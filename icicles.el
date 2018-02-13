@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2018.01.15
+;; Version: 2018.02.13
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 15 15:19:34 2018 (-0800)
+;; Last-Updated: Tue Feb 13 15:00:55 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 23720
+;;     Update #: 23733
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -454,7 +454,7 @@
 ;;    `icicle-visit-marked-file-of-content-recursive-other-window',
 ;;    `icicle-where-is', `icicle-widget-file-complete',
 ;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
-;;    `icicle-zap-to-char', `toggle', `synonyms',
+;;    `icicle-zap-to-char' (Emacs 23-25), `toggle', `synonyms',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
@@ -905,6 +905,7 @@
 ;;    `icicle-prefix-cycle-previous-alt-action-keys',
 ;;    `icicle-prefix-cycle-previous-help-keys',
 ;;    `icicle-quote-shell-file-name-flag',
+;;    `icicle-read-char-by-name-multi-completion-flag' (Emacs 23-25),
 ;;    `icicle-read+insert-file-name-keys', `icicle-recenter',
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
 ;;    `icicle-region-background', `icicle-require-match-flag',
@@ -945,7 +946,7 @@
 ;;    `icicle-use-candidates-only-once-flag',
 ;;    `icicle-widgets-to-redefine', `icicle-word-completion-keys',
 ;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
-;;    `icicle-zap-to-char-candidates'.
+;;    `icicle-zap-to-char-candidates' (Emacs 23-25).
 ;;
 ;;  Non-interactive functions in Icicles:
 ;;
@@ -1021,7 +1022,7 @@
 ;;    `icicle-candidate-short-help',
 ;;    `icicle-case-insensitive-string-less-p',
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
-;;    `icicle-char-cands-from-charlist',
+;;    `icicle-char-cands-from-charlist' (Emacs 23-25),
 ;;    `icicle-char-properties-in-buffer',
 ;;    `icicle-char-properties-in-buffers',
 ;;    `icicle-choose-anything-candidate',
@@ -1217,11 +1218,12 @@
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
 ;;    `icicle-looks-like-dir-name-p', `icicle-lru-window-for-buffer',
 ;;    `icicle-major-mode-name-less-p',
-;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
-;;    `icicle-make-color-candidate', `icicle-make-face-candidate',
-;;    `icicle-make-frame-alist', `icicle-make-plain-predicate',
-;;    `icicle-make-window-alist', `icicle-map', `icicle-markers',
-;;    `icicle-markers-to-readable', `icicle-marker+text',
+;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate'
+;;    (Emacs 23-25), `icicle-make-color-candidate',
+;;    `icicle-make-face-candidate', `icicle-make-frame-alist',
+;;    `icicle-make-plain-predicate', `icicle-make-window-alist',
+;;    `icicle-map', `icicle-markers', `icicle-markers-to-readable',
+;;    `icicle-marker+text',
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-maybe-sort-and-strip-candidates',
 ;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
@@ -1255,8 +1257,8 @@
 ;;    `icicle-ORIG-display-completion-list',
 ;;    `icicle-ORIG-face-valid-attribute-values',
 ;;    `icicle-ORIG-minibuffer-default-add-completions',
-;;    `icicle-ORIG-read-char-by-name', `icicle-ORIG-read-color',
-;;    `icicle-ORIG-read-face-name',
+;;    `icicle-ORIG-read-char-by-name' (Emacs 23-25),
+;;    `icicle-ORIG-read-color', `icicle-ORIG-read-face-name',
 ;;    `icicle-ORIG-read-from-minibuffer', `icicle-ORIG-read-number',
 ;;    `icicle-ORIG-read-string', `icicle-ORIG-shell-command',
 ;;    `icicle-ORIG-shell-command-on-region',
@@ -1277,10 +1279,10 @@
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
-;;    `icicle-read-args-w-val-satisfying', `icicle-read-char-by-name',
-;;    `icicle-read-args-for-set-completion-methods',
+;;    `icicle-read-args-w-val-satisfying', `icicle-read-char-by-name'
+;;    (Emacs 23-25), `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-char-exclusive',
-;;    `icicle-read-char-maybe-completing',
+;;    `icicle-read-char-maybe-completing' (Emacs 23-25),
 ;;    `icicle-read-choose-window-args', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-file-name-default',
 ;;    `icicle-read-from-minibuffer',
@@ -1375,7 +1377,8 @@
 ;;    `icicle-transform-multi-completion',
 ;;    `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-magic', `icicle-try-switch-buffer',
-;;    `icicle-ucs-names', `icicle-unbind-buffer-candidate-keys',
+;;    `icicle-ucs-names' (Emacs 23-25),
+;;    `icicle-unbind-buffer-candidate-keys',
 ;;    `icicle-unbind-file-candidate-keys',
 ;;    `icicle-unbind-isearch-keys',
 ;;    `icicle-unbind-key-completion-keys-for-map-var',
@@ -1538,8 +1541,8 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-expression-map', `icicle-read-char-history',
-;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
+;;    `icicle-read-expression-map', `icicle-read-char-history' (Emacs
+;;    23-25), `icicle-remove-icicles-props-p', `icicle-re-no-dot',
 ;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
 ;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
