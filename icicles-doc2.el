@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Jan 15 14:52:04 2018 (-0800)
+;; Last-Updated: Tue Feb 13 15:19:41 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 30057
+;;     Update #: 30061
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6681,7 +6681,7 @@
 ;;    such option saving using their own function instead of the
 ;;    default value, `customize-save-variable'.
 ;;
-;;  * Non-`nil' option
+;;  * (Emacs 23-25 only.) Non-`nil' option
 ;;    `icicle-read-char-by-name-multi-completion-flag' means that
 ;;    `icicle-read-char-by-name' (which, by the default value of
 ;;    option `icicle-functions-to-redefine', replaces vanilla
@@ -6707,14 +6707,15 @@
 ;;    * choosing a strong input pattern, before asking for candidate
 ;;      matching
 ;;
-;;  * Option `icicle-zap-to-char-candidates' determines which
-;;    character names are used for `icicle-zap-to-char' (bound to
-;;    `M-z' by default) when completing.  The default value of `nil'
-;;    means complete against character names that you have already
-;;    entered.  You can instead set the value to `icicle-ucs-names' to
-;;    complete against all Unicode character names.  Or you can set it
-;;    to any function that returns a value of the same form at that
-;;    returned by `icicle-ucs-names' (hence `ucs-names').
+;;  * (Emacs 23-25 only.) Option `icicle-zap-to-char-candidates'
+;;    determines which character names are used for
+;;    `icicle-zap-to-char' (bound to `M-z' by default) when
+;;    completing.  The default value of `nil' means complete against
+;;    character names that you have already entered.  You can instead
+;;    set the value to `icicle-ucs-names' to complete against all
+;;    Unicode character names.  Or you can set it to any function that
+;;    returns a value of the same form at that returned by
+;;    `icicle-ucs-names' (hence `ucs-names').
 ;;
 ;;  * The options whose names start with prefix `icicle-cand-preds-'
 ;;    are lists of predefined predicates that are used to filter
