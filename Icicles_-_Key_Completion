@@ -531,7 +531,7 @@ can insert any Unicode characters using either an input method or  '''`C-x 8 RET
 
 
 [:icicle-read-char-by-name-multi-completion-flag]
-If option '''`<tt>[[Icicles - Customization and General Tips#icicle-read-char-by-name-multi-completion-flag|icicle-read-char-by-name-multi-completion-flag]]</tt>''''  is
+For Emacs 23-25, if option '''`<tt>[[Icicles - Customization and General Tips#icicle-read-char-by-name-multi-completion-flag|icicle-read-char-by-name-multi-completion-flag]]</tt>''''  is
 non-`nil' then '''Icicles''' enhances this in a few ways:
 
 * It shows in `*Completions*',
