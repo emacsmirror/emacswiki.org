@@ -2660,7 +2660,7 @@ saving using their own function instead of the default value,
 [:icicle-read-char-by-name-multi-completion-flag]
 ==== Option icicle-read-char-by-name-multi-completion-flag ====
 
-Non-`nil' option '''`icicle-read-char-by-name-multi-completion-flag'''' means that
+(Emacs 23-25 only.) Non-`nil' option '''`icicle-read-char-by-name-multi-completion-flag'''' means that
 `icicle-read-char-by-name' (which, by the default value of option `icicle-functions-to-redefine', replaces vanilla
 `read-char-by-name' in ''Icicle'' mode) uses multi-completion and
 shows helpful information about the current completion candidate
@@ -2689,6 +2689,7 @@ Instead of using a `nil' value, you can also speed things up by:
 [:icicle-zap-to-char-candidates]
 ==== Option icicle-zap-to-char-candidates ====
 
+(Emacs 23-25 only.)
 Option '''`icicle-zap-to-char-candidates'''' determines which
 character names are used for `icicle-zap-to-char' (bound to
 '''`M-z'''' by default) when completing.  The default value of `nil'
