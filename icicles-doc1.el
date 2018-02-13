@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Jan 15 15:07:16 2018 (-0800)
+;; Last-Updated: Tue Feb 13 15:14:14 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 28658
+;;     Update #: 28660
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7309,8 +7309,9 @@
 ;;  my library `ucs-cmds.el' then you might want to remap that command
 ;;  to command `ucsc-insert', which is an enhancement.
 ;;
-;;  If option `icicle-read-char-by-name-multi-completion-flag' is
-;;  non-`nil' then Icicles enhances this in a few ways:
+;;  For Emacs 23-25, if option
+;;  `icicle-read-char-by-name-multi-completion-flag' is non-`nil' then
+;;  Icicles enhances this in a few ways:
 ;;
 ;;  * It shows in `*Completions*', for each candidate Unicode
 ;;    character, its name and code point, as well as the character
