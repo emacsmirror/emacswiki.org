@@ -157,11 +157,6 @@ In Emacs's native python-mode, use:
 }}}
 This should work with any recent IPython, including on Windows.
 
- 37
-down vote
-accepted
-	
-
 Since IPython 5 it has a new terminal interface, which is not compatible with Emacs' inferior shells. To fix it, add the --simple-prompt flag to the IPython command:
 
 {{{
