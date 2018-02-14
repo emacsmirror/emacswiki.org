@@ -8,9 +8,9 @@
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 14 10:19:13 2018 (-0800)
+;; Last-Updated: Wed Feb 14 11:03:08 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 315
+;;     Update #: 321
 ;; URL: https://www.emacswiki.org/emacs/download/ucs-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -145,7 +145,7 @@
 ;;     Adapted to Emacs 26, where ucs-names is a hash table.
 ;;       Use lexical-binding.
 ;;       Added: ucsc-char-name, ucsc-char-names, ucsc-get-a-hash-key, ucsc-get-hash-keys.
-;;       ucsc-define-char-insert-cmd: Use ucsc-char-name if ucs-names is hash-table-p.
+;;       ucsc-define-char-insert-cmd: Use ucsc-char-name.
 ;;       ucsc-make-commands: Handle hash-table-p case for ucs-names.
 ;; 2016/11/18 dadams
 ;;     ucsc-make-commands: Changed from a macro to a command that returns the commands.
@@ -218,12 +218,16 @@ predicate used to compare values."
 ;;;###autoload
 (defun ucsc-char-names (character)
   "Return a list of the names for CHARACTER."
-  (ucsc-get-hash-keys character (ucs-names)))
+  (if (hash-table-p (ucs-names))
+      (ucsc-get-hash-keys character (ucs-names))
+    (mapcar #'car (ucs-names))))
 
 ;;;###autoload
 (defun ucsc-char-name (character)
   "Return a name for CHARACTER, from `ucs-names'."
-  (ucsc-get-a-hash-key character (ucs-names)))
+  (if (hash-table-p (ucs-names))
+      (ucsc-get-a-hash-key character (ucs-names))
+    (car (rassq character (ucs-names)))))
 
 ;;;###autoload
 (defun ucsc-define-char-insert-cmd (character &optional msgp)
@@ -242,9 +246,7 @@ Non-interactively:
  CHARACTER is a character - it must satisfy `characterp'.
  MSGP non-nil means echo the name of the created command."
   (interactive (list (read-char-by-name "Unicode (name or hex): ") t))
-  (let* ((char-name  (if (hash-table-p (ucs-names))
-                         (ucsc-char-name character)
-                       (car (rassq character (ucs-names)))))
+  (let* ((char-name  (ucsc-char-name character))
          (cmd-name   (and char-name
                           (downcase (replace-regexp-in-string " " "-" char-name nil t))))
          (cmd        (and cmd-name  (intern cmd-name))))
