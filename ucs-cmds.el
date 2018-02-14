@@ -8,9 +8,9 @@
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 14 11:03:08 2018 (-0800)
+;; Last-Updated: Wed Feb 14 13:23:19 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 321
+;;     Update #: 327
 ;; URL: https://www.emacswiki.org/emacs/download/ucs-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -187,7 +187,6 @@
 ;;
 ;;; Code:
 
-;;;###autoload
 (defun ucsc-get-hash-keys (value hash-table &optional value-test-function)
   "Return a list of keys associated with VALUE in HASH-TABLE.
 Optional arg VALUE-TEST-FUNCTION (default `equal') is the equality
@@ -200,7 +199,6 @@ predicate used to compare values."
              hash-table)
     keys))
 
-;;;###autoload
 (defun ucsc-get-a-hash-key (value hash-table &optional value-test-function)
   "Return a hash key associated with VALUE in HASH-TABLE.
 If there is more than one such key then it is undefined which is
@@ -215,19 +213,23 @@ predicate used to compare values."
              hash-table)
     nil))
 
-;;;###autoload
 (defun ucsc-char-names (character)
   "Return a list of the names for CHARACTER."
   (if (hash-table-p (ucs-names))
       (ucsc-get-hash-keys character (ucs-names))
     (mapcar #'car (ucs-names))))
 
-;;;###autoload
-(defun ucsc-char-name (character)
-  "Return a name for CHARACTER, from `ucs-names'."
-  (if (hash-table-p (ucs-names))
-      (ucsc-get-a-hash-key character (ucs-names))
-    (car (rassq character (ucs-names)))))
+(defun ucsc-char-name (character &optional prefer-old-name-p)
+  "Return the name of CHARACTER, or nil if it has no name.
+This is Unicode property `name' if there is one, or property
+ `old-name' if not, or nil if neither.
+Non-nil optional arg PREFER-OLD-NAME-P means reverse the priority,
+ returning the old name if there is one."
+  (if prefer-old-name-p
+      (or (get-char-code-property character 'old-name)
+          (get-char-code-property character 'name))
+    (or (get-char-code-property character 'name)
+        (get-char-code-property character 'old-name))))
 
 ;;;###autoload
 (defun ucsc-define-char-insert-cmd (character &optional msgp)
