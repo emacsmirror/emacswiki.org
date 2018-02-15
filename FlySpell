@@ -234,6 +234,136 @@ When the subword mode is on, especially with cc-mode, the words are distinguishe
 
 -Kiwon
 
+[new]
+
+Flyspell has no built-in support for subword-mode, however, it is possible to adapt Flyspell to be more competent when subword-mode is activated.  There are three primary changes that need to be made:
+
+# Word boundary detection needs to updated for both Flyspell and ispell
+# ##flyspell-small-region## needs to be updated to advance by subwords, not whole words
+## ##flyspell-large-region## has similar issues which are more difficult to fix, though aspell offers a pseudo-solution
+# ##flyspell-post-command-hook## needs to know to trigger after typing a subword boundary
+
+Code addressing (1) is as follows:
+<pre>
+;; Like looking-at but with an offset
+(defun my-looking-at (regexp &optional offset)
+  (let ((pos (+ (or offset 0) (point))))
+    (when (and (>= pos (point-min)) (< pos (point-max)))
+      (string-match regexp (string (char-after pos))))))
+
+;; Call the right forward function and move past otherchars
+(defun my-forward (&optional backward)
+  (let ((ispell-casechars (ispell-get-casechars))
+        (ispell-otherchars (ispell-get-otherchars))
+        (ispell-many-otherchars-p (ispell-get-many-otherchars-p))
+        (offset (if backward -1 0))
+        (dir (if backward -1 1))
+        (continue t))
+    (if subword-mode (subword-forward dir) (forward-word dir))
+    (while (and continue
+                (not (string= "" ispell-otherchars))
+                (my-looking-at ispell-otherchars offset)
+                (my-looking-at ispell-casechars (+ dir offset)))
+      (if subword-mode (subword-forward dir) (forward-word dir))
+      (setq continue ispell-many-otherchars-p))))
+(defun my-backward () (my-forward t))
+
+;; Properly find boundaries of words in CamelCase
+(defun my-ispell-get-word (orig-fun &optional following extra-otherchars)
+  (if (not subword-mode)
+      (funcall orig-fun following extra-otherchars)
+    (if following (my-forward) (if (not (eobp)) (forward-char)))
+    (let* ((beg (progn (my-backward) (point-marker)))
+           (end (progn (my-forward) (point-marker)))
+           (word (buffer-substring-no-properties beg end)))
+      (list word beg end))))
+(advice-add #'ispell-get-word :around #'my-ispell-get-word)
+(advice-add #'flyspell-get-word :around #'my-ispell-get-word)
+</pre>
+This makes use of ##subword-forward## and ##-backward## to identify word boundaries while being careful to respect spelling non-delimiters like ##'## when used as an apostrophe (expressed in ispell's ##otherchars##).  Optional argument `extra-otherchars' is ignored in the above, but can be incorporated similarly if desired.
+
+Code addressing (2) is as follows:
+<pre>
+;; Simplify and use my-forward to handle CamelCase words
+(defun my-flyspell-small-region (orig-fun beg end)
+  ;; (if (not subword-mode)
+  ;;     (funcall orig-fun beg end)
+  (save-excursion
+    (if (> beg end) (setq beg (prog1 end (setq end beg))))
+    (goto-char beg)
+    (while (< (point) end)
+      (flyspell-word t)
+      ;; (sit-for 0) ;; uncomment to enable animation
+      (my-forward))))
+(advice-add #'flyspell-small-region :around #'my-flyspell-small-region)
+</pre>
+(Note that this depends on ##my-forward## from (1).)  This removes the status messages and the cursor sweep animation, which become a bit jarring when used with (3) below.  (This should be fine for ''small'' regions, after all, unless you've disabled ##flyspell-large-region##.)  Note the use use of ##(flyspell-word t)## to check forward rather than backward: this permits simpler cursor movement and also avoids double-checking each word (as is done in the standard implementation!).
+
+A pseudo-solution for ##flyspell-large-region## with aspell is as follows:
+<pre>
+;; Fake handling of CamelCase words in flyspell-large-region
+(defun my-flyspell-large-region (orig-fun beg end)
+  (let ((ispell-extra-args ispell-extra-args)
+        (subword-mode subword-mode))
+    (when (and subword-mode (string-match "aspell\\'" ispell-program-name))
+      (push "--run-together" ispell-extra-args)
+      (push "--run-together-limit=6" ispell-extra-args)
+      (push "--run-together-min=2" ispell-extra-args)
+      (setq subword-mode nil))
+    (funcall orig-fun beg end)))
+(advice-add #'flyspell-large-region :around #'my-flyspell-large-region)
+
+...
+
+;; Use aspell if installed
+(when (executable-find "aspell")
+  (setq ispell-program-name "aspell")
+  (setq ispell-list-command "--list"))
+</pre>
+This exploits aspell's ##--run-together## family of options to accept CamelCase words, but it also ends up permitting missingspaces and other typos that form run-together words, like "theis".  aspell's default case sensitivity does at least prevent the flagrant disregard of word boundaries within CamelCase words.  (The choice of ##--run-together-limit=6## and ##-min=2## should serve most uses of CamelCase, which often include words as short as "is" but typically stick to brief phrases.)
+
+In order to address (3), it is necessary to alter the logic Flyspell uses to decide when to trigger:
+<pre>
+;; Only check the previous word if no longer editing it
+(defun my-flyspell-check-pre-word-p ()
+  (and (eq flyspell-pre-buffer (current-buffer))
+       (numberp flyspell-pre-point)
+       (/= (save-excursion
+             (goto-char (1- flyspell-pre-point))
+             (my-forward)
+             (point))
+           (save-excursion
+             (if (not (bobp)) (backward-char))
+             (my-forward)
+             (point)))))
+
+;; Simplify and use flyspell-region in the post-command-hook
+(defun my-flyspell-post-command-hook (orig-fun)
+  (when flyspell-mode
+    (with-local-quit
+      (let ((command this-command)
+            deactivate-mark)
+        ;; Handle word at previous location
+        (when (my-flyspell-check-pre-word-p)
+          (save-excursion
+            (goto-char (1- flyspell-pre-point))
+            (flyspell-word)))
+        ;; Handle word at current location
+        (when (flyspell-check-word-p)
+          (flyspell-word))
+        ;; Handle all other recent changes
+        (while (and (not (input-pending-p)) (consp flyspell-changes))
+          (let* ((change (pop flyspell-changes))
+                 (beg (car change))
+                 (end (cdr change)))
+            (flyspell-region beg end)))
+        (setq flyspell-previous-command command)))))
+(advice-add #'flyspell-post-command-hook :around #'my-flyspell-post-command-hook)
+</pre>
+(Also depends on ##my-forward## from (1).)  ##flyspell-post-command-hook## is replaced primarily to check the word at ##(1- flyspell-pre-point)## rather than directly at ##flyspell-pre-point## so subwords are checked as you type them.  The while-loop at the end now also unconditionally calls ##flyspell-region## rather than ##flyspell-word##, '''which renders flyspell extremely aggressive when altering large chunks of text.'''
+
+I realize the above is a fairly extensive change, but I believe it's roughly the minimum alteration needed to add subword checking as you type.  All of the above is also compatible with disabling subword-mode, though doing so still leaves in some differences: notably, unconditionally calling ##flyspell-region## in ##flyspell-post-command-hook##.  Should the maintainers of Flyspell ever read this, I would ask that they check that the logic expressed in their various ##-p## functions to ensure they behave as intended.  In particular ##flypsell-check-changed-word-p##'s last line appears to be missing an ##and##, and as a result may be incapable of returning non-nil. ---rriegs
+
 == Flyspell with popup.el ==
 If you'd like to use Flyspell's menu selection in the terminal, or just prefer to use popup.el over the graphical menu, stick this somewhere in your load path:
 <pre>
