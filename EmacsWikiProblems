@@ -29,7 +29,7 @@ come up empty. I'm not sure what to make of it. Strange! -- Alex Schroeder
 Each of the links (for Emacs, XEmacs, Aquamacs, & TecoEmacs) are broken.  [[KamʻIʻi]]
 
 [new]
-Hm. I'll take a look! -- Alex Schroeder
+I think I fixed them. Thanks for note! -- Alex Schroeder
 
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
