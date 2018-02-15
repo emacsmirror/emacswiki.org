@@ -8,6 +8,18 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Recent changes in last 14 days shows 0 changes, though changes in last 1, 3, and 7 days show more than 0 changes
+
+As the number of days is increased, the number of changes mostly goes up, as one would expect.  Except for the following number, where it shows no changes (or 1 change for couple of these).
+
+https://www.emacswiki.org/emacs?action=rc;days=6;all=0;showedit=0
+https://www.emacswiki.org/emacs?action=rc;days=13;all=0;showedit=0
+https://www.emacswiki.org/emacs?action=rc;days=14;all=0;showedit=0
+https://www.emacswiki.org/emacs?action=rc;days=20;all=0;showedit=0
+https://www.emacswiki.org/emacs?action=rc;days=22;all=0;showedit=0
+https://www.emacswiki.org/emacs?action=rc;days=28;all=0;showedit=0
+https://www.emacswiki.org/emacs?action=rc;days=30;all=0;showedit=0
+
 ==  "List the users of..." page produces http 404 errors ==
 Each of the links (for Emacs, XEmacs, Aquamacs, & TecoEmacs) are broken.  [[KamʻIʻi]]
 
