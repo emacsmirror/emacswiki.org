@@ -20,10 +20,16 @@ As the number of days is increased, the number of changes mostly goes up, as one
 * https://www.emacswiki.org/emacs?action=rc;days=28;all=0;showedit=0
 * https://www.emacswiki.org/emacs?action=rc;days=30;all=0;showedit=0
 
+[new]
+At first I wanted to say that I couldn't reproduce the problem but as I kept pressing
+Ctrl-Shift-R on my browser I noticed that sometimes (1 in 4, maybe?) the list would
+come up empty. I'm not sure what to make of it. Strange! -- Alex Schroeder
+
 ==  "List the users of..." page produces http 404 errors ==
 Each of the links (for Emacs, XEmacs, Aquamacs, & TecoEmacs) are broken.  [[KamʻIʻi]]
 
-
+[new]
+Hm. I'll take a look! -- Alex Schroeder
 
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
