@@ -340,6 +340,21 @@ Again, I saw in the sql.el comments that there are ways to configure the tool, e
 
 -- SebastianMonia
 
+== Connect better ==
+I find this little convenience function useful if you want to connect to several different types of databases.
+
+{{{
+(defun sql-connect-better (name)
+  "Like `sql-connect' but fixed so that `sql-product' and buffer name are set automatically.
+NAME is the name of the connection in `sql-connection-alist'."
+  (interactive (list (sql-read-connection "Connection: " nil '(nil))))
+  (let* ((sql-product (or (cadadr (assoc 'sql-product (cdr (assoc name sql-connection-alist))))
+                          sql-product)))
+    (sql-connect name name)))
+}}}
+
+-- JoeBloggs
+
 ----
 CategoryModes
 CategorySql
