@@ -1,0 +1,4 @@
+Is any of this still applicable for GNU Emacs 25+ running on Windows now (2018)?  According to http://bamanzi.github.io/scrapbook/data/20110925164421/fonts-and-text-translation.html : "For many languages, native truetype fonts are sufficient, and in Emacs 23 the need for BDF fonts will disappear for almost all languages" and we're well past Emacs 23.  I would at least recommend a note at the top of the page stating "this page is applicable to Emacs versions before Emacs 23" or something similar.
+
+-- rgd786 2018-02-16 18:37 UTC
+
