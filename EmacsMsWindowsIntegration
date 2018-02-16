@@ -97,12 +97,26 @@ Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\*\shell\emacsopensameframe\command]
 @="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
 
-;; Dired support
+;; Dired for desktop background
+[HKEY_CLASSES_ROOT\DesktopBackground\shell\emacsopensameframe]
+@="&Emacs: Open in dired"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\DesktopBackground\shell\emacsopensameframe\command]
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%v\""
+
+;; Dired for directory
 [HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe]
 @="&Emacs: Open in dired"
 "icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe\command]
 @="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+
+;; Dired for directory background
+[HKEY_CLASSES_ROOT\Directory\Background\shell\emacsopensameframe]
+@="&Emacs: Open in dired"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\Directory\Background\shell\emacsopensameframe\command]
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%v\""
 }}}
 
 You should immediately see the options if you right click any file in explorer.
