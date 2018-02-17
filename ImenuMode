@@ -202,6 +202,8 @@ You can hook this to `mail-mode':
            (setq imenu-generic-expression mail-imenu-generic-expression)))
 
 
+[new]
+: Isn't setq-ing imenu-generic-expression to mail-imenu-generic-expression overwriting default imenu search settings for that particular mode? If you only want to expand the current imenu setup with new keywords, it seems better to add them with (add-hook ..... (add-to-list my-customization imenu-generic-expression)) -- MaliRemorker
 
 Here's a more complex example, for PL/SQL (for SqlMode):
 
@@ -251,8 +253,6 @@ In these examples, the major mode supports a buffer local copy of the "real" var
                      ...))))
 
 That way, setting `imenu-generic-expression' will only change for the buffer the hook runs in -- the foo-mode buffer.
-
-
 
 == Using Selection Buffer ==
 
