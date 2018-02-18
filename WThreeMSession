@@ -19,12 +19,12 @@ any single tab or the session itself, or delete a tab or the session itself.
 
 == Usage ==
 
-Using the default keybindings, M-S stores the current session, M-s opens
-the session list, and pressing M-s a second time inspects the contents
+Using the default keybindings, `M-S' stores the current session, `M-s' opens
+the session list, and pressing `M-s' a second time inspects the contents
 of the session at point.
 
-At any point, `d' will delete the current entry, 'r' will rename it, and
-pressing return will load it. Loading is non-destructive, ie. it only adds
+At any point, `d' will delete the current entry, `r' will rename it, and
+pressing `return' will load it. Loading is non-destructive, ie. it only adds
 new tabs, and does not replace any.
 
 == Session tab history ==
