@@ -83,19 +83,19 @@ Windows Registry Editor Version 5.00
 ;; Be sure to set the correct path to Emacs on your system
 [HKEY_CLASSES_ROOT\*\shell]
 
-;; Open file in new frame
-[HKEY_CLASSES_ROOT\*\shell\emacsopennewframe]
-@="&Emacs: Edit in new window"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\*\shell\emacsopennewframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -c -n \"%1\""
-
 ;; Open file in existing frame
-[HKEY_CLASSES_ROOT\*\shell\emacsopensameframe]
+[HKEY_CLASSES_ROOT\*\shell\emacsopen1sameframe]
 @="&Emacs: Edit in existing window"
 "icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\*\shell\emacsopensameframe\command]
+[HKEY_CLASSES_ROOT\*\shell\emacsopen1sameframe\command]
 @="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+
+;; Open file in new frame
+[HKEY_CLASSES_ROOT\*\shell\emacsopen2newframe]
+@="&Emacs: Edit in new window"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\*\shell\emacsopen2newframe\command]
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -c -n \"%1\""
 
 ;; Dired for desktop background
 [HKEY_CLASSES_ROOT\DesktopBackground\shell\emacsopensameframe]
