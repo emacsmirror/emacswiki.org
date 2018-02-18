@@ -1,32 +1,30 @@
 == Introduction ==
 
 `w3m-search' provides a convenient interface to various internet
-search engines. By default, `w3m-search' is bound to S in WThreeM
-buffers.
+search engines.
+
+`s' Search, fetching results in the current buffer, using your default search engine.
+`S' Search, fetching results in a new buffer, using your default search engine.
+
+Running either command with the default prefix `C-u' allows you to choose from any of
+the non-default pre-configured searcg engines (and of course you can always customize and add your own).
 
 See also: [[w3m support for Emacs Wiki]].
 
 == Customization ==
 
-The following provides an example of how to customize the behaviour of
-`w3m-search'. In particular, how to change the default search engine,
-how to add new search engines, and how to make the search engine
-default to the previous one selected.
+The default search engine is set in `w3m-search-default-engine'. Its value should match an entry
+in `w3m-search-engine-alist'. Both are defined using `defcustom' so you can use the emacs
+customization-group interface to modify them.
 
-    (require 'w3m-search)
-
-    (setq w3m-search-default-engine "google-groups")
-
-    (add-to-list 'w3m-search-engine-alist
-                 '("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
-
-    ;; Make the previous search engine the default for the next
-    ;; search.
+=== Make the previous search engine the default for the next search ===
 
     (defadvice w3m-search (after change-default activate)
       (let ((engine (nth 1 minibuffer-history)))
 	(when (assoc engine w3m-search-engine-alist)
 	  (setq w3m-search-default-engine engine))))
+
+=== Ideas for other search engines ===
 
 Here are some more entries that can be added to
 `w3m-search-engine-alist', as above:
@@ -39,89 +37,13 @@ Here are some more entries that can be added to
 * ("wikipedia-en" "http://en.wikipedia.org/wiki/Special:Search?search=%s")
 * ("worldclock" "http://www.timeanddate.com/worldclock/results.html?query=%s")
 
-If you don't want to build the list from scratch, wholesale removal
-of unwanted search engines can be done with something like:
-
-    (let ((unwanted (regexp-opt '("altavista"
-				  "eiei"
-				  "eiwa"
-				  "iij-archie"
-				  "rpmfind"
-				  "yahoo"
-				  "-ja"
-				  "-jp"))))
-      (mapcar (lambda (elt)
-		(when (or (string-match unwanted (car elt))
-			  (eq 'euc-japan (nth 2 elt)))
-		  (setq w3m-search-engine-alist (delete elt w3m-search-engine-alist))))
-	      w3m-search-engine-alist))
-
 == Typing the search engine and query at once like Firefox ==
 
-Note: At least in the developer version of emacs-w3m (it's pretty
-stable, don't be afraid to grab a fresh CVS co) you can simply type
+By default, google and yahoo have uri shortcuts defined, so from any url prompt, you can
+type `gg:<your search string>' or `ya:<your search string>'.
 
-    gg:<your search string>
-
-to do a google search.  There are some other search engines predefined
-and you can easily add your other favorite engines.  Have a look at
-`w3m-uri-replace-alist'.
-
-You know how Firefox or Internet Explorer lets you type in the address bar any search query if you define a bookmark with "keyword" (IE requires the registry, hm). Let's do the same thing with w3m by defining a new function.
-
-Add the following to your init files (eg. .emacs). Then run M-x piyo-w3m-search. By default, if you don't type your search engine name, the whole string will be the query. If you do type a search engine name "google" for example, that search engine will be used. I also enabled completion on the search engine name but allow space to enter as self-insert-command (thanks offby1).
-
-Here's a use case.
-
-# I want to look up the entry "recursion" on "wikipedia-en" (see Customization example above)
-# Type M-x piyo-w3m-search (you can bind this to a key, of course)
-# Type "wiki" then hit tab to complete "wikipedia-en"
-# Type space then "recursion".
-# Hit enter and bask in w3m search stuff
-
-The code:
-
- ;(require 'w3m-search) ; or auto-load?
- (defvar piyo-w3m--query-history nil
-   "The query history isn't saved seperately!")
- (defun piyo-w3m-search (line)
-   "Modeled on `w3m-search', but if the first word is a search engine as defined in `w3m-search-default-engine',
- then use that engine instead."
-   (interactive (piyo-w3m--read-query-smart))
-   (let* ((defeng w3m-search-default-engine)
- 	 (srceng (mapcar 'car w3m-search-engine-alist))
- 	 (sepr " ")
- 	 (brok (split-string line sepr))
- 	 (possiblesea (pop brok)))
-     (apply 'w3m-search 
- 	   (if (member possiblesea srceng)
- 	       (list possiblesea (join-string brok " "))
- 	     (list defeng (join-string (push possiblesea brok) " "))))))
- 
- (defun join-string (lst &optional seperator)
-   "The reverse of `split-string'"
-   (interactive)
-   (mapconcat 'identity lst seperator))
- 
- (defun piyo-w3m--read-query-dumb ()
-   "For reference. Not reference by running code."
-    (let ((defeng w3m-search-default-engine))
-      (list (w3m-search-read-query
-       (format "%s search: " defeng)
-       (format "%s search (default %%s): " defeng)
-       'piyo-w3m--query-history))))
- 
- (defun piyo-w3m--read-query-smart ()
-   "Use `completing-read' to find the first matching search engine. But allow space input."
-   (let ((defeng w3m-search-default-engine)
- 	(minibuffer-local-completion-map (copy-sequence minibuffer-local-completion-map)))
-     (setcdr (assoc ?\s ; change space character
- 		   minibuffer-local-completion-map) 'self-insert-command)
-     (let ((completion-ignore-case t))
-       (list (completing-read (format "%s search: " defeng)
- 			     w3m-search-engine-alist nil nil nil 'piyo-w3m--query-history)))))
-
-This is tested on Emacs 22.0.50 / Meadow 3.00 -r 4152.
+Shortcuts are defined in variable `w3m-uri-replace-alist', which is defined using defcustom
+for easy customization.
 
 ----
 See Also: WThreeM, CategoryHypermedia
