@@ -1,65 +1,40 @@
 == Introduction ==
 
-w3m-session ([[Lisp:w3m-session.el]]) provides persistent
-[[emacs-w3m]] browsing sessions. When quitting w3m (or, if you request
+Emacs-w3m provides persistent browsing sessions, and crash recovery.
+When quitting w3m (or, if you request
 it, at any other time while using it) you can save the current w3m
 session (that is, the set of open tabs and the URLs they're
 visiting). Upon restarting emacs-w3m (possibly after restarting Emacs
-itself) you'll have the possibity of recovering the saved session
+itself) you'll have the possibility of recovering the saved session
 (that is, of re-opening the saved tabs and URLs). You also have at
 your disposal a command to recover the saved session at any other
 time.
 
-== Installation ==
+Emacs-w3m also keeps current "crash recovery" session information,
+so that should you experience any form of crash, the next time you
+start emacs-w3m it will prompt you to restore that session.
 
-Just put the file somewhere on your Emacs load path and add the
-following line to your InitFile:
+For each stored session, you can selectively load single tabs, rename
+any single tab or the session itself, or delete a tab or the session itself.
 
-  (require 'w3m-session)
+== Usage ==
 
-After restarting Emacs (or evaluating the form above), each time
-you start emacs-w3m with 'w3m' you'll get a prompt asking whether
-your last browsing session should be loaded. Likewise, when
-quitting the browser, you'll have the possibility of saving your
-current session (overwriting the previous one).
+Using the default keybindings, M-S stores the current session, M-s opens
+the session list, and pressing M-s a second time inspects the contents
+of the session at point.
 
-In addition, two new interactive functions are defined:
+At any point, `d' will delete the current entry, 'r' will rename it, and
+pressing return will load it. Loading is non-destructive, ie. it only adds
+new tabs, and does not replace any.
 
-  w3m-session-load  --  load the last stored session
-  w3m-session-save  --  save the current session
+== Session tab history ==
 
-These functions can be invoked at any time while running emacs-w3m.
-Optionally, you can bind them to key shortcuts with the proper
-variations of the following elisp magic in your InitFile:
-
- (defun w3m-add-keys ()
-   (define-key w3m-mode-map "S" 'w3m-session-save)
-   (define-key w3m-mode-map "L" 'w3m-session-load))
- (add-hook 'w3m-mode-hook 'w3m-add-keys)
+The saved session information includes a simplified history for each tab,
+so upon restoring a session you can also navigate to prior pages.
 
 == Customization ==
 
-A new customization group, w3m-session, is available. There you can
-customize the following variables:
-
-  w3m-session-load-always     -- if t, `w3m-session-load' will *not* ask
-                               for confirmation (default nil)
-  w3m-session-save-always     -- if t, `w3m-session-load' will *not* ask
-                               for confirmation (default nil)
-  w3m-session-show-titles     -- if t, the load prompt will list the
-                               session URL titles (default t)
-  w3m-session-duplicate-tabs  -- what to do when loading a session that
-                               contains a URL already open
-  w3m-session-file            -- the file where w3m session info
-                               is stored (default "~/.w3m-session")
-
-You can also customize them in your InitFile, to wit:
-
-  (setq w3m-session-file "~/.emacs.d/w3m-session")
-  (setq w3m-session-save-always nil)
-  (setq w3m-session-load-always nil)
-  (setq w3m-session-show-titles t)
-  (setq w3m-session-duplicate-tabs 'ask) ;  'never, 'always, 'ask
+Refer to the w3m customization group.
 
 ----
 CategoryHypermedia
