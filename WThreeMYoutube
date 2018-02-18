@@ -1,39 +1,82 @@
-Here's a function to view youtube video using mplayer:
+Here is a generic video downloader for emacs-w3m that supports all videos on all sites,
+using the external program <b>youtube-dl</b>. The function spawns an asychronous process
+to perform the download, so you can continue using emacs for other work, and you can
+download multiple videos simultaneously. Each download is documented in a unique
+*w3m-download-video* buffer which indicates the download operation status and progress.
+You can customize the youtube-dl download options for any site by modifying or adding
+entries to the defcustom <i>w3m-download-video-alist</i>.
+
+The interactive function names are <i>w3m-download-video</i>
+and <i>w3m-download-video-at-point</i>, which you can bind to whatever key combination
+you think appropriate.
+
+Do note that emacs-w3m already has functions <i>w3m-lnum-download-this-url</i>
+and <i>w3m-download</i>.
+
+The revision history of this wiki page contains two other methods for downloading video,
+but both are very old and outdated.
 
 <pre>
-(defun w3m-yt-view ()
-  "View a YouTube link with mplayer."
-  (interactive)
-  (let ((url (or (w3m-anchor) (w3m-image))))
-    (cond ((string-match "youtube" url)
-           (string-match "[^v]*v.\\([^&]*\\)" url)
-           (let* ((vid (match-string 1 url))
-                  (info (with-temp-buffer
-                          (w3m-retrieve 
-                           (format "http://www.youtube.com/get_video_info?video_id=%s"
-                                   vid))
-                          (buffer-string))))
-             (string-match "&token=\\([^%]*\\)" info)
-             (let ((vurl (format "http://www.youtube.com/get_video?video_id=%s&t=%s=&fmt=18"
-                                 vid
-                                 (match-string 1 info))))
-               (start-process "mplayer" nil "mplayer" "-quiet" "-cache" " 8192"
-                              (nth 5 (w3m-attributes vurl))))))
-          (t
-           (message "Not yt URL.")))))
-</pre>
+(defcustom w3m-download-video-alist
+  '(("\\.youtube\\." . "-f 18 --newline"))
+  "*An alist of arguments to use for downloading from specific urls.
 
-[new:mgi:2010-07-23 12:48 UTC]
-This is already obsolete (because Youtube has already changed). Here's a new and (IMO) better option. It uses [http://bitbucket.org/rg3/youtube-dl/wiki/Home youtube-dl], an easy to set up Python script that keeps track of Youtube changes quite often.
+Each element should be of the form (URL . ARGS),
+for example (\"\\.youtube\\.\" . \"-f 18\").
 
-<pre>
-(defun w3m-yt-view ()
-  "View a YouTube link with youtube-dl and mplayer."
+Refer to `man(1) youtube-dl' for information on available arguments."
+  :group 'w3m
+  :type '(repeat
+      (cons :format "%v" :indent 12
+        (string :format "url base:            %v")
+        (string :format "args for youtube-dl: %v"))))
+
+
+(defun w3m-download-video (url)
+  "Invoke `youtube-dl' in a sub-process to download a video."
   (interactive)
-  (let ((url (or (w3m-anchor) (w3m-image))))
-    (string-match "[^v]*v.\\([^&]*\\)" url)
-    (let* ((vid (match-string 1 url))
-           (out (format "%s/%s.mp4" w3m-default-save-directory vid)))
-      (call-process "youtube-dl" nil nil nil "-U" "-q" "-c" "-o" out url)
-      (start-process "mplayer" nil "mplayer" "-quiet" out))))
+  (if (not (w3m-url-valid url))
+    (error "Invalid URL")
+  (let* (proc
+         (buf (generate-new-buffer "*w3m-download-video*"))
+         (base (and (string-match "//\\([^/]+\\)/" url)
+           (substring-no-properties url
+             (match-beginning 1) (match-end 1))))
+         (args (catch 'found-replacement
+           (dolist (elem w3m-download-video-alist "--")
+             (when (string-match (car elem) base)
+               (throw 'found-replacement (cdr elem)))))))
+    (with-current-buffer buf
+      ; How can I customize this buffer so incoming 'C-m' will be
+      ; dynamically converted to 'C-j' in order to appear correctly
+      ; as new-lines?
+      ; (set-buffer-file-coding-system 'utf-8-dos)
+      ; (set-buffer-file-coding-system 'utf-8-mac)
+      (insert (current-time-string)
+        "\n  youtube-dl " args " " url "\n\n")
+      ; NOTE: There does exist a function `w3m-process-do' to evaluate
+      ;       lisp code asyncronously.
+      (setq proc
+        (start-process "w3m-download-video" buf "youtube-dl" args url)))
+    (w3m-message "Requesting download.")
+    (set-process-sentinel proc
+      (lambda (proc event)
+        (let ((buf (process-buffer proc)))
+         (with-current-buffer buf (insert event))
+         (cond
+          ((string-match "^finished" event)
+             (w3m-message
+               "Download complete. Check buffer %s for details." buf))
+          ((string-match "^open" event) t)
+          (t (message
+               "Download error. Check buffer %s for details." buf)))))))))
+
+
+(defun w3m-download-video-at-point ()
+  "Invoke `youtube-dl' in a sub-process to download the video at point."
+  (interactive)
+  (let ((url (w3m-anchor)))
+   (if (not url)
+     (user-error "No url found at point.")
+    (w3m-download-video url))))
 </pre>
