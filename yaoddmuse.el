@@ -1417,7 +1417,8 @@ unless option FORCED is non-nil."
            (url-request-method "GET")
            (coding (yaoddmuse-get-coding wikiname))
            retrieve-buffer
-           retrieve-buffer-name)
+           retrieve-buffer-name
+	   text)
       ;; Initialize url request parameter.
       (setq url (yaoddmuse-format yaoddmuse-args-index coding url))
       ;; Get unique buffer for handle information.
@@ -1464,7 +1465,8 @@ PAGENAME is the pagename of the page you want to edit."
          (yaoddmuse-wikiname wikiname)
          (yaoddmuse-pagename pagename)
          retrieve-buffer
-         retrieve-buffer-name)
+         retrieve-buffer-name
+	 text)
     ;; Initialize url request parameter.
     (setq url (yaoddmuse-format yaoddmuse-args-get coding url))
     ;; Get unique buffer for handle information.
