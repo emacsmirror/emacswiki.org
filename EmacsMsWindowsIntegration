@@ -109,14 +109,30 @@ Windows Registry Editor Version 5.00
 @="&Emacs: Open in dired"
 "icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%V\""
 
 ;; Dired for directory background
 [HKEY_CLASSES_ROOT\Directory\Background\shell\emacsopensameframe]
 @="&Emacs: Open in dired"
 "icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\emacsopensameframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%v\""
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%V\""
+
+;; Dired for drive background
+[HKEY_CLASSES_ROOT\Drive\Background\shell\EmacsOpenDirSameFrame]
+@="&Emacs: Open in dired"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\Drive\Background\shell\EmacsOpenDirSameFrame\command]
+;; as drives haven't space inside their name don't use quoting
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n %L"
+
+;; Dired for drive
+[HKEY_CLASSES_ROOT\Drive\shell\EmacsOpenDirSameFrame]
+@="&Emacs: Open in dired"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\Drive\shell\EmacsOpenDirSameFrame\command]
+;; as drives haven't space inside their name don't use quoting
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n %L"
 }}}
 
 You should immediately see the options if you right click any file in explorer.
