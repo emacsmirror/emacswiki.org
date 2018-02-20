@@ -4,8 +4,24 @@
 
 ==怎么编辑和贡献==
 
-* 要[EmacsWiki:action=edit;id=怎么编辑 编辑已有的 wiki 页面]，可以点击页面底部的 "'''Edit this page'''" 链接，或者用快捷键。
+* [EmacsWiki:action=edit;id=怎么编辑 编辑已有的 wiki 页面]，可以点击页面底部的 "'''Edit this page'''" 链接，或者用快捷键。
 ** 大部分浏览器：'''<code>Alt e</code>''',
 ** Mac OS X 系统下的 Firefox: '''<code>Ctrl Alt e</code>'''. 
 ** Windows/Linux 系统下的 Firefox: '''<code>Alt Shift e</code>'''. 
 ** 在 AccessKey 页面可以看到完整的快捷键等更多信息
+* 使用[EmacsWiki:Yaoddmuse Yaoddmuse 模式]-- 从而可以用 Emacs 编辑 EmacsWiki，它基于 [[Oddmuse 模式]]，在其他支持 Oddmuse 的 wiki 网站也是有用的。
+* [EmacsWiki:TextFormattingRules 编辑格式] -- 如何遵照 wiki 页面的''编辑格式''，''创建连接''…… Emacs Wiki 使用的是 [http://www.oddmuse.org/ Oddmuse] wiki 引擎，这也决定了它的格式。
+* [EmacsWiki:CreateNewPages 创建新页面] -- 试试把你的 UserName 添加到 CategoryHomepage.
+* [EmacsWiki:DeletedPage 删除页面]
+* [EmacsWiki:UploadingImages 上传图片]
+* [EmacsWiki:UserName 用户名] -- 将你的名字录入贡献者列表中
+* [EmacsWiki:UsingPortraits 使用头像]
+
+
+== 政策 ==
+* [EmacsWiki:MinorEdit 微小改变] -- 选中 "This change is a minor edit" 复选框
+* [EmacsWiki:IfYouRenameOrDeletePages 重命名/删除页面] -- 你重命名或者删除页面的话，会导致链接失效，所以需要修复一下指向这个页面的链接
+* [EmacsWiki:PageRedirection 页面跳转]
+* [EmacsWiki:TranslationHelp 翻译帮助] -- 如何翻译页面，如何链接到翻译过后的页面
+* [EmacsWiki:AppropriateMedia 合适的图文]
+* [EmacsWiki:CrossPosting 贴其他网站的文章]
