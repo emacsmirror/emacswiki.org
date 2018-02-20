@@ -290,6 +290,8 @@ Code addressing (2) is as follows:
   ;;     (funcall orig-fun beg end)
   (save-excursion
     (if (> beg end) (setq beg (prog1 end (setq end beg))))
+    (if (< beg (point-min)) (setq beg (point-min)))
+    (if (> end (point-max)) (setq end (point-max)))
     (goto-char beg)
     (while (< (point) end)
       (flyspell-word t)
