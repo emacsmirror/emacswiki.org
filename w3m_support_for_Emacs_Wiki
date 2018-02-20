@@ -1,27 +1,4 @@
-Below is an [[emacs-w3m]] patch that Naohiro Aota gave Andy to fix automatic jumping in the
-Emacs Wiki Google Search page.
-
-{{{
-----------------------> patch start <----------------------------------------
-RCS file: /storage/cvsroot/emacs-w3m/w3m.el,v
-diff -u -r1.1359 -r1.1360
---- w3m.el      19 May 2008 15:13:42 -0000      1.1359
-+++ w3m.el      24 May 2008 19:42:47 -0000      1.1360
-@@ -1906,7 +1906,7 @@
-  `((w3m-relationship-simple-estimate
-     "\\`http://\\(?:www\\|blogsearch\\|groups\\|news\\|images\\)\
- \\.google\\.[^/]+/\\(?:\\(?:blog\\|code\\)?search\\|groups\\|news\\|images\
--\\|cse\\?cx=\\|custom\\?q=\\)"
-+\\|cse\\?cx=\\|custom\\?\\(?:q\\|hl\\)=\\)"
-     ,(concat "<a[^>]+?href=" w3m-html-string-regexp
-             ">\\(?:\\(?:<img src=[^>]*nav_next\\.gif\\)"
-             "\\|\\(?:<span>Next</span>\\)\\)")
------------------------> patch end <-----------------------------------------
-}}}
-
-The latest w3m.el will have this patch applied.
-
-And here's a collection of functions that might help:
+Here's a collection of functions that might help (current as of 2008):
 
 {{{
 ------------------> function start <----------------------------
