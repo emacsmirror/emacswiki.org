@@ -1,4 +1,4 @@
-;;; apu.el --- Apropos Unicode characters.
+;;; apu.el --- Apropos Unicode characters. -*- lexical-binding:t -*-
 ;;
 ;; Filename: apu.el
 ;; Description: Apropos Unicode characters.
@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 09:26:45 2018 (-0800)
+;; Last-Updated: Tue Feb 20 11:05:36 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 728
+;;     Update #: 779
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -21,7 +21,7 @@
 ;;
 ;;   `button', `cl', `cl-lib', `descr-text', `descr-text+', `gv',
 ;;   `help-fns', `help-fns+', `help-mode', `info', `macroexp',
-;;   `naked', `wid-edit', `wid-edit+'.
+;;   `naked', `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -100,13 +100,16 @@
 ;;
 ;;    `apu-add-to-pats+bufs', `apu-buf-name-for-matching',
 ;;    `apu-char-at-point', `apu-char-displayable-p', `apu-char-here',
-;;    `apu-char-name', `apu-char-name-here', `apu-char-string-here',
-;;    `apu-chars-narrow-1', `apu-chars-read-pattern-arg',
-;;    `apu-compute-matches', `apu-copy-char-to-second-sel',
-;;    `apu-filter', `apu-full-word-match', `apu-make-tablist-entry',
-;;    `apu-match-type-msg', `apu-print-apropos-matches',
-;;    `apu-print-chars', `apu-remove-if-not', `apu-sort-char',
-;;    `apu-substring-match', `apu-tablist-match-entries'.
+;;    `apu-char-name', `apu-char-names', `apu-char-name-here',
+;;    `apu-char-string-here', `apu-chars-narrow-1',
+;;    `apu-chars-read-pattern-arg', `apu-compute-matches',
+;;    `apu-copy-char-to-second-sel', `apu-filter',
+;;    `apu-full-word-match', `apu-get-a-hash-key',
+;;    `apu-get-hash-keys', `apu-hash-table-to-alist',
+;;    `apu-make-tablist-entry', `apu-match-type-msg',
+;;    `apu-print-apropos-matches', `apu-print-chars',
+;;    `apu-remove-if-not', `apu-sort-char', `apu-substring-match',
+;;    `apu-tablist-match-entries'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -120,6 +123,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/02/20 dadams
+;;     Added: apu-char-names, apu-hash-table-to-alist, apu-get-a-hash-key, apu-get-hash-keys.
+;;     Use lexical binding: set file-local variable lexical-binding to t.
+;;     apu-match-only-displayable-chars-flag:
+;;       Because of Emacs bug #30539, change default value to nil for Emacs 25+, at least temporarily.
+;;     apu-char-at-point, apu-char-name-here: Use apu-char-name - do not invoke ucs-names.
+;;     apu-char-at-point: Make POSITION and MSGP optional.
+;;     apu-google-char: Removed unused arg MSGP.
+;;     apu-char-name: Added optional arg PREFER-OLD-NAME-P.
+;;     apu-compute-matches: Use apu-char-displayable-p only once, and last (because slow).
+;;     apu-filter: Handle hash-table version of ucs-names.
+;;     apu-chars-narrow-1: Removed unused args orig-names+codes and match-fn.
 ;; 2016/12/10 dadams
 ;;     apu-copy-char-to-second-sel: x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2015/06/21 dadams
@@ -229,8 +244,12 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/AproposUnicode")
   :link '(emacs-commentary-link :tag "Commentary" "apu"))
 
-(defcustom apu-match-only-displayable-chars-flag t
-  "Non-nil means filter out char not displayable in the current font."
+;; Emacs bug #30539: If `apu-match-only-displayable-chars-flag' is non-nil and you have many fonts
+;; installed then `apropos-char' (aka `apu-chars') queries can be very long.  Until that bug is fixed,
+;; the default value will be nil for Emacs 25+.
+;;
+(defcustom apu-match-only-displayable-chars-flag (< emacs-major-version 25)
+  "Non-nil means filter out chars not displayable (`char-displayable-p')."
   :type 'boolean :group 'apu)
 
 (defcustom apu-match-two-or-more-words-flag nil
@@ -314,7 +333,7 @@ Used in a list buffer to point to where it was invoked.")
 (defvar apu--matches ()
   "Result of matching character names in `apu--buffer-invoked-from'.
 A cons whose car is the maximum width of the matching character names
-and whose cdr is an alist of matches having the form of `ucs-names'.")
+and whose cdr is an alist of (CHAR-NAME . CHAR-CODE) pairs.")
 (make-variable-buffer-local 'apu--matches)
 (put 'apu--matches 'permanent-local t)  ; Use only in list-output buffer.
 
@@ -347,7 +366,7 @@ They are for the last apu command associated with this output buffer.")
 (put 'apu--unnamed-chars 'permanent-local t)
 
 
-;;; Commands ---------------------------------------------------------
+;;; Functions ---------------------------------------------------------
 
 ;;;###autoload
 (defun apu-chars-next-match-method ()   ; Not bound by default.
@@ -486,14 +505,21 @@ Non-nil POSITION means use the character at POSITION."
   (interactive "d\np")
   (apu-char-at-point 'code position msgp))
 
-(defun apu-char-at-point (return-type position msgp)
-  "Return the name or codepoint of the Unicode char at point."
-  (let* ((name+code  (rassq (char-after position) (ucs-names)))
-         (name       (car name+code))
-         (code       (cdr name+code)))
-    (unless name (error "No Unicode char here"))
-    (prog1 (if (eq return-type 'name) name code)
-      (when msgp (message "Char: `%s', Codepoint: `%d' (`%#x')" name code code)))))
+(defun apu-char-at-point (return-type &optional position msgp)
+  "Return the name or codepoint of the Unicode char at POSITION.
+Return the name If RETURN-TYPE is `name'; otherwise, the codepoint.
+POSITION defaults to point.
+Non-nil MSGP means echo the name and code point."
+  (let ((char  (char-after position))
+        name)
+    (prog1 (if (eq return-type 'name)
+               (or (setq name  (apu-char-name char))  (error "No Unicode char here"))
+             char)
+      (when msgp
+        (message "Char: `%s', Codepoint: `%d' (`%#x')"
+                 (or name  (apu-char-name char)  (error "No Unicode char here"))
+                 char
+                 char)))))
 
 (defun apu-char-here ()
   "Return the Unicode character described on this line."
@@ -570,7 +596,7 @@ This command requires library `ucs-cmds.el'."
     (global-set-key key char)
     (when msgp (message "`%s' will now insert `%s' globally" (key-description key) char))))
 
-(defun apu-google-char (&optional msgp) ; Bound to `i'.
+(defun apu-google-char () ; Bound to `i'.
   "Google the Unicode character described on this line."
   (interactive "p")
   (browse-url (format "https://www.google.com/search?ion=1&q=%s"
@@ -578,7 +604,7 @@ This command requires library `ucs-cmds.el'."
 
 (defun apu-char-name-here ()
   "Return the name of the Unicode char described on this line, as a string."
-  (car (rassq (apu-char-here) (ucs-names))))
+  (apu-char-name (apu-char-here)))
 
 (defun apu-insert-char (buffer &optional msgp) ; Bound to `^'.
   "Insert the Unicode character described on this line at point in BUFFER.
@@ -799,10 +825,10 @@ See `apu-make-tablist-entry'."
 
 (defun apu-make-tablist-entry (char)
   "Return a tablist entry for CHAR.
-CHAR is either a Unicode code point or a cons similar to an element of
-`ucs-names': (CHAR-NAME . CHAR-CODE).  CHAR-NAME is the `name' or
-`old-name' property of the character, and CHAR-CODE is its code point.
-\(For `ucs-names', property `old-name' is not used.)
+CHAR is either a Unicode code point or a cons (CHAR-NAME . CHAR-CODE).
+CHAR-NAME is the `name' or `old-name' property of the character, and
+CHAR-CODE is its code point.  (For `ucs-names', property `old-name' is
+not used.)
 
 This  is a list (CHAR [GLYPH NAME DEC HEX]), where:
 CODE  is the character (an integer),
@@ -822,11 +848,56 @@ If CHAR is not recognized then it is added to the buffer-local list
       (push code apu--unnamed-chars)
       nil)))
 
-(defun apu-char-name (character)
+(defun apu-hash-table-to-alist (hash-table)
+  "Create and return an alist created from HASH-TABLE.
+The order of alist entries is undefined, but it seems to be the same
+as the order of hash-table entries (which seems to be the order in
+which the entries were added to the table)."
+  (let ((al  ()))
+    (maphash (lambda (key val) (push (cons key val) al)) hash-table)
+    (nreverse al)))
+
+(defun apu-get-hash-keys (value hash-table &optional value-test-function)
+  "Return a list of keys associated with VALUE in HASH-TABLE.
+Optional arg VALUE-TEST-FUNCTION (default `equal') is the equality
+predicate used to compare values."
+  (setq value-test-function  (or value-test-function  #'equal))
+  (let ((keys  ()))
+    (maphash (lambda (key val)
+               (when (funcall value-test-function val value)
+                 (push key keys)))
+             hash-table)
+    keys))
+
+(defun apu-get-a-hash-key (value hash-table &optional value-test-function)
+  "Return a hash key associated with VALUE in HASH-TABLE.
+If there is more than one such key then it is undefined which is
+returned.
+Optional arg VALUE-TEST-FUNCTION (default `equal') is the equality
+predicate used to compare values."
+  (setq value-test-function  (or value-test-function  #'equal))
+  (catch 'get-a-hash-key
+    (maphash (lambda (key val)
+               (when (funcall value-test-function val value)
+                 (throw 'get-a-hash-key key)))
+             hash-table)
+    nil))
+
+(defun apu-char-names (character)
+  "Return a list of the names for CHARACTER."
+  (if (hash-table-p (ucs-names))
+      (apu-get-hash-keys character (ucs-names))
+    (mapcar #'car (ucs-names))))
+
+(defun apu-char-name (character &optional prefer-old-name-p)
   "Return the name of CHARACTER, or nil if it has no name.
 This is Unicode property `name' if there is one, or property
-`old-name' if not, or nil if neither."
-  (or (get-char-code-property character 'name)  (get-char-code-property character 'old-name)))
+ `old-name' if not, or nil if neither.
+Non-nil optional arg PREFER-OLD-NAME-P means reverse the priority,
+ returning the old name if there is one."
+  (if prefer-old-name-p
+      (or (get-char-code-property character 'old-name)  (get-char-code-property character 'name))
+    (or (get-char-code-property character 'name)  (get-char-code-property character 'old-name))))
 
 (defun apu-compute-matches ()     ; Invoked in the list-output buffer.
   "Compute matches for apropos Unicode commands."
@@ -838,15 +909,14 @@ This is Unicode property `name' if there is one, or property
            (max-char          0)
            (names+codes       ()))
       (dolist (pat  patterns)
-        (setq names+codes  (apu-filter pat names+codes))
-        (when apu-match-only-displayable-chars-flag
-          (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
-        (unless names+codes (error "No characters match patterns specified")))
+        (setq names+codes  (apu-filter pat names+codes)))
+      (unless names+codes (error "No characters match patterns specified"))
       (dolist (pat  patterns-not)
-        (setq names+codes  (apu-filter pat names+codes 'NOT))
-        (when apu-match-only-displayable-chars-flag
-          (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
-        (unless names+codes (error "No characters match patterns specified")))
+        (setq names+codes  (apu-filter pat names+codes 'NOT)))
+      (unless names+codes (error "No characters match patterns specified"))
+      (when apu-match-only-displayable-chars-flag
+        (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
+      (unless names+codes (error "No characters match patterns specified"))
       (dolist (char+code  names+codes) (setq max-char  (max max-char (string-width (car char+code)))))
       (message "Matching `%s'...done" patterns)
       (setq apu--matches  (cons max-char names+codes)))))
@@ -855,8 +925,9 @@ This is Unicode property `name' if there is one, or property
   "Try to match PATTERN against each element of alist NAMES+CODES.
 Return filtered list.
 PATTERN is as for `apropos-char'.
-NAMES+CODES has the same form as `ucs-names'.
-If NAMES+CODES is nil then match against `ucs-names'.
+NAMES+CODES is an alist of conses (CHAR-NAME . CHAR-CODE).
+If NAMES+CODES is nil then match against an alist derived from
+`ucs-names'.
 
 Non-nil optional arg NOTP means exclude, instead of include, matches
 for PATTERN."
@@ -865,15 +936,18 @@ for PATTERN."
                         #'apu-substring-match))
         (rem-filt-fn  (if notp #'apu-remove-if #'apu-remove-if-not))
         (del-filt-fn  (if notp #'apu-delete-if #'apu-delete-if-not)))
+    (setq names+codes  (or names+codes
+                           (if (hash-table-p (ucs-names))
+                               (apu-hash-table-to-alist ucs-names)
+                             ucs-names)))
     (cond ((or (atom pattern)  (eq apu--match-type 'MATCH-TWO-OR-MORE))
            (require 'apropos) ; `apropos-parse-pattern', `apropos-regexp'.
            (let ((apropos-synonyms  apu-synonyms)) (apropos-parse-pattern pattern))
-           (funcall rem-filt-fn (apply-partially #'apu-substring-match apropos-regexp)
-                    (or names+codes  ucs-names)))
+           (funcall rem-filt-fn (apply-partially #'apu-substring-match apropos-regexp) names+codes))
           (t ; List of words, to be matched as full words or substrings.
            (let ((chs+cds  ())
                  (first    (car pattern)))
-             (dolist (c.c  (or names+codes  ucs-names))
+             (dolist (c.c  names+codes)
                (if notp
                    (unless (funcall match-fn first c.c) (push c.c chs+cds))
                  (when (funcall match-fn first c.c) (push c.c chs+cds))))
@@ -908,11 +982,12 @@ You are prompted for the PATTERN, which is as for `apropos-char'."
       (let ((kill-buffer-query-functions  ())) (kill-buffer newbufname)))
     (rename-buffer newbufname))
   (let ((case-fold-search  t)
-        (orig-names+codes  (cdr apu--matches))
         (max-char          0)
-        (match-fn          (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
-                               #'apu-full-word-match
-                             #'apu-substring-match)))
+        ;; (orig-names+codes  (cdr apu--matches))
+        ;; (match-fn          (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
+        ;;                        #'apu-full-word-match
+        ;;                      #'apu-substring-match))
+        )
     (setcdr apu--matches (apu-filter pattern (cdr apu--matches) notp))
     (unless (cdr apu--matches) (error "No characters match patterns specified"))
     (dolist (char+code  (cdr apu--matches))
