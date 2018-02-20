@@ -1,0 +1,17 @@
+在 TranslatingPages 这里可以看到，我们这个 wiki 有很多不同语言的版本。
+
+比如你要翻译 SandBox 这个页面，操作的步骤是这样的：
+
+1. 打开 SandBox 页面
+
+2. 点击页面最底部的 *Add Translation*
+
+3. 选择一门语言，比如 Deutsch（只可以选择还没有被翻译的语言）
+
+4. 输入翻译的标题，比如 SandKasten
+
+5. 点击 Go! 按钮
+
+6. 现在 SandBox 页面就有你翻译的语言的链接了
+
+7. 就搞定了
