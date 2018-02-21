@@ -7,10 +7,10 @@
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
-;; Version: 0.1.2
-;; Package-Version: 20150521.1841
-;; Last-Updated: 2015/21/05 2:40
-;;           By: Michael Abrahams
+;; Version: 0.1.3
+;; Package-Version: 20180219.2147
+;; Last-Updated: 2018/19/02 9:47
+;;           By: Pierre Téchoueyres
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
