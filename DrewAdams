@@ -69,7 +69,7 @@ The same question, applied to functional programming:
 IOW, it's about '''modularity''', and modularity is all about '''glue''': the ''ability to combine'' pieces.
 
 For a fabulous essay on the modularity and "glue" of functional programming, see
-[[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]'s classic, ''Why Functional Programming Matters'': <tt> http://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf </tt> or <tt>http://www.md.chalmers.se/~rjmh/Papers/whyfp.html. </tt> From the Introduction (emphasis added):
+[[WikiPedia:John_Hughes_(computer_scientist)|John Hughes]]'s classic, ''Why Functional Programming Matters'': <tt> http://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf </tt> or <tt>http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html </tt> From the Introduction (emphasis added):
 
 [new]
 : The special characteristics and advantages of functional programming are
