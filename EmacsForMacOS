@@ -291,6 +291,30 @@ Drag your new app into [http://support.apple.com/kb/HT2474 the Dock] as usual, a
 
 Your new app does two things that the Dock doesn't (on Mac OS 10.9).  The "cd" command causes emacs to start in your home directory, instead of the root directory "/".  The --login option gives emacs the same environment as an interactive [http://en.wikipedia.org/wiki/Terminal_(OS_X) Terminal]. In particular, it gives emacs your usual PATH environment variable, so you can run commands in emacs the same as commands in Terminal. An alternative to --login is -i, which sets the environment differently, as described in the [http://www.gnu.org/software/bash/manual/bashref.html#Bash-Startup-Files Bash reference manual].
 
+If you followed above guide, and registered the app to the dock, and clicked it, it will actually create another icon in the dock for the running Emacs application.  After that, if you click the original app icon, it will not create another running app in the Dock, but the Automator might spin infinitely, as you already have it (as in the second app icon).
+
+If you're using "M-x server-start", then you could use following script instead above one:
+<pre>
+EMACS=/Applications/Aquamacs.app/Contents/MacOS/Aquamacs
+EMACSCLIENT=/Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient
+
+cd # start in my home directory
+
+if pgrep -U $(id -u) $(basename $EMACS) >/dev/null; then
+  if [ "$#" -eq 0 ]; then
+    # set -- -e '(select-frame-set-input-focus (car (or (visible-frame-list) (frame-list)))'
+    echo "\"$EMACSCLIENT\" -e '(select-frame-set-input-focus (car (or (visible-frame-list) (frame-list))))'" | bash --login -s "$@";
+  else
+    echo "\"$EMACSCLIENT\" -n \"\$@\"" | bash --login -s "$@";
+  fi
+else
+  echo "\"$EMACS\" \"\$@\"" | bash --login -s "$@" &
+  disown %-
+fi
+</pre>
+
+Above script is tested in Aquamacs, but it may work with Emacs.  What it does, if you click the original App Icon twice, it will just give the focus to the Emacs(Aquamacs), and if you drag a file to it, it will call emacsclient to transfer it to the Emacs process.  If there is no Emacs process, it will create it. -- CinSK
+
 === Use Alt/Option as Meta Key under terminal emulators ===
 
 For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
