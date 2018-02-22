@@ -205,10 +205,10 @@ This page describes my EmacsLisp libraries: '''DrewsElispLibraries'''.
 * '''ColorPalette''' -- examine color properties or choose colors
 * '''[[Synonyms]]'''  -- search and browse a hyperlinked thesaurus for synonyms
 
-* '''FaceMenuPlus'''  -- enhancements to the '''Text Properties''' menu
+* '''FaceMenuPlus''' -- enhancements to the '''Text Properties''' menu
 * '''ThingAtPointCommands''' -- commands to select things near the [[cursor]]
 * HighLight -- highlight text in different ways, hide/show [[face]]s
-* MousePlus -- highlight the [[yank]] position while you press ‘mouse-2’; other mouse enhancements
+* [[Mouse+]] -- highlight the [[yank]] position while you press ‘mouse-2’; other mouse enhancements
 * ModeLinePosition -- enhanced [[mode line]] support for [[variable]] `mode-line-position' (Emacs 22 and later)
 * CrosshairHighlighting, HighlightCurrentLine, HighlightCurrentColumn, ChangingCursorDynamically -- ways to make the [[cursor]] location ([[point]]) more apparent
 * CustomizingAndSaving  -- how to make [[Customize]] play better with the rest of Emacs
@@ -239,9 +239,9 @@ This page describes my EmacsLisp libraries: '''DrewsElispLibraries'''.
 * EmacsNewbie -- a gentle intro to Emacs, including Emacs-speak -- and pick up my <tt>[[emacs-init.el]]</tt> for info on using my libraries
 * [[ToolBar#ToolBarPlus|ToolBarPlus]] -- a pop-up [[tool bar]], to save screen real estate
 * HelpPlus, HelpMenuBarPlus, and HelpModePlus -- extra help: help commands and menus
-* [[Dired+]]-- (<tt>[[dired+.el]]</tt>): new commands, menus, highlighting...
+* [[Dired+]] -- (<tt>[[dired+.el]]</tt>): new commands, menus, highlighting...
 * SaveAsHtml -- create HTML with hyperlinks from Emacs [[buffer]]s ([[Info]] etc.): <tt>[[mkhtml.el]]</tt>
-* [[Info+]] -- '''Info+''' (<tt>[[info+.el]]</tt>): new commands, menus, highlighting...
+* [[Info+]] -- (<tt>[[info+.el]]</tt>): new commands, menus, highlighting...
 * MenuBarPlus -- '''Menu-Bar+''' (<tt>[[menu-bar+.el]]</tt>): enhancements to the [[menu bar]] (new menus and commands)
 * FrameModes -- a different introduction to my [[frame]] libraries than that presented in OneOnOneEmacs
 * BufferMenuPlus -- '''Buffer Menu+''' (<tt>[[buff-menu+.el]]</tt>): a mouse popup menu (`mouse-3'), sorting, filtering, highlighting, time-last-accessed column,...
@@ -272,8 +272,8 @@ Here are some screenshots of my Emacs.
 * ColorPalette -- A palette for choosing and editing colors: RGB, HSV, color names
 * DrewsEmacsTileSS -- View of whole desktop (Windows XP shown here): comparing two [[buffer]]s with `ediff-buffers' after tiling the [[frame]]s horizontally
 * DrewsEmacsBufferMenu -- Buffer Menu, showing context-sensitive `mouse-3' popup menu and highlighting (marks, columns, full-line mouse-over). More screenshots of Buffer Menu: [[Shrink-Wrapping Frames]].
-* [[Dired+]]-- [[DiredMode|Dired]]: similar features to Buffer Menu, but more
-* [[Info+]]-- [[Info]], showing extra highlighting (quoted text, strings) and merged Info nodes
+* [[Dired+]] -- [[DiredMode|Dired]]: similar features to Buffer Menu, but more
+* [[Info+]] -- [[Info]], showing extra highlighting (quoted text, strings) and merged Info nodes
 * DrewsEmacsOccurImage -- `*Occur*' buffer, and a visited occurrence in a target [[buffer]], showing highlighting: match-string, visited-[[line]] number, full-line mouse-over (underline)
 * DrewsEmacsGrepImage -- `*grep*' buffer: features similar to `*Occur*' buffer
 * DrewEmacsImenuImage -- '''Defs''' imenu in Emacs-Lisp mode
