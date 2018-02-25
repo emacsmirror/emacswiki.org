@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 20 11:05:36 2018 (-0800)
+;; Last-Updated: Sun Feb 25 11:03:47 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 779
+;;     Update #: 832
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -21,7 +21,7 @@
 ;;
 ;;   `button', `cl', `cl-lib', `descr-text', `descr-text+', `gv',
 ;;   `help-fns', `help-fns+', `help-mode', `info', `macroexp',
-;;   `naked', `radix-tree', `wid-edit', `wid-edit+'.
+;;   `naked', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -69,6 +69,30 @@
 ;;  can match them as substrings or as full words.  You can use `C-c
 ;;  n' to refresh the matches, cycling among these word-match methods.
 ;;
+;;  Non-`nil' option `apu-match-only-displayable-chars-flag' means
+;;  that commands such as `apropos-unicode' display only Unicode chars
+;;  that can be displayed in the current context.  Non-displayable
+;;  chars are those that do not have displayable glyphs, in general,
+;;  and those for which you do not have a font installed that can
+;;  display them.  Displayability of a character is determined by
+;;  standard Emacs function `char-displayable-p'.
+;;
+;;  NOTE:
+;;
+;;    Starting with Emacs 25, `char-displayable-p' can be EXTREMELY
+;;    SLOW if the new variable `inhibit-compacting-font-caches' is
+;;    `nil', which it is by default, and if you have many, or large,
+;;    fonts installed.  For this reason the default value of
+;;    `apu-match-only-displayable-chars-flag' is `nil' for Emacs 25
+;;    and later.  This seems to be the case if you have MS Windows
+;;    TrueType fonts installed, for instance.
+;;
+;;    If you want to be able to exclude non-displayable chars in Emacs
+;;    25+, then set `apu-match-only-displayable-chars-flag' to
+;;    non-`nil'.  If you find that this makes APU commands such as
+;;    `apropos-char' extremely slow then set variable
+;;    `inhibit-compacting-font-caches' to `t'.
+;;
 ;;
 ;;  Commands defined here:
 ;;
@@ -86,7 +110,7 @@
 ;;    `apu-chars-refresh-matching-as-substrings',
 ;;    `apu-chars-refresh-matching-full-words',
 ;;    `apu-chars-refresh-matching-two-or-more-words',
-;;    `apu-chars-refresh-with-next-match-method',
+;;    `apu-chars-refresh-with-next-match-method', `apu-revert-buffer',
 ;;    `apu-show-char-details', `apu-zoom-char-here',
 ;;    `apu-zoom-char-at-point', `describe-chars-in-region'.
 ;;
@@ -123,6 +147,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/02/25 dadams
+;;     Added: apu-revert-buffer (bound to `g' in apu-mode-map).
+;;     apu-match-only-displayable-chars-flag and commentary: Mention Emacs 25+ issues.
+;;     apu-mode: Add some info to doc string.
 ;; 2018/02/20 dadams
 ;;     Added: apu-char-names, apu-hash-table-to-alist, apu-get-a-hash-key, apu-get-hash-keys.
 ;;     Use lexical binding: set file-local variable lexical-binding to t.
@@ -249,7 +277,20 @@ Don't forget to mention your Emacs and library versions."))
 ;; the default value will be nil for Emacs 25+.
 ;;
 (defcustom apu-match-only-displayable-chars-flag (< emacs-major-version 25)
-  "Non-nil means filter out chars not displayable (`char-displayable-p')."
+  "Non-nil means filter out chars not displayable (`char-displayable-p').
+NOTE:
+
+Starting with Emacs 25, `char-displayable-p' can be extremely slow if
+the new variable `inhibit-compacting-font-caches' is nil, which it is
+by default, and if you have many, or large, fonts installed.  For this
+reason the default value of `apu-match-only-displayable-chars-flag' is
+nil for Emacs 25 and later.  This seems to be the case if you have MS
+Windows TrueType fonts installed, for instance.
+
+If you want to be able to exclude non-displayable characters in Emacs
+25+, then set `apu-match-only-displayable-chars-flag' to non-nil.  If
+you find that this makes APU commands such as `apropos-char' extremely
+slow then set variable `inhibit-compacting-font-caches' to `t'."
   :type 'boolean :group 'apu)
 
 (defcustom apu-match-two-or-more-words-flag nil
@@ -467,13 +508,32 @@ Does nothing if current pattern is a regexp instead of a word list."
   (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
 
+(defun apu-revert-buffer ()
+  "Revert current APU buffer.
+This will cause any partly elided (`...') char names to be shown
+completely"
+  (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
+  (run-hooks 'apu-revert-hook)
+  (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches)))
+
 (define-derived-mode apu-mode tabulated-list-mode "Apropos Unicode"
   "Major mode for `apropos-char' output.
+If some char names are partly elided (`...') you can use \\<apu-mode-map>`\\[apu-revert-buffer]' to
+refresh the display to show the full names.  Using any of the
+match-refreshing commands (`\\[apu-chars-refresh-matching-as-substrings]', \
+`\\[apu-chars-refresh-with-next-match-method]', `\\[apu-chars-refresh-matching-full-words]', and \
+`\\[apu-chars-refresh-matching-two-or-more-words]')
+also shows the full names.
+
+See command `apropos-char' for more information.
+
 \\{apu-mode-map}"
   (update-glyphless-char-display 'glyphless-char-display-control glyphless-char-display-control))
 
 (when (featurep 'ucs-cmds)
   (define-key apu-mode-map "c"         'apu-define-insert-command))
+(define-key apu-mode-map   "g"         'apu-revert-buffer)
 (define-key apu-mode-map   "i"         'apu-google-char)
 (define-key apu-mode-map   "k"         'apu-global-set-insertion-key)
 (define-key apu-mode-map   "l"         'apu-local-set-insertion-key)
@@ -908,11 +968,9 @@ Non-nil optional arg PREFER-OLD-NAME-P means reverse the priority,
     (let* ((case-fold-search  t)
            (max-char          0)
            (names+codes       ()))
-      (dolist (pat  patterns)
-        (setq names+codes  (apu-filter pat names+codes)))
+      (dolist (pat  patterns) (setq names+codes  (apu-filter pat names+codes)))
       (unless names+codes (error "No characters match patterns specified"))
-      (dolist (pat  patterns-not)
-        (setq names+codes  (apu-filter pat names+codes 'NOT)))
+      (dolist (pat  patterns-not) (setq names+codes  (apu-filter pat names+codes 'NOT)))
       (unless names+codes (error "No characters match patterns specified"))
       (when apu-match-only-displayable-chars-flag
         (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
