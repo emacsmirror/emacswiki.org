@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 12 12:24:44 2018 (-0800)
+;; Last-Updated: Fri Feb 23 11:24:23 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 16372
+;;     Update #: 16394
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2018/02/23 dadams
+;;     Changes to EWW support - thx to Charles Roelli.
+;;      Added: bmkp-eww-generate-buffer-flag.
+;;      Removed: bmkp-jump-eww-in-buffer-*eww*, bmkp-jump-eww-renaming-buffer,
+;;               bmkp-eww-sans-pop-to-buffer, bmkp-get-eww-mode-buffer.
+;;      Renamed: bmkp-eww-buffer-handling to bmkp-eww-buffer-renaming.
+;;      bmkp-eww-new-buf-name and bmkp-eww-jumping-p are now buffer-local.
+;;      bmkp-jump-eww: Respect bmkp-eww-generate-buffer-flag.  Use buffer-local eww-after-render-hook.
+;;                     Integrate code from removed functions.
+;;      bmkp-eww-rename-buffer: Rename to generated name if rename attempt fails and either
+;;                              bmkp-eww-generate-buffer-flag or not bmkp-eww-jumping-p.
 ;; 2018/02/12 dadams
 ;;     bookmark-write-file, bmkp-regexp-filtered-bookmark-name-alist-only:
 ;;      Use bookmark-name-from-full-record, not car.
