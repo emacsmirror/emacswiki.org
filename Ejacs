@@ -5,7 +5,7 @@ http://Steve-Yegge.BlogSpot.com/2008/11/ejacs-javascript-interpreter-for-emacs.h
 
 == Description ==
 
-http://Code.Google.com/p/ejacs ''Ejacs is an Ecma-262 compliant JavaScript interpreter written entirely in Emacs Lisp. It should work in GNU Emacs versions 22 and higher.
+https://github.com/emacsattic/ejacs ''Ejacs is an Ecma-262 compliant JavaScript interpreter written entirely in Emacs Lisp. It should work in GNU Emacs versions 22 and higher.
 
 The parser and evaluator are ports of Brendan Eich's Narcissus (JavaScript in JavaScript). The runtime is my own implementation, with a few exceptions (notably the regular expression engine) that are ports of Mozilla Rhino code.
 
