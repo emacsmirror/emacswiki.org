@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Feb 12 12:19:34 2018 (-0800)
+;; Last-Updated: Fri Feb 23 10:59:06 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 8602
+;;     Update #: 8661
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -362,7 +362,8 @@
 ;;    `bmkp-desktop-default-directory',
 ;;    `bmkp-desktop-jump-save-before-flag.',
 ;;    `bmkp-desktop-no-save-vars', `bmkp-eww-auto-type' (Emacs 25+),
-;;    `bmkp-eww-buffer-handling' (Emacs 25+),
+;;    `bmkp-eww-buffer-renaming' (Emacs 25+),
+;;    `bmkp-eww-generate-buffer-flag' (Emacs 25+),
 ;;    `bmkp-eww-replace-keys-flag' (Emacs 25+),
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
@@ -435,10 +436,10 @@
 ;;    `bmkp-end-position-pre-context', `bmkp-every',
 ;;    `bmkp-eww-alist-only' (Emacs 25+), `bmkp-eww-bookmark-p' (Emacs
 ;;    25+), `bmkp-eww-cp' (Emacs 25+), `bmkp-eww-new-buffer-name'
-;;    (Emacs 25+), `bmkp-eww-sans-pop-to-buffer' (Emacs 25+),
-;;    `bmkp-eww-rename-buffer' (Emacs 25+), `bmkp-eww-title' (Emacs
-;;    25+), `bmkp-eww-url' (Emacs 25+), `bmkp-ffap-guesser',
-;;    `bmkp-file-alist-only', `bmkp-file-all-tags-alist-only',
+;;    (Emacs 25+), `bmkp-eww-rename-buffer' (Emacs 25+),
+;;    `bmkp-eww-title' (Emacs 25+), `bmkp-eww-url' (Emacs 25+),
+;;    `bmkp-ffap-guesser', `bmkp-file-alist-only',
+;;    `bmkp-file-all-tags-alist-only',
 ;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
 ;;    `bmkp-file-attribute-2-cp', `bmkp-file-attribute-3-cp',
@@ -460,11 +461,10 @@
 ;;    `bmkp-format-spec', `bmkp-full-tag', `bmkp-function-alist-only',
 ;;    `bmkp-function-bookmark-p', `bmkp-get-autofile-bookmark',
 ;;    `bmkp-get-bookmark-in-alist', `bmkp-get-buffer-name',
-;;    `bmkp-get-end-position', `bmkp-get-eww-mode-buffer' (Emacs 25+),
-;;    `bmkp-get-tag-value', `bmkp-get-tags', `bmkp-get-visit-time',
-;;    `bmkp-get-visits-count', `bmkp-gnus-alist-only',
-;;    `bmkp-gnus-bookmark-p', `bmkp-gnus-cp', `bmkp-goto-position',
-;;    `bmkp-handle-region-default',
+;;    `bmkp-get-end-position', `bmkp-get-tag-value', `bmkp-get-tags',
+;;    `bmkp-get-visit-time', `bmkp-get-visits-count',
+;;    `bmkp-gnus-alist-only', `bmkp-gnus-bookmark-p', `bmkp-gnus-cp',
+;;    `bmkp-goto-position', `bmkp-handle-region-default',
 ;;    `bmkp-handle-region+narrow-indirect', `bmkp-handler-cp',
 ;;    `bmkp-handler-pred', `bmkp-has-tag-p',
 ;;    `bmkp-icicles-search-hits-alist-only',
@@ -476,9 +476,7 @@
 ;;    `bmkp-isearch-next-bookmark-buffer' (Emacs 23+), `bmkp-jump-1',
 ;;    `bmkp-jump-bookmark-file', `bmkp-jump-bookmark-list',
 ;;    `bmkp-jump-desktop', `bmkp-jump-dired', `bmkp-jump-eww' (Emacs
-;;    25+), `bmkp-jump-eww-in-buffer-*eww*' (Emacs 25+),
-;;    `bmkp-jump-eww-renaming-buffer' (Emacs 25+),
-;;    `bmkp-jump-function', `bmkp-jump-gnus',
+;;    25+), `bmkp-jump-function', `bmkp-jump-gnus',
 ;;    `bmkp-jump-icicle-search-hits', `bmkp-jump-kmacro-list' (Emacs
 ;;    22+), `bmkp-jump-man', `bmkp-jump-sequence',
 ;;    `bmkp-jump-snippet', `bmkp-jump-url-browse',
@@ -772,7 +770,8 @@
 (defvar bmkp-edit-bookmark-records-mode-map) ; Here, via `define-derived-mode'
 (defvar bmkp-edit-tags-mode-map)        ; Here, via `define-derived-mode'
 (defvar bmkp-eww-auto-type)             ; Here (Emacs 25+)
-(defvar bmkp-eww-buffer-handling)       ; Here (Emacs 25+)
+(defvar bmkp-eww-buffer-renaming)       ; Here (Emacs 25+)
+(defvar bmkp-eww-generate-buffer-flag)  ; Here (Emacs 25+)
 (defvar bmkp-eww-jumping-p)             ; Here (Emacs 25+)
 (defvar bmkp-eww-new-buf-name)          ; Here (Emacs 25+)
 (defvar bmkp-eww-replace-keys-flag)     ; Here (Emacs 25+)
@@ -1100,42 +1099,32 @@ You can toggle this option using `\\[bmkp-toggle-eww-auto-type]'."
             (const :tag "Update existing EWW bookmark (only)" update-only))
     :group 'bookmark-plus)
 
-  (defcustom bmkp-eww-buffer-handling nil
-    "How to handle an EWW buffer.
-A nil value means always use buffer `*eww*' for EWW, and do not rename
-the buffer.  This value makes no change to the behavior of EWW.
+  (defvaralias 'bmkp-eww-buffer-handling 'bmkp-eww-buffer-renaming)
+  (make-obsolete-variable 'bmkp-eww-buffer-handling 'bmkp-eww-buffer-renaming "2018-02-23")
+  (defcustom bmkp-eww-buffer-renaming nil
+    "Whether and how an EWW buffer is renamed.
+Non-nil values affect EWW behavior even when bookmarks are not used.
 
-Non-nil means rename the buffer using the web-page title.  This
-affects EWW behavior even when bookmarks are not used.
-
-The particular non-nil value defines whether and when a
-separate (e.g. new) buffer is used, and whether a reused existing
-buffer is renamed, as follows:
-
- `one'         - Use one buffer for all EWW visits, renaming it.
-
- `url'         - Use a separate buffer for each URL.
-
- other non-nil - Use a separate buffer for each web-page visit.
-
-Except for a value of (nil or) `url', the buffer is renamed to
-`*eww*-' followed by the web-page title.
-
-For `url', the buffer is renamed to `*eww*-' followed by the page
-title, followed by a `SPC' char and the last 20 chars of the URL.
-This generally means that different pages with the same title use
-different buffers."
+* nil:    Do not rename buffer - use `*eww*' (vanilla EWW behavior).
+* `url':  Rename buffer to web-page title plus last 20 chars of URL.
+* `page': Rename buffer to web-page title (only)."
     :type '(choice
-            (const :tag "One buffer for all EWW visits, never renamed"                    nil)
-            (const :tag "One buffer for all EWW visits, renamed for each title in turn"   one)
-            (const :tag "Separate buffer per web page, named for its title"               page)
-            (const :tag "Separate buffer per URL, named for page title + URL (last part)" url))
+            (const :tag "Do not rename buffer (use name `*eww*')"                    nil)
+            (const :tag "Rename buffer to web-page title plus last 20 chars of URL"  url)
+            ;; Any symbol other than `page' and nil is treated the same as `page'.
+            (const :tag "Rename buffer to web-page title"                            page))
     :group 'bookmark-plus)
+
+  (defcustom bmkp-eww-generate-buffer-flag nil
+    "Whether to generate a new buffer when jumping to an EWW bookmark.
+* nil means reuse an existing buffer for the bookmarked URL.
+* Non-nil means use a new buffer."
+    :type 'boolean :group 'bookmark-plus)
 
   ;; We do not use `define-obsolete-function-alias' so that byte-compilation in older Emacs
   ;; works for newer Emacs too.
-  (defalias 'bmkp-replace-eww-keys-flag 'bmkp-eww-replace-keys-flag)
-  (make-obsolete 'bmkp-replace-eww-keys-flag 'bmkp-eww-replace-keys-flag "2017-01-10")
+  (defvaralias 'bmkp-replace-eww-keys-flag 'bmkp-eww-replace-keys-flag)
+  (make-obsolete-variable 'bmkp-replace-eww-keys-flag 'bmkp-eww-replace-keys-flag "2017-01-10")
   (defcustom bmkp-eww-replace-keys-flag t
     "Non-nil means replace EWW bookmarking keys and menus with Bookmark+ ones.
 If you change the value of this option then you must restart Emacs for
@@ -9845,13 +9834,15 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; EWW support
 (when (> emacs-major-version 24)        ; Emacs 25+
 
+  ;; This is set by `bmkp-eww-rename-buffer' and used in `bmkp-jump-eww' for local var `after-render-function'.
   (defvar bmkp-eww-new-buf-name nil
-    "If non-nil, the name of the EWW buffer to jump to.
-This is set by `bmkp-eww-rename-buffer' and used by
-`bmkp-jump-eww-renaming-buffer'.")
+    "If non-nil, the name of the EWW buffer to jump to.")
+  (make-variable-buffer-local 'bmkp-eww-new-buf-name)
 
-  (defvar bmkp-eww-jumping-p  nil
-    "Non-nil only if in dynamic scope of `bmkp-jump-eww-renaming-buffer'.")
+  ;; This is set by `bmkp-jump-eww' and used in `bmkp-eww-rename-buffer'.
+  (defvar bmkp-eww-jumping-p nil
+    "Non-nil only if we are currently jumping to an EWW bookmark.")
+  (make-variable-buffer-local 'bmkp-eww-jumping-p)
 
   (defun bmkp-eww-title ()
     "Return the web-page title of the current `eww-mode' buffer."
@@ -9862,150 +9853,70 @@ This is set by `bmkp-eww-rename-buffer' and used by
     (eww-current-url))
 
   (defun bmkp-make-eww-record ()
-    "Make a record for EWW buffers."
-    (require 'eww)
-    (let ((eww-title  (bmkp-eww-title)))
-      `(,eww-title
-        (buffer-name . ,(bmkp-eww-new-buffer-name))
-        ,@(bookmark-make-record-default 'NO-FILE)
-        (location . ,(bmkp-eww-url))
-        (handler . bmkp-jump-eww))))
-
-  (defun bmkp-eww-new-buffer-name ()
-    "Return a new buffer name for the current `eww-mode' buffer.
-The name format is determined by option `bmkp-eww-buffer-handling'."
-    (if bmkp-eww-buffer-handling
-        (concat "*eww*-" (bmkp-eww-title) (let ((url  (bmkp-eww-url)))
-                                            (and (eq 'url bmkp-eww-buffer-handling)
-                                                 (concat " " (if (>= (length url) 20)
-                                                                 (substring url -20)
-                                                               url)))))
-      "*eww*"))
+    "Make a record for an EWW buffer."
+    `(,(bmkp-eww-title)
+      (buffer-name . ,(bmkp-eww-new-buffer-name))
+      ,@(bookmark-make-record-default 'NO-FILE)
+      (location . ,(bmkp-eww-url))
+      (handler . bmkp-jump-eww)))
 
   (add-hook 'eww-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
                                            'bmkp-make-eww-record)))
+
+  (defun bmkp-eww-new-buffer-name ()
+    "Return a new buffer name for the current `eww-mode' buffer.
+The name format is determined by option `bmkp-eww-buffer-renaming'."
+    (concat "*eww*" (and bmkp-eww-buffer-renaming
+                         (concat "-"
+                                 (bmkp-eww-title)
+                                 (let ((url  (bmkp-eww-url)))
+                                   (and (eq 'url bmkp-eww-buffer-renaming)
+                                        (concat " " (if (>= (length url) 20) (substring url -20) url))))))))
 
   (defun bmkp-jump-eww (bookmark)
     "Handler function for record returned by `bmkp-make-eww-record'.
 BOOKMARK is a bookmark name or a bookmark record."
     (require 'eww)
-    (if bmkp-eww-buffer-handling
-        (bmkp-jump-eww-renaming-buffer bookmark)
-      (bmkp-jump-eww-in-buffer-*eww* bookmark)))
-
-  (defun bmkp-jump-eww-in-buffer-*eww* (bookmark)
-    "Jump to EWW bookmark BOOKMARK in buffer `*eww*'."
-    (require 'eww)
-    (bmkp-eww-sans-pop-to-buffer (bookmark-location bookmark))
-    ;; Wait until buffer has real content.
-    (with-current-buffer (get-buffer-create "*eww*")
-      (while (= (count-lines (point-min) (point-max)) 1) (sit-for 1)))
-    (bookmark-default-handler `("" (buffer . "*eww*") . ,(bmkp-bookmark-data-from-record bookmark))))
-
-  ;; VAR `bmkp-eww-new-buf-name' is free here.  It is bound in `bmkp-eww-rename-buffer'.
-  (defun bmkp-jump-eww-renaming-buffer (bookmark)
-    "Jump to EWW bookmark BOOKMARK, handling it per `bmkp-eww-buffer-handling'."
-    (require 'eww)
-    (let ((bmkp-eww-jumping-p  t)
-          (buf                 (if (eq 'one bmkp-eww-buffer-handling)
-                                   (bmkp-get-eww-mode-buffer)
-                                 (get-buffer (bmkp-get-buffer-name bookmark)))))
-      (when (or (not buf)  (and (eq 'url bmkp-eww-buffer-handling)
-                                (not (equal (bookmark-prop-get bookmark 'location)
-                                            (with-current-buffer buf (bmkp-eww-url))))))
-        (setq buf  (get-buffer-create " *temp-name*")))
-      (with-current-buffer buf
+    (let ((buffer                 (or (and (not bmkp-eww-generate-buffer-flag)
+                                           (get-buffer (bmkp-get-buffer-name bookmark)))
+                                      (generate-new-buffer "*eww*"))) ; Might get renamed later.
+          ;; VAR `bmkp-eww-new-buf-name' is free here.  It is bound in `bmkp-eww-rename-buffer'.
+          (after-render-function  `(lambda ()
+                                    (when (and bmkp-eww-buffer-renaming  bmkp-eww-new-buf-name)
+                                      (kill-buffer)
+                                      (set-buffer bmkp-eww-new-buf-name))
+                                    (bookmark-default-handler
+                                     `("" (buffer . ,(current-buffer))
+                                       . ,(bmkp-bookmark-data-from-record ,(car bookmark))))
+                                    (dolist (var  '(bmkp-eww-jumping-p eww-after-render-hook))
+                                      (kill-local-variable var)))))
+      (setq bmkp-eww-jumping-p  t)
+      (with-current-buffer buffer
         (eww-mode)
-        (bmkp-eww-sans-pop-to-buffer (bookmark-location bookmark))
-        (while (= (count-lines (point-min) (point-max)) 1) (sit-for 1)))
-      (when bmkp-eww-new-buf-name
-        (set-buffer bmkp-eww-new-buf-name)
-        (setq buf                    (current-buffer)
-              bmkp-eww-new-buf-name  nil))
-      (bookmark-default-handler
-       `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
+        (save-window-excursion ; Save window because it calls `pop-to-buffer-same-window'.
+          (eww (bookmark-location bookmark)))
+        (add-hook 'eww-after-render-hook after-render-function 'APPEND 'LOCAL))))
 
-  ;; This is `eww' from emacs-25, redefined to remove the call to `pop-to-buffer-same-window'.
-  ;; The forms that usually follow `pop-to-buffer-same-window' are enclosed in `with-current-buffer' instead.
-  (defun bmkp-eww-sans-pop-to-buffer (url)
-    "Fetch URL and render the page.
-If the input doesn't look like an URL or a domain name, the
-word(s) will be searched for via `eww-search-prefix'."
-    (interactive
-     (let* ((uris (eww-suggested-uris))
-            (prompt (concat "Enter URL or keywords"
-                            (if uris (format " (default %s)" (car uris)) "")
-                            ": ")))
-       (list (read-string prompt nil nil uris))))
-    (require 'eww)
-    (setq url (string-trim url))
-    (cond ((string-match-p "\\`file:/" url))
-          ;; Don't mangle file: URLs at all.
-          ((string-match-p "\\`ftp://" url)
-           (user-error "FTP is not supported"))
-          (t
-           ;; Anything that starts with something that vaguely looks
-           ;; like a protocol designator is interpreted as a full URL.
-           (if (or (string-match "\\`[A-Za-z]+:" url)
-                   ;; Also try to match "naked" URLs like
-                   ;; en.wikipedia.org/wiki/Free software
-                   (string-match "\\`[A-Za-z_]+\\.[A-Za-z._]+/" url)
-                   (and (= (length (split-string url)) 1)
-                        (or (and (not (string-match-p "\\`[\"'].*[\"']\\'" url))
-                                 (> (length (split-string url "[.:]")) 1))
-                            (string-match eww-local-regex url))))
-               (progn
-                 (unless (string-match-p "\\`[a-zA-Z][-a-zA-Z0-9+.]*://" url)
-                   (setq url (concat "http://" url)))
-                 ;; Some sites do not redirect final /
-                 (when (string= (url-filename (url-generic-parse-url url)) "")
-                   (setq url (concat url "/"))))
-             (setq url (concat eww-search-prefix
-                               (replace-regexp-in-string " " "+" url))))))
-    ;; Call to `pop-to-buffer-same-window' was here, with the following
-    ;; sexp as argument.  We use that argument as the BUFFER argument to
-    ;; `with-current-buffer', and enclose the rest of the forms.
-    (with-current-buffer
-        (if (eq major-mode 'eww-mode)
-            (current-buffer)
-          (get-buffer-create "*eww*"))
-      (eww-setup-buffer)
-      (plist-put eww-data :url url)
-      (plist-put eww-data :title "")
-      (eww-update-header-line-format)
-      (let ((inhibit-read-only t))
-        (insert (format "Loading %s..." url))
-        (goto-char (point-min)))
-      (url-retrieve url 'eww-render
-                    (list url nil (current-buffer)))))
+  (defun bmkp-eww-rename-buffer (&rest _ignored)
+    "Rename current buffer according to option `bmkp-eww-buffer-renaming'.
+When jumping to EWW bookmark with nil `bmkp-eww-generate-buffer-flag',
+if the buffer has already been visited, set `bmkp-eww-new-buf-name' so
+that `bmkp-jump-eww' will use the already visited buffer."
+    (when bmkp-eww-buffer-renaming
+      (let ((new-bname  (bmkp-eww-new-buffer-name)))
+        (condition-case nil
+            (rename-buffer new-bname)
+          ;; VAR `bmkp-eww-jumping-p' is free here.  It is set in `bmkp-jump-eww'.
+          (error (if (and bmkp-eww-jumping-p  (not bmkp-eww-generate-buffer-flag))
+                     (setq bmkp-eww-new-buf-name  new-bname) ; For `after-render-function' in `bmkp-jump-eww'.
+                   (rename-buffer (generate-new-buffer-name new-bname))))))))
 
-  (defun bmkp-get-eww-mode-buffer ()
-    "Return a buffer that is in `eww-mode', or nil if there is none."
-    (catch 'bmkp-get-eww-mode-buffer
-      (dolist (buf  (buffer-list))
-        (when (with-current-buffer buf (derived-mode-p 'eww-mode))
-          (throw 'bmkp-get-eww-mode-buffer buf)))
-      nil))
-
-  ;; The EWW buffer is renamed on each visit, if `bmkp-eww-buffer-handling' is non-nil.
+  ;; The EWW buffer is renamed on each visit, if `bmkp-eww-buffer-renaming' is non-nil.
   (eval-after-load "eww"
     '(when (> emacs-major-version 24)   ; Emacs 25+
       (add-hook   'eww-after-render-hook      'bmkp-eww-rename-buffer)
       (advice-add 'eww-restore-history :after 'bmkp-eww-rename-buffer)))
 
-  (defun bmkp-eww-rename-buffer (&rest _ignored)
-    "Rename current buffer according to option `bmkp-eww-buffer-handling'.
-If a buffer with the new name already exists and this function is
-called within the dynamic scope of `bmkp-jump-eww-renaming-buffer'
-then set variable `bmkp-eww-new-buf-name' to the buffer name, so that
-`bmkp-jump-eww-renaming-buffer' uses that buffer."
-    (when bmkp-eww-buffer-handling
-      (let ((new-bname  (bmkp-eww-new-buffer-name)))
-        (condition-case err
-            (rename-buffer new-bname)
-          (error (if (and (buffer-live-p (get-buffer new-bname))  bmkp-eww-jumping-p)
-                     (setq bmkp-eww-new-buf-name  new-bname) ; Save name for `bmkp-jump-eww-renaming-buffer'.
-                   (error "%s" (error-message-string err))))))))
 
   ;; Eval this so that even if the library is byte-compiled with Emacs 20,
   ;; loading it into Emacs 22+ will define variable `bmkp-eww-auto-bookmark-mode'.
