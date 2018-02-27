@@ -11,7 +11,7 @@ would also be helpful.
 
 = Bugs =
 
-* When you're in two channels with the same name, e.g. #hello, on different networks, the buffers are called #hello and #hello<2>.  Now, if you temporarily lose your connection (e.g. unplug the network cable and plug it back in) and ERC reconnects, #hello<2> will not be re-used, but instead #hello<nowiki><3></nowiki> will be created.
+* When you're in two channels with the same name, e.g. #hello, on different networks, the buffers are called #hello and #hello<2>.  Now, if you temporarily lose your connection (e.g. unplug the network cable and plug it back in) and ERC reconnects, #hello<2> will not be re-used, but instead #hello<nowiki><3></nowiki> will be created. There is a patch for this in [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30639 emacs bug #30639].
 * On a daily basis, Freenode's Tor hidden service will be unavailable or in a state that'll break ERC at its first reconnection attempt. It won't attempt to reconnect anymore after this first failed attempt. The last *Messages* I get are:
 <pre>
 Connecting to mejokbp2brhw4omd.onion:ircd...
