@@ -60,9 +60,9 @@ It adds the secondary selection to a new selection ring, '''`secondary-selection
 ##second-sel.el## defines new secondary-selection commands. Library <tt>[[menu-bar+.el]]</tt> adds some of these to the '''Edit''' menu as items '''Paste Secondary''', '''Move Secondary to Region''', '''Swap Region and Secondary''', and '''Select Secondary as Region'''.
 
 
-=== `secondary-dwim' (`C-M-y') ===
+=== `secondary-yank|select|move|swap' (`C-M-y') ===
 
-Command '''`secondary-dwim'''' rolls several secondary-selection commands into one. Library <tt>[[setup-keys.el]]</tt> binds this to '''`C-M-y''''.
+Command '''`secondary-yank|select|move|swap'''' rolls several secondary-selection commands into one. Library <tt>[[setup-keys.el]]</tt> binds this to '''`C-M-y''''.
 
 Its behavior depends on the [[prefix argument]]:
 
