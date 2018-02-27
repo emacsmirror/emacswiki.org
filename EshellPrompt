@@ -144,10 +144,10 @@ Below is a snippit from my configuration that attempts to accomplish these tasks
       (lambda nil
         (concat
 	 "[" (user-login-name) "@" (system-name) " "
-	 (if (= (length (eshell/pwd)) (length (getenv "HOME")))
+	 (if (string= (eshell/pwd) (getenv "HOME"))
 	     "~" (eshell/basename (eshell/pwd)))
 	 "]"
-	 (if (= (user-uid) 0) " # " " $ "))))
+	 (if (= (user-uid) 0) "# " "$ "))))
 </pre>
 
 ----
