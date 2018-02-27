@@ -69,6 +69,23 @@ Consider writing tests, Emacs uses the convetion of a `foo-tests.el` file for ea
 
 You can use M-x checkdoc and friends to check part of the documentation style for an elisp module.
 
+
+=== Setting Long Strings ===
+
+The following example shows how *long strings* can be
+defined over several physical lines, thereby preserving
+the maximum column requirement dictated by good style
+(typically 80 chars).
+
+{{{
+(let ((msg "A long one line message \
+with continuation breaks and not much \
+content."))
+  (message msg))
+}}}
+
+The trailing '\' must be followed immediately by a newline.
+
 === Module Header ===
 Each elisp module should have header with information about the module. 
 See Emacs Info for more.
@@ -141,22 +158,6 @@ an entry for doc string changes is only necessary when you want to
 record that somebody made a contribution without writing any code, or
 when the usage of a variable changed in backwards-incompatible ways.
 But those are special circumstances, anyway.
-
-== Setting Long Strings ==
-
-The following example shows how *long strings* can be
-defined over several physical lines, thereby preserving
-the maximum column requirement dictated by good style
-(typically 80 chars).
-
-{{{
-(let ((msg "A long one line message \
-with continuation breaks and not much \
-content."))
-  (message msg))
-}}}
-
-The trailing '\' must be followed immediately by a newline.
 
 == Unified Configuration Across Editors ==
 
