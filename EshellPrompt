@@ -128,7 +128,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
 </pre>
 
-=== Making the eshell prompt behave more like Bash/ZSH ===
+== Making the eshell prompt behave more like Bash/ZSH ==
 
 There are a few features that I've become accustomed to that I've integrated into my own eshell prompt:
 * Bash-style prompt formatting
