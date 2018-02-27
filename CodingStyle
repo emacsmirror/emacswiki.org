@@ -1,10 +1,10 @@
-Gotta start somewhere.
+This is a collection of general coding style guidelines (mostly for Elisp), not an official Emacs coding style guide.
 
-= C =
+== C ==
 
 A good place is your friendly linux kernel source tree, at
 Documentation/CodingStyle.  At the other end of the spectrum are the
-GNU Coding Standards, available at
+GNU Coding Standards (used by Emacs), available at
 http://www.gnu.org/prep/standards_toc.html.
 
 It's worth mentioning that TabsAreEvil and that 6-8 spaces for a tab
@@ -13,14 +13,14 @@ things than infinite nesting.  6-8 spaces is of course very hard to
 maintain with something like java where just a method name can take up
 40 columns.
 
-= Emacs Lisp =
+== Emacs Lisp ==
 
-== Indenting ==
+=== Indenting ===
 
 Use the default indentation.  Closing parenthesis shall never stand on
 their own.
 
-== Overall Structure ==
+=== Overall Structure ===
 
 Split the code into many small functions.  Functions should not be
 longer than 24 lines, and no line should be longer than 80 characters.
@@ -32,9 +32,9 @@ These are easier to document, maintain, and test.
 
 When your source files grow too big, consider splitting them up into
 various modules, to make it easier for other people to work on them
-using CVS.
+using [[Git]].
 
-== Functional Style ==
+=== Functional Style ===
 
 As many functions as possible should be writen in a functional style,
 ie. they should not work by side effect.  This means that the they can
@@ -60,16 +60,16 @@ set to a specific value X.  Use `let' to bind these temporarily:
        (let ((X "foo"))
           (B)))
 
-Consider writing tests into your source code:
+Consider writing tests, Emacs uses the convetion of a `foo-tests.el` file for each `foo.el` file.
 
-    (eval-when-compile
-      (assert (equal '(foo bar) (ueber-fun 12))))
+    (ert-deftest uber-fun-test ()
+      (should (equal '(foo bar) (ueber-fun 12))))
 
-= Documentation =
+=== Documentation ===
 
 You can use M-x checkdoc and friends to check part of the documentation style for an elisp module.
 
-== Module Header ==
+=== Module Header ===
 Each elisp module should have header with information about the module. 
 See Emacs Info for more.
 
@@ -78,7 +78,7 @@ It can also update last update time, dependencies etc.
 
 M-x copyright-update and M-x copyright-fix-years are useful too.
 
-== Symbols (functions, variables, macros etc) ==
+=== Symbols (functions, variables, macros etc) ===
 
 Document every function, variable, macro etc. using DocStrings -- or
 at least every such entity that you expect users to inquire
@@ -86,7 +86,9 @@ about. DocStrings must be ''split'' into separate lines, each of which
 should be ''shorter than 71 characters''. The ''first'' DocString line
 should be able to stand on its own as a ''summary'' of the documented
 entity. When a doc-string line starts with a left parenthesis, precede
-it with a backslash: `<code>\(</code>'.
+it with a backslash: `<code>\(</code>' (this shouldn't be needed as 
+of Emacs 27 (refer [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30393 Bug#30393]]),
+but it's nice to keep compatibility for older editors).
 
 In the documentation of functions, mention every formal parameter, and write the names of the formal parameters (variables) in upper case.  The actual parameters are not in upper case, of course.
 
@@ -107,7 +109,7 @@ displayed.
     This function can be added to the list of actions `baz'."
       (bar))
 
-= ChangeLog =
+== ChangeLog ==
 
 Use `C-x 4 a' to maintain a ChangeLog.  Depending on the project, this
 file may or may not be checked in.  When you commit, remove the file
@@ -123,7 +125,7 @@ In the <nowiki>ChangeLog</nowiki> file:
             (erc-track-modified-channels): Use 1+.
             Plus some doc and comment changes.
 
-When checking into CVS:
+When checking into [[Git]]:
 
     (erc-make-mode-line-buffer-name): Removed a 
     superfluous if construct around erc-track-showcount-string.
@@ -140,23 +142,23 @@ record that somebody made a contribution without writing any code, or
 when the usage of a variable changed in backwards-incompatible ways.
 But those are special circumstances, anyway.
 
-= Setting Long Strings =
+== Setting Long Strings ==
 
 The following example shows how *long strings* can be
 defined over several physical lines, thereby preserving
 the maximum column requirement dictated by good style
 (typically 80 chars).
 
-<pre>
-  (setq msg "A long one line message \
+{{{
+(let ((msg "A long one line message \
 with continuation breaks and not much \
-content.")
-  (message msg)
-</pre>
+content."))
+  (message msg))
+}}}
 
 The trailing '\' must be followed immediately by a newline.
 
-= Unified Configuration Across Editors =
+== Unified Configuration Across Editors ==
 
 Unified configuration across editors can be useful for a team in which
 everyone uses their own editing tool. This can be done by using
