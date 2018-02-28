@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 28 10:00:09 2018 (-0800)
+;; Last-Updated: Wed Feb 28 10:22:21 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10729
+;;     Update #: 10742
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -440,6 +440,7 @@
 ;;    `diredp-compilation-files-other-window' (Emacs 24+),
 ;;    `diredp-compress-this-file',
 ;;    `diredp-copy-abs-filenames-as-kill',
+;;    `diredp-copy-abs-filenames-as-kill-recursive',
 ;;    `diredp-copy-filename-as-kill-recursive',
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
 ;;    `diredp-decrypt-this-file', `diredp-delete-this-file',
@@ -748,9 +749,10 @@
 ;;; Change Log:
 ;;
 ;; 2018/02/28 dadams
-;;     Added: diredp-last-copied-filenames and redefinition of diredp-last-copied-filenames.
-;;     diredp-copy-abs-filenames-as-kill: Update diredp-last-copied-filenames with filenames string.
-;;                                        Use diredp-ensure-mode in interactive spec.
+;;     Added: diredp-last-copied-filenames, diredp-copy-abs-filenames-as-kill-recursive,
+;;            and redefinition of vanilla diredp-last-copied-filenames.
+;;     diredp-copy-abs-filenames-as-kill: Use diredp-ensure-mode in interactive spec.
+;;     diredp-copy-filename-as-kill-recursive: Update diredp-last-copied-filenames with filenames string.
 ;;     diredp-yank-files: Require confirmation for pasting, using diredp-y-or-n-files-p.
 ;;                        Get file names from variable diredp-last-copied-filenames, not kill-ring.
 ;;                        Added NO-CONFIRM-P arg.
@@ -4543,8 +4545,7 @@ function; it copies the data if necessary."
 
 (defvar diredp-last-copied-filenames ()
   "String list of file names last copied to the `kill-ring'.
-Copying is done by commands `dired-copy-filename-as-kill' and
-`diredp-copy-abs-filenames-as-kill'.")
+Copying is done by `dired-copy-filename-as-kill' and related commands.")
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
@@ -4588,8 +4589,7 @@ lists the file names.
 This is the same as using a zero prefix arg with command
 `dired-copy-filename-as-kill', that is, \\<dired-mode-map>`M-0 \\[dired-copy-filename-as-kill]'."
   (interactive (diredp-ensure-mode))
-  (dired-copy-filename-as-kill 0)
-  (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
+  (dired-copy-filename-as-kill 0))
 
 ;;;###autoload
 (defalias 'diredp-paste-files 'diredp-yank-files) ; Bound to `C-y'.
@@ -5372,7 +5372,10 @@ arg and marked files are ignored in this case.
 
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
-subdirectories are handled recursively in the same way."
+subdirectories are handled recursively in the same way.
+
+The names are copied to the kill ring and to variable
+`diredp-last-copied-filenames'."
   (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
    (progn (diredp-ensure-mode) (list current-prefix-arg)))
   (let* ((files   (mapcar (cond ((zerop (prefix-numeric-value arg)) #'identity)
@@ -5381,8 +5384,25 @@ subdirectories are handled recursively in the same way."
                                 (t (lambda (fn) (file-name-nondirectory fn))))
                           (diredp-get-files)))
          (string  (mapconcat #'identity files " ")))
-    (if (eq last-command 'kill-region) (kill-append string nil) (kill-new string))
+    (unless (string= "" string)
+      (if (eq last-command 'kill-region) (kill-append string nil) (kill-new string))
+      (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
     (message "%s" string)))
+
+;;;###autoload
+(defun diredp-copy-abs-filenames-as-kill-recursive (&optional ignore-marks-p) ; Not bound.
+  "Copy absolute names of files marked here and in marked subdirs, recursively.
+The names are copied to the kill ring and to variable
+`dired-copy-filename-as-kill'.
+
+The files whose names are copied are those that are marked in the
+current Dired buffer, or all files in the directory if none are
+marked.  Marked subdirectories are handled recursively in the same
+way."
+  (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
+   (progn (diredp-ensure-mode) (list current-prefix-arg)))
+  (diredp-copy-filename-as-kill-recursive 0)
+  (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
 
 ;;;###autoload
 (defun diredp-mark-files-regexp-recursive (regexp &optional marker-char ignore-marks-p) ; Bound to `M-+ % m'
