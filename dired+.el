@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 27 11:11:56 2018 (-0800)
+;; Last-Updated: Wed Feb 28 09:15:40 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10677
+;;     Update #: 10728
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -626,12 +626,13 @@
 ;;    `diredp-hide-details-last-state' (Emacs 24.4+),
 ;;    `diredp-hide-details-toggled' (Emacs 24.4+),
 ;;    `diredp-hide/show-menu', `diredp-images-recursive-menu',
-;;    `diredp-list-files-map', `diredp-loaded-p',
-;;    `diredp-marks-recursive-menu', `diredp-menu-bar-dir-menu',
-;;    `diredp-menu-bar-marks-menu', `diredp-menu-bar-multiple-menu',
-;;    `diredp-menu-bar-regexp-menu', `diredp-menu-bar-single-menu',
-;;    `diredp-multiple-bookmarks-menu', `diredp-multiple-delete-menu',
-;;    `diredp-multiple-dired-menu', `diredp-multiple-images-menu',
+;;    `diredp-last-copied-filenames', `diredp-list-files-map',
+;;    `diredp-loaded-p', `diredp-marks-recursive-menu',
+;;    `diredp-menu-bar-dir-menu', `diredp-menu-bar-marks-menu',
+;;    `diredp-menu-bar-multiple-menu', `diredp-menu-bar-regexp-menu',
+;;    `diredp-menu-bar-single-menu', `diredp-multiple-bookmarks-menu',
+;;    `diredp-multiple-delete-menu', `diredp-multiple-dired-menu',
+;;    `diredp-multiple-images-menu',
 ;;    `diredp-multiple-encryption-menu',
 ;;    `diredp-multiple-move-copy-link-menu',
 ;;    `diredp-multiple-omit-menu', `diredp-multiple-recursive-menu',
@@ -725,6 +726,8 @@
 ;;  ***** NOTE: The following functions defined in `dired-x.el' have
 ;;              been REDEFINED HERE:
 ;;
+;;  `dired-copy-filename-as-kill' -
+;;     Put file names also in var `diredp-last-copied-filenames'.
 ;;  `dired-do-find-marked-files' -
 ;;     Doc string reflects new `dired-simultaneous-find-file'.
 ;;  `dired-do-run-mail' - Require confirmation.
@@ -744,8 +747,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/02/28 dadams
+;;     Added: diredp-last-copied-filenames and redefinition of diredp-last-copied-filenames.
+;;     diredp-copy-abs-filenames-as-kill: Update diredp-last-copied-filenames with filenames string.
+;;                                        Use diredp-ensure-mode in interactive spec.
+;;     diredp-yank-files: Require confirmation for pasting, using diredp-y-or-n-files-p.
+;;                        Get file names from variable diredp-last-copied-filenames, not kill-ring.
+;;                        Added NO-CONFIRM-P arg.
+;;     diredp-ensure-mode: Added doc string.
 ;; 2018/02/27 dadams
 ;;     Added: diredp-copy-abs-filenames-as-kill, diredp-yank-files (aka diredp-paste-files) (bound to C-y).
+;;     diredp-menu-bar-multiple-menu: Added diredp-copy-abs-filenames-as-kill.
+;;     diredp-menu-bar-dir-menu: Added diredp-yank-files.
 ;; 2018/01/11 dadams
 ;;     diredp-get-files:
 ;;       Set IGNORE-MARKS-P to non-nil if nothing marked here.  (It was not getting all if nothing marked.)
@@ -2319,6 +2332,7 @@ Uses the `derived-mode-parent' property of the symbol to trace backwards."
       parent)))
 
 (defun diredp-ensure-mode ()
+  "Raise an error if not in Dired or a mode derived from it."
   (unless (derived-mode-p 'dired-mode)
     (error "You must be in Dired or a mode derived from it to use this command")))
 
@@ -4527,28 +4541,82 @@ function; it copies the data if necessary."
            (setq list2  (cdr list2)))
          list1)))
 
-;;;###autoload
+(defvar diredp-last-copied-filenames ()
+  "String list of file names last copied to the `kill-ring'.
+Copying is done by commands `dired-copy-filename-as-kill' and
+`diredp-copy-abs-filenames-as-kill'.")
+
+
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; Put text copied to kill ring in variable `diredp-last-copied-filenames'.
+;;
+(defun dired-copy-filename-as-kill (&optional arg)
+  "Copy names of marked (or next ARG) files into the kill ring.
+The names are separated by a space.
+With a zero prefix arg, use the absolute file name of each marked file.
+With \\[universal-argument], use the file name relative to the Dired buffer's
+`default-directory'.  (This still may contain slashes if in a subdirectory.)
+
+If on a subdir headerline, use absolute subdirname instead;
+prefix arg and marked files are ignored in this case.
+
+You can then feed the file name(s) to other commands with \\[yank].
+
+The value of global variable `diredp-last-copied-filenames' is updated
+to the string list of file name(s), so you can obtain it even after
+the kill ring is modified."
+  (interactive "P")
+  (let* ((num-arg  (prefix-numeric-value arg))
+         (string  (or (dired-get-subdir)
+                      (mapconcat #'identity
+                                 (cond ((not arg)       (dired-get-marked-files 'no-dir))
+                                       ((zerop num-arg) (dired-get-marked-files))
+                                       ((consp arg)     (dired-get-marked-files t))
+                                       (t               (dired-get-marked-files 'no-dir num-arg)))
+                                 " "))))
+    (unless (string= "" string)
+      (if (eq last-command 'kill-region) (kill-append string nil) (kill-new string))
+      (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer))
+      (message "%s" string))))
+
 (defun diredp-copy-abs-filenames-as-kill () ; Not bound.
   "Copy absolute names of marked files in Dired to the `kill-ring'.
 Same as `M-0 w'."
-  (interactive)
-  (dired-copy-filename-as-kill 0))
+  (interactive (diredp-ensure-mode))
+  (dired-copy-filename-as-kill 0)
+  (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
 
 ;;;###autoload
 (defalias 'diredp-paste-files 'diredp-yank-files) ; Bound to `C-y'.
-(defun diredp-yank-files (&optional dir)
-  "Yank (paste) files, whose names you copied, to the current directory."
+;;;###autoload
+(defun diredp-yank-files (&optional dir no-confirm-p)
+  "Paste files, whose absolute names you copied, to the current directory.
+With a prefix arg you are instead prompted for the target directory.
+
+You should have copied the list of file names as a string to the kill
+ring using \\<dired-mode-map>`M-0 \\[dired-copy-filename-as-kill]' or \
+\\[diredp-copy-abs-filenames-as-kill].
+Those commands also set variable `diredp-last-copied-filenames' to the
+same string.  `diredp-yank-files' uses the value of that variable, not
+whatever is currently at the head of the kill ring.
+
+When called from Lisp, optional arg NO-CONFIRM-P means do not ask for
+confirmation to copy."
   (interactive (and current-prefix-arg
                     (list (expand-file-name (read-directory-name "Yank files to directory: ")))))
   (setq dir  (or dir  (and (derived-mode-p 'dired-mode)  (dired-current-directory))))
   (unless (file-directory-p dir) (error "Not a directory: `%s'" dir))
-  (let ((files     (car kill-ring-yank-pointer)))
+  (let ((files  diredp-last-copied-filenames))
     (unless (stringp files)  (error "No copied file names"))
     (setq files  (delete-if-not (lambda (file) (file-name-absolute-p file)) (split-string files)))
     (unless files  (error "No copied absolute file names (Did you use `M-0 w'?)"))
-    (dired-create-files #'dired-copy-file "Copy" files
-                        (lambda (from)
-	                  (expand-file-name (file-name-nondirectory from) dir)))))
+    (if (and (not no-confirm-p)
+             (diredp-y-or-n-files-p "Paste files whose names you copied? " files))
+        (dired-create-files #'dired-copy-file "Copy" files
+                            (lambda (from)
+	                      (expand-file-name (file-name-nondirectory from) dir)))
+      (message "OK, file-pasting canceled"))))
 
 
 
@@ -10037,6 +10105,8 @@ Marked (or next prefix arg) files & subdirs here
     "  \\[diredp-list-marked]\t\t- List marked files and directories
   \\[diredp-insert-subdirs]\t\t- Insert marked subdirectories
   \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
+  \\[diredp-copy-abs-filenames-as-kill]\t\t- Copy absolute names for pasting
+  \\[diredp-yank-files]\t\t- Paste files whose absolute names you copied
   \\[dired-do-find-marked-files]\t\t- Visit
   \\[dired-do-copy]\t\t- Copy
   \\[dired-do-rename]\t\t- Rename/move
@@ -10735,10 +10805,13 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Create HTML files corresponding to marked files")))
 (define-key diredp-menu-bar-multiple-menu [separator-misc] '("--")) ; ---------------------------
 
-(when (fboundp 'dired-copy-filename-as-kill)
-  (define-key diredp-menu-bar-multiple-menu [kill-ring]
-    '(menu-item "Copy File Names (to Paste)" dired-copy-filename-as-kill
-      :help "Copy names of marked files onto kill ring, for pasting")))
+(define-key diredp-menu-bar-multiple-menu [diredp-copy-abs-filenames-as-kill]
+  '(menu-item "Copy Marked Names as Absolute" diredp-copy-abs-filenames-as-kill
+    :help "Copy absolute names of marked files to the kill ring"
+    :keys "M-0 w"))
+(define-key diredp-menu-bar-multiple-menu [kill-ring]
+  '(menu-item "Copy Marked Names" dired-copy-filename-as-kill
+    :help "Copy names of marked files to the kill ring, for pasting"))
 (define-key diredp-menu-bar-multiple-menu [diredp-list-marked]
     '(menu-item "List Marked Files" diredp-list-marked
       :help "List the files marked here (C-u C-u: all, C-u C-u C-u: all + dirs)"))
@@ -11645,6 +11718,15 @@ If no one is selected, symmetric encryption will be performed.  "
     '(menu-item "Edit File Names (WDired)" wdired-change-to-wdired-mode
       :help "Put a Dired buffer in a mode in which filenames are editable"
       :keys "C-x C-q" :filter (lambda (x) (and (derived-mode-p 'dired-mode)  x)))))
+(define-key diredp-menu-bar-dir-menu [diredp-yank-files]
+  '(menu-item "Paste Files from Copied Absolute Names" diredp-yank-files
+    :help "Paste files here whose absolute names you copied"
+    :enable (catch 'dir-menu--yank-files
+              (let ((files  (car kill-ring-yank-pointer)))
+                (and (stringp files)
+                     (dolist (file  (split-string files))
+                       (unless (file-name-absolute-p file) (throw 'dir-menu--yank-files nil)))))
+              t)))
 (when (fboundp 'dired-compare-directories) ; Emacs 22+
   (define-key diredp-menu-bar-dir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
