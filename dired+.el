@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 28 09:15:40 2018 (-0800)
+;; Last-Updated: Wed Feb 28 10:00:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10728
+;;     Update #: 10729
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4581,8 +4581,12 @@ the kill ring is modified."
       (message "%s" string))))
 
 (defun diredp-copy-abs-filenames-as-kill () ; Not bound.
-  "Copy absolute names of marked files in Dired to the `kill-ring'.
-Same as `M-0 w'."
+  "Copy absolute names of marked files in Dired to the kill ring.
+Also set variable `diredp-last-copied-filenames' to the string that
+lists the file names.
+
+This is the same as using a zero prefix arg with command
+`dired-copy-filename-as-kill', that is, \\<dired-mode-map>`M-0 \\[dired-copy-filename-as-kill]'."
   (interactive (diredp-ensure-mode))
   (dired-copy-filename-as-kill 0)
   (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
