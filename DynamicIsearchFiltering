@@ -81,7 +81,7 @@ filter predicate.  (This requires library '''<tt>[[crosshairs.el]]</tt>''', whic
 highlights the current column and line using crosshairs.)
 
     (lambda (beg end)
-       (save-excursion (goto-char end)) ; Gp to end of search hit.
+       (save-excursion (goto-char end)) ; Go to end of search hit.
        ;; Avoid calling `crosshairs' when inside `isearch-lazy-highlight-search'.
        (unless isearchp-in-lazy-highlight-update-p (crosshairs))
        t)  ; Return non-nil always - no real filtering.
