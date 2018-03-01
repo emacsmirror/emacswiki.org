@@ -45,6 +45,8 @@ The !PyBBDB module (https://pypi.python.org/pypi/pybbdb) can be used to write yo
 
 [http://github.com/trebb/bbdb-vcard bbdb-vcard.el] exports BBDB records of (almost) arbitrary content into vCards version 3.0.
 
+Does not work for bbdb 3.1.2.
+
 In buffer %%*BBDB*%%, press %%v%% to export the record under point. Press %%* v%%
 to export all records in buffer into one vCard file.  Press %%* C-u v%% to
 export them into one file each.
