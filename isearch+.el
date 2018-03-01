@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:33:36 2018 (-0800)
+;; Last-Updated: Wed Feb 28 18:05:53 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 5913
+;;     Update #: 5937
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,8 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `color', `frame-fns', `gv', `hexrgb', `isearch-prop',
+;;   `macroexp', `misc-cmds', `misc-fns', `strings', `thingatpt',
+;;   `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1161,6 +1163,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/02/28 dadams
+;;     isearch-lazy-highlight-update: do not use isearch-lazy-highlight-update if nil.
 ;; 2017/11/12 dadams
 ;;     Added: isearchp-forward-region, isearchp-forward-regexp-region (Emacs 24.4+).
 ;; 2017/10/17 dadams
@@ -1171,7 +1175,7 @@
 ;;     isearch-repeat: Typo: Was testing emacs-minor-version not emacs-major-version.
 ;;     isearch-lazy-highlight-search: Do not dim unless isearchp--lazy-hlt-filter-failures-p is non-nil.
 ;; 2017/05/29 dadams
-;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only the binding of BINDING.  See bug #23007.
+;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only the binding of BINDING. See bug #23007.
 ;; 2017/05/18 dadams
 ;;     Added:
 ;;      isearchp-define-in/out-filter,
@@ -5334,6 +5338,7 @@ Attempt to do the search exactly the way the pending Isearch would."
                         (if (and (boundp 'isearchp-highlight-regexp-group-levels-flag) ; Emacs 24.4+
                                  isearchp-highlight-regexp-group-levels-flag
                                  isearch-lazy-highlight-regexp
+                                 isearch-lazy-highlight-last-string
                                  (> (regexp-opt-depth isearch-lazy-highlight-last-string) 0))
                             (save-match-data
                               (let ((level         1)
@@ -5908,7 +5913,8 @@ You are prompted for the PATTERN and DISTANCE.
   option `isearchp-movement-unit-alist'.
 
 You might also be prompted for a predicate name or an Isearch prompt
-prefix - see `isearchp-add-filter-predicate'."
+prefix.  See `isearchp-add-filter-predicate' for info about this and
+about the use of a prefix argument."
     (interactive (isearchp-read-near-args "Near regexp: "))
     (isearchp-add-filter-predicate
      (isearchp-near-predicate pattern distance) flip-read-name-p flip-read-prefix-p msgp))
@@ -6044,7 +6050,8 @@ Defaults: 0 for the minimum, largest integer for the maximum.
 Example: Enter 71 as min, default as max, to search past column 70.
 
 You might also be prompted for a predicate name or an Isearch prompt
-prefix - see `isearchp-add-filter-predicate'."
+prefix.  See `isearchp-add-filter-predicate' for info about this and
+about the use of a prefix argument."
     (interactive
      (let ((isearchp-resume-with-last-when-empty-flag  nil)
            mn mx)
@@ -6186,21 +6193,21 @@ BEG and END are the search-hit limits."
   ;; `isearchp-not-in-list-p'
   (isearchp-define-in/out-filter list "the same list" (not (= 0 (nth 0 (syntax-ppss pos)))) nil 'NOT)
 
-;; Do not use macro `isearchp-define-in/out-filter' for `isearchp-not-in-lisp-variable-p'.
-;;
-(defun isearchp-not-in-lisp-variable-p (__%$_BEG_+-*&__ __%$_END_+-*&__)
-  "Return t if all chars in the search hit are not in the same Lisp variable.
+  ;; Do not use macro `isearchp-define-in/out-filter' for `isearchp-not-in-lisp-variable-p'.
+  ;;
+  (defun isearchp-not-in-lisp-variable-p (__%$_BEG_+-*&__ __%$_END_+-*&__)
+    "Return t if all chars in the search hit are not in the same Lisp variable.
 BEG and END are the search-hit limits."
-  ;; Just ignore the arguments, as variables (dumb, ugly hack, but good enough).
-  (save-excursion
-    (goto-char __%$_BEG_+-*&__)
-    (catch 'isearchp-in-lisp-variable-p
-      (while (<= __%$_BEG_+-*&__ __%$_END_+-*&__)
-        (when (and (symbolp (variable-at-point))
-                   (not (memq (variable-at-point) '(__%$_BEG_+-*&__ __%$_END_+-*&__))))
-          (throw 'isearchp-in-lisp-variable-p nil))
-        (setq __%$_BEG_+-*&__  (1+ __%$_BEG_+-*&__)))
-      t)))
+    ;; Just ignore the arguments, as variables (dumb, ugly hack, but good enough).
+    (save-excursion
+      (goto-char __%$_BEG_+-*&__)
+      (catch 'isearchp-in-lisp-variable-p
+        (while (<= __%$_BEG_+-*&__ __%$_END_+-*&__)
+          (when (and (symbolp (variable-at-point))
+                     (not (memq (variable-at-point) '(__%$_BEG_+-*&__ __%$_END_+-*&__))))
+            (throw 'isearchp-in-lisp-variable-p nil))
+          (setq __%$_BEG_+-*&__  (1+ __%$_BEG_+-*&__)))
+        t)))
 
 
 ;;; In and out thing filters
