@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Feb 13 14:54:51 2018 (-0800)
+;; Last-Updated: Fri Mar  2 08:49:18 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 27593
+;;     Update #: 27596
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7146,6 +7146,8 @@ You can use these additional keys during completion:
 * `C-x C-m +' Keep only buffers in a mode derived from a given mode.
 * `C-x * -'   Remove buffers that are modified (unsaved)
 * `C-x * +'   Keep only buffers that are modified (unsaved)
+* `C-x i -'   Remove buffers that are indirect.
+* `C-x i +'   Keep only buffers that are indirect.
 * `C-x v -'   Remove buffers that are visible (maybe iconified).
 * `C-x v +'   Keep only buffers that are visible (maybe iconified).
 * `\\[icicle-delete-candidate-object]'  Kill the buffer named by a completion candidate.
