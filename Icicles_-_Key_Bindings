@@ -629,6 +629,10 @@ default, they are the following:
 
 * '''##‘C-x * +’##'''  -- `icicle-keep-only-buffer-cands-for-modified': ''Keep'' only buffers that are ''modified''.
 
+* '''`C-x i -''''  -- `icicle-remove-buffer-cands-for-indirect': ''Remove'' buffers that are ''indirect''.
+
+* '''##‘C-x i +’##'''  -- `icicle-keep-only-buffer-cands-for-indirect': ''Keep'' only buffers that are ''indirect''.
+
 * '''`C-x v -''''  -- `icicle-remove-buffer-cands-for-visible': ''Remove'' buffers that are ''visible''.  Includes
 buffers in iconified frames.
 
