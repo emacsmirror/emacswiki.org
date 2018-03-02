@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Feb 13 14:40:20 2018 (-0800)
+;; Last-Updated: Fri Mar  2 08:47:25 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 6226
+;;     Update #: 6229
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1028,6 +1028,8 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
     (,(icicle-kbd "C-x M +")       icicle-keep-only-buffer-cands-for-mode         t) ; `C-x M +'
     (,(icicle-kbd "C-x C-m -")     icicle-remove-buffer-cands-for-derived-mode    t) ; `C-x C-m -'
     (,(icicle-kbd "C-x C-m +")     icicle-keep-only-buffer-cands-for-derived-mode t) ; `C-x C-m +'
+    (,(icicle-kbd "C-x i -")       icicle-remove-buffer-cands-for-indirect        t) ; `C-x i -'
+    (,(icicle-kbd "C-x i +")       icicle-keep-only-buffer-cands-for-indirect     t) ; `C-x i +'
     (,(icicle-kbd "C-x v -")       icicle-remove-buffer-cands-for-visible         t) ; `C-x v -'
     (,(icicle-kbd "C-x v +")       icicle-keep-only-buffer-cands-for-visible      t) ; `C-x v +'
     (,(icicle-kbd "C-x F"  )       icicle-toggle-include-cached-files             t) ; `C-x F'
