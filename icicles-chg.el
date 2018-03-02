@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Feb 13 15:04:22 2018 (-0800)
+;; Last-Updated: Fri Mar  2 14:50:59 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 11827
+;;     Update #: 11834
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2018/03/02 dadams
+;;     icicle-buffer: Updated doc string for C-x i -|+.
 ;; 2018/02/13 dadams
 ;;     Removed (Emacs 23-25 only now): icicle-zap-to-char.
 ;; 2017/12/12 dadams
@@ -4674,6 +4676,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2018/03/02 dadams
+;;     Added: icicle-keep/remove-buffer-cands-for-indirect, icicle-keep-only-buffer-cands-for-indirect,
+;;            icicle-remove-buffer-cands-for-indirect.
 ;; 2018/01/15 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Added highlighting for icicle-SPC-scatter-match.
@@ -7809,6 +7814,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2018/03/02 dadams
+;;     icicle-buffer-candidate-key-bindings: Added icicle-(keep|remove)-buffer-cands-for-indirect.
 ;; 2018/02/13 dadams
 ;;     Removed (Emacs 23-25 only now): icicle-read-char-by-name-multi-completion-flag,
 ;;                                     icicle-zap-to-char-candidates. 
