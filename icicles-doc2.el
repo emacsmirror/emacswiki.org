@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Feb 13 15:19:41 2018 (-0800)
+;; Last-Updated: Fri Mar  2 08:40:07 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 30061
+;;     Update #: 30062
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7484,8 +7484,14 @@
 ;;    `C-x * -'       - `icicle-remove-buffer-cands-for-modified':
 ;;                      Remove modified buffers.
 ;;
-;;    `C-x * +'       - `icicle-keep-buffer-cands-for-modified'): Keep
+;;    `C-x * +'       - `icicle-keep-buffer-cands-for-modified': Keep
 ;;                      only modified buffers.
+;;
+;;    `C-x i -'       - `icicle-remove-buffer-cands-for-indirect':
+;;                      Remove indirect buffers.
+;;
+;;    `C-x i +'       - `icicle-keep-only-buffer-cands-for-indirect':
+;;                      Keep only indirect buffers.
 ;;
 ;;    `C-x v -'       - `icicle-remove-buffer-cands-for-visible':
 ;;                      Remove buffers that are visible.  Includes
