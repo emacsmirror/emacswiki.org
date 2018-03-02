@@ -80,7 +80,6 @@ is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buff
   visit any number of buffer bookmarks with one use of `C-x m'.  When finished, you can
   continue with non-bookmark buffer-name completion.
 
-
 [:icicle-remove-buffer-cands-for-derived-mode]
 * '''`C-x C-m -'''' ('''`icicle-remove-buffer-cands-for-derived-mode'''') ''Remove'' the
   buffer-name candidates with a major
@@ -91,7 +90,6 @@ is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buff
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.   (`C-m' is the same key as `RET'.)
 
-
 [:icicle-remove-buffer-cands-for-mode]
 * '''`C-x M -'''' ('''`icicle-remove-buffer-cands-for-mode'''') Same as `C-x C-m -', but excludes ancestor modes.
 
@@ -100,11 +98,19 @@ is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buff
 
 [:icicle-remove-buffer-cands-for-modified]
 * '''`C-x * -'''' ('''`icicle-remove-buffer-cands-for-modified'''')  ''Remove''
-the candidate buffers that are ''modified''.
+the buffer-name candidates for ''modified'' buffers.
 
 [:icicle-keep-only-buffer-cands-for-modified]
 * '''`##C-x * +##'''' ('''`icicle-keep-only-buffer-cands-for-modified'''') ''Keep
-only'' the candidate buffers that are ''modified''.
+only'' the buffer-name candidates for ''modified'' buffers.
+
+[:icicle-remove-buffer-cands-for-indirect]
+* '''`##C-x i -##'''' ('''`icicle-remove-buffer-cands-for-indirect'''') ''Remove'' the
+buffer-name candidates for indirect buffers.
+
+[:icicle-keep-buffer-cands-for-indirect]
+* '''`##C-x i +##'''' ('''`icicle-remove-buffer-cands-for-indirect'''') ''Keep only'' the
+buffer-name candidates for indirect buffers.
 
 [:icicle-remove-buffer-cands-for-visible]
 * '''`C-x v -'''' ('''`icicle-remove-buffer-cands-for-visible'''') ''Remove''
