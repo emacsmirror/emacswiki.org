@@ -18,7 +18,7 @@
 ;;                https://github.com/vincentb1
 ;;                http://www.emacswiki.org/Vincent%20Bela%c3%afche
 ;; Version: 1.5 (2014-12-07)
-;; Serial Version: %Id: 47%
+;; Serial Version: %Id: 48%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -61,12 +61,12 @@
 ;;  the following to your init file:
 
 ;;  (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
-;;  (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\)$" .
-;;                                  visual-basic-mode)) auto-mode-alist))
+;;  (push '("\\.\\(?:frm\\|\\(?:ba\\|cl\\|vb\\)s\\)\\'" . visual-basic-mode)
+;;         auto-mode-alist)
 ;;
-;;  If you are doing Rhino scripts, add:
-;;  (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|rvb\\)$" .
-;;                                  visual-basic-mode)) auto-mode-alist))
+;;  If you are doing Rhino scripts, add instead:
+;;  (push '("\\.\\(?:frm\\|\\(?:ba\\|cl\\|vb\\)s\\|rvb\\)\\'" . visual-basic-mode)
+;;         auto-mode-alist)
 
 ;;  If you had visual-basic-mode already installed, you may need to call
 ;;  visual-basic-upgrade-keyword-abbrev-table the first time that
