@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Feb 13 14:31:45 2018 (-0800)
+;; Last-Updated: Sat Mar  3 09:39:04 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 15275
+;;     Update #: 15280
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5898,7 +5898,7 @@ kept."
 
 ;; Same as `delete-dups' from Emacs 22+.
 (if (fboundp 'delete-dups)
-    (defalias 'icicle-delete-dups (symbol-function 'delete-dups))
+    (defalias 'icicle-delete-dups 'delete-dups)
   (defun icicle-delete-dups (list)
     "Destructively remove `equal' duplicates from LIST.
 Store the result in LIST and return it.  LIST must be a proper list.
@@ -6943,7 +6943,7 @@ makes candidates matching previous inputs available first (at the top
 of buffer `*Completions*').  Candidates are effectively in two groups,
 each of which is sorted alphabetically separately: matching previous
 inputs, followed by matching candidates that have not yet been used."
-  ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
+  ;; We could use `icicle-delete-dups' to shorten the history, but that takes time too.
   ;; And, starting in Emacs 22, histories will not contain duplicates anyway.
   (let ((hist  (and (symbolp minibuffer-history-variable)  (boundp minibuffer-history-variable)
                     (symbol-value minibuffer-history-variable)))
@@ -6966,7 +6966,7 @@ inputs, followed by matching candidates that have not yet been used."
 ;;  S1 < S2 if S1 was used previously but S2 was not.
 ;;  S1 < S2 if neither was used previously
 ;;   and S1 `icicle-case-string-less-p' S2."
-;;   ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
+;;   ;; We could use `icicle-delete-dups' to shorten the history, but that takes time too.
 ;;   ;; And, starting in Emacs 22, histories will not contain duplicates anyway.
 ;;   (let ((hist  (and (symbolp minibuffer-history-variable)
 ;;                     (symbol-value minibuffer-history-variable)))
@@ -6989,7 +6989,7 @@ Also:
  S1 < S2 if S1 was used as input previously but S2 was not.
  S1 < S2 if neither was used as input previously
   and S1 `icicle-case-string-less-p' S2."
-  ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
+  ;; We could use `icicle-delete-dups' to shorten the history, but that takes time too.
   ;; And, starting in Emacs 22, histories do not contain duplicates anyway.
   (let ((hist     (and (symbolp minibuffer-history-variable) (boundp minibuffer-history-variable)
                        (symbol-value minibuffer-history-variable)))
@@ -7202,7 +7202,7 @@ S1 < S2 if neither was used as input previously
 If not doing file-name completion then this is the same as
 `icicle-latest-input-first-p'."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
-      ;; We could use `icicle-delete-duplicates' to shorten the history, but that takes time too.
+      ;; We could use `icicle-delete-dups' to shorten the history, but that takes time too.
       ;; And, starting in Emacs 22, histories do not contain duplicates anyway.
       (let ((hist     (and (symbolp minibuffer-history-variable)  (boundp minibuffer-history-variable)
                            (symbol-value minibuffer-history-variable)))
