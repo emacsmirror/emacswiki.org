@@ -62,5 +62,5 @@ M-RET - вставить новый элемент списка
 * C-c C-t - пометить задачу как выполненную
 
 =Расширение возможностей Org Mode=
-[https://github.com/jkitchin/org-ref org-ref] - Работа с библиографией 
+[https://github.com/jkitchin/org-ref org-ref] - Развитый инструмент работы с библиографией 
 
