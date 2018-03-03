@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 28 16:02:45 2018 (-0800)
+;; Last-Updated: Sat Mar  3 09:33:56 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10752
+;;     Update #: 10754
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -748,6 +748,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/03/03 dadams
+;;     diredp-delete-dups: defalias the symbol, not its symbol-function (dunno why I did the latter).
 ;; 2018/02/28 dadams
 ;;     Added: diredp-last-copied-filenames, diredp-copy-abs-filenames-as-kill-recursive,
 ;;            and redefinition of vanilla diredp-last-copied-filenames.
@@ -2273,7 +2275,7 @@ HISTORY defaults to `dired-regexp-history'."
     (read-from-minibuffer prompt nil nil nil history default)))
 
 (if (fboundp 'delete-dups)
-    (defalias 'diredp-delete-dups (symbol-function 'delete-dups))
+    (defalias 'diredp-delete-dups 'delete-dups)
   (defun diredp-delete-dups (list)
     "Destructively remove `equal' duplicates from LIST.
 Store the result in LIST and return it.  LIST must be a proper list.
