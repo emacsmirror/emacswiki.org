@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Mar  2 14:50:59 2018 (-0800)
+;; Last-Updated: Sat Mar  3 09:37:46 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 11834
+;;     Update #: 11835
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2298,6 +2298,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2018/03/03 dadams
+;;     icicle-delete-dups: defalias the symbol, not its symbol-function (dunno why I did the latter).
 ;; 2018/02/13 dadams
 ;;     Removed (Emacs 23-25 only now): icicle-char-cands-from-charlist, icicle-make-char-candidate,
 ;;                                     icicle-ucs-names, (icicle(-ORIG)-)read-char-by-name,
