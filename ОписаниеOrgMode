@@ -60,3 +60,7 @@ M-RET - вставить новый элемент списка
 == Список задач (todo list) ==
 * M-shift-RET (org-insert-todo-heading) создать новую задачу.
 * C-c C-t - пометить задачу как выполненную
+
+=Расширение возможностей Org Mode=
+[[org-ref][https://github.com/jkitchin/org-ref]] - Работа с библиографией 
+
