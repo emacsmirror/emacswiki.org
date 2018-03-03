@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:42:00 2018 (-0800)
+;; Last-Updated: Sat Mar  3 09:22:49 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1338
+;;     Update #: 1340
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/03/03 dadams
+;;     Removed binding of <delete> to kill-line.
 ;; 2017/09/10 dadams
 ;;     Change binding of 1on1-fit-minibuffer-frame in minibuffer keymaps to M-up from C-o.
 ;; 2016/11/02 dadams
@@ -803,7 +805,6 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
   '(global-set-key "\M-#" 'lisp-spell-symbol))                                 ; `M-#'
 
 ;; [delete] key.
-(global-set-key [delete] 'kill-line)    ; Defined in `simple.el'.                `delete'
 (global-set-key [C-delete] 'kill-paragraph) ; Defined in `paragraphs.el'.        `C-delete'
 (global-set-key [M-delete] 'kill-ring-save) ; Defined in `simple.el'.            `M-delete'
 ; Emacs standard: [S-delete] is `kill-region'.
