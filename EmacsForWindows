@@ -9,7 +9,7 @@ The page has also links to the precompiled binaries for MS-Windows of the curren
 
 If you want precompiled binaries for the latest Emacses (version 25.3 is officially released stable), please see CategoryWThirtyTwo.
 
-Project ntemacs/emax64 at (https://ntemacs.sourceforge.io/) provides clean, optimized binary builds of the latest Emacs source, with image support enabled and necessary dependencies bundled in the package.
+Project emax64 at (https://github.com/m-parashar/emax64, https://ntemacs.sourceforge.io/) provides clean, optimized binary builds of the latest Emacs source, with image support enabled and necessary dependencies bundled in the package.
 
 
 ----
