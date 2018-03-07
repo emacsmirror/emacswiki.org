@@ -7,7 +7,7 @@
 * Что такое Dired?
 
 ** _Часть 1_
-   [http://youtu.be/_HW1sEc7RLU Как отркыть нужную директорию?]
+   [http://youtu.be/_HW1sEc7RLU Как открыть нужную директорию?]
 
 *** Открыть директорию
     <code>M-x dired</code>
