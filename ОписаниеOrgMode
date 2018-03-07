@@ -63,4 +63,5 @@ M-RET - вставить новый элемент списка
 
 =Расширение возможностей Org Mode=
 [https://github.com/jkitchin/org-ref org-ref] - Развитый инструмент работы с библиографией 
+[http://bastibe.de/2017-09-19-multi-font-themes.html Multi-Font Themes in Emacs]- Темы с оформлением несколькими шрифтами
 
