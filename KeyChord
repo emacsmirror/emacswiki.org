@@ -62,6 +62,11 @@ If you use german, here are some you could check (rare letter combinations): dp,
 [new]
 Arne: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). Even very infrequent clashes can be very irritating. I am not fluent in german, but the above list match a lot of not so uncommon words: s**oz**ial, **zo**gen, Schu**lz**, plöt**zl**ich, M**aj**or, **Ja**hre, Kau**fm**ann, U**mf**ang, Se**gm**ent, **Gm**bH, Wol**fg**ang, sor**gf**ältig, e**rw**arten, Ve**rw**altung, bestim**mt**, Ers**tm**al, Sa**ms**tag, Ministeriu**ms**, Sch**ul**e, r**uh**ig, and many hundreds more. And sorry to say, the letter+dot and letter+comma is just stupid. I have also seen other examples where key-chord is used with way to common letter pairs. Please check your texts thorolly before chosing chords.
 -- DavidAndersson
+[new]
+David: Chords I’ve now been using for several years are bv x1 x0 xs bf bk cf and vc. I also have xo, but that always created problems. Which I just found to be logical, because it’s at position 1000 in a combined list of the most common bigrams in German and English I compiled for another project: https://bitbucket.org/ArneBab/evolve-keyboard-layout/src/c4df8323467538ac274c58f28c1b82ea5d58efa1/2-gramme.15.txt
+I’m now replacing xo by xö and xc, which are much less common.
+
+-- ArneBab
 
 [new]
 If, like me you need to undefine a key chord and key-chord-unset-global does not help, try the following:
