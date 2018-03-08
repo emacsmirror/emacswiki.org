@@ -13,6 +13,8 @@ wget --reject "*search=*","*action=*", \
 You're probably better off using a different download method!
 If you get it wrong, [http://www.emacswiki.org/alex/2012-05-12_Stupid_Leeches you might get banned].
 
+Perhaps a better way (for EmacsWiki) would be to wget every page listed here: https://www.emacswiki.org/emacs?action=index&raw=1
+
 (Back to WikiDownload.)
 
 ----
