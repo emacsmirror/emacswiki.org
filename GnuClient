@@ -1,5 +1,5 @@
 Gnuclient allows you to edit files using an already running Emacs or XEmacs.
-It is part of XEmacs.  The program EmacsClient shipped with GnuEmacs supports similar functionality and as of Emacs 22.1 supports all of the features and platforms that Gnuclient does, therefore the rest of this page applies to GNU Emacs 21.4 and earlier for users who require functionality beyond simple file loading, and MS Windows users (and XEmacs, of course).
+It is part of XEmacs.  The program EmacsClient shipped with GnuEmacs supports similar functionality and as of Emacs 22.1 supports all of the features and platforms that Gnuclient does, therefore the rest of this page applies to GNU Emacs 21.4 and earlier for users who require functionality beyond simple file loading (and XEmacs, of course).
 
 ----
 
