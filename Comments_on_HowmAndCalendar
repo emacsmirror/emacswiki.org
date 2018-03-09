@@ -4,3 +4,10 @@ this is no longer working with latest emacs. I have a void function definition e
 
 -- aVisitor 2018-03-09 14:41 UTC
 
+
+----
+
+In fact, one should replace `list-diary-entries' with `diary-list-entries' and that will work.
+
+-- aVisitor 2018-03-09 14:47 UTC
+
