@@ -1,3 +1,4 @@
+[[ru:1]]
 It is sometimes annoying to use multiple shells from within emacs. One must create a shell, rename it, create another, etc.
 
 == Native Eshell ==
