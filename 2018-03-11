@@ -1,0 +1,11 @@
+[new]
+You are on the new server! The old OpenVZ system did not allow me to
+dist-upgrade the server from Debian 8 to Debian 9, I think. The switch
+took an extra long time because not only did the domain name changes
+have to propagate through the sytem, my domain name service provider
+(Gandi) also decided to switch to a new system and I only just learned
+about it. If you see this notice, thought, you're on the new server.
+Welcome back!
+
+If you have any questions, feel free to contact me via mail.
+-- [[Alex Schroeder]]
