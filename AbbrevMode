@@ -24,7 +24,7 @@ If you don't like an abbrev that you have set up, then do M-x
 edit-abbrevs.  You can have different abbrevs for each mode (cperl,
 c++, Message); the ##g## in ##C-x a i g## is for global, meaning every mode.
 
-See the Abbrevs node in the emacs info for more.
+See the [[Manual:Abbrevs]] node in the emacs info for more.
 
 JohnHunter
 
@@ -57,53 +57,40 @@ Also, if you want abbreviations to be saved whenever you save files (##C-x s##) 
 
 == Restoring Abbrevs ==
 
-Turning on abbrev mode will read your abbrev file.
-To turn on abbrev-mode globally in your init file:
+Emacs reads abbrevs from `abbrev-file-name' on startup, if it exists.
 
-  (setq-default abbrev-mode t)
-
-If you want to read you abbrev file at a different time, perhaps at init without turning on abbrev mode,
-
-    (quietly-read-abbrev-file)       ;; reads the abbreviations file
-
-This will read the definitions from the default file,
-##~/.abbrev_defs##.
-
-If you want to avoid errors if the abbrev-file is missing, use something like:
-
-    (if (file-exists-p abbrev-file-name)
-        (quietly-read-abbrev-file))
+If you want to read your abbrev file at a different time, or from a
+different file you can call `read-abbrev-file' or
+`quietly-read-abbrev-file'.
 
 == Using Abbrevs ==
 
 ##M-x abbrev-mode## toggles Abbrev mode.  You can also put the following
 in your ##~/.emacs## file if you want it always on:
 
-    (setq default-abbrev-mode t)
+    (setq-default abbrev-mode t)
 
-If you only want it on in text and derived modes, you could do something like this:
+If you only want it on in text and derived modes, you could do
+something like this:
 
-    (add-hook 'text-mode-hook (lambda () (abbrev-mode 1)))
+    (add-hook 'text-mode-hook #'abbrev-mode)
 
 For multiple modes, use something like the following:
 
     (dolist (hook '(erc-mode-hook
                     emacs-lisp-mode-hook
                     text-mode-hook))
-      (add-hook hook (lambda () (abbrev-mode 1))))
+      (add-hook hook #'abbrev-mode))
 
-== Using Abbrevs in Code Only ==
+=== Using Abbrevs in Code Only ===
 
 VisualBasicMode does a nifty trick that checks its syntactic content and only expands abbrevs when in code (i.e. make your comments NOT show capitalization you do NOT expect - yow can do that FOR you :)).  You can add a similar snippet of code to the pre-abbrev-expand-hook and then get, for instance, SQL keywords all capitalized, but readable comments.
 
-Add this to the mode definition (sql-mode in this case):
-
 {{{
-     (if 1
-	  (progn
-		(make-local-variable 'pre-abbrev-expand-hook)
-		(add-hook 'pre-abbrev-expand-hook 'sql-pre-abbrev-expand-hook)
-		(abbrev-mode 1)))
+     (add-hook 'sql-mode-hook
+       (lambda ()
+         (add-hook 'pre-abbrev-expand-hook #'sql-pre-abbrev-expand-hook nil t)
+         (abbrev-mode 1)))
 }}}
 
 And build a hook:
@@ -157,6 +144,7 @@ If you prefer that the expansion character not be inserted, you can use a hook t
       ("em" "\\emph{" dont-insert-expansion-char 0)
 }}}
 
+----
 [new]
 I'm wanting to write a Macro/Abbrev in Emacs/XEmacs so that when I type <code>sout</code> Emacs automatically replaces it with System.out.println("|") and positions the TextCursor in between the quotes.  A simple Abbrev gets me the replace, but how can I get it to reposition the cursor??  I realise this may not be the best place to ask these sorts of  questions, is there a page on this wiki for such things?
 
@@ -243,14 +231,20 @@ Note that `table' is abbrev table to use."
 I use this macro to define abbrev with command. -- [[rubikitch]]
 
 --
-Was it just my imagination, or wasn't there a way to have abbrevs run elisp code?  I thought there was a way to specify that in edit-abbrevs?
-  - yes - M-x edit-abbrevs shows a list of abbrevs, their replacements, and a lisp function to run - I use this to activate tempo expansions
+
+[new]
+Was it just my imagination, or wasn't there a way to have
+abbrevs run elisp code?  I thought there was a way to specify that in
+edit-abbrevs?
+[new]
+yes - `M-x edit-abbrevs' shows a list of abbrevs, their replacements,
+and a lisp function to run - I use this to activate tempo expansions
 
 == Abbrev Prefixes ==
 
-If you find yourself editing a lot of scientific articles (or even if you don't), you might find the abbrev-prefix-mark (M-') command useful.  Basically, this lets you expand one or more abbrevs within a word.  This is most useful when you're dealing with a lot of jargon or technical terms that have multiple and lengthy morphemes, prefixes, or suffixes.
+If you find yourself editing a lot of scientific articles (or even if you don't), you might find the `abbrev-prefix-mark' (##M-'##) command useful.  Basically, this lets you expand one or more abbrevs within a word.  This is most useful when you're dealing with a lot of jargon or technical terms that have multiple and lengthy morphemes, prefixes, or suffixes.
 
-For example, you might have an abbrev em that expands to electromagnetic, but what about if you find yourself typing a lot of similar terms as well: electrochemical, electrolysis, biochemical, and so on?  You can then define abbrevs for electro(el), magnetic(mag), and chemical(chem).  So instead of typing "electromagnetic" you would type: el M-' mag; and emacs will expand it to "electromagnetic".  Similarly: el M-' chem; expands to "electrochemical".  You can type: bio M-' chem; expands to biochemical, and so on.  Try it, it works.
+For example, you might have an abbrev em that expands to electromagnetic, but what about if you find yourself typing a lot of similar terms as well: electrochemical, electrolysis, biochemical, and so on?  You can then define abbrevs for electro(`el'), magnetic(`mag'), and chemical(`chem').  So instead of typing "electromagnetic" you would type: ##el M-' mag##; and emacs will expand it to "electromagnetic".  Similarly: ##el M-' chem##; expands to "electrochemical".  You can type: ##bio M-' chem##; expands to biochemical, and so on.  Try it, it works.
 
 -- parolang
 
