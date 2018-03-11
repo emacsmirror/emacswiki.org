@@ -1,1 +1,284 @@
-%x
+See also: DynamicAbbreviations
+
+ From: <nowiki>JohnHunter</nowiki>
+ Subject: tip of the day: abbrevs
+ Newsgroups: gnu.emacs.help
+ Date: 31 Aug 2001 08:57:29 -0500
+
+Emacs has a nice feature to expand abbreviations.  If for example, you
+wanted an abbreviation for 'Your Name' to be 'yn', just type 'yn' and
+with your point after the 'n' do ##C-x a i g## (mnemonic add inverse
+global) and enter the expansion, in this case 'Your Name'.  In the
+future, whenever you type 'yn' your name will be inserted.  The
+abbrevs are automatically saved between sessions in a file
+##~/.abbrev_defs##.
+
+I find this most useful for fixing typos.  Whenever you have a typo (I
+type 'becasue' almost every time) if you are religious (see
+alt.religion.emacs) and never correct it but instead do ##C-x a i g## and
+enter the correct spelling, emacs will fix all your typos, and you can
+type like a reckless madman and emacs will clean up the mess behind
+you.  See AutoCorrection.
+
+If you don't like an abbrev that you have set up, then do M-x
+edit-abbrevs.  You can have different abbrevs for each mode (cperl,
+c++, Message); the ##g## in ##C-x a i g## is for global, meaning every mode.
+
+See the Abbrevs node in the emacs info for more.
+
+JohnHunter
+
+== Defining Abbrevs ==
+
+Type the word you want to use as expansion, and then type ##C-x a g##
+and the abbreviation for it.  Example:
+
+    t h e C-x a g t e h RET
+
+Unfortunately, if you wanted to abbreviate Read The Fine Manual with RTFM, you couldn't just type C-x a g after "Read the Fine Manual".  Emacs would ask you for an abbreviation for Manual.  A simple solution is to use a numeric prefix.
+Note how many words you want to be part of the expansion, and then use
+##C-u 4 C-x a g## after "Read the Fine Manual" -- four words.
+
+== Saving Abbrevs ==
+
+Use ##M-x write-abbrev-file## and just hit RET when asked for a
+filename.  The default is ##~/.abbrev_defs##.  In the future, Emacs
+should save the abbrevs automatically when you quit Emacs.
+
+You may not want to use ##~/.abbrev_defs## as your abbrev file.  I use the following in my .emacs code to store my abbrevs in [[.emacs.d]]
+
+  (setq abbrev-file-name             ;; tell emacs where to read abbrev
+        "~/.emacs.d/abbrev_defs")    ;; definitions from...
+
+Also, if you want abbreviations to be saved whenever you save files (##C-x s##) or quit emacs, add the following to your .emacs:
+
+  (setq save-abbrevs t)              ;; save abbrevs when files are saved
+                                     ;; you will be asked before the abbreviations are saved
+
+== Restoring Abbrevs ==
+
+Turning on abbrev mode will read your abbrev file.
+To turn on abbrev-mode globally in your init file:
+
+  (setq-default abbrev-mode t)
+
+If you want to read you abbrev file at a different time, perhaps at init without turning on abbrev mode,
+
+    (quietly-read-abbrev-file)       ;; reads the abbreviations file
+
+This will read the definitions from the default file,
+##~/.abbrev_defs##.
+
+If you want to avoid errors if the abbrev-file is missing, use something like:
+
+    (if (file-exists-p abbrev-file-name)
+        (quietly-read-abbrev-file))
+
+== Using Abbrevs ==
+
+##M-x abbrev-mode## toggles Abbrev mode.  You can also put the following
+in your ##~/.emacs## file if you want it always on:
+
+    (setq default-abbrev-mode t)
+
+If you only want it on in text and derived modes, you could do something like this:
+
+    (add-hook 'text-mode-hook (lambda () (abbrev-mode 1)))
+
+For multiple modes, use something like the following:
+
+    (dolist (hook '(erc-mode-hook
+                    emacs-lisp-mode-hook
+                    text-mode-hook))
+      (add-hook hook (lambda () (abbrev-mode 1))))
+
+== Using Abbrevs in Code Only ==
+
+VisualBasicMode does a nifty trick that checks its syntactic content and only expands abbrevs when in code (i.e. make your comments NOT show capitalization you do NOT expect - yow can do that FOR you :)).  You can add a similar snippet of code to the pre-abbrev-expand-hook and then get, for instance, SQL keywords all capitalized, but readable comments.
+
+Add this to the mode definition (sql-mode in this case):
+
+{{{
+     (if 1
+	  (progn
+		(make-local-variable 'pre-abbrev-expand-hook)
+		(add-hook 'pre-abbrev-expand-hook 'sql-pre-abbrev-expand-hook)
+		(abbrev-mode 1)))
+}}}
+
+And build a hook:
+
+{{{
+(defun sql-in-code-context-p ()
+  (if (fboundp 'buffer-syntactic-context) ; XEmacs function.
+       (null (buffer-syntactic-context))
+     ;; Attempt to simulate buffer-syntactic-context
+     ;; I don't know how reliable this is.
+     (let* ((beg (save-excursion
+ 		  (beginning-of-line)
+ 		  (point)))
+ 	   (list
+ 	    (parse-partial-sexp beg (point))))
+       (and (null (nth 3 list))		; inside string.
+ 	   (null (nth 4 list))))))	; inside cocmment
+
+(defun sql-pre-abbrev-expand-hook ()
+  ;; Allow our abbrevs only in a code context.
+  (setq local-abbrev-table
+	(if (sql-in-code-context-p)
+	    sql-mode-abbrev-table)))
+}}}
+
+== Example .abbrev_defs File ==
+
+Amongst many define-abbrev-table statements, you'll find a statement
+for the global-abbrev-table.  Here is mine:
+
+{{{
+    (define-abbrev-table 'global-abbrev-table '(
+	("afaict" "as far as I can tell" nil 1)
+	("omuse" "http://www.emacswiki.org/cgi-bin/oddmuse.pl" nil 0)
+	("btw" "by the way" nil 3)
+	("wether" "whether" nil 5)
+	("ewiki" "http://www.emacswiki.org/cgi-bin/wiki.pl" nil 3)
+	("pov" "point of view" nil 1)
+	))
+}}}
+
+== Abbrev with Hooking ==
+
+If you prefer that the expansion character not be inserted, you can use a hook that returns non-nil (example here for latex-mode)
+
+{{{
+  (defun dont-insert-expansion-char ()  t)    ;; this is the "hook" function
+  (put 'dont-insert-expansion-char 'no-self-insert t)   ;; the hook should have a "no-self-insert"-property set 
+  
+  (define-abbrev-table 'latex-mode-abbrev-table   '(
+      ("em" "\\emph{" dont-insert-expansion-char 0)
+}}}
+
+[new]
+I'm wanting to write a Macro/Abbrev in Emacs/XEmacs so that when I type <code>sout</code> Emacs automatically replaces it with System.out.println("|") and positions the TextCursor in between the quotes.  A simple Abbrev gets me the replace, but how can I get it to reposition the cursor??  I realise this may not be the best place to ask these sorts of  questions, is there a page on this wiki for such things?
+
+[new]
+You, sir, are after SkeletonMode, or [[Yasnippet]]; *abbrev-mode* can only expand the text preceding point, while these provide more sophisticated *template* functionality.
+
+[new]
+Here's a simple answer: use tempo for that. In case, you don't want the hustle and bustle of that here's how i accomplished that. You can add hooker function to be executed after the expansion. But to prevent the SPACE inserting after the expansion the hooker function should be named and have a property 'no-self-insert. Here's a little bit of EmacsLisp code to hack it up. 
+<pre>
+     ;;; new macro declare-abbrevs -- similar to define-abbrev-table
+     (require 'cl)
+     (defvar my-abbrev-tables nil)
+     (defun my-abbrev-hook ()
+       (let ((def (assoc (symbol-name last-abbrev) my-abbrev-tables)))
+         (when def
+           (execute-kbd-macro (cdr def)))
+         t))
+     (put 'my-abbrev-hook 'no-self-insert t)
+     (defmacro declare-abbrevs (table abbrevs)
+       (if (consp table)
+           `(progn ,@(loop for tab in table
+                           collect `(declare-abbrevs ,tab ,abbrevs)))
+         `(progn
+            ,@(loop for abbr in abbrevs
+                    do (when (third abbr)
+                         (push (cons (first abbr) (read-kbd-macro (third abbr)))
+                               my-abbrev-tables))
+                    collect `(define-abbrev ,table
+                               ,(first abbr) ,(second abbr) ,(and (third abbr)
+                                                                  ''my-abbrev-hook))))))
+     (put 'declare-abbrevs 'lisp-indent-function 2)
+</pre>
+Now you can add your abbrev definitions like this:
+<pre>
+    ;;; sample abbrev definitions
+    (eval-after-load "cc-mode"
+      '(declare-abbrevs (c-mode-abbrev-table c++-mode-abbrev-table)
+           (("#s"    "#include <>" "C-b")
+            ("#i"    "#include \"\"" "C-b")
+            ("#ifn"  "#ifndef")
+            ("#e"    "#endif /* */" "C-3 C-b")
+            ("#ifd"  "#ifdef")
+            ("imain" "int\nmain (int ac, char **av[])\n{\n\n}" "C-p TAB")
+            ("if"    "if () {\n}\n" "C-M-b C-M-q C-- C-M-d")
+            ("else"  "else {\n}\n"  "C-M-b C-M-q C-M-d RET")
+            ("while" "while () {\n}\n" "C-M-b C-M-q C-- C-M-d")
+            ("for"   "for (;;) {\n}\n" "C-M-b C-M-q C-M-b C-M-d")
+            ("pr"    "printf (\"\")" "C-2 C-b"))))
+
+    (eval-after-load "jde"
+      '(declare-abbrevs (java-mode-abbrev-table jde-mode-abbrev-table)
+           (("pp"   "System.out.print ()" "C-b")
+            ("psvm" "public static void main(String[] args) {\n\n}" "C-p TAB C-h")
+             ("pl"   "System.out.println ()" "C-b")
+            ("pr"   "System.out.print ()" "C-b"))))
+</pre>
+The third column is a series of keystrokes you should have issued after the expansion. Hope this helps!  -- JaeyounChung
+
+[new]
+even quicker:
+
+  (autoload 'expand-abbrev-hook "expand")
+  (define-abbrev-table 'java-mode-abbrev-table '(
+    ("sout" ["System.out.println(\"\")" 2 () nil] expand-abbrev-hook 0)))
+
+The 2 determines the cursor position.
+-- [[nschum]]
+
+== defun with abbrev ==
+<pre>
+(defun define-abbrev-function (table abbrev func)
+  (put func 'no-self-insert t)
+  (define-abbrev table abbrev "" `(lambda () (call-interactively ',func)))
+)
+
+(defmacro defun-abbrev (funcname abbrev &rest body)
+  "Defun a function and define an abbrev.
+Note that `table' is abbrev table to use."
+  `(progn
+     (defun ,funcname ,@body)
+     (define-abbrev-function table ,abbrev ',funcname)))
+</pre>
+
+I use this macro to define abbrev with command. -- [[rubikitch]]
+
+--
+Was it just my imagination, or wasn't there a way to have abbrevs run elisp code?  I thought there was a way to specify that in edit-abbrevs?
+  - yes - M-x edit-abbrevs shows a list of abbrevs, their replacements, and a lisp function to run - I use this to activate tempo expansions
+
+== Abbrev Prefixes ==
+
+If you find yourself editing a lot of scientific articles (or even if you don't), you might find the abbrev-prefix-mark (M-') command useful.  Basically, this lets you expand one or more abbrevs within a word.  This is most useful when you're dealing with a lot of jargon or technical terms that have multiple and lengthy morphemes, prefixes, or suffixes.
+
+For example, you might have an abbrev em that expands to electromagnetic, but what about if you find yourself typing a lot of similar terms as well: electrochemical, electrolysis, biochemical, and so on?  You can then define abbrevs for electro(el), magnetic(mag), and chemical(chem).  So instead of typing "electromagnetic" you would type: el M-' mag; and emacs will expand it to "electromagnetic".  Similarly: el M-' chem; expands to "electrochemical".  You can type: bio M-' chem; expands to biochemical, and so on.  Try it, it works.
+
+-- parolang
+
+== Buffer local abbrevs ==
+The following function allows you to make buffer local abbrevs that are not shared by other buffers with the same major-mode:
+
+<pre>
+(defun set-local-abbrevs (abbrevs)
+  "Add ABBREVS to `local-abbrev-table' and make it buffer local.
+ABBREVS should be a list of abbrevs as passed to `define-abbrev-table'.
+The `local-abbrev-table' will be replaced by a copy with the new abbrevs added,
+so that it is not the same as the abbrev table used in other buffers with the
+same `major-mode'."
+  (setq temp-abbrev-table
+	(copy-abbrev-table local-abbrev-table))
+  (dolist (abbrev abbrevs)
+    (define-abbrev temp-abbrev-table
+      (cl-first abbrev)
+      (cl-second abbrev)
+      (cl-third abbrev)))
+  (setq-local local-abbrev-table temp-abbrev-table))
+</pre>
+you call it like this:
+<pre>
+(set-local-abbrevs '(("tr" "try it out" nil) ("co" "cool huh?" nil))
+</pre>
+-- JoeBloggs
+
+----
+CategoryModes
+CategoryTemplates
