@@ -258,14 +258,16 @@ ABBREVS should be a list of abbrevs as passed to `define-abbrev-table'.
 The `local-abbrev-table' will be replaced by a copy with the new abbrevs added,
 so that it is not the same as the abbrev table used in other buffers with the
 same `major-mode'."
-  (setq temp-abbrev-table
-	(copy-abbrev-table local-abbrev-table))
-  (dolist (abbrev abbrevs)
-    (define-abbrev temp-abbrev-table
-      (cl-first abbrev)
-      (cl-second abbrev)
-      (cl-third abbrev)))
-  (setq-local local-abbrev-table temp-abbrev-table))
+  (let* ((bufname (buffer-name))
+         (prefix (substring (md5 bufname) 0 (length bufname)))
+         (tblsym (intern (concat prefix "-abbrev-table"))))
+    (set tblsym (copy-abbrev-table local-abbrev-table))
+    (dolist (abbrev abbrevs)
+      (define-abbrev (eval tblsym)
+        (cl-first abbrev)
+        (cl-second abbrev)
+        (cl-third abbrev)))
+    (setq-local local-abbrev-table (eval tblsym))))
 </pre>
 you call it like this:
 <pre>
