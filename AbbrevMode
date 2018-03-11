@@ -254,6 +254,29 @@ For example, you might have an abbrev em that expands to electromagnetic, but wh
 
 -- parolang
 
+== Buffer local abbrevs ==
+The following function allows you to make buffer local abbrevs that are not shared by other buffers with the same major-mode:
+
+<pre>
+(defun set-local-abbrevs (abbrevs)
+  "Add ABBREVS to `local-abbrev-table' and make it buffer local.
+ABBREVS should be a list of abbrevs as passed to `define-abbrev-table'.
+The `local-abbrev-table' will be replaced by a copy with the new abbrevs added,
+so that it is not the same as the abbrev table used in other buffers with the
+same `major-mode'."
+  (setq temp-abbrev-table
+	(copy-abbrev-table local-abbrev-table))
+  (dolist (abbrev abbrevs)
+    (define-abbrev temp-abbrev-table
+      (cl-first abbrev)
+      (cl-second abbrev)
+      (cl-third abbrev)))
+  (setq-local local-abbrev-table temp-abbrev-table))
+</pre>
+you call it like this:
+<pre>
+(set-local-abbrevs '(("tr" "try it out" nil) ("co" "cool huh?" nil))
+</pre>
 ----
 CategoryModes
 CategoryTemplates
