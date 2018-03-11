@@ -103,7 +103,7 @@ Refactoring C code:
 	  ((scope-depth 1))
 	(while (not (= scope-depth 0))
 	  (search-backward-regexp "}\\|{")
-	  (if (string= (char-to-string (char-before)) "}")
+	  (if (string= (char-to-string (char-after)) "}")
 		  (setq scope-depth (1+ scope-depth))
 			(setq scope-depth (1- scope-depth)))))
   (point))
@@ -117,7 +117,7 @@ Refactoring C code:
 	  (search-forward-regexp "}\\|{")
 	  (if (string= (char-to-string (char-before)) "}")
 		  (setq scope-depth (1- scope-depth))
-			(setq scope-depth (1_ scope-depth)))))
+			(setq scope-depth (1+ scope-depth)))))
   (point))
 
 (defun kill-c-scope ()
