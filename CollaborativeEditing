@@ -19,6 +19,7 @@
 * [[Egret]] -- An extension to XEmacs.
 * [http://csdl.ics.hawaii.edu/Tools/Shemacs/ Shemacs] is a tool implementing synchronous multi-user support for the Emacs editor using Egret, a client-server-agent framework for implementation of domain-specific, collaborative, hypertext systems.
 * [http://github.com/technomancy/conspire/tree/master Conspire mode] achieves realtime, collaborative editing using git as a backend. Works only over a LAN. (No activity in since 2008)
+* [[Google_Wave_for_Emacs]] -- An ongoing discussion concerning future [http://en.wikipedia.org/wiki/Google_Wave Google Wave] support in Emacs. Since Google Wave is mostly dead, it is fair to assume this effort is also.
 
 == To be confirmed ==
 
@@ -26,10 +27,10 @@
 * [https://github.com/zk-phi/togetherly/ Togetherly] - cleartext simple client/server model, emacs-only
 * [https://floobits.com/help/plugins/emacs Floobits] provides real-time collaboration tools for a variety of editors including an Emacs plugin. Proprietary/commercial service. [https://news.ycombinator.com/item?id=15705013 reports of problems in vim], unclear if it works well with Emacs.
 
-== Ideas ==
+== Future ideas ==
 
-* [[Google_Wave_for_Emacs]] -- An ongoing discussion concerning future [http://en.wikipedia.org/wiki/Google_Wave Google Wave] support in Emacs.
 * The [https://atom.io/ Atom editor] people wrote a protocol called [https://teletype.atom.io/ Teletype] that supposedly implements an editor-neutral robust collaborative editing protocol
+* [http://typeintandem.com/ Tandem] is another such effort, but with a [https://github.com/typeintandem/tandem/issues/131 weird license]
 
 ----
 CategoryRemoteEmacs
