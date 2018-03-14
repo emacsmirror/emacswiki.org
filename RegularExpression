@@ -43,7 +43,7 @@ Many characters are special when they follow a backslash -- see below.
   \b       word boundary
   \sc      character with c syntax (e.g. \s- for whitespace char)
   \( \)    start/end of group
-  \< \>    start/end of word (faulty rendering: backslash + less-than and backslash + greater-than)
+  \< \>    start/end of word
   \_< \_>  start/end of symbol
   \` \'    start/end of buffer/string
   \1       string matched by the first group
