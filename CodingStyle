@@ -15,6 +15,11 @@ maintain with something like java where just a method name can take up
 
 == Emacs Lisp ==
 
+See also
+
+* Manual:Tips (elisp) in the Elisp manual
+* https://github.com/bbatsov/emacs-lisp-style-guide.
+
 === Indenting ===
 
 Use the default indentation.  Closing parenthesis shall never stand on
