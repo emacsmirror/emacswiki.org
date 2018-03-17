@@ -1,5 +1,5 @@
 ;;; next-prev.el --- Next and previous functions and motion commands. -*- lexical-binding:t -*-
-;; 
+;;
 ;; Filename: next-prev.el
 ;; Description:  Next and previous functions and motion commands.
 ;; Author: Drew Adams
@@ -8,22 +8,22 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sat Mar 17 13:42:32 2018 (-0700)
+;; Last-Updated: Sat Mar 17 14:10:14 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 101
+;;     Update #: 105
 ;; URL: https://www.emacswiki.org/emacs/download/next-prev.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NextPrevious
 ;; Keywords: motion thing
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;    Next and previous functions and motion commands.
 ;;
 ;;  This library is about getting, or moving to, the next or previous
@@ -148,32 +148,32 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `np-to-thing-last', `np-to-where-last'. 
-;; 
+;;    `np-to-thing-last', `np-to-where-last'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
+;;
 ;; 2018/03/17 dadams
 ;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or (at
 ;; your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful, but
 ;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'thingatpt+)
@@ -276,7 +276,7 @@ Same as `np-to-next-where' except this moves backward."
                                                    (func-arity np-to-where-last)))))))
   (let ((pos  (np--next/prev-where next/prev np-to-where-last start args n)))
     (if pos (goto-char pos) (unless noerror (error "No such position")))))
-  
+
 
 (defvar np-to-thing-last nil
   "Last thing used by `np-to-next-thing' or `np-to-previous-thing'.")
