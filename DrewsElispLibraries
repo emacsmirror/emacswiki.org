@@ -101,6 +101,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[mouse3.el]]</tt> -- customizable behavior for `mouse-3' -- see [[Mouse3]]
 * <tt>[[naked.el]]</tt> -- provide for naked key descriptions: no angle brackets -- see NaKeD
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
+* <tt>[[next-prev.el]]</tt> -- get or move to next/previous position that satisfies a some predicate
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
 * <tt>[[reveal-next.el]]</tt> -- progressively reveal text after the cursor -- see RevealNextTextMode
@@ -122,6 +123,14 @@ I make minor changes to some libraries often, so check for the latest versions.
 '''Tip:''' The best way to know what files have recently been uploaded to the ElispArea is to consult the recent uploads list: [http://www.emacswiki.org/elisp/changelog.html Recent uploads].
 
 
+
+=== Emacs 24 or Later  (will not work in older versions) ===
+
+* <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
+* <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
+
+
+
 === Emacs 23 or Later  (will not work in older versions) ===
 
 * <tt>[[descr-text+.el]]</tt> -- extensions to standard library `descr-text'
@@ -131,7 +140,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 
 
 
-=== Emacs 24 (and 23 (and 22 (and 21 (and 20 (and ...))))) ===
+=== Emacs 26 (and 25 (and 24 (and 23 (and 22 (and 21 (and 20 (and ...))))))) ===
 
 * <tt>[[apropos+.el]]</tt> -- extensions to standard library `apropos'
 * <tt>[[autofit-frame.el]]</tt> -- automatically fit each one-window frame to its buffer; see also '''[[Shrink-Wrapping Frames]]'''
@@ -199,6 +208,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[misc-cmds.el]]</tt> -- miscellaneous commands (interactive functions); see also KillingBuffers, SecondarySelection, IsearchPlus, FindLongLines, RepeatKeyDifferentBehaviors, BackToIndentationOrBeginning, and FileModes.
 * <tt>[[misc-fns.el]]</tt> -- miscellaneous non-interactive functions
 * <tt>[[mouse+.el]]</tt> -- extensions to standard library `mouse' -- see MousePlus
+* <tt>[[next-prev.el]]</tt> -- get or move to next/previous position that satisfies a some predicate
 * <tt>[[novice+.el]]</tt> -- extensions to standard library `novice'
 * <tt>[[oneonone.el]]</tt> -- define a special multi-frame setup; see '''OneOnOneEmacs'''; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
 * <tt>[[pp+.el]]</tt> -- extensions to standard library `pp' -- see [[PP+]]
