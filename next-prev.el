@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sat Mar 17 14:10:14 2018 (-0700)
+;; Last-Updated: Sun Mar 18 14:22:15 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 105
+;;     Update #: 153
 ;; URL: https://www.emacswiki.org/emacs/download/next-prev.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NextPrevious
 ;; Keywords: motion thing
@@ -41,12 +41,22 @@
 ;;  position.  `np-previous-where' does the same thing in the reverse
 ;;  direction.
 ;;
+;;  Functions `np-next-where-vertical' and
+;;  `np-previous-where-vertical' are similar, but they find a position
+;;  that is directly below or above point, instead of after or before
+;;  point.
+;;
 ;;  The main commands here are `np-to-next-where' and
 ;;  `np-to-previous-where'.  They move the cursor to positions
 ;;  `np-next-where' and `np-previous-where', respectively.
 ;;
-;;  When repeated, these conditional-motion commands reuse the same
-;;  predicate as the last time (it is the value of variable
+;;  Commands `np-to-next-where-vertical' and
+;;  `np-to-previous-where-vertical' are similar, but they move to a
+;;  position directly below or above point, instead of after or before
+;;  point.
+;;
+;;  When repeated, all of these conditional-motion commands reuse the
+;;  same predicate as the last time (it is the value of variable
 ;;  `np-to-where-last'), but a prefix arg makes them prompt you for
 ;;  the predicate to use.  The predicate you enter must accept at
 ;;  least one argument, and its first argument must be a buffer
@@ -136,15 +146,18 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `np-to-next-thing', `np-to-next-where', `np-to-previous-thing',
-;;    `np-to-previous-where'.
+;;    `np-to-next-thing', `np-to-next-where',
+;;    `np-to-next-where-vertical', `np-to-previous-thing',
+;;    `np-to-previous-where', `np-to-previous-where-vertical'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `np--next/prev-thing', `np--next/prev-where', `np-next-thing',
-;;    `np-next-where', `np-previous-thing', `np-previous-where',
-;;    `np-thing-start-p', `np-to-next/prev-thing',
-;;    `np-to-next/prev-where'.
+;;    `np--line-move-visual-down-1', `np--next/prev-thing',
+;;    `np--next/prev-where', `np--to-next/prev-where',
+;;    `np-next-thing', `np-next-where', `np-next-where-vertical',
+;;    `np-previous-thing', `np-previous-where',
+;;    `np-previous-where-vertical', `np-thing-start-p',
+;;    `np-to-next/prev-thing'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -154,6 +167,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/03/18 dadams
+;;     Added: np--line-move-visual-down-1, np-next-where-vertical, np-previous-where-vertical,
+;;            np-to-next-where-vertical, np-to-previous-where-vertical.
+;;     Renamed: np-to-next/prev-where to np--to-next/prev-where.
+;;     np--(to-)next/prev-where: Added args FORWARD-FN and BACKWARD-FN.  Made most args optional.
 ;; 2018/03/17 dadams
 ;;     Created.
 ;;
@@ -216,16 +234,38 @@ START defaults to point.
 N defaults to 1."
   (np--next/prev-where 'previous predicate start args n))
 
-(defun np--next/prev-where (next/prev predicate start args n)
-  "Helper for `np-next-where' and `np-previous-where'."
-  (setq n      (or n  1)
-        start  (or start  (point)))
+(when (fboundp 'line-move-visual)       ; Emacs 25+
+
+  (defun np-next-where-vertical (predicate &optional start args n)
+    "Like `np-next-where', but look down instead of forward (right)."
+    (np--next/prev-where 'next predicate start args n #'line-move-visual))
+
+  (defun np-previous-where-vertical (predicate &optional start args n)
+    "Like `np-previous-where', but look up instead of backward (left)."
+    (np--next/prev-where 'previous predicate start args n nil #'np--line-move-visual-down-1))
+
+  (defun np--line-move-visual-down-1 ()
+    "Move down one visual line."
+    (line-move-visual -1))
+
+  )
+
+(defun np--next/prev-where (next/prev predicate &optional start args n forward-fn backward-fn)
+  "Helper for `np-next-where*' and `np-previous-where*'.
+Optional args FORWARD-FN and BACKWARD-FN are functions for moving
+forward and backward, respectively, by one unit (defaults:
+`forward-char', `backward-char').  (Only one of them is used,
+depending on NEXT/PREV.)"
+  (setq n            (or n  1)
+        start        (or start  (point))
+        forward-fn   (or forward-fn   #'forward-char)
+        backward-fn  (or backward-fn  #'backward-char))
   (let ((pos    nil)
         (count  0))
     (save-excursion
       (goto-char start)
       (while (and (< count n)  (not (eobp)))
-        (if (eq 'next next/prev) (forward-char 1) (backward-char 1))
+        (funcall (if (eq 'next next/prev) forward-fn backward-fn) 1)
         (when (apply predicate (point) args)
           (setq pos    (point)
                 count  (1+ count)))))
@@ -244,17 +284,37 @@ Go to Nth buffer position after START where PREDICATE is true.
 Non-nil NOERROR means do not raise an error when there is no such
 next position.  See `np-next-where' for the other arguments."
   (interactive "i\ni\ni\ni\ni\nP\np")
-  (np-to-next/prev-where 'next predicate start args n noerror readp interactivep))
+  (np--to-next/prev-where 'next predicate start args n noerror readp interactivep))
 
 ;;;###autoload
 (defun np-to-previous-where (&optional predicate start args n noerror readp interactivep)
   "Go to first buffer position before point where PREDICATE is true.
 Same as `np-to-next-where' except this moves backward."
   (interactive "i\ni\ni\ni\ni\nP")
-  (np-to-next/prev-where 'previous predicate start args n noerror readp interactivep))
+  (np--to-next/prev-where 'previous predicate start args n noerror readp interactivep))
 
-(defun np-to-next/prev-where (next/prev predicate start args n noerror readp interactivep)
-  "Helper for `np-to-next-where' and `np-to-previous-where'."
+(when (fboundp 'line-move-visual)       ; Emacs 25+
+
+  (defun np-to-next-where-vertical (&optional predicate start args n noerror readp interactivep)
+    "Like `np-to-next-where', but move down instead of forward (right)."
+    (interactive "i\ni\ni\ni\ni\nP\np")
+    (np--to-next/prev-where 'next predicate start args n noerror readp interactivep
+                            #'line-move-visual))
+
+  (defun np-to-previous-where-vertical (&optional predicate start args n noerror readp interactivep)
+    "Like `np-previous-where', but move up instead of backward (left)."
+    (interactive "i\ni\ni\ni\ni\nP")
+    (np--to-next/prev-where 'previous predicate start args n noerror readp interactivep
+                            nil #'np--line-move-visual-down-1))
+
+  )
+
+(defun np--to-next/prev-where (&optional next/prev predicate start args n noerror readp interactivep
+                               forward-fn backward-fn)
+  "Helper for `np-to-next-where' and `np-to-previous-where'.
+FORWARD-FN and BACKWARD-FN are functions for moving forward and
+backward, respectively, by one unit (defaults: `forward-char',
+`backward-char').  (Only one of them is used, depending on NEXT/PREV.)"
   (when readp     (setq np-to-where-last nil))
   (when predicate (setq np-to-where-last predicate))
   ;; $$ An alternative - using this means that it reads whenever not repeated (or C-u).
@@ -274,7 +334,7 @@ Same as `np-to-next-where' except this moves backward."
                 arity                            (if (subrp np-to-where-last)
                                                      (subr-arity np-to-where-last)
                                                    (func-arity np-to-where-last)))))))
-  (let ((pos  (np--next/prev-where next/prev np-to-where-last start args n)))
+  (let ((pos  (np--next/prev-where next/prev np-to-where-last start args n forward-fn backward-fn)))
     (if pos (goto-char pos) (unless noerror (error "No such position")))))
 
 
