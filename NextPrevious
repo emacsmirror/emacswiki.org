@@ -6,6 +6,8 @@ It includes functions that get or move to the next or previous
 Library `##thingatpt+.el##' uses and enhances standard library
 `##thingatpt.el##'.
 
+[:np-next-where]
+[:np-previous-where]
 The workhorse functions here are '''`np-next-where'''' and
 '''`np-previous-where''''.  `np-next-where' returns the next (or the nth
 next) buffer position after point (or after a given position)
@@ -13,11 +15,27 @@ where a given predicate is true -- or nil if there is no such
 position.  `np-previous-where' does the same thing in the reverse
 direction.
 
+[:np-next-where-vertical]
+[:np-previous-where-vertical]
+Functions '''`np-next-where-vertical'''' and
+'''`np-previous-where-vertical'''' are similar, but they find a position
+that is directly ''below or above'' point, instead of after or
+before point.
+
+[:np-to-next-where]
+[:np-to-previous-where]
 The main [[command]]s here are '''`np-to-next-where'''' and
 '''`np-to-previous-where''''.  They move the cursor to positions
 `np-next-where' and `np-previous-where', respectively.
 
-When repeated, these conditional-motion commands reuse the same
+[:np-to-next-where-vertical]
+[:np-to-previous-where-vertical]
+Commands '''`np-to-next-where-vertical'''' and
+'''`np-to-previous-where-vertical'''' are similar, but they move to a
+position directly ''below or above'' point, instead of after or
+before point.
+
+When repeated, all of these conditional-motion commands reuse the same
 predicate as the last time (it is the value of [[variable]]
 `np-to-where-last'), but a [[prefix argument]] makes them prompt you for
 the predicate to use.  The predicate you enter must accept at
