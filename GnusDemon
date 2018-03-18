@@ -9,7 +9,7 @@ The parameters to gnus-demon-add-handler are:
 * TIME how many time units ( specified in gnus-demon-timestep) pass between attempts to call the function
 * IDLE whether Emacs has to be idle in order to call the function. t: it must be idle. A number: it must have been idle for this many minutes (well, gnus-demon-timestep). nil: call it anyway even if it isn't idle
 
-Gnus demon is pretty smart, but it's behavior is not properly documented. Here is how it works. Assume you set gnus-demon-timestep to 1 second, the TIME to 60 and IDLE to 5, then gnus will try to call your function every 60 seconds, but it will first check if you have been idle for 5 seconds. If so, it executes the function, if not, it sets the idle timer which is triggered first time you are idle for 5 sec. Once executed the one minute count starts again and gnus takes it all over again. Thus, you are pretty sure that the intervals between calls are not smaller than (60 sec) + (continuous work time) + (5 idle sec).
+Gnus demon is pretty smart, but its behavior is not properly documented. Here is how it works. Assume you set gnus-demon-timestep to 1 second, the TIME to 60 and IDLE to 5, then gnus will try to call your function every 60 seconds, but it will first check if you have been idle for 5 seconds. If so, it executes the function, if not, it sets the idle timer which is triggered first time you are idle for 5 sec. Once executed the one minute count starts again and gnus takes it all over again. Thus, you are pretty sure that the intervals between calls are not smaller than (60 sec) + (continuous work time) + (5 idle sec).
 
 ----
 
