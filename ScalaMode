@@ -3,9 +3,6 @@ For more about Scala, see [WikiPedia:Scala_%28programming_language%29 Scala on W
 
 * [https://github.com/ensime/emacs-scala-mode Emacs Scala Mode on GitHub]
 
-
-SBT support for scala-mode2 is available as a separate mode from https://github.com/hvesalai/sbt-mode
-
 There is also a minor-mode for editing scala programs that use the Scalatra web application framework (see WikiPedia:Scalatra). The mode is available at https://github.com/hvesalai/scalatra-mode
 
 == Without Using the Emacs Package System == 
