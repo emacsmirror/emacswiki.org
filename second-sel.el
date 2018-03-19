@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:36:31 2018 (-0800)
+;; Last-Updated: Sun Mar 18 19:12:39 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 606
+;;     Update #: 613
 ;; URL: https://www.emacswiki.org/emacs/download/second-sel.el
 ;; Doc URL: https://emacswiki.org/emacs/SecondarySelection#second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
@@ -45,7 +45,7 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `add-secondary-to-ring', `current-secondary-selection',
-;;    `second-sel-msg'.
+;;    `second-sel-msg', `secondary-selection-limits'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -101,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/03/18 dadams
+;;     Added: secondary-selection-limits.
 ;; 2016/12/10 dadams
 ;;     primary-to-secondary, secondary-swap-region, secondary-to-primary, mouse-drag-secondary,
 ;;       set-secondary-start, secondary-save-then-kill-1:
@@ -521,6 +523,18 @@ move the yanking point; just return the Nth kill forward."
                                 secondary-selection-ring)))
     (unless do-not-move (setq secondary-selection-ring-yank-pointer  secondary-elt))
     (car secondary-elt)))
+
+(defun secondary-selection-limits ()
+  "Return a list (BUFFER START END) of secondary-selection info.
+Return nil if there is no secondary selection."
+  (let ((sel  (if (fboundp 'gui-get-selection)
+                  (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
+                (x-get-selection 'SECONDARY))))
+    (and sel
+         (overlayp mouse-secondary-overlay)
+         (list (overlay-buffer mouse-secondary-overlay)
+               (overlay-start mouse-secondary-overlay)
+               (overlay-end mouse-secondary-overlay)))))
 
 ;; Not used.
 ;;;###autoload
