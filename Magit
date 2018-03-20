@@ -48,7 +48,6 @@ Various packages exist which extend Magit, including:
 * [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit extension for Gerrit Code Review
 * [https://github.com/jtatarik/magit-gitflow magit-gitflow] ## git flow## extension for Magit
 * [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit extension for dealing with GitHub pull requests
-* [https://github.com/tarsius/magit-rockstar magit-rockstar] some small tools by the Magit maintainer
 * [https://github.com/magit/magit-stgit magit-stgit] StGit extension for Magit
 * [https://github.com/magit/magit-svn magit-svn] use Magit with ##git svn## repositories
 * [https://github.com/magit/magit-topgit magit-topgit] Topgit extension for Magit
