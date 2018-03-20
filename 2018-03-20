@@ -1,6 +1,8 @@
 [new]
 I'm trying to get the wiki ready for the EU Data Protection Directive. This means that I'm stripping or masking IP numbers where I can. Right now, the most visible effect of that is that RecentChanges has little color blocks for anonymous edits. On a particular page, the same colors means that these edits were likely made by the same person. The color codes are four digit octal numbers, so 4 × 3 bits = 12 bits which is a much smaller space than IPv4's 32 bits.
 
+And of course, if you're not using the default [[CSS]] you're only going to see the octal numbers. No great loss, I think.
+
 Anyway, that's just to explain what those color codes mean. If you want to read more about the other efforts, see [https://oddmuse.org/wiki/2018-03-17_Data_Protection_Directive this blog post].
 
 -- Alex Schroeder
