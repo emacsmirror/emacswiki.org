@@ -68,7 +68,7 @@ This wiki runs [[Oddmuse]].
 
 Cron jobs:
 
-* one job to [Self:action=maintain run maintenance]
+* one job to run [https://www.emacswiki.org/maintenance/ maintenance] 
 * one job to make a backup to the [[Rsync repository]]
 * one job to push commits to the [[Git repository]]
 
