@@ -62,7 +62,7 @@ This wiki runs [[Oddmuse]].
 * [Self:action=version modules installed]
 * [https://www.emacswiki.org/config config] for Oddmuse
 * [https://www.emacswiki.org/light.css light.css] ([https://github.com/bburns/emacswiki-light-theme source])
-* [https://www.emacswiki.org/outliner.0.5.0.52-toc.js outliner.0.5.0.52-toc.js],
+* [https://www.emacswiki.org/outliner.0.5.0.62-toc.js outliner.0.5.0.62-toc.js],
   a very old piece of Javascript to generate the table of contents,
   based on [https://github.com/h5o/h5o-js h5o-js]
 
