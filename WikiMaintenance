@@ -1,7 +1,6 @@
 Stuff for the EmacsWikiAdministrators and other people interested in helping out:
 
 * UnlockWiki -- how to unlock the wiki.  Call this when you get the message '''Could not get main lock: File exists'''
-* [EmacsWiki:action=maintain Start maintenance job]
 * [EmacsWiki:action=version Check script version] and versions of installed extensions
 * [http://emacswiki.org/usage/ Usage Statistics] (and OldStats)
 * WikiSpam -- Help fight wiki spam and vandalism
