@@ -60,13 +60,15 @@ See EmacsWikiAdministrators.
 This wiki runs [[Oddmuse]].
 
 * [Self:action=version modules installed]
-* [http://www.emacswiki.org/config config file]
-* [http://www.emacswiki.org/bootstrap.js bootstrap compatibility using Javascript]
-* [http://www.emacswiki.org/css/bootstrap.css bootstrap compatible CSS]
+* [https://www.emacswiki.org/config config] for Oddmuse
+* [https://github.com/bburns/emacswiki-light-theme light.css]
+* [https://www.emacswiki.org/outliner.0.5.0.52-toc.js outliner.0.5.0.52-toc.js],
+  a very old piece of Javascript to generate the table of contents,
+  based on [https://github.com/h5o/h5o-js h5o-js]
 
 Cron jobs:
 
-* one job to copy the EmacsLispList to Emacs Wiki
+* one job to [Self:action=maintain run maintenance]
 * one job to make a backup to the [[Rsync repository]]
 * one job to push commits to the [[Git repository]]
 
