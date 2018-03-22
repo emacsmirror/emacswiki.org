@@ -21,7 +21,7 @@ Out of the box, PuTTY (verison 0.58) is ANSI-color (8 colors, w00t) compliant, b
 
 # Start up PuTTY.
 # In "Settings" Category "Window > Colours", enable "Allow terminal to use xterm 256-colour mode".
-# In "Settings" Category "Connection > Data", enable "Terminal-type string" by entering the string "xterm-256color" ('''Note:''' This choice is not avaibale in Windows version of Putty)
+# In "Settings" Category "Connection > Data", enable "Terminal-type string" by entering the string "xterm-256color".
 # Enter your hostname and start a client session.
 # Verify that first your (client) terminal settings are supported by your hosted (server) session. Use the [http://frexx.de/xterm-256-notes/ "256 color mode of xterm" site]'s utility scripts to show if you have all the colors. If it doesn't work make sure TERM is set to "xterm-256color"
 # Go ahead start up your Emacs, then run M-x list-colors-display. Bask in the color goodness!
