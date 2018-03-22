@@ -1,4 +1,4 @@
-I started using Emacs since early 2016. I use GNU/Emacs, MicroEmacs Jasspa Distribution and [https://sourceforge.net/projects/sciteco/ SciTECO] (a modern real time display TECO dialect) on macOS.
+I started using Emacs since early 2016. I use GNU/Emacs, MicroEmacs Jasspa Distribution and [https://sourceforge.net/projects/sciteco/ SciTECO] (a modern real time display TECO dialect) on macOS and NetBSD.
 
 You might want to contact me at mailto:andpuke@foxmail.com
 
@@ -17,10 +17,16 @@ Happy Hacking!
 # MuseMode and PlannerMode for blogging and writing
 # WThreeM and Conkeror for browsing web.
 # Erc for IRC
+# Sly for Common Lisp
+# AucTex for LaTeX
 
+== Programming Languages I use ==
 
-
-
+# Common Lisp, Emacs Lisp (of course), Scheme and many Lisp descendants
+# J
+# Forth
+# Haskell
+# SNOBOL
 
 [new:DrewAdams:2017-06-22 14:20 UTC]
 Welcome to the wiki. -- DrewAdams
