@@ -67,6 +67,8 @@ Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and u
 
 A brief [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf PDF manual] is available in the ##/doc## subdirectory.
 
+There is also a guide on Github made by Noctuid [https://github.com/noctuid/evil-guide evil-guide].
+
 == Plug-ins ==
 
 * [https://github.com/timcharper/evil-surround evil-surround]: Port of Vim's surround script.
