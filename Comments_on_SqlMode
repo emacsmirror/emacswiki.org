@@ -15,3 +15,35 @@ If it is, and it works from a terminal but not within Emacs, then you need to ad
 
 -- AlexSchroeder 2014-08-24 07:08 UTC
 
+
+----
+
+Below the Miscellaneous Settings heading there is the code for this:
+"When using sql-send-region to execute a query in a SQLi buffer, the table formatting is off because the column names are printed on the same row as the the prompt. By adding a newline before the comint output we can make sure everything lines up nice. This will add a preceding newline to every comint output, even queries run at the prompt - though the extra line isn’t too noticeable."
+I paste the code into ~/.emacs. After I start again Emacs I open an sql file. Then I set product to sqlite. Then I start sql cli buffer with C-c C-z. Here I get the following error:
+
+user-error: End of defaults; no next item [6 times]
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+Login...done
+
+Then when in my sql file I hit C-c C-b I get again this error:
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: or: Symbol’s value as variable is void: comint-last-prompt-overlay
+error in process filter: Symbol’s value as variable is void: comint-last-prompt-overlay
+
+So what is wrong here?
+
+-- [https://www.cspl.hu/ csanyipal] 2018-03-22 06:32 UTC
+
