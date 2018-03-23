@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 23 09:47:18 2018 (-0700)
+;; Last-Updated: Fri Mar 23 11:08:32 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10839
+;;     Update #: 10846
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -2115,15 +2115,22 @@ Initialized to the value of option `diredp-hide-details-initially-flag'.")
 ;;; Macros
 
 
-;; Unlike `dired-mark-if', value returned and message indicate both the number matched and the number changed.
+;; Unlike `dired-mark-if':
 ;;
-(defmacro diredp-mark-if (predicate msg)
+;; 1. Value returned and message indicate both the number matched and the number changed.
+;; 2. Added optional arg PLURAL, for irregular plurals (e.g. "directories").
+;;
+(defmacro diredp-mark-if (predicate singular &optional plural)
   "Mark files for PREDICATE, according to `dired-marker-char'.
 PREDICATE is evaluated on each line, with point at beginning of line.
-MSG is a noun phrase for the type of files being marked.
-It should end with a noun that can be pluralized by adding `s'.
-Return value is nil if no files matched PREDICATE.  Otherwise it is
-a cons (CHANGED . MATCHED), where:
+SINGULAR is a singular noun phrase for the type of files being marked.
+Optional arg PLURAL is a plural noun phrase for the type of files
+ being marked.
+If PLURAL is nil then SINGULAR should end with a noun that can be
+pluralized by adding `s'.
+
+Return nil if no files matched PREDICATE.
+Otherwise return a cons (CHANGED . MATCHED), where:
  CHANGED is the number of markings that were changed by the operation.
  MATCHED is the number of files that matched PREDICATE."
   `(let ((inhibit-read-only  t)
@@ -2131,12 +2138,12 @@ a cons (CHANGED . MATCHED), where:
     (save-excursion
       (setq matched  0
             changed  0)
-      (when ,msg (message "%s %ss%s..."
-                          (cond ((eq dired-marker-char ?\040)            "Unmarking")
-                                ((eq dired-del-marker dired-marker-char) "Flagging")
-                                (t                                       "Marking"))
-                          ,msg
-                          (if (eq dired-del-marker dired-marker-char) " for deletion" "")))
+      (when ,singular (message "%s %s%s..."
+                               (cond ((eq dired-marker-char ?\040)            "Unmarking")
+                                     ((eq dired-del-marker dired-marker-char) "Flagging")
+                                     (t                                       "Marking"))
+                               (or ,plural  (concat ,singular "s"))
+                               (if (eq dired-del-marker dired-marker-char) " for deletion" "")))
       (goto-char (point-min))
       (while (not (eobp))
         (when ,predicate
@@ -2144,14 +2151,13 @@ a cons (CHANGED . MATCHED), where:
           (unless (diredp-looking-at-p (char-to-string dired-marker-char))
             (delete-char 1) (insert dired-marker-char) (setq changed  (1+ changed))))
         (forward-line 1))
-      (when ,msg (message "%s %s%s%s%s newly %s%s"
-                          matched
-                          ,msg
-                          (dired-plural-s matched)
-                          (if (not (= matched changed)) " matched, " "")
-                          (if (not (= matched changed)) changed "")
-                          (if (eq dired-marker-char ?\040) "un" "")
-                          (if (eq dired-marker-char dired-del-marker) "flagged" "marked"))))
+      (when ,singular (message "%s %s%s%s newly %s%s"
+                               matched
+                               (if (= matched 1) ,singular (or ,plural  (concat ,singular "s")))
+                               (if (not (= matched changed)) " matched, " "")
+                               (if (not (= matched changed)) changed "")
+                               (if (eq dired-marker-char ?\040) "un" "")
+                               (if (eq dired-marker-char dired-del-marker) "flagged" "marked"))))
     (and (> matched 0)  (cons changed matched))))
 
 
@@ -8742,7 +8748,7 @@ With prefix argument, unmark or unflag the files instead."
   (interactive "P")
   (let ((dired-marker-char  (if unflag-p ?\040 dired-marker-char)))
     (diredp-mark-if (and (diredp-looking-at-p dired-re-dir)  (not (diredp-looking-at-p dired-re-dot)))
-                    "directory file")))
+                    "directory" "directories")))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
