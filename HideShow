@@ -55,7 +55,7 @@ The variable hs-special-modes-alist stores the settings for some major modes:
     (c++-mode "{" "}" "/[*/]" nil nil)
     (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
     (java-mode "{" "}" "/[*/]" nil nil)
-    (js-mode "{" "}" "/[*/]" nil)))
+    (js-mode "{" "}" "/[*/]" nil))))
 </pre>
 
 
