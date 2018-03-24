@@ -144,9 +144,9 @@ Now, the above code is probably supposed to go to a separate elisp file so as no
           (lambda ()
             (if (string-match (regexp-opt '("irc.freenode.net"
                                             "irc.inet.tele.dk"
-                                            "irc.perl.org")
+                                            "irc.perl.org"))
                               (buffer-name))
-                (rcirc-reconnect-mode 1))))
+                (rcirc-reconnect-mode 1)))
 </pre>
 
 Add this to .emacs and you will never stay disconnected from this IRC server again.
