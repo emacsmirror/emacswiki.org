@@ -141,8 +141,8 @@ commands, which move ''past'' the end or the beginning of something.
 Typical `forward-*' commands essentially perform the following
 sequence of actions, expressed in terms of `gw-next-*':
 
-  1. While some predicate PRED-X is ''NOT'' true, do `gw-to-next-X'.
-  2. Do `gw-to-next-NOT-X'.
+: 1. While some predicate PRED-X is ''NOT'' true, do `gw-to-next-X'.
+: 2. Do `gw-to-next-NOT-X'.
 
 Step 1 moves to the next place X is true (e.g., a word beginning).
 Step 2 moves just past where X continues to be true (e.g., just
