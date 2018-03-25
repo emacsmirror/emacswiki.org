@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sat Mar 24 21:11:03 2018 (-0700)
+;; Last-Updated: Sun Mar 25 07:49:09 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 284
+;;     Update #: 289
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -186,7 +186,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
-;;
+;; 2018/03/25 dadams
+;;     gw-line-move-(down|up): Default COLUMN to current.  Prefix arg is for N, not COLUMN.
 ;; 2018/03/24 dadams
 ;;     Renamed library from next/prev.el to gowhere.el (prefix np- to gw-).
 ;;     Added: gw-line-move-down, gw-line-move-up, gw-word-char-after-p, gw-word-char-before-p,
@@ -379,21 +380,21 @@ backward, respectively, by one unit (defaults: `forward-char',
 
   (defun gw-line-move-down (&optional column n noerror force)
     "Like `line-move-visual', but try to move first to COLUMN.
-COLUMN defaults to 0.  N defaults to 1.
+COLUMN defaults to the current column.  N defaults to 1.
 Non-nil NOERROR means do not raise an error.  Otherwise, raise an
  error if `line-move-visual' would raise an error.
 Non-nil FORCE means force moving to COLUMN, inserting SPC chars as
 needed."
-    (interactive "p")
-    (setq column  (or column  0)
+    (interactive "i\np")
+    (setq column  (or column  (current-column))
           n       (or n  1))
     (move-to-column column force)
     (line-move-visual n noerror))
 
   (defun gw-line-move-up (&optional column n noerror force)
     "Same as `gw-line-move-down', except move up, not down."
-    (interactive "p")
-    (setq column  (or column  0)
+    (interactive "i\np")
+    (setq column  (or column  (current-column))
           n       (or n  1))
     (move-to-column column force)
     (line-move-visual (- n) noerror))
