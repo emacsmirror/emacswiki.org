@@ -1,0 +1,157 @@
+This page is about library '''<tt>[[gowhere.el]]</tt>''', which is about ''getting'', or ''moving to'', the next or previous
+buffer '''position that satisfies some predicate'''.
+
+It includes functions that get or move to the next or previous
+##THING## of some kind, as defined by library '''<tt>[[thingatpt+.el]]</tt>''', which is required.
+Library `##thingatpt+.el##' uses and enhances standard library
+`##thingatpt.el##'.
+
+[:gw-next-where]
+[:gw-previous-where]
+The workhorse functions here are '''`gw-next-where'''' and
+'''`gw-previous-where''''.  `gw-next-where' returns the next (or the nth
+next) buffer position after point (or after a given position)
+where a given predicate is true -- or ##nil## if there is no such
+position.  `gw-previous-where' does the same thing in the reverse
+direction.
+
+[:gw-next-where-vertical]
+[:gw-previous-where-vertical]
+Functions '''`gw-next-where-vertical'''' and
+'''`gw-previous-where-vertical'''' are similar, but they find a position
+that is directly ''below or above'' point, instead of after or
+before point.
+
+[:gw-to-next-where]
+[:gw-to-previous-where]
+The main [[command]]s here are '''`gw-to-next-where'''' and
+'''`gw-to-previous-where''''.  They move the cursor to positions
+`gw-next-where' and `gw-previous-where', respectively.
+
+[:gw-to-next-where-vertical]
+[:gw-to-previous-where-vertical]
+Commands '''`gw-to-next-where-vertical'''' and
+'''`gw-to-previous-where-vertical'''' are similar, but they move to a
+position directly ''below or above'' point, instead of after or
+before point.
+
+When repeated, all such conditional-motion commands reuse the same
+predicate as the last time (it is the value of [[variable]]
+`gw-to-where-last'), but a [[prefix argument]] makes them prompt you for
+the predicate to use.  The predicate you enter must accept at
+least one argument, and its first argument must be a buffer
+position (the position to test).
+
+A typical use might check something about the character at (i.e.,
+after) that position.
+
+The thing-related functions are `gw-next-thing' and
+'''`gw-previous-thing''''.  They just use `gw-next-where' and
+`gw-previous-where' with a predicate that tests whether the
+position is at the start of a given type of thing, where being at
+the start also means that the previous buffer position is not on
+the same thing (not just the same type of thing).  For instance,
+if the thing type passed to `gw-next-thing' is `list' then it
+returns the position of the start of the next list (or nil, if
+none).
+
+The '''thing'''-related [[command]]s are '''`gw-to-next-thing'''' and
+'''`gw-to-previous-thing''''.  They move the cursor to positions
+`gw-next-thing' and `gw-previous-thing', respectively.
+
+When repeated, these commands reuse the same thing
+type as the last time (it is the value of [[variable]]
+`gw-to-thing-last'), but a [[prefix argument]] makes them prompt you for
+the thing type to use.
+
+You can bind any of the commands defined here to keys, of course.
+But you can also easily define other commands that make use of
+them, and bind those commands to keys.
+
+For example:
+
+{{{
+(defun doc-face-p (position)
+  "Return non-nil if char at POSITION has face `font-lock-doc-face'."
+  (and (eq (get-text-property position 'face) 'font-lock-doc-face)
+       (or (eq position (point-min))
+           (not (eq (get-text-property (1- position) 'face)
+                    'font-lock-doc-face)))))
+
+(defun to-next-doc-face (n)
+  "Move to next doc face.
+With numeric prefix arg N, move to Nth next doc face."
+  (interactive "p")
+  (gw-to-next-where #'doc-face-p nil '(font-lock-doc-face) n))
+}}}
+
+And because the predicate can accept additional args, besides the
+position, you can use a predicate that accepts the face to look
+for.
+
+{{{
+(defun face-p (position face)
+  "Return non-nil if char at POSITION has FACE."
+  (and (eq (get-text-property position 'face) face)
+       (or (eq position (point-min))
+           (not (eq (get-text-property (1- position) 'face)
+                    face)))))
+
+(defvar last-face nil "Last face used by `to-next-face'.")
+
+(defun to-next-face (arg)
+  "Move to next use of FACE.
+With a plain prefix arg, prompt for FACE.
+With numeric prefix arg N, move to Nth next FACE."
+  (interactive "P")
+  (if (or (consp arg)  (not last-face))
+      (setq last-face  (read-face-name "Face: ")
+            arg        1)
+    (setq arg  (prefix-numeric-value arg)))
+  (gw-to-next-where #'face-p nil (list last-face) arg))
+}}}
+
+As an example of defining a next-thing command, this is how you
+might define a command to move among sexps:
+
+{{{
+(defun to-next-sexp (n)
+  "Go to next start of a sexp."
+  (interactive "p")
+  (gw-to-next-thing 'sexp nil n))
+}}}
+
+Or among strings:
+
+{{{
+(defun to-next-string (n)
+  "Go to next start of a string."
+  (interactive "p")
+  (gw-to-next-thing 'string nil n))
+}}}
+
+
+Note that the various `gw-next-*' and `gw-previous-*' commands
+move to the ''beginning'' of the next or previous place where
+something is true.  For example, if you use `gw-next-thing' with
+##THING## `word' then the cursor moves to the beginning of each word.
+This is different from typical Emacs `forward-*' and `backward-*'
+commands, which move ''past'' the end or the beginning of something.
+
+Typical `forward-*' commands essentially perform the following
+sequence of actions, expressed in terms of `gw-next-*':
+
+  1. While some predicate PRED-X is ''NOT'' true, do `gw-to-next-X'.
+  2. Do `gw-to-next-NOT-X'.
+
+Step 1 moves to the next place X is true (e.g., a word beginning).
+Step 2 moves just past where X continues to be true (e.g., just
+after the end of the word).
+
+Partly as a way of illustrating this, commands `gw-downward-word'
+and `gw-upward-word' act like Emacs `forward-word' and
+`backward-word', but they move through text vertically, not
+horizontally.  They are defined using steps 1 and 2.
+
+----
+CategoryEditing
