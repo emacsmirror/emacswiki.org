@@ -8,11 +8,11 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sat Mar 24 20:51:15 2018 (-0700)
+;; Last-Updated: Sat Mar 24 21:11:03 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 282
+;;     Update #: 284
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
-;; Doc URL: https://www.emacswiki.org/emacs/NextPrevious
+;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
@@ -76,10 +76,9 @@
 ;;  `gw-to-previous-thing'.  They move the cursor to positions
 ;;  `gw-next-thing' and `gw-previous-thing', respectively.
 ;;
-;;  When repeated, these thing-related commands reuse the same thing
-;;  type as the last time (it is the value of variable
-;;  `gw-to-thing-last'), but a prefix argument makes them prompt you
-;;  for the thing type to use.
+;;  When repeated, these commands reuse the same thing type as the
+;;  last time (it is the value of variable `gw-to-thing-last'), but a
+;;  prefix argument makes them prompt you for the thing type to use.
 ;;
 ;;  You can bind any of the commands defined here to keys, of course.
 ;;  But you can also easily define other commands that make use of
