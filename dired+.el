@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 23 11:08:32 2018 (-0700)
+;; Last-Updated: Sun Mar 25 11:18:04 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10846
+;;     Update #: 10917
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -646,7 +646,8 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `diredp-mark-if', `diredp-with-help-window'.
+;;    `diredp-mark-if', `diredp-user-error',
+;;    `diredp-with-help-window'.
 ;;
 ;;
 ;;  ***** NOTE: The following macros defined in `dired.el' have
@@ -666,6 +667,8 @@
 ;;  `dired-dwim-target-directory' - Uses `diredp-dwim-any-frame-flag'.
 ;;  `dired-find-file'         - Allow `.' and `..' (Emacs 20 only).
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
+;;  `dired-get-marked-files'  - Can include `.' and `..'.
+;;                              Allow FILTER + DISTINGUISH-ONE-MARKED.
 ;;  `dired-goto-file'         - Fix Emacs bug #7126.
 ;;                              Remove `/' from dir before compare.
 ;;                              (Emacs < 24 only.)
@@ -708,8 +711,7 @@
 ;;              take advantage of the new definition of macro
 ;;              `dired-map-over-marks':
 ;;
-;;  `dired-do-redisplay', `dired-get-marked-files',
-;;  `dired-map-over-marks-check',
+;;  `dired-do-redisplay', `dired-map-over-marks-check',
 ;;  `image-dired-dired-insert-marked-thumbs',
 ;;  `image-dired-dired-toggle-marked-thumbs'.
 ;;
@@ -733,7 +735,8 @@
 ;;  `dired-copy-filename-as-kill' -
 ;;     Put file names also in var `diredp-last-copied-filenames'.
 ;;  `dired-do-find-marked-files' -
-;;     Doc string reflects new `dired-simultaneous-find-file'.
+;;     Call `dired-get-marked-files' with original ARG.
+;;     Added optional arg INTERACTIVEP - no error if nil and no files.
 ;;  `dired-do-run-mail' - Require confirmation.
 ;;  `dired-mark-sexp' - 1. Variable `s' -> `blks'.
 ;;                      2. Fixes to `uid' and `gid'.
@@ -752,6 +755,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/03/25 dadams
+;;     Added: diredp-user-error.
+;;     Updated for Emacs 27-pretest-2 change in dired-get-marked-files signature.
+;;       dired-get-marked-files: Added optional arg ERROR-IF-NONE-P.
+;;       diredp-list-marked, diredp-insert-subdirs, dired-do-(i)search(-regexp), dired-do-query-replace-regexp,
+;;         dired-do-find-marked-files, diredp-describe-marked-autofiles:
+;;           Added optional arg INTERACTIVEP.
+;;           Pass non-nil ERROR-IF-NONE-P to dired-get-marked-files when INTERACTIVEP.  (See Emacs bug #30938.)
 ;; 2018/03/23 dadams
 ;;     Added diredp-mark-if.  Removed: redefinition of dired-mark-if.
 ;;       Differences: msg and return value include both number of matches and number of changes.
@@ -1820,6 +1831,9 @@ rather than FUN itself, to `minibuffer-setup-hook'."
               (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
            (remove-hook 'minibuffer-setup-hook ,hook)))))))
 
+(defmacro diredp-user-error (&rest args)
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+
 ;; Define these for Emacs 20 and 21.
 (unless (fboundp 'dired-get-file-for-visit) ; Emacs 22+
   (defun dired-get-file-for-visit ()    ; Not bound
@@ -2385,7 +2399,7 @@ Uses the `derived-mode-parent' property of the symbol to trace backwards."
 ;; 2. Doc string is updated to reflect the new ARG behavior.
 ;; 3. Allow, unlike vanilla Emacs, use of FILTER and DISTINGUISH-ONE-MARKED together.
 ;;
-(defun dired-get-marked-files (&optional localp arg filter distinguish-one-marked)
+(defun dired-get-marked-files (&optional localp arg filter distinguish-one-marked error-if-none-p)
   "Return names of the marked files and directories as a list of strings.
 The list is in the same order as the buffer, that is, the car is the
   first marked file.
@@ -2407,6 +2421,8 @@ Optional third argument FILTER, if non-nil, is a function to select
 If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
  of (FILENAME) if only one file is marked (after any filtering by
  FILTER).
+If ERROR-IF-NONE-P is non-nil, signal an error if the list of files is
+ empty.  If ERROR-IF-NONE-P is a string then it is the error message.
 
 Note that the Dired+ version of this function differs from the vanilla
 version in these respects:
@@ -2414,9 +2430,10 @@ version in these respects:
 * There are more possibilities for argument ARG (prefix argument).
 * Directories `.' and `..' can be included as marked.
 * You can use arguments FILTER and DISTINGUISH-ONE-MARKED together."
-  (let ((all  (delq nil (save-excursion
-                          (dired-map-over-marks (dired-get-filename localp t)
-                                                arg nil distinguish-one-marked))))
+  (let ((all  (delq nil (save-excursion (dired-map-over-marks (dired-get-filename localp 'NO-ERROR-IF-NOT-FILEP)
+                                                              arg
+                                                              nil
+                                                              distinguish-one-marked))))
         result)
     (if (and distinguish-one-marked  (eq (car all) t))
         (if (not filter)
@@ -2424,6 +2441,8 @@ version in these respects:
           (and (funcall filter (cadr all))  (list t (cadr all))))
       (dolist (file  all)
         (when (or (not filter)  (funcall filter file)) (push file result)))
+      (when (and (null result)  error-if-none-p)
+        (diredp-user-error (if (stringp error-if-none-p) error-if-none-p "No files specified")))
       (if (and distinguish-one-marked  (= 1 (length result)))
           (cons t result)
         result))))
@@ -4318,7 +4337,7 @@ The full text of the line is used as the file name."
   (save-excursion (mouse-set-point e) (diredp-find-line-file-other-window)))
 
 ;;;###autoload
-(defun diredp-list-marked (&optional arg predicate) ; Bound to `C-M-l'
+(defun diredp-list-marked (&optional arg predicate interactivep) ; Bound to `C-M-l'
   "List the marked files in this Dired buffer.
 A prefix arg specifies files to use instead of the marked files:
 
@@ -4334,8 +4353,9 @@ shows image previews.
 
 Non-interactively, non-nil arg PREDICATE is a file-name predicate.
 List only the files for which it returns non-nil."
-  (interactive (progn (diredp-ensure-mode) (list current-prefix-arg)))
-  (let ((files  (dired-get-marked-files nil arg predicate))) (diredp-list-files files)))
+  (interactive (progn (diredp-ensure-mode) (list current-prefix-arg nil t)))
+  (let ((files  (dired-get-marked-files nil arg predicate 'DISTINGUISH-ONE interactivep)))
+    (diredp-list-files files)))
 
 (defun diredp-list-files (files &optional dir bufname predicate)
   "Display FILES, a list of file names.  Wildcard patterns are expanded.
@@ -4671,18 +4691,20 @@ Raise an error first if not in Dired mode."
     (dired-kill-tree (dired-current-directory) nil 'KILL-ROOT)))
 
 ;;;###autoload
-(defun diredp-insert-subdirs (&optional switches) ; Bound to `M-i'
+(defun diredp-insert-subdirs (&optional switches interactivep) ; Bound to `M-i'
   "Insert the marked subdirectories.
 Like using \\<dired-mode-map>`\\[dired-maybe-insert-subdir]' at each marked directory line."
   (interactive (list (and current-prefix-arg
                           (read-string "Switches for listing: "
                                        (or (and (boundp 'dired-subdir-switches)  dired-subdir-switches)
-                                           dired-actual-switches)))))
-  (dolist (subdir  (dired-get-marked-files nil nil
-                                           (lambda (fl)
-                                             (and (file-directory-p fl) ; Exclude `.' and `..'
-                                                  (not (diredp-string-match-p "/[.][.]?\\'"
-                                                                              fl))))))
+                                           dired-actual-switches)))
+                     t))
+  (dolist (subdir  (dired-get-marked-files nil
+                                           nil
+                                           (lambda (fl) (and (file-directory-p fl) ; Exclude `.' and `..'
+                                                             (not (diredp-string-match-p "/[.][.]?\\'" fl))))
+                                           nil
+                                           interactivep))
     (dired-maybe-insert-subdir subdir switches)))
 
 ;;;###autoload
@@ -7294,48 +7316,56 @@ A prefix argument ARG specifies files to use instead of those marked.
 
   ;; REPLACE ORIGINAL in `dired.el':
   ;;
-  ;; Added optional ARG, so you can act on next ARG files or on all files.
+  ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
+  ;; 2. Added optional arg INTERACTIVEP.
+  ;; 3. Do not raise error if no files when not INTERACTIVEP.
   ;;
-  (defun dired-do-isearch (&optional arg)
+  (defun dired-do-isearch (&optional arg interactivep)
     "Search for a string through all marked files using Isearch.
 A prefix argument ARG specifies files to use instead of those marked.
  * An integer means use the next ARG files (previous -ARG, if < 0).
  * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
    all files in the Dired buffer.
- * Any other prefix arg means use the current file."
+ * Any other prefix arg means use the current file.
+When invoked interactively, raise an error if no files are marked."
     (interactive (let* ((arg  current-prefix-arg)
                         (C-u  (and (consp arg)  arg)))
                    (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
-                   (list arg)))
-    (multi-isearch-files (dired-get-marked-files nil arg 'dired-nondirectory-p)))
+                   (list arg t)))
+    (multi-isearch-files (dired-get-marked-files nil arg 'dired-nondirectory-p nil interactivep)))
 
 
   ;; REPLACE ORIGINAL in `dired.el':
   ;;
-  ;; Added optional ARG, so you can act on next ARG files or on all files.
+  ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
+  ;; 2. Added optional arg INTERACTIVEP.
+  ;; 3. Do not raise error if no files when not INTERACTIVEP.
   ;;
-  (defun dired-do-isearch-regexp (&optional arg)
+  (defun dired-do-isearch-regexp (&optional arg interactivep)
     "Search for a regexp through all marked files using Isearch.
 A prefix arg behaves as follows:
  * An integer means use the next ARG files (previous -ARG, if < 0).
  * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
    all files in the Dired buffer.
- * Any other prefix arg means use the current file."
+ * Any other prefix arg means use the current file.
+When invoked interactively, raise an error if no files are marked."
     (interactive (let* ((arg  current-prefix-arg)
                         (C-u  (and (consp arg)  arg)))
                    (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
-                   (list arg)))
-    (multi-isearch-files-regexp (dired-get-marked-files nil arg 'dired-nondirectory-p)))
+                   (list arg t)))
+    (multi-isearch-files-regexp (dired-get-marked-files nil arg 'dired-nondirectory-p nil interactivep)))
 
   )
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Added optional ARG, so you can act on next ARG files or on all files.
+;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
+;; 2. Added optional arg INTERACTIVEP.
+;; 3. Do not raise error if no files when not INTERACTIVEP.
 ;;
 ;;;###autoload
-(defun dired-do-search (regexp &optional arg)
+(defun dired-do-search (regexp &optional arg interactivep)
   "Search through all marked files for a match for REGEXP.
 Stops when a match is found.
 To continue searching for next match, use command \\[tags-loop-continue].
@@ -7344,21 +7374,26 @@ A prefix arg behaves as follows:
  * An integer means use the next ARG files (previous -ARG, if < 0).
  * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
    all files in the Dired buffer.
- * Any other prefix arg means use the current file."
+ * Any other prefix arg means use the current file.
+
+When invoked interactively, raise an error if no files are marked."
   (interactive (let* ((arg  current-prefix-arg)
                       (C-u  (and (consp arg)  arg)))
                  (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
                  (list (diredp-read-regexp "Search marked files (regexp): ")
-                       arg)))
-  (tags-search regexp `(dired-get-marked-files nil ',arg 'dired-nondirectory-p)))
+                       arg
+                       t)))
+  (tags-search regexp `(dired-get-marked-files nil ',arg 'dired-nondirectory-p nil ,interactivep)))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Added optional ARG, so you can act on next ARG files or on all files.
+;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
+;; 2. Added optional arg INTERACTIVEP.
+;; 3. Do not raise error if no files when not INTERACTIVEP.
 ;;
 ;;;###autoload
-(defun dired-do-query-replace-regexp (from to &optional arg)
+(defun dired-do-query-replace-regexp (from to &optional arg interactivep)
   "Do `query-replace-regexp' of FROM with TO, on all marked files.
 NOTE: A prefix arg for this command acts differently than for other
 commands, so that you can use it to request word-delimited matches.
@@ -7375,17 +7410,23 @@ So for example:
  * `C-u 4': act on the next 4 files.  `C-4' means the same thing.
  * `C-u': act on the marked files, replacing word-delimited matches.
 
+When invoked interactively, raise an error if no files are marked.
+
 If you exit (\\[keyboard-quit], RET or q), you can resume the query replace
 with the command \\[tags-loop-continue]."
   (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
                  (list (nth 0 common)
                        (nth 1 common)
-                       current-prefix-arg))) 
+                       current-prefix-arg
+                       t)))
   (let* ((argnum     (and (consp arg)  (prefix-numeric-value arg)))
          (delimited  (and argnum  (eq (logand (truncate (log argnum 4)) 1) 1))) ; Odd number of plain `C-u'.
          (all        (and argnum  (> argnum 4))) ; At least 3 plain `C-u'.
-         (dgmf-arg   (dired-get-marked-files nil (if (and arg  (atom arg)) (abs arg) (and all  '(16)))
-                                             'dired-nondirectory-p)))
+         (dgmf-arg   (dired-get-marked-files nil
+                                             (if (and arg  (atom arg)) (abs arg) (and all  '(16)))
+                                             'dired-nondirectory-p
+                                             nil
+                                             interactivep)))
     (dolist (file  dgmf-arg)
       (let ((buffer  (get-file-buffer file)))
         (when (and buffer  (with-current-buffer buffer buffer-read-only))
@@ -7754,11 +7795,12 @@ Non-interactively:
 ;; REPLACE ORIGINAL in `dired-x.el'.
 ;;
 ;; 1. Call `dired-get-marked-files' with original ARG, to get its multi-`C-u' behavior.
-;;
 ;; 2. Doc string updated to reflect change to `dired-simultaneous-find-file'.
+;; 3. Added optional arg INTERACTIVEP.
+;; 4. Do not raise error if no files when not INTERACTIVEP.
 ;;
 ;;;###autoload
-(defun dired-do-find-marked-files (&optional arg) ; Bound to `F'
+(defun dired-do-find-marked-files (&optional arg interactivep) ; Bound to `F'
   "Find marked files, displaying all of them simultaneously.
 With no prefix argument:
 
@@ -7789,10 +7831,13 @@ than it does with other `dired-do-*' commands: it does NOT act on the
 next or previous (abs ARG) files, ignoring markings.
 
 To keep the Dired buffer displayed, split the window (e.g., `C-x 2')
-first.  To show only the marked files, type `\\[delete-other-windows]' first."
-  (interactive "P")
-  (dired-simultaneous-find-file (dired-get-marked-files nil (and (consp arg)  arg))
-                                (and arg  (prefix-numeric-value arg))))
+first.  To show only the marked files, type `\\[delete-other-windows]' first.
+
+When invoked interactively, raise an error if no files are marked."
+  (interactive "P\np")
+  (dired-simultaneous-find-file
+   (dired-get-marked-files nil (and (consp arg)  arg) nil nil interactivep)
+   (and arg  (prefix-numeric-value arg))))
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
@@ -9108,13 +9153,13 @@ You need library `bookmark+.el' for this command."
 ;;;###autoload
 (defalias 'diredp-show-metadata-for-marked 'diredp-describe-marked-autofiles)
 ;;;###autoload
-(defun diredp-describe-marked-autofiles (&optional internal-form-p)
+(defun diredp-describe-marked-autofiles (&optional internal-form-p interactivep)
   "Show metadata for the marked files.
 If no file is marked, describe ALL autofiles in this directory.
 With a prefix argument, show the internal (Lisp) form of the metadata.
-
+When invoked interactively, raise an error if no files are marked.
 You need library `bookmark+.el' for this command."
-  (interactive "P")
+  (interactive "P\np")
   (diredp-ensure-bookmark+)
   (let ((help-xref-following  nil))
     (help-setup-xref (list `(lambda (_buf)
@@ -9125,7 +9170,7 @@ You need library `bookmark+.el' for this command."
                          (called-interactively-p 'interactive)
                        (interactive-p))))
   (diredp-with-help-window "*Help*"
-    (let ((marked  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)))
+    (let ((marked  (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED interactivep)))
       (unless (cdr marked)
         (message "Describing ALL autofiles here (none are marked)...")
         (setq marked  (diredp-get-files 'IGNORE-MARKS-P)))
@@ -9856,13 +9901,11 @@ output files usually are created there instead of in a subdir."
   ;;actual work and can be redefined for customization.
   (interactive "e")
   (lexical-let ((mouse-pos  (event-start event))
-                (command    (dired-read-shell-command "! on %s: " nil
-                                                      (dired-get-marked-files t nil))))
+                (command    (dired-read-shell-command "! on %s: " nil (dired-get-marked-files t nil))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
     (dired-bunch-files (- 10000 (length command))
-                       #'(lambda (&rest files)
-                           (dired-run-shell-command (dired-shell-stuff-it command files t 1)))
+                       (lambda (&rest files) (dired-run-shell-command (dired-shell-stuff-it command files t 1)))
                        nil
                        (dired-get-marked-files t 1))))
 
