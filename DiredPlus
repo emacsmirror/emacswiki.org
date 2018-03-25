@@ -1020,8 +1020,31 @@ Thank you, this is exactly what I need :). Regarding preferences, I don't know, 
 Not sure I understand the last sentence, but if I do then it's done, by your screenshots above and this discussion, no? ;-)  I've also mentioned it above and added it to the file Commentary.  Thx -- DrewAdams
 
 
+----
+I use '''helm''' and the latest version of Emacs '''27.0.50''' and when I try to rename a file or dir, I get:
 
-
+{{{dired-do-create-files: Wrong number of arguments: (lambda (&optional localp arg filter distinguish-one-marked) 
+"Return names of the marked files and directories as a list of strings.
+\nThe list is in the same order as the buffer, that is, the car is the\n  
+first marked file.\nValues returned are normally absolute file names.\n
+Optional arg LOCALP as in `dired-get-filename'.\n
+Optional second argument ARG specifies files to use instead of marked.\n 
+Usually ARG comes from the command's prefix arg.\n 
+If ARG is an integer, use the next ARG files (previous -ARG, if < 0).\n
+If ARG is a cons with element 16, 64, or 256, corresponding to\n  
+`C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files\n  
+in the Dired buffer, where:\n    16 includes NO directories (including `.' and `..')\n    
+64 includes directories EXCEPT `.' and `..'\n   256 includes ALL directories (including `.' and `..')\n 
+If ARG is otherwise non-nil, use the current file.\nOptional third argument FILTER, if non-nil, is a function to select\n 
+some of the files: those for which (funcall FILTER FILENAME) is\n n
+on-nil.\nIf DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead\n 
+of (FILENAME) if only one file is marked (after any filtering by\n FILTER).\n\n
+Note that the Dired+ version of this function differs from the vanilla\nversion in these respects:\n\n* 
+There are more possibilities for argument ARG (prefix argument).\n* 
+Directories `.' and `..' can be included as marked.\n* 
+You can use arguments FILTER and DISTINGUISH-ONE-MARKED together." 
+(let ((all (delq nil (save-excursion (prog1 (let ((inhibit-read-only t) (newarg arg) multi-C-u case-fold-search found results) (if (and ... ...) (progn ...)) (if (and newarg ...) (if ... ... ...) (let ... ... ... ...))) (dired-move-to-filename))))) result) (if (and distinguish-one-marked (eq (car all) t)) (if (not filter) all (and (funcall filter (car (cdr all))) (list t (car (cdr all))))) (let ((--dolist-tail-- all) file) (while --dolist-tail-- (setq file (car --dolist-tail--)) (if (or (not filter) (funcall filter file)) (progn (setq result (cons file result)))) (setq --dolist-tail-- (cdr --dolist-tail--)))) (if (and distinguish-one-marked (= 1 (length result))) (cons t result) result)))), 5
+}}}
 
 
 ----
