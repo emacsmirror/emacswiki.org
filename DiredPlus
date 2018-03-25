@@ -1021,9 +1021,12 @@ Not sure I understand the last sentence, but if I do then it's done, by your scr
 
 
 ----
+
+
 I use '''helm''' and the latest version of Emacs '''27.0.50''' and when I try to rename a file or dir, I get:
 
-{{{dired-do-create-files: Wrong number of arguments: (lambda (&optional localp arg filter distinguish-one-marked) 
+{{{
+dired-do-create-files: Wrong number of arguments: (lambda (&optional localp arg filter distinguish-one-marked) 
 "Return names of the marked files and directories as a list of strings.
 \nThe list is in the same order as the buffer, that is, the car is the\n  
 first marked file.\nValues returned are normally absolute file names.\n
@@ -1044,7 +1047,22 @@ There are more possibilities for argument ARG (prefix argument).\n*
 Directories `.' and `..' can be included as marked.\n* 
 You can use arguments FILTER and DISTINGUISH-ONE-MARKED together." 
 (let ((all (delq nil (save-excursion (prog1 (let ((inhibit-read-only t) (newarg arg) multi-C-u case-fold-search found results) (if (and ... ...) (progn ...)) (if (and newarg ...) (if ... ... ...) (let ... ... ... ...))) (dired-move-to-filename))))) result) (if (and distinguish-one-marked (eq (car all) t)) (if (not filter) all (and (funcall filter (car (cdr all))) (list t (car (cdr all))))) (let ((--dolist-tail-- all) file) (while --dolist-tail-- (setq file (car --dolist-tail--)) (if (or (not filter) (funcall filter file)) (progn (setq result (cons file result)))) (setq --dolist-tail-- (cdr --dolist-tail--)))) (if (and distinguish-one-marked (= 1 (length result))) (cons t result) result)))), 5
+
 }}}
+
+-- [[caisah]]
+
+[new:DrewAdams:2018-03-25 18:24 UTC]
+Thanks for the report (but it's better to use `M-x diredp-send-bug-report' next time).
+
+Emacs 27 is in pretest.  I generally don't try to support it until it is released, since things are volatile.  (See bug #[[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30938|30938]], wrt this change, for instance.)
+
+But I've updated `dired+.el' now, to accommodate this change.  Let me know, if you still see a problem here.
+
+-- DrewAdams
+
+
+
 
 
 ----
