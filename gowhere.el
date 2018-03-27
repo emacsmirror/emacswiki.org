@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Mar 25 07:49:09 2018 (-0700)
+;; Last-Updated: Tue Mar 27 09:46:31 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 289
+;;     Update #: 305
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -163,7 +163,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `gw-downward-word', `gw-line-move-down', `gw-line-move-up',
+;;    `gw-downward-word', `gw-to-column-down', `gw-to-column-up',
 ;;    `gw-to-next-thing', `gw-to-next-where',
 ;;    `gw-to-next-where-vertical', `gw-to-previous-thing',
 ;;    `gw-to-previous-where', `gw-to-previous-where-vertical',
@@ -186,6 +186,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 2018/03/27 dadams
+;;     Renamed gw-line-move-down to gw-to-column-down, gw-line-move-up to gw-to-column-up.
+;;     gw-to-column-(down|up): Move down only if point already at COLUMN or N > 1.
 ;; 2018/03/25 dadams
 ;;     gw-line-move-(down|up): Default COLUMN to current.  Prefix arg is for N, not COLUMN.
 ;; 2018/03/24 dadams
@@ -378,35 +381,40 @@ backward, respectively, by one unit (defaults: `forward-char',
 
 (when (fboundp 'line-move-visual)       ; Emacs 25+
 
-  (defun gw-line-move-down (&optional column n noerror force)
-    "Like `line-move-visual', but try to move first to COLUMN.
-COLUMN defaults to the current column.  N defaults to 1.
+  (defun gw-to-column-down (&optional column n noerror force)
+    "Move to COLUMN.  If already there or N > 1 then move down N lines.
+The line movement uses `line-move-visual'.
+COLUMN defaults to the current column.
+N defaults to 1.
+
 Non-nil NOERROR means do not raise an error.  Otherwise, raise an
  error if `line-move-visual' would raise an error.
 Non-nil FORCE means force moving to COLUMN, inserting SPC chars as
 needed."
     (interactive "i\np")
-    (setq column  (or column  (current-column))
-          n       (or n  1))
-    (move-to-column column force)
-    (line-move-visual n noerror))
+    (let ((opoint  (point)))
+      (setq column  (or column  (current-column))
+            n       (or n  1))
+      (move-to-column column force)
+      (when (or (= opoint (point))  (> n 1)) (line-move-visual n noerror))))
 
-  (defun gw-line-move-up (&optional column n noerror force)
-    "Same as `gw-line-move-down', except move up, not down."
+  (defun gw-to-column-up (&optional column n noerror force)
+    "Same as `gw-to-column-down', except move up, not down."
     (interactive "i\np")
-    (setq column  (or column  (current-column))
-          n       (or n  1))
-    (move-to-column column force)
-    (line-move-visual (- n) noerror))
+    (let ((opoint  (point)))
+      (setq column  (or column  (current-column))
+            n       (or n  1))
+      (move-to-column column force)
+      (when (or (= opoint (point))  (> n 1)) (line-move-visual (- n) noerror))))
 
   (defun gw-next-where-vertical (predicate &optional start args n noerror force)
     "Like `gw-next-where', but look down instead of forward (right).
-Optional args NOERROR and FORCE are as for `gw-line-move-down'."
+Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (setq n  (or n  1))
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--next/prev-where 'next pred start args n
-                           `(lambda () (gw-line-move-down ,col ,n ,noerror ,force)))))
+                           `(lambda () (gw-to-column-down ,col ,n ,noerror ,force)))))
 
   (defun gw-previous-where-vertical (predicate &optional start args n noerror force)
     "Like `gw-next-where-vertical', but look up instead of down."
@@ -414,17 +422,17 @@ Optional args NOERROR and FORCE are as for `gw-line-move-down'."
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--next/prev-where 'previous pred start args n
-                           nil `(lambda () (gw-line-move-up ,col ,n ,noerror ,force)))))
+                           nil `(lambda () (gw-to-column-up ,col ,n ,noerror ,force)))))
 
   (defun gw-to-next-where-vertical (&optional predicate start args n noerror force readp interactivep)
     "Like `gw-to-next-where', but move down instead of forward (across).
-Optional args NOERROR and FORCE are as for `gw-line-move-down'."
+Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (interactive "i\ni\ni\ni\ni\nP\np")
     (setq n  (or n  1))
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--to-next/prev-where 'next pred start args n noerror readp interactivep
-                              `(lambda () (gw-line-move-down ,col ,n ,noerror ,force)))))
+                              `(lambda () (gw-to-column-down ,col ,n ,noerror ,force)))))
 
   (defun gw-to-previous-where-vertical (&optional predicate start args n noerror force readp interactivep)
     "Like `gw-to-previous-where', but move up instead of backward (across)."
@@ -433,7 +441,7 @@ Optional args NOERROR and FORCE are as for `gw-line-move-down'."
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--to-next/prev-where 'previous pred start args n noerror readp interactivep
-                              nil `(lambda () (gw-line-move-up ,col ,n ,noerror ,force)))))
+                              nil `(lambda () (gw-to-column-up ,col ,n ,noerror ,force)))))
 
   ;; Could be called `gw-next-word-vertical', but it moves _after_ the word, like `forward-word'.
   (defun gw-downward-word (_pos &optional n)
