@@ -1,4 +1,3 @@
-[[ja:HowTo]]
 ;;; auto-install.el --- Auto install elisp file
 ;; $Id: auto-install.el,v 1.58 2015/01/14 08:24:23 rubikitch Exp $
 
