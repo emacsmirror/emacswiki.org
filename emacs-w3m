@@ -62,20 +62,6 @@ MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;appl
 
 3. run <code>xdg-settings set default-web-browser emacs-w3m.desktop</code>.
 
-= Editing Emacs Wiki =
-
-Don't forget to enable the use of cookies!
-
-{{{
-(setq w3m-use-cookies t)
-}}}
-
-Next, [http://www.emacswiki.org/emacs/uihnscuskc/SiteMap follow this
-link] to set the cookie. This will prevent the reCAPTCHA code from
-being triggered.
-
-=== Editing other wikis is still a problem ===
-There is such a problem with captcha at other wikis: for example, [http://www.haskell.org/haskellwiki/HaskellWiki_talk:Community#captcha_not_visible_in_.28emacs-.29w3m_:.28 the problem described at the Haskell Wiki]. Can a solution be suggested for emacs-w3m for overcoming the captcha barrier?
 
 = Other WThreeM pages =
 
@@ -97,14 +83,6 @@ There is such a problem with captcha at other wikis: for example, [http://www.ha
 * WThreeMYoutube - View youtube video from emacs-w3m
 * WThreeMEmacsTwentyThree - Issues specific to emacs version 23
 
-==Searching emacswiki.org==
-Put this in your .emacs file:
-
-   (require 'w3m-search)
-   (add-to-list 'w3m-search-engine-alist
-		'("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
-
--- kruhft
 == Middle click to open url in a new sesstion (tab) ==
 I try to use:
 
