@@ -76,6 +76,8 @@ Other pages (could this please be split in major and minor modes?):
 * IbufferMode
 * '''Icicle''' Mode -- [[Icicles]]: MiniBuffer input [[Completion]] and cycling of completion candidates. Lots more.
 * IMDbAddsMode -- Editing and syntax highlighting for IMDb data submissions
+* ide-mode -- Minor mode that uses a solution file to perform various
+operations on files in the solution.
 * ImenuMode -- Mode-specific buffer indexes (navigation menus).
 * ImpatientMode -- minor mode for i.a. creating a live connection between your HTML file and your browser
 * InfoLook, WordHelp, FuncDoc -- find info about a command keyword
