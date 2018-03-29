@@ -34,7 +34,7 @@ If your GUI desktop complies with the freedesktop standard, you can have
 all your GUI programs open links in emacs-w3m instead of, say, firefox or chrome.
 Most linux desktops are compliant (eg. gnome, kde, xfce, lxde)
 
-1. Create a file `emacs-w3m.desktop'. Here's an example:
+1. Create a file <code>emacs-w3m.desktop</code>. Here's an example:
 {{{
 [Desktop Entry]
 Name=emacs-w3m
@@ -58,9 +58,9 @@ StartupNotify=true
 MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;application/xhtml+xml;application/xml;application/vnd.mozilla.xul+xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;
 }}}
 
-2. Save your `emacs-w3m.desktop' file in an appropriate place. If you want the change to be applied system-wide for all users, that would be `/usr/local/share/application/'. For a single user, the correct location would be `~/.local/share/applications'.
+2. Save your <code>emacs-w3m.desktop</code> file in an appropriate place. If you want the change to be applied system-wide for all users, that would be <code>/usr/local/share/application/</code>. For a single user, the correct location would be <code>~/.local/share/applications</code>.
 
-3. run `xdg-settings set default-web-browser emacs-w3m.desktop'
+3. run <code>xdg-settings set default-web-browser emacs-w3m.desktop</code>.
 
 = Editing Emacs Wiki =
 
