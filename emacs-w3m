@@ -46,6 +46,7 @@ There is such a problem with captcha at other wikis: for example, [http://www.ha
 = Other WThreeM pages =
 
 * WThreeMHintsAndTips - Useful extensions and tips for using w3m
+* WThreeMReportedProblems - Reported problems and their solutions
 * WThreeMEditingWikis - using '''w3m''' to view and edit wikis
 * WThreeMFrames - rendering frames
 * WThreeMKeymap - alternate keymaps (including some "hidden" commands)
