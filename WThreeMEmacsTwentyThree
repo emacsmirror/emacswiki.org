@@ -1,20 +1,9 @@
 Information Specific to Emacs23
 
-===Not working with Emacs 23 ?===
+For a while, there were problems reported about using emacs-w3m in emacs version 23, but as of 2007-05-09,
+the current CVS version works out of the box (per ZedLopez).
 
-I am using GnuEmacs version 23 and emacs-w3m as of 1.4.4 refuses to
-load. What is the correct way to use it then ?
-
-Try this (as suggested to me by EduardoOchs when I asked in EmacsChannel):
-<pre>
-(require 'w3m-e21)
-(provide 'w3m-e23)
-</pre>
-Works for me. :)
-[new]
-The current CVS version works out of the box with GnuEmacs 23 (as of 2007-05-09.) --ZedLopez
-
-If you installed w3m from a package, you might need to recompile the bytecode, as bytecode compiled by GnuEmacs 22 is not compatible with GnuEmacs 23
+If you installed w3m from a package in emacs 22, you might need to recompile the bytecode, as bytecode compiled by GnuEmacs 22 is not compatible with GnuEmacs 23
 
 ===Not working with Emacs 23 and emacs-w3m from the CVS ?===
 
