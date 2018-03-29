@@ -21,12 +21,46 @@ InfoMode form will be built by the installation process.
 If you are building from cvs, be aware of one gotcha: if the first ##emacs## executable in your ##$PATH## is a symlink, then the directory containing that symlink will be used as the base install location by ##make install##. Fix: either change ##$PATH## to expose the actual installed ##emacs## binary first, at least for the duration of the configure/make/install procedure, or hand-edit the ##Makefile## created by running ##./configure##.
 
 
-= Basic Setup =
+== Basic Setup ==
 
  (setq browse-url-browser-function 'w3m-browse-url)
  (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
  ;; optional keyboard short-cut
  (global-set-key "\C-xm" 'browse-url-at-point)
+
+=== GUI Desktop Integration ===
+
+If your GUI desktop complies with the freedesktop standard, you can have
+all your GUI programs open links in emacs-w3m instead of, say, firefox or chrome.
+Most linux desktops are compliant (eg. gnome, kde, xfce, lxde)
+
+1. Create a file `emacs-w3m.desktop'. Here's an example:
+{{{
+[Desktop Entry]
+Name=emacs-w3m
+GenericName=Emacs Web Browser
+X-GNOME-FullName=Emacs w3m Web Browser
+
+Encoding=UTF-8
+Version=1.0
+Comment=Using emacsclient
+NoDisplay=true
+
+Exec=emacsclient --eval "(browse-url (replace-regexp-in-string \"'\" \"\" \"%u\"))"
+
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=firefox-esr
+Categories=Network;WebBrowser;
+StartupWMClass=Firefox-esr
+StartupNotify=true
+MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;application/xhtml+xml;application/xml;application/vnd.mozilla.xul+xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;
+}}}
+
+2. Save your `emacs-w3m.desktop' file in an appropriate place. If you want the change to be applied system-wide for all users, that would be `/usr/local/share/application/'. For a single user, the correct location would be `~/.local/share/applications'.
+
+3. run `xdg-settings set default-web-browser emacs-w3m.desktop'
 
 = Editing Emacs Wiki =
 
