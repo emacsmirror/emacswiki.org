@@ -79,6 +79,30 @@ Yeah, the reCaptcha extension was added on [[2008-09-05]].  That's a bummer it d
 
 Perhaps the solution is making a hook in w3m that edits pages on Emacs Wiki in Oddmuse mode?  That'd be cool.  Again, Oddmuse mode can handle browsing *and* editing of pages.  I can understand if one prefers the interaction and keyboard commands the know and prefer in w3m.  -- AaronHawley
 
+= Editing Emacs Wiki =
+
+Don't forget to enable the use of cookies!
+
+{{{
+(setq w3m-use-cookies t)
+}}}
+
+Next, [http://www.emacswiki.org/emacs/uihnscuskc/SiteMap follow this
+link] to set the cookie. This will prevent the reCAPTCHA code from
+being triggered.
+
+=== Editing other wikis is still a problem ===
+There is such a problem with captcha at other wikis: for example, [http://www.haskell.org/haskellwiki/HaskellWiki_talk:Community#captcha_not_visible_in_.28emacs-.29w3m_:.28 the problem described at the Haskell Wiki]. Can a solution be suggested for emacs-w3m for overcoming the captcha barrier?
+
+==Searching emacswiki.org==
+Put this in your .emacs file:
+
+   (require 'w3m-search)
+   (add-to-list 'w3m-search-engine-alist
+		'("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
+
+-- kruhft
+
 ----
 CategoryHypermedia
 WThreeM
