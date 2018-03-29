@@ -95,6 +95,7 @@ There is such a problem with captcha at other wikis: for example, [http://www.ha
 * WThreeMSession - persistent tabbed browsing with w3m
 * WThreeMReadability - improving readability
 * WThreeMYoutube - View youtube video from emacs-w3m
+* WThreeMEmacsTwentyThree - Issues specific to emacs version 23
 
 ==Searching emacswiki.org==
 Put this in your .emacs file:
