@@ -1,39 +1,9 @@
 = Editing wiki pages =
 
-== 2018-03-30 update ==
-
-Much of the prior information on this page was wrong or out-of-date.
-As of today, editing this wiki using the basic emacs-w3m package was
+2018-03-30: Much of the prior information on this page was wrong or out-of-date.
+As of today, editing this wiki and wikipedia using the basic emacs-w3m package was
 straightforward and required no special settings, functions, or
-additional packages. Here's how I performed this edit:
-
-1. Ensure variable <code>w3m-use-cookies</code> is non-nil. This is
-the default setting.
-
-2. Navigate to and click on the "Edit this page" link at the bottom of
-the page.
-
-3. Navigate to the form and press ENTER for emacs-w3m to create an
-edit window with the form text.
-
-4. When you have completed your edit, press C-c C-c to exit the edit
-window.
-
-5. Navigate to the other form fields in order to enter an edit
-summary, answer the security question, optionally enter your
-user-name.
-
-6. Click on the link to either preview your edit or submit it.
-
-
-===Searching emacswiki.org===
-
-Any web site search can be added to emacs-w3m by adding an entry to
-the variable <code>'w3m-search-engine-alist</code>. Here's an example
-for this wiki:
-
-   (add-to-list 'w3m-search-engine-alist
-		'("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
+additional packages. It just worked™.
 
 == Other packages for editing wikis ==
 
@@ -95,6 +65,40 @@ Wiki.
 </pre>
 
 == Information re: specific wikis ==
+
+=== This wiki (emacswiki) ===
+
+Here's how I performed this edit:
+
+1. Ensure variable <code>w3m-use-cookies</code> is non-nil. This is
+the default setting.
+
+2. Navigate to and click on the "Edit this page" link at the bottom of
+the page.
+
+3. Navigate to the form and press ENTER for emacs-w3m to create an
+edit window with the form text.
+
+4. When you have completed your edit, press C-c C-c to exit the edit
+window.
+
+5. Navigate to the other form fields in order to enter an edit
+summary, answer the security question, optionally enter your
+user-name.
+
+6. Click on the link to either preview your edit or submit it.
+
+
+===Searching emacswiki ===
+
+Any web site search can be added to emacs-w3m by adding an entry to
+the variable <code>'w3m-search-engine-alist</code>. Here's an example
+for this wiki:
+
+   (add-to-list 'w3m-search-engine-alist
+		'("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
+
+
 
 === CGI::Kwiki ===
 
