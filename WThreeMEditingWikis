@@ -1,6 +1,6 @@
-== Editing wiki pages ==
+= Editing wiki pages =
 
-=== 2018-03-30 update ===
+== 2018-03-30 update ==
 
 Much of the prior information on this page was wrong or out-of-date.
 As of today, editing this wiki using the basic emacs-w3m package was
@@ -26,7 +26,7 @@ user-name.
 6. Click on the link to either preview your edit or submit it.
 
 
-====Searching emacswiki.org====
+===Searching emacswiki.org===
 
 Any web site search can be added to emacs-w3m by adding an entry to
 the variable <code>'w3m-search-engine-alist</code>. Here's an example
@@ -34,6 +34,8 @@ for this wiki:
 
    (add-to-list 'w3m-search-engine-alist
 		'("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
+
+== Other packages for editing wikis ==
 
 === WikiRemote ===
 
@@ -60,7 +62,10 @@ edit the page you are currently browsing.
 Be sure to look at the customizations of WThreeM for the
 w3m-form-input-textarea-mode-hook.
 
-=== Generic jumping to Wiki-like Pages ===
+=== Oddmuse mode ===
+
+
+== Generic jumping to Wiki-like Pages ==
 
 The following defun can be used to quickly go to specific pages of a
 Wiki. 
@@ -89,7 +94,9 @@ Wiki.
     (w3m-goto-url (concat (nth 1 wiki-list) topic))))
 </pre>
 
-== CGI::Kwiki ==
+== Information re: specific wikis ==
+
+=== CGI::Kwiki ===
 
 CGI::Kwiki (http://kwiki.org/) pages can be edited simply with WThreeM's form support and some help from LongLines mode and RefillMode.  A few customizations are in order:
 
@@ -103,9 +110,6 @@ CGI::Kwiki (http://kwiki.org/) pages can be edited simply with WThreeM's form su
             flyspell-mode
             refill-mode)
           w3m-form-input-textarea-set-hook '(longlines-mode))
-
-=== Oddmuse mode ===
-
 
 
 ----
