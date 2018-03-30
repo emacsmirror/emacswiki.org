@@ -1,4 +1,5 @@
 == Editing wiki pages ==
+Test edit
 
 The latest version of WikiRemote includes the function
 `wiki-remote-get-w3m'.  Call it to edit the wiki page you are
