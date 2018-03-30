@@ -34,6 +34,7 @@ w3m-form-input-textarea-mode-hook.
 
 === Oddmuse mode ===
 
+See the OddMuseMode page.
 
 == Generic jumping to Wiki-like Pages ==
 
@@ -89,7 +90,7 @@ user-name.
 6. Click on the link to either preview your edit or submit it.
 
 
-===Searching emacswiki ===
+====Searching emacswiki ====
 
 Any web site search can be added to emacs-w3m by adding an entry to
 the variable <code>'w3m-search-engine-alist</code>. Here's an example
