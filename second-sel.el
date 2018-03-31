@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 18 19:12:39 2018 (-0700)
+;; Last-Updated: Sat Mar 31 10:28:34 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 613
+;;     Update #: 618
 ;; URL: https://www.emacswiki.org/emacs/download/second-sel.el
 ;; Doc URL: https://emacswiki.org/emacs/SecondarySelection#second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
@@ -101,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/03/31 dadams
+;;     mouse-drag-secondary: Do it with the overlay buffer as current buffer.
 ;; 2018/03/18 dadams
 ;;     Added: secondary-selection-limits.
 ;; 2016/12/10 dadams
@@ -557,20 +559,18 @@ With prefix arg, rotate that many kills forward or backward."
 ;;
 (defadvice mouse-drag-secondary (after populate-secondary-ring activate)
   "Add secondary selection to `secondary-selection-ring'."
-  (prog1                                ; For the return value.
-      (and (overlayp mouse-secondary-overlay)
-           (overlay-buffer mouse-secondary-overlay)
-           (add-secondary-to-ring
-            (if (fboundp 'gui-set-selection)
-                (gui-set-selection      ; Emacs 25.1+.
-                 'SECONDARY
-                 (buffer-substring (overlay-start mouse-secondary-overlay)
-                                   (overlay-end   mouse-secondary-overlay)))
-              (x-set-selection
-               'SECONDARY
-               (buffer-substring (overlay-start mouse-secondary-overlay)
-                                 (overlay-end   mouse-secondary-overlay))))))
-    (when (interactive-p) (second-sel-msg))))
+  (let* ((ov   (and (overlayp mouse-secondary-overlay)  mouse-secondary-overlay))
+         (buf  (and ov  (overlay-buffer ov))))
+    (when buf
+      (with-current-buffer buf
+        (add-secondary-to-ring
+         (if (fboundp 'gui-set-selection)
+             (gui-set-selection         ; Emacs 25.1+.
+              'SECONDARY (buffer-substring (overlay-start ov) (overlay-end ov)))
+           (x-set-selection
+            'SECONDARY (buffer-substring (overlay-start ov) (overlay-end ov)))))))
+    (when (interactive-p) (second-sel-msg))
+    buf))                               ; Return non-nil if created second sel.
 
 
 ;;; REPLACES ORIGINAL in `mouse.el'.
