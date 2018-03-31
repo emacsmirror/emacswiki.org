@@ -10,4 +10,4 @@ operations on files in the solution. It enables you to:
 # Compile files in the solution or only in a project (Only supports visual
       studio for now).
 
-CategoryIde
+CategoryProgramming
