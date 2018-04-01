@@ -9,7 +9,7 @@ Eshell itself can open a specific new buffer when invoked as (eshell 'N) where N
 (defun eshell-new()
   "Open a new instance of eshell."
   (interactive)
-  (eshell 'N)))
+  (eshell 'N))
 </pre>
 
 == Shell-switcher ==
