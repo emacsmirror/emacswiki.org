@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:37:27 2018 (-0800)
+;; Last-Updated: Sun Apr  1 20:10:02 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1390
+;;     Update #: 1392
 ;; URL: https://www.emacswiki.org/emacs/download/fit-frame.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -131,6 +131,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/04/01 dadams
+;;     fit-frame-max-height-percent: Change default value to 80 for Emacs 26+.
 ;; 2016/10/02 dadams
 ;;     Added: fit-frame-to-non-image.
 ;;     fit-frame:
@@ -366,7 +368,7 @@ If nil, then the function `fit-frame-max-height' is used instead."
   :group 'fit-frame)
 
 ;;;###autoload
-(defcustom fit-frame-max-height-percent 82
+(defcustom fit-frame-max-height-percent (if (> emacs-major-version 25) 80 82)
   "*Maximum percent of display height that `fit-frame' gives to a frame.
 See function `fit-frame-max-height'.
 Not used unless `fit-frame-max-height' is nil."
