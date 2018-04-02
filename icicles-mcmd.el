@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Mar  2 13:22:56 2018 (-0800)
+;; Last-Updated: Mon Apr  2 07:49:06 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 19856
+;;     Update #: 19857
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3326,7 +3326,7 @@ floating point support."
            t)
           ((input-pending-p)
            nil)
-          ((<= seconds 0)
+          ((or (<= seconds 0)  defining-kbd-macro)
            (or nodisp  (redisplay)))
           (t
            (or nodisp  (redisplay))
