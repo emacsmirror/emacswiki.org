@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Mar  3 09:37:46 2018 (-0800)
+;; Last-Updated: Mon Apr  2 07:52:37 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11835
+;;     Update #: 11837
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4678,6 +4678,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2018/04/02 dadams
+;;     icicle-sit-for, 3rd cond clause: do it also if defining-kbd-macro.
+;;       Thx to Charles Roelli.  Same fix as for Emacs bug#21329.
 ;; 2018/03/02 dadams
 ;;     Added: icicle-keep/remove-buffer-cands-for-indirect, icicle-keep-only-buffer-cands-for-indirect,
 ;;            icicle-remove-buffer-cands-for-indirect.
