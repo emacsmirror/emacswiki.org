@@ -228,6 +228,16 @@ Here's a snippet that adds Java stack trace support to `compilation-mode' and `n
 
 I have just built emacs 21.3 on HP-UX.  When I try to do a compile from various frames, I find that the compilation mode has set the environment variable COLUMNS, which the compiler then uses to format it's output.  The COLUMNS is set from the frame that I issue the compile-command.  However, I have *compilation* set in my special-display-buffer-names variable, so the column-width is completely irrelevant for any other frame.  The upshot is that this interferes with the interpretation of compile errors.  Is there a way to suppress COLUMNS from being set?
 
+== Jump to the right column when code is TAB indented ==
+
+By default Emacs assumes that the error message contains the column number as opposed to the character number to jump to the right column. This doesn't work well for TAB indented code. To fix that merely set <tt>compilation-error-screen-columns</tt> to <tt>nil</tt> in the <tt>*compile*</tt> buffer, or to permanently fix it, add the following compilation hook in config file
+
+   (defun my-compilation-mode-hook ()
+     ;; Jump at the right column even for tab indentation
+     (setq compilation-error-screen-columns nil)
+   )
+   (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
+
 ----
 '''See Also''': GrepMode
 
