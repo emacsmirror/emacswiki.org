@@ -141,69 +141,36 @@ Here's one way to check which '''Icicles''' libraries have changed recently: '''
 
 '''Icicles''', as well as my other libraries that are on %%EmacsWiki%%, used to be obtainable also from [[MELPA]].  You may still find some of them there, but they are likely ''not up-to-date''. 
 
-[[MELPA]] has decided to no longer accept Lisp libraries from %%EmacsWiki%%. This includes my libraries, even though these libraries are read-only (administrator lock on the wiki pages). Too bad. This means that you must download '''Icicles''' and my other libraries only from Emacs Wiki. Sorry about that. I upload '''Icicles''' files only to the wiki.
+As of 2017-10, [[MELPA]] has decided to no longer accept Lisp libraries from %%EmacsWiki%%. This includes my libraries, even though these libraries are read-only (administrator lock on the wiki pages). Too bad. This means that you must download '''Icicles''' and my other libraries only from Emacs Wiki. Sorry about that. I upload '''Icicles''' files only to the wiki.
 
 
 [new]
 
 
-You can download the '''Icicles''' files individually from ElispArea, by clicking the file link and then right-clicking the `Download' link for each, and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
+'''1.''' '''The slow boring inefficient manual method'''
 
-Alternatively, there are ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
+You could always download each of the '''Icicles''' files individually from ElispArea, by clicking the file link and then right-clicking the `Download' link for each, and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
 
-[new:DrewAdams:2009-04-17 07:54 UTC]
-'''Note:''' The %%EmacsWiki%% ElispArea always has the latest version of '''Icicles'''.  If you want to be sure to have the latest version, then either download the files individually there or use one of the first two methods described below (within Emacs and using a shell script).  The files obtained by the other methods are updated only periodically (e.g. once a week).  
+'''2.''' '''Automated methods from within Emacs:'''
 
-If you have Emacs 24 or later, then the first method is probably the easiest way to obtain up-to-date '''Icicles''' files.
-[new]
+* Use library <tt>[[icicles-install.el]]</tt>. See the simple instructions in the file header, and read the docstring for <tt>customize-variable icicle-files-to-download-list</tt>. Based on the [[ELPA]] initialization code. It uses [[UrlPackage]], if available; else it uses `wget'. Thanks to AnupamSengupta for this.
 
-
-
-'''1.''' '''Within Emacs''' -- Alternative ways:
-
-* You can download '''Icicles''' from [[MELPA]].  If you use Emacs 24 or later, you can both download and install it from within Emacs, easily.  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `icicles' in the list of available pacakges.  Use code like this to add `melpa' to the list of available archives:
-
-       (when (> emacs-major-version 23)
-        (require 'package)
-        (package-initialize)
-        (add-to-list 'package-archives 
-                     '("melpa" . "http://melpa.milkbox.net/packages/")
-                     'APPEND))
-
-* Use library <tt>[[icicles-install.el]]</tt>. See the simple instructions in the file header. Based on the [[ELPA]] initialization code. It uses [[UrlPackage]], if available; else it uses `wget'. Thanks to AnupamSengupta for this.
 
 * Use library <tt>[[auto-install.el]]</tt>. Setup like this: ##(setq auto-install-save-confirm nil)##. Do `M-x auto-install-batch', then enter `icicles'.  -- Thanks to AndyStewart for this.
 
 
+'''3.''' '''Automated method using a shell script external from emacs:''' (UNIX, GNU/Linux) 
+
+Use `wget': <tt>[[get-icicles.sh]]</tt>. Thanks to LeWang for that. Thanks to MishaGorodnitzky for tweaking it to get around an EmacsWiki limit on how many files you can download per second.
 
 
-'''2.''' '''Using a shell script:''' (UNIX, GNU/Linux) Use `wget': <tt>[[get-icicles.sh]]</tt>. Thanks to LeWang for that. Thanks to MishaGorodnitzky for tweaking it to get around an EmacsWiki limit on how many files you can download per second.
+'''4'''. '''Automated method using a Python script''': <tt>[[icicles_dler.py]]</tt>.
+
+Runs under python2.5.2.  Thanks to DarrenYin.  (The script is still "somewhat
+sketchy". -- DarrenYin) (and only installs icicles files, not its dependencies or recommended libraries)
 
 
-'''3.''' '''Using git''': The GitHubMirror
-contains a git repository that includes the '''[[https://github.com/emacsmirror/icicles Icicles files]]''' (https://github.com/emacsmirror/icicles), as well as other repositories.
-
-The '''Icicles''' repository contains the full git history of each '''Icicles''' file, but it does not include any of the other libraries on which '''Icicles''' depends or which '''Icicles''' can take advantage of.  (The git commit messages themselves are not meaningful.)  Those related libraries are also available on the GitHubMirror, but
-in ''separate'' git repositories.
-
-Note that repository names on
-github cannot contain a plus character (`##+##').  So, for example, '''[[Bookmark+]]''' files are available from repository
-https://github.com/emacsmirror/bookmark-plus, not ##https://github.com/emacsmirror/bookmark+##.
-
-
-
-[:ZipFileDownload]
-'''4.''' '''Using a zip file:''' You can download an automatically generated zip file of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles
-Icicles repository]]''' on the GitHubMirror.  The zip file contains only the '''Icicles''' files, not any related files (see #'''3''').
-
-
-
-'''5'''. '''Python script''': <tt>[[icicles_dler.py]]</tt>.  Runs
-under python2.5.2.  Thanks to DarrenYin.  (The script is still "somewhat
-sketchy". -- DarrenYin)
-
-
-'''6.''' '''Using `wget' directly :''' 
+'''5.''' '''Using `wget' directly :''' 
 * Required libraries:
 ##wget https://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el##
 * Optional libraries:
@@ -213,15 +180,24 @@ sketchy". -- DarrenYin)
 
 
 
+[new:DrewAdams:2009-04-17 07:54 UTC Updated by BoruchBaum 2018-04-03]
+'''Note:''' The remaining methods perform downloads from the project's mirror on github, and so have in common two disadvantages: 1) They only download the icicles libraries themselves, not their dependencies or recommended related libraries. Those related libraries are also available on the GitHubMirror, but in ''separate'' git repositories; 2) They might not always have the absolute most up-to-date version because the github mirror is updated  only periodically (e.g. once a week).
+
+Also note that repository names on
+github cannot contain a plus character (`##+##').  So, for example, '''[[Bookmark+]]''' files are available from repository
+https://github.com/emacsmirror/bookmark-plus, not ##https://github.com/emacsmirror/bookmark+##.
+[new]
 
 
+'''6.''' '''Manual download using git'''
+
+The GitHubMirror contains a git repository that includes the '''[[https://github.com/emacsmirror/icicles Icicles files]]''' (https://github.com/emacsmirror/icicles), as well as other repositories. Note that if you do not need the entire git history of each '''Icicles''' file, you can clone a subset using the options <tt>--depth=1 --branch=master</tt>
 
 
+[:ZipFileDownload]
+'''7.''' '''Manual github download using a zip file:'''
 
-
-
-
-
+You can download an automatically generated zip file of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles Icicles repository]]''' on the GitHubMirror.
 
 
 
