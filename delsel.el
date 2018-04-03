@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 10:39:32 2018 (-0800)
+;; Last-Updated: Tue Apr  3 15:00:03 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 510
+;;     Update #: 521
 ;; URL: https://www.emacswiki.org/emacs/download/delsel.el
 ;; Doc URL: https://emacswiki.org/emacs/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -90,6 +90,16 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/04/03 dadams
+;;     Updated wrt Emacs 24-27:
+;;      Added: delete-selection-uses-region-p, delsel--replace-text-or-position,
+;;             delete-selection-save-to-register.
+;;      delete-active-region: Added clause for delete-selection-save-to-register.
+;;      delete-selection-pre-hook: Moved doc string to delete-selection-helper.
+;;      Put t, not kill, on open-line.
+;;      delsel-unload-function: Added completion-*, self-insert-iso, delete-backward-char,
+;;        delete-forward-char, backward-delete-char-untabify, delete-char,
+          electric-newline-and-maybe-indent.
 ;; 2017/01/12 dadams
 ;;     delete-selection-mode:
 ;;       Corrected doc string per Emacs bug #25428.
@@ -223,7 +233,11 @@ ARG is omitted, nil, or a positive integer).
 
 When Delete Selection mode is enabled, typed text replaces the
 selection if the selection is active, and DEL deletes the selection.
-Otherwise, typed text is just inserted at point, as usual."
+Otherwise, typed text is just inserted at point, as usual.
+
+See `delete-selection-helper' and `delete-selection-pre-hook' for
+information about adapting behavior of commands in Delete Selection
+mode."
                :global t :group 'editing-basics
                (if (not delete-selection-mode)
                    (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
@@ -296,10 +310,20 @@ either \\[customize] or function `delete-selection-mode'."
   :group 'editing-basics
   :require 'delsel)
 
+(defvar delete-selection-save-to-register nil
+  "If non-nil then a register (key) to store deleted region text in.")
+
+(defvar delsel--replace-text-or-position nil)
+
 
 ;; CMPL-LAST-INSERT-LOCATION, CMPL-ORIGINAL-STRING and COMPLETION-TO-ACCEPT
 ;; are free here.
+;;
+;; Handles `completion.el'.
+;;
 (defun delete-active-region (&optional killp)
+  "Delete the active region.
+If KILLP is not-nil, kill the active region instead of deleting it."
   (cond ((and (eq last-command 'complete) ; See `completion.el'.
               (boundp 'cmpl-last-insert-location))
          ;; Do not delete region if a `self-insert-command'.  Delete it only if a
@@ -316,33 +340,71 @@ either \\[customize] or function `delete-selection-mode'."
                ;; Do not let `kill-region' change `this-command' - see Emacs bug #13312.
                (kill-region (point) (mark) 'REGION)
              (kill-region (point) (mark)))))
+        (delete-selection-save-to-register
+         (set-register delete-selection-save-to-register (funcall region-extract-function t))
+         (setq delsel--replace-text-or-position  (cons (current-buffer)
+                                                       (and (consp buffer-undo-list)
+                                                            (car buffer-undo-list)))))
         ((boundp 'region-extract-function) ; Emacs 24.4+
          (funcall region-extract-function 'delete-only))
         (t (delete-region (point) (mark))))
   (deactivate-mark)
   t)
 
+(defun delete-selection-repeat-replace-region (arg)
+  "Repeat replacing text of highlighted region with typed text.
+Search for the next stretch of text identical to the region last replaced
+by typing text over it and replace it with the same stretch of text.
+With numeric prefix ARG, repeat that many times.
+With plain `C-u', repeat until reach `point-max'."
+  (interactive "P")
+  (let ((old-text  (and delete-selection-save-to-register
+                        (get-register delete-selection-save-to-register)))
+        (count     (if (consp arg) (point-max) (prefix-numeric-value current-prefix-arg))))
+    (if (not (and old-text
+                  (> (length old-text) 0)
+                  (or (stringp delsel--replace-text-or-position)
+                      (buffer-live-p (car delsel--replace-text-or-position)))))
+        (message "No known previous replacement")
+      ;; If first use after overwriting regions, find replacement by looking at undo list.
+      (when (consp delsel--replace-text-or-position)
+        (let ((buffer  (car delsel--replace-text-or-position))
+              (elt     (cdr delsel--replace-text-or-position)))
+          (setq delsel--replace-text-or-position  nil)
+          (with-current-buffer buffer
+            (save-restriction
+              (widen)
+              ;; Find the text that replaced the region, using the undo list.
+              (let ((undos  buffer-undo-list)
+                    undo ubeg uend)
+                (when elt
+                  (while (consp undos)
+                    (setq undo   (car undos)
+                          undos  (cdr undos))
+                    (cond ((eq undo elt) (setq undos  nil)) ; Got it
+                          ((and (consp undo)  (integerp (car undo))  (integerp (cdr undo)))
+                           (unless (and ubeg  (= (cdr undo) ubeg)) (setq uend  (cdr undo)))
+                           (setq ubeg  (car undo))))))
+                (cond ((and ubeg  uend  (<= ubeg uend)  (= ubeg (mark t)))
+                       (setq delsel--replace-text-or-position  (filter-buffer-substring
+                                                                ubeg uend))
+                       (set-text-properties 0 (length delsel--replace-text-or-position)
+                                            nil delsel--replace-text-or-position))
+                      ((and (null ubeg)  (eq undo elt)) ; Nothing inserted.
+                       (setq delsel--replace-text-or-position  ""))
+                      (t (message "Cannot locate replacement text"))))))))
+      (while (and (> count 0)
+                  delsel--replace-text-or-position
+                  (search-forward old-text nil t))
+        (replace-match delsel--replace-text-or-position nil t)
+        (setq count  (1- count))))))
+
 (defun delete-selection-pre-hook ()
-  "Delete selection according to TYPE:
-`yank'
-    For commands that yank: Ensure that the region about to be
-    deleted is not yanked.
-
-`supersede'
-    Delete the active region and ignore the current command.
-
-`kill'
-    Use `kill-region' on the selection, rather than `delete-region'.
-    (Text selected with the mouse will typically be yankable anyway.)
-
-FUNCTION (Emacs 24.4 or later, only)
-    Invoke FUNCTION and then start over, using its return value as the
-    new TYPE.  FUNCTION should not require an argument and should
-    a value acceptable as TYPE.
-
-other non-nil value
-    Delete the active region prior to executing the command that
-    inserts replacement text."
+  "Function run before commands that delete selections are executed.
+Commands which will delete the selection need a `delete-selection'
+property on their symbol; commands which insert text but don't
+have this property won't delete the selection.
+See `delete-selection-helper'."
   (if (and (eq last-command 'complete)  ; See `completion.el'.
            (boundp 'cmpl-last-insert-location))
       (let ((mark-active  t))
@@ -384,7 +446,28 @@ other non-nil value
                                     (get this-command 'delete-selection))))))
 
 (defun delete-selection-helper (type)
-  "Helper for `delete-selection-pre-hook-1'."
+  "Delete selection according to TYPE:
+`yank'
+    For commands that yank: Ensure that the region about to be
+    deleted is not yanked immediately, which would be a no-op.
+
+`supersede'
+    Delete the active region and ignore the current command.
+    Used typically for commands that delete small amounts of text.
+    With this they instead delete the whole active region.
+
+`kill'
+    Use `kill-region' on the selection, rather than `delete-region'.
+    (Text selected with the mouse is typically yankable anyway.)
+
+FUNCTION (Emacs 24.4 or later, only)
+    Invoke FUNCTION and then start over, using its return value as the
+    new TYPE.  FUNCTION should not require an argument and should
+    return nil or a value acceptable as TYPE.
+
+other non-nil value
+    Delete the active region prior to executing the command that
+    inserts replacement text.  This is the most common case."
   (condition-case err
       (cond ((eq type 'kill)
              (delete-active-region t)
@@ -444,15 +527,29 @@ other non-nil value
     ;; deletion when inserting text is forbidden there.
     (text-read-only (message "Text is read-only") (ding))))
 
+(when (boundp 'self-insert-uses-region-functions)
 
-(if (or (> emacs-major-version 24)
-        (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
-    (put 'self-insert-command 'delete-selection
-         (lambda ()
-           (not (run-hook-with-args-until-success 'self-insert-uses-region-functions))))
+  (defun delete-selection-uses-region-p ()
+    "Return t when `delete-selection-mode' should not delete the region.
+The `self-insert-command' could be the current command or may be
+called by the current command.  If this function returns nil,
+then `delete-selection' is allowed to delete the region.
+
+This function is intended for use as the value of the
+`delete-selection' property of a command, and shouldn't be used
+for anything else.  In particular, `self-insert-command' has this
+function as its `delete-selection' property, so that \"electric\"
+self-insert commands that act on the region could adapt themselves
+to `delete-selection-mode'."
+    (not (run-hook-with-args-until-success 'self-insert-uses-region-functions)))
+
+  )
+
+(if (boundp 'self-insert-uses-region-functions)
+    (put 'self-insert-command 'delete-selection 'delete-selection-uses-region-p)
   (put 'self-insert-command 'delete-selection t))
 
-(put 'self-insert-iso 'delete-selection t)
+(put 'self-insert-iso 'delete-selection t) ; Used in Emacs 23.
 
 ;; These are defined in `completion.el'.
 (put 'completion-separator-self-insert-command 'delete-selection t)
@@ -466,6 +563,7 @@ other non-nil value
 (put 'insert-register 'delete-selection t)
 
 (put 'delete-backward-char 'delete-selection 'supersede)
+(put 'delete-forward-char 'delete-selection 'supersede)
 (put 'backward-delete-char-untabify 'delete-selection 'supersede)
 (put 'delete-char 'delete-selection 'supersede)
 
@@ -473,7 +571,7 @@ other non-nil value
 (put 'reindent-then-newline-and-indent 'delete-selection t)
 (put 'newline-and-indent 'delete-selection t)
 (put 'newline 'delete-selection t)
-(put 'open-line 'delete-selection 'kill)
+(put 'open-line 'delete-selection t)    ; Was `kill' in Emacs 23.
 
 (when (< emacs-major-version 22)        ; New `insert-parentheses' behavior.
   (put 'insert-parentheses 'delete-selection t))
@@ -486,7 +584,7 @@ other non-nil value
 In Delete Selection mode, if the mark is active, just deactivate it;
 then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (interactive)
-  (if (and delete-selection-mode transient-mark-mode mark-active)
+  (if (and delete-selection-mode transient-mark-mode mark-active) ; aka ~ `region-active-p'
       (setq deactivate-mark  t)
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
@@ -503,9 +601,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key minibuffer-local-completion-map "\C-g" 'abort-recursive-edit)
   (define-key minibuffer-local-must-match-map "\C-g" 'abort-recursive-edit)
   (define-key minibuffer-local-isearch-map "\C-g" 'abort-recursive-edit)
-  (dolist (sym  '(self-insert-command  insert-char  quoted-insert yank
+  (dolist (sym  '(completion-separator-self-insert-command
+                  completion-separator-self-insert-autofilling
+                  self-insert-command  insert-char  quoted-insert yank
                   clipboard-yank  insert-register  newline-and-indent
-                  reindent-then-newline-and-indent  newline  open-line))
+                  reindent-then-newline-and-indent  newline  open-line
+                  self-insert-iso delete-backward-char delete-forward-char
+                  backward-delete-char-untabify delete-char
+                  electric-newline-and-maybe-indent))
     (put sym 'delete-selection nil)))
 
 (when (< emacs-major-version 21)
