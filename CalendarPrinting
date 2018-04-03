@@ -1,9 +1,7 @@
 =General=
-When typing 't m' on the current month in CalendarMode you will be presented a new buffer named 'calendar.tex' containing a latex representation of the current month.
+When typing 't m' (cal-tex-cursor-month) on the current month in CalendarMode you will be presented a new buffer named 'calendar.tex' containing a latex representation of the current month.
 
-Typing '\C-c\C-c' will "compile" the file and then you can see it by typing "\C-c\C-c" again.
-
-That's just cool :)
+Save it. Then, typing '\C-c\C-c' and <Enter> (likely selecting tex-compile), will "compile" the file and then you can see it by typing "\C-c\C-c" and <Enter> again (likely selecting \doc-view "calendar.pdf").
 
 Note that typing 't M' instead of 't m' will change the orientation of the calendar.
 
