@@ -1,5 +1,7 @@
 = Editing wiki pages =
 
+test7
+
 2018-03-30: Much of the prior information on this page was wrong or out-of-date.
 As of today, editing this wiki and wikipedia using the basic emacs-w3m package was
 straightforward and required no special settings, functions, or
