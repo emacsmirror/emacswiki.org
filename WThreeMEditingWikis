@@ -17,7 +17,13 @@ The final version of WikiRemote includes the function
 currently visiting.  Here's an example which allows you to hit `e' to
 edit the page you are currently browsing.
 
+<<<<<<< you
+ (autoload 'wiki-remote-get-w3m "wiki-remote";;
+||||||| ancestor
+ (autoload 'wiki-remote-get-w3m "wiki-remote"
+=======
  (autoload 'wiki-remote-get-w3m "wiki-remote";
+>>>>>>> other
    "Edit wiki pages currently visited using w3m." t)
 
  (add-hook 'w3m-mode-hook
