@@ -1,4 +1,3 @@
-;; -*- emacs-lisp -*-
 ;;; gnus-notify.el --- use the modeline to indicate groups with new messages
 
 ;; Author: Mark Triggs <mark@dishevelled.net>
