@@ -19,7 +19,7 @@ edit the page you are currently browsing.
 
  (autoload 'wiki-remote-get-w3m "wiki-remote"
    "Edit wiki pages currently visited using w3m." t)
-;
+
  (add-hook 'w3m-mode-hook
 	   (lambda ()
 	     (define-key w3m-mode-map "e" 
