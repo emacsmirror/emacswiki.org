@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 10:35:51 2018 (-0800)
+;; Last-Updated: Thu Apr  5 13:55:02 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1641
+;;     Update #: 1652
 ;; URL: https://www.emacswiki.org/emacs/download/cus-edit%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -320,7 +320,7 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `custom-consider-face-unchanged',
+;;    `cus-editp-remove-duplicates', `custom-consider-face-unchanged',
 ;;    `custom-consider-variable-unchanged',
 ;;    `custom-ignore-unsaved-preference', `custom-type',
 ;;    `custom-update-face', `custom-update-variable',
@@ -353,6 +353,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/04/05 dadams
+;;     Added cus-editp-remove-duplicates.  Use instead of help-remove-duplicates.
 ;; 2017/06/04 dadams
 ;;     custom-magic-alist: Use newer face names (which are aliased to the old ones).
 ;; 2017/01/06 dadams
@@ -917,6 +919,17 @@ widget.  If FILTER is nil, ACTION is always valid.")
 
 ;;; FUNCTIONS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun cus-editp-remove-duplicates (list &optional use-eq)
+  "Copy of LIST with duplicate elements removed.
+Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
+  (let ((tail  list)
+        new)
+    (while tail
+      (unless (if use-eq (memq (car tail) new) (member (car tail) new))
+        (push (car tail) new))
+      (pop tail))
+    (nreverse new)))
+
 ;;;###autoload
 (defun customize-apropos-options-of-type (type regexp &optional arg)
   "Customize all loaded customizable options of type TYPE that match REGEXP.
@@ -936,7 +949,7 @@ potential candidates."
                           (push (list (format "%s" (format "%S" (get cand 'custom-type))))
                                 types))))
                      (completing-read "Customize all options of type: "
-                                      (help-remove-duplicates types)
+                                      (cus-editp-remove-duplicates types)
                                       nil nil nil nil "nil")))
                 (end-of-file (error "No such custom type"))))
          (read-string "Customize options matching (regexp): ")
