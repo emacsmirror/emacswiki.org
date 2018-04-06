@@ -1,4 +1,6 @@
-This page describes package Lisp:intel-hex-mode.el, by Rubens Ramos.
+This page describes package intel-hex-mode, authored by Rubens Ramos and maintained by Michael Schuldt.
+
+The code is hosted at: https://github.com/mschuldt/intel-hex-mode
 
 == About intel-hex-mode ==
 
@@ -10,7 +12,7 @@ To use intel-hex-mode, add
 
 to your ##~/.emacs(.el)## or ##~/.xemacs/init.el##.
 
-By default, .a90 and .hex files will be recognized.
+By default, .a90, .hex, .a43, and, ihx files will be recognized.
 
 Use `C-c C-c' to update the current line's checksum, and `C-c C-b' to update the whole buffer.
 
