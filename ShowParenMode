@@ -66,6 +66,22 @@ The information that you are all writing about is from [[user option]] `blink-ma
 
 IOW, if you turn on `show-paren-mode' and `blink-matching-paren' is on (the default) then you get both highlighting of the matching paren and, when it is off-screen, an [[echo area]] description of the match location. If you turn off `show-paren-mode' but you leave on `blink-matching-paren' then you get the echo-area indication ''and'' the [[cursor]] bounces to the match location.  If you turn on `show-paren-mode' and you turn off `blink-matching-paren' then you get only the match highlighting -- no echo-area description of an off-screen match location. -- DrewAdams
 
+[new]
+
+In GNU Emacs 25.1 the message is not shown in the echo area automatically even if `show-paren-mode' and `blink-matching-paren' is on. The given defadvice partly solves the problem, but you get an error message. To solve that simply remove the `(when matching-text ...)' so you get
+
+    (defadvice show-paren-function
+      (after show-matching-paren-offscreen activate)
+      "If the matching paren is offscreen, show the matching line in the
+        echo area. Has no effect if the character before point is not of
+        the syntax class ')'."
+      (interactive)
+      (let* ((cb (char-before (point)))
+             (matching-text (and cb
+                                 (char-equal (char-syntax cb) ?\) )
+                                 (blink-matching-open)))))))
+
+
 
 == Links ==
 
