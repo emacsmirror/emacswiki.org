@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:35:56 2018 (-0800)
+;; Last-Updated: Sat Apr  7 17:35:06 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 238
+;;     Update #: 315
 ;; URL: https://www.emacswiki.org/emacs/download/highlight-chars.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -69,9 +69,9 @@
 ;;     you for the face to use.
 ;;
 ;;   For these particular commands and functions, option
-;;   `hc-other-chars-font-lock-override' controls whether the current
-;;   highlighting face overrides (`t'), is overridden by (`keep'), or
-;;   merges with (`append' or `prepend') any existing highlighting.
+;;   `hc-font-lock-override' controls whether the current highlighting
+;;   face overrides (`t'), is overridden by (`keep'), or merges with
+;;   (`append' or `prepend') any existing highlighting.
 ;;
 ;; To use this library, add this to your init file (~/.emacs):
 ;;
@@ -222,8 +222,7 @@
 ;;
 ;; User options defined here:
 ;;
-;;    `hc-other-chars', `hc-other-chars-font-lock-override',
-;;    `hc-other-chars-NOT'.
+;;    `hc-font-lock-override', `hc-other-chars', `hc-other-chars-NOT'.
 ;;
 ;; Commands defined here:
 ;;
@@ -246,12 +245,14 @@
 ;;    `hc-highlight-other-chars', `hc-highlight-hard-spaces',
 ;;    `hc-highlight-tabs', `hc-highlight-trailing-whitespace',
 ;;    `hc-other-chars-defcustom-spec', `hc-other-chars-description',
-;;    `hc-other-chars-font-lock-spec', `hc-other-chars-matcher'.
+;;    `hc-other-chars-font-lock-spec', `hc-other-chars-matcher',
+;;    `hc-remove-hc-from-font-lock-keywords', `hc-remove-if'.
 ;;
 ;; Internal variables defined here:
 ;;
 ;;    `hc-highlight-hard-hyphens-p', `hc-highlight-hard-spaces-p',
-;;    `hc-highlight-tabs-p', `hc-highlight-trailing-whitespace-p',
+;;    `hc-highlight-other-chars-p', `hc-highlight-tabs-p',
+;;    `hc-highlight-trailing-whitespace-p',
 ;;    `hc--other-chars-last-match-data',
 ;;    `hc--saved-nobreak-char-display'.
 ;;
@@ -270,6 +271,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/04/07 dadams
+;;     Added: hc-remove-hc-from-font-lock-keywords, hc-remove-if.
+;;     Renamed: hc-other-chars-font-lock-override to hc-font-lock-override.
+;;     hc-font-lock-override: Added :set function.  Used now for all hc-* highlighting, not just other-chars.
+;;     hc(-dont)-highlight-*: Use value of hc-font-lock-override, not t.
 ;; 2014/05/12 dadams
 ;;     hc-highlight-chars: Clarified doc string for arg CHARS.
 ;; 2012/11/18 dadams
@@ -504,21 +510,73 @@ The possible option values are the same as for `hc-other-char'."
          (setq hc--saved-nobreak-char-display  nil)) ; Reset cached match-data.
   :type (hc-other-chars-defcustom-spec) :group 'Highlight-Characters)
 
+;; Same as `diredp-remove-if'.
+;;
 ;;;###autoload
-(defcustom hc-other-chars-font-lock-override 'append
+(defun hc-remove-if (pred xs)
+  "A copy of list XS with no elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (unless (funcall pred x) (push x result)))
+    (nreverse result)))
+
+;;;###autoload
+(defun hc-remove-hc-from-font-lock-keywords ()
+  "Remove `hc-*' face entries from `font-lock-keywords' in current buffer."
+  (font-lock-set-defaults)
+  (let ((was-compiled  (eq (car font-lock-keywords) t)))
+    ;; Restore the user-level (uncompiled) keywords.
+    (when was-compiled (setq font-lock-keywords  (cadr font-lock-keywords)))
+    ;; Each of the `hc-*' entries has this form: (0 'hc-* VALUE)
+    (setq font-lock-keywords
+          (let ((hc-faces  '(hc-tab  hc-trailing-whitespace  hc-hard-space
+                             hc-hard-hyphen  hc-other-char))
+                face)
+            (hc-remove-if
+             (lambda (entry)
+               (setq face  (condition-case nil (cadr (cadr (cadr entry))) (error nil)))
+               (and face  (memq face hc-faces)))
+             font-lock-keywords)))
+    (when was-compiled ; If keywords were compiled before, compile them again.
+      (setq font-lock-keywords  (font-lock-compile-keywords font-lock-keywords)))))
+
+;;;###autoload
+(defcustom hc-font-lock-override 'append
   "*How highlighting for other chars interacts with existing highlighting.
 The values correspond to the values for an OVERRIDE spec in
 `font-lock-keywords'.  See (elisp) `Search-based Fontification'.
 
-This affects commands `hc-toggle-highlight-other-chars' and
- `hc-highlight-chars', and functions `hc-highlight-other-chars' and
- `hc-dont-highlight-other-chars'."
+This affects commands `hc-toggle-highlight-*' and
+ `hc-highlight-chars', and non-interactive functions
+ `hc-highlight-other-chars' and `hc-dont-highlight-other-chars'.
+
+Use \\[customize-option] to change the option value.
+
+If you instead change the value some other way, which is not
+recommended, then you must first remove any existing `hc-*' entries
+from `font-lock-keywords', in each buffer.  You can do that by
+invoking `hc-remove-hc-from-font-lock-keywords' in each buffer.  Then
+you must toggle `font-lock-mode' off and on again, for the new option
+value to take effect."
   :type '(choice
-          (const :tag "Do not override existing highlighting (`keep')" keep)
-          (const :tag "Merge after existing highlighting (`append')"   append)
-          (const :tag "Merge before existing highlighting (`prepend')" prepend)
-          (const :tag "Replace (override) existing highlighting"       t))
-  :group 'Highlight-Characters)
+          (const :tag "Do not override any existing highlighting (`keep')" keep)
+          (const :tag "Merge after any existing highlighting (`append')"   append)
+          (const :tag "Merge before any existing highlighting (`prepend')" prepend)
+          (const :tag "Replace (override) any existing highlighting"       t))
+  :group 'Highlight-Characters
+  :set (lambda (sym defs)
+         (dolist (buf  (buffer-list))
+           (with-current-buffer buf
+             (when font-lock-keywords
+               (hc-remove-hc-from-font-lock-keywords)
+               (setq hc-highlight-tabs-p                 nil
+                     hc-highlight-hard-spaces-p          nil
+                     hc-highlight-other-chars-p          nil
+                     hc-highlight-trailing-whitespace-p  nil)
+               (when (fboundp 'hc-dont-highlight-hard-hyphens) ; Emacs 23+
+                 (setq hc-highlight-hard-hyphens-p  nil)))))
+         (custom-set-default sym defs)
+         (dolist (buf  (buffer-list))
+           (with-current-buffer buf (when font-lock-mode (font-lock-mode) (font-lock-mode))))))
 
 (defvar hc-highlight-tabs-p nil
   "Non-nil means font-lock mode highlights TAB characters (`C-i').")
@@ -759,14 +817,14 @@ Uses face `hc-trailing-whitespace'."
 
 (defun hc-highlight-tabs ()
   "Highlight tab characters (`C-i')."
-  (font-lock-add-keywords nil '(("[\t]+" (0 'hc-tab t))) 'APPEND))
+  (font-lock-add-keywords nil `(("[\t]+" (0 'hc-tab ,hc-font-lock-override))) 'APPEND))
 
 ;; These are no-ops for Emacs 20, 21:
 ;; `font-lock-remove-keywords' is not defined, and we don't need to use it.
 (defun hc-dont-highlight-tabs ()
   "Do not highlight tab characters (`C-i')."
   (when (fboundp 'font-lock-remove-keywords)
-    (font-lock-remove-keywords nil '(("[\t]+" (0 'hc-tab t))))))
+    (font-lock-remove-keywords nil `(("[\t]+" (0 'hc-tab ,hc-font-lock-override))))))
 
 (defun hc-highlight-hard-spaces ()
   "Highlight hard (non-breaking) space characters (`?\u00a0').
@@ -775,8 +833,8 @@ This also sets `nobreak-char-display' to nil, to turn off its
 low-level, vanilla highlighting."
   (when (boundp 'nobreak-char-display) (setq nobreak-char-display  nil))
   (if (> emacs-major-version 22)
-      (font-lock-add-keywords nil '(("[\u00a0]+" (0 'hc-hard-space t))) 'APPEND)
-    (font-lock-add-keywords nil '(("[\240]+" (0 'hc-hard-space t))) 'APPEND)))
+      (font-lock-add-keywords nil `(("[\u00a0]+" (0 'hc-hard-space ,hc-font-lock-override))) 'APPEND)
+    (font-lock-add-keywords nil `(("[\240]+" (0 'hc-hard-space ,hc-font-lock-override))) 'APPEND)))
 
 (defun hc-dont-highlight-hard-spaces ()
   "Do not highlight hard (non-breaking) space characters (`?\u00a0').
@@ -788,8 +846,8 @@ value."
     (setq nobreak-char-display  hc--saved-nobreak-char-display))
   (when (fboundp 'font-lock-remove-keywords)
     (if (> emacs-major-version 22)
-        (font-lock-remove-keywords nil '(("[\u00a0]+" (0 'hc-hard-space t))))
-      (font-lock-remove-keywords nil '(("[\240]+" (0 'hc-hard-space t)))))))
+        (font-lock-remove-keywords nil `(("[\u00a0]+" (0 'hc-hard-space ,hc-font-lock-override))))
+      (font-lock-remove-keywords nil `(("[\240]+" (0 'hc-hard-space ,hc-font-lock-override)))))))
 
 (when (> emacs-major-version 22)
   (defun hc-highlight-hard-hyphens ()
@@ -797,7 +855,7 @@ value."
 This also sets `nobreak-char-display' to nil, to turn off its
 low-level, vanilla highlighting."
     (when (boundp 'nobreak-char-display) (setq nobreak-char-display  nil))
-    (font-lock-add-keywords nil '(("[\u2011]+" (0 'hc-hard-hyphen t))) 'APPEND)))
+    (font-lock-add-keywords nil `(("[\u2011]+" (0 'hc-hard-hyphen ,hc-font-lock-override))) 'APPEND)))
 
 (when (> emacs-major-version 22)
   (defun hc-dont-highlight-hard-hyphens ()
@@ -808,7 +866,7 @@ value."
     (unless (or hc-highlight-trailing-whitespace-p  hc-highlight-hard-spaces-p)
       (setq nobreak-char-display  hc--saved-nobreak-char-display))
     (when (fboundp 'font-lock-remove-keywords)
-      (font-lock-remove-keywords nil '(("[\u2011]+" (0 'hc-hard-hyphen t)))))))
+      (font-lock-remove-keywords nil `(("[\u2011]+" (0 'hc-hard-hyphen ,hc-font-lock-override)))))))
 
 (defun hc-highlight-trailing-whitespace ()
   "Highlight whitespace characters at line ends.
@@ -817,10 +875,12 @@ This also sets `nobreak-char-display' to nil, to turn off the
 low-level, vanilla highlighting of hard spaces."
   (when (boundp 'nobreak-char-display) (setq nobreak-char-display  nil))
   (if (> emacs-major-version 22)
-      (font-lock-add-keywords
-       nil '(("[\u00a0\040\t]+$" (0 'hc-trailing-whitespace t))) 'APPEND)
-    (font-lock-add-keywords
-     nil '(("[\240\040\t]+$" (0 'hc-trailing-whitespace t))) 'APPEND)))
+      (font-lock-add-keywords nil
+                              `(("[\u00a0\040\t]+$" (0 'hc-trailing-whitespace ,hc-font-lock-override)))
+                              'APPEND)
+    (font-lock-add-keywords nil
+                            `(("[\240\040\t]+$" (0 'hc-trailing-whitespace ,hc-font-lock-override)))
+                            'APPEND)))
 
 (defun hc-dont-highlight-trailing-whitespace ()
   "Do not highlight whitespace characters at line ends.
@@ -832,10 +892,8 @@ value."
     (setq nobreak-char-display  hc--saved-nobreak-char-display))
   (when (fboundp 'font-lock-remove-keywords)
     (if (> emacs-major-version 22)
-        (font-lock-remove-keywords
-         nil '(("[\u00a0\040\t]+$" (0 'hc-trailing-whitespace t))))
-      (font-lock-remove-keywords
-       nil '(("[\240\040\t]+$" (0 'hc-trailing-whitespace t)))))))
+        (font-lock-remove-keywords nil `(("[\u00a0\040\t]+$" (0 'hc-trailing-whitespace ,hc-font-lock-override))))
+      (font-lock-remove-keywords nil `(("[\240\040\t]+$" (0 'hc-trailing-whitespace ,hc-font-lock-override)))))))
 
 (defun hc-highlight-other-chars (&optional chars chars-NOT face)
   "Highlight CHARS using FACE.
@@ -844,15 +902,13 @@ as a value of `hc-other-chars' or `hc-other-chars-NOT'.
 CHARS defaults to the value of `hc-other-chars'.
 CHARS-NOT defaults to the value of `hc-other-chars-NOT'.
 FACE defaults to face `hc-other-char'."
-  (font-lock-add-keywords
-   nil (hc-other-chars-font-lock-spec chars chars-NOT face) 'APPEND))
+  (font-lock-add-keywords nil (hc-other-chars-font-lock-spec chars chars-NOT face) 'APPEND))
 
 (defun hc-dont-highlight-other-chars (&optional chars chars-NOT face)
   "Do not highlight CHARS using FACE.  That is, unhighlight any such.
 CHARS, CHARS-NOT, and FACE are as for `hc-highlight-other-chars'."
   (when (fboundp 'font-lock-remove-keywords)
-    (font-lock-remove-keywords
-     nil (hc-other-chars-font-lock-spec chars chars-NOT face))))
+    (font-lock-remove-keywords nil (hc-other-chars-font-lock-spec chars chars-NOT face))))
 
 (defun hc-other-chars-font-lock-spec (&optional chars chars-NOT face)
   "Font-lock spec used by `hc-highlight-other-chars'.
@@ -953,7 +1009,7 @@ CHARS, CHARS-NOT, and FACE are as for `hc-highlight-other-chars'."
                                chars-NOT)
                        "\\|"))))
     `((,(hc-other-chars-matcher regexp-in regexp-out)
-        (0 ',face ,hc-other-chars-font-lock-override)))))
+        (0 ',face ,hc-font-lock-override)))))
 
 (defun hc-other-chars-matcher (regexp-in regexp-out)
   "Return a font-lock matcher function for `hc-other-chars-font-lock-spec'.
