@@ -35,57 +35,21 @@ To change the color/face:
 
 == How to show the matching paren when it is offscreen ==
 
-When the matching paren is offscreen, show-paren-mode highlights only the paren at point. It is more useful to show the line of matching paren in the minibuffer. Execute the following to get this behavior:
+See `blink-matching-paren' and `blink-matching-paren-distance'.
 
-    (defadvice show-paren-function
-      (after show-matching-paren-offscreen activate)
-      "If the matching paren is offscreen, show the matching line in the
-        echo area. Has no effect if the character before point is not of
-        the syntax class ')'."
-      (interactive)
-      (let* ((cb (char-before (point)))
-             (matching-text (and cb
-                                 (char-equal (char-syntax cb) ?\) )
-                                 (blink-matching-open))))
-        (when matching-text (message matching-text))))
+Note this change in etc/NEWS:
+<pre>
+* Editing Changes in Emacs 24.4
 
-[new:PaulTipper:2008-06-05 09:02 UTC]
-
-This behaviour seems to occur already in my GNU Emacs 23.0.60.2 with (show-paren-mode), but I'm fairly sure it happens in stock GNU Emacs 22 as well, can anyone confirm?
-
-[new]
-
-Not in my emacs: 22.2.1.  Glad to have it though.
-
-[new]
-
-In GNU Emacs 23.2, this information shows up directly after typing a closing paren, independent of whether ``show-paren-mode'' is enabled or not (see [ParenthesisMatching]).  If you use the above code (and enable ``show-paren-mode''), the information will show up every time the point is placed behind a closing paren.
-
-[new:DrewAdams:2013-12-13 01:37 UTC]
-The information that you are all writing about is from [[user option]] `blink-matching-paren', which is by default `t' (i.e., turned on) in ''all'' Emacs versions.  When it is on and `show-paren-mode' is also on, the information about the matching location off-screen appears (from `blink-matching-paren'), but there is ''no'' blink: no apparent cursor movement (bounce).
-
-IOW, if you turn on `show-paren-mode' and `blink-matching-paren' is on (the default) then you get both highlighting of the matching paren and, when it is off-screen, an [[echo area]] description of the match location. If you turn off `show-paren-mode' but you leave on `blink-matching-paren' then you get the echo-area indication ''and'' the [[cursor]] bounces to the match location.  If you turn on `show-paren-mode' and you turn off `blink-matching-paren' then you get only the match highlighting -- no echo-area description of an off-screen match location. -- DrewAdams
-
-[new]
-
-In GNU Emacs 25.1 the message is not shown in the echo area automatically even if `show-paren-mode' and `blink-matching-paren' is on. The given defadvice partly solves the problem, but you get an error message. To solve that simply remove the `(when matching-text ...)' so you get
-
-    (defadvice show-paren-function
-      (after show-matching-paren-offscreen activate)
-      "If the matching paren is offscreen, show the matching line in the
-        echo area. Has no effect if the character before point is not of
-        the syntax class ')'."
-      (interactive)
-      (let* ((cb (char-before (point)))
-             (matching-text (and cb
-                                 (char-equal (char-syntax cb) ?\) )
-                                 (blink-matching-open)))))))
-
-
+** `blink-matching-paren' now only highlights the matching open-paren
+by default, instead of moving the cursor.  Set this variable to `jump' to
+restore the old behavior.
+</pre>
 
 == Links ==
 
-http://emacs-fu.blogspot.com/2009/01/balancing-your-parentheses.html
+* http://emacs-fu.blogspot.com/2009/01/balancing-your-parentheses.html
+* See "Manual:Matching Parentheses" in the Emacs manual.
 
 ----
 CategoryParentheses CategoryModes ParenthesesAppearance
