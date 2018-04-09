@@ -399,7 +399,7 @@ Confirm your order? "
                   ("shows_feedback_form"           . ,(=> basket 'shows_feedback_form))
                   ("wanted_time"                   . ,wanted_time)
                   ("uploaded_at")
-                  ("contact_number" . "6467501189")
+                  ("contact_number" . "XXXXXXX")
                   ("state" . "complete")
                   ("billing_account" .
                    (
