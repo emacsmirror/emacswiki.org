@@ -1,0 +1,4 @@
+In emacs 25.2.2, I had to replace "labels" by "cl-labels" so that (mapcar #'score-chunk completion) doesn't fail.
+
+-- Anonymous 2018-04-09 09:24 UTC
+
