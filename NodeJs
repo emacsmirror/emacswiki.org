@@ -5,7 +5,8 @@
 The simplest method is to just use Emacs's Comint mode: 
 
     (defun node-repl () (interactive)
-      (pop-to-buffer (make-comint "node-repl" "node" nil "--interactive"))
+      (setenv "NODE_NO_READLINE" "1") ;avoid fancy terminal codes
+      (pop-to-buffer (make-comint "node-repl" "node" nil "--interactive")))
     (node-repl)
 
 == Using js-comint ==
