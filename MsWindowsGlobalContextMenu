@@ -62,3 +62,5 @@ Emacsclient may stop functioning if there is an old server file left over from p
 There is a similar registry code at [[EmacsW32]] in the /Send To/ submenu.
 
 -- Abrahams
+
+HKEY_CLASSES_ROOT is a thing of the past. Please use HKEY_CURRENT_USER\Software\Classes instead.
