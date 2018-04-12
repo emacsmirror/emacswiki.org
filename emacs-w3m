@@ -74,6 +74,7 @@ MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;appl
 * WThreeMSearch - improving searching
 * WThreeMTables - displaying tables correctly
 * WThreeMTabs - managing multiple WThreeM buffers
+* WThreeMTranslation - use google translate
 * WThreeMTypeAhead - type ahead support
 * WThreeMShimbun - use w3m to create mail backend
 * WThreeMAuthentication - issues with http auth
