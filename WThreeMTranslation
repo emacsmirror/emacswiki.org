@@ -1,1 +1,4 @@
-All the web-based translation services with which I'm familiar require javascript for their web interface; however, google translate doe have a developer API which has been used by emacs package "*google-translate*" (available on MELPA). With that package installed, just select a region and <code>M-x google-translate-at-point</code>.
+All the web-based translation services with which I'm familiar require Javascript for their web interface; however, Google Translate does have a developer API which has been used by the Emacs package *google-translate* (available on MELPA). With that package installed, just select a region and <code>M-x google-translate-at-point</code>.
+
+----
+CategoryServices
