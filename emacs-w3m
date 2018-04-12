@@ -22,12 +22,12 @@ If you are building from cvs, be aware of one gotcha: if the first ##emacs## exe
 
 
 == Basic Setup ==
-
+{{{
  (setq browse-url-browser-function 'w3m-browse-url)
  (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
  ;; optional keyboard short-cut
  (global-set-key "\C-xm" 'browse-url-at-point)
-
+}}}
 === GUI Desktop Integration ===
 
 If your GUI desktop complies with the freedesktop standard, you can have
@@ -74,7 +74,7 @@ MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;appl
 * WThreeMSearch - improving searching
 * WThreeMTables - displaying tables correctly
 * WThreeMTabs - managing multiple WThreeM buffers
-* WThreeMTranslation - use google translate
+* WThreeMTranslation - use google translate indirectly
 * WThreeMTypeAhead - type ahead support
 * WThreeMShimbun - use w3m to create mail backend
 * WThreeMAuthentication - issues with http auth
