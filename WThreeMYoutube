@@ -37,6 +37,11 @@ Refer to `man(1) youtube-dl' for information on available arguments."
   (interactive)
   (if (not (w3m-url-valid url))
     (error "Invalid URL")
+  (when (string-match "\\(\\&list=[^&]+\\)" url)
+    (setq url
+      (concat
+        (substring-no-properties url nil (match-beginning 0))
+        (substring-no-properties url (match-end 0)))))
   (let* (proc
          (buf (generate-new-buffer "*w3m-download-video*"))
          (base (and (string-match "//\\([^/]+\\)/" url)
@@ -80,3 +85,7 @@ Refer to `man(1) youtube-dl' for information on available arguments."
      (user-error "No url found at point.")
     (w3m-download-video url))))
 </pre>
+
+=== Changelog ===
+
+2018-04-12: updated code to handle youtube links on playlist pages
