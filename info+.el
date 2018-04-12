@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 10 10:18:09 2018 (-0800)
+;; Last-Updated: Thu Apr 12 13:10:04 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6280
+;;     Update #: 6327
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -454,6 +454,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/04/12 dadams
+;;     Info-read-node-name: Use Info-minibuffer-history, not Info-history, for completing-read.
+;;     Info-find-node(-2): Added arg STRICT-CASE, moving arg MSG to the end.
+;;     Info-find-node-2: Updated for Emacs 25+ - use filepos-to-bufferpos etc.
 ;; 2017/11/17 dadams
 ;;     Info-TOC-outline stuff needs Info-virtual-nodes.  Thx to Mike Fitzgerald.
 ;;     http -> https everywhere.
@@ -521,7 +525,7 @@
 ;;     Added autoload cookies: Info-breadcrumbs-in-mode-line-mode, Info-set-breadcrumbs-depth,
 ;;           Info-search, Info-mouse-follow-nearest-node, info-display-manual.
 ;; 2017/01/09 dadams
-;;     Info-find-emacs-command-nodes: Updated for handle LINE-NUMBER (Emacs 24.5+).
+;;     Info-find-emacs-command-nodes: Updated to handle LINE-NUMBER (Emacs 24.5+).
 ;; 2016/12/13 dadams
 ;;     Removed obsolete face aliases: info-menu-5, Info-title-*-face.
 ;; 2016/12/11 dadams
@@ -2560,7 +2564,7 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
   (let* ((completion-ignore-case           t)
 	 (Info-read-node-completion-table  (Info-build-node-completions))
 	 (nodename                         (completing-read
-                                            prompt 'Info-read-node-name-1 nil t nil 'Info-history default)))
+                                            prompt 'Info-read-node-name-1 nil t nil 'Info-minibuf-history default)))
     (if (equal nodename "")
 	(or default  (Info-read-node-name prompt))
       nodename)))
@@ -2628,10 +2632,15 @@ just return nil (no error)."
 ;;
 ;; Added optional arg NOMSG.
 ;;
-(defun Info-find-node (filename nodename &optional no-going-back nomsg)
+(defun Info-find-node (filename nodename &optional no-going-back strict-case nomsg)
   "Go to an Info node specified as separate FILENAME and NODENAME.
 NO-GOING-BACK is non-nil if recovering from an error in this function;
-it says do not attempt further (recursive) error recovery."
+it says do not attempt further (recursive) error recovery.
+
+Look first for a case-sensitive match for NODENAME.  If none is found
+then try a case-insensitive match, unless STRICT-CASE is non-nil.
+
+Non-nil NOMSG means do not show a status message."
   (info-initialize)
   (setq filename  (Info-find-file filename))
   ;; Go into Info buffer.
@@ -2640,7 +2649,7 @@ it says do not attempt further (recursive) error recovery."
   (and (not no-going-back)
        Info-current-file
        (push (list Info-current-file Info-current-node (point)) Info-history))
-  (Info-find-node-2 filename nodename no-going-back nomsg))
+  (Info-find-node-2 filename nodename no-going-back strict-case nomsg))
 
 
 ;; REPLACE ORIGINAL in `info.el':
@@ -2648,7 +2657,7 @@ it says do not attempt further (recursive) error recovery."
 ;; 1. Call `fit-frame' if `Info-fit-frame-flag'.
 ;; 2. Added optional arg NOMSG.
 ;;
-(defun Info-find-node-2 (filename nodename &optional no-going-back nomsg)
+(defun Info-find-node-2 (filename nodename &optional no-going-back strict-case nomsg)
   (buffer-disable-undo (current-buffer))
   (or (eq major-mode 'Info-mode)  (Info-mode))
   (widen)
@@ -2670,20 +2679,27 @@ it says do not attempt further (recursive) error recovery."
                   (set-marker Info-tag-table-marker nil)
                   (setq buffer-read-only  t)
                   (set-buffer-modified-p nil)
-                  (set (make-local-variable 'Info-current-node-virtual) t)))
+                  (if (> emacs-major-version 24)
+                      (setq Info-current-node-virtual  t)
+                    (set (make-local-variable 'Info-current-node-virtual) t))))
                ((not (and (or (not (boundp 'Info-current-node-virtual))  (not Info-current-node-virtual))
                           (or (null filename)  (equal Info-current-file filename))))
                 ;; Switch files if necessary
                 (let ((inhibit-read-only  t))
                   (when (and (boundp 'Info-current-node-virtual)  Info-current-node-virtual)
                     ;; When moving from a virtual node.
-                    (set (make-local-variable 'Info-current-node-virtual) nil)
+                    (if (> emacs-major-version 24)
+                        (setq Info-current-node-virtual  nil)
+                      (set (make-local-variable 'Info-current-node-virtual) nil))
                     (unless filename (setq filename  Info-current-file)))
                   (setq Info-current-file              nil
                         Info-current-subfile           nil
                         Info-current-file-completions  ()
                         buffer-file-name               nil)
                   (erase-buffer)
+                  ;; Erase any memory of the previous coding-system, so that `info-insert-file-contents' sets the
+                  ;; buffer's encoding to what the Info file specifies.
+                  (set-buffer-file-coding-system 'undecided t)
                   (cond ((eq filename t)        (Info-insert-dir nomsg))
                         ((eq filename 'apropos) (insert-buffer-substring " *info-apropos*"))
                         ((eq filename 'history) (insert-buffer-substring " *info-history*"))
@@ -2691,8 +2707,10 @@ it says do not attempt further (recursive) error recovery."
                         (t (info-insert-file-contents filename nil)
                            (setq default-directory  (file-name-directory filename))))
                   (set-buffer-modified-p nil)
-                  (set (make-local-variable 'Info-file-supports-index-cookies)
-                       (Info-file-supports-index-cookies filename))
+                  (if (> emacs-major-version 24)
+                      (setq Info-file-supports-index-cookies  (Info-file-supports-index-cookies filename))
+                    (set (make-local-variable 'Info-file-supports-index-cookies)
+                         (Info-file-supports-index-cookies filename)))
                   ;; See whether file has a tag table.  Record the location if yes.
                   (goto-char (point-max))
                   (forward-line -8)
@@ -2700,13 +2718,11 @@ it says do not attempt further (recursive) error recovery."
                   (if (not (or (string-equal nodename "*")
                                (not (search-forward "\^_\nEnd tag table\n" nil t))))
                       (let (pos)
-                        ;; We have a tag table.  Find its beginning.
-                        ;; Is this an indirect file?
+                        ;; We have a tag table.  Find its beginning.  Is this an indirect file?
                         (search-backward "\nTag table:\n")
                         (setq pos  (point))
                         (if (save-excursion (forward-line 2) (looking-at "(Indirect)\n"))
-                            ;; It is indirect.  Copy it to another buffer
-                            ;; and record that the tag table is in that buffer.
+                            ;; It is indirect.  Copy it to another buffer and record that the tag table is in that buffer.
                             (let ((buf     (current-buffer))
                                   (tagbuf  (or Info-tag-table-buffer
                                                (generate-new-buffer " *info tag table*"))))
@@ -2736,36 +2752,45 @@ it says do not attempt further (recursive) error recovery."
            ;;
            ;; Search file for a suitable node.
            (let ((guesspos  (point-min))
-                 (regexp    (concat "\\(Node:\\|Ref:\\) *\\("  (if (stringp nodename)
-                                                                   (regexp-quote nodename)
-                                                                 "")
+                 (regexp    (concat "\\(Node:\\|Ref:\\) *\\("  (if (stringp nodename) (regexp-quote nodename) "")
                                     "\\) *[,\t\n\177]")))
              (catch 'foo
                ;; First, search a tag table, if any
                (when (marker-position Info-tag-table-marker)
                  (let* ((m      Info-tag-table-marker)
-                        (found  (Info-find-in-tag-table m regexp)))
-                   (when found
-                     ;; FOUND is (ANCHOR POS MODE).
-                     (setq guesspos  (nth 1 found))
-                     ;; If this is an indirect file, determine which
-                     ;; file really holds this node and read it in.
-                     (unless (eq (nth 2 found) 'Info-mode)
-                       ;; Note that the current buffer must be the *info* buffer on entry to
-                       ;; `Info-read-subfile'.  Thus the hackery above.
-                       (setq guesspos  (Info-read-subfile guesspos)))
+                        (found  (if (or (> emacs-major-version 24) ; Emacs 24.4+
+                                        (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+                                    (Info-find-in-tag-table m regexp strict-case)
+                                  (Info-find-in-tag-table m regexp))))
+                   (when found          ; FOUND is (ANCHOR POS MODE)
+                     (let ((filepos  (nth 1 found))) ; File position in bytes.
+                       ;; If this is an indirect file, determine which file really holds this node and read it in.
+                       (unless (eq (nth 2 found) 'Info-mode)
+                         ;; Note that the current buffer must be the *info* buffer on entry to `Info-read-subfile'.
+                         ;; Thus the hackery above.
+                         (setq filepos  (Info-read-subfile filepos)))
+                       (setq guesspos  (if (fboundp 'filepos-to-bufferpos)
+                                           (filepos-to-bufferpos filepos 'approximate)
+                                         filepos)))
                      (when (nth 0 found) ; Handle anchor
                        (goto-char (setq anchorpos  guesspos)) (throw 'foo t)))))
-               ;; Else we may have a node, which we search for:
-               (goto-char (max (point-min) (- (byte-to-position guesspos) 1000)))
-               ;; Now search from our advised position (or from beg of buffer) to find the actual
-               ;; node.  First, check whether the node is right where we are, in case the buffer
-               ;; begins with a node.
-               (let ((pos  (Info-find-node-in-buffer regexp)))
+               ;; Else we may have a node, which we search for.
+               (goto-char (max (point-min) (- (if (> emacs-major-version 24) guesspos (byte-to-position guesspos))
+                                              1000)))
+               ;; Now search from our advised position (or from beg of buffer) to find the actual node.
+               ;; First, check whether the node is right where we are, in case the buffer begins with a node.
+               (when (> emacs-major-version 24)
+                 (let ((pos  (Info-find-node-in-buffer regexp strict-case))) (when pos (goto-char pos) (throw 'foo t)))
+                 ;; If the Texinfo source had an @ifnottex block of text before the Top node, makeinfo 5.0 and 5.1 mistakenly
+                 ;; omitted that block's size from the starting position of the 1st subfile, which makes GUESSPOS overshoot
+                 ;; the correct position by the length of that text.  So we try again with a larger slop.
+                 (goto-char (max (point-min) (- guesspos 10000))))
+               (let ((pos  (if (<= emacs-major-version 23)
+                               (Info-find-node-in-buffer regexp)
+                             (Info-find-node-in-buffer regexp strict-case))))
                  (when pos (goto-char pos) (throw 'foo t)))
                (when (string-match "\\([^.]+\\)\\." nodename)
-                 (let (Info-point-loc)
-                   (Info-find-node-2 filename (match-string 1 nodename) no-going-back nomsg))
+                 (let (Info-point-loc) (Info-find-node-2 filename (match-string 1 nodename) no-going-back strict-case nomsg))
                  (widen)
                  (throw 'foo t))
                ;; No such anchor in tag table or node in tag table or file
@@ -2798,9 +2823,9 @@ it says do not attempt further (recursive) error recovery."
       (if Info-history
           (let ((hist  (car Info-history)))
             (setq Info-history  (cdr Info-history))
-            (Info-find-node (nth 0 hist) (nth 1 hist) t nomsg)
+            (Info-find-node (nth 0 hist) (nth 1 hist) t t nomsg) ; Pass STRICT-CASE?  Emacs bug #31137.
             (goto-char (nth 2 hist)))
-        (Info-find-node Info-current-file "Top" t))))
+        (Info-find-node Info-current-file "Top" t t nomsg)))) ; Pass STRICT-CASE?  Emacs bug #31137.
   (Info-set-mode-line))
 
 
@@ -3101,8 +3126,7 @@ the list."
                 (setq info-file  file
                       file-list  ()))
             (setq file-list  (cdr file-list))))))
-    (when msgp (message "Looking for command `%s' in Info manual `%s'..."
-                        command (file-name-nondirectory info-file)))
+    (when msgp (message "Looking for command `%s' in Info manual `%s'..." command (file-name-nondirectory info-file)))
     (save-excursion
       (condition-case nil
           (progn (Info-find-node info-file "Top" (not msgp))
