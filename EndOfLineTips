@@ -18,9 +18,9 @@ You can see an example from Elisp in SeijiZenitaniDotEmacs;
 
 Here are the specific codes:
 
-* `C-x C-m f unix'  (for ##LF##)
-* `C-x C-m f mac'   (for ##CR##)
-* `C-x C-m f dos'   (for ##CR+LF##)
+* `C-x <RET> f unix'  (for ##LF##)
+* `C-x <RET> f mac'   (for ##CR##)
+* `C-x <RET> f dos'   (for ##CR+LF##)
 
 ----
 
