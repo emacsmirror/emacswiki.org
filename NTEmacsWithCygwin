@@ -16,22 +16,28 @@ The helpful people from the Cygwin mailing list suggest that it is an NTEmacs pr
 Still a problem as of October 2014, with all Emacs versions (starting with Emacs 20, at least), including Emacs 25 dev snapshots. -- DrewAdams
 
 [new]
-Workarounds:
-# Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there are also X11 and console packages)
-# Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9.
+It would have been helpful to have links to those alleged Cygwin mailing list threads.  I found a few that seem related, though from what I'm reading it doesn't sound like something that could be fixed in Emacs.
 
-[[halloleo]] took route 1 (with X11 emacs). It is quite a hassle when you are coming from NTemacs: The look-and-feel (provided by X/Free) of the frame is significant less MS Windows-like, keyboard mappings are changed, no window shortcuts, no drag-n-drop, etc.
+* https://sourceware.org/ml/cygwin/2012-05/msg00114.html
+* https://sourceware.org/ml/cygwin/2012-03/msg00348.html
+* https://sourceware.org/ml/cygwin/2012-02/msg00908.html
 
-(I will try to delete this "current issue" entry once the original problem is sorted. - [[halloleo]])
 
-Update:
+=== Workarounds ===
+==== Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there are also X11 and console packages) ====
+[new]
+[[halloleo]] took this route (with X11 emacs). It is quite a hassle when you are coming from NTemacs: The look-and-feel (provided by X/Free) of the frame is significant less MS Windows-like, keyboard mappings are changed, no window shortcuts, no drag-n-drop, etc.
+[new]
+(I'd like to mention that Cygwin included a native emacs (emacs-w32) now, looks pretty good. - [[qun]])
+
+==== Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9. ====
+
+==== Other? ====
 It was suggested somewhere that one could remove the test for the terminal using a pty in bash and I tried this on the cygwin source for bash-4.2, i.e., I edited jobs.c to remove the test (on line 3703).  This removes the error message, but still does not allow seem to allow any job control.  I hope someone is working on this.  
 
 To avoid this, using '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c] for '''`shell'''' command, and remove "-i" option from '''`shell-command-switchs'''' for '''`shell-command'''' command. 
 
 A similar trick was useful in running SshWithNTEmacs.
-
-(I'd like to mention that Cygwin included a native emacs (emacs-w32) now, looks pretty good. - [[qun]])
 
 ==Why use NTEmacs with Cygwin?==
 
