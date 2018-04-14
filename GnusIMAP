@@ -4,7 +4,7 @@ Foreign IMAP groups can be created in the usual way too with "G m" and "nnimap".
 
 ==Yahoo IMAP==
 
-Gnus in Emacs 24 through 25.2 has a problem accessing the Yahoo server <code>imap.mail.yahoo.com</code> of circa Jan 2018.  The symptom is a hang on first attempt in a session, but ok on second attempt.
+Gnus in Emacs 24 through 25.2 had a problem accessing the Yahoo server <code>imap.mail.yahoo.com</code> of circa Apr 2018.  The symptom is a hang on first attempt in a session, but ok on second attempt.  (Now fixed in EmacsFromGit.)
 
 The problem is a repeated sequence number from Gnus so response to initial capabilities looks like login complete.  Fix this in your <code>.gnus.el</code> with
 
