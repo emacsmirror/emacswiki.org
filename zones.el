@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan  9 14:51:56 2018 (-0800)
+;; Last-Updated: Tue Apr 17 14:45:44 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1813
+;;     Update #: 1814
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -1910,7 +1910,7 @@ The value of variable `zz-izones' defines the zones."
   ;;     (let ((region-extract-function  (lambda (_ignore) zones)))
   ;;       (replace-string from-string to-string delimited start end backward t)))
 
-  ;;   (defun replace-regexp (regexp to-string &optional delimited start end backward zones)
+  ;;   (defun zz-replace-regexp-zones (regexp to-string &optional delimited start end backward zones)
   ;;     "`replace-regexp' in the zones currently defined in the current buffer.
   ;; The value of variable `zz-izones' defines the zones."
   ;;     (declare (interactive-only "use `re-search-forward' and `replace-match' instead."))
