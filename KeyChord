@@ -7,6 +7,8 @@ as key chords) retain their original command bindings.
 
 There are some info and examples in the elisp-file: Lisp:key-chord.el
 
+Key-chord is available at [https://github.com/emacsorphanage/key-chord/commits/master]
+
 (*) (In other emacs related texts, pressing SHIFT and/or
 META plus another key is sometimes call a "[[chord]]", but not here.
 However SHIFT plus _two_ normal keys might be a "key chord".)
