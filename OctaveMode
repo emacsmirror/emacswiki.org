@@ -94,6 +94,19 @@ If you run inferior-octave and emacs becomes frozen, consider setting the same p
     Add PS1(">> ") to ~/.octaverc
     Add (setq inferior-octave-prompt ">> ") to ~/.emacs
 
+As of 2018-04-22, the Octave was updated to 4.2.2 version, and using Inferior Octave under Win32 has some changes.
+
+In brief, you should (1) ensure octave bin comes first in PATH. For example
+
+    (setenv "PATH" (concat "C:\\octave\\bin;" (getenv "PATH")))
+
+and (2) set <code>inferior-octave-program</code> point to "octave-gui.exe". For example
+
+	(setq inferior-octave-program "C:/octave/bin/octave-gui.exe")
+
+A recent version of Emacs (e.g. Emacs 25 and above) is also needed.
+
+Note that in recent versions of Octave, after the above configuration, the plot commands don't work properly. All the plot commands simply return and no figures are drawn. A workaround is run <code>close</code> or <code>close all</code> before you plot.
 
 ==Completion==
 
