@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Feb 23 10:59:06 2018 (-0800)
+;; Last-Updated: Sun Apr 22 10:38:00 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 8661
+;;     Update #: 8664
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -113,8 +113,9 @@
 ;;    `bmkp-autonamed-this-buffer-jump',
 ;;    `bmkp-autonamed-this-buffer-jump-other-window',
 ;;    `bmkp-bookmark-a-file' `bmkp-bookmark-file-jump',
-;;    `bmkp-bookmark-linked-at' (Emacs 22+),
-;;    `bmkp-bookmark-linked-at-mouse' (Emacs 22+),
+;;    `bmkp-bookmark-file-load-jump',
+;;    `bmkp-bookmark-file-switch-jump', `bmkp-bookmark-linked-at'
+;;    (Emacs 22+), `bmkp-bookmark-linked-at-mouse' (Emacs 22+),
 ;;    `bmkp-bookmark-list-jump',
 ;;    `bmkp-bookmark-set-confirm-overwrite',
 ;;    `bmkp-choose-navlist-from-bookmark-list',
@@ -9097,6 +9098,39 @@ Otherwise, load it to supplement the current bookmark list."
      (list (bmkp-read-bookmark-for-type "bookmark-file" alist nil nil 'bmkp-bookmark-file-history)
            current-prefix-arg)))
   (bmkp-jump-bookmark-file bookmark-name switchp no-msg))
+
+;;;###autoload (autoload 'bmkp-bookmark-file-load-jump "bookmark+")
+(defun bmkp-bookmark-file-load-jump (bookmark &optional nosavep)
+  "Prompt for a bookmark-file BOOKMARK and load that file's bookmarks.
+This adds to the current bookmark list.  It does not overwrite it.
+By default, this first saves the current bookmark list in the current
+bookmark file.  With a prefix argument it does not save first."
+  (interactive
+   (let ((alist  (bmkp-bookmark-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "bookmark-file" alist nil nil
+                                        'bmkp-bookmark-file-history)
+           current-prefix-arg)))
+  (let ((file  (bookmark-prop-get bookmark 'bookmark-file)))
+    (bookmark-load file nil (if nosavep t 'save))
+    (bmkp-refresh/rebuild-menu-list)
+    (message "Added bookmarks in `%s'" file)))
+
+;;;###autoload (autoload 'bmkp-bookmark-file-switch-jump "bookmark+")
+(defun bmkp-bookmark-file-switch-jump (bookmark &optional nosavep)
+  "Prompt for a bookmark-file BOOKMARK and switch to that bookmark file.
+Unlike `C-u \\[bmkp-bookmark-file-jump]', you are not prompted for confirmation.
+By default, this first saves the current bookmark list in the current
+bookmark file.  With a prefix argument it does not save first."
+  (interactive
+   (let ((alist  (bmkp-bookmark-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "bookmark-file" alist nil nil
+                                        'bmkp-bookmark-file-history)
+           current-prefix-arg)))
+  (let ((file  (bookmark-prop-get bookmark 'bookmark-file)))
+    (bookmark-load file t (if nosavep t 'save))
+    (bmkp-refresh/rebuild-menu-list)
+    (message "Switched to bookmarks in `%s'" file)))
+
 
 ;; Snippet bookmarks
 ;; Inspired by emacs-devel@gnu.org post from Masatake Yamato [yamato@redhat.com], 2012-01-06.
