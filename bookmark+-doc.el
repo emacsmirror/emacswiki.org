@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  1 09:50:42 2018 (-0800)
+;; Last-Updated: Sun Apr 22 10:34:06 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 15247
+;;     Update #: 15248
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2390,6 +2390,11 @@
 ;;  bookmark just loads the bookmark file that it records.  With `C-u'
 ;;  (e.g. `C-u C-x j y project-foo'), jumping switches bookmark files.
 ;;  Without `C-u' it accumulates the loaded bookmarks.
+;;
+;;  You can also use commands `bmkp-bookmark-file-load-jump' and
+;;  `bmkp-bookmark-file-switch-jump' (unbound by default), which load
+;;  and switch without prompting you for confirmation or whether to
+;;  first save the current bookmark file.
 ;;
 ;;  A bookmark-file bookmark is not only an added convenience.  You
 ;;  can also use it in combination with other Bookmark+ features, such
