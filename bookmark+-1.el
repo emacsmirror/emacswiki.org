@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 24 08:30:31 2018 (-0700)
+;; Last-Updated: Tue Apr 24 09:10:24 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 8689
+;;     Update #: 8690
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -11791,8 +11791,7 @@ You are prompted for the REGEXP."
             (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist))
             (message "Bookmark navigation list is now the global bookmark list") (sit-for 2))
           (let ((bookmark-alist  bmkp-nav-alist))
-            (list (bookmark-completing-read "Jump to bookmark (in another window)"
-                                            (bmkp-default-bookmark-name))
+            (list (bookmark-completing-read "Jump to bookmark" (bmkp-default-bookmark-name))
                   current-prefix-arg))))
   (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p))
 
