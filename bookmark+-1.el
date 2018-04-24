@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 24 08:11:42 2018 (-0700)
+;; Last-Updated: Tue Apr 24 08:30:31 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 8688
+;;     Update #: 8689
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -10047,7 +10047,7 @@ that `bmkp-jump-eww' will use the already visited buffer."
 The bookmark name is the title of the web page.
 
 If option `bmkp-eww-auto-type' is `create-or-update' then such a
-bookmark is created for the node if none exists.  If the option value
+bookmark is created for the URL if none exists.  If the option value
 is `update-only' then no new bookmark is created automatically, but an
 existing bookmark is updated.  (Updating a bookmark increments the
 recorded number of visits.)  You can toggle the option using
