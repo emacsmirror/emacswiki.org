@@ -10,7 +10,7 @@ Imaxima uses breqn.sty. Get http://members3.jcom.home.ne.jp/imaxima/breqn097a.zi
 
 Add this to your .emacs:
 
- (add-to-list 'load-path "/usr/local/share/maxima/5.18.1/emacs/")
+ (add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima/")
  (autoload 'maxima-mode "maxima" "Maxima mode" t)
  (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
  (autoload 'maxima "maxima" "Maxima interaction" t)
