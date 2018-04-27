@@ -8,9 +8,9 @@
 ;; Created: Mon Nov 08 16:36:09 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 26 14:55:12 2018 (-0700)
+;; Last-Updated: Fri Apr 27 10:54:57 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 756
+;;     Update #: 761
 ;; URL: https://www.emacswiki.org/emacs/download/diff-mode-.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local, font, face
@@ -62,10 +62,11 @@
 ;;    `diff-indicator-removed', `diff-nonexistent', `diff-removed'.
 ;;
 ;;
-;;  ***** NOTE: The following variable defined in `diff-mode.el' has
+;;  ***** NOTE: The following variables defined in `diff-mode.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;    `diff-font-lock-keywords'.
+;;    `diff-context-mid-hunk-header-re', `diff-font-lock-keywords',
+;;    `diff-hunk-header-re-unified'.
 ;;
 ;;
 ;;  This library should be loaded *before* library `diff-mode.el'.
@@ -76,6 +77,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/04/27 dadams
+;;     Added copies of vanilla constants diff-hunk-header-re-unified, diff-context-mid-hunk-header-re.
 ;; 2018/04/26 dadams
 ;;     diff-font-lock-keywords: Updated for Emacs 26 - no obsolete face names.
 ;; 2011/02/11 dadams
@@ -113,9 +116,6 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defvar diff-context-mid-hunk-header-re) ; Emacs 23+
-(defvar diff-hunk-header-re-unified) ; Emacs 23+
 
 ;;; Define some additional faces.
 ;;;###autoload
@@ -188,6 +188,14 @@
  '(diff-removed ((((background dark)) (:foreground "#7474FFFF7474"))
                  (t (:foreground "DarkMagenta"))) 'now)
  )
+
+;; No changes from original constants (Emacs 22 - Emacs 27).
+;; Add them here because used in `diff-font-lock-keywords' setting.
+;;
+(defconst diff-hunk-header-re-unified
+  "^@@ -\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)? \\+\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)? @@")
+(defconst diff-context-mid-hunk-header-re
+  "--- \\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)? ----$")
 
 ;; Differs from standard Emacs 22 version in the use of diff-file1* and diff-file2*.
 ;;
