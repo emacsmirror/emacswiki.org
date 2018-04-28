@@ -35,8 +35,8 @@ Historic implementations and predecessors to modern Emacsen:
 * [[EINE]] „EINE Is Not Emacs” (intended pun: eine is German for one)
 * [[ZWEI]] „ZWEI Was EINE Initially” (intended pun: zwei is German for two)
 * MulticsEmacs
-* HemLock, included in CMU Common Lisp as (ed)
-* Zmacs, integrated in some Lisp-Machine development environments
+* [[Hemlock]], included in CMU Common Lisp as (ed)
+* [[Zmacs]], integrated in some Lisp-Machine development environments
 
 
 Not locally documented:
