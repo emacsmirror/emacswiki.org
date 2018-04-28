@@ -13,7 +13,7 @@ Other implementations still alive:
 * EdWin -- based on [[Scheme]], included in GNU/MIT Scheme.
 * EfunsEditor -- based on ObjectiveCaml.
 * [[Mg]] -- a lightweight public domain Emacs clone
-* [[Zmacs]]
+* [[Zmacs]], a port of the editor integrated in some Lisp-Machine IDEs
 * [[Ymacs]] -- an Emacs-like AJAX language editor for the Web (ie., embedded in webpages)
 * [[9ne]], an HTML/Java-embedded light-weight Emacs
 * CommonLisp variants:
@@ -36,6 +36,7 @@ Historic implementations and predecessors to modern Emacsen:
 * [[ZWEI]] „ZWEI Was EINE Initially” (intended pun: zwei is German for two)
 * MulticsEmacs
 * HemLock, included in CMU Common Lisp as (ed)
+* Zmacs, integrated in some Lisp-Machine development environments
 
 
 Not locally documented:
