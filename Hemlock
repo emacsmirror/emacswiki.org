@@ -1,0 +1,18 @@
+Hemlock is an [[extensible]] Emacs-like text editor embedded in CMUCL. It follows the tradition of the Lisp Machine editor [[ZWEI]] and the ITS/TOPS-20 implementation, TecoEmacs. Hemlock is supposed to be able to display to a terminal, or use CLX for X11; afaik only X works at present.
+
+* http://www.cons.org/cmucl/hemlock/
+
+It is part of Debian:
+
+* http://packages.debian.org/stable/devel/cmucl-hemlock.html
+
+In more recent versions of Debian it moved into the cmucl-source
+package.
+
+And there is also [[CLiki:Portable Hemlock]], "An attempt to free HemLock from its CmuCl prison."
+
+Some people do seem to be actively hacking on Hemlock -- see
+e.g. CLiki:CloserLookAtHemlock.
+
+----
+EmacsImplementations
