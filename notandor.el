@@ -8,9 +8,9 @@
 ;; Created: Mon Apr 30 12:26:00 2018 (-0700)
 ;; Version: 0
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue May  1 19:48:05 2018 (-0700)
+;; Last-Updated: Tue May  1 19:58:21 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 257
+;;     Update #: 259
 ;; URL: https://www.emacswiki.org/emacs/download/notandor.el
 ;; Doc URL: https://emacswiki.org/emacs/NotAndOr
 ;; Keywords: lisp logic conditional
@@ -84,16 +84,16 @@
 ;;  6.           A     transforms to (not (not A))
 ;;
 ;;  Rule #6 is used only at the top level, so as not to inject `(not
-;;  (not...))' in subexpressions.  If you want that rule then you must
-;;  ask for it explicitly for a given occurrence of the code, `A', to
-;;  wrap as `(not (not A))'.
+;;  (not...))' into subexpressions.  If you want that rule then you
+;;  must ask for it explicitly for a given occurrence of the code,
+;;  `A', to wrap as `(not (not A))'.
 ;;
 ;;  Which of the rules gets used depends on where you place the
 ;;  cursor.  For example, if it is at the beginning of an `or' sexp,
-;;  `(or A B)', then rule #4 is used and the result is `(not (and (not
-;;  A) (not B)))'.  If on a `not' sexp of the form `(not (and (not A)
-;;  (not B)))' then it is transformed to `(or A B)' - the opposite
-;;  direction.
+;;  `(or A B)', then rule #4 is used, and the result is `(not (and
+;;  (not A) (not B)))'.  If on a `not' sexp of the form `(not (and
+;;  (not A) (not B)))' then it is transformed to `(or A B)' - the
+;;  opposite direction.
 ;;
 ;;  So if you transform twice at the same location you get back what
 ;;  you started with: the tranformation operation is its own inverse.
