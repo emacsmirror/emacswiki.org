@@ -1,0 +1,68 @@
+This page is about library '''<tt>[[notandor.el]]</tt>''', which lets you transform Boolean expressions in Lisp source code for better readability, preserving equivalent behavior.
+
+The logic of EmacsLisp code that involves special forms `not', `and', and `or' can sometimes be a bit complex.  You might find yourself manually simplifying such code to make it more readable, while maintaining the meaning and behavior, i.e., expressing the same control flow in a way that you find easier to understand.  Subsequent changes to the logic might lead you to resimplify.
+
+Such manual simplification can be error prone.  The commands defined in library <tt>[[notandor.el]]</tt> can help by performing such equivalence-preserving
+transformations.
+
+Two commands that transform a Boolean [[sexp]] are defined:
+
+* Command '''`notandor-at-point'''' replaces the sexp at point by its
+  transformation.
+
+* Command '''`notandor-show'''' just shows you (in a [[tooltip]], a message,
+  or another buffer) what the result of transforming the sexp at
+  point would be -- it does not alter your code. It prompts you
+;;    for the sexp to transform, the default being the sexp at point.
+
+Both commands return the new sexp, the result of transformation.
+
+The commands provide the following transformation rules:
+
+1. '''##(not (and A B))##''' transforms to      ##(or  (not A) (not B))##
+
+2.      '''##(and A B)##'''  transforms to ##(not (or  (not A) (not B)))##
+
+3. '''##(not (or  A B))##''' transforms to      ##(and (not A) (not B))##
+
+4.      '''##(or  A B)##'''  transforms to ##(not (and (not A) (not B)))##
+
+5. '''##(not (not A))##'''   transforms to           ##A##
+
+6.          '''##A##'''     transforms to ##(not (not A))##
+
+Rule #6 is used only at the top level, so as not to inject ##(not
+(not...))## into subexpressions.  If you want that rule then you must
+ask for it explicitly for a given occurrence of the code, ##A##, to
+wrap as ##(not (not A))##.
+
+Which of the rules gets used depends on where you place the
+cursor.  For example, if it is at the beginning of an `or' sexp,
+##(or A B)##, then rule #4 is used, and the result is ##(not (and (not A) (not B)))##.  If on a `not' sexp of the form ##(not (and (not A) (not B)))## then it is transformed to ##(or A B)## - the opposite
+direction.
+
+So if you transform twice at the same location you get back what
+you started with: the tranformation operation is its own inverse.
+(You can also use [[undo]], of course.)
+
+If you want to use a transformation that expects outermost `not'
+where there is none then you can first use a transformation that
+produces an outermost `not'.  It's up to you where to put the
+cursor before invoking a transformation command.
+
+
+
+If you also use library <tt>[[pp+.el]]</tt> then the commands give you
+additional behavior with a [[prefix argument]].
+
+This library requires library <tt>[[thingatpt+.el]]</tt>, which uses and
+enhances standard library `thingatpt.el'.
+
+
+
+
+
+
+----
+CategoryCode
+CategoryEditing
