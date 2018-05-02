@@ -8,9 +8,9 @@
 ;; Created: Mon Apr 30 12:26:00 2018 (-0700)
 ;; Version: 0
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue May  1 19:37:07 2018 (-0700)
+;; Last-Updated: Tue May  1 19:48:05 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 256
+;;     Update #: 257
 ;; URL: https://www.emacswiki.org/emacs/download/notandor.el
 ;; Doc URL: https://emacswiki.org/emacs/NotAndOr
 ;; Keywords: lisp logic conditional
@@ -111,8 +111,8 @@
 ;;
 ;;  * Command `notandor-show' just shows you (in a tooltip, a message,
 ;;    or another buffer) what the result of transforming the sexp at
-;;    point would be - it does not alter your code.  If there is no
-;;    sexp at point then it prompts you for a sexp to transform.
+;;    point would be - it does not alter your code.  It prompts you
+;;    for the sexp to transform, the default being the sexp at point.
 ;;
 ;;  Both commands return the new sexp, the result of transformation.
 ;;
