@@ -153,6 +153,7 @@ Tips and tricks for writing a MajorMode.
 * LuiMode -- A Linewise User Interface
 * MacroUtilities -- Utilities for writing macros.
 * ModeLocal -- Causing a variable or function to have a value/behavior based on major mode.
+* NotAndOr -- Commands to transform Boolean EmacsLisp [[sexp]]s.
 * PasswordGenerator
 * PatternMatching -- Matching Lisp expressions based on pattern expressions.
 * [[Queues]] -- Queue data structures
