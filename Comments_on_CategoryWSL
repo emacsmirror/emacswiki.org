@@ -1,12 +1,12 @@
-How much sense does this page really make?  Most Windows people don't even understand the Windows version of Emacs, why should they bother to install a whole system which is completely alien to them, even though it offers a lot of real advantages over Windows, as a subsystem of Windows?
+How much sense does this page really make?  Most Windows people don't even understand the Windows version of Emacs, why should they bother to install a whole system which is completely alien to them, even though it offers a lot of real advantages over Windows, as a subsystem of Windows?  From a tiny set of available distros which had to be made „WSL-compatible” and are among the worst (most crippled) GNU/Linuxes out there?
 
-Using Emacs in a Windows „Subsystem for Linux” only exposes the whole Linux VM to all of the Windows bugs and intrudability… nobody should actually do this but use either:
+In addition, using Emacs in the Windows „Subsystem for Linux” only exposes the whole Linux VM directly to all of the Windows bugs and intrudability… nobody should actually do this but use either:
 
 – a real VM like VirtualBox or QEMU
 
 – a parallel Linux installation in another partition or on another harddisk
 
-– a native Emacs
+– a Windows-native Emacs
 
 – Emacs in a Linux installation on a Raspberry, Wandbord, Cubie etc.
 
