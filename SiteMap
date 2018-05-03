@@ -75,7 +75,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 [[CategoryOutline|outlining]] and folding
 
 * [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
-* [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("keyboard shortcuts")
+* [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("hotkeys", aka."keyboard shortcuts")
 * [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
 * [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
 ** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
