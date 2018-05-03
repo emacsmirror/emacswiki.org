@@ -3,8 +3,11 @@ How much sense does this page really make?  Most Windows people don't even under
 Using Emacs in a Windows „Subsystem for Linux” only exposes the whole Linux VM to all of the Windows bugs and intrudability… nobody should actually do this but use either:
 
 – a real VM like VirtualBox or QEMU
+
 – a parallel Linux installation in another partition or on another harddisk
+
 – a native Emacs
+
 – Emacs in a Linux installation on a Raspberry, Wandbord, Cubie etc.
 
 -- mangledmind 2018-05-03 02:33 UTC
