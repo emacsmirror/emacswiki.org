@@ -8,9 +8,9 @@
 ;; Created: Mon Apr 30 12:26:00 2018 (-0700)
 ;; Version: 0
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue May  1 19:58:21 2018 (-0700)
+;; Last-Updated: Thu May  3 14:16:17 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 259
+;;     Update #: 264
 ;; URL: https://www.emacswiki.org/emacs/download/notandor.el
 ;; Doc URL: https://emacswiki.org/emacs/NotAndOr
 ;; Keywords: lisp logic conditional
@@ -131,6 +131,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/05/03 dadams
+;;     notandor-(at-pointHandle|show): Handle single-quoted sexps and strings.
 ;; 2018/05/01 dadams
 ;;     Created.
 ;;
@@ -179,6 +181,22 @@ Optional arg RECURSIVEP is non-nil for recursive calls."
 ;;;###autoload
 (defun notandor-at-point (&optional show-only-p swap-tooltip)
   "Replace the Boolean sexp at point with an equivalent one.
+There are two special cases when determining the sexp at point:
+
+* If point is on a sexp that is single-quoted then the single-quote
+  mark is ignored.  If you want to transform the quoted sexp then put
+  point on the single-quote mark itself.
+
+* If point is on the double-quote char at the start of a string then
+  that string is the sexp to be transformed.  Otherwise, the
+  double-quoting (string) is ignored when obtaining the sexp to be
+  transformed.
+
+  Put differently, if point is on the start of a string then the whole
+  string is the object of transformation.  If point is inside a string
+  then the transformation takes place inside the string (on the sexp
+  at point).
+
 Also show the new sexp separately, using `pp-eval-expression'.
 
 If you use library `pp+.el' then option `pp-max-tooltip-size', and
@@ -191,7 +209,15 @@ With a zero prefix arg, swap the use of a tooltip according to
 `pp-max-tooltip-size': use a tooltip only if the option is nil."
   (interactive (list current-prefix-arg (zerop (prefix-numeric-value current-prefix-arg))))
   (let* ((sexp+bnds  (tap-sexp-at-point-with-bounds))
+         (on-dbl-q   (looking-at-p "\"")) ; Use whole string as sexp.
+         ;; Next 3 bindings remove single-quote, i.e., `(quote...)' wrapper, unless point
+         ;; is directly on the quote mark.  A simpler version would just use the sexp from
+         ;; `tap-sexp-at-point-with-bounds' directly.
+         (on-quote   (or (looking-at-p "'")  (looking-at-p "([ \t\n]*quote\\>")))
          (sexp       (and sexp+bnds  (car sexp+bnds)))
+         (sexp       (and sexp  (pcase sexp
+                                  ((and `(quote ,a)  (guard (not on-quote)))  a)
+                                  (_ sexp))))
          (beg        (and sexp+bnds  (cadr sexp+bnds)))
          (end        (and sexp+bnds  (cddr sexp+bnds)))
          new-sexp)
@@ -202,7 +228,10 @@ With a zero prefix arg, swap the use of a tooltip according to
       (unless show-only-p
         (save-excursion (goto-char beg)
                         (delete-region beg end)
-                        (let ((print-quoted  t)) (princ new-sexp (current-buffer)))))
+                        (let ((print-quoted  t))
+                          (if on-dbl-q
+                              (prin1 new-sexp (current-buffer))
+                            (princ new-sexp (current-buffer))))))
       (pp-eval-expression `',new-sexp nil swap-tooltip))
     new-sexp))  ; Return it.
 
@@ -210,6 +239,16 @@ With a zero prefix arg, swap the use of a tooltip according to
 (defun notandor-show (sexp &optional insert-value swap-tooltip)
   "Show an equivalent Boolean expression to SEXP.
 You are prompted for SEXP, which defaults to the sexp at point.
+
+There are two special cases when determining the sexp at point:
+
+* If point is on a sexp that is single-quoted then the single-quote
+  mark is ignored.  If you want the quoted sexp as the default then
+  put point on the single-quote mark itself.
+
+* If point is on the double-quote char at the start of a string then
+  that string is the sexp.  Otherwise, the double-quoting (string) is
+  ignored when obtaining the default sexp.
 
 The new, equivalent sexp is returned, and it is displayed using
 `pp-eval-expression'.
@@ -230,7 +269,16 @@ The option controls whether to use a tooltip and its size.
   then insert it into the buffer without double-quotes (`\"')."
   (interactive
    (let* ((sexp+bnds  (tap-sexp-at-point-with-bounds))
-          (default    (and sexp+bnds  (format "%s" (car sexp+bnds))))
+          (on-dbl-q   (looking-at-p "\"")) ; Use string as sexp.
+          ;; Next 3 bindings remove single-quote, i.e., `(quote...)' wrapper, unless point
+          ;; is directly on the quote mark.  A simpler version would just use the sexp from
+          ;; `tap-sexp-at-point-with-bounds' directly.
+          (on-quote   (or (looking-at-p "'")  (looking-at-p "([ \t\n]*quote\\>")))
+          (sexp       (and sexp+bnds  (car sexp+bnds)))
+          (sexp       (and sexp  (pcase sexp
+                                   ((and `(quote ,a)  (guard (not on-quote)))  a)
+                                   (_ sexp))))
+          (default    (and sexp    (format (if on-dbl-q "%S" "%s") sexp)))
           (cands      (mapcar #'list (cl-remove-duplicates read-expression-history)))
           (sxp        (car (read-from-string
                             (completing-read "Sexp: " cands nil nil nil
