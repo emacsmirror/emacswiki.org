@@ -185,6 +185,15 @@ The code can be downloaded from my Emacs page at http://home.nc.rr.com/nascifand
 
 Another python solution is at http://barnson.org/node/295 (but what's the point of going through some intermediate Tk application?)
 
+== outlook.el ==
+
+[https://github.com/asavonic/outlook.el Outlook.el] package can be used to send HTML or plain-text emails directly from Emacs, and they will look exactly as 
+they were sent from MS Outlook with all fancy HTML formatting that Outlook usually does. It is meant to be used 
+together with other email packages for Emacs, extending their functionality. 
+As for now, only [https://github.com/djcb/mu mu4e] integration is supported.
+
+The package does not depend on MS Outlook, so it can be used on Linux as well.
+
 ----
 CategoryWThirtyTwo
 WThirtyTwoSendMAPI
