@@ -2,8 +2,6 @@
 [[zh:翻译此yem]]
 You can upload an image to a page, replacing the text on that page.  A page can contain only text or an image.  You can inline these images on other pages, of course.
 
-Alternatively, just use sites such as [http://www.flickr.com Flickr] to store your images.
-
 == Standalone Images ===
 
 Here are the steps to create an image and link to it. The image appears on a Web page by itself.
@@ -33,31 +31,12 @@ Note that this wiki is protected by a SurgeProtector: You are only allowed 10 hi
 
 == External Images ==
 
-The limit on inlined images does not apply if you inline images from ''external sources'' using an ordinary URL.
+As Emacs Wiki is served via HTTPS, many browsers will refuse to load images from other domains. That's why you cannot inline images from other sites.
 
-Example:
+You have two options:
 
-    http://www.emacswiki.org/pics/oddmuse-logo.png
+# link to the image
 
-Result:
+# copy the image to Emacs Wiki
 
-http://www.emacswiki.org/pics/oddmuse-logo.png
-
-=== imgur.com hosted images ===
-An ''ordinary URL'' is not defined explicitly, but it would appear to require an image-type suffix (eg. <code>.jpg .png .gif</code> etc.)
-
-http://imgur.com is a decent, easy-to-use host that does not require an account (unlike Flickr), but their images are not inlined by default: <code>http://imgur.com/K2UweJp</code>
-
-::: http://imgur.com/K2UweJp
-
-Unless you grab the special URL <code>http://i.imgur.com/mEfHEIZ.png</code>
-
-::: http://i.imgur.com/mEfHEIZ.png
-
-
-=== Ending a page with an External Image ===
-Don't, and probably can't. 
-
-One of the BannedRegexps prohibits pages from ending with URLS, so an ending url-image will fire off the ban-hammer.
-You will see this in action if you hit preview.
-If the page can't be rendered, backup, and edit the page so that ''something else'' (non-whitespace) comes after the url.
+Either way, you will need to think about copyright and licenses. 
