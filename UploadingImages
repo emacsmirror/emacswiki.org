@@ -29,14 +29,18 @@ The image page still exists, but the link to it ''does not appear''. Instead, th
 
 Note that this wiki is protected by a SurgeProtector: You are only allowed 10 hits in 20 seconds.  If you inline images stored on wiki pages, then every image counts as another hit.  Assume a visitor does nothing for 20 seconds, and then visits a page with 10 inlined images.  With the 10 hits allowed in 20 seconds, you will be able to load the page itself, and 9 inlined images.  The last image will not load.  You can try it yourself by reloading this page more than 10 times: You'll get an error: '''Too many connections from xxx'''!
 
+== Limits on the File Size ==
+
+The wiki is limits uploaded files to half a megabyte. If your image is very large, or worse, if it is an animated GIF or the like, you won't be able to upload it.
+
+And that brings us to the next topic...
+
 == External Images ==
 
 As Emacs Wiki is served via HTTPS, many browsers will refuse to load images from other domains. That's why you cannot inline images from other sites.
 
 You have two options:
 
-# link to the image
+# copy the image to Emacs Wiki (if license and file size allow it) 
 
-# copy the image to Emacs Wiki
-
-Either way, you will need to think about copyright and licenses. 
+# link to the external image (this always works...)
