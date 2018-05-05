@@ -24,11 +24,11 @@ Here's an example of rfringe showing indicators in the fringe for flymake errors
 
 freeze-frame:
 
-[[image:http://imgur.com/RqBj7.png]]
+http://imgur.com/RqBj7.png
 
 in action: 
 
-[img]http://i.imgur.com/Sjzgx.gif[/img]
+http://i.imgur.com/Sjzgx.gif
 
 == Indicators.el ==
 
