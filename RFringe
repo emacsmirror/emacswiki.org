@@ -22,13 +22,9 @@ rfringe.el includes an extension to flymake, to display the buffer-relative posi
 
 Here's an example of rfringe showing indicators in the fringe for flymake errors, in a vb.net buffer:
 
-freeze-frame:
-
 [[image:RFringe Freeze Frame]]
 
-in action: 
-
-[[image:RFringe Action]]
+To see it in action, check out this [http://i.imgur.com/Sjzgx.gif short video].
 
 == Indicators.el ==
 
