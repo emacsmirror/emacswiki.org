@@ -32,6 +32,7 @@ Open (toggle) NeoTree:
 
 * <code>n</code> next line ， <code>p</code> previous line。
 * <code>SPC</code> or <code>RET</code> or <code>TAB</code> Open current item if it is a file. Fold/Unfold current item if it is a directory.
+* <code>U</code> Go up a directory
 * <code>g</code> Refresh
 * <code>A</code> Maximize/Minimize the NeoTree Window
 * <code>H</code> Toggle display hidden files
