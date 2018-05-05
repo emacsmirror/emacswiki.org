@@ -37,7 +37,7 @@ And that brings us to the next topic...
 
 == External Images ==
 
-As Emacs Wiki is served via HTTPS, many browsers will refuse to load images from other domains. That's why you cannot inline images from other sites.
+As Emacs Wiki is served via HTTPS, many browsers will refuse to load images from other domains. That's why you should not inline images from other sites. On browsers who refuse to load the images, you'll get nothing. The image will simply be missing.
 
 You have two options:
 
