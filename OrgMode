@@ -9,6 +9,7 @@
 Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
 
 Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes [http://orgmode.org/worg/org-tutorials/index.html tutorials], ideas, code snippets, [http://orgmode.org/worg/dev/org-syntax.html Org Syntax], etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. 
+
 [:features]
 === Features ===
 
@@ -21,7 +22,6 @@ Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/gu
 * Export: HTML, LaTeX, Markdown, iCalendar, OpenDocument, Beamer slides, PDF, and more via an extensible exporting system
 * Babel: Literate programming, reproducible research
 * Agenda: Overview of scheduled and TODO items across files
-
 
 [:install]
 == Download and Install ==
@@ -56,7 +56,6 @@ You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or
   websites composed of all the files within a project (including
   OrgMode files, images, and source code, if desired).
 
-
 === new exporter/publish framework ===
 * [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziou…''
 * For instructions on how to upgrade from the previous Org-mode exporter, see the [http://orgmode.org/worg/org-8.0.html upgrade guide.]
@@ -66,7 +65,6 @@ You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or
 Obviously, default HTML output does not look nice at all. Here are some themes you can use:
 
 * https://github.com/thi-ng/org-spec – which is basically [[https://github.com/thi-ng/org-spec/blob/master/css/style.css just one css file]]. No external dependencies, [[http://demo.thi.ng/org-spec/ looks great]].
-
 
 [:conflicts]
 == Conflicts ==
