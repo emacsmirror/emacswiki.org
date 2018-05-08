@@ -3,44 +3,9 @@ integrating emacs-w3m to the rest of the Emacs-environment.
 
 == browse-url ==
 
-This is how one would set up emacs-w3m for BrowseUrl.
+BrowseUrl is an emacs package that allows one to select a URL in any emacs buffer and open that URL in a browser of your choice. By default, it is bound to `C-x m`. In order to select emacs-w3m as the browser for it to open:
 
- (setq browse-url-browser-function 'w3m-browse-url)
- (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
- (global-set-key "\C-xm" 'browse-url-at-point)
-
-Note that w3m-browse-url in w3m.el uses browse-url-interactive-arg, but makes no provision to
-load it.  w3m.el has the following:
-
-    (eval-when-compile
-      (autoload 'browse-url-interactive-arg "browse-url"))
-
-Why is the autoload only set up for compile time?  It seems to be
-needed for run time as well.  Adding this to .emacs fixed it for me.
--- ZwaX
-
-    (autoload 'browse-url-interactive-arg "browse-url")
-
-== Browse URL in new tabs ==
-
-
-Allows browse-url to open URLs in a new tab instead of the current one:
-
- (defun w3m-new-tab ()
-   (interactive)
-   (w3m-copy-buffer nil nil nil t))
-
- (defun w3m-browse-url-new-tab (url &optional new-session)
-   (interactive)
-   (w3m-new-tab)
-   (w3m-browse-url url))
-
- (setq browse-url-browser-function 'w3m-browse-url-new-tab)
-
-Why not just:
-
-    (setq browse-url-browser-function 'w3m-browse-url
-          browse-url-new-window-flag t)
+ (setq browse-url-browser-function  'w3m-goto-url-new-session)
 
 == Dired ==
 
