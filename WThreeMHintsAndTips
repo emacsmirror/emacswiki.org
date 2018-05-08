@@ -1,47 +1,16 @@
-Below are some hints for [[emacs-w3m]].  A lot of them deal with
-integrating emacs-w3m to the rest of the Emacs-environment.
+== Open a url embedded in any buffer ==
 
-== browse-url ==
-
-BrowseUrl is an emacs package that allows one to select a URL in any emacs buffer and open that URL in a browser of your choice. By default, it is bound to `C-x m`. In order to select emacs-w3m as the browser for it to open:
+BrowseUrl is a package bundled by default in the emacs distribution that allows one to select a URL in any emacs buffer and open that URL in a browser of your choice. By default, it is bound to `C-x m`. In order to select emacs-w3m as the browser for it to open:
 
  (setq browse-url-browser-function  'w3m-goto-url-new-session)
 
-== Dired ==
+== View a file from within Dired ==
 
- (add-hook 'dired-mode-hook
-	   (lambda ()
-	       (define-key dired-mode-map "\C-xm" 'dired-w3m-find-file)))
+`M-x browse-url-of-dired-file'
 
- (defun dired-w3m-find-file ()
-   (interactive)
-   (require 'w3m)
-   (let ((file (dired-get-filename)))
-     (if (y-or-n-p (format "Open 'w3m' %s " (file-name-nondirectory file)))
-	 (w3m-find-file file))))
+== View the current buffer as rendered HTML ==
 
-That's great, but how can you switch to w3m mode for an existing buffer
-(e.g. one which contains an HTML page?)  IOW why isn't there a M-x w3m-mode? -- AdamSpiers
-
-[new]
-/See my code immediately below/ - MarkHulmeJones
-
-== Browsing the current buffer ==
-
-Assign this code to a key to "preview" a buffer full of HTML in w3m.
-
-  (defun w3m-browse-current-buffer ()
-    (interactive)
-    (let ((filename (concat (make-temp-file "w3m-") ".html")))
-      (unwind-protect
-          (progn
-            (write-region (point-min) (point-max) filename)
-            (w3m-find-file filename))
-        (delete-file filename))))
-
-[new]
-
-Why not `browse-url-of-buffer' , C-c C-v in html-mode ?
+`M-x browse-url-of-buffer' , bound by default to `C-c C-v` in html-mode.
 
 == Downloading Files Asynchronously ==
 
