@@ -27,7 +27,7 @@ By default, emacs-w3m automatically keeps track of the open buffers and maintain
 
 But there's more. You can examine the details of any entry by pressing `M-s' on it. Then, you can use the `d' command to selectively delete its entries, or you can selectively restore single entries by pressing `return' on them.
 
-At any time while using emacs-w3m, you can save your session by pressing `M-S` (capital S for saving a session; lower-case s for viewing the list).
+At any time while using emacs-w3m, you can save your session by pressing `M-S' (capital S for saving a session; lower-case s for viewing the list).
 
 == Using TextMode for textareas ==
 (by DavidEdmondson)
