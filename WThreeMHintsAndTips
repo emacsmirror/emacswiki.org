@@ -12,60 +12,22 @@ BrowseUrl is a package bundled by default in the emacs distribution that allows 
 
 `M-x browse-url-of-buffer' , bound by default to `C-c C-v` in html-mode.
 
-== Downloading Files Asynchronously ==
+== Downloading files asynchronously ==
 
 emacs-w3m performs downloads asynchronously, so you can continue working while
 something is being downloaded. Should you wish to abort a download, press `C-c C-k'.
 
-== Saving Buffers with Desktop ==
+== Saving buffers for future emacs sessions ==
 
-The following code makes it possible to save the w3m buffers between
-sessions with desktop.el
+emacs-w3m has an extensive ability to save its buffers for future use, for example
+in future emacs sessions. Note that the nomenclature can be slightly confusing
+because each collection of emacs-w3m buffers is called a session.
 
- (defun desktop-buffer-w3m-misc-data ()
-   "Save data necessary to restore a `w3m' buffer."
-   (when (eq major-mode 'w3m-mode)
-     w3m-current-url))
+By default, emacs-w3m automatically keeps track of the open buffers and maintains a "crash recovery session", "automatic saved session" and possibly any number of "removed sessions", so even if you haven't manually saved anything, you probably have the ability to recover past work. Type `M-s' to see a pop-up window listing the current collection of saved sessions. On any line, the number in brackets is the number of buffers saved for that entry. You can delete entries using the `d' command, and restore an entire session by pressing `return' on an entry. `q' exits the window.
 
- (defun desktop-buffer-w3m ()
-   "Restore a `w3m' buffer on `desktop' load."
-   (when (eq 'w3m-mode desktop-buffer-major-mode)
-     (let ((url desktop-buffer-misc))
-       (when url
-	 (require 'w3m)
-	 (if (string-match "^file" url)
-	     (w3m-find-file (substring url 7))
-	   (w3m-goto-url url))
-	 (current-buffer)))))
+But there's more. You can examine the details of any entry by pressing `M-s' on it. Then, you can use the `d' command to selectively delete its entries, or you can selectively restore single entries by pressing `return' on them.
 
- (add-to-list 'desktop-buffer-handlers 'desktop-buffer-w3m)
- (add-to-list 'desktop-buffer-misc-functions 'desktop-buffer-w3m-misc-data)
- (add-to-list 'desktop-buffer-modes-to-save 'w3m-mode)
-
-[new:stepnem:2010-03-06 22:30 UTC]
-The above does not work with Emacs 22.1 and later, due to changes in
-desktop.el API. This works for me with Emacs 23:
-
-{{{
-(defun w3m-register-desktop-save ()
-  "Set `desktop-save-buffer' to a function returning the current URL."
-  (setq desktop-save-buffer (lambda (desktop-dirname) w3m-current-url)))
-
-(add-hook 'w3m-mode-hook 'w3m-register-desktop-save)
-
-(defun w3m-restore-desktop-buffer (d-b-file-name d-b-name d-b-misc)
-  "Restore a `w3m' buffer on `desktop' load."
-  (when (eq 'w3m-mode desktop-buffer-major-mode)
-    (let ((url d-b-misc))
-      (when url
-        (require 'w3m)
-        (if (string-match "^file" url)
-            (w3m-find-file (substring url 7))
-          (w3m-goto-url-new-session url))
-        (current-buffer)))))
-
-(add-to-list 'desktop-buffer-mode-handlers '(w3m-mode . w3m-restore-desktop-buffer))
-}}}
+At any time while using emacs-w3m, you can save your session by pressing `M-S` (capital S for saving a session; lower-case s for viewing the list).
 
 == Using TextMode for textareas ==
 (by DavidEdmondson)
