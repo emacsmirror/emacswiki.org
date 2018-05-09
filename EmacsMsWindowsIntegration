@@ -19,7 +19,7 @@ This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is runni
   -a EDITOR specifies to the emacsclientw.exe which editor to run if emacs.exe is not running. An empty string starts a new server if needed
 
 
-This may not work correctly on Windows 7. See OldMsWindowsProblems
+This may not work correctly on Windows 7. See MsWindowsSevenProblems
 
 == Right-Click Context Menu == 
 There are several options for adding an "Open in Emacs" command that can be found here: MsWindowsGlobalContextMenu
