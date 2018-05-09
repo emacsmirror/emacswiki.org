@@ -125,40 +125,6 @@ update-alternatives --config editor
 
 --TheAnarcat
 
-= Emulating GnuClient in Silently Reloading the changed Buffer in EmacsClient =
-
-Add the following to your InitFile:
-
-    (defadvice server-visit-files (around save-buffers last activate)
-      "Try to emulate gnuclient behavior with emacsclient.
-    Works only for visiting one buffer at a time."
-      (let* ((filen (car (car (ad-get-arg 0))))
-             (buf (get-file-buffer filen))
-             (this-buf-modified-p nil))
-        ;;; the following is copied from server-visit-files, with
-        ;;; a modification for the `verify-visited-file-modtime' test
-        (if (and buf (set-buffer buf))
-            (if (file-exists-p filen)
-                ;;; if the file has changed on disk, reload it
-                ;;; using `find-file-noselect'
-                (if (not (verify-visited-file-modtime buf))
-                    (progn
-                      (find-file-noselect filen)
-                      ;;; if user answered `no', reset modtime anyway
-                      ;;; so that server-visit-files doesn't realize the
-                      ;;; difference:
-                      (set-visited-file-modtime)))
-              ;;; if file exists no longer, we let server-visit-files
-              ;;; deal with that
-              t)
-          (setq buf (find-file-noselect filen)))
-        (setq this-buf-modified-p (buffer-modified-p buf))
-        (set-buffer buf)
-        (set-buffer-modified-p nil)
-        ad-do-it
-        (set-buffer-modified-p this-buf-modified-p)))
-
-From http://docs.kde.org/en/HEAD/kdegraphics/kdvi/inverse-search-editor.html
 
 = Using EmacsClient with screen =
 
