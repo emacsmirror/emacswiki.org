@@ -53,33 +53,7 @@ See MsWindowsGlobalContextMenu to add Emacs client to the right click context me
 
 WThirtyTwoFileAssociations to see how to associate file extensions to open with Emacs client on Windows. 
 
-
-
-==== Editing with Emacs from Web Browsers ====
-
-===== With Firefox Add-on "It's All Text" + an Elisp file + =====
-
-To execute emacsclient From Firefox to call Windows Native Emacs to edit web pages, see [[Mozilla]] page and comments about add-on /It's all text/.
-
-There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
-You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
-
-===== With a Chrome extension =====
-*Edit with Emacs - a Google Chrome browser extension*: Source: http://github.com/stsquad/emacs_chrome or https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh to install in Chrome.
-This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
-
-*MozEx* is a Firefox extension which allows the user to use external programs for editing TEXTAREAs, viewing page source, handling mailto, news, telnet and FTP links.  http://mozex.mozdev.org/
-
---RobDavenport
-
-==== Editing with Emacs from any text area ====
-[http://code.google.com/p/external-exe/ External.exe] allows you to assign a keyboard shortcut to "EMACS editing": Whenever you want to edit text in a text area in Windows, hit the shortcut. Then External.exe copies the text in the text area to a file, opens the file with an external editor, and - once editing has finished - copies back the text from the file into the text area. The source code of External.exe is included in the downloadable zip file, and it is under the GPL.
-
-# Install External.exe.
-# Set the editor in the configuration file <tt>external.ini</tt> to: <tt>emacsclient.exe ~f</tt>
-# Follow the instructions in the documentation of External.exe.
-
-
+ExternalDotExe shows a way to edit text fields in many applications with Emacs client.
 
 = Opening Server Files Always in a New Frame =
 
@@ -664,6 +638,24 @@ emacsclient -s todo -c ~/docs/todo/work.org &
 </pre>
 
 Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#emacsclient-Options
+
+= Web Browser Plugins = 
+
+The Emacs server can be used to edit text fields in web browsers using plugins.
+
+===== Firefox Add-on: "It's All Text" =====
+
+To execute emacsclient From Firefox to call Windows Native Emacs to edit web pages, see [[Mozilla]] page and comments about add-on /It's all text/.
+
+There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
+You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
+
+===== With a Chrome extension =====
+*Edit with Emacs - a Google Chrome browser extension*: Source: http://github.com/stsquad/emacs_chrome or https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh to install in Chrome.
+This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
+
+*MozEx* is a Firefox extension which allows the user to use external programs for editing TEXTAREAs, viewing page source, handling mailto, news, telnet and FTP links.  http://mozex.mozdev.org/
+
 
 = Troubleshooting = 
 
