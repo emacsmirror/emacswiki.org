@@ -1,14 +1,14 @@
 The MakeSmartShortcuts is an EmacsLisp program to help me manage my smart start-menu shortcuts when working in Windows. The concept is very nice if you are tired of a cluttered start-menu in which you have to mouse around in. This is a new way of cluttering it, a structured way that let you get at what you really want to...
 
-I have a web-page that explains it much much better with pictures here:
+If you are like me, using Windows at work and like keyboard shortcuts for as many things as possible, try it.
 
-http://klibb.com/cgi-bin/wiki.pl/MakeSmartShortcuts
 
-(The name of the concept is old, I haven't bothered changing it.)
+The file can be found [Lisp:mss.el here].
 
-If you are like me, using Windows at work and like keyboard shortcuts for as many things as possible, take five minutes and read it.
+
 
 ----
+
 
 Thank you very much, very nice concept and implementation. Using it everyday at work and home.
 Sebastien Vauclair
