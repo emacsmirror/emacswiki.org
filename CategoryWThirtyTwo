@@ -79,7 +79,7 @@ Use Dired in Windows and let Emacs open files using default Windows commands.
 * WThirtyTwoFontifiedRegionToClipboard -- like it says
 * WThirtyTwoBrowseNetDrives -- To browse the net drives!
 * WThirtyTwoMsgBox -- make emacs bring up a simple message box using vbscript
-* [[WThirtyTwoUtl W32 Utilities]-- elisp to parse Shortcut files (.lnk), and get links to StartMenu, Recent, Desktop, etc.
+* [WThirtyTwoUtl W32 Utilities]-- elisp to parse Shortcut files (.lnk), and get links to StartMenu, Recent, Desktop, etc.
 * WThirtyTwoTelnetPlink -- Use Plink (the command-line interface to PuTTY) as an emacs telnet client.
 * SshWithNTEmacs - Use cygwin SSH within Emacs
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
