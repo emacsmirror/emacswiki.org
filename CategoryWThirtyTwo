@@ -48,38 +48,50 @@ https://www.gnu.org/software/emacs/download.html#windows
 * [BuildingOnWindowsTableofContents Build Emacs yourself] - for those who demand the most customization.
 
 == Getting Started == 
-* MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
-* EmacsMsWindowsIntegration -- Add Emacs to right click context menu and more. 
-* WThirtyTwoServerMode -- How to use Emacs server mode (i.e. emacsclient) on Windows.
-* MsWindowsCustomize -- overview of Emacs customization on Microsoft Windows
-* MsWindowsRegistry -- using the MS-Windows Registry for customizing the initial window (font, window position, window size) like a .Xdefaults file
-* WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
-* MsWindowsGlobalContextMenu -- adds Emacs to the menu you see when right-clicking on a file (and, if you select it, opens the file in Emacs)
+Using Emacs on Windows comfortably will require some extra configuration steps.
 
-== MS Tips and Tricks ==
-* [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
-* [[DiredPlus|Dired+]] -- open files from Dired using their Windows file associations
+* MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
+* EmacsMsWindowsIntegration -- Open files with Emacs, create working shortcuts that play nicely with EmacsClient and more.
+* WThirtyTwoServerMode -- How to use Emacs server mode (i.e. emacsclient) on Windows.
+* MsWindowsCustomize -- overview of Emacs customization on Microsoft Windows.
+* [MsWindowsGlobalContextMenu Context Menu] -- adds Emacs to the menu you see when right-clicking on files
+* MsWindowsRegistry -- using the MS-Windows Registry for customizing Emacs startup - font, window position, window size.
+
+== Detailed Usage Guides ==
+
+=== Shell Integration ===
+Use Dired in Windows and let Emacs open files using default Windows commands. 
+
+* [[DiredPlus#w32-browser|`^' Dired+ in Windows]] -- open files from Dired using their Windows file associations
 * DiredHtmlMoveLikeWThirtyTwo -- a way to make dired behave like Windows Explorer with regard to moving HTML files (while moving or deleting foo.htm MS-Windows also includes the directory foo_files which contains associated images, css etc.)
-* MsShellExecute -- `w32-browser' and its variants: execute MS-Windows applications associated with file types
 * MsWindowsDiredContextMenu -- display Explorer's context menu
+* WThirtyTwoFindDired -- simple Windows-version of find-dired
+* WThirtyTwoFindDiredWithUnixUtils -- find-dired on win32 using "real" unix find
+* WThirtyTwoShellExecute -- execute any of the 'Explorer verbs' available for a file or directory.
+* MsShellExecute -- More variants to execute MS-Windows applications associated with file types.
+* WThirtyTwoExecPredef -- execute Start Menu shortcuts from Emacs
+* WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
+* WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
+
+
+=== Tips and Tricks ===
+* [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
 * WThirtyTwoNetSend -- send messages using the NT command net send
 * WThirtyTwoSwitchToWindows -- switch to a window by its name
 * MsdnHelp -- Get MSDN help right from Emacs.
 * EdiffOnWThirtyTwo -- using ediff in an MS-Windows environment
-* WThirtyTwoFontifiedRegionToClipboard -- well...
+* WThirtyTwoFontifiedRegionToClipboard -- like it says
 * WThirtyTwoBrowseNetDrives -- To browse the net drives!
 * WThirtyTwoMsgBox -- make emacs bring up a simple message box using vbscript
-* WThirtyTwoFindDired -- simple Windows-version of find-dired
-* WThirtyTwoFindDiredWithUnixUtils -- find-dired on win32 using "real" unix find
 * WThirtyTwoSymlinks -- parse .lnk files
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * WThirtyTwoTelnetPlink -- Use Plink (the command-line interface to PuTTY) as an emacs telnet client.
 * SshWithNTEmacs - Use cygwin SSH within Emacs
-* WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
-* [[DiredPlus#w32-browser|`^' in Dired+: Windows drives in Dired Dired]]
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
 * `w32-toggle-lock-key' function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
+* WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
+* MakeSmartShortcuts -- seeing is believing, try it out
 
 
 === MS applications ===
@@ -89,16 +101,7 @@ https://www.gnu.org/software/emacs/download.html#windows
 * XKeymacs --  use the Emacs keybindings everywhere
 * PowerShell -- run Windows Powershell as an inferior shell within Emacs.
 
-=== MS shell ===
-* WThirtyTwoShellExecute -- execute any of the 'Explorer verbs' available for a file or directory.
-* MsShellExecute -- more Shell Execute stuff
-* MakeSmartShortcuts -- seeing is believing, try it out
-* WThirtyTwoExecPredef -- execute Start Menu shortcuts from Emacs
-* WThirtyTwoUtl -- utility functions
-* WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
-
 === Printing ===
-
 * PrintWithWebBrowser
 * See also the Ghostscript tip on PrintingFromEmacs.
 * From the FAQ, printing under MS-Windows: http://www.gnu.org/software/emacs/windows/faq6.html#printing - but this is not uptodate and all tips there does not work! There are only two ways to print from Emacs that always works on MS-Windows, and that are PrintWithWebBrowser and using Ghostscript/GSview.
@@ -107,12 +110,10 @@ See also http://lists.gnu.org/archive/html/emacs-devel/2006-05/msg01022.html
 * From Word (as straight text or converting to RTF): PrintUsingWord
 
 === Reading proprietary file formats ===
-
 * UnDoc -- view MS Word files in Emacs
 * AntiWord -- interfacing with the antiword program
 
 == MS-Windows development ==
-
 * MSVisualStudio -- Dev Env Command Line builds
 * CygWin -- using Emacs with (or within) Cygwin
 * MinGW -- using GCC directly without the Cygwin library
