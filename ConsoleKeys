@@ -53,6 +53,8 @@ enter them by the numbers into emacs, so I put a "[" between them.
 
 ''[Why not use <tt>\e</tt> instead of the literal escape char?  That would avoid possible problems when transmitting the file over the network.]
 
+''[Note: Emacs documentation for "Translation Keymaps" suggests <tt>local-function-key-map</tt> over <tt>function-key-map</tt>]
+
 
 I can only give the following advice when choosing strings:
 
