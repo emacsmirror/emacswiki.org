@@ -1,0 +1,26 @@
+
+
+==== Emacsclient and Windows 7 Taskbar ====
+Wanted to have Emacs icon on taskbar that calls runemacs to get Emacs started (without command prompt windows flashing or odd submenus and with proper icon (putting .vbs scripts on the taskbar created pinned shortcuts to wscript with the runemacs.vbs as a submenu).  I found a tip here http://superuser.com/questions/259146/why-latest-emacs-version-dont-support-windows-7-taskbar and was able to do it by:
+
+1. Start Emacs via runemacs shortcut, no other Emacs process running previously.  Emacs icon shows up on taskbar when Emacs starts.
+
+2. Right-click on icon, select pin to taskbar.
+
+3. Shift-right-click on the icon and change the target from emacs.exe to runemacs.exe
+
+Emacsclient can be used (with -n -a arguments as above) but needs "%1" in shortcut to work and that creates an empty buffer '%1' which isn't ideal so I just use runemacs.exe. I don't drag-and-drop files to the taskbar icon (can't) just use it to start/focus Emacs, and I use other tips here to use emacsclient via SendTo or context menu options to send files. --RobDavenport
+
+Suggestion: use <code>emacsclientw -e (raise-frame)</code> to be able to click on the icon to raise an existing frame - at the cost of not being able to drag files onto the taskbar icon. Add <code>--alternate-editor= </code> to launch emacs in daemon mode (works on Emacs 25 and later for Windows) if it is not already running, or in older versions you can use <code>--alternate-editor=runemacs.exe</code> but this will start emacs with an error due to the -e option being unrecognized by emacs (it has --eval, but with different syntax)
+
+And there's another possible method here: http://robert-adesam.blogspot.com/2011/01/emacsclient-setup-on-windows-7-starter.html.  He uses a bat-to-exe converter to create an executable to run a batch file that executes emacsclient as needed, but the exe can be put onto the taskbar (and the converter he mentions can have it run invisibly and with custom icon).  Might also be worth a look. --RobDavenport 
+
+After upgrading to Windows 10 and installing a fresh installation of Emacs, pinning emacs.exe to the taskbar had same old problems (multiple icons), and the 'fix' above to change emacs.exe target to 'runemacs.exe' didn't help.  However, using MichaelHoffman's tip over in [http://www.emacswiki.org/emacs/EmacsW32#toc51] to use a nice tool to set the AppID for the shortcut. Running the app at http://code.google.com/p/win7appid/  on the emacs.lnk shortcut in \users\<name>\ApplicationData\Microsoft\Internet Explorer\QuickLaunch\User Pinned\Taskbar and setting it's AppID to "Gnu.Emacs" did the trick.  --RobDavenport
+
+Another way to (manually) edit the app id of a shortcut... add the following string registry entry to HKCR\lnkfile:
+<pre>
+[HKEY_CLASSES_ROOT\lnkfile]
+"FullDetails"="prop:System.PropGroup.Description;System.ItemTypeText;System.Comment;System.Link.TargetParsingPath;System.AppUserModel.ID;System.ItemFolderPathDisplay;prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName"
+</pre>
+Then when viewing the Properties on a shortcut file, in the Details tab, the AppUserModelID is displayed - and is editable.  I fixed my repinned emacs shortcut with this.    (You could just set "FullDetails" to be *just* "prop:SystemAppUserModel.ID" but then the details tab will *only* show the app id.) --RobDavenport
+
