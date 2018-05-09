@@ -1,11 +1,6 @@
 [[ja:カテゴリ・WThirtyTwo]]
 Click on the header to search for pages about EmacsForWindows.
 
-== Help ==
-
-* FAQ http://www.gnu.org/software/emacs/windows/ntemacs.html (considerably outdated because there is no maintainer currently)
-* Mailing list http://mail.gnu.org/archive/html/help-emacs-windows/
-
 == Installation ==
 
 === Official Releases ===
@@ -123,3 +118,10 @@ See also http://lists.gnu.org/archive/html/emacs-devel/2006-05/msg01022.html
 * CSharpMode - major mode for editing C# code
 * [http://www.emacswiki.org/emacs/PowerShell#toc2 Powershell mode] - mode for editing powershell code
 * [http://www.emacswiki.org/emacs/MSTFS MS TFS] - commands for checkout/checkin to TFS from emacs (via TF.exe)
+
+
+
+== Help ==
+
+* Mailing list http://mail.gnu.org/archive/html/help-emacs-windows/
+* FAQ http://www.gnu.org/software/emacs/windows/ntemacs.html (considerably outdated because there is no maintainer currently)
