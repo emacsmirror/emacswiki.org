@@ -2,9 +2,10 @@ I use Emacs on Linux, Windows, and OS X; I don't use Aquamacs.
 
 == My Emacs Lisp Code  ==
 
-* [https://github.com/sshaw/git-link git-link] - Create URLs for files and commits in GitHub/Bitbucket/[[GitLab]]/... repositories
+* [https://github.com/sshaw/git-link git-link] - Create URLs for files and commits in [[GitHub]]/[[Bitbucket]]/[[GitLab]]/... repositories
 * [https://github.com/sshaw/copy-as-format copy-as-format] - Copy buffer locations as GitHub/[[Slack]]/JIRA/HipChat/... formatted code
 * [https://github.com/sshaw/build-status build-status] - Minor mode that shows a buffer's build status in the mode line
+* [https://github.com/sshaw/issue-link issue-link] - Get the link to JIRA/Tracker/[[GitHub]] issues and turn bug/feature/issue IDs into links
 * [https://github.com/sshaw/ruby-factory-mode ruby-factory-mode] - Minor mode for Ruby test object generation libraries (factory_girl and Fabrication)
 * [https://gist.github.com/sshaw/19d1e0d85eadd555c178ae1754cc6211 request-bin] - Create a RequestBin on http://requestb.in/
 * [https://github.com/sshaw/emacs.d emacs.d] - My Emacs config
