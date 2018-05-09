@@ -43,100 +43,6 @@ To open text files with the emacs daemon, run cmd.exe as administrator use the c
     assoc .c=CodeFile
     assoc .h=CodeFile
 
-
-== Context Menu "Edit with Emacs," Windows 7 or earlier==
-
-Save the following text to a file explorer-edit-with-emacs.reg, fix the paths, then double-click it.
-
-{{{
-Windows Registry Editor Version 5.00
-;; Search and replace C:\\path\\to\\emacs with the right path on your system
-
-;; If emacs isn't running and server isn't running, will open directly in emacs
-;; If emacs is running with server, opens using emacsclientw (C-# when done)
-
-;; To automatically start server, add to ~/.emacs, remove semicolons:
-;; (cond ((eq system-type 'windows-nt)
-;;        (require 'server)
-;;        (unless (server-running-p)
-;;          (server-start))))
-
-[HKEY_CLASSES_ROOT\*\shell\openwemacs]
-@="&Edit with Emacs"
-"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
-
-[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-@="C:\\path\\to\\emacs\\bin\\emacsclientw.exe -a \"C:\\path\\to\\emacs\\bin\\runemacs.exe\" \"%1\""
-"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
-}}}
-
-Right-click a file in Windows Explorer to see "Edit with Emacs."
-
-Tested with Windows 7 and Emacs 24.5.1.
-
-== Context Menu "Edit with Emacs," Windows 10 ==
-
-Save the following text to a file with emacs_explorer_integration.reg, replace the paths to Emacs binaries to match the location on your system. Double click the file and confirm the security warning to add this to the registry.
-
-{{{
-Windows Registry Editor Version 5.00
-;; Be sure to set the correct path to Emacs on your system
-[HKEY_CLASSES_ROOT\*\shell]
-
-;; Open file in existing frame
-[HKEY_CLASSES_ROOT\*\shell\emacsopen1sameframe]
-@="&Emacs: Edit in existing window"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\*\shell\emacsopen1sameframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
-
-;; Open file in new frame
-[HKEY_CLASSES_ROOT\*\shell\emacsopen2newframe]
-@="&Emacs: Edit in new window"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\*\shell\emacsopen2newframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -c -n \"%1\""
-
-;; Dired for desktop background
-[HKEY_CLASSES_ROOT\DesktopBackground\shell\emacsopensameframe]
-@="&Emacs: Open in dired"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\DesktopBackground\shell\emacsopensameframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%v\""
-
-;; Dired for directory
-[HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe]
-@="&Emacs: Open in dired"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%V\""
-
-;; Dired for directory background
-[HKEY_CLASSES_ROOT\Directory\Background\shell\emacsopensameframe]
-@="&Emacs: Open in dired"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\Directory\Background\shell\emacsopensameframe\command]
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%V\""
-
-;; Dired for drive background
-[HKEY_CLASSES_ROOT\Drive\Background\shell\EmacsOpenDirSameFrame]
-@="&Emacs: Open in dired"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\Drive\Background\shell\EmacsOpenDirSameFrame\command]
-;; as drives haven't space inside their name don't use quoting
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n %L"
-
-;; Dired for drive
-[HKEY_CLASSES_ROOT\Drive\shell\EmacsOpenDirSameFrame]
-@="&Emacs: Open in dired"
-"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
-[HKEY_CLASSES_ROOT\Drive\shell\EmacsOpenDirSameFrame\command]
-;; as drives haven't space inside their name don't use quoting
-@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n %L"
-}}}
-
-You should immediately see the options if you right click any file in explorer.
-
 == Set `emacsclient' as Your Editor ==
 
 This almost works:
@@ -190,9 +96,6 @@ Drag your newly created shortcut to your startbar, or desktop or wherever you wi
 OBS: No need to edit your .emacs file and add server line to it.
 
 
-
-== Send-To Context Menu ==
-Press ##Win+r## and in Run dialog type ##shell:sendto##. Copy your newly created shortcut to emacs client to folder that just opened. This will create an entry in ##send to## context menu so you can right click on any document and choose to open it in Emacs.
 
 == Debug Version ==
 Sometimes it is useful to be able to start up default autonomous copy of Emacs (not client/server), for example if you play with your config file and something gets messed up.
