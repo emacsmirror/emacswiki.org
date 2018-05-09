@@ -8,26 +8,26 @@ Click on the header to search for pages about EmacsForWindows.
 
 == Installation ==
 
+=== Official Releases ===
+
 https://www.gnu.org/software/emacs/download.html#windows
 
-=== Official Releases ===
-==== Stable ====
-* ftp://ftp.gnu.org/gnu/emacs/windows/
-* http://ftp.gnu.org/gnu/emacs/windows/
-
-The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, emacs-XX.y-x86_64.zip for 64bit.
-
-==== Weekly builds ====
-* http://alpha.gnu.org/gnu/emacs/windows/
-
-==== Pretests ====
-* ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
-* http://alpha.gnu.org/gnu/emacs/pretest/windows/
+* /Stable Releases:/
+** ftp://ftp.gnu.org/gnu/emacs/windows/
+** http://ftp.gnu.org/gnu/emacs/windows/
+\\\\
+* /Weekly Builds:/
+** http://alpha.gnu.org/gnu/emacs/windows/
+\\\\
+* /Pretests:/
+** ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
+** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 === Unofficial Releases ===
 
-* **emax64** -- https://github.com/m-parashar/emax64/releases/ -- **64-bit Emacs for Windows** [26.0.91]
-** 64-bit Windows build of Emacs 26.0.91. DLLs included.
+* /emax64/ -- https://github.com/m-parashar/emax64/releases/ 
+** 64-bit Windows build of Emacs for Windows.
+** Highly up to date: current version 26.0.91 released 2018-03-03
 ** Patched with ImageMagick 7 support. Binaries and libs included.
 ** PDF-TOOLS (epdfinfo.exe) included.
 ** Features[1]: "XPM JPEG TIFF GIF PNG RSVG IMAGEMAGICK SOUND NOTIFY ACL GNUTLS LIBXML2 ZLIB TOOLKIT_SCROLL_BARS MODULES THREADS LCMS2"
@@ -35,12 +35,12 @@ The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, e
 ** Built and tested on a clean Windows 10 system.
 ** * addpm modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
 ** Available on Github too - https://ntemacs.sourceforge.io/
-
-* **Emacs Modified for Windows** -- https://vigou3.github.io/emacs-modified-windows/ 
+\\\\
+* /Emacs Modified for Windows/ -- https://vigou3.github.io/emacs-modified-windows/ 
 ** Stock Emacs with a few modifications for R users. Currently offering version 25.3
 ** Includes an installer, AUCTeX, ESS and image libraries.
-
-* **Emacs-w64**  -- http://emacsbinw64.sourceforge.net/
+\\\\
+* /Emacs-w64/  -- http://emacsbinw64.sourceforge.net/
 ** Unmodified source code very similar to GNU release, but compiled with optimization.
 ** Offers snapshots and pretests as well as full releases.
 
@@ -49,8 +49,8 @@ The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, e
 
 * MsWindowsInstallation -- Installation guidelines
 * [[EmacsPortableApp]] -- Install to USB stick for portability.
-* The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.
-* Build it yourself - see BuildingOnWindowsTableofContents.
+* [http://www.7-zip.org/ 7-zip] is a fantastic free (GNU LGPL) open source program  for extracting <tt>.tar.gz</tt> files.
+* [BuildingOnWindowsTableofContents Build Emacs yourself] - for those who demand the most customization.
 
 == Getting Started == 
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
