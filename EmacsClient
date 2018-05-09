@@ -1,9 +1,29 @@
 [[ja:EmacsClient-ja]]
 EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can setup EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
 
-== Using EmacsClient ==
+= Start the Emacs Server =
 
-= The Easy Solution (With Emacs 23+) =
+== Starting interactively == 
+To enable the Emacs server, add the command 
+
+   (server-start) 
+
+to your init.el.  This is a requirement for using the Emacs client! When the server is running, closing the last Emacs frame will leave the server running. To shut Emacs down completely, call the command `(kill-emacs)'. 
+
+== Emacs Daemon == 
+
+The command 
+
+ emacs --daemon
+
+will launch an emacs in daemon mode, starting the server, running the init files and then detaching into the background. This is handy for automatically running at launch. This can save you a few seconds since Emacs will already be running by the time you open your first file! This was not supported on Windows before version 25. 
+
+EmacsAsDaemon details various ways to run this command in different distributions, init scripts vs systemd and so on.
+
+
+= Using EmacsClient =
+
+== The Easy Solution (With Emacs 23+) ==
 
 === Bash environments ===
 
@@ -86,18 +106,6 @@ https://github.com/mickbeaver/win32emacslauncher
 
 The tips for doing this are platform specific.
 
-=== GNU/Linux and other that has bash etc ===
-
-Just add this command to your startup script:
-
- emacs --daemon
-
-This will launch an emacs daemon that detaches itself. This can save you a few seconds since Emacs will already be running by the time you open your first file!
-
-
-EmacsAsDaemon details various ways to run this command in different distributions, using init scripts vs systemd and so on.
-
-
 === Microsoft Windows (in Emacs often called w32) ===
 
 ==== Using stock (unpatched) Emacs ====
@@ -106,53 +114,14 @@ See EmacsMsWindowsIntegration for how to set up taskbar/Start-menu shortcuts and
 
 ==== Starting Emacs automatically from a context menu on w32 ====
 
-See [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
-
-
-[new]
-I only know how to get icons to show up in Windows Explorer, by defining file "meta types", e.g., %%"EmacsFile"%%, and then hanging the file associations (e.g., ".foo") off of those:
-<pre>
-REGEDIT4
-#-----
-# Set up the handler and icon
-#-----
-[HKEY_CLASSES_ROOT\EmacsFile]
-@="Emacs File"
-"Content Type"="text/plain"
-
-[HKEY_CLASSES_ROOT\EmacsFile\shell]
-[HKEY_CLASSES_ROOT\EmacsFile\shell\open]
-# This gets displayed in context menu
-@="Open in Emacs"
-
-[HKEY_CLASSES_ROOT\EmacsFile\shell\open\command]
-@="C:\\Program Files\\Emacs\\bin\\runemacs.exe \"%1\""
-
-[HKEY_CLASSES_ROOT\EmacsFile\DefaultIcon]
-@="C:\\Program Files\\Emacs\\etc\\icons\\emacs.ico,0"
-# Alternate
-# @="C:\\Program Files\\Emacs\\bin\\runemacs.exe,0"
-
-#-----
-# Associate file types w/ Emacs
-#-----
-[HKEY_CLASSES_ROOT\.foo]
-@="EmacsFile"
-"Content Type"="text/plain"</pre>
-</pre>
-Note that this does not do the context menus; it sets the icons in Windows Explorer!  (Only takes effect after you restart your desktop Explorer instance, e.g., after rebooting or manually killing off all 'explorer.exe' instances in Task Manager and rerunning it.  This reloads the registry cache.)
-
-Hopefully this brings us a step closer.
+See [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].
 
 
 ==== Associate files with no extension with Emacs ====
 
-See: WThirtyTwoFileAssociations
+See WThirtyTwoFileAssociations
 
 
-==== Opening via Send To ====
-
-You can open a file in Emacs via Windows Send To by placing a shortcut to emacsclientw.exe in <code>C:\Documents and Settings\yourName\SendTo</code>. Then, when you right-click on a file and select Send To select emacsclientw. This will open the file in the running version of Emacs; if Emacs isn't running it will fail, but you can use methods described elsewhere in this Wiki for starting the server automatically. The simplest way I found is to simply add <code>(server-start)</code> to your emacs init file, then configure Windows to automatically start Emacs when you log in and leave Emacs running until you log off.
 
 
 ==== Emacsclient and Windows 7 Taskbar ====
