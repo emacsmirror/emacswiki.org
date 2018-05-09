@@ -105,6 +105,10 @@ You should immediately see the options if you right click any file in explorer.
 
 
 == Add Emacs to global Send-To Menu  ==
+
+You can open a file in Emacs via Windows Send To by placing a shortcut to emacsclientw.exe in <code>C:\Documents and Settings\yourName\SendTo</code>. Then, when you right-click on a file and select Send To select emacsclientw. This will open the file in the running version of Emacs; if Emacs isn't running it will fail, but you can use methods described elsewhere in this Wiki for starting the server automatically. The simplest way I found is to simply add <code>(server-start)</code> to your emacs init file, then configure Windows to automatically start Emacs when you log in and leave Emacs running until you log off.
+
+
 Press ##Win+r## and in Run dialog type ##shell:sendto##. Copy your newly created shortcut to emacs client to folder that just opened. This will create an entry in ##send to## context menu so you can right click on any document and choose to open it in Emacs.
 
 
