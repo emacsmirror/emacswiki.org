@@ -25,16 +25,11 @@ https://www.gnu.org/software/emacs/download.html#windows
 
 === Unofficial Releases ===
 
-* /emax64/ -- https://github.com/m-parashar/emax64/releases/ 
-** 64-bit Windows build of Emacs for Windows.
-** Highly up to date: current version 26.0.91 released 2018-03-03
-** Patched with ImageMagick 7 support. Binaries and libs included.
-** PDF-TOOLS (epdfinfo.exe) included.
-** Features[1]: "XPM JPEG TIFF GIF PNG RSVG IMAGEMAGICK SOUND NOTIFY ACL GNUTLS LIBXML2 ZLIB TOOLKIT_SCROLL_BARS MODULES THREADS LCMS2"
-** Optimized clean build. Options[2]: "--without-compress-install --without-dbus --with-modules 'CFLAGS= -O2 -pipe -g3'"
-** Built and tested on a clean Windows 10 system.
-** * addpm modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
-** Available on Github too - https://ntemacs.sourceforge.io/
+* /emax64/ -- https://github.com/m-parashar/emax64/releases/  ([https://ntemacs.sourceforge.io/ sourceforge link])
+** Optimized 64-bit build of Emacs for Windows. Built on Windows 10.
+** Kept highly up to date with releases around once per month. 
+** Extensive library support including !ImageMagick, Pdf-Tools, and !GnuTLS.
+** //addpm// modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
 \\\\
 * /Emacs Modified for Windows/ -- https://vigou3.github.io/emacs-modified-windows/ 
 ** Stock Emacs with a few modifications for R users. Currently offering version 25.3
