@@ -1,8 +1,8 @@
 ==== Starting Emacs From Global Context Menu ====
 Here is a simple but useful way to access Emacs.  It adds
 the option to open a file in Emacs to your global context menu
-(i.e., right clicking on a file).  It will connect to a running Emacs server if one exists.
-Be sure to change the path to 
+(i.e., right clicking on a file).  It will connect to a running Emacs server if one exists. 
+Be sure to change the path to the location of your Emacs binary.
 
 <pre>
 Windows Registry Editor Version 5.00
