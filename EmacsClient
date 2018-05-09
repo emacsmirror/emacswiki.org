@@ -104,119 +104,10 @@ EmacsAsDaemon details various ways to run this command in different distribution
 
 See EmacsMsWindowsIntegration for how to set up taskbar/Start-menu shortcuts and make Emacs open particular file types using emacsclient.  This works well for Emacs 24 at least, and is simpler and perhaps better than the VBS solutions mentioned below.
 
-==== Using the patched version of EmacsW32 ====
-
-With the patched version of [[EmacsW32]] [[#EmacsW32Client]] will start Emacs automatically by default.
-You can use the same solution also with the unpatched version, but this requires using the patched version of emacs client + the file auto-server.el.
-
-
 ==== Starting Emacs automatically from a context menu on w32 ====
 
-[new]
-With Emacs 23 (and possibly any version with EmacsClient), to avoid the following VB scripting, a simple batch file solution can be found in the "Easy Way" section above.
+See [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
 
-'''Note: On Windows, GnuClient works better than %%EmacsClient%% (for versions prior to 22.1). The instructions below apply to %%EmacsClient%%; head over to GnuClient for a less cumbersome solution.'''
-
-(I haven't found GnuClient less cumberson than EmacsClient, and in fact have always had trouble getting GnuClient set up on Windows. Not big trouble, but enough to be frustrating when I have to get it set up.  Once running, both GnuClient and EmacsClient (for 22.1 and later) work fine.  With EmacsClient, once Emacs is started, I only use emacsclient to send file edit requests.  I only use the vbs script below to launch Emacs from quicklaunch or a PowerPro script.)
---RobDavenport
-
-[new]
-(A trivial version of this, not using %%EmacsClient%%, is at [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
-
-Save the current VBscript (shiver) in emacs/bin folder, as ''launch-emacs-client.vbs'':
-<pre>
-Set objShell = WScript.CreateObject("WScript.Shell")
-Set fso = CreateObject("Scripting.FileSystemObject")
-
-If WScript.Arguments.Count = 1 Then
-
-  strComputer = "."
-
-  Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
-
-  Set colItems = objWMIService.ExecQuery("Select * From Win32_Process")
-
-  Dim isRunning
-  isRunning = False
-
-  For Each objItem in colItems
-    If InStr(objItem.CommandLine, "emacs.exe") Then
-      isRunning = True
-    End If
-  Next
-
-  If isRunning Then
-    objShell.Run(fso.GetParentFolderName(WScript.ScriptFullName) & "/emacsclientw.exe -n """ & WScript.Arguments(0) & """")
-  Else
-    objShell.Run(fso.GetParentFolderName(WScript.ScriptFullName) & "/runemacs.exe """ & WScript.Arguments(0) & """")
-  End If
-
-Else
-  objShell.Run(fso.GetParentFolderName(WScript.ScriptFullName) & "/runemacs.exe")
-End If
-</pre>
-
-Add the following keys to the registry:
-<pre>
-[HKEY_CLASSES_ROOT\*\shell]
-
-[HKEY_CLASSES_ROOT\*\shell\openwemacs]
-@="Edit with Emacs"
-
-[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-@="Wscript.exe C:\\Program Files\\emacs\\bin\\launch-emacs-client.vbs \"%1\""
-</pre>
-
-You'll have to adjust the path in the last key, to your installed directory.
-
-Remember to put (server-start) in your InitFile.
-
-If anybody knows, how to get an icon into the contextmenu, please append the information here -- I gave up googling it.
-
---TroelsKn
-
-[new]
-I encountered "permission denied" problems when using the value for the 'command' registry key as described above. I have no idea what the underlying cause was, but I discovered that using %L instead of \"%1\" appeared to solve the problem; so my value was:
-
-   Wscript.exe C:\\[PATH TO EMACS]\\bin\\launch-emacs-client.vbs %L
-
---Dave Hancock
-
-[new]
-I found that I ran into problems when using the VBScript that TroelsKn posted. I encountered errors when trying to edit files found in folders with spaces (i.e. <code> "c:\My Documents\mytest.txt"</code>). This VBScript should work better:
-<pre>
-Set objShell = WScript.CreateObject("WScript.Shell")
-Set fso = CreateObject("Scripting.FileSystemObject")
-
-If WScript.Arguments.Count = 1 Then
-
-  strComputer = "."
-
-  Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
-
-  Set colItems = objWMIService.ExecQuery("Select * From Win32_Process")
-
-  Dim isRunning
-  isRunning = False
-
-  For Each objItem in colItems
-    If InStr(objItem.CommandLine, "emacs.exe") Then
-      isRunning = True
-    End If
-  Next
-
-  If isRunning Then
-    objShell.Run("""" & fso.GetParentFolderName(WScript.ScriptFullName) & "\emacsclientw.exe"" -n " & """" & WScript.Arguments(0) & """")
-  Else
-    objShell.Run("""" & fso.GetParentFolderName(WScript.ScriptFullName) & "\runemacs.exe"" " & """" & WScript.Arguments(0) & """")
-  End If
-
-Else
-  objShell.Run("""" & fso.GetParentFolderName(WScript.ScriptFullName) & "\runemacs.exe"" ")
-End If
-</pre>
-
--- Shane
 
 [new]
 I only know how to get icons to show up in Windows Explorer, by defining file "meta types", e.g., %%"EmacsFile"%%, and then hanging the file associations (e.g., ".foo") off of those:
@@ -252,115 +143,17 @@ REGEDIT4
 Note that this does not do the context menus; it sets the icons in Windows Explorer!  (Only takes effect after you restart your desktop Explorer instance, e.g., after rebooting or manually killing off all 'explorer.exe' instances in Task Manager and rerunning it.  This reloads the registry cache.)
 
 Hopefully this brings us a step closer.
---[[thundt]]
 
-[new]
-Had some trouble getting emacsclient to work under Windows 7 with the default settings.  The server file was created in %userprofile%\appdata\roaming\.emacs.d\server\server and emacsclient didn't look there by default.  Quickest solution was to define EMACS_SERVER_FILE environment variable and restart Emacs.
-
---RobDavenport
-
-
-==== "Open with Emacs" on Windows with Emacs 22 ====
-
-The following opens the selected file in a running instance of Emacs, starting Emacs if necessary.
-
-This is similar to TroelsKn method above but leverages the newly integrated EmacsClient (emacsclientw.exe) in Emacs 22 to obviate the use of the .vbs file:
-
-1. Add the registry key as described above, i.e. 
-  
-  [HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-
-2. Set the value of command to the following, adjusting the path as necessary:
-
-  C:\emacs-22\emacs\bin\emacsclientw.exe -n "%1"
-
---EdwardGarson
-
-[new]
-With this setup on my pc the shell window just blinks momentarily and disappears. Is there any way to keep it on screen to see what the problem is? (Emacs sever is running, and the path to emacsclientw.exe looks fine)
-
-[new]
-As far as I know the vbs-script from TroelsKn is still useful because EmacsClient does not start a new Emacs if it is not running. At least for me the changes above only worked if Emacs was already started. 
---MartinStemplinger 
-
-[new]
-The -a option of emacsclient, or the environment variable ALTERNATE_EDITOR can be used to specify runemacs.exe as an alternate editor when emacsclient fails to find a server.
-
-Using a utility like NirCmd (http://www.nirsoft.net/utils/nircmd.html) to supress the command window for emacsclient, it makes for a much smoother experience.  As emacsclientw pops a dialog on initial run.
 
 ==== Associate files with no extension with Emacs ====
 
 See: WThirtyTwoFileAssociations
 
-==== VBS for context menu or hot key ====
-Bind this script to the registry key as above to edit files from the context menu, starting emacs as required. Run the script with no argument and it will open a new emacs or make the already running emacs the top window. I put a shortcut to the script on my desktop and attach a hot key so emacs is just a keystroke away and I never have more than one running.
-
-<pre>
-'*******************************************************************************
-'  Start emacs if it's not running & open file if script called with argument
-'*******************************************************************************
-For Each process In GetObject("winmgmts:\\.\root\cimv2"). _
-                    ExecQuery("Select * From Win32_Process")
-    If process.name = "emacs.exe" Then
-        ' connect to emacs & open file or make emacs the top window
-        ' replace -f arg with your server file location
-        run path("emacsclientw.exe") & " -f c:\.emacs.d\server\server -n " & _
-            fileOr("-e (raise-frame)")
-        WScript.Quit
-    End If
-Next
-run path("runemacs.exe") & " " & fileOr(Null)  ' start new emacs
-
-Sub run(cmd)  ' run the cmd
-    WScript.CreateObject("WScript.Shell").Run(cmd)
-End Sub
-
-Function path(exe)  ' return full, quoted path to executable
-    scriptDir = CreateObject("Scripting.FileSystemObject"). _
-                GetParentFolderName(WScript.ScriptFullName)
-    path = """" & scriptDir & "\" & exe & """"
-End Function
-
-Function fileOr(default)  ' return script arg (filename) or default
-    If WScript.Arguments.Count = 1 Then
-        fileOr =  """" & WScript.Arguments(0) & """"
-    Else
-        fileOr = default
-    End If
-End Function
-</pre>
-
--- John Dell'Aquila
 
 ==== Opening via Send To ====
 
 You can open a file in Emacs via Windows Send To by placing a shortcut to emacsclientw.exe in <code>C:\Documents and Settings\yourName\SendTo</code>. Then, when you right-click on a file and select Send To select emacsclientw. This will open the file in the running version of Emacs; if Emacs isn't running it will fail, but you can use methods described elsewhere in this Wiki for starting the server automatically. The simplest way I found is to simply add <code>(server-start)</code> to your emacs init file, then configure Windows to automatically start Emacs when you log in and leave Emacs running until you log off.
 
-- Glen Cordrey
-
-I've used two ways to get EmacsClient into the SendTo on Windows 7.  First was to use the VBScript mentioned above, but I had to copy the script to the SendTo folder (%APPDATA%\Roaming\Microsoft\Windows\SendTo) not just a link/shortcut to it, and that meant altering the script to use a fixed path since the script was no longer in the same directory as emacsclientw.exe or runemacs.exe.
-<pre>
-Set objShell = WScript.CreateObject("WScript.Shell")
-Set fso = CreateObject("Scripting.FileSystemObject")
-
-If WScript.Arguments.Count = 1 Then
-   objShell.Run("c:/sys/emacs-23.3/bin/emacsclientw.exe -na ""c:/sys/emacs-23.3/bin/runemacs.exe"" """ & WScript.Arguments(0) & """")
-Else
-   objShell.Run("c:/sys/emacs-23.3/bin/emacsclientw.exe -na ""c:/sys/emacs-23.3/bin/runemacs.exe"" ")
-end If
-</pre>
-(I'm not VBScript programmer so that could obviously be improved, but it was short and quick, and you'll need to modify paths as appropriate.)
-Benefit is that it sends the file to Emacs (starting Emacs if necessary) without a flashing command prompt.  Downside is that it has to show up with the ".vbs" extension to work.  Would rather it showed up in the SendTo menu as just "Emacs" and not "emacs.vbs".  Oh well.  Ideas?
-Second way was to create a batch file like described above, put it into Emacs' bin directory and create a shortcut to it in the SendTo folder.  Change the shortcut name to just "Emacs" and it looks better in the menu, but there is a command prompt window that flashes up. -- RobDavenport
-
-*The above* tips have worked well for me on Windows-XP. When I recently was moved to Windows-7, it would no longer work. My emacs client .bat file would fire up from a cmd command just fine, but when invoked via a SendTo link, it could not find the server socket. Taking information found elsewhere on this page (does anyone else think this page could use some organizing?) as well as the source for emacsclient that was connected to another Google hit on the subject, I discovered a way to tell emacsclient where to look for the socket, er. the server file. SendTo seems to now be happy. Here is what I put in my emacsclient .bat file:
-<pre>
-@c:\apps\emacs\bin\emacsclient.exe -a c:\apps\emacs\bin\runemacs.exe --server-file h:\.emacs.d\server\server %1 %2 %3 %4 %5 %6 %7 %8 %9
-</pre>
-
-Where I am using my h-drive for my .emacs.d directory (HOME = h:\). Your path to the server file probably is different. Your path to emacsclient is probably different also. I pass all the command line arguments (upto 9) in case I use this file for another purpose.
--- KevinBuchs 2012-02-06
-[new] You might want to use %* which is short hand for all arguments. -- shjk
 
 ==== Emacsclient and Windows 7 Taskbar ====
 Wanted to have Emacs icon on taskbar that calls runemacs to get Emacs started (without command prompt windows flashing or odd submenus and with proper icon (putting .vbs scripts on the taskbar created pinned shortcuts to wscript with the runemacs.vbs as a submenu).  I found a tip here http://superuser.com/questions/259146/why-latest-emacs-version-dont-support-windows-7-taskbar and was able to do it by:
