@@ -62,7 +62,7 @@ Using Emacs on Windows comfortably will require some extra configuration steps.
 === Shell Integration ===
 Use Dired in Windows and let Emacs open files using default Windows commands. 
 
-* [[DiredPlus#w32-browser|`^' Dired+ in Windows]] -- open files from Dired using their Windows file associations
+* [[DiredPlus#w32-browser| Dired+ in Windows]] -- open files from Dired using their Windows file associations
 * DiredHtmlMoveLikeWThirtyTwo -- a way to make dired behave like Windows Explorer with regard to moving HTML files (while moving or deleting foo.htm MS-Windows also includes the directory foo_files which contains associated images, css etc.)
 * MsWindowsDiredContextMenu -- display Explorer's context menu
 * WThirtyTwoFindDired -- simple Windows-version of find-dired
