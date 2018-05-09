@@ -4,7 +4,7 @@ This page is about different ways to integrate Emacs into MS Windows:
 
 Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-click Computer, Properties, Advanced, Environment Variables).  This also simplifies other methods mentioned on this page (no explicit paths needed then).
 
-== Proper Windows shortcut ==
+== Create a shortcut ==
 
 Use this code for a desktop/task-bar shortcut. Right-click in a file folder, select New -> Shortcut, and enter: 
 
