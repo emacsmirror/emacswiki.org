@@ -4,7 +4,7 @@ This page is about different ways to integrate Emacs into MS Windows:
 
 Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-click Computer, Properties, Advanced, Environment Variables).  This also simplifies other methods mentioned on this page (no explicit paths needed then).
 
-== Desktop or start menu shortcut ==
+== Proper Windows shortcut ==
 
 Use this code for a desktop/task-bar shortcut. Right-click in a file folder, select New -> Shortcut, and enter: 
 
@@ -40,10 +40,10 @@ To open text files with the emacs daemon, run cmd.exe as administrator use the c
 
 This almost works:
 {{{
-  git config --global core.editor "emacsclient -a emacs '%*'"
+  git config --global core.editor "C:/path/to/emacsclientw.exe --alternate-editor='C:/path/to/emacsclient.exe' '%*'"
 }}}
 
-Do ''not'' use ##emacsclientw## here; it doesn't wait.
+Be sure not to add -n to the command here. A non-blocking editor will cause Git to fail!
 
 == Replace `notepad.exe` calls ==
 
@@ -67,25 +67,26 @@ Check out [https://github.com/d5884/fakecygpty]. This is your best bet to get `t
 You will need Cygwin installed to build it.
 
 
-= Run Emacs server at windows startup & create shortcut to Emacs client =
+= Run Emacs server automatically at windows startup =
 
-Tested on Windows 10. In your Emacs/bin directory (where your Emacs binaries are) create a shortcut to ##runemacs.exe##. You may right-click on file ##runemacs.exe## and choose ##send-to desktop (create shortcut)##.
+Edit the first line of this Powershell script to specify the path to Emacs. The script creates a .bat file in your shell:startup folder. It also adds a line to delete any old emacs server data that may not have gotten cleaned, if the previous shutdown was dirty. Tested on Windows 10.
 
-Right click on newly created shortcut and choose ##Properties##. 
-In ##Target## put following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon## , X:\path\to\emacs is your drive letter and path where emacs resides on your harddrive. Close the properties dialog. 
+{{{
+# Path to runemacs (Modify this!)
+$run_server = "X:\path\to\emacs\bin\runemacs.exe --daemon"
 
-Press ##Win+r## to open Run dialog and type ##shell:startup##.
+# Path to startup file
+$startup_file = "$([Environment]::GetFolderPath('Startup'))\StartEmacsServer.bat"
 
-Copy your newly created link to Emacs server into opened directory. Emacs will start up automatically next time you start the system. Double click on the shortcut to start Emacs server now if it is not already running.
+# Clean previous server file info first
+"del /Q %HOME%/.emacs.d/server/*" > $startup_file
+$run_server >> $startup_file
 
-In your Emacs/bin directory, create a new shortcut file to ##emacsclientw.exe##.
-Open Properties for newly created shortcut and in ##Target## type: 
-##X:\path\to\emacs\bin\emacsclientw.exe -na "X:\path\to\emacs\bin\runemacs.exe" -c -n##
-In ##Open in## field, type ##%Documents%## or whatever your choice for default directory is.
-Close the ##Properties## dialog and rename your shortcut to just: ##emacs##
-Drag your newly created shortcut to your startbar, or desktop or wherever you wish to have it.
+}}}
 
-OBS: No need to edit your .emacs file and add server line to it.
+
+You can also open ##shell:startup## in Explorer, and create a shortcut described in the first section but when asked for location, put the following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon##. You can double click on the shortcut to start Emacs server if it is not already running.
+
 
 
 
