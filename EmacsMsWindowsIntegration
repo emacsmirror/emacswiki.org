@@ -36,6 +36,8 @@ To open text files with the emacs daemon, run cmd.exe as administrator use the c
     assoc .c=CodeFile
     assoc .h=CodeFile
 
+See WThirtyTwoFileAssociations for more info.
+
 == Set `emacsclient' as Your Editor ==
 
 This almost works:
