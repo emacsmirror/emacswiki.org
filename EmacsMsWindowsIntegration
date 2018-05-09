@@ -4,29 +4,22 @@ This page is about different ways to integrate Emacs into MS Windows:
 
 Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-click Computer, Properties, Advanced, Environment Variables).  This also simplifies other methods mentioned on this page (no explicit paths needed then).
 
+== Desktop or start menu shortcut ==
 
-== Use a Shortcut ==
+Use this code for a desktop/task-bar shortcut. Right-click in a file folder, select New -> Shortcut, and enter: 
 
-Use this code for a desktop/task-bar shortcut:
 {{{
-emacsclientw.exe -na "" -c
+c:\path\to\emacs\bin\emacsclientw.exe -c -n -a c:\path\to\emacs\bin\runemacs.exe
 }}}
 
-This shortcut starts Emacs from scratch if it's not running, and opens a new frame if it is.
+This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is running, otherwise opens a new frame.
 
-The ##-c## is key: without it, you have to pass a file to open or else emacsclient will exit with an error.
-(Right-click on desktop, New Shortcut, etc., then drag the shortcut into the Quick-Launch bar if you want.)
-
+  -c tells emacs to create a new frame instead of trying to use an existing frame.
   -n means no wait - don't wait for the server to return
   -a EDITOR specifies to the emacsclientw.exe which editor to run if emacs.exe is not running. An empty string starts a new server if needed
-  -c tells emacs to create a new frame instead of trying to use the existing frame
 
-Milouse, 2013/03/08: on Windows XP and Gnu/Emacs 24.2, I have to use the following shortcut to have things working as expected with a non integrated Emacs (just unziped version somewhere in my computer) [If you don't want to or can't add the emacs path to %PATH% as described above -- garyo] :
-{{{
-C:\Path\To\emacsclientw.exe --alternate-editor="C:\Path\To\runemacs.exe" -c
-}}}
-
-And, more important thing: you have to put the ##(server-start)## declaration in your init.el file, otherwise the shortcut will keep creating new and disconnected instance of emacs.
+== Right-Click Context Menu == 
+There are several options for adding an "Open in Emacs" command that can be found here: MsWindowsGlobalContextMenu
 
 == Create File Associations ==
 
@@ -74,10 +67,9 @@ Check out [https://github.com/d5884/fakecygpty]. This is your best bet to get `t
 You will need Cygwin installed to build it.
 
 
-== Windows 10/Emacs 25-* ==
 = Run Emacs server at windows startup & create shortcut to Emacs client =
 
-In your Emacs/bin directory (where your Emacs binaries are) create a shortcut to ##runemacs.exe##. You may right-click on file ##runemacs.exe## and choose ##send-to desktop (create shortcut)##.
+Tested on Windows 10. In your Emacs/bin directory (where your Emacs binaries are) create a shortcut to ##runemacs.exe##. You may right-click on file ##runemacs.exe## and choose ##send-to desktop (create shortcut)##.
 
 Right click on newly created shortcut and choose ##Properties##. 
 In ##Target## put following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon## , X:\path\to\emacs is your drive letter and path where emacs resides on your harddrive. Close the properties dialog. 
