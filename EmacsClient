@@ -3,14 +3,14 @@ EmacsClient allows one to open a file for editing in an already running Emacs.  
 
 = Start the Emacs Server =
 
-== Starting interactively == 
+=== Starting Interactively ===
 To enable the Emacs server, add the command 
 
    (server-start) 
 
 to your init.el.  This is a requirement for using the Emacs client! When the server is running, closing the last Emacs frame will leave the server running. To shut Emacs down completely, call the command `(kill-emacs)'. 
 
-== Emacs Daemon == 
+=== Emacs Daemon ===
 
 The command 
 
@@ -44,109 +44,15 @@ export EDITOR="emacsclient -c -a emacs"
 }}}
 
 
-OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
-
-RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
-
 
 === Windows ===
 
-See EmacsMsWindowsIntegration for a fairly complete and workable solution for Emacs 23/24, using stock Emacs builds (not W32Emacs).
+See EmacsMsWindowsIntegration for a fairly complete and workable solution for Emacs 23/24, using stock Emacs builds. EmacsMsWindowsIntegration contains info on how to set up taskbar/Start-menu shortcuts and make Emacs open particular file types using emacsclient.  
 
-Create an emacs.bat file in your Emacs "bin" directory. (Perhaps something like "\Program Files\emacs-23.1\bin" if you've used an installer.) Add the following commands:
+See MsWindowsGlobalContextMenu to add Emacs client to the right click context menu in Explorer. 
 
-<pre>
-@echo off
-"%~dp0emacsclientw.exe" -na "%~dp0runemacs.exe" "%1"
-</pre>
+WThirtyTwoFileAssociations to see how to associate file extensions to open with Emacs client on Windows. 
 
-The first line suppresses command line output, but if anyone knows a quick and easy trick to prevent the batch file from popping a command window in the process, that'd be nice. The "%~dp0" returns the directory in which the batch file resides, which is why it's important to put it alongside "emacsclientw.exe" and "runemacs.exe". Everything is set in quotes to handle for spaces in path names. A script seen elsewhere suggested use of "-n/--no-wait". If you'd like Emacs to create a new window (an Emacs frame) consider adding the "-c/--create-frame" option to the beginning of the options argument.
-
-The -a option specifies a fallback program to run if the emacs server is not found. In this case, it is runemacs.exe, which runs emacs without opening a console window. 
-
-[new]
-To address: "The first line suppresses command line output, but if anyone knows a quick and easy trick to prevent the batch file from popping a command window in the process, that'd be nice."
-
-<pre>
-@echo off
-start "" "%~dp0emacsclientw.exe" --alternate-editor="" -n %*
-</pre>
-[new]
-
-Pro tip: Under Windows Vista/7 with your emacs directory in "Program Files", do *NOT* use Emacs itself to create or edit the batch file. Windows creates a "Virtual Store" in the environment of the current user when it sees an executable messing with it's own directory under "Program Files". This could cause some confusing problems.
-
-17 Dec 2010: @Pro tip: what do you mean "when it sees an executable messing with it's own directory"?  Can't an executable run another executable under same directory?  Could you please provide more details?  Thanks.
-
-9 Jul 2012: I believe he means that, to bypass permissions issues, any edits made in Program Files by programs stored there, are actually written to a virtual version of that folder somehwere in the user's home folder in C:\Users\<Username> (I cannot exactly remember where)
-
-Also, two things, with .cmd files, you can avoid the cmd window from opening if you use "start emacsclient <put your options here> %*", and that using %* is far better than using %1 since that collects all command line arguments after the command, and not just the first one.
-
-[new]
-CaptainObvious : The problem is with the creation of files, not running. http://answers.microsoft.com/en-us/windows/forum/windows_7-security/how-to-disable-virtualstore-in-windows-7/55dce284-0dcd-46af-892e-d2b9cf5bcff6
-[new]
-
-Then it's as easy as associating whatever files you like with with the new emacs.bat file.
-
-Inspired by the original text:
-
-Under Windows I used someting like this wedit.bat:
-
-"\emacs-22.3\bin\emacsclientw.exe" --alternate-editor="\emacs-22.3-bin-i386\emacs-22.3\bin\runemacs.exe" "%1"
-
-Note: Make sure you have (server-start) in your .emacs file, so the first time emacs is run it will run as a server. 
-
-Note: I had to remove the quotes from around the %1, and then in the registry, have something like "c:\apps\emacs\bin\emacs.bat" "%1" for the shell/open/command entries. Otherwise file paths with spaces in them would get parsed incorrectly. 
-
-Since BAT files may not work for everything, I made a small launcher app that does the same as the aforementioned.
-https://github.com/mickbeaver/win32emacslauncher
-
-
-
-= Starting Emacs automatically =
-
-The tips for doing this are platform specific.
-
-=== Microsoft Windows (in Emacs often called w32) ===
-
-==== Using stock (unpatched) Emacs ====
-
-See EmacsMsWindowsIntegration for how to set up taskbar/Start-menu shortcuts and make Emacs open particular file types using emacsclient.  This works well for Emacs 24 at least, and is simpler and perhaps better than the VBS solutions mentioned below.
-
-==== Starting Emacs automatically from a context menu on w32 ====
-
-See [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].
-
-
-==== Associate files with no extension with Emacs ====
-
-See WThirtyTwoFileAssociations
-
-
-
-
-==== Emacsclient and Windows 7 Taskbar ====
-Wanted to have Emacs icon on taskbar that calls runemacs to get Emacs started (without command prompt windows flashing or odd submenus and with proper icon (putting .vbs scripts on the taskbar created pinned shortcuts to wscript with the runemacs.vbs as a submenu).  I found a tip here http://superuser.com/questions/259146/why-latest-emacs-version-dont-support-windows-7-taskbar and was able to do it by:
-
-1. Start Emacs via runemacs shortcut, no other Emacs process running previously.  Emacs icon shows up on taskbar when Emacs starts.
-
-2. Right-click on icon, select pin to taskbar.
-
-3. Shift-right-click on the icon and change the target from emacs.exe to runemacs.exe
-
-Emacsclient can be used (with -n -a arguments as above) but needs "%1" in shortcut to work and that creates an empty buffer '%1' which isn't ideal so I just use runemacs.exe. I don't drag-and-drop files to the taskbar icon (can't) just use it to start/focus Emacs, and I use other tips here to use emacsclient via SendTo or context menu options to send files. --RobDavenport
-
-Suggestion: use <code>emacsclientw -e (raise-frame)</code> to be able to click on the icon to raise an existing frame - at the cost of not being able to drag files onto the taskbar icon. Add <code>--alternate-editor= </code> to launch emacs in daemon mode (works on Emacs 25 and later for Windows) if it is not already running, or in older versions you can use <code>--alternate-editor=runemacs.exe</code> but this will start emacs with an error due to the -e option being unrecognized by emacs (it has --eval, but with different syntax)
-
-And there's another possible method here: http://robert-adesam.blogspot.com/2011/01/emacsclient-setup-on-windows-7-starter.html.  He uses a bat-to-exe converter to create an executable to run a batch file that executes emacsclient as needed, but the exe can be put onto the taskbar (and the converter he mentions can have it run invisibly and with custom icon).  Might also be worth a look. --RobDavenport 
-
-After upgrading to Windows 10 and installing a fresh installation of Emacs, pinning emacs.exe to the taskbar had same old problems (multiple icons), and the 'fix' above to change emacs.exe target to 'runemacs.exe' didn't help.  However, using MichaelHoffman's tip over in [http://www.emacswiki.org/emacs/EmacsW32#toc51] to use a nice tool to set the AppID for the shortcut. Running the app at http://code.google.com/p/win7appid/  on the emacs.lnk shortcut in \users\<name>\ApplicationData\Microsoft\Internet Explorer\QuickLaunch\User Pinned\Taskbar and setting it's AppID to "Gnu.Emacs" did the trick.  --RobDavenport
-
-Another way to (manually) edit the app id of a shortcut... add the following string registry entry to HKCR\lnkfile:
-<pre>
-[HKEY_CLASSES_ROOT\lnkfile]
-"FullDetails"="prop:System.PropGroup.Description;System.ItemTypeText;System.Comment;System.Link.TargetParsingPath;System.AppUserModel.ID;System.ItemFolderPathDisplay;prop:System.PropGroup.FileSystem;System.ItemNameDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName"
-</pre>
-Then when viewing the Properties on a shortcut file, in the Details tab, the AppUserModelID is displayed - and is editable.  I fixed my repinned emacs shortcut with this.    (You could just set "FullDetails" to be *just* "prop:SystemAppUserModel.ID" but then the details tab will *only* show the app id.) --RobDavenport
 
 
 ==== Editing with Emacs from Web Browsers ====
@@ -173,27 +79,7 @@ This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs
 # Set the editor in the configuration file <tt>external.ini</tt> to: <tt>emacsclient.exe ~f</tt>
 # Follow the instructions in the documentation of External.exe.
 
-[:EmacsW32Client]
-==== Using the patched version of EmacsW32 to start Emacs automatically ====
 
-The patched version of Emacs + [[EmacsW32]] may start Emacs automatically and opens the given file name.
-Note that in this case you do not have to add server-start to .emacs.
-The patched version of Emacs client does this for you.
-(Actually I believe the same code can be used on other platforms than w32, but so far I do not think anyone has tested this.)
-
-The installation of Emacs + [[EmacsW32]] also does some file associations etc,
-but see also WThirtyTwoFileAssociations.
-
-==== Desktop Shortcut That Maintains a Single Session ====
-
-WThirtyTwoServerMode describes how to set up Windows so that a desktop shortcut will open the same instance of Emacs every time you double-click on the shortcut, and hide Emacs when you exit.
-
-= Opening a New Emacs Frame on the Current Terminal =
-
-GnuEmacs cannot currently handle different terminal devices
-at the same time, so emacsclient is not able to open a new [[Frame]]
-on the terminal that it is invoked from. Fortunately this is issue is
-being resolved, see MultiTTYSupport.
 
 = Opening Server Files Always in a New Frame =
 
@@ -778,6 +664,15 @@ emacsclient -s todo -c ~/docs/todo/work.org &
 </pre>
 
 Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#emacsclient-Options
+
+= Troubleshooting = 
+
+
+OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
+
+RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
+
+
 
 = KDE =
 In KDE, you can set File Associations to open in emacsclient instead of KWrite.
