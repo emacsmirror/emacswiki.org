@@ -49,7 +49,12 @@ https://www.gnu.org/software/emacs/download.html#windows
 
 == Getting Started == 
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
-* EmacsMsWindowsIntegration -- 
+* EmacsMsWindowsIntegration -- Add Emacs to right click context menu and more. 
+* WThirtyTwoServerMode -- How to use Emacs server mode (i.e. emacsclient) on Windows.
+* MsWindowsCustomize -- overview of Emacs customization on Microsoft Windows
+* MsWindowsRegistry -- using the MS-Windows Registry for customizing the initial window (font, window position, window size) like a .Xdefaults file
+* WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
+* MsWindowsGlobalContextMenu -- adds Emacs to the menu you see when right-clicking on a file (and, if you select it, opens the file in Emacs)
 
 == MS Tips and Tricks ==
 * [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
@@ -74,26 +79,10 @@ https://www.gnu.org/software/emacs/download.html#windows
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
 * [[DiredPlus#w32-browser|`^' in Dired+: Windows drives in Dired Dired]]
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
-* WThirtyTwoServerMode -- How to use Emacs server mode on Windows.
-
-=== Customization ===
-
 * `w32-toggle-lock-key' function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
-* MsWindowsCustomize -- overview of Emacs customization on Microsoft Windows
-* MsWindowsRegistry -- using the MS-Windows Registry for customizing the initial window (font, window position, window size) like a .Xdefaults file
-* WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
-* MsWindowsGnuClient -- opening .txt files with Emacs
-* MsWindowsGlobalContextMenu -- adds Emacs to the menu you see when right-clicking on a file (and, if you select it, opens the file in Emacs)
 
-=== Special problems on w32 ===
-
-* WThirtyTwoMetaRightLeftNotWorking -- some programs prevent M-Right and M-Left from working
-* WThirtyTwoCtrlShiftNotWorking -- Windows "language bar" shortcuts prevent certain keyboard shortcuts like ##C-S-)##
-* [[http://lists.gnu.org/archive/html/help-emacs-windows/2011-02/msg00000.html Growl for windows uses Alt-X by default]] - but you can customize it.
-* There is a small bug due to incomplete MS documentation of the !ClearType api which causes text glitches during scrolling.  As such, !ClearType support is disabled in 21.3.  The buggy version is enabled in 21.1 and may be a useful alternative for those who don't mind the occasional display bug and being a few versions behind.
 
 === MS applications ===
-
 * MsOutlook -- use Emacs as the editor for Microsoft Outlook
 * VisEmacs -- Use emacs as the text editor for VisualStudio
 * IEViewSource -- Use emacs as the Internet Explorer "View Source" application
@@ -103,7 +92,6 @@ https://www.gnu.org/software/emacs/download.html#windows
 === MS shell ===
 * WThirtyTwoShellExecute -- execute any of the 'Explorer verbs' available for a file or directory.
 * MsShellExecute -- more Shell Execute stuff
-* ContextMenu -- adding "Open with Emacs" to the MS-Windows context menu
 * MakeSmartShortcuts -- seeing is believing, try it out
 * WThirtyTwoExecPredef -- execute Start Menu shortcuts from Emacs
 * WThirtyTwoUtl -- utility functions
