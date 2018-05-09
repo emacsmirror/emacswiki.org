@@ -1,66 +1,39 @@
 ==== Starting Emacs From Global Context Menu ====
 Here is a simple but useful way to access Emacs.  It adds
 the option to open a file in Emacs to your global context menu
-(i.e., right clicking on a file).  This runs a new Emacs instance
-for each file.  (Note: not the "Open With" submenu, but the top level context menu.)
-
-This has been tested under %%WinXP%%.
-
-Create a file named global_context_emacs.reg:
-<pre>
-REGEDIT4
-[HKEY_CLASSES_ROOT\*\shell]
-
-[HKEY_CLASSES_ROOT\*\shell\openwemacs]
-@="&GNU Emacs"
-# The above value appears in the global context menu, 
-# i.e., when you right click on a file.
-# (The '&' makes the next character a shortcut.)
-"Icon"="C:\\Program Files\\Emacs\\bin\\emacs.exe,0"
-# The above uses the icon of the Emacs exe for the context
-# and should match the path used for the command below.
-# The ,0 selects the main icon.
-
-[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-@="C:\\Program Files\\Emacs\\bin\\runemacs.exe \"%1\""
-# The above has to point to where you install Emacs
-</pre>
-Obviously, the command in the last line here has to point to where you install Emacs.  For example, I think the distribution zip file normally unpacks to a folder named "emacs22" or something like that.  I renamed this to "Emacs".
-
-Double click this file to load its entries into the registry.  You can use regedit to check if they are there, or remove them later.
-
-For more elaborate context menu stuff, including opening successive files in the same Emacs instance, see [EmacsClient EmacsClient].  Note that I've used the same registry key names as on that page, so, if you load one of those files, it will replace this version (which is probably what you want).
-
--- [[thundt]]
-
-----
-
-I was able to get EmacsClient to open the file with [[EmacsW32]] fairly trivially.  Here is my change to thundt's registry entry.  Unless you installed [[EmacsW32]] in a weird place, this should work out of the box:
+(i.e., right clicking on a file).  It will connect to a running Emacs server if one exists.
+Be sure to change the path to 
 
 <pre>
-REGEDIT4
-[HKEY_CLASSES_ROOT\*\shell]
+Windows Registry Editor Version 5.00
+;; Be sure to set the correct path to Emacs on your system!
+[HKEY_CURRENT_USER\*\shell]
 
-[HKEY_CLASSES_ROOT\*\shell\openwemacs]
-@="&GNU Emacs"
-# The above value appears in the global context menu, 
-# i.e., when you right click on a file.
-# (The '&' makes the next character a shortcut.)
+;; Open file in existing frame
+[HKEY_CURRENT_USER\*\shell\emacsopencurrentframe]
+@="&Emacs: Edit in existing window"
+"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CURRENT_USER\*\shell\emacsopencurrentframe\command]
+@="C:\\path\\to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"C:\\path\\to\\emacs\\bin\\emacsclient.exe\" \"%1\""
 
-[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-@="C:\\Program Files\\Emacs\\bin\\emacsclientw -n -a \"C:\\Program Files\\Emacs\\bin\\runemacs\" \"%1\""
-# The above has to point to where you install Emacs
+;; Open file in new frame
+[HKEY_CURRENT_USER\*\shell\emacsopennewframe]
+@="&Emacs: Edit in new window"
+"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CURRENT_USER\*\shell\emacsopennewframe\command]
+@="C:\\path\\to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"C:\\path\\to\\emacs\\bin\\emacsclient.exe\" -c \"%1\""
+
+;; Dired support
+[HKEY_CURRENT_USER\Directory\shell\emacsopensameframe]
+@="&Emacs: Open in dired"
+"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CURRENT_USER\Directory\shell\emacsopensameframe\command]
+@="C:\\path\\to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"C:\\path\\to\\emacs\\bin\\emacsclient.exe\" \"%1\""
 </pre>
 
--- JonathanArkell
 
-Emacsclient may stop functioning if there is an old server file left over from previous instance of Emacs which has not shut down properly. To fix this you can clear the server files (Powershell syntax): 
+Emacsclient may stop functioning if there is an old server file left over from previous instance of Emacs which has not shut down properly. To fix this you can clear the server files: 
 
  rm "~\.emacs.d\server\*"
 
-
-There is a similar registry code at [[EmacsW32]] in the /Send To/ submenu.
-
--- Abrahams
-
-HKEY_CLASSES_ROOT is a thing of the past. Please use HKEY_CURRENT_USER\Software\Classes instead.
+Note that HKEY_CLASSES_ROOT is a thing of the past. Please use HKEY_CURRENT_USER\Software\Classes instead.
