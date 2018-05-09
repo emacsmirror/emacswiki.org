@@ -1,12 +1,14 @@
-==== Starting Emacs From Global Context Menu ====
-Here is a simple but useful way to access Emacs.  It adds
-the option to open a file in Emacs to your global context menu
-(i.e., right clicking on a file).  It will connect to a running Emacs server if one exists. 
+= Starting Emacs From Global Context Menu =
+This page lists a few ways to Emacs to the right click menu in the Windows file explorer.
+
+
+== Basic context menu ==
+This will connect to a running Emacs server if one exists. 
 
 
 Save the following text to a file with emacs_explorer.reg. Replace the paths to Emacs binaries to match the location on your system. Double click the file and confirm the security warning to add this to the registry.
 
-<pre>
+{{{
 Windows Registry Editor Version 5.00
 ;; Be sure to set the correct path to Emacs on your system!
 [HKEY_CURRENT_USER\Software\Classes\*\shell]
@@ -25,7 +27,7 @@ Windows Registry Editor Version 5.00
 "icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CURRENT_USER\Software\Classes\*\shell\emacsopennewframe\command]
 @="C:\\path\\to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"C:\\path\\to\\emacs\\bin\\emacsclient.exe\" -c \"%1\""
-</pre>
+}}}
 
 Emacsclient may stop functioning if there is an old server file left over from previous instance of Emacs which has not shut down properly. To fix this you can clear the server files: 
 
