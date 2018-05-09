@@ -123,7 +123,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
 * [[CategoryPackaging|Packages]] -- Emacs package management
-* [[CategoryWThirtyTwo|Emacs on Windows]] -- Configuring Emacs for MS Windows
+* [[CategoryWThirtyTwo|Emacs on Windows]] -- configuring Emacs for MS Windows
+* [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
 
 
 [:ProgrammingEmacs]
