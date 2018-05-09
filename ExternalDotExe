@@ -1,0 +1,8 @@
+==== Editing with Emacs from any text area ====
+[http://code.google.com/p/external-exe/ External.exe] allows you to assign a keyboard shortcut to "EMACS editing": Whenever you want to edit text in a text area in Windows, hit the shortcut. Then External.exe copies the text in the text area to a file, opens the file with an external editor, and - once editing has finished - copies back the text from the file into the text area. The source code of External.exe is included in the downloadable zip file, and it is under the GPL.
+
+# Install External.exe.
+# Set the editor in the configuration file <tt>external.ini</tt> to: <tt>emacsclient.exe ~f</tt>
+# Follow the instructions in the documentation of External.exe.
+
+
