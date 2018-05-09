@@ -1,5 +1,11 @@
 This package contains two utility functions, w32-utl-lnk-get-target-and-args that fetches target and arguments from Windows shortcut files (.lnk files) and w32-utl-special-folder which fetches the path to a certain "special folder" (StartMenu, Recent, Desktop, etc.).
 
 Download the file: http://www.emacswiki.org/elisp/w32-utl.el
+
+
+
+More information about Windows symlinks here: WThirtyTwoSymlinks
+
+
 ----
 CategoryWThirtyTwo
