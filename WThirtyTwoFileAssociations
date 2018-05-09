@@ -1,24 +1,67 @@
 == Changing file associations from command line ==
+To set up Emacs file associations properly, use the commands `ftype' and `assoc'
 
-on NT (4, 2k, xp) there are two commands built into cmd.exe used display and alter file associations.
 
-ASSOC
-: to change file extension associations.
+    ftype txtfile=emacsclientw -na runemacs "%1"
+    ftype EmacsLisp=emacsclientw -na runemacs "%1"
+    ftype CodeFile=emacsclientw -na runemacs "%1"
+    assoc .txt=txtfile
+    assoc .text=txtfile
+    assoc .log=txtfile
+    assoc .org=txtfile
+    assoc .el=EmacsLisp
+    assoc .c=CodeFile
+    assoc .h=CodeFile
 
-FTYPE 
-: to display or modify file types used in file extension associations.
 
-I don't know how well these work or how complete their changes are.  use the /? switch for more help.
+== Changing file associations with registry keys ==
 
-See also EmacsClient.
+This is similar to the "assoc" commands above.
 
-== Changing File Types in Windows Explorer ==
+by defining file "meta types", e.g., %%"EmacsFile"%%, and then hanging the file associations (e.g., ".foo") off of those:
+<pre>
+REGEDIT4
+#-----
+# Set up the handler and icon
+#-----
+[HKEY_CLASSES_ROOT\EmacsFile]
+@="Emacs File"
+"Content Type"="text/plain"
+
+[HKEY_CLASSES_ROOT\EmacsFile\shell]
+[HKEY_CLASSES_ROOT\EmacsFile\shell\open]
+# This gets displayed in context menu
+@="Open in Emacs"
+
+[HKEY_CLASSES_ROOT\EmacsFile\shell\open\command]
+@="C:\\Program Files\\Emacs\\bin\\runemacs.exe \"%1\""
+
+[HKEY_CLASSES_ROOT\EmacsFile\DefaultIcon]
+@="C:\\Program Files\\Emacs\\etc\\icons\\emacs.ico,0"
+# Alternate
+# @="C:\\Program Files\\Emacs\\bin\\runemacs.exe,0"
+
+#-----
+# Associate file types w/ Emacs
+#-----
+[HKEY_CLASSES_ROOT\.foo]
+@="EmacsFile"
+"Content Type"="text/plain"</pre>
+</pre>
+Note that this only takes effect after you restart your desktop Explorer instance, e.g., after rebooting or killing all 'explorer.exe' instances in Task Manager.
+
+
+
+
+== Changing file associations in Windows Explorer ==
 
 Instead of the above or editing the registry keys directly you can in Windows Explorer from the menus choose
 
   Tools - Folder Options
 
 and then the tab "File Types".
+
+
 
 == Make files with no extension be treated as text files ==
 
