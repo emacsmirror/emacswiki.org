@@ -24,17 +24,9 @@ The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, e
 * ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
 * http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
-=== Helpful things for Installation ===
-
-* MsWindowsInstallation -- Installation guidelines
-* MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
-* The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.  You can also use [http://cheeso.members.winisp.net/srcview.aspx?dir=Tar&file=Tar.cs this simple Tar program in C#]
-* Build it yourself - see BuildingOnWindowsTableofContents.
-* [[EmacsPortableApp]] -- Install to USB stick
-
 === Unofficial Releases ===
 
-* **2018-03-03** **emax64** -- https://github.com/m-parashar/emax64/releases/ -- **64-bit Emacs for Windows** [26.0.91]
+* **emax64** -- https://github.com/m-parashar/emax64/releases/ -- **64-bit Emacs for Windows** [26.0.91]
 ** 64-bit Windows build of Emacs 26.0.91. DLLs included.
 ** Patched with ImageMagick 7 support. Binaries and libs included.
 ** PDF-TOOLS (epdfinfo.exe) included.
@@ -44,24 +36,27 @@ The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, e
 ** * addpm modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
 ** Available on Github too - https://ntemacs.sourceforge.io/
 
-* [https://vigou3.github.io/emacs-modified-windows/ Emacs Modified for Windows] -- Emacs 25.2 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
+* **Emacs Modified for Windows** -- https://vigou3.github.io/emacs-modified-windows/ 
+** Stock Emacs with a few modifications for R users. Currently offering version 25.3
+** Includes an installer, AUCTeX, ESS and image libraries.
 
-==== Older, mostly Obsolete ====
+* **Emacs-w64**  -- http://emacsbinw64.sourceforge.net/
+** Unmodified source code very similar to GNU release, but compiled with optimization.
+** Offers snapshots and pretests as well as full releases.
 
-* **2014-11-15** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
-** Unmodified source code from git mirror.
-** Includes development snapshot, pretests, and release builds.
-** Supports JPEG, GIF, PNG, TIFF, SVG, and XML2.
-** Compiled with optimization.
-** Also available as a [https://chocolatey.org/packages/emacs64 Chocolatey package].
 
-* **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
+=== Installation Details ===
 
-* **2007-10-08** -- Emacs 22 -- http://www.crasseux.com/emacs
-* **2005-06-26** -- Emacs 22 -- http://nqmacs.sf.net
+* MsWindowsInstallation -- Installation guidelines
+* [[EmacsPortableApp]] -- Install to USB stick for portability.
+* The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.
+* Build it yourself - see BuildingOnWindowsTableofContents.
+
+== Getting Started == 
+* MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
+* EmacsMsWindowsIntegration -- 
 
 == MS Tips and Tricks ==
-
 * [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
 * [[DiredPlus|Dired+]] -- open files from Dired using their Windows file associations
 * DiredHtmlMoveLikeWThirtyTwo -- a way to make dired behave like Windows Explorer with regard to moving HTML files (while moving or deleting foo.htm MS-Windows also includes the directory foo_files which contains associated images, css etc.)
