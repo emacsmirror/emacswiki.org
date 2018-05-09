@@ -85,7 +85,7 @@ $run_server >> $startup_file
 }}}
 
 
-You can also open ##shell:startup## in Explorer, and create a shortcut described in the first section but when asked for location, put the following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon##. You can double click on the shortcut to start Emacs server if it is not already running.
+You can also open Explorer, type in ##shell:startup## in the address bar, and press enter. In this startup folder, create a shortcut by right clicking and selecting new->shortcut. When asked for location, put the following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon## where you have substituted the proper path to runemacs.exe. This shortcut will run at startup. You can double click on the shortcut to start the Emacs server if it is not already running.
 
 
 
