@@ -26,36 +26,27 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 [:LearningEmacs]
 ==Learning About Emacs==
 
+* [[https://www.gnu.org/software/emacs/ GNU Emacs Homepage]] Download Emacs and find official documentation here.
 * EmacsNewbie -- basic concepts, vocabulary, notation used in documentation
 * [[CategoryDocumentation|Documentation]] -- learn why Emacs is called the self-documenting text editor.
 * [[CategoryHelp|Help]] -- online help from Emacs itself and its users
 * [[LearningEmacs|Learning Emacs]] -- there are many resources ways to learn Emacs, and lots of aids to learning
 * [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp is the heart and soul of Emacs.
-* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to use the EmacsLisp code snippets from this site.
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
 * [[EmacsNiftyTricks|Nifty Tricks]] -- some extra tips
 * RandomPage -- for serendipitous visitors
 * [[CategoryCommunity|Community]] -- learning from other people who use Emacs
 
-[:DownloadAndInstallEmacs]
-==Downloading and Installing Emacs==
-
-* [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
-* [[CategoryWThirtyTwo|W32]] -- obtaining and using Emacs for MS Windows
-* [[CategoryWSL|WSL]] -- Windows 10: installing Emacs 25 in WSL (Windows Subsystem for Linux)
-* [[CategoryBuilding|Building]] -- building Emacs from source code
-
 
 [:GeneralUse]
 ==Emacs Use In-Depth==
-
 * [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command|commands]], `M-x'
 * [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
-* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
 * [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
 ** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
@@ -85,7 +76,6 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
 ** [[CategoryXML|XML]] -- XML technologies
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
-* [[CategoryPackaging|Packages]] -- Emacs package management
 * [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 * [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
@@ -96,9 +86,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
 
 
-[:ExternalPrograms]
+[:EmacsApplications]
 ==Applications within Emacs==
-
 * [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
 * [[CategoryCalculators|Calculators]] -- math operations
 ** [[CategoryFinancial|Financial]] -- money management and accounting
@@ -130,6 +119,13 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
 
 
+[:Customization]
+==Customizing Emacs==
+* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryPackaging|Packages]] -- Emacs package management
+* [[CategoryWThirtyTwo|Emacs on Windows]] -- Configuring Emacs for MS Windows
+
 
 [:ProgrammingEmacs]
 == Programming Emacs in Lisp and C ==
@@ -138,6 +134,12 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryPatches|Patches]] -- patches to Emacs, mostly for C-level
 extensions
 * [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
+
+[:CustomInstallations]
+==Installing Custom Emacs Builds==
+* [[CategoryBuilding|Building]] -- building Emacs from source code
+* [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
+* [[CategoryWSL|WSL]] -- Windows 10: installing Emacs 25 in WSL (Windows Subsystem for Linux)
 
 [:Bugs]
 ==Emacs Bugs==
