@@ -107,8 +107,12 @@ Known issues - trying to run emacsclient from DISPLAY with no previous emacsclie
 
 === Comprehensive init script ===
 
-Here a little init script for GNU Debian/Ubuntu
+Here a little init script for GNU Debian/Ubuntu to put in /etc/init.d/emacsd.
 (please help to improve!)
+
+TODO: can someone compare it with [[EmacsdInitScript]]? It can run the daemon on startup and shutdown. init.d is an outdated method.
+
+
 Save in /etc/init.d/emacs
 <pre>
 #! /bin/sh
