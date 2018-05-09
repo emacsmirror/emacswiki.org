@@ -1,34 +1,33 @@
 [[ja:EmacsClient-ja]]
 EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can setup EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
 
-Since the release of GnuEmacs 22.1 both EmacsClient and GnuClient also work on "Windows"
-and offer similar functionality, e.g. execute arbitrary EmacsLisp code from the command line.
+== Using EmacsClient ==
 
-== How to start to use EmacsClient ==
+= The Easy Solution (With Emacs 23+) =
 
-= Starting Server With Emacs 23 : Easy Way =
-=== Bash Shells ===
+=== Bash environments ===
 
-RichardRiley : With emacs 23 simply do something like
+Simply replace every place you'd run <tt>emacs</tt> with this command instead. 
 
-<pre>
-#!/bin/bash
-exec emacsclient --alternate-editor="" -c "$@"
-</pre>
+{{{
+emacsclient -create-frame --alternate-editor=""
+}}}
 
-Then
+The emacsclient program will connect to a running instance of Emacs if it exists. <tt>-c</tt> tells Emacs to open the file in a new frame, which is optional. 
+ Specifying <tt>-a=""</tt> tells emacsclient to start an an instance of emacs if it cannot find one already running.
 
-<pre>
-export EDITOR=~/bin/edit
-</pre>
 
-Where "edit" is the small script above. The key is the "" for alternate-editor. emacsclient starts the server for you if and only if it is not already running.
+To use emacsclient as your editor, add the following to your .bashrc:
+
+{{{
+export EDITOR="emacsclient -c -a emacs"
+}}}
+
 
 OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
 
 RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
 
-* In Linux, I find the absolute easiest way to start the daemon and a new frame is to bind the command <tt>emacsclient -c -a ""</tt> to a keyboard command or in some menu. This attempts to start a new client, fails to detect a running daemon, starts the daemon, and finally starts the client with <tt>""</tt> as the argument/file. If a daemon is running it doesn't get past the <tt>-c</tt> switch.
 
 === Windows ===
 
@@ -81,44 +80,22 @@ Note: I had to remove the quotes from around the %1, and then in the registry, h
 Since BAT files may not work for everything, I made a small launcher app that does the same as the aforementioned.
 https://github.com/mickbeaver/win32emacslauncher
 
+
+
 = Starting Emacs automatically =
 
 The tips for doing this are platform specific.
 
 === GNU/Linux and other that has bash etc ===
-==== Starting Emacs automatically on *nixes with a shell script ====
 
-To have emacsclient start a full Emacs process if it can't connect to
-one, simply set ALTERNATE_EDITOR.  In your .bash_profile (or similar):
+Just add this command to your startup script:
 
-<pre>
-    export ALTERNATE_EDITOR=emacs EDITOR=emacsclient VISUAL=emacsclient
-</pre>
+ emacs --daemon
 
-Alternatively, the following script can be used to open Emacs in the background if not already present, giving more consistent behaviour:
+This will launch an emacs daemon that detaches itself. This can save you a few seconds since Emacs will already be running by the time you open your first file!
 
-<pre>
-tempuid=$(id -u)
-temphost=$(hostname)
-if [ ! -e "/tmp/esrv$tempuid-$temphost" ]
-then
-    emacs &
-    while [ ! -e "/tmp/esrv$tempuid-$temphost" ] ; do sleep 1 ; done
-fi
-emacsclient "$@"
-</pre>
 
-Note that the above script is not perfect. It assumes that emacs will sucessfully load, and that the InitFile will start the server. Also on my system using some cvs version of 22.0, the socket to look for is "/tmp/emacs$tempuid/server".
-
-'''Best Solution:''' The same basic functionality is available in etc/emacs.bash of Emacs, which defines a new command named ''edit'', and should be sourced from .bashrc with a line like ''"source /usr/share/emacs/21.4/etc/emacs.bash"''. 
-
-''edit'' can then be used as the value of EDITOR. If no windowing system is found, no attempt to use emacsclient is made, however if a suspended emacs session is available, it will be re-used, otherwise a new emacs session is used. Future versions might try emacsclient even without a windowing system before testing for a suspended emacs.
-
-[new:CarlGroner:2008-12-29 20:27 UTC]
-The current cvs version of [http://repo.or.cz/w/emacs.git/blob/HEAD:/etc/emacs.bash emacs.bash] notes that this method is now obsolete, and the -a (alternate editor) option to emacsclient should be used instead if available. 
-
-[new:sylecn:2009-05-14]
-For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init.d/emacsd for autostart emacs daemon on startup and kill emacs on shutdown.
+EmacsAsDaemon details various ways to run this command in different distributions, using init scripts vs systemd and so on.
 
 
 === Microsoft Windows (in Emacs often called w32) ===
@@ -667,31 +644,6 @@ that's all !
 When you want to detach from a running session, just press C-\. To
 reattach, run your dtach command again. Very simple and very handy.
 
-= NEW ! Detaching without 3rd party tool =
-
-A major addition has been done in the EmacsCVS trunk lately.
-This addition allows a user to start emacs as a daemon !
-
-To start the daemon, just do:
-
- emacs --daemon
-
-This will launch an emacs daemon and detach itself.
-
-When you want to attach to it, either issue:
-
- emacsclient -t
-
-or
-
- emacsclient -c
-
-Tadah !
-
-To detach again, just use the usual key binding.
-
-Enjoy.
-
 = Using emacsclient to make a new frame of a remote Emacs 22 on a local display =
 
     ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
@@ -855,18 +807,6 @@ I wanted to use emacsclient as my editor to svn in Windows, but when I used emac
 
 A: This is known to be broken currently (16-Oct-09); it always returns 1.  There's some discussion in the help-emacs-windows mailing list about fixing it.
 
-== Emacsclient vs. gnuclient ==
-
-Is emacs-server protocol compatible with gnuclient or are they totally different implementations? I would like to use an utility in Windows designed for gnuclient (visemacs), but it only supports gnuclient at the moment. I would like to know, how big effor it would be to patch it to support emacs client protocol. All pointers to relevant documentation is gladly accepted too!  
-
-== remote realtime collaborative editing in Windows ==
-
-Is this possible? 
-I read how to do it in linux here: http://blog.lathi.net/articles/2007/10/09/remote-pair-programming
-
-[new]
-You may want to try [[Rudel]] for realtime collaborative editing.
-[new]
 
 == multiple emacs clients ==
 
