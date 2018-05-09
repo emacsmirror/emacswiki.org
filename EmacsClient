@@ -937,22 +937,6 @@ See: SettingFrameColorsForEmacsClient
 
 -- GeoffreyTeale
 
-== Shutdown emacs server ==
-
-This function will ask if you want to save any modified buffers, quit your session, and shutdown the associated emacs server instance.
-
-Add the below code to your .emacs file.  Call it w/ <code>M-x server-shutdown</code>
-
-<pre>
-;; define function to shutdown emacs server instance
-(defun server-shutdown ()
-  "Save buffers, Quit, and Shutdown (kill) server"
-  (interactive)
-  (save-some-buffers)
-  (kill-emacs)
-  )
-</pre>
-
 == Color coding (multiple) emacs server instances ==
 
 You can start different emacs server instances w/ different color schemes (so you instantly know which one your using).
