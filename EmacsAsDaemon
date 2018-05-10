@@ -1,347 +1,69 @@
+Emacs supports a client/server mode where new files are opened in a running instance of Emacs. This saves you from having to load configuration and packages for every new file you open. This involves two configuration steps: using EmacsClient to open files, and running the Emacs server. This page focuses on how to launch the server at startup, a.k.a. daemon mode.
+
+
 = Running emacs like a Daemon  =
 
-This a new feature that is included in emacs-23.1.
-
-Start the emacs daemon with
+This feature was introduced in Emacs 23.1.  Daemon mode starts Emacs loading the user's standard init files, but headless.  The command to run it is: 
 
 <pre>
 emacs --daemon
 </pre>
 
-or,
 
-<pre>
-sudo emacs --daemon
-</pre>
 
-== Simple setup ==
+= Starting Emacs Daemon with systemd =
 
-Put
+[http://www.freedesktop.org/wiki/Software/systemd Systemd] is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.  All you need to do is copy this to <tt>~/.config/systemd/user/emacs.service</tt>.
 
-<pre>
-export ALTERNATE_EDITOR=""
-export EDITOR=emacsclient
-</pre>
+    cat ~/.config/systemd/user/emacs.service
 
-in your .bashrc, or
+{{{
+[Unit]
+Description=Emacs text editor
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 
-<pre>
-setenv ALTERNATE_EDITOR ""
-setenv EDITOR emacsclient
-</pre>
+[Service]
+Type=simple
+ExecStart=/c/emax64/bin/emacs.exe --fg-daemon
+ExecStop=/c/emax64/bin/emacsclient.exe --eval "(kill-emacs)"
+Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+Restart=on-failure
 
-in your .cshrc depending on your default shell.  After that, using <code>emacsclient</code> (or <code>emacsclient -t</code>) will automatically start an emacs in daemon mode and connect to it if one is not found running, and sane programs will know to run <code>emacsclient</code> to start an editor.
+[Install]
+WantedBy=default.target
+
+}}}
+
+
+
+Enable the unit by running:
+{{{
+systemctl enable --user emacs
+systemctl start --user emacs
+}}}
+
+
+
+
 
 == Debian/Ubuntu ==
 
-Depending on your requirements, there are a couple ways to work with <code>emacs --daemon</code> and <code>emacsclient</code>.
+Depending on your requirements, there are a couple ways to work with <code>emacs --daemon</code>.
 
 === Basic setup ===
 
-Add <code>emacs --daemon</code> to auto-start on boot. This can be done the easy way (via "Settings > Session and Startup > Application Autostart") or by writing your own <code>.desktop</code> file and placing it in <code>~/.config/autostart</code>. 
+This can be done the easy way (via "Settings > Session and Startup > Application Autostart") or by writing your own <code>.desktop</code> file and placing it in <code>~/.config/autostart</code>. 
 
-Then make the following changes to your <code>.bashrc</code> (assuming you're using <code>bash</code>):
+=== Comprehensive init scripts ===
 
-<pre>
-export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t"                  # $EDITOR should open in terminal
-export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI with non-daemon as alternate
-</pre>
-
-For convenience (and because I'm used to them) I also added the following aliases:
-
-<pre>
-alias emax="emacsclient -t"                      # used to be "emacs -nw"
-alias semac="sudo emacsclient -t"                # used to be "sudo emacs -nw"
-alias emacsc="emacsclient -c -a emacs"           # new - opens the GUI with alternate non-daemon
-</pre>
+Here are two possible init scripts for GNU Debian/Ubuntu to put in /etc/init.d/emacsd.  
 
 
-=== Multiple XServers (DISPLAYs) + emacsclient ===
-Each emacs shell have its own environment variables, which is loaded from the frame-parameters which opened that shell.
-When working on this shell process from more than one DISPLAYs, it occurs that emacsclient is opened on the DISPLAY from the original frame which created that shell.
-To fix this problem we will hook the frame creation function to make sure emacsclient will be opened on the right DISPLAY.
+[[DebianInitScript]]
 
-init.el:
-<pre>
-; patches the call at server.el:1237
-(defun server-create-window-system-frame-hook(orig-fun &rest args)
-  (let (
-        (expected-display (car-safe args))
-        (frame-display (frame-parameter (selected-frame) 'display))
-        (other-arguments (cdr-safe args))
-        )
-;  (message "Create server params: %S, frame params: %S" args frame-display)
-;  (message "CAR %S is iq %S" expected-display (string-equal (car-safe args) "localhost:current"))
-;  (message "CDR %S" other-arguments)
-;  (message "REJOIN %S" (cons frame-display other-arguments))
-  (if (null frame-display)
-      (if (string-equal expected-display "localhost:current")
-          (apply orig-fun (cons (getenv "DISPLAY") other-arguments))
-        (apply orig-fun args)
-        )
-    
-    (if (string-equal expected-display "localhost:current")
-        (apply orig-fun (cons frame-display other-arguments))
-      (apply orig-fun args)
-      )
-    )
-  )
-  
-  )
-
-(advice-add 'server-create-window-system-frame :around #'server-create-window-system-frame-hook)
+[[EmacsdInitScript]]
 
 
-</pre>
-
-.bashrc:
-
-<pre>
-export VISUAL="emacsclient -c --display=localhost:current -a emacs"
-
-</pre>
-
-Known issues - trying to run emacsclient from DISPLAY with no previous emacsclients, where there is a different DISPLAY with existing emacsclients, the emacsclient still opens in the wrong DISPLAY. Fixing it would probably require recompilation of emacsclient to make it send BOTH the needed DISPLAY to show the frame and the localhost:current flag.
-
-
-=== Comprehensive init script ===
-
-Here a little init script for GNU Debian/Ubuntu to put in /etc/init.d/emacsd.
-(please help to improve!)
-
-TODO: can someone compare it with [[EmacsdInitScript]]? It can run the daemon on startup and shutdown. init.d is an outdated method.
-
-
-Save in /etc/init.d/emacs
-<pre>
-#! /bin/sh
-### BEGIN INIT INFO
-# Provides:          emacs
-# Default-Start:     2 3 4 5
-# Default-Stop:      S 0 1 6
-# Description:       This file should be placed in /etc/init.d.
-### END INIT INFO
-
-#change this
-#USERNAME=YourUserName
-USERNAME=`id 1000 -un`
-eval USERHOME=~$USERNAME
-DESC="Run the emacs daemon."
-NAME=emacs
-#change this
-#DAEMON=/opt/emacs23/bin/$NAME
-DAEMON=`which emacs`
-DAEMON_ARGS="--daemon"
-PIDFILE=/var/run/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
-#change this
-#EMACSCLIENT=/opt/emacs23/bin/emacsclient
-EMACSCLIENT=`which emacsclient`
-
-EVALEXIT="(progn (kill-emacs))"
-
-# Exit if the package is not installed
-[ -x "$DAEMON" ] || exit 0
-
-# Read configuration variable file if it is present
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
-
-# Load the VERBOSE setting and other rcS variables
-[ -f /etc/default/rcS ] && . /etc/default/rcS
-
-# Define LSB log_* functions.
-# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
-. /lib/lsb/init-functions
-
-#
-# Function that starts the daemon/service
-#
-do_start()
-{
-	# Return
-	#   0 if daemon has been started
-	#   1 if daemon was already running
-	#   2 if daemon could not be started
-	start-stop-daemon -c $USERNAME -d $USERHOME --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
-		|| return 1
-	start-stop-daemon -c $USERNAME -d $USERHOME --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
-		$DAEMON_ARGS \
-		|| return 2
-	# Add code here, if necessary, that waits for the process to be ready
-	# to handle requests from services started subsequently which depend
-	# on this one.  As a last resort, sleep for some time.
-}
-
-#
-# Function that stops the daemon/service
-#
-do_stop()
-{
-        $EMACSCLIENT --eval "$EVALEXIT" 
-	# Return
-	#   0 if daemon has been stopped
-	#   1 if daemon was already stopped
-	#   2 if daemon could not be stopped
-	#   other if a failure occurred
-	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
-	RETVAL="$?"
-	[ "$RETVAL" = 2 ] && return 2
-	# Wait for children to finish too if this is a daemon that forks
-	# and if the daemon is only ever run from this initscript.
-	# If the above conditions are not satisfied then add some other code
-	# that waits for the process to drop all resources that could be
-	# needed by services started subsequently.  A last resort is to
-	# sleep for some time.
-	start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
-	[ "$?" = 2 ] && return 2
-	# Many daemons don't delete their pidfiles when they exit.
-	rm -f $PIDFILE
-	return "$RETVAL"
-}
-
-#
-# Function that sends a SIGHUP to the daemon/service
-#
-do_reload() {
-	#
-	# If the daemon can reload its configuration without
-	# restarting (for example, when it is sent a SIGHUP),
-	# then implement that here.
-	#
-	start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
-	return 0
-}
-
-case "$1" in
-  start)
-	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
-	do_start
-	case "$?" in
-		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
-		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
-	esac
-	;;
-  stop)
-	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
-	do_stop
-	case "$?" in
-		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
-		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
-	esac
-	;;
-  #reload|force-reload)
-	#
-	# If do_reload() is not implemented then leave this commented out
-	# and leave 'force-reload' as an alias for 'restart'.
-	#
-	#log_daemon_msg "Reloading $DESC" "$NAME"
-	#do_reload
-	#log_end_msg $?
-	#;;
-  restart|force-reload)
-	#
-	# If the "reload" option is implemented then remove the
-	# 'force-reload' alias
-	#
-	log_daemon_msg "Restarting $DESC" "$NAME"
-	do_stop
-	case "$?" in
-	  0|1)
-		do_start
-		case "$?" in
-			0) log_end_msg 0 ;;
-			1) log_end_msg 1 ;; # Old process is still running
-			*) log_end_msg 1 ;; # Failed to start
-		esac
-		;;
-	  *)
-	  	# Failed to stop
-		log_end_msg 1
-		;;
-	esac
-	;;
-  *)
-	#echo "Usage: $SCRIPTNAME {start|stop|restart|reload|force-reload}" >&2
-	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
-	exit 3
-	;;
-esac
-
-:
-</pre>
-
-I use also this start script placed in /usr/bin/emacs
-<pre>
-#!/bin/bash
-USERID=`id -u`
-if [ ! -e /tmp/emacs$USERID/server ]
-then
-	echo "Starting server."
-	/etc/init.d/emacs start
-        while [ ! -e "/tmp/emacs$USERID/server" ] ; do sleep 1 ; done
-fi
-
-emacsclient -c "$@"
-</pre>
-
-*bug* : unfortunately this does not work on Debian Lenny using sudo. I get:
-<pre>
-start-stop-daemon: Unable to chdir() to /home/root/ (No such file or directory)
-</pre>
-
-*Fixed* : replaced <code>/home/$USERNAME/</code> with <code>~$USERNAME</code> (root's home directory is /root not in /home)
-
-
-Since start-stop-daemon needs root should they be sudo calls? Otherwise surely on root can run emacs in this way!
-* This init script requires you to change the USERNAME variable - not ideal :/
-* How do you think deal with the choose of a user? One server per user? I think its a bad idea. The server is not useful for all users.
-** How about starting  a server for every user in group 'emacs' or 'emacs-daemon'?
-
-You should rather change the variables in /etc/default/emacs, this is how other init scripts work. You could extend the script to start daemons for several users, e.g. by looking for a .start-emacs-daemon file in their home directories. But then, the init script wouldn't make much sense on a system with multiple users, anyway: such a computer should never get powered off, so the init script will not run, anyway. A better solution would be to start the daemon lazily: just create a wrapper around emacsclient, starting the daemon if it isn't already running. -- AnselmHelbig
-
-several *bugs*
-* no <code>user</code> command on my debian machine, better replace <code>USERID=`user -u $USER`</code> with <code>USERID=`id -u`</code> and remove the previous line.
-* <code>start-stop-daemon</code> is in /sbin which is not in default <code>$PATH</code>, better add <code>PATH=/usr/sbin:/usr/bin:/sbin:/bin</code> below the line <code>. /lib/lsb/init-functions</code>
-* still got <code>start-stop-daemon: Unable to chdir() to ~username (No such file or directory)</code>
-       emacsclient "$@"
-       return $?
-
-After fixing all these, I still can't stop the daemon, <code>sudo /etc/init.d/emacs stop</code> gives
-<pre>
-        /usr/bin/emacsclient: can't find socket; have you started the server?
-        To start the server in Emacs, type "M-x server-start".                         
-        /usr/bin/emacsclient: No socket or alternate editor.  Please use:
-
-             --socket-name
-             --server-file      (or environment variable EMACS_SERVER_FILE)
-             --alternate-editor (or environment variable ALTERNATE_EDITOR)
-</pre>
-
-*Fixed:* I was able to use <code>sudo /etc/init.d/emacs stop</code> to stop the daemon with the above init script after replacing
-<pre>
-$EMACSCLIENT --eval "$EVALEXIT"
-</pre>
-in the <code>do_stop()</code> function with
-<pre>
-su -c "$EMACSCLIENT --eval \"$EVALEXIT\"" $USERNAME
-</pre>
-The problem was that root didn't have an emacs server running.  It worked fine when running
-<code>/etc/init.d/emacs stop</code> as <code>$USERNAME</code>, but it would have failed during shutdown. --JasonBlevins
-
-Several more *bugs*
-
-* I needed to alter all uses of "~" in my .emacs (and related) files to the absolute path to my home directory.
-* <code>(user-login-name)</code> returns "root". I have a working hack, but it's probably not very advisable: I've changed the <code>DAEMON</code> and <code>DAEMON_ARGS</code> variables to run <code>emacs</code> using <code>su</code> allowing me to specify the <code>-l</code> switch to <code>su</code>:
-
-<pre>
-DAEMON=/bin/su
-DAEMON_ARGS="${USERNAME} -l -c emacs -- -daemon -u ${USERNAME}"
-</pre>
-
-And <code>start-stop-daemon</code> should be executed *without* the <code>-c $USERNAME</code> switch.
-
---RichardLewis
 
 == Gentoo ==
 
@@ -400,51 +122,6 @@ For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/ema
 
 : Link dead? This site http://launchd.info/ seems to suggest we don't need sudo above. Not sure, please delete my remark if you can edit above. 
 
-== Systemd user service on startup ==
-
-It's simple enough to run the emacs daemon with [http://www.freedesktop.org/wiki/Software/systemd systemd].
-
-{{{
-$ cat ~/.config/systemd/user/emacs.service
-[Unit]
-Description=Emacs: the extensible, self-documenting text editor
-
-[Service]
-Type=forking
-ExecStart=/usr/bin/emacs --daemon
-ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
-Environment=SSH_AUTH_SOCK=%t/keyring/ssh
-Restart=always
-
-[Install]
-WantedBy=default.target
-}}}
-
-Make sure the <code>SSH_AUTH_SOCK</code> is the correct one by checking the output of the following:
-
-{{{
-$ echo $SSH_AUTH_SOCK
-/run/user/1000/keyring/ssh
-}}}
-
-When you see <code>%t</code> in the <code>emacs.service</code> file, it means the value of <code>XDG_RUNTIME_DIR</code> (which equals to <code>/run/user/1000</code> on my computer).
-
-Enable the unit for your user
-{{{
-systemctl enable --user emacs
-systemctl start --user emacs
-}}}
-
-
-[new]
-I get weird some weird gui-related errors with the above script.  Using Spacemacs modeline, the non-unicode decorative characters get distorted. I also get a message that it cannot find my Source Code Pro font.
-
-[new]
-This apparently stops working with systemd 219, see https://emacs.stackexchange.com/questions/9390/emacsclient-cant-open-display-0
-
-
-[new]
-To prevent emacs from hindering shutdown when sudo-edit was used I had to add "emacsclient -e "(kill-emacs)"" to /etc/gdm/PostSession/Default
 
 == Stopping the Emacs Daemon ==
 
@@ -612,6 +289,64 @@ Add the below code to your .emacs file.  Call it w/ <code>M-x server-shutdown</c
   (kill-emacs)
   )
 </pre>
+
+
+
+
+
+
+
+=== Multiple XServers (DISPLAYs) + emacsclient ===
+Each emacs shell have its own environment variables, which is loaded from the frame-parameters which opened that shell.
+When working on this shell process from more than one DISPLAYs, it occurs that emacsclient is opened on the DISPLAY from the original frame which created that shell.
+To fix this problem we will hook the frame creation function to make sure emacsclient will be opened on the right DISPLAY.
+
+init.el:
+<pre>
+; patches the call at server.el:1237
+(defun server-create-window-system-frame-hook(orig-fun &rest args)
+  (let (
+        (expected-display (car-safe args))
+        (frame-display (frame-parameter (selected-frame) 'display))
+        (other-arguments (cdr-safe args))
+        )
+;  (message "Create server params: %S, frame params: %S" args frame-display)
+;  (message "CAR %S is iq %S" expected-display (string-equal (car-safe args) "localhost:current"))
+;  (message "CDR %S" other-arguments)
+;  (message "REJOIN %S" (cons frame-display other-arguments))
+  (if (null frame-display)
+      (if (string-equal expected-display "localhost:current")
+          (apply orig-fun (cons (getenv "DISPLAY") other-arguments))
+        (apply orig-fun args)
+        )
+    
+    (if (string-equal expected-display "localhost:current")
+        (apply orig-fun (cons frame-display other-arguments))
+      (apply orig-fun args)
+      )
+    )
+  )
+  
+  )
+
+(advice-add 'server-create-window-system-frame :around #'server-create-window-system-frame-hook)
+
+
+</pre>
+
+.bashrc:
+
+<pre>
+export VISUAL="emacsclient -c --display=localhost:current -a emacs"
+
+</pre>
+
+Known issues - trying to run emacsclient from DISPLAY with no previous emacsclients, where there is a different DISPLAY with existing emacsclients, the emacsclient still opens in the wrong DISPLAY. Fixing it would probably require recompilation of emacsclient to make it send BOTH the needed DISPLAY to show the frame and the localhost:current flag.
+
+
+
+
+
 == Color coding (multiple) emacs server instances ==
 
 You can start different emacs server instances w/ different color schemes (so you instantly know which one you're using).
