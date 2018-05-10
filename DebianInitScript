@@ -168,3 +168,55 @@ fi
 
 emacsclient -c "$@"
 </pre>
+
+
+
+Since start-stop-daemon needs root should they be sudo calls? Otherwise surely on root can run emacs in this way!
+* This init script requires you to change the USERNAME variable - not ideal :/
+* How do you think deal with the choose of a user? One server per user? I think its a bad idea. The server is not useful for all users.
+** How about starting  a server for every user in group 'emacs' or 'emacs-daemon'?
+
+You should rather change the variables in /etc/default/emacs, this is how other init scripts work. You could extend the script to start daemons for several users, e.g. by looking for a .start-emacs-daemon file in their home directories. But then, the init script wouldn't make much sense on a system with multiple users, anyway: such a computer should never get powered off, so the init script will not run, anyway. A better solution would be to start the daemon lazily: just create a wrapper around emacsclient, starting the daemon if it isn't already running. -- AnselmHelbig
+
+several *bugs*
+* no <code>user</code> command on my debian machine, better replace <code>USERID=`user -u $USER`</code> with <code>USERID=`id -u`</code> and remove the previous line.
+* <code>start-stop-daemon</code> is in /sbin which is not in default <code>$PATH</code>, better add <code>PATH=/usr/sbin:/usr/bin:/sbin:/bin</code> below the line <code>. /lib/lsb/init-functions</code>
+* still got <code>start-stop-daemon: Unable to chdir() to ~username (No such file or directory)</code>
+       emacsclient "$@"
+       return $?
+
+After fixing all these, I still can't stop the daemon, <code>sudo /etc/init.d/emacs stop</code> gives
+<pre>
+        /usr/bin/emacsclient: can't find socket; have you started the server?
+        To start the server in Emacs, type "M-x server-start".                         
+        /usr/bin/emacsclient: No socket or alternate editor.  Please use:
+
+             --socket-name
+             --server-file      (or environment variable EMACS_SERVER_FILE)
+             --alternate-editor (or environment variable ALTERNATE_EDITOR)
+</pre>
+
+*Fixed:* I was able to use <code>sudo /etc/init.d/emacs stop</code> to stop the daemon with the above init script after replacing
+<pre>
+$EMACSCLIENT --eval "$EVALEXIT"
+</pre>
+in the <code>do_stop()</code> function with
+<pre>
+su -c "$EMACSCLIENT --eval \"$EVALEXIT\"" $USERNAME
+</pre>
+The problem was that root didn't have an emacs server running.  It worked fine when running
+<code>/etc/init.d/emacs stop</code> as <code>$USERNAME</code>, but it would have failed during shutdown. --JasonBlevins
+
+Several more *bugs*
+
+* I needed to alter all uses of "~" in my .emacs (and related) files to the absolute path to my home directory.
+* <code>(user-login-name)</code> returns "root". I have a working hack, but it's probably not very advisable: I've changed the <code>DAEMON</code> and <code>DAEMON_ARGS</code> variables to run <code>emacs</code> using <code>su</code> allowing me to specify the <code>-l</code> switch to <code>su</code>:
+
+<pre>
+DAEMON=/bin/su
+DAEMON_ARGS="${USERNAME} -l -c emacs -- -daemon -u ${USERNAME}"
+</pre>
+
+And <code>start-stop-daemon</code> should be executed *without* the <code>-c $USERNAME</code> switch.
+
+--RichardLewis
