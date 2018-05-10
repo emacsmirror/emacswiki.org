@@ -168,8 +168,3 @@ fi
 
 emacsclient -c "$@"
 </pre>
-
-*bug* : unfortunately this does not work on Debian Lenny using sudo. I get:
-<pre>
-start-stop-daemon: Unable to chdir() to /home/root/ (No such file or directory)
-</pre>
