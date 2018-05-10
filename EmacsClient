@@ -38,9 +38,14 @@ The emacsclient program will connect to a running instance of Emacs if it exists
 To use emacsclient as your editor, add the following to your .bashrc:
 
 {{{
-export EDITOR="emacsclient -c -a emacs"
+<pre>
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -t"                  # $EDITOR should open in terminal
+export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI with non-daemon as alternate
+</pre>
 }}}
 
+If you prefer to launch GUI Emacs instead of terminal Emacs, replace the <tt>-t</tt> in the second line with <tt>-c</tt>
 
 
 === Windows ===
