@@ -12,7 +12,7 @@ Library [[levenshtein.el]] defines function `levenshtein-distance' which returns
 It is posted to [http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance WikiBooks:Algorithm implementation/Strings/Levenshtein distance]  with the comments removed, and it is also archived on ThisWiki for discussion and improvement.
 
 === Built in `string-distance` =
-Emacs 27 has new function `string-distance`. It's implemented in C and as 10000% fast as Lisp implementation.
+Emacs 27 has new function `string-distance` implemented in C. It's as 10000% fast as Lisp.
 
 
 == Levenshtein Distance for Completion ==
