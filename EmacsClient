@@ -172,7 +172,7 @@ Edit a file in a new frame by adding to your .bashrc or .zshrc
 
 == Tiling Window Managers ==
 
-See EmacsTilingWM for info about using Emacsclient with tiling WMs.
+See TilingWindowManagers for info about using Emacsclient with tiling WMs.
 
 
 = Saveplace and Emacs server: remembering last point position in files opened with emacsclient(w) =
