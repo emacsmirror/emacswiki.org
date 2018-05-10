@@ -46,26 +46,22 @@ systemctl start --user emacs
 
 
 
-== Debian/Ubuntu ==
+= Other Systems =
 
-Depending on your requirements, there are a couple ways to work with <code>emacs --daemon</code>.
+There are other ways to launch <code>emacs --daemon</code> depending on your requirements.
 
-=== Basic setup ===
+===Debian===
 
-This can be done the easy way (via "Settings > Session and Startup > Application Autostart") or by writing your own <code>.desktop</code> file and placing it in <code>~/.config/autostart</code>. 
+One easy way to start the Emacs daemon is via "Settings > Session and Startup > Application Autostart". You can also your own <code>.desktop</code> file and placing it in <code>~/.config/autostart</code>. 
 
-=== Comprehensive init scripts ===
-
-Here are two possible init scripts for GNU Debian/Ubuntu to put in /etc/init.d/emacsd.  
-
+You can also place an init script in /etc/init.d/emacsd. You can base yours on one of these scripts for GNU Debian/Ubuntu.  
 
 [[DebianInitScript]]
 
 [[EmacsdInitScript]]
 
 
-
-== Gentoo ==
+=== Gentoo ===
 
 Gentoo includes support for running Emacs as a daemon in the
 <code>app-emacs/emacs-daemon</code> package.
@@ -90,9 +86,9 @@ Further customizations can be done through the
 You may also create individual <code>/etc/conf.d/emacs.</code>''username''
 files for "multiplexed" user configuration.
 
-== Emacs as Daemon on OS X using Launchd ==
+=== OS X ===
 
-If you're running Emacs 23, you can run Emacs As Daemon via OS X's launchd.  The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
+If you're running Emacs 23 or higher, you can run Emacs Daemon via OS X's launchd. The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
@@ -120,7 +116,9 @@ This can then be installed in ##~/Library/LaunchAgents## and loaded via:
 
 For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
 
-: Link dead? This site http://launchd.info/ seems to suggest we don't need sudo above. Not sure, please delete my remark if you can edit above. 
+=== Microsoft Windows ===
+
+You can run <tt>emacs --daemon</tt> by creating a shortcut file or .bat file in the startup folder. See EmacsMsWindowsIntegration for details.
 
 
 == Stopping the Emacs Daemon ==
@@ -484,7 +482,15 @@ elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa
 }}}
 
 
-== FUBAR: Impossible to connect ==
+= Troubleshooting =
+
+== "/tmp/emacs1000 is unsafe" ==
+
+Emacs won't start the daemon if its permissions aren't secure. If you receive an error that /tmp/emacs1000 (or another number) isn't safe, do `ls -l /tmp`. The entry for the emacs1000 directory will probably look like `drwxr-x---`. Simply do a `chmod 700 /tmp/emacs1000` to set them to the correct `drwx------` and start the daemon again.  
+
+
+
+=== Isolated server impossible to connect ===
 
 There is an unfortunate possibility when using the emacs server where the server can be stopped and then all visible frames closed (e.g. server-force-delete + ssh disconnect). As far as I can tell, in this condition it becomes impossible to attach to your running emacs instance. This is a real bummer. As a workaround, you can set up a signal handler to restart the server. You can put the following into your emacs startup elisp:
 <pre>
@@ -523,27 +529,3 @@ doh@bummer ~/ $ emacsclient -nc
 </pre>
 
 NOTE: One other possible way to get the server restarted would be to connect to the process with gdb and then call some function to execute lisp code to restart the server. If anyone knows how to do that I would be very interested in learning how it is done.
-
-
-== "/tmp/emacs1000 is unsafe" ==
-
-Emacs won't start the daemon if its permissions aren't secure. If you receive an error that /tmp/emacs1000 (or another number) isn't safe, do `ls -l /tmp`. The entry for the emacs1000 directory will probably look like `drwxr-x---`. Simply do a `chmod 700 /tmp/emacs1000` to set them to the correct `drwx------` and start the daemon again.
-
-
-
-== Shutdown emacs server ==
-
-This function will ask if you want to save any modified buffers, quit your session, and shutdown the associated emacs server instance.
-
-Add the below code to your .emacs file.  Call it w/ <code>M-x server-shutdown</code>
-
-<pre>
-;; define function to shutdown emacs server instance
-(defun server-shutdown ()
-  "Save buffers, Quit, and Shutdown (kill) server"
-  (interactive)
-  (save-some-buffers)
-  (kill-emacs)
-  )
-</pre>
-
