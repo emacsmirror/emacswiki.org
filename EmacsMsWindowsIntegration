@@ -45,7 +45,7 @@ See WThirtyTwoFileAssociations for more info.
 
 This almost works:
 {{{
-  git config --global core.editor "C:/path/to/emacsclientw.exe --alternate-editor='C:/path/to/emacsclient.exe' '%*'"
+  git config --global core.editor "C:/path/to/emacsclientw.exe --alternate-editor='C:/path/to/runemacs.exe' '%*'"
 }}}
 
 Be sure not to add -n to the command here. A non-blocking editor will cause Git to fail!
