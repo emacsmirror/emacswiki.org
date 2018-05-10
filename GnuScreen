@@ -157,5 +157,116 @@ How do people handle multiple emacs sessions within screen. I often have two or 
 
  You could use emacs as server : `emacs --daemon` and `emacsclient -t`.
 
+= Using Emacsclient with GNU Screen =
+
+
+= Using EmacsClient with screen =
+
+I use screen all the time, and always wanted to get it to autoswitch back and forth between shell and emacs window.
+I now figured out how, and here is what I do:
+
+In ~/.screenrc I have:
+
+ screen -t Emacs 1 /usr/bin/emacs
+
+In ~/bin/emacs I have the following:
+
+ #!/bin/sh
+ echo $WINDOW >~/tmp/emacsclient-caller
+ screen -r -X select 1
+ emacsclient "$1"
+
+And in my InitFile I have:
+
+    (add-hook 'after-init-hook 'server-start)
+    (add-hook 'server-done-hook
+              (lambda ()
+                (shell-command
+                 "screen -r -X select $(cat ~/tmp/emacsclient-caller)")))
+
+Now I only need to set my EDITOR environment variable
+to ~/bin/emacs.
+
+--MarioLang
+
+With MultiTTYSupport emacs branch, simply calling emacsclient -t would be enough and would not require such a hack :) Plus it is really *damn fast* ;)
+
+--XavierMaillard
+
+I've made a screenserver.el that takes this an extra step, allowing you to move to the correct screen window no matter where you run the emacs server.
+
+* http://web.archive.org/web/xor.orodu.net/configs/emacs.d/screenserver.el
+
+--BenJansens
+
+I wanted a do-it-all script, that would:
+
+* run emacsclient, or start emacs in server mode if there wasn't already one.
+
+* return to the right "screen caller window" upon C-x #, even in the case of multiple emacsclients running at the same time.
+
+* just close the buffer without returning to the calling screen window is the buffer is exited using C-x k
+
+* just run a regular emacs if used through sudo.
+
+* be usable as my general EDITOR, which means being smart about whether or not to background itself: if I'm in my shell in a screen session,
+    I want it to detach itself automatically,  but not in all other cases since it'd break break mutt, svn, and other apps that explicitely wait on EDITOR
+    to return. This "smart auto-backgrounding" feature can be disabled easily if the user wants to.
+
+All you need is to drop and chmod u+x the following shell script somewhere in your PATH:
+
+* http://people.debian.org/~seb/emacs-screen.sh
+
+add this snippet to your .emacs:
+
+  ;; emacsclient/server hook
+  (defvar server-seb-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "\C-xk"
+	'(lambda ()
+	   (interactive)
+	   (shell-command (concat "touch " "/tmp/blah"))
+	   (server-edit)))
+      map))
+  (define-minor-mode server-seb-mode "Server")
+  (add-hook 'server-visit-hook 'server-seb-mode)
+
+and then add the following into one of your shell startup files:
+<pre>
+  export EDITOR=emacs-screen.sh
+</pre>
+if you're used to typing 'emacs', maybe also alias it:
+<pre>
+  alias emacs=emacs-screen.sh
+</pre>
+
+--SebastienDelafond
+
+= Using EmacsClient with Dtach =
+
+=== What is dtach ? ===
+
+dtach (Emulate GNU screen's detach feature.)
+
+dtach is a tiny program that emulates the detach feature of GNU screen, 
+allowing you to run a program in an environment that is protected from 
+the controlling terminal and attach to it later.
+
+Visit the dtach homepage project at http://dtach.sourceforge.net
+
+=== Using it ===
+
+The cool thing with dtach is that you do not have anything to setup,
+just run something like:
+
+ dtach -A /tmp/emacs emacs
+
+that's all !
+
+When you want to detach from a running session, just press C-\. To
+reattach, run your dtach command again. Very simple and very handy.
+
+
+
 ----
 CategoryRelated
