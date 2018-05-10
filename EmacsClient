@@ -125,118 +125,18 @@ update-alternatives --config editor
 
 --TheAnarcat
 
+= Using Gnu Screen = 
+See here: GnuScreen
 
-= Using EmacsClient with screen =
 
-I use screen all the time, and always wanted to get it to autoswitch back and forth between shell and emacs window.
-I now figured out how, and here is what I do:
+= Custom commands and configurations =
 
-In ~/.screenrc I have:
 
- screen -t Emacs 1 /usr/bin/emacs
-
-In ~/bin/emacs I have the following:
-
- #!/bin/sh
- echo $WINDOW >~/tmp/emacsclient-caller
- screen -r -X select 1
- emacsclient "$1"
-
-And in my InitFile I have:
-
-    (add-hook 'after-init-hook 'server-start)
-    (add-hook 'server-done-hook
-              (lambda ()
-                (shell-command
-                 "screen -r -X select $(cat ~/tmp/emacsclient-caller)")))
-
-Now I only need to set my EDITOR environment variable
-to ~/bin/emacs.
-
---MarioLang
-
-With MultiTTYSupport emacs branch, simply calling emacsclient -t would be enough and would not require such a hack :) Plus it is really *damn fast* ;)
-
---XavierMaillard
-
-I've made a screenserver.el that takes this an extra step, allowing you to move to the correct screen window no matter where you run the emacs server.
-
-* http://web.archive.org/web/xor.orodu.net/configs/emacs.d/screenserver.el
-
---BenJansens
-
-I wanted a do-it-all script, that would:
-
-* run emacsclient, or start emacs in server mode if there wasn't already one.
-
-* return to the right "screen caller window" upon C-x #, even in the case of multiple emacsclients running at the same time.
-
-* just close the buffer without returning to the calling screen window is the buffer is exited using C-x k
-
-* just run a regular emacs if used through sudo.
-
-* be usable as my general EDITOR, which means being smart about whether or not to background itself: if I'm in my shell in a screen session,
-    I want it to detach itself automatically,  but not in all other cases since it'd break break mutt, svn, and other apps that explicitely wait on EDITOR
-    to return. This "smart auto-backgrounding" feature can be disabled easily if the user wants to.
-
-All you need is to drop and chmod u+x the following shell script somewhere in your PATH:
-
-* http://people.debian.org/~seb/emacs-screen.sh
-
-add this snippet to your .emacs:
-
-  ;; emacsclient/server hook
-  (defvar server-seb-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map "\C-xk"
-	'(lambda ()
-	   (interactive)
-	   (shell-command (concat "touch " "/tmp/blah"))
-	   (server-edit)))
-      map))
-  (define-minor-mode server-seb-mode "Server")
-  (add-hook 'server-visit-hook 'server-seb-mode)
-
-and then add the following into one of your shell startup files:
-<pre>
-  export EDITOR=emacs-screen.sh
-</pre>
-if you're used to typing 'emacs', maybe also alias it:
-<pre>
-  alias emacs=emacs-screen.sh
-</pre>
-
---SebastienDelafond
-
-= Using EmacsClient with Dtach =
-
-=== What is dtach ? ===
-
-dtach (Emulate GNU screen's detach feature.)
-
-dtach is a tiny program that emulates the detach feature of GNU screen, 
-allowing you to run a program in an environment that is protected from 
-the controlling terminal and attach to it later.
-
-Visit the dtach homepage project at http://dtach.sourceforge.net
-
-=== Using it ===
-
-The cool thing with dtach is that you do not have anything to setup,
-just run something like:
-
- dtach -A /tmp/emacs emacs
-
-that's all !
-
-When you want to detach from a running session, just press C-\. To
-reattach, run your dtach command again. Very simple and very handy.
-
-= Using emacsclient to make a new frame of a remote Emacs 22 on a local display =
+== Using emacsclient to make a new frame of a remote Emacs 22 on a local display ==
 
     ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
 
-= Edit in a new frame or in the current frame =
+== Edit in a new frame or in the current frame ==
 
 Open a new frame from you shell by adding to your .bashrc or .zshrc
 
@@ -270,56 +170,11 @@ Edit a file in a new frame by adding to your .bashrc or .zshrc
       edit $1 "yes"
    }
 
-[:WMFocus]
-= Automatically managing window manager focus =
+== Tiling Window Managers ==
 
-If you want your window manager to automatically focus the emacs frame
-when emacsclient is invoked, then once editing is done, refocus back
-to the original window from which emacsclient was invoked, here's how:
+See EmacsTilingWM for info about using Emacsclient with tiling WMs.
 
-First you need wmctrl installed, and a helper script called
-<code>current-winid</code>:
 
-<pre>
-#!/bin/sh
-
-# Only ttys have $WINDOWID set correctly? Firefox doesn't, anyway.
-
-if ! which wmctrl >/dev/null 2>&1; then
-  me=$(basename $0)
-  echo "$me: wmctrl not found; aborting." >&2
-  exit 1
-fi
-
-# Note that the exit in END is what determines the final exit status,
-# even t/pre~hough the previous exit initiates the exit.
-wmctrl -a :ACTIVE: -v 2>&1 \
-  | awk 'BEGIN { exit_status = 1 }
-         /^Using window:/ { print $3; exit_status = 0; exit } 
-         END { exit exit_status }' \
-|| exit 1
-</pre>
-
-Then all you need is an emacsclient wrapper script (e.g. call it
-<code>switch-to-emacsclient</code>):
-
-<pre>
-#!/bin/sh
-
-# Save the current winid so we know what to switch back to from emacs.
-client_winid=$(current-winid)
-
-# Switch to emacs and wait for editing to be completed.
-wmctrl -xa emacs
-emacsclient -a fe "$@"
-
-# Switch back to window from which emacsclient was invoked.
-wmctrl -ia $client_winid
-</pre>
-
-The really nice thing about this is that it supports multiple emacsclients running at once, and it doesn't matter which order you complete editing of the emacsclient buffers.
-
-Alternative: Lisp:switching_emacsclient.bash
 = Saveplace and Emacs server: remembering last point position in files opened with emacsclient(w) =
 
 If you use the package saveplace.el (http://www.emacswiki.org/cgi-bin/wiki/SavePlace) to remember the last position a file was visited at, you may have noticed that opening files with emacsclient(w) the cursor always goes at the beginning of buffer, that is, it looks like emacsclient (or better, emacs server) does not care about save-place being active. I suppose this is a bug. A temporary workaround to this is to set
@@ -366,17 +221,6 @@ If there are no clients, the above code will error. I would suggest the folowing
 	      (when server-buffer-clients
 		(local-set-key (kbd "C-x k") 'server-edit))))
 
-= Making C-c C-c end a gnuclient session =
-
-This is similar to the C-x k binding above, but uses C-c C-c -- which makes it similar to using gnus -- and is, of course, for the other protocol.
-
- (add-hook 'gnuserv-visit-hook '(lambda ()
-				  (local-set-key [(control c) (control c)]
-						 (lambda ()
-						   (interactive)
-						   (save-buffer)
-						   (gnuserv-edit)))))
-
 
 == Functionality similar to kill-emacs-query-functions for clients ==
 
@@ -388,76 +232,6 @@ This is similar to the C-x k binding above, but uses C-c C-c -- which makes it s
 
 is there some way of achieving similar when killing a client?
 
-
-== Emacs client return values ==
-
-I wanted to use emacsclient as my editor to svn in Windows, but when I used emacsclientw.exe or emacsclient.exe, the return value when I was done editing was always 1, which made svn to reject my edit. How it is with emacsclient and return values? Is my copy just broken?
-
-A: This is known to be broken currently (16-Oct-09); it always returns 1.  There's some discussion in the help-emacs-windows mailing list about fixing it.
-
-
-== multiple emacs clients ==
-
-If a first instance of emacs is started (and it starts its server), then a remote login is performed and a second instance started, the new instance will starts its own server and mask or kill the original one. An attempt to use emacsclient at the initial login will then start a client window at the remote login. In case that sounds an unlikely scenario, I achieved it by 1) starting an X11 session with emacs in one window, 2) working on a machine in another room, including an ssh to the first machine and another emacs session, 3) returning to the first machine where I attempted to respond to a Usenet post. The edit appeared in emacs on the second machine.
-
-Is there some way to allow the servers started in different ttys to distinguish themselves from each other ?
-
-== workaround for emacsclient "can't find socket" error on cocoa/ns build (OS X) via ssh ==
-
-I find that after starting emacs server (eg, /Applications/Emacs.app/Contents/MacOS/Emacs --daemon) I can start a client session locally, but emacsclient can't find the socket if I try to create a terminal-only client via ssh (OS X 10.6.2, GNU Emacs 23.1.90.1 compiled with ./configure --with-ns). I've seen this reported as a bug (bug#3992: 23.1.50) on bug-gnu-emacs-gnu. Here's a workaround. 
-
-First, you need to make sure that you're using the right emacsclient binary.  Apple distributes GNU Emacs 22 (installed in /usr/bin), but its emacsclient binary is not compatible with GNU Emacs 23.
-
-<pre>
-alias emacsclient="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
-</pre>
-
-Then, you need to set the server-socket-dir variable in your .emacs so that the standard path assumed by emacsclient is used instead of the path that Emacs 23 defaults to on MacOS X.
-
-<pre>
-(setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
-</pre>
-
-Obviously, this needs to be executed before (server-start) is called.
-
-Now you can attach to the server process using the above alias in terminal mode via an ssh session:
-
- emacsclient -nw
-
-And it also works locally to launch the cocoa GUI:
-
- emacsclient -c &
-
-I expect that this will fail if you are running multiple servers.
-
--- Noah Hoffman
-edited by:
--- HansHuebner
-
-= Additional notes on OS X / Cocoa Emacs =
-
-I'd had a few problems connecting to the emacs server from <code>emacsclient</code>, until I realised I was using the default <code>/usr/bin/emacsclient</code> when I should've been using the <code>/Applications/Emacs.app/Contents/MacOS/bin/emacsclient</code> ... so make a symlink, 
-
-<pre>
-sudo mv /usr/bin/emacsclient /usr/bin/emacsclient.old # backup the original emacsclient.
-sudo ln /Applications/Emacs.app/Contents/MacOS/bin/emacsclient /usr/bin/emacsclient # symlink emacsclient from Emacs.app
-</pre>
-
-Rather than moving a file installed by the OS, I have symlinked /Applications/Emacs.app/Contents/MacOS/bin/emacsclient to /usr/local/bin/emacsclient. Of course you have to make sure that /usr/local/bin comes before /usr/bin in your $PATH. - [[citizen428]]
-
-Setting emacs to work over tcp will create the <code>~/.emacs.d/server/server</code> socket file, you can then use emacsclient this way...
-
-<pre>
-emacsclient  +4:14 FILE
-
-# opens FILE at line 4, col 14. 
-</pre>
-
-(I've found there's no need to specify the server, unless you are running more than one Emacs server. )
-
-Set -a and/or -c as you like.
-
--- Jasonm23
 
 == Piping stdout to an Emacs buffer using emacsclient ==
 
@@ -589,7 +363,7 @@ An example script for starting emacsclient (for different instances of emacs ser
 <pre>
 #!/bin/bash
 
-emacsclient -s edit -c "$@"
+emacsclient -server-file edit -c "$@"
 </pre>
 
 This allows you to pass any parameters to emacsclient, e.g., filenames, or even the '-t' (or '-nw') option (it will override the '-c')
@@ -600,7 +374,7 @@ Another example:
 
 umask 0007 # you can set a different umask than your default for emcas session
 cd ~/docs/todo/
-emacsclient -s todo -c ~/docs/todo/work.org &
+emacsclient -server-file todo -c ~/docs/todo/work.org &
 </pre>
 
 Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#emacsclient-Options
@@ -631,6 +405,36 @@ OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, 
 RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
 
 
+
+
+
+== workaround for emacsclient "can't find socket" error on cocoa/ns build (OS X) via ssh ==
+
+I find that after starting emacs server (eg, /Applications/Emacs.app/Contents/MacOS/Emacs --daemon) I can start a client session locally, but emacsclient can't find the socket if I try to create a terminal-only client via ssh (OS X 10.6.2, GNU Emacs 23.1.90.1 compiled with ./configure --with-ns). I've seen this reported as a bug (bug#3992: 23.1.50) on bug-gnu-emacs-gnu. Here's a workaround. 
+
+First, you need to make sure that you're using the right emacsclient binary.  Apple distributes GNU Emacs 22 (installed in /usr/bin), but its emacsclient binary is not compatible with GNU Emacs 23.
+
+<pre>
+alias emacsclient="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+</pre>
+
+Then, you need to set the server-socket-dir variable in your .emacs so that the standard path assumed by emacsclient is used instead of the path that Emacs 23 defaults to on MacOS X.
+
+<pre>
+(setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
+</pre>
+
+Obviously, this needs to be executed before (server-start) is called.
+
+Now you can attach to the server process using the above alias in terminal mode via an ssh session:
+
+ emacsclient -nw
+
+And it also works locally to launch the cocoa GUI:
+
+ emacsclient -c &
+
+I expect that this will fail if you are running multiple servers.
 
 = KDE =
 In KDE, you can set File Associations to open in emacsclient instead of KWrite.
