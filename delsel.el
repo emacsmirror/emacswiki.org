@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr  3 15:00:03 2018 (-0700)
+;; Last-Updated: Thu May 10 16:39:49 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 521
+;;     Update #: 522
 ;; URL: https://www.emacswiki.org/emacs/download/delsel.el
 ;; Doc URL: https://emacswiki.org/emacs/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -99,7 +99,7 @@
 ;;      Put t, not kill, on open-line.
 ;;      delsel-unload-function: Added completion-*, self-insert-iso, delete-backward-char,
 ;;        delete-forward-char, backward-delete-char-untabify, delete-char,
-          electric-newline-and-maybe-indent.
+;;        electric-newline-and-maybe-indent.
 ;; 2017/01/12 dadams
 ;;     delete-selection-mode:
 ;;       Corrected doc string per Emacs bug #25428.
