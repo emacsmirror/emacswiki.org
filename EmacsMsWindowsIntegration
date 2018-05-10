@@ -22,7 +22,8 @@ This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is runni
 This may not work correctly on Windows 7. See MsWindowsSevenProblems
 
 == Right-Click Context Menu == 
-There are several options for adding an "Open in Emacs" command that can be found here: MsWindowsGlobalContextMenu
+You may want to add a command to "Open in Emacs" when you right click on files in Explorer. There are several solutions to that which you can find here: MsWindowsGlobalContextMenu
+
 
 == Create File Associations ==
 
@@ -41,14 +42,14 @@ To open text files with the emacs daemon, run cmd.exe as administrator use the c
 
 See WThirtyTwoFileAssociations for more info.
 
-== Set `emacsclient' as Your Editor ==
+== Use `emacsclient' to edit git commits==
 
-This almost works:
+This seems to works:
 {{{
   git config --global core.editor "C:/path/to/emacsclientw.exe --alternate-editor='C:/path/to/runemacs.exe' '%*'"
 }}}
 
-Be sure not to add -n to the command here. A non-blocking editor will cause Git to fail!
+Be sure not to add -n to the command here. A non-blocking editor call will cause Git to fail, since it thinks you entered an empty commit message.
 
 == Replace `notepad.exe` calls ==
 
