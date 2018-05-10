@@ -1,0 +1,59 @@
+Using pipe commands with Emacs can be a bit tricky. 
+
+
+This snippet will make pipes play nicely with EmacsClient.
+
+
+[new]
+I defined the following function within .bashrc and start emacs under cygwin with the command <tt>e</tt>.
+<pre>
+e() {
+    local TMP;
+    if [[ "$1" == "-" ]]; then
+        TMP="$(mktemp /tmp/emacsstdinXXX)";
+        cat >"$TMP";
+        if ! emacsclient --alternate-editor /usr/bin/false --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\") (delete-file \"${TMP}\"))"  > /dev/null 2>&1; then
+            emacs --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\") (delete-file \"${TMP}\"))" &
+        fi;
+    else
+        emacsclient --alternate-editor "emacs" --no-wait "$@" > /dev/null 2>&1 &
+    fi;
+}
+</pre>
+Editing a file <tt>text.txt</tt>:
+<pre>
+e text.txt
+</pre>
+Piping something:
+<pre>
+echo "something" | e -
+</pre>
+Using <tt>--alternate-editor</tt> and <tt>--eval</tt> together did not work for me. I don't know why.
+The bad thing about <tt>e</tt> is that it relies on an undocumented feature of emacsclient.
+It is assumed that <tt>emacsclient --alternate-editor /usr/bin/false ...</tt> returns the exit code of <tt>false</tt> if the alternate editor is used and that it returns SUCCESS if the server can successfully be contacted.
+
+-- TN
+
+I've simplified this down to the following shell script, which I keep in ~/bin/e:
+
+<pre>
+if [ -z "$1" ]
+then
+    TMP="$(mktemp /tmp/stdin-XXX)"
+    cat >$TMP
+    emacsclient -a emacs $TMP
+    rm $TMP
+else
+    emacsclient -a emacs "$@"
+fi
+</pre>
+
+It's not *quite* the same but I value the simplicity of it. With this you no longer need 'e -' to indicate STDIN, e will just look for STDIN whenever no files are specified.
+
+[new]
+
+If you happen to be using Eshell, you can get this via:
+
+<pre>
+cat myfile > (switch-to-buffer "*my-buf*")
+</pre>
