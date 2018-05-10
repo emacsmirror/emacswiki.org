@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2009-2013 Takeshi Banse <takebi@laafc.net>
 ;; Author: Takeshi Banse <takebi@laafc.net>
-;; Version: 0.4.1
+;; Version: 0.4.2
 ;; Keywords: lisp, highlight, convenience
-;; Package-Requires: ((highlight "0"))
+;; Package-Requires: ((cl-lib "0") (highlight "0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -80,6 +80,10 @@
 
 ;;; History:
 
+;; v0.4.2
+;; rename missing multiple-value-bind to cl-multiple-value-bind
+;; Thank you very much, Hlöðver Sigurðsson
+
 ;; v0.4.1
 ;; replacing preceding-sexp with elisp--preceding-sexp to avoid obsolete warning in Emacs 25.1
 ;; Remove `labels' and `flet' (obsolete as of 24.3).
@@ -105,6 +109,7 @@
   (defalias 'elisp--preceding-sexp 'preceding-sexp))
 
 (eval-when-compile (require 'cl))
+(require 'cl-lib)
 (require 'highlight)
 
 (defgroup eval-sexp-fu nil
@@ -279,7 +284,7 @@ See also `eval-sexp-fu-flash'."
   (declare (indent 1))
   `(defadvice ,command (around eval-sexp-fu-flash-region activate)
      (if eval-sexp-fu-flash-mode
-         (multiple-value-bind (bounds hi unhi eflash) ,form
+         (cl-multiple-value-bind (bounds hi unhi eflash) ,form
            (if bounds
                (esf-flash-doit (esf-konstantly ad-do-it) hi unhi eflash)
              ad-do-it))
