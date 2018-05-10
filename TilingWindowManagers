@@ -1,0 +1,54 @@
+
+Many Emacs workflows often create multiple frames. Here is information about how to interact nicely with tiling WMs.
+
+
+[:WMFocus]
+= Automatically managing window manager focus =
+
+If you want your window manager to automatically focus the emacs frame
+when emacsclient is invoked, then once editing is done, refocus back
+to the original window from which emacsclient was invoked, here's how:
+
+First you need wmctrl installed, and a helper script called
+<code>current-winid</code>:
+
+<pre>
+#!/bin/sh
+
+# Only ttys have $WINDOWID set correctly? Firefox doesn't, anyway.
+
+if ! which wmctrl >/dev/null 2>&1; then
+  me=$(basename $0)
+  echo "$me: wmctrl not found; aborting." >&2
+  exit 1
+fi
+
+# Note that the exit in END is what determines the final exit status,
+# even t/pre~hough the previous exit initiates the exit.
+wmctrl -a :ACTIVE: -v 2>&1 \
+  | awk 'BEGIN { exit_status = 1 }
+         /^Using window:/ { print $3; exit_status = 0; exit } 
+         END { exit exit_status }' \
+|| exit 1
+</pre>
+
+Then all you need is an emacsclient wrapper script (e.g. call it
+<code>switch-to-emacsclient</code>):
+
+<pre>
+#!/bin/sh
+
+# Save the current winid so we know what to switch back to from emacs.
+client_winid=$(current-winid)
+
+# Switch to emacs and wait for editing to be completed.
+wmctrl -xa emacs
+emacsclient -a fe "$@"
+
+# Switch back to window from which emacsclient was invoked.
+wmctrl -ia $client_winid
+</pre>
+
+The really nice thing about this is that it supports multiple emacsclients running at once, and it doesn't matter which order you complete editing of the emacsclient buffers.
+
+Alternative: Lisp:switching_emacsclient.bash
