@@ -23,8 +23,6 @@ EmacsAsDaemon details various ways to run this command in different distribution
 
 = Using EmacsClient =
 
-== The Easy Solution (With Emacs 23+) ==
-
 === Bash environments ===
 
 Simply replace every place you'd run <tt>emacs</tt> with this command instead. 
@@ -55,7 +53,53 @@ WThirtyTwoFileAssociations to see how to associate file extensions to open with 
 
 ExternalDotExe shows a way to edit text fields in many applications with Emacs client.
 
-= Opening Server Files Always in a New Frame =
+
+= Custom commands and configurations =
+
+
+====Using emacsclient to make a new frame of a remote Emacs 22 on a local display:====
+
+    ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
+
+====Edit in a new frame or in the current frame====
+
+Open a new frame from you shell by adding to your .bashrc or .zshrc
+
+   new-frame() {
+      emacsclient -e "(new-frame)"
+   }
+
+
+====Tiling Window Managers====
+
+See TilingWindowManagers for info about using Emacsclient with tiling WMs.
+
+
+====Making C-x k end an emacsclient session====
+
+If your fingers are wired to using C-x k to kill off buffers (and you dont like having to type C-x #) then try this :
+ 
+  (add-hook 'server-switch-hook
+            (lambda ()
+              (when (current-local-map)
+                (use-local-map (copy-keymap (current-local-map))))
+	      (when server-buffer-clients
+		(local-set-key (kbd "C-x k") 'server-edit))))
+
+
+====Functionality similar to kill-emacs-query-functions for clients====
+
+`kill-emacs-query-functions' allows one to call functions that query the user about killing emacs, with the potential for aborting the quit.  i have a simple check in my .emacs that works fine for a standalone emacs process but doesn't get called when exiting an emacs client.
+
+ (setq kill-emacs-query-functions
+      (cons (lambda () (yes-or-no-p "Really kill Emacs? "))
+            kill-emacs-query-functions))
+
+====Using Emacsclient with Gnu Screen====
+See here: GnuScreen
+
+
+====Opening Server Files Always in a New Frame====
 
 To open the files designated by emacsclient in their own frame, you can use the following hook as a Server Switch Hook which can be setup in customize-group <RET> Server <RET>, or in your InitFile, as such:
 
@@ -92,7 +136,7 @@ your `server-done-hook', e.g.
 
 --RyanBarrett
 
-= Setting Up emacsclient to Run Emacs Only on X11 =
+===Setting Up emacsclient to Run Emacs Only on X11===
 
 I've found it very useful to set my $EDITOR to emacsclient, and let it judge wether or not to start emacs, based on the $DISPLAY variable, which is often an indication of running on a faster machine for me. So I've wrote the following script, and installed it as /usr/bin/emacsclient.vim.
 
@@ -125,147 +169,11 @@ update-alternatives --config editor
 
 --TheAnarcat
 
-= Using Gnu Screen = 
-See here: GnuScreen
 
+===Piping stdout to an Emacs buffer using emacsclient===
 
-= Custom commands and configurations =
+See EmacsPipe.
 
-
-== Using emacsclient to make a new frame of a remote Emacs 22 on a local display ==
-
-    ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
-
-== Edit in a new frame or in the current frame ==
-
-Open a new frame from you shell by adding to your .bashrc or .zshrc
-
-   new-frame() {
-      emacsclient -e "(new-frame)"
-   }
-
-Edit a file in a new frame by adding to your .bashrc or .zshrc
-
-   edit() {
-       local FILE=$1
-
-       if [[ -z $FILE ]]; then
-          echo "Missing filename"
-          return
-       fi
-
-       if [ $FILE[0] != "/" -o $FILE[0] = "~" ]
-       then
-           FILE="$PWD/$FILE"
-       fi
-
-       if [[ -z $2 ]]; then
-          emacsclient -n $FILE
-       else
-          emacsclient -e "(find-file-other-frame \"$FILE\")"
-       fi
-   }
-
-   edit_new_frame() {
-      edit $1 "yes"
-   }
-
-== Tiling Window Managers ==
-
-See TilingWindowManagers for info about using Emacsclient with tiling WMs.
-
-
-= Making C-x k end an emacsclient session =
-
-If your fingers are wired to using C-x k to kill off buffers (and you dont like having to type C-x #) then try this :
-
-  (add-hook 'server-switch-hook 
-            (lambda ()
-              (when (current-local-map)
-                (use-local-map (copy-keymap (current-local-map))))
-              (local-set-key (kbd "C-x k") 'server-edit)))
-
-[new:WilliamRoe:2010-04-19 13:17 UTC]
-If there are no clients, the above code will error. I would suggest the folowing instead:
- 
-  (add-hook 'server-switch-hook
-            (lambda ()
-              (when (current-local-map)
-                (use-local-map (copy-keymap (current-local-map))))
-	      (when server-buffer-clients
-		(local-set-key (kbd "C-x k") 'server-edit))))
-
-
-== Functionality similar to kill-emacs-query-functions for clients ==
-
-`kill-emacs-query-functions' allows one to call functions that query the user about killing emacs, with the potential for aborting the quit.  i have a simple check in my .emacs that works fine for a standalone emacs process but doesn't get called when exiting an emacs client.
-
- (setq kill-emacs-query-functions
-      (cons (lambda () (yes-or-no-p "Really kill Emacs? "))
-            kill-emacs-query-functions))
-
-is there some way of achieving similar when killing a client?
-
-
-== Piping stdout to an Emacs buffer using emacsclient ==
-
-See [[e-pipe]]
-
--- LeWang
-
-[new]
-I defined the following function within .bashrc and start emacs under cygwin with the command <tt>e</tt>.
-<pre>
-e() {
-    local TMP;
-    if [[ "$1" == "-" ]]; then
-        TMP="$(mktemp /tmp/emacsstdinXXX)";
-        cat >"$TMP";
-        if ! emacsclient --alternate-editor /usr/bin/false --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\") (delete-file \"${TMP}\"))"  > /dev/null 2>&1; then
-            emacs --eval "(let ((b (create-file-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"${TMP}\") (delete-file \"${TMP}\"))" &
-        fi;
-    else
-        emacsclient --alternate-editor "emacs" --no-wait "$@" > /dev/null 2>&1 &
-    fi;
-}
-</pre>
-Editing a file <tt>text.txt</tt>:
-<pre>
-e text.txt
-</pre>
-Piping something:
-<pre>
-echo "something" | e -
-</pre>
-Using <tt>--alternate-editor</tt> and <tt>--eval</tt> together did not work for me. I don't know why.
-The bad thing about <tt>e</tt> is that it relies on an undocumented feature of emacsclient.
-It is assumed that <tt>emacsclient --alternate-editor /usr/bin/false ...</tt> returns the exit code of <tt>false</tt> if the alternate editor is used and that it returns SUCCESS if the server can successfully be contacted.
-
--- TN
-
-I've simplified this down to the following shell script, which I keep in ~/bin/e:
-
-<pre>
-if [ -z "$1" ]
-then
-    TMP="$(mktemp /tmp/stdin-XXX)"
-    cat >$TMP
-    emacsclient -a emacs $TMP
-    rm $TMP
-else
-    emacsclient -a emacs "$@"
-fi
-</pre>
-
-It's not *quite* the same but I value the simplicity of it. With this you no longer need 'e -' to indicate STDIN, e will just look for STDIN whenever no files are specified.
-
-[new]
-
-If you happen to be using Eshell, you can get this via:
-
-<pre>
-cat myfile > (switch-to-buffer "*my-buf*")
-</pre>
 
 == Setting frame colors differently for graphical clients and console clients ==
 
@@ -357,14 +265,14 @@ Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#ema
 
 The Emacs server can be used to edit text fields in web browsers using plugins.
 
-===== Firefox Add-on: "It's All Text" =====
+===== Firefox Add-on: It's All Text =====
 
 To execute emacsclient From Firefox to call Windows Native Emacs to edit web pages, see [[Mozilla]] page and comments about add-on /It's all text/.
 
 There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
 You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
 
-===== With a Chrome extension =====
+===== Chrome extension: Edit with Emacs =====
 *Edit with Emacs - a Google Chrome browser extension*: Source: http://github.com/stsquad/emacs_chrome or https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh to install in Chrome.
 This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
 
@@ -373,11 +281,9 @@ This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs
 
 = Troubleshooting = 
 
+"No connection could be made because the target machine actively refused it"
 
-OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
-
-RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
-
+The #1 problem people face is a stale or outdated server file. Just rm ~/.emacs.d/server/* and your problem is usually solved. 
 
 
 
