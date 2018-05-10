@@ -1,0 +1,188 @@
+
+
+=== Multiple XServers (DISPLAYs) + emacsclient ===
+Each emacs shell have its own environment variables, which is loaded from the frame-parameters which opened that shell.
+When working on this shell process from more than one DISPLAYs, it occurs that emacsclient is opened on the DISPLAY from the original frame which created that shell.
+To fix this problem we will hook the frame creation function to make sure emacsclient will be opened on the right DISPLAY.
+
+init.el:
+<pre>
+; patches the call at server.el:1237
+(defun server-create-window-system-frame-hook(orig-fun &rest args)
+  (let (
+        (expected-display (car-safe args))
+        (frame-display (frame-parameter (selected-frame) 'display))
+        (other-arguments (cdr-safe args))
+        )
+;  (message "Create server params: %S, frame params: %S" args frame-display)
+;  (message "CAR %S is iq %S" expected-display (string-equal (car-safe args) "localhost:current"))
+;  (message "CDR %S" other-arguments)
+;  (message "REJOIN %S" (cons frame-display other-arguments))
+  (if (null frame-display)
+      (if (string-equal expected-display "localhost:current")
+          (apply orig-fun (cons (getenv "DISPLAY") other-arguments))
+        (apply orig-fun args)
+        )
+    
+    (if (string-equal expected-display "localhost:current")
+        (apply orig-fun (cons frame-display other-arguments))
+      (apply orig-fun args)
+      )
+    )
+  )
+  
+  )
+
+(advice-add 'server-create-window-system-frame :around #'server-create-window-system-frame-hook)
+
+
+</pre>
+
+.bashrc:
+
+<pre>
+export VISUAL="emacsclient -c --display=localhost:current -a emacs"
+
+</pre>
+
+Known issues - trying to run emacsclient from DISPLAY with no previous emacsclients, where there is a different DISPLAY with existing emacsclients, the emacsclient still opens in the wrong DISPLAY. Fixing it would probably require recompilation of emacsclient to make it send BOTH the needed DISPLAY to show the frame and the localhost:current flag.
+
+
+
+
+
+== Color coding (multiple) emacs server instances ==
+
+You can start different emacs server instances w/ different color schemes (so you instantly know which one you're using).
+
+This works to set the background color:
+
+<pre>
+emacs --daemon=todo --background-color='#93DB80'
+emacs --daemon=edit --background-color=yellow
+</pre>
+
+But if you try setting the cursor color -- it fails miserably.
+
+[new:PhilHudson:2013-12-08 11:36 UTC]
+I use a different color for the fringe on each instance, set using Custom.
+
+----
+
+Another, more flexible option:
+
+=== starting emacs server (daemon) ===
+Example scripts for starting different instances of emacs server:
+<pre>
+#!/bin/bash
+
+export ESRVNAME=todo
+emacs --daemon=$ESRVNAME
+</pre>
+or
+<pre>
+#!/bin/bash
+
+export ESRVNAME=edit
+emacs --daemon=$ESRVNAME
+ps -ef | grep -i 'emacs --daemon'
+</pre>
+
+Also see http://www.gnu.org/s/libtool/manual/emacs/Emacs-Server.html#Emacs-Server
+
+=== set color choices in .emacs ===
+Set your color choices in your .emacs file:
+<pre>
+;; set colors for my emacs server instances
+(defvar esrvname (getenv "ESRVNAME")) ;; is there a var that provides the server-name?
+(ignore-errors ;; this prevents error when environment variable is not set
+  (when (string-match "todo" esrvname)
+    (setq default-frame-alist
+          (append default-frame-alist
+                  '((background-color . "#93DB80")
+                    (cursor-color . "yellow")
+                    )))
+    ;; or set a color-theme, e.g., (color-theme-classic)
+    )
+  (when (string-match "edit" esrvname)
+    (setq default-frame-alist
+          (append default-frame-alist
+                  '((background-color . "yellow")
+                    ;; (foreground-color . "black")
+                    (cursor-color . "blue")
+                    )))
+    )
+  )
+</pre>
+
+=== starting emacsclient ===
+An example script for starting emacsclient (for different instances of emacs server):
+<pre>
+#!/bin/bash
+
+emacsclient -s edit -c $@
+</pre>
+
+This allows you to pass any parameters to emacsclient, e.g., filenames, or even the '-t' (or '-nw') option (it will override the '-c')
+
+Another example:
+<pre>
+#!/bin/bash
+
+umask 0007 # you can set a different umask than your default for emcas session
+cd ~/docs/todo/
+emacsclient -s todo -c ~/docs/todo/work.org &
+</pre>
+
+Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#emacsclient-Options
+
+----
+
+See also EmacsClient
+
+=== problem and workaround for emacs daemon spinning w/ "back to top level" message ===
+Problem:
+During the first dozen invocations, "emacs --daemon" started up and cleanly loaded my init files.  But, after making some init file changes (including but possibly not limited to removing my prior font customizations from .emacs-custom.el, in order to go back to the default font), the subsequent invocations hung at the "Starting Emacs daemon" line.  Then, when typing "enter" at the terminal or when connecting via emacsclient, emacs continually spools out the message: "back to top level". Inspection revealed the emacs daemon was chewing up 100% of one of the cpu's.
+
+yum info emacs
+Arch        : x86_64
+Epoch       : 1
+Version     : 23.3
+Release     : 8.fc16
+
+Workaround:
+Start emacs with "emacs --daemon -q". The first time you connect via emacsclient, open your .emacs file and run 'eval-buffer'.
+
+== Running multiple Emacs daemons under different users ==
+
+[[NicFerrier|I]] run many Emacs instances on a single box, as application servers. Some of them run Elnode, some run ShoesOff, etc... I normally separate these by using different operating system users to run them. Otherwise it is too easy for them to trample on each other.
+
+=== Setting up a complete fresh daemon ===
+
+I always:
+
+* make a new user
+* make a specific ##.emacs.d## directory for the new emacs instance
+** for example ##.emacs.elpad.d##
+** you need this because customs cannot be saved to ##.emacs.d## if you start with -Q
+* make a boot script to start (and connect as a client) to it
+** I usually copy it from another service, say TeamChat
+** the boot script sets the daemon socket specifically
+* start the emacs service
+
+=== Problems connecting ===
+Sometimes you get problems connecting to these multiple servers. This is normally to do with terminal permissions, especially if you just ##sudo su## from one user to another, you get this:  ##Could not open file## - here's an example:
+
+{{{
+elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa/
+Waiting for Emacs...
+*ERROR*: Could not open file: /dev/pts/9
+}}}
+
+This is down to ownership of the tty. To fix this I just ##ssh## to the user from the local box, that always fixes it:
+
+{{{
+ssh elpad@localhost
+elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa/
+## starts emacs...
+}}}
