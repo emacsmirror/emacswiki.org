@@ -292,6 +292,13 @@ Sadly, even our beloved editor isn't that powerful... yet.
 [new]
 [http://www.reddit.com/r/programming/comments/8d3w8/tabs_vs_spaces/ Reddit discussion].
 
+[new]
+A factor I don't see mentioned is that there are many tools that manipulate ascii (or at least text) files, and most of them consider tabs to be set at 8-space intervals, period.  Thus, whatever choices we make in an IDE or Emacs, if they don't include 8-space tabs (including the special case of NO tabs), then we've cut off a huge swath of tools we might want to use later.  In particular printing code (I know, it's old-fashioned, but I'm old; besides, how do you ANNOTATE 1000 lines of spaghetti code on the screen?) either doesn't work, or requires manually set non-default configuration, to print text files with tabs at other than 8 spaces correctly. 
+
+(Also, an early argument for use of tabs was that they saved space in the file.  That's still absolutely true, but also rather irrelevant at today's storage prices.)
+
+dd-b 2018-05-11
+
 ----
 
 See UntabifyUponSave to make Emacs save all your files replacing spaces with tabs because by running `M-x untabify' automatically on each save.
