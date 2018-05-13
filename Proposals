@@ -5,3 +5,4 @@ and discussion, and ease of author revision.
 * [[Isearch-prompt-proposal|Discoverability of isearch options]]
 * [[Framework extending window functions for Follow Mode (etc.)]]
 * Package Management: one-stop downloading ALL marked packages BEFORE compiling/installing, to avoid nasty errors and a full-stop abort somewhere in between à la „package xyz is not available”
+* variable-pitch overlay mode, similar to enriched-mode's tag hiding, which simply displays whitespace differently to align text correctly (eg., assume 4 var-pitch spaces for a mono-space, 2 var-pitch tabs for a mono-tab, etc) without disturbing the monospace layout of the actual buffer.
