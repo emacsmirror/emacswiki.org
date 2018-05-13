@@ -55,6 +55,8 @@ there is plenty of empty room in the prompt."
 
 There are a couple more future improvements under consideration (not part of the actual proposal for now).
 
+* With [[Isearch+]], `C-h' while searching pops up all such information in buffer `*Help*': [[prefix argument|prefix-arg]] behavior, user [[option]]s, [[key sequence|keys]], other Isearch [[command]]s. 
+
 * Change the reminder to just ##[F1] Help##, and thus rebind ##F1## to the isearch help (users can still access the usual help keymap with ##C-h##).
 
 * Implement an “Isearch Options Buffer”, and display that instead of the isearch help. (The reminder would then be changed to say "Options" instead of "Help").
