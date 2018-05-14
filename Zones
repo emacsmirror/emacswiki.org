@@ -7,11 +7,24 @@ of buffer zones is, in effect, a (typically) noncontiguous
 "region" of text.
 
 
-A zone records two buffer positions and an optional list of additional information (whatever you like).  Each buffer position can be a marker, which means that a list of zones can specify zones in different buffers.
+A '''zone''' records two buffer positions and an optional list of additional information (whatever you like).  Each buffer position can be a marker, which means that a list of zones can specify zones in different buffers.
 
 A position can also be a ''readable marker'', which is a Lisp sexp that can be written to disk (e.g., as part of a bookmark or saved variable), and restored in a later Emacs session by reading the file where it is saved.
 
 (Commands that use zones typically act on ''izones'', which are just zones that are labeled with a numeric identifier.)
+
+Emacs [[overlay]]s have a lot in common with zones: overlays have an
+associated buffer, two limits (positions), and a list of
+properties.  You can create zones from overlays, and vice versa.  You can also unite (coalesce) overlays or zones that overlap or are adjacent.
+
+When creating zones from overlays, the overlay property list becomes the ##EXTRA## information
+of the resulting zone: ##(LIMIT1 LIMIT2 . EXTRA)##.
+When creating overlays from zones, any list of ##EXTRA## zone
+information is used as the property list of the resulting overlay.
+
+
+
+
 
 You can do the following with a list of zones:
 
@@ -79,6 +92,10 @@ Many of the commands that manipulate zones are bound on keymap '''`narrow-map'''
 The above descriptions speak of the "current list" of zones.  You can have any number of variables whose value is a list of zones, and you can switch among them.  The variables can be buffer-local or global (e.g., with positions recorded from multiple buffers).
 
 Most zone commands let you use a [[prefix argument]] to be prompted for a different zones variable to use from the current one (the value of variable `zz-izones-var').  The use can be just for the current command (e.g., add a zone to the list of zones in a particular variable). Or it can be also for subsequent zone commands, by making the variable you entered the current one (setting `zz-izones-var' to it).
+
+
+
+----
 
 If you use library [[Icicles]] then you can use commands `icicle-select-zone', to select a zone as the [[region]], and `icicle-buffer-narrowing', to choose a [[Narrowing|narrowing]] (buffer restriction) and apply it.  They let you cycle zones, like 
 `zz-select-region-repeat' and `zz-narrow-repeat', but you can, in addition, pick zones by name (composed of the zone limits and a zone-text prefix) using completion.  The candidate zones can be from multiple [[buffer]]s.
