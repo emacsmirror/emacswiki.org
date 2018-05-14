@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 19 13:45:19 2018 (-0700)
+;; Last-Updated: Sun May 13 21:45:40 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1842
+;;     Update #: 1918
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -47,6 +47,7 @@
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
 ;;    (@> "Compatibility")
+;;    (@> "Zones From Overlays, Overlays from Zones")
 ;;    (@> "Coalesced (United) Zones")
 ;;    (@> "Izone Commands")
 ;;    (@> "Izone List Variables")
@@ -89,19 +90,22 @@
 ;;    `zz-marker-from-object', `zz-markerize', `zz-max', `zz-min',
 ;;    `zz-narrowing-lighter', `zz-noncontiguous-region-from-izones',
 ;;    `zz-noncontiguous-region-from-zones', `zz-number-or-marker-p',
-;;    `zz-rassoc-delete-all', `zz-readable-marker',
-;;    `zz-readable-marker-p', `zz-read-any-variable', `zz-read-bufs',
-;;    `zz-regexp-car-member', `zz-remove-if', `zz-remove-if-not',
+;;    `zz-overlays-to-zones', `zz-overlay-to-zone',
+;;    `zz-overlay-union', `zz-rassoc-delete-all',
+;;    `zz-readable-marker', `zz-readable-marker-p',
+;;    `zz-read-any-variable', `zz-read-bufs', `zz-regexp-car-member',
+;;    `zz-remove-if', `zz-remove-if-not',
 ;;    `zz-remove-izones-w-other-buffer-markers',
 ;;    `zz-remove-zones-w-other-buffer-markers', `zz-repeat-command',
 ;;    `zz-set-intersection', `zz-set-union', `zz-some',
 ;;    `zz-string-match-p', `zz-two-zone-intersection',
-;;    `zz-two-zone-union', `zz-zones-complement',
+;;    `zz-two-zone-union', `zz-zone-buffer-name',
 ;;    `zz-zone-has-other-buffer-marker-p', `zz-zone-intersection',
 ;;    `zz-zone-intersection-1', `zz-zone-ordered',
-;;    `zz-zones-from-noncontiguous-region' (Emacs 25+),
-;;    `zz-zones-overlap-p', `zz-zones-same-buffer-p', `zz-zone-union',
-;;    `zz-zone-union-1'.
+;;    `zz-zones-complement', `zz-zones-from-noncontiguous-region'
+;;    (Emacs 25+), `zz-zones-overlap-p',
+;;    `zz-zones-same-buffer-name-p', `zz-zones-to-overlays',
+;;    `zz-zone-to-overlay', `zz-zone-union', `zz-zone-union-1'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -170,10 +174,35 @@
 ;;  called the zone "beginning"; the upper limit is called its "end".
 ;;
 ;;
+;;(@* "Zones From Overlays, Overlays from Zones")
+;;  ** Zones From Overlays, Overlays from Zones **
+;;
+;;  Emacs overlays have a lot in common with zones: overlays have an
+;;  associated buffer, two limits (positions), and a list of
+;;  properties.  You can create zones from overlays, and vice versa,
+;;  using functions `zz-overlay-to-zone', `zz-zone-to-overlay',
+;;  `zz-overlays-to-zones', and `zz-zones-to-overlays'.
+;;
+;;  When creating zones from overlays you can specify how to represent
+;;  the zone limits: using markers, readable markers, or positive
+;;  integers.  And you can specify whether to create basic zones or
+;;  izones.  The overlay property list becomes the EXTRA information
+;;  of the resulting zone: (LIMIT1 LIMIT2 . EXTRA).
+;;
+;;  When creating overlays from zones, any list of EXTRA zone
+;;  information is used as the property list of the resulting overlay.
+;;  When creating a single such overlay you can optionally specify
+;;  additional overlay properties, as well as arguments FRONT-ADVANCE
+;;  and REAR-ADVANCE for function `make-overlay'.
+;;
+;;  You can use function `zz-overlay-union' to coalesce overlays in a
+;;  given buffer that overlap or are adjacent.
+;;
+;;
 ;;(@* "Coalesced (United) Zones")
 ;;  ** Coalesced (United) Zones **
 ;;
-;;  A list of zones can contain zones that overlap or are adjacent
+;;  A list of zones can include zones that overlap or are adjacent
 ;;  (the end of one is one less than the beginning of the other).
 ;;
 ;;  Basic-zone union and intersection operations (`zz-zone-union',
@@ -428,6 +457,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/05/13 dadams
+;;     Added: zz-overlays-to-zones, zz-overlay-to-zone, zz-zones-to-overlays, zz-zone-to-overlay,
+;;            zz-zone-buffer-name, zz-overlay-union.
+;;     Renamed: zz-zones-same-buffer-p to zz-zones-same-buffer-name-p.
+;;     zz-zones-same-buffer-name-p: Use zz-zone-buffer-name.  Check also readable markers.
+;;     zz-zone-ordered: Handle also readable markers.
+;;     Require cl.el at compile time, for case macro.
 ;; 2018/04/19 dadams
 ;;     Added zz-map-query-replace-regexp-zones, zz-replace-string-zones, and zz-replace-regexp-zones, after fix
 ;;       of Emacs bug #27897.
@@ -658,6 +694,8 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl)) ;; case
+
 ;; Quiet the byte-compiler.
 (defvar mode-line-modes)                ; Emacs 22+
 (defvar narrow-map)                     ; Emacs 23+
@@ -750,6 +788,8 @@ The cddr of ZONE remains as it was."
   (let ((beg    (car  zone))
         (end    (cadr zone))
         (extra  (cddr zone)))
+    (when (zz-readable-marker-p beg) (setq beg  (nth 2 beg)))
+    (when (zz-readable-marker-p end) (setq end  (nth 2 end)))
     (if (<= beg end) zone `(,end ,beg ,@extra))))
 
 (defun zz-zones-overlap-p (zone1 zone2)
@@ -758,21 +798,31 @@ Assumes that each zone is ordered (its car <= its cadr).
 The cddrs are ignored.
 
 Zones that use markers do not overlap if the marker buffers differ."
-  (and (zz-zones-same-buffer-p zone1 zone2)
+  (and (zz-zones-same-buffer-name-p zone1 zone2)
        (progn (when (< (car zone2) (car zone1)) (setq zone1 (prog1 zone2 (setq zone2 zone1))))
               (<= (car zone2) (cadr zone1)))))
 
-(defun zz-zones-same-buffer-p (zone1 zone2)
+(defun zz-zones-same-buffer-name-p (zone1 zone2)
   "Return non-nil if ZONE1 and ZONE2 apply to the same buffer.
-This is the case if they do not contain markers or the markers are
-from the same buffer."
-  (let* ((car1   (car zone1))
-         (cadr1  (cadr zone1))
-         (mkr1   (or (and (markerp car1)   car1)  (and (markerp cadr1)  cadr1)))
-         (car2   (car zone2))
-         (cadr2  (cadr zone2))
-         (mkr2   (or (and (markerp car2)   car2)  (and (markerp cadr2)  cadr2))))
-    (or (not (and mkr1  mkr2))  (eq (marker-buffer mkr1) (marker-buffer mkr2)))))
+This is the case if `zz-zone-buffer-name' returns the same name for
+each.  (A buffer with that name need not exist.)"
+  (eq (zz-zone-buffer-name zone1) (zz-zone-buffer-name zone2)))
+
+(defun zz-zone-buffer-name (zone)
+  "Return the name of the buffer used by ZONE.
+If the two ZONE positions specify different buffers, or if either is a
+marker that points nowhere, then raise an error."
+  (let* ((lim1  (car zone))
+         (lim2  (cadr zone))
+         (buf1  (cond ((markerp lim1)               (and (marker-buffer lim1)  (buffer-name (marker-buffer lim1))))
+                      ((zz-readable-marker-p lim1)  (cadr lim1))
+                      (t                            (buffer-name (current-buffer)))))
+         (buf2  (cond ((markerp lim2)               (and (marker-buffer lim2)  (buffer-name (marker-buffer lim2))))
+                      ((zz-readable-marker-p lim2)  (cadr lim2))
+                      (t                            (buffer-name (current-buffer))))))
+    (unless (and buf1  buf2) (error "Zone has marker(s) that point nowhere: %S" zone))
+    (unless (equal buf1 buf2) (error "Zone has conflicting buffers: %S" zone))
+    buf1))
 
 (defun zz-zones-complement (zones &optional beg end buffer)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
@@ -1919,13 +1969,13 @@ The value of variable `zz-izones' defines the zones."
 
 
   (defun zz-izones-from-noncontiguous-region ()
-    "Return a list if izones from `region-extract-function' bounds."
+    "Return a list of izones from `region-extract-function' bounds."
     (let ((ii  0))
       (mapcar (lambda (posn) (cons (setq ii  (1+ ii)) (list (copy-marker (car posn)) (copy-marker (cdr posn)))))
               (funcall region-extract-function 'bounds))))
          
   (defun zz-zones-from-noncontiguous-region ()
-    "Return a list if basic zones from `region-extract-function' bounds."
+    "Return a list of basic zones from `region-extract-function' bounds."
     (mapcar (lambda (posn) (list (copy-marker (car posn)) (copy-marker (cdr posn))))
             (funcall region-extract-function 'bounds)))
 
@@ -1949,8 +1999,100 @@ but the entry pairs are dotted: `(beg . end)', not `(beg end)'."
   "Dot PAIRS, a list of lists, each of which has at least two elements."
   (mapcar (lambda (b-e) (cons (car b-e) (cadr b-e))) pairs))
 
+(defun zz-overlay-to-zone (overlay &optional pos-type)
+  "Return a basic zone derived from OVERLAY.
+If OVERLAY is not an overlay or it has been deleted (has no buffer)
+then return nil.
 
+Optional arg POS-TYPE controls the kind of position used by the zone:
+ `markers'          - use markers
+ `readable-markers' - use readable-markers
+ nil                - use positive integers"
+  (let ((buf  (overlay-buffer overlay)))
+    (and buf
+         (let* ((beg    (overlay-start overlay))
+                (end    (overlay-end overlay))
+                (props  (overlay-properties overlay)))
+           (case pos-type
+             (markers           (setq beg  (copy-marker beg)
+                                      end  (copy-marker end)))
+             (readable-markers  (setq beg  (zz-readable-marker beg buf)
+                                      end  (zz-readable-marker end buf))))
+           `(,beg ,end ,@props)))))
 
+(defun zz-overlays-to-zones (overlays &optional pos-type izones-p)
+  "Return a list of zones derived from OVERLAYS list.
+This uses `zz-overlay-to-zone', which see for optional arg POS-TYPE.
+
+By default, the zones are basic zones.  Non-nil optional arg IZONES-P
+means they are izones.
+
+Note: If you plan to coelesce the resulting ZONES (using, e.g.,
+`zz-unite-zones') then you will no doubt want to ensure that the
+OVERLAYS are all of the same type."
+  (let ((zones  (delq nil (mapcar `(lambda (ov) (zz-overlay-to-zone ov ',pos-type)) overlays))))
+    (when izones-p (setq zones  (zz-izones-from-zones zones)))
+    zones))
+
+(defun zz-zone-to-overlay (zone &optional properties front-advance rear-advance)
+  "Create and return an overlay derived from ZONE.
+ZONE is a basic zone; it has the form (LIMIT1 LIMIT2 . EXTRA).
+
+If EXTRA is not a list then it is ignored.
+If EXTRA is a list then it is treated as a plist of overlay
+properties.  This is so regardless of the type of any given
+property (e.g., it need not be a symbol).  If the list has an odd
+number of elements then the last one is treated as a property with
+value `nil'.
+
+Optional arg PROPERTIES is a plist to add to the overlay properties
+coming from the `cddr' of ZONE (after adding the value `nil' if the
+latter list has an odd length.
+
+Optional args FRONT-ADVANCE and REAR-ADVANCE are passed to
+ `make-overlay'."
+  (let* ((buf     (get-buffer (zz-zone-buffer-name zone)))
+         (zon     (zz-zone-ordered zone))
+         (beg     (car zon))
+         (end     (cadr zone))
+         (zprops  (cddr zone))
+         (zprops  (and (listp zprops)  zprops))
+         (ov      (make-overlay (zz-marker-from-object beg) (zz-marker-from-object end) buf
+                                front-advance rear-advance)))
+    (while zprops
+      (overlay-put ov (car zprops) (cadr zprops))
+      (setq zprops  (cddr zprops)))
+    (while properties
+      (overlay-put ov (car properties) (cadr properties))
+      (setq properties  (cddr properties)))
+    ov))
+
+(defun zz-zones-to-overlays (zones)
+  "Return a list of overlays derived from ZONES list of basic zones."
+  (mapcar #'zz-zone-to-overlay zones))
+
+(defun zz-overlay-union (overlays &optional buffer dont-delete-p)
+  "Return the union (coalescence) of the overlays in list OVERLAYS.
+Overlapping and adjacent overlays are coalesced to a single overlay
+whose set of properties are the union of the properties of OVERLAYS.
+
+Returns a list of new overlays, which is sorted by the lower limit of
+each overlay.
+
+Only overlays in BUFFER (default: current buffer) are coalesced.
+
+By default the original OVERLAYS in BUFFER are all deleted.  Non-nil
+optional arg DONT-DELETE-P means do not delete them.  Any of the
+original overlays that are not in BUFFER (and so were not coalesced)
+are included in the returned list."
+  (let* ((zones    (zz-zone-union (zz-overlays-to-zones overlays 'markers) buffer))
+         (new-ovs  (zz-zones-to-overlays zones)))
+    (dolist (ov  overlays)
+      (if (eq (overlay-buffer ov) (or buffer  (current-buffer)))
+          (unless dont-delete-p (delete-overlay ov)) ; Delete original overlays in BUFFER
+        (push ov new-ovs)))             ; Add other-buffer overlays to return value.
+    new-ovs))
+          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'zones)
