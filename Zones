@@ -85,7 +85,7 @@ If you use library [[Icicles]] then you can use commands `icicle-select-zone', t
 
 ----
 
-(Library <tt>[[zones.el]]</tt> supersedes library <tt>[[wide-n.el]]</tt>, which is obsolete as of 2015-08-16.
+(Library <tt>[[zones.el]]</tt> supersedes library <tt>[[wide-n.el]]</tt>, which is obsolete as of 2015-08-16.)
 
 
 
