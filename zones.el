@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 13 21:45:40 2018 (-0700)
+;; Last-Updated: Mon May 14 07:53:25 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1918
+;;     Update #: 1920
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -47,8 +47,8 @@
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
 ;;    (@> "Compatibility")
-;;    (@> "Zones From Overlays, Overlays from Zones")
 ;;    (@> "Coalesced (United) Zones")
+;;    (@> "Zones and Overlays")
 ;;    (@> "Izone Commands")
 ;;    (@> "Izone List Variables")
 ;;    (@> "Keys")
@@ -174,31 +174,6 @@
 ;;  called the zone "beginning"; the upper limit is called its "end".
 ;;
 ;;
-;;(@* "Zones From Overlays, Overlays from Zones")
-;;  ** Zones From Overlays, Overlays from Zones **
-;;
-;;  Emacs overlays have a lot in common with zones: overlays have an
-;;  associated buffer, two limits (positions), and a list of
-;;  properties.  You can create zones from overlays, and vice versa,
-;;  using functions `zz-overlay-to-zone', `zz-zone-to-overlay',
-;;  `zz-overlays-to-zones', and `zz-zones-to-overlays'.
-;;
-;;  When creating zones from overlays you can specify how to represent
-;;  the zone limits: using markers, readable markers, or positive
-;;  integers.  And you can specify whether to create basic zones or
-;;  izones.  The overlay property list becomes the EXTRA information
-;;  of the resulting zone: (LIMIT1 LIMIT2 . EXTRA).
-;;
-;;  When creating overlays from zones, any list of EXTRA zone
-;;  information is used as the property list of the resulting overlay.
-;;  When creating a single such overlay you can optionally specify
-;;  additional overlay properties, as well as arguments FRONT-ADVANCE
-;;  and REAR-ADVANCE for function `make-overlay'.
-;;
-;;  You can use function `zz-overlay-union' to coalesce overlays in a
-;;  given buffer that overlap or are adjacent.
-;;
-;;
 ;;(@* "Coalesced (United) Zones")
 ;;  ** Coalesced (United) Zones **
 ;;
@@ -228,6 +203,31 @@
 ;;  * The zones in the result list are not adjacent and do not
 ;;    overlap: there is some other buffer text (i.e., not in any zone)
 ;;    between any two zones in the result.
+;;
+;;
+;;(@* "Zones and Overlays")
+;;  ** Zones and Overlays **
+;;
+;;  Emacs overlays have a lot in common with zones: overlays have an
+;;  associated buffer, two limits (positions), and a list of
+;;  properties.  You can create zones from overlays, and vice versa,
+;;  using functions `zz-overlay-to-zone', `zz-zone-to-overlay',
+;;  `zz-overlays-to-zones', and `zz-zones-to-overlays'.
+;;
+;;  When creating zones from overlays you can specify how to represent
+;;  the zone limits: using markers, readable markers, or positive
+;;  integers.  And you can specify whether to create basic zones or
+;;  izones.  The overlay property list becomes the EXTRA information
+;;  of the resulting zone: (LIMIT1 LIMIT2 . EXTRA).
+;;
+;;  When creating overlays from zones, any list of EXTRA zone
+;;  information is used as the property list of the resulting overlay.
+;;  When creating a single such overlay you can optionally specify
+;;  additional overlay properties, as well as arguments FRONT-ADVANCE
+;;  and REAR-ADVANCE for function `make-overlay'.
+;;
+;;  You can use function `zz-overlay-union' to coalesce overlays in a
+;;  given buffer that overlap or are adjacent.
 ;;
 ;;
 ;;(@* "Izone Commands")
