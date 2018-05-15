@@ -279,6 +279,29 @@ Or, a more interesting example:
 <fsbot> Shut up, kensanata!
 }}}
 
+More code:
+
+{{{
+<kensanata> no which\\sis\\sbetter:\\S is lisp (let ((it nil) (in
+    (mapcar 'symbol-name (nthcdr 2 lispargs)))) (while in (unless (string=
+    (car in) "or") (setq it (cons (car in) it))) (setq in (cdr in))) (nth
+    (random (length it)) it))
+<fsbot> Created new note for "which\\\\sis\\\\sbetter:\\\\S"
+<kensanata> which is better: toast, bread, croissant or jam
+<fsbot> jam
+}}}
+
+Or fancy output, and showing how to describe such terms:
+
+{{{
+<kensanata> dl how\\scool\\sis\\s\\S
+<fsbot> From memory, how\scool\sis\s\S is lisp (let ((i (random 10)))
+    (format "|%s%s| %d%%" (substring "**********" 0 i) (substring
+    "----------" i) (* 10 i)))
+<kensanata> how cool is emacs
+<fsbot> |*****-----| 50%
+}}}
+
 === redirect ===
 
     <deego> , shae
