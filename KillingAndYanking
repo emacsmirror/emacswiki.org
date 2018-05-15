@@ -1,6 +1,6 @@
 '''_Vocabulary:_''' In Emacs, we call '''killing''' what others call ''cutting'', and '''yanking''' what others call ''pasting''. '''killing''' moves text from the document to the top of the kill ring.  We call "saving onto the kill-ring" what others call ''copying'' text. The '''kill-ring''' is similar to a ''clipboard'': it is a list of the last 60 killed items, from which items can be yanked.
 
-The default command for killing the selected region is `kill-region' (`C-w'). The command for saving (copying) text to the `kill-ring' is `kill-ring-save' (`M-w').
+The default command for killing the selected [[region]] is `kill-region' (`C-w'). The command for saving (copying) text to the `kill-ring' is `kill-ring-save' (`M-w').
 
 The default command for killing the rest of the current line is `kill-line'  (`C-k').  The default command for killing the rest of a sentence is `kill-sentence' (`M-k').  As always, repeated invocations of kill commands prepend the kills, in order, to the `kill-ring'.  
 
