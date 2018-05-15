@@ -282,10 +282,10 @@ Or, a more interesting example:
 More code:
 
 {{{
-<kensanata> no which\\sis\\sbetter:\\S is lisp (let ((it nil) (in
+<kensanata> which\\sis\\sbetter:\\S is lisp (let ((it nil) (in
     (mapcar 'symbol-name (nthcdr 2 lispargs)))) (while in (unless (string=
-    (car in) "or") (setq it (cons (car in) it))) (setq in (cdr in))) (nth
-    (random (length it)) it))
+    (car in) "or") (setq it (cons (car in) it))) (setq in (cdr in))) (if it
+    (random-choice it) "Or what?"))
 <fsbot> Created new note for "which\\\\sis\\\\sbetter:\\\\S"
 <kensanata> which is better: toast, bread, croissant or jam
 <fsbot> jam
