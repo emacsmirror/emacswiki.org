@@ -66,10 +66,11 @@ MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;appl
 = Other WThreeM pages =
 
 * WThreeMTabsAndDisplayModes - managing multiple WThreeM buffers
+* WThreeMFilters - greasemonkey ability to easily customize everything about how pages look
 * WThreeMHintsAndTips - Useful extensions and tips for using w3m
 * WThreeMReportedProblems - Reported problems and their solutions
 * WThreeMEditingWikis - using '''w3m''' to view and edit wikis
-* WThreeMFrames - rendering frames
+* WThreeMFrames - rendering HTML <FRAME> elements
 * WThreeMKeymap - alternate keymaps (including some "hidden" commands)
 * WThreeMMailmanAdmin - using '''w3m''' to handle GNU Mailman admin approval queues
 * WThreeMSearch - improving searching
