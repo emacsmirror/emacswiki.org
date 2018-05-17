@@ -1,106 +1,87 @@
-In the WThreeM webbrowser one can have multiple buffers open at the
-same time, just like in any other modern, decent browser.  By default
-all the available buffers are shows as ''tabs'' at the top edge of the
-w3m window.  All of the basic functionality is explained in the InfoMode manual for WThreeM  
-at node <code>(emacs-w3m) Working with buffers</code>, but
-summarized here too.
+Emacs-w3m supports asynchronous operations on as many tabs, buffers, windows and frames that your cpu can handle. And they can be organized in several different ways.
 
-== Navigating the buffers ==
+== Display Modes ==
 
-So... you can click on the tab to switch to that buffer or use
-<code>w3m-next-buffer</code> and <code>w3m-previous-buffer</code>
+There exist five display modes for emacs-w3m when called
+interactively: Plain, Tabbed, Dual-Pane, Dedicated-Frames, and
+Tabbed-Dedicated-Frames. When emacs-w3m is run in batch mode or
+non-interactively, only the Plain or Tabbed display modes are
+available. In the past, these modes had been set by a combination
+of three variables, `w3m-use-tab', `w3m-pop-up-windows' and
+`w3m-pop-up-frames', but can now be set with this single setting
+`w3m-display-mode'. When this variable is set, the other three
+are ignored. Interactively, you can control this setting by <code>M-x w3m-display-mode</code>.
+
+=== PLAIN ===
+Each emacs-w3m buffer exists on its own and can appear in
+any window in any frame, although a reasonable attempt will be
+made to re-use an existing window. There is no tab bar. In the
+past, this had been set by the combination: `w3m-use-tab' nil,
+`w3m-pop-up-windows' nil, and `w3m-pop-up-frames' nil.
+
+=== TABBED ===
+A reasonable attempt is made to keep only one window
+displaying emacs-w3m buffers. That window has a cliackable tab
+bar along the top. Users can manually subvert this by explicitly
+opening an emacs-w3m buffer in any number of other windows. In
+the past, this had been set by the combination: `w3m-use-tab' t
+`w3m-pop-up-windows' ignored, and `w3m-pop-up-frames' nil.
+
+=== DUAL-PANE ===
+Once more than one emacs-w3m buffer exists, a
+reasonable attempt is made to present emacs-w3m in two windows on
+the same frame. Any action to open a new emacs-w3m buffer, such
+as `w3m-goto-url-new-session' or `w3m-search-new-session'
+displays the new buffer in the unfocused pane, and transfers
+focus there. In the past, this had been set by the combination:
+`w3m-use-tab' nil `w3m-pop-up-windows' t, and `w3m-pop-up-frames'
+nil.
+
+=== DEDICATED-FRAMES ===
+Each new emacs-w3m buffer is opened in a new
+single-window frame. In the past, this had been set by the
+combination: `w3m-use-tab' nil `w3m-pop-up-windows' ignored, and
+`w3m-pop-up-frames' t.
+
+=== TABBED-DEDICATED-FRAMES ===
+Each new emacs-w3m buffer is opened in
+the same window of the frame from which it was spawned, and is
+not easily visible to emacs-w3m buffers associated with other
+frames. The window includes a clickable tab bar along the top. In
+the past, this had been set by the combination: `w3m-use-tab' t
+`w3m-pop-up-windows' ignored, and `w3m-pop-up-frames' t."
+
+
+== Navigating between emacs-w3m buffers ==
+
+Much of the following is a re-hash of content found in the emacs-w3m InfoMode manual,  
+at node <code>(emacs-w3m) Working with buffers</code>.
+
+From any emacs-w3m buffer, you can issue command <code>w3m-select-buffer</code> (default keybiding: <code>C-c C-s</code>), which will display a popup window listing all open w3m buffers. The display is very user-friendly in that instead of listing a buffer's emacs name, which would be something like "<w3m>(23)", it lists just the number followed by the title of the html page that the buffer is displaying. It also adds "(u)" for unread buffers. From that popup window, you can navigate the list and select a buffer to display (press 'RETURN' on it), or delete (press 'd'). 'q', or <code>C-g</code> exit the popup buffer without doing anything.
+
+If you don't want to use the popup window, you can directly navigate to the sequentially next and previous emacs-w3m buffers using <code>w3m-next-buffer</code> and <code>w3m-previous-buffer</code>
 (<code>C-c C-n</code> and <code>C-c C-p</code> by default) to hop
 among them.
 
-There's also <code>w3m-switch-buffer</code> (<code>C-c C-a</code>)
-that provides a convenient interactive way to switch from the
-minibuffer with the common <code>M-n</code> and <code>M-p</code> keys.
-One more alternative is shipped with w3m, namely the
-<code>w3m-select-buffer</code> at <code>C-c C-s</code>.  This will
-open a temporary buffer on the righthand side of the frame listing all
-open w3m buffers.  Move among these as instructed in the EchoArea.
+Another method is <code>w3m-switch-buffer</code> (<code>C-c C-a</code>). That command prompts you for an HTML window title to switch to, and lets you use <code>M-p</code> and <code>M-n</code> keys to navigate a list of available options.
 
-Zajcev Evgeny wrote Lisp:wl-list.el to browse active w3m buffers, not
-unlike <code>w3m-select-buffer</code>.
+Of course, if you are using a tabbed display mode and have mouse support, you can always just click on a tab ...
 
-Here's yet another function for buffer-switching, and its
-installation:
-
- (defun my-w3m-switch-to-buffer (arg)
-   "Select the ARG'th w3m buffer."
-   (interactive "p")
-   (let (buf)
-     (if (= arg 0)
-	 (setq arg 10)
-       (setq arg (1- arg)))
-     (if (and (> arg -1) (setq buf (nth arg (w3m-list-buffers))))
-	 (progn
-	   (switch-to-buffer buf)
-	   (run-hooks 'w3m-select-buffer-hook)
-	   (w3m-select-buffer-update))
-       (message "No such buffer!"))))
-
- (add-hook 'w3m-mode-hook
-	   (lambda ()
-	     (dolist (bufnum '(0 1 2 3 4 5 6 7 8 9))
-	       (let* ((bufstr (number-to-string bufnum))
-		      (funcname (concat "my-w3m-switch-to-buffer-" bufstr)))
-		 (eval `(defun ,(intern funcname) ()
-			  (interactive)
-			  (my-w3m-switch-to-buffer ,bufnum)))
-		 (define-key w3m-mode-map bufstr
-		   (intern funcname))))))
+See the history for this page if you're interested in some really old (~2003, ~2007) alternative code snippets
 
 A more generic Emacs buffer switching tool, BufferQuickSwitcher, could
 be used with ''w3m'' context too.
 
-I find that customizing w3m to give its buffers more sensible names than "w3m" and "w3m<many>" makes it interact much better with things like InteractivelyDoThings and IbufferMode that help manage lots of buffers:
+== Spawning a new buffer ==
 
- (defun my-w3m-rename-buffer (url)
-   "more useful buffer names, thanks to forcer on freenode."
-   (rename-buffer url t))
- (add-hook 'w3m-display-hook 'my-w3m-rename-buffer)
+You have a few choices:
 
-This just uses the url as buffer name. Disadvantage is that it puts a lot of stuff on the modeline (the url as buffer name as well as the title which w3m puts there by default) but now I can switch between w3m buffers by typing C-x b followed by a small part of the url (thanks to InteractivelyDoThings) or get a somewhat readable list of open w3m buffers by using ibuffer limited to the w3m-mode major mode. I like that better than learning a w3m-specific way of switching buffers. YMMV, of course.
+1. <code>w3m-goto-url-new-session</code>, bound by default to <code>G</code>. You will then be prompted for a URL, but if your cursor is on a URL, that will be the default.
 
-I guess it might be even better to use the page title as buffer name (and convince w3m to not add the title to the mode line too). 
+2. You can explicitly make a copy of the current buffer with
+<code>w3m-copy-buffer</code> (<code>C-c C-t</code> by default).
 
-A modification to the function above achieves that:
-
-    (defun my-w3m-rename-buffer (url)
-      "base buffer name on title"
-      (let* ((size 32)
-             (title w3m-current-title)
-             (name (truncate-string-to-width 
-                    (replace-regexp-in-string " " "_" title)
-                    size)))
-        (rename-buffer name t)))
-
-Now we prevent w3m from adding its (truncated) title to the modeline:
-
-    (defadvice w3m-modeline-title (around my-w3m-modeline-title)
-      "prevent original function from running; cleanup remnants"
-      (setq w3m-modeline-separator ""
-            w3m-modeline-title-string ""))
-    (ad-activate 'w3m-modeline-title)
-    
-
-Alternatively, you can just use this functionality built right into w3m...
-(setq w3m-use-title-buffer-name t)
-
-This was [http://atomized.org/2008/09/emacs-w3m-buffer-name-disambiguation/#comment-97972 mentioned on my blog], but there are no references to it in the source of Emacs-W3M 0.5.2, and it doesn't work for me. – ieure
-
-== Spawning and slaying buffers ==
-
-New buffers are generated in a number of ways.  Either one can use the
-<code>w3m-goto-url-new-session</code> at <code>G</code> and give an
-URI to visit at the prompt, follow a link with
-<code>w3m-view-this-url-new-session</code> with <code>S-RET</code> or
-explicitly make a copy of the current buffer with
-<code>w3m-copy-buffer</code> at <code>C-c C-t</code>.  Because this is
-a ''copy'' of an existing buffer, it takes extra time to render the
-page if one merely wishes to have a brand new buffer.  Here's a
-tiny-weeny function to create a new, empty buffer.
+3. Here's a tiny-weeny function to create a new, empty buffer.
 
  (defun w3m-new-buffer nil
    "Opens a new, empty w3m buffer."
@@ -112,14 +93,15 @@ tiny-weeny function to create a new, empty buffer.
    (interactive)
    (w3m-goto-url-new-session "about://"))
 
-To close a buffer, one invokes <code>w3m-delete-buffer</code> with
-<code>C-c C-w</code>.
-   
-== Discussion ==
-   
-: Tabs is not the way I feel and look. They uses my screen space for nothing :). w3m-switch-buffer is surely needs enhancement.
+== Killing a buffer ==
 
-:: As a long time Emacs user, I can appreciate that not everyone works the same way.  I just wanted to state (other than the facts of how w3m.el works above) that I really like the way the tabs work.  It only cost me one extra line of my display and gives me a pretty good visual cue for both how many w3m buffers I have open and what's in them.  I don't mind sacrificing a line for that.  Of course, my main emacs window is 59 lines tall.
+You have a few choices:
+
+1. The usual emacs command <code>C-x k</code>
+
+2. <code>w3m-delete-buffer</code>, bound by default to <code>C-c C-w</code>.
+
+3. From within the buffer selection popup window (<code>C-c C-s</code> by default), press 'd' on a selection.
 
 ----
 See Also: WThreeM, CategoryHypermedia
