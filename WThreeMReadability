@@ -25,6 +25,7 @@ Now you can customize headline faces by <code>M-x customize-face RET w3m-h1 RET<
 
 Please check <code>w3m-command</code> is correct if it doesn't work.
 
+See also WThreeMFilters
 -----
 
 [[WThreeM]]
