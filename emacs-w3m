@@ -65,6 +65,7 @@ MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;appl
 
 = Other WThreeM pages =
 
+* WThreeMTabsAndDisplayModes - managing multiple WThreeM buffers
 * WThreeMHintsAndTips - Useful extensions and tips for using w3m
 * WThreeMReportedProblems - Reported problems and their solutions
 * WThreeMEditingWikis - using '''w3m''' to view and edit wikis
@@ -73,7 +74,6 @@ MimeType=x-scheme-handler/unknown;x-scheme-handler/about;text/html;text/xml;appl
 * WThreeMMailmanAdmin - using '''w3m''' to handle GNU Mailman admin approval queues
 * WThreeMSearch - improving searching
 * WThreeMTables - displaying tables correctly
-* WThreeMTabs - managing multiple WThreeM buffers
 * WThreeMTranslation - use google translate indirectly
 * WThreeMTypeAhead - type ahead support
 * WThreeMShimbun - use w3m to create mail backend
