@@ -1,6 +1,8 @@
-== Rendering Frames ==
+This page discusses the ability of a single emacs-w3m buffer to render html FRAME elements, ie. <FRAME>...</FRAME>. Don't confuse the content of this page with emacs-w3m ability to display different buffers and buffer groups in dedicated emacs frames (see page WThreeMTabsAndDisplayModes). 
 
-If you want to render frames within Emacs, you have to use w3mmee
+== Rendering HTML Frames ==
+
+If you want to render html frames within Emacs, you have to use w3mmee
 rather than w3m -- w3mmee is w3m with multibyte encoding extension.
 The problem seems to be that w3m and w3mmee behave differently with
 the -dump_extra flag.
