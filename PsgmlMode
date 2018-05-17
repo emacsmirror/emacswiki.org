@@ -80,7 +80,8 @@ Onsgmls's ancestor nsgmls can be found at SP's original site:
 See also:
 
 * http://www.iro.umontreal.ca/~pinard/fp-etc/dist/xxml/xxml.el
-* http://xxml.progiciels-bpi.ca/index.html (try this is above link fails)
+* http://xxml.progiciels-bpi.ca/index.html (try this if above link fails)
+* http://xml.silmaril.ie/software/xxml.el (as both above links are now dead)
 * http://www.menteith.com/tdtd/ -- one of these nicely font-locked DTDs
 * XmlParser -- more on other XML parsers
 * http://www.snee.com/bob/sgmlfree/ has a PDF of an introduction to Emacs+PSGML
