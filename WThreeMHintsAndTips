@@ -1,3 +1,9 @@
+== Reader mode ==
+
+Many browsers now have some form of mode that tries strips a web page of all frills and leave just text displaying, so you don't see headers, menus, sidebars, ads, etc. just core page content in a way that's easy to read.
+
+Emacs-w3m can do this with page filters. See WThreeMFilters.
+
 == Open a url embedded in any buffer ==
 
 BrowseUrl is a package bundled by default in the emacs distribution that allows one to select a URL in any emacs buffer and open that URL in a browser of your choice. By default, it is bound to `C-x m`. In order to select emacs-w3m as the browser for it to open:
