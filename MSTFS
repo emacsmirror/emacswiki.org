@@ -12,6 +12,13 @@ Here's the source:
 
 : Lisp:tfs.el
 
+[new]
+I wrote an updated version of tfs.el, you can find it in https://github.com/sebasmonia/tfs.el.
+
+Many thanks to the original tfs.el author for permission to modify the existing code.
+-- SebastianMonia
+
+
 === Basic Setup ===
 <pre>
    1. Place `tfs.el' in your `load-path'.
