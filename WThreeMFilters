@@ -1,0 +1,7 @@
+Emacs-w3m allows you to customize how any web page displays, using what it calls 'filters'. This is kind of like what the greasemonkey extension to firefox allows you to do.
+
+Filters can be turned on or off globally (<code>f</code> by default) or individually (by default <code>C-u f</code>, and then navigate to a selection using <code>M-p</code> / <code>M-n</code>).
+
+The package comes with a few filters installed as examples. They are just elisp functions that do things like search and replace html tags or regions. Each filter function is then associated with one or more regular expressions scoping the urls on which it is to be applied (see variable <code>w3m-filter-configuration</code>.
+
+This page is a good a place as any for people to share their filters or links...
