@@ -6,8 +6,8 @@ Please follow the [https://github.com/DamienCassou/textlint#emacs-installing ins
 
 It's written in Smalltalk and is currently accessible through:
 
-* Emacs (https://github.com/DamienCassou/textlint)
-* [http://macromates.com/ TextMate]  (https://github.com/DamienCassou/textlint)
+* Emacs (https://github.com/DamienCassou/textlint) 
+* [http://macromates.com/ TextMate]  (https://github.com/DamienCassou/textlint) Note: This is currently deprecated.
 * The web (http://textlint.lukas-renggli.ch/)
 * A Smalltalk IDE (http://scg.unibe.ch/research/textlint)
 
