@@ -12,11 +12,11 @@ Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself
 === 1. Notes and Authoring ===
 For notes and authoring I have found the following to be useful:
 * [[OrgMode]]: I use [[OrgMode]] for most of my needs in GNU Emacs session; which is primarily writing.
-## Most of my setup is tailored towards org-mode config. I have quite an extensive list of customisations/configurations, including a few personal functions.
+
+- Most of my setup is tailored towards org-mode config. I have quite an extensive list of customisations/configurations, including a few personal functions.
 
 === 2. Dictionary, Spelling and Thesaurus ===
-For dictionary, spelling and thesaurus purposes I have found the following to be useful:
-- I'm still looking for a decent dictionary/thesaurus combination.
+I'm still looking for a decent dictionary/thesaurus combination.
 
 === 3. References and Bibliography ===
 For references and bibliography I have found the following to be useful:
