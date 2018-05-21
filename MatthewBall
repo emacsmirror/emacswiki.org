@@ -4,71 +4,36 @@ I am an Australian university student studying philosophy/linguistics.
 I'm not much of a programmer, my interest in (GNU) Emacs is primarily focused on how it can be used as a writing environment.
 
 == GNU Emacs ==
-I have been using GNU Emacs for the past five or so years, and am currently using [http://emacs.naquadah.org/|GNU Emacs 24]. I'm absolutely in love with [[package.el]] and [[ELPA]] for GNU Emacs 24, and have attempted to automatically handle as much configuration as possible using it. I have a small, lightweight, netbook running [http://wiki.debian.org/DebianSqueeze|Debian Squeeze] with StumpWM, GNU Emacs, and Chromium web-browser, which is ideal for my needs. Despite this, I'm not much of a "minimalist" - I've never been a terminal user for instance - a GNU Emacs session for me is, I would say, relatively "heavy". I use the following GNU Emacs modes extensively:
-
-* [[Ido]]
-* [[Smex]]
-* [[IbufferMode]]
-* [[ERC]]
-* [[Gnus]]
-* [[DiredMode]]
-* [[AnsiTerm]]
-* [[CategoryEshell]]
-* [[DeskTop]]
-* [[RecentFiles]]
-* [[FindFileAtPoint]]
-* [[AutoComplete]]
-* [[ELPA]]
-* [[DiminishedModes]]
-* [[VisualLineMode]]
-* [[AdaptiveWrapMode]] (see: [[LineWrap]])
+I am currently using GNU Emacs 25.
 
 == Writing ==
 Roughly, the tasks GNU Emacs easily accommodates which are of interest to myself can be classified as follows:
 
 === 1. Notes and Authoring ===
 For notes and authoring I have found the following to be useful:
-* [[DeftMode]]: /insert description/.
 * [[OrgMode]]: I use [[OrgMode]] for most of my needs in GNU Emacs session; which is primarily writing.
-## Toggle the display of unicode characters in an [[OrgMode]] buffer with the command "org-toggle-pretty-entities".
+## Most of my setup is tailored towards org-mode config. I have quite an extensive list of customisations/configurations, including a few personal functions.
 
 === 2. Dictionary, Spelling and Thesaurus ===
 For dictionary, spelling and thesaurus purposes I have found the following to be useful:
-* [[DictEm]]
-* [[FlySpell]]
-* [[thesaurus.el]]
+## I'm still looking for a decent dictionary/thesaurus combination.
 
 === 3. References and Bibliography ===
 For references and bibliography I have found the following to be useful:
 * [[BibTeX]]
 * [[RefTeX]]
 * [http://ebib.sourceforge.net/ ebib]
-
-== StumpWM ==
-Spend some time with GNU Emacs and the user is invited to learn EmacsLisp. I enjoyed EmacsLisp so much I started looking into other lisps, finding CommonLisp and StumpWM.
-
-I've been using StumpWM for a few years and find it to be the best window manager for my purposes - which is really just an instance of GNU Emacs and an instance of Chromium.
+* [[OrgRef]
 
 == Configuration ==
 I will get around to cleaning up my dot emacs file and putting it online eventually.
 
-My configuration is split into the following hierarchy:
-* ~/.emacs.d/init.el
-* ~/.emacs.d/config-el/general-config.el
-* ~/.emacs.d/config-el/writing-config.el
-* ~/.emacs.d/config-el/programming-config.el
-* ~/.emacs.d/config-el/user-config.el
-* ~/.emacs.d/config-el/key-bindings-config.el
-* ~/.emacs.d/config-el/appearance-config.el
-
-This configuration sets a number of variables in *init.el* before loading the files in the *config-el* directory; it is structured such that everything included in *general-config.el* is available by default with GNU Emacs 24, while everything included in *user-config.el* are packages (and settings) which I have found useful using [[ELPA]]. I believe the function of the remaining configurations should be evident from their names. These configurations tend to /include/ packages from [[ELPA]]; even though there is the *general-config.el* and *user-config.el* distinction. The *general-config.el* file sets a number of packages to be downloaded which the configuration "requires", although the corresponding command needs to be manually called.
-
-I guess this is an attempt at writing a "general" configuration file another user could easily adapt to their own purposes; at some point I was interested in writing a document to the effect of "GNU Emacs for Writers".
+My configuration is roughly 400 lines of emacs lisp, majority of which is org-mode functionality.
 
 == Contact ==
 I can be reached via email at "mathew.ball" at "gmail.com".
 
-I spend a fair amount of time idling in [[EmacsChannel|#emacs]], #stumpwm, #org-mode, #gnus, and various other channels on freenode under the nickname "[::chu]".
+I spend a fair amount of time idling in [[EmacsChannel|#emacs]], and #org-mode channels on freenode under the nickname "[::chu]".
 
 ----
 CategoryHomepage
