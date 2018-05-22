@@ -194,7 +194,7 @@ for the words is `toe-starting-length'."
   "Return questions and answers from the region as an alist.
 The alist is made of elements (LENGTH (question answer) ...)
 where LENGTH is an integer describing the length of the answer.
-Each ANSWER in the list is treated accourding to `toe-treat-words'.
+Each ANSWER in the list is treated according to `toe-treat-words'.
 The minimum length for the words is `toe-starting-length'."
   (save-excursion
     (goto-char start)
@@ -226,7 +226,7 @@ The minimum length for the words is `toe-starting-length'."
 (defun toe-parse-region (start end)
   "Parse region and return words, questions, and answers.
 Words are defined as strings consisting of word characters per syntax
-table of the buffer.  Questions are sentences ending in a questionmark.
+table of the buffer.  Questions are sentences ending in a question mark.
 Answers are the sentences following a question."
   (list (toe-parse-region-words start end)
 	(toe-parse-region-questions start end)))
@@ -294,7 +294,7 @@ Answers are the sentences following a question."
 ;; Only way to get out of the game
 
 (defun toe-score (letters words start end)
-  "Calculate characters per minutes typed and print it.
+  "Calculate characters per minute typed and print it.
 LETTERS is the number of characters typed.
 START and END are times such as returned by
 `current-time'."
@@ -404,7 +404,7 @@ second."
 The game builds a list of words from the current buffer.
 In the buffer *The Typing Of Emacs* you will be asked to
 type the words.  Should you take more than a certain
-number of seconds to do the typing, you loose.  As you
+number of seconds to do the typing, you lose.  As you
 continue playing the words will get longer and longer."
   (interactive "P")
   (if (string-equal (buffer-name) toe-buffer-name)
