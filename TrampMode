@@ -111,6 +111,12 @@ Make it foolproof by putting it at the very top of your .zshrc and adding a retu
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
 }}}
 
+Even better, avoid changing your ##dumb## terminal's prompt (eg, in ##M-x shell##), and instead use a specific ##TERM##: set ##tramp-terminal-type## to ##"tramp"##, and then check for *that* in your ##.zschrc##:
+
+{{{
+[[ $TERM == "tramp" ]] && unsetopt zle && PS1='$ ' && return
+}}}
+
 Alternatively, I had success using the following in my .zshrc:
 
 {{{
