@@ -69,8 +69,8 @@ configuration errors, missing redirects and the like.
 == Spammers ==
 
 As you can see on WikiSpam, we log all the blocked edits that ran
-afoul of our banning rules. These log files contain IP numbers and
-there is currently no deleting of these logs.
+afoul of our banning rules. These log files contain IP numbers. These
+logs also go back four days.
 
 ----
 EmacsWiki
