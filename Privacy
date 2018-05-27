@@ -1,6 +1,6 @@
 This page lists privacy issues concerning this site.
 
-==  Cookies
+==  Cookies ==
 
 The wiki uses a cookie that doesn't identify individual users. The
 cookie is used to remember your preferences from one visit to the
@@ -9,7 +9,7 @@ URL-encoded 0x1e byte (%251e). A typical user's cookie might contain
 ##username AlexSchroeder##, for example. This says which username
 you'd like to use when editing a page.
 
-== Username
+== Username ==
 
 Nothing requires usernames to be unique. You can pick any valid page
 name. If you do provide a username, we're going to store it in various
@@ -25,14 +25,14 @@ places:
 
 Information on this site is available via the HTML pages, RSS, and Gopher.
 
-== Backups
+== Backups ==
 
 Offline backups of the data exist on the private laptop of Alex
 Schroeder and his backup disks. The data is encrypted and access is
 limited to Alex Schroeder and his wife. The data will be overwritten
 at irregular intervals.
 
-==  Tracking of Reader IP Numbers
+==  Tracking of Reader IP Numbers ==
   
 In order to prevent leeching, the wiki also keeps of the IP numbers
 that have visited the site in the last 20 seconds. The `visitors.log`
@@ -45,7 +45,7 @@ file lists IP numbers and timestamps as follows:
 This is updated whenever somebody visits the site. This information is
 not public.
 
-==  Tracking of Author IP Numbers
+==  Tracking of Author IP Numbers ==
 
 The wiki also tracks IP numbers whenever a page is edited. The idea is
 that we want to ban certain people from editing the site via
@@ -59,16 +59,18 @@ octal, take the first four digits and show one of eight colours for
 each one. After 28 days the IP number will be removed from our wiki
 log files by the maintenance job.
 
-==  Web Server Logs
+==  Web Server Logs ==
 
 The web server itself also keeps access log and error logs. These go
 back four days. They contain IP numbers and the URLs they requested.
 These log files are not public. These are used to help find
 configuration errors, missing redirects and the like.
 
-== Spammers
+== Spammers ==
 
-As you can see on WikiSpam, we log all the blocked edits that ran afoul of our banning rules. These log files contain IP numbers and there is currently no deleting of these logs.
+As you can see on WikiSpam, we log all the blocked edits that ran
+afoul of our banning rules. These log files contain IP numbers and
+there is currently no deleting of these logs.
 
 ----
 EmacsWiki
