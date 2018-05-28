@@ -3,7 +3,7 @@
 
 == As a simple calculator ==
 
-If all you need is a simple calculation and don't want to deal with [https://en.wikipedia.org/wiki/Reverse_Polish_notation) RPN] mode, you can use Calc in algebraic mode. 
+If all you need is a simple calculation and don't want to deal with [https://en.wikipedia.org/wiki/Reverse_Polish_notation RPN] mode, you can use Calc in algebraic mode. 
 To do so, just run Calc with M-x calc <RETURN>, and then hit apostrophe (') -
 now you can type in your formula normally and hit enter for the result. 
 
