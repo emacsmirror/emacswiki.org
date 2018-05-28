@@ -272,10 +272,10 @@ s U
 }}}
 
 == Minimalistic calculation ==
-I always calculate something, so there is a way i use calc.el
+I always calculate something, so there is a way I use calc.el
 
 {{{
-;; usefull mini calculator
+;; useful mini calculator
 (defun my-mini-calc (expr &optional arg)
   "Calculate expression
 
