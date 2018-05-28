@@ -187,6 +187,11 @@ of user interface experiments should be easier to do in the future.
 
 == Questions ==
 
+[new]
 I have tried to run this code in a recent GNU Emacs alas, there is nothing different than running directly C-M-t. Is it normal ? -- XavierMaillard
+
+[new]
+Perhaps the default behaviour simply changed? If so, we should simply mark this code as deprecated. -- Alex Schroeder
+
 ----
 CategoryMail CategoryMailAddons
