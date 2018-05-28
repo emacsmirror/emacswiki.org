@@ -41,8 +41,7 @@ And then make sure you enable mouse support in your iTerm2 connection profile, l
 You can now resize Emacs windows using your mouse, as well as clicking on hyperlinks (but you don't NEED a mouse to do that, don't you?)
 
 = Rendering Powerline arrows in iTerm2 =
-
-https://philadelinquency.com/emacs/iterm2powerline.png
+[[image:iTermPowerlineFont]]
 
 Go to the [https://github.com/powerline/fonts Powerline font patch] site on GitHub and install the fonts on your Mac, and switch iTerm2 to use one of the "(Font Name) for Powerline" fonts.   Powerline will now render with proper separators.
 
@@ -75,26 +74,27 @@ iTerm2 supports the full range of Unicode (provided you have the fonts installed
 
 Install [https://melpa.org/#/emojify emojify] and [https://melpa.org/#/company-emoji company-emoji] from the MELPA repository.  If you use company-mode (and who doesn't?), typing a colon and the first two letters of the emoji's common name will yield this:
 
-https://www.philadelinquency.com/emacs/iterm2emoji.png
+[[image:iTerm2Emoji]]
 
 = File transfers and remote image display in iTerm2 sessions =
 
-https://www.philadelinquency.com/emacs/iterm2shell.gif
+[[image:iTerm2Shell]]
 
 iTerm2 comes with some installable scripts you can put on the remote computer that make it quite useful.   You can do that under the iTerm2 menu, here:
 
-https://www.philadelinquency.com/emacs/iterm2installshell.png
+[[image:iTerm2InstallShell]]
 
 Some of my favorite commands to run on the remote host are <code>it2ul</code> to upload a file, <code>itdl</code>, which downloads a file.
 
 You can do a quick preview of an image with <code>imgcat</code>, which outputs the picture to your terminal:
 
-http://www.philadelinquency.com/emacs/iterm2imgcat.png
+[[image:iTerm2ImgCat]]
 
 If you have to maintain a remote web server and make post-op edits these tools can come in handy.   These tools work by sending proprietary terminal escape codes which iTerm2 understands and reacts to.  File transfers might be a tad slow, but it's amazing that it works at all—given the terminal display technology from the 1970s that lies underneath.  The same techniques were used in the 1970s, 80s and early 90s to send files using programs like [https://alioth.debian.org/scm/?group_id=30018 Minicom] and [http://www.columbia.edu/kermit/ck90.html kermit] and the X, Y and Z-modem protocols found in bulletin board systems.
 
 = Getting the Super and Hyper Keys working in iTerm2 =
-http://redgrittybrick.org/images/vt102.png
+
+[[image:iTerm2VT102]]
 
 First, let's explain why getting Super and Hyper working in a terminal is not straightforward:
 
@@ -128,7 +128,7 @@ You can press C-c to get out of <code>cat</code>.
 
 Now let's try sending a more complicated escape sequence using some keys on your keyboard and fool Emacs on the remote into thinking you pressed a Hyper key combo.   Go into your iTerm2 settings for your connection profile.  In the Keys panel, let's set a key combo for Ctrl+⌘+Option+A, which is the three leftmost keys next to the space bar plus the letter A.  I'm pretty confident your remote termcap probably does not have an entry for <code>^[[1;P9</code>, so let's start off with that code.  Your setting should look like this:
 
-https://www.philadelinquency.com/emacs/iterm2binding.png
+[[image:iTerm2Binding]]
 
 Let's get Emacs to listen for this key.  Evaluate the following Lisp code in an Emacs session (I took the liberty of adding escapes for the rest of the keys):
 
