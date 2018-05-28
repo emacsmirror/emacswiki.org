@@ -1,4 +1,7 @@
 = What is iTerm2 =
+
+[[image:iTerm2Screenshot]]
+
 iTerm2 is a feature-rich terminal emulation replacement for Terminal.app on OSX machines.  It is [https://en.wikipedia.org/wiki/Donationware donationware] and is under the [https://www.iterm2.com/license.txt GPL v2] license.
 
 If you use OSX on a regular basis but prefer to interact with Emacs running somewhere else, iTerm2's features will get you as close as possible to feeling as if you were running the Emacs GUI on your local machine.
