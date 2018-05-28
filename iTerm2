@@ -36,7 +36,7 @@ Believe it or not, you can get basic mouse functions working in iTerm2 pretty ea
 
 And then make sure you enable mouse support in your iTerm2 connection profile, like this:
 
-https://philadelinquency.com/emacs/iterm2_mouse.png
+[[image:iTermMouseSettings]]
 
 You can now resize Emacs windows using your mouse, as well as clicking on hyperlinks (but you don't NEED a mouse to do that, don't you?)
 
