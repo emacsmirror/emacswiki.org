@@ -35,7 +35,7 @@ at irregular intervals.
 ==  Tracking of Reader IP Numbers ==
   
 In order to prevent leeching, the wiki also keeps of the IP numbers
-that have visited the site in the last 20 seconds. The `visitors.log`
+that have visited the site in the last twenty seconds. The `visitors.log`
 file lists IP numbers and timestamps as follows:
 
 {{{text
@@ -49,15 +49,16 @@ not public.
 
 The wiki also tracks IP numbers whenever a page is edited. The idea is
 that we want to ban certain people from editing the site via
-[[Local Banned Hosts]].
+[[Banned Hosts]].
+
+After four days the IP number will be removed from our wiki log files by the maintenance job.
 
 *Recent changes* records IP number of authors. If you check
 [Self:action=rc Recent Changes], you'll see that we're translating IP
 numbers of anonymous edits into a colour code. We’re using a hash
 function to turn the IP number into an 32bit number, convert it to
 octal, take the first four digits and show one of eight colours for
-each one. After 28 days the IP number will be removed from our wiki
-log files by the maintenance job.
+each one.
 
 ==  Web Server Logs ==
 
