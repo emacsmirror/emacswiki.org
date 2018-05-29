@@ -49,7 +49,7 @@ not public.
 
 The wiki also tracks IP numbers whenever a page is edited. The idea is
 that we want to ban certain people from editing the site via
-[[Banned Hosts]].
+[[BannedHosts|Banned Hosts]].
 
 After four days the IP number will be removed from our wiki log files by the maintenance job.
 
