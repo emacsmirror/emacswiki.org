@@ -88,3 +88,5 @@ i.e. change right window to bottom, or change bottom window to right."
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 </pre>
 --BaManzi
+
+(Note: This version does not seem to work with Agenda windows, but JeffDwork's version does --mediapathic)
