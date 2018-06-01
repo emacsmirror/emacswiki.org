@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Mon Jan  1 13:49:44 2018 (-0800)
+;; Last-Updated: Fri Jun  1 09:07:08 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1286
+;;     Update #: 1287
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -312,6 +312,7 @@ created after the others."
        (icicle-extra-candidates                     icicle-buffer-extras)
        (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
+       (icicle-sort-comparer                        icicle-sort-comparer)
        (icicle--temp-orders
         (append (list
                  '("by last display time") ; Renamed from "turned OFF'.
@@ -408,6 +409,7 @@ created after the others."
        (icicle-file-completing-p                    t)
        (icicle-extra-candidates                     icicle-file-extras)
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
+       (icicle-sort-comparer                        icicle-sort-comparer)
        ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
        (icicle-sort-orders-alist
