@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Apr  2 07:52:37 2018 (-0700)
+;; Last-Updated: Fri Jun  1 08:44:23 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11837
+;;     Update #: 11839
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2298,6 +2298,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2018/06/01 dadams
+;;     icicle-filter-wo-input: Protect against improper default value passed to completing-read.
 ;; 2018/03/03 dadams
 ;;     icicle-delete-dups: defalias the symbol, not its symbol-function (dunno why I did the latter).
 ;; 2018/02/13 dadams
