@@ -332,6 +332,13 @@ However, this little problem is easily fixed with a simple registry edit using [
  "Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,38,00,38,e0,00,00,00,00
 
 
+Another easy fix, for those using [https://github.com/AutoHotkey/AutoHotkey AutoHotKey], is to add a few lines to an AutoHotKey script to map Right Alt to Left Alt. Create a script or add the following to an active script and reload it:
+
+ #IfWinActive ahk_class PuTTY
+ RAlt::LAlt
+ #IfWinActive
+
+
 Or, download putty0.60 source, patch it and compile (http://www.cnblogs.com/thomasnet/archive/2008/03/25/1122012.html):
 
 <pre>
