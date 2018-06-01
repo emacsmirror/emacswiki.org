@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Mar  3 09:39:04 2018 (-0800)
+;; Last-Updated: Fri Jun  1 08:37:10 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 15280
+;;     Update #: 15281
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5073,7 +5073,8 @@ This filtering does not affect proxy candidates or extra candidates.
 See also variable `icicle-must-pass-after-match-predicate', which is
 similar to `icicle-must-pass-predicate' but is used after filtering
 using the user input."
-  (and (not (string= "" candidate))     ; Filter out empty strings.
+  (and (stringp candidate)              ; Protect against improper default value passed to `completing-read'.
+       (not (string= "" candidate))     ; Filter out empty strings.
        (or (not icicle-must-match-regexp)  (icicle-string-match-p icicle-must-match-regexp candidate))
        (or (not icicle-must-not-match-regexp)
            (not (icicle-string-match-p icicle-must-not-match-regexp candidate)))
