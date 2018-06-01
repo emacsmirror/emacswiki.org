@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jun  1 08:44:23 2018 (-0700)
+;; Last-Updated: Fri Jun  1 09:12:21 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11839
+;;     Update #: 11840
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4418,6 +4418,9 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2018/06/01 dadams
+;;     icicle-(buffer|file)-bindings:
+;;       Bind icicle-sort-comparer, since set it to icicle-(buffer|file)-sort.
 ;; 2017/12/10 dadams
 ;;     icicle-buffer-bindings:
 ;;       Bind icicle-pref-arg and use it, not current-prefix-arg.
