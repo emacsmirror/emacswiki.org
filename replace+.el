@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:29:56 2018 (-0800)
+;; Last-Updated: Sun Jun  3 09:29:57 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1898
+;;     Update #: 1901
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -141,6 +141,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/03 dadams
+;;     replace-highlight: Do not try to highlight regexp groups if REGEXP-FLAG is nil.
 ;; 2017/07/31 dadams
 ;;     query-replace-w-options, query-replace(-regexp), replace-(string|regexp):
 ;;       Update for Emacs 25: Added arg REGION-NONCONTIGUOUS-P.
@@ -1128,7 +1130,7 @@ then highlight each regexp group differently."
         (setq replace-overlay (make-overlay match-beg match-end))
         (overlay-put replace-overlay 'priority 1001) ;higher than lazy overlays
         (overlay-put replace-overlay 'face 'query-replace)))
-    (when isearchp-highlight-regexp-group-levels-flag
+    (when (and regexp-flag  isearchp-highlight-regexp-group-levels-flag)
       (while isearchp-regexp-level-overlays
         (delete-overlay (car isearchp-regexp-level-overlays))
         (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))
