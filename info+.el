@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 12 13:10:04 2018 (-0700)
+;; Last-Updated: Sun Jun  3 12:05:02 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6327
+;;     Update #: 6348
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -454,6 +454,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/03 dadams
+;;     info-quotation-regexp, info-quoted+<>-regexp:
+;;       Use shy groups everywhere.  [CHAR] -> CHAR, \\CHAR -> CHAR.  Added equivalent rx sexps.
+;;     info-fontify-reference-items, Info-node-name-at-point: [\n] -> \n.
 ;; 2018/04/12 dadams
 ;;     Info-read-node-name: Use Info-minibuffer-history, not Info-history, for completing-read.
 ;;     Info-find-node(-2): Added arg STRICT-CASE, moving arg MSG to the end.
@@ -1403,25 +1407,54 @@ If nil then emphasis is never fontified, regardless of that flag.")
 ;;
 (defvar info-quotation-regexp
   (concat
-   "\"\\(?:[^\\\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-   "`\\(?:[^\\']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
-   "‘\\(?:[^\\’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"      ; ‘...’
-   "\“\\(?:[^\\”]\\|\\\\\\(.\\|[\n]\\)\\)*”"        ; “...”
+   "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
+   "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"      ; `...'
+   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"      ; ‘...’
+   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”"         ; “...”
    )
   "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
 If ... contains an end char then that char must be backslashed.")
 
+;; (rx (or (seq ?\"
+;;              (zero-or-more (or (not (any ?\" ?\\))  (seq ?\\ anything)))
+;;              ?\")
+;;         (seq ?\`
+;;              (zero-or-more (or (not (any ?'))  (seq ?\\ anything)))
+;;              ?\')
+;;         (seq ?‘
+;;              (zero-or-more (or (not (any ?’))  (seq ?\\ anything)))
+;;              ?’)
+;;         (seq ?“
+;;              (zero-or-more (or (not (any ?”))  (seq ?\\ anything)))
+;;              ?”)))
 
 (defvar info-quoted+<>-regexp
   (concat
-   "\"\\(?:[^\\\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|"           ; "..."
-   "`\\(?:[^\\']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"                ; `...'
-   "‘\\(?:[^\\’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"                ; ‘...’
-   "\“\\(?:[^\\”]\\|\\\\\\(.\\|[\n]\\)\\)*”\\|"               ; “...”
-   "<\\(?:[[:alpha:]][^\\>]*\\|\\(\\\\\\(.\\|[\n]\\)\\)*\\)>" ; <...>
+   "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|"             ; "..."
+   "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"                  ; `...'
+   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"                  ; ‘...’
+   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”\\|"                  ; “...”
+   "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)*\\)>" ; <...>
    )
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains an end char then that char must be backslashed.")
+
+;; (rx (or (seq ?\"
+;;              (zero-or-more (or (not (any ?\" ?\\))  (seq ?\\ anything)))
+;;              ?\")
+;;         (seq ?\`
+;;              (zero-or-more (or (not (any ?'))  (seq ?\\ anything)))
+;;              ?\')
+;;         (seq ?‘
+;;              (zero-or-more (or (not (any ?’))  (seq ?\\ anything)))
+;;              ?’)
+;;         (seq ?“
+;;              (zero-or-more (or (not (any ?”))  (seq ?\\ anything)))
+;;              ?”)
+;;         (seq ?<
+;;              (or (seq (any alpha) (zero-or-more (not (any ?>))))
+;;                  (zero-or-more (seq ?\\ anything)))
+;;              ?>)))
 
 (defvar Info-toc-outline-map (let ((map  (make-sparse-keymap))) (set-keymap-parent map Info-mode-map))
   "Keymap for Info TOC with outlining.")
@@ -4452,7 +4485,7 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
 (defun info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
   (while (re-search-forward "^ --? \\(Command:\\|Constant:\\|Function:\\|Macro:\\|Special Form:\\|\
-Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\([\n]          \\(.*\\)\\)*"
+Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\(\n          \\(.*\\)\\)*"
                             nil t)
     (let ((symb  (intern (match-string 1))))
       (put-text-property (match-beginning 1) (match-end 1)
@@ -4971,7 +5004,7 @@ currently visited manuals."
                        ((Info-get-token (point) "Next: " "Next: \\([^,\n\t]*\\)"))
                        ((Info-get-token (point) "File: " "File: \\([^,\n\t]*\\)"))
                        ((Info-get-token (point) "Prev: " "Prev: \\([^,\n\t]*\\)")))))
-      (and name  (replace-regexp-in-string "[\n]+" " " name)))))
+      (and name  (replace-regexp-in-string "\n+" " " name)))))
 
 (when (require 'bookmark+ nil t)
 
