@@ -26,7 +26,7 @@ If you are using Windows, make sure to specify gnuclient, not gnuclientw.
 
 == Diff switches ==
 
-Occasionally, one would like to change the switches used for the `vc-diff' command, either on a tempoary basis or a permanent one.  This is traditionally done with `vc-diff-switches`.  Because Subversion has its own internal implementation of diff, it doesn't support many switches as, say, GNU diff.  The current Subversion backend for VC uses a sentintel value to keep from using the switches set by the user.  However, Subversion's diff command can be told to use the diff installed on the system.  The Subversion backend to VC even knows how to do this.  Simply, set `vc-svn-diff-switches' to `nil', rather than `t' and you'll get `vc-diff' to do what you wanted again.
+Occasionally, one would like to change the switches used for the `vc-diff' command, either on a temporary basis or a permanent one.  This is traditionally done with `vc-diff-switches`.  Because Subversion has its own internal implementation of diff, it doesn't support many switches as, say, GNU diff.  The current Subversion backend for VC uses a sentinel value to keep from using the switches set by the user.  However, Subversion's diff command can be told to use the diff installed on the system.  The Subversion backend to VC even knows how to do this.  Simply, set `vc-svn-diff-switches' to `nil', rather than `t' and you'll get `vc-diff' to do what you wanted again.
 
 Here's an example of how to require a "normal" diff from GNU diff with whitespace and newline changes ignored:
 
