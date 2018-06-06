@@ -2,15 +2,14 @@
 
 Hi all,
 
-My name is Andy Stewart (My Chinese name is 王勇) and I am a programmer living and working in China.
-I am now developing leading operating system [http://www.linuxdeepin.com LinuxDeepin]
+My name is Andy Stewart (My Chinese name is 王勇) and I am a open sources programmer living and working in China.
 
 I've used Gnu Emacs since 2007, I love it and use it for pretty much everything (programming, irc, music, file-manager, mail, newsgroup, wiki, notes... etc.). Almost anything that you can imagine.
 
 I have signed the copyright document for the FSF so my contributions may be distributed accordingly.
 Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
-==DeepinEmacs==
+==My Emacs Config/Extensions==
 Deepin emacs Video:
 [http://www.youtube.com/watch?v=ZA3uuflGtk8 MyEmacs]
 
@@ -402,105 +401,12 @@ Welcome to the Wiki!  Thanks for sharing your large collection of Emacs librarie
 [new]
 Thanks! -- AndyStewart
 
-----
-==Leave Emacs==
-* Bye
-:: Hi, all.
+==I'm back==
+Since 2008, I have used Haskell and C++ try to build a brand new Emacs for my need.
 
-:: I will leave Emacs soon. 
-:: The main reason that make me leave Emacs is not Emacs environment, is elisp, elisp is not powerful enough.
-:: So i think it's time to change...
-:: Sorry i can't do more contributions for Emacs world, but i'm very enjoy the time that explored Emacs.
-:: And i'm very happy to know so many emacsers...
+As an entrepreneur of [https://www.deepin.org/ Deepin], I was very, very tired. I didn't have time to write my favorite elisp code. 
 
-* My code
-
-:: I'm glad to help others even i never use Emacs anymore, i like share my knowledge. 
-:: My code perhaps have bug or flaw, please hacking it self, i really haven't time to write elisp code. Sorry.
-:: And anyone can re-release my code and don't need my permission, all my code is under GPL!
-
-* Find someone take over my extension
-
-:: Now i'm finding someone to take over my elisp package.
-:: If anyone interested my elisp package, please add at below (or mail to me). 
-
-:: Please don't ask me why, i don't want to fall into an endless debate. 
-:: If you want to take over my elisp package, just leave your name here, otherwise i will ignore. Thanks! -- AndyStewart
-
-[new]
-I wish you'd elaborate. How is elisp not powerful enough? What are you migrating to?
-
-: Sorry,  i do not want to further. Just one thing, I will leave... -- AndyStewart
-
-:: That's OK, didn't mean any offense. Thank you for your many contributions, and good luck. :)
-
-[new:jsyjr:2010-05-22]
-While Andy has every right to remain mum regarding his opinion of elisp there is ample evidence that he has taken an interest in Haskell.  -- JohnYates
-
-[new:rubikitch:2009-05-01 22:07 UTC]
-I want to take over AutoInstall. Thank you for evolving InstallElisp. And I would
-merge Lisp:anything-auto-install.el and Lisp:anything-yaoddmuse.el into
-Lisp:anything-config.el if you prefer, because they are very useful. -- [[rubikitch]]
-
-: Yes, AutoInstall is yours. I think you're the best person to take over AutoInstall.
-About merge Lisp:anything-auto-install.el and Lisp:anything-yaoddmuse.el into Lisp:anything-config.el, feel free to do that. BTW, are you have interested below packages? 
-:: [[Yaoddmuse]], [[OneKey]], [[LazySearch]]? -- AndyStewart
-
-
-[new:DrewAdams:2009-05-01 14:02 UTC]
-Best of luck to you, Andy, and thanks for all of your EmacsLisp contributions. -- DrewAdams
-
-[new:XavierMaillard:2009-05-02 04:45 UTC]
-I am very sad to read that. Anyway, thank you very much for your
-contributions. We hope to see you again soon :) -- XavierMaillard
-
-----
-
-==What I doing after leaving Emacs?==
-
-Many people are curious, what i doing after leaving Emacs? 
-
-: I'm hacking Haskell to build my own OS:
-
-:: [http://hackage.haskell.org/package/manatee Homepage]
-:: [http://www.youtube.com/watch?v=weS6zys3U8k Video] (Select 720p HD version)
-:: [https://www.flickr.com/photos/48809572@N02/ Screenshot]
-:: [http://haskell.org/haskellwiki/Manatee Manual]
-:: IRC channel : irc.freenode.net 6667 ##manatee
-:: Mailing-List : manatee-user@googlegroups.com manatee-develop@googlegroups.com
-
-: Please watch [http://www.youtube.com/watch?v=weS6zys3U8k Video] to understand "what's it". 
-: Any suggestion and contribution are welcome! :)
-
-: To Emacs fans,
-
-:: My project's aim is real OS, please don't compare it with Emacs.
-:: Choose any software you favorites, please do not debate with me endless, thank you very much! :) -- AndyStewart
-
-[new:DrewAdams:2010-11-29 15:15 UTC]
-Great initiative! -- DrewAdams
-
-just do it!  -- QinGW
-
-Looks great. -- XueFuqiao
-
-----
-
-==My work==
-
-Now i spend all my time on [http://www.linuxdeepin.com LinuxDeepin] and my baby girl. :)
-
-Of course, now i share my fastest [https://gitcafe.com/Deepin/deepin-emacs deepin-emacs], enjoy emacsers! ;) 
-
-----
-
-==Next Emacs==
-
-Top hacker like live in emacs, keyboard control everything... Unfortunately, emacs can't do everything, such as web browser, GUI multimedia application, power tool in real world.
-
-Why not build everything with keyboard? Like emacs style, but this time, we rebuild everything scratch from [https://github.com/manateelazycat/mrkeyboard MrKeyboard].
-
-This is OS for top hacker, enjoy it. ;)
+Emacs guys, I'm back, as elisp hacker.
 
 ----
 
