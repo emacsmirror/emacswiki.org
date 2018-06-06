@@ -10,11 +10,12 @@ I have signed the copyright document for the FSF so my contributions may be dist
 Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 ==My Emacs Config/Extensions==
-Deepin emacs Video:
+Note: many config and extensions in this page is too old, even not update since 2008, please find newest version code from git:
+[https://github.com/manateelazycat/lazycat-emacs LazyCatEmacs]
+
+My emacs Video:
 [http://www.youtube.com/watch?v=ZA3uuflGtk8 MyEmacs]
 
-Deepin Emacs souce code:
-git clone https://github.com/manateelazycat/deepin-emacs
 
 ==Packages==
 * Standalone packages.
