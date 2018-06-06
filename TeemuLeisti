@@ -8,7 +8,7 @@ As of this writing, I'm using v25.2.2 of Gnu Emacs, running on Xubuntu.
 
 I've used Emacs since the mid-1980s. I've found the Projectile and Tabbar packages especially useful. *Projectile* allows you to easily manage the files of a project using Emacs commands. This makes for enough of an IDE for Rails projects. *Tabbar* gives you a tabbed list of open files in a bar just above the editing are, and allows you to easily switch between tabs using keystrokes.
 
-My init.el file (see [[TeemuLeisti-init.el]]) sets up and customizes Tabbar and other stuff. I worked a bit on the color scheme, a sort of a yellowish-tan-brown desert theme, and am happy with it.
+My init.el file (see [[TeemuLeisti-init.el]]) sets up and customizes Tabbar and other stuff. I worked a bit on the *color scheme*, a sort of a yellowish-tan-brown desert theme, and am happy with it.
 
 ----
 CategoryHomepage
