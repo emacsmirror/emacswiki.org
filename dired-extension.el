@@ -2,13 +2,13 @@
 
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2008 ~ 2016, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-11 22:57:07
-;; Version: 0.1
-;; Last-Updated: 2008-10-11 22:57:11
+;; Version: 0.2
+;; Last-Updated: 2018-06-06 11:26:19
 ;; URL:
 ;; Keywords: dired
-;; Compatibility: GNU Emacs 23.0.60.1
+;; Compatibility: GNU Emacs 27.0.50
 
 ;; This file is not part of GNU Emacs
 
@@ -62,6 +62,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2016/6/6
+;;      Build new function `moccur-grep-find-without-binary-files' that make `moccur-grep-find-pwd' remove binary files from search result.
+;;      I hate cross binary files in moccur search result.
 ;;
 ;; 2008/10/11
 ;;      First released.
@@ -306,7 +310,65 @@ See also file-name-directory and file-name-nondirectory.."
 (defun moccur-grep-find-pwd (inputs)
   (interactive
    (list (moccur-grep-read-regexp moccur-grep-default-mask)))
-  (moccur-grep-find default-directory inputs))
+  (moccur-grep-find-without-binary-files default-directory inputs))
+
+(defun moccur-grep-find-without-binary-files (dir inputs)
+  "This function is copy `moccur-grep-find' from `color-moccur.el' and with little improve.
+Default `moccur-grep-find' will search keyword from all files under directory, include binary files.
+This function will fitler binary files before search continue, avoid view binary when we cross search results."
+  (interactive
+   (list (moccur-grep-read-directory)
+         (moccur-grep-read-regexp moccur-grep-default-mask)))
+  (moccur-setup)
+  (setq moccur-last-command 'moccur-grep-find)
+
+  (let (regexps
+        mask (files nil)
+        ;;(default-directory dir)
+        )
+    (setq regexps
+          (mapconcat 'concat
+                     (if (= 1 (length inputs))
+                         inputs
+                       (reverse (cdr (reverse inputs))))
+                     " "))
+    (setq mask
+          (if (= 1 (length inputs))
+              "."
+            (car (reverse inputs))))
+    (message "Listing files...")
+    (cond
+     ((listp dir)
+      (while dir
+        (cond
+         ((file-directory-p (car dir))
+          (setq files (append
+                       (reverse (moccur-grep-find-subdir (car dir) mask))
+                       files)))
+         (t
+          (setq files (cons
+                       (car dir)
+                       files))))
+        (setq dir (cdr dir))))
+     (t
+      (setq files (reverse (moccur-grep-find-subdir dir mask)))))
+    (message "Listing files done!")
+    (moccur-search-files regexps (seq-remove 'file-binary-p files))
+    ))
+
+(defun file-binary-p (file &optional full)
+  "Return t if FILE contains binary data.  If optional FULL is non-nil,
+check for the whole contents of FILE, otherwise check for the first
+  1000-byte."
+  (let ((coding-system-for-read 'binary)
+        default-enable-multibyte-characters)
+    (with-temp-buffer
+      (insert-file-contents file nil 0 (if full nil 1000))
+      (goto-char (point-min))
+      (and (re-search-forward
+            "[\000-\010\016-\032\034-\037]"
+            nil t)
+           t))))
 
 (provide 'dired-extension)
 ;;; dired-extension.el ends here
