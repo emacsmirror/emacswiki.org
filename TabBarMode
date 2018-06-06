@@ -240,10 +240,9 @@ functions to the C-S-<prior> and C-S-<next> key sequences is also shown.
             (push not-yet-this-buf new-bufs)
             (setq not-yet-this-buf (car old-bufs))
             (setq old-bufs (cdr old-bufs)))
-          (if old-bufs ; if this is false, then the current buffer's name is mysteriously missing from
-                       ; the list of buffer names
+          (if old-bufs ; if this is false, then the current tab's buffer name is mysteriously missing
               (progn
-                (push (car old-bufs) new-bufs)
+                (push (car old-bufs) new-bufs) ; this is the tab that was to be moved
                 (push not-yet-this-buf new-bufs)
                 (setq new-bufs (reverse new-bufs))
                 (setq new-bufs (append new-bufs (cdr old-bufs))))
@@ -251,7 +250,7 @@ functions to the C-S-<prior> and C-S-<next> key sequences is also shown.
           (set bufset new-bufs)
           (tabbar-set-template bufset nil)
           (tabbar-display-update))))
-
+    
     (defun tabbar-move-current-tab-one-place-right ()
       "Move current tab one place right, unless it's already rightmost."
       (interactive)
@@ -264,21 +263,20 @@ functions to the C-S-<prior> and C-S-<next> key sequences is also shown.
                 (not (string= (buffer-name) (format "%s" (car (car old-bufs))))))
           (push (car old-bufs) new-bufs)
           (setq old-bufs (cdr old-bufs)))
-        (if old-bufs ; if this is false, then the current buffer's name is mysteriously missing from
-                     ; the list of buffer names
+        (if old-bufs ; if this is false, then the current tab's buffer name is mysteriously missing
             (progn
-              (setq foo (car old-bufs))
+              (setq the-buffer (car old-bufs))
               (setq old-bufs (cdr old-bufs))
               (if old-bufs ; if this is false, then the current buffer is rightmost
                   (push (car old-bufs) new-bufs))
-              (push foo new-bufs))
+              (push the-buffer new-bufs)) ; this is the tab that was to be moved
           (error "Error: current buffer's name was not found in Tabbar's buffer list."))
         (setq new-bufs (reverse new-bufs))
         (setq new-bufs (append new-bufs (cdr old-bufs)))
         (set bufset new-bufs)
         (tabbar-set-template bufset nil)
         (tabbar-display-update)))
-
+    
     ;; Key sequences "C-S-PgUp" and "C-S-PgDn" move the current tab to the left and to the right.
     (global-set-key (kbd "C-S-<prior>") 'tabbar-move-current-tab-one-place-left)
     (global-set-key (kbd "C-S-<next>") 'tabbar-move-current-tab-one-place-right)
