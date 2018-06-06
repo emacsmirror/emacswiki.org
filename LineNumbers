@@ -4,9 +4,9 @@ This page is about ''displaying'' line numbers in a buffer, or otherwise indicat
 
 == The Easy Way ==
 
-##M-x linum-mode##
+##display-line-numbers-mode## is available since Emacs 26.
 
-It could slow down emacs when viewing file with more than tens of thousands of lines. See https://github.com/redguardtoo/emacs.d/issues/178 for bug report and solution.
+For older Emacs, use ##M-x linum-mode##. It could slow down emacs when viewing file with more than tens of thousands of lines. See https://github.com/redguardtoo/emacs.d/issues/178 for bug report and solution.
 
 == The Current Line Only ==
 
