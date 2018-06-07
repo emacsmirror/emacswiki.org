@@ -1,4 +1,3 @@
-{{{
 ; -*- coding: utf-8  -*-
 
 ;;;; file: ~/.emacs.d/init.el
@@ -625,14 +624,14 @@
             (tabbar-tabs tabbar-tabsets-tabset))))
 
   (defun tabbar-move-current-tab-one-place-left ()
-    "Move current tab one place left, unless it's already leftmost."
+    "Move current tab one place left, unless it's already the leftmost."
     (interactive)
     (let* ((bufset (tabbar-current-tabset t))
            (old-bufs (tabbar-tabs bufset))
            (first-buf (car old-bufs))
            (new-bufs (list)))
       (if (string= (buffer-name) (format "%s" (car first-buf)))
-          old-bufs ; the current tab is leftmost
+          old-bufs ; the current tab is the leftmost
         (setq not-yet-this-buf first-buf)
         (setq old-bufs (cdr old-bufs))
         (while (and
@@ -653,7 +652,7 @@
         (tabbar-display-update))))
 
   (defun tabbar-move-current-tab-one-place-right ()
-    "Move current tab one place right, unless it's already rightmost."
+    "Move current tab one place right, unless it's already the rightmost."
     (interactive)
     (let* ((bufset (tabbar-current-tabset t))
            (old-bufs (tabbar-tabs bufset))
@@ -668,7 +667,7 @@
           (progn
             (setq the-buffer (car old-bufs))
             (setq old-bufs (cdr old-bufs))
-            (if old-bufs ; if this is false, then the current buffer is rightmost
+            (if old-bufs ; if this is false, then the current tab is the rightmost
                 (push (car old-bufs) new-bufs))
             (push the-buffer new-bufs)) ; this is the tab that was to be moved
         (error "Error: current buffer's name was not found in Tabbar's buffer list."))
@@ -715,4 +714,3 @@
 ;                                  (toggle-frame-maximized)
 ;                                  (find-file "~/.emacs.d/lunch.txt")
 ;                                  (text-scale-adjust 19)))
-}}}
