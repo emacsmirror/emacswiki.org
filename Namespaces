@@ -35,6 +35,8 @@ EmacsLisp doesn't offer namespaces. Multiple ideas and implementations abound, h
 
 * [http://nic.ferrier.me.uk/blog/2013_06/adding-namespaces-to-elisp Hatching a plan to add namespaces to EmacsLisp] is a blog post talking about namespaces with some pointers to discussions on [[emacs-devel]].
 
+* [https://gist.github.com/kbauer/f629eaf78f8dd1117225eaf2baf717d5 myelisp-namespace-helper.el] is a quick solution for more easily inserting namespace prefixes with the `-' key, and support for visually collapsing the prefix with `prettify-symbols-mode'. This approach avoids the risk of breaking interactive features.
+
 ----
 CategoryCode
 
