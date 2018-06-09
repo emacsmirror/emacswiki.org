@@ -13,7 +13,7 @@ emacs --daemon
 
 = Starting Emacs Daemon with systemd =
 
-[http://www.freedesktop.org/wiki/Software/systemd Systemd] is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.  All you need to do is copy this to <tt>~/.config/systemd/user/emacs.service</tt>.
+[http://www.freedesktop.org/wiki/Software/systemd Systemd] is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.  All you need to do is copy this to <tt>~/.config/systemd/user/emacs.service</tt> .
 
 {{{
 [Unit]
