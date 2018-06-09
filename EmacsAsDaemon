@@ -145,7 +145,7 @@ If you would like emacs to prompt if there are unsaved buffers or existing clien
 {{{
     emacsclient -e '(client-save-kill-emacs)'
 }}}
-The display on which the the new frame should be opened can optionally be specified. If a prompt is required this function will always open an frame as an x window.
+The display on which the new frame should be opened can optionally be specified. If a prompt is required this function will always open an frame as an x window.
 
 {{{
 (defun client-save-kill-emacs(&optional display)
