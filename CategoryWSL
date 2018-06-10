@@ -11,19 +11,21 @@ Here is how I install emacs 25:
 = Install & Activate WSL =
 
 The official WSL Installation Guide:
-https://msdn.microsoft.com/de-de/commandline/wsl/install_guide
+https://msdn.microsoft.com/commandline/wsl/install_guide
 
 Check OS Type and Build of you System, there are minimal requirements. There is a choice between Linux distros.
 
 Be sure to specify a non-su username and password when prompted - Linux usernames and password are separate from your Windows username and password.
 
 = Install a graphical Linux environment = 
-Although only Linux commandline tools are officially supported on WSL, you may want to install a Linux GUI/desktop, follow the instructions on this page:
+Although only Linux commandline tools are officially supported on WSL many X applications work fine.  In addition, you may want to install a Linux GUI/desktop, though this will require having all X applications in a dedicated toplevel window --- follow the instructions on this page:
 https://solarianprogrammer.com/2017/04/16/windows-susbsystem-for-linux-xfce-4/
 
 There are several X Servers for Windows, some of which include:
 * https://sourceforge.net/projects/vcxsrv/
 * https://sourceforge.net/projects/xming/
+
+[The following is probably outdated with recent updates to WSL]
 
 Most likely, you will get (DBus) errors (like I did) when trying XFCE4 with VcXsrv, i.e. by doing XLaunch (starting the X Server from the Windows Icon) and then calling 'xfce4-session' on the BASH command line. If so, follow points 2 and 3 of the instructions on this page:
 
