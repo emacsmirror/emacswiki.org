@@ -1,6 +1,9 @@
-[http://www.sxemacs.org/ SXEmacs] is a fork from [[XEmacs]] 21.4, led by SteveYoungs, a former and current [[XEmacs]] developer. Relations between the two projects remain amicable, and most of the package system, for example, is maintained in common.
+[http://www.sxemacs.org/ SXEmacs] is a fork from [[XEmacs]] 21.4, led by SteveYoungs, a former and current [[XEmacs]] developer. Relations between the two projects remain amicable, and most of the package system, for example, is maintained in common.  The last release was 22.1.16 in 2016 (see http://www.sxemacs.org/news.html).
 
 * Download: http://www.sxemacs.org/download.html
+
+* The original announcement with rationale for fork on the emacs-devel list: https://lists.gnu.org/archive/html/emacs-devel/2004-12/msg01057.html
+** The sxemacs-devel archive is 404, but the sxemacs-devel announcement can be found at web.archive.org: https://web.archive.org/web/20090918235955/http://www.sxemacs.org/list-archives/html/sxemacs-devel/2004-12/msg00065.html
 
 ----
 EmacsImplementations
