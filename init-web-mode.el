@@ -1,13 +1,13 @@
-;;; init-web-mode.el --- Init web mode
+ ;;; init-web-mode.el --- Init web mode
 
 ;; Filename: init-web-mode.el
 ;; Description: Init web mode
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
-;; Copyright (C) 2014, Andy Stewart, all rights reserved.
+;; Copyright (C) 2014 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2014-03-06 15:50:39
-;; Version: 0.1
-;; Last-Updated: 2014-03-06 15:50:39
+;; Version: 0.2
+;; Last-Updated: 2018-06-11 14:12:44
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-web-mode.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;
+;; `web-mode' `emmet-mode' `tagedit'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -65,6 +65,11 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/11
+;;      * Set `web-mode-tag-auto-close-style' with 2, make auto close tag more smart.
+;;      * Binding Ctrl + k to `tagedit-kill', it's much better than paredit-kill for web-mode.
+;;      * Add some frequent commands in web-mode-map.
+;;
 ;; 2014/03/06
 ;;      * First released.
 ;;
@@ -83,6 +88,7 @@
 
 (require 'web-mode)
 (require 'emmet-mode)
+(require 'tagedit)
 
 ;;; Code:
 
@@ -96,20 +102,25 @@
                    (emmet-mode)
                    )))
 
+(lazy-set-key paredit-key-alist web-mode-map)
 (lazy-set-mode-autoload-key
  '(
-   ("M-(" . web-mode-element-wrap)
+   ("M-(" . web-mode-element-wrap+)
    ("M-)" . web-mode-element-unwrap)
-   ("M-k" . web-mode-element-kill)
+   ("M-R" . web-mode-element-rename)
+   ("M-s-SPC" . web-mode-element-content-select)
+   ("C-s-l" . web-mode-element-clone)
    ("C-M-SPC" . web-mode-mark-and-expand)
    ("%" . web-mode-match-paren)
    ("C-:" . web-mode-comment-or-uncomment)
+   ("C-k" . tagedit-kill)
    )
  web-mode-map nil "web-mode-extension")
 (lazy-set-mode-autoload-key
  '(
    ("C-c C-r" . mc/mark-sgml-tag-pair))
  web-mode-map nil "multiple-cursors")
+(setq web-mode-tag-auto-close-style 2) ;2 mean auto-close with > and </.
 
 (provide 'init-web-mode)
 
