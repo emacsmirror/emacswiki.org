@@ -5,6 +5,7 @@ position.
 
 This function uses undo information.
 
+* https://github.com/emacs-evil/goto-chg
 * Lisp:goto-chg.el
 
 Sample usage (init file):
