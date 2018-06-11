@@ -347,6 +347,7 @@ My emacs Video:
 * Web:
 
 ** Lisp:init-w3m.el -- Configuration file for [[emacs-w3m]].
+** Lisp:init-web-mode.el -- Configuration file for web-mode
 
 * Download:
 
