@@ -1,4 +1,4 @@
- ;;; init-web-mode.el --- Init web mode
+;;; init-web-mode.el --- Init web mode
 
 ;; Filename: init-web-mode.el
 ;; Description: Init web mode
