@@ -212,6 +212,7 @@ My emacs Video:
 ** Web:
 
 *** Lisp:w3m-extension.el -- Many useful functions for [[emacs-w3m]].
+*** Lisp:emmet-extension.el -- Some handy functions for [https://emmet.io/ Emmet]
 
 ** RSS and Atom:
 
