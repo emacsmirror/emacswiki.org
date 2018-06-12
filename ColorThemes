@@ -3,13 +3,12 @@ for your use, and you can easily define additional themes.
 
 The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24).
 
-Starting with version 23, vanilla GnuEmacs introduced CustomThemes, which are similar to color themes.  Many color themes have been ported to the custom theme format, at https://github.com/emacs-jp/replace-colorthemes -- there are 100+ themes and a gallery.
-
-''Custom themes '''do not replace''' color themes'', however -- [[CustomThemes#ComparedToColorThemes|each approach has its advantages]].  
-
 See the color-theme web page at http://www.nongnu.org/color-theme for how to get
 started with <tt>color-theme.el</tt>.
 For questions about color-theme, see ColorThemeQuestions.  
+
+Vanilla Emacs CustomThemes are similar to color themes, but ''they '''do not replace''' color themes'' -- [[CustomThemes#ComparedToColorThemes|each approach has its advantages]].  Custom themes that have been based on some color themes can be found [https://github.com/emacs-jp/replace-colorthemes|here].
+
 
 
 
