@@ -43,7 +43,7 @@ Getting started:
 * TextTranslator -- text translation package
 * TransEJ -- English-Japanese translator using multiple Web translation services
 * Lisp:eijiro.el -- Search Eijiro, Japanese <=> English dictionary, with [[Anything]]
-* [https://www.mojotech.com/blog/automating-internationalization-workflow-in-emacs/] Internationalization WorkFlow
+* [https://www.mojotech.com/blog/automating-internationalization-workflow-in-emacs/ Internationalization WorkFlow]
 * [http://sourceforge.jp/projects/dic-lookup-w3m/ dic-lookup-w3m] -- Lookup [http://www.kotoba.ne.jp/ online dictionaries] or [http://homepage2.nifty.com/m_kamada/l_translation.htm translate text] using [http://www.emacswiki.org/emacs/emacs-w3m emacs-w3m].
 
 Coding System stuff:
