@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2014-03-06 15:50:39
-;; Version: 0.4
-;; Last-Updated: 2018-06-12 08:17:41
+;; Version: 0.5
+;; Last-Updated: 2018-06-12 08:42:33
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-web-mode.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `web-mode' `emmet-mode' `tagedit'
+;; `web-mode' `emmet-mode' `tagedit' `emmet-extension'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -68,6 +68,7 @@
 ;; 2018/06/12
 ;;      * Add config for `web-mode-markup-indent-offset'.
 ;;      * Use emmet-mode instead zencoding-mode.
+;;      * Add `emmet-preview-current-line'
 ;;
 ;; 2018/06/11
 ;;      * Set `web-mode-tag-auto-close-style' with 2, make auto close tag more smart.
@@ -91,8 +92,9 @@
 ;;; Require
 
 (require 'web-mode)
-(require 'emmet-mode)
 (require 'tagedit)
+(require 'emmet-mode)
+(require 'emmet-extension)
 
 ;;; Code:
 
@@ -122,6 +124,7 @@
    ("C-:" . web-mode-comment-or-uncomment)
    ("C-k" . tagedit-kill)
    ("M-i" . emmet-expand-yas)
+   ("C-c M-i" . emmet-preview-current-line)
    )
  web-mode-map nil "web-mode-extension")
 
