@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-01-12 16:34:11
-;; Version: 0.1
-;; Last-Updated: 2018-01-12 16:34:11
+;; Version: 0.2
+;; Last-Updated: 2018-06-12 14:16:37
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-pdf-tools.el
 ;; Keywords:
@@ -53,17 +53,30 @@
 ;;
 ;; (require 'init-pdf-tools)
 ;;
-;; No need more.
-
-;;; Customize:
+;; Install epdfinfo:
+;; Some linux system (such as ArchLinux) not build binary package epdfinfo,
+;; make pdf-tools report error cause by `pdf-info-epdfinfo-program' is nil.
 ;;
+;; You can use below commands to install epdfinfo:
+;; 1. Install cask:
+;;    curl -fsSkL https://raw.github.com/cask/cask/master/go | python
+;;    
+;; 2. Export cash bin path make pdf-tools know which find cash:
+;;    export PATH="/home/yourusername/.cask/bin:$PATH"
 ;;
+;; 3. Download pdf-tools server from git:
+;;    git clone https://github.com/politza/pdf-tools
 ;;
-;; All of the above can customize by:
-;;      M-x customize-group RET init-pdf-tools RET
+;; 4. Compile epdfinfo:
+;;    make
 ;;
+;; 5. Copy epdfinfo to same directory that put `pdf-tools.el'
+;;    cp server/epdfinfo ~/pdf-tools-elisp-path/
 
 ;;; Change log:
+;;
+;; 2018/06/12
+;;      * Add commands of install epdfinfo, make me can use this awesome extension in ArchLinux. 
 ;;
 ;; 2014/03/17
 ;;      * First released.
