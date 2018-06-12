@@ -293,6 +293,7 @@ My emacs Video:
 ** Lisp:init-hideshow.el -- Configuration file for [[HideShow]].
 
 ** Lisp:init-etags.el -- Configuration file for [[EmacsTags]].
+** Lisp:init-string-inflection.el -- Configuration file for [https://github.com/akicho8/string-inflection StringInflection]
                                                    
 * File and Buffer:
 
