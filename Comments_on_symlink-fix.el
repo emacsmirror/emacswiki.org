@@ -2,3 +2,10 @@ I'm still using this with emacs 26.1, however the \N in one of the docstrings tr
 
 -- [https://github.com/TauPan TauPan] 2018-06-11 07:16 UTC
 
+
+----
+
+All the backslashes in that docstring needed to doubled, which I just did.
+
+-- npostavs 2018-06-13 11:56 UTC
+
