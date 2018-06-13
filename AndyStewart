@@ -141,6 +141,7 @@ My emacs Video:
 *** Lisp:org-extension.el -- Some enhanced functions for [[OrgMode]].
 
 ** Programming:
+*** Lisp:find-define.el -- Find definition for many programming language.
 
 *** Lisp:auto-complete-extension.el -- Some enhanced module for [[AutoComplete]], including Haskell.
 
