@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-06-13 17:19:58
-;; Version: 0.2
-;; Last-Updated: 2018-06-13 17:47:21
+;; Version: 0.3
+;; Last-Updated: 2018-06-13 22:25:02
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/find-define.el
 ;; Keywords:
@@ -57,7 +57,7 @@
 ;; (require 'find-define)
 ;;
 ;; And binding any key you like with below commands:
-;; 
+;;
 ;; `find-define-back'           (I like use Ctrl + 7)
 ;; `find-define-go'             (I like use Ctrl + 8)
 ;; `find-define-prompt'         (I like use Ctrl + 9)
@@ -73,6 +73,7 @@
 ;;; Change log:
 ;;
 ;; 2018/06/13
+;;      * Set `dumb-jump-prefer-searcher' with rg.
 ;;      * First released.
 ;;
 
@@ -91,6 +92,10 @@
 (require 'dumb-jump)
 
 ;;; Code:
+
+;; Prefer use rg, because rg is much faster than ag, grep, ack.
+;; If rg is not installed, use other grep tools.
+(setq dumb-jump-prefer-searcher 'rg)
 
 (defun find-define-go (&optional prefix)
   (interactive "P")
