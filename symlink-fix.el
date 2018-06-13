@@ -339,10 +339,10 @@ otherwise it is clobbered."
 If fourth arg FIXEDCASE is non-nil, do not alter case of replacement text.
 Otherwise convert to all caps or cap initials, like replaced text.
 If fifth arg LITERAL is non-nil, use TO-STRING literally.
-Otherwise treat \ as special:
-  \& in TO-STRING means substitute original matched text,
-  \N means substitute match for \(...\) number N,
-  \\ means insert one \."
+Otherwise treat \\ as special:
+  \\& in TO-STRING means substitute original matched text,
+  \\N means substitute match for \\(...\\) number N,
+  \\\\ means insert one \\."
   (save-excursion
     (set-buffer (get-buffer-create " *replace-regexp-string*"))
     (erase-buffer)
