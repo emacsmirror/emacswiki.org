@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-28 01:19:38
-;; Version: 0.1
-;; Last-Updated: 2013-12-28 01:19:38
+;; Version: 0.2
+;; Last-Updated: 2018-06-14 10:11:43
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-session.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;
+;; `basic-tookit' `auto-save'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/14
+;;      * Use `desktop.el' instead window.el and revive.el, those two libraries buggy.
+;;
 ;; 2013/12/28
 ;;      * First released.
 ;;
@@ -80,34 +83,40 @@
 ;;
 
 ;;; Require
-
-(require 'windows)
-(require 'revive)
 (require 'auto-save)
+(require 'basic-toolkit)
 
 ;;; Code:
 
-(defun kill-unused-buffers ()
-  (ignore-errors (kill-buffer "*GNU Emacs*"))
-  (ignore-errors (kill-buffer "*scratch*"))
-  )
-
 (defun emacs-session-restore ()
-  (if (file-exists-p "~/.emacs.d/deepin-emacs/Configure-File/Windows/windows-configure")
-      (resume-windows 'a))
+  "Restore emacs session."
+  (interactive)
+  ;; Kill unused buffers.
   (kill-unused-buffers)
+  ;; Restore session.
+  (desktop-read "~/.emacs.d/")
   )
 
 (defun emacs-session-save ()
-  "Exit emacs."
+  "Save emacs session."
   (interactive)
+  ;; Kill minibuffer tray process and kill epc buffers.
   (ignore-errors
-    (epc:stop-epc minibuffer-tray-epc)
-    (kill-epc-buffers)
-    (kill-unused-buffers)
-    (auto-save-buffers)
-    (make-directory "~/.emacs.d/deepin-emacs/Configure-File/Windows/" t)
-    (see-you-again)))
+    (minibuffer-tray-stop-process)
+    (kill-epc-buffers))
+  ;; Kill unused buffers.
+  (kill-unused-buffers)
+  ;; Save all buffers before exit.
+  (auto-save-buffers)
+  ;; Save session.
+  (make-directory "~/.emacs.d/" t)
+  (desktop-save "~/.emacs.d/")
+  ;; Exit emacs.
+  (kill-emacs))
+
+(defun kill-unused-buffers ()
+  (ignore-errors (kill-buffer "*GNU Emacs*"))
+  (ignore-errors (kill-buffer "*scratch*")))
 
 (defun kill-epc-buffers ()
   (interactive)
@@ -116,20 +125,7 @@
       (with-current-buffer buf
         (if (string-prefix-p "*epc" (buffer-name buf))
             (ignore-errors (kill-buffer buf)))
-        )))
-  )
-
-;;; ### Windows ###
-;;; --- 用于保存和管理窗口的配置方案
-(win:startup-with-window)
-(setq win:configuration-file "~/.emacs.d/deepin-emacs/Configure-File/Windows/windows-configure") ;窗口布局管理保存文件
-
-;;; ### Revive ###
-;;; --- 用于记录恢复特定窗口配置方案
-(autoload 'save-current-configuration "revive" "Save status" t)
-(autoload 'resume "revive" "Resume Emacs" t)
-(autoload 'wipe "revive" "Wipe Emacs" t)
-(setq revive:configuration-file "~/.emacs.d/deepin-emacs/Configure-File/Revive/revive-configure") ;窗口布局设置保存文件
+        ))))
 
 (provide 'init-session)
 
