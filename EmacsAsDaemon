@@ -22,8 +22,8 @@ Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 
 [Service]
 Type=simple
-ExecStart=/c/emax64/bin/emacs.exe --fg-daemon
-ExecStop=/c/emax64/bin/emacsclient.exe --eval "(kill-emacs)"
+ExecStart=/usr/bin/emacs --fg-daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
 Environment=SSH_AUTH_SOCK=%t/keyring/ssh
 Restart=on-failure
 
