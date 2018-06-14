@@ -1,0 +1,30 @@
+This page contains links to various users' Emacs configurations.
+
+== Literate examples ==
+
+Self-documenting Emacs configurations that make use of a mixture of Org and Emacs Lisp with literate programming techniques.
+
+* [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom GuiltyDolphin's .emacs] includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more
+* [[SachaChua]]'s [[http://sachachua.com/dotemacs OrgMode-based .emacs]]
+
+== Other configurations ==
+
+* AlexSchroederConfigWindows at work
+* [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file]
+* [http://edward.oconnor.cx/config/.emacs EdwardOConnor's .emacs] works in various versions of both Emacsen on several different platforms
+* EnterpriseEmacs -- a page about /minimal/ amount of settings for a behavior more common to the bulk of most other editors and IDEs
+* [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there
+* JesseWeinsteinDotEmacs has some Mac OS X initialization that might be interesting
+* [https://github.com/mina86/dot-files/blob/master/emacs/init.el mina86’s init.el] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions
+* [http://www.hollenback.net/index.php?OneTrueEditor Phil Hollenback's .emacs] is well-commented and supports both XEmacs and emacs
+* [http://www.xsteve.at/prg/emacs/ StefanReichoer's .emacs] is HUGE and runs on Windows and Unix platforms
+
+.emacs on Windows: MsWindowsDotEmacs
+
+There's lots more at:
+
+* http://www.dotemacs.de/
+* [https://github.com/search?type=Repositories&q=Emacs GitHub Search: Emacs]
+
+----
+CategoryDotEmacs
