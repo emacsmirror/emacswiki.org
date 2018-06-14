@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  3 12:05:02 2018 (-0700)
+;; Last-Updated: Thu Jun 14 10:52:44 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6348
+;;     Update #: 6367
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -149,6 +149,9 @@
 ;;  ***** NOTE: The following standard functions defined in `info.el'
 ;;              have been REDEFINED or ADVISED HERE:
 ;;
+;;  `info-apropos' - Apropos, not literal string, match by default.
+;;                   Use other window if not already in Info.
+;;  `Info-apropos-matches' - Added optional arg REGEXP-P.
 ;;  `info-display-manual' - Use completion to input manual name.
 ;;  `Info-find-emacs-command-nodes' - Added arg MSGP and message.
 ;;  `Info-find-file' - Handle virtual books.
@@ -454,6 +457,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/14 dadams
+;;     Added: redefinitions of info-apropos, Info-apropos-matches.
+;;     bmkp-string-match-p - > string-match-p everywhere.
 ;; 2018/06/03 dadams
 ;;     info-quotation-regexp, info-quoted+<>-regexp:
 ;;       Use shy groups everywhere.  [CHAR] -> CHAR, \\CHAR -> CHAR.  Added equivalent rx sexps.
@@ -1763,7 +1769,7 @@ NODE in MANUAL.
 Optional arg LOCALP means read a node name from the current manual."
     (let* ((completion-ignore-case  t)
            (bmks                    (remove-if-not
-                                     (lambda (bmk) (bmkp-string-match-p (if (and localp  Info-current-file)
+                                     (lambda (bmk) (string-match-p (if (and localp  Info-current-file)
                                                                        (format "\\`(%s) "
                                                                                (file-name-sans-extension
                                                                                 (file-name-nondirectory Info-current-file)))
@@ -2601,6 +2607,106 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
     (if (equal nodename "")
 	(or default  (Info-read-node-name prompt))
       nodename)))
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Added optional arg LITERALP.  Use apropos matching, not literal-string matching, by default.  Prefix arg matches literally.
+;; Use other window, unless already in Info.
+;;
+(defun info-apropos (pattern &optional literalp)
+  "Search indexes of all known Info files on your system for apropos PATTERN.
+Build a menu of the possible matches.
+
+With a prefix arg, match PATTERN as a literal string, not as a regexp
+or keywords.
+
+Just as for commands such as `apropos', PATTERN can be a word, a list
+of words (separated by spaces), or a regexp (using some regexp special
+characters).  If it is a word, search for matches for that word as a
+substring.  If it is a list of words, search for matches for any
+two (or more) of those words."
+  (interactive (list (apropos-read-pattern "index entries") current-prefix-arg))
+  (apropos-parse-pattern pattern)
+  (if (equal apropos-regexp "")
+      (Info-find-node Info-apropos-file "Top")
+    (let ((nodes  Info-apropos-nodes)
+          nodename)
+      (while (and nodes  (not (string-match apropos-regexp (nth 1 (car nodes)))))
+        (setq nodes  (cdr nodes)))
+      ;; Use another window, if not already in Info.
+      (unless (eq major-mode 'Info-mode) (pop-to-buffer "*info*"))
+      (if nodes
+          (Info-find-node Info-apropos-file (caar nodes))
+        (setq nodename  (format "Index for ‘%s’" apropos-regexp))
+        (push (list nodename
+                    apropos-regexp
+                    (Info-apropos-matches apropos-regexp (and (not literalp) 'REGEXP)))
+              Info-apropos-nodes)
+        (Info-find-node Info-apropos-file nodename)))))
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Added optional arg REGEXP-P.
+;;
+(defun Info-apropos-matches (string &optional regexp-p)
+  "Collect STRING matches from all known Info files on your system.
+Return a list of matches where each element is in the format
+\((FILENAME INDEXTEXT NODENAME LINENUMBER)).
+
+Non-nil optional REGEXP-P means interpret STRING as a regexp, instead
+of trying to match it literally."
+  ;; Emacs 23 has an `interactive' spec here, for no reason.
+  (unless (string= string "")
+    (let ((pattern       (format "\n\\* +\\([^\n]*\\(%s\\)[^\n]*\\):[ \t]+\
+\\([^\n]+\\)\\.\\(?:[ \t\n]*(line +\\([0-9]+\\))\\)?"
+                                 (if regexp-p string (regexp-quote string))))
+	  (ohist         Info-history)
+	  (ohist-list    Info-history-list)
+	  (current-node  Info-current-node)
+	  (current-file  Info-current-file)
+	  manuals matches node nodes)
+      (let ((Info-fontify-maximum-menu-size  nil))
+	(Info-directory)
+	;; `current-node' and `current-file' are nil if you invoke `info-apropos' as the first Info command.
+        ;; (`info-apropos' loads `info.el'.)  In that case, use `(DIR)Top', to avoid an error after search is complete.
+	(unless current-node (setq current-file  Info-current-file
+	                           current-node  Info-current-node))
+	(message "Searching indices...")
+	(goto-char (point-min))
+	(re-search-forward "\\* Menu: *\n" nil t)
+	(while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
+          (add-to-list 'manuals (match-string 1))) ; Ensure no duplicates in MANUALS, so the `dolist' runs faster.
+	(dolist (manual  (nreverse manuals))
+	  (message "Searching %s" manual)
+	  (condition-case err
+	      (if (setq nodes  (Info-index-nodes (Info-find-file manual)))
+                  (save-excursion
+                    (Info-find-node manual (car nodes))
+                    (while
+                        (progn
+                          (goto-char (point-min))
+                          (while (re-search-forward pattern nil t)
+			    (let ((entry     (match-string-no-properties 1))
+				  (nodename  (match-string-no-properties 3))
+				  (line      (match-string-no-properties 4)))
+			      (add-text-properties
+			       (- (match-beginning 2) (match-beginning 1))
+			       (- (match-end 2) (match-beginning 1))
+			       '(face info-index-match) entry)
+			      (setq matches  (cons (list manual entry nodename line)
+						   matches))))
+                          (setq nodes  (cdr nodes)
+                                node   (car nodes)))
+                      (Info-goto-node node))))
+	    (error (message "%s" (if (eq (car-safe err) 'error) (nth 1 err) err))
+	           (sit-for 1 t)))))
+      (Info-find-node current-file current-node)
+      (setq Info-history       ohist
+            Info-history-list  ohist-list)
+      (message "Searching indices...done")
+      (or (nreverse matches)  t))))
 
 
 ;; REPLACE ORIGINAL in `info.el':
@@ -5013,7 +5119,7 @@ currently visited manuals."
 Non-nil NODE can have the form `NODE' or `(MANUAL) NODE'.
 If NODE is nil then read the node name.  If optional arg LOCALP is
 non-nil then read the node name only from the current manual."
-    (when (and node  (stringp Info-current-file)  (not (bmkp-string-match-p "(\\([^)]+\\)) \\([^)]*\\)" node)))
+    (when (and node  (stringp Info-current-file)  (not (string-match-p "(\\([^)]+\\)) \\([^)]*\\)" node)))
       (setq node  (concat "(" (file-name-sans-extension (file-name-nondirectory Info-current-file)) ") " node)))
     (unless node (setq node  (Info-read-bookmarked-node-name localp)))
     (bmkp-get-bookmark-in-alist node t (bmkp-info-alist-only)))
