@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-10-07 23:26:04
-;; Version: 0.1
-;; Last-Updated: 2014-10-07 23:26:04
+;; Version: 0.2
+;; Last-Updated: 2018-06-14 12:57:42
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-minibuffer-tray.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/14
+;;      * Call `minibuffer-tray-stop-process' when kill emacs.
+;;
 ;; 2014/10/07
 ;;      * First released.
 ;;
@@ -86,6 +89,7 @@
 ;;; Code:
 
 (minibuffer-tray-mode 1)
+(add-hook 'kill-emacs-hook 'minibuffer-tray-stop-process)
 
 (provide 'init-minibuffer-tray)
 
