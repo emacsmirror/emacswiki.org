@@ -53,6 +53,7 @@ of selected resources.
 
 * DrewAdams has posted sample InitFile <tt>[[emacs-init.el]]</tt>, which includes some introductory Emacs info as comments. DrewsElispLibraries describes the libraries mentioned in the file.
 * EnterpriseEmacs -- a page about /minimal/ amount of settings for a behavior more common to the bulk of most other editors and IDEs.
+* [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom GuiltyDolphin's .emacs] includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more
 * [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there. 
 * JoelHolveck has posted his 90k ##.emacs.el## on the Wiki.  It's pretty hairy (a decade of degeneration), but has some neat stuff buried in there.
 * [http://www.hollenback.net/index.php?OneTrueEditor Phil Hollenback's .emacs] is well-commented and supports both XEmacs and emacs.
