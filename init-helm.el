@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.1
-;; Last-Updated: 2013-12-30 16:23:29
+;; Version: 0.2
+;; Last-Updated: 2018-06-14 12:19:13
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -15,7 +15,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;
+;; `helm' `helm-autoload-commands' `helm-buffers'
+;; `helm-c-yasnippet' `helm-for-files'
+;; `helm-projectile' `helm-ring'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -65,6 +67,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/14
+;;      * Upgrade configuration to match git version of helm.
+;;
 ;; 2013/12/30
 ;;      * First released.
 ;;
@@ -80,49 +85,29 @@
 ;;
 
 ;;; Require
-
-(require 'ag)
-(require 'helm-files)
-(require 'helm-config)
-(require 'helm-helm-commands)
-(require 'helm-c-yasnippet)
-(require 'helm-apt)
+(require 'helm)
 (require 'helm-autoload-commands)
-(require 'helm-ls-git)
-(require 'helm-descbinds)
-(require 'helm-webkit)
+(require 'helm-buffers)
+(require 'helm-c-yasnippet)
+(require 'helm-for-files)
+(require 'helm-projectile)
 (require 'helm-ring)
-(require 'helm-imenu)
-(require 'helm-man)
-(require 'helm-ag)
-(require 'apt-utils)
 
 ;;; Code:
-
-(setq helm-apt-cache-show-function
-      '(lambda (package)
-         (require 'init-apt-utils)
-         (apt-utils-show-package-1 package)))
 
 (defun helm-dwim ()
   (interactive)
   (let ((helm-ff-transformer-show-only-basename nil))
     (helm-other-buffer
      '(
-       helm-source-findutils
        helm-source-buffers-list
        helm-source-recentf
-       helm-source-occur
-       helm-source-do-ag
-       helm-source-locate
+       helm-source-projectile-buffers-list
+       helm-source-projectile-files-list
+       helm-source-projectile-projects
        helm-source-kill-ring
-       helm-source-imenu
+       helm-source-yasnippet
        helm-source-autoload-commands
-       helm-source-ls-git
-       helm-c-source-yasnippet
-       helm-source-webkit
-       helm-source-apt
-       helm-source-man-pages
        )
      "*helm search*")))
 
@@ -135,13 +120,9 @@
 
 (setq helm-autoload-commands-list
       '(
-        ("inf-ruby" "Run an inferior Ruby process in a buffer." "inf-ruby")
         ("yaoddmuse-post-library-default" "Post elisp library to EmacsWiki" "yaoddmuse-extension")
         ("yaoddmuse-edit-default" "Edit EmacsWiki page" "yaoddmuse-extension")
         ("auto-install-from-emacswiki" "Install package from EmacsWiki.org" "auto-install")
-        )
-      )
+        ))
 
 (provide 'init-helm)
-
-;;; init-helm.el ends here
