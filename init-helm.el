@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.2
-;; Last-Updated: 2018-06-14 12:19:13
+;; Version: 0.3
+;; Last-Updated: 2018-06-14 12:41:20
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -69,6 +69,7 @@
 ;;
 ;; 2018/06/14
 ;;      * Upgrade configuration to match git version of helm.
+;;      * Just add helm-source-projectile-* in list when current place in project, avoid `helm-source-projectile-files-list' block `helm-dwim'.
 ;;
 ;; 2013/12/30
 ;;      * First released.
@@ -97,19 +98,33 @@
 
 (defun helm-dwim ()
   (interactive)
-  (let ((helm-ff-transformer-show-only-basename nil))
-    (helm-other-buffer
-     '(
-       helm-source-buffers-list
-       helm-source-recentf
-       helm-source-projectile-buffers-list
-       helm-source-projectile-files-list
-       helm-source-projectile-projects
-       helm-source-kill-ring
-       helm-source-yasnippet
-       helm-source-autoload-commands
-       )
-     "*helm search*")))
+  (let ((helm-ff-transformer-show-only-basename nil)
+        helm-source-list)
+    (cond (
+           ;; Just add helm-source-projectile-* in list when current place in project.
+           (projectile-project-p)
+           (setq helm-source-list
+                 '(
+                   helm-source-buffers-list
+                   helm-source-recentf
+                   helm-source-projectile-buffers-list
+                   helm-source-projectile-files-list
+                   helm-source-projectile-projects
+                   helm-source-kill-ring
+                   helm-source-yasnippet
+                   helm-source-autoload-commands
+                   )))
+          (t
+           (setq helm-source-list
+                 '(
+                   helm-source-buffers-list
+                   helm-source-recentf
+                   helm-source-kill-ring
+                   helm-source-yasnippet
+                   helm-source-autoload-commands
+                   ))
+           ))
+    (helm-other-buffer helm-source-list "*helm search*")))
 
 (lazy-set-key
  '(
