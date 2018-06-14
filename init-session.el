@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-28 01:19:38
-;; Version: 0.2
-;; Last-Updated: 2018-06-14 10:11:43
+;; Version: 0.3
+;; Last-Updated: 2018-06-14 12:58:32
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-session.el
 ;; Keywords:
@@ -67,6 +67,7 @@
 ;;
 ;; 2018/06/14
 ;;      * Use `desktop.el' instead window.el and revive.el, those two libraries buggy.
+;;      * Move `kill-unused-buffers' to package `basic-tookit.el'
 ;;
 ;; 2013/12/28
 ;;      * First released.
@@ -91,41 +92,27 @@
 (defun emacs-session-restore ()
   "Restore emacs session."
   (interactive)
-  ;; Kill unused buffers.
-  (kill-unused-buffers)
-  ;; Restore session.
-  (desktop-read "~/.emacs.d/")
-  )
+  (ignore-errors
+    ;; Kill unused buffers.
+    (kill-unused-buffers)
+    ;; Restore session.
+    (desktop-read "~/.emacs.d/")
+    ))
 
 (defun emacs-session-save ()
   "Save emacs session."
   (interactive)
-  ;; Kill minibuffer tray process and kill epc buffers.
   (ignore-errors
-    (minibuffer-tray-stop-process)
-    (kill-epc-buffers))
-  ;; Kill unused buffers.
-  (kill-unused-buffers)
-  ;; Save all buffers before exit.
-  (auto-save-buffers)
-  ;; Save session.
-  (make-directory "~/.emacs.d/" t)
-  (desktop-save "~/.emacs.d/")
-  ;; Exit emacs.
-  (kill-emacs))
-
-(defun kill-unused-buffers ()
-  (ignore-errors (kill-buffer "*GNU Emacs*"))
-  (ignore-errors (kill-buffer "*scratch*")))
-
-(defun kill-epc-buffers ()
-  (interactive)
-  (dolist (buf (buffer-list))
-    (save-excursion
-      (with-current-buffer buf
-        (if (string-prefix-p "*epc" (buffer-name buf))
-            (ignore-errors (kill-buffer buf)))
-        ))))
+    ;; Kill unused buffers.
+    (kill-unused-buffers)
+    ;; Save all buffers before exit.
+    (auto-save-buffers)
+    ;; Save session.
+    (make-directory "~/.emacs.d/" t)
+    (desktop-save "~/.emacs.d/")
+    ;; Exit emacs.
+    (kill-emacs)
+    ))
 
 (provide 'init-session)
 
