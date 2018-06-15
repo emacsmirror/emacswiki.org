@@ -80,19 +80,27 @@
 ;;
 
 ;;; Require
-
+(require 'python)
+(require 'jedi)
 
 ;;; Code:
 
-(eval-after-load 'python-mode
-  '(lambda ()
-     (progn
-       (lazy-set-mode-autoload-key
-        '(
-          ("C-S-j" . jump-to-import)
-          )
-        python-mode-map nil "python-mode-utils")
-       )))
+(lazy-set-mode-autoload-key
+ '(
+   ("C-S-j" . jump-to-import)
+   )
+ python-mode-map nil "python-extension")
+
+(add-hook 'python-mode-hook
+          '(lambda ()
+             ;; Configure jedi.
+             (jedi:setup)
+             (jedi:ac-setup)
+             (setq jedi:tooltip-method nil)
+             ;; Set indent.
+             (setq electric-indent-mode nil)
+             (setq indent-tabs-mode nil)
+             ))
 
 (provide 'init-python)
 
