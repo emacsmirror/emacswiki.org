@@ -90,6 +90,11 @@ As a workaround, show all headers before activating artist mode:
 			       (show-all)
 			       (artist-mode)))
 
+Or consider simply org-narrow before editing in artist-mode:
+
+   C-x n e   # narrow to an element
+   C-x n w   # widen back to the whole page
+
 ----
 Note: If using the keyboard to draw, use C-u RET to stop drawing.
 ----
