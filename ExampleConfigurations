@@ -1,5 +1,6 @@
 This page contains links to various users' Emacs configurations.
 
+[:OrgModeConfigs]
 == Literate examples ==
 
 Self-documenting Emacs configurations that make use of a mixture of Org and Emacs Lisp with literate programming techniques.
@@ -7,6 +8,7 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 * [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom GuiltyDolphin's .emacs] includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more
 * [[SachaChua]]'s [[http://sachachua.com/dotemacs OrgMode-based .emacs]]
 
+[:OtherConfigs]
 == Other configurations ==
 
 * AlexSchroederConfigWindows at work
@@ -25,6 +27,18 @@ There's lots more at:
 
 * http://www.dotemacs.de/
 * [https://github.com/search?type=Repositories&q=Emacs GitHub Search: Emacs]
+
+[:adding-example-emacs-configuration]
+== Adding an example Emacs Configuration ==
+
+When adding a new Emacs configuration to this page, please bear in mind the following:
+
+# Lists are alphabetically sorted by /author/
+# List items do *not* end with a period
+# Add the config to the appropriate section; if it uses OrgMode to generate the main configuration files, 
+then link it in [[#OrgModeConfigs]], otherwise add it to [[#OtherConfigs]]
+# Please start the item with the name of the author, to help with the alphabetical ordering
+# Please add a brief summary; every Emacs configuration is different, why might someone want to look at this one?
 
 ----
 CategoryDotEmacs
