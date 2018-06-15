@@ -23,7 +23,7 @@ EmacsAsDaemon details various ways to run this command in different distribution
 
 = Using EmacsClient =
 
-=== Bash environments ===
+=== Terminal environment ===
 
 Simply replace every place you'd run <tt>emacs</tt> with this command instead. 
 
@@ -38,14 +38,12 @@ The emacsclient program will connect to a running instance of Emacs if it exists
 To use emacsclient as your editor, add the following to your .bashrc:
 
 {{{
-<pre>
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t"                  # $EDITOR should open in terminal
-export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI with non-daemon as alternate
-</pre>
+export EDITOR="emacsclient -t"                  # $EDITOR opens in terminal
+export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI mode
 }}}
 
-If you prefer to launch GUI Emacs instead of terminal Emacs, replace the <tt>-t</tt> in the second line with <tt>-c</tt>
+If you prefer to launch GUI Emacs from your terminal when editing files, replace the <tt>-t</tt> in the second line with <tt>-c</tt>
 
 === Desktop Environment ===
 
