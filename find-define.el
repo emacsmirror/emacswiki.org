@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-06-13 17:19:58
-;; Version: 0.3
-;; Last-Updated: 2018-06-13 22:25:02
+;; Version: 0.4
+;; Last-Updated: 2018-06-15 10:41:58
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/find-define.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `find-func-extension' `dumb-jump'
+;; `find-func-extension' `dumb-jump' `python-extension'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -72,6 +72,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/15
+;;      * Python mode use `jedi:goto-definition'
+;;
 ;; 2018/06/13
 ;;      * Set `dumb-jump-prefer-searcher' with rg.
 ;;      * First released.
@@ -90,6 +93,7 @@
 ;;; Require
 (require 'find-func-extension)
 (require 'dumb-jump)
+(require 'python-extension)
 
 ;;; Code:
 
@@ -101,11 +105,15 @@
   (interactive "P")
   (setq find-define-symbol-cache (thing-at-point 'symbol))
   (find-define-remember-position)
-  (if (equal 'emacs-lisp-mode major-mode)
-      (find-function-or-variable-at-point prefix)
-    (if (null prefix)
-        (dumb-jump-go)
-      (dumb-jump-go-other-window))))
+  (cond ((equal 'emacs-lisp-mode major-mode)
+         (find-function-or-variable-at-point prefix))
+        ((equal 'python-mode major-mode)
+         (find-python-define prefix))
+        (t
+         (if (null prefix)
+             (dumb-jump-go)
+           (dumb-jump-go-other-window))
+         )))
 
 (defun find-define-back ()
   (interactive)
