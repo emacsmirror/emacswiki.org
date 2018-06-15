@@ -1,3 +1,15 @@
 == Emacs Configuration ==
 
 My Emacs configuration is available on [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom GitHub]. It includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more.
+
+== My Emacs Packages ==
+
+* [https://github.com/GuiltyDolphin/duckpan-emacs duckpan-emacs]
+* [https://github.com/GuiltyDolphin/emaps emaps]
+* [https://github.com/GuiltyDolphin/evil-calendar.el evil-calendar.el]
+* [https://github.com/GuiltyDolphin/evil-remap evil-remap]
+* [https://github.com/GuiltyDolphin/examr examr]
+* [https://github.com/GuiltyDolphin/monitor monitor]
+* [https://github.com/GuiltyDolphin/org-evil org-evil]
+* [https://github.com/GuiltyDolphin/prompts.el prompts.el]
+* [https://github.com/GuiltyDolphin?tab=repositories&type=source&language=emacs+lisp other packages]
