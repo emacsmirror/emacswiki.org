@@ -47,6 +47,27 @@ export VISUAL="emacsclient -c -a emacs"         # $VISUAL opens in GUI with non-
 
 If you prefer to launch GUI Emacs instead of terminal Emacs, replace the <tt>-t</tt> in the second line with <tt>-c</tt>
 
+=== Desktop Environment ===
+
+You can install a desktop entry for Emacsclient. This will make it available in context menus in Gnome, KDE, XFCE, and other Freedesktop environments. Create a file named emacsclient.desktop in ~/.local/share/applications containing the following:
+
+{{{
+[Desktop Entry]
+Name=Emacs (Client)
+GenericName=Text Editor
+Comment=Edit text
+MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+Exec=emacsclient -a "emacs" %F
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=Development;TextEditor;Utility;
+StartupWMClass=Emacs
+}}}
+
+
+
+
 
 === Windows ===
 
