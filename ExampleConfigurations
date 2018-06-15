@@ -14,14 +14,11 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 * AlexSchroederConfigWindows at work
 * [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file]
 * [http://edward.oconnor.cx/config/.emacs EdwardOConnor's .emacs] works in various versions of both Emacsen on several different platforms
-* EnterpriseEmacs -- a page about /minimal/ amount of settings for a behavior more common to the bulk of most other editors and IDEs
 * [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there
 * JesseWeinsteinDotEmacs has some Mac OS X initialization that might be interesting
 * [https://github.com/mina86/dot-files/blob/master/emacs/init.el mina86’s init.el] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions
 * [http://www.hollenback.net/index.php?OneTrueEditor Phil Hollenback's .emacs] is well-commented and supports both XEmacs and emacs
 * [http://www.xsteve.at/prg/emacs/ StefanReichoer's .emacs] is HUGE and runs on Windows and Unix platforms
-
-.emacs on Windows: MsWindowsDotEmacs
 
 [:please-sir-can-i-have-some-more]
 == Where can I find more? ==
@@ -42,6 +39,12 @@ When adding a new Emacs configuration to this page, please bear in mind the foll
 then link it in [[#OrgModeConfigs]], otherwise add it to [[#OtherConfigs]]
 # Please start the item with the name of the author, to help with the alphabetical ordering
 # Please add a brief summary; every Emacs configuration is different, why might someone want to look at this one?
+
+[:see-also]
+== See Also ==
+
+* EnterpriseEmacs -- a page about /minimal/ amount of settings for a behavior more common to the bulk of most other editors and IDEs
+* MsWindowsDotEmacs -- setting up .emacs on Windows
 
 ----
 CategoryDotEmacs
