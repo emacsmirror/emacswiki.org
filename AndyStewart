@@ -169,6 +169,8 @@ My emacs Video:
 
 *** Lisp:projectile-rails-extension.el -- Some enhanced functions for [https://github.com/asok/projectile-rails ProjectileRails]
 
+*** Lisp:python-extension.el -- Some enhanced functions for python mode.
+
 ** [[Anything]]:
 
 *** Lisp:anything-extension.el -- Some enhanced functions for [[Anything]], more extensions see Lisp:anything-config.el.
@@ -268,7 +270,11 @@ My emacs Video:
 * Programming:
 
 ** Lisp:init-rtags.el -- Configure for [https://github.com/Andersbakken/rtags rtags]
+
 ** Lisp:init-golang.el -- Configure for [http://golang.org/ golang]
+
+** Lisp:init-python.el -- Configure for Python.
+
 ** Lisp:init-qt.el -- Configure for Qt/C++.
 
 ** Lisp:init-jedi.el -- How to configure [http://tkf.github.io/emacs-jedi/ jedi] to make [[AutoComplete]] works perfect to Python.
