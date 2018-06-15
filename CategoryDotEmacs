@@ -16,9 +16,9 @@ of selected resources.
 
 * AutoModeAlist -- Set the MajorMode based on the filename
 * CustomizingBoth -- Use the same InitFile for multiple operating systems or features
+* EmacsCrashCode and DotEmacsChallenge -- miscellaneous tips
 * LoadingLispFiles -- How to load Emacs Lisp in separate files
 * ModeHooks -- Add code that will run after a function executes or a mode is initialized
-* EmacsCrashCode and DotEmacsChallenge -- miscellaneous tips
 
 == Other options and tips ==
 
@@ -27,8 +27,8 @@ of selected resources.
 * AutoCompileInit -- Automatically compile your InitFile
 * AutoSave -- Organize the autosave files or change the autosave interval
 * BackupDirectory -- Organize the automatic backup files named ##filename~##
-* DotEmacsDistributions -- Running multiple independent configurations (or "distributions") of Emacs
 * DotEmacsBankruptcy -- Declare bankruptcy when things get so bad you have to start over
+* DotEmacsDistributions -- Running multiple independent configurations (or "distributions") of Emacs
 * DotEmacsStructuring -- Organize your Emacs config
 * InterpreterModeAlist -- Set the MajorMode based on a shell script's first line
 * MenuBar -- Hide the menu bar or customize it
@@ -38,16 +38,15 @@ of selected resources.
 * RemoteDotEmacs -- eval the InitFile you have on a web server
 * ToolBar -- Hide the tool bar or customize it
 
-
 == Init-related packages and starter kits ==
 
+* EmacsMacro -- A "portable configuration file that configures itself."
+* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack
 * [https://github.com/technomancy/better-defaults PhilHagelberg's defaults]
 * [[Prelude]] -- aims to enhance the default Emacs experience
 * [[Spacemacs]] -- particularly for Vim converts
-* EmacsMacro -- A "portable configuration file that configures itself."
-* TinyTools -- JariAalto's add-on utilities
-* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack
 * [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
+* TinyTools -- JariAalto's add-on utilities
 
 == Example Configurations ==
 
@@ -55,11 +54,9 @@ See the [[ExampleConfigurations|example configurations]] for a list of existing 
 
 == See also ==
 
+* CategoryPersistence
 * DotEmacsDotD
+* DumpingEmacs
+* EmacsNiftyTricks
 * LearnEmacsLisp
 * SessionManagement
-* CategoryPersistence
-* EmacsNiftyTricks
-* DumpingEmacs
-
-
