@@ -6,7 +6,10 @@ Starting with Emacs 23, the variable ##user-emacs-directory## holds the location
 
 The user directory itself is not part of ##load-path##, and since it contains other things than libraries, you should leave it at that. Instead, you should install packages in a dedicated sub-directory (e.g., ##~/.emacs.d/elisp##) and [[LoadPath#AddSubDirectories|add that]] to the ##load-path## instead.
 
-See also DotEmacsBankruptcy.
+== See Also ==
+
+* DotEmacsBankruptcy
+* ExampleConfigurations
 
 ----
 CategoryDotEmacs
