@@ -1,0 +1,3 @@
+== Emacs Configuration ==
+
+My Emacs configuration is available on [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom GitHub]. It includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more.
