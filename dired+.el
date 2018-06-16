@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 25 11:18:04 2018 (-0700)
+;; Last-Updated: Sat Jun 16 07:23:09 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10917
+;;     Update #: 10976
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -61,6 +61,23 @@
 ;;    `diredp-prev-dirline'  - `<'
 ;;    `diredp-next-subdir'   - `C-M-n'
 ;;    `diredp-prev-subdir'   - `C-M-p'
+;;
+;;
+;;  Quick Viewing While Navigating
+;;  ------------------------------
+;;
+;;  You can use key `C-down' or `C-up' to navigate to the next or
+;;  previous file line, respectively, and at the same time show its
+;;  file in another window.  The focus remains on the Dired buffer.
+;;  A numeric prefix arg means move that many lines first.
+;;
+;;  Names of files and directories that match either of the options
+;;  `diredp-visit-ignore-extensions' or `diredp-visit-ignore-regexps'
+;;  are skipped.
+;;
+;;  You can use `e' to show the file of the current line.  If it is
+;;  already shown in the same frame, and if Dired is the only other
+;;  window there, then the file is hidden (its window is deleted).
 ;;
 ;;
 ;;  Font-Lock Highlighting
@@ -559,9 +576,11 @@
 ;;    `diredp-untag-this-file', `diredp-upcase-recursive',
 ;;    `diredp-up-directory', `diredp-up-directory-reuse-dir-buffer',
 ;;    `diredp-upcase-this-file', `diredp-verify-this-file',
-;;    `diredp-w32-drives', `diredp-w32-drives-mode',
-;;    `diredp-yank-files', `global-dired-hide-details-mode' (Emacs
-;;    24.4+), `toggle-diredp-find-file-reuse-dir'.
+;;    `diredp-visit-next-file', `diredp-visit-previous-file',
+;;    `diredp-visit-this-file', `diredp-w32-drives',
+;;    `diredp-w32-drives-mode', `diredp-yank-files',
+;;    `global-dired-hide-details-mode' (Emacs 24.4+),
+;;    `toggle-diredp-find-file-reuse-dir'.
 ;;
 ;;  User options defined here:
 ;;
@@ -576,6 +595,7 @@
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
 ;;    `diredp-max-frames', `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diredp-visit-ignore-extensions', `diredp-visit-ignore-regexps',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -618,7 +638,8 @@
 ;;    `diredp--set-up-font-locking', `diredp-string-match-p',
 ;;    `diredp-tag', `diredp-this-file-marked-p',
 ;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
-;;    `diredp-untag', `diredp-y-or-n-files-p'.
+;;    `diredp-untag', `diredp-visit-ignore-regexp',
+;;    `diredp-y-or-n-files-p'.
 ;;
 ;;  Variables defined here:
 ;;
@@ -755,6 +776,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/16 dadams
+;;     Added: diredp-visit-ignore-extensions, diredp-visit-ignore-regexps, diredp-visit-next-file,
+;;            diredp-visit-previous-file, diredp-visit-this-file, diredp-visit-ignore-regexp.
+;;     Bind the commands to C-down, C-up, e.
 ;; 2018/03/25 dadams
 ;;     Added: diredp-user-error.
 ;;     Updated for Emacs 27-pretest-2 change in dired-get-marked-files signature.
@@ -2082,6 +2107,20 @@ the circumstances in which they show the files in separate frames."
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
   "*Non-nil means prompt for a prefix string for bookmark names."
   :type 'boolean :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-visit-ignore-regexps ()
+  "Regexps matching file names for `diredp-visit-(next|previous)' to skip.
+A file or directory name matching one of these regexps is skipped,
+along with those with an extension in `diredp-visit-ignore-extensions'."
+  :type '(repeat regexp) :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-visit-ignore-extensions '("elc")
+  "Extensions of file names for `diredp-visit-(next|previous)' to skip.
+A file name with one of these extensions is skipped, along with those
+matching a regexp in `diredp-visit-ignore-regexps'."
+  :type '(repeat string) :group 'Dired-Plus)
 
 ;;;###autoload
 (defcustom diredp-w32-local-drives '(("C:" "Local disk"))
@@ -9619,7 +9658,7 @@ With non-nil prefix arg, mark them instead."
 ;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
 ;;
 (when (< emacs-major-version 21)
-  (defun dired-find-file ()             ; Bound to `e', `RET'
+  (defun dired-find-file ()             ; Bound to `RET'
     "In Dired, visit the file or directory named on this line."
     (interactive)
     (let* ((dgf-result  (or (dired-get-filename nil t)  (error "No file on this line")))
@@ -10615,6 +10654,78 @@ Dired+ bug: \
 File `dired+.el' has a header `Update #' that you can use to identify it.\
 %%0A%%0AEmacs version: %s.")
                       (emacs-version))))
+
+(defun diredp-visit-ignore-regexp ()    ; Taken from `image-file-name-regexp'.
+  "Return a regular expression matching file names to skip.
+This is used by `dired-visit-(next|previous)'."
+  (let ((exts-regexp  (and diredp-visit-ignore-extensions
+                           (concat "\\." (regexp-opt (nconc (mapcar #'upcase diredp-visit-ignore-extensions)
+                                                            diredp-visit-ignore-extensions)
+                                                     t)
+                                   "\\'"))))
+    (if diredp-visit-ignore-regexps
+	(mapconcat #'identity (if exts-regexp
+                                  (cons exts-regexp diredp-visit-ignore-regexps)
+                                diredp-visit-ignore-regexps)
+		   "\\|")
+      exts-regexp)))
+
+;;;###autoload
+(defun diredp-visit-next-file (&optional arg) ; Bound to `C-down'
+  "Move down a line and visit its file in another window.
+With numeric prefix arg N, move down N-1 lines first.
+
+After moving N lines, skip any lines with file names that match either
+`diredp-visit-ignore-extensions' or `diredp-visit-ignore-regexps'. 
+
+Kill the last buffer visited by a `dired-visit-*' command."
+  (interactive "p")
+  (dired-next-line arg)
+  (while (diredp-string-match-p (diredp-visit-ignore-regexp) (dired-get-file-for-visit))
+    (dired-next-line 1))
+  (diredp-visit-this-file))
+
+;;;###autoload
+(defun diredp-visit-previous-file (&optional arg) ; Bound to `C-up'
+  "Move up a line and visit its file in another window.
+With numeric prefix arg N, move up N-1 lines first.
+
+After moving N lines, skip any lines with file names that match either
+`diredp-visit-ignore-extensions' or `diredp-visit-ignore-regexps'. 
+
+Kill the last buffer visited by a `dired-visit-*' command."
+  (interactive "p")
+  (dired-previous-line arg)
+  (while (diredp-string-match-p (diredp-visit-ignore-regexp) (dired-get-file-for-visit))
+    (dired-previous-line 1))
+  (diredp-visit-this-file))
+
+;;;###autoload
+(defun diredp-visit-this-file ()        ; Bound to `e' (replaces `dired-find-file' binding)
+  "View the file on this line in another window in the same frame.
+If it was not already shown there then kill the previous buffer
+visited by a `dired-visit-*' command.
+
+If it was already shown there, and if it and Dired are the only
+windows there, then delete its window (toggle : show/hide the file)."
+  (interactive)
+  (let ((file   (dired-get-file-for-visit))
+        (obuf   (current-buffer))
+        (shown  nil)
+        fwin)
+    (unless (or (and (fboundp 'window-parent)  (window-parent))
+                (not (one-window-p 'NOMINI)))
+      (split-window))
+    (save-selected-window
+      (other-window 1)
+      (setq fwin  (selected-window))
+      (unless (or (setq shown  (or (equal (current-buffer) (get-file-buffer file))
+                                   (memq (current-buffer) (dired-buffers-for-dir file))))
+                  (equal obuf (current-buffer)))
+        (kill-buffer (current-buffer))))
+    (if shown
+        (when (= 2 (count-windows 'NOMINI)) (delete-window fwin))
+      (set-window-buffer fwin (find-file-noselect file)))))
  
 ;;; Key Bindings.
 
@@ -12064,6 +12175,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (when diredp-bind-problematic-terminal-keys
   (define-key dired-mode-map [(control meta shift ?b)]                              ; `C-M-B' (aka `C-M-S-b')
     'diredp-do-bookmark-in-bookmark-file))
+(define-key dired-mode-map "e"       'diredp-visit-this-file)                       ; `e' (was `dired-find-file')
+(define-key dired-mode-map [C-down]  'diredp-visit-next-file)                 ; `C-down' (was `forward-paragraph')
+(define-key dired-mode-map [C-up]    'diredp-visit-previous-file)             ; `C-up' (was `backward-paragraph')
 (define-key dired-mode-map "\C-\M-G" 'diredp-do-grep)                               ; `C-M-G'
 (when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))                          ; `M-h'
