@@ -4,12 +4,12 @@
 '''emacs-shellfm''' is a tiny package designed to provide Emacs interface to [http://nex.scrapping.cc/shell-fm/ Shell-FM] console player.
 
 = Obtaining emacs-shellfm =
-Latest source code for emacs-shellfm is in [[MercurialMode|Mercurial]] repository at http://dzhus.org/hg/emacs-shellfm/ so you may get a recent version with the following command:
+Latest source code for emacs-shellfm is in [[MercurialMode|Mercurial]] repository at https://github.com/dzhus/emacs-shellfm so you may get a recent version with the following command:
 <pre>
-hg clone http://dzhus.org/hg/emacs-shellfm/
+git clone https://github.com/dzhus/emacs-shellfm.git
 </pre>
 
-You may also download a [http://dzhus.org/hg/emacs-shellfm/archive/tip.tar.gz snapshot tarball].
+You may also download a [https://github.com/dzhus/emacs-shellfm/archive/master.zip snapshot tarball].
 
 See also project page on [https://www.ohloh.net/p/emacs-shellfm Ohloh].
 
@@ -24,7 +24,7 @@ emacs-shellfm supports nearly all features Shell-FM has:
 
 = Documentation =
 
-Installation notes and usage tips are in [http://dzhus.org/hg/emacs-shellfm/raw-file/tip/README README] file (an [[OrgMode]] one actually) in emacs-shellfm source.
+Installation notes and usage tips are in [https://github.com/dzhus/emacs-shellfm README] file (an [[OrgMode]] one actually) in emacs-shellfm source.
 
 = Requirements =
 
