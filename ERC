@@ -7,9 +7,6 @@ With an older version of Emacs, you might need to install it separately, e.g. un
 
 For a brief history of the development of ERC and access to older versions, code repositories, and mailing list archives see ErcProjectHistory.
 
-=== File releases ===
-The latest version of ERC is **5.3**. 
-
 === Included with GNU Emacs ===
 ERC is included in released versions of GNU Emacs since v22.3.
 
