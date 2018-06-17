@@ -32,7 +32,6 @@ An info manual is now included with ERC.  It's also available on-line in several
 # HTML (single file):https://www.gnu.org/software/emacs/manual/html_mono/erc.html
 # HTML (multiple files):https://www.gnu.org/software/emacs/manual/html_node/erc/index.html
  
-The manual is not yet complete. At the moment you can find more detailed information on certain topics on the ERC pages here in the EmacsWiki. If you'd like to help write the manual, have a look at the FOR-RELEASE file which is available in ErcDevelopment to find out what needs to be done.
 
 == Quickstart ==
 * Download the .tar.gz file and extract it (tar -xzf ''filename'')
