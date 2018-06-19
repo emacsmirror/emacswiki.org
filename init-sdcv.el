@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-03-26 11:44:00
-;; Version: 0.1
-;; Last-Updated: 2009-03-26 11:44:00
+;; Version: 0.2
+;; Last-Updated: 2018-06-20 06:21:01
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-sdcv.el
 ;; Keywords: sdcv
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/20
+;;      * Add `sdcv-dictionary-data-dir'
+;;
 ;; 2009/03/26
 ;;      * First released.
 ;;
@@ -84,7 +87,7 @@
 
 ;;; Code:
 
-(setq sdcv-dictionary-simple-list       ;星际译王屏幕取词词典, 简单, 快速
+(setq sdcv-dictionary-simple-list    ;星际译王屏幕取词词典, 简单, 快速
       '("懒虫简明英汉词典"
         "懒虫简明汉英词典"
         "KDic11万英汉词典"))
@@ -103,8 +106,8 @@
         "Jargon"
         "FOLDOC"
         "WordNet"))
+(setq sdcv-dictionary-data-dir lazycat-emacs-sdcv-data-dir) ;设置星际译王本地词典的目录
 
 (provide 'init-sdcv)
 
 ;;; init-sdcv.el ends here
-
