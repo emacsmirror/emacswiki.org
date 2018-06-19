@@ -1,17 +1,17 @@
-;;; init-flymake.el --- Flymake configuration
+;;; init-flymake.el --- Init flymake
 
 ;; Filename: init-flymake.el
-;; Description: Flymake configuration
-;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
-;; Created: 2008-10-20 09:43:11
-;; Version: 0.1
-;; Last-Updated: 2008-10-20 09:43:11
+;; Description: Init flymake
+;; Author: Andy Stewart <lazycat.manatee@gmail.com>
+;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
+;; Copyright (C) 2014, Andy Stewart, all rights reserved.
+;; Created: 2014-03-17 02:06:19
+;; Version: 0.2
+;; Last-Updated: 2018-06-20 06:53:19
 ;;           By: Andy Stewart
-;; URL:
-;; Keywords: flymake
-;; Compatibility: GNU Emacs 23.0.60.1
+;; URL: http://www.emacswiki.org/emacs/download/init-flymake.el
+;; Keywords:
+;; Compatibility: GNU Emacs 24.3.50.1
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -39,7 +39,7 @@
 
 ;;; Commentary:
 ;;
-;; Flymake configuration
+;; Init flymake
 ;;
 
 ;;; Installation:
@@ -55,10 +55,21 @@
 ;;
 ;; No need more.
 
+;;; Customize:
+;;
+;;
+;;
+;; All of the above can customize by:
+;;      M-x customize-group RET init-flymake RET
+;;
+
 ;;; Change log:
 ;;
-;; 2008/10/20
-;;      First released.
+;; 2018/06/20
+;;      * Remove flymake log buffer when start emacs.
+;;
+;; 2014/03/17
+;;      * First released.
 ;;
 
 ;;; Acknowledgements:
@@ -76,18 +87,65 @@
 
 ;;; Code:
 
-;; flymake
-(dolist (hook (list
-               'haskell-mode-hook
-               'c-mode-hook
-               'c++-mode-hook
-               'java-mode-hook
-               ))
-  (add-hook hook 'flymake-find-file-hook))
-;; flymake-shell
-(add-hook 'sh-mode-hook 'flymake-shell-load)
-;; flymake extension
-(setq flymake-extension-use-showtip t)  ;use `showtip' display error or warning.
+;; Remove flymake log buffer when start emacs.
+(remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+
+(add-hook 'shell-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-shell)
+            (flymake-mode)
+            ))
+
+(add-hook 'jave-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-jave)
+            (flymake-mode)
+            ))
+
+(add-hook 'haskell-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-haskell)
+            (flymake-mode)
+            ))
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-python)
+            (flymake-mode)
+            ))
+
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-jslint)
+            (flymake-mode)
+            ))
+
+(add-hook 'go-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-go)
+            (flymake-mode)
+            ))
+
+(add-hook 'php-mode-hook
+          (lambda ()
+            (require 'flymake)
+            (require 'flymake-extension)
+            (require 'flymake-php)
+            (flymake-mode)
+            (flymake-php-load)
+            ))
 
 (provide 'init-flymake)
 
