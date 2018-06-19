@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-28 01:19:38
-;; Version: 0.3
-;; Last-Updated: 2018-06-14 12:58:32
+;; Version: 0.4
+;; Last-Updated: 2018-06-20 05:59:41
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-session.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/20
+;;      * Make `desktop.el' don't ask user if found file locked by other emacs process.
+;;
 ;; 2018/06/14
 ;;      * Use `desktop.el' instead window.el and revive.el, those two libraries buggy.
 ;;      * Move `kill-unused-buffers' to package `basic-tookit.el'
@@ -88,6 +91,8 @@
 (require 'basic-toolkit)
 
 ;;; Code:
+
+(setq desktop-load-locked-desktop t) ;don't popup dialog ask user, load anyway
 
 (defun emacs-session-restore ()
   "Restore emacs session."
