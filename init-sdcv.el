@@ -107,6 +107,7 @@
         "FOLDOC"
         "WordNet"))
 (setq sdcv-dictionary-data-dir lazycat-emacs-sdcv-data-dir) ;设置星际译王本地词典的目录
+(setq showtip-timeout 5)                ;10秒太长 ;)
 
 (provide 'init-sdcv)
 
