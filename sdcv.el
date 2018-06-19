@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 1.5.2
-;; Last-Updated: 2009-04-04 09:11:00
+;; Version: 1.6
+;; Last-Updated: 2018-06-20 06:21:41
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -130,6 +130,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/20
+;;      * Add `sdcv-dictionary-data-dir'
+;;
 ;; 2009/04/04
 ;;      * Fix the bug of `sdcv-search-pointer'.
 ;;      * Fix doc.
@@ -186,6 +189,13 @@
 (defcustom sdcv-dictionary-simple-list nil
   "The simply dictionary list for translate."
   :type 'list
+  :group 'sdcv)
+
+(defcustom sdcv-dictionary-data-dir nil
+  "Default, sdcv search word from /usr/share/startdict/dict/.
+You can customize this value with local dir,
+then you don't need copy dict data to /usr/share directory everytime when you finish system install."
+  :type 'string
   :group 'sdcv)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -382,10 +392,12 @@ Argument DICTIONARY-LIST the word that need transform."
   ;; Return translate result.
   (sdcv-filter
    (shell-command-to-string
-    (format "sdcv -n %s %s"
+    (format "sdcv -n %s %s --data-dir=%s"
             (mapconcat (lambda (dict)
                          (concat "-u " dict))
-                       dictionary-list " ") word))))
+                       dictionary-list " ")
+            word
+            sdcv-dictionary-data-dir))))
 
 (defun sdcv-filter (sdcv-string)
   "This function is for filter sdcv output string,.
@@ -396,7 +408,7 @@ Argument SDCV-STRING the search string from sdcv."
     (with-temp-buffer
       (insert sdcv-string)
       (goto-char (point-min))
-      (kill-line 1)                     ;remove unnecessary information.
+      (kill-line 1)                   ;remove unnecessary information.
       (buffer-string))))
 
 (defun sdcv-goto-sdcv ()
