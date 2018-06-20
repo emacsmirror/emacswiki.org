@@ -4,11 +4,11 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-11 23:05:38
-;; Version: 0.3
-;; Last-Updated: 2009-02-04 19:31:35
+;; Version: 0.4
+;; Last-Updated: 2018-06-20 20:54:17
 ;; URL:
 ;; Keywords: flymake
-;; Compatibility: GNU Emacs 23.0.60.1
+;; Compatibility: GNU Emacs 27.0.50
 
 ;; This file is not part of GNU Emacs
 
@@ -54,9 +54,8 @@
 
 ;;; Customize:
 ;;
-;; You can setup option `flymake-extension-use-showtip' with `t',
-;; if you want to show error or warning use `showtip',
-;; And `showtip' just can use in X window system.
+;; You can setup option `flymake-extension-use-tooltip' with `t',
+;; if you want to show error or warning with tooltip.
 ;;
 ;; You can setup option `flymake-extension-auto-show' with `t',
 ;; if you want to show error or waring automatically.
@@ -67,12 +66,16 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/20
+;;      * Switch from `showtip' to `posframe' to show tooltip.
+;;      * Rename `flymake-extension-use-showtip' to `flymake-extension-use-tooltip'.
+;;
 ;; 2009/02/04
-;;      Add new option `flymake-extension-use-showtip'.
-;;      Add new option `flymake-extension-auto-show'.
+;;      * Add new option `flymake-extension-use-showtip'.
+;;      * Add new option `flymake-extension-auto-show'.
 ;;
 ;; 2008/10/11
-;;      First released.
+;;      * First released.
 ;;
 
 ;;; Acknowledgements:
@@ -96,10 +99,10 @@
   "Some extension functions for flymake."
   :group 'flymake)
 
-(defcustom flymake-extension-use-showtip nil
-  "Display error or warning in showtip.
+(defcustom flymake-extension-use-tooltip t
+  "Display error or warning in tooltip.
 If nil flymake display error or warning in minibuffer.
-Otherwise use `showtip' display.
+Otherwise use `tooltip' display.
 If you use X window, you can try to enable this option.
 Default is nil."
   :type 'boolean
@@ -116,6 +119,21 @@ Default is nil."
            (remove-hook 'post-command-hook 'flymake-extension-show+)))
   :group 'flymake-extension)
 
+(defcustom flymake-extension-tooltip-name "*flymake-extension*"
+  "The name of flymake tooltip name."
+  :type 'string
+  :group 'flymake-extension)
+
+(defcustom flymake-extension-tooltip-timeout 10
+  "The timeout of flymake tooltip show time, in seconds."
+  :type 'integer
+  :group 'flymake-extension)
+
+(defface flymake-extension-tooltip-face
+  '((t (:foreground "orange" :background "gray12")))
+  "Face for flymake tooltip"
+  :group 'flymake-extension)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar multiline-flymake-mode nil)
 
@@ -123,6 +141,12 @@ Default is nil."
 
 (defvar flymake-fringe-overlays nil)
 (make-variable-buffer-local 'flymake-fringe-overlays)
+
+(defvar flymake-extension-tooltip-last-point 0
+  "Hold last point when show tooltip, use for hide tooltip after move point.")
+
+(defvar flymake-extension-tooltip-last-scroll-offset 0
+  "Hold last scroll offset when show tooltip, use for hide tooltip after window scroll.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Show error ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun flymake-show-next-error (&optional reversed)
@@ -146,7 +170,7 @@ Default is nil."
 
 (defun flymake-extension-show (&optional msg no-echo)
   "Show error or warning.
-If option `flymake-extension-use-showtip' is t, use `showtip' display.
+If option `flymake-extension-use-tooltip' is t, use `tooltip' display.
 If MSG nil, try to get current error or warning.
 If NO-ECHO t, don't display message when no error or waring."
   ;; Just check when `flymake-mode' is enable.
@@ -157,13 +181,33 @@ If NO-ECHO t, don't display message when no error or waring."
           ;; Remove blank lines form information.
           (setq msg (replace-regexp-in-string "^[ \t]*\n" "" msg))
           ;; Show information.
-          (if flymake-extension-use-showtip
+          (if flymake-extension-use-tooltip
               (progn
-                (require 'showtip)
-                (showtip msg))
+                (require 'posframe)
+                (posframe-show
+                 flymake-extension-tooltip-name
+                 :string (concat "\n" msg)
+                 :position (point)
+                 :timeout flymake-extension-tooltip-timeout
+                 :background-color (face-attribute 'flymake-extension-tooltip-face :background)
+                 :foreground-color (face-attribute 'flymake-extension-tooltip-face :foreground)
+                 :min-height 3)
+                (add-hook 'post-command-hook 'flymake-extension-hide-tooltip-after-move)
+                (setq flymake-extension-tooltip-last-point (point))
+                (setq flymake-extension-tooltip-last-scroll-offset (window-start))
+                )
             (message msg)))
       (unless no-echo
         (message "No error or waring.")))))
+
+(defun flymake-extension-hide-tooltip-after-move ()
+  (ignore-errors
+    (when (get-buffer flymake-extension-tooltip-name)
+      (unless (and
+               (equal (point) flymake-extension-tooltip-last-point)
+               (equal (window-start) flymake-extension-tooltip-last-scroll-offset))
+        (posframe-delete flymake-extension-tooltip-name)
+        (kill-buffer flymake-extension-tooltip-name)))))
 
 (defun flymake-extension-show+ ()
   "This function is similar with `flymake-extension-show'.
@@ -172,71 +216,19 @@ Except don't display message when no error or waring."
   (flymake-extension-show nil t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Rules for `flymake' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Haskell mode.
-(defun flymake-Haskell-init ()
-  (flymake-simple-make-init-impl
-   'flymake-create-temp-with-folder-structure nil nil
-   (file-name-nondirectory buffer-file-name)
-   'flymake-get-Haskell-cmdline))
-
-(defun flymake-get-Haskell-cmdline (source base-dir)
-  (list "ghc"
-        (list "--make" "-fbyte-code"
-              (concat "-i" base-dir) ;; can be expanded for additional -i options as in the Perl script
-              source)))
-
 (defadvice flymake-split-output
-  ;; this needs to be advised as flymake-split-string is used in other places
-  ;; and I don't know of a better way to get at the caller's details
-  (around flymake-split-output-multiline activate protect)
+    ;; this needs to be advised as flymake-split-string is used in other places
+    ;; and I don't know of a better way to get at the caller's details
+    (around flymake-split-output-multiline activate protect)
   (if multiline-flymake-mode
       (let ((flymake-split-output-multiline t))
         ad-do-it)
     ad-do-it))
 
 (defadvice flymake-split-string
-  (before flymake-split-string-multiline activate)
+    (before flymake-split-string-multiline activate)
   (when flymake-split-output-multiline
     (ad-set-arg 1 "^\\s *$")))
-
-(add-hook
- 'haskell-mode-hook
- '(lambda ()
-    ;; use add-to-list rather than push to avoid growing the list for every Haskell file loaded
-    (add-to-list 'flymake-allowed-file-name-masks
-                 '("\\.l?hs$" flymake-Haskell-init flymake-simple-java-cleanup))
-    (add-to-list 'flymake-err-line-patterns
-                 '("^\\(.+\\.l?hs\\):\\([0-9]+\\):\\([0-9]+\\):\\(\\(?:.\\|\\W\\)+\\)"
-                   1 2 3 4))
-    (set (make-local-variable 'multiline-flymake-mode) t)))
-
-;; C mode.
-(defun flymake-c-init ()
-  (flymake-simple-make-init-impl 'flymake-create-temp-inplace t t (file-name-nondirectory buffer-file-name) 'flymake-get-c-cmdline))
-
-(defun flymake-get-c-cmdline (source base-dir)
-  (list "gcc" (list "-Wall" (concat base-dir source))))
-
-(push '(".+\\.c$" flymake-c-init) flymake-allowed-file-name-masks)
-(push '(".+\\.h$" flymake-c-init) flymake-allowed-file-name-masks)
-
-;; C++ mode.
-(defun flymake-c++-init ()
-  (flymake-simple-make-init-impl 'flymake-create-temp-inplace t t (file-name-nondirectory buffer-file-name) 'flymake-get-c++-cmdline))
-
-(defun flymake-get-c++-cmdline (source base-dir)
-  (list "g++" (list "-Wall" (concat base-dir source))))
-
-(push '(".+\\.cpp$" flymake-c++-init) flymake-allowed-file-name-masks)
-
-;; Java mode.
-(defun flymake-java-init ()
-  (flymake-simple-make-init-impl 'flymake-create-temp-inplace t t (file-name-nondirectory buffer-file-name) 'flymake-get-java-cmdline))
-
-(defun flymake-get-java-cmdline (source base-dir)
-  (list "javac" (list "-g" (concat base-dir source))))
-
-(push '(".+\\.java$" flymake-java-init) flymake-allowed-file-name-masks)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Fringe for `flymake' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defadvice flymake-make-overlay (after add-to-fringe first
@@ -259,5 +251,5 @@ Except don't display message when no error or waring."
 
 ;;; flymake-extension.el ends here
 
-;;; LocalWords:  flymake haskell impl inplace cmdline perl hg errline showtip
+;;; LocalWords:  flymake haskell impl inplace cmdline perl hg errline
 ;;; LocalWords:  multiline ghc fbyte hs msg
