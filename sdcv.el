@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 1.6
-;; Last-Updated: 2018-06-20 06:21:41
+;; Version: 1.7
+;; Last-Updated: 2018-06-20 11:09:26
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `showtip' `outline' `cl'
+;; `posframe' `outline' `cl'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -42,18 +42,18 @@
 ;; Interface for sdcv (StartDict console version).
 ;;
 ;; Translate word by sdcv (console version of Stardict), and display
-;; translation use showtip or buffer.
+;; translation use posframe or buffer.
 ;;
 ;; Below are commands you can use:
 ;;
 ;; `sdcv-search-pointer'
 ;; Search around word and display with buffer.
 ;; `sdcv-search-pointer+'
-;; Search around word and display with `showtip'.
+;; Search around word and display with `posframe'.
 ;; `sdcv-search-input'
 ;; Search input word and display with buffer.
 ;; `sdcv-search-input+'
-;; Search input word and display with `showtip'.
+;; Search input word and display with `posframe'.
 ;;
 ;; Tips:
 ;;
@@ -68,10 +68,10 @@
 ;;
 ;;      sudo aptitude install stardict sdcv -y
 ;;
-;; And make sure have install `showtip.el',
+;; And make sure have install `posframe.el',
 ;; this extension depend it.
 ;; You can install get it from:
-;; http://www.emacswiki.org/cgi-bin/emacs/showtip.el
+;; https://raw.githubusercontent.com/tumashu/posframe/master/posframe.el
 ;;
 ;; Put sdcv.el to your load-path.
 ;; The load-path is usually ~/elisp/.
@@ -84,7 +84,7 @@
 ;;
 ;; And then you need set two options.
 ;;
-;;  sdcv-dictionary-simple-list         (a simple dictionary list for showtip display)
+;;  sdcv-dictionary-simple-list         (a simple dictionary list for posframe display)
 ;;  sdcv-dictionary-complete-list       (a complete dictionary list for buffer display)
 ;;
 ;; Example, setup like this:
@@ -111,6 +111,7 @@
 ;;         "FOLDOC"
 ;;         "WordNet"
 ;;         ))
+;; (setq sdcv-dictionary-data-dir "your_sdcv_dict_dir")   ;; set local sdcv dict to search word
 ;;
 
 ;;; Customize:
@@ -124,6 +125,12 @@
 ;; `sdcv-dictionary-complete-list'
 ;; The dictionary list for complete describe.
 ;;
+;; `sdcv-dictionary-data-dir'
+;; The directory to store stardict dictionaries.
+;;
+;; `sdcv-tooltip-face'
+;; The foreground/background colors of sdcv tooltip.
+;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET sdcv RET
 ;;
@@ -132,6 +139,9 @@
 ;;
 ;; 2018/06/20
 ;;      * Add `sdcv-dictionary-data-dir'
+;;      * Use `posframe' instead `showtip' for better user experience.
+;;      * Add new face `sdcv-tooltip-face' for customize.
+;;      * Automatically hide sdcv tooltip once user move cursor of scroll window.
 ;;
 ;; 2009/04/04
 ;;      * Fix the bug of `sdcv-search-pointer'.
@@ -167,7 +177,7 @@
 (require 'outline)
 (eval-when-compile
   (require 'cl))
-(require 'showtip)
+(require 'posframe)
 
 ;;; Code:
 
@@ -179,6 +189,16 @@
 (defcustom sdcv-buffer-name "*SDCV*"
   "The name of the buffer of sdcv."
   :type 'string
+  :group 'sdcv)
+
+(defcustom sdcv-tooltip-name "*sdcv*"
+  "The name of sdcv tooltip name."
+  :type 'string
+  :group 'sdcv)
+
+(defcustom sdcv-tooltip-timeout 5
+  "The timeout of sdcv tooltip show time, in seconds."
+  :type 'integer
   :group 'sdcv)
 
 (defcustom sdcv-dictionary-complete-list nil
@@ -198,6 +218,11 @@ then you don't need copy dict data to /usr/share directory everytime when you fi
   :type 'string
   :group 'sdcv)
 
+(defface sdcv-tooltip-face
+  '((t (:foreground "green" :background "gray12")))
+  "Face for sdcv tooltip"
+  :group 'sdcv)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar sdcv-previous-window-configuration nil
   "Window configuration before switching to sdcv buffer.")
@@ -210,6 +235,12 @@ then you don't need copy dict data to /usr/share directory everytime when you fi
 
 (defvar sdcv-fail-notify-string "没有发现解释也... \n用更多的词典查询一下吧! ^_^"
   "This string is for notify user when search fail.")
+
+(defvar sdcv-tooltip-last-point 0
+  "Hold last point when show tooltip, use for hide tooltip after move point.")
+
+(defvar sdcv-tooltip-last-scroll-offset 0
+  "Hold last scroll offset when show tooltip, use for hide tooltip after window scroll.")
 
 (defvar sdcv-mode-font-lock-keywords    ;keyword for buffer display
   '(
@@ -296,9 +327,7 @@ And show information in other buffer."
 And show information use tooltip."
   (interactive)
   ;; Display simple translate result.
-  (sdcv-search-simple (or word (sdcv-prompt-input)))
-  ;; I set this delay for fast finger. ;)
-  (sit-for 0.5))
+  (sdcv-search-simple (or word (sdcv-prompt-input))))
 
 (defun sdcv-quit ()
   "Bury sdcv buffer and restore the previous window configuration."
@@ -379,8 +408,23 @@ The result will be displayed in buffer named with
 
 (defun sdcv-search-simple (&optional word)
   "Search WORD simple translate result."
-  (showtip
-   (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)))
+  (posframe-show
+   sdcv-tooltip-name
+   :string (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)
+   :position (point)
+   :timeout sdcv-tooltip-timeout
+   :background-color (face-attribute 'sdcv-tooltip-face :background)
+   :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
+  (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
+  (setq sdcv-tooltip-last-point (point))
+  (setq sdcv-tooltip-last-scroll-offset (window-start)))
+
+(defun sdcv-hide-tooltip-after-move ()
+  (ignore-errors
+    (unless (and
+             (equal (point) sdcv-tooltip-last-point)
+             (equal (window-start) sdcv-tooltip-last-scroll-offset))
+      (posframe-delete sdcv-tooltip-name))))
 
 (defun sdcv-search-witch-dictionary (word dictionary-list)
   "Search some WORD with dictionary list.
@@ -458,5 +502,5 @@ Otherwise return word around point."
 
 ;;; sdcv.el ends here
 
-;;; LocalWords:  sdcv StartDict startdict showtip stardict KDic XDICT CDICT
+;;; LocalWords:  sdcv StartDict startdict posframe stardict KDic XDICT CDICT
 ;;; LocalWords:  FOLDOC WordNet ChiYuan Hideshow reinit
