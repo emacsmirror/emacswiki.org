@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 1.8
-;; Last-Updated: 2018-06-20 11:37:23
+;; Version: 1.9
+;; Last-Updated: 2018-06-20 12:05:31
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -144,6 +144,7 @@
 ;;      * Automatically hide sdcv tooltip once user move cursor of scroll window.
 ;;      * Make sure sdcv tooltip buffer kill after frame deleted.
 ;;      * Improve function `sdcv-hide-tooltip-after-move' performance.
+;;      * Show tooltip above minibuffer if word is input from user.
 ;;
 ;; 2009/04/04
 ;;      * Fix the bug of `sdcv-search-pointer'.
@@ -410,13 +411,24 @@ The result will be displayed in buffer named with
 
 (defun sdcv-search-simple (&optional word)
   "Search WORD simple translate result."
-  (posframe-show
-   sdcv-tooltip-name
-   :string (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)
-   :position (point)
-   :timeout sdcv-tooltip-timeout
-   :background-color (face-attribute 'sdcv-tooltip-face :background)
-   :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
+  (let ((result (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)))
+    (if word
+        ;; Show tooltip above minibuffer if word is input from user.
+        (posframe-show
+         sdcv-tooltip-name
+         :string result
+         :poshandler 'posframe-poshandler-frame-bottom-left-corner
+         :timeout sdcv-tooltip-timeout
+         :background-color (face-attribute 'sdcv-tooltip-face :background)
+         :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
+      ;; Show tooltip at point if word fetch from user cursor.
+      (posframe-show
+       sdcv-tooltip-name
+       :string result
+       :position (point)
+       :timeout sdcv-tooltip-timeout
+       :background-color (face-attribute 'sdcv-tooltip-face :background)
+       :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))))
   (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
   (setq sdcv-tooltip-last-point (point))
   (setq sdcv-tooltip-last-scroll-offset (window-start)))
