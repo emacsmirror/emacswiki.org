@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-03-26 11:44:00
-;; Version: 0.2
-;; Last-Updated: 2018-06-20 06:21:01
+;; Version: 0.3
+;; Last-Updated: 2018-06-20 11:15:34
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-sdcv.el
 ;; Keywords: sdcv
@@ -67,6 +67,7 @@
 ;;
 ;; 2018/06/20
 ;;      * Add `sdcv-dictionary-data-dir'
+;;      * Follow posframe version of `sdcv.el'
 ;;
 ;; 2009/03/26
 ;;      * First released.
@@ -107,7 +108,6 @@
         "FOLDOC"
         "WordNet"))
 (setq sdcv-dictionary-data-dir lazycat-emacs-sdcv-data-dir) ;设置星际译王本地词典的目录
-(setq showtip-timeout 5)                ;10秒太长 ;)
 
 (provide 'init-sdcv)
 
