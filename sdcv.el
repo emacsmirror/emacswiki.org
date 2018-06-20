@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 1.7
-;; Last-Updated: 2018-06-20 11:09:26
+;; Version: 1.8
+;; Last-Updated: 2018-06-20 11:37:23
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -142,6 +142,8 @@
 ;;      * Use `posframe' instead `showtip' for better user experience.
 ;;      * Add new face `sdcv-tooltip-face' for customize.
 ;;      * Automatically hide sdcv tooltip once user move cursor of scroll window.
+;;      * Make sure sdcv tooltip buffer kill after frame deleted.
+;;      * Improve function `sdcv-hide-tooltip-after-move' performance.
 ;;
 ;; 2009/04/04
 ;;      * Fix the bug of `sdcv-search-pointer'.
@@ -421,10 +423,12 @@ The result will be displayed in buffer named with
 
 (defun sdcv-hide-tooltip-after-move ()
   (ignore-errors
-    (unless (and
-             (equal (point) sdcv-tooltip-last-point)
-             (equal (window-start) sdcv-tooltip-last-scroll-offset))
-      (posframe-delete sdcv-tooltip-name))))
+    (when (get-buffer sdcv-tooltip-name)
+      (unless (and
+               (equal (point) sdcv-tooltip-last-point)
+               (equal (window-start) sdcv-tooltip-last-scroll-offset))
+        (posframe-delete sdcv-tooltip-name)
+        (kill-buffer sdcv-tooltip-name)))))
 
 (defun sdcv-search-witch-dictionary (word dictionary-list)
   "Search some WORD with dictionary list.
