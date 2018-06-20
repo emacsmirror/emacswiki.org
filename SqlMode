@@ -114,6 +114,10 @@ PostgreSQL databases with underscores in their names trip up the prompt specifie
 
 -- LukeBurton
 
+The regular expression might be better expressed as  "^[_[:alnum:]]*[=][#>] " as tables names may also contain digits.
+
+-- hdasch
+
 === Automatically upcase SQL keywords ===
 
 See also http://stackoverflow.com/q/22091936/324105
