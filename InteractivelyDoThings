@@ -240,6 +240,23 @@ What about the following?
                 tags-completion-table)
       (find-tag (ido-completing-read "Tag: " tag-names))))
 
+If you have a very large Tags file, you might want to cache the tag-names list and refresh it only when you update Tags:
+
+  ;; This isn't necessary, but I thought it helpful as a reminder to refresh if the cache isn't initialized 
+  (setq my-tag-names (list "empty (run my-ido-find-tag-refresh"))
+  (defun my-ido-find-tag-refresh ()
+    "Refresh ido tag list"
+    (interactive)
+    (tags-completion-table)
+    (setq my-tag-names nil) ;; Clear the list so we don't get duplicates (and get rid of reminder value)
+    (mapcar (lambda (x)
+              (push (prin1-to-string x t) my-tag-names))
+            tags-completion-table))
+
+  (defun my-ido-find-tag ()
+    "Find a tag using ido"
+    (interactive)
+    (find-tag (ido-completing-read "Tag: " my-tag-names)))
 
 [:TagsFile]
 
