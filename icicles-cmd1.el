@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Mar  2 08:49:18 2018 (-0800)
+;; Last-Updated: Thu Jun 21 10:51:57 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 27596
+;;     Update #: 27600
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -196,11 +196,12 @@
 ;;    (+)`icicle-customize-face-other-window',
 ;;    `icicle-customize-icicles-group', (+)`icicle-custom-theme',
 ;;    `icicle-dabbrev-completion', (+)`icicle-delete-file',
-;;    (+)`icicle-delete-window', (+)`icicle-describe-option-of-type',
+;;    (+)`icicle-delete-window', (+)`icicle-delete-window-by-name',
+;;    (+)`icicle-delete-windows', (+)`icicle-describe-option-of-type',
 ;;    `icicle-describe-process',
 ;;    (+)`icicle-describe-var-w-val-satisfying',
-;;    (+)`icicle-delete-windows', (+)`icicle-directory-list',
-;;    (+)`icicle-dired', `icicle-dired-chosen-files',
+;;    (+)`icicle-directory-list', (+)`icicle-dired',
+;;    `icicle-dired-chosen-files',
 ;;    `icicle-dired-chosen-files-other-window',
 ;;    (+)`icicle-dired-insert-as-subdir',
 ;;    (+)`icicle-dired-other-window', `icicle-dired-project',
@@ -6988,6 +6989,32 @@ want this remapping, then customize option
   (if (window-minibuffer-p (selected-window))
       (icicle-remove-Completions-window)
     (if bufferp (icicle-delete-windows) (delete-window))))
+
+(defun icicle-delete-window-by-name (win-name &optional window-alist)
+  "Delete the window named WIN-NAME.
+Optional arg WINDOW-ALIST is an alist of windows to choose from.  Each
+alist element has the form (WNAME . WINDOW), where WNAME names WINDOW.
+See `icicle-make-window-alist' for more about WNAME.  If WINDOW-ALIST
+is nil then use `icicle-make-window-alist' to create an alist of the
+windows in the selected frame.
+
+Interactively:
+* No prefix arg means windows from the selected frame are candidates.
+* A non-negative prefix arg means include windows from visible frames.
+* A negative prefix arg means include windows from all frames
+  (including iconified and invisible)."
+  (interactive
+   (let* ((parg   (prefix-numeric-value current-prefix-arg))
+          (args   (icicle-read-choose-window-args
+                   nil
+                   (icicle-make-window-alist (and current-prefix-arg  (if (natnump parg) 'visible t))))))
+     (list (car args) (cadr args))))
+  (unless window-alist
+    (setq window-alist  (or (and (boundp 'icicle-window-alist)  icicle-window-alist)
+                            (icicle-make-window-alist))))
+  (let ((window  (cdr (assoc win-name window-alist))))
+    (unless window (icicle-user-error "No such window: `%s'" win-name))
+    (delete-window window)))
 
 
 (put 'icicle-kill-buffer 'icicle-Completions-window-max-height 200)
