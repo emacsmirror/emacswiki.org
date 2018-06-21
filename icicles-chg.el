@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jun  1 09:12:21 2018 (-0700)
+;; Last-Updated: Thu Jun 21 10:51:20 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11840
+;;     Update #: 11841
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2018/06/21 dadams
+;;     Added: icicle-delete-window-by-name.
 ;; 2018/03/02 dadams
 ;;     icicle-buffer: Updated doc string for C-x i -|+.
 ;; 2018/02/13 dadams
