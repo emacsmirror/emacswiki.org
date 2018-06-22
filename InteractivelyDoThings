@@ -227,9 +227,8 @@ What about the following?
     (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
     (bookmark-jump bname))
 
-
-=== Complete find-tag using ido ===
 [:CompleteFindTagUsingIdo]
+=== Complete find-tag using ido ===
 
   (defun my-ido-find-tag ()
     "Find a tag using ido"
