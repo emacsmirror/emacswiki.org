@@ -46,33 +46,6 @@
 
 per chi fosse interessato confermo che è possibile utilizzare [[Identica-mode]] negli Hub(zilla) che hanno installato il plugin twitter-api
 
--------
-[code]
-;
-; toot-post.el
-;
-; uno script per la pubblicazione su mastodon da emacs
-;
-; uso:
-;
-; si carica lo script con un M-x "load-file"
-; in questo modo viene resa disponibile la funzione "toot-post"
-;
-; una volta composto il messaggio
-; ad esempio in un buffer di cattura con org-mode
-; si fa un bel M-w del messaggio postare,
-; a questo punto un M-x "toot-post" apre il buffer per la composizione del toot
-; che viene generato dalla funzione (mastodon-toot) di mastodon.el
-
-(require 'mastodon)
-(provide 'toot-post)
-(defun toot-post ()
-  (interactive)
-  (setq messaggio (substring-no-properties (nth 0 kill-ring)))
-  (mastodon-toot (format "%s" messaggio))
-  )
-[/code]
-
 
 [new:DrewAdams:2016-11-08 15:40 UTC]
 Welcome to the wiki. -- DrewAdams
