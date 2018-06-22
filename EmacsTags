@@ -55,6 +55,10 @@ In addition, you can use '''Icicles''' multi-command `icicle-imenu' as an altern
 
 Since `icicle-imenu' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp). See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
 
+== Ido for Fuzzy Tag Selection ==
+
+Ido can be used to browse tags by name using fuzzy searching, which lets you progressively narrow down potential options. This is similar to Goto Symbol functionality in [https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name Visual Stuio Code] or Sublime's "Goto Symbol in Project". See [[InteractivelyDoThings#CompleteFindTagUsingIdo]].
+
 == Finding files *in* TAGS ==
 
 Directly open the a file referenced in the TAGS file without specifying the path,
