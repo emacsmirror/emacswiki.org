@@ -57,7 +57,7 @@ Since `icicle-imenu' locates definitions using Imenu regexps, you can only navig
 
 == Ido for Fuzzy Tag Selection ==
 
-Ido can be used to browse tags by name using fuzzy searching, which lets you progressively narrow down potential options. This is similar to Goto Symbol functionality in [https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name Visual Stuio Code] or Sublime's "Goto Symbol in Project". See [[InteractivelyDoThings#CompleteFindTagUsingIdo]].
+Ido can be used to browse tags by name using fuzzy searching, which lets you progressively narrow down potential options. This is similar to Goto Symbol functionality in [https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name Visual Studio Code] or Sublime's "Goto Symbol in Project". See [[InteractivelyDoThings#CompleteFindTagUsingIdo]].
 
 == Finding files *in* TAGS ==
 
