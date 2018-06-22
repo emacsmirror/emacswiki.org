@@ -229,6 +229,7 @@ What about the following?
 
 
 === Complete find-tag using ido ===
+[:CompleteFindTagUsingIdo]
 
   (defun my-ido-find-tag ()
     "Find a tag using ido"
