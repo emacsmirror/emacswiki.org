@@ -1,0 +1,43 @@
+Sometimes people try to download the entire site, not realising that is is hosted on a tiny VM together with all my private stuff. And then I get stuff like this in my logs:
+
+{{{
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:31 +0200] "GET /emacs/AddictedToVi HTTP/1.1" 200 14991 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:37 +0200] "GET /emacs/AngryFruitSaladTwo_Screenshot HTTP/1.1" 502 4602 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:35 +0200] "GET /emacs/AlistVsPlist HTTP/1.1" 502 4568 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:33 +0200] "GET /emacs/AktiveMen%C3%BCs HTTP/1.1" 502 4568 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:35 +0200] "GET /emacs/AlignLet HTTP/1.1" 502 4560 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:35 +0200] "GET /emacs/AlignCommands HTTP/1.1" 502 4570 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+www.emacswiki.org:443 108.36.154.245 - - [22/Jun/2018:18:49:33 +0200] "GET /emacs/AimClient HTTP/1.1" 502 4562 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0"
+}}}
+
+This is the result:
+
+[[image:Load on 2018-06-22]]
+
+And then of course my monitoring services decided to shut the site down.
+
+Whoever you are thinking about downloading thousands of pages, please start reading WikiDownload.
+
+The link is one of the first links of the SiteMap. It leads you to the [[Git repository]]. What else would you want?
+
+This is the repo you want:
+
+{{{
+https://github.com/emacsmirror/emacswiki.org.git
+}}}
+
+Or follow the link to the [[Rsync repository]].
+
+This is the command you want:
+
+{{{
+rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
+}}}
+
+Please don't treat every website like it's a run by a big company using cloud-something-something to cache and distribute and whatever. Think of the good old days when we thought the Internet was going to be distributed everybody would be connected, directly, without any of that NAT stuff.
+
+-- [[Alex Schroeder]]
+ 
+[[image:XKCD Dreams]]
+
+(This is [https://www.xkcd.com/137/ Dreams] by Randall Munroe. This work is licensed under a [https://creativecommons.org/licenses/by-nc/2.5/ Creative Commons Attribution-NonCommercial 2.5 License].
