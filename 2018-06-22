@@ -34,7 +34,7 @@ This is the command you want:
 rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
 }}}
 
-Please don't treat every website like it's a run by a big company using cloud-something-something to cache and distribute and whatever. Think of the good old days when we thought the Internet was going to be distributed and everybody would be connected, directly, without any of that NAT stuff.
+Please don't treat every website like it's a run by a big company using cloud-something-something to cache and distribute and whatever. Think of the good old days when we thought the Internet was going to be distributed and everybody would be connected, directly, with small machines and tiny cables.
 
 -- [[Alex Schroeder]]
  
