@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 1.9
-;; Last-Updated: 2018-06-20 12:05:31
+;; Version: 2.0
+;; Last-Updated: 2018-06-23 17:11:33
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -136,6 +136,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/06/23
+;;      * Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
 ;;
 ;; 2018/06/20
 ;;      * Add `sdcv-dictionary-data-dir'
@@ -449,6 +452,8 @@ Argument DICTIONARY-LIST the word that need transform."
   (or word (setq word (sdcv-region-or-word)))
   ;; Record current translate object.
   (setq sdcv-current-translate-object word)
+  ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
+  (setenv "LANG" "en_US.UTF-8")
   ;; Return translate result.
   (sdcv-filter
    (shell-command-to-string
