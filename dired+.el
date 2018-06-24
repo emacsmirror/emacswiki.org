@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 16 07:23:09 2018 (-0700)
+;; Last-Updated: Sun Jun 24 14:58:11 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10976
+;;     Update #: 10977
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -3781,7 +3781,7 @@ A new list is returned - list THINGS is not modified."
 ;;;         (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
-(defun diredp-dired-union (dired-name dirbufs &optional switches extra) ; Bound to `C-x 4 D U'
+(defun diredp-dired-union (dired-name dirbufs &optional switches extra) ; Bound to `C-x D U'
   "Create a Dired buffer that is the union of some existing Dired buffers.
 With a non-negative prefix arg, you are prompted for `ls' switches.
 With a non-positive prefix arg, you are prompted for file and dir
