@@ -62,23 +62,18 @@
 (require 'ddg-mode)
 
 (defconst ddg-result-buffer-name "*DuckDuckGo!*"
-  "This is the DDG. buffer name."
-  )
+  "This is the DDG. buffer name.")
 
 (defun duckduckgo (term)
   "Search using DuckDuckGo."
-  (interactive "MSearch?")
+  (interactive "MSearch? ")
 
   (with-current-buffer (get-buffer-create ddg-result-buffer-name)
     (let ((inhibit-read-only t))
       (delete-region (point-min) (point-max))    
       (ddg-mode)
-      (insert "Query: " term "\n")
-      )
-    )
-  
-  (ddg-search-asyn term 'ddg-show-results)  
-  )
+      (insert "Query: " term "\n")))  
+  (ddg-search-asyn term 'ddg-show-results))
 
 (defun duckduckgo-web (term)
   "Search in the web using `browse-url'."
@@ -88,8 +83,8 @@
   )
 
 (defun duckduckgo-emacswiki (term)
-  "Searcn inside emacswiki site using `browse-url'."
-  (interactive "MSearch inside EmacsWiki.org?")
+  "Search inside emacswiki site using `browse-url'."
+  (interactive "MSearch inside EmacsWiki.org? ")
   (duckduckgo-web (concat "site:emacswiki.org " term)))
 
 (defun ddg-show-results (list)
@@ -178,11 +173,8 @@ DDG-RESULTS is an array of the Results that comes from a parsed JSON answer."
   "Format only one result element. RES is only one JSON parsed result."
   (let ((text (cdr (assoc 'Text res)))
 	(first-url (cdr (assoc 'FirstURL res)))
-	(result (cdr (assoc 'Result res)))
-	)
-    (format "%s --> %s" text first-url)
-    )
-  )
+	(result (cdr (assoc 'Result res))))
+    (format "%s --> %s" text first-url)))
 
 
 (provide 'ddg-search)
