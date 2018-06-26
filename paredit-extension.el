@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.3
-;; Last-Updated: 2017-02-28 20:57:27
+;; Version: 0.4
+;; Last-Updated: 2018-06-26 08:54:29
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 26.0.50.1
@@ -45,18 +45,21 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/26
+;;      * Add `python-mode' in black list of `paredit-open-curly-smart'
+;;
 ;; 2017/02/24
-;;          Fixed `paredit-open-curly-smart' bug that indent wrong column.
+;;      * Fixed `paredit-open-curly-smart' bug that indent wrong column.
 ;;
 ;; 2017/02/23
-;;          Add `paredit-open-curly-smart'.
+;;      * Add `paredit-open-curly-smart'.
 ;;
 ;; 2014/03/16
-;;          Add `paredit-kill+'.
-;;          Add `paredit-duplicate-closest-sexp'.
+;;      * Add `paredit-kill+'.
+;;      * Add `paredit-duplicate-closest-sexp'.
 ;;
 ;; 2008/07/28
-;;          First release.
+;;      * First release.
 ;;
 
 ;;; Acknowledgments:
@@ -273,10 +276,21 @@ Will delete blank line after execute `paredit-splice-sexp'."
 
 (defun paredit-open-curly-smart ()
   (interactive)
-  (paredit-open-curly)
-  (indent-according-to-mode)
-  (comment-indent-new-line)
-  (open-newline-above 1)
+  (if (or
+       (eq major-mode 'rjsx-mode)
+       (eq major-mode 'js-mode)
+       (eq major-mode 'js2-mode)
+       (eq major-mode 'ruby-mode)
+       (eq major-mode 'python-mode)
+       )
+      ;; Just do same as `paredit-open-curly' in some mode.
+      (paredit-open-curly)
+    ;; Otherwise do something smart operation.
+    (paredit-open-curly)
+    (indent-according-to-mode)
+    (comment-indent-new-line)
+    (open-newline-above 1)
+    )
   )
 
 (provide 'paredit-extension)
