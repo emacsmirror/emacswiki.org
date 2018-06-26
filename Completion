@@ -17,6 +17,9 @@ The term "'''[::completion]'''" can mean different things in Emacs:
 
 * `dabbrev' -- standard library `<code>dabbrev.el</code>': Completes to words in current buffer and possibly other buffers. See DynamicAbbreviations.
 
+
+* `hippie-expand' -- standard library `<code>hippie-exp.el</code>': Try to expand text before point, using multiple methods. Repeated application of `hippie-expand' inserts successively possible expansions.
+
 * `complete' -- standard library `<code>completion.el</code>': Completes to words you have typed previously, or uses `dabbrev' completions if no other completions are found. Saves completions between sessions (persistent).
 
 * `complete-tag' -- standard library `<code>etags.el</code>': Completes to a defined tag (e.g. a function or variable name). See EmacsTags
