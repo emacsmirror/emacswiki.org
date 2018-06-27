@@ -3,3 +3,10 @@ sudo apt-get install gnutls-bin
 
 -- Anonymous 2015-11-10 16:09 UTC
 
+
+----
+
+nnir-search-engine isn't defined in Emacs 26
+
+-- Compro 2018-06-27 11:14 UTC
+
