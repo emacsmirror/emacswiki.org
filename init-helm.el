@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.3
-;; Last-Updated: 2018-06-14 12:41:20
+;; Version: 0.4
+;; Last-Updated: 2018-06-28 08:01:42
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -66,6 +66,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/06/28
+;;      * Update some key of helm-map.
 ;;
 ;; 2018/06/14
 ;;      * Upgrade configuration to match git version of helm.
@@ -130,6 +133,9 @@
  '(
    ("M-s-j" . helm-next-source)
    ("M-s-k" . helm-previous-source)
+   ("M->" . helm-scroll-other-window-down)
+   ("M-<" . helm-scroll-other-window)
+   ("M-o" . backward-delete-char-untabify)
    )
  helm-map)
 
