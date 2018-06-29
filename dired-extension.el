@@ -63,12 +63,15 @@
 
 ;;; Change log:
 ;;
+;; 2016/06/29
+;;      * Move moccur function to `moccur-extension.el'.
+;;
 ;; 2016/6/6
-;;      Build new function `moccur-grep-find-without-binary-files' that make `moccur-grep-find-pwd' remove binary files from search result.
-;;      I hate cross binary files in moccur search result.
+;;      * Build new function `moccur-grep-find-without-binary-files' that make `moccur-grep-find-pwd' remove binary files from search result.
+;;        I hate cross binary files in moccur search result.
 ;;
 ;; 2008/10/11
-;;      First released.
+;;      * First released.
 ;;
 
 ;;; Acknowledgements:
@@ -82,8 +85,6 @@
 ;;
 
 ;;; Require
-
-(require 'color-moccur)
 
 ;;; Code:
 (defvar my-dired-omit-status t
@@ -306,55 +307,6 @@ See also file-name-directory and file-name-nondirectory.."
   "Find files in DIR, matching REGEXP."
   (interactive "sMatching regexp: ")
   (find-lisp-find-dired default-directory regexp))
-
-(defun moccur-grep-find-pwd (inputs)
-  (interactive
-   (list (moccur-grep-read-regexp moccur-grep-default-mask)))
-  (moccur-grep-find-without-binary-files default-directory inputs))
-
-(defun moccur-grep-find-without-binary-files (dir inputs)
-  "This function is copy `moccur-grep-find' from `color-moccur.el' and with little improve.
-Default `moccur-grep-find' will search keyword from all files under directory, include binary files.
-This function will fitler binary files before search continue, avoid view binary when we cross search results."
-  (interactive
-   (list (moccur-grep-read-directory)
-         (moccur-grep-read-regexp moccur-grep-default-mask)))
-  (moccur-setup)
-  (setq moccur-last-command 'moccur-grep-find)
-
-  (let (regexps
-        mask (files nil)
-        ;;(default-directory dir)
-        )
-    (setq regexps
-          (mapconcat 'concat
-                     (if (= 1 (length inputs))
-                         inputs
-                       (reverse (cdr (reverse inputs))))
-                     " "))
-    (setq mask
-          (if (= 1 (length inputs))
-              "."
-            (car (reverse inputs))))
-    (message "Listing files...")
-    (cond
-     ((listp dir)
-      (while dir
-        (cond
-         ((file-directory-p (car dir))
-          (setq files (append
-                       (reverse (moccur-grep-find-subdir (car dir) mask))
-                       files)))
-         (t
-          (setq files (cons
-                       (car dir)
-                       files))))
-        (setq dir (cdr dir))))
-     (t
-      (setq files (reverse (moccur-grep-find-subdir dir mask)))))
-    (message "Listing files done!")
-    (moccur-search-files regexps (seq-remove 'file-binary-p files))
-    ))
 
 (defun file-binary-p (file &optional full)
   "Return t if FILE contains binary data.  If optional FULL is non-nil,
