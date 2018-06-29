@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Mar 27 09:46:31 2018 (-0700)
+;; Last-Updated: Fri Jun 29 10:47:47 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 305
+;;     Update #: 310
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -185,6 +185,9 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; 2018/06/29 dadams
+;;     gw--next/prev-where: Use eobp for next, bobp for previous.
+;;     gw-upward-word: Use bobp, not eobp.
 ;;; Change Log:
 ;; 2018/03/27 dadams
 ;;     Renamed gw-line-move-down to gw-to-column-down, gw-line-move-up to gw-to-column-up.
@@ -285,7 +288,7 @@ By default, they move forward or backward one character."
         (count  0))
     (save-excursion
       (goto-char start)
-      (while (and (< count n)  (not (eobp)))
+      (while (and (< count n)  (not (if (eq 'next next/prev) (eobp) (bobp))))
         (funcall (if (eq 'next next/prev) forward-fn backward-fn))
         (when (apply predicate (point) args)
           (setq pos    (point)
@@ -463,7 +466,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (interactive "i\np")
     (setq n  (or n  1))
     (dotimes (_i  n)
-      (if (and (not (eobp))  (gw-word-char-after-p (point)))
+      (if (and (not (bobp))  (or (bobp)  (gw-word-char-after-p (point))))
           (gw-to-previous-where-vertical #'gw-not-word-char-after-p)
         (let ((pos  (point)))
           (condition-case err
