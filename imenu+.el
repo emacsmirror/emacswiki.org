@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:25:10 2018 (-0800)
+;; Last-Updated: Fri Jun 29 10:14:40 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1048
+;;     Update #: 1063
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -28,7 +28,6 @@
 ;;
 ;;   User options defined here:
 ;;
-;;    `imenup-ignore-comments-flag' (Emacs 22+),
 ;;    `imenup-sort-ignores-case-flag'.
 ;;
 ;;   Commands defined here:
@@ -79,6 +78,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/29 dadams
+;;     Removed: imenup-ignore-comments-flag - Use imenu-generic-skip-comments-and-strings (Emacs 24.4+)
 ;; 2014/12/23 dadams
 ;;     lisp-imenu-generic-expression, imenup-emacs-lisp-generic-expression:
 ;;       Use distinct submenu names, so no ambiguity: Others 2, Functions 2.
@@ -212,7 +213,7 @@
 
 ;; Quiet the byte-compiler
 (defvar imenu-menubar-modified-tick)
-(defvar imenup-ignore-comments-flag)    ; Here (Emacs 22+).
+(defvar imenu-generic-skip-comments-and-strings)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -231,10 +232,11 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/ImenuMode#ImenuPlus")
   :link '(emacs-commentary-link :tag "Commentary" "imenu+"))
 
-(when (fboundp 'syntax-ppss)            ; Emacs 22+.
-  (defcustom imenup-ignore-comments-flag t
-    "Non-nil means Imenu ignores comments."
-    :type 'boolean :group 'Imenu-Plus))
+;; Emacs 22+.  The value assigned here is ignored in Emacs 24.4+, since there is a vanilla defcustom.
+(when (fboundp 'syntax-ppss)
+  (defcustom imenu-generic-skip-comments-and-strings t
+    "Non-nil means Imenu ignores text inside comments and strings."
+    :type 'boolean :group 'imenu))
 
 ;;;###autoload
 (defcustom imenup-sort-ignores-case-flag nil
@@ -410,14 +412,14 @@ This affects menu sorting using `imenu--sort-by-name'."
                                                                   "IGNORE case"
                                                                 "RESPECT case"))))
 
-(when (boundp 'imenup-ignore-comments-flag)
+(when (boundp 'imenu-generic-skip-comments-and-strings)
   (defun imenup-toggle-ignoring-comments ()
-    "Toggle option `imenup-ignore-comments-flag'."
+    "Toggle option `imenu-generic-skip-comments-and-strings'."
     (interactive)
-    (setq imenup-ignore-comments-flag  (not imenup-ignore-comments-flag))
+    (setq imenu-generic-skip-comments-and-strings  (not imenu-generic-skip-comments-and-strings))
     (imenu--menubar-select imenu--rescan-item)
-    (message "Ignoring definitions inside comments is now %s"
-             (if imenup-ignore-comments-flag 'ON 'OFF))))
+    (message "Ignoring definitions inside comments and strings is now %s"
+             (if imenu-generic-skip-comments-and-strings 'ON 'OFF))))
 
 
 ;; REPLACE ORIGINAL in `imenu.el'.
@@ -586,33 +588,37 @@ special element of the form (INDEX-NAME POSITION-MARKER FUNCTION
 ARGUMENTS...) with FUNCTION and ARGUMENTS copied from PATTERNS.
 
 MENU-TITLE is a string used as the title for the submenu or nil if the
-entries are not nested.
+entries (matches for this alist element) are to be at the top level of
+the menu, not nested.
 
-REGEXP is a regexp that should match a construct in the buffer that is
-to be displayed in the menu; i.e., function or variable definitions,
-etc.  It contains a substring which is the name to appear in the menu.
-See the info section on Regexps for more information.  REGEXP may also
-be a function, called without arguments.  It is expected to search
-backwards.  It shall return true and set `match-data' if it finds
-another element.
+REGEXP is a regular-expression string to match a construct in the
+buffer that is to be displayed in the menu; i.e., function or variable
+definitions, etc.  It contains a substring which is the name to appear
+in the menu.
 
-INDEX points to the substring in REGEXP that contains the name (of the
-function, variable or type) that is to appear in the menu.
+REGEXP can instead be a function, called without arguments.  It is
+expected to search backwards.  It must return true and set
+`match-data' if it finds another element.
 
-The variable `imenu-case-fold-search' determines whether or not the
-regexp matches are case sensitive, and `imenu-syntax-alist' can be
-used to alter the syntax table for the search.
+INDEX is an integer specifying which substring of REGEXP matches the
+definition name (e.g., name of the function, variable or type) that is
+to appear in the menu.
+
+FUNCTION, if present, specifies a function to call when the index item
+is chosen by the user.  It is called with, as arguments, the item
+name, the buffer position, and the elements of list ARGUMENTS.
+
+Variable `imenu-case-fold-search' determines whether or not the regexp
+matches are case sensitive, and `imenu-syntax-alist' can be used to
+alter the syntax table for the search.
 
 See `lisp-imenu-generic-expression' for an example of PATTERNS.
 
 Returns an index of the current buffer as an alist.  The elements in
-the alist look like:
- (INDEX-NAME . INDEX-POSITION)
-or like:
- (INDEX-NAME INDEX-POSITION FUNCTION ARGUMENTS...)
-They may also be nested index alists like:
- (INDEX-NAME . INDEX-ALIST)
-depending on PATTERNS."
+the alist look like (INDEX-NAME . INDEX-POSITION) or like
+\(INDEX-NAME INDEX-POSITION FUNCTION ARGUMENTS...).  They may also be
+nested index alists like: (INDEX-NAME . INDEX-ALIST), depending on
+PATTERNS."
   (let ((index-alist       (list 'dummy))
         (case-fold-search  (if (or (local-variable-p 'imenu-case-fold-search)
                                    (not (local-variable-p 'font-lock-defaults)))
@@ -667,10 +673,11 @@ depending on PATTERNS."
                                 (cons (match-string-no-properties index) beg)))
                        ;; This is the desired submenu, starting with its title (or nil).
                        (menu (assoc menu-title index-alist)))
-                   ;; Insert the item unless it is already present or is in a comment being ignored.
-                   (unless (or (and (boundp 'imenup-ignore-comments-flag)  imenup-ignore-comments-flag
-                                    (nth 8 (syntax-ppss)))
-                               (member item (cdr menu)))
+                   ;; Insert item unless already present or in a comment or string being ignored.
+                   (unless (or (member item (cdr menu))
+                               (and (fboundp 'syntax-ppss)
+                                    imenu-generic-skip-comments-and-strings
+                                    (nth 8 (syntax-ppss))))
                      (setcdr menu (cons item (cdr menu)))))
                  ;; Go to the start of the match, to make sure we keep making progress backwards.
                  (goto-char start))))
