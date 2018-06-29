@@ -165,7 +165,7 @@ Use python extension emacs: [https://www.emacswiki.org/emacs/EmacsApplicationFra
 
 *** Lisp:haskell-extension.el -- Some enhanced functions for [[HaskellMode]].
 
-*** Lisp:moccur-at-pointer.el -- Search anything around pointer with moccur-grep-find-pwd, don't need type command 'moccur-grep-find-pwd' and input search content manually.
+*** Lisp:moccur-extension.el -- Search symbol or input with current directory.
 
 *** Lisp:projectile-rails-extension.el -- Some enhanced functions for [https://github.com/asok/projectile-rails ProjectileRails]
 
