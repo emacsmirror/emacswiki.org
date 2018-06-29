@@ -9,7 +9,7 @@ parsing and displaying is done by the external w3m process.
 
 Though you can download emacs-w3m from its homepage at
 http://emacs-w3m.namazu.org, please note that the official releases are extremely old. 
-It is best to download the CVS version from the homepage, or from an un-official third-party mirror such as exist on MELPA or github (https://github.com/ecbrown/emacs-w3m).
+It is best to download the CVS version from the homepage, or from an un-official third-party mirror such as exist on MELPA or github (https://github.com/emacsorphanage/w3m.git).
 
 There are English and Japanese language mailing-lists.  Their archives are
 available at the website.  The lists are also archived and gatewayed on
