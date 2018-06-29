@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jun 21 10:51:57 2018 (-0700)
+;; Last-Updated: Fri Jun 29 14:57:50 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 27600
+;;     Update #: 27603
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -860,7 +860,7 @@ customize option `icicle-top-level-key-bindings'."
   (message "Evaluating...")
   (if (or (not (boundp 'eval-expression-debug-on-error))
           (null eval-expression-debug-on-error))
-      (setq values  (cons (if (boundp 'lexical-binding) ; Emacs 24+
+      (setq values  (cons (if (and (boundp 'lexical-binding)  (> emacs-major-version 23)) ; Emacs 24+
                               (eval expression lexical-binding)
                             (eval expression))
                           values))
