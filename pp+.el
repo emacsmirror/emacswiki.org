@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:21:16 2018 (-0800)
+;; Last-Updated: Fri Jun 29 14:53:55 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 446
+;;     Update #: 448
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
@@ -137,6 +137,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/29 dadams
+;;     pp-eval-expression: Ensure not just (boundp 'lexical-binding) but also Emacs 24+.
 ;; 2017/10/23 dadams
 ;;     pp-show-tooltip, pp-expression-size, pp-display-expression:
 ;;       Wrap calls to posn-* with save-excursion.
@@ -492,7 +494,8 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
     (message "Evaluating...")
     (if (or (not (boundp 'eval-expression-debug-on-error))
             (null eval-expression-debug-on-error))
-        (setq values  (cons (if (boundp 'lexical-binding) ; Emacs 24+
+        (setq values  (cons (if (and (boundp 'lexical-binding)
+                                     (> emacs-major-version 23)) ; Emacs 24+
                                 (eval expression lexical-binding)
                               (eval expression))
                             values))
