@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `helm' `helm-autoload-commands' `helm-buffers'
+;; `helm' `helm-buffers'
 ;; `helm-c-yasnippet' `helm-for-files'
 ;; `helm-projectile' `helm-ring'
 ;;
@@ -67,6 +67,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/06/29
+;;      * Remove `helm-autoload-commands', one-key is enough.
+;;
 ;; 2018/06/28
 ;;      * Update some key of helm-map.
 ;;
@@ -90,7 +93,6 @@
 
 ;;; Require
 (require 'helm)
-(require 'helm-autoload-commands)
 (require 'helm-buffers)
 (require 'helm-c-yasnippet)
 (require 'helm-for-files)
@@ -115,7 +117,6 @@
                    helm-source-projectile-projects
                    helm-source-kill-ring
                    helm-source-yasnippet
-                   helm-source-autoload-commands
                    )))
           (t
            (setq helm-source-list
@@ -124,7 +125,6 @@
                    helm-source-recentf
                    helm-source-kill-ring
                    helm-source-yasnippet
-                   helm-source-autoload-commands
                    ))
            ))
     (helm-other-buffer helm-source-list "*helm search*")))
@@ -138,12 +138,5 @@
    ("M-o" . backward-delete-char-untabify)
    )
  helm-map)
-
-(setq helm-autoload-commands-list
-      '(
-        ("yaoddmuse-post-library-default" "Post elisp library to EmacsWiki" "yaoddmuse-extension")
-        ("yaoddmuse-edit-default" "Edit EmacsWiki page" "yaoddmuse-extension")
-        ("auto-install-from-emacswiki" "Install package from EmacsWiki.org" "auto-install")
-        ))
 
 (provide 'init-helm)
