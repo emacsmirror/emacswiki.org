@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 24 14:58:11 2018 (-0700)
+;; Last-Updated: Sat Jun 30 15:00:20 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10977
+;;     Update #: 10981
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -603,8 +603,8 @@
 ;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
-;;    `diredp-delete-dups', `diredp-directories-within',
-;;    `diredp-dired-plus-description',
+;;    `diredp-delete-dups', `diredp-delete-if-not',
+;;    `diredp-directories-within', `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
@@ -776,6 +776,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/30 dadams
+;;     Added: diredp-delete-if-not.
 ;; 2018/06/16 dadams
 ;;     Added: diredp-visit-ignore-extensions, diredp-visit-ignore-regexps, diredp-visit-next-file,
 ;;            diredp-visit-previous-file, diredp-visit-this-file, diredp-visit-ignore-regexp.
@@ -2328,6 +2330,18 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
 (put 'diredp-with-help-window 'common-lisp-indent-function '(4 &body))
  
 ;;; Utility functions
+
+;; Same as `imenup-delete-if-not'.
+;;
+(defun diredp-delete-if-not (predicate xs)
+  "Remove all elements of list XS that do not satisfy PREDICATE.
+This operation is destructive, reusing conses of XS whenever possible."
+  (while (and xs  (not (funcall predicate (car xs))))
+    (setq xs  (cdr xs)))
+  (let ((cl-p  xs))
+    (while (cdr cl-p)
+      (if (not (funcall predicate (cadr cl-p))) (setcdr cl-p (cddr cl-p)) (setq cl-p  (cdr cl-p)))))
+  xs)
 
 ;; Same as `tap-string-match-p' in `thingatpt+.el'.
 (if (fboundp 'string-match-p)
@@ -4699,7 +4713,7 @@ confirmation to copy."
   (unless (file-directory-p dir) (error "Not a directory: `%s'" dir))
   (let ((files  diredp-last-copied-filenames))
     (unless (stringp files)  (error "No copied file names"))
-    (setq files  (delete-if-not (lambda (file) (file-name-absolute-p file)) (split-string files)))
+    (setq files  (diredp-delete-if-not (lambda (file) (file-name-absolute-p file)) (split-string files)))
     (unless files  (error "No copied absolute file names (Did you use `M-0 w'?)"))
     (if (and (not no-confirm-p)
              (diredp-y-or-n-files-p "Paste files whose names you copied? " files))
