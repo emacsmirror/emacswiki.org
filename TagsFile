@@ -98,7 +98,46 @@ in files/folders names. This is a patch that makes it work:
 </pre>
 
 Hope this helps. -- Andrea
+
 [new]
+Something about the `xref-find-definitions' in Emacs 25.1+.  It is
+frustrating that `xref-find-definitions' can't work with elisp
+back-end and etags back-end at the same time.  If you turn on the
+`xref-etags-mode', you also need a TAGS file to search the loaded
+symbols (The elisp back-end can search the loaded symbols without TAGS
+file).
+
+The function `xref--find-xrefs' does the actual searching work.  We
+can re-define that function to make `xref-find-definitions' support
+multiple back-ends at the same time:
+
+<pre>
+ (when (require 'xref nil t)
+   (defun xref--find-xrefs (input kind arg display-action)
+     "Re-define the `xref--find-xrefs'.
+ This is a re-defined version of `xref--find-xrefs'.  This
+ function will call all backends until the definitions are found
+ or the `xref-backend-functions' is exhausted."
+     (let ((fn (intern (format "xref-backend-%s" kind)))
+           (tail xref-backend-functions))
+       (cl-block nil
+         (while tail
+           (let* ((backend-fn (car tail))
+                  (backend (and (symbol-function backend-fn) (funcall backend-fn)))
+                  (xrefs (and backend (funcall fn backend arg))))
+             (when xrefs
+               (cl-return (xref--show-xrefs xrefs display-action))))
+           (setq tail (cdr tail)))
+         (user-error "No %s found for: %s" (symbol-name kind) input)))))
+
+ ;; and add a hook function to the `emacs-lisp-mode-hook':
+ (defun hook:elisp-mode ()
+   (when (require 'xref nil t)
+     (setq-local xref-backend-functions '(elisp--xref-backend etags--xref-backend t))))
+ (add-hook 'emacs-lisp-mode-hook 'hook:elisp-mode)
+</pre>
+
+I'm happy to see that works -- Pan Xie
 
 =Alternatives=
 
