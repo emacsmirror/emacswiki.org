@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Fri Jun 29 10:47:47 2018 (-0700)
+;; Last-Updated: Sat Jun 30 16:32:24 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 310
+;;     Update #: 336
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -185,6 +185,12 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; 2018/06/30 dadams
+;;     Return more than just the position:
+;;       gw--next/prev-where, gw--to-next/prev-where:
+;;         Return cons of position found and result of applying predicate.
+;;       gw-thing-start-p: Return cons of thing and end position.  Do not try to go back a char if at bob.
+;;       gw--to-next/prev-thing: Adapt to change in gw--next/prev-thing.
 ;; 2018/06/29 dadams
 ;;     gw--next/prev-where: Use eobp for next, bobp for previous.
 ;;     gw-upward-word: Use bobp, not eobp.
@@ -255,8 +261,10 @@ Don't forget to mention your Emacs and library versions."))
   "Last predicate used by `to-next-where' or `to-previous-where'.")
 
 (defun gw-next-where (predicate &optional start args n)
-  "Return Nth buffer position after START where PREDICATE is true.
+  "Find the Nth buffer position after START where PREDICATE is true.
 Return nil if there is no such position.
+Otherwise, return the found position in a cons (POSITION . VALUE),
+ where VALUE is what PREDICATE returns.
 
 PREDICATE must accept a buffer position as its first arg.
 Non-nil ARGS are passed to PREDICATE as additional args.
@@ -265,13 +273,8 @@ N defaults to 1."
   (gw--next/prev-where 'next predicate start args n))
 
 (defun gw-previous-where (predicate &optional start args n)
-  "Return Nth buffer position before START where PREDICATE is true.
-Return nil if there is no such position.
-
-PREDICATE must accept a buffer position as its first arg.
-Non-nil ARGS are passed to PREDICATE as additional args.
-START defaults to point.
-N defaults to 1."
+  "Find the Nth buffer position before START where PREDICATE is true.
+Same as `gw-next-where' except this searches backward."
   (gw--next/prev-where 'previous predicate start args n))
 
 (defun gw--next/prev-where (next/prev predicate &optional start args n forward-fn backward-fn)
@@ -285,15 +288,16 @@ By default, they move forward or backward one character."
         forward-fn   (or forward-fn   (lambda () (forward-char 1)))
         backward-fn  (or backward-fn  (lambda () (backward-char 1))))
   (let ((pos    nil)
-        (count  0))
+        (count  0)
+        res)
     (save-excursion
       (goto-char start)
       (while (and (< count n)  (not (if (eq 'next next/prev) (eobp) (bobp))))
         (funcall (if (eq 'next next/prev) forward-fn backward-fn))
-        (when (apply predicate (point) args)
+        (when (setq res  (apply predicate (point) args))
           (setq pos    (point)
                 count  (1+ count)))))
-    pos))
+    (and res  (cons pos res))))
 
 ;;;###autoload
 (defun gw-to-next-where (&optional predicate start args n noerror readp interactivep)
@@ -302,6 +306,10 @@ PREDICATE must accept a buffer position as its first arg.  You are
 prompted for PREDICATE if you use a prefix arg.  Otherwise, PREDICATE
 is the value of `gw-to-where-last', which is the last predicate used
 by the command.
+
+Return nil if there is no such position.
+Otherwise, return the found position in a cons (POSITION . VALUE),
+ where VALUE is what PREDICATE returns.
 
 Non-interactively:
 Go to Nth buffer position after START where PREDICATE is true.
@@ -318,13 +326,13 @@ Same as `gw-to-next-where' except this moves backward."
   (gw--to-next/prev-where 'previous predicate start args n noerror readp interactivep))
 
 (defun gw--to-next/prev-where (&optional next/prev predicate start args n noerror readp interactivep
-                               forward-fn backward-fn)
+                                 forward-fn backward-fn)
   "Helper for `gw-to-next-where' and `gw-to-previous-where'.
 FORWARD-FN and BACKWARD-FN are functions for moving forward and
 backward, respectively, by one unit (defaults: `forward-char',
 `backward-char').  (Only one of them is used, depending on NEXT/PREV.)"
-  (when readp     (setq gw-to-where-last nil))
-  (when predicate (setq gw-to-where-last predicate))
+  (when readp     (setq gw-to-where-last  nil))
+  (when predicate (setq gw-to-where-last  predicate))
   ;; $$ An alternative - using this means that it reads whenever not repeated (or C-u).
   ;;   (when (or (not (eq this-command last-command))  readp)
   ;;     (setq gw-to-where-last nil))
@@ -342,8 +350,11 @@ backward, respectively, by one unit (defaults: `forward-char',
                 arity                            (if (subrp gw-to-where-last)
                                                      (subr-arity gw-to-where-last)
                                                    (func-arity gw-to-where-last)))))))
-  (let ((pos  (gw--next/prev-where next/prev gw-to-where-last start args n forward-fn backward-fn)))
-    (if pos (goto-char pos) (unless noerror (error "No such position")))))
+  (let ((res  (gw--next/prev-where next/prev gw-to-where-last start args n forward-fn backward-fn)))
+    (if (not res)
+        (and noerror  (error "No such position"))
+      (goto-char (car res))
+      res)))
 
 (defun gw-word-char-after-p (pos)
   "Return non-nil if next char is a word constituent."
@@ -482,17 +493,18 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
   "Last thing used by `gw-to-next-thing' or `gw-to-previous-thing'.")
 
 (defun gw-next-thing (thing &optional start n)
-  "Return Nth buffer position after START that is the start of a THING.
+  "Find the Nth buffer position after START that is the start of a THING.
 Return nil if there is no such position.
+Otherwise, return the found position in a cons (POSITION . VALUE),
+ where VALUE is what `gw-thing-start-p' returns.
+xc
 START defaults to point.
 N defaults to 1."
   (gw--next/prev-thing 'next thing start n))
 
 (defun gw-previous-thing (thing &optional start n)
-  "Return Nth buffer position before START that is the start of a THING.
-Return nil if there is no such position.
-START defaults to point.
-N defaults to 1."
+  "Find the Nth buffer position before START that is the start of a THING.
+Same as `gw-next-thing' except this searches backward."
   (gw--next/prev-thing 'previous thing start n))
 
 (defun gw--next/prev-thing (next/prev thing start n)
@@ -500,14 +512,19 @@ N defaults to 1."
   (gw--next/prev-where next/prev #'gw-thing-start-p start (list thing) n))
 
 (defun gw-thing-start-p (position thing)
-  "Return non-nil if POSITION is at the start of a THING.
-This also means that (1- POSITION) is not on the same THING.
-Else return nil."
-  (let ((bnds  (save-excursion (goto-char position) (tap-bounds-of-thing-at-point thing))))
-    (and bnds
-         (= position (car bnds))
-         (not (equal bnds (save-excursion (goto-char (1- position))
-                                          (tap-bounds-of-thing-at-point thing)))))))
+  "Return true if POSITION is at the start of a THING, otherwise nil.
+A true value means also that (1- POSITION) is not on the same THING,
+or else point is at the beginning of the buffer.
+
+The true value returned is a cons (THE-THING . END), where THE-THING is
+the THING that starts at POSITION, and END is the buffer position of its end.
+THE-THING."
+  (let ((bounds  (save-excursion (goto-char position) (tap-bounds-of-thing-at-point thing))))
+    (and bounds
+         (= position (car bounds))
+         (or (bobp)  (not (equal bounds (save-excursion (goto-char (1- position))
+                                                        (tap-bounds-of-thing-at-point thing)))))
+         (cons (buffer-substring (car bounds) (cdr bounds)) (cdr bounds)))))
 
 ;;;###autoload
 (defun gw-to-next-thing (&optional thing start n noerror readp)
@@ -515,7 +532,12 @@ Else return nil."
 Non-interactively:
 Go to Nth buffer position after START that is the start of a THING.
 Non-nil NOERROR means do not raise an error when there is no such
-next position."
+next position.
+
+Return what `gw-thing-start-p' returns:
+* nil if there is no such position.
+* a cons (START THE-THING . END), where THE-THING is the THING, and
+  START and END are its buffer-position bounds."
   (interactive "i\ni\ni\ni\nP")
   (gw--to-next/prev-thing 'next thing start n noerror readp))
 
@@ -528,13 +550,16 @@ Same as `gw-to-next-thing', except this moves backward."
 
 (defun gw--to-next/prev-thing (next/prev thing start n noerror readp)
   "Helper for `gw-to-next-thing' and `gw-to-previous-thing'."
-  (when readp (setq gw-to-thing-last nil))
-  (when thing (setq gw-to-thing-last thing))
+  (when readp (setq gw-to-thing-last  nil))
+  (when thing (setq gw-to-thing-last  thing))
   (unless (or thing  (and gw-to-thing-last  (eq this-command last-command)))
     (while (not gw-to-thing-last)
       (setq gw-to-thing-last  (read (let (this-command) (read-string "Thing: "))))))
-  (let ((pos  (gw--next/prev-thing next/prev gw-to-thing-last start n)))
-    (if pos (goto-char pos) (unless noerror (error "No such position")))))
+  (let ((res  (gw--next/prev-thing next/prev gw-to-thing-last start n)))
+    (if (not res)
+        (and noerror  (error "No such position"))
+      (goto-char (car res))
+      res)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
