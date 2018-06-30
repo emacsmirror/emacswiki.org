@@ -7,11 +7,11 @@
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Mon Jan  1 16:05:56 2018 (-0800)
+;; Last-Updated: Sat Jun 30 10:25:28 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 2334
+;;     Update #: 2376
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
-;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus#ThingAtPoint%2b
+;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
@@ -52,7 +52,8 @@
 ;;    `tap-bounds-of-string-contents-at-point',
 ;;    `tap-bounds-of-symbol-at-point',
 ;;    `tap-bounds-of-symbol-nearest-point',
-;;    `tap-bounds-of-thing-nearest-point', `tap-color-at-point',
+;;    `tap-bounds-of-thing-nearest-point',
+;;    `tap-bounds-of-vector-at-point', `tap-color-at-point',
 ;;    `tap-color-nearest-point',
 ;;    `tap-color-nearest-point-with-bounds',
 ;;    `tap-define-aliases-wo-prefix', `tap-form-at-point-with-bounds',
@@ -85,6 +86,7 @@
 ;;    `tap-thing-nearest-point-with-bounds',
 ;;    `tap-unquoted-list-at-point', `tap-unquoted-list-nearest-point',
 ;;    `tap-unquoted-list-nearest-point-as-string',
+;;    `tap-vector-at-point', `tap-vector-nearest-point',
 ;;    `tap-word-nearest-point',
 ;;
 ;;    plus the same functions without the prefix `tap-', if you invoke
@@ -245,6 +247,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/30 dadams
+;;     Added: tap-vector-at-point, tap-bounds-of-vector-at-point, tap-vector-nearest-point.
 ;; 2016/11/21 dadams
 ;;     Rename tap-thing-at-point to tap-thing-at-point-as-string and add new def of former.
 ;;     The new def follows vanilla Emacs in letting property thing-at-point return non-string.
@@ -1464,6 +1468,15 @@ near point.
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-form-nearest-point 'sexp nil syntax-table))
 
+(defun tap-vector-nearest-point (&optional syntax-table)
+  "Return the vector nearest point, if any, else \"\".
+This is an Emacs Lisp entity, the result of reading a textual sexp
+near point.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
+Optional arg SYNTAX-TABLE is a syntax table to use."
+  (tap-form-nearest-point 'sexp 'vectorp syntax-table))
+
 (defun tap-number-nearest-point (&optional syntax-table)
   "Return the number nearest to point, if any, else nil.
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
@@ -1476,6 +1489,19 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 (unless (get 'defun 'beginning-op) (put 'defun 'beginning-op 'beginning-of-defun))
 (unless (get 'defun 'end-op)       (put 'defun 'end-op       'end-of-defun))
 (unless (get 'defun 'forward-op)   (put 'defun 'forward-op   'end-of-defun))
+
+
+(defun tap-vector-at-point ()
+  "Return the vector at point, if any, else \"\"."
+  (tap-form-at-point 'sexp 'vectorp))
+
+
+(put 'vector 'tap-bounds-of-thing-at-point 'tap-bounds-of-vector-at-point)
+
+(defun tap-bounds-of-vector-at-point ()
+  "Return bounds of vector at point.
+Return nil if none is found."
+  (and (tap-vector-at-point)  (tap-bounds-of-thing-at-point 'sexp)))
 
 
 (put 'number 'tap-bounds-of-thing-at-point 'tap-bounds-of-number-at-point)
