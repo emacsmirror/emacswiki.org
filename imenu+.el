@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 29 10:14:40 2018 (-0700)
+;; Last-Updated: Sat Jun 30 09:25:44 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1063
+;;     Update #: 1070
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -78,6 +78,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/06/30 dadams
+;;     imenu--generic-function: No longer call imenu-progress-message.
 ;; 2018/06/29 dadams
 ;;     Removed: imenup-ignore-comments-flag - Use imenu-generic-skip-comments-and-strings (Emacs 24.4+)
 ;; 2014/12/23 dadams
@@ -497,19 +499,21 @@ NOT share structure with ALIST."
                                                                  sm imenu-sort-function))
                                                               index-alist)
                                                     index-alist))
-                menu                             (imenu--split-menu index-alist (buffer-name)))
-          (if (>= emacs-major-version 22)
-              (setq menu1  (imenu--create-keymap (car menu)
-                                                 (cdr (if (< 1 (length (cdr menu)))
-                                                          menu
-                                                        (car (cdr menu))))
-                                                 'imenu--menubar-select))
-            (setq menu1  (imenu--create-keymap-1 (car menu)
-                                                 (if (< 1 (length (cdr menu)))
-                                                     (cdr menu)
-                                                   (cdr (car (cdr menu))))
-                                                 t)))
-          (setq old  (lookup-key (current-local-map) [menu-bar index]))
+                menu                             (imenu--split-menu index-alist (buffer-name))
+                menu1                            (if (>= emacs-major-version 22)
+                                                     (imenu--create-keymap
+                                                      (car menu)
+                                                      (cdr (if (< 1 (length (cdr menu)))
+                                                               menu
+                                                             (car (cdr menu))))
+                                                      'imenu--menubar-select)
+                                                   (imenu--create-keymap-1
+                                                    (car menu)
+                                                    (if (< 1 (length (cdr menu)))
+                                                        (cdr menu)
+                                                      (cdr (car (cdr menu))))
+                                                    t))
+                old                              (lookup-key (current-local-map) [menu-bar index]))
 	  ;; Next line was added in vanilla Emacs 24, with the comment.
           ;; This should never happen, but in some odd cases, potentially,
 	  ;; lookup-key may return a dynamically composed keymap.
@@ -633,7 +637,7 @@ PATTERNS."
           (modify-syntax-entry (car syn) (cdr syn) table)
         (mapc (lambda (c) (modify-syntax-entry c (cdr syn) table)) (car syn))))
     (goto-char (point-max))
-    (imenu-progress-message prev-pos 0 t)
+    ;; (imenu-progress-message prev-pos 0 t)
     (unwind-protect			; for syntax table
          (save-match-data
            (set-syntax-table table)
@@ -663,7 +667,7 @@ PATTERNS."
                  (goto-char (match-beginning index))
                  (beginning-of-line)
                  (setq beg  (point))
-                 (imenu-progress-message prev-pos nil t)
+                 ;; (imenu-progress-message prev-pos nil t)
                  ;; Add this sort of submenu only when find an item for it, to avoid empty menus.
                  (unless (assoc menu-title index-alist) (push (list menu-title) index-alist))
                  (when imenu-use-markers (setq beg  (copy-marker beg)))
@@ -682,7 +686,7 @@ PATTERNS."
                  ;; Go to the start of the match, to make sure we keep making progress backwards.
                  (goto-char start))))
            (set-syntax-table old-table)))
-    (imenu-progress-message prev-pos 100 t)
+    ;; (imenu-progress-message prev-pos 100 t)
     ;; Sort each submenu by position.
     ;; This is in case one submenu gets items from two different regexps.
     (dolist (item  index-alist)
