@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sat Jun 30 16:32:24 2018 (-0700)
+;; Last-Updated: Sun Jul  1 14:38:45 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 336
+;;     Update #: 340
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -185,6 +185,8 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; 2018/07/01 dadams
+;;     gw-(up|down)ward-word: Corrected use of bobp|eobp.
 ;; 2018/06/30 dadams
 ;;     Return more than just the position:
 ;;       gw--next/prev-where, gw--to-next/prev-where:
@@ -463,7 +465,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (interactive "i\np")
     (setq n  (or n  1))
     (dotimes (_i  n)
-      (if (and (not (eobp))  (gw-word-char-after-p (point)))
+      (if (or (eobp)  (gw-word-char-after-p (point)))
           (gw-to-next-where-vertical #'gw-not-word-char-after-p)
         (let ((pos  (point)))
           (condition-case err
@@ -477,7 +479,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (interactive "i\np")
     (setq n  (or n  1))
     (dotimes (_i  n)
-      (if (and (not (bobp))  (or (bobp)  (gw-word-char-after-p (point))))
+      (if (or (bobp)  (gw-word-char-after-p (point)))
           (gw-to-previous-where-vertical #'gw-not-word-char-after-p)
         (let ((pos  (point)))
           (condition-case err
