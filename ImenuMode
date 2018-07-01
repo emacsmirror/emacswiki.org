@@ -150,12 +150,13 @@ prompt to `isearch' or `occur'.
 Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##. 
 
 * Redefines standard functions `imenu-update-menubar' and `imenu--mouse-menu' so that submenus are sorted before splitting.
-* Ignores invisible definitions.  Ignores definitions that are commented out, if [[user option]] '''`imenup-ignore-comments-flag'''' is non-`nil'.
 
 * Three toggle items added to every Imenu menu:
 ** '''Toggle Case-Sensitive Name-Sort'''
 ** '''Toggle Ignoring Commented Defs'''
 ** '''Toggle Sorting'''
+
+* If used together with library [[GoWhere|Go Where]] (<tt>[[gowhere.el]]</tt>), you can add menu items to go to thing-at-point ##THING##s (strings, vectors, lists, [[sexp|sexps]], [[symbol|symbols]], words, colors (names/hex), numbers, decimal numbers, hex numbers, sentences, paragraphs,... whatever).  More generally, you can go to buffer positions where a given predicate is true.
 
 * Identifies more EmacsLisp definitions (`defalias' etc.) and more types of definitions.
 
