@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul  1 14:38:45 2018 (-0700)
+;; Last-Updated: Sun Jul  1 14:57:42 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 340
+;;     Update #: 341
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -97,7 +97,7 @@
 ;;    "Move to next doc face.
 ;;  With numeric prefix arg N, move to Nth next doc face."
 ;;    (interactive "p")
-;;    (gw-to-next-where #'doc-face-p nil '(font-lock-doc-face) n))
+;;    (gw-to-next-where #'doc-face-p nil nil n))
 ;;
 ;;  And because the predicate can accept additional args, besides the
 ;;  position, you can use a predicate that accepts the face to look
