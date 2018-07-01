@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 2.0
-;; Last-Updated: 2018-06-23 17:11:33
+;; Version: 2.1
+;; Last-Updated: 2018-07-01 21:15:44
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -137,6 +137,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/01
+;;      * Add support for MacOS, use `popup-tip'.
+;;
 ;; 2018/06/23
 ;;      * Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
 ;;
@@ -183,7 +186,9 @@
 (require 'outline)
 (eval-when-compile
   (require 'cl))
-(require 'posframe)
+(if (string-equal system-type "darwin")
+    (require 'popup)
+  (require 'posframe))
 
 ;;; Code:
 
@@ -199,6 +204,11 @@
 
 (defcustom sdcv-tooltip-name "*sdcv*"
   "The name of sdcv tooltip name."
+  :type 'string
+  :group 'sdcv)
+
+(defcustom sdcv-program (if (string-equal system-type "darwin") "/usr/local/bin/sdcv" "sdcv")
+  "The path of sdcv."
   :type 'string
   :group 'sdcv)
 
@@ -402,7 +412,7 @@ The result will be displayed in buffer named with
     (erase-buffer)
     (let* ((process
             (start-process
-             "sdcv" sdcv-buffer-name "sdcv"
+             "sdcv" sdcv-buffer-name sdcv-program
              (sdcv-search-witch-dictionary word sdcv-dictionary-complete-list))))
       (set-process-sentinel
        process
@@ -415,26 +425,20 @@ The result will be displayed in buffer named with
 (defun sdcv-search-simple (&optional word)
   "Search WORD simple translate result."
   (let ((result (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)))
-    (if word
-        ;; Show tooltip above minibuffer if word is input from user.
-        (posframe-show
-         sdcv-tooltip-name
-         :string result
-         :poshandler 'posframe-poshandler-frame-bottom-left-corner
-         :timeout sdcv-tooltip-timeout
-         :background-color (face-attribute 'sdcv-tooltip-face :background)
-         :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
-      ;; Show tooltip at point if word fetch from user cursor.
+    ;; Show tooltip at point if word fetch from user cursor.
+    (if (string-equal system-type "darwin")
+        (popup-tip result)
       (posframe-show
        sdcv-tooltip-name
        :string result
        :position (point)
        :timeout sdcv-tooltip-timeout
        :background-color (face-attribute 'sdcv-tooltip-face :background)
-       :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))))
-  (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
-  (setq sdcv-tooltip-last-point (point))
-  (setq sdcv-tooltip-last-scroll-offset (window-start)))
+       :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
+      (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
+      (setq sdcv-tooltip-last-point (point))
+      (setq sdcv-tooltip-last-scroll-offset (window-start))
+      )))
 
 (defun sdcv-hide-tooltip-after-move ()
   (ignore-errors
@@ -457,7 +461,8 @@ Argument DICTIONARY-LIST the word that need transform."
   ;; Return translate result.
   (sdcv-filter
    (shell-command-to-string
-    (format "sdcv -n %s %s --data-dir=%s"
+    (format "%s -n %s %s --data-dir=%s"
+            sdcv-program
             (mapconcat (lambda (dict)
                          (concat "-u " dict))
                        dictionary-list " ")
