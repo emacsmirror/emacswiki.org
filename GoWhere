@@ -154,4 +154,25 @@ and `gw-upward-word' act like Emacs `forward-word' and
 horizontally.  They are defined using steps 1 and 2.
 
 ----
+
+If you also use library [[Imenu+]] then you can use it to navigate among thing-at-point ##THING##s (strings, vectors, lists, [[sexp|sexps]], [[symbol|symbols]], words, colors (names/hex), numbers, decimal numbers, hex numbers, sentences, paragraphs,... whatever).  More generally, you can go to buffer positions where a given predicate is true.
+
+It's as simple as defining an Imenu item function, like so:
+
+
+    (defun imenup-gowhere-vector ()
+      "Generic-expression definition matcher for Lisp vectors.
+    Use it in an `imenu-generic-expression' value as follows:
+
+     \(list \"Vectors\" 'imenup-gowhere-vector 0)"
+      (imenup-gowhere-1 'vector))
+
+And then adding that to variable `imenu-generic-expression' for a given mode.  For example:
+
+    (add-to-list 'my-mode-imenu-generic-expression
+                 (list "Vectors" 'imenup-gowhere-vector 0))
+
+That gives you a menu '''Vectors''' whose menu items are the vectors in the buffer.  (And as usual you can toggle whether to include those that are inside comments or strings.)
+
+----
 CategoryEditing
