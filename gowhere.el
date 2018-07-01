@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul  1 14:57:42 2018 (-0700)
+;; Last-Updated: Sun Jul  1 15:11:22 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 341
+;;     Update #: 342
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -98,6 +98,13 @@
 ;;  With numeric prefix arg N, move to Nth next doc face."
 ;;    (interactive "p")
 ;;    (gw-to-next-where #'doc-face-p nil nil n))
+;;
+;;  Note the use here of two complementary tests within the predicate,
+;;  `doc-face-p'.  The char at the tested position must pass the test
+;;  (having property `font-lock-doc-face'), and the preceding char
+;;  must not pss the test.  That is, the test finds the next char that
+;;  is the first one to pass the test.  This is typical of a predicate
+;;  used with `gowhere.el' functions.
 ;;
 ;;  And because the predicate can accept additional args, besides the
 ;;  position, you can use a predicate that accepts the face to look
