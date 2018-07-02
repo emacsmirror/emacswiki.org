@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008 ~ 2016, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-11 22:57:07
-;; Version: 0.2
-;; Last-Updated: 2018-06-06 11:26:19
+;; Version: 0.3
+;; Last-Updated: 2018-07-02 17:30:09
 ;; URL:
 ;; Keywords: dired
 ;; Compatibility: GNU Emacs 27.0.50
@@ -62,6 +62,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2016/07/02
+;;      * Move function `file-binary-p' to `moccur-extension.el'
 ;;
 ;; 2016/06/29
 ;;      * Move moccur function to `moccur-extension.el'.
@@ -307,20 +310,6 @@ See also file-name-directory and file-name-nondirectory.."
   "Find files in DIR, matching REGEXP."
   (interactive "sMatching regexp: ")
   (find-lisp-find-dired default-directory regexp))
-
-(defun file-binary-p (file &optional full)
-  "Return t if FILE contains binary data.  If optional FULL is non-nil,
-check for the whole contents of FILE, otherwise check for the first
-  1000-byte."
-  (let ((coding-system-for-read 'binary)
-        default-enable-multibyte-characters)
-    (with-temp-buffer
-      (insert-file-contents file nil 0 (if full nil 1000))
-      (goto-char (point-min))
-      (and (re-search-forward
-            "[\000-\010\016-\032\034-\037]"
-            nil t)
-           t))))
 
 (provide 'dired-extension)
 ;;; dired-extension.el ends here
