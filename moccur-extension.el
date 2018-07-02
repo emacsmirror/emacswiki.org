@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2017, Andy Stewart, all rights reserved.
 ;; Created: 2017-06-14 17:38:23
-;; Version: 0.1
-;; Last-Updated: 2017-06-14 17:38:23
+;; Version: 0.2
+;; Last-Updated: 2018-07-02 17:30:42
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/moccur-extension.el
 ;; Keywords:
@@ -64,6 +64,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/07/02
+;;      * Add `file-binary-p' from `dired-extension.el'
 ;;
 ;; 2018/06/29
 ;;      * Create `moccur-grep-pointer' and `moccur-grep-input'
@@ -150,6 +153,20 @@ This function will fitler binary files before search continue, avoid view binary
     (message "Listing files done!")
     (moccur-search-files regexps (seq-remove 'file-binary-p files))
     ))
+
+(defun file-binary-p (file &optional full)
+  "Return t if FILE contains binary data.  If optional FULL is non-nil,
+check for the whole contents of FILE, otherwise check for the first
+  1000-byte."
+  (let ((coding-system-for-read 'binary)
+        default-enable-multibyte-characters)
+    (with-temp-buffer
+      (insert-file-contents file nil 0 (if full nil 1000))
+      (goto-char (point-min))
+      (and (re-search-forward
+            "[\000-\010\016-\032\034-\037]"
+            nil t)
+           t))))
 
 (provide 'moccur-extension)
 
