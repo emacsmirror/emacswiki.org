@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Jul  3 08:36:04 2018 (-0700)
+;; Last-Updated: Tue Jul  3 14:36:12 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 354
+;;     Update #: 357
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -95,8 +95,8 @@
 ;;                      'font-lock-doc-face)))))
 ;;
 ;;  (defun to-next-doc-face (n)
-;;    "Move to next doc face.
-;;  With numeric prefix arg N, move to Nth next doc face."
+;;    "Move to next occurrence of `font-lock-doc-face'.
+;;  With numeric prefix arg N, move to Nth next occurrence."
 ;;    (interactive "p")
 ;;    (gw-to-next-where #'doc-face-start-p nil nil n))
 ;;
@@ -123,9 +123,9 @@
 ;;  (defvar last-face nil "Last face used by `to-next-face'.")
 ;;
 ;;  (defun to-next-face (arg)
-;;    "Move to next use of FACE.
-;;  With a plain prefix arg, prompt for FACE.
-;;  With numeric prefix arg N, move to Nth next FACE."
+;;    "Move to next occurrence of `last-face'.
+;;  With plain `C-u', prompt for the face to assign to `last-face'.
+;;  With numeric prefix arg N, move to Nth next occurrence."
 ;;    (interactive "P")
 ;;    (if (or (consp arg)  (not last-face))
 ;;        (setq last-face  (read-face-name "Face: ")
