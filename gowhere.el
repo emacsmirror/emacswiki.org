@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Jul  3 14:36:12 2018 (-0700)
+;; Last-Updated: Tue Jul  3 15:30:29 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 357
+;;     Update #: 378
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -54,8 +54,8 @@
 ;;
 ;;  When repeated, all such conditional-motion commands reuse the same
 ;;  predicate as the last time (it is the value of variable
-;;  `gw-to-where-last'), but a prefix argument makes them prompt you
-;;  for the predicate to use.  The predicate you enter must accept at
+;;  `gw-last-pred'), but a prefix argument makes them prompt you for
+;;  the predicate to use.  The predicate you enter must accept at
 ;;  least one argument, and its first argument must be a buffer
 ;;  position (the position to test).
 ;;
@@ -191,10 +191,12 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `gw-to-thing-last', `gw-to-where-last'.
+;;    `gw-last-pred', `gw-last-thing'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;; 2018/07/03 dadams
+;;     Renamed: gw-to-where-last to gw-last-pred and gw-to-where-last to gw-last-thing.
 ;; 2018/07/01 dadams
 ;;     gw-(up|down)ward-word: Corrected use of bobp|eobp.
 ;; 2018/06/30 dadams
@@ -269,7 +271,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/GoWhere")
   :link '(emacs-commentary-link :tag "Commentary" "gowhere"))
 
-(defvar gw-to-where-last nil
+(defvar gw-last-pred nil
   "Last predicate used by `to-next-where' or `to-previous-where'.")
 
 (defun gw-next-where (predicate &optional start args n)
@@ -316,8 +318,8 @@ By default, they move forward or backward one character."
   "Go to first buffer position after point where PREDICATE is true.
 PREDICATE must accept a buffer position as its first arg.  You are
 prompted for PREDICATE if you use a prefix arg.  Otherwise, PREDICATE
-is the value of `gw-to-where-last', which is the last predicate used
-by the command.
+is the value of `gw-last-pred', which is the last predicate used by
+the command.
 
 Return nil if there is no such position.
 Otherwise, return the found position in a cons (POSITION . VALUE),
@@ -338,31 +340,28 @@ Same as `gw-to-next-where' except this moves backward."
   (gw--to-next/prev-where 'previous predicate start args n noerror readp interactivep))
 
 (defun gw--to-next/prev-where (&optional next/prev predicate start args n noerror readp interactivep
-                                 forward-fn backward-fn)
+                               forward-fn backward-fn)
   "Helper for `gw-to-next-where' and `gw-to-previous-where'.
 FORWARD-FN and BACKWARD-FN are functions for moving forward and
 backward, respectively, by one unit (defaults: `forward-char',
 `backward-char').  (Only one of them is used, depending on NEXT/PREV.)"
-  (when readp     (setq gw-to-where-last  nil))
-  (when predicate (setq gw-to-where-last  predicate))
+  (when readp     (setq gw-last-pred  nil))
+  (when predicate (setq gw-last-pred  predicate))
   ;; $$ An alternative - using this means that it reads whenever not repeated (or C-u).
   ;;   (when (or (not (eq this-command last-command))  readp)
-  ;;     (setq gw-to-where-last nil))
-  (unless (or predicate  (and gw-to-where-last  (eq this-command last-command)))
-    (while (not (functionp gw-to-where-last))
-      (setq gw-to-where-last  (read (let (this-command) (read-string "Predicate: ")))))
+  ;;     (setq gw-last-pred  nil))
+  (unless (or predicate  (and gw-last-pred  (eq this-command last-command)))
+    (while (not (functionp gw-last-pred))
+      (setq gw-last-pred  (read (let (this-command) (read-string "Predicate: ")))))
     (when (fboundp 'func-arity)         ; Emacs 26+
-      (let ((arity  (if (subrp gw-to-where-last)
-                        (subr-arity gw-to-where-last)
-                      (func-arity gw-to-where-last))))
+      (let ((arity  (if (subrp gw-last-pred) (subr-arity gw-last-pred) (func-arity gw-last-pred))))
         (while (or (not (>= (car arity) 1))
                    (and interactivep  (not (= (car arity) 1)))) ; Cannot know how to read ARGS.
-          (setq gw-to-where-last  (read (let (this-command)
-                                          (read-string "Predicate (at least 1 arg): ")))
-                arity                            (if (subrp gw-to-where-last)
-                                                     (subr-arity gw-to-where-last)
-                                                   (func-arity gw-to-where-last)))))))
-  (let ((res  (gw--next/prev-where next/prev gw-to-where-last start args n forward-fn backward-fn)))
+          (setq gw-last-pred  (read (let (this-command) (read-string "Predicate (at least 1 arg): ")))
+                arity         (if (subrp gw-last-pred)
+                                  (subr-arity gw-last-pred)
+                                (func-arity gw-last-pred)))))))
+  (let ((res  (gw--next/prev-where next/prev gw-last-pred start args n forward-fn backward-fn)))
     (if (not res)
         (and noerror  (error "No such position"))
       (goto-char (car res))
@@ -501,7 +500,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
 
 ;;; THING movement ---------------------------------------------------
 
-(defvar gw-to-thing-last nil
+(defvar gw-last-thing nil
   "Last thing used by `gw-to-next-thing' or `gw-to-previous-thing'.")
 
 (defun gw-next-thing (thing &optional start n)
@@ -541,6 +540,9 @@ THE-THING."
 ;;;###autoload
 (defun gw-to-next-thing (&optional thing start n noerror readp)
   "Go to first buffer position after point that is the start of a THING.
+You are prompted for THING if you use a prefix arg or if this is the
+first time you use the command.
+
 Non-interactively:
 Go to Nth buffer position after START that is the start of a THING.
 Non-nil NOERROR means do not raise an error when there is no such
@@ -562,12 +564,12 @@ Same as `gw-to-next-thing', except this moves backward."
 
 (defun gw--to-next/prev-thing (next/prev thing start n noerror readp)
   "Helper for `gw-to-next-thing' and `gw-to-previous-thing'."
-  (when readp (setq gw-to-thing-last  nil))
-  (when thing (setq gw-to-thing-last  thing))
-  (unless (or thing  (and gw-to-thing-last  (eq this-command last-command)))
-    (while (not gw-to-thing-last)
-      (setq gw-to-thing-last  (read (let (this-command) (read-string "Thing: "))))))
-  (let ((res  (gw--next/prev-thing next/prev gw-to-thing-last start n)))
+  (when readp (setq gw-last-thing  nil))
+  (when thing (setq gw-last-thing  thing))
+  (unless (or thing  (and gw-last-thing  (eq this-command last-command)))
+    (while (not gw-last-thing)
+      (setq gw-last-thing  (read (let (this-command) (read-string "Thing: "))))))
+  (let ((res  (gw--next/prev-thing next/prev gw-last-thing start n)))
     (if (not res)
         (and noerror  (error "No such position"))
       (goto-char (car res))
