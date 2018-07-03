@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul  1 15:11:22 2018 (-0700)
+;; Last-Updated: Tue Jul  3 08:36:04 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 342
+;;     Update #: 354
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -86,10 +86,11 @@
 ;;
 ;;  For example:
 ;;
-;;  (defun doc-face-p (position)
-;;    "Return non-nil if char at POSITION has face `font-lock-doc-face'."
+;;  (defun doc-face-start-p (position)
+;;    "Return non-nil if char at POSITION starts face `font-lock-doc-face'.
+;;  That is, it has that face, and any char just before it does not."
 ;;    (and (eq (get-text-property position 'face) 'font-lock-doc-face)
-;;         (or (eq position (point-min))
+;;         (or (= position (point-min))
 ;;             (not (eq (get-text-property (1- position) 'face)
 ;;                      'font-lock-doc-face)))))
 ;;
@@ -97,23 +98,25 @@
 ;;    "Move to next doc face.
 ;;  With numeric prefix arg N, move to Nth next doc face."
 ;;    (interactive "p")
-;;    (gw-to-next-where #'doc-face-p nil nil n))
+;;    (gw-to-next-where #'doc-face-start-p nil nil n))
 ;;
 ;;  Note the use here of two complementary tests within the predicate,
-;;  `doc-face-p'.  The char at the tested position must pass the test
-;;  (having property `font-lock-doc-face'), and the preceding char
-;;  must not pss the test.  That is, the test finds the next char that
-;;  is the first one to pass the test.  This is typical of a predicate
-;;  used with `gowhere.el' functions.
+;;  `doc-face-start-p'.  The character at the tested position must
+;;  pass the test (having property `font-lock-doc-face'), and the
+;;  preceding char, if there is one, must NOT pass the test.  This
+;;  means that `to-next-doc-face' finds the first character that
+;;  passes the test.  This is typical of a predicate used with
+;;  `gowhere.el' functions.
 ;;
 ;;  And because the predicate can accept additional args, besides the
 ;;  position, you can use a predicate that accepts the face to look
 ;;  for.
 ;;
-;;  (defun face-p (position face)
-;;    "Return non-nil if char at POSITION has FACE."
+;;  (defun face-start-p (position face)
+;;    "Return non-nil if the character at POSITION starts FACE.
+;;  That is, it has FACE, and any character just before it does not."
 ;;    (and (eq (get-text-property position 'face) face)
-;;         (or (eq position (point-min))
+;;         (or (= position (point-min))
 ;;             (not (eq (get-text-property (1- position) 'face)
 ;;                      face)))))
 ;;
@@ -128,7 +131,7 @@
 ;;        (setq last-face  (read-face-name "Face: ")
 ;;              arg        1)
 ;;      (setq arg  (prefix-numeric-value arg)))
-;;    (gw-to-next-where #'face-p nil (list last-face) arg))
+;;    (gw-to-next-where #'face-start-p nil (list last-face) arg))
 ;;
 ;;  As an example of defining a next-thing command, this is how you
 ;;  might define a command to move among sexps:
