@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Jul  3 15:30:29 2018 (-0700)
+;; Last-Updated: Tue Jul  3 16:05:29 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 378
+;;     Update #: 398
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -54,10 +54,10 @@
 ;;
 ;;  When repeated, all such conditional-motion commands reuse the same
 ;;  predicate as the last time (it is the value of variable
-;;  `gw-last-pred'), but a prefix argument makes them prompt you for
-;;  the predicate to use.  The predicate you enter must accept at
-;;  least one argument, and its first argument must be a buffer
-;;  position (the position to test).
+;;  `gw-last-pred'), but a plain prefix argument (`C-u') makes them
+;;  prompt you for the predicate to use.  The predicate you enter must
+;;  accept at least one argument, and its first argument must be a
+;;  buffer position (the position to test).
 ;;
 ;;  A typical use might check something about the character at (i.e.,
 ;;  after) that position.
@@ -78,7 +78,8 @@
 ;;
 ;;  When repeated, these commands reuse the same thing type as the
 ;;  last time (it is the value of variable `gw-to-thing-last'), but a
-;;  prefix argument makes them prompt you for the thing type to use.
+;;  plain prefix argument (`C-u') makes them prompt you for the thing
+;;  type to use.
 ;;
 ;;  You can bind any of the commands defined here to keys, of course.
 ;;  But you can also easily define other commands that make use of
@@ -197,6 +198,7 @@
 ;;
 ;; 2018/07/03 dadams
 ;;     Renamed: gw-to-where-last to gw-last-pred and gw-to-where-last to gw-last-thing.
+;;     gw-to-(next|previous)-(where|thing): Corrected use of prefix arg.
 ;; 2018/07/01 dadams
 ;;     gw-(up|down)ward-word: Corrected use of bobp|eobp.
 ;; 2018/06/30 dadams
@@ -316,10 +318,11 @@ By default, they move forward or backward one character."
 ;;;###autoload
 (defun gw-to-next-where (&optional predicate start args n noerror readp interactivep)
   "Go to first buffer position after point where PREDICATE is true.
-PREDICATE must accept a buffer position as its first arg.  You are
-prompted for PREDICATE if you use a prefix arg.  Otherwise, PREDICATE
-is the value of `gw-last-pred', which is the last predicate used by
-the command.
+PREDICATE must accept a buffer position as its first arg.
+
+You are prompted for PREDICATE if you use a plain prefix arg or it is
+the first time you use the command.  Otherwise, PREDICATE is the value
+of `gw-last-pred', which is the last predicate used by the command.
 
 Return nil if there is no such position.
 Otherwise, return the found position in a cons (POSITION . VALUE),
@@ -329,14 +332,16 @@ Non-interactively:
 Go to Nth buffer position after START where PREDICATE is true.
 Non-nil NOERROR means do not raise an error when there is no such
 next position.  See `gw-next-where' for the other arguments."
-  (interactive "i\ni\ni\ni\ni\nP\np")
+  (interactive (let ((parg  current-prefix-arg))
+                 (list nil nil nil (and (atom parg) (prefix-numeric-value parg)) nil parg t)))
   (gw--to-next/prev-where 'next predicate start args n noerror readp interactivep))
 
 ;;;###autoload
 (defun gw-to-previous-where (&optional predicate start args n noerror readp interactivep)
   "Go to first buffer position before point where PREDICATE is true.
 Same as `gw-to-next-where' except this moves backward."
-  (interactive "i\ni\ni\ni\ni\nP")
+  (interactive (let ((parg  current-prefix-arg))
+                 (list nil nil nil (and (atom parg) (prefix-numeric-value parg)) nil parg t)))
   (gw--to-next/prev-where 'previous predicate start args n noerror readp interactivep))
 
 (defun gw--to-next/prev-where (&optional next/prev predicate start args n noerror readp interactivep
@@ -540,8 +545,9 @@ THE-THING."
 ;;;###autoload
 (defun gw-to-next-thing (&optional thing start n noerror readp)
   "Go to first buffer position after point that is the start of a THING.
-You are prompted for THING if you use a prefix arg or if this is the
-first time you use the command.
+You are prompted for THING if you use a plain prefix arg or if this is
+the first time you use the command.  Otherwise, THING is the value of
+`gw-last-thing', which is the last THING used by the command.
 
 Non-interactively:
 Go to Nth buffer position after START that is the start of a THING.
@@ -552,14 +558,16 @@ Return what `gw-thing-start-p' returns:
 * nil if there is no such position.
 * a cons (START THE-THING . END), where THE-THING is the THING, and
   START and END are its buffer-position bounds."
-  (interactive "i\ni\ni\ni\nP")
+  (interactive (let ((parg  current-prefix-arg))
+                 (list nil nil (and (atom parg) (prefix-numeric-value parg)) nil parg)))
   (gw--to-next/prev-thing 'next thing start n noerror readp))
 
 ;;;###autoload
 (defun gw-to-previous-thing (&optional thing start n noerror readp)
   "Go to first buffer position before point that is the start of a THING.
 Same as `gw-to-next-thing', except this moves backward."
-  (interactive "i\ni\ni\ni\nP")
+  (interactive (let ((parg  current-prefix-arg))
+                 (list nil nil (and (atom parg) (prefix-numeric-value parg)) nil parg)))
   (gw--to-next/prev-thing 'previous thing start n noerror readp))
 
 (defun gw--to-next/prev-thing (next/prev thing start n noerror readp)
