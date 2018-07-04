@@ -235,6 +235,16 @@ or (if you prefer a -- usually more recent-- development version)
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
 
+==== Mitsaharu version in MacPorts ====
+
+To instead use the Yamamoto Mitsuharu version of Emacs 26.1 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
+
+<pre>
+sudo port install emacs-mac-app
+</pre>
+
+The application will appear in your Applications/MacPorts folder.
+
 == Terminal Emulation ==
 
 Read up on [[iTerm2]] if you want to spend most of your time in ssh using emacs rather than the GUI.
