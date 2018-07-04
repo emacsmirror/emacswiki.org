@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Jul  3 17:14:44 2018 (-0700)
+;; Last-Updated: Wed Jul  4 09:17:59 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 426
+;;     Update #: 431
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -231,7 +231,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; 2018/07/03 dadams
+;; 2018/07/04 dadams
 ;;     Added: gw-test-start-p.
 ;;     Renamed: gw-to-where-last to gw-last-pred and gw-to-where-last to gw-last-thing.
 ;;     gw-thing-start-p: Use gw-test-start-p.
@@ -443,6 +443,19 @@ backward, respectively, by one unit (defaults: `forward-char',
 ;;       (gw-to-previous-where #'gw-word-char-before-p)
 ;;       (gw-to-previous-where #'gw-not-word-char-before-p))))
 
+(defun gw-test-start-p (position predicate &rest args)
+  "Return non-nil if PREDICATE is true at POSITION and not just before it.
+Otherwise return nil.  The non-nil return value is whatever PREDICATE
+returns at POSITION.
+
+PREDICATE is applied to (only) the arguments in list ARGS (empty by
+default)."
+  (let ((here  (save-excursion (goto-char position) (apply predicate args))))
+    (and here
+         (or (bobp)
+             (not (equal here (save-excursion (goto-char (1- position)) (apply predicate args)))))
+         here)))
+
 
 ;;; Vertical movement ------------------------------------------------
 
@@ -575,6 +588,7 @@ THE-THING."
   (gw-test-start-p position `(lambda ()
                               (let ((bounds  (tap-bounds-of-thing-at-point ',thing)))
                                 (and bounds
+                                     (= ,position (car bounds))
                                      (cons (buffer-substring (car bounds) (cdr bounds))
                                            (cdr bounds)))))))
 
