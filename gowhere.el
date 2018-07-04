@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Jul  3 16:05:29 2018 (-0700)
+;; Last-Updated: Tue Jul  3 17:14:44 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 398
+;;     Update #: 426
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -77,7 +77,7 @@
 ;;  `gw-next-thing' and `gw-previous-thing', respectively.
 ;;
 ;;  When repeated, these commands reuse the same thing type as the
-;;  last time (it is the value of variable `gw-to-thing-last'), but a
+;;  last time (it is the value of variable `gw-last-thing'), but a
 ;;  plain prefix argument (`C-u') makes them prompt you for the thing
 ;;  type to use.
 ;;
@@ -88,7 +88,7 @@
 ;;  For example:
 ;;
 ;;  (defun doc-face-start-p (position)
-;;    "Return non-nil if char at POSITION starts face `font-lock-doc-face'.
+;;    "Return non-nil if char at POSITION starts `font-lock-doc-face'.
 ;;  That is, it has that face, and any char just before it does not."
 ;;    (and (eq (get-text-property position 'face) 'font-lock-doc-face)
 ;;         (or (= position (point-min))
@@ -97,7 +97,7 @@
 ;;
 ;;  (defun to-next-doc-face (n)
 ;;    "Move to next occurrence of `font-lock-doc-face'.
-;;  With numeric prefix arg N, move to Nth next occurrence."
+;;  With numeric prefix arg N, move to the Nth next occurrence."
 ;;    (interactive "p")
 ;;    (gw-to-next-where #'doc-face-start-p nil nil n))
 ;;
@@ -105,13 +105,30 @@
 ;;  `doc-face-start-p'.  The character at the tested position must
 ;;  pass the test (having property `font-lock-doc-face'), and the
 ;;  preceding char, if there is one, must NOT pass the test.  This
-;;  means that `to-next-doc-face' finds the first character that
+;;  means that `to-next-doc-face' finds the _first_ character that
 ;;  passes the test.  This is typical of a predicate used with
 ;;  `gowhere.el' functions.
 ;;
-;;  And because the predicate can accept additional args, besides the
-;;  position, you can use a predicate that accepts the face to look
-;;  for.
+;;  For this reason, you can use helper function `gw-test-start-p' to
+;;  take care of that true-here-but-not-just-before-here logic.  It
+;;  takes the position to test and a predicate as arguments.  The
+;;  predicate must be true at the position and false just before the
+;;  position, for `gw-test-start-p' to be true (return non-nil).
+;;
+;;  Using `gw-test-start-p', `doc-face-start-p' becomes just this:
+;;
+;;  (defun doc-face-start-p (position)
+;;    "Return non-nil if char at POSITION starts `font-lock-doc-face'.
+;;  That is, it has that face, and any char just before it does not."
+;;    (gw-test-start-p position
+;;                     (lambda ()
+;;                       (eq (get-text-property (point) 'face)
+;;                           'font-lock-doc-face))))
+;;
+;;  Because the predicate arg to `gw-to-next-where' can accept
+;;  additional args, besides the position, you can use a predicate
+;;  that accepts, as argument, the face to look for, as well as the
+;;  position to test.  For example:
 ;;
 ;;  (defun face-start-p (position face)
 ;;    "Return non-nil if the character at POSITION starts FACE.
@@ -121,12 +138,22 @@
 ;;             (not (eq (get-text-property (1- position) 'face)
 ;;                      face)))))
 ;;
+;;  Or using `gw-test-start-p':
+;;
+;;  (defun face-start-p (position face)
+;;    "Return non-nil if the character at POSITION starts FACE.
+;;  That is, it has FACE, and any character just before it does not."
+;;    (gw-test-start-p position
+;;                     `(lambda ()
+;;                        (eq (get-text-property (point) 'face)
+;;                            ',face))))
+;;
 ;;  (defvar last-face nil "Last face used by `to-next-face'.")
 ;;
 ;;  (defun to-next-face (arg)
-;;    "Move to next occurrence of `last-face'.
+;;    "Move to next text-property occurrence of face `last-face'.
 ;;  With plain `C-u', prompt for the face to assign to `last-face'.
-;;  With numeric prefix arg N, move to Nth next occurrence."
+;;  With numeric prefix arg N, move to the Nth next occurrence."
 ;;    (interactive "P")
 ;;    (if (or (consp arg)  (not last-face))
 ;;        (setq last-face  (read-face-name "Face: ")
@@ -134,8 +161,15 @@
 ;;      (setq arg  (prefix-numeric-value arg)))
 ;;    (gw-to-next-where #'face-start-p nil (list last-face) arg))
 ;;
-;;  As an example of defining a next-thing command, this is how you
-;;  might define a command to move among sexps:
+;;
+;;  [Note: Text property `face' can actually have a list of faces as
+;;   its value, so instead of using an `eq' text in those `*-start-p'
+;;   functions a more realistic example would test for the particular
+;;   face using both `eq' or `memq' (return true if either is true).]
+;;
+;;
+;;  As an example of defining a next-THING command, this is how you
+;;  might define a command to move forward among sexps:
 ;;
 ;;  (defun to-next-sexp (n)
 ;;    "Go to next start of a sexp."
@@ -150,7 +184,7 @@
 ;;    (gw-to-next-thing 'string nil n))
 ;;
 ;;  Note that the various `gw-next-*' and `gw-previous-*' commands
-;;  move to the beginning of the next or previous place where
+;;  move to the _beginning_ of the next or previous place where
 ;;  something is true.  For example, if you use `gw-next-thing' with
 ;;  THING `word' then the cursor moves to the beginning of each word.
 ;;  This is different from typical Emacs `forward-*' and `backward-*'
@@ -187,8 +221,9 @@
 ;;    `gw-next-thing', `gw-next-where', `gw-next-where-vertical',
 ;;    `gw-not-word-char-after-p', `gw-not-word-char-before-p',
 ;;    `gw-previous-thing', `gw-previous-where',
-;;    `gw-previous-where-vertical', `gw-thing-start-p',
-;;    `gw-word-char-after-p', `gw-word-char-before-p'.
+;;    `gw-previous-where-vertical', `gw-test-start-p',
+;;    `gw-thing-start-p', `gw-word-char-after-p',
+;;    `gw-word-char-before-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -197,7 +232,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; 2018/07/03 dadams
+;;     Added: gw-test-start-p.
 ;;     Renamed: gw-to-where-last to gw-last-pred and gw-to-where-last to gw-last-thing.
+;;     gw-thing-start-p: Use gw-test-start-p.
 ;;     gw-to-(next|previous)-(where|thing): Corrected use of prefix arg.
 ;; 2018/07/01 dadams
 ;;     gw-(up|down)ward-word: Corrected use of bobp|eobp.
@@ -535,12 +572,11 @@ or else point is at the beginning of the buffer.
 The true value returned is a cons (THE-THING . END), where THE-THING is
 the THING that starts at POSITION, and END is the buffer position of its end.
 THE-THING."
-  (let ((bounds  (save-excursion (goto-char position) (tap-bounds-of-thing-at-point thing))))
-    (and bounds
-         (= position (car bounds))
-         (or (bobp)  (not (equal bounds (save-excursion (goto-char (1- position))
-                                                        (tap-bounds-of-thing-at-point thing)))))
-         (cons (buffer-substring (car bounds) (cdr bounds)) (cdr bounds)))))
+  (gw-test-start-p position `(lambda ()
+                              (let ((bounds  (tap-bounds-of-thing-at-point ',thing)))
+                                (and bounds
+                                     (cons (buffer-substring (car bounds) (cdr bounds))
+                                           (cdr bounds)))))))
 
 ;;;###autoload
 (defun gw-to-next-thing (&optional thing start n noerror readp)
