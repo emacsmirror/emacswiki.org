@@ -291,6 +291,8 @@ Use python extension emacs: [https://www.emacswiki.org/emacs/EmacsApplicationFra
 
 ** Lisp:init-company-mode.el -- Configuration file for [[CompanyMode]].
 
+** Lisp:init-flycheck.el -- Configuration file for [[FlyCheck]]
+
 ** Lisp:init-flymake.el -- Configuration file for [[FlyMake]].
 
 ** Lisp:init-paredit.el -- Configuration file for [[ParEdit]].
