@@ -6,7 +6,7 @@ Start ansi-term with `M-x ansi-term'.
 
 Historically, `M-x ansi-term' differed from `M-x term' in that the latter couldn't render colours. These days ([https://lists.gnu.org/archive/html/help-gnu-emacs/2007-12/msg00199.html ref]) the latter has caught up, so the main practical difference is now that ansi-term uses `C-x' for a prefix key, while term sticks with only the older `C-c' binding. They also use slightly different buffer names.
 
-`ansi-term` also does not support ncurses while `term` does.
+`ansi-term' also does not support ncurses while `term' does.
 
 In Emacs 22, try prefixing actions that aren't recognized by their standard key commands with `C-x'. For example, `M-x' becomes `C-x M-x'.
 
