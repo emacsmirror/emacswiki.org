@@ -1,16 +1,16 @@
 ;;; gowhere.el --- Get or go to next position that satisfies a predicate.  -*- lexical-binding:t -*-
 ;;
 ;; Filename: gowhere.el
-;; Description:  Get or go to next position that satisfies a predicate.
+;; Description: Get or go to next position that satisfies a predicate.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2018, Drew Adams, all rights reserved.
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-03-17
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Wed Jul  4 09:17:59 2018 (-0700)
+;; Last-Updated: Wed Jul  4 09:35:36 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 431
+;;     Update #: 445
 ;; URL: https://www.emacswiki.org/emacs/download/gowhere.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GoWhere
 ;; Keywords: motion thing
@@ -235,7 +235,9 @@
 ;;     Added: gw-test-start-p.
 ;;     Renamed: gw-to-where-last to gw-last-pred and gw-to-where-last to gw-last-thing.
 ;;     gw-thing-start-p: Use gw-test-start-p.
-;;     gw-to-(next|previous)-(where|thing): Corrected use of prefix arg.
+;;     gw-to-(next|previous-)(where|thing): Corrected use of prefix arg.
+;;     gw-thing-start-p: Provide lexical-binding version for Emacs 24+.
+;;     gw-(to-)(next|previous-)-where-vertical: Use lexical-binding code (removed backquote construct).
 ;; 2018/07/01 dadams
 ;;     gw-(up|down)ward-word: Corrected use of bobp|eobp.
 ;; 2018/06/30 dadams
@@ -494,7 +496,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--next/prev-where 'next pred start args n
-                           `(lambda () (gw-to-column-down ,col ,n ,noerror ,force)))))
+                           (lambda () (gw-to-column-down col n noerror force)))))
 
   (defun gw-previous-where-vertical (predicate &optional start args n noerror force)
     "Like `gw-next-where-vertical', but look up instead of down."
@@ -502,7 +504,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--next/prev-where 'previous pred start args n
-                           nil `(lambda () (gw-to-column-up ,col ,n ,noerror ,force)))))
+                           nil (lambda () (gw-to-column-up col n noerror force)))))
 
   (defun gw-to-next-where-vertical (&optional predicate start args n noerror force readp interactivep)
     "Like `gw-to-next-where', but move down instead of forward (across).
@@ -512,7 +514,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--to-next/prev-where 'next pred start args n noerror readp interactivep
-                              `(lambda () (gw-to-column-down ,col ,n ,noerror ,force)))))
+                              (lambda () (gw-to-column-down col n noerror force)))))
 
   (defun gw-to-previous-where-vertical (&optional predicate start args n noerror force readp interactivep)
     "Like `gw-to-previous-where', but move up instead of backward (across)."
@@ -521,7 +523,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
     (let* ((col   (current-column))
            (pred  (lambda (pos &rest args) (and (= (current-column) col)  (apply predicate pos args)))))
       (gw--to-next/prev-where 'previous pred start args n noerror readp interactivep
-                              nil `(lambda () (gw-to-column-up ,col ,n ,noerror ,force)))))
+                              nil (lambda () (gw-to-column-up col n noerror force)))))
 
   ;; Could be called `gw-next-word-vertical', but it moves _after_ the word, like `forward-word'.
   (defun gw-downward-word (_pos &optional n)
@@ -585,12 +587,20 @@ or else point is at the beginning of the buffer.
 The true value returned is a cons (THE-THING . END), where THE-THING is
 the THING that starts at POSITION, and END is the buffer position of its end.
 THE-THING."
-  (gw-test-start-p position `(lambda ()
-                              (let ((bounds  (tap-bounds-of-thing-at-point ',thing)))
-                                (and bounds
-                                     (= ,position (car bounds))
-                                     (cons (buffer-substring (car bounds) (cdr bounds))
-                                           (cdr bounds)))))))
+  (gw-test-start-p position
+                   (if (> emacs-major-version 23) ; Emacs 24+
+                       (lambda ()
+                         (let ((bounds  (tap-bounds-of-thing-at-point thing)))
+                           (and bounds
+                                (= position (car bounds))
+                                (cons (buffer-substring (car bounds) (cdr bounds))
+                                      (cdr bounds)))))
+                     `(lambda ()        ; No `lexical-binding' before Emacs 24
+                       (let ((bounds  (tap-bounds-of-thing-at-point ',thing)))
+                         (and bounds
+                              (= ,position (car bounds))
+                              (cons (buffer-substring (car bounds) (cdr bounds))
+                                    (cdr bounds))))))))
 
 ;;;###autoload
 (defun gw-to-next-thing (&optional thing start n noerror readp)
