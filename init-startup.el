@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-01-20 23:58:38
-;; Version: 0.2
-;; Last-Updated: 2018-07-05 18:23:57
+;; Version: 0.3
+;; Last-Updated: 2018-07-05 18:42:28
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-startup.el
 ;; Keywords:
@@ -67,6 +67,7 @@
 ;;
 ;; 2018/07/05
 ;;      * Make emacs fullscreen mode works with MacOS.
+;;      * Use `toggle-frame-fullscreen' instead `set-frame-parameter', make command `toggle-frame-fullscreen' can work after start emacs.
 ;;
 ;; 2014/01/20
 ;;      * First released.
@@ -98,7 +99,7 @@
 (setq ns-use-native-fullscreen nil)
 (setq ns-use-fullscreen-animation nil)
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(run-at-time "5sec" nil (lambda () (set-frame-parameter (selected-frame) 'fullscreen 'fullboth)))
+(run-at-time "5sec" nil (lambda () (toggle-frame-fullscreen)))
 
 (setq ad-redefinition-action 'accept)   ;不要烦人的 redefine warning
 (setq frame-resize-pixelwise t) ;设置缩放的模式,避免Mac平台最大化窗口以后右边和下边有空隙
