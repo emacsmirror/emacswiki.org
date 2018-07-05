@@ -565,7 +565,7 @@ Optional args NOERROR and FORCE are as for `gw-to-column-down'."
 Return nil if there is no such position.
 Otherwise, return the found position in a cons (POSITION . VALUE),
  where VALUE is what `gw-thing-start-p' returns.
-xc
+
 START defaults to point.
 N defaults to 1."
   (gw--next/prev-thing 'next thing start n))
