@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-03-14 21:45:07
-;; Version: 0.1
-;; Last-Updated: 2014-03-16 17:10:13
+;; Version: 0.2
+;; Last-Updated: 2018-07-05 22:31:04
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/web-mode-extension.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/05
+;;      * Fix `web-mode-element-unwrap' error cause by `web-mode-element-vanish'.
+;;
 ;; 2014/03/16
 ;;      * Add `web-mode-element-unwrap'.
 ;;
@@ -98,13 +101,43 @@
          (sgml-skip-tag-backward 1))
         (t (self-insert-command (or arg 1)))))
 
+(defun web-mode-element-wrap+ ()
+  "Like `web-mode-element-wrap', but jump after tag for continue edit."
+  (interactive)
+  (let (beg end pos tag sep)
+    (save-excursion
+      (setq tag (read-from-minibuffer "Tag name? "))
+      (setq pos (point))
+      (cond
+       (mark-active
+        (setq beg (region-beginning)
+              end (region-end)))
+       ((get-text-property pos 'tag-type)
+        (setq beg (web-mode-element-beginning-position pos)
+              end (1+ (web-mode-element-end-position pos)))
+        )
+       ((setq beg (web-mode-element-parent-position pos))
+        (setq end (1+ (web-mode-element-end-position pos)))
+        )
+       )
+      ;;      (message "beg(%S) end(%S)" beg end)
+      (when (and beg end (> end 0))
+        (setq sep (if (get-text-property beg 'tag-beg) "\n" ""))
+        (web-mode-insert-text-at-pos (concat sep "</" tag ">") end)
+        (web-mode-insert-text-at-pos (concat "<" tag ">" sep) beg)
+        (when (string= sep "\n") (indent-region beg (+ end (* (+ 3 (length tag)) 2))))
+        )
+      )                                 ;save-excursion
+    (if beg (goto-char beg))
+    (forward-char (+ 1 (length tag)))))
+
 (defun web-mode-element-unwrap ()
   "Like `web-mode-element-vanish', but you don't need jump parent tag to unwrap.
 Just like `paredit-splice-sexp+' style."
   (interactive)
   (save-excursion
     (web-mode-element-parent)
-    (web-mode-element-vanish)
+    (web-mode-element-vanish 1)
     (back-to-indentation)
     ))
 
