@@ -533,7 +533,8 @@ Instead of switching to the separate full-screen workspace of the Mac, the tradi
                        ;; behavior, on macOS (bug#28496).
                        (sleep-for 0.5)
                        ;; Call `toggle-frame-fullscreen' to fullscreen emacs.
-                       (toggle-frame-fullscreen))))</pre>
+                       (toggle-frame-fullscreen))))
+</pre>
 
   Don't fullscreen frame when emacs start, otherwise MacOS window manager will move emacs window to another single space, above code can make emacs just fullscreen frame in current space.  -- AndyStewart
 
