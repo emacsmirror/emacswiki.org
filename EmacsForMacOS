@@ -523,7 +523,7 @@ Instead of switching to the separate full-screen workspace of the Mac, the tradi
 (setq ns-use-native-fullscreen nil)
 (setq ns-use-fullscreen-animation nil)
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(run-at-time "5sec" nil (lambda () (set-frame-parameter (selected-frame) 'fullscreen 'fullboth)))
+(run-at-time "5sec" nil (lambda () (toggle-frame-fullscreen)))
 </pre>
 
   Don't fullscreen frame when emacs start, otherwise MacOS window manager will move emacs window to another single space, above code can make emacs just fullscreen frame in current space.  -- AndyStewart
