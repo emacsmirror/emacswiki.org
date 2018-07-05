@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-01-20 23:58:38
-;; Version: 0.3
-;; Last-Updated: 2018-07-05 18:42:28
+;; Version: 0.4
+;; Last-Updated: 2018-07-05 19:01:41
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-startup.el
 ;; Keywords:
@@ -67,7 +67,7 @@
 ;;
 ;; 2018/07/05
 ;;      * Make emacs fullscreen mode works with MacOS.
-;;      * Use `toggle-frame-fullscreen' instead `set-frame-parameter', make command `toggle-frame-fullscreen' can work after start emacs.
+;;      * Make emacs fullscreen works perfect even MacOS fullscreen emacs first.
 ;;
 ;; 2014/01/20
 ;;      * First released.
@@ -98,8 +98,18 @@
 ;; Mac就不会移动Emacs窗口到单独的工作区, 最终解决Mac平台下原生全屏窗口导致 `make-frame' 左右滑动闪烁的问题.
 (setq ns-use-native-fullscreen nil)
 (setq ns-use-fullscreen-animation nil)
-(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(run-at-time "5sec" nil (lambda () (toggle-frame-fullscreen)))
+(run-at-time "5sec" nil
+             (lambda ()
+               (let ((fullscreen (frame-parameter (selected-frame) 'fullscreen)))
+                 ;; If emacs has in fullscreen status, maximized window first, drag from Mac's single space.
+                 (when (memq fullscreen '(fullscreen fullboth))
+                   (set-frame-parameter (selected-frame) 'fullscreen 'maximized))
+                 ;; Manipulating a frame without waiting for the fullscreen
+                 ;; animation to complete can cause a crash, or other unexpected
+                 ;; behavior, on macOS (bug#28496).
+                 (when (featurep 'cocoa) (sleep-for 0.5))
+                 ;; Call `toggle-frame-fullscreen' to fullscreen emacs.
+                 (toggle-frame-fullscreen))))
 
 (setq ad-redefinition-action 'accept)   ;不要烦人的 redefine warning
 (setq frame-resize-pixelwise t) ;设置缩放的模式,避免Mac平台最大化窗口以后右边和下边有空隙
