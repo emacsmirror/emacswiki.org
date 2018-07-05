@@ -5,6 +5,8 @@ Filladapt by KyleJones enhances Emacs' fill functions by guessing a fill prefix,
 : http://www.wonderworks.com/
 : http://www.wonderworks.com/download/filladapt.el
 
+It is also available from GNU ELPA at http://elpa.gnu.org/packages/filladapt.html
+
 Here are some things adding to filladapt (in addition to the sections below),
 
 * HaskellMode -- recognising haskell style comments
