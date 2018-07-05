@@ -281,17 +281,17 @@ In Vim I like to have the status line change color when in insert mode and when 
 
 == counsel-yank-pop (or yank-pop) intergration in visual mode ==
 
-`counsel-yank-pop' in visual mode will not replace the region, instead it just inserts the text.
+`counsel-yank-pop' in visual mode does not replace the region, instead it just inserts the text.
 To fix this behavior, I simply advise `counsel-yank-pop' with a function that kills the region. 
 
-<code>
-(defun moon-override-yank-pop (&optional arg)
-      "Delete the region before inserting poped string."
-      (when (and evil-mode (eq 'visual evil-state))
-        (kill-region (region-beginning) (region-end))))
 
-(advice-add 'counsel-yank-pop :before #'moon-override-yank-pop)
-</code>
+    (defun moon-override-yank-pop (&optional arg)
+          "Delete the region before inserting poped string."
+          (when (and evil-mode (eq 'visual evil-state))
+            (kill-region (region-beginning) (region-end))))
+
+    (advice-add 'counsel-yank-pop :before #'moon-override-yank-pop)
+
 
 == Discussion ==
 
