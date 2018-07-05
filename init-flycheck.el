@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-07-04 21:35:23
-;; Version: 0.1
-;; Last-Updated: 2018-07-04 21:35:23
+;; Version: 0.2
+;; Last-Updated: 2018-07-05 18:27:38
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-flycheck.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/05
+;;      * Use `posframe' for MacOS, bug has fixed at: https://www.emacswiki.org/emacs/init-startup.el
+;;
 ;; 2018/07/04
 ;;      * First released.
 ;;
@@ -92,11 +95,9 @@
                ))
   (add-hook hook '(lambda () (flycheck-mode 1))))
 
-;; Use tooltip show errors.
-;; Don't use tooltip in Mac, it's font too smalll!!!
-(unless (string-equal system-type "darwin")
-  (require 'flycheck-pos-tip)
-  (with-eval-after-load 'flycheck (flycheck-pos-tip-mode)))
+(with-eval-after-load 'flycheck
+  (require 'flycheck-posframe)
+  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
 (add-hook 'swift-mode-hook
           (lambda ()
