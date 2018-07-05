@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 2.1
-;; Last-Updated: 2018-07-01 21:15:44
+;; Version: 2.2
+;; Last-Updated: 2018-07-05 18:26:42
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -137,6 +137,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/05
+;;      * Use `posframe' for MacOS, bug has fixed at: https://www.emacswiki.org/emacs/init-startup.el
+;;
 ;; 2018/07/01
 ;;      * Add support for MacOS, use `popup-tip'.
 ;;
@@ -186,9 +189,7 @@
 (require 'outline)
 (eval-when-compile
   (require 'cl))
-(if (string-equal system-type "darwin")
-    (require 'popup)
-  (require 'posframe))
+(require 'posframe)
 
 ;;; Code:
 
@@ -426,19 +427,17 @@ The result will be displayed in buffer named with
   "Search WORD simple translate result."
   (let ((result (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)))
     ;; Show tooltip at point if word fetch from user cursor.
-    (if (string-equal system-type "darwin")
-        (popup-tip result)
-      (posframe-show
-       sdcv-tooltip-name
-       :string result
-       :position (point)
-       :timeout sdcv-tooltip-timeout
-       :background-color (face-attribute 'sdcv-tooltip-face :background)
-       :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
-      (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
-      (setq sdcv-tooltip-last-point (point))
-      (setq sdcv-tooltip-last-scroll-offset (window-start))
-      )))
+    (posframe-show
+     sdcv-tooltip-name
+     :string result
+     :position (point)
+     :timeout sdcv-tooltip-timeout
+     :background-color (face-attribute 'sdcv-tooltip-face :background)
+     :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
+    (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
+    (setq sdcv-tooltip-last-point (point))
+    (setq sdcv-tooltip-last-scroll-offset (window-start))
+    ))
 
 (defun sdcv-hide-tooltip-after-move ()
   (ignore-errors
