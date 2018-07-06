@@ -27,6 +27,18 @@ You can also bind this function with a key:
 (global-set-key (kbd "M-\"") 'shell-command-on-buffer)
 }}}
 
+
+=== Rofi and Dmenu like runner ===
+
+If you are after an runner just like Rofi or Dmenu.
+
+{{{
+(defun run-command (command)
+  "Dmenu/rofi-like run external commands. Tab/C-M-I to auto complete"
+  (interactive
+   (list (read-shell-command "run: ")))
+  (start-process-shell-command command nil command))
+}}}
 == TAB Completion for `M-!' and `M-|' ==
 
 Starting with Emacs 23, `TAB' [[completion]] is available for `##M-!##' and `##M-|##'.  The following libraries provide such a feature for earlier Emacs versions:
