@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.2
-;; Last-Updated: 2018-07-06 02:13:43
+;; Version: 0.3
+;; Last-Updated: 2018-07-06 08:02:50
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -68,6 +68,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/06
+;;      * Fix ruby mode load error.
+;;
 ;; 2018/07/05
 ;;      * Config company and company-lsp fronted.
 ;;      * Make company works with posframe.
@@ -114,9 +117,8 @@
                ))
   (add-hook hook
             '(lambda ()
-               (ignore-errors
-                 (lsp-mode 1)
-                 (lsp-ruby-enable))
+               ;; Don't call (lsp-mode 1) before (lsp-ruby-enable), (lsp-ruby-enable) will call lsp-mode automatically.
+               (ignore-errors (lsp-ruby-enable))
                )))
 
 ;; Add company-lsp backend.
