@@ -418,12 +418,16 @@ destructive variant, `nbutlast'.
 
 Here's my personal helper function for manipulating lists:
 
+It would be great if someone can show me a better way to delete 0th element in delete-nth
+
  (defun delete-nth (index seq)
    "Delete the INDEX th element of SEQ.
  Return result sequence, SEQ __is__ modified."
-   (setcdr (nthcdr (1- index) seq) (nthcdr (1+ index) seq)))
-
-
+   (if (equal index 0)
+       (progn
+         (setcar seq (car (cdr seq)))
+         (setcdr seq (cdr (cdr seq))))
+     (setcdr (nthcdr (1- index) seq) (nthcdr (1+ index) seq))))
 
  (defun set-nth (index seq newval)
    "Set the INDEX th element of SEQ to NEWVAL.
