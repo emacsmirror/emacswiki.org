@@ -11,7 +11,7 @@ There's a [http://youtu.be/Uz_0i27wYbg four-minute Evil demo] on !YouTube, creat
 Install using the latest version of Emacs and its builtin package system. Start with this in your .emacs:
 
   (require 'package)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
   (package-initialize)
 
 Then:
