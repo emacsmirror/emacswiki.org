@@ -418,10 +418,14 @@ destructive variant, `nbutlast'.
 
 Here's my personal helper function for manipulating lists:
 
-    (defun delete-nth (index seq)
+    (defun ezmark--delete-nth (index seq)
       "Delete the INDEX th element of SEQ.
     Return result sequence, SEQ __is__ modified."
-      (setcdr (nthcdr (1- index) seq) (nthcdr (1+ index) seq)))
+      (let* ((cdr1 seq)
+             (cdr1 (dotimes (num (1- index) cdr1) (setq cdr1 (cdr cdr1))))
+             (cdr2 (cdr (cdr cdr1))))
+        (setcdr cdr1 cdr2)))
+
 
     (defun set-nth (index seq newval)
       "Set the INDEX th element of SEQ to NEWVAL.
