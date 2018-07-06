@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.3
-;; Last-Updated: 2018-07-06 08:02:50
+;; Version: 0.4
+;; Last-Updated: 2018-07-06 09:25:10
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -53,13 +53,20 @@
 ;;
 ;; (require 'init-company-mode)
 ;;
+;; For Mac user:
+;; You need install `exec-path-from-shell' from https://raw.githubusercontent.com/purcell/exec-path-from-shell/master/exec-path-from-shell.el
+;; Then put below code in your ~/.emacs, otherwise `lsp-python' will report can't found pyls from PATH:
+;;
+;; (when (featurep 'cocoa)
+;;   (require 'exec-path-from-shell)
+;;   (exec-path-from-shell-initialize))
 ;;
 ;; LSP server install step:
 ;;
 ;; Python:
 ;; * conda info --envs
 ;; * source activate python36
-;; * sudo pip install python-language-server
+;; * sudo pip install 'python-language-server[all]'
 ;;
 ;; Ruby:
 ;; * sudo gem install solargraph
@@ -70,6 +77,8 @@
 ;;
 ;; 2018/07/06
 ;;      * Fix ruby mode load error.
+;;      * Fix python mode load error.
+;;      * Use `exec-path-from-shell' avoid LSP can't found server bin path.
 ;;
 ;; 2018/07/05
 ;;      * Config company and company-lsp fronted.
@@ -92,49 +101,52 @@
 ;;
 
 ;;; Require
+(require 'lazy-set-key)
 (require 'company)
 (require 'company-posframe)
 (require 'company-yasnippet)
 (require 'lsp-mode)
 (require 'lsp-ruby)
+(require 'lsp-python)
 (require 'company-lsp)
 (require 'desktop)
 
 ;;; Code:
 
-;; Init company and posframe.
+;; Make LSP can find server bin path.
+(when (featurep 'cocoa)
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
+
+;; Config for company mode.
 (global-company-mode)
-(company-posframe-mode 1)
-
-;; LSP mode for languages.
-(dolist (hook (list
-               'python-mode-hook
-               ))
-  (add-hook hook '(lambda () (lsp-mode 1))))
-
-(dolist (hook (list
-               'ruby-mode-hook
-               ))
-  (add-hook hook
-            '(lambda ()
-               ;; Don't call (lsp-mode 1) before (lsp-ruby-enable), (lsp-ruby-enable) will call lsp-mode automatically.
-               (ignore-errors (lsp-ruby-enable))
-               )))
+(setq company-idle-delay 0.2)
+(setq company-minimum-prefix-length 1)
+(setq company-show-numbers nil)
 
 ;; Add company-lsp backend.
 (push 'company-lsp company-backends)
 
 ;; Let desktop.el not record the company-posframe-mode
+(company-posframe-mode 1)
 (push '(company-posframe-mode . nil)
       desktop-minor-mode-table)
 
-(setq company-idle-delay 0.2)           ;延迟时间
-(setq company-minimum-prefix-length 1)  ;触发补全的字符数量
-(setq company-show-numbers nil)         ;不显示数字
+;; LSP mode for languages.
+(add-hook 'python-mode-hook
+          '(lambda ()
+             ;; Use `ignore-errors' avoid LSP failed.
+             (ignore-errors (lsp-python-enable()))
+             ))                         ;
+(add-hook 'ruby-mode-hook
+          '(lambda ()
+             ;; Use `ignore-errors' avoid LSP failed.
+             (ignore-errors (lsp-ruby-enable()))))
 
+;; Key settings.
 (lazy-unset-key
  '("TAB")
- company-mode-map)                      ;卸载按键
+ company-mode-map)                      ;unset default keys
 
 (lazy-unset-key
  '("M-p" "M-n" "M-1"
@@ -146,18 +158,18 @@
 
 (lazy-set-key
  '(
-   ("TAB" . company-complete-selection) ;补全选择的
-   ("M-h" . company-complete-selection) ;补全选择的
-   ("M-H" . company-complete-common)    ;补全公共部分
-   ("M-w" . company-show-location)      ;显示局部的
-   ("M-s" . company-search-candidates)  ;搜索候选
-   ("M-S" . company-filter-candidates)  ;过滤候选
-   ("M-n" . company-select-next)        ;下一个
-   ("M-p" . company-select-previous)    ;上一个
+   ("TAB" . company-complete-selection)
+   ("M-h" . company-complete-selection)
+   ("M-H" . company-complete-common)
+   ("M-w" . company-show-location)
+   ("M-s" . company-search-candidates)
+   ("M-S" . company-filter-candidates)
+   ("M-n" . company-select-next)
+   ("M-p" . company-select-previous)
    )
  company-active-map)
 
-;; Add yasnippet support for all company backends
+;; Add yasnippet support for all company backends.
 (defvar company-mode/enable-yas t
   "Enable yasnippet for all backends.")
 
