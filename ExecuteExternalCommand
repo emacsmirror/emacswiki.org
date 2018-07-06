@@ -34,7 +34,7 @@ If you are after an runner just like Rofi or Dmenu.
 
 {{{
 (defun run-command (command)
-  "Dmenu/rofi-like run external commands. Tab/C-M-I to auto complete"
+  "Dmenu/rofi-like run external commands. Press C-M-i or Tab to auto complete"
   (interactive
    (list (read-shell-command "run: ")))
   (start-process-shell-command command nil command))
