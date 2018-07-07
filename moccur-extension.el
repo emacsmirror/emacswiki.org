@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2017, Andy Stewart, all rights reserved.
 ;; Created: 2017-06-14 17:38:23
-;; Version: 0.3
-;; Last-Updated: 2018-07-07 09:16:52
+;; Version: 0.4
+;; Last-Updated: 2018-07-07 09:32:42
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/moccur-extension.el
 ;; Keywords:
@@ -68,6 +68,7 @@
 ;; 2018/07/07
 ;;      * Refacotry code make interactive functions eaiser to use.
 ;;      * Add new function `moccur-grep-in-rails-app-directory', `moccur-read-input', `moccur-pointer-string'.
+;;      * Fix prompt string.
 ;;
 ;; 2018/07/02
 ;;      * Add `file-binary-p' from `dired-extension.el'
@@ -105,14 +106,14 @@
   (interactive)
   (moccur-grep-find-without-binary-files
    default-directory
-   (moccur-read-input "sMoccur grep input (%s): ")))
+   (moccur-read-input "Moccur grep input (%s): ")))
 
 (defun moccur-grep-in-rails-app-directory ()
   (interactive)
   (require 'projectile-rails)
   (moccur-grep-find-without-binary-files
    (concat (projectile-project-root) "app")
-   (moccur-read-input "sMoccur grep rails app directory (%s): ")))
+   (moccur-read-input "Moccur grep rails app directory (%s): ")))
 
 (defun moccur-read-input (prompt-string)
   (let* ((current-symbol (moccur-pointer-string))
