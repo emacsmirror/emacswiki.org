@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.4
-;; Last-Updated: 2018-07-06 09:25:10
+;; Version: 0.5
+;; Last-Updated: 2018-07-07 10:00:21
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -75,6 +75,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/07
+;;      * Add `company-css' into `company-backends'.
+;;
 ;; 2018/07/06
 ;;      * Fix ruby mode load error.
 ;;      * Fix python mode load error.
@@ -105,6 +108,7 @@
 (require 'company)
 (require 'company-posframe)
 (require 'company-yasnippet)
+(require 'company-css)
 (require 'lsp-mode)
 (require 'lsp-ruby)
 (require 'lsp-python)
@@ -124,8 +128,9 @@
 (setq company-minimum-prefix-length 1)
 (setq company-show-numbers nil)
 
-;; Add company-lsp backend.
+;; Customize company backends.
 (push 'company-lsp company-backends)
+(push 'company-css company-backends)
 
 ;; Let desktop.el not record the company-posframe-mode
 (company-posframe-mode 1)
