@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2017, Andy Stewart, all rights reserved.
 ;; Created: 2017-06-14 17:38:23
-;; Version: 0.2
-;; Last-Updated: 2018-07-02 17:30:42
+;; Version: 0.3
+;; Last-Updated: 2018-07-07 09:16:52
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/moccur-extension.el
 ;; Keywords:
@@ -65,6 +65,10 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/07
+;;      * Refacotry code make interactive functions eaiser to use.
+;;      * Add new function `moccur-grep-in-rails-app-directory', `moccur-read-input', `moccur-pointer-string'.
+;;
 ;; 2018/07/02
 ;;      * Add `file-binary-p' from `dired-extension.el'
 ;;
@@ -88,27 +92,44 @@
 
 ;;; Require
 (require 'color-moccur)
+(require 'subr-x)
 
-(defun moccur-grep-pointer (beg end)
-  ;; Get symbol at pointer or selected text.
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list (beginning-of-thing 'symbol) (end-of-thing 'symbol))))
-  (let ((content (buffer-substring-no-properties beg end)))
-    ;; Convert content whitespace with \s- and around \b, then pass regex to moccur-grep-find to search.
-    (moccur-grep-find-without-binary-files
-     default-directory
-     (moccur-regexp-string content))))
-
-(defun moccur-grep-input (inputs)
-  (interactive "sMoccur grep: ")
+;;; Code
+(defun moccur-grep-pointer ()
+  (interactive)
   (moccur-grep-find-without-binary-files
    default-directory
-   (moccur-regexp-string inputs)
-   ))
+   (moccur-regexp-string (moccur-pointer-string))))
+
+(defun moccur-grep-input ()
+  (interactive)
+  (moccur-grep-find-without-binary-files
+   default-directory
+   (moccur-read-input "sMoccur grep input (%s): ")))
+
+(defun moccur-grep-in-rails-app-directory ()
+  (interactive)
+  (require 'projectile-rails)
+  (moccur-grep-find-without-binary-files
+   (concat (projectile-project-root) "app")
+   (moccur-read-input "sMoccur grep rails app directory (%s): ")))
+
+(defun moccur-read-input (prompt-string)
+  (let* ((current-symbol (moccur-pointer-string))
+         (input-string (string-trim (read-string (format prompt-string current-symbol)))))
+    (when (string-blank-p input-string)
+      (setq input-string current-symbol))
+    (moccur-regexp-string input-string)))
+
+(defun moccur-pointer-string ()
+  (if (use-region-p)
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    (string-remove-prefix "." (thing-at-point 'symbol))))
 
 (defun moccur-regexp-string (input)
-  (moccur-split-string (concat "\\b" (replace-regexp-in-string  "\\s-+" "\\\\s-" input) "\\b")))
+  (if (use-region-p)
+      (moccur-split-string (concat (replace-regexp-in-string  "\\s-+" "\\\\s-" input)))
+    (moccur-split-string (concat "\\b" (replace-regexp-in-string  "\\s-+" "\\\\s-" input) "\\b"))))
 
 (defun moccur-grep-find-without-binary-files (dir inputs)
   "This function is copy `moccur-grep-find' from `color-moccur.el' and with little improve.
