@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-06-12 21:24:21
-;; Version: 0.2
-;; Last-Updated: 2018-06-13 09:10:48
+;; Version: 0.3
+;; Last-Updated: 2018-07-07 09:19:09
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-projectile-rails.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `projectile' `projectile-rails' `rake' `rails-lib' `projectile-rails-extension'
+;; `projectile' `projectile-rails' `rake' `rails-lib'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/07
+;;      * Move function `moccur-grep-in-rails-app-directory' to `moccur-extension.el'.
+;;
 ;; 2018/06/13
 ;;      * Add command `moccur-grep-in-rails-app-directory'
 ;;
@@ -87,7 +90,7 @@
 (require 'projectile-rails)
 (require 'rake)
 (require 'rails-lib)
-(require 'projectile-rails-extension)
+(require 'moccur-extension)
 
 ;;; Code:
 
