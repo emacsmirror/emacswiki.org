@@ -7,7 +7,7 @@
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
 ;; Version: 2.2
-;; Last-Updated: 2018-07-05 18:26:42
+;; Last-Updated: 2018-07-08 11:45:16
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -137,6 +137,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/08
+;;      * Add new option `sdcv-tooltip-border-width'.
+;;
 ;; 2018/07/05
 ;;      * Use `posframe' for MacOS, bug has fixed at: https://www.emacswiki.org/emacs/init-startup.el
 ;;
@@ -233,6 +236,11 @@
 You can customize this value with local dir,
 then you don't need copy dict data to /usr/share directory everytime when you finish system install."
   :type 'string
+  :group 'sdcv)
+
+(defcustom sdcv-tooltip-border-width 10
+  "The border width of sdcv tooltip, default is 10 px."
+  :type 'integer
   :group 'sdcv)
 
 (defface sdcv-tooltip-face
@@ -433,7 +441,9 @@ The result will be displayed in buffer named with
      :position (point)
      :timeout sdcv-tooltip-timeout
      :background-color (face-attribute 'sdcv-tooltip-face :background)
-     :foreground-color (face-attribute 'sdcv-tooltip-face :foreground))
+     :foreground-color (face-attribute 'sdcv-tooltip-face :foreground)
+     :internal-border-width sdcv-tooltip-border-width
+     )
     (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
     (setq sdcv-tooltip-last-point (point))
     (setq sdcv-tooltip-last-scroll-offset (window-start))
@@ -456,7 +466,7 @@ Argument DICTIONARY-LIST the word that need transform."
   ;; Record current translate object.
   (setq sdcv-current-translate-object word)
   ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
-  (setenv "LANG" "en_US.UTF-8")
+  ;; (setenv "LANG" "en_US.UTF-8")
   ;; Return translate result.
   (sdcv-filter
    (shell-command-to-string
