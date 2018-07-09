@@ -156,7 +156,7 @@ Library <tt>[[imenu+.el]]</tt> (Imenu+) extends standard library ##imenu.el##.
 ** '''Toggle Ignoring Commented Defs'''
 ** '''Toggle Sorting'''
 
-* If used together with library [[GoWhere|Go Where]] (<tt>[[gowhere.el]]</tt>), you can add menu items to go to thing-at-point ##THING##s (strings, vectors, lists, [[sexp|sexps]], [[symbol|symbols]], words, colors (names/hex), numbers, decimal numbers, hex numbers, sentences, paragraphs,... whatever).  More generally, you can go to buffer positions where a given predicate is true.
+* If used together with library [[FindWhere|Find Where]] (<tt>[[find-where.el]]</tt>), you can add menu items to go to thing-at-point ##THING##s (strings, vectors, lists, [[sexp|sexps]], [[symbol|symbols]], words, colors (names/hex), numbers, decimal numbers, hex numbers, sentences, paragraphs,... whatever).  More generally, you can go to buffer positions where a given predicate is true.
 
 * Identifies more EmacsLisp definitions (`defalias' etc.) and more types of definitions.
 
