@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-07-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul  8 19:34:38 2018 (-0700)
+;; Last-Updated: Sun Jul  8 19:56:49 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 845
+;;     Update #: 849
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -62,7 +62,7 @@
 ;;  a time before each match attempt.
 ;;
 ;;  So if you want to search for a sequence of characters, just use
-;;  `(re-)search-forward' or similar.  And if you need and additional
+;;  `(re-)search-forward' or similar.  And if you need an additional
 ;;  test at a match position (e.g., check a text or overlay property)
 ;;  you can easily add that.  So forget about this library for
 ;;  ordinary buffer search.
@@ -81,9 +81,9 @@
 ;;  end positions).
 ;;  
 ;;  The library defines some general functions to find and return the
-;;  next or previous where + what, which you provide with a defining
-;;  predicate.  And it defines corresponding commands to go the next
-;;  or previous such location.
+;;  next or previous where-plus-what, which you provide with a
+;;  defining predicate.  And it defines corresponding commands to go
+;;  to the next or previous such location.
 ;;
 ;;  The commands have names that start (after prefix `fw-') with
 ;;  `to-'.  The corresponding non-interactive functions generally have
@@ -231,7 +231,7 @@
 ;;  (defun to-next-face-prop ()
 ;;    "Go to next change in `face' text property."
 ;;    (let ((pos  (next-single-property-change (point) 'face)))
-;;      (when pos  (goto-char pos))))
+;;      (when pos (goto-char pos))))
 ;;
 ;;  (defun to-next-face (arg)
 ;;    (interactive "P")
