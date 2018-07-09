@@ -1,0 +1,278 @@
+This page is about library '''<tt>[[find-where.el]]</tt>''', which is about ''finding where something is true''.  Use it to ''get or move'' to the next place ''where some predicate is satisfied''.
+
+In Emacs and EmacsLisp there are multiple ways to find things.
+And in many cases it will be simpler or more efficient to use
+another way than to take advantage of this library.
+
+What this library offers is some convenience sometimes, and a
+certain kind of generality: '''Specify what you want to find by a
+predicate.'''  The predicate is tested at successive places, forward
+or backward, until it is satisfied.
+
+By default, the forward and backward movement is among buffer
+positions, in the usual sense.  And by default, each movement
+before testing is just one character.  This is the minimum
+movement needed to get past the current position (which is often
+the last place found).
+
+Moving only one character and testing is obviously not very
+efficient, but it is all that can be done in the general case.
+
+When you know a way to move farther before testing and to be sure
+there is no need to test closer, you can take advantage of that by
+providing for the appropriate movement in the predicate you
+provide or in optional forward and backward movement functions.
+
+Clearly, this move-one-char-and-test approach is not the way to go
+for ordinary string searching.  Emacs uses an efficient,
+[[https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm|Boyer-Moore string-search]] algorithm,
+which essentially moves forward in chunks that are as long as what
+your search string matches, rather than moving just a character at
+a time before each match attempt.
+
+So if you want to search for a sequence of characters, just use
+`##(re-)search-forward##' or similar.  And if you need an additional
+test at a match position (e.g., check a text or overlay property)
+you can easily add that.  So forget about this library for
+ordinary buffer search.
+
+Still, you might find this library convenient for some things,
+even in cases where there is an easy alternative.  The abstraction
+of defining a destination by a predicate that holds there can be
+helpful.
+
+So just what does it mean to ''"find where something is true"''?  Find
+what?  Well, the ''what'' is defined by your predicate.  What is
+found, that is, returned, is both the ''position'' (where) and
+''whatever the predicate returns'' as a non-`nil' value.  For example,
+you can find a text ##THING##, such as the next vector with 13
+elements, and have it returned along with its bounds (start and
+end positions).
+
+The library defines some general functions to ''find and return'' the
+next or previous where-plus-what, which you provide with a defining
+predicate.  And it defines corresponding [[command]]s to ''go to'' the next
+or previous such location.
+
+The commands have names that start (after prefix '''`fw-'''') with
+'''`to-''''.  The corresponding non-interactive functions generally have
+the same names without the `to-'.  For example, function
+`fw-next-where' returns the next position and data that satisfy a
+predicate, and command `fw-to-next-where' goes there.
+
+By default, movement is to the ''start position'' of something, but
+really the ''where'', in relation to its ''what'', is up to you.  The
+default behavior is thus different from the standard Emacs
+`forward-THING' and `backward-THING' behavior, which moves just
+''past'' the ##THING## rather than just ''to'' it.
+
+This default behavior applies to all functions provided here, not
+just to those (`fw-next-thing' etc.) that find buffer ##THING##s.  For
+##THING##s, `find-where.el' requires library '''<tt>[[thingatpt+.el]]</tt>', which
+uses and enhances standard library `##thingatpt.el##'.
+
+When repeated, the commands reuse the same predicate as the last
+time (it is the value of variable `fw-last-pred'), but a plain
+[[prefix argument]] (`C-u') makes them prompt you for the predicate to
+use.  The predicate you enter must accept a buffer position (the
+position to test) as its first argument.
+
+A typical use might check something about the character at (i.e.,
+after) that position.
+
+The ##THING##-related function `fw-next-thing' just uses
+`fw-next-where' with a predicate that tests whether the position
+is at the start of a ##THING##, where being at the start also means
+that the previous buffer position is not on the same thing (not
+just the same type of thing).
+
+For instance, if the ##THING## type passed to `fw-next-thing' is
+`list' then it returns the start position of the next list (as
+well as the list text as a string and its end position).
+
+When repeated, the ##THING## commands reuse the same ##THING## type as the
+last time (it is the value of variable `fw-last-thing'), but a
+plain prefix argument (`C-u') makes them prompt you for the THING
+type to use.
+
+You can bind any of the commands defined here to keys, of course.
+But you can also easily define other commands that make use of
+them, and bind those commands to keys.
+
+For example, here's a simple command that moves to the start of
+the next use of [[face]] `font-lock-doc-face':
+
+    (defun to-next-doc-face (n)
+      "Move to next occurrence of `font-lock-doc-face'.
+    With numeric prefix arg N, move to the Nth next occurrence."
+      (interactive "p")
+      (fw-to-next-where #'doc-face-start-p nil nil n))
+
+where the predicate is defined like so:
+
+    (defun doc-face-start-p (position)
+      "Return non-nil if char at POSITION starts `font-lock-doc-face'.
+    That is, it has that face, and any char just before it does not."
+      (and (eq (get-text-property position 'face) 'font-lock-doc-face)
+           (or (= position (point-min))
+               (not (eq (get-text-property (1- position) 'face)
+                        'font-lock-doc-face)))))
+
+Note the use here of two complementary tests within the predicate.
+The character at the tested position must pass the test (having
+property `font-lock-doc-face'), and the preceding char, if there
+is one, must ''NOT'' pass the test.  This means that
+`to-next-doc-face' finds the ''first'' character that passes the
+test.  This is typical of a predicate used with `##find-where.el##'
+functions.
+
+For this reason, you can use helper function '''`fw-test-start-p'''' to
+take care of that true-here-but-not-just-before-here logic.  It
+takes the position to test and a predicate as arguments.  The
+predicate must be true at the position and false just before the
+position, for `fw-test-start-p' to be true (return non-`nil').
+
+Using `fw-test-start-p', `doc-face-start-p' becomes just this:
+
+    (defun doc-face-start-p (position)
+      "Return non-nil if char at POSITION starts `font-lock-doc-face'.
+    That is, it has that face, and any char just before it does not."
+      (fw-test-start-p position
+                       (lambda ()
+                         (eq (get-text-property (point) 'face)
+                             'font-lock-doc-face))))
+
+The predicate argument to `fw-to-next-where' can accept additional
+arguments, besides the position.  So you can use a predicate that
+accepts, as argument, the face to look for, as well as the
+position to test.  For example:
+
+    (defun face-start-p (position face)
+      "Return non-nil if the character at POSITION starts FACE.
+    That is, it has FACE, and any character just before it does not."
+      (and (eq (get-text-property position 'face) face)
+           (or (= position (point-min))
+               (not (eq (get-text-property (1- position) 'face)
+                        face)))))
+
+Or simplified using `fw-test-start-p':
+
+    (defun face-start-p (position face)
+      "Return non-nil if the character at POSITION starts FACE.
+    That is, it has FACE, and any character just before it does not."
+      (fw-test-start-p position
+                       `(lambda ()
+                          (eq (get-text-property (point) 'face)
+                              ',face))))
+
+    (defvar last-face nil "Last face used by `to-next-face'.")
+
+    (defun to-next-face (arg)
+      "Move to next text-property occurrence of face `last-face'.
+    With plain `C-u', prompt for the face to assign to `last-face'.
+    With numeric prefix arg N, move to the Nth next occurrence."
+      (interactive "P")
+      (if (or (consp arg)  (not last-face))
+          (setq last-face  (read-face-name "Face: ")
+                arg        1)
+        (setq arg  (prefix-numeric-value arg)))
+      (fw-to-next-where #'face-start-p nil (list last-face) arg))
+
+
+[Note: Text property `face' can actually have a list of faces as
+its value, so instead of using an `eq' text in those `*-start-p'
+functions a more realistic example would test for the particular
+face using both `eq' and `memq' (return true if either is true).]
+
+Now recall that the way `fw-to-next-where' works by default is to
+move forward only one char and then test with the predicate.  This
+is not very efficient, but it is all that can be done, unless
+there is some way to move farther forward before testing and be
+sure there is no need to test closer.
+
+In the case of testing for a given text property (or overlay
+property) at a buffer position there is such a better way: use
+function `next-single-property-change'.  Using that, we can define
+the ''forward-movement function'' `to-next-face-prop', which we can
+pass to `to-next-face' to override the default one-char movement
+(`forward-char').
+
+    (defun to-next-face-prop ()
+      "Go to next change in `face' text property."
+      (let ((pos  (next-single-property-change (point) 'face)))
+        (when pos (goto-char pos))))
+
+    (defun to-next-face (arg)
+      (interactive "P")
+      (if (or (consp arg)  (not last-face))
+          (setq last-face  (read-face-name "Face: ")
+                arg        1)
+        (setq arg  (prefix-numeric-value arg)))
+      (fw-to-next-where #'face-start-p nil (list last-face) arg
+                        nil nil nil #'to-next-face-prop))
+
+
+As an example of defining a next-##THING## command, this defines a
+command to move forward among [[sexp]]s:
+
+    (defun to-next-sexp (n)
+      "Go to next start of a sexp."
+      (interactive "p")
+      (fw-to-next-thing 'sexp nil n))
+
+And this moves among strings:
+
+    (defun to-next-string (n)
+      "Go to next start of a string."
+      (interactive "p")
+      (fw-to-next-thing 'string nil n))
+
+Note that the various `fw-to-next-*' and `fw-to-previous-*'
+commands move to the ''beginning'' of the next or previous place
+where something is true.  For example, if you use `fw-next-thing'
+with ##THING## `word' then the cursor moves to the beginning of each
+word.  This is different from typical Emacs `forward-*' and
+`backward-*' commands, which move ''past'' the end or the beginning
+of something.
+
+Typical Emacs `forward-*' commands essentially perform the
+following sequence of actions, expressed in terms of `fw-next-*':
+
+: 1. While some predicate ##PRED-X## is ''NOT'' true, do `fw-to-next-X'.
+: 2. Do `fw-to-next-NOT-X'.
+
+Step 1 moves to the next place X is true (e.g., a word beginning).
+
+Step 2 moves just past where X continues to be true (e.g., just
+after the end of the word).
+
+Partly as a way of illustrating this, commands `fw-downward-word'
+and `fw-upward-word' act like Emacs `forward-word' and
+`backward-word', but they move through text vertically, not
+horizontally.  They are defined in the library, using steps 1 and 2.
+
+
+----
+
+If you also use library [[Imenu+]] then you can use it to navigate among thing-at-point ##THING##s (strings, vectors, lists, [[sexp|sexps]], [[symbol|symbols]], words, colors (names/hex), numbers, decimal numbers, hex numbers, sentences, paragraphs,... whatever).  More generally, you can go to buffer positions where a given predicate is true.
+
+It's as simple as defining an Imenu item function, like so:
+
+
+    (defun imenup-find-where-vector ()
+      "Generic-expression definition matcher for Lisp vectors.
+    Use it in an `imenu-generic-expression' value as follows:
+
+     \(list \"Vectors\" 'imenup-find-where-vector 0)"
+      (imenup-find-where-1 'vector))
+
+And then adding that to variable `imenu-generic-expression' for a given mode.  For example:
+
+    (add-to-list 'my-mode-imenu-generic-expression
+                 (list "Vectors" 'imenup-find-where-vector 0))
+
+That gives you a menu '''Vectors''' whose menu items are the vectors in the buffer.  (And as usual you can toggle whether to include those that are inside comments or strings.)
+
+----
+CategoryEditing
+CategorySearch
