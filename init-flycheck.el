@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-07-04 21:35:23
-;; Version: 0.2
-;; Last-Updated: 2018-07-05 18:27:38
+;; Version: 0.3
+;; Last-Updated: 2018-07-10 07:58:50
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-flycheck.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/10
+;;      * Turn off js2 mode warnings
+;;
 ;; 2018/07/05
 ;;      * Use `posframe' for MacOS, bug has fixed at: https://www.emacswiki.org/emacs/init-startup.el
 ;;
@@ -92,18 +95,26 @@
                'ruby-mode-hook
                'python-mode-hook
                'swift-mode-hook
+               'go-mode-hook
                ))
   (add-hook hook '(lambda () (flycheck-mode 1))))
 
+;; Use posframe as flycheck UI.
 (with-eval-after-load 'flycheck
   (require 'flycheck-posframe)
   (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
+;; Add flycheck for swift.
 (add-hook 'swift-mode-hook
           (lambda ()
             (require 'flycheck-swift)
             (flycheck-swift-setup)
             ))
+
+;; Don't show missing semi warning in js2-mode.
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (setq js2-mode-show-strict-warnings nil)))
 
 (provide 'init-flycheck)
 
