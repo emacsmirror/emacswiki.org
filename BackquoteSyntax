@@ -38,7 +38,7 @@ defun.  Compare:
 and
 
     (defmacro my-macro-2 (arg1 arg2)
-      `(setq ,arg1 `,(cons ,arg2 ,arg1)))
+      `(setq ,arg1 ,`(cons ,arg2 ,arg1)))
 
 Comparing the macroexpansions:
 
