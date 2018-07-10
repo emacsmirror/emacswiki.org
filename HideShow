@@ -248,7 +248,10 @@ Use AUCTeX.
 AUCTex doesn't do text folding it only hides the macros. Maybe hs-special-modes-alist can be expanded so that when instead of a pair like '{', '}' the you only insert one pattern like '\chapter{.*}' it would look for the next similar match and fold the text between the two matches.
 
 [new]
+hideshow is very nice but I am sad that it does not have the equivalent of outline-mode's show-children (i.e. show one level down).  My desired work flow is to hide everything then show one level at a time as I walk down the tree structure of nested blocks looking for the one I want.
 
+My elisp is pretty rusty so I probably won't get around to trying to add this myself anytime soon.
+[new]
 
 === Bugs ===
 I found a problem with the (correct) behavior of HideShow. In the 1st situation (see below, 1st column), if one hides the 1st block, what is shown is not entirely satisfactory (2nd column). Much better would be the last example, i.e., as though the "else" was in the next line from the '}' which closes the 1st block.
