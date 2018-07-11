@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2014-03-06 15:50:39
-;; Version: 0.5
-;; Last-Updated: 2018-06-12 08:42:33
+;; Version: 0.6
+;; Last-Updated: 2018-07-11 23:00:02
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-web-mode.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `web-mode' `emmet-mode' `tagedit' `emmet-extension'
+;; `web-mode' `emmet-mode' `emmet-extension'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/11
+;;      * Use function `paredit-kill+' in paredit-extension.el 0.5 instead `tagedit-kill' to build better kill experience for `web-mode' and `ruby-mode'.
+;;
 ;; 2018/06/12
 ;;      * Add config for `web-mode-markup-indent-offset'.
 ;;      * Use emmet-mode instead zencoding-mode.
@@ -92,9 +95,9 @@
 ;;; Require
 
 (require 'web-mode)
-(require 'tagedit)
 (require 'emmet-mode)
 (require 'emmet-extension)
+(require 'paredit-extension)
 
 ;;; Code:
 
@@ -122,7 +125,7 @@
    ("C-M-SPC" . web-mode-mark-and-expand)
    ("%" . web-mode-match-paren)
    ("C-:" . web-mode-comment-or-uncomment)
-   ("C-k" . tagedit-kill)
+   ("C-k" . paredit-kill+)
    ("M-i" . emmet-expand-yas)
    ("C-c M-i" . emmet-preview-current-line)
    )
