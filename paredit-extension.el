@@ -2,13 +2,13 @@
 
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2008 ~ 2018, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.4
-;; Last-Updated: 2018-06-26 08:54:29
+;; Version: 0.5
+;; Last-Updated: 2018-07-11 22:57:49
 ;; URL: not distributed yet
 ;; Keywords: paredit
-;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 26.0.50.1
+;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 27.0.50
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -44,6 +44,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/07/11
+;;      * Add new function `paredit-web-mode-kill' and `paredit-ruby-mode-kill'.
+;;      * Add new function `paredit-common-mode-kill' and refactry `paredit-kill+'.
 ;;
 ;; 2018/06/26
 ;;      * Add `python-mode' in black list of `paredit-open-curly-smart'
@@ -238,17 +242,94 @@ Will delete blank line after execute `paredit-splice-sexp'."
     (kill-line)
     (back-to-indentation)))
 
-(defun paredit-kill+()
-  "It's annoying that we need re-indent line after we delete blank line with `paredit-kill'.
-`paredt-kill+' fixed this problem."
+(defun paredit-blank-line-p ()
+  (and (equal (current-column) 0)
+       (blank-line-p)))
+
+(defun paredit-kill-blank-line-and-reindent ()
   (interactive)
-  (if (and (equal (current-column) 0)
-           (blank-line-p))
-      (progn
-        (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
-        (back-to-indentation))
-    (paredit-kill))
-  )
+  (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
+  (back-to-indentation))
+
+(defun paredit-kill+ ()
+  "It's annoying that we need re-indent line after we delete blank line with `paredit-kill'.
+`paredt-kill+' fixed this problem.
+
+If current mode is `web-mode', use `paredit-web-mode-kill' instead `paredit-kill' for smarter kill operation."
+  (interactive)
+  (cond ((eq major-mode 'web-mode)
+         (paredit-web-mode-kill))
+        ((eq major-mode 'ruby-mode)
+         (paredit-ruby-mode-kill))
+        (t
+         (paredit-common-mode-kill))))
+
+(defun paredit-common-mode-kill ()
+  (interactive)
+  (if (paredit-blank-line-p)
+      (paredit-kill-blank-line-and-reindent)
+    (paredit-kill)))
+
+(defun paredit-web-mode-kill ()
+  "It's a smarter kill function for `web-mode'.
+
+If current line is blank line, re-indent line after kill whole line.
+If point in string area, kill string content like `paredit-kill' do.
+If point in tag area, kill nearest tag attribute around point.
+Otherwise, do `paredit-kill'."
+  (interactive)
+  (if (paredit-blank-line-p)
+      (paredit-kill-blank-line-and-reindent)
+    (let (parent-element-pos
+          line-indent-pos
+          in-tag-p)
+      (save-excursion
+        (web-mode-element-parent)
+        (setq parent-element-pos (point)))
+      (save-excursion
+        (back-to-indentation)
+        (setq line-indent-pos (point)))
+      (setq in-tag-p (equal parent-element-pos line-indent-pos))
+      (cond ((paredit-in-string-p)
+             (paredit-kill))
+            (in-tag-p
+             (web-mode-attribute-kill))
+            (t
+             (paredit-kill))
+            ))))
+
+(defun paredit-ruby-mode-kill ()
+  "It's a smarter kill function for `ruby-mode'.
+
+If current line is blank line, re-indent line after kill whole line.
+If point in string area, kill string content like `paredit-kill' do.
+If point at block beginning, kill whole block.
+If point at block end, kill rest line after end block.
+Otherwise, do `paredit-kill'.
+"
+  (interactive)
+  (if (paredit-blank-line-p)
+      (paredit-kill-blank-line-and-reindent)
+    (let (in-beginning-block-p in-end-block-p block-start-pos block-end-pos)
+      (save-excursion
+        (setq current-symbol (buffer-substring-no-properties (beginning-of-thing 'symbol) (end-of-thing 'symbol)))
+        (setq in-beginning-block-p (member current-symbol '("class" "module" "def" "if" "unless" "case" "while" "until" "for" "begin" "do")))
+        (setq in-end-block-p (member current-symbol '("end")))
+        )
+      (cond ((paredit-in-string-p)
+             (paredit-kill))
+            (in-beginning-block-p
+             (beginning-of-thing 'symbol)
+             (setq block-start-pos (point))
+             (forward-sexp 1)
+             (setq block-end-pos (point))
+             (kill-region block-start-pos block-end-pos))
+            (in-end-block-p
+             (beginning-of-thing 'symbol)
+             (save-excursion
+               (kill-line)))
+            (t
+             (paredit-kill))))))
 
 (defun paredit--is-at-start-of-sexp ()
   (and (looking-at "(\\|\\[")
@@ -282,6 +363,7 @@ Will delete blank line after execute `paredit-splice-sexp'."
        (eq major-mode 'js2-mode)
        (eq major-mode 'ruby-mode)
        (eq major-mode 'python-mode)
+       (eq major-mode 'lua-mode)
        )
       ;; Just do same as `paredit-open-curly' in some mode.
       (paredit-open-curly)
@@ -289,9 +371,7 @@ Will delete blank line after execute `paredit-splice-sexp'."
     (paredit-open-curly)
     (indent-according-to-mode)
     (comment-indent-new-line)
-    (open-newline-above 1)
-    )
-  )
+    (open-newline-above 1)))
 
 (provide 'paredit-extension)
 
