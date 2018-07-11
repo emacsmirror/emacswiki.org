@@ -247,6 +247,10 @@ If you have a very large Tags file, you might want to cache the tag-names list a
   (defun my-ido-find-tag-refresh ()
     "Refresh ido tag list"
     (interactive)
+    ;; tags-completion-table() early-outs if the table has already been created
+    ;; This is problematic if TAGS has changed
+    ;; Clearing it here ensures the table won't get out of sync
+    (setq tags-completion-table nil)
     (tags-completion-table)
     (setq my-tag-names nil) ;; Clear the list so we don't get duplicates (and get rid of reminder value)
     (mapcar (lambda (x)
