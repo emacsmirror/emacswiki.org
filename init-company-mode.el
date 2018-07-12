@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.6
-;; Last-Updated: 2018-07-12 22:04:59
+;; Version: 0.7
+;; Last-Updated: 2018-07-12 22:20:29
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -77,6 +77,7 @@
 ;;
 ;; 2018/07/12
 ;;      * Customize dabbrev backend, to make company can completion any words in all buffer like `dabbrev-expand'.
+;;      * Default add `company-files' backend.
 ;;
 ;; 2018/07/07
 ;;      * Add `company-css' into `company-backends'.
@@ -113,6 +114,7 @@
 (require 'company-yasnippet)
 (require 'company-dabbrev)
 (require 'company-css)
+(require 'company-files)
 (require 'lsp-mode)
 (require 'lsp-ruby)
 (require 'lsp-python)
@@ -141,6 +143,7 @@
 ;; Customize company backends.
 (push 'company-lsp company-backends)
 (push 'company-css company-backends)
+(push 'company-files company-backends)
 
 ;; Let desktop.el not record the company-posframe-mode
 (company-posframe-mode 1)
