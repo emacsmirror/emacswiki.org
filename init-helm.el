@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.4
-;; Last-Updated: 2018-06-28 08:01:42
+;; Version: 0.5
+;; Last-Updated: 2018-07-12 22:32:08
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -55,7 +55,10 @@
 ;;
 ;; (require 'init-helm)
 ;;
-;; No need more.
+;; In Mac OS, you perhaps need execute below command to build locate db:
+;;
+;; sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+;;
 
 ;;; Customize:
 ;;
@@ -66,6 +69,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/07/12
+;;      * Add `helm-source-locate' in `helm-source-list' for search file in file system.
 ;;
 ;; 2018/06/29
 ;;      * Remove `helm-autoload-commands', one-key is enough.
@@ -116,6 +122,7 @@
                    helm-source-projectile-files-list
                    helm-source-projectile-projects
                    helm-source-kill-ring
+                   helm-source-locate
                    helm-source-yasnippet
                    )))
           (t
@@ -124,6 +131,7 @@
                    helm-source-buffers-list
                    helm-source-recentf
                    helm-source-kill-ring
+                   helm-source-locate
                    helm-source-yasnippet
                    ))
            ))
