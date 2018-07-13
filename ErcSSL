@@ -108,5 +108,53 @@ This version works for me:
     BUFFER.  HOST and PORT specify the connection target."
       (open-tls-stream name buffer host port))
 
+=== Emacs 26/27 onwards ===
+If you want to use `gnutls'(default) with client certificates, then you have to override `open-gnutls-stream', as it is not flexible enough(a patch to upstream would be nice).
+
+I use the following code that uses the cert defined in a global variable when called from `erc-tls':
+
+  (with-eval-after-load 'erc
+  
+    ;; erc hack for gnutls for client cert.
+    (defvar *uconf/erc-certs* nil
+      "erc client certs used by gnutls package for :keylist.")
+  
+    ;; copied from the gnutls lib but set :keylist to client certs.
+    ;; this function is called from `open-network-stream' with :type tls.
+    (defun uconf/open-gnutls-stream (name buffer host service &optional nowait)
+      (let ((process (open-network-stream
+                      name buffer host service
+                      :nowait nowait
+                      :tls-parameters
+                      (and nowait
+                           (cons 'gnutls-x509pki
+                                 (gnutls-boot-parameters
+                                  :type 'gnutls-x509pki
+                                  :keylist *uconf/erc-certs* ;;added parameter to pass the cert.
+                                  :hostname (puny-encode-domain host)))))))
+        (if nowait
+            process
+          (gnutls-negotiate :process process
+                            :type 'gnutls-x509pki
+                            :keylist *uconf/erc-certs* ;;added parameter to pass the cert.
+                            :hostname (puny-encode-domain host)))))
+  
+    ;; only set the global variable when used from `erc-tls'.
+    (defun uconf/erc-open-tls-stream (name buffer host port)
+      (unwind-protect
+          (progn
+            (setq *uconf/erc-certs*
+                  '(("your keyfile" "your certfile")))
+            (open-network-stream name buffer host port
+                                 :nowait t
+                                 :type 'tls))
+        (setq *uconf/erc-certs* nil)))
+  
+    (advice-add 'open-gnutls-stream :override #'uconf/open-gnutls-stream)
+    (advice-add 'erc-open-tls-stream :override #'uconf/erc-open-tls-stream)
+    )
+
+--Jiten
+
 ----
 [[ERC]]
