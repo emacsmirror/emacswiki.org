@@ -111,6 +111,8 @@ This version works for me:
 === Emacs 26/27 onwards ===
 If you want to use `gnutls'(default) with client certificates, then you have to override `open-gnutls-stream', as it is not flexible enough(a patch to upstream would be nice).
 
+Note: You don't need any previous workarounds on this page like setting `tls-program' (it is deprecated) and the builtin `gnutls' lib does vaildate server certificates(see `gnutls-trustfiles').
+
 I use the following code that uses the cert defined in a global variable when called from `erc-tls':
 
   (with-eval-after-load 'erc
