@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2009-02-07 20:56:08
-;; Version: 0.2
-;; Last-Updated: 2018-06-14 12:54:40
+;; Version: 0.5
+;; Last-Updated: 2018-07-13 09:30:23
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/basic-toolkit.el
 ;; Keywords: edit, toolkit
@@ -59,6 +59,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/13
+;;      * Add `css-sort-buffer' for sort css attributable before format css buffer.
+;;
 ;; 2018/06/14
 ;;      * Add function `kill-unused-buffers'
 ;;
@@ -80,6 +83,7 @@
 
 (require 'windows)
 (require 'cycle-buffer)
+(require 'css-sort-buffer)
 
 ;;; Code:
 
@@ -286,6 +290,10 @@ Optional argument REVERSED default is move next line, if reversed is non-nil mov
   "Automatic format current buffer."
   (interactive)
   (save-excursion
+    (when (or
+           (eq major-mode 'scss-mode)
+           (eq major-mode 'css-mode))
+      (css-sort-buffer))
     (indent-region (point-min) (point-max) nil)
     (delete-trailing-whitespace)
     (untabify (point-min) (point-max))))
