@@ -106,7 +106,10 @@ Use python extension emacs: [https://www.emacswiki.org/emacs/EmacsApplicationFra
 *** [http://www.emacswiki.org/emacs/window-number.el window-number.el] -- For fast switch in windows.
 
 *** [http://www.emacswiki.org/emacs/helm-autoload-commands.el helm-autoload-commands.el] -- Search command, load library, execute command in runtime.
+
 *** [http://www.emacswiki.org/emacs/helm-webkit.el helm-webkit.el] -- Search browse history of [http://www.emacswiki.org/emacs/WebKit emacs-webkit] .
+
+*** [https://www.emacswiki.org/emacs/css-sort-buffer.el css-sort-buffer.el] -- Sort css attributes of whole css buffer.
 
 *** [https://raw.githubusercontent.com/manateelazycat/lazycat-emacs/master/site-lisp/extensions/lazycat/company-english-helper.el company-english-helper.el] -- English helper base on Company interface.
 
