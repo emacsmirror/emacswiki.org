@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-07-13 08:59:01
-;; Version: 0.1
-;; Last-Updated: 2018-07-13 08:59:01
+;; Version: 0.2
+;; Last-Updated: 2018-07-13 12:29:49
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/css-sort-buffer.el
 ;; Keywords:
@@ -66,6 +66,7 @@
 ;;
 ;; 2018/07/13
 ;;      * First released.
+;;      * Adjust order of `line-height' attributable.
 ;;
 
 ;;; Acknowledgements:
@@ -102,7 +103,9 @@
         "left"
         "right"
         "width"
+        "line-width"
         "height"
+        "line-height"
         "min-width"
         "min-height"
         "max-width"
@@ -160,7 +163,6 @@
         "text-indent"
         "text-transform"
         "text-decoration"
-        "line-height"
         "transform"
         "word-spacing"
         "letter-spacing"
