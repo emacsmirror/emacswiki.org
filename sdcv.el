@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 2.2
-;; Last-Updated: 2018-07-08 11:45:16
+;; Version: 2.3
+;; Last-Updated: 2018-07-16 09:27:18
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -136,6 +136,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/07/16
+;;      * Fixed typo that uncomment setenv code.
 ;;
 ;; 2018/07/08
 ;;      * Add new option `sdcv-tooltip-border-width'.
@@ -466,7 +469,7 @@ Argument DICTIONARY-LIST the word that need transform."
   ;; Record current translate object.
   (setq sdcv-current-translate-object word)
   ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
-  ;; (setenv "LANG" "en_US.UTF-8")
+  (setenv "LANG" "en_US.UTF-8")
   ;; Return translate result.
   (sdcv-filter
    (shell-command-to-string
