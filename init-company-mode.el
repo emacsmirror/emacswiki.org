@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.7
-;; Last-Updated: 2018-07-12 22:20:29
+;; Version: 0.8
+;; Last-Updated: 2018-07-16 09:13:30
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -75,6 +75,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/16
+;;      * Don't downcase completion result from dabbrev.
+;;
 ;; 2018/07/12
 ;;      * Customize dabbrev backend, to make company can completion any words in all buffer like `dabbrev-expand'.
 ;;      * Default add `company-files' backend.
@@ -139,6 +142,7 @@
 (push 'company-dabbrev company-backends)
 (setq company-dabbrev-char-regexp "[\\.0-9a-z-_'/]") ;adjust regexp make `company-dabbrev' search words like `dabbrev-expand'
 (setq company-dabbrev-code-other-buffers 'all) ;search completion from all buffers, not just same mode buffers.
+(setq company-dabbrev-downcase nil) ;don't downcase completion result from dabbrev.
 
 ;; Customize company backends.
 (push 'company-lsp company-backends)
