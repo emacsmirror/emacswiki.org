@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 30 16:49:11 2018 (-0700)
+;; Last-Updated: Tue Jul 17 16:19:17 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1091
+;;     Update #: 1110
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `imenu'.
+;;   `find-where', `imenu', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -39,14 +39,15 @@
 ;;
 ;;   Non-interactive functions defined here:
 ;;
-;;    `imenup--sort-submenu', `imenup-delete-if-not',
-;;    `imenup-gowhere', `imenup-gowhere-1', `imenup-gowhere-color',
-;;    `imenup-gowhere-decimal-number', `imenup-gowhere-hex-number',
-;;    `imenup-gowhere-list', `imenup-gowhere-number',
-;;    `imenup-gowhere-paragraph', `imenup-gowhere-sentence',
-;;    `imenup-gowhere-sexp', `imenup-gowhere-string',
-;;    `imenup-gowhere-symbol', `imenup-gowhere-vector',
-;;    `imenup-gowhere-word', `imenup-invisible-p'.
+;;    `imenup--sort-submenu', `imenup-delete-if', `imenup-find-where',
+;;    `imenup-find-where-1', `imenup-find-where-color',
+;;    `imenup-find-where-decimal-number',
+;;    `imenup-find-where-hex-number', `imenup-find-where-list',
+;;    `imenup-find-where-number', `imenup-find-where-paragraph',
+;;    `imenup-find-where-sentence', `imenup-find-where-sexp',
+;;    `imenup-find-where-string', `imenup-find-where-symbol',
+;;    `imenup-find-where-vector', `imenup-find-where-word',
+;;    `imenup-invisible-p'.
 ;;
 ;;   Internal variables defined here:
 ;;
@@ -85,12 +86,15 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/07/17 dadams
+;;     Added imenup-delete-if.  Removed imenup-delete-if-not.
+;;     imenu--generic-function: Return result of nconc.
 ;; 2018/06/30 dadams
-;;     Added: imenup-delete-if-not, imenup-gowhere, imenup-gowhere-1, imenup-gowhere-color,
-;;       imenup-gowhere-decimal-number, imenup-gowhere-hex-number, imenup-gowhere-list,
-;;       imenup-gowhere-number, imenup-gowhere-paragraph, imenup-gowhere-sentence,
-;;       imenup-gowhere-sexp, imenup-gowhere-string, imenup-gowhere-symbol, imenup-gowhere-vector,
-;;       imenup-gowhere-word.
+;;     Added: imenup-delete-if-not, imenup-find-where, imenup-find-where-1, imenup-find-where-color,
+;;       imenup-find-where-decimal-number, imenup-find-where-hex-number, imenup-find-where-list,
+;;       imenup-find-where-number, imenup-find-where-paragraph, imenup-find-where-sentence,
+;;       imenup-find-where-sexp, imenup-find-where-string, imenup-find-where-symbol, imenup-find-where-vector,
+;;       imenup-find-where-word.
 ;;     imenu--generic-function: Fixed two bugs (Emacs bug #32024).  Do not call imenu-progress-message.
 ;; 2018/06/29 dadams
 ;;     Removed: imenup-ignore-comments-flag - Use imenu-generic-skip-comments-and-strings (Emacs 24.4+)
@@ -225,7 +229,7 @@
 
 (require 'imenu)
 
-(require 'gowhere nil t) ;; (no error if not found) gw-to-previous-thing
+(require 'find-where nil t) ;; (no error if not found) gw-to-previous-thing
 
 ;; Quiet the byte-compiler
 (defvar imenu-menubar-modified-tick)
@@ -590,23 +594,23 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
         (or (memq prop buffer-invisibility-spec)  (assq prop buffer-invisibility-spec))))))
 
 
-;; If you use library `gowhere.el' then you can get Imenu menus for things at point and any positions
+;; If you use library `find-where.el' then you can get Imenu menus for things at point and any positions
 ;; where some predicate starts to return true.
 ;;
-(when (featurep 'gowhere)
+(when (featurep 'find-where)
 
-  (defun imenup-gowhere ()
+  (defun find-where ()
     "Function used as REGEXP entry of a generic-expression definition matcher.
 This uses `gw-to-previous-thing' to locate a THING beginning.  On
 first invocation it prompts for the THING.
 
 Instead of that prompting, which is one-time only, use this function
 only to define a function that uses a specific kind of THING.  An
-example of such a function is `imenup-gowhere-list'."
-    (imenup-gowhere-1))
+example of such a function is `find-where-list'."
+    (find-where-1))
 
-  (defun imenup-gowhere-1 (&optional thing)
-    "Helper for defining `imenup-gowhere-THING' function."
+  (defun find-where-1 (&optional thing)
+    "Helper for defining `find-where-THING' function."
     (let* ((res    (gw-to-previous-thing thing))
            (beg    (car res))
            (beg    (if imenu-use-markers (copy-marker beg) beg))
@@ -616,89 +620,89 @@ example of such a function is `imenup-gowhere-list'."
       (when res (set-match-data (list beg end)))
       (and res  (format "%s" res))))    ; Convert to string.
 
-  (defun imenup-gowhere-list ()
+  (defun find-where-list ()
     "Generic-expression definition matcher for Lisp lists.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Lists\" 'imenup-gowhere-list 0)"
-    (imenup-gowhere-1 'list))
+ \(list \"Lists\" 'find-where-list 0)"
+    (find-where-1 'list))
 
-  (defun imenup-gowhere-string ()
+  (defun find-where-string ()
     "Generic-expression definition matcher for Lisp strings.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Strings\" 'imenup-gowhere-string 0)"
-    (imenup-gowhere-1 'string))
+ \(list \"Strings\" 'find-where-string 0)"
+    (find-where-1 'string))
 
-  (defun imenup-gowhere-vector ()
+  (defun find-where-vector ()
     "Generic-expression definition matcher for Lisp vectors.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Vectors\" 'imenup-gowhere-vector 0)"
-    (imenup-gowhere-1 'vector))
+ \(list \"Vectors\" 'find-where-vector 0)"
+    (find-where-1 'vector))
 
-  (defun imenup-gowhere-number ()
+  (defun find-where-number ()
     "Generic-expression definition matcher for numbers.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Numbers\" 'imenup-gowhere-number 0)"
-    (imenup-gowhere-1 'number))
+ \(list \"Numbers\" 'find-where-number 0)"
+    (find-where-1 'number))
 
-  (defun imenup-gowhere-decimal-number ()
+  (defun find-where-decimal-number ()
     "Generic-expression definition matcher for decimal numbers.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Decimal Numbers\" 'imenup-gowhere-decimal-number 0)"
-    (imenup-gowhere-1 'decimal-number))
+ \(list \"Decimal Numbers\" 'find-where-decimal-number 0)"
+    (find-where-1 'decimal-number))
 
-  (defun imenup-gowhere-hex-number ()
+  (defun find-where-hex-number ()
     "Generic-expression definition matcher for hexadecimal numbers.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Hex Numbers\" 'imenup-gowhere-hex-number 0)"
-    (imenup-gowhere-1 'hex-number))
+ \(list \"Hex Numbers\" 'find-where-hex-number 0)"
+    (find-where-1 'hex-number))
 
-  (defun imenup-gowhere-symbol ()
+  (defun find-where-symbol ()
     "Generic-expression definition matcher for symbols.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Symbols\" 'imenup-gowhere-symbol 0)"
-    (imenup-gowhere-1 'symbol))
+ \(list \"Symbols\" 'find-where-symbol 0)"
+    (find-where-1 'symbol))
 
-  (defun imenup-gowhere-sexp ()
+  (defun find-where-sexp ()
     "Generic-expression definition matcher for Lisp S-expressions.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Sexps\" 'imenup-gowhere-sexp 0)"
-    (imenup-gowhere-1 'sexp))
+ \(list \"Sexps\" 'find-where-sexp 0)"
+    (find-where-1 'sexp))
 
-  (defun imenup-gowhere-color ()
+  (defun find-where-color ()
     "Generic-expression definition matcher for color names and hex RGB.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Colors\" 'imenup-gowhere-color 0)"
-    (imenup-gowhere-1 'color))
+ \(list \"Colors\" 'find-where-color 0)"
+    (find-where-1 'color))
 
-  (defun imenup-gowhere-word ()
+  (defun find-where-word ()
     "Generic-expression definition matcher for words.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Words\" 'imenup-gowhere-word 0)"
-    (imenup-gowhere-1 'word))
+ \(list \"Words\" 'find-where-word 0)"
+    (find-where-1 'word))
 
-  (defun imenup-gowhere-sentence ()
+  (defun find-where-sentence ()
     "Generic-expression definition matcher for sentences.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Sentences\" 'imenup-gowhere-sentence 0)"
-    (imenup-gowhere-1 'sentence))
+ \(list \"Sentences\" 'find-where-sentence 0)"
+    (find-where-1 'sentence))
 
-  (defun imenup-gowhere-paragraph ()
+  (defun find-where-paragraph ()
     "Generic-expression definition matcher for paragraphs.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Paragraphs\" 'imenup-gowhere-paragraph 0)"
-    (imenup-gowhere-1 'paragraph))
+ \(list \"Paragraphs\" 'find-where-paragraph 0)"
+    (find-where-1 'paragraph))
 
   )
 
@@ -823,12 +827,11 @@ PATTERNS."
     ;; This is in case one submenu gets items from two different regexps.
     (dolist (item  index-alist)
       (when (listp item) (setcdr item (sort (cdr item) 'imenu--sort-by-position))))
-    (let ((main-element  (assq nil index-alist)))
-      (nconc (delq main-element (delq 'dummy index-alist)) (cdr main-element)))
     ;; Remove any empty menus.  That can happen because of skipping things inside comments or strings.
     ;; Fixes Emacs bug #32024
-    (when (consp (car index-alist))
-      (setq index-alist  (imenup-delete-if-not (lambda (it) (cdr it)) index-alist)))))
+    (setq index-alist (imenup-delete-if (lambda (it) (and (consp it)  (null (cdr it)))) index-alist))
+    (let ((main-element  (assq nil index-alist)))
+      (nconc (delq main-element (delq 'dummy index-alist)) (cdr main-element)))))
 
 
 ;; REPLACE ORIGINAL in `imenu.el'.
@@ -882,16 +885,18 @@ Returns t for rescan, or else an element or subelement of INDEX-ALIST."
                                                    (concat title imenu-level-separator
                                                            (car (rassq position index-alist)))
                                                  (car (rassq position index-alist)))))))))
-;; Same as `diredp-delete-if-not'.
+;; Same as `doremi-delete-if'.
 ;;
-(defun imenup-delete-if-not (predicate xs)
-  "Remove all elements of list XS that do not satisfy PREDICATE.
+(defun imenup-delete-if (predicate xs)
+  "Remove all elements of list XS that satisfy PREDICATE.
 This operation is destructive, reusing conses of XS whenever possible."
-  (while (and xs  (not (funcall predicate (car xs))))
+  (while (and xs  (funcall predicate (car xs)))
     (setq xs  (cdr xs)))
   (let ((cl-p  xs))
     (while (cdr cl-p)
-      (if (not (funcall predicate (cadr cl-p))) (setcdr cl-p (cddr cl-p)) (setq cl-p  (cdr cl-p)))))
+      (if (funcall predicate (cadr cl-p))
+          (setcdr cl-p (cddr cl-p))
+        (setq cl-p  (cdr cl-p)))))
   xs)
 
 ;;;;;;;;;;;;;;;;;;
