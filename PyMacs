@@ -3,7 +3,10 @@
  <johnw> you can do (pymacs-load "os") and then call (os-stat FILE), 
          for example
 
- Newsgroups: comp.lang.python.announce
+Update 2018/07/16 - Pymacs has moved to https://github.com/gentry/Pymacs.  Further pointers to releases, etc., are in the README there.
+
+
+Newsgroups: comp.lang.python.announce
  Date: 25 Jun 2002 20:01:49 -0400
  
  Hi!  A new release of Pymacs is available as:
@@ -48,5 +51,3 @@ CategoryExtensionLanguage
 
 Update 2009/06/06 - PyMacs is required for PySmell
 * you can clone pymacs from their git repository: https://github.com/pinard/Pymacs 
-
-
