@@ -139,6 +139,28 @@ Further variation on RichardRiley's and ajvargo's examples: Limit ido to the cur
 (global-set-key (kbd "C-c t") 'wg/ido-for-this-mode)
 }}}
 
+=== Filter ido buffer list to show only directories ===
+Adopting from RichardRiley's example, you can filter the ido buffer list printed by "C-x b" by further pressing invoking "C-d". This allows for an easy way to switch to an opened dired buffer.
+-- [[sagarjha]]
+
+{{{
+(defun ido-switch-to-dired (&optional removep)
+  (interactive "P")
+  (setq ido-cur-list
+	(remove-if-not (lambda (buf-name)
+			 (setq buf (get-buffer buf-name))
+			 (when (buffer-live-p buf)
+			   (with-current-buffer buf
+			     (eq major-mode 'dired-mode))))
+		       ido-cur-list)))
+
+(defun bind-ido-keys ()
+  "Keybindings for ido mode."
+  (define-key ido-completion-map (kbd "C-d") 'ido-switch-to-dired))
+
+(add-hook 'ido-setup-hook #'bind-ido-keys)
+}}}
+
 = Mimicking an invocation of ido followed by some keys =
 
 I use ERC, and I wanted to bind something to the equivalent of "C-x b #": that is, launching ido-switch-buffer and hitting a # so that ERC channels are given as options.  However, it's tough in general to write elisp or keyboard macros that run a command and start entering things into a minibuffer without finishing the prompt. For this special case, though, this elisp works:
