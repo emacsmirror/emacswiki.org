@@ -16,8 +16,28 @@ Note: many config and extensions in this page is too old, even not update since 
 My emacs Video:
 [http://www.youtube.com/watch?v=ZA3uuflGtk8 MyEmacs]
 
-==Run any program (browser, image viewer, etc) in Emacs==
-Use python extension emacs: [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsApplicationFramework]
+==Run any program in Emacs==
+HomePage: [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsApplicationFramework]
+
+** Browser: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/browser.gif
+
+** Video Player: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/video_player.gif
+
+** Pdf Viewer: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/pdf_viewer.gif
+
+** Org Previewer: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/org_previewer.gif
+
+** Markdown Previewer: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/markdown_previewer.gif
+
+** Image Viewer: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/image_viewer.gif
+
+** Camera: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/camera.gif
+
+** File Transfer: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/file_transfer.png
+
+** File Uploader: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/file_uploader.png
+
+** Air Share: https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/air_share.png
 
 ==Packages==
 * Standalone packages.
