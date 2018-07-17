@@ -3,7 +3,7 @@
  <johnw> you can do (pymacs-load "os") and then call (os-stat FILE), 
          for example
 
-Update 2018/07/16 - Pymacs has moved to https://github.com/gentry/Pymacs.  Further pointers to releases, etc., are in the README there.
+Update 2018/07/16 - Pymacs has moved to https://github.com/gentry/Pymacs.  Further pointers to releases, etc., are in the README there.  Note that the github URL in the message below is obsolete.
 
 
 Newsgroups: comp.lang.python.announce
@@ -49,5 +49,9 @@ CategoryExtensionLanguage
 
 ----
 
-Update 2009/06/06 - PyMacs is required for PySmell
-* you can clone pymacs from their git repository: https://github.com/pinard/Pymacs 
+Update 2009/06/06 - Pymacs is required for PySmell
+* you can clone pymacs from the git repository https://github.com/gentry/Pymacs 
+
+Update 2018/07/16 - Pymacs is also required for Rope/Ropemacs, a python refactoring library and emacs bindings.
+
+
