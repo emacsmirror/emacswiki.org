@@ -1,11 +1,33 @@
 : "Everything is deeply intertwingled."
  -- [https://en.wikiquote.org/wiki/Ted_Nelson Ted Nelson]
 
-== Contact ==
+== About ==
 
-* Email: <chrisbryant AT SPAMFREE ucla DOT edu>
+<pre>
+I use GNU Emacs.  
+GNU Emacs is free software.  
+I Org-mode - do you?
+I also hack on GNU Linux-libre systems.
+</pre>
 
-* Website: [http://chrisbryant.bol.ucla.edu/ Chris Bryant at UCLA]
+<pre>
+Yo uso de GNU Emacs. 
+GNU Emacs es software libre. 
+Yo Org-mode - ¿verdad? 
+También me hackeo en sistemas GNU Linux-libre.
+</pre>
+
+*  GPG key: [http://chrisbryant.bol.ucla.edu/pubkey.asc B7E1 D4BA 8587 397F 4DE9 EBBC D40B 5D14 62A1 A4D1]
+*  Email:  [mailto:chrisbryant@ucla.edu chrisbryant@ucla.edu]
+*  Web:  http://chrisbryant.bol.ucla.edu/
+*  OS:  http://www.gnu.org
+*  Kernel:  http://linux-libre.fsfla.org
+*  Languages: Lisp, GNU Emacs Lisp, Arc, Scheme, GNU Guile
+*  GitHub: https://github.com/christianbryant 
+*  Latitude/Longitude: 34°3'8"N, 118°14'34"W 
+*  Tea:  Earl Grey.  Hot.
+*  Moderator: [http://www.darkreading.com/profile_content.asp?piddl_userid=106330 Dark Reading]
+*  Contributor: [https://news.ycombinator.com/user?id=christianbryant Hacker News]
 
 == I Use Emacs ==
 
