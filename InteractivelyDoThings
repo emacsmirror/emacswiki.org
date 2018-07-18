@@ -140,7 +140,7 @@ Further variation on RichardRiley's and ajvargo's examples: Limit ido to the cur
 }}}
 
 === Filter ido buffer list to show only directories ===
-Adopting from RichardRiley's example, you can filter the ido buffer list printed by "C-x b" by further pressing invoking "C-d". This allows for an easy way to switch to an opened dired buffer.
+Adopting from RichardRiley's example, you can filter the ido buffer list printed by "C-x b" by further invoking "C-d". This allows for an easy way to switch to an opened dired buffer.
 -- [[sagarjha]]
 
 {{{
