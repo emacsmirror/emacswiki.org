@@ -209,4 +209,10 @@ To check spelling of camel-cased words, you need to switch the default ispell pr
   (setq ispell-extra-args '("-C" "--sug-mode=ultra" "--run-together-limit=5"))
 
 ----
+---
+A better optiona o check spelling of camel-cased words is https://github.com/redguardtoo/wucuo
+
+It support both aspell and hunspell. No extra setup required. Just works out of box.
+
+----
 CategoryModes
