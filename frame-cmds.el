@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Jan  5 14:39:57 2018 (-0800)
+;; Last-Updated: Thu Jul 19 07:14:42 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3120
+;;     Update #: 3121
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -259,7 +259,7 @@
 ;;   (defvar menu-bar-doremi-menu (make-sparse-keymap "Do Re Mi"))
 ;;   (define-key global-map [menu-bar doremi]
 ;;     (cons "Do Re Mi" menu-bar-doremi-menu))
-;;   (define-key menu-bar-doremi-menu [doremi-font+]
+;;   (define-key menu-bar-doremi-menu [doremi-push-current-frame-config]
 ;;     '("Save Frame Configuration" . save-frame-config))
 ;;
 ;;  See also these files for other frame commands:
