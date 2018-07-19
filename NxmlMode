@@ -269,6 +269,8 @@ Barely tested, improvements welcome. -- EmilioLopes
 
 You can use which-func-mode to show this info in the modeline, you just have to use (add-hook 'which-func-functions 'nxml-where) to tie the two together. -- ZoltanIvanfi
 
+Breaks if there is text that looks like start of a element in a comment, e.g. `<!-- <example' -- MiserableVariable
+
 == False-positive validation errors ==
 
 Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sample document, the label and input will be considered errors:
