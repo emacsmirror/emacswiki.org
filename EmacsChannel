@@ -1,6 +1,6 @@
 [[fr:SalleEmacs]]
 
-The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002]. You can join using the [http://webchat.freenode.net?channels=%23emacs&uio=d4 Freenode web interface], or use your favorite IRC client. There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. 
+The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002]. You can join using the [https://webchat.freenode.net?channels=%23emacs Freenode web interface], or use your favorite IRC client. There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. 
 
 If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections. 
 
@@ -27,7 +27,7 @@ Channel list:
 * '''#erc''' for [[ERC]]
 * '''#rcirc''' for [[rcirc]]
 
-We prefer no public logs of the Emacs channel. See EmacsChannelLogging.
+Public logging of the Emacs channel is forbidden.  (See EmacsChannelLogging.)
 
 = Tips for getting help =
 
@@ -76,6 +76,8 @@ If you're in trouble:
 * If nothing else works, you'll have to contact Freenode staff on #freenode.
 
 ops can add themselves using ##,ops-list is also <nick>##
+
+
 = Bots =
 
 The channel is probably logged by a gazillion bots (and human users).  Some of the bots one might encounter are described below.
