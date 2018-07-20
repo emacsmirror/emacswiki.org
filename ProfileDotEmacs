@@ -40,7 +40,7 @@ emacs -Q -l PATH/profile-dotemacs.el -f profile-dotemacs
 
 with PATH being the path to where this file resides.
 
-The specific file to be profiled is hardcoded within profile-dotemacs.el
+The specific file to be profiled (i.e. ~/.emacs) is hardcoded within profile-dotemacs.el as follows:
 
 <code>
 (defvar profile-dotemacs-file "~/.emacs"
