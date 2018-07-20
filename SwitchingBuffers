@@ -160,7 +160,7 @@ See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] w
 
 : -- e1f via retroj who suggests that 'C-x 4 t' is a logical binding for the function
 
-
+May I suggest using cl-plusp instead of plusp in the function above. plusp produces error at least on Emacs 24.5.1 (lubuntu 16.4).
 
 
 
