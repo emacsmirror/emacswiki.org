@@ -113,7 +113,7 @@ I wrote a new function to fix this and make the line number recognition enhanced
                (goto-char (cadr ffap-string-at-point-region))
                (and (re-search-backward ":\\([0-9]+\\)"
                                         (line-beginning-position) t)
-                    (string-to-int (match-string 1))))))
+                    (string-to-number (match-string 1))))))
         ;; (message "file:%s,line:%s" fname line)
         (when (and (tramp-tramp-file-p default-directory)
                    (= ?/ (aref fname 0)))
