@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-07-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul  8 19:56:49 2018 (-0700)
+;; Last-Updated: Sun Jul 22 13:39:16 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 849
+;;     Update #: 850
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -560,7 +560,7 @@ the function must accept a buffer position as its first arg."
   "Return non-nil if previous char is not a word constituent."
   (not (equal '(2) (syntax-after (1- pos)))))
 
-;; (defun fw-to-next-word (pos &optional n)
+;; (defun fw-go-past-next-word (pos &optional n)
 ;;   "Same behavior as `forward-word'."
 ;;   (interactive "i\np")
 ;;   (dotimes (ii  n)
@@ -569,7 +569,7 @@ the function must accept a buffer position as its first arg."
 ;;       (fw-to-next-where #'fw-word-char-after-p)
 ;;       (fw-to-next-where #'fw-not-word-char-after-p))))
 
-;; (defun fw-to-previous-word (pos &optional n)
+;; (defun fw-go-before-previous-word (pos &optional n)
 ;;   "Same behavior as `backward-word'."
 ;;   (interactive "i\np")
 ;;   (dotimes (ii  n)
