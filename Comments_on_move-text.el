@@ -38,3 +38,10 @@ It's also what's on MELPA
 
 -- Anonymous 2018-07-22 10:00 UTC
 
+
+----
+
+@Anonymous 2018-07-22: using Emacs 24.5 or older perhaps?
+
+-- npostavs 2018-07-22 15:47 UTC
+
