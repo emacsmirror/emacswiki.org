@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:54:08 2018 (-0800)
+;; Last-Updated: Sun Jul 22 14:19:41 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3295
+;;     Update #: 3299
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -53,7 +53,8 @@
 ;;    (Emacs 21+), `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window',
 ;;    `to-indentation-repeat-backward',
-;;    `to-indentation-repeat-forward', `undo-repeat' (Emacs 24.3+),
+;;    `to-indentation-repeat-forward', `to-next-word',
+;;    `to-previous-word', `undo-repeat' (Emacs 24.3+),
 ;;    `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -104,6 +105,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/07/22 dadams
+;;     Added to-next-word, to-previous-word.
 ;; 2017/08/23 dadams
 ;;     Added: mark-whole-word.
 ;; 2017/01/13 dadams
@@ -512,6 +515,34 @@ This is the similar to `beginning-of-visual-line', but:
       (vertical-motion 0)
       ;; Constrain to field boundaries, like `move-beginning-of-line'.
       (goto-char (constrain-to-field (point) opoint (/= n 1))))))
+
+;;;###autoload
+(defun to-next-word (&optional n)
+  "Go to the beginning of the Nth word after point.
+N defaults to 1 (next word)."
+  (interactive "p")
+  (if (< n 0)
+      (to-previous-word (- n))
+    (dotimes (_  n)
+      (let ((opt  (point)))
+        (skip-syntax-forward "^w")
+        (when (eq opt (point))
+          (skip-syntax-forward "w")
+          (skip-syntax-forward "^w"))))))
+
+;;;###autoload
+(defun to-previous-word (&optional n)
+  "Go to the beginning of the Nth word before point.
+N defaults to 1 (previous word)."
+  (interactive "p")
+  (if (< n 0)
+      (to-next-word (- n))
+    (dotimes (_  n)
+      (let ((opt  (point)))
+        (skip-syntax-backward "w")
+        (when (eq opt (point))
+          (skip-syntax-backward "^w")
+          (skip-syntax-backward "w"))))))
 
 ;;;###autoload
 (defun reversible-transpose-sexps (arg)
