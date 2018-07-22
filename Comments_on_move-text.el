@@ -30,3 +30,11 @@ On "GNU Emacs 24.2.1 (i386-mingw-nt5.1.2600)
 
 -- [http://emacs-sbcl-slime.blogspot.com alkhimov] 2013-07-24 12:38 UTC
 
+
+----
+
+Any reason not to just refer to the more recent https://github.com/emacsfodder/move-text
+It's also what's on MELPA
+
+-- Anonymous 2018-07-22 10:00 UTC
+
