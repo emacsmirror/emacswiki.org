@@ -2,7 +2,7 @@
 
 The default bindings are M-up-arrow and M-down-arrow. It works like Eclipse's (same binding) and !NetBeans M-S-up/down.
 
-[http://www.emacswiki.org/emacs/move-text.el Download move-text.el here.]
+[http://www.emacswiki.org/emacs/move-text.el Download move-text.el here.]  A more up to date version is maintained at https://github.com/emacsfodder/move-text (although that version declares compatibility with Emacs 25.1 rather than 23.0.60.1).
 
 This is a feature is extracted [http://www.emacswiki.org/emacs/basic-edit-toolkit.el from basic-edit-toolkit.el]  
 
