@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.8
-;; Last-Updated: 2018-07-16 09:13:30
+;; Version: 0.9
+;; Last-Updated: 2018-07-23 13:03:15
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -53,27 +53,11 @@
 ;;
 ;; (require 'init-company-mode)
 ;;
-;; For Mac user:
-;; You need install `exec-path-from-shell' from https://raw.githubusercontent.com/purcell/exec-path-from-shell/master/exec-path-from-shell.el
-;; Then put below code in your ~/.emacs, otherwise `lsp-python' will report can't found pyls from PATH:
-;;
-;; (when (featurep 'cocoa)
-;;   (require 'exec-path-from-shell)
-;;   (exec-path-from-shell-initialize))
-;;
-;; LSP server install step:
-;;
-;; Python:
-;; * conda info --envs
-;; * source activate python36
-;; * sudo pip install 'python-language-server[all]'
-;;
-;; Ruby:
-;; * sudo gem install solargraph
-;; * Add gem 'solargraph' in Gemfile, then execute command "bundler update" in ruby project
-;;
 
 ;;; Change log:
+;;
+;; 2018/07/23
+;;      * Add `company-elisp' backend when load emacs-lisp mode.
 ;;
 ;; 2018/07/16
 ;;      * Don't downcase completion result from dabbrev.
@@ -118,19 +102,9 @@
 (require 'company-dabbrev)
 (require 'company-css)
 (require 'company-files)
-(require 'lsp-mode)
-(require 'lsp-ruby)
-(require 'lsp-python)
-(require 'lsp-go)
-(require 'company-lsp)
 (require 'desktop)
 
 ;;; Code:
-
-;; Make LSP can find server bin path.
-(when (featurep 'cocoa)
-  (require 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
 
 ;; Config for company mode.
 (global-company-mode)
@@ -145,7 +119,6 @@
 (setq company-dabbrev-downcase nil) ;don't downcase completion result from dabbrev.
 
 ;; Customize company backends.
-(push 'company-lsp company-backends)
 (push 'company-css company-backends)
 (push 'company-files company-backends)
 
@@ -154,16 +127,21 @@
 (push '(company-posframe-mode . nil)
       desktop-minor-mode-table)
 
-;; LSP mode for languages.
+;; Completion mode for languages.
 (add-hook 'python-mode-hook
           '(lambda ()
-             ;; Use `ignore-errors' avoid LSP failed.
-             (ignore-errors (lsp-python-enable()))
+             (require 'company-jedi)
+             (push 'company-jedi company-backends)
              ))                         ;
 (add-hook 'ruby-mode-hook
           '(lambda ()
-             ;; Use `ignore-errors' avoid LSP failed.
-             (ignore-errors (lsp-ruby-enable()))))
+             (require 'company-robe)
+             (push 'company-robe company-backends)))
+
+(add-hook 'emacs-lisp-mode-hook
+          '(lambda ()
+             (require 'company-elisp)
+             (push 'company-elisp company-backends)))
 
 ;; Key settings.
 (lazy-unset-key
