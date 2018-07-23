@@ -67,6 +67,7 @@ If you want to edit the macro in future sessions, you need to let the ##kmacro##
 * KeybindingGuide for an article on key bindings
 * Functions `local-set-key' and `global-set-key' for more info on key bindings
 * TinyMacro, a simple way to assign macros to keys.
+* [https://github.com/howardabrams/demo-it demo-it] -- an Emacs package for running demonstrations and presentations from within Emacs, it repeats key sequences and is useful for recording screencasts, why type out code you've already written?
 
 == Problems with Isearch ==
 
