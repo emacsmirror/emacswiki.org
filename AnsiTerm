@@ -10,7 +10,7 @@ In Emacs 22, try prefixing actions that aren't recognized by their standard key 
 
 For more configuration options see AnsiTermHints
 
-NB: While ansi-term and term are closely related to each other, they shouldn't be confused with the entirely separate `M-x terminal-emulator' package. This is expected to be announced as obsolete in the [http://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?id=55d5b3e35ac0de26fb09525e64d528db218f04e0#n909 NEWS] file for Emacs 24.4.
+NB: While `ansi-term' and `term' are closely related to each other, they shouldn't be confused with the entirely separate (and [http://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?id=emacs-24.4#n909 obsolete as of 24.4]) terminal.el package which provides `M-x terminal-emulator'.
 
 ----
 CategoryExternalUtilities
