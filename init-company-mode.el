@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 0.9
-;; Last-Updated: 2018-07-23 13:03:15
+;; Version: 1.0
+;; Last-Updated: 2018-07-24 09:52:53
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -53,8 +53,15 @@
 ;;
 ;; (require 'init-company-mode)
 ;;
+;; The install commands of Python completion backend:
+;;
+;; sudo pip install jedi pep8 pylint flake8
+;;
 
 ;;; Change log:
+;;
+;; 2018/07/24
+;;      * Add command to install python completion backend.
 ;;
 ;; 2018/07/23
 ;;      * Add `company-elisp' backend when load emacs-lisp mode.
