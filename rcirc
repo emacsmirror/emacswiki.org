@@ -2,45 +2,22 @@ rcirc is a next generation InternetRelayChat client. It blends seamlessly with t
 
 rcirc is part of GNU Emacs since release 22.0.
 
-==Talking about rcirc==
+== Quickstart ==
 
-If you want to chat about rcirc, the place is <tt>#rcirc</tt> on freenode.
+If you want to chat about rcirc, the place is <tt>#rcirc</tt> on freenode. ##M-x irc## should take you there.
 
-==Getting rcirc==
+You can override these settings in your InitFile or use ##C-u M-x rcirc## to set server, port, username and channels.
 
-If you are running Emacs 22, you already have it.  Skip this section.
+You also can define a key to start rcirc for you:
 
-To check out rcirc.el from EmacsFromCVS: GIT:net/rcirc.el.
-
-New versions of rcirc do not work in Emacs 21. You can get the last version of rcirc working in Emacs 21 here: Lisp:rcirc.el.
-
-==Starting rcirc==
-
-In Emacs 22, just type ##M-x irc##.
-
-In Emacs 21 and/or a very old rcirc version, you will have to add this to your InitFile:
-<pre>
-(eval-after-load "rcirc"                ; for Emacs 21
-  '(if (not (functionp 'irc))
-       (defun irc (x)
-         (interactive "P")
-         (if x
-             (call-interactively 'rcirc)
-           (rcirc rcirc-server rcirc-port rcirc-nick
-                  (rcirc-startup-channels rcirc-server))))))
-</pre>
-then just do as usual.
-
-rcirc comes set up with default values for IRC server and port (irc.freenode.net 6667), nickname (your login name), and channel (#rcirc). You can override these settings in your InitFile or use C-u M-x rcirc to set these values.
-You also can define a key to start it for you:
-<pre>
+{{{
 (global-set-key (kbd "C-c I") 'irc)
-</pre>
+}}}
 
 Please also consider visiting these pages in order to getting started:
 
-; [[rcircExampleSettings]]: examples of stuff you can do to configure rcirc.
-; [[rcircAutoAuthentication]]: How to get automatic authentication with nickserv &c.
+* [[rcircExampleSettings]]: examples of stuff you can do to configure rcirc.
+* [[rcircAutoAuthentication]]: How to get automatic authentication with nickserv &c.
 
 ==Connecting to servers using SSL/TLS ==
 
@@ -52,7 +29,7 @@ Emacs 24 has SSL support out of the box but rcirc doesn't use it by default. Her
 	 :channels ("#rcirc" "#emacs" "#emacswiki"))))
 }}}
 
-Use [http://blog.freenode.net/2011/02/port-6697-irc-via-tlsssl/ post 6697].
+Use [http://blog.freenode.net/2011/02/port-6697-irc-via-tlsssl/ port 6697].
 This requires an Emacs that has been built with [http://www.gnutls.org/ GNU TLS] or an appropriate ##gnutls-cli##.
 
 If you are on *Windows*, you can [ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ download a precompiled binary]. Make sure the ##bin## directory is on your path. Test it by calling ##gnutls-cli## from `eshell'. This is what you would expect:
@@ -63,14 +40,6 @@ Welcome to the Emacs shell
 ~ $ gnutls-cli
 No hostname specified
 }}} 
-
-For *Emacs 23* you need a *fork* of rcirc:
-
-https://github.com/nealey/rcirc/wiki 
-which makes possible to use an arbitrary connection method (ssl/proxy/whatever)
-
-or this (SSL with an optional :use-tls for `rcirc-server-alist' and :custom-connect-function for arbitrary connection method (ssl/proxy/whatever) similar to the neale's patch)
-https://github.com/melmothx/rcirc/tree/to-emacs
 
 ===Warnings==
 
