@@ -81,7 +81,6 @@ There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanatio
 ; [[rcircAutoFillColumn]]: Have your rcirc windows dynamically set fill-column instead of always being too long or too short
 ; [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
 ; [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
-; [[rcircFacebook]]: how to use Facebook chat
 ; [[rcircOccur]]: ##/occur## -- find stuff in all your rcirc buffers
 ; [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
 ; [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
