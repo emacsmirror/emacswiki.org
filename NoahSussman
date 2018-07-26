@@ -1,5 +1,6 @@
 == Elisp ==
 
+# [https://gist.github.com/noahsussman/e6fb79581543a57449ed85c9645a32ee | .emacs.d/init.el for Emacs 26]
 # [http://gist.github.com/64503  .emacs for Aquamacs]
 # [http://gist.github.com/64706 .emacs for the Windows port of GNU Emacs]
 # [http://snipplr.com/users/noah/language/emacs-lisp Some snippets you can drop in your .emacs]
