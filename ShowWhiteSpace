@@ -1,21 +1,26 @@
 This page is about making particular whitespace characters stand out better.
 
-== Vanilla GNU Emacs ==
+Emacs comes with a standard solution: ##M-x whitespace-mode##.
+See WhiteSpace. 
 
-GnuEmacs 24 has internal variable `nobreak-char-display' (turned on by default), which highlights hard space and hard hyphen characters.  But the face is hardwired, and you cannot highlight only one of these chars. 
+== Some Details ==
 
-GNU Emacs 22 or later has library ##whitespace.el##, which lets you highlight whitespace in several ways.  See WhiteSpace. 
+GNU Emacs 24 has internal variable `nobreak-char-display' (turned on by default), which highlights hard space and hard hyphen characters.  But the face is hardwired, and you cannot highlight only one of these chars. 
 
-GNU Emacs 21 or later provides [[option]] `show-trailing-whitespace' to
-highlight trailing whitespace in face `trailing-whitespace'.  For CPerl, you can also specify the face to use.  The default face is `underline'.  You can use face `default' for invisible whitespace:
+GNU Emacs 22 or later has library ##whitespace.el##, which lets you highlight whitespace in several ways.
 
-    (setq cperl-invalid-face 'default)
+GNU Emacs 21 or later provides the [[option]] `show-trailing-whitespace' to
+highlight trailing whitespace in face `trailing-whitespace'.
 
+== CPerl ==
 
+CPerl shows trailing whitespace by default.
+You can specify the face to use for trailing whitespace.
+You can use face `default' for invisible whitespace, if you don't care about trailing whitespace:
 
-
-
-
+{{{
+(setq cperl-invalid-face 'default)
+}}}
 
 [:ShowWspace]
 [:HighlightChars]
