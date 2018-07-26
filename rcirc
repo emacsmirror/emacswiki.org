@@ -149,10 +149,13 @@ AlexSchroeder replies: For beginners, there should be no significant differences
 [new]
 WeakishJiang: I have not used ERC. But I found this piece on [[InternetRelayChat|this page]]:
 
-   I used ERC for a while, but I was not very fond of the 20 odd files required in 
-   my elisp directory, so I switched to rcirc and haven’t looked back since. It does
-   everything I need, the (very clean) code is contained in a single file, I’m very happy! 
-   – VincentFoley
+[quote]
+I used ERC for a while, but I was not very fond of the 20 odd files required in 
+my elisp directory, so I switched to rcirc and haven’t looked back since. It does
+everything I need, the (very clean) code is contained in a single file, I’m very happy! 
+
+– VincentFoley
+[/quote]
 
 Hope it helps.
 [new]
