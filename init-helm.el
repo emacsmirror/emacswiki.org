@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.5
-;; Last-Updated: 2018-07-12 22:32:08
+;; Version: 0.6
+;; Last-Updated: 2018-07-26 08:36:31
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -70,6 +70,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/07/26
+;;      * Make `helm-source-buffers-list' first, otherwise can't switch to with exist buffer list.
+;;
 ;; 2018/07/12
 ;;      * Add `helm-source-locate' in `helm-source-list' for search file in file system.
 ;;
@@ -111,6 +114,9 @@
   (interactive)
   (let ((helm-ff-transformer-show-only-basename nil)
         helm-source-list)
+    (unless helm-source-buffers-list
+      (setq helm-source-buffers-list
+            (helm-make-source "Buffers" 'helm-source-buffers)))
     (cond (
            ;; Just add helm-source-projectile-* in list when current place in project.
            (projectile-project-p)
