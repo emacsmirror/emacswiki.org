@@ -1055,6 +1055,42 @@ After you define the contexts, you type text in the minibuffer to filter the con
 Add new entries here.
 
 
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+Hello icicles masters. I've installed icicles and have noticed that it tries to make thumbnails of pictures when I open a directory. I'd like icicle *not to* make thumbnails (because 1/ I don't need them, 2/ I'm on windows and it doesn't work out of the box). I do it like this, is it right or is it a better way I missed ? :
+<pre>
+(defun image-dired-create-thumb (file &optional arg) nil)
+</pre>
+
+-- [[6514]]
+
+[new:Anonymous:2018-07-26 14:48 UTC]
+
+Not sure what you mean.
+
+* If you mean that '''Icicles''' is showing thumbnails in buffer `*Completions*' during file-name completion then customize option '''`<tt>[[Icicles - Customization and General Tips#icicle-image-files-in-Completions|icicle-image-files-in-Completions]]</tt>''''.
+
+* If you mean that '''Icicles''' is showing a thumbnail tooltip in buffer `*Completions*' then  customize option '''`<tt>[[Icicles - Customization and General Tips#icicle-image-preview-in-tooltip|icicle-image-preview-in-tooltip]]</tt>''''.
+
+-- DrewAdams
+
+
+
+
+
+
+
+
+
 <pre>
 
 </pre>
@@ -2410,19 +2446,6 @@ With '''Icicles''', BTW, it is not unusual at all to have 100 or more matching c
 Let me know what you do find out.  Thx -- DrewAdams
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-[new]
-Hello icicles masters. I've installed icicles and have noticed that it tries to make thumbnails of pictures when I open a directory. I'd like icicle *not to* make thumbnails (because 1/ I don't need them, 2/ I'm on windows and it doesn't work out of the box). I do it like this, is it right or is it a better way I missed ? :
-<pre>
-(defun image-dired-create-thumb (file &optional arg) nil)
-</pre>
 
 
 ----
