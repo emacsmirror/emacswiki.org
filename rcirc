@@ -68,7 +68,6 @@ There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanatio
 ; [[rcircShowVersion]]: ##/sv## -- show rcirc version
 ; [[rcircAwayTime]]: Display how long you are/were away from IRC
 ; [[rcircBack]]: Cancel your AWAY state with /back (requires [[rcircAwayTime]])
-; [[rcircLogging]]: Log conversations to disk
 ; [[rcircServerAuth]]: Patch that adds server authentication (PASS).
 ; [[rcircAutoAway]]: Go /away after Emacs is idle for a period of time.
 ; [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
