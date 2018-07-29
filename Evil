@@ -275,6 +275,90 @@ In Vim I like to have the status line change color when in insert mode and when 
            (set-face-background 'mode-line (car color))
            (set-face-foreground 'mode-line (cdr color))))))
 
+== Make the most out of search and replace ==
+
+The "cgn" command is "change next search object", which is perfect for search and replacing.
+I've read a article called (I guess) "Why Vim doesn't need multiple cursors",
+which mentioned that cgn + rectangle selection can cover 90% what multiple cursors can do.
+
+Back to the topic, the default evil searching with "/" is:
+1. Hit "/"
+2. Insert regex
+3. Hit enter and search
+4. Hit "N" if you jumps to the next match
+5. Hit "cgn" to start replacing
+
+This workflow has two downsides:
+
+1. You need to insert the text again
+2. If you are on the text you want to replace and you start the search,
+evil automatically jumps to the next match, ew.
+
+How about this:
+
+1. Go to visual mode and select what you want to replace
+2. Hit "."
+3. hit "cgn" and replace
+
+Here is the code:
+
+  ;; . in visual mode
+  (defun moon/make-region-search-history ()
+    "Make region a histroy so I can use cgn."
+    (interactive)
+    (let ((region (strip-text-properties (funcall region-extract-function nil))))
+      (push region evil-ex-search-history)
+      (setq evil-ex-search-pattern (evil-ex-make-search-pattern region))
+      (evil-ex-search-activate-highlight evil-ex-search-pattern)
+      (deactivate-mark)))
+
+Bind this command to "." in visual mode and you are set!
+
+Here are some advice functions that can insert the selected text for you
+in evil search:
+
+  ;; / in visual mode will start search immediatly
+  (defun moon-evil-ex-start-search-with-region-string ()
+    (let ((selection (with-current-buffer (other-buffer (current-buffer) 1)
+                       (when (evil-visual-state-p)
+                         (let ((selection (buffer-substring-no-properties (region-beginning)
+                                                                          (1+ (region-end)))))
+                           (evil-normal-state)
+                           selection)))))
+      (when selection
+        (evil-ex-remove-default)
+        (insert selection)
+        (evil-ex-search-activate-highlight (list selection
+                                                 evil-ex-search-count
+                                                 evil-ex-search-direction)))))
+
+  (advice-add #'evil-ex-search-setup :after #'moon-evil-ex-start-search-with-region-string)
+
+  ;; # in visual mode
+  (defun moon-evil-ex-search-word-backward-advice (old-func count &optional symbol)
+    (if (evil-visual-state-p)
+        (let ((region (buffer-substring-no-properties
+                       (region-beginning) (1+ (region-end)))))
+          (setq evil-ex-search-pattern region)
+          (deactivate-mark)
+          (evil-ex-search-full-pattern region count 'backward))
+      (apply old-func count symbol)))
+
+  ;; * in visual mode
+  (defun moon-evil-ex-search-word-forward-advice (old-func count &optional symbol)
+    (if (evil-visual-state-p)
+        (let ((region (buffer-substring-no-properties
+                       (region-beginning) (1+ (region-end)))))
+          (setq evil-ex-search-pattern region)
+          (deactivate-mark)
+          (evil-ex-search-full-pattern region count 'forward))
+      (apply old-func count symbol)))
+
+  (advice-add #'evil-ex-search-word-backward :around #'moon-evil-ex-search-word-backward-advice)
+  (advice-add #'evil-ex-search-word-forward :around #'moon-evil-ex-search-word-forward-advice))
+
+
+
 == Powerline Integration ==
 
 [https://github.com/Dewdrops/powerline Here] is a powerline fork tuned for Evil user.
