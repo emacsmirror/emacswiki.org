@@ -7,7 +7,8 @@ This page is ''not'' for questions or problems about Emacs -- see OpenQuestions 
 Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
-
+== Problem with MELPA page ==
+The MELPA page still says that it gets source from this wiki.  According to the Bookmark Plus page that is no longer true
 == Problem with BannedRegexps and Package-Version tags ==
 Yesterday I tried to update yaoddmuse.el page with last update date, author, and package informations after an fix.
 But I get the following error (I added x in "matched" to bypass the regexp banning):
