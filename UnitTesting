@@ -14,7 +14,7 @@ Various '''testing frameworks''' simplify the task of writing and running tests.
 * '''Mock/stub:''' a stand-in for actual code, useful for "stubbing out" external behavior. (Roughly speaking, mocks and stubs do the same thing, but mocks are more sophisticated.) A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web.
 * '''Fixture:''' setting up (and tearing down) an environment for a test or a test suite.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
-* '''Test-Driven Developent''': a methodology that emphasizes continual testing as part of the "development cycle".
+* '''Test-Driven Development''': a methodology that emphasizes continual testing as part of the "development cycle".
 
 The precise meanings of these terms may vary, though there is some commonality among [http://en.wikipedia.org/wiki/XUnit xUnit]-like frameworks (like SUnit for Smalltalk, JUnit for Java, and lisp-unit for Common Lisp).
 
