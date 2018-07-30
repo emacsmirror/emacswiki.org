@@ -57,6 +57,12 @@ and the 'terrestrial-branch' (地支) in Chinese:
            "červen" "červenec" "srpen" "září"
            "říjen" "listopad" "prosinec"])
 
+=== Danish ===
+
+See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kalender.el] from [https://hub.369.dk/elisp/ Søren's Emacs Lisp Stuff].
+
+*Note:* This will also add Danish holidays.
+
 === Dutch ===
 
     (setq calendar-week-start-day 1
@@ -247,7 +253,10 @@ There is a package, cal-korea-x that support Korean lunar calendar, and display 
 
 === Danish ===
 
-See Soren's page [http://soren.github.com/elisp/index.html on Github]
+See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kalender.el] from [https://hub.369.dk/elisp/ Søren's Emacs Lisp Stuff].
+
+*Note:* This will also localize day and month names.
+
 
 === Finnish ===
 
