@@ -1,6 +1,6 @@
 [[zh:动态绑定_vs_词法绑定]]
 [[zh:动态绑定_vs_词法绑定]]
-Lexical and dynamic binding refer to how variables are looked up by their names.  Lexical binding is sometimes called ''static binding''.  The naming contrast between "static binding" and "dynamic binding" more obvious, however the difference is somewhat more subtle than simply whether a binding changes over time.
+Lexical and dynamic binding refer to how variables are looked up by their names.  Lexical binding is sometimes called ''static binding''.  The naming contrast between "static binding" and "dynamic binding" is more obvious, however the difference is somewhat more subtle than simply whether a binding changes over time.
 
 == Binding ==
 
