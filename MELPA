@@ -2,7 +2,7 @@
 
 Library authors do not need to upload new versions of their packages to MELPA, since they are built automatically.  For builds of stable version packages triggered by upstream version tags, see [[https://stable.melpa.org/ MELPA Stable]].
 
-Currently supported backends are git, svn, bzr, hg, darcs and emacswiki. The collaboration model for MELPA is like that of the Homebrew package manager on OS X -- to add new recipes, simply file a pull request [https://github.com/milkypostman/melpa on Github].
+Currently supported backends are git, svn, bzr, hg, and darcs. The collaboration model for MELPA is like that of the Homebrew package manager on OS X -- to add new recipes, simply file a pull request [https://github.com/milkypostman/melpa on Github].
 
 MELPA uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
 
