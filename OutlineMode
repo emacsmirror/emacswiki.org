@@ -144,10 +144,8 @@ There, now you can use normal outline notation.  If you use "outline" instead of
 
  (add-hook 'change-log-mode-hook
   (lambda ()
-    (setq outline-regexp "[[:digit:]]+")))
+    (set (make-local-variable 'outline-regexp) "[[:digit:]]+")))
  ; note that the "^" is *implicit* at the beginning of the regexp
-
-Better use (set (make-local-variable 'outline-regexp) "...") as the above changes the global value.
 
 == Cycling ==
 
