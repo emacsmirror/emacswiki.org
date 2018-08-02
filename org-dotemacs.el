@@ -1,501 +1,428 @@
-;;; org-dotemacs.el --- Store your emacs config as an org file, and choose which bits to load.
-
-;; Filename: org-dotemacs.el
-;; Description: Store your emacs config as an org file, and load code snippets based on tag matches.
-;; Author: Joe Bloggs <vapniks@yahoo.com>
-;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
-;; Copyleft (Ↄ) 2013, Joe Bloggs, all rites reversed.
-;; Created: 2013-04-27 20:19:18
-;; Version: 0.4
-;; Last-Updated: 2018-07-28 22:22:18
-;;           By: Joe Bloggs
-;; URL: https://github.com/vapniks/org-dotemacs
-;; Keywords: local
-;; Compatibility: GNU Emacs 24.3.1
-;; Package-Requires: ((org "7.9.3") (cl-lib "0.5"))
-;;
-;; Features that might be required by this library:
-;;
-;; org cl
-;;
-
-;;; This file is NOT part of GNU Emacs
-
-;;; License
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.
-;; If not, see <http://www.gnu.org/licenses/>.
-
-;;; Commentary: 
-;;
-;; Bitcoin donations gratefully accepted: 1Ph9srQBspJCDS9CnGUyWJPTrU4ydX9Aa3
-;;
-;; Keeping your emacs config in an org file makes it easier for you to keep your .emacs under control,
-;; and avoid DotEmacsBankruptcy.
-;; With your config code stored in an org file you can easily edit the structure and keep notes.
-;; Note: it can also be used for organizing other elisp config files such as .gnus.el and .ercrc.el.
-;; 
-;; This library allows you to load elisp code from an org file on emacs startup.
-;; You can also limit the code that is loaded to certain tagged headers using an org tag match,
-;; and specify dependencies between code blocks.
-;; Using tag matches you can also reuse the same org file for different emacs setups by specifying different
-;; tag matches for each setup, or load parts of the file on demand.
-;; 
-;;; Commands/Usage 
-;; 
-;; The main command is `org-dotemacs-load-default' which loads your default org-dotemacs file (~/.dotemacs.org)
-;; and prompts for a tag match to specify which code blocks to load. 
-;; In this way you can load bits of config code when you need them.
-;; 
-;; You can also put this command in your InitFile (see Installation below) to load the code on startup.
-;; To change the default org file use the `org-dotemacs-default-file' option.
-;; If you want to load a different org file from your default one, use `org-dotemacs-load-file'.
-;; 
-;; For faster loading you may prefer to keep your config code in a separate elisp file, and just update this file now and again
-;; by exporting the code from the org file.
-;; Use the `org-dotemacs-load-file' command for this and specify a target elisp file when prompted.
-;; 
-;;; Structure of the org file 
-;; 
-;; The elisp code should be contained in emacs-lisp code blocks, e.g:
-;; 
-;; #+BEGIN_SRC emacs-lisp
-;; (setq line-number-mode t)
-;; (setq column-number-mode t)
-;; (setq frame-title-format "%b")
-;; (set-background-color "Black")
-;; (set-foreground-color "White")
-;; (set-cursor-color "White")
-;; #+END_SRC
-;; 
-;; Ideally you should have each code block under a separate org subtree, then you can use properties to
-;; name the blocks and define dependencies, and tags and todo states to specify which blocks
-;; should be loaded (see below). You can specify that certain blocks are loaded only when certain conditions hold
-;; by customizing `org-dotemacs-conditional-tags'. By default operating system tags (linux, windows, mac, hurd, freebsd,
-;; unix) are set to only load when the corresponding operating system is being used (as reported by the `system-type' variable).
-;; So for example, any blocks tagged with "linux" will only be loaded if `system-type' is eq to 'gnu/linux.
-;; These conditional tags are overridden by any tag-match supplied to the command line.
-;; 
-;; I prefer to keep all my code block subtrees under a single header, and use other headers for keeping notes,
-;; defining buffer-wide properties, etc. This way I can get a nice column view of the code blocks
-;; (see the columns view section below).
-;; 
-;;;  Block dependencies 
-;; 
-;; You can enforce dependencies between code blocks by defining NAME & DEPENDS properties for the subtrees containing the
-;; blocks (preferred). The NAME property should contain the name of the block, and the DEPENDS property should contain a space
-;; separated list of block names that this block depends on.
-;; These properties will be applied to all code blocks in the subtree (see "Properties and Columns" in the org manual for
-;; more details).
-;; 
-;; The NAME property can be overridden on a per block basis by adding a :name header arg to a block, and dependencies can be
-;; augmented by adding a :depends header arg (see "Header arguments" in the org manual).
-;; However it is recommended to keep a separate subtree for each code block and use properties for defining headers and names
-;; since then you can get a column view of the dependencies (see below).
-;; 
-;; A block will not be loaded until all of its dependencies have been loaded.
-;; 
-;;;  Tags and TODO states 
-;; 
-;; You can tag your subtrees and use tag matches to specify which blocks to evaluate in calls to `org-dotemacs-load-file'
-;; and `org-dotemacs-load-default'. See "Matching tags and properties" in the org manual for more information on tag matches.
-;; 
-;; Also, by default any blocks in a subtree marked with a todo state of BROKEN will not be evaluated.
-;; You can specify which TODO states to include/exclude for evaluation by customizing the `org-dotemacs-include-todo' and
-;; `org-dotemacs-exclude-todo' options.
-;; 
-;; To add the BROKEN state to the list of todo states for the file you need to add buffer-wide todo states by adding a line
-;; like this somewhere in your org file (see "Per file keywords" in the org manual).
-;; 
-;; #+TODO: BROKEN CHECK TODO
-;; 
-;;;  Columns View 
-;; 
-;; If you use properties for defining names and dependencies then you can get a nice column view of your code subtrees
-;; with the following columns view specification:
-;; 
-;; #+COLUMNS: %35ITEM %15NAME %35DEPENDS %15TAGS %TODO
-;; 
-;; This can be placed anywhere in your dotemacs org file.
-;; Then if you press C-c C-x C-c on the toplevel header for your code blocks you'll get a column view that allows you
-;; to easily change the names, dependencies, tags and todo states.
-;; 
-;;;  Error handling 
-;; 
-;; Error handling can be controlled by customizing `org-dotemacs-error-handling' or by setting the error-handling
-;; command line option when starting emacs.
-;; By default code blocks with unmet dependencies or errors are skipped over as soon as an error is encountered,
-;; but you can also specify that org-dotemacs should halt or try to reload the blocks.
-;; In the latter case each time a new block is successfully loaded, any unsuccessful blocks will be retried.
-;; 
-;;;  Command line options 
-;; 
-;; org-dotemacs.el will look for two command line options when loaded: error-handling (for setting the value of
-;; `org-dotemacs-error-handling') and tag-match (for specifying which headers to load).
-;; For example if you enter the following at the command line:
-;; 
-;;        emacs --error-handling retry --tag-match "settings-mouse"
-;; 
-;; Then only code blocks tagged "settings" but not "mouse" will be loaded, and org-dotemacs will try to reload any
-;; blocks that have errors. If no tag-match is specified on the command line then `org-dotemacs-conditional-tags'
-;; will be used to determine which blocks can be loaded by default.
-;; 
-;;;  Installation 
-;; 
-;; Put org-dotemacs.el in a directory in your load-path, e.g. ~/.emacs.d/
-;; You can add a directory to your load-path with the following line in ~/.emacs
-;; (add-to-list 'load-path (expand-file-name "~/elisp"))
-;; where ~/elisp is the directory you want to add 
-;; (you don't need to do this for ~/.emacs.d - it's added by default).
-;; 
-;; Then make sure you have an ~/.dotemacs.org file and add the following lines to
-;; the end of your .emacs file:
-;; 
-;; (load-file "~/.emacs.d/org-dotemacs.el")
-;; (let (find-file-hook) (org-dotemacs-load-default))
-;; 
-;; or if you want to just load code blocks matching a tag match:
-;; 
-;; (load-file "~/.emacs.d/org-dotemacs.el")
-;; (let (find-file-hook) (org-dotemacs-load-default "<TAG-MATCH>"))
-;; 
-;; To load a different org file either customize `org-dotemacs-default-file' or use the
-;; `org-dotemacs-load-file' function, e.g:
-;; 
-;; (load-file "~/.emacs.d/org-dotemacs.el")
-;; (let (find-file-hook) (org-dotemacs-load-file "<TAG-MATCH>" "~/.emacs.d/my_emacs_config.org"))
-;; 
-
-
-;;; Customize:
-;;
-;; `org-dotemacs-conditional-tags' : A list of tags/regexps and corresponding conditions for loading blocks.
-;; `org-dotemacs-default-file' : The default org file containing the code blocks to load when `org-dotemacs-load-file' is called.
-;; `org-dotemacs-error-handling' : Indicates how errors should be handled by `org-dotemacs-load-blocks'.
-;; `org-dotemacs-include-todo' : A regular expression matching TODO states to be included.
-;; `org-dotemacs-exclude-todo' : A regular expression matching TODO states to be excluded.
-;;
-;; All of the above can customized by:
-;;      M-x customize-group RET org-dotemacs RET
-;;
-
-;;; Change log:
-;; [2018-07-28 Sat]
-;;      * Refactor code to use org-dotemacs-topo-sort
-;;	
-;; [2013-04-27]
-;;      * First released.
-;; 
-
-;;; Acknowledgements:
-;;
-;; 
-;;
-
-;;; TODO
-;;
-;; Option to show prominent warning message if some blocks didn't load (e.g. in large font in dedicated buffer after startup)
-;; Option to show full backtrace on error?
-
-;;; Require
-(require 'cl-lib)
-(require 'org)
-
-;;; Code:
-
-
-
-(defgroup org-dotemacs nil
-  "Store your emacs config as an org file, and choose which bits to load."
-  :group 'org)
-
-(defcustom org-dotemacs-default-file "~/.dotemacs.org"
-  "The default org file containing the code blocks to load when `org-dotemacs-load-file' is called."
-  :group 'org-dotemacs
-  :type '(file :must-match t))
-
-(defcustom org-dotemacs-error-handling 'skip
-  "Indicates how errors should be handled by `org-dotemacs-load-blocks'.
-If eq to 'skip then errors will be skipped over (default).
-If eq to 'retry then `org-dotemacs-load-blocks' will attempt to reload any blocks containing errors,
-after each successfully loaded block.
-In all other cases errors will cause evaluation to halt as normal.
-In all cases errors will be reported in the *Messages* buffer as normal.
-
-This variable can be set from the command line using the dotemacs-error-handling argument."
-  :group 'org-dotemacs
-  :type 'symbol)
-
-(defcustom org-dotemacs-include-todo nil
-  "A regular expression matching TODO states to be included.
-If non-nil then only headers with TODO states matching this regexp will be checked for code blocks.
-See also `org-dotemacs-exclude-todo'."
-  :group 'org-dotemacs
-  :type 'regexp)
-
-(defcustom org-dotemacs-exclude-todo "BROKEN"
-  "A regular expression matching TODO states to be excluded.
-If non-nil then headers with TODO states matching this regexp will not be checked for code blocks.
-See also `org-dotemacs-include-todo'."
-  :group 'org-dotemacs
-  :type 'regexp)
-
-(defcustom org-dotemacs-conditional-tags '(("linux" . (eq system-type 'gnu/linux))
-                                           ("windows" . (member system-type '(ms-dos windows-nt cygwin)))
-                                           ("mac" . (eq system-type 'darwin))
-                                           ("hurd" . (eq system-type 'gnu))
-                                           ("freebsd" . (eq system-type 'gnu/kfreebsd))
-                                           ("unix" . (member system-type '(aix berkely-unix hpux irix usg-unix-v))))
-  "A list of tags/regexps and corresponding conditions for loading blocks.
-If a block has a tag matching a regexp in this list then it will only be loaded if the corresponding
-condition evaluates to non-nil. All other blocks are loaded as normal.
-This behaviour is overridden if a tag-match is supplied on the command line."
-  :group 'org-dotemacs
-  :type '(repeat (cons (string :tag "Tag/regexp:")
-                       (sexp :tag "Predicate expression:"))))
-
-(defcustom org-dotemacs-dependency-inheritance nil
-  "Whether dependency properties (:DEPENDS:) can be inherited or not.
-This is passed straight to `org-entry-get'. See the documentation of that function for more info."
-  :group 'org-dotemacs
-  :type '(choice (const nil) (const t) (const selective)))
-
-(defvar org-dotemacs-tag-match nil
-  "An org tag match string indicating which code blocks to load with `org-dotemacs-load-file'.
-This overrides the match argument to `org-dotemacs-load-file' and is set by the emacs command line
-argument '--tag-match'.")
-
-;;;###autoload
-;; simple-call-tree-info: DONE
-(defun org-dotemacs-default-match nil
-  "Returns the default tag match string based on items in `org-dotemacs-conditional-tags' (which see)."
-  (let ((str (cl-loop for (regex . condition) in org-dotemacs-conditional-tags
-                      if (eval condition) concat (concat regex "\\|"))))
-    (if (not (equal str ""))
-        (concat "-{" (substring str 0 -2) "}"))))
-
-;; The following function is based on code from el-get-dependencies.el : https://github.com/dimitri/el-get/
-;; simple-call-tree-info: DONE
-;;;###autoload
-(cl-defun org-dotemacs-topo-sort (graph blocks &optional haltonerror)
-  "Returns a list of items whose order is consistent with the supplied dependency GRAPH.
-GRAPH is an alist whose keys are block names, and whose values are lists of block names 
-on which the corresponding key depends.
-BLOCKS is an alist of (NAME . CODE) pairs, containing the code blocks corresponding to 
-the names in GRAPH. These BLOCKS will be evaluated as the return list is created.
-If SKIPERRORS determines what to do about blocks which throw errors when evaluated;
-
-A list of the following four values is returned.
-1: list of block names sorted such that dependent blocks come after their dependencies in the list.
-   Failed blocks, and blocks with failed dependencies will not be included in this list.
-2: boolean indicating whether all blocks in the input GRAPH are present in the previous list.
-3: list of failed blocks (i.e. blocks that threw errors when evaluated).
-4: list of blocks which could not be processed because they depend on failed blocks, or are part of
-   a circular dependency."
-  (let* ((entries (make-hash-table :test 'equal))
-	 ;; function to return the entry for vertex v. Each entry is a cons
-	 ;; whose car is the number of outstanding dependencies of vertex
-	 ;; and whose cdr is a list of dependents of vertex.
-	 (entry (lambda (v)
-		  (or (gethash v entries)
-		      (puthash v (cons 0 '()) entries)))))
-    ;; populate entries initially
-    (dolist (gvertex graph)
-      (cl-destructuring-bind (vertex &rest dependencies) gvertex
-	(let ((ventry (funcall entry vertex)))
-	  (dolist (dependency dependencies)
-	    (let ((dentry (funcall entry dependency)))
-	      (unless (equal dependency vertex)
-		(cl-incf (car ventry))
-		(push vertex (cdr dentry))))))))
-    ;; L is the list of sorted elements, and S the set of vertices with no outstanding dependencies.
-    (let (L S failed)
-      (maphash (lambda (k v) (if (zerop (car v)) (push k S))) entries)
-      ;; Until there are no vertices with no outstanding dependencies,
-      ;; process vertices from S, adding them to L.
-      (cl-do* () ((cl-endp S))
-	(let* ((v (pop S))
-	       (ventry (funcall entry v))
-	       (block (cdr (assoc v blocks))))
-	  (remhash v entries)
-	  ;; try to eval this block
-	  (if block
-	      (if (with-temp-buffer
-		    (insert block)
-		    (condition-case err 
-			(progn (eval-buffer)
-			       (message "org-dotemacs: %s block evaluated" v)
-			       nil)
-		      (error (funcall (if haltonerror 'error 'message)
-				      "org-dotemacs: error in block %s: %s"
-				      v (error-message-string err))
-			     t)))
-		  (push v failed)
-		(dolist (dependant (cdr ventry) (push v L))
-		  (when (zerop (cl-decf (car (funcall entry dependant))))
-		    (push dependant S)))))))
-      ;; return values
-      (let ((all-sorted-p (zerop (hash-table-count entries))))
-	(list (nreverse L) all-sorted-p failed (unless all-sorted-p entries))))))
-
-;;;###autoload
-;; simple-call-tree-info: CHANGE  
-(cl-defun org-dotemacs-load-file (&optional match
-					    (file org-dotemacs-default-file)
-					    target-file
-					    (error-handling org-dotemacs-error-handling))
-  "Load the elisp code from code blocks in org FILE under headers matching tag MATCH.
-Tag matches supplied at the command line get priority over those supplied by the MATCH argument,
-and if both of these are nil then `org-dotemacs-default-match' will be used to create a tag match.
-If you need to override the command line tag-match set `org-dotemacs-tag-match' to nil.
-If TARGET-FILE is supplied it should be a filename to save the elisp code to, but it should
-not be any of the default config files .emacs, .emacs.el, .emacs.elc or init.el
- (the function will halt with an error in those cases). If TARGET-FILE is newer than FILE then
-TARGET-FILE will be loaded and FILE will not be processed. Otherwise TARGET-FILE will be overwritten
-by the code blocks in FILE.
-The optional argument ERROR-HANDLING determines how errors are handled and takes default value
-`org-dotemacs-error-handling' (which see)."
-  (interactive (list nil
-                     (read-file-name (format "File to load (default %s): " org-dotemacs-default-file)
-                                     (file-name-directory org-dotemacs-default-file)
-                                     org-dotemacs-default-file
-                                     t nil
-				     (lambda (file)
-				       (string-match "\\.org$" file)))
-                     (if (y-or-n-p "Save elisp code to separate file?")
-                         (read-file-name "Save to file: " user-emacs-directory))))
-  (if (and target-file (string-match "\\(?:\\.emacs\\(?:\\.elc?\\)?\\|init\\.elc?\\)$" target-file))
-      (error "org-dotemacs: Refuse to overwrite %s" target-file))
-  (require 'ob-core)
-  (cl-flet ((age (file) (float-time
-                         (time-subtract (current-time)
-                                        (nth 5 (or (file-attributes (file-truename file))
-                                                   (file-attributes file)))))))
-    (if (and target-file
-             (file-exists-p target-file)
-             (> (age file) (age target-file)))
-        (load-file target-file)
-      (let* ((matcher (cdr (org-make-tags-matcher
-			    (or match (org-dotemacs-default-match)))))
-	     (todo-only nil)
-	     blocks graph
-	     ;; make sure we dont get any strange behaviour from hooks
-	     find-file-hook change-major-mode-after-body-hook
-	     text-mode-hook outline-mode-hook org-mode-hook)
-	(message "org-dotemacs: parsing %s" file)
-	(org-babel-map-src-blocks file
-	  (let* ((parts (org-heading-components))
-		 (todo (nth 2 parts)))
-	    (if (and (equal lang "emacs-lisp")
-		     (if (and todo org-dotemacs-include-todo)
-			 (string-match org-dotemacs-include-todo todo)
-		       t)
-		     (if (and todo org-dotemacs-exclude-todo)
-			 (not (string-match org-dotemacs-exclude-todo todo))
-		       t)
-		     (save-excursion
-		       (unless (outline-on-heading-p t)
-			 (outline-previous-heading))
-		       (funcall matcher
-				(nth 2 parts)
-				(and (nth 5 parts)
-				     (split-string (nth 5 parts) ":" t))
-				(car parts))))
-		(let ((name (org-entry-get beg-block "NAME"))
-		      (depends (org-entry-get
-				beg-block "DEPENDS" org-dotemacs-dependency-inheritance)))
-		  (push (cons name (and depends (split-string depends "[[:space:]]+"))) graph)
-		  (push (cons name (substring-no-properties body)) blocks)))))
-	(cl-destructuring-bind (evaled-blocks allgood bad-blocks unevaled-blocks)
-	    (org-dotemacs-topo-sort graph blocks (not (memq error-handling '(skip retry))))
-	  (if (eq error-handling 'retry)
-	      (let ((oldlen 0))
-		(while (/= oldlen (length bad-blocks))
-		  ;; remove evaled-blocks from graph and try again
-		  (message "org-dotemacs: re-trying bad blocks")
-		  (setq oldlen (length bad-blocks)
-			vals (org-dotemacs-topo-sort
-			      (cl-loop for (node . lst) in graph
-				       unless (member node evaled-blocks)
-				       collect (cons node
-						     (cl-remove-if (lambda (x) (member x evaled-blocks)) lst)))
-			      (cl-remove-if (lambda (x) (member (car x) evaled-blocks)) blocks)))
-		  (setq evaled-blocks (append evaled-blocks (car vals))
-			allgood (nth 1 vals)
-			bad-blocks (nth 2 vals)
- 			unevaled-blocks (nth 3 vals)))))
-	  (if target-file
-	      (with-temp-buffer
-		(insert (concat ";; org-dotemacs: code extracted from " file "\n"))
-		(dolist (blk evaled-blocks)
-		  (insert (concat ";; Block = " blk "\n"))
-		  (insert (cdr (assoc blk blocks))))
-		(write-file target-file)))
-	  (if allgood
-	      (message "org-dotemacs: all %d blocks evaluated successfully."
-		       (length evaled-blocks))
-	    (cl-flet ((msgfn (lst msg1 &optional (msg2 msg1))
-			     (if (> (length lst) 0)
-				 (if (= (length lst) 1)
-				     (message (concat "org-dotemacs: 1 block " msg1 ": %s") lst)
-				   (message (concat "org-dotemacs: %d blocks " msg2 ": %s") (length lst) lst))
-			       (message (concat "org-dotemacs: no blocks " msg2)))))
-	      (msgfn evaled-blocks "evaluated successfully")
-	      (msgfn bad-blocks "has errors" "have errors")
-	      (let* ((baddeps (cl-loop for (v . deps) in graph
-				       if (cl-intersection deps bad-blocks :test 'equal)
-				       collect v))
-		     all circular)
-		(maphash (lambda (k v) (push k all)) unevaled-blocks)
-		(maphash (lambda (k v)
-			   (if (cl-intersection (cdr v) all :test 'equal) (push k circular)))
-			 unevaled-blocks)
-		(msgfn baddeps
-		       "depends on blocks with errors" "depend on blocks with errors")
-		(msgfn (cl-set-difference all (append circular baddeps))
-		       "depends on unevaluated blocks" "depend on unevaluated blocks")
-		(msgfn circular "has circular dependencies" "have circular dependencies")))))))))
-
-;;;###autoload
-;; simple-call-tree-info: CHANGE  
-(cl-defun org-dotemacs-load-default (&optional match)
-  "Load code from `org-dotemacs-default-file' matching tag MATCH.
-Unlike `org-dotemacs-load-file' the user is not prompted for the location of any files,
-and no code is saved."
-  (interactive (list nil))
-  (org-dotemacs-load-file
-   match org-dotemacs-default-file
-   (concat (file-name-sans-extension org-dotemacs-default-file)
-	   ".el")))
-
-;; Code to handle command line arguments
-(let* ((errpos (or (cl-position-if (lambda (x) (equal x "-error-handling")) command-line-args)
-		   (cl-position-if (lambda (x) (equal x "--error-handling")) command-line-args)))
-       (errval (if errpos (nth (+ 1 errpos) command-line-args)))
-       (tagpos (or (cl-position-if (lambda (x) (equal x "-tag-match")) command-line-args)
-		   (cl-position-if (lambda (x) (equal x "--tag-match")) command-line-args)))
-       (tagval (if tagpos (nth (+ 1 tagpos) command-line-args))))
-  (if errval 
-      (setq org-dotemacs-error-handling (intern errval)))
-  (if tagval (setq org-dotemacs-tag-match tagval)))
-
-(message "org-dotemacs: error-handling = %s" (concat "'" (symbol-name org-dotemacs-error-handling)))
-(message "org-dotemacs: tag-match = %s" org-dotemacs-tag-match)
-
-(provide 'org-dotemacs)
-
-;; (magit-push)
-;; (yaoddmuse-post "EmacsWiki" "org-dotemacs.el" (buffer-name) (buffer-string) "update")
-
-;;; org-dotemacs.el ends here
+#FILE text/x-emacs-lisp 
+Ozs7IG9yZy1kb3RlbWFjcy5lbCAtLS0gU3RvcmUgeW91ciBlbWFjcyBjb25maWcgYXMgYW4gb3Jn
+IGZpbGUsIGFuZCBjaG9vc2Ugd2hpY2ggYml0cyB0byBsb2FkLgoKOzsgRmlsZW5hbWU6IG9yZy1k
+b3RlbWFjcy5lbAo7OyBEZXNjcmlwdGlvbjogU3RvcmUgeW91ciBlbWFjcyBjb25maWcgYXMgYW4g
+b3JnIGZpbGUsIGFuZCBsb2FkIGNvZGUgc25pcHBldHMgYmFzZWQgb24gdGFnIG1hdGNoZXMuCjs7
+IEF1dGhvcjogSm9lIEJsb2dncyA8dmFwbmlrc0B5YWhvby5jb20+Cjs7IE1haW50YWluZXI6IEpv
+ZSBCbG9nZ3MgPHZhcG5pa3NAeWFob28uY29tPgo7OyBDb3B5bGVmdCAo4oaDKSAyMDEzLCBKb2Ug
+QmxvZ2dzLCBhbGwgcml0ZXMgcmV2ZXJzZWQuCjs7IENyZWF0ZWQ6IDIwMTMtMDQtMjcgMjA6MTk6
+MTgKOzsgVmVyc2lvbjogMC40Cjs7IExhc3QtVXBkYXRlZDogMjAxOC0wNy0yOCAyMjoyMjoxOAo7
+OyAgICAgICAgICAgQnk6IEpvZSBCbG9nZ3MKOzsgVVJMOiBodHRwczovL2dpdGh1Yi5jb20vdmFw
+bmlrcy9vcmctZG90ZW1hY3MKOzsgS2V5d29yZHM6IGxvY2FsCjs7IENvbXBhdGliaWxpdHk6IEdO
+VSBFbWFjcyAyNC4zLjEKOzsgUGFja2FnZS1SZXF1aXJlczogKChvcmcgIjcuOS4zIikgKGNsLWxp
+YiAiMC41IikpCjs7Cjs7IEZlYXR1cmVzIHRoYXQgbWlnaHQgYmUgcmVxdWlyZWQgYnkgdGhpcyBs
+aWJyYXJ5Ogo7Owo7OyBvcmcgY2wKOzsKCjs7OyBUaGlzIGZpbGUgaXMgTk9UIHBhcnQgb2YgR05V
+IEVtYWNzCgo7OzsgTGljZW5zZQo7Owo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsg
+eW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo7OyBpdCB1bmRlciB0aGUgdGVy
+bXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo7OyB0
+aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAzLCBvciAoYXQgeW91
+ciBvcHRpb24pCjs7IGFueSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3Ry
+aWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7IGJ1dCBXSVRIT1VU
+IEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCjs7IE1F
+UkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0
+aGUKOzsgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KCjs7IFlv
+dSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
+aWNlbnNlCjs7IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBzZWUgdGhlIGZpbGUgQ09QWUlORy4K
+OzsgSWYgbm90LCBzZWUgPGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8+LgoKOzs7IENvbW1l
+bnRhcnk6IAo7Owo7OyBCaXRjb2luIGRvbmF0aW9ucyBncmF0ZWZ1bGx5IGFjY2VwdGVkOiAxUGg5
+c3JRQnNwSkNEUzlDbkdVeVdKUFRyVTR5ZFg5QWEzCjs7Cjs7IEtlZXBpbmcgeW91ciBlbWFjcyBj
+b25maWcgaW4gYW4gb3JnIGZpbGUgbWFrZXMgaXQgZWFzaWVyIGZvciB5b3UgdG8ga2VlcCB5b3Vy
+IC5lbWFjcyB1bmRlciBjb250cm9sLAo7OyBhbmQgYXZvaWQgRG90RW1hY3NCYW5rcnVwdGN5Lgo7
+OyBXaXRoIHlvdXIgY29uZmlnIGNvZGUgc3RvcmVkIGluIGFuIG9yZyBmaWxlIHlvdSBjYW4gZWFz
+aWx5IGVkaXQgdGhlIHN0cnVjdHVyZSBhbmQga2VlcCBub3Rlcy4KOzsgTm90ZTogaXQgY2FuIGFs
+c28gYmUgdXNlZCBmb3Igb3JnYW5pemluZyBvdGhlciBlbGlzcCBjb25maWcgZmlsZXMgc3VjaCBh
+cyAuZ251cy5lbCBhbmQgLmVyY3JjLmVsLgo7OyAKOzsgVGhpcyBsaWJyYXJ5IGFsbG93cyB5b3Ug
+dG8gbG9hZCBlbGlzcCBjb2RlIGZyb20gYW4gb3JnIGZpbGUgb24gZW1hY3Mgc3RhcnR1cC4KOzsg
+WW91IGNhbiBhbHNvIGxpbWl0IHRoZSBjb2RlIHRoYXQgaXMgbG9hZGVkIHRvIGNlcnRhaW4gdGFn
+Z2VkIGhlYWRlcnMgdXNpbmcgYW4gb3JnIHRhZyBtYXRjaCwKOzsgYW5kIHNwZWNpZnkgZGVwZW5k
+ZW5jaWVzIGJldHdlZW4gY29kZSBibG9ja3MuCjs7IFVzaW5nIHRhZyBtYXRjaGVzIHlvdSBjYW4g
+YWxzbyByZXVzZSB0aGUgc2FtZSBvcmcgZmlsZSBmb3IgZGlmZmVyZW50IGVtYWNzIHNldHVwcyBi
+eSBzcGVjaWZ5aW5nIGRpZmZlcmVudAo7OyB0YWcgbWF0Y2hlcyBmb3IgZWFjaCBzZXR1cCwgb3Ig
+bG9hZCBwYXJ0cyBvZiB0aGUgZmlsZSBvbiBkZW1hbmQuCjs7IAo7OzsgQ29tbWFuZHMvVXNhZ2Ug
+Cjs7IAo7OyBUaGUgbWFpbiBjb21tYW5kIGlzIGBvcmctZG90ZW1hY3MtbG9hZC1kZWZhdWx0JyB3
+aGljaCBsb2FkcyB5b3VyIGRlZmF1bHQgb3JnLWRvdGVtYWNzIGZpbGUgKH4vLmRvdGVtYWNzLm9y
+ZykKOzsgYW5kIHByb21wdHMgZm9yIGEgdGFnIG1hdGNoIHRvIHNwZWNpZnkgd2hpY2ggY29kZSBi
+bG9ja3MgdG8gbG9hZC4gCjs7IEluIHRoaXMgd2F5IHlvdSBjYW4gbG9hZCBiaXRzIG9mIGNvbmZp
+ZyBjb2RlIHdoZW4geW91IG5lZWQgdGhlbS4KOzsgCjs7IFlvdSBjYW4gYWxzbyBwdXQgdGhpcyBj
+b21tYW5kIGluIHlvdXIgSW5pdEZpbGUgKHNlZSBJbnN0YWxsYXRpb24gYmVsb3cpIHRvIGxvYWQg
+dGhlIGNvZGUgb24gc3RhcnR1cC4KOzsgVG8gY2hhbmdlIHRoZSBkZWZhdWx0IG9yZyBmaWxlIHVz
+ZSB0aGUgYG9yZy1kb3RlbWFjcy1kZWZhdWx0LWZpbGUnIG9wdGlvbi4KOzsgSWYgeW91IHdhbnQg
+dG8gbG9hZCBhIGRpZmZlcmVudCBvcmcgZmlsZSBmcm9tIHlvdXIgZGVmYXVsdCBvbmUsIHVzZSBg
+b3JnLWRvdGVtYWNzLWxvYWQtZmlsZScuCjs7IAo7OyBGb3IgZmFzdGVyIGxvYWRpbmcgeW91IG1h
+eSBwcmVmZXIgdG8ga2VlcCB5b3VyIGNvbmZpZyBjb2RlIGluIGEgc2VwYXJhdGUgZWxpc3AgZmls
+ZSwgYW5kIGp1c3QgdXBkYXRlIHRoaXMgZmlsZSBub3cgYW5kIGFnYWluCjs7IGJ5IGV4cG9ydGlu
+ZyB0aGUgY29kZSBmcm9tIHRoZSBvcmcgZmlsZS4KOzsgVXNlIHRoZSBgb3JnLWRvdGVtYWNzLWxv
+YWQtZmlsZScgY29tbWFuZCBmb3IgdGhpcyBhbmQgc3BlY2lmeSBhIHRhcmdldCBlbGlzcCBmaWxl
+IHdoZW4gcHJvbXB0ZWQuCjs7IAo7OzsgU3RydWN0dXJlIG9mIHRoZSBvcmcgZmlsZSAKOzsgCjs7
+IFRoZSBlbGlzcCBjb2RlIHNob3VsZCBiZSBjb250YWluZWQgaW4gZW1hY3MtbGlzcCBjb2RlIGJs
+b2NrcywgZS5nOgo7OyAKOzsgIytCRUdJTl9TUkMgZW1hY3MtbGlzcAo7OyAoc2V0cSBsaW5lLW51
+bWJlci1tb2RlIHQpCjs7IChzZXRxIGNvbHVtbi1udW1iZXItbW9kZSB0KQo7OyAoc2V0cSBmcmFt
+ZS10aXRsZS1mb3JtYXQgIiViIikKOzsgKHNldC1iYWNrZ3JvdW5kLWNvbG9yICJCbGFjayIpCjs7
+IChzZXQtZm9yZWdyb3VuZC1jb2xvciAiV2hpdGUiKQo7OyAoc2V0LWN1cnNvci1jb2xvciAiV2hp
+dGUiKQo7OyAjK0VORF9TUkMKOzsgCjs7IElkZWFsbHkgeW91IHNob3VsZCBoYXZlIGVhY2ggY29k
+ZSBibG9jayB1bmRlciBhIHNlcGFyYXRlIG9yZyBzdWJ0cmVlLCB0aGVuIHlvdSBjYW4gdXNlIHBy
+b3BlcnRpZXMgdG8KOzsgbmFtZSB0aGUgYmxvY2tzIGFuZCBkZWZpbmUgZGVwZW5kZW5jaWVzLCBh
+bmQgdGFncyBhbmQgdG9kbyBzdGF0ZXMgdG8gc3BlY2lmeSB3aGljaCBibG9ja3MKOzsgc2hvdWxk
+IGJlIGxvYWRlZCAoc2VlIGJlbG93KS4gWW91IGNhbiBzcGVjaWZ5IHRoYXQgY2VydGFpbiBibG9j
+a3MgYXJlIGxvYWRlZCBvbmx5IHdoZW4gY2VydGFpbiBjb25kaXRpb25zIGhvbGQKOzsgYnkgY3Vz
+dG9taXppbmcgYG9yZy1kb3RlbWFjcy1jb25kaXRpb25hbC10YWdzJy4gQnkgZGVmYXVsdCBvcGVy
+YXRpbmcgc3lzdGVtIHRhZ3MgKGxpbnV4LCB3aW5kb3dzLCBtYWMsIGh1cmQsIGZyZWVic2QsCjs7
+IHVuaXgpIGFyZSBzZXQgdG8gb25seSBsb2FkIHdoZW4gdGhlIGNvcnJlc3BvbmRpbmcgb3BlcmF0
+aW5nIHN5c3RlbSBpcyBiZWluZyB1c2VkIChhcyByZXBvcnRlZCBieSB0aGUgYHN5c3RlbS10eXBl
+JyB2YXJpYWJsZSkuCjs7IFNvIGZvciBleGFtcGxlLCBhbnkgYmxvY2tzIHRhZ2dlZCB3aXRoICJs
+aW51eCIgd2lsbCBvbmx5IGJlIGxvYWRlZCBpZiBgc3lzdGVtLXR5cGUnIGlzIGVxIHRvICdnbnUv
+bGludXguCjs7IFRoZXNlIGNvbmRpdGlvbmFsIHRhZ3MgYXJlIG92ZXJyaWRkZW4gYnkgYW55IHRh
+Zy1tYXRjaCBzdXBwbGllZCB0byB0aGUgY29tbWFuZCBsaW5lLgo7OyAKOzsgSSBwcmVmZXIgdG8g
+a2VlcCBhbGwgbXkgY29kZSBibG9jayBzdWJ0cmVlcyB1bmRlciBhIHNpbmdsZSBoZWFkZXIsIGFu
+ZCB1c2Ugb3RoZXIgaGVhZGVycyBmb3Iga2VlcGluZyBub3RlcywKOzsgZGVmaW5pbmcgYnVmZmVy
+LXdpZGUgcHJvcGVydGllcywgZXRjLiBUaGlzIHdheSBJIGNhbiBnZXQgYSBuaWNlIGNvbHVtbiB2
+aWV3IG9mIHRoZSBjb2RlIGJsb2Nrcwo7OyAoc2VlIHRoZSBjb2x1bW5zIHZpZXcgc2VjdGlvbiBi
+ZWxvdykuCjs7IAo7OzsgIEJsb2NrIGRlcGVuZGVuY2llcyAKOzsgCjs7IFlvdSBjYW4gZW5mb3Jj
+ZSBkZXBlbmRlbmNpZXMgYmV0d2VlbiBjb2RlIGJsb2NrcyBieSBkZWZpbmluZyBOQU1FICYgREVQ
+RU5EUyBwcm9wZXJ0aWVzIGZvciB0aGUgc3VidHJlZXMgY29udGFpbmluZyB0aGUKOzsgYmxvY2tz
+IChwcmVmZXJyZWQpLiBUaGUgTkFNRSBwcm9wZXJ0eSBzaG91bGQgY29udGFpbiB0aGUgbmFtZSBv
+ZiB0aGUgYmxvY2ssIGFuZCB0aGUgREVQRU5EUyBwcm9wZXJ0eSBzaG91bGQgY29udGFpbiBhIHNw
+YWNlCjs7IHNlcGFyYXRlZCBsaXN0IG9mIGJsb2NrIG5hbWVzIHRoYXQgdGhpcyBibG9jayBkZXBl
+bmRzIG9uLgo7OyBUaGVzZSBwcm9wZXJ0aWVzIHdpbGwgYmUgYXBwbGllZCB0byBhbGwgY29kZSBi
+bG9ja3MgaW4gdGhlIHN1YnRyZWUgKHNlZSAiUHJvcGVydGllcyBhbmQgQ29sdW1ucyIgaW4gdGhl
+IG9yZyBtYW51YWwgZm9yCjs7IG1vcmUgZGV0YWlscykuCjs7IAo7OyBUaGUgTkFNRSBwcm9wZXJ0
+eSBjYW4gYmUgb3ZlcnJpZGRlbiBvbiBhIHBlciBibG9jayBiYXNpcyBieSBhZGRpbmcgYSA6bmFt
+ZSBoZWFkZXIgYXJnIHRvIGEgYmxvY2ssIGFuZCBkZXBlbmRlbmNpZXMgY2FuIGJlCjs7IGF1Z21l
+bnRlZCBieSBhZGRpbmcgYSA6ZGVwZW5kcyBoZWFkZXIgYXJnIChzZWUgIkhlYWRlciBhcmd1bWVu
+dHMiIGluIHRoZSBvcmcgbWFudWFsKS4KOzsgSG93ZXZlciBpdCBpcyByZWNvbW1lbmRlZCB0byBr
+ZWVwIGEgc2VwYXJhdGUgc3VidHJlZSBmb3IgZWFjaCBjb2RlIGJsb2NrIGFuZCB1c2UgcHJvcGVy
+dGllcyBmb3IgZGVmaW5pbmcgaGVhZGVycyBhbmQgbmFtZXMKOzsgc2luY2UgdGhlbiB5b3UgY2Fu
+IGdldCBhIGNvbHVtbiB2aWV3IG9mIHRoZSBkZXBlbmRlbmNpZXMgKHNlZSBiZWxvdykuCjs7IAo7
+OyBBIGJsb2NrIHdpbGwgbm90IGJlIGxvYWRlZCB1bnRpbCBhbGwgb2YgaXRzIGRlcGVuZGVuY2ll
+cyBoYXZlIGJlZW4gbG9hZGVkLgo7OyAKOzs7ICBUYWdzIGFuZCBUT0RPIHN0YXRlcyAKOzsgCjs7
+IFlvdSBjYW4gdGFnIHlvdXIgc3VidHJlZXMgYW5kIHVzZSB0YWcgbWF0Y2hlcyB0byBzcGVjaWZ5
+IHdoaWNoIGJsb2NrcyB0byBldmFsdWF0ZSBpbiBjYWxscyB0byBgb3JnLWRvdGVtYWNzLWxvYWQt
+ZmlsZScKOzsgYW5kIGBvcmctZG90ZW1hY3MtbG9hZC1kZWZhdWx0Jy4gU2VlICJNYXRjaGluZyB0
+YWdzIGFuZCBwcm9wZXJ0aWVzIiBpbiB0aGUgb3JnIG1hbnVhbCBmb3IgbW9yZSBpbmZvcm1hdGlv
+biBvbiB0YWcgbWF0Y2hlcy4KOzsgCjs7IEFsc28sIGJ5IGRlZmF1bHQgYW55IGJsb2NrcyBpbiBh
+IHN1YnRyZWUgbWFya2VkIHdpdGggYSB0b2RvIHN0YXRlIG9mIEJST0tFTiB3aWxsIG5vdCBiZSBl
+dmFsdWF0ZWQuCjs7IFlvdSBjYW4gc3BlY2lmeSB3aGljaCBUT0RPIHN0YXRlcyB0byBpbmNsdWRl
+L2V4Y2x1ZGUgZm9yIGV2YWx1YXRpb24gYnkgY3VzdG9taXppbmcgdGhlIGBvcmctZG90ZW1hY3Mt
+aW5jbHVkZS10b2RvJyBhbmQKOzsgYG9yZy1kb3RlbWFjcy1leGNsdWRlLXRvZG8nIG9wdGlvbnMu
+Cjs7IAo7OyBUbyBhZGQgdGhlIEJST0tFTiBzdGF0ZSB0byB0aGUgbGlzdCBvZiB0b2RvIHN0YXRl
+cyBmb3IgdGhlIGZpbGUgeW91IG5lZWQgdG8gYWRkIGJ1ZmZlci13aWRlIHRvZG8gc3RhdGVzIGJ5
+IGFkZGluZyBhIGxpbmUKOzsgbGlrZSB0aGlzIHNvbWV3aGVyZSBpbiB5b3VyIG9yZyBmaWxlIChz
+ZWUgIlBlciBmaWxlIGtleXdvcmRzIiBpbiB0aGUgb3JnIG1hbnVhbCkuCjs7IAo7OyAjK1RPRE86
+IEJST0tFTiBDSEVDSyBUT0RPCjs7IAo7OzsgIENvbHVtbnMgVmlldyAKOzsgCjs7IElmIHlvdSB1
+c2UgcHJvcGVydGllcyBmb3IgZGVmaW5pbmcgbmFtZXMgYW5kIGRlcGVuZGVuY2llcyB0aGVuIHlv
+dSBjYW4gZ2V0IGEgbmljZSBjb2x1bW4gdmlldyBvZiB5b3VyIGNvZGUgc3VidHJlZXMKOzsgd2l0
+aCB0aGUgZm9sbG93aW5nIGNvbHVtbnMgdmlldyBzcGVjaWZpY2F0aW9uOgo7OyAKOzsgIytDT0xV
+TU5TOiAlMzVJVEVNICUxNU5BTUUgJTM1REVQRU5EUyAlMTVUQUdTICVUT0RPCjs7IAo7OyBUaGlz
+IGNhbiBiZSBwbGFjZWQgYW55d2hlcmUgaW4geW91ciBkb3RlbWFjcyBvcmcgZmlsZS4KOzsgVGhl
+biBpZiB5b3UgcHJlc3MgQy1jIEMteCBDLWMgb24gdGhlIHRvcGxldmVsIGhlYWRlciBmb3IgeW91
+ciBjb2RlIGJsb2NrcyB5b3UnbGwgZ2V0IGEgY29sdW1uIHZpZXcgdGhhdCBhbGxvd3MgeW91Cjs7
+IHRvIGVhc2lseSBjaGFuZ2UgdGhlIG5hbWVzLCBkZXBlbmRlbmNpZXMsIHRhZ3MgYW5kIHRvZG8g
+c3RhdGVzLgo7OyAKOzs7ICBFcnJvciBoYW5kbGluZyAKOzsgCjs7IEVycm9yIGhhbmRsaW5nIGNh
+biBiZSBjb250cm9sbGVkIGJ5IGN1c3RvbWl6aW5nIGBvcmctZG90ZW1hY3MtZXJyb3ItaGFuZGxp
+bmcnIG9yIGJ5IHNldHRpbmcgdGhlIGVycm9yLWhhbmRsaW5nCjs7IGNvbW1hbmQgbGluZSBvcHRp
+b24gd2hlbiBzdGFydGluZyBlbWFjcy4KOzsgQnkgZGVmYXVsdCBjb2RlIGJsb2NrcyB3aXRoIHVu
+bWV0IGRlcGVuZGVuY2llcyBvciBlcnJvcnMgYXJlIHNraXBwZWQgb3ZlciBhcyBzb29uIGFzIGFu
+IGVycm9yIGlzIGVuY291bnRlcmVkLAo7OyBidXQgeW91IGNhbiBhbHNvIHNwZWNpZnkgdGhhdCBv
+cmctZG90ZW1hY3Mgc2hvdWxkIGhhbHQgb3IgdHJ5IHRvIHJlbG9hZCB0aGUgYmxvY2tzLgo7OyBJ
+biB0aGUgbGF0dGVyIGNhc2UgZWFjaCB0aW1lIGEgbmV3IGJsb2NrIGlzIHN1Y2Nlc3NmdWxseSBs
+b2FkZWQsIGFueSB1bnN1Y2Nlc3NmdWwgYmxvY2tzIHdpbGwgYmUgcmV0cmllZC4KOzsgCjs7OyAg
+Q29tbWFuZCBsaW5lIG9wdGlvbnMgCjs7IAo7OyBvcmctZG90ZW1hY3MuZWwgd2lsbCBsb29rIGZv
+ciB0d28gY29tbWFuZCBsaW5lIG9wdGlvbnMgd2hlbiBsb2FkZWQ6IGVycm9yLWhhbmRsaW5nIChm
+b3Igc2V0dGluZyB0aGUgdmFsdWUgb2YKOzsgYG9yZy1kb3RlbWFjcy1lcnJvci1oYW5kbGluZycp
+IGFuZCB0YWctbWF0Y2ggKGZvciBzcGVjaWZ5aW5nIHdoaWNoIGhlYWRlcnMgdG8gbG9hZCkuCjs7
+IEZvciBleGFtcGxlIGlmIHlvdSBlbnRlciB0aGUgZm9sbG93aW5nIGF0IHRoZSBjb21tYW5kIGxp
+bmU6Cjs7IAo7OyAgICAgICAgZW1hY3MgLS1lcnJvci1oYW5kbGluZyByZXRyeSAtLXRhZy1tYXRj
+aCAic2V0dGluZ3MtbW91c2UiCjs7IAo7OyBUaGVuIG9ubHkgY29kZSBibG9ja3MgdGFnZ2VkICJz
+ZXR0aW5ncyIgYnV0IG5vdCAibW91c2UiIHdpbGwgYmUgbG9hZGVkLCBhbmQgb3JnLWRvdGVtYWNz
+IHdpbGwgdHJ5IHRvIHJlbG9hZCBhbnkKOzsgYmxvY2tzIHRoYXQgaGF2ZSBlcnJvcnMuIElmIG5v
+IHRhZy1tYXRjaCBpcyBzcGVjaWZpZWQgb24gdGhlIGNvbW1hbmQgbGluZSB0aGVuIGBvcmctZG90
+ZW1hY3MtY29uZGl0aW9uYWwtdGFncycKOzsgd2lsbCBiZSB1c2VkIHRvIGRldGVybWluZSB3aGlj
+aCBibG9ja3MgY2FuIGJlIGxvYWRlZCBieSBkZWZhdWx0Lgo7OyAKOzs7ICBJbnN0YWxsYXRpb24g
+Cjs7IAo7OyBQdXQgb3JnLWRvdGVtYWNzLmVsIGluIGEgZGlyZWN0b3J5IGluIHlvdXIgbG9hZC1w
+YXRoLCBlLmcuIH4vLmVtYWNzLmQvCjs7IFlvdSBjYW4gYWRkIGEgZGlyZWN0b3J5IHRvIHlvdXIg
+bG9hZC1wYXRoIHdpdGggdGhlIGZvbGxvd2luZyBsaW5lIGluIH4vLmVtYWNzCjs7IChhZGQtdG8t
+bGlzdCAnbG9hZC1wYXRoIChleHBhbmQtZmlsZS1uYW1lICJ+L2VsaXNwIikpCjs7IHdoZXJlIH4v
+ZWxpc3AgaXMgdGhlIGRpcmVjdG9yeSB5b3Ugd2FudCB0byBhZGQgCjs7ICh5b3UgZG9uJ3QgbmVl
+ZCB0byBkbyB0aGlzIGZvciB+Ly5lbWFjcy5kIC0gaXQncyBhZGRlZCBieSBkZWZhdWx0KS4KOzsg
+Cjs7IFRoZW4gbWFrZSBzdXJlIHlvdSBoYXZlIGFuIH4vLmRvdGVtYWNzLm9yZyBmaWxlIGFuZCBh
+ZGQgdGhlIGZvbGxvd2luZyBsaW5lcyB0bwo7OyB0aGUgZW5kIG9mIHlvdXIgLmVtYWNzIGZpbGU6
+Cjs7IAo7OyAobG9hZC1maWxlICJ+Ly5lbWFjcy5kL29yZy1kb3RlbWFjcy5lbCIpCjs7IChsZXQg
+KGZpbmQtZmlsZS1ob29rKSAob3JnLWRvdGVtYWNzLWxvYWQtZGVmYXVsdCkpCjs7IAo7OyBvciBp
+ZiB5b3Ugd2FudCB0byBqdXN0IGxvYWQgY29kZSBibG9ja3MgbWF0Y2hpbmcgYSB0YWcgbWF0Y2g6
+Cjs7IAo7OyAobG9hZC1maWxlICJ+Ly5lbWFjcy5kL29yZy1kb3RlbWFjcy5lbCIpCjs7IChsZXQg
+KGZpbmQtZmlsZS1ob29rKSAob3JnLWRvdGVtYWNzLWxvYWQtZGVmYXVsdCAiPFRBRy1NQVRDSD4i
+KSkKOzsgCjs7IFRvIGxvYWQgYSBkaWZmZXJlbnQgb3JnIGZpbGUgZWl0aGVyIGN1c3RvbWl6ZSBg
+b3JnLWRvdGVtYWNzLWRlZmF1bHQtZmlsZScgb3IgdXNlIHRoZQo7OyBgb3JnLWRvdGVtYWNzLWxv
+YWQtZmlsZScgZnVuY3Rpb24sIGUuZzoKOzsgCjs7IChsb2FkLWZpbGUgIn4vLmVtYWNzLmQvb3Jn
+LWRvdGVtYWNzLmVsIikKOzsgKGxldCAoZmluZC1maWxlLWhvb2spIChvcmctZG90ZW1hY3MtbG9h
+ZC1maWxlICI8VEFHLU1BVENIPiIgIn4vLmVtYWNzLmQvbXlfZW1hY3NfY29uZmlnLm9yZyIpKQo7
+OyAKCgo7OzsgQ3VzdG9taXplOgo7Owo7OyBgb3JnLWRvdGVtYWNzLWNvbmRpdGlvbmFsLXRhZ3Mn
+IDogQSBsaXN0IG9mIHRhZ3MvcmVnZXhwcyBhbmQgY29ycmVzcG9uZGluZyBjb25kaXRpb25zIGZv
+ciBsb2FkaW5nIGJsb2Nrcy4KOzsgYG9yZy1kb3RlbWFjcy1kZWZhdWx0LWZpbGUnIDogVGhlIGRl
+ZmF1bHQgb3JnIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBibG9ja3MgdG8gbG9hZCB3aGVuIGBv
+cmctZG90ZW1hY3MtbG9hZC1maWxlJyBpcyBjYWxsZWQuCjs7IGBvcmctZG90ZW1hY3MtZXJyb3It
+aGFuZGxpbmcnIDogSW5kaWNhdGVzIGhvdyBlcnJvcnMgc2hvdWxkIGJlIGhhbmRsZWQgYnkgYG9y
+Zy1kb3RlbWFjcy1sb2FkLWJsb2NrcycuCjs7IGBvcmctZG90ZW1hY3MtaW5jbHVkZS10b2RvJyA6
+IEEgcmVndWxhciBleHByZXNzaW9uIG1hdGNoaW5nIFRPRE8gc3RhdGVzIHRvIGJlIGluY2x1ZGVk
+Lgo7OyBgb3JnLWRvdGVtYWNzLWV4Y2x1ZGUtdG9kbycgOiBBIHJlZ3VsYXIgZXhwcmVzc2lvbiBt
+YXRjaGluZyBUT0RPIHN0YXRlcyB0byBiZSBleGNsdWRlZC4KOzsKOzsgQWxsIG9mIHRoZSBhYm92
+ZSBjYW4gY3VzdG9taXplZCBieToKOzsgICAgICBNLXggY3VzdG9taXplLWdyb3VwIFJFVCBvcmct
+ZG90ZW1hY3MgUkVUCjs7Cgo7OzsgQ2hhbmdlIGxvZzoKOzsgWzIwMTgtMDctMjggU2F0XQo7OyAg
+ICAgICogUmVmYWN0b3IgY29kZSB0byB1c2Ugb3JnLWRvdGVtYWNzLXRvcG8tc29ydAo7OwkKOzsg
+WzIwMTMtMDQtMjddCjs7ICAgICAgKiBGaXJzdCByZWxlYXNlZC4KOzsgCgo7OzsgQWNrbm93bGVk
+Z2VtZW50czoKOzsKOzsgCjs7Cgo7OzsgVE9ETwo7Owo7OyBPcHRpb24gdG8gc2hvdyBwcm9taW5l
+bnQgd2FybmluZyBtZXNzYWdlIGlmIHNvbWUgYmxvY2tzIGRpZG4ndCBsb2FkIChlLmcuIGluIGxh
+cmdlIGZvbnQgaW4gZGVkaWNhdGVkIGJ1ZmZlciBhZnRlciBzdGFydHVwKQo7OyBPcHRpb24gdG8g
+c2hvdyBmdWxsIGJhY2t0cmFjZSBvbiBlcnJvcj8KCjs7OyBSZXF1aXJlCihyZXF1aXJlICdjbC1s
+aWIpCihyZXF1aXJlICdvcmcpCgo7OzsgQ29kZToKCgoKKGRlZmdyb3VwIG9yZy1kb3RlbWFjcyBu
+aWwKICAiU3RvcmUgeW91ciBlbWFjcyBjb25maWcgYXMgYW4gb3JnIGZpbGUsIGFuZCBjaG9vc2Ug
+d2hpY2ggYml0cyB0byBsb2FkLiIKICA6Z3JvdXAgJ29yZykKCihkZWZjdXN0b20gb3JnLWRvdGVt
+YWNzLWRlZmF1bHQtZmlsZSAifi8uZG90ZW1hY3Mub3JnIgogICJUaGUgZGVmYXVsdCBvcmcgZmls
+ZSBjb250YWluaW5nIHRoZSBjb2RlIGJsb2NrcyB0byBsb2FkIHdoZW4gYG9yZy1kb3RlbWFjcy1s
+b2FkLWZpbGUnIGlzIGNhbGxlZC4iCiAgOmdyb3VwICdvcmctZG90ZW1hY3MKICA6dHlwZSAnKGZp
+bGUgOm11c3QtbWF0Y2ggdCkpCgooZGVmY3VzdG9tIG9yZy1kb3RlbWFjcy1lcnJvci1oYW5kbGlu
+ZyAnc2tpcAogICJJbmRpY2F0ZXMgaG93IGVycm9ycyBzaG91bGQgYmUgaGFuZGxlZCBieSBgb3Jn
+LWRvdGVtYWNzLWxvYWQtYmxvY2tzJy4KSWYgZXEgdG8gJ3NraXAgdGhlbiBlcnJvcnMgd2lsbCBi
+ZSBza2lwcGVkIG92ZXIgKGRlZmF1bHQpLgpJZiBlcSB0byAncmV0cnkgdGhlbiBgb3JnLWRvdGVt
+YWNzLWxvYWQtYmxvY2tzJyB3aWxsIGF0dGVtcHQgdG8gcmVsb2FkIGFueSBibG9ja3MgY29udGFp
+bmluZyBlcnJvcnMsCmFmdGVyIGVhY2ggc3VjY2Vzc2Z1bGx5IGxvYWRlZCBibG9jay4KSW4gYWxs
+IG90aGVyIGNhc2VzIGVycm9ycyB3aWxsIGNhdXNlIGV2YWx1YXRpb24gdG8gaGFsdCBhcyBub3Jt
+YWwuCkluIGFsbCBjYXNlcyBlcnJvcnMgd2lsbCBiZSByZXBvcnRlZCBpbiB0aGUgKk1lc3NhZ2Vz
+KiBidWZmZXIgYXMgbm9ybWFsLgoKVGhpcyB2YXJpYWJsZSBjYW4gYmUgc2V0IGZyb20gdGhlIGNv
+bW1hbmQgbGluZSB1c2luZyB0aGUgZG90ZW1hY3MtZXJyb3ItaGFuZGxpbmcgYXJndW1lbnQuIgog
+IDpncm91cCAnb3JnLWRvdGVtYWNzCiAgOnR5cGUgJ3N5bWJvbCkKCihkZWZjdXN0b20gb3JnLWRv
+dGVtYWNzLWluY2x1ZGUtdG9kbyBuaWwKICAiQSByZWd1bGFyIGV4cHJlc3Npb24gbWF0Y2hpbmcg
+VE9ETyBzdGF0ZXMgdG8gYmUgaW5jbHVkZWQuCklmIG5vbi1uaWwgdGhlbiBvbmx5IGhlYWRlcnMg
+d2l0aCBUT0RPIHN0YXRlcyBtYXRjaGluZyB0aGlzIHJlZ2V4cCB3aWxsIGJlIGNoZWNrZWQgZm9y
+IGNvZGUgYmxvY2tzLgpTZWUgYWxzbyBgb3JnLWRvdGVtYWNzLWV4Y2x1ZGUtdG9kbycuIgogIDpn
+cm91cCAnb3JnLWRvdGVtYWNzCiAgOnR5cGUgJ3JlZ2V4cCkKCihkZWZjdXN0b20gb3JnLWRvdGVt
+YWNzLWV4Y2x1ZGUtdG9kbyAiQlJPS0VOIgogICJBIHJlZ3VsYXIgZXhwcmVzc2lvbiBtYXRjaGlu
+ZyBUT0RPIHN0YXRlcyB0byBiZSBleGNsdWRlZC4KSWYgbm9uLW5pbCB0aGVuIGhlYWRlcnMgd2l0
+aCBUT0RPIHN0YXRlcyBtYXRjaGluZyB0aGlzIHJlZ2V4cCB3aWxsIG5vdCBiZSBjaGVja2VkIGZv
+ciBjb2RlIGJsb2Nrcy4KU2VlIGFsc28gYG9yZy1kb3RlbWFjcy1pbmNsdWRlLXRvZG8nLiIKICA6
+Z3JvdXAgJ29yZy1kb3RlbWFjcwogIDp0eXBlICdyZWdleHApCgooZGVmY3VzdG9tIG9yZy1kb3Rl
+bWFjcy1jb25kaXRpb25hbC10YWdzICcoKCJsaW51eCIgLiAoZXEgc3lzdGVtLXR5cGUgJ2dudS9s
+aW51eCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoIndpbmRv
+d3MiIC4gKG1lbWJlciBzeXN0ZW0tdHlwZSAnKG1zLWRvcyB3aW5kb3dzLW50IGN5Z3dpbikpKQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKCJtYWMiIC4gKGVxIHN5
+c3RlbS10eXBlICdkYXJ3aW4pKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKCJodXJkIiAuIChlcSBzeXN0ZW0tdHlwZSAnZ251KSkKICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICgiZnJlZWJzZCIgLiAoZXEgc3lzdGVtLXR5cGUgJ2du
+dS9rZnJlZWJzZCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
+InVuaXgiIC4gKG1lbWJlciBzeXN0ZW0tdHlwZSAnKGFpeCBiZXJrZWx5LXVuaXggaHB1eCBpcml4
+IHVzZy11bml4LXYpKSkpCiAgIkEgbGlzdCBvZiB0YWdzL3JlZ2V4cHMgYW5kIGNvcnJlc3BvbmRp
+bmcgY29uZGl0aW9ucyBmb3IgbG9hZGluZyBibG9ja3MuCklmIGEgYmxvY2sgaGFzIGEgdGFnIG1h
+dGNoaW5nIGEgcmVnZXhwIGluIHRoaXMgbGlzdCB0aGVuIGl0IHdpbGwgb25seSBiZSBsb2FkZWQg
+aWYgdGhlIGNvcnJlc3BvbmRpbmcKY29uZGl0aW9uIGV2YWx1YXRlcyB0byBub24tbmlsLiBBbGwg
+b3RoZXIgYmxvY2tzIGFyZSBsb2FkZWQgYXMgbm9ybWFsLgpUaGlzIGJlaGF2aW91ciBpcyBvdmVy
+cmlkZGVuIGlmIGEgdGFnLW1hdGNoIGlzIHN1cHBsaWVkIG9uIHRoZSBjb21tYW5kIGxpbmUuIgog
+IDpncm91cCAnb3JnLWRvdGVtYWNzCiAgOnR5cGUgJyhyZXBlYXQgKGNvbnMgKHN0cmluZyA6dGFn
+ICJUYWcvcmVnZXhwOiIpCiAgICAgICAgICAgICAgICAgICAgICAgKHNleHAgOnRhZyAiUHJlZGlj
+YXRlIGV4cHJlc3Npb246IikpKSkKCihkZWZjdXN0b20gb3JnLWRvdGVtYWNzLWRlcGVuZGVuY3kt
+aW5oZXJpdGFuY2UgbmlsCiAgIldoZXRoZXIgZGVwZW5kZW5jeSBwcm9wZXJ0aWVzICg6REVQRU5E
+UzopIGNhbiBiZSBpbmhlcml0ZWQgb3Igbm90LgpUaGlzIGlzIHBhc3NlZCBzdHJhaWdodCB0byBg
+b3JnLWVudHJ5LWdldCcuIFNlZSB0aGUgZG9jdW1lbnRhdGlvbiBvZiB0aGF0IGZ1bmN0aW9uIGZv
+ciBtb3JlIGluZm8uIgogIDpncm91cCAnb3JnLWRvdGVtYWNzCiAgOnR5cGUgJyhjaG9pY2UgKGNv
+bnN0IG5pbCkgKGNvbnN0IHQpIChjb25zdCBzZWxlY3RpdmUpKSkKCihkZWZ2YXIgb3JnLWRvdGVt
+YWNzLXRhZy1tYXRjaCBuaWwKICAiQW4gb3JnIHRhZyBtYXRjaCBzdHJpbmcgaW5kaWNhdGluZyB3
+aGljaCBjb2RlIGJsb2NrcyB0byBsb2FkIHdpdGggYG9yZy1kb3RlbWFjcy1sb2FkLWZpbGUnLgpU
+aGlzIG92ZXJyaWRlcyB0aGUgbWF0Y2ggYXJndW1lbnQgdG8gYG9yZy1kb3RlbWFjcy1sb2FkLWZp
+bGUnIGFuZCBpcyBzZXQgYnkgdGhlIGVtYWNzIGNvbW1hbmQgbGluZQphcmd1bWVudCAnLS10YWct
+bWF0Y2gnLiIpCgo7OzsjIyNhdXRvbG9hZAo7OyBzaW1wbGUtY2FsbC10cmVlLWluZm86IERPTkUK
+KGRlZnVuIG9yZy1kb3RlbWFjcy1kZWZhdWx0LW1hdGNoIG5pbAogICJSZXR1cm4gdGhlIGRlZmF1
+bHQgdGFnIG1hdGNoIHN0cmluZyBiYXNlZCBvbiBpdGVtcyBpbiBgb3JnLWRvdGVtYWNzLWNvbmRp
+dGlvbmFsLXRhZ3MnICh3aGljaCBzZWUpLiIKICAobGV0ICgoc3RyIChjbC1sb29wIGZvciAocmVn
+ZXggLiBjb25kaXRpb24pIGluIG9yZy1kb3RlbWFjcy1jb25kaXRpb25hbC10YWdzCiAgICAgICAg
+ICAgICAgICAgICAgICBpZiAobm90IChldmFsIGNvbmRpdGlvbikpIGNvbmNhdCAoY29uY2F0IHJl
+Z2V4ICJcXHwiKSkpKQogICAgKGlmIChub3QgKGVxdWFsIHN0ciAiIikpCiAgICAgICAgKGNvbmNh
+dCAiLXtcXCg/OiIgKHN1YnN0cmluZyBzdHIgMCAtMikgIlxcKX0iKSkpKQoKOzsgVGhlIGZvbGxv
+d2luZyBmdW5jdGlvbiBpcyBiYXNlZCBvbiBjb2RlIGZyb20gZWwtZ2V0LWRlcGVuZGVuY2llcy5l
+bCA6IGh0dHBzOi8vZ2l0aHViLmNvbS9kaW1pdHJpL2VsLWdldC8KOzsgc2ltcGxlLWNhbGwtdHJl
+ZS1pbmZvOiBET05FCjs7OyMjI2F1dG9sb2FkCihjbC1kZWZ1biBvcmctZG90ZW1hY3MtdG9wby1z
+b3J0IChncmFwaCBibG9ja3MgJm9wdGlvbmFsIGhhbHRvbmVycm9yKQogICJSZXR1cm5zIGEgbGlz
+dCBvZiBpdGVtcyB3aG9zZSBvcmRlciBpcyBjb25zaXN0ZW50IHdpdGggdGhlIHN1cHBsaWVkIGRl
+cGVuZGVuY3kgR1JBUEguCkdSQVBIIGlzIGFuIGFsaXN0IHdob3NlIGtleXMgYXJlIGJsb2NrIG5h
+bWVzLCBhbmQgd2hvc2UgdmFsdWVzIGFyZSBsaXN0cyBvZiBibG9jayBuYW1lcyAKb24gd2hpY2gg
+dGhlIGNvcnJlc3BvbmRpbmcga2V5IGRlcGVuZHMuCkJMT0NLUyBpcyBhbiBhbGlzdCBvZiAoTkFN
+RSAuIENPREUpIHBhaXJzLCBjb250YWluaW5nIHRoZSBjb2RlIGJsb2NrcyBjb3JyZXNwb25kaW5n
+IHRvIAp0aGUgbmFtZXMgaW4gR1JBUEguIFRoZXNlIEJMT0NLUyB3aWxsIGJlIGV2YWx1YXRlZCBh
+cyB0aGUgcmV0dXJuIGxpc3QgaXMgY3JlYXRlZC4KSWYgU0tJUEVSUk9SUyBkZXRlcm1pbmVzIHdo
+YXQgdG8gZG8gYWJvdXQgYmxvY2tzIHdoaWNoIHRocm93IGVycm9ycyB3aGVuIGV2YWx1YXRlZDsK
+CkEgbGlzdCBvZiB0aGUgZm9sbG93aW5nIGZvdXIgdmFsdWVzIGlzIHJldHVybmVkLgoxOiBsaXN0
+IG9mIGJsb2NrIG5hbWVzIHNvcnRlZCBzdWNoIHRoYXQgZGVwZW5kZW50IGJsb2NrcyBjb21lIGFm
+dGVyIHRoZWlyIGRlcGVuZGVuY2llcyBpbiB0aGUgbGlzdC4KICAgRmFpbGVkIGJsb2NrcywgYW5k
+IGJsb2NrcyB3aXRoIGZhaWxlZCBkZXBlbmRlbmNpZXMgd2lsbCBub3QgYmUgaW5jbHVkZWQgaW4g
+dGhpcyBsaXN0LgoyOiBib29sZWFuIGluZGljYXRpbmcgd2hldGhlciBhbGwgYmxvY2tzIGluIHRo
+ZSBpbnB1dCBHUkFQSCBhcmUgcHJlc2VudCBpbiB0aGUgcHJldmlvdXMgbGlzdC4KMzogbGlzdCBv
+ZiBmYWlsZWQgYmxvY2tzIChpLmUuIGJsb2NrcyB0aGF0IHRocmV3IGVycm9ycyB3aGVuIGV2YWx1
+YXRlZCkuCjQ6IGxpc3Qgb2YgYmxvY2tzIHdoaWNoIGNvdWxkIG5vdCBiZSBwcm9jZXNzZWQgYmVj
+YXVzZSB0aGV5IGRlcGVuZCBvbiBmYWlsZWQgYmxvY2tzLCBvciBhcmUgcGFydCBvZgogICBhIGNp
+cmN1bGFyIGRlcGVuZGVuY3kuIgogIChsZXQqICgoZW50cmllcyAobWFrZS1oYXNoLXRhYmxlIDp0
+ZXN0ICdlcXVhbCkpCgkgOzsgZnVuY3Rpb24gdG8gcmV0dXJuIHRoZSBlbnRyeSBmb3IgdmVydGV4
+IHYuIEVhY2ggZW50cnkgaXMgYSBjb25zCgkgOzsgd2hvc2UgY2FyIGlzIHRoZSBudW1iZXIgb2Yg
+b3V0c3RhbmRpbmcgZGVwZW5kZW5jaWVzIG9mIHZlcnRleAoJIDs7IGFuZCB3aG9zZSBjZHIgaXMg
+YSBsaXN0IG9mIGRlcGVuZGVudHMgb2YgdmVydGV4LgoJIChlbnRyeSAobGFtYmRhICh2KQoJCSAg
+KG9yIChnZXRoYXNoIHYgZW50cmllcykKCQkgICAgICAocHV0aGFzaCB2IChjb25zIDAgJygpKSBl
+bnRyaWVzKSkpKSkKICAgIDs7IHBvcHVsYXRlIGVudHJpZXMgaW5pdGlhbGx5CiAgICAoZG9saXN0
+IChndmVydGV4IGdyYXBoKQogICAgICAoY2wtZGVzdHJ1Y3R1cmluZy1iaW5kICh2ZXJ0ZXggJnJl
+c3QgZGVwZW5kZW5jaWVzKSBndmVydGV4CgkobGV0ICgodmVudHJ5IChmdW5jYWxsIGVudHJ5IHZl
+cnRleCkpKQoJICAoZG9saXN0IChkZXBlbmRlbmN5IGRlcGVuZGVuY2llcykKCSAgICAobGV0ICgo
+ZGVudHJ5IChmdW5jYWxsIGVudHJ5IGRlcGVuZGVuY3kpKSkKCSAgICAgICh1bmxlc3MgKGVxdWFs
+IGRlcGVuZGVuY3kgdmVydGV4KQoJCShjbC1pbmNmIChjYXIgdmVudHJ5KSkKCQkocHVzaCB2ZXJ0
+ZXggKGNkciBkZW50cnkpKSkpKSkpKQogICAgOzsgTCBpcyB0aGUgbGlzdCBvZiBzb3J0ZWQgZWxl
+bWVudHMsIGFuZCBTIHRoZSBzZXQgb2YgdmVydGljZXMgd2l0aCBubyBvdXRzdGFuZGluZyBkZXBl
+bmRlbmNpZXMuCiAgICAobGV0IChMIFMgZmFpbGVkKQogICAgICAobWFwaGFzaCAobGFtYmRhIChr
+IHYpIChpZiAoemVyb3AgKGNhciB2KSkgKHB1c2ggayBTKSkpIGVudHJpZXMpCiAgICAgIDs7IFVu
+dGlsIHRoZXJlIGFyZSBubyB2ZXJ0aWNlcyB3aXRoIG5vIG91dHN0YW5kaW5nIGRlcGVuZGVuY2ll
+cywKICAgICAgOzsgcHJvY2VzcyB2ZXJ0aWNlcyBmcm9tIFMsIGFkZGluZyB0aGVtIHRvIEwuCiAg
+ICAgIChjbC1kbyogKCkgKChjbC1lbmRwIFMpKQoJKGxldCogKCh2IChwb3AgUykpCgkgICAgICAg
+KHZlbnRyeSAoZnVuY2FsbCBlbnRyeSB2KSkKCSAgICAgICAoYmxvY2sgKGNkciAoYXNzb2MgdiBi
+bG9ja3MpKSkpCgkgIChyZW1oYXNoIHYgZW50cmllcykKCSAgOzsgdHJ5IHRvIGV2YWwgdGhpcyBi
+bG9jawoJICAoaWYgYmxvY2sKCSAgICAgIChpZiAod2l0aC10ZW1wLWJ1ZmZlcgoJCSAgICAoaW5z
+ZXJ0IGJsb2NrKQoJCSAgICAoY29uZGl0aW9uLWNhc2UgZXJyIAoJCQkocHJvZ24gKGV2YWwtYnVm
+ZmVyKQoJCQkgICAgICAgKG1lc3NhZ2UgIm9yZy1kb3RlbWFjczogJXMgYmxvY2sgZXZhbHVhdGVk
+IiB2KQoJCQkgICAgICAgbmlsKQoJCSAgICAgIChlcnJvciAoZnVuY2FsbCAoaWYgaGFsdG9uZXJy
+b3IgJ2Vycm9yICdtZXNzYWdlKQoJCQkJICAgICAgIm9yZy1kb3RlbWFjczogZXJyb3IgaW4gYmxv
+Y2sgJXM6ICVzIgoJCQkJICAgICAgdiAoZXJyb3ItbWVzc2FnZS1zdHJpbmcgZXJyKSkKCQkJICAg
+ICB0KSkpCgkJICAocHVzaCB2IGZhaWxlZCkKCQkoZG9saXN0IChkZXBlbmRhbnQgKGNkciB2ZW50
+cnkpIChwdXNoIHYgTCkpCgkJICAod2hlbiAoemVyb3AgKGNsLWRlY2YgKGNhciAoZnVuY2FsbCBl
+bnRyeSBkZXBlbmRhbnQpKSkpCgkJICAgIChwdXNoIGRlcGVuZGFudCBTKSkpKSkpKQogICAgICA7
+OyByZXR1cm4gdmFsdWVzCiAgICAgIChsZXQgKChhbGwtc29ydGVkLXAgKHplcm9wIChoYXNoLXRh
+YmxlLWNvdW50IGVudHJpZXMpKSkpCgkobGlzdCAobnJldmVyc2UgTCkgYWxsLXNvcnRlZC1wIGZh
+aWxlZCAodW5sZXNzIGFsbC1zb3J0ZWQtcCBlbnRyaWVzKSkpKSkpCgo7OzsjIyNhdXRvbG9hZAo7
+OyBzaW1wbGUtY2FsbC10cmVlLWluZm86IENIQU5HRSAgCihjbC1kZWZ1biBvcmctZG90ZW1hY3Mt
+bG9hZC1maWxlICgmb3B0aW9uYWwgbWF0Y2gKCQkJCQkgICAgKGZpbGUgb3JnLWRvdGVtYWNzLWRl
+ZmF1bHQtZmlsZSkKCQkJCQkgICAgdGFyZ2V0LWZpbGUKCQkJCQkgICAgKGVycm9yLWhhbmRsaW5n
+IG9yZy1kb3RlbWFjcy1lcnJvci1oYW5kbGluZykpCiAgIkxvYWQgdGhlIGVsaXNwIGNvZGUgZnJv
+bSBjb2RlIGJsb2NrcyBpbiBvcmcgRklMRSB1bmRlciBoZWFkZXJzIG1hdGNoaW5nIHRhZyBNQVRD
+SC4KVGFnIG1hdGNoZXMgc3VwcGxpZWQgYXQgdGhlIGNvbW1hbmQgbGluZSBnZXQgcHJpb3JpdHkg
+b3ZlciB0aG9zZSBzdXBwbGllZCBieSB0aGUgTUFUQ0ggYXJndW1lbnQsCmFuZCBpZiBib3RoIG9m
+IHRoZXNlIGFyZSBuaWwgdGhlbiBgb3JnLWRvdGVtYWNzLWRlZmF1bHQtbWF0Y2gnIHdpbGwgYmUg
+dXNlZCB0byBjcmVhdGUgYSB0YWcgbWF0Y2guCklmIHlvdSBuZWVkIHRvIG92ZXJyaWRlIHRoZSBj
+b21tYW5kIGxpbmUgdGFnLW1hdGNoIHNldCBgb3JnLWRvdGVtYWNzLXRhZy1tYXRjaCcgdG8gbmls
+LgpJZiBUQVJHRVQtRklMRSBpcyBzdXBwbGllZCBpdCBzaG91bGQgYmUgYSBmaWxlbmFtZSB0byBz
+YXZlIHRoZSBlbGlzcCBjb2RlIHRvLCBidXQgaXQgc2hvdWxkCm5vdCBiZSBhbnkgb2YgdGhlIGRl
+ZmF1bHQgY29uZmlnIGZpbGVzIC5lbWFjcywgLmVtYWNzLmVsLCAuZW1hY3MuZWxjIG9yIGluaXQu
+ZWwKICh0aGUgZnVuY3Rpb24gd2lsbCBoYWx0IHdpdGggYW4gZXJyb3IgaW4gdGhvc2UgY2FzZXMp
+LiBJZiBUQVJHRVQtRklMRSBpcyBuZXdlciB0aGFuIEZJTEUgdGhlbgpUQVJHRVQtRklMRSB3aWxs
+IGJlIGxvYWRlZCBhbmQgRklMRSB3aWxsIG5vdCBiZSBwcm9jZXNzZWQuIE90aGVyd2lzZSBUQVJH
+RVQtRklMRSB3aWxsIGJlIG92ZXJ3cml0dGVuCmJ5IHRoZSBjb2RlIGJsb2NrcyBpbiBGSUxFLgpU
+aGUgb3B0aW9uYWwgYXJndW1lbnQgRVJST1ItSEFORExJTkcgZGV0ZXJtaW5lcyBob3cgZXJyb3Jz
+IGFyZSBoYW5kbGVkIGFuZCB0YWtlcyBkZWZhdWx0IHZhbHVlCmBvcmctZG90ZW1hY3MtZXJyb3It
+aGFuZGxpbmcnICh3aGljaCBzZWUpLiIKICAoaW50ZXJhY3RpdmUgKGxpc3QgbmlsCiAgICAgICAg
+ICAgICAgICAgICAgIChyZWFkLWZpbGUtbmFtZSAoZm9ybWF0ICJGaWxlIHRvIGxvYWQgKGRlZmF1
+bHQgJXMpOiAiIG9yZy1kb3RlbWFjcy1kZWZhdWx0LWZpbGUpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoZmlsZS1uYW1lLWRpcmVjdG9yeSBvcmctZG90ZW1hY3MtZGVmYXVs
+dC1maWxlKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3JnLWRvdGVtYWNz
+LWRlZmF1bHQtZmlsZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdCBuaWwK
+CQkJCSAgICAgKGxhbWJkYSAoZmlsZSkKCQkJCSAgICAgICAoc3RyaW5nLW1hdGNoICJcXC5vcmck
+IiBmaWxlKSkpCiAgICAgICAgICAgICAgICAgICAgIChpZiAoeS1vci1uLXAgIlNhdmUgZWxpc3Ag
+Y29kZSB0byBzZXBhcmF0ZSBmaWxlPyIpCiAgICAgICAgICAgICAgICAgICAgICAgICAocmVhZC1m
+aWxlLW5hbWUgIlNhdmUgdG8gZmlsZTogIiB1c2VyLWVtYWNzLWRpcmVjdG9yeSkpKSkKICAoaWYg
+KGFuZCB0YXJnZXQtZmlsZSAoc3RyaW5nLW1hdGNoICJcXCg/OlxcLmVtYWNzXFwoPzpcXC5lbGM/
+XFwpP1xcfGluaXRcXC5lbGM/XFwpJCIgdGFyZ2V0LWZpbGUpKQogICAgICAoZXJyb3IgIm9yZy1k
+b3RlbWFjczogUmVmdXNlIHRvIG92ZXJ3cml0ZSAlcyIgdGFyZ2V0LWZpbGUpKQogIChyZXF1aXJl
+ICdvYi1jb3JlKQogIChjbC1mbGV0ICgoYWdlIChmaWxlKSAoZmxvYXQtdGltZQogICAgICAgICAg
+ICAgICAgICAgICAgICAgKHRpbWUtc3VidHJhY3QgKGN1cnJlbnQtdGltZSkKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChudGggNSAob3IgKGZpbGUtYXR0cmlidXRlcyAo
+ZmlsZS10cnVlbmFtZSBmaWxlKSkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKGZpbGUtYXR0cmlidXRlcyBmaWxlKSkpKSkpKQogICAgKGxldCogKCht
+YXRjaHN0ciAob3IgbWF0Y2ggKG9yZy1kb3RlbWFjcy1kZWZhdWx0LW1hdGNoKSkpCgkgICAobWF0
+Y2hlciAoaWYgbWF0Y2hzdHIKCQkJKGNkciAob3JnLW1ha2UtdGFncy1tYXRjaGVyIG1hdGNoc3Ry
+KSkKCQkgICAgICAobGFtYmRhICgmcmVzdCBhcmdzKSB0KSkpCgkgICAodG9kby1vbmx5IG5pbCkK
+CSAgIGJsb2NrcyBncmFwaAoJICAgOzsgbWFrZSBzdXJlIHdlIGRvbnQgZ2V0IGFueSBzdHJhbmdl
+IGJlaGF2aW91ciBmcm9tIGhvb2tzCgkgICBmaW5kLWZpbGUtaG9vayBjaGFuZ2UtbWFqb3ItbW9k
+ZS1hZnRlci1ib2R5LWhvb2sKCSAgIHRleHQtbW9kZS1ob29rIG91dGxpbmUtbW9kZS1ob29rIG9y
+Zy1tb2RlLWhvb2spCiAgICAgIChpZiAoYW5kIHRhcmdldC1maWxlCgkgICAgICAgKGZpbGUtZXhp
+c3RzLXAgdGFyZ2V0LWZpbGUpCgkgICAgICAgKD4gKGFnZSBmaWxlKSAoYWdlIHRhcmdldC1maWxl
+KSkpCgkgIChsb2FkLWZpbGUgdGFyZ2V0LWZpbGUpCgkobWVzc2FnZSAib3JnLWRvdGVtYWNzOiBw
+YXJzaW5nICVzIiBmaWxlKQoJKG9yZy1iYWJlbC1tYXAtc3JjLWJsb2NrcyBmaWxlCgkgIChsZXQq
+ICgocGFydHMgKG9yZy1oZWFkaW5nLWNvbXBvbmVudHMpKQoJCSAodG9kbyAobnRoIDIgcGFydHMp
+KSkKCSAgICAoaWYgKGFuZCAoZXF1YWwgbGFuZyAiZW1hY3MtbGlzcCIpCgkJICAgICAoaWYgKGFu
+ZCB0b2RvIG9yZy1kb3RlbWFjcy1pbmNsdWRlLXRvZG8pCgkJCSAoc3RyaW5nLW1hdGNoIG9yZy1k
+b3RlbWFjcy1pbmNsdWRlLXRvZG8gdG9kbykKCQkgICAgICAgdCkKCQkgICAgIChpZiAoYW5kIHRv
+ZG8gb3JnLWRvdGVtYWNzLWV4Y2x1ZGUtdG9kbykKCQkJIChub3QgKHN0cmluZy1tYXRjaCBvcmct
+ZG90ZW1hY3MtZXhjbHVkZS10b2RvIHRvZG8pKQoJCSAgICAgICB0KQoJCSAgICAgKHNhdmUtZXhj
+dXJzaW9uCgkJICAgICAgICh1bmxlc3MgKG91dGxpbmUtb24taGVhZGluZy1wIHQpCgkJCSAob3V0
+bGluZS1wcmV2aW91cy1oZWFkaW5nKSkKCQkgICAgICAgKGZ1bmNhbGwgbWF0Y2hlcgoJCQkJKG50
+aCAyIHBhcnRzKQoJCQkJKGFuZCAobnRoIDUgcGFydHMpCgkJCQkgICAgIChzcGxpdC1zdHJpbmcg
+KG50aCA1IHBhcnRzKSAiOiIgdCkpCgkJCQkoY2FyIHBhcnRzKSkpKQoJCShsZXQgKChuYW1lIChv
+cmctZW50cnktZ2V0IGJlZy1ibG9jayAiTkFNRSIpKQoJCSAgICAgIChkZXBlbmRzIChvcmctZW50
+cnktZ2V0IGJlZy1ibG9jayAiREVQRU5EUyIgb3JnLWRvdGVtYWNzLWRlcGVuZGVuY3ktaW5oZXJp
+dGFuY2UpKSkKCQkgIChwdXNoIChjb25zIG5hbWUgKGFuZCBkZXBlbmRzIChzcGxpdC1zdHJpbmcg
+ZGVwZW5kcyAiW1s6c3BhY2U6XV0rIikpKSBncmFwaCkKCQkgIChwdXNoIChjb25zIG5hbWUgKHN1
+YnN0cmluZy1uby1wcm9wZXJ0aWVzIGJvZHkpKSBibG9ja3MpKSkpKQoJKGNsLWRlc3RydWN0dXJp
+bmctYmluZCAoZXZhbGVkLWJsb2NrcyBhbGxnb29kIGJhZC1ibG9ja3MgdW5ldmFsZWQtYmxvY2tz
+KQoJICAgIChvcmctZG90ZW1hY3MtdG9wby1zb3J0IGdyYXBoIGJsb2NrcyAobm90IChtZW1xIGVy
+cm9yLWhhbmRsaW5nICcoc2tpcCByZXRyeSkpKSkKCSAgKGlmIChlcSBlcnJvci1oYW5kbGluZyAn
+cmV0cnkpCgkgICAgICAobGV0ICgob2xkbGVuIDApKQoJCSh3aGlsZSAoLz0gb2xkbGVuIChsZW5n
+dGggYmFkLWJsb2NrcykpCgkJICA7OyByZW1vdmUgZXZhbGVkLWJsb2NrcyBmcm9tIGdyYXBoIGFu
+ZCB0cnkgYWdhaW4KCQkgIChtZXNzYWdlICJvcmctZG90ZW1hY3M6IHJlLXRyeWluZyBiYWQgYmxv
+Y2tzIikKCQkgIChzZXRxIG9sZGxlbiAobGVuZ3RoIGJhZC1ibG9ja3MpCgkJCXZhbHMgKG9yZy1k
+b3RlbWFjcy10b3BvLXNvcnQKCQkJICAgICAgKGNsLWxvb3AgZm9yIChub2RlIC4gbHN0KSBpbiBn
+cmFwaAoJCQkJICAgICAgIHVubGVzcyAobWVtYmVyIG5vZGUgZXZhbGVkLWJsb2NrcykKCQkJCSAg
+ICAgICBjb2xsZWN0IChjb25zIG5vZGUKCQkJCQkJICAgICAoY2wtcmVtb3ZlLWlmIChsYW1iZGEg
+KHgpIChtZW1iZXIgeCBldmFsZWQtYmxvY2tzKSkgbHN0KSkpCgkJCSAgICAgIChjbC1yZW1vdmUt
+aWYgKGxhbWJkYSAoeCkgKG1lbWJlciAoY2FyIHgpIGV2YWxlZC1ibG9ja3MpKSBibG9ja3MpKSkK
+CQkgIChzZXRxIGV2YWxlZC1ibG9ja3MgKGFwcGVuZCBldmFsZWQtYmxvY2tzIChjYXIgdmFscykp
+CgkJCWFsbGdvb2QgKG50aCAxIHZhbHMpCgkJCWJhZC1ibG9ja3MgKG50aCAyIHZhbHMpCgkJCXVu
+ZXZhbGVkLWJsb2NrcyAobnRoIDMgdmFscykpKSkpCgkgIChpZiB0YXJnZXQtZmlsZQoJICAgICAg
+KHdpdGgtdGVtcC1idWZmZXIKCQkoaW5zZXJ0IChjb25jYXQgIjs7IG9yZy1kb3RlbWFjczogY29k
+ZSBleHRyYWN0ZWQgZnJvbSAiIGZpbGUgIlxuIikpCgkJKGRvbGlzdCAoYmxrIGV2YWxlZC1ibG9j
+a3MpCgkJICAoaW5zZXJ0IChjb25jYXQgIjs7IEJsb2NrID0gIiBibGsgIlxuIikpCgkJICAoaW5z
+ZXJ0IChjb25jYXQgIihtZXNzYWdlIFwib3JnLWRvdGVtYWNzOiBldmFsdWF0aW5nICIgYmxrICIg
+YmxvY2tcIilcbiIpKQoJCSAgKGluc2VydCAoY2RyIChhc3NvYyBibGsgYmxvY2tzKSkpKQoJCShp
+bnNlcnQgKGZvcm1hdCAiKG1lc3NhZ2UgXCJvcmctZG90ZW1hY3M6ICVzIGJsb2NrcyBldmFsdWF0
+ZWQuXCIpXG4iIChsZW5ndGggZXZhbGVkLWJsb2NrcykpKQoJCShpbnNlcnQgKGZvcm1hdCAiKG1l
+c3NhZ2UgXCJvcmctZG90ZW1hY3M6ICVzIGJsb2NrcyBub3QgY29uc2lkZXJlZCAoc2VlICVzKS5c
+IilcbiIKCQkJCSgrIChsZW5ndGggYmFkLWJsb2NrcykKCQkJCSAgIChsZW5ndGggdW5ldmFsZWQt
+YmxvY2tzKSkKCQkJCWZpbGUpKQoJCSh3cml0ZS1maWxlIHRhcmdldC1maWxlKSkpCgkgIChpZiBh
+bGxnb29kCgkgICAgICAobWVzc2FnZSAib3JnLWRvdGVtYWNzOiBhbGwgJWQgYmxvY2tzIGV2YWx1
+YXRlZCBzdWNjZXNzZnVsbHkuIgoJCSAgICAgICAobGVuZ3RoIGV2YWxlZC1ibG9ja3MpKQoJICAg
+IChjbC1mbGV0ICgobXNnZm4gKGxzdCBtc2cxICZvcHRpb25hbCAobXNnMiBtc2cxKSkKCQkJICAg
+ICAoaWYgKD4gKGxlbmd0aCBsc3QpIDApCgkJCQkgKGlmICg9IChsZW5ndGggbHN0KSAxKQoJCQkJ
+ICAgICAobWVzc2FnZSAoY29uY2F0ICJvcmctZG90ZW1hY3M6IDEgYmxvY2sgIiBtc2cxICI6ICVz
+IikgbHN0KQoJCQkJICAgKG1lc3NhZ2UgKGNvbmNhdCAib3JnLWRvdGVtYWNzOiAlZCBibG9ja3Mg
+IiBtc2cyICI6ICVzIikgKGxlbmd0aCBsc3QpIGxzdCkpCgkJCSAgICAgICAobWVzc2FnZSAoY29u
+Y2F0ICJvcmctZG90ZW1hY3M6IG5vIGJsb2NrcyAiIG1zZzIpKSkpKQoJICAgICAgKG1zZ2ZuIGV2
+YWxlZC1ibG9ja3MgImV2YWx1YXRlZCBzdWNjZXNzZnVsbHkiKQoJICAgICAgKG1zZ2ZuIGJhZC1i
+bG9ja3MgImhhcyBlcnJvcnMiICJoYXZlIGVycm9ycyIpCgkgICAgICAobGV0KiAoKGJhZGRlcHMg
+KGNsLWxvb3AgZm9yICh2IC4gZGVwcykgaW4gZ3JhcGgKCQkJCSAgICAgICBpZiAoY2wtaW50ZXJz
+ZWN0aW9uIGRlcHMgYmFkLWJsb2NrcyA6dGVzdCAnZXF1YWwpCgkJCQkgICAgICAgY29sbGVjdCB2
+KSkKCQkgICAgIGFsbCBjaXJjdWxhcikKCQkobWFwaGFzaCAobGFtYmRhIChrIHYpIChwdXNoIGsg
+YWxsKSkgdW5ldmFsZWQtYmxvY2tzKQoJCShtYXBoYXNoIChsYW1iZGEgKGsgdikKCQkJICAgKGlm
+IChjbC1pbnRlcnNlY3Rpb24gKGNkciB2KSBhbGwgOnRlc3QgJ2VxdWFsKSAocHVzaCBrIGNpcmN1
+bGFyKSkpCgkJCSB1bmV2YWxlZC1ibG9ja3MpCgkJKG1zZ2ZuIGJhZGRlcHMKCQkgICAgICAgImRl
+cGVuZHMgb24gYmxvY2tzIHdpdGggZXJyb3JzIiAiZGVwZW5kIG9uIGJsb2NrcyB3aXRoIGVycm9y
+cyIpCgkJKG1zZ2ZuIChjbC1zZXQtZGlmZmVyZW5jZSBhbGwgKGFwcGVuZCBjaXJjdWxhciBiYWRk
+ZXBzKSkKCQkgICAgICAgImRlcGVuZHMgb24gdW5ldmFsdWF0ZWQgYmxvY2tzIiAiZGVwZW5kIG9u
+IHVuZXZhbHVhdGVkIGJsb2NrcyIpCgkJKG1zZ2ZuIGNpcmN1bGFyICJoYXMgY2lyY3VsYXIgZGVw
+ZW5kZW5jaWVzIiAiaGF2ZSBjaXJjdWxhciBkZXBlbmRlbmNpZXMiKSkpKSkpKSkpCgo7OzsjIyNh
+dXRvbG9hZAo7OyBzaW1wbGUtY2FsbC10cmVlLWluZm86IENIQU5HRSAgCihjbC1kZWZ1biBvcmct
+ZG90ZW1hY3MtbG9hZC1kZWZhdWx0ICgmb3B0aW9uYWwgbWF0Y2ggc2F2ZXApCiAgIkxvYWQgY29k
+ZSBmcm9tIGBvcmctZG90ZW1hY3MtZGVmYXVsdC1maWxlJyBtYXRjaGluZyB0YWcgTUFUQ0guCklm
+IFNBVkVQIGlzIG5vbi1uaWwgdGhlbiBgb3JnLWRvdGVtYWNzLWxvYWQtZmlsZScgd2lsbCBiZSBj
+YWxsZWQgd2l0aCBUQVJHRVQtRklMRQphcmd1bWVudCBzZXQgdG8gdGhlIHZhbHVlIG9mIGBvcmct
+ZG90ZW1hY3MtZGVmYXVsdC1maWxlJyB3aXRoIHRoZSBmaWxlIGVuZGluZyAKcmVwbGFjZWQgd2l0
+aCBcIi5lbFwiLgpUaGUgdXNlciB3aWxsIG5vdCBiZSBwcm9tcHRlZCBmb3IgdGhlIGxvY2F0aW9u
+IG9mIGFueSBmaWxlcy4iCiAgKGludGVyYWN0aXZlIChsaXN0IG5pbCkpCiAgKG9yZy1kb3RlbWFj
+cy1sb2FkLWZpbGUKICAgbWF0Y2ggb3JnLWRvdGVtYWNzLWRlZmF1bHQtZmlsZQogICAoaWYgc2F2
+ZXAKICAgICAgIChjb25jYXQgKGZpbGUtbmFtZS1zYW5zLWV4dGVuc2lvbiBvcmctZG90ZW1hY3Mt
+ZGVmYXVsdC1maWxlKQoJICAgICAgICIuZWwiKSkpKQoKOzsgQ29kZSB0byBoYW5kbGUgY29tbWFu
+ZCBsaW5lIGFyZ3VtZW50cwoobGV0KiAoKGVycnBvcyAob3IgKGNsLXBvc2l0aW9uLWlmIChsYW1i
+ZGEgKHgpIChlcXVhbCB4ICItZXJyb3ItaGFuZGxpbmciKSkgY29tbWFuZC1saW5lLWFyZ3MpCgkJ
+ICAgKGNsLXBvc2l0aW9uLWlmIChsYW1iZGEgKHgpIChlcXVhbCB4ICItLWVycm9yLWhhbmRsaW5n
+IikpIGNvbW1hbmQtbGluZS1hcmdzKSkpCiAgICAgICAoZXJydmFsIChpZiBlcnJwb3MgKG50aCAo
+KyAxIGVycnBvcykgY29tbWFuZC1saW5lLWFyZ3MpKSkKICAgICAgICh0YWdwb3MgKG9yIChjbC1w
+b3NpdGlvbi1pZiAobGFtYmRhICh4KSAoZXF1YWwgeCAiLXRhZy1tYXRjaCIpKSBjb21tYW5kLWxp
+bmUtYXJncykKCQkgICAoY2wtcG9zaXRpb24taWYgKGxhbWJkYSAoeCkgKGVxdWFsIHggIi0tdGFn
+LW1hdGNoIikpIGNvbW1hbmQtbGluZS1hcmdzKSkpCiAgICAgICAodGFndmFsIChpZiB0YWdwb3Mg
+KG50aCAoKyAxIHRhZ3BvcykgY29tbWFuZC1saW5lLWFyZ3MpKSkpCiAgKGlmIGVycnZhbCAKICAg
+ICAgKHNldHEgb3JnLWRvdGVtYWNzLWVycm9yLWhhbmRsaW5nIChpbnRlcm4gZXJydmFsKSkpCiAg
+KGlmIHRhZ3ZhbCAoc2V0cSBvcmctZG90ZW1hY3MtdGFnLW1hdGNoIHRhZ3ZhbCkpKQoKKG1lc3Nh
+Z2UgIm9yZy1kb3RlbWFjczogZXJyb3ItaGFuZGxpbmcgPSAlcyIgKGNvbmNhdCAiJyIgKHN5bWJv
+bC1uYW1lIG9yZy1kb3RlbWFjcy1lcnJvci1oYW5kbGluZykpKQoobWVzc2FnZSAib3JnLWRvdGVt
+YWNzOiB0YWctbWF0Y2ggPSAlcyIgb3JnLWRvdGVtYWNzLXRhZy1tYXRjaCkKCihwcm92aWRlICdv
+cmctZG90ZW1hY3MpCgo7OyAobWFnaXQtcHVzaCkKOzsgKHlhb2RkbXVzZS1wb3N0ICJFbWFjc1dp
+a2kiICJvcmctZG90ZW1hY3MuZWwiIChidWZmZXItbmFtZSkgKGJ1ZmZlci1zdHJpbmcpICJ1cGRh
+dGUiKQoKOzs7IG9yZy1kb3RlbWFjcy5lbCBlbmRzIGhlcmUK
