@@ -30,6 +30,48 @@ Put the following in your .emacs to [::MakeMarkVisible] at all times.
 (advice-add 'push-mark :after #'mmv-show-mark)
 </pre>
 
+<pre>
+
+;; This alternative version of the function `mmv-show-mark' deals with a problem of the code above:
+;; when a mark is placed at the end of a line, the rest of the line is highlighted rightward, to the
+;; end of the window. It does this by putting a space character in the `before-string' property of
+;; overlay `mmv-mark-overlay', and by shrinking that overlay's size to 0. However, this code does
+;; not play nicely with package fill-column-indicator, nor probably with other similar code. Also,
+;; when the cursor is placed to right of a mark at the end of the line, it is displayed on column
+;; too far to the right, as is text then added, until the mark is moved again. This is ugly and
+;; disconcerting. If you find a better way of doing this, by all means update the code.
+
+(defface mmv-face
+  '((t :inherit default :background "red"))
+  "Face used for showing the mark's position.")
+
+(defvar mmv-mark-overlay nil "Overlay for showing the mark's position.")
+(defvar mmv-helper-space nil "Space used when mark is at end of line.")
+(make-variable-buffer-local 'mmv-mark-overlay)
+(make-variable-buffer-local 'mmv-helper-space)
+
+;; The three optional arguments are needed to cover the optional arguments of those functions that
+;; this function will modify through `advice-add'.
+(defun mmv-show-mark (&optional ARG1 ARG2 ARG3)
+  "Make the mark's position stand out by means of a one-character-long overlay."
+  (unless mmv-mark-overlay
+    (setq mmv-mark-overlay (make-overlay 0 0 nil t))
+    (overlay-put mmv-mark-overlay 'face 'mmv-face))
+  (unless mmv-helper-space
+    (setq mmv-helper-space (propertize " " 'face 'mmv-face)))
+  (let ((mark-position (mark t)))
+    (when mark-position ; function mark returns non-nil only if the buffer's mark is set
+      (move-overlay mmv-mark-overlay mark-position (1+ mark-position))
+      (overlay-put mmv-mark-overlay 'before-string "")
+      (when (= mark-position (point-at-eol))
+        (move-overlay mmv-mark-overlay mark-position mark-position)
+        (overlay-put mmv-mark-overlay 'before-string mmv-helper-space)))))
+
+(advice-add 'set-mark :after #'mmv-show-mark)
+(advice-add 'pop-mark :after #'mmv-show-mark)
+(advice-add 'push-mark :after #'mmv-show-mark)
+</pre>
+
 [new:DrewAdams:2004-12-25 17:38 UTC]
 Interesting alternative to `C-x C-x' (`exchange-point-and-mark') to see the mark.
 
