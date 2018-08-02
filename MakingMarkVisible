@@ -1,38 +1,33 @@
 Put the following in your .emacs to [::MakeMarkVisible] at all times.
 
 <pre>
+;;;; Shows mark highlighted with a red background so the user can always see
+;;;; where it is. ('mmv' is for 'make mark visible'.)
+;;;; By Patrick Gundlach and Teemu Leisti.
 
-;; Author: Patrick Gundlach 
-;; nice mark - shows mark as a highlighted 'cursor' so user 'always' 
-;; sees where the mark is. Especially nice for killing a region.
+(defface mmv-face
+  '((t :inherit default :background "red"))
+  "Face used for showing the mark's position.")
 
-(defvar pg-mark-overlay nil
-  "Overlay to show the position where the mark is") 
-(make-variable-buffer-local 'pg-mark-overlay)
+(defvar mmv-mark-overlay nil "Overlay for showing the mark's position.")
+(make-variable-buffer-local 'mmv-mark-overlay)
 
-(put 'pg-mark-mark 'face 'secondary-selection)
+;; The three optional arguments are needed to cover the optional arguments of
+;; those functions that this function will modify through `advice-add'.
+(defun mmv-show-mark (&optional ARG1 ARG2 ARG3)
+  "Make the mark's position stand out by means of a one-character-long overlay."
+  (unless mmv-mark-overlay
+    (setq mmv-mark-overlay (make-overlay 0 0 nil t))
+    (overlay-put mmv-mark-overlay 'face 'mmv-face))
+  (let ((mark-position (mark t)))
+    (when mark-position
+      ; Function `mark' returns non-nil only if the buffer's mark is set, so
+      ; doing the following is pointless if `mark-position' is nil.
+      (move-overlay mmv-mark-overlay mark-position (1+ mark-position)))))
 
-(defvar pg-mark-old-position nil
-  "The position the mark was at. To be able to compare with the
-current position")
-
-(defun pg-show-mark () 
-  "Display an overlay where the mark is at. Should be hooked into 
-activate-mark-hook" 
-  (unless pg-mark-overlay 
-    (setq pg-mark-overlay (make-overlay 0 0))
-    (overlay-put pg-mark-overlay 'category 'pg-mark-mark))
-  (let ((here (mark t)))
-    (when here
-      (move-overlay pg-mark-overlay here (1+ here)))))
-
-(defadvice  exchange-point-and-mark (after pg-mark-exchange-point-and-mark)
-  "Show visual marker"
-  (pg-show-mark))
-
-(ad-activate 'exchange-point-and-mark)
-(add-hook 'activate-mark-hook 'pg-show-mark)
-
+(advice-add 'set-mark :after #'mmv-show-mark)
+(advice-add 'pop-mark :after #'mmv-show-mark)
+(advice-add 'push-mark :after #'mmv-show-mark)
 </pre>
 
 [new:DrewAdams:2004-12-25 17:38 UTC]
@@ -43,9 +38,9 @@ Might be even more interesting to show ''all'' of the marks (or the N most recen
 And, instead of seeing marks all the time, I'd like to have a binding that shows marks only temporarily - e.g. until some easy event, like a mouse-button release (that is, display marks only while pressed).
 
 BTW, when the mark is at the end of a line, the buffer is highlighted from the line end to the right window edge -- looks like a minor bug. -- DrewAdams
+
 [new]
 See also VisibleMark for such sort of things.
 
 [new]
 I wrote some elisp that displays the points in the mark ring.  It's modeled after Occur.  The line number for each point in the mark-ring is displayed as well as the contents of that line.  Pressing RET on the line will take you to the point from the mark-ring.  The function is called 'show-marks' and is available at http://therowes.net/~greg/code/emacs/emacs.d/mark.el
-
