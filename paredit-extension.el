@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008 ~ 2018, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.5
-;; Last-Updated: 2018-07-11 22:57:49
+;; Version: 0.6
+;; Last-Updated: 2018-08-06 21:23:09
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 27.0.50
@@ -44,6 +44,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/08/06
+;;      * Improve function `paredit-ruby-mode-kill' that reindent line if rest line start with ruby keywords.
 ;;
 ;; 2018/07/11
 ;;      * Add new function `paredit-web-mode-kill' and `paredit-ruby-mode-kill'.
@@ -243,8 +246,9 @@ Will delete blank line after execute `paredit-splice-sexp'."
     (back-to-indentation)))
 
 (defun paredit-blank-line-p ()
-  (and (equal (current-column) 0)
-       (blank-line-p)))
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[[:space:]]*$")))
 
 (defun paredit-kill-blank-line-and-reindent ()
   (interactive)
@@ -302,34 +306,27 @@ Otherwise, do `paredit-kill'."
   "It's a smarter kill function for `ruby-mode'.
 
 If current line is blank line, re-indent line after kill whole line.
-If point in string area, kill string content like `paredit-kill' do.
-If point at block beginning, kill whole block.
-If point at block end, kill rest line after end block.
-Otherwise, do `paredit-kill'.
+
+If current line is not blank, do `paredit-kill' first, re-indent line if rest line start with ruby keywords.
 "
   (interactive)
   (if (paredit-blank-line-p)
       (paredit-kill-blank-line-and-reindent)
-    (let (in-beginning-block-p in-end-block-p block-start-pos block-end-pos)
-      (save-excursion
-        (setq current-symbol (buffer-substring-no-properties (beginning-of-thing 'symbol) (end-of-thing 'symbol)))
-        (setq in-beginning-block-p (member current-symbol '("class" "module" "def" "if" "unless" "case" "while" "until" "for" "begin" "do")))
-        (setq in-end-block-p (member current-symbol '("end")))
-        )
-      (cond ((paredit-in-string-p)
-             (paredit-kill))
-            (in-beginning-block-p
-             (beginning-of-thing 'symbol)
-             (setq block-start-pos (point))
-             (forward-sexp 1)
-             (setq block-end-pos (point))
-             (kill-region block-start-pos block-end-pos))
-            (in-end-block-p
-             (beginning-of-thing 'symbol)
-             (save-excursion
-               (kill-line)))
-            (t
-             (paredit-kill))))))
+    ;; Do `paredit-kill' first.
+    (paredit-kill)
+
+    ;; Re-indent current line if line start with ruby keywords.
+    (when (let (in-beginning-block-p
+                in-end-block-p
+                current-symbol)
+            (save-excursion
+              (back-to-indentation)
+              (ignore-errors (setq current-symbol (buffer-substring-no-properties (beginning-of-thing 'symbol) (end-of-thing 'symbol))))
+              (setq in-beginning-block-p (member current-symbol '("class" "module" "else" "def" "if" "unless" "case" "while" "until" "for" "begin" "do")))
+              (setq in-end-block-p (member current-symbol '("end")))
+
+              (or in-beginning-block-p in-end-block-p)))
+      (indent-for-tab-command))))
 
 (defun paredit--is-at-start-of-sexp ()
   (and (looking-at "(\\|\\[")
