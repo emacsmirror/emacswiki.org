@@ -1,10 +1,1 @@
-Google Chrome and Google Chromium are WebKit based browsers with a souped up JavaScript engine for running complex web-apps.
 
-== Integrating with Emacs ==
-
-You can use Emacs to edit textareas in the manner of It's All Text using the [[Edit with Emacs]] Chrom(ium) extension. It comes with its own elisp based "Edit Server" to respond to edit requests from Chrome without needing to use emacsclient.
-
-Get it from [[https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh|here]]
-
-For emacs keybindings of browser functions, see:
-https://chrome.google.com/webstore/detail/bkbaanfaopgmdicplibllmdkfkmfafad
