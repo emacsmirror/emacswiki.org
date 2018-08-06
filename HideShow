@@ -1,4 +1,3 @@
-[[de:hindi]]
 %%HideShow%% is a minor mode similar to OutlineMode -- it hides and shows blocks of text. In particular, it hides balanced-expression code blocks and multi-line comment blocks.
 
 See HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
