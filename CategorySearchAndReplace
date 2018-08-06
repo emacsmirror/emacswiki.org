@@ -1,149 +1,20 @@
-Emacs can search in the current [[buffer]], across multiple buffers or in files.
+Emacs b
 
-You can also search Emacs itself: introspect documentation, [[command]]s, [[face]]s, [[variable]]s,... (See SelfDocumentation).
-Some [EmacsWiki:CategoryCompletion completion] features use search.
 
-This page is about searching and replacing text in Emacs. Look for `search' in the EmacsManual for more information -- that will also provide info about replacing.
-
-[:SearchInBuffers]
-== Search in Buffers ==
-
-Vanilla:
-
-* IncrementalSearch -- aka [[Isearch]]. ‘C-s’ and `C-M-s'.
-* Incremental search across multiple buffers: command `multi-isearch-buffers'.  (See the Emacs manual: [[Manual:Other Repeating Search]].)
-* OccurMode -- ‘M-x occur’ and `multi-occur'. Similar to [[GrepMode|grep]], but for buffers, not files.
-
-Additional:
-* [[AceJump]] -- a minor mode for Emacs, enabling direct cursor-moving in current view.
-* AcmeSearch -- Simple right-click searching.
-* BuffersMisc
-* [[CharacterFold+]] -- optional symmetric character folding for Isearch
-* [[Icicles]] -- two unrelated features: `icicle-search' and [[completion]] for Isearch:
-** [[Icicles - Search Commands, Overview|Icicles search]]: [[regexp|Regexp]] search within ''search contexts'': text zones defined using regexps (and their subgroups) or using [[text property|text or overlay property]] values.  Combine syntactic and semantic (predicate) searching. (Cf. [[Isearch+]].)
-** Use completion against previous [[Icicles - Isearch Enhancements|Isearch search strings]].
-* [[VisualRegexp]] -- using the ##visual-regexp-steroids## extension, you can use a modern regexp engine to power ##isearch##.
-
-[:IsearchPlusContexts]
-* [[Isearch+]] -- Many extensions to Emacs' standard [[Isearch]], including search within ''search contexts'': [[text property|text or overlay property]] zones, [[ImenuMode|Imenu]] definitions, and Emacs THINGs (sexps, lists, symbols, paragraphs, whatever). (Cf. [[Icicles - Search Commands, Overview|Icicles search]].)
-* LazySearch -- A new search mode to search string around point fast.
-* [[msearch]] -- Search matches of text dragged with the mouse in the current buffer.
-* [[Replace+]] -- Extensions to OccurMode.
-* SearchBuffers -- Like OccurMode, but for multiple buffers.
-* SearchKeybind -- `occur' for key bindings and their commands.
-* SearchNear -- Using OccurMode to find words that are near each other.
-* SummaryEditMode -- List up matched strings from a buffer, and display them in summary buffer.
-* SuperDuperRedundantPlus -- can mark all files in dired buffer using `dired-mark-files-containing-regexp' followed by `dired-do-query-replace-regexp'.
+bbb
 
 
 
+gg
 
 
 
+gg
+
+g
 
 
+njjj
 
 
-
-
-
-
-
-
-
-[:ReplaceInBuffers]
-== Replace in Buffers ==
-
-Vanilla:
-
-* ReplaceRegexp -- Query-replace, possibly evaluating an EmacsLisp [[sexp]] to compute the replacement text.
-* After starting Isearch, `query-replace' with `##M-%##' or `query-replace-regexp' with `##C-M-%##', using the current search string.
-* IbufferMode -- Operate on multiple buffers, including query replace (Emacs 22).
-
-Additional:
-
-* [[VisualRegexp]] -- like `M-x replace-regexp', but with live visual feedback directly in the buffer.
-
-* [[Anything]] -- `M-x anything-regexp', `M-x anything-query-replace-regexp': narrow the matched lines by multiple patterns and replace.
-
-[:IciclesSearchAndReplace]
-* Icicles [[Icicles - Search-And-Replace|search-and-replace]]
--- Replace individual search hits in any order. Replace all. Search hits can be [[regexp]] matches within a search context that corresponds to a regexp or a regexp-subgroup match. Lisp [[sexp]] eval replacement text is allowed, as in ReplaceRegexp. Search and replace across multiple buffers, files, bookmarks, or saved [[region]]s.
-[:IciclesSearchAndReplace]
-
-* [[Iedit]] -- Replace multiple occurrences of the [[Isearch]] string.
-* [[Isearch+]] -- ''On-demand'' replacement during Isearch: hit `C-M-RET' to replace the current search hit, the next ''N'' search hits, or all remaining search hits. Can limit search-and-replace to ''[[#IsearchPlusContexts|search contexts]]''.  Similar to [[#IciclesSearchAndReplace|Icicles search-and-replace]] ([[sexp]] eval replacement etc.).
-* QueryExchange -- Exchange two string interactively.
-* [[Replace+]] -- Extensions to Emacs' standard query-replace commands.
-* ReplaceGarbageChars -- Replace MS and other goofy/"garbage" characters with latin1.  Simple elisp code can be easily applied to LaTeX or HTML or other kinds of buffers.
-* ReplaceRecentCharacter -- Quickly fix typos using a non-incremental search and replace.
-* SearchAndReplaceDelimitedStrings -- Replace (only) the prefix and suffix of a pattern.
-* [[Replace-in-buffer]] -- Replace text in complete buffer, use current region or next word as pattern
-* Lisp:replace-string-simulatenously.el -- Replace several strings at the same time. For example, you want to replace "yes"->"no" and "no"->"yes" in some text. If you do it in two replacements, it will replace all occurences "yes" for "no", so you can't differentiate between those. With this function, you just do M-x replace-string-simulatenously yes RET no RET no RET yes RET RET
-
-
-
-
-
-
-[:SearchAcrossFiles]
-== Search Across Files ==
-
-You can also, of course, visit files to be searched in buffers, and then use the techniques above for [[#SearchInBuffers]].
-
-Vanilla:
-
-* GrepMode -- `M-x grep'
-* `M-x find-name-dired'
-* RecursiveGrep, `grep-find', `find-grep-dired'
-
-Additional:
-
-* [[Anything]] -- `M-x anything-grep' in Lisp:anything-grep.el: narrow the list by multiple patterns
-* [[CharacterFold+]] -- optional symmetric character folding for Isearch
-* FindrPackage -- Breadth-first search for files.  Search for regexp within found files.
-* [[Grep+]] -- Emacs `grep' enhancements
-* Icicles search [[Icicles - Search Commands, Overview|across multiple files]]. Icicles [[Icicles - Other Search Commands|compilation search]] to visit source-file hits in a ##*grep*## or any compilation buffer. Multiple levels of regexp search. 
-
-
-
-[:ReplaceAcrossFiles]
-== Replace Across Files ==
-
-Vanilla:
-
-* DiredSearchAndReplace (`Q' in Dired) -- Mark files, then search and replace in them.
-** FindGrepDiredSearchAndReplace -- find matches in files with grep and replace them with Dired.
-* `M-x find-name-dired'
-* `M-x grep' -- GrepMode
-* RecursiveGrep, `grep-find', `find-grep-dired'
-* `M-x tags-query-replace' -- replace using etags' TagFile.
-
-Additional:
-
-* [[Anything]] -- `M-x anything-grep' in Lisp:anything-grep.el: narrow the list by multiple patterns.
-* FindrPackage -- Breadth-first search for files.  Search for regexp within found files.
-* GlobRep Search across multiple files, edit these lines, and save back.
-* GrepEd Edit 'grep' results and write them back. Does not support M-%, which limits its usefulness.
-* Lisp:wgrep.el Writable grep results
-** wgrep.el is based on Lisp:grep-edit.el http://www.bookshelf.jp/elc/grep-edit.el -- Supports M-%
-* grep-x similar to GlobRep. http://groups.google.com/groups?q=author:shouman%40goofy.cc.utexas.edu&hl=en&safe=off&rnum=2&selm=SHOUMAN.95Apr26224953%40goofy.cc.utexas.edu Usenet Article 1995/04/27 
-* Icicles [[Icicles - Search-And-Replace|search-and-replace]] 
--- see [[#IciclesSearchAndReplace|above]]. Use Icicles [[Icicles - Other Search Commands|compilation search-and-replace]] to visit source-file hits in a ##*grep*## buffer and replace text within them.
-* MultiReplace
-* http://groups.google.com/groups?q=replace+group:gnu.emacs.sources
-* TinyReplace replace over multiple files (run M-x grep to and hit % in compile buffer) RCS support.
-* TraverseDirectory search a word or regexp in all files in dir and subdir (recursive search).
-* VersionControlSearchAndReplace -- Search and replace VC files, using Dired `Q'.
-
-* (Links are broken or faulty - http://www.peerfear.org/el/replace-recursive.el (successor of http://www.peerfear.org/el/igrep-find-query-replace.el))
-
-== See Also ==
-* [[Namazu]] -- Text indexing and search.
-* [[Tracker]] -- Gnome tool for indexing and search
-* LocateFilesAnywhere to find files on your file system, when you don't know where they are. (This does not search the files; it locates them.)
-
-----
-CategoryExternalUtilities CategoryRegexp
-
-
+f
