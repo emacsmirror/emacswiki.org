@@ -30,7 +30,7 @@ There are various places where advice can happen:
 
 ##:around## is special: it happens instead of the original function being called but you get the old function definition in an extra argument so you can still run the old code, if you need to.
 
-See [[Manual:Ways to compose advice]] for more info.
+See [[Manual:Advice combinators]] for more info.
 
 ----
 CategoryCode
