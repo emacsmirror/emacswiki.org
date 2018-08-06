@@ -13,10 +13,13 @@ directly.  That doesn't mean `advice.el' is evil, but that it should
 only be used when you cannot change the command; for example if you
 want your package to work with older releases.
 
-[new:DrewAdams:2004-12-30 15:36 UTC]
-What I particularly don't like about advised functions is that it is difficult to use the ''debugger'' with them. 
+Advised functions are difficult to use with the ''debugger''. 
 
-And here is StefanMonnier's strong `advice' advice from mailing list ##help-gnu-emacs@gnu.org##:
+Extra special care needs to be taken when advising Emacs Lisp primitives. The special case of advising primitives is further explained in the EmacsLispReference.
+
+== What other people have said ==
+
+Here is StefanMonnier's strong `advice' advice from mailing list ##help-gnu-emacs@gnu.org##:
 
 {{{
 `advice' is a sledghammer: it's the last resort before
@@ -28,12 +31,6 @@ Advice have to be written *extremely* carefully.
 I.e. if you can do it without `advice', then don't use `advice'.
 }}}
 
--- DrewAdams
-
-[new:YoniRabkinKatzenell:2005-03-03 21:45 UTC]
-Extra special care needs to be taken when advising Emacs Lisp primitives. The special case of advising primitives is further explained in the EmacsLispReference. -- YoniRabkinKatzenell
-
-[new:DrewAdams:2005-03-03 21:45 UTC]
 And this is what RichardStallman said 2005-03-03 about Emacs developers (not users) advising Emacs primitives:
 
 {{{
@@ -43,9 +40,6 @@ code in Emacs that advises other parts of Emacs was installed without
 my knowledge.  It is a bug that ought to be fixed.
 }}}
 
--- DrewAdams
-
-[new:DrewAdams:2005-08-04 15:50 UTC]
 And this is what RichardStallman said 2005-08-03:
 
 {{{
@@ -55,9 +49,6 @@ When you're trying to make improvements in Emacs or fix problems in
 Emacs, please do NOT think of defadvice as the way to do it.
 }}}
 
--- DrewAdams
-
-[new:DrewAdams:2007-06-02 13:24 UTC]
 And this is from an exchange on ##help-gnu-emacs@gnu.org##, 2007-06-02, between KevinRodgers and EliZaretski:
 
 {{{
@@ -71,6 +62,8 @@ Eli> not useful.  His position on not using it within Emacs itself
 Eli> is because doing that obscures how things work, which is bad
 Eli> from the maintainability point of view.  FWIW, I agree with that.
 }}}
+
+Enough said. :)
 
 ----
 CategoryCode
