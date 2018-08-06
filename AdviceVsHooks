@@ -1,4 +1,4 @@
-When having the choice to use a Hook or defadvice to manipulate a
+When having the choice to use a Hook or [[Advice]] to manipulate a
 certain package, what should you do?
 
 Hooks are always better because they break less.  If the author
@@ -18,13 +18,15 @@ What I particularly don't like about advised functions is that it is difficult t
 
 And here is StefanMonnier's strong `advice' advice from mailing list ##help-gnu-emacs@gnu.org##:
 
-    `advice' is a sledghammer: it's the last resort before
-    modifying the source code.
+{{{
+`advice' is a sledghammer: it's the last resort before
+modifying the source code.
 
-    Advising is a source of major headaches because of unexpected
-    interactions with other pieces of code...
-    Advice have to be written *extremely* carefully.
-    I.e. if you can do it without `advice', then don't use `advice'.
+Advising is a source of major headaches because of unexpected
+interactions with other pieces of code...
+Advice have to be written *extremely* carefully.
+I.e. if you can do it without `advice', then don't use `advice'.
+}}}
 
 -- DrewAdams
 
@@ -34,36 +36,41 @@ Extra special care needs to be taken when advising Emacs Lisp primitives. The sp
 [new:DrewAdams:2005-03-03 21:45 UTC]
 And this is what RichardStallman said 2005-03-03 about Emacs developers (not users) advising Emacs primitives:
 
-    Please do not think of making any part of Emacs advise primitives.
-    That technique should never be used, because it causes confusion.  All
-    code in Emacs that advises other parts of Emacs was installed without
-    my knowledge.  It is a bug that ought to be fixed.
+{{{
+Please do not think of making any part of Emacs advise primitives.
+That technique should never be used, because it causes confusion.  All
+code in Emacs that advises other parts of Emacs was installed without
+my knowledge.  It is a bug that ought to be fixed.
+}}}
 
 -- DrewAdams
 
 [new:DrewAdams:2005-08-04 15:50 UTC]
 And this is what RichardStallman said 2005-08-03:
 
-    No!  Emacs code should not use defadvice.
+{{{
+No!  Emacs code should not use defadvice.
 
-    When you're trying to make improvements in Emacs or fix problems in
-    Emacs, please do NOT think of defadvice as the way to do it.
+When you're trying to make improvements in Emacs or fix problems in
+Emacs, please do NOT think of defadvice as the way to do it.
+}}}
 
 -- DrewAdams
 
 [new:DrewAdams:2007-06-02 13:24 UTC]
 And this is from an exchange on ##help-gnu-emacs@gnu.org##, 2007-06-02, between KevinRodgers and EliZaretski:
 
-    Kevin> I think RMS' position is that defadvice should not be
-    Kevin> used within Emacs itself.  But the inclusion of defadvice.el
-    Kevin> in Emacs is tacit acknowledgement of its usefulness
+{{{
+Kevin> I think RMS' position is that defadvice should not be
+Kevin> used within Emacs itself.  But the inclusion of defadvice.el
+Kevin> in Emacs is tacit acknowledgement of its usefulness
 
-    Eli> You are right on both accounts.  And I see no contradiction
-    Eli> between those two, because RMS never said that defadvice is
-    Eli> not useful.  His position on not using it within Emacs itself
-    Eli> is because doing that obscures how things work, which is bad
-    Eli> from the maintainability point of view.  FWIW, I agree with that.
-
+Eli> You are right on both accounts.  And I see no contradiction
+Eli> between those two, because RMS never said that defadvice is
+Eli> not useful.  His position on not using it within Emacs itself
+Eli> is because doing that obscures how things work, which is bad
+Eli> from the maintainability point of view.  FWIW, I agree with that.
+}}}
 
 ----
 CategoryCode
