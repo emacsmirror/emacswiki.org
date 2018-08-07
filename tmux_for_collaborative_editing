@@ -1,1 +1,100 @@
+== How to use emacs with tmux for collaborative editing ==
 
+This document describes how you can use tmux with a recent emacs
+version for collaborative editing. If you have a fast ssh connection,
+this is no slower than editing in your own terminal emacs session.
+
+In this setup, one user, the "host", shares her account using the
+program tmux, and other users connect to her account (and are thus
+given full access to that account). If no one is comfortable with
+sharing their account, I would recommend setting up a special account
+for the host. Note: other users don't need to share their accounts,
+only the host.
+=== Prerequisites===
+* tmux version 1.6 or later
+* emacs version 23 or later
+
+=== Setting up the host===
+This step has to be done just once for the host.
+
+Put this at the end of ~/.emacs if it's not already there:
+
+    (require 'server)
+    ;; some systems don't auto-detect the socket dir, so specify it here and for the client:
+    (setq server-socket-dir "/tmp/emacs-shared"))
+    (server-start)
+
+    ;; highlight-changes-mode is very handy when collaborating:
+    (global-highlight-changes-mode t)
+    ;; Keys for moving back and forth between changes, set these to what
+    ;; you prefer:
+    (global-set-key (kbd "<f5>") 'highlight-changes-previous-change)
+    (global-set-key (kbd "<f6>") 'highlight-changes-next-change)
+    (global-set-key (kbd "<f7>") 'highlight-changes-rotate-faces)
+    (global-set-key (kbd "<f8>") 'highlight-changes-remove-highlight)
+
+
+The, assuming all concerned users are members of the group <code>users</code>
+(or some other group if you prefer):
+
+    mkdir /tmp/tmux-shared
+    chgrp users /tmp/tmux-shared
+    chmod g+ws  /tmp/tmux-shared
+
+
+This creates a tmux socket directory where files are read-writable
+by all the users in the group, tmux communicates through these
+sockets.
+
+=== Start up the host===
+Assuming the previous step is done, start up tmux with that
+directory:
+
+
+    tmux -S /tmp/tmux-shared/myshare
+
+
+This will log you into a new shell (you can exit as usual with
+Ctrl+D), from here you start up emacs:
+
+
+    emacs
+
+
+=== Connecting to the host===
+With the host up and running, users in the <code>users</code> (or whatever) group
+on the same machine should be able to connect to the host by simply
+typing
+
+    tmux -S /tmp/tmux-shared/myshare
+
+and then do
+
+    emacsclient --tty --socket-name /tmp/emacs-shared/server
+
+
+
+
+=== Other alternatives / further reading===
+tmux is not used to its fullest extent here, e.g. it also lets you
+share a standard emacs (or vim) session (if the clients use "tmux -S
+/tmp/tmux-shared/myshare attach" instead), but I don't think anyone
+other than the host can do the editing in that case. And tmux can do
+[http://tmux.sourceforge.net/ lots more].
+
+We could also use GNU screen to acheive the same, but unfortunately it
+has to run with root permissions to allow sharing between different
+users.
+
+If you're on a local network, you shouldn't need anything but emacs
+to work collaboratively. Say the computers involved have the names
+foo (the host) and bar (the client), then the client has to do
+enter <code>xhost +foo</code> into some terminal, then the host opens emacs and
+does <code>M-x make-frame-on-display RET bar:0.0</code>
+
+There's also [[Rudel]], a plugin for emacs which apparently makes it
+compatible with [http://www.divvun.no/doc/tools/gobby.html gobby]. 
+More alternatives are listed on the page [[CollaborativeEditing]].
+
+----
+CategoryRemoteEmacs
