@@ -1,1 +1,210 @@
-Don't confuse  
+Don't confuse the program <code>msmtp</code> with the ability to use [[MultipleSMTPAccounts]] in Gnus.
+
+== Basic Setup ==
+Here's a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
+
+<pre>
+No Gnus v0.6 or higher
+GNU Emacs 21.3 or higher
+msmtp version 1.4.9 or higher
+</pre>
+
+The details above can be got by 
+<pre>
+1.	M-x gnus-version in Emacs 
+2.	M-x emacs-version in emacs 
+3.	msmtp --version at the command prompt 
+</pre>
+
+Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp --version</tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
+
+<pre>
+########################
+account anderson
+host smtp.gmail.com
+tls on
+auth on
+user sivaram.notthere@gmail.com
+password XXXXXXX
+port 587
+
+logfile c:\msmtplog.txt
+########################
+account neo
+host smtp.gmail.com
+tls on
+auth on
+user sivaram.anotherguy@gmail.com
+password XXXXXXX
+port 587
+logfile c:\msmtplog.txt
+########################
+</pre>
+
+Attention: As in version 1.4.31 of msmtp, there is no need to fiddle with `message-sendmail-extra-arguments'.  Inside your msmtprc file, add the `from' command to each account. msmtp will match the `from' value against the `From: ' field of the e-mail header (only the address).
+
+I have found an alternate way to allow msmtp to determine from the
+email message which SMTP account to use. The following settings in my
+.gnus.el works for msmtp version 1.4.26:
+<pre>
+;; This is needed to allow msmtp to do its magic:
+(setq message-sendmail-f-is-evil 't)
+
+;;need to tell msmtp which account we're using
+(setq message-sendmail-extra-arguments '("--read-envelope-from"))
+</pre>
+A close reading of the msmtp documentation and the definition of
+message-send-mail-with-sendmail in message.el will reveal how this works.
+--taltman
+
+Now, we'd like to use Gnus to send email through <tt>msmtp</tt>. Add the following lines to the <tt>.gnus.el</tt> file. 
+
+<pre>
+;; with Emacs 23.1, you have to set this explicitly (in MS Windows)
+;; otherwise it tries to send through OS associated mail client
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+;; we substitute sendmail with msmtp
+(setq sendmail-program "c:/gnu/bin/msmtp.exe")
+;;need to tell msmtp which account we're using
+(setq message-sendmail-extra-arguments '("-a" "anderson"))
+;; you might want to set the following too
+(setq mail-host-address "gmail.com")
+(setq user-full-name "Anderson Guy")
+(setq user-mail-address "sivaram.notthere@gmail.com")
+</pre>
+
+Now compose a mail in Gnus to see whether the headers come up correctly and then send the mail message by hitting <tt>C-c C-c</tt>
+After a brief wait, the mail should be sent to the address specified. If there are any errors, <tt>msmtp</tt> error codes are displayed in the %%*echo%%* area as well as the <tt>msmtplog.txt</tt> file.
+
+Or you can see what's wrong here by looking up the error code in the
+man page
+
+http://freebsd-man.page2go2.com/man3/sysexits_3.html
+
+In the example above, we have used only 1 of the email accounts.
+Gnus allows you to post using different accounts, which can be
+accomplished with [[PostingStyles]].
+
+To use [[PostingStyles]] in Gnus with <tt>msmtp</tt>, here's an example of how it's done
+
+<pre>
+(setq gnus-parameters
+  ;;Use notthere id for all gmane news group postings
+  '((".*news\\.gmane\\.org.*"
+     (posting-style
+      (address "sivaram.notthere@gmail.com")
+      (name "Sivaram N")
+      (body "\n\n\n sivaram\n -- ")
+      (eval (setq message-sendmail-extra-arguments '("-a" "anderson")))
+      (user-mail-address "sivaram.notthere@gmail.com")))
+      ;;use anotherguy id for all normal mails
+    (".*mail\\.misc"
+     (posting-style
+      (address "sivaram.anotherguy@gmail.com")
+      (name "Sivaram Another")
+      (body "\n\n\n Sivaram A\n -- \n")
+      (eval (setq message-sendmail-extra-arguments '("-a" "neo")))
+      (user-mail-address "sivaram.anotherguy@gmail.com")))))
+</pre>
+
+The variable <tt>message-sendmail-extra-arguments</tt> decides which <tt>msmtp</tt> account is called depending in which folder one is currently in Gnus.
+
+
+Thanks to ssSslang on <b>gnu.emacs.gnus</b> who requested for <tt>message-sendmail-extra-arguments</tt> to handle multiple accounts of <tt> msmtp </tt>
+
+-- Updated: 4/18/2008 (blbrown): To the original post, I couldn't get msmtp and gnus to work properly.  It kept returning an exit value 78 error.  I went to the msmtp documentation and made sure I could send a message directly from the command line with msmtp.  I would make sure that works first.  Also, here is my ~/__DOT__msmtprc file.
+<pre>
+##################
+defaults
+tls on
+tls_starttls on
+
+account default
+host smtp.gmail.com
+domain smtp.gmail.com
+tls on
+tls_starttls on
+auth on
+user USER@gmail.com
+from USER@gmail.com
+password PASSWORD
+port 587
+logfile /home/USER/msmtplog.txt
+##################
+</pre>
+msmtp complains about the 'default' account settings, so if you receive a generic error while running with emacs; go to the command-line and if see if you receive more verbose error messages.  Also, recheck your rc file.
+
+
+<pre>
+Above configuration tested with:
+OS: Ubuntu Linux 7.10
+Emacs: 22.1.1 x86
+msmtp version 1.4.14
+TLS/SSL library: OpenSSL
+</pre>
+
+<b>Note that tls_cert_check = off makes you susceptible to man-in-the-middle attacks</b>. The correct thing to do is to download the appropriate SSL certificates and configure them as describe in the msmtp man page.
+
+== Yet Another Gnus/MSMTP Setting for Easy Multi-SMTP Sending ==
+
+Multi-SMTP email sending in Gnus tortured me for long time. I searched for a sound solution for long time and can not find one. And I think using Posting Styles is too tedious, boring and prone to shooting myself. ILast Saturday night, I spent several hours, and found a sound and safe solution, and its setting is quite simple.
+
+<pre>
+;; Choose account label to feed msmtp -a option based on From header in Message buffer;
+;; This function must be added to message-send-mail-hook for on-the-fly change of From address
+;; before sending message since message-send-mail-hook is processed right before sending message.
+(defun cg-feed-msmtp ()
+  (if (message-mail-p)
+          (save-excursion
+                (let* ((from
+                               (save-restriction
+                                         (message-narrow-to-headers)
+                                         (message-fetch-field "from")))
+                           (account
+                                   (cond
+                                            ;; I use email address as account label in ~/.msmtprc
+                                        ((string-match "myemail1@server1.com" from)"myemail1@server1.com")
+                                ;; Add more string-match lines for your email accounts
+                                ((string-match "myemail2@server2.com" from)"myemail2@server2.com"))))
+                  (setq message-sendmail-extra-arguments (list '"-a" account)))))) ; the original form of this script did not have the ' before "a" which causes a very difficult to track bug --frozencemetery
+
+(setq message-sendmail-envelope-from 'header)
+(add-hook 'message-send-mail-hook 'cg-feed-msmtp)
+</pre>
+
+Though I use email address as account label, it's not necessary. You can use any style you like. Just keep labels the same as in .msmtprc and code above.
+
+Anyone who can read Chinese, and if you are interested, you can visit original article at my site  - [http://cyberhut.org/2007/10/gnusmsmtp.html / Gnus+MSMTP] or the same article in Chinese Emacs wiki - [http://www.emacs.cn/Gnus/Msmtp / Gnus+MSMTP].
+
+[new]
+Q: Is there any way to protect the password? I don't like the idea of leaving it in plain text in the file, and for some reason I do not get prompted in gnus if I leave it out (although it works fine from the command line).
+
+[new]
+A1: MSMTP can use gnome keyring to store your password. If you specify auth but no pass, it will interrogate gnome-keyring-daemon for a password. This mitigates the risk of plain text password storage but is difficult to configure in a non-desktop environment.
+
+A2: MSMTP takes the argument **--passwordeval=<cmd>**. In order to retrieve the password for the specified account, it will then run **<cmd>**. Since **<cmd>** can be anything, in particular **gpg**, you need not store your password unencrypted, just add **"--passwordeval=gpg --quiet --batch -d name-of-file"** to **message-sendmail-extra-arguments**, where **name-of-file** should be a gpg-encrypted text file containing nothing but the password. Note that if you miss **--batch** or **--quiet**, you will get errors which are hard to trace; the two disable unnecessary output to stdout and stderr, both of which emacs would capture.
+
+
+[new]
+== Using msmtpQ to queue your mail ==
+
+msmtp comes with a simple script which adds the ability to queue mail.
+I use it in gnus with these settings:
+<pre>
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+(setq sendmail-program "/usr/local/bin/msmtpQ"
+      mail-specify-envelope-from t
+;; needed for debians message.el cf. README.Debian.gz 
+      message-sendmail-f-is-evil nil                
+      mail-envelope-from 'header
+      message-sendmail-envelope-from 'header)
+</pre>
+msmtpQ sends the mail if there is a
+connection or queues it when there is none. It is part of the debian package:
+(/usr/share/doc/msmtp/examples/msmtpq/), but afaics is also in included in upstream.
+I put it into "/usr/local/bin/". Don't forget to set 3 vars in the script and
+make it +x.
+To send your mails, you flush your queue with "msmtpq -r" (Yes, small q).
+
+----
+CategoryGnus
