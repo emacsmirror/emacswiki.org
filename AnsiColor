@@ -1,1 +1,75 @@
+<code>ansi-color.el</code> translates ANSI SGR (Select Graphic Rendition) escape sequences like "Esc [ 30 m" into EmacsOverlays, TextProperties, or XEmacsExtents with face colours, bold, etc.
 
+These escape sequences are best known as "ANSI" which is where they were first standardized.  They can be found in ECMA-48 (section 3.8.117, identical to ISO/IEC 6429), freely available as a PDF file.
+
+* http://www.ecma-international.org/publications/standards/Ecma-048.htm
+
+The "Graphic Rendition Combination Mode (GRCM)" implemented by <code>ansi-color.el</code>
+is "cumulative mode" as defined in section 7.2.8.  Cumulative mode
+means that whenever possible, SGR control sequences are combined
+(ie. blue and bold).
+
+'''ansi-color.el is part of Emacs!'''
+
+To install it, put the following into your InitFile:
+
+    (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+And In order for this to have any effect, `ansi-color-process-output' must
+be in `comint-output-filter-functions'. If not, use the following line to add it.
+
+    (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+
+Some GNU/Linux distributions allow you to install a "color gcc" -- the warnings and errors are colored using escape sequences.  These usually display as garbage within Emacs.  The above code fixes this as well.
+
+== Old Versions ==
+
+You can also get a copy of ansi-color.el from this wiki.
+
+* Lisp:ansi-color.el
+
+If you're using an old Emacs, you might have to install ansi-color.el on
+your LoadPath and add the following to your InitFile:
+
+    (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+
+== Eshell ==
+
+If you want to use it with [[Eshell]], try the following to remove escape sequences
+from the output:
+
+ (add-hook 'eshell-preoutput-filter-functions
+           'ansi-color-filter-apply)
+
+The following will add colors, but its very slow.  Don't try it on /dev or similar huge directories:
+
+ (add-hook 'eshell-preoutput-filter-functions
+           'ansi-color-apply)
+
+== term ==
+
+`M-x term' and `M-x ansi-term' do their own hilighting.
+It makes no sense to add ansi-color to these modes.
+If you still want to investigate this, take a look at
+term-emulate-terminal.  That is the function where you
+would have to add your stuff.
+
+== See Also ==
+
+* TtyFormat -- using ansi-color as a buffer-file-format
+
+
+== Xterm Color ==
+
+<code>xterm-color.el</code> is an alternative to ansi-color.el for both comint
+and eshell. It can also be used standalone in your own modes.
+
+Code and documentation here: https://github.com/atomontage/xterm-color
+
+It supports the standard ANSI color protocol plus XTERM 256 colors.
+It implements a state machine to handle ANSI SGR sequences rather than using regular
+expressions like ansi-color.el. This means that xterm-color.el can correctly handle
+sequences that span input batches while also being faster than ansi-color.el.
+
+----
+CategoryFaces
