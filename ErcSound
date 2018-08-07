@@ -1,1 +1,162 @@
+There are various ways people want to play sounds in ERC.
 
+== Make a sound when text matches ==
+
+(See also ErcLibNotify.)
+
+=== Beeping ===
+
+Using the ErcMatch module, any text matches that are made can trigger a
+beep.  Just add 'erc-beep-on-match' to `erc-text-matched-hook' and set
+`erc-beep-match-types' accordingly.  The default is to beep when your current
+nickname appears in messages.  The following example makes Emacs beep when
+your nickname and any of your keywords is found in messages.
+
+    (add-hook 'erc-text-matched-hook 'erc-beep-on-match)
+    (setq erc-beep-match-types '(current-nick keyword))
+
+And here's how to have it beep when someone calls or mentions you
+if you're not using the ErcMatch module for some reason.
+
+    (add-hook 'erc-insert-post-hook 
+              (lambda () (goto-char (point-min)) 
+                (when (re-search-forward
+                       (regexp-quote  (erc-current-nick)) nil t) (ding))))
+
+.. as seen from MarioLang helping camel in EmacsChannel
+
+=== Playing sound files ===
+
+Here's a way to play a sound whenever someone uses your name, or uses certain keywords
+(this also assumes you're using ErcMatch):
+
+    (add-hook 'erc-text-matched-hook
+              (lambda (match-type nickuserhost message)
+                (cond
+                  ((eq match-type 'current-nick)
+                    (play-sound-file "~/pub/TR2070/TR-Mail.wav"))
+                  ((eq match-type 'keyword)
+                    (play-sound-file "~/pub/TR2070/TR-Command.wav")))))
+
+==== Asynchronous sound ====
+
+Note that play-sound-file plays sound synchronously, i.e. Emacs will lock up until the sound has finished playing.  If you want to play the sound asynchronously, use this instead of play-sound-file:
+
+    (start-process-shell-command "whatever" nil "mplayer ~/sound.wav")
+
+==== Only on meaningful matches ====
+
+This is what I use for only playing a sound (asynchronously) whenever a match occurs and it's not in e.g. a NAMES listing:
+
+    (add-hook 'erc-text-matched-hook 'erc-sound-if-not-server)
+
+    (defun erc-sound-if-not-server (match-type nickuserhost msg)
+      (unless (string-match "Server:[0-9]+" nickuserhost)
+        (start-process-shell-command "lolsound" nil "mplayer ~/.emacs.d/sound/spring.wav")))
+
+== Module to support the IRC command /CTCP SOUND ==
+
+Support for CTCP Sound is not enabled by default. To enable it use M-x customize-variable RET erc-modules.
+
+In ERC sound mode, when someone sends you a CTCP SOUND request, ERC will play the corresponding sound file.
+
+You need to tell ERC where sound files can be found:
+
+    (setq erc-sound-path '("~/.erc/sounds" "~/sounds"))
+
+You can set a default file to be played when no sounds are found that match the requested sound:
+
+    (setq erc-default-sound "~/sounds/hello.wav")
+
+The default play command is play.  To change that, you can do the following:
+
+    (setq erc-play-command "aplay")
+
+== Integrating with EmacSpeak ==
+
+See the ErcSpeak module.
+
+== Playing with sound ==
+
+Here is how to add a simple sound effect to your ERC experience.
+First, get a sound file.  In the following example, I got the famous
+"Ni!" file:
+
+* http://www.intriguing.com/mp/sounds.php
+
+Save it somewhere, and then add the following code, modifying the file
+path accordingly:
+
+    (defun erc-say-ni (str)
+      "Play the Ni! sound file if STR contains Ni!"
+      (when (string-match "\\bni!" str)
+        (play-sound-file "/home/alex/elisp/erc/sounds/ni.wav")))
+
+    (add-hook 'erc-insert-pre-hook 'erc-say-ni)
+    (add-hook 'erc-send-pre-hook 'erc-say-ni)
+
+Whenever somebody -- or you yourself -- says "Ni!" the sound file is
+played.
+
+
+You have to replace the above mentioned sound files by ones that exist on your system.
+
+
+== Playing a sound when receiving a private message ==
+
+  (defun erc-my-privmsg-sound (proc parsed)
+    (let* ((tgt (car (erc-response.command-args parsed)))
+           (privp (erc-current-nick-p tgt)))
+      (and
+       privp
+       (sound)
+       nil))) ;We must return nil. See help for `erc-server-PRIVMSG-functions'
+
+  (add-hook 'erc-server-PRIVMSG-functions
+            'erc-my-privmsg-sound)
+
+Then, an example for the above 'sound' function could just be:
+
+  (setq sound-default "/usr/share/sounds/purple/alert.wav")
+  
+  (defun sound (&optional path)
+    (start-process-shell-command
+     "sound"
+     nil
+     (concat "aplay -fcd " (or path sound-default))))
+
+
+== Playing with sound on Mac OS X ==
+
+play-sound and friends don't appear to be implemented in various 
+Emacsen on Mac OS X (e.g. Carbon Emacs Package, Aquamacs, etc.).  Using 
+the Emacs Lisp function 'do-applescript' and the Mac OS X application 
+'Play Sound':
+
+* http://microcosmsoftware.com/playsound/
+
+=== sample config for OS X ===
+   (setq apscript (format "
+    set cusrPath to (path to \"cusr\" as string)
+    set soundAlias to (cusrPath & \"notebook:sounds:DJ Scratch.aiff\") as alias ;; path to your sound file from your home directory
+    tell application \"Play Sound\"
+	play (soundAlias as alias)
+    end tell
+    "))
+
+   (add-hook 'erc-text-matched-hook
+	     (lambda (match-type nickuserhost message)
+	       (cond
+	        ((eq match-type 'keyword)
+	         (do-applescript apscript)))))
+
+(via [[ThomasKnoll]])
+
+it's possible to achieve nicer sound emissions than just beeping.  Also of interest is 
+applying the 'say' command line program to do such things as 'saying' a nick in an 
+appropriate sentence when a user signs on or off.
+
+Thanks to Howard Melman for various suggestions and ideas.
+
+----
+[[ERC]]
