@@ -1,1 +1,187 @@
+[[ERC]]'s nickserv module is not enabled by default.  To enable it use M-x customize-variable RET erc-modules.
 
+== What is Nickserv? ==
+
+On some IRC networks you are able to register your nickname with their
+services, so that there will be no conflicts between users trying to
+have the same nick at the same time.  Nickserv is the service which
+keeps track of the nicknames.
+
+== The easy way: ==
+
+Customise (M-x customize-variable RET) the following:
+
+; erc-modules: Make sure the ''services'' item is checked.
+; erc-nick: A list of nicks to try, in order. If erc runs out of these, it will try adding the usual ` style characters to make an acceptable nick.
+; erc-nickserv-passwords: Your passwords, one for each network.
+; erc-prompt-for-nickserv-password: Whether to ask you for a nickserv password. Turn it off if you set the previous variable
+
+=== Updating emacs 23 for freenode service changes ===
+
+Note that emacs23 has some old nickserv identification data - freenode in particular has changed the way its
+nickserv operates since the last emac23 release. emacs24 has a current entry. To fix this for 23:
+
+M-x customize-variable RET erc-nickserv-alist RET
+
+Then modify the freenode entry (^B indicates control character B - enter it with C-q C-b):
+<pre>
+[INS] [DEL] Nickserv data:
+            Network name: freenode
+            Choice: [Value Menu] Nickserv's nick!user@host: NickServ!NickServ@services.
+            Choice: [Value Menu] Identify request sent by Nickserv: ^B/msg\s-NickServ\s-identify\s-<password>^B
+            Identify to: NickServ
+            Identify keyword: identify
+            Use current nick in identify message?: [Toggle]  off (nil)
+            Command to use (optional): [Value Menu] No special command necessary
+            Detect Success: [Value Menu] Pattern to match: You are now identified for ^B\S-+^B\.
+</pre>
+
+== Identifying yourself to Nickserv ==
+
+There are two ways to identify.  The default is to wait until Nickserv requests that you identify.  If
+the data for this Nickserv corresponds with the one matching the current network in `erc-nickserv-alist',
+the identification process will continue.  The other way is to send an identify message once when you
+connect to the server and every time you change your nickname afterwards.  If there's no entry in
+`erc-nickserv-alist' for the current network, an identify message is sent to the user
+<nowiki>NickServ</nowiki>.
+
+If you want to change the way you identify, use M-x customize-variable RET erc-nickserv-identify-mode.
+
+Note that automatically sending sensitive information like passwords is not really the most secure thing
+to do, so if you want to be sure that you're identifying to the right user you'll want to forget about
+this module and do things manually ;)
+
+=== Prompt for Nickserv password ===
+
+Before ERC sends an identify message to Nickserv you will get a prompt in the minibuffer so that you
+can enter the password for your current nickname.
+
+=== Identify automatically ===
+
+If you'd rather not be prompted every time you identify yourself,
+you can set the following variables in your ~/.emacs or ERC configuration file.
+
+It's possible to store the passwords for more than one nickname per network.
+
+Here's an example:
+
+    (require 'erc-services)
+    (erc-services-mode 1)
+
+    (setq erc-prompt-for-nickserv-password nil)
+
+    (setq erc-nickserv-passwords
+          '((freenode     (("nick-one" . "password")
+                           ("nick-two" . "password")))
+            (DALnet       (("nickname" . "password")))))
+
+And if you want to put your password in another file, say, ~/.ercpass, do the following:
+
+    (load "~/.ercpass")
+    (require 'erc-services)
+    (erc-services-mode 1)
+
+    (setq erc-prompt-for-nickserv-password nil)
+
+    (setq erc-nickserv-passwords
+          `((freenode     (("nick-one" . ,freenode-nickone-pass)
+                           ("nick-two" . ,freenode-nicktwo-pass)))
+            (DALnet       (("nickname" . ,dalnet-pass)))))
+
+And put the following in ~/.ercpass:
+
+    (setq freenode-nickone-pass "mynickservpass1")
+    (setq freenode-nicktwo-pass "mynickservpass2")
+    (setq dalnet-pass "mynickservpass3")
+
+=== Alternatives ===
+
+See ErcExampleEmacsFile for an alternate method of automatic identification which sends an IDENTIFY message after connecting without using the nickserv module.
+
+== Add new Nickserv data ==
+
+By default, there is support for Nickserv on only a few networks.  They are
+<nowiki>freenode, DALnet, GalaxyNet, SlashNET, iip, BRASnet, and Austnet.</nowiki>. Also ERCSupportForAzzurra
+
+But you can add entries for any other networks you might connect to by using the following function.
+After loading the function, simply place the cursor point on the message that Nickserv always says
+when you need to identify and do M-x my-erc-add-nickserv-at-point.
+
+If you have to enter a network name, that means ERC wasn't able to determine the network for the current
+server.  You'll probably want to add something to `erc-networks-alist'.
+
+    (defun my-erc-add-nickserv-at-point ()
+      "Add Nickserv data from the line at point to `erc-nickserv-alist'.
+    If data for the current network exists, replace it.
+
+    See the documentation for `erc-nickserv-alist' for further information about
+    the questions being asked."
+      (interactive)
+      (let ((parsed (get-char-property (point) 'erc-parsed)))
+        (cond (parsed
+               (let ((network (or (erc-network)
+                                  (read-minibuffer "Network name (no spaces): ")))
+                     (nick-user-host (erc-response.sender parsed))
+                     (request (regexp-quote (erc-response.contents parsed)))
+                     (nickname (read-from-minibuffer
+                                "Identify to: "
+                                (erc-extract-nick (erc-response.sender parsed))))
+                     (keyword (read-from-minibuffer
+                               "Identify using this keyword: " "IDENTIFY"))
+                     (use-current-nick (y-or-n-p
+                                        "Use current nickname in message?: "))
+                     (command (when (y-or-n-p
+                                     "Is a special IRC command necessary?: ")
+                                (read-from-minibuffer
+                                 "Command to use: " "PRIVMSG"))))
+                 (cond ((assoc network erc-nickserv-alist)
+                        (setq erc-nickserv-alist
+                              (substitute
+                               (list network nick-user-host request nickname
+                                     keyword use-current-nick command)
+                               (assoc network erc-nickserv-alist)
+                               erc-nickserv-alist)))
+                       (t
+                        (add-to-list 'erc-nickserv-alist
+                                     (list network nick-user-host request nickname
+                                           keyword use-current-nick command))))
+                 (message "Added Nickserv data to `erc-nickserv-alist'.")))
+              (t (error "This doesn't seem to be an ERC message line.")))))
+
+Note that something like this will be added to erc-services.el...
+
+== Information for Specific IRC Networks ==
+
+=== Auto-identifying in GRnet (the *.irc.gr servers) ===
+
+To successfully enable auto-identify in GRNET, the Greek IRC network, you will have to add a proper alist entry for the local NickServ.  The following snippet in your ERC startup code takes care of this:
+
+    (setq erc-prompt-for-nickserv-password nil)
+    (setq erc-nickserv-identify-mode 'autodetect)
+    (setq erc-nickserv-passwords
+          '((GRNET (("nickname" . "password")))))
+
+    (add-to-list 'erc-nickserv-alist
+                 '(GRNET                            ;Network name
+                   "NickServ!services@irc.gr"        ;NickServ's nick!user@host
+                   "This nickname is registered and protected" ; IDENTIFY request sent by NickServ
+                   "NickServ"                       ;Identify to
+                   "IDENTIFY"                       ;Identify keyword
+                   nil                              ;Use current nick))
+
+Without this entry in 'erc-nickserv-alist', the 'erc-nickserv-identify-autodetect' function will fail to identify the GRNET NickServ service and your 'erc-nickserv-passwords' will be ignored.
+
+== Problems with autojoin channels requiring registered identification to join==
+
+Erc has builtin support for channels that require identification before they let you join:
+
+(setq erc-autojoin-timing 'ident)
+
+or M-x customize-variable  RET erc-autojoin-timing RET
+
+The customise form is broken in some releases: If you try to customise it and
+the entry is labelled with '''(mismatch)''' then you have to use the setq form above
+in your init file.
+
+----
+[[ERC]]
