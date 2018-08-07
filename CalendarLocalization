@@ -1,1 +1,499 @@
+Here are ways to localize CalendarMode to display day names, month names and holidays.
 
+== The Basics ==
+
+As of GnuEmacs 23 the following code will make CalendarMode use the European style of dates in the diary and display:
+
+    (add-hook 'calendar-load-hook
+              (lambda ()
+                (calendar-set-date-style 'european)))
+
+In previous versions of GnuEmacs of the following incantations were necessary:
+
+    (european-calendar) 
+
+or
+
+    (setq european-calendar-style 't)
+
+== Localized Day and Month Names ==
+=== Bulgarian ===
+
+      (setq calendar-week-start-day 1
+            calendar-day-name-array ["Неделя" "Понеделник" "Вторник" "Сряда" "Четвъртък" "Петък" "Събота"]
+            calendar-month-name-array ["Януари" "Февруари" "Март" "Април" "Май" 
+				       "Юни" "Юли" "Август" "Септември"
+				       "Октомври" "Ноември" "Декември"])
+
+=== Catalan ===
+Unfortunately, if you use the long day names, their 2-letter abbreviation will always be "di" :-)
+
+   (setq
+    calendar-week-start-day 1
+    ;; calendar-day-name-array ["diumenge" "dilluns" "dimarts" "dimecres" "dijous" "divendres" "dissabte"]
+    calendar-day-name-array ["dg" "dll" "dm" "dx" "dj" "dv" "ds"]
+    calendar-month-name-array ["gener" "febrer" "març" "abril" "maig" "juny" "juliol" "agost" "setembre" "octubre" "novembre" "desembre"]
+   )
+
+=== Chinese ===
+
+Here is how to display the 'celestial-stem' (天干)
+and the 'terrestrial-branch' (地支) in Chinese:
+
+    (setq chinese-calendar-celestial-stem
+          ["甲" "乙" "丙" "丁" "戊" "己" "庚" "辛" "壬" "癸"]
+          chinese-calendar-terrestrial-branch
+          ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
+
+
+=== Czech ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array
+          ["neděle" "pondělí" "úterý" "středa" 
+           "čtvrtek" "pátek" "sobota"]
+          calendar-month-name-array
+          ["leden" "únor" "březen" "duben" "květen"
+           "červen" "červenec" "srpen" "září"
+           "říjen" "listopad" "prosinec"])
+
+=== Danish ===
+
+See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kalender.el] from [https://hub.369.dk/elisp/ Søren's Emacs Lisp Stuff].
+
+*Note:* This will also add Danish holidays.
+
+=== Dutch ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array
+          ["zondag" "maandag" "dinsdag" "woensdag" 
+           "donderdag" "vrijdag" "zaterdag"]
+          calendar-month-name-array
+          ["januari" "februari" "maart" "april" "mei" 
+           "juni" "juli" "augustus" "september" 
+           "oktober" "november" "december"])
+
+=== Finnish ===
+   (setq calendar-week-start-day 1
+         calendar-day-name-array
+           ["sunnuntai" "maanantai" "tiistai" "keskiviikko"
+            "torstai" "perjantai" "lauantai"]
+         calendar-month-name-array
+           ["tammikuu" "helmikuu" "maaliskuu" "huhtikuu" "toukokuu" 
+            "kesäkuu" "heinäkuu" "elokuu" "syyskuu"
+            "lokakuu" "marraskuu" "joulukuu"])
+
+=== French ===
+   (setq calendar-week-start-day 1
+          calendar-day-name-array ["Dimanche" "Lundi" "Mardi" "Mercredi"
+                                   "Jeudi" "Vendredi" "Samedi"]
+          calendar-month-name-array ["Janvier" "Février" "Mars" "Avril" "Mai"
+                                     "Juin" "Juillet" "Août" "Septembre"
+                                        "Octobre" "Novembre" "Décembre"])
+
+=== German ===
+First, we know that the week starts with Monday, and we need German weekday and month
+names.
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
+                                   "Donnerstag" "Freitag" "Samstag"]
+          calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
+                                     "Juni" "Juli" "August" "September"
+                                     "Oktober" "November" "Dezember"])
+
+=== Greek ===
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Κυριακή" "Δευτέρα" "Τρίτη" "Τετάρτη"
+                                   "Πέμπτη" "Παρασκευή" "Σάββατο"]
+          calendar-month-name-array ["Ιανουάριος" "Φεβρουάριος" "Μάρτιος"
+                                     "Απρίλιος" "Μάιος" "Ιούνιος"
+                                     "Ιούλιος" "Αύγουστος" "Σεπτέμβριος"
+                                     "Οκτώβρης" "Νοέμβρης" "Δεκέμβρης"])
+
+=== Hungarian ===
+   (setq calendar-week-start-day 1
+      calendar-day-name-array
+       ["vasárnap" "hétfő" "kedd" "szerda"
+        "csütörtök" "péntek" "szombat"]
+      calendar-month-name-array
+        ["Január" "Február" "Március" "Április" "Május" "Június"
+         "Július" "Augusztus" "Szeptember" "Október" "November" "December"])
+
+=== Italian ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Domenica" "Lunedì" "Martedì" "Mercoledì" 
+                                   "Giovedì" "Venerdì" "Sabato"]
+          calendar-month-name-array ["Gennaio" "Febbraio" "Marzo" "Aprile" "Maggio"
+                                     "Giugno" "Luglio" "Agosto" "Settembre" 
+                                     "Ottobre" "Novembre" "Dicembre"])
+
+=== Polish ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Niedziela" "Poniedziałek" "Wtorek" "Środa"
+                                   "Czwartek" "Piątek" "Sobota"]
+          calendar-month-name-array ["Styczeń" "Luty" "Marzec" "Kwiecień" "Maj"
+                                     "Czerwiec" "Lipiec" "Sierpień" "Wrzesień"
+                                     "Październik" "Listopad" "Grudzień"])
+
+=== Portuguese ===
+
+    (setq calendar-week-start-day 0
+          calendar-day-name-array ["Domingo" "Segunda" "Terça" "Quarta" 
+                                   "Quinta" "Sexta" "Sábado"]
+          calendar-month-name-array ["Janeiro" "Fevereiro" "Março" "Abril"
+                                     "Maio" "Junho" "Julho" "Agosto"
+                                     "Setembro" "Outubro" "Novembro" "Dezembro"])
+
+=== Russian ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
+          calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
+                                     "Июнь" "Июль" "Август" "Сентябрь"
+                                     "Октябрь" "Ноябрь" "Декабрь"])
+
+
+
+=== Spanish (Castillian) ===
+Week starts with monday, use also Spanish weekday and month names. Editor specially dislikes jueves. :)
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["domingo" "lunes" "martes" "miércoles"
+                                   "jueves" "viernes" "sábado"]
+          calendar-month-name-array ["enero" "febrero" "marzo" "abril" "mayo"
+                                     "junio" "julio" "agosto" "septiembre"
+                                     "octubre" "noviembre" "diciembre"])
+
+=== Swedish ===
+See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
+
+=== Norwegian ===
+See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
+
+=== Latvian ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Sv" "P " "O " "T " "C " "Pk" "S "]
+          calendar-month-name-array ["Janvāris" "Februāris" "Marts" "Aprīlis"
+                                     "Maijs" "Jūnijs" "Jūlijs" "Augusts"
+                                     "Septembris" "Oktobris" "Novembris" "Decembris"])
+
+== Localized National Holidays ==
+
+=== Bulgarian ===
+
+Available on Github: https://github.com/dimitern/bulgarian-holidays.el
+
+=== Chinese ===
+
+Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
+See [https://github.com/xwl/cal-china-x cal-china-x].
+
+Modified version of the above using traditional Chinese characters (plus some nit picks): [http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el cal-china-x.el]
+
+=== Colombia ===
+<pre>
+(setq holiday-other-holidays
+      '((holiday-fixed 1 1 "Año nuevo")
+	(holiday-sexp '(calendar-nth-named-day 1 1 1 year 6) "Día de Reyes")
+	(holiday-sexp '(calendar-nth-named-day 1 1 3 year 19) "Día de San José")
+	(holiday-easter-etc -3 "Jueves Santo")
+	(holiday-easter-etc -2 "Viernes Santo")
+	(holiday-fixed 5 1 "Día del trabajo")
+	(holiday-easter-etc +43 "Día de la ascención")
+	(holiday-sexp '(calendar-nth-named-day 1 1 6 year 29)
+		      "San Pedro y San Pablo")
+	(holiday-easter-etc +64 "Corpus Christi")
+	(holiday-easter-etc +71 "Sagrado corazón")
+	(holiday-fixed 7 20 "Día de la independencia")
+	(holiday-fixed 8 7 "Batalla de Boyacá")
+	(holiday-sexp '(calendar-nth-named-day 1 1 8 year 15)
+		      "Asunción de la virgen")
+	(holiday-sexp '(calendar-nth-named-day 1 1 10 year 12) "Día de la raza")
+	(holiday-sexp '(calendar-nth-named-day 1 1 11 year 1)
+		      "Todos los santos")
+	(holiday-sexp '(calendar-nth-named-day 1 1 11 year 11)
+		      "Independencia de Cartagena")
+	(holiday-fixed 12 25 "Navidad")
+	(holiday-fixed 12 8 "Inmaculada concepción")))
+</pre>
+
+=== Costa Rica ===
+<pre>
+(setq holiday-local-holidays
+      '((holiday-fixed 1 1 "Año Nuevo")
+        (holiday-fixed 4 11 "Día de Juan Santamaría")
+	(holiday-easter-etc -3 "Jueves Santo")
+	(holiday-easter-etc -2 "Viernes Santo")
+	(holiday-fixed 5 1 "Día Internacional del Trabajo")
+	(holiday-float 6 0 3 "Día del Padre")
+	(holiday-fixed 7 25 "Anexión del Partido de Nicoya")
+	(holiday-fixed 8 2 "Día de Virgen de los Ángeles")
+	(holiday-fixed 8 15 "Día de la Madre")
+	(holiday-fixed 9 15 "Independencia de Costa Rica")
+	(holiday-fixed 10 12 "Día de las Culturas")
+        (holiday-fixed 12 25 "Navidad")))
+</pre>
+
+=== Czech ===
+
+There is a package [https://github.com/hydandata/czech-holidays czech-holidays] which is available through ##MELPA##. Add following call somewhere in your init file. Note that this must be called before Emacs calendar is loaded.
+    
+    (czech-holidays-add)
+
+If you have ##org-agenda-include-diary## set to ##t##, these will be also listed in the ##org-agenda## view.
+
+=== Korean ===
+
+There is a package, cal-korea-x that support Korean lunar calendar, and display names for months.  See [http://github.com/cinsk/cal-korea-x/ cal-korea-x].
+
+=== Danish ===
+
+See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kalender.el] from [https://hub.369.dk/elisp/ Søren's Emacs Lisp Stuff].
+
+*Note:* This will also localize day and month names.
+
+
+=== Finnish ===
+
+See [https://github.com/tlikonen/suomalainen-kalenteri suomalainen-kalenteri].
+
+=== French ===
+Lisp:french-holidays.el
+
+=== German ===
+<pre>
+(setq solar-n-hemi-seasons
+      '("Frühlingsanfang" "Sommeranfang" "Herbstanfang" "Winteranfang"))
+
+(setq holiday-general-holidays
+      '((holiday-fixed 1 1 "Neujahr")
+        (holiday-fixed 5 1 "1. Mai")
+        (holiday-fixed 10 3 "Tag der Deutschen Einheit")))
+
+;; Feiertage für Bayern, weitere auskommentiert
+(setq holiday-christian-holidays
+      '((holiday-float 12 0 -4 "1. Advent" 24)
+        (holiday-float 12 0 -3 "2. Advent" 24)
+        (holiday-float 12 0 -2 "3. Advent" 24)
+        (holiday-float 12 0 -1 "4. Advent" 24)
+        (holiday-fixed 12 25 "1. Weihnachtstag")
+        (holiday-fixed 12 26 "2. Weihnachtstag")
+        (holiday-fixed 1 6 "Heilige Drei Könige")
+        (holiday-easter-etc -48 "Rosenmontag")
+        ;; (holiday-easter-etc -3 "Gründonnerstag")
+        (holiday-easter-etc  -2 "Karfreitag")
+        (holiday-easter-etc   0 "Ostersonntag")
+        (holiday-easter-etc  +1 "Ostermontag")
+        (holiday-easter-etc +39 "Christi Himmelfahrt")
+        (holiday-easter-etc +49 "Pfingstsonntag")
+        (holiday-easter-etc +50 "Pfingstmontag")
+        (holiday-easter-etc +60 "Fronleichnam")
+        (holiday-fixed 8 15 "Mariae Himmelfahrt")
+        (holiday-fixed 11 1 "Allerheiligen")
+        ;; (holiday-float 11 3 1 "Buss- und Bettag" 16)
+        (holiday-float 11 0 1 "Totensonntag" 20)))
+</pre>
+
+=== Irish ===
+To add a few key Irish public holidays:
+<pre>
+(setq  holiday-irish-holidays 
+       '((holiday-float 5 1 1 "May Day")
+         (holiday-float 6 1 1 "June Bank Holiday")
+         (holiday-float 8 1 1 "August Bank Holiday")
+         (holiday-float 10 1 -1 "October Bank Holiday")
+         (holiday-fixed 12 26 "St. Stephen's Day")))
+</pre>
+
+=== Japanese ===
+
+See [http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el japanese-holidays.el].
+
+Here is my calendar configuration. -- [[rubikitch]]
+
+<pre>
+(require 'calendar)
+(setq  number-of-diary-entries 31)
+(define-key calendar-mode-map "f" 'calendar-forward-day)
+(define-key calendar-mode-map "n" 'calendar-forward-day)
+(define-key calendar-mode-map "b" 'calendar-backward-day)
+(setq mark-holidays-in-calendar t)
+;; (install-elisp "http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el")
+(require 'japanese-holidays)
+(setq calendar-holidays
+      (append japanese-holidays local-holidays other-holidays))
+(setq calendar-weekend-marker 'diary)
+(add-hook 'today-visible-calendar-hook 'calendar-mark-weekend)
+(add-hook 'today-invisible-calendar-hook 'calendar-mark-weekend)
+</pre>
+
+=== Swiss ===
+<pre>
+;; Holidays
+; Swiss national holidays
+(setq holiday-other-holidays 
+      '((holiday-fixed 1 1 "Neujahr")
+	(holiday-fixed 1 2 "Berchtoldstag")
+        (holiday-easter-etc -2 "Karfreitag")
+        (holiday-easter-etc 1 "Ostermontag")
+        (holiday-easter-etc 39 "Auffahrt")
+	(holiday-easter-etc 50 "Pfingstmontag")
+        (holiday-fixed 5 1   "Tag der Arbeit") 
+        (holiday-fixed 8 1  "Nationalfeiertag") 
+        (holiday-fixed 12 25 "Weihnachten")
+	(holiday-fixed 12 26 "Stephanstag")))
+</pre>
+
+=== Russian ===
+
+The full package with regional holidays see at [https://github.com/grafov/russian-holidays russian-holidays.el].
+
+<pre>
+(setq calendar-holidays
+      `(
+	;; State holidays
+	(holiday-fixed 1 1 "Новый год")
+	(holiday-fixed 2 23 "День защитника Отечества")
+	(holiday-fixed 3 8 "Международный женский день")
+	(holiday-fixed 5 1 "День труда")
+	(holiday-fixed 5 2 "День труда")
+	(holiday-fixed 5 9 "День Победы")
+	(holiday-fixed 6 12 "День России")
+	(holiday-fixed 10 4 "День Народного единства")
+      ))
+</pre>
+
+=== Belarussian ===
+<pre>
+(setq calendar-holidays
+      `(
+       ;; State holidays
+       (holiday-fixed 1 1 "New Year")
+       (holiday-fixed 1 7 "Orthodox Christmas")
+       (holiday-fixed 2 23 "Defender of the Fatherland and Armed Forces day")
+       (holiday-fixed 3 8 "International Women's Day")
+       (holiday-fixed 5 1 "International Labor Day")
+       (holiday-fixed 5 9 "Victory Day")
+       (holiday-fixed 7 3 "Independence Day")
+       (holiday-fixed 11 7 "October Revolution Day")
+       (holiday-fixed 12 25 "Catholic Christmas")
+       ))
+</pre>
+
+=== Ukrainian ===
+Lisp:ukrainian-holidays.el
+
+=== Dutch ===
+
+<pre>
+;; Dutch holidays (Nederlandse feestdagen)
+;; Because there are dupicates with holiday-general-holidays and lists,
+;; I disable almost all other holiday lists.
+(setq holiday-other-holidays
+      '((holiday-fixed 1 1 "Nieuwjaarsdag")
+        (holiday-fixed 1 6 "Driekoningen")
+        (holiday-fixed 2 14 "Valentijnsdag")
+        ;; (holiday-fixed 4 1 "Één April")
+        ;; (holiday-fixed 4 30 "Koninginnedag") Changed since 2013 to:
+        (holiday-sexp
+         '(if (zerop (calendar-day-of-week (list 4 27 year)))
+              (list 4 26 year)
+            (list 4 27 year))
+         "Koningsdag")
+        (holiday-fixed 5 1 "Dag van de Arbeid")
+        (holiday-fixed 5 4 "Dodenherdenking")
+        (holiday-fixed 5 5 "Bevrijdingsdag")
+        (holiday-fixed 10 4 "Dierendag")
+        (holiday-fixed 10 31 "Halloween")
+        (holiday-fixed 11 11 "Sint Maarten")
+        (holiday-fixed 12 5 "Sinterklaas")
+        (holiday-fixed 12 25 "Eerste kerstdag")
+        (holiday-fixed 12 26 "Tweede kerstdag")
+        (holiday-fixed 12 31 "Oudejaarsdag")
+        ;; Feestdagen gerelateerd aan Pasen
+        (holiday-easter-etc -49 "Carnaval")
+        (holiday-easter-etc -48 "Carnaval")
+        (holiday-easter-etc -47 "Carnaval")
+        (holiday-easter-etc -2 "Goede Vrijdag")
+        (holiday-easter-etc 0 "Eerste Paasdag")
+        (holiday-easter-etc +1 "Tweede Paasdag")
+        (holiday-easter-etc +39 "Hemelvaart")
+        (holiday-easter-etc +49 "Eerste Pinksterdag")
+        (holiday-easter-etc +50 "Tweede Pinksterdag")
+        ;; Overige feestdagen met een variabele datum
+        (holiday-float 5 0 2 "Moederdag")
+        (holiday-float 6 0 3 "Vaderdag")
+        (holiday-float 9 2 3 "Prinsjesdag")))
+(setq holiday-general-holidays nil)
+(setq holiday-christian-holidays nil)
+(setq holiday-hebrew-holidays nil)
+(setq holiday-islamic-holidays nil)
+(setq holiday-bahai-holidays nil)
+(setq holiday-oriental-holidays nil)
+</pre>
+
+
+=== Italian ===
+<pre>
+(setq holiday-general-holidays
+      '((holiday-fixed 1 1 "Capodanno")
+        (holiday-fixed 5 1 "1 Maggio")
+        (holiday-fixed 4 25 "Liberazione")
+        (holiday-fixed 6 2 "Festa Repubblica")
+))
+
+(setq holiday-christian-holidays
+     '((holiday-fixed 12 8 "Immacolata Concezione")
+       (holiday-fixed 12 25 "Natale")
+       (holiday-fixed 12 26 "Santo Stefano")
+       (holiday-fixed 1 6 "Epifania")
+       (holiday-easter-etc -52 "Giovedì grasso")
+       (holiday-easter-etc -47 "Martedì grasso")
+       (holiday-easter-etc  -2 "Venerdì Santo")
+       (holiday-easter-etc   0 "Pasqua")
+       (holiday-easter-etc  +1 "Lunedì Pasqua")
+       (holiday-fixed 8 15 "Assunzione di Maria")
+       (holiday-fixed 11 1 "Ognissanti")
+))
+</pre>
+
+=== Republic of Zimbabwe ===
+
+<pre>
+;; Republic of Zimbabwe's national holidays.
+(setq holiday-local-holidays
+      '((holiday-fixed 1 1 "New Years Day")
+	;; Easter Sunday minus two days
+	(holiday-easter-etc -2 "Good Friday")
+	;; Easter Sunday plus one day
+        (holiday-easter-etc +1 "Easter Monday")
+	(holiday-fixed 4 18 "Independence Day")
+	(holiday-fixed 5 1 "Workers Day")
+	(holiday-fixed 5 25 "Africa Day")
+	;; Second Monday in August
+	(holiday-float 8 1 2 "Heroes' Day") 
+	;; Second Tuesday in August
+	(holiday-float 8 2 2 "Defence Forces Day")
+	(holiday-fixed 12 22 "Unity Day")
+	(holiday-fixed 12 25 "Christmas Day")
+	(holiday-fixed 12 26 "Boxing Day"))
+      )
+
+(setq holiday-general-holidays nil)
+(setq holiday-christian-holidays nil)
+(setq holiday-hebrew-holidays nil)
+(setq holiday-islamic-holidays nil)
+(setq holiday-bahai-holidays nil)
+(setq holiday-oriental-holidays nil)
+
+;; Change these to your location in Zimbabwe. This information is
+;; useful for sunrise, sunset, equinox, solstice etc.
+(setq calendar-latitude -17.405608900000000000)
+(setq calendar-longitude 32.221119000000044000)
+(setq calendar-location-name "Mutoko, Mashonaland East, Zimbabwe")
+</pre>
