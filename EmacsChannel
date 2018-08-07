@@ -1,1 +1,125 @@
+[[fr:SalleEmacs]]
 
+The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002]. You can join using the [https://webchat.freenode.net?channels=%23emacs Freenode web interface], or use your favorite IRC client. There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. 
+
+If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections. 
+
+= About #emacs and related channels =
+
+The freenode [[IRC]] channel '''#emacs''' is a place where people can ask questions and hang out with other Emacs folks.
+
+The chatter is in English and EmacsLisp, but other flavours of Lisp and French, Finnish, German, Hindi, Portuguese, Swedish, Icelandic, Tagalog, Persian, and who knows what else are heard from time to time.  Pour les francophones, allez voir aussi SalleEmacsFr. Para la gente hispanoparlante, también vea CanalEmacsEs. See EmacsChannelDemographics to get a sense of who's on the channel.
+
+Channel list:
+
+* '''#emacs''' is the generic Emacs channel
+* '''#emacs-beginners''' is also open for questions. See EmacsBeginnersChannel .
+* '''#evil-mode''' is for [[Evil]].
+* '''#emacsfr''' is the French Emacs channel, SalleEmacsFr
+* '''#emacs-es''' is the Hispanic Emacs channel, CanalEmacsEs
+* '''##emacs.de''' is the German Emacs channel, [[Emacs IRC Kanal (Deutsch)]]
+* '''#xemacs''' is the XEmacsChannel
+* '''#gnus''' for [[Gnus]]
+* '''#org-mode''' for OrgMode
+* '''#ideologies''' is the IdeologiesChannel
+* '''#emacs-offtopic''' is for extremely off-topic conversations that don't fit in #ideologies
+* '''#emacswiki''' for EmacsWiki
+* '''#erc''' for [[ERC]]
+* '''#rcirc''' for [[rcirc]]
+
+Public logging of the Emacs channel is forbidden.  (See EmacsChannelLogging.)
+
+= Tips for getting help =
+
+* Don't ask to ask - just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
+* People often hang out in #emacs and have off-topic conversations. Don't worry - if you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel.
+* If you need to share code that's more than one or two lines long, use a service such as paste.lisp.org or gist.github.com instead of pasting the code directly into the channel.
+* You may want to check the [[CommunityEmacsFAQ|Community FAQ]] and other resources for [[GetHelp|getting help]] before asking questions on the channel.
+
+[:Conduct]
+= Conduct =
+
+In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own rules (some of which are redundant):
+
+* Treat people with respect. No sexism, racism, homophobia, or discrimination against other conditions or factors. Don't be a jerk. Don't put other people down, insult them, or threaten them. If you like teasing people or using sarcasm, please be aware that other people may not know the context or may not be able to read your intent. Avoid that kind of ambiguous communication if possible, or clarify if asked.
+* Be patient. You might not get an answer right away. People are not actively watching the channel all the time. If no one knows the answer to your question, you might not get a response at all. You don't need to repeat the question or ask if people have seen it. While waiting for someone to reply to your question, you might want to participate in other questions, investigate other ways of [[GetHelp|getting help]], or focus on other things. Check back occasionally to see if someone has responded to you.
+* Be friendly to newbies. They might not know what things are called or where to look for help, so you may want to suggest links or keywords to help them learn more.
+* Don't start or participate in flame wars. If a discussion gets out of hand, feel free to use ##/ignore##. If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere. If a discussion disrupts Emacs-related help, bring it to the attention of a channel operator. See the [[#LawAndOrder|Law and Order]] section below. 
+* You don't need to change your IRC nick to indicate that you are away. A simple ##/away## message will be enough.
+
+Violators of this code of conduct may be temporarily or permanently banned from the channel.
+
+[:LawAndOrder]
+= Law and Order =
+
+If you need the help of a channel *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
+
+    ops?
+
+To call the ops, use ##ops <nick-to-complain-about> [reason]##. Make sure you have a clear reason for getting in touch with the ops, such as code of conduct violations.
+
+In the background the Freenode server maintains an *access list* for the channel.  Try it for yourself:
+
+    /msg chanserv access #emacs list
+
+!ChanServ will reply with a list of people who have some sort of power on the channel. These are the important flags:
+
+* Anybody with the +t flag may change the *topic* (although topic lock is almost always off)
+* Anybody with the +o flag is a potential *operator*
+
+The most powerful flag is the *founder* flag (+F).  Currently (2013 Apr 25) [[delYsid]], [[johnw]] and [[kensanata]] have it.
+
+If you're in trouble:
+
+* To complain about a fellow channel member, talk to an operator (+o flag).
+* To appeal decisions made by an operator, find another operator.
+* If nothing else works, you'll have to contact Freenode staff on #freenode.
+
+ops can add themselves using ##,ops-list is also <nick>##
+
+
+= Bots =
+
+The channel is probably logged by a gazillion bots (and human users).  Some of the bots one might encounter are described below.
+
+In addition to addressing the bots like any other person, by prefixing the message with the recipients nickname and a colon, the bots understand a variety of special syntax among the traffic.  For example, fsbot parses strings surrounded by pairs of double commas.
+
+The bots generally provide help if you ask them for it.  Better do that in private though, to keep it off the channel.
+
+'''[::fsbot]'''
+
+Fsbot, an instance of ErBot, is the simplest to use.  It has pointers to nearly all the pages on this wiki, among massive amounts of other usefulness.  Fsbot commands start with an initial comma.  It's cunning enough to respond to other syntaxes too.
+
+    <kensanata> ,setfonts
+    <fsbot> me thinks SetFonts is at
+        http://www.emacswiki.org/cgi-bin/wiki.pl?SetFonts
+
+'''[::rudybot]'''
+
+[[offby1]] runs this bot in the channel. Its sole useful feature is using http://tinyurl.com to convert long URLs to short ones.  Other features, only arguably useful, include entertaining its author; spewing random quotes on demand; a "seen" feature similar to birny's; and a Scheme evaluator (handy for confusing Lisp novices who are unclear about the difference between Emacs Lisp and Scheme).  Its source lives at https://github.com/offby1/rudybot.
+
+= Off-topic conversations =
+
+After spending some time on the channel, one's mind might start suspecting the EmacsChannelPeople are mere slackers, doing little else than idling on their beloved channel.  The EmacsChannelDemographics certainly proves such accusations downright rubbish.  These "slackers" come from all aspects of life and are involved a vast range of most Useful Things indeed.  Besides they're so busy doing their Useful Things, they have only time to idle on the channel, and not chit-chat all day long.  Many have even automated the joining process (f.ex. ErcEmacsChannel), to minimize the distraction.  If the channel does seem rather quiet at times, a gentle stir usually attracts audience.
+
+It would be naive to think only strictly Emacs-related issues were discussed on the channel, especially on a channel where 'strict' itself is such an unpopular idea.  At times discussions, especially about politics, can get rather carried away as we all so well know.  It might be best to take it to the IdeologiesChannel when that happens.  All in all, the Emacsfolks being such a well-behaved lots, there isn't much to EmacsChannelMaintenance beyond fighting EmacsChannelHarassment.
+
+= Polls =
+
+* LangPollResults -- preliminary results of the language poll on the #emacs channel
+
+[:IRC Client Stats]
+= IRC Client Stats =
+
+Previous surveys:
+* [[2016-11-17]]
+* [[2015-11-18]]
+* [[2014-11-05]] 
+* [[2012-05-22]]
+* [[2010-02-05]]
+* [[2009-04-02]]
+* [[2008-09-30]]
+* [[2007-12-21]]
+
+----
+InternetRelayChat
