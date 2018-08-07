@@ -1,1 +1,210 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - A Propos d'Apropos]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Completions]] ||
+
+----
+
+== Multi-Commands ==
+
+
+[:WhatIsAMulti-Command]
+=== What Is a Multi-Command? ===
+
+A '''[::multi-command]''' is a [[command]] that lets you make multiple input
+choices in a single command execution: a '''''multiple-choice''''' command.
+You can choose multiple items from a set of choices, using [[buffer]]
+`*Completions*' as a multiple-choice "menu".  (It's not necessary to
+display `*Completions*', however.)  Instead of asking you "Which
+file do you want to delete?", a multi-command asks you, in effect,
+"Which file(_s_) do you want to delete?".
+
+Nothing especially new here. Any Emacs command could be defined to
+use an input loop, asking for file names until you do something to
+signal that you're done inputting. It could provide for file-name
+[[completion]] by calling `read-file-name' to read your input.
+
+* But what if you could also ''filter'' the domain of discourse on the
+  fly, so that the candidate files were only those ''matching a
+  regular expression'' ([[regexp]]) that you typed? Then, the command
+  definition would need to provide for that behavior too.
+
+* And what if you could then take the ''complement'' of that set of
+  candidate file names, with respect to the complete set of files
+  in the directory? Or ''subtract'' (exclude) some set of file names
+  from the set of matching names, to get the set of possible
+  choices?
+
+* And what if the set of potential candidates at each step (regexp
+  match, complement, set difference) could also be displayed in a
+  ''multiple-choice menu''?
+
+For such multi-command functionality you need '''Icicles'''. 
+
+You can tell whether a command is a multi-command when you execute it: if it is
+a multi-command, then the prompt is prefixed by '''`##+##''''.
+For example, multi-command `icicle-file' uses this prompt:
+: '''##+##'''## File or directory:##
+
+Normal, non multi-command `find-file' uses this prompt, which has no `##+##':
+: ##Find file:## 
+
+Just remember that '''`##+##''''
+means that you can choose any number of inputs.
+
+
+
+
+
+
+
+
+
+
+
+[:HowDoesAMulti-CommandWork]
+=== How Does a Multi-Command Work? ===
+
+When an '''Icicles''' multi-command prompts you for input, you can make
+a single choice and press `RET' to confirm it, as usual, or you
+can choose any number of completion candidates, using `C-RET' (`C-return') or `C-mouse-2' for each.  
+
+(The documentation refers to the key that acts on a completion
+candidate as `C-RET'.  Actually, it is this only by default.  You
+can customize it, using [[option]] 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-action-keys|icicle-candidate-action-keys]]</tt>''''.)
+
+You can thus act on multiple candidates,
+or even ''multiple times on the same'' candidate, during the same
+execution of the command. 
+
+But you do not have to -- you can use any
+multi-command just ''as if it were a normal, single-choice command''.''
+
+For example, command `icicle-delete-file' lets you delete a single file or  a set of 
+files that match your minibuffer input -- all in the same command
+execution.  If you type no input, then all files in the current
+directory match, and you can delete any number of them individually.  If you
+type `<code>~$</code>' and hit `S-TAB' (`icicle-apropos-complete'), then all files
+that end in `<code>~</code>' match, and you can delete any number of them.
+Similarly, command `icicle-buffer-other-window' lets you display
+any number of buffers, and so on.
+
+You make multiple choices this way by [[Icicles - Cycling Completions|cycling]] through the
+candidate completions, as usual, and hitting `C-RET' whenever you
+want to choose (act on) the current cycle candidate.  Or just
+press and hold '''Control''' while clicking each chosen candidate with
+`mouse-2'.
+
+Similarly, you can use `C-down', 
+`C-up', `C-next', `C-prior', `C-end', or
+`C-home' to act on successive candidates, forward or backward.
+You can thus just hold down the '''Control''' key while cycling, to act
+on each candidate in turn, if you want.
+
+Instead of, or in addition to, cycling, you can use completion to
+get to a particular candidate you want.  No matter how a candidate
+is made current, you can choose the current candidate (perform the
+action on it) using `C-RET' or `C-mouse-2'.
+
+For [[lax]] (permissive) completion, you can use `C-RET' to act on ''any'' input text -- you need
+not choose one of the available candidates.  This means, for example, that you can create any number of new file buffers with a single `C-x C-f' invocation, as well as open any number of existing files.
+
+As always, hitting `RET' (or `S-RET') ends the command.  For most
+multi-commands, hitting `RET' performs the same action as `C-RET',
+but it is possible to have a command that acts differently for
+`RET' and `C-RET'.  That is the case, for instance, when help is
+displayed via `C-RET'.
+
+You can use `C-RET' or `C-mouse-2' repeatedly
+to act multiple times on the same candidate.  A shortcut is to
+use `C-u' with `C-RET' or `C-mouse-2'.  That will work if the
+candidate action function is designed to be `C-u' sensitive.  This
+is the case for the '''Icicles''' multi-commands that read the name of a
+command or [[keyboard macro]] and execute the command or macro:
+`icicle-execute-extended-command' (`M-x'), `icicle-kmacro' (`S-f4'), and
+`icicle-execute-named-keyboard-macro' (`C-x M-e'). 
+
+So for
+example, if you use `##C-u 10 C-RET##' on command `forward-char'
+during `M-x' command completion, the [[cursor]] advances 10
+characters.  Another example: `##C-x M-e C-u 200 C-RET##' on a
+keyboard-macro candidate `foo' executes `foo' 200 times.  You can
+use all of the [[numeric prefix argument]] shortcuts, such as `M--',
+`M-7', and `C-6', with the exception of `C--', which has a
+different meaning (`icicle-candidate-set-difference') in the
+'''Icicles''' minibuffer.
+
+Note that you can supply a [[prefix argument]] for both the
+multi-command and any of its individual actions.  The command is
+free to interpret these differently.  For example, a prefix argument 
+for `icicle-kmacro' provides a default repeat factor, which can
+then be overridden for any individual action by providing a
+different prefix argument.
+
+As another example, a prefix argument used with
+any completion candidate for command `icicle-find-file-no-search' visits the
+file in read-only mode.  But a prefix argument  for the command itself
+reverses this effect: read-only becomes the default so that a
+prefix argument for a given candidate means that the visited file buffer is writable.
+
+If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-use-candidates-only-once-flag|icicle-use-candidates-only-once-flag]]</tt>'''' is non-`nil', then, when you act
+on a candidate, it is removed from the list of available
+candidates, for clarity.  Commands where this behavior is
+appropriate bind this option to a non-`nil' value.  This is a user
+option, but you normally will not [[Customize]] it.
+
+
+You can use `C-g' to exit a multi-command at any time, without
+making a final choice using `RET'.  If the actions performed by a
+multi-command are easily reversible, `C-g' will often restore
+things to the way they were before performing the actions.
+
+Does this `C-RET' stuff sound familiar?  Using a multi-command is similar to
+accessing help on a candidate (see
+[[Icicles - Help on Candidates]]).  A '''multi-command''' is any command that has a special action
+defined for use with `C-RET' (command `icicle-candidate-action')
+on the current cycle candidate.  If no such special action is
+defined, then help on the candidate is displayed -- displaying help
+is just the default action for `C-RET', used when no other action is defined.  You can
+always access candidate help using the `C-M-' prefix: `C-M-help',
+`C-M-f1', `C-M-RET', `C-M-mouse-2', `C-M-down', `C-M-up', `C-M-next', `C-M-prior',
+`C-M-end', and `C-M-home'.
+
+You can also cycle among elements of a set,
+performing actions, if you use my libraries '''<tt>[[doremi.el]]</tt>''', '''<tt>[[doremi-cmd.el]]</tt>''', and '''<tt>[[doremi-frm.el]]</tt>'''.  Like '''Icicles''', '''DoReMi''' lets you see the effect of a choice immediately, whenever you make changes.  Each library has its own advantages and special uses. Advantages of '''Icicles''' include:
+
+*  ''completion'' to candidate values
+*  restoration after making changes, letting you ''preview'' changes without actually applying them
+
+'''See Also:'''
+
+* [[Icicles - Defining Icicles Commands]] for how to define your own
+multi-commands.
+* [[Icicles - Moving Between the Minibuffer and Other Buffers]]
+
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - A Propos d'Apropos]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Completions]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:icicles.el
+
+
+CategoryMenus
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+CategoryCode
+
+
+
 
