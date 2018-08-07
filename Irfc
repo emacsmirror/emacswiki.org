@@ -1,1 +1,157 @@
+==What's Irfc ?==
+Irfc is interface for IETF [[RFC]] document.
 
+: Please send suggestions and bug reports to NielsWidger, he's the new maintainer. Thanks! -- AndyStewart
+
+This package use some code from Lisp:rfcview.el, thanks "Neil W. Van Dyke"!
+
+The features this package provide:
+
+* Format RFC document for easy reading.
+* Single keystroke for fast view.
+* Render status switch.
+* *Smart* table and content navigation.
+* Visit RFC link around point.
+* Jump to RFC reference around point.
+* Jump to heading name with completion.
+* Jump to heading number with completion.
+* Download RFC document *asynchronous*.
+
+==Install==
+* Put Lisp:irfc.el in your load-path, and add 
+{{{
+        (require 'irfc)  
+}}}
+: in ~/.emacs.
+
+* Setup storage directory for RFC document search and download.
+{{{
+        (setq irfc-directory "YourStorageDirectory")
+}}}
+
+* If you want make RFC document load `irfc-mode' automatically,
+setup like below:
+{{{
+        (setq irfc-assoc-mode t)
+}}}
+
+==Usage==
+
+* "irfc-render-toggle"         Toggle render status with RFC buffer.
+* "irfc-quit"                  Quit RFC buffer.
+* "irfc-visit"                 Ask for RFC number and visit document.
+* "irfc-reference-goto"        Ask for RFC reference and jump to it.
+* "irfc-head-goto"             Ask for heading name and jump to it.
+* "irfc-head-number-goto"      Ask for heading number and jump to it.
+* "irfc-follow"                Visit RFC link around point.
+* "irfc-table-jump"            Navigation between table and content.
+: This feature is very useful when you want navigation in RFC document like HTML document, even it is *text* version.
+* "irfc-page-goto"             Goto page.
+* "irfc-page-next"             Jump next page.
+* "irfc-page-prev"             Jump previous page.
+* "irfc-page-first"            Jump first page.
+* "irfc-page-last"             Jump last page.
+* "irfc-page-table"            Jump table page.
+* "irfc-head-next"             Jump next heading.
+* "irfc-head-prev"             Jump previous heading.
+* "irfc-rfc-link-next"         Jump next RFC link.
+* "irfc-rfc-link-prev"         Jump previous RFC link.
+* "irfc-scroll-up-one-line"    Scroll up one line.
+* "irfc-scroll-down-one-line"  Scroll down one line.
+
+==Customize==
+All below option can customize by: M-x customize-group RET irfc RET
+
+* "irfc-assoc-mode" Whether assoc RFC document with `irfc-mode'.
+* "irfc-directory" The storage directory for RFC document search and download.
+* "irfc-download-base-url" The base url for download RFC document.
+* "irfc-buffer-name-includes-title" Whether buffer name should
+  include the RFC document's title
+* "irfc-highlight-requirement-keywords" whether RFC requirement
+  keywords specified in `irfc-requirement-keywords' list
+  should be highlighted using the face specified by
+  `irfc-requirement-keyword-face'.
+* "irfc-requirement-keywords" list of RFC requirement keywords to
+  highlight if `irfc-highlight-requirement-keywords' is t.
+* "irfc-highlight-references" whether RFC references should be
+  highlighted using the face specified by `irfc-reference-face'.
+
+==Tips==
+* You can use command `irfc-render-toggle' to toggle render status.
+
+* Command `irfc-table-jump' can navigation between table and content,
+example you stay cursor at *table*, and type "G" will jump corresponding
+content in buffer, alike, you can stay at any content and type "G"
+will jump corresponding table item.
+
+* Command `irfc-visit' will ask the user for a RFC number and will
+visit that document, either from `irfc-directory', if exists, or by
+downloading it.  This command can serve as entry point for Irfc,
+to go to a RFC without having to visit the file or remember
+whether it is already in `irfc-directory'.
+And if you visit same document with your previous type, so just
+hit RET, and don't need type RFC document number.
+
+* Command `irfc-follow' will visit RFC document around point,
+example you stay cursor at "[RFC3986]", and type "o" will
+open rfc3986.txt in storage directory. If have not found
+this file in directory, will download from `http://www.ietf.org/rfc/'
+and open it when download complete.
+: And command `irfc-follow' can also use at title of RFC document.
+: Example rfc3986.txt contain "Obsoletes: 2732, 2396, 1808" at title, you can move cursor to "2732" and type "o" will visit RFC 2732 document.
+: `irfc-follow' support below keywords in title:
+:: "Request for Comments:" 
+:: "Updates:"
+:: "Obsoletes:"
+
+* Command `irfc-reference-goto' will ask the user for a reference
+number and will jump to that citation in the Normative
+References/Informative References heading.
+
+* Command `irfc-rfc-link-next' and `irfc-rfc-link-prev' can jump next or previous RFC link in document.
+
+* Command `irfc-head-goto' will ask the user for a heading name and
+will jump to that heading.  Completion list in minibuffer is
+available.
+
+* Command `irfc-head-number-goto' will ask the user for a heading
+number and will jump to that heading.  Completion list in minibuffer
+is available.
+
+==Related==
+* Integrate with [[Anything]]:
+** Install:
+:: Put Lisp:anything.el and Lisp:anything-irfc.el in your load-path, then add
+{{{
+        (require 'anything-irfc)
+}}}
+:: in your ~/.emacs
+** Usage:
+### You can use the command `anything-irfc-table-jump' to jump table or content. 
+### Or you can also integrate this package with [[Anything]]:
+{{{
+            (setq anything-sources
+                  (list
+                   anything-c-source-irfc-table-jump
+                   ))
+}}}
+** Tips:
+### When you use [[Anything]] interface, you can type "TAB" to switch second-level interface for more command for same candidate.
+
+==Screenshot==
+* Irfc View screenshot:
+: [[image:IrfcShotPage]]
+
+* Irfc integrate with anything:
+: [[image:AnythingIrfcScreenshot]]
+
+==Take Over ?==
+
+Hi Neils, i notice you add new feature in irfc.el, very cool.
+Are you interested take over irfc.el? I have leave Emacs long time, no time maintain irfc.el.
+
+Please let me know if you want take over it, thanks!  -- AndyStewart
+
+Hi Andy, Sure I'll keep adding features and fix any bugs I find.  :)  -- Niels
+
+: Great! I have update your information in irfc.el, thank you very much! -- AndyStewart
