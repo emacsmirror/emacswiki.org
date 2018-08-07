@@ -1,1 +1,94 @@
+The easiest way by far to generate a [[tags file]] recursively is with `ctags' with its ##-R## option for recursing into directories. See BuildTags for just basic information.
 
+==steps==
+
+You want to eventually run something like:
+{{{
+ctags --languages=lisp -e -R -f TAGS-lisps
+}}}
+To see which files are picked up by that language do:
+{{{
+ctags --list-maps
+}}}
+You'll see that 'lisp' picks up *.el files.  Then in your .emacs file put:
+{{{
+(visit-tags-table "~/TAGS-lisps")
+}}}
+Better yet add a hook for lispy languages to load this tags file, when editing python or something else create a different TAGS file for that and selectively load that with another hook.
+{{{
+(mapc (lambda (mode)   
+        (let ((hook (intern (concat (symbol-name mode)   
+                                    "-mode-hook"))))   
+          (visit-tags-table "~/TAGS-lisps")
+      '(emacs-lisp lisp inferior-lisp slime slime-repl))
+}}}
+== ctags ==
+
+ From: those who know me have no need of my name
+ Subject: Re: etags help
+ Newsgroups: gnu.emacs.help
+ Date: 28 Jun 2001 01:13:39 GMT
+
+ cd c:\source-root
+ ctags [other-flags-if-any] -R *.hpp *.cpp *.h
+
+If you want ETAGS output, remember to add the <code>-e</code> option, i.e.,
+
+ ctags -e -R *.hpp *.cpp *.h
+
+== etags ==
+
+ From: Alexander
+ Subject: Re: etags help
+ Newsgroups: gnu.emacs.help
+ Date: Wed, 27 Jun 2001 17:51:27 GMT
+
+Here's how to create a TagFile for an entire directory tree as posted on one of the EmacsNewsgroups:
+
+ cd c:\source-root
+ dir /b /s *.cpp *.h *.hpp | etags --your_options -
+
+=== Older versions of etags ===
+
+BuildTags describes how to combine find with etags to generate tags for a tree of files. But the 5.7 version of etags doesn't have a `-' option for reading on stdin. Use xargs instead, making sure that you pass --append to etags or it will overwrite the tags file for each file it gets from find.
+
+ find . -name "*.cpp" -print -or -name "*.h" -print | xargs etags --append
+
+=== auto-recursive functionality ===
+
+This shell script will plough through a source tree and
+produce a [[tags file]] on standard output with GNU `etags'.
+(it mimics the exuberant `ctags' recursive functionality):
+
+ for src in `find . -type f`;
+ do
+   ETAGS=/usr/bin/etags;
+   case "${src}" in
+     *.ad[absm]|*.[CFHMSacfhlmpsty]|*.def|*.in[cs]|*.s[as]|*.src|*.cc|\\
+     *.hh|*.[chy]++|*.[ch]pp|*.[chy]xx|*.pdb|*.[ch]s|*.[Cc][Oo][Bb]|\\
+     *.[eh]rl|*.f90|*.for|*.java|*.[cem]l|*.clisp|*.lisp|*.[Ll][Ss][Pp]|\\
+     [Mm]akefile*|*.pas|*.[Pp][LlMm]|*.psw|*.lm|*.pc|*.prolog|*.oak|\\
+     *.p[sy]|*.sch|*.scheme|*.[Ss][Cc][Mm]|*.[Ss][Mm]|*.bib|*.cl[os]|\\
+     *.ltx|*.sty|*.TeX|*.tex|*.texi|*.texinfo|*.txi|*.x[bp]m|*.yy|\\
+     *.[Ss][Qq][Ll])
+           ${ETAGS} -o- "${src}";
+           ;;
+       *)
+           FTYPE=`file ${src}`;
+           case "${FTYPE}" in
+               *script*text*)
+                   ${ETAGS} -o- "${src}";
+                   ;;
+               *text*)
+                   if head -n1 "${src}" | grep '^#!' >/dev/null 2>&1;
+                   then
+                       ${ETAGS} -o- "${src}";
+                   fi;
+                   ;;
+           esac;
+           ;;
+   esac;
+ done;
+
+----
+CategoryExternalUtilities
