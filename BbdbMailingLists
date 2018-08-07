@@ -1,1 +1,47 @@
+There are two different things you must consider when talking about
+mailing-lists.
 
+(These instructions are correct for BBDBv3 as of 2015-04-28).
+
+== One mail alias for several people ==
+
+If you have a group of people that you often send mail to, eg. your
+family, you can define a _mail-alias_ for every group-member in your
+database.  Here is an example for how I do it:
+
+* Search for all family members.  Use `M-x bbdb' and search for "schroeder".
+* Elide (suppress display) any non-family records using `o'.
+* Add a mail-alias for all remaining records.  Use `*a' and type the mail-alias "schroeder".
+
+You also need to tell the BBDB to define the mail abbreviations for
+you.  This depends on the mail package you use -- here is the code for
+your ##~/.emacs## for both plain mail-mode, or the message-mode that comes
+with Gnus.
+
+In BBDBv2:
+
+    (add-hook 'mail-setup-hook 'bbdb-define-all-aliases)
+    (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+
+In BBDBv3:
+
+    (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
+    (add-hook 'message-setup-hook 'bbdb-mail-aliases)
+
+Now you can create a new mail and type `schroeder SPC' at the To:
+header.  Since "schroeder" is a mail-abbrev, this will get expanded to
+all the recipients with the schroeder mail-alias in the BBDB.
+
+== A record for a real mailing-list ==
+
+You can treat a mailing list just like an ordinary person.  The only
+thing you might want to consider are the gnus-public and gnus-private
+fields, if you want to SplitMailUsingBbdb.
+
+    emacs-devel
+                net: emacs-devel@gnu.org
+        gnus-public: mail.emacs.devel .*
+
+----
+CategoryBbdb
+CategoryGnus
