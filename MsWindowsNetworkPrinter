@@ -1,1 +1,104 @@
+This page describes what is probably the simplest method of getting a network
+printer to work with Emacs.  The method described works for a network printer
+that has a network card and its own IP address.  
+If you are fortunate enough to have a !PostScript printer, this method will
+give you !PostScript printing without installing /GSView/ and /GhostScript/.
+Essentially it boils down to three steps:-
 
+
+
+== Install a Generic Text Printer Driver ==
+
+Before starting, make sure that the printer you want use works properly from
+a standard Windows application such as /Word/ or /Notepad/.  When you are sure
+it is working properly, right-click the printer icon and select /Properties/.
+Check the /Ports/ tab and make a note of the port that is being used by the
+Windows printer driver.
+
+Now use the /Add Printer/ wizard to install a Generic/Text printer driver
+(the Manufacturer name is /Generic/ and the model name is
+<i>Generic/Text Only</i>). Specify the port that you noted down (that is, the port
+used by the full Windows printer driver).
+
+Once the generic printer driver is installed, right-click the icon and select
+/Properties/. Check the /Ports/ tab and make sure the driver is using the same
+port as the full Windows driver.  Then use the /Print Test Page/ button on the
+Properties/ dialog box to make sure the generic driver is working properly.
+It <u>must</u> work successfully before you carry on.
+
+== Map the Generic Printer to a DOS Device ==
+
+Right-click the Generic printer icon, select the /Sharing/ tab and share the
+printer, giving it a suitable share name.  Check that this worked by using
+Emacs /shell/ or a command prompt window and entering the following command:-
+
+: ##net view \\127.0.0.1##
+
+Assuming the printer's sharename appears in the list, we can now map it to a DOS
+device. ##LPT3:## is a good choice for this purpose. This is the command to use:-
+
+: ##net use LPT3: \\127.0.0.1\<i>sharename</i> /persistent:yes##
+
+The ##/persistent:yes## parameter ensures that the device will be available the
+next time you log on.  Check that this worked by creating a small text file
+(for example, /test.txt/) and printing it using the following DOS command:-
+
+: ##print C:\path\to\test.txt /d:lpt3##
+
+You <u>must</u> be able to print a text file using the ##PRINT## command before
+continuing.  If the file did not print out, go through the
+preceding steps again (but the most likely error is that you got the path to
+the text file wrong).
+
+== Set the Printer up in Emacs ==
+
+Configuring the printer in Emacs is easy.  Add the following line to your
+InitFile :-
+
+: ##(setq printer-name "LPT3:")##
+
+Emacs won't process this line until the next time you start it.  To make it work
+straight away, evaluate it by placing the cursor after the closing parenthesis and typing
+##C-x C-e##.
+
+You should now be able to print from Emacs using the printer icon in the
+toolbar or the /Print Buffer/ and /Print Region/ options in the /File/
+menu.  If the printer is a !PostScript printer, the /Postscript Print Buffer/ and
+/Postscript Print Region/ options in the /File/ menu will also work.
+
+If the printer is not a !PostScript printer, you will have to use something
+like !GhostScript and GSView to get formatted printing.  See PrintingFromEmacs
+for some further information.
+
+[new]
+Unfortunately I doubt that this will work for all networked printers.
+I do not remember all the cases I found where this could fail now,
+but one thing I noticed is that you can not always rely on the state of the printer when
+accessing it this way.
+For some printers it worked and for others it did not.
+That is why I wrote PrintWithWebBrowser
+
+== Setup a printer that works over a TCP/IP port
+
+http://www.emacswiki.org/emacs/McMahanDotEmacs defines how to do this. However, I have a minor modification:
+
+ ; if you map to the tcp/ip port, then once the printer
+ ; is installed, share it from the printer properties dialog, and
+ ; assign the SHARE name to 'MyPrinter' or similar
+
+ (defconst PRINTER_NAME "MyPrinter"
+   "printer to use within emacs")
+
+ ;; now build the network printer name
+ (defconst MY_PRINTER  (concat "//" (getenv "COMPUTERNAME") "/" PRINTER_NAME)
+   "Point to the printer emacs is to use. Defaults to host/`PRINTER_NAME'")
+
+ (defconst MY_PS_PRINTER MY_PRINTER
+   "Point to the ps printer emacs is to use. Defaults to `MY_PRINTER'")
+
+ (setq printer-name MY_PRINTER)
+
+
+== Sending raw text to a postscript printer results in an error ==
+So for me the test print using the generic driver caused a failure at the printer. The printer is expecting postscript. 
+#justsaying...
