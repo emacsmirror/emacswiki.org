@@ -1,1 +1,30 @@
+[https://melpa.org/ MELPA] is an [[ELPA]]-compatible package repository built automatically on our server from the upstream source code using simple recipes. (Think of it as a server-side version of el-get, or even homebrew.)
 
+Library authors do not need to upload new versions of their packages to MELPA, since they are built automatically.  For builds of stable version packages triggered by upstream version tags, see [[https://stable.melpa.org/ MELPA Stable]].
+
+Currently supported backends are git, svn, bzr, hg, and darcs. The collaboration model for MELPA is like that of the Homebrew package manager on OS X -- to add new recipes, simply file a pull request [https://github.com/milkypostman/melpa on Github].
+
+MELPA uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
+
+* [https://github.com/milkypostman/melpa Github page]
+* [https://melpa.org/ Homepage]
+
+Here's how to add MELPA to your ##package-archives##:
+
+{{{
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+}}}
+
+If you prefer versions that have been tagged by their maintainers for release, you can use this instead:
+
+{{{
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
+}}}
+
+For more information, see [https://melpa.org/#/getting-started Getting started with MELPA].
+
+----
+CategoryPackaging
