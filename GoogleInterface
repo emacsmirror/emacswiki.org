@@ -1,1 +1,104 @@
+Use the [http://www.google.com/apis/ Google API] to search for fun things from within Emacs:
 
+* http://edward.oconnor.cx/elisp/google.el
+
+Requires json.el:
+
+* http://edward.oconnor.cx/elisp/json.el
+
+Share and Enjoy!
+
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with M-x anything-google-suggest, narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+
+M-x anything-yahoo-suggest is the same except using Yahoo! instead of Google.
+
+== Google Interface Functions == 
+
+Some functions to turn text in an emacs buffer into hyperlinks that are Google searches for that text:
+
+{{{
+(defvar google-button-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\r" 'push-button)
+    (define-key map [mouse-1] 'push-button)
+    (define-key map [mouse-3] 'google-join-buttons-region)
+    map)
+  "Keymap used by buttons.")
+
+(defun google-region ()
+  "Turn all non-whitespace groups of characters in the region into hyperlinks
+to google searches on those groups of characters."
+  (interactive)
+  (let ((rb (region-beginning))
+	(re (region-end))
+	(white "[ \t\r\n]+")
+	(non-white "[^ \t\r\n]+"))
+    (save-excursion
+      (goto-char rb)
+      (while (< (point) re)
+	(skip-chars-forward " \t\r\n")
+	(if (not (equal (point) re))
+	    (progn
+	      (re-search-forward non-white re 'go-there)
+	      (make-text-button 
+	       (match-beginning 0) 
+	       (match-end 0)
+	       'type (define-button-type 'google-button
+		       'keymap google-button-map
+		       'action (lambda (x) 
+				 (let* ((but (button-at (point)))
+					(text (buffer-substring-no-properties 
+					       (button-start but)
+					       (button-end but))))
+				   (browse-url 
+				    (concat 
+				     "http://www.google.com/search?q=" 
+				     text))))))))))))
+
+(defun google-join-buttons-region ()
+  "Turn all non-whitespace groups of characters in the region into hyperlinks
+to google searches on those groups of charactersgoogle buttons in region into 
+one big google button."
+  (interactive)
+  (let* ((rb (region-beginning))
+	 (re (region-end))
+	 (bb (button-at rb))
+	 (be (button-at re))
+	 (rb (if bb (button-start bb) rb))
+	 (re (if be (button-end bb) re))
+	 (white "[ \t\r\n]+")
+	 (non-white "[^ \t\r\n]+"))
+    (save-excursion
+      (goto-char rb)
+      (skip-chars-forward " \t\r\n")
+      (if (not (equal (point) re)) (setq rb (point)))
+      (goto-char re)
+      (skip-chars-backward " \t\r\n")
+      (if (not (equal (point) rb)) (setq re (point)))
+      (let ((buftext (buffer-substring rb re)))
+	;; This clears all buttons from region.
+	;; Unfortunately it also clear all other text properties.
+	(delete-region rb re)
+	(insert buftext)
+	(make-text-button 
+	 rb re
+	 'type (define-button-type 'google-button
+		 'keymap google-button-map
+		 'action (lambda (x) 
+			   (let* ((but (button-at (point)))
+				  (text (buffer-substring-no-properties 
+					 (button-start but)
+					 (button-end but))))
+			     (browse-url 
+			      (concat 
+			       "http://www.google.com/search?q=\'" 
+			       text
+			       "\'"))))))))))
+}}}
+
+----
+CategoryModes
