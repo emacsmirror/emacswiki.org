@@ -1,1 +1,73 @@
+== Intro ==
 
+Disclaimer: This is a Work-in-Progress page.
+
+Apl comes under Debian under the Aplus packages.  These supposedly work 
+under xemacs or the shell.
+
+For playing with the interactive shell there are broadly 3 ways: shell, xemacs, gnuemacs.
+This page mainly focuses on gnu-emacs but for (a little) completeness mentions links to the others.
+
+== Apl under the shell ==
+
+See this thread http://groups.google.com/group/comp.lang.apl/browse_thread/thread/00dda3821da693bb#
+
+== Apl under Xemacs ==
+
+I could get it to work some 5 years ago. I could not recently. So...
+Someone else can fill this :-)
+
+I am going to stick to
+
+== Apl under Gnu Emacs ==
+
+Cleaned up from 
+http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/1c6284278d3713d6/05e2dc099ce4a7db?lnk=raot&fwc=1
+
+=== Assumptions ===
+
+# You are running a recent gnuemacs under a recent debian.
+In my case this is emacs 23 and 24 with debian unstable.
+# You start emacs like LANG=C emacs
+# You have the aplus-fsf packages installed. This is the list
+aplus-fsf, xfonts-kapl and aplus-fsf-{doc,el,dev}
+To test that aplus is running run a+ (not aplus) at a shell prompt
+You should get a banner and a strange indent.
+2 + 3 RET
+should give you 5.  Char encoding issues will prevent much more here, so get out with a Ctrl-d
+# You have Markus Triska's apl.el from http://stud4.tuwien.ac.at/~e0225855/unicapl/apl.el
+Load it into emacs.
+M-x set-input-method to apl-ascii (in a fresh buffer if you like)
+The left corner of the mode line should show 'apl' to indicate that emacs can deal with apl chars [toggle with C-\]
+Typing {rho} {iota} {is} should give you rho iota and left arrow: (is ⍴ ⍳ ← )
+
+=== Inferior Apl ===
+
+# You should have inferior-apl.el  Lisp:inferior-apl.el.
+Note: apl.el is needed for writing apl symbols but it has not interpreter functionality. inferior-apl.el has the interpreter functionality. It needs apl.el
+# Set the load path (top of inferior-apl.el) to the path of apl.el
+# Load inferior-apl.el (preferably into a fresh emacs)
+# M-x run-apl
+should start apl in an emacs buffer
+
+Type A {is} 2 3 {rho} {iota} 6
+The {is} {rho} and {iota} should immediately convert to ← ⍴ ⍳
+Type A and a 2x3 matrix should be there
+
+=== Apl Chars are where? ===
+
+Look at the top of the apl.el file
+
+Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} (ie 'less-than' 'hyphen')
+
+=== Emacs 22 ===
+Ive got reports that this does not work in emacs 22 (under ubuntu) but worked when all the font-lock stuff was commented out of
+inferior-apl.el and an unicode font was explicitly loaded at the command line.
+
+(Need to add the details here )
+
+=== TODOs ===
+
+# I'm sure this will run just as easily on ubuntu and other linuxes. But someone who has tried that needs to say that :-)
+# Better integration between apl.el and inferior-apl.el
+# Better font-locking
