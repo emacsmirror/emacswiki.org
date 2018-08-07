@@ -1,1 +1,183 @@
+NTEmacs is commonly used to denote Emacs compiled as a native w32 application.
+For precompiled versions and instructions on how to build see CategoryWThirtyTwo.
 
+[:bash-issue]
+== Issue (as of 26 Sep 2012): NTEmacs breaks cygwin bash==
+When using precompiled *NTemacs version GNU Emacs 23.4.1* (i386-mingw-nt6.1.7601) with a Cygwin installation *with Cygwin1.dll version 1.7.11-1*, you have trouble running bash in emacs. On `M-x shell` you get: 
+
+  bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+  bash: no job control in this shell
+
+This shell then is rather useless, because apart from the missing job control some commands called in that shell just hang.
+
+The helpful people from the Cygwin mailing list suggest that it is an NTEmacs problem. This issue does not seem to be resolved yet(as of 15 Mar 2012).
+
+[new:DrewAdams:2014-10-14 16:51 UTC]
+Still a problem as of October 2014, with all Emacs versions (starting with Emacs 20, at least), including Emacs 25 dev snapshots. -- DrewAdams
+
+[new]
+It would have been helpful to have links to those alleged Cygwin mailing list threads.  I found a few that seem related, though from what I'm reading it doesn't sound like something that could be fixed in Emacs.
+
+* https://sourceware.org/ml/cygwin/2012-05/msg00114.html
+* https://sourceware.org/ml/cygwin/2012-03/msg00348.html
+* https://sourceware.org/ml/cygwin/2012-02/msg00908.html
+
+
+=== Workarounds ===
+==== Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there are also X11 and console packages) ====
+[new]
+[[halloleo]] took this route (with X11 emacs). It is quite a hassle when you are coming from NTemacs: The look-and-feel (provided by X/Free) of the frame is significant less MS Windows-like, keyboard mappings are changed, no window shortcuts, no drag-n-drop, etc.
+[new]
+(I'd like to mention that Cygwin included a native emacs (emacs-w32) now, looks pretty good. - [[qun]])
+
+==== Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9. ====
+
+==== Other? ====
+It was suggested somewhere that one could remove the test for the terminal using a pty in bash and I tried this on the cygwin source for bash-4.2, i.e., I edited jobs.c to remove the test (on line 3703).  This removes the error message, but still does not allow seem to allow any job control.  I hope someone is working on this.  
+
+To avoid this, using '''`fakecygpty''''[https://github.com/Shougo/fakecygpty/blob/master/fakecygpty.c] for '''`shell'''' command, and remove "-i" option from '''`shell-command-switchs'''' for '''`shell-command'''' command. 
+
+A similar trick was useful in running SshWithNTEmacs.
+
+==Why use NTEmacs with Cygwin?==
+
+Because Cygwin is wonderful ... but the Emacsen that come with it suffer from a few problems:
+* It's kinda slow (although recent Cygwin builds of X seem faster -- 4.3.0-61, e.g.)
+* "I can't remember specific details, but I'm pretty sure the Cygwin X server is unreliable" (according to the original author of this page)
+* Using it under the Win32 console, as opposed to under X, is too painful, since there is no mouse support and the Meta key doesn't work properly (see CygwinMeta).
+[new]
+Actually the third point is not strictly true, depending on what you mean by "Win32 console". If you use a different console, such as mintty, you can have mouse support but must use the emacs-X11 binary not emacs-nox. It might even work with the MS Win32 console, but I wouldn't put money on it. And since you don't need to run X I think the first two points kind of fall out, too.
+[new]
+
+So I find myself using venerable NTEmacs, which is a native Win32 app (hence fast) with the Cygwin tools (again by the first author).
+The second editor of this page uses NTEmacs quite successfully with Cygwin with little changes.
+
+The following code will produce a reasonable approximation of Unix Emacs on NT:
+
+  ;;;;
+  ;;;; cygwin support
+  ;;;;
+
+  ;; Sets your shell to use cygwin's bash, if Emacs finds it's running
+  ;; under Windows and c:\cygwin exists. Assumes that C:\cygwin\bin is
+  ;; not already in your Windows Path (it generally should not be).
+  ;;
+  (let* ((cygwin-root "c:/cygwin")
+         (cygwin-bin (concat cygwin-root "/bin")))
+    (when (and (eq 'windows-nt system-type)
+  	     (file-readable-p cygwin-root))
+    
+      (setq exec-path (cons cygwin-bin exec-path))
+      (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
+    
+      ;; By default use the Windows HOME.
+      ;; Otherwise, uncomment below to set a HOME
+      ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
+    
+      ;; NT-emacs assumes a Windows shell. Change to bash.
+      (setq shell-file-name "bash")
+      (setenv "SHELL" shell-file-name) 
+      (setq explicit-shell-file-name shell-file-name) 
+    
+      ;; This removes unsightly ^M characters that would otherwise
+      ;; appear in the output of java applications.
+      (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+
+This code first verifies it is running under windows with cygwin installed, so this snippet can be safely placed in a .emacs file that is also used on emacs in unices.
+
+You will also need Lisp:cygwin-mount.el if you want Emacs to understand Cygwin paths.
+
+Note that this is substantially the same as the bit of code given in
+the Cygwin FAQ: http://www.cygwin.com/faq/faq.using.html#faq.using.ntemacs
+
+See CustomizingBoth to get fancier.
+
+
+[new:DrewAdams:2010-03-22 21:29 UTC]
+FWIW, I have been using Cygwin with vanilla native GnuEmacs on Windows for years. To do that, I just load <tt>[[cygwin-mount.el]]</tt> and <tt>[[setup-cygwin.el]]</tt>, in that order.
+
+EliZaretskii, who is very knowledgable about Emacs on Windows (among other things), advises against doing that, however. I don't make heavy use of Cygwin, and I don't use it much outside Emacs, so maybe that's why I've never encountered a problem. HTH -- DrewAdams
+
+
+
+== Problems ==
+summary: cmd.exe can't deal with cygwin 'links'.
+
+`shell-file-name' defaults to cmdproxy.exe - which simply prepends "/c " to the args and sends that to cmd.exe or command.com (NT, 9x).  But cmd.exe doesn't understand cygwin links, so the call to any such program fails - sometimes silently.  For instance: with my setup, gunzip.exe fails with Emacs reporting "(Shell command succeeded with no output)".
+
+Poking around, I found Cygwin's gunzip.exe is 19 bytes long.  The contents are: "!<symlink>gzip.exe" (with a trailing ^@).
+
+to fix this, either copy gzip.exe to gunzip.exe, or use "bash" as your `shell-file-name'
+
+----
+"Assumes that <code>C:\cygwin\bin</code> is not already in your Windows Path (it generally should not be)."
+
+Why not?
+
+The cygwin documentation itself seems to disagree: http://cygwin.com/cygwin-ug-net/setup-env.html
+----
+M-x rgrep may generate a find command which includes the null-device, and NTEmacs uses "NUL" (the Windows null device) rather than "/dev/null".
+
+e.g.: <code>C-u C-u M-x rgrep RET</code> results in the following prompt:
+<code>Run: find . -type f -exec grep -nH  {} NUL \;</code>
+
+This causes the rgrep output to output numerous "grep: NUL: No such file or directory" errors.
+
+We can advise the grep-compute-defaults function to make it see the cygwin null device when establishing the find command. Interestingly enough, this causes it to drop any mention of the null device, and pipe the find results through xargs instead of using -exec. I couldn't follow the logic, but the resulting command prompt is certainly fine.
+
+<code>Run: find . -type f -print0 | xargs -0 -e grep -nH -e </code>
+
+You should restart emacs after adding this to your .emacs file (rather than just reloading .emacs), as the default find command is cached once it has been established, and will not be re-generated otherwise.
+
+<pre>
+;; Prevent issues with the Windows null device (NUL)
+;; when using cygwin find with rgrep.
+(defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+  "Use cygwin's /dev/null as the null-device."
+  (let ((null-device "/dev/null"))
+	ad-do-it))
+(ad-activate 'grep-compute-defaults)
+</pre>
+
+[new]
+Another option may be to use the <i>-r</i> option to /grep/ (this works with GNU grep) instead of piping to /find/.
+I believe this should work for both the gnuwin32 grep and the cygwin grep.
+There is an implementation of this in /w32-grep.el/ in [[EmacsW32]].
+Could someone please test it with Cygwin?
+(The file /w32-grep.el/ is only available in [[EmacsW32]], but you could mail me if you want a copy for testing.)
+
+[new]
+I found w32-grep.el in the latest zip file in the [http://ourcomments.org/Emacs/DL/EmacsW32-only/ EmacsW32-only] directory listing. That could be easier to find (the home page says "This download is no longer available").
+
+After loading w32-grep.el, <code>C-u C-u M-x rgrep RET</code> returns an invalid prompt:
+<code>grep -r <C> -nH . --include=</code>
+
+[new]
+The other option is setting `null-device' to "/dev/null" permanently in the Cygwin section of your .emacs.
+
+[new]
+Is that actually true? I would have thought making that change permanent would break any non-Cygwin functionality in NTEmacs that utilises the null-device. Surely the change needs to be made selectively, only for Cygwin-based functionality that relies upon it (as with the above advice-based solution for the rgrep issue)?
+
+I know that cygwin-mount allows you to access cygwin paths natively in emacs, so perhaps /dev/null will actually work in a cygwin-mounted emacs, but I'm unsure whether that would actually be a consistent solution in all circumstances. Can anyone confirm this categorically?
+
+[new]
+No, it is not true. What cygwin-mount.el does is replacing file paths when using Emacs file primitive (it installs itself as a file handler).
+
+So if `null-device' is used in a way where it is not translated cygwin-mount.el can't help.
+
+[new]
+Cygwin-mount is a non sequitur here, since no one would actually open ##/dev/null## in Emacs.
+
+Yes, using ##/dev/null## globally and for all scenarios would break any NT Emacs commands that use "non-Cygwin functionality" and use `null-device'.  A feature that requires such a combination doesn't exist.  If otherwise, let it be known.
+
+[new:DrewAdams:2013-06-03 04:46 UTC]
+I added ##(setq null-device "/dev/null")## to <tt>[[setup-cygwin.el]]</tt>.  I don't think it will cause any problems, but if you run into a problem with it, just comment it out. -- DrewAdams
+
+----
+
+If you want to launch NTEmacs via Cygwin (in order that it inherits your Cygwin environment variables -- particularly useful if your bash profile does things like managing a ssh-agent), then you can use a shortcut like the following to enable this, while maintaining consistency with the standard (for NTEmacs) HOME directory:
+
+<code>C:\cygwin\bin\bash.exe --login -c "env HOME=\"`cygpath '%APPDATA%'`\" /cygdrive/c/emacs/emacs-23.2/bin/runemacs.exe"</code>
+
+----
+CygWin
