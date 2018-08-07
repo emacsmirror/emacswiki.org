@@ -1,1 +1,54 @@
-In this page, we are providing methods/tools 
+In this page, we are providing methods/tools to interact with Google Drive Docs. Our need can be divided into these 2 components:
+# A tool for synchronizing Google Drive contents on the local filesystem with the Google Drive cloud.
+# A way to edit Google Docs using Emacs
+
+Note that Google Doc files aren't plain-text. So, they have to be converted to a suitable format for editing by Emacs. A popular way to do this is to convert Google Docs to Markdown/rST using *pandoc* and then edit it using Emacs. After editing, it is then again converted back to Google Docs using *pandoc*.
+
+
+== Using GoogleCL ==
+
+You can use [http://code.google.com/p/googlecl/ this commandline program] to edit a Google Doc with your local EDITOR:
+
+  google docs list
+  google docs edit --title "title of Google Doc you wish to edit"
+
+I put the following in my .bashrc:
+
+    alias gdl='google docs list'
+    gde() {
+	google docs edit --title "$@"
+    }
+
+    export EDITOR=/home/bshanks/bin/myemacsclient
+
+-- BayleShanks
+
+=== UPDATE (12 May 2017) ===
+GoogleCL has been broken since 2015. See the official Google Announcement: https://code.google.com/archive/p/googlecl/
+
+However, there is a fork of the project, which probably is working: https://github.com/vinitkumar/googlecl
+
+
+== Using GDrive ==
+Another option using [[https://github.com/prasmussen/gdrive gdrive]] (requires helm for completion)
+
+    (defvar gdocs-folder-id "<gdrive folder for exported docs>"
+     "location for storing org to gdocs exported files, use 'gdrive list  -t <foldername>' to find the id")
+
+    (defun gdoc-export-buffer ()
+      "Export current buffer as google doc to folder identified by gdocs-folder-id"
+      (interactive)
+      (shell-command
+      (format "gdrive upload --convert --mimetype text/plain --parent %s --file %s"
+          gdocs-folder-id buffer-file-name)))
+
+    (defun gdoc-import-buffer (doc)
+       "Import a file in gdocs-folder-id into current buffer"
+       (interactive 
+       (list
+          (completing-read "Choose one: "
+                     (split-string
+                      (shell-command-to-string
+                       (format "gdrive list -q \"'%s' in parents\"" gdocs-folder-id)) "\n"))))
+      (insert (replace-regexp-in-string (string ?\C-m) (string ?\C-j) (shell-command-to-string
+      (format "gdrive download -s --format txt --id %s" (car (split-string doc " ")))))))
