@@ -1,1 +1,344 @@
+This page is for recording (or discussion) of [::Suggestions] about the EmacsWiki Web site. 
 
+If you want to record or discuss problems with the Web site (not with Emacs), please do so at EmacsWikiProblems.
+
+Make sure your suggestion doesn't exist already or that your question has already been answered by checking the HowTo and WikiQuestions pages, respectively.
+
+Discussion about the front page of the Wiki is at [[SiteMap Discussion]].
+
+Discussion about the table of contents at the top of each page is at TableOfContentsDiscussion.
+
+Discussion about the "Goto Bar", the links at the top and bottom of each page, is at GotoBarDiscussion.
+
+Discussion about the TextFormattingRules used in contributing to pages  is at TextFormattingDiscussion.
+
+'''Add your suggestions below this line.'''
+
+== Revamp the GnuPlot pages ==
+
+The page 'GnuPlot' [[https://www.emacswiki.org/emacs/GnuPlot]] gives a good two sentence description of gnuplot.  But then everything after is out of date. It used to tell how to get the mode written by (dead link)[[BruceRavel]] and a screenshot of the mode.
+
+If everything after the first two sentences were replaced with a link to 'GnuplotModes' [[https://www.emacswiki.org/emacs/GnuplotModes]] that would restore it well.
+It has updated links to the Mr. Ravel's mode. It also has links to a second mode.
+
+It could also use a link to a third mode, 'GnuplotMode' 
+[[https://www.emacswiki.org/emacs/GnuplotMode]].
+
+
+== Default font-size should not be 1.2em ==
+
+The new CSS is a  very nice improvement, but the default font-size is set to 1.2em.  This causes all fonts on the page to be 20% larger than the user's default font size.  For me, this is jarring and annoying, causing me to have to scan more and scroll more to read the same amount of text.  I have the default font size set to be comfortable for me, and web sites should generally respect users' default font size.  So, please consider setting the <code>body</code> element's <code>font-size</code> to <code>100%</code> in the stylesheet.
+
+[new:AlexDaniel:2016-03-22 22:58 UTC]
+There's a [[https://github.com/bburns/emacswiki-light-theme github repo]] for the new css, so I think that it would be better to place your suggestion there. I created a [[https://github.com/bburns/emacswiki-light-theme/issues/13 new issue just for that]].
+
+[new:BrianBurns:2016-03-23 11:25 UTC]
+Good point - I'll set the size to 100%, as it's easy enough for users to override, and there was only one other (positive) comment on the font size - I just tend to like larger fonts as my eyes get older. :) 
+
+== Alt key problem when using Compiz in Ubuntu ==
+
+In Ubuntu (at least when using Compiz), the left Alt key brings up a HUD by default. This causes problems when you use left Alt as the meta key. Hence, this problem should go under the GNU/Linux section in the [[MetaKeyProblems|Meta Key Problems]] article. One solution to this problem is to disable a keyboard shortcut to display the HUD, described [http://askubuntu.com/a/122232 here].
+
+== Camel Case Auto-split Syntax ==
+[new]
+I think a syntax like <nowiki>^EmacsWiki</nowiki> to automatically generate a link with spacing like [[EmacsWiki|Emacs Wiki]] would improve the overall look of the site quite a bit. On the main navigation bar for example, "Site Map," "Elisp Area," and "Recent Changes" would look much nicer. 
+
+--MikeAbrahams
+
+[new:JimThompson:2016-04-15 09:39 UTC]
+I second this suggestion. --JimThompson
+
+[new]
+I wonder whether I understood this correctly. You can always create link to pages containing spaces using double square brackets ##[[Like This]]##. And we should totally encourage people to do that, and to redirect from pages ##LikeThis## to pages ##[[Like This]]##. Are you arguing that typing ##^LikeThis## is much easier than ##[[Like This]]## or were you unaware of the double square bracket syntax, or did I miss something? -- [[Alex Schroeder]]
+
+== Provide alternate stylesheets ==
+
+I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
+
+[new:DrewAdams:2012-08-05 16:41 UTC]
+Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting. 
+
+(I've updated HowTo to mention page [[CSS]].) -- DrewAdams
+
+[new]
+
+This is how the directives on [http://Orgmode.org/worg Worg] looks like:
+
+    <link rel="stylesheet" title="Standard" href="/worg/style/worg.css" type="text/css" />
+    <link rel="alternate stylesheet" title="Zenburn" href="/worg/style/worg-zenburn.css" type="text/css" />
+    <link rel="alternate stylesheet" title="Classic" href="/worg/style/worg-classic.css" type="text/css" />
+    <link rel="stylesheet" href="http://orgmode.org/css/lightbox.css" type="text/css" media="screen" />
+
+This is how it looks like on EmacsWiki pages
+
+    <link type="text/css" rel="stylesheet" href="/emacs/wiki.css" />
+
+Note the absence of "alternate stylesheet" attributes.  I am wondering whether such directives could be added to the site.
+
+[new]
+Given the selection we have on the [[CSS]] page, which are the themes you'd like to hard-code as alternatives? -- Alex
+
+[new]
+I went through the available stylesheets and moved my favorites to the top.  None of them are perfect but several could potentially be fixed into something decent with a bit of tweaking. In my opinion this is a very serious issue.  Applying a new CSS theme made the wiki spring to life for me.  --MikeAbrahams
+
+[new]
+What do you guys think about updating the default theme of the site? I think it looks really nice with a lighter theme like Cali+ or  [http://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia], but the gray and orange theme is kind of dark. I'm mostly thinking of new users - it took me a couple of years to realize you could change the look of the site, but I've really enjoyed visiting here since discovering those other themes. 
+-- BrianBurns
+
+[new]
+I'm in favor of trying something new!
+-- AlexSchroeder
+
+[new]
+
+Okay great! I put up an album of screenshots for some themes (just things that I thought might look good as a default theme, and some others) for comparison at http://imgur.com/a/czk9D - I like the lighter themes but they could still use some tweaking - I'd like to try and make one that combines 
+
+* Made in California (gray links, but larger `function references' text)
+* Cali+ (headings, have section separators but lighter dots, box around table of contents) 
+* Planet CSS (code block font, colored syntax highlighting)
+* Wikipedia (large logo on left, maybe try a vertical sidebar)
+
+and see how it looks - other suggestions are welcome too. I'll put the CSS on Github when I get it started - it can be a collaborative effort, and I'll post to the dev list and reddit once I get the Github up for some more feedback. 
+
+-- BrianBurns
+
+[new]
+Thanks! Looking forward to it. I just checked and it seems the current theme was added installed [[2013-04-24]].
+
+-- Alex Schroeder
+
+== Talk link indicates whether page already exists ==
+Could there be some sort of styling or tooltip to indicate if the talk page exists/has talk on it?
+I like to browse the talk pages to see some meta-discussion.
+But if it's not there, I don't want to bother clicking through.
+
+On Pmwiki, Talk-links are followed by a question-mark if there is no page (it's the default indicator that a wiki-link does not exist). I don't actually like the question-mark.
+On Wikipedia... well, I can't find an article without a talk page right now. 
+No idea.
+
+While I'm on about Talk, is there a reason that Talk asks for a users homepage-url, while other edits only ask for username?
+--MichaelPaulukonis
+
+[new]
+Wikipedia makes the talk link red. http://en.wikipedia.org/wiki/Inciting_incident as of  21 September 2013 at 16:30.
+-- Anon
+
+[new]
+Sure. I think there's a related question, here: Should all links to non-existing pages get "red link" instead of the question-mark?
+For now, I'll see about a simple change that only affects the comment links we have right now...
+
+Here's what I'm doing right now: If the comment link points to a comment-page that doesn't exist, the class "edit" is added but without changing it into a standard edit link (no questionmark!). Plus, if you're using the default setup with bootstrap CSS, I'm adding the "warning" [http://getbootstrap.com/css/#buttons button style], resulting in a yellow button instead of a standard yellow button for non-existing Talk pages.
+What do you think?
+-- AlexSchroeder
+
+== Easy navigation from talk page back to parent ==
+Pages ("parents" or "parent pages") have links to goto/create talk pages, but there's no reverse functionality on the talk pages to go back to the parent (that I can see).
+This would be nice. --MichaelPaulukonis
+
+[new]
+Do you see the link at the bottom that says _Article_? If so, that's the one and perhaps it could use some further highlighting. If you don't, then that's a bug. -- AlexSchroeder
+
+[new:MichaelPaulukonis:2013-05-08 13:16 UTC]
+Ah! '''NOW''' I see it. I'd probably like both of them up top, next to the page name. When I'm on the talk page I more want to go back to the parent then to see what links to the talk page (default title-link behavior). --MichaelPaulukonis
+
+[new]
+What do you think of the change I just made? It moves the _Article_ or _Talk_ link (if any) to right after the header.
+
+In case you're interested, I added the following to [http://emacswiki.org/emacs/emacs-bootstrap.js emacs-bootstrap.js]:
+
+  // move article link and talk link below title
+  var $link = $('a.original').add('a.comment');
+  if ($link) {
+    $('.header h1').after($('<p>').append($link));
+  }
+
+-- AlexSchroeder
+
+
+[new:DrewAdams:2013-05-08 14:33 UTC]
+I don't see it.  Then again, I don't use the bootstrap version... 
+
+I agree that the link back to the page commented on should be much more prominent.  And the main page is not necessarily an "article".  It is sometimes a file in ElispArea, for instance. -- DrewAdams
+
+[new:MichaelPaulukonis:2013-05-08 14:53 UTC]
+I like it. I'm not going to say "love", as we've (I) have also got the two searchboxes up there. I know, I'm being finicky; I don't have a complete suggestion of how to better use the space. Something like how mediawiki (or the styling that wikipedia uses) displays the Article/Talk tabs, maybe?
+
+On a related note, are there any keybindings for common functionality -- like edit, talk, article/parent? That would remove part of the issue with having them below/above the fold.
+
+I agree with Drew about the "article" issue. I usually think of everything in here as a page, anyway. [for all of my caveats, I was amazed at the response time. woooh!] --MichaelPaulukonis
+
+[new]
+The name "article" is just what Wikipedia uses so it is easier to understand. There are "access keys" which might work for you but I don't know them by heart. If you use the English interface then I'd try e for edit, c for comment and a for article, perhaps? -- Alex
+
+[new:MichaelPaulukonis:2013-05-08 18:59 UTC]
+Okay, those work. I see '''e''' is documented at [[HowToEdit#accesskeys]], and '''p''' is down below here in dialog, but there's no central documentation of  them?
+Where would be the best place to document ALL of these? I.E., I'll do it. --MichaelPaulukonis
+
+[new]
+There is no central documentation. They just get added ad-hoc. Let me check the source. :)
+
+; e: edit (German: b)
+; s: save
+; p: preview
+; f: find
+; a: article
+; c: comment
+
+As for where to document them, I don't know. Probably a new page to link from HowToEdit? -- Alex
+
+[new:MichaelPaulukonis:2013-05-10 18:31 UTC]
+Say "hello!" to AccessKey --MichaelPaulukonis
+
+== User Names on RecentChanges Page ==
+
+It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page like a non-existant page is usually shown. People might be encouraged to follow it and create a home page.
+
+[new]
+I haven't thought about this in a long time. Maybe you're right. -- AlexSchroeder
+
+== Layout ==
+
+=== Edit Page ==
+
+What about moving the "Please make sure..." text, plus the Username field above the text-input editing box? That would reduce the need to scroll the page by placing the Save and Preview buttons closer to the editing box (using Preview more than once while editing is common). In fact, it would be great if those two buttons could be on the same line as the "This change is a minor edit" check box, making them even closer to the edit box. -- DrewAdams
+
+[new]
+At the time I did this on purpose to make sure people read the blurb... :/
+
+As for hitting Preview a lot: The access key should be P, so try M-p or C-p in your browser (see [[http://en.wikipedia.org/wiki/Access_key#Access_in_different_browsers this list]] too see which modifiers are used in different browsers).
+
+Other than that, if you have a CSS-based suggestion, we can try it out.
+-- AlexSchroeder
+
+
+=== Keys ===
+
+[new]
+Adding some style changes to break out &lt;code&gt; from the surrounding text would be very helpful for key strokes.  Especially if they are something like '<code>C-x (</code>' which is used for starting a keyboard macro. -- DocWhat
+
+[new]
+Do you mean in addition to using a monospaced font, something like a light gray background?
+Alternatively, the weird accents-used-as-apostrophes such as `C-x C-c' usually work.
+Unfortunately, the regular expression used prevents `C-x (' from working. :(
+
+The particular regular expressions used, straight from the Perl code:
+
+  if (/\G(\`|‘)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|’)/cg
+      or /\G(\`|‘)([-A-Za-z0-9\/\*]+[=]?)(\'|’)/cg) {
+    return $q->code('&#x2018;' . $2 . '&#x2019;');
+  }
+
+Any suggestions for improvement? It would obviously be easy to style these occurrences.
+But how?
+-- AlexSchroeder
+
+== Click the heading to search for pages in this category / that link here ==
+
+This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
+
+Maybe somewhere in the footer close to where the language links are too.  Then again this link ("Pages linking here") as well as the links to the translations can easily be missed.  Maybe both kinds should be placed somewhere more visible?  But if you do this please do so in a way that makes it easy to hide it using a style sheet.  -- JonasBernoulli
+
+== Subscription service to  watch changes == 
+
+There should be a way to subscribe to changes to pages of interest to users, including Emacs Lisp files.
+
+[new]
+The current option is to subscribe to RSS feeds for each page or for pages matching a particular regular expression. The html has appropriate meta links. Alternatively you could go to RecentChanges, figure out what settings you need and change "action=rc" in the URL to "action=rss".
+
+The URL for this page, for example, would be one of these:
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions## -- the default, listing the last major change in the last 7 days
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;days=30## -- listing the last major change in the last 30 days
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;showedit=1## -- listing the last change (major or minor) in the last 7 days
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;full=1## -- listing the last major change in the last 7 days with full page content (unless it's blows the arbitrary limit I've set in order to save bandwidth)
+
+* ##http://www.emacswiki.org/emacs?action=rss;rcidonly=EmacsWikiSuggestions;full=1;diff=1## -- listing the last major change in the last 7 days with full page content and diff
+
+* ##http://www.emacswiki.org/emacs/?action=rss;match=emacs## -- listing the last major change for any page matching the Perl regular expression "emacs" in the last 7 days
+
+There are many more parameters to tune this.
+
+Finally, if a few people were interested, we could add an _email subscription_ extension to the wiki. If you'd like to see this, edit this page and leave your name or send me an email <mailto:alex@emacswiki.org>.
+
+-- AlexSchroeder
+
+
+== Email Subscription ==
+Leave your name here if you are interested adding a feature to EmacsWiki (probably as a button at the bottom of each page) to receive email alerts when a page changes.
+
+* PatrickAnderson
+* xuhdev
+
+
+== Screenshots for major modes == 
+
+[new]
+I would like to see a screenshot showing what each mode looks like.
+
+I just read about AllOut mode and wanted to see what it looked like; it would have been nice if there was a screenshot.
+
+--LuisFernandes
+
+[new]
+Yeah, technically this is possible and DrewAdams does it a lot for the documentation of his Icicles package.
+It's a lot of work, unfortunately. -- Alex
+
+== Protect users with only linking to signed downloads and/or signed checksums ==
+
+The development community is a great target for peers with ill intent.
+And what better place to attack than the editors/IDEs that devs use to write code all the other devs use.
+
+Whether sitting on university, coffee shop or a conference public wifi, devs often work in public spaces where the network can be compromised.
+Compromising wifi networks is pretty easy too these days: add one of these to a shopping cart and off you go https://wifipineapple.com/
+
+Therefore, please protect us by only offering downloads to and only linking to downloads that offer either an encrypted download or an encrypted checksum.
+The encryption would have to be verifiable: HTTPS is a good starting place, GPG and HTTPS hosted public keys could work too.
+
+Here's an example of a link that raised this concern: http://sourceforge.net/projects/jdee/files/jdee/2.4.1/
+Here's an example of Eclipse offering secure checksums https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/kepler/SR2/eclipse-standard-kepler-SR2-linux-gtk-x86_64.tar.gz offers a link to https://www.eclipse.org/downloads/sums.php?file=/technology/epp/downloads/release/kepler/SR2/eclipse-standard-kepler-SR2-linux-gtk-x86_64.tar.gz&type=sha1
+Not ideal, but if you are in a public area you can check and then trust the download.
+
+Many Thanks
+
+-- Anonymous
+
+[new]
+I'm not sure /how/ we should go about doing that... Check every outbound link? Scrape target websites? This is way too much work. Are you concerned only about the downloads from the ElispArea? Anybody can come and edit the files. What additional security would encryption and checksums provide, given that there is no security at the page level?
+
+*If, as a user, you are concerned about the code, you must refrain from downloading source code from Emacs Wiki.* I would think that you should also only download code from trusted sources (and by that I mean code signed by particular people you know). This is the point where we must realize that security is not just cryptography. It's also an open society, the ability to criticize, publish, talk, double check.
+
+*If, as an author, you are concerned about other people changing your code, you must refrain from uploading source code to Emacs Wiki.*
+
+Perhaps the download button should carry a warning? Then again, perhaps every page should carry a warning... But, if every page carries a warning, it means nothing. Thus I'd argue that the status quo is good enough. Visitors know that *a wiki implies a lack of security*.
+
+-- AlexSchroeder
+
+[new:DrewAdams:2014-04-09 13:59 UTC]
+A parenthetical remark concerning my libraries: As an Emacs-Wiki administrator, I lock the wiki pages for the code I upload, so you can be pretty sure that it has not been tampered with. -- DrewAdams
+
+== Instant Answers for DuckDuckGo ==
+
+Emacs Wiki relies on DuckDuckGo for in-site search. Maybe develop a [https://duck.co/ia DuckDuckGo instant answer] such that each time when EmacsWiki updates, the changes in DuckDuckGo's search results are updated instantly?
+
+[new]
+How is that going to work? The way I see it, an Instant Answer can take a search query and produce an answer using code and data – but what we would like is /push/ page edits so that DuckDuckGo updates their index, right? Or am I misunderstanding something? -- AlexSchroeder
+
+== Changing default font to sans-serif ==
+
+In conformity to the many other application wikis out there, the emacs wiki should at least use a sans-serif font as default across its pages.
+
+Many other application wikis use a sans serif font, not to mention Wikipedia itself. Some examples include [https://wiki.archlinux.org/index.php/Arch_Linux Arch] and [https://en.wiktionary.org/wiki/Wiktionary:Main_Page Wikitionary].
+
+[new:AlexSchroeder:2017-07-10 08:17 UTC]
+There's a [https://github.com/bburns/emacswiki-light-theme github repo] for the new css, so I think that it would be better to place your suggestion there.
+Personally, though, I don't agree and I think that looking like the other wikis out there is not a goal. But I'll leave it to the author of the theme we're using.
+Also note that you can use your own [[CSS]].
+Perhaps you want that [https://www.emacswiki.org/emacs?action=browse;id=CSS;css=/css/pedia.css Wikipedia theme]?
+
+-- Alex Schroeder
+
+----
+CategoryEmacsWikiSite
