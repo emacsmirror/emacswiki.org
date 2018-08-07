@@ -1,1 +1,460 @@
+This was an EmacsForMacOS options, also known as [::CarbonEmacs].
+It contains Emacs CVS using Carbon and comes bundled with many packages.  It is no longer supported.
 
+* SeijiZenitani's page in [http://th.nao.ac.jp/MEMBER/zenitani/emacs-j.html Japanese], [http://th.nao.ac.jp/MEMBER/zenitani/emacs-e.html English]
+* [http://groups.google.com/group/carbon-emacs?hl=en Carbon Emacs User Group]
+* MakingOfCarbonEmacsPackage describes how to build CarbonEmacsPackage from the source code.
+
+
+== Status ==
+
+This is currently (July 2008) a good up-to-date Emacs.  I use it on Leopard. -Karl Anderson
+
+== Requirements ==
+
+The latest version available from the Apple download page requires OS X 10.5 (Leopard).
+
+You can get old versions for 10.4 (Tiger) from [http://macwiki.sourceforge.jp/emacs/ an archive].
+
+You can get other variants that run on 10.3.9 (Panther) from [http://irodori.sakura.ne.jp/carbon-emacs/index.en.xhtml Eiji Honjoh's page].
+
+== Installation ==
+
+=== I cannot open the dmg file... ===
+
+If you download the dmg file for Tiger, you cannot open the dmg file on the Panther system. The dmg file uses a compressed format which only works on Tiger.
+
+Get the Panther dmg file from [http://irodori.sakura.ne.jp/carbon-emacs/index.en.xhtml Eiji Honjoh's page].
+
+
+== Emulating Mac-like Behaviors ==
+
+=== Was the change from QuickDraw to ATSUI an improvement? ===
+
+In Carbon Emacs, the backend has recently changed from !QuickDraw to ATSUI. The font rendering when using 'Bitstream Vera Sans Mono' seems quite different. Is it a bug or an improvement? Personally, I preferred the old rendering.
+
+See for yourself.
+
+!QuickDraw:
+
+[[image:CarbonEmacsUsingQuickDraw]]
+
+ATSUI:
+
+[[image:CarbonEmacsUsingATSUI]]
+
+ (setq mac-allow-anti-aliasing nil)
+
+is used in both cases.
+
+Compare this to how !TextEdit renders this:
+
+[[image:TextEditRenderingBitstreamVeraSansMono]]
+
+(don't know what backend it uses though)
+
+[new]
+Note that ATSUI's rendering of light-on-dark text is quite different from its rendering of dark-on-light text, and if you use dark-on-light text, it will look similar to TextEdit.
+
+[new]
+Try the following to get the !QuickDraw look when using the ATSUI backend. It effectively disables anti-aliasing for Emacs regardless of the system-wide setting. Works great for me.
+<pre>
+$ defaults write org.gnu.Emacs AppleAntiAliasingThreshold 100
+</pre>
+See http://lists.gnu.org/archive/html/emacs-devel/2007-03/msg01507.html  -- JulianScheid
+
+
+=== How to enable/disable anti-alias rendering? ===
+
+To turn on/off anti-aliasing, use the following lines. By default, anti-aliasing is on.
+
+ (setq mac-allow-anti-aliasing t)    ;; turn on anti-aliasing (default)
+ (setq mac-allow-anti-aliasing nil)  ;; turn off anti-aliasing
+
+=== Where is the "Help > Carbon Emacs Package" menu? ===
+
+See the below screenshot. Some Mac-only features can be controlled through menu items.
+
+[[image:CarbonEmacsPackageExtraMenu]]
+
+=== How to use "Mac-Style Printer Dialog" in the extra menu? ===
+
+# Check "Help > Carbon Emacs Package > Mac-Style Print Dialog".
+# Save Changes by "Help > Carbon Emacs Package > Save Changes...".
+# Restart your emacs.
+
+Then Mac-Style Printer Dialog appears when you call the printer-related functions (ps-print-buffer-with-faces, ps-print-region-with-faces, ps-print-buffer, ps-print-region, print-buffer, print-region). You can directly call M-x mac-print-buffer.
+
+[[image:CarbonEmacsPackagePrinterDialogue|M-x mac-print-buffer]]
+
+=== How to open recent files? ===
+
+You can use "Open Recent ..." submenu by using '''recentf''' library. Add the below lines to your ##.emacs.el##.
+
+ (require 'recentf)
+ (recentf-mode 1)
+
+ref: RecentFiles
+
+=== Non-standard functions ===
+
+In addition to the standard elisp functions, the following functions are available. Try M-x describe-functions for more details.
+
+* mac-show-menu-bar
+* mac-hide-menu-bar
+* mac-spotlight-search
+* mac-process-activate
+* carbon-emacs-package-add-to-path
+* carbon-emacs-package-add-to-env
+* carbon-emacs-package-netinstall
+* carbon-emacs-package-tmpdir
+
+=== Getting Copy & Paste to preserve newlines correctly ===
+
+The function mac-string-to-utxt (inside term/mac-win.el) is used to encode text which is then placed onto the system clipboard, It currently uses the encodings utf-16be-mac and/or utf-16le-mac which replace all \n characters with \r (0x0A with 0x0D), You can add the following to your InitFile to fix this and preserve the correct newlines in the buffer/file:
+
+
+    (defun mac-string-to-utxt (string &optional coding-system)
+      (or coding-system (setq coding-system mac-system-coding-system))
+      (let (data encoding)
+        (when (and (fboundp 'mac-code-convert-string)
+                   (memq (coding-system-base coding-system)
+                         (find-coding-systems-string string)))
+          (setq coding-system
+                (coding-system-change-eol-conversion coding-system 'unix))
+          (let ((str string))
+            (when (and (eq system-type 'darwin)
+                       (eq coding-system 'japanese-shift-jis-mac))
+              (setq encoding mac-text-encoding-mac-japanese-basic-variant)
+              (setq str (subst-char-in-string ?\\ ?\x80 str))
+              (subst-char-in-string ?\\ ?\x5c str t)
+              ;; ASCII-only?
+              (if (string-match "\\`[\x00-\x7f]*\\'" str)
+                  (setq str nil)))
+            (and str
+                 (setq data (mac-code-convert-string
+                             (encode-coding-string str coding-system)
+                             (or encoding coding-system) nil)))))
+        (or data (encode-coding-string string (if (eq (byteorder) ?B)
+                                                  'utf-16be
+                                                'utf-16le)))))
+
+The only change is in the last two lines, removal of -mac in each.
+
+=== Reclaiming the Option/Alt key for typing special characters ===
+Mac uses the Option/Alt key in order to create characters not directly available on the keyboard, e.g. to type # (known as the pound or hash symbol) simply use Alt-3. The fact that several of these characters are typically directly available on non-Mac keyboards is often a source of frustration for new Mac users (particularly if your developing software). So, unless you intend to put other mechanisms in place to create such characters (without too many keystrokes), you probably don't want to use the Option/Alt key as meta key in Carbon Emacs.
+
+A suggested approach is therefore to set the Command (Cmd) key as meta key, and remove any Emacs bindings from the Option/Alt key. To do this, nagivate to ''Emacs > Preferences > Environment > Mac > Mac Option Modifier'', and set ''Value Menu'' to ''No modifier (work as option)''. Remember to set this for your current session and save it for future sessions.
+
+== Getting Rid of Mac-like Behaviors ==
+
+=== Stop M-h from Hiding Emacs ===
+
+How to have cmd-h (M-h) not acting as Hide Current Application?
+
+Answer: add the following lines to the emacs InitFile
+
+     (setq mac-pass-command-to-system nil);avoid hiding with M-h
+
+
+== How can I use QuickSilver with RememberMode? ==
+
+If you're a fan of RememberMode you may like the following which creates a new Emacs Service and allows for RememberMode note-taking from any other OS X application:
+
+Obviously RememberMode and [http://quicksilver.blacktree.com/ QuickSilver] are prerequisites.
+
+Then to 
+
+ /Applications/Emacs.app/Contents/Resources/share/emacs/22.0.50/lisp/term/mac-win.el
+
+add the following:
+
+: N.B. If using CarbonEmacs 20060616 or later, in the following code, replace "services" with "service"
+
+ (defun mac-services-remember-selection ()
+  "Visit a remember buffer containing the selection value for Services."
+  (interactive)
+  (remember (x-selection-value mac-services-selection)))
+
+ (define-key mac-apple-event-map [service perform remember-selection]
+  'mac-services-remember-selection)
+
+Don't forget to byte-compile...
+
+Then to
+
+ /Applications/Emacs.app/Contents/Info.plist
+
+add:
+
+		<dict>
+			<key>NSKeyEquivalent</key>
+			<dict/>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Emacs/Remember Selection</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>remember-selection</string>
+			<key>NSPortName</key>
+			<string>Emacs</string>
+			<key>NSReturnTypes</key>
+			<array/>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+		</dict>
+
+to the array within the NSServices key.
+
+Ensure you have the !QuickSilver Services Menu Module installed and restart Emacs.
+
+You will now have a new Emacs Service (Remember Selection) which !QuickSilver can access to send any text from any application to RememberMode (as an added bonus you can also link to any file etc. you've selected - drag the file onto !QuickSilver, hit . to convert the URL to text and dump it into RememberMode).
+
+[new]
+I've followed the instructions step by step: 1) modifying the mac-win.el 2) modifying the info.plist - I was able to get a Emacs/remember selection command in !QuickSilver, but unfortunately nothing happens when hitting enter. Has anybody succesfully modified its emacs and can maybe post the two urls for mac.win.el and info.plist?
+-- Phil (A T s n a p u p D O T n e t)
+
+== International ==
+
+=== How do I input and display Traditional Chinese characters?===
+
+To use a Traditional Chinese input method provided by Mac OS X, try
+
+ (set-language-environment 'Chinese-BIG5)
+ (set-keyboard-coding-system 'chinese-big5)
+
+in your InitFile. (BIG5 is the de facto char set and encoding for Traditional Characters used in Taiwan)
+
+If you like to use PinYin as your input system, do:
+ (set-input-method 'chinese-py)
+
+If you like your encoding to be based on unicode instead of any of the Chinese-only standard, do
+ (set-keyboard-coding-system 'utf-8)
+
+If you use June '05 version or later, please modify the japanese setting file (carbon-emacs-japanese-init.el) in the site-start directory by the following way.
+
+* (set-language-environment 'Chinese-BIG5)
+* replace ''sjis-mac'' to ''chinese-big5''.
+
+The site-start directory: $(Emacs.app)/Contents/Resources/site-lisp/site-start.d/carbon-emacs-japanese-init.el can be found by choosing "Carbon Emacs Package > Open Site-Start Directory" in the help menu.
+
+* If you use Dec. '05 version or later, please examine the japanese setting file (carbon-emacs-japanese-init.el) in the site-start directory.
+
+=== How do I input and display Simplified Chinese characters?===
+
+To use a Simplified Chinese input method provided by Mac OS X, add some lines in your InitFile. For March 2006 (v2) version, the below setting works (ref: [http://lists.sourceforge.jp/mailman/archives/macemacsjp-english/2006-April/000525.html macemacsjp-english 527]).
+
+ (set-language-environment "Chinese-GB")
+ (set-default-coding-systems 'utf-8)
+ (set-keyboard-coding-system 'utf-8)
+ (set-clipboard-coding-system 'utf-8)
+ (set-terminal-coding-system 'utf-8)
+ (prefer-coding-system 'utf-8)
+
+For older version the below might work.
+
+ (set-language-environment 'Chinese-GB)
+ (set-keyboard-coding-system 'chinese-iso-8bit)
+ (set-input-method 'chinese-py)
+
+
+
+=== How do I input and display Hangul characters?===
+
+Enabling the inline input method for Hangul became even easier with
+the new release of Carbon Emacs Package (March 12 2006 version).
+These lines have been suggested by Seiji and work perfectly well:
+
+ (set-language-environment 'Korean)
+ (set-default-coding-systems 'utf-8-unix)
+ (when (eq window-system 'mac)
+  (mac-setup-inline-input-method)
+  (add-hook 'minibuffer-setup-hook 'mac-change-language-to-us)
+ )
+
+Notice that the last part (i.e., (when ...)) enables to use the Mac OS X native input method instead of the Emacs Mule input method.  Therefore, in order to switch between Latin and Hangul input methods, the Mac-Style-Key-Bindings should
+be turned  on (see Help menu).
+
+If you use earlier but later than June '05 version, try to modify the japanese setting file (carbon-emacs-japanese-init.el) in the site-start directory by the following way:
+
+* (set-language-environment 'Korean)
+* replace ''sjis-mac'' to ''euc-kr-unix''.
+
+
+=== How do I enter Latin-1 characters? ===
+
+To type characters such as éàüîñ, type
+
+C-x 8 ' e
+C-x 8 ` a
+C-x 8 " u
+C-x 8 ^ i
+C-x 8 ~ n
+
+To see all the non-ascii characters you can type with C-x 8 prefix, type C-x 8 C-h. More generally, you can always enter characters using an InputMethod.
+
+Alternatively, most non-ascii characters used in European languages supported by Mac OS's option key combination should work. (make sure you are using the latest carbon emacs released in 2005-11-??. If you are using a Carbon Emacs before that, you have to disable the default Japanese environment customization) However, character such as éàüîñ that requires a Mac option prefix keypress (aka dead keys) does not currently work. That is to say, normally on a mac, one can type "option-e e" to produce é, but in emacs it produces a space instead.
+
+
+=== Conflict between dead keys and flyspell mode ===
+
+In flyspell mode, you cannot normally enter accented characters with dead keys. Workaround: type the accent TWICE.
+For example, to get "prêt", type pr^^et, to get "cañon", type ca~~non.
+
+This bug was found in GNU Emacs 22.0.50.1 (powerpc-apple-darwin7.9.0) of 2005-11-15 on 
+woodstock.local.mac, with Mac OS X.3.9, a French keyboard, and latin-1 or utf-8 file coding systems.
+
+The ispell programm was external ispell or aspell (not the internal aspell that does not work in LaTeX mode).
+
+=== Although I set file-name-coding-system to utf-8, some characters are displayed as white squares in dired-mode. Why? ===
+
+Mac OS X's filesystem uses an unpopular version of UTF-8 (NFD; Normalization Form D), which is slightly different from the popular version of UTF-8 (NFC; Normalization Form C). At present, Emacs does not support NFD. In NFD, diacritical marks (accents, diaresis, cedille, tilde, etc.) are decomposed into two sequences; for example, ü is decomposed into the character u and the diaresis ¨ combining character [http://www.unicode.org/versions/Unicode4.0.0/ch03.pdf#G30602].  In a conforming Unicode implementation, these two would be combined back to ü.  But Emacs doesn't support that, yet.  This is why you will see "u" and an empty box in the dired-mode buffer of Carbon Emacs.
+
+When you use Terminal.app or you use Carbon Emacs in its no-window mode (emacs -nw), characters with diacritical marks look fine, because Terminal.app knows how to deal with combining characters. 
+
+Characters affected by this issue:
+
+* All characters containing diacritical marks (accents, umlauts, tilde, etc.)
+* Japanese Kana characters with Dakuten/Handakuten signs
+* Korean Hangul characters
+
+References:
+* http://www.unicode.org/reports/tr15/
+* http://www.unicode.org/charts/normalization/
+* http://developer.apple.com/technotes/tn/tn1150.html#UnicodeSubtleties
+
+=== What is utf-8m? ===
+
+''utf-8m'' provides ad-hoc fixes for the above dired-mode problem.
+The file is available at http://sourceforge.jp/projects/macemacsjp/files/.
+
+If you'd like to use ''utf-8m'', try the below line. CarbonEmacsPackage uses ''utf-8m'' by default.
+
+ (require 'utf-8m)
+ (set-file-name-coding-system 'utf-8m)
+
+Screenshot:
+
+[[image:CarbonEmacsPackageDiredUtfm]]
+
+
+== Elisp packages ==
+
+=== How do I install additional elisp packages? ===
+
+It depends.  If you want to install an elisp package for your own use, see LoadPath.
+But here is an example for your InitFile if ##css-mode.el## is in ##~/.elisp##:
+
+ (add-to-list 'load-path (expand-file-name "~/.elisp"))
+ (autoload 'css-mode "css-mode" "CSS Mode" t)
+ (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+ ; make pretty color fonts default
+ (global-font-lock-mode 1)
+
+
+If you want to add an elisp package to the Carbon Emacs Package, however, you need to add it to the bundle.
+Since all of the Emacs files are installed in the application bundle, use the following configuration:
+
+ ./configure --prefix=(Emacs.app)/Contents/Resources \
+  --bindir=(Emacs.app)/Contents/MacOS/bin \
+  --with-emacs=(Emacs.app)/Contents/MacOS/Emacs
+ make
+ make install
+
+ make [install] EMACS=(Emacs.app)/Contents/MacOS/Emacs
+
+In the above lines, (Emacs.app) is the path to the application bundle.
+
+If you are successful in installing a [[GPL]]-compatible elisp package, send your recipe to SeijiZenitani.
+
+=== How to use Fink's aspell? ===
+
+At present I don't know. The below line and some more settings will be required. [http://lists.sourceforge.jp/mailman/archives/macemacsjp-english/2005-May/000077.html]
+
+ (setq ispell-program-name "/sw/bin/aspell")
+
+=== How to use MacPorts' aspell? ===
+
+Use the following settings [http://blog.jasper.es/archives/8-Forcing-Carbon-Emacs-to-use-MacPorts-aspell.html jasper.es]. See elsewhere for how to enable flyspell mode
+
+ (setq ispell-program-name "/opt/local/bin/aspell")
+ (setenv "ASPELL_CONF" nil)
+
+
+=== How do I install German/French/Italian/Spanish/Russian aspell dictionary? ===
+
+Choose "Help > Carbon Emacs Package > Net-Install > Aspell (...)" in the menu bar.
+
+=== How do I manually install Spanish aspell dictionary to the built-in aspell? (for Jan. '07 or later) ===
+
+Notice that unpacking the file aspell-es-0.50-2.tar.bz2 often fails.  I used [http://wakaba.c3.cx/s/apps/ Unarchiver.app] instead.
+If you use powerpc macs, replace ''i386'' with ''powerpc'' in the following command lines.
+
+ export ASPELL_CONF="prefix /Applications/Emacs.app/Contents/Resources;data-dir /Applications/Emacs.app/Contents/Resources/lib/aspell-i386;dict-dir /Applications/Emacs.app/Contents/Resources/lib/aspell-i386;conf-dir /Applications/Emacs.app/Contents/Resources/etc"
+ export PATH="/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+ ./configure
+
+remove español.alias from the Makefile
+
+ make install
+
+copy español.alias by hand
+
+ cp espa*.alias /Applications/Emacs.app/Contents/Resources/lib/aspell-i386/
+
+According to the user, you may need to copy one more file.
+
+ cp spanish.alias /Applications/Emacs.app/Contents/Resources/lib/aspell-i386/castellano.alias
+
+== UNIX search PATH and other environment variables ==
+
+The way Carbon or Cocoa applications are launched in Aqua is different from the way in other UNIX windows environments. There they inherit their environment variables from the login shell. In Mac OS X it is different, and so Carbon Emacs and other applications do not run in the same process environment as a programme launched in Terminal. Since the times of !NeXTStep and the !NeXT a mechanism exists that can correct this difference: in Mac OS X it is the file ##~/.MacOSX/environment.plist##.
+
+In a freshly installed Mac OS X system neither the (invisible) ##~/.MacOSX## directory nor the file ##environment.plist## in it exist. Its – their! – creation is simple:
+
+	defaults write ${HOME}/.MacOSX/environment PATH "${HOME}/bin:/usr/bin:/bin:/usr/local/bin:${TeXbin}"
+
+##${TeXbin}## is here a proxy that stands for the bin directory of your TeX installation, if you have one. Instead of it, or in addition to it, you can provide the path to your Fink or !MacPorts binaries or to X11 installed, ##/usr/X11R6/bin##. The same mechanism can be used to make MANPATH, INFOPATH, LC_CTYPE, and other environment variables available, for example CFLAGS, CPPFLAGS, LDFLAGS, CVS_RSH in case you develop or install UNIX software.
+
+Having set up this mechanism, it can interfere with settings from the usual UNIX files like the system's ##/etc/profile## or ##/etc/csh.login## etc. and also the user's ##~/.profile## or ##~/.login## RC (resource script) files. You have to decide from which of the two systems the settings used will come. I recommend ##~/.MacOSX/environment.plist##, because it is so easy to change (edit) and use their key/value pairs saved in XML (on the command line with the defaults and plutil commands or PLTools from http://www.macorchard.com/PLTools, or "Mac like" with ##/Developer/Applications/Utilities/Property List Editor.app## from Apple's Mac OS X Developer Tools), for example in
+
+	~/.profile:		PATH=`defaults read "${HOME}/.MacOSX/environment" PATH`
+	~/.login:	setenv PATH       `defaults read ~/.MacOSX/environment PATH`
+
+The file ##~/.MacOSX/environment.plist## also solves similar problems in X11, because the X server runs in Aqua, too, and is therefore not completely initialised and all its clients are so because they inherit only this incomplete process environment. [http://developer.apple.com/qa/qa2001/qa1067.html] -- Pete
+
+== Misc ==
+
+On the Apple [http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html page] (dead link; see [https://web.archive.org/web/20110507083241/http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html archive]) it says that the license is "Freeware" which is wrong, I think.
+-- AlexSchroeder
+
+The developer chooses "freeware" or "shareware" in that entry item so that freeware would be a right choice. Other GPL'ed softwares are also categorized as freeware. -- SeijiZenitani
+
+I see.  Somebody should tell Apple.  :) -- AlexSchroeder
+
+
+Anybody know how to get anti-aliasing with font sizes less than 11pt? I haven't found a way even searching through the source.  I have the minimum size in System Preferences set to 4pt.
+
+[new]
+What exactly does Command-<mouse highlight region> do? It highlights the region in bright yellow, and the highlighted region is "fixed", but I'm curious as to how this might actually be used. -- Mike S.
+
+It's used to set the secondary selection. If you type C-h k and then do Command-<mouse highlight region> emacs itself will tell you more... -- Vila
+
+
+[new]
+
+How do I get rid of the toolbar? Setting (setq tool-bar-mode nil) doesn't work.
+
+Try (tool-bar-mode 0) 
+
+I created a file called "carbon" in /usr/local/bin, which just contains "open -a Emacs.app $@" and chmod 777'd it. However, when I run "sudo carbon (filename)", it doesn't load .emacs properly. Help?
+
+Don't do this; use [[EmacsClient]] so you only ever have one copy of Emacs running. (Also, chmod 777 is bad!)
+
+== See Also ==
+
+* MacOSTweaks
+* EmacsForMacOS
