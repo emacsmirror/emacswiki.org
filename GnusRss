@@ -1,1 +1,134 @@
+RSS feed support in Gnus is implemented with the 'nnrss' backend.
 
+== Supported versions ==
+
+You can read RSS feeds in latest Gnus (since 5.10.6; 2009).  If you have older Emacs, in order to parse ISO 8601 dates correctly, you need a trivial patch to timezone.el which is part of EmacsCvs. [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/timezone.el?rev=1.31]
+
+== Common tasks ==
+
+=== Adding feeds ===
+Use `G R' in the group buffer to create a new group for the feed.
+When asked, paste the URL to the XML or RDF file (I usually paste
+the URL to the RSS 1.0 feed when given the choice).
+(You must use G R only when the pointer is not on any other group, else it triggers group rename. An empty line in the group buffer should work fine.)
+
+The `G R' method does not work for me on gnus 5.10.8, for instance when tried with the url below it says "no such newsgroup nnrss:EmacsWiki".
+What works for me is hitting `G m' then typing a group name, and specifying nnrss as the backend, this creates a group, when entering the group for the first time it prompts for a url.
+
+=== Updating feeds ===
+Whenever Gnus updates, it will fetch the latest news from those feeds.
+Usually a feed has 15 items.  If you don't update from Gnus often enough,
+you will be missing new items.  For this wiki, for example, consider the
+following URL:
+
+* http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss&days=15&rsslimit=all&all=1
+
+This will give the items of all pages changed in the last fifteen days, without truncating the list down to 15 items, and it will show an entry for every major change to page, even if the page was changed several times.
+
+=== Importing/Exporting feeds ===
+
+There are two functions for reading/writing OPML:
+* <code>nnrss-opml-import</code>
+* <code>nnrss-opml-export</code>
+
+== Atom feeds ==
+
+You can convert Atom feeds to RSS before they are parsed by Gnus with an external program. Here's the setup:
+
+* Install <code>xsltproc</code> (Debian: <code>apt-get install xsltproc</code>)
+* Get the file <code>atom2rss.xsl</code> from http://atom.geekhood.net/ and save it in your home directory
+* Put the following code into your <code>.gnus</code>:
+
+<pre>
+(require 'mm-url)
+(defadvice mm-url-insert (after DE-convert-atom-to-rss () )
+  "Converts atom to RSS by calling xsltproc."
+  (when (re-search-forward "xmlns=\"http://www.w3.org/.*/Atom\"" 
+			   nil t)
+    (goto-char (point-min))
+    (message "Converting Atom to RSS... ")
+    (call-process-region (point-min) (point-max) 
+			 "xsltproc" 
+			 t t nil 
+			 (expand-file-name "~/atom2rss.xsl") "-")
+    (goto-char (point-min))
+    (message "Converting Atom to RSS... done")))
+
+(ad-activate 'mm-url-insert)
+</pre>
+
+Note that this will convert every Atom feed to RSS, not just for Gnus, but also for every other Emacs package which happens to call mm-url-insert.
+
+Alternatively, you can use nnshimbun from [[emacs-w3m]], which can also be used as a general RSS or Atom feed reader via the rss-hash and atom-hash shimbuns (but there are also many specialized shimbuns - see also WThreeMShimbun and the documentation from emacs-w3m. I strongly recommend using emacs-w3m from CVS, since the shimbuns get updated pretty often). There is also the rss-blogs shimbun, which is especially suited for RSS feeds without fully published content (see http://www.randomsample.de/dru5/node/45 ).
+
+-- DavidEngster
+
+== Gwene ==
+
+If one prefers to read rss and atom feeds via nntp, one can do so at
+news.gwene.org. Simply add the following to your .gnus.el:
+
+                (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
+
+One can then browse the list of available feeds via the server buffer
+(^).
+
+New feeds can be added [[http://gwene.org/|here]].
+
+== reader2maildir ==
+
+If you want to read [[http://reader.google.com/|Google Reader]] feeds with Gnus, you can use [[https://github.com/kisonecat/reader2maildir|reader2maildir]] to fetch feeds from Google Reader into a local Maildir, which can then be accessed via dovecot and nnimap.
+
+Seen marks are propagated in both directions, so if you read an article in Gnus, it will show up as Read in Google Reader, and vice versa.
+
+== Discussion ==
+
+----
+[new]
+You may be interested in the lisp code from http://my.gnus.org/book/view/108 which makes IMHO the rss feed look better than the default. The GnusRssScreenshot is even better. Does anybody know how to tweak the summary line for that?
+
+[new]
+I get almost that look with the following summary-line-format:
+
+    (setq gnus-summary-line-format "%U%R%z%d %I%(%[ %F %] %s %)\n"). 
+
+The only difference is that all entries have the date 01-JAN. Can anybody correct my format string?
+
+----
+[new]
+I began using the RSS feed with Gnus however, soon after I added five or six feeds I began to see a problem. Checking my email was now taking forever. Some feeds are slow. I wanted to add many, many more feeds, but instead wound up not using it at all. Maybe someone can comment on the possibility of doing checks to the RSS feeds only every 4, 8, 16 or maybe even 24 hours? IMHO, that would make it a much more usable product, and I would really very much like to use it, just not enough of an elisp programmer yet to handle the change (if ones even needed, might be a setting?) -- JeremyCowgar.
+
+[new]
+Well, you can set them to a different *level* -- S L 4 RET should set them to level 4, for example.
+If you use 3 g in the Group buffer, the groups on level 4 should not be fetched. -- AlexSchroeder
+
+[new]
+There is also the possibility to use an external download script for retrieving the feeds, which you can call e.g. via cron. See the variable nnrss-use-local and the function nnrss-generate-download-script. -- DavidEngster
+
+[new]
+You could also read them through gwene.org (see above). --JimKalb
+
+----
+[new]
+I run Gnus 5.10.6 and nnrss forgets the rss feed URLs between gnus sessions. I can see that they are available in ~/News/rss/nnrss.el. What is wrong with my setup? -- Dirk
+
+----
+For some RSS feeds I get "link" where there should be a link -- is this a utf-8 problem?
+--JoelAdamson
+----
+
+I'm using a snippet from Gnus' manual to extract the RSS URL from within the nnrss summary buffer (http://www.gnu.org/software/emacs/manual/html_node/gnus/RSS.html). This requires the nnrss-url-field/"X-Gnus-Url" header being set.
+
+However, it seems that articles being cached by the gnus agent do not contain the header (removing them from cache results  headers being restored again) -- is there any way to tell gnus to cache the nnrss-url-field, too?
+
+--SandroGiessl
+----
+
+== See Also ==
+
+rss2email, a different way of reading RSS feeds: [http://rss2email.infogami.com/]
+
+NewsTicker, WThreeMShimbun, GnusRssScreenshot
+----
+CategoryJournaling
+CategoryGnus
