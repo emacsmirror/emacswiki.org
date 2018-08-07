@@ -1,1 +1,42 @@
+15:55 <forcer> We already have namespaces! You just prefix
+      stuff with namespace-, namespace--, or namespace/!
+16:02 <kensanata> forcer: I agree with you regarding
+      namespaces. Namespaces are a convention and I think
+      elisp shows that that's often good enough.
+16:03 <forcer> kensanata: I was being sarcastic. :-(
+16:03 <kensanata> forcer: Nooooooo!
+
+This is what the manual says:
+
+: "You should choose a short word to
+distinguish your program from other Lisp programs. The
+names of all global variables, constants, and functions
+in your program should begin with that chosen prefix.
+Separate the prefix from the rest of the name with a
+hyphen, `-'.
+: "This practice helps avoid name conflicts,
+since all global variables in Emacs Lisp share the same
+name space, and all functions share another name
+space.
+: "Use two hyphens to separate prefix and name
+if the symbol is not meant to be used by other
+packages."
+: -- [[Manual:Coding Conventions]]
+
+EmacsLisp doesn't offer namespaces. Multiple ideas and implementations abound, however.
+
+* [https://github.com/chrisbarrett/elisp-namespaces elisp-namespaces] using a `namespace' macro at the beginning of your file
+
+* [http://draketo.de/licht/freie-software/emacs/namespaces-elisp Namespaces in Emacs Lisp] using a `namespace' macro where all your symbols are defined in the macro's body
+
+* [https://github.com/Malabarba/names The Names package] similar to the previous, provides a `define-namespace' macro. It's a more complete solution, tackling things like `eval-defun'. It  “is designed as a practical, complete, robust, and debuggable tool which writes your namespaces for you.”  See [https://github.com/Malabarba/names/blob/master/UsageExample.org this usage example] that shows namespaces are added to your library.
+
+* [https://github.com/Malabarba/Nameless The Nameless package] lets you pretend to have namespaces by hiding the namespace prefixes with font locking.
+
+* [http://nic.ferrier.me.uk/blog/2013_06/adding-namespaces-to-elisp Hatching a plan to add namespaces to EmacsLisp] is a blog post talking about namespaces with some pointers to discussions on [[emacs-devel]].
+
+* [https://github.com/kbauer/myelisp-namespace-helper.el myelisp-namespace-helper.el] is a quick solution for more easily inserting namespace prefixes with the `-' key, and support for visually collapsing the prefix with `prettify-symbols-mode'. This approach avoids the risk of breaking interactive features.
+
+----
+CategoryCode
 
