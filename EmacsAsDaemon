@@ -1,1 +1,334 @@
-e.
+Emacs supports a client/server mode where new files are opened in a running instance of Emacs. This saves you from having to load configuration and packages for every new file you open. This involves two configuration steps: using EmacsClient to open files, and running the Emacs server. This page focuses on how to launch the server at startup, a.k.a. daemon mode.
+
+
+= Running emacs like a Daemon  =
+
+This feature was introduced in Emacs 23.1.  Daemon mode starts Emacs loading the user's standard init files, but headless.  The command to run it is: 
+
+<pre>
+emacs --daemon
+</pre>
+
+
+
+= Starting Emacs Daemon with systemd =
+
+[http://www.freedesktop.org/wiki/Software/systemd Systemd] is the supported method of running applications at startup on most Linux distributions. The following configuration file emacs.service will be included in the standard Emacs installation as of 26.1.  All you need to do is copy this to <tt>~/.config/systemd/user/emacs.service</tt> .
+
+{{{
+[Unit]
+Description=Emacs text editor
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/emacs --fg-daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+
+}}}
+
+
+
+Enable the unit by running:
+{{{
+systemctl enable --user emacs
+systemctl start --user emacs
+}}}
+
+
+
+= Other Systems =
+
+There are other ways to launch <code>emacs --daemon</code> depending on your requirements.
+
+===Debian===
+
+One easy way to start the Emacs daemon is via "Settings > Session and Startup > Application Autostart". 
+
+You can also place an init script to place in /etc/init.d/emacsd. Here are examples for GNU Debian/Ubuntu.  
+
+* [DebianInitScript Init script example 1]
+
+* [EmacsdInitScript Init script example 2]
+
+
+=== Gentoo ===
+
+Gentoo includes support for running Emacs as a daemon in the
+<code>app-emacs/emacs-daemon</code> package.
+
+: emerge app-emacs/emacs-daemon
+
+Every user who wants to connect to an Emacs server must have an own
+instance of the daemonized Emacs. The init script automatically
+determines the user by its name, so you create a symbolic link
+(do not copy the script, or you will miss eventual updates!) in your
+<code>/etc/init.d</code> directory:
+
+: ln -s emacs /etc/init.d/emacs.''username''
+
+This may be added to the boot sequence (and will run under the user's
+privileges)
+
+: rc-update add emacs.''username'' default
+
+Further customizations can be done through the
+<code>/etc/conf.d/emacs</code> file, which is extensively commented.
+You may also create individual <code>/etc/conf.d/emacs.</code>''username''
+files for "multiplexed" user configuration.
+
+=== OS X ===
+
+If you're running Emacs 23 or higher, you can run Emacs Daemon via OS X's launchd. The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd"> 
+     <plist version="1.0">
+      <dict> 
+        <key>Label</key>
+        <string>gnu.emacs.daemon</string>
+        <key>ProgramArguments</key>
+        <array>
+          <string>/Applications/Emacs.app/Contents/MacOS/Emacs</string>
+          <string>--daemon</string>
+        </array>
+       <key>RunAtLoad</key>
+       <true/>
+       <key>ServiceDescription</key>
+       <string>Gnu Emacs Daemon</string>
+      </dict>
+    </plist>
+
+
+This can then be installed in ##~/Library/LaunchAgents## and loaded via:
+
+   launchctl load -w ~/Library/LaunchAgents/gnu.emacs.daemon.plist
+
+For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
+
+=== Microsoft Windows ===
+
+You can run <tt>emacs --daemon</tt> by creating a shortcut file or .bat file in the startup folder. See EmacsMsWindowsIntegration for details.
+
+
+= Stopping the Emacs Daemon =
+
+The simplest way to stop the emacs daemon from within emacs is to use the <code>kill-emacs</code> or <code>save-buffers-kill-emacs</code> commands.
+
+Here is a more advanced function will ask if you want to save any modified buffers, quit your session, and shutdown the associated emacs server instance.
+
+<pre>
+;; define function to shutdown emacs server instance
+(defun server-shutdown ()
+  "Save buffers, Quit, and Shutdown (kill) server"
+  (interactive)
+  (save-some-buffers)
+  (kill-emacs)
+  )
+</pre>
+
+=== From outside a running instance ===
+
+From outside of emacs this can be achieved using emacsclient, using the -e execute command:
+{{{
+    emacsclient -e '(kill-emacs)'
+}}}
+This will shutdown the daemon immediately with out prompting or saving files.
+
+If you would like emacs to prompt if there are unsaved buffers or existing clients/frames, you can add the following functions to your .emacs file then use the command:
+{{{
+    emacsclient -e '(client-save-kill-emacs)'
+}}}
+The display on which the new frame should be opened can optionally be specified. If a prompt is required this function will always open an frame as an x window.
+
+{{{
+(defun client-save-kill-emacs(&optional display)
+  " This is a function that can bu used to shutdown save buffers and 
+shutdown the emacs daemon. It should be called using 
+emacsclient -e '(client-save-kill-emacs)'.  This function will
+check to see if there are any modified buffers or active clients
+or frame.  If so an x window will be opened and the user will
+be prompted."
+
+  (let (new-frame modified-buffers active-clients-or-frames)
+
+    ; Check if there are modified buffers or active clients or frames.
+    (setq modified-buffers (modified-buffers-exist))
+    (setq active-clients-or-frames ( or (> (length server-clients) 1)
+					(> (length (frame-list)) 1)
+				       ))  
+
+    ; Create a new frame if prompts are needed.
+    (when (or modified-buffers active-clients-or-frames)
+      (when (not (eq window-system 'x))
+	(message "Initializing x windows system.")
+	(x-initialize-window-system))
+      (when (not display) (setq display (getenv "DISPLAY")))
+      (message "Opening frame on display: %s" display)
+      (select-frame (make-frame-on-display display '((window-system . x)))))
+
+    ; Save the current frame.  
+    (setq new-frame (selected-frame))
+
+
+    ; When displaying the number of clients and frames: 
+    ; subtract 1 from the clients for this client.
+    ; subtract 2 from the frames this frame (that we just created) and the default frame.
+    (when ( or (not active-clients-or-frames)
+	       (yes-or-no-p (format "There are currently %d clients and %d frames. Exit anyway?" (- (length server-clients) 1) (- (length (frame-list)) 2)))) 
+      
+      ; If the user quits during the save dialog then don't exit emacs.
+      ; Still close the terminal though.
+      (let((inhibit-quit t))
+             ; Save buffers
+	(with-local-quit
+	  (save-some-buffers)) 
+	      
+	(if quit-flag
+	  (setq quit-flag nil)  
+          ; Kill all remaining clients
+	  (progn
+	    (dolist (client server-clients)
+	      (server-delete-client client))
+		 ; Exit emacs
+	    (kill-emacs))) 
+	))
+
+    ; If we made a frame then kill it.
+    (when (or modified-buffers active-clients-or-frames) (delete-frame new-frame))
+    )
+  )
+
+
+(defun modified-buffers-exist() 
+  "This function will check to see if there are any buffers
+that have been modified.  It will return true if there are
+and nil otherwise. Buffers that have buffer-offer-save set to
+nil are ignored."
+  (let (modified-found)
+    (dolist (buffer (buffer-list))
+      (when (and (buffer-live-p buffer)
+		 (buffer-modified-p buffer)
+		 (not (buffer-base-buffer buffer))
+		 (or
+		  (buffer-file-name buffer)
+		  (progn
+		    (set-buffer buffer)
+		    (and buffer-offer-save (> (buffer-size) 0))))
+		 )
+	(setq modified-found t)
+	)
+      )
+    modified-found
+    )
+  )
+
+}}}
+
+=== Using GNOME startup and session manager ===
+
+When the emacs daemon is started as a GNOME startup application (by adding "emacs --daemon" as one of the startup applications), you can use the following code in your init file to make emacs register as a client with the GNOME session manager, and shutdown gracefully when the session ends.
+
+{{{
+;;; save & shutdown when we get an "end of session" signal on dbus 
+(require 'dbus)
+
+(defun my-register-signals (client-path)
+  "Register for the 'QueryEndSession' and 'EndSession' signals from
+Gnome SessionManager.
+
+When we receive 'QueryEndSession', we just respond with
+'EndSessionResponse(true, \"\")'.  When we receive 'EndSession', we
+append this EndSessionResponse to kill-emacs-hook, and then call
+kill-emacs.  This way, we can shut down the Emacs daemon cleanly
+before we send our 'ok' to the SessionManager."
+  (setq my-gnome-client-path client-path)
+  (let ( (end-session-response (lambda (&optional arg)
+                                 (dbus-call-method-asynchronously
+                                  :session "org.gnome.SessionManager" my-gnome-client-path
+                                  "org.gnome.SessionManager.ClientPrivate" "EndSessionResponse" nil
+                                  t "") ) ) )
+         (dbus-register-signal
+          :session "org.gnome.SessionManager" my-gnome-client-path
+          "org.gnome.SessionManager.ClientPrivate" "QueryEndSession"
+          end-session-response )
+         (dbus-register-signal
+          :session "org.gnome.SessionManager" my-gnome-client-path
+          "org.gnome.SessionManager.ClientPrivate" "EndSession"
+          `(lambda (arg)
+             (add-hook 'kill-emacs-hook ,end-session-response t)
+             (kill-emacs) ) ) ) )
+
+;; DESKTOP_AUTOSTART_ID is set by the Gnome desktop manager when emacs
+;; is autostarted.  We can use it to register as a client with gnome
+;; SessionManager.
+(dbus-call-method-asynchronously
+ :session "org.gnome.SessionManager"
+ "/org/gnome/SessionManager" 
+ "org.gnome.SessionManager" "RegisterClient" 'my-register-signals
+ "Emacs server" (getenv "DESKTOP_AUTOSTART_ID"))
+}}}
+
+
+
+= Running Multiple Emacs Servers =
+
+It is possible to run multiple Emacs servers on one machine. This makes it possible to isolate tasks and use different preference files for different workloads. 
+
+Instructions can be found on MultiEmacsServer.
+
+
+
+= Troubleshooting =
+
+== "/tmp/emacs1000 is unsafe" ==
+
+Emacs won't start the daemon if its permissions aren't secure. If you receive an error that /tmp/emacs1000 (or another number) isn't safe, do `ls -l /tmp`. The entry for the emacs1000 directory will probably look like `drwxr-x---`. Simply do a `chmod 700 /tmp/emacs1000` to set them to the correct `drwx------` and start the daemon again.  
+
+
+
+== Isolated server, impossible to connect ==
+
+There is an unfortunate possibility when using the emacs server where the server can be stopped and then all visible frames closed (e.g. server-force-delete + ssh disconnect). As far as I can tell, in this condition it becomes impossible to attach to your running emacs instance. This is a real bummer. As a workaround, you can set up a signal handler to restart the server. You can put the following into your emacs startup elisp:
+<pre>
+;; define function to restart the server
+(defun signal-restart-server ()
+  (interactive)
+  (message "Caught event %S" last-input-event)
+  (server-mode)
+  )
+
+;; add the binding to the special-event-map
+(define-key special-event-map [sigusr1] 'signal-restart-server)
+</pre>
+
+Once that code has been loaded, sending a USR1 to the emacs process will restart the server. You can now reconnect. Joy.
+
+<pre>
+doh@bummer ~/ $ emacsclient -nc
+emacsclient: can't find socket; have you started the server?
+To start the server in Emacs, type "M-x server-start".
+emacsclient: No socket or alternate editor.  Please use:
+
+	--socket-name
+	--server-file      (or environment variable EMACS_SERVER_FILE)
+	--alternate-editor (or environment variable ALTERNATE_EDITOR)
+
+doh@bummer ~/ $ ps auxw | grep emacs
+doh     5373  0.0  0.2 483844 28872 ?        Ssl  18:44   0:00 emacs --daemon
+
+doh@bummer ~/ $ kill -USR1 5373
+  ## Note: there is no feedback from the command line kill
+
+doh@bummer ~/ $ emacsclient -nc
+  ## Note: Joy!
+
+</pre>
+
+NOTE: One other possible way to get the server restarted would be to connect to the process with gdb and then call some function to execute lisp code to restart the server. If anyone knows how to do that I would be very interested in learning how it is done.
