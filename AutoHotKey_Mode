@@ -1,11 +1,1 @@
-There are 2 major modes for editing the keyboard macro scripting language [http://en.wikipedia.org/wiki/Autohotkey Autohotkey].
 
-One is [http://www.robf.de/Hacking/elisp/ahk-mode.el ahk-mode] by Robert Widhopf-Fenk. This one is bundled with the AutoHotKey software.
-
-Another one is [http://xahlee.org/mswin/emacs_autohotkey_mode.html xahk-mode] by Xah Lee.
-
-: <em>Note that as of mid-2014, Xah Lee has started charging money (US$5.00) for xahk-mode.</em>
-
-As of mid-2016, [https://github.com/xahlee/xahk-mode.el xahk-mode is on GitHub].
-
-In addition, there appears to be [https://github.com/ralesi/ahk-mode another ahk-mode] available that is fairly actively maintained, and is based on both the other two.
