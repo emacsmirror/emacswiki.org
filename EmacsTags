@@ -1,1 +1,134 @@
+[[de:indonesia]]
+This page is about '''[::tags]''', a facility for recording names and their definitions and later looking up the definitions.
 
+See BuildTags for how to build or update a [[tags file]] with a command-line program which records where names of different kinds of entities are defined and where they are referenced.  Names that are indexed for quick lookup this way are called '''[[tag]]s'''.
+
+== Navigating using tags ==
+
+Once you have a [[tags file]] and M-x visit-tags-table, you can follow tags (of functions, variables, macros, whatever) to their definitions. These are the basic commands:
+
+* `##M-.##' (`find-tag') -- find a tag, that is, use the Tags file to look up a definition.  If there are multiple tags in the project with the same name, use `##C-u M-.##' to go to the next match.
+* `M-x find-tag-other-window' -- selects the buffer containing the tag's definition in another window, and move point there.
+* `##M-*##' (`pop-tag-mark') -- jump back
+* `M-x tags-search' -- [[regexp]]-search through the source files indexed by a tags file (a bit like `grep')
+* `M-x tags-query-replace' -- query-replace through the source files indexed by a tags file
+* `##M-,##’ (`tags-loop-continue') -- resume  `tags-search'  or `tags-query-replace' starting at [[point]] in a source file
+* `M-x tags-apropos' -- list all tags in a tags file that match a regexp
+* `M-x list-tags' -- list all tags defined in a source file
+
+See the Emacs manual, node '''Tags''' for more information: Manual:Tags.
+
+=== View tag other window ===
+
+This function acts like `find-tag-other-window' but lets the point on current buffer:
+
+{{{
+;;; View tags other window
+(defun view-tag-other-window (tagname &optional next-p regexp-p)
+  "Same as `find-tag-other-window' but doesn't move the point"
+  (interactive (find-tag-interactive "View tag other window: "))
+  (let ((window (get-buffer-window)))
+    (find-tag-other-window tagname next-p regexp-p)
+    (recenter 0)
+    (select-window window)))
+}}}
+
+== Choosing Among Multiple Tags for the Same Name ==
+
+A [[tags file]] can have multiple definitions, hence multiple tags, for the same name. The different definitions for the name can be in the same source file or in different source files. And you can have multiple tags files. This means that when you ask to follow a name to its definition there can be some ambiguity.
+
+It's good to have a way to navigate among different definitions of the same name in such a way that you can tell where each source definition is located before you go to it. The following libraries all help you choose from among multiple tags for the same name in multiple files:
+
+* [[Icicles - Emacs Tags Enhancements]]
+* EtagsSelect
+* [[VTags]]
+* (helm-c-etags-select) in https://github.com/emacs-helm/helm  is [https://github.com/emacs-helm/helm helm] interface to select candidates.
+* [https://github.com/jixiuf/helm-etags-plus helm-etags-plus] this is another  [https://github.com/emacs-helm/helm helm]  interface to select candidates(support multiple tag files).
+** See also AnythingApplications
+
+== Icicles Helps You Work with Tags ==
+
+You can use use '''[[Icicles]]''' [[Icicles - Multi-Commands|multi-commands]] '''‘icicle-search-tag’''' and '''`icicle-find-tag'''' to do all of what you normally do with a combination of commands `find-tag’, `tags-loop-continue’ (`##M-,##’), `tags-apropos’, `tags-query-replace', `list-tags', and more.  Each of these is a general ''tags browser''.  Being multi-commands, you can visit any number of tags, in any order, in a single command invocation. You see a list of all tags that match your (reexp) input, and those choices are dynamically updated when you change your minibuffer input. See [[Icicles - Emacs Tags Enhancements]].
+
+
+In addition, you can use '''Icicles''' multi-command `icicle-imenu' as an alternative to using tags.  Like tags, it lets you navigate among definitions in multiple files -- and also multiple saved regions and non-file buffers.  Like ImenuMode, you need not build a tags file.
+
+Since `icicle-imenu' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp). See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
+
+== Ido for Fuzzy Tag Selection ==
+
+Ido can be used to browse tags by name using fuzzy searching, which lets you progressively narrow down potential options. This is similar to Goto Symbol functionality in [https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name Visual Studio Code] or Sublime's "Goto Symbol in Project". See [[InteractivelyDoThings#CompleteFindTagUsingIdo]].
+
+== Finding files *in* TAGS ==
+
+Directly open the a file referenced in the TAGS file without specifying the path,
+and share a single TAGS file across work areas of the same project.  See [[find-file-in-tags]]
+
+== Finding Tags Files ==
+
+[new]
+See EtagsTable
+
+[new]
+To load an existing TAGS file by searching parent directories, use this:
+
+<pre>
+(let ((my-tags-file (locate-dominating-file default-directory "TAGS")))
+  (when my-tags-file
+    (message "Loading tags file: %s" my-tags-file)
+    (visit-tags-table my-tags-file)))
+</pre>
+
+== Revisit Tags Chronologically ==
+
+You can use EtagsStack to see the history of which tags you have visited (using, for example, `##M-.##') and retrace your visits chronologically.
+
+An alternative (similar functionality, but with support for multiple tags types such as gtags, and additional operations such as deleting spurious tags) is http://github.org/markhepburn/tags-view
+
+[https://github.com/jixiuf/helm-etags-plus helm-etags-plus] this is another
+[https://github.com/emacs-helm/helm helm]  interface to select candidates(support multiple tag files) and it support  revisiting the history of which tags you have visited.
+
+== Use Tags to Complete Symbols ==
+
+You can use `M-x complete-tag' to get simple
+(ie context free) symbol name [[Completion]]. This works like other types of
+completion in emacs, if there are multiple possibilities a window will be opened showing them all. 
+
+[new]
+Does anybody know where the 'tag-complete-symbol' went? -- AlexSchroeder
+
+[new]
+No idea, but try tags-complete-tag in etags.el. It does pretty much the same thing. It's not documented which is criminal for such an insanely useful thing. -- Anonymous
+
+[new]
+`complete-tag' is bound to `M-TAB' by default but because some
+window managers use this to switch between windows, I tend to use `M-RET' instead. Which tool do you use for context symbol completion? For example, I just want to see the functions accessible from [[point]]. -- JérômeRadix
+
+[new]
+Semantic in CEDET has a feature that might fit your needs: "Smart Completion
+Completes symbols actually available in a given context. Some tools call this intellisense." -- Martin Muggli
+
+== Use incron (Inotify cron) to generate tags automatically  ==
+
+An article document here how to use [http://inotify.aiken.cz/?section=incron&page=about&lang=en incron] to generate the tags automatically when a file changed. You can read it here :
+
+http://blog.chmouel.com/2009/07/03/update-emacsvim-tags-with-inotify/
+
+== XEmacs vs GNU Emacs Versions of etags.el ==
+
+##etags.el## is the Emacs library that defines commands for working with tags. XEmacs and GnuEmacs each have an ##etags.el## file, and they are quite different. This divergence has been a source of
+frustration on my part over the years.  In early 1990's I started
+using the XEmacs version of etags.el and grew very fond of it's
+configurability especially with regards to specifying which TAGS file
+to use based on regexp of file names, major modes, etc.  It seems like
+to me that etags.el in GNU Emacs lacks such configurability. Hence, I
+still use etags.el, lifted from Lucid emacs, that I hacked up to work
+with Emacs many years ago. Again, if someone knowledgable with Emacs
+etags.el can correct me, I would appreciate it. -- Anonymous
+
+See EtagsTable
+
+----
+CategoryProgrammerUtils
+CategoryCompletion
+CategoryNavigation
