@@ -1,1 +1,124 @@
+The value of [[variable]] '''`load-path'''' is a list of directories to search, in order, for EmacsLisp libraries that you load.  If you do not alter it (directly or indirectly), by default it contains the Lisp source directories for the Emacs distribution.
 
+If you install an Emacs package using the package manager (see
+InstallingPackages), it automatically configures `load-path' to handle 
+the packages you install that way. But if you download  Emacs Lisp files yourself or you write local Lisp files, just add the directories containing those files to 
+`load-path'.
+
+When both a byte-compiled file (##*.elc##) and a
+source file (##*.el##) are found for the same library, preference is given to byte-compiled file. Therefore, be sure to recompile files after
+making changes to them (or don't compile them at all).
+
+
+== Adding a directory ==
+
+To add a single directory (e.g., ##"~/.emacs.d/lisp/"##) to the front of your `load-path':
+{{{
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+}}}
+
+(The directory name does not need to end with a slash (##/##).)
+
+[:AddSubDirectories]
+== Adding Descendant Directories ==
+
+Adding a directory to variable `load-path' does not also add any of its descendants (its subdirectories, their subdirectories, and so on, recursively).
+
+To add all of the descendant directories of a directory ##DIR## to your  `load-path', 
+bind variable `default-directory' to ##DIR## and then invoke function '''`normal-top-level-add-subdirs-to-load-path'''', as follows:
+
+{{{
+(let ((default-directory  "~/.emacs.d/lisp/"))
+  (normal-top-level-add-subdirs-to-load-path))
+}}}
+
+This omits directories whose names do not start with letters or digits, those named
+##RCS## or ##CVS##, and those containing a file named ##.nosearch##.
+
+To add only some descendant directories, pass the list as a second argument.  For example:
+
+{{{
+(let ((default-directory  "~/.emacs.d/lisp/"))
+  (normal-top-level-add-to-load-path '("emms" "erc" "planner" "w3")))
+}}}
+
+To have libraries in particular paths take precedence over other libraries with the same name, elsewhere, put the
+directories or those prioritized libraries at the beginning of `load-path'.
+
+{{{
+(let ((default-directory  "~/.emacs.d/lisp/"))
+  (setq load-path
+        (append
+         (let ((load-path  (copy-sequence load-path))) ;; Shadow
+           (normal-top-level-add-subdirs-to-load-path))
+         load-path)))
+}}}
+
+Assuming that you install packages in ##~/.emacs.d/lisp/## and
+that some of the installed packages are single libraries while others
+are placed inside their own descendant directories you need to combine the
+steps from above.
+
+{{{
+(let ((default-directory  "~/.emacs.d/lisp/"))
+  (normal-top-level-add-to-load-path '("."))
+  (normal-top-level-add-subdirs-to-load-path))
+}}}
+
+Since various packages store information in ##~/.emacs.d/##, it is
+unwise to add all of its descendant directories to `load-path'.  Above we
+only added directory ##lisp##, to avoid loading files that
+are not libraries.
+
+To install all directories to the beginning of the `load-path' use:
+
+{{{
+(let ((default-directory  "~/.emacs.d/lisp/"))
+  (setq load-path
+        (append
+         (let ((load-path  (copy-sequence load-path))) ;; Shadow
+           (append 
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
+}}}
+
+If you are using Emacs 23 or later you can use variable `user-emacs-directory' to
+construct a path to one of its descendant directories.
+
+{{{
+(concat user-emacs-directory
+        (convert-standard-filename "lisp/"))
+}}}
+Note the use of `convert-standard-file-name' to construct a path
+that is valid on all supported platforms.
+
+
+== Default value of `load-path' ==
+
+On GNU/Linux, the default value of `load-path' includes two special directories
+and their descendants: ##/usr/local/share/emacs/VERSION/site-lisp## and
+##/usr/local/share/emacs/site-lisp##.  The first
+directory contains packages for a particular Emacs version; the second
+contains packages for all installed versions of Emacs.  These
+directories contain files for the current ''site'', for use by the
+system administrator when installing software
+locally[http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY].
+
+##~/.emacs.d/##, on the other hand, contains files for the current
+''user'', and is independent of system-wide changes.  This makes it
+the best choice for storing your personal changes.  Installing all
+packages in a sub-directory of ##~/.emacs.d/## also makes it very easy
+to move them along with your configuration to a different machine.
+
+== Debugging ==
+
+First, `C-h v load-path RET' gives you the documentation variable `load-path', as well as its current value. If your directory is not listed,
+add it (see above).
+
+If your directory ''is'' listed, check for ConflictingLibraries.
+
+To see the path where Emacs finds a library use `M-x locate-library'.
+
+----
+CategoryHelp
