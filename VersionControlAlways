@@ -1,1 +1,219 @@
+== Discussion ==
 
+Ever since emacs was able to do version control, I have wondered why
+not go all the way and replace backup files with it --
+transparently, of course.  (If you are the only user, no need for
+checkout/checkin; eveything is always checked out except that
+versions are stored in nice, compact, viewable deltas instead of
+separate files.)  You would specify the dir where the version
+control files are kept, if you want them all in one place (as I
+would). -- (wayestuncool@yahoo).
+
+[new]
+Since this page was last edited Eric Raymond (ers) has written
+[http://esr.ibiblio.org/?p=6502 SRC: Simple Revision Control].
+Here are the
+[http://www.catb.org/~esr/src/FAQ.html FAQ],
+[http://www.catb.org/~esr/src/ resources] and
+[http://www.catb.org/~esr/src/src.html man] pages.
+
+[new]
+This seems rather pointless to me.  You can have numbered backups
+and use diff to create the diff between any revision you want. That
+seems much better.
+[new]
+
+You can, but with vc, you would have the full power of vc
+(branches), the compactness of a single file, the clarity of
+seeing the history of changes, etc.  And one set of backup code is
+easier to maintain than two.  It would be just as transparent as
+backups, so no &quot;vc fear&quot; about permissions and such in the default
+case where there is only one user.  Why does that seem pointless
+to you?  -- wayestuncool@yahoo
+[new]
+You can always use revision control if you want.  Once you have it,
+though, you need to make sure the repository moves when the file
+moves (this is obvious in the case of backupfiles, but not
+necessarily obvious with vc), and you need to have a vc tool
+installed, which is not necessarily true. -- AlexSchroeder
+[new]
+Good points, but can it be set so that all the vc files are in one
+place and so that it is just as transparent as tilde files?
+i.e. not having to register a new file, but just happens when you
+save a file for the first time, and doesn't mess with the
+permissions of the file that you are editing.  Does this
+capability exist?
+[new]
+Mentioned in #emacs:
+
+<MartinCleaver> it seems like such an obvious thing to do
+<bpalmer> adding a thing to after-save-hook would be relatively straightforward
+<bpalmer> e.g., first you write a function which, when invoked in a buffer, checks for the existence of the RCS file and complains if need be
+<bpalmer> then add it to after-save-hook
+<bpalmer> but that would bug you every single time, not having a history of files you don't actually want to do that for
+
+So... based on a prototype by <bpalmer> and with further refinement a couple of weeks later from <forcer>, <dmhouse> and <lde> :
+
+[new]
+Conclusion, in your ~/.emacs file:
+
+   (require 'vc)
+
+   (defun ensure-in-vc-or-check-in () 
+     (interactive)
+     (if (file-exists-p (format "%s,v" (buffer-file-name)))
+        (progn (vc-checkin (buffer-file-name) nil "") (vc-toggle-read-only) (message "Checked in"))
+        (ding) (message "You need to check this in! M-x vc-use"))
+     )
+     (add-hook 'after-save-hook  'ensure-in-vc-or-check-in)
+
+   (defun vc-use () 
+     (interactive)
+     (vc-register) 
+     (vc-toggle-read-only)
+   )
+
+[new]
+
+I'd be interested if others are using this method, how I might package
+it into a mode and some general feedback.
+[new]
+
+----
+
+[new]
+I found this page because I am looking for a method to accomplish exactly what the title says.  The comment regarding versioned backups and diff made me laugh and cringe at the same time.  Folks, we're experiencing a minor clash of cultures here... :)  My advice: when you find yourself wondering why seemingly intelligent people are so passionate about vc, consider how so many people have failed to understand your passion about emacs over the years.  Modern version control systems are strong magic.  They are esoteric, abstract filesystems that give users great power.  I consider every file that isn't under version control to be a temporary file.  From a usability point of view: I currently have a terminal open where I handle git commands, because egg doesn't meet my needs.
+[new]
+
+----
+
+Unless you're using a distributed VC system, this would only work when
+you're on a network with interactive latency/bandwidth.  For some, the
+discipline of having to check in whole files is important.  For
+others, no distributed VC system yet scales well enough.
+
+[new]
+Isn't bandwidth my problem?  And, people seem happy with tramp.
+[new]
+
+I don't disagree with the fundamental urge to limit the proliferation
+of "versioned backup" mechanisms.  We have, in no particular order:
+emacs saves, version control such as CVS, filesystem snapshots (LVM2
+comes to mind), UnionFS, RAID mirroring, incremental dumps to tape,
+and probably more I'm not thinking of.  These all go on at the same
+time, on the same precious source files.  I have to admit, that's a
+lot.
+
+(jfm3)
+
+[new]
+A couple points of note:
+
+a) you don't usually want to check in after *each* save (like, you just save a file/files because you go home for the day, but are not actually finished).
+
+b) you need a commit message in about all VC systems out there.
+
+c) if you ever get the Emacs maintainers to replace the current backup scheme(s) with VC, make *very*, **very** sure it plays along with an actual VC like Subversion.  I could see lots of trouble that way ("Whattaya mean, it isn't checked in?  Emacs tells me it is... oops, just in my local pseudo-VC.  Sorry 'bout yelling.")
+
+--jae
+[new]
+The proposal is to replace the BackupFiles system with *transparent* VersionControl.  BackupFiles doesn't backup on every save, although it can be set to to.  And commit messages good be auto generated.
+
+Avoiding complications with an existing VC mode session, is a known flaw with this WishList item.  It's the core part of the problem.
+
+[new]
+
+Seems stupid, but this works for me:
+
+    #!/bin/sh
+    git-init-db
+    git add *.lisp *.asd
+    git-update-index *.lisp *.asd
+    git-commit -m "autocommit"
+
+[new]
+I create a git repo in my homedir and put all saved changes into it since I lost a colortheme I was working on three hours just because I closed another emacs instance that overwrote custom options...
+{{{
+(require 'cl)
+
+(setq myhomedir "/home/jeff/")
+
+(setq my-save-ignore-files 
+      '(".ido.last" 
+	".recentf"
+	".projects.ede"))
+
+(defun commit-after-save ()
+  (let ((filename (buffer-file-name)))
+    (when (and (string-match myhomedir filename)
+	       (not (find-if '(lambda (ignore) 
+				(string-match (regexp-quote ignore) filename)) 
+			     my-save-ignore-files)))
+      (let ((commit-file (concat "git add " (buffer-file-name) 
+				 " && git commit -m '" filename "'"))
+	    (olddir default-directory))
+	(save-excursion
+	  (cd myhomedir)
+	  (shell-command commit-file))
+	(cd olddir)))))
+
+(add-hook 'after-save-hook 'commit-after-save)
+}}}
+(provide 'my-save)
+
+[new]
+Using WIP branches to save every edit
+
+    ;;save changes into wip shadow branch
+    ;; see http://www.jukie.net/~bart/blog/save-everything-with-git-wip
+    ;; and http://github.com/bartman/git-wip
+    (defun git-wip-wrapper () 
+      (interactive)
+      (shell-command (concat "git-wip save \"WIP from emacs\" --editor -- " (buffer-file-name))))
+    (add-hook 'after-save-hook  'git-wip-wrapper)
+
+Enter git-wip. WIP stands for Work In Progress, and is a term that is 
+commonly used to describe work that is not ready to be shared and is 
+still in progress. This git wip tool manages hidden side branches that 
+live along side every other branch you work on. Any time it's invoked 
+it will commit the state of the working tree to this branch.
+
+
+[new]
+
+Some comments regarding  ensure-in-vc-or-check-in:
+# At least for RCS you should allow also RCS/%s,v
+# I would only restrict it to buffers which possess a buffer-file-name
+# I would not put this function globally in the after-save-hook.
+Either add to the local variables list 
+
+ Local Variables: 
+ eval: (add-hook (make-local-variable 'after-save-hook) 'ensure-in-vc-or-check-in)
+
+or I would write a function, which interactively adds ensure-in-vc-or-check-in locally to that hook and another functions which removes it. 
+
+So here is my modification.
+
+ (defun ensure-in-vc-or-check-in ()
+   "Automatically checkin file ,v can be in the same directory or in the
+ subdirectory RCS. The idea is  to call that function only for files
+ not for buffers. See the function ensure-in-vc-or-check-in-modes  
+ which could be use in an apropriate HOOK."
+   (interactive)
+   (when (buffer-file-name)   
+ 	(if (or (and (file-exists-p (format "%s,v" (buffer-file-name))))
+ 			(and (file-exists-p (format "RCS/%s,v" (file-name-nondirectory buffer-file-name)))))
+ 		(progn
+ 			(vc-checkin (buffer-file-name) nil "")   
+ 			(vc-toggle-read-only) 
+ 			(message "Checked in"))
+ 		  (ding)
+ 		  (beep)  
+  		  (message "You need to check this in! M-x vc-use"))))
+
+
+Uwe Brauer 
+
+----
+CategoryVersionControl
+CategoryWishList
