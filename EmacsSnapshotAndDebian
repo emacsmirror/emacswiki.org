@@ -1,1 +1,118 @@
+There are good Debian and Ubuntu packages that provide emacs versions newer than the official packages. One can also install from source for maximum freshness.
 
+== Debian packages ==
+
+Bleeding-edge snapshots are generated weekly for amd64 Debian/unstable. Packages available here: [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]
+
+For Debian testing, stable and oldstable you can find packages built directly from Emacs git master here:
+[[http://emacs.ganneff.de/|http://emacs.ganneff.de/]] - Build status can be seen at [[https://git.nsb-software.de/joerg/emacs/pipelines||https://git.nsb-software.de/joerg/emacs/pipelines]]
+
+== Ubuntu packages ==
+
+The [[https://launchpad.net/~ubuntu-elisp|“Ubuntu Emacs Lisp” team]] maintain [[https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa|The Official ;-) Ubuntu Emacs Daily Snapshot PPA]].
+
+Unofficial packages built from stable releases are available in [[https://launchpad.net/~kelleyk/+archive/ubuntu/emacs|ppa:kelleyk/emacs]].
+
+== Installing from source on Debian and similar ==
+
+To install a bleeding-edge version of Emacs direct from Bazaar, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, one can use [[https://github.com/rrthomas/src-emacs-on-debian|this handy script and Debian package]] by Michael Olson. 
+
+Alternatively, do it yourself. First, use git to get the sources:
+
+    git clone --depth 1 git://git.sv.gnu.org/emacs.git
+
+=== Required Packages ===
+
+The following packages are available through apt-get/aptitude and might need to be installed. Check the output from the configure stage described below.
+
+* autoconf
+* automake
+* libtool
+* texinfo -- is not essential but if you want the manuals you need it
+* build-essential
+* xorg-dev
+* libgtk2.0-dev
+* libjpeg-dev
+* libncurses5-dev
+* libdbus-1-dev
+* libgif-dev
+* libtiff-dev
+* libm17n-dev
+* libpng-dev -- if this doesn't work on older Debian versions (prior to 2016), try libpng12-dev
+* librsvg2-dev
+* libotf-dev
+* libgnutls28-dev
+* libxml2-dev -- necessary for the eww-browser
+
+Copy and paste this for easy apt-get lines:
+
+{{{
+autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev
+}}}
+
+=== Building from the source ===
+
+In order to build after installing required dependencies:
+
+{{{
+cd emacs
+./autogen.sh
+./configure
+make bootstrap
+sudo make install
+}}}
+
+A good alternative is to not do a root install:
+
+{{{
+mkdir ~/emacs-20131123 # for example
+cd emacs
+./autogen.sh
+./configure --prefix=/home/me/emacs-20131123 # for example
+make bootstrap
+make install
+}}}
+
+Then use ##~/emacs-20131123/bin/emacs## to start it.
+
+
+== Optional multi character library ==
+
+For non-latin scripts you might want to add:
+
+{{{
+libm17n-dev
+}}}
+
+as a library and:
+
+{{{
+--with--m17n-flt
+}}}
+
+as a configure option.
+
+
+== Keeping up to date ==
+
+You can use git pull to keep pulling. Emacs is often released against tags so you can pull those too:
+
+{{{
+git checkout -t tag-name
+}}}
+
+To rebuild it's best to:
+
+{{{
+git clean -dxf  ## cleans up old files
+./autogen.sh
+./configure
+make bootstrap
+sudo make install
+}}}
+
+or use the alternative method to have a prefixed emacs.
+
+
+----
+CategoryBuilding
