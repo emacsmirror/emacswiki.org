@@ -1,2 +1,159 @@
-     
+[[it:Mappa_del_sito]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[se:InnehållsFörteckning]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+[[es:MapaDelSitio]]
+[[de:Übersicht]]
+<include "WikiLanguageMenu">
+
+The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs and EmacsLisp. See the MissionStatement for more information.
+
+You can edit this website.  There's a link, '''Edit this page''', at the bottom of this and other pages.  ''Please check [[Comments on SiteMap]] before editing this SiteMap page, however.''
+
+==How to use this site==
+
+* HowToNavigate -- how to find what you're looking for 
+* HowToEdit -- how you can contribute to the site
+* ElispArea -- upload and download EmacsLisp source code
+* [EmacsWiki:CSS Appearance] -- how to change the way the site appears to you
+* WikiDownload -- how to get copies of the site
+* EmacsWikiAdministrators -- handling vandalism and spam on this site
+
+[:LearningEmacs]
+==Learning About Emacs==
+* [[https://www.gnu.org/software/emacs/ GNU Emacs Homepage]] official Emacs releases and documentation here.
+* EmacsNewbie -- basic concepts, vocabulary, notation used in documentation
+* [[CategoryDocumentation|Documentation]] -- learn why Emacs is called the self-documenting text editor.
+* [[CategoryHelp|Help]] -- online help from Emacs itself and its users
+* [[LearningEmacs|Learning Emacs]] -- there are many resources ways to learn Emacs, and lots of aids to learning
+* [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp is the heart and soul of Emacs.
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryGlossary|Glossary]] -- Emacs terminology
+* [[EmacsNiftyTricks|Nifty Tricks]] -- some extra tips
+* RandomPage -- for serendipitous visitors
+* [[CategoryCommunity|Emacs Communities]] -- connect with other people who use Emacs
+
+
+[:GeneralUse]
+==Emacs Use In-Depth==
+* [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
+* [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
+* [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
+* [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command|commands]], `M-x'
+* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
+* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
+* [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
+** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
+** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
+** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal)
+* [[CategoryEditing|Editing]] -- general information about text editing, including
+** [[CategoryAlignment|Alignment]] -- aligning text, columns, comments or other programming-language constructs
+** [[CategoryIndentation|Indentation]] -- indenting text, including source code
+** [[CategoryComments|Comments]] -- manipulating and using code comments
+** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
+** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
+** [[CategoryRegion|Region]] -- selecting a [[region]] of text to act on it (copy, cut, paste, ...)
+** [[CategorySpelling|Spelling]] -- spell-checking
+** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (file headers, templates, forms)
+** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
+* [[CategoryFiles|Files]] -- files and directories: local, remote, backup. (see also [[CategoryDirectories|Directories]] and DiredMode)
+* [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]], including 
+[[CategoryOutline|outlining]] and folding
+
+* [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
+* [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("hotkeys", aka."keyboard shortcuts")
+* [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
+* [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
+** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
+** [[CategoryHypermedia|Hypermedia]] -- creating and using hypertext: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
+** [[CategoryTables|Tables]] -- working with tabular data
+** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
+** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
+** [[CategoryXML|XML]] -- XML technologies
+* [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
+* [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
+* [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
+* [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
+* [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
+* [[CategoryProgramming|Programming]] -- using Emacs as a development environment
+* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
+* [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
+* [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
+
+
+[:EmacsApplications]
+==Applications within Emacs==
+* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
+* [[CategoryCalculators|Calculators]] -- math operations
+** [[CategoryFinancial|Financial]] -- money management and accounting
+* [[CategoryCalendar|Calendar]] -- calendar, diary, task and appointment reminders
+** [[CategoryTodo|Todo]] -- maintaining to-do lists
+** [[CategoryTimeTracking|TimeTracking]] -- tracking your time spent
+* [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
+* [[CategoryDatabase|Databases]] -- databases in Emacs
+* [[CategoryEducation|Education]] -- learn something new, use a dictionary, or grade students
+* [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
+* [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities other than programming
+* [[CategoryGames|Games]] -- play in Emacs
+* [[CategoryInterface|Interface]] -- accessing web services
+** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
+** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
+* [[CategoryMail|Mail]] -- reading email in Emacs
+** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
+** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
+** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
+** [[WanderLust|WanderLust]] -- another Emacs news and mail reader
+** [[mu4e]] -- another Emacs based mail program.
+* [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
+** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
+* [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
+* [[CategoryRelated|Related]] -- Emacs environments run in other programs (browsers, terminal emulators,...)
+* [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host
+* [[CategoryShell|Shell]] -- interact with a shell inside Emacs, including  [[CategoryEshell|eshell]], a cross-platform shell implemented in EmacsLisp
+* [[CategoryVersionControl|VersionControl]] -- using version-control systems in Emacs (Git, Mercurial, SVN...)
+* [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
+
+
+[:Customization]
+==Customizing Emacs==
+* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryPackaging|Packages]] -- Emacs package management
+* [[CategoryWThirtyTwo|Emacs on Windows]] -- configuring Emacs for MS Windows
+* [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
+
+
+[:ProgrammingEmacs]
+== Programming Emacs in Lisp and C ==
+* [[CategoryCode|Code]] -- EmacsLisp coding tips
+* [[CategoryDebug|Debug]] -- debugging Emacs, debugging with Emacs, debugging EmacsLisp
+* [[CategoryPatches|Patches]] -- patches to Emacs, mostly for C-level
+extensions
+* [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
+
+[:CustomInstallations]
+==Installing Custom Emacs Builds==
+* [[CategoryBuilding|Building]] -- building Emacs from source code
+* [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
+* [[CategoryWSL|WSL]] -- Windows 10: installing Emacs 25 in WSL (Windows Subsystem for Linux)
+
+[:Bugs]
+==Emacs Bugs==
+
+* EmacsBugs -- how to report bugs and where to find a list of those already reported
+* [[CategoryWishList|WishList]] -- "Emacs isn't perfect already?"
+* [[Proposals|Proposals]] -- Formal proposals for improvements to Emacs.
+
+[:EmacsInfo]
+==Other Emacs-related information==
+* EmacsImplementations -- a list of Emacsen and their impersonators
+* [[CategoryHistory|History]] -- history of Emacs
+* [[CategoryHumor|Humor]] -- what's funny about Emacs and Emacs users?
+
+----
+CategoryEmacsWikiSite
 
