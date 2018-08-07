@@ -1,1 +1,30 @@
+The EmacsWiki [[Git]] repository checks in every change on the Emacswiki (with username and summary being used as author and commit message). It contains the raw text of all Emacswiki pages.
 
+It uses [[Git]] and can be [http://github.com/emacsmirror/emacswiki.org found] on github as part of the [https://emacsmirror.net/ Emacsmirror].
+
+(Back to WikiDownload.)
+
+== History ==
+
+The master branch contains the full history of all pages and libraries since the 8th August 2009. The first 800 commits have been created by importing from the (now defunct) SVN repository. Each of these commits contains all changes of a complete day and has no meaningful commit messages.
+
+Since the 20th November 2011 this repository is integrated with Oddmuse -- every edit results in a separate commit. The announcement can be found [http://www.emacswiki.org/emacs/2011-11-04 here].
+
+== Package Repositories ==
+
+Additionally _most_ packages distributed on the Emacswiki are also available as individual _repositories_ from the [[Emacsmirror]] (##https://github.com/emacsmirror/NAME##). The package repositories are created by JonasBernoulli as part of the Emacsmirror.
+
+Such repositories contains the full history of all files that are part of a particular package but purges all other history. These repositories can lag behind a few days.
+
+Also, if you are already comfortable using git and need to make changes to a package which can't be merged right away, branch that package's repository from the Emacsmirror and hack away without having to worry about stepping on somebody's toes (as it can happen when you edit somebody's package here on the Emacswiki without prior approval). As always when you fork: don't forget to ask upstream to merge once you are satisfied with your changes!
+
+== Binary Files ==
+
+The wiki allows users to upload files to a page. The page content is now a binary blob plus MIME-type. When the uploaded file is served, the MIME-type is used to tell the browser how to handle the file. In fact, the binary blob is stored in MIME-encoded format and can therefore be served as-is when it is requested.
+
+This is different from how files are often treated by operating systems. Take [[TummePic01]] for example:  the MIME-type on the first line and the MIME-encoded file content on the following lines. This is exactly how the page looks in the Git repository. In order to convert this file, you need to determine that the appropriate suffix for ##image/png## is ##.png##, decode it and rename it.
+
+If the page name includes the traditional suffix, however, things are easier. Take [[ArabicIrc.png]] for example and check out the [Self:action=browse;id=ArabicIrc.png;raw=1 raw data]. If you want to convert this page to a file that is usable on an ordinary file system, you just need to strip the first line and decode it. [http://git.savannah.gnu.org/cgit/oddmuse.git/tree/mimedecode.pl mimedecode.pl] does this for you.
+
+----
+CategoryEmacsWikiSite
