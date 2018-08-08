@@ -1,0 +1,8 @@
+This is a minimalistic colour theme. That is, it tries to minimize the use of colours and prefers to use size difference and font-weight to highlight the few things it wants to highlight. I guess it's somewhat inspired by Rob Pike's idea to not have any syntax highlighting at all.
+
+* [https://git.madhouse-project.org/algernon/brutalist-theme.el brutalist-theme.el project]
+
+[[image:Brutalist Theme Image]]
+
+----
+ColorTheme
