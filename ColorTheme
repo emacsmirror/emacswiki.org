@@ -1,1 +1,5 @@
-#REDIRECT CustomThemes#ComparedToColorThemes
+This page collects reviews and recommendations of the various colour themes out there.
+These are all [[CustomThemes|custom themes]]. Note that in the old days, there used to be a separate `color-theme` package that installed color themes by modifying Emacs faces directly instead of using the /custom theme/ framework. See [[CustomThemes#ComparedToColorThemes comparing color theme and custom theme]] for more.
+
+* [[PinkBliss Pink Bliss]] -- everything is pink, what's not to like? 
+* [[Brutalist Theme]] -- trying to use as few colours as possible
