@@ -4,21 +4,6 @@ Get it here:
 
 * [https://github.com/kensanata/elisp/blob/master/pink-bliss-theme.el pink-bliss-theme.el] from GitHub
 
-This version uses Emacs' own Custom code.
-
-There's also an older version that changes the menu bar to show a gnu head, as you can see in the screenshot:
-
-* Lisp:pink-bliss.el from Emacs Wiki, 
-* [[pink-gnu.xpm]] (image required for the tool-bar based on [http://www.gnu.org/graphics/heckert_gnu.html Heckert’s bold gnu head])
-
-You need to install the _image_!
-The theme switches on the toolbar, removes all the icons, adds a gnu, and binds
-a very simple defun to the button:
-If the current buffer is modified, a click will save the buffer.
-If the current buffer has been saved, a click will open a new file.
-
-== Comments ==
-
 [new:DrewAdams:2005-07-12 19:33 UTC]
 : '''''Sign me up!''''' -- Zippy
 
