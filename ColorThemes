@@ -1,7 +1,7 @@
 EmacsLisp library ##color-theme.el## provides many predefined '''[::color theme]s'''
 for your use, and you can easily define additional themes.  
 
-The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24). If you look at the themes provided via [[ELPA]] and [[MELPA]], you'll see that they all implemented using [[CustomThemes|custom themes]]. If you are going to write your own themes, please consider writing a /custom theme/ instead of using ##color-theme.el##.
+The library has not been updated since 2009, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24). If you look at the themes provided via [[ELPA]] and [[MELPA]], you'll see that they all implemented using [[CustomThemes|custom themes]]. If you are going to write your own themes, please consider writing a /custom theme/ instead of using ##color-theme.el##.
 
 See the color-theme web page at http://www.nongnu.org/color-theme for how to get
 started with ##color-theme.el##.
