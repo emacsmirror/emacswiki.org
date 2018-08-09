@@ -1,5 +1,5 @@
 [[es:AutoGuardar]]
-By default, Emacs automatically saves your changes to a file intermittently. If anything should happen, you can recover a file with `M-x recover-file'. Auto-saving can be turned on globally or on a per-buffer basis with `M-x auto-save-mode'.  Note that auto-saving and backing up are different concepts and serve different purposes.
+By default, Emacs automatically saves your changes to a file intermittently. If anything should happen, you can recover a file with `M-x recover-file'. Auto-saving can be turned on globally or on a per-buffer basis with `M-x auto-save-mode' (users of Emacs 26.1 and later may prefer `M-x auto-save-visited-mode').  Note that auto-saving and backing up are different concepts and serve different purposes.
 
 See also the [[Manual:Auto Save]] (emacs) Emacs manual entry.
 
@@ -46,18 +46,17 @@ See Manual:Interlocking in the EmacsManual for details.
 
 == Running save-buffer Automatically ==
 
+For Emacs 26.1 and later:
+
 As written in [[Manual:Auto Save Files]] (emacs):
 [quote]
   If you want auto-saving to be done in the visited file rather than
-in a separate auto-save file, set the variable
-`auto-save-visited-file-name' to a non-##nil## value.  In this
-mode, auto-saving is very similar to explicit saving.  However,
-differences still exist, in particular for modes which modify the
-buffer-saving process in non-trivial ways via various hooks
-([[Manual:Saving Buffers]] (elisp)).
+in a separate auto-save file, enable the global minor mode
+`auto-save-visited-mode'.  In this mode, auto-saving is identical to
+explicit saving.
 [/quote]
 
-The alternate methods below call the normal `save-buffer' so they don't have these differences (see also [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25478 Bug#25478]]).
+For older versions of Emacs, or for greater flexibility you can use a 3rd-party package:
 
 === After Some Time Interval via Idle Timers ===
 
