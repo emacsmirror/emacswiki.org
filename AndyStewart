@@ -335,6 +335,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 ** Lisp:init-string-inflection.el -- Configuration file for [https://github.com/akicho8/string-inflection StringInflection]
 
 ** Lisp:init-projectile-rails.el -- Configuration file for [https://github.com/asok/projectile-rails ProjectileRails]
+
+** Lisp:init-lua.el -- Configuration file for [https://github.com/immerrr/lua-mode lua-mode]
                                                    
 * File and Buffer:
 
