@@ -1,10 +1,10 @@
-EmacsLisp library <tt>color-theme.el</tt> provides many predefined '''[::color theme]s'''
+EmacsLisp library ##color-theme.el## provides many predefined '''[::color theme]s'''
 for your use, and you can easily define additional themes.  
 
-The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24).
+The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24). If you look at the themes provided via [[ELPA]] and [[MELPA]], you'll see that they all implemented using [[CustomThemes|custom themes]]. If you are going to write your own themes, please consider writing a /custom theme/ instead of using ##color-theme.el##.
 
 See the color-theme web page at http://www.nongnu.org/color-theme for how to get
-started with <tt>color-theme.el</tt>.
+started with ##color-theme.el##.
 For questions about color-theme, see ColorThemeQuestions.  
 
 Vanilla Emacs CustomThemes are similar to color themes, but ''they '''do not replace''' color themes'' -- [[CustomThemes#ComparedToColorThemes|each approach has its advantages]].  Custom themes that have been based on some color themes can be found [https://github.com/emacs-jp/replace-colorthemes|here].
@@ -103,7 +103,7 @@ Here are four alternative ways to cycle among color themes in a list. For illust
 
 === Do Re Mi: Cycling Color Themes and Custom Themes ===
 
-You can cycle among color themes or custom themes using library '''DoReMi'''.  This feature is part of library <tt>[[doremi-cmd.el]]</tt>.
+You can cycle among color themes or custom themes using library '''DoReMi'''.  This feature is part of library ##[[doremi-cmd.el]]##.
 
 Use command `##M-x doremi-color-themes+##' or `##M-x doremi-custom-themes+##', then use the up and down arrow keys and/or the mouse wheel to cycle among themes. The name of each newly applied theme is displayed in the echo area. You can customize [[option]]s `doremi-color-themes' and `doremi-custom-themes', which is the set of color or custom themes to cycle among.  By default, ''all'' color or custom themes are included. 
 
@@ -111,9 +111,9 @@ You can use these commands to preview themes: use `C-g' to cancel changes and re
 
 * For color themes, `C-g' is equivalent to picking pseudo-theme ##[Reset]##, which also means that sometimes not everything is restored, but most is. 
 
-* Unfortunately, Emacs custom themes ''cannot'' be undone this way, to return to a non-theme state prior to applying a theme. For <tt>`doremi-custom-themes+'</tt>, `C-g' just disables each of the themes that you cycled through.  This does not, however, restore any non-theme customizations in effect before cycling. The appearance of the last theme applied remains, for the existing frames, even though that theme has been disabled and will have no effect on new frames etc.
+* Unfortunately, Emacs custom themes ''cannot'' be undone this way, to return to a non-theme state prior to applying a theme. For ##`doremi-custom-themes+'##, `C-g' just disables each of the themes that you cycled through.  This does not, however, restore any non-theme customizations in effect before cycling. The appearance of the last theme applied remains, for the existing frames, even though that theme has been disabled and will have no effect on new frames etc.
 
-Also worth mentioning, if you define your own themes, are the commands in library <tt>[[doremi-frm.el]]</tt> that let you fine-tune [[frame]] and [[face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). See '''[[DoReMi|Do Re Mi]]'''.
+Also worth mentioning, if you define your own themes, are the commands in library ##[[doremi-frm.el]]## that let you fine-tune [[frame]] and [[face]] colors incrementally, using the arrow keys or mouse wheel. They give you an easy way to get exactly the color scheme you want before saving it as a color theme. There are also commands to convert and tweak colors (for example, obtain a color that is slightly lighter, redder, etc. than a given color). See '''[[DoReMi|Do Re Mi]]'''.
 
 
 
