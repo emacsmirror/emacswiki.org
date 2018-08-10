@@ -122,20 +122,29 @@ Similar to find-file-in-project, NeoTree can be opened (toggled) at <code>projec
 
 If you use <code>evil-mode</code>, by default some of evil key bindings conflict with <code>neotree-mode</code> keys. For example, you cannot use <code>q</code> to hide NeoTree. To make NeoTree key bindings in effect, you can bind those keys in <code>evil-normal-state-local-map</code> in <code>neotree-mode-hook</code>, as shown in below code:
 
-  (add-hook 'neotree-mode-hook
-            (lambda ()
-              (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
-              (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-quick-look)
-              (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-              (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+    (add-hook 'neotree-mode-hook
+              (lambda ()
+                (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+                (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-quick-look)
+                (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+                (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)
+                (define-key evil-normal-state-local-map (kbd "g") 'neotree-refresh)
+                (define-key evil-normal-state-local-map (kbd "n") 'neotree-next-line)
+                (define-key evil-normal-state-local-map (kbd "p") 'neotree-previous-line)
+                (define-key evil-normal-state-local-map (kbd "A") 'neotree-stretch-toggle)
+                (define-key evil-normal-state-local-map (kbd "H") 'neotree-hidden-file-toggle)))
 
 In recent versions of <code>evil-mode</code> you can create key bindings for specific modes using <code>evil-define-key</code>, so another way to override mappings in <code>neotree-mode</code> is as shown below:
 
-  (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
-  (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
-  (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
-  (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-
+    (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
+    (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
+    (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
+    (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+    (evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
+    (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-next-line)
+    (evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
+    (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
+    (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
 
 === popwin ===
 
