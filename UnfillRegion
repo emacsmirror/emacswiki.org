@@ -2,31 +2,18 @@ Unfilling a region joins all the lines in a paragraph into a single
 line for each paragraphs in that region. It is the contrary of
 ##fill-region##, and the idea is based on UnfillParagraph.
 
-You can convert an entire buffer from paragraphs to lines by recording
-a macro that calls `unfill-paragraph' and moves past the blank-line to
-the next unfilled paragraph and then executing that macro on the whole
-buffer, `C-u 0 C-x e' (see InfiniteArgument). Or, use `unfill-region',
-below.
-
-    (defun unfill-region (beg end)
-      "Unfill the region, joining text paragraphs into a single
+{{{
+(defun unfill-region (beg end)
+  "Unfill the region, joining text paragraphs into a single
     logical line.  This is useful, e.g., for use with
     `visual-line-mode'."
-      (interactive "*r")
-      (let ((fill-column (point-max)))
-        (fill-region beg end)))
-    
-    ;; Handy key definition
-    (define-key global-map "\C-\M-Q" 'unfill-region)
+  (interactive "*r")
+  (let ((fill-column (point-max)))
+    (fill-region beg end)))
 
-[new]
-For those that needs those functions, they are in the file ##util/ourcomments-util.el## in [NxhtmlMode nXhtml]. You can grab that file from the repository if you like. (But I think the functions should be in Emacs so we do not have to reinvent them so often as we do now ...)
-
-[new]
-I do this all the time with the cumbersome ##C-x f 999 M-q##. Thanks for the tip.
-
-[new]
-Perhaps you meant `C-x f 999 M-x fill-region'?  The ''unfill'' version of `M-q' is at UnfillParagraph. -- AaronHawley
+;; Handy key definition
+(define-key global-map "\C-\M-Q" 'unfill-region)
+}}}
 
 ----
 CategoryFilling
