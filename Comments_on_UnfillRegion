@@ -4,3 +4,10 @@ Perhaps the elisp that included the unfill- functions is available somewhere els
 
 -- bsbonfire 2018-08-10 19:27 UTC
 
+
+----
+
+I decided to remove the reference to nXhtml instead. I'm guessing NxmlMode does what nXhtml might have done, generally speaking.
+
+-- Alex Schroeder 2018-08-11 07:24 UTC
+
