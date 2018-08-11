@@ -134,5 +134,8 @@ Thanks, done! -- SebastienRoccaSerra
 [new]
 How do you make ##C-x C-x## turn on highlighting, without changing anything else?
 
+[new:Anonymous:2018-08-11 15:03 UTC]
+What do you mean by *"without changing anything else"*? Doesn't `C-x C-x C-x C-x' do what you are requesting?
+
 ----
 CategoryRegion
