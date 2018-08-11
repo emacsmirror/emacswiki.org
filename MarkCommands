@@ -3,63 +3,66 @@ Here are some common commands for manipulating and using the [[mark]], in partic
 [:set-mark-command]
 == set-mark-command (`C-SPC') ==
 
-Use `C-SPC' to set the mark, and  `C-x C-x' to go back.  A nice but often unknown feature is using universal argument: `C-u C-SPC'.  It's an easy way to navigate back to your previous editing spots by jumping to the positions stored in the buffer's local mark ring. Repeated calls will ''cycle through the ring of marks''.
+Use `C-SPC' to set the mark, and `C-x C-x' to go back. A nice but often unknown feature is using
+universal argument: `C-u C-SPC'. It's an easy way to navigate back to your previous editing spots by
+jumping to the positions stored in the buffer's local mark ring. Repeated calls will ''cycle through
+the ring of marks''.
 
-If you use TransientMarkMode and you want to set the mark but don't want to subsequently see the [[region]] highlighting, you can use `C-SPC C-g' to set the mark and then deactivate it.  You can also use `C-SPC C-SPC', which may be faster for most people to type.
+If you use TransientMarkMode and you want to set the mark but don't want to subsequently see the
+[[region]] highlighting, you can use `C-SPC C-g' to set the mark and then deactivate it. You can
+also use `C-SPC C-SPC', which may be faster for most people to type.
 
-Unfortunately, traversing the mark ring with `C-u C-SPC' can make you lose your last point if it is different from the mark.  This happens when you fail to set the mark with `C-SPC' before hitting `C-u C-SPC'. 
+Unfortunately, traversing the mark ring with `C-u C-SPC' can make you lose your last point if it is
+different from the mark. This happens when you fail to set the mark with `C-SPC' before hitting `C-u
+C-SPC'.
 
-There is no way to traverse the mark ring in reverse nor skip ''N'' entries in the ring with a numeric PrefixArgument.
+There is no way to traverse the mark ring in reverse nor skip ''N'' entries in the ring with a
+numeric PrefixArgument.
 
 [:pop-global-mark]
 == pop-global-mark (`C-x C-SPC') ==
 
-In addition to the ordinary mark ring that belongs to each buffer,
-Emacs has a single global mark ring.  It records a sequence of
-buffers in which you have recently set the mark, so you can go back to
-those buffers.
+In addition to the ordinary mark ring that belongs to each buffer, Emacs has a single global mark
+ring. It records a sequence of buffers in which you have recently set the mark, so you can go back
+to those buffers.
 
-Setting the mark always makes an entry on the current buffer's mark
-ring.  If you have switched buffers since the previous mark setting, the
-new mark position makes an entry on the global mark ring also.  The
-result is that the global mark ring records a sequence of buffers that
-you have been in, and, for each buffer, a place where you set the mark.
+Setting the mark always makes an entry on the current buffer's mark ring. If you have switched
+buffers since the previous mark setting, the new mark position makes an entry on the global mark
+ring also. The result is that the global mark ring records a sequence of buffers that you have been
+in, and, for each buffer, a place where you set the mark.
 
-`C-x C-SPC' (`pop-global-mark') jumps to the buffer
-and position of the latest entry in the global mark ring.  It also rotates
-the ring, so that successive uses of `C-x C-SPC' take you to earlier
-and earlier buffers.
+`C-x C-SPC' (`pop-global-mark') jumps to the buffer and position of the latest entry in the global
+mark ring. It also rotates the ring, so that successive uses of `C-x C-SPC' take you to earlier and
+earlier buffers.
 
 [:IciclesGoToMarker]
-== Icicles Commands to Go To a Marker ==
+== Icicles commands to go to a marker ==
 
-'''[[Icicles]]''' provides two commands, '''`icicle-goto-marker''''
-and '''`icicle-goto-global-marker'''', that let you navigate among [[marker]]s. The former uses buffer-local markers; the latter uses global markers. You can navigate among markers using [[completion]], as well as by [[Icicles - Cycling Completions|cycling]]. 
+'''[[Icicles]]''' provides two commands, '''`icicle-goto-marker'''' and
+'''`icicle-goto-global-marker'''', that let you navigate among [[marker]]s. The former uses
+buffer-local markers; the latter uses global markers. You can navigate among markers using
+[[completion]], as well as by [[Icicles - Cycling Completions|cycling]].
 
-The completion is based on
-the text of the line the mark is in (or "##<EMPTY LINE>##" if the line is
-empty). IOW, in buffer `*Completions*', you can "see" all of the marks that
-are in lines that match your [[minibuffer]] input. You can use normal prefix
-matching or regexp (e.g. substring) matching. When your input is empty, you
-see the lines of ''all'' marks as navigation candidates. Typing some text filters the list
-of candidates incrementally, so they always match your input.
+The completion is based on the text of the line the mark is in (or "##<EMPTY LINE>##" if the line is
+empty). IOW, in buffer `*Completions*', you can "see" all of the marks that are in lines that match
+your [[minibuffer]] input. You can use normal prefix matching or regexp (e.g. substring) matching.
+When your input is empty, you see the lines of ''all'' marks as navigation candidates. Typing some
+text filters the list of candidates incrementally, so they always match your input.
 
-These commands are multi-commands (see [[Icicles - Multi-Commands]]): You
-can use `C-RET', `C-down', `C-next', and `C-mouse-2' to move around among
-selected markers, before deciding on a final destination with `RET'.
+These commands are multi-commands (see [[Icicles - Multi-Commands]]): You can use `C-RET', `C-down',
+`C-next', and `C-mouse-2' to move around among selected markers, before deciding on a final
+destination with `RET'.
 
-These two '''Icicles''' commands are in fact specific applications of the generic
-function (and command) '''`icicle-apply''''. That is, they are defined by using
-`icicle-apply' to apply a simple go-to function to mark-ring candidates. 
-`icicle-apply' lets you apply any function to association-list entries in a
-selective, interactive fashion. The alist keys are used as the completion
-candidates, and choosing a candidate applies the function to that alist
-entry (key + value).
+These two '''Icicles''' commands are in fact specific applications of the generic function (and
+command) '''`icicle-apply''''. That is, they are defined by using `icicle-apply' to apply a simple
+go-to function to mark-ring candidates. `icicle-apply' lets you apply any function to
+association-list entries in a selective, interactive fashion. The alist keys are used as the
+completion candidates, and choosing a candidate applies the function to that alist entry (key +
+value).
 
-When you use command `icicle-apply' interactively, it prompts you for the
-names of 1) a variable that has an alist value and 2) a function - you can
-use completion for each name. In Emacs, there are many alist variables; by
-default, they constitute the completion candidates for #1.
+When you use command `icicle-apply' interactively, it prompts you for the names of 1) a variable
+that has an alist value and 2) a function - you can use completion for each name. In Emacs, there
+are many alist variables; by default, they constitute the completion candidates for #1.
 
 See: [[Icicles - Tripping]].
 
@@ -67,28 +70,29 @@ See: [[Icicles - Tripping]].
 [:cycle-thing-region]
 [:thing-region]
 
-== unpop mark ===
+== Unpop the mark ===
 
-Allows you to navigate forward on the mark ring, while using pop-to-mark-command to navigate backward.
-Other variants are discussed here http://stackoverflow.com/questions/3393834/how-to-move-forward-and-backward-in-emacs-mark-ring.
+Allows you to navigate forward on the mark ring, while using pop-to-mark-command to navigate
+backward. Other variants are discussed here
+http://stackoverflow.com/questions/3393834/how-to-move-forward-and-backward-in-emacs-mark-ring.
 
-      (defun unpop-to-mark-command ()
-        "Unpop off mark ring. Does nothing if mark ring is empty."
-        (interactive)
-        (when mark-ring
-          (let ((pos (marker-position (car (last mark-ring)))))
-            (if (not (= (point) pos))
-                (goto-char pos)
-              (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-              (set-marker (mark-marker) pos)
-              (setq mark-ring (nbutlast mark-ring))
-              (goto-char (marker-position (car (last mark-ring))))))))
+  (defun unpop-to-mark-command ()
+    "Unpop off mark ring. Does nothing if mark ring is empty."
+    (interactive)
+    (when mark-ring
+      (let ((pos (marker-position (car (last mark-ring)))))
+        (if (not (= (point) pos))
+            (goto-char pos)
+          (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+          (set-marker (mark-marker) pos)
+          (setq mark-ring (nbutlast mark-ring))
+          (goto-char (marker-position (car (last mark-ring))))))))
 
+== Marking things with thing-cmds.el ==
 
-
-== Marking Things ==
-
-You can use library <tt>[[thing-cmds.el]]</tt> to quickly mark (select) various kinds of things. Use it, for example, to mark successive [[sexp]]s, lines, paragraphs, or words. Additional types of things are available. Commands:
+You can use library <tt>[[thing-cmds.el]]</tt> to quickly mark (select) various kinds of things. Use
+it, for example, to mark successive [[sexp]]s, lines, paragraphs, or words. Additional types of
+things are available. Commands:
 
 * `mark-thing' -- Select successive things of a given type.
 * `cycle-thing-region' -- Select a thing near point. Repeat to change to a different type of thing.
@@ -96,13 +100,140 @@ You can use library <tt>[[thing-cmds.el]]</tt> to quickly mark (select) various 
 
 See ThingAtPointCommands.
 
+[:mark-a-word-or-thing]
+=== Mark word or thing ===
+
+The following command relies on <tt>[[thing-cmds.el]]</tt>. I stumbled upon the (somewhat curious) behavior but it happens to be what I want. I use CUA mode. -- MaverickWoo
+
+  (autoload 'mark-thing "thing-cmds")
+  
+  (defun mark-a-word-or-thing (arg)
+    "Select word on or before current point, and move point to beginning of word.
+    
+      With a prefix ARG, first prompts for type of things and select ARG things
+      but you need to move the point to the beginnig of thing first.
+    
+      But if a thing has been selected, then extend the selection by one thing
+      on the other side of the point.
+      (So to select backwards, select to the right first.)"
+    (interactive "P")
+    (if (or arg mark-active)
+        (call-interactively 'mark-thing)
+      (skip-syntax-backward "w_")
+      (mark-thing 'word)))
+
+[new:DrewAdams:2007-11-12 17:42 UTC]
+You might want to set the prefix arg to nil before calling `mark-thing', in the case where a plain prefix arg is used (e.g. `C-u' or `C-u C-u' etc.). I doubt you frequently want to mark 4 (or 16 etc.) sexps. IOW:
+
+ (defun mark-a-word-or-thing (arg)
+   "..."
+  (interactive "P")
+  (cond ((or arg mark-active)
+         (when (consp arg) (setq current-prefix-arg nil))
+         (call-interactively 'mark-thing))
+        (t
+         (skip-syntax-backward "w_")
+         (mark-thing 'word))))
+
+Alternatively, you might want to introduce some other behavior for plain `C-u'.
+
+My point is that the prefix arg is being used for two different purposes: (1) choosing thing instead
+of word and (2) choosing how many things. At first reading, I didn't notice #2, so was surprised by
+an error when it tried to scan forward 4 things and couldn't. -- DrewAdams
+
+[new:MaverickWoo:2007-11-21]
+I agree that it's confusing and even wasting the prefix argument feature. Here is an expanded
+version, again, assuming CUA mode.
+
+I also note that the previous version has a conceptual bug: (skip-syntax-backward "w_") doesn't do
+the exactly the same thing as (backward-word 1) with additional care at the beginning of word.
+(Example: try put the point at the end of "abc-def") As a user would expect that mark-thing to treat
+things like forward-thing, this is what our newer version does. -- MaverickWoo
+
+  (defun mark-a-word-or-thing (arg)
+    "Move point to beginning of current word and mark to end of word.
+  
+    Dropping the mark before first invocation flips the direction to backward.
+  
+    With a universal argument, and optionally a numerical prefix, call
+    `mark-thing' interactively as if calling mark-thing.
+    Ex: C-u 7 M-x mark-a-word-or-thing is equivalent to
+        C-u 7 M-x mark-thing
+  
+    With a numerical prefix, mark ARG things forward, with things defaulted to be
+    words.
+    Ex: C-7 M-x mark-a-word-or-thing means \"mark 7 words, starting from current\"
+  
+    Without any argument in the first invocation, any existing selection will be
+    preserved and extended by words. The extend direction is the same as your
+    marking movement, ie, \"from mark towards point\". However, point will be
+    exchanged with the mark to allow for subsequent invocations.
+  
+    Subsequent invocations, now with some things marked, will continue to mark the
+    same type of things in the same direction as previous.
+  
+    Tested with CUA-mode
+    Posted on http://www.emacswiki.org/cgi-bin/wiki/MarkCommands on 2007-11-21."
+  
+    (interactive "P")
+    (cond
+  
+     ;; C-u => ask type and mark one of those
+     ((consp arg)
+      (setq current-prefix-arg nil)
+      (call-interactively 'mark-thing))
+  
+     ;; C-u C-7 => ask type and mark 7, generally ARG, of those
+     ((>= (length (this-command-keys-vector)) 3)
+      (call-interactively 'mark-thing))
+  
+     ;; 2nd invoke => continue to mark whatever we have been marking
+     ((eq this-command last-command)
+      (mark-thing mark-thing-type
+                  (* (prefix-numeric-value arg)
+                     (if (< (mark) (point)) -1 1))
+                  t))
+  
+     ;; below are all 1st invokes
+  
+     ;; 1st invoke w/ existing => extend by word in the "right" direction
+     ((and mark-active (< (mark) (point))) ;forward
+      (exchange-point-and-mark)
+      (mark-thing 'word (prefix-numeric-value arg) nil))
+  
+     ;; 1st invoke w/ existing => extend by word in the "right" direction
+     ((and mark-active (> (mark) (point))) ;backward
+      (exchange-point-and-mark)
+      (mark-thing 'word (- (prefix-numeric-value arg)) nil))
+  
+     ;; C-SPC (drop mark) + 1st invoke => mark one word BACKWARDS
+     ((and mark-active (= (mark) (point)))
+      (setq CUA-explicit-region-start nil) ;to cancel C-SPC in CUA
+      (unless (looking-at "\\>") (forward-word 1))
+      (mark-thing 'word (- (prefix-numeric-value arg)) nil))
+  
+     ;; 1st invoke
+     (t
+      (unless (looking-at "\\<") (backward-word 1))
+      (mark-thing 'word (prefix-numeric-value arg) nil))))
+
+[new:DrewAdams:2008-11-29 20:00 UTC]
+I don't see any advantage of this over [[#mark-thing]] or [[#cycle-thing-region]]. `word' is already
+the default thing type. And you can change that default by customizing option `thing-types':
+whatever is first in that list is the default type. -- DrewAdams
+
 [:mark-word]
 [:my-mark-current-word]
 == Mark current word ==
 
-Vanilla Emacs command `mark-word' operates on words by using `forward-word' (`##M-f##') from [[point]] and setting [[mark]] at the end of the word.  Most other `mark-'-style commands move the point -- including `mark-defun', `mark-paragraph', ...
+Vanilla Emacs command `mark-word' operates on words by using `forward-word' (`##M-f##') from
+[[point]] and setting [[mark]] at the end of the word. Most other `mark-'-style commands move the
+point -- including `mark-defun', `mark-paragraph', ...
 
-There exists a `current-word' function in EmacsLisp that finds the word (or symbol) at the point from its beginning to its end.  Since `current-word' returns a string, and does not return region markers, it's difficult to translate its results.  This code uses ThingAtPoint to find the current word.  Use it by EvaluatingExpressions in Emacs or by adding it to your Emacs InitFile.
+There exists a `current-word' function in EmacsLisp that finds the word (or symbol) at the point
+from its beginning to its end. Since `current-word' returns a string, and does not return region
+markers, it's difficult to translate its results. This code uses ThingAtPoint to find the current
+word. Use it by EvaluatingExpressions in Emacs or by adding it to your Emacs InitFile.
 
   (defun my-mark-current-word (&optional arg allow-extend)
     "Put point at beginning of current word, set mark at end."
@@ -129,168 +260,58 @@ There exists a `current-word' function in EmacsLisp that finds the word (or symb
                      (point)))
         (activate-mark))))
 
-[:mark-a-word-or-thing]
-== Mark Word or Thing ==
+== Showing the mark ==
 
-The following command relies on <tt>[[thing-cmds.el]]</tt>. I stumbled upon the (somewhat curious) behavior but it happens to be what I want. I use CUA mode. -- MaverickWoo
+VisibleMark for highlighting the mark with custom faces. Including multiple forward and backward
+marks. --[[IanKelling]]
 
-    (autoload 'mark-thing "thing-cmds")
-    (defun mark-a-word-or-thing (arg)
-      "Select word on or before current point, and move point to beginning of word.
-    
-    With a prefix ARG, first prompts for type of things and select ARG things
-    but you need to move the point to the beginnig of thing first.
-    
-    But if a thing has been selected, then extend the selection by one thing
-    on the other side of the point.
-    (So to select backwards, select to the right first.)"
-      (interactive "P")
-      (if (or arg mark-active)
-        (call-interactively 'mark-thing)
-        (skip-syntax-backward "w_")
-        (mark-thing 'word)))
+MakingMarkVisible is a simple version: it just highlights the mark, with no history features.
+--[[TeemuLeisti]]
 
-[new:DrewAdams:2007-11-12 17:42 UTC]
-You might want to set the prefix arg to nil before calling `mark-thing', in the case where a plain prefix arg is used (e.g. `C-u' or `C-u C-u' etc.). I doubt you frequently want to mark 4 (or 16 etc.) sexps. IOW:
+== Visible (buffer) order mark navigation ==
 
- (defun mark-a-word-or-thing (arg)
-   "..."
-  (interactive "P")
-  (cond ((or arg mark-active)
-         (when (consp arg) (setq current-prefix-arg nil))
-         (call-interactively 'mark-thing))
-        (t
-         (skip-syntax-backward "w_")
-         (mark-thing 'word))))
-
-Alternatively, you might want to introduce some other behavior for plain `C-u'.
-
-My point is that the prefix arg is being used for two different purposes: (1) choosing thing instead of word and (2) choosing how many things. At first reading, I didn't notice #2, so was surprised by an error when it tried to scan forward 4 things and couldn't. -- DrewAdams
-
-[new:MaverickWoo:2007-11-21]
-I agree that it's confusing and even wasting the prefix argument feature. Here is an expanded version, again, assuming CUA mode. 
-
-I also note that the previous version has a conceptual bug: (skip-syntax-backward "w_") doesn't do the exactly the same thing as (backward-word 1) with additional care at the beginning of word. (Example: try put the point at the end of "abc-def") As a user would expect that mark-thing to treat things like forward-thing, this is what our newer version does.  -- MaverickWoo
-
-  (defun mark-a-word-or-thing (arg)
-    "Move point to beginning of current word and mark to end of word.
-  
-  Dropping the mark before first invocation flips the direction to backward.
-  
-  With a universal argument, and optionally a numerical prefix, call
-  `mark-thing' interactively as if calling mark-thing.
-  Ex: C-u 7 M-x mark-a-word-or-thing is equivalent to
-      C-u 7 M-x mark-thing
-  
-  With a numerical prefix, mark ARG things forward, with things defaulted to be
-  words.
-  Ex: C-7 M-x mark-a-word-or-thing means \"mark 7 words, starting from current\"
-  
-  Without any argument in the first invocation, any existing selection will be
-  preserved and extended by words. The extend direction is the same as your
-  marking movement, ie, \"from mark towards point\". However, point will be
-  exchanged with the mark to allow for subsequent invocations.
-  
-  Subsequent invocations, now with some things marked, will continue to mark the
-  same type of things in the same direction as previous.
-  
-  Tested with CUA-mode
-  Posted on http://www.emacswiki.org/cgi-bin/wiki/MarkCommands on 2007-11-21."
-    (interactive "P")
-    (cond
-  
-     ;; C-u => ask type and mark one of those
-     ((consp arg)
-      (setq current-prefix-arg nil)
-      (call-interactively 'mark-thing))
-  
-     ;; C-u C-7 => ask type and mark 7, generally ARG, of those
-     ((>= (length (this-command-keys-vector)) 3)
-      (call-interactively 'mark-thing))
-  
-     ;; 2nd invoke => continue to mark whatever we have been marking
-     ((eq this-command last-command)
-      (mark-thing mark-thing-type
-  		(* (prefix-numeric-value arg)
-  		   (if (< (mark) (point)) -1 1))
-  		t))
-  
-     ;; below are all 1st invokes
-  
-     ;; 1st invoke w/ existing => extend by word in the "right" direction
-     ((and mark-active (< (mark) (point))) ;forward
-      (exchange-point-and-mark)
-      (mark-thing 'word (prefix-numeric-value arg) nil))
-  
-     ;; 1st invoke w/ existing => extend by word in the "right" direction
-     ((and mark-active (> (mark) (point))) ;backward
-      (exchange-point-and-mark)
-      (mark-thing 'word (- (prefix-numeric-value arg)) nil))
-  
-     ;; C-SPC (drop mark) + 1st invoke => mark one word BACKWARDS
-     ((and mark-active (= (mark) (point)))
-      (setq CUA-explicit-region-start nil) ;to cancel C-SPC in CUA
-      (unless (looking-at "\\>") (forward-word 1))
-      (mark-thing 'word (- (prefix-numeric-value arg)) nil))
-  
-     ;; 1st invoke
-     (t
-      (unless (looking-at "\\<") (backward-word 1))
-      (mark-thing 'word (prefix-numeric-value arg) nil))))
-
-
-[new:DrewAdams:2008-11-29 20:00 UTC]
-I don't see any advantage of this over [[#mark-thing]] or [[#cycle-thing-region]]. `word' is already the default thing type.  And you can change that default by customizing option `thing-types': whatever is first in that list is the default type. -- DrewAdams
-
-== Showing the Mark ==
-
-VisibleMark for highlighting the mark with custom faces. Including multiple forward and backward marks. --[[IanKelling]]
-
-
-== Visible (Buffer) Order Mark Navigation ==
-
-If you're using visible mark and displaying all the marks on the mark
-ring, you may find yourself wanting to navigate to them in the order they're 
-displayed relative to the current point rather than the order you pushed 
-them onto the mark ring - following allows you to move to the next/previous
-mark on the mark ring relative to the point in buffer order with
-control-super-left/right  (super is usually windoze keys on PCs):
+If you're using visible mark and displaying all the marks on the mark ring, you may find yourself
+wanting to navigate to them in the order they're displayed relative to the current point rather than
+the order you pushed them onto the mark ring - following allows you to move to the next/previous
+mark on the mark ring relative to the point in buffer order with control-super-left/right (super is
+usually windoze keys on PCs):
 
   (defun buffer-order-next-mark (arg)
     (interactive "p")
     (when (mark)
-    (let* ((p (point))
-  	 (m (mark))
-  	 (n p)
-  	 (count (if (null arg) 1 arg))
-	 (abscount (abs count))
-	 (rel
-	  (funcall
-	   (if (< 0 count) 'identity 'reverse)
-	   (sort (cons (cons 0 p)
-		       (cons (cons (- m p) m)
-			     (if mark-ring
-				 (mapcar (lambda (mrm)
-					   (cons (- mrm p) mrm))
-					 mark-ring)
-			       nil)))
-		 (lambda (c d) (< (car c) (car d))))))
-	  (cur rel))
-	 (while (and (numberp (caar cur)) (/= (caar cur) 0))
-	   (setq cur (cdr cur)))
-	 (while (and (numberp (caadr cur)) (= (caadr cur) 0))
-	   (setq cur (cdr cur)))
-	 (while (< 0 abscount)
-	   (setq cur (cdr cur))
-	   (when (null cur) (setq cur rel))
-	   (setq abscount (- abscount 1)))
-	 (when (number-or-marker-p (cdar cur))
-	   (goto-char (cdar cur))))))
+      (let* ((p (point))
+             (m (mark))
+             (n p)
+             (count (if (null arg) 1 arg))
+             (abscount (abs count))
+             (rel
+              (funcall
+               (if (< 0 count) 'identity 'reverse)
+               (sort (cons (cons 0 p)
+                           (cons (cons (- m p) m)
+                                 (if mark-ring
+                                     (mapcar (lambda (mrm)
+                                               (cons (- mrm p) mrm))
+                                             mark-ring)
+                                   nil)))
+                     (lambda (c d) (< (car c) (car d))))))
+             (cur rel))
+        (while (and (numberp (caar cur)) (/= (caar cur) 0))
+          (setq cur (cdr cur)))
+        (while (and (numberp (caadr cur)) (= (caadr cur) 0))
+          (setq cur (cdr cur)))
+        (while (< 0 abscount)
+          (setq cur (cdr cur))
+          (when (null cur) (setq cur rel))
+          (setq abscount (- abscount 1)))
+        (when (number-or-marker-p (cdar cur))
+          (goto-char (cdar cur))))))
+  
   (defun buffer-order-prev-mark (arg)
     (interactive "p")
     (buffer-order-next-mark
      (if (null arg) -1 (- arg))))
-
+  
   (global-set-key [C-s-right] 'buffer-order-next-mark)
   (global-set-key [C-s-left] 'buffer-order-prev-mark)
 
@@ -303,11 +324,14 @@ Try AutoMark if you are tired of setting the mark manually.
 [:expandregion]
 == Expand region command ==
 
-expandregion.el is a very useful tool for increasing the selected region by semantic units. Download it at: https://github.com/magnars/expand-region.el
+expandregion.el is a very useful tool for increasing the selected region by semantic units. Download
+it at: https://github.com/magnars/expand-region.el
 
-== Mark Tools ==
+== Mark tools ==
 
-mark-tools.el provides a simple table for browsing the global and local mark-rings. The code is at: https://github.com/stsquad/emacs-mark-tools and the package is available on the MELPA and Marmalade repositories.
+mark-tools.el provides a simple table for browsing the global and local mark-rings. The code is at:
+https://github.com/stsquad/emacs-mark-tools and the package is available on the MELPA and Marmalade
+repositories.
 
 == Helm ==
 
@@ -315,7 +339,8 @@ Helm has M-x helm-mark-ring
 
 == Reimplementation ==
 
-There is no (easy?) way to just keep history of all the places where you've been in Emacs, and navigate back and forward. 
+There is no (easy?) way to just keep history of all the places where you've been in Emacs, and
+navigate back and forward.
 
 https://github.com/boyw165/history is an attempt to fix that.
 
