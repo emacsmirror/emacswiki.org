@@ -21,7 +21,7 @@ In Emacs 22 and later, `C-SPC C-SPC' activates Transient Mark mode only ''tempor
 * PcSelectionMode also uses Transient Mark mode.
 * ZmacsRegions is the equivalent, in [[XEmacs]], of Transient Mark mode in GnuEmacs.
 
-== Activating Transient Mark Mode Temporarily Prior to Emacs 22 ==
+== Activating Transient Mark Mode temporarily (prior to Emacs 22) ==
 
 This code snippet is from Emacs CVS.
 
@@ -92,9 +92,9 @@ purposes.  See the documentation of `set-mark' for more information."
 (setq set-mark-command-repeat-pop nil)
 </pre>
 
-=== Commands that Do Not Work Well with Transient Mark Mode ===
+== Commands that do not work well with Transient Mark Mode ==
 
-==== indent-rigidly (prior to Emacs 23 only) ====
+=== indent-rigidly (prior to Emacs 23 only) ===
 
 # Set [[mark]] (C-SPC)
 # Move the [[cursor]] a couple of [[lines]] down
@@ -109,10 +109,9 @@ In order to keep the region highlighted after `C-x TAB' finishes, you can use th
          (setq deactivate-mark nil)))
 
 
+== Comments ==
 
-
-
-==== Trouble Activating the Region at the End of a Command ====
+=== Trouble activating the region at the end of a command ===
 
 [new]
 I wrote a small function called `duplicate-region' (see DuplicateStartOfLineOrRegion), and I'd like the mark to be active after calling it.
@@ -129,6 +128,8 @@ Cheers! -- SebastienRoccaSerra
 
 [new]
 Thanks, done! -- SebastienRoccaSerra
+
+=== How to make C-x C-x turn on highlighting? ===
 
 [new]
 How do you make ##C-x C-x## turn on highlighting, without changing anything else?
