@@ -3,7 +3,7 @@ This page collects reviews and recommendations of the various colour themes out 
 
 These are all implemented using [[CustomThemes|custom themes]].
 
-(In the old days, there used to be a separate [[ColorThemes|color-theme.el]] package that installed color themes by modifying Emacs faces directly instead of using the /custom theme/ framework. It hasn't been updated since 2009 and these days, using /custom theme/ is the popular choice. See [[CustomThemes#ComparedToColorThemes|comparing color theme and custom theme]] for a comparison of the two.)
+(There is a separate [[ColorThemes|color-theme.el]] package, which installs color themes by modifying Emacs faces directly instead of using the /custom theme/ ([[Customize]]) framework. It hasn't been updated since 2009, and now it is more common to use /custom theme/. See [[CustomThemes#ComparedToColorThemes|comparing color theme and custom theme]] for a comparison of the two.)
 
 * [[PinkBliss Pink Bliss]] -- everything is pink, what's not to like? 
 * [[Brutalist Theme]] -- trying to use as few colours as possible
