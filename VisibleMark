@@ -1,42 +1,39 @@
-Displays an overlay face on mark location(s).
-Customizable faces and number of marks to display.
-Can display marks from the mark ring in the normal backward direction,
-and in the forward direction.
+Displays an overlay face on mark location(s). Customizable faces and number of
+marks to display. Can display marks from the mark ring in the normal backward
+direction, and in the forward direction.
 
-Get it from
-melpa or
-https://gitlab.com/iankelling/visible-mark
+Get it from melpa or https://gitlab.com/iankelling/visible-mark.
 
 == Tips ==
 
-Useful functions like unpoping the mark are listed in MarkCommands
+Useful functions like unpoping the mark are listed in MarkCommands.
 
 [new]
-Tip: I like not highlighting the region with visible-mark and allowing marks to override paren highlights. -- [[IanKelling]]
- 
+Tip: I like not highlighting the region with visible-mark and allowing marks to
+override paren highlights. -- [[IanKelling]]
+
   (setq show-paren-priority 999)
   (set-face-background 'region nil)
 
-  
 [new]
-Tip: I find setting a colored underline face less in-your-face than a colored 
-background for the visible marks - especially if you're displaying all marks on 
+Tip: I find setting a colored underline face less in-your-face than a colored
+background for the visible marks - especially if you're displaying all marks on
 the mark ring.
 
 [new]
-Tip: I wanted the opposite: so that paren highlights do not override region marking (aka selecting). -- [[NovadeViator]]
+Tip: I wanted the opposite: so that paren highlights do not override region
+marking (aka selecting). -- [[NovadeViator]]
 
   (setq show-paren-priority -1)
 
-
-== See Also ==
+== See also ==
 
 * AutoMark - makes you free from pushing marks
 * MarkCommands - useful mark navigation commands
 * MakingMarkVisible - Like VisibleMark, but extremely simplistic. Only shows active mark.
 * VisibleBookmarks - can be used like visible mark
 * Old XEmacs only mark highlighting Lisp:himarks-mode.el
-* Occur for mark ring - (dead link when I checked in 04-2014) http://therowes.net/~greg/code/emacs/emacs.d/mark.el
+
 ----
 CategoryFaces
 CategoryRegion
