@@ -57,6 +57,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** OrgOddmuse -- Transform OrgMode text to Oddmuse Wiki format (see TextFormattingRules) for sharing. :)
 
+*** Aweshell -- Awesome shell to extension eshell, (Aweshell [https://github.com/manateelazycat/lazycat-emacs/tree/master/site-lisp/extensions/aweshell])
+
 *** MultiTerm -- Manages multiple terminal buffers (Maintainer [http://www.emacswiki.org/emacs/ahei Ahei]).
 
 *** MultiShell -- Manages multiple shell buffers.
