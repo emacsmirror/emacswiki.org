@@ -52,6 +52,10 @@ Some known examples are:
 ||##auto-fill-mode##||||##(delight 'auto-fill-function " AF" t)##||
 ||##server-mode##||||##(delight 'server-buffer-clients " SV" 'server)##||
 
+Note also that it can be easier to configure some package modelines directly. For example, the [https://github.com/bbatsov/projectile/blob/master/doc/configuration.md#mode-line-indicator Projectile readme] shows how to customize it:
+
+  (setq projectile-mode-line '(:eval (format " Proj[%s]" (projectile-project-name))))
+
 ==Important notes==
 
 Although strings are common, any mode-line construct is permitted as the value (for both minor and major modes); so before you override a value you should check the existing one, as you may want to replicate any structural elements in your replacement if it turns out not to be a simple string.
