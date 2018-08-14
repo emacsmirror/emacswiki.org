@@ -2,6 +2,10 @@ Once you've set up GNU [[EmacsW32]] you will probably want to add spell checking
 
 [new] Although it might be out of date it seems to work well. I installed Aspell according to the instructions below, yesterday (today is 2015-09-23), and it works fine, in a quite recent Emacs 25. -- MaDa
 
+[new] This does not seem to be working with Windows 10 and emacs 26.1. I get this error:
+Error enabling Flyspell mode:
+(C:/path-to-aspell/aspell.exe release 0.60 or greater is required)
+
 == Setup for 64-bit Windows 7 ==
 
 First you need to download and install both the aspell executable and at least one dictionary from http://aspell.net/win32/.  &nbsp;These will be two separate downloads, be sure to get both.  &nbsp;Under the 64-bit version of Windows 7 the default install directory for both of them is "C:\Program Files (x86)\Aspell\dict\".  &nbsp;"C:\Program Files (x86)" is used for 32-bit executables, while "C:\Program Files" is for the 64-bit ones.
