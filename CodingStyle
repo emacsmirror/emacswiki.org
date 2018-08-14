@@ -168,7 +168,7 @@ But those are special circumstances, anyway.
 
 Unified configuration across editors can be useful for a team in which
 everyone uses their own editing tool. This can be done by using
-[http://editorconfig EditorConfig]. Its Emacs extension is available
+[http://editorconfig.com EditorConfig]. Its Emacs extension is available
 [https://github.com/editorconfig/editorconfig-emacs here].
 
 ----
