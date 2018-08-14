@@ -59,8 +59,8 @@ You can write in the cells, the table will be expanded or redrawn as
 needed.
 
 Commands available with tables are prefixed with <code>table</code>.
-They can be listed by typing <code>M-x table- TAB </code>. There name
-is self-explanatory. For example, we can center the second column
+They can be listed by typing <code>M-x table- TAB </code>. Their names
+are self-explanatory. For example, we can center the second column
 by putting the cursor on that column and typing 
 <code>M-x table-justify</code>.
 Just answer <code>column</code> then <code>center</code> when asked. 
