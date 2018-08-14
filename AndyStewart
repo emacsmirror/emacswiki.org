@@ -59,7 +59,7 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** [https://github.com/manateelazycat/aweshell Aweshell] -- Awesome shell to extension eshell.
 
-*** MultiTerm -- Manages multiple terminal buffers (Maintainer [http://www.emacswiki.org/emacs/ahei Ahei]).
+*** MultiTerm -- Manages multiple terminal buffers
 
 *** MultiShell -- Manages multiple shell buffers.
 
