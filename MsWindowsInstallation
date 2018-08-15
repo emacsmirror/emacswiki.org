@@ -1,36 +1,39 @@
 == GNU Emacs on MS Windows ==
 
 There are several distributions of binaries of Gnu-Emacs for
-MS-Windows to choose from:
+MS-Windows to choose from, see [[CategoryWThirtyTwo#toc1]].
 
-* So-called *snapshot* versions that are currently in development. 
-  These are located on !SourceForge.  The current development version is 27.0.50.
-  Installation guidelines are below.
+There are two general flavours: native Windows and Cygwin builds.  The have drawbacks as detailed [[#below]],
+so the guidelines here are only about the native Windows builds.
 
-* *The official stable binaries.* The latest stable version is 25.3, 
-guidelines for installation are given below.
-
-* *Versions available through Cygwin setup.* These have drawbacks as detailed [[#below]],
-  and installation guidelines will not be given here.
+The latest stable version is 26.1.  There are also *snapshot* versions, which are builds of the code currently under development (i.e., having newer features, and possibly more bugs).
+The current development version is 27.0.50 (snapshot versions always have a large 3rd number).
 
 ==Guidelines for installing Emacs on MS Windows==
 
-If installing the *snapshot* version from !SourceForge:
+To install the *official stable binaries*:
+
+: Visit https://ftp.gnu.org/gnu/emacs/windows/emacs-26/ (or https://ftpmirror.gnu.org/emacs/windows/emacs-26 to use a nearby [https://www.gnu.org/prep/ftp mirror]).
+  Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed (currently
+  ##emacs-26.1-x86_64.zip## and ##emacs-26.1-i686.zip##, respectively). You might also want to read the [https://ftp.gnu.org/gnu/emacs/windows/README README] file at the same site (not the one inside
+  the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
+  (faster) and extract all the files into a directory of your choice
+  (e.g. ##c:\packages\emacs-26.1##).
+
+To install the *official snapshot binaries*:
+
+: Visit https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-27/.
+  Download the installer.exe with the latest date (again with x86_64 and i686 indicating 64 bit or 32 bit, respectively). 
+  As of this writing, those are ##emacs-27.0.50-snapshot-2018-05-03-x86_64-installer.exe## and ##emacs-27.0.50-snapshot-2018-05-03-i686-installer.exe##.
+  Run the executable to extract the Emacs installation into the directory of your choice.
+  Alternatively, you can download snapshots in zip format, like for the stable release.
+
+If installing the *snapshot* "emax64" version from !SourceForge:
 
 : Visit the site https://ntemacs.sourceforge.io/ and download the .7z file marked
   "binary" near the bottom.  Once downloaded, unzip it to a directory of your
-  choice (e.g. ##c:\\packages##).  A directory named emaxw64 will be created
+  choice (e.g. ##c:\packages##).  A directory named emaxw64 will be created
   therein.
-
-Otherwise, to install the *official stable binaries*:
-
-: Visit the site ftp://ftp.gnu.org/gnu/emacs/windows/ (or one of the mirrors listed at
-  http://www.gnu.org/order/ftp.html; once at a mirror site select emacs and
-  windows).  Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed (currently
-  emacs-25.3_1-x86_64.zip and emacs-25.3-i686.zip, respectively). You might also want to read the README file at the same site (not the one inside
-  the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
-  (faster) and extract all the files into a directory of your choice
-  (e.g. ##c:\packages\emacs-25.3##).
 
 A subdirectory of the one just created will be /bin/
 (e.g. ##c:\packages\ntemacs23\bin##). Enter this bin-directory and run ##addpm.exe##
@@ -58,7 +61,7 @@ these features is described in MsWindowsCustomize.
 
 When run by selecting the shortcut, by default Emacs starts in the bin subdirectory of the
 installation folder. When started from a command line, it starts in the current
-directory. In both cases, the /home/ directory (where customization files are read from, in
+directory. In both cases, the /home/ directory (aka ##~##, where customization files are read from, in
 particular the ##.emacs## file) is set to ##C:\Documents and Settings\##/user/##\Application
 Data## (on Vista it is set to ##C:\Users\##/user/##\AppData\Roaming##). It is possible to stick
 with this default behaviour and place customization files in Application Data, but here
@@ -66,7 +69,7 @@ it is assumed that the default is changed. To take an
 example assume that Cygwin has been set up and the user's home directory for Cygwin is
 ##c:\cygwin\home\smith## (or cygwinized: ##/home/smith##). It might be natural to make
 this the home directory for Emacs and make it start there (in the following replace
-##smith## with your username.
+##smith## with your username).
 
 *Changing the directory where Emacs starts:* Right-click on the icon (shortcut) used to
 start Emacs, select /Properties/, and type ##c:\cygwin\home\smith## into 
