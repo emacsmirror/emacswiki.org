@@ -27,10 +27,11 @@ https://www.gnu.org/software/emacs/download.html#windows
 ** //addpm// modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
 \\\\
 * /Emacs Modified for Windows/ -- https://vigou3.github.io/emacs-modified-windows/ 
-** Stock Emacs with a few modifications for R users. Currently offering version 25.3
+** Stock Emacs with a few modifications for R users. Currently offering version 26.1
 ** Includes an installer, AUCTeX, ESS and image libraries.
 \\\\
 * /Emacs-w64/  -- http://emacsbinw64.sourceforge.net/
+** As of August 2018, seems to be abandoned: latest snapshot is from 2015, latest release is 25.3.
 ** Unmodified source code very similar to GNU release, but compiled with optimization.
 ** Offers snapshots and pretests as well as full releases.
 
