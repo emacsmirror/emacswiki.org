@@ -4,6 +4,7 @@
 Homepage:
 
 * http://epg.sourceforge.jp/ (epa-file.el part of GNU emacs.  See http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el for source.)
+* You can find the manual here: http://www.gnu.org/software/emacs/manual/epa.html (or from Emacs, with `C-h i m EasyPG Assistant RET').
 
 == Files ==
 
@@ -24,33 +25,7 @@ To prevent EPG from prompting for a key every time you save a file, put the foll
 
 EPA will prompt for the key only the first time you save the file, assuming you have the email address you specified in your keyring.
 
-The following comments are outdated as of Emacs 23:
-
-epa-file will prompt for which key to use for encryption each time you save a .gpg file.  The following patch will stop it prompting, and cause it to always use symmetric encryption:
-
-{{{
---- Backup/epa-file.el.~1~	2006-12-20 07:33:07.000000000 +0100
-+++ epa-file.el	2007-02-11 13:57:20.000000000 +0100
-@@ -186,13 +186,14 @@
- 		 (epa-file--encode-coding-string (buffer-substring start end)
- 						 coding-system))
- 	       (unless (assoc file epa-file-passphrase-alist)
--		 (epa-select-keys
-+		 '(epa-select-keys
- 		  context
- 		  "Select recipents for encryption.
- If no one is selected, symmetric encryption will be performed.  "
- 		  (cond
- 		   ((listp epa-file-encrypt-to) epa-file-encrypt-to)
--		   ((stringp epa-file-encrypt-to) (list epa-file-encrypt-to)))))))
-+		   ((stringp epa-file-encrypt-to) (list epa-file-encrypt-to))))
-+		 nil)))
-       (error
-        (if (setq entry (assoc file epa-file-passphrase-alist))
- 	   (setcdr entry nil))
-}}}
-
-The above patch appears to be included in Emacs 23.
+Alternatively, set [https://www.gnu.org/software/emacs/manual/html_node/epa/Encrypting_002fdecrypting-gpg-files.html#index-epa_002dfile_002dselect_002dkeys-43 `epa-file-select-keys'] to something other than `t' or `nil'.
 
 == Comments ==
 
@@ -310,16 +285,6 @@ Customized the function epa-mail-encrypt (EasyPG version 23.1; Emacs 23.4.1) to 
 }}}
 
 ----
-
-== Documentation ==
-
-Being difficult to find it online I decided to extract and publish the EasyPG Assistant User's Manual found within the package of Emacs 23.1.
-
-You can find the manual here: 
-
-- http://virgo977virgo.blogspot.com/2009/09/easypg-assistant-users-manual-from.html
-
-- http://www.gnu.org/software/emacs/manual/epa.html
 
 == Gnus ==
 
