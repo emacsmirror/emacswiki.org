@@ -8,15 +8,13 @@ Click on the header to search for pages about EmacsForWindows.
 https://www.gnu.org/software/emacs/download.html#windows
 
 * /Stable Releases:/
-** ftp://ftp.gnu.org/gnu/emacs/windows/
-** http://ftp.gnu.org/gnu/emacs/windows/
-\\\\
-* /Weekly Builds:/
+** https://ftp.gnu.org/gnu/emacs/windows/
+* /Snapshot Builds:/
+** https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-27/
+* /Weekly Builds:/ (as of August 2018, not being updated)
 ** http://alpha.gnu.org/gnu/emacs/windows/
-\\\\
 * /Pretests:/
-** ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
-** http://alpha.gnu.org/gnu/emacs/pretest/windows/
+** https://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 === Unofficial Releases ===
 
