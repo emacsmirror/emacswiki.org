@@ -9,7 +9,11 @@ This feature was introduced in Emacs 23.1.  Daemon mode starts Emacs loading the
 emacs --daemon
 </pre>
 
+In Emacs 26.1+, you can force the daemon to run in the foreground:
 
+<pre>
+emacs --fg-daemon
+</pre>
 
 = Starting Emacs Daemon with systemd =
 
