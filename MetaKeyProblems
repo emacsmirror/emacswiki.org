@@ -200,9 +200,15 @@ adapt to it and use "Alt" key combinations for the window manager
 (eg. Sawfish).  If you use a lot of hotkeys in your window manager,
 this is recommended.
 
-=== MacOSX ===
+=== MacOS ===
 
-If you are having problems using option as meta in the Terminal app, look in preferences, navigate to keyboard options (exactly where it is depends on OSX version), look for a checkbox "Use Option as Meta key", check it, open a new Terminal, and voilà!
+If you're in a hurry, ESC maps to Meta, so you can type <code>ESC x</code> instead of <code>M-x</code>. This even works over SSH, on any keyboard layout.
+
+==== Terminal ====
+
+When running emacs from Terminal, you can set Terminal's preferences/settings/keyboard and check "Use option as meta key", and the option/alt key should properly behave as the Meta key. You can also remap the Command key to be a control key under System Preferences/Keyboard/Keyboard/Modifier Keys to use emacs in Terminal. The downside to this approach is that it does not retain the Command key's functionality for use in other Mac applications, 
+
+==== X11 ====
 
 The Apple X11 server application has the meta at the *Option* button,
 which is caught by the application itself for various purposes, and
@@ -210,13 +216,6 @@ never passes on to the X11 client.  Disabling <code>Enable key
 equivalents under X11</code> under the input preferences is one easy
 way to fix this, but this will effectively kill a few useful
 keybindings of the X11 servers too.
-
-Typing the ESC key, and releasing it, comes down to holding the ALT key down. EX : search and replace would be ESC and release then % 
-Off course I only tested on a french leyboard running ElCaptain (sorry.) Off course, this isn't the real key bindings for emacs. BUT this comes very handy when running emacs through a couple of ssh connections on a distant *nix server. 
-
-If one is running the native EmacsForMacOS, the variable
-<code>mac-command-key-is-meta</code> might be of interest, but it
-ought to be true by default.
 
 For some reason under leopard (Mac OS-X 10.0 and higher), internationalization may be turned on. This will result in insertion of a non-ASCII character in the native EmacsForMacOS when you use the Meta key. For example, you may see a "phi" when you type M-X, instead of the behavior you want (this is discussed in  [http://www.gnu.org/software/emacs/manual/html_node/emacs/Terminal-Coding.html 26.13 Coding Systems for Terminal I/O] in version 23). To disable this emacs-unfriendly behavior, enter the line 
 {{{
@@ -254,11 +253,12 @@ However, you must then also execute the command <code>stty erase ^?</code>.This 
  :imap ^? <left><del> 
 }}} into your .vimrc file.]
 
-Alternatively, you can run emacs from Terminal, by changing Terminal's preferences/settings/keyboard and check "Use option as meta key", and the option/alt key should properly behave as the Meta key. You can also remap the Command key to be a control key under System Preferences/Keyboard/Keyboard/Modifier Keys to use emacs in Terminal. The downside to this approach is that it does not retain the Command key's functionality for use in other Mac applications, 
+==== Native GUI ====
+
+When using native EmacsForMacOS, the variables <code>mac-option-modifier</code>, <code>mac-command-modifier</code> and <code>mac-command-key-is-meta</code> are useful for changing the behavior of different modifier keys.
 
 In AquamacsEmacs, Option (Alt) is mapped to Meta - however, because Option is used to input a lot of non-ASCII characters such as ü or £ on a variety of keyboards, the special character input methods take precedence by default. You can deselect "Option key produces only special characters" in the Options menu to use Option as Meta, or you set the variable mac-command-modifier to 'meta - you will lose functionality, of course. 
 If you use a non-English keybboard layout, the emulation modes might be just what you want. While they leave the Option key mapped to Meta, they will allow you to input many common characters ([,],{,},\, etc.) directly with the Option key, just as you would otherwise. You can find them in the Options -> Option Key menu - or use, e.g., M-x emulate-mac-german-keyboard-mode.
-
 
 In CarbonEmacsPackage, you can set the variable mac-option-modifier to 'meta when your option key is used to input special characters. See also mac-control-modifier and mac-command-modifier if you want to map the meta-key to another modifier key (Ctrl, for example).
 
@@ -272,10 +272,6 @@ Best option in Emacs 23 is to revert to Emacs 22 settings (alt is alt, cmd is me
     (setq mac-command-key-is-meta t)
     (setq mac-command-modifier 'meta)
     (setq mac-option-modifier nil)
-
-If you're running "emacs -nw" in Terminal.app you can swap the cmd and alt keys; see the following blog post:
-http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html.
-Alternatively, you can use [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this patch] for iTerm, to get both Meta and normal Option modifier working at the same time.
 
 CocoaEmacs has a group of customizable options named Ns, for adjustment of GNUstep/Mac OS X specific features. 
 Some variables in this group can be set to either assign behavior to modifier keys, or remove it to make them behave as usual in Mac OS X.
