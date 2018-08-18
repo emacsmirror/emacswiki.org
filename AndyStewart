@@ -135,7 +135,7 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** [https://www.emacswiki.org/emacs/css-sort-buffer.el css-sort-buffer.el] -- Sort css attributes of whole css buffer.
 
-*** [https://github.com/manateelazycat/lazycat-emacs/tree/master/site-lisp/extensions/english-helper Company-English-Helper] -- English helper base on Company interface.
+*** [https://github.com/manateelazycat/company-english-helper Company-English-Helper] -- English helper base on Company interface.
 
 * Enhanced packages.
 
