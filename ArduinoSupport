@@ -6,7 +6,7 @@ The Arduino IDE is useful for beginners, but Emacs is better.
 * [https://github.com/bookest/arduino-mode arduino-mode.el] - major mode for editing .ino and .pde files.
 * CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports Arduino sketch projects, enabling compilation and uploading sketches to your microcontroller.
 
-To compile sketches outside of the Arduino IDE, you will need to use [http://mjo.tc/atelier/2009/02/arduino-cli.html Arduino.mk] which is comes with the Arduino development environment.  This enables command line compilation of your sketches, and is used by the CEDET support.
+To compile sketches outside of the Arduino IDE, you will need to use [http://mjo.tc/atelier/2009/02/arduino-cli.html Arduino.mk] which comes with the Arduino development environment.  This enables command line compilation of your sketches, and is used by the CEDET support.
 
 Alternately, to use the Arduino IDE for compilation, but edit in Emacs, open the preferences in the IDE, and choose "Use External Editor".
 
