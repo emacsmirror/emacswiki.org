@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008 ~ 2018, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.6
-;; Last-Updated: 2018-08-06 21:23:09
+;; Version: 0.7
+;; Last-Updated: 2018-08-21 18:23:41
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 27.0.50
@@ -44,6 +44,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/08/21
+;;      * Fix bug of `paredit-web-mode-kill' not kill tag attribute correctly. 
 ;;
 ;; 2018/08/06
 ;;      * Improve function `paredit-ruby-mode-kill' that reindent line if rest line start with ruby keywords.
@@ -284,23 +287,17 @@ Otherwise, do `paredit-kill'."
   (interactive)
   (if (paredit-blank-line-p)
       (paredit-kill-blank-line-and-reindent)
-    (let (parent-element-pos
-          line-indent-pos
-          in-tag-p)
-      (save-excursion
-        (web-mode-element-parent)
-        (setq parent-element-pos (point)))
-      (save-excursion
-        (back-to-indentation)
-        (setq line-indent-pos (point)))
-      (setq in-tag-p (equal parent-element-pos line-indent-pos))
-      (cond ((paredit-in-string-p)
-             (paredit-kill))
-            (in-tag-p
-             (web-mode-attribute-kill))
-            (t
-             (paredit-kill))
-            ))))
+    (cond ((paredit-in-string-p)
+           (paredit-kill))
+          (t
+           (let (char-count-before-kill
+                 char-count-after-kill)
+             (setq char-count-before-kill (- (point-max) (point-min)))
+             (web-mode-attribute-kill)
+             (setq char-count-after-kill (- (point-max) (point-min)))
+             (when (equal char-count-before-kill char-count-after-kill)
+               (paredit-kill))
+             )))))
 
 (defun paredit-ruby-mode-kill ()
   "It's a smarter kill function for `ruby-mode'.
