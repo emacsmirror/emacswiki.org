@@ -71,6 +71,19 @@ Key binding
 
      (global-set-key (kbd "C-c w")         (quote copy-word))
 
+=Copy backward word=
+ (defun copy-backward-word ()
+  "copy word before point - rocky @ stackexchange"
+   (interactive "")
+   (save-excursion
+    (let ((end (point))
+      (beg (get-point 'backward-word 1)))
+      (copy-region-as-kill beg end))))
+
+Key binding
+
+    (global-set-key (kbd "C-c W") 'copy-backward-word) 
+
 =Copy Line=
 
      (defun copy-line (&optional arg)
