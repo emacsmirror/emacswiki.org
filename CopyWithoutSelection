@@ -28,33 +28,25 @@ Killing next word or sexp can be done with <code>C-M-SPC C-w</code>, or better w
 
 = the base functions =
 
-     (defun get-point (symbol &optional arg)
+    (defun get-point (symbol &optional arg)
       "get the point"
       (funcall symbol arg)
-      (point)
-     )
+      (point))
      
-     (defun copy-thing (begin-of-thing end-of-thing &optional arg)
-       "copy thing between beg & end into kill ring"
-        (save-excursion
-          (let ((beg (get-point begin-of-thing 1))
-         	 (end (get-point end-of-thing arg)))
-            (copy-region-as-kill beg end)))
-     )
+    (defun copy-thing (begin-of-thing end-of-thing &optional arg)
+      "Copy thing between beg & end into kill ring."
+      (save-excursion
+        (let ((beg (get-point begin-of-thing 1))
+              (end (get-point end-of-thing arg)))
+          (copy-region-as-kill beg end))))
      
-     (defun paste-to-mark(&optional arg)
-       "Paste things to mark, or to the prompt in shell-mode"
-       (let ((pasteMe 
-     	 (lambda()
-     	   (if (string= "shell-mode" major-mode)
-     	     (progn (comint-next-prompt 25535) (yank))
-     	   (progn (goto-char (mark)) (yank) )))))
-     	(if arg
-     	    (if (= arg 1)
-     		nil
-     	      (funcall pasteMe))
-     	  (funcall pasteMe))
-     	))
+    (defun paste-to-mark (&optional arg)
+      "Paste things to mark, or to the prompt in shell-mode."
+      (unless (eq arg 1)
+        (if (string= "shell-mode" major-mode)
+            (comint-next-prompt 25535)
+          (goto-char (mark)))
+        (yank)))
      
 
 =Copy Word=
@@ -115,16 +107,13 @@ key binding
 
 =Copy String=
 
-     (defun beginning-of-string(&optional arg)
-       "  "
-       (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-     	     (if (looking-at "[\t ]")  (goto-char (+ (point) 1)) )
-     )
-     (defun end-of-string(&optional arg)
-       " "
-       (re-search-forward "[ \t]" (line-end-position) 3 arg)
-     	     (if (looking-back "[\t ]") (goto-char (- (point) 1)) )
-     )
+    (defun beginning-of-string (&optional arg)
+      (when (re-search-backward "[ \t]" (line-beginning-position) :noerror 1)
+        (forward-char 1)))
+
+    (defun end-of-string (&optional arg)
+      (when (re-search-forward "[ \t]" (line-end-position) :noerror arg)
+        (backward-char 1)))
      
      (defun thing-copy-string-to-mark(&optional arg)
        " Try to copy a string and paste it to the mark
@@ -143,18 +132,15 @@ Key binding
 
 Similar with new copy string to mark
 
-     (defun beginning-of-parenthesis(&optional arg)
-       "  "
-       (re-search-backward "[[<(?\"]" (line-beginning-position) 3 1)
-     	     (if (looking-at "[[<(?\"]")  (goto-char (+ (point) 1)) )
-     )
-     (defun end-of-parenthesis(&optional arg)
-       " "
-       (re-search-forward "[]>)?\"]" (line-end-position) 3 arg)
-     	     (if (looking-back "[]>)?\"]") (goto-char (- (point) 1)) )
-     )
+    (defun beginning-of-parenthesis (&optional arg)
+      (when (re-search-backward "[[<(?\"]" (line-beginning-position) :noerror)
+        (forward-char 1)))
+
+    (defun end-of-parenthesis (&optional arg)
+      (when (re-search-forward "[]>)?\"]" (line-end-position) :noerror arg)
+        (backward-char 1)))
      
-     (defun thing-copy-parenthesis-to-mark(&optional arg)
+     (defun thing-copy-parenthesis-to-mark (&optional arg)
        " Try to copy a parenthesis and paste it to the mark
      When used in shell-mode, it will paste parenthesis on shell prompt by default "
        (interactive "P")
@@ -164,13 +150,12 @@ Similar with new copy string to mark
       (global-set-key (kbd "C-c a")         (quote thing-copy-parenthesis-to-mark))
 
 ----
-==Comment==
+== Possible alternative: thing-edit.el ==
+
+[new]
 Have you see Lisp:thing-edit.el ?  -- AndyStewart
 
-----
-----
-==Comment==
--- David Young
+[new]
 
 Thanks for your advice. It's cool. I evaluated thing-edit.el. Yeah I actually modified some of my functions to leverage the thingatpt.el. I love to leverage build-in functions as much as possible than to write my own ones. But anyway, it does not give me what copy-string could do fo me. 
 
@@ -198,7 +183,8 @@ Or I would need a command like <b>ALTER  CHANNEL(TO.QMCOD.4.FTECA) CHLTYPE(CLUSR
 
 Both <b>thing-copy-sexp</b> and <b>thing-copy-symbol</b> do not work in this way. Maybe I am not actually understand how thing-copy-sexp works. I don't find enough document for it in thingatpt.el. 
 
+-- David Young
+
+
 ----
-
-
 CategoryRegion  CategoryEditing
