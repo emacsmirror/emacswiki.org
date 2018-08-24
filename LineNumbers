@@ -6,7 +6,7 @@ This page is about ''displaying'' line numbers in a buffer, or otherwise indicat
 
 ##display-line-numbers-mode## is available since Emacs 26.
 
-For older Emacs, use ##M-x linum-mode##. It could slow down emacs when viewing file with more than tens of thousands of lines. See https://github.com/redguardtoo/emacs.d/issues/178 for bug report and solution.
+For older Emacs, use ##M-x linum-mode##. It could slow down emacs when viewing file with more than tens of thousands of lines. See https://github.com/redguardtoo/emacs.d/issues/178 for bug report and solution. The solution is simple: disable `linum-mode` or any linum-mode alternative when file is too big.
 
 You can enable it globally by appending this to your ##.emacs## file:
 
