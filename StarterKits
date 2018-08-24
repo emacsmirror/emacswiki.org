@@ -1,9 +1,10 @@
 There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration.
 
-Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (all numbers as of 2016-01-16):
+Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (all numbers as of 2016-01-16, except for the updated 2018-08-25 numbers on Spacemacs and Doom Emacs):
 
 || Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            ||  5476 ||          318 ||    5276 ||              6040 || https://github.com/syl20bnr/spacemacs ||
+|| Spacemacs            || 15.7k ||          568 ||    7430 ||              6040 || https://github.com/syl20bnr/spacemacs ||
+|| Doom Emacs           ||  1.7k ||           27 ||    4336 ||               142 || https://github.com/hlissner/doom-emacs ||
 || Prelude              ||  2723 ||          100 ||    1188 ||                80 || https://github.com/bbatsov/prelude ||
 || purcell emacs.d      ||  2417 ||           13 ||    2427 ||                60 || https://github.com/purcell/emacs.d || 
 || magnars emacs.d      ||   910 ||            6 ||    1359 ||               500 || https://github.com/magnars/.emacs.d ||
