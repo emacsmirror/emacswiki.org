@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2009-02-07 20:56:08
-;; Version: 0.6
-;; Last-Updated: 2018-08-26 02:13:28
+;; Version: 0.7
+;; Last-Updated: 2018-08-26 03:01:43
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/basic-toolkit.el
 ;; Keywords: edit, toolkit
@@ -61,6 +61,7 @@
 ;;
 ;; 2018/08/26
 ;;      * Add function `goto-line-with-feedback', use `display-line-numbers-mode' instead `linum-mode', for better performance.
+;;      * `match-paren' should instead by `paredit-match-paren' by `paredit-extension.el'.
 ;;
 ;; 2018/07/13
 ;;      * Add `css-sort-buffer' for sort css attributable before format css buffer.
@@ -522,15 +523,6 @@ Argument STRING the string that need pretty."
   (call-interactively 'backward-button)
   (while (not (bolp))
     (call-interactively 'backward-button)))
-
-(defun match-paren (arg)
-  "Go to the matching parenthesis if on parenthesis, otherwise insert %."
-  (interactive "p")
-  (cond ((looking-at "\\s\(\\|\\s\{\\|\\s\[")
-         (forward-list))
-        ((looking-back "\\s\)\\|\\s\}\\|\\s\\]")
-         (backward-list))
-        (t (self-insert-command (or arg 1)))))
 
 (defun goto-column (number)
   "Untabify, and go to a column NUMBER within the current line (0 is beginning of the line)."
