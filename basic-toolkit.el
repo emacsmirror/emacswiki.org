@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2009-02-07 20:56:08
-;; Version: 0.5
-;; Last-Updated: 2018-07-13 09:30:23
+;; Version: 0.6
+;; Last-Updated: 2018-08-26 02:13:28
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/basic-toolkit.el
 ;; Keywords: edit, toolkit
@@ -59,6 +59,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/08/26
+;;      * Add function `goto-line-with-feedback', use `display-line-numbers-mode' instead `linum-mode', for better performance.
+;;
 ;; 2018/07/13
 ;;      * Add `css-sort-buffer' for sort css attributable before format css buffer.
 ;;
@@ -84,6 +87,7 @@
 (require 'windows)
 (require 'cycle-buffer)
 (require 'css-sort-buffer)
+(require 'display-line-numbers)
 
 ;;; Code:
 
@@ -772,6 +776,19 @@ use function `completion-delete'."
         (if (and (string-prefix-p "*" (buffer-name)) (string-suffix-p "*" (buffer-name)))
             (kill-buffer buf))
         ))))
+
+(defun goto-line-with-feedback ()
+  "Show line numbers temporarily, while prompting for the line number input.
+This function will detect current display-line-numbers-mode status, it won't disable display-line-numbers-mode if current buffer has enable it."
+  (interactive)
+  (let ((display-line-numbers-mode-p display-line-numbers-mode))
+    (unwind-protect
+        (progn
+          (display-line-numbers-mode 1)
+          (goto-line (read-number "Goto line: ")))
+      (unless display-line-numbers-mode-p
+        (display-line-numbers-mode -1))
+      )))
 
 (provide 'basic-toolkit)
 
