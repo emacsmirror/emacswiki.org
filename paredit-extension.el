@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008 ~ 2018, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.7
-;; Last-Updated: 2018-08-21 18:23:41
+;; Version: 0.8
+;; Last-Updated: 2018-08-26 03:02:02
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 27.0.50
@@ -45,8 +45,11 @@
 
 ;;; Change log:
 ;;
+;; 2018/08/26
+;;      * Add new function `paredit-match-paren'.
+;;
 ;; 2018/08/21
-;;      * Fix bug of `paredit-web-mode-kill' not kill tag attribute correctly. 
+;;      * Fix bug of `paredit-web-mode-kill' not kill tag attribute correctly.
 ;;
 ;; 2018/08/06
 ;;      * Improve function `paredit-ruby-mode-kill' that reindent line if rest line start with ruby keywords.
@@ -366,6 +369,18 @@ If current line is not blank, do `paredit-kill' first, re-indent line if rest li
     (indent-according-to-mode)
     (comment-indent-new-line)
     (open-newline-above 1)))
+
+(defun paredit-match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis, otherwise insert %."
+  (interactive "p")
+  (cond ((or (paredit-in-comment-p)
+             (paredit-in-string-p))
+         (self-insert-command (or arg 1)))
+        ((looking-at "\\s\(\\|\\s\{\\|\\s\[")
+         (forward-list))
+        ((looking-back "\\s\)\\|\\s\}\\|\\s\\]")
+         (backward-list))
+        (t (self-insert-command (or arg 1)))))
 
 (provide 'paredit-extension)
 
