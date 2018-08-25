@@ -1,10 +1,6 @@
 [[ja:VariableDefinition-ja]]
-This pages explains when to use defcustom, when to use defvar, when to
-use defconst, and when to start the DocString with an asterisk `*'.
-Variables with DocStrings that start with an asterisk are possible
-candidates for `M-x set-variable'.  Since the user is supposed to type
-the new value into the MiniBuffer, the possible values must be simple
-to type!
+This pages explains when to use defcustom, when to use defvar and when to
+use defconst.
 
 Look at BufferLocalVariable for variables that have a different value
 in every buffer (such as `buffer-file-name').
@@ -42,8 +38,10 @@ initial value specified in the `defvar' expression.  `defcustom'
 expressions are treated similarly.  This special feature is convenient
 for debugging Lisp programs.
 
+
 [new:XueFuqiao:2012-12-29 05:58 UTC]
-From GNU Emacs 24.3 on, docstrings starting with `*' no longer indicate user options.
+Prior to version 24.3 of GNU Emacs, variables with DocStrings that start with an asterisk were considered possible
+candidates for `M-x set-variable'. From GNU Emacs 24.3 on, docstrings starting with `*' no longer indicate user options.
 Only variables defined using `defcustom' are considered user options.  -- XueFuqiao
 [new]
 
