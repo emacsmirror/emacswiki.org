@@ -5,28 +5,17 @@ use defconst.
 Look at BufferLocalVariable for variables that have a different value
 in every buffer (such as `buffer-file-name').
 
-* Variable changed by users interactively
+* Variable changed by users interactively, set in ~/.emacs, or using custom.
 
-: Use `defvar' or `defcustom'. The DocString should start with `*'.
-If the value is a long list, or a function, or if the variable would
-be set only in init files, then don't start the documentation string
-with `*'.
+: Use `defcustom'.
 
-* Variable changed by users using custom
+* Variable not changed by user.
 
-: Use `defcustom'. Maybe start DocString with `*'. See above for details.
-
-* Variable set in ~/.emacs
-
-: Use `defcustom' or `defvar'. Maybe start DocString with `*'. See above for details.
-
-* Variable not changed by user
-
-: If the variable is only used by code, use `defvar'. Do not start DocString with `*'.
+: If the variable is only used by code, use `defvar'.
 
 * Variable not changed at all
 
-: Use `defconst'. Do not start DocString with `*'.
+: Use `defconst'.  Note this doesn't prevent changing the variable, it just makes the author's intention explicit.
 
 * Development
 : From the EmacsManual :
@@ -43,8 +32,10 @@ for debugging Lisp programs.
 Prior to version 24.3 of GNU Emacs, variables with DocStrings that start with an asterisk were considered possible
 candidates for `M-x set-variable'. From GNU Emacs 24.3 on, docstrings starting with `*' no longer indicate user options.
 Only variables defined using `defcustom' are considered user options.  -- XueFuqiao
-[new]
 
+For more recent Emacs, this would be considered a bug: [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=23392 Bug#23392 - Somebody should clean up the "*" in doc strings]
+
+----
 See also NonNilValues.
 
 ----
