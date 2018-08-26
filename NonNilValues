@@ -35,7 +35,7 @@ the mode: turns it alternately on and off. To turn the mode on, you pass a posit
 
 This last case brings up a related point. When an optional argument is absent, its value is `nil'. This is handy, especially for functions that are interactive (i.e. commands): The default behavior is the `nil' case, but if you supply a prefix argument (via `C-u'), then a non-`nil' value is passed. This is so regardless of the meaning that the function gives to `nil' and to the various possible non-`nil' values. You can always contrive to interpret `nil' and non-`nil' as FALSE and TRUE of something, of course, but it is really the fact that an optional argument has value `nil' that is behind the behavior. The person who defines the command picks the most common case for a `nil' value, and picks one or more less common cases for non-`nil' values.
 
-'''Summary:'''
+== Summary ==
 
 * To know what a non-`nil' value means, read the appropriate doc.
 * A non-`nil' value often means TRUE -- and it often conveys additional information as well.
