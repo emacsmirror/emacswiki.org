@@ -1,4 +1,4 @@
-== Difference between setting 1 vs t? ==
+== What is the difference between using t and other non-nil values? ==
 ''For setting a variable to be non-<code>nil</code>, is there any appreciable difference in setting it to <code>t</code> versus <code>1</code>? Or is it simply a matter of style? Many postings on this wiki seem to favor using <code>1</code>.''
 
 '''Answer:''' ''To find out what any value for a given variable means, consult the doc for that variable.''
