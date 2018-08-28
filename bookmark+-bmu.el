@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jan  1 09:54:35 2018 (-0800)
+;; Last-Updated: Tue Aug 28 13:48:06 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3961
+;;     Update #: 3962
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2513,6 +2513,8 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                              (setq char  (read-char (concat "Pattern: " bmkp-bmenu-filter-pattern)))
                            ;; `read-char' raises an error for non-char event.
                            (error (throw 'bmkp-bmenu-read-filter-input nil)))
+                    (unless (or (not (fboundp 'characterp))  (characterp char)) ; E.g. `M-x', `M-:'
+                      (throw 'bmkp-bmenu-read-filter-input nil))
                     (case char
                       ((?\e ?\r)  (throw 'bmkp-bmenu-read-filter-input nil)) ; Break and exit.
                       (?\C-g      (setq inhibit-quit  nil)
