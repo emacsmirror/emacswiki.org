@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 24 08:16:06 2018 (-0700)
+;; Last-Updated: Tue Aug 28 13:49:49 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 16400
+;;     Update #: 16402
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1361,6 +1361,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2018/08/28 dadams
+;;     bmkp-bmenu-read-filter-input: Do not pass non-characterp value to text-char-description.
 ;; 2017/10/27 dadams
 ;;     bookmark-bmenu-mode: Added to doc string: bmkp-bmenu-paste-(add|replace)-tags.
 ;; 2017/10/14 dadams
