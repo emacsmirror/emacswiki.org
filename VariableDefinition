@@ -33,7 +33,7 @@ Prior to version 24.3 of GNU Emacs, variables with DocStrings that start with an
 candidates for `M-x set-variable'. From GNU Emacs 24.3 on, docstrings starting with `*' no longer indicate user options.
 Only variables defined using `defcustom' are considered user options.  -- XueFuqiao
 
-For more recent Emacs, this would be considered a bug: [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=23392 Bug#23392 - Somebody should clean up the "*" in doc strings]
+For more recent Emacs, this would be considered a bug for code distributed by GnuEmacs: [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=23392 Bug#23392 - Somebody should clean up the "*" in doc strings]. It is not a bug for user code and 3rd-party libraries that are designed to work with older Emacs versions.
 
 ----
 See also NonNilValues.
