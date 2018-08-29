@@ -1,9 +1,27 @@
 [[es:truncateLines]]
 Turn off wrapping for a single buffer using `M-x toggle-truncate-lines'.
+Long lines will show a continuation character in the right margin to
+indicate that one can scroll to see the rest. 
+
+As you move the point, for example with C-e, the buffer will scroll
+horizontally to show you the rest of a long line. 
 
 This is a BufferLocalVariable.  You can set the ''default'' value by customizing option '''`truncate-lines'''' (`M-x customize-option truncate-lines') or by putting the following in your InitFile.
 {{{
 (set-default 'truncate-lines t)
+}}}
+
+If you would like line truncation to always be turned on whenever you
+open a specific file, you can do so by adding the following
+[FileVariables File Variable] line to the top of any file:
+{{{
+-*- truncate-lines: t -*-
+}}}
+
+To make it easier to toggle truncating lines, you can bind it to a key
+sequence in your InitFile. For example, `C-c` `$`:
+{{{
+(global-set-key "\C-c$" 'toggle-truncate-lines)
 }}}
 
 This setting does not apply to horizontally-split windows.
