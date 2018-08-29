@@ -39,8 +39,11 @@ devices --- for example, by using two fingers on a trackpad on most
 GNU/Linux laptops. To tell emacs you'd like those mouse events to
 scroll the buffer sideways, add the following to your InitFile:
 {{{
-(global-set-key (kbd "<mouse-6>") 'scroll-right)
-(global-set-key (kbd "<mouse-7>") 'scroll-left)
+;; Horizontal scrolling mouse events should actually scroll left and right.
+(global-set-key (kbd "<mouse-6>") (lambda () (interactive)
+				    (if truncate-lines (scroll-right 1))))
+(global-set-key (kbd "<mouse-7>") (lambda () (interactive)
+				    (if truncate-lines (scroll-left 1))))
 }}}
 
 ----
