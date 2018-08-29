@@ -1,7 +1,7 @@
-[[es:truncateLines]]
-Turn off wrapping for a single buffer using `M-x toggle-truncate-lines'.
-Long lines will show a continuation character in the right margin to
-indicate that one can scroll to see the rest. 
+[[es:truncateLines]] Turn off wrapping for a single buffer using `M-x
+toggle-truncate-lines'. Long lines will show a continuation character
+in the right margin of the window's edge to indicate that one can
+scroll to see the rest.
 
 [[image:truncate1.png]]
 
@@ -21,7 +21,7 @@ putting the following in your InitFile.
 
 If you would like line truncation to always be turned on whenever you
 open a specific file, you can do so by adding the following
-[FileVariables File Variable] line to the top of any file:
+[FileVariables File Variables] line to the top of any file:
 {{{
 -*- truncate-lines: t -*-
 }}}
@@ -31,6 +31,8 @@ sequence in your InitFile. For example, ##C-c $##:
 {{{
 (global-set-key "\C-c$" 'toggle-truncate-lines)
 }}}
+
+----
 
 This setting does not apply to horizontally-split windows.
 `C-x 3' splits windows horizontally, where as `C-x 2' splits them vertically.
@@ -53,6 +55,9 @@ to put the setting in a hook:
 {{{
 (add-hook 'diff-mode-hook (lambda () (setq truncate-lines t)))
 }}}
+
+----
+
 [new] 
 Nano truncates lines so that when you scroll toward the end of one,
 the line itself moves to the left independently of the rest of the
