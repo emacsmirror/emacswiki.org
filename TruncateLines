@@ -5,12 +5,16 @@ indicate that one can scroll to see the rest.
 
 [[image:truncate1.png]]
 
-As you move the point, for example with ##C-e##, the buffer will scroll
-horizontally to show you the rest of a long line. 
+As you move the point, for example by typing or with ##C-a## and
+##C-e##, the buffer will scroll horizontally to show you the rest of a
+long line.
 
 [[image:truncate2.png]]
 
-This is a BufferLocalVariable.  You can set the ''default'' value by customizing option '''`truncate-lines'''' (`M-x customize-option truncate-lines') or by putting the following in your InitFile.
+This is a [BufferLocalVariable buffer local variable]. You can set
+emacs to default to truncating lines by customizing the option
+`truncate-lines' (##M-x customize-option truncate-lines##) or by
+putting the following in your InitFile.
 {{{
 (set-default 'truncate-lines t)
 }}}
@@ -23,7 +27,7 @@ open a specific file, you can do so by adding the following
 }}}
 
 To make it easier to toggle truncating lines, you can bind it to a key
-sequence in your InitFile. For example, `C-c` `$`:
+sequence in your InitFile. For example, ##C-c $##:
 {{{
 (global-set-key "\C-c$" 'toggle-truncate-lines)
 }}}
