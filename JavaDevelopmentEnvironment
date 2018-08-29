@@ -11,7 +11,7 @@ Project site: https://github.com/jdee-emacs/jdee
 
 [http://eclim.org/ Eclim] uses Eclipse as a backend to provide intelligent Java completion and coding support in Emacs
 
-[https://github.com/emacs-lsp/lsp-java lsp-java] Java support for lsp-mode using the Eclipse JDT Language Server.]
+[https://github.com/emacs-lsp/lsp-java lsp-java] Java support for lsp-mode using the Eclipse JDT Language Server.
 
 [https://github.com/mopemope/meghanada-emacs Meghanada] is an Emacs mode with a dedicated server component.
 
