@@ -1,13 +1,13 @@
 [[es:truncateLines]] Turn off wrapping for a single buffer using `M-x
 toggle-truncate-lines'. Long lines will show a continuation character
-in the right margin of the window's edge to indicate that one can
+in the right margin at the window's edge to indicate that one can
 scroll to see the rest.
 
 [[image:truncate1.png]]
 
 As you move the point, for example by typing or with ##C-a## and
 ##C-e##, the buffer will scroll horizontally to show you the rest of a
-long line.
+long line. You can also scroll manually using ##C-x <## and ##C-x >##.
 
 [[image:truncate2.png]]
 
