@@ -34,7 +34,18 @@ sequence in your InitFile. For example, ##C-c $##:
 
 ----
 
-This setting does not apply to horizontally-split windows.
+Scrolling horizontally is supported by many mouses and mouse-like
+devices --- for example, by using two fingers on a trackpad on most
+GNU/Linux laptops. To tell emacs you'd like those mouse events to
+scroll the buffer sideways, add the following to your InitFile:
+{{{
+(global-set-key (kbd "<mouse-6>") 'scroll-right)
+(global-set-key (kbd "<mouse-7>") 'scroll-left)
+}}}
+
+----
+
+The truncate-lines setting does not apply to horizontally-split windows.
 `C-x 3' splits windows horizontally, where as `C-x 2' splits them vertically.
 
 To turn wrapping on in horizontally-split windows, use the following in your InitFile:
