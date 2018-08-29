@@ -11,8 +11,13 @@ Project site: https://github.com/jdee-emacs/jdee
 
 [http://eclim.org/ Eclim] uses Eclipse as a backend to provide intelligent Java completion and coding support in Emacs
 
-[http://github.com/espenhw/malabar-mode malabar-mode] was an effort to create a better Java mode for Emacs.  It has been [https://github.com/m0smith/malabar-mode/commit/e8a1725f26f80d1f4edc0a1dabd5b5502ab69695 folded into JDEE].
+[https://github.com/emacs-lsp/lsp-java lsp-java] Java support for lsp-mode using the Eclipse JDT Language Server.]
 
+[https://github.com/mopemope/meghanada-emacs Meghanada] is an Emacs mode with a dedicated server component.
+
+[https://github.com/Ruin0x11/intellij-lsp-server IntelliJ LSP Server] uses IntelliJ as a backend.
+
+[http://github.com/espenhw/malabar-mode malabar-mode] was an effort to create a better Java mode for Emacs.  It has been [https://github.com/m0smith/malabar-mode/commit/e8a1725f26f80d1f4edc0a1dabd5b5502ab69695 folded into JDEE].
 
 ==Download==
 JDEE is available from MELPA.
