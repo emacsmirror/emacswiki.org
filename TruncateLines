@@ -5,10 +5,10 @@ indicate that one can scroll to see the rest.
 
 [[image:truncate1.png]]
 
-As you move the point, for example with C-e, the buffer will scroll
+As you move the point, for example with ##C-e##, the buffer will scroll
 horizontally to show you the rest of a long line. 
 
-
+[[image:truncate2.png]]
 
 This is a BufferLocalVariable.  You can set the ''default'' value by customizing option '''`truncate-lines'''' (`M-x customize-option truncate-lines') or by putting the following in your InitFile.
 {{{
