@@ -631,6 +631,42 @@ That is, remove a non kept file from the recent list."
 Tip: when helm is used, use "someDir/$" to narrow to directory only pattern. "someDir" pattern also works of course, but it will display other paths containing "someDir" as well.
  -- vibrys
 
+== Updating recentf-list when renaming files in dired ==
+
+If you move a source directory with dired from A to B, by default there's no integration to make sure that an entry of <code>A/xxx</code> gets updated to <code>B/xxx</code>. This snippet of code makes this work properly (it uses the new Emacs advice functions; if you have an Emacs older than 24.4, you'll have to port it).
+
+{{{
+;; Magic advice to rename entries in recentf when moving files in
+;; dired.
+(defun rjs/recentf-rename-notify (oldname newname &rest args)
+  (if (file-directory-p newname)
+      (rjs/recentf-rename-directory oldname newname)
+    (rjs/recentf-rename-file oldname newname)))
+
+(defun rjs/recentf-rename-file (oldname newname)
+  (setq recentf-list
+        (mapcar (lambda (name)
+                  (if (string-equal name oldname)
+                      newname
+                    oldname))
+                recentf-list)))
+
+(defun rjs/recentf-rename-directory (oldname newname)
+  ;; oldname, newname and all entries of recentf-list should already
+  ;; be absolute and normalised so I think this can just test whether
+  ;; oldname is a prefix of the element.
+  (setq recentf-list
+        (mapcar (lambda (name)
+                  (if (string-prefix-p oldname name)
+                      (concat newname (substring name (length oldname)))
+                    name))
+                recentf-list)))
+
+(advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify)
+}}}
+
+
+
 == History ==
 
 An older version is available here: 
