@@ -118,6 +118,15 @@ The regular expression might be better expressed as  "^[_[:alnum:]]*[=][#>] " as
 
 -- hdasch
 
+In Emacs 26.1, the above workarounds for Postgres database names didn't work for me, but there seems to be a better way to fix it:
+
+  (sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
+  (sql-set-product-feature 'postgres :prompt-cont-regexp
+                           "^[-[:alnum:]_]*[-(][#>] ")
+
+-- JonathanRRogers
+
+
 === Automatically upcase SQL keywords ===
 
 See also http://stackoverflow.com/q/22091936/324105
