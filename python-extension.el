@@ -80,7 +80,7 @@
 ;;
 
 ;;; Require
-(require 'jedi)
+(require 'jedi-core)
 
 ;;; Code:
 (defun jump-to-import()
