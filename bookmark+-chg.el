@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 28 13:49:49 2018 (-0700)
+;; Last-Updated: Thu Aug 30 08:56:17 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 16402
+;;     Update #: 16404
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2018/08/30 dadams
+;;     Added defmacro for with-coding-priority at compile time.
 ;; 2018/04/24 dadams
 ;;     Added: bmkp-cycle-eww, bmkp-cycle-eww-other-window, bmkp-next-eww-bookmark,
 ;;       bmkp-next-eww-bookmark-other-window, bmkp-next-eww-bookmark-other-window-repeat,
