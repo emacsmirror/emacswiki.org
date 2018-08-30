@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 24 09:10:24 2018 (-0700)
+;; Last-Updated: Thu Aug 30 08:44:54 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 8690
+;;     Update #: 8694
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3297,6 +3297,22 @@ If called from Lisp:
   (setq bookmark-alist-modification-count  0
         bmkp-modified-bookmarks            ())
   (bmkp-refresh/rebuild-menu-list))     ; $$$$$$ Should this be done only when interactive?
+
+
+;; From `mule-util.el'
+;;
+(eval-when-compile
+ (defmacro with-coding-priority (coding-systems &rest body)
+   "Execute BODY like `progn' with CODING-SYSTEMS at the front of priority list.
+CODING-SYSTEMS is a list of coding systems.  See `set-coding-system-priority'.
+This affects the implicit sorting of lists of coding systems returned by
+operations such as `find-coding-systems-region'."
+   (let ((current (make-symbol "current")))
+     `(let ((,current (coding-system-priority-list)))
+       (apply #'set-coding-system-priority ,coding-systems)
+       (unwind-protect
+            (progn ,@body)
+         (apply #'set-coding-system-priority ,current))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
