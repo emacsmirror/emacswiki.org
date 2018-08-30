@@ -115,57 +115,62 @@
   :type 'hook
   :group 'color-rg-mode)
 
-(defface color-rg-header-line-text
+(defface color-rg-font-lock-header-line-text
   '((t (:foreground "Green3" :bold t)))
   "Face for header line text."
   :group 'color-rg)
 
-(defface color-rg-header-line-keyword
+(defface color-rg-font-lock-header-line-keyword
   '((t (:foreground "Gold" :bold t)))
   "Face for header line keyword."
   :group 'color-rg)
 
-(defface color-rg-header-line-directory
+(defface color-rg-font-lock-header-line-directory
   '((t (:foreground "DodgerBlue" :bold t)))
   "Face for header line directory."
   :group 'color-rg)
 
-(defface color-rg-header-line-edit-mode
+(defface color-rg-font-lock-header-line-edit-mode
   '((t (:foreground "Gold" :bold t)))
   "Face for header line edit mode."
   :group 'color-rg)
 
-(defface color-rg-file
+(defface color-rg-font-lock-command
+  '((t (:foreground "Gray30" :bold t)))
+  "Face for filepath."
+  :group 'color-rg)
+
+(defface color-rg-font-lock-file
   '((t (:foreground "DodgerBlue" :bold t)))
   "Face for filepath."
   :group 'color-rg)
 
-(defface color-rg-line-number
+(defface color-rg-font-lock-line-number
   '((t (:foreground "gray35")))
   "Face for line number."
   :group 'color-rg)
 
-(defface color-rg-column-number
+(defface color-rg-font-lock-column-number
   '((t (:foreground "gray35")))
   "Face for column number."
   :group 'color-rg)
 
-(defface color-rg-position-splitter
+(defface color-rg-font-lock-position-splitter
   '((t (:foreground "gray25")))
   "Face for position splitter."
   :group 'color-rg)
 
-(defface color-rg-match
+(defface color-rg-font-lock-match
   '((t (:foreground "Gold3" :bold t)))
   "Face for keyword match."
   :group 'color-rg)
 
-(defface color-rg-position-mark-changed
-  '((t (:foreground "SystemOrangeColor" :background "gray20" :bold t)))
+(defface color-rg-font-lock-mark-changed
+  '((t (:foreground "White" :background "SystemBlueColor" :bold t)))
   "Face for keyword match."
   :group 'color-rg)
 
-(defface color-rg-position-mark-deleted
+(defface color-rg-font-lock-mark-deleted
   '((t (:foreground "SystemRedColor" :bold t)))
   "Face for keyword match."
   :group 'color-rg)
@@ -207,10 +212,14 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "h") 'color-rg-jump-next-file)
     (define-key map (kbd "l") 'color-rg-jump-prev-file)
     (define-key map (kbd "RET") 'color-rg-open-file)
+    (define-key map (kbd "C-m") 'color-rg-open-file)
 
     (define-key map (kbd "m") 'color-rg-change-search-customized)
-    (define-key map (kbd "i") 'color-rg-rerun-no-ignore)
     (define-key map (kbd "r") 'color-rg-replace-all-matches)
+    (define-key map (kbd "f") 'color-rg-filter-match-results)
+    (define-key map (kbd "F") 'color-rg-filter-mismatch-results)
+    (define-key map (kbd "D") 'color-rg-remove-line-from-results)
+    (define-key map (kbd "i") 'color-rg-rerun-no-ignore)
     (define-key map (kbd "t") 'color-rg-rerun-literal)
     (define-key map (kbd "c") 'color-rg-rerun-case-senstive)
     (define-key map (kbd "s") 'color-rg-change-search-keyword)
@@ -255,11 +264,12 @@ used to restore window configuration after apply changed.")
   (font-lock-add-keywords
    nil
    '(
-     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 1 'color-rg-line-number)
-     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 2 'color-rg-position-splitter)
-     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 3 'color-rg-column-number)
-     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 4 'color-rg-position-splitter)
-     ("^[/\\~].*" . 'color-rg-file)
+     ("^rg\\s-.*" . 'color-rg-font-lock-command)
+     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 1 'color-rg-font-lock-line-number)
+     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 2 'color-rg-font-lock-position-splitter)
+     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 3 'color-rg-font-lock-column-number)
+     ("^\\([1-9][0-9]*\\)\\(:\\)\\([1-9][0-9]*\\)\\(:\\)" 4 'color-rg-font-lock-position-splitter)
+     ("^[/\\~].*" . 'color-rg-font-lock-file)
      ))
   ;; NOTE:
   ;; Because search line maybe just contains *half* of string/comment that make rest content of buffer mark as string.
@@ -284,14 +294,14 @@ This function is called from `compilation-filter-hook'."
         ;; Highlight filename.
         (while (re-search-forward "^\033\\[[0]*m\033\\[35m\\(.*?\\)\033\\[[0]*m$" end 1)
           (replace-match (concat (propertize (match-string 1)
-                                             'face nil 'font-lock-face 'color-rg-file))
+                                             'face nil 'font-lock-face 'color-rg-font-lock-file))
                          t t))
         (goto-char beg)
 
         ;; Highlight rg matches and delete marking sequences.
         (while (re-search-forward "\033\\[[0]*m\033\\[[3]*1m\033\\[[3]*1m\\(.*?\\)\033\\[[0]*m" end 1)
           (replace-match (propertize (match-string 1)
-                                     'face nil 'font-lock-face 'color-rg-match)
+                                     'face nil 'font-lock-face 'color-rg-font-lock-match)
                          t t)
           (setq color-rg-hit-count (+ color-rg-hit-count 1)))
         ;; Delete all remaining escape sequences
@@ -302,12 +312,12 @@ This function is called from `compilation-filter-hook'."
 
 (defun color-rg-update-header-line ()
   (setq header-line-format (format "%s%s%s%s%s%s"
-                                   (propertize "[COLOR-RG] Search '" 'font-lock-face 'color-rg-header-line-text)
-                                   (propertize search-keyword 'font-lock-face 'color-rg-header-line-keyword)
-                                   (propertize "' in directory: " 'font-lock-face 'color-rg-header-line-text)
-                                   (propertize search-directory 'font-lock-face 'color-rg-header-line-directory)
-                                   (propertize " Mode: " 'font-lock-face 'color-rg-header-line-text)
-                                   (propertize edit-mode 'font-lock-face 'color-rg-header-line-edit-mode)
+                                   (propertize "[COLOR-RG] Search '" 'font-lock-face 'color-rg-font-lock-header-line-text)
+                                   (propertize search-keyword 'font-lock-face 'color-rg-font-lock-header-line-keyword)
+                                   (propertize "' in directory: " 'font-lock-face 'color-rg-font-lock-header-line-text)
+                                   (propertize search-directory 'font-lock-face 'color-rg-font-lock-header-line-directory)
+                                   (propertize " Mode: " 'font-lock-face 'color-rg-font-lock-header-line-text)
+                                   (propertize edit-mode 'font-lock-face 'color-rg-font-lock-header-line-edit-mode)
                                    ))
   )
 
@@ -467,10 +477,10 @@ This function is called from `compilation-filter-hook'."
         ))))
 
 (defun color-rg-mark-position-changed (line)
-  (color-rg-mark-position line "changed" 'color-rg-position-mark-changed))
+  (color-rg-mark-position line "changed" 'color-rg-font-lock-mark-changed))
 
 (defun color-rg-mark-position-deleted (line)
-  (color-rg-mark-position line "deleted" 'color-rg-position-mark-deleted))
+  (color-rg-mark-position line "deleted" 'color-rg-font-lock-mark-deleted))
 
 (defun color-rg-kill-temp-buffer ()
   (when (get-buffer color-rg-temp-buffer)
@@ -500,6 +510,31 @@ This function is called from `compilation-filter-hook'."
     (set (make-local-variable 'edit-mode) "View")
     (color-rg-update-header-line)
     ))
+
+(defun color-rg-filter-results (match-regexp)
+  (let ((filter-regexp (read-string
+                        (format (if match-regexp
+                                    "Filter result match regexp: "
+                                  "Filter result not match regexp: ")))))
+    (save-excursion
+      (with-current-buffer color-rg-buffer
+        (setq remove-counter 0)
+        (goto-char (point-min))
+        (while (setq start (search-forward-regexp color-rg-regexp-position nil t))
+          (setq line-content (color-rg-get-line-content color-rg-buffer (line-number-at-pos)))
+          (if match-regexp
+              (unless (string-match filter-regexp line-content)
+                (color-rg-remove-line-from-results)
+                (setq remove-counter (+ 1 remove-counter))
+                )
+            (when (string-match filter-regexp line-content)
+              (color-rg-remove-line-from-results)
+              (setq remove-counter (+ 1 remove-counter))
+              )))
+        (if match-regexp
+            (message (format "Remove %s lines not match regexp '%s'." remove-counter filter-regexp))
+          (message (format "Remove %s lines match regexp '%s'." remove-counter filter-regexp)))
+        ))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun color-rg-search-input (&optional keyword directory argument)
@@ -552,6 +587,26 @@ This function is called from `compilation-filter-hook'."
         (set (make-local-variable 'search-keyword) replace-text)
         ))))
 
+(defun color-rg-filter-match-results ()
+  (interactive)
+  (color-rg-filter-results t))
+
+(defun color-rg-filter-mismatch-results ()
+  (interactive)
+  (color-rg-filter-results nil))
+
+(defun color-rg-remove-line-from-results ()
+  (interactive)
+  (save-excursion
+    (with-current-buffer color-rg-buffer
+      (when (color-rg-get-row-column-position)
+        (read-only-mode -1)
+        (beginning-of-line)
+        (kill-line)
+        (kill-line)
+        (read-only-mode 1)
+        ))))
+
 (defun color-rg-change-search-keyword ()
   (interactive)
   (with-current-buffer color-rg-buffer
@@ -582,7 +637,7 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-rerun-literal ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-argument "--column --color=always --fixed-strings"))
+    (let* ((new-argument "--column --color=always --smart-case --fixed-strings"))
       (color-rg-switch-to-view-mode)
       (color-rg-search-input search-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
@@ -591,7 +646,7 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-rerun-no-ignore ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-argument "--column --color=always --no-ignore"))
+    (let* ((new-argument "--column --color=always --smart-case --no-ignore"))
       (color-rg-switch-to-view-mode)
       (color-rg-search-input search-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
