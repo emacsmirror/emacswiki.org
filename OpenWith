@@ -61,5 +61,18 @@ In order to get that to run without an error, I had to reformulate the main hand
 	(apply operation args)))))
 </pre>
 
+=== OpeningWith for interactive functions only ===
+
+I found that openwith is also opening files when a file was opened non-interactively from package "dashboard". I had to change the defun for openwith-file-handler to check (called-interactively-p):
+
+
+<pre>
+(defun openwith-file-handler (operation &rest args)
+  "Open file with external program, if an association is configured."
+  (when (and openwith-mode (not (buffer-modified-p)) (zerop (buffer-size))
+             (called-interactively-p)) [...]
+
+</pre>
+
 ----
 See also CategoryExternalUtilities
