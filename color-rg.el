@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 0.1
-;; Last-Updated: 2018-08-26 14:22:12
+;; Version: 1.0
+;; Last-Updated: 2018-08-31 13:15:40
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -59,13 +59,25 @@
 
 ;;; Customize:
 ;;
-;;
+;; `color-rg'
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET color-rg RET
 ;;
 
 ;;; Change log:
+;;
+;; 2018/08/30
+;;      * Add color-rg-recover-buffer
+;;      * Enhance rerun function
+;;      * Add new functions: color-rg-filter-match-results, color-rg-filter-mismatch-results, color-rg-remove-line-from-results
+;;      * Add function color-rg-filter-results
+;;      * Add smart-case to color-rg-rerun-literal and color-rg-rerun-no-ignore
+;;      * Use color-rg-get-row-column-position remove duplicate code.
+;;      * Add customize option color-rg-default-argument
+;;      * Add some research functions
+;;      * Add color-rg-replace-all-matches
+;;      * Add new functions: color-rg-change-search-keyword and color-rg-change-search-directory
 ;;
 ;; 2018/08/26
 ;;      * First released.
@@ -241,6 +253,7 @@ used to restore window configuration after apply changed.")
 
     (define-key map (kbd "C-c C-d") 'color-rg-delete-line)
     (define-key map (kbd "C-c C-r") 'color-rg-recover-line)
+    (define-key map (kbd "C-c C-R") 'color-rg-recover-buffer)
     (define-key map (kbd "C-c C-q") 'color-rg-quit)
     (define-key map (kbd "C-c C-c") 'color-rg-apply-changed)
     map)
@@ -612,7 +625,7 @@ This function is called from `compilation-filter-hook'."
   (with-current-buffer color-rg-buffer
     (let* ((new-keyword (read-string (format "Re-search with new keyword: ") search-keyword)))
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input new-keyword search-directory)
+      (color-rg-search-input new-keyword search-directory search-argument)
       (set (make-local-variable 'search-keyword) new-keyword)
       )))
 
@@ -621,7 +634,7 @@ This function is called from `compilation-filter-hook'."
   (with-current-buffer color-rg-buffer
     (let* ((new-directory (read-file-name (format "Re-search with new directory: ") search-directory)))
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input search-keyword new-directory)
+      (color-rg-search-input search-keyword new-directory search-argument)
       (set (make-local-variable 'search-directory) new-directory)
       )))
 
@@ -637,7 +650,12 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-rerun-literal ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-argument "--column --color=always --smart-case --fixed-strings"))
+    (let* ((new-argument (cond ((cl-search (regexp-quote "--regexp") search-argument)
+                                (replace-regexp-in-string (regexp-quote "--regexp") "--fixed-strings" search-argument))
+                               ((cl-search (regexp-quote "--fixed-strings") search-argument)
+                                (replace-regexp-in-string (regexp-quote "--fixed-strings") "--regexp" search-argument))
+                               (t color-rg-default-argument))))
+
       (color-rg-switch-to-view-mode)
       (color-rg-search-input search-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
@@ -646,7 +664,9 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-rerun-no-ignore ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-argument "--column --color=always --smart-case --no-ignore"))
+    (let* ((new-argument (if (cl-search (regexp-quote "--no-ignore") search-argument)
+                             (replace-regexp-in-string (regexp-quote "--no-ignore ") "" search-argument)
+                           (concat "--no-ignore " search-argument))))
       (color-rg-switch-to-view-mode)
       (color-rg-search-input search-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
@@ -655,11 +675,22 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-rerun-case-senstive ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-argument "--column --color=always --case-sensitive"))
+    (let* ((new-argument (cond ((cl-search (regexp-quote "--smart-case") search-argument)
+                                (replace-regexp-in-string (regexp-quote "--smart-case") "--case-sensitive" search-argument))
+                               ((cl-search (regexp-quote "--case-sensitive") search-argument)
+                                (replace-regexp-in-string (regexp-quote "--case-sensitive") "--smart-case" search-argument))
+                               (t color-rg-default-argument))))
       (color-rg-switch-to-view-mode)
       (color-rg-search-input search-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
       )))
+
+(defun isearch-toggle-color-rg ()
+  "toggle `color-rg' in isearch-mode."
+  (interactive)
+  (color-rg-search-input isearch-string)
+  (isearch-exit)
+  )
 
 (defun color-rg-jump-next-keyword ()
   (interactive)
@@ -827,6 +858,31 @@ This function is called from `compilation-filter-hook'."
   (interactive)
   (color-rg-delete-line)
   (insert (color-rg-get-line-content color-rg-temp-buffer (line-number-at-pos))))
+
+(defun color-rg-recover-buffer ()
+  (interactive)
+  (save-excursion
+    (with-current-buffer color-rg-buffer
+      (let ((inhibit-read-only t))
+        ;; Save local variables.
+        (setq current-edit-mode edit-mode)
+        (setq current-search-argument search-argument)
+        (setq current-search-keyword search-keyword)
+        (setq current-search-directory search-directory)
+        ;; Recover buffer content from temp buffer.
+        (color-rg-mode) ; switch to `color-rg-mode' first, otherwise `erase-buffer' will cause "save-excursion: end of buffer" error.
+        (read-only-mode -1)
+        (erase-buffer)
+        (insert (with-current-buffer color-rg-temp-buffer
+                  (buffer-substring (point-min) (point-max))))
+        ;; Restore local variables.
+        (set (make-local-variable 'search-argument) current-search-argument)
+        (set (make-local-variable 'search-keyword) current-search-keyword)
+        (set (make-local-variable 'search-directory) current-search-directory)
+        (set (make-local-variable 'edit-mode) current-edit-mode)
+        ;; Switch to edit mode.
+        (color-rg-switch-to-edit-mode)
+        ))))
 
 (defun color-rg-apply-changed ()
   (interactive)
