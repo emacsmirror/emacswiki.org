@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 1.0
-;; Last-Updated: 2018-08-31 13:15:40
+;; Version: 1.1
+;; Last-Updated: 2018-08-31 18:48:51
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -66,6 +66,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/08/31
+;;      * Fix `color-rg-window-configuration-before-search' override if user multiple search.
 ;;
 ;; 2018/08/30
 ;;      * Add color-rg-recover-buffer
@@ -194,6 +197,10 @@
 (defvar color-rg-window-configuration-before-search nil
   "Save window configuration before search,
 used to restore window configuration after finish search.")
+
+(defvar color-rg-search-counter 0
+  "Just save window configuration when this counter is 0.
+Avoid multiple search overwrite window configuration.")
 
 (defvar color-rg-window-configuration-before-apply nil
   "Save window configuration before apply changed,
@@ -360,6 +367,7 @@ This function is called from `compilation-filter-hook'."
       (set (make-local-variable 'search-argument) rg-argument)
       (set (make-local-variable 'search-keyword) keyword)
       (set (make-local-variable 'search-directory) directory)
+      (set (make-local-variable 'default-directory) directory)
       (set (make-local-variable 'edit-mode) "View")
       (color-rg-update-header-line)
       )
@@ -553,7 +561,9 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-search-input (&optional keyword directory argument)
   (interactive)
   ;; Save window configuration before do search.
-  (setq color-rg-window-configuration-before-search (current-window-configuration))
+  (when (equal color-rg-search-counter 0)
+    (setq color-rg-window-configuration-before-search (current-window-configuration)))
+  (setq color-rg-search-counter (+ 1 color-rg-search-counter))
   ;; Set `enable-local-variables' to :safe, avoid emacs ask annoyingly question when open file by color-rg.
   (setq enable-local-variables :safe)
   ;; Reset hit count.
@@ -580,7 +590,8 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-search-project ()
   (interactive)
   (require 'projectile)
-  (color-rg-search-input (color-rg-read-input) (projectile-project-root)))
+  (color-rg-search-input (color-rg-read-input) (projectile-project-root))
+  )
 
 (defun color-rg-search-project-rails ()
   (interactive)
@@ -627,6 +638,7 @@ This function is called from `compilation-filter-hook'."
       (color-rg-switch-to-view-mode)
       (color-rg-search-input new-keyword search-directory)
       (set (make-local-variable 'search-keyword) new-keyword)
+      (set (make-local-variable 'search-argument) color-rg-default-argument)
       )))
 
 (defun color-rg-literal-search-helper (search-argument)
@@ -637,14 +649,16 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-literal-string-escape (string)
   "escape double quote and backslash."
   (replace-regexp-in-string (regexp-quote "\"") "\\\\\""
-                                      (replace-regexp-in-string (regexp-quote "\\") "\\\\\\\\"
-                                                                string)
-                                      ))
+                            (replace-regexp-in-string (regexp-quote "\\") "\\\\\\\\"
+                                                      string)
+                            ))
 
 (defun color-rg-change-search-directory ()
   (interactive)
   (with-current-buffer color-rg-buffer
     (let* ((new-directory (read-file-name (format "Re-search with new directory: ") search-directory))
+           (unused (if (not (file-exists-p new-directory))
+                       (error "directory not exist")))
            (original-keyword search-keyword)
            (literal-search (color-rg-literal-search-helper search-argument))
            (new-keyword (if literal-search
@@ -875,7 +889,8 @@ This function is called from `compilation-filter-hook'."
   ;; Restore window configuration before search.
   (when color-rg-window-configuration-before-search
     (set-window-configuration color-rg-window-configuration-before-search)
-    (setq color-rg-window-configuration-before-search nil)))
+    (setq color-rg-window-configuration-before-search nil))
+  (setq color-rg-search-counter 0))
 
 (defun color-rg-beginning-of-line ()
   (interactive)
