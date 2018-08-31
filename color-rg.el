@@ -625,17 +625,36 @@ This function is called from `compilation-filter-hook'."
   (with-current-buffer color-rg-buffer
     (let* ((new-keyword (read-string (format "Re-search with new keyword: ") search-keyword)))
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input new-keyword search-directory search-argument)
+      (color-rg-search-input new-keyword search-directory)
       (set (make-local-variable 'search-keyword) new-keyword)
       )))
+
+(defun color-rg-literal-search-helper (search-argument)
+  (if (cl-search (regexp-quote "--fixed-strings") search-argument)
+      t
+    nil))
+
+(defun color-rg-literal-string-escape (string)
+  "escape double quote and backslash."
+  (replace-regexp-in-string (regexp-quote "\"") "\\\\\""
+                                      (replace-regexp-in-string (regexp-quote "\\") "\\\\\\\\"
+                                                                string)
+                                      ))
 
 (defun color-rg-change-search-directory ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-directory (read-file-name (format "Re-search with new directory: ") search-directory)))
+    (let* ((new-directory (read-file-name (format "Re-search with new directory: ") search-directory))
+           (original-keyword search-keyword)
+           (literal-search (color-rg-literal-search-helper search-argument))
+           (new-keyword (if literal-search
+                            (color-rg-literal-string-escape search-keyword)
+                          original-keyword)))
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input search-keyword new-directory search-argument)
+      (set (make-local-variable 'default-directory) new-directory)
+      (color-rg-search-input new-keyword new-directory search-argument)
       (set (make-local-variable 'search-directory) new-directory)
+      (set (make-local-variable 'search-keyword) original-keyword)
       )))
 
 (defun color-rg-change-search-customized ()
@@ -647,18 +666,26 @@ This function is called from `compilation-filter-hook'."
       (set (make-local-variable 'search-argument) new-argument)
       )))
 
+
 (defun color-rg-rerun-literal ()
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-argument (cond ((cl-search (regexp-quote "--regexp") search-argument)
+    (let* (
+           (new-argument (cond ((cl-search (regexp-quote "--regexp") search-argument)
                                 (replace-regexp-in-string (regexp-quote "--regexp") "--fixed-strings" search-argument))
                                ((cl-search (regexp-quote "--fixed-strings") search-argument)
-                                (replace-regexp-in-string (regexp-quote "--fixed-strings") "--regexp" search-argument))
-                               (t color-rg-default-argument))))
+                                search-argument)
+                               (t
+                                (replace-regexp-in-string (regexp-quote "--regexp") "--fixed-strings" color-rg-default-argument))
+                               ))
+           (input-keyword (read-string (format "Re-search with literal: ") search-keyword))
+           (literal-keyword
+            (color-rg-literal-string-escape input-keyword)))
 
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input search-keyword search-directory new-argument)
+      (color-rg-search-input literal-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
+      (set (make-local-variable 'search-keyword) input-keyword)
       )))
 
 (defun color-rg-rerun-no-ignore ()
@@ -666,10 +693,16 @@ This function is called from `compilation-filter-hook'."
   (with-current-buffer color-rg-buffer
     (let* ((new-argument (if (cl-search (regexp-quote "--no-ignore") search-argument)
                              (replace-regexp-in-string (regexp-quote "--no-ignore ") "" search-argument)
-                           (concat "--no-ignore " search-argument))))
+                           (concat "--no-ignore " search-argument)))
+           (original-keyword search-keyword)
+           (literal-search (color-rg-literal-search-helper new-argument))
+           (new-keyword (if literal-search
+                            (color-rg-literal-string-escape search-keyword)
+                          original-keyword)))
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input search-keyword search-directory new-argument)
+      (color-rg-search-input new-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
+      (set (make-local-variable 'search-keyword) original-keyword)
       )))
 
 (defun color-rg-rerun-case-senstive ()
@@ -679,10 +712,17 @@ This function is called from `compilation-filter-hook'."
                                 (replace-regexp-in-string (regexp-quote "--smart-case") "--case-sensitive" search-argument))
                                ((cl-search (regexp-quote "--case-sensitive") search-argument)
                                 (replace-regexp-in-string (regexp-quote "--case-sensitive") "--smart-case" search-argument))
-                               (t color-rg-default-argument))))
+                               (t color-rg-default-argument)))
+           (original-keyword search-keyword)
+           (literal-search (color-rg-literal-search-helper new-argument))
+           (new-keyword (if literal-search
+                            (color-rg-literal-string-escape search-keyword)
+                          original-keyword))
+           )
       (color-rg-switch-to-view-mode)
-      (color-rg-search-input search-keyword search-directory new-argument)
+      (color-rg-search-input new-keyword search-directory new-argument)
       (set (make-local-variable 'search-argument) new-argument)
+      (set (make-local-variable 'search-keyword) original-keyword)
       )))
 
 (defun isearch-toggle-color-rg ()
