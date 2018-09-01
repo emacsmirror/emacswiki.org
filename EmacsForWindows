@@ -1,16 +1,9 @@
-Download:
+Official stable binary releases are available at http://ftpmirror.gnu.org/emacs/windows/
 
-* http://ftpmirror.gnu.org/emacs/windows/
+For other official and unofficial releases, and further information, see CategoryWThirtyTwo.
 
-
-The [http://www.gnu.org/software/emacs/windows/ntemacs.html official MS-Windows port homepage]
+The [https://www.gnu.org/software/emacs/manual/efaq-w32.html GNU Emacs FAQ for MS Windows]
 treats many issues concerning Emacs and MS-Windows.
-The page has also links to the precompiled binaries for MS-Windows of the current Emacs or earlier versions. 
-
-If you want precompiled binaries for the latest Emacses (version 25.3 is officially released stable), please see CategoryWThirtyTwo.
-
-Project emax64 at (https://github.com/m-parashar/emax64, https://ntemacs.sourceforge.io/) provides clean, optimized binary builds of the latest Emacs source, with image support enabled and necessary dependencies bundled in the package.
-
 
 ----
 See also CategoryPorts
