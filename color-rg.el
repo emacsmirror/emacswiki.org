@@ -55,7 +55,8 @@
 ;;
 ;; (require 'color-rg)
 ;;
-;; No need more.
+;; If you use Mac, you also need install `exec-path-from-shell'
+;;
 
 ;;; Customize:
 ;;
