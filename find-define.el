@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-06-13 17:19:58
-;; Version: 0.4
-;; Last-Updated: 2018-06-15 10:41:58
+;; Version: 0.5
+;; Last-Updated: 2018-09-01 20:54:49
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/find-define.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `find-func-extension' `dumb-jump' `python-extension'
+;; `dumb-jump' `elisp-def'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -42,7 +42,7 @@
 ;; Find function or variable definition.
 ;;
 ;; `dumb-jump' is awesome extension, but it's not smart enough for emacs-lisp mode.
-;; So i use my `find-function-or-variable-at-point' instead `dumb-jump-go' if current mode is emacs-lisp mode.
+;; So i use `elisp-defs' instead `dumb-jump-go' if current mode is emacs-lisp mode.
 ;;
 
 ;;; Installation:
@@ -72,6 +72,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/01
+;;      * Use `elisp-def.el' instead my `find-func-extension.el', `elisp-def.el' is more smarter.
+;;
 ;; 2018/06/15
 ;;      * Python mode use `jedi:goto-definition'
 ;;
@@ -91,11 +94,14 @@
 ;;
 
 ;;; Require
-(require 'find-func-extension)
+(require 'elisp-def)
 (require 'dumb-jump)
-(require 'python-extension)
 
 ;;; Code:
+
+;; Add `elisp-def-mode' in elisp mode.
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+  (add-hook hook #'elisp-def-mode))
 
 ;; Prefer use rg, because rg is much faster than ag, grep, ack.
 ;; If rg is not installed, use other grep tools.
@@ -106,7 +112,7 @@
   (setq find-define-symbol-cache (thing-at-point 'symbol))
   (find-define-remember-position)
   (cond ((equal 'emacs-lisp-mode major-mode)
-         (find-function-or-variable-at-point prefix))
+         (find-elisp-define prefix))
         ((equal 'python-mode major-mode)
          (find-python-define prefix))
         (t
@@ -114,6 +120,23 @@
              (dumb-jump-go)
            (dumb-jump-go-other-window))
          )))
+
+(defun find-elisp-define (&optional prefix)
+  (interactive "P")
+  (if (null prefix)
+      (elisp-def)
+    (progn
+      (switch-to-buffer-other-window (buffer-name))
+      (elisp-def))))
+
+(defun find-python-define (&optional prefix)
+  (interactive "P")
+  (require 'jedi-core)
+  (if (null prefix)
+      (jedi:goto-definition)
+    (progn
+      (switch-to-buffer-other-window (buffer-name))
+      (jedi:goto-definition))))
 
 (defun find-define-back ()
   (interactive)
