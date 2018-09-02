@@ -19,7 +19,7 @@ use the RGB values directly:
  (set-background-color "#0000FF")
 
 These RGB values cannot be entered interactively, because the interactive input
-checks wether the names are defined.  The RGB values can have 3, 6, or 9 hex digits.
+checks whether the names are defined.  The RGB values can have 3, 6, or 9 hex digits.
 
 [new:DrewAdams:2005-01-04 15:51 UTC]
 1. To enter RGB values interactively, just use `<code>M-: (set-background-color "000000FFF")</code>', or whatever.
