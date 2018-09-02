@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014 ~ 2018 Andy Stewart, all rights reserved.
 ;; Created: 2014-03-06 15:50:39
-;; Version: 0.6
-;; Last-Updated: 2018-07-11 23:00:02
+;; Version: 0.7
+;; Last-Updated: 2018-09-02 16:51:21
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-web-mode.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/02
+;;      * Add `js2-refactor'.
+;;
 ;; 2018/07/11
 ;;      * Use function `paredit-kill+' in paredit-extension.el 0.5 instead `tagedit-kill' to build better kill experience for `web-mode' and `ruby-mode'.
 ;;
@@ -98,6 +101,7 @@
 (require 'emmet-mode)
 (require 'emmet-extension)
 (require 'paredit-extension)
+(require 'js2-refactor)
 
 ;;; Code:
 
@@ -113,7 +117,33 @@
                    (setq emmet-preview-default nil)
                    (emmet-mode)
                    )))
+;; Js2-refactor.
+(add-hook 'js2-mode-hook #'js2-refactor-mode)
+(setq js2-skip-preprocessor-directives t)
 
+(defvar one-key-menu-js2-refacotry-alist nil
+  "The `one-key' menu alist for JS-REFACOTRY.")
+
+(setq one-key-menu-js2-refacotry-alist
+      '(
+        (("v" . "Rename variable") . js2r-rename-var)
+        (("l" . "Extract variable") . js2r-extract-var)
+        (("t" . "var a to this.a") . js2r-var-to-this)
+        (("c" . "console.log") . js2r-log-this)
+        ))
+
+(defun one-key-menu-js2-refacotry ()
+  "The `one-key' menu for JS-REFACOTRY."
+  (interactive)
+  (one-key-menu "JS-REFACOTRY" one-key-menu-js2-refacotry-alist t))
+
+(lazy-set-mode-autoload-key
+ '(
+   ("M-'" . one-key-menu-js2-refacotry)
+   )
+ js2-mode-map nil "js2-refactor")
+
+;; We-mode.
 (lazy-set-key paredit-key-alist web-mode-map)
 (lazy-set-mode-autoload-key
  '(
