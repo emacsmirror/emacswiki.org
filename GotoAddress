@@ -1,10 +1,4 @@
-The command `M-x goto-address' is a builtin Emacs feature to highlight all URLs and mail addresses, so that you can browse them or mail them using mouse button-2 (or mouse button-1 starting in Emacs 22).  Available in GnuEmacs and [[XEmacs]] (in the FSF compat package, I assume).
-
-See Manual:goto-address
-
-The library is maintained at GIT:goto-addr.el
-
-This mode will be renamed `goto-address-mode' in Emacs 23.
+The `goto-address-mode' and `goto-address-prog-mode' minor modes highlight URLs and mail addresses, so that you can browse or mail them using a mouse.  They are provided by the built-in `goto-addr' package, which also provides an interactive command `goto-address' to set this up in the current buffer.  
 
 ----
 CategoryHypermedia
