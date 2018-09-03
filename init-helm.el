@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.6
-;; Last-Updated: 2018-07-26 08:36:31
+;; Version: 0.7
+;; Last-Updated: 2018-09-03 14:40:31
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -70,6 +70,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/03
+;;      * Make filename has enough width to display full name.
+;;
 ;; 2018/07/26
 ;;      * Make `helm-source-buffers-list' first, otherwise can't switch to with exist buffer list.
 ;;
@@ -109,6 +112,8 @@
 (require 'helm-ring)
 
 ;;; Code:
+
+(setq helm-buffer-max-length 60) ; make filename has enough width to display full name
 
 (defun helm-dwim ()
   (interactive)
