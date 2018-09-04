@@ -1,6 +1,6 @@
 **My email: jianlizhao1@gmail.com**
 
-I use Emacs since 2009.08 to work on c/c++/java/asm code, so I write some packages for this purpose. 
+:: I use Emacs since 2009.08 to work on c/c++/java/asm code, so I write some packages for this purpose. 
 
 
 =  Bellow zjl-hl.el and region-list-edit.el are updated in 2016.5.27 and have lot improvement on =
@@ -8,13 +8,14 @@ I use Emacs since 2009.08 to work on c/c++/java/asm code, so I write some packag
 *  C++/JAVA highlight
 *  The recognize rate of the local var/parameters is much much higher and thus highlighted properly. This is mostly by copying the function body to a temp buffer and do code clean so semantic can recognize the local var with much higher rate.
 *  Good stability (was using this version for half year by myself)
+
 {{{
 NOTE: 
 1. The faces are only optimized for white background and for black background if you have recommendation please let me know, I can merge it.
 2. If you experience extreme long frozen of emacs when using both of evil (especially the dd/o/O cmd) + zjl-hl, please update your evil version. mine of 20180723 is fine and 20170624(and before) is problematic
 }}}
  
- 
+
  
  
  
@@ -52,7 +53,7 @@ NOTE:
 * zjl-hl use it to record/merge/invalid the region has been hl. Better method might be use text property or layer of orignal emacs, but I wrote the zjl-hl.el after 1 or 2 month I started use emacs, so this looks rough though, but work fine nevertheless.
 
 
----
+
 
 [new:DrewAdams:2010-05-30 08:12 UTC]
 Welcome to the wiki. -- DrewAdams
