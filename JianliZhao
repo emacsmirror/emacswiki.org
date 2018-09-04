@@ -14,6 +14,9 @@ NOTE:
 
 2. If you experience extreme long frozen of emacs when using both of evil (especially the dd/o/O cmd) + zjl-hl, please update your evil version. mine of 20180723 is fine and 20170624(and before) is problematic
 
+
+
+
 * 1 http://www.emacswiki.org/emacs/zjl-hl.el 
 
 This highlight C/C++JAVA file local variable/parameters, function call and some other to make code easier to read
