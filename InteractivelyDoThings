@@ -484,6 +484,8 @@ There are at least two options:
 
 [http://marmalade-repo.org/packages/ido-better-flex ido-better-flex] implements just another fuzzy matching algorithm, unlike default Ido flex, it allows you to match candidates even if you type a character that is before the previously matched input.
 
+[https://github.com/Bogdanp/ido-clever-match ido-clever-match] yet another fuzzy matching which prefers prefix and substring over the default flex algorithm.
+
 === Display Completions Vertically ===
 
 It's a lot easier to scan long path names if they're displayed vertically, instead of horizontally.  Run this to achieve just that:
