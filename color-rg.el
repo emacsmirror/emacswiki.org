@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 1.1
-;; Last-Updated: 2018-08-31 18:48:51
+;; Version: 1.4
+;; Last-Updated: 2018-09-04 12:55:03
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,12 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/04
+;;      * Use `color-rg-process-setup' monitor process finished, then output search hit in minibuffer.
+;;      * Avoid function `move-to-column' change search file content.
+;;      * Add `color-rg-filter-match-files' and `color-rg-filter-mismatch-files'
+;;      * Flash match line after open search file.
 ;;
 ;; 2018/08/31
 ;;      * Fix `color-rg-window-configuration-before-search' override if user multiple search.
@@ -191,6 +197,18 @@
   "Face for keyword match."
   :group 'color-rg)
 
+(defcustom color-rg-flash-line-delay .3
+  "How many seconds to flash `color-rg-font-lock-flash' after navigation.
+
+Setting this to nil or 0 will turn off the indicator."
+  :type 'number
+  :group 'color-rg)
+
+(defface color-rg-font-lock-flash
+  '((t (:inherit highlight)))
+  "Face to flash the current line."
+  :group 'color-rg)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar color-rg-temp-visit-buffers nil
   "The temp visit buffers use to kill temp buffer after quit color-rg.")
@@ -238,6 +256,8 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "r") 'color-rg-replace-all-matches)
     (define-key map (kbd "f") 'color-rg-filter-match-results)
     (define-key map (kbd "F") 'color-rg-filter-mismatch-results)
+    (define-key map (kbd "x") 'color-rg-filter-match-files)
+    (define-key map (kbd "X") 'color-rg-filter-mismatch-files)
     (define-key map (kbd "D") 'color-rg-remove-line-from-results)
     (define-key map (kbd "i") 'color-rg-rerun-no-ignore)
     (define-key map (kbd "t") 'color-rg-rerun-literal)
@@ -276,6 +296,7 @@ used to restore window configuration after apply changed.")
   (color-rg-highlight-keywords)
   (use-local-map color-rg-mode-map)
   (add-hook 'compilation-filter-hook 'color-rg-filter nil t)
+  (set (make-local-variable 'compilation-process-setup-function) 'color-rg-process-setup)
   (run-hooks 'color-rg-mode-hook)
   )
 
@@ -317,19 +338,36 @@ This function is called from `compilation-filter-hook'."
           (replace-match (concat (propertize (match-string 1)
                                              'face nil 'font-lock-face 'color-rg-font-lock-file))
                          t t))
-        (goto-char beg)
 
         ;; Highlight rg matches and delete marking sequences.
+        (goto-char beg)
         (while (re-search-forward "\033\\[[0]*m\033\\[[3]*1m\033\\[[3]*1m\\(.*?\\)\033\\[[0]*m" end 1)
           (replace-match (propertize (match-string 1)
                                      'face nil 'font-lock-face 'color-rg-font-lock-match)
                          t t)
           (setq color-rg-hit-count (+ color-rg-hit-count 1)))
+
         ;; Delete all remaining escape sequences
         (goto-char beg)
         (while (re-search-forward "\033\\[[0-9;]*[0mK]" end 1)
           (replace-match "" t t))))
     ))
+
+(defun color-rg-process-setup ()
+  "Setup compilation variables and buffer for `color-rg'."
+  (set (make-local-variable 'compilation-exit-message-function)
+       (lambda (status code msg)
+         (if (eq status 'exit)
+             ;; This relies on the fact that `compilation-start'
+             ;; sets buffer-modified to nil before running the command,
+             ;; so the buffer is still unmodified if there is no output.
+             (cond ((and (zerop code) (buffer-modified-p))
+                    `(,(format "finished (%d matches found)\n" color-rg-hit-count) . "matched"))
+                   ((not (buffer-modified-p))
+                    '("finished with no matches found\n" . "no match"))
+                   (t
+                    (cons msg code)))
+           (cons msg code)))))
 
 (defun color-rg-update-header-line ()
   (setq header-line-format (format "%s%s%s%s%s%s"
@@ -344,10 +382,9 @@ This function is called from `compilation-filter-hook'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utils functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun color-rg-search (keyword directory &optional argument)
-  (let* ((rg-argument (if argument
-                          argument
-                        color-rg-default-argument
-                        ))
+  (let* ((rg-argument (or argument
+                          color-rg-default-argument
+                          ))
          (search-command (format "rg %s \"%s\" %s" rg-argument keyword directory)))
     ;; Erase or create search result.
     (if (get-buffer color-rg-buffer)
@@ -391,9 +428,9 @@ This function is called from `compilation-filter-hook'."
     ;; Get current symbol but remove prefix char before return.
     (let ((current-symbol (thing-at-point 'symbol)))
       (cond ((string-prefix-p "." current-symbol)
-             (string-remove-prefix current-symbol))
+             (string-remove-prefix "." current-symbol))
             ((string-prefix-p "#" current-symbol)
-             (string-remove-prefix current-symbol))
+             (string-remove-prefix "#" current-symbol))
             (t current-symbol)))
     ))
 
@@ -558,6 +595,91 @@ This function is called from `compilation-filter-hook'."
           (message (format "Remove %s lines match regexp '%s'." remove-counter filter-regexp)))
         ))))
 
+(defun color-rg-filter-files (match-files)
+  (let (file-extensions start end)
+    (save-excursion
+      (goto-char (point-min))
+      (while (setq end (search-forward-regexp color-rg-regexp-file nil t))
+        (beginning-of-line)
+        (setq start (point))
+        (setq filename (buffer-substring-no-properties start end))
+        (end-of-line)
+        (add-to-list 'file-extensions (file-name-extension filename))))
+    (if (< (length file-extensions) 2)
+        (message (format "Has one type files now."))
+      (setq filter-extension (completing-read (if match-files
+                                                  "Only display file suffix with: "
+                                                "Remove file suffix with: ")
+                                              file-extensions))
+      (save-excursion
+        (with-current-buffer color-rg-buffer
+          (setq remove-counter 0)
+          (goto-char (point-min))
+          (while (setq end (search-forward-regexp color-rg-regexp-file nil t))
+            (beginning-of-line)
+            (setq start (point))
+            (setq file-extension (file-name-extension (buffer-substring-no-properties start end)))
+            (if match-files
+                (if (string-equal file-extension filter-extension)
+                    (end-of-line)
+                  (color-rg-remove-lines-under-file))
+              (if (string-equal file-extension filter-extension)
+                  (color-rg-remove-lines-under-file)
+                (end-of-line))))
+          )))))
+
+(defun color-rg-remove-lines-under-file ()
+  (let (start end)
+    (save-excursion
+      (with-current-buffer color-rg-buffer
+        (read-only-mode -1)
+        (beginning-of-line)
+        (setq start (point))
+        (when (search-forward-regexp color-rg-regexp-split-line nil t)
+          (setq end (point))
+          (kill-region start end))
+        (read-only-mode 1)))))
+
+(defun color-rg-flash-line (&optional pos end-pos face delay)
+  "Flash a temporary highlight to help the user find something.
+
+POS is optional, and defaults to the current point.
+
+If optional END-POS is set, flash the characters between the two
+points, otherwise flash the entire line in which POS is found.
+
+The flash is normally not inclusive of END-POS.  However, when
+POS is equal to END-POS, the single character at POS will flash.
+
+Optional FACE defaults to `color-rg-font-lock-flash'.  Optional DELAY
+defaults to `color-rg-flash-line-delay' seconds.  Setting DELAY to 0 makes
+this function a no-op."
+  (callf or pos (point))
+  (unless end-pos
+    (save-excursion
+      (let ((inhibit-point-motion-hooks t))
+        (goto-char pos)
+        (beginning-of-visual-line)
+        (setq pos (point))
+        (end-of-visual-line)
+        (setq end-pos (1+ (point))))))
+  (when (eq pos end-pos)
+    (incf end-pos))
+  (callf or delay color-rg-flash-line-delay)
+  (callf or face 'color-rg-font-lock-flash)
+  (when (and (numberp delay)
+             (> delay 0))
+    (when (timerp next-error-highlight-timer)
+      (cancel-timer next-error-highlight-timer))
+    (setq compilation-highlight-overlay (or compilation-highlight-overlay
+                                            (make-overlay (point-min) (point-min))))
+    (overlay-put compilation-highlight-overlay 'face face)
+    (overlay-put compilation-highlight-overlay 'priority 10000)
+    (move-overlay compilation-highlight-overlay pos end-pos)
+    (add-hook 'pre-command-hook 'compilation-goto-locus-delete-o)
+    (setq next-error-highlight-timer
+          (run-at-time delay nil 'compilation-goto-locus-delete-o))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun color-rg-search-input (&optional keyword directory argument)
   (interactive)
@@ -571,17 +693,14 @@ This function is called from `compilation-filter-hook'."
   (setq color-rg-hit-count 0)
   ;; Search.
   (let* ((search-keyboard
-          (if keyword
-              keyword
-            (color-rg-read-input)))
+          (or keyword
+              (color-rg-read-input)))
          (search-directory
-          (if directory
-              directory
-            default-directory))
+          (or directory
+              default-directory))
          (search-argument
-          (if argument
-              argument
-            color-rg-default-argument)))
+          (or argument
+              color-rg-default-argument)))
     (color-rg-search search-keyboard search-directory search-argument)))
 
 (defun color-rg-search-symbol ()
@@ -619,6 +738,14 @@ This function is called from `compilation-filter-hook'."
 (defun color-rg-filter-mismatch-results ()
   (interactive)
   (color-rg-filter-results nil))
+
+(defun color-rg-filter-match-files ()
+  (interactive)
+  (color-rg-filter-files t))
+
+(defun color-rg-filter-mismatch-files ()
+  (interactive)
+  (color-rg-filter-files nil))
 
 (defun color-rg-remove-line-from-results ()
   (interactive)
@@ -830,7 +957,12 @@ This function is called from `compilation-filter-hook'."
         (add-to-list 'color-rg-temp-visit-buffers (current-buffer)))
       ;; Jump to match position.
       (goto-line match-line)
-      (move-to-column (- match-column 1) t))
+      ;; NOTE:
+      ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
+      (move-to-column (- match-column 1))
+      ;; Flash match line.
+      (color-rg-flash-line)
+      )
     ;; Keep cursor in search buffer's window.
     (select-window (get-buffer-window color-rg-buffer))
     ;; Ajust column position.
