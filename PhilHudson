@@ -44,7 +44,7 @@ Welcome to the wiki. -- DrewAdams
 * [https://github.com/jwiegley/emacs-async emacs-async]
 * [https://github.com/thisirs/erc-colorize erc-colorize]
 * [https://github.com/leathekd/ercn ercn]
-* ertx
+* [https://github.com/nicferrier/emacs-ertx ertx]
 * org
 * org-capture-pop-frame
 * [[ratpoison]] (bundled elisp files)
