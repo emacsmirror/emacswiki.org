@@ -55,7 +55,8 @@ Welcome to the wiki. -- DrewAdams
 == My own stuff ==
 
 ; [https://github.com/PhilHudson/org-capture-vars.el org-capture-vars.el]: User-defined capture variables and prompts for Org-mode
-; [https://github.com/PhilHudson/yasnippets My yasnippets]: Pretty cool, pretty smart snippets, giving you all or most of the seldom-used options for common Elisp forms while still making the most-common usage easy to choose. Idiosyncratic formatting; if you hate it, I understand. Why not fork it? If you do, please keep me posted, and I'll link to you.
+; [https://github.com/PhilHudson/yasnippets My yasnippets]: Pretty cool, pretty smart snippets, giving you all or most of the seldom-used options for common Elisp forms while still making the most-common usage easy to choose.
+: Idiosyncratic formatting; if you hate it, I understand. Why not fork it? If you do, please keep me posted, and I'll link to you.
 
 == Plan ==
 
