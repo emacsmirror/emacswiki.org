@@ -33,25 +33,7 @@ Welcome to the wiki. -- DrewAdams
 * [[Yasnippet]]
 * [[Bookmarks]]
 
-
-== Still to learn/master/enable: ==
-
-* [[DiredSearchAndReplace]]
-* [[Gnus]] (re-enable, in this case)
-* [CategoryBbdb BBDB]
-* [[Icicles]]
-* [JavaDevelopmentEnvironment JDEE], [CollectionOfEmacsDevelopmentEnvironmentTools CEDET], [EmacsCodeBrowser ECB] and [[toggle.el]]
-* [[Anything]]
-* [[Registers]]
-* [[Narrowing]]
-
-== Probably never going to learn/master/enable: ==
-
-* LaTeX
-
 == Extensions etc that I've contributed to: ==
-
-All trivial one- or two-line mods (so far). You've got to start somewhere...
 
 * [[DVC]]
 * [[ratpoison]] (bundled elisp files)
