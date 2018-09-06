@@ -202,6 +202,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** Lisp:python-extension.el -- Some enhanced functions for python mode.
 
+*** Lisp:magit-extension.el -- Some enhanced functions for magit.
+
 ** [[Anything]]:
 
 *** Lisp:anything-extension.el -- Some enhanced functions for [[Anything]], more extensions see Lisp:anything-config.el.
