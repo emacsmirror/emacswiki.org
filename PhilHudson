@@ -41,8 +41,8 @@ Welcome to the wiki. -- DrewAdams
 * elmarmalade
 * [[Elnode]]
 * elwikicreole
-* emacs-async
-* erc-colorize
+* [https://github.com/jwiegley/emacs-async emacs-async]
+* [https://github.com/thisirs/erc-colorize erc-colorize]
 * ercn
 * ertx
 * org
