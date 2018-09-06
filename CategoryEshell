@@ -1,5 +1,8 @@
 An entire shell by JohnWiegley, now maintained by [[aidalgol|Aidan Gauland]], written in EmacsLisp.  Great stuff, and very useful for people on weird operating systems without usable shells.  It was added to Emacs 21.
 
+Source (AFAICT; last commit 2009? Really?)
+* [https://github.com/emk/eshell Github repo]
+
 Work-in-progress manual:
 
 * [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html Eshell: The Emacs Shell]
