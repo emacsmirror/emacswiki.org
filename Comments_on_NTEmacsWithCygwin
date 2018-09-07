@@ -1,0 +1,8 @@
+[new]
+{{{
+  ;; [...] Assumes that C:\cygwin\bin is
+  ;; not already in your Windows Path (it generally should not be).}}}
+
+Why not?
+
+The cygwin documentation itself seems to disagree: http://cygwin.com/cygwin-ug-net/setup-env.html
