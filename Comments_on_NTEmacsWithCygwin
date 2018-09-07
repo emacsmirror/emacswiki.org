@@ -6,3 +6,12 @@
 Why not?
 
 The cygwin documentation itself seems to disagree: http://cygwin.com/cygwin-ug-net/setup-env.html
+
+----
+
+Putting Cygwin's path first will override Windows' builtin commands like `find' which have different semantics than the Unix version.  This can break batch file scripts.
+
+I don't where the cygwin documentation says anything about it either way (at least, looking at the Sep 2018 version of that page).
+
+-- npostavs 2018-09-07 12:13 UTC
+
