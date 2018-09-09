@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun 14 13:33:53 2018 (-0700)
+;; Last-Updated: Sun Sep  9 16:02:04 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6370
+;;     Update #: 6399
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -152,6 +152,8 @@
 ;;  `info-apropos' - Apropos, not literal string, match by default.
 ;;                   Use other window if not already in Info.
 ;;  `Info-apropos-matches' - Added optional arg REGEXP-P.
+;;  `Info-backward-node' - Prefix arg clones buffer.
+;;  `Info-directory' - Prefix arg clones buffer.
 ;;  `info-display-manual' - Use completion to input manual name.
 ;;  `Info-find-emacs-command-nodes' - Added arg MSGP and message.
 ;;  `Info-find-file' - Handle virtual books.
@@ -175,6 +177,7 @@
 ;;    10. If `Info-fontify-single-quote-flag' and
 ;;        `Info-fontify-quotations-flag', then fontify ' in face
 ;;        `info-single-quote'.
+;;  `Info-forward-node' - Prefix arg clones buffer.
 ;;  `Info-goto-emacs-command-node' -
 ;;     1. Uses `completing-read' in interactive spec, with,
 ;;        as default, `symbol-nearest-point'.
@@ -188,17 +191,22 @@
 ;;  `Info-goto-node' - Respect option
 ;;     `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+).
 ;;  `Info-history' - A prefix arg clears the history.
+;;  `Info-history-back' - Prefix arg clones buffer.
+;;  `Info-history-forward' - Prefix arg clones buffer.
 ;;  `Info-insert-dir' -
 ;;     Added optional arg NOMSG to inhibit showing progress msgs.
+;;  `Info-isearch-search' - Respect restriction to active region.
+;;  `Info-isearch-wrap' - Respect restriction to active region.
 ;;  `Info-mode' - Doc string shows all bindings.
+;;  `Info-next' - Prefix arg clones buffer.
+;;  `Info-prev' - Prefix arg clones buffer.
 ;;  `Info-read-node-name'   - Added optional arg DEFAULT.
 ;;  `Info-search' - 1. Fits frame.
 ;;                  2. Highlights found regexp if `search-highlight'.
 ;;  `Info-set-mode-line' - Handles breadcrumbs in the mode line.
 ;;  `Info-mouse-follow-nearest-node' - With prefix arg, show node in
 ;;                                     a new Info buffer.
-;;  `Info-isearch-search' - Respect restriction to active region.
-;;  `Info-isearch-wrap' - Respect restriction to active region.
+;;  `Info-up' - Prefix arg clones buffer.
 ;;
 ;;
 ;;  ***** NOTE: The following standard function
@@ -457,6 +465,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/09 dadams
+;;     Added: redefinitions of Info-backward-node, Info-directory, Info-forward-node, Info-history-back, Info-history-forward,
+;;            Info-next, Info-prev, Info-up.
 ;; 2018/06/14 dadams
 ;;     Added: redefinitions of info-apropos, Info-apropos-matches.
 ;;     bmkp-string-match-p - > string-match-p everywhere.
@@ -945,6 +956,7 @@
 (defvar Info-fontify-visited-nodes)
 (defvar Info-hide-note-references)
 (defvar Info-history-list)
+(defvar Info-history-skip-intermediate-nodes) ; Emacs 24+
 (defvar Info-isearch-initial-node)
 (defvar Info-isearch-search)
 (defvar Info-last-search)
@@ -4856,6 +4868,204 @@ over.  To remove the highlighting, just start an incremental search:
         (message (substitute-command-keys
                   "Use \\<Info-mode-map>`\\[Info-search] RET' to search again for `%s'.")
                  regexp)))))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-next (&optional fork)       ; `n'
+  "Go to the next node of this node.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "P")
+  (unless (derived-mode-p 'Info-mode) (switch-to-buffer "*info*"))
+  (Info-goto-node (Info-extract-pointer "next") fork))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-prev (&optional fork)       ; `p'
+  "Go to the previous node of this node.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "P")
+  (unless (derived-mode-p 'Info-mode) (switch-to-buffer "*info*"))
+  (Info-goto-node (Info-extract-pointer "prev[ious]*" "previous") fork))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-up (&optional same-file fork) ; `u', `^'
+  "Go to the superior node of this node.
+If SAME-FILE is non-nil, do not move to a different Info file.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "i\nP")
+  (unless (derived-mode-p 'Info-mode) (switch-to-buffer "*info*"))
+  (let ((old-node  Info-current-node)
+        (old-file  Info-current-file)
+        (node      (Info-extract-pointer "up"))
+        pp)
+    (when (and same-file  (string-match "^(" node)) (error "Up node is in another Info file"))
+    (Info-goto-node node fork)
+    (setq pp  (point))
+    (goto-char (point-min))
+    (cond ((and (stringp old-file)
+                (search-forward "\n* Menu:" nil t)
+                (re-search-forward
+                 (if (string-equal old-node "Top")
+                     (concat "\n\\*[^:]+: +(" (file-name-nondirectory old-file) ")")
+                   (concat "\n\\* +\\(" (regexp-quote old-node)
+                           ":\\|[^:]+: +" (regexp-quote old-node) "\\)"))
+                 nil t))
+           (beginning-of-line)
+           (if (looking-at "^\\* ") (forward-char 2)))
+          (t
+           (goto-char pp)
+           (Info-restore-point Info-history)))))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-history-back (&optional fork) ; `l'
+  "Go back in the history to the last node visited.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "P")
+  (unless Info-history
+    (funcall (if (fboundp 'user-error) #'user-error #'error)
+             "This is the first Info node you have visited"))
+  (let ((history-forward  (cons (list Info-current-file Info-current-node (point))
+                                Info-history-forward))
+        filename nodename opoint)
+    (setq filename      (caar Info-history)
+          nodename      (car (cdar Info-history))
+          opoint        (cadr (cdar Info-history))
+          Info-history  (cdr Info-history))
+    (when fork
+      (set-buffer (clone-buffer (concat "*info-" (if (stringp fork) fork nodename) "*") t)))
+    (Info-find-node filename nodename)
+    (setq Info-history          (cdr Info-history)
+          Info-history-forward  history-forward)
+    (goto-char opoint)))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-history-forward (&optional fork) ; `r'
+  "Go forward in the history of visited nodes.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "P")
+  (unless Info-history-forward 
+    (funcall (if (fboundp 'user-error) #'user-error #'error)
+             "This is the last Info node you have visited"))
+  (let ((history-forward  (cdr Info-history-forward))
+        filename nodename opoint)
+    (setq filename  (caar Info-history-forward)
+          nodename  (car (cdar Info-history-forward))
+          opoint    (cadr (cdar Info-history-forward)))
+    (when fork
+      (set-buffer (clone-buffer (concat "*info-" (if (stringp fork) fork nodename) "*") t)))
+    (Info-find-node filename nodename)
+    (setq Info-history-forward  history-forward)
+    (goto-char opoint)))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-directory (&optional fork)  ; `d'
+  "Go to the Info directory node.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "P")
+  (when fork (set-buffer (clone-buffer nil t)))
+  (Info-find-node "dir" "top"))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-forward-node (&optional not-down not-up no-error fork) ; `]'
+  "Go forward one node, considering all nodes as forming one sequence.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "i\ni\ni\nP")
+  (goto-char (point-min))
+  (forward-line 1)
+  (let ((case-fold-search  t))
+    ;; Three possibilities, in order of priority:
+    ;;     1. Next node is in a menu in this node (but not in an index)
+    ;;     2. Next node is next at same level
+    ;;     3. Next node is up and next
+    (cond ((and (not not-down)
+                (save-excursion (search-forward "\n* menu:" nil t))
+                (not (Info-index-node)))
+           (Info-goto-node (Info-extract-menu-counting 1) fork)
+           t)
+          ((save-excursion (search-backward "next:" nil t))
+           (Info-next fork)
+           t)
+          ((and (not not-up)
+                (save-excursion (search-backward "up:" nil t))
+                ;; Use `string-equal', not `equal', to ignore text properties.
+                (not (string-equal (downcase (Info-extract-pointer "up")) "top")))
+           (let ((old-node  Info-current-node))
+             (Info-up)
+             (let ((old-history  Info-history)
+                   success)
+               (unwind-protect
+                    (setq success  (Info-forward-node t nil no-error fork))
+                 (or success  (Info-goto-node old-node fork)))
+               (and (boundp 'Info-history-skip-intermediate-nodes) ; Emacs 24+
+                    Info-history-skip-intermediate-nodes
+                    (setq Info-history  old-history)))))
+          (no-error nil)
+          (t (user-error "No pointer forward from this node")))))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;; Added optional arg FORK.
+;;
+(defun Info-backward-node (&optional fork) ; `['
+  "Go backward one node, considering all nodes as forming one sequence.
+If FORK is non-nil (interactively with a prefix arg), show the node in
+a new Info buffer.
+If FORK is a string, it is the name to use for the new buffer."
+  (interactive "P")
+  (let ((prevnode          (Info-extract-pointer "prev[ious]*" t))
+        (upnode            (Info-extract-pointer "up" t))
+        (case-fold-search  t))
+    (cond ((and upnode  (string-match "(" upnode)) (user-error "First node in file"))
+          ((and upnode  (or (null prevnode)
+                            ;; Use `string-equal', not `equal', to ignore text properties.
+                            (string-equal (downcase prevnode) (downcase upnode))))
+           (Info-up fork))
+          (prevnode
+           ;; If we move back at the same level, go down to find the last subnode*.
+           (Info-prev fork)
+           (let ((old-history  Info-history)
+                 node)
+             (while (and (not (Info-index-node))
+                         (save-excursion (search-forward "\n* Menu:" nil t)))
+               (Info-goto-node (setq node  (Info-extract-menu-counting nil))))
+;;; (when fork (Info-goto-node node fork))
+             (and (boundp 'Info-history-skip-intermediate-nodes) ; Emacs 24+
+                  Info-history-skip-intermediate-nodes
+                  (setq Info-history  old-history))))
+          (t (user-error "No pointer backward from this node")))))
 
 
 ;; REPLACES ORIGINAL in `info.el':
