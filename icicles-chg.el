@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jun 29 14:57:00 2018 (-0700)
+;; Last-Updated: Sun Sep  9 09:44:21 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11843
+;;     Update #: 11844
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1206,6 +1206,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2018/09/09 dadams
+;;     icicle-Info-goto-node-1: Test numeric, not raw, prefix arg with natnump.
 ;; 2017/02/01 dadams
 ;;     Added: icicle-woman.
 ;; 2017/01/31 dadams
