@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:56:57
-;; Version: 1.0
-;; Last-Updated: 2018-07-24 09:52:53
+;; Version: 1.1
+;; Last-Updated: 2018-09-11 01:00:24
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: company-mode
@@ -53,12 +53,11 @@
 ;;
 ;; (require 'init-company-mode)
 ;;
-;; The install commands of Python completion backend:
-;;
-;; sudo pip install jedi pep8 pylint flake8
-;;
 
 ;;; Change log:
+;;
+;; 2018/09/11
+;;      * Split lsp configuration to `init-lsp.el'.
 ;;
 ;; 2018/07/24
 ;;      * Add command to install python completion backend.
@@ -102,12 +101,12 @@
 ;;
 
 ;;; Require
+
 (require 'lazy-set-key)
 (require 'company)
 (require 'company-posframe)
 (require 'company-yasnippet)
 (require 'company-dabbrev)
-(require 'company-css)
 (require 'company-files)
 (require 'desktop)
 
@@ -119,14 +118,7 @@
 (setq company-minimum-prefix-length 1)
 (setq company-show-numbers nil)
 
-;; Customize dabbrev backend, to make company can completion any words in all buffer like `dabbrev-expand'.
-(push 'company-dabbrev company-backends)
-(setq company-dabbrev-char-regexp "[\\.0-9a-z-_'/]") ;adjust regexp make `company-dabbrev' search words like `dabbrev-expand'
-(setq company-dabbrev-code-other-buffers 'all) ;search completion from all buffers, not just same mode buffers.
-(setq company-dabbrev-downcase nil) ;don't downcase completion result from dabbrev.
-
-;; Customize company backends.
-(push 'company-css company-backends)
+;; ;; Customize company backends.
 (push 'company-files company-backends)
 
 ;; Let desktop.el not record the company-posframe-mode
@@ -134,17 +126,7 @@
 (push '(company-posframe-mode . nil)
       desktop-minor-mode-table)
 
-;; Completion mode for languages.
-(add-hook 'python-mode-hook
-          '(lambda ()
-             (require 'company-jedi)
-             (push 'company-jedi company-backends)
-             ))                         ;
-(add-hook 'ruby-mode-hook
-          '(lambda ()
-             (require 'company-robe)
-             (push 'company-robe company-backends)))
-
+;; Add `company-elisp' backend for elisp.
 (add-hook 'emacs-lisp-mode-hook
           '(lambda ()
              (require 'company-elisp)
