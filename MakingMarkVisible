@@ -44,6 +44,9 @@ And, instead of seeing marks all the time, I'd like to have a binding that shows
 
 BTW, when the mark is at the end of a line, the buffer is highlighted from the line end to the right window edge -- looks like a minor bug. -- DrewAdams
 
+[new:TeemuLeisti:2018-09-10]
+The new version fixes the mark-at-EOL problem reported by DrewAdams above. -- TeemuLeisti
+
 [new]
 See also VisibleMark for such sort of things.
 
