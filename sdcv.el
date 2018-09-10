@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 2.3
-;; Last-Updated: 2018-07-16 09:27:18
+;; Version: 2.4
+;; Last-Updated: 2018-09-10 09:30:04
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -137,6 +137,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/10
+;;      * Add option `sdcv-say-word', just support OSX now, please send me PR if you want to support Linux. ;)
+;;
 ;; 2018/07/16
 ;;      * Fixed typo that uncomment setenv code.
 ;;
@@ -243,6 +246,14 @@ then you don't need copy dict data to /usr/share directory everytime when you fi
 
 (defcustom sdcv-tooltip-border-width 10
   "The border width of sdcv tooltip, default is 10 px."
+  :type 'integer
+  :group 'sdcv)
+
+(defcustom sdcv-say-word nil
+  "Say word after search word if this option is non-nil.
+Default is nil.
+
+This feature just support OSX system now, you need install library `osx-lib' first."
   :type 'integer
   :group 'sdcv)
 
@@ -432,7 +443,8 @@ The result will be displayed in buffer named with
          (when (memq (process-status process) '(exit signal))
            (unless (eq (current-buffer) (sdcv-get-buffer))
              (sdcv-goto-sdcv))
-           (sdcv-mode-reinit)))))))
+           (sdcv-mode-reinit))))))
+  (sdcv-say-word word))
 
 (defun sdcv-search-simple (&optional word)
   "Search WORD simple translate result."
@@ -450,7 +462,15 @@ The result will be displayed in buffer named with
     (add-hook 'post-command-hook 'sdcv-hide-tooltip-after-move)
     (setq sdcv-tooltip-last-point (point))
     (setq sdcv-tooltip-last-scroll-offset (window-start))
-    ))
+    )
+  (sdcv-say-word word))
+
+(defun sdcv-say-word (word)
+  (if (featurep 'cocoa)
+      (progn
+        (require 'osx-lib)
+        (osx-lib-say word))
+    (message (format "sdcv say word just support OSX now."))))
 
 (defun sdcv-hide-tooltip-after-move ()
   (ignore-errors
