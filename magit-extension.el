@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-07 03:32:14
-;; Version: 0.1
-;; Last-Updated: 2018-09-07 03:32:14
+;; Version: 0.2
+;; Last-Updated: 2018-09-10 21:24:05
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/magit-extension.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/10
+;;      * Fix error of `magit-submodule-remove' that git-modules-submodule-path is not right sometimes.
+;;
 ;; 2018/09/07
 ;;      * First released.
 ;;
@@ -105,10 +108,13 @@
       (when (search-forward-regexp (format "path\\s-=\\s-%s" submodule-name) nil t)
         (previous-line)
         (beginning-of-line)
+        (when (search-forward-regexp "\\[submodule\\s-\"\\(.*\\)\"]" nil t)
+          (setq git-modules-submodule-path (concat (magit-toplevel) ".git/modules/" (match-string 1))))
+        (beginning-of-line)
         (kill-line 3)
         (save-buffer)))
+    (message (format "*** '%s'" git-modules-submodule-path))
     ;; Get submodule url.
-    (setq git-modules-submodule-path (concat (magit-toplevel) ".git/modules/" (file-name-base submodule-name)))
     (magit-kill-buffer-match-file (concat git-modules-submodule-path "/config"))
     (with-current-buffer (find-file (concat git-modules-submodule-path "/config"))
       (goto-char (point-min))
