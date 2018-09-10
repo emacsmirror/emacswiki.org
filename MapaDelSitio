@@ -36,8 +36,14 @@ Aprendiendo a usar Emacs:
 * [English:CategoryGlossary Glosario] -- Terminología usada en Emacs (inglés)
 * [RandomPage Página Aleatoria] -- prueba tu suerte
 * EmacsNiftyTricks -- trucos diversos
-* [https://github.com/farliz/emacs-academia/blob/master/contenido.md Curso de Emacs] -- Videos de Emacs en español.
 
+
+[:EmacsAcademico]
+Emacs para Académicos:
+
+Una serie de videos que te mostrarán de forma práctica y simple, cómo utilizar Emacs para la producción de documentos académicos.
+
+* [https://github.com/farliz/emacs-academia/blob/master/contenido.md Curso de Emacs] -- Videos de Emacs en español.
 
 [:Comunidad]
 Comunidad:
