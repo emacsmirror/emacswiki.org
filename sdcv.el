@@ -468,7 +468,6 @@ The result will be displayed in buffer named with
   (if (featurep 'cocoa)
       (progn
         (require 'osx-lib)
-        (message (format "'%s'" word))
         (osx-lib-say word))
     (message (format "sdcv say word just support OSX now."))))
 
