@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 2.6
-;; Last-Updated: 2018-09-10 10:12:05
+;; Version: 2.7
+;; Last-Updated: 2018-09-10 14:02:45
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -141,6 +141,7 @@
 ;;      * Add option `sdcv-say-word', just support OSX now, please send me PR if you want to support Linux. ;)
 ;;      * Make `sdcv-say-word' can work with `sdcv-search-pointer'.
 ;;      * Make `sdcv-say-word' support all platform.
+;;      * Don't need `osx-lib' anymore.
 ;;
 ;; 2018/07/16
 ;;      * Fixed typo that uncomment setenv code.
@@ -468,9 +469,8 @@ The result will be displayed in buffer named with
 
 (defun sdcv-say-word (word)
   (if (featurep 'cocoa)
-      (progn
-        (require 'osx-lib)
-        (osx-lib-say word))
+      (call-process-shell-command
+       (format "say %s" word) nil 0)
     (let ((player (or (executable-find "mpv")
                       (executable-find "mplayer")
                       (executable-find "mpg123"))))
@@ -480,7 +480,7 @@ The result will be displayed in buffer named with
            nil
            player
            (format "http://dict.youdao.com/dictvoice?type=2&audio=%s" (url-hexify-string word)))
-        (user-error "mplayer or mpg123 is needed to play word voice")))))
+        (message "mpv, mplayer or mpg123 is needed to play word voice")))))
 
 (defun sdcv-hide-tooltip-after-move ()
   (ignore-errors
