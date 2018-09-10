@@ -3,7 +3,7 @@ Put the following in your .emacs to [::MakeMarkVisible] at all times.
 <pre>
 ;;;; Shows mark highlighted with a red background so the user can always see
 ;;;; where it is. ('mmv' is for 'make mark visible'.)
-;;;; By Patrick Gundlach and Teemu Leisti.
+;;;; By Patrick Gundlach, Teemu Leisti, and Stefan.
 
 (defface mmv-face
   '((t :inherit default :background "red"))
