@@ -119,6 +119,7 @@
 ;; lsp-ruby has tcp port error when kill ruby buffer.
 ;; So i use eglot for ruby-mode.
 ;;
+(setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
 (add-hook 'ruby-mode-hook
           '(lambda ()
              (eglot-ensure)))
