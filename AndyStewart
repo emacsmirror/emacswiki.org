@@ -322,6 +322,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 ** Lisp:init-auto-complete.el -- Configuration file for [[AutoComplete]].
 
+** Lisp:init-lsp.el -- Configuration file for [https://github.com/emacs-lsp/lsp-mode lsp-mode]
+
 ** Lisp:init-company-mode.el -- Configuration file for [[CompanyMode]].
 
 ** Lisp:init-flycheck.el -- Configuration file for [[FlyCheck]]
