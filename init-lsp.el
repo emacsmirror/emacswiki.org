@@ -105,11 +105,23 @@
 (setq lsp-message-project-root-warning t) ;avoid popup warning buffer if lsp can't found root directory (such as edit simple *.py file)
 (setq create-lockfiles nil) ;we will got error "Error from the Language Server: FileNotFoundError" if `create-lockfiles' is non-nil
 
-;; Python support for lsp-mode using pyls.
-;; Install: pip install python-language-server
-(add-hook 'python-mode-hook #'lsp-python-enable)
+;; Eglot configuration.
+(setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
 
-;; Ruby support for lsp-mode using the solargraph gem.
+;; Python support for eglot using pyls.
+;; Install: pip install python-language-server
+;;
+;; When type os. in python file, pyls will crash.
+;; So you need clone python-language-server and path https://github.com/palantir/python-language-server/issues/373
+;; Then install patched version with command:
+;;
+;; sudo pip install .
+;;
+(add-hook 'python-mode-hook
+          '(lambda ()
+             (eglot-ensure)))
+
+;; Ruby support for eglot using the solargraph gem.
 ;; Install: gem install solargraph
 ;; NOTE: and you need put below line in your Gemfile, otherwise lsp-ruby will report tcp error.
 ;;
@@ -119,7 +131,6 @@
 ;; lsp-ruby has tcp port error when kill ruby buffer.
 ;; So i use eglot for ruby-mode.
 ;;
-(setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
 (add-hook 'ruby-mode-hook
           '(lambda ()
              (eglot-ensure)))
