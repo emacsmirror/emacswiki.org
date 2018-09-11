@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 1.4
-;; Last-Updated: 2018-09-04 12:55:03
+;; Version: 1.6
+;; Last-Updated: 2018-09-11 11:50:35
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/11
+;;      * Switch to literal search automaticity when parsing keyword regexp failed.
+;;      * Adjust regex to match "Error parsing regex near".
 ;;
 ;; 2018/09/04
 ;;      * Use `color-rg-process-setup' monitor process finished, then output search hit in minibuffer.
@@ -366,7 +370,17 @@ This function is called from `compilation-filter-hook'."
                    ((not (buffer-modified-p))
                     '("finished with no matches found\n" . "no match"))
                    (t
-                    (cons msg code)))
+                    (if (string-prefix-p "exited abnormally with code" msg)
+                        ;; Switch to literal search automaticity when parsing keyword regexp failed.
+                        (with-current-buffer color-rg-buffer
+                          (when (search-forward-regexp "^Error parsing regex near" nil t)
+                            (run-at-time "2sec" nil
+                                         (lambda ()
+                                           (message "COLOR-RG: parsing keyword regexp failed, switch to literal search automaticity.")))
+                            (color-rg-rerun-literal t)
+                            ))
+                      (cons msg code))
+                    ))
            (cons msg code)))))
 
 (defun color-rg-update-header-line ()
@@ -809,7 +823,7 @@ this function a no-op."
       )))
 
 
-(defun color-rg-rerun-literal ()
+(defun color-rg-rerun-literal (&optional nointeractive)
   (interactive)
   (with-current-buffer color-rg-buffer
     (let* (
@@ -820,7 +834,9 @@ this function a no-op."
                                (t
                                 (replace-regexp-in-string (regexp-quote "--regexp") "--fixed-strings" color-rg-default-argument))
                                ))
-           (input-keyword (read-string (format "Re-search with literal: ") search-keyword))
+           (input-keyword (if nointeractive
+                              search-keyword
+                            (read-string (format "Re-search with literal: ") search-keyword)))
            (literal-keyword
             (color-rg-literal-string-escape input-keyword)))
 
