@@ -17,20 +17,22 @@ All IMAP operation in [[Gnus]] (see [[GnusSpeed]])
 
 == Already Concurrent ==
 
-Font Lock: `jit-lock-stealth-fontify' solves this.
+Font Lock: `jit-lock-stealth-fontify' solves this (using IdleTimers).
 
-Shell: EmacsShell must be doing this right?
+Shell: EmacsShell must be doing this right? (It runs external processes asynchronously)
 
-Introspection: EmacsDebugger seems like it must do this, but maybe I'm thinking about it wrong.
+Introspection: EmacsDebugger seems like it must do this, but maybe I'm thinking about it wrong.  (It doesn't really do much processing, just goes into a RecursiveEdit)
 
 == Practical Approaches to Concurrency in use today ==
 
-*Accept that you can do a lot with just multiple async processes* -- this is the [[NodeJs]] approach; a single Emacs can ask another process to do something and use ProcessSentinels and ProcessFilterFunctions to do quite a lot of processing apparently concurrently but really just in an event loop. As long as the ProcessFilterFunction is not too slow this is fine. Elnode takes this approach to making a scalable webserver in EmacsLisp.
+* *Accept that you can do a lot with just multiple async processes* -- this is the [[NodeJs]] approach; a single Emacs can ask another process to do something and use ProcessSentinels and ProcessFilterFunctions to do quite a lot of processing apparently concurrently but really just in an event loop. As long as the ProcessFilterFunction is not too slow this is fine. 
 
-*Spawn more Emacs processes to do work for you* -- [[JohnWiegley]]'s [[Async]] takes this approach, [[Elnode]] has an alternative and [[Elpakit]] another alternative. No one has unified this approach yet.
+** As a special case, the async subprocess can be an Emacs running in BatchMode.  [[Elnode]] and ElpaKit take this approach.  [[JohnWiegley]]'s [[Async]] makes this into an Elisp library, it has a has a `dired-async' module that can be used to make at least copying and moving to remote servers asynchronous.
 
-*Defer asynchronous tasks* -- this is what the [https://github.com/kiwanami/emacs-deferred emacs-deferred] library does.
+* *Defer asynchronous tasks* -- this is what the [https://github.com/kiwanami/emacs-deferred emacs-deferred] library does.
 It provides facilities to manage asynchronous tasks. The API and implementations were translated from JSDeferred and Mochikit.Async in Javascript. [https://github.com/kiwanami/emacs-deferred/blob/master/README-concurrent.markdown concurrent.el] is a higher level library for concurrency, based on `deferred.el'.
+
+* IdleTimers -- Call some Elisp while the user isn't doing anything.  You can still lock up Emacs if you're not careful though.  The threading API added in Emacs 27 is mostly equivalent, though sometimes more convenient.  See also LaterDo.
 
 == Research ==
 CoRoutines, jit-lock-stealth*, ECB, Lisp:later-do.el, Lisp:coroutine.el, Lisp:tagbody.el, AsyncEval
@@ -263,11 +265,6 @@ that takes long time; it could be listings on a file server at another office,
 it can be "% g" searches I want to do, etc. Dired is a very handy tool for
 many variants of file operations, but sometimes I have to plan the work so
 that I don't need Emacs during the time dired works. -- MaDa
-
-[new] 
-Check out [https://github.com/jwiegley/emacs-async emacs-async], which has a
-`dired-async' module that can be used to make at least copying and moving to
-remote servers asynchronous. -- JohnWiegley
 
 ----
 
