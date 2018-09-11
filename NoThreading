@@ -1,12 +1,8 @@
-== Adding Threads to Emacs ==
+== (Non-Parallel) Threads Added in Emacs 26 ==
 
-There is ongoing work to add threading to Emacs. 
+As explained below on this page, adding threads to Emacs is so difficult that it's basically impossible.  Unfortunately, nobody notified the Emacs maintainers of this, so they went ahead and did it anyway, see Manual:Threads (elisp) in the Elisp manual. :-)
 
-A developer branch is published at [[http://bzr.savannah.gnu.org/lh/emacs/concurrency/files|here]]
-
-The GitHub mirror also has a branch: [[https://github.com/emacsmirror/emacs/tree/concurrency|here]]
-
-It was discussed in emacs-devel: http://thread.gmane.org/gmane.emacs.devel/120530/focus=122664
+More seriously though, some of the difficulties talked about below are avoided because Emacs doesn't have actual parallelism (yet), only one thread runs at a time.
 
 == About Threading and Emacs ==
 
