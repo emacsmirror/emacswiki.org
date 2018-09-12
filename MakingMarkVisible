@@ -11,8 +11,6 @@ Put the following in your .emacs to [::MakeMarkVisible] at all times.
 
 (defvar-local mmv-mark-overlay nil "Overlay for showing the mark's position.")
 
-;; The three optional arguments are needed to cover the optional arguments of
-;; those functions that this function will modify through `advice-add'.
 (defun mmv-show-mark (&rest _)
   "Make the mark's position stand out by means of a one-character-long overlay."
   (unless mmv-mark-overlay
@@ -27,6 +25,9 @@ Put the following in your .emacs to [::MakeMarkVisible] at all times.
       (move-overlay mmv-mark-overlay
                     mark-position (1+ mark-position)))
      (t
+      ; This branch is called when the mark is at the end of a line or at the
+      ; end of the buffer. We use a bit of trickery to avoid the higlight
+      ; extending from the mark all the way to the right end of the frame.
       (overlay-put mmv-mark-overlay 'after-string
                    (propertize " " 'face (overlay-get mmv-mark-overlay 'face)))
       (move-overlay mmv-mark-overlay
