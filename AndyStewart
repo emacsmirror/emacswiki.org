@@ -39,8 +39,6 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 * [https://github.com/manateelazycat/emacs-application-framework/blob/master/screenshot/air_share.png Air Share]
 
-
-
 ==Packages==
 * Standalone packages.
 
@@ -419,6 +417,9 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 ** Lisp:init-maxima.el -- Configuration file for [http://maxima.sourceforge.net/ Maxima].
 
 ** Lisp:init-time.el -- Time setup.
+
+==Patch contributions==
+*** lsp-mode: Fixed crash bug of lsp--annotate https://github.com/emacs-lsp/lsp-mode/pull/420 
 
 ===Yasnippet Template Code===
 : [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Here] have my template code for [[Yasnippet]].
