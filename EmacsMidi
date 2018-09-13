@@ -23,3 +23,186 @@ midi.el in emacs.sources
 http://utopia.knoware.nl/~hlub/rlwrap/README.midi-input.txt
 
 end of page
+
+=== Experimental Launchpad keyboard ===
+
+Couldn't resist playing with a Launchpad, not for music, but for being the ultimate
+stylish keyboard extension for the one and only editor. Just imagine: the 'compile key',
+flashing yellow until result is green or red... 80 more function keys... illuminated...
+
+Here's some proof-of-concept code that allows cycling throw key color by pressing
+that same key repeatedly. It is based on 'amidi' command line tool.
+
+The programmers manual for the Launchpad can be found at https://global.novationmusic.com.
+
+<pre>
+(provide 'midiio)
+
+(setq midiio-device "hw:2,0,0") ;; find out with 'amidi -l'
+
+(setq midiio-matrix
+      '[[(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        [(0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0) (0 0 0)]
+        ])
+
+(defun midiio-next-rgb (rgb)
+  (let* ((r      (elt rgb 0))
+         (g      (elt rgb 1))
+         (b      (elt rgb 2)))
+    (cond
+     ((and (= r 0) (= g 0) (= b 0)) '(1 0 0))
+     ((and (= r 1) (= g 0) (= b 0)) '(1 1 0))
+     ((and (= r 1) (= g 1) (= b 0)) '(0 1 0))
+     ((and (= r 0) (= g 1) (= b 0)) '(0 1 1))
+     ((and (= r 0) (= g 1) (= b 1)) '(0 0 1))
+     ((and (= r 0) (= g 0) (= b 1)) '(1 0 1))
+     ((and (= r 1) (= g 0) (= b 1)) '(1 1 1))
+     ((and (= r 1) (= g 1) (= b 1)) '(0 0 0))
+     )
+    )
+  )
+
+(defun midiio-process-key (x y value)
+  (message "midi %d %d %s" x y value)
+  (when (string= value "7F")
+    (let* ((row    (aref midiio-matrix y))
+           (rgb    (aref row    x))
+           (newrgb (midiio-next-rgb rgb))
+           (r      (elt newrgb 0))
+           (g      (elt newrgb 1))
+           (b      (elt newrgb 2)))
+      (midiio-set-led x y r g b)
+      (aset row x newrgb)
+      )
+    )
+  )
+
+(defun midiio-process-scan-commands ()
+  (goto-char (marker-position midiio-examination-marker))
+  (while (re-search-forward "^[0-9A-Fa-f][0-9A-Fa-f]\\( [0-9A-Fa-f][0-9A-Fa-f]\\)*$" nil t)
+    (let* ((seq-start (match-beginning 0))
+           (seq-end   (match-end 0))
+           (sequence  (buffer-substring seq-start seq-end))
+           )
+      (set-marker midiio-examination-marker seq-end)
+      (cond
+       ((string-match "[9B]0 \\([0-9A-Fa-f][0-9A-Fa-f]\\) \\([0-9A-Fa-f][0-9A-Fa-f]\\)" sequence)
+        (let* ((key (match-string 1 sequence))
+               (val (match-string 2 sequence))
+               (xy  (midiio-key-to-xy key))
+               (x   (elt xy 0))
+               (y   (elt xy 1)))
+          (midiio-process-key x y val)
+          )
+        )
+       )
+      )
+    )
+  )
+
+(defun midiio-process-filter (proc string)
+  (with-current-buffer (process-buffer proc)
+    (let ((moving (= (point) (marker-position (process-mark proc)))))
+      (save-excursion
+        (goto-char (process-mark proc))
+        (insert string)
+        (set-marker (process-mark proc) (point))
+        (midiio-process-scan-commands)
+        )
+      (comint-postoutput-scroll-to-bottom string)
+      ))
+  )
+
+(defun midiio-prepare-buffer (buffername)
+  (save-excursion
+    (set-buffer buffername)
+    (setq comint-move-point-for-output t)
+    (set-process-filter (get-process (get-buffer-process buffername)) 'midiio-process-filter)
+      
+    (make-local-variable 'midiio-examination-marker)
+    (setq midiio-examination-marker (make-marker))
+    (set-marker midiio-examination-marker 0)
+    )
+  )
+
+(defun midiio-listen ()
+  (interactive)
+  (let ((buffername "*MIDI I/O*")
+        (processname "midi-i")
+        (action "amidi --dump -p hw:2,0,0"))
+    (start-process-shell-command processname buffername action)
+    (midiio-prepare-buffer buffername)
+    )
+  )
+
+(defun midiio-send (command)
+  (start-process "midi-o" nil "/usr/bin/amidi" "-p" midiio-device "--send-hex" command)
+  )
+
+(defun midiio-send-sysex (command)
+  (midiio-send (concat "F0 00 20 29 02 18 " command " F7"))
+  )
+
+(defun midiio-set-session-layout ()
+  (interactive)
+  (let ((layout "00")) ;; session layout, should be default
+    (midiio-send-sysex (concat "22 " layout))
+    ))
+
+;; in session layout, keys can be calculated like this:
+
+(defun midiio-xy-to-key (x y)
+  (format "%02X" (+ 11 x (* y 10) (if (= y 8) 13 0)))
+  )
+
+(defun midiio-key-to-xy (key)
+  (let* ((raw (string-to-number key 16))
+         (xy  (- raw (if (>= raw 104) 13 0) 11))
+         (x   (mod xy 10))
+         (y   (/ xy 10))
+         )
+    (list x y)
+    ))
+
+(defun midiio-set-led (x y r01 g01 b01)
+  (interactive)
+  (let* ((r      (* r01 63))
+         (g      (* g01 63))
+         (b      (* b01 63))
+         (rgbhex (format "%02X %02X %02X" r g b))
+         (led    (midiio-xy-to-key x y))
+         )
+    (midiio-send-sysex (concat "0B " led " " rgbhex))
+    ))
+
+(defun midiio-start-scrolling-text (color loop text)
+  (interactive)
+  (let ((hextext ""))
+    (dotimes (i (length text))
+      (setq hextext (concat hextext (format " %02X" (aref text i)))))
+    (midiio-send-sysex (concat "14 " color (if loop " 01 " " 00 ") hextext))
+    ))
+
+(defun midiio-stop-scrolling-text ()
+  (interactive)
+  (midiio-send-sysex "14")
+  )
+
+;; some samples:
+;;
+;; (midiio-listen)
+;; 
+;; (midiio-start-scrolling-text "20" t "Hi there!")
+;; (midiio-stop-scrolling-text)
+;; 
+;; (midiio-set-led 7 0 1 0 0)
+;; (midiio-set-led 8 0 0 1 0)
+;; (midiio-set-led 7 8 0 0 1)
+</pre>
