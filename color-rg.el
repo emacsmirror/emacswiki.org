@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;
+;; `cl' `sub-x'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -108,6 +108,8 @@
 ;;
 
 ;;; Require
+(require 'cl)
+(require 'sub-x)
 
 ;;; Code:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; OS Config ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
