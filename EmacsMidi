@@ -30,7 +30,7 @@ Couldn't resist playing with a Launchpad, not for music, but for being the ultim
 stylish keyboard extension for the one and only editor. Just imagine: the 'compile key',
 flashing yellow until result is green or red... 80 more function keys... illuminated...
 
-Here's some proof-of-concept code that allows cycling throw key color by pressing
+Here's some proof-of-concept code that allows cycling through key color by pressing
 that same key repeatedly. It is based on 'amidi' command line tool.
 
 The programmers manual for the Launchpad can be found at https://global.novationmusic.com.
