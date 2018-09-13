@@ -90,20 +90,31 @@
 (defun magit-get-submodule-short-name (path)
   "Return short name of submodule path."
   (let* ((submodule-lines (magit-git-lines "config" "--list" "-f" ".gitmodules"))
-         (submodule-match-line (car (seq-filter (lambda (l) (string-match (format "submodule.*.path=%s" path) l)) submodule-lines)))
-         submodule-url-title
-         submodule-url-string)
+         (submodule-match-line (car (seq-filter (lambda (l) (string-match (format "submodule.*.path=%s" path) l)) submodule-lines))))
     (when submodule-match-line
-      (replace-regexp-in-string "submodule." "" (replace-regexp-in-string ".path$" "" (car (split-string submodule-match-line "="))))
-      )))
+      (string-remove-suffix ".path" (string-remove-prefix "submodule." (car (split-string submodule-match-line "=")))))))
 
+;;;###autoload
 (defun magit-submodule-remove (&optional module-name)
   (interactive)
-  (let* ((default-directory (magit-toplevel))
+  (let* ((git-file (concat (magit-toplevel) ".git"))
+         (default-directory
+           (if (file-directory-p git-file)
+               ;; Return toplevel if .git is a directory.
+               (magit-toplevel)
+             ;; Otherwise try to parse gitdir if .git just a file in worktree.
+             (with-temp-buffer
+               (insert-file-contents git-file)
+               (if (re-search-forward "gitdir:\\s-\\(.*\\).git")
+                   (match-string 1)
+                 (error "Can't found gitdir string in .git file")))))
          (submodule-name (or module-name (completing-read "Remove submodule: " (magit-list-module-paths))))
          (submodule-short-name (magit-get-submodule-short-name submodule-name))
-         (submodule-fullpath (concat (magit-toplevel) submodule-name))
-         (submodule-modules-path (concat (magit-toplevel) ".git/" "modules/" (magit-get-submodule-name submodule-name))))
+         (submodule-fullpath (concat default-directory submodule-name))
+         (submodule-modules-path (concat default-directory
+                                         (file-name-as-directory ".git")
+                                         (file-name-as-directory "modules")
+                                         (magit-get-submodule-name submodule-name))))
     ;; Remove the submodule entry from .git/config
     (magit-run-git "submodule" "deinit" "-f" submodule-name)
 
@@ -116,8 +127,7 @@
 
     ;; Delete submodule under .git/modules/ directory.
     (when (file-exists-p submodule-modules-path)
-      (delete-directory submodule-modules-path t))
-    ))
+      (delete-directory submodule-modules-path t))))
 
 (defun magit-get-submodule-url (path)
   "Return url of submodule path."
