@@ -35,6 +35,15 @@ that same key repeatedly. It is based on 'amidi' command line tool.
 
 The programmers manual for the Launchpad can be found at https://global.novationmusic.com.
 
+The control code below switching LED colors on the launchpad is certainly
+Launchpad specific, but the MIDI reading functions should work similar
+for other MIDI devices, since the Launchpad also just sends music keys.
+
+BTW: the approach with make-serial-process above didn't work for me,
+it seems there is no serial device created, but a midi device instead,
+which is not acceessible as a serial device. That's why I used the
+amidi commands.
+
 <pre>
 (provide 'midiio)
 
