@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-10 22:46:41
-;; Version: 0.1
-;; Last-Updated: 2018-09-10 22:46:41
+;; Version: 0.2
+;; Last-Updated: 2018-09-14 09:48:52
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-lsp.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018-09-14
+;;      * Switch from eglot to lsp-mode since lsp-ruby looks fix disconnect problem.
+;;
 ;; 2018/09/10
 ;;      * First released.
 ;;
@@ -81,9 +84,10 @@
 
 ;;; Require
 (require 'lsp-mode)
+(require 'lsp-ruby)
+(require 'lsp-python)
 (require 'lsp-javascript-typescript)
 (require 'company-lsp)
-(require 'eglot)
 
 ;;; Code:
 
@@ -101,10 +105,7 @@
 (setq lsp-message-project-root-warning t) ;avoid popup warning buffer if lsp can't found root directory (such as edit simple *.py file)
 (setq create-lockfiles nil) ;we will got error "Error from the Language Server: FileNotFoundError" if `create-lockfiles' is non-nil
 
-;; Eglot configuration.
-(setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
-
-;; Python support for eglot using pyls.
+;; Python support for lsp-mode using pyls.
 ;; Install: pip install python-language-server
 ;;
 ;; When type os. in python file, pyls will crash.
@@ -113,27 +114,15 @@
 ;;
 ;; sudo pip install .
 ;;
-(add-hook 'python-mode-hook
-          '(lambda ()
-             (run-with-timer "2sec" nil (lambda () (flymake-mode -1)))
-             (eglot-ensure)
-             ))
+(add-hook 'python-mode-hook #'lsp-python-enable)
 
-;; Ruby support for eglot using the solargraph gem.
+;; Ruby support for lsp-mode using the solargraph gem.
 ;; Install: gem install solargraph
 ;; NOTE: and you need put below line in your Gemfile, otherwise lsp-ruby will report tcp error.
 ;;
 ;; gem "solargraph"
 ;;
-;; NOTE:
-;; lsp-ruby has tcp port error when kill ruby buffer.
-;; So i use eglot for ruby-mode.
-;;
-(add-hook 'ruby-mode-hook
-          '(lambda ()
-             (run-with-timer "2sec" nil (lambda () (flymake-mode -1)))
-             (eglot-ensure)
-             ))
+(add-hook 'ruby-mode-hook #'lsp-ruby-enable)
 
 ;; Javascript, Typescript and Flow support for lsp-mode
 ;; Install: npm i -g javascript-typescript-langserver
@@ -151,18 +140,6 @@
   (push 'lsp-company-transformer company-transformers))
 
 (add-hook 'js-mode-hook 'lsp-js-hook)
-
-;; CSS, LESS, and SCSS/SASS support for lsp-mode using vscode-css-languageserver-bin
-;; Install: npm i -g vscode-css-languageserver-bin
-;; (add-hook 'css-mode-hook #'lsp-css-enable)
-;; (add-hook 'less-mode-hook #'lsp-less-enable)
-;; (add-hook 'sass-mode-hook #'lsp-scss-enable)
-;; (add-hook 'scss-mode-hook #'lsp-scss-enable)
-
-;; HTML support for lsp-mode using vscode-html-languageserver-bin
-;; Install: npm i -g vscode-html-languageserver-bin
-;; (add-hook 'html-mode-hook #'lsp-html-enable)
-;; (add-hook 'web-mode-hook #'lsp-html-enable)
 
 (provide 'init-lsp)
 
