@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Thu Jul 19 07:14:42 2018 (-0700)
+;; Last-Updated: Fri Sep 14 09:11:26 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3121
+;;     Update #: 3125
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -99,7 +99,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `create-frame-tiled-horizontally',
+;;    `clone-frame', `create-frame-tiled-horizontally',
 ;;    `create-frame-tiled-vertically', `decrease-frame-transparency'
 ;;    (Emacs 23+), `delete-1-window-frames-on',
 ;;    `delete/iconify-window', `delete/iconify-windows-on',
@@ -194,6 +194,7 @@
 ;;   (global-set-key [(control meta ?z)]            'show-hide)
 ;;   (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
 ;;   (global-set-key [C-down-mouse-1]               'mouse-show-hide-mark-unmark)
+;;   (substitute-key-definition 'make-frame-command 'clone-frame   global-map)
 ;;   (substitute-key-definition 'delete-window      'remove-window global-map)
 ;;   (define-key ctl-x-map "o"                      'other-window-or-frame)
 ;;   (define-key ctl-x-4-map "1"                    'delete-other-frames)
@@ -283,6 +284,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/14 dadams
+;;     Added: clone-frame.
 ;; 2018/01/05 dadams
 ;;     frcmds-available-screen-pixel-bounds:
 ;;       Use display-monitor-attributes-list to compute, if option is nil.
@@ -1022,6 +1025,18 @@ Interactively, FRAME is nil, and FRAME-P depends on the prefix arg:
     (setq frame  (if (eq t frame) nil (if (eq nil frame) t frame)))
     (dolist (fr  (frames-on buffer))
       (delete/iconify-window (get-buffer-window buffer frame) frame-p))))
+
+;;;###autoload
+(defun clone-frame (&optional frame)
+  "Make a new frame with the same parameters as FRAME.
+FRAME defaults to the selected frame.  The frame is created on the
+same terminal as FRAME.  If the terminal is a text-only terminal then
+also select the new frame."
+  (interactive)
+  (let* ((default-frame-alist  (frame-parameters frame))
+         (new-fr  (make-frame)))
+    (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+      (select-frame new-fr))))
 
 ;;;###autoload
 (defun rename-frame (&optional old-name new-name all-named)
