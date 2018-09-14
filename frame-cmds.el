@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Sep 14 09:11:26 2018 (-0700)
+;; Last-Updated: Fri Sep 14 09:29:53 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3125
+;;     Update #: 3126
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -651,8 +651,8 @@ Candidates include `jump-to-frame-config-register' and `show-buffer-menu'."
 ;; Use `cond', not `case', for Emacs 20 byte-compiler.
 (defcustom window-mgr-title-bar-pixel-height (cond ((eq window-system 'mac) 22)
                                                    ;; For older versions of OS X, 40 might be better.
-						   ((eq window-system 'ns)  50)
-						   (t  27))
+                                                   ((eq window-system 'ns)  50)
+                                                   (t  27))
   "*Height of frame title bar provided by the window manager, in pixels.
 You might alternatively call this constant the title-bar \"width\" or
 \"thickness\".  There is no way for Emacs to determine this, so you
