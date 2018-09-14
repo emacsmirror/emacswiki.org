@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Sep 14 09:29:53 2018 (-0700)
+;; Last-Updated: Fri Sep 14 12:29:19 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3126
+;;     Update #: 3127
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -1027,16 +1027,20 @@ Interactively, FRAME is nil, and FRAME-P depends on the prefix arg:
       (delete/iconify-window (get-buffer-window buffer frame) frame-p))))
 
 ;;;###autoload
-(defun clone-frame (&optional frame)
+(defun clone-frame (&optional frame no-clone)
   "Make a new frame with the same parameters as FRAME.
+With a prefix arg, don't clone - just call `make-frame-command'.
+
 FRAME defaults to the selected frame.  The frame is created on the
 same terminal as FRAME.  If the terminal is a text-only terminal then
 also select the new frame."
-  (interactive)
-  (let* ((default-frame-alist  (frame-parameters frame))
-         (new-fr  (make-frame)))
-    (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
-      (select-frame new-fr))))
+  (interactive "i\nP")
+  (if no-clone
+      (make-frame-command)
+    (let* ((default-frame-alist  (frame-parameters frame))
+           (new-fr  (make-frame)))
+      (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
+        (select-frame new-fr)))))
 
 ;;;###autoload
 (defun rename-frame (&optional old-name new-name all-named)
