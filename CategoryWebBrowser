@@ -36,6 +36,7 @@
 
 == Other ==
 
+* [https://github.com/parkouss/webmacs webmacs] -- A great web browser based on qutebrowser,with customizable Emacs keybindings.
 * [[Mozilla]]
 * FireFox
 * [[Conkeror]] -- Web browser based on Mozilla and mainly inspired by Emacs; it was previously a Firefox extension
