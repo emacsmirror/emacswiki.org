@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 30 15:00:20 2018 (-0700)
+;; Last-Updated: Fri Sep 14 15:16:01 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10981
+;;     Update #: 10989
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -548,7 +548,7 @@
 ;;    `diredp-mouse-flag-file-deletion', `diredp-mouse-mark',
 ;;    `diredp-mouse-mark-region-files', `diredp-mouse-mark/unmark',
 ;;    `diredp-mouse-unmark', `diredp-mouse-upcase',
-;;    `diredp-mouse-view-file',
+;;    `diredp-mouse-view-file', `diredp-move-file' (Emacs 24+),
 ;;    `diredp-multiple-w32-browser-recursive',
 ;;    `diredp-nb-marked-in-mode-name', `diredp-next-dirline',
 ;;    `diredp-next-line', `diredp-next-subdir', `diredp-omit-marked',
@@ -594,7 +594,8 @@
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
-;;    `diredp-max-frames', `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diredp-max-frames', `diredp-move-file-dirs' (Emacs 24+),
+;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-visit-ignore-extensions', `diredp-visit-ignore-regexps',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
@@ -776,6 +777,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/14 dadams
+;;     Added: diredp-move-file-dirs, diredp-move-file.
 ;; 2018/06/30 dadams
 ;;     Added: diredp-delete-if-not.
 ;; 2018/06/16 dadams
@@ -1914,6 +1917,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar diredp-menu-bar-images-recursive-menu)    ; Here (old name)
 (defvar diredp-menu-bar-regexp-recursive-menu)    ; Here (old name)
 (defvar diredp-menu-bar-subdir-menu)              ; Here (old name)
+(defvar diredp-move-file-dirs)                    ; Here, Emacs 24+
 (defvar diredp-single-bookmarks-menu)             ; Here, if Bookmark+ is available
 (defvar filesets-data)                            ; In `filesets.el'
 (defvar grep-use-null-device)                     ; In `grep.el'
@@ -2104,6 +2108,13 @@ These commands are `dired-do-find-marked-files' and
 the circumstances in which they show the files in separate frames."
   :type '(restricted-sexp :match-alternatives ((lambda (x) (and (wholenump x)  (not (zerop x))))))
   :group 'Dired-Plus)
+
+(when (fboundp 'file-equal-p)           ; Emacs 24+
+  (defcustom diredp-move-file-dirs ()
+    "Alist of names of files and preferred directories to move them to.
+File names should be relative (no directory component).
+Target directory names should be absolute."
+    :group 'files :type '(alist :key-type file :value-type directory)))
 
 ;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
@@ -4642,6 +4653,23 @@ function; it copies the data if necessary."
            (unless (member (car list2) list1)  (setq list1  (cons (car list2) list1)))
            (setq list2  (cdr list2)))
          list1)))
+
+(when (fboundp 'file-equal-p)           ; Emacs 24+
+  (defun diredp-move-file (file &optional prompt-anyway)
+    "Move FILE to associated directory in `diredp-move-file-dirs'.
+If no association, or if you use a prefix arg, prompt for directory."
+    (interactive (list (dired-get-filename) current-prefix-arg))
+    (unless file (error "No file specified"))
+    (let* ((file-sans  (file-name-nondirectory file))
+           (dir        (file-name-as-directory
+                        (or (and (not prompt-anyway)
+                                 (cdr (assoc file-sans diredp-move-file-dirs)))
+                            (read-directory-name "Move to: ")))))
+      (when (file-equal-p dir (file-name-directory file))
+        (error "Cannot move to same directory: " dir))
+      (dired-rename-file file dir nil)
+      (dired-add-file (expand-file-name file-sans dir))
+      (message "Moved `%s' to `%s'" file-sans dir))))
 
 (defvar diredp-last-copied-filenames ()
   "String list of file names last copied to the `kill-ring'.
