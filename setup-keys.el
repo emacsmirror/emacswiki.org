@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar  3 09:22:49 2018 (-0800)
+;; Last-Updated: Fri Sep 14 09:21:41 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1340
+;;     Update #: 1344
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/14 dadams
+;;     Added: sub-clone-frame.  Use it.
 ;; 2018/03/03 dadams
 ;;     Removed binding of <delete> to kill-line.
 ;; 2017/09/10 dadams
@@ -906,6 +908,10 @@ This applies to `move-to-(beginning|end)-of-line', if defined, or to
 `(beginning|end)-of-line', otherwise.
 This has no effect unless you use library `misc-cmds.el'.")
 
+(defvar sub-clone-frame t
+  "*Non-nil means remap `make-frame-command' to `clone-frame' globally.
+This has no effect unless you use library `frame-cmds.el'.")
+
 (defvar sub-delete-windows-for t
   "*Non-nil means remap `delete-window' to `delete-windows-for' globally.
 This has no effect unless you use library `frame-cmds.el'.")
@@ -941,8 +947,11 @@ This has no effect unless you use library `misc-cmds.el'.")
 ;;; Do these all *after* load `menu-bar+.el', since that sets original bindings.
 
 (eval-after-load "frame-cmds"
-  '(when sub-delete-windows-for
-    (remap-command 'delete-window 'delete-windows-for global-map)))
+  '(progn
+    (when sub-delete-windows-for
+      (remap-command 'delete-window 'delete-windows-for global-map))
+    (when sub-clone-frame
+      (remap-command 'make-frame-command 'clone-frame global-map))))
 (eval-after-load "replace+"
   '(when sub-query-replace-w-options
     (remap-command 'query-replace 'query-replace-w-options global-map)))
