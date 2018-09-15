@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008 ~ 2018, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.8
-;; Last-Updated: 2018-08-26 03:02:02
+;; Version: 0.9
+;; Last-Updated: 2018-09-15 17:52:11
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 27.0.50
@@ -44,6 +44,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/15
+;;      * `paredit-web-mode-kill' support rails template now.
 ;;
 ;; 2018/08/26
 ;;      * Add new function `paredit-match-paren'.
@@ -286,6 +289,7 @@ If current mode is `web-mode', use `paredit-web-mode-kill' instead `paredit-kill
 If current line is blank line, re-indent line after kill whole line.
 If point in string area, kill string content like `paredit-kill' do.
 If point in tag area, kill nearest tag attribute around point.
+If point in <% ... %>, kill rails code.
 Otherwise, do `paredit-kill'."
   (interactive)
   (if (paredit-blank-line-p)
@@ -294,13 +298,31 @@ Otherwise, do `paredit-kill'."
            (paredit-kill))
           (t
            (let (char-count-before-kill
-                 char-count-after-kill)
+                 char-count-after-kill
+                 kill-start-point)
+             ;; Try do `web-mode-attribute-kill'.
              (setq char-count-before-kill (- (point-max) (point-min)))
              (web-mode-attribute-kill)
              (setq char-count-after-kill (- (point-max) (point-min)))
+             ;; Try continue if nothing change after `web-mode-attribute-kill'.
              (when (equal char-count-before-kill char-count-after-kill)
-               (paredit-kill))
-             )))))
+               ;; Do `paredit-kill' if point at front of <%.
+               (if (looking-at "<%")
+                   (paredit-kill)
+                 (setq kill-start-point (point))
+                 ;; Kill content in <% ... %> if found %> in rest line.
+                 (if (search-forward-regexp
+                      ".*\\(%>\\)"
+                      (save-excursion
+                        (end-of-line)
+                        (point))
+                      t)
+                     (progn
+                       (backward-char (length (substring-no-properties (match-string 1))))
+                       (kill-region kill-start-point (point)))
+                   ;; Do `paredit-kill' last.
+                   (paredit-kill)))
+               ))))))
 
 (defun paredit-ruby-mode-kill ()
   "It's a smarter kill function for `ruby-mode'.
