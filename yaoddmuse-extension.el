@@ -279,7 +279,7 @@ SEARCH-URL is url try to search."
 (defun yaoddmuse-notify-popup-window (msg)
   "Use program `notify-send' notify yaoddmuse-message MSG."
   (if (featurep 'cocoa)
-      (ns-do-applescript (format "display notification \"%s" msg))
+      (ns-do-applescript (format "display notification \"%s\"" msg))
     (shell-command (concat yaoddmuse-notify-cmd
                            " -i " yaoddmuse-notify-icon
                            " -t " (int-to-string
