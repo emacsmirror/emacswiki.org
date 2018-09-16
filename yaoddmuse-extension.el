@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-01-09 22:27:36
-;; Version: 0.2.3
-;; Last-Updated: 2009-03-11 22:01:29
+;; Version: 0.3
+;; Last-Updated: 2018-09-16 21:38:39
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse-extension.el
 ;; Keywords: oddmuse, yaoddmuse
@@ -86,7 +86,7 @@
 ;;    default = "notify-send"
 ;;  `yaoddmuse-notify-icon'
 ;;    Specifies an icon filename or stock icon to display.
-;;    default = "~/MyEmacs/Image/Irc.png"
+;;    default = "/usr/share/deepin-emacs/Image/Irc.png"
 ;;  `yaoddmuse-notify-timeout'
 ;;    Specifies the timeout in milliseconds at which to expire the notification.
 ;;    default = 5000
@@ -111,6 +111,10 @@
 ;; No need more.
 
 ;;; Change log:
+;;
+;; 2019/09/16
+;;      * Support MacOS now.
+;;
 ;; 2009/03/11
 ;;  * Andy Stewart:
 ;;      * Fix bug of `yaoddmuse-w3m-edit-emacswiki-page'.
@@ -146,33 +150,42 @@
 
 ;;; Require
 (require 'yaoddmuse)
-(require 'w3m)
 
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defcustom yaoddmuse-notify-cmd "notify-send"
-  "The command that use for notify."
+  "The command that use for notify.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'yaoddmuse)
 
-(defcustom yaoddmuse-notify-icon "~/MyEmacs/Image/Irc.png"
-  "Specifies an icon filename or stock icon to display."
+(defcustom yaoddmuse-notify-icon "/usr/share/deepin-emacs/Image/Irc.png"
+  "Specifies an icon filename or stock icon to display.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'yaoddmuse)
 
 (defcustom yaoddmuse-notify-timeout 5000
-  "Specifies the timeout in milliseconds at which to expire the notification."
+  "Specifies the timeout in milliseconds at which to expire the notification.
+
+This option just for linux, MacOS user don't need this."
   :type 'number
   :group 'yaoddmuse)
 
 (defcustom yaoddmuse-notify-urgency "low"
-  "Specifies the urgency level (low, normal, critical)."
+  "Specifies the urgency level (low, normal, critical).
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'yaoddmuse)
 
 (defcustom yaoddmuse-notify-category "im.received"
-  "Specifies the notification category."
+  "Specifies the notification category.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'yaoddmuse)
 
@@ -212,6 +225,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun yaoddmuse-browse-page-in-w3m (url)
   "This function is browse URL in w3m."
+  (require 'w3m)
   (let ((current-window (selected-window)))
     ;; Switch window if major-mode
     ;; is not `w3m-mode'.
@@ -252,6 +266,7 @@ SEARCH-URL is url try to search."
 (defun yaoddmuse-w3m-edit-emacswiki-page ()
   "Edit current emacswiki wiki page."
   (interactive)
+  (require 'w3m)
   (yaoddmuse-edit "EmacsWiki" (replace-regexp-in-string
                                "\\(.*id=\\).*$" "" ;pick up page name from `id=PageName'
                                (replace-regexp-in-string
@@ -261,19 +276,21 @@ SEARCH-URL is url try to search."
 
 (defun yaoddmuse-notify-popup-window (msg)
   "Use program `notify-send' notify yaoddmuse-message MSG."
-  (flet ((message (&rest args)))
-    (shell-command (concat yaoddmuse-notify-cmd
-                           " -i " yaoddmuse-notify-icon
-                           " -t " (int-to-string
-                                   yaoddmuse-notify-timeout)
-                           " -u " yaoddmuse-notify-urgency
-                           " -c " yaoddmuse-notify-category
-                           " -- "
-                           " \"Yaoddmuse-Notify\""
-                           " \""
-                           (if (boundp 'msg)
-                               msg "")
-                           "\""))))
+  (cl-flet ((message (&rest args)))
+    (if (featurep 'cocoa)
+        (ns-do-applescript (format "display notification \"%s" msg))
+      (shell-command (concat yaoddmuse-notify-cmd
+                             " -i " yaoddmuse-notify-icon
+                             " -t " (int-to-string
+                                     yaoddmuse-notify-timeout)
+                             " -u " yaoddmuse-notify-urgency
+                             " -c " yaoddmuse-notify-category
+                             " -- "
+                             " \"Yaoddmuse-Notify\""
+                             " \""
+                             (if (boundp 'msg)
+                                 msg "")
+                             "\"")))))
 
 (defun yaoddmuse-notify-by-growl (msg)
   "Use program `growl' notify yaoddmuse-message MSG."
