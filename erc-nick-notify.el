@@ -3,16 +3,15 @@
 ;; Filename: erc-nick-notify.el
 ;; Description: Notify popup for ERC
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Contributors: Philipp Haselwarter <philipp AT haselwarter DOT org>
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-12-04 12:47:28
-;; Version: 0.3.1
-;; Last-Updated: 2011-12-08 19:18:20
-;;           By: Philipp Haselwarter
+;; Version: 0.3
+;; Last-Updated: 2018-09-16 21:27:34
+;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/erc-nick-notify.el
 ;; Keywords: erc, notify
-;; Compatibility: GNU Emacs 23.3.1
+;; Compatibility: GNU Emacs 23.0.60.1
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -42,23 +41,22 @@
 ;;
 ;; Notify popup for ERC
 ;;
-;; This extension uses "notify-send" for notification,
-;; so make sure you have "notify-send" on your system.
+;; This extension use `notify-send' for notify.
+;; So make you have install `notify-send' in your system.
 ;;
 
 ;;; Installation:
 ;;
-;; Add erc-nick-notify.el to your load-path.
+;; Put erc-nick-notify.el to your load-path.
 ;; The load-path is usually ~/elisp/.
 ;; It's set in your ~/.emacs like this:
 ;; (add-to-list 'load-path (expand-file-name "~/elisp"))
 ;;
-;; And the following to your ~/.emacs startup file:
+;; And the following to your ~/.emacs startup file.
 ;;
-;; (autoload 'erc-nick-notify-mode "erc-nick-notify"
-;;   "Minor mode that calls `erc-nick-notify-cmd' when his nick gets
-;; mentioned in an erc channel" t)
-;; (eval-after-load 'erc '(erc-nick-notify-mode t))
+;; (require 'erc-nick-notify)
+;;
+;; No need more.
 
 ;;; Customize:
 ;;
@@ -81,21 +79,20 @@
 
 ;;; Change log:
 ;;
-;; 2011/12/08
-;;      Replace `shell-command' with `start-process' to prevent command
-;;      injection, make this a minor mode
+;; 2019/09/16
+;;      * Support MacOS now.
 ;;
 ;; 2009/01/31
-;;      Fix doc.
+;;      * Fix doc.
 ;;
 ;; 2008/12/21
-;;      Fix `void-variable' bug.
+;;      * Fix `void-variable' bug.
 ;;
 ;; 2008/12/08
-;;      Add customize support.
+;;      * Add customize support.
 ;;
 ;; 2008/12/04
-;;      First released.
+;;      * First released.
 ;;
 
 ;;; Acknowledgements:
@@ -125,27 +122,37 @@ Default is 5 minutes."
   :group 'erc-nick-notify)
 
 (defcustom erc-nick-notify-cmd "notify-send"
-  "The command that use for notify."
+  "The command that use for notify.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'erc-nick-notify)
 
-(defcustom erc-nick-notify-icon "~/MyEmacs/Image/Irc.png"
-  "Specifies an icon filename or stock icon to display."
+(defcustom erc-nick-notify-icon "/usr/share/deepin-emacs/Image/Irc.png"
+  "Specifies an icon filename or stock icon to display.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'erc-nick-notify)
 
 (defcustom erc-nick-notify-timeout 10000
-  "Specifies the timeout in milliseconds at which to expire the notification."
+  "Specifies the timeout in milliseconds at which to expire the notification.
+
+This option just for linux, MacOS user don't need this."
   :type 'number
   :group 'erc-nick-notify)
 
 (defcustom erc-nick-notify-urgency "low"
-  "Specifies the urgency level (low, normal, critical)."
+  "Specifies the urgency level (low, normal, critical).
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'erc-nick-notify)
 
 (defcustom erc-nick-notify-category "im.received"
-  "Specifies the notification category."
+  "Specifies the notification category.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'erc-nick-notify)
 
@@ -162,20 +169,12 @@ Default is 5 minutes."
   (interactive)
   (if erc-nick-notify-buffer
       (switch-to-buffer erc-nick-notify-buffer)
-    (message "No pending notifications from ERC.")))
-
-;;;###autoload
-(define-minor-mode erc-nick-notify-mode
-  "Minor mode that calls `erc-nick-notify-cmd' when your nick gets
-mentioned in an erc channel."
-  nil nil nil :group 'erc-nick-notify :global t
-  (funcall (if erc-nick-notify-mode 'add-hook 'remove-hook)
-           'erc-insert-post-hook 'erc-nick-notify))
+    (message "Nobody notify you in IRC.")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun erc-nick-notify ()
   "Notify me when my nick show up.
-This function should be on `erc-insert-post-hook'"
+This function should be in the insert-post-hook."
   (let ((now (current-time)))
     (when (time-less-p erc-nick-notify-delay
                        (time-since erc-nick-notify-last))
@@ -196,18 +195,28 @@ This function should be on `erc-insert-post-hook'"
                               "&gt;</b> "))
                     (match-string-no-properties 5))))
           (setq erc-nick-notify-buffer (buffer-name))
-          (start-process "erc-nick-notify" nil erc-nick-notify-cmd
-                         "-i" erc-nick-notify-icon
-                         "-t" (int-to-string
-                                 erc-nick-notify-timeout)
-                         "-u" erc-nick-notify-urgency
-                         "-c" erc-nick-notify-category
-                         "--" erc-nick-notify-buffer
-                         (if (boundp 'msg)
-                             msg "")))))))
+          (if (featurep 'cocoa)
+              (ns-do-applescript (format "display notification \"%s: %s\""
+                                         (match-string-no-properties 2)
+                                         (match-string-no-properties 5)))
+            (shell-command (concat erc-nick-notify-cmd
+                                   " -i " erc-nick-notify-icon
+                                   " -t " (int-to-string
+                                           erc-nick-notify-timeout)
+                                   " -u " erc-nick-notify-urgency
+                                   " -c " erc-nick-notify-category
+                                   " -- "
+                                   " \"" erc-nick-notify-buffer "\""
+                                   " \""
+                                   (if (boundp 'msg)
+                                       msg "")
+                                   "\""))))))))
 
+;; Add `erc-nick-notify' to `erc-insert-post-hook'
+(add-hook 'erc-insert-post-hook 'erc-nick-notify)
 
 (provide 'erc-nick-notify)
+
 ;;; erc-nick-notify.el ends here
 
 ;;; LocalWords:  erc cmd im msg lt
