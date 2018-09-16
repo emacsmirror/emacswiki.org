@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-06-08 12:45:24
-;; Version: 1.0
-;; Last-Updated: 2008-06-08 12:45:27
+;; Version: 1.1
+;; Last-Updated: 2018-09-16 21:32:24
 ;; URL:  http://www.emacswiki.org/emacs/download/rcirc-notify+.el
 ;; Keywords: rcirc, notify
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -49,15 +49,18 @@
 ;;  (setq rcirc-notify+-open t)
 ;;
 ;; Little tips:
-;;  Function 'rcirc-notify+-jump-last-message-channel' can jump last channel that
+;;  Function `rcirc-notify+-jump-last-message-channel' can jump last channel that
 ;;  message notify you.
 ;;  And feel free to binding it to you like. ^_^
 ;;
 
 ;;; Change log:
 ;;
+;; 2019/09/16
+;;      * Support MacOS now.
+;;
 ;; 2008/06/08
-;;         First release.
+;;         * First release.
 ;;
 
 ;;; Acknowledgments:
@@ -89,27 +92,37 @@
   :group 'rcirc-notify+)
 
 (defcustom rcirc-notify+-cmd "notify-send"
-  "The command that use for notify."
+  "The command that use for notify.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'rcirc-notify+)
 
-(defcustom rcirc-notify+-icon "~/MyEmacs/Image/Irc.png"
-  "Specifies an icon filename or stock icon to display."
+(defcustom rcirc-notify+-icon "/usr/share/deepin-emacs/Image/Irc.png"
+  "Specifies an icon filename or stock icon to display.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'rcirc-notify+)
 
 (defcustom rcirc-notify+-timeout 10000
-  "Specifies the timeout in milliseconds at which to expire the notification."
+  "Specifies the timeout in milliseconds at which to expire the notification.
+
+This option just for linux, MacOS user don't need this."
   :type 'number
   :group 'rcirc-notify+)
 
 (defcustom rcirc-notify+-urgency "low"
-  "Specifies the urgency level (low, normal, critical)."
+  "Specifies the urgency level (low, normal, critical).
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'rcirc-notify+)
 
 (defcustom rcirc-notify+-category "im.received"
-  "Specifies the notification category."
+  "Specifies the notification category.
+
+This option just for linux, MacOS user don't need this."
   :type 'string
   :group 'rcirc-notify+)
 
@@ -125,8 +138,8 @@
   (let ((last-channel nil)
         (last-server nil))
     (when (and rcirc-notify+-open       ;if notify switcher is open
-               rcirc-target)            ;if is a null channel (ignore the first message from server)
-      (setq last-channel rcirc-target)  ;get channel name or use name (from private message)
+               rcirc-target) ;if is a null channel (ignore the first message from server)
+      (setq last-channel rcirc-target) ;get channel name or use name (from private message)
       (setq last-server (with-rcirc-server-buffer rcirc-server-name)) ;get random server name
       (string-match "^[^.]*" last-server) ;replace random server name use string @irc
       (setq last-server (replace-match "@irc" nil nil last-server 0))
@@ -137,18 +150,20 @@
 
 (defun rcirc-notify+-popup (msg)
   "Popup notify window."
-  (shell-command (concat rcirc-notify+-cmd
-                         " -i " rcirc-notify+-icon
-                         " -t " (int-to-string
-                                 rcirc-notify+-timeout)
-                         " -u " rcirc-notify+-urgency
-                         " -c " rcirc-notify+-category
-                         " -- "
-                         " \"" rcirc-last-position "\""
-                         " \""
-                         (if (boundp 'msg)
-                             msg "")
-                         "\"")))
+  (if (featurep 'cocoa)
+      (ns-do-applescript (format "display notification \"%s" msg))
+    (shell-command (concat rcirc-notify+-cmd
+                           " -i " rcirc-notify+-icon
+                           " -t " (int-to-string
+                                   rcirc-notify+-timeout)
+                           " -u " rcirc-notify+-urgency
+                           " -c " rcirc-notify+-category
+                           " -- "
+                           " \"" rcirc-last-position "\""
+                           " \""
+                           (if (boundp 'msg)
+                               msg "")
+                           "\""))))
 
 (defun rcirc-notify+-jump-last-message-channel()
   "Jump to last message that call you."
