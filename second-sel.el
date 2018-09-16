@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 31 10:28:34 2018 (-0700)
+;; Last-Updated: Sun Sep 16 10:35:38 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 618
+;;     Update #: 620
 ;; URL: https://www.emacswiki.org/emacs/download/second-sel.el
 ;; Doc URL: https://emacswiki.org/emacs/SecondarySelection#second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -68,6 +68,7 @@
 ;;   (define-key isearch-mode-map (kbd "C-M-y")  'isearch-yank-secondary)
 ;;   (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)
 ;;   (global-set-key (kbd "C-x C-M-<return>")    'secondary-save-then-kill)
+;;   (global-set-key (kbd "C-M-<mouse-3>")       'mouse-secondary-save-then-kill)
 ;;
 ;;
 ;;  You can enhance what `second-sel.el' offers in these ways:
@@ -633,7 +634,7 @@ Interactively, or with non-nil optional arg MSGP, display a message."
 ;;  Use helper fn `secondary-save-then-kill-1'.
 ;;;
 ;;;###autoload
-(defun mouse-secondary-save-then-kill (click &optional msgp) ; Suggested binding: `C-M-y'
+(defun mouse-secondary-save-then-kill (click &optional msgp) ; Suggested binding: `C-M-mouse-3'
   "Set or delete the secondary selection according to CLICK.
 Add the updated secondary selection to `secondary-selection-ring'.
 CLICK should be a mouse click event.
