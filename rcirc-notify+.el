@@ -151,7 +151,7 @@ This option just for linux, MacOS user don't need this."
 (defun rcirc-notify+-popup (msg)
   "Popup notify window."
   (if (featurep 'cocoa)
-      (ns-do-applescript (format "display notification \"%s" msg))
+      (ns-do-applescript (format "display notification \"%s\"" msg))
     (shell-command (concat rcirc-notify+-cmd
                            " -i " rcirc-notify+-icon
                            " -t " (int-to-string
