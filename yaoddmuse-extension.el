@@ -113,6 +113,7 @@
 ;;; Change log:
 ;;
 ;; 2019/09/16
+;;  * Andy Stewart:
 ;;      * Support MacOS now.
 ;;
 ;; 2009/03/11
@@ -123,6 +124,7 @@
 ;; 2009/03/11
 ;;   * rubikitch
 ;;      * Add new function `yaoddmuse-notify-by-growl'
+;;
 ;; 2009/02/22
 ;;   * Andy Stewart:
 ;;      * Add new function `yaoddmuse-notify-popup-window'
@@ -276,21 +278,20 @@ SEARCH-URL is url try to search."
 
 (defun yaoddmuse-notify-popup-window (msg)
   "Use program `notify-send' notify yaoddmuse-message MSG."
-  (cl-flet ((message (&rest args)))
-    (if (featurep 'cocoa)
-        (ns-do-applescript (format "display notification \"%s" msg))
-      (shell-command (concat yaoddmuse-notify-cmd
-                             " -i " yaoddmuse-notify-icon
-                             " -t " (int-to-string
-                                     yaoddmuse-notify-timeout)
-                             " -u " yaoddmuse-notify-urgency
-                             " -c " yaoddmuse-notify-category
-                             " -- "
-                             " \"Yaoddmuse-Notify\""
-                             " \""
-                             (if (boundp 'msg)
-                                 msg "")
-                             "\"")))))
+  (if (featurep 'cocoa)
+      (ns-do-applescript (format "display notification \"%s" msg))
+    (shell-command (concat yaoddmuse-notify-cmd
+                           " -i " yaoddmuse-notify-icon
+                           " -t " (int-to-string
+                                   yaoddmuse-notify-timeout)
+                           " -u " yaoddmuse-notify-urgency
+                           " -c " yaoddmuse-notify-category
+                           " -- "
+                           " \"Yaoddmuse-Notify\""
+                           " \""
+                           (if (boundp 'msg)
+                               msg "")
+                           "\""))))
 
 (defun yaoddmuse-notify-by-growl (msg)
   "Use program `growl' notify yaoddmuse-message MSG."
