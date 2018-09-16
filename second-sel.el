@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 16 10:35:38 2018 (-0700)
+;; Last-Updated: Sun Sep 16 10:51:59 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 620
+;;     Update #: 625
 ;; URL: https://www.emacswiki.org/emacs/download/second-sel.el
 ;; Doc URL: https://emacswiki.org/emacs/SecondarySelection#second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
@@ -102,6 +102,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/16 dadams
+;;     secondary-save-then-kill-1: If not initiated by mouse then do not extend to full word etc.
+;;                                 (Fourth cond clause is mouse-specific.)
 ;; 2018/03/31 dadams
 ;;     mouse-drag-secondary: Do it with the overlay buffer as current buffer.
 ;; 2018/03/18 dadams
@@ -712,7 +715,9 @@ Interactively, or with non-nil optional arg MSGP, display a message."
              (when msgp (message "Second sel DELETED: %d chars" (abs (- beg end)))))
 
             ;; Otherwise, adjust overlay by moving one end (whichever is closer) to CLICK-POSN.
-            ((and beg  (eq buf (overlay-buffer mouse-secondary-overlay)))
+            ((and (eq this-command 'mouse-secondary-save-then-kill)
+                  beg
+                  (eq buf (overlay-buffer mouse-secondary-overlay)))
              (let ((range  (mouse-start-end position position click-count)))
                (if (< (abs (- position beg)) (abs (- position end)))
                    (move-overlay mouse-secondary-overlay (car range) end)
@@ -726,7 +731,7 @@ Interactively, or with non-nil optional arg MSGP, display a message."
              (setq secondary-selection-save-posn  position)
              (when msgp (second-sel-msg)))
 
-            ;; Otherwise, set secondary selection overlay.
+            ;; Otherwise, set secondary-selection overlay.
             (t
              (select-window win)
              (when mouse-secondary-start
