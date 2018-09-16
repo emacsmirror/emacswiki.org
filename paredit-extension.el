@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008 ~ 2018, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.9
-;; Last-Updated: 2018-09-15 17:52:11
+;; Version: 1.0
+;; Last-Updated: 2018-09-16 10:24:50
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 27.0.50
@@ -44,6 +44,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/16
+;;      * Adjust <% regexp of `paredit-web-mode-kill'.
 ;;
 ;; 2018/09/15
 ;;      * `paredit-web-mode-kill' support rails template now.
@@ -307,7 +310,7 @@ Otherwise, do `paredit-kill'."
              ;; Try continue if nothing change after `web-mode-attribute-kill'.
              (when (equal char-count-before-kill char-count-after-kill)
                ;; Do `paredit-kill' if point at front of <%.
-               (if (looking-at "<%")
+               (if (looking-at "\\(\\s-+<%\\|<%\\)")
                    (paredit-kill)
                  (setq kill-start-point (point))
                  ;; Kill content in <% ... %> if found %> in rest line.
