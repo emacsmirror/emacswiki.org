@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 1.6
-;; Last-Updated: 2018-09-11 11:50:35
+;; Version: 1.8
+;; Last-Updated: 2018-09-17 10:46:13
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,16 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/17
+;;      * Use `ido-completing-read' instead `completing-read' to provide fuzz match.
+;;
+;; 2018/09/15
+;;      * Transferred keyword if use default `color-rg-default-argument'
+;;        Make below transferred for regexp search in ripgrep.
+;;
+;;         "`foo" => "\`foo"
+;;         ""foo" => "\"foo"
 ;;
 ;; 2018/09/11
 ;;      * Switch to literal search automaticity when parsing keyword regexp failed.
@@ -371,18 +381,16 @@ This function is called from `compilation-filter-hook'."
                     `(,(format "finished (%d matches found)\n" color-rg-hit-count) . "matched"))
                    ((not (buffer-modified-p))
                     '("finished with no matches found\n" . "no match"))
-                   (t
-                    (if (string-prefix-p "exited abnormally with code" msg)
-                        ;; Switch to literal search automaticity when parsing keyword regexp failed.
-                        (with-current-buffer color-rg-buffer
-                          (when (search-forward-regexp "^Error parsing regex near" nil t)
-                            (run-at-time "2sec" nil
-                                         (lambda ()
-                                           (message "COLOR-RG: parsing keyword regexp failed, switch to literal search automaticity.")))
-                            (color-rg-rerun-literal t)
-                            ))
-                      (cons msg code))
-                    ))
+                   ((string-prefix-p "exited abnormally with code" msg)
+                    ;; Switch to literal search automaticity when parsing keyword regexp failed.
+                    (with-current-buffer color-rg-buffer
+                      (cond ((search-forward-regexp "^Error parsing regex near" nil t)
+                             (run-at-time "2sec" nil
+                                          (lambda ()
+                                            (message "COLOR-RG: parsing keyword regexp failed, switch to literal search automaticity.")))
+                             (color-rg-rerun-literal t))
+                            )))
+                   (t (cons msg code)))
            (cons msg code)))))
 
 (defun color-rg-update-header-line ()
@@ -398,10 +406,20 @@ This function is called from `compilation-filter-hook'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utils functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun color-rg-search (keyword directory &optional argument)
-  (let* ((rg-argument (or argument
-                          color-rg-default-argument
-                          ))
-         (search-command (format "rg %s \"%s\" %s" rg-argument keyword directory)))
+  (let* ((rg-argument (or argument color-rg-default-argument))
+         (search-command
+          (format "rg %s \"%s\" %s"
+                  rg-argument
+                  ;; Transferred keyword if use default `color-rg-default-argument'
+                  ;; Make below transferred for regexp search in ripgrep.
+                  ;;
+                  ;; "`foo" => "\`foo"
+                  ;; ""foo" => "\"foo"
+                  ;;
+                  (if (equal rg-argument color-rg-default-argument)
+                      (color-rg-transferred-quote keyword)
+                    keyword)
+                  directory)))
     ;; Erase or create search result.
     (if (get-buffer color-rg-buffer)
         (with-current-buffer color-rg-buffer
@@ -429,6 +447,11 @@ This function is called from `compilation-filter-hook'."
     (pop-to-buffer color-rg-buffer)
     (goto-char (point-min))
     ))
+
+(defun color-rg-transferred-quote (text)
+  (setq text (princ (replace-regexp-in-string "\"" "\\\\\"" text)))
+  (setq text (princ (replace-regexp-in-string "`" "\\\\`" text)))
+  text)
 
 (defun color-rg-read-input ()
   (let* ((current-symbol (color-rg-pointer-string))
@@ -623,10 +646,10 @@ This function is called from `compilation-filter-hook'."
         (add-to-list 'file-extensions (file-name-extension filename))))
     (if (< (length file-extensions) 2)
         (message (format "Has one type files now."))
-      (setq filter-extension (completing-read (if match-files
-                                                  "Only display file suffix with: "
-                                                "Remove file suffix with: ")
-                                              file-extensions))
+      (setq filter-extension (ido-completing-read (if match-files
+                                                      "Only display file suffix with: "
+                                                    "Remove file suffix with: ")
+                                                  file-extensions))
       (save-excursion
         (with-current-buffer color-rg-buffer
           (setq remove-counter 0)
@@ -775,10 +798,10 @@ this function a no-op."
         (read-only-mode 1)
         ))))
 
-(defun color-rg-change-search-keyword ()
+(defun color-rg-change-search-keyword (&optional keyword)
   (interactive)
   (with-current-buffer color-rg-buffer
-    (let* ((new-keyword (read-string (format "Re-search with new keyword: ") search-keyword)))
+    (let* ((new-keyword (or keyword (read-string (format "Re-search with new keyword: ") search-keyword))))
       (color-rg-switch-to-view-mode)
       (color-rg-search-input new-keyword search-directory)
       (set (make-local-variable 'search-keyword) new-keyword)
