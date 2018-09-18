@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 14 07:53:25 2018 (-0700)
+;; Last-Updated: Tue Sep 18 13:34:02 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1920
+;;     Update #: 1932
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -64,13 +64,13 @@
 ;;  Commands defined here:
 ;;
 ;;    `zz-add-zone', `zz-add-zone-and-coalesce',
-;;    `zz-add-zone-and-unite', `zz-clone-and-coalesce-zones',
-;;    `zz-clone-and-unite-zones', `zz-clone-zones',
-;;    `zz-coalesce-zones', `zz-delete-zone', `zz-narrow',
-;;    `zz-narrow-repeat', `zz-query-replace-zones' (Emacs 25+),
-;;    `zz-query-replace-regexp-zones' (Emacs 25+), `zz-select-region',
-;;    `zz-select-region-repeat', `zz-set-izones-var',
-;;    `zz-unite-zones'.
+;;    `zz-add-zone-and-unite', `zz-add-zones-from-highlighting',
+;;    `zz-clone-and-coalesce-zones', `zz-clone-and-unite-zones',
+;;    `zz-clone-zones', `zz-coalesce-zones', `zz-delete-zone',
+;;    `zz-narrow', `zz-narrow-repeat', `zz-query-replace-zones' (Emacs
+;;    25+), `zz-query-replace-regexp-zones' (Emacs 25+),
+;;    `zz-select-region', `zz-select-region-repeat',
+;;    `zz-set-izones-var', `zz-unite-zones'.
 ;;
 ;;  User options defined here:
 ;;
@@ -261,6 +261,10 @@
 ;;  * Highlight and unhighlight them.  For this you need library
 ;;    `highlight.el' or library `facemenu+.el' (different kinds of
 ;;    highlighting).
+;;
+;;  * Add zones of highlighted text (overlay or text-property
+;;    highlighting).  For this you need library `highlight.el'.
+;;    (You can highlight many ways, including dragging the mouse.)
 ;;
 ;;  * Add the active region to a list of zones.
 ;;
@@ -457,6 +461,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/09/18 dadams
+;;     Added: zz-add-zones-from-highlighting.
 ;; 2018/05/13 dadams
 ;;     Added: zz-overlays-to-zones, zz-overlay-to-zone, zz-zones-to-overlays, zz-zone-to-overlay,
 ;;            zz-zone-buffer-name, zz-overlay-union.
@@ -1711,6 +1717,79 @@ Non-interactively:
   (zz-add-zone start end variable nil nil msgp)
   (zz-unite-zones variable msgp)
   (symbol-value variable))
+
+(when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
+  (defun zz-add-zones-from-highlighting (&optional start end face only-hlt-face overlay/text face-prop msgp)
+    "Add highlighted areas as zones to izones variable.
+By default, the text used is that highlighted with `hlt-last-face'.
+With a prefix arg you are instead prompted for the face.
+
+The izones variable to use is the value of `zz-izones-var'.  You can
+set this to a different variable anytime using `\\[zz-set-izones-var]'.
+
+All highlighting is checked, both overlays and face text properties.
+
+When called from Lisp:
+
+* Non-nil START and END are the buffer limits to search.
+* Non-nil FACE is the highlighting face to look for.
+* Non-nil ONLY-HLT-FACE means check only `highlight.el' highlighting.
+  (By default, any highlighting is checked.)
+* If OVERLAY/TEXT is `text-prop' then only text-property highlighting
+  is checked. If it is `overlay' then only overlay highlighting is
+  checked.  (If nil then both are checked.)
+* Non-nil FACE-PROP is the face property to check: `font-lock-face' or
+  `face'.  By default (nil), the property to check is `face'."
+    (interactive
+     (progn
+       (unless (require 'highlight nil t) (zz-user-error "You need library `zones.el' to use this command"))
+       `(,@(hlt-region-or-buffer-limits)
+         ,(if current-prefix-arg
+              (hlt-read-bg/face-name "Create zones highlighted with face: ")
+              hlt-last-face)
+         nil nil nil t)))
+    (require 'highlight)
+    (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
+                               (setq start  (car start-end)
+                                     end    (cadr start-end))))
+    (unless face (setq face  hlt-last-face))
+    (let ((hlt-use-overlays-flag     (case overlay/text
+                                       (text-prop  nil) ; Only text property
+                                       (overlay    'only) ; Only overlay
+                                       (t          t))) ; Default: both
+          (hlt-act-on-any-face-flag  (not only-hlt-face))
+          (hlt-face-prop             (or face-prop 'face))
+          (count                     0))
+      (save-excursion
+        (save-window-excursion
+          (goto-char start)
+          (let ((zone-beg  start)
+                zone-end zone)
+            (while (and zone-beg  (< zone-beg end))
+              (setq zone      (hlt-next-highlight zone-beg end face nil nil 'no-error-msg)
+                    zone-beg  (car zone)
+                    zone-end  (cdr zone))
+              ;; Create zone from `zone-beg' to `zone-end' if highlighted.  Add it to zones list.
+              (when hlt-use-overlays-flag
+                (let ((overlays  (overlays-at zone-beg)))
+                  (while overlays
+                    (when (and (or hlt-act-on-any-face-flag
+                                   (equal face (overlay-get (car overlays) 'hlt-highlight)))
+                               (equal face (overlay-get (car overlays) hlt-face-prop)))
+                      (zz-add-zone zone-beg zone-end)
+                      (setq count  (1+ count)))
+                    (when overlays (setq overlays  (cdr overlays))))))
+              (when (and (not (eq hlt-use-overlays-flag 'only))
+                         (or hlt-act-on-any-face-flag  (equal face (get-text-property (point) 'hlt-highlight)))
+                         (let ((pt-faces  (get-text-property (point) hlt-face-prop)))
+                           (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
+                (zz-add-zone zone-beg zone-end)
+                (setq count  (1+ count)))))))
+      (when msgp
+        (case count
+          (0 (message "NO zones added or updated"))
+          (1 (message "1 zone added or updated"))
+          (t (message "%s zones added or updated" count)))))))
 
 
 ;;---------------------
