@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-19 14:05:39
-;; Version: 0.1
-;; Last-Updated: 2018-09-19 14:05:39
+;; Version: 0.2
+;; Last-Updated: 2018-09-19 15:07:46
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/cache-path-from-shell.el
 ;; Keywords:
@@ -71,6 +71,7 @@
 ;;
 ;; 2018/09/19
 ;;      * First released.
+;;      * Disable startup warning of `exec-path-from-shell' default.
 ;;
 
 ;;; Acknowledgements:
@@ -87,6 +88,9 @@
 (require 'exec-path-from-shell)
 
 ;;; Code:
+
+;; We don't need warnings from `exec-path-from-shell'. ;)
+(setq exec-path-from-shell-check-startup-files nil)
 
 (defvar cache-path-from-shell-loaded-p nil)
 
