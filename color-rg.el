@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 1.9
-;; Last-Updated: 2018-09-20 17:32:43
+;; Version: 2.0
+;; Last-Updated: 2018-09-20 20:07:49
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -72,6 +72,7 @@
 ;;      * Display search hit in header line.
 ;;      * Fix `color-rg-replace-all-matches' void variable bug cause by refactor of `color-rg-cur-search'
 ;;      * Clean unused local variables.
+;;      * Get string around point if point in string area and string not include space character.
 ;;
 ;; 2018/09/18
 ;;      * add `color-rg-cur-search' to store parameters of last search.
@@ -509,12 +510,47 @@ CASE-SENSITIVE determinies if search is case-sensitive."
       (setq input-string current-symbol))
     input-string))
 
+(defun color-rg-current-parse-state ()
+  "Return parse state of point from beginning of defun."
+  (let ((point (point)))
+    (beginning-of-defun)
+    (parse-partial-sexp (point) point)))
+
+(defun color-rg-in-string-p (&optional state)
+  "True if the parse state is within a double-quote-delimited string.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point."
+  (and (nth 3 (or state (color-rg-current-parse-state)))
+       t))
+
+(defun color-rg-string-start+end-points (&optional state)
+  "Return a cons of the points of open and close quotes of the string.
+The string is determined from the parse state STATE, or the parse state
+  from the beginning of the defun to the point.
+This assumes that `color-rg-in-string-p' has already returned true, i.e.
+  that the point is already within a string."
+  (save-excursion
+    (let ((start (nth 8 (or state (color-rg-current-parse-state)))))
+      (goto-char start)
+      (forward-sexp 1)
+      (cons start (1- (point))))))
+
 (defun color-rg-pointer-string ()
   (if (use-region-p)
       ;; Get region string if mark is set.
       (buffer-substring-no-properties (region-beginning) (region-end))
-    ;; Get current symbol but remove prefix char before return.
-    (let ((current-symbol (thing-at-point 'symbol)))
+    ;; Get current symbol or string, and remove prefix char before return.
+    (let* ((current-string (if (color-rg-in-string-p)
+                               (buffer-substring-no-properties
+                                (1+ (car (color-rg-string-start+end-points)))
+                                (cdr (color-rg-string-start+end-points)))
+                             ""))
+           (current-symbol (if (or (string-empty-p current-string)
+                                   (string-match-p "[[:space:]]" current-string))
+                               ;; Get symbol around point if string around point is empty or include spaces.
+                               (thing-at-point 'symbol)
+                             ;; Otherwise, get string around point.
+                             current-string)))
       (cond ((string-prefix-p "." current-symbol)
              (string-remove-prefix "." current-symbol))
             ((string-prefix-p "#" current-symbol)
