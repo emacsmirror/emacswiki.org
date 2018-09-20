@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 1.8
-;; Last-Updated: 2018-09-17 10:46:13
+;; Version: 1.9
+;; Last-Updated: 2018-09-20 17:32:43
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,20 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/20
+;;      * Display search hit in header line.
+;;      * Fix `color-rg-replace-all-matches' void variable bug cause by refactor of `color-rg-cur-search'
+;;      * Clean unused local variables.
+;;
+;; 2018/09/18
+;;      * add `color-rg-cur-search' to store parameters of last search.
+;;      * rewrite `color-rg-rerun-toggle-ignore', `color-rg-rerun-literal',
+;;        `color-rg-rerun-toggle-case', `color-rg-rerun-regexp' and
+;;        `color-rg-rerun-change-dir'
+;;      * use `grep-expand-template' to expand keyword, we do not to care about
+;;        escaping special characters now.
+;;      * remove `color-rg-default-argument'
 ;;
 ;; 2018/09/17
 ;;      * Use `ido-completing-read' instead `completing-read' to provide fuzz match.
@@ -140,11 +154,6 @@
 
 (defcustom color-rg-temp-buffer " *color-rg temp* "
   "The buffer name of clone temp buffer"
-  :type 'string
-  :group 'color-rg)
-
-(defcustom color-rg-default-argument "--column --color=always --smart-case --regexp"
-  "The default search argument to ripgrep."
   :type 'string
   :group 'color-rg)
 
@@ -260,6 +269,8 @@ used to restore window configuration after apply changed.")
 (defvar color-rg-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-a") 'color-rg-beginning-of-line)
+    (define-key map (kbd "<tab>") 'color-rg-jump-next-keyword)
+    (define-key map (kbd "<backtab>") 'color-rg-jump-prev-keyword)
 
     (define-key map (kbd "j") 'color-rg-jump-next-keyword)
     (define-key map (kbd "k") 'color-rg-jump-prev-keyword)
@@ -275,11 +286,13 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "x") 'color-rg-filter-match-files)
     (define-key map (kbd "X") 'color-rg-filter-mismatch-files)
     (define-key map (kbd "D") 'color-rg-remove-line-from-results)
-    (define-key map (kbd "i") 'color-rg-rerun-no-ignore)
+
+    (define-key map (kbd "i") 'color-rg-rerun-toggle-ignore)
     (define-key map (kbd "t") 'color-rg-rerun-literal)
-    (define-key map (kbd "c") 'color-rg-rerun-case-senstive)
-    (define-key map (kbd "s") 'color-rg-change-search-keyword)
-    (define-key map (kbd "d") 'color-rg-change-search-directory)
+    (define-key map (kbd "c") 'color-rg-rerun-toggle-case)
+    (define-key map (kbd "s") 'color-rg-rerun-regexp)
+    (define-key map (kbd "d") 'color-rg-rerun-change-dir)
+
     (define-key map (kbd "e") 'color-rg-switch-to-edit-mode)
     (define-key map (kbd "q") 'color-rg-quit)
     map)
@@ -361,7 +374,9 @@ This function is called from `compilation-filter-hook'."
           (replace-match (propertize (match-string 1)
                                      'face nil 'font-lock-face 'color-rg-font-lock-match)
                          t t)
-          (setq color-rg-hit-count (+ color-rg-hit-count 1)))
+          (setq color-rg-hit-count (+ color-rg-hit-count 1))
+          (color-rg-update-header-line)
+          )
 
         ;; Delete all remaining escape sequences
         (goto-char beg)
@@ -394,32 +409,66 @@ This function is called from `compilation-filter-hook'."
            (cons msg code)))))
 
 (defun color-rg-update-header-line ()
-  (setq header-line-format (format "%s%s%s%s%s%s"
-                                   (propertize "[COLOR-RG] Search '" 'font-lock-face 'color-rg-font-lock-header-line-text)
-                                   (propertize search-keyword 'font-lock-face 'color-rg-font-lock-header-line-keyword)
-                                   (propertize "' in directory: " 'font-lock-face 'color-rg-font-lock-header-line-text)
-                                   (propertize search-directory 'font-lock-face 'color-rg-font-lock-header-line-directory)
-                                   (propertize " Mode: " 'font-lock-face 'color-rg-font-lock-header-line-text)
-                                   (propertize edit-mode 'font-lock-face 'color-rg-font-lock-header-line-edit-mode)
-                                   ))
+  (setq header-line-format (concat
+                            (propertize "[COLOR-RG] Search '" 'font-lock-face 'color-rg-font-lock-header-line-text)
+                            (propertize (format "%s" (color-rg-search-keyword color-rg-cur-search)) 'font-lock-face 'color-rg-font-lock-header-line-keyword)
+                            (propertize "' in directory: " 'font-lock-face 'color-rg-font-lock-header-line-text)
+                            (propertize (format "%s" (color-rg-search-dir color-rg-cur-search)) 'font-lock-face 'color-rg-font-lock-header-line-directory)
+                            (propertize " Mode: " 'font-lock-face 'color-rg-font-lock-header-line-text)
+                            (propertize (format "%s" (color-rg-search-mode color-rg-cur-search)) 'font-lock-face 'color-rg-font-lock-header-line-edit-mode)
+                            (propertize " Hits: " 'font-lock-face 'color-rg-font-lock-header-line-text)
+                            (propertize (format "%s" color-rg-hit-count) 'font-lock-face 'color-rg-font-lock-header-line-edit-mode)
+                            )))
+
+(cl-defstruct (color-rg-search (:constructor color-rg-search-create)
+                               (:constructor color-rg-search-new (pattern dir))
+                               (:copier nil))
+  keyword                               ; search keyword
+  dir                                   ; base directory
+  literal                               ; literal patterh (t or nil)
+  case-sensitive                        ; case-sensitive (t or nil)
+  no-ignore                             ; toggle no-ignore (t or nil)
+  mode                                  ; view or edit mode
   )
 
+(defvar color-rg-cur-search (color-rg-search-create)
+  "Stores parameters of last search.
+Becomes buffer local in `color-rg-mode' buffers.")
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utils functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun color-rg-search (keyword directory &optional argument)
-  (let* ((rg-argument (or argument color-rg-default-argument))
-         (search-command
-          (format "rg %s \"%s\" %s"
-                  rg-argument
-                  ;; Transferred keyword if use default `color-rg-default-argument'
-                  ;; Make below transferred for regexp search in ripgrep.
-                  ;;
-                  ;; "`foo" => "\`foo"
-                  ;; ""foo" => "\"foo"
-                  ;;
-                  (if (equal rg-argument color-rg-default-argument)
-                      (color-rg-transferred-quote keyword)
-                    keyword)
-                  directory)))
+
+(defun color-rg-build-command (keyword dir &optional literal no-ignore case-sensitive)
+  "Create the command line for KEYWORD.
+LITERAL determines if search will be literal or regexp based.
+NO-IGNORE determinies if search not ignore the ignored files.
+CASE-SENSITIVE determinies if search is case-sensitive."
+  (let ((command-line
+         (append
+
+          (list "--column --color=always")
+
+          (when no-ignore
+            (list "--no-ignore"))
+
+          (if case-sensitive
+              (list "--case-sensitive")
+            (list "--smart-case"))
+
+          (when literal
+            (list "--fixed-strings"))
+
+          (list "-e <R>" dir))))
+
+    (grep-expand-template
+     (mapconcat 'identity (cons "rg" (delete-dups command-line)) " ")
+     keyword
+     )))
+
+(defun color-rg-search (keyword directory &optional literal no-ignore case-sensitive)
+  (let* ((command (color-rg-build-command keyword directory literal no-ignore case-sensitive)))
+    ;; Reset hit count.
+    (setq color-rg-hit-count 0)
     ;; Erase or create search result.
     (if (get-buffer color-rg-buffer)
         (with-current-buffer color-rg-buffer
@@ -431,27 +480,27 @@ This function is called from `compilation-filter-hook'."
             (erase-buffer)))
       (generate-new-buffer color-rg-buffer))
     (setq color-rg-changed-lines nil)
+
     ;; Run search command.
     (with-current-buffer color-rg-buffer
       ;; Start command.
-      (compilation-start search-command 'color-rg-mode)
-      ;; Set header line.
-      (set (make-local-variable 'search-argument) rg-argument)
-      (set (make-local-variable 'search-keyword) keyword)
-      (set (make-local-variable 'search-directory) directory)
-      (set (make-local-variable 'default-directory) directory)
-      (set (make-local-variable 'edit-mode) "View")
-      (color-rg-update-header-line)
-      )
+      (compilation-start command 'color-rg-mode)
+
+      ;; save last search
+      (setq-default color-rg-cur-search
+                    (color-rg-search-create
+                     :keyword keyword
+                     :dir directory
+                     :no-ignore no-ignore
+                     :literal literal
+                     :case-sensitive case-sensitive
+                     :mode "View"))
+      (color-rg-update-header-line))
+
     ;; Pop search buffer.
     (pop-to-buffer color-rg-buffer)
     (goto-char (point-min))
     ))
-
-(defun color-rg-transferred-quote (text)
-  (setq text (princ (replace-regexp-in-string "\"" "\\\\\"" text)))
-  (setq text (princ (replace-regexp-in-string "`" "\\\\`" text)))
-  text)
 
 (defun color-rg-read-input ()
   (let* ((current-symbol (color-rg-pointer-string))
@@ -605,7 +654,7 @@ This function is called from `compilation-filter-hook'."
     (read-only-mode 1)
     (use-local-map color-rg-mode-map)
     (kill-local-variable 'query-replace-skip-read-only)
-    (set (make-local-variable 'edit-mode) "View")
+    (setf (color-rg-search-mode color-rg-cur-search) "View")
     (color-rg-update-header-line)
     ))
 
@@ -728,19 +777,14 @@ this function a no-op."
   (setq color-rg-search-counter (+ 1 color-rg-search-counter))
   ;; Set `enable-local-variables' to :safe, avoid emacs ask annoyingly question when open file by color-rg.
   (setq enable-local-variables :safe)
-  ;; Reset hit count.
-  (setq color-rg-hit-count 0)
   ;; Search.
   (let* ((search-keyboard
           (or keyword
               (color-rg-read-input)))
          (search-directory
           (or directory
-              default-directory))
-         (search-argument
-          (or argument
-              color-rg-default-argument)))
-    (color-rg-search search-keyboard search-directory search-argument)))
+              default-directory)))
+    (color-rg-search search-keyboard search-directory)))
 
 (defun color-rg-search-symbol ()
   (interactive)
@@ -761,13 +805,13 @@ this function a no-op."
   (interactive)
   (save-excursion
     (with-current-buffer color-rg-buffer
-      (let* ((replace-text (read-string (format "Replace '%s' all matches with: " search-keyword) search-keyword)))
+      (let* ((search-keyword (color-rg-search-keyword color-rg-cur-search))
+             (replace-text (read-string (format "Replace '%s' all matches with: " search-keyword) search-keyword)))
         (color-rg-switch-to-edit-mode)
         (query-replace search-keyword replace-text nil (point-min) (point-max))
         (color-rg-apply-changed)
         (color-rg-switch-to-view-mode)
-        ;; Set search keyword with new replace text.
-        (set (make-local-variable 'search-keyword) replace-text)
+        (setf (color-rg-search-keyword color-rg-cur-search) replace-text)
         ))))
 
 (defun color-rg-filter-match-results ()
@@ -798,115 +842,85 @@ this function a no-op."
         (read-only-mode 1)
         ))))
 
-(defun color-rg-change-search-keyword (&optional keyword)
+(defun color-rg-recompile ()
+  "Run `recompile' while preserving some buffer local variables."
   (interactive)
-  (with-current-buffer color-rg-buffer
-    (let* ((new-keyword (or keyword (read-string (format "Re-search with new keyword: ") search-keyword))))
-      (color-rg-switch-to-view-mode)
-      (color-rg-search-input new-keyword search-directory)
-      (set (make-local-variable 'search-keyword) new-keyword)
-      (set (make-local-variable 'search-argument) color-rg-default-argument)
-      )))
+  ;; Buffer locals will be reset in recompile so we need save them
+  ;; here.
+  (let ((cur-search color-rg-cur-search))
+    (recompile)
+    (setq color-rg-cur-search cur-search)))
 
-(defun color-rg-literal-search-helper (search-argument)
-  (if (cl-search (regexp-quote "--fixed-strings") search-argument)
-      t
-    nil))
-
-(defun color-rg-literal-string-escape (string)
-  "escape double quote and backslash."
-  (replace-regexp-in-string (regexp-quote "\"") "\\\\\""
-                            (replace-regexp-in-string (regexp-quote "\\") "\\\\\\\\"
-                                                      string)
-                            ))
-
-(defun color-rg-change-search-directory ()
+(defun color-rg-rerun ()
+  "Run `color-rg-recompile' with `compilation-arguments' taken
+from `color-rg-cur-search'."
   (interactive)
-  (with-current-buffer color-rg-buffer
-    (let* ((new-directory (read-file-name (format "Re-search with new directory: ") search-directory))
-           (unused (if (not (file-exists-p new-directory))
-                       (error "directory not exist")))
-           (original-keyword search-keyword)
-           (literal-search (color-rg-literal-search-helper search-argument))
-           (new-keyword (if literal-search
-                            (color-rg-literal-string-escape search-keyword)
-                          original-keyword)))
-      (color-rg-switch-to-view-mode)
-      (set (make-local-variable 'default-directory) new-directory)
-      (color-rg-search-input new-keyword new-directory search-argument)
-      (set (make-local-variable 'search-directory) new-directory)
-      (set (make-local-variable 'search-keyword) original-keyword)
-      )))
+  (let ((keyword (color-rg-search-keyword color-rg-cur-search))
+        (dir (color-rg-search-dir color-rg-cur-search))
+        (literal (color-rg-search-literal color-rg-cur-search))
+        (case-sensitive (color-rg-search-case-sensitive color-rg-cur-search))
+        (no-ignore (color-rg-search-no-ignore color-rg-cur-search)))
+    (setcar compilation-arguments
+            (color-rg-build-command keyword dir literal no-ignore case-sensitive))
+    ;; Reset hit count.
+    (setq color-rg-hit-count 0)
 
-(defun color-rg-change-search-customized ()
+    ;; compilation-directory is used as search dir and
+    ;; default-directory is used as the base for file paths.
+    (setq compilation-directory dir)
+    (setq default-directory compilation-directory)
+    (color-rg-recompile)
+    (color-rg-update-header-line)
+    (pop-to-buffer color-rg-buffer)
+    (goto-char (point-min))
+    ))
+
+(defun color-rg-rerun-regexp (&optional keyword)
+  "Re-search as regexp."
   (interactive)
-  (with-current-buffer color-rg-buffer
-    (let* ((new-argument (read-string (format "Re-search with new argument: ") search-argument)))
-      (color-rg-switch-to-view-mode)
-      (color-rg-search-input search-keyword search-directory new-argument)
-      (set (make-local-variable 'search-argument) new-argument)
-      )))
+  (setf (color-rg-search-keyword color-rg-cur-search)
+        (read-string (format "Re-search with new keyword: ")
+                     (color-rg-search-keyword color-rg-cur-search)))
+  (setf (color-rg-search-literal color-rg-cur-search) nil)
+  (color-rg-rerun))
 
+(defun color-rg-rerun-change-dir ()
+  "rerun last command but prompt for new dir."
+  (interactive)
+  (setf (color-rg-search-dir color-rg-cur-search)
+        (read-directory-name "In directory: "
+                             (color-rg-search-dir color-rg-cur-search) nil))
+  (color-rg-rerun))
 
 (defun color-rg-rerun-literal (&optional nointeractive)
+  "Re-search as literal."
   (interactive)
-  (with-current-buffer color-rg-buffer
-    (let* (
-           (new-argument (cond ((cl-search (regexp-quote "--regexp") search-argument)
-                                (replace-regexp-in-string (regexp-quote "--regexp") "--fixed-strings" search-argument))
-                               ((cl-search (regexp-quote "--fixed-strings") search-argument)
-                                search-argument)
-                               (t
-                                (replace-regexp-in-string (regexp-quote "--regexp") "--fixed-strings" color-rg-default-argument))
-                               ))
-           (input-keyword (if nointeractive
-                              search-keyword
-                            (read-string (format "Re-search with literal: ") search-keyword)))
-           (literal-keyword
-            (color-rg-literal-string-escape input-keyword)))
+  (setf (color-rg-search-literal color-rg-cur-search)
+        t)
+  (if nointeractive
+      (color-rg-rerun)
+    (progn
+      (setf (color-rg-search-keyword color-rg-cur-search)
+            (read-string "Re-search with-literal: "
+                         (color-rg-search-keyword color-rg-cur-search)))
+      (color-rg-rerun))))
 
-      (color-rg-switch-to-view-mode)
-      (color-rg-search-input literal-keyword search-directory new-argument)
-      (set (make-local-variable 'search-argument) new-argument)
-      (set (make-local-variable 'search-keyword) input-keyword)
-      )))
-
-(defun color-rg-rerun-no-ignore ()
+(defun color-rg-rerun-toggle-case ()
+  "Rerun last search with toggled case sensitivity setting."
   (interactive)
-  (with-current-buffer color-rg-buffer
-    (let* ((new-argument (if (cl-search (regexp-quote "--no-ignore") search-argument)
-                             (replace-regexp-in-string (regexp-quote "--no-ignore ") "" search-argument)
-                           (concat "--no-ignore " search-argument)))
-           (original-keyword search-keyword)
-           (literal-search (color-rg-literal-search-helper new-argument))
-           (new-keyword (if literal-search
-                            (color-rg-literal-string-escape search-keyword)
-                          original-keyword)))
-      (color-rg-switch-to-view-mode)
-      (color-rg-search-input new-keyword search-directory new-argument)
-      (set (make-local-variable 'search-argument) new-argument)
-      (set (make-local-variable 'search-keyword) original-keyword)
-      )))
+  (let ((case-sensitive (not (color-rg-search-case-sensitive color-rg-cur-search))))
 
-(defun color-rg-rerun-case-senstive ()
+    (setf (color-rg-search-case-sensitive color-rg-cur-search)
+          case-sensitive)
+    (color-rg-rerun)))
+
+(defun color-rg-rerun-toggle-ignore ()
+  "Rerun last search with toggled '--no-ignore' flag."
   (interactive)
-  (with-current-buffer color-rg-buffer
-    (let* ((new-argument (cond ((cl-search (regexp-quote "--smart-case") search-argument)
-                                (replace-regexp-in-string (regexp-quote "--smart-case") "--case-sensitive" search-argument))
-                               ((cl-search (regexp-quote "--case-sensitive") search-argument)
-                                (replace-regexp-in-string (regexp-quote "--case-sensitive") "--smart-case" search-argument))
-                               (t color-rg-default-argument)))
-           (original-keyword search-keyword)
-           (literal-search (color-rg-literal-search-helper new-argument))
-           (new-keyword (if literal-search
-                            (color-rg-literal-string-escape search-keyword)
-                          original-keyword))
-           )
-      (color-rg-switch-to-view-mode)
-      (color-rg-search-input new-keyword search-directory new-argument)
-      (set (make-local-variable 'search-argument) new-argument)
-      (set (make-local-variable 'search-keyword) original-keyword)
-      )))
+  (let ((ignore (not (color-rg-search-no-ignore color-rg-cur-search))))
+    (setf (color-rg-search-no-ignore color-rg-cur-search)
+          ignore)
+    (color-rg-rerun)))
 
 (defun isearch-toggle-color-rg ()
   "toggle `color-rg' in isearch-mode."
@@ -1019,7 +1033,8 @@ this function a no-op."
   ;; Clone content to temp buffer.
   (color-rg-clone-to-temp-buffer)
   ;; Update header-line.
-  (set (make-local-variable 'edit-mode) "Edit")
+  (setf (color-rg-search-mode color-rg-cur-search) "Edit")
+
   ;; Set `query-replace-skip-read-only' to avoid read-only error when do `query-replace'.
   (set (make-local-variable 'query-replace-skip-read-only) t)
   (color-rg-update-header-line)
@@ -1049,8 +1064,7 @@ this function a no-op."
   ;; Add change monitor.
   (add-hook 'after-change-functions 'color-rg-after-change-function nil t)
   ;; Message to user.
-  (message "Switch to edit mode")
-  )
+  (message "Switch to edit mode"))
 
 (defun color-rg-quit ()
   (interactive)
@@ -1093,22 +1107,12 @@ this function a no-op."
   (save-excursion
     (with-current-buffer color-rg-buffer
       (let ((inhibit-read-only t))
-        ;; Save local variables.
-        (setq current-edit-mode edit-mode)
-        (setq current-search-argument search-argument)
-        (setq current-search-keyword search-keyword)
-        (setq current-search-directory search-directory)
         ;; Recover buffer content from temp buffer.
         (color-rg-mode) ; switch to `color-rg-mode' first, otherwise `erase-buffer' will cause "save-excursion: end of buffer" error.
         (read-only-mode -1)
         (erase-buffer)
         (insert (with-current-buffer color-rg-temp-buffer
                   (buffer-substring (point-min) (point-max))))
-        ;; Restore local variables.
-        (set (make-local-variable 'search-argument) current-search-argument)
-        (set (make-local-variable 'search-keyword) current-search-keyword)
-        (set (make-local-variable 'search-directory) current-search-directory)
-        (set (make-local-variable 'edit-mode) current-edit-mode)
         ;; Switch to edit mode.
         (color-rg-switch-to-edit-mode)
         ))))
