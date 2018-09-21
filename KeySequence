@@ -1,3 +1,4 @@
+[[de:tagalog]]
 A '''[::key]''', or more properly a '''[::key sequence]''', is similar to what is sometimes called a keyboard ''shortcut'' in other editors. However, in Emacs:
 
 * A key sequence can be short for any [[Command | command]] or [[KeyboardMacros | keyboard macro]]; it is not necessarily short for a menu item.
