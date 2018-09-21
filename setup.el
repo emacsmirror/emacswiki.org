@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:43:17 2018 (-0800)
+;; Last-Updated: Fri Sep 21 15:39:37 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 800
+;;     Update #: 803
 ;; URL: https://www.emacswiki.org/emacs/download/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     Turn on mlw-mode-line-buf-id-sel-win-mode after modeline-win is loaded.
 ;; 2017/10/11 dadams
 ;;     Do not turn on icomplete-mode.
 ;; 2015/09/27 dadams
@@ -173,6 +175,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (eval-after-load "pp-c-l" '(pretty-control-l-mode 1)) ; Turn on pretty display of `^L'.
+
+;; Highlight buffer name in mode-line of selected window.
+(eval-after-load "modeline-win" '(mlw-mode-line-buf-id-sel-win-mode))
 
 ;; One-on-One Emacs - see `oneonone.el'.
 (eval-after-load "oneonone"
