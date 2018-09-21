@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Sep  9 09:44:21 2018 (-0700)
+;; Last-Updated: Fri Sep 21 14:55:42 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11844
+;;     Update #: 11852
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2018/09/21 dadams
+;;     icicle-bbdb-complete-name, icicle-bookmark-jump-1, icicle-buffer(-no-search)
+;;       icicle-visit-marked-file-of-content-1:
+;;         Use icicle--pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2018/06/29 dadams
 ;;     icicle-pp-eval-expression: Ensure not just (boundp 'lexical-binding) but also Emacs 24+.
 ;; 2018/06/21 dadams
@@ -2304,6 +2308,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2018/09/21 dadams
+;;     Added: icicle--pop-to-buffer-same-window.
+;;     icicle-try-switch-buffer: Use icicle--pop-to-buffer-same-window.
 ;; 2018/06/01 dadams
 ;;     icicle-filter-wo-input: Protect against improper default value passed to completing-read.
 ;; 2018/03/03 dadams
