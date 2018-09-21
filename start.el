@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:52:42 2018 (-0800)
+;; Last-Updated: Fri Sep 21 15:27:39 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3078
+;;     Update #: 3087
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -31,12 +31,12 @@
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `em-joc', `emacsbug',
 ;;   `eshell-auto', `eyedropper', `facemenu', `facemenu+', `faces',
 ;;   `faces+', `ffap', `files+', `find-dired', `find-dired+',
-;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
-;;   `header2', `help+20', `hexrgb', `highlight', `highlight-chars',
-;;   `image-dired', `image-file', `imenu', `imenu+', `info',
-;;   `info+20', `isearch+', `iso-transl', `kmacro', `lacarte',
-;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `find-where', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
+;;   `fuzzy-match', `header2', `help+20', `hexrgb', `highlight',
+;;   `highlight-chars', `image-dired', `image-file', `imenu',
+;;   `imenu+', `info', `info+20', `isearch+', `iso-transl', `kmacro',
+;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
@@ -84,8 +84,10 @@
 ;;
 ;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     Require modeline-win.el, modeline-char.el.
 ;; 2017/10/11 dadams
-;;    Load icomplete+.el only if icomplete.el is loaded.
+;;     Load icomplete+.el only if icomplete.el is loaded.
 ;; 2017/06/18 dadams
 ;;     Autoload apropos+ for apropos-local-variable and apropos-local-value.
 ;; 2016/07/01 dadams
@@ -461,8 +463,12 @@
 
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'oneonone nil t))            ; Default frame configuration.
-(when (boundp 'mode-line-position)      ; Emacs 22+ - Mode line position highlighting.
+(when (boundp 'mode-line-position)      ; Emacs 22+ - Mode-line highlighting of position and size.
   (require 'modeline-posn nil t))
+(when (boundp 'pre-redisplay-function)  ; Emacs 24.4+ - Mode-line Highlight of selected window bufname.
+  (require 'modeline-win nil t))
+(when (> emacs-major-version 21)        ; Emacs 22+ - Mode-line current-character info.
+  (require 'modeline-char nil t))
 (require 'window+ nil t)                ; Corrections.
 (unless (featurep 'window+) (require 'frame+ nil t)) ; Corrections.
 ;; (require 'apropos)                      ; My version.
