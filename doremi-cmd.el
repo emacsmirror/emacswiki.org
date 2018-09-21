@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Mon Jan  1 11:01:31 2018 (-0800)
+;; Last-Updated: Fri Sep 21 13:47:27 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 510
+;;     Update #: 521
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-cmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -90,9 +90,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `doremi-buffers-1', `doremi-color-themes-1',
-;;    `doremi-custom-themes-1' (Emacs 24+), `doremi-global-marks-1',
-;;    `doremi-marks-1', `doremi-windows-1'.
+;;    `doremi--pop-to-buffer-same-window', `doremi-buffers-1',
+;;    `doremi-color-themes-1', `doremi-custom-themes-1' (Emacs 24+),
+;;    `doremi-global-marks-1', `doremi-marks-1', `doremi-windows-1'.
 ;;
 ;;
 ;;  Add this to your initialization file (~/.emacs or ~/_emacs):
@@ -154,6 +154,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     Added: doremi--pop-to-buffer-same-window.
+;;     doremi-buffers+, doremi-buffers-1, doremi-global-marks+:
+;;       Use idoremi--pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2016/05/12 dadams
 ;;     Added: doremi-window+, doremi-windows-1.
 ;; 2013/10/27 dadams
@@ -461,11 +465,12 @@ You can use `C-g' to quit and return to the original buffer."
   (let ((curr-buff  (current-buffer)))
     (condition-case nil
         (doremi-buffers-1)
-      (quit (switch-to-buffer curr-buff)))))
+      (quit (doremi--pop-to-buffer-same-window curr-buff)))))
 
 (defun doremi-buffers-1 ()
   "Helper-function for `doremi-buffers+'."
-  (doremi (lambda (newval) (switch-to-buffer newval 'norecord) newval)
+  (doremi (lambda (newval)
+            (doremi--pop-to-buffer-same-window newval 'norecord) newval)
           (current-buffer)
           nil                           ; ignored
           nil                           ; ignored
@@ -511,7 +516,7 @@ position temporarily."
        (let ((curr-pos  (point-marker)))
          (condition-case nil
              (doremi-global-marks-1)
-           (quit (switch-to-buffer (marker-buffer curr-pos))
+           (quit (doremi--pop-to-buffer-same-window (marker-buffer curr-pos))
                  (goto-char curr-pos))))
     (when (fboundp 'crosshairs-unhighlight)
       (crosshairs-unhighlight 'even-if-frame-switch))))
@@ -579,6 +584,10 @@ WINDOW is selected.  WINDOW defaults to the selected window."
             nil
             nil
             (reverse (window-list)))))
+
+(if (fboundp 'pop-to-buffer-same-window)
+    (defalias 'doremi--pop-to-buffer-same-window 'pop-to-buffer-same-window)
+  (defalias 'doremi--pop-to-buffer-same-window 'switch-to-buffer))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
