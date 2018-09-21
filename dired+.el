@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 14 15:16:01 2018 (-0700)
+;; Last-Updated: Fri Sep 21 13:34:41 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10989
+;;     Update #: 10994
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -777,6 +777,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     diredp-image-dired-edit-comment-and-tags, diredp-w32-drives:
+;;       Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2018/09/14 dadams
 ;;     Added: diredp-move-file-dirs, diredp-move-file.
 ;; 2018/06/30 dadams
@@ -3185,7 +3188,9 @@ Uses `image-dired-get-exif-file-name' to name the new file."
   (interactive (progn (diredp-image-dired-required-msg) ()))
   (setq image-dired-widget-list  ())
   (let ((file  (dired-get-filename)))
-    (switch-to-buffer "*Image-Dired Edit Meta Data*")
+    (if (fboundp 'pop-to-buffer-same-window)
+        (pop-to-buffer-same-window "*Image-Dired Edit Meta Data*")
+      (switch-to-buffer "*Image-Dired Edit Meta Data*"))
     (kill-all-local-variables)
     (make-local-variable 'widget-example-repeat)
     (let ((inhibit-read-only  t))
@@ -3657,7 +3662,9 @@ In particular, inode number, number of hard links, and file size."
 ;;;   (when (consp arg)
 ;;;     (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
 ;;;       (when buf (kill-buffer buf))))
-;;;   (switch-to-buffer (dired-noselect arg switches)))
+;;;   (if (fboundp 'pop-to-buffer-same-window)
+;;;       (pop-to-buffer-same-window (dired-noselect arg switches))
+;;;     (switch-to-buffer (dired-noselect arg switches))))
 
 ;;; (defun diredp-dired-files-other-window (arg &optional switches) ; Not bound
 ;;;   "Same as `diredp-dired-files' except uses another window."
@@ -7591,7 +7598,9 @@ Note: When you are in Dired at the root of a drive (e.g. directory
           (setq drive  (cons (split-string (match-string 0)) drive))))
       (if other-window-p
           (pop-to-buffer "*Windows Drives*")
-        (switch-to-buffer "*Windows Drives*"))
+        (if (fboundp 'pop-to-buffer-same-window)
+            (pop-to-buffer-same-window "*Windows Drives*")
+          (switch-to-buffer "*Windows Drives*")))
       (erase-buffer)
       (widget-minor-mode 1)
       (dolist (drv  (sort drive (lambda (a b) (string-lessp (car a) (car b)))))
