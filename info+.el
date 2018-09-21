@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  9 16:02:04 2018 (-0700)
+;; Last-Updated: Fri Sep 21 15:14:21 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6399
+;;     Update #: 6407
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -121,8 +121,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `Info-bookmark-for-node', `Info-bookmark-name-at-point',
-;;    `Info-bookmark-named-at-point', `Info-bookmark-name-for-node',
+;;    `Info--pop-to-buffer-same-window', `Info-bookmark-for-node',
+;;    `Info-bookmark-name-at-point', `Info-bookmark-named-at-point',
+;;    `Info-bookmark-name-for-node',
 ;;    `Info-display-node-default-header', `info-fontify-quotations',
 ;;    `info-fontify-reference-items',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
@@ -465,6 +466,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     Added: Info--pop-to-buffer-same-window.
+;;     Info-find-node, Info-(next|prev|up), info-display-manual: Use Info--pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2018/09/09 dadams
 ;;     Added: redefinitions of Info-backward-node, Info-directory, Info-forward-node, Info-history-back, Info-history-forward,
 ;;            Info-next, Info-prev, Info-up.
@@ -2795,7 +2799,7 @@ Non-nil NOMSG means do not show a status message."
   (info-initialize)
   (setq filename  (Info-find-file filename))
   ;; Go into Info buffer.
-  (or (eq major-mode 'Info-mode)  (switch-to-buffer "*info*"))
+  (or (eq major-mode 'Info-mode)  (Info--pop-to-buffer-same-window "*info*"))
   ;; Record the node we are leaving, if we were in one.
   (and (not no-going-back)
        Info-current-file
@@ -4879,7 +4883,7 @@ If FORK is non-nil (interactively with a prefix arg), show the node in
 a new Info buffer.
 If FORK is a string, it is the name to use for the new buffer."
   (interactive "P")
-  (unless (derived-mode-p 'Info-mode) (switch-to-buffer "*info*"))
+  (unless (derived-mode-p 'Info-mode) (Info--pop-to-buffer-same-window "*info*"))
   (Info-goto-node (Info-extract-pointer "next") fork))
 
 
@@ -4892,7 +4896,7 @@ If FORK is non-nil (interactively with a prefix arg), show the node in
 a new Info buffer.
 If FORK is a string, it is the name to use for the new buffer."
   (interactive "P")
-  (unless (derived-mode-p 'Info-mode) (switch-to-buffer "*info*"))
+  (unless (derived-mode-p 'Info-mode) (Info--pop-to-buffer-same-window "*info*"))
   (Info-goto-node (Info-extract-pointer "prev[ious]*" "previous") fork))
 
 
@@ -4906,7 +4910,7 @@ If FORK is non-nil (interactively with a prefix arg), show the node in
 a new Info buffer.
 If FORK is a string, it is the name to use for the new buffer."
   (interactive "i\nP")
-  (unless (derived-mode-p 'Info-mode) (switch-to-buffer "*info*"))
+  (unless (derived-mode-p 'Info-mode) (Info--pop-to-buffer-same-window "*info*"))
   (let ((old-node  Info-current-node)
         (old-file  Info-current-file)
         (node      (Info-extract-pointer "up"))
@@ -5290,7 +5294,7 @@ currently visited manuals."
           (setq found  buffer
                 blist  ()))))
     (if found
-        (switch-to-buffer found)
+        (Info--pop-to-buffer-same-window found)
       (info-initialize)
       (info (Info-find-file manual)))))
  
@@ -5400,6 +5404,10 @@ See `Info-bookmark-name-for-node' for the form of the bookmark name."
           (when Info-fontify-visited-nodes (Info-fontify-node))))))
 
   )
+
+(if (fboundp 'pop-to-buffer-same-window)
+    (defalias 'Info--pop-to-buffer-same-window 'pop-to-buffer-same-window)
+  (defalias 'Info--pop-to-buffer-same-window 'switch-to-buffer))
 
 ;;; ;; Not currently used.
 ;;; (defun Info-display-node-time-header ()
