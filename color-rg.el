@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.0
-;; Last-Updated: 2018-09-20 20:07:49
+;; Version: 2.1
+;; Last-Updated: 2018-09-21 09:56:08
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/21
+;;      * Add `color-rg-delete-all-lines'
 ;;
 ;; 2018/09/20
 ;;      * Display search hit in header line.
@@ -310,6 +313,7 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "C-c <C-return>") 'color-rg-open-file)
 
     (define-key map (kbd "C-c C-d") 'color-rg-delete-line)
+    (define-key map (kbd "C-c C-D") 'color-rg-delete-all-lines)
     (define-key map (kbd "C-c C-r") 'color-rg-recover-line)
     (define-key map (kbd "C-c C-R") 'color-rg-recover-buffer)
     (define-key map (kbd "C-c C-q") 'color-rg-quit)
@@ -1132,6 +1136,14 @@ from `color-rg-cur-search'."
       (setq end (point))
       (kill-region start end)
       )))
+
+(defun color-rg-delete-all-lines ()
+  (interactive)
+  (save-excursion
+    (with-current-buffer color-rg-buffer
+      (goto-char (point-min))
+      (while (search-forward-regexp color-rg-regexp-position nil t)
+        (color-rg-delete-line)))))
 
 (defun color-rg-recover-line ()
   (interactive)
