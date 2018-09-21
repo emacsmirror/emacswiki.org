@@ -8,9 +8,9 @@
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 0
 ;; Package-Requires: ((browse-kill-ring "0"))
-;; Last-Updated: Mon Jan  1 10:03:09 2018 (-0800)
+;; Last-Updated: Fri Sep 21 12:09:20 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 974
+;;     Update #: 976
 ;; URL: https://www.emacswiki.org/emacs/download/browse-kill-ring%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BrowseKillRing
 ;; Keywords: convenience
@@ -149,6 +149,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     browse-kill-ring-edit: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2012/02/08 dadams
 ;;     browse-kill-ring-remove-dups: Redefined to use a hash table.
 ;; 2012/01/15 dadams
@@ -649,7 +651,9 @@ See also option `browse-kill-ring-yank-commands'."
                                       'browse-kill-ring-target))
 	   (target-cell  (member target (symbol-value (browse-kill-ring-current-ring)))))
       (unless target-cell (error "Item deleted from the current selection ring"))
-      (switch-to-buffer (get-buffer-create "*Kill Ring Edit*"))
+      (if (fboundp 'pop-to-buffer-same-window)
+          (pop-to-buffer-same-window (get-buffer-create "*Kill Ring Edit*"))
+        (switch-to-buffer (get-buffer-create "*Kill Ring Edit*")))
       (setq buffer-read-only  nil)
       (erase-buffer)
       (insert target)
