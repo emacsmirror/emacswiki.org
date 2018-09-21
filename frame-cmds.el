@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Sep 14 12:29:19 2018 (-0700)
+;; Last-Updated: Fri Sep 21 14:14:31 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3127
+;;     Update #: 3129
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -284,6 +284,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     tear-off-window: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2018/09/14 dadams
 ;;     Added: clone-frame.
 ;; 2018/01/05 dadams
@@ -2060,7 +2062,9 @@ Otherwise, this command effectively clones the frame and window."
          (buf     (window-buffer window))
          (frame   (make-frame)))
     (select-frame frame)
-    (switch-to-buffer buf)
+    (if (fboundp 'pop-to-buffer-same-window)
+        (pop-to-buffer-same-window buf)
+      (switch-to-buffer buf))
     (save-window-excursion (select-window window)
                            (unless (one-window-p) (delete-window window)))))
 
