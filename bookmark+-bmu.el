@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Sep 21 11:08:35 2018 (-0700)
+;; Last-Updated: Fri Sep 21 11:57:58 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3968
+;;     Update #: 3970
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -504,6 +504,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
       (define-key map (vector 'remap old) new) ; Ignore OLDMAP for Emacs 22.
     (substitute-key-definition old new map oldmap)))
 
+;; This is also in `bookmark+-lit.el', since it is loaded first but is optional.
+;;
 (if (fboundp 'pop-to-buffer-same-window)
     (defalias 'bmkp--pop-to-buffer-same-window 'pop-to-buffer-same-window)
   (defalias 'bmkp--pop-to-buffer-same-window 'switch-to-buffer))
