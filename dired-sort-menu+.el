@@ -8,9 +8,9 @@
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-sort-menu "0"))
-;; Last-Updated: Mon Jan  1 10:56:51 2018 (-0800)
+;; Last-Updated: Fri Sep 21 13:38:59 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 138
+;;     Update #: 140
 ;; URL: https://www.emacswiki.org/emacs/download/dired-sort-menu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/DiredSortMenu
 ;; Keywords: directories, diredp, dired
@@ -59,6 +59,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     dired-sort-dialogue: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2011/06/18 dadams
 ;;     Updated T prefix-key bindings, because added more in dired+.el.
 ;; 2011/04/19 dadams
@@ -232,7 +234,9 @@ This command *must* be run in the Dired buffer!"
           (split-window                 ; WINDOW SIZE HORIZONTAL
            nil (- (window-width) dired-sort-dialogue-width) t)
           (select-window (next-window))))
-      (switch-to-buffer bufname)
+      (if (fboundp 'pop-to-buffer-same-window)
+          (pop-to-buffer-same-window bufname)
+        (switch-to-buffer bufname))
       (set-window-dedicated-p (selected-window) t) ; can crash Emacs!
       (kill-all-local-variables)
       ;;       (or buffer-display-table
