@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:48:41 2018 (-0800)
+;; Last-Updated: Fri Sep 21 14:21:14 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 719
+;;     Update #: 722
 ;; URL: https://www.emacswiki.org/emacs/download/grep%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -101,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     grepp-new-grep-buffer, grepp-choose-grep-buffer: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2016/09/23 dadams
 ;;     grep-regexp-alist: Also inappropriate for Emacs 24.
 ;; 2016/09/22 dadams
@@ -368,7 +370,9 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
   (unless (string-match "\\*grep\\*" (buffer-name (current-buffer)))
     (error "Not in a grep buffer"))
   (rename-uniquely)
-  (switch-to-buffer "*grep*")
+  (if (fboundp 'pop-to-buffer-same-window)
+      (pop-to-buffer-same-window "*grep*")
+    (switch-to-buffer "*grep*"))
   (grep-mode))
 
 
@@ -382,7 +386,9 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
      (unless bufs (error "No grep buffers"))
      (list (completing-read "Grep buffer: " bufs nil t nil nil
                             (and grep-last-buffer (buffer-name grep-last-buffer))))))
-  (switch-to-buffer buf)
+  (if (fboundp 'pop-to-buffer-same-window)
+      (pop-to-buffer-same-window buf)
+    (switch-to-buffer buf))
   (select-frame-set-input-focus (selected-frame))
   (grep-mode))
 
