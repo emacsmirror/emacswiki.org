@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Mar  2 08:47:25 2018 (-0800)
+;; Last-Updated: Fri Sep 21 14:29:44 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6229
+;;     Update #: 6232
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5440,9 +5440,9 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
      icicle-help-line-buffer  icicle-kill-a-buffer  insert-buffer  insert-buffer-substring
      insert-buffer-substring-as-yank  insert-buffer-substring-no-properties  kill-buffer
      kill-buffer-and-its-windows  kill-buffer-if-not-modified  last-buffer
-     multi-window-frames-on  other-buffer  pop-to-buffer  pr-interface  remove-windows-on
-     replace-buffer-in-windows  smiley-buffer  switch-to-buffer  switch-to-buffer-other-frame
-     switch-to-buffer-other-window  view-buffer  view-buffer-other-frame
+     multi-window-frames-on  other-buffer  pop-to-buffer  pop-to-buffer-same-window  pr-interface
+     remove-windows-on  replace-buffer-in-windows  smiley-buffer  switch-to-buffer
+     switch-to-buffer-other-frame  switch-to-buffer-other-window  view-buffer  view-buffer-other-frame
      view-buffer-other-window)
     ("color"
      color-defined-p  color-gray-p  color-supported-p  color-values  colors
