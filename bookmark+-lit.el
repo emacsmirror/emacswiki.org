@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2018, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Mon Jan  1 10:01:51 2018 (-0800)
+;; Last-Updated: Fri Sep 21 11:56:43 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 954
+;;     Update #: 958
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -133,6 +133,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
+;;    `bmkp--pop-to-buffer-same-window',
 ;;    `bmkp-a-bookmark-lighted-at-pos',
 ;;    `bmkp-a-bookmark-lighted-on-this-line',
 ;;    `bmkp-bookmark-data-from-record',
@@ -556,7 +557,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-lighted-alist-only)))
      (unless alist  (error "No highlighted bookmarks"))
      (list (bookmark-completing-read "Jump to highlighted bookmark" nil alist) current-prefix-arg)))
-  (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p))
+  (bmkp-jump-1 bookmark-name 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
 ;;;###autoload (autoload 'bmkp-lighted-jump-other-window "bookmark+")
 (defun bmkp-lighted-jump-other-window (bookmark-name &optional flip-use-region-p) ; `C-x 4 j h'
@@ -1450,6 +1451,13 @@ AUTONAMEDP: non-nil means use face `bmkp-light-fringe-autonamed'.
                                            'bmkp-light-fringe-non-autonamed)))
                        fringe-string)
     fringe-string))
+
+;; This is also in `bookmark+-bmu.el', since `bookmark+-lit.el' is loaded first but is optional.
+;;
+(if (fboundp 'pop-to-buffer-same-window)
+    (defalias 'bmkp--pop-to-buffer-same-window 'pop-to-buffer-same-window)
+  (defalias 'bmkp--pop-to-buffer-same-window 'switch-to-buffer))
+
 
 ;;;;;;;;;;;;;;;;;;;
 
