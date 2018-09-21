@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jun 29 14:57:50 2018 (-0700)
+;; Last-Updated: Fri Sep 21 14:56:02 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 27603
+;;     Update #: 27612
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2084,7 +2084,7 @@ control completion behaviour using `bbdb-completion-type'."
                             (mapcar (lambda (n) (bbdb-dwim-net-address rec n)) ; FREE here: REC.
                                     (bbdb-record-net rec)))
                            (delete-region beg end)
-                           (switch-to-buffer standard-output))
+                           (icicle--pop-to-buffer-same-window standard-output))
                        ;; Use next address
                        (let* ((addrs      (bbdb-record-net rec))
                               (this-addr  (or (cadr (member (car (cdar addr)) addrs))  (nth 0 addrs))))
@@ -5812,12 +5812,12 @@ You probably do not want to use this.  Use
     (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
     (unless bookmark (error "No such bookmark: `%s'" input-bmk)))
   (if (fboundp 'bookmark--jump-via)
-      (bookmark--jump-via bookmark (if other-window-p 'pop-to-buffer 'switch-to-buffer))
+      (bookmark--jump-via bookmark (if other-window-p 'pop-to-buffer 'icicle--pop-to-buffer-same-window))
     (let ((cell  (bookmark-jump-noselect bookmark))) ; Emacs < 23 and without `Bookmark+'.
       (when cell
         (if other-window-p
             (pop-to-buffer (car cell) 'other-window)
-          (switch-to-buffer (car cell)))
+          (icicle--pop-to-buffer-same-window (car cell)))
         (goto-char (cdr cell))
         (unless (pos-visible-in-window-p) (recenter icicle-recenter))
         (progn (run-hooks 'bookmark-after-jump-hook) t)
@@ -7218,7 +7218,7 @@ the behavior."                          ; Doc string
   (lambda (buf)                         ; Action function
     (when (and (not (get-buffer buf))  (member buf icicle-buffer-easy-files))
       (setq buf  (find-file-noselect buf)))
-    (switch-to-buffer buf))
+    (icicle--pop-to-buffer-same-window buf))
   prompt 'icicle-buffer-multi-complete nil ;  `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (icicle-default-buffer-names current-prefix-arg) nil
@@ -7504,7 +7504,7 @@ This is like command `icicle-buffer', but without the possibility of
 searching buffer contents.  That is, completion candidates are just
 buffer names, not multi-completions - they contain no buffer-content
 part."                                  ; Doc string
-  switch-to-buffer                      ; Action function
+  icicle--pop-to-buffer-same-window     ; Action function
   (icicle-buffer-name-prompt "Switch to") ; `completing-read' args
   (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free.
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
@@ -7611,7 +7611,7 @@ Dired mode to use it."
     (icicle-new-bufs-to-keep                ())
     (act-fn                                 (if icicle-vmfoc-other-win-p
                                                 'switch-to-buffer-other-window
-                                              'switch-to-buffer))
+                                              'icicle--pop-to-buffer-same-window))
     (icicle-candidate-help-fn               'icicle-buffer-cand-help))
    ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
     ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
