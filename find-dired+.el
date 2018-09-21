@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:31:09 2018 (-0800)
+;; Last-Updated: Fri Sep 21 10:52:11 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1245
+;;     Update #: 1250
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -53,7 +53,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `find-diredp--parse-time'.
+;;    `find-diredp--parse-time', `find-diredp--pop-to-buffer-same-window'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -90,6 +90,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     Added: find-diredp--pop-to-buffer-same-window.
+;;     find-dired: Use find-diredp--pop-to-buffer-same-window instead of switch-to-buffer.
 ;; 2017/12/30 dadams
 ;;     find-dired-filter: Updated for Emacs bug #29803, for better alignment with human-readable file sizes.
 ;; 2017/11/11 dadams
@@ -344,6 +347,10 @@ LS-SWITCHES is a list of `ls' switches that tell Dired how to parse
 ;; Make `defconst' override custom value.
 (when (fboundp 'custom-reevaluate-setting) (custom-reevaluate-setting 'find-ls-option))
 
+(if (fboundp 'pop-to-buffer-same-window)
+    (defalias 'find-diredp--pop-to-buffer-same-window 'pop-to-buffer-same-window)
+  (defalias 'find-diredp--pop-to-buffer-same-window 'switch-to-buffer))
+
 
 ;; REPLACES ORIGINAL in `find-dired.el':
 ;;
@@ -383,10 +390,10 @@ where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
     (setq dir  (file-name-as-directory (expand-file-name dir)))
     (unless (file-directory-p dir) (error "Command `find-dired' needs a directory: `%s'" dir))
     (if (not find-diredp-repeating-search)
-        (switch-to-buffer (create-file-buffer (directory-file-name dir)))
+        (find-diredp--pop-to-buffer-same-window (create-file-buffer (directory-file-name dir)))
       (setq find-diredp-repeating-search  nil)
       (unless find-diredp-repeat-reuses-buffer-flag
-        (switch-to-buffer (create-file-buffer (directory-file-name dir)))))
+        (find-diredp--pop-to-buffer-same-window (create-file-buffer (directory-file-name dir)))))
     ;; See if there is still a `find' running, and offer to kill it first, if so.
     (let ((find-proc  (get-buffer-process (current-buffer))))
       (when find-proc
