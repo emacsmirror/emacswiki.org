@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 0
 ;; Package-Requires: ((compile- "0"))
-;; Last-Updated: Mon Jan  1 10:19:45 2018 (-0800)
+;; Last-Updated: Fri Sep 21 13:24:54 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 945
+;;     Update #: 949
 ;; URL: https://www.emacswiki.org/emacs/download/compile%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/CompilationMode
@@ -65,6 +65,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/21 dadams
+;;     Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2016/02/11 dadams
 ;;     Removed r and R bindings for recompile (they are used in grep+.el to rename buffer).
 ;; 2015/04/01 dadams
@@ -304,8 +306,9 @@
 
 
 ;;; REPLACE ORIGINAL defined in `compile.el'.
-;;; Respect new value of `until-move' for `next-error-highlight' (from `simple+.el').
-;;; Raise frame - especially useful when used with `thumb-frm.el'.
+;;; 1. Respect new value of `until-move' for `next-error-highlight' (from `simple+.el').
+;;; 2. Raise frame - especially useful when used with `thumb-frm.el'.
+;;; 3. Use `pop-to-buffer-same-window', not `switch-to-buffer'.
 ;;;
 (defun compilation-goto-locus (msg mk end-mk)
   "Jump to an error corresponding to MSG at MK.
@@ -342,7 +345,9 @@ and overlay is highlighted between MK and END-MK."
           (pop-to-buffer (marker-buffer mk) 'other-window))
       (if (window-dedicated-p (selected-window))
           (pop-to-buffer (marker-buffer mk))
-        (switch-to-buffer (marker-buffer mk))))
+        (if (fboundp 'pop-to-buffer-same-window)
+            (pop-to-buffer-same-window (marker-buffer mk))
+          (switch-to-buffer (marker-buffer mk)))))
     ;; If narrowing gets in the way of going to the right place, widen.
     (unless (eq (goto-char mk) (point))
       (widen)
