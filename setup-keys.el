@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 14 09:21:41 2018 (-0700)
+;; Last-Updated: Sat Sep 22 16:44:02 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1344
+;;     Update #: 1352
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/22 dadams
+;;     Use tear-off-window, not mouse-* (aliased), now in mouse+.el, not in frame-cmds.el.
 ;; 2018/09/14 dadams
 ;;     Added: sub-clone-frame.  Use it.
 ;; 2018/03/03 dadams
@@ -367,8 +369,8 @@
                             ;; mouse-iconify/map-frame, mouse-remove-window,
                             ;; mouse-show-hide-mark-unmark, other-window-or-frame,
                             ;; show-*Help*-buffer, show-hide, shrink-frame*,
-                            ;; tear-off-window
-(require 'mouse+ nil t) ;; (no error if not found): mouse-tear-off-window, mouse-flash-position
+(require 'mouse+ nil t)     ;; (no error if not found):
+                            ;; mouse-flash-position, (mouse-)tear-off-window
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight, hlt-highlighter,
                            ;; hlt-eraser, hlt-(next|previous)-highlight
 (when (fboundp 'define-minor-mode) ;; (no error if not found): *-at-point,
@@ -455,8 +457,9 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
   '(progn                               ; Highlight yank position or call `M-x' in echo area.
     (global-set-key [down-mouse-2]   'mouse-flash-position-or-M-x)               ; `mouse-2'
     ;; Highlight line or `M-:'.
-    (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:)                   ; `S-mouse-2'
-    (global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window)
+    (global-set-key [S-down-mouse-2]      'mouse-scan-lines-or-M-:)              ; `S-mouse-2'
+    (global-set-key [mode-line C-mouse-1] 'tear-off-window)            ; `<mode-line> C-mouse-1'
+    (define-key ctl-x-5-map "1"           'tear-off-window)                      ; `C-x 5 1'
     (when (> emacs-major-version 23)
       (define-key minibuffer-inactive-mode-map [down-mouse-1] nil)               ; `mouse-1'
       (define-key minibuffer-inactive-mode-map [mouse-1] nil))))                 ; in echo area
@@ -533,8 +536,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     ;;(global-set-key [vertical-line S-mouse-1] 'ignore)
     ;; [mode-line mouse-3] as deletion (Emacs std) is too hazardous.  Iconify instead.
     (global-set-key [mode-line mouse-3]     'mouse-iconify/map-frame)
-    (global-set-key [mode-line C-mouse-3]   'mouse-remove-window)
-    (define-key ctl-x-5-map "1"             'tear-off-window)))
+    (global-set-key [mode-line C-mouse-3]   'mouse-remove-window)))
 
 (eval-after-load "framemove"
   '(progn
