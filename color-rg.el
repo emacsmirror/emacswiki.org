@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.1
-;; Last-Updated: 2018-09-21 09:56:08
+;; Version: 2.2
+;; Last-Updated: 2018-09-22 16:20:10
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -68,6 +68,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/22
+;;      * Add `color-rg-unfilter'
+;;      
 ;; 2018/09/21
 ;;      * Add `color-rg-delete-all-lines'
 ;;
@@ -289,6 +292,7 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "F") 'color-rg-filter-mismatch-results)
     (define-key map (kbd "x") 'color-rg-filter-match-files)
     (define-key map (kbd "X") 'color-rg-filter-mismatch-files)
+    (define-key map (kbd "u") 'color-rg-unfilter)
     (define-key map (kbd "D") 'color-rg-remove-line-from-results)
 
     (define-key map (kbd "i") 'color-rg-rerun-toggle-ignore)
@@ -398,6 +402,10 @@ This function is called from `compilation-filter-hook'."
              ;; sets buffer-modified to nil before running the command,
              ;; so the buffer is still unmodified if there is no output.
              (cond ((and (zerop code) (buffer-modified-p))
+                    ;; Clone to temp buffer and we restore by command, such as `color-rg-unfilter'.
+                    (run-at-time "1sec" nil
+                                 (lambda ()
+                                   (color-rg-clone-to-temp-buffer)))
                     `(,(format "finished (%d matches found)\n" color-rg-hit-count) . "matched"))
                    ((not (buffer-modified-p))
                     '("finished with no matches found\n" . "no match"))
@@ -869,6 +877,19 @@ this function a no-op."
 (defun color-rg-filter-mismatch-files ()
   (interactive)
   (color-rg-filter-files nil))
+
+(defun color-rg-unfilter ()
+  (interactive)
+  (save-excursion
+    (with-current-buffer color-rg-buffer
+      (let ((inhibit-read-only t))
+        (color-rg-mode) ; switch to `color-rg-mode' first, otherwise `erase-buffer' will cause "save-excursion: end of buffer" error.
+        (read-only-mode -1)
+        (erase-buffer)
+        (insert (with-current-buffer color-rg-temp-buffer
+                  (buffer-substring (point-min) (point-max))))
+        (read-only-mode 1)
+        ))))
 
 (defun color-rg-remove-line-from-results ()
   (interactive)
