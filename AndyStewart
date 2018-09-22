@@ -426,6 +426,7 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 ==Patch contributions==
 *** lsp-mode: Fixed crash bug of lsp--annotate https://github.com/emacs-lsp/lsp-mode/pull/420 
+*** magithub: Add magithub-browser-file https://github.com/vermiculus/magithub/pull/377
 
 ===Yasnippet Template Code===
 : [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Here] have my template code for [[Yasnippet]].
