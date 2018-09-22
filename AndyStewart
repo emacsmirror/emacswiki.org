@@ -61,6 +61,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** [https://github.com/manateelazycat/awesome-tab awesome-tab] -- Provide an out of box configuration to use tabbar in Emacs.
 
+*** [https://github.com/manateelazycat/insert-translated-name insert-translated-name] -- Ask me Chinese words and then insert translation as variable or function name.
+
 *** [https://github.com/manateelazycat/cache-path-from-shell cache-path-from-shell] -- Provide a chache mechanism make sure exec-path-from-shell just execute once.
 
 *** MultiTerm -- Manages multiple terminal buffers
