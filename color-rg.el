@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.2
-;; Last-Updated: 2018-09-22 16:20:10
+;; Version: 2.3
+;; Last-Updated: 2018-09-23 07:09:17
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/23
+;;      * Add `--heading' option force to make group matches work always to support Windows.
 ;;
 ;; 2018/09/22
 ;;      * Add `color-rg-unfilter'
@@ -460,6 +463,14 @@ CASE-SENSITIVE determinies if search is case-sensitive."
          (append
 
           (list "--column --color=always")
+
+          ;; NOTE:
+          ;;
+          ;; ripgrep is default use heading option (group matches by each file) in all OS's terminal.
+          ;; But not greoup matches on Windows/Emacs.
+          ;; So we add this option force to make group matches work always.
+          ;;
+          (list "--heading")
 
           (when no-ignore
             (list "--no-ignore"))
