@@ -1,4 +1,4 @@
-;;; insert-translated-name.el --- Insert translated string as variable or function name
+;;; insert-translated-name.el --- Insert translated string as variable or function name  -*- lexical-binding: t; -*-
 
 ;; Filename: insert-translated-name.el
 ;; Description: Insert translated string as variable or function name
@@ -97,22 +97,19 @@
 (defvar insert-translated-name-underline-style-mode-list
   '(ruby-mode))
 
-(defvar insert-translated-name-retrieve-buffer nil)
-
-(defvar insert-translated-name-insert-buffer nil)
-
-(defvar insert-translated-name-retrieve-time nil)
-
 (defun insert-translated-name (word)
   (interactive "sTranslate with current mode style: ")
-  (cond ((remove-if 'null (mapcar '(lambda (mode) (derived-mode-p mode)) insert-translated-name-line-style-mode-list))
+  (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
          (insert-translated-name-with-line word))
-        ((remove-if 'null (mapcar '(lambda (mode) (derived-mode-p mode)) insert-translated-name-camel-style-mode-list))
+        ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
          (insert-translated-name-with-camel word))
-        ((remove-if 'null (mapcar '(lambda (mode) (derived-mode-p mode)) insert-translated-name-underline-style-mode-list))
+        ((insert-translated-name-match-modes insert-translated-underline-camel-style-mode-list)
          (insert-translated-name-with-underline word))
         (t
          (insert-translated-name-with-underline word))))
+
+(defun insert-translated-name-match-modes (mode-list)
+  (cl-remove-if 'null (mapcar '(lambda (mode) (derived-mode-p mode)) mode-list)))
 
 (defun insert-translated-name-with-line (word)
   (interactive "sTranslate with line style: ")
@@ -128,13 +125,12 @@
 
 (defun insert-translated-name-get-translation (word style)
   "Request WORD, return JSON as an alist if successes."
-  (setq insert-translated-name-retrieve-time (string-to-number (format-time-string "%s")))
-  (setq insert-translated-name-insert-buffer (current-buffer))
-  (setq insert-translated-name-retrieve-buffer
-        (url-retrieve
-         (format insert-translated-name-api-url (url-hexify-string word))
-         'insert-translated-name-retrieve-callback
-         (list style))))
+  (let ((placeholder (insert-translated-name--generate-uuid)))
+    (insert placeholder)
+    (url-retrieve
+     (format insert-translated-name-api-url (url-hexify-string word))
+     'insert-translated-name-retrieve-callback
+     (list style (current-buffer) placeholder))))
 
 (defun insert-translated-name-convert-translation (translation style)
   (let ((words (split-string translation " ")))
@@ -145,26 +141,28 @@
           ((string-equal style "camel")
            (concat (downcase (car words)) (string-join (mapcar 'capitalize (cdr words))))))))
 
-(defun insert-translated-name-retrieve-callback (&optional redirect style)
-  (let ((retrieve-duration (- (string-to-number (format-time-string "%s")) insert-translated-name-retrieve-time))
-        json word translation result)
-    (with-current-buffer insert-translated-name-retrieve-buffer
-      (set-buffer-multibyte t)
-      (goto-char (point-min))
-      (when (not (string-match "200 OK" (buffer-string)))
-        (error "Problem connecting to the server"))
-      (re-search-forward "^$" nil 'move)
-      (setq json (json-read-from-string
-                  (buffer-substring-no-properties (point) (point-max))))
-      (kill-buffer (current-buffer)))
+(defun insert-translated-name-retrieve-callback (&optional redirect style insert-buffer placeholder)
+  (let (json word translation result)
+    (set-buffer-multibyte t)
+    (goto-char (point-min))
+    (when (not (string-match "200 OK" (buffer-string)))
+      (error "Problem connecting to the server"))
+    (re-search-forward "^$" nil 'move)
+    (setq json (json-read-from-string
+                (buffer-substring-no-properties (point) (point-max))))
+    (kill-buffer (current-buffer))
     (setq word (assoc-default 'query json))
     (setq translation (elt (assoc-default 'translation json) 0))
     (setq result (insert-translated-name-convert-translation translation style))
-    (if (< retrieve-duration 2)
-        (with-current-buffer insert-translated-name-insert-buffer
-          (insert result))
-      (kill-new result)
-      (message (format "Query %s (%s) more than %s seconds, please press C-y to insert" result word retrieve-duration)))))
+    (with-current-buffer insert-buffer
+      (save-excursion
+        (goto-char (point-min))
+        (search-forward placeholder)
+        (replace-match result)))))
+
+(defun insert-translated-name--generate-uuid ()
+  "Generate a 32 character UUID."
+  (md5 (number-to-string (float-time))))
 
 (provide 'insert-translated-name)
 
