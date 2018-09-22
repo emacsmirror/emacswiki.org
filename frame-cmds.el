@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Sep 21 14:14:31 2018 (-0700)
+;; Last-Updated: Sat Sep 22 16:15:43 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 3129
+;;     Update #: 3138
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -126,7 +126,6 @@
 ;;    `show-a-frame-on', `show-buffer-menu', `show-frame',
 ;;    `show-hide', `shrink-frame', `shrink-frame-horizontally',
 ;;    `split-frame-horizontally', `split-frame-vertically',
-;;    `tear-off-window', `tear-off-window-if-not-alone',
 ;;    `tell-customize-var-has-changed', `tile-frames',
 ;;    `tile-frames-horizontally', `tile-frames-side-by-side',
 ;;    `tile-frames-top-to-bottom', `tile-frames-vertically',
@@ -198,7 +197,6 @@
 ;;   (substitute-key-definition 'delete-window      'remove-window global-map)
 ;;   (define-key ctl-x-map "o"                      'other-window-or-frame)
 ;;   (define-key ctl-x-4-map "1"                    'delete-other-frames)
-;;   (define-key ctl-x-5-map "1"                    'tear-off-window)
 ;;   (define-key ctl-x-5-map "h"                    'show-*Help*-buffer)
 ;;   (substitute-key-definition 'delete-window      'delete-windows-for global-map)
 ;;   (define-key global-map "\C-xt."                'save-frame-config)
@@ -284,6 +282,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/22 dadams
+;;     Moved to mouse+.el: tear-off-window(-if-not-alone).
 ;; 2018/09/21 dadams
 ;;     tear-off-window: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2018/09/14 dadams
@@ -2051,32 +2051,6 @@ VARIABLE is a symbol that names a user option."
   "`other-frame', if `one-window-p'; otherwise, `other-window'."
   (interactive "p")
   (if (one-window-p) (other-frame arg) (other-window arg)))
-
-;;;###autoload
-(defun tear-off-window ()
-  "Create a new frame displaying buffer of window clicked on.
-If window is not the only one in frame, then delete it.
-Otherwise, this command effectively clones the frame and window."
-  (interactive)
-  (let* ((window  (selected-window))
-         (buf     (window-buffer window))
-         (frame   (make-frame)))
-    (select-frame frame)
-    (if (fboundp 'pop-to-buffer-same-window)
-        (pop-to-buffer-same-window buf)
-      (switch-to-buffer buf))
-    (save-window-excursion (select-window window)
-                           (unless (one-window-p) (delete-window window)))))
-
-;;;###autoload
-(defun tear-off-window-if-not-alone ()
-  "Move selected window to a new frame, unless it is alone in its frame.
-If it is alone, do nothing.  Otherwise, delete it and create a new
-frame showing the same buffer."
-  (interactive)
-  (if (one-window-p 'NOMINI)
-      (message "Sole window in frame")
-    (tear-off-window)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
