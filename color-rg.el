@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `cl' `subr-x'
+;; `cl' `subr-x' `grep'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -70,7 +70,7 @@
 ;;
 ;; 2018/09/22
 ;;      * Add `color-rg-unfilter'
-;;      
+;;
 ;; 2018/09/21
 ;;      * Add `color-rg-delete-all-lines'
 ;;
@@ -141,6 +141,7 @@
 ;;; Require
 (require 'cl)
 (require 'subr-x)
+(require 'grep)
 
 ;;; Code:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; OS Config ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -286,7 +287,6 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "RET") 'color-rg-open-file)
     (define-key map (kbd "C-m") 'color-rg-open-file)
 
-    (define-key map (kbd "m") 'color-rg-change-search-customized)
     (define-key map (kbd "r") 'color-rg-replace-all-matches)
     (define-key map (kbd "f") 'color-rg-filter-match-results)
     (define-key map (kbd "F") 'color-rg-filter-mismatch-results)
