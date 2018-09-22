@@ -116,7 +116,7 @@
           "line")
          ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
           "camel")
-         ((insert-translated-name-match-modes insert-translated-underline-camel-style-mode-list)
+         ((insert-translated-name-match-modes insert-translated-name-underline-style-mode-list)
           "underline")
          (t
           "underline"))))
@@ -140,7 +140,7 @@
           "line")
          ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
           "camel")
-         ((insert-translated-name-match-modes insert-translated-underline-camel-style-mode-list)
+         ((insert-translated-name-match-modes insert-translated-name-underline-style-mode-list)
           "underline")
          (t
           "underline"))))
@@ -164,7 +164,7 @@
     (insert-translated-name-query-translation word style)))
 
 (defun insert-translated-name-match-modes (mode-list)
-  (cl-remove-if 'null (mapcar '(lambda (mode) (derived-mode-p mode)) mode-list)))
+  (cl-remove-if 'null (mapcar #'(lambda (mode) (derived-mode-p mode)) mode-list)))
 
 (defun insert-translated-name-active (style)
   ;; Add monitor hook.
