@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:05:43 2018 (-0800)
+;; Last-Updated: Sat Sep 22 16:42:29 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 607
+;;     Update #: 628
 ;; URL: https://www.emacswiki.org/emacs/download/mouse%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/MousePlus
 ;; Keywords: mouse
@@ -63,7 +63,8 @@
 ;;  Commands defined here:
 ;;
 ;;    `mouse-flash-position', `mouse-flash-position-or-M-x',
-;;    `mouse-M-:', `mouse-scan-lines', `mouse-scan-lines-or-M-:'.
+;;    `mouse-M-:', `mouse-scan-lines', `mouse-scan-lines-or-M-:',
+;;    `tear-off-window-if-not-alone'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -79,8 +80,8 @@
 ;;
 ;;  `mouse-drag-region'     - If click echo area and `*Messages*' is
 ;;                            displayed, do `M-x', delete `*Messages*'
-;;  `mouse-tear-off-window' - Don't delete window if it is alone in
-;;                            frame.  Instead, clone frame and window.
+;;  `(mouse-)tear-off-window' - Don't delete window if it is alone in
+;;                              frame.  Instead, clone frame and window.
 ;;  `mouse-yank-secondary' - Error if (x-get-selection 'SECONDARY)=nil
 ;;
 ;;
@@ -103,12 +104,17 @@
 ;;
 ;;   (global-set-key [down-mouse-2]        'mouse-flash-position-or-M-x)
 ;;   (global-set-key [S-down-mouse-2]      'mouse-scan-lines-or-M-:)
-;;   (global-set-key [mode-line C-mouse-1] 'mouse-tear-off-window)
+;;   (global-set-key [mode-line C-mouse-1] 'tear-off-window)
+;;   (define-key ctl-x-5-map "1"           'tear-off-window)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2018/09/22 dadams
+;;     Moved here from frame-cmds.el: tear-off-window(-if-not-alone).
+;;     (mouse-)tear-off-window(-if-not-alone): Updated per Emacs bug #32799.
+;;                                             Raise error for Emacs 20.
 ;; 2016/12/09 dadams
 ;;     mouse-yank-secondary: x-get-selection -> gui-get-selection for Emacs 25+.
 ;; 2015/11/22 dadams
@@ -410,23 +416,49 @@ release `mouse-2'; release `C-g')."
 
 
 ;; REPLACES ORIGINAL in `mouse.el':
-;; Only delete window if it is not the only one in frame.
-;; Otherwise, this clones the frame and window.
+;;
+;; If window is alone in its frame then just clone frame.
+;; Suppress error "Attempt to delete minibuffer or sole ordinary window" in that context.
+;; Use `pop-to-buffer-same-window', not `switch-to-buffer'.
 ;;
 ;;;###autoload
-(defun mouse-tear-off-window (event)
+(defun tear-off-window (click)
   "Create a new frame displaying buffer of window clicked on.
 If window is not the only one in frame, then delete it.
 Otherwise, this command effectively clones the frame and window."
-  (interactive "e")
-  (mouse-minibuffer-check event)
-  (let* ((window  (posn-window (event-start event)))
+  (interactive
+   (progn (unless (> emacs-major-version 21)
+            (error "You need Emacs 22 or later for this command"))
+          (list last-nonmenu-event)))   ; See bug #32799
+  (mouse-minibuffer-check click)
+  (let* ((window  (posn-window (event-start click)))
          (buf     (window-buffer window))
          (frame   (make-frame)))
     (select-frame frame)
-    (switch-to-buffer buf)
+    (if (fboundp 'pop-to-buffer-same-window)
+        (pop-to-buffer-same-window buf)
+      (switch-to-buffer buf))
     (save-window-excursion (select-window window)
                            (unless (one-window-p) (delete-window window)))))
+
+;; This is redundant for Emacs 24.4+, but it is needed for older releases.
+;;
+;;;###autoload
+(defalias 'mouse-tear-off-window 'tear-off-window)
+
+;;;###autoload
+(defun tear-off-window-if-not-alone (click)
+  "Move selected window to a new frame, unless it is alone in its frame.
+If it is alone, do nothing.  Otherwise, delete it and create a new
+frame showing the same buffer."
+  (interactive
+   (progn (unless (> emacs-major-version 21)
+            (error "You need Emacs 22 or later for this command"))
+          (list last-nonmenu-event)))   ; See bug #32799
+  (mouse-minibuffer-check click)
+  (if (one-window-p 'NOMINI)
+      (message "Sole window in frame")
+    (tear-off-window click)))
 
 
 
