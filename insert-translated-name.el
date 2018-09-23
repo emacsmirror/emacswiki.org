@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 0.3
-;; Last-Updated: 2018-09-23 07:59:52
+;; Version: 0.5
+;; Last-Updated: 2018-09-23 10:43:18
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -67,6 +67,8 @@
 ;;
 ;; 2018/09/23
 ;;      * Store placeholder in buffer local's hash instead insert placeholder uuid in buffer.
+;;      * Make `insert-translated-name-replace-*' functions support region.
+;;      * Call `insert-translated-name-insert-comment' when cursor in comment or string.
 ;;
 ;; 2018/09/22
 ;;      * First released.
@@ -114,15 +116,22 @@
 ;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;
 (defun insert-translated-name-insert ()
   (interactive)
-  (insert-translated-name-active
-   (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
-          "line")
-         ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
-          "camel")
-         ((insert-translated-name-match-modes insert-translated-name-underline-style-mode-list)
-          "underline")
-         (t
-          "underline"))))
+  (if (or (insert-translated-name-in-string-p)
+          (insert-translated-name-in-comment-p))
+      (insert-translated-name-insert-comment)
+    (insert-translated-name-active
+     (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
+            "line")
+           ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
+            "camel")
+           ((insert-translated-name-match-modes insert-translated-name-underline-style-mode-list)
+            "underline")
+           (t
+            "underline")))))
+
+(defun insert-translated-name-insert-comment ()
+  (interactive)
+  (insert-translated-name-active "comment"))
 
 (defun insert-translated-name-insert-with-line ()
   (interactive)
@@ -138,7 +147,7 @@
 
 (defun insert-translated-name-replace ()
   (interactive)
-  (insert-translated-name-query-symbol
+  (insert-translated-name-replace-symbol
    (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
           "line")
          ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
@@ -150,20 +159,24 @@
 
 (defun insert-translated-name-replace-with-line ()
   (interactive)
-  (insert-translated-name-query-symbol "line"))
+  (insert-translated-name-replace-symbol "line"))
 
 (defun insert-translated-name-replace-with-underline ()
   (interactive)
-  (insert-translated-name-query-symbol "underline"))
+  (insert-translated-name-replace-symbol "underline"))
 
 (defun insert-translated-name-replace-with-camel ()
   (interactive)
-  (insert-translated-name-query-symbol "camel"))
+  (insert-translated-name-replace-symbol "camel"))
 
 ;;;;;;;;;;;;;;;;;;;;; Helper functions ;;;;;;;;;;;;;;;;;;;;;
-(defun insert-translated-name-query-symbol (style)
-  (let ((word (thing-at-point 'symbol)))
-    (thing-paste-symbol)
+(defun insert-translated-name-replace-symbol (style)
+  (let ((word (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (thing-at-point 'symbol))))
+    (if (use-region-p)
+        (kill-region (region-beginning) (region-end))
+      (thing-paste-symbol))
     (insert-translated-name-query-translation word style)))
 
 (defun insert-translated-name-match-modes (mode-list)
@@ -171,7 +184,8 @@
 
 (defun insert-translated-name-active (style)
   ;; Add monitor hook.
-  (add-hook 'after-change-functions 'insert-translated-name-monitor-change nil t)
+  (add-hook 'after-change-functions 'insert-translated-name-monitor-after-change nil t)
+  (add-hook 'pre-command-hook #'insert-translated-name-monitor-pre-command)
 
   ;; Make sure build hash to contain placeholder.
   (unless (boundp 'insert-translated-name-placeholder-hash)
@@ -191,38 +205,90 @@
   (overlay-put insert-translated-name-active-overlay 'face 'insert-translated-name-font-lock-mark-word)
 
   ;; Print play hint.
-  (message "Type Chinese and press SPACE to translate"))
+  (if (string-equal insert-translated-name-active-style "comment")
+      (message "Type Chinese and press SPACE to translate, type TAB to stop translate.")
+    (message "Type Chinese and press SPACE to translate.")))
 
-(defun insert-translated-name-inactive ()
+(defun insert-translated-name-inactive (&optional keep-style)
+  (interactive)
   ;; Delete active overlay.
-  (delete-overlay insert-translated-name-active-overlay)
+  (when (and (boundp 'insert-translated-name-active-overlay)
+             insert-translated-name-active-overlay)
+    (delete-overlay insert-translated-name-active-overlay))
 
   ;; Clean active local variables.
   (set (make-local-variable 'insert-translated-name-active-point) nil)
-  (set (make-local-variable 'insert-translated-name-active-overlay) nil)
-  )
+  (when (and (boundp 'insert-translated-name-active-overlay)
+             insert-translated-name-active-overlay)
+    (set (make-local-variable 'insert-translated-name-active-overlay) nil))
 
-(defun insert-translated-name-monitor-change (start end len)
-  (when (and (boundp 'insert-translated-name-active-point)
-             insert-translated-name-active-point)
-    ;; Translate current Chinese words after press SPACE.
-    (if (string-equal (buffer-substring-no-properties start end) " ")
-        (let (
-              (word (buffer-substring-no-properties insert-translated-name-active-point (- (point) 1))))
-          ;; Delete Chinese words.
-          (kill-region insert-translated-name-active-point (point))
+  ;; Clean style.
+  (unless keep-style
+    (set (make-local-variable 'insert-translated-name-active-style) nil)))
 
-          ;; Inactive.
-          (insert-translated-name-inactive)
+(defun insert-translated-name-monitor-pre-command ()
+  (when (and (boundp 'insert-translated-name-active-point))
+    (let* ((event last-command-event)
+           (key (make-vector 1 event))
+           (key-desc (key-description key)))
+      (cond
+       ;; End translate if press TAB with comment style.
+       ((and (string-equal insert-translated-name-active-style "comment")
+             (equal key-desc "TAB"))
+        ;; Inactive
+        (insert-translated-name-inactive nil)
 
-          ;; Query translation.
-          (insert-translated-name-query-translation word)
-          )
-      ;; Update active overlay bound if user press any other non-SPACE character.
-      (move-overlay insert-translated-name-active-overlay insert-translated-name-active-point (point)))
-    ))
+        (message "End translate comment."))))))
 
-(defun insert-translated-name-query-translation (word &optional style)
+(defun insert-translated-name-monitor-after-change (start end len)
+  (when (and (boundp 'insert-translated-name-active-point))
+    (if insert-translated-name-active-point
+        (cond
+         ;; Translate current Chinese words after press SPACE.
+         ((string-equal (buffer-substring-no-properties start end) " ")
+          (let ((word (buffer-substring-no-properties insert-translated-name-active-point (- (point) 1))))
+            ;; Delete Chinese words.
+            (kill-region insert-translated-name-active-point (point))
+
+            ;; Query translation.
+            (insert-translated-name-query-translation word insert-translated-name-active-style)
+
+            ;; Inactive.
+            (insert-translated-name-inactive t)
+            ))
+         ;; Update active overlay bound if user press any other non-SPACE character.
+         (t
+          (move-overlay insert-translated-name-active-overlay insert-translated-name-active-point (point))))
+      ;; Continue translate if styel is comment and press SPACE.
+      (when (string-equal insert-translated-name-active-style "comment")
+        (let ((insert-char (buffer-substring-no-properties start end)))
+          (when (string-equal insert-char " ")
+            (insert-translated-name-active "comment")
+            ))))))
+
+(defun insert-translated-name-current-parse-state ()
+  "Return parse state of point from beginning of defun."
+  (let ((point (point)))
+    (beginning-of-defun)
+    (parse-partial-sexp (point) point)))
+
+(defun insert-translated-name-in-string-p (&optional state)
+  "True if the parse state is within a double-quote-delimited string.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point."
+  (and (nth 3 (or state (insert-translated-name-current-parse-state)))
+       t))
+
+(defun insert-translated-name-in-comment-p (&optional state)
+  "True if parse state STATE is within a comment.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point."
+  ;; 4. nil if outside a comment, t if inside a non-nestable comment,
+  ;;    else an integer (the current comment nesting)
+  (and (nth 4 (or state (insert-translated-name-current-parse-state)))
+       t))
+
+(defun insert-translated-name-query-translation (word style)
   (prin1 word)
   (let ((placeholder (insert-translated-name--generate-uuid)))
     ;; Store placeholder in hash.
@@ -232,7 +298,7 @@
     (url-retrieve
      (format insert-translated-name-api-url (url-hexify-string word))
      'insert-translated-name-retrieve-callback
-     (list word (or style insert-translated-name-active-style) (current-buffer) placeholder))
+     (list word style (current-buffer) placeholder))
     ))
 
 (defun insert-translated-name-convert-translation (translation style)
@@ -242,7 +308,9 @@
           ((string-equal style "underline")
            (string-join (mapcar 'downcase words) "_"))
           ((string-equal style "camel")
-           (concat (downcase (car words)) (string-join (mapcar 'capitalize (cdr words))))))))
+           (concat (downcase (car words)) (string-join (mapcar 'capitalize (cdr words)))))
+          ((string-equal style "comment")
+           translation))))
 
 (defun insert-translated-name-retrieve-callback (&optional redirect word style insert-buffer placeholder)
   (let (json word translation result)
@@ -268,17 +336,18 @@
     (setq result (insert-translated-name-convert-translation translation style))
 
     ;; Insert result with placeholder point.
-    (with-current-buffer insert-buffer
-      (let ((placeholder-point (gethash placeholder insert-translated-name-placeholder-hash)))
-        (if placeholder-point
-            (progn
-              ;; Insert result at placeholder point .
-              (goto-char placeholder-point)
-              (insert result)
+    (save-excursion
+      (with-current-buffer insert-buffer
+        (let ((placeholder-point (gethash placeholder insert-translated-name-placeholder-hash)))
+          (if placeholder-point
+              (progn
+                ;; Insert result at placeholder point .
+                (goto-char placeholder-point)
+                (insert result)
 
-              ;; Remove placeholder from hash.
-              (remhash placeholder insert-translated-name-placeholder-hash))
-          (message (format "Something wrong that we can't found placeholder for %s: %s" word translation)))))))
+                ;; Remove placeholder from hash.
+                (remhash placeholder insert-translated-name-placeholder-hash))
+            (message (format "Something wrong that we can't found placeholder for %s: %s" word translation))))))))
 
 (defun insert-translated-name--generate-uuid ()
   "Generate a 32 character UUID."
