@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 0.2
-;; Last-Updated: 2018-09-22 15:35:00
+;; Version: 0.3
+;; Last-Updated: 2018-09-23 07:59:52
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -64,6 +64,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/23
+;;      * Store placeholder in buffer local's hash instead insert placeholder uuid in buffer.
 ;;
 ;; 2018/09/22
 ;;      * First released.
@@ -170,6 +173,10 @@
   ;; Add monitor hook.
   (add-hook 'after-change-functions 'insert-translated-name-monitor-change nil t)
 
+  ;; Make sure build hash to contain placeholder.
+  (unless (boundp 'insert-translated-name-placeholder-hash)
+    (set (make-local-variable 'insert-translated-name-placeholder-hash) (make-hash-table :test 'equal)))
+
   ;; Make sure clean active overlay first.
   (when (and (boundp 'insert-translated-name-active-overlay)
              insert-translated-name-active-overlay)
@@ -218,14 +225,14 @@
 (defun insert-translated-name-query-translation (word &optional style)
   (prin1 word)
   (let ((placeholder (insert-translated-name--generate-uuid)))
-    ;; Insert placeholder.
-    (insert placeholder)
+    ;; Store placeholder in hash.
+    (puthash placeholder (point) insert-translated-name-placeholder-hash)
 
     ;; Query translation.
     (url-retrieve
      (format insert-translated-name-api-url (url-hexify-string word))
      'insert-translated-name-retrieve-callback
-     (list (or style insert-translated-name-active-style) (current-buffer) placeholder))
+     (list word (or style insert-translated-name-active-style) (current-buffer) placeholder))
     ))
 
 (defun insert-translated-name-convert-translation (translation style)
@@ -237,7 +244,7 @@
           ((string-equal style "camel")
            (concat (downcase (car words)) (string-join (mapcar 'capitalize (cdr words))))))))
 
-(defun insert-translated-name-retrieve-callback (&optional redirect style insert-buffer placeholder)
+(defun insert-translated-name-retrieve-callback (&optional redirect word style insert-buffer placeholder)
   (let (json word translation result)
     ;; Make sure buffer support multibyte.
     (set-buffer-multibyte t)
@@ -260,12 +267,18 @@
     (setq translation (elt (assoc-default 'translation json) 0))
     (setq result (insert-translated-name-convert-translation translation style))
 
-    ;; Replace placeholder with translated name.
+    ;; Insert result with placeholder point.
     (with-current-buffer insert-buffer
-      (save-excursion
-        (goto-char (point-min))
-        (search-forward placeholder)
-        (replace-match result)))))
+      (let ((placeholder-point (gethash placeholder insert-translated-name-placeholder-hash)))
+        (if placeholder-point
+            (progn
+              ;; Insert result at placeholder point .
+              (goto-char placeholder-point)
+              (insert result)
+
+              ;; Remove placeholder from hash.
+              (remhash placeholder insert-translated-name-placeholder-hash))
+          (message (format "Something wrong that we can't found placeholder for %s: %s" word translation)))))))
 
 (defun insert-translated-name--generate-uuid ()
   "Generate a 32 character UUID."
