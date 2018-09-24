@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 0.6
-;; Last-Updated: 2018-09-24 16:06:39
+;; Version: 0.7
+;; Last-Updated: 2018-09-24 19:06:19
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -68,6 +68,7 @@
 ;;
 ;; 2018/09/24
 ;;      * Add option `insert-translated-name-translate-engine' and default use Google.
+;;      * Support pyim now.
 ;;
 ;; 2018/09/23
 ;;      * Store placeholder in buffer local's hash instead insert placeholder uuid in buffer.
@@ -186,6 +187,10 @@
   (cl-remove-if 'null (mapcar #'(lambda (mode) (derived-mode-p mode)) mode-list)))
 
 (defun insert-translated-name-active (style)
+  ;; Enable pyim if user has load it.
+  (when (featurep 'pyim)
+    (activate-input-method "pyim"))
+
   ;; Add monitor hook.
   (add-hook 'after-change-functions 'insert-translated-name-monitor-after-change nil t)
   (add-hook 'pre-command-hook #'insert-translated-name-monitor-pre-command)
@@ -214,6 +219,10 @@
 
 (defun insert-translated-name-inactive (&optional keep-style)
   (interactive)
+  ;; Disable pyim if user has load it.
+  (when (featurep 'pyim)
+    (deactivate-input-method))
+
   ;; Delete active overlay.
   (when (and (boundp 'insert-translated-name-active-overlay)
              insert-translated-name-active-overlay)
