@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 0.7
-;; Last-Updated: 2018-09-24 19:06:19
+;; Version: 0.8
+;; Last-Updated: 2018-09-25 00:41:36
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -66,6 +66,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/25
+;;      * Add `insert-translated-name-in-comment-buffer-p' option to make english assistants available in magit.     
+;;
 ;; 2018/09/24
 ;;      * Add option `insert-translated-name-translate-engine' and default use Google.
 ;;      * Support pyim now.
@@ -121,7 +124,8 @@
 (defun insert-translated-name-insert ()
   (interactive)
   (if (or (insert-translated-name-in-string-p)
-          (insert-translated-name-in-comment-p))
+          (insert-translated-name-in-comment-p)
+          (insert-translated-name-in-comment-buffer-p))
       (insert-translated-name-insert-comment)
     (insert-translated-name-active
      (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
@@ -283,6 +287,12 @@
   (let ((point (point)))
     (beginning-of-defun)
     (parse-partial-sexp (point) point)))
+
+(defun insert-translated-name-in-comment-buffer-p ()
+  (and (string-equal (buffer-name) "COMMIT_EDITMSG")
+       (save-excursion
+         (goto-char (point-min))
+         (search-forward-regexp "#\\s-Please\\s-enter\\s-the\\s-commit\\s-message\\s-for\\s-your\\s-changes." nil t))))
 
 (defun insert-translated-name-in-string-p (&optional state)
   "True if the parse state is within a double-quote-delimited string.
