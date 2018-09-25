@@ -367,13 +367,17 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 ** Lisp:init-visual-regexp.el -- Some configuration for [https://github.com/benma/visual-regexp.el VisualRegexp].
 
 ** Lisp:init-smex.el -- Some configuration for [https://github.com/nonsequitur/smex/ smex].
+
 ** Lisp:init-auto-sudoedit.el -- Some configuration for [http://elpa.zilongshanren.com/melpa/auto-sudoedit-20171227.156.el auto-sudoedit], prompt user input password before edit system file.
+
+** Lisp:init-pyim.el Some configuration for [https://github.com/tumashu/pyim pyim]
 
 * Spell Check:
 
 ** Lisp:init-ispell.el -- Configuration file for [[InteractiveSpell]].
 
 ** Lisp:init-predictive.el -- Configuration file for [[PredictiveMode]].
+
 * Reader:
 ** Lisp:init-pdf-tools.el -- Configuration file for [https://github.com/politza/pdf-tools pdf-tools]
 
@@ -428,13 +432,6 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 ** lsp-mode: Fixed crash bug of lsp--annotate https://github.com/emacs-lsp/lsp-mode/pull/420 
 ** magithub: Add magithub-browser-file https://github.com/vermiculus/magithub/pull/377
 ** magit: Add magit-submodule-remove https://github.com/magit/magit/pull/3583
-
-===Yasnippet Template Code===
-: [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Here] have my template code for [[Yasnippet]].
-
-===Use SCIM in Emacs===
-: I have wrote [http://www.emacswiki.org/cgi-bin/emacs/ScimBridge EnglishTutorial] that how to use [http://www.scim-im.org/ SCIM] in Emacs.
-: And [http://www.emacswiki.org/cgi-bin/emacs/ScimBridge_Chinese ChineseTutorial] have the Chinese version of tutorial.
 
 ==Reading Notes==
 ===Emacs Lisp Reference Manual===
