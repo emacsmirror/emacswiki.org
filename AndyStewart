@@ -425,8 +425,9 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 ** Lisp:init-time.el -- Time setup.
 
 ==Patch contributions==
-*** lsp-mode: Fixed crash bug of lsp--annotate https://github.com/emacs-lsp/lsp-mode/pull/420 
-*** magithub: Add magithub-browser-file https://github.com/vermiculus/magithub/pull/377
+** lsp-mode: Fixed crash bug of lsp--annotate https://github.com/emacs-lsp/lsp-mode/pull/420 
+** magithub: Add magithub-browser-file https://github.com/vermiculus/magithub/pull/377
+** magit: Add magit-submodule-remove https://github.com/magit/magit/pull/3583
 
 ===Yasnippet Template Code===
 : [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Here] have my template code for [[Yasnippet]].
