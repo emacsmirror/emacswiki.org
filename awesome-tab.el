@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 0.8
-;; Last-Updated: 2018-09-25 10:34:20
+;; Version: 1.0
+;; Last-Updated: 2018-09-25 19:33:44
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -54,6 +54,7 @@
 ;; And the following to your ~/.emacs startup file.
 ;;
 ;; (require 'awesome-tab)
+;; (awesome-tab-mode t)
 ;;
 ;; No need more.
 ;;
@@ -64,6 +65,7 @@
 ;; `awesome-tab-select-end-tab'
 ;; `awesome-tab-forward-tab-other-window'
 ;; `awesome-tab-backward-tab-other-window'
+;; `awesome-tab-kill-other-buffers-in-current-group'
 ;; `awesome-tab-kill-all-buffers-in-current-group'
 ;; `awesome-tab-kill-match-buffers-in-current-group'
 ;; `awesome-tab-keep-match-buffers-in-current-group'
@@ -86,8 +88,12 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/29
+;;      * Add new command `awesome-tab-kill-other-buffers-in-current-group'
+;;      * Not enable mode default.
+;;
 ;; 2018/09/25
-;;      * Adjust magit regexp to only match magit buffer, not file that named with magit. 
+;;      * Adjust magit regexp to only match magit buffer, not file that named with magit.
 ;;
 ;; 2018/09/22
 ;;      * Adjust `awesome-tab-buffer-list' to hide unused buffer to user.
@@ -1765,6 +1771,16 @@ Optional argument REVERSED default is move backward, if reversed is non-nil move
     (awesome-tab-forward-group)
     ))
 
+(defun awesome-tab-kill-other-buffers-in-current-group ()
+  "Kill all buffers except current buffer in current group."
+  (interactive)
+  (let* ((current-group-name (cdr (awesome-tab-selected-tab (awesome-tab-current-tabset t))))
+         (currentbuffer (current-buffer)))
+    ;; Kill all buffers in current group.
+    (awesome-tab-kill-buffer-match-rule
+     (lambda (buffer) (not (equal buffer currentbuffer))))
+    ))
+
 (defun awesome-tab-kill-match-buffers-in-current-group ()
   "Kill all buffers match extension in current group."
   (interactive)
@@ -1925,8 +1941,6 @@ Other buffer group by `projectile-project-p' with project name."
            "Awesome-Tab Groups:"
            (awesome-tab-get-groups)
            :action #'awesome-tab-switch-group))))
-
-(awesome-tab-mode t)
 
 (provide 'awesome-tab)
 
