@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.3
-;; Last-Updated: 2018-09-23 07:09:17
+;; Version: 2.4
+;; Last-Updated: 2018-09-26 17:23:53
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/09/26
+;;      * Make the save window configuration more robust when user do `color-rg-*' multiple times.
 ;;
 ;; 2018/09/23
 ;;      * Add `--heading' option force to make group matches work always to support Windows.
@@ -253,9 +256,9 @@ Setting this to nil or 0 will turn off the indicator."
   "Save window configuration before search,
 used to restore window configuration after finish search.")
 
-(defvar color-rg-search-counter 0
-  "Just save window configuration when this counter is 0.
-Avoid multiple search overwrite window configuration.")
+(defvar color-rg-buffer-point-before-search nil
+  "Save buffer point before search,
+used to restore buffer point after finish search.")
 
 (defvar color-rg-window-configuration-before-apply nil
   "Save window configuration before apply changed,
@@ -831,9 +834,12 @@ this function a no-op."
 (defun color-rg-search-input (&optional keyword directory argument)
   (interactive)
   ;; Save window configuration before do search.
-  (when (equal color-rg-search-counter 0)
-    (setq color-rg-window-configuration-before-search (current-window-configuration)))
-  (setq color-rg-search-counter (+ 1 color-rg-search-counter))
+  ;; Just save when `color-rg-window-configuration-before-search' is nil
+  ;; Or current buffer is not `color-rg-buffer' (that mean user not quit color-rg and search again in other place).
+  (when (or (not color-rg-window-configuration-before-search)
+            (not (string-equal (buffer-name) color-rg-buffer)))
+    (setq color-rg-window-configuration-before-search (current-window-configuration))
+    (setq color-rg-buffer-point-before-search (point)))
   ;; Set `enable-local-variables' to :safe, avoid emacs ask annoyingly question when open file by color-rg.
   (setq enable-local-variables :safe)
   ;; Search.
@@ -1149,8 +1155,9 @@ from `color-rg-cur-search'."
   ;; Restore window configuration before search.
   (when color-rg-window-configuration-before-search
     (set-window-configuration color-rg-window-configuration-before-search)
-    (setq color-rg-window-configuration-before-search nil))
-  (setq color-rg-search-counter 0))
+    (goto-char color-rg-buffer-point-before-search)
+    (setq color-rg-window-configuration-before-search nil)
+    (setq color-rg-buffer-point-before-search nil)))
 
 (defun color-rg-beginning-of-line ()
   (interactive)
