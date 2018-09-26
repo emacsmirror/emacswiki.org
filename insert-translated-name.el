@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 0.8
-;; Last-Updated: 2018-09-25 00:41:36
+;; Version: 1.2
+;; Last-Updated: 2018-09-26 13:44:50
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -66,8 +66,14 @@
 
 ;;; Change log:
 ;;
+;; 2018/09/26
+;;      * Add `insert-translated-name-use-original-translation'.
+;;      * Nothing happen if input word is empty.
+;;      * Make `insert-translated-name-insert' support prefix arg.
+;;
 ;; 2018/09/25
-;;      * Add `insert-translated-name-in-comment-buffer-p' option to make english assistants available in magit.     
+;;      * Add `insert-translated-name-in-commit-buffer-p' option to make english assistants available in magit.
+;;      * Make english assistants available in minibuffer.
 ;;
 ;; 2018/09/24
 ;;      * Add option `insert-translated-name-translate-engine' and default use Google.
@@ -76,7 +82,7 @@
 ;; 2018/09/23
 ;;      * Store placeholder in buffer local's hash instead insert placeholder uuid in buffer.
 ;;      * Make `insert-translated-name-replace-*' functions support region.
-;;      * Call `insert-translated-name-insert-comment' when cursor in comment or string.
+;;      * Call `insert-translated-name-insert-original-translation' when cursor in comment or string.
 ;;
 ;; 2018/09/22
 ;;      * First released.
@@ -121,12 +127,17 @@
   "The translate engine can use \"google\" or \"youdao\".")
 
 ;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;
-(defun insert-translated-name-insert ()
-  (interactive)
-  (if (or (insert-translated-name-in-string-p)
-          (insert-translated-name-in-comment-p)
-          (insert-translated-name-in-comment-buffer-p))
-      (insert-translated-name-insert-comment)
+(defun insert-translated-name-insert (arg)
+  (interactive "p")
+  (if (or
+       (equal arg 4)
+       (and (boundp 'insert-translated-name-original-translation)
+            insert-translated-name-original-translation)
+       (insert-translated-name-in-string-p)
+       (insert-translated-name-in-comment-p)
+       (insert-translated-name-in-commit-buffer-p)
+       (minibuffer-window-active-p (get-buffer-window)))
+      (insert-translated-name-insert-original-translation)
     (insert-translated-name-active
      (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
             "line")
@@ -137,7 +148,7 @@
            (t
             "underline")))))
 
-(defun insert-translated-name-insert-comment ()
+(defun insert-translated-name-insert-original-translation ()
   (interactive)
   (insert-translated-name-active "comment"))
 
@@ -189,6 +200,9 @@
 
 (defun insert-translated-name-match-modes (mode-list)
   (cl-remove-if 'null (mapcar #'(lambda (mode) (derived-mode-p mode)) mode-list)))
+
+(defun insert-translated-name-use-original-translation ()
+  (set (make-local-variable 'insert-translated-name-original-translation) t))
 
 (defun insert-translated-name-active (style)
   ;; Enable pyim if user has load it.
@@ -288,7 +302,7 @@
     (beginning-of-defun)
     (parse-partial-sexp (point) point)))
 
-(defun insert-translated-name-in-comment-buffer-p ()
+(defun insert-translated-name-in-commit-buffer-p ()
   (and (string-equal (buffer-name) "COMMIT_EDITMSG")
        (save-excursion
          (goto-char (point-min))
@@ -341,13 +355,15 @@ If no parse state is supplied, compute one from the beginning of the
   (md5 (number-to-string (float-time))))
 
 (defun insert-translated-name-query-translation (word style)
-  (let ((placeholder (insert-translated-name-generate-uuid)))
-    ;; Store placeholder in hash.
-    (puthash placeholder (point) insert-translated-name-placeholder-hash)
+  (if (string-equal word "")
+      (message "Nothing input, cancel translate.")
+    (let ((placeholder (insert-translated-name-generate-uuid)))
+      ;; Store placeholder in hash.
+      (puthash placeholder (point) insert-translated-name-placeholder-hash)
 
-    ;; Query translation.
-    (insert-translated-name-retrieve-translation word style placeholder)
-    ))
+      ;; Query translation.
+      (insert-translated-name-retrieve-translation word style placeholder)
+      )))
 
 (defun insert-translated-name-retrieve-translation (word style placeholder)
   (cond ((string-equal insert-translated-name-translate-engine "youdao")
