@@ -1,23 +1,29 @@
+== GNU Emacs ==
+* [[aaptel]] wrote with the help of Daniel Colascione and Philipp Stephani a proper module API for Emacs 25.1.  You must ##./configure --with-modules## to enable it.
+** There is [https://phst.github.io/emacs-modules some documentation], but it's [https://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00969.html not integrated into the Emacs manual].
+
+* [[tromey]] has written a [https://github.com/tromey/emacs-ffi module using this API which provides a FFI]. It allows to load and any external library from Emacs Lisp, without writing any C.
+
+
+=== Obsolete patches ===
+
 SteveKemp announced a patch to fns.c on [[gnu.emacs.sources]] which allows Emacs to use shared libraries (2000-02-23).[Groups:fns.c&selm=Pine.GSO.4.10.10002231444090.20962-100000@tardis.tardis.ed.ac.uk]  He called it "Dynamic loading of extensions modules" and "Dynamically Extending Emacs".
 
 The patch eliminated the need to recompile Emacs, by allowing C DEFUN functions to be placed in external libraries and dynamically loaded when they were needed.  The patch is no longer maintained.
 
+-----
+
 DaveLove released a follow up for Emacs that uses libtool.  According to Dave, "this won't get into Emacs until rms is persuaded it's not a GPL threat, probably with some additional hack".
 
-* http://www.loveshack.ukfsn.org/emacs/dynamic-loading 
+http://www.loveshack.ukfsn.org/emacs/dynamic-loading 
 
 The patch doesn't apply properly even on Emacs 22.
 
-[[aaptel]] wrote with the help of Daniel Colascione and Philipp Stephani a proper module API for Emacs 25.1. [[tromey]] has written a module using this API which provides a FFI. It allows to load and any external library from Emacs Lisp, without writing any C.
 
-
-[[XEmacs]] also has something of an FFI:
-
+== XEmacs ==
 * [http://www.xemacs.org/Documentation/21.5/html/emodules.html XEmacs using C Modules]
-
-see Also:
-
-* http://delysid.org/emacs/xemacs.html
+** The official doc is 404 (as of Sep 2018), [https://web.archive.org/web/20150705160314/http://www.xemacs.org/Documentation/21.5/html/emodules.html archive.org link]
+* See also http://delysid.org/emacs/xemacs.html
 
 ----
 CategoryExtensionLanguage
