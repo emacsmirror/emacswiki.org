@@ -26,8 +26,8 @@ M-x znc-all
 By default, when you kill a channel buffer instead of /parting from the channel, you will detach from it
 This is customizable
 
-[new:PhilHudson:2015-01-18 23:11 UTC]
+[PhilHudson:2015-01-18 23:11 UTC]
 Question: what is a "network slug"?
 
-[new:WadeMealing:2018-09-27 11:11]
-Answer: Slug is a "name-like-this" identifier.  No spaces or dots, i think the term originates from django's slug url.  This question originates from the temr used in the customize-group znc "Account" information.
+[new:WadeMealing:2018-09-27 11:11 UTC]
+Answer: Slug is a "name-like-this" identifier.  No spaces or dots, i think the term originates from django's slug url.  This question originates from the term used in the customize-group znc "Account" information.
