@@ -10,3 +10,15 @@ So here is yet another sample of ancient, abandoned, nonworking and incorrect in
 
 -- chethcoat 2018-09-27 18:20 UTC
 
+
+----
+
+Update:
+
+I forgot to supply my e m a i l  a d d r e s s.  Here it is:
+c h e t h c o a t (a t) o p l i n k (d o t) (n e t)
+
+Thanks.
+
+-- chethcoat 2018-09-27 18:24 UTC
+
