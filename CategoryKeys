@@ -44,7 +44,7 @@ See also: MenuAccessFromKeyboard: using menus from the keyboard.
 ** Let users of your code [[UseCustomizeForKeyBindings|use Customize]] to bind keys.
 ** BufferLocalKeys - Define keys local to a buffer, without affecting the [[major mode]] as a whole
 ** MultipleCommandsOnSingleKey - Bind multiple commands to the same key (in effect).
-
+* [[DocumentingKeyBindingToLambda|Documenting a key bound to a lambda definition]]
 
 == Dealing with modifier keys ==
 
