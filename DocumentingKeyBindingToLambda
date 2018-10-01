@@ -1,0 +1,41 @@
+*Skip* this article if you do *not* care about key-binding descriptions.
+
+Here is the *problem* addressed: if you simply bind a key to a lambda with `define-key' like this ...
+
+<pre>
+(define-key global-map "\C-h=" 
+  '(lambda () "insert foo" (interactive) (insert "foo")))
+</pre>
+
+... then the key will be reported by `describe-bindings' like this ...
+
+<pre>
+C-h =           ??
+</pre>
+
+A *solution* is to give the lambda a name describing its function.
+This *wrapper* can be used to turn the documentation string into a name ...
+
+<pre>
+(defun lambda-key (keymap key def)
+  "Wrap`define-key' to provide documentation."
+  (set 'sym (make-symbol (documentation def)))
+  (fset sym def)
+  (define-key keymap key sym))
+</pre>
+
+Then after ...
+
+<pre>
+(lambda-key global-map "\C-h=" 
+  '(lambda () "insert foo" (interactive) (insert "foo")))
+</pre>
+
+... the key binding will be described like this:
+
+<pre>
+C-h =           insert foo
+</pre>
+
+Since `lambda-key' has the same signature as `define-key',  
+you can quickly switch between them.  (Tested with Emacs 25.2)
