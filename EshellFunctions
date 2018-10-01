@@ -245,11 +245,11 @@ by 'user@host:/u/l/share/emacs/site-lisp $'.
 <pre>
 (setq eshell-prompt-function
       (lambda()
-        (concat (getenv "USER") "@" (getenv "HOST") ":"
+        (concat (getenv "USER") "@" (getenv "HOST") ":" ; FIXME: tramp support
                 ((lambda (p-lst)
                    (if (> (length p-lst) 3)
                        (concat
-                        (mapconcat (lambda (elm) (substring elm 0 1))
+                        (mapconcat (lambda (elm) (unless (equal elm "") (substring elm 0 1))) ; If the path starts with /, there will be an empty string that substring can choke on.  We tell it to ignore them. 
                                    (butlast p-lst (- (length p-lst) 3))
                                    "/")
                         "/"
@@ -259,7 +259,7 @@ by 'user@host:/u/l/share/emacs/site-lisp $'.
                      (mapconcat (lambda (elm) elm)
                                 p-lst
                                 "/")))
-                 (cl-remove "" (split-string (eshell/pwd) "/"))) ; added cl-remove so "/one/two/three/" or "~/two//three" work as well.
+                 (split-string (eshell/pwd) "/"))
                 (if (= (user-uid) 0) " # " " $ "))))
 </pre>
 
