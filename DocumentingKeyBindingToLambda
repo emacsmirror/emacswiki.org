@@ -1,6 +1,6 @@
 *Skip* this article if you do *not* care about key-binding descriptions.
 
-Here is the *problem* addressed: if you simply bind a key to a lambda with `define-key' like this ...
+Here is the *problem*: if you simply bind a key to a lambda with `define-key' like this ...
 
 <pre>
 (define-key global-map "\C-h=" 
