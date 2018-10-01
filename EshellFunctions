@@ -259,7 +259,7 @@ by 'user@host:/u/l/share/emacs/site-lisp $'.
                      (mapconcat (lambda (elm) elm)
                                 p-lst
                                 "/")))
-                 (split-string (eshell/pwd) "/"))
+                 (cl-remove "" (split-string (eshell/pwd) "/"))) ; added cl-remove so "/one/two/three/" or "~/two//three" work as well.
                 (if (= (user-uid) 0) " # " " $ "))))
 </pre>
 
