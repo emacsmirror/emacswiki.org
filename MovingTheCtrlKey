@@ -6,6 +6,8 @@ But note that some users find that doing this <i>causes</i> Emacs pinky because 
 == Introduction ==
 For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press than Control, crucial to Emacs yet really awkwardly located.
 
+When Emacs was first written, most keyboards had Ctrl to the left of A, either immediately to the left or with CapsLock in between.  Thus, it was a convenient and logical choice of key for creating Emacs commands.  When personal computers went mainstream in the 80's, Ctrl was moved out of the way, presumably because the target users (office workers) wouldn't need Ctrl as often as CapsLock.
+
 == GNU/Linux ==
 
 Note that separate keyboard mappings are often used for X (graphical sessions) and for virtual consoles. (On Debian, you may be able to use <code>/etc/default/keyboard</code> file for both.)
