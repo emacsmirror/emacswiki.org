@@ -1,15 +1,15 @@
 ;;; actions.el --- actions utilities
 
-;; Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016, 2017 Vinicius Jose Latorre
+;; Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 Vinicius Jose Latorre
 
 ;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: convenience
-;; Version: 0.6
+;; Version: 0.10
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
-(defconst actions-version "0.6"
-  "actions.el, v 0.6 <2017/10/02 vinicius>
+(defconst actions-version "0.10"
+  "actions.el, v 0.10 <2018/08/08 vinicius>
 
 Please send all bug fixes and enhancements to
 	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
@@ -125,21 +125,26 @@ Please send all bug fixes and enhancements to
     ["Expand .tar"     (actions-untar)
      :visible (actions-file-p "\\.tar$")]
     ["Expand .tar.***" (actions-untar)
-     :visible (actions-file-p "\\.tar\\.\\(gz\\|tgz\\|taz\\|Z\\|taZ\\|bz2\\|tz2\\|tbz2\\|tbz\\|lz\\|lzma\\|tlz\\|lzo\\|xz\\)$")]
+     :visible (actions-file-p "\\.\\(tar\\.\\(gz\\|Z\\|bz2\\|lz\\|lzma\\|lzo\\|xz\\)\\|tgz\\|taz\\|taZ\\|tz2\\|tbz2\\|tbz\\|tlz\\)$")]
     ["Expand .gz"      (actions-call "gunzip")
      :visible (actions-file-p "\\.gz$")]
     ["Expand .zip"     (actions-call "unzip")
      :visible (actions-file-p "\\.zip$")]
     ["Expand .rar"     (actions-call "unrar")
      :visible (actions-file-p "\\.rar$")]
-    ["Read PDF"        (actions-call "xpdf")
-     :visible (actions-file-p "\\.\\(pdf\\|PDF\\)$")]
+    ("Read PDF" :visible (actions-file-p "\\.\\(pdf\\|PDF\\)$")
+     ["via 'xpdf'"     (actions-call "xpdf") :visible t]
+     ["via 'okular'"   (actions-call "okular") :visible t])
     ["Read PS"         (actions-call "gv")
      :visible (actions-file-p "\\.\\(ps\\|PS\\)$")]
     ["Read PS.GZ"      (actions-call "gv")
      :visible (actions-file-p "\\.\\(ps\\|PS\\)\\.\\(gz\\|GZ\\)$")]
     ["Qt Designer"     (actions-call "designer")
      :visible (actions-file-p "\\.ui$")]
+    ["VLC Video/Audio" (actions-call "vlc")
+     :visible (actions-file-p "\\.\\(MP[34]\\|M4A\\|AAC\\|OPUS\\|mp[34]\\|m4a\\|aac\\|opus\\)$")]
+    ["LibreOffice Doc" (actions-call "libreoffice")
+     :visible (actions-file-p "\\.\\(OD[TF]\\|DOCX?\\|DOCX?\\.ENC\\|PPTX?\\|od[tf]\\|docx?\\|docx?\\.enc\\|pptx?\\)$")]
     ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|XCF\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
      ["GIMP Image"     (actions-call "gimp") :visible t]
      ["GEEQIE Image"   (actions-call "geeqie")
@@ -241,7 +246,7 @@ Where:
 
 Optional arg COMPRESS indicates which uncompress method to use (see tar
 manual).  For example, \"z\" for gzip; \"j\" for bz2."
-  (actions-call (format "tar x%svf" compress)))
+  (actions-call (format "tar x%svf" (or compress ""))))
 
 
 (defun actions-file-p (regexp)
