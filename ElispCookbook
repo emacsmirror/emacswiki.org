@@ -1289,15 +1289,19 @@ Run a command return and insert its output at point in the current buffer.
 
 Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here. Also [[https://github.com/stsquad/emacs_chrome/blob/master/servers/edit-server.el|Edit with Emacs' edit-server.el]] which is a more complete server implementation.
 
-== Keyboard events ==
+== Keys ==
 
-Call function bound to key
+=== Call function bound to key ===
 
   (funcall (key-binding (kbd "M-TAB")))
 
 or
 
   (call-interactively (key-binding (kbd "M-TAB")))
+
+=== Documenting key binding to lambda ===
+
+See [[DocumentingKeyBindingToLambda]]
 
 == Test code ==
 
