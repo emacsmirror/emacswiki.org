@@ -1139,6 +1139,23 @@ An interface to the kernel's stat(2) is provided by the function file-attributes
 
   (rename-file file new-name)
 
+=== Copy the buffer filename for yanking ===
+
+{{{
+(defun copy-buffer-file-truename (&optional as-host-os-path)
+  "Copy the buffer-file-truename to the kill ring.
+Also, display it in the `*Messages*' buffer.
+
+If AS-HOST-OS-PATH is nil, use the Emacs representation,
+otherwise use 'something suitable for the OS'."
+  (interactive "P")
+  (if (not buffer-file-truename)
+      (error "%s" "This buffer has no filename")
+    (set 'path (expand-file-name buffer-file-truename))
+    (kill-new (if as-host-os-path (convert-standard-filename path) path))
+    (message "%s" (current-kill 0 t))))
+}}}
+
 == Directories ==
 
 === Listing ===
