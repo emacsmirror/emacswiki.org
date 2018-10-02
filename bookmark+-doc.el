@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 22 10:34:06 2018 (-0700)
+;; Last-Updated: Tue Oct  2 14:55:52 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 15248
+;;     Update #: 15249
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1193,7 +1193,7 @@
 ;;  For example, to display `Hello!' when a bookmark is visited you
 ;;  can use this:
 ;;
-;;    T v bookmark-jump RET (lambda () (message "Hello!"))
+;;    T v bmkp-jump RET (lambda () (message "Hello!"))
 ;;
 ;;  The function that is the value of a "bmkp-jump" tag is called just
 ;;  after the the standard hook `bookmark-after-jump-hook' is invoked.
