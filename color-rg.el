@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.4
-;; Last-Updated: 2018-09-26 17:23:53
+;; Version: 2.5
+;; Last-Updated: 2018-10-03 16:36:46
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/10/03
+;;      * Use `color-rg-update-header-line-hits' update keywoard hits after filter operation.
 ;;
 ;; 2018/09/26
 ;;      * Make the save window configuration more robust when user do `color-rg-*' multiple times.
@@ -743,7 +746,9 @@ This assumes that `color-rg-in-string-p' has already returned true, i.e.
         (if match-regexp
             (message (format "Remove %s lines not match regexp '%s'." remove-counter filter-regexp))
           (message (format "Remove %s lines match regexp '%s'." remove-counter filter-regexp)))
-        ))))
+        )))
+  ;; Update hit number in header line.
+  (color-rg-update-header-line-hits))
 
 (defun color-rg-filter-files (match-files)
   (let (file-extensions start end)
@@ -776,7 +781,9 @@ This assumes that `color-rg-in-string-p' has already returned true, i.e.
               (if (string-equal file-extension filter-extension)
                   (color-rg-remove-lines-under-file)
                 (end-of-line))))
-          )))))
+          ))))
+  ;; Update hit number in header line.
+  (color-rg-update-header-line-hits))
 
 (defun color-rg-remove-lines-under-file ()
   (let (start end)
@@ -829,6 +836,25 @@ this function a no-op."
     (add-hook 'pre-command-hook 'compilation-goto-locus-delete-o)
     (setq next-error-highlight-timer
           (run-at-time delay nil 'compilation-goto-locus-delete-o))))
+
+(defun color-rg-update-header-line-hits ()
+  (setq color-rg-hit-count (color-rg-stat-hits))
+  (color-rg-update-header-line))
+
+(defun color-rg-stat-hits ()
+  (let ((hit-count 0))
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (let ((plist (text-properties-at (point)))
+              (next-change
+               (or (next-property-change (point) (current-buffer))
+                   (point-max))))
+          (dolist (property plist)
+            (when (string-equal (format "%s" property) "color-rg-font-lock-match")
+              (setq hit-count (+ hit-count 1))))
+          (goto-char next-change)))
+      hit-count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun color-rg-search-input (&optional keyword directory argument)
@@ -906,7 +932,9 @@ this function a no-op."
         (insert (with-current-buffer color-rg-temp-buffer
                   (buffer-substring (point-min) (point-max))))
         (read-only-mode 1)
-        ))))
+        )
+      ;; Update hit number in header line.
+      (color-rg-update-header-line-hits))))
 
 (defun color-rg-remove-line-from-results ()
   (interactive)
