@@ -1,3 +1,5 @@
 == Compare regions within a buffer ==
 
 You can compare regions within the same buffer by using ##M-x## ##ediff-regions-wordwise## or ##M-x## ##ediff-regions-linewise##. ediff will prompt you to select the buffer and regions you wish to compare.
+
+Note that this will clear your open windows without warning. Turn [[Winner Mode]] on first if you want to restore them afterward.
