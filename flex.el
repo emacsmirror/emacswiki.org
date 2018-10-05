@@ -99,7 +99,7 @@
   :group 'flex)
 
 (defface flex-font-lock-pattern-content
-  '((t (:foreground "gold")))
+  '((t (:foreground "gold3")))
   "Color for pattern content"
   :group 'flex)
 
@@ -142,11 +142,9 @@
   (font-lock-add-keywords
    nil
    '(
-     ("\\(%%\n\\)\\(\\(.+\n\\)+\\)\\(%%\\)" 1 'flex-font-lock-pattern-delimiter)
-     ("\\(%%\n\\)\\(\\(.+\n\\)+\\)\\(%%\\)" 2 'flex-font-lock-pattern-content)
-     ("\\(%%\n\\)\\(\\(.+\n\\)+\\)\\(%%\\)" 4 'flex-font-lock-pattern-delimiter)
-     ("\\(%{\\)\\([^%{}]+\\)\\(%}\\)" 1 'flex-font-lock-declare-delimiter)
-     ("\\(%{\\)\\([^%{}]+\\)\\(%}\\)" 3 'flex-font-lock-declare-delimiter)
+     ("\\(^\\(%{\\|%}\\)\\)" 1 'flex-font-lock-declare-delimiter)
+     ("\\(^%%\\)" 1 'flex-font-lock-pattern-delimiter)
+     ("\\(^\\([\"]\\|[\[]\\|[\.]\\|[\\]\\)[^\{]+\\)\\({.*}\\)" 1 'flex-font-lock-pattern-content)
      ))
   (set (make-local-variable 'font-lock-keywords-only) t)
   (font-lock-mode 1))
