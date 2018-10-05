@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2013 ~ 2014, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-31 00:32:00
-;; Version: 0.3
-;; Last-Updated: 2018-08-14 03:05:52
+;; Version: 0.4
+;; Last-Updated: 2018-10-05 08:00:39
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: autosave
@@ -61,8 +61,11 @@
 
 ;;; Change log:
 ;;
+;; 2018/10/05
+;;      * Update font lock before save file.
+;;
 ;; 2018/08/14
-;;      * Fixed typo, change `auto-save-slient' to `auto-save-silent'.
+;;      *Fixed typo, change `auto-save-slient' to `auto-save-silent'.
 ;;
 ;; 2018/07/06
 ;;      * Add new option `auto-save-delete-trailing-whitespace'.
@@ -159,7 +162,9 @@ avoid delete current indent space when you programming."
 (defun auto-save-enable ()
   (interactive)
   (run-with-idle-timer auto-save-idle t #'auto-save-buffers)
-  (add-hook 'before-save-hook 'auto-save-delete-trailing-whitespace-except-current-line))
+  (add-hook 'before-save-hook 'auto-save-delete-trailing-whitespace-except-current-line)
+  (add-hook 'before-save-hook 'font-lock-flush)
+  )
 
 (provide 'auto-save)
 
