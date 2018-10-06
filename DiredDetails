@@ -6,7 +6,7 @@ The Changelog explains:
 
     New minor mode ``dired-hide-details-mode`` hides details.
 
-According to the Emacs manal:
+According to the Emacs manual:
 
     The command ( (dired-hide-details-mode) toggles whether details, such as
     ownership or file permissions, are visible in the current Dired buffer. By
