@@ -1,5 +1,22 @@
 This page describes libraries Lisp:dired-details.el and Lisp:dired-details+.el, which let you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
 
+'''This functionality is now available by default starting with Emacs 24.4.'''
+
+The Changelog explains:
+
+    New minor mode ``dired-hide-details-mode`` hides details.
+
+According to the Emacs manal:
+
+    The command ( (dired-hide-details-mode) toggles whether details, such as
+    ownership or file permissions, are visible in the current Dired buffer. By
+    default, it also hides the targets of symbolic links, and all lines other
+    than the header line and file/directory listings. To change this, customize
+    the options dired-hide-details-hide-symlink-targets and
+    dired-hide-details-hide-information-lines, respectively.
+
+You can run it with either <tt>M-x dired-hide-details-mode</tt> or <tt>(</tt> when in a dired buffer.
+
 == dired-details.el ==
 
 RobGiardina has written library <tt>[[dired-details.el]]</tt>, which lets you hide and show the details of each file or directory in DiredMode. You use 
