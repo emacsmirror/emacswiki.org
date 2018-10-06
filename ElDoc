@@ -39,6 +39,12 @@ One useful way to enable this minor mode is to put the following in your <tt>[In
      (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
      (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
+If you are using Emacs 24.4 or later, use <tt>eldoc-mode</tt> instead:
+
+     (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+     (add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
+     (add-hook 'ielm-mode-hook 'eldoc-mode)
+
 == How to implement support ==
 
 Your mode need only supply 1 function to support eldoc-mode which you tell ElDoc about like this.
