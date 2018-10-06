@@ -88,17 +88,17 @@
   "Editing flex files."
   :group 'flex)
 
-(defface flex-font-lock-declare-delimiter
+(defface flex-font-lock-declare-delimiter-face
   '((t (:foreground "gray35")))
   "Color for declare delimiter."
   :group 'flex)
 
-(defface flex-font-lock-pattern-delimiter
+(defface flex-font-lock-pattern-delimiter-face
   '((t (:foreground "gray35")))
   "Color for pattern delimiter."
   :group 'flex)
 
-(defface flex-font-lock-pattern-content
+(defface flex-font-lock-pattern-content-face
   '((t (:foreground "gold3")))
   "Color for pattern content"
   :group 'flex)
@@ -142,9 +142,9 @@
   (font-lock-add-keywords
    nil
    '(
-     ("\\(^\\(%{\\|%}\\)\\)" 1 'flex-font-lock-declare-delimiter)
-     ("\\(^%%\\)" 1 'flex-font-lock-pattern-delimiter)
-     ("\\(^\\([\"]\\|[\[]\\|[(]\\|[\.]\\|[\\]\\)[^\{]+\\)\\({.*}\\)" 1 'flex-font-lock-pattern-content)
+     ("\\(^\\(%{\\|%}\\)\\)" 1 'flex-font-lock-declare-delimiter-face)
+     ("\\(^%%\\)" 1 'flex-font-lock-pattern-delimiter-face)
+     ("\\(^\\([\"]\\|[\[]\\|[(]\\|[\.]\\|[\\]\\)[^\{]+\\)\\({.*}\\)" 1 'flex-font-lock-pattern-content-face)
      ))
   (set (make-local-variable 'font-lock-keywords-only) t)
   (font-lock-mode 1))
