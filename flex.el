@@ -103,7 +103,7 @@
   "Color for pattern content"
   :group 'flex)
 
-(defcustom color-rg-mode-hook '()
+(defcustom flex-mode-hook '()
   "flex mode hook."
   :type 'hook
   :group 'flex)
@@ -133,7 +133,7 @@
   (flex-highlight-keywords)
 
   ;; Run hooks.
-  (run-hooks 'color-rg-mode-hook)
+  (run-hooks 'flex-mode-hook)
   )
 
 (defun flex-highlight-keywords ()
@@ -144,7 +144,7 @@
    '(
      ("\\(^\\(%{\\|%}\\)\\)" 1 'flex-font-lock-declare-delimiter)
      ("\\(^%%\\)" 1 'flex-font-lock-pattern-delimiter)
-     ("\\(^\\([\"]\\|[\[]\\|[\.]\\|[\\]\\)[^\{]+\\)\\({.*}\\)" 1 'flex-font-lock-pattern-content)
+     ("\\(^\\([\"]\\|[\[]\\|[(]\\|[\.]\\|[\\]\\)[^\{]+\\)\\({.*}\\)" 1 'flex-font-lock-pattern-content)
      ))
   (set (make-local-variable 'font-lock-keywords-only) t)
   (font-lock-mode 1))
