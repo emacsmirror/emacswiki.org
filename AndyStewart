@@ -67,6 +67,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** [https://github.com/manateelazycat/flex flex] -- It's a mode for flex files that provide better syntax highlight than flex-mode.el
 
+*** [https://github.com/manateelazycat/bison bison] -- It's a mode for bison files that provide better syntax highlight than bison-mode.el
+
 *** MultiTerm -- Manages multiple terminal buffers
 
 *** MultiShell -- Manages multiple shell buffers.
