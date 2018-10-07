@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 28 18:05:53 2018 (-0800)
+;; Last-Updated: Sat Oct  6 17:31:50 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 5937
+;;     Update #: 5951
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,10 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `color', `frame-fns', `gv', `hexrgb', `isearch-prop',
-;;   `macroexp', `misc-cmds', `misc-fns', `strings', `thingatpt',
-;;   `thingatpt+', `zones'.
+;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -328,6 +326,8 @@
 ;;                  (Emacs 22+)
 ;;    `C-end'      `goto-longest-line' (requires `misc-cmds.el')
 ;;    `C-left'     `isearchp-init-edit' (Emacs 22+)
+;;    `C-SPC C-SPC' `isearchp-toggle-region-deactivation'
+;;                  (Emacs 24.3+)
 ;;    `C-b'        `isearchp-init-edit' (Emacs 22+)
 ;;    `C-h'        `isearch-mode-help'
 ;;    `C-t'        `isearchp-property-forward' (Emacs 23+)
@@ -785,9 +785,7 @@
 ;;    by option `isearchp-restrict-to-region-flag'.  Deactivation of
 ;;    the active region is controlled by option
 ;;    `isearchp-deactivate-region-flag'.  Both of these are available
-;;    for Emacs 24.3 and later.  You can use `C-x n' (command
-;;    `isearchp-toggle-region-restriction') during search to toggle
-;;    `isearchp-restrict-to-region-flag'.
+;;    for Emacs 24.3 and later.
 ;;
 ;;    Restriction of Isearch to the region works also for a
 ;;    rectangular region (which you create using `M-x
@@ -795,6 +793,14 @@
 ;;
 ;;    NOTE: For search to be limited to the region in Info, you must
 ;;    also use library `info+.el'.
+;;
+;;    You can use `C-x n' (command
+;;    `isearchp-toggle-region-restriction') and `C-SPC C-SPC' (command
+;;    `isearchp-toggle-region-deactivation') during search to toggle
+;;    `isearchp-restrict-to-region-flag' and
+;;    `isearchp-deactivate-region-flag', respectively, but in each
+;;    case the new value takes effect only when the current search is
+;;    exited.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
@@ -1163,6 +1169,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/06 dadams
+;;     Added: isearchp-toggle-region-deactivation.  Bound to C-SPC C-SPC.
 ;; 2018/02/28 dadams
 ;;     isearch-lazy-highlight-update: do not use isearch-lazy-highlight-update if nil.
 ;; 2017/11/12 dadams
@@ -3267,10 +3275,20 @@ Use \\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' to do that."
     (isearch-update))
 
   (defun isearchp-toggle-region-restriction () ; Bound to `C-x n' in `isearch-mode-map'.
-    "Toggle option `isearchp-restrict-to-region-flag'."
+    "Toggle option `isearchp-restrict-to-region-flag'.
+The new value takes effect only when the current search is exited."
     (interactive)
     (setq isearchp-restrict-to-region-flag  (not isearchp-restrict-to-region-flag))
     (message "Restricting search to active region is now %s" (if isearchp-restrict-to-region-flag 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
+  (defun isearchp-toggle-region-deactivation () ; Bound to `C-SPC C-SPC' in `isearch-mode-map'.
+    "Toggle option `isearchp-deactivate-region-flag'.
+The new value takes effect only when the current search is exited."
+    (interactive)
+    (setq isearchp-deactivate-region-flag  (not isearchp-deactivate-region-flag))
+    (message "Deactivating the region is now %s" (if isearchp-deactivate-region-flag 'ON 'OFF))
     (sit-for 1)
     (isearch-update))
 
@@ -4031,6 +4049,7 @@ Commands
 \\[isearch-toggle-invisible]\t- toggle searching invisible text, for current search or more
 \\[isearchp-toggle-option-toggle]\t- toggle option `isearchp-toggle-option-flag'
 \\[isearchp-toggle-region-restriction]\t- toggle restricting search to active region
+\\[isearchp-toggle-region-deactivation]\t- toggle deactivating the region
 \\[isearchp-toggle-set-region]\t- toggle setting region around search target
 \\[isearchp-toggle-regexp-quote-yank]\t- toggle quoting (escaping) of regexp special characters
 \\[isearch-toggle-word]\t- toggle word-searching
@@ -6621,7 +6640,8 @@ Elements of ALIST that are not conses are ignored."
   (define-key isearch-mode-map "\C-x"             nil)
   (when (or (> emacs-major-version 24)  ; Emacs 24.3+
             (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
-    (define-key isearch-mode-map "\C-xn"          'isearchp-toggle-region-restriction)) ; `n'arrow to region
+    (define-key isearch-mode-map "\C-xn"                 'isearchp-toggle-region-restriction) ; `n'arrow to region
+    (define-key isearch-mode-map (kbd "C-<SPC> C-<SPC>") 'isearchp-toggle-region-deactivation))
   (define-key isearch-mode-map "\C-xo"            'isearchp-open-recursive-edit) ; `o'pen edit session
   ;; Do this even for Emacs 24.4+ (where it is true by default), because we set `C-x' to nil.
   (when (> emacs-major-version 22)      ; Emacs 23+ (supports Unicode)
