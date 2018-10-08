@@ -81,18 +81,32 @@
 
 ;;; Require
 
-
 ;;; Code:
 
-;;; ### Indent ###
-;;; --- 缩进设置
-(setq-default indent-tabs-mode t)       ;默认用Tab模式
-(setq default-tab-width 4)              ;设置TAB默认的宽度
-(dolist (hook (list                     ;设置用空格替代TAB的模式
-               'emacs-lisp-mode-hook
-               'lisp-mode-hook
-               'lisp-interaction-mode-hook
-               'scheme-mode-hook
+(defun adjust-languages-indent (n)
+  ;; Java/C/C++
+  (setq-local c-basic-offset n)
+
+  ;; Web development
+  (setq-local coffee-tab-width n)
+  (setq-local javascript-indent-level n)
+  (setq-local js-indent-level n)
+  (setq-local js2-basic-offset n)
+
+  (setq-local web-mode-attr-indent-offset n)
+  (setq-local web-mode-attr-value-indent-offset n)
+  (setq-local web-mode-code-indent-offset n)
+  (setq-local web-mode-css-indent-offset n)
+  (setq-local web-mode-markup-indent-offset n)
+  (setq-local web-mode-sql-indent-offset n)
+
+  (setq-local css-indent-offset n))
+
+(defun use-two-spaces-instead-tab ()
+  (setq indent-tabs-mode nil)
+  (adjust-languages-indent 2))
+
+(dolist (hook (list
                'c-mode-hook
                'c++-mode-hook
                'java-mode-hook
@@ -101,9 +115,13 @@
                'emms-tag-editor-mode-hook
                'sh-mode-hook
                'haskell-cabal-mode-hook
+               'ruby-mode-hook
                'qml-mode-hook
+               'web-mode-hook
+               'scss-mode-hook
+               'coffee-mode-hook
                ))
-  (add-hook hook '(lambda () (setq indent-tabs-mode nil))))
+  (add-hook hook '(lambda () (use-two-spaces-instead-tab))))
 
 (provide 'init-indent)
 
