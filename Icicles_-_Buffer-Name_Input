@@ -129,7 +129,7 @@ When cached or recently used file names are included as candidates, option '''`<
 files from content-searching whose names match its patterns,
 similarly to what `icicle-buffer-skip-functions' does for buffer names.
 
-
+[:sorting]
 During completion, candidate sorting is specific to buffer names.
 `##C-,##' cycles among the following ''sort orders'':
 
