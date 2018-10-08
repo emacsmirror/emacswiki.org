@@ -70,6 +70,11 @@ to something like:
    (define-derived-mode edit-server-text-mode markdown-mode "Edit Server Text Mode"
 </pre>
 
+Or instead of editing edit-server.el add this:
+<pre>
+  (add-hook 'edit-server-start-hook 'markdown-mode)
+</pre>
+
 === Integrating with other modes ===
 
 TODO: Look at integrating as-external...
