@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Sep 21 11:46:34 2018 (-0700)
+;; Last-Updated: Wed Oct 10 14:28:56 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 8782
+;;     Update #: 8788
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -710,7 +710,8 @@
 ;;    `bookmark-edit-annotation-mode', `bookmark-insert',
 ;;    `bookmark-insert-annotation',
 ;;    `bookmark-insert-current-bookmark', `bookmark-insert-location',
-;;    `bookmark-jump', `bookmark-jump-other-window', `bookmark-load',
+;;    `bookmark-jump', `bookmark-jump-other-frame',
+;;    `bookmark-jump-other-window', `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
 ;;    `bookmark-send-edited-annotation', `bookmark-set',
 ;;    `bookmark-set-name', `bookmark-yank-word'.
@@ -2860,6 +2861,22 @@ See `bookmark-jump', in particular for info about using a prefix arg."
                                                (bmkp-default-bookmark-name))
                      current-prefix-arg))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
+
+
+;; REPLACES ORIGINAL in `bookmark.el' (Emacs 27+)
+;;
+;; 1. Added optional arg FLIP-USE-REGION-P.
+;; 2. Use `bmkp-default-bookmark-name' as default when interactive.
+;; 3. Use `bmkp-jump-1'.
+;;
+;;;###autoload (autoload 'bookmark-jump-other-frame "bookmark+")
+(defun bookmark-jump-other-frame (bookmark &optional flip-use-region-p) ; Bound to `C-x 5 B'
+  "Jump to bookmark BOOKMARK in another frame.
+See `bookmark-jump', in particular for info about using a prefix arg."
+  (interactive (list (bookmark-completing-read "Jump to bookmark (in another frame)"
+                                               (bmkp-default-bookmark-name))
+                     current-prefix-arg))
+  (let ((pop-up-frames  t)) (bookmark-jump-other-window bookmark flip-use-region-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
