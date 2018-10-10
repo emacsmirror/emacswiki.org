@@ -8,3 +8,15 @@ Get it from [[https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjb
 
 For emacs keybindings of browser functions, see:
 https://chrome.google.com/webstore/detail/bkbaanfaopgmdicplibllmdkfkmfafad
+
+== Atomic Chrome for Emacs ==
+
+The Atom fans have implemented an [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc extension]] to talk to  Chrome over a websocket. The same extension can be used to interface Chrome with Emacs. 
+
+As mentioned on the [[https://github.com/alpha22jp/atomic-chrome github page]], there are a few advantages over [[Edit with Emacs]]
+
+* The input on Emacs is reflected to the browser instantly and continuously.
+* You can use both the browser and Emacs at the same time. They are updated to the same content bi-directionally.
+* You can associate the mode based on the URL. e.g. gfm-mode for github.com, textile-mode for redmine, etc.
+
+To complete the Emacs side of the setup, you need the atomic-chrome package which is available on melpa.
