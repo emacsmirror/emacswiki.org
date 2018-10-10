@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Mon Jan  1 09:57:17 2018 (-0800)
+;; Last-Updated: Wed Oct 10 15:00:22 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 794
+;;     Update #: 804
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -381,8 +381,10 @@ Each value of the list is a prefix key bound to keymap
 (define-key bookmark-bmenu-mode-map "J"  nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "J"  bmkp-jump-map)
 (define-key bookmark-bmenu-mode-map "j"  bmkp-jump-other-window-map)
-(define-key bookmark-bmenu-mode-map "j>" 'bmkp-bmenu-jump-to-marked)  ; `j >'
+(define-key bookmark-bmenu-mode-map "j>" 'bmkp-bmenu-jump-to-marked)                           ; `j >'
 
+(define-key ctl-x-5-map                "B"    'bookmark-jump-other-frame)       ; `C-x j 5', `C-x 5 B'
+(define-key bmkp-jump-map              "5"    'bookmark-jump-other-frame )                     ; `J 5'
 (define-key bmkp-jump-map              "."    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "."    nil) ; For Emacs 20
 (define-key bmkp-jump-map              ".d"   'bmkp-dired-this-dir-jump)                 ; `C-x j . d'
