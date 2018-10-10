@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Sep 21 12:05:21 2018 (-0700)
+;; Last-Updated: Wed Oct 10 15:14:44 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 16458
+;;     Update #: 16463
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2018/10/10 dadams
+;;     Added: bookmark-jump-other-frame.
 ;; 2018/09/21 dadams
 ;;     bmkp-show-this-annotation-read-only, bmkp-edit-this-annotation, bmkp-desktop-read,
 ;;       bmkp-jump-man, bmkp-jump-dired, bmkp-jump-to-type, bmkp-*-jump, bmkp-jump-in-navlist:
@@ -1369,6 +1371,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2018/10/10 dadams
+;;     Added: bookmark-bmenu-other-frame.
+;;     bookmark-bmenu-mode: Added bookmark-bmenu-other-frame to doc string.
 ;; 2018/09/21 dadams
 ;;     Added: bmkp--pop-to-buffer-same-window.  (Added also to bookmark+-lit.el.)
 ;;     bookmark-bmenu-2-window, bookmark-bmenu-this-window:
@@ -2010,6 +2015,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2018/10/10 dadams
+;;     Bound bookmark-jump-other-frame to C-x 5 B, C-x j 5 globally, and J 5 in bookmark-list buffer.
 ;; 2017/10/14 dadams
 ;;     All EWW stuff is for Emacs 25+, not Emacs 24.4+.
 ;; 2017/01/10 dadams
