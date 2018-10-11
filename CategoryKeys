@@ -22,7 +22,7 @@ For more information on using menus, see CategoryMenus.
 
 * To find out what command is invoked by a given key, use `C-h k' (command `describe-key').
 * To see which keys are bound to a given command, use `C-h w' (command `where-is').
-* To see the currently bound keys, use `C-b' (command `describe-bindings').
+* To see the currently bound keys, use `C-h b' (command `describe-bindings').
 
 * [[Icicles - Key Completion]] -- Complete a key sequence. Show on-the-fly help about the currently available keys and their commands (including [[menu bar]] menus). See which are prefix keys and which are bound locally.
 * ##guide-key## or ##which-key## -- Show help for current key bindings when you pause
