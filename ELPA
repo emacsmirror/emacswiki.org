@@ -19,7 +19,6 @@ Add this to your [[init file]]:
 
 {{{
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 }}}
 
@@ -30,7 +29,6 @@ Package archives may also be [[LocalElpaArchive|local to your machine]].
 You can also add repositories one at a time:
 
 {{{
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 }}}
@@ -53,8 +51,6 @@ You get a UI and then you can add the archives directly:
 Hide Package Archives:
 INS DEL Archive name: gnu
             URL or directory name: https://elpa.gnu.org/packages/
-INS DEL Archive name: marmalade
-            URL or directory name: https://marmalade-repo.org/packages/
 INS
     State : SAVED and set.
    An alist of archives from which to fetch. Hide
