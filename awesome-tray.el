@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-10-07 07:30:16
-;; Version: 0.6
-;; Last-Updated: 2018-10-07 19:44:14
+;; Version: 0.8
+;; Last-Updated: 2018-10-11 19:41:01
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tray.el
 ;; Keywords:
@@ -64,13 +64,19 @@
 ;;
 ;; `awesome-tray-mode-line-active-color'
 ;; `awesome-tray-mode-line-inactive-color'
-;; `awesome-tray-info-face'
+;; `awesome-tray-active-modules'
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET awesome-tray RET
 ;;
 
 ;;; Change log:
+;;
+;; 2018/10/11
+;;	* Reimplement `awesome-tray-module-git-info' don't depend on magit.
+;;
+;; 2018/10/09
+;;      * Add new option `awesome-tray-active-modules'.
 ;;
 ;; 2018/10/07
 ;;      * First released.
@@ -108,9 +114,30 @@
   :type 'string
   :group 'awesome-tray)
 
-(defface awesome-tray-info-face
+(defcustom awesome-tray-active-modules
+  '("location" "git" "mode-name" "date")
+  "Default active modules."
+  :type 'list
+  :group 'awesome-tray)
+
+(defface awesome-tray-module-git-face
+  '((t (:foreground "SystemPinkColor" :bold t)))
+  "Git face."
+  :group 'awesome-tray)
+
+(defface awesome-tray-module-mode-name-face
   '((t (:foreground "green3" :bold t)))
-  "Face tray info."
+  "Mode name face."
+  :group 'awesome-tray)
+
+(defface awesome-tray-module-location-face
+  '((t (:foreground "SystemOrangeColor" :bold t)))
+  "Location face."
+  :group 'awesome-tray)
+
+(defface awesome-tray-module-date-face
+  '((t (:foreground "SystemGrayColor" :bold t)))
+  "Date face."
   :group 'awesome-tray)
 
 (define-minor-mode awesome-tray-mode
@@ -121,13 +148,16 @@
       (awesome-tray-enable)
     (awesome-tray-disable)))
 
-(defvar awesome-tray-info-padding-right 1)
+(defvar awesome-tray-info-padding-right 2)
 
 (defvar awesome-tray-mode-line-colors nil)
 
 (defvar awesome-tray-timer nil)
 
 (defvar awesome-tray-active-p nil)
+
+(defvar awesome-tray-all-modules
+  '("git" "mode-name" "location" "date"))
 
 (defun awesome-tray-enable ()
   ;; Save mode-line colors when first time.
@@ -177,8 +207,9 @@
                       :box (nth 7 awesome-tray-mode-line-colors)
                       :height 1)
   ;; Cancel timer.
-  (cancel-timer awesome-tray-timer)
-  (remove-hook 'focus-in-hook 'awesome-tray-timer)
+  (when (timerp awesome-tray-timer)
+    (cancel-timer awesome-tray-timer))
+  (remove-hook 'focus-in-hook 'awesome-tray-show-info)
   ;; Update mode-line.
   (force-mode-line-update)
   (redraw-display)
@@ -189,26 +220,37 @@
   (message "Disable awesome tray."))
 
 (defun awesome-tray-build-info ()
-  (let ((info ""))
-    ;; Collection information.
-    (mapcar #'(lambda (i) (setq info (format " %s %s" info i)))
-            (list
-             ;; Git branch.
-             (if (fboundp 'magit-get-current-branch)
-                 (let ((branch (magit-get-current-branch)))
-                   (if branch
-                       (format "Git:%s" branch)
-                     ""))
-               "")
-             ;; Current mode.
-             major-mode
-             ;; Location.
-             (format "(%s:%s)" (line-number-at-pos) (current-column))
-             ;; Date.
-             (format-time-string "[%Y-%m-%d %H:%M]")))
-    ;; Add color property.
-    (put-text-property 0 (length info) 'face 'awesome-tray-info-face info)
-    info))
+  (condition-case nil
+      (mapconcat 'identity (mapcar 'awesome-tray-get-module-info awesome-tray-active-modules) " ")
+    (format "Awesome Tray broken.")))
+
+(defun awesome-tray-get-module-info (module-name)
+  (cond ((string-equal module-name "git")
+         (propertize (awesome-tray-module-git-info) 'face 'awesome-tray-module-git-face))
+        ((string-equal module-name "mode-name")
+         (propertize (awesome-tray-module-mode-name-info) 'face 'awesome-tray-module-mode-name-face))
+        ((string-equal module-name "location")
+         (propertize (awesome-tray-module-location-info) 'face 'awesome-tray-module-location-face))
+        ((string-equal module-name "date")
+         (propertize (awesome-tray-module-date-info) 'face 'awesome-tray-module-date-face)
+         )))
+
+(defun awesome-tray-module-git-info ()
+  (if (executable-find "git")
+      (let ((current-branch (replace-regexp-in-string "\n" "" (shell-command-to-string "git symbolic-ref --short HEAD"))))
+        (if (string-prefix-p "fatal: Not a git repository" current-branch)
+            ""
+          current-branch))
+    ""))
+
+(defun awesome-tray-module-mode-name-info ()
+  (format "%s" major-mode))
+
+(defun awesome-tray-module-location-info ()
+  (format "(%s:%s)" (line-number-at-pos) (current-column)))
+
+(defun awesome-tray-module-date-info ()
+  (format-time-string "[%Y-%m-%d %H:%M]"))
 
 (defun awesome-tray-show-info ()
   ;; Only flush tray info when current message is empty.
@@ -235,16 +277,18 @@
 ;; Wrap `message' make tray information visible always
 ;; even other plugins call `message' to flush minibufer.
 (defadvice message (around awesome-tray-advice activate)
-  (if awesome-tray-active-p
-      (cond
-       ;; Just flush tray info if message string is empty.
-       ((not (ad-get-arg 0))
-        ad-do-it
-        (awesome-tray-flush-info))
-       ;; Otherwise, wrap message string with tray info.
-       (t (let ((formatted-string (apply 'format (ad-get-args 0))))
-            (ad-set-args 0 `(,(awesome-tray-get-echo-format-string formatted-string)))
-            ad-do-it)))
+  (condition-case nil
+      (if awesome-tray-active-p
+          (cond
+           ;; Just flush tray info if message string is empty.
+           ((not (ad-get-arg 0))
+            ad-do-it
+            (awesome-tray-flush-info))
+           ;; Otherwise, wrap message string with tray info.
+           (t (let ((formatted-string (apply 'format (ad-get-args 0))))
+                (ad-set-args 0 `(,(awesome-tray-get-echo-format-string formatted-string)))
+                ad-do-it)))
+        ad-do-it)
     ad-do-it))
 
 (provide 'awesome-tray)
