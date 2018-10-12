@@ -1,6 +1,6 @@
 == GNU Emacs ==
 * [[aaptel]] wrote with the help of Daniel Colascione and Philipp Stephani a proper module API for Emacs 25.1.  You must ##./configure --with-modules## to enable it.
-** There is [https://phst.github.io/emacs-modules some documentation], but it's [https://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00969.html not integrated into the Emacs manual].
+** The documentation was only integrated into the Elisp manual in version 26.2.  There is [https://phst.github.io/emacs-modules an earlier draft here].
 
 * [[tromey]] has written a [https://github.com/tromey/emacs-ffi module using this API which provides a FFI]. It allows to load and any external library from Emacs Lisp, without writing any C.
 
