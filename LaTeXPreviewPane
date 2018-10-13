@@ -7,12 +7,12 @@ The latest version of latex-preview-pane can always be found at: https://github.
 
 The following document details the installation and usage of latex-preview-pane. Below you can see a screenshot of LaTeX Preview Pane in action.
 
-[[image:LaTeXPreviewPaneSS]]
+[[image:SS.png]]
 
 
 Below, you can see LaTeX Preview Pane highlighting an error in a buffer.
 
-[[image:LaTeXPreviewPaneError]]
+[[image:Error.png]]
 
 == Installing LaTeX Preview Pane == 
 
