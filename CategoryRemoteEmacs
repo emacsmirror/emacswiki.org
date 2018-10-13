@@ -22,3 +22,5 @@ Not sure where to put this:
 Isn't this what RemoteDisplay does?
 
 : Um, no?  If I understand it correctly, it allows you to open a frame on a remote display (provided you have the necessary X authorization credentials, of course).
+
+:: (Maybe CollaborativeEditing is the right place for this discussion?)
