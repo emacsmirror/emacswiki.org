@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 18 13:34:02 2018 (-0700)
+;; Last-Updated: Sun Oct 14 13:15:47 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1932
+;;     Update #: 1984
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -111,6 +111,10 @@
 ;;
 ;;    `zz-izones', `zz-izones-var', `zz-lighter-narrowing-part',
 ;;    `zz-add-zone-anyway-p'.
+;;
+;;  Macros defined here:
+;;
+;;    `zz-user-error'.
 ;;
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
@@ -461,6 +465,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/14 dadams
+;;     Added (missing) macro zz-user-error.
+;;     Fixed (redefined) zz-noncontiguous-region-from-(i)zones.  Added optional arg to zz-*-from-izones.
+;;     zz-clone-zones, zz-clone-and-unite-zones: Return new value of TO-VARIABLE.
+;;     zz-add-zones-from-highlighting: Corrected error msg.
+;;     zz-query-replace(-regexp)-zones, zz-map-query-replace-regexp-zones, zz-replace-(string|regexp)-zones:
+;;       Use zz-query-replace-regexp-zones.
 ;; 2018/09/18 dadams
 ;;     Added: zz-add-zones-from-highlighting.
 ;; 2018/05/13 dadams
@@ -709,6 +720,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
  
+
+(defmacro zz-user-error (&rest args)
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+
 (defgroup zones nil
   "Zones of text - like multiple regions."
   :prefix "zz-"
@@ -1599,6 +1614,7 @@ With a prefix arg, make VARIABLE automatically be buffer-local."
 ;;;###autoload
 (defun zz-clone-zones (from-variable to-variable &optional msgp) ; Bound to `C-x n c'
   "Clone FROM-VARIABLE to TO-VARIABLE.
+Return the new value of TO-VARIABLE.
 That is, copy the zones of FROM-VARIABLE to (emptied) TO-VARIABLE.
 A non-destructive operation: The value of TO-VARIABLE is a new list,
  with only the zones from FROM-VARIABLE.
@@ -1620,14 +1636,16 @@ Non-interactively: Non-nil MSGP means show a status message."
      (when (and npref  (>= npref 0)) (make-local-variable to-var))
      (when (and npref  (<= npref 0)) (setq zz-izones-var to-var))
      (list from-var to-var t)))
-  (set to-variable (copy-sequence (symbol-value from-variable)))
-  (when msgp (message "Cloned `%s' to `%s'" from-variable to-variable)))
+  (prog1 (set to-variable (copy-sequence (symbol-value from-variable)))
+    (when msgp (message "Cloned `%s' to `%s'" from-variable to-variable))))
 
 ;;;###autoload
 (defalias 'zz-clone-and-coalesce-zones 'zz-clone-and-unite-zones)
 ;;;###autoload
 (defun zz-clone-and-unite-zones (from-variable to-variable &optional msgp) ; Bound to `C-x n C'
   "Clone FROM-VARIABLE to TO-VARIABLE, then unite (coalesce) TO-VARIABLE.
+Return the new value of TO-VARIABLE.
+
 That is, use`zz-clone-zones' to fill TO-VARIABLE, then use
 `zz-unite-zones' on TO-VARIABLE.
 
@@ -1647,8 +1665,8 @@ Non-interactively: Non-nil MSGP means show a status message."
      (when (and npref  (<= npref 0)) (setq zz-izones-var to-var))
      (list from-var to-var t)))
   (set to-variable (copy-sequence (symbol-value from-variable)))
-  (zz-unite-zones to-variable)
-  (when msgp (message "Cloned `%s' to `%s' and united `%s'" from-variable to-variable to-variable)))
+  (prog1 (zz-unite-zones to-variable)
+    (when msgp (message "Cloned `%s' to `%s' and united `%s'" from-variable to-variable to-variable))))
 
 ;;;###autoload
 (defalias 'zz-coalesce-zones 'zz-unite-zones)
@@ -1742,7 +1760,7 @@ When called from Lisp:
   `face'.  By default (nil), the property to check is `face'."
     (interactive
      (progn
-       (unless (require 'highlight nil t) (zz-user-error "You need library `zones.el' to use this command"))
+       (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
        `(,@(hlt-region-or-buffer-limits)
          ,(if current-prefix-arg
               (hlt-read-bg/face-name "Create zones highlighted with face: ")
@@ -1941,12 +1959,7 @@ The value of variable `zz-izones' defines the zones."
                                               nil))
             (beg     (point-max))
             (end     (point-min))
-            zs)
-       (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
-         (setq beg  (min beg (car zone))
-               end  (max end (cadr zone)))
-         (push (cons (car zone) (cadr zone)) zs))
-       (setq zs  (nreverse zs))
+            (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
        (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
     (unless zones (error "No zones to search"))
     (let ((region-extract-function  (lambda (_ignore) zones)))
@@ -1964,19 +1977,14 @@ The value of variable `zz-izones' defines the zones."
                                               nil))
             (beg     (point-max))
             (end     (point-min))
-            zs)
-       (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
-         (setq beg  (min beg (car zone))
-               end  (max end (cadr zone)))
-         (push (cons (car zone) (cadr zone)) zs))
-       (setq zs  (nreverse zs))
+            (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
        (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
     (unless zones (error "No zones to search"))
     (let ((region-extract-function  (lambda (_ignore) zones)))
       (query-replace-regexp regexp to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
 
-  (when (> emacs-major-version 26)      ; These three depend on the fix to Emacs bug #27897.
+  (when (> emacs-major-version 26) ; These three depend on the fix to Emacs bug #27897.
 
     (defun zz-map-query-replace-regexp-zones (regexp to-strings &optional n start end zones)
       "`map-query-replace-regexp' in the zones currently defined in the current buffer.
@@ -1988,12 +1996,7 @@ The value of variable `zz-izones' defines the zones."
                                            nil nil nil query-replace-to-history-variable from t))
               (beg   (point-max))
               (end   (point-min))
-              zs)
-         (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
-           (setq beg  (min beg (car zone))
-                 end  (max end (cadr zone)))
-           (push (cons (car zone) (cadr zone)) zs))
-         (setq zs  (nreverse zs))
+              (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
          (list from to (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)) beg end zs)))
       (unless zones (error "No zones to search"))
       (let ((region-extract-function  (lambda (_ignore) zones)))
@@ -2013,12 +2016,7 @@ The value of variable `zz-izones' defines the zones."
                                                nil))
              (beg     (point-max))
              (end     (point-min))
-             zs)
-         (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
-           (setq beg  (min beg (car zone))
-                 end  (max end (cadr zone)))
-           (push (cons (car zone) (cadr zone)) zs))
-         (setq zs  (nreverse zs))
+             (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
          (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
       (unless zones (error "No zones to search"))
       (let ((region-extract-function  (lambda (_ignore) zones)))
@@ -2038,7 +2036,7 @@ The value of variable `zz-izones' defines the zones."
                                                t))
              (beg     (point-max))
              (end     (point-min))
-             zs)
+             (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
          (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
       (unless zones (error "No zones to search"))
       (let ((region-extract-function  (lambda (_ignore) zones)))
@@ -2060,19 +2058,21 @@ The value of variable `zz-izones' defines the zones."
 
   )
 
-(defun zz-noncontiguous-region-from-izones ()
-  "Return a noncontiguous region from value of value of `zz-izones-var'.
+(defun zz-noncontiguous-region-from-izones (&optional variable)
+  "Return a noncontiguous region from value of value of VARIABLE.
+VARIABLE defaults to the value of `zz-izones-var'.
 An Emacs \"noncontiguous region\" (Emacs 25+) is what the value of
 `region-extract-function' returns.  It is like a list of basic zones,
 but the entry pairs are dotted: `(beg . end)', not `(beg end)'."
-  (nreverse (zz-izone-limits (zz-unite-zones zz-izones-var))))
+  (let ((iz-var  (make-symbol "NRFI")))
+    (zz-dot-pairs (zz-izone-limits (zz-clone-and-unite-zones (or variable  zz-izones-var) iz-var)))))
 
 (defun zz-noncontiguous-region-from-zones (basic-zones)
   "Return a noncontiguous region from a list of BASIC-ZONES.
 An Emacs \"noncontiguous region\" (Emacs 25+) is what the value of
 `region-extract-function' returns.  It is like a list of basic zones,
 but the entry pairs are dotted: `(beg . end)', not `(beg end)'."
-  (mapcar #'zz-dot-pairs (zz-zone-union basic-zones)))
+  (zz-dot-pairs (zz-zone-union basic-zones)))
 
 (defun zz-dot-pairs (pairs)
   "Dot PAIRS, a list of lists, each of which has at least two elements."
