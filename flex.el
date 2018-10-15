@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-10-04 08:41:04
-;; Version: 0.4
-;; Last-Updated: 2018-10-14 14:10:08
+;; Version: 0.5
+;; Last-Updated: 2018-10-15 21:45:03
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/flex.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/10/15
+;;	* Highlight comment block.
+;; 
 ;; 2018/10/14
 ;;      * Use overlay instead regexp to match pattern content.
 ;;      * Adjust overlay regexp to match any pattern line.
@@ -219,6 +222,7 @@
      ("\\(^\\(%{\\|%}\\)\\)" 1 'flex-font-lock-declare-delimiter-face)
      ("\\(^%%\\)" 1 'flex-font-lock-pattern-delimiter-face)
      ("\\(%option\\|%x\\)" 1 'font-lock-keyword-face)
+     ("/\\*\\s-.*\\*/" 0 'font-lock-comment-face)
      ))
   (set (make-local-variable 'font-lock-keywords-only) t)
   (font-lock-mode 1))
