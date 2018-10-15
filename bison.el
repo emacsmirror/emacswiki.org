@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-10-06 11:59:10
-;; Version: 0.1
-;; Last-Updated: 2018-10-06 11:59:10
+;; Version: 0.2
+;; Last-Updated: 2018-10-15 21:45:29
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/bison.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/10/15
+;;	* Highlight comment block.
+;; 
 ;; 2018/10/06
 ;;      * First released.
 ;;
@@ -153,6 +156,7 @@
      ("\\(%token\\|%union\\|%type\\|%left\\|%right\\|%nonassoc\\)" 1 'font-lock-keyword-face)
      ("^|\\(\\s-.*\\){" 1 'bison-font-lock-rule-content-face)
      ("^.*:\\s-\\(.*\\){" 1 'bison-font-lock-rule-content-face)
+     ("/\\*\\s-.*\\*/" 0 'font-lock-comment-face)
      ))
   (set (make-local-variable 'font-lock-keywords-only) t)
   (font-lock-mode 1))
