@@ -12,5 +12,7 @@ Put <code>wavefront-obj-mode.el</code> in your load-path and add the following l
  (add-to-list 'auto-mode-alist '("\\.obj\\'" . wavefront-obj-mode))
  (add-to-list 'auto-mode-alist '("\\.mtl\\'" . wavefront-obj-mode))
 
+For Wavefront 3D obj specification, see https://en.wikipedia.org/wiki/Wavefront_.obj_file
+
 ----
 CategoryModes
