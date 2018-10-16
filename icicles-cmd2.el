@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Sep  9 10:01:01 2018 (-0700)
+;; Last-Updated: Mon Oct 15 19:21:31 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 7446
+;;     Update #: 7454
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8285,11 +8285,13 @@ filtering:
               (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
               (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
               (icicle-require-match-flag               icicle-buffer-require-match-flag)
+              (icicle-buffer-completing-p              t)
               (icicle-extra-candidates                 icicle-buffer-extras)
-              (icicle-delete-candidate-object          'icicle-kill-a-buffer) ; `S-delete' kills buf
+              (icicle-delete-candidate-object          'icicle-kill-a-buffer) ; `S-delete' kills current buf
               (icicle-transform-function               'icicle-remove-dups-if-extras)
+              (icicle-sort-comparer                    icicle-sort-comparer)
               (icicle--temp-orders
-               (append (list '("by last access") ; Renamed from "turned OFF'.
+               (append (list '("by last display time") ; Renamed from "turned OFF'.
                              '("*...* last" . icicle-buffer-sort-*...*-last)
                              '("by buffer size" . icicle-buffer-smaller-p)
                              '("by major mode name" . icicle-major-mode-name-less-p)
@@ -8297,11 +8299,11 @@ filtering:
                                   '("by mode-line mode name" . icicle-mode-line-name-less-p))
                              '("by file/process name" . icicle-buffer-file/process-name-less-p))
                        (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
-              ;; Put `icicle-buffer-sort' first.  If already in list, move it, else add it, to start.
+              ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
               (icicle-sort-orders-alist
-               (progn (when (and icicle-buffer-sort-first-time-p  icicle-buffer-sort)
-                        (setq icicle-sort-comparer             icicle-buffer-sort
-                              icicle-buffer-sort-first-time-p  nil))
+               (progn (when t ; $$$$ (and icicle-buffer-sort-first-time-p  icicle-buffer-sort)
+                        (setq icicle-sort-comparer  icicle-buffer-sort))
+                      ;; $$$$ (setq icicle-buffer-sort-first-time-p  nil))
                       (if icicle-buffer-sort
                           (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
                             (if already-there
