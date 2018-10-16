@@ -1,0 +1,16 @@
+WavefrontObjMode is a major mode for editing Wavefront 3D obj ascii files.  I has simple syntax highlighting, Imenu support, and movement-by-defun and paragraph (object/group blocks).
+
+Download: https://raw.github.com/abend/obj-mode/master/wavefront-obj-mode.el
+
+Git repo: https://github.com/abend/wavefront-obj-mode
+
+Installation:
+
+Put <code>wavefront-obj-mode.el</code> in your load-path and add the following line to the .emacs file:
+
+ (require 'wavefront-obj-mode)
+ (add-to-list 'auto-mode-alist '("\\.obj\\'" . wavefront-obj-mode))
+ (add-to-list 'auto-mode-alist '("\\.mtl\\'" . wavefront-obj-mode))
+
+----
+CategoryModes
