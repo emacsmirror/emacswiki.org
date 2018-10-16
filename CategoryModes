@@ -100,7 +100,7 @@ operations on files in the solution.
 * MuttMode -- use emacs as editor for mutt
 * MuttRc -- generic mode for mutt configuration files
 * MTraceMode -- keep track of hidden buffer changes
-* ObjMode -- Edit 3D Wavefront Obj format files
+* ObjMode -- Edit 3D Wavefront Obj format files (see WavefrontObjMode)
 * OrgMode -- Keep notes, maintain TODO lists, do project planning, and author with plain-text system.
 * OccurMode -- Create a hyperlinked index for the lines in a buffer that match a regexp
 * OutlineMode -- hide blocks of text beneath a heirarchy of headings (see also CategoryTodo)
@@ -151,6 +151,7 @@ operations on files in the solution.
 * [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightMode] -- Minor mode provides visual feedback on some operations: undo, yank and etc.
 * VersionControl -- and various similar implementations
 * WajigMode -- An interface for wajig
+* WavefrontObjMode -- Edit 3D Wavefront Obj format files
 * WebgenMode -- minor mode for [http://webgen.rubyforge.org/ webgen]
 * WhiteSpace -- minor mode to visualize (HARD) SPACE, TAB and NEWLINE
 * WikiMode
