@@ -6,7 +6,7 @@ Git repo: https://github.com/abend/wavefront-obj-mode
 
 Installation:
 
-Put <code>wavefront-obj-mode.el</code> in your load-path and add the following line to the .emacs file:
+Put <code>wavefront-obj-mode.el</code> in your load-path and add the following line to the <code>.emacs</code> file:
 
  (require 'wavefront-obj-mode)
  (add-to-list 'auto-mode-alist '("\\.obj\\'" . wavefront-obj-mode))
