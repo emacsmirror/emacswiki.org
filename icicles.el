@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2018.02.13
+;; Version: 2018.10.15
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 13 15:00:55 2018 (-0800)
+;; Last-Updated: Mon Oct 15 19:38:36 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 23733
+;;     Update #: 23738
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1419,12 +1419,11 @@
 ;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
 ;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
 ;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
-;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
-;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
-;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
-;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
-;;    `icicle-char-property-value-history',
+;;    `icicle-bufflist', `icicle-candidate-action-fn',
+;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
+;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
+;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
+;;    `icicle-cands-to-narrow', `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -1466,8 +1465,7 @@
 ;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p', `icicle-ffap-max-region-size',
 ;;    `icicle-file-menu-map', `icicle-file-name-completion-table',
-;;    `icicle-files', `icicle-file-sort-first-time-p',
-;;    `icicle-filtered-default-value',
+;;    `icicle-files', `icicle-filtered-default-value',
 ;;    `icicle-find-file-abs-action-fn', `icicle-find-file-action-fn',
 ;;    `icicle-font-name-history', `icicle-frame-alist',
 ;;    `icicle-frame-name-history', `icicle-frames-menu-map',
