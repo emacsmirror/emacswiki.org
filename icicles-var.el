@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Tue Feb 13 14:18:30 2018 (-0800)
+;; Last-Updated: Mon Oct 15 19:15:28 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1888
+;;     Update #: 1892
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -49,12 +49,11 @@
 ;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
 ;;    `icicle-bookmark-types', `icicle-buffer-complete-fn',
 ;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
-;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
-;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
-;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
-;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
-;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
-;;    `icicle-char-property-value-history',
+;;    `icicle-bufflist', `icicle-candidate-action-fn',
+;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
+;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
+;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
+;;    `icicle-cands-to-narrow', `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
@@ -84,7 +83,6 @@
 ;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p',
 ;;    `icicle-file-name-completion-table' (Emacs 24+),
-;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
 ;;    `icicle-full-cand-fn', `icicle-function-name-history',
@@ -331,8 +329,9 @@ If the value is nil then:
 (defvar icicle-buffer-name-input-p nil
   "Non-nil means we are reading a buffer name.")
 
-(defvar icicle-buffer-sort-first-time-p t
-  "Non-nil means buffer-name completion has not yet been used.")
+;;; $$$$
+;;; (defvar icicle-buffer-sort-first-time-p t
+;;;   "Non-nil means buffer-name completion has not yet been used.")
 
 (defvar icicle-bufflist 'icicle-bufflist--NOT-A-LIST
   "List of buffers used as completion candidates for `icicle-read-buffer'.
@@ -614,8 +613,9 @@ Do not set or bind this.  This is bound only by `completing-read'.")
                               #'completion-file-name-table)
     "Completion table used for file-name completion."))
 
-(defvar icicle-file-sort-first-time-p t
-  "Non-nil means file-name completion has not yet been used.")
+;;; $$$$
+;;; (defvar icicle-file-sort-first-time-p t
+;;;   "Non-nil means file-name completion has not yet been used.")
 
 (defvar icicle-filtered-default-value nil
   "Minibuffer default value, after filtering with `icicle-filter-wo-input'.")
