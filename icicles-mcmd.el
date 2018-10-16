@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Apr  2 07:49:06 2018 (-0700)
+;; Last-Updated: Mon Oct 15 19:35:19 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 19857
+;;     Update #: 19863
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2008,65 +2008,69 @@ minibuffer invocation because there are more candidates than
 The newly chosen sort order takes effect only when sorting is turned
 on again (e.g. because there are fewer candidates)."
   (interactive "P")
-  (setq icicle-sort-orders-alist  (delq nil icicle-sort-orders-alist)) ; Purge any nil entries.
-  (if (and (interactive-p)  icicle-inhibit-sort-p)
-      (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
-    (if (and arg  (not (consp arg)))
-        (icicle-reverse-sort-order)
-      (let* ((following-order   nil)
-             (use-completion-p  (if (integerp icicle-change-sort-order-completion)
-                                    (> (length (icicle-current-sort-functions))
-                                       icicle-change-sort-order-completion)
-                                  icicle-change-sort-order-completion))
-             (use-completion-p  (or (and (not arg)  use-completion-p) ; Use completion.
-                                    (and arg        (not use-completion-p))))
-             next-order)
-        (cond (use-completion-p
-               (setq next-order  (let ((icicle-whole-candidate-as-text-prop-p   nil)
-                                       (icicle-must-pass-after-match-predicate  nil)
-                                       (icicle-show-Completions-initially-flag  t)
-                                       (enable-recursive-minibuffers            t)
-                                       (icicle-default-value                    t) ; Put current in prompt.
-                                       (icicle-default-in-prompt-format-function
-                                        (lambda (def) (format " (NOW: %s)" def))))
-                                   (save-selected-window
-                                     (completing-read
-                                      (format "New %ssort order: " (if alternativep "alternative " ""))
-                                      (icicle-current-sort-functions)
-                                      nil t nil nil
-                                      (car (rassoc (if alternativep
-                                                       icicle-alternative-sort-comparer
-                                                     icicle-sort-comparer)
-                                                   icicle-sort-orders-alist))))))
-               (when (if alternativep icicle-alternative-sort-comparer icicle-sort-comparer)
-                 (setq icicle-last-sort-comparer  (if alternativep ; Save current as last.
-                                                      icicle-alternative-sort-comparer
-                                                    icicle-sort-comparer)))
-               (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
-                    (cdr (assoc next-order icicle-sort-orders-alist))))
-              (t                        ; Cycle to next sort order.
-               (let ((orders  (mapcar #'car (icicle-current-sort-functions))))
-                 (setq next-order       (or (cadr (memq (icicle-current-sort-order alternativep) orders))
-                                            (car orders))
-                       following-order  (or (cadr (memq next-order orders))  (car orders)))
+  (let ((orders  (delq nil icicle-sort-orders-alist))) ; Purge any nil entries.
+    (if (and (interactive-p)  icicle-inhibit-sort-p)
+        (icicle-msg-maybe-in-minibuffer "Cannot sort candidates now")
+      (if (and arg  (not (consp arg)))
+          (icicle-reverse-sort-order)
+        (let* ((following-order   nil)
+               (use-completion-p  (if (integerp icicle-change-sort-order-completion)
+                                      (> (length (icicle-current-sort-functions orders))
+                                         icicle-change-sort-order-completion)
+                                    icicle-change-sort-order-completion))
+               (use-completion-p  (or (and (not arg)  use-completion-p) ; Use completion.
+                                      (and arg        (not use-completion-p))))
+               next-order)
+          (cond (use-completion-p
+                 (setq next-order  (let ((icicle-whole-candidate-as-text-prop-p   nil)
+                                         (icicle-must-pass-after-match-predicate  nil)
+                                         (icicle-show-Completions-initially-flag  t)
+                                         (enable-recursive-minibuffers            t)
+                                         (icicle-default-value                    t) ; Put current in prompt.
+                                         (icicle-sort-comparer                    'icicle-case-string-less-p)
+                                         (icicle-sort-orders-alist                nil) ; No choices here.
+                                         (icicle-default-in-prompt-format-function
+                                          (lambda (def) (format " (NOW: %s)" def))))
+                                     (save-selected-window
+                                       (completing-read
+                                        (format "New %ssort order: " (if alternativep "alternative " ""))
+                                        (icicle-current-sort-functions orders)
+                                        nil t nil nil
+                                        (car (rassoc (if alternativep
+                                                         icicle-alternative-sort-comparer
+                                                       icicle-sort-comparer)
+                                                     orders))))))
                  (when (if alternativep icicle-alternative-sort-comparer icicle-sort-comparer)
                    (setq icicle-last-sort-comparer  (if alternativep ; Save current as last.
                                                         icicle-alternative-sort-comparer
                                                       icicle-sort-comparer)))
                  (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
-                      (cdr (assoc next-order icicle-sort-orders-alist))))))
-        (icicle-complete-again-update)
-        (icicle-msg-maybe-in-minibuffer
-         "%sorting is now %s.  Reverse: `C-9 C-,'%s"
-         (if alternativep "Alternative s" "S")
-         (icicle-propertize (concat next-order (and icicle-reverse-sort-p  ", REVERSED"))
-                            'face 'icicle-msg-emphasis)
-         (if following-order (format ".  Next: %s" following-order) "")))
-      (when (fboundp 'completion--flush-all-sorted-completions) ; E.g., so Icomplete+ recomputes order.
-        (completion--flush-all-sorted-completions)))))
+                      (cdr (assoc next-order orders))))
+                (t                      ; Cycle to next sort order.
+                 (let ((orders  (mapcar #'car (icicle-current-sort-functions orders))))
+                   (setq next-order       (or (cadr (memq (icicle-current-sort-order alternativep) orders))
+                                              (car orders))
+                         following-order  (or (cadr (memq next-order orders))  (car orders)))
+                   (when (if alternativep icicle-alternative-sort-comparer icicle-sort-comparer)
+                     (setq icicle-last-sort-comparer  (if alternativep ; Save current as last.
+                                                          icicle-alternative-sort-comparer
+                                                        icicle-sort-comparer)))
+                   (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
+                        (cdr (assoc next-order orders))))))
+          (icicle-complete-again-update)
+          (icicle-msg-maybe-in-minibuffer
+           "%sorting is now %s.  Reverse: `C-9 C-,'%s"
+           (if alternativep "Alternative s" "S")
+           (icicle-propertize (concat next-order (and icicle-reverse-sort-p  ", REVERSED"))
+                              'face 'icicle-msg-emphasis)
+           (if following-order (format ".  Next: %s" following-order) "")))
+        (when (fboundp 'completion--flush-all-sorted-completions) ; E.g., so Icomplete+ recomputes order.
+          (completion--flush-all-sorted-completions))))))
 
-(defun icicle-current-sort-functions ()
+(defun icicle-current-sort-functions (&optional orders-alist)
   "Subset of `icicle-sort-orders-alist' that is currently appropriate.
+Optional arg ORDERS-ALIST is an alternative alist to use, instead of
+`icicle-sort-orders-alist'.
 For some common kinds of completion, remove simple sort functions (not
 multi-sort comparers) that are not pertinent for the current kind of
 completion."
@@ -2093,7 +2097,7 @@ completion."
                                ;; or it could be a list of multi-completions.
                                (and (get pred 'icicle-multi-completion-sort-predicate)
                                     (not (icicle-maybe-multi-completion-completing-p))))))
-                    icicle-sort-orders-alist))
+                    (or orders-alist  icicle-sort-orders-alist)))
 
 (defun icicle-maybe-multi-completion-completing-p ()
   "Returns non-nil if we might currently be multi-completion completing.
