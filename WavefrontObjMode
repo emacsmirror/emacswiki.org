@@ -1,4 +1,4 @@
-WavefrontObjMode is a major mode for editing Wavefront 3D obj ascii files.  I has simple syntax highlighting, Imenu support, and movement-by-defun and paragraph (object/group blocks).
+WavefrontObjMode is a major mode for editing Wavefront 3D obj ascii files.  It has simple syntax highlighting, Imenu support, and movement-by-defun and paragraph (object/group blocks).
 
 Download: https://raw.github.com/abend/obj-mode/master/wavefront-obj-mode.el
 
