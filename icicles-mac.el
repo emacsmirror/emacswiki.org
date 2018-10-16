@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Fri Jun  1 09:07:08 2018 (-0700)
+;; Last-Updated: Mon Oct 15 18:56:24 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1287
+;;     Update #: 1302
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -294,12 +294,12 @@ created after the others."
        ;; (icicle-buffer-complete-fn                   (and (fboundp 'internal-complete-buffer)
        ;;                                                   'internal-complete-buffer))
        (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
-                                                         read-buffer-completion-ignore-case)
-                                                     completion-ignore-case))
+                                                             read-buffer-completion-ignore-case)
+                                                        completion-ignore-case))
        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
-                                                     icicle-buffers-ido-like-flag))
+                                                        icicle-buffers-ido-like-flag))
        (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
-                                                     icicle-buffers-ido-like-flag))
+                                                        icicle-buffers-ido-like-flag))
        (icicle-default-value                        (if (and icicle-buffers-ido-like-flag
                                                              icicle-default-value)
                                                         icicle-buffers-ido-like-flag
@@ -320,14 +320,14 @@ created after the others."
                  '("by buffer size" . icicle-buffer-smaller-p)
                  '("by major mode name" . icicle-major-mode-name-less-p)
                  (and (fboundp 'icicle-mode-line-name-less-p)
-                  '("by mode-line mode name" . icicle-mode-line-name-less-p))
+                      '("by mode-line mode name" . icicle-mode-line-name-less-p))
                  '("by file/process name" . icicle-buffer-file/process-name-less-p))
-         (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
+                (delete '("turned OFF") (copy-sequence icicle-sort-orders-alist))))
        ;; Put `icicle-buffer-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle-sort-orders-alist
-        (progn (when (and icicle-buffer-sort-first-time-p  icicle-buffer-sort)
-                 (setq icicle-sort-comparer             icicle-buffer-sort
-                       icicle-buffer-sort-first-time-p  nil))
+        (progn (when t ; $$$$ (and icicle-buffer-sort-first-time-p  icicle-buffer-sort)
+                 (setq icicle-sort-comparer  icicle-buffer-sort))
+               ;; $$$$ (setq icicle-buffer-sort-first-time-p  nil))
                (if icicle-buffer-sort
                    (let ((already-there  (rassq icicle-buffer-sort icicle--temp-orders)))
                      (if already-there
@@ -358,7 +358,7 @@ created after the others."
                     ((zerop (prefix-numeric-value icicle-pref-arg)) ; `C-0', same mode
                      (let ((this-mode  major-mode))
                        (icicle-remove-if-not `(lambda (bf)
-                                               (with-current-buffer bf (eq major-mode ',this-mode)))
+                                                (with-current-buffer bf (eq major-mode ',this-mode)))
                                              (buffer-list))))
                     ((< (prefix-numeric-value icicle-pref-arg) 0) ; `C-- 1', same frame
                      (cdr (assq 'buffer-list (frame-parameters))))
@@ -384,18 +384,18 @@ created after the others."
 PRE-BINDINGS is a list of additional bindings, which are created
 before the others.  POST-BINDINGS is similar, but the bindings are
 created after the others."
-  ;; We use `append' rather than backquote syntax (with ,@post-bindings in particular) because of a bug
+  ;; Use `append' rather than backquote syntax (with ,@post-bindings in particular) because of a bug
   ;; in Emacs 20.  This ensures that you can byte-compile in, say, Emacs 20 and still use the result
   ;; in later Emacs releases.
   `,(append
      pre-bindings
      `((completion-ignore-case
         (or (and (boundp 'read-file-name-completion-ignore-case)  read-file-name-completion-ignore-case)
-         completion-ignore-case))
+            completion-ignore-case))
        (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
-                                                     icicle-files-ido-like-flag))
+                                                        icicle-files-ido-like-flag))
        (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
-                                                     icicle-files-ido-like-flag))
+                                                        icicle-files-ido-like-flag))
        (icicle-default-value                        (if (and icicle-files-ido-like-flag
                                                              icicle-default-value)
                                                         icicle-files-ido-like-flag
@@ -408,28 +408,28 @@ created after the others."
        (icicle-require-match-flag                   icicle-file-require-match-flag)
        (icicle-file-completing-p                    t)
        (icicle-extra-candidates                     icicle-file-extras)
+       (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
        (icicle-transform-function                   'icicle-remove-dups-if-extras)
        (icicle-sort-comparer                        icicle-sort-comparer)
-       ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle--temp-orders                         (copy-sequence icicle-sort-orders-alist))
+       ;; Put `icicle-file-sort' first.  If already in the list, move it, else add it, to beginning.
        (icicle-sort-orders-alist
-        (progn (when (and icicle-file-sort-first-time-p  icicle-file-sort)
-                 (setq icicle-sort-comparer           icicle-file-sort
-                       icicle-file-sort-first-time-p  nil))
+        (progn (when t ; $$$$ (and icicle-file-sort-first-time-p  icicle-file-sort)
+                 (setq icicle-sort-comparer  icicle-file-sort))
+               ;; $$$$ (setq icicle-file-sort-first-time-p  nil))
                (if icicle-file-sort
                    (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
                      (if already-there
                          (cons already-there (setq icicle--temp-orders  (delete already-there
                                                                                 icicle--temp-orders)))
-                       (cons `("by `icicle-file-sort'" ,@icicle-file-sort) icicle--temp-orders)))
+                       (cons `("by `icicle-file-sort'" . ,icicle-file-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
        (icicle-candidate-help-fn                    (lambda (cand)
                                                       (icicle-describe-file cand current-prefix-arg t)))
        (icicle-candidate-alt-action-fn
         (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "file")))
        (icicle-all-candidates-list-alt-action-fn
-        (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "file")))
-       (icicle-delete-candidate-object              'icicle-delete-file-or-directory))
+        (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "file"))))
      post-bindings))
 
 (defmacro icicle-define-command
