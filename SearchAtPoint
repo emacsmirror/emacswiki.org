@@ -33,6 +33,17 @@ Enable highlight-symbol-mode (usually done conditionally depending on major mode
 
 See highlight-symbol-mode for additional configuration and functions with this minor mode.
 
+== isearch-forward-symbol-at-point ==
+
+As of GNU Emacs 26.1 (and probably earlier) there's a command built into <code>isearch.el</code>, namely <code>isearch-forward-symbol-at-point</code>.  This will copy the symbol under the cursor, start isearch, and paste that symbol into the minibuffer for isearch.  You can then search for more instances of that symbol by doing <code>C-s</code> in the minibuffer (i.e., the normal key sequence for repeating an isearch)(<code>C-r</code> will do a reverse search).
+
+If you want to bind this to a key sequence of ease-of-use you might try:
+
+   (global-set-key (kbd "C-S-s") 'isearch-forward-symbol-at-point)
+
+which will bind it to Control-Shift-"s".  For me this is a great substitute for vim's <code>*</code> command and yet it doesn't take me too far from something that feels like emacs.
+
+Thanks to Mike Panitz for contributing this tip
 
 == Isearch with symbol regex ==
 
