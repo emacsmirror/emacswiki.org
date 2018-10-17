@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Oct 15 19:35:19 2018 (-0700)
+;; Last-Updated: Wed Oct 17 09:40:50 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 19863
+;;     Update #: 19864
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2056,7 +2056,7 @@ on again (e.g. because there are fewer candidates)."
                                                           icicle-alternative-sort-comparer
                                                         icicle-sort-comparer)))
                    (set (if alternativep 'icicle-alternative-sort-comparer 'icicle-sort-comparer)
-                        (cdr (assoc next-order orders))))))
+                        (cdr (assoc next-order icicle-sort-orders-alist))))))
           (icicle-complete-again-update)
           (icicle-msg-maybe-in-minibuffer
            "%sorting is now %s.  Reverse: `C-9 C-,'%s"
