@@ -156,7 +156,7 @@ brew install --with-cocoa --srgb emacs
 
 and finally link it to your Applications folder:
 <pre>
-brew linkapps emacs
+ln -Fs $(find /usr/local -name "Emacs.app") /Applications/Emacs.app
 </pre>
 
 This creates a symlink and not an alias. So Spotlight may not find it (tested on macOS Sierra 10.12.2). Spotlight indexes symlinks to files that are treated as system files, but it doesn't show them in the GUI. It does show aliases though, so you could just command-option-drag <code>/usr/local/Cellar/emacs/*/Emacs.app</code> to <code>/Applications/</code> from Finder. Or:
