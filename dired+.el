@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 21 13:34:41 2018 (-0700)
+;; Last-Updated: Wed Oct 17 09:33:55 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 10994
+;;     Update #: 10998
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -777,6 +777,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/10/17 dadams
+;;     dired-read-dir-and-switches: Removed mention of icicle-file-sort-first-time-p (no longer used in Icicles).
 ;; 2018/09/21 dadams
 ;;     diredp-image-dired-edit-comment-and-tags, diredp-w32-drives:
 ;;       Use pop-to-buffer-same-window, not switch-to-buffer.
@@ -1926,7 +1928,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar grep-use-null-device)                     ; In `grep.el'
 (defvar header-line-format)                       ; Emacs 22+
 (defvar icicle-file-sort)                         ; In `icicles-opt.el'
-(defvar icicle-file-sort-first-time-p)            ; In `icicles-var.el'
+;; $$$$ (defvar icicle-file-sort-first-time-p)            ; In `icicles-var.el'
 (defvar icicle-files-ido-like-flag)               ; In `icicles-opt.el'
 (defvar icicle-ignored-directories)               ; In `icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
@@ -2734,9 +2736,9 @@ additional multi-command keys.  See `dired' (defadvice doc)."
          (icicle-delete-candidate-object              'icicle-delete-file-or-directory)
          (icicle-sort-orders-alist
           (and (boundp 'icicle-sort-orders-alist)
-               (progn (when (and icicle-file-sort-first-time-p  icicle-file-sort)
-                        (setq icicle-sort-comparer           icicle-file-sort
-                              icicle-file-sort-first-time-p  nil))
+               (progn (when t ; $$$$ (and icicle-file-sort-first-time-p  icicle-file-sort)
+                        (setq icicle-sort-comparer  icicle-file-sort))
+                        ; $$$$ (setq icicle-file-sort-first-time-p  nil))
                       (if icicle-file-sort
                           (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
                             (if already-there
