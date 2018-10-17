@@ -7,10 +7,10 @@
 ;; Copyright (C) 2018, Drew Adams, all rights reserved.
 ;; Created: Mon Apr 30 12:26:00 2018 (-0700)
 ;; Version: 0
-;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Thu May  3 14:16:17 2018 (-0700)
+;; Package-Requires: ((thingatpt+ "0"))
+;; Last-Updated: Tue Oct 16 18:56:04 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 264
+;;     Update #: 265
 ;; URL: https://www.emacswiki.org/emacs/download/notandor.el
 ;; Doc URL: https://emacswiki.org/emacs/NotAndOr
 ;; Keywords: lisp logic conditional
