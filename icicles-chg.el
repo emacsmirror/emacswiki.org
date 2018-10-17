@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Oct 15 19:38:17 2018 (-0700)
+;; Last-Updated: Wed Oct 17 10:08:59 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 11867
+;;     Update #: 11869
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4703,6 +4703,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2018/10/17 dadams
+;;     icicle-change-sort-order: Last occurrence of ORDER-NAMES should be icicle-sort-orders-alist.
 ;; 2018/10/15 dadams
 ;;     icicle-change-sort-order:
 ;;       Use original icicle-sort-orders-alist (local var ORDERS) for candidates, before changing it.
