@@ -24,12 +24,12 @@ the default Emacs keys except for <code>Ctrl-g</code> (cancel half-entered comma
 
 ===Quick steps for non-Emacs users:===
 
-* 1) Install Emacs package, better be Emacs version 24 above (Emacs26 recommended).\\For Debian/Ubuntu users:
+* 1) Install Emacs, better be Emacs version 24 above (Emacs26 recommended).\\For Debian/Ubuntu users:
 {{{
 $ sudo apt install emacs -y
 }}}
 
-* 2) Download Brief package using emacs command line:
+* 2) Download Brief package using Emacs command line:
 {{{
 $ emacs -Q -eval "(progn (package-initialize) (package-refresh-contents) (package-install 'brief) (save-buffers-kill-emacs))"
 }}}
