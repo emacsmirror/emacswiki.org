@@ -9,7 +9,7 @@ hour and difficult to forget.
 For example, the first <code><home></code> key bring the cursor to home (beginning) of current
 line, a consecutive second <code><home></code> key to the home (beginning) of the window and a
 third <code><home></code> to the home (beginning) of the file.  Similarly for the <code><end></code> key.
-To paste/insert clipboard contents into current file just press <code><insert></code>... and so on.
+To paste/insert clipboard contents into current file just press <code><insert></code>,... and so on.
 
 Personally, I've been using this key combination for over 27+ years (by the time
 Y2018 this guide was written) and have never changed, since the beginning of the
