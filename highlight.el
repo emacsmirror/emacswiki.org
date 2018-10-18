@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 18 13:13:51 2018 (-0700)
+;; Last-Updated: Thu Oct 18 15:16:05 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 4141
+;;     Update #: 4144
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -19,17 +19,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `crosshairs', `easymenu',
-;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `apropos', `apropos+', `avoid', `easymenu', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -774,6 +768,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/18 dadams
+;;     hlt-next-highlight: Do not wrap-around more than once.
 ;; 2018/09/18 dadams
 ;;     hlt-hide-default-face: If FACE is nil then set it to hlt-last-face (in body, not just interactive).
 ;; 2017/10/15 dadams
@@ -2964,10 +2960,12 @@ When called non-interactively:
     (when backward-p (setq end  (prog1 start (setq start  end))))
     (let ((face-found  nil)
           (orig-point  (point))
-          (beg         start))
+          (beg         start)
+          (wrapped     nil))
       (while (and (not (if backward-p (bobp) (eobp)))
                   (not (equal face face-found))
-                  (not (= beg end)))
+                  (not (= beg end))
+                  (not wrapped))
         (save-restriction
           (narrow-to-region beg end)
           (setq beg  (if backward-p
@@ -2993,7 +2991,9 @@ When called non-interactively:
           (setq face-found  face))
         (when (and (= beg end)          ; Wrap around.
                    (if backward-p (< orig-point start) (> orig-point start)))
-          (setq beg  start) (goto-char beg)))
+          (setq beg      start
+                wrapped  t)
+          (goto-char beg)))
       (unless (or (and (equal face face-found)  (not (eq (point) orig-point)))  no-error-p)
         (goto-char orig-point)
         (hlt-user-error "No %s highlight with face `%s'" (if backward-p "previous" "next") face)))
