@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 18 13:02:42 2018 (-0700)
+;; Last-Updated: Thu Oct 18 13:13:51 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 4137
+;;     Update #: 4141
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -19,11 +19,17 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `easymenu', `fit-frame',
-;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `crosshairs', `easymenu',
+;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
+;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
+;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1290,7 +1296,9 @@ Don't forget to mention your Emacs and library versions."))
     :group 'highlight :group 'faces)
   (defcustom hlt-act-on-any-face-flag nil
     "*Non-nil means highlight actions apply to all text with a face.
-nil means that they apply only to text that has been highlighted.
+nil means they apply only to text that has been highlighted by library
+`highlight.el'.
+
 Consult the doc for particular actions, to see if they are affected by
 this option."
     :type 'boolean :group 'highlight)
@@ -2817,7 +2825,7 @@ With a prefix argument, prompt for the highlighting face to hide,
 
 If `hlt-act-on-any-face-flag' is non-nil, then the face to be hidden
 can be any face you choose.  Otherwise, it must be a face that has
-been used for highlighting.
+been used for highlighting by library `highlight.el'.
 
 Hiding a face at some location means two things:
 1) setting its `invisible' property there, making it susceptible to
@@ -2903,7 +2911,7 @@ Interactively:
 
 If `hlt-act-on-any-face-flag' is non-nil, then the target face can be
 any face you choose.  Otherwise, it must be a face that has been used
-for highlighting.
+for highlighting by library `highlight.el'.
 
 With a prefix argument, go to the next `mouse-face' property with
 FACE, not the next `face' property.
