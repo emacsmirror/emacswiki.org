@@ -155,9 +155,7 @@ the <code><Esc></code> key but mostly by <code><Ctrl>-G</code> key.
 }}}
 * Search (<F5>) and Replace (<F6>) commands:
 
-   By default the un-prefixed commands search/replace forwards. Prefixed key
-   change their meaning: <code><shift></code> means "repeat", <code><alt></code> means "backward" and
-   <code><control></code> means "current" or sometimes "forwards".
+** By default the un-prefixed commands search/replace forwards. Prefixed key change their meaning:\\<code><alt></code> (ALTer direction) means "backward",\\<code><shift></code> means "repeat" and\\<code><'C'ontrol></code> means "'C'urrent" or sometimes "forwards".\\\\
 
 ** Search:
 {{{
