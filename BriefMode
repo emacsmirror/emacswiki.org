@@ -107,6 +107,7 @@ the <code><Esc></code> key but mostly by <code><Ctrl>-G</code> key.
    |   if no text selected, cut current line     | <Shift>-<Delete>    |
    |---------------------------------------------+---------------------|
    | Paste clipboard texts into current line:    | <Insert>            |
+   |   if text selected, replace selected        |                     |
    |---------------------------------------------+---------------------|
    | 'D'elete a line(s):                         | <Alt>-D             |
    |   if text selected, delete selected         |                     |
@@ -129,7 +130,7 @@ the <code><Esc></code> key but mostly by <code><Ctrl>-G</code> key.
    | 'U'ndo:                                     | <Alt>-U             |
    |                                             | <Keypad *>          |
    |---------------------------------------------+---------------------|
-   | Buffer 'F'ilename:                          | <Alt>-F             |
+   | Show buffer 'F'ilename:                     | <Alt>-F             |
    |---------------------------------------------+---------------------|
    | Jump to bookmark '0' ... '9':               | <Alt>-0 .. <Alt>-9  |
    |---------------------------------------------+---------------------|
