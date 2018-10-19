@@ -238,6 +238,7 @@ Better to have our hook running last so messages are not blatted:
          (vc-register))
      (vc-checkin (list (buffer-file-name)) 'SRC "auto-checkin" nil)))
 
+Bob Hepple
 ----
 CategoryVersionControl
 CategoryWishList
