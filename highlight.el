@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 18 15:16:05 2018 (-0700)
+;; Last-Updated: Fri Oct 19 09:41:12 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 4144
+;;     Update #: 4149
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -768,6 +768,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/19 dadams
+;;     hlt-next-highlight: Corrected wrapping.
 ;; 2018/10/18 dadams
 ;;     hlt-next-highlight: Do not wrap-around more than once.
 ;; 2018/09/18 dadams
@@ -2960,15 +2962,16 @@ When called non-interactively:
     (when backward-p (setq end  (prog1 start (setq start  end))))
     (let ((face-found  nil)
           (orig-point  (point))
-          (beg         start)
-          (wrapped     nil))
+          (pos         start)
+          loop-beg)
+
       (while (and (not (if backward-p (bobp) (eobp)))
                   (not (equal face face-found))
-                  (not (= beg end))
-                  (not wrapped))
+                  (not (= pos end)))
+        (setq loop-beg  pos)
         (save-restriction
-          (narrow-to-region beg end)
-          (setq beg  (if backward-p
+          (narrow-to-region loop-beg end)
+          (setq pos  (if backward-p
                          (goto-char (previous-single-char-property-change
                                      (point) (if mousep 'mouse-face hlt-face-prop) nil (point-min)))
                        (goto-char (next-single-char-property-change
@@ -2989,11 +2992,11 @@ When called non-interactively:
                    (let ((pt-faces  (get-char-property (point) hlt-face-prop)))
                      (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
           (setq face-found  face))
-        (when (and (= beg end)          ; Wrap around.
-                   (if backward-p (< orig-point start) (> orig-point start)))
-          (setq beg      start
-                wrapped  t)
-          (goto-char beg)))
+        (when (and (= pos end)          ; Wrap around.
+                   (if backward-p (<= loop-beg start) (> loop-beg start))
+                   (not (equal face face-found)))
+          (setq pos  start) (goto-char start)))
+
       (unless (or (and (equal face face-found)  (not (eq (point) orig-point)))  no-error-p)
         (goto-char orig-point)
         (hlt-user-error "No %s highlight with face `%s'" (if backward-p "previous" "next") face)))
@@ -3001,6 +3004,7 @@ When called non-interactively:
       (cons (point)
             (next-single-char-property-change (point) (if mousep 'mouse-face hlt-face-prop)
                                               nil (if backward-p start end)))))
+
 
   ;; Suggested binding: `C-S-p'.
   (defun hlt-previous-highlight (&optional start end face mousep no-error-p)
