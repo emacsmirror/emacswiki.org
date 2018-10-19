@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.8
-;; Last-Updated: 2018-10-18 18:21:25
+;; Version: 2.9
+;; Last-Updated: 2018-10-19 17:57:36
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -68,12 +68,15 @@
 
 ;;; Change log:
 ;;
+;; 2018/10/19
+;;	* Add option `color-rg-kill-temp-buffer-p'.
+;;
 ;; 2018/10/18
 ;;      * Add `color-rg-rerun-change-files' to files search files by GLOB. default files is "everything".
 ;;      * Add new functions:
-;;		`color-rg-search-symbol-with-type'
-;;		`color-rg-search-project-with-type'
-;;		`color-rg-search-project-rails-with-type'
+;;              `color-rg-search-symbol-with-type'
+;;              `color-rg-search-project-with-type'
+;;              `color-rg-search-project-rails-with-type'
 ;;
 ;; 2018/10/11
 ;;      * Reset `color-rg-temp-visit-buffers' to avoid deleting the buffer being browsed after multiple searches.
@@ -190,6 +193,33 @@
   :type 'hook
   :group 'color-rg-mode)
 
+(defcustom color-rg-custom-type-aliases
+  '(("gn" .    "*.gn *.gni")
+    ("gyp" .    "*.gyp *.gypi"))
+  "A list of file type aliases that are added to the 'rg' built in aliases.
+Each list element may be a (string . string) cons containing the name of the
+type alias and the file patterns, or a lambda returning a similar cons cell.
+A lambda should return nil if it currently has no type aliases to contribute.")
+
+(defcustom color-rg-flash-line-delay .3
+  "How many seconds to flash `color-rg-font-lock-flash' after navigation.
+
+Setting this to nil or 0 will turn off the indicator."
+  :type 'number
+  :group 'color-rg)
+
+(defcustom color-rg-kill-temp-buffer-p t
+  "Default this option is true, it will kill temp buffer when quit color-rg buffer.
+
+A buffer will killled if it is open by color-rg and not edit by color-rg.
+
+A buffer won't kill is it open before color-rg command start.
+A buffer won't kill if buffer content is change by color-rg.
+
+Anyway, you can set this option with nil if you don't like color-rg kill any buffer."
+  :type 'boolean
+  :group 'color-rg)
+
 (defface color-rg-font-lock-header-line-text
   '((t (:foreground "Green3" :bold t)))
   "Face for header line text."
@@ -248,13 +278,6 @@
 (defface color-rg-font-lock-mark-deleted
   '((t (:foreground "SystemRedColor" :bold t)))
   "Face for keyword match."
-  :group 'color-rg)
-
-(defcustom color-rg-flash-line-delay .3
-  "How many seconds to flash `color-rg-font-lock-flash' after navigation.
-
-Setting this to nil or 0 will turn off the indicator."
-  :type 'number
   :group 'color-rg)
 
 (defface color-rg-font-lock-flash
@@ -493,15 +516,6 @@ Becomes buffer local in `color-rg-mode' buffers.")
     ("everything" . "*"))                ; rg without '--type' arg
   "Internal type aliases for special purposes.
 These are not produced by 'rg --type-list' but we need them anyway.")
-
-(defcustom color-rg-custom-type-aliases
-  '(("gn" .    "*.gn *.gni")
-    ("gyp" .    "*.gyp *.gypi"))
-  "A list of file type aliases that are added to the 'rg' built in aliases.
-Each list element may be a (string . string) cons containing the name of the
-type alias and the file patterns, or a lambda returning a similar cons cell.
-A lambda should return nil if it currently has no type aliases to contribute."
-  )
 
 (defun color-rg-get-custom-type-aliases ()
   "Get alist of custom type aliases.
@@ -1302,8 +1316,9 @@ from `color-rg-cur-search'."
 (defun color-rg-quit ()
   (interactive)
   ;; Kill temp buffer open by color-rg.
-  (dolist (temp-buffer color-rg-temp-visit-buffers)
-    (kill-buffer temp-buffer))
+  (when color-rg-kill-temp-buffer-p
+    (dolist (temp-buffer color-rg-temp-visit-buffers)
+      (kill-buffer temp-buffer)))
   (setq color-rg-temp-visit-buffers nil)
   ;; Kill search buffer.
   (kill-buffer color-rg-buffer)
