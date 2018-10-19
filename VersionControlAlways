@@ -214,6 +214,30 @@ So here is my modification.
 
 Uwe Brauer 
 
+[new]
+2018/10/20 This works for me on emacs-26.1:
+
+Better to have our hook running last so messages are not blatted:
+
+ #  Local Variables:
+ #  eval: (add-hook (make-local-variable 'after-save-hook) 'bh:ensure-in-vc-or-check-in t)
+ #  End:
+
+ (require 'vc)
+ (setq find-file-visit-truename t) ;;; follow sym links
+ (defun bh:ensure-in-vc-or-check-in ()
+   "Automatically checkin file ,v can be in the same directory or in the
+  subdirectory RCS or .src. The idea is to call vc-checkin only for files
+  not for buffers."
+   (interactive)
+   (when (buffer-file-name)
+     (if (not
+          (or (file-exists-p (format "%s,v" (buffer-file-name)))
+              (file-exists-p (format "RCS/%s,v" (file-name-nondirectory buffer-file-name)))
+              (file-exists-p (format ".src/%s,v" (file-name-nondirectory buffer-file-name)))))
+         (vc-register))
+     (vc-checkin (list (buffer-file-name)) 'SRC "auto-checkin" nil)))
+
 ----
 CategoryVersionControl
 CategoryWishList
