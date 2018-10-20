@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 14 13:15:47 2018 (-0700)
+;; Last-Updated: Fri Oct 19 21:41:21 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 1984
+;;     Update #: 2022
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -70,7 +70,8 @@
 ;;    `zz-narrow', `zz-narrow-repeat', `zz-query-replace-zones' (Emacs
 ;;    25+), `zz-query-replace-regexp-zones' (Emacs 25+),
 ;;    `zz-select-region', `zz-select-region-repeat',
-;;    `zz-set-izones-var', `zz-unite-zones'.
+;;    `zz-set-izones-var', `zz-set-zones-from-highlighting',
+;;    `zz-unite-zones'.
 ;;
 ;;  User options defined here:
 ;;
@@ -355,6 +356,8 @@
 ;;  C-x n C-d `zz-delete-zone' - Delete an izone from current var
 ;;  C-x n h   `hlt-highlight-regions' - Highlight izones
 ;;  C-x n H   `hlt-highlight-regions-in-buffers' - in multiple buffers
+;;  C-x n l   `zz-add-zones-from-highlighting' - Add highlighted areas
+;;  C-x n L   `zz-set-zones-from-highlighting' - Set to highlighted
 ;;  C-x n n   `narrow-to-region'
 ;;  C-x n p   `narrow-to-page'
 ;;  C-x n r   `zz-select-region-repeat' - Cycle as active regions
@@ -465,6 +468,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/18 dadams
+;;     Added: zz-set-zones-from-highlighting.
+;;     zz-add-zones-from-highlighting: Prefix arg >=0: prompt for the face, <= 0: use font-lock-face.
+;;     Bind in eval-after-load of highlight.el: zz-(add|set)-zones-from-highlighting (to C-x n [lL]),
+;;                                              hlt-highlight-regions(-in-buffers).
 ;; 2018/10/14 dadams
 ;;     Added (missing) macro zz-user-error.
 ;;     Fixed (redefined) zz-noncontiguous-region-from-(i)zones.  Added optional arg to zz-*-from-izones.
@@ -1737,10 +1745,14 @@ Non-interactively:
   (symbol-value variable))
 
 (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
-  (defun zz-add-zones-from-highlighting (&optional start end face only-hlt-face overlay/text face-prop msgp)
+
+  (defun zz-add-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
     "Add highlighted areas as zones to izones variable.
 By default, the text used is that highlighted with `hlt-last-face'.
-With a prefix arg you are instead prompted for the face.
+With a non-negative prefix arg you are instead prompted for the face.
+
+With a non-positive prefix arg use face property `font-lock-face'
+instead of property `face'.
 
 The izones variable to use is the value of `zz-izones-var'.  You can
 set this to a different variable anytime using `\\[zz-set-izones-var]'.
@@ -1756,16 +1768,16 @@ When called from Lisp:
 * If OVERLAY/TEXT is `text-prop' then only text-property highlighting
   is checked. If it is `overlay' then only overlay highlighting is
   checked.  (If nil then both are checked.)
-* Non-nil FACE-PROP is the face property to check: `font-lock-face' or
-  `face'.  By default (nil), the property to check is `face'."
+* Non-nil FONK-LOCK-P means check property `font-lock-face'.  By
+  default (nil), check property `face'."
     (interactive
-     (progn
+     (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
        (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
        `(,@(hlt-region-or-buffer-limits)
-         ,(if current-prefix-arg
-              (hlt-read-bg/face-name "Create zones highlighted with face: ")
+           ,(if (natnump numarg)
+                (hlt-read-bg/face-name "Create zones highlighted with face: ")
               hlt-last-face)
-         nil nil nil t)))
+           nil nil ,(and numarg  (<= numarg 0)) t)))
     (require 'highlight)
     (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
                                (setq start  (car start-end)
@@ -1776,7 +1788,7 @@ When called from Lisp:
                                        (overlay    'only) ; Only overlay
                                        (t          t))) ; Default: both
           (hlt-act-on-any-face-flag  (not only-hlt-face))
-          (hlt-face-prop             (or face-prop 'face))
+          (hlt-face-prop             (if fonk-lock-p 'font-lock-face 'face))
           (count                     0))
       (save-excursion
         (save-window-excursion
@@ -1807,7 +1819,24 @@ When called from Lisp:
         (case count
           (0 (message "NO zones added or updated"))
           (1 (message "1 zone added or updated"))
-          (t (message "%s zones added or updated" count)))))))
+          (t (message "%s zones added or updated" count))))))
+
+  (defun zz-set-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
+    "Replace value of izones variable with zones from the highlighted areas.
+Like `zz-add-zones-from-highlighting' (which see), but it replaces any
+current zones instead of adding to them."
+    (interactive
+     (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+       (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
+       `(,@(hlt-region-or-buffer-limits)
+           ,(if (natnump numarg)
+                (hlt-read-bg/face-name "Create zones highlighted with face: ")
+              hlt-last-face)
+           nil nil ,(and numarg  (<= numarg 0)) t)))
+    (set zz-izones-var ())
+    (zz-add-zones-from-highlighting start end face only-hlt-face overlay/text fonk-lock-p msgp))
+  
+  )
 
 
 ;;---------------------
@@ -1818,10 +1847,6 @@ When called from Lisp:
        (define-key narrow-map "c"    'zz-clone-zones)
        (define-key narrow-map "C"    'zz-clone-and-unite-zones)
        (define-key narrow-map "\C-d" 'zz-delete-zone)
-       (when (fboundp 'hlt-highlight-regions)
-         (define-key narrow-map "h"  'hlt-highlight-regions))
-       (when (fboundp 'hlt-highlight-regions)
-         (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
        (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
        (define-key narrow-map "u"    'zz-unite-zones)
        (define-key narrow-map "v"    'zz-set-izones-var)
@@ -1832,14 +1857,23 @@ When called from Lisp:
        (define-key ctl-x-map "nc"    'zz-clone-zones)
        (define-key ctl-x-map "nC"    'zz-clone-and-unite-zones)
        (define-key ctl-x-map "n\C-d" 'zz-delete-zone)
-       (when (fboundp 'hlt-highlight-regions)
-         (define-key ctl-x-map "nh"  'hlt-highlight-regions))
-       (when (fboundp 'hlt-highlight-regions)
-         (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
        (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
        (define-key ctl-x-map "nu"    'zz-unite-zones)
        (define-key ctl-x-map "nv"    'zz-set-izones-var)
        (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow))))
+
+(eval-after-load "highlight"
+  '(cond
+    ((boundp 'narrow-map)
+     (define-key narrow-map "h"  'hlt-highlight-regions)
+     (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers)
+     (define-key narrow-map "l"  'zz-add-zones-from-highlighting)
+     (define-key narrow-map "L"  'zz-set-zones-from-highlighting))
+    (t
+     (define-key ctl-x-map "nh"  'hlt-highlight-regions)
+     (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers)
+     (define-key ctl-x-map "nl"  'zz-add-zones-from-highlighting)
+     (define-key ctl-x-map "nL"  'zz-set-zones-from-highlighting))))
 
 
 ;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
