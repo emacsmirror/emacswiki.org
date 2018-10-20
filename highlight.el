@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 19 09:41:12 2018 (-0700)
+;; Last-Updated: Sat Oct 20 09:25:27 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 4149
+;;     Update #: 4155
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -768,6 +768,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/20 dadams
+;;     hlt-highlight-isearch-matches: Fixed interactive spec: put STRING last, not first.
 ;; 2018/10/19 dadams
 ;;     hlt-next-highlight: Corrected wrapping.
 ;; 2018/10/18 dadams
@@ -3256,10 +3258,12 @@ With a non-positive prefix arg, use `mouse-face' instead of `face'.
 
 To use a prefix argument you must set either `isearch-allow-scroll' or
 `isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
-arg during Isearch exits Isearch."
+arg during Isearch exits Isearch.
+
+If invoked outside of Isearch, use the last Isearch search pattern or,
+if none, prompt for the pattern to match."
   (interactive
-   (list (or isearch-string  (read-string "Highlight string: "))
-         (if (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+   (list (if (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
              (let (fac)
                ;; This is better than the vanilla Emacs approach used for `isearch-highlight-regexp'
                ;; Because this lets you continue searching after highlighting.
@@ -3267,7 +3271,9 @@ arg during Isearch exits Isearch."
                fac)
            (if hlt-auto-faces-flag (hlt-next-face) hlt-last-face))
          t
-         (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+         (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+         ()
+         (or isearch-string  (read-string "Highlight string: "))))
   (let ((bufs                   (or buffers  (and (boundp 'multi-isearch-buffer-list)
                                                   multi-isearch-buffer-list)))
         (regexp                 (cond ((functionp isearch-word) (funcall isearch-word string))
@@ -3284,7 +3290,7 @@ arg during Isearch exits Isearch."
                                                         (regexp-quote s))))
                                                   string ""))
                                       (t (regexp-quote string))))
-        (hlt-overlays-priority  1002))  ; Higher than Isearch's 1000 priority.
+        (hlt-overlays-priority  1002)) ; Higher than Isearch's 1000 priority.
     (hlt-+/--highlight-regexp-region nil nil nil regexp face msgp mousep nil bufs)))
 
 ;;;###autoload
