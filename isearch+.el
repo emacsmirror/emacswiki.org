@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct  6 17:31:50 2018 (-0700)
+;; Last-Updated: Sat Oct 20 10:59:32 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 5951
+;;     Update #: 6019
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,8 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `color', `frame-fns', `gv', `hexrgb', `isearch-prop',
+;;   `macroexp', `misc-cmds', `misc-fns', `strings', `thingatpt',
+;;   `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -315,8 +317,9 @@
 ;;
 ;;
 ;;  Keys bound in `isearch-mode-map' here, by default.  Some are from
-;;  `isearch-prop.el'.  Keys bound to `isearchp-init-edit' by default
-;;  are controlled by option `isearchp-initiate-edit-commands'.
+;;  `isearch-prop.el' or `highlight.el'.  Keys bound to
+;;  `isearchp-init-edit' by default are controlled by option
+;;  `isearchp-initiate-edit-commands'.
 ;;
 ;;    `C-`'        `isearchp-toggle-regexp-quote-yank'
 ;;    `C-+'        `isearchp-toggle-search-invisible'
@@ -398,19 +401,24 @@
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
 ;;    `M-r'        `isearch-toggle-regexp'
 ;;    `M-w'        `isearchp-kill-ring-save'
+;;    `M-s h '     `isearchp-toggle-lazy-highlighting'
 ;;    `M-s C-e'    `isearchp-yank-line'
 ;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
 ;;    `M-s h d'    `isearchp-toggle-dimming-filter-failures'
 ;;                 (Emacs 24.4+)
-;;    `M-s h l'    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+)
+;;    `M-s h f'    `isearchp-highlight-matches-other-face' (Emacs 22+)
+;;    `M-s h h'    `hlt-highlight-isearch-matches'
+;;    `M-s h l'    `isearchp-toggle-lazy-highlight-cleanup'
+;;                 (Emacs 22+)
 ;;    `M-s h L'    `isearchp-toggle-lazy-highlighting' (Emacs 22+)
 ;;    `M-s h R'    `isearchp-toggle-highlighting-regexp-groups'
+;;    `M-s h u'    `hlt-unhighlight-isearch-matches'
 ;;    `M-s i'      `isearch-toggle-invisible'
 ;;    `M-s v'      `isearchp-toggle-option-toggle'
 ;;    `M-TAB'      `isearchp-complete'
 ;;    `M-s M-SPC'  `isearchp-toggle-set-region'
 ;;    `M-s M-k'    `isearchp-toggle-repeat-search-if-fail' (Emacs 22+)
-;;    `M-s h '     `isearchp-toggle-lazy-highlighting'
+;;    `M-s u f'    `isearchp-unhighlight-last-face' (Emacs 22+)
 ;;    `M-S-delete' `isearchp-cleanup'  (Emacs 23+) (`isearch-prop.el')
 ;;    `left'       `isearchp-init-edit' (Emacs 22+)
 ;;    `mouse-2'    `isearch-mouse-2'
@@ -1158,10 +1166,11 @@
 ;;  text-property search.  For property `face', empty input to
 ;;  `isearchp-put-prop-on-region' removes all faces from the region.
 ;;
-;;  If you use library `highlight.el' then you can highlight and
+;;  If you also use library `highlight.el' then you can highlight and
 ;;  unhighlight Isearch matches in different faces, including for
-;;  multiple-buffer searches.  That library binds keys `M-s h h' and
-;;  `M-s h u' for this highlighting and unhighlighting.
+;;  multiple-buffer searches.  The simplest way to do this is to use
+;;  `M-s h f' (to highlight) and `M-s u f' (to unhighlight) while
+;;  searching.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1169,6 +1178,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/20 dadams
+;;     Added: isearchp-highlight-matches-other-face, isearchp-unhighlight-last-face. Bound to M-s h f, M-s u f.
+;;     Use eval-after-load for highlight.el.
 ;; 2018/10/06 dadams
 ;;     Added: isearchp-toggle-region-deactivation.  Bound to C-SPC C-SPC.
 ;; 2018/02/28 dadams
@@ -2772,7 +2784,7 @@ BEG and END are the search-hit limits.
 %s"
                 (if replace-doc-p
                     doc
-                  (format "Return t if all chars in the search hit are %sin %s." 
+                  (format "Return t if all chars in the search hit are %sin %s."
                           (if notp "not " "")
                           in-type))
                 (or (and (not replace-doc-p)  doc)  ""))
@@ -4060,15 +4072,17 @@ A `SPC' char normally matches all whitespace defined by variable
 `search-whitespace-regexp'.  See also variables
 `isearch-lax-whitespace' and `isearch-regexp-lax-whitespace'.
 
-Commands that Require Library `isearch-prop.el'
+
+Commands that require library `isearch-prop.el'
 -----------------------------------------------
 
-\\[isearchp-property-forward]\t- search for a character (overlay or text) property
-\\[isearchp-property-forward-regexp]\t- regexp-search for a character (overlay or text) property
+\\[isearchp-property-forward]\t- search for a character property (overlay or text)
+\\[isearchp-property-forward-regexp]\t- regexp-search for a character property (overlay or text)
 \\[isearchp-toggle-complementing-domain]\t- toggle searching complements of normal search contexts
 \\[isearchp-toggle-dimming-outside-search-area]\t- toggle dimming non-search zones
 \\[isearchp-toggle-ignoring-comments]\t- toggle ignoring comments for `isearchp-thing'
 \\[isearchp-toggle-hiding-comments]\t- hide or (`C-u') show comments
+\\[isearchp-narrow-to-lazy-highlights]\t- new search of just the lazy-highlighted areas
 
 \\[isearchp-put-prop-on-region]\t- add a text property to region
 \\[isearchp-add-regexp-as-property]\t- add prop to regexp matches
@@ -4084,6 +4098,20 @@ Commands that Require Library `isearch-prop.el'
 \\[isearchp-thing-define-contexts]\t- define THING contexts
 \\[isearchp-previous-visible-thing]\t- go to previous visible THING
 \\[isearchp-next-visible-thing]\t- go to next visible THING
+
+
+Commands that require libraries `isearch-prop.el' and `zones.el'
+----------------------------------------------------------------
+
+\\[isearchp-narrow-to-matching-zones]\t- search lazy-highlight zones
+
+
+Commands that require library `highlight.el'
+--------------------------------------------
+
+\\[hlt-highlight-isearch-matches]\t- highlight matches using a given face
+\\[hlt-unhighlight-isearch-matches]\t- unhighlight matches highlighted with a given face
+
 
 Input Methods
 -------------
@@ -4208,6 +4236,7 @@ See command `isearch-forward-regexp' for more information."
   )
 
 (when (fboundp 'region-noncontiguous-p) ; Emacs 25+
+
   (defun isearchp-constrain-to-rectangular-region ()
     "Advise search not to match outside active rectangular region.
 This has no effect if `isearchp-restrict-to-region-flag' is nil or the region is contiguous."
@@ -5284,7 +5313,7 @@ Attempt to do the search exactly the way the pending Isearch would."
                         (= (match-beginning 0) (match-end 0)))
                 (setq retry  nil))
               ;; Check filter predicate.  If `isearchp-lazy-dim-filter-failures-flag' is non-nil
-              ;; then set face according to filter success.  Otherwise, clear RETRY if filter succeeded. 
+              ;; then set face according to filter success.  Otherwise, clear RETRY if filter succeeded.
               (setq filter-OK  (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
               (let ((dimming  (and (boundp 'isearchp-lazy-dim-filter-failures-flag)
                                    isearchp-lazy-dim-filter-failures-flag)))
@@ -6136,7 +6165,7 @@ delimiters, `comment-start' and `comment-end'."
                                  'REPLACE-DOC)
 
   ;; `isearchp-not-in-comment-or-delim-p'
-  (isearchp-define-in/out-filter comment-or-delim nil 
+  (isearchp-define-in/out-filter comment-or-delim nil
                                  (or (nth 4 (syntax-ppss pos))
                                      (and comment-start-skip  (looking-at comment-start-skip)))
                                  "Return t unless `isearchp-in-comment-or-delim-p'."
@@ -6660,10 +6689,71 @@ Elements of ALIST that are not conses are ignored."
 
 (define-key isearch-mode-map (kbd "M-s C-e")      'isearchp-yank-line) ; Replace vanilla `isearch-yank-line'.
 
-(eval-after-load "second-sel"
+(eval-after-load "highlight"            ; `highlight.el'
+  '(progn
+
+    (defun isearchp-highlight-matches-other-face (&optional face start end msgp mousep buffers) ; `M-s h f'
+      "Highlight search matches with another face, keeping the highlighting.
+Use a differnt face in place of `lazy-highlight' highlighting, and
+keep this new highlighting after searching.
+
+By default, use the last face used for `highlight.el' highlighting.
+If option `hlt-auto-faces-flag' is non-nil then by default a new face
+is used each time this command is invoked.
+
+With a prefix arg, you are prompted for the face to use.
+
+You can remove this highlighting for the face:
+
+* Anytime when searching, using `\\<isearch-mode-map>\\[isearchp-unhighlight-last-face]'
+* Anytime when not searching, using `\\<global-map>\\[hlt-unhighlight-region-for-face]'
+
+You can remove such highlighting for more than one face using other
+keys on the `highlight.el' prefix key `C-x X u' - see `C-x X u C-h'.
+
+See also similar commands `\\<isearch-mode-map>\\[hlt-highlight-isearch-matches]' (`hlt-highlight-isearch-matches')
+and `\\[hlt-unhighlight-isearch-matches]' (`hlt-unhighlight-isearch-matches').
+
+Be aware that lazy highlighting does not necessarily highlight the
+whole buffer.  It highlights the visible parts only - the parts you
+have looked at.  This command changes the lazy highlighting, to give
+it a different face (and make it persist past searching).  As a
+result, this command highlights only the lazy-highlighted parts of the
+buffer.
+
+If you need to be sure that the whole buffer is covered then use
+`\\<isearch-mode-map>\\[hlt-highlight-isearch-matches]' (`hlt-highlight-isearch-matches') instead.
+
+You need library `highlight.el' for this command."
+      (interactive `(,(if current-prefix-arg
+                          (hlt-read-bg/face-name "New face: ")
+                        (if hlt-auto-faces-flag (hlt-next-face) hlt-last-face))
+                      ,@(hlt-region-or-buffer-limits)
+                      t))
+      (let ((lazy-highlight-cleanup  nil))
+        (hlt-replace-highlight-face 'lazy-highlight face start end nil mousep buffers)
+        ;; Set this to nil so next search will not remove the isearch overlays co-opted to use FACE.
+        (setq isearch-lazy-highlight-overlays  ()))
+      (when msgp (message "To remove highlighting: `M-s u f' (searching) or `C-x X u f' (later)" face)))
+
+    (defun isearchp-unhighlight-last-face (&optional face start end msgp mousep buffers) ; `M-s u f'
+      "Remove highlighting face that last replaced `lazy-highlight'.
+When called from Lisp this is just `hlt-unhighlight-region-for-face'.
+
+You need library `highlight.el' for this command."
+      (interactive (list hlt-last-face))
+      (hlt-unhighlight-region-for-face face start end msgp mousep buffers))
+
+    (define-key isearch-mode-map (kbd "M-s h f") 'isearchp-highlight-matches-other-face)
+    (define-key isearch-mode-map (kbd "M-s u f") 'isearchp-unhighlight-last-face)
+    (define-key isearch-mode-map (kbd "M-s h h") 'hlt-highlight-isearch-matches)
+    (define-key isearch-mode-map (kbd "M-s h u") 'hlt-unhighlight-isearch-matches)))
+
+(eval-after-load "second-sel"           ; `second-sel.el'
   '(progn
     (define-key isearch-mode-map (kbd "C-y C-2")  'isearch-yank-secondary)
     (define-key isearch-mode-map (kbd "C-M-y")    'isearch-yank-secondary)))
+
 (define-key isearch-mode-map "\C-y\C-y"           'isearch-yank-kill)
 (define-key isearch-mode-map "\C-y\M-g"           'isearchp-retrieve-last-quit-search)
 (when (fboundp 'isearch-yank-pop)
