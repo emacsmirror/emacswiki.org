@@ -304,6 +304,32 @@ the <code><Esc></code> key but mostly by <code><Ctrl>-G</code> key.
    | Save buffer and exit Emacs immediately            | <Ctrl>-<Alt>-<Shift>-X |
    |---------------------------------------------------+------------------------|
 }}}
+
+* There are some less favored default Emacs settings which makes the editing experience in Emacs quite unlike other editors, especially for programmers.
+\\For example, text wrapping is by default enabled so a program line could easily
+wrapped to next line if window size changed; text scrolling is jumppy in both
+horizontal and vertical directions and on <code><page up></code>/<code><page down></code> the cursor does
+not stay at the same position.\\All these behaviors can be easily adjusted by
+changing default settings.
+
+: With the quick launcher 'b' all these are fixed.  The <code><page up></code>/<code><page down></code>
+are rewritten to behave like other editors while 'b' changed other settings.
+\\If you launch Emacs without using 'b' you may want to include those changes into your ~/.emacs init script:
+
+{{{
+  ;;--------------------------------------------------------------------------;
+  (setq-default truncate-lines t)  ;; disable line wrapping                   ;
+  ;;(setq-default global-visual-line-mode t)                                  ;
+  (setq scroll-step 1              ;; set vertical scroll not jumppy          ;
+        scroll-conservatively 101)                                            ;
+  (setq hscroll-margin 1           ;; set horizontal scroll not jumppy        ;
+        hscroll-step 1)                                                       ;
+  (scroll-bar-mode -1)             ;; small border without scroll bar         ;
+  ;;--------------------------------------------------------------------------;
+}}}
+: Or you can refer to the source code "brief.el" for function `brief-easy-start'.
+
+
 * For more details like Cygwin 2.x users note, please check the comments in the source code "brief.el".
 
 Luke Lee
