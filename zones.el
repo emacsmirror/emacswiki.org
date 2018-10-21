@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 19 21:41:21 2018 (-0700)
+;; Last-Updated: Sun Oct 21 11:52:29 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 2022
+;;     Update #: 2031
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -30,7 +30,7 @@
 ;;    More description below.
 ;;
 ;;    Bug reports etc.: (concat "drew" ".adams" "@" "oracle" ".com")
-;;      
+;;
  
 ;;(@> "Index")
 ;;
@@ -457,7 +457,7 @@
 ;;   (dolist (start+end  regions)
 ;;     (hlt-highlight-region (nth 0 start+end) (nth 1 start+end)
 ;;                           face msgp mousep buffers)))
-;;    
+;;
 ;;  That's it - just iterate over `zz-izones' with a function that
 ;;  takes the region as an argument.  What `zones.el' offers in this
 ;;  regard is a way to easily define a set of buffer zones.
@@ -748,7 +748,7 @@ Don't forget to mention your Emacs and library versions."))
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3))) ; `reset' arg to `face-spec-set'.
 
-  (defface zz-fringe-for-narrowing 
+  (defface zz-fringe-for-narrowing
       '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
         (t (:background "LightGreen")))
     "*Face used for fringe when buffer is narrowed."
@@ -1759,6 +1759,10 @@ set this to a different variable anytime using `\\[zz-set-izones-var]'.
 
 All highlighting is checked, both overlays and face text properties.
 
+The number of highlighted areas added as zones is echoed in a message.
+This might be less than the number of zones added, because there can
+be multiple highlights with the same face for the same area.
+
 When called from Lisp:
 
 * Non-nil START and END are the buffer limits to search.
@@ -1819,7 +1823,7 @@ When called from Lisp:
         (case count
           (0 (message "NO zones added or updated"))
           (1 (message "1 zone added or updated"))
-          (t (message "%s zones added or updated" count))))))
+          (t (message "%s highlighted areas added or updated as zones" count))))))
 
   (defun zz-set-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
     "Replace value of izones variable with zones from the highlighted areas.
@@ -1835,7 +1839,7 @@ current zones instead of adding to them."
            nil nil ,(and numarg  (<= numarg 0)) t)))
     (set zz-izones-var ())
     (zz-add-zones-from-highlighting start end face only-hlt-face overlay/text fonk-lock-p msgp))
-  
+
   )
 
 
@@ -2084,7 +2088,7 @@ The value of variable `zz-izones' defines the zones."
     (let ((ii  0))
       (mapcar (lambda (posn) (cons (setq ii  (1+ ii)) (list (copy-marker (car posn)) (copy-marker (cdr posn)))))
               (funcall region-extract-function 'bounds))))
-         
+
   (defun zz-zones-from-noncontiguous-region ()
     "Return a list of basic zones from `region-extract-function' bounds."
     (mapcar (lambda (posn) (list (copy-marker (car posn)) (copy-marker (cdr posn))))
@@ -2205,7 +2209,7 @@ are included in the returned list."
           (unless dont-delete-p (delete-overlay ov)) ; Delete original overlays in BUFFER
         (push ov new-ovs)))             ; Add other-buffer overlays to return value.
     new-ovs))
-          
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'zones)
