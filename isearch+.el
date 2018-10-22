@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 21 19:13:39 2018 (-0700)
+;; Last-Updated: Sun Oct 21 19:33:38 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6160
+;;     Update #: 6172
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -406,6 +406,7 @@
 ;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
 ;;    `M-s h d'    `isearchp-toggle-dimming-filter-failures'
 ;;                 (Emacs 24.4+)
+;;    `M-s h b'    `isearchp-toggle-lazy-highlight-full-buffer'
 ;;    `M-s h f'    `isearchp-highlight-matches-other-face' (Emacs 22+)
 ;;    `M-s h h'    `hlt-highlight-isearch-matches'
 ;;    `M-s h l'    `isearchp-toggle-lazy-highlight-cleanup'
@@ -419,6 +420,9 @@
 ;;    `M-s M-SPC'  `isearchp-toggle-set-region'
 ;;    `M-s M-k'    `isearchp-toggle-repeat-search-if-fail' (Emacs 22+)
 ;;    `M-s u f'    `isearchp-unhighlight-last-face' (Emacs 22+)
+;;    `M-s z a'    `isearchp-add-zones-from-lazy-highlighting'
+;;    `M-s z r'    `isearchp-noncontiguous-region-from-lazy-highlighting'
+;;    `M-s z s'    `isearchp-set-zones-from-lazy-highlighting'
 ;;    `M-S-delete' `isearchp-cleanup'  (Emacs 23+) (`isearch-prop.el')
 ;;    `left'       `isearchp-init-edit' (Emacs 22+)
 ;;    `mouse-2'    `isearch-mouse-2'
@@ -1148,6 +1152,17 @@
 ;;    can change, delete, or insert chars in the middle somewhere.
 ;;    This makes the search string more minibuffer-like.
 ;;
+;;  * If you also use library `highlight.el' then you can highlight
+;;    and unhighlight Isearch matches in different faces, including
+;;    for multiple-buffer searches.  The simplest way to do this is to
+;;    use `M-s h f' (to highlight) and `M-s u f' (to unhighlight)
+;;    while searching.
+;;
+;;  * If you also use library `zones.el' then you can replace (`M-s z
+;;    s') or update (`M-s z a') the current list of zones from the
+;;    boundaries of lazy-highlighted text, or you can create a
+;;    noncontiguous region from that text (`M-s z r').
+;;
 ;;  * You can, by default, select text with the mouse, then hit `C-s'
 ;;    etc. to search for it.  This is controlled by user option
 ;;    `isearchp-mouse-2-flag'.
@@ -1178,11 +1193,6 @@
 ;;  text-property search.  For property `face', empty input to
 ;;  `isearchp-put-prop-on-region' removes all faces from the region.
 ;;
-;;  If you also use library `highlight.el' then you can highlight and
-;;  unhighlight Isearch matches in different faces, including for
-;;  multiple-buffer searches.  The simplest way to do this is to use
-;;  `M-s h f' (to highlight) and `M-s u f' (to unhighlight) while
-;;  searching.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
