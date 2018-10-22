@@ -315,8 +315,8 @@ not stay at the same position.\\All these behaviors can be easily adjusted by
 changing default settings.
 
 : With the quick launcher 'b' all these are fixed.  The <code><page up></code>/<code><page down></code>
-are rewritten to behave like other editors while 'b' changed other settings.
-\\If you launch Emacs without using 'b' you may want to include those changes into your ~/.emacs init script:
+are rewritten in Brief while function `brief-easy-start' changed other settings then do `(brief-mode 1)' to enable Brief mode.
+\\If you launch Emacs without using quick launcher 'b' or `brief-easy-start' function, you may want to include those changes into your ~/.emacs init script:
 
 {{{
   ;;--------------------------------------------------------------------------;
