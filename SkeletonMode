@@ -8,10 +8,12 @@ TomBreton wrote a nice recipe for skeletons: RecipeForSkeletonMode.
 
 === Bare bones ===
 
-    (define-skeleton hello-world-skeleton
-      "Write a greeting"
-      "Type name of user: "
-      "hello, " str "!")
+{{{
+(define-skeleton hello-world-skeleton
+  "Write a greeting"
+  "Type name of user: "
+  "hello, " str "!")
+}}}
 
 === Full example ===
 
@@ -23,25 +25,29 @@ The construct ##str | " *** Empfänger *** "## in the skeleton means that "##***
 
 Finally, the ##_## symbol specifies the "wrap position", i.e., where the point will end up when the skeleton has been inserted. If any text is selected beforehand, the skeleton will wrap around it.
 
-    (define-skeleton latex-skeleton
-      "Inserts a Latex letter skeleton into current buffer.
-    This only makes sense for empty buffers."
-      "Empfänger: "
-      "\\documentclass[a4paper]{letter}\n"
-      "\\usepackage{german}\n"
-      "\\usepackage[latin1]{inputenc}\n"
-      "\\name{A. Schröder}\n"
-      "\\address{Alexander Schröder \\\\ Langstrasse 104 \\\\ 8004 Zürich}\n"
-      "\\begin{document}\n"
-      "\\begin{letter}{" str | " *** Empfänger *** " "}\n"
-      "\\opening{" _ "}\n\n"
-      "\\closing{Mit freundlichen Grüssen,}\n"
-      "\\end{letter}\n"
-      "\\end{document}\n")
+{{{
+(define-skeleton latex-skeleton
+  "Inserts a Latex letter skeleton into current buffer.
+This only makes sense for empty buffers."
+  "Empfänger: "
+  "\\documentclass[a4paper]{letter}\n"
+  "\\usepackage{german}\n"
+  "\\usepackage[latin1]{inputenc}\n"
+  "\\name{A. Schröder}\n"
+  "\\address{Alexander Schröder \\\\ Langstrasse 104 \\\\ 8004 Zürich}\n"
+  "\\begin{document}\n"
+  "\\begin{letter}{" str | " *** Empfänger *** " "}\n"
+  "\\opening{" _ "}\n\n"
+  "\\closing{Mit freundlichen Grüssen,}\n"
+  "\\end{letter}\n"
+  "\\end{document}\n")
+}}}
 
 Place the code in <tt>[InitFile .emacs]</tt>. Then you can, for example, bind it to a key with:
 
-    (global-set-key "\C-cl" 'latex-skeleton)
+{{{
+(global-set-key "\C-cl" 'latex-skeleton)
+}}}
 
 Very simple, right?
 
@@ -51,49 +57,60 @@ Of course, the scheme is infinitely flexible. Instead of strings you can use Lis
 
 You can combine the power of skeletons with abbrevs. Note that you need to activate AbbrevMode if you really want to just type `;ife' to insert the expansion. (The following posting was slightly edited by AlexSchroeder.)
 
- From: Miroslav Fikar <fikar@cvt.stuba.sk>
- Subject: Re: Templates in Emacs...
- Newsgroups: comp.emacs
- Date: 12 Oct 2001 18:07:28 +0200
+{{{
+From: Miroslav Fikar <fikar@cvt.stuba.sk>
+Subject: Re: Templates in Emacs...
+Newsgroups: comp.emacs
+Date: 12 Oct 2001 18:07:28 +0200
+}}}
 
 Here is a small skeleton example from my fortran mode: typing `;ife' expands to the following fragment with the TextCursor placed in ().
 
- if () then
- else
- end if
+{{{
+if () then
+else
+end if
+}}}
 
 Here's the code:
 
-    (define-abbrev fortran-mode-abbrev-table ";ife"
-      "" 'fortran-skeleton-if-else-endif)
+{{{
+(define-abbrev fortran-mode-abbrev-table ";ife"
+  "" 'fortran-skeleton-if-else-endif)
 
-    (define-skeleton fortran-skeleton-if-else-endif
-      "Insert an if - else - end if region" nil
-      > "if (" _ ") then" \n
-      -3 "else" \n
-      -3 "end if")
+(define-skeleton fortran-skeleton-if-else-endif
+  "Insert an if - else - end if region" nil
+  > "if (" _ ") then" \n
+  -3 "else" \n
+  -3 "end if")
 
-    (setq skeleton-end-hook nil)
+(setq skeleton-end-hook nil)
+}}}
 
-[new]
-abbrev only expands on word constituents. In fortran-mode, the semicolon is a word constituent. You can't just use ##;foo## in other modes ... this confused me greatly ;)
+Note: abbrev only expands on *word constituents*. In ##fortran-mode##, the semicolon is a word constituent. You can't just use ##;foo## in other modes!
 
 == Preventing skeleton/abbrev recursion ==
 
 If you want to use abbrevs, but don't want abbrevs interacting with your skeletons, you can use this.
 
-    (setq skeleton-further-elements '((abbrev-mode nil)))
+{{{
+(setq skeleton-further-elements '((abbrev-mode nil)))
+}}}
 
 ##skeleton-further-elements## is buffer local when set. Its purpose is to effectively surround your abbrev expansion with ##let##.
 
-    ;; actual snippet from skeleton.el
-    (eval `(let ,skeleton-further-elements
-     	   (skeleton-internal-list skeleton str)))
+{{{
+;; actual snippet from skeleton.el
+(eval `(let ,skeleton-further-elements
+	 (skeleton-internal-list skeleton str)))
+}}}
 
 So my example causes the above code to expand into:
 
-    (let ((abbrev-mode nil))
-         (skeleton-internal-list skeleton str))
+{{{
+(let ((abbrev-mode nil))
+  (skeleton-internal-list skeleton str))
+}}}
 
 Effectivly turning off abbrev-mode while skeletons insert into this buffer.
 
@@ -103,37 +120,47 @@ See "Using Multiple Variables" below and then imagine how this feature opens the
 
 Here is another example which asks the user for repeated input. The key phrase to note in the ##skeleton-insert## !DocString is this:
 
-: ##ELEMENT## may itself be a ##SKELETON## with an ##INTERACTOR##. The user is prompted repeatedly for different inputs. The ##SKELETON## is processed as often as the user enters a non-empty string.
+[quote]
+##ELEMENT## may itself be a ##SKELETON## with an ##INTERACTOR##. The user is prompted repeatedly for different inputs. The ##SKELETON## is processed as often as the user enters a non-empty string.
+[/quote]
 
-    (define-skeleton hello-class
-      "Example for repeated input."
-      "this prompt is ignored"
-      ("Enter name of student: " "hello, " str \n))
+{{{
+(define-skeleton hello-class
+  "Example for repeated input."
+  "this prompt is ignored"
+  ("Enter name of student: " "hello, " str \n))
+}}}
 
 And assuming some very simple input, here's the result:
 
-    hello, a
-    hello, b
-    hello, c
+{{{
+hello, a
+hello, b
+hello, c
+}}}
 
 == Using the power of repeating skeletons ==
 
 I like the way you can make a skeleton repeat until you don't want any more input (see above), however I struggled until today to work out how to act on the str so that you can transform it how you will.
 
-  (define-skeleton add-tags
-    "Enter tags in any case and the output will be upcased."
-     nil
-    "Tags: "
-    ((upcase (skeleton-read "Tag: ")) ":"  str) ":" \n)
+{{{
+(define-skeleton add-tags
+  "Enter tags in any case and the output will be upcased."
+  nil
+  "Tags: "
+  ((upcase (skeleton-read "Tag: ")) ":"  str) ":" \n)
+}}}
 
 == Skeletonizing skeletons ==
 It's easy to create interactive skeletons for multiple distinct inputs. Here's a skeleton which aids in writing new skeletons! It first prompts for the name and docstring, and then repeatedly prompts for every line of the new skeleton definition. This could easily be adapted to writing simple functions or classes in different languages.
 
- (define-skeleton skeleton-skel
-   "Interactive skeleton for writing skeletons."
-   > "(define-skeleton " (skeleton-read "Skeleton name: ") \n
-   > "\"" (skeleton-read "Docstring: ") "\""
-   > ("Content line: " \n str) _ ")")
+{{{
+(define-skeleton skeleton-skel
+  "Interactive skeleton for writing skeletons."
+  > "(define-skeleton " (skeleton-read "Skeleton name: ") \n
+  > "\"" (skeleton-read "Docstring: ") "\""
+  > ("Content line: " \n str) _ ")")
+}}}
 
 == Using Multiple Variables with Skeleton Mode ==
 
@@ -141,30 +168,34 @@ It's easy to create interactive skeletons for multiple distinct inputs. Here's a
 
 The skeleton provides a) the two symbols ##v1## and ##v2## (preserved for the user) and b) `skeleton-read' to query for a string during the execution of the skeleton. Thus:
 
-    (define-skeleton read-two-vars
-      "Prompt the user for two variables, and use them in a skeleton."
-      ""
-      > "variable A is " (setq v1 (skeleton-read "Variable A? ")) \n
-      > "variable B is " (setq v2 (skeleton-read "Variable B? ")) \n
-      > "A: " v1 "    B: " v2 \n)
+{{{
+(define-skeleton read-two-vars
+  "Prompt the user for two variables, and use them in a skeleton."
+  ""
+  > "variable A is " (setq v1 (skeleton-read "Variable A? ")) \n
+  > "variable B is " (setq v2 (skeleton-read "Variable B? ")) \n
+  > "A: " v1 "    B: " v2 \n)
+}}}
 
 == More things to do with Variables in Skeleton Mode ==
 
-    (define-skeleton vote
-      "Electoral motion results"
-      nil
-      > "|----------------+----------+--------------|" \n
-      > "|Vote:           |For: "
-      (setq v1 (skeleton-read "How many for? "))
-      "    |Against: "
-      (setq v2 (skeleton-read "How many against? "))
-      "    |" \n
-      > "|----------------+----------+--------------|" \n
-      "|" (if (< (string-to-number v1)(string-to-number v2))
-	      "Not Carried                               |"
-	    "Carried                                    |")
-      \n
-      > "|------------------------------------------|" \n)
+{{{
+(define-skeleton vote
+  "Electoral motion results"
+  nil
+  > "|----------------+----------+--------------|" \n
+  > "|Vote:           |For: "
+  (setq v1 (skeleton-read "How many for? "))
+  "    |Against: "
+  (setq v2 (skeleton-read "How many against? "))
+  "    |" \n
+  > "|----------------+----------+--------------|" \n
+  "|" (if (< (string-to-number v1)(string-to-number v2))
+	  "Not Carried                               |"
+	"Carried                                    |")
+  \n
+  > "|------------------------------------------|" \n)
+}}}
 
 This is a use of unquoted S-expressions to both write immediate text and set variables that are to be reused later. As you can see, so long as the S-expression finally inserts text some numerical calculations can be done.
 
@@ -176,79 +207,87 @@ The skeleton language allows to evaluate arbitrary Lisp expressions when Emacs e
 
 S-expressions without a quote must return a string. The skeleton program then inserts this string into the buffer. Example:
 
-    (define-skeleton sexpr-example
-      "Insert a silly example."
-      ""
-      > "Emacs version is: " emacs-version \n
-      > "And time is: " (current-time-string))
+{{{
+(define-skeleton sexpr-example
+  "Insert a silly example."
+  ""
+  > "Emacs version is: " emacs-version \n
+  > "And time is: " (current-time-string))
+}}}
 
 === Quoted S-Expressions ===
 
 If you quote the sexpr, the skeleton program does ''not'' insert its return value, but discards it. You can use this to play some hackish tricks. The following example inserts a C-style comment in a box into the current buffer, like:
 
+{{{
  /* **************************************************************** */
  /* **                        Lirum larum                         ** */
  /* **************************************************************** */
+}}}
 
 This is the skeleton:
 
-    (define-skeleton insert-c-comment-header
-      "Inserts a c comment in a rectangle into current buffer."
-      ""
-      '(setq str (skeleton-read "Comment: "))
-      ;; `str' is set explicitly here, because otherwise the skeleton
-      ;; program would set it, only when it is going to insert it into the
-      ;; buffer. But we need to determine the length of the string
-      ;; beforehand, with `(length str)' below.
-      '(when (string= str "") (setq str " - "))
-      '(setq v1 (make-string (- fill-column 6) ?*))
-      '(setq v2 (- fill-column 10 (length str)))
-      "/* " v1 " */" \n
-      "/* **"
-      (make-string (floor v2 2) ?\ )
-      str
-      (make-string (ceiling v2 2) ?\ )
-      "** */" \n
-      "/* " v1 " */")
+{{{
+(define-skeleton insert-c-comment-header
+  "Inserts a c comment in a rectangle into current buffer."
+  ""
+  '(setq str (skeleton-read "Comment: "))
+  ;; `str' is set explicitly here, because otherwise the skeleton
+  ;; program would set it, only when it is going to insert it into the
+  ;; buffer. But we need to determine the length of the string
+  ;; beforehand, with `(length str)' below.
+  '(when (string= str "") (setq str " - "))
+  '(setq v1 (make-string (- fill-column 6) ?*))
+  '(setq v2 (- fill-column 10 (length str)))
+  "/* " v1 " */" \n
+  "/* **"
+  (make-string (floor v2 2) ?\ )
+  str
+  (make-string (ceiling v2 2) ?\ )
+  "** */" \n
+  "/* " v1 " */")
+}}}
 
 Please note, however, that when you have reached this level of complexity, you probably should consider implementing it as a normal EmacsLisp function.
 
 [:XhtmlSkeleton]
 Here's another example of quoted sexps that might be more useful.
 
-    (define-skeleton xhtml-trans-skeleton
-      "Inserts a skeletal XHTML file with the DOCTYPE declaration
+{{{
+(define-skeleton xhtml-trans-skeleton
+  "Inserts a skeletal XHTML file with the DOCTYPE declaration
     for the XHTML 1.0 Transitional DTD"
-      "Title: "
-      "<?xml version=\"1.0\""
-      (if buffer-file-coding-system
-          (concat " encoding=\""
-                  (setq v1
-                        (symbol-name
-                         (coding-system-get buffer-file-coding-system
+  "Title: "
+  "<?xml version=\"1.0\""
+  (if buffer-file-coding-system
+      (concat " encoding=\""
+	      (setq v1
+		    (symbol-name
+		     (coding-system-get buffer-file-coding-system
                                         'mime-charset))) "\""))
-      "?>\n"
-      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
-      > "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-      > "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-      > "<head>\n"
-      (when buffer-file-coding-system
-            (indent-according-to-mode)
-            (concat
-             "<meta http-equiv=\"Content-type\" content=\"text/html; charset="
-             v1 "\" />\n"))
-      > "<meta name=\"Author\" content=\"" (user-full-name) "\" />\n"
-      > "<title>" - str
-      '(save-excursion (sgml-quote skeleton-point (point)))
-      "</title>\n"
-      "</head>" > \n
-      > "<body>\n"
-      > "<h1>" - str
-      '(save-excursion (sgml-quote skeleton-point (point)))
-      "</h1>\n"
-      > - \n
-      "</body>" > \n
-      "</html>" > \n \n)
+  "?>\n"
+  "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+  > "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+  > "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  > "<head>\n"
+  (when buffer-file-coding-system
+    (indent-according-to-mode)
+    (concat
+     "<meta http-equiv=\"Content-type\" content=\"text/html; charset="
+     v1 "\" />\n"))
+  > "<meta name=\"Author\" content=\"" (user-full-name) "\" />\n"
+  > "<title>" - str
+  '(save-excursion (sgml-quote skeleton-point (point)))
+  "</title>\n"
+  "</head>" > \n
+  > "<body>\n"
+  > "<h1>" - str
+  '(save-excursion (sgml-quote skeleton-point (point)))
+  "</h1>\n"
+  > - \n
+  "</body>" > \n
+  "</html>" > \n \n)
+}}}
 
 The quoted sexps provide proper HTML characters by running sgml-quote on the region, by first marking the point with ##-## and using `skeleton-point' in the sexp.  Once you start using ##-##, you can't use ##_## as the "interesting point".  This example also shows how you need to use ##>## at the end of lines before a newline is inserted in case indentation needs to go backwards because of a closing element.
 
@@ -261,17 +300,21 @@ snippets. When creating skeleton templates, you can use the "@" sign
 to indicate positions that will be saved in the variable
 skeleton-positions. Here's a simple example:
 
-   (define-skeleton skel-defun
-     "Insert a defun template."
-     "Name: "
-     "(defun " str " (" @ - ")" \n
-     "(" @ _ ")" \n)
+{{{
+(define-skeleton skel-defun
+  "Insert a defun template."
+  "Name: "
+  "(defun " str " (" @ - ")" \n
+  "(" @ _ ")" \n)
+}}}
 
 The template above inserts a skeleton that looks like this (after the prompt):
 
-   (defun some-function ()
-     ()
-
+{{{
+(defun some-function ()
+  ()
+}}}
+  
 Because of the "-", the cursor is placed inside the first set of
 parentheses. And because of the "_", any active region is placed
 inside the second set of parentheses. But thanks to the "@" signs,
@@ -279,36 +322,37 @@ these locations have also been saved in skeleton-positions, making it
 possible (with some handy elisp) to jump back and forth between the
 entry points:
 
-  (defvar *skeleton-markers* nil
-    "Markers for locations saved in skeleton-positions")
+{{{
+(defvar *skeleton-markers* nil
+  "Markers for locations saved in skeleton-positions")
 
-  (add-hook 'skeleton-end-hook 'skeleton-make-markers)
+(add-hook 'skeleton-end-hook 'skeleton-make-markers)
 
-  (defun skeleton-make-markers ()
-    (while *skeleton-markers*
-      (set-marker (pop *skeleton-markers*) nil))
-    (setq *skeleton-markers*
-          (mapcar 'copy-marker (reverse skeleton-positions))))
+(defun skeleton-make-markers ()
+  (while *skeleton-markers*
+    (set-marker (pop *skeleton-markers*) nil))
+  (setq *skeleton-markers*
+	(mapcar 'copy-marker (reverse skeleton-positions))))
 
-  (defun skeleton-next-position (&optional reverse)
-    "Jump to next position in skeleton.
+(defun skeleton-next-position (&optional reverse)
+  "Jump to next position in skeleton.
          REVERSE - Jump to previous position in skeleton"
-    (interactive "P")
-    (let* ((positions (mapcar 'marker-position *skeleton-markers*))
-           (positions (if reverse (reverse positions) positions))
-           (comp (if reverse '> '<))
-           pos)
-      (when positions
-        (if (catch 'break
-              (while (setq pos (pop positions))
-                (when (funcall comp (point) pos)
-                  (throw 'break t))))
-            (goto-char pos)
-          (goto-char (marker-position
-                      (car *skeleton-markers*)))))))
+  (interactive "P")
+  (let* ((positions (mapcar 'marker-position *skeleton-markers*))
+	 (positions (if reverse (reverse positions) positions))
+	 (comp (if reverse '> '<))
+	 pos)
+    (when positions
+      (if (catch 'break
+	    (while (setq pos (pop positions))
+	      (when (funcall comp (point) pos)
+		(throw 'break t))))
+	  (goto-char pos)
+	(goto-char (marker-position
+		    (car *skeleton-markers*)))))))
+}}}
 
-
-Simply bind skeleton-next-position to some convenient key and you'll
+Simply bind ##skeleton-next-position## to some convenient key and you'll
 be able to cycle through the completion points within the template.
 
 == More Information ==
