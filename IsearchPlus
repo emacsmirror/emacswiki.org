@@ -26,12 +26,47 @@ removes all faces from the region.
 
 [:hlt-highlight--isearch-matches]
 [:hlt-unhighlight--isearch-matches]
-* If you use library [[HighlightLibrary|Highlight]] (<tt>[[highlight.el]]</tt>) then you can highlight and
+* If you also use library [[HighlightLibrary|Highlight]] (<tt>[[highlight.el]]</tt>) then you can highlight and
 unhighlight Isearch matches in different faces, including for
-multiple-buffer searches.  Library Highlight binds keys '''`M-s h h'''' and
-'''`M-s h u'''' for this highlighting and unhighlighting.
+multiple-buffer searches.   The simplest way to do this is to
+use `M-s h f' (to highlight) and `M-s u f' (to unhighlight)
+while searching. 
 
 
+
+[:isearchp-zones-forward]
+[:isearchp-zones-forward-regexp]
+[:isearchp-zones-backward]
+[:isearchp-zones-backward-regexp]
+* If you also use library [[Zones]] ('''<tt>[[zones.el]]</tt>''') then  you can 
+search a set of [[buffer]] zones that are defined by their
+limits ([[marker]]s or numbers) -- like multiple [[region]]s, using
+commands '''`isearchp-zones-forward'''' and
+'''`isearchp-zones-forward-regexp''''.  You can use different such
+zone sets.  Library ##zones.el## gives you an easy, interactive
+way to define them.  A [[prefix argument]] to the commands that search a
+set of zones prompts you for a [[variable]] whose value is such a
+set.  By default the variable is `zz-izones'.
+
+
+[:isearchp-make-zones-invisible]
+[:isearchp-make-anti-zones-invisible]
+[:isearchp-make-zones-visible]
+[:isearchp-make-anti-zones-visible]
+[:isearchp-toggle-zones-invisible]
+[:isearchp-toggle-anti-zones-invisible]
+[:isearchp-toggle-zone-anti-zone-visibility]
+* If you use library ##zones.el## then you can also make a set of zones or its complement (the set of anti-zones) invisible, so that you do not see it at all, including while searching.  The commands for this are '''`isearchp-make-zones-invisible'''', '''`isearchp-make-anti-zones-invisible'''', '''`isearchp-toggle-zones-invisible'''', '''`isearchp-toggle-anti-zones-invisible'''', and '''`isearchp-toggle-zone/anti-zone-visibility''''. 
+
+
+
+
+[:isearchp-add-zones-from-lazy-highlighting]
+[:isearchp-set-zones-from-lazy-highlighting]
+[:isearchp-noncontiguous-region-from-lazy-highlighting]
+* If you use library ##zones.el## then you can also, during Isearch, replace (`M-s z s') or update (`M-s z a') the current list of zones from the
+boundaries of lazy-highlighted text, or you can create a
+noncontiguous region from that text (`M-s z r').
 
 
 [:isearchp-toggle-complementing-domain]
@@ -101,28 +136,7 @@ ignoring comments during Isearch, using '''`##C-M-;##'''' (command
 
 
 
-[:isearchp-zones-forward]
-[:isearchp-zones-forward-regexp]
-[:isearchp-zones-backward]
-[:isearchp-zones-backward-regexp]
-[:isearchp-make-zones-invisible]
-[:isearchp-make-anti-zones-invisible]
-[:isearchp-make-zones-visible]
-[:isearchp-make-anti-zones-visible]
-[:isearchp-toggle-zones-invisible]
-[:isearchp-toggle-anti-zones-invisible]
-[:isearchp-toggle-zone-anti-zone-visibility]
-* If you use library '''<tt>[[zones.el]]</tt>''' (see '''[[Zones]]''') then you can
-search a set of [[buffer]] zones that are defined by their
-limits ([[marker]]s or numbers) -- like multiple [[region]]s, using
-commands '''`isearchp-zones-forward'''' and
-'''`isearchp-zones-forward-regexp''''.  You can use different such
-zone sets.  Library ##zones.el## gives you an easy, interactive
-way to define them.  A [[prefix argument]] to the commands that search a
-set of zones prompts you for a [[variable]] whose value is such a
-set.  By default the variable is `zz-izones'.
 
-* If you use library ##zones.el## then you can also make a set of zones or its complement (the set of anti-zones) invisible, so that you do not see it at all, including while searching.  The commands for this are '''`isearchp-make-zones-invisible'''', '''`isearchp-make-anti-zones-invisible'''', '''`isearchp-toggle-zones-invisible'''', '''`isearchp-toggle-anti-zones-invisible'''', and '''`isearchp-toggle-zone/anti-zone-visibility''''. 
 
 
 
