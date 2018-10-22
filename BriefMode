@@ -29,25 +29,27 @@ the default Emacs keys except for <code>Ctrl-g</code> (cancel half-entered comma
 $ sudo apt install emacs -y
 }}}
 
-* 2) Download Brief package using Emacs command line:
+* 2) Download Brief package using emacs command line:
 {{{
-$ emacs -Q -eval "(progn (package-initialize) (package-refresh-contents) (package-install 'brief) (save-buffers-kill-emacs))"
+$ emacs --batch --eval "(progn (package-initialize) (package-refresh-contents) (package-install 'brief))"
 }}}
 
-* 3) Now the Brief package (currently v5.86) should be presented in "~/.emacs.d/elpa/brief-5.86".  You can either add this into PATH, or copy (link) the launcher bash script "~/.emacs.d/elpa/brief-5.86/b" to anywhere within your PATH.\\\\Now you can start Emacs brief emulator, just run the launcher:
+* 3) Now the Brief package should be installed in <code>"~/.emacs.d/elpa/brief-#.##"</code> (where <nowiki>#.##</nowiki> is the version number, by the time this document is written it's 5.87).
+\\You can either add this into PATH, or copy (link) the launcher bash script <code>"~/.emacs.d/elpa/brief-#.##/b"</code> to anywhere within your PATH (notice this launcher exists only after v5.87).
+\\\\Now you can start Emacs brief emulator, just run the launcher:
 {{{
 $ b
 }}}
 : That's it!
-\\(If 'b' fail to launch, use 'b -h' and adjust the associated environment variables.)
+\\(If 'b' fail to launch, the package might not be properly installed, try step 2 and 3 again, or do it like Emacs users below.)
 
 ===For Emacs users:===
 * Just install the ELPA brief package with menu -> "Options" -> "Manage Emacs Packages", then add
 {{{
 (require 'brief)
-(brief-mode 1)
+(brief-easy-start) ;; will do (brief-mode 1)
 }}}
-: into ~/.emacs to enable it.
+: into ~/.emacs to enable it. (For what `brief-easy-start' does please search "brief-easy-start" following.)
 
 ==Key Command List==
 
