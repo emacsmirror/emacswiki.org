@@ -16,7 +16,7 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 
 * Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. You'll see a description of the function or variable. If you have the Emacs source code locally, you will also see a link to the relevant definition in the code. Click the link or move the [[cursor]] to it and press `RET' to follow it.
 
-* Use `C-h k' to see which command is invoked when you use a [[key]]. The description shown includes the command description (see previous).
+* Use `C-h k' (`describe-key') to see which command is invoked when you use a [[key]]. The description shown includes the command description (see previous).
 
 == Resources ==
 
