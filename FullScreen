@@ -94,6 +94,7 @@ If you want to start Emacs in full-screen mode then put call to toggle-full-scre
 {{{
 (toggle-full-screen)
 }}}
+Ps: in Windows System the right command to toggle full screen is (toggle-frame-fullscreen), change to that code in all the samples below.
 
 ===== Hide bars in full-screen mode and show them in windowed mode =====
 If you want to hide menu-bar, tool-bar, and scroll-bar in full-screen mode and restore them in windowed mode then use this code:
