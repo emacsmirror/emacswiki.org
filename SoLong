@@ -43,6 +43,7 @@ It is a good idea to customize ##so-long-minor-modes## to add any additional buf
 * diff-hl-mode
 * diff-hl-amend-mode
 * diff-hl-flydiff-mode
+* dtrt-indent-mode
 * hl-sexp-mode
 * idle-highlight-mode
 * rainbow-delimiters-mode
