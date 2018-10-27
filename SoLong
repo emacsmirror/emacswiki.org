@@ -59,3 +59,14 @@ While the standard mode hook `so-long-mode-hook' (which runs between `change-maj
    (when (bound-and-true-p idle-highlight-timer)
      (cancel-timer idle-highlight-timer)
      (setq idle-highlight-timer nil)))
+
+==Troubleshooting==
+
+Any elisp library has the potential to cause performance problems, and while ##so-long## addresses some important common cases, it's entirely possible that your own config contains problem cases that are unknown to this library.
+
+If a file is still taking a very long time to load with ##so-long## enabled, you should test the following command:
+
+ emacs -Q -l /path/to/so-long.el -f so-long-enable <file>
+
+If the file loads quickly when that command is used, you'll know that there is something in your personal configuration which is causing problems.  If this turns out to be a buffer-local minor mode, or a user option, you can hopefully alleviate the issue by customizing 
+`so-long-minor-modes' or `so-long-variable-overrides' accordingly.
