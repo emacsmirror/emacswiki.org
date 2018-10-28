@@ -472,20 +472,41 @@ with no prefix argument and with non-`nil'
 `isearchp-toggle-option-flag'.
 
 
+[:isearchp-toggle-lazy-highlighting]
+* '''`M-s h L'''' ('''`isearchp-toggle-lazy-highlighting'''') toggles the
+value of ''option'' '''`isearch-lazy-highlight''''.  Turning this
+highlighting off can sometimes speed up searching considerably,
+in particular for [[#isearchp-toggle-symmetric-char-fold|symmetric character folding]].
+
+
 [:isearchp-toggle-lazy-highlight-cleanup]
 * '''`M-s h l'''' ('''`isearchp-toggle-lazy-highlight-cleanup'''') toggles the
 value of ''option'' '''`lazy-highlight-cleanup''''.  When the option
 value is `nil' you can continue to see the search hits
 highlighted from the last search.  Toggle the option off, or
 use command `isearch-lazy-highlight-cleanup', to remove the
-highlighting.  See also option '''`lazy-highlight-max-at-a-time''''.
+highlighting.  When `M-s h l' turns cleanup on it also sets option
+`lazy-highlight-buffer' to `nil', turning
+off full-buffer highlighting.
 
 
-[:isearchp-toggle-lazy-highlighting]
-* '''`M-s h L'''' ('''`isearchp-toggle-lazy-highlighting'''') toggles the
-value of ''option'' '''`isearch-lazy-highlight''''.  Turning this
-highlighting off can sometimes speed up searching considerably,
-in particular for [[#isearchp-toggle-symmetric-char-fold|symmetric character folding]].
+[:isearchp-toggle-lazy-highlight-full-buffer]
+* '''`M-s h b'''' ('''`isearchp-toggle-lazy-highlight-full-buffer'''') toggles
+the value of option '''`lazy-highlight-buffer''''.  When the
+value is `t' Isearch lazy-highlights the entire buffer.  The
+default value of `nil' means it lazy-highlights only the buffer
+parts currently shown (but previously highlighted parts remain
+highlighted).  `M-s h b' also toggles option `lazy-highlight-cleanup', in the
+other direction.  This is because in most cases where you want
+to lazy-highlight the whole buffer you also want to keep that
+highlighting.  You need Emacs 24.3+ to take advantage of
+`lazy-highlight-buffer'.
+
+
+[:`isearchp-toggle-showing-match-number]
+* '''`M-s #'''' ('''`isearchp-toggle-showing-match-number'''')  toggles showing
+the current match number and total matches in the Isearch prompt
+(option '''`isearch-lazy-count'''').
 
 
 [:goto-longest-line]
