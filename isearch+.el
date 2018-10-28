@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 25 20:32:24 2018 (-0700)
+;; Last-Updated: Sat Oct 27 18:52:18 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 6411
+;;     Update #: 6516
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -112,12 +112,17 @@
 ;;    `isearchp-toggle-dimming-filter-failures' (Emacs 24.4+),
 ;;    `isearchp-toggle-highlighting-regexp-groups',
 ;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
+;;    `isearchp-toggle-lazy-highlight-full-buffer' (Emacs 24.3+),
 ;;    `isearchp-toggle-lazy-highlighting' (Emacs 22+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
+;;    `isearchp-toggle-region-deactivation' (Emacs 24.3+),
+;;    `isearchp-toggle-region-restriction' (Emacs 24.3+),
 ;;    `isearchp-toggle-repeat-search-if-fail' (Emacs 22+),
 ;;    `isearchp-toggle-search-invisible',
+;;    `isearchp-toggle-showing-filter-prompt-prefixes' (Emacs 24.4+),
+;;    `isearchp-toggle-showing-match-number' (Emacs 24.3+),
 ;;    `isearchp-toggle-set-region',
 ;;    `isearchp-toggle-symmetric-char-fold' (Emacs 25+),
 ;;    `isearchp-yank-char' (Emacs 22+), `isearchp-yank-line' (Emacs
@@ -404,6 +409,7 @@
 ;;    `M-s h '     `isearchp-toggle-lazy-highlighting'
 ;;    `M-s C-e'    `isearchp-yank-line'
 ;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
+;;    `M-s #'      `isearchp-toggle-showing-match-number' (Emacs 24.3+),
 ;;    `M-s h d'    `isearchp-toggle-dimming-filter-failures'
 ;;                 (Emacs 24.4+)
 ;;    `M-s h b'    `isearchp-toggle-lazy-highlight-full-buffer'
@@ -1112,24 +1118,28 @@
 ;;     value of option `lazy-highlight-cleanup'.  When the value is
 ;;     `nil' you can continue to see the search hits highlighted from
 ;;     the last search.  Toggle the option off, or use command
-;;     `isearch-lazy-highlight-cleanup', to remove the highlighting.
+;;     `lazy-highlight-cleanup', to remove the highlighting.
 ;;
 ;;     When `M-s h l' turns cleanup on it also sets option
-;;     `isearchp-toggle-lazy-highlight-full-buffer' to nil, turning
-;;     off full-buffer highlighting.
+;;     `lazy-highlight-buffer' to nil, turning off full-buffer
+;;     highlighting.
 ;;
 ;;  * `M-s h b' (`isearchp-toggle-lazy-highlight-full-buffer') toggles
-;;     the value of option `isearch-lazy-highlight-buffer'.  When the
-;;     value is `t' Isearch lazy-highlights the entire buffer.  The
-;;     default value of `nil' means it lazy-highlights only the buffer
-;;     parts currently shown (but previously highlighted parts remain
+;;     the value of option `lazy-highlight-buffer'.  When the value is
+;;     `t' Isearch lazy-highlights the entire buffer.  The default
+;;     value of `nil' means it lazy-highlights only the buffer parts
+;;     currently shown (but previously highlighted parts remain
 ;;     highlighted).
 ;;
 ;;     `M-s h b' also toggles option `lazy-highlight-cleanup', in the
 ;;     other direction.  This is because in most cases where you want
 ;;     to lazy-highlight the whole buffer you also want to keep that
 ;;     highlighting.  You need Emacs 24.3+ to take advantage of
-;;     `isearch-lazy-highlight-buffer'.
+;;     `lazy-highlight-buffer'.
+;;
+;;  * `M-s #' (`isearchp-toggle-showing-match-number') toggles showing
+;;    the current match number and total matches in the Isearch prompt
+;;    (option `isearch-lazy-count').
 ;;
 ;;  * Other bindings during Isearch:
 ;;
@@ -1205,6 +1215,15 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/10/27 dadams
+;;     Added: isearch-lazy-count, isearchp-toggle-showing-match-number (bound to M-s #).
+;;     Renamed, per vanilla Emacs: isearch-lazy-highlight-buffer to lazy-highlight-buffer,
+;;                                 isearch-lazy-highlight-buffer-p to isearch-lazy-highlight-buffer.
+;;     isearch-lazy-highlight-new-loop:
+;;       Update isearch-lazy-count-start, isearch-lazy-count-current, isearch-lazy-count-total, hash and prompt.
+;;     isearch-message-prefix: Add count to prompt, if counting.
+;;     isearch-lazy-highlight-update: Do isearch-lazy-highlight-buffer-update if isearch-lazy-count-start.
+;;     isearch-lazy-highlight-buffer-update: Update isearch-lazy-count-total, isearch-lazy-count-current, and prompt.
 ;; 2018/10/25 dadams
 ;;     Updated per isearch.el patch today from Juri:
 ;;     Added vanilla versions for older versions or redefinitions for Isearch+:
@@ -1911,8 +1930,13 @@
 (defvar isearch-last-case-fold-search)   ; In `isearch.el'.
 (defvar isearch-lax-whitespace)          ; In `isearch.el' (Emacs 24.3+).
 (defvar isearch-lazy-highlight)          ; In `isearch.el' (Emacs 21+).
-(defvar isearch-lazy-highlight-buffer-p) ; In `isearch.el' (Emacs 27+).
+(defvar isearch-lazy-highlight-buffer)   ; In `isearch.el' (Emacs 27+).
 (defvar isearch-lazy-highlight-case-fold-search) ; In `isearch.el' (Emacs 24+).
+(defvar isearch-lazy-count)              ; Here (Emacs 24.3+)
+(defvar isearch-lazy-count-current nil)  ; In `isearch.el' (Emacs 27+)
+(defvar isearch-lazy-count-total nil)    ; In `isearch.el' (Emacs 27+)
+(defvar isearch-lazy-count-start nil)    ; In `isearch.el' (Emacs 27+)
+(defvar isearch-lazy-count-hash (make-hash-table)) ; In `isearch.el' (Emacs 27+)
 (defvar isearch-lazy-highlight-end)      ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-end-limit) ; In `isearch.el' (Emacs 24+).
 (defvar isearch-lazy-highlight-forward)  ; In `isearch.el' (Emacs 24+).
@@ -1961,6 +1985,7 @@
 (defvar isearchp-show-filter-prompt-prefixes-flag) ; Here (Emacs 24.4+).
 (defvar isearchp-update-filter-predicates-alist-flag) ; Here (Emacs 24.4+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
+(defvar lazy-highlight-buffer)           ; In `isearch.el' (Emacs 27+).
 (defvar lazy-highlight-cleanup)          ; In `isearch.el' (Emacs 22+).
 (defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
 (defvar lazy-highlight-max-at-a-time)    ; In `isearch.el' (Emacs 24+).
@@ -2192,20 +2217,15 @@ Like `isearchp-prompt-filter-prefix', but used only when
 (when (and (boundp 'isearch-lazy-highlight) ; Emacs 22-26
            (< emacs-major-version 27))
 
-  (defcustom isearch-lazy-highlight-buffer nil
-    "Controls the lazy-highlighting of the full buffer.
-When non-nil, all text in the buffer matching the current search
-string is highlighted lazily (see `lazy-highlight-initial-delay',
-`lazy-highlight-interval' and `lazy-highlight-buffer-max-at-a-time').
-This is useful when `lazy-highlight-cleanup' is customized to nil
-and doesn't remove full-buffer highlighting after a search.
-\(This option has no effect in Emacs releases before 24.3.)"
-    :type 'boolean
-    :group 'lazy-highlight
-    :group 'isearch)
+  (defcustom isearch-lazy-count nil
+    "Show match number in the Isearch prompt.
+When both this option and `isearch-lazy-highlight' are non-nil, show
+CURRENT/TOTAL, where CURRENT is the current match number and TOTAL is
+the total number of matches in the buffer (or its restriction)."
+    :type 'boolean :group 'isearch :version "27.1")
 
   (defcustom lazy-highlight-buffer-max-at-a-time 20
-    "Maximum matches to highlight at a time (for `isearch-lazy-highlight-buffer').
+    "Maximum matches to highlight at a time (for `lazy-highlight-buffer').
 Larger values may reduce Isearch's responsiveness to user input;
 smaller values make matches highlight slowly.
 A value of nil means highlight all matches shown in the buffer.
@@ -2215,22 +2235,24 @@ A value of nil means highlight all matches shown in the buffer.
             (integer :tag "Some"))
     :group 'lazy-highlight)
 
+  (defcustom lazy-highlight-buffer nil
+    "Controls the lazy-highlighting of the full buffer.
+When non-nil, all text in the buffer matching the current search
+string is highlighted lazily (see `lazy-highlight-initial-delay',
+`lazy-highlight-interval' and `lazy-highlight-buffer-max-at-a-time').
+This is useful when `lazy-highlight-cleanup' is customized to nil
+and doesn't remove full-buffer highlighting after a search.
+\(This option has no effect in Emacs releases before 24.3.)"
+    :type 'boolean :group 'lazy-highlight :group 'isearch)
+
   (defvar isearch-lazy-highlight-match-function #'isearch-lazy-highlight-match
     "Function that highlights the found match.
 The function accepts two arguments: the beginning and the end of the match.")
 
-  (defun isearch-lazy-highlight-match (mb me)
-    (let ((ov  (make-overlay mb me)))
-      (push ov isearch-lazy-highlight-overlays)
-      ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
-      (overlay-put ov 'priority 1000)
-      (overlay-put ov 'face 'lazy-highlight)
-      (unless (eq isearch-lazy-highlight 'all-windows) (overlay-put ov 'window (selected-window)))))
-
 
   ;; REPLACE ORIGINAL in `isearch.el' for Emacs < 27
   ;;
-  ;; Updated per vanilla Emacs 27, for full-buffer lazy-highlighting.
+  ;; Updated per vanilla Emacs 27, for full-buffer lazy-highlighting and match count.
   ;; 
   (defun isearch-lazy-highlight-new-loop (&optional beg end)
     "Cleanup any previous `lazy-highlight' loop and begin a new one.
@@ -2238,31 +2260,35 @@ BEG and END specify the bounds within which highlighting should occur.
 This is called when `isearch-update' is invoked (which can cause the
 search string to change or the window to scroll).  It is also used
 by other Emacs features."
+    (setq isearch-lazy-count-start  (or (not (equal isearch-string isearch-lazy-highlight-last-string))
+                                        (if (boundp 'isearch-lazy-highlight-window-group)
+                                            (not (memq (selected-window) isearch-lazy-highlight-window-group))
+                                          (not (eq (selected-window) isearch-lazy-highlight-window)))
+	                                (not (eq isearch-lazy-highlight-case-fold-search isearch-case-fold-search))
+	                                (not (eq isearch-lazy-highlight-regexp isearch-regexp))
+	                                (not (eq isearch-lazy-highlight-regexp-function isearch-regexp-function))
+	                                (not (eq isearch-lazy-highlight-lax-whitespace isearch-lax-whitespace))
+	                                (not (eq isearch-lazy-highlight-regexp-lax-whitespace
+                                                 isearch-regexp-lax-whitespace))
+	                                (not (eq isearch-forward isearch-lazy-highlight-forward))
+	                                ;; In case we are recovering from an error.
+	                                (not (equal isearch-error isearch-lazy-highlight-error))))
     (when (and (null executing-kbd-macro)
                (sit-for 0)    ; Make sure `(window-start)' is credible
-               (or (not (equal isearch-string isearch-lazy-highlight-last-string))
-                   (if (boundp 'isearch-lazy-highlight-window-group)
-                       (not (memq (selected-window) isearch-lazy-highlight-window-group))
-                     (not (eq (selected-window) isearch-lazy-highlight-window)))
-                   (not (eq isearch-lazy-highlight-case-fold-search isearch-case-fold-search))
-                   (not (eq isearch-lazy-highlight-regexp isearch-regexp))
-                   (not (eq isearch-lazy-highlight-regexp-function isearch-regexp-function))
-                   (not (eq isearch-lazy-highlight-lax-whitespace isearch-lax-whitespace))
-                   (not (eq isearch-lazy-highlight-regexp-lax-whitespace isearch-regexp-lax-whitespace))
-                   (not (or isearch-lazy-highlight-buffer-p (= (isearchp-window-group-start)
-                                                               isearch-lazy-highlight-window-start)))
+               (or isearch-lazy-count-start
+                   (not (or lazy-highlight-buffer  (= (isearchp-window-group-start)
+                                                      isearch-lazy-highlight-window-start)))
                    ;; Window may have been split/joined.
-                   (not (or isearch-lazy-highlight-buffer-p (= (isearchp-window-group-end)
-                                                               isearch-lazy-highlight-window-end)))
-                   (not (eq isearch-forward isearch-lazy-highlight-forward))
-                   (not (equal isearch-error isearch-lazy-highlight-error)))) ; In case recovering from an error.
+	           (not (or lazy-highlight-buffer  (= (isearchp-window-group-end)
+			                              isearch-lazy-highlight-window-end)))))
+
       ;; Something important changed.
       (if (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
           (lazy-highlight-cleanup t (not (equal isearch-string ""))) ; Stop old timer.
         (lazy-highlight-cleanup t))  ; Kill old loop & remove overlays
+      ;; It used to check for `(not isearch-error)' here, but lazy-highlighting might find matches to highlight even
+      ;; when `isearch-error' is non-nil.  (Bug#9918)
       (setq isearch-lazy-highlight-error                   isearch-error
-            ;; It used to check for `(not isearch-error)' here, but lazy-highlighting might find matches to
-            ;; highlight even when `isearch-error' is non-nil.  (Bug#9918)
             isearch-lazy-highlight-start-limit             beg
             isearch-lazy-highlight-end-limit               end
             isearch-lazy-highlight-window                  (selected-window)
@@ -2270,7 +2296,7 @@ by other Emacs features."
                                                                 (selected-window-group))
             isearch-lazy-highlight-window-start            (isearchp-window-group-start)
             isearch-lazy-highlight-window-end              (isearchp-window-group-end)
-            isearch-lazy-highlight-buffer-p                isearch-lazy-highlight-buffer
+            isearch-lazy-highlight-buffer                  lazy-highlight-buffer
             ;; Start lazy-highlighting at start of found match (`isearch-other-end').  If no match, use point.
             ;; One of the next two vars (depending on search direction) is used to define start position of
             ;; lazy-highlighting and to remember current position of point between calls of
@@ -2296,8 +2322,16 @@ by other Emacs features."
                                                   (1- (length isearch-lazy-highlight-last-string)))
                                                (point-min))))
       (unless (equal isearch-string "")
+        (when (and isearch-lazy-count  isearch-mode)
+          (when isearch-lazy-count-start
+            (clrhash isearch-lazy-count-hash)
+            (setq isearch-lazy-count-current  nil
+                  isearch-lazy-count-total    nil)))
         (setq isearch-lazy-highlight-timer  (run-with-idle-timer lazy-highlight-initial-delay nil
-                                                                 'isearch-lazy-highlight-start)))))
+                                                                 'isearch-lazy-highlight-start))))
+    (when (and isearch-lazy-count  isearch-mode)
+      (setq isearch-lazy-count-current  (gethash isearch-other-end isearch-lazy-count-hash))
+      (funcall (or isearch-message-function  #'isearch-message) nil t)))
 
   )
 
@@ -4249,7 +4283,8 @@ Commands
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
 \\[isearch-toggle-character-fold]\t- toggle character folding
 \\[isearchp-toggle-symmetric-char-fold]\t- toggle character folding being symmetric
-\\[isearchp-toggle-lazy-highlight-full-buffer]\t- option `isearch-lazy-highlight-buffer'
+\\[isearchp-toggle-lazy-highlight-full-buffer]\t- option `lazy-highlight-buffer'
+\\[isearchp-toggle-showing-match-number]\t- option `isearch-lazy-count'
 \\[isearchp-toggle-lazy-highlight-cleanup]\t- option `lazy-highlight-cleanup'
 \\[isearchp-toggle-lazy-highlighting]\t- option `isearch-lazy-highlight'
 \\[isearchp-toggle-search-invisible]\t- toggle searching invisible text
@@ -5018,7 +5053,14 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
       ;; within `with-isearch-suspended', in `isearchp-add-filter-predicate-1'.  I haven't isolated the bug,
       ;; hence this hack.
       (let ((face  (get-text-property 0 'face mmm)))
-        (concat (propertize (upcase (substring mmm 0 1)) 'face face) (substring mmm 1)))))
+        (propertize (concat (if (and isearch-lazy-count  isearch-lazy-count-current)
+                                (format "%d/%d " (if isearch-forward
+                                                     isearch-lazy-count-current
+                                                   (- isearch-lazy-count-total isearch-lazy-count-current -1))
+                                        (or isearch-lazy-count-total  "?"))
+                              "")
+                            (upcase (substring mmm 0 1)) (substring mmm 1))
+		    'face face))))
 
   )
 
@@ -5174,32 +5216,45 @@ Bound to `C-M-`' during Isearch."
     (isearch-update))
 
   (defun isearchp-toggle-lazy-highlight-full-buffer () ; Bound to `M-s h b' in `isearch-mode-map'.
-    "Toggle `isearch-lazy-highlight-buffer' and set/reset `lazy-highlight-cleanup'.
-`isearch-lazy-highlight-buffer' is toggled, then its negation is used
-for the value of `lazy-highlight-cleanup'.  So when full-buffer
-highlighting is toggled on/off `lazy-highlight-cleanup' is turned
+    "Toggle `lazy-highlight-buffer' and set/reset `lazy-highlight-cleanup'.
+`lazy-highlight-buffer' is toggled, then its negation is used for the
+value of `lazy-highlight-cleanup'.  So when full-buffer highlighting
+is toggled on/off `lazy-highlight-cleanup' is turned
 off/on."
     (interactive)
     (unless (or (> emacs-major-version 24) ; Emacs 24.3+
                 (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
       (isearchp-user-error "Full-buffer lazy highlighting is not available before Emacs 24.3"))
-    (setq isearch-lazy-highlight-buffer  (not isearch-lazy-highlight-buffer))
+    (setq lazy-highlight-buffer  (not lazy-highlight-buffer))
     (setq lazy-highlight-cleanup  t)
     (isearchp-redo-lazy-highlighting)
-    (setq lazy-highlight-cleanup  (not isearch-lazy-highlight-buffer))
-    (message "FULL-BUFFER persistent lazy-highlighting is now %s" (if isearch-lazy-highlight-buffer 'ON 'OFF))
+    (setq lazy-highlight-cleanup  (not lazy-highlight-buffer))
+    (message "FULL-BUFFER persistent lazy-highlighting is now %s" (if lazy-highlight-buffer 'ON 'OFF))
     (sit-for 1.5)
     (isearch-update))
 
   (define-key isearch-mode-map (kbd "M-s h b") 'isearchp-toggle-lazy-highlight-full-buffer)
 
+  (defun isearchp-toggle-showing-match-number () ; Bound to `M-s #' in `isearch-mode-map'.
+    "Toggle `isearch-lazy-count'."
+    (interactive)
+    (unless (or (> emacs-major-version 24) ; Emacs 24.3+
+                (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+      (isearchp-user-error "Showing match number in Isearch prompt is not available before Emacs 24.3"))
+    (setq isearch-lazy-count  (not isearch-lazy-count))
+    (message "Showing match number in Isearch prompt is now %s" (if isearch-lazy-count 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
+  (define-key isearch-mode-map (kbd "M-s #") 'isearchp-toggle-showing-match-number)
+
   (defun isearchp-toggle-lazy-highlight-cleanup () ; Bound to `M-s h l' in `isearch-mode-map'.
     "Toggle `lazy-highlight-cleanup'.
 If turned on then turn off full-buffer lazy highlighting (set option
-`isearch-lazy-highlight-buffer' to nil)."
+`lazy-highlight-buffer' to nil)."
     (interactive)
     (setq lazy-highlight-cleanup  (not lazy-highlight-cleanup))
-    (when lazy-highlight-cleanup (setq isearch-lazy-highlight-buffer  nil))
+    (when lazy-highlight-cleanup (setq lazy-highlight-buffer  nil))
     (message "Cleanup of lazy highlighting is now %s" (if lazy-highlight-cleanup 'ON 'OFF))
     (sit-for 1)
     (isearch-update))
@@ -5413,7 +5468,7 @@ You need library `character-fold+.el' for this command."
   )
 
 
-;;; Support for limiting search to active region and other things.
+;;; Support for limiting search to active region, full-buffer higlighting, and other things.
 ;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
@@ -5527,14 +5582,25 @@ Attempt to do the search exactly the way the pending Isearch would."
 
 
   (defvar isearchp-in-lazy-highlight-update-p nil
-    "Non-nil means `isearch-lazy-highlight-update' is processing.")
+    "Non-nil means we are lazy-highlight updating.
+That is, either `isearch-lazy-highlight-update' or
+`isearch-lazy-highlight-buffer-update' is processing.")
+
+  (defun isearch-lazy-highlight-match (mb me)
+    (let ((ov  (make-overlay mb me)))
+      (push ov isearch-lazy-highlight-overlays)
+      ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
+      (overlay-put ov 'priority 1000)
+      (overlay-put ov 'face 'lazy-highlight)
+      (unless (or (eq isearch-lazy-highlight 'all-windows)  isearch-lazy-highlight-buffer)
+        (overlay-put ov 'window (selected-window)))))
 
 
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
   ;; 1. Use `isearchp-reg-(beg|end)', not point-min|max.
-  ;; 2. Binds `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
-  ;; 3. Lazy-highlights odd regexp groups using face `isearchp-lazy-odd-regexp-groups'.
+  ;; 2. Bind `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
+  ;; 3. Lazy-highlight odd regexp groups using face `isearchp-lazy-odd-regexp-groups'.
   ;;
   (defun isearch-lazy-highlight-update ()
     "Update highlighting of other matches for current search."
@@ -5601,6 +5667,7 @@ Attempt to do the search exactly the way the pending Isearch would."
                                                 (overlay-put ov 'window (selected-window)))))
                                           (setq level  (+ level 1)))
                                       (error nil))))))
+                          ;; Non-zero-length match.
                           (funcall isearch-lazy-highlight-match-function mb me)))
                       ;; Remember current point for next call of `isearch-lazy-highlight-update' when
                       ;; `lazy-highlight-max-at-a-time' is too small.
@@ -5621,7 +5688,7 @@ Attempt to do the search exactly the way the pending Isearch would."
                         (goto-char (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
                                         window-end)))))))
               (if nomore
-                  (when isearch-lazy-highlight-buffer-p
+                  (when (or isearch-lazy-highlight-buffer  isearch-lazy-count-start)
                     (if isearch-lazy-highlight-forward
                         (setq isearch-lazy-highlight-end  (point-min))
                       (setq isearch-lazy-highlight-start  (point-max)))
@@ -5629,6 +5696,11 @@ Attempt to do the search exactly the way the pending Isearch would."
                 (setq isearch-lazy-highlight-timer
                       (run-at-time lazy-highlight-interval nil 'isearch-lazy-highlight-update)))))))))
 
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; Bind `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
+  ;;
   (defun isearch-lazy-highlight-buffer-update ()
     "Update highlighting of other matches in the whole buffer."
     (let ((max                                  lazy-highlight-buffer-max-at-a-time)
@@ -5646,29 +5718,30 @@ Attempt to do the search exactly the way the pending Isearch would."
                 window-end    (isearchp-window-group-end))
           (save-excursion
             (save-match-data
-              (goto-char (if isearch-lazy-highlight-forward
-                             isearch-lazy-highlight-end
-                           isearch-lazy-highlight-start))
+              (goto-char (if isearch-lazy-highlight-forward isearch-lazy-highlight-end isearch-lazy-highlight-start))
               (while looping
                 (let* ((bound  (if isearch-lazy-highlight-forward
-                                   (or isearch-lazy-highlight-end-limit (point-max))
-                                 (or isearch-lazy-highlight-start-limit (point-min))))
+                                   (or isearch-lazy-highlight-end-limit  (point-max))
+                                 (or isearch-lazy-highlight-start-limit  (point-min))))
                        (found  (isearch-lazy-highlight-search isearch-lazy-highlight-last-string bound)))
                   (when max
                     (setq max  (1- max))
-                    (if (<= max 0)
-                        (setq looping  nil)))
+                    (when (<= max 0) (setq looping  nil)))
                   (if found
-                      (let ((mb (match-beginning 0))
-                            (me (match-end 0)))
+                      (let ((mb  (match-beginning 0))
+                            (me  (match-end 0)))
                         (if (= mb me)   ; Zero-length match
                             (if isearch-lazy-highlight-forward
                                 (if (= mb (point-max)) (setq found  nil) (forward-char 1))
                               (if (= mb (point-min)) (setq found  nil) (forward-char -1)))
-                          ;; Already highlighted by isearch-lazy-highlight-update
+                          (setq isearch-lazy-count-total  (1+ (or isearch-lazy-count-total  0)))
+                          (puthash (if isearch-lazy-highlight-forward mb me)
+                                   isearch-lazy-count-total
+                                   isearch-lazy-count-hash)
+                          ;; Already highlighted by isearch-lazy-highlight-update.
                           (unless (or (and (>= mb window-start)  (<= me window-end))
-                                      (not isearch-lazy-highlight-buffer-p))
-                            ;; Non-zero-length match
+                                      (not isearch-lazy-highlight-buffer))
+                            ;; Non-zero-length match.
                             (funcall isearch-lazy-highlight-match-function mb me)))
                         ;; Remember current position of point for next `isearch-lazy-highlight-update' call
                         ;; when `lazy-highlight-buffer-max-at-a-time' is too small.
@@ -5679,6 +5752,9 @@ Attempt to do the search exactly the way the pending Isearch would."
                     (setq looping  nil
                           nomore   t))))
               (unless nomore
+	        (when (and isearch-lazy-count  isearch-mode)
+                  (setq isearch-lazy-count-current  (gethash isearch-other-end isearch-lazy-count-hash))
+                  (funcall (or isearch-message-function  #'isearch-message) nil t))
                 (setq isearch-lazy-highlight-timer
                       (run-at-time lazy-highlight-interval nil
                                    'isearch-lazy-highlight-buffer-update)))))))))
