@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2018-10-28
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 28 18:15:09 2018 (-0700)
+;; Last-Updated: Sun Oct 28 18:46:30 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 2058
+;;     Update #: 2075
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -722,9 +722,12 @@
 (eval-when-compile (require 'cl)) ;; case
 
 ;; Quiet the byte-compiler.
+(defvar hlt-last-face)                  ; In `highlight.el'
 (defvar mode-line-modes)                ; Emacs 22+
 (defvar narrow-map)                     ; Emacs 23+
 (defvar region-extract-function)        ; Emacs 25+
+(defvar repeat-message-function)        ; In `repeat.el'
+(defvar repeat-previous-repeated-command) ; In `repeat.el'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -751,7 +754,7 @@ Don't forget to mention your Emacs and library versions."))
   (defface zz-fringe-for-narrowing
       '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
         (t (:background "LightGreen")))
-    "*Face used for fringe when buffer is narrowed."
+    "Face used for fringe when buffer is narrowed."
     :group 'zones :group 'faces)
 
   (defcustom zz-narrowing-use-fringe-flag t
@@ -760,8 +763,8 @@ Don't forget to mention your Emacs and library versions."))
     :set (lambda (sym defs)
            (custom-set-default sym defs)
            (if (symbol-value sym)
-               (add-hook 'post-command-hook 'zz-set-fringe-for-narrowing)
-             (remove-hook 'post-command-hook 'zz-set-fringe-for-narrowing))))
+               (add-hook 'post-command-hook #'zz-set-fringe-for-narrowing)
+             (remove-hook 'post-command-hook #'zz-set-fringe-for-narrowing))))
 
   (defun zz-set-fringe-for-narrowing ()
     "Set fringe face if buffer is narrowed."
@@ -1418,28 +1421,28 @@ value can be modified."
     (set var ())
     (dolist (nn  orig) (zz-add-zone (cadr nn) (car (cddr nn)) var))))
 
-;;; Non-destructive version.
-;;;
-;;; (defun zz-izone-limits-in-bufs (buffers &optional variable)
-;;;   "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
-;;; That is, return a list of all recorded buffer zones for BUFFERS.
-;;; If BUFFERS is nil, return the zones recorded for the current buffer.
-;;;
-;;; This is a non-destructive operation: The list returned is independent
-;;; of the `zz-izone-limits' list in each of the buffers.
-;;;
-;;; Optional arg VARIABLE is the izones variable to use.  If nil,
-;;; use the value of `zz-izones-var'.  The variable is evaluated in each
-;;; buffer (or in the current buffer, if BUFFERS is nil)."
-;;;
-;;;   (let ((limits  ()))
-;;;     (dolist (buf  (or (reverse buffers)  (list (current-buffer)))) ; Reverse so we keep the order.
-;;;       (with-current-buffer buf
-;;;         (setq limits  (append (zz-izone-limits (symbol-value (or variable  zz-izones-var))
-;;;                                              buf
-;;;                                              'ONLY-THIS-BUFFER)
-;;;                               limits))))
-;;;     limits))
+;; Non-destructive version.
+;;
+;; (defun zz-izone-limits-in-bufs (buffers &optional variable)
+;;   "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
+;; That is, return a list of all recorded buffer zones for BUFFERS.
+;; If BUFFERS is nil, return the zones recorded for the current buffer.
+;;
+;; This is a non-destructive operation: The list returned is independent
+;; of the `zz-izone-limits' list in each of the buffers.
+;;
+;; Optional arg VARIABLE is the izones variable to use.  If nil,
+;; use the value of `zz-izones-var'.  The variable is evaluated in each
+;; buffer (or in the current buffer, if BUFFERS is nil)."
+;;
+;;   (let ((limits  ()))
+;;     (dolist (buf  (or (reverse buffers)  (list (current-buffer)))) ; Reverse so we keep the order.
+;;       (with-current-buffer buf
+;;         (setq limits  (append (zz-izone-limits (symbol-value (or variable  zz-izones-var))
+;;                                              buf
+;;                                              'ONLY-THIS-BUFFER)
+;;                               limits))))
+;;     limits))
 
 (defun zz-izone-limits-in-bufs (buffers &optional variable)
   "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
@@ -1566,17 +1569,17 @@ reads any symbol, but it provides completion against variable names."
                                  (or default-value  var-at-pt)))
                              t))))
 
-;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
-(if (fboundp 'string-match-p)
-    (defalias 'zz-string-match-p 'string-match-p) ; Emacs 23+
-  (defun zz-string-match-p (regexp string &optional start)
-    "Like `string-match', but this saves and restores the match data."
-    (save-match-data (string-match regexp string start))))
+(defalias 'zz-string-match-p
+  (if (fboundp 'string-match-p)
+      #'string-match-p                  ; Emacs 23+
+   (lambda (regexp string &optional start)
+     "Like `string-match', but this saves and restores the match data."
+      (save-match-data (string-match regexp string start)))))
 
 (defun zz-repeat-command (command)
   "Repeat COMMAND."
  (let ((repeat-previous-repeated-command  command)
-       (repeat-message-function           'ignore)
+       (repeat-message-function           #'ignore)
        (last-repeatable-command           'repeat))
    (repeat nil)))
 
@@ -1650,7 +1653,7 @@ Non-interactively: Non-nil MSGP means show a status message."
     (when msgp (message "Cloned `%s' to `%s'" from-variable to-variable))))
 
 ;;;###autoload
-(defalias 'zz-clone-and-coalesce-zones 'zz-clone-and-unite-zones)
+(defalias 'zz-clone-and-coalesce-zones #'zz-clone-and-unite-zones)
 ;;;###autoload
 (defun zz-clone-and-unite-zones (from-variable to-variable &optional msgp) ; Bound to `C-x n C'
   "Clone FROM-VARIABLE to TO-VARIABLE, then unite (coalesce) TO-VARIABLE.
@@ -1680,7 +1683,7 @@ Non-interactively: Non-nil MSGP means show a status message."
     (when msgp (message "Cloned `%s' to `%s' and united `%s'" from-variable to-variable to-variable))))
 
 ;;;###autoload
-(defalias 'zz-coalesce-zones 'zz-unite-zones)
+(defalias 'zz-coalesce-zones #'zz-unite-zones)
 ;;;###autoload
 (defun zz-unite-zones (&optional variable msgp) ; Bound to `C-x n u'
   "Coalesce (unite) the izones of VARIABLE.
@@ -1714,7 +1717,7 @@ Non-interactively:
     (symbol-value var)))
 
 ;;;###autoload
-(defalias 'zz-add-zone-and-coalesce 'zz-add-zone-and-unite)
+(defalias 'zz-add-zone-and-coalesce #'zz-add-zone-and-unite)
 ;;;###autoload
 (defun zz-add-zone-and-unite (start end &optional variable msgp) ; Bound to `C-x n A'.
   "Add an izone from START to END to those of VARIABLE, and coalesce.
