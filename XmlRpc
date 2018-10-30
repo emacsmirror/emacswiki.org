@@ -8,14 +8,25 @@ The spec can be found at http://www.xmlrpc.com/.
 
 == xml-rpc.el ==
 
+This is an XML-RPC client implementation in elisp, capable of both
+synchronous and asynchronous method calls (using the url package's async
+retrieval functionality).
+
+XML-RPC is remote procedure calls over HTTP using XML to describe the
+function call and return values.
+
+xml-rpc.el represents XML-RPC datatypes as lisp values, automatically
+converting to and from the XML datastructures as needed, both for method
+parameters and return values, making using XML-RPC methods fairly
+transparent to the lisp code.
+
 This is an implementation of XML-RPC in EmacsLisp. It allows Emacs to
 make asynchronous remote procedure calls over http.
 
-* http://bzr.savannah.gnu.org/lh/emacsweblogs/annotate/head%3A/lisp/xml-rpc.el
+You can find it on Github:
+https://github.com/hexmode/xml-rpc-el
 
-: that link doesn't work, there's a file at http://www.emacswiki.org/emacs/xml-rpc.el but is this the newest one? 
-
-To fix a bug in that causes double escaping of string parameters in Emacs 23, apply the patch from the following bug report: http://savannah.nongnu.org/bugs/?25314
+Or install it via [[MELPA]].
 
 It could probably be useful for communicating with EmacsWiki using the
 MeatBall:XmlRpcToWiki API.  See the WikiRemote for further discussion
