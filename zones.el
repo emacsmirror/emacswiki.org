@@ -8,14 +8,14 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2018-10-28
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 28 18:46:30 2018 (-0700)
+;; Last-Updated: Tue Oct 30 13:07:40 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 2075
+;;     Update #: 2152
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
-;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -37,11 +37,11 @@
 ;;  Index
 ;;  -----
 ;;
-;;  If you have library `linkd.el' and Emacs 22 or later, load
-;;  `linkd.el' and turn on `linkd-mode' now.  It lets you easily
-;;  navigate around the sections of this doc.  Linkd mode will
-;;  highlight this Index, as well as the cross-references and section
-;;  headings throughout this file.  You can get `linkd.el' here:
+;;  If you have library `linkd.el', load `linkd.el' and turn on
+;;  `linkd-mode' now.  It lets you easily navigate around the sections
+;;  of this doc.  Linkd mode will highlight this Index, as well as the
+;;  cross-references and section headings throughout this file.  You
+;;  can get `linkd.el' here:
 ;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
@@ -83,7 +83,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `zz-buffer-of-markers', `zz-car-<', `zz-dot-pairs', `zz-every',
+;;    `zz-buffer-narrowed-p' (Emacs 22-23), `zz-buffer-of-markers',
+;;    `zz-car-<', `zz-dot-pairs', `zz-every',
 ;;    `zz-izone-has-other-buffer-marker-p', `zz-izone-limits',
 ;;    `zz-izone-limits-in-bufs', `zz-izones',
 ;;    `zz-izones-from-noncontiguous-region' (Emacs 25+),
@@ -118,15 +119,9 @@
 ;;    `zz-user-error'.
 ;;
 ;;
-;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
+;;  ***** NOTE: These EMACS PRIMITIVES have been ADVISED HERE:
 ;;
-;;    `narrow-to-region'.
-;;
-;;
-;;  ***** NOTE: The following functions defined in `lisp.el' and
-;;              `page.el' have been REDEFINED here:
-;;
-;;    `narrow-to-defun', `narrow-to-page'.
+;;    `narrow-to-defun', `narrow-to-page', `narrow-to-region'.
  
 ;;(@* "Documentation")
 ;;
@@ -215,8 +210,17 @@
 ;;
 ;;  Emacs overlays have a lot in common with zones: overlays have an
 ;;  associated buffer, two limits (positions), and a list of
-;;  properties.  You can create zones from overlays, and vice versa,
-;;  using functions `zz-overlay-to-zone', `zz-zone-to-overlay',
+;;  properties.
+;;
+;;  Zones are different, in that:
+;;
+;;  * They can have identifiers (izones).
+;;  * They can have a readable Lisp form, by using numbers or readable
+;;    markers.
+;;  * They can be persistent, by bookmarking them.
+;;
+;;  You can create zones from overlays, and vice versa, using
+;;  functions `zz-overlay-to-zone', `zz-zone-to-overlay',
 ;;  `zz-overlays-to-zones', and `zz-zones-to-overlays'.
 ;;
 ;;  When creating zones from overlays you can specify how to represent
@@ -468,7 +472,13 @@
 ;;
 ;;(@* "Change log")
 ;;
-;; 2018/10/18 dadams
+;; 2018/10/30 dadams
+;;     Forked Emacs 20-21 stuff off as zones20.el.
+;;       Require cl-lib.el for Emacs 23+, cl.el for Emacs 22.
+;;       Added: zz-buffer-narrowed-p (for Emacs 22-23).
+;;       narrow-to-(defun|page): Use defadvice instead of redefining.
+;;       narrow-to-defun: Updated to Emacs 26 definition.
+;; 2018/10/28 dadams
 ;;     Added: zz-set-zones-from-highlighting.
 ;;     zz-add-zones-from-highlighting: Prefix arg >=0: prompt for the face, <= 0: use font-lock-face.
 ;;     Bind in eval-after-load of highlight.el: zz-(add|set)-zones-from-highlighting (to C-x n [lL]),
@@ -719,7 +729,8 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile
+  (or (require 'cl-lib nil t)  (require 'cl))) ;; case (No `cl-case' for Emacs 22)
 
 ;; Quiet the byte-compiler.
 (defvar hlt-last-face)                  ; In `highlight.el'
@@ -733,7 +744,7 @@
  
 
 (defmacro zz-user-error (&rest args)
-  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args))) ; For Emacs 22-23. 
 
 (defgroup zones nil
   "Zones of text - like multiple regions."
@@ -768,7 +779,7 @@ Don't forget to mention your Emacs and library versions."))
 
   (defun zz-set-fringe-for-narrowing ()
     "Set fringe face if buffer is narrowed."
-    (if (buffer-narrowed-p)
+    (if (zz-buffer-narrowed-p)
         (copy-face 'zz-fringe-for-narrowing 'fringe (selected-frame))
       (face-spec-set 'fringe (get 'fringe 'face-defface-spec) 'reset)))
 
@@ -1069,7 +1080,7 @@ PREDICATE applied to ELEMENT."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defun zz-select-region (arg &optional msgp) ; Bound to `C-x n r', for Emacs < 22.
+(defun zz-select-region (arg &optional msgp) ; Not bound.
   "Select a region from among the current set of zones.
 The zones are those in the current `zz-izones-var'.
 With no prefix arg, select the previous recorded zone.
@@ -1106,7 +1117,7 @@ can use this command to cycle among regions in multiple buffers."
 ;; This is a non-destructive operation.
 ;;
 ;;;###autoload
-(defun zz-narrow (arg &optional msgp) ; Bound to `C-x n x', for Emacs < 22.
+(defun zz-narrow (arg &optional msgp)   ; Not bound.
   "Widen to a previous buffer restriction (narrowing).
 The candidates are the zones in the current `zz-izones-var'.
 
@@ -1122,8 +1133,7 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
   (let* ((var  zz-izones-var)
          (val  (symbol-value var)))
     (unless val (error "No previous narrowing"))
-    (cond ((or (consp arg)  (and (null (cdr val))
-                                 (/= (- (point-max) (point-min)) (buffer-size)))) ; = `buffer-narrowed-p'.
+    (cond ((or (consp arg)  (and (null (cdr val))  (zz-buffer-narrowed-p)))
            (widen)
            (setq zz-lighter-narrowing-part  "")
            (zz-narrowing-lighter)
@@ -1167,29 +1177,24 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
 
 (defun zz-narrowing-lighter ()
   "Update minor-mode mode-line lighter to reflect narrowing/widening.
-Put `zz-narrow' on `mouse-2' for the lighter suffix.
-\(Do nothing unless `mode-line-modes' is bound (Emacs 22+).)"
-  (when (boundp 'mode-line-modes)
-    (let* ((%n-cons  (zz-regexp-car-member "%n\\(.*\\)\\'" mode-line-modes)))
-      (when %n-cons
-        (setcar %n-cons (replace-regexp-in-string
-                         "%n\\(.*\\)"
-                         (if (/= (- (point-max) (point-min)) (buffer-size)) ; `buffer-narrowed-p', for older Emacs
-                             zz-lighter-narrowing-part
-                           "")
-                         (car %n-cons) nil nil 1))
-        (when (> (length (car %n-cons)) 2)
-          (set-text-properties 2
-                               (length (car %n-cons))
-                               '(local-map (keymap (mode-line keymap (mouse-2 . zz-narrow)))
-                                 mouse-face mode-line-highlight
-                                 help-echo "mouse-2: Next Restriction")
-                               (car %n-cons)))
-        ;; Dunno why we need to do this.  Tried adjusting `rear-sticky' and `front-sticky',
-        ;; but without this the whole field (not just the suffix) gets changed, in effect, to the above spec.
-        (set-text-properties 0 2 '(local-map (keymap (mode-line keymap (mouse-2 . mode-line-widen)))
-                                   mouse-face mode-line-highlight help-echo "mouse-2: Widen")
-                             (car %n-cons))))))
+Put `zz-narrow' on `mouse-2' for the lighter suffix."
+  (let* ((%n-cons  (zz-regexp-car-member "%n\\(.*\\)\\'" mode-line-modes)))
+    (when %n-cons
+      (setcar %n-cons (replace-regexp-in-string "%n\\(.*\\)"
+                                                (if (zz-buffer-narrowed-p) zz-lighter-narrowing-part "")
+                                                (car %n-cons) nil nil 1))
+      (when (> (length (car %n-cons)) 2)
+        (set-text-properties 2
+                             (length (car %n-cons))
+                             '(local-map (keymap (mode-line keymap (mouse-2 . zz-narrow)))
+                               mouse-face mode-line-highlight
+                               help-echo "mouse-2: Next Restriction")
+                             (car %n-cons)))
+      ;; Dunno why we need to do this.  Tried adjusting `rear-sticky' and `front-sticky',
+      ;; but without this the whole field (not just the suffix) gets changed, in effect, to the above spec.
+      (set-text-properties 0 2 '(local-map (keymap (mode-line keymap (mouse-2 . mode-line-widen)))
+                                 mouse-face mode-line-highlight help-echo "mouse-2: Widen")
+                           (car %n-cons)))))
 
 (defun zz-regexp-car-member (regexp xs)
   "Like `member', but tests by matching REGEXP against cars."
@@ -1534,7 +1539,7 @@ BUFFER is the buffer to compare with (default: current buffer)."
 (defun zz-remove-if (pred xs)
   "A copy of list XS with no elements that satisfy predicate PRED."
   (let ((result  ()))
-    (dolist (x xs) (unless (funcall pred x) (push x result)))
+    (dolist (x  xs) (unless (funcall pred x) (push x result)))
     (nreverse result)))
 
 ;; Useful for commands that want to act on  regions in multiple buffers (e.g., visible buffers only).
@@ -1543,7 +1548,7 @@ BUFFER is the buffer to compare with (default: current buffer)."
 (defun zz-remove-if-not (pred xs)
   "A copy of list XS with only elements that satisfy predicate PRED."
   (let ((result  ()))
-    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (dolist (x  xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
 ;; Like `read-any-variable' in `strings.el', but passes REQUIRE-MATCH arg to `completing-read'.
@@ -1568,6 +1573,11 @@ reads any symbol, but it provides completion against variable names."
                                    (list default-value var-at-pt)
                                  (or default-value  var-at-pt)))
                              t))))
+
+(defalias 'zz-buffer-narrowed-p
+    (if (fboundp 'buffer-narrowed-p)
+        #'buffer-narrowed-p             ; Emacs 24+
+      (lambda () (/= (- (point-max) (point-min)) (buffer-size)))))
 
 (defalias 'zz-string-match-p
   (if (fboundp 'string-match-p)
@@ -1753,10 +1763,8 @@ Non-interactively:
   (zz-unite-zones variable msgp)
   (symbol-value variable))
 
-(when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
-
-  (defun zz-add-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
-    "Add highlighted areas as zones to izones variable.
+(defun zz-add-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
+  "Add highlighted areas as zones to izones variable.
 By default, the text used is that highlighted with `hlt-last-face'.
 With a non-negative prefix arg you are instead prompted for the face.
 
@@ -1783,78 +1791,76 @@ When called from Lisp:
   checked.  (If nil then both are checked.)
 * Non-nil FONK-LOCK-P means check property `font-lock-face'.  By
   default (nil), check property `face'."
-    (interactive
-     (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
-       (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
-       `(,@(hlt-region-or-buffer-limits)
-           ,(if (natnump numarg)
-                (hlt-read-bg/face-name "Create zones highlighted with face: ")
-              hlt-last-face)
-           nil nil ,(and numarg  (<= numarg 0)) t)))
-    (require 'highlight)
-    (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
-                               (setq start  (car start-end)
-                                     end    (cadr start-end))))
-    (unless face (setq face  hlt-last-face))
-    (let ((hlt-use-overlays-flag     (case overlay/text
-                                       (text-prop  nil) ; Only text property
-                                       (overlay    'only) ; Only overlay
-                                       (t          t))) ; Default: both
-          (hlt-act-on-any-face-flag  (not only-hlt-face))
-          (hlt-face-prop             (if fonk-lock-p 'font-lock-face 'face))
-          (count                     0))
-      (save-excursion
-        (save-window-excursion
-          (goto-char start)
-          (let ((zone-beg  start)
-                zone-end zone)
-            (while (and zone-beg  (< zone-beg end))
-              (setq zone      (hlt-next-highlight zone-beg end face nil nil 'no-error-msg)
-                    zone-beg  (car zone)
-                    zone-end  (cdr zone))
-              ;; Create zone from `zone-beg' to `zone-end' if highlighted.  Add it to zones list.
-              (when hlt-use-overlays-flag
-                (let ((overlays  (overlays-at zone-beg)))
-                  (while overlays
-                    (when (and (or hlt-act-on-any-face-flag
-                                   (equal face (overlay-get (car overlays) 'hlt-highlight)))
-                               (equal face (overlay-get (car overlays) hlt-face-prop)))
-                      (zz-add-zone zone-beg zone-end)
-                      (setq count  (1+ count)))
-                    (when overlays (setq overlays  (cdr overlays))))))
-              (when (and (not (eq hlt-use-overlays-flag 'only))
-                         (or hlt-act-on-any-face-flag  (equal face (get-text-property (point) 'hlt-highlight)))
-                         (let ((pt-faces  (get-text-property (point) hlt-face-prop)))
-                           (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
-                (zz-add-zone zone-beg zone-end)
-                (setq count  (1+ count)))))))
-      (when msgp
-        (case count
-          (0 (message "NO zones added or updated"))
-          (1 (message "1 zone added or updated"))
-          (t (message "%s highlighted areas added or updated as zones" count))))))
+  (interactive
+   (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+     (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
+     `(,@(hlt-region-or-buffer-limits)
+         ,(if (natnump numarg)
+              (hlt-read-bg/face-name "Create zones highlighted with face: ")
+            hlt-last-face)
+         nil nil ,(and numarg  (<= numarg 0)) t)))
+  (require 'highlight)
+  (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
+                             (setq start  (car start-end)
+                                   end    (cadr start-end))))
+  (unless face (setq face  hlt-last-face))
+  (let ((hlt-use-overlays-flag     (case overlay/text
+                                     (text-prop  nil) ; Only text property
+                                     (overlay    'only) ; Only overlay
+                                     (t          t))) ; Default: both
+        (hlt-act-on-any-face-flag  (not only-hlt-face))
+        (hlt-face-prop             (if fonk-lock-p 'font-lock-face 'face))
+        (count                     0))
+    (save-excursion
+      (save-window-excursion
+        (goto-char start)
+        (let ((zone-beg  start)
+              zone-end zone)
+          (while (and zone-beg  (< zone-beg end))
+            (setq zone      (hlt-next-highlight zone-beg end face nil nil 'no-error-msg)
+                  zone-beg  (car zone)
+                  zone-end  (cdr zone))
+            ;; Create zone from `zone-beg' to `zone-end' if highlighted.  Add it to zones list.
+            (when hlt-use-overlays-flag
+              (let ((overlays  (overlays-at zone-beg)))
+                (while overlays
+                  (when (and (or hlt-act-on-any-face-flag
+                                 (equal face (overlay-get (car overlays) 'hlt-highlight)))
+                             (equal face (overlay-get (car overlays) hlt-face-prop)))
+                    (zz-add-zone zone-beg zone-end)
+                    (setq count  (1+ count)))
+                  (when overlays (setq overlays  (cdr overlays))))))
+            (when (and (not (eq hlt-use-overlays-flag 'only))
+                       (or hlt-act-on-any-face-flag  (equal face (get-text-property (point) 'hlt-highlight)))
+                       (let ((pt-faces  (get-text-property (point) hlt-face-prop)))
+                         (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
+              (zz-add-zone zone-beg zone-end)
+              (setq count  (1+ count)))))))
+    (when msgp
+      (case count
+        (0 (message "NO zones added or updated"))
+        (1 (message "1 zone added or updated"))
+        (t (message "%s highlighted areas added or updated as zones" count))))))
 
-  (defun zz-set-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
-    "Replace value of izones variable with zones from the highlighted areas.
+(defun zz-set-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
+  "Replace value of izones variable with zones from the highlighted areas.
 Like `zz-add-zones-from-highlighting' (which see), but it replaces any
 current zones instead of adding to them."
-    (interactive
-     (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
-       (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
-       `(,@(hlt-region-or-buffer-limits)
-           ,(if (natnump numarg)
-                (hlt-read-bg/face-name "Create zones highlighted with face: ")
-              hlt-last-face)
-           nil nil ,(and numarg  (<= numarg 0)) t)))
-    (set zz-izones-var ())
-    (zz-add-zones-from-highlighting start end face only-hlt-face overlay/text fonk-lock-p msgp))
-
-  )
+  (interactive
+   (let ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+     (unless (require 'highlight nil t) (zz-user-error "You need library `highlight.el' to use this command"))
+     `(,@(hlt-region-or-buffer-limits)
+         ,(if (natnump numarg)
+              (hlt-read-bg/face-name "Create zones highlighted with face: ")
+            hlt-last-face)
+         nil nil ,(and numarg  (<= numarg 0)) t)))
+  (set zz-izones-var ())
+  (zz-add-zones-from-highlighting start end face only-hlt-face overlay/text fonk-lock-p msgp))
 
 
 ;;---------------------
 
-(cond ((boundp 'narrow-map)
+(cond ((boundp 'narrow-map)             ; Emacs 23+
        (define-key narrow-map "a"    'zz-add-zone)
        (define-key narrow-map "A"    'zz-add-zone-and-unite)
        (define-key narrow-map "c"    'zz-clone-zones)
@@ -1877,7 +1883,7 @@ current zones instead of adding to them."
 
 (eval-after-load "highlight"
   '(cond
-    ((boundp 'narrow-map)
+    ((boundp 'narrow-map)               ; Emacs 23+
      (define-key narrow-map "h"  'hlt-highlight-regions)
      (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers)
      (define-key narrow-map "l"  'zz-add-zones-from-highlighting)
@@ -1891,7 +1897,7 @@ current zones instead of adding to them."
 
 ;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
 ;;
-(defadvice narrow-to-region (before zz-add-zone activate)
+(defadvice narrow-to-region (before zz-add-zone--region activate)
   "Push the region limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
@@ -1900,63 +1906,71 @@ value can be modified."
   (when (or (interactive-p)  zz-add-zone-anyway-p)
     (let ((start  (ad-get-arg 0))
           (end    (ad-get-arg 1)))
-      (unless start (setq start  (region-beginning))) ; Needed for Emacs 20.
+      (unless start (setq start  (region-beginning))) ; Needed? (was needed for Emacs 20).
       (unless end   (setq end    (region-end)))
       (zz-add-zone start end nil nil nil 'MSG))))
 
-
-;; REPLACE ORIGINAL in `lisp.el'.
+;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
 ;;
-;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
-;;
-;; TODO: Update for more recent Emacs.
-;;
-;;;###autoload
-(defun narrow-to-defun (&optional _ignore)
-  "Make text outside current defun invisible.
-The visible defun is the one that contains point or follows point.
-Optional arg _IGNORE is ignored.
+(defadvice narrow-to-defun (around zz-add-zone--defun activate)
+  "Push the defun limits to the current `zz-izones-var'.
+You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
-that is the value of `zz-izones-var' can be modified."
-  (interactive)
+value can be modified."
+  (interactive (and (boundp 'narrow-to-defun-include-comments) ; Emacs 24+
+                    (list narrow-to-defun-include-comments)))
   (save-excursion
     (widen)
-    (let ((opoint  (point))
+    (let ((opoint (point))
 	  beg end)
-      ;; Try first in this order for the sake of languages with nested functions
-      ;; where several can end at the same place as with the offside rule, e.g. Python.
-      (beginning-of-defun)
+      ;; Try first in this order for the sake of languages with nested functions where several can end at the same
+      ;; place as with the offside rule, e.g. Python.
+      ;; Finding the start of the function is a bit problematic since `beginning-of-defun' when we are on the
+      ;; first character of the function might go to the previous function.
+      ;; Therefore we first move one character forward and then call `beginning-of-defun'.  However now we must
+      ;; check that we did not move into the next function.
+      (let ((here  (point)))
+        (unless (eolp) (forward-char))
+        (beginning-of-defun)
+        (when (< (point) here)
+          (goto-char here)
+          (beginning-of-defun)))
       (setq beg  (point))
       (end-of-defun)
       (setq end  (point))
-      (while (looking-at "^\n")
-	(forward-line 1))
-      (unless (> (point) opoint)
-	;; `beginning-of-defun' moved back one defun, so we got the wrong one.
+      (while (looking-at "^\n")	(forward-line 1))
+      (unless (> (point) opoint) ; `beginning-of-defun' moved back one defun so we got the wrong one.
 	(goto-char opoint)
 	(end-of-defun)
 	(setq end  (point))
 	(beginning-of-defun)
 	(setq beg  (point)))
+      (when (ad-get-arg 0) ; Argument INCLUDE-COMMENTS
+	(goto-char beg)
+	(when (forward-comment -1) ; Move back past all preceding comments (and whitespace).
+	  (while (forward-comment -1))
+	  ;; Move forward past any page breaks within these comments.
+	  (when (and page-delimiter  (not (string= page-delimiter "")))
+	    (while (re-search-forward page-delimiter beg t)))
+	  ;; Lastly, move past any empty lines.
+	  (skip-chars-forward "[:space:]\n")
+	  (beginning-of-line)
+	  (setq beg (point))))
       (goto-char end)
       (re-search-backward "^\n" (- (point) 1) t)
+      ;; THIS IS THE ONLY CHANGE FOR `zones.el'.
       (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
 
-
-;; REPLACE ORIGINAL in `page.el'.
-;;
 ;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
 ;;
-;;;###autoload
-(defun narrow-to-page (&optional arg)
-  "Make text outside current page invisible.
-A numeric arg specifies to move forward or backward by that many pages,
-thus showing a page other than the one point was originally in.
+(defadvice narrow-to-page (around zz-add-zone--defun activate)
+  "Push the page limits to the current `zz-izones-var'.
+You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
-that is the value of `zz-izones-var' can be modified."
+value can be modified."
   (interactive "P")
   (setq arg  (if arg (prefix-numeric-value arg) 0))
   (save-excursion
@@ -1978,8 +1992,7 @@ that is the value of `zz-izones-var' can be modified."
     ;; If we stopped due to end of buffer, stay there.
     ;; If we stopped after a page delimiter, put end of restriction at the beginning of that line.
     ;; Before checking the match that was found, verify that `forward-page' actually set the match data.
-    (if (and (match-beginning 0)  (save-excursion (goto-char (match-beginning 0))
-                                                  (looking-at page-delimiter)))
+    (if (and (match-beginning 0)  (save-excursion (goto-char (match-beginning 0)) (looking-at page-delimiter)))
 	(goto-char (match-beginning 0)))
     (let ((beg  (point))
           (end  (progn
@@ -1990,11 +2003,23 @@ that is the value of `zz-izones-var' can be modified."
                   ;; Otherwise, show text starting with following line.
                   (when (and (eolp)  (not (bobp))) (forward-line 1))
                   (point))))
+      ;; THIS IS THE ONLY CHANGE FOR `zones.el'.
       (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
 
 
 (when (> emacs-major-version 24)
+
+  (defun zz-izones-from-noncontiguous-region ()
+    "Return a list of izones from `region-extract-function' bounds."
+    (let ((ii  0))
+      (mapcar (lambda (posn) (cons (setq ii  (1+ ii)) (list (copy-marker (car posn)) (copy-marker (cdr posn)))))
+              (funcall region-extract-function 'bounds))))
+
+  (defun zz-zones-from-noncontiguous-region ()
+    "Return a list of basic zones from `region-extract-function' bounds."
+    (mapcar (lambda (posn) (list (copy-marker (car posn)) (copy-marker (cdr posn))))
+            (funcall region-extract-function 'bounds)))
 
   (defun zz-query-replace-zones (from-string to-string &optional delimited start end backward zones)
     "`query-replace' in the zones currently defined in the current buffer.
@@ -2092,18 +2117,6 @@ The value of variable `zz-izones' defines the zones."
         (replace-regexp regexp to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
     )
-
-
-  (defun zz-izones-from-noncontiguous-region ()
-    "Return a list of izones from `region-extract-function' bounds."
-    (let ((ii  0))
-      (mapcar (lambda (posn) (cons (setq ii  (1+ ii)) (list (copy-marker (car posn)) (copy-marker (cdr posn)))))
-              (funcall region-extract-function 'bounds))))
-
-  (defun zz-zones-from-noncontiguous-region ()
-    "Return a list of basic zones from `region-extract-function' bounds."
-    (mapcar (lambda (posn) (list (copy-marker (car posn)) (copy-marker (cdr posn))))
-            (funcall region-extract-function 'bounds)))
 
   )
 
