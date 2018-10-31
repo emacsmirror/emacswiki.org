@@ -1,16 +1,17 @@
 ;;; zones.el --- Zones of text - like multiple regions
 ;;
+;; Copyright (C) 2010-2018  Free Software Foundation, Inc.
+;;
 ;; Filename: zones.el
 ;; Description:  Zones of text - like multiple regions
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2018, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2018-10-28
+;; Version: 2018-10-31
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 30 13:07:40 2018 (-0700)
+;; Last-Updated: Wed Oct 31 08:48:50 2018 (-0700)
 ;;           By: dradams
-;;     Update #: 2152
+;;     Update #: 2171
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -729,8 +730,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile
-  (or (require 'cl-lib nil t)  (require 'cl))) ;; case (No `cl-case' for Emacs 22)
+(eval-when-compile (require 'cl)) ;; case (No `cl-case' for Emacs 22)
 
 ;; Quiet the byte-compiler.
 (defvar hlt-last-face)                  ; In `highlight.el'
@@ -743,8 +743,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
  
 
-(defmacro zz-user-error (&rest args)
-  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args))) ; For Emacs 22-23. 
+(defalias 'zz-user-error
+    (if (fboundp 'user-error) #'user-error #'error)) ; For Emacs 22-23.
 
 (defgroup zones nil
   "Zones of text - like multiple regions."
@@ -1860,6 +1860,7 @@ current zones instead of adding to them."
 
 ;;---------------------
 
+;; FIXME: Just loading this file shouldn't overwrite bindings a user has made to `narrow-map' or `ctl-x-map'.
 (cond ((boundp 'narrow-map)             ; Emacs 23+
        (define-key narrow-map "a"    'zz-add-zone)
        (define-key narrow-map "A"    'zz-add-zone-and-unite)
@@ -1910,103 +1911,23 @@ value can be modified."
       (unless end   (setq end    (region-end)))
       (zz-add-zone start end nil nil nil 'MSG))))
 
-;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
-;;
-(defadvice narrow-to-defun (around zz-add-zone--defun activate)
+(defadvice narrow-to-defun (after zz-add-zone--defun activate)
   "Push the defun limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (interactive (and (boundp 'narrow-to-defun-include-comments) ; Emacs 24+
-                    (list narrow-to-defun-include-comments)))
-  (save-excursion
-    (widen)
-    (let ((opoint (point))
-	  beg end)
-      ;; Try first in this order for the sake of languages with nested functions where several can end at the same
-      ;; place as with the offside rule, e.g. Python.
-      ;; Finding the start of the function is a bit problematic since `beginning-of-defun' when we are on the
-      ;; first character of the function might go to the previous function.
-      ;; Therefore we first move one character forward and then call `beginning-of-defun'.  However now we must
-      ;; check that we did not move into the next function.
-      (let ((here  (point)))
-        (unless (eolp) (forward-char))
-        (beginning-of-defun)
-        (when (< (point) here)
-          (goto-char here)
-          (beginning-of-defun)))
-      (setq beg  (point))
-      (end-of-defun)
-      (setq end  (point))
-      (while (looking-at "^\n")	(forward-line 1))
-      (unless (> (point) opoint) ; `beginning-of-defun' moved back one defun so we got the wrong one.
-	(goto-char opoint)
-	(end-of-defun)
-	(setq end  (point))
-	(beginning-of-defun)
-	(setq beg  (point)))
-      (when (ad-get-arg 0) ; Argument INCLUDE-COMMENTS
-	(goto-char beg)
-	(when (forward-comment -1) ; Move back past all preceding comments (and whitespace).
-	  (while (forward-comment -1))
-	  ;; Move forward past any page breaks within these comments.
-	  (when (and page-delimiter  (not (string= page-delimiter "")))
-	    (while (re-search-forward page-delimiter beg t)))
-	  ;; Lastly, move past any empty lines.
-	  (skip-chars-forward "[:space:]\n")
-	  (beginning-of-line)
-	  (setq beg (point))))
-      (goto-char end)
-      (re-search-backward "^\n" (- (point) 1) t)
-      ;; THIS IS THE ONLY CHANGE FOR `zones.el'.
-      (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
-      (narrow-to-region beg end))))
+  (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone (point-min) (point-max) nil nil nil 'MSG)))
 
 ;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
 ;;
-(defadvice narrow-to-page (around zz-add-zone--defun activate)
+(defadvice narrow-to-page (after zz-add-zone--defun activate)
   "Push the page limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (interactive "P")
-  (setq arg  (if arg (prefix-numeric-value arg) 0))
-  (save-excursion
-    (widen)
-    (if (> arg 0)
-	(forward-page arg)
-      (if (< arg 0)
-	  (let ((adjust  0)
-		(opoint  (point)))
-	    ;; If not now at the beginning of a page, move back one extra time, to get to start of this page.
-	    (save-excursion
-	      (beginning-of-line)
-	      (or (and (looking-at page-delimiter)  (eq (match-end 0) opoint))
-		  (setq adjust 1)))
-	    (forward-page (- arg adjust)))))
-    ;; Find the end of the page.
-    (set-match-data nil)
-    (forward-page)
-    ;; If we stopped due to end of buffer, stay there.
-    ;; If we stopped after a page delimiter, put end of restriction at the beginning of that line.
-    ;; Before checking the match that was found, verify that `forward-page' actually set the match data.
-    (if (and (match-beginning 0)  (save-excursion (goto-char (match-beginning 0)) (looking-at page-delimiter)))
-	(goto-char (match-beginning 0)))
-    (let ((beg  (point))
-          (end  (progn
-                  ;; Find the top of the page.
-                  (forward-page -1)
-                  ;; If we found beginning of buffer, stay there.
-                  ;; If extra text follows page delimiter on same line, include it.
-                  ;; Otherwise, show text starting with following line.
-                  (when (and (eolp)  (not (bobp))) (forward-line 1))
-                  (point))))
-      ;; THIS IS THE ONLY CHANGE FOR `zones.el'.
-      (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
-      (narrow-to-region beg end))))
-
+  (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone (point-min) (point-max) nil nil nil 'MSG)))
 
 (when (> emacs-major-version 24)
 
@@ -2116,9 +2037,8 @@ The value of variable `zz-izones' defines the zones."
       (let ((region-extract-function  (lambda (_ignore) zones)))
         (replace-regexp regexp to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
-    )
-
-  )
+    )                                   ; Emacs 27+
+  )                                     ; Emacs 25+
 
 (defun zz-noncontiguous-region-from-izones (&optional variable)
   "Return a noncontiguous region from value of value of VARIABLE.
