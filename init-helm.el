@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <andy@freedom>
 ;; Copyright (C) 2013, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-30 16:23:29
-;; Version: 0.7
-;; Last-Updated: 2018-09-03 14:40:31
+;; Version: 1.0
+;; Last-Updated: 2018-11-01 20:53:46
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/init-helm.el
 ;; Keywords:
@@ -17,7 +17,7 @@
 ;;
 ;; `helm' `helm-buffers'
 ;; `helm-c-yasnippet' `helm-for-files'
-;; `helm-projectile' `helm-ring'
+;; `helm-ring'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -70,6 +70,12 @@
 
 ;;; Change log:
 ;;
+;; 2018/11-01
+;;	* Fix `helm-ls-git' not work when first run `helm-dwim'.
+;;
+;; 2018/10-29
+;;      * Use `helm-ls-git' instead `helm-projectile', helm so fast now!!!
+;;
 ;; 2018/09/03
 ;;      * Make filename has enough width to display full name.
 ;;
@@ -108,12 +114,42 @@
 (require 'helm-buffers)
 (require 'helm-c-yasnippet)
 (require 'helm-for-files)
-(require 'helm-projectile)
+(require 'helm-x-files)
+(require 'helm-ls-git)
 (require 'helm-ring)
+(require 'awesome-tab)
 
 ;;; Code:
 
 (setq helm-buffer-max-length 60) ; make filename has enough width to display full name
+(awesome-tab-build-helm-source)
+
+(defvar helm-source-elisp-library
+  (helm-build-in-buffer-source  "Elisp libraries (Scan)"
+    :data #'helm-locate-library-scan-list
+    :fuzzy-match helm-locate-library-fuzzy-match
+    :keymap helm-generic-files-map
+    :search (unless helm-locate-library-fuzzy-match
+              (lambda (regexp)
+                (re-search-forward
+                 (if helm-ff-transformer-show-only-basename
+                     (replace-regexp-in-string
+                      "\\`\\^" "" regexp)
+                   regexp)
+                 nil t)))
+    :match-part (lambda (candidate)
+                  (if helm-ff-transformer-show-only-basename
+                      (helm-basename candidate) candidate))
+    :filter-one-by-one (lambda (c)
+                         (if helm-ff-transformer-show-only-basename
+                             (cons (helm-basename c) c) c))
+    :action (helm-actions-from-type-file)))
+
+;; MacOS use spotlight instead locate.
+(defvar helm-source-system
+  (if (featurep 'cocoa)
+      helm-source-mac-spotlight
+    helm-source-locate))
 
 (defun helm-dwim ()
   (interactive)
@@ -122,30 +158,20 @@
     (unless helm-source-buffers-list
       (setq helm-source-buffers-list
             (helm-make-source "Buffers" 'helm-source-buffers)))
-    (cond (
-           ;; Just add helm-source-projectile-* in list when current place in project.
-           (projectile-project-p)
-           (setq helm-source-list
-                 '(
-                   helm-source-buffers-list
-                   helm-source-recentf
-                   helm-source-projectile-buffers-list
-                   helm-source-projectile-files-list
-                   helm-source-projectile-projects
-                   helm-source-kill-ring
-                   helm-source-locate
-                   helm-source-yasnippet
-                   )))
-          (t
-           (setq helm-source-list
-                 '(
-                   helm-source-buffers-list
-                   helm-source-recentf
-                   helm-source-kill-ring
-                   helm-source-locate
-                   helm-source-yasnippet
-                   ))
-           ))
+    (unless helm-source-ls-git
+      (setq helm-source-ls-git
+            (helm-ls-git-build-ls-git-source)))
+    (setq helm-source-list
+          '(
+            helm-source-awesome-tab-group
+            helm-source-ls-git
+            helm-source-buffers-list
+            helm-source-recentf
+            helm-source-kill-ring
+            helm-source-system
+            helm-source-elisp-library
+            helm-source-yasnippet
+            ))
     (helm-other-buffer helm-source-list "*helm search*")))
 
 (lazy-set-key
