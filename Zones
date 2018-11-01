@@ -7,6 +7,8 @@ You can get '''##zones.el##''' from Emacs Wiki or GNU ELPA:
 
 The instance on Emacs Wiki might sometimes be more recent, but major changes (named ''versions'') are posted to GNU ELPA.
 
+(If you use Emacs 20 or 21 then you can use <tt>[[zones20.el]]</tt> instead. It has a subset of the <tt>[[zones.el]]</tt> features.)
+
 You can think of zones as enlarging
 the notion of ''region''.  A set
 of buffer zones is, in effect, a (typically) noncontiguous
