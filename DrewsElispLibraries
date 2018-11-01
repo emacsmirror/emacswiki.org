@@ -78,6 +78,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[ffap-.el]]</tt> -- extensions to standard library `ffap' (see FindFileAtPoint)
 * <tt>[[finder+.el]]</tt> -- extensions to standard library `finder'
 * <tt>[[find-func+.el]]</tt> -- extensions to standard library `find-func'
+* <tt>[[find-where.el]]</tt> -- find where something is true -- see '''FindWhere'''
 * <tt>[[font-lock+.el]]</tt> -- extensions to standard library `font-lock' (see HighLight and FaceMenuPlus)
 * <tt>[[font-lock-menus.el]]</tt> -- font-lock menus: enhanced `font-menus.el'
 * <tt>[[grep+.el]]</tt> -- extensions to standard library `grep'; see also '''GrepPlus'''
@@ -102,7 +103,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[naked.el]]</tt> -- provide for naked key descriptions: no angle brackets -- see NaKeD
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[next-prev.el]]</tt> -- get or move to next/previous position that satisfies a some predicate
-* <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws
+* <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws -- see '''NotAndOr'''
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
 * <tt>[[reveal-next.el]]</tt> -- progressively reveal text after the cursor -- see RevealNextTextMode
@@ -129,7 +130,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 
 * <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
 * <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
-* <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws
+* <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws -- see '''NotAndOr'''
 
 
 
@@ -282,6 +283,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[emacs-init.el]]</tt> -- my InitFile -- '''''the commentary explains how to use my libraries'''''
 * <tt>[[find-dired-.el]]</tt> -- extensions to standard library `find-dired'
 * <tt>[[find-dired+.el]]</tt> -- extensions to standard library `find-dired'
+* <tt>[[find-where.el]]</tt> -- find where something is true -- see '''FindWhere'''
 * <tt>[[help-macro+.el]]</tt> -- extensions to standard library `help-macro'
 * <tt>[[help+20.el]]</tt> -- extensions to standard library `help'; see also '''HelpPlus''' and '''HelpMenuBarPlus'''
 * <tt>[[mkhtml.el]]</tt> -- create HTML with links (extensions to library `htmlize'); see also '''SaveAsHtml'''
