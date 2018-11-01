@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 2.9
-;; Last-Updated: 2018-10-19 17:57:36
+;; Version: 3.1
+;; Last-Updated: 2018-11-01 21:39:40
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -68,8 +68,14 @@
 
 ;;; Change log:
 ;;
+;; 2018/11/01
+;;      * Remove `projectile' depend.
+;;
+;; 2018/10/29
+;;      * Use `string-trim' instead `s-trim' to remove require of `s.el'
+;;
 ;; 2018/10/19
-;;	* Add option `color-rg-kill-temp-buffer-p'.
+;;      * Add option `color-rg-kill-temp-buffer-p'.
 ;;
 ;; 2018/10/18
 ;;      * Add `color-rg-rerun-change-files' to files search files by GLOB. default files is "everything".
@@ -536,8 +542,8 @@ filtered out."
     (mapcar
      (lambda (type-alias)
        (setq type-alias (split-string type-alias ":" t))
-       (cons (s-trim (car type-alias))
-             (s-trim
+       (cons (string-trim (car type-alias))
+             (string-trim
               (mapconcat 'identity
                          (split-string (cadr type-alias) "," t )
                          " "))))
@@ -1007,25 +1013,26 @@ this function a no-op."
   (interactive)
   (color-rg-search-input (color-rg-pointer-string) default-directory (color-rg-read-file-type "Filter file by type (default: [ %s ]): ")))
 
+(defun color-rg-project-root-dir ()
+  (-if-let (project (project-current))
+      (expand-file-name (cdr project))
+    default-directory))
+
 (defun color-rg-search-project ()
   (interactive)
-  (require 'projectile)
-  (color-rg-search-input (color-rg-read-input) (projectile-project-root)))
+  (color-rg-search-input (color-rg-read-input) (color-rg-project-root-dir)))
 
 (defun color-rg-search-project-with-type ()
   (interactive)
-  (require 'projectile)
-  (color-rg-search-input (color-rg-read-input) (projectile-project-root) (color-rg-read-file-type "Filter file by type (default: [ %s ]): ")))
+  (color-rg-search-input (color-rg-read-input) (color-rg-project-root-dir) (color-rg-read-file-type "Filter file by type (default: [ %s ]): ")))
 
 (defun color-rg-search-project-rails ()
   (interactive)
-  (require 'projectile)
-  (color-rg-search-input (color-rg-read-input) (concat (projectile-project-root) "app")))
+  (color-rg-search-input (color-rg-read-input) (concat (color-rg-project-root-dir) "app")))
 
 (defun color-rg-search-project-rails-with-type ()
   (interactive)
-  (require 'projectile)
-  (color-rg-search-input (color-rg-read-input) (concat (projectile-project-root) "app") (color-rg-read-file-type "Filter file by type (default: [ %s ]): ")))
+  (color-rg-search-input (color-rg-read-input) (concat (color-rg-project-root-dir) "app") (color-rg-read-file-type "Filter file by type (default: [ %s ]): ")))
 
 (defun color-rg-replace-all-matches ()
   (interactive)
