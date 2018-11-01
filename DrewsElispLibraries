@@ -256,6 +256,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[yes-no.el]]</tt> -- let your users specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
+* <tt>[[zones.el]]</tt> --  -- zones of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 
 
 
@@ -267,7 +268,6 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[diff+.el]]</tt> -- extensions to standard library `diff'  -- see '''DiffEnhancements'''
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode'  -- see '''DiffEnhancements'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `tool-bar'; see also '''ToolBar'''
-* <tt>[[zones.el]]</tt> --  -- zones of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 
 
 
@@ -290,6 +290,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[vc-.el]]</tt> -- extensions to standard library `vc'
 * <tt>[[vc-hooks+.el]]</tt> -- extensions to standard library `vc-hooks'
 * <tt>[[vc+.el]]</tt> -- extensions to standard library `vc'
+* <tt>[[zones20.el]]</tt> --  (reduced) version of zones <tt>[[zones.el]]</tt> for Emacs 20-21 -- of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 
 
 
