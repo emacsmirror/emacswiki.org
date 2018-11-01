@@ -102,6 +102,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[naked.el]]</tt> -- provide for naked key descriptions: no angle brackets -- see NaKeD
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[next-prev.el]]</tt> -- get or move to next/previous position that satisfies a some predicate
+* <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
 * <tt>[[reveal-next.el]]</tt> -- progressively reveal text after the cursor -- see RevealNextTextMode
@@ -128,6 +129,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 
 * <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
 * <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
+* <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws
 
 
 
