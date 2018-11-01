@@ -30,13 +30,16 @@ Note: With key-chord, order doesn't matter: <code>ab</code> is the same chord as
 [new:ipstone:2018-11-01]
 Missing minor mode line info:
 When in keychord mode, there is no mode line information displaying whether we are in keychord mode. It would be fine if we use key-chord-mode always; but at times, it will conflict with vi related mode. The following code will add 'KeyC' to the mode-line:
-
+{{{
 ;; Add key-chord-mode to minor-mode-alist
 (if (not (assq 'key-chord-mode minor-mode-alist))
       (setq minor-mode-alist
 	    (cons '(key-chord-mode " KeyC ")
 		  minor-mode-alist)))
 
+}}}
+
+Do we know where melpa pull the key-chord-mode from?
 
 [new:rubikitch:2008-11-05 03:40 UTC]
 A thumb is a finger of the strongest! Let's utilize a thumb.
