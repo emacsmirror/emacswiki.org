@@ -12,24 +12,53 @@ the notion of ''region''.  A set
 of buffer zones is, in effect, a (typically) noncontiguous
 "region" of text.
 
-The content of a ''zone'' is any contiguous stretch of buffer text. And unlike what Emacs calls a '''noncontiguous region''', the zones in a set of zones can be adjacent or overlap, and their order in the set is typically not important.
+The content of a ''zone'' is any contiguous stretch of buffer text.
 
-What Emacs calls a ''noncontiguous region'' is what, in zone jargon, results from ''coalescing'' (uniting) a set of zones. The result is a sequence of ''disjoint'' zones ordered by their cars.
+A set of zones differs from what Emacs calls a '''noncontiguous region''' in these ways:
 
-Another difference is that the segments of a noncontiguous region are just conses of a start position and an end position. 
+* The zones in a set (or list) of zones can be adjacent or overlap,
+and their order in the set is typically not important.
+A noncontiguous region corresponds instead to what results from
+''coalescing'' (uniting) a set of zones: a sequence of ''disjoint'' zones,
+in buffer order, that is, ''ordered'' by their cars.
 
-Similarly, a '''zone''' records two buffer positions, but it can also include an optional list of additional information (whatever you like).  For this reason, a zone is not a cons of two positions ##(BEGIN . END)##; it is a list ##(BEGIN END . STUFF)## of two positions optionally followed by other stuff.
+* The Lisp representations of a zone and a
+segment of a noncontiguous region each record two buffer
+positions, but a zone can also include a list of additional
+information (whatever you like).
+A noncontiguous-region segment is a cons ##(BEGIN . END)##, with ##BEGIN##
+<= ##END##.  A zone is a list ##(LIMIT1 LIMIT2 . EXTRA)## of two positions
+optionally followed by a list of extra stuff (any Lisp objects).
+And as stated above, the zone limits need not be in ascending
+order.
 
-Each buffer position of a zone can be a marker, which means that a list of zones can specify zones in different buffers. It  can also be a ''readable marker'', which is a Lisp sexp that can be written to disk (e.g., as part of a bookmark or saved variable), and restored in a later Emacs session by reading the file where it is saved.
+* Each buffer position of a zone can be
+a marker, which means that a list of zones can specify zones in
+different buffers.  A zone position can also be a ''readable marker'',
+which is a Lisp [[sexp]] that can be written to disk (e.g., as part of
+a bookmark or saved variable), and restored in a later Emacs
+session by reading the file where it is saved.
 
 (Commands that use zones typically act on ''izones'', which are just zones that are labeled with a numeric identifier.)
 
-Emacs [[overlay]]s have a lot in common with zones: overlays have an
-associated buffer, two limits (positions), and a list of
-properties.  You can create zones from overlays, and vice versa.  You can also unite (coalesce) overlays or zones that overlap or are adjacent.
+Zones have even more in common with Emacs [[overlay]]s than they do
+with segments of a noncontiguous region. An overlay has an
+associated buffer, two limits (start and end), and an optional list of
+properties.
+
+Zones differ from overlays in these ways:
+
+* A zone can have an identifier (izone).
+* A zone can have a readable Lisp form, by using numbers or readable markers.
+* A zone need not be specific to a particular buffer.  If a zone's
+positions are numbers instead of markers then you can use it in
+any buffer.
+
+You can create zones from overlays, and vice versa.  You can also unite (coalesce) overlays or zones that overlap or are adjacent.
 
 When creating zones from overlays, the overlay property list becomes the ##EXTRA## information
 of the resulting zone: ##(LIMIT1 LIMIT2 . EXTRA)##.
+
 When creating overlays from zones, any list of ##EXTRA## zone
 information is used as the property list of the resulting overlay.
 
