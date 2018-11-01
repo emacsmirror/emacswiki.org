@@ -53,6 +53,27 @@ Then, easily define contexts:
            ,(my-make-mu4e-context "other" "activist@example.com"
                                   "Plain text mail forever.")))
 
+=== Integrating with mbsync ===
+
+I use mu4e with mbsync (and GMail). Since it takes a while, mbsync runs in a cron job every 10 minutes or so, which mostly works (and I don't want mu4e to wait for a sync). However, sometimes I want to refresh my emails now ("Hey, I just sent you something..."). This code changes the meaning of the prefix argument to "U" so that it re-syncs when given a prefix and doesn't otherwise.
+
+    (setq mu4e-get-mail-command "mbsync gmail")
+
+    ;; Most of the time, I merely want mu4e to re-index my local maildir (because
+    ;; I'm running mbsync as a cron job). However, sometimes I want to fetch mails
+    ;; immediately. Do this by changing the meaning of a prefix for
+    ;; mu4e-update-mail-and-index (bound to "U").
+    ;;
+    ;; A prefix usually means run in the background, but I don't think I ever want
+    ;; that. Change things so a prefix means to call mbsync.
+    (defun rjs/mu4e-update-mail-and-index (orig-fun prefix &rest args)
+      (interactive "P")
+      (if prefix (funcall orig-fun nil) (mu4e-update-index)))
+
+    (advice-add 'mu4e-update-mail-and-index
+                :around #'rjs/mu4e-update-mail-and-index)
+
+
 
 ----
 CategoryMail
