@@ -35,7 +35,7 @@ See [[Manual:Advice combinators]] for more info.
 -----
 === Another simple example using nadvice advice-add ===
 
-This is a near-minimal example of using advice-add to change the behaviour of a function. This code advises ##display-buffer## to first delete all windows but the active window, thus resulting in two windows only being shown:
+This is a near-minimal example of using ##advice-add## to change the behaviour of a function. This code advises ##display-buffer## to first delete all windows but the active window, thus resulting in two windows only being shown:
 
 {{{
 (advice-add 
