@@ -32,5 +32,24 @@ There are various places where advice can happen:
 
 See [[Manual:Advice combinators]] for more info.
 
+-----
+=== Another simple example using nadvice advice-add ===
+
+This is a near-minimal example of using advice-add to change the behaviour of a function. This code advises ##display-buffer## to first delete all windows but the active window, thus resulting in two windows only being shown:
+
+{{{
+(advice-add 
+   'display-buffer    ; function to be advised
+   :before            ; advice runs first
+   (lambda (&rest r) (delete-other-windows)) ; advising function, this must have the same argument list as the main function, in this case all absorbed into a list "r"
+   '((name . "test"))) ; convenient name for identifying or removing this advice later
+}}}
+
+And this removes the advice:
+{{{
+(advice-remove 'display-buffer "test")
+}}}
+
+
 ----
 CategoryCode
