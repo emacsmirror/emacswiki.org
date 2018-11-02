@@ -41,7 +41,7 @@ On dark backgrounds, I recommend checking out bitmap fonts instead of TrueType o
 
 == Variations ==
 
-This list is sorted by inch followed by screen resolution; Currently a  good customer rated 27" monitor cost from $270 and give you most inch per dollar ($27) in contrast to other dimensions. Also, the free graphic driver Nouveau are stable and works fine with many graphic cards. softwares usually list scren resolutions begining with the highest mode first (eg see xrandr -q in a terminal emulator).
+This list is sorted by inch followed by screen resolution; Currently a  good customer rated 27" monitor cost from $270 and give you most inch per dollar ($27) in contrast to other dimensions. Also, the free graphic driver Nouveau are stable and works fine with many graphic cards. softwares usually list screen resolutions beginning with the highest mode first (e.g., see xrandr -q in a terminal emulator).
 
 === For every resolution ===
 
@@ -49,6 +49,8 @@ As an atom/emacs new developer, I am recommending Hack,
 an open source font which fits very well in every situation and editor. 
 
 -- @Anteron_
+
+Thanks so much for this recommendation ... I didn't know of this previously, but Hack (https://sourcefoundry.org/hack/) is a free, open source, and excellent programmers' font under active development ... they actually add characters when you file a bug report. This should be preferred over many obsolete recommendations on this page (proggy? yow). The one other font I would recommend is DejaVu Sans Mono. -- JimBalter
 
 === 27", 1920x1080 ===
 *DejaVu Sans Mono 13* was very good.
@@ -114,7 +116,7 @@ I often need better Unicode coverage than provided by most monospaced fonts, lik
 [[image:DmFontETLEighteen]]
 
 [new]
-Hello, this is one of your enemies: a Vim-fanatic. Nontheless, I wondered if you might also seek for some feasible fonts at small sizes, and so didn't hardly hesitate to enter the evil world of Escape-Meta-Alt-Control-Shift, commonly known as EMACS. I personally found the DINA font very pleasing. When I saw it mentioned in the preface, I had to admit you have no bad taste - well, as far as fonts are concerned. When differentiating between an OS and an editing facility, you're still at odds (my opinion). I _found_ DINA very pleasing indeed but in the last years got convinced of all the benefits one begets using *DejaVu Sans Mono*. Any size (small for myself, huge when showing off some snippets to others), a whole bunch of codepages supported (I use the NEO ergonomic keyboard layout giving direct access to many glyphs most of which !DejaVu surprisingly knows about), and readability 24/7. I do love that font. Every now and then I'd still switch back to DINA but never for too long. Glad to have found !DejaVu here, too.
+Hello, this is one of your enemies: a Vim-fanatic. Nonetheless, I wondered if you might also seek for some feasible fonts at small sizes, and so didn't hardly hesitate to enter the evil world of Escape-Meta-Alt-Control-Shift, commonly known as EMACS. I personally found the DINA font very pleasing. When I saw it mentioned in the preface, I had to admit you have no bad taste - well, as far as fonts are concerned. When differentiating between an OS and an editing facility, you're still at odds (my opinion). I _found_ DINA very pleasing indeed but in the last years got convinced of all the benefits one begets using *DejaVu Sans Mono*. Any size (small for myself, huge when showing off some snippets to others), a whole bunch of codepages supported (I use the NEO ergonomic keyboard layout giving direct access to many glyphs most of which !DejaVu surprisingly knows about), and readability 24/7. I do love that font. Every now and then I'd still switch back to DINA but never for too long. Glad to have found !DejaVu here, too.
 
 Greetings from Germany (apologies for any mistakes in English spelling/wording/…)
 
