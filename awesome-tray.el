@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-10-07 07:30:16
-;; Version: 1.4
-;; Last-Updated: 2018-10-29 22:18:59
+;; Version: 1.6
+;; Last-Updated: 2018-11-03 21:08:21
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tray.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;
+;; `cl'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -65,6 +65,7 @@
 ;; `awesome-tray-mode-line-active-color'
 ;; `awesome-tray-mode-line-inactive-color'
 ;; `awesome-tray-active-modules'
+;; `awesome-tray-git-update-duration'
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET awesome-tray RET
@@ -72,8 +73,13 @@
 
 ;;; Change log:
 ;;
+;; 2018/11/03
+;;      * Add percent information in location module.
+;;      * Fix error: Not enough arguments for format string.
+;;
 ;; 2018/10/29
-;;	* Use `unspecified' attribute fix black block of mode-line inactive status.
+;;      * Use `unspecified' attribute fix black block of mode-line inactive status.
+;;      * Add `awesome-tray-git-update-duration' option.
 ;;
 ;; 2018/10/21
 ;;      * Use `advice-add' re-implmenet `awesome-tray-message-advice'
@@ -132,6 +138,14 @@
   :type 'list
   :group 'awesome-tray)
 
+(defcustom awesome-tray-git-update-duration 1
+  "Update duration of git command, in seconds.
+
+It's very slow start new process in Windows platform.
+Maybe you need set this option with bigger value to speedup on Windows platform."
+  :type 'integer
+  :group 'awesome-tray)
+
 (defface awesome-tray-module-git-face
   '((t (:foreground "SystemPinkColor" :bold t)))
   "Git face."
@@ -185,6 +199,10 @@
 
 (defvar awesome-tray-all-modules
   '("last-command" "parent-dir" "git" "buffer-name" "mode-name" "location" "date"))
+
+(defvar awesome-tray-git-command-last-time 0)
+
+(defvar awesome-tray-git-command-cache "")
 
 (defun awesome-tray-enable ()
   ;; Save mode-line colors when first time.
@@ -273,19 +291,23 @@
 
 (defun awesome-tray-module-git-info ()
   (if (executable-find "git")
-      (let* ((git-info (awesome-tray-process-exit-code-and-output "git" "symbolic-ref" "--short" "HEAD"))
-             (status (nth 0 git-info))
-             (result (format "git:%s" (nth 1 git-info))))
-        (if (equal status 0)
-            (replace-regexp-in-string "\n" "" result)
-          ""))
+      (let ((current-seconds (awesome-tray-current-seconds)))
+        (if (> (- current-seconds awesome-tray-git-command-last-time) awesome-tray-git-update-duration)
+            (progn
+              (setq awesome-tray-git-command-last-time current-seconds)
+              (awesome-tray-update-git-command-cache))
+          awesome-tray-git-command-cache))
     ""))
 
 (defun awesome-tray-module-mode-name-info ()
   (format "%s" major-mode))
 
 (defun awesome-tray-module-location-info ()
-  (format "(%s:%s)" (line-number-at-pos) (current-column)))
+  (format "(%s:%s %.f%%)"
+          (line-number-at-pos)
+          (current-column)
+          (* (/ (float (line-number-at-pos)) (count-lines (point-min) (point-max))) 100)
+          ))
 
 (defun awesome-tray-module-date-info ()
   (format-time-string "[%Y-%m-%d %H:%M]"))
@@ -329,6 +351,19 @@
     (list (apply 'call-process program nil (current-buffer) nil args)
           (buffer-string))))
 
+(defun awesome-tray-current-seconds ()
+  (string-to-number (format-time-string "%s")))
+
+(defun awesome-tray-update-git-command-cache ()
+  (let* ((git-info (awesome-tray-process-exit-code-and-output "git" "symbolic-ref" "--short" "HEAD"))
+         (status (nth 0 git-info))
+         (result (format "git:%s" (nth 1 git-info))))
+    (setq awesome-tray-git-command-cache
+          (if (equal status 0)
+              (replace-regexp-in-string "\n" "" result)
+            ""))
+    awesome-tray-git-command-cache))
+
 ;; Wrap `message' make tray information visible always
 ;; even other plugins call `message' to flush minibufer.
 (defun awesome-tray-message-advice (old-message &rest arguments)
@@ -341,9 +376,10 @@
             (awesome-tray-flush-info))
            ;; Otherwise, wrap message string with tray info.
            (t
-            (apply old-message (cons (awesome-tray-get-echo-format-string (apply 'format arguments)) '()))))
+            (apply old-message "%s" (cons (awesome-tray-get-echo-format-string (apply 'format arguments)) '()))))
         (apply old-message arguments))
-    (apply old-message arguments)))
+    (apply old-message arguments)
+    ))
 
 (advice-add #'message :around #'awesome-tray-message-advice)
 
