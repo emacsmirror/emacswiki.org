@@ -6,20 +6,21 @@ And also available as DebianPackage:yaml-mode.
 
 It features font locking for data forms and comments, and some electric keys to help with block literals.
 
-----
+== Spaces vs. Tabs
 
-As of 2009/07/07, <code>yaml-mode.el</code> enforces spaces instead of TABs in yaml-mode, regardless of emacs configuration.
+<code>yaml-mode.el</code> enforces spaces instead of TABs in yaml-mode, regardless of emacs configuration.
 
 If you wish to have Return key automatically indent cursor on new line, add the following to emacs config:
 
-    (add-hook 'yaml-mode-hook
-        (lambda ()
+```
+(add-hook 'yaml-mode-hook
+          (lambda ()
             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+```
 
-IvanKorotkov
+== Indentation Tools
 
-
-Another good accompanying mode for editing YAML files (and some other structured texts like Python) is  [https://gitlab.com/emacs-stuff/indent-tools/ indent-tools] as it provides functionality related to tree indentation, navigation and commenting 
+Another good accompanying mode for editing YAML files (and some other structured texts like Python) is  [https://gitlab.com/emacs-stuff/indent-tools/ indent-tools] as it provides functionality related to tree indentation, navigation and commenting.
 
 ----
 CategoryModes
