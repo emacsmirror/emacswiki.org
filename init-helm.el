@@ -71,7 +71,7 @@
 ;;; Change log:
 ;;
 ;; 2018/11-01
-;;	* Fix `helm-ls-git' not work when first run `helm-dwim'.
+;;      * Fix `helm-ls-git' not work when first run `helm-dwim'.
 ;;
 ;; 2018/10-29
 ;;      * Use `helm-ls-git' instead `helm-projectile', helm so fast now!!!
@@ -164,8 +164,8 @@
     (setq helm-source-list
           '(
             helm-source-awesome-tab-group
-            helm-source-ls-git
             helm-source-buffers-list
+            helm-source-ls-git
             helm-source-recentf
             helm-source-kill-ring
             helm-source-system
