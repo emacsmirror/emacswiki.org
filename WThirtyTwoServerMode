@@ -6,23 +6,34 @@ Some time ago on emacs-fu I [http://emacs-fu.blogspot.com/2009/03/windows-and-da
 The behavior I like is to have an Emacs icon on my desktop. When I double click the icon, it should throw me into Emacs -- starting an Emacs if necessary, and otherwise re-using the existing Emacs. Here's how to get that behavior.
 
 =Emacs Desktop Shortcut=
-First, create an Emacs shortcut on your desktop, e.g., by dragging "runemacs.exe" from your Emacs bin directory onto your desktop and choosing "Create shortcut here." Then right-click on the shortcut, select Properties and edit the Target to look like this:
+First, create an Emacs shortcut on your desktop, e.g., by dragging "runemacs.exe" from your Emacs bin directory onto your desktop and choosing "Create shortcut here." 
 
- "C:\Program Files (x86)\emacs-24.3\bin\emacsclientw.exe" -n -a "C:\Program Files (x86)\emacs-24.3\bin\runemacs.exe" -e "(make-frame-visible)" 
+If you are using Emacs 25 or earlier, right-click on the shortcut, select Properties and edit the Target to look like this:
 
-(Substitute the appropriate path to your own Emacs bin folder.) EmacsClient is a helper program that re-uses an Emacs server if one is available. Here's an explanation of the arguments:
+ "C:\path\to\bin\emacsclientw.exe" -n -a "C:\path\to\bin\runemacs.exe" -e "(raise-frame)" 
+
+(Substitute the appropriate path to your own Emacs bin folder.) 
+
+If you are using Emacs 26 or later, right-click on the shortcut, select Properties and edit the Target to look like this:
+
+ "C:\path\to\bin\emacsclientw.exe" -n -a "" -e "(raise-frame)" 
+
+(Substitute the appropriate path to your own Emacs bin folder.) 
+
+EmacsClient is a helper program that re-uses an Emacs server if one is available. Here's an explanation of the arguments:
 
  -n  
 
 This simply tells EmacsClient to exit immediately after starting Emacs.
 
- -a "C:\Program Files (x86)\emacs-24.3\bin\runemacs.exe"
+ -a "C:\Program Files (x86)\emacs-24.3\bin\runemacs.exe"  (25 and earlier)
+ -a "" (26 and later)
 
-This specifies an alternate editor to use if an Emacs server is not available. By making our alternate editor "runemacs.exe", we make EmacsClient start up an Emacs if one isn't already running.
+This specifies an alternate editor to use if an Emacs server is not available. By making our alternate editor "runemacs.exe", we make EmacsClient start up an Emacs if one isn't already running.  Starting in version 26, emacsclientw was modified to start Emacs in daemon mode if this option is passed an empty string.
 
- -e "(make-frame-visible)"
+ -e "(raise-frame)"
 
-This tells EmacsClient to execute the provide Elisp code if it was successful in starting up. In this case, the Elisp code we provide "(make-frame-visible)" causes the existing Emacs server to become visible on the screen if it was hidden.
+This tells EmacsClient to execute the provide Elisp code if it was successful in starting up. In this case, the Elisp code we provide "(raise-frame)" causes the existing Emacs server to become visible on the screen if it was hidden.
 
 So we now have a shortcut that will start up Emacs if it is not running, and will otherwise simply make the existing Emacs visible on the screen. 
 
@@ -33,10 +44,12 @@ There are a few more things we have to do in the .emacs init file to make everyt
     ;;  This makes Emacs ignore the "-e (make-frame-visible)" 
     ;;  that it gets passed when started by emacsclientw.
     ;;
-    (add-to-list 'command-switch-alist '("(make-frame-visible)" .
+    (add-to-list 'command-switch-alist '("(raise-frame)" .
                  (lambda (s))))
 
-There's a bug in EmacsClient that results in some of the EmacsClient arguments getting passed along to "runemacs.exe" when it is invoked. If left unfixed, this results in Emacs opening a buffer called "(make-frame-visible)" when it starts up for the first time. That's more an annoyance than a real problem, but this hack stops that from happening by deleting the erroneous "(make-frame-visible)" out of the command line arguments.
+There's a bug in EmacsClient that results in some of the EmacsClient arguments getting passed along to "runemacs.exe" when it is invoked. If left unfixed, this results in Emacs opening a buffer called "(make-frame-visible)" when it starts up for the first time. That's more an annoyance than a real problem, but this hack stops that from happening by deleting the erroneous "(raise-frame)" out of the command line arguments.
+
+(In version 26+, this bug is fixed and this is no longer necessary.)
 
     ;;
     ;;  This starts the Emacs server when .emacs gets loaded
@@ -62,8 +75,7 @@ When Emacs starts up, we need to start the Emacs server, or the next time we use
 
 Once we have our Emacs server up and running, when we're done editing we want to just hide Emacs away rather than actually killing it. So we rebind the usual exit key "C-x C-c" to a function that says we're done using the server and then hides Emacs. It's important to say we're done using the server, because if we started Emacs from another program (say we're using it as our editor in an email program) the other program is probably waiting for Emacs to say it is done executing.
 
-=Conclusion=
-And that's it. The only small drawback to this set up is that the first time you start Emacs you'll get a popup alert "Emacsclient ERROR" saying that EmacsClient couldn't find a server to use. (This happens just before it fails through to calling "runemacs.exe" to start a server.)  EmacsClient has an option that is supposed to mute this error ("--quiet" or "-q") but it doesn't work.
+=Possible Problems=
+With some older versions of Emacs, the first time you start you'll get a popup alert "Emacsclient ERROR" saying that EmacsClient couldn't find a server to use. (This happens just before it fails through to calling "runemacs.exe" to start a server.)  EmacsClient has an option that is supposed to mute this error ("--quiet" or "-q") but it doesn't work in some earlier versions of Emacs.
 
-=Auto raise/de-iconify=
-Using 'raise-frame' instead of 'make-frame-visible' in the code above will get you a ready-to- type emacs frame regardless of its previous state.
+ 
