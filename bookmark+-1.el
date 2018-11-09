@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Oct 10 14:28:56 2018 (-0700)
+;; Last-Updated: Fri Nov  9 08:09:05 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 8788
+;;     Update #: 8793
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -449,7 +449,7 @@
 ;;    `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handlers-for-file-types',
 ;;    `bmkp-desktop-default-directory',
-;;    `bmkp-desktop-jump-save-before-flag.',
+;;    `bmkp-desktop-jump-save-before-flag',
 ;;    `bmkp-desktop-no-save-vars', `bmkp-eww-auto-type' (Emacs 25+),
 ;;    `bmkp-eww-buffer-renaming' (Emacs 25+),
 ;;    `bmkp-eww-generate-buffer-flag' (Emacs 25+),
@@ -577,8 +577,8 @@
 ;;    `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
 ;;    `bmkp-last-specific-file-alist-only',
-;;    `bmkp-last-specific-file-p', `bmkp-line-number-at-pos',
-;;    `bmkp-list-position', `bmkp-local-directory-bookmark-p',
+;;    `bmkp-last-specific-file-p', `bmkp-list-position',
+;;    `bmkp-local-directory-bookmark-p',
 ;;    `bmkp-local-file-accessed-more-recently-cp',
 ;;    `bmkp-local-file-alist-only', `bmkp-local-file-bookmark-p',
 ;;    `bmkp-local-file-size-cp', `bmkp-local-file-type-cp',
@@ -4327,7 +4327,7 @@ When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
 (define-key bmkp-edit-bookmark-record-mode-map "\C-c\C-c" 'bmkp-edit-bookmark-record-send)
 
 ;;;###autoload (autoload 'bmkp-edit-bookmark-record "bookmark+")
-(defun bmkp-edit-bookmark-record (bookmark) ; Bound to `C-x p e'.
+(defun bmkp-edit-bookmark-record (bookmark) ; Bound to `C-x p E'.
   "Edit the full record (the Lisp sexp) for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
@@ -9032,12 +9032,6 @@ If region was relocated, save it if user confirms saving."
           ((and pos  end-pos)           ; No region.  Go to old start.  Don't push-mark.
            (goto-char pos) (forward-line 0)
            (message "No region from %d to %d" pos end-pos)))))
-
-;; Same as `line-number-at-pos', which is not available until Emacs 22.
-(defun bmkp-line-number-at-pos (&optional pos)
-  "Buffer line number at position POS. Current line number if POS is nil.
-Counting starts at (point-min), so any narrowing restriction applies."
-  (1+ (count-lines (point-min) (save-excursion (when pos (goto-char pos)) (forward-line 0) (point)))))
 
 (defun bmkp-goto-position (bookmark file buf bufname pos forward-str behind-str)
   "Go to a bookmark that has no region.
