@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 22 16:44:02 2018 (-0700)
+;; Last-Updated: Fri Nov  9 12:00:13 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1352
+;;     Update #: 1353
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/11/09 dadams
+;;     Change binding of to-indentation-repeat-backward to M-p.
 ;; 2018/09/22 dadams
 ;;     Use tear-off-window, not mouse-* (aliased), now in mouse+.el, not in frame-cmds.el.
 ;; 2018/09/14 dadams
@@ -899,7 +901,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (eval-after-load "misc-cmds"
   '(progn
-    (global-set-key "\M-m" 'to-indentation-repeat-backward)                   ; `M-m'
+    (global-set-key "\M-p" 'to-indentation-repeat-backward)                   ; `M-p'
     (global-set-key "\M-n" 'to-indentation-repeat-forward)))                  ; `M-n'
 
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
