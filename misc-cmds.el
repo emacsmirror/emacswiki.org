@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 22 14:19:41 2018 (-0700)
+;; Last-Updated: Fri Nov  9 11:56:31 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 3299
+;;     Update #: 3300
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -93,7 +93,7 @@
 ;;   (define-key visual-line-mode-map [end]  'end-of-line+)
 ;;   (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
 ;;   (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)
-;;   (global-set-key "\M-m"           'to-indentation-repeat-backward)
+;;   (global-set-key "\M-p"           'to-indentation-repeat-backward)
 ;;   (global-set-key "\M-n"           'to-indentation-repeat-forward)
 ;;
 ;;   (global-set-key [remap mark-word]       'mark-whole-word)
