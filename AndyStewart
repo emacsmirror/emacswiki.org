@@ -63,6 +63,8 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** [https://github.com/manateelazycat/awesome-tray awesome-tray] -- Hide mode-line, and display necessary information at right of minibuffer.
 
+*** [https://github.com/manateelazycat/awesome-pair awesome-pair] -- Auto parenthesis pairing with syntax table.
+
 *** [https://github.com/manateelazycat/insert-translated-name insert-translated-name] -- Ask me Chinese words and then insert translation as variable or function name.
 
 *** [https://github.com/manateelazycat/cache-path-from-shell cache-path-from-shell] -- Provide a chache mechanism make sure exec-path-from-shell just execute once.
