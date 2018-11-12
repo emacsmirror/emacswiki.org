@@ -19,6 +19,12 @@ This page is about using [[http://www.cygwin.com/ Cygwin]] with Emacs. Cygwin is
 * CygwinizedEmacsWithWindowsPath -- make Cygwinized Emacs understand Windows style path
 * <tt>[[windows-path.el]]</tt> -- use windows-style filenames like ##c:/path/file## or ##c:\path\file## in Cygwin Emacs
 
+
+
+== Setting Up an MS Windows Shortcut to Cygwin Emacs ==
+
+See CygwinShortcut for how to use Cygwin Emacs and create a Windows shortcut to it.
+
 ----
 
 Other info about Emacs and Cygwin: http://www.khngai.com/emacs/ 
