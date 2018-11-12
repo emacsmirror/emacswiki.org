@@ -1,0 +1,29 @@
+== How to setup a Windows shortcut to Cygwin Emacs ==
+
+One good reason to use Cygwin Emacs is that the Emacs shell is 'bash' if that is what one wishes to use as a shell.
+
+The method described here creates a shortcut that will accept Windows paths even when the path includes space and single quote characters. The setup requires roughly three steps.
+
+# Copy the script (bottom of this page) to a file on your PC. I use C:\opt\bin\emacscw.sh.
+
+# Send a shortcut of program C:\cygwin\bin\run.exe to the PC Desktop and rename the shortcut as you wish. I name the shortcut "emacsCW.sh". To create the shortcut navigate Explorer to directory C:\cygwin\bin and right-click run.exe; select "Send to/Desktop".
+
+# Open the script in an editor and right-click the shortcut icon on the Desptop; select "Properties / Shortcut". A this point cut and paste the Target and "Start in" fields from the script comment area to the corresponding parts of the Properties mini-window.  Make sure to edit the content to reflect the actual names you use for the script name and the path. Click Apply at the bottom-right of the Properties window.
+
+* SCRIPT
+<pre>
+#!/usr/bin/sh
+# file name: emacscw.sh
+# context: Cygwin emacs on Windows 7.
+# purpose: To launch Cygwin emacs.
+# usage:   Called from a Cygwin\bin\run shortcut setup as follows.  The
+#          shortcut can be pinned to the Start menu.
+#   target:   C:\cygwin\bin\run.exe /usr/bin/bash --wait /cygdrive/c/opt/bin/emacscw.sh
+#   Start in: %HOME%
+if test "$1" = ""; then
+    exec /usr/bin/emacs;
+else
+    CPATH=$(/usr/bin/cygpath "$*")
+    exec /usr/bin/emacs --file """$CPATH""";
+fi
+</pre>
