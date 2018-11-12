@@ -1,4 +1,4 @@
-== How to setup an MS Windows shortcut to Cygwin Emacs ==
+== How to Create an MS Windows Shortcut to Cygwin Emacs ==
 
 One good reason to use Cygwin Emacs is that the Emacs shell can be `bash'.
 
@@ -10,7 +10,8 @@ The method described here creates a shortcut that will accept Microsoft Windows 
 
 # Open the script in an editor and right-click the shortcut icon on the Desktop; select ##Properties / Shortcut##. A this point cut and paste the ##Target## and ##Start in## fields from the script comment area to the corresponding parts of the ##Properties## mini-window.  Make sure to edit the content to reflect the actual names you use for the script name and the path. Click ##Apply## at the bottom-right of the Properties window.
 
-* SCRIPT
+=== SCRIPT ===
+
 <pre>
 #!/usr/bin/sh
 # file name: emacscw.sh
