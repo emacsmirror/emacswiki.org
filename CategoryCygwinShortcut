@@ -25,7 +25,7 @@ The setup requires roughly three steps.
 if test "$1" = ""; then
     exec /usr/bin/emacs;
 else
-    CPATH=$(/usr/bin/cygpath "$*")
-    exec /usr/bin/emacs --file """$CPATH""";
+    CPATH=$(/usr/bin/cygpath "$1")
+    exec /usr/bin/emacs """$CPATH""";
 fi
 </pre>
