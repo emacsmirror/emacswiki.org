@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:35:33 2018 (-0800)
+;; Last-Updated: Mon Nov 12 09:37:36 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1427
+;;     Update #: 1433
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `hexrgb', `thingatpt', `thingatpt+', `zones'.
+;;   `cl', `hexrgb', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -356,6 +356,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/10/20 dadams
+;;     Use eval-after-load for zones.el.
 ;; 2017/11/19 dadams
 ;;     isearchp-narrow-to-lazy-highlights:
 ;;       Added isearchp-restore-pred-and-remove-dimming to isearch-mode-end-hook.
@@ -744,9 +746,10 @@ Possible values are `text', `overlay', and nil, meaning both.")
 (define-key isearch-mode-map (kbd "C-M-~")        'isearchp-toggle-complementing-domain)
 (define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-outside-search-area)
 (define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
-(when (fboundp 'isearchp-narrow-to-matching-zones)
-  (define-key isearch-mode-map (kbd "S-SPC")      'isearchp-narrow-to-matching-zones))
 (define-key isearch-mode-map (kbd "C-S-SPC")      'isearchp-narrow-to-lazy-highlights)
+
+(eval-after-load "zones"
+  '(define-key isearch-mode-map (kbd "S-SPC")     'isearchp-narrow-to-matching-zones))
  
 ;;(@* "General Search-Property Commands")
 
@@ -1487,7 +1490,7 @@ artifacts from property searching.  This includes dimming and all
 
 (defun isearchp-lazy-highlights-forward-regexp (beg end &optional restartp)
   "Same as `isearchp-lazy-highlights-forward', but regexp search."
-  (interactive 
+  (interactive
    (list (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
          (if (and transient-mark-mode  mark-active) (region-end) (point-max))
          current-prefix-arg))
