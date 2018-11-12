@@ -2,7 +2,7 @@
 
 One good reason to use Cygwin Emacs is that the Emacs shell is 'bash' if that is one wishes to use as a shell.
 
-The method described here creates a shortcut that will accept Windows paths even when the path includes space and single quote characters. The setup requires roughly three steps.
+The method described here creates a shortcut that will accept Windows paths even when the path includes space and quote characters. The setup requires roughly three steps.
 
 # Copy the script (bottom of this page) to a file on your PC. I use C:\opt\bin\emacscw.sh.
 
