@@ -18,7 +18,7 @@ The method described here creates a shortcut that will accept Windows paths even
 # purpose: To launch Cygwin emacs.
 # usage:   Called from a Cygwin\bin\run shortcut setup as follows.  The
 #          shortcut can be pinned to the Start menu.
-#   target:   C:\cygwin\bin\run.exe /usr/bin/bash --wait /cygdrive/c/opt/bin/emacscw.sh
+#   target:   C:\cygwin\bin\run.exe /usr/bin/bash --quote /cygdrive/c/opt/bin/emacscw.sh
 #   Start in: %HOME%
 if test "$1" = ""; then
     exec /usr/bin/emacs;
