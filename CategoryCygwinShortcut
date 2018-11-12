@@ -1,6 +1,6 @@
 == How to setup a Windows shortcut to Cygwin Emacs ==
 
-One good reason to use Cygwin Emacs is that the Emacs shell is 'bash' if that is what one wishes to use as a shell.
+One good reason to use Cygwin Emacs is that the Emacs shell is 'bash' if that is one wishes to use as a shell.
 
 The method described here creates a shortcut that will accept Windows paths even when the path includes space and single quote characters. The setup requires roughly three steps.
 
