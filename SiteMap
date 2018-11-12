@@ -125,7 +125,6 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryPackaging|Packages]] -- Emacs package management
 * [[CategoryWThirtyTwo|Emacs on Windows]] -- configuring Emacs for MS Windows
 * [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
-* [[CategoryCygwinShortcut|Windows shortcut to start Emacs on Cygwin]] -- Setup a Windows shortcut to start Cygwin Emacs.
 
 
 [:ProgrammingEmacs]
