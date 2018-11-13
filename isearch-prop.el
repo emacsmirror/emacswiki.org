@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 12 09:37:36 2018 (-0800)
+;; Last-Updated: Tue Nov 13 06:40:34 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1433
+;;     Update #: 1438
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -356,6 +356,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/11/13 dadams
+;;     Use eval-after-load for zones.el stuff, instead of just testing already loaded.
 ;; 2018/10/20 dadams
 ;;     Use eval-after-load for zones.el.
 ;; 2017/11/19 dadams
@@ -1885,9 +1887,10 @@ See `make-hash-table' for possible values of TEST."
 
 ;;; Search-Zones Commands and Functions ------------------------------
 
-(when (require 'zones nil t)
-  (defun isearchp-zones-forward (&optional variable)
-    "Search forward within the zones of izones variable VARIABLE.
+(eval-after-load "zones" 
+  '(progn
+    (defun isearchp-zones-forward (&optional variable)
+      "Search forward within the zones of izones variable VARIABLE.
 VARIABLE defaults to the value of `zz-izones-var'.
 
 With a prefix arg you are prompted for a different variable to use, in
@@ -1901,274 +1904,274 @@ Non-interactively, VARIABLE is the izones variable to use.
 If `isearchp-complement-domain-p' is non-nil then move to the next
 non-zone; that is, the areas to search are those outside the given
 zones.  (Use `C-M-~' during Isearch to toggle this variable.)"
-    (interactive (isearchp-zones-read-args))
-    (setq isearch-forward  t)
-    (isearchp-zones-1 'isearch-forward variable))
+      (interactive (isearchp-zones-read-args))
+      (setq isearch-forward  t)
+      (isearchp-zones-1 'isearch-forward variable))
 
-  (defun isearchp-zones-backward (&optional variable)
-    "Search backward within the zones of restrictions variable VARIABLE.
+    (defun isearchp-zones-backward (&optional variable)
+      "Search backward within the zones of restrictions variable VARIABLE.
 See `isearchp-zones-forward'."
-    (interactive (isearchp-zones-read-args))
-    (setq isearch-forward  nil)
-    (isearchp-zones-1 'isearch-backward variable))
+      (interactive (isearchp-zones-read-args))
+      (setq isearch-forward  nil)
+      (isearchp-zones-1 'isearch-backward variable))
 
-  (defun isearchp-zones-forward-regexp (&optional variable)
-    "Regexp search forward within the zones of restrictions variable VARIABLE.
+    (defun isearchp-zones-forward-regexp (&optional variable)
+      "Regexp search forward within the zones of restrictions variable VARIABLE.
 See `isearchp-zones-forward'."
-    (interactive (isearchp-zones-read-args))
-    (setq isearch-regexp   t
-          isearch-forward  t)
-    (isearchp-zones-1 'isearch-forward-regexp variable))
+      (interactive (isearchp-zones-read-args))
+      (setq isearch-regexp   t
+            isearch-forward  t)
+      (isearchp-zones-1 'isearch-forward-regexp variable))
 
-  (defun isearchp-zones-backward-regexp (&optional variable)
-    "Regexp search backward within the zones of restrictions variable VARIABLE.
+    (defun isearchp-zones-backward-regexp (&optional variable)
+      "Regexp search backward within the zones of restrictions variable VARIABLE.
 See `isearchp-zones-forward'."
-    (interactive (isearchp-zones-read-args))
-    (setq isearch-regexp   t
-          isearch-forward  nil)
-    (isearchp-zones-1 'isearch-backward-regexp variable))
+      (interactive (isearchp-zones-read-args))
+      (setq isearch-regexp   t
+            isearch-forward  nil)
+      (isearchp-zones-1 'isearch-backward-regexp variable))
 
-  (defun isearchp-zones-read-args ()
-    "Read args for `isearchp-zones*'."
-    (let ((var    (and current-prefix-arg  (zz-read-any-variable "Variable: ")))
-          (npref  (prefix-numeric-value current-prefix-arg)))
-      (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
-      (when (and current-prefix-arg  (<= npref 0)) (setq zz-izones-var  var))
-      (list var)))
+    (defun isearchp-zones-read-args ()
+      "Read args for `isearchp-zones*'."
+      (let ((var    (and current-prefix-arg  (zz-read-any-variable "Variable: ")))
+            (npref  (prefix-numeric-value current-prefix-arg)))
+        (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
+        (when (and current-prefix-arg  (<= npref 0)) (setq zz-izones-var  var))
+        (list var)))
 
-  (defun isearchp-zones-1 (search-fn &optional variable)
-    "Helper for Isearch zone commands.
+    (defun isearchp-zones-1 (search-fn &optional variable)
+      "Helper for Isearch zone commands.
 Search with function SEARCH-FN within the zones of izones VARIABLE.
 VARIABLE defaults to the value of `zz-izones-var'."
-    (unless variable (setq variable  zz-izones-var))
-    (when isearchp-dim-outside-search-area-flag
-      (with-silent-modifications
-        (let* ((zones       (zz-zone-union (zz-izone-limits (symbol-value variable) nil 'ONLY-THIS-BUFFER)))
-               (comp-zones  (zz-zones-complement zones)))
-          (dolist (zone  (if isearchp-complement-domain-p comp-zones zones))
-            (let ((isearchp-complement-domain-p  nil))
-              (isearchp-add/remove-dim-overlay (car zone) (cadr zone) nil)))
-          (dolist (zone  (if isearchp-complement-domain-p zones comp-zones))
-            (let ((isearchp-complement-domain-p  nil))
-              (isearchp-add/remove-dim-overlay (car zone) (cadr zone) 'ADD))))))
-    ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
-    (ignore-errors (isearch-done))
-    ;; At least for the initial message, assume we are starting over, with a new kind of searching.
-    ;; Maybe we should reset more vars here, unless we are starting from within `isearch-mode'?
-    ;; Do nothing about that, for now.  Just reset those that might make the message wrong.
-    (setq isearch-word                     nil
-          isearch-success                  t
-          isearch-wrapped                  nil
-          isearch-adjusted                 nil
-          ;; isearch-barrier                  (point)
-          ;; isearch-yank-flag                nil
-          ;; isearch-error                    nil
-          ;; isearch-just-started             t
-          )
-    (let ((message-log-max  nil))
-      (message "%sZONE SEARCH %s" (if isearchp-complement-domain-p "*OUTSIDE* " "")
-               (isearchp-message-prefix nil nil isearch-nonincremental))
-      (sit-for 1))
-    (let* ((enable-recursive-minibuffers   t)
-           ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
-           (search-nonincremental-instead  nil))
-      (setq isearchp-filter-predicate-orig  isearch-filter-predicate
-            isearch-filter-predicate        (isearchp-zones-filter-pred (zz-izone-limits
-                                                                         (symbol-value variable)))))
-    (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
-    (funcall search-fn))
+      (unless variable (setq variable  zz-izones-var))
+      (when isearchp-dim-outside-search-area-flag
+        (with-silent-modifications
+          (let* ((zones       (zz-zone-union (zz-izone-limits (symbol-value variable) nil 'ONLY-THIS-BUFFER)))
+                 (comp-zones  (zz-zones-complement zones)))
+            (dolist (zone  (if isearchp-complement-domain-p comp-zones zones))
+              (let ((isearchp-complement-domain-p  nil))
+                (isearchp-add/remove-dim-overlay (car zone) (cadr zone) nil)))
+            (dolist (zone  (if isearchp-complement-domain-p zones comp-zones))
+              (let ((isearchp-complement-domain-p  nil))
+                (isearchp-add/remove-dim-overlay (car zone) (cadr zone) 'ADD))))))
+      ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
+      (ignore-errors (isearch-done))
+      ;; At least for the initial message, assume we are starting over, with a new kind of searching.
+      ;; Maybe we should reset more vars here, unless we are starting from within `isearch-mode'?
+      ;; Do nothing about that, for now.  Just reset those that might make the message wrong.
+      (setq isearch-word                     nil
+            isearch-success                  t
+            isearch-wrapped                  nil
+            isearch-adjusted                 nil
+            ;; isearch-barrier                  (point)
+            ;; isearch-yank-flag                nil
+            ;; isearch-error                    nil
+            ;; isearch-just-started             t
+            )
+      (let ((message-log-max  nil))
+        (message "%sZONE SEARCH %s" (if isearchp-complement-domain-p "*OUTSIDE* " "")
+                 (isearchp-message-prefix nil nil isearch-nonincremental))
+        (sit-for 1))
+      (let* ((enable-recursive-minibuffers   t)
+             ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
+             (search-nonincremental-instead  nil))
+        (setq isearchp-filter-predicate-orig  isearch-filter-predicate
+              isearch-filter-predicate        (isearchp-zones-filter-pred (zz-izone-limits
+                                                                           (symbol-value variable)))))
+      (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
+      (funcall search-fn))
 
-  (defun isearchp-zones-filter-pred (&optional zones)
-    "Return a predicate that tests if its args are in ZONES.
+    (defun isearchp-zones-filter-pred (&optional zones)
+      "Return a predicate that tests if its args are in ZONES.
 Optional arg ZONES is a list of basic zones.
 The predicate is suitable as a value of `isearch-filter-predicate'."
-    (lexical-let ((limits  zones))
-      (lambda (beg end)
-        (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
-             (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
-             (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
-                 (and (boundp 'isearch-invisible) ; Emacs 24.4+
-                      (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
-             (let ((in-zone-p  (zz-some (lambda (zone) (and (<= (nth 0 zone) beg)  (>= (nth 1 zone) end)))
-                                        (zz-zone-union limits))))
-               (if isearchp-complement-domain-p (not in-zone-p) in-zone-p))))))
+      (lexical-let ((limits  zones))
+        (lambda (beg end)
+          (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
+               (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
+               (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
+                   (and (boundp 'isearch-invisible) ; Emacs 24.4+
+                        (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
+               (let ((in-zone-p  (zz-some (lambda (zone) (and (<= (nth 0 zone) beg)  (>= (nth 1 zone) end)))
+                                          (zz-zone-union limits))))
+                 (if isearchp-complement-domain-p (not in-zone-p) in-zone-p))))))
 
-  (defun isearchp-narrow-to-matching-zones (&optional all-zones msgp) ; Bound to `S-SPC'.
-    "Narrow the zones to search, to those containing lazy-highlighting.
+    (defun isearchp-narrow-to-matching-zones (&optional all-zones msgp) ; Bound to `S-SPC'.
+      "Narrow the zones to search, to those containing lazy-highlighting.
 The other search zones are excluded for the continued searching.
 Optional arg ALL-ZONES is the list of zones to check for exclusion.
 Non-interactively, arg MSGP means show a status message."
-    (interactive (list (funcall isearchp-zone-limits-function) t))
-    (let ((zones  (or all-zones  (zz-izone-limits (symbol-value zz-izones-var)))))
-      (isearchp-exclude-zones-w-no-lazy-highlight zones))
-    (let ((opred  isearch-filter-predicate))
-      (setq isearch-filter-predicate
-            `(lambda (beg end)
-               (and (not (funcall (isearchp-zones-filter-pred isearchp-excluded-zones) beg end))
-                    (funcall ,opred beg end))))
-      (when msgp (message "Narrowed to zones that have a search hit"))))
+      (interactive (list (funcall isearchp-zone-limits-function) t))
+      (let ((zones  (or all-zones  (zz-izone-limits (symbol-value zz-izones-var)))))
+        (isearchp-exclude-zones-w-no-lazy-highlight zones))
+      (let ((opred  isearch-filter-predicate))
+        (setq isearch-filter-predicate
+              `(lambda (beg end)
+                 (and (not (funcall (isearchp-zones-filter-pred isearchp-excluded-zones) beg end))
+                      (funcall ,opred beg end))))
+        (when msgp (message "Narrowed to zones that have a search hit"))))
 
-  (defun isearchp-zone-limits-izones ()
-    "Return the limits of the current value of `zz-izones-var'.
+    (defun isearchp-zone-limits-izones ()
+      "Return the limits of the current value of `zz-izones-var'.
 That is, return the basic zones."
-    (zz-izone-limits (symbol-value zz-izones-var)))
+      (zz-izone-limits (symbol-value zz-izones-var)))
 
-  (defun isearchp-exclude-zones-w-no-lazy-highlight (zones)
-    "Add zones that contain no lazy highlight to `isearchp-excluded-zones'.
+    (defun isearchp-exclude-zones-w-no-lazy-highlight (zones)
+      "Add zones that contain no lazy highlight to `isearchp-excluded-zones'.
 ZONES is the list of zones to check for exclusion."
-    (let (beg end)
-      (dolist (zone  zones)
-        (setq beg  (nth 0 zone)
-              end  (nth 1 zone))
-        (when (> beg end) (setq beg  (prog1 end (setq end  beg))))
-        (unless (isearchp-lazy-highlights-present-p beg end) (add-to-list 'isearchp-excluded-zones zone))))
-    (dolist (zone  isearchp-excluded-zones)
-      (isearchp-add/remove-dim-overlay (nth 0 zone) (nth 1 zone) 'ADDP))
-    (isearch-lazy-highlight-update)
-    isearchp-excluded-zones)
+      (let (beg end)
+        (dolist (zone  zones)
+          (setq beg  (nth 0 zone)
+                end  (nth 1 zone))
+          (when (> beg end) (setq beg  (prog1 end (setq end  beg))))
+          (unless (isearchp-lazy-highlights-present-p beg end) (add-to-list 'isearchp-excluded-zones zone))))
+      (dolist (zone  isearchp-excluded-zones)
+        (isearchp-add/remove-dim-overlay (nth 0 zone) (nth 1 zone) 'ADDP))
+      (isearch-lazy-highlight-update)
+      isearchp-excluded-zones)
 
-  (defadvice perform-replace (around respect-isearchp-query-replace-zones-flag activate)
-    "Respect option `isearchp-query-replace-zones-flag'."
-    (let* ((orig-pred                 isearch-filter-predicate)
-           (zone-pred                 (and isearchp-query-replace-zones-flag
-                                           (isearchp-zones-filter-pred
-                                            (zz-izone-limits (symbol-value zz-izones-var)))))
-           (isearch-filter-predicate  (cond ((and orig-pred  zone-pred)
-                                             (lambda (beg end)
-                                               (and (funcall orig-pred beg end)
-                                                    (funcall zone-pred beg end))))
-                                            (zone-pred)
-                                            (orig-pred))))
-      ad-do-it))
+    (defadvice perform-replace (around respect-isearchp-query-replace-zones-flag activate)
+     "Respect option `isearchp-query-replace-zones-flag'."
+     (let* ((orig-pred                 isearch-filter-predicate)
+            (zone-pred                 (and isearchp-query-replace-zones-flag
+                                            (isearchp-zones-filter-pred
+                                             (zz-izone-limits (symbol-value zz-izones-var)))))
+            (isearch-filter-predicate  (cond ((and orig-pred  zone-pred)
+                                              (lambda (beg end)
+                                                (and (funcall orig-pred beg end)
+                                                     (funcall zone-pred beg end))))
+                                             (zone-pred)
+                                             (orig-pred))))
+       ad-do-it))
 
-  (defun isearchp-put-prop-on-zones (property value zones)
-    "Add text PROPERTY with VALUE to the text in each of the ZONES.
+    (defun isearchp-put-prop-on-zones (property value zones)
+      "Add text PROPERTY with VALUE to the text in each of the ZONES.
 Does `isearchp-put-prop-on-region' (which see) on each zone in ZONES.
 Interactively, ZONES is the value of variable `zz-izones-var'."
-    (interactive
-     (let ((zs  (isearchp-zone-limits-izones)))
-       (unless zs (error "No zones"))
-       (if (and current-prefix-arg  isearchp-property-prop  (car isearchp-property-values))
-           (list isearchp-property-prop isearchp-property-values zs)
-         (let* ((props  (and (or (not current-prefix-arg)  (not isearchp-property-prop))
-                             (mapcar #'(lambda (prop) (list (symbol-name prop)))
-                                     (isearchp-properties-in-buffer
-                                      (current-buffer) (point-min) (point-max) 'text))))
-                (prop   (intern (completing-read "Text property: " props nil nil nil
-                                                 'isearchp-property-history "face")))
-                (vals   (if (memq prop '(face font-lock-face))
-                            (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
-                          (isearchp-read-sexps 'ONLY-ONE-P))))
-           (setq isearchp-property-prop    prop
-                 isearchp-property-type    'text
-                 isearchp-property-values  (list prop vals))
-           (list prop vals zs)))))
-    (with-silent-modifications
-      (dolist (beg+end  zones)
-        (add-text-properties (nth 0 beg+end) (nth 1 beg+end) (list property value))
-        (isearchp-add/remove-dim-overlay (nth 0 beg+end) (nth 1 beg+end) nil)
+      (interactive
+       (let ((zs  (isearchp-zone-limits-izones)))
+         (unless zs (error "No zones"))
+         (if (and current-prefix-arg  isearchp-property-prop  (car isearchp-property-values))
+             (list isearchp-property-prop isearchp-property-values zs)
+           (let* ((props  (and (or (not current-prefix-arg)  (not isearchp-property-prop))
+                               (mapcar #'(lambda (prop) (list (symbol-name prop)))
+                                       (isearchp-properties-in-buffer
+                                        (current-buffer) (point-min) (point-max) 'text))))
+                  (prop   (intern (completing-read "Text property: " props nil nil nil
+                                                   'isearchp-property-history "face")))
+                  (vals   (if (memq prop '(face font-lock-face))
+                              (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
+                            (isearchp-read-sexps 'ONLY-ONE-P))))
+             (setq isearchp-property-prop    prop
+                   isearchp-property-type    'text
+                   isearchp-property-values  (list prop vals))
+             (list prop vals zs)))))
+      (with-silent-modifications
+        (dolist (beg+end  zones)
+          (add-text-properties (nth 0 beg+end) (nth 1 beg+end) (list property value))
+          (isearchp-add/remove-dim-overlay (nth 0 beg+end) (nth 1 beg+end) nil)
 ;;; $$$$$$    (when (string-match-p "\\`isearchp-" (symbol-name property))
 ;;;             (setq isearchp-last-prop+value (cons property value)))
-        )))
+          )))
 
-  (defun isearchp-make-zones-invisible (zones &optional onlyp no-error-p msgp)
-    "Make ZONES invisible.
+    (defun isearchp-make-zones-invisible (zones &optional onlyp no-error-p msgp)
+      "Make ZONES invisible.
 With a prefix argument, also make anti-zones visible.
 Non-interactively:
  Non-nil ONLYP means also make anti-zones visible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (isearchp-put-prop-on-zones 'invisible t zones)
-    (setq isearchp-zones-invisible-p  t)
-    (when onlyp (isearchp-make-anti-zones-visible zones nil no-error-p msgp))
-    (when msgp (message (if onlyp
-                            "Only ANTI-zones are now visible"
-                          "Zones are now INvisible"))))
+      (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (isearchp-put-prop-on-zones 'invisible t zones)
+      (setq isearchp-zones-invisible-p  t)
+      (when onlyp (isearchp-make-anti-zones-visible zones nil no-error-p msgp))
+      (when msgp (message (if onlyp
+                              "Only ANTI-zones are now visible"
+                            "Zones are now INvisible"))))
 
-  (defun isearchp-make-zones-visible (zones &optional onlyp no-error-p msgp)
-    "Make ZONES visible.
+    (defun isearchp-make-zones-visible (zones &optional onlyp no-error-p msgp)
+      "Make ZONES visible.
 With a prefix argument, also make anti-zones invisible.
 Non-interactively:
  Non-nil ONLYP means also make anti-zones invisible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (isearchp-put-prop-on-zones 'invisible nil zones)
-    (setq isearchp-zones-invisible-p  nil)
-    (when onlyp (isearchp-make-anti-zones-invisible zones nil no-error-p msgp))
-    (when msgp (message "%sones are now VISIBLE" (if onlyp "Only z" "Z"))))
+      (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (isearchp-put-prop-on-zones 'invisible nil zones)
+      (setq isearchp-zones-invisible-p  nil)
+      (when onlyp (isearchp-make-anti-zones-invisible zones nil no-error-p msgp))
+      (when msgp (message "%sones are now VISIBLE" (if onlyp "Only z" "Z"))))
 
-  (defun isearchp-toggle-zones-invisible (zones &optional onlyp no-error-p msgp)
-    "Toggle visibility of ZONES.
+    (defun isearchp-toggle-zones-invisible (zones &optional onlyp no-error-p msgp)
+      "Toggle visibility of ZONES.
 With a prefix argument, also toggle anti-zones the other way.
 Non-interactively:
  Non-nil ONLYP means also toggle anti-zones the other way.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (if isearchp-zones-invisible-p
-        (isearchp-make-zones-visible zones onlyp no-error-p msgp)
-      (isearchp-make-zones-invisible zones onlyp no-error-p msgp)))
+      (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (if isearchp-zones-invisible-p
+          (isearchp-make-zones-visible zones onlyp no-error-p msgp)
+        (isearchp-make-zones-invisible zones onlyp no-error-p msgp)))
 
-  (defun isearchp-make-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
-    "Make the complement of (the union of) ZONES invisible.
+    (defun isearchp-make-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
+      "Make the complement of (the union of) ZONES invisible.
 With a prefix argument, also make zones visible.
 Non-interactively:
  Non-nil ONLYP means also make zones visible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
-      (isearchp-put-prop-on-zones 'invisible t anti-zones)
-      (setq isearchp-anti-zones-invisible-p  t)
-      (when onlyp (isearchp-make-zones-visible zones nil no-error-p msgp))
-      (when msgp (message "Anti-zones are now INvisible%s" (if onlyp ", zones are visible" "")))))
+      (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
+        (isearchp-put-prop-on-zones 'invisible t anti-zones)
+        (setq isearchp-anti-zones-invisible-p  t)
+        (when onlyp (isearchp-make-zones-visible zones nil no-error-p msgp))
+        (when msgp (message "Anti-zones are now INvisible%s" (if onlyp ", zones are visible" "")))))
 
-  (defun isearchp-make-anti-zones-visible (zones &optional onlyp no-error-p msgp)
-    "Make the complement of (the union of) ZONES visible.
+    (defun isearchp-make-anti-zones-visible (zones &optional onlyp no-error-p msgp)
+      "Make the complement of (the union of) ZONES visible.
 With a prefix argument, also make zones invisible.
 Non-interactively:
  Non-nil ONLYP means also make zones invisible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
-      (isearchp-put-prop-on-zones 'invisible nil anti-zones)
-      (setq isearchp-anti-zones-invisible-p  nil)
-      (when onlyp (isearchp-make-zones-invisible zones nil no-error-p msgp))
-      (when msgp (message "Anti-zones are now VISIBLE%s" (if onlyp ", zones are invisible" "")))))
+      (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
+        (isearchp-put-prop-on-zones 'invisible nil anti-zones)
+        (setq isearchp-anti-zones-invisible-p  nil)
+        (when onlyp (isearchp-make-zones-invisible zones nil no-error-p msgp))
+        (when msgp (message "Anti-zones are now VISIBLE%s" (if onlyp ", zones are invisible" "")))))
 
-  (defun isearchp-toggle-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
-    "Toggle visibility of the complement of (the union of) ZONES.
+    (defun isearchp-toggle-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
+      "Toggle visibility of the complement of (the union of) ZONES.
 With a prefix argument, also toggle zones the other way.
 Non-interactively:
  Non-nil ONLYP means also toggle zones the other way.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (if isearchp-anti-zones-invisible-p
-        (isearchp-make-anti-zones-visible zones onlyp no-error-p msgp)
-      (isearchp-make-anti-zones-invisible zones onlyp no-error-p msgp)))
+      (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (if isearchp-anti-zones-invisible-p
+          (isearchp-make-anti-zones-visible zones onlyp no-error-p msgp)
+        (isearchp-make-anti-zones-invisible zones onlyp no-error-p msgp)))
 
-  (defun isearchp-toggle-zone/anti-zone-visibility (zones &optional no-error-p msgp)
-    "Show only zones, if they are invisible.  Else show only anti-zones."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
-    (unless (or no-error-p  zones) (error "No zones"))
-    (cond (isearchp-zones-invisible-p
-           (isearchp-make-zones-visible zones 'ONLY no-error-p)
-           (when msgp (message "Showing only ZONES now")))
-          (t
-           (isearchp-make-anti-zones-visible zones 'ONLY no-error-p)
-           (when msgp (message "Showing only ANTI-zones now")))))
+    (defun isearchp-toggle-zone/anti-zone-visibility (zones &optional no-error-p msgp)
+      "Show only zones, if they are invisible.  Else show only anti-zones."
+      (interactive (list (isearchp-zone-limits-izones) nil t))
+      (unless (or no-error-p  zones) (error "No zones"))
+      (cond (isearchp-zones-invisible-p
+             (isearchp-make-zones-visible zones 'ONLY no-error-p)
+             (when msgp (message "Showing only ZONES now")))
+            (t
+             (isearchp-make-anti-zones-visible zones 'ONLY no-error-p)
+             (when msgp (message "Showing only ANTI-zones now")))))
 
-  )
+    ))
  
 ;;(@* "Imenu Commands and Functions")
 
