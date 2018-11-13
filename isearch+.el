@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 13 13:42:41 2018 (-0800)
+;; Last-Updated: Tue Nov 13 15:14:54 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 6799
+;;     Update #: 6822
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -115,6 +115,7 @@
 ;;    `isearchp-toggle-lazy-highlight-count' (Emacs 22+),
 ;;    `isearchp-toggle-lazy-highlight-full-buffer' (Emacs 24.3+),
 ;;    `isearchp-toggle-lazy-highlighting' (Emacs 22+),
+;;    `isearchp-toggle-limit-match-numbers-to-region' (Emacs 24.3+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
@@ -142,7 +143,9 @@
 ;;    `isearchp-filter-predicates-alist' (Emacs 24.4+),
 ;;    `isearchp-highlight-regexp-group-levels-flag' (Emacs 24.4+),
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
+;;    `isearch-lazy-count' (Emacs 22-26),
 ;;    `isearchp-lazy-dim-filter-failures-flag' (Emacs 24.4+),
+;;    `isearchp-limit-match-numbers-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-mouse-2-flag', `isearchp-movement-unit-alist' (Emacs
 ;;    24.4+), `isearchp-on-demand-action-function' (Emacs 22+),
 ;;    `isearchp-prompt-for-filter-name' (Emacs 24.4+),
@@ -410,7 +413,9 @@
 ;;    `M-s h '     `isearchp-toggle-lazy-highlighting'
 ;;    `M-s C-e'    `isearchp-yank-line'
 ;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
-;;    `M-s #'      `isearchp-toggle-showing-match-number' (Emacs 24.3+),
+;;    `M-s #'      `isearchp-toggle-showing-match-number' (Emacs 24.3+)
+;;    `M-s %'      `isearchp-toggle-limit-match-numbers-to-region'
+;;                 (Emacs 24.3+)
 ;;    `M-s h d'    `isearchp-toggle-dimming-filter-failures'
 ;;                 (Emacs 24.4+)
 ;;    `M-s h b'    `isearchp-toggle-lazy-highlight-full-buffer'
@@ -1142,6 +1147,11 @@
 ;;    the current match number and total matches in the Isearch prompt
 ;;    (option `isearch-lazy-count').  (Emacs 24.3+)
 ;;
+;;  * `M-s %' (`isearchp-toggle-limit-match-numbers-to-region')
+;;    toggles whether match number are limited to the active region
+;;    when `isearchp-restrict-to-region-flag' is non-nil.  (Emacs
+;;    24.3+)
+;;
 ;;  * Other bindings during Isearch:
 ;;
 ;;    - `next', `prior' repeat the last Isearch forward and backward
@@ -1222,10 +1232,12 @@
 ;;              isearch-lazy-highlight-point-(min|max).
 ;;       Main changes: isearch-lazy-highlight-new-loop, isearch-message-prefix, isearch-lazy-highlight-update,
 ;;                     isearch-lazy-highlight-buffer-update.
+;;     Added: isearchp-limit-match-numbers-to-region-flag, isearchp-toggle-limit-match-numbers-to-region (M-s %).
 ;;     with-isearch-suspended:
 ;;       Updated per vanilla: isearch-new-nonincremental, isearch-suspended, isearch-update-from-string-properties.
 ;;     isearch-toggle-invisible: Use isearchp-message-prefix, not vanilla isearch-message-prefix.
 ;;     isearch-message-prefix: Use search-lazy-count-format.  Propertize message (Emacs 22-24.2).
+;;     isearch-lazy-highlight-buffer-update: Respect isearchp-limit-match-numbers-to-region-flag.
 ;; 2018/10/27 dadams
 ;;     Added: isearch-lazy-count, isearchp-toggle-showing-match-number (bound to M-s #).
 ;;     Renamed, per vanilla Emacs: isearch-lazy-highlight-buffer to lazy-highlight-buffer,
@@ -2234,6 +2246,20 @@ Like `isearchp-prompt-filter-prefix', but used only when
 
   )
 
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
+
+  (defcustom isearchp-limit-match-numbers-to-region-flag t
+    "Non-nil means show match numbers only for hits in the region.
+This has an effect only when showing the match number and search is
+limited to the active region, that is, when both options
+`isearchp-toggle-showing-match-number' and are
+`isearchp-restrict-to-region-flag' is non-nil.
+You can toggle this option using \\<isearch-mode-map>`\\[isearchp-toggle-limit-match-numbers-to-region]' \
+during Isearch."
+    :type 'boolean :group 'isearch-plus)
+
+  )
+
 (when (and (boundp 'isearch-lazy-highlight) ; Emacs 22-26
            (< emacs-major-version 27))
 
@@ -2261,7 +2287,7 @@ Isearch."
     :group 'isearch :version "27.1")
 
   (defcustom lazy-highlight-buffer-max-at-a-time 20
-    "Maximum matches to highlight at a time (for `lazy-highlight-buffer').
+                                            "Maximum matches to highlight at a time (for `lazy-highlight-buffer').
 Larger values may reduce Isearch's responsiveness to user input;
 smaller values make matches highlight slowly.
 A value of nil means highlight all matches shown in the buffer.
@@ -2446,7 +2472,7 @@ by other Emacs features."
     (when (and isearch-lazy-count
                isearch-mode
                (or (not (boundp 'isearch-message-function))  (null isearch-message-function)))
-      ;; Update `isearch-lazy-count-current' only if it already set at end of `isearch-lazy-highlight-buffer-update'.
+      ;; Update `isearch-lazy-count-current' only if already set at end of `isearch-lazy-highlight-buffer-update'.
       (when isearch-lazy-count-current
         (setq isearch-lazy-count-current  (or (gethash (point) isearch-lazy-count-hash) 0))
         (isearch-message nil t))))
@@ -4412,13 +4438,16 @@ Commands
 \\[isearch-describe-key]\t- show documentation of an Isearch key
 \\[isearch-describe-mode]\t- show documentation for Isearch mode
 
+Toggle Commands
+---------------
 \\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
-\\[isearchp-repeat-search-if-fail-flag]\t- toggle restarting search on failure
+\\[isearchp-toggle-repeat-search-if-fail]\t- toggle restarting search on failure
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
 \\[isearch-toggle-character-fold]\t- toggle character folding
 \\[isearchp-toggle-symmetric-char-fold]\t- toggle character folding being symmetric
 \\[isearchp-toggle-lazy-highlight-full-buffer]\t- option `lazy-highlight-buffer'
 \\[isearchp-toggle-showing-match-number]\t- option `isearch-lazy-count'
+\\[isearchp-toggle-limit-match-numbers-to-region]\t- option `isearchp-limit-match-numbers-to-region-flag'
 \\[isearchp-toggle-lazy-highlight-cleanup]\t- option `lazy-highlight-cleanup'
 \\[isearchp-toggle-lazy-highlighting]\t- option `isearch-lazy-highlight'
 \\[isearchp-toggle-search-invisible]\t- toggle searching invisible text
@@ -5381,6 +5410,20 @@ off/on."
 
   (define-key isearch-mode-map (kbd "M-s #") 'isearchp-toggle-showing-match-number)
 
+  (defun isearchp-toggle-limit-match-numbers-to-region () ; Bound to `M-s %' in `isearch-mode-map'.
+    "Toggle option `isearchp-limit-match-numbers-to-region-flag'."
+    (interactive)
+    (unless (or (> emacs-major-version 24) ; Emacs 24.3+
+                (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+      (isearchp-user-error "Match numbers are not available in Isearch prompt before Emacs 24.3"))
+    (setq isearchp-limit-match-numbers-to-region-flag  (not isearchp-limit-match-numbers-to-region-flag))
+    (message "Limiting message numbers to the region is now %s"
+             (if isearchp-limit-match-numbers-to-region-flag 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
+  (define-key isearch-mode-map (kbd "M-s %") 'isearchp-toggle-limit-match-numbers-to-region)
+
   (defun isearchp-toggle-lazy-highlight-cleanup () ; Bound to `M-s h l' in `isearch-mode-map'.
     "Toggle option `lazy-highlight-cleanup'.
 If turned on then turn off full-buffer lazy highlighting (set option
@@ -5823,7 +5866,8 @@ That is, either `isearch-lazy-highlight-update' or
 
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
-  ;; Bind `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
+  ;; 1. Bind `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
+  ;; 2. Limit match numbers in message prefix/suffix if `isearchp-limit-match-numbers-to-region-flag' is non-nil.
   ;;
   (defun isearch-lazy-highlight-buffer-update ()
     "Update highlighting of other matches in the whole buffer."
@@ -5859,7 +5903,10 @@ That is, either `isearch-lazy-highlight-update' or
                             (if isearch-lazy-highlight-forward
                                 (if (= mb (point-max)) (setq found  nil) (forward-char 1))
                               (if (= mb (point-min)) (setq found  nil) (forward-char -1)))
-                          (when isearch-lazy-count
+                          (when (and isearch-lazy-count
+                                     (or (not isearchp-reg-beg)
+                                         (not isearchp-limit-match-numbers-to-region-flag)
+                                         (and (>= mb isearchp-reg-beg)  (<= me isearchp-reg-end))))
                             (setq isearch-lazy-count-total  (1+ (or isearch-lazy-count-total  0)))
                             (puthash (if isearch-lazy-highlight-forward me mb)
                                      isearch-lazy-count-total
