@@ -437,14 +437,26 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
 (defun awesome-pair-jump-left ()
   "To left of previous match parentheses."
   (interactive)
-  (backward-char 1)
-  (while (not (looking-at "\\(['\"<({]\\|[[]\\)")) (backward-char 1)))
+  (cond
+   ;; Jump out of string if cursor in string area.
+   ((awesome-pair-in-string-p)
+    (goto-char (car (awesome-pair-string-start+end-points))))
+   ;; Jump to previous pair.
+   (t
+    (backward-char 1)
+    (while (not (looking-at "\\(['\"<({]\\|[[]\\)")) (backward-char 1)))))
 
 (defun awesome-pair-jump-right ()
   "To right of next match parentheses."
   (interactive)
-  (while (not (looking-at "\\(['\">)}]\\|]\\)")) (forward-char 1))
-  (forward-char 1))
+  (cond
+   ;; Jump out of string if cursor in string area.
+   ((awesome-pair-in-string-p)
+    (goto-char (+ (cdr (awesome-pair-string-start+end-points)) 1)))
+   ;; Jump to next pair.
+   (t
+    (while (not (looking-at "\\(['\">)}]\\|]\\)")) (forward-char 1))
+    (forward-char 1))))
 
 (defun awesome-pair-delete-whitespace-before-cursor ()
   (kill-region (save-excursion
@@ -686,6 +698,10 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
   (if (awesome-pair-is-blank-line-p)
       (awesome-pair-kill-blank-line-and-reindent)
     (cond
+     ;; Kill all template between <% ... %>
+     ((and (looking-at "<%")
+           (save-excursion (search-forward-regexp "%>" nil t)))
+      (kill-region (point) (search-forward-regexp "%>" nil t)))
      ;; Kill string if current pointer in string area.
      ((awesome-pair-in-string-p)
       (awesome-pair-kill-internal))
@@ -702,14 +718,8 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
       (awesome-pair-delete-whitespace-before-cursor))
      (t
       (unless (awesome-pair-ignore-errors
-               ;; Kill with sexp block.
-               (let (kill-start kill-end)
-                 (save-excursion
-                   (web-mode-forward-sexp 1)
-                   (setq kill-end (point))
-                   (web-mode-backward-sexp 1)
-                   (setq kill-start (point)))
-                 (kill-region (min kill-start (point)) kill-end)))
+               ;; Kill all sexps in current line.
+               (awesome-pair-kill-sexps-on-line))
         ;; Kill block if sexp parse failed.
         (web-mode-block-kill))))))
 
