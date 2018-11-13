@@ -22,10 +22,10 @@ The method described here creates a shortcut that will accept input by pasting o
 #   target:   C:\cygwin\bin\run.exe /usr/bin/bash --quote /cygdrive/c/opt/bin/emacscw.sh
 #   Start in: %HOME%
 if test "$1" = ""; then
-    exec /usr/bin/emacs;
+    exec /usr/bin/emacs-w32;
 else
     CPATH=$(/usr/bin/cygpath "$1")
-    exec /usr/bin/emacs --file """$CPATH""";
+    exec /usr/bin/emacs-w32 --file """$CPATH""";
 fi
 </pre>
 
