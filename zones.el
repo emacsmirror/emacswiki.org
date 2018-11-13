@@ -7,11 +7,12 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2018-10-31
+;; Version: 2018.11.12
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 31 08:48:50 2018 (-0700)
+;; Last-Updated: Mon Nov 12 19:08:21 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2171
+;;     Update #: 2252
+;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -20,7 +21,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
+;;   `backquote', `bytecomp', `cconv', `cl', `cl-lib', `gv',
+;;   `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -28,10 +30,17 @@
 ;;
 ;;     Zones of text - like multiple regions.
 ;;
-;;    More description below.
-;;
 ;;    Bug reports etc.: (concat "drew" ".adams" "@" "oracle" ".com")
 ;;
+;;    You can get `zones.el' from Emacs Wiki or GNU ELPA:
+;;
+;;    * Emacs Wiki: https://www.emacswiki.org/emacs/download/zones.el
+;;    * GNU ELPA:   https://elpa.gnu.org/packages/zones.html
+;;
+;;    The instance on Emacs Wiki might sometimes be more recent, but
+;;    major changes (named ''versions'') are posted to GNU ELPA.
+;;
+;;    More description below.
  
 ;;(@> "Index")
 ;;
@@ -48,7 +57,9 @@
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
 ;;    (@> "Compatibility")
+;;    (@> "Zones")
 ;;    (@> "Coalesced (United) Zones")
+;;    (@> "Noncontiguous Region and Set of Zones")
 ;;    (@> "Zones and Overlays")
 ;;    (@> "Izone Commands")
 ;;    (@> "Izone List Variables")
@@ -67,12 +78,12 @@
 ;;    `zz-add-zone', `zz-add-zone-and-coalesce',
 ;;    `zz-add-zone-and-unite', `zz-add-zones-from-highlighting',
 ;;    `zz-clone-and-coalesce-zones', `zz-clone-and-unite-zones',
-;;    `zz-clone-zones', `zz-coalesce-zones', `zz-delete-zone',
-;;    `zz-narrow', `zz-narrow-repeat', `zz-query-replace-zones' (Emacs
-;;    25+), `zz-query-replace-regexp-zones' (Emacs 25+),
-;;    `zz-select-region', `zz-select-region-repeat',
-;;    `zz-set-izones-var', `zz-set-zones-from-highlighting',
-;;    `zz-unite-zones'.
+;;    `zz-clone-zones', `zz-coalesce-zones', `zz-create-face-zones',
+;;    `zz-delete-zone', `zz-narrow', `zz-narrow-repeat',
+;;    `zz-query-replace-zones' (Emacs 25+),
+;;    `zz-query-replace-regexp-zones' (Emacs 25+), `zz-select-region',
+;;    `zz-select-region-repeat', `zz-set-izones-var',
+;;    `zz-set-zones-from-highlighting', `zz-unite-zones'.
 ;;
 ;;  User options defined here:
 ;;
@@ -170,6 +181,7 @@
 ;;  BUFFER is a buffer name (string) and where POSITION is a buffer
 ;;  position (number only).
 ;;
+;;  The content of a zone is any contiguous stretch of buffer text.
 ;;  The positions of a zone can be in either numeric order.  The
 ;;  positions are also called the zone "limits".  The lower limit is
 ;;  called the zone "beginning"; the upper limit is called its "end".
@@ -183,10 +195,10 @@
 ;;
 ;;  Basic-zone union and intersection operations (`zz-zone-union',
 ;;  `zz-zone-intersection') each act on a list of zones, returning
-;;  another such list, but which has POS1 <= POS2 in each of its
-;;  zones, and which lists its zones in ascending order of their cars.
-;;  For basic-zone union, the resulting zones are said to be
-;;  "coalesced", or "united".
+;;  another such list, but with the recorded positions for each zone
+;;  in (ascending) buffer order, and with the zones in ascending order
+;;  of their cars.  For basic-zone union, the resulting zones are said
+;;  to be "coalesced", or "united".
 ;;
 ;;  The extra info in the zones that result from zone union or
 ;;  intersection is just the set union or set intersection of the
@@ -201,24 +213,62 @@
 ;;  * The zones in the result list have been sorted in ascending order
 ;;    by their first elements.
 ;;
-;;  * The zones in the result list are not adjacent and do not
-;;    overlap: there is some other buffer text (i.e., not in any zone)
-;;    between any two zones in the result.
+;;  * The zones in the result list are disjoint: they are not adjacent
+;;    and do not overlap: there is some other buffer text (i.e., not
+;;    in any zone) between any two zones in the result.
+;;
+;;
+;;(@* "Noncontiguous Region and Set of Zones")
+;;  ** Noncontiguous Region and Set of Zones **
+;;
+;;  Starting with Emacs 25, Emacs can sometimes use a region that is
+;;  made up of noncontiguous pieces of buffer content: a
+;;  "noncontiguous region".  This is similar to a set of zones, but
+;;  there are some differences.
+;;
+;;  The zones in a set (or list) of zones can be adjacent or overlap,
+;;  and their order in the set is typically not important.
+;;
+;;  A noncontiguous region corresponds instead to what results from
+;;  coalescing (uniting) a set of zones: a sequence of disjoint zones,
+;;  in buffer order, that is, ordered by their cars.
+;;
+;;  The Lisp representation of a zone also differs from that of a
+;;  segment of a noncontiguous region.  Each records two buffer
+;;  positions, but a zone can also include a list of additional
+;;  information (whatever you like).
+;;
+;;  A noncontiguous-region segment is a cons (BEGIN . END), with BEGIN
+;;  <= END.  A zone is a list (LIMIT1 LIMIT2 . EXTRA) of two positions
+;;  optionally followed by a list of extra stuff (any Lisp objects).
+;;  And as stated above, the zone limits need not be in ascending
+;;  order.
+;;
+;;  The last difference is that each buffer position of a zone can be
+;;  a marker, which means that a list of zones can specify zones in
+;;  different buffers.  A zone position can also be a readable marker,
+;;  which is a Lisp sexp that can be written to disk (e.g., as part of
+;;  a bookmark or saved variable), and restored in a later Emacs
+;;  session by reading the file where it is saved.
 ;;
 ;;
 ;;(@* "Zones and Overlays")
 ;;  ** Zones and Overlays **
 ;;
-;;  Emacs overlays have a lot in common with zones: overlays have an
-;;  associated buffer, two limits (positions), and a list of
-;;  properties.
+;;  Zones have even more in common with Emacs overlays than they do
+;;  with segments of a noncontiguous region.  An overlay has an
+;;  associated buffer, two limits (start and end), and an optional
+;;  list of properties.
 ;;
-;;  Zones are different, in that:
+;;  Zones differ from overlays in these ways:
 ;;
-;;  * They can have identifiers (izones).
-;;  * They can have a readable Lisp form, by using numbers or readable
-;;    markers.
-;;  * They can be persistent, by bookmarking them.
+;;  * A zone can have an identifier (izone).
+;;  * A zone can have a readable Lisp form, by using numbers or
+;;    readable markers.
+;;  * A zone need not be specific to a particular buffer.  If a zone's
+;;    positions are numbers instead of markers then you can use it in
+;;    any buffer.
+;;  * A set of zones can be persistent, by bookmarking it.
 ;;
 ;;  You can create zones from overlays, and vice versa, using
 ;;  functions `zz-overlay-to-zone', `zz-zone-to-overlay',
@@ -227,8 +277,8 @@
 ;;  When creating zones from overlays you can specify how to represent
 ;;  the zone limits: using markers, readable markers, or positive
 ;;  integers.  And you can specify whether to create basic zones or
-;;  izones.  The overlay property list becomes the EXTRA information
-;;  of the resulting zone: (LIMIT1 LIMIT2 . EXTRA).
+;;  izones.  The overlay property list becomes the list of EXTRA
+;;  information of the resulting zone: (LIMIT1 LIMIT2 . EXTRA).
 ;;
 ;;  When creating overlays from zones, any list of EXTRA zone
 ;;  information is used as the property list of the resulting overlay.
@@ -351,7 +401,11 @@
 ;;  Many of the commands that manipulate izones are bound on keymap
 ;;  `narrow-map'.  They are available on prefix key `C-x n', along
 ;;  with the narrowing/widening keys `C-x n d', `C-x n n', `C-x n p',
-;;  and `C-x n w':
+;;  and `C-x n w'.  (If you use Emacs 22 then there is no
+;;  `narrow-map', so the same keys are bound on keymap `ctl-x-map'.)
+;;
+;;  If you have already bound one of these keys then `zones.el' does
+;;  not rebind that key; your bindings are respected.
 ;;
 ;;  C-x n a   `zz-add-zone' - Add to current izones variable
 ;;  C-x n A   `zz-add-zone-and-unite' - Add izone, then unite izones
@@ -473,6 +527,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/11/12 dadams
+;;     Added: zz-create-face-zones.
+;;     zz-zone-union-1: Replaced recursive version with iterative version.
+;;     zz-unite-zones: Better message: give number of resulting zones.
+;;     zz-(add|set)-zones-from-highlighting: Added autoload cookie.
+;; 2018/10/31 dadams
+;;     Do not overwrite any user key bindings on narrow-map or ctl-x-map.
+;;     Simplified defadvice.
 ;; 2018/10/30 dadams
 ;;     Forked Emacs 20-21 stuff off as zones20.el.
 ;;       Require cl-lib.el for Emacs 23+, cl.el for Emacs 22.
@@ -835,7 +897,7 @@ The cddr of ZONE remains as it was."
     (if (<= beg end) zone `(,end ,beg ,@extra))))
 
 (defun zz-zones-overlap-p (zone1 zone2)
-  "Return non-nil if ZONE1 and  ZONE2 overlap.
+  "Return non-nil if ZONE1 and ZONE2 overlap.
 Assumes that each zone is ordered (its car <= its cadr).
 The cddrs are ignored.
 
@@ -896,8 +958,7 @@ This is a non-destructive operation: The result is a new list."
   "Return the union (coalescence) of the zones in list ZONES.
 Each element of ZONES is a list of two zone limits, possibly followed
 by extra info: (LIMIT1 LIMIT2 . EXTRA), where EXTRA is a list.
-
-The limits do not need to be in numerical order.
+The limits need not be in numerical order.
 
 Each limit can be a number or a marker, but zones with markers for
 buffers other than BUFFER (default: current buffer) are ignored.
@@ -919,14 +980,29 @@ combined whenever zones are merged together."
          (sorted-zones    (sort flipped-zones #'zz-car-<)))
     (zz-zone-union-1 sorted-zones)))
 
+;;; Recursive version.
+;;; (defun zz-zone-union-1 (zones)
+;;;   "Helper for `zz-zone-union'."
+;;;   (if (null (cdr zones))
+;;;       zones
+;;;     (let ((new  (zz-two-zone-union (car zones) (cadr zones))))
+;;;       (if new
+;;;           (zz-zone-union-1 (cons new (cddr zones)))
+;;;         (cons (car zones) (zz-zone-union-1 (cdr zones)))))))
+
 (defun zz-zone-union-1 (zones)
   "Helper for `zz-zone-union'."
   (if (null (cdr zones))
       zones
-    (let ((new  (zz-two-zone-union (car zones) (cadr zones))))
-      (if new
-          (zz-zone-union-1 (cons new (cddr zones)))
-        (cons (car zones) (zz-zone-union-1 (cdr zones)))))))
+    (let ((acc  ())
+          new)
+      (while zones
+        (setq new  (and (cdr zones)  (zz-two-zone-union (car zones) (cadr zones))))
+        (if new
+            (setq zones  (cons new (cddr zones)))
+          (setq acc    (cons (car zones) acc)
+                zones  (cdr zones))))
+      (setq acc  (nreverse acc)))))
 
 (defun zz-car-< (zone1 zone2)
   "Return non-nil if car of ZONE1 < car of ZONE2.
@@ -956,8 +1032,8 @@ Each car can be a number or a marker.
 \(The result is nil if they do not overlap.)
 Assumes that each zone is ordered (its car <= its cadr).
 
-The cddr of a non-nil result (its EXTRA information) is
-the intersection of the EXTRA information of each zone:
+The cddr of a non-nil result (its list of EXTRA information) is the
+intersection of the EXTRA information of each zone:
 
  (zz-set-intersection (cddr zone1) (cddr zone2))
 
@@ -1723,7 +1799,9 @@ Non-interactively:
          (_IGNORE     (unless (zz-izones-p val) (error "Not an izones variable: `%s', value: `%S'" var val)))
          (zone-union  (zz-zone-union (zz-izone-limits val))))
     (set var  (zz-izones-from-zones zone-union))
-    (when msgp (message "Restrictions united for `%s'" var))
+    (when msgp
+      (let ((len  (length (symbol-value var))))
+        (message "Zones united for variable `%s': %d zone%s now" var len (if (> len 1) "s" ""))))
     (symbol-value var)))
 
 ;;;###autoload
@@ -1763,6 +1841,7 @@ Non-interactively:
   (zz-unite-zones variable msgp)
   (symbol-value variable))
 
+;;;###autoload
 (defun zz-add-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
   "Add highlighted areas as zones to izones variable.
 By default, the text used is that highlighted with `hlt-last-face'.
@@ -1842,6 +1921,7 @@ When called from Lisp:
         (1 (message "1 zone added or updated"))
         (t (message "%s highlighted areas added or updated as zones" count))))))
 
+;;;###autoload
 (defun zz-set-zones-from-highlighting (&optional start end face only-hlt-face overlay/text fonk-lock-p msgp)
   "Replace value of izones variable with zones from the highlighted areas.
 Like `zz-add-zones-from-highlighting' (which see), but it replaces any
@@ -1857,43 +1937,96 @@ current zones instead of adding to them."
   (set zz-izones-var ())
   (zz-add-zones-from-highlighting start end face only-hlt-face overlay/text fonk-lock-p msgp))
 
+;;;###autoload
+(defun zz-create-face-zones (face &optional start end variable msgp)
+  "Set an izones variable to (united) zones of a face or background color.
+You are prompted for a face name or a color name.  If you enter a
+color, it is used for the face background.  The face foreground is
+determined by the value of `hlt-auto-face-foreground'.
+The variable defaults to `zz-izones'.  With a prefix arg you are
+  prompted for a different izones variable."
+  (interactive
+   (progn
+     (unless (require 'highlight nil t)
+       (error "You need library `highlight.el' for this command"))
+     (let ((fac  (hlt-read-bg/face-name "Choose background color or face: "
+                                        (and (symbolp hlt-last-face)  (symbol-name hlt-last-face))))
+           (var  (or (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var))
+                     zz-izones-var)))
+       (if (hlt-nonempty-region-p)
+           (if (< (point) (mark)) (list (point) (mark) var t) (list (mark) (point) var t))
+         (list fac (point-min) (point-max) var t)))))
+  (unless (require 'highlight nil t)
+    (error "You need library `highlight.el' for this command"))
+  (unless (require 'isearch-prop nil t)
+    (error "You need library `isearch-prop.el' for this command"))
+  (unless (require 'zones nil t)
+    (error "You need library `zones' for this command"))
+  (font-lock-default-fontify-buffer)    ; Fontify the whole buffer.
+  (zz-set-zones-from-highlighting start end face nil 'text-prop)
+  (zz-unite-zones variable t))
 
 ;;---------------------
 
-;; FIXME: Just loading this file shouldn't overwrite bindings a user has made to `narrow-map' or `ctl-x-map'.
 (cond ((boundp 'narrow-map)             ; Emacs 23+
-       (define-key narrow-map "a"    'zz-add-zone)
-       (define-key narrow-map "A"    'zz-add-zone-and-unite)
-       (define-key narrow-map "c"    'zz-clone-zones)
-       (define-key narrow-map "C"    'zz-clone-and-unite-zones)
-       (define-key narrow-map "\C-d" 'zz-delete-zone)
-       (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
-       (define-key narrow-map "u"    'zz-unite-zones)
-       (define-key narrow-map "v"    'zz-set-izones-var)
-       (define-key narrow-map "x"    'zz-narrow-repeat))
+       (unless (lookup-key narrow-map "a")
+         (define-key narrow-map "a"    'zz-add-zone))
+       (unless (lookup-key narrow-map "A")
+         (define-key narrow-map "A"    'zz-add-zone-and-unite))
+       (unless (lookup-key narrow-map "c")
+         (define-key narrow-map "c"    'zz-clone-zones))
+       (unless (lookup-key narrow-map "C")
+         (define-key narrow-map "C"    'zz-clone-and-unite-zones))
+       (unless (lookup-key narrow-map "\C-d")
+         (define-key narrow-map "\C-d" 'zz-delete-zone))
+       (unless (lookup-key narrow-map "r")
+         (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region)))
+       (unless (lookup-key narrow-map "u")
+         (define-key narrow-map "u"    'zz-unite-zones))
+       (unless (lookup-key narrow-map "v")
+         (define-key narrow-map "v"    'zz-set-izones-var))
+       (unless (lookup-key narrow-map "x")
+         (define-key narrow-map "x"    'zz-narrow-repeat)))
       (t
-       (define-key ctl-x-map "na"    'zz-add-zone)
-       (define-key ctl-x-map "nA"    'zz-add-zone-and-unite)
-       (define-key ctl-x-map "nc"    'zz-clone-zones)
-       (define-key ctl-x-map "nC"    'zz-clone-and-unite-zones)
-       (define-key ctl-x-map "n\C-d" 'zz-delete-zone)
-       (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
-       (define-key ctl-x-map "nu"    'zz-unite-zones)
-       (define-key ctl-x-map "nv"    'zz-set-izones-var)
-       (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow))))
+       (unless (lookup-key ctl-x-map "na")
+         (define-key ctl-x-map "na"    'zz-add-zone))
+       (unless (lookup-key ctl-x-map "nA")
+         (define-key ctl-x-map "nA"    'zz-add-zone-and-unite))
+       (unless (lookup-key ctl-x-map "nc")
+         (define-key ctl-x-map "nc"    'zz-clone-zones))
+       (unless (lookup-key ctl-x-map "nC")
+         (define-key ctl-x-map "nC"    'zz-clone-and-unite-zones))
+       (unless (lookup-key ctl-x-map "n\C-d")
+         (define-key ctl-x-map "n\C-d" 'zz-delete-zone))
+       (unless (lookup-key ctl-x-map "nr")
+         (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region)))
+       (unless (lookup-key ctl-x-map "nu")
+         (define-key ctl-x-map "nu"    'zz-unite-zones))
+       (unless (lookup-key ctl-x-map "nv")
+         (define-key ctl-x-map "nv"    'zz-set-izones-var))
+       (unless (lookup-key ctl-x-map "nx")
+         (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow)))))
 
 (eval-after-load "highlight"
   '(cond
     ((boundp 'narrow-map)               ; Emacs 23+
-     (define-key narrow-map "h"  'hlt-highlight-regions)
-     (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers)
-     (define-key narrow-map "l"  'zz-add-zones-from-highlighting)
-     (define-key narrow-map "L"  'zz-set-zones-from-highlighting))
+     (unless (lookup-key narrow-map "h")
+       (define-key narrow-map "h"  'hlt-highlight-regions))
+     (unless (lookup-key narrow-map "H")
+       (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
+     (unless (lookup-key narrow-map "l")
+       (define-key narrow-map "l"  'zz-add-zones-from-highlighting))
+     (unless (lookup-key narrow-map "L")
+       (define-key narrow-map "L"  'zz-set-zones-from-highlighting)))
     (t
-     (define-key ctl-x-map "nh"  'hlt-highlight-regions)
-     (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers)
-     (define-key ctl-x-map "nl"  'zz-add-zones-from-highlighting)
-     (define-key ctl-x-map "nL"  'zz-set-zones-from-highlighting))))
+     (unless (lookup-key ctl-x-map "nh")
+       (define-key ctl-x-map "nh"  'hlt-highlight-regions))
+     (unless (lookup-key ctl-x-map "nH")
+       (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
+     (unless (lookup-key ctl-x-map "nl")
+       (define-key ctl-x-map "nl"  'zz-add-zones-from-highlighting))
+     (unless (lookup-key ctl-x-map "nL")
+       (define-key ctl-x-map "nL"  'zz-set-zones-from-highlighting)))))
 
 
 ;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
