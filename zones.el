@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2018.11.12
+;; Version: 2018.11.13
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 12 19:08:21 2018 (-0800)
+;; Last-Updated: Tue Nov 13 08:32:45 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2252
+;;     Update #: 2257
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -96,13 +96,14 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `zz-buffer-narrowed-p' (Emacs 22-23), `zz-buffer-of-markers',
-;;    `zz-car-<', `zz-dot-pairs', `zz-every',
-;;    `zz-izone-has-other-buffer-marker-p', `zz-izone-limits',
-;;    `zz-izone-limits-in-bufs', `zz-izones',
+;;    `zz-car-<', `zz-do-izones', `zz-do-zones', `zz-dot-pairs',
+;;    `zz-every', `zz-izone-has-other-buffer-marker-p',
+;;    `zz-izone-limits', `zz-izone-limits-in-bufs', `zz-izones',
 ;;    `zz-izones-from-noncontiguous-region' (Emacs 25+),
 ;;    `zz-izones-from-zones', `zz-izones-p', `zz-izones-renumber',
-;;    `zz-marker-from-object', `zz-markerize', `zz-max', `zz-min',
-;;    `zz-narrowing-lighter', `zz-noncontiguous-region-from-izones',
+;;    `zz-map-izones', `zz-map-zones', `zz-marker-from-object',
+;;    `zz-markerize', `zz-max', `zz-min', `zz-narrowing-lighter',
+;;    `zz-noncontiguous-region-from-izones',
 ;;    `zz-noncontiguous-region-from-zones', `zz-number-or-marker-p',
 ;;    `zz-overlays-to-zones', `zz-overlay-to-zone',
 ;;    `zz-overlay-union', `zz-rassoc-delete-all',
@@ -527,6 +528,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/11/13 dadams
+;;     Added: zz-do-izones, zz-do-zones, zz-map-izones, zz-map-zones.
 ;; 2018/11/12 dadams
 ;;     Added: zz-create-face-zones.
 ;;     zz-zone-union-1: Replaced recursive version with iterative version.
@@ -927,6 +930,45 @@ marker that points nowhere, then raise an error."
     (unless (and buf1  buf2) (error "Zone has marker(s) that point nowhere: %S" zone))
     (unless (equal buf1 buf2) (error "Zone has conflicting buffers: %S" zone))
     buf1))
+
+(defun zz-do-zones (function &optional zones)
+  "Like `zz-map-zones', but without returning the result of mapping.
+The return value is undefined."
+  (when (functionp function)
+    (when (zz-izones-p zones)
+      (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+    (setq zones  (zz-zone-union zones))
+    (dolist (zone  zones) (funcall function (car zone) (cadr zone)))))
+
+(defun zz-map-zones (function &optional zones)
+  "Map binary FUNCTION over ZONES, applying it to the limits of each zone.
+ZONES can be a list of basic zones or a list like `zz-izones', that
+is, zones that have identifiers.  By default, ZONES is the value of
+`zz-izones'."
+  (if (not (functionp function))
+      (or zones  zz-izones)
+    (when (zz-izones-p zones)
+      (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+    (setq zones  (zz-zone-union zones))
+    (setq zones  (mapcar (lambda (zone) (funcall function (car zone) (cadr zone))) zones))))
+
+(defun zz-do-izones (function &optional izones)
+  "Like `zz-map-izones', but without returning the result of mapping.
+The return value is undefined."
+  (when (functionp function)
+    (setq izones  (zz-unite-zones izones))
+    (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone)))))
+
+(defun zz-map-izones (function &optional izones)
+  "Map FUNCTION over IZONES.
+Apply FUNCTION to the first three elements of each izone, that is, the
+ identifier and the zone limits.
+IZONES is a list like `zz-izones', that is, zones with identifiers.
+By default, IZONES is the value of `zz-izones'."
+  (if (not (functionp function))
+      (or izones  zz-izones)
+    (setq izones  (zz-unite-zones izones))
+    (setq izones  (mapcar (lambda (izone) (funcall function (car izone) (cadr izone) (caddr izone))) izones))))
 
 (defun zz-zones-complement (zones &optional beg end)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
