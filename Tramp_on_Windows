@@ -21,6 +21,12 @@ Or you can put it all together like this such that your init file will work for 
 
 If you use ##pscp## instead of ##plink##, ##tramp-do-copy-or-rename-file-out-of-band## will do ##executable-find## for the ##copy-program##, and ##executable-find## will search on ##exec-path##, not on ##(getenv PATH)##. I assume ##exec-path## is initialised from ##(getenv PATH)## (also see [[ExecPath]]), but they are not automatically kept in sync, so we have to do it ourselves.
 
+If you need to specify additional properties for your connection (like a private key file, keepalives, etc) one easy way is to create and save a session with your desired properties in PuTTY's gui program and then connect using your saved session by ##C-x## ##C-f## then
+{{{
+/plinkx:sessname:/path/to/your/file/on/server
+}}}
+where ##sessname## is the name of your saved session in PuTTY.
+
 For general information and troubleshooting, see [[TrampMode|Tramp Mode]].
 
 ----
