@@ -698,10 +698,20 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
   (if (awesome-pair-is-blank-line-p)
       (awesome-pair-kill-blank-line-and-reindent)
     (cond
-     ;; Kill all template between <% ... %>
+     ;; Kill all content wrap by <% ... %> when right is <%
      ((and (looking-at "<%")
            (save-excursion (search-forward-regexp "%>" nil t)))
       (kill-region (point) (search-forward-regexp "%>" nil t)))
+     ;; Kill content in <% ... %> if left is <% or <%=
+     ((and (looking-back "<%=?\\s-?")
+           (save-excursion (search-forward-regexp "%>" nil t)))
+      (let ((start (point))
+            (end (progn
+                   (search-forward-regexp "%>" nil t)
+                   (backward-char 2)
+                   (point)
+                   )))
+        (kill-region start end)))
      ;; Kill string if current pointer in string area.
      ((awesome-pair-in-string-p)
       (awesome-pair-kill-internal))
@@ -709,13 +719,55 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
      ((awesome-pair-in-single-quote-string-p)
       (awesome-pair-kill-line-in-single-quote-string))
      ;; Kill element if no attributes in tag.
-     ((looking-at ">?</")
+     ((and
+       (looking-at "\\s-?+</")
+       (looking-back "<[a-z]+\\s-?>\\s-?+"))
       (web-mode-element-kill 1))
      ;; Kill whitespace in tag.
      ((looking-at "\\s-+>")
       (search-forward-regexp ">" nil t)
       (backward-char)
       (awesome-pair-delete-whitespace-before-cursor))
+     ;; Jump in content if point in start tag.
+     ((and (looking-at ">")
+           (looking-back "<[a-z]+"))
+      (forward-char 1))
+     ;; Kill tag if in end tag.
+     ((and (looking-at ">")
+           (looking-back "</[a-z]+"))
+      (beginning-of-thing 'sexp)
+      (web-mode-element-kill 1))
+     ;; Kill attributes if point in attributes area.
+     ((and
+       (web-mode-attribute-beginning-position)
+       (web-mode-attribute-end-position)
+       (>= (point) (web-mode-attribute-beginning-position))
+       (<= (point) (web-mode-attribute-end-position)))
+      (web-mode-attribute-kill))
+     ;; Kill attributes if only space between point and attributes start.
+     ((and
+       (looking-at "\\s-+")
+       (save-excursion
+         (search-forward-regexp "\\s-+" nil t)
+         (equal (point) (web-mode-attribute-beginning-position))))
+      (search-forward-regexp "\\s-+")
+      (web-mode-attribute-kill))
+     ;; Kill content in tag.
+     ((and
+       (save-excursion
+         (search-backward-regexp "<[a-z]+\\s-?>" nil t))
+       (save-excursion
+         (search-forward-regexp "</[a-z]+\\s-?>" nil t)))
+      (kill-region
+       (point)
+       (save-excursion
+         (search-forward-regexp "</[a-z]+\\s-?>" nil t)
+         (search-backward-regexp "</" nil t)
+         (point)
+         )))
+     ;; Kill line if rest chars is whitespace.
+     ((looking-at "\\s-?+\n")
+      (kill-line))
      (t
       (unless (awesome-pair-ignore-errors
                ;; Kill all sexps in current line.
