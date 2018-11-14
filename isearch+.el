@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 13 15:14:54 2018 (-0800)
+;; Last-Updated: Tue Nov 13 18:31:03 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 6822
+;;     Update #: 6824
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1238,6 +1238,8 @@
 ;;     isearch-toggle-invisible: Use isearchp-message-prefix, not vanilla isearch-message-prefix.
 ;;     isearch-message-prefix: Use search-lazy-count-format.  Propertize message (Emacs 22-24.2).
 ;;     isearch-lazy-highlight-buffer-update: Respect isearchp-limit-match-numbers-to-region-flag.
+;;     isearchp-act-on-demand:
+;;       Renamed isearchp-property-finish to isearchp-restore-pred-and-remove-dimming (overdue since 2015/09/01.
 ;; 2018/10/27 dadams
 ;;     Added: isearch-lazy-count, isearchp-toggle-showing-match-number (bound to M-s #).
 ;;     Renamed, per vanilla Emacs: isearch-lazy-highlight-buffer to lazy-highlight-buffer,
@@ -3382,7 +3384,7 @@ By default, replace the search hit - see `isearchp-replace-on-demand'.
 Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
     (interactive "P")
     (let ((isearch-mode-end-hook  isearch-mode-end-hook))
-      (remove-hook 'isearch-mode-end-hook 'isearchp-property-finish)
+      (remove-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
       (when (and isearch-success  (not isearch-error)  (not isearch-just-started))
         (with-isearch-suspended
           (let ((isearchp-pref-arg  arg))
