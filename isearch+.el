@@ -1149,8 +1149,17 @@
 ;;
 ;;  * `M-s %' (`isearchp-toggle-limit-match-numbers-to-region')
 ;;    toggles whether match number are limited to the active region
-;;    when `isearchp-restrict-to-region-flag' is non-nil.  (Emacs
-;;    24.3+)
+;;    when option `isearchp-restrict-to-region-flag' is non-nil.
+;;    (Emacs 24.3+)
+;;
+;;  * There are almost 30 Isearch toggle commands, depending on
+;;    whether you use optional libraries such as `isearch-prop.el',
+;;    `zones.el', and `highlight.el'.  Each toggle is bound to a short
+;;    key.  In addition, they are all on prefix key `M-=', by default.
+;;    They are on prefix keymap `isearchp-toggles-map' which you can
+;;    bind to any key in `isearch-mode-map'.  If you forget a `M-='
+;;    toggle key, you can use `M-= C-h' while searching to show them
+;;    all.
 ;;
 ;;  * Other bindings during Isearch:
 ;;
@@ -7319,6 +7328,73 @@ The list is the value of the var that is the value of `zz-izones-var'"
   (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))
 (when (> emacs-major-version 22)
   (define-key minibuffer-local-isearch-map "\C-x8\r" 'insert-char))
+
+
+
+;; Put all toggle commands on prefix key `M-='.
+;;
+(defvar isearchp-toggles-map nil "Keymap containing bindings for Isearch toggle commands.")
+
+(define-prefix-command 'isearchp-toggles-map)
+(define-key isearch-mode-map (kbd "M-=") isearchp-toggles-map) ; Put toggle commands on prefix `M-='.
+(define-key isearchp-toggles-map (kbd "C-h")  'isearchp-describe-prefix-bindings)              ; `M-= C-h'
+
+(when (fboundp 'isearchp-toggle-showing-filter-prompt-prefixes)    ; Emacs 24.4+
+  (define-key isearchp-toggles-map (kbd "d")  'isearchp-toggle-dimming-filter-failures)        ; `M-= d'
+  (define-key isearchp-toggles-map (kbd "p")  'isearchp-toggle-showing-filter-prompt-prefixes) ; `M-= p'
+  (define-key isearchp-toggles-map (kbd "s")  'isearchp-toggle-auto-keep-filter-predicate)     ; `M-= s'
+  )
+ 
+(when (boundp 'isearch-lazy-highlight)  ; Emacs 22+
+  (define-key isearchp-toggles-map (kbd "#")  'isearchp-toggle-showing-match-number)           ; `M-= #'
+  (define-key isearchp-toggles-map (kbd "%")  'isearchp-toggle-limit-match-numbers-to-region)  ; `M-= %'
+  (define-key isearchp-toggles-map (kbd "b")  'isearchp-toggle-lazy-highlight-full-buffer)     ; `M-= b'
+  (define-key isearchp-toggles-map (kbd "l")  'isearchp-toggle-lazy-highlight-cleanup)         ; `M-= l'
+  (define-key isearchp-toggles-map (kbd "L")  'isearchp-toggle-lazy-highlighting)              ; `M-= L'
+  )
+
+(when (featurep 'character-fold+)
+  (define-key isearchp-toggles-map (kbd "=")  'isearchp-toggle-symmetric-char-fold)
+  )
+
+(when (or (> emacs-major-version 24)  ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+  (define-key isearchp-toggles-map (kbd "n")  'isearchp-toggle-region-restriction)             ; `M-= n'
+  (define-key isearchp-toggles-map (kbd "C-SPC") 'isearchp-toggle-region-deactivation)         ; `M-= C-SPC'
+
+  )
+
+(define-key isearchp-toggles-map (kbd "M-SPC") 'isearchp-toggle-set-region)                    ; `M-= M-SPC'
+(define-key isearchp-toggles-map (kbd "+")   'isearchp-toggle-search-invisible)                ; `M-= +'
+(define-key isearchp-toggles-map (kbd "`")   'isearchp-toggle-regexp-quote-yank)               ; `M-= `'
+(define-key isearchp-toggles-map (kbd "M-`") 'isearchp-toggle-literal-replacement)             ; `M-= M-`'
+(define-key isearchp-toggles-map (kbd "c")   'isearch-toggle-case-fold)                        ; `M-= c'
+(define-key isearchp-toggles-map (kbd "i")   'isearch-toggle-invisible)                        ; `M-= i'
+(define-key isearchp-toggles-map (kbd "k")   'isearchp-toggle-repeat-search-if-fail)           ; `M-= k'
+(define-key isearchp-toggles-map (kbd "R")   'isearchp-toggle-highlighting-regexp-groups)      ; `M-= R'
+(define-key isearchp-toggles-map (kbd "v")   'isearchp-toggle-option-toggle)                   ; `M-= v'
+
+;;--------------------------- FROM `isearch-x.el' ----------------------------
+(when (featurep 'isearch-x)
+  (define-key isearchp-toggles-map (kbd "\\") 'isearch-toggle-input-method)                   ; `M-= \'
+  (define-key isearchp-toggles-map (kbd "^")  'isearch-toggle-specified-input-method)         ; `M-= ^'
+  )
+
+;;--------------------------- FROM `isearch-prop.el' -------------------------
+(when (featurep 'isearch-prop)
+  (define-key isearchp-toggles-map (kbd "~")  'isearchp-toggle-complementing-domain)           ; `M-= ~'
+  (define-key isearchp-toggles-map (kbd ";")  'isearchp-toggle-hiding-comments)                ; `M-= ;'
+  (define-key isearchp-toggles-map (kbd "M-;") 'isearchp-toggle-ignoring-comments)            ; `M-= M-;'
+  (define-key isearchp-toggles-map (kbd "D")  'isearchp-toggle-dimming-outside-search-area)    ; `M-= D'
+  )
+
+;;--------------------------- FROM `isearch.el' ------------------------------
+(define-key isearchp-toggles-map (kbd "SPC") 'isearch-toggle-lax-whitespace)                   ; `M-= SPC'
+(define-key isearchp-toggles-map (kbd "'")   'isearch-toggle-char-fold)                        ; `M-= ''
+(define-key isearchp-toggles-map (kbd "_")   'isearch-toggle-symbol)                           ; `M-= _'
+(define-key isearchp-toggles-map (kbd "r")   'isearch-toggle-regexp)                           ; `M-= r'
+(define-key isearchp-toggles-map (kbd "w")   'isearch-toggle-word)                             ; `M-= w'
+
 
 (defun isearchp-set-region ()
   "Set the region around the search target, if `isearchp-set-region-flag'.
