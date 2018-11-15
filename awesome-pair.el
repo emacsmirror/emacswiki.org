@@ -101,38 +101,68 @@
 
 (defun awesome-pair-open-round ()
   (interactive)
-  (cond ((or (awesome-pair-in-string-p)
-             (awesome-pair-in-comment-p))
-         (insert "("))
-        (t
-         (insert "()")
-         (backward-char))
-        ))
+  (cond
+   ((region-active-p)
+    (let ((start (region-beginning))
+          (end (region-end)))
+      (setq mark-active nil)
+      (goto-char start)
+      (insert "(")
+      (goto-char (+ end 1))
+      (insert ")")
+      (goto-char (+ start 1))))
+   ((or (awesome-pair-in-string-p)
+        (awesome-pair-in-comment-p))
+    (insert "("))
+   (t
+    (insert "()")
+    (backward-char))
+   ))
 
 (defun awesome-pair-open-curly ()
   (interactive)
-  (cond ((or (awesome-pair-in-string-p)
-             (awesome-pair-in-comment-p))
-         (insert "{"))
-        (t
-         (cond ((derived-mode-p 'ruby-mode)
-                (insert "{  }")
-                (backward-char 2))
-               (t
-                (insert "{}")
-                (backward-char)))
-         )
-        ))
+  (cond
+   ((region-active-p)
+    (let ((start (region-beginning))
+          (end (region-end)))
+      (setq mark-active nil)
+      (goto-char start)
+      (insert "{")
+      (goto-char (+ end 1))
+      (insert "}")
+      (goto-char (+ start 1))))
+   ((or (awesome-pair-in-string-p)
+        (awesome-pair-in-comment-p))
+    (insert "{"))
+   (t
+    (cond ((derived-mode-p 'ruby-mode)
+           (insert "{  }")
+           (backward-char 2))
+          (t
+           (insert "{}")
+           (backward-char)))
+    )
+   ))
 
 (defun awesome-pair-open-bracket ()
   (interactive)
-  (cond ((or (awesome-pair-in-string-p)
-             (awesome-pair-in-comment-p))
-         (insert "["))
-        (t
-         (insert "[]")
-         (backward-char))
-        ))
+  (cond
+   ((region-active-p)
+    (let ((start (region-beginning))
+          (end (region-end)))
+      (setq mark-active nil)
+      (goto-char start)
+      (insert "[")
+      (goto-char (+ end 1))
+      (insert "]")
+      (goto-char (+ start 1))))
+   ((or (awesome-pair-in-string-p)
+        (awesome-pair-in-comment-p))
+    (insert "["))
+   (t
+    (insert "[]")
+    (backward-char))
+   ))
 
 (defun awesome-pair-close-round ()
   (interactive)
@@ -752,19 +782,6 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
          (equal (point) (web-mode-attribute-beginning-position))))
       (search-forward-regexp "\\s-+")
       (web-mode-attribute-kill))
-     ;; Kill content in tag.
-     ((and
-       (save-excursion
-         (search-backward-regexp "<[a-z]+\\s-?>" nil t))
-       (save-excursion
-         (search-forward-regexp "</[a-z]+\\s-?>" nil t)))
-      (kill-region
-       (point)
-       (save-excursion
-         (search-forward-regexp "</[a-z]+\\s-?>" nil t)
-         (search-backward-regexp "</" nil t)
-         (point)
-         )))
      ;; Kill line if rest chars is whitespace.
      ((looking-at "\\s-?+\n")
       (kill-line))
