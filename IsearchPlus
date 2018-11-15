@@ -503,10 +503,26 @@ highlighting.  You need Emacs 24.3+ to take advantage of
 `lazy-highlight-buffer'.
 
 
-[:`isearchp-toggle-showing-match-number]
-* '''`M-s #'''' ('''`isearchp-toggle-showing-match-number'''')  toggles showing
+[:isearchp-toggle-showing-match-number]
+* '''`##M-s ###'''' ('''`isearchp-toggle-showing-match-number'''')  toggles showing
 the current match number and total matches in the Isearch prompt
 (option '''`isearch-lazy-count'''').
+
+
+[:isearchp-toggle-limit-match-numbers-to-region]
+* '''`##M-s %##'''' ('''`isearchp-toggle-limit-match-numbers-to-region'''')
+toggles whether match number are limited to the [[active region]]
+when option '''`isearchp-restrict-to-region-flag'''' is non-`nil'.  (Emacs
+24.3+)
+
+* There are almost ''30 Isearch toggle commands'', depending on
+whether you use optional libraries such as <tt>[[isearch-prop.el]]</tt>,
+<tt>[[zones.el]]</tt>, and <tt>[[highlight.el]]</tt>.  Each toggle is bound to a short
+key.  In addition, they are all on prefix key '''`##M-=##'''', by default.
+They are on prefix keymap `isearchp-toggles-map' which you can
+bind to any key in `isearch-mode-map'.  If you forget a `##M-=##'
+toggle key, you can use '''`##M-= C-h##'''' while searching to show them
+all.
 
 
 [:goto-longest-line]
