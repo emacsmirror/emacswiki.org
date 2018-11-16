@@ -2,6 +2,10 @@ This page describes '''[::Menu-Bar+]''': library <tt>[[menu-bar+.el]]</tt>, whic
 
 == Menu-Bar+ ==
 
+This page describes library <tt>[[menu-bar+.el]]</tt>.
+
+See screenshots of the '''Help''' menu, [[#HelpScreenshots|below]], as an example.  (Some of the menu items and submenus shown in screenshots are from additional libraries.)
+
 [:SeparateLocalAndGlobalMenus]
 === Separation of Local and Global Menus ===
 
@@ -10,6 +14,8 @@ The buffer-specific (local) menus are separated from the common (global) menus b
 [[image:DrewsEmacsMenuBarBar]]
 
 
+
+[:FramesMenu]
 === Frames Menu ===
 
 A new menu, '''Frames''', is added, with these menu items:
@@ -17,6 +23,7 @@ A new menu, '''Frames''', is added, with these menu items:
 : _Hide Frames or Show Buffers_, _Iconify All Frames_, _Maximize Frame_, _Maximize Frame Horizontally_, _Maximize Frame Vertically_, _Toggle Max Frame_, _Toggle Max Frame Horizontally_, _Toggle Max Frame Vertically_, _Tile Frames Horizontally_, _Tile Frames Vertically_, _Set Frame Parameter from Frame_, _Set All Frame Parameters from Frame_, _Fit This Frame_
 
 
+[:DoReMiMenu]
 === Do Re Mi Menu ===
 
 A new menu, '''Do Re Mi''', is added, with these menu items (see [[DrewsEmacsDoReMiMenu|Screenshot]]):
@@ -25,6 +32,7 @@ A new menu, '''Do Re Mi''', is added, with these menu items (see [[DrewsEmacsDoR
 :: See '''DoReMi'''. 
 
 
+[:FilesMenu]
 === Files Menu ===
 
 The standard '''Files''' menu is enhanced in these ways:
@@ -34,6 +42,8 @@ The standard '''Files''' menu is enhanced in these ways:
 * '''File''' > '''Close''' (command `kill-this-buffer') also deletes the window.
 
 
+
+[:EditMenu]
 == Edit Menu ===
 
 The standard '''Edit''' menu is enhanced in these ways:
@@ -49,6 +59,8 @@ The standard '''Edit''' menu is enhanced in these ways:
 * Moved submenu '''Search''' to the top level (menu bar) -- see next.
 
 
+
+[:SearchMenu]
 === Search Menu ===
 
 A new menu, '''Search''', is added (see [[DrewSearchMenu|Screenshot]]). It replaces the '''Search''' submenu under '''Edit'''.
@@ -67,7 +79,10 @@ A new menu, '''Search''', is added (see [[DrewSearchMenu|Screenshot]]). It repla
 
 
 
+[:HelpMenu]
 === Help Menu ===
+
+See the screenshots [[#HelpScreenshots|below]].  (Some of the menu items and submenus shown are from additional libraries.)
 
 The standard '''Help''' menu is enhanced in these ways:
 
@@ -92,17 +107,65 @@ Item _This..._ gives help on any key/menu sequence or object clicked with the mo
 ** `'''Emacs Lisp'''' menu: items _Manual - Info_, _Locate Library..._, _Locate Libraries by Keyword_, and _Change History_.
 
 
+
+[:OptionsMenu]
 === Options Menu ===
 
 The standard '''Options''' menu is enhanced with a new menu item, _Show, Edit All Options_ (`edit-options').
 
 
+
+[:ToolsMenu]
 === Tools Menu ===
 
 If library <tt>[[cmds-menu.el]]</tt> is in your `load-path' then it is loaded by library <tt>[[menu-bar+.el]]</tt>.  It adds a `Recent Commands' submenu to menu `Tools'.  The list of recent commands is updated automatically, similarly to how the `Buffers' menu buffer list is updated.
 
 
 
+----
+
+[:HelpScreenshots]
+=== Help-Menu Screenshots ===
+
+'''Help Menu'''
+
+[[image:DrewsEmacsHelpMenu]]
+
+'''Help > Whoops!? Menu'''
+
+[[image:DrewsEmacsHelpWhoopsMenu]]
+
+'''Help > Apropos Menu'''
+
+[[image:DrewsEmacsHelpAproposMenu]]
+
+'''Help > Describe Menu'''
+
+[[image:DrewsEmacsHelpDescribeMenu]]
+
+'''Help > Describe > Describe Language Environment Menu'''
+
+[[image:DrewsEmacsHelpDescribeLangEnvMenu]]
+
+'''Help > Learn More Menu'''
+
+[[image:DrewsEmacsHelpLearnMoreMenu]]
+
+'''Help > Learn More > Emacs Menu'''
+
+[[image:DrewsEmacsHelpLearnMoreEmacsMenu]]
+
+'''Help > Learn More > Emacs Lisp Menu'''
+
+[[image:DrewsEmacsHelpLearnMoreElispMenu]]
+
+'''Help > Search Documentation Menu'''
+
+[[image:DrewsEmacsHelpSearchDocMenu]]
+
+'''Help > More Manuals Menu'''
+
+[[image:DrewsEmacsHelpMoreManualsMenu]]
 
 
 
@@ -122,7 +185,8 @@ If library <tt>[[cmds-menu.el]]</tt> is in your `load-path' then it is loaded by
 
 
 
-
+----
+----
 
 == Discussion ==
 
