@@ -1,10 +1,9 @@
-This page describes '''[::Menu-Bar+]''': library <tt>[[menu-bar+.el]]</tt>, which enhances the standard Emacs [[menu bar]].
-
 == Menu-Bar+ ==
 
-This page describes library <tt>[[menu-bar+.el]]</tt>.
+This page describes '''[::Menu-Bar+]''': library <tt>[[menu-bar+.el]]</tt>, which enhances the standard Emacs [[menu bar]].
 
 See screenshots of the '''Help''' menu, [[#HelpScreenshots|below]], as an example.  (Some of the menu items and submenus shown in screenshots are from additional libraries.)
+
 
 [:SeparateLocalAndGlobalMenus]
 === Separation of Local and Global Menus ===
