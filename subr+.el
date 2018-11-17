@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:55:16 2018 (-0800)
+;; Last-Updated: Sat Nov 17 11:16:20 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 169
+;;     Update #: 198
 ;; URL: https://www.emacswiki.org/emacs/download/subr%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/SplittingStrings
 ;; Keywords: strings, text
@@ -62,6 +62,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/11/17 dadams
+;;     split-string: If arg HOW is null then use split-string-by-regexp.
+;;     split-string-by-regexp:
+;;       Make arg SEPARATORS optional, like vanilla split-string. 
+;;       If SEPARATORS is null then set OMIT-NULLS to t, like vanilla split-string.
 ;; 2017/05/01 dadams
 ;;     split-string-by-regexp: Refer to split-string-by-regexp, not split-string, in doc string.
 ;; 2014/05/31 dadams
@@ -117,8 +122,8 @@
 ;;
 (defun split-string (string &optional how omit-nulls trim flip test)
   "Split STRING into substrings.
-Arg HOW determines how splitting is done.  it is one of the following:
-* a regexp (a string) - see function `split-string-by-regexp'
+Arg HOW determines how splitting is done.  It is one of the following:
+* nil or a regexp (a string) - use function `split-string-by-regexp'
 * a list whose first element is a text property (a symbol) and whose
   second element is the property value - see function
   `split-string-by-property'
@@ -138,8 +143,7 @@ which case it is passed to function `split-string-by-property' (which
 see).  Otherwise, it is ignored.
 
 Modifies the match data; use `save-match-data' if necessary."
-  (unless how (setq how  split-string-default-separators))
-  (cond ((stringp how)
+  (cond ((or (null how)  (stringp how))
          (split-string-by-regexp string how omit-nulls trim flip))
         ((functionp how)
          (split-string-by-predicate string how omit-nulls trim flip))
@@ -155,10 +159,11 @@ Modifies the match data; use `save-match-data' if necessary."
   "Push the substring of STRING from START to END to list PARTS.
 Return updated list PARTS.
 
+Argumensts HOW and PARTS are as for function `split-string'.
+In particular, if HOW is nil then act as if OMIT-NULLS is t.
+
 Do not add substring if it is empty (\"\") and OMIT-NULLS is non-nil.
 Before adding it, trim its ends if they match regexp TRIM.
-
-Argumensts HOW and PARTS are as for function `split-string'.
 
 Modifies the match data; use `save-match-data' if necessary."
   (when trim                            ; Trim beginning of substring.
@@ -171,10 +176,11 @@ Modifies the match data; use `save-match-data' if necessary."
           (let ((trim-beg  (string-match (concat trim "\\'") this 0)))
             (when (and trim-beg  (< trim-beg (length this)))
               (setq this  (substring this 0 trim-beg)))))
+        ;; Trimming could have made it empty - check again.
         (when (or keep-nulls  (> (length this) 0)) (push this parts)))))
   parts)
 
-(defun split-string-by-regexp (string separators &optional omit-nulls trim flip)
+(defun split-string-by-regexp (string &optional separators omit-nulls trim flip)
   "Split STRING into substrings bounded by matches for SEPARATORS.
 Return the list of substrings.  The beginning and end of STRING, and
 each match for SEPARATORS, are splitting points.
@@ -185,9 +191,10 @@ is returned.  With non-nil optional argument FLIP this is reversed:
 the list of matches to SEPARATORS is returned.
 
 If SEPARATORS is non-nil, it should be a regular expression matching
-text which separates, but is not part of, the substrings.  If nil it
-defaults to `split-string-default-separators', normally
-\"[ \\f\\t\\n\\r\\v]+\", and OMIT-NULLS is forced to t.
+text which separates, but is not part of, the substrings.
+
+If SEPARATORS is nil it defaults to `split-string-default-separators',
+normally \"[ \\f\\t\\n\\r\\v]+\", and OMIT-NULLS is forced to t.
 
 See function `split-string' for information about args OMIT-NULLS and
 TRIM.
@@ -206,6 +213,7 @@ splitting on whitespace, use `(split-string-by-regexp STRING
 split-string-default-separators)'.
 
 Modifies the match data; use `save-match-data' if necessary."
+  (unless separators (setq omit-nulls  t))
   (let* ((regexp    (or separators  split-string-default-separators))
          (s-len     (length string))
          (start     0)
