@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2018.11.13
+;; Version: 2018.11.18
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 13 08:32:45 2018 (-0800)
+;; Last-Updated: Sun Nov 18 14:08:52 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2257
+;;     Update #: 2332
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -95,15 +95,16 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `zz-buffer-narrowed-p' (Emacs 22-23), `zz-buffer-of-markers',
-;;    `zz-car-<', `zz-do-izones', `zz-do-zones', `zz-dot-pairs',
-;;    `zz-every', `zz-izone-has-other-buffer-marker-p',
-;;    `zz-izone-limits', `zz-izone-limits-in-bufs', `zz-izones',
+;;    `zz-add-key-bindings-to-narrow-map', `zz-buffer-narrowed-p'
+;;    (Emacs 22-23), `zz-buffer-of-markers', `zz-car-<',
+;;    `zz-do-izones', `zz-do-zones', `zz-dot-pairs', `zz-every',
+;;    `zz-izone-has-other-buffer-marker-p', `zz-izone-limits',
+;;    `zz-izone-limits-in-bufs', `zz-izones',
 ;;    `zz-izones-from-noncontiguous-region' (Emacs 25+),
 ;;    `zz-izones-from-zones', `zz-izones-p', `zz-izones-renumber',
 ;;    `zz-map-izones', `zz-map-zones', `zz-marker-from-object',
-;;    `zz-markerize', `zz-max', `zz-min', `zz-narrowing-lighter',
-;;    `zz-noncontiguous-region-from-izones',
+;;    `zz-markerize', `zz-max', `zz-min', `zz-narrow-advice',
+;;    `zz-narrowing-lighter', `zz-noncontiguous-region-from-izones',
 ;;    `zz-noncontiguous-region-from-zones', `zz-number-or-marker-p',
 ;;    `zz-overlays-to-zones', `zz-overlay-to-zone',
 ;;    `zz-overlay-union', `zz-rassoc-delete-all',
@@ -124,7 +125,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `zz-izones', `zz-izones-var', `zz-lighter-narrowing-part',
+;;    `zz--fringe-remapping', `zz-izones', `zz-izones-var', `zz-lighter-narrowing-part',
 ;;    `zz-add-zone-anyway-p'.
 ;;
 ;;  Macros defined here:
@@ -400,10 +401,11 @@
 ;;  ** Keys **
 ;;
 ;;  Many of the commands that manipulate izones are bound on keymap
-;;  `narrow-map'.  They are available on prefix key `C-x n', along
-;;  with the narrowing/widening keys `C-x n d', `C-x n n', `C-x n p',
-;;  and `C-x n w'.  (If you use Emacs 22 then there is no
-;;  `narrow-map', so the same keys are bound on keymap `ctl-x-map'.)
+;;  `narrow-map'.  So they are available on prefix key `C-x n' (by
+;;  default), along with the narrowing/widening keys `C-x n d', `C-x n
+;;  n', `C-x n p', and `C-x n w'.  (If you use Emacs 22 then there is
+;;  no `narrow-map', so the same `n ...' keys are bound on keymap
+;;  `ctl-x-map'.)
 ;;
 ;;  If you have already bound one of these keys then `zones.el' does
 ;;  not rebind that key; your bindings are respected.
@@ -528,6 +530,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/11/18 dadams
+;;     Suggestions from Stefan Monnier:
+;;       Added: zz--fringe-remapping, zz-add-key-bindings-to-narrow-map.
+;;       zz-set-fringe-for-narrowing: Remap fringe face (relative) instead of (re)setting it.
+;;       zz-add-zone: Use string, not Boolean MSG arg.
+;;       Require repeat.el in zz-repeat-command, not in zz-*-repeat.
+;;       zz-add-zone-and-unite: MSGP -> MSG (string, not Boolean).
+;;       Advice for narrow-*: Use zz-narrow-advice.
 ;; 2018/11/13 dadams
 ;;     Added: zz-do-izones, zz-do-zones, zz-map-izones, zz-map-zones.
 ;; 2018/11/12 dadams
@@ -824,8 +834,8 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/Zones")
   :link '(emacs-commentary-link :tag "Commentary" "zones"))
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.4+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 3))) ; `reset' arg to `face-spec-set'.
+(when (>= emacs-major-version 23)       ; Emacs 23.1+
+  ;; NOTE: Buffer-local face-remapping of fringe is not handled correctly until Emacs-27 (Emacs bug#33244).
 
   (defface zz-fringe-for-narrowing
       '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
@@ -833,6 +843,7 @@ Don't forget to mention your Emacs and library versions."))
     "Face used for fringe when buffer is narrowed."
     :group 'zones :group 'faces)
 
+  ;; FIXME?: This feature is really orthogonal to zones.  And should just loading this file enables the feature?
   (defcustom zz-narrowing-use-fringe-flag t
     "Non-nil means use fringe face `zz-fringe-for-narrowing' when narrowed."
     :type 'boolean :group 'zones
@@ -842,11 +853,24 @@ Don't forget to mention your Emacs and library versions."))
                (add-hook 'post-command-hook #'zz-set-fringe-for-narrowing)
              (remove-hook 'post-command-hook #'zz-set-fringe-for-narrowing))))
 
+  (defvar zz--fringe-remapping nil
+    "Cookie from remapping face `fringe' to `zz-fringe-for-narrowing'.
+Deleted by `face-remap-remove-relative' when buffer is widened.")
+  (with-no-warnings (make-variable-buffer-local 'zz--fringe-remapping))
+
   (defun zz-set-fringe-for-narrowing ()
-    "Set fringe face if buffer is narrowed."
+    "Remap face `fringe' to `zz-fringe-for-narrowing' if buffer is narrowed.
+Remove remapping if not narrowed."
     (if (zz-buffer-narrowed-p)
-        (copy-face 'zz-fringe-for-narrowing 'fringe (selected-frame))
-      (face-spec-set 'fringe (get 'fringe 'face-defface-spec) 'reset)))
+        (unless zz--fringe-remapping
+          (setq zz--fringe-remapping  (face-remap-add-relative 'fringe 'zz-fringe-for-narrowing))
+          ;; FIXME: For some reason, the display is not always redrawn fully.
+          (redraw-frame))
+      (when zz--fringe-remapping
+        (face-remap-remove-relative zz--fringe-remapping)
+        ;; FIXME: For some reason, the display is not redrawn fully.
+        (redraw-frame)
+        (setq zz--fringe-remapping  nil))))
 
   )
 
@@ -950,7 +974,7 @@ is, zones that have identifiers.  By default, ZONES is the value of
     (when (zz-izones-p zones)
       (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
     (setq zones  (zz-zone-union zones))
-    (setq zones  (mapcar (lambda (zone) (funcall function (car zone) (cadr zone))) zones))))
+    (mapcar (lambda (zone) (funcall function (car zone) (cadr zone))) zones)))
 
 (defun zz-do-izones (function &optional izones)
   "Like `zz-map-izones', but without returning the result of mapping.
@@ -968,7 +992,7 @@ By default, IZONES is the value of `zz-izones'."
   (if (not (functionp function))
       (or izones  zz-izones)
     (setq izones  (zz-unite-zones izones))
-    (setq izones  (mapcar (lambda (izone) (funcall function (car izone) (cadr izone) (caddr izone))) izones))))
+    (mapcar (lambda (izone) (funcall function (car izone) (cadr izone) (caddr izone))) izones)))
 
 (defun zz-zones-complement (zones &optional beg end)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
@@ -1022,15 +1046,15 @@ combined whenever zones are merged together."
          (sorted-zones    (sort flipped-zones #'zz-car-<)))
     (zz-zone-union-1 sorted-zones)))
 
-;;; Recursive version.
-;;; (defun zz-zone-union-1 (zones)
-;;;   "Helper for `zz-zone-union'."
-;;;   (if (null (cdr zones))
-;;;       zones
-;;;     (let ((new  (zz-two-zone-union (car zones) (cadr zones))))
-;;;       (if new
-;;;           (zz-zone-union-1 (cons new (cddr zones)))
-;;;         (cons (car zones) (zz-zone-union-1 (cdr zones)))))))
+;; Recursive version.
+;; (defun zz-zone-union-1 (zones)
+;;   "Helper for `zz-zone-union'."
+;;   (if (null (cdr zones))
+;;       zones
+;;     (let ((new  (zz-two-zone-union (car zones) (cadr zones))))
+;;       (if new
+;;           (zz-zone-union-1 (cons new (cddr zones)))
+;;         (cons (car zones) (zz-zone-union-1 (cdr zones)))))))
 
 (defun zz-zone-union-1 (zones)
   "Helper for `zz-zone-union'."
@@ -1321,7 +1345,7 @@ Put `zz-narrow' on `mouse-2' for the lighter suffix."
                      (zz-regexp-car-member regexp (cdr xs)))))
 
 ;;;###autoload
-(defun zz-add-zone (start end &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n a'.
+(defun zz-add-zone (start end &optional variable not-buf-local-p set-var-p msg) ; Bound to `C-x n a'.
   "Add an izone for the text from START to END to the izones of VARIABLE.
 Return the new value of VARIABLE.
 
@@ -1347,7 +1371,7 @@ Non-interactively:
 * VARIABLE is the optional izones variable to use.
 * Non-nil NOT-BUF-LOCAL-P means do not make VARIABLE buffer-local.
 * Non-nil SET-VAR-P means set `zz-izones-var' to VARIABLE.
-* Non-nil MSGP means echo the region size."
+* Non-nil MSG means echo the zone limits, preceded by string MSG."
   (interactive (let* ((beg    (region-beginning))
                       (end    (region-end))
                       (var    (or (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var))
@@ -1355,7 +1379,7 @@ Non-interactively:
                       (npref  (prefix-numeric-value current-prefix-arg))
                       (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
                       (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0)))))
-                 (list beg end var nloc setv t)))
+                 (list beg end var nloc setv "Recorded zone: ")))
   (let* ((mrk1     (make-marker))
          (mrk2     (make-marker))
          (var      (or variable  zz-izones-var))
@@ -1372,8 +1396,7 @@ Non-interactively:
           id       (if id-cons (car id-cons) (1+ (length val))) ; 1-based, not 0-based.
           val      (set var (zz-rassoc-delete-all sans-id val))) ; Destructive operation.
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size)))) (set var `((,id ,mrk1 ,mrk2) ,@val)))
-    (when msgp (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
-                        (marker-position mrk1) (marker-position mrk2)))
+    (when msg (message "%s%d to %d" msg (marker-position mrk1) (marker-position mrk2)))
     (symbol-value var)))
 
 ;;;###autoload
@@ -1706,10 +1729,11 @@ reads any symbol, but it provides completion against variable names."
 
 (defun zz-repeat-command (command)
   "Repeat COMMAND."
- (let ((repeat-previous-repeated-command  command)
-       (repeat-message-function           #'ignore)
-       (last-repeatable-command           'repeat))
-   (repeat nil)))
+  (require 'repeat)                   ;Define its vars before we let-bind them!
+  (let ((repeat-previous-repeated-command  command)
+        (repeat-message-function           #'ignore)
+        (last-repeatable-command           'repeat))
+    (repeat nil)))
 
 ;;;###autoload
 (defun zz-narrow-repeat ()              ; Bound to `C-x n x'.
@@ -1719,7 +1743,6 @@ This is a repeatable version of `zz-narrow'.
 Note that if the value of `zz-izones-var' is not buffer-local then you
 can use this command to cycle among regions in multiple buffers."
   (interactive)
-  (require 'repeat)
   (zz-repeat-command 'zz-narrow))
 
 ;;;###autoload
@@ -1727,7 +1750,6 @@ can use this command to cycle among regions in multiple buffers."
   "Cycle to the next region.
 This is a repeatable version of `zz-select-region'."
   (interactive)
-  (require 'repeat)
   (zz-repeat-command 'zz-select-region))
 
 (defun zz-izones-from-zones (basic-zones)
@@ -1849,7 +1871,7 @@ Non-interactively:
 ;;;###autoload
 (defalias 'zz-add-zone-and-coalesce #'zz-add-zone-and-unite)
 ;;;###autoload
-(defun zz-add-zone-and-unite (start end &optional variable msgp) ; Bound to `C-x n A'.
+(defun zz-add-zone-and-unite (start end &optional variable msg) ; Bound to `C-x n A'.
   "Add an izone from START to END to those of VARIABLE, and coalesce.
 Use `zz-add-zone', then apply `zz-unite-zones'.
 United zones are in ascending order of their cars.
@@ -1869,7 +1891,8 @@ variable symbol.  (Zero: do both.)
 
 Non-interactively:
 * VARIABLE is the optional izones variable to use.
-* Non-nil MSGP means echo the size of the added zone."
+* Non-nil MSG means echo messages for adding the zone and uniting
+  zones.  In this case MSG is the message prefix for `zz-add-zone'."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
                      (var    (or (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var))
@@ -1877,10 +1900,10 @@ Non-interactively:
                      (npref  (prefix-numeric-value current-prefix-arg)))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
                  (when (and current-prefix-arg  (<= npref 0)) (setq zz-izones-var var))
-                 (list beg end var t)))
+                 (list beg end var "Zone recorded: ")))
   (unless variable (setq variable  zz-izones-var))
-  (zz-add-zone start end variable nil nil msgp)
-  (zz-unite-zones variable msgp)
+  (zz-add-zone start end variable nil nil msg)
+  (zz-unite-zones variable msg)
   (symbol-value variable))
 
 ;;;###autoload
@@ -2009,82 +2032,45 @@ The variable defaults to `zz-izones'.  With a prefix arg you are
   (zz-unite-zones variable t))
 
 ;;---------------------
+(defun zz-add-key-bindings-to-narrow-map (bindings)
+  "Add BINDINGS to `narrow-map'.
+\(For Emacs prior to Emacs 24, add bindings to prefix key `C-x n'.)"
+  (let ((map  (if (boundp 'narrow-map) narrow-map (lookup-key ctl-x-map "n"))))
+    (when (keymapp map)
+      (dolist (binding  bindings)
+        (let ((kseq  (car binding))
+              (cmd   (cdr binding)))
+          (unless (lookup-key map kseq) (define-key map kseq cmd)))))))
 
-(cond ((boundp 'narrow-map)             ; Emacs 23+
-       (unless (lookup-key narrow-map "a")
-         (define-key narrow-map "a"    'zz-add-zone))
-       (unless (lookup-key narrow-map "A")
-         (define-key narrow-map "A"    'zz-add-zone-and-unite))
-       (unless (lookup-key narrow-map "c")
-         (define-key narrow-map "c"    'zz-clone-zones))
-       (unless (lookup-key narrow-map "C")
-         (define-key narrow-map "C"    'zz-clone-and-unite-zones))
-       (unless (lookup-key narrow-map "\C-d")
-         (define-key narrow-map "\C-d" 'zz-delete-zone))
-       (unless (lookup-key narrow-map "r")
-         (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region)))
-       (unless (lookup-key narrow-map "u")
-         (define-key narrow-map "u"    'zz-unite-zones))
-       (unless (lookup-key narrow-map "v")
-         (define-key narrow-map "v"    'zz-set-izones-var))
-       (unless (lookup-key narrow-map "x")
-         (define-key narrow-map "x"    'zz-narrow-repeat)))
-      (t
-       (unless (lookup-key ctl-x-map "na")
-         (define-key ctl-x-map "na"    'zz-add-zone))
-       (unless (lookup-key ctl-x-map "nA")
-         (define-key ctl-x-map "nA"    'zz-add-zone-and-unite))
-       (unless (lookup-key ctl-x-map "nc")
-         (define-key ctl-x-map "nc"    'zz-clone-zones))
-       (unless (lookup-key ctl-x-map "nC")
-         (define-key ctl-x-map "nC"    'zz-clone-and-unite-zones))
-       (unless (lookup-key ctl-x-map "n\C-d")
-         (define-key ctl-x-map "n\C-d" 'zz-delete-zone))
-       (unless (lookup-key ctl-x-map "nr")
-         (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region)))
-       (unless (lookup-key ctl-x-map "nu")
-         (define-key ctl-x-map "nu"    'zz-unite-zones))
-       (unless (lookup-key ctl-x-map "nv")
-         (define-key ctl-x-map "nv"    'zz-set-izones-var))
-       (unless (lookup-key ctl-x-map "nx")
-         (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow)))))
+(zz-add-key-bindings-to-narrow-map '(("a" . zz-add-zone)
+                                     ("A" . zz-add-zone-and-unite)
+                                     ("c" . zz-clone-zones)
+                                     ("C" . zz-clone-and-unite-zones)
+                                     ("\C-d" . zz-delete-zone)
+                                     ("r" . zz-select-region-repeat)
+                                     ("u" . zz-unite-zones)
+                                     ("v" . zz-set-izones-var)
+                                     ("x" . zz-narrow-repeat)))
 
 (eval-after-load "highlight"
-  '(cond
-    ((boundp 'narrow-map)               ; Emacs 23+
-     (unless (lookup-key narrow-map "h")
-       (define-key narrow-map "h"  'hlt-highlight-regions))
-     (unless (lookup-key narrow-map "H")
-       (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
-     (unless (lookup-key narrow-map "l")
-       (define-key narrow-map "l"  'zz-add-zones-from-highlighting))
-     (unless (lookup-key narrow-map "L")
-       (define-key narrow-map "L"  'zz-set-zones-from-highlighting)))
-    (t
-     (unless (lookup-key ctl-x-map "nh")
-       (define-key ctl-x-map "nh"  'hlt-highlight-regions))
-     (unless (lookup-key ctl-x-map "nH")
-       (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
-     (unless (lookup-key ctl-x-map "nl")
-       (define-key ctl-x-map "nl"  'zz-add-zones-from-highlighting))
-     (unless (lookup-key ctl-x-map "nL")
-       (define-key ctl-x-map "nL"  'zz-set-zones-from-highlighting)))))
-
+  '(zz-add-key-bindings-to-narrow-map '(("h" . hlt-highlight-regions)
+                                        ("H" . hlt-highlight-regions-in-buffers)
+                                        ("l" . zz-add-zones-from-highlighting)
+                                        ("L" . zz-set-zones-from-highlighting))))
 
 ;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
-;;
-(defadvice narrow-to-region (before zz-add-zone--region activate)
+
+(defun zz-narrow-advice (interactive-p)
+  (when (or interactive-p  zz-add-zone-anyway-p)
+    (zz-add-zone (point-min) (point-max) nil nil nil "Narrowed, and recorded zone: ")))
+
+(defadvice narrow-to-region (after zz-add-zone--region activate)
   "Push the region limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (when (or (interactive-p)  zz-add-zone-anyway-p)
-    (let ((start  (ad-get-arg 0))
-          (end    (ad-get-arg 1)))
-      (unless start (setq start  (region-beginning))) ; Needed? (was needed for Emacs 20).
-      (unless end   (setq end    (region-end)))
-      (zz-add-zone start end nil nil nil 'MSG))))
+  (zz-narrow-advice (interactive-p)))
 
 (defadvice narrow-to-defun (after zz-add-zone--defun activate)
   "Push the defun limits to the current `zz-izones-var'.
@@ -2092,7 +2078,7 @@ You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone (point-min) (point-max) nil nil nil 'MSG)))
+  (zz-narrow-advice (interactive-p)))
 
 ;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
 ;;
@@ -2102,7 +2088,7 @@ You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone (point-min) (point-max) nil nil nil 'MSG)))
+  (zz-narrow-advice (interactive-p)))
 
 (when (> emacs-major-version 24)
 
