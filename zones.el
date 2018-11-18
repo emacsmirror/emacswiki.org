@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2018.11.18
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 18 14:08:52 2018 (-0800)
+;; Last-Updated: Sun Nov 18 15:03:48 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2332
+;;     Update #: 2333
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -819,7 +819,7 @@
  
 
 (defalias 'zz-user-error
-    (if (fboundp 'user-error) #'user-error #'error)) ; For Emacs 22-23.
+  (if (fboundp 'user-error) #'user-error #'error)) ; For Emacs 22-23.
 
 (defgroup zones nil
   "Zones of text - like multiple regions."
@@ -843,7 +843,7 @@ Don't forget to mention your Emacs and library versions."))
     "Face used for fringe when buffer is narrowed."
     :group 'zones :group 'faces)
 
-  ;; FIXME?: This feature is really orthogonal to zones.  And should just loading this file enables the feature?
+  ;; FIXME?: This feature is really orthogonal to zones.  And should just loading this file enable the feature?
   (defcustom zz-narrowing-use-fringe-flag t
     "Non-nil means use fringe face `zz-fringe-for-narrowing' when narrowed."
     :type 'boolean :group 'zones
