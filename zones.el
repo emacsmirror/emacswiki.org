@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2018.11.18
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 18 15:03:48 2018 (-0800)
+;; Last-Updated: Sun Nov 18 20:20:52 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2333
+;;     Update #: 2376
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -82,7 +82,9 @@
 ;;    `zz-delete-zone', `zz-narrow', `zz-narrow-repeat',
 ;;    `zz-query-replace-zones' (Emacs 25+),
 ;;    `zz-query-replace-regexp-zones' (Emacs 25+), `zz-select-region',
-;;    `zz-select-region-repeat', `zz-set-izones-var',
+;;    `zz-select-region-by-id-and-text', `zz-select-region-repeat',
+;;    `zz-select-zone', `zz-select-zone-by-id-and-text',
+;;    `zz-select-zone-repeat', `zz-set-izones-var',
 ;;    `zz-set-zones-from-highlighting', `zz-unite-zones'.
 ;;
 ;;  User options defined here:
@@ -312,7 +314,7 @@
 ;;    them in any order, and using completion against BEG-END range
 ;;    names.
 ;;
-;;  * Select any of them as the active region.  Cycle among regions.
+;;  * Select any of them as the active region.  Cycle among them.
 ;;
 ;;  * Search them (they are automatically coalesced first).  For this
 ;;    you need library `isearch-prop.el'.
@@ -330,8 +332,8 @@
 ;;
 ;;  * Add the active region to a list of zones.
 ;;
-;;  * Add the region to a list of zones, and then unite (coalesce) the
-;;    zones.
+;;  * Add the active region to a list of zones, and then unite
+;;    (coalesce) the zones.
 ;;
 ;;  * Delete an izone from a list of zones.
 ;;
@@ -422,7 +424,7 @@
 ;;  C-x n L   `zz-set-zones-from-highlighting' - Set to highlighted
 ;;  C-x n n   `narrow-to-region'
 ;;  C-x n p   `narrow-to-page'
-;;  C-x n r   `zz-select-region-repeat' - Cycle as active regions
+;;  C-x n r   `zz-select-zone-repeat' - Cycle as active regions
 ;;  C-x n u   `zz-unite-zones' - Unite (coalesce) izones
 ;;  C-x n v   `zz-set-izones-var' - Set `zz-izones-var' to a variable
 ;;  C-x n w   `widen'
@@ -501,16 +503,16 @@
 ;;  `C-x n H' (command `hlt-highlight-regions-in-buffers') to do the
 ;;  same across a set of buffers that you specify (or across all
 ;;  visible buffers).  If option `hlt-auto-faces-flag' is non-nil then
-;;  each region gets a different face.  Otherwise, all of the regions
-;;  are highlighted with the same face.  Complementary (unbound)
-;;  commands `hlt-unhighlight-regions' and
-;;  `hlt-unhighlight-regions-in-buffers' unhighlight.
+;;  each zone gets a different face.  Otherwise, all of the zones are
+;;  highlighted with the same face.  Complementary (unbound) commands
+;;  `hlt-unhighlight-regions' and `hlt-unhighlight-regions-in-buffers'
+;;  unhighlight.
 ;;
 ;;  Defining your own command can be simple or somewhat complex,
 ;;  depending on how the region is used in the code for the
 ;;  corresponding region-action Emacs command.  The definition of
 ;;  `hlt-highlight-regions' just calls existing function
-;;  `hlt-highlight-region' once for each recorded region:
+;;  `hlt-highlight-region' once for each recorded zone:
 ;;
 ;; (defun hlt-highlight-regions (&optional regions face msgp mousep
 ;;                                         buffers)
@@ -521,7 +523,7 @@
 ;;                           face msgp mousep buffers)))
 ;;
 ;;  That's it - just iterate over `zz-izones' with a function that
-;;  takes the region as an argument.  What `zones.el' offers in this
+;;  takes a zone as an argument.  What `zones.el' offers in this
 ;;  regard is a way to easily define a set of buffer zones.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -531,6 +533,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2018/11/18 dadams
+;;     Added: zz-select-zone-by-id-and-text, zz-select-region-by-id-and-text.
+;;     Switched which is main and which is alias: zz-select-(zone|region)(-repeat): act on zone to make it active region.
 ;;     Suggestions from Stefan Monnier:
 ;;       Added: zz--fringe-remapping, zz-add-key-bindings-to-narrow-map.
 ;;       zz-set-fringe-for-narrowing: Remap fringe face (relative) instead of (re)setting it.
@@ -1222,14 +1226,48 @@ PREDICATE applied to ELEMENT."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defun zz-select-region (arg &optional msgp) ; Not bound.
-  "Select a region from among the current set of zones.
-The zones are those in the current `zz-izones-var'.
-With no prefix arg, select the previous recorded zone.
-With a numeric prefix arg N, select the Nth previous zone.
+(defalias 'zz-select-region-by-id-and-text #'zz-select-zone-by-id-and-text)
+;;;###autoload
+(defun zz-select-zone-by-id-and-text (id &optional variable msgp)
+  "Select a zone by completing against its ID and its text (content).
+The text of the chosen zone is made the active region.
+
+The zones to choose from are those of VARIABLE that are in the current
+buffer.  VARIABLE defaults to the value of `zz-izones-var'.  With a
+prefix arg you are prompted for a different variable to use.
+
+Non-interactively:
+* VARIABLE is the optional izones variable to use.
+* Non-nil MSGP means show a status message."
+  (interactive
+   (let* ((var      (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var)))
+          (izones   (zz-remove-izones-w-other-buffer-markers (symbol-value var)))
+          (numstrg  (string-to-number
+                     (completing-read "Izone: " (mapcar (lambda (iz)
+                                                          (cons (format "%d  %s" (car iz) (buffer-substring
+                                                                                           (cadr iz)
+                                                                                           (caddr iz)))
+                                                                (cdr iz)))
+                                                        izones)
+                                      nil t))))
+     (list numstrg t)))
+  (let* ((izone  (assq id (zz-remove-izones-w-other-buffer-markers (symbol-value variable))))
+         (beg    (cadr izone))
+         (end    (caddr izone)))
+    (goto-char beg)
+    (push-mark end nil t)
+    (when msgp (message "Izone #%d selected" (car izone)))))
+
+;;;###autoload
+(defalias 'zz-select-region #'zz-select-zone)
+;;;###autoload
+(defun zz-select-zone (arg &optional msgp) ; Not bound.
+  "Select a zone in `zz-izones-var', and make it the active region.
+With no prefix arg, select the last-recorded zone.
+With a numeric prefix arg N, select the Nth last-recorded zone.
 
 Note that if the value of `zz-izones-var' is not buffer-local then you
-can use this command to cycle among regions in multiple buffers."
+can use this command to cycle among zones in multiple buffers."
   (interactive "p\np")
   (let* ((var   zz-izones-var)
          (val   (symbol-value var))
@@ -1254,7 +1292,8 @@ can use this command to cycle among regions in multiple buffers."
         (goto-char beg)
         (push-mark end nil t)
         (when msgp
-          (message "Region #%d restored%s" (caar val) (if other-buf (format " in `%s'" other-buf) "")))))))
+          (message "Restored region #%d (in zone-creation order)%s"
+                   (caar val) (if other-buf (format " in `%s'" other-buf) "")))))))
 
 ;; This is a non-destructive operation.
 ;;
@@ -1629,7 +1668,7 @@ contain markers for a buffer other than BUFFER."
     (when only-one-buffer-p (setq restrs  (zz-remove-izones-w-other-buffer-markers restrs)))
     (delq nil (mapcar #'cdr restrs))))
 
-;; Useful for commands that want to act on regions in multiple buffers.
+;; Useful for commands that want to act on zones in multiple buffers.
 (defun zz-read-bufs ()
   "Read names of buffers, one at a time.  `C-g' ends reading."
   (let ((bufs  ())
@@ -1683,7 +1722,7 @@ BUFFER is the buffer to compare with (default: current buffer)."
     (dolist (x  xs) (unless (funcall pred x) (push x result)))
     (nreverse result)))
 
-;; Useful for commands that want to act on  regions in multiple buffers (e.g., visible buffers only).
+;; Useful for commands that want to act on zones in multiple buffers (e.g., visible buffers only).
 ;;
 ;; Same as `icicle-remove-if-not' etc.
 (defun zz-remove-if-not (pred xs)
@@ -1741,19 +1780,22 @@ reads any symbol, but it provides completion against variable names."
 This is a repeatable version of `zz-narrow'.
 
 Note that if the value of `zz-izones-var' is not buffer-local then you
-can use this command to cycle among regions in multiple buffers."
+can use this command to cycle among zones in multiple buffers."
   (interactive)
   (zz-repeat-command 'zz-narrow))
 
 ;;;###autoload
-(defun zz-select-region-repeat () ; Bound to `C-x n r'.
-  "Cycle to the next region.
-This is a repeatable version of `zz-select-region'."
+(defalias 'zz-select-region-repeat #'zz-select-zone-repeat)
+;;;###autoload
+(defun zz-select-zone-repeat () ; Bound to `C-x n r'.
+  "Cycle to the next zone, and make it the active region.
+Zones are cycled in chronological order of their recording.
+This is a repeatable version of `zz-select-zone'."
   (interactive)
-  (zz-repeat-command 'zz-select-region))
+  (zz-repeat-command 'zz-select-zone))
 
 (defun zz-izones-from-zones (basic-zones)
-  "Return a list of regions like `zz-izones', based on BASIC-ZONES.
+  "Return a list of zones like `zz-izones', based on BASIC-ZONES.
 Each zone in the list BASIC-ZONES has form (LIMIT1 LIMIT2 . EXTRA),
 where each of the limits is a buffer position (a number or marker) and
 EXTRA is a list.
@@ -2047,7 +2089,7 @@ The variable defaults to `zz-izones'.  With a prefix arg you are
                                      ("c" . zz-clone-zones)
                                      ("C" . zz-clone-and-unite-zones)
                                      ("\C-d" . zz-delete-zone)
-                                     ("r" . zz-select-region-repeat)
+                                     ("r" . zz-select-zone-repeat)
                                      ("u" . zz-unite-zones)
                                      ("v" . zz-set-izones-var)
                                      ("x" . zz-narrow-repeat)))
