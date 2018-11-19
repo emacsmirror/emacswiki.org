@@ -1040,7 +1040,7 @@ a choice."
         (let ((process-environment (append '("COLUMNS=200") (copy-alist process-environment))))
           (call-process apt-utils-dpkg-program nil t nil "-l" package))
         (when (re-search-backward
-               (format "^\\([a-z ][a-z ][a-z ]\\)\\s-+%s\\s-+\\(\\S-+\\)"
+               (format "^\\([a-z ][a-z ][a-z ]\\)\\s-+%s\\(?:\\s-+\\|:\\)\\(\\S-+\\)"
                        (regexp-quote package)) nil t)
           (progn
             (setq desired (aref (match-string 1) 0)
