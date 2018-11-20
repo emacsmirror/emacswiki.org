@@ -73,7 +73,7 @@ Please look [https://www.emacswiki.org/emacs/EmacsApplicationFramework EmacsAppl
 
 *** [https://github.com/manateelazycat/bison bison] -- It's a mode for bison files that provide better syntax highlight than bison-mode.el
 
-*** [https://github.com/manateelazycat/css-sort css-sort.el] -- Sort css attributes automatically.
+*** [https://github.com/manateelazycat/css-sort css-sort] -- Sort css attributes automatically.
 
 *** MultiTerm -- Manages multiple terminal buffers
 
