@@ -17,7 +17,7 @@ Regexps are important to Emacs users in many ways, including these:
 
 Users are also encouraged to use a tool to construct regexes (eg, `rx' - see below)
 
-    (rx (or (and "\*" anything "*/") (and "//" (*? anything) eol))) ;; Matches C-style multiline and single line comments
+    (rx (or (and "\*" (*? anything) "*/") (and "//" (*? anything) eol))) ;; Matches C-style multiline and single line comments
 
 [:RegexpSyntax]
 == Regular Expression Syntax ==
