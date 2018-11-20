@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 13 06:40:34 2018 (-0800)
+;; Last-Updated: Tue Nov 20 13:07:23 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1438
+;;     Update #: 1441
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -356,6 +356,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/11/20 dadams
+;;     isearchp-complement-dimming: Do not call isearch-lazy-highlight-update unless searching (isearch-mode).
 ;; 2018/11/13 dadams
 ;;     Use eval-after-load for zones.el stuff, instead of just testing already loaded.
 ;; 2018/10/20 dadams
@@ -1012,7 +1014,7 @@ Bound to `\\<isearch-mode-map>\\[isearchp-toggle-complementing-domain]' during I
         (while oprops1 (overlay-put new-ov (pop oprops1) (pop oprops1))))
       (setq ov-lims  (cdr ov-lims)))
     (setq isearchp-dimmed-overlays  new-ovs)
-    (isearch-lazy-highlight-update)))
+    (when isearch-mode (isearch-lazy-highlight-update))))
 
 (define-obsolete-function-alias 'isearchp-toggle-dimming-non-prop-zones ; $$$$$$ Remove alias later.
     'isearchp-dim-outside-search-area-flag "2015-08-10")
