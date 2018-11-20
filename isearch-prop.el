@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 20 13:07:23 2018 (-0800)
+;; Last-Updated: Tue Nov 20 14:07:52 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1441
+;;     Update #: 1447
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -358,6 +358,9 @@
 ;;
 ;; 2018/11/20 dadams
 ;;     isearchp-complement-dimming: Do not call isearch-lazy-highlight-update unless searching (isearch-mode).
+;;     isearchp-regexp-scan:
+;;       Dim from last hit to end (that was missing).
+;;       Moved no-matches error outside with-silent-* - cannot be inside loop since loop test fails.
 ;; 2018/11/13 dadams
 ;;     Use eval-after-load for zones.el stuff, instead of just testing already loaded.
 ;; 2018/10/20 dadams
@@ -1802,7 +1805,8 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (let ((prop-value    (cons regexp predicate))
         (last-beg      nil)
-        (added-prop-p  nil))
+        (added-prop-p  nil)
+        (found         nil))
     (with-silent-modifications
       (condition-case-no-debug isearchp-regexp-scan
           (save-excursion
@@ -1815,7 +1819,8 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                                  ;; Matched again, same place.  Advance 1 char.
                                  (forward-char) (setq beg  (1+ beg)))
                                beg))    ; Stop if no more matches.
-              (unless (or (not beg)  (match-beginning isearchp-context-level)) ; No `user-error': Emacs 23
+              (setq found  t)
+              (unless (match-beginning isearchp-context-level) ; No `user-error' in Emacs 23
                 (error "Search context has no subgroup of level %d - try a lower number"
                        isearchp-context-level))
               (let* ((hit-beg     (match-beginning isearchp-context-level))
@@ -1844,8 +1849,10 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
                       (t
                        (remove-text-properties hit-beg hit-end (list property 'IGNORED))
                        (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD))))
-              (goto-char (setq last-beg  beg))))
+              (goto-char (setq last-beg  beg)))
+            (isearchp-add/remove-dim-overlay last-beg end 'ADD)) ; Dim from last hit to end.
         (error (error "%s" (error-message-string isearchp-regexp-scan)))))
+    (unless found (error "No regexp matches")) ; No `user-error': Emacs 23
     ;; $$$$$$ (when added-prop-p (setq isearchp-last-prop+value (cons property prop-value)))
     added-prop-p)) ; Return property value if added, or nil otherwise.
 
