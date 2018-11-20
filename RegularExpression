@@ -10,14 +10,23 @@ A plain string is a regular expression that matches the string exactly.  The abo
     "alexa?"
 
 Some characters have special meanings in a regular expression.  The question mark, for example, says that the preceding expression (the character "a" in this case)  may or may not be present.  The above regular expression matches "alex" or "alexa".
-S
+
 Regexps are important to Emacs users in many ways, including these:
 * We search with them interactively.  Try `C-M-s' (command <code>isearch-forward-regexp</code>).
 * Emacs code uses them to parse text.  We use regexps all the time, without knowing it, when we use Emacs.
 
-Users are also encouraged to use a tool to construct regexes (eg, `rx' - see below)
+You can use a tool to construct regexps. For example, you can use '''`rx'''' like this:
 
-    (rx (or (and "\*" (*? anything) "*/") (and "//" (*? anything) eol))) ;; Matches C-style multiline and single line comments
+    (rx (or (and "\*" (*? anything) "*/") (and "//" (*? anything) eol)))
+
+To produce this regexp (which matches C-style multiline and single line comments):
+
+    \\*\\(?:.\\|\n\\)*?\\*/\\|//\\(?:.\\|\n\\)*?$
+
+
+
+
+
 
 [:RegexpSyntax]
 == Regular Expression Syntax ==
