@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 21 15:39:37 2018 (-0700)
+;; Last-Updated: Wed Nov 21 10:11:04 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 803
+;;     Update #: 812
 ;; URL: https://www.emacswiki.org/emacs/download/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/11/21 dadams
+;;     lisp-indentation-hack: Use it only for Emacs 20-21.
 ;; 2018/09/21 dadams
 ;;     Turn on mlw-mode-line-buf-id-sel-win-mode after modeline-win is loaded.
 ;; 2017/10/11 dadams
@@ -275,39 +277,40 @@
 ;(add-hook 'emacs-lisp-mode-hook       'imenu-add-defs-to-search-menu)
 
 
-
-;; This might not be needed for Emacs 22+ - dunno.
-;;
-(defun lisp-indentation-hack ()
-  "Better Lisp indenting.  Use in Lisp mode hooks
+(when (< emacs-major-version 22)
+  (defun lisp-indentation-hack ()
+    "Better Lisp indenting.  Use in Lisp mode hooks
 such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
 `lisp-interaction-mode-hook'."
-  (unless (if (fboundp 'load-history-regexp) ; Emacs 22+
-              (load-history-filename-element (load-history-regexp "cl-indent"))
-            (assoc "cl-indent" load-history))
-    (load "cl-indent" nil t))
-  (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
-  (setq lisp-indent-maximum-backtracking  10)
-  (put 'define-derived-mode              'common-lisp-indent-function '(4 4 4 2 &body))
-  (put 'if                               'common-lisp-indent-function '(nil nil &body))
-  (put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
-  (put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
-  (put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
-  (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
-  (put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
-  (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
-  (when (featurep 'cl-indent)
-    (put 'cl-flet 'common-lisp-indent-function
-         (get 'flet 'common-lisp-indent-function))
-    (put 'cl-labels 'common-lisp-indent-function
-         (get 'labels 'common-lisp-indent-function))))
+    (unless (if (fboundp 'load-history-regexp) ; Emacs 22+
+                (load-history-filename-element (load-history-regexp "cl-indent"))
+              (assoc "cl-indent" load-history))
+      (load "cl-indent" nil t))
+    (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function)
+    (setq lisp-indent-maximum-backtracking  10)
+    (put 'define-derived-mode              'common-lisp-indent-function '(4 4 4 2 &body))
+    (put 'if                               'common-lisp-indent-function '(nil nil &body))
+    (put 'icicle-define-command              'common-lisp-indent-function '(4 &body))
+    (put 'icicle-define-file-command         'common-lisp-indent-function '(4 &body))
+    (put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
+    (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
+    (put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
+    (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
+    (when (featurep 'cl-indent)
+      (put 'cl-flet 'common-lisp-indent-function
+           (get 'flet 'common-lisp-indent-function))
+      (put 'cl-labels 'common-lisp-indent-function
+           (get 'labels 'common-lisp-indent-function))))
 
-(add-hook 'emacs-lisp-mode-hook 'lisp-indentation-hack)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode) ; Feedback on current function.
+  (add-hook 'emacs-lisp-mode-hook       'lisp-indentation-hack)
+  (add-hook 'lisp-mode-hook             'lisp-indentation-hack)
+  (add-hook 'lisp-interaction-mode-hook 'lisp-indentation-hack)
+  )
 
-(add-hook 'lisp-mode-hook             'lisp-indentation-hack)
-(add-hook 'lisp-interaction-mode-hook 'lisp-indentation-hack)
+
+(add-hook 'emacs-lisp-mode-hook       'turn-on-eldoc-mode) ; Feedback on current function.
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+
 
 (eval-after-load "misc-fns"
   '(progn
