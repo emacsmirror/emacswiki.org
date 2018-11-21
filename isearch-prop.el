@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 20 20:35:44 2018 (-0800)
+;; Last-Updated: Wed Nov 21 08:43:28 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1473
+;;     Update #: 1487
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -871,7 +871,7 @@ Non-interactively:
   (setq isearchp-excluded-zones  ())
   (when msgp (message "Removed dimming")))
 
-(defun isearchp-cleanup (&optional msgp)
+(defun isearchp-cleanup (&optional msgp) ; Bound to `M-S-delete' in `isearch-mode-map'.
   "Remove lazy-highlighting and artifacts from property searching.
 This includes dimming and all `isearchp-' properties.
 Bound to `\\<isearch-mode-map>\\[isearchp-cleanup]' during Isearch."
@@ -886,6 +886,8 @@ Bound to `\\<isearch-mode-map>\\[isearchp-cleanup]' during Isearch."
   "Isearch forward in text with a text property or overlay property.
 That is, move to the next such property and search within it for text
 matching your input.
+
+Bound to `\\<isearch-mode-map>\\[isearchp-property-forward]' during Isearch.
 
 If `isearchp-complement-domain-p' is non-nil then move to the next
 zone that does *not* have the given property.  (Use \\<isearch-mode-map>\
@@ -962,7 +964,8 @@ NOTE: This command is available during normal Isearch, on key \\<isearch-mode-ma
       you must set `isearch-allow-scroll' or `isearch-allow-prefix'
       (if available) to non-nil.  Otherwise, a prefix arg exits
       Isearch.
-See `isearchp-property-forward'."
+See `isearchp-property-forward'.
+Bound to `\\<isearch-mode-map>\\[isearchp-property-forward-regexp]' during Isearch."
   (interactive "P")
   (setq isearch-regexp   t
         isearch-forward  t)
@@ -1532,7 +1535,8 @@ artifacts from property searching.  This includes dimming and all
   "Narrow the zones to search, to the current lazy-highlighted text.
 Search these zones, but update lazy-highlighting from the new search.
 Removes any lazy-highlight marks, then marks lazy-highlights anew,
-from the new search."
+from the new search.
+Bound to `\\<isearch-mode-map>\\[isearchp-narrow-to-lazy-highlights]' during Isearch."
   (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
                    (list (point-min) (point-max) t)
                  (if (< (point) (mark)) (list (point) (mark) t) (list (mark) (point) t))))
@@ -2016,6 +2020,8 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
     (defun isearchp-narrow-to-matching-zones (&optional all-zones msgp) ; Bound to `S-SPC'.
       "Narrow the zones to search, to those containing lazy-highlighting.
 The other search zones are excluded for the continued searching.
+Bound to `\\<isearch-mode-map>\\[isearchp-narrow-to-matching-zones]' during Isearch.
+
 Optional arg ALL-ZONES is the list of zones to check for exclusion.
 Non-interactively, arg MSGP means show a status message."
       (interactive (list (funcall isearchp-zone-limits-function) t))
@@ -2348,8 +2354,7 @@ Non-nil REGEXP-P means use regexp search (otherwise, literal search)."
   "Toggle hiding/showing of comments in the active region or whole buffer.
 If the region is active then toggle in the region.  Otherwise, in the
 whole buffer.
-
-During Isearch this is bound to \\<isearch-mode-map>`\\[isearchp-toggle-hiding-comments]'.
+Bound to `\\<isearch-mode-map>\\[isearchp-toggle-hiding-comments]' during Isearch.
 
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
@@ -2433,7 +2438,7 @@ show them."
   "Toggle the value of option `isearchp-ignore-comments-flag'.
 If option `ignore-comments-flag' is defined (in library
 `hide-comnt.el') then it too is toggled.
-Bound to `C-M-;' during Isearch."
+Bound to `\\<isearch-mode-map>\\[isearchp-toggle-ignoring-comments]' during Isearch."
   (interactive "p")
   (setq isearchp-ignore-comments-flag  (not isearchp-ignore-comments-flag))
   (when (boundp 'ignore-comments-flag) (setq ignore-comments-flag  (not ignore-comments-flag)))
