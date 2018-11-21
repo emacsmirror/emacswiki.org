@@ -41,7 +41,7 @@ which is a Lisp [[sexp]] that can be written to disk (e.g., as part of
 a bookmark or saved variable), and restored in a later Emacs
 session by reading the file where it is saved.
 
-(Commands that use zones typically act on ''izones'', which are just zones that are labeled with a numeric identifier.)
+Commands that use zones typically act on ''izones'', which are just zones that are labeled with a numeric identifier (a negative integer).
 
 Zones have even more in common with Emacs [[overlay]]s than they do
 with segments of a noncontiguous region. An overlay has an
@@ -95,7 +95,7 @@ you need library [[Bookmark+]].
 
 
 
-
+[:zz-select-zone-by-id-and-text]
 [:zz-add-zone]
 [:zz-add-zone-and-unite]
 [:zz-add-zones-from-highlighting]
@@ -116,23 +116,27 @@ you need library [[Bookmark+]].
 Many of the commands that manipulate zones are bound on keymap '''`narrow-map''''.  They are available on prefix key '''`C-x n'''', along with the narrowing/widening keys `C-x n d', `C-x n n', `C-x n p', and `C-x n w':
 
 
-* '''`C-x n a''''   (`zz-add-zone') -- Add the active [[region]] to the current list of zones.
-* '''`C-x n A''''   (`zz-add-zone-and-unite') -- Add the region to the current list of zones, and then unite (coalesce) them.
+* '''`##C-x n ###''''   (`zz-select-zone-by-id-and-text') -- Select zone as region, using completion.
+* '''`C-x n a''''   (`zz-add-zone') -- Add the active [[region]] to the current izones set (variable).
+* '''`C-x n A''''   (`zz-add-zone-and-unite') -- Add the region to the current set of zones, and then unite (coalesce) them.
 * '''`C-x n c''''   (`zz-clone-zones')  -- Clone a zones variable to another one, so the clone has the same zones.
 * '''`C-x n C''''   (`zz-clone-and-unite-zones') -- Clone to a variable and then unite its zones.
 * '''`C-x n d''''   (`narrow-to-defun') -- Standard, except that it is advised to update the current list of zones with the narrowing.
 * '''`C-x n C-d'''' (`zz-delete-zone') -- Delete a zone from a set of zones.
+* '''`C-x n f''''   (`zz-set-zones-from-face') -- Set a zone set to areas with a given face or background color
 * '''`C-x n h''''   (`hlt-highlight-regions') -- Highlight zones in the current buffer.
 * '''`C-x n H''''   (`hlt-highlight-regions-in-buffers') -- Highlight zones in multiple buffers.
 * '''`C-x n l''''   (`zz-add-zones-from-highlighting') -- Add highlighted areas as new zones.
 * '''`C-x n L''''   (`zz-add-zones-from-highlighting') -- Replace current set of zones with new zones from highlighted areas.
 * '''`C-x n n''''   (`narrow-to-region') -- Standard, except that it is advised to update the current list of zones with the narrowing.
 * '''`C-x n p''''   (`narrow-to-page') (standard, except that it is advised to update the current list of zones with the narrowing)
-* '''`C-x n r''''   (`zz-select-zone-repeat') -- Cycle zones as the active [[region]]: '''`##C-x n r r r ...##''''
-* '''`C-x n u''''   (`zz-unite-zones') -- Unite (coalesce) the zones in the current list.
+* '''`C-x n r''''   (`zz-add-zones-matching-regexp') -- Add [[regexp]] matches as zones.
+* '''`C-x n R''''   (`zz-set-zones-matching-regexp') -- Set zone set to [[regexp]] matches.
+* '''`C-x n u''''   (`zz-unite-zones') -- Unite (coalesce) zones.
 * '''`C-x n v''''   (`zz-set-izones-var') -- Make another zones variable current.
 * '''`C-x n w''''   (`widen') -- Standard.
-* '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle zones as buffer [[Narrowing|narrowings]]: '''`##C-x n x x x ...##''''
+* '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle zones as buffer [[Narrowing|narrowing]]: '''`##C-x n x x x ...##''''
+* '''`C-x n C-x''''   (`zz-select-zone-repeat') -- Cycle zones as the active [[region]]: '''`##C-x n C-x C-x C-x ...##''''
 
 
 The above descriptions speak of the "current list" of zones.  You can have any number of variables whose value is a list of zones, and you can switch among them.  The variables can be buffer-local or global (e.g., with positions recorded from multiple buffers).
