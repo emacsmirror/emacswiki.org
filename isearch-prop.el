@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 20 14:07:52 2018 (-0800)
+;; Last-Updated: Tue Nov 20 20:35:44 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1447
+;;     Update #: 1473
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -361,6 +361,7 @@
 ;;     isearchp-regexp-scan:
 ;;       Dim from last hit to end (that was missing).
 ;;       Moved no-matches error outside with-silent-* - cannot be inside loop since loop test fails.
+;;     isearchp-remove-dimming: Added optional arg MSGP.
 ;; 2018/11/13 dadams
 ;;     Use eval-after-load for zones.el stuff, instead of just testing already loaded.
 ;; 2018/10/20 dadams
@@ -699,7 +700,10 @@ the buffer.
 If the variable value is non-nil then the actual candidates used are
 the sections of region or buffer text that are separated by the
 initial candidates, that is, the non-candidates as defined by the scan
-or regexp.")
+or regexp.
+
+You can use \\<isearch-mode-map>`\\[isearchp-toggle-complementing-domain]' during Isearch to toggle this \
+variable.")
 
 (defvar isearchp-context-level 0
   "Match level for Isearch context regexp.
@@ -858,13 +862,14 @@ Non-interactively:
                                                      isearchp-property-values  nil))))
     (when msgp (message (if removedp "Properties removed" "Properties NOT removed")))))
 
-(defun isearchp-remove-dimming ()
+(defun isearchp-remove-dimming (&optional msgp)
   "Remove any text dimming that was applied by `isearchp-*' functions."
-  (interactive)
+  (interactive "p")
   (while isearchp-dimmed-overlays
     (delete-overlay (car isearchp-dimmed-overlays))
     (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays)))
-  (setq isearchp-excluded-zones  ()))
+  (setq isearchp-excluded-zones  ())
+  (when msgp (message "Removed dimming")))
 
 (defun isearchp-cleanup (&optional msgp)
   "Remove lazy-highlighting and artifacts from property searching.
@@ -883,7 +888,8 @@ That is, move to the next such property and search within it for text
 matching your input.
 
 If `isearchp-complement-domain-p' is non-nil then move to the next
-zone that does *not* have the given property.  (Use `C-M-~' during
+zone that does *not* have the given property.  (Use \\<isearch-mode-map>\
+`\\[isearchp-toggle-complementing-domain]' during
 Isearch to toggle this variable.)  For example, this lets you search
 for text that is NOT displayed using a certain face or combination of
 faces.
@@ -903,7 +909,7 @@ commands and commands such as `isearchp-imenu*',
 `isearchp-thing(-regexp)', `isearchp-regexp-context-search', and
 `isearchp-put-prop-on-region'.
 
-Note that this means that you can simply use `C-u C-t' during ordinary
+Note that this means that you can simply use `C-u \\[isearchp-property-forward]' during ordinary
 Isearch in order to repeat the last property search.
 
 The particular prefix arg controls the behavior as follows:
@@ -932,7 +938,7 @@ NOTE: If you search zones of property `face' and the property values
       sure the entire buffer has been fontified.  You can do that
       using command `isearchp-fontify-buffer-now'.
 
-NOTE: This command is available during normal Isearch, on key `C-t'.
+NOTE: This command is available during normal Isearch, on key `\\[isearchp-property-forward]'.
       However, in order to be able to use a prefix arg within Isearch,
       you must set `isearch-allow-scroll' or `isearch-allow-prefix'
       (if available) to non-nil.  Otherwise, a prefix arg exits
@@ -950,7 +956,8 @@ See `isearchp-property-forward'."
 
 (defun isearchp-property-forward-regexp (arg) ; Bound to `C-M-t' in `isearch-mode-map'.
   "Regexp Isearch forward in text with a text or overlay property.
-NOTE: This command is available during normal Isearch, on key `C-M-t'.
+NOTE: This command is available during normal Isearch, on key \\<isearch-mode-map\>\
+`\\[isearchp-property-forward-regexp]'.
       However, in order to be able to use a prefix arg within Isearch,
       you must set `isearch-allow-scroll' or `isearch-allow-prefix'
       (if available) to non-nil.  Otherwise, a prefix arg exits
@@ -1110,7 +1117,8 @@ Non-interactively, non-nil BEG and END are used as the region limits."
 (defun isearchp-regexp-context-search (reuse beg end _ignored regexp &optional predicate action)
   "Search within search contexts that are defined by a regexp.
 If `isearchp-complement-domain-p' is non-nil then search *outside* the
-contexts defined by the regexp.  (Use `C-M-~' during Isearch to toggle
+contexts defined by the regexp.  (Use \\<isearch-mode-map>\
+`\\[isearchp-toggle-complementing-domain]' during Isearch to toggle
 this variable.
 
 Search is limited to the region if it is active.
@@ -1183,8 +1191,7 @@ See `isearchp-regexp-context-search' for a description of the
 arguments and prefix-argument behavior in terms of prompting for them.
 
 If `isearchp-dim-outside-search-area-flag' is non-nil then dim the
-non-contexts.  (You can use command `isearchp-remove-dimming' to
-remove the dimming.)"
+non-contexts.  (You can use `\\[isearchp-remove-dimming]' to remove the dimming.)"
   (interactive (append (isearchp-regexp-read-args) (list t)))
   (when msgp (message "Scanning for regexp matches..."))
   (let ((matches-p  (isearchp-regexp-scan beg end property regexp predicate action)))
@@ -1912,7 +1919,8 @@ Non-interactively, VARIABLE is the izones variable to use.
 
 If `isearchp-complement-domain-p' is non-nil then move to the next
 non-zone; that is, the areas to search are those outside the given
-zones.  (Use `C-M-~' during Isearch to toggle this variable.)"
+zones.  (Use \\<isearch-mode-map>\
+`\\[isearchp-toggle-complementing-domain]' during Isearch to toggle this variable.)"
       (interactive (isearchp-zones-read-args))
       (setq isearch-forward  t)
       (isearchp-zones-1 'isearch-forward variable))
@@ -2086,6 +2094,7 @@ Interactively, ZONES is the value of variable `zz-izones-var'."
     (defun isearchp-make-zones-invisible (zones &optional onlyp no-error-p msgp)
       "Make ZONES invisible.
 With a prefix argument, also make anti-zones visible.
+
 Non-interactively:
  Non-nil ONLYP means also make anti-zones visible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
@@ -2102,6 +2111,7 @@ Non-interactively:
     (defun isearchp-make-zones-visible (zones &optional onlyp no-error-p msgp)
       "Make ZONES visible.
 With a prefix argument, also make anti-zones invisible.
+
 Non-interactively:
  Non-nil ONLYP means also make anti-zones invisible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
@@ -2116,6 +2126,7 @@ Non-interactively:
     (defun isearchp-toggle-zones-invisible (zones &optional onlyp no-error-p msgp)
       "Toggle visibility of ZONES.
 With a prefix argument, also toggle anti-zones the other way.
+
 Non-interactively:
  Non-nil ONLYP means also toggle anti-zones the other way.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
@@ -2129,6 +2140,7 @@ Non-interactively:
     (defun isearchp-make-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
       "Make the complement of (the union of) ZONES invisible.
 With a prefix argument, also make zones visible.
+
 Non-interactively:
  Non-nil ONLYP means also make zones visible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
@@ -2144,6 +2156,7 @@ Non-interactively:
     (defun isearchp-make-anti-zones-visible (zones &optional onlyp no-error-p msgp)
       "Make the complement of (the union of) ZONES visible.
 With a prefix argument, also make zones invisible.
+
 Non-interactively:
  Non-nil ONLYP means also make zones invisible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
@@ -2159,6 +2172,7 @@ Non-interactively:
     (defun isearchp-toggle-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
       "Toggle visibility of the complement of (the union of) ZONES.
 With a prefix argument, also toggle zones the other way.
+
 Non-interactively:
  Non-nil ONLYP means also toggle zones the other way.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
@@ -2335,7 +2349,7 @@ Non-nil REGEXP-P means use regexp search (otherwise, literal search)."
 If the region is active then toggle in the region.  Otherwise, in the
 whole buffer.
 
-During Isearch this is bound to `M-;'.
+During Isearch this is bound to \\<isearch-mode-map>`\\[isearchp-toggle-hiding-comments]'.
 
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
@@ -2372,7 +2386,8 @@ Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
 
-During Isearch this is invoked when you use `M-;'.  However, in order
+During Isearch this is invoked when you use \\<isearch-mode-map>`\\[isearchp-toggle-hiding-comments]'.  \
+However, in order
 to use a prefix arg within Isearch you must set `isearch-allow-scroll'
 or `isearch-allow-prefix' (if available) to non-nil.  Otherwise, a
 prefix arg exits Isearch.
@@ -2434,8 +2449,8 @@ Enter the type of THING to search: `sexp', `sentence', `list',
 
 You can alternatively choose to search, not the THINGs as search
 contexts, but the non-THINGs (non-contexts), that is, the buffer text
-that is outside THINGs.  To do this, use
-`C-M-~' (`isearchp-toggle-completing-domain') during Isearch.
+that is outside THINGs.  To do this, use \\<isearch-moe-map>`\\[isearchp-toggle-complementing-domain]' \
+during Isearch.
 
 Possible THINGs are those for which
 `isearchp-bounds-of-thing-at-point' returns non-nil (and for which the
@@ -2453,8 +2468,9 @@ contexts if `isearchp-ignore-comments-flag' is non-nil.  (You can,
 however, search non-comments even if it is non-nil.)  If THING is
 `comment' (and you are not searching the complement zones) then this
 command automatically turns option `isearchp-ignore-comments-flag'
-OFF.  You can use `C-M-;' toggle this option anytime during Isearch,
-but to see the effect you will need to invoke Isearch again.
+OFF.  You can use `\\<isearch-mode-map>\\[isearchp-toggle-ignoring-comments]' \
+to toggle this option anytime during
+Isearch, but to see the effect you will need to invoke Isearch again.
 
 If you do not use a prefix argument then you are prompted also for a
 PREDICATE (Boolean function) that acceptable things must satisfy.  It
@@ -2722,7 +2738,8 @@ Return (THING THING-START . THING-END), with THING-START and THING-END
 The \"visible\" in the name refers to ignoring things that are within
 invisible text, such as hidden comments.
 
-You can toggle hiding of comments using `C-M-;' during Isearch, but
+You can toggle hiding of comments using \\<isearch-mode-map>`\\[isearchp-toggle-ignoring-comments]' during \
+Isearch, but
 depending on when you do so you might need to invoke the current
 command again.."
   (save-excursion (isearchp-next-visible-thing thing start end)))
