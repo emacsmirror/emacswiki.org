@@ -949,7 +949,7 @@ of `zz-izones-var'.  A non-nil value here overrides the push
 inhibition.  You can bind this to non-nil in Lisp code to populate the
 current `zz-izones-var' during narrowing.")
 
-(defvar zz-zone-abstract-function @'zz-zone-abstract-function-default
+(defvar zz-zone-abstract-function #'zz-zone-abstract-function-default
   "Function used to create an abstract (description) of a zone.
 It must accept an izone as its first argument, and it should return a
 cons whose care is the abstract (a string).")
