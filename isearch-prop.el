@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 21 08:43:28 2018 (-0800)
+;; Last-Updated: Thu Nov 22 07:19:46 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1487
+;;     Update #: 1503
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -356,6 +356,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/11/22 dadams
+;;     isearchp-zones-1: Message or error if no zones.
 ;; 2018/11/20 dadams
 ;;     isearchp-complement-dimming: Do not call isearch-lazy-highlight-update unless searching (isearch-mode).
 ;;     isearchp-regexp-scan:
@@ -1965,42 +1967,47 @@ See `isearchp-zones-forward'."
 Search with function SEARCH-FN within the zones of izones VARIABLE.
 VARIABLE defaults to the value of `zz-izones-var'."
       (unless variable (setq variable  zz-izones-var))
-      (when isearchp-dim-outside-search-area-flag
-        (with-silent-modifications
-          (let* ((zones       (zz-zone-union (zz-izone-limits (symbol-value variable) nil 'ONLY-THIS-BUFFER)))
-                 (comp-zones  (zz-zones-complement zones)))
-            (dolist (zone  (if isearchp-complement-domain-p comp-zones zones))
-              (let ((isearchp-complement-domain-p  nil))
-                (isearchp-add/remove-dim-overlay (car zone) (cadr zone) nil)))
-            (dolist (zone  (if isearchp-complement-domain-p zones comp-zones))
-              (let ((isearchp-complement-domain-p  nil))
-                (isearchp-add/remove-dim-overlay (car zone) (cadr zone) 'ADD))))))
-      ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
-      (ignore-errors (isearch-done))
-      ;; At least for the initial message, assume we are starting over, with a new kind of searching.
-      ;; Maybe we should reset more vars here, unless we are starting from within `isearch-mode'?
-      ;; Do nothing about that, for now.  Just reset those that might make the message wrong.
-      (setq isearch-word                     nil
-            isearch-success                  t
-            isearch-wrapped                  nil
-            isearch-adjusted                 nil
-            ;; isearch-barrier                  (point)
-            ;; isearch-yank-flag                nil
-            ;; isearch-error                    nil
-            ;; isearch-just-started             t
-            )
-      (let ((message-log-max  nil))
-        (message "%sZONE SEARCH %s" (if isearchp-complement-domain-p "*OUTSIDE* " "")
-                 (isearchp-message-prefix nil nil isearch-nonincremental))
-        (sit-for 1))
-      (let* ((enable-recursive-minibuffers   t)
-             ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
-             (search-nonincremental-instead  nil))
-        (setq isearchp-filter-predicate-orig  isearch-filter-predicate
-              isearch-filter-predicate        (isearchp-zones-filter-pred (zz-izone-limits
-                                                                           (symbol-value variable)))))
-      (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
-      (funcall search-fn))
+      (let ((zones  (symbol-value variable)))
+        (unless zones (if (not isearchp-complement-domain-p)
+                          (error "No zones to search") ; No `user-error' in Emacs 23.
+                        (message "No zones - searching complement: ALL text") (sit-for 0.6)))
+        (when isearchp-dim-outside-search-area-flag
+          (with-silent-modifications
+            (let* ((zs       (zz-zone-union (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+                   (comp-zs  (zz-zones-complement zs)))
+              (dolist (zone  (if isearchp-complement-domain-p comp-zs zs))
+                (let ((isearchp-complement-domain-p  nil))
+                  (isearchp-add/remove-dim-overlay (car zone) (cadr zone) nil)))
+              (dolist (zone  (if isearchp-complement-domain-p zs comp-zs))
+                (let ((isearchp-complement-domain-p  nil))
+                  (isearchp-add/remove-dim-overlay (car zone) (cadr zone) 'ADD))))))
+
+        ;; Emacs bug #21091: Wrap with `ignore-errors'. Bug not fixed before Emacs 25.2, so leave this in.
+        (ignore-errors (isearch-done))
+
+        ;; At least for the initial message, assume we are starting over, with a new kind of searching.
+        ;; Maybe we should reset more vars here, unless we are starting from within `isearch-mode'?
+        ;; Do nothing about that, for now.  Just reset those that might make the message wrong.
+        (setq isearch-word                     nil
+              isearch-success                  t
+              isearch-wrapped                  nil
+              isearch-adjusted                 nil
+              ;; isearch-barrier                  (point)
+              ;; isearch-yank-flag                nil
+              ;; isearch-error                    nil
+              ;; isearch-just-started             t
+              )
+        (let ((message-log-max  nil))
+          (message "%sZONE SEARCH %s" (if isearchp-complement-domain-p "*OUTSIDE* " "")
+                   (isearchp-message-prefix nil nil isearch-nonincremental))
+          (sit-for 1))
+        (let* ((enable-recursive-minibuffers   t)
+               ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
+               (search-nonincremental-instead  nil))
+          (setq isearchp-filter-predicate-orig  isearch-filter-predicate
+                isearch-filter-predicate        (isearchp-zones-filter-pred (zz-izone-limits zones))))
+        (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
+        (funcall search-fn)))
 
     (defun isearchp-zones-filter-pred (&optional zones)
       "Return a predicate that tests if its args are in ZONES.
