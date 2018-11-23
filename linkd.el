@@ -10,14 +10,14 @@
 ;; Copyright (C) 2009, Shaun Johnson.
 ;; Created: Fri Mar 14 07:56:32 2008 (Pacific Daylight Time)
 ;; Version: $Id: linkd.el,v 1.64 2008/03/14 $
-;; Last-Updated: Sun Mar  7 11:48:30 2010 (-0800)
+;; Last-Updated: Wed Jun  9 23:22:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 629
+;;     Update #: 630
 ;; Package-Version: 0.9
 ;; Website, original version: http://dto.github.com/notebook/linkd.html
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/linkd.el
 ;; URL: http://www.emacswiki.org/emacs/linkd.tar.gz
-;; Keywords: hypermedia help 
+;; Keywords: hypermedia help
 ;; Compatibility: GNU Emacs 21.x, GNU Emacs 22.x
 ;;
 ;; Features that might be required by this library:
@@ -722,7 +722,8 @@ Returns the file-name to the icon image file."
 
 (defun linkd-find-next-tag-or-star (name)
   "Find next Linkd tag or star."
-  (let* ((regexp (concat "\(\@\\(\*\\|>\\) \"" name))
+  ;; 2010-06-09 DADAMS: wrapped NAME with `regexp-quote'.
+  (let* ((regexp (concat "\(\@\\(\*\\|>\\) \"" (regexp-quote name)))
          (found-position
           (save-excursion
             (goto-char (point-at-eol))
