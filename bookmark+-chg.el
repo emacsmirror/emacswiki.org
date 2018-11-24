@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Nov 22 10:32:00 2018 (-0800)
+;; Last-Updated: Sat Nov 24 08:53:53 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 16467
+;;     Update #: 16473
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1376,6 +1376,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2018/11/24 dadams
+;;     bookmark-bmenu-other-(window|frame):
+;;       Added missing bookmark-name arg to b-j-o-(window|frame).  Thx to Alan Wehmann.
+;;     Added: bmkp-bmenu-load-marking,  bmkp-bmenu-load-marking-unmark-first.
+;;     bmkp-bmenu-(bookmark-file|mark)-menu: Added bmkp-bmenu-load-marking(-unmark-first).
 ;; 2018/10/10 dadams
 ;;     Added: bookmark-bmenu-other-frame.
 ;;     bookmark-bmenu-mode: Added bookmark-bmenu-other-frame to doc string.
