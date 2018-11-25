@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct  2 14:55:52 2018 (-0700)
+;; Last-Updated: Sun Nov 25 15:28:51 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 15249
+;;     Update #: 15251
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3489,7 +3489,7 @@
 ;;  period of time (option `bmkp-auto-idle-bookmark-mode-delay').
 ;;  
 ;;
-;;(@* Automatic Info Bookmarking)
+;;(@* "Automatic Info Bookmarking")
 ;;  *** Automatic Info Bookmarking ***
 ;;
 ;;  The former feature is currently limited to Info bookmarks.  When
@@ -3534,7 +3534,7 @@
 ;;  minor mode `Info-persist-history-mode'.
 ;;
 ;;
-;;(@* Automatic Idle-Period Bookmarking)
+;;(@* "Automatic Idle-Period Bookmarking")
 ;;  *** Automatic Idle-Period Bookmarking ***
 ;;
 ;;  Automatic idle-period bookmarking uses autonamed bookmarks (see
