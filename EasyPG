@@ -41,7 +41,7 @@ I found the cause for it. The graphical window appears if you run <code>gpg</cod
 I have the same problem. And in console emacs23 can pop up nothing, so it hang there, you have to use "C-g" quit it. For my gentoo system, I compile the package 'pinentry' without gtk qt3 ncurses. It caused emacs23 hang both in X or console. I notice that pinentry did not have the readline USE in recent  version.
 
 I found the thread to fix it.
-http://www.nabble.com/gnupg-interface-td17242718.html
+https://web.archive.org/web/20090204142256/http://www.nabble.com/gnupg-interface-td17242718.html
 
 1. Install the latest GnuPG 1.x along with 2.x and let epg-gpg-program
    to point the executable, or
