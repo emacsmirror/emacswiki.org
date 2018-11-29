@@ -24,6 +24,15 @@ jurisdiction to jurisdiction.  I figure that if Andrew Tridgel feels
 OK saying in open court that he did these things against Microsoft,
 we're probably safe from the presumably less litigious codingmonkeys.
 
+
+=== SubEthaEdit is free software ===
+
+SubEthaEdit became MIT [https://github.com/subethaedit/SubEthaEdit/commit/6ba20f3d9988f09703bf3018b86fcd9cb8717ed4#diff-61e0bdf7e1b43c5c93d9488b22e04170 licensed in October 2018]. 
+
+==== Discussion ====
+
+The reverse engineering requirements were written when SubEthaEdit was proprietary. How does the MIT License change these?
+
 == Introduction ==
 
 The SubEthaEdit protocol has a fair number of parts. You've probably
