@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-11-11 09:27:58
-;; Version: 0.1
-;; Last-Updated: 2018-11-11 09:27:58
+;; Version: 0.3
+;; Last-Updated: 2018-11-30 13:31:24
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-pair.el
 ;; Keywords:
@@ -69,6 +69,12 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/11/30
+;;      * Fix `awesome-pair-kill-line-in-string' won't work with golang string.
+;;
+;; 2018/11/23
+;;      * Make `awesome-pair-kill-line-in-string' support single quote string.
 ;;
 ;; 2018/11/11
 ;;      * First released.
@@ -614,10 +620,11 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
         (last-command nil))
     (kill-region start end)))
 
-(defun awesome-pair-kill-internal (&optional argument)
-  (interactive "P")
-  (cond (argument
-         (kill-line (if (integerp argument) argument 1)))
+(defun awesome-pair-kill-internal ()
+  (cond (current-prefix-arg
+         (kill-line (if (integerp current-prefix-arg)
+                        current-prefix-arg
+                      1)))
         ((awesome-pair-in-string-p)
          (awesome-pair-kill-line-in-string))
         ((awesome-pair-in-single-quote-string-p)
@@ -638,19 +645,21 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
     (kill-region (point) sexp-end)))
 
 (defun awesome-pair-kill-line-in-string ()
-  (if (save-excursion (awesome-pair-skip-whitespace t (point-at-eol))
-                      (eolp))
-      (kill-line)
-    (save-excursion
-      (if (awesome-pair-in-string-escape-p)
-          (backward-char))
-      (let ((beginning (point)))
-        (while (not (or (eolp)
-                        (eq (char-after) ?\" )))
-          (forward-char)
-          (if (eq (char-before) ?\\ )
-              (forward-char)))
-        (kill-region beginning (point))))))
+  (cond ((save-excursion
+           (awesome-pair-skip-whitespace t (point-at-eol))
+           (eolp))
+         (kill-line))
+        (t
+         (save-excursion
+           (if (awesome-pair-in-string-escape-p)
+               (backward-char))
+           (let ((beginning (point)))
+             (while (save-excursion
+                      (forward-char)
+                      (awesome-pair-in-string-p))
+               (forward-char))
+             (kill-region beginning (point)))
+           ))))
 
 (defun awesome-pair-skip-whitespace (trailing-p &optional limit)
   (funcall (if trailing-p 'skip-chars-forward 'skip-chars-backward)
@@ -680,9 +689,10 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
         (if (and kill-whole-line (eobp)) (throw 'return nil))
         (save-excursion
           (unless (awesome-pair-ignore-errors (forward-sexp))
-            (up-list)
-            (setq end-of-list-p (eq (point-at-eol) eol))
-            (throw 'return nil))
+            (if (awesome-pair-ignore-errors (up-list))
+                (progn
+                  (setq end-of-list-p (eq (point-at-eol) eol))
+                  (throw 'return nil))))
           (if (or (and (not firstp)
                        (not kill-whole-line)
                        (eobp))
@@ -846,54 +856,60 @@ If current line is not blank, do `awesome-pair-kill' first, re-indent line if re
       (cons start (1- (point))))))
 
 (defun awesome-pair-after-open-pair-p ()
-  (let ((syn (char-syntax (char-before))))
-    (or (eq syn ?\()
-        (and (eq syn ?_)
-             (eq (char-before) ?\{)))
-    ))
+  (save-excursion
+    (let ((syn (char-syntax (char-before))))
+      (or (eq syn ?\()
+          (and (eq syn ?_)
+               (eq (char-before) ?\{)))
+      )))
 
 (defun awesome-pair-after-close-pair-p ()
-  (let ((syn (char-syntax (char-before))))
-    (or (eq syn ?\) )
-        (eq syn ?\" )
-        (and (eq syn ?_ )
-             (eq (char-before) ?\}))
-        )))
+  (save-excursion
+    (let ((syn (char-syntax (char-before))))
+      (or (eq syn ?\) )
+          (eq syn ?\" )
+          (and (eq syn ?_ )
+               (eq (char-before) ?\}))
+          ))))
 
 (defun awesome-pair-in-empty-pair-p ()
-  (or (and (eq (char-syntax (char-before)) ?\()
-           (eq (char-after) (matching-paren (char-before))))
-      (and (eq (char-syntax (char-before)) ?_)
-           (eq (char-before) ?\{)
-           (eq (char-syntax (char-after)) ?_)
-           (eq (char-after) ?\})
-           )))
+  (save-excursion
+    (or (and (eq (char-syntax (char-before)) ?\()
+             (eq (char-after) (matching-paren (char-before))))
+        (and (eq (char-syntax (char-before)) ?_)
+             (eq (char-before) ?\{)
+             (eq (char-syntax (char-after)) ?_)
+             (eq (char-after) ?\})
+             ))))
 
 (defun awesome-pair-in-single-quote-string-p ()
-  (when (awesome-pair-ignore-errors
-         (progn
-           (save-excursion (backward-sexp))
-           (save-excursion (forward-sexp))))
-    (let* ((current-sexp (buffer-substring-no-properties
-                          (save-excursion
-                            (backward-sexp)
-                            (point))
-                          (save-excursion
-                            (forward-sexp)
-                            (point))
-                          ))
-           (first-char (substring current-sexp 0 1))
-           (last-char (substring current-sexp -1 nil)))
-      (and (string-equal first-char "'")
-           (string-equal last-char "'")))))
+  (save-excursion
+    (when (awesome-pair-ignore-errors
+           (progn
+             (save-excursion (backward-sexp))
+             (save-excursion (forward-sexp))))
+      (let* ((current-sexp (buffer-substring-no-properties
+                            (save-excursion
+                              (backward-sexp)
+                              (point))
+                            (save-excursion
+                              (forward-sexp)
+                              (point))
+                            ))
+             (first-char (substring current-sexp 0 1))
+             (last-char (substring current-sexp -1 nil)))
+        (and (string-equal first-char "'")
+             (string-equal last-char "'"))))))
 
 (defun awesome-pair-in-string-p (&optional state)
-  (and (nth 3 (or state (awesome-pair-current-parse-state)))
-       t))
+  (save-excursion
+    (and (nth 3 (or state (awesome-pair-current-parse-state)))
+         t)))
 
 (defun awesome-pair-in-comment-p (&optional state)
-  (and (nth 4 (or state (awesome-pair-current-parse-state)))
-       t))
+  (save-excursion
+    (and (nth 4 (or state (awesome-pair-current-parse-state)))
+         t)))
 
 (defun awesome-pair-in-string-escape-p ()
   (let ((oddp nil))
