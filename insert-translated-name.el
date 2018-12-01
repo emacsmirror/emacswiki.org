@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 1.6
-;; Last-Updated: 2018-11-18 08:14:29
+;; Version: 1.7
+;; Last-Updated: 2018-12-01 22:23:49
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -66,6 +66,9 @@
 
 ;;; Change log:
 ;;
+;; 2018/12/01
+;;      * Add `insert-translated-name-origin-style-mode-list'.
+;;
 ;; 2018/11/18
 ;;      * Refacotry to remove duplicate variable.
 ;;
@@ -123,6 +126,9 @@
   "Face for keyword match."
   :group 'insert-translated-name)
 
+(defvar insert-translated-name-origin-style-mode-list
+  '(text-mode))
+
 (defvar insert-translated-name-line-style-mode-list
   '(web-mode emacs-lisp-mode))
 
@@ -148,14 +154,17 @@
        (minibuffer-window-active-p (get-buffer-window)))
       (insert-translated-name-insert-original-translation)
     (insert-translated-name-active
-     (cond ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
-            "line")
-           ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
-            "camel")
-           ((insert-translated-name-match-modes insert-translated-name-underline-style-mode-list)
-            "underline")
-           (t
-            "underline")))))
+     (cond
+      ((insert-translated-name-match-modes insert-translated-name-origin-style-mode-list)
+       "origin")
+      ((insert-translated-name-match-modes insert-translated-name-line-style-mode-list)
+       "line")
+      ((insert-translated-name-match-modes insert-translated-name-camel-style-mode-list)
+       "camel")
+      ((insert-translated-name-match-modes insert-translated-name-underline-style-mode-list)
+       "underline")
+      (t
+       "underline")))))
 
 (defun insert-translated-name-insert-original-translation ()
   (interactive)
@@ -319,7 +328,9 @@ If no parse state is supplied, compute one from the beginning of the
            (string-join (mapcar 'downcase words) "_"))
           ((string-equal style "camel")
            (concat (downcase (car words)) (string-join (mapcar 'capitalize (cdr words)))))
-          ((string-equal style "comment")
+          ((or
+            (string-equal style "comment")
+            (string-equal style "origin"))
            translation))))
 
 (defun insert-translated-name-update-translation-in-buffer (word style translation insert-buffer placeholder)
