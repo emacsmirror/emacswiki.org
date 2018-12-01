@@ -1,0 +1,25 @@
+Context sensitive help is help that matches the major mode you're using and the symbol you're looking at.
+
+== Emacs Lisp ==
+
+Emacs has two key bindings programmers are very familiar with:
+
+* `C-h f' gives you the documentation for the function at point
+* `C-h v' gives you the documentation for the variable at point
+
+== Perl ==
+
+CPerl comes with the function `cperl-perldoc' that calls `perldoc' on the symbol at point.
+Here's a simple addition to your config file to make `C-h f' call it, even if you use ordinary
+Perl mode instead of CPerl.
+
+{{{
+(add-hook 'perl-mode-hook 'my-context-help-for-perl-mode)
+
+(defun my-context-help-for-perl-mode ()
+  (require 'cperl-mode);; for help
+  (local-set-key (kbd "C-h f") 'cperl-perldoc))
+}}}
+
+----
+CategoryHelp
