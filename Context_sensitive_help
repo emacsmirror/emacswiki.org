@@ -59,5 +59,20 @@ If that doesn't do what you expect it to do, give the following code a try.
     (Man-getpage-in-background word)))
 }}}
 
+== Go ==
+
+Go has commonly used helper programs `godoc' and `godef' which can be used to find documentation
+and source definitions.
+
+An example of how to enable `C-h f' as context sensitive help function:
+
+{{{
+;; https://github.com/dominikh/go-mode.el
+(use-package go-mode
+  :config
+  :bind (:map go-mode-map
+	      ("C-h f" . godoc-at-point)))
+}}}
+
 ----
 CategoryHelp
