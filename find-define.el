@@ -1,4 +1,4 @@
-;;; find-define.el --- Find function or variable definition.
+;;; find-define.el --- Jump to the definition of a function or variable
 
 ;; Filename: find-define.el
 ;; Description: Find function or variable definition.
@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-06-13 17:19:58
-;; Version: 0.5
-;; Last-Updated: 2018-09-01 20:54:49
+;; Version: 0.6
+;; Last-Updated: 2018-12-01 12:17:01
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/find-define.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `dumb-jump' `elisp-def'
+;;
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -39,10 +39,16 @@
 
 ;;; Commentary:
 ;;
-;; Find function or variable definition.
+;; Jump to the definition of a function or variable, and support multiple programming languages
 ;;
-;; `dumb-jump' is awesome extension, but it's not smart enough for emacs-lisp mode.
-;; So i use `elisp-defs' instead `dumb-jump-go' if current mode is emacs-lisp mode.
+;; `find-define' supports the following programming languages:
+;;
+;; | Language   | Backend   |
+;; | Elisp      | elisp-def |
+;; | Python     | jedi-core |
+;; | Golang     | go-mode   |
+;; | JavaScript | tide      |
+;; | Other      | dumb-jump |
 ;;
 
 ;;; Installation:
@@ -50,27 +56,24 @@
 ;; Put find-define.el to your load-path.
 ;; The load-path is usually ~/elisp/.
 ;; It's set in your ~/.emacs like this:
-;; (add-to-list 'load-path (expand-file-name "~/elisp"))
 ;;
-;; And the following to your ~/.emacs startup file.
-;;
-;; (require 'find-define)
+;;     (add-to-list 'load-path (expand-file-name "~/elisp"))
+;;     (require 'find-define)
 ;;
 ;; And binding any key you like with below commands:
 ;;
+;; `find-define'                (I like use Ctrl + 8)
 ;; `find-define-back'           (I like use Ctrl + 7)
-;; `find-define-go'             (I like use Ctrl + 8)
-;; `find-define-prompt'         (I like use Ctrl + 9)
+;;
 
 ;;; Customize:
 ;;
 ;;
-;;
-;; All of the above can customize by:
-;;      M-x customize-group RET find-define RET
-;;
 
 ;;; Change log:
+;;
+;; 2018/12/01
+;;      * Refactory code.
 ;;
 ;; 2018/09/01
 ;;      * Use `elisp-def.el' instead my `find-func-extension.el', `elisp-def.el' is more smarter.
@@ -94,43 +97,19 @@
 ;;
 
 ;;; Require
-(require 'elisp-def)
-(require 'dumb-jump)
 
 ;;; Code:
 
-;; Add `elisp-def-mode' in elisp mode.
-(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
-  (add-hook hook #'elisp-def-mode))
-
-;; Prefer use rg, because rg is much faster than ag, grep, ack.
-;; If rg is not installed, use other grep tools.
-(setq dumb-jump-prefer-searcher 'rg)
-
-(defun find-define-go (&optional prefix)
-  (interactive "P")
-  (setq find-define-symbol-cache (thing-at-point 'symbol))
-  (find-define-remember-position)
-  (cond ((equal 'emacs-lisp-mode major-mode)
-         (find-elisp-define prefix))
-        ((equal 'python-mode major-mode)
-         (find-python-define prefix))
-        (t
-         (if (null prefix)
-             (dumb-jump-go)
-           (dumb-jump-go-other-window))
-         )))
-
-(defun find-elisp-define (&optional prefix)
-  (interactive "P")
+;;;;;;;;;;;; Utils functions ;;;;;;;;;;;;;;;;;;
+(defun find-define-elisp (&optional prefix)
+  (require 'elisp-def)
   (if (null prefix)
       (elisp-def)
     (progn
       (switch-to-buffer-other-window (buffer-name))
       (elisp-def))))
 
-(defun find-python-define (&optional prefix)
-  (interactive "P")
+(defun find-define-python (&optional prefix)
   (require 'jedi-core)
   (if (null prefix)
       (jedi:goto-definition)
@@ -138,21 +117,47 @@
       (switch-to-buffer-other-window (buffer-name))
       (jedi:goto-definition))))
 
-(defun find-define-back ()
-  (interactive)
-  (find-define-restore-position))
+(defun find-define-go (&optional prefix)
+  (require 'go-mode)
+  (if (null prefix)
+      (godef-jump (point))
+    (godef-jump-other-window (point))))
 
-(defun find-define-prompt (&optional prefix)
-  (interactive "P")
-  (if (equal 'emacs-lisp-mode major-mode)
-      (find-define-go prefix)
-    (dumb-jump-go-prompt)))
+(defun find-define-js (&optional prefix)
+  (require 'tide)
+  (if (null prefix)
+      (xref--find-definitions (symbol-name (symbol-at-point)) nil)
+    (xref--find-definitions (symbol-name (symbol-at-point)) 'window)))
+
+(defun find-define-common (&optional prefix)
+  (require 'dumb-jump)
+  (setq dumb-jump-prefer-searcher 'rg)
+  (if (null prefix)
+      (dumb-jump-go)
+    (dumb-jump-go-other-window)))
 
 (defun find-define-remember-position ()
-  (interactive)
   (point-to-register 8))
 
-(defun find-define-restore-position ()
+;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;
+(defun find-define (&optional prefix)
+  (interactive "P")
+  (find-define-remember-position)
+  (cond ((or
+          (derived-mode-p 'emacs-lisp-mode)
+          (derived-mode-p 'ielm-mode))
+         (find-define-elisp prefix))
+        ((derived-mode-p 'python-mode)
+         (find-define-python prefix))
+        ((derived-mode-p 'go-mode)
+         (find-define-go prefix))
+        ((derived-mode-p 'js-mode)
+         (find-define-js prefix))
+        (t
+         (find-define-common prefix)
+         )))
+
+(defun find-define-back ()
   (interactive)
   (let ((tmp (point-marker)))
     (jump-to-register 8)
