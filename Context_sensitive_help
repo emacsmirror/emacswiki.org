@@ -23,7 +23,7 @@ Perl mode instead of CPerl mode.
 
 == Python ==
 
-Python mode has support for EldocMode, and a key binding to go along with it: `C-c f`.
+Python mode has support for ElDoc, and a key binding to go along with it: `C-c f`.
 If that doesn't do what you expect it to do, give the following code a try.
 
 {{{
