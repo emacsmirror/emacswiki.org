@@ -9,9 +9,9 @@ Emacs has two key bindings programmers are very familiar with:
 
 == Perl ==
 
-CPerl comes with the function `cperl-perldoc' that calls `perldoc' on the symbol at point.
+CPerl mode comes with the function `cperl-perldoc' that calls `perldoc' on the symbol at point.
 Here's a simple addition to your config file to make `C-h f' call it, even if you use ordinary
-Perl mode instead of CPerl.
+Perl mode instead of CPerl mode.
 
 {{{
 (add-hook 'perl-mode-hook 'my-context-help-for-perl-mode)
@@ -19,6 +19,42 @@ Perl mode instead of CPerl.
 (defun my-context-help-for-perl-mode ()
   (require 'cperl-mode);; for help
   (local-set-key (kbd "C-h f") 'cperl-perldoc))
+}}}
+
+== Python ==
+
+Python mode has support for EldocMode, and a key binding to go along with it: `C-c f`.
+If that doesn't do what you expect it to do, give the following code a try.
+
+{{{
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-h f") 'pydoc-at-point)))
+
+(defun pydoc-at-point ()
+  "Run `pydoc' on the word around point."
+  (interactive)
+  (pydoc (python-eldoc--get-symbol-at-point)))
+
+(defun pydoc (word)
+  "Run `pydoc' on WORD."
+  (interactive
+   (list (let* ((default-entry (python-eldoc--get-symbol-at-point))
+                (input (read-string
+                        (format "pydoc entry%s: "
+                                (if (string= default-entry "")
+                                    ""
+                                  (format " (default %s)" default-entry))))))
+           (if (string= input "")
+               (if (string= default-entry "")
+                   (error "No pydoc args given")
+                 default-entry)
+             input))))
+  (require 'man)
+  (let* ((case-fold-search nil)
+	 (Man-switches nil)
+	 (manual-program "pydoc"))
+    (Man-getpage-in-background word)))
 }}}
 
 ----
