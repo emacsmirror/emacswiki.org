@@ -1,5 +1,7 @@
 Context sensitive help is help that matches the major mode you're using and the symbol you're looking at.
 
+If you're interested in a one-liner for the symbol at point, take a look at ElDoc.
+
 == Emacs Lisp ==
 
 Emacs has two key bindings programmers are very familiar with:
