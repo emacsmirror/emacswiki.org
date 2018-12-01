@@ -19,6 +19,7 @@ This category is about help with '''''Emacs'''''. See also CategoryDocumentation
 * InfoMode -- ''complete'' Emacs documentation: `C-h i', then click ''Emacs''
 * LearnEmacsLisp -- Using EmacsLisp with Emacs is helpful.
 * SelfDocumentation -- quick reference on finding help within Emacs
+* [[Context sensitive help]] -- getting help for the major mode you're working with
 
 ==Emacs help from the Internet==
 
