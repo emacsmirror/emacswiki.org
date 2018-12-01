@@ -7,7 +7,7 @@ Context sensitive help is help that matches the current context, for example the
 
 Library [[Mouse3]] (<tt>[[mouse3.el]]</tt>) gives you a context-specific popup menu by clicking the right mouse button (`mouse-3') twice (slower than a double-click).
 
-The menu differs depending on whether the [[region]] is active.  If it is then you get a menu of actions on the region.  Otherwise you get a menu of actions on a thing at point.
+The menu differs depending on whether the [[region]] is active.  If it is then you get a menu of actions on the region.  Otherwise you get a menu of actions on a thing at point. Actions can be anything; in particular, they can include contextual help information.
 
 By default, each of these menus also includes, at the beginning of the menu, a submenu
 that has, as its own submenus, the global menus that are currently available.
