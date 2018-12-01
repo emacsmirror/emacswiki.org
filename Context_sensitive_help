@@ -1,6 +1,6 @@
-Context sensitive help is help that matches the major mode you're using and the symbol you're looking at.
+Context sensitive help is help that matches the current context, for example the current [[major mode]] and the symbol at [[point]].
 
-If you're interested in a one-liner for the symbol at point, take a look at ElDoc.
+(If you're interested in a one-liner for the symbol at point, take a look at ElDoc.)
 
 == Emacs Lisp ==
 
