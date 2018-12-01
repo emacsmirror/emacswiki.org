@@ -2,6 +2,21 @@ Context sensitive help is help that matches the current context, for example the
 
 (If you're interested in a one-liner for the symbol at point, take a look at ElDoc.)
 
+
+== Mouse-3 Contextual Menu ==
+
+Library [[Mouse3]] (<tt>[[mouse3.el]]</tt>) gives you a context-specific popup menu by clicking the right mouse button (`mouse-3') twice (slower than a double-click).
+
+The menu differs depending on whether the [[region]] is active.  If it is then you get a menu of actions on the region.  Otherwise you get a menu of actions on a thing at point.
+
+By default, each of these menus also includes, at the beginning of the menu, a submenu
+that has, as its own submenus, the global menus that are currently available.
+
+You can also provide mode-specific behavior by either replacing the
+default `mouse-3' popup menu or augmenting it with mode-specific entries.
+
+
+
 == Emacs Lisp ==
 
 Emacs has two key bindings programmers are very familiar with:
