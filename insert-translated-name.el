@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-22 10:54:16
-;; Version: 1.7
-;; Last-Updated: 2018-12-01 22:23:49
+;; Version: 1.8
+;; Last-Updated: 2018-12-02 23:24:18
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/insert-translated-name.el
 ;; Keywords:
@@ -65,6 +65,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/12/02
+;;      * Use `get-text-property' improve algorithm of `insert-translated-name-in-string-p' and `insert-translated-name-in-commit-p'
 ;;
 ;; 2018/12/01
 ;;      * Add `insert-translated-name-origin-style-mode-list'.
@@ -305,20 +308,14 @@
          (search-forward-regexp "#\\s-Please\\s-enter\\s-the\\s-commit\\s-message\\s-for\\s-your\\s-changes." nil t))))
 
 (defun insert-translated-name-in-string-p (&optional state)
-  "True if the parse state is within a double-quote-delimited string.
-If no parse state is supplied, compute one from the beginning of the
-  defun to the point."
-  (and (nth 3 (or state (insert-translated-name-current-parse-state)))
-       t))
+  (or (nth 3 (or state (insert-translated-name-current-parse-state)))
+      (eq (get-text-property (point) 'face) 'font-lock-string-face)
+      (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+      ))
 
 (defun insert-translated-name-in-comment-p (&optional state)
-  "True if parse state STATE is within a comment.
-If no parse state is supplied, compute one from the beginning of the
-  defun to the point."
-  ;; 4. nil if outside a comment, t if inside a non-nestable comment,
-  ;;    else an integer (the current comment nesting)
-  (and (nth 4 (or state (insert-translated-name-current-parse-state)))
-       t))
+  (or (nth 4 (or state (insert-translated-name-current-parse-state)))
+      (eq (get-text-property (point) 'face) 'font-lock-comment-face)))
 
 (defun insert-translated-name-convert-translation (translation style)
   (let ((words (split-string translation " ")))
