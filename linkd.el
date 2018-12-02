@@ -10,9 +10,9 @@
 ;; Copyright (C) 2009, Shaun Johnson.
 ;; Created: Fri Mar 14 07:56:32 2008 (Pacific Daylight Time)
 ;; Version: $Id: linkd.el,v 1.64 2008/03/14 $
-;; Last-Updated: Wed Jun  9 23:22:15 2010 (-0700)
-;;           By: dradams
-;;     Update #: 630
+;; Last-Updated: Sat Dec 1 20:48:00 2018 (-0700)
+;;           By: awehmann
+;;     Update #: 631
 ;; Package-Version: 0.9
 ;; Website, original version: http://dto.github.com/notebook/linkd.html
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/linkd.el
@@ -73,6 +73,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2018/12/01 awehmann
+;;     linkd-match
+;;     added failure return when search failed or when sexp exceeded limit or when symbol test failed
 ;; 2010/03/07 dadams
 ;;     linkd-render-link:
 ;;       Don't render unless the (@...) is really a function call.  Thx to eeeickythump.
@@ -412,19 +415,23 @@ You can set this in the `Local Variables' section of a file.")
 
 (defun linkd-match (limit)
   "Try to read link sexp between point and LIMIT.
-Return non-nil if a link is found.  Set match-data appropriately."
-  (let ((sexp nil))
-    (when (search-forward (concat "(" "@") limit t) (backward-char 2))
-    (let ((begin-point (point)))
-      (condition-case nil (setq sexp (read (current-buffer))) ((error nil)))
-      (when (and (symbolp (car-safe sexp))
-                 (string-match "@.*" (symbol-name (car-safe sexp))))
-        (let ((begin-marker (make-marker))
-              (end-marker (make-marker)))
-          (set-marker begin-marker begin-point)
-          (set-marker end-marker (point))
-          (set-match-data (list begin-marker end-marker)))
-        t))))
+Return non-nil if a link is found.  Set `match-data' appropriately."
+  (catch 'linkd-match
+    (let ((sexp  nil))
+      (unless (search-forward "(@" limit t) (throw 'linkd-match nil))
+      (backward-char 2)
+      (let ((begin-point  (point)))
+	(condition-case nil (setq sexp  (read (current-buffer))) ((error nil)))
+	(when (> (point) limit) (throw 'linkd-match nil))
+	(unless (and (symbolp (car-safe sexp))
+		     (string-match "@.*" (symbol-name (car-safe sexp))))
+	  (throw 'linkd-match nil))
+	(let ((begin-marker  (make-marker))
+	      (end-marker    (make-marker)))
+	  (set-marker begin-marker begin-point)
+	  (set-marker end-marker   (point))
+	  (set-match-data (list begin-marker end-marker)))))
+    t))
 
 ;; Function to extract link data from plain text.  It determines the
 ;; presence of a link by searching for the `linkd' text property,
