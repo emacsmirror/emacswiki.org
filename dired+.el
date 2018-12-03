@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 17 09:33:55 2018 (-0700)
+;; Last-Updated: Sun Dec  2 19:02:44 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10998
+;;     Update #: 11000
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -777,6 +777,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/12/02 dadams
+;;     dired-mark-pop-up: Work around Emacs 22 bug in dired-pop-to-buffer which can exit in Dired buffer.
 ;; 2018/10/17 dadams
 ;;     dired-read-dir-and-switches: Removed mention of icicle-file-sort-first-time-p (no longer used in Icicles).
 ;; 2018/09/21 dadams
@@ -8732,6 +8734,8 @@ FUNCTION should not manipulate the files.  It should just read input
                    (default-frame-alist          (cons '(menu-bar-lines . 0)
                                                        default-frame-alist)))
                (dired-pop-to-buffer buffer-or-name)
+               ;; Work around Emacs 22 bug in `dired-pop-to-buffer', which can exit with Dired buffer current.
+               (set-buffer buffer-or-name)
                (goto-char (point-min)))
              (setq result  (apply function args)))
         (save-excursion
