@@ -3423,7 +3423,7 @@ among those cycled.  But see also
 
 You can update the navlist at any time by taking another snapshot
 of the same bookmark list you used for the last snapshot.  For the
-global bookmark list just use `C-x p : RET'.  (You can of course
+global bookmark list just use '''`##C-x p : RET##''''.  (You can of course
 bind that action to a shorter key sequence if you like.)
 
 Besides cycling among the bookmarks of the navlist (see next),
