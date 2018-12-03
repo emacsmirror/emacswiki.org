@@ -8,9 +8,9 @@
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:13:19 2018 (-0800)
+;; Last-Updated: Mon Dec  3 12:14:10 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 393
+;;     Update #: 400
 ;; URL: https://www.emacswiki.org/emacs/download/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -60,6 +60,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/12/03 dadams
+;;     report-emacs-bug: Updated to Emacs 26 version:
+;;       Use full emacs-version in topic for Emacs 26+, regardless of system-type.
+;;       Updated action button URL.
 ;; 2017/09/13 dadams
 ;;     ebp-insert-*: Added optional arg FORCE (prefix arg).
 ;; 2016/02/29 dadams
@@ -341,7 +345,7 @@ Prompts for bug subject.  Leaves you in a mail buffer."
   (interactive (reverse (list (recent-keys) (read-string "Bug Subject: "))))
   ;; The syntax `version;' is preferred to `[version]' because the latter could be
   ;; mistakenly stripped by mailing software.
-  (if (eq system-type 'ms-dos)
+  (if (or (> emacs-major-version 25)  (eq system-type 'ms-dos))
       (setq topic  (concat emacs-version "; " topic))
     (when (string-match "^\\(\\([.0-9]+\\)*\\)\\.[0-9]+$" emacs-version)
       (setq topic  (concat (match-string 1 emacs-version) "; " topic))))
@@ -399,7 +403,9 @@ Prompts for bug subject.  Leaves you in a mail buffer."
               'face 'link
               'help-echo (concat "mouse-2, RET: Follow this link")
               'action (lambda (button)
-                        (browse-url "https://lists.gnu.org/archive/html/bug-gnu-emacs/"))
+                        (browse-url (if (> emacs-major-version 25)
+                                        "https://lists.gnu.org/r/bug-gnu-emacs/"
+                                      "https://lists.gnu.org/archive/html/bug-gnu-emacs/")))
               'follow-link t)
              (insert " mailing list\nand the GNU bug tracker at ")
              (insert-text-button
