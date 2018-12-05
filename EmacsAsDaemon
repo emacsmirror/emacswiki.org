@@ -299,40 +299,28 @@ Emacs won't start the daemon if its permissions aren't secure. If you receive an
 
 == Isolated server, impossible to connect ==
 
-There is an unfortunate possibility when using the emacs server where the server can be stopped and then all visible frames closed (e.g. server-force-delete + ssh disconnect). As far as I can tell, in this condition it becomes impossible to attach to your running emacs instance. This is a real bummer. As a workaround, you can set up a signal handler to restart the server. You can put the following into your emacs startup elisp:
-<pre>
-;; define function to restart the server
-(defun signal-restart-server ()
-  (interactive)
-  (message "Caught event %S" last-input-event)
-  (server-mode)
-  )
+There are unfortunate possibilities of being unable to connect to a running server> This has been observed as: 1) the server being stopped and then all visible frames closed (e.g. server-force-delete + ssh disconnect); 2) the server socket file being deleted. There may be other examples.
 
-;; add the binding to the special-event-map
+It may be possible to connect to the process with gdb and then call some function to execute lisp code to restart the server. If anyone knows how to do that, please insert that information here.
+
+We don't know how to re-connect to the running server in vanilla emacs, but here is a workaround, which sets up a signal handler to restart the server. Add the following to your emacs startup elisp:
+
+<pre>
+(defun signal-restart-server ()
+  "Handler for SIGUSR1 signal, to (re)start an emacs server.
+
+Can be tested from within emacs with:
+  (signal-process (emacs-pid) 'sigusr1)
+
+or from the command line with:
+$ kill -USR1 <emacs-pid>
+$ emacsclient -c
+"
+  (interactive)
+  (server-force-delete)
+  (server-start))
+  )
 (define-key special-event-map [sigusr1] 'signal-restart-server)
 </pre>
 
 Once that code has been loaded, sending a USR1 to the emacs process will restart the server. You can now reconnect. Joy.
-
-<pre>
-doh@bummer ~/ $ emacsclient -nc
-emacsclient: can't find socket; have you started the server?
-To start the server in Emacs, type "M-x server-start".
-emacsclient: No socket or alternate editor.  Please use:
-
-	--socket-name
-	--server-file      (or environment variable EMACS_SERVER_FILE)
-	--alternate-editor (or environment variable ALTERNATE_EDITOR)
-
-doh@bummer ~/ $ ps auxw | grep emacs
-doh     5373  0.0  0.2 483844 28872 ?        Ssl  18:44   0:00 emacs --daemon
-
-doh@bummer ~/ $ kill -USR1 5373
-  ## Note: there is no feedback from the command line kill
-
-doh@bummer ~/ $ emacsclient -nc
-  ## Note: Joy!
-
-</pre>
-
-NOTE: One other possible way to get the server restarted would be to connect to the process with gdb and then call some function to execute lisp code to restart the server. If anyone knows how to do that I would be very interested in learning how it is done.
