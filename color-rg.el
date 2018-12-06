@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 3.5
-;; Last-Updated: 2018-12-02 23:28:54
+;; Version: 3.6
+;; Last-Updated: 2018-12-06 09:13:13
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/12/06
+;;      * Fix typo of `insert-translated-name-current-parse-state', it should be `color-rg-current-parse-state'
 ;;
 ;; 2018/12/02
 ;;      * Use `get-text-property' improve algorithm of `color-rg-in-string-p'.
@@ -673,7 +676,7 @@ CASE-SENSITIVE determinies if search is case-sensitive."
     (parse-partial-sexp (point) point)))
 
 (defun color-rg-in-string-p (&optional state)
-  (or (nth 3 (or state (insert-translated-name-current-parse-state)))
+  (or (nth 3 (or state (color-rg-current-parse-state)))
       (eq (get-text-property (point) 'face) 'font-lock-string-face)
       (eq (get-text-property (point) 'face) 'font-lock-doc-face)
       ))
