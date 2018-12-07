@@ -8,15 +8,17 @@ downgrading to Emacs version XX.X."
 
 The Antinews become part of the info manuals, both the Emacs and Elisp manuals:
 * [http://snotty.org/manual/emacs-21.2/html_chapter/emacs_35.html Emacs 20 Antinews]
-* [http://snotty.org/manual/elisp-manual-21-2.8/html_chapter/elisp_41.html Emacs 20 Antinews, Lisp]
 * [http://www.ldc.usb.ve/docs/emacs/Antinews.html Emacs 21 Antinews]
-* Emacs 21 Antinews, Lisp
+* [https://gnu.huihoo.org/emacs/24.4/emacs-editor/Antinews.html Emacs 23 Antinews]
 * [http://www.gnu.org/software/emacs/manual/html_node/emacs/Antinews.html Emacs stable Antinews, manual ]
-* [http://www.gnu.org/software/emacs/manual/html_node/elisp/Antinews.html Emacs stable Antinews, Elisp]
 * ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/man/anti.texi?&content-type=text/plain Emacs-24.4 CVS Antinews, manual in TeXinfo])
+* [http://git.savannah.gnu.org/cgit/emacs.git/plain/doc/lispref/anti.texi Emacs Elisp git master branch AntiNews, in TeXinfo format]
+
+Emacs Antinews, Lisp
+* [http://snotty.org/manual/elisp-manual-21-2.8/html_chapter/elisp_41.html Emacs 20 Antinews, Lisp]
+* [http://www.gnu.org/software/emacs/manual/html_node/elisp/Antinews.html Emacs stable Antinews, Elisp]
 * ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lispref/anti.texi?content-type=text/plain Emacs-24.4 CVS Antinews, Elisp in TeXinfo])
 * [http://git.savannah.gnu.org/cgit/emacs.git/plain/doc/emacs/anti.texi Emacs manual git master branch AntiNews, in TeXinfo format]
-* [http://git.savannah.gnu.org/cgit/emacs.git/plain/doc/lispref/anti.texi Emacs Elisp git master branch AntiNews, in TeXinfo format]
 
 ----
 CategoryDocumentation
