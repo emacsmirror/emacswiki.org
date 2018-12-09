@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-05 22:04:02
-;; Version: 2.7
-;; Last-Updated: 2018-09-10 14:02:45
+;; Version: 2.8
+;; Last-Updated: 2018-12-09 18:55:23
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/sdcv.el
 ;; Keywords: startdict, sdcv
@@ -137,8 +137,11 @@
 
 ;;; Change log:
 ;;
+;; 2018/12/09
+;;      * Add command `sdcv-check' to help check invalid dictionaries.
+;;
 ;; 2018/09/10
-;;      * Add option `sdcv-say-word', just support OSX now, please send me PR if you want to support Linux. ;)
+;;      * Add option `sdcv-say-word-p', just support OSX now, please send me PR if you want to support Linux. ;)
 ;;      * Make `sdcv-say-word' can work with `sdcv-search-pointer'.
 ;;      * Make `sdcv-say-word' support all platform.
 ;;      * Don't need `osx-lib' anymore.
@@ -252,7 +255,7 @@ then you don't need copy dict data to /usr/share directory everytime when you fi
   :type 'integer
   :group 'sdcv)
 
-(defcustom sdcv-say-word nil
+(defcustom sdcv-say-word-p nil
   "Say word after search word if this option is non-nil.
 Default is nil.
 
@@ -428,6 +431,44 @@ And show information use tooltip."
   (ignore-errors
     (call-interactively 'previous-line arg)))
 
+(defun sdcv-check ()
+  "This function mainly detects the StarDict dictionary that does not exist,
+and eliminates the problem that cannot be translated."
+  (interactive)
+  ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
+  (setenv "LANG" "en_US.UTF-8")
+  (let* ((dict-name-infos
+          (cdr (split-string
+                (string-trim
+                 (shell-command-to-string
+                  (format "%s --list-dicts --data-dir=%s" sdcv-program sdcv-dictionary-data-dir)))
+                "\n")))
+         (dict-names (mapcar (lambda (dict) (car (split-string dict " "))) dict-name-infos))
+         (have-invalid-dict nil))
+    (if sdcv-dictionary-simple-list
+        (dolist (dict sdcv-dictionary-simple-list)
+          (unless (member dict dict-names)
+            (setq have-invalid-dict t)
+            (message
+             "sdcv-dictionary-simple-list: dictionary '%s' is not exist, remove it from sdcv-dictionary-simple-list or download the corresponding dictionary file to %s"
+             dict
+             sdcv-dictionary-data-dir)))
+      (setq have-invalid-dict t)
+      (message "sdcv-dictionary-simple-list is empty, command sdcv-search-simple won't work as expected."))
+    (if sdcv-dictionary-complete-list
+        (dolist (dict sdcv-dictionary-complete-list)
+          (unless (member dict dict-names)
+            (setq have-invalid-dict t)
+            (message
+             "sdcv-dictionary-complete-list: dictionary '%s' is not exist, remove it from sdcv-dictionary-complete-list or download the corresponding dictionary file to %s"
+             dict
+             sdcv-dictionary-data-dir)))
+      (setq have-invalid-dict t)
+      (message "sdcv-dictionary-complete-list is empty, command sdcv-search-detail won't work as expected."))
+    (unless have-invalid-dict
+      (message "The dictionary's settings look correct, sdcv should work as expected."))
+    ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sdcv-search-detail (&optional word)
   "Search WORD through the `command-line' tool sdcv.
@@ -501,7 +542,7 @@ Argument DICTIONARY-LIST the word that need transform."
   ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
   (setenv "LANG" "en_US.UTF-8")
   ;; Say word.
-  (sdcv-say-word word)
+  (if sdcv-say-word-p (sdcv-say-word word))
   ;; Return translate result.
   (sdcv-filter
    (shell-command-to-string
