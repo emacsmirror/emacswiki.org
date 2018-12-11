@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2013 ~ 2014, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-31 00:32:00
-;; Version: 0.4
-;; Last-Updated: 2018-10-05 08:00:39
+;; Version: 0.5
+;; Last-Updated: 2018-12-11 18:18:31
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: autosave
@@ -60,6 +60,9 @@
 ;; No need more.
 
 ;;; Change log:
+;;
+;; 2018/12/11
+;;      * Do not flash minibuffer when saving automatically.
 ;;
 ;; 2018/10/05
 ;;      * Update font lock before save file.
@@ -128,7 +131,8 @@ avoid delete current indent space when you programming."
               (progn
                 (push (buffer-name) autosave-buffer-list)
                 (if auto-save-silent
-                    (with-temp-message ""
+                    (with-temp-message
+                        (with-current-buffer " *Minibuf-0*" (buffer-string))
                       (basic-save-buffer))
                   (basic-save-buffer))
                 )))
