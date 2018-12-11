@@ -830,6 +830,9 @@ For one reason or another I have a bunch of WMA files. However, EMMS does not re
 Instead WMA tracks are just mixed together under Misc. EMMS will play back the tracks, however.
 Does somebody know how to make EMMS handle WMA tags? 
 
+[new:PhilHudson:2018-12-11 00:34 UTC]You need to add an appropriate entry for ##"wma"## to each of the two alists `emms-tag-editor-formats' and `emms-tag-editor-tagfile-functions'.
+See https://www.gnu.org/software/emms/manual/#Editing-Tracks
+
 == DVD's and CD's Using MPlayer Player? ==
 
 Is this possible? Would I just point EMMS to the /mnt/cdrom
