@@ -285,6 +285,20 @@ If you use paredit or something to add closing parens then hippie expand line ca
 
 -----
 
+== Expand tempo tags ==
+If you're using Tempo mode, add the following to your init.el to allow hippie-expand to complete user-defined tempo tags:
+<pre>
+(defun try-tempo-complete-tag (old)
+  (unless old
+    (tempo-complete-tag)))
+
+(add-to-list 'hippie-expand-try-functions-list 'try-tempo-complete-tag)
+</pre>
+
+-- federicotedin
+
+-----
+
 == Expansion menu ==
 
 The following is an approach for obtaining the complete list of possible expansions from hippie-expand, and letting the user select the one they want via the ido interface.
