@@ -11,7 +11,7 @@
 == Abandoned ==
 
 * [[Rudel]] is a collaborative editing extension for GNU Emacs written purely in Emacs Lisp. It is designed to support multiple protocol backends to enable interoperability with other collaborative editors.
-* [http://gobby.0x539.de/trac/ Obby] is an open collaborative editor protocol. The reference implementation is called [http://gobby.0x539.de/trac/ Gobby] and is a cross-platform GTK editor. [[Rudel]]'s most complete backend implements the Obby protocol. Using this backend, Emacs can act as an Obby client and as an Obby server (possibly at the same time). Due to a limitation of gnutls-bin, the server does not support encryption.
+* [http://gobby.0x539.de/trac/ Obby] is an open collaborative editor protocol. The reference implementation is called [http://gobby.0x539.de/trac/ Gobby] and is a cross-platform GTK editor. [[Rudel]]'s most complete backend implements the Obby protocol. Using this backend, Emacs can act as an Obby client and as an Obby server (possibly at the same time).  Due to a limitation of gnutls-bin, the server does not support encryption.  Unfortunately, connecting to infinoted, the reference implementation server, is currently broken (see [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30252 Bug#30252]).
 * Also [http://dev.technomancy.us/ebby ebby] was an attempt to work with an older version of the Obby protocol; it's now deprecated.
 * SubEthaEmacs is a (dead?) attempt to get Emacs to grok [http://www.emacswiki.org/cgi-bin/wiki/SubEthaEditProtocol SubEthaEdit's closed collaborative editing protocol]. The authors of SubEthaEdit are actively hostile to interop attempts.
 * LukeGorrie wrote shbuf http://www.bluetail.com/~luke/shbuf/ which formerly required erlang for the server (since emacs didn't have server sockets) but I think it only requires gnumacs now (xemacs doesn't have server sockets) --ShaeErisson [new] I just found this: http://verse.blender.org/cms/Overview.573.0.html Even though it seems aimed at 3D-development, the descriptions seems to suggest that the protocol is general.
@@ -19,7 +19,6 @@
 * [[Egret]] -- An extension to XEmacs.
 * [http://csdl.ics.hawaii.edu/Tools/Shemacs/ Shemacs] is a tool implementing synchronous multi-user support for the Emacs editor using Egret, a client-server-agent framework for implementation of domain-specific, collaborative, hypertext systems.
 * [http://github.com/technomancy/conspire/tree/master Conspire mode] achieves realtime, collaborative editing using git as a backend. Works only over a LAN. (No activity in since 2008)
-* [[Google_Wave_for_Emacs]] -- An ongoing discussion concerning future [http://en.wikipedia.org/wiki/Google_Wave Google Wave] support in Emacs. Since Google Wave is mostly dead, it is fair to assume this effort is also.
 
 == To be confirmed ==
 
