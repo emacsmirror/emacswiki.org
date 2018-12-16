@@ -1,1 +1,29 @@
-#hide
+[[de:tagalog]]
+A '''[::key]''', or more properly a '''[::key sequence]''', is similar to what is sometimes called a keyboard ''shortcut'' in other editors. However, in Emacs:
+
+* A key sequence can be short for any [[Command | command]] or [[KeyboardMacros | keyboard macro]]; it is not necessarily short for a menu item.
+* A key sequence is not necessarily a sequence of keyboard key presses. It can be any combination of the following:
+** A sequence of ''keyboard'' key pressings and releases. Any element in such a sequence can be a [[Chord | chord]] composed of a non-modifier key and one or more modifier keys pressed at the same time. 
+** A seqence of ''mouse'' button or wheel actions. Any element in such a sequence can be a chord composed of a mouse-button pressing or mouse-wheel motion and one or more modifier keys pressed at the same time. In addition to pressing and releasing a mouse button, a button can be pressed and the mouse ''dragged'' before releasing. Such a drag operation can also be part of a key sequence.
+** A sequence of ''menu'' choices, including from the MenuBar.
+** A ToolBar icon choice.
+
+* A key sequence can also include information on ''where'' you use a key or mouse button. Particular places include the ModeLine and the HeaderLine. It sometimes does this by including '''pseudokeys''' like `<code>[mode-line]</code>'. Other places, like the MiniBuffer are just special buffers -- see the explanation of buffer-local bindings, below.
+
+A key sequence is typically bound to a command.  This mapping or association is called a '''[::KeyBinding]'''.  For example, the command `forward-char', meaning "move the TextCursor forward one character" is bound to the key sequence `C-f'. Even simple key sequences such as `s' (just typing the letter "s") are bound to commands in Emacs -- `s' is bound globally to the command `self-insert-command', which just inserts an `s' character.
+
+; '''Examples''':
+The command `indent-code-rigidly' is (by default) not bound to any keyboard sequence. The command `grep' is (by default) not bound to a keyboard key sequence, but it is bound to the MenuBar key sequence '''Tools''' -> '''Search Files''' (= ##[menu-bar tools grep]##).
+
+(You can invoke any Emacs command, whether or not it is bound to a key
+sequence, via `M-x'. Example: `M-x grep' invokes the `grep' command.)
+
+A key sequence can be bound to different commands in different contexts. In particular, key sequences are sometimes '''buffer-local''': specific to a given buffer. For example, although the global binding for key sequence `s' is `self-insert-command', in Dired mode `s' is bound to the command `dired-sort-toggle-or-edit', in Info mode `s' is bound to `Info-search', and in Buffer Menu mode `s' is bound to `Buffer-menu-save' (to pick just a few common modes).
+
+You can tell which command, if any, a key sequence is bound to in any context by using `C-h k' or `C-h c'. You can display short descriptions of all of the key sequences currently defined in any context by using `C-h b'.
+
+Most importantly, in Emacs, '''''YOU''''' can bind any key sequence to any command, including commands that you create. This is a big part of what makes Emacs the most ''[[extensible]]'' editor.
+
+----
+CategoryGlossary
+CategoryKeys
