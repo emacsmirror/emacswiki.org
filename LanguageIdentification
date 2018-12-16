@@ -1,1 +1,80 @@
-Block
+The wiki checks which of the following regular expressions matches at least three times.
+This is done everytime a page is edited, and the resulting language code list is shown on
+RecentChanges.
+
+{{{
+%Languages = ( 'en' => ' (the|that|and|why|what) ',
+	       'de' => ' (der|das|und|oder) ',
+	       'fr' => ' (et|une|les|est|je|avec|même) ',
+	       'it' => ' (gli|che|perchè|così) ',
+	       'es' => '(¡|¿|ñ|ción)',
+	       'ru' => '\b(и|или|это|тот|для|как)\b',
+	       'zh' => '(的|一|是|不|了)',
+	       'pt' => '(ã|õ)',
+	       'se' => ' (är|från|för) ',
+	       'ja' => '(ま|す|ん|し|ょ|う|の|は)',
+	       'ko' => '(이)');
+}}}
+
+To improve language detection, or add new languages, we need a list of small words
+that appear very often in a particular language, and that do not appear in all other
+languages.
+Since all these words appear on ''this'' page (and they occur at least three times in the above source!),
+this page ''should'' be in all languages.  ;)
+
+When the approach described above no longer scales,
+we will sort the languages by hits, and just use the first two
+or three.
+
+[new]
+: "Un pas en avant, 3 pas en arrière..." -- LucasBonnet
+
+At the moment, let us just improve the word list.  This page collects words we tried and discovered in other languages.
+
+Bad candidates: mais (fr, es), un (fr, it), pour (fr, en, y (fr,es), il (fr, it), y (fr, es), que (fr, ?), en (es, fr)
+
+New candidates: 
+
+How about "qu" (with a ', like in "qu'elle" ?) for French ? -- LucasBonnet, still playing with Emacs
+
+I sadly have to disagree: 'en' is used in French, very often :( And what about an addendum in bottom of page, where you check boxes corresponding to the languages used? -- LucasBonnet
+
+[new]
+What was I thinking?  Of course.  How about 'es', though?  And what do you mean with the checkboxes -- do you want that people see the languages used ''on the current page'', or do you want links to translations?  Currently the language is stored in the log file only (because then RecentChanges does not need to access the page database).  I could add it to the list displayed when you click on ''View other revisions'' -- at the moment the language is not displayed, there. -- AlexSchroeder.
+
+[new]
+I meant that, when a user edit text on a page, he could tick a box, like "This change is a minor edit", to advise that this page is in French, English, Japanese, or whatever. -- LucasBonnet [BTW, do you read your yahoo mails sometimes ? :)]
+
+[new]
+Hm.  Manual identification.  If this language guessing doesn't work, we will have to do it manually.
+But we can still improve the mechanism, I think.
+
+I practically never read my Yahoo mail.  Use mailto:alex@gnu.org instead. -- AlexSchroeder
+
+[new]
+Ach, Je le saurais, j'avais pondu 40 lignes de texte :) Va falloir s'en souvenir..
+
+About ''by hand'' notification (that was '''the''' word I were missing), this is a ''dernière chance'' solution, of course. I'll think about often used French words, stay tuned :) -- LucasBonnet
+
+[new]
+jemarch is the user from #emacs that helped me out with Spanish. [Allright :) God, you're everywhere !]
+
+[new]
+I'd like to mention a few more candidates for Spanish -- I don't know if they're valid terms in other languages :): <code>(si|entonces|con|que|para|ha|de|debe)</code>. Note that `que' is very common in Spanish (as much as in French, I guess). I say so because I recently edited a page in Spanish and it was recognized as French. --LeonardoBoshell
+
+[new]
+<code>si</code> is used in French, it's "if". <code>de</code> is also used in French ("from" "of" ...). Well, <code>con</code> shouldn't be used in French on those pages so you can keep it :). LucasBonnet
+
+[new]
+Wow, I didn't know Spanish and French had such similarities. The terms `si' and `de' have the same meanings that you're mentioning in Spanish. One learns something new everyday... :) --LeonardoBoshell
+
+[new:XueFuqiao:2012-12-03 08:34 UTC] Chinese: (的|一|是|不|了) -- XueFuqiao
+
+[new]
+I just noticed that the data at the top of this page hasn't been updated in quite a while.
+Do you still think that we should replace (是|但|這|这|你|了|啊|沒) with (的|一|是|不|了) ?
+I don't remember where I got the old regular expression from. I just realized that your list corresponds to the top entries of [http://www.zein.se/patrick/3000char.html The most common Chinese characters in order of frequency] by Patrick Hassel Zein.
+This sounds like a good change. I'll do it. :) -- AlexSchroeder
+
+[new]
+Contributors: LucasBonnet, AlexSchroeder, JoseEMarchesi, XueFuqiao
