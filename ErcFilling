@@ -1,1 +1,151 @@
-#hide
+Filling is enabled by default (to disable it, use M-x customize-variable RET erc-modules).
+
+When you use erc-fill-mode's default settings, messages with long lines are
+split into shorter lines that look like this:
+
+ <kensanata> bla bla bla bla bla bla bla bla bla
+             bla bla bla bla bla bla
+ <delYsid> bla bla bla bla bla bla bla bla bla
+           bla bla bla bla bla
+
+== Input Filling ==
+
+By default, ERC's fill mode does not wrap the input text. This leads to long messages
+not being wrapped as you type, and you lose sight of the conversation. However,
+you have ERC wrap your input to the same size as your erc-fill-column, so you don't
+lose sight of the chat while you type a long message. A hack which enables this
+behavior is available at Lisp:erc-input-fill.el. 
+
+== Fill width ==
+
+Set `erc-fill-column' to change the fill width for ERC buffers.  The default
+width is 78.
+
+If you'd like to have the fill width be a little more dynamic and change
+properly when you resize a window, try this. (It might make things a little
+ugly if you resize again later, though.)  Note that only new lines will be
+filled to the new value.
+
+ (add-hook 'window-configuration-change-hook 
+	   '(lambda ()
+	      (setq erc-fill-column (- (window-width) 2))))
+
+If you chat in multiple, differently sized ERC windows, it may be better to
+make the erc-fill-column variable buffer-local:
+
+ (make-variable-buffer-local 'erc-fill-column)
+ (add-hook 'window-configuration-change-hook 
+	   '(lambda ()
+	      (save-excursion
+	        (walk-windows
+		 (lambda (w)
+		   (let ((buffer (window-buffer w)))
+		     (set-buffer buffer)
+		     (when (eq major-mode 'erc-mode)
+		       (setq erc-fill-column (- (window-width w) 2)))))))))
+
+Of course, this still has the problem that lines displayed previously are
+not affected (they retain the last fill column the buffer had).
+
+== Customized filling ==
+
+If you want a constant indentation, set the variable `erc-fill-prefix'
+to the string to use as a prefix -- four spaces is pretty nice, for
+example.
+
+ (setq erc-fill-prefix "    ")
+
+And the result:
+
+ <kensanata> bla bla bla bla bla bla bla bla bla
+     bla bla bla bla bla bla
+ <delYsid> bla bla bla bla bla bla bla bla bla
+     bla bla bla bla bla
+
+
+Here is a nice way to prefix wrapped lines with timestamps on the left side.
+For example, with these settings:
+
+ (setq erc-timestamp-format "[%H:%M] ")
+ (setq erc-fill-prefix "      + ")
+
+wrapped text looks like this:
+
+ [12:34] <user-one> the quick brown fox jumps over the lazy dog.  the quick
+       + brown fox jumps over the lazy dog
+ [12:35] <another-user> the quick brown fox jumps over the lazy dog.  the
+       + quick brown fox jumps over the lazy dog...
+
+You can also set `erc-fill-function' to `erc-fill-static' to get
+AndreasFuchs' version of a somehow different filling method. This one
+right-aligns all nick names along a certain column (27 is the default)
+and left-aligns all text along this column. The result looks mostly
+like this:
+ 
+<pre>
+        <averylongnickindeed> foo bar.
+                 <ashortnick> Baz Quuxong bla bla bla bla bla bla bla bla bla bla
+                              bla bla bla bla bla
+                          *** Server message
+                            * ashortnick does nothing.
+</pre>
+
+The default left-side column of 27 can be changed by setting the
+`erc-fill-static-center' variable like this:
+
+ (setq erc-fill-static-center 15)
+
+== Disabling auto-fill-mode ==
+ 
+If you have auto-fill-mode enabled by default for all new
+buffers, you might need to disable it from the `erc-mode-hook'.
+Here's how:
+
+ (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
+
+== Unfill pasted text ==
+ 
+If you paste stuff from elsewhere into ERC, you might want to unwrap the paragraph.  See UnwrapLine.
+
+== Elisp sexp pp-filling for #emacs ==
+
+Use at your own risk.
+
+ (require 'pp)
+ (defun ted-erc-fill-elisp ()
+   "If it appears to be elisp, pretty print region.
+ Otherwise, fall back to `erc-fill-variable'."
+   (let ((print-escape-newlines t)
+         (pp-escape-newlines t))
+     (goto-char (point-min))
+     (if (re-search-forward "Elisp: " nil t)
+         (let* ((start (point))
+                (end (progn (forward-sexp 1) (point)))
+                (psexp (pp-to-string
+                        (car
+                         (read-from-string
+                          (buffer-substring-no-properties
+                           start end))))))
+           (delete-region start end)
+           (insert "\n" psexp))
+       (erc-fill-variable))))
+
+ (setq erc-fill-function 'ted-erc-fill-elisp)
+
+== Re-fill lines ==
+
+You can use the following function if you'd like to change the filling or to
+undo the filling in files saved by ErcLogging.
+
+    (defun my-erc-refill (column)
+      "Fill the ERC messages in the current buffer to COLUMN.
+    Using a very high number will undo any previous filling.
+    See also `erc-fill-prefix'."
+      (interactive "nFill at which column? ")
+      (let ((erc-fill-column column))
+        ;; `erc-fill' fills the whole buffer, no need to set region
+        (erc-fill)))
+
+: Can I use this somehow to not have filling in my logs but still have filling in windows? -- Samgee
+----
+[[ERC]]
