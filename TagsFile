@@ -1,1 +1,155 @@
-#hide
+A '''[::tags file]''' is an index to source-code definitions of functions, variables, and any other
+interesting syntactic feature.  If you BuildTags for your
+project (possibly RecursiveTags), Emacs can use the tags file (typically named "TAGS") to find the indexed definitions very quickly.
+You need the EmacsTags (etags) program to generate the tags file.  The
+program understands many languages, Lisps, C, C++ and Perl for
+example.
+
+The following Unix command creates a tags
+file that indexes all of the EmacsLisp files in the current directory:
+
+    rm -f TAGS
+    etags *.el
+
+This command creates a tags file for all ##*.c## and ##*.h## files
+in the current directory and its subdirectories (recursively):
+
+    rm -f TAGS
+    find . -name "*.[ch]" -print | xargs etags -a
+
+You might want to add the target tags to their Makefile, so
+that they can easily be updated. See example of complex command for GNU Make, which skip VCS dirs for performance reason, like another project dirs, and include system headers and some of project library headers, and tags all project .c/.h/.cpp files:
+
+[new]
+{{{
+define FIND_HEADERS_CMD
+( \
+    find . '(' -type d -name .svn -o -name $(DIST_DIR) -o -name $(LIB_DIR) ')' -prune -o -type f \
+        '(' -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.rc' ')' -print; \
+    ls $(LIB_DIR)/xulrunner-sdk/include/plugin/np*.h; \
+    ls /usr/include/*.h; \
+)
+endef
+
+.PHONY: etags
+etags:
+	rm -f TAGS
+	$(FIND_HEADERS_CMD) | etags -
+
+.PHONY: ctags
+ctags:
+	rm -f TAGS
+	$(FIND_HEADERS_CMD) | ctags --tag-relative=yes -e -L -
+}}}
+[new]
+
+The following will create a tags file if none exists. Just hit `##M-.##' and you're off.
+
+ (defadvice find-tag (before c-tag-file activate)
+   "Automatically create tags file."
+   (let ((tag-file (concat default-directory "TAGS")))
+     (unless (file-exists-p tag-file)
+       (shell-command "etags *.[ch] -o TAGS 2>/dev/null"))
+     (visit-tags-table tag-file)))
+
+After this, `M-x visit-tags-table RET' and `M-x tags-search RET' are your
+friends.  Also take a look at
+[Groups:sure-tags.el&selm=199707312315.QAA06142%40hiro.zanshin.com sure-tags.el]
+
+
+[new]
+In Emacs 25.1+, it seems that `find-tag' has been replaced by `xref-find-definitions'. So I had to do this instead to get the above trick to work:
+
+<pre>
+   (defadvice xref-find-definitions (before c-tag-file activate)
+   "Automatically create tags file."
+   (let ((tag-file (concat default-directory "TAGS")))
+     (unless (file-exists-p tag-file)
+       (shell-command "etags *.[ch] -o TAGS 2>/dev/null"))
+     (visit-tags-table tag-file)))
+</pre>
+
+[new]
+##sure-tags.el## works pretty well, but I've noticed that it doesn't work 
+properly with those filesystems in which space characters are allowed 
+in files/folders names. This is a patch that makes it work:
+
+<pre>
+--- sure-tags.el.orig	2007-04-27 12:28:12.000000000 +0200
++++ sure-tags.el	2007-12-29 16:42:49.000000000 +0100
+@@ -72,7 +72,7 @@
+           (delete-file file))
+     (error))
+   (message "Building %s..." file)
+-  (let* ((dir (file-name-directory file))
++  (let* ((dir (substring (file-name-directory file) 0 -1))
+          (find-args (mapconcat
+                      'identity
+                      (mapcar (function
+@@ -84,7 +84,7 @@
+                   "/bin/sh" nil nil nil
+                   "-c"
+                   (format
+-                   "%s %s \\( %s \\) -print | %s %s -a -o %s"
++                   "%s %S \\( %s \\) -print0 | %s -0 %s -a -o %S"
+                    find-prog
+                    dir find-args
+                    xargs-prog
+</pre>
+
+Hope this helps. -- Andrea
+
+[new]
+Something about the `xref-find-definitions' in Emacs 25.1+.  It is
+frustrating that `xref-find-definitions' can't work with elisp
+back-end and etags back-end at the same time.  If you turn on the
+`xref-etags-mode', you also need a TAGS file to search the loaded
+symbols (The elisp back-end can search the loaded symbols without TAGS
+file).
+
+The function `xref--find-xrefs' does the actual searching work.  We
+can re-define that function to make `xref-find-definitions' support
+multiple back-ends at the same time:
+
+<pre>
+ (when (require 'xref nil t)
+   (defun xref--find-xrefs (input kind arg display-action)
+     "Re-define the `xref--find-xrefs'.
+ This is a re-defined version of `xref--find-xrefs'.  This
+ function will call all backends until the definitions are found
+ or the `xref-backend-functions' is exhausted."
+     (let ((fn (intern (format "xref-backend-%s" kind)))
+           (tail xref-backend-functions))
+       (cl-block nil
+         (while tail
+           (let* ((backend-fn (car tail))
+                  (backend (and (symbol-function backend-fn) (funcall backend-fn)))
+                  (xrefs (and backend (funcall fn backend arg))))
+             (when xrefs
+               (cl-return (xref--show-xrefs xrefs display-action))))
+           (setq tail (cdr tail)))
+         (user-error "No %s found for: %s" (symbol-name kind) input)))))
+
+ ;; and add a hook function to the `emacs-lisp-mode-hook':
+ (defun hook:elisp-mode ()
+   (when (require 'xref nil t)
+     (setq-local xref-backend-functions '(elisp--xref-backend etags--xref-backend t))))
+ (add-hook 'emacs-lisp-mode-hook 'hook:elisp-mode)
+</pre>
+
+I'm happy to see that works -- Pan Xie
+
+=Alternatives=
+
+There are two different programs, ##ctags## and ##etags##. Both are distributed with Emacs, XEmacs, and on their own, so you
+might run into conflicts if you have several editors installed.  Vi
+uses ##ctags##(1) that creates files names ##tags##.  There is also
+ExuberantCtags. In all these cases, be sure to generate Emacs-compatible output. See also GnuGlobal.
+
+
+Also see [[JumpToDefinition]].
+
+----
+CategoryProgrammerUtils
+CategoryExternalUtilities
+
