@@ -1,1 +1,167 @@
-Dead
+[[fr:CommentFaire]]
+
+Wiki は協力的なウェブサイトです．誰でも投稿できます．全てのページは，ページの下のところに，そのページの編集を許すリンクを持っています(画面下の "Edit txt of this page" またはこれに対応する日本語)．最初のページの作成に良い場所は CategoryHomepage です．
+
+* UserName にはこの wiki で使われるユーザネームに関するさらに詳しい情報があります．
+
+ここではいくつかのリンク (他の wiki 上にある) を紹介します:
+
+* MeatBall:StyleGuide has some discussion on how to write for the curious.  As long as common sense prevails, nothing else is needed.  Try to avoid shallow pages: There is no need to create pages just to define terms.
+* MeatBall:WhyWikiWorks explains why wikis (hopefully) generate interesting content and why there is not much abuse.
+* Oddmuse:SiteMap is the homepage of the wiki engine -- the CGI script (in Perl, I am sorry to say) that produces the pages you are reading.
+
+== テキストの整形規則 ==
+
+Wiki のテストには SandBox を使ってください!
+
+最も重要な規則はとても簡単です:
+
+* 空行は段落の区切りを表す．
+* 段落は複数行にわたるだろう．
+* 段落は 1 カラム目から始まる．
+
+リンク:
+
+* <nowiki>CamelCase</nowiki> (mixed case = 大文字小文字を混ぜた英文字列) のような単語は内部リンクに変換されます．これは ASCII 文字だけに働きます．なぜなら， wiki は非 ASCII 文字の大文字や小文字が何か知らないからです．
+* <nowiki>[[二重の大かっこでくくられた単語]]</nowiki> は内部リンクに変換されます．これは全ての文字に対して働きます．
+* 新しいページを作るには，既に存在しているページにリンクを追加し，ページ名の後にあるクエスチョンマークをクリックするだけです．
+* URL をそのまま書くと，ハイパーリンクされます．
+* .png や .jpg で終わる，画像と見なされる URL を書くと，画像がインラインで表示されます．
+
+リスト，インデントされた段落:
+
+* リストの要素はアスタリスク (`*') で始まります． 1 行が 1 つのリスト要素になります．
+* 1 つ以上のコロン (`:') で始まる行は，インデントされます．
+
+ソースコード，例:
+
+* 空白で始まる行は，ソースコードとして扱われます (4 つの空白を提案します) ．
+
+見出し:
+
+* 見出しは 2 つのイコールで囲まれます (`== 見出し ==') ．
+* 副見出しは 3 つのイコールで囲まれます (`=== 副見出し ===')
+
+いくつかの HTML タグが使用できます:
+
+; em: <em>Emphasis, 強調</em> (通常はイタリック)
+; i: <i>Italics, イタリック</i>
+; strong: <strong>Strong, 強調</strong> (通常はボールド)
+; b: <b>Bold, ボールド</b>
+; tt: <tt>Teletype, テレタイプ</tt> (通常は等幅)
+; code: <code>Code, コード</code> (通常は等幅で， wiki で処理されない)
+; pre: <tt>Preformatted, 整形済み</tt> (通常は等幅で，段落になり，空白が保存され， wiki で処理されない)
+; nowiki: wiki 処理しない (通常，大文字小文字の混ざった単語のリンクをはずすために使われる．例: <nowiki>NoLink</nowiki>)
+
+More rules: MeatBall:TextFormattingRules.
+
+== 新しいページの作成 ==
+
+* 方法 1 : 新しいページにリンクさせたいページを編集して，リンクのために wiki word を挿入します．新しいページのネーミングを受けて，この word をページの下に作成してください．基本的に， mixed case の語は，そのページを保存したとき wiki word として扱われます．新しいリンクは，語の後にあるクエスチョンマークになります．リンクをたどると，新しいページを作ることができるでしょう．
+* 方法 2 : これは url munging と呼ばれます．現在の URL を存在していない新しいページの URL に編集します．その新しい URL は次のようになるでしょう．例 :
+** http://www.emacswiki.org/cgi-bin/wiki.pl?SampleUndefinedPage
+
+== 新しいページのネーミング ==
+
+ここでは，ページ名を選択するための，いくつかの助けをあげます :
+
+* 名前が短かい場合 (Sql とか Tcl のように) ，もしそれが Emacs mode についての何らかの記述であれば，"Mode" を追加しなさい．
+* Gnus のように大きいものに対しては，たくさんのサブページを持つことを期待できます．ゆえに，それはカテゴリとして作りなさい:<nowiki>CategoryGnus</nowiki>.
+* もし，何かが略語または頭文字であれば，全て綴りなさい: <nowiki>WThreeM</nowiki>.
+* ページが特定のパッケージのためのあなたの設定を含んでいるなら，接尾辞として -Configuration を使いなさい．例: <nowiki>BbdbConfiguration</nowiki>.
+* まだ適切な名前が見つけられないのなら，単に "Page" を追加しなさい．私はこれが他の wiki で使われているのを見たことがありあせん．彼らはたいてい，<nowiki>UgLy</nowiki> のような醜い capitalization tricks を使っています．まあ，いいけど．<nowiki>TrampPage</nowiki> は 「詳しくは <nowiki>TrampPage</nowiki> を参照」 みたいに言うのに使えるので良いでしょう．
+
+== Spam の削除 ==
+
+Spam は "DeletedPage" に置き換えてください．
+
+== URL の略語 ==
+
+InterMap ページで可能な略語を見付けることができます．
+それはサポートされている URL の略語とその展開を表にしています．
+
+ここではそれらの興味深い例をいくつか見てみます:
+
+* MeatBall:StartingPoints
+* Google:emacswiki
+* Groups:emacswiki
+
+=== URL を書く方法 ===
+
+もしもパッケージのホームページを参照したり，ソースファイルへのリンクをしているなら，ブレット (`*') を頭につけてリンクを置いてください．
+
+* http://foo.bar/like.this
+
+これは外部へのリンクを目につきやすくし，重要な情報の損失なしにページを印刷可能にします．
+
+== オフトピック ==
+
+ある話題はほかの所でよく議論されています:
+
+* CLiki:Recent%20Changes -- Common Lisp
+* Wiki:RecentChanges -- non-Emacs related programming languages, techniques, paradigmas
+* MeatBall:RecentChanges -- online communities, security, moderation, meta discussion on wikis, wiki terminology
+* Why:RecentChanges -- religious stuff
+* CreationMatters:RecentChanges -- social stuff
+* AndStuff:RecentChanges -- philosophical stuff
+* SenseisLibrary:RecentChanges -- the game of Go
+
+For more ideas, see http://www.emacswiki.org/intermap.
+
+=== 他のメディアを使うとき ===
+
+いくつかの議論については MeatBall:AppropriateMedia を見てください．この wiki の範囲では，私は以下のことが当てはまると考えます．
+
+* Emacs/XEmacs マニュアルの一部になっていないドキュメントは wiki へ行くべきだ．
+* Emacs/XEmacs マニュアルのバグはメンテナに報告されるべきだ．
+* 例えば，典型的な使い方，カスタマイズ方法， code snipplets は wiki へ行くべきだ．
+* パッケージに対するバグ報告やバグフィクスは適切なメンテナに報告されるべきだ．
+* 議論や質問などは，通常は EmacsNewsgroups へ行くべきだ．私は wiki 上でさらなるノウハウのコレクションを見たいが，今のところ，たくさんの良い情報は USENET 投稿から来ており，それらはコピーされて wiki 上でまとめられている．
+* しばしば，新しいコンテンツが，私たちのノウハウをさらに共有する，または wiki に書き込まれた事柄について質問をするよう促す．これは wiki 上で留まるべきだ．
+
+私は，みなさんに，新しいコンテンツを追加するのを思いとどまらせないことを望んでいます．私は，私たちの場所が Emacs 情報基盤の中のどこにあるかを，それが多かれ少かれ示すことを望んでいます．
+
+== 親ページへのリンク ==
+
+いくつかのページは「親」ページを持つか特定のカテゴリに属しています．それは，それらの親ページまたはカテゴリページへの系統だったバックリンクを提供するために良いでしょう．筆者はこれを手作業で追加しなければなりません．すなわち，適切な親ページまたはカテゴリタグを，ページの最後に追加します．バックリンクは自動的に検索できます．あなたの現在のページへリンクしているほかの全てのページを一覧するために，ヘッダをクリックしてください(ページの一番上にあるタイトルをクリックすることで，その語が検索されます)．これは単純な通常の検索です．これが自動化されるとは限らない理由は， a) 個別のリンク DB の保守管理が要求されるであろうこと， b) 双方向グラフには，現在のページを指している，たくさんの関連性のないページが存在する可能性があり，あなたはいつもそれら全てをリストしたいとは限らないことです．したがって，最終的にはカテゴリタグや親ページを追加する方法は手作業になります．
+
+これは通常，ページの末尾に次のような形で見られます:
+
+<pre>
+----
+CategoryFoo
+</pre>
+
+
+== Including RSS Feeds ==
+
+あなたは，自分のホームページに RSS feed を含みたいかもしれません．
+ここではそれを追加する方法の例をあげます:
+
+<pre>
+    <rss "http://purl.org/NET/kensanata/home?action=rss">
+</pre>
+
+== Including Online Diaries ==
+
+もしあなたが，別の wiki で MeatBall:OnlineDiary を管理していて，他の wiki がそのページの raw content を示すことができ，テキストの整形規則がこの wiki と似ているなら，あなたはそのページを含むことができます :
+
+<pre>
+    <include "http://www.usemod.com/cgi-bin/mb.pl?action=browse&id=AlexSchroeder&raw=1">
+</pre>
+
+== Usenet からの相互投稿 ==
+
+もしあなたが，Usenet から wiki へ記事を相互投稿 (crosspost) するなら，オリジナルの作者に彼らのテキストを GNU Free Documentation License に基いてライセンスすること (または，それをパブリックドメインに解放すること) をいとわないかどうかを尋ねてください．
+
+== メールアドレスの除去 ==
+
+あなたが投稿した全ての素材から E-mail アドレスを取り除き，本人の名前を彼らの wiki 上のホームページへのリンクに変換してください．もし人々が wiki 上のホームページにある彼らの E-mail アドレスを見せたいなら，かまわないでしょう．(If people
+want to reveal their email addresses on their homepage, fine.) 例: Alex Schroeder <alex@some.adress.com> は AlexSchroeder に変えます．
+
+ニュースグループからの興味深い投稿記事をコピーしようとする場合も E-mail アドレスを取り除いてください．ソースコードのコメントからも E-mail アドレスを取り除いてください．オリジナルアドレスの E-mail アドレスを確定するのに十分なヘッダを提供するには，<nowiki>http://groups.google.com</nowiki> のようなサーチエンジンを使うことができます(作者の名前，subject，ニュースグループと日付を提案します)．
+
+E-mail アドレスはメーリングリストに残してください．
+
+----
+[[利用手引]]
