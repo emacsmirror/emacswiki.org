@@ -1,1 +1,17 @@
-#hide
+Emacs supports the '''[::modifier key]s''' found commonly on keyboards today: Control, Shift, and Alt. Emacs also supports additional modifier keys that few modern keyboards have direct (hardware) support for: Meta, Super, and Hyper. These keys existed on various keyboards in the past, in particular those of Lisp machines. In many cases, Emacs automatically maps the Alt modifier key to Meta.
+
+Some common contemporary keyboards also have modifier keys such as Option (Apple), Command (Apple), Window (MS Windows), and Menu (MS Windows). You can map such keyboard keys to Emacs [[key sequence]]s.
+
+A modifier key typically has no effect when pressed, unless you press it along with some other key.  And the physical label on the keyboard key has no meaning except for what the user or the application developer decides it should mean.  So, for instance, in XMonad, the modifier keys are called Mod1, Mod2, Mod3, etc. -- you can bind them however you want.
+
+Emacs supports Alt [[key binding]]s, but this doesn't correspond to the keyboard Alt key on most Intel-compatible PC systems.  For Apple, Alt is not used for commands, but for alternative keysets or alternative functions.  
+
+To write arbitrary modifiers into Emacs-Lisp files, you can use the function kbd, which converts a string using the more human-readable modifier notation; for example,
+
+  (define-key my-mode-map (kbd "C-M-s-x") 'my-command)
+
+to bind Control-Meta-Super-x.
+
+----
+CategoryKeys
+CategoryGlossary
