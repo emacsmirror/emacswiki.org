@@ -1,1 +1,19 @@
-new
+[[de:Letzte_Änderungen]]
+Recent changes are added automatically below.
+By default, only the most recent change is listed for each page.
+Click '''List all changes''' to view all the recent changes to a page.
+
+By following the '''(diff)''' link you can see a page where the difference
+(removals, additions, changes) between the previously edited revision and the
+current revision is displayed above the latest formatted version of the page.
+
+By following the '''(history)''' link you can see a list of all the revisions for a page.
+Not all revisions are kept, see [[Oddmuse:Kept Pages]].
+
+See
+'''OtherRecentChanges''' for alternatives such as recent changes filtered by language, and recent visitors.
+
+* [English:action=rc&rclang=en Pages in English only]
+* [EmacsWiki:action=rss RSS feed], [EmacsWiki:action=rc;raw=1 TXT feed]
+
+See UserName for more information about the user names used in the list below.
