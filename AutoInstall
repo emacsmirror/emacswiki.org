@@ -1,3 +1,308 @@
-#hide
+Effortlessly download, install, and update Elisp files from the web or from a local buffer.  Easily install packages from the Emacswiki ElispArea (with auto-complete of package name, and easy update of selected packages).  Optionally view changes from previous versions of packages before installation.
+
+: Please send suggestions and bug reports to [[rubikitch]], he's the new maintainer. Thanks! -- AndyStewart
+
+==What is Auto Install==
+When you install an Emacs lisp file for use with Emacs, you generally have to navigate some or all of the the following steps: 
+
+# *Find the Elisp file.*  Locate it on the web, either from a private site or from a code repository such as the EmacsWiki ElispArea or gist. 
+
+# *Download the file.* 
+
+# *Install all related files* Some extension (such as [[Icicles]]) have many parts.  Installing those packages one by one can be painful.
+
+# *View differences with the old version.*  You may want to view the differences between the new and old versions before you update. 
+
+# *Save the Elisp file.*  You might keep your Elisp files organized into folders by categories, but this causes its own problems:  if you download a new elisp file, you need to make sure you're deleting the old one, a hassle if the file is located deep in a storage directory.
+
+# *Install the Elisp file* by requiring it from your .emacs
+
+# *Keep the Elisp file updated.* 
+
+Is there any way to do all of this automatically?
+*Yes, there is.* Auto Install can download, install and update your collection of Elisp files automatically.
+
+The biggest difference between auto-install.el and most other Elisp installers is that auto-install.el can download Elisp files *asynchronously* directly from Emacs, without the help of any external download program.
+
+==Installation of auto-install.el==
+
+* Put Lisp:auto-install.el somewhere in your load-path.
+
+: For example, put it into  ~/elisp/.
+:: Then add the following to your ~/.emacs:
+{{{
+      (add-to-list 'load-path (expand-file-name "~/elisp"))
+}}}      
+
+* And put the following in your ~/.emacs startup file:
+{{{
+      (require 'auto-install)
+}}}
+
+* Add this to your ~/.emacs to optionally specify a download directory:
+{{{
+      (setq auto-install-directory "~/.emacs.d/auto-install/")
+}}}
+:: If you don't set this, 
+{{{
+        "~/.emacs.d/auto-install/"
+}}}
+:: will be used as the default, and will be created as needed.
+
+* Optionally load the Emacswiki package list at startup.
+ :: If you put the following in your ~/.emacs,  it will update the list of package names from Emacswiki when Emacs starts up. If you don't set this variable, the list will be updated the first time you call `auto-install-from-emacswiki'. Setting this variable avoids a slight delay at that time.
+{{{
+      (auto-install-update-emacswiki-package-name t)
+}}}
+
+*  If you want to use proxy server, set `url-proxy-services'. For example:
+{{{
+      (setq url-proxy-services '(("http" . "localhost:8339")))
+}}}
+
+* For current InstallElisp users:
+: You can add below to your ~/.emacs for compatibility install-elisp.el:
+{{{
+        (auto-install-compatibility-setup)
+}}}      
+
+==Usage Examples:==
+
+* Install a single package (such as Lisp:multi-term.el):
+## M-x auto-install-from-emacswiki RET, input "multi-term.el".
+## After the AutoInstall download command is complete you can use the following commands:
+### Type "C-c C-c" to continue the install process.
+### Type "C-c C-d" to view differences from the old version.  This does nothing if you have no older version.
+### Type "C-c C-q" to abort the install process.
+
+* Batch install packages (such as [[Icicles]]):
+## M-x auto-install-batch RET, input "icicles".
+## And then it will download and install all [[Icicles]] packages.
+:: For more supported packages, see [http://www.emacswiki.org/emacs/AutoInstall#toc9 BatchInstallList]].
+
+* If you want AutoInstall to install packages fully automatically without any prompts, just set the option `auto-install-save-confirm' with `nil', like below:
+
+:: (setq auto-install-save-confirm nil)
+
+: This has all the risks and benefits you might expect from the effortless installation of software which is hosted on a public Wiki. :-) You're on your own here.  Proceed with caution.
+
+* For more commands, see [http://www.emacswiki.org/cgi-bin/emacs/AutoInstall#toc4 CommandList].
+
+==Command List==
+* "auto-install-from-url" will install an elisp file from given URL.
+
+* "auto-install-from-emacswiki" will install an elisp file from EmacsWiki.
+
+* "auto-install-from-gist" will install an elisp file from gist.github.com.
+
+* "auto-install-from-library" will install an elisp file taken from a library.
+
+* "auto-install-from-directory" updates elisp files in specified directory from EmacsWiki.
+
+* "auto-install-from-dired" can install all files marked in dired in parallel.  By default, download these files from EmacsWiki.
+
+* "auto-install-from-buffer" installs the elisp file in the current buffer. It will prompt for the file name for installation.
+
+* `auto-install-update-emacswiki-package-name' Update the list of elisp package names from `EmacsWiki'.
+
+* `auto-install-dired-mark-files' install marked files that exist at `EmacsWiki'.
+
+* `auto-install-compatibility-setup' for compatibility InstallElisp.
+
+* `auto-install-batch' for batch install many packages.
+
+==Customize==
+
+And all options below can customized by: M-x RET customize-group RET auto-install RET.
+
+* "auto-install-directory" -- The default directory for storing and installing elisp files.
+* "auto-install-buffer-name" -- The temporary buffer for storing downloaded content.
+* "auto-install-emacswiki-base-url" -- The base emacswiki.org URL from which to download elisp files.
+* "auto-install-gist-base-url" --  The base gist url from which to download elisp files.
+* "auto-install-filter-url" -- The filter base url alist for special library.
+* "auto-install-save-confirm" -- Whether confirmation is needed to save downloaded content.
+* "auto-install-replace-confirm" -- Whether confirmation is needed to replace an existing elisp file.
+* "auto-install-install-confirm" -- Whether confirmation is needed to install a downloaded elisp file.
+* "auto-install-from-dired-confirm" -- Whether confirmation is needed to download marked files from Dired.
+* "auto-install-batch-list" -- List that contain packages information for batch install.
+
+==Tips==
+* Batch install.
+
+: Some extensions (such as [[Icicles]]) have many packages need installing (16, to be exact), and installing those packages one by one is painful.
+: And some website have a max connect limit within a period of time (EmacsWiki.org allowed 10 connects in 20 seconds), you can use command `auto-install-batch' to install those packages automatically,  It will automatically control the delay time to avoid failed downloads. 
+
+:: Note that at the moment, there can be trouble if with a batch install when you have auto-install-save-confirm and auto-install-install-confirm set (as you probably should normally).  This is because AutoInstall lets you check each file in the package one at a time, but then compiles it immediately after you tell it to 'continue' (with C-c C-c).  But if it hasn't saved the other parts of the package yet, you could get a compile error.  The current workaround involves disabling the install confirmation for complex packages (at least with icicles).
+
+* Install Directory.
+
+: By default, if a file that you download does not exist on your system, the file is downloaded to the value of "auto-install-directory".  But if you have a file with the same name in your load-path, "auto-install" will try to download to that same directory and replace the
+file there.
+
+* Remember previous search history.
+
+: "auto-install-from-url' remembers previous installations, so if your search is the same as the previous search, you won't need to type anything, just hit RETURN.
+
+* Completing package name.
+: `auto-install-from-emacswiki' will complete the package name from the a downloaded from `EmacsWiki' (if auto-install has retrieved this list).
+
+* Update library:
+
+: You can use command "auto-install-from-library" to update a special library.  By default, it updates from EmacsWiki,
+: if it can't find a match in "auto-install-filter-url".
+
+* Asynchronous install of marked files in dired.
+
+: "auto-install-from-dired" can install marked files marked in dired.
+You can mark many files in dired and then use "auto-install-from-dired" to asynchronously download those files in parallel.
+All installation processes are in the background and won't conflict with each other.
+
+* Install from buffer.
+
+: "auto-install-from-buffer" can save and install the current buffer as a file.  You need to input a valid elisp file name. The
+default name is the current buffer name.
+
+* Pick up current file name:
+: "auto-install-from-emacswiki" and "auto-install-from-library" can pick up file name around point, you can move the cursor to file name, and call those commands, then just hit RET for install.
+
+* Valid URL filter.
+
+: All of the above functions support a filename filter. You can input any url to download an elisp file. If the file name suffix is `.el', it will install the downloaded file automatically. Otherwise, it won't install it unless you input a valid elisp file name.
+
+* Initialization of current symbol:
+: By default, command `auto-install-from-emacswiki' will initialize the current symbol as the default value, if default value is you want,
+just hit RET.  Go on be lazy!
+
+==Related==
+
+* Integrate with [[Anything]]:
+** Install:
+:: Put Lisp:anything.el and Lisp:anything-auto-install.el in your load-path, then add
+{{{
+        (require 'anything-auto-install)
+}}}
+:: in your ~/.emacs
+** Usage:
+### You can use the command `anything-auto-install-from-emacswiki' to install a package from EmacsWiki. If you don't see anything for completion, just wait until AutoInstall updates the package list and try again.
+### You can use the command `anything-auto-install-from-library' to update library.
+### Or you can integrate this package with [[Anything]], just setup like this:
+{{{
+            (setq anything-sources
+                  (list
+                   anything-c-source-auto-install-from-emacswiki
+                   anything-c-source-auto-install-from-library
+                   ))
+}}}
+** Tips:
+### When you use the [[Anything]] interface, you can type "TAB" to switch to the second-level interface for more commands on the same candidate.
+
+==Screenshot==
+* Install elisp package from EmacsWiki with [[Anything]]:
+
+: [[image:Anything_Auto_Install_Screenshot]]
+
+* Update library with [[Anything]]:
+
+: [[image:Anything_Auto_Install_Update_Screenshot]]
+
+==Batch Install Supported Extensions==
+* Now auto-install.el can batch install packages in below extensions:
+** [[Icicles]]
+** [[AutoComplete]] development version
+** [[Anything]]
+** [[Sdcv]]
+** LazySearch
+
+: If anyone would like an auto-install.el batch install for their own packages, just add it below.  I'm happy to add it.  -- AndyStewart
+
+==Other Elisp Installers==
+
+See also: [[ELPA]], [[DELPS]], [[el-get]], EmacsLispList, and InstallElisp
+
+
+==Questions==
+
+
+It is very unfortunate was then when I installed and configured auto-install and tried to type M-x auto-install-from-emacswiki, what I got was just an error message:
+
+<pre>
+        Making completion list...
+        Contacting host: www.emacswiki.org:80
+        error in process sentinel: url-http-async-sentinel: writing to process: transport endpoint is not connected, www.emacswiki.org
+        error in process sentinel: writing to process: transport endpoint is not connected, www.emacswiki.org
+</pre>
+
+I've tried to load the following url with both FireFox and w3m, they all works fine. 
+http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1
+
+And you know the worst thing is that I cannot even get any information about this from google.com. It seems that I am the only person who is so sad to meet this problem. :-(.
+
+Does any one has any idea to help me? Thanks in advance. This is my Emacs and Cygwin version information:
+
+; emacs-version:
+ GNU Emacs 23.2.1 (i686-pc-cygwin, GTK+ Version 2.18.6) of 2010-05-08 on laptop
+; uname -a:
+ CYGWIN_NT-5.1 IBM-0ADFC3DF773 1.7.5(0.225/5/3) 2010-04-12 19:07 i686 Cygwin
+
+-- David Young
+
+
+[new:rubikitch:2010-05-17 17:31 UTC]
+Sometimes url-retrieve fails I know. But I do not figure out why. Try (setq auto-install-use-wget t) .
+
+If you got any trouble, send a bug report via M-x auto-install-send-bug-report .
+
+-- [[rubikitch]]
+
+(setq auto-install-use-wget t) works. Thanks a lot.
+
+-- David Young
+
+[new:NicFerrier:2010-12-05 11:02 UTC]
+Are there any plans to get this into Emacs proper? It seems fantasically useful if you keep a lot of Emacs around. Or even if it could be put into ELPA.
+
+Although, I can't actually see how it causes auto-installed files to be reloaded on startup? This is something I really want... so I wrote a patch:
+
+{{{
+;; Automatic loading
+
+(defcustom auto-install-inhibit-startup-loading nil
+  "Controls whether auto-installed packaged are loaded at startup.
+
+If set to 't this inhibts the automatic loading of auto-load
+files at startup. 
+
+Otherwise all files in the 'auto-install-directory' are loaded
+when auto-install is required."
+  :type 'string
+  :group 'auto-install)
+
+(defun auto-install-on-startup ()
+  "Require everything in the auto-install directory."
+  (when (not auto-install-inhibit-startup-loading)
+    (mapc (lambda (direntry)
+            (let ((path (concat
+                         (file-name-as-directory auto-install-directory)
+                         direntry)))
+              (when (and (file-readable-p path) 
+                         (not (file-directory-p path))
+                         (equal "el" (file-name-extension path)))
+                (load-file path))))
+          (directory-files auto-install-directory))))
+
+;; Attempt to load all the auto-install files
+(auto-install-on-startup)
+}}}
+
+Damn. I also seem to have trouble updating, ie: doing auto-install-from-emacswiki for a package that I've already done that with. 
+
+-- [[NicFerrier]]
+
+==AutoInstall Suggestions (with code to help)==
+I like AutoInstall but I'd like it to be a bit more powerful ("bit more powerful" is secret code for "complaining"). So, having learned that complaining means volunteering, I'd like to make some suggestions and offer some code. It's your package [[rubikitch]] so no offense if you don't like my ideas, don't have time to use them, etc... And definitely feel free to delete this from your page or reword it. If you do leave it, please reword it to something that is more appropriate. This is more of an invitation for you to come over to the AutoInstallPlayGround  than something that belongs on the page long-term.
+
+--NeilSmithline
+
+PS: No category on the page bottom...
  
 
