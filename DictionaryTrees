@@ -1,1 +1,54 @@
-#hide
+These dictionary tree data structures are a hybrid between [[Tries]] and hash tables.
+
+The data is stored in a trie, but results of queries that take particularly long to retrieve are cached in hash tables, which are automatically kept synchronised with the tree. The package also provides persistent storage of the data structures in files, automatic saving, using multiple dictionary trees together as a combined meta-dictionary, and various other convenience features.
+
+Requires the [[Heaps]], [[Tries]], TaggedNFA and [[Queues]] packages. The latest version (0.12.6, released January 2012) can be obtained from:
+
+* Dictionary Tree package download: http://www.dr-qubit.org/download.php?file=predictive/dict-tree.el
+* Dictionary Tree git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
+* Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, ''*not*'' a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
+
+  git clone http://www.dr-qubit.org/git/predictive.git
+
+
+Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
+Happy Elisping!
+
+--TobyCubitt
+
+
+== Just for fun...! ==
+
+The following command might help when solving crosswords. Note that, for this to work, you'll either need the English dictionary from the PredictiveMode package, or you'll need to create your own dictionary and name it dict-english (or modify the code below to use a different dictionary name):
+
+<pre>
+(defun crossword-search (pattern)
+  "Search for words matching a pattern of letters in a crossword.
+Use \".\" (without quotes) in place of unknown letters.
+
+When called interactively, matching words are displayed in the
+\"*Crossword matches\" buffer.
+
+Searches for matches in the `dict-english' English
+dictionary. Returns a list of words that match the pattern."
+  (interactive "sCrossword pattern (use \".\" in place of unknown letters): ")
+  (unless (dictree-p dict-english) (dictree-load "dict-english"))
+  (setq pattern
+	(replace-regexp-in-string "\\\\\\." "." (regexp-quote pattern)))
+  (let ((words (dictree-regexp-search
+		dict-english pattern nil nil nil nil nil
+		(lambda (key data) key))))
+    (when (interactive-p)
+      (switch-to-buffer-other-window "*Crossword matches*")
+      (erase-buffer)
+      (dolist (word words) (insert word "\n"))
+      (other-window -1))
+    words))
+</pre>
+
+----
+CategoryCode
+CategoryExtensions
