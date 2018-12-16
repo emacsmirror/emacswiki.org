@@ -1,1 +1,59 @@
-Fgf
+[[de:Bangla]]
+If you keep hitting ##M-q## to fill your paragraphs (see FillParagraph), then ##auto-fill-mode## is for you. It doesn't get rid of ##M-q## altogether (use RefillMode (which replaces ManiacMode) for that), but it is a very good approximation:
+Type ##M-x auto-fill-mode## to activate the MinorMode for the current buffer, or put the following in your <tt>[InitFile .emacs]</tt> to activate it for all text mode buffers:
+
+    (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+If you want Emacs to ''ask'' you whether to use Auto Fill Mode when opening a text file, you can do:
+
+    (add-hook 'text-mode-hook
+              (lambda ()
+                (when (y-or-n-p "Auto Fill mode? ")
+                  (turn-on-auto-fill))))
+
+This is what I have in my ##.emacs## file to quickly ''toggle'' auto fill mode:
+
+    (global-set-key (kbd "C-c q") 'auto-fill-mode)
+
+Similarly, if you want to activate it for a particular mode, proceed as follows:
+
+* Determine the MajorMode. Switch to a buffer with the appropriate mode and type ##M-: major-mode RET##. This might return something like ##change-log-mode##, or whatever the MajorMode is.
+
+* Guess the name of the mode hook. Just append "##-hook##" and hope for the best. This gets me ##change-log-mode-hook##. If you want to verify the existence of such a hook variable, you can try to read its documentation: ##C-h v change-log-mode-hook RET##. This is not guaranteed to work, however, because hooks need not be defined. Therefore, just use the guessed name anyway.
+
+* Add the following to your ##.emacs## file:
+
+    (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
+
+To automatically fill comments but not code in ProgrammingModes, something like this can be used.
+
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                (auto-fill-mode 1)
+                (set (make-local-variable 'fill-nobreak-predicate)
+                     (lambda ()
+                       (not (eq (get-text-property (point) 'face)
+                                'font-lock-comment-face))))))
+
+Or you could define this and call it in your programming mode hooks as needed, which seems to work more reliably for me:
+
+    (defun comment-auto-fill ()
+      (setq-local comment-auto-fill-only-comments t)
+      (auto-fill-mode 1))
+
+FillingComments mentions this approach and should probably be merged with this page.
+
+----
+
+The variable ##fill-no-break-predicate## holds a list of functions that can be used 
+to compute when a particular point is line-breaked on.  This can be used to write modes 
+that have unusual breaking behaviour, such as Wiki types modes.
+
+[[https://github.com/nicferrier/creole-mode/blob/e3a2b15b228c9c1df7560ec390424040d69b8bb7/creole-mode.el#L70|Here's an example]]
+from a WikiCreole mode where auto-fill is useful but shouldn't affect text inside links. 
+
+----
+CategoryComments
+CategoryFilling 
+CategoryModes 
+CategoryDotEmacs
