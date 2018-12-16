@@ -1,1 +1,24 @@
-#hide
+In GnuEmacs prior to 23, you could not open frames on other ttys.  You
+could, however, use the same Emacs from different Linux consoles by
+using screen(1) to do this.
+
+The preferred approach would be to use EmacsClient.
+
+In 22 or if you do not wish to use features like EmacsAsDaemon.
+
+* Login, start screen, and within screen, start Emacs.
+* Login on another tty again, start screen -x.  This will show you the
+same Emacs.
+
+Note that "another tty" may also be remote. Just ssh to the account
+where you have your screen session running and start screen -x.
+
+You can also easily connect tty frames and X frames to a single
+instance of Emacs easily in [[emacs23]] same time.  This is possible
+with [[XEmacs]].  Or with older versions of GnuEmacs using the
+MultiTTYSupport that has now been integrated into
+[http://www.gnu.org/software/emacs/ Emacs23].
+
+
+----
+CategoryGlossary CategoryFrames CategoryDisplay
