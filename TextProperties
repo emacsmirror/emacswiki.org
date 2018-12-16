@@ -1,1 +1,40 @@
-#hide
+A '''[::text property]''' is a property attached to characters in a [[buffer]] or a string. The text properties attached to a character make up a [[property list]].  Each property in the list has a name and a value.
+
+In a buffer without font-lock, evaluate the following:
+
+    (let ((s "Alex"))
+      (put-text-property 0 (length s) 'face 'bold s)
+      (insert s))
+
+This should insert a bold "Alex" into the buffer. If it doesn't seem to work, try it in fundamental-mode, as some major modes will override the face.
+
+As another example, InvisibleText uses the text property `invisible'. If a non-`nil' `invisible' property
+is attached to a character, that character is invisible.
+
+
+Text-properties exist in GNU Emacs.  XEmacs provides a compatibility layer
+that translates TextProperties to XEmacsExtents.
+
+Text-properties affect text in strings and buffers.  When text is
+killed in one buffer and yanked in another buffer, the text-properties
+stick with it.
+
+Text-properties start between characters and end between characters.
+Text-properties affect a range of characters.  If a text-property is
+attached to a range of characters, it is shared.  The effect is the
+same as if every single character had it's own copy of the same
+property-list.
+
+This may lead to a problem if you want to include the first character
+into the range.  The solution is to use front-sticky property like this
+(as explained by MilesBader on the newsgroup):
+
+      (put-text-property 1 2 'front-sticky t)
+      (put-text-property 1 2 'read-only t)
+
+See also: EmacsOverlays, the answer to XEmacsExtents.
+
+Font-locking (in more recent Emacs versions) uses text property `font-lock-face', not text property `face'.  To change the appearance of font-locked text, set property `font-lock-face' for that text, not property `face'.  The appearance of text with property `face' is unaffected by font-locking (e.g. turning font-locking on/off). 
+
+----
+CategoryGlossary
