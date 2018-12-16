@@ -1,1 +1,238 @@
-#hide
+This page is about buffer-cycling methods that are akin to the `Alt-Tab' cycling of MS Windows. Control-tab meaning the single app equivalent. 
+
+C-tab cycling means cycling back and forth your buffer list with Tab and Shift-Tab while keeping Control down.  As soon as you release Control, the currently selected buffer becomes your current one, whilst your previous one becomes your most recently used one.  As long as you keep Control down, you are in a sort of "cycling mode".  
+
+Emacs does not see "control down" and "control up" events, so it must use a complete keypress to enter into the "cycling mode", unless some external application tells it when Control has been been released (no one has posted code to do that yet afaik). 
+
+----
+
+[:BufferStack]
+= buffer-stack.el =
+	
+* [[buffer-stack.el]] packaged from this wiki to melpa and marmalade
+* Unchanged since creation in 2010.
+
+Your buffers are in a stack, with the most recent on top. When
+you want a new buffer, you scan through them until you find the one you want,
+and then it goes on top of the stack.
+
+Features:
+* The stack is not changed while you are flipping through it -- unlike some ways of cycling buffers with `C-TAB'.
+* You can filter the stack and add/remove buffers from the stack dynamically.
+* Stacks may be frame-specific.
+* When moving through the stack it can show you your position.
+* You can bury buffers while moving through the stack.
+* Uses custom: easy to configure.
+* supplemental library Lisp:buffer-stack-suppl.el for only switching amongst buffers of the current major-mode.
+* Here is a snipplet of my emacs.el.  I use f9-f10-f11 for same major-mode switching and *shift* commands for switching amongst all buffers.
+
+<pre>
+;;;;;;;;;;;;;;;;;
+; buffer-stack ;;
+;;;;;;;;;;;;;;;;;
+
+(setq buffer-stack-show-position 'buffer-stack-show-position-buffers)
+
+(autoload 'buffer-stack-down "buffer-stack"  nil t)
+(autoload 'buffer-stack-up "buffer-stack"  nil t)
+(autoload 'buffer-stack-bury-and-kill "buffer-stack"  nil t)
+(autoload 'buffer-stack-bury "buffer-stack"  nil t)
+(eval-after-load "buffer-stack" '(require 'buffer-stack-suppl))
+
+(global-set-key [(f10)] 'buffer-stack-bury)
+(global-set-key [(control f10)] 'buffer-stack-bury-and-kill)
+(global-set-key [(f9)] 'buffer-stack-down)
+(global-set-key [(f11)] 'buffer-stack-up)
+(global-set-key [(shift f10)] 'buffer-stack-bury-thru-all)
+(global-set-key [(shift f9)] 'buffer-stack-down-thru-all)
+(global-set-key [(shift f11)] 'buffer-stack-up-thru-all)
+
+</pre>
+
+
+[:PcBufsw]
+= PC-BufSw =
+
+* Author: Igor Bukanov
+* URL: https://github.com/ibukanov/pc-bufsw
+* Packaged on melpa
+
+A fast way to switch buffers working like Ctrl-Tab in Windows
+applications.
+
+
+[:Stesla]
+= Stesla =
+
+Cycles back and forward through `(buffer-list)', excluding certain buffers. Also has an example of binding C-TAB and C-M-TAB in the GNU/Linux console.
+
+{{{
+ ;; Support functions for `stesla-rotate-buffers'.  From the EmacsWiki.
+
+ (defvar stesla-hated-buffers '("KILL" "*Apropos*" "*Completions*" "*grep*"
+                                ".newsrc-dribble" ".bbdb" "sent-mail" "*vc*"
+                               "*Compile-Log*" "*Help*" "*Messages*"))       
+
+ (defvar stesla-hated-buffer-regexps '("^ " "*Buffer" "^\\*trace" "^\\*tramp"))
+
+ (setq iswitchb-buffer-ignore (append stesla-hated-buffer-regexps  stesla-hated-buffers))
+
+ (defmacro stesla-buffer-regexp-mapcar (regexp buffers)
+  "Find BUFFERS whose name matches REGEXP"
+  `(mapcar (lambda (this-buffer)
+             (if (string-match ,regexp (buffer-name this-buffer))
+                 this-buffer))
+           ,(if (symbolp buffers) (symbol-value buffers) buffers)))
+
+ (defmacro stesla-hated-buffer-from-regexps (regexps)
+  "Generate a one-dimensional list of buffers that match REGEXPS"
+  (append
+   '(append)
+   (mapcar (lambda (regexp)
+             `(delete nil (stesla-buffer-regexp-mapcar ,regexp
+                                                       (buffer-list))))
+           (if (symbolp regexps) (symbol-value regexps) regexps))))
+
+ (defun stesla-delete-from-list (delete-these from-list)
+  "Delete DELETE-THESE from FROM-LIST."
+  (cond
+   ((car delete-these)
+    (if (member (car delete-these) from-list)
+        (stesla-delete-from-list (cdr delete-these)
+                                (delete (car delete-these) from-list))
+      (stesla-delete-from-list (cdr delete-these) from-list)))
+   (t from-list)))
+
+ (defun stesla-hated-buffers ()
+  "List of buffers I never want to see."
+  (delete nil
+          (append
+           (mapcar 'get-buffer stesla-hated-buffers)
+           (stesla-hated-buffer-from-regexps stesla-hated-buffer-regexps))))
+
+ ;; `stesla-rotate-buffers': Like `bury-buffer' but with the capability to
+ ;; exclude certain specified buffers.
+
+ (defun stesla-rotate-buffers (&optional n)
+  "Switch to the Nth next buffer.  Negative arguments move backwards."
+  (interactive)
+  (unless n
+    (setq n 1))
+  (let ((my-buffer-list
+         (stesla-delete-from-list (stesla-hated-buffers)
+                                 (buffer-list (selected-frame)))))
+    (switch-to-buffer
+     (if (< n 0)
+         (nth (+ (length my-buffer-list) n)
+              my-buffer-list)
+       (bury-buffer)
+       (nth n my-buffer-list)))))
+
+ ;; Windows-style C-TAB and C-M-TAB to switch buffers.
+
+ (global-set-key (kbd "C-<tab>") 'stesla-rotate-buffers)
+ (global-set-key (kbd "C-M-<tab>") (lambda ()
+                                    (interactive)
+                                    (stesla-rotate-buffers -1)))
+
+ ;; This is C-TAB and C-M-TAB for the Linux console.  This requires special
+ ;; setup; namely, you need to load a keymap file with /usr/bin/loadkeys
+ ;; containing the following lines:
+ ;;
+ ;; control keycode 15 = Macro
+ ;; control alt keycode 15 = Pause
+ ;;
+ ;; If you actually -have- a key that generates the Macro or Pause keysyms,  you 
+ ;; have a better keyboard than I.  For me, this makes Emacs DWIW.  Credit for
+ ;; this hack goes to Alex Schroeder.
+
+ (global-set-key (kbd "ESC [ M") 'stesla-rotate-buffers)
+ (global-set-key (kbd "ESC [ P") (lambda ()
+                                  (interactive)
+                                  (stesla-rotate-buffers -1)))
+}}}
+: -- SamuelTesla
+
+
+
+
+
+[:Icicles]
+= Icicles =
+
+* Packaged on melpa
+
+Command `icicle-buffer' (bound by default to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. 
+
+* Positive [[prefix argument]]: only file buffers are candidates.
+
+* Zero prefix arg: only buffer in same mode as current buffer are candidates.
+
+* Negative prefix arg: only buffers associated with the selected [[frame]] are candidates.
+
+* `C-x m' during completion to access buffer bookmarks (needs [[Bookmark+]]).
+
+* `C-x m' during completion: only buffers of a given [[major mode]]are candidates (you are prompted for the mode).
+
+By default, the buffers are cycled in alphabetical order. However, if you use `<code>C-,</code>' after hitting `C-x b', then you cycle to another sort order -- several orders are available. You can alternatively impose a given order by default, by setting or binding user option `icicle-sort-comparer' appropriately.
+
+There are also several [[user option]]s that control the behavior.  For example, you can specify a predicate to satisfy or extra buffers to include as candidates.  See [[Icicles - Buffer-Name Input]].
+
+
+
+
+[:swbuff]
+= SwBuff and SwBuff-x =
+
+* Packaged on melpa from https://github.com/emacsorphanage/swbuff and Lisp:swbuff-x.el
+
+With swbuff and swbuff-x together you can easily get a buffer switching that behaves like Alt-Tab in windows. An important addition by swbuff-x is that it reorders the buffers in the same way as Alt-Tab does.
+
+For more info see SwBuff.
+
+[:Cycbuf]
+= Cycbuf =
+
+* Packaged on melpa and marmalade
+* Author: Martin Pohlack
+* URL: https://github.com/martinp26/cycbuf
+
+This is a combination of some features of swbuff-x, which is a modification to swbuff and bs.
+
+I really liked the nicely layouted and composed buffer-selection buffer of bs.  However, also fast switching buffers with one key-stroke and showing a temporary buffer with a buffer list (with hide timeout) a la swbuff is nice.  So I combined both's advantages.
+
+= Ido buffer switching =
+
+* Built-in to emacs
+
+[InteractivelyDoThings ido-mode] provides the function ido-switch-buffer, allows you to cycle or match using intuitive methods like substring match among the most recent buffers. 
+
+= iflipb =
+
+* Packaged on melpa via https://github.com/jrosdahl/iflipb
+
+[[iflipb]] is a lightweight and no-nonsense way of flipping through the most recently used buffers.
+
+= mybuffers =
+
+* Not packaged
+
+Yet another way to do it. It cycles only through the normal text buffers (i.e., excludes special buffers) and visits the most recently used first.
+
+* Author: ChristianRovner
+* Code: Lisp:mybuffers.el
+
+= buffcycle =
+
+* Not packaged
+
+[https://github.com/troydm/emacs-stuff/blob/master/buffcycle.el buffcycle.el] is a simple Control-Tab way to switch only between file buffers
+
+= buffer-flip =
+
+* Packaged on melpa from https://github.com/killdash9/buffer-flip.el
+
+Flip through emacs buffers Alt-Tab style with an emphasis on minimizing keystrokes.
+
+---- 
+CategoryBufferSwitching
