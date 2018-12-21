@@ -1,0 +1,3 @@
+Pymacs allows two-way communication between Emacs Lisp and Python. It enables the use of Python as an extension language for Emacs.
+
+It's available at https://github.com/dgentry/Pymacs
