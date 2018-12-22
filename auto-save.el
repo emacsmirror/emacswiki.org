@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2013 ~ 2014, Andy Stewart, all rights reserved.
 ;; Created: 2013-12-31 00:32:00
-;; Version: 0.5
-;; Last-Updated: 2018-12-11 18:18:31
+;; Version: 0.6
+;; Last-Updated: 2018-12-20 12:10:44
 ;;           By: Andy Stewart
 ;; URL:
 ;; Keywords: autosave
@@ -60,6 +60,9 @@
 ;; No need more.
 
 ;;; Change log:
+;;
+;; 2018/12/20
+;;      * Don't save buffer when yassnippet or company is active.
 ;;
 ;; 2018/12/11
 ;;      * Do not flash minibuffer when saving automatically.
@@ -127,15 +130,24 @@ avoid delete current indent space when you programming."
       (save-excursion
         (dolist (buf (buffer-list))
           (set-buffer buf)
-          (if (and (buffer-file-name) (buffer-modified-p))
-              (progn
-                (push (buffer-name) autosave-buffer-list)
-                (if auto-save-silent
-                    (with-temp-message
-                        (with-current-buffer " *Minibuf-0*" (buffer-string))
-                      (basic-save-buffer))
+          (when (and
+                 ;; Buffer associate with a filename?
+                 (buffer-file-name)
+                 ;; Buffer is modifiable?
+                 (buffer-modified-p)
+                 ;; Yassnippet is not active?
+                 (or (not (boundp 'yas--active-snippets))
+                     (not yas--active-snippets))
+                 ;; Company is not active?
+                 (or (not (boundp 'company-candidates))
+                     (not company-candidates)))
+            (push (buffer-name) autosave-buffer-list)
+            (if auto-save-silent
+                (with-temp-message
+                    (with-current-buffer " *Minibuf-0*" (buffer-string))
                   (basic-save-buffer))
-                )))
+              (basic-save-buffer))
+            ))
         ;; Tell user when auto save files.
         (unless auto-save-silent
           (cond
