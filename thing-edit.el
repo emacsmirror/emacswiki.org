@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2014, Arthur Miller <arthur.miller@live.com>, all rights reserved.
 ;; Created: 2008-06-08 00:42:07
-;; Version: 1.2.2
-;; Last-Updated: 2014-04-09 23:31:18
+;; Version: 1.3
+;; Last-Updated: 2018-12-22 12:48:56
 ;; URL: http://www.emacswiki.org/emacs/download/thing-edit.el
 ;; Keywords: thingatpt, edit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -40,51 +40,71 @@
 ;;
 ;; thing-paste-sexp                paste regular expression around cursor.
 ;; thing-copy-sexp                 copy regular expression around cursor.
+;; thing-replace-sexp              replace regular expression around cursor with content of kill-ring.
 ;;
 ;; thing-paste-email               paste email string around cursor
 ;; thing-copy-email                copy email string around cursor.
+;; thing-replace-email             replace email string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-filename            paste filename string around cursor.
 ;; thing-copy-filename             copy filename string around cursor.
+;; thing-replace-filename          replace filename string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-url                 paste url string around cursor.
 ;; thing-copy-url                  copy url string around cursor.
+;; thing-replace-url               replace url string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-word                paste word string around cursor.
 ;; thing-copy-word                 copy word string around cursor.
+;; thing-replace-word              replace word string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-symbol              paste symbol string around cursor.
 ;; thing-copy-symbol               copy symbol string around cursor.
+;; thing-replace-symbol            replace symbol string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-defun               paste function string around cursor.
 ;; thing-copy-defun                copy function string around cursor.
+;; thing-replace-defun             replace function string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-list                paste list string around cursor.
 ;; thing-copy-list                 copy list string around cursor.
+;; thing-replace-list              replace list string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-sentence            paste sentence string around cursor.
 ;; thing-copy-sentence             copy sentence string around cursor.
+;; thing-replace-sentence          replace sentence string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-whitespace          paste whitespace string around cursor.
 ;; thing-copy-whitespace           copy whitespace string around cursor.
+;; thing-replace-whitespace        replace whitespace string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-page                paste page string around cursor.
 ;; thing-copy-page                 copy page string around cursor.
+;; thing-replace-page              replace page string around cursor with content of kill-ring.
 ;;
 ;; thing-paste-line                paste current line.
 ;; thing-copy-line                 copy current line.
+;; thing-replace-line              replace current line with content of kill-ring.
 ;;
 ;; thing-paste-to-line-end         paste string to end of line.
 ;; thing-copy-to-line-end          copy string to end of line.
+;; thing-replace-to-line-end       replace string to end of line with content of kill-ring.
 ;;
 ;; thing-paste-to-line-beginning   paste string to beginning of line.
 ;; thing-copy-to-line-beginning    copy string to beginning of line.
+;; thing-replace-to-line-beginning replace string to beginning of line with content of kill-ring.
 ;;
 ;; thing-paste-comment             paste comment.
 ;; thing-copy-comment              copy comment.
-;; 
+;; thing-replace-comment           replace comment with content of kill-ring.
+;;
 ;; thing-paste-paragrap            paste paragraph around cursor.
 ;; thing-copy-paragrap             copy paragraph around cursor.
+;; thing-replace-paragrap          replace paragraph around cursor with content of kill-ring.
+;;
+;; thing-paste-parentheses         paste parentheses around cursor.
+;; thing-copy-parentheses          copy parentheses around cursor.
+;; thing-replace-parentheses       replace parentheses around cursor with content of kill-ring.
 ;;
 
 ;;; Installation:
@@ -96,6 +116,12 @@
 ;; No more need
 
 ;;; Change log:
+;;
+;; 2018/12/22
+;;      * Add docs.
+;;
+;; 2018/12/20
+;;      * Add `thing-replace-xxx' function. These functions can replace current thing with the content of `kill-ring'.
 ;;
 ;; 2014/04/09
 ;;      * Merge Arthur's new functions `thing-copy-paragraph' and `thing-paste-paragraph', thanks!
@@ -175,6 +201,23 @@ otherwise copy object."
     (thing-edit-internal (beginning-of-thing thing)
                          (end-of-thing thing)
                          kill-conditional)))
+
+(defun thing-replace-internal (object-beg object-end)
+  "A fast replace complexes object.
+Argument OBJECT-BEG the begin position that object.
+Argument OBJECT-END the end position of object."
+  (interactive)
+  (progn
+    (goto-char object-beg)
+    (delete-char (- object-end object-beg))
+    (yank)))
+
+(defun thing-replace (thing)
+  "This function is a simple interface for `thing-replace-internal'"
+  (save-excursion
+    (thing-replace-internal (beginning-of-thing thing)
+                          (end-of-thing thing))))
+
 ;;;###autoload
 (defun thing-paste-sexp ()
   "Paste regular expression at current point."
@@ -182,10 +225,19 @@ otherwise copy object."
   (thing-edit 'sexp t))
 
 ;;;###autoload
-(defun thing-copy-sexp ()
-  "Copy regular expression at current point."
+(defun thing-copy-sexp (kill-conditional)
+  "Copy regular expression at current point.
+With the universal argument, the text will also be killed."
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'sexp t)
+    (thing-edit 'sexp)))
+
+;;;###autoload
+(defun thing-replace-sexp ()
+  "Replace regular expression at current point with the content of kill-ring."
   (interactive)
-  (thing-edit 'sexp))
+  (thing-replace 'sexp))
 
 ;;;###autoload
 (defun thing-paste-email ()
@@ -194,10 +246,19 @@ otherwise copy object."
   (thing-edit 'email t))
 
 ;;;###autoload
-(defun thing-copy-email ()
-  "Copy email at current point."
+(defun thing-copy-email (kill-conditional)
+  "Copy email at current point.
+With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'email t)
+    (thing-edit 'email)))
+
+;;;###autoload
+(defun thing-replace-email ()
+  "Replace email at current point with the content kill ring."
   (interactive)
-  (thing-edit 'email))
+  (thing-replace 'email))
 
 ;;;###autoload
 (defun thing-paste-filename ()
@@ -206,10 +267,19 @@ otherwise copy object."
   (thing-edit 'filename t))
 
 ;;;###autoload
-(defun thing-copy-filename ()
-  "Copy filename at current point."
+(defun thing-copy-filename (kill-conditional)
+  "Copy filename at current point.
+With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'filename t)
+    (thing-edit 'filename)))
+
+;;;###autoload
+(defun thing-replace-filename ()
+  "Replace filename at current point with kill ring."
   (interactive)
-  (thing-edit 'filename))
+  (thing-replace 'filename))
 
 ;;;###autoload
 (defun thing-paste-url ()
@@ -218,10 +288,19 @@ otherwise copy object."
   (thing-edit 'url t))
 
 ;;;###autoload
-(defun thing-copy-url ()
-  "Copy url at current point."
+(defun thing-copy-url (kill-conditional)
+  "Copy url at current point.
+With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'url t)
+    (thing-edit 'url)))
+
+;;;###autoload
+(defun thing-replace-url ()
+  "Replace url at current point with kill ring."
   (interactive)
-  (thing-edit 'url))
+  (thing-replace 'url))
 
 ;;;###autoload
 (defun thing-paste-word ()
@@ -230,10 +309,19 @@ otherwise copy object."
   (thing-edit 'word t))
 
 ;;;###autoload
-(defun thing-copy-word ()
-  "Copy words at point."
+(defun thing-copy-word (kill-conditional)
+  "Copy words at point.
+With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'word t)
+    (thing-edit 'word)))
+
+;;;###autoload
+(defun thing-replace-word ()
+  "Replace words at point with kill ring."
   (interactive)
-  (thing-edit 'word))
+  (thing-replace 'word))
 
 ;;;###autoload
 (defun thing-paste-symbol ()
@@ -242,10 +330,19 @@ otherwise copy object."
   (thing-edit 'symbol t))
 
 ;;;###autoload
-(defun thing-copy-symbol ()
-  "Copy symbol around point."
+(defun thing-copy-symbol (kill-conditional)
+  "Copy symbol around point.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'symbol t)
+    (thing-edit 'symbol)))
+
+;;;###autoload
+(defun thing-replace-symbol ()
+  "Replace symbol around point with kill ring."
   (interactive)
-  (thing-edit 'symbol))
+  (thing-replace 'symbol))
 
 ;;;###autoload
 (defun thing-paste-line ()
@@ -254,17 +351,34 @@ otherwise copy object."
   (thing-edit 'line t))
 
 ;;;###autoload
-(defun thing-copy-line ()
-  "Copy current line into Kill-Ring without mark the line."
-  (interactive)
-  (thing-edit 'line))
+(defun thing-copy-line (kill-conditional)
+  "Copy current line into Kill-Ring without mark the line.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'line t)
+    (thing-edit 'line)))
 
 ;;;###autoload
-(defun thing-copy-paragraph (&optional kill-conditional)
-  "Copy current paragraph around the point"
+(defun thing-replace-line ()
+  "Replace current line with kill ring"
   (interactive)
-  (thing-edit 'paragraph)
-  )
+  (thing-replace 'line))
+
+;;;###autoload
+(defun thing-copy-paragraph (kill-conditional)
+  "Copy current paragraph around the point.
+With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'paragraph t)
+    (thing-edit 'paragraph)))
+
+;;;###autoload
+(defun thing-replace-paragraph ()
+  "Replace current paragraph around the point with the content of kill ring."
+  (interactive)
+  (thing-replace 'paragraph))
 
 ;;;###autoload
 (defun thing-paste-paragraph (&optional kill-conditional)
@@ -280,10 +394,19 @@ otherwise copy object."
   (thing-edit 'defun t))
 
 ;;;###autoload
-(defun thing-copy-defun ()
-  "Paste function around point."
+(defun thing-copy-defun (kill-conditional)
+  "Paste function around point.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'defun t)
+    (thing-edit 'defun)))
+
+;;;###autoload
+(defun thing-replace-defun ()
+  "Replace function around point with the content of kill ring."
   (interactive)
-  (thing-edit 'defun))
+  (thing-replace 'defun))
 
 ;;;###autoload
 (defun thing-paste-list ()
@@ -292,10 +415,19 @@ otherwise copy object."
   (thing-edit 'list t))
 
 ;;;###autoload
-(defun thing-copy-list ()
-  "Paste list around point."
+(defun thing-copy-list (kill-conditional)
+  "Paste list around point.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'list t)
+    (thing-edit 'list)))
+
+;;;###autoload
+(defun thing-replace-list ()
+  "Replace list around point with the content of kill ring."
   (interactive)
-  (thing-edit 'list))
+  (thing-replace 'list))
 
 ;;;###autoload
 (defun thing-paste-sentence ()
@@ -304,10 +436,19 @@ otherwise copy object."
   (thing-edit 'sentence t))
 
 ;;;###autoload
-(defun thing-copy-sentence ()
-  "Paste sentence around point."
+(defun thing-copy-sentence (kill-conditional)
+  "Paste sentence around point.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'sentence t)
+    (thing-edit 'sentence)))
+
+;;;###autoload
+(defun thing-replace-sentence ()
+  "Replace sentence around point with the content of currnt line."
   (interactive)
-  (thing-edit 'sentence))
+  (thing-replace 'sentence))
 
 ;;;###autoload
 (defun thing-paste-whitespace ()
@@ -316,10 +457,19 @@ otherwise copy object."
   (thing-edit 'whitespace t))
 
 ;;;###autoload
-(defun thing-copy-whitespace ()
-  "Paste whitespace around point."
+(defun thing-copy-whitespace (kill-conditional)
+  "Paste whitespace around point.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'whitespace t)
+    (thing-edit 'whitespace)))
+
+;;;###autoload
+(defun thing-replace-whitespace ()
+  "Replace whitespace around point with the content of currnt line."
   (interactive)
-  (thing-edit 'whitespace))
+  (thing-replace 'whitespace))
 
 ;;;###autoload
 (defun thing-paste-page ()
@@ -328,10 +478,19 @@ otherwise copy object."
   (thing-edit 'page t))
 
 ;;;###autoload
-(defun thing-copy-page ()
-  "Paste page around point."
+(defun thing-copy-page (kill-conditional)
+  "Paste page around point.
+ With the universal argument, the text will also be killed"
+  (interactive "P")
+  (if kill-conditional
+      (thing-edit 'page t)
+    (thing-edit 'page)))
+
+;;;###autoload
+(defun thing-replace-page ()
+  "Replace page around point with the content of currnt line."
   (interactive)
-  (thing-edit 'page))
+  (thing-replace 'page))
 
 ;; Below function is not base on thingatpt, but it's effect like above function.
 ;; So i add to this package.
@@ -399,8 +558,79 @@ otherwise copy object."
               (call-interactively 'comment-copy))
           (goto-char end))))))
 
+(defun thing-paste-parentheses ()
+  "Paste content in match parentheses."
+  (interactive)
+  (thing-copy-parentheses t))
+
+(defun thing-copy-parentheses (kill-conditional)
+  "Copy content in match parentheses.
+If `KILL-CONDITIONAL' is non-nil, kill object,
+otherwise copy object."
+  (interactive "P")
+  (save-excursion
+    (if (thing-edit-in-string-p)
+        (thing-edit-internal
+         (1+ (car (thing-edit-string-start+end-points)))
+         (cdr (thing-edit-string-start+end-points))
+         kill-conditional)
+      (thing-edit-internal
+       (progn
+         (backward-up-list)
+         (forward-char +1)
+         (point))
+       (progn
+         (up-list)
+         (forward-char -1)
+         (point))
+       kill-conditional))))
+
+(defun thing-replace-parentheses ()
+  "Replace content in match parentheses with the content of currnt line."
+  (interactive)
+  (save-excursion
+    (if (thing-edit-in-string-p)
+        (thing-replace-internal
+         (1+ (car (thing-edit-string-start+end-points)))
+         (cdr (thing-edit-string-start+end-points)))
+      (thing-replace-internal
+       (progn
+         (backward-up-list)
+         (forward-char +1)
+         (point))
+       (progn
+         (up-list)
+         (forward-char -1)
+         (point))))))
+
+(defun thing-edit-in-string-p (&optional state)
+  (or (nth 3 (or state (thing-edit-current-parse-state)))
+      (and
+       (eq (get-text-property (point) 'face) 'font-lock-string-face)
+       (eq (get-text-property (- (point) 1) 'face) 'font-lock-string-face))
+      (and
+       (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+       (eq (get-text-property (- (point) 1) 'face) 'font-lock-doc-face))
+      ))
+
+(defun thing-edit-string-start+end-points (&optional state)
+  "Return a cons of the points of open and close quotes of the string.
+The string is determined from the parse state STATE, or the parse state
+  from the beginning of the defun to the point.
+This assumes that `thing-edit-in-string-p' has already returned true, i.e.
+  that the point is already within a string."
+  (save-excursion
+    (let ((start (nth 8 (or state (thing-edit-current-parse-state)))))
+      (goto-char start)
+      (forward-sexp 1)
+      (cons start (1- (point))))))
+
+(defun thing-edit-current-parse-state ()
+  "Return parse state of point from beginning of defun."
+  (let ((point (point)))
+    (beginning-of-defun)
+    (parse-partial-sexp (point) point)))
+
 (provide 'thing-edit)
 
 ;;; thing-edit.el ends here
-
-;;; LocalWords:  el thingatpt paredit paredit's
