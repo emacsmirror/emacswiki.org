@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 24 08:53:53 2018 (-0800)
+;; Last-Updated: Sun Dec 23 11:37:41 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 16473
+;;     Update #: 16487
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2018/12/23 dadams
+;;     Added: bmkp-bookmark-type-valid-p., bmkp-buffer-bookmark-p, bmkp-buffer-alist-only.
+;;     Removed: bmkp-bookmark-type - use bmkp-bookmark-type-valid-p instead.
+;;     bmkp-edit-tags-send: Use bmkp-bookmark-type-valid-p.
 ;; 2018/11/22 dadams
 ;;     bookmark-load: Return the list of bookmarks read from FILE.
 ;;     bmkp-set-izones-bookmark: Include zone EXTRA info in bookmark record.
@@ -3393,4 +3397,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmark+-chg.el ends here
-
