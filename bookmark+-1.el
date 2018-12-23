@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Nov 22 10:32:25 2018 (-0800)
+;; Last-Updated: Sun Dec 23 11:33:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 8805
+;;     Update #: 8863
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -497,10 +497,9 @@
 ;;    `bmkp-bookmark-file-bookmark-p',
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-name-member',
-;;    `bmkp-bookmark-record-from-name', `bmkp-bookmark-type',
-;;    `bmkp-buffer-last-access-cp', `bmkp-buffer-names',
-;;    `bmkp-compilation-file+line-at', `bmkp-completing-read-1',
-;;    `bmkp-completing-read-bookmarks',
+;;    `bmkp-bookmark-record-from-name', `bmkp-buffer-last-access-cp',
+;;    `bmkp-buffer-names', `bmkp-compilation-file+line-at',
+;;    `bmkp-completing-read-1', `bmkp-completing-read-bookmarks',
 ;;    `bmkp-completing-read-buffer-name',
 ;;    `bmkp-completing-read-file-name', `bmkp-completing-read-lax',
 ;;    `bmkp-cp-not', `bmkp-create-variable-list-bookmark',
@@ -674,6 +673,7 @@
 ;;    `bmkp-autotemp-all-when-set-p', `bmkp-before-jump-hook',
 ;;    `bmkp-bookmark-file-history', `bmkp-bookmark-list-history',
 ;;    `bmkp-bookmark-set-confirms-overwrite-p',
+;;    `bmkp-buffer-alist-only', `bmkp-buffer-bookmark-p',
 ;;    `bmkp-current-bookmark-file', `bmkp-current-nav-bookmark',
 ;;    `bmkp-desktop-current-file', `bmkp-desktop-history',
 ;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
@@ -1023,7 +1023,7 @@ These are the predefined type predicates:
 
 `bmkp-autofile-bookmark-p', `bmkp-annotated-bookmark-p',
 `bmkp-autonamed-bookmark-for-buffer-p', `bmkp-autonamed-bookmark-p',
-`bmkp-autonamed-this-buffer-bookmark-p','
+`bmkp-autonamed-this-buffer-bookmark-p', `bmkp-buffer-bookmark-p',
 `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
 `bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
 `bmkp-dired-this-dir-bookmark-p', `bmkp-dired-wildcards-bookmark-p',
@@ -4458,7 +4458,8 @@ DO NOT MODIFY the header comment lines, which begin with `;;'."
              (error "Bad bookmark name in edit-buffer header"))
            (unless (setq bmk  (bmkp-get-bookmark-in-alist bname 'NOERROR))
              (error "No such bookmark: `%s'" bname))
-           (unless (bmkp-bookmark-type bmk) (error "Invalid bookmark"))
+           (unless (bmkp-bookmark-valid-p bmk)
+             (error "Invalid bookmark: `%s'" bname))
            (goto-char (point-min))
            (setq tags  (read (current-buffer)))
            (unless (listp tags) (error "Tags sexp is not a list of strings or an alist with string keys"))
@@ -4474,44 +4475,8 @@ DO NOT MODIFY the header comment lines, which begin with `;;'."
       (when (equal (buffer-name (current-buffer)) "*Bookmark List*")
         (bmkp-bmenu-goto-bookmark-named bname)))))
 
-(defun bmkp-bookmark-type (bookmark)
-  "Return the type of BOOKMARK or nil if no type is recognized.
-Return nil if the bookmark record is not recognized (invalid).
-See the code for the possible non-nil return values.
-BOOKMARK is a bookmark name or a bookmark record.
-If it is a record then it need not belong to `bookmark-alist'."
-  (condition-case nil
-      (progn
-        ;; If BOOKMARK is already a bookmark record, not a bookmark name, then we must use it.
-        ;; If we used the name instead, then tests such as `bookmark-get-filename' would fail,
-        ;; because they call `bookmark-get-bookmark', which, for a string, checks whether the
-        ;; bookmark exists in `bookmark-alist'.  But we want to be able to use `bmkp-bookmark-type'
-        ;; to get the type of any bookmark record, not necessarily one that is in `bookmark-alist'.
-        (when (stringp bookmark) (setq bookmark  (bookmark-get-bookmark bookmark)))
-        (let ((filep  (bookmark-get-filename bookmark)))
-          (cond ((bmkp-sequence-bookmark-p bookmark)             'bmkp-sequence-bookmark-p)
-                ((bmkp-function-bookmark-p bookmark)             'bmkp-function-bookmark-p)
-                ((bmkp-variable-list-bookmark-p bookmark)        'bmkp-variable-list-bookmark-p)
-                ((bmkp-url-bookmark-p bookmark)                  'bmkp-url-bookmark-p)
-                ((bmkp-gnus-bookmark-p bookmark)                 'bmkp-gnus-bookmark-p)
-                ((bmkp-desktop-bookmark-p bookmark)              'bmkp-desktop-bookmark-p)
-                ((bmkp-bookmark-file-bookmark-p bookmark)        'bmkp-bookmark-file-bookmark-p)
-                ((bmkp-bookmark-list-bookmark-p bookmark)        'bmkp-bookmark-list-bookmark-p)
-                ((bmkp-snippet-bookmark-p bookmark)              'bmkp-snippet-bookmark-p)
-                ((bmkp-man-bookmark-p bookmark)                  'bmkp-man-bookmark-p)
-                ((bmkp-info-bookmark-p bookmark)                 'bmkp-info-bookmark-p)
-                ((bookmark-get-handler bookmark)                 'bookmark-get-handler)
-                ((bmkp-region-bookmark-p bookmark)               'bmkp-region-bookmark-p)
-                ;; Make sure we test for remoteness before any other tests of the file itself
-                ;; (e.g. `file-exists-p'). We do not want to prompt for a password etc.
-                ((and filep  (bmkp-file-remote-p filep))         'remote-file)
-                ((and filep  (file-directory-p filep))           'local-directory)
-                (filep                                           'local-file)
-                ((and (bmkp-get-buffer-name bookmark)
-                      (or (not filep)  (equal filep bmkp-non-file-filename)))
-                 'buffer)
-                (t                                               nil))))
-    (error nil)))
+(defalias 'bmkp-bookmark-type 'bmkp-bookmark-valid-p)
+(make-obsolete 'bmkp-bookmark-type 'bmkp-bookmark-valid-p) ; 2018-12-23
 
 (defun bmkp-record-visit (bookmark &optional batchp)
   "Update the data recording a visit to BOOKMARK.
@@ -5968,6 +5933,14 @@ If it is a record then it need not belong to `bookmark-alist'."
   (let ((file  (bookmark-get-filename bookmark)))
     (and (bmkp-local-file-bookmark-p bookmark)  (not (file-directory-p file)))))
 
+(defun bmkp-buffer-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK bookmarks a non-file buffer.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (and (bmkp-get-buffer-name bookmark)
+       (let ((filep  (bookmark-get-filename bookmark)))
+         (or (not filep)  (equal filep bmkp-non-file-filename)))))
+
 (defun bmkp-man-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a `man' page bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -6321,6 +6294,12 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-bookmark-list-bookmark-p bookmark-alist))
+
+(defun bmkp-buffer-alist-only ()
+  "`bookmark-alist', filtered to retain only non-file buffer bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-buffer-bookmark-p bookmark-alist))
 
 (defun bmkp-desktop-alist-only ()
   "`bookmark-alist', filtered to retain only desktop bookmarks.
