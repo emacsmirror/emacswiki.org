@@ -9,7 +9,9 @@ Contributions to a new php-mode are very welcome!
 
 == Download ==
 
-* https://sourceforge.net/projects/php-mode/ -- maintained by EricJMRitz
+* (active) https://github.com/emacs-php/php-mode -- Maintained by Kenta Usami, previously by EricJMRitz.  It is based on the mode from SourceForge with updates for new PHP features like traits and namespaces.
+* (active) http://web-mode.org -- Maintained by François-Xavier Bois. For PHP templates files. Syntax highlighting and indentation according to the type of bloc (PHP/HTML/JavaScript/CSS)
+* (last update 2013) https://sourceforge.net/projects/php-mode/ -- maintained by EricJMRitz
 ** By default, in GNU Emacs 23.2.1, <tt><nowiki>//</nowiki></tt> comments are not formatted correctly by M-q. The problem is a bug in c-mode, which php-mode 1.5.0 depends on. A [http://lists.gnu.org/archive/html/help-gnu-emacs/2010-12/msg01114.html patch] is available and works, but it has to be applied manually: Line numbers don't match.
 ** [NxhtmlMode nXhtml] contains a variation of the latest php-mode (1.5.0), with some bug fixes and extensions.
 ** There is also Lisp:php-mode-improved.el, a version by DavidHouse branched from the version in nxhtml-mode that fixes a couple of annoying bugs (see the comments at the top of that file).
@@ -20,13 +22,11 @@ Contributions to a new php-mode are very welcome!
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 }}}
 * http://www.ontosys.com/src/php-mode.el -- maintained by FredYankowski
-* http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js -- patch for CC mode from Emacs 22.1, and files byte-compiled for Emacs 21/22.  See http://www.loveshack.ukfsn.org/emacs/index.html#html-php.el for PHP embedded in HTML.
-* http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
-* http://mewde.googlecode.com/files/php-mode-new.el -- Mewde Project php-mode maintained by AhmetUsal; updated 2008-10-07
+* (last update 2009) http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js -- patch for CC mode from Emacs 22.1, and files byte-compiled for Emacs 21/22.  See http://www.loveshack.ukfsn.org/emacs/index.html#html-php.el for PHP embedded in HTML.
+* (last update 2007) http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
+* (unavailable anymore) http://mewde.googlecode.com/files/php-mode-new.el -- Mewde Project php-mode maintained by AhmetUsal; updated 2008-10-07
 ** Based on the Deboutv Xemacs and SourceForge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] Some big differences from Deboutv inheritance mode; code comments inserting SourceForge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
 Auto-completes PHP functions and handles indentation both SourceForge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all SourceForge php-mode features supporting. I tested with an Emacs 23 environment; both Windows&nbsp;Vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert PHP template, function, etc.; after typing and tabbing completion; type M-Space then going on; it works fine...
-* https://github.com/emacs-php/php-mode -- Maintained by Kenta Usami, previously by EricJMRitz.  It is based on the mode from SourceForge with updates for new PHP features like traits and namespaces.
-* http://web-mode.org -- Maintained by François-Xavier Bois. For PHP templates files. Syntax highlighting and indentation according to the type of bloc (PHP/HTML/JavaScript/CSS)
 
 == php-mode comparison ==
 
