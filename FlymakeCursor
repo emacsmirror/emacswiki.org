@@ -17,3 +17,6 @@ The built-in package help-at-pt provides similar functionality, and also doesn't
     (custom-set-variables
      '(help-at-pt-timer-delay 0.9)
      '(help-at-pt-display-when-idle '(flymake-overlay)))
+
+[new]
+Note that this does not work with the latest Emacs (version >= 26). You can check this fork https://github.com/akash-akya/emacs-flymake-cursor for using with latest flymake 
