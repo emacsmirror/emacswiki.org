@@ -17,6 +17,12 @@ It all boils down to:
 
 ----
 
+Here's an emacs daemon pool I wrote, useful for those that don't like the buffer/frame sharing when using emacs daemon:
+
+http://github.com/cfal/emacs-pool
+
+-- cfal
+
 Here is an article I wrote about optimizing Emacs startup times.  Rather than posting the whole text of the article, I will just give the link to my site (feel free to edit and post the text here if you feel that would be more approriate):
 
 http://metashell-v1.blogspot.com/2006/04/howto-lightning-fast-emacs-startup.html
