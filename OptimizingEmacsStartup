@@ -17,7 +17,7 @@ It all boils down to:
 
 ----
 
-Here's an emacs daemon pool I wrote, useful for those that don't like the buffer/frame sharing when using emacs daemon:
+Here's an emacs daemon pool, useful for those that want improved startup time but don't want to deal with daemon mode:
 
 http://github.com/cfal/emacs-pool
 
