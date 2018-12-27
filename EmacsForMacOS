@@ -178,7 +178,7 @@ brew install emacs-plus
 </pre>
 
 
-==== Mitsaharu version in tap ====
+==== Mitsuharu version in tap ====
 
 To instead use the Yamamoto Mitsuharu version of Emacs 25.2 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
 
@@ -235,7 +235,7 @@ or (if you prefer a -- usually more recent-- development version)
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
 
-==== Mitsaharu version in MacPorts ====
+==== Mitsuharu version in MacPorts ====
 
 To instead use the Yamamoto Mitsuharu version of Emacs 26.1 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
 
