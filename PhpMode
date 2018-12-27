@@ -386,9 +386,6 @@ Multiple major modes are often not the best, but there are a lot of files that u
 The *files* don't use multiple modes, the programmers do. I find it's usually less of a hassle to do M-x html-mode, M-x javascript-mode, M-x php-mode etc.
 
 [new]
-How could I use c++ style comment as '//' instead of the old c style '/* */' to comment my codes?
-
-[new]
 How do I make a file for etags? I tried a file with all of the functions on separate lines, but it only made a TAGS file with one function.
 
 [new]
