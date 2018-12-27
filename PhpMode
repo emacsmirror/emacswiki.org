@@ -24,9 +24,6 @@ Contributions to a new php-mode are very welcome!
 * http://www.ontosys.com/src/php-mode.el -- maintained by FredYankowski
 * (last update 2009) http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js -- patch for CC mode from Emacs 22.1, and files byte-compiled for Emacs 21/22.  See http://www.loveshack.ukfsn.org/emacs/index.html#html-php.el for PHP embedded in HTML.
 * (last update 2007) http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
-* (unavailable anymore) http://mewde.googlecode.com/files/php-mode-new.el -- Mewde Project php-mode maintained by AhmetUsal; updated 2008-10-07
-** Based on the Deboutv Xemacs and SourceForge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] Some big differences from Deboutv inheritance mode; code comments inserting SourceForge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
-Auto-completes PHP functions and handles indentation both SourceForge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all SourceForge php-mode features supporting. I tested with an Emacs 23 environment; both Windows&nbsp;Vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert PHP template, function, etc.; after typing and tabbing completion; type M-Space then going on; it works fine...
 
 == php-mode comparison ==
 
