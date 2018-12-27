@@ -21,7 +21,6 @@ Contributions to a new php-mode are very welcome!
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 }}}
-* http://www.ontosys.com/src/php-mode.el -- maintained by FredYankowski
 * (last update 2007) http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
 
 == php-mode comparison ==
