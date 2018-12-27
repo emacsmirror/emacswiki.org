@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-11-11 09:27:58
-;; Version: 0.4
-;; Last-Updated: 2018-12-02 23:51:24
+;; Version: 0.5
+;; Last-Updated: 2018-12-09 20:44:27
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-pair.el
 ;; Keywords:
@@ -69,6 +69,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2018/12/09
+;;      * Fix bug of `awesome-pair-in-string-p' when cursor at left side of string.
 ;;
 ;; 2018/12/02
 ;;      * Use `get-text-property' improve algorithm of `awesome-pair-in-string-p' and `awesome-pair-in-commit-p'
@@ -906,14 +909,18 @@ If current line is not blank, do `awesome-pair-kill' first, re-indent line if re
 
 (defun awesome-pair-in-string-p (&optional state)
   (save-excursion
-    (or (nth 3 (or state (insert-translated-name-current-parse-state)))
-        (eq (get-text-property (point) 'face) 'font-lock-string-face)
-        (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+    (or (nth 3 (or state (awesome-pair-current-parse-state)))
+        (and
+         (eq (get-text-property (point) 'face) 'font-lock-string-face)
+         (eq (get-text-property (- (point) 1) 'face) 'font-lock-string-face))
+        (and
+         (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+         (eq (get-text-property (- (point) 1) 'face) 'font-lock-doc-face))
         )))
 
 (defun awesome-pair-in-comment-p (&optional state)
   (save-excursion
-    (or (nth 4 (or state (insert-translated-name-current-parse-state)))
+    (or (nth 4 (or state (awesome-pair-current-parse-state)))
         (eq (get-text-property (point) 'face) 'font-lock-comment-face))))
 
 (defun awesome-pair-in-string-escape-p ()
