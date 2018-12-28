@@ -218,7 +218,7 @@
                 (match-end 1))
                default-directory))
         (setq grep-edit-line
-              (string-to-int
+              (string-to-number
                (buffer-substring-no-properties
                 (match-beginning 2)
                 (match-end 2))))
