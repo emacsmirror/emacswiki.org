@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 12 10:59:17 2018 (-0800)
+;; Last-Updated: Fri Dec 28 09:25:17 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 4162
+;;     Update #: 4168
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -19,17 +19,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `crosshairs', `easymenu',
-;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `apropos', `apropos+', `avoid', `easymenu', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -774,6 +768,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/12/28 dadams
+;;     hlt-(un)highlight-regions: Pass zz-izones as explicit arg to zz-izone-limits.
 ;; 2018/11/12 dadams
 ;;     hlt-(next|previous)-highlight: Added optional arg WRAP-P.  In general, just for interactive use.
 ;;                                    Use WRAP-P in while tests.
@@ -1891,14 +1887,14 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
                        (if mbufs (format " in `%s'"  (buffer-name buf)) "")
                        remove-msg))))))))
 
-;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
+;; No need to use (zz-izone-limits zz-izones nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
 (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
   "Apply `hlt-highlight-region' to each zone in `zz-izones'.
 You need library `zones.el' to use this command interactively.
 Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-highlight-region'."
   (interactive (list (if (require 'zones nil t)
-                         (zz-izone-limits)
+                         (zz-izone-limits zz-izones)
                        (hlt-user-error "You need library `zones.el' to use this command interactively"))
                      nil
                      t
@@ -1906,14 +1902,14 @@ The other args are passed to `hlt-highlight-region'."
   (dolist (start+end  regions)
     (hlt-highlight-region (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers)))
 
-;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
+;; No need to use (zz-izone-limits zz-izones nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
 (defun hlt-unhighlight-regions (&optional regions face msgp mousep buffers)
   "Apply `hlt-unhighlight-region' to each zone in `zz-izones'.
 You need library `zones.el' to use this command interactively.
 Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-unhighlight-region'."
   (interactive (list (if (require 'zones nil t)
-                         (zz-izone-limits)
+                         (zz-izone-limits zz-izones)
                        (hlt-user-error "You need library `zones.el' to use this command interactively"))
                      nil
                      t
