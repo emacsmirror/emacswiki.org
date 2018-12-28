@@ -135,7 +135,7 @@ Many of the commands that manipulate zones are bound on keymap '''`narrow-map'''
 * '''`C-x n u''''   (`zz-unite-zones') -- Unite (coalesce) zones.
 * '''`C-x n v''''   (`zz-set-izones-var') -- Make another zones variable current.
 * '''`C-x n w''''   (`widen') -- Standard.
-* '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle zones as buffer [[Narrowing|narrowing]]: '''`##C-x n x x x ...##''''
+* '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle or pop zones as [[Narrowing|narrowings]]: '''`##C-x n x x x ...##''''
 * '''`C-x n C-x''''   (`zz-select-zone-repeat') -- Cycle zones as the active [[region]]: '''`##C-x n C-x C-x C-x ...##''''
 
 
