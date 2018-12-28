@@ -27,9 +27,13 @@ The narrowings can be nested, but they need not be. They can be any regions at a
 
 * You can repeat the `x' to cycle quickly among narrowings: `##C-x n x x x##'...
 
-* You can go directly to the Nth previous narrowing by using a [[numeric prefix argument]].  If you use a negative prefix arg, then (its absolute value is used and) the latest entries through the abs(N)th one are popped off the ring. Thus, if you use only negative args then the ring acts like a stack.
+* You can go directly to the Nth previous narrowing by using a [[numeric prefix argument]].
+
+* If you use a ''negative prefix arg'', then (its absolute value is used and) the latest entries through the abs(N)th one are ''popped'' off the ring.  For example, `##C-- C-x n x x x##' pops the last added narrowing each time you hit `x'.  You can thus use the list of recorded zones as a narrowing stack: narrow commands push to the stack, and `##C-- C-x n x##' pops it.
 
 * You can widen the buffer completely by using a plain prefix arg (`C-u') or a zero prefix arg (`C-0').  A zero prefix arg also resets (empties) the ring completely for the current buffer. (You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.)
+
+
 
 The [[mode line|mode-line]] lighter `Narrow' is still used for the ordinary
 Emacs narrowing commands.  But for `zz-narrow-repeat' (`C-x n x')
