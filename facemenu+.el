@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:19:54 2018 (-0800)
+;; Last-Updated: Fri Dec 28 09:20:50 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1955
+;;     Update #: 1959
 ;; URL: https://www.emacswiki.org/emacs/download/facemenu%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CustomizingFaces
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -211,6 +211,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/12/28 dadams
+;;     facemenup-add-face-to-regions: Pass explicit list of zones to zz-izone-limits.
 ;; 2015/08/16 dadams
 ;;     Renamed wide-n.el stuff to zones.el stuff.
 ;; 2015/08/14 dadams
@@ -1349,15 +1351,16 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
   (defun facemenup-add-face-to-regions (face &optional regions msgp)
     "Use `facemenu-add-face' to add FACE to each region in REGIONS.
 Optional arg REGIONS is a list of (START END) region limits.  If nil,
-the regions are taken from the izones in thevariable that is the value
-of `zz-izones-var'.  You need library `zones.el' for this command."
+the regions are taken from the izones in the variable that is the
+value of `zz-izones-var'.  You need library `zones.el' for this
+command."
     (interactive
      (progn (barf-if-buffer-read-only)
             (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
                                                          pp-read-expression-map
                                                        read-expression-map)
                                         'READ 'read-expression-history)
-                  (zz-izone-limits nil nil 'ONLY-THIS-BUFFER)
+                  (zz-izone-limits (symbol-value zz-izones-var) nil 'ONLY-THIS-BUFFER)
                   'MSGP)))
     (let (buf start end)
       (dolist (start+end  regions)
