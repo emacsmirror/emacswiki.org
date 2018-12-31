@@ -213,6 +213,12 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
 
 This fn reads a registry key - retrieves all the values and the names of all the subkeys. 
 
+    (defun string/starts-with (s begins)
+          "Return non-nil if string S starts with BEGINS."
+          (cond ((>= (length s) (length begins))
+                 (string-equal (substring s 0 (length begins)) begins))
+                (t nil)))
+    
     (defun w32reg-read-key (key)
       "Read all values and subkeys for a key path in the Windows registry.
     The return value is a list (KEYNAME VALUES SUBKEYS).  KEYNAME is
