@@ -43,7 +43,7 @@ To solve this problem, I modified the function somewhat.  Now, instead of [[kill
     (erase-buffer)
     (insert-register 9)
     (let ((sum 0))
-      (while (re-search-forward "[0-9]*\\.?[0-9]+" nil t)
+      (while (re-search-forward "-?[0-9]*\\.?[0-9]+" nil t)
         (setq sum (+ sum (string-to-number (match-string 0)))))
       (message "Sum: %f" sum)))
 
