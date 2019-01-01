@@ -962,11 +962,12 @@ See TrampAndDocker
 
 === Tramp and nixos ===
 
-If you have trouble connecting to a remote host that is running nixos, check that /bin/sh, /bin/uname & /bin/ls exist.
+If you have trouble connecting to a remote host that is running nixos, check that /bin/sh, /bin/base64, /bin/uname & /bin/ls exist.
 You may need to create symlinks for these files on nixos: 
 {{{
 sudo ln -s /run/current-system/sw/bin/ls /bin/ls
 sudo ln -s /run/current-system/sw/bin/uname /bin/uname
+sudo ln -a /run/current-system/sw/bin/base64 /bin/base64
 }}}
 
 ---JoeBloggs
