@@ -969,6 +969,10 @@ sudo ln -s /run/current-system/sw/bin/ls /bin/ls
 sudo ln -s /run/current-system/sw/bin/uname /bin/uname
 sudo ln -a /run/current-system/sw/bin/base64 /bin/base64
 }}}
+For editing files as root you will also need a copy of sudo (with setuid bit set) in the /bin directory:
+{{{
+sudo ln -s /run/wrappers/bin/sudo /bin/sudo
+}}}
 
 ---JoeBloggs
 
