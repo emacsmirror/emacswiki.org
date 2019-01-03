@@ -10,6 +10,11 @@ given full access to that account). If no one is comfortable with
 sharing their account, I would recommend setting up a special account
 for the host. Note: other users don't need to share their accounts,
 only the host.
+
+For an alternate and dramatically simpler solution, consider
+[https://tmate.io tmate], a wrapper around tmux which handles the
+collaboration setup for you.
+
 === Prerequisites===
 * tmux version 1.6 or later
 * emacs version 23 or later
