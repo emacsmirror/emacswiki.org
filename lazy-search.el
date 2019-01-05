@@ -1,4 +1,4 @@
-;;; lazy-search.el --- Lazy Search
+;;; lazy-search.el --- Mark current symbol and jump in all matching symbols.
 
 ;; Filename: lazy-search.el
 ;; Description: Lazy Search
@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-12-23 23:05:10
-;; Version: 0.2.1
-;; Last-Updated: 2009-01-22 12:30:26
+;; Version: 1.2
+;; Last-Updated: 2019-01-05 14:28:28
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/lazy-search.el
 ;; Keywords: lazy-search
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `thingatpt' `one-key'
+;; `thingatpt'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -39,38 +39,7 @@
 
 ;;; Commentary:
 ;;
-;; Lazy Search
-;;
-;; Like this name, this extension provide a lazy-search mode.
-;; This extension is base on `one-key' mode.
-;;
-;; It can take the search string from the buffer around point.
-;; Then jump next or previous match fast.
-;;
-;; Simple describe use step:
-;;
-;; 1-> Make sure you have install `one-key', `lazy-search' depend it.
-;;
-;; 2-> Bind some global keystroke with function `lazy-search-menu'.
-;;     Like me: (global-set-key (kbd "M-s") 'lazy-search-menu)
-;;
-;; 3-> Move cursor to some symbol, and type `M-s', then current symbol
-;;     will mark in all buffer and will popup a help window.
-;;
-;; 4-> Then you just type keystroke 's', you can jump to next symbol,
-;;     you just type keystroke 'r', you can jump to previous symbol.
-;;
-;; 5-> If you type 'w' can switch current search type from SYMBOL (default)
-;;     switch to WORD.
-;;
-;; 6-> That's all, you just call function, will popup a keystroke help
-;;     window, then you just try type keystroke in window.
-;;
-;; Have two function transform search object between `lazy-search'
-;; `isearch':
-;;      `lazy-search-to-isearch' can transform search object to `isearch'.
-;;      `isearch-to-lazy-search' can transform search object to `lazy-search',
-;;              just bind this function with `isearch-to-lazy-search'.
+;; Mark current symbol and jump in all matching symbols.
 ;;
 
 ;;; Installation:
@@ -84,12 +53,16 @@
 ;;
 ;; (require 'lazy-search)
 ;;
-;; Bind any keystroke you like to `lazy-search-menu'.
+;; Bind any keystroke you like to `lazy-search'.
 ;;
-;; (global-set-key (kbd "M-s") 'lazy-search-menu)
+;; (global-set-key (kbd "M-s") 'lazy-search)
 ;;
 
 ;;; Change log:
+;;
+;; 20019/01/05
+;;      * Remove `one-key' dependences and unused code, and refactory code.
+;;      * Add `lazy-search-to-color-rg'
 ;;
 ;; 2009/01/22
 ;;      * Make function `lazy-search-menu' respond
@@ -120,15 +93,9 @@
 
 ;;; TODO
 ;;
-;;      * Search and toggle REGEXP with search object.
-;;        With different color between text and regexp text.
-;;
-;;      * Support search text through in `outline-mode'.
-;;
 
 ;;; Require
 (require 'thingatpt)
-(require 'one-key)
 
 ;;; Code:
 
@@ -139,13 +106,13 @@
 
 (defface lazy-search-highlight-current
   '((((class color) (background dark))
-     (:background "DodgerBlue3" :foreground "black")))
+     (:foreground "black" :background "gold2" :bold t)))
   "Face for highlighting current object."
   :group 'lazy-search)
 
 (defface lazy-search-highlight-background
   '((((class color) (background dark))
-     (:background "grey10")))
+     (:foreground "grey80" :background "grey15" :bold t)))
   "Face for highlighting background object."
   :group 'lazy-search)
 
@@ -168,31 +135,19 @@
 (defvar lazy-search-mark-init-pos 0
   "The initialization mark position.")
 
-(defvar lazy-search-menu-first-time-p t
-  "Whether the first time call `lazy-search-menu'.")
-
-(defvar lazy-search-menu-alist nil
-  "The `one-key' menu alist for `lazy-search'.")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilise Function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lazy-search-menu ()
-  "The `one-key' menu for `lazy-search'."
+(defun lazy-search ()
   (interactive)
-  (lazy-search-init)
-  (one-key-menu "Lazy Search" lazy-search-menu-alist t t 'lazy-search-abort nil t))
+  (lazy-search-mode 1))
 
-(defun lazy-search-init ()
-  "Lazy search initialization."
-  (if lazy-search-menu-first-time-p
-      (if (thing-at-point 'symbol)
-          (progn
-            (setq lazy-search-menu-first-time-p nil)
-            (lazy-search-mark-symbol))
-        (error "Please move cursor some thing, lazy-search can mark it"))))
+(defun lazy-search-quit ()
+  "Lazy search quit."
+  (interactive)
+  (lazy-search-mode -1)
+  (message "Quit from lazy-search"))
 
 (defun lazy-search-abort ()
   "Handle abort with `lazy-search'."
-  (interactive)
   ;; Clean overlay from buffer.
   (lazy-search-highlight-current-clean)
   (lazy-search-highlight-background-clean)
@@ -203,30 +158,17 @@
     (setq lazy-search-object nil))
   ;; Reset some value.
   (setq lazy-search-object-offset 0)
-  (setq lazy-search-mark-init-pos 0)
-  (setq lazy-search-menu-first-time-p t))
-
-(defun lazy-search-quit ()
-  "Lazy search quit."
-  (keyboard-quit)
-  (message "Quit from lazy-search"))
+  (setq lazy-search-mark-init-pos 0))
 
 (defun lazy-search-highlight-current-highlight (object-beg object-end)
   "Highlight current search object.
 `OBJECT-BEG' the begin position of search-object.
 `OBJECT-END' the end position of search-object."
   (save-excursion
-    ;; Clean current highlight overlay in buffer.
-    (lazy-search-highlight-current-clean)
-    ;; Remove overlay with face from `OBJECT-BEG' to `OBJECT-ENG'.
-    (remove-overlays object-beg object-end
-                     lazy-search-highlight-current-overlay 'lazy-search-highlight-current)
-    ;; Bind current highlight overlay in buffer.
-    (setq lazy-search-highlight-current-overlay
-          (lazy-search-highlight-bind-overlay
-           object-beg object-end
-           lazy-search-highlight-current-overlay
-           'lazy-search-highlight-current))))
+    (if lazy-search-highlight-current-overlay
+        (move-overlay lazy-search-highlight-current-overlay object-beg object-end)
+      (setq lazy-search-highlight-current-overlay (make-overlay object-beg object-end))
+      (overlay-put lazy-search-highlight-current-overlay 'face 'lazy-search-highlight-current))))
 
 (defun lazy-search-highlight-background-highlight (object)
   "Background highlight all match object.
@@ -341,68 +283,24 @@ Otherwise keep original point before search."
       (message "Haven't match string with: %s" str))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Mark Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lazy-search-mark-word ()
-  "Mark word."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'word)
-     (end-of-thing 'word))))
-
-(defun lazy-search-mark-symbol ()
+(defun lazy-search-mark-symbol-or-region ()
   "Mark symbol."
   (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'symbol)
-     (end-of-thing 'symbol))))
-
-(defun lazy-search-mark-url ()
-  "Mark url."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'url)
-     (end-of-thing 'url))))
-
-(defun lazy-search-mark-filename ()
-  "Mark filename."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'filename)
-     (end-of-thing 'filename))))
-
-(defun lazy-search-mark-email ()
-  "Mark email."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'email)
-     (end-of-thing 'email))))
-
-(defun lazy-search-mark-sexp ()
-  "Mark sexp."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (beginning-of-thing 'sexp)
-     (end-of-thing 'sexp))))
-
-(defun lazy-search-mark-line ()
-  "Mark current line."
-  (interactive)
-  (save-excursion
-    (lazy-search-mark
-     (point)
-     (line-beginning-position)
-     (line-end-position))))
+  (if (or (thing-at-point 'symbol)
+          (region-active-p))
+      (save-excursion
+        (if (region-active-p)
+            (progn
+              (lazy-search-mark
+               (point)
+               (region-beginning)
+               (region-end))
+              (setq mark-active nil))
+          (lazy-search-mark
+           (point)
+           (beginning-of-thing 'symbol)
+           (end-of-thing 'symbol))))
+    (message "Please move cursor some thing, lazy-search can mark it")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Copy Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lazy-search-copy (object-beg object-end)
@@ -413,67 +311,15 @@ Otherwise keep original point before search."
   (message "%s copied." (buffer-substring object-beg object-end))
   (kill-ring-save object-beg object-end))
 
-(defun lazy-search-copy-search ()
+(defun lazy-search-copy-object ()
   "Copy current search object."
   (interactive)
   (save-excursion
     (lazy-search-copy (overlay-start lazy-search-highlight-current-overlay)
                       (overlay-end lazy-search-highlight-current-overlay))))
 
-(defun lazy-search-copy-symbol ()
-  "Copy symbol that at current point."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'symbol)
-                      (end-of-thing 'symbol))))
-
-(defun lazy-search-copy-word ()
-  "Copy words at point.
-Kill object if `KILL-CONDITIONAL' is non-nil,
-otherwise copy object."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'word)
-                      (end-of-thing 'word))))
-
-(defun lazy-search-copy-filename ()
-  "Copy filename at current point.
-Optional argument KILL-CONDITIONAL default is do copy handle, if KILL-CONDITIONAL is non-nil do paste handle."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'filename)
-                      (end-of-thing 'filename))))
-
-(defun lazy-search-copy-email ()
-  "Copy email at current point."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'email)
-                      (end-of-thing 'email))))
-
-(defun lazy-search-copy-url ()
-  "Copy url at current point."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'url)
-                      (end-of-thing 'url))))
-
-(defun lazy-search-copy-sexp ()
-  "Copy regular expression at current point."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'sexp)
-                      (end-of-thing 'sexp))))
-
-(defun lazy-search-copy-line ()
-  "Copy current line into Kill-Ring without mark the line."
-  (interactive)
-  (save-excursion
-    (lazy-search-copy (beginning-of-thing 'line)
-                      (end-of-thing 'line))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Move Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lazy-search-move-forward (&optional reverse)
+(defun lazy-search-jump-to-next-match (&optional reverse)
   "Move forward and mark next search object.
 Move backward and mark previous search object if option `REVERSE' is `non-nil'."
   (interactive)
@@ -497,92 +343,86 @@ Move backward and mark previous search object if option `REVERSE' is `non-nil'."
       (goto-char original-point)
       (message "Search failed with %s" (or lazy-search-object "")))))
 
-(defun lazy-search-move-backward ()
+(defun lazy-search-jump-to-previous-match ()
   "Move backward and mark previous search object."
   (interactive)
-  (lazy-search-move-forward t))
+  (lazy-search-jump-to-next-match t))
 
-(defun lazy-search-move-first ()
+(defun lazy-search-jump-to-first-match ()
   "Move the first search object."
   (interactive)
   (goto-char (point-min))
-  (lazy-search-move-forward))
+  (lazy-search-jump-to-next-match))
 
-(defun lazy-search-move-last ()
+(defun lazy-search-jump-to-last-match ()
   "Move the last search object."
   (interactive)
   (goto-char (point-max))
-  (lazy-search-move-backward))
-
-(defun lazy-search-move-start ()
-  "Move to the start position of object"
-  (interactive)
-  (goto-char (overlay-start lazy-search-highlight-current-overlay))
-  (setq lazy-search-object-offset 0))
-
-(defun lazy-search-move-end ()
-  "Move to the end position of object"
-  (interactive)
-  (goto-char (overlay-end lazy-search-highlight-current-overlay))
-  (setq lazy-search-object-offset (length lazy-search-object)))
+  (lazy-search-jump-to-previous-match))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; View Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lazy-search-view-next-line ()
   "Next line."
   (interactive)
-  (forward-line +1)
-  (message "Next line."))
+  (ignore-errors
+    (forward-line +1)))
 
 (defun lazy-search-view-previous-line ()
   "View previous line."
   (interactive)
-  (forward-line -1)
-  (message "Previous line."))
+  (ignore-errors
+    (forward-line -1)))
 
 (defun lazy-search-view-forward-char ()
   "View forward char."
   (interactive)
   (ignore-errors
-    (call-interactively 'forward-char))
-  (message "Forward char."))
+    (call-interactively 'forward-char)))
 
 (defun lazy-search-view-backward-char ()
   "View backward char."
   (interactive)
   (ignore-errors
-    (call-interactively 'backward-char))
-  (message "Backward char."))
+    (call-interactively 'backward-char)))
 
-(defun lazy-search-view-scroll-up-one-line ()
+(defun lazy-search-scroll-up-one-line ()
   "View scroll up one line."
   (interactive)
   (ignore-errors
-    (scroll-up 1))
-  (message "Scroll up one line"))
+    (scroll-up 1)))
 
-(defun lazy-search-view-scroll-down-one-line ()
+(defun lazy-search-scroll-down-one-line ()
   "View scroll down one line."
   (interactive)
   (ignore-errors
-    (scroll-down 1))
-  (message "Scroll down one line."))
+    (scroll-down 1)))
 
-(defun lazy-search-view-scroll-up-one-page ()
+(defun lazy-search-scroll-up-one-page ()
   "View scroll up one page."
   (interactive)
   (ignore-errors
-    (scroll-up))
-  (message "Scroll up one page."))
+    (scroll-up)))
 
-(defun lazy-search-view-scroll-down-one-page ()
+(defun lazy-search-scroll-down-one-page ()
   "View scroll down one page."
   (interactive)
   (ignore-errors
-    (scroll-down))
-  (message "Scroll down one page."))
+    (scroll-down)))
+
+(defun lazy-search-view-line-beginning ()
+  "Move to the start position of object"
+  (interactive)
+  (goto-char (overlay-start lazy-search-highlight-current-overlay))
+  (setq lazy-search-object-offset 0))
+
+(defun lazy-search-view-line-end ()
+  "Move to the end position of object"
+  (interactive)
+  (goto-char (overlay-end lazy-search-highlight-current-overlay))
+  (setq lazy-search-object-offset (length lazy-search-object)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Search Function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lazy-search-search-cache (&optional reverse)
+(defun lazy-search-search-previous-cache (&optional reverse)
   "Search forward object cache.
 Search backward object cache if option `REVERSE' is `non-nil'."
   (interactive)
@@ -609,12 +449,11 @@ Search backward last-object of kill ring if option `REVERSE' is `non-nil'."
   "Transform isearch to `lazy-search'."
   (interactive)
   (isearch-exit)
-  (setq lazy-search-menu-first-time-p nil)
   (setq lazy-search-object isearch-string)
   (lazy-search-mark (point)
                     (- (point) (length lazy-search-object))
                     (point))
-  (call-interactively 'lazy-search-menu))
+  (call-interactively 'lazy-search))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Others Function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lazy-search-edit-object (&optional reverse)
@@ -623,10 +462,10 @@ Search backward if option `REVERSE' is `non-nil'."
   (interactive)
   (let (new-search-object)
     (or lazy-search-object (setq lazy-search-object ""))
-    (setq new-search-object (read-string (format "Search object: (%s)" lazy-search-object) lazy-search-object))
+    (setq new-search-object (read-string (format "Edit and research: " lazy-search-object) lazy-search-object))
     (lazy-search-search-string new-search-object reverse)))
 
-(defun lazy-search-return-mark-init-position ()
+(defun lazy-search-jump-to-init ()
   "Return init position that before mark."
   (interactive)
   (if lazy-search-mark-init-pos
@@ -638,55 +477,83 @@ Search backward if option `REVERSE' is `non-nil'."
         (message "Return search start position."))
     (message "No search start position.")))
 
+(defun lazy-search-to-color-rg ()
+  (interactive)
+  (if (featurep 'color-rg)
+      (let ((search-object lazy-search-object))
+        (lazy-search-quit)
+        (color-rg-search-input search-object default-directory))
+    (message "You need install color-rg.el from https://github.com/manateelazycat/color-rg first")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize Keystroke ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(dolist (elt-cons
-         '(
-           ;; Mark.
-           (("w" . "Mark Word") . lazy-search-mark-word)
-           (("b" . "Mark Symbol") . lazy-search-mark-symbol)
-           (("u" . "Mark Url") . lazy-search-mark-url)
-           (("f" . "Mark Filename") . lazy-search-mark-filename)
-           (("m" . "Mark Email") . lazy-search-mark-email)
-           (("x" . "Mark Sexp") . lazy-search-mark-sexp)
-           (("z" . "Mark Line") . lazy-search-mark-line)
-           ;; Copy
-           (("S" . "Copy Search Object") . lazy-search-copy-search)
-           (("W" . "Copy Word") . lazy-search-copy-word)
-           (("B" . "Copy Symbol") . lazy-search-copy-symbol)
-           (("U" . "Copy Url") . lazy-search-copy-url)
-           (("F" . "Copy Filename") . lazy-search-copy-filename)
-           (("M" . "Copy Email") . lazy-search-copy-email)
-           (("X" . "Copy Sexp") . lazy-search-copy-sexp)
-           (("Z" . "Copy Line") . lazy-search-copy-line)
-           ;; Move.
-           (("s" . "Move Forward") . lazy-search-move-forward)
-           (("r" . "Move Backeard") . lazy-search-move-backward)
-           (("." . "Move First") . lazy-search-move-first)
-           (("," . "Move Last") . lazy-search-move-last)
-           (("H" . "Move Start") . lazy-search-move-start)
-           (("L" . "Move End") . lazy-search-move-end)
-           ;; View
-           (("j" . "View Next Line") . lazy-search-view-next-line)
-           (("k" . "View Previous Line") . lazy-search-view-previous-line)
-           (("h" . "View Backward Char") . lazy-search-view-backward-char)
-           (("l" . "View Forward Char") . lazy-search-view-forward-char)
-           (("K" . "View Scroll Down One Line") . lazy-search-view-scroll-down-one-line)
-           (("J" . "View Scroll Up One Line") . lazy-search-view-scroll-up-one-line)
-           (("e" . "View Scroll Down One Page") . lazy-search-view-scroll-down-one-page)
-           (("SPC" . "View Scroll Up One Page") . lazy-search-view-scroll-up-one-page)
-           ;; Search.
-           (("c" . "Search Object Cache") . lazy-search-search-cache)
-           (("Y" . "Search Yank") . lazy-search-search-yank)
-           ;; Isearch.
-           (("t" . "Switch To Isearch") . lazy-search-to-isearch)
-           ;; Others.
-           (("E" . "Edit Search Object") . lazy-search-edit-object)
-           (("R" . "Return Mark Init Position") . lazy-search-return-mark-init-position)
-           ))
-  (add-to-alist 'lazy-search-menu-alist elt-cons))
+(define-minor-mode lazy-search-mode
+  "Lazy search mode."
+  nil
+  "Lazy Search"
+  '()
+  (if lazy-search-mode
+      (lazy-search-mode-enable)
+    (lazy-search-mode-disable)))
+
+(defun lazy-search-mode-enable ()
+  (lazy-search-mark-symbol-or-region)
+  (setq buffer-read-only t))
+
+(defun lazy-search-mode-disable ()
+  (lazy-search-abort)
+  (setq buffer-read-only nil))
+
+(defun lazy-search-set-key (key-alist &optional keymap key-prefix)
+  "This function is to little type when define key binding.
+`KEYMAP' is a add keymap for some binding, default is `current-global-map'.
+`KEY-ALIST' is a alist contain main-key and command.
+`KEY-PREFIX' is a add prefix for some binding, default is nil."
+  (let (key def)
+    (or keymap (setq keymap (current-global-map)))
+    (if key-prefix
+        (setq key-prefix (concat key-prefix " "))
+      (setq key-prefix ""))
+    (dolist (element key-alist)
+      (setq key (car element))
+      (setq def (cdr element))
+      (cond ((stringp key) (setq key (read-kbd-macro (concat key-prefix key))))
+            ((vectorp key) nil)
+            (t (signal 'wrong-type-argument (list 'array key))))
+      (define-key keymap key def))))
+
+(lazy-search-set-key
+ '(
+   ;; Move
+   ("s" . lazy-search-jump-to-next-match)
+   ("r" . lazy-search-jump-to-previous-match)
+   ("." . lazy-search-jump-to-first-match)
+   ("," . lazy-search-jump-to-last-match)
+   ("i" . lazy-search-jump-to-init)
+   ;; View
+   ("j" . lazy-search-view-next-line)
+   ("k" . lazy-search-view-previous-line)
+   ("h" . lazy-search-view-backward-char)
+   ("l" . lazy-search-view-forward-char)
+   ("H" . lazy-search-view-line-beginning)
+   ("L" . lazy-search-view-line-end)
+   ("K" . lazy-search-scroll-down-one-line)
+   ("J" . lazy-search-scroll-up-one-line)
+   ("e" . lazy-search-scroll-down-one-page)
+   ("SPC" . lazy-search-scroll-up-one-page)
+   ;; Mark
+   ("S" . lazy-search-mark-symbol-or-region)
+   ;; Other
+   ("w" . lazy-search-copy-object)
+   ("c" . lazy-search-search-previous-cache)
+   ("t" . lazy-search-to-isearch)
+   ("E" . lazy-search-edit-object)
+   ("Y" . lazy-search-search-yank)
+   ("g" . lazy-search-to-color-rg)
+   ;; Quit
+   ("q" . lazy-search-quit)
+   )
+ lazy-search-mode-map)
 
 (provide 'lazy-search)
 
 ;;; lazy-search.el ends here
-
-;;; LocalWords:  QinGW DodgerBlue pos elt POSITOIN BAKCWARD str Backeard SPC
