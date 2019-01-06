@@ -68,6 +68,22 @@ defines an additional prefix key.
 
 Using `C-c C-c' was suggested by [[JesseW]] on the EmacsChannel. -- AaronHawley
 
+[new]
+
+Instead of rebinding keys one by one define:
+
+{{{
+(defun my-simplify-fold-keymap (mode)
+  (let ((map (make-sparse-keymap)))
+     (map-keymap (lambda (ev def)
+                   (define-key map (string (event-basic-type ev)) def))
+                 (lookup-key
+                  (alist-get mode minor-mode-map-alist)
+                  (kbd "C-c @")))
+     map))
+}}}
+
+Then just bind the result of the above function called with 'hs-minor-mode and/or 'outline-minor-mode.
 
 == Explorer like Key-Bindings ==
 
