@@ -1,6 +1,6 @@
 ;;; zones.el --- Zones of text - like multiple regions
 ;;
-;; Copyright (C) 2010-2018  Free Software Foundation, Inc.
+;; Copyright (C) 2010-2019  Free Software Foundation, Inc.
 ;;
 ;; Filename: zones.el
 ;; Description:  Zones of text - like multiple regions
@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2018.12.28
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 28 10:11:11 2018 (-0800)
+;; Last-Updated: Mon Jan  7 06:55:41 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 2961
+;;     Update #: 2967
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -21,7 +21,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `cconv', `cl', `cl-lib', `gv',
+;;   `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -557,6 +558,9 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2019/01/07 dadams
+;;     zz-add-zones-matching-regexp: Removed unused variable end-marker.
+;;     zz-order-zones: Use optional arg DESCENDINGP.
 ;; 2018/12/28 dadams
 ;;     Fix condition-case-unless-debug for Emacs 22.  Use full macro definition, to prevent E22 compiler warning.
 ;;     zz-izone-limits: IZONES arg is no longer optional - explicit list of izones, so can handle null izones.
@@ -1494,8 +1498,7 @@ arg, and the parameters when called from Lisp."
                    (hit-end     (match-end 0))
                    (hit-string  (buffer-substring-no-properties hit-beg hit-end))
                    (c-beg       last-beg)
-                   (c-end       (if beg (match-beginning 0) (min end (point-max)))) ; Truncate.
-                   end-marker)
+                   (c-end       (if beg (match-beginning 0) (min end (point-max))))) ; Truncate.
               (isearchp-add/remove-dim-overlay c-beg c-end 'ADD)
               (cond ((not (string= "" hit-string))
                      (zz-add-zone c-beg c-end variable not-buf-local-p set-var-p)
@@ -1781,7 +1784,9 @@ iterate over the resulting list."
 ZONES can be a list of basic zones or a list like `zz-izones', that
 is, zones that have identifiers.
 Non-nil optional arg DESCENDINGP means put greater limit first."
-  (zz-map-zones (lambda (lim1 lim2) (if (> lim1 lim2) (list lim2 lim1) (list lim1 lim2))) zones))
+  (zz-map-zones (lambda (lim1 lim2)
+                  (if (if descendingp (< lim1 lim2) (> lim1 lim2)) (list lim2 lim1) (list lim1 lim2)))
+                zones))
 
 (defun zz-zones-complement (zones &optional beg end)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
