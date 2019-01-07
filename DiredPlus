@@ -38,6 +38,7 @@ them, and each entry is listed only once in the new Dired buffer.  The
 union Dired listing respects the markings, subdirectory insertions, and
 hidden subdirectories of the chosen Dired listings.
 
+[:diredp-fileset]
 * Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').
 
 * Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x D R'''' and '''`C-x 4 D R'''').
