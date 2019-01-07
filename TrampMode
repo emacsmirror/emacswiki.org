@@ -974,6 +974,8 @@ For editing files as root you will also need a copy of sudo (with setuid bit set
 sudo ln -s /run/wrappers/bin/sudo /bin/sudo
 }}}
 
+The recommended way of making tramp work with nixos is to add /run/current-system/sw/bin to `tramp-remote-path' but that didn't work for me.
+
 ---JoeBloggs
 
 ----
