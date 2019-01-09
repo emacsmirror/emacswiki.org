@@ -33,11 +33,10 @@ You can also bind this function with a key:
 If you are after an runner just like Rofi or Dmenu.
 
 {{{
-(defun run-command (command)
-  "Dmenu/rofi-like run external commands. Press C-M-i or Tab to auto complete"
-  (interactive
-   (list (read-shell-command "run: ")))
-  (start-process-shell-command command nil command))
+(defun run-command ()
+  "Dmenu/rofi-like run external commands. Tab/C-M-i to completion"
+  (interactive)  
+  (start-process "RUN" "RUN" (read-shell-command "RUN: ")))
 }}}
 == TAB Completion for `M-!' and `M-|' ==
 
