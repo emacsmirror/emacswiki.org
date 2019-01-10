@@ -34,10 +34,9 @@ If you are after an runner just like Rofi or Dmenu.
 
 {{{
 (defun run-command ()
-  "Dmenu/rofi-like run external commands. Tab/C-M-i to completion"
-  (interactive)  
-  (start-process "RUN" "RUN" (read-shell-command "RUN: ")))
-}}}
+      "Dmenu/rofi-like run external commands. Tab/C-M-i to completion"
+      (interactive)  
+      (start-process "RUN" "RUN" (substring (read-shell-command "RUN: ") 0 -1)))}}}
 == TAB Completion for `M-!' and `M-|' ==
 
 Starting with Emacs 23, `TAB' [[completion]] is available for `##M-!##' and `##M-|##'.  The following libraries provide such a feature for earlier Emacs versions:
