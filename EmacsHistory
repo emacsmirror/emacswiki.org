@@ -37,8 +37,7 @@ In 1981, Stallman wrote a report on Emacs as an internal document of the MIT AI 
 ''EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor''.
 He also gave a speech on his experiences, ''My Lisp Experiences and the Development of GNU Emacs'', 28 Oct 2002, at the International Lisp Conference.[http://www.gnu.org/gnu/rms-lisp.html]
 
-In 1984, Stallman began writing a new Emacs implementation, '''GnuEmacs''', which became the first program in the nascent GNU project. See [[WikiPedia:GNU Emacs]] for an extensive history and description. GNU Emacs
-was written in C and used EmacsLisp for extension. The first widely
+In 1984, Stallman began writing a new Emacs implementation, '''GnuEmacs''', which became the first program in the nascent GNU project. See [[WikiPedia:GNU Emacs]] for an extensive history and description. GNU Emacs's core (user interface and Lisp engine) was written in C, while the engine's Lisp itself was used to write most parts of the editor's functionality and functioned as integral extension language at the same time. The first widely
 distributed version of GNU Emacs was 15.34, which appeared in
 1985. Like Gosling Emacs, GNU Emacs ran on Unix, but it had more
 features and a more advanced extension language. It soon replaced
