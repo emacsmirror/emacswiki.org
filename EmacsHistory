@@ -30,14 +30,14 @@ written in Lisp. The choice of [[Lisp]] provided more extensibility than
 ever before, and has been followed by most subsequent Emacsen.
 
 '''Gosling Emacs''', the first Emacs to run on Unix, was written by
-JamesGosling in 1981. It was written in C, with MockLisp as its
+JamesGosling in 1981. It was written in C, with MockLisp at the core of its functionality and as its
 extension language.  Mock Lisp looked a bit like Lisp, but it was not really Lisp: it lacked true lists (it couldn't `cons'), and handling of function arguments was done in an error-prone, artificial way. For more info, see [[WikiPedia:Gosling Emacs]]).
 
 In 1981, Stallman wrote a report on Emacs as an internal document of the MIT AI Lab.  The title of the report was
 ''EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor''.
 He also gave a speech on his experiences, ''My Lisp Experiences and the Development of GNU Emacs'', 28 Oct 2002, at the International Lisp Conference.[http://www.gnu.org/gnu/rms-lisp.html]
 
-In 1984, Stallman began writing a new Emacs implementation, '''GnuEmacs''', which became the first program in the nascent GNU project. See [[WikiPedia:GNU Emacs]] for an extensive history and description. GNU Emacs's core (user interface and Lisp engine) was written in C, while the engine's Lisp itself was used to write most parts of the editor's functionality and functioned as integral extension language at the same time. The first widely
+In 1984, Stallman began writing a new Emacs implementation, '''GnuEmacs''', which became the first program in the nascent GNU project. See [[WikiPedia:GNU Emacs]] for an extensive history and description. Like with Gosling Emacs, GNU Emacs's core (user interface and Lisp engine) was written in C, while the engine's Lisp itself was used to write most parts of the editor's functionality and is used as integral extension language at the same time. Stallman's EmacsLisp featured several improvements over MockLisp and had new features specifically suited to editing text and source code. The first widely
 distributed version of GNU Emacs was 15.34, which appeared in
 1985. Like Gosling Emacs, GNU Emacs ran on Unix, but it had more
 features and a more advanced extension language. It soon replaced
