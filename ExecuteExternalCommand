@@ -28,9 +28,9 @@ You can also bind this function with a key:
 }}}
 
 
-=== Rofi and Dmenu like runner ===
+=== Running external programs from Emacs (Rofi - Dmenu) ===
 
-If you are after an runner just like Rofi or Dmenu.
+Running external programs from emacs as Windows Manager programs (Dmenu/Rofi):
 
 {{{
 (defun e-run-command ()
