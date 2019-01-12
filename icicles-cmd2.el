@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Oct 15 19:21:31 2018 (-0700)
+;; Last-Updated: Sat Jan 12 11:29:58 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 7454
+;;     Update #: 7456
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3967,7 +3967,7 @@ See also commands `icicle-goto-any-marker' and
 (defun icicle-goto-any-marker ()        ; Bound to `C-0 C-@', `C-0 C-SPC'.
   "Like `icicle-goto-marker', but lets you visit markers in all buffers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
-each completion candidate is has two parts, the first of which is the
+each completion candidate has two parts, the first of which is the
 name of the marker's buffer, and the second of which is the text from
 the marker's line.
 
