@@ -187,9 +187,9 @@ brew tap railwaycat/emacsmacport
 brew install emacs-mac
 </pre>
 
-and finally link it to your Applications folder:
+and finally link it to your Applications folder (default Homebrew App location):
 <pre>
-brew linkapps emacs-mac
+ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications
 </pre>
 
 === MacPorts ===
