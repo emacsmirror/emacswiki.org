@@ -55,11 +55,6 @@ depend on plain text.
 * NewsTicker -- watches RSS feeds for you
 * GnusRss -- read RSS feeds in Gnus
 * WThreeMShimbun -- read various web articles in Gnus, Wanderlust, or Mew.
-* You can also use [[emacs-w3m]] to access the mobile versions of online RSS
-aggregators, such as Google Reader. In the latter case, just go 
-[[http://www.google.com/reader/m/view/|here]], and log in as usual. If anyone has had
-success accessing other similar online services this way, maybe we should make a
-list here with the relevant URLs. ([[KamenNedev]])
 * HOWTOReadFeedsInEmacsViaEmail
 
 == Discussion ==
