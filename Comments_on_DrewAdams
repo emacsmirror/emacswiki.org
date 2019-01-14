@@ -2,3 +2,12 @@ Classic view: [https://www.emacswiki.org/emacs?action=browse;id=Comments_on_Drew
 
 -- Alex Schroeder 2018-07-26 07:01 UTC
 
+
+----
+
+Hello Drew,
+Since you are the author of dired+, I have a feature request: to support relative symlinks in Diredp-move-files.
+Currently the symlinks will be broken after the move.
+
+-- [http://www.debian.org godblessfq] 2019-01-14 13:02 UTC
+
