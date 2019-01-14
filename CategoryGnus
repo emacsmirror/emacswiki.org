@@ -121,6 +121,7 @@ Suggestions:
 * ExecuteSigFile - How to execute your .signature script
 * GnusAdBannerWashing -- Using gnus-article-address-banner-alist to remove ad banners
 * GnusGmail -- Set up gnus for GMail
+* GnusRiseup -- Set up gnus for Riseup
 * GnusICalAppIntegration -- Extracting iCalendar event invites from Gnus into OS X's iCal
 * GnusIMAP -- using an IMAP server
 * GnusMultipleIMAP -- multiple mailboxes
