@@ -11,3 +11,10 @@ Currently the symlinks will be broken after the move.
 
 -- [http://www.debian.org godblessfq] 2019-01-14 13:02 UTC
 
+
+----
+
+@godblessfq: I don't know just what the request is for such rel symlink support. (Also, I can't test symlink code, as I'm on MS Windows. If you have a patch or more precise info, please suggest it. Thx.
+
+-- DrewAdams 2019-01-14 14:40 UTC
+
