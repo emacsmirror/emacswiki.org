@@ -1,0 +1,66 @@
+== Quickstart ==
+
+Now put the following in your ##~/.gnus## file, replacing <EMAIL_ADDRESS> and <FULL NAME> by your, uhm, email address and full name:
+
+{{{
+;; Basic setup
+
+(setq user-mail-address "swedebugia@riseup.net")
+(setq user-full-name "swedebugia")
+(load-library "smtpmail")
+(load-library "nnimap")
+(load-library "starttls")
+(require 'nnir)
+
+(setq gnus-select-method '(nnimap "mail.riseup.net"
+	       (nnimap-address "mail.riseup.net")
+	       (nnimap-server-port 993)
+               ;; The following will be populated at the first run of "M-x gnus"
+	       (nnimap-authinfo-file "~/.authinfo")
+	       (nnir-search-engine imap)
+	       (nnimap-stream ssl)))
+
+;; Add secondary account like this:
+;; (setq gnus-secondary-select-methods
+;;       '(
+;; 	(nnimap "finn.cns.montana.edu"
+;;       	       (nnimap-address "finn.cns.montana.edu")
+;;       	       (nnimap-server-port 993)
+;;       	       (nnimap-authinfo-file "~/.authinfo")
+;;       	       (nnir-search-engine imap)
+;;       	       (nnimap-stream ssl)
+;;       	       (nnimap-list-pattern ("~/mail/in-SPAM_BUCKET"))
+;;       	       )
+;;       ))
+
+(setq smtpmail-starttls-credentials '(("mail.riseup.net" 587 nil nil))
+      smtpmail-smtp-server "mail.riseup.net"
+      smtpmail-default-smtp-server "mail.riseup.net"
+      send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'smtpmail-send-it
+      smtpmail-smtp-service 587)
+
+(add-hook 'gnus-topic-mode-hook 'gnus-topic-mode)
+(setq gnus-ignored-newsgroups  "")
+(setq gnus-summary-mark-below 0)
+}}}
+
+When sending your first email from gnus, you might get a ##STARTTLS## error. If you're using homebrew in Mac OS X, you can install the necessary package with ##brew install gnutls##.
+
+You can find more information in the following sections.
+
+Run `M-x gnus' and enjoy.
+
+=== Sync sent mail back to the server ===
+
+Add this to your .gnus:
+{{{
+;; Sync sent messages back to the server.
+(setq gnus-parameters
+      '((".*" (gcc-self . "Sent"))))
+
+(setq gnus-message-archive-group
+      '((".*" "nnimap+Mail:Sent")))
+
+(setq gnus-outgoing-message-group "Sent")
+}}}
