@@ -72,6 +72,44 @@ would be nice if results from it would show up on the Emacs Wiki search?
 I guess I just don't feel too attached to the list. -- [[Alex Schroeder]]
 
 [new]
+
+Oh, no, there's no way it's falling of the Internet! I've got my herd of trained unicorns down there, poised to catch anything falling off the Internet. ;)
+
+On a more serious note, I think mirroring the list here has some
+
+Pros:
+
+** It would be nice to have it on the EmacsWiki because that turns the
+   wiki more into a reference resource than simply a place where
+   things are linked to.
+
+** The list has a certain historical value, and the EmacsWiki is a
+   good place to hold documents like that.
+
+** The list also has a decent (if not very up-to-date) bibliographical
+   reference, so that's another thing we gain for the EmacsWiki.
+
+...and, of course, there are some
+
+Cons:
+
+** The list is long and rather unwieldy for a WikiWiki page; it can be
+   nicely structured, cross-referenced and formatted, but it's still
+   long.
+
+** The list is not very up-to-date. (Although we can continue to
+   document EmacsImplementations independently on this page at our
+   usual pace).
+
+** I don't know whether CraigFinseth would like the idea.
+
+Of course, we could leave it as it is, and continue to add-to and
+document different Emacs as it has been done up to now.
+
+[new]
+ 
+
+
 See also: EditorsUsedByOthers
 
 ----
