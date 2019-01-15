@@ -300,6 +300,7 @@ If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own 
 
 ; '''Mark''': [[image:DiredPlusMarkMenu]]
 
+[:TaggedMenu]
 The '''Mark''' menu has a '''Tagged''' submenu:
 
 ;; '''Tagged''': [[image:DiredPlusMarkTaggedMenu]]
