@@ -4,13 +4,13 @@
 ;; Description: Highlighting commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 28 09:25:17 2018 (-0800)
+;; Last-Updated: Mon Jan 14 21:05:30 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 4168
+;;     Update #: 4169
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -19,11 +19,17 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `easymenu', `fit-frame',
-;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `crosshairs', `easymenu',
+;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
+;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
+;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
