@@ -1,0 +1,4 @@
+Ff I edit a windows schtasks xml import file with Emacs for Wndows, it unknowingly converts Unicode little endian to Unicode big endian, and then the xml file can't be imported.
+
+-- js2010 2019-01-15 17:34 UTC
+
