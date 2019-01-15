@@ -18,3 +18,10 @@ Currently the symlinks will be broken after the move.
 
 -- DrewAdams 2019-01-14 14:40 UTC
 
+
+----
+
+@drew: The use case is to move files (rel symlinks) around in a git-annex repo without unlocking it, someone told me that git will fix the broken symlinks before commit. I will try to provide a patch.
+
+-- [http://www.debian.org godblessfq] 2019-01-15 01:29 UTC
+
