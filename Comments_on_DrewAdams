@@ -46,3 +46,10 @@ https://github.com/sensorflo/sensorflo-emacs/blob/master/site-lisp/w32-symlinks.
 
 -- [http://www.debian.org godblessfq] 2019-01-15 09:02 UTC
 
+
+----
+
+@godblessfq: Sorry, but I think you should instead file an Emacs bug report (enhancement request) for this, using `M-x report-emacs-bug'.  Someone knowledgeable will take a look and DTRT.  I'll then update the version in Dired+.  You can include your advice in the bug report, as further indication of the problem you see and what might help resolve it.  Thx.
+
+-- DrewAdams 2019-01-15 17:13 UTC
+
