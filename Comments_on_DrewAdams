@@ -25,3 +25,24 @@ Currently the symlinks will be broken after the move.
 
 -- [http://www.debian.org godblessfq] 2019-01-15 01:29 UTC
 
+
+----
+
+@Drew I solve this with an advice for rename-file.
+
+    (defun my-rename-file (file newname &optional ok-if-already-exists)
+    "fix path for relative symlink"
+    (let ((target (expand-file-name (file-symlink-p newname) (file-name-directory file))))
+          (if (and target (string-equal system-type "gnu/linux") (not (file-exists-p newname))) 
+              (dired-make-relative-symlink target newname t))))
+    (advice-add #'rename-file :after #'my-rename-file)
+
+I am quite new to emacs, I am not sure if the above has any side
+effect. There are some complicated examples of dealing with
+symlink : https://www.emacswiki.org/emacs/symlink-fix.el I am not
+sure if windows has relative shortcuts. This link show you can
+use symlinks in windows:
+https://github.com/sensorflo/sensorflo-emacs/blob/master/site-lisp/w32-symlinks.el
+
+-- [http://www.debian.org godblessfq] 2019-01-15 09:02 UTC
+
