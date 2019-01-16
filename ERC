@@ -199,6 +199,7 @@ You should be able to find documentation on how to set them up on their pages.
 * ErcGrowl -- Get notified via Growl (Mac OS X) whenever your name is mentioned.
 * ErcViewLog -- View ERC logs with the same look as a real ERC buffer
 * [https://github.com/atomontage/erc-crypt erc-crypt.el] -- Per buffer PSK encryption for ERC 
+* [https://github.com/vapniks/erc-list-cache erc-list-cache.el] -- Cache IRC server channel lists so they load faster
 
 == Proxies ==
 
