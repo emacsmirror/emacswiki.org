@@ -3,26 +3,37 @@
 ;; Filename: org-readme.el
 ;; Description: Integrate Readme.org and Commentary/Change Logs.
 ;; Author: Matthew L. Fidler
-;; Maintainer: Matthew L. Fidler
+;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
-;; Version: 20151119.1039
-;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Thu Nov 19 10:39:47 2015
+;; Version: 20190116.1923
+;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0") (cl-lib "0.5"))
+;; Last-Updated: Wed Jan 16 19:22:48 2019
 ;;           By: Joe Bloggs
-;;     Update #: 803
-;; URL: https://github.com/mlf176f2/org-readme
+;;     Update #: 818
+;; URL: https://github.com/vapniks/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
 ;; Compatibility: Tested with Emacs 24.1 on Windows.
 ;;
+;;
 ;; Features that might be required by this library:
 ;;
-;;   yaoddmuse http-post-simple org-html auto-document
-;; 
+;;   cl-lib yaoddmuse http-post-simple org-html auto-document
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: 
 ;; 
-;; * Using org-readme
+;;; Installation
+;; 
+;; To make sure you have the most up-to-date version of this library it is best to install 
+;; using the emacs package system, with the appropriate repository added (e.g https://melpa.org/)
+;; 
+;; To install without using a package manager:
+;; 
+;;  - Put the library in a directory in the emacs load path, like ~/.emacs.d/
+;;  - Add (require 'LIB-NAME) in your ~/.emacs file
+;; 
+;;; Using org-readme
 ;; Org readme is used to:
 ;; 
 ;; - Create/Update a "History" section in the Readme.org based on the changelog
@@ -44,6 +55,9 @@
 ;; 
 ;; - Asks for a commentary about the library change.
 ;;   - To exit/save press `C-c C-c'
+;; - Asks the user whether to add 
+;; - Updates the headers in the elisp library according to the current date, time
+;;   and the value of `org-readme-author-name'
 ;; - Asks if this is a minor revision
 ;;   - If it is a minor revision, bumps the revision up so the new
 ;;     library will be posted to marmalade-repo.org
@@ -55,17 +69,17 @@
 ;; - Updates Marmalade-repo if the library version is different than the
 ;;   version in the server (requires http-post-simple).
 ;; - Updates the git repository with the differences that you posted.
-;; - If you are using github, this library creates a melpa recipie.
-;; - If you are using github, this library creates a el-get recipie. 
+;; - If you are using github, this library creates a melpa recipe.
+;; - If you are using github, this library creates a el-get recipe. 
 ;; 
 ;; When `org-readme-sync' is called in a `Readme.org' file that is not a
 ;; single lisp file, the function exports the readme in EmacsWiki format
 ;; and posts it to the EmacsWiki.
-;; ** EmacsWiki Page Names
+;;;; EmacsWiki Page Names
 ;; EmacsWiki Page names are generated from the file.  `org-readme.el'
 ;; would generate a page of OrgReadme.
 ;; 
-;; ** Why each required library is needed
+;;;; Why each required library is needed
 ;; There are a few required libraries.  This is a list of the require
 ;; libraries and why they are needed.
 ;; 
@@ -78,12 +92,10 @@
 ;; | lib-requires     | To generate the library dependencies                                |
 ;; | auto-document    | To generate list of commands & options within elisp file (optional) |
 ;; |------------------+---------------------------------------------------------------------|
-;; ** Notes
+;;;; Notes
 ;; If you use `auto-insert' you may need to change your elisp 
 ;; entry of `auto-insert-alist' so that the end of the header section 
 ;; matches `org-readme-end-section-regexp'
-;; 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Commands:
 ;;
@@ -92,9 +104,18 @@
 ;;  `org-readme-add-autoloads'
 ;;    Query user to add ;;;###autoload magic comments to each function/macro/option.
 ;;    Keybinding: M-x org-readme-add-autoloads
+;;  `org-readme-insert-autodoc'
+;;    Use `auto-document' to document functions and options in current elisp file.
+;;    Keybinding: M-x org-readme-insert-autodoc
 ;;  `org-readme-insert-variables'
 ;;    Extracts variable documentation and places it in the readme file.
 ;;    Keybinding: M-x org-readme-insert-variables
+;;  `org-readme-build-el-get'
+;;    Builds an el-get recipe. This assumes github, though others could be added.
+;;    Keybinding: M-x org-readme-build-el-get
+;;  `org-readme-build-melpa'
+;;    Builds a melpa recipe. This assumes github, though other could be added.
+;;    Keybinding: M-x org-readme-build-melpa
 ;;  `org-readme-marmalade-post'
 ;;    Posts the current buffer to Marmalade.
 ;;    Keybinding: M-x org-readme-marmalade-post
@@ -111,13 +132,13 @@
 ;;    Convert Readme.org to markdown Readme.md.
 ;;    Keybinding: M-x org-readme-convert-to-markdown
 ;;  `org-readme-convert-to-emacswiki'
-;;    Converts Readme.org to oddmuse markup and uploads to emacswiki.
+;;    Convert Readme.org to oddmuse markup and upload to emacswiki.
 ;;    Keybinding: M-x org-readme-convert-to-emacswiki
 ;;  `org-readme-git'
-;;    Add The files to git.
+;;    Add current file and other relevant files to git.
 ;;    Keybinding: M-x org-readme-git
 ;;  `org-readme-gen-info'
-;;    With the proper tools, generates an info and dir from the current readme.org
+;;    With the proper tools, generate an info and dir from the current readme.org.
 ;;    Keybinding: M-x org-readme-gen-info
 ;;  `org-readme-sync'
 ;;    Syncs Readme.org with current buffer.
@@ -131,6 +152,9 @@
 ;;  `org-readme-changelog-to-readme'
 ;;    This puts the Emacs Lisp change-log into the Readme.org file.
 ;;    Keybinding: M-x org-readme-changelog-to-readme
+;;  `org-readme-update-required-features-section'
+;;    Update the required features section of the elisp file.
+;;    Keybinding: M-x org-readme-update-required-features-section
 ;;
 ;;; Customizable Options:
 ;;
@@ -138,13 +162,13 @@
 ;;
 ;;  `org-readme-default-template'
 ;;    Default template for blank Readme.org Files. LIB-NAME is replaced with the library.
-;;    default = "\n* Installation\n\nTo use without using a package manager:\n\n - Put the library in a directory in the emacs load path, like ~/.emacs.d\n - Add (require 'LIB-NAME) in your ~/.emacs file\n - If you have [[http://www.marmalade-repo.org/][marmalade-repo.org]], this LIB-NAME is part of the emacs packges you can install.  Just type M-x package-install LIB-NAME marmalade \n\nThis is in emacswiki, so this package can also be installed using el-get.\n\nAfter installing el-get, Type M-x el-get-install LIB-NAME.\n"
+;;    default = "\n* Installation\n\nTo make sure you have the most up-to-date version of this library it is best to install \nusing the emacs package system, with the appropriate repository added (e.g https://melpa.org/)\n\nTo install without using a package manager:\n\n - Put the library in a directory in the emacs load path, like ~/.emacs.d/\n - Add (require 'LIB-NAME) in your ~/.emacs file\n\n"
 ;;  `org-readme-end-section-regexp'
 ;;    Regexp to match the end of a header/comments/changelog section in the elisp file comments.
 ;;    default = "^;;;;+[ 	]*$"
 ;;  `org-readme-features-regexp'
 ;;    Regexp to match the header line for the required libraries section.
-;;    default = "^[ 	]*Features that might be required by this library:[ 	]*$"
+;;    default = "^[ 	]*Features that might be required by this library:?[ 	]*$"
 ;;  `org-readme-changelog-lines-regexp'
 ;;    Regexp matching changelog lines in the elisp file (you probably shouldn't change this).
 ;;    default = "^[ 	]*\\([0-9][0-9]?-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ 	]*.*\n.*(\\([^)]*\\))[ 	]*\n\\(\\(?:\n\\|.\\)*?\\)\n[ 	]*\\([0-9][0-9]?\\)"
@@ -184,24 +208,18 @@
 ;;  `org-readme-build-el-get-recipe'
 ;;    Build an el-get recipe based on github information.
 ;;    default = (quote prompt)
-;;  `org-readme-build-markdown'
-;;    Build Readme.md from Readme.org.
-;;    default = (quote prompt)
 ;;  `org-readme-use-pandoc-markdown'
 ;;    Use pandoc's grid tables instead of transferring the tables to html.
 ;;    default = (quote prompt)
-;;  `org-readme-build-texi'
-;;    Build library-name.texi from Readme.org, using Readme.md and pandoc.
-;;    default = (quote prompt)
 ;;  `org-readme-drop-markdown-after-build-texi'
 ;;    Remove Readme.md after texinfo is generated.
-;;    default = (quote prompt)
+;;    default = t
 ;;  `org-readme-build-info'
-;;    Build library-name.info from Reade.org using texi.  
-;;    default = (quote prompt)
+;;    Build .info file from Reade.org using texi.
+;;    default = nil
 ;;  `org-readme-drop-texi-after-build-info'
 ;;    Remove the texi information after building info files.
-;;    default = (quote prompt)
+;;    default = t
 ;;  `org-readme-add-readme-to-lisp-file'
 ;;    Update elisp file header with commentary section of Readme.org.
 ;;    default = (quote prompt)
@@ -228,15 +246,35 @@
 ;;    default = (quote prompt)
 ;;  `org-readme-remove-sections'
 ;;    List of sections to remove when changing the Readme.org to Commentary.
-;;    default = (quote ("History" "Possible Dependencies" "Library Information" "Functions & macros" "Variables" ...))
+;;    default = (quote ("History" "Possible Dependencies" "Library Information" "Installation" "Functions & macros" ...))
 ;;  `org-readme-remove-sections-from-markdown'
 ;;    List of sections to remove when changing the Readme.org to 
 ;;    default = (quote ("Functions & macros" "Variables"))
 
+;;; Installation:
+;;
+;; Put org-readme.el in a directory in your load-path, e.g. ~/.emacs.d/
+;; You can add a directory to your load-path with the following line in ~/.emacs
+;; (add-to-list 'load-path (expand-file-name "~/elisp"))
+;; where ~/elisp is the directory you want to add 
+;; (you don't need to do this for ~/.emacs.d - it's added by default).
+;;
+;; Add the following to your ~/.emacs startup file.
+;;
+;; (require 'org-readme)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 16-Jan-2019    Joe Bloggs  
+;;    Last-Updated: Wed Jan 16 19:19:18 2019 #817 (Joe Bloggs)
+;;    org-readme-sync: allow syncing without updating the Changelog 
+;; 16-Jan-2019    Joe Bloggs  
+;;    Last-Updated: Wed Jan 16 18:06:06 2019 #812 (Joe Bloggs)
+;;    A few minor changes
+;; 30-Nov-2015    Joe Bloggs  
+;;    Last-Updated: Mon Nov 30 19:45:19 2015 #807 (Joe Bloggs)
+;;    Add melpa recipe to package-build-recipes-dir
 ;; 19-Nov-2015    Joe Bloggs  
 ;;    Last-Updated: Thu Nov 19 02:43:29 2015 #802 (Joe Bloggs)
 ;;    Automatically update required features section in elisp comments
@@ -586,6 +624,7 @@
 ;; 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'yaoddmuse nil t)
 (require 'http-post-simple nil t)
 (require 'org-html nil t)
@@ -607,15 +646,14 @@
 (defcustom org-readme-default-template "
 * Installation
 
-To use without using a package manager:
+To make sure you have the most up-to-date version of this library it is best to install 
+using the emacs package system, with the appropriate repository added (e.g https://melpa.org/)
 
- - Put the library in a directory in the emacs load path, like ~/.emacs.d
+To install without using a package manager:
+
+ - Put the library in a directory in the emacs load path, like ~/.emacs.d/
  - Add (require 'LIB-NAME) in your ~/.emacs file
- - If you have [[http://www.marmalade-repo.org/][marmalade-repo.org]], this LIB-NAME is part of the emacs packges you can install.  Just type M-x package-install LIB-NAME marmalade 
 
-This is in emacswiki, so this package can also be installed using el-get.
-
-After installing el-get, Type M-x el-get-install LIB-NAME.
 "
   "Default template for blank Readme.org Files. LIB-NAME is replaced with the library."
   :type 'string
@@ -626,7 +664,7 @@ After installing el-get, Type M-x el-get-install LIB-NAME.
   :type 'regexp
   :group 'org-readme)
 
-(defcustom org-readme-features-regexp "^[ \t]*Features that might be required by this library:[ \t]*$"
+(defcustom org-readme-features-regexp "^[ \t]*Features that might be required by this library:?[ \t]*$"
   "Regexp to match the header line for the required libraries section."
   :type 'regexp
   :group 'org-readme)
@@ -715,36 +753,27 @@ Requires `yaoddmuse'."
   :type 'yesnoprompt
   :group 'org-readme)
 
-(defcustom org-readme-build-markdown 'prompt
-  "Build Readme.md from Readme.org."
-  :type 'yesnoprompt
-  :group 'org-readme)
-
 (defcustom org-readme-use-pandoc-markdown 'prompt
   "Use pandoc's grid tables instead of transferring the tables to html."
   :type 'yesnoprompt
   :group 'org-readme)
 
-(defcustom org-readme-build-texi 'prompt
-  "Build library-name.texi from Readme.org, using Readme.md and pandoc.
-Requires `org-readme-build-markdown' to be non-nil as pandoc to be found."
-  :type 'yesnoprompt
-  :group 'org-readme)
-
-(defcustom org-readme-drop-markdown-after-build-texi 'prompt
+(defcustom org-readme-drop-markdown-after-build-texi t
   "Remove Readme.md after texinfo is generated."
   :type 'yesnoprompt
   :group 'org-readme)
 
-(defcustom org-readme-build-info 'prompt
-  "Build library-name.info from Reade.org using texi.  
-Requires `org-readme-build-texi' to be non-nil, pandoc and makeinfo to be found. 
+(defcustom org-readme-build-info nil
+  "Build .info file from Reade.org using texi.
+Requires pandoc and makeinfo to be found.
 This will also create the directory entry using install-info, if it is found."
   :type 'yesnoprompt
   :group 'org-readme)
 
-(defcustom org-readme-drop-texi-after-build-info 'prompt
-  "Remove the texi information after building info files."
+(defcustom org-readme-drop-texi-after-build-info t
+  "Remove the texi information after building info files.
+Either the .texi file or the info file and dir will be added to
+the git repo depending on this option."
   :type 'yesnoprompt
   :group 'org-readme)
 
@@ -789,7 +818,7 @@ This will also create the directory entry using install-info, if it is found."
   :group 'org-readme)
 
 (defcustom org-readme-remove-sections
-  '("History" "Possible Dependencies" "Library Information"
+  '("History" "Possible Dependencies" "Library Information" "Installation"
     "Functions & macros" "Variables" "Customizable Options" "Commands & keybindings")
   "List of sections to remove when changing the Readme.org to Commentary."
   :group 'org-readme
@@ -819,17 +848,22 @@ Markdown which is an intermediary for texinfo (using pandoc)."
 (defvar-local org-readme-added-autoloads nil
   "Whether autoload's have been added yet.")
 
-(cl-defmacro org-readme-check-opt (opt &optional prompt)
-  "Query user if option OPT is 'prompt, otherwise return OPT.
+(cl-defmacro org-readme-check-opt (opt &optional prompt override)
+  "Query user if option OPT is 'prompt, or OVERRIDE is non-nil otherwise return OPT.
 If PROMPT is supplied use that for the prompt, otherwise use
 the first sentence of the docstring for OPT."
-  `(if (eq ,opt 'prompt)
+  `(if (or ,override (eq ,opt 'prompt))
        (y-or-n-p (or ,prompt
 		     (replace-regexp-in-string
 		      "\n.*" ""
 		      (documentation-property
 		       ',opt 'variable-documentation))))
      ,opt))
+
+;; This occurs frequently
+(defsubst goto-start nil
+  "Move cursor to start of buffer."
+  (goto-char (point-min)))
 
 ;; The following function is a slightly modified version of `xah-replace-regexp-pairs-region'
 ;; available here: https://github.com/xahlee/xah-replace-pairs
@@ -839,18 +873,17 @@ BEGIN END are the region boundaries.
 PAIRS is: [[regexStr1 replaceStr1] [regexStr2 replaceStr2] …]
 It can be list or vector, for the elements or the entire argument.
 The optional arguments FIXEDCASE, LITERAL, STRING & SUBEXP are the same as in `replace-match'."
-  (save-restriction
-    (mapc
-     (lambda (x)
-       (goto-char (point-min))
-       (while (search-forward-regexp (elt x 0) (point-max) t)
-	 (replace-match (elt x 1) fixedcase literal string subexp)))
-     pairs)))
+  (save-excursion
+    (mapc (lambda (x)
+	    (goto-start)
+	    (while (search-forward-regexp (elt x 0) (point-max) t)
+	      (replace-match (elt x 1) fixedcase literal string subexp)))
+	  pairs)))
 
 (defun org-readme-update-last-update nil
   "Update the \"Last-Updated:\", \"By:\" & \"Update #:\" fields in the elisp file header."
   (save-excursion
-    (goto-char (point-min))
+    (goto-start)
     (if (re-search-forward "^[; \t]*[Ll]ast[ -][Uu]pdated:[ \t]*\\(.*\\)$" nil t)
 	(let ((endpos (save-excursion (forward-line 3) (point))))
 	  (replace-match (current-time-string) t nil nil 1)
@@ -861,6 +894,23 @@ The optional arguments FIXEDCASE, LITERAL, STRING & SUBEXP are the same as in `r
 	  (if (re-search-forward "^[; \t]*[Uu]pdate[ -]\\(?:#\\|[Nn]umber\\):[ \t]*\\(.*\\)$" endpos t)
 	      (replace-match (number-to-string (1+ (string-to-number (match-string 1))))
 			     t nil nil 1))))))
+
+(defun org-readme-guess-package-name nil
+  "Return the name of the elisp package."
+  (let ((base (file-name-sans-extension
+               (file-name-nondirectory (buffer-file-name)))))
+    (when (string= (downcase base) "readme")
+      (let ((df (directory-files (file-name-directory (buffer-file-name))
+				 t ".*[.]el$")))
+        (unless (= 1 (length df))
+          (setq df (directory-files (file-name-directory (buffer-file-name))
+				    t ".*-mode[.]el$")))
+        (unless (= 1 (length df))
+          (setq df (directory-files (file-name-directory (buffer-file-name))
+				    t ".*-pkg[.]el$")))
+        (when (= 1 (length df))
+          (setq base (file-name-sans-extension (file-name-nondirectory (nth 0 df)))))))
+    base))
 
 (defun org-readme-add-autoloads nil
   "Query user to add ;;;###autoload magic comments to each function/macro/option.
@@ -883,15 +933,16 @@ If COPY is non-nil copy the output to Readme.org."
 	     (formattedtxt
 	      (with-temp-buffer
 		(insert txt)
-		(org-readme-regexp-pairs [["^;;;;+" ""]
-					  ["^;;;+" "*"]
-					  [";+" ""]
-					  ["`\\(.*?\\)'" " - *\\1* :"]
-					  ["^\\*[ \t]+Commands:" "* Commands & keybindings"]
-					  ["^\\*[ \t]+Customizable Options:" "* Customizable Options"]
-					  ["\n[ \t]*default = \\(.*\\)" "\\\\\\\\\n    default value: =\\1="]
-					  ["\n[ \t]*Keybinding:[ \t]*\\(.*\\)$" "\\\\\\\\\n    Keybinding: =\\1="]
-					  ["=\"\\(.*\\)\"=" "=\\1="]])
+		(org-readme-regexp-pairs
+		 [["^;;;;+" ""]
+		  ["^;;;+" "*"]
+		  [";+" ""]
+		  ["`\\(.*?\\)'" " - *\\1* :"]
+		  ["^\\*[ \t]+Commands:?" "* Commands & keybindings"]
+		  ["^\\*[ \t]+Customizable Options:?" "* Customizable Options"]
+		  ["\n[ \t]*default = \\(.*\\)" "\\\\\\\\\n    default value: =\\1="]
+		  ["\n[ \t]*Keybinding:[ \t]*\\(.*\\)$" "\\\\\\\\\n    Keybinding: =\\1="]
+		  ["=\"\\(.*\\)\"=" "=\\1="]])
 		(buffer-string))))
 	(with-temp-buffer
 	  (insert-file-contents readme)
@@ -903,7 +954,7 @@ If COPY is non-nil copy the output to Readme.org."
   "Return sorted list of matches to REGEX in current file.
 If N is provided return all matches of the Nth subexpression of REGEX."
   (save-excursion
-    (goto-char (point-min))
+    (goto-start)
     (sort (cl-loop while (re-search-forward regex nil t)
 		   collect (match-string-no-properties (or n 0)))
 	  'string<)))
@@ -913,25 +964,29 @@ If N is provided return all matches of the Nth subexpression of REGEX."
   (let ((lst (org-readme-get-matches
 	      "(\\(?:cl-\\)?def\\(?:un\\|macro\\)[*]?[ \t\n]+\\([^ \t\n]+\\)" 1))
 	(readme (org-readme-find-readme))
-	tmp ret1 ret2 ret)
+	tmp ret1 ret2 ret3 ret)
     (cl-flet ((fd (x)
 		  (with-temp-buffer
 		    (insert x)
-		    (goto-char (point-min))
+		    (goto-start)
 		    (when (re-search-forward "'[.]" nil t)
 		      (skip-chars-forward " \t\n")
 		      (delete-region (point) (point-min)))
-		    (goto-char (point-min))
+		    (goto-start)
 		    (when (re-search-forward "[(]" nil t)
 		      (goto-char (match-beginning 0))
 		      (insert "=")
 		      (forward-list)
 		      (insert "="))
-		    (org-readme-regexp-pairs [["`\\(.*?\\)'" "=\\1="] ["^[ \t]*[*]+[ \t]+" " - "]])
+		    (org-readme-regexp-pairs
+		     [["`\\(.*?\\)'" "=\\1="] ;change `' quotes to =
+		      ["^[ \t]*[*]+[ \t]+" " - "] ;reformat list items
+		      ["^[ \t]*[*]+" ""]])	  ;remove empty list items
 		    (goto-char (point-max))
-		    (insert "\n")
-		    (org-readme-regexp-pairs [["^[ \t]*[*]+" ""]])
-		    (buffer-string))))
+		    (insert "\n")	;final extra newline
+		    (buffer-string)))
+	      (addfns (txt) (if (string-match "\\*\\*\\*" txt)
+				(concat "\n" txt))))
       (setq ret1 "** Interactive Functions\n"
 	    ret2 "** Internal Functions\n"
 	    ret3 "** Macros\n")
@@ -946,14 +1001,17 @@ If N is provided return all matches of the Nth subexpression of REGEX."
 		 (setq ret3 (concat ret3 "\n*** " x "\n" (fd tmp))))
 		((string-match "interactive" tmp)
 		 (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
-		(t
-		 (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp))))))
+		(t (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp))))))
 	   (error nil)))
        lst)
-      (setq ret (concat "* Functions & macros\n" ret1 "\n" ret2 "\n" ret3)))
+      (setq ret (concat "* Functions & macros" (addfns ret1) (addfns ret2) (addfns ret3))))
     (with-temp-buffer
       (insert-file-contents readme)
-      (org-readme-remove-section "Functions & macros" ret)
+      (org-readme-remove-section "Functions & macros"
+				 (if (string-match "\\*\\*" ret)
+				     ret
+				   (message "No functions or macros found")
+				   nil))
       (write-file readme))))
 
 (defun org-readme-insert-variables ()
@@ -967,7 +1025,7 @@ If N is provided return all matches of the Nth subexpression of REGEX."
     (cl-flet ((fd (x) ;function to format text returned by `describe-variable'
 		  (with-temp-buffer
 		    (insert x)
-		    (goto-char (point-min))
+		    (goto-start)
 		    ;; remove whitespace before and after variable description
 		    (when (re-search-forward "Documentation:" nil t)
 		      (skip-chars-forward " \t\n")
@@ -977,12 +1035,15 @@ If N is provided return all matches of the Nth subexpression of REGEX."
 		      (skip-chars-backward " \t\n")
 		      (delete-region (point) (point-max)))
 		    ;; reformat to org format
-		    (org-readme-regexp-pairs [["`\\(.*?\\)'" "=\\1="] ;change `' quotes to =
-					      ["^[ \t]*[*]+[ \t]+" " - "] ;reformat list items
-					      ["^[ \t]*[*]+" ""]]) ;remove empty list items
+		    (org-readme-regexp-pairs
+		     [["`\\(.*?\\)'" "=\\1="] ;change `' quotes to =
+		      ["^[ \t]*[*]+[ \t]+" " - "] ;reformat list items
+		      ["^[ \t]*[*]+" ""]]) ;remove empty list items
 		    (goto-char (point-max))
 		    (insert "\n")	;final extra newline
-		    (buffer-string))))
+		    (buffer-string)))
+	      (addvars (txt) (if (string-match "\\*\\*\\*" txt)
+				 (concat "\n" txt))))
       (setq ret1 "** Customizable Variables\n"
 	    ret2 "** Internal Variables\n")
       (mapc
@@ -994,111 +1055,93 @@ If N is provided return all matches of the Nth subexpression of REGEX."
 		((string-match "Not documented" tmp))
 		((string-match "customize" tmp)
 		 (setq ret1 (concat ret1 "\n*** " x "\n" (fd tmp))))
-		(t
-		 (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp))))))
+		(t (setq ret2 (concat ret2 "\n*** " x "\n" (fd tmp))))))
 	   (error nil)))
        lst)
-      (setq ret (concat "* Variables\n" ret1 "\n" ret2)))
+      (setq ret (concat "* Variables" (addvars ret1) (addvars ret2))))
     (with-temp-buffer
       (insert-file-contents readme)
-      (org-readme-remove-section "Variables" ret)
+      (org-readme-remove-section "Variables"
+				 (if (string-match "\\*\\*" ret)
+				     ret
+				   (message "No variables found")
+				   nil))
       (write-file readme))))
+
+(defun org-readme-get-github-repo nil
+  "Return the name of the github repo for the project, or nil if none found.
+Assumes the current buffer contains a toplevel project file."
+  (let* ((dir (file-name-directory (buffer-file-name)))
+	 (git-cfg (expand-file-name "config" (expand-file-name ".git" dir))))
+    (if (file-exists-p git-cfg)
+	(with-temp-buffer
+	  (insert-file-contents git-cfg)
+	  (goto-start)
+	  (if (or (re-search-forward "git@github.com:\\(.*?\\)[.]git" nil t)
+		  (re-search-forward "https://github.com/\\(.*\\)" nil t))
+	      (match-string 1))))))
 
 (defun org-readme-build-el-get ()
   "Builds an el-get recipe. This assumes github, though others could be added.
 Returns file name if created."
-  (let ((el-get (expand-file-name
-                 "el-get" (file-name-directory (buffer-file-name))))
-        (lib-name (file-name-sans-extension
-                   (file-name-nondirectory (buffer-file-name))))
-        (git-cfg
-         (expand-file-name
-	  "config"
-	  (expand-file-name
-	   ".git" (file-name-directory (buffer-file-name)))))
-        github tmp
-        rcp)
+  (interactive)
+  (let* ((el-get (expand-file-name
+		  "el-get" (file-name-directory (buffer-file-name))))
+	 (lib-name (org-readme-guess-package-name))
+	 (github (org-readme-get-github-repo)))
     (unless (file-exists-p el-get)
       (make-directory el-get))
     (setq el-get (expand-file-name lib-name el-get))
-    (when (file-exists-p git-cfg)
-      (with-temp-buffer
-        (insert-file-contents git-cfg)
-        (goto-char (point-min))
-        (when (re-search-forward "git@github.com:\\(.*?\\)[.]git" nil t)
-          (setq github (match-string 1))))
-      (setq rcp
-            (format "(:name %s\n :description \"%s\"%s\n :website \"%s\"\n :type git\n :url \"%s\")"
-                    lib-name
-                    (save-excursion
-                      (goto-char (point-min))
-                      (if (re-search-forward "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$" nil t)
-                          (match-string 1)
-                        lib-name))
-                    ;; :depends
-                    (save-excursion
-                      (goto-char (point-min))
-                      (if (re-search-forward "^[ \t]*;+[ \t]*[Pp]ackage-[Rr]equires:[ \t]*\\(.*?\\)[ \t]*$" nil t)
-                          (condition-case err
-                              (progn
-                                (setq tmp (match-string 1))
-                                (with-temp-buffer
-                                  (insert (format "(setq tmp '%s)" tmp))
-                                  (condition-case err
-                                      (eval-buffer)
-                                    (error nil)))
-                                (format "\n :depends (%s)"
-                                        (mapconcat
-                                         (lambda(x)
-                                           (symbol-name (car x)))
-                                         tmp " ")))
-                            (error (message "Error parsing package-requires: %s" err)
-                                   ""))
-                        ""))
-                    ;; Website
-                    (save-excursion
-                      (goto-char (point-min))
-                      (if (re-search-forward "^[ \t]*;+URL:[ \t]*\\(.*\\)[ \t]*$" nil t)
-                          (match-string 1)
-                        (format "https://github.com/%s" github)))
-                    ;; Github
-                    (format "https://github.com/%s.git" github)
-                    lib-name))
-      (when rcp (with-temp-file el-get (insert rcp))))
-    (if (file-exists-p el-get) (symbol-value 'el-get) nil)))
+    (unless (not github)
+      (with-temp-file el-get
+	(insert (format "(:name %s\n :description \"%s\"%s\n :website \"%s\"\n :type git\n :url \"%s\")"
+			lib-name	; :name
+			(save-excursion	; :description
+			  (goto-start)
+			  (if (re-search-forward
+			       (format "^[ \t]*;;;[ \t]*%s[.]el[ \t]*--+[ \t]*\\(.*?\\)[ \t]*$"
+				       lib-name) nil t)
+			      (match-string 1)
+			    lib-name))
+			(save-excursion	; :depends
+			  (goto-start)
+			  (if (re-search-forward "^[ \t]*;+[ \t]*[Pp]ackage-[Rr]equires:[ \t]*\\(.*?\\)[ \t]*$" nil t)
+			      (condition-case err
+				  (format "\n :depends %s" (mapcar 'car (read (match-string 1))))
+				(error (message "Error parsing package-requires: %s" err) ""))
+			    ""))
+			(save-excursion	; :website
+			  (goto-start)
+			  (if (re-search-forward "^[ \t]*;+[ \t]*URL:[ \t]*\\(.*\\)[ \t]*$" nil t)
+			      (match-string 1)
+			    (format "https://github.com/%s" github)))
+			;; :url
+			(format "https://github.com/%s.git" github))))
+      el-get)))
 
 (defun org-readme-build-melpa ()
   "Builds a melpa recipe. This assumes github, though other could be added.
 Returns file name if created."
-  (let ((melpa (expand-file-name
-                "melpa" (file-name-directory (buffer-file-name))))
-        (lib-name (file-name-sans-extension
-                   (file-name-nondirectory (buffer-file-name))))
-        (git-cfg
-         (expand-file-name
-          "config"
-          (expand-file-name
-	   ".git" (file-name-directory (buffer-file-name)))))
-        rcp)
+  ;; this assumes we are in the main elisp file
+  (interactive)
+  (let* ((melpa (expand-file-name
+		 "melpa" (file-name-directory (buffer-file-name))))
+	 (lib-name (org-readme-guess-package-name))
+	 (github (org-readme-get-github-repo)))
     (unless (file-exists-p melpa)
       (make-directory melpa))
     (setq melpa (expand-file-name lib-name melpa))
-    (when (file-exists-p git-cfg)
-      (with-temp-buffer
-        (insert-file-contents git-cfg)
-        (goto-char (point-min))
-        (when (re-search-forward "git@github.com:\\(.*?\\)[.]git")
-          (setq rcp
-                (format "(%s\n :repo \"%s\"\n :fetcher github\n :files (\"%s.el\" \"dir\" \"%s.info\"))"
-                        lib-name (match-string 1) lib-name lib-name))))
-      (when rcp (with-temp-file melpa (insert rcp))))
-    (if (file-exists-p melpa) (symbol-value 'melpa) nil)))
+    (when github
+      (with-temp-file melpa
+	(insert (format "(%s\n :repo \"%s\"\n :fetcher github\n)"
+			lib-name github)))
+      melpa)))
 
 (defun org-readme-buffer-version ()
   "Gets the version of the current buffer."
   (let ((case-fold-search t))
     (save-excursion
-      (goto-char (point-min))
+      (goto-start)
       (when (re-search-forward "^ *;+ *Version: *\\(.*?\\) *$" nil t)
         (match-string-no-properties 1)))))
 
@@ -1140,7 +1183,7 @@ Returns file name if created."
     (when ver-json
       (save-excursion
         (set-buffer ver-json)
-        (goto-char (point-min))
+        (goto-start)
         (when (re-search-forward "\"version\"[ \t]*:[ \t]*\"\\(.*?\\)\"" nil t)
           (setq ver (match-string 1)))
         (kill-buffer (current-buffer))))
@@ -1161,7 +1204,7 @@ Returns file name if created."
 				 (format "%s/v1/users/login" org-readme-marmalade-server)
 				 `((name . ,user-name)
 				   (password . ,password))))))
-                (goto-char (point-min))
+                (goto-start)
                 (when (re-search-forward "\"token\"[ \t]*:[ \t]*\"\\(.*?\\)\"" nil t)
 		  (match-string 1))))
         (when token
@@ -1179,7 +1222,7 @@ Returns file name if created."
     (kill-buffer (get-buffer "*Change Comment*"))
     (with-temp-buffer
       (insert comment)
-      (goto-char (point-min))
+      (goto-start)
       (end-of-line)
       (while (re-search-forward "^" nil t)
         (insert ";;    "))
@@ -1212,10 +1255,11 @@ Returns file name if created."
 
 ;;;###autoload
 (defun org-readme-convert-to-markdown ()
-  "Convert Readme.org to markdown Readme.md."
+  "Convert Readme.org to markdown Readme.md.
+If called with a prefix arg always prompt for options." 
   (interactive)
   (let ((readme (org-readme-find-readme))
-        (what "Readme.md")
+        (markdown "Readme.md")
         p1 md tmp tmp2)
     (with-temp-buffer
       (insert-file-contents readme)
@@ -1228,7 +1272,7 @@ Returns file name if created."
 				["^[ \t]*#.*" ""]
 				["[+]TITLE:" "# "]])
       ;; Convert Headings
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^\\([*]+\\) *!?\\(.*\\)" nil t)
 	(setq tmp (make-string  (+ 1 (length (match-string 1))) ?#))
 	(replace-match (format "%s %s" tmp (match-string 2)) t t))
@@ -1241,7 +1285,7 @@ Returns file name if created."
 				;; Emphasis /emp/ to _emph_
 				["/\\(.*+?\\)/" "_\\1_"]] t)
       ;; Bold *bold* to __bold__
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "[*]\\(.*+?\\)[*]" nil t)
 	(unless (save-match-data (string-match "^[*]+$" (match-string 1)))
 	  (replace-match "__\\1__" t)))
@@ -1249,7 +1293,7 @@ Returns file name if created."
       (org-readme-regexp-pairs [["^[ \t]*[+-] +\\(.*?\\) *::" "- __\\1__ -- "]
 				["=\\(.*+?\\) *=" "`\\1`"]])
       ;; convert code blocks
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^ *#[+]BEGIN_SRC.*" nil t)
 	(setq tmp (point))
 	(when (re-search-forward "^ *#[+]END_SRC" nil t)
@@ -1260,7 +1304,7 @@ Returns file name if created."
 		      (re-search-forward "^" tmp2 t))
 	    (replace-match "::::"))))
       ;; convert evaluation results
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^: " nil t)
 	(replace-match "\n::::" t t) ;
 	(while (progn (end-of-line)
@@ -1270,7 +1314,7 @@ Returns file name if created."
       ;; Convert pre-formatted
       (org-readme-regexp-pairs [["^::::" "    "]])
       ;; Convert tables to html
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^[ \t]*|.*|[ \t]*$" nil t)
 	(beginning-of-line)
 	(setq p1 (point))
@@ -1280,27 +1324,25 @@ Returns file name if created."
 	(end-of-line)
 	(save-restriction
 	  (narrow-to-region p1 (point))
-	  (if (org-readme-check-opt org-readme-use-pandoc-markdown)
+	  (if (org-readme-check-opt org-readme-use-pandoc-markdown nil current-prefix-arg)
 	      (org-readme-regexp-pairs [["^\\([ \t]*\\)|\\(-.*?-\\)|\\([ \t]*\\)$" "\\1+\\2+\\3"]])
 	    (if (featurep 'org-html)
 		(org-replace-region-by-html (point-min) (point-max))
 	      (org-export-replace-region-by 'html))
 	    (org-readme-regexp-pairs [["class" "align"]]))))
       ;; Lists are the same.
-      (setq readme (buffer-string)))
-    (with-temp-file (expand-file-name
-		     "Readme.md"
-		     (file-name-directory (buffer-file-name)))
-      (insert readme))))
+      (setq markdown (buffer-string)))
+    (with-temp-file (expand-file-name "Readme.md" (file-name-directory (buffer-file-name)))
+      (insert markdown))))
 
 ;;;###autoload
 (defun org-readme-convert-to-emacswiki ()
-  "Converts Readme.org to oddmuse markup and uploads to emacswiki."
+  "Convert Readme.org to oddmuse markup and upload to emacswiki."
   (interactive)
   (let ((readme (org-readme-find-readme))
         (what (file-name-nondirectory (buffer-file-name)))
         (wiki (org-readme-get-emacswiki-name))
-        tmp tmp2) 
+        tmp tmp2)
     (with-temp-buffer
       (insert-file-contents readme)
       ;; Take out CamelCase Links
@@ -1308,7 +1350,7 @@ Returns file name if created."
 	(org-readme-regexp-pairs [["\\([A-Z][a-z]+[A-Z][A-Za-z]*\\)" "!\\1"]] t))
       ;; Convert Tables.
       (org-readme-regexp-pairs [["^[ \t]*|[-+]+|[ \t]*\n" ""]])
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^[ \t]*|" nil t)
 	(replace-match "||")
 	(while (re-search-forward "|" (point-at-eol) t)
@@ -1319,7 +1361,7 @@ Returns file name if created."
 				["\\[\\[file:\\(.*?[.]el\\)\\]\\[\\1\\]\\]" "[[\\1]]"]
 				["\\[\\[\\(.*?\\)\\]\\[\\(.*?\\)\\]\\]" "\\2"]
 				["=\\(.*?\\)=" "<tt>\\1</tt>"]] t)
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^\\([*]+\\) *!?\\(.*\\)" nil t)
 	(setq tmp (make-string (min 4 (+ 1 (length (match-string 1)))) ?=))
 	(replace-match (format "%s %s %s" tmp (match-string 2) tmp) t t)
@@ -1327,7 +1369,7 @@ Returns file name if created."
 	(let ((case-fold-search nil))
 	  (while (re-search-forward "!\\([A-Z][a-z]+[A-Z][A-Za-z]*\\)" (point-at-eol) t)
 	    (replace-match "\\1" t))))
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^: " nil t)
 	(replace-match "<pre>\n::::" t t) ;
 	(while (progn (end-of-line)
@@ -1335,7 +1377,7 @@ Returns file name if created."
 	  (replace-match "\n:::: "))
 	(end-of-line)
 	(insert "\n</pre>"))
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^ *#[+]BEGIN_SRC emacs-lisp *.*" nil t)
 	(replace-match "{{{")
 	(setq tmp (point))
@@ -1347,7 +1389,7 @@ Returns file name if created."
 	  (while (and (> tmp2 (point))
 		      (re-search-forward "^" tmp2 t))
 	    (replace-match "::::"))))
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^ *#[+]BEGIN_SRC.*" nil t)
 	(replace-match "<pre>" t t)
 	(setq tmp (point))
@@ -1364,7 +1406,7 @@ Returns file name if created."
 				["^[ \t]*#.*" ""]
 				["^[ \t]*[0-9]+[.)] +" "# "]
 				["^[ \t]+" ""]])
-      (goto-char (point-min))
+      (goto-start)
       (while (re-search-forward "^::::" nil t)
 	(replace-match "")
 	(let ((case-fold-search nil))
@@ -1381,58 +1423,62 @@ Returns file name if created."
     (delete-file wiki)))
 
 ;;;###autoload
-(defun org-readme-git ()
-  "Add The files to git."
-  (interactive)
-  (let* ((df (file-name-directory (buffer-file-name)))
-         (default-directory df)
-	 (texifile (concat (file-name-sans-extension
-			    (file-name-nondirectory (buffer-file-name)))
-			   ".texi"))
-	 (infofile (concat (file-name-sans-extension
-			    (file-name-nondirectory (buffer-file-name)))
-			   ".info"))
-	 (thisfile (file-name-nondirectory (buffer-file-name)))
+(defun org-readme-git (addmelpa addelget)
+  "Add current file and other relevant files to git.
+If ADDMELPA and/or ADDELGET are non-nil then add a melpa/el-get recipe,
+and either of these arguments are filepaths then use those files as the
+recipes.
+If called with a prefix arg always prompt for options."
+  (interactive (list (org-readme-check-opt org-readme-build-melpa-recipe nil current-prefix-arg)
+		     (org-readme-check-opt org-readme-build-el-get-recipe nil current-prefix-arg)))
+  (let* ((base (org-readme-guess-package-name))
+	 (texifile (concat base ".texi"))
+	 (infofile (concat base ".info"))
 	 (changelog (org-readme-get-change))
          melpa el-get)
-    (cl-flet ((gitadd (file) (shell-command (concat "git add " file)))
-	      (gitrm (file) (shell-command (concat "git rm " file))))
-      ;; add melpa recipe
-      (when (org-readme-check-opt org-readme-build-melpa-recipe)
-	(setq melpa (org-readme-build-melpa))
+    ;; these functions will be used later
+    (cl-flet ((gitadd (file) (message "Git adding %s" file)
+		      (shell-command (concat "git add " file)))
+	      (gitrm (file) (delete-file file)
+		     (shell-command (concat "git rm --ignore-unmatch " file))
+		     (shell-command (concat "rm -f " file))))
+      ;; add melpa recipe if necessary
+      (when addmelpa
+	(setq melpa (if (and (stringp addmelpa)
+			     (file-readable-p addmelpa))
+			addmelpa
+		      (org-readme-build-melpa)))
 	(when melpa
-	  (message "Adding Melpa recipe")
-	  (gitadd (concat "melpa/" (file-name-nondirectory melpa)))))
+	  (gitadd (concat (file-name-as-directory "melpa") (file-name-nondirectory melpa)))))
       ;; add el-get recipe
-      (when (org-readme-check-opt org-readme-build-el-get-recipe)
-	(setq el-get (org-readme-build-el-get))
+      (when addelget
+	(setq el-get (if (and (stringp addelget)
+			      (file-readable-p addelget))
+			 addelget
+		       (org-readme-build-el-get)))
 	(when el-get
-	  (message "Adding El-Get recipe")
-	  (gitadd (concat "el-get/" (file-name-nondirectory el-get)))))
+	  (gitadd (concat (file-name-as-directory "el-get") (file-name-nondirectory el-get)))))
       ;; add Readme.org
-      (message "Git Adding Readme")
       (gitadd (file-name-nondirectory (org-readme-find-readme)))
       ;; add either .info or .texi file, and delete Readme.md if necessary
       (when (file-exists-p texifile)
-	(when (and (org-readme-check-opt org-readme-drop-markdown-after-build-texi)
+	(when (and (org-readme-check-opt org-readme-drop-markdown-after-build-texi nil current-prefix-arg)
 		   (file-exists-p "Readme.md"))
-	  (delete-file "Readme.md")
 	  (gitrm "Readme.md"))
-	(if (and (org-readme-check-opt org-readme-drop-texi-after-build-info)
+	;; add either the info & dir files or the texifile
+	(if (and (org-readme-check-opt org-readme-drop-texi-after-build-info nil current-prefix-arg)
 		 (file-exists-p infofile))
-	    (progn (delete-file texifile)
-		   (gitadd infofile)
-		   (if (file-exists-p
-			(expand-file-name
-			 "dir" (file-name-directory (buffer-file-name))))
+	    (progn (gitadd infofile)
+		   (if (file-exists-p (expand-file-name
+				       "dir" (file-name-directory (buffer-file-name))))
 		       (gitadd "dir"))
 		   (gitrm texifile))
 	  (gitadd texifile)))
       ;; add Readme.md if it wasn't deleted
-      (when (file-exists-p "Readme.md") (gitadd "Readme.md"))
-      ;; add elisp file
-      (message "Git Adding %s" thisfile)
-      (gitadd thisfile)
+      (when (file-exists-p "Readme.md")
+	(gitadd "Readme.md"))
+      ;; add this file
+      (gitadd (file-name-nondirectory (buffer-file-name)))
       ;; commit the changes
       (when (file-exists-p changelog)
 	(message "Git Committing")
@@ -1443,7 +1489,7 @@ Returns file name if created."
 	(shell-command "git push")
 	;; tag the commit if this is a new version
 	(let ((tags (shell-command-to-string "git tag"))
-	      (ver  (org-readme-buffer-version)))
+	      (ver (org-readme-buffer-version)))
 	  (when ver
 	    (unless (string-match (concat "v" (regexp-quote ver)) tags)
 	      (message "Tagging the new version")
@@ -1467,102 +1513,137 @@ If so, return the name of that Lisp file, otherwise return nil."
 
 ;;;###autoload
 (defun org-readme-gen-info ()
-  "With the proper tools, generates an info and dir from the current readme.org"
+  "With the proper tools, generate an info and dir from the current readme.org.
+If called with a prefix arg always prompt for options."
   (interactive)
-  (when (org-readme-check-opt org-readme-build-markdown)
-    ;; first create the Readme.md file
-    (org-readme-convert-to-markdown)	;create Readme.md
-    (when (org-readme-check-opt org-readme-build-texi)
-      (when (executable-find "pandoc")
-        (let ((default-directory (file-name-directory (buffer-file-name)))
-              (base (file-name-sans-extension
-                     (file-name-nondirectory (buffer-file-name))))
-              (file (concat (file-name-sans-extension
-                             (file-name-nondirectory (buffer-file-name)))
-                            ".texi"))
-              pkg ver desc cnt)
-          (when (string= (downcase base) "readme")
-            (let ((df (directory-files (file-name-directory (buffer-file-name)) t ".*[.]el$")))
-              (unless (= 1 (length df))
-                (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-mode[.]el$")))
-              (unless (= 1 (length df))
-                (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-pkg[.]el$")))
-              (when (= 1 (length df))
-                (setq base (file-name-sans-extension (file-name-nondirectory (nth 0 df)))
-		      file (concat base ".texi")))))
-	  ;; convert Readme.md to a .texi file
-	  (shell-command (concat "pandoc Readme.md -s -o " file))
-	  ;; get information for direntry
-	  (setq cnt (with-temp-buffer
-		      (insert-file-contents file)
-		      (goto-char (point-min))
-		      (if (search-forward "@strong{Description} -- " nil t)
-			  (setq desc (buffer-substring (point) (point-at-eol)))
-			(setq desc base))
-		      (goto-char (point-min))
-		      (if (search-forward "@strong{Package-Requires} -- " nil t)
-			  (setq pkg (buffer-substring (point) (point-at-eol)))
-			(setq pkg "()"))
-		      (goto-char (point-min))
-		      (if (search-forward "@strong{Version} -- " nil t)
-			  (setq ver (buffer-substring (point) (point-at-eol)))
-			(setq ver "0.0"))
-		      (buffer-string)))
-	  ;; Now add direntry to the .texi file
-	  (with-temp-file file
-	    (insert cnt)
-	    (goto-char (point-min))
-	    (when (re-search-forward "@documentencoding")
-	      (goto-char (point-at-eol))
-	      (insert "\n@dircategory Emacs lisp libraries\n@direntry\n* "
-		      base ": (" base ").     " desc "\n@end direntry\n")))
-	  ;; create and install the .info file
-	  (when (and (org-readme-check-opt org-readme-build-info)
-		     (executable-find "makeinfo"))
-	    (shell-command (concat "makeinfo " base ".texi"))
-	    (when (executable-find "install-info")
-	      (shell-command (concat "install-info --dir-file=dir " base ".info")))))))))
+  (if (not (executable-find "pandoc"))
+      (error "Can't find pandoc executable"))
+  (if (not (executable-find "makeinfo"))
+      (error "Can't find makeinfo executable"))
+  ;; first create the Readme.md file
+  (org-readme-convert-to-markdown)
+  (cl-flet ((shell-cmd-concat (&rest strs) (shell-command (apply 'concat strs)))
+	    (getval (var str default) ;var = variable to assign to, str = string to search for
+		    (goto-start)      ;default = default value
+		    (if (search-forward str nil t)
+			(set var (buffer-substring (point) (point-at-eol)))
+		      (set var default))))
+    (let ((base (org-readme-guess-package-name))
+	  (texifile (concat (file-name-sans-extension
+			     (file-name-nondirectory (buffer-file-name)))
+			    ".texi"))
+	  pkg ver desc cnt)
+      ;; convert Readme.md to a .texi file
+      (shell-cmd-concat "pandoc Readme.md -s -o " texifile)
+      ;; get information for direntry
+      (setq cnt (with-temp-buffer
+		  (insert-file-contents texifile)
+		  (getval 'desc "@strong{Description} -- " base)
+		  (getval 'pkg "@strong{Package-Requires} -- " "()")
+		  (getval 'ver "@strong{Version} -- " "0.0")
+		  (buffer-string)))
+      ;; Now add direntry to the .texi file
+      (with-temp-file texifile
+	(insert cnt)
+	(goto-start)
+	(when (re-search-forward "@documentencoding")
+	  (goto-char (point-at-eol))
+	  (insert "\n@dircategory Emacs lisp libraries\n@direntry\n* "
+		  base ": (" base ").     " desc "\n@end direntry\n")))
+      ;; create the .info file
+      (shell-cmd-concat "makeinfo " base ".texi")
+      ;; only create the dir file if the install-info executable is present
+      (when (executable-find "install-info")
+	(shell-cmd-concat "install-info --dir-file=dir " base ".info"))))
+  ;; remove the markdown file as it is no longer needed
+  (when (org-readme-check-opt org-readme-drop-markdown-after-build-texi nil current-prefix-arg)
+    (delete-file "Readme.md")))
+
+(defun org-readme-create-tar-archive nil
+  "Create tar archive for package files in the current directory."
+  (cl-flet ((getval (regexp) (save-excursion (goto-start)
+					     (re-search-forward regexp)
+					     (match-string 1))))
+    (if (not (or (executable-find "tar")
+		 (executable-find "7z")
+		 (executable-find "7za")))
+	(error "Can't find tar or 7z program")
+      (let* ((base (org-readme-guess-package-name))
+	     (desc (getval "---[ \t]*\\(.*\\)[ \t]*"))
+	     (ver (getval "^[ \t]*;+[ \t]*Version:[ \t]*\\(.*\\)[ \t]*"))
+	     (pkg (getval "^;;[ \t]*Package-Requires:[ \t]*\\(.*\\)[ \t]*"))
+	     (tardir (concat base "-" ver))
+	     (tarbase (concat (file-name-as-directory tardir) base))
+	     (infofile (concat base ".info")))
+	(when (file-exists-p (concat base ".tar"))
+	  (delete-file (concat base ".tar")))
+	(make-directory tardir t)
+	(copy-file (concat base ".el") (concat tarbase ".el") t)
+	(when (file-exists-p infofile)
+	  (copy-file (concat base ".info") (concat tarbase ".info") t))
+	(when (file-exists-p "dir")
+	  (copy-file "dir" (concat (file-name-as-directory tardir) "dir") t))
+	(with-temp-file (concat tarbase "-pkg.el")
+	  (insert "(define-package \"" base "\" \"" ver  "\" \"" desc "\" '" pkg ")"))
+	(if (executable-find "tar")
+	    (shell-command (concat "tar -cvf " base ".tar " (file-name-as-directory tardir)))
+	  (shell-command (concat "7z" (if (executable-find "7za") "a" "")
+				 " -ttar -so " base ".tar " (file-name-as-directory tardir) "*.*")))
+	(mapc (lambda (x) (when (file-exists-p x) (delete-file x)))
+	      (list (concat tarbase ".el")
+		    (concat tarbase "-pkg.el")
+		    (concat tarbase ".info")
+		    (concat (file-name-as-directory tardir) "dir")))
+	(delete-directory tardir)))))
 
 ;;;###autoload
 (defun org-readme-sync (&optional comment-added)
   "Syncs Readme.org with current buffer.
-When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin."
+When COMMENT-ADDED is non-nil, the comment has been added and the syncing should begin.
+If called with a prefix arg always prompt for options."
   (interactive)
   ;; Store the name of the package in `base'
-  (let ((base (file-name-sans-extension
-               (file-name-nondirectory (buffer-file-name)))))
-    (when (string= (downcase base) "readme")
-      (let ((df (directory-files (file-name-directory (buffer-file-name)) t ".*[.]el$")))
-        (unless (= 1 (length df))
-          (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-mode[.]el$")))
-        (unless (= 1 (length df))
-          (setq df (directory-files (file-name-directory (buffer-file-name)) t ".*-pkg[.]el$")))
-        (when (= 1 (length df))
-          (setq base (file-name-sans-extension (file-name-nondirectory (nth 0 df)))))))
+  (let ((base (org-readme-guess-package-name))
+	(single-lisp-file (org-readme-single-lisp-p))
+	addmelpa addelget melpa elget)
+    ;; Check that we are either in the Readme.org file or an elisp file
+    (unless (or (org-readme-in-readme-org-p)
+		(eq major-mode 'emacs-lisp-mode))
+      (error "Cannot run `org-readme-sync' from this buffer"))
     ;; Check if we need to switch file or update the changelog first
-    (if (and (not comment-added)
-	     (org-readme-in-readme-org-p))
-        (let ((single-lisp-file (org-readme-single-lisp-p)))
-          (message "In Readme.org")
-	  ;; If there's only one lisp file, switch to it, and start again.
-          (if single-lisp-file
-              (progn
-                (setq org-readme-edit-last-window-configuration (current-window-configuration))
-                (find-file single-lisp-file)
-                (setq org-readme-edit-last-buffer (current-buffer))
-                (org-readme-sync))
-            ;; Post to emacswiki if necessary
-	    (unless (not (org-readme-check-opt org-readme-sync-emacswiki
-					       "Post Readme.org to emacswiki without changes"))
-	      (message "Posting Description to emacswiki")
-	      (org-readme-convert-to-emacswiki))))
+    ;; (`comment-added' should be nil unless this function was called internally)
+    (cl-block nil
       (if (and (not comment-added)
-	       (org-readme-check-opt org-readme-update-changelog))
-	  ;; Update the Changelog file if necessary
-          (progn
-            (setq org-readme-edit-last-buffer (current-buffer))
-	    (org-readme-update-last-update)
-            (org-readme-edit))
+	       (org-readme-in-readme-org-p))
+	  (progn (message "In Readme.org")
+		 ;; If there's only one lisp file, switch to it, and start again.
+		 (if single-lisp-file
+		     (progn (setq org-readme-edit-last-window-configuration
+				  (current-window-configuration))
+			    (find-file single-lisp-file)
+			    (setq org-readme-edit-last-buffer (current-buffer))
+			    (org-readme-sync))
+		   ;; otherwise there are several elisp files so just post Readme.org to emacswiki if necessary
+		   (unless (not (org-readme-check-opt
+				 org-readme-sync-emacswiki
+				 "Post Readme.org to emacswiki without changes"
+				 current-prefix-arg))
+		     (message "Posting Description to emacswiki")
+		     (org-readme-convert-to-emacswiki))))
+	(if (and (not comment-added)
+		 (org-readme-check-opt org-readme-update-changelog nil current-prefix-arg))
+	    ;; Update the Changelog file if necessary (and set `comment-added' to t)
+	    (progn
+	      (setq org-readme-edit-last-buffer (current-buffer))
+	      (org-readme-update-last-update)
+	      ;; `org-readme-sync' will be called again with `comment-added' set to t
+	      (org-readme-edit)
+	      (cl-return))
+	  ;; Otherwise, make sure we are in the elisp file
+	  (if (not (eq major-mode 'emacs-lisp-mode))
+	      (if single-lisp-file
+		  (find-file single-lisp-file)
+		(error "Can't find elisp file"))))
 	;; Add autoload's
 	(when (and (not org-readme-added-autoloads)
 		   (y-or-n-p "Add autoloads? "))
@@ -1571,100 +1652,118 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
 	(org-readme-update-required-features-section)
 	;; Update last update & version number
 	(unless comment-added (org-readme-update-last-update))
-        (when (y-or-n-p "Update version number? ")
-          (save-excursion
-            (goto-char (point-min))
-            (let ((case-fold-search t))
-              (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
-                (if (or (org-readme-check-opt org-readme-use-melpa-versions)
-                        (save-match-data (looking-at "[ \t]*[0-9]\\{8\\}[.][0-9]\\{4\\}[ \t]*$")))
-                    (progn
-                      (delete-region (point) (point-at-eol))
-                      (insert (concat " " (format-time-string "%Y%m%d." (current-time))
-                                      (format "%d" (or (string-to-number (format-time-string "%H%M" (current-time))) 0)))))
-                  (end-of-line)
-                  (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
-                    (replace-match (format "\\1%s"
-                                           (+ 1 (string-to-number (match-string 2)))))))))))
+	(when (y-or-n-p "Update version number? ")
+	  (save-excursion
+	    (goto-start)
+	    (let ((case-fold-search t))
+	      (when (re-search-forward "^[ \t]*;+[ \t]*Version:" nil t)
+		(if (or (org-readme-check-opt org-readme-use-melpa-versions nil current-prefix-arg)
+			(save-match-data (looking-at "[ \t]*[0-9]\\{8\\}[.][0-9]\\{2,4\\}[ \t]*$")))
+		    (progn
+		      (delete-region (point) (point-at-eol))
+		      (insert (concat " " (format-time-string "%Y%m%d." (current-time))
+				      (format "%d" (or (string-to-number (format-time-string "%H%M" (current-time))) 0)))))
+		  (end-of-line)
+		  (when (looking-back "\\([ .]\\)\\([0-9]+\\)[ \t]*")
+		    (replace-match (format "\\1%s"
+					   (+ 1 (string-to-number (match-string 2)))))))))))
 	;; Replace commentary section in elisp file with text extracted from readme file
-	(when (org-readme-check-opt org-readme-add-readme-to-lisp-file)
+	;; (if this file doesn't yet exist it will be created and `org-readme-default-template' inserted).
+	;; The user will be prompted to save the existing Commentary section to the kill ring.
+	(when (org-readme-check-opt org-readme-add-readme-to-lisp-file nil current-prefix-arg)
 	  (message "Adding Readme to Header Commentary")
-	  (org-readme-to-commentary))
+	  (if (called-interactively-p 'any)
+	      (call-interactively 'org-readme-to-commentary)
+	    (org-readme-to-commentary)))
 	;; Document commands and options in elisp file
-        (when (and (require 'auto-document nil t)
-		   (org-readme-check-opt org-readme-use-autodoc))
+	(when (and (require 'auto-document nil t)
+		   (org-readme-check-opt
+		    org-readme-use-autodoc nil current-prefix-arg))
 	  (message "Updating using autodoc.")
-	  (org-readme-insert-autodoc (org-readme-check-opt org-readme-add-autodoc-to-readme)))
+	  (org-readme-insert-autodoc
+	   (org-readme-check-opt org-readme-add-autodoc-to-readme nil current-prefix-arg)))
 	;; Add functions section to readme file
-        (when (org-readme-check-opt org-readme-add-functions-to-readme)
-          (message "Updating Functions.")
-          (org-readme-insert-functions))
+	(when (org-readme-check-opt
+	       org-readme-add-functions-to-readme nil current-prefix-arg)
+	  (message "Updating Functions.")
+	  (org-readme-insert-functions))
 	;; Add variables section to readme file
-        (when (org-readme-check-opt org-readme-add-variables-to-readme)
-          (message "Updating Variables.")
-          (org-readme-insert-variables))
+	(when (org-readme-check-opt
+	       org-readme-add-variables-to-readme nil current-prefix-arg)
+	  (message "Updating Variables.")
+	  (org-readme-insert-variables))
 	;; Add Changelog to readme file
-        (when (org-readme-check-opt org-readme-add-changelog-to-readme)
-          (message "Updating Changelog in current file.")
-          (org-readme-changelog-to-readme))
+	(when (org-readme-check-opt
+	       org-readme-add-changelog-to-readme nil current-prefix-arg)
+	  (message "Updating Changelog in current file.")
+	  (org-readme-changelog-to-readme))
 	;; Copy top header from elisp file into readme file
-        (when (org-readme-check-opt org-readme-add-top-header-to-readme)
-          (org-readme-top-header-to-readme))
-        (save-buffer)
-	;; Create info documentation (if required; checks are done in `org-readme-gen-info')
-        (org-readme-gen-info)
+	(when (org-readme-check-opt
+	       org-readme-add-top-header-to-readme nil current-prefix-arg)
+	  (org-readme-top-header-to-readme))
+	;; save the elisp buffer before moving on
+	(save-buffer)
+	;; Create info documentation
+	(when (org-readme-check-opt
+	       org-readme-build-info nil current-prefix-arg)
+	  (org-readme-gen-info))
 	;; Create .tar archive
-        (when (file-exists-p (concat base ".tar"))
-          (delete-file (concat base ".tar")))
-        (when (and (org-readme-check-opt org-readme-create-tar-package)
-                   (or (executable-find "tar")
-                       (executable-find "7z")
-                       (executable-find "7za")))
-          (make-directory (concat base "-" ver))
-          (copy-file (concat base ".el") (concat base "-" ver "/" base ".el"))
-          (copy-file (concat base ".info") (concat base "-" ver "/" base ".info"))
-          (copy-file "dir" (concat base "-" ver "/dir"))
-          (with-temp-file (concat base "-" ver "/" base "-pkg.el")
-            (insert "(define-package \"" base "\" \"" ver  "\" \"" desc "\" '" pkg ")"))
-          (if (executable-find "tar")
-              (shell-command (concat "tar -cvf " base ".tar " base "-" ver "/"))
-            (shell-command (concat "7z" (if (executable-find "7za") "a" "")
-                                   " -ttar -so " base ".tar " base "-" ver "/*.*")))
-	  (mapcar 'delete-file
-		  (list (concat base "-" ver "/" base ".el")
-			(concat base "-" ver "/" base "-pkg.el")
-			(concat base "-" ver "/" base ".info")
-			(concat base "-" ver "/dir")))
-          (delete-directory (concat base "-" ver)))
+	(when (and (or (executable-find "tar")
+		       (executable-find "7z")
+		       (executable-find "7za"))
+		   (org-readme-check-opt
+		    org-readme-create-tar-package nil current-prefix-arg))
+	  (org-readme-create-tar-archive))
 	;; post to marmalade
-        (when (and (featurep 'http-post-simple)
-                   (org-readme-check-opt org-readme-sync-marmalade))
-          (message "Attempting to post to marmalade-repo.org")
-          (org-readme-marmalade-post))
+	(when (and (featurep 'http-post-simple)
+		   (org-readme-check-opt
+		    org-readme-sync-marmalade nil current-prefix-arg))
+	  (message "Attempting to post to marmalade-repo.org")
+	  (org-readme-marmalade-post))
 	;; post to elisp file to emacswiki
-        (when (and (featurep 'yaoddmuse)
-                   (org-readme-check-opt org-readme-sync-emacswiki
-					 "Post elisp file to emacswiki?"))
-          (message "Posting elisp file to emacswiki")
-          (emacswiki-post nil ""))
-	;; add files to git repo
-        (when (org-readme-check-opt org-readme-sync-git) (org-readme-git))
+	(when (and (featurep 'yaoddmuse)
+		   (org-readme-check-opt
+		    org-readme-sync-emacswiki "Post elisp file to emacswiki?" current-prefix-arg))
+	  (message "Posting elisp file to emacswiki")
+	  (emacswiki-post nil ""))
+	;; add melpa recipe if necessary
+	(setq addmelpa (org-readme-check-opt
+			org-readme-build-melpa-recipe nil current-prefix-arg))
+	(when addmelpa
+	  (setq melpa (org-readme-build-melpa))
+	  (when (and (require 'package-build nil t)
+		     (file-directory-p package-build-recipes-dir))
+	    (let ((melpa2 (expand-file-name (org-readme-guess-package-name)
+					    package-build-recipes-dir)))
+	      (if (file-writable-p melpa2)
+		  (copy-file melpa melpa2 t)
+		(error "Can't write to %s" package-build-recipes-dir)))))
+	;; add el-get recipe if necessary
+	(setq addelget (org-readme-check-opt
+			org-readme-build-el-get-recipe nil current-prefix-arg))
+	(when addelget (setq elget (org-readme-build-el-get)))
+	;; add files to git repo, along with MELPA and el-get recipes
+	(when (org-readme-check-opt
+	       org-readme-sync-git nil current-prefix-arg)
+	  ;; TODO: allow creation of melpa and el-get recipes without syncing to git?
+	  (org-readme-git melpa elget))
 	;; post readme file to emacswiki
-        (when (and (featurep 'yaoddmuse)
-                   (org-readme-check-opt
+	(when (and (featurep 'yaoddmuse)
+		   (org-readme-check-opt
 		    org-readme-sync-emacswiki
-		    "Post Readme.org to emacswiki?"))
-          (message "Posting Description to emacswiki")
-          (org-readme-convert-to-emacswiki))
+		    "Post Readme.org to emacswiki?" current-prefix-arg))
+	  (message "Posting Description to emacswiki")
+	  (org-readme-convert-to-emacswiki))
 	;; revert the window config back to how it was before
-        (when org-readme-edit-last-window-configuration
-          (set-window-configuration org-readme-edit-last-window-configuration)
-          (setq org-readme-edit-last-window-configuration nil))))))
+	(when org-readme-edit-last-window-configuration
+	  (set-window-configuration org-readme-edit-last-window-configuration)
+	  (setq org-readme-edit-last-window-configuration nil))))))
 
 ;;;###autoload
-(defun org-readme-to-commentary ()
-  "Replace Commentary section in elisp file with text from Readme.org."
-  (interactive)
+(defun org-readme-to-commentary (&optional savetokr)
+  "Replace Commentary section in elisp file with text from Readme.org.
+If SAVETOKR is non-nil then save the existing Commentary section to the `kill-ring'."
+  (interactive (list (y-or-n-p "Save existing Commentary section to kill ring? ")))
   (let ((readme (org-readme-find-readme)) p1)
     (with-temp-buffer
       (insert-file-contents readme)
@@ -1676,15 +1775,21 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (org-readme-regexp-pairs [["=\\<\\(.*?\\)\\>=" "`\\1'"] ;replace =SYMBOL= with `SYMBOL'
 				["#.*" ""] ;remove all org #+KEYWORDS
 				["^[ \t]*[A-Z]+:[ \t]*\\[[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}.*" ""]
-				["^:" ""]]) ;remove : at beginning of lines
+				["^:" ""] ;remove : at beginning of lines
+				["^[ \t]*\\*+ Commentary" ""] ;remove Commentary line (this already exists in elisp file)
+				["^\\*" ";;;"] ;replace *'s with ;'s to keep outline structure
+				["^\\(;*\\)\\*" "\\1;"]   ;second *
+				["^\\(;*\\)\\*" "\\1;"]   ;third *
+				["^\\(;*\\)\\*" "\\1;"]   ;fourth *
+				["^[ \t]*\\*+" ""]]) ;remove *'s from beginning of lines
       ;; remove all TODO items
-      (goto-char (point-min))
+      (goto-start)
       (when org-todo-keyword-faces
 	(while (org-readme-remove-section
 		(regexp-opt (mapcar (lambda(x) (nth 0 x)) org-todo-keyword-faces))
 		nil t)))
       ;; replace initial & final whitespace with single newline chars
-      (goto-char (point-min))
+      (goto-start)
       (skip-chars-forward " \t\n")
       (delete-region (point-min) (point))
       (insert "\n")
@@ -1693,18 +1798,18 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (delete-region (point) (point-max))
       (insert "\n")
       ;; comment all lines with ;;
-      (org-readme-regexp-pairs [["^\\(.?\\)" ";; \\1"]])
+      (org-readme-regexp-pairs [["^\\([^;]\\)" ";; \\1"]])
       (setq readme (buffer-string)))
     ;; delete current "Commentary" region in elisp file, and replace
     ;; with text extracted from Readme.org
-    (goto-char (point-min))
-    (when (re-search-forward "^;;;[ \t]*Commentary:[ \t]*$" nil t)
-      (skip-chars-forward "\n")
+    (goto-start)
+    (when (re-search-forward "^;;;[ \t]*Commentary:?[ \t]*$" nil t)
+      (forward-line 1)
       (let ((pt (point)))
 	(when (re-search-forward org-readme-end-section-regexp nil t)
 	  (goto-char (match-beginning 0))
-	  (skip-chars-backward "\n")
-	  (delete-region pt (point))
+	  (forward-line 0)
+	  (funcall (if savetokr 'kill-region 'delete-region) pt (point))
 	  (insert readme))))))
 
 (defun org-readme-get-emacswiki-name ()
@@ -1713,7 +1818,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
       (let ((wiki (file-name-nondirectory (substring (file-name-directory (buffer-file-name)) 0 -1))))
         (with-temp-buffer
           (insert wiki)
-          (goto-char (point-min))
+          (goto-start)
           (when (looking-at ".") (replace-match (upcase (match-string 0)) t t))
           (while (re-search-forward "[-._]\\(.\\)" nil t)
             (replace-match  (upcase (match-string 1))) t t)
@@ -1723,7 +1828,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
           (name (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
       (with-temp-buffer
         (insert (downcase name))
-        (goto-char (point-min))
+        (goto-start)
         (when (looking-at ".") (replace-match (upcase (match-string 0)) t t))
         (while (re-search-forward "-\\(.\\)" nil t)
           (replace-match  (upcase (match-string 1))) t t)
@@ -1745,7 +1850,7 @@ When COMMENT-ADDED is non-nil, the comment has been added and the syncing should
                        (file-name-nondirectory (buffer-file-name)))))
         (with-temp-file df
           (insert org-readme-default-template)
-          (goto-char (point-min))
+          (goto-start)
           (while (re-search-forward "LIB-NAME" nil t)
             (replace-match lib-name t t)))))
     (symbol-value 'df)))
@@ -1757,10 +1862,9 @@ When AT-BEGINNING is non-nil, if the section is not found, insert TXT at the beg
   (let ((case-fold-search t)
         (mtch ""))
     (save-excursion
-      (goto-char (point-min))
-      (if (re-search-forward
-	   (format "^\\([*]%s\\) +%s" (if any-level "+" "") section)
-	   nil t)
+      (goto-start)
+      (if (re-search-forward (format "^\\([*]%s\\)[ \t]+%s" (if any-level "+" "") section)
+			     nil t)
           (progn
             (org-cut-subtree)
             (save-excursion (when txt (insert txt)))
@@ -1785,14 +1889,14 @@ match to `org-readme-end-section-regexp'."
         (readme (org-readme-find-readme)))
     ;; copy the top header from the elisp file
     (save-excursion
-      (goto-char (point-min))
+      (goto-start)
       (when (re-search-forward org-readme-end-section-regexp nil t)
         (beginning-of-line)
         (setq top-header (buffer-substring (point-min) (point)))))
     ;; copy top header info and reformat it for orgmode
     (with-temp-buffer
       (insert top-header)
-      (goto-char (point-min))
+      (goto-start)
       ;; uncomment and format first line
       ;; (remove initial ;'s and backslash quote the library name)
       (when (looking-at ";;; *\\(.*?\\) *--+ *\\(.*\\)")
@@ -1800,13 +1904,13 @@ match to `org-readme-end-section-regexp'."
       ;; remove elisp comment chars (;'s)
       (org-readme-regexp-pairs [["^ *;; ?" ""]])
       ;; replace filename with orglink to filename
-      (goto-char (point-min))
+      (goto-start)
       (when (re-search-forward "[Ff]ile[Nn]ame: *\\(.*\\) *$" nil t)
 	(replace-match "Filename: [[file:\\1][\\1]]"))
       ;; format other info lines into an org list
       (org-readme-regexp-pairs [["^\\(.*?\\):\\(.*?[A-Za-z0-9.].*\\)$" " - \\1 ::\\2"]])
       ;; add the header line
-      (goto-char (point-min))
+      (goto-start)
       (insert "* Library Information\n")
       ;; make new header for dependencies info
       (org-readme-regexp-pairs (list (list org-readme-features-regexp
@@ -1830,7 +1934,7 @@ match to `org-readme-end-section-regexp'."
     (let ((readme (org-readme-find-readme))
           pt1 pt2 txt)
       (save-excursion
-        (goto-char (point-min))
+        (goto-start)
         (when (re-search-forward "^[ \t]*;;; \\(?:Change Log\\|History\\):[ \t]*$" nil t)
           (setq pt1 (point))
           (when (re-search-forward org-readme-end-section-regexp nil t)
@@ -1840,7 +1944,7 @@ match to `org-readme-end-section-regexp'."
 	      (insert txt)
 	      ;; Remove initial ;'s
 	      (org-readme-regexp-pairs [["^[ \t]*;+ ?" ""]])
-	      (goto-char (point-min))
+	      (goto-start)
 	      (cl-symbol-macrolet	;a couple of symbol-macros to save space
 		  ((comment (save-match-data
 			      (replace-regexp-in-string
@@ -1868,7 +1972,7 @@ match to `org-readme-end-section-regexp'."
 	      (org-readme-regexp-pairs [["`\\(.*?\\)'" "=\\1="]
 					["^[ \t][ \t]+[-]" " -"]])
 	      ;; add org header
-	      (goto-char (point-min))
+	      (goto-start)
 	      (insert "* History\n")
 	      (setq txt (buffer-substring-no-properties (point-min) (point-max))))
 	    ;; add to readme file and save it
@@ -1880,25 +1984,30 @@ match to `org-readme-end-section-regexp'."
 (defun org-readme-get-required-features nil
   "Return list of names of libraries required in current file."
   (save-excursion
-    (goto-char (point-min))
+    (goto-start)
     (cl-loop with form
 	     while (setq form (condition-case v
 				  (read (current-buffer)) (error nil)))
 	     if (eq (car form) 'require)
-	     collect (symbol-name (cadadr form)))))
+	     collect (symbol-name (cl-cadadr form)))))
 
 ;;;###autoload
 (defun org-readme-update-required-features-section nil
   "Update the required features section of the elisp file."
   (interactive)
-  (org-readme-regexp-pairs (list (list
-				  (replace-regexp-in-string
-				   "\\$" "\n;;[ \t]*\n;;[ \t]*\\\\(.*\\\\)$"
-				   (replace-regexp-in-string
-				    "\\^" ";;"
-				    org-readme-features-regexp))
-				  (mapconcat 'identity (org-readme-get-required-features) " ")
-				  )) nil nil nil 1))
+  (save-excursion
+    (goto-start)
+    (if (re-search-forward (replace-regexp-in-string
+			    "\\$" "\n;;[ \t]*\n;;[ \t]*\\\\(.*\\\\)$"
+			    (replace-regexp-in-string
+			     "\\^" ";;**" org-readme-features-regexp)) nil t)
+	(replace-match (mapconcat 'identity (org-readme-get-required-features) " ")
+		       nil nil nil 1)
+      (unless (not (re-search-forward ";;;;+\\|;;+[ \t]Commentary" nil t))
+	(forward-line -1)
+	(insert (concat ";;\n;; Features that might be required by this library:\n;;\n;;   "
+			(mapconcat 'identity (org-readme-get-required-features) " ")
+			"\n;;\n"))))))
 
 (provide 'org-readme)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
