@@ -49,6 +49,35 @@ If ##(setq visible-bell t)## doesn't work for you, you can use a different visua
 
 This uses a timer to turn the colors back to what they were.
 
+
+== Flash the mode-line ==
+
+Having the whole screen flash can be jarring, and fast full-screen flashes look bad with jaggies because they're not synced with you monitor's screen refresh.
+Instead, you can flash just the mode line, which is still easy to notice without feeling like an electric shock:
+
+{{{
+(setq visible-bell nil
+      ring-bell-function 'flash-mode-line)
+(defun flash-mode-line ()
+  (invert-face 'mode-line)
+  (run-with-timer 0.1 nil #'invert-face 'mode-line))
+}}}
+
+Or to make it even more noticeable, flash twice:
+
+{{{
+(setq visible-bell nil
+      ring-bell-function 'double-flash-mode-line)
+(defun double-flash-mode-line ()
+  (let ((flash-sec (/ 1.0 20)))
+    (invert-face 'mode-line)
+    (run-with-timer flash-sec nil #'invert-face 'mode-line)
+    (run-with-timer (* 2 flash-sec) nil #'invert-face 'mode-line)
+    (run-with-timer (* 3 flash-sec) nil #'invert-face 'mode-line)))
+}}}
+
+Tune the times to your liking, of course.
+
 == Subtly flash the modeline ==
 
 For an non-intrusive but still noticeable visual bell, you can flash the foreground of a face.
