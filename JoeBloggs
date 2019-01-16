@@ -35,6 +35,7 @@ Here are some libraries I wrote:
 * '''Lisp:keyword-arg-macros.el''' -- Some macros for extracting keyword args
 * '''Lisp:extract-text.el''' -- Functions for extracting/scraping text from buffers
 * '''Lisp:ido-choose-function.el''' -- Use ido to select functions and (partially) apply arguments
+* '''Lisp:erc-list-cache.el''' -- Cache IRC channel lists so they load faster
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
