@@ -254,7 +254,7 @@ I would very much like to be able to insert something like this:
     (next-line)
     (insert "foo"))
 
-But it appears emacs does not have this feature. A casual glance at the source for insert-kbd-macro in macros.el would suggest that the best way to go about this would be to write a function that called <code>(key-binding)</code> on each key it was about to insert and inserted the corresponding function name instead. -[[avar]]. 
+But it appears emacs does not have this feature.(2017 update: emacs does have this feature in a package called elmacro. [see bottom of page]) A casual glance at the source for insert-kbd-macro in macros.el would suggest that the best way to go about this would be to write a function that called <code>(key-binding)</code> on each key it was about to insert and inserted the corresponding function name instead. -[[avar]]. 
 
 [new:IainDalton:2009-02-12 10:17 UTC]
 edit-kbd-macro lists the names of the commands used in the function.  With some regexing you could turn this into a function.  Better yet, look in edmacro.el and write a function that writes the function.
