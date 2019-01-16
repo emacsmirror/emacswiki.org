@@ -30,7 +30,7 @@ Emacs keybindings for Vi users:
 ||Enter vi emulation mode (maybe) ||Alt-X viper-mode <ENTER>||"What the heck is a META key? It is what Alt MAYBE is..."||
 ||Enter vi emulation mode ||ESC X viper-mode <ENTER>||"What the heck is a META key? It is what ESC normally is..."||
 
-For a serious tip sheet for Vi users, see Google:grok2.
+For a serious tip sheet for Vi users, see [http://www.grok2.com/vi-emacs.html grok site].
 
 == Getting the best parts of Vim and Emacs ==
 
