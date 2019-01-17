@@ -296,7 +296,10 @@ If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own 
 
 
 [:MarkMenu]
-=== Mark Menu-Bar Menu ===
+[:MarksMenu]
+=== Marks Menu-Bar Menu ===
+
+This is called '''Mark''' in vanilla Emacs.
 
 ; '''Mark''': [[image:DiredPlusMarkMenu]]
 
