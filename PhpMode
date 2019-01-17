@@ -163,7 +163,7 @@ I would be interested in a way to inspect values.  I can hit ##e## and then ente
 [new:EngelkeEschner:2019-01-17 13:34 UTC]
 Use ##v## to inspect values.
 
-Also geben is available from melpa via https://github.com/ahungry/geben.
+Also geben is available from [[MELPA]] via https://github.com/ahungry/geben.
 
 == Improved Imenu by Class ==
 
