@@ -307,7 +307,7 @@ Submenu '''Configuration''' of menu '''Sort By''':
 ; '''Mark''': [[image:DiredPlusMarkMenu]]
 
 [:MarksHereAndBelow]
-The '''Marks''' menu has a '''Here and Below''' submenu:
+Menu '''Marks''' has a '''Here and Below''' submenu:
 
 ;; '''Here and Below''': [[image:DiredPlusMarksHereAndBelow]]
 
@@ -346,14 +346,22 @@ The '''Marks''' menu has a '''Tagged''' submenu:
 
 ; '''Regexp''': [[image:DiredPlusRegexpMenu]]
 
+[:MarksHereAndBelow]
+Menu '''Regexp''' has a '''Here and Below''' submenu:
+
+;; '''Here and Below''': [[image:DiredPlusRegexpHereAndBelow]]
 
 
+
+
+
+
+
+[:OperateMenu]
 [:MultipleMenu]
-=== Operate (aka Multiple) Menu-Bar Menu ===
+=== Multiple (aka Operate) Menu-Bar Menu ===
 
-If you use '''MenuBarPlus''' then this menu is called '''Multiple'''.
-
-; '''Operate''': [[image:DiredPlusMultipleMenu]]
+; '''Multiple''': [[image:DiredPlusMultipleMenu]]
 
 If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
@@ -362,13 +370,11 @@ If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
 
 
-
+[:ImmediateMenu]
 [:SingleMenu]
-=== Immediate (aka Single) Menu-Bar Menu ===
+=== Single (aka Immediate) Menu-Bar Menu ===
 
-If you use '''MenuBarPlus''' then this menu is called '''Single'''.
-
-; '''Immediate''': [[image:DiredPlusSingleMenu]]
+; '''Single''': [[image:DiredPlusSingleMenu]]
 
 This has submenus '''Bookmark''', '''Encryption''', and '''Image'''.
 
