@@ -378,11 +378,27 @@ If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
 ;; '''Icicles''': [[image:DiredPlusMultipleIciclesMenu]]
 
-Menu '''Multiple''' has a '''Here and Below''' submenu:
-
-;; '''Here and Below''': [[image:DiredPlusMultipleHereAndBelow]]
+Menu '''Multiple''' has a '''Marked Here and Below''' submenu:
 
 
+
+;; '''Marked Here and Below''': [[image:DiredPlusMultipleHereAndBelow]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Bookmark''' submenu:
+
+;; '''Bookmark''': [[image:DiredPlusMultipleHereAndBelowBookmark]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Search''' submenu:
+
+;; '''Search''': [[image:DiredPlusMultipleHereAndBelowSearch]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Encryption''' submenu:
+
+;; '''Encryption''': [[image:DiredPlusMultipleHereAndBelowEncryption]]
+
+Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Images''' submenu:
+
+;; '''Images''': [[image:DiredPlusMultipleHereAndBelowImages]]
 
 
 
