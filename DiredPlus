@@ -253,13 +253,12 @@ The first submenu shown here, '''Dired/name''' corresponds exactly to the major-
 
 
 
-
+[:DirMenu]
 [:SubdirMenu]
-=== Subdir (aka Dir) Menu-Bar Menu ===
+=== Dir (aka Subdir) Menu-Bar Menu ===
 
-If you use '''MenuBarPlus''' (library <tt>[[menu-bar+.el]]</tt>) then this menu is called '''Dir'''.
 
-; '''Subdir''': [[image:DiredPlusDirMenu]]
+; '''Dir''': [[image:DiredPlusDirMenu]]
 
 If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
