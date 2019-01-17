@@ -160,6 +160,11 @@ GEBEN is still the only option for an Emacs xdebug. Actually I found it to be ea
 [new:kgrossjo:2018-06-29 11:55 UTC]
 I would be interested in a way to inspect values.  I can hit ##e## and then enter a variable name, and then I get a lispish representation of that value in the echo area.  But if it's a deeply nested object, this representation is hard to understand.
 
+[new:EngelkeEschner:2019-01-17 13:34 UTC]
+Use ##v## to inspect values.
+
+Also geben is available from melpa via https://github.com/ahungry/geben.
+
 == Improved Imenu by Class ==
 
 [http://www.oak.homeunix.org/~marcel/blog/articles/2008/07/18/nested-imenu-for-php php-imenu.el] organizes the imenu for php-mode a little differently.  Instead of listing all classes separate from all functions, it lists functions within a class, like most other IDEs do.
