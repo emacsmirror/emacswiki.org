@@ -302,10 +302,24 @@ If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own 
 
 ; '''Mark''': [[image:DiredPlusMarkMenu]]
 
+[:MarksHereAndBelow]
+The '''Marks''' menu has a '''Here and Below''' submenu:
+
+;; '''Here and Below''': [[image:DiredPlusMarksHereAndBelow]]
+
+[:MarksHereAndBelow]
+The '''Marks''' menu has a '''Mark''' submenu:
+
+;; '''Mark''': [[image:DiredPlusMarksMark]]
+
+
 [:TaggedMenu]
-The '''Mark''' menu has a '''Tagged''' submenu:
+The '''Marks''' menu has a '''Tagged''' submenu:
 
 ;; '''Tagged''': [[image:DiredPlusMarkTaggedMenu]]
+
+
+
 
 
 
