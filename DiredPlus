@@ -378,9 +378,10 @@ If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
 ;; '''Icicles''': [[image:DiredPlusMultipleIciclesMenu]]
 
+
+
+
 Menu '''Multiple''' has a '''Marked Here and Below''' submenu:
-
-
 
 ;; '''Marked Here and Below''': [[image:DiredPlusMultipleHereAndBelow]]
 
@@ -401,6 +402,39 @@ Submenu '''Marked Here and Below''' of menu '''Multiple''' has a '''Images''' su
 ;; '''Images''': [[image:DiredPlusMultipleHereAndBelowImages]]
 
 
+
+
+Menu '''Multiple''' has a '''Bookmark''' submenu:
+
+;; '''Bookmark''': [[image:DiredPlusMultipleBookmark]]
+
+Menu '''Multiple''' has a '''Search''' submenu:
+
+;; '''Search''': [[image:DiredPlusMultipleSearch]]
+
+Menu '''Multiple''' has a '''Encryption''' submenu:
+
+;; '''Encryption''': [[image:DiredPlusMultipleEncryption]]
+
+Menu '''Multiple''' has a '''Images''' submenu:
+
+;; '''Images''': [[image:DiredPlusMultipleImages]]
+
+Menu '''Multiple''' has a '''Move / Copy / Link''' submenu:
+
+;; '''Move / Copy / Link''': [[image:DiredPlusMultipleMoveCopyLink]]
+
+Menu '''Multiple''' has a '''Rename''' submenu:
+
+;; '''Rename''': [[image:DiredPlusMultipleRename]]
+
+Menu '''Multiple''' has a '''Delete''' submenu:
+
+;; '''Delete''': [[image:DiredPlusMultipleDelete]]
+
+Menu '''Multiple''' has a '''Omit''' submenu:
+
+;; '''Omit''': [[image:DiredPlusMultipleOmit]]
 
 
 
