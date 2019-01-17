@@ -1,19 +1,19 @@
-portrait:http://gravatar.com/avatar/5b50630eab8c1a6d8b43f91db6d3316e?s=80
+portrait:https://gravatar.com/avatar/5b50630eab8c1a6d8b43f91db6d3316e?s=80
 
 I use Emacs and has used it since 1994. Currently I'm using YamamotoMitsuharu's Mac port.
 
 I made a few contributions to Emacs, [[Gnus]] and AUCTeX and created a couple of other  [http://marmalade-repo.org/profile/arne packages distributed via Marmalade Repo].
 
-As my day job I develop Drupal sites at [http://reload.dk Reload!]
+As my day job I develop Drupal sites at [https://reload.dk Reload!]
 
 * Homepage: https://arnested.dk
 * Mail: [mailto:arne@arnested.dk arne@arnested.dk]
 * [EmacsChannel #emacs]: arnested
-* [http://marmalade-repo.org/profile/arne Marmalade Repo]
+* [https://marmalade-repo.org/profile/arne Marmalade Repo]
 * [https://plus.google.com/+ArneJorgensen?rel=author Google+]
 * [https://github.com/arnested GitHub]
 
-From [http://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS AUTHORS]:
+From [https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS AUTHORS]:
 <pre>
 Arne Jørgensen: wrote latexenc.el
 and changed smime.el mml-smime.el smime-ldap.el flymake.el gnus-art.el
