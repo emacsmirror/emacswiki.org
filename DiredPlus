@@ -253,6 +253,8 @@ The first submenu shown here, '''Dired/name''' corresponds exactly to the major-
 
 
 
+
+
 [:DirMenu]
 [:SubdirMenu]
 === Dir (aka Subdir) Menu-Bar Menu ===
@@ -270,23 +272,23 @@ If you use <tt>[[find-dired+.el]]</tt> then it has a '''Run `find' Command''' su
 ;; '''Run `find' Command''': [[image:DiredPlusFindCommandMenu]]
 
 
-It has a '''Navigate''' submenu:
+Menu '''Dir''' has a '''Navigate''' submenu:
 
 ;; '''Navigate''': [[image:DiredPlusNavigateMenu]]
 
 
-It has a '''Bookmark''' submenu:
+Menu '''Dir''' has a '''Bookmark''' submenu:
 
 ;; '''Bookmark''': [[image:DiredPlusBookmarkMenu]]
 
 
-It has a '''Hide/Show''' submenu:
+Menu '''Dir''' has a '''Hide/Show''' submenu:
 
 ;; '''Hide/Show''': [[image:DiredPlusHideShowMenu]]
 
 
 
-If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own submenus.
+If you use DiredSortMenu then menu '''Dir''' has a '''Sort By''' submenu, which has its own submenus.
 
 ;; '''Sort By''': [[image:DiredPlusDirSortByMenu]]
 
@@ -297,6 +299,15 @@ Submenu '''Reversed Sort By''' of menu '''Sort By''' has the same items as the l
 Submenu '''Configuration''' of menu '''Sort By''':
 
 ;; '''Configuration''': [[image:DiredPlusDirSortByConfigMenu]]
+
+
+
+
+
+
+
+
+
 
 
 [:MarkMenu]
@@ -312,27 +323,27 @@ Menu '''Marks''' has a '''Here and Below''' submenu:
 ;; '''Here and Below''': [[image:DiredPlusMarksHereAndBelow]]
 
 [:MarksMark]
-The '''Marks''' menu has a '''Mark''' submenu:
+Menu '''Marks''' has a '''Mark''' submenu:
 
 ;; '''Mark''': [[image:DiredPlusMarksMark]]
 
 [:MarksUnmark]
-The '''Marks''' menu has an '''Unmark''' submenu:
+Menu '''Marks''' has an '''Unmark''' submenu:
 
 ;; '''Unmark''': [[image:DiredPlusMarksUnmark]]
 
 [:MarksFlag]
-The '''Marks''' menu has a '''Flag''' submenu:
+Menu '''Marks''' has a '''Flag''' submenu:
 
 ;; '''Flag''': [[image:DiredPlusMarksFlag]]
 
 [:MarksOmit]
-The '''Marks''' menu has an '''Omit''' submenu:
+Menu '''Marks''' has an '''Omit''' submenu:
 
 ;; '''Omit''': [[image:DiredPlusMarksOmit]]
 
 [:TaggedMenu]
-The '''Marks''' menu has a '''Tagged''' submenu:
+Menu '''Marks''' has a '''Tagged''' submenu:
 
 ;; '''Tagged''': [[image:DiredPlusMarkTaggedMenu]]
 
@@ -366,6 +377,18 @@ Menu '''Regexp''' has a '''Here and Below''' submenu:
 If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 
 ;; '''Icicles''': [[image:DiredPlusMultipleIciclesMenu]]
+
+Menu '''Multiple''' has a '''Here and Below''' submenu:
+
+;; '''Here and Below''': [[image:DiredPlusMultipleHereAndBelow]]
+
+
+
+
+
+
+
+
 
 
 
