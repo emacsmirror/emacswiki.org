@@ -307,11 +307,25 @@ The '''Marks''' menu has a '''Here and Below''' submenu:
 
 ;; '''Here and Below''': [[image:DiredPlusMarksHereAndBelow]]
 
-[:MarksHereAndBelow]
+[:MarksMark]
 The '''Marks''' menu has a '''Mark''' submenu:
 
 ;; '''Mark''': [[image:DiredPlusMarksMark]]
 
+[:MarksUnmark]
+The '''Marks''' menu has an '''Unmark''' submenu:
+
+;; '''Unmark''': [[image:DiredPlusMarksUnmark]]
+
+[:MarksFlag]
+The '''Marks''' menu has a '''Flag''' submenu:
+
+;; '''Flag''': [[image:DiredPlusMarksFlag]]
+
+[:MarksOmit]
+The '''Marks''' menu has an '''Omit''' submenu:
+
+;; '''Omit''': [[image:DiredPlusMarksOmit]]
 
 [:TaggedMenu]
 The '''Marks''' menu has a '''Tagged''' submenu:
