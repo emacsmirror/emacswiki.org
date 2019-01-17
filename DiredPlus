@@ -286,12 +286,17 @@ It has a '''Hide/Show''' submenu:
 
 
 
-If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own submenus (not shown here):
+If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own submenus.
 
 ;; '''Sort By''': [[image:DiredPlusDirSortByMenu]]
 
+Submenu '''Reversed Sort By''' of menu '''Sort By''' has the same items as the latter's first pane:
 
+;; '''Reversed Sort By''': [[image:DiredPlusDirSortByReversedMenu]]
 
+Submenu '''Configuration''' of menu '''Sort By''':
+
+;; '''Configuration''': [[image:DiredPlusDirSortByConfigMenu]]
 
 
 [:MarkMenu]
