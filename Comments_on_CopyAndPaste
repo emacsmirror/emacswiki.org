@@ -583,3 +583,12 @@ With XEmacs, everything works fine.
 
 -- Anonymous 2016-04-23 10:33 UTC
 
+
+----
+
+== How to copy text to clipboard? ==
+
+This article states that Emacs does the right thing. Selecting text in a buffer using the mouse, then typing C-c will copy the text to the Windows clipboard. Except that that makes no sense. In Emacs, C-c is a command prefix character, the first character in a multi-character command sequence. This article does not make it clear how to do in "The Best Editor" what in Windows is done by using Ctrl+c.
+
+-- DavidSpector 2019-01-18 16:47 UTC
+
