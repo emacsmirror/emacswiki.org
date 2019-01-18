@@ -7,14 +7,18 @@ Instead of InsertingTodaysDate, the following command takes a UniversalArgument 
     (interactive (list (calendar-read-date)))
     (insert (calendar-date-string date)))
   
-  (defun insdate-insert-date-from (&optional days)
+  (cl-defun insdate-insert-date-from (&optional days)
     "Insert date that is DAYS from current."
-    (interactive "p*")
+    (interactive (list
+                  (read-number (format "days: ")
+                               0)))
     (insert
+     (concat "days: " (int-to-string days) " "
      (calendar-date-string
       (calendar-gregorian-from-absolute
        (+ (calendar-absolute-from-gregorian (calendar-current-date))
-	  days)))))
+  	days))
+      t))))
 
 See InsertingAndUpdatingDates for other ways to insert dates in buffers and files.
 
