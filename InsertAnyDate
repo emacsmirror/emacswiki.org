@@ -13,12 +13,11 @@ Instead of InsertingTodaysDate, the following command takes a UniversalArgument 
                   (read-number (format "days: ")
                                0)))
     (insert
-     (concat "days: " (int-to-string days) " "
      (calendar-date-string
       (calendar-gregorian-from-absolute
        (+ (calendar-absolute-from-gregorian (calendar-current-date))
   	days))
-      t))))
+      t)))
 
 See InsertingAndUpdatingDates for other ways to insert dates in buffers and files.
 
