@@ -203,7 +203,7 @@ Here are screenshots of the various '''Dired+''' menus. Using the menus is a goo
 ; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
 
 
-The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menu-bar menu '''[[#SingleBookmarkMenu|Immediate]]''' (aka '''Single'''). 
+The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menu-bar menu '''[[#SingleBookmarkMenu|Single]]''' (aka '''Immediate'''). 
 
 
 [:DiredPlusPopupRegionMenu]
@@ -460,6 +460,13 @@ This has submenus '''Bookmark''', '''Encryption''', '''Image''', '''Move / Copy 
 ;; '''Encryption''': [[image:DiredPlusSingleEncryptionMenu]]
 
 ;; '''Image''': [[image:DiredPlusSingleImageMenu]]
+
+;; '''Move / Copy / Link''': [[image:DiredPlusSingleMoveCopyLinkMenu]]
+
+;; '''Rename''': [[image:DiredPlusSingleRenameMenu]]
+
+;; '''Open''': [[image:DiredPlusSingleOpenMenu]]
+
 
 
 
