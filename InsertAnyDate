@@ -7,7 +7,7 @@ Instead of InsertingTodaysDate, the following command takes a UniversalArgument 
     (interactive (list (calendar-read-date)))
     (insert (calendar-date-string date)))
   
-  (cl-defun insdate-insert-date-from (&optional days)
+  (defun insdate-insert-date-from (&optional days)
     "Insert date that is DAYS from current."
     (interactive (list
                   (read-number (format "days: ")
