@@ -443,13 +443,16 @@ Menu '''Multiple''' has a '''Omit''' submenu:
 
 
 
+
+
+
 [:ImmediateMenu]
 [:SingleMenu]
 === Single (aka Immediate) Menu-Bar Menu ===
 
 ; '''Single''': [[image:DiredPlusSingleMenu]]
 
-This has submenus '''Bookmark''', '''Encryption''', and '''Image'''.
+This has submenus '''Bookmark''', '''Encryption''', '''Image''', '''Move / Copy / Link''', '''Rename''', and '''Open'''.
 
 [:SingleBookmarkMenu]
 ;; '''Bookmark''': [[image:DiredPlusSingleBookmarkMenu]]
