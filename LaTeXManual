@@ -1,4 +1,9 @@
-There exists a free user manual for LaTeX, started six years ago, in 1999.
+A free reference manual for LaTeX2e in the [https://www.ctan.org/ CTAN]
+is written in GNU [[Texinfo]], and available in Info, PDF, and HTML:
+
+https://www.ctan.org/tex-archive/info/latex2e-help-texinfo
+
+There's also another free user manual for LaTeX, started six years ago, in 1999.
 It is far from completion, but has some interesting commentary and a great
 command reference appendix.  It is written in GNU [[Texinfo]] and is availble as
 a helpful Emacs InfoMode.  PDF versions are also available:
