@@ -523,7 +523,7 @@ You can get documentation about the information sent back to the Aquamacs server
 
 == How to cleanly uninstall Aquamacs? ==
 
-I'd recommend [http://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.
+I'd recommend [https://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.
 
 == Ringing the bell, visible bell, sound, etc. ==
 
