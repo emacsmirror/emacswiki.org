@@ -962,19 +962,32 @@ See TrampAndDocker
 
 === Tramp and nixos ===
 
-If you have trouble connecting to a remote host that is running nixos, check that /bin/sh, /bin/base64, /bin/uname & /bin/ls exist.
-You may need to create symlinks for these files on nixos: 
+The recommended way of connecting to a nixos machine with tramp is to add /run/current-system/sw/bin to `tramp-remote-path', this reportedly works with newer versions of tramp, but didn't work for me with tramp version "2.2.13.25.2"
+
+Instead I had to create some symlinks in /bin on nixos to get it working:
 {{{
 sudo ln -s /run/current-system/sw/bin/ls /bin/ls
 sudo ln -s /run/current-system/sw/bin/uname /bin/uname
 sudo ln -s /run/current-system/sw/bin/base64 /bin/base64
-}}}
-For editing files as root you will also need a copy of sudo (with setuid bit set) in the /bin directory:
-{{{
 sudo ln -s /run/wrappers/bin/sudo /bin/sudo
 }}}
 
-The recommended way of making tramp work with nixos is to add /run/current-system/sw/bin to `tramp-remote-path' but that didn't work for me.
+This can be done automatically on each invocation of nixos-rebuild by adding the following snippet to your /etc/nixos/configuration.nix file:
+{{{
+# Create symlinks to allow older versions of emacs tramp to connect to this computer
+system.activationScripts.tramp = ''
+  for bin in ls uname base64; do
+    if [ ! -e /bin/$bin ]; then
+       ln -s /run/current-system/sw/bin/$bin /bin/$bin
+    fi
+  done
+  if [ ! -e /bin/sudo ]; then
+     ln -s /run/wrappers/bin/sudo /bin/sudo
+  fi
+  '';
+}}}
+
+
 
 ---JoeBloggs
 
