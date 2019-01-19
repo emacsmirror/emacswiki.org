@@ -570,9 +570,7 @@ Possible improvements:
 
 == How can I get left-mouse button highlights, middle-mouse button pastes? ==
 
-Years ago the default behavior on X11+emacs was that anything highlighted in any application with the left-mouse button could be pasted with a single click of the middle button into emacs.  Copy and paste with ONE click and ZERO keystrokes from any application.  That is the behavior I want.  How can I restore this behavior in modern versions of emacs?  Thank you.
-
--- DrewAdams 2014-11-07 15:50 UTC
+Years ago the default behavior on X11+emacs was that anything highlighted in any application with the left-mouse button could be pasted with a single click of the middle button into emacs.  Copy and paste with ONE click and ZERO keystrokes from any application.  That is the behavior I want.  How can I restore this behavior in modern versions of emacs?  Thank you. -- ????
 
 
 ----
