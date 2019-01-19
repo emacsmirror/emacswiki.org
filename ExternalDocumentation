@@ -98,3 +98,16 @@ Alternatively, for manual installation:
   $ cd ~/info
   $ wget https://github.com/webframp/sicp-info/raw/master/sicp.info
   $ install-info sicp.info dir
+
+=== Common Lisp Spec ===
+
+  $ cd ~/info
+  $ wget ftp://ftp.gnu.org/pub/gnu/gcl/gcl.info.tgz
+  $ install-info --section="Software development" --entry="* HyperSpec: (gcl). Common Lisp HyperSpec." gcl.info.tgz dir
+
+=== LaTeX2e Reference Manual ===
+
+  $ cd ~/info
+  $ wget http://mirrors.ctan.org/info/latex2e-help-texinfo/latex2e.info
+  $ install-info latex2e.info dir
+
