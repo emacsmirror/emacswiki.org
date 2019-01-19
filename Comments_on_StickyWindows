@@ -2,3 +2,11 @@ Thank you very much PeterAllin. I couldn't figure out how to unsticky!
 
 -- fomentia 2018-06-21 18:31 UTC
 
+
+----
+
+I'm not the original author but I added support for overriding sticky windows via a prefix argument.
+("garbage" seems like a strong word, this code works well for me)
+
+-- erjoalgo 2019-01-19 05:19 UTC
+
