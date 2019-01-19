@@ -101,9 +101,11 @@ Alternatively, for manual installation:
 
 === Common Lisp Spec ===
 
-  $ cd ~/info
+  $ mkdir /tmp/cl-info
+  $ cd /tmp/cl-info
   $ wget ftp://ftp.gnu.org/pub/gnu/gcl/gcl.info.tgz
-  $ install-info --section="Software development" --entry="* HyperSpec: (gcl). Common Lisp HyperSpec." gcl.info.tgz dir
+  $ mv info/* ~/info
+  $ install-info --section="Software development" --entry="* HyperSpec: (gcl). Common Lisp HyperSpec." ~/info/gcl.info ~/info/dir
 
 === LaTeX2e Reference Manual ===
 
