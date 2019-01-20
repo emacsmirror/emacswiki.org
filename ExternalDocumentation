@@ -15,6 +15,8 @@ https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 
 === Git ===
 
+The git documentation and the git manual pages can be installed as info files!
+
 Requirements: ##asciidoc## and ##docbook2x##. We assume that local info files are stored in ##~/.local/info## and that the `dir` file is actually `DIR`.
 
 {{{
@@ -27,10 +29,6 @@ cd ~/.local/info
 install-info git.info DIR
 install-info gitman.info DIR
 }}}
-
-The git man pages can also be converted and accessed via
-Info. To produce them follow the steps above by replacing git.info
-with gitman.info.
 
 On a Mac, via brew:
 
