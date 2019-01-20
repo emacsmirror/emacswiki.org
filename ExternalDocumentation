@@ -3,21 +3,21 @@ Emacs and the GNU tools. For convenience, it might be useful to
 install in the Info's directory some other manuals and documentation.
 
 Common convention to all external manuals would be to be keep a
-separate directory, for example "~/info". In it a special file, named "dir",
+separate directory, for example "~/.local/info". In it a special file, named /DIR/,
 lists the documentation installed in it. To add to it invoke "install-info".
 
 To make this directory available to Emacs add this snippet to your "init.el":
 
-  (add-to-list 'Info-default-directory-list "~/info")
+  (add-to-list 'Info-default-directory-list "~/.local/info")
 
 SteveYegge on Info files:
 https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 
 === Git ===
 
-The git documentation and the git manual pages can be installed as info files!
+The git documentation and the git manual pages can be installed as info files.
 
-Requirements: ##asciidoc## and ##docbook2x##. We assume that local info files are stored in ##~/.local/info## and that the `dir` file is actually `DIR`.
+Requirements: ##asciidoc## and ##docbook2x##.
 
 {{{
 wget https://github.com/git/git/archive/master.zip
@@ -41,20 +41,22 @@ ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
 
 === Python ===
 
-At https://github.com/politza/python-info you can find info files for a few most
-recent Python versions 2 and 3. In the README of that repo are instructions how to
-convert any Python documentation, if based on "Sphinx", to emacs info files.
+The Python documentation can be installed as info files.
+
+Requirements: ##python3-sphinx## and [https://www.python.org/downloads/ Python sources].
 
 To install:
 
-  $ cd ~/info
-  $ wget https://github.com/politza/python-info/raw/master/python-2.7.6.info.gz
-  $ install-info python-2.7.6.info.gz dir
-
-This one seems to be no longer updated (via JonathanWaltman)
-
-  $ wget https://bitbucket.org/jonwaltman/pydoc-info/downloads/python.info.gz
-  $ install-info python.info.gz dir
+{{{
+wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz.asc
+gpg --verify Python-3.7.2.tar.xz.asc
+tar xf Python-3.7.2.tar.xz
+sphinx-build -b texinfo -d build/doctrees . build/texinfo
+cd build/texinfo && make
+mv python.info ~/.local/info
+cd ~/.local/info
+install-info python.info DIR
+}}}
 
 === Perl ===
 
