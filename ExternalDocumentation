@@ -87,6 +87,8 @@ cd ~/.local/info/
 install-info --entry="* Perl: (perl-menu.info). " --section=Perl perl-menu.info DIR
 }}}
 
+(I'm not quite sure how to view the ##perlfunc## manual. If you know how to fix it, please change the instructions above.)
+
 === stdlibc++ ===
 
 To install documentation in .info format of GNU's standard C++ library (for stuff like std::string, std::vector, etc.) follow:
