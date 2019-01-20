@@ -72,19 +72,19 @@ install-info python.info DIR
 wget https://perl5.git.perl.org/perl.git/snapshot/HEAD.tar.gz
 tar xf HEAD.tar.gz
 cd perl-HEAD-*/pod
-for pod in *.pod; do
+for pod in perl*.pod; do
   base=$(basename $pod .pod)
   pod2texi "$pod" > "$base.texi" \
   && makeinfo "$base.texi"
 done
-touch perl5.info
+touch perl-menu.info
 for info in *.info; do
   base=$(basename $info .info)
-  install-info --entry="* $base: ($info). " --section=Perl $info perl5.info
+  install-info --entry="* $base: ($info). " --section=Perl $info perl-menu.info
 done
-mv *.info ~/.local/info/
+mv *.info* ~/.local/info/
 cd ~/.local/info/
-install-info --entry="* Perl: (perl5.info). " --section=Perl perl5.info DIR
+install-info --entry="* Perl: (perl-menu.info). " --section=Perl perl-menu.info DIR
 }}}
 
 === stdlibc++ ===
