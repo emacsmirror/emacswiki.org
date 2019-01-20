@@ -15,26 +15,32 @@ https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 
 === Git ===
 
-  $ wget https://github.com/git/git/archive/master.zip
-  $ unzip master.zip
-  $ cd git-master/Documentation
-  $ make git.info
-  $ mv git.info ~/info
-  $ cd ~/info
-  $ install-info git.info dir
+Requirements: ##asciidoc## and ##docbook2x##.
+
+{{{
+wget https://github.com/git/git/archive/master.zip
+unzip master.zip
+cd git-master/Documentation
+make git.info
+mv git.info ~/info
+cd ~/info
+install-info git.info dir
+}}}
 
 (PetarMarinov)
 
-NOTE: the git man pages can also be converted and accessed via
+The git man pages can also be converted and accessed via
 Info. To produce them follow the steps above by replacing git.info
 with gitman.info.
 
-NOTE: On a Mac install asciidoc and docbook2x first. For example, via brew:
+On a Mac, via brew:
 
-  $ brew install asciidoc
-  $ brew install docbook2x
-  $ cd /usr/local/bin
-  $ ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
+{{{
+brew install asciidoc
+brew install docbook2x
+cd /usr/local/bin
+ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
+}}}
 
 === Python ===
 
