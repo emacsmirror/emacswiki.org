@@ -30,6 +30,8 @@ install-info git.info DIR
 install-info gitman.info DIR
 }}}
 
+(These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/git/git/releases tag] like "v2.20.1".)
+
 On a Mac, via brew:
 
 {{{
@@ -38,8 +40,6 @@ brew install docbook2x
 cd /usr/local/bin
 ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
 }}}
-
-(These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/git/git/releases tag] like "v2.20.1".)
 
 === Python ===
 
