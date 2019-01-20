@@ -8,7 +8,11 @@ lists the documentation installed in it. To add to it invoke "install-info".
 
 To make this directory available to Emacs add this snippet to your "init.el":
 
-  (add-to-list 'Info-default-directory-list "~/.local/info")
+{{{
+(add-to-list 'Info-default-directory-list "~/.local/info")
+}}}
+
+Sadly, all these info files have plenty of warnings when you generate them...
 
 SteveYegge on Info files:
 https://sites.google.com/site/steveyegge2/my-dot-emacs-file
@@ -64,20 +68,24 @@ install-info python.info DIR
 
 === Perl ===
 
-  $ mkdir tmp
-  $ cd tmp
-  $ wget -r --no-parent http://cpansearch.perl.org/src/KRISHPL/perl-5.6-info/info/
-  $ cd cpansearch.perl.org/src/KRISHPL/perl-5.6-info/info/
-  $ rm *unsplit*
-  $ rm *html*
-  $ rm pm.*
-  $ mv * ~/info
-  $ cd ~/info
-  $ install-info --section="Development" --entry="* Perl 5.6: (perl.info).  The Perl 5.6 Documentation" perl.info dir
-
-NOTE:
-pm.info* is deleted because it gives an error. The best solution is for
-documentation to be rebuilt with newer makeinfo version.
+{{{
+wget https://perl5.git.perl.org/perl.git/snapshot/HEAD.tar.gz
+tar xf HEAD.tar.gz
+cd perl-HEAD-*/pod
+for pod in *.pod; do
+  base=$(basename $pod .pod)
+  pod2texi "$pod" > "$base.texi" \
+  && makeinfo "$base.texi"
+done
+touch perl5.info
+for info in *.info; do
+  base=$(basename $info .info)
+  install-info --entry="* $base: ($info). " --section=Perl $info perl5.info
+done
+mv *.info ~/.local/info/
+cd ~/.local/info/
+install-info --entry="* Perl: (perl5.info). " --section=Perl perl5.info DIR
+}}}
 
 === stdlibc++ ===
 
