@@ -20,8 +20,8 @@ The git documentation and the git manual pages can be installed as info files.
 Requirements: ##asciidoc## and ##docbook2x##.
 
 {{{
-wget https://github.com/git/git/archive/master.zip
-unzip master.zip
+wget https://github.com/git/git/archive/master.tar.gz
+tar xf master.tar.gz
 cd git-master/Documentation
 make git.info gitman.info
 mv git.info gitman.info ~/.local/info
@@ -39,24 +39,28 @@ cd /usr/local/bin
 ln -s ../Cellar/docbook2x/0.8.8/bin/docbook2texi docbook2x-texi
 }}}
 
+(These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/git/git/releases tag] like "v2.20.1".)
+
 === Python ===
 
 The Python documentation can be installed as info files.
 
-Requirements: ##python3-sphinx## and [https://www.python.org/downloads/ Python sources].
+Requirements: ##python3-sphinx##.
 
 To install:
 
 {{{
-wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz.asc
-gpg --verify Python-3.7.2.tar.xz.asc
-tar xf Python-3.7.2.tar.xz
+wget https://github.com/python/cpython/archive/master.tar.gz
+tar xf master.tar.gz
+cd cpython-master/Doc
 sphinx-build -b texinfo -d build/doctrees . build/texinfo
 cd build/texinfo && make
 mv python.info ~/.local/info
 cd ~/.local/info
 install-info python.info DIR
 }}}
+
+(These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/python/cpython/releases tag] like "v3.7.2".)
 
 === Perl ===
 
