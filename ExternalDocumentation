@@ -15,19 +15,18 @@ https://sites.google.com/site/steveyegge2/my-dot-emacs-file
 
 === Git ===
 
-Requirements: ##asciidoc## and ##docbook2x##.
+Requirements: ##asciidoc## and ##docbook2x##. We assume that local info files are stored in ##~/.local/info## and that the `dir` file is actually `DIR`.
 
 {{{
 wget https://github.com/git/git/archive/master.zip
 unzip master.zip
 cd git-master/Documentation
-make git.info
-mv git.info ~/info
-cd ~/info
-install-info git.info dir
+make git.info gitman.info
+mv git.info gitman.info ~/.local/info
+cd ~/.local/info
+install-info git.info DIR
+install-info gitman.info DIR
 }}}
-
-(PetarMarinov)
 
 The git man pages can also be converted and accessed via
 Info. To produce them follow the steps above by replacing git.info
