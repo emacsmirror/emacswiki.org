@@ -123,6 +123,10 @@ bug.
 /Parts of the contents of this section have been moved to /[[RudelDiscussionArchive]].
 
 [new]
+I can't get the custom variable rudel-configured-sessions to work properly.  I am using obby and follow the documented example, but it fails to join the session with error message: eieio--validate-slot-value: Invalid slot type: rudel-client-session, backend, rudel-backend-child, nil
+
+
+[new]
 Can't get rudel to a join a session more than once. If emacs is exited and reloaded, it will neither recognize a session nor host one, nor is it able to join a session even if the host is specified. It returns a "join denied" error or something like that. It joins exactly one file where the spell checker and flyspell are operable. Additional files create errors.
 
 [new]
