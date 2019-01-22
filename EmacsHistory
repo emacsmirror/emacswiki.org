@@ -31,7 +31,7 @@ ever before, and has been followed by most subsequent Emacsen.
 
 '''Gosling Emacs''', the first Emacs to run on Unix, was written by
 JamesGosling in 1981, based on the plans he and RichardStallman had developed for a new, widely portable Emacs. It was written in C, with MockLisp at the core of its functionality and as its
-extension language.  Like the name implies, Mock Lisp was not a complete Lisp, but merely an approximation: it lacked true lists (it couldn't `cons'), and handling of function arguments was done in an error-prone, artificial way. For more info, see [[WikiPedia:Gosling Emacs]]).
+extension language.  Mock Lisp ''looked'' a bit like Lisp, but it was not really Lisp: it lacked true lists (it couldn't `cons'), and handling of function arguments was done in an error-prone, artificial way. For more info, see [[WikiPedia:Gosling Emacs]]).
 
 In 1981, Stallman wrote a report on Emacs as an internal document of the MIT AI Lab.  The title of the report was
 ''EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor''.
