@@ -121,6 +121,15 @@ or (tested with emacs 23):
      (let ((face-offset (* (face-id 'shadow) (lsh 1 22))))
        (vconcat (mapcar (lambda (c) (+ face-offset c)) " [...] "))))
 
+If you're using Whitespace mode, you'll need to use this to change the ellipsis:
+
+  (defun whitespace-change-ellipsis ()
+    "Change ellipsis when used with `whitespace-mode'."
+    (set-display-table-slot buffer-display-table
+                            'selective-display
+                            (string-to-vector " [...]")))
+  (add-hook 'whitespace-mode-hook #'whitespace-change-ellipsis)
+
 == Using Roman Numerals as Headings ==
 
 Here's how to make Emacs' outline mode use "I., A., 1., a., i." and so on as valid outline entries.  Put the following at the end of your document (or among your LocalVariables if you already have them):
