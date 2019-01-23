@@ -43,7 +43,7 @@ has the same effect as the following in GNU Emacs:
 
 To bind keys interactively, use the `M-x set-key' command.  To bind keys programmatically, use the `define-key' procedure, which takes as arguments: the name of the mode in whose key map to define the key; the key to bind, written as a Scheme character, or a list of Scheme characters, or a Scheme character set; and the name of the command to bind the key to.  For example,
 
-  (define-key 'fundamental #\M-^ 'delete-indenation)
+  (define-key 'fundamental #\M-^ 'delete-indentation)
 
 will globally bind the key `M-^' to the command `delete-indentation'.  All modes in EdwinScheme inherit from the fundamental mode of Edwin.
 
