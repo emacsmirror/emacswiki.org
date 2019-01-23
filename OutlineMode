@@ -125,9 +125,10 @@ If you're using Whitespace mode, you'll need to use this to change the ellipsis:
 
   (defun whitespace-change-ellipsis ()
     "Change ellipsis when used with `whitespace-mode'."
-    (set-display-table-slot buffer-display-table
-                            'selective-display
-                            (string-to-vector " [...]")))
+    (when buffer-display-table
+      (set-display-table-slot buffer-display-table
+                              'selective-display
+                              (string-to-vector " [...]"))))
   (add-hook 'whitespace-mode-hook #'whitespace-change-ellipsis)
 
 == Using Roman Numerals as Headings ==
