@@ -7,7 +7,7 @@ GNU Hyperbole is available as a quick install package from GNU [[ELPA]]. The pro
 A major new release of Hyperbole, version 7, the Git Ready for Action Release, was released on November 15, 2017.  It includes easily embeddable cross-references to git and Github objects, social media hashtag and user page links, rapid drags for displaying buffers and files in any desired window and window grids for displaying many buffers/files in a specified grid of windows, e.g. 3 rows by 5 columns.
 
 Hyperbole's major capabilities include:
- 
+
 * Info Management: an interactive, unstructured textual information management interface
 * HyControl: the fastest and easiest-to-use window and frame control
 * HyRolo: a hierarchical contact manager with free-form records and fast retrieval
@@ -23,25 +23,32 @@ People often ask us about the differences between Org mode and Hyperbole.  Altho
 
 * Org-mode is a major-mode that works on structured files built atop Emacs outlining mode.
 * Hyperbole is a system that spans across much of Emacs' functionality, providing quick access keys and hyperbuttons wherever needed.
-
+\\
+\\
 * Org-mode's outliner is like Emacs outliner.
 * Hyperbole's Koutliner is unique; every node/paragraph has a unique id and settable attributes plus a relative id that is auto-updated as you move trees around the outline, so you know that node 2b4 is a child of 2b and is the next sibling of the 2b3 node.
-
+\\
+\\
 * Org-mode has explicit hyperlinks that you create and a limited form of implicit links (links recognized contextually from just the text of a file).
 * Hyperbole has these too, allowing you to create them in any type of text file, with simple drags between windows.  But Hyperbole also recognizes hyperlinks embedded in many different types of files and buffers and can easily support new types.  You simply press one button and Hyperbole figures out what to do in dozens of contexts.
-
+\\
+\\
 * Org-mode manages todos, time entries and some basic project management.
 * Hyperbole does none of this but allows you can integrate with whatever todo management you like.
-
+\\
+\\
 * Org-mode doesn't have any contact management builtin, only through add-on packages.
 * Hyperbole has an integrated, fast, effective hierarchical contact manager.
-
+\\
+\\
 * Org-mode does nothing with your buffers, windows and frames since it is just a major mode.
 * Hyperbole has a fast, thoughtfully designed window and frame manager that lets you quickly arrange your Emacs artifacts as you like.  Eventually, these window and frame configurations will be saveable and will be able to be the target of links, so you can have quick access buttons that arrange things for different work tasks (similar to Workspaces but integrated with all of Hyperbole's other features).
-
+\\
+\\
 * Org-mode does nothing for management of libraries of information.
 * Hyperbole helps organize, link, search and retrieve libraries of text files.
-
+\\
+\\
 * Hyperbole also has features that speed code browsing and structured code editing and support for using the mouse keys as Control and Meta modifiers so you can point and operate on screen entities quickly.
 
 ----
