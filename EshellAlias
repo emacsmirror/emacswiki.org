@@ -116,7 +116,8 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
     (add-hook 'eshell-mode-hook 'eshell-load-bashrc-aliases)
     (defun re-n-matches ()
       (1- (/ (length (match-data)) 2)))
-    
+
+    ;; from xah-lee http://ergoemacs.org/emacs/elisp_read_file_content.html
     (defun get-string-from-file (filePath)
       "Return filePath's file content."
       (with-temp-buffer
