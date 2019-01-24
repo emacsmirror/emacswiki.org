@@ -116,7 +116,13 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
     (add-hook 'eshell-mode-hook 'eshell-load-bashrc-aliases)
     (defun re-n-matches ()
       (1- (/ (length (match-data)) 2)))
-      
+    
+    (defun get-string-from-file (filePath)
+      "Return filePath's file content."
+      (with-temp-buffer
+      (insert-file-contents filePath)
+      (buffer-string)))
+
     (defun match-strings-all (&optional string)
       "Return the list of all expressions matched in last search.
       STRING is optionally what was given to `string-match'."
@@ -126,7 +132,7 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
     (defun re-find-all (regexp string &optional groups yes-props)
       "like python's re.find_all"
       (let (
-    	(groups (or groups (list (regexp-count-capture-groups regexp))))
+    	;;(groups (or groups (list (regexp-count-capture-groups regexp))))
     	(match-string-fun (if (not yes-props) 'match-string 'match-string-no-properties))
     	(start 0)
     	(matches nil )
@@ -171,4 +177,10 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
     
 
 ----
+
+-- 2019-01-24 [[Arthur Miller]]:
+
+I have edited code above - added get-string-from-file and commented away unnecessary line (groups (or ... )))) to make it work on my Emacs, however this is noticeably slow. The solution will neither take into consideration that users might have their aliases spread in
+different files, for example if they use something bash-it. Currently as I know the best solution is to export aliases from bash to alias file as suggested in 'sed' snippet.
+
 CategoryEshell
