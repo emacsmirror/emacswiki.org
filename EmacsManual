@@ -51,9 +51,7 @@ If you get this error message:
 
  Info-find-file: Info file emacs does not exist
 
-then you need to install the emacsXX-common-non-dfsg package (in debian) -- [[primewizard]]
-
-Emacs 26 requires emacs-non-dfsg instead! 
+then you need to install the ##emacsXX-common-non-dfsg## [Emacs 25] or ## emacs-common-non-dfsg ## [Emacs 26.1] package (Debian) 
 
 
 
