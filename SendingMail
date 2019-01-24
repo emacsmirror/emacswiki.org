@@ -52,7 +52,9 @@ You can use the variable `gnutls-algorithm-priority' to control which encryption
 
     (setq gnutls-algorithm-priority "PFS")
 
-See the section about priority strings of the documentation of !GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings
+See the section about priority strings of the documentation of !GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings 
+
+The default `smtpmail-stream-type' nil means STARTTLS if possible.  This is convenient, but vulnerable to a man-in-the-middle pretending STARTTLS not available so inducing you not to encrypt.
 
 ==== Fixing Issues ====
 Some servers use sloppy implementations of the TLS and SSL standards and it may happen that connections are dropped unexpectedly.  In these situations, it can help to update !GnuTLS or to add a setting that allows GnuTLS to be more forgiving with respect to deviations from the standards:
@@ -60,6 +62,8 @@ Some servers use sloppy implementations of the TLS and SSL standards and it may 
  (setq gnutls-algorithm-priority "NORMAL:%COMPAT")
 
 See the section about priority strings of the documentation of GnuTLS for details: http://gnutls.org/manual/gnutls.html#Priority-Strings
+
+Set variables `smtpmail-debug-info' and `smtpmail-debug-verb' to record interaction in a trace buffer.
 
 == Examples ==
 
@@ -146,6 +150,11 @@ You can also add the <code>X-Message-SMTP-Method</code> header when composing a 
 See MultipleSMTPAccounts for some external solutions.
 
 If you have more than one email address and have to send them using different SMTP servers, then you might want to take a look at esmtpmail.el a fork from smtpmail.el
+
+== Specific Servers Etc ==
+
+Yahoo <code>smtp.mail.yahoo.com</code>, circa Jan 2019, is best used by port 465 always-SSL.  The symptom on its ports 25 or 587 with STARTTLS is for smtpmail to hang a while then error out with 450 mailbox unavailable.  The cause is Yahoo hellos not showing AUTH on the unencrypted, so smtpmail assumes no authentication required, where in fact it is.  Smtpmail would recognise a 530 auth required and go again, but the Yahoo server gives only the unenlightening 450.
+
 
 See also: WritingMail
 ----
