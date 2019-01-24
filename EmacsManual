@@ -53,7 +53,7 @@ If you get this error message:
 
 then you need to install the emacsXX-common-non-dfsg package (in debian) -- [[primewizard]]
 
-
+Emacs 26 requires emacs-non-dfsg instead! 
 
 
 
