@@ -15,8 +15,7 @@ The web sites used by the two builtin retrieval methods have changed.
 Money Quick Quotes has gone away, and Quicken now merely redirects to
 Yahoo Finance.
 
-If you want to give the code a try, the following adds a Yahoo Finance
-retrieval (http://finance.yahoo.com),
+The following code got prices from the Yahoo Finance ([http://finance.yahoo.com http://finance.yahoo.com]) CSV query.  Alas Yahoo has discontinued that interface.  (As of Jan 2019 it has two forms of JSON, one with cookies and one without, both needing parsing and some truncating of decimals due to floating point.)
 
     (defun my-stock-quote-yahoo (ticker)
       "Download a stock price using Yahoo Finance (CSV format)."
