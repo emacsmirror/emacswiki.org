@@ -16,6 +16,11 @@ There is also an IRC bouncer, a proxy, to make your IRC connections persistent:
 * ShoesOff - IRC bouncer in Emacs
 
 == Instant Messaging ==
+* Matrix protocol clients
+** http://savannah.nongnu.org/projects/maelstrom-el
+** https://github.com/jgkamat/matrix-client-el/
+** https://github.com/mujx/nheko
+
 * Jabber clients
 ** [[Gajim]] -- Some function to be able to talk with Gajim from Emacs.
 ** JabberEl -- The Jabber client which appears to be the most up-to-date.
