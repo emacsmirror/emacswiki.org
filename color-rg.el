@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 3.6
-;; Last-Updated: 2018-12-06 09:13:13
+;; Version: 4.0
+;; Last-Updated: 2019-01-25 08:29:02
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,18 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/01/25
+;;      * Move two chars backward when current link is format as [[link]]
+;;
+;; 2019/01/24
+;;      * Expand org block if current file is *.org file.
+;;
+;; 2018/12/27
+;;      * Use `pulse-momentary-highlight-region' instead `thing-edit-flash-line'.
+;;
+;; 2018/12/09
+;;      * Fix bug of `color-rg-in-string-p' when cursor at left side of string.
 ;;
 ;; 2018/12/06
 ;;      * Fix typo of `insert-translated-name-current-parse-state', it should be `color-rg-current-parse-state'
@@ -677,8 +689,12 @@ CASE-SENSITIVE determinies if search is case-sensitive."
 
 (defun color-rg-in-string-p (&optional state)
   (or (nth 3 (or state (color-rg-current-parse-state)))
-      (eq (get-text-property (point) 'face) 'font-lock-string-face)
-      (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+      (and
+       (eq (get-text-property (point) 'face) 'font-lock-string-face)
+       (eq (get-text-property (- (point) 1) 'face) 'font-lock-string-face))
+      (and
+       (eq (get-text-property (point) 'face) 'font-lock-doc-face)
+       (eq (get-text-property (- (point) 1) 'face) 'font-lock-doc-face))
       ))
 
 (defun color-rg-string-start+end-points (&optional state)
@@ -929,46 +945,6 @@ This assumes that `color-rg-in-string-p' has already returned true, i.e.
           (setq end (point))
           (kill-region start end))
         (read-only-mode 1)))))
-
-(defun color-rg-flash-line (&optional pos end-pos face delay)
-  "Flash a temporary highlight to help the user find something.
-
-POS is optional, and defaults to the current point.
-
-If optional END-POS is set, flash the characters between the two
-points, otherwise flash the entire line in which POS is found.
-
-The flash is normally not inclusive of END-POS.  However, when
-POS is equal to END-POS, the single character at POS will flash.
-
-Optional FACE defaults to `color-rg-font-lock-flash'.  Optional DELAY
-defaults to `color-rg-flash-line-delay' seconds.  Setting DELAY to 0 makes
-this function a no-op."
-  (callf or pos (point))
-  (unless end-pos
-    (save-excursion
-      (let ((inhibit-point-motion-hooks t))
-        (goto-char pos)
-        (beginning-of-visual-line)
-        (setq pos (point))
-        (end-of-visual-line)
-        (setq end-pos (1+ (point))))))
-  (when (eq pos end-pos)
-    (incf end-pos))
-  (callf or delay color-rg-flash-line-delay)
-  (callf or face 'color-rg-font-lock-flash)
-  (when (and (numberp delay)
-             (> delay 0))
-    (when (timerp next-error-highlight-timer)
-      (cancel-timer next-error-highlight-timer))
-    (setq compilation-highlight-overlay (or compilation-highlight-overlay
-                                            (make-overlay (point-min) (point-min))))
-    (overlay-put compilation-highlight-overlay 'face face)
-    (overlay-put compilation-highlight-overlay 'priority 10000)
-    (move-overlay compilation-highlight-overlay pos end-pos)
-    (add-hook 'pre-command-hook 'compilation-goto-locus-delete-o)
-    (setq next-error-highlight-timer
-          (run-at-time delay nil 'compilation-goto-locus-delete-o))))
 
 (defun color-rg-update-header-line-hits ()
   (setq color-rg-hit-count (color-rg-stat-hits))
@@ -1281,14 +1257,12 @@ from `color-rg-cur-search'."
       ;; Add to temp list if file's buffer is not exist.
       (unless match-buffer
         (add-to-list 'color-rg-temp-visit-buffers (current-buffer)))
-      ;; Jump to match position.
-      (goto-line match-line)
-      ;; NOTE:
-      ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
-      (move-to-column (- match-column 1))
+      ;; Jump to match point.
+      (color-rg-jump-to-match-point match-line match-column)
       ;; Flash match line.
-      (color-rg-flash-line)
-      )
+      (let ((pulse-iterations 1)
+            (pulse-delay color-rg-flash-line-delay))
+        (pulse-momentary-highlight-one-line (point) 'color-rg-font-lock-flash)))
     ;; Keep cursor in search buffer's window.
     (select-window (get-buffer-window color-rg-buffer))
     ;; Ajust column position.
@@ -1298,6 +1272,33 @@ from `color-rg-cur-search'."
     (unless (looking-at "[[:space:]]*$")
       (forward-char (- match-column 1)))
     ))
+
+(defun color-rg-jump-to-match-point (match-line match-column)
+  (cond ((derived-mode-p 'org-mode)
+         ;; Jump to match position.
+         (goto-line match-line)
+         ;; NOTE:
+         ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
+         (move-to-column (- match-column 1))
+         ;; Move two chars backward when current link is format as [[link]]
+         (let* ((context
+                 (org-element-lineage
+                  (org-element-context)
+                  '(clock footnote-definition footnote-reference headline
+                          inlinetask link timestamp)
+                  t))
+                (type (org-element-type context)))
+           (cond ((and (eq type 'link)
+                       (looking-back "\\[\\[.*" (line-beginning-position)))
+                  (backward-char 2))))
+         ;; Expand org block if current file is *.org file.
+         (org-reveal))
+        (t
+         ;; Jump to match position.
+         (goto-line match-line)
+         ;; NOTE:
+         ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
+         (move-to-column (- match-column 1)))))
 
 (defun color-rg-switch-to-edit-mode ()
   (interactive)
