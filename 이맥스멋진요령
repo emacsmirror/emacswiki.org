@@ -2,6 +2,7 @@
 ----
 지금까지 수년간 이맥스를 사용해왔지만 극한의 가능성은 언제나 도달할 수 없었습니다.
 : 모든 이맥스 사용자가 이렇게 생각할 것입니다. -Lathl
+
 저는 이맥스를 엄청나게 생산적으로 사용하는 사람들을 본적이있었습니다.
 그들은 몇시간을 걸릴 일을 몇분 만에 해내기 위해서 키보드를 빠르게 움직이는 것 같았습니다.
 그래서 저는 그들이 이맥스의 효과적인 사용법에 대해서 알고있을 것이라 생각했고, 물었보았습니다만
@@ -38,7 +39,7 @@ Nifty tricks for Dired are on their own page: '''DiredPower'''.
 MovingTheCtrlKey -- For some, redefining the CapsKey is one of the most important customizations for computer use in general and especially for Emacs.
 [:Editing]
 = Editing =
-== Searching and Replacing ==
+== 검색 및 대체 ==
 * When doing isearch, `C-w' adds the word following point to the search buffer. Very useful. `C-y' adds the rest of the current line to the search buffer. Sometimes useful.
 * Use `isearch' as a navigation mechanism. Consider modifying Isearch's behavior by using IsearchOtherEnd.
 * Regexps can be limited to a region by using BasicNarrowing or selecting an active region with TransientMarkMode.
@@ -47,11 +48,11 @@ MovingTheCtrlKey -- For some, redefining the CapsKey is one of the most importan
 ''Use recursive-edit''
 When replacing some text with M-% or M-C-% you may replace and edit the matches with C-w or just edit with C-r and leave recursive edit with M-C-c. This is useful when you need to replace some text, but in certain places it should differ.
 : Excellent!
-== Keyboard Macros ==
+== 키보드 매크로 ==
 Use KeyboardMacros! Various KeyboardMacrosTricks are here.
 ----
 A useful adjunct to keyboard macros is the ability to use multiple buffers or windows in a macro. When doing a complex keyboard macro I sometimes lose track of where the point and mark is, or maybe I need to keep track of more locations. 
 Splitting the [[Frame]] and using one [[Window]] as 'input' and the other as 'output' can often make things a lot simpler. You get a sed-like way of editing the data.
 -- TrulsArnegaard
-== Copy, Paste, and Select ==
+== 복사, 붙여넣기 및 선택 ==
 * Use the ''secondary'' selection: SecondarySelection. With it, you can mark some text without moving point. So if you want to copy a word from elsewhere in the text to point, double-click `M-mouse-1' on the word, then `M-mouse-2' to insert. Very easy. With library '''<tt>[[second-sel.el]]</tt>''', you can d
