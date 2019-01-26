@@ -1,3 +1,4 @@
+[[de:Turkish]]
 Emacs comes with sgml-mode, and a derived html-mode.  Both are
 rather simple and offer the insertion of tags based on a list of tag
 names and appropriate skeletons (see SkeletonMode).  The original ##html-mode.el## was written by MarcAndreessen.
