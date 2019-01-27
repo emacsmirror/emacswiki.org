@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 17 13:11:52 2019 (-0800)
+;; Last-Updated: Sun Jan 27 13:32:11 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 11287
+;;     Update #: 11308
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -528,6 +528,7 @@
 ;;    `diredp-marked-recursive',
 ;;    `diredp-marked-recursive-other-window',
 ;;    `diredp-mark-extension-recursive',
+;;    `diredp-mark-files-containing-regexp-recursive',
 ;;    `diredp-mark-files-regexp-recursive',
 ;;    `diredp-mark-files-tagged-all', `diredp-mark-files-tagged-none',
 ;;    `diredp-mark-files-tagged-not-all',
@@ -786,6 +787,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/01/27 dadams
+;;     Added: diredp-mark-files-containing-regexp-recursive.
+;;              Bound to M-+ % g.  Added to diredp-marks-recursive-menu, diredp-regexp-recursive-menu.
 ;; 2019/01/17 dadams
 ;;     Added: diredp-mark-sexp-recursive.  Bound to M-+ M-(, M-+ * (.  Added to diredp-marks-recursive-menu.
 ;;     dired-query: Use dired-query-alist only when available.
@@ -5746,7 +5750,8 @@ When called from Lisp, optional arg DETAILS is passed to
   (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
 
 ;;;###autoload
-(defun diredp-mark-files-regexp-recursive (regexp &optional marker-char ignore-marks-p details) ; Bound to `M-+ % m'
+(defun diredp-mark-files-regexp-recursive (regexp
+                                           &optional marker-char ignore-marks-p details) ; Bound to `M-+ % m'
   "Mark all files matching REGEXP, including those in marked subdirs.
 Like `dired-mark-files-regexp' but act recursively on marked subdirs.
 
@@ -5794,6 +5799,79 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                                (let ((fn  (dired-get-filename nil 'NO-ERROR)))
                                                  (and fn  (diredp-string-match-p regexp fn))))
                                           "file")
+                changed   (+ changed (or (car chg.mtch)  0))
+                matched   (+ matched (or (cdr chg.mtch)  0))))))
+    (message "%s file%s%s%s newly %s"
+             matched
+             (dired-plural-s matched)
+             (if (not (= matched changed)) " matched, " "")
+             (if (not (= matched changed)) changed "")
+             (if (eq ?\040 dired-marker-char) "unmarked" "marked"))))
+
+;;;###autoload
+(defun diredp-mark-files-containing-regexp-recursive (regexp
+                                                      &optional marker-char ignore-marks-p details) ; `M-+ % g'
+  "Mark files with contents containing a REGEXP match, including in marked subdirs.
+Like `dired-mark-files-containing-regexp' but act recursively on
+marked subdirs.
+
+A non-negative prefix arg means to UNmark the files instead.
+
+A non-positive prefix arg means to ignore subdir markings and act
+instead on ALL subdirs.  That is, mark all matching files in this
+directory and all descendant directories.
+
+REGEXP is added to `regexp-search-ring', for regexp search.
+
+Note: If there is more than one Dired buffer for a given subdirectory
+then only the first such is used.
+
+If a file is visited in a buffer and `dired-always-read-filesystem' is
+nil, this looks in the buffer without revisiting the file, so the
+results might be inconsistent with the file on disk if its contents
+have changed since it was last visited.
+
+When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
+
+  (interactive (let* ((numarg   (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+                      (unmark   (and numarg  (>= numarg 0)))
+                      (ignorep  (and numarg  (<= numarg 0))))
+                 (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " files containing (regexp): "))
+                       (and unmark  ?\040)
+                       ignorep)))
+  (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
+
+
+  (let ((dired-marker-char  (or marker-char  dired-marker-char))
+        (sdirs              (diredp-get-subdirs ignore-marks-p details))
+        (matched            0)
+        (changed            0)
+        dbufs chg.mtch)
+    (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking"))
+    (dolist (dir  (cons default-directory sdirs))
+      (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+        (with-current-buffer (car dbufs)
+          (setq chg.mtch
+                (diredp-mark-if
+                 (and (not (diredp-looking-at-p dired-re-dot))
+                      (not (eolp))
+                      (let ((fname  (dired-get-filename nil t)))
+                                  
+                        (and fname
+                             (file-readable-p fname)
+                             (not (file-directory-p fname))
+                             (let ((prebuf  (get-file-buffer fname)))
+                               (message "Checking %s" fname)
+                               ;; For now, do it inside Emacs.  Grep might be better if there are lots of files.
+                               (if (and prebuf  (or (not (boundp 'dired-always-read-filesystem))
+                                                    (not dired-always-read-filesystem))) ; Emacs 26+
+                                   (with-current-buffer prebuf
+                                     (save-excursion (goto-char (point-min)) (re-search-forward regexp nil t)))
+                                 (with-temp-buffer
+                                   (insert-file-contents fname)
+                                   (goto-char (point-min))
+                                   (re-search-forward regexp nil t)))))))
+                 "file")
                 changed   (+ changed (or (car chg.mtch)  0))
                 matched   (+ matched (or (cdr chg.mtch)  0))))))
     (message "%s file%s%s%s newly %s"
@@ -5983,7 +6061,8 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                      (buffer-substring (progn (skip-chars-backward " \t") (point))
                                                        (progn (skip-chars-backward "^ \t") (point)))))
                              ;; `NAME', `SYM'
-                             (setq name  (buffer-substring (point) (or (dired-move-to-end-of-filename t)  (point)))
+                             (setq name  (buffer-substring (point)
+                                                           (or (dired-move-to-end-of-filename t)  (point)))
                                    sym   (if (diredp-looking-at-p " -> ")
                                              (buffer-substring (progn (forward-char 4) (point))
                                                                (line-end-position))
@@ -11209,7 +11288,8 @@ Here and below (in marked subdirs)
   \\[diredp-mark-directories-recursive]\t\t- Mark directories
   \\[diredp-mark-executables-recursive]\t\t- Mark executables
   \\[diredp-mark-symlinks-recursive]\t\t- Mark symbolic links
-  \\[diredp-mark-files-regexp-recursive]\t\t- Mark regexp matches
+  \\[diredp-mark-files-containing-regexp-recursive]\t\t- Mark content regexp matches
+  \\[diredp-mark-files-regexp-recursive]\t\t- Mark filename regexp matches
 "
     (and (featurep 'bookmark+)
          "  \\[diredp-mark-autofiles-recursive]\t\t- Mark autofiles
@@ -12406,8 +12486,11 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-regexp-menu [mark-recursive]
   (cons "Here and Below" diredp-regexp-recursive-menu))
 (define-key diredp-regexp-recursive-menu [diredp-mark-files-regexp-recursive]
-    '(menu-item "Mark..." diredp-mark-files-regexp-recursive
-      :help "Mark all files matching a regexp, including those in marked subdirs"))
+    '(menu-item "Mark Named..." diredp-mark-files-regexp-recursive
+      :help "Mark all file names matching a regexp, including those in marked subdirs"))
+(define-key diredp-regexp-recursive-menu [diredp-mark-files-containing-regexp-recursive]
+    '(menu-item "Mark Containing..." diredp-mark-files-containing-regexp-recursive
+      :help "Mark all files with content matching a regexp, including in marked subdirs"))
 
 ;; We don't use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
 ;; works for newer Emacs too.
@@ -12636,9 +12719,12 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-marks-recursive-menu [diredp-mark-sexp-recursive]
   '(menu-item "If..." diredp-mark-sexp-recursive
     :help "Mark files satisfying specified condition, including those in marked subdirs"))
+(define-key diredp-marks-recursive-menu [diredp-mark-files-containing-regexp-recursive]
+  '(menu-item "Containing Regexp..." diredp-mark-files-containing-regexp-recursive
+    :help "Mark all files with content matching a regexp, including in marked subdirs"))
 (define-key diredp-marks-recursive-menu [diredp-mark-files-regexp-recursive]
-  '(menu-item "Regexp..." diredp-mark-files-regexp-recursive
-    :help "Mark all files matching a regexp, including those in marked subdirs"))
+  '(menu-item "Named Regexp..." diredp-mark-files-regexp-recursive
+    :help "Mark all file names matching a regexp, including those in marked subdirs"))
 (define-key diredp-marks-recursive-menu [diredp-mark-extension-recursive]
   '(menu-item "Extension..." diredp-mark-extension-recursive
     :help "Mark all files with a given extension, including those in marked subdirs"))
@@ -13023,6 +13109,7 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-recursive-map ":s"        'diredp-do-sign-recursive)               ; `: s'
   (define-key diredp-recursive-map ":v"        'diredp-do-verify-recursive))            ; `: v'
 (define-key diredp-recursive-map "%c"          'diredp-capitalize-recursive)            ; `% c'
+(define-key diredp-recursive-map "%g"          'diredp-mark-files-containing-regexp-recursive) ; `% g'
 (define-key diredp-recursive-map "%l"          'diredp-downcase-recursive)              ; `% l'
 (define-key diredp-recursive-map "%m"          'diredp-mark-files-regexp-recursive)     ; `% m'
 (define-key diredp-recursive-map "%u"          'diredp-upcase-recursive)                ; `% u'
