@@ -55,4 +55,8 @@ A useful adjunct to keyboard macros is the ability to use multiple buffers or wi
 Splitting the [[Frame]] and using one [[Window]] as 'input' and the other as 'output' can often make things a lot simpler. You get a sed-like way of editing the data.
 -- TrulsArnegaard
 == 복사, 붙여넣기 및 선택 ==
-* Use the ''secondary'' selection: SecondarySelection. With it, you can mark some text without moving point. So if you want to copy a word from elsewhere in the text to point, double-click `M-mouse-1' on the word, then `M-mouse-2' to insert. Very easy. With library '''<tt>[[second-sel.el]]</tt>''', you can d
+* Use the ''secondary'' selection: SecondarySelection. With it, you can mark some text without moving point. So if you want to copy a word from elsewhere in the text to point, double-click `M-mouse-1' on the word, then `M-mouse-2' to insert. Very easy. With library '''<tt>[[second-sel.el]]</tt>''', you can do more: swap primary and secondary, use a ring of secondary selections,…
+
+----
+
+CategoryHelp GnusNiftyTricks CategoryEditing CategoryDotEmacs
