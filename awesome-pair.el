@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-11-11 09:27:58
-;; Version: 0.5
-;; Last-Updated: 2018-12-09 20:44:27
+;; Version: 0.8
+;; Last-Updated: 2019-01-29 06:13:06
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-pair.el
 ;; Keywords:
@@ -69,6 +69,15 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/01/29
+;;      * Fixed bug where `awesome-pair-jump-out-pair-and-newline' function did not clean unnecessary whitespaces sometimes. 
+;;
+;; 2019/01/09
+;;      * Just indent parent expression after unwrap pair when in lisp like language.
+;;
+;; 2018/12/27
+;;      * Just clean unnecessary whitespace before close parenthesis when in lisp like language.
 ;;
 ;; 2018/12/09
 ;;      * Fix bug of `awesome-pair-in-string-p' when cursor at left side of string.
@@ -446,9 +455,14 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
         (forward-sexp)
         (backward-delete-char 1))
       (delete-char 1)
-      (ignore-errors
-        (backward-up-list)
-        (indent-sexp)))))
+      ;; Try to indent parent expression after unwrap pair.
+      ;; This feature just enable in lisp-like language.
+      (when (or
+             (derived-mode-p 'lisp-mode)
+             (derived-mode-p 'emacs-lisp-mode))
+        (ignore-errors
+          (backward-up-list)
+          (indent-sexp))))))
 
 (defun awesome-pair-jump-out-pair-and-newline ()
   (interactive)
@@ -467,11 +481,15 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
                  (setq up-list-point (point))
                  (newline-and-indent)
                  ;; Try to clean unnecessary whitespace before close parenthesis.
-                 (save-excursion
-                   (goto-char up-list-point)
-                   (backward-char)
-                   (when (awesome-pair-only-whitespaces-before-cursor-p)
-                     (awesome-pair-delete-whitespace-before-cursor)))))
+                 ;; This feature just enable in lisp-like language.
+                 (when (or
+                        (derived-mode-p 'lisp-mode)
+                        (derived-mode-p 'emacs-lisp-mode))
+                   (save-excursion
+                     (goto-char up-list-point)
+                     (backward-char)
+                     (when (awesome-pair-only-whitespaces-before-cursor-p)
+                       (awesome-pair-delete-whitespace-around-cursor))))))
            ;; Try to clean blank line if no pair can jump out.
            (if (awesome-pair-is-blank-line-p)
                (awesome-pair-kill-current-line))))))
@@ -506,6 +524,16 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
                  (forward-char)
                  (point))
                (point)))
+
+(defun awesome-pair-delete-whitespace-around-cursor ()
+  (kill-region (save-excursion
+                 (search-backward-regexp "[^ \t\n]" nil t)
+                 (forward-char)
+                 (point))
+               (save-excursion
+                 (search-forward-regexp "[^ \t\n]" nil t)
+                 (backward-char)
+                 (point))))
 
 (defun awesome-pair-kill-current-line ()
   (kill-region (beginning-of-thing 'line) (end-of-thing 'line))
