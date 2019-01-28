@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 4.0
-;; Last-Updated: 2019-01-25 08:29:02
+;; Version: 4.1
+;; Last-Updated: 2019-01-29 05:47:17
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/01/29
+;;      * Automatically expand the block of matching keywords in org files and adjust column along with org link syntax.
 ;;
 ;; 2019/01/25
 ;;      * Move two chars backward when current link is format as [[link]]
@@ -1250,55 +1253,76 @@ from `color-rg-cur-search'."
   (let* ((match-file (color-rg-get-match-file))
          (match-line (color-rg-get-match-line))
          (match-column (color-rg-get-match-column))
-         (match-buffer (color-rg-get-match-buffer match-file)))
+         (match-buffer (color-rg-get-match-buffer match-file))
+         in-org-link-content-p
+         in-org-link-title-p)
     (save-excursion
+      ;; Try fill variables when in org file.
+      (color-rg-move-to-column match-column)
+      (when (color-rg-is-org-file match-file)
+        (cond ((color-rg-in-org-link-content-p)
+               (setq in-org-link-content-p t))
+              ((color-rg-in-org-link-title-p)
+               (setq in-org-link-title-p t))))
       ;; Open file in other window.
       (find-file-other-window match-file)
       ;; Add to temp list if file's buffer is not exist.
       (unless match-buffer
         (add-to-list 'color-rg-temp-visit-buffers (current-buffer)))
       ;; Jump to match point.
-      (color-rg-jump-to-match-point match-line match-column)
+      (cond ((color-rg-is-org-file match-file)
+             ;; Jump to match position.
+             (color-rg-move-to-point match-line match-column)
+             ;; Expand org block if current file is *.org file.
+             (org-reveal)
+             ;; Adjust position when cursor in org link area.
+             (cond
+              ;; Jump to link beginning if keyword in content area.
+              (in-org-link-content-p
+               (search-backward-regexp "\\[\\[" (line-beginning-position) t))
+              ;; Move two chars backward when current link is format as [[link]]
+              (in-org-link-title-p
+               (backward-char 2))))
+            (t
+             (color-rg-move-to-point match-line match-column)))
       ;; Flash match line.
-      (let ((pulse-iterations 1)
-            (pulse-delay color-rg-flash-line-delay))
-        (pulse-momentary-highlight-one-line (point) 'color-rg-font-lock-flash)))
+      (color-rg-flash-line))
     ;; Keep cursor in search buffer's window.
     (select-window (get-buffer-window color-rg-buffer))
     ;; Ajust column position.
-    (beginning-of-line)
-    (search-forward-regexp color-rg-regexp-position)
-    ;; Forward to column if current line is not empty line (delete by `color-rg-delete-line').
-    (unless (looking-at "[[:space:]]*$")
-      (forward-char (- match-column 1)))
+    (color-rg-move-to-column match-column)
     ))
 
-(defun color-rg-jump-to-match-point (match-line match-column)
-  (cond ((derived-mode-p 'org-mode)
-         ;; Jump to match position.
-         (goto-line match-line)
-         ;; NOTE:
-         ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
-         (move-to-column (- match-column 1))
-         ;; Move two chars backward when current link is format as [[link]]
-         (let* ((context
-                 (org-element-lineage
-                  (org-element-context)
-                  '(clock footnote-definition footnote-reference headline
-                          inlinetask link timestamp)
-                  t))
-                (type (org-element-type context)))
-           (cond ((and (eq type 'link)
-                       (looking-back "\\[\\[.*" (line-beginning-position)))
-                  (backward-char 2))))
-         ;; Expand org block if current file is *.org file.
-         (org-reveal))
-        (t
-         ;; Jump to match position.
-         (goto-line match-line)
-         ;; NOTE:
-         ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
-         (move-to-column (- match-column 1)))))
+(defun color-rg-flash-line ()
+  (let ((pulse-iterations 1)
+        (pulse-delay color-rg-flash-line-delay))
+    (pulse-momentary-highlight-one-line (point) 'color-rg-font-lock-flash)))
+
+(defun color-rg-in-org-link-content-p ()
+  (and (looking-back "\\[\\[.*" (line-beginning-position))
+       (looking-at ".*\\]\\[")
+       (looking-at ".*\\]\\]")))
+
+(defun color-rg-in-org-link-title-p ()
+  (looking-back "\\[\\[.*" (line-beginning-position)))
+
+(defun color-rg-is-org-file (file)
+  (string-equal (color-rg-file-extension file) "org"))
+
+(defun color-rg-move-to-point (line column)
+  ;; Jump to match position.
+  (goto-line line)
+  ;; NOTE:
+  ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
+  (move-to-column (- column 1)))
+
+(defun color-rg-move-to-column (column)
+  (beginning-of-line)
+  (search-forward-regexp color-rg-regexp-position)
+
+  ;; Forward to column if current line is not empty line (delete by `color-rg-delete-line').
+  (unless (looking-at "[[:space:]]*$")
+    (forward-char (- column 1))))
 
 (defun color-rg-switch-to-edit-mode ()
   (interactive)
