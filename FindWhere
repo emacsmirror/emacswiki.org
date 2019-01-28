@@ -92,7 +92,7 @@ well as the list text as a string and its end position).
 
 When repeated, the ##THING## commands reuse the same ##THING## type as the
 last time (it is the value of variable `fw-last-thing'), but a
-plain prefix argument (`C-u') makes them prompt you for the THING
+plain prefix argument (`C-u') makes them prompt you for the ##THING##
 type to use.
 
 You can bind any of the commands defined here to keys, of course.
