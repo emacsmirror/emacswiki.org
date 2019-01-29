@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 4.1
-;; Last-Updated: 2019-01-29 05:47:17
+;; Version: 4.2
+;; Last-Updated: 2019-01-29 20:46:00
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -70,6 +70,7 @@
 ;;
 ;; 2019/01/29
 ;;      * Automatically expand the block of matching keywords in org files and adjust column along with org link syntax.
+;;      * Jump to correct column positions in multi-byte strings, such as, mixed string of Chinese and English.
 ;;
 ;; 2019/01/25
 ;;      * Move two chars backward when current link is format as [[link]]
@@ -1254,16 +1255,13 @@ from `color-rg-cur-search'."
          (match-line (color-rg-get-match-line))
          (match-column (color-rg-get-match-column))
          (match-buffer (color-rg-get-match-buffer match-file))
-         in-org-link-content-p
-         in-org-link-title-p)
+         in-org-link-content-p)
     (save-excursion
       ;; Try fill variables when in org file.
       (color-rg-move-to-column match-column)
-      (when (color-rg-is-org-file match-file)
-        (cond ((color-rg-in-org-link-content-p)
-               (setq in-org-link-content-p t))
-              ((color-rg-in-org-link-title-p)
-               (setq in-org-link-title-p t))))
+      (setq in-org-link-content-p
+            (and (color-rg-is-org-file match-file)
+                 (color-rg-in-org-link-content-p)))
       ;; Open file in other window.
       (find-file-other-window match-file)
       ;; Add to temp list if file's buffer is not exist.
@@ -1275,14 +1273,9 @@ from `color-rg-cur-search'."
              (color-rg-move-to-point match-line match-column)
              ;; Expand org block if current file is *.org file.
              (org-reveal)
-             ;; Adjust position when cursor in org link area.
-             (cond
-              ;; Jump to link beginning if keyword in content area.
-              (in-org-link-content-p
-               (search-backward-regexp "\\[\\[" (line-beginning-position) t))
-              ;; Move two chars backward when current link is format as [[link]]
-              (in-org-link-title-p
-               (backward-char 2))))
+             ;; Jump to link beginning if keyword in content area.
+             (when in-org-link-content-p
+               (search-backward-regexp "\\[\\[" (line-beginning-position) t)))
             (t
              (color-rg-move-to-point match-line match-column)))
       ;; Flash match line.
@@ -1303,18 +1296,15 @@ from `color-rg-cur-search'."
        (looking-at ".*\\]\\[")
        (looking-at ".*\\]\\]")))
 
-(defun color-rg-in-org-link-title-p ()
-  (looking-back "\\[\\[.*" (line-beginning-position)))
-
 (defun color-rg-is-org-file (file)
   (string-equal (color-rg-file-extension file) "org"))
 
 (defun color-rg-move-to-point (line column)
   ;; Jump to match position.
   (goto-line line)
-  ;; NOTE:
-  ;; Don't turn on FORCE option of `move-to-column', it will modification search file when force move to target column.
-  (move-to-column (- column 1)))
+  (beginning-of-line)
+
+  (color-rg-jump-to-column column))
 
 (defun color-rg-move-to-column (column)
   (beginning-of-line)
@@ -1322,7 +1312,21 @@ from `color-rg-cur-search'."
 
   ;; Forward to column if current line is not empty line (delete by `color-rg-delete-line').
   (unless (looking-at "[[:space:]]*$")
-    (forward-char (- column 1))))
+    (color-rg-jump-to-column column)))
+
+(defun color-rg-jump-to-column (column)
+  "This function use for jump to correct column positions in multi-byte strings.
+Such as, mixed string of Chinese and English.
+
+Function `move-to-column' can't handle mixed string of Chinese and English correctly."
+  (let ((scan-column 0)
+        (first-char-point (point)))
+
+    (while (> column scan-column)
+      (forward-char 1)
+      (setq scan-column (string-bytes (buffer-substring first-char-point (point)))))
+
+    (backward-char 1)))
 
 (defun color-rg-switch-to-edit-mode ()
   (interactive)
