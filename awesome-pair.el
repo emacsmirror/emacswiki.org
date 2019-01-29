@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-11-11 09:27:58
-;; Version: 0.8
-;; Last-Updated: 2019-01-29 06:13:06
+;; Version: 0.9
+;; Last-Updated: 2019-01-30 07:40:22
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-pair.el
 ;; Keywords:
@@ -70,8 +70,12 @@
 
 ;;; Change log:
 ;;
+;; 2019/01/30
+;;      * Fix 'wrong type character-p' error when call `awesome-pair-forward-delete' in beginning of buffer.
+;;      * Add docs of `awesome-pair-forward-delete'.
+;;
 ;; 2019/01/29
-;;      * Fixed bug where `awesome-pair-jump-out-pair-and-newline' function did not clean unnecessary whitespaces sometimes. 
+;;      * Fixed bug where `awesome-pair-jump-out-pair-and-newline' function did not clean unnecessary whitespaces sometimes.
 ;;
 ;; 2019/01/09
 ;;      * Just indent parent expression after unwrap pair when in lisp like language.
@@ -272,6 +276,20 @@
          (awesome-pair-backward-delete-in-pair))
         ((not (awesome-pair-after-open-pair-p))
          (backward-delete-char 1))))
+
+(defun awesome-pair-forward-delete ()
+  (interactive)
+  (cond ((awesome-pair-in-string-p)
+         (awesome-pair-forward-delete-in-string))
+        ((awesome-pair-in-comment-p)
+         (delete-char 1))
+        ((awesome-pair-before-open-pair-p)
+         (awesome-pair-forward-movein-or-delete-open-pair))
+        ((awesome-pair-in-empty-pair-p)
+         (awesome-pair-backward-delete-in-pair))
+        ((not (awesome-pair-before-close-pair-p))
+         (delete-char 1)
+         )))
 
 (defun awesome-pair-kill ()
   "It's annoying that we need re-indent line after we delete blank line with `awesome-pair-kill'.
@@ -558,6 +576,11 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
       (backward-char)
     (backward-delete-char 1)))
 
+(defun awesome-pair-forward-movein-or-delete-open-pair ()
+  (if (awesome-pair-ignore-errors (save-excursion (forward-sexp)))
+      (forward-char)
+    (delete-char 1)))
+
 (defun awesome-pair-backward-delete-in-string ()
   (let ((start+end (awesome-pair-string-start+end-points)))
     (cond ((not (eq (1- (point)) (car start+end)))
@@ -569,6 +592,18 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
           ((eq (point) (cdr start+end))
            (backward-delete-char 1)
            (delete-char 1)))))
+
+(defun awesome-pair-forward-delete-in-string ()
+  (let ((start+end (awesome-pair-string-start+end-points)))
+    (cond ((not (eq (point) (cdr start+end)))
+           (cond ((awesome-pair-in-string-escape-p)
+                  (delete-char -1))
+                 ((eq (char-after) ?\\ )
+                  (delete-char +1)))
+           (delete-char +1))
+          ((eq (1- (point)) (car start+end))
+           (delete-char -1)
+           (delete-char +1)))))
 
 (defun awesome-pair-splice-string (argument)
   (let ((original-point (point))
@@ -906,15 +941,31 @@ If current line is not blank, do `awesome-pair-kill' first, re-indent line if re
                (eq (char-before) ?\}))
           ))))
 
-(defun awesome-pair-in-empty-pair-p ()
+(defun awesome-pair-before-open-pair-p ()
   (save-excursion
-    (or (and (eq (char-syntax (char-before)) ?\()
-             (eq (char-after) (matching-paren (char-before))))
-        (and (eq (char-syntax (char-before)) ?_)
-             (eq (char-before) ?\{)
-             (eq (char-syntax (char-after)) ?_)
-             (eq (char-after) ?\})
-             ))))
+    (let ((syn (char-syntax (char-after))))
+      (or (eq syn ?\( )
+          (eq syn ?\" )
+          (and (eq syn ?_)
+               (eq (char-after) ?\{))))))
+
+(defun awesome-pair-before-close-pair-p ()
+  (save-excursion
+    (let ((syn (char-syntax (char-after))))
+      (or (eq syn ?\) )
+          (and (eq syn ?_)
+               (eq (char-after) ?\}))))))
+
+(defun awesome-pair-in-empty-pair-p ()
+  (ignore-errors
+    (save-excursion
+      (or (and (eq (char-syntax (char-before)) ?\()
+               (eq (char-after) (matching-paren (char-before))))
+          (and (eq (char-syntax (char-before)) ?_)
+               (eq (char-before) ?\{)
+               (eq (char-syntax (char-after)) ?_)
+               (eq (char-after) ?\})
+               )))))
 
 (defun awesome-pair-in-single-quote-string-p ()
   (save-excursion
