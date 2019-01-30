@@ -4,5 +4,29 @@ This is a minimalistic colour theme. That is, it tries to minimize the use of co
 
 [[image:Brutalist Theme Image]]
 
+== Switching between Brutalist and Brutalist Dark
+
+This code switches between the two themes based on whether the sun is up or not.
+
+{{{
+;; load both themes
+(load-theme 'brutalist t t)
+(load-theme 'brutalist-dark t t)
+
+;; enable the appropriate one
+(require 'calendar)
+(setq calendar-latitude [47 22 north]
+      calendar-longitude [8 33 east])
+(let* ((date (calendar-current-date))
+       (data (solar-sunrise-sunset date))
+       (sunrise (car (car data)))
+       (sunset (car (cadr data)))
+       (time (decode-time))
+       (now (+ (nth 2 time) (/ (nth 1 time) 60.0))))
+  (if (and (< sunrise now) (< now sunset))
+      (enable-theme 'brutalist)
+    (enable-theme 'brutalist-dark)))
+}}}
+
 ----
 ColorTheme
