@@ -2,7 +2,7 @@ Also known as [::WomanMode].
 
 In this case, "woman" stands for "w/o man", ie "without man"
 and allows you to view man pages without having the "man" program installed.  This is useful
-on Windows, for example.
+if you don't like man.
 
 Woman is the elisp-only alternative to ManMode.
 
