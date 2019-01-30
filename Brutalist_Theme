@@ -4,7 +4,7 @@ This is a minimalistic colour theme. That is, it tries to minimize the use of co
 
 [[image:Brutalist Theme Image]]
 
-== Switching between Brutalist and Brutalist Dark
+== Switching between Brutalist and Brutalist Dark ==
 
 This code switches between the two themes based on whether the sun is up or not.
 
