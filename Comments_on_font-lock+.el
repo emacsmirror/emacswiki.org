@@ -4,3 +4,12 @@ Longer explanation: I’m trying to create clickable text in an Org dynamic bloc
 
 -- TinaRussell 2019-01-29 22:34 UTC
 
+
+----
+
+@TinaRussell:
+
+Dunno. There's no explicit occurrence of `keymap' in the code. What happens if you do the same or similar without the library (without `font-lock-ignore')? Maybe show some code. Also, try using `debug-on-entry': walk through the debugger for some function to see just what goes on. Try to simplify what you do, just for testing what's going on with the text properties. E.g., maybe take Org out of the loop, for now.
+
+-- DrewAdams 2019-01-30 15:55 UTC
+
