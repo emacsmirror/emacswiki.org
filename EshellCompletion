@@ -48,15 +48,56 @@ handled by tramp-file-name-handler.
 
 Perhaps there are better ways of doing this? -- Matt Hodges
 == Subcommand completions ==
-In default subcommands are not completed, so I make the completion functions for the some commands
-(systemctl, pacman, sudo, man) which have subcommands. Since pcomplete is effective on eshell, created
-the completion functions having  the corresponding commands' names.
+In default subcommands are not completed, so I make the completion functions for the commands
+(systemctl, pacman, sudo, man) which have subcommands. Completion functions have  the corresponding commands' names.
 
-<include gist "https://gist.github.com/ede09142b817f2e3b97e87ce8bc93736">
+<pre>
+;;;; sudo completion
+(defun pcomplete/sudo ()
+  "Completion rules for the `sudo' command."
+  (let ((pcomplete-ignore-case t))
+    (pcomplete-here (funcall pcomplete-command-completion-function))
+    (while (pcomplete-here (pcomplete-entries)))))
 
-Other distribution users who don't use <code>pacman</code> should exclude
-the <code>pacman</code> completion codes and the pacman-related parts
-within <code>sudo</code> completion.
+;;;; systemctl completion
+(defcustom pcomplete-systemctl-commands
+  '("disable" "enable" "status" "start" "restart" "stop" "reenable"
+    "list-units" "list-unit-files")
+  "p-completion candidates for `systemctl' main commands"
+  :type '(repeat (string :tag "systemctl command"))
+  :group 'pcomplete)
+
+(defvar pcomplete-systemd-units
+  (split-string
+   (shell-command-to-string
+    "(systemctl list-units --all --full --no-legend;systemctl list-unit-files --full --no-legend)|while read -r a b; do echo \" $a\";done;"))
+  "p-completion candidates for all `systemd' units")
+
+(defvar pcomplete-systemd-user-units
+  (split-string
+   (shell-command-to-string
+    "(systemctl list-units --user --all --full --no-legend;systemctl list-unit-files --user --full --no-legend)|while read -r a b;do echo \" $a\";done;"))
+  "p-completion candidates for all `systemd' user units")
+
+(defun pcomplete/systemctl ()
+  "Completion rules for the `systemctl' command."
+  (pcomplete-here (append pcomplete-systemctl-commands '("--user")))
+  (cond ((pcomplete-test "--user")
+         (pcomplete-here pcomplete-systemctl-commands)
+         (pcomplete-here pcomplete-systemd-user-units))
+        (t (pcomplete-here pcomplete-systemd-units))))
+
+;;;; man completion
+(defvar pcomplete-man-user-commands
+  (split-string
+   (shell-command-to-string
+    "apropos -s 1 .|while read -r a b; do echo \" $a\";done;"))
+  "p-completion candidates for `man' command")
+
+(defun pcomplete/man ()
+  "Completion rules for the `man' command."
+  (pcomplete-here pcomplete-man-user-commands))
+</pre>
 
 Completed subcommands on <code>systemctl</code> are set
 <code>disable</code>, <code>enable</code>, <code>status</code>, <code>start</code>,
