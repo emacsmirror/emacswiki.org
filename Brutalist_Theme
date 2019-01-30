@@ -28,5 +28,23 @@ This code switches between the two themes based on whether the sun is up or not.
     (enable-theme 'brutalist-dark)))
 }}}
 
+== Changes for rcirc ==
+
+{{{
+(custom-theme-set-faces
+ 'brutalist
+ ;; rcirc-my-nick needs to have a foreground for `rcirc-colors' to work
+ '(rcirc-my-nick ((t (:foreground "blue"))))
+ '(rcirc-dim-nick ((t (:foreground "dim gray"))))
+ '(rcirc-prompt ((t (:inherit bold)))))
+
+(custom-theme-set-faces
+ 'brutalist-dark
+ ;; rcirc-my-nick needs to have a foreground for `rcirc-colors' to work
+ '(rcirc-my-nick ((t (:foreground "light blue"))))
+ '(rcirc-dim-nick ((t (:foreground "gray70"))))
+ '(rcirc-prompt ((t (:inherit bold)))))
+}}}
+
 ----
 ColorTheme
