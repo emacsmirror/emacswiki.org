@@ -1,3 +1,4 @@
+
 This page describes how you can get tables in emacs-w3m (WThreeM) to
 display using the original IBM graphics characters instead of plain
 ASCII +, -, and |.  You can see them in xterm (if you are using the
