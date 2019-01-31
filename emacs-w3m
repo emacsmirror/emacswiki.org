@@ -1,5 +1,5 @@
     NEWS: 2019-01-31: emacs-w3m has launched an official git repository on
-                      github https://github.com/emacs-w3m/emacs-w3m.git ,
+                      github https://github.com/emacs-w3m/emacs-w3m ,
                       including support there for project-specific wiki.
 
 
@@ -16,7 +16,7 @@ Though you can download an old static release of emacs-w3m from its
 homepage at http://emacs-w3m.namazu.org, please note that since 2005
 the project has operated on a rolling-release model, based upon its
 CVS repository, and as of 2019-01-31, its github repository
-(https://github.com/emac-w3m/emacs-w3m.git). There also exists a
+(https://github.com/emac-w3m/emacs-w3m). There also exists a
 convenient un-official third-party mirror on MELPA, allowing you to
 directly install the package.
 
