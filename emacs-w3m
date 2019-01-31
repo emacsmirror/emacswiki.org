@@ -1,3 +1,8 @@
+    NEWS: 2019-01-31: emacs-w3m has launched an official git repository on
+                      github https://github.com/emacs-w3m/emacs-w3m ,
+                      including support there for project-specific wiki.
+
+
 = Description =
 
 '''emacs-w3m''', also known on this wiki as [::WThreeM],
