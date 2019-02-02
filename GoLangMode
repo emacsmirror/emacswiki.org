@@ -26,6 +26,10 @@ You would like [https://github.com/nsf/gocode gocode] utility for autocompletion
 
 * [https://github.com/favadi/flycheck-gometalinter flycheck-gometalinter]
 
+== Debugging ==
+
+* [https://github.com/benma/go-dlv.el/ delve debugger support]
+
 == Playground ==
 
 go-mode can ability to interact with play.golang.org but there are nice modes that setup comfortable local playground.
