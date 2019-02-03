@@ -49,7 +49,6 @@ Click on the header to list some pages related to game playing on Emacs.
 * PhutballMode -- play phutball over the net
 * RandomIdleQuote -- not really a game, but fun! Shows a quote when emacs goes into idle.
 * [https://gist.github.com/dto/4112806 RLX], a graphical roguelike engine and development system for Emacs(currently being ported to Common Lisp).
-* [https://www.axfc.net/u/3902052.tgz rpg-el] -- a role playing game
 * ScrmableSrtnig
 * [http://melpa.org/#/slime-volleyball Slime Volleyball] [https://github.com/fitzsim/slime-volleyball (screenshot)]
 * SokobanMode
