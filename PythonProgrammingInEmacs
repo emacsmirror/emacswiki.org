@@ -27,7 +27,7 @@ There is some built-in support for virtual environments in python.el, but these 
 * [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper].
 * [https://github.com/aculich/virtualenv.el virtualenv.el] - deprecated. 
 * [https://github.com/necaris/conda.el conda.el] - for working with conda environments.
-* [https://github.com/mukuge/nPipenv nPipenv] - A nano (or minimalistic) support for Pipenv in Emacs.
+* [https://github.com/mukuge/npy.el npy.el] - for integration of Pipenv virtualenvs and the inferior python mode.
 
 To automatically activate virtual environment you can use:
 * [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] - uses virtualenvwrapper.
