@@ -10,7 +10,7 @@ Here is a simple example:
 
 You can get it from here:
 
-* http://hawaii.aist-nara.ac.jp/~hiroki-t/Distribution/Tategaki/
+* [[Lisp:tategaki.el]]
 
 Note: The page is in japanese, but by examining all the links on the page, you will find the one linking to the lisp file.
 
