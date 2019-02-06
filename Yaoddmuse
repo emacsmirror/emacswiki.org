@@ -503,6 +503,9 @@ Is there a way to tell Yaoddmuse to create a page upon follow if it doesn't exis
 Some one should modify the default url of "EmacsWiki" in yaoddmuse.el , since the pages have been moved from "http://www.emacswiki.org/cgi-bin/emacs?action=browse;raw=1;id=SiteMap" to
 "http://www.emacswiki.org/emacs?action=browse;raw=1;id=SiteMap" -- xiepan
 
+[new:fbetten:2019-02-06 15:56 UTC]
+Syntax highlighting for first level header, something like '<nowiki>= My Header =</nowiki>', does not work (while navigation does). Also a nice improvement would be the handling of raw HTML headers. -- F Betten
+
 ----
 CategoryHypermedia
 CategoryOddmuse
