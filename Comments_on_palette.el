@@ -2,3 +2,10 @@ Sadly, this package isn’t compatible with Emacs 26, due to removal of `make-va
 
 -- TinaRussell 2019-02-06 22:16 UTC
 
+
+----
+
+TinaRussell: OK, thanks. I fixed that. But there seem to be some other problems that affect the display. I'll have to dig into those later, when I get some time.
+
+-- DrewAdams 2019-02-07 00:08 UTC
+
