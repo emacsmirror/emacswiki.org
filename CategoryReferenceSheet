@@ -17,7 +17,7 @@ Ideally, they would fit nicely on a mug.  :)
 
 * EmacsNewbieKeyReference -- Slightly longer list, aimed especially at EmacsNewbie.
 
-* [[http://www.bundesbrandschatzamt.de/~baron/blog/20150812-Emacs%20Keyboard%20Map Keyboard Map by Sami BEN GRINE]] -- A QUERTY Keyboard Layout with default bindings for each key.
+* [[http://www.bundesbrandschatzamt.de/~baron/blog/20150812-emacs-keyboard-map.html Keyboard Map by Sami BEN GRINE]] -- A QUERTY Keyboard Layout with default bindings for each key.
 * [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
 * ReferenceCards -- Lists of standard GnuEmacs keys in printable form (TeX/%%PostScript%%/PDF).
 * [[http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Reference Sheet by John Sturdy]] -- Concise summary of keys, [[command]]s, terminology, [[regexp]] syntax….
