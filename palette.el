@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Mon Jan  1 15:19:41 2018 (-0800)
+;; Last-Updated: Wed Feb  6 16:06:18 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 923
+;;     Update #: 927
 ;; URL: https://www.emacswiki.org/emacs/download/palette.el
 ;; Doc URL: https://emacswiki.org/emacs/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -330,6 +330,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/02/06 dadams
+;;     palette: Protect make-variable-frame-local with fboundp.
 ;; 2016/12/24 dadams
 ;;     Added palette-popup-map as obsolete alias for palette-menu.
 ;;     Soft-require crosshairs.el.
@@ -2063,7 +2065,8 @@ See `palette-mode' for more information."
     (set-buffer (get-buffer-create "Palette (Hue x Saturation)"))
     ;; Create the palette frame.  Prevent `1on1-change-cursor-on-input-method-flag' (from
     ;; `oneonone.el') from changing the cursor color.
-    (make-variable-frame-local '1on1-change-cursor-on-input-method-flag)
+    (when (fboundp 'make-variable-frame-local)
+      (make-variable-frame-local '1on1-change-cursor-on-input-method-flag))
     (modify-frame-parameters
      (make-frame
       `((menu-bar-lines . 0) (tool-bar-lines . 0) (left-fringe . 0) (right-fringe . 0)
