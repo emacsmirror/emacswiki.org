@@ -1,18 +1,18 @@
 Emacs comes with an AdvancedDeskCalculator called `calc'.
 Try it! `M-x calc'.
 
-AndrewHyatt wrote a number of tutorials on Google+:
+AndrewHyatt wrote a number of tutorials on Google+, which have since moved to Github:
 
-* [https://plus.google.com/101505495157778834572/posts/ECBKVLjtsok Bit Manipulation]
-* [https://plus.google.com/101505495157778834572/posts/a7HYKLnFuZh Calculus]
-* [https://plus.google.com/101505495157778834572/posts/YdwsbNmZ4NL Finances]
-* [https://plus.google.com/101505495157778834572/posts/YG2vYpGoLn3 Solving Equations] -- basic algebra
-* [https://plus.google.com/101505495157778834572/posts/RYiWfs9NMTS Display] -- show square roots and superscripts using ASCII art
-* [https://plus.google.com/101505495157778834572/posts/bNw8CqAKpBR Fractions]
-* [https://plus.google.com/101505495157778834572/posts/VzAQ8QLyCXj Strings and Binary]
-* [https://plus.google.com/101505495157778834572/posts/ggiQGdLyX41 Pi and Precision]
-* [https://plus.google.com/101505495157778834572/posts/LNi5SJxXXxC Units]
-* [https://plus.google.com/101505495157778834572/posts/QuN7vdJpSZN Random Numbers]
-* [https://plus.google.com/101505495157778834572/posts/YFKHGksdeWy Time] -- seconds since the Epoch
-* [https://plus.google.com/101505495157778834572/posts/TWdjoj1zirv Digit Grouping] -- 1,910,255,938.01 and the like
-* [https://plus.google.com/101505495157778834572/posts/goYiW8VfamS Hex Numbers]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/bit_manipulation.org Bit Manipulation]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/calculus.org Calculus]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/financial.org Finances]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/algebra.org Display] -- show square roots and superscripts using ASCII art
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/more_algebra.org Algebra]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/fractional_arithmetic.org Fractions]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/strings.org Strings and Binary]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/pi_and_precision.org Pi and Precision]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/unit_conversion.org Units]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/random.org Random Numbers]
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/time.org Time] 
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/date.org Date] -- also digit grouping
+* [https://github.com/ahyatt/emacs-calc-tutorials/blob/master/hex.org Hex Numbers]
