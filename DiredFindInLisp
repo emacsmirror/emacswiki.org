@@ -1,8 +1,7 @@
 You can run `M-x find-dired-lisp' and `M-x find-grep-dired-lisp' using only Lisp.
 Use it as you would `M-x find-dired' and `M-x find-grep-dired'.
 
-* http://www.bookshelf.jp/elc/find-dired-lisp.el
-
+* https://web.archive.org/web/20160505073255/http://www.bookshelf.jp/elc/find-dired-lisp.el
 See also DiredTweaks.
 
 ----
