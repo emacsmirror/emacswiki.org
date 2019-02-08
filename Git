@@ -68,7 +68,7 @@ These packages are *not* "complete" front ends but "only" to certain Git feature
 === Blog posts ===
 
 * [http://alexott.net/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information some of the mentioned packages.
-* [http://snarfed.org/emacs-vc-git-tweaks This] blob post adds direct ##git add## and ##git reset## support to VC.
+* [http://snarfed.org/emacs-vc-git-tweaks This] blog post adds direct ##git add## and ##git reset## support to VC.
 
 ----
 [[Git]] CategoryVersionControl
