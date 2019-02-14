@@ -1,0 +1,4 @@
+La solution proposée pour résoudre le problème de l'enregistrement des macros avec I-search ne fonctionne pas avec la version d'emacs 25.2.2 sous Ubuntu dans Windows (WSL). Avec Emacs sous windows, le I-search ne pose pas de problème particulier, il faut juste le terminer correctement par <RET>.
+
+-- jcm69 2019-02-14 21:09 UTC
+
