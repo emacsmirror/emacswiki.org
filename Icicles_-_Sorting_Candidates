@@ -209,6 +209,14 @@ It can help you choose, however, to know which of the predefined '''Icicles''' s
 
 The reason these sorts are slower is that they check the current minibuffer history, to see whether, and where, each candidate is located in the history list. If you, like I, have very long history lists, then this can take a while. I use histories of virtually unlimited length -- I let SaveHist (<tt>[[savehist-20+.el]]</tt>) save all of my histories from one Emacs session to the next.
 
+
+
+
+
+
+
+
+[:PredefinedSortOrders]
 Here are some of the '''Icicles''' sort orders that exist by default:
 
 * '''alphabetical''' -- see [[Icicles - History Enhancements#SortPreviousFirst|Putting Previous Candidates First: `C-M-,']]
