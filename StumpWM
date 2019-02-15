@@ -19,6 +19,14 @@ If you've enabled multi-threading, add this code to your .stumpwmrc for interact
 
 Multi-threading is available in SBCL, though [[http://bbs.archlinux.org/viewtopic.php?pid=434724#p434724 not in CLisp]].  Running Swank (or any other command that doesn't fork or exit) on a single-threaded StumpWM will hang StumpWM.  You'll be able to move the mouse, but the prefix key won't react anymore.  You'll have to Ctrl+Alt+Backspace to start a new session.  You can still hack using the StumpWM Eval functionality though.
 
+=== Sly ===
+
+If you prefer to use Sly on the other hand, add this to your stump file instead:
+{{{
+(ql:quickload :slynk)
+(slynk:create-server :dont-close t)
+}}}
+
 == Controlling emacs through stumpwm commands ==
 
 This is an example of how you can use stumpwm commands to call emacs functions.
