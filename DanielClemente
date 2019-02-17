@@ -20,7 +20,7 @@ For instance, moving people to take part in GoogleSummerOfCode 2009 in GNU Emacs
 
 Until now, I improved some documentation: [[FloatingPoint]], symbol glossary at [[CategoryGlossary]], [[GnusGmail]], [[GnusEncryptedAuthInfo]], [[GnusSpeed]], [[EmacsLispReference]], [[FakeClosures]], [[EmacsMemoryDebugging]], [[GnusDemon]], [[GnusNotify]], … and did content reorganization and maintenance (ex: at [[JavaDevelopmentEnvironment]], [[JdeeVsEclipse]]). I'm writting also my first patches while I learn [[EmacsLisp]].
 
-I use GNU Emacs, [[OrgMode]], [[Gnus]], [[Icicles]], [[emacs-w3m]], [[Muse]], [[Rcirc]], [[TabBarMode]], [[JabberEl]].
+I use GNU Emacs, [[OrgMode]], [[Gnus]], [[Icicles]], [[emacs-w3m]], [[EmacsMuse]], [[Rcirc]], [[TabBarMode]], [[JabberEl]].
 
 I'm user <code>clemente</code> in [[EmacsChannel]]. My web site is at http://www.danielclemente.com/
 
