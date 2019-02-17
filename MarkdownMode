@@ -35,8 +35,7 @@ within Emacs or with the command-line `info' utility. As it has a
 [https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.pdf typeset PDF] and other formats.
 
 This manual is *not* authorized by the author of `markdown-mode',
-Jason Blevins. It is based upon his program's documentation and is
-current with version 2.1 (and pending features of version 2.2).
+Jason Blevins. It is based upon his program's internal doc strings.
 
 == Check Markdown with Flycheck ==
 
