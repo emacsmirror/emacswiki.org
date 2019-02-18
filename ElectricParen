@@ -1,0 +1,12 @@
+Watching Lisp Machine demo videos on Youtube, I observed that, in the REPL, complete expressions are evaluated as soon as the closing parenthesis is typed. There is no need to also type a carriage return. I wanted my Emacs to do this as well.
+
+To that end, I made electric-paren:
+
+Lisp:electric-paren.el
+
+It works in the slime REPL, ielm, interactive lisp mode, and eshell. You can enable it like so:
+
+<pre>
+(require 'electric-paren)
+(electric-paren-enable)
+</pre>
