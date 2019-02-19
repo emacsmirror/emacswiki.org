@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-201, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 25 15:28:51 2018 (-0800)
+;; Last-Updated: Mon Feb 18 22:48:44 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 15251
+;;     Update #: 15299
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -284,11 +284,11 @@
 ;;
 ;;     - You can have multiple bookmarks with the same name.  This is
 ;;       particularly useful for autofile bookmarks, which are
-;;       bookmarks that have the same name as their target files.
-;;       They give you the effect of using files themselves as
-;;       bookmarks.  In particular, they let you, in effect, tag
-;;       files.  See (@> "Autofile Bookmarks") and
-;;       (@> "Tagging Files").
+;;       bookmarks that have the same name as their target files or
+;;       directories.  They give you the effect of using files or
+;;       directories themselves as bookmarks.  In particular, they let
+;;       you, in effect, tag files and directories.
+;;       See (@> "Autofile Bookmarks") and (@> "Tagging Files").
 ;;
 ;;       (In vanilla Emacs you can also, in theory, have multiple
 ;;       bookmarks with the same name.  But you cannot really use them
@@ -326,7 +326,7 @@
 ;;
 ;;     - Autofile bookmarks.  You can bookmark a file without visiting
 ;;       it or naming the bookmark.  The bookmark name is the same as
-;;       the file name (non-directory part).  You can have multiple
+;;       the file name (nondirectory part).  You can have multiple
 ;;       such bookmarks with the same name, to bookmark files with the
 ;;       same name but in different directories.
 ;;
@@ -891,7 +891,7 @@
 ;;  with Emacs 22.
 ;;
 ;;  Bookmark names are global.  File names are not; that is, the
-;;  non-directory portion is not.  Suppose you have two similar
+;;  nondirectory portion is not.  Suppose you have two similar
 ;;  directories with some like-named files, perhaps tagged in similar
 ;;  ways.  Imagine image files of your vacations organized in
 ;;  different directories by year.  It is sometimes useful to narrow
@@ -1076,10 +1076,11 @@
 ;;
 ;;  For example, if you use `Dired+' (library `dired+.el'), then you
 ;;  can use `M-b' (`diredp-do-bookmark') in Dired to create an
-;;  autofile bookmark for each of the marked files in the Dired
-;;  buffer.  Even if you never use those bookmarks for navigating to
-;;  the files, you can use them with tags to organize the files and
-;;  thus operate on subsets of them.
+;;  autofile bookmark for each of the marked files and subdirectories
+;;  in the Dired buffer.  Even if you never use those bookmarks for
+;;  navigating to their targets, you can use them with tags to
+;;  organize the targets, and thus operate on subsets of the marked
+;;  files and subdirectories.
 ;;
 ;;  And if you use libraries `Dired+' and `highlight.el' then
 ;;  autofiles are highlighted specially in Dired, and the highlighting
@@ -1762,9 +1763,9 @@
 ;;  *** Bookmarking the Marked Files in Dired ***
 ;;
 ;;  If you use `Dired+' (library `dired+.el'), then you can bookmark
-;;  all of the marked files in a Dired buffer at once, as autofiles,
-;;  even if you normally do not or cannot visit those files in Emacs.
-;;  These keys are available in Dired:
+;;  all of the marked files (and subdirectories) in a Dired buffer at
+;;  once, as autofiles, even if you normally do not or cannot visit
+;;  those files in Emacs.  These keys are available in Dired:
 ;;
 ;;    `M-b'                   - Bookmark each marked file
 ;;    `C-M-S-b' (aka `C-M-B') - Bookmark each marked file in a
@@ -1773,9 +1774,9 @@
 ;;                              bookmark-file you specify, and create
 ;;                              a bookmark for that bookmark-file
 ;;
-;;  Each of these commands bookmarks each of the marked files as an
-;;  autofile.  By default, the bookmark file used for the latter two
-;;  commands is in the current directory.
+;;  Each of these commands bookmarks each of the marked files and
+;;  subdirectories as an autofile.  By default, the bookmark file used
+;;  for the latter two commands is in the current directory.
 ;;
 ;;  If you use multiple `C-u' as a prefix arg for these commands, then
 ;;  you can bookmark all of the files in Dired, regardless of
@@ -1970,12 +1971,15 @@
 ;;(@* "Autofile Bookmarks")
 ;;  *** Autofile Bookmarks ***
 ;;
-;;  An autofile bookmark, or just an autofile, is a bookmark that uses
-;;  the non-directory part of its file name as its bookmark name.
+;;  An autofile bookmark, or just an autofile, is a bookmark to a file
+;;  or directory that uses the nondirectory part of its file name (or
+;;  of its `directory-file-name', if a directory name) as the bookmark
+;;  name.
 ;;
-;;  You can look at an autofile bookmark as just a file wrapper: a way
-;;  to attach meta information (such as tags) to a file.  But you can
-;;  use an autofile bookmark much as you would use a file.
+;;  You can look at an autofile bookmark as just a wrapper around a
+;;  file or directory: a way to attach meta information (such as tags)
+;;  to it.  But you can use an autofile bookmark much as you would use
+;;  a file or directory.
 ;;
 ;;  To create a new autofile bookmark, you can use
 ;;  `bmkp-bookmark-a-file' (aka `bmkp-autofile-set'), which is bound
@@ -1986,15 +1990,15 @@
 ;;  which it is by default with Emacs 21 and later, then you can have
 ;;  multiple bookmarks with the same name.  This is important for
 ;;  autofile bookmarks because the bookmark name is only the
-;;  non-directory part of the file name.  This Bookmark+ feature lets
+;;  nondirectory part of the file name.  This Bookmark+ feature lets
 ;;  you have different autofile bookmarks for files of the same name
 ;;  in different directories.
 ;;
 ;;  In addition to the single autofile bookmark that you can create
 ;;  for a given absolute file location, you can of course create
-;;  additional bookmarks to the same file, using different bookmark
-;;  names.  Among other things, this lets you tag the same file in
-;;  different ways.
+;;  additional bookmarks to the same file or directory, using
+;;  different bookmark names.  Among other things, this lets you tag
+;;  the same file or directory in different ways.
 ;;
 ;;  You can use `C-x j a' (`bmkp-autofile-jump') or `C-x 4 j a'
 ;;  (`bmkp-autofile-jump-other-window') to visit an autofile bookmark.
@@ -2024,12 +2028,12 @@
 ;;  See the Emacs manual, node `File Name Cache'.
 ;;
 ;;  If option `bmkp-autofile-access-invokes-bookmark-flag' is
-;;  non-`nil' then regular access of a file (e.g. `find-file') invokes
-;;  the associated autofile bookmark, if there is one.  This has the
-;;  effect of updating the bookmark data, such as the number of
-;;  visits.  The default value of the option is `nil'.  To set the
-;;  option value, either use Customize interactively or use a
-;;  Customize function.
+;;  non-`nil' then regular access of a file or directory
+;;  (e.g. `find-file') invokes the associated autofile bookmark, if
+;;  there is one.  This has the effect of updating the bookmark data,
+;;  such as the number of visits.  The default value of the option is
+;;  `nil'.  To set the option value, either use Customize
+;;  interactively or use a Customize function.
 ;;
 ;;  Finally, if you use libraries `Dired+' and `highlight.el' then
 ;;  autofiles are highlighted specially in Dired, and the highlighting
@@ -2088,12 +2092,13 @@
 ;;
 ;;  You can thus use the `C-f' commands to take advantage of
 ;;  file-action associations that you define.  But if you want to
-;;  associate metadata (e.g. tags) with files, then you will want to
-;;  create autofiles.  You can do this when you invoke these commands,
-;;  by providing a prefix argument.  Thus, for example, `C-u C-x j C-f
-;;  foo.doc' opens file `foo.doc', respecting any handler recorded for
-;;  it via option `bmkp-default-handlers-for-file-types' - but it also
-;;  creates an autofile bookmark for it.
+;;  associate metadata (e.g. tags) with files or directories, then you
+;;  will want to create autofiles.  You can do this when you invoke
+;;  these commands, by providing a prefix argument.  Thus, for
+;;  example, `C-u C-x j C-f foo.doc' opens file `foo.doc', respecting
+;;  any handler recorded for it via option
+;;  `bmkp-default-handlers-for-file-types' - but it also creates an
+;;  autofile bookmark for it.
 ;;
 ;;  Whenever an autofile bookmark is used, regardless of whether you
 ;;  access it using a `bmkp-autofile*' command or a `bmkp-find-file*'
@@ -2139,35 +2144,38 @@
 ;;  bookmarks into meaningful sets.
 ;;
 ;;  Section (@> "Autofile Bookmarks") describes autofile bookmarks,
-;;  which, in effect, let you treat files generally as if they were
-;;  bookmarks.  You can choose a file to visit or act on by its name
-;;  and location, but also by its bookmark metadata.
+;;  which, in effect, let you treat files and directories generally as
+;;  if they were bookmarks.  You can choose a file or directory to
+;;  visit or act on by its name and location, but also by its bookmark
+;;  metadata.
 ;;
-;;  In particular, you can tag a file - that is, specify tags for its
-;;  associated autofile bookmark.  And you can then visit a file that
-;;  has a given set of tags.  Bookmark+ provides file commands that
-;;  automatically create and manipulate autofile bookmarks, that is,
-;;  bookmarks that have the same name as the files they tag.
+;;  In particular, you can tag a file or directory - that is, specify
+;;  tags for its associated autofile bookmark.  And you can then visit
+;;  a file or directory that has a given set of tags.  Bookmark+
+;;  provides commands that automatically create and manipulate
+;;  autofile bookmarks, that is, bookmarks that have the same name as
+;;  the files or directories they tag.
 ;;
 ;;  Command `bmkp-tag-a-file' (aka `bmkp-autofile-add-tags'), bound by
 ;;  default to `C-x p t + a', prompts you for a set of tags and a file
-;;  location, and creates or sets the corresponding autofile bookmark.
-;;  Command `bmkp-untag-a-file' (aka `bmkp-autofile-remove-tags'),
-;;  bound by default to `C-x p t - a', similarly lets you remove
-;;  specified tags from a file.
+;;  or directory, and creates or sets the corresponding autofile
+;;  bookmark.  Command `bmkp-untag-a-file' (aka
+;;  `bmkp-autofile-remove-tags'), bound by default to `C-x p t - a',
+;;  similarly lets you remove specified tags from a file or directory.
 ;;
 ;;  If you also use library `Icicles', then you can act on multiple
-;;  files during the same command (a "multi-command").  You can thus
-;;  all at once tag a set of files the same way, or act on a set of
-;;  files that are tagged similarly.  `Icicles' also lets you create
-;;  autofiles or add or remove tags, on the fly, whenever you use
-;;  commands (e.g. `C-x C-f') that access files.
+;;  files and directories during the same command (a "multi-command").
+;;  You can thus all at once tag a set of files and directories the
+;;  same way, or act on a set of files and directories that are tagged
+;;  similarly.  `Icicles' also lets you create autofiles or add or
+;;  remove tags, on the fly, whenever you use commands (e.g. `C-x
+;;  C-f') that access files or directories.
 ;;
 ;;  If you also use library `Dired+' (`dired+.el') then you can use
-;;  `C-+' to add tags to the marked files and `C--' to remove tags
-;;  from them.  You can use `C-M-+' and `C-M--' to do the same thing
-;;  for the current file.  You can also use items from the Dired menus
-;;  to do these things.
+;;  `C-+' to add tags to the marked files and directories, and `C--'
+;;  to remove tags from them.  You can use `C-M-+' and `C-M--' to do
+;;  the same thing for the current file.  You can also use items from
+;;  the Dired menus to do these things.
 ;;
 ;;  Bookmark+ provides two kinds of command for visiting files
 ;;  associated with bookmarks that have tags.
@@ -2188,9 +2196,9 @@
 ;;  The second kind of command is for visiting tagged files, that is,
 ;;  autofile bookmarks, just like the commands with prefix
 ;;  `bmkp-autofile-'.  However, these commands do not handle the
-;;  bookmark as such, but only its file name.  They recognize its
-;;  tags, but they pay no attention to any special handler or other
-;;  recorded information.
+;;  bookmark as such, but only its associated file or directory.  They
+;;  recognize its tags, but they pay no attention to any special
+;;  handler or other recorded information.
 ;;
 ;;  These commands have the prefix `bmkp-find-file-', and they are on
 ;;  the prefix key `C-x j t C-f'.  The `C-f' here is intended to
@@ -2198,7 +2206,7 @@
 ;;  they use `read-file-name' to read the bookmark's file name,
 ;;  instead of using `completing-read' to read the bookmark name.
 ;;
-;;  Yes, for an autofile bookmark the bookmark name and the (relative)
+;;  Yes, for an autofile bookmark the bookmark name and the relative
 ;;  file name are the same.  But `read-file-name' is file-aware, and
 ;;  lets you browse up and down the directory hierarchy.
 ;;
@@ -2213,9 +2221,9 @@
 ;;    `C-x j t a   % +' is `bmkp-autofile-some-tags-regexp-jump'
 ;;    `C-x j t C-f % +' is `bmkp-find-file-some-tags-regexp'
 ;;
-;;  * The first of these visits any file bookmark that has at least
-;;    one tag among the tags you specify, and you choose among
-;;    bookmark names.  The files can be in any directories.
+;;  * The first of these visits any file or directory bookmark that
+;;    has at least one tag among the tags you specify, and you choose
+;;    among bookmark names.  The file or directory can be anywhere.
 ;;
 ;;  * The second is similar to the first, but only bookmarks for files
 ;;    in the current directory are completion candidates.
@@ -2225,26 +2233,26 @@
 ;;
 ;;  * The fourth is similar to the third regarding tags, but it uses
 ;;    `read-file-name', so you can browse up and down the file
-;;    hierarchy.  The completion candidates are file names, not
-;;    bookmark names.
+;;    hierarchy.  The completion candidates are file and directory
+;;    names, not bookmark names.
 ;;
 ;;  If you use `Icicles', there are similar sets of commands, but they
-;;  all let you act on multiple files at the same time
+;;  all let you act on multiple files and directories at the same time
 ;;  (multi-commands).  For example, you can delete (or byte-compile
-;;  or...) a set of files according to their tags.
+;;  or...) a set of files and directories according to their tags.
 ;;
-;;  Remember that you can create multiple bookmarks for the same file,
-;;  providing them with different sets of tags.  (Only one of the
-;;  bookmarks is the autofile bookmark.)
+;;  Remember that you can create multiple bookmarks for the same file
+;;  or directory, providing them with different sets of tags.  (Only
+;;  one of the bookmarks is the autofile bookmark.)
 ;;
 ;;  You can also use multiple bookmark files (the files that record
 ;;  bookmarks).  Different projects can thus have different tags for
-;;  the same sets of files, even using just autofile bookmarks.  See
-;;  (@> "Using Multiple Bookmark Files").
+;;  the same sets of files and directories, even using just autofile
+;;  bookmarks.  See (@> "Using Multiple Bookmark Files").
 ;;
-;;  A file bookmark can have any number of tags, and multiple file
-;;  bookmarks can have the same tag.  You can sort, show/hide, or mark
-;;  files based on their tags.
+;;  A file or directory bookmark can have any number of tags, and
+;;  multiple such bookmarks can have the same tag.  You can sort,
+;;  show/hide, or mark files and directories based on their tags.
  
 ;;(@* "Using Multiple Bookmark Files")
 ;;  ** Using Multiple Bookmark Files **
@@ -2402,11 +2410,11 @@
 ;;
 ;;  As a shortcut, in Dired (if you use library `Dired+'), `C-M-b'
 ;;  creates a bookmark-file bookmark.  The bookmark file that it
-;;  records contains autofile bookmarks to each of the files that was
-;;  marked in Dired at the time it was created.  Jumping to that
-;;  bookmark-file bookmark makes those (marked) files available as
-;;  bookmarks.  See also
-;;  (@> "Use Dired to Bookmark Files without Visiting Them").
+;;  records contains autofile bookmarks to each of the files and
+;;  subdirectories that was marked in Dired at the time it was
+;;  created.  Jumping to that bookmark-file bookmark makes those
+;;  (marked) files and subdirectories available as bookmarks.  See
+;;  also (@> "Use Dired to Bookmark Files without Visiting Them").
 ;;
 ;;  Note that the bookmark file in which a bookmark-file bookmark is
 ;;  recorded is not the same as the bookmark file recorded in that
@@ -3976,11 +3984,11 @@
 ;;
 ;;  * Create one or more autofile bookmarks, using `C-x a a'.
 ;;
-;;  * Add tags to one or more files (autofile bookmarks), using `C-x a
-;;    +'.
+;;  * Add tags to one or more files or directories (autofile
+;;    bookmarks), using `C-x a +'.
 ;;
-;;  * Remove tags from one or more files (autofile bookmarks), using
-;;    `C-x a -'.
+;;  * Remove tags from one or more files or directories (autofile
+;;    bookmarks), using `C-x a -'.
 ;;
 ;;  There are 25 Icicles commands for searching bookmark destinations!
 ;;  The most general is `icicle-search-bookmark'.  Others let you
@@ -4042,7 +4050,7 @@
 ;;  Bookmark+ does.  Having multiple bookmarks with the same name is
 ;;  particularly useful for autofiles.  It means you can have
 ;;  different autofiles in different directories but with the same
-;;  name. See (@> "Autofile Bookmarks").
+;;  name.  See (@> "Autofile Bookmarks").
 ;;
 ;;  Here is what happens when `bmkp-propertize-bookmark-names-flag' is
 ;;  non-nil:
