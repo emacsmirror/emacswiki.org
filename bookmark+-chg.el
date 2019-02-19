@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Dec 23 11:37:41 2018 (-0800)
+;; Last-Updated: Mon Feb 18 22:33:46 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 16487
+;;     Update #: 16496
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/02/18
+;;     bmkp-autofile-bookmark-p, bmkp-file-target-set, bmkp-autofile-add-tags,
+;;       bmkp-get-autofile-bookmark:
+;;         Handle a directory like a file.
 ;; 2018/12/23 dadams
 ;;     Added: bmkp-bookmark-type-valid-p., bmkp-buffer-bookmark-p, bmkp-buffer-alist-only.
 ;;     Removed: bmkp-bookmark-type - use bmkp-bookmark-type-valid-p instead.
