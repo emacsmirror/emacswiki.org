@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Dec 23 11:33:09 2018 (-0800)
+;; Last-Updated: Mon Feb 18 22:27:48 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 8863
+;;     Update #: 8873
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -17,8 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-1', `ffap', `kmacro', `pp', `thingatpt',
-;;   `thingatpt+'.
+;;   `backquote', `bookmark', `bookmark+-1', `bytecomp', `cconv',
+;;   `cl-lib', `col-highlight', `crosshairs', `font-lock',
+;;   `font-lock+', `hl-line', `hl-line+', `kmacro', `macroexp', `pp',
+;;   `replace', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `vline'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1021,7 +1024,7 @@ accepts as its (first) argument a bookmark or bookmark name.
 
 These are the predefined type predicates:
 
-`bmkp-autofile-bookmark-p', `bmkp-annotated-bookmark-p',
+`bmkp-annotated-bookmark-p', `bmkp-autofile-bookmark-p',
 `bmkp-autonamed-bookmark-for-buffer-p', `bmkp-autonamed-bookmark-p',
 `bmkp-autonamed-this-buffer-bookmark-p', `bmkp-buffer-bookmark-p',
 `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
@@ -5766,8 +5769,11 @@ If it is a record then it need not belong to `bookmark-alist'."
 
 (defun bmkp-autofile-bookmark-p (bookmark &optional prefix)
   "Return non-nil if BOOKMARK is an autofile bookmark.
-That means that it is `bmkp-file-bookmark-p' and also its
-non-directory file name is the same as the bookmark name.
+That means both:
+ * It is `bmkp-file-bookmark-p'.
+ * Its bookmark name is the same as the nondirectory part of its file
+   name (or of its `directory-file-name', if a directory).
+
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
 
@@ -5776,7 +5782,10 @@ name is actually expected to be the file name prefixed by PREFIX (a
 string)."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (and (bmkp-file-bookmark-p bookmark)
-       (let ((fname  (file-name-nondirectory (bookmark-get-filename bookmark))))
+       (let* ((file   (bookmark-get-filename bookmark))
+              (fname  (file-name-nondirectory (if (file-directory-p file)
+                                                  (directory-file-name file)
+                                                file))))
          (string= (if prefix (concat prefix fname) fname) (bmkp-bookmark-name-from-record bookmark)))))
 
 (defun bmkp-bookmark-file-bookmark-p (bookmark)
@@ -5927,7 +5936,7 @@ If it is a record then it need not belong to `bookmark-alist'."
   (and (bmkp-file-bookmark-p bookmark)  (not (bmkp-remote-file-bookmark-p bookmark))))
 
 (defun bmkp-local-non-dir-file-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK bookmarks a local non-directory file.
+  "Return non-nil if BOOKMARK bookmarks a local nondirectory file.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (let ((file  (bookmark-get-filename bookmark)))
@@ -5969,7 +5978,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   (memq bookmark bmkp-nav-alist))
 
 (defun bmkp-non-dir-file-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK bookmarks a non-directory file.
+  "Return non-nil if BOOKMARK bookmarks a nondirectory file.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (let ((file  (bookmark-get-filename bookmark)))
@@ -6067,7 +6076,7 @@ If it is a record then it need not belong to `bookmark-alist'."
     (and rem-file  (or (not handler)  (eq handler 'bmkp-jump-dired)))))
 
 (defun bmkp-remote-non-dir-file-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK bookmarks a remote non-directory file.
+  "Return non-nil if BOOKMARK bookmarks a remote nondirectory file.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (let ((file  (bookmark-get-filename bookmark)))
@@ -6513,7 +6522,7 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not (lambda (bmk) (not (bmkp-autonamed-bookmark-p bmk))) bookmark-alist))
 
 (defun bmkp-non-dir-file-alist-only ()
-  "`bookmark-alist', filtered to retain only non-directory file bookmarks.
+  "`bookmark-alist', filtered to retain only nondirectory file bookmarks.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-non-dir-file-bookmark-p bookmark-alist))
@@ -7935,15 +7944,18 @@ Non-interactively:
 (defun bmkp-file-target-set (file &optional arg name/prefix no-overwrite no-refresh-p msg-p)
                                         ; Bound to `C-x p c f'
   "Set a bookmark for FILE.  Return the bookmark.
-The bookmarked position is the beginning of the file.
+The bookmarked position is the beginning of the file (0).
 Interactively you are prompted for FILE.  Completion is available.
 You can use `M-n' to pick up the file name at point, or if none then
 the visited file.
 
+FILE can also be a directory name.  In that case set a bookmark for
+the directory.
+
 You are also prompted for the bookmark name.  But with a non-negative
 prefix arg, you are prompted only for a bookmark-name prefix.  In that
-case, the bookmark name is the prefix followed by the non-directory
-part of FILE.
+case, the bookmark name is the prefix followed by the nondirectory
+part of FILE (or of its `directory-file-name', if a directory name).
 
 When entering a bookmark name you can use completion against existing
 names.  This completion is lax, so you can easily edit an existing
@@ -7993,7 +8005,10 @@ Non-interactively:
         bmk failure)
     (condition-case err
         (setq bmk  (bookmark-store (if arg
-                                       (concat name/prefix (file-name-nondirectory file))
+                                       (concat name/prefix
+                                               (file-name-nondirectory (if (file-directory-p file)
+                                                                           (directory-file-name file)
+                                                                         file)))
                                      name/prefix)
                                    (cdr (bookmark-make-record))  no-overwrite  no-refresh-p  (not msg-p)))
       (error (setq failure  (error-message-string err))))
@@ -8072,7 +8087,7 @@ Return the bookmark.
 Interactively, you are prompted for FILE.  You can use `M-n' to pick
 up the file name at point or the visited file.
 
-The bookmark name is the non-directory part of FILE, but with a prefix
+The bookmark name is the nondirectory part of FILE, but with a prefix
 arg you are also prompted for a PREFIX string to prepend to the
 bookmark name.  The bookmarked position is the beginning of the file.
 
@@ -8090,7 +8105,7 @@ then do nothing.
 Otherwise, create a new bookmark for the file, even if a bookmark with
 the same name already exists.  This means that you can have more than
 one autofile bookmark with the same bookmark name and the same
-relative file name (non-directory part), but with different absolute
+relative file name (nondirectory part), but with different absolute
 file names.
 
 Non-interactively:
@@ -8138,16 +8153,20 @@ Non-interactively:
 
 (defun bmkp-get-autofile-bookmark (file &optional dir prefix)
   "Return an existing autofile bookmark for FILE, or nil if there is none.
-The bookmark name is the non-directory part of FILE, but if PREFIX is
-non-nil then it is PREFIX prepended to the non-directory part of FILE.
+The bookmark name is PREFIX prepended to the nondirectory part of
+FILE (or of FILE's `directory-file-name', if FILE is a directory).
 
-The directory part of entry `filename' is the directory part of FILE,
-if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
+If PREFIX is nil then it acts like an empty prefix (\"\").
+
+The directory part of bookmark entry `filename' is the directory part
+of FILE, if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
 `default-directory' otherwise.
 
 FILE and the `filename' entry of the bookmark returned are the same,
 except possibly for their directory parts (see previous)."
-  (let* ((fname       (file-name-nondirectory file))
+  (let* ((fname       (file-name-nondirectory (if (file-directory-p file)
+                                                  (directory-file-name file)
+                                                file)))
          (bname       (if prefix (concat prefix fname) fname))
          (dir-to-use  (if (file-name-absolute-p file)
                           (file-name-directory file)
@@ -8166,7 +8185,7 @@ except possibly for their directory parts (see previous)."
 (defalias 'bmkp-tag-a-file 'bmkp-autofile-add-tags) ; Bound to `C-x p t + a'
 ;;;###autoload (autoload 'bmkp-autofile-add-tags "bookmark+")
 (defun bmkp-autofile-add-tags (file tags &optional dir prefix no-update-p msg-p)
-  "Add TAGS to the autofile bookmark for FILE.
+  "Add TAGS to the autofile bookmark for FILE (a file or directory name).
 Return the number of tags added.
 
 If there is no autofile bookmark for FILE, create one.
@@ -8193,7 +8212,7 @@ Non-interactively:
  - Non-nil MSG-P means display a message about the addition."
   (interactive
    (list (let ((icicle-unpropertize-completion-result-flag  t))
-           (read-file-name "File: " nil
+           (read-file-name "File or directory to tag: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
                                  (bmkp-ffap-guesser))
@@ -10752,7 +10771,7 @@ for info about using a prefix argument."
 
 ;;;###autoload (autoload 'bmkp-local-non-dir-file-jump "bookmark+")
 (defun bmkp-local-non-dir-file-jump (bookmark-name &optional flip-use-region-p) ; Not bound.
-  "Jump to a local non-directory file bookmark.
+  "Jump to a local nondirectory file bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
   (interactive
@@ -10792,7 +10811,7 @@ for info about using a prefix argument."
 
 ;;;###autoload (autoload 'bmkp-non-dir-file-jump "bookmark+")
 (defun bmkp-non-dir-file-jump (bookmark-name &optional flip-use-region-p) ; Not bound.
-  "Jump to a non-directory file bookmark.
+  "Jump to a nondirectory file bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
   (interactive
@@ -10896,7 +10915,7 @@ for info about using a prefix argument."
 
 ;;;###autoload (autoload 'bmkp-remote-non-dir-file-jump "bookmark+")
 (defun bmkp-remote-non-dir-file-jump (bookmark-name &optional flip-use-region-p) ; Not bound.
-  "Jump to a remote non-directory file bookmark.
+  "Jump to a remote nondirectory file bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
   (interactive
