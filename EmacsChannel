@@ -33,7 +33,7 @@ Public logging of the Emacs channel is forbidden.  (See EmacsChannelLogging.)
 
 * Don't ask to ask - just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
 * People often hang out in #emacs and have off-topic conversations. Don't worry - if you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel.
-* If you need to share code that's more than one or two lines long, use a service such as paste.lisp.org or gist.github.com instead of pasting the code directly into the channel.
+* If you need to share code that's more than one or two lines long, use a service such as gist.github.com instead of pasting the code directly into the channel.
 * You may want to check the [[CommunityEmacsFAQ|Community FAQ]] and other resources for [[GetHelp|getting help]] before asking questions on the channel.
 
 [:Conduct]
