@@ -2,6 +2,7 @@
 
 === Submitted Here ===
 
+* [[Yii-el]] : Helpers and Navigating commands for Yii projects.
 * [[Execute.el]] : For executing various asynchronous external programs.
 * [[SQLite-el]] : For connecting and executing queries using the SqliteInterface.
 * [[DuckDuckGo-el]] : For searching in the web using EmacsLisp and [https://duckduckgo.com DuckDuckGo].
@@ -61,8 +62,9 @@ Unrelated Projects:
 
 === On Bitbucket ===
 
+* [https://bitbucket.org/cnngimenez/yii-el Yii.el] : Emacs script for adding commands for Yii projects.
 * [https://bitbucket.org/cnngimenez/d-post-bash d-post bash] : Bash scripts for posting to diaspora.
-* [a8-tools https://bitbucket.org/cnngimenez/a8-tools] Some tools for managing blocks on old Atari Cassettes.
+* [https://bitbucket.org/cnngimenez/a8-tools a8-tools] Some tools for managing blocks on old Atari Cassettes.
 * [https://bitbucket.org/cnngimenez/qsocial QSocial ] A Qt program for socializing on Diaspora.
 
 
