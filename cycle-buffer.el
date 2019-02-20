@@ -387,4 +387,4 @@ considered by cycle-buffer when cycle-buffer-interesting is t."
 (run-hooks 'cycle-buffer-load-hook)
 (provide 'cycle-buffer)
 
-;;; end of cycle-buffer.el
+;;; cycle-buffer.el ends here
