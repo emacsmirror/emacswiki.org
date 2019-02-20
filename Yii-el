@@ -6,17 +6,17 @@ The advantage of this script is that you can open any model/view/controller and 
 The script is hosted here: https://bitbucket.org/cnngimenez/yii-el
 
 Yii-el depends on:
-- [[Ivy]] for autocompleting (see [https://github.com/abo-abo/swiper/tree/2a02343cdf218441158e83323ce507a6d9112445 Ivy repository]).
-- use some functions from [[dash]] library (see [https://github.com/magnars/dash.el#functions dash repository]).
+* [[Ivy]] for autocompleting (see [https://github.com/abo-abo/swiper/tree/2a02343cdf218441158e83323ce507a6d9112445 Ivy repository]).
+* Use some functions from [[dash]] library (see [https://github.com/magnars/dash.el#functions dash repository]).
 == Instalation ==
 Download the script into a directory listed at the ##load-path##. Then load the library using ##(load-library "yii")## or ##(require "yii")##.
 
 == Usage ==
 
-1. Tell Yii-el where is the base directory of your Yii project: ##M-x yii-init## ( ##C-cyi## ).
-   - Yii-el will show which type of layout detects: if it is a base or advance project.
-2. Open your file with ##M-x yii-???## (##C-cy?##) which ##???## (##?##) can be model (m), view (v), controller (c) or migration (M).
-   - Yii-el uses Ivy for autocompleting. You just have to type some letters to select the file you want to open. 
+# Tell Yii-el where is the base directory of your Yii project: ##M-x yii-init## ( ##C-cyi## ).
+** Yii-el will show which type of layout detects: if it is a base or advance project.
+# Open your file with ##M-x yii-???## (##C-cy?##) which ##???## (##?##) can be model (m), view (v), controller (c) or migration (M).
+** Yii-el uses Ivy for autocompleting. You just have to type some letters to select the file you want to open. 
 
 For example: ##C-cym## will ask for a model file.
 
@@ -25,11 +25,11 @@ In case of the ##yii-view## will ask for the view directory, and then for the vi
 == Key bindings ==
 Yii-el provides some global key bindings:
 
-- C-cyi : ##yii-init##
-- C-cym : ##yii-model##
-- C-cyv : ##yii-view##
-- C-cyc : ##yii-controller##
-- C-cyM : ##yii-migration##
+* C-cyi : ##yii-init##
+* C-cym : ##yii-model##
+* C-cyv : ##yii-view##
+* C-cyc : ##yii-controller##
+* C-cyM : ##yii-migration##
 
 
 
