@@ -57,7 +57,7 @@ Ignore text with property `font-lock-ignore'."
 					'(mouse-face t keymap t org-linked-text t
 						 invisible t intangible t
 						 org-emphasis t)))
-      (setq here  chg))
+	  (setq here  chg))
 	(org-remove-font-lock-display-properties beg end))))
 </pre>
 
