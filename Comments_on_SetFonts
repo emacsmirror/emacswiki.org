@@ -53,3 +53,10 @@ P.S. I echo the sentiment that "This page is too impenetrable..."
 
 -- Anonymous 2019-02-23 19:48 UTC
 
+
+----
+
+Ignoring what (seemed) to be said concerning  (set-face-attribute ‘default t :font FONT ), I tried random things until serendipitously discovering that adding (set-frame-font "-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1") as the last line in .emacs seems to work (though I haven't a clue as to what I'm doing).
+
+-- Anonymous 2019-02-23 21:16 UTC
+
