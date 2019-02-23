@@ -36,3 +36,20 @@ But i dont understand the difference of using the 't', or 'nil' option in an .in
 
 -- DrewAdams 2014-08-14 14:28 UTC
 
+
+----
+
+Using (set-face-attribute 'default t :font FONT ) in .emacs file is problematic because I can find no explanation of what syntax to substitute for FONT...  
+
+For example, "M-x describe-font return return" reports "-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1" as the font name currently used (or so I suppose what gets reported is what is currently used), but putting (set-face-attribute 'default t :font -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1) in .emacs results in the error message "Symbol's value as variable is void: -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1" which is a message I'ld rather not be confronted with although I shouldn't be totally bothered because emacs does start with the font I want (but I conjecture emacs starting with my desired font had nothing to do with what I put in .emacs).  
+
+Moreover, if I put (set-face-attribute 'default t :font "-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1")  in .emacs that results in no error but the desired font is not used.
+
+Please include a variety of examples that show completely and exactly how to get from the font name reported by "M-x describe-font return return" to the appropriate syntax to substitute for FONT when putting (set-face-attribute 'default t :font FONT ) in .emacs file so as to make emacs start without errors and with the current font... or if that request is of such a fundamentally confused nature as to be inappropriate to achieving my goal (of using the current font by way of .emacs while avoiding error messages) -- because, for example, perhaps "M-x describe-font return return" does not report the font in current use -- then an explanation of why and how it is confused, and an explanation of how one should appropriately proceed would be much appreciated.
+
+Thank you.
+
+P.S. I echo the sentiment that "This page is too impenetrable..."
+
+-- Anonymous 2019-02-23 19:48 UTC
+
