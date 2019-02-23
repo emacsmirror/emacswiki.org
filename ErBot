@@ -1,3 +1,8 @@
+
+Erbot is an emacs-lisp irc bot whose main instance is fsbot. Fsbot hangs out on #emacs and other free software channels on freenode. The rest of the erbot-docs below are a bit dated (by about two decades). For current information on fsbot, message it on freenode and type ,help. -deego, 2019
+
+----
+
 Other sections available:
 
 * ErbotPorts -- running erbot on IM, lispy, etc.
@@ -12,9 +17,6 @@ Other sections available:
 * ErbotContrib -- contributed code snippets for erbots.
 
 ----
-Now follows the basic introduction:
-
-Erbot is an emacs-lisp irc bot whose main instance is fsbot. Fsbot hangs out on #emacs and other free software channels. The rest of the erbot-docs on emacswiki are a bit dated (by about two decades). For current information on fsbot, message it on freenode and type ,help. -deego, 2019
 
 
 
