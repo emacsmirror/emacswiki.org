@@ -1,3 +1,4 @@
+[[zh:InstallingPackage]]
 == 安装一个新的文件 ==
 
 确保有一个存放elisp文件的本地目录。例如，我使用~/elisp。
