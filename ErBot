@@ -670,6 +670,10 @@ Here can erbot be downloaded from? I mirror this package on the [[Emacsmirror]] 
 AFAICT the official sources are still on savannah: https://savannah.nongnu.org/projects/erbot/
 I just imported the CVS with history into https://github.com/sigma/erbot if that can be of any help. -- YannHodique
 
+[new]
+
+The current sources reside at http://gnufans.net/~fsbot/. Disclaimer/forewarning: Source is far from polished; nor is installation straightforward. -deego, 2019
+
 ----
 EmacsChannel  ErcRobot
 
