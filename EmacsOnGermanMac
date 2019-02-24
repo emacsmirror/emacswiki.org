@@ -1,3 +1,11 @@
+== Emacs als macOS App ==
+
+GNU Emacs kann mit folgendem Einzeiler mit Homebrew installiert werden. 
+
+  brew install emacs --with-cocoa
+
+(Weitere Möglichkeiten siehe https://www.gnu.org/software/emacs/download.html#macos)
+
 == Emacs in Terminal.app ==
 
 === Konfiguration der Shell ===
