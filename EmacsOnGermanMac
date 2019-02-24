@@ -101,6 +101,3 @@ Eine andere Möglichkeit wäre, sich mit einem Patch für eine ältere Version v
 
 Eine Alternative könnte es aber auch sein, einfach das US Layout zu verwenden und Umlaute mittels dem erwähnten digraph in Screen, sowie mittels M-u (alt-u) in anderen OS X Anwendungen einzugeben. Also zB. 'C-a C-v "a' in Screen oder 'M-u a' im Carbon Emacs und in Safari für jeweils ein "ä".
 
-=== Carbon Emacs ===
-
-Noch eine Alternative: Eine native OSX Anwendung wie CarbonEmacsPackage (http://homepage.mac.com/zenitani/emacs-e.html)
