@@ -1,5 +1,5 @@
-[http://planet.emacsen.org/ Planet Emacsen] is an aggregation of the blogs of Emacs users, run by Tess O'Connor. 
-You can read the collected blogs at http://planet.emacsen.org. If you prefer to read NNTP with a news client such as Gnus, Planet Emacsen is available through news.gwene.org .
+[http://planet.emacslife.com/ Planet Emacsen] is an aggregation of the blogs of Emacs users, run by Tess O'Connor. 
+You can read the collected blogs at http://planet.emacslife.com/. If you prefer to read NNTP with a news client such as Gnus, Planet Emacsen is available through news.gwene.org .
 
 To add your blog or a category of your blog, submit a pull request or issue at https://github.com/hober/planet.emacsen.org/ , or get in touch with Tess O'Connor (hober on irc.freenode.net #emacs, @hober on Twitter).
 
