@@ -711,7 +711,47 @@ Unlike Ido, in Icicles you can:
 You cannot use Icicles and Ido together -- they use the minibuffer differently. You can, however, use Icicles and IswitchB together. (%%IswitchB%% provides buffer-switching similar to Ido, but it does not provide Ido's file visiting.)
 And you can make Icicles behave more like Ido, if you prefer that interaction -- see [[Icicles - Ido and IswitchB]].
 
+== Ido Load Library ==
 
+Load-library alternative for Emacs using ‘ido-completing-read’.
+
+[[IdoLoadLibrary]]
+
+== ido-gnus ==
+
+Access gnus groups or servers using ido.
+
+Lisp:ido-gnus.el
+
+== ido-yasnippet ==
+
+Access yas snippets using ido.
+
+Lisp:yas-ido.el
+
+== ido-webjump ==
+
+Use ido for selecting URLs for webjump.
+
+Lisp:webjump-ido.el
+
+== ido-choose-function ==
+
+Use ido to select functions and (partially) apply arguments.
+
+Lisp:ido-choose-function.el
+
+== ido-apt-utils ==
+
+Ido commands for apt-utils.
+
+Lisp:apt-utils-ido.el
+
+== ido-jb-misc-extras ==
+
+Miscellaneous extra ido related commands.
+
+Lisp:ido-jb-misc-extras.el
 
 == Ido History ==
 
