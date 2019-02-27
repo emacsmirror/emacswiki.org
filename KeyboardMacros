@@ -62,7 +62,7 @@ If you want to edit the macro in future sessions, you need to let the ##kmacro##
 
 '''See Also:'''
 * DotMode -- An Emacs mode inspired by the Vi command of the same name that will redo a set of commands.
-* http://jfm3-repl.blogspot.com/2007/09/emacs-tricks-6-keyboard-macros.html is a tutorial on using Emacs macros to write C macros with with a nugget of wisdom from a Lisper.
+* [https://web.archive.org/web/20080510134757/http://jfm3-repl.blogspot.com/2007/09/emacs-tricks-6-keyboard-macros.html Emacs Tricks #6 - keyboard macros] is a tutorial on using Emacs macros to write C macros with with a nugget of wisdom from a Lisper.
 * http://www.linuxjournal.com/article/3769 for an article about Emacs Macros in the Linux Gazette by JesperPedersen
 * KeybindingGuide for an article on key bindings
 * Functions `local-set-key' and `global-set-key' for more info on key bindings
