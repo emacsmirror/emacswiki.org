@@ -1,3 +1,4 @@
+DeletedPage
 ;;; sweetgreen.el --- Order Salads from sweetgreen.com -*- lexical-binding: t -*-
 
 ;; Change Log:
