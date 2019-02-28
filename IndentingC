@@ -55,6 +55,16 @@ A partial list of the better known C styles:
 
 See [WikiPedia:Indent_style Indent style] article on Wikipedia with examples how different predefined C styles looks like.
 
+== Interactively Customizing your C style ==
+
+If you don't know the name of the style you want, but you know when code looks wrong to you, then you can build up your own C style one setting at a time, interactively. Put your cursor on code whose indentation looks wrong, then type 'C-c C-o'. Emacs will tell you what semantic symbol it assigned to that code location and prompt you for a new indentation setting. Some options are
+
+* 0: no indentation
+* +: indent one basic offset
+* -: outdent one basic offset
+
+For more information, and the full list of options, see https://www.gnu.org/software/emacs/manual/html_node/efaq/Customizing-C-and-C_002b_002b-indentation.html .
+
 == C-like Automatic Style Input (casi) ==
 
 Casi allows you to tune the behavior of many keystrokes for every specified style in CC mode. For example, you can tell Emacs to insert a space (" ") when you type '(', and delete this space when you type DEL while point is after a '(', in a CC mode buffer and the style of the buffer is "gnu", but keep the default behavior when the style is not "gnu". This is useful for some cases, e.g. when you are used to "bsd" style, but have to write programs in "gnu" style, and you don't want to change your key-pressing habit. Plus "c-auto-newline", casi makes Emacs a more convenient tool of writing C/C++ programs, since it allows one to keep a single key-pressing habit to write programs in many different styles. For more information about casi, see http://sourceforge.net/projects/casi-mode.
