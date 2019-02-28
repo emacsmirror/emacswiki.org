@@ -1,5 +1,7 @@
 Send a CTCP VERSION to all of #emacs. This is potentially rude, so don't do this lightly.
 
+Actually, you now need to do this manually for every single nick in the channel as simply sending the request to the channel will give you an error: "Cannot send to nick/channel".
+
 Place point at the beginning of the output and invoke `M-x irc-version-summary' defined as follows:
 
 {{{
