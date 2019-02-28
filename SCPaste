@@ -2,10 +2,8 @@
 
 SCPaste is a simple tool to post the contents of a buffer to a public place.
 
-Lisp:scpaste.el
-
-It uses Lisp:htmlize.el to convert font-lock coloring to HTML and then
-copies the file via SCP. See http://p.hagelb.org.
+It uses htmlize to convert font-lock coloring to HTML and then
+copies the file via SCP. See https://p.hagelb.org.
 
 [new]
 A version using tramp-mode is available here:
