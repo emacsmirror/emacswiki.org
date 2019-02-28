@@ -94,13 +94,13 @@ Add the following code segment into your .emacs init script. It will search ".em
 ----
 
 [new]
-Session is not work well with emacs daemon mode.
+Session does not work well with emacs daemon mode.
 
-When exit/restart emacs server, session position is not saved.
+When one exits/restarts emacs server, the session position is not saved.
 
-because kill-emacs-hook is not run in this case.
+This is because kill-emacs-hook is not run in this case.
 
-Here is my solution for session.el, it worked fine for emacs 24.3.
+Here is my solution for session.el. It worked fine for emacs 24.3.
 
 {{{
 (require 'session)
@@ -115,9 +115,7 @@ Here is my solution for session.el, it worked fine for emacs 24.3.
 }}}
 
 
-Just be careful exit exist emacs frame before restart emacs daemon.
-
-we should do like this, ah?
+Just be careful to exit existing emacs frame before restarting the emacs daemon.
 
 -- Billy.Zheng (zw963)
 
