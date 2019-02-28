@@ -17,26 +17,17 @@ All these variables may be overridden on a per-directory basis in
 your .dir-locals.el.  See [[Manual:Directory Variables]] for
 details.
 
-Available at [http://stable.melpa.org/#/find-file-in-project MELPA Stable Repo]
+Available [https://github.com/technomancy/find-file-in-project on GitHub]
 
 == Alternatives ==
 
 * [https://github.com/yunxing/git-find-file.el- find file in git repo]
 * [https://github.com/d11wtq/fiplr Fiplr]
 * [http://github.com/justinweiss/fuzzy-find-in-project fuzzy-find-in-project]
-
 * [[Gpicker]]
-
 * <tt>[[ifind-mode.el]]</tt>
-
 * [[Projectile]]
-
-* [http://github.com/technomancy/rinari/tree/master rinari-find-file-in-project]
-
 * [http://github.com/re5et/simp simp] --  Includes also project-specific `rgrepp'ing, which takes project ignored directories into account.
-
-
-
 
 
 ----
