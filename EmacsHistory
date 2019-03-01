@@ -2,7 +2,7 @@
 : -- [http://www.iupui.edu/~santedit/ George Santayana], //Life of Reason//, Reason in Common Sense, Scribner's, 1905, page 284.
 
 '''Emacs''' began at the Artificial Intelligence Laboratory at
-MIT (See MeatBall:MitAiLab). Beginning in 1972, staff hacker CarlMikkelson added
+MIT (See MeatBall:MitAiLab). Beginning in 1972, staff hacker CarlMikkelsen added
 display-editing capability to '''[[TECO]]''', the text editor on the AI Lab's
 IncompatibleTimeSharingSystem (ITS) "Display-editing" meant
 that the screen display was updated as the user entered new commands;
