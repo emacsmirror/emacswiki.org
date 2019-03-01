@@ -57,10 +57,14 @@ The core of Emacs is written in C.
 
 Let's look at <code>src/lisp.h</code> for fundamental definitions.
 
-A Lisp object (<code>Lisp_Object</code>) is basically a number (an integer). This number is
-split in 2 parts in terms of bits:
-* a value
-* a tag
+A Lisp object (<code>Lisp_Object</code>) is basically a number (an integer). For 32bits Lisp_Object, in hexadecimal:
+
+0xAAAAAAAB
+
+
+This number is split in 2 parts in terms of bits:
+* a value (A), length is the number of bits in type minus number of tag bits
+* a tag (B), length is 2 or 3 bits
 
 The value is either a memory address or an integer i.e. the <code>fixnum</code>
 Lisp type. The tag indicates the type of the value.
@@ -254,7 +258,7 @@ if test "${with_thing}" != "no"; then
  # define
 fi
 
-if test "${HAVE_MODULES}" = yes; then
+if test "${HAVE_THING}" = yes; then
   # now you *have* to enable Thing!
   # AC_SUBST, AC_DEFINE, etc usually go here
   AC_DEFINE(HAVE_THING, 1, [Define to 1 if Thing enabled])
