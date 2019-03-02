@@ -729,7 +729,8 @@ fly.  See [[#UseBookmarkPlusWithIcicles|Use Bookmark+ with Icicles]].
 == Bookmark Basics ==
 
 '''Bookmark+''' builds on vanilla Emacs bookmarks.  If you are familiar
-with the latter, then you can skip this section.  However, this section also introduces some
+with the latter, then you can skip this section, which mostly
+reviews the former.  However, this section also introduces some
 '''Bookmark+''' concepts and features that are detailed in other
 sections.
 
