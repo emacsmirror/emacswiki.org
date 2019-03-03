@@ -4,13 +4,13 @@
 ;; Description: Frame and window commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Sep 22 16:15:43 2018 (-0700)
+;; Last-Updated: Sat Mar  2 16:11:16 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3138
+;;     Update #: 3152
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -20,7 +20,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `misc-fns', `strings', `thingatpt',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `frame-fns', `macroexp', `misc-fns', `strings', `thingatpt',
 ;;   `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -282,6 +283,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/02 dadama
+;;     clone-frame: Bind fit-frame-inhibit-fitting-flag to preserve current frame dimensions.
 ;; 2018/09/22 dadams
 ;;     Moved to mouse+.el: tear-off-window(-if-not-alone).
 ;; 2018/09/21 dadams
@@ -1039,8 +1042,9 @@ also select the new frame."
   (interactive "i\nP")
   (if no-clone
       (make-frame-command)
-    (let* ((default-frame-alist  (frame-parameters frame))
-           (new-fr  (make-frame)))
+    (let* ((fit-frame-inhibit-fitting-flag  t)
+           (default-frame-alist             (frame-parameters frame))
+           (new-fr                          (make-frame)))
       (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
         (select-frame new-fr)))))
 
@@ -1260,17 +1264,21 @@ In Lisp code:
          (top    . ,new-top)
          (height . ,new-height)
          ;; If we actually changed a parameter, record the old one for restoration.
-         ,(and new-left    (/= (frame-geom-value-numeric 'left orig-left)
-                               (frame-geom-value-numeric 'left new-left))
+         ,(and new-left
+               (/= (frame-geom-value-numeric 'left orig-left)
+                   (frame-geom-value-numeric 'left new-left))
                (cons 'restore-left   orig-left))
-         ,(and new-top     (/= (frame-geom-value-numeric 'top orig-top)
-                               (frame-geom-value-numeric 'top new-top))
+         ,(and new-top
+               (/= (frame-geom-value-numeric 'top orig-top)
+                   (frame-geom-value-numeric 'top new-top))
                (cons 'restore-top    orig-top))
-         ,(and new-width   (/= (frame-geom-value-numeric 'width orig-width)
-                               (frame-geom-value-numeric 'width new-width))
+         ,(and new-width
+               (/= (frame-geom-value-numeric 'width orig-width)
+                   (frame-geom-value-numeric 'width new-width))
                (cons 'restore-width  orig-width))
-         ,(and new-height  (/= (frame-geom-value-numeric 'height orig-height)
-                               (frame-geom-value-numeric 'height new-height))
+         ,(and new-height
+               (/= (frame-geom-value-numeric 'height orig-height)
+                   (frame-geom-value-numeric 'height new-height))
                (cons 'restore-height orig-height)))))
     (show-frame frame)
     (incf fr-origin (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height))))
@@ -1969,9 +1977,9 @@ The CAR of each list item is a string variable name.
 The CDR is nil."
   (let ((vars  ()))
     (mapatoms (lambda (sym) (and (boundp sym)
-                                 (setq sym  (symbol-name sym))
-                                 (string-match "frame-alist$" sym)
-                                 (push (list sym) vars))))
+                            (setq sym  (symbol-name sym))
+                            (string-match "frame-alist$" sym)
+                            (push (list sym) vars))))
     vars))
 
 (defun frcmds-frame-parameter-names ()
