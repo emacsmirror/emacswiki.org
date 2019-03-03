@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Mar  2 16:40:02 2019 (-0800)
+;; Last-Updated: Sun Mar  3 11:25:52 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3155
+;;     Update #: 3166
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -92,8 +92,9 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `available-screen-pixel-bounds', `enlarge-font-tries',
-;;    `frame-config-register', `frame-parameters-to-exclude',
+;;    `available-screen-pixel-bounds', `clone-frame-parameters',
+;;    `enlarge-font-tries', `frame-config-register',
+;;    `frame-parameters-to-exclude',
 ;;    `move-frame-wrap-within-display-flag'
 ;;    `rename-frame-when-iconify-flag', `show-hide-show-function',
 ;;    `window-mgr-title-bar-pixel-height'.
@@ -283,6 +284,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/03 dadams
+;;     Added: clone-frame-parameters.
+;;     clone-frame: Always select new frame.  Augment current params with clone-frame-parameters.
 ;; 2019/03/02 dadama
 ;;     clone-frame: Bind fit-frame-inhibit-fitting-flag to preserve current frame dimensions.
 ;;                  Return the new frame.
@@ -637,6 +641,22 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description - General"
           "https://www.emacswiki.org/emacs/FrameModes")
   :link '(emacs-commentary-link :tag "Commentary" "frame-cmds"))
+
+(defcustom clone-frame-parameters (cons 30 30)
+  "Frame parameter settings that override those of the frame to clone.
+The value can be an alist of frame parameters or a cons of two
+integers, (LEFT-OFFSET . TOP-OFFSET).
+
+The latter case sets parameters `left' and `top' of the new frame to
+the `left' and `top' of the selected frame, offset by adding
+LEFT-OFFSET and TOP-OFFSET to them, respectively."
+  :type '(choice
+          (cons :tag "Offset from current frame location"
+                (integer :tag "Left")
+                (integer :tag "Top"))
+          (alist :tag "Parameters to augment/replace those of current frame"
+                 :key-type (symbol :tag "Parameter")))
+  :group 'Frame-Commands)
 
 (defcustom rename-frame-when-iconify-flag t
   "*Non-nil means frames are renamed when iconified.
@@ -1034,7 +1054,7 @@ Interactively, FRAME is nil, and FRAME-P depends on the prefix arg:
 
 ;;;###autoload
 (defun clone-frame (&optional frame no-clone)
-  "Make a new frame with the same parameters as FRAME.
+  "Make and select a new frame with the same parameters as FRAME.
 With a prefix arg, don't clone - just call `make-frame-command'.
 Return the new frame.
 
@@ -1045,10 +1065,18 @@ also select the new frame."
   (if no-clone
       (make-frame-command)
     (let* ((fit-frame-inhibit-fitting-flag  t)
-           (default-frame-alist             (frame-parameters frame))
+           (clone-frame-parameters          (if (and clone-frame-parameters
+                                                     (not (consp (car clone-frame-parameters))))
+                                                `((left . ,(+ (car clone-frame-parameters)
+                                                              (or (cdr (assq 'left (frame-parameters frame)))
+                                                                  0)))
+                                                  (top  . ,(+ (cdr clone-frame-parameters)
+                                                              (or (cdr (assq 'top (frame-parameters frame)))
+                                                                  0))))
+                                              clone-frame-parameters))
+           (default-frame-alist             (append clone-frame-parameters (frame-parameters frame)))
            (new-fr                          (make-frame)))
-      (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
-        (select-frame new-fr))
+      (select-frame new-fr)
       new-fr)))
 
 ;;;###autoload
