@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Mar  2 16:11:16 2019 (-0800)
+;; Last-Updated: Sat Mar  2 16:40:02 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3152
+;;     Update #: 3155
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -285,6 +285,7 @@
 ;;
 ;; 2019/03/02 dadama
 ;;     clone-frame: Bind fit-frame-inhibit-fitting-flag to preserve current frame dimensions.
+;;                  Return the new frame.
 ;; 2018/09/22 dadams
 ;;     Moved to mouse+.el: tear-off-window(-if-not-alone).
 ;; 2018/09/21 dadams
@@ -1035,6 +1036,7 @@ Interactively, FRAME is nil, and FRAME-P depends on the prefix arg:
 (defun clone-frame (&optional frame no-clone)
   "Make a new frame with the same parameters as FRAME.
 With a prefix arg, don't clone - just call `make-frame-command'.
+Return the new frame.
 
 FRAME defaults to the selected frame.  The frame is created on the
 same terminal as FRAME.  If the terminal is a text-only terminal then
@@ -1046,7 +1048,8 @@ also select the new frame."
            (default-frame-alist             (frame-parameters frame))
            (new-fr                          (make-frame)))
       (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
-        (select-frame new-fr)))))
+        (select-frame new-fr))
+      new-fr)))
 
 ;;;###autoload
 (defun rename-frame (&optional old-name new-name all-named)
