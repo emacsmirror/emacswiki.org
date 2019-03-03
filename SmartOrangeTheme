@@ -1,6 +1,6 @@
 Amber Case argues in [https://medium.com/@caseorganic/why-the-color-of-technology-must-change-caae7f1ca061 Why The Color of Technology Must Change] that blue colors are more fatiguing for users and that technology should shift to a palette of oranges and reds, like military and industrial displays.
 
-I have hacked together an Emacs theme based Case's essay that uses orange-on-black as the primary colors. It doesn't have nearly the depth of theming as e.g. ColorThemeZenBurn. There's very little theming for OrgMode or other applications, and in some corners of Emacs, an eye-burningly illegible face may pop up. It's a start.
+I have hacked together an Emacs theme based Case's essay that uses orange-on-black as the primary colors. It doesn't have nearly the depth of theming as e.g. ColorThemeZenburn. There's very little theming for OrgMode or other applications, and in some corners of Emacs, an eye-burningly illegible face may pop up. It's a start.
 
 Lisp:smart-orange-theme.el
 
