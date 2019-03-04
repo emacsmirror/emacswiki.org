@@ -1,44 +1,33 @@
-GNU Eev provides e-script environment.
+Eev-mode is a tool to let record "executable logs" of what we do in a
+format that is reasonably easy to read and to modify, and that lets us
+"play back" those logs step by step in any order.
 
-What is an e-script exactly ? Simple plain old ascii text files
-holding commands (shell or not) and EmacsLisp commands (hyperlinks).
+Most steps are either
 
-What would it be useful for ?
+* [http://angg.twu.net/eev-intros/find-eev-quick-intro.html#3 elisp
+  hyperlinks] or
+* [http://angg.twu.net/eev-intros/find-eev-quick-intro.html#6 lines to
+  be sent to shell-like programs] (in
+  "[http://angg.twu.net/eev-intros/find-eev-quick-intro.html#6 eepitch
+  blocks]").
 
-* replaying recorded shell "sessions"
-* refering to other documents (other text files, info, man, URL, mail,
-  whatever, ...)
-* demoing
-* insert your hint here <<----
+[https://www.youtube.com/watch?v=Lj_zKC5BR64&t=16s This
+video] has a demo of eepitch blocks.
 
-The good thing with e-scripts is its format-independant nature
-allowing them to be embedded in any file: source code (like in
-litteral programming), documentations, ...
+The main starting point of eev is [http://angg.twu.net/eev-intros/find-eev-quick-intro.html this tutorial] (accessible by `M-x find-eev-quick-intro' or `M-5 M-j').
 
-http://angg.twu.net/#eev by EduardoOchs
-
-== News (nov/2012) ==
-
-There's a video here: http://angg.twu.net/eev-videos/README.html
-
-The README above has many pointers (to changes, docs, etc). Please take a look!
-
-== Download ==
-
-Latest version is 0.95.1 released on 2006.
-
-Get it at http://angg.twu.net/eev-current.tar.gz
-
-== Documentation ==
-
-http://angg.twu.net/eev-article.html
+Home page: http://angg.twu.net/#eev (by EduardoOchs).
 
 == Getting Help ==
 
 There are several channels to get help:
 
-- a mailing list at http://lists.nongnu.org/mailman/listinfo/eev
-- a CategoryIrc channel: #eev on freenode
+* a mailing list: http://lists.nongnu.org/mailman/listinfo/eev
+* CategoryIrc channels: #eev and #emacs on freenode (chat with "edrx" there).
+
+
+Everything below this point was written by ThierryVolpiatto in 2013. Some things may be obsolete!
+
 
 == Build a TOC for your files ==
 
