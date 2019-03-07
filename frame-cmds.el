@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sun Mar  3 11:25:52 2019 (-0800)
+;; Last-Updated: Thu Mar  7 14:10:40 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3166
+;;     Update #: 3167
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -69,7 +69,7 @@
 ;;    kinds of frames.  These include: `default-frame-alist',
 ;;    `initial-frame-alist', and `special-display-frame-alist'.  The
 ;;    complete list of such frame alist variables is available using
-;;    function `frame-alist-var-names', defined here.
+;;    function `frcmds-frame-alist-var-names', defined here.
 ;;
 ;;    Example: Suppose you change the background color of a frame and
 ;;    want to make that the default background color for new frames in
