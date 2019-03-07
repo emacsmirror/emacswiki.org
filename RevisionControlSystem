@@ -4,21 +4,21 @@ anything special in order to use it in Emacs.  Just issue the keyboard sequence 
 # To put a file under VersionControl with '''RCS''' type `C-x v v' (`vc-next-action').
 # After making edits,
 ## view the changes with `C-x v =' (`vc-diff').
-## or check-in the revision by typing another `C-x v v'.
+## or check in the revision by typing another `C-x v v'.
 ### After entering a log message, complete the check-in with `C-c C-c' (`vc-finish-logentry').
-## Instead of checking-in, undo your changes with `C-x v u' (`vc-revert-buffer')
+## Instead of checking in, undo your changes with `C-x v u' (`vc-revert-buffer').
 # At any moment,
 ## view a file's revision log with `C-x v l' (`vc-print-log').
-## be prompted for another version number to view of the file in another window with `C-x v ~' (`vc-version-other-window').
+## be prompted for another version number to view the file in another window with `C-x v ~' (`vc-version-other-window').
 
 
 == Automatically check in/out ==
 
-To automatically check in - out a file when saving it
+To automatically check in/out a file when saving it
 if the file is under RCS, put this in your .emacs:
 
 <pre>
-;; automatically check-in check-out when under rcs
+;; automatically check-in/check-out when under rcs
 (defun rcs-ci-co nil
   "check in check out the file if it is under vc with rcs
         with a prefix other than 1 only check-in"
@@ -33,7 +33,7 @@ if the file is under RCS, put this in your .emacs:
 (add-hook 'after-save-hook 'rcs-ci-co)
 
 (defun my-vc-diff (historic &optional not-urgent)
-  "my vc diff, sames as vc-diff but in case of rcs, display the 
+  "my vc diff, same as vc-diff but in case of rcs, display the 
 diffs between current version and previous one (with a prefix 
 calls vc-diff)"
   (interactive (list current-prefix-arg t))
@@ -48,10 +48,10 @@ calls vc-diff)"
 
 </pre>
 
-Note that if a prefix is used when saving the file, the file is only checked-in allowing you to put a meaningfull message to the Changelog.
+Note that if a prefix is used when saving the file, the file is only checked in allowing you to put a meaningful message to the Changelog.
 
 [new]
-it did'nt work for me (the first defun trew errors), but this other did the trick
+it didn't work for me (the first defun threw errors), but this other did the trick
 <pre>
   (defun rcs-ci-co nil
     "check in check out the file if it is under vc with rcs"
@@ -62,26 +62,26 @@ it did'nt work for me (the first defun trew errors), but this other did the tric
 
   (add-hook 'after-save-hook 'rcs-ci-co)
 </pre>
-but it has problems anyway, for example: vc-checkin first tries to save, which is a problem when you want to create another mayor version.
+but it has problems anyway, for example: vc-checkin first tries to save, which is a problem when you want to create another major version.
 There is also a nice discussion here: VersionControlAlways 
  -- AlvaroMartinez
 
 [new]
-starting with Emacs 22 (in earlier versions the vc-rcs-*-switches were present, but ignored by the functions) you can also just use
+Starting with Emacs 22 (in earlier versions the vc-rcs-*-switches were present, but ignored by the functions) you can also just use
 
   (setq vc-rcs-checkin-switches "-l")
 
-this means use "ci -l file" to checkout a locked (writable) version right after the checkin.  Which should always be fine when using RCS.
+This means use "ci -l file" to check out a locked (writable) version right after the check-in.  This should always be fine when using RCS.
 
 == Modifiable Log View ==
 
-Like [[WDired]], it would be handy if you could hand edit the contents of log view (revision logs, dates, author, state, file description) and commit the changes to the RCS file.  Yet another WishList item.
+Like [[WDired]], it would be handy if you could hand-edit the contents of log view (revision logs, dates, author, state, file description) and commit the changes to the RCS file.  Yet another WishList item.
 
 == Related Information ==
 * [http://www.gnu.org/software/rcs/ GNU RCS Home Page]
 * [http://users.ninthfloor.org/~ashawley/rcs/ Resources on Using GNU RCS by Aaron Hawley]
 * [http://www.cs.purdue.edu/homes/trinkle/RCS/ Win32 Port]
-* [http://obsidianrook.com/devnotes/joys-of-rcs.html The Joys of RCS] - a nice writeup about version control/emacs/rcs.
+* [http://obsidianrook.com/devnotes/joys-of-rcs.html The Joys of RCS] - a nice writeup about version control/emacs/RCS.
 
 ----
 CategoryVersionControl
