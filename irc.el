@@ -1,4 +1,4 @@
-;; irc.el --- A user interface for the Internet Relay Chat
+;;; irc.el --- A user interface for the Internet Relay Chat
 
 ;; Copyright (C) 1989, 1990  David C Lawrence
 
