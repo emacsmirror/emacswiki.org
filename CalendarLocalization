@@ -462,6 +462,33 @@ Lisp:ukrainian-holidays.el
 ))
 </pre>
 
+=== New Zealand ===
+
+<pre>
+
+;; New Zealands Public Holidays
+(setq holiday-local-holidays
+    '((holiday-fixed 1 1     "New Years Day")
+      (holiday-fixed 1 2     "Day after New Years")
+      (holiday-fixed 1 23    "Wellington Anniversary Day")
+      (holiday-fixed 1 29    "Auckland Anniversary Day")
+      (holiday-fixed 2 6     "Waitangi Day")
+      (holiday-easter-etc -2 "Good Friday")
+      (holiday-easter-etc +1 "Easter Monday")
+      (holiday-fixed 4 25    "Anzac Day")
+      (holiday-float 6 1 1   "Queens Birthday")
+      (holiday-float 10 1 4  "Labour Day")
+      (holiday-fixed 12 25   "Christmas Day")
+      (holiday-fixed 12 26   "Boxing Day")))
+
+(setq holiday-general-holidays nil)
+(setq holiday-christian-holidays nil)
+(setq holiday-hebrew-holidays nil)
+(setq holiday-islamic-holidays nil)
+(setq holiday-bahai-holidays nil)
+(setq holiday-oriental-holidays nil)
+
+</pre>
 === Republic of Zimbabwe ===
 
 <pre>
