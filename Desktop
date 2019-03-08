@@ -4,7 +4,7 @@ There are many other packages providing similar functionality. See SessionManage
 
 == Loading a Desktop Saved from a Previous Session at Startup ==
 
-Desktop will load, at startup, the buffers you were editing when you last quit Emacs.
+Desktop will load, at startup, the buffers you were editing when you last quit Emacs. It will also attempt to restore frames and frame sizes, unless you've set `desktop-restore-frames' to nil.
 
 In Emacs 22+, add the following to your .emacs file:
 
