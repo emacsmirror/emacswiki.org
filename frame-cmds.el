@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Thu Mar  7 14:10:40 2019 (-0800)
+;; Last-Updated: Fri Mar  8 08:29:14 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3167
+;;     Update #: 3168
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -872,7 +872,7 @@ With a prefix arg, prompt for a buffer and delete all windows, on any
 
 
 
-;; REPLACES ORIGINAL (built-in):
+;; REPLACES ORIGINAL in `window.el' (built-in prior to Emacs 24.5):
 ;;
 ;; 1) Use `read-buffer' in interactive spec.
 ;; 2) Do not raise an error if BUFFER is a string that does not name a buffer.
