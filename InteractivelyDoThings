@@ -482,9 +482,9 @@ You can make use of built-in ido fuzzy match with <code>(setq ido-enable-flex-ma
 
 Other options include:
 
-* [http://marmalade-repo.org/packages/flx-ido flx-ido].  This does fuzzy matching based on intelligent sorting of the list along with nice highlighting.  It doesn't match out-of-order characters though, unlike:
+* [https://github.com/lewang/flx flx-ido].  This does fuzzy matching based on intelligent sorting of the list along with nice highlighting.  It doesn't match out-of-order characters though, unlike:
 
-* [http://marmalade-repo.org/packages/ido-better-flex ido-better-flex] implements just another fuzzy matching algorithm, unlike default Ido flex, it allows you to match candidates even if you type a character that is before the previously matched input.
+* [https://github.com/vic/ido-better-flex ido-better-flex] implements just another fuzzy matching algorithm, unlike default Ido flex, it allows you to match candidates even if you type a character that is before the previously matched input.
 
 * [https://github.com/Bogdanp/ido-clever-match ido-clever-match] yet another fuzzy matching which prefers prefix and substring over the default flex algorithm.
 
@@ -492,7 +492,7 @@ Other options include:
 
 It's a lot easier to scan long path names if they're displayed vertically, instead of horizontally.  Run this to achieve just that:
 
-This can be achieved by installing package [http://marmalade-repo.org/packages/ido-vertical-mode ido-vertical-mode], which (presumably), does the following, below.
+This can be achieved by installing package [https://github.com/creichert/ido-vertical-mode.el ido-vertical-mode], which (presumably), does the following, below.
 
   ;; Display ido results vertically, rather than horizontally
   (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
