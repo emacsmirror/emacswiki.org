@@ -59,7 +59,7 @@ Many of these settings are not at all typical; some are quite personal, and othe
  (setq show-paren-style 'expression)            ; Highlight text between parens
 
 = Buffers and windows =
- (setq pop-up-frame t)                          ; Buffers in separate frames
+ (setq pop-up-frames t)                         ; Buffers in separate frames
  (setq frame-title-format "%b - emacs")         ; Use buffer name as frame title
  (global-set-key "\C-x\C-b" 'buffer-menu)       ; CxCb puts point on buffer list
  (setq window-min-height 10)                    ; Minimal height of windows
