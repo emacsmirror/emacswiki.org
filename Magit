@@ -43,6 +43,7 @@ You might also want to read the [https://magit.vc/manual/magit/Getting-started.h
 
 Various packages exist which extend Magit, including:
 
+* [https://github.com/magit/forge forge] Support for PRs and Issues in Git Forges such as GitHub
 * [https://github.com/justbur/evil-magit evil-magit] evil key bindings for Magit
 * [https://github.com/magit/magit-annex magit-annex] use ##git annex## within Magit
 * [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit extension for Gerrit Code Review
