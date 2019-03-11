@@ -22,27 +22,6 @@ Here are the specific codes:
 * `C-x <RET> f mac'   (for ##CR##)
 * `C-x <RET> f dos'   (for ##CR+LF##)
 
-----
-
-Toggle the end of line encoding:
-
-{{{
-(defun unix-file ()
-  "Change the current buffer to Unix line-ends."
-  (interactive)
-  (set-buffer-file-coding-system 'unix t))
-
-(defun dos-file ()
-  "Change the current buffer to DOS line-ends."
-  (interactive)
-  (set-buffer-file-coding-system 'dos t))
-
-(defun mac-file ()
-  "Change the current buffer to Mac line-ends."
-  (interactive)
-  (set-buffer-file-coding-system 'mac t))
-}}}
-
 See DosToUnix for other methods.
 
 ----
