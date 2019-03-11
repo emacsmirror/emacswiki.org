@@ -57,26 +57,6 @@ Automatically convert line endings to unix:
 (add-hook 'find-file-hooks 'no-junk-please-were-unixish)
 }}}
 
-----
-With Emacs 21 and later, you can preserve the current text coding system and change end-of-line conversion by running the command set-buffer-file-coding-system (C-x RET f) and specifying "unix", "dos", or "mac". Emacs 20 doesn't support that behavior, but this function should achieve the same goal:
-
-   (defun set-eol-conversion (new-eol)
-     "Specify new end-of-line conversion NEW-EOL for the buffer's file
-   coding system. This marks the buffer as modified."
-     (interactive "SEnd-of-line conversion for visited file: \n")
-     ;; Check for valid user input.
-     (unless (or (string-equal new-eol "unix")
-                 (string-equal new-eol "dos")
-                 (string-equal new-eol "mac"))
-       (error "Invalid EOL type, %s" new-eol))
-     (if buffer-file-coding-system
-         (let ((new-coding-system (coding-system-change-eol-conversion
-                                   buffer-file-coding-system new-eol)))
-           (set-buffer-file-coding-system new-coding-system))
-       (let ((new-coding-system (coding-system-change-eol-conversion
-                                 'undecided new-eol)))
-         (set-buffer-file-coding-system new-coding-system)))
-     (message "EOL conversion now %s" new-eol))
 
 ----
 CategoryEditing
