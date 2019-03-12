@@ -168,7 +168,7 @@ define your own).
 A data structure like that just described is used to specify the
 composite predicate to use: a list of three-valued predicates and
 possibly a fallback two-valued predicate.  This is [[user option]]
-'''`bmkp-sort-comparer''''.  Its default value is this list:
+'''`<tt>[[#BmkpSortComparer|bmkp-sort-comparer]]</tt>''''.  Its default value is this list:
 
   ((bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp bmkp-local-file-type-cp)
    bmkp-alpha-p)
@@ -243,7 +243,100 @@ final predicate."
 
 
 
+== Doc String of Option `bmkp-sort-comparer' ==
 
+
+
+[:BmkpSortComparer]
+
+
+[new:DrewAdams:2019-03-12 00:44 UTC]
+
+<pre>
+Predicate or predicates for sorting (comparing) bookmarks.
+This defines the default sort for bookmarks in the bookmark list.
+
+Various sorting commands, such as `s v', change the value of this
+option dynamically (but they do not save the changed value).
+
+The value must be one of the following:
+
+* nil, meaning do not sort
+
+* a predicate that takes two bookmarks as args
+
+* a list of the form ((PRED...) FINAL-PRED), where each PRED and
+  FINAL-PRED are predicates that take two bookmarks as args
+
+If the value is a list of predicates, then each PRED is tried in turn
+until one returns a non-nil value.  In that case, the result is the
+car of that value.  If no non-nil value is returned by any PRED, then
+FINAL-PRED is used and its value is the result.
+
+Each PRED should return `(t)' for true, `(nil)' for false, or nil for
+undecided.  A nil value means that the next PRED decides (or
+FINAL-PRED, if there is no next PRED).
+
+Thus, a PRED is a special kind of predicate that indicates either a
+boolean value (as a singleton list) or "I cannot decide - let the
+next guy else decide".  (Essentially, each PRED is a hook function
+that is run using `run-hook-with-args-until-success'.)
+
+Examples:
+
+ nil           - No sorting.
+
+ string-lessp  - Single predicate that returns nil or non-nil.
+
+ ((p1 p2))     - Two predicates `p1' and `p2', which each return
+                 (t) for true, (nil) for false, or nil for undecided.
+
+ ((p1 p2) string-lessp)
+               - Same as previous, except if both `p1' and `p2' return
+                 nil, then the return value of `string-lessp' is used.
+
+Note that these two values are generally equivalent, in terms of their
+effect (*):
+
+ ((p1 p2))
+ ((p1) p2-plain) where p2-plain is (bmkp-make-plain-predicate p2)
+
+Likewise, these three values generally act equivalently (*):
+
+ ((p1))
+ (() p1-plain)
+ p1-plain        where p1-plain is (bmkp-make-plain-predicate p1)
+
+The PRED form lets you easily combine predicates: use `p1' unless it
+cannot decide, in which case try `p2', and so on.  The value ((p2 p1))
+tries the predicates in the opposite order: first `p2', then `p1' if
+`p2' returns nil.
+
+Using a single predicate or FINAL-PRED makes it easy to reuse an
+existing predicate that returns nil or non-nil.
+
+You can also convert a PRED-type predicate (which returns (t), (nil),
+or nil) into an ordinary predicate, by using function
+`bmkp-make-plain-predicate'.  That lets you reuse elsewhere, as
+ordinary predicates, any PRED-type predicates you define.
+
+For example, this defines a plain predicate to compare by URL:
+ (defalias 'bmkp-url-p (bmkp-make-plain-predicate 'bmkp-url-cp))
+
+Note: As a convention, predefined Bookmark+ PRED-type predicate names
+have the suffix `-cp' (for "component predicate") instead of `-p'.
+
+--
+* If you use `s C-r', then there is a difference in behavior between
+
+   (a) using a plain predicate as FINAL-PRED and
+   (b) using the analogous PRED-type predicate (and no FINAL-PRED).
+
+  In the latter case, `s C-r' affects when the predicate is tried and
+  its return value.  See `bmkp-reverse-multi-sort-order'.
+
+You can customize this variable.
+</pre>
 
 
 
