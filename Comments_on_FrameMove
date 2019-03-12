@@ -9,3 +9,13 @@ Framemove works fine on Mac, but in Ubuntu it only works when the emacs frames a
 
 -- [http://www.arcanegarden.com Anonymous] 2014-10-30 17:41 UTC
 
+
+----
+
+About point 4, moving frame (instead of focus), I've made some experiments based on modify-frame-parameters function, but it required some hacks to manage frame when they are in fullscreen and it's a bit slow, not sure I've done it the right way...
+
+Experiment is here:
+https://github.com/fredericfrances/frame-cycle/blob/master/frame-cycle.el
+
+-- fre 2019-03-12 21:57 UTC
+
