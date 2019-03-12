@@ -7,3 +7,11 @@ I tried to download org-publish.el and add it to the load path. When exporting e
 
 
 
+
+----
+
+See also https://emacs.stackexchange.com/questions/48273/no-such-file-or-directory-org-publish
+Seems to be the same problem.
+
+-- [http://tn-home.de TobiasZawada] 2019-03-12 11:34 UTC
+
