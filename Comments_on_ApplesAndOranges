@@ -1,0 +1,167 @@
+[new]
+Nice entry Drew :). I constantly find myself reinventing the wheel with this
+sort of thing. That said, a case can/should be made for _not_ building overly
+extensive sets of one's own dedicated predicates in deference to the CL sequence
+keyword args (e.g. :test, :test-not, :key) and for using CL's defun* with &key.
+
+I always seem to eventually encounter situations where having built a suite of
+`utility' functions only to I can no longer realistically recall _what_ that
+suite was first intended for. This is an indication of time to reify the
+`suite' into a wrapper function that takes keyword args:
+
+   (defun* reify-cp (a b cond-pred &key size-kcp core-kcp date-kcp)
+     (let* ((conds '(if cond when unless and or))
+            (c-prd (car (member cond-pred conds))))
+       (cond ((eq c-prd 'cond)       ( {...cond-logic-here...} ))
+             ((eq c-prd 'if)         ( {...if-logic-here...} ))
+             ((eq c-prd 'when)       ( {...when-logic-here...} ))
+             ((eq c-prd 'unless)     ( {...unless-logic-here...} ))
+             ((eq c-prd 'and)        ( {...and-logic-here...} ))
+             ((eq c-prd 'or)         ( {...or-logic-here...} ))
+             ((eq c-prd 'ad-nauseam) ( {...ad-nauseam-logic-here...} ))))
+     (destructoring-macro/function-here
+      ,@body))
+
+This is also about the time that I give up tyring to build cathedrals and start wishing
+that Elisp had a more comprehensive CL foundation. These types of things are
+fairly routine and to the extend they are is indicative of _why_ CLTL[2]/ANSI-CL were created
+in the first place. It can become tiresome living in the Bazaar where we are
+continually reinventing standard idioms. -- [[mon_key]]
+
+
+[new:DrewAdams:2009-12-01 21:24 UTC]
+Maybe I'm missing something, but I don't see the relation to what I discuss here. How does that help with "don't know" decisions? The point here is that a predicate can be partial, able to answer some true-or-false questions but not others, or partly able answer a complex true-or-false question, and to be able to combine such partial deciders in arbitrary ways (e.g. by changing their order).  -- DrewAdams
+
+[new]
+The relation is w/re the vacuous unknown. I'm simply presenting a side
+note/caveat w/re to building large sets of "don't know" predicates in elisp b/c:
+    
+    a) There are a lot of things we don't know we don't know;
+
+    b) It is difficult to decide when one should stop enumerating procedures to
+       test unknown;
+
+    c) Any reasonable well developed set of predicate helpers will eventually
+       become unwieldy;
+
+    d) It is difficult in Elisp to reify sub-components of a the predicate
+       helper superset;
+
+To the degree that `a' is a fact, what does one do when one's existing (and
+inherently inexhaustible set) of unknowns does in fact eventually lead to
+situation `c'?  Apropos `a',`b', `c' this is not an unreasonable question to
+take into consideration when examining the idiom you're presenting. Lisp history
+provides indicators of what happens when large sets of predicate utilities are
+developed w/out robust mechanisms for encapsulation/reification. `d' appears to
+have been taken into consideration with CLTL2 esp. w/re `&key', `values',
+`multiple-value-bind', `destructuring-bind' esp. when considered in conjunction
+w/ sequence predicates `:test' `:test-not' `:key' etc. These features simply
+aren't present in the same way for Emacs lisp.
+
+So, the relation is this: 
+
+The _very useful_ idioms you've eloquently identified and outlined are not a
+panacea for interrogating unknowns if/when/should one expect them to scale with
+emacs lisp as they too quickly become unmanageable and b/c it can be
+difficult/inelegant to reify these sorts of predicates into larger wrapper
+functions/macros/methods in the absences of ANSI-CL style features. 
+
+IME for non-trivial applications the idioms you've outlined fall over easily in
+vanilla Emacs lisp and one may be better off mastering elisp's existing CL
+compatibility features instead of trying to extend elisp into a realm that it is
+not well capable of supporting.
+
+When it comes to implementing applications which leverage predicate testing may
+be better off focusing Emacs lisp development efforts elsewhere and where
+predicate frobbing is concerned instead pursue a mastery of those CL predicate
+idioms that elisp does support. Certainly this is the case where implementation
+of elisps existing CL predicates afford one the opportunity to scale/port and
+extend code to a bona fide CL. If such is a transition that one anticipates
+making with ones existing/future elisp code then time/energy/effort may be
+better spent elsewhere instead of accumulating a too extensive set of elisp
+specific "user-level predicate utilities" esp. where these procedures might be
+far more easily/rapidly/readily embodied in a fully functional CL.
+--[[mon_key]]
+
+[new:DrewAdams:2009-12-02 22:40 UTC]
+I'm glad that my writing on this topic has interested you, but AFAICT you have misunderstood what this is about. 
+
+1. It's not about "building large sets of “don’t know” predicates" (or any kind of predicates). It's not about "building overly extensive sets of one’s own dedicated predicates" or a "suite of ‘utility’ functions" or defining "large sets of predicate utilities", with or without "robust mechanisms for encapsulating/reification".
+
+It's not about providing a "panacea" for anything or "interrogating unknowns" or reifying predicates or "focusing Emacs lisp development efforts" in any way or accumulating "user-level predicate utilities".
+
+No one is suggesting to build a library of predicates. I assume as given that you have apples and oranges (and...) to sort, and that you already have (or will anyway need) predicates that compare apples to apples, oranges to oranges, etc. The point is that if those are ordinary two-valued predicates, then there is no easy, manageable way to combine them, but that three-valued predicates do the job nicely.
+
+The reason that ordinary predicates don't help is that their mission is to decide definitively, rather than to decide or delegate. Combining implies cooperating, which in turn implies relinquishing some control.
+
+
+2. AFAIK there is nothing in Common Lisp that is particularly relevant here or that provides a ready-made way to do what I suggested or something equivalent. Certainly "CL sequence keyword args (e.g. :test, :test-not, :key)" and "CL’s defun* with &key" do not help in any direct way that I am aware of.
+
+Perhaps you are focusing on the predicates examining particular attributes (e.g. apple core size), and that's what made you think of ##:key## etc? Or perhaps you are focusing on the combining of predicates by sequencing them, and you thought of CL's `some' etc. sequence functions? If so, then none of that is particularly relevant here. It is not the fact that the objects to be compared are rich, and comparison must examine their attributes, that is interesting. It is not the how of sequencing (e.g. `some' vs iteration) that is interesting.
+
+The point is instead about letting a predicate report "dunno" and ''by that means'' letting another predicate take over deciding. The idea is that this lets you shuffle and combine simple predicates, to provide a gamut of combinations that would be otherwise difficult to realize or unmanageable. This same idea is just as relevant for Common Lisp. (Is this an important idea or a new idea? Nah -- please reread the 3rd sentence on the page.)
+
+I hesitate to say again what this is about, since I don't seem to be getting through. Let us not waste more words on it. I'm sorry my writing here was not clear enough. If you look at the actual code where this is used (<tt>[[bookmark+.el]]</tt>), perhaps you will see. See `bmkp-sort-comparer' and how it is used. Thinking in terms of sorting should help. If you want to discuss issues that are specifically related to the code, fine, but I'm not interested in a wide-ranging, abstract discussion in unclear terms. If this page stimulated you to think about something else that is interesting, that's good, whether or not I understand what that is. :-) -- DrewAdams
+
+[new]
+Re: 1 There is simply no easy way to implement this idiom in Emac lisp without
+accumulating a suite of predicates. Each predicate begets the next.
+
+Re: 2 Real CL's `values' (and the requisite language foundations which support
+it) are quite relevant vis a vis this idiom.  Your missing the nuance. Obv. this
+is not a CL wiki but w/re this _particular_ idiom emacs lisp is woefully
+shorthanded and it should bear mentioning that most of what your advocating
+doesn't scale well in Emacs lisp. This isn't to say it isn't doable or that your
+examination isn't cogent because it is. 
+
+That this idiom is relevant to CL needn't imply that it take the same form
+there. It can, but typically doesn't. Which is essentially what I'm getting
+at. That there is a difference (measured by degrees of elegance) in how a CL
+coder would approach this idiom as contrasted with an elisper (esp. in the
+aggregate) is indicative that elisp is short handed here.  Because these are
+both lisps the distinction is cloudy.  Consider an implementation of this idiom
+in `C' as compared to elisp. Or in assembly as compared to `C'. Certainly the
+idiom _can_ be translated across environments - this doesn't mean it should be.
+
+Consider how this idiom might be accomodated more readily with the assistance of
+multiple values. 
+
+Consider how multiplicative return values could be immediatlely extended
+with mvb/destructuring-bind.
+
+Consider how such bound forms could be immediately interogated with CL's
+sequencing predicates.
+
+Consider that all of this could happen inside a very small set of
+functions/macros.
+
+Consider that if the limtations of binary return are lifted the utility
+ternary-valued predicates aren't nearly as utilitarian.
+
+Your discussion of this idiom is clear, and it is a fascinating read because it
+provides an opportunity for insight into a struggle many seem to share in
+shoe-horning Emacs lisp functionality. To the extent that this struggle does
+exist it is enlightening to compare and contrast how other lisps accomodate the
+idiom if only as an exercise in "Comparitive Lispology".
+
+FWIW I did take time to review the code in bookmark+. Your macro solution w/
+bmkp-sort-comparer belabors what I am pointing out here. 
+Hint, the tip of this iceberg began with my consideration of eql vs. equal in
+lieu of a review of bmkp-sort-comparer; which by the way occured prior
+to my initial response here. :) --[[mon_key]]
+
+
+[new:DrewAdams:2009-12-03 18:42 UTC]
+I said "I'm not interested in a wide-ranging, abstract discussion in unclear terms". Sorry.
+
+Suffice it to say that I disagree that anything in CL, including `values', `multiple-value-bind', and the higher-order sequence functions, adds anything to the party or changes anything wrt the ideas presented here. 
+
+Whether you use explicit lists or `values' to return multiple values is irrelevant. One way or another, you still have to let the component predicates indicate whether they have decided definitively or not (and two-valued predicates always decide definitively). In CL, you might choose to use `values' to do that (or you might choose to use a list or a structure or...). In EmacsLisp, `values' is not an option, but that changes nothing essential. If all you are saying is that if one were implementing these ideas in CL then one might choose a different implementation, then sure, that's obvious. 
+
+But show me how you would use existing ''two''-valued predicates to accomplish this (in CL or any other language). Employ `values', `m-v-b', and anything else you want. Show me how to combine two-valued predicates `size', `core', and `date' to compare apples and oranges. Show me something that moves beyond `<tt>[[#pred1]]</tt>' and `<tt>[[#pred2]]</tt>' above, so that one can easily change the order of predicate application (hence sorting) etc.
+
+Again, if you want to present specific, alternative code snippets (e.g. CL code) to the code in <tt>[[bookmark+.el]]</tt>, we can discuss that -- in ''specific'' terms. I am not interested in a hand-waving, abstract discussion.
+
+To be clear about CL -- I have nothing against it; quite the contrary. And I prefer it to Emacs Lisp in many ways. I used CL from the moment it existed (the first implementations available in Europe, in the early 80s -- in particular Kyoto CL, even before it was fully baked). I like CL and appreciate many of the features it has that Emacs Lisp lacks.
+
+The macro you refer to wrt sorting is, I assume, `bmkp-define-sort-command'. That is irrelevant to this discussion. It simply facilitates interactive choice of sort orders -- it is purely a UI thing, unrelated to how predicates are combined or how sorting works. It takes as input a comparer (list of predicates) and simply makes that particular comparer available interactively in various ways (e.g. cycling). The code for sorting using a comparer is in `bmkp-multi-sort' -- it is essentially `run-hook-with-args-until-success'. -- DrewAdams
