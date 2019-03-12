@@ -147,6 +147,17 @@ But be advised that `cua-mode' will change more behaviors than just that.
 [new]
 Emacs 24 has <code>(setq scroll-error-top-bottom t)</code> to approximate this behavior.
 
+== Scroll to move the cursor ==
+
+Wouldn't it be nice if when pressing C- and scrolling, your cursor moved around as if you were pressing on the arrows but in a far more sensitive way ? The only code you need is :
+
+    (define-key key-translation-map (kbd "<C-mouse-4>") (kbd "<up>"))
+    (define-key key-translation-map (kbd "<C-mouse-5>") (kbd "<down>"))
+    (global-set-key (kbd "<C-mouse-6>") 'left-char)
+    (global-set-key (kbd "<C-mouse-7>") 'right-char)
+
+With this config, you can even use it in term (terminal emulation) and enjoy new ways of navigating within commands like less, man or visidata. 
+
 == Other Scrolling Pages ==
 
 * BufferScrolling -- horizontal scrolling
