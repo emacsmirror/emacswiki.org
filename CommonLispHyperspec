@@ -4,7 +4,7 @@ The Common Lisp Hyperspec is a HTML rendition of the ANSI CommonLisp specificati
 
 and at many other sites.  On a [[Debian]] system DebianPackage:hyperspec will download a copy for you.
 
-There's also a [[Texinfo]] rendition of the spec made by Bill Schelter in the GNU Common Lisp package, that can be downloaded at [ftp://ftp.gnu.org/pub/gnu/gcl/gcl.info.tgz]. The package <code>dpans2texi.el</code>[http://users-phys.au.dk/harder/dpans.html] by JesperHarder can make a similar conversion.  Both allow InfoLook symbol searching (and of course full-text searches as usual in InfoMode).
+There's also a [[Texinfo]] rendition of the spec made by Bill Schelter in the GNU Common Lisp package, that can be downloaded at [ftp://ftp.gnu.org/pub/gnu/gcl/gcl.info.tgz]. The package <code>dpans2texi.el</code>[https://github.com/rebcabin/dpans2texi] by JesperHarder can make a similar conversion.  Both allow InfoLook symbol searching (and of course full-text searches as usual in InfoMode).
 
 The following Emacs packages help you browse the HTML hyperspec.
 
