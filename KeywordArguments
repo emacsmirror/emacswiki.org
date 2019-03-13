@@ -40,3 +40,13 @@ You can also use `cl-defun' from [CommonLispForEmacs `cl-lib'] to define functio
 }}}
 
 '''See Also:''' [http://ccrma.stanford.edu/courses/220b/cltl/clm/node64.html] ''Common Lisp the Language'' for more on keyword parameters.
+
+Keyword parameters may be emulated (assuming you have no ##&rest## args) by treating the ##&rest## arguments as a property list:
+
+{{{
+(defun foobar-plist (&rest args)
+  "`foobar-plist' takes keyword arguments of :foo and :bar like this:
+\(foobar-plist :foo 23)
+\(foobar-plist :bar 42)"
+  (format "foo is %S and bar is %S" (plist-get args :foo) (plist-get args :bar)))
+}}}
