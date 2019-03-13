@@ -44,7 +44,8 @@ systemctl enable --user emacs
 systemctl start --user emacs
 }}}
 
-Centos7 does not support `--user` configurations for systemd. Instead, you can use this unit file:
+===CentOS===
+CentOS 7 does not support <tt>--user</tt> configurations for systemd. Instead, you can use this unit file:
 {{{
 [Unit]
 Description=Emacs: the extensible, self-documenting text editor
@@ -61,7 +62,7 @@ WorkingDirectory=%h
 WantedBy=multi-user.target
 }}}
 
-Save it as `/usr/lib/systemd/system/emacs@.service' and then install it:
+Save it as <tt>/usr/lib/systemd/system/emacs@.service</tt> and then install it:
 {{{
 systemctl daemon-reload 
 systemctl enable emacs@<user>
