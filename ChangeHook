@@ -1,4 +1,4 @@
-Here is sample code that makes sure there is allways a space before and after an equal sign.  Just to illustrate a possible use for the `after-change-functions' and `before-change-functions'.
+Here is sample code that makes sure there is always a space before and after an equal sign.  Just to illustrate a possible use for the `after-change-functions' and `before-change-functions'.
 
 Note that this example will have difficulties when people want to type >= <= != == or string=.  checking for these exceptions is left as an exercise for the reader.  Actually, if anybody knows a better solution to the problem, add it.
 
