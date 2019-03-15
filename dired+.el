@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 27 13:32:11 2019 (-0800)
+;; Last-Updated: Fri Mar 15 09:22:01 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11308
+;;     Update #: 11310
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -787,6 +787,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/15 dadams
+;;     diredp-font-lock-keywords-1: Treat dired-omit-files like dired-omit-extensions.
+;;                                  Append [*]? to last entry for ignore lists.
 ;; 2019/01/27 dadams
 ;;     Added: diredp-mark-files-containing-regexp-recursive.
 ;;              Bound to M-+ % g.  Added to diredp-marks-recursive-menu, diredp-regexp-recursive-menu.
@@ -3568,14 +3571,20 @@ In particular, inode number, number of hard links, and file size."
        ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
 
    ;; Files to ignore
-   (list (concat "^  \\(.*\\("
-                 (mapconcat #'regexp-quote (or (and (boundp 'dired-omit-extensions)  dired-omit-extensions)
-                                               completion-ignored-extensions)
-                            "[*]?\\|")
-                 (and diredp-ignore-compressed-flag
-                      (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|")))
-                 "[*]?\\)\\)$") ; Allow for executable flag (*).
-         1 diredp-ignored-file-name t)
+   (let* ((omit-exts   (or (and (boundp 'dired-omit-extensions)  dired-omit-extensions)
+                           completion-ignored-extensions))
+          (omit-exts   (and omit-exts
+                            (concat (mapconcat #'regexp-quote omit-exts "[*]?\\|") "[*]?")))
+          (omit-files  (and dired-omit-files
+                            (concat "\\|" dired-omit-files))) ; Don't bother trying to handle final `*'
+          (compr-exts  (and diredp-ignore-compressed-flag
+                            (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|") "[*]?"))))
+     (list (concat "^  \\(.*\\("
+                   omit-exts
+                   omit-files
+                   compr-exts
+                   "[*]?\\)\\)$") ; Allow for executable flag (*).
+           1 diredp-ignored-file-name t))
 
    ;; Compressed-file (suffix)
    (list (concat "\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions) "\\)[*]?$"))
