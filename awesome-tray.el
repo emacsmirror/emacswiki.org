@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-10-07 07:30:16
-;; Version: 1.9
-;; Last-Updated: 2018-11-18 07:47:06
+;; Version: 2.0
+;; Last-Updated: 2018-11-25 20:33:29
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tray.el
 ;; Keywords:
@@ -73,8 +73,12 @@
 
 ;;; Change log:
 ;;
+;; 2018/11/25
+;;      * Add `RVM' support.
+;;      * The rvm module is not activated by default, I move it to `awesome-tray-all-modules'.
+;;
 ;; 2018/11/18
-;;	* Fix the problem of displaying duplicate information when the mouse is in the minibuffer window.
+;;      * Fix the problem of displaying duplicate information when the mouse is in the minibuffer window.
 ;;
 ;; 2018/11/12
 ;;      * Remove Mac color, use hex color instead.
@@ -157,6 +161,11 @@ Maybe you need set this option with bigger value to speedup on Windows platform.
   "Git face."
   :group 'awesome-tray)
 
+(defface awesome-tray-module-rvm-face
+  '((t (:foreground "#333fff" :bold t)))
+  "Git face."
+  :group 'awesome-tray)
+
 (defface awesome-tray-module-mode-name-face
   '((t (:foreground "green3" :bold t)))
   "Mode name face."
@@ -204,7 +213,7 @@ Maybe you need set this option with bigger value to speedup on Windows platform.
 (defvar awesome-tray-active-p nil)
 
 (defvar awesome-tray-all-modules
-  '("last-command" "parent-dir" "git" "buffer-name" "mode-name" "location" "date"))
+  '("last-command" "parent-dir" "git" "buffer-name" "mode-name" "location" "rvm" "date"))
 
 (defvar awesome-tray-git-command-last-time 0)
 
@@ -282,6 +291,8 @@ Maybe you need set this option with bigger value to speedup on Windows platform.
 (defun awesome-tray-get-module-info (module-name)
   (cond ((string-equal module-name "git")
          (propertize (awesome-tray-module-git-info) 'face 'awesome-tray-module-git-face))
+        ((string-equal module-name "rvm")
+         (propertize (awesome-tray-module-rvm-info) 'face 'awesome-tray-module-rvm-face))
         ((string-equal module-name "mode-name")
          (propertize (awesome-tray-module-mode-name-info) 'face 'awesome-tray-module-mode-name-face))
         ((string-equal module-name "location")
@@ -305,6 +316,14 @@ Maybe you need set this option with bigger value to speedup on Windows platform.
               (setq awesome-tray-git-command-last-time current-seconds)
               (awesome-tray-update-git-command-cache))
           awesome-tray-git-command-cache))
+    ""))
+
+(defun awesome-tray-module-rvm-info ()
+  (if (executable-find "rvm-prompt")
+      (format "rvm:%s" (replace-regexp-in-string
+         "\n" ""
+         (nth 1 (awesome-tray-process-exit-code-and-output "rvm-prompt")))
+        )
     ""))
 
 (defun awesome-tray-module-mode-name-info ()
@@ -361,7 +380,9 @@ Maybe you need set this option with bigger value to speedup on Windows platform.
         (if (> blank-length 0)
             ;; Fill message's end with whitespace to keep tray info at right of minibuffer.
             (concat message-string message-fill-string tray-info)
-          (if (string-suffix-p awesome-tray-last-tray-info message-string)
+          (if (and awesome-tray-last-tray-info
+                   message-string
+                   (string-suffix-p awesome-tray-last-tray-info message-string))
               ;; Fill empty whitespace if new message contain duplicate tray-info (cause by move mouse on minibuffer window).
               (concat empty-fill-string tray-info)
             ;; Don't fill whitepsace at end of message if new message is very long.
