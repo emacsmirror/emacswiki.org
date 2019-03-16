@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 2.6
-;; Last-Updated: 2019-03-09 11:51:38
+;; Version: 2.9
+;; Last-Updated: 2019-03-16 23:30:26
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `cl' `cl-lib' `color'
+;; `cl' `cl-lib' `color' `which-func'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -86,6 +86,15 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/03/16
+;;      * Fix integerp error.
+;;
+;; 2019/03/14
+;;      * Try to fix numberp error.
+;;
+;; 2019/03/12
+;;      * Display sticky function name in tab.
 ;;
 ;; 2019/03/09
 ;;      * Absorb powerline code, keep single file.
@@ -158,6 +167,7 @@
 (require 'cl)
 (require 'cl-lib)
 (require 'color)
+(require 'which-func)
 
 ;;; Code:
 ;;;;;;;;;;;;;;;;;;;;;;; Awesome-Tab source code ;;;;;;;;;;;;;;;;;;;;;;;
@@ -225,6 +235,12 @@ background color of the `default' face otherwise."
   "The style of tab."
   :group 'awesome-tab
   :type 'string)
+
+(defcustom awesome-tab-display-sticky-function-name t
+  "Non-nil to display sticky function name in tab.
+Sticky function is the function at the top of the current window sticky."
+  :group 'awesome-tab
+  :type 'boolean)
 
 (defvar awesome-tab-hide-tab-function 'awesome-tab-hide-tab
   "Function to hide tab.
@@ -579,13 +595,6 @@ current cached copy."
 
 ;;; Tabs
 ;;
-(defsubst awesome-tab-line-buttons (tabset)
-  "Return a list of propertized strings for tab bar buttons.
-TABSET is the tab set used to choose the appropriate buttons."
-  (list
-   (1- (length (awesome-tab-tabs tabset)))
-   ))
-
 (defsubst awesome-tab-line-tab (tab)
   "Return the display representation of tab TAB.
 That is, a propertized string used as an `header-line-format' template
@@ -628,7 +637,6 @@ Call `awesome-tab-tab-label-function' to obtain a label for TAB."
               start)
           (setq truncate-lines nil
                 buffer-undo-list t)
-          (apply 'insert (awesome-tab-line-buttons tabset))
           (setq start (point))
           (while (and (cdr elts) ;; Always show the selected tab!
                       (progn
@@ -648,8 +656,7 @@ Call `awesome-tab-tab-label-function' to obtain a label for TAB."
     ;; Cache and return the new tab bar.
     (awesome-tab-set-template
      tabset
-     (list (awesome-tab-line-buttons tabset)
-           (nreverse elts)
+     (list (nreverse elts)
            (propertize "%-"
                        'face (list :background padcolor
                                    :foreground padcolor)
@@ -1411,11 +1418,48 @@ That is, a string used to represent it on the tab bar."
   (awesome-tab-render-separator
    (list awesome-tab-style-left
          (format " %s "
-                 (let ((bufname (buffer-name (car tab))))
+                 (let ((bufname (awesome-tab-buffer-name (car tab))))
                    (if (> awesome-tab-label-fixed-length 0)
                        (awesome-tab-truncate-string  awesome-tab-label-fixed-length bufname)
                      bufname)))
          awesome-tab-style-right)))
+
+(defun awesome-tab-buffer-name (tab-buffer)
+  "Get buffer name of tab.
+Will merge sticky function name in tab if option `awesome-tab-display-sticky-function-name' is non-nil."
+  (if (and awesome-tab-display-sticky-function-name
+           awesome-tab-last-sticky-func-name
+           (equal tab-buffer (current-buffer)))
+      (format "%s [%s]" (buffer-name tab-buffer) awesome-tab-last-sticky-func-name)
+    (buffer-name tab-buffer)))
+
+(defvar awesome-tab-last-scroll-y 0
+  "Holds the scroll y of window from the last run of post-command-hooks.")
+
+(defvar awesome-tab-last-sticky-func-name nil
+  "Holds the sticky function name.")
+
+(defun awesome-tab-monitor-window-scroll ()
+  "This function is used to monitor the window scroll.
+Currently, this function is only use for option `awesome-tab-display-sticky-function-name'."
+  (when awesome-tab-display-sticky-function-name
+    (let ((scroll-y (window-start)))
+      (when (and scroll-y
+                 (integerp scroll-y))
+        (unless (equal scroll-y awesome-tab-last-scroll-y)
+          (let ((func-name (save-excursion
+                             (goto-char scroll-y)
+                             (which-function))))
+            (unless (equal func-name awesome-tab-last-sticky-func-name)
+              (setq awesome-tab-last-sticky-func-name func-name)
+
+              ;; Use `ignore-errors' avoid integerp error when execute `awesome-tab-line-format'.
+              (ignore-errors
+                (awesome-tab-line-format awesome-tab-current-tabset))
+              ))))
+      (setq awesome-tab-last-scroll-y scroll-y))))
+
+(add-hook 'post-command-hook 'awesome-tab-monitor-window-scroll)
 
 (defun awesome-tab-render-separator (values)
   "Render a list of powerline VALUES."
