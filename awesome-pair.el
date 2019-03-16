@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-11-11 09:27:58
-;; Version: 0.9
-;; Last-Updated: 2019-01-30 07:40:22
+;; Version: 1.6
+;; Last-Updated: 2019-03-16 20:37:10
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-pair.el
 ;; Keywords:
@@ -69,6 +69,23 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/03/16
+;;      * Make `awesome-pair-wrap-double-quote' and `awesome-pair-unwrap' support web-mode.
+;;      * Add new command `awesome-pair-space'.
+;;
+;; 2019/03/12
+;;      * Add new command `awesome-pair-equal'.
+;;
+;; 2019/02/27
+;;      * Don't insert \" in string that wrap by `...` when current mode is golang.
+;;
+;; 2019/02/09
+;;      * Insert ) directly in sh-mode for case ... in syntax.
+;;
+;; 2019/02/07
+;;      * Don't insert \ before " if cursor at comment area.
+;;      * Fix `integer-or-marker-p' error when run `awesome-pair-*-delete-in-string' functions in Python language.
 ;;
 ;; 2019/01/30
 ;;      * Fix 'wrong type character-p' error when call `awesome-pair-forward-delete' in beginning of buffer.
@@ -194,6 +211,9 @@
   (cond ((or (awesome-pair-in-string-p)
              (awesome-pair-in-comment-p))
          (insert ")"))
+        ;; Insert ) directly in sh-mode for case ... in syntax.
+        ((derived-mode-p 'sh-mode)
+         (insert ")"))
         (t
          (let ((close (awesome-pair-missing-close)))
            (if close
@@ -230,13 +250,43 @@
 
 (defun awesome-pair-double-quote ()
   (interactive)
-  (cond ((or (awesome-pair-in-string-p)
-             (awesome-pair-in-comment-p))
-         (insert "\\\""))
+  (cond ((awesome-pair-in-string-p)
+         (if (and (derived-mode-p 'go-mode)
+                  (equal (save-excursion (nth 3 (awesome-pair-current-parse-state))) 96))
+             ;; When current mode is golang.
+             ;; Don't insert \" in string that wrap by `...`
+             (insert "\"")
+           (insert "\\\"")))
+        ((awesome-pair-in-comment-p)
+         (insert "\""))
         (t
          (insert "\"\"")
          (backward-char))
         ))
+
+(defun awesome-pair-space (arg)
+  "Wrap space around cursor if cursor in blank parenthesis.
+
+input: {|} (press <SPACE> at |)
+output: { | }
+
+input: [|] (press <SPACE> at |)
+output: [ | ]
+"
+  (interactive "p")
+  (if (> arg 1)
+      (self-insert-command arg)
+    (cond ((or (awesome-pair-in-comment-p)
+               (awesome-pair-in-string-p))
+           (insert " "))
+          ((or (and (equal (char-after) ?\} )
+                    (equal (char-before) ?\{ ))
+               (and (equal (char-after) ?\] )
+                    (equal (char-before) ?\[ )))
+           (insert "  ")
+           (backward-char 1))
+          (t
+           (insert " ")))))
 
 (defun awesome-pair-match-paren (arg)
   "Go to the matching parenthesis if on parenthesis, otherwise insert %."
@@ -306,44 +356,45 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
 
 (defun awesome-pair-wrap-round ()
   (interactive)
-  (cond
-   ((region-active-p)
-    (let ((start (region-beginning))
-          (end (region-end)))
-      (setq mark-active nil)
-      (goto-char start)
-      (insert "(")
-      (goto-char (+ end 1))
-      (insert ")")
-      (goto-char start)))
-   ((awesome-pair-in-string-p)
-    (let ((string-bound (awesome-pair-string-start+end-points)))
-      (save-excursion
-        (goto-char (car string-bound))
-        (insert "(")
-        (goto-char (+ (cdr string-bound) 2))
-        (insert ")"))))
-   ((awesome-pair-in-comment-p)
-    (save-excursion
-      (let ((start (beginning-of-thing 'symbol))
-            (end (end-of-thing 'symbol)))
-        (goto-char start)
-        (insert "(")
-        (goto-char (+ end 1))
-        (insert ")"))))
-   (t
-    (save-excursion
-      (let ((start (beginning-of-thing 'sexp))
-            (end (end-of-thing 'sexp)))
-        (goto-char start)
-        (insert "(")
-        (goto-char (+ end 1))
-        (insert ")"))
-      )))
-  ;; Forward to jump in parenthesis.
-  (forward-char)
-  ;; Indent wrap area.
-  (awesome-pair-indent-parenthesis-area))
+  (if (derived-mode-p 'web-mode)
+      (awesome-pair-web-mode-element-wrap)
+    (cond ((region-active-p)
+           (let ((start (region-beginning))
+                 (end (region-end)))
+             (setq mark-active nil)
+             (goto-char start)
+             (insert "(")
+             (goto-char (+ end 1))
+             (insert ")")
+             (goto-char start)))
+          ((awesome-pair-in-string-p)
+           (let ((string-bound (awesome-pair-string-start+end-points)))
+             (save-excursion
+               (goto-char (car string-bound))
+               (insert "(")
+               (goto-char (+ (cdr string-bound) 2))
+               (insert ")"))))
+          ((awesome-pair-in-comment-p)
+           (save-excursion
+             (let ((start (beginning-of-thing 'symbol))
+                   (end (end-of-thing 'symbol)))
+               (goto-char start)
+               (insert "(")
+               (goto-char (+ end 1))
+               (insert ")"))))
+          (t
+           (save-excursion
+             (let ((start (beginning-of-thing 'sexp))
+                   (end (end-of-thing 'sexp)))
+               (goto-char start)
+               (insert "(")
+               (goto-char (+ end 1))
+               (insert ")"))
+             )))
+    ;; Forward to jump in parenthesis.
+    (forward-char)
+    ;; Indent wrap area.
+    (awesome-pair-indent-parenthesis-area)))
 
 (defun awesome-pair-wrap-bracket ()
   (interactive)
@@ -464,23 +515,26 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
 
 (defun awesome-pair-unwrap (&optional argument)
   (interactive "P")
-  (if (awesome-pair-in-string-p)
-      (awesome-pair-splice-string argument)
-    (save-excursion
-      (awesome-pair-kill-surrounding-sexps-for-splice argument)
-      (backward-up-list)
-      (save-excursion
-        (forward-sexp)
-        (backward-delete-char 1))
-      (delete-char 1)
-      ;; Try to indent parent expression after unwrap pair.
-      ;; This feature just enable in lisp-like language.
-      (when (or
-             (derived-mode-p 'lisp-mode)
-             (derived-mode-p 'emacs-lisp-mode))
-        (ignore-errors
-          (backward-up-list)
-          (indent-sexp))))))
+  (cond ((derived-mode-p 'web-mode)
+         (awesome-pair-web-mode-element-unwrap))
+        ((awesome-pair-in-string-p)
+         (awesome-pair-splice-string argument))
+        (t
+         (save-excursion
+           (awesome-pair-kill-surrounding-sexps-for-splice argument)
+           (backward-up-list)
+           (save-excursion
+             (forward-sexp)
+             (backward-delete-char 1))
+           (delete-char 1)
+           ;; Try to indent parent expression after unwrap pair.
+           ;; This feature just enable in lisp-like language.
+           (when (or
+                  (derived-mode-p 'lisp-mode)
+                  (derived-mode-p 'emacs-lisp-mode))
+             (ignore-errors
+               (backward-up-list)
+               (indent-sexp)))))))
 
 (defun awesome-pair-jump-out-pair-and-newline ()
   (interactive)
@@ -583,27 +637,67 @@ If current mode is `web-mode', use `awesome-pair-web-mode-kill' instead `awesome
 
 (defun awesome-pair-backward-delete-in-string ()
   (let ((start+end (awesome-pair-string-start+end-points)))
-    (cond ((not (eq (1- (point)) (car start+end)))
-           (if (awesome-pair-in-string-escape-p)
-               (delete-char 1))
-           (backward-delete-char 1)
-           (if (awesome-pair-in-string-escape-p)
-               (backward-delete-char 1)))
-          ((eq (point) (cdr start+end))
-           (backward-delete-char 1)
-           (delete-char 1)))))
+    (cond
+     ;; Some language, such as Python, `awesome-pair-string-start+end-points' will return nil cause by `beginning-of-defun' retun nil.
+     ;; This logical branch is handle this.
+     ((not start+end)
+      ;; First determine if it is in the string area?
+      (when (awesome-pair-in-string-p)
+        (let ((syn-before (char-syntax (char-before)))
+              (syn-after  (char-syntax (char-after))))
+          (cond
+           ;; Remove double quotes when the string is empty
+           ((and (eq syn-before ?\" )
+                 (eq syn-after  ?\" ))
+            (backward-delete-char 1)
+            (delete-char 1))
+           ;; If there is still content in the string and the double quotation marks are in front of the cursor,
+           ;; no delete operation is performed.
+           ((eq syn-before ?\" ))
+           ;; If the cursor is not double quotes before and after, delete the previous character.
+           (t
+            (backward-delete-char 1))))))
+     ((not (eq (1- (point)) (car start+end)))
+      (if (awesome-pair-in-string-escape-p)
+          (delete-char 1))
+      (backward-delete-char 1)
+      (if (awesome-pair-in-string-escape-p)
+          (backward-delete-char 1)))
+     ((eq (point) (cdr start+end))
+      (backward-delete-char 1)
+      (delete-char 1)))))
 
 (defun awesome-pair-forward-delete-in-string ()
   (let ((start+end (awesome-pair-string-start+end-points)))
-    (cond ((not (eq (point) (cdr start+end)))
-           (cond ((awesome-pair-in-string-escape-p)
-                  (delete-char -1))
-                 ((eq (char-after) ?\\ )
-                  (delete-char +1)))
-           (delete-char +1))
-          ((eq (1- (point)) (car start+end))
-           (delete-char -1)
-           (delete-char +1)))))
+    (cond
+     ;; Some language, such as Python, `awesome-pair-string-start+end-points' will return nil cause by `beginning-of-defun' retun nil.
+     ;; This logical branch is handle this.
+     ((not start+end)
+      ;; First determine if it is in the string area?
+      (when (awesome-pair-in-string-p)
+        (let ((syn-before (char-syntax (char-before)))
+              (syn-after  (char-syntax (char-after))))
+          (cond
+           ;; Remove double quotes when the string is empty
+           ((and (eq syn-before ?\" )
+                 (eq syn-after  ?\" ))
+            (backward-delete-char 1)
+            (delete-char 1))
+           ;; If there is still content in the string and the double quotation marks are after of the cursor,
+           ;; no delete operation is performed.
+           ((eq syn-after ?\" ))
+           ;; If the cursor is not double quotes before and after, delete the previous character.
+           (t
+            (delete-char 1))))))
+     ((not (eq (point) (cdr start+end)))
+      (cond ((awesome-pair-in-string-escape-p)
+             (delete-char -1))
+            ((eq (char-after) ?\\ )
+             (delete-char +1)))
+      (delete-char +1))
+     ((eq (1- (point)) (car start+end))
+      (delete-char -1)
+      (delete-char +1)))))
 
 (defun awesome-pair-splice-string (argument)
   (let ((original-point (point))
@@ -911,6 +1005,58 @@ If current line is not blank, do `awesome-pair-kill' first, re-indent line if re
     (save-excursion
       (indent-region bound-start bound-end))))
 
+(defun awesome-pair-equal ()
+  (interactive)
+  (cond
+   ((derived-mode-p 'web-mode)
+    (if (awesome-pair-in-string-p)
+        (insert "=")
+      (insert "=\"\"")
+      (backward-char 1)))
+   (t
+    (insert "="))))
+
+
+(defun awesome-pair-web-mode-element-wrap ()
+  "Like `web-mode-element-wrap', but jump after tag for continue edit."
+  (interactive)
+  (let (beg end pos tag sep)
+    (save-excursion
+      (setq tag (read-from-minibuffer "Tag name? "))
+      (setq pos (point))
+      (cond
+       (mark-active
+        (setq beg (region-beginning)
+              end (region-end)))
+       ((get-text-property pos 'tag-type)
+        (setq beg (web-mode-element-beginning-position pos)
+              end (1+ (web-mode-element-end-position pos)))
+        )
+       ((setq beg (web-mode-element-parent-position pos))
+        (setq end (1+ (web-mode-element-end-position pos)))
+        )
+       )
+      ;;      (message "beg(%S) end(%S)" beg end)
+      (when (and beg end (> end 0))
+        (setq sep (if (get-text-property beg 'tag-beg) "\n" ""))
+        (web-mode-insert-text-at-pos (concat sep "</" tag ">") end)
+        (web-mode-insert-text-at-pos (concat "<" tag ">" sep) beg)
+        (when (string= sep "\n") (indent-region beg (+ end (* (+ 3 (length tag)) 2))))
+        )
+      )                                 ;save-excursion
+    (if beg (goto-char beg))
+    (forward-char (+ 1 (length tag)))))
+
+(defun awesome-pair-web-mode-element-unwrap ()
+  "Like `web-mode-element-vanish', but you don't need jump parent tag to unwrap.
+Just like `paredit-splice-sexp+' style."
+  (interactive)
+  (save-excursion
+    (web-mode-element-parent)
+    (web-mode-element-vanish 1)
+    (back-to-indentation)
+    ))
+
 ;;;;;;;;;;;;;;;;; Utils functions ;;;;;;;;;;;;;;;;;;;;;;
 (defun awesome-pair-current-parse-state ()
   (let ((point (point)))
@@ -918,11 +1064,12 @@ If current line is not blank, do `awesome-pair-kill' first, re-indent line if re
     (parse-partial-sexp (point) point)))
 
 (defun awesome-pair-string-start+end-points (&optional state)
-  (save-excursion
-    (let ((start (nth 8 (or state (awesome-pair-current-parse-state)))))
-      (goto-char start)
-      (forward-sexp 1)
-      (cons start (1- (point))))))
+  (ignore-errors
+    (save-excursion
+      (let ((start (nth 8 (or state (awesome-pair-current-parse-state)))))
+        (goto-char start)
+        (forward-sexp 1)
+        (cons start (1- (point)))))))
 
 (defun awesome-pair-after-open-pair-p ()
   (save-excursion
