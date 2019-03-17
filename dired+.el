@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 16 17:01:47 2019 (-0700)
+;; Last-Updated: Sat Mar 16 17:06:44 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11329
+;;     Update #: 11330
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -3455,7 +3455,8 @@ This means the `.' plus the file extension.  Example: `.elc'."
       ;; (((background dark)) (:foreground "#A71F5F645F64")) ; ~ dark salmon
       (((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
       (t                   (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
-  "*Face used for ignored file names  in Dired buffers."
+  "*Face used for ignored file names  in Dired buffers.
+But see also face `diredp-omit-file-name'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
