@@ -3,13 +3,13 @@ Emacs and the GNU tools. For convenience, it might be useful to
 install in the Info's directory some other manuals and documentation.
 
 Common convention to all external manuals would be to be keep a
-separate directory, for example "~/.local/info". In it a special file, named /DIR/,
+separate directory, for example "~/.local/share/info". In it a special file, named /dir/,
 lists the documentation installed in it. To add to it invoke "install-info".
 
 To make this directory available to Emacs add this snippet to your "init.el":
 
 {{{
-(add-to-list 'Info-default-directory-list "~/.local/info")
+(add-to-list 'Info-default-directory-list "~/.local/share/info")
 }}}
 
 Sadly, all these info files have plenty of warnings when you generate them...
@@ -28,10 +28,10 @@ wget https://github.com/git/git/archive/master.tar.gz
 tar xf master.tar.gz
 cd git-master/Documentation
 make git.info gitman.info
-mv git.info gitman.info ~/.local/info
-cd ~/.local/info
-install-info git.info DIR
-install-info gitman.info DIR
+mv git.info gitman.info ~/.local/share/info
+cd ~/.local/share/info
+install-info git.info dir
+install-info gitman.info dir
 }}}
 
 (These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/git/git/releases tag] like "v2.20.1".)
@@ -59,9 +59,9 @@ tar xf master.tar.gz
 cd cpython-master/Doc
 sphinx-build -b texinfo -d build/doctrees . build/texinfo
 cd build/texinfo && make
-mv python.info ~/.local/info
-cd ~/.local/info
-install-info python.info DIR
+mv python.info ~/.local/share/info
+cd ~/.local/share/info
+install-info python.info dir
 }}}
 
 (These instructions assume that you want the latest, bleeding edge. Replace "master" with an appropriate [https://github.com/python/cpython/releases tag] like "v3.7.2".)
@@ -82,9 +82,9 @@ for info in *.info; do
   base=$(basename $info .info)
   install-info --entry="* $base: ($info). " --section=Perl $info perl-menu.info
 done
-mv *.info* ~/.local/info/
-cd ~/.local/info/
-install-info --entry="* Perl: (perl-menu.info). " --section=Perl perl-menu.info DIR
+mv *.info* ~/.local/share/info
+cd ~/.local/share/info
+install-info --entry="* Perl: (perl-menu.info). " --section=Perl perl-menu.info dir
 }}}
 
 (I'm not quite sure how to view the ##perlfunc## manual. If you know how to fix it, please change the instructions above.)
@@ -100,8 +100,8 @@ To install documentation in .info format of GNU's standard C++ library (for stuf
   $ cp texinfo/lgpl.texinfo .
   $ makeinfo libg++.texi
     (a bunch of warnings!)
-  $ cp libg++.info ~/info/
-  $ cd ~/info
+  $ cp libg++.info ~/.local/share/info
+  $ cd ~/.local/share/info
   $ install-info libg++.info dir
 
 The URL in wget is one of the mirrors selected for geographic proximity. Select yours from http://gcc.gnu.org/mirrors.html
@@ -114,7 +114,7 @@ Most convenient way to install is via MELPA. For reference, the package page is:
 
 Alternatively, for manual installation:
 
-  $ cd ~/info
+  $ cd ~/.local/share/info
   $ wget https://github.com/webframp/sicp-info/raw/master/sicp.info
   $ install-info sicp.info dir
 
@@ -123,12 +123,11 @@ Alternatively, for manual installation:
   $ mkdir /tmp/cl-info
   $ cd /tmp/cl-info
   $ wget ftp://ftp.gnu.org/pub/gnu/gcl/gcl.info.tgz
-  $ mv info/* ~/info
-  $ install-info --section="Software development" --entry="* HyperSpec: (gcl). Common Lisp HyperSpec." ~/info/gcl.info ~/info/dir
+  $ mv info/* ~/.local/share/info
+  $ install-info --section="Software development" --entry="* HyperSpec: (gcl). Common Lisp HyperSpec." ~/.local/share/info/gcl.info ~/.local/share/info/dir
 
 === LaTeX2e Reference Manual ===
 
-  $ cd ~/info
+  $ cd ~/.local/share/info
   $ wget http://mirrors.ctan.org/info/latex2e-help-texinfo/latex2e.info
   $ install-info latex2e.info dir
-
