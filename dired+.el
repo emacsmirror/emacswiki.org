@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 15 09:22:01 2019 (-0700)
+;; Last-Updated: Sat Mar 16 17:01:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11310
+;;     Update #: 11329
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -443,9 +443,10 @@
 ;;    `diredp-flag-mark-line', `diredp-get-file-or-dir-name',
 ;;    `diredp-ignored-file-name', `diredp-link-priv',
 ;;    `diredp-mode-line-flagged', `diredp-mode-line-marked'
-;;    `diredp-no-priv', `diredp-number', `diredp-other-priv',
-;;    `diredp-rare-priv', `diredp-read-priv', `diredp-symlink',
-;;    `diredp-tagged-autofile-name', `diredp-write-priv'.
+;;    `diredp-omit-file-name', `diredp-no-priv', `diredp-number',
+;;    `diredp-other-priv', `diredp-rare-priv', `diredp-read-priv',
+;;    `diredp-symlink', `diredp-tagged-autofile-name',
+;;    `diredp-write-priv'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -787,9 +788,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/16 dadms
+;;     Added face diredp-omit-file-name.
+;;     diredp-font-lock-keywords-1: Use face diredp-omit-file-name for dired-omit-files matches.
 ;; 2019/03/15 dadams
 ;;     diredp-font-lock-keywords-1: Treat dired-omit-files like dired-omit-extensions.
-;;                                  Append [*]? to last entry for ignore lists.
 ;; 2019/01/27 dadams
 ;;     Added: diredp-mark-files-containing-regexp-recursive.
 ;;              Bound to M-+ % g.  Added to diredp-marks-recursive-menu, diredp-regexp-recursive-menu.
@@ -3456,6 +3459,18 @@ This means the `.' plus the file extension.  Example: `.elc'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
+(defface diredp-omit-file-name
+  (if (assq :inherit custom-face-attributes)
+      '((t  (:inherit diredp-ignored-file-name :strike-through "Firebrick")))
+    '((((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
+      (t                   (:foreground "#00006DE06DE0")))) ; ~ dark cyan
+  "*Face used for files whose names will be omitted in `dired-omit-mode'.
+This means file names that match regexp `dired-omit-files'.
+File names matching `dired-omit-extensions' are highlighted with face
+`diredp-ignored-file-name' instead."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-omit-file-name 'diredp-omit-file-name)
+
 (defface diredp-link-priv
     '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
       (t                   (:foreground "DarkOrange")))
@@ -3570,22 +3585,17 @@ In particular, inode number, number of hard links, and file size."
        (2 diredp-date-time t t)         ; Date/time, ISO
        ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
 
-   ;; Files to ignore
+   ;; Files to ignore.   ([*]? allows for executable flag (*).
    (let* ((omit-exts   (or (and (boundp 'dired-omit-extensions)  dired-omit-extensions)
                            completion-ignored-extensions))
           (omit-exts   (and omit-exts
                             (concat (mapconcat #'regexp-quote omit-exts "[*]?\\|") "[*]?")))
-          (omit-files  (and dired-omit-files
-                            (concat "\\|" dired-omit-files))) ; Don't bother trying to handle final `*'
           (compr-exts  (and diredp-ignore-compressed-flag
                             (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|") "[*]?"))))
-     (list (concat "^  \\(.*\\("
-                   omit-exts
-                   omit-files
-                   compr-exts
-                   "[*]?\\)\\)$") ; Allow for executable flag (*).
+     (list (concat "^  \\(.*\\(" omit-exts compr-exts "\\)\\)$")
            1 diredp-ignored-file-name t))
-
+   (list (concat "^  \\(.*\\(" dired-omit-files "\\)\\)$") ; Don't bother trying to allow for executable flag here.
+         1 diredp-omit-file-name t)
    ;; Compressed-file (suffix)
    (list (concat "\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions) "\\)[*]?$"))
          1 diredp-compressed-file-suffix t)
