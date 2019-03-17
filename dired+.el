@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 16 17:06:44 2019 (-0700)
+;; Last-Updated: Sun Mar 17 15:22:48 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11330
+;;     Update #: 11371
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -788,6 +788,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/17 dadams
+;;     diredp-font-lock-keywords-1:
+;;       Use just dired-omit-files as regexp - its components already have ^...$.
+;;       Removed superfluous execute *'s in regexps and superfluous concat for compressed extensions.
+;;     Face diredp-omit-file-name: Removed :strike-through for default value.
 ;; 2019/03/16 dadms
 ;;     Added face diredp-omit-file-name.
 ;;     diredp-font-lock-keywords-1: Use face diredp-omit-file-name for dired-omit-files matches.
@@ -3462,7 +3467,7 @@ But see also face `diredp-omit-file-name'."
 
 (defface diredp-omit-file-name
   (if (assq :inherit custom-face-attributes)
-      '((t  (:inherit diredp-ignored-file-name :strike-through "Firebrick")))
+      '((t  (:inherit diredp-ignored-file-name))) ; Maybe add this?  :strike-through "Firebrick"
     '((((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
       (t                   (:foreground "#00006DE06DE0")))) ; ~ dark cyan
   "*Face used for files whose names will be omitted in `dired-omit-mode'.
@@ -3558,10 +3563,10 @@ In particular, inode number, number of hard links, and file size."
 (defvar diredp-font-lock-keywords-1
   (list
    '("^  \\(.+:\\)$" 1 diredp-dir-heading) ; Directory headers
-   '("^  wildcard.*$" 0 'default)       ; Override others, e.g. `l' for `diredp-other-priv'.
-   '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
+   '("^  wildcard.*$" 0 'default)   ; Override others, e.g. `l' for `diredp-other-priv'.
+   '("^  (No match).*$" 0 'default) ; Override others, e.g. `t' for `diredp-other-priv'.
    '("[^ .]\\(\\.[^. /]+\\)$" 1 diredp-file-suffix) ; Suffix, including `.'.
-   '("\\([^ ]+\\) -> .+$" 1 diredp-symlink) ; Symbolic links
+   '("\\([^ ]+\\) -> .+$" 1 diredp-symlink)         ; Symbolic links
 
    ;; 1) Date/time and 2) filename w/o suffix.
    ;;    This is a bear, and it is fragile - Emacs can change `dired-move-to-filename-regexp'.
@@ -3572,8 +3577,8 @@ In particular, inode number, number of hard links, and file size."
                                                  "\\)[*]?$")) ; Compressed-file name
                    nil nil (list 0 diredp-compressed-file-name 'keep t)))
      `(,dired-move-to-filename-regexp
-       (7 diredp-date-time t t)         ; Date/time, locale (western or eastern)
-       (2 diredp-date-time t t)         ; Date/time, ISO
+       (7 diredp-date-time t t) ; Date/time, locale (western or eastern)
+       (2 diredp-date-time t t) ; Date/time, ISO
        (,(concat "\\(.+\\)\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions)
                                        "\\)[*]?$"))
         nil nil (0 diredp-compressed-file-name keep t)))) ; Compressed-file suffix
@@ -3582,23 +3587,25 @@ In particular, inode number, number of hard links, and file size."
              (list 1 'diredp-date-time t t) ; Date/time
              (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
      `(,dired-move-to-filename-regexp
-       (7 diredp-date-time t t)         ; Date/time, locale (western or eastern)
-       (2 diredp-date-time t t)         ; Date/time, ISO
+       (7 diredp-date-time t t) ; Date/time, locale (western or eastern)
+       (2 diredp-date-time t t) ; Date/time, ISO
        ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
 
-   ;; Files to ignore.   ([*]? allows for executable flag (*).
+   ;; Files to ignore.
+   ;;   Face `diredp-ignored-file-name' for omission by extension.
+   ;;   Face `diredp-omit-file-name' for omission by file name.
    (let* ((omit-exts   (or (and (boundp 'dired-omit-extensions)  dired-omit-extensions)
                            completion-ignored-extensions))
-          (omit-exts   (and omit-exts
-                            (concat (mapconcat #'regexp-quote omit-exts "[*]?\\|") "[*]?")))
+          (omit-exts   (and omit-exts  (mapconcat #'regexp-quote omit-exts "\\|")))
           (compr-exts  (and diredp-ignore-compressed-flag
-                            (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|") "[*]?"))))
-     (list (concat "^  \\(.*\\(" omit-exts compr-exts "\\)\\)$")
+                            (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "\\|")))))
+     (list (concat "^  \\(.*\\(" omit-exts compr-exts "\\)[*]?\\)$") ; [*]? allows for executable flag (*).
            1 diredp-ignored-file-name t))
-   (list (concat "^  \\(.*\\(" dired-omit-files "\\)\\)$") ; Don't bother trying to allow for executable flag here.
-         1 diredp-omit-file-name t)
+   ;; FIXME: Could insert [*]? before $ in each component of `dired-omit-files'.  Not bothering to, so far.
+   `(,dired-omit-files 0 diredp-omit-file-name t)
+
    ;; Compressed-file (suffix)
-   (list (concat "\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions) "\\)[*]?$"))
+   (list (concat "\\(" (funcall #'regexp-opt diredp-compressed-extensions) "\\)[*]?$")
          1 diredp-compressed-file-suffix t)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
 
