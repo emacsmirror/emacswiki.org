@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 2.9
-;; Last-Updated: 2019-03-16 23:30:26
+;; Version: 3.1
+;; Last-Updated: 2019-03-19 07:08:20
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -86,6 +86,12 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/03/19
+;;      * If `tab-index' more than length of visible tabs, selet the last tab.
+;;
+;; 2019/03/18
+;;      * Add new command `awesome-tab-select-visible-tab'.
 ;;
 ;; 2019/03/16
 ;;      * Fix integerp error.
@@ -667,7 +673,7 @@ Call `awesome-tab-tab-label-function' to obtain a label for TAB."
   "Return the header line templates that represent the tab bar.
 Inhibit display of the tab bar in current window `awesome-tab-hide-tab-function' return nil."
   (cond
-   ((funcall awesome-tab-hide-tab-function (current-buffer))
+   ((awesome-tab-hide-tab-cached (current-buffer))
     ;; Don't show the tab bar.
     (setq header-line-format nil))
    ((awesome-tab-current-tabset t)
@@ -899,7 +905,7 @@ Returns non-nil if the new state is enabled.
 Exclude buffers whose name starts with a space, when they are not
 visiting a file.  The current buffer is always included."
   (awesome-tab-filter-out
-   awesome-tab-hide-tab-function
+   'awesome-tab-hide-tab-cached
    (delq nil
          (mapcar #'(lambda (b)
                      (cond
@@ -1703,6 +1709,37 @@ Optional argument REVERSED default is move backward, if reversed is non-nil move
       (awesome-tab-forward-group))
     ))
 
+(defun awesome-tab-select-visible-nth-tab (tab-index)
+  "Select visible tab with `tab-index'.
+Example, when `tab-index' is 1, this function will select the leftmost label in the visible area,
+instead of the first label in the current group.
+
+If `tab-index' more than length of visible tabs, selet the last tab.
+
+If `tab-index' is 0, select last tab."
+  (let ((visible-tabs (awesome-tab-view awesome-tab-current-tabset)))
+    (switch-to-buffer
+     (car
+      (if (or (equal tab-index 0)
+              (> tab-index (length visible-tabs)))
+          (car (last visible-tabs))
+        (nth (- tab-index 1) visible-tabs))))))
+
+(defun awesome-tab-select-visible-tab ()
+  "Bind this function with number keystroke, such as s-1, s-2, s-3 ... etc.
+
+This function automatically recognizes the number at the end of the keystroke
+and switches to the tab of the corresponding index.
+
+Note that this function switches to the visible range,
+not the actual logical index position of the current group."
+  (interactive)
+  (let* ((event last-command-event)
+         (key (make-vector 1 event))
+         (key-desc (key-description key)))
+    (awesome-tab-select-visible-nth-tab
+     (string-to-number (nth 1 (split-string key-desc "-"))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;; Utils functions ;;;;;;;;;;;;;;;;;;;;;;;
 (defun awesome-tab-get-groups ()
   ;; Refresh groups.
@@ -1746,6 +1783,7 @@ Optional argument REVERSED default is move backward, if reversed is non-nil move
 
 ;; Rules to control buffer's group rules.
 (defvar awesome-tab-groups-hash (make-hash-table :test 'equal))
+(defvar awesome-tab-hide-hash (make-hash-table :test 'equal))
 
 (defun awesome-tab-project-name ()
   (let ((project-name (cdr (project-current))))
@@ -1803,8 +1841,8 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
         (when (featurep 'helm)
           (require 'helm)
           (helm-build-sync-source "Awesome-Tab Group"
-                                  :candidates #'awesome-tab-get-groups
-                                  :action '(("Switch to group" . awesome-tab-switch-group))))))
+            :candidates #'awesome-tab-get-groups
+            :action '(("Switch to group" . awesome-tab-switch-group))))))
 
 ;; Ivy source for switching group in ivy.
 (defvar ivy-source-awesome-tab-group nil)
@@ -1835,6 +1873,13 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
      (and (string-prefix-p "magit" name)
           (not (file-name-extension name)))
      )))
+
+(defun awesome-tab-hide-tab-cached (buf)
+  (let ((hide (gethash buf awesome-tab-hide-hash 'not-found)))
+    (when (eq hide 'not-found)
+      (setq hide (funcall awesome-tab-hide-tab-function buf))
+      (puthash buf hide awesome-tab-hide-hash))
+    hide))
 
 (defvar awesome-tab-last-focus-buffer nil
   "The last focus buffer.")
