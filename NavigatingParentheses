@@ -397,7 +397,7 @@ regular expression. The following is available in regular expressions.
   
   \S(    matches anything but an open delimiter
 
-  \S(    matches anything but a closing delimiter
+  \S)    matches anything but a closing delimiter
 
 So, <code>C-M-s RET \s( </code> will highlight all opening delimiters.
 You can then hit <code>C-M-s</code> repeatedly to jump from one delimiter
