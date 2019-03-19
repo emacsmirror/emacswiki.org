@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Mar  8 08:29:14 2019 (-0800)
+;; Last-Updated: Mon Mar 18 19:49:52 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3168
+;;     Update #: 3172
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -284,6 +284,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/18 dadams
+;;     clone-frame: Use frame-geom-value-numeric.
 ;; 2019/03/03 dadams
 ;;     Added: clone-frame-parameters.
 ;;     clone-frame: Always select new frame.  Augment current params with clone-frame-parameters.
@@ -1068,10 +1070,12 @@ also select the new frame."
            (clone-frame-parameters          (if (and clone-frame-parameters
                                                      (not (consp (car clone-frame-parameters))))
                                                 `((left . ,(+ (car clone-frame-parameters)
-                                                              (or (cdr (assq 'left (frame-parameters frame)))
+                                                              (or (frame-geom-value-numeric
+                                                                   'left (frame-parameter frame 'left))
                                                                   0)))
                                                   (top  . ,(+ (cdr clone-frame-parameters)
-                                                              (or (cdr (assq 'top (frame-parameters frame)))
+                                                              (or (frame-geom-value-numeric
+                                                                   'top (frame-parameter frame 'top))
                                                                   0))))
                                               clone-frame-parameters))
            (default-frame-alist             (append clone-frame-parameters (frame-parameters frame)))
