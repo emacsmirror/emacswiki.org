@@ -32,34 +32,34 @@ To change the ''expiration date'' of special buffers, to 6 hours, set `clean-buf
 
 To add more buffers to the list of special buffers, add them to the list `clean-buffer-list-kill-buffer-names'.
 
-    (add-to-list 'clean-buffer-list-kill-buffer-names
+    (setq clean-buffer-list-kill-buffer-names (nconc clean-buffer-list-kill-buffer-names
                  '("*buffer-selection*"
                    "*Finder*"
                    "*Finder Category*"
                    "*Finder-package*"
                    "*RE-Builder*"
-                   "*vc-change-log*"))
+                   "*vc-change-log*")))
 
 To define more regular expressions that should match special buffers, add them to `clean-buffer-list-kill-regexps'.
 
-    (add-to-list 'clean-buffer-list-kill-regexps
+    (setq clean-buffer-list-kill-regexps (nconc clean-buffer-list-kill-regexps
                  '("\\`\\*Customize .*\\*\\'"
-                   "\\`\\*\\(Wo\\)?Man .*\\*\\'"))
+                   "\\`\\*\\(Wo\\)?Man .*\\*\\'")))
 
 To define buffers that should never be killed, add strings to the list `clean-buffer-list-kill-never-buffer-names'.
 
-    (add-to-list 'clean-buffer-list-kill-never-buffer-names
+    (setq clean-buffer-list-kill-never-buffer-names (nconc clean-buffer-list-kill-never-buffer-names
                  '("*eshell*"
                    "*ielm*"
                    "*mail*"
                    "*w3m*"
-                   "*w3m-cache*"))
+                   "*w3m-cache*")))
 
 To define regular expressions for buffers that should never be killed, add them to the list `clean-buffer-list-kill-never-regexps'.
 
-    (add-to-list 'clean-buffer-list-kill-never-regexps
+    (setq clean-buffer-list-kill-never-regexps (nconc clean-buffer-list-kill-never-regexps
                  '("\\`\\*tramp/.*\\*\\`"
-                   "\\`\\*ftp .*\\*\\`"))
+                   "\\`\\*ftp .*\\*\\`")))
 
 The efforts of `clean-buffer-list' are logged in the ##*Messages*## buffer.  It Lists for each buffer the current timestamp, followed by the buffer's name, the number of seconds since a buffer was last visited, followed by the threshold seconds it needed to meet for deletion to occur.
 
