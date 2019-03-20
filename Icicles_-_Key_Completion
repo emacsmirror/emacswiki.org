@@ -101,6 +101,9 @@ What happens if the completion candidate is itself a [[prefix key]]? For example
 
 These represent prefix keys (`C-x 4', `C-x C-k', and so on). If you choose such a candidate, then you just continue completing -- buffer `*Completions*' is updated to show the completions of the compound prefix: `C-x 4', `C-x RET', or whichever you choose. The minibuffer prompt shows the completion so far; if you choose `RET', for instance, then it shows `C-x RET' while prompting you for the rest of the key sequence.
 
+
+
+[:Sorting]
 By default, completion candidates are sorted in buffer
 `*Completions*' with ''local bindings'' listed first.  You can use
 `##C-M-,##' at any time during key completion to toggle between this order
