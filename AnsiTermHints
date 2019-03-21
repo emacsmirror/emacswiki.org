@@ -219,6 +219,10 @@ hosts, you'll need to copy the ##eterm-color## and ##eterm-color.ti## files from
     ~/.terminfo/e/eterm-color
     ~/.terminfo/e/eterm-color.ti
 
+If your remote is running MacOS, compile it with tic:
+
+    tic -o ~/.terminfo ~/.terminfo/e/eterm-color.ti
+
 == Terminfo ==
 
 The above information relating to Remote Term Type can also apply to your local terminal. On some systems eterm-color might not be defined, or, perhaps even worse, be not as well defined as it could be. If you copy (or symlink to) the <code>/usr/share/emacs/<emacs version number>/etc/e/eterm-color</code> terminfo file into (in) <code>/usr/share/terminfo/e/</code> you may find more useful behaviour (for example of display handling when using cursor keys in bash). For more information see http://www.cygwin.com/ml/cygwin/2009-06/msg00259.html
