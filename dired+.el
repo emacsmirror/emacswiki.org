@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 17 15:22:48 2019 (-0700)
+;; Last-Updated: Wed Mar 20 19:37:45 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11371
+;;     Update #: 11515
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -21,9 +21,9 @@
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-lib', `cmds-menu', `col-highlight', `crosshairs',
-;;   `dired', `dired+', `dired-aux', `dired-loaddefs', `dired-x',
-;;   `easymenu', `fit-frame', `font-lock', `font-lock+',
+;;   `cl', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `crosshairs', `dired', `dired+', `dired-aux', `dired-loaddefs',
+;;   `dired-x', `easymenu', `fit-frame', `font-lock', `font-lock+',
 ;;   `format-spec', `frame-fns', `gv', `help+', `help-fns',
 ;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
 ;;   `highlight', `hl-line', `hl-line+', `image', `image-dired',
@@ -99,9 +99,10 @@
 ;;  font-locking, and this effect is established only when Dired+ is
 ;;  loaded, which defines the font-lock keywords for Dired.  These
 ;;  options include `diredp-compressed-extensions',
-;;  `diredp-ignore-compressed-flag', and `dired-omit-extensions'.
-;;  This means that if you change the value of such an option then you
-;;  will see the change only in a new Emacs session.
+;;  `diredp-ignore-compressed-flag', `dired-omit-extensions', and
+;;  `diredp-omit-files-regexp'.  This means that if you change the
+;;  value of such an option then you will see the change only in a new
+;;  Emacs session.
 ;;
 ;;  (You can see the effect in the same session if you use `C-M-x' on
 ;;  the `defvar' sexp for `diredp-font-lock-keywords-1', and then you
@@ -603,6 +604,7 @@
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
 ;;    `diredp-max-frames', `diredp-move-file-dirs' (Emacs 24+),
+;;    `diredp-omit-files-regexp'
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-visit-ignore-extensions', `diredp-visit-ignore-regexps',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
@@ -788,6 +790,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/03/20 dadams
+;;     Added option diredp-omit-files-regexp.
+;;     Face diredp-omit-file-name: Added strike-through.
+;;     diredp-font-lock-keywords-1, for face diredp-omit-file-name:
+;;       Move to file name.  Use diredp-omit-files-regexp.  Append * for executable flag.  Highlight whole line.
 ;; 2019/03/17 dadams
 ;;     diredp-font-lock-keywords-1:
 ;;       Use just dired-omit-files as regexp - its components already have ^...$.
@@ -2049,7 +2056,10 @@ support the use of such keys then customize this option to nil."
 ;;;###autoload
 (defcustom diredp-compressed-extensions '(".tar" ".taz" ".tgz" ".arj" ".lzh"
                                           ".lzma" ".xz" ".zip" ".z" ".Z" ".gz" ".bz2")
-  "*List of compressed-file extensions, for highlighting."
+  "*List of compressed-file extensions, for highlighting.
+
+Note: If you change the value of this option then you need to restart
+Emacs to see the effect of the new value on font-locking."
   :type '(repeat string) :group 'Dired-Plus)
 
 (when (> emacs-major-version 21)        ; Emacs 22+
@@ -2114,7 +2124,10 @@ This option has no effect unless you use libraries `Bookmark and
   "*Non-nil means to font-lock names of compressed files as ignored files.
 This applies to filenames whose extensions are in
 `diredp-compressed-extensions'.  If nil they are highlighted using
-face `diredp-compressed-file-name'."
+face `diredp-compressed-file-name'.
+
+Note: If you change the value of this option then you need to restart
+Emacs to see the effect of the new value on font-locking."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
@@ -2168,6 +2181,48 @@ the circumstances in which they show the files in separate frames."
 File names should be relative (no directory component).
 Target directory names should be absolute."
     :group 'files :type '(alist :key-type file :value-type directory)))
+
+;; (Not used - just use the body directly in the option default value.
+;; (defun diredp-omit-files-regexp ()
+;;   "Return regexp to use for font-locking, using `dired-omit-files' as base."
+;;   (let* ((strg  dired-omit-files)
+;;          (strg  (if (eq ?^ (aref strg 0)) (substring strg 1) strg)) ; Remove initial ^
+;;          (strg  (replace-regexp-in-string "\\(\\\\[|]\\)\\^" "\\1" strg 'FIXEDCASE nil)) ; Remove other ^'s
+;;          (strg  (replace-regexp-in-string "\\([$]\\)" "" strg 'FIXEDCASE nil))) ; Remove $'s
+;;     strg))
+
+;;;###autoload
+(defcustom diredp-omit-files-regexp (let* ((strg  dired-omit-files)
+                                           (strg  (if (eq ?^ (aref strg 0)) ; Remove initial ^
+                                                      (substring strg 1)
+                                                    strg))
+                                           (strg  (replace-regexp-in-string "\\(\\\\[|]\\)\\^" ; Remove other ^'s
+                                                                            "\\1"
+                                                                            strg
+                                                                            'FIXEDCASE
+                                                                            nil))
+                                           (strg  (replace-regexp-in-string "\\([$]\\)" ; Remove $'s
+                                                                            ""
+                                                                            strg
+                                                                            'FIXEDCASE
+                                                                            nil)))
+                                      strg)
+  "Regexp for font-locking file names to be omitted by `dired-omit-mode'.
+The regexp is matched only against the file name, but the entire line
+is highlighted (with face `diredp-omit-file-name').
+
+The default value of this option differs from that of
+`dired-omit-files' by removing \"^\" from the beginning, and \"$\"
+from the end, of each regexp choice.  (The default value of
+`dired-omit-files', at least prior to Emacs 27, uses \"^\" and \"$\",
+but it should not.)
+
+If you want to control the beginning and end of choice matches then
+use \"\\`\" and \"\\'\" instead of \"^\" and \"$\".
+
+Note: If you change the value of this option then you need to restart
+Emacs to see the effect of the new value on font-locking."
+  :group 'Dired-Plus :type 'regexp)
 
 ;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
@@ -3456,24 +3511,23 @@ This means the `.' plus the file extension.  Example: `.elc'."
 (defvar diredp-flag-mark-line 'diredp-flag-mark-line)
 
 (defface diredp-ignored-file-name
-    '(;; (((background dark)) (:foreground "#FFFF921F921F")) ; ~ salmon
-      ;; (((background dark)) (:foreground "#A71F5F645F64")) ; ~ dark salmon
-      (((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
-      (t                   (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
-  "*Face used for ignored file names  in Dired buffers.
-But see also face `diredp-omit-file-name'."
+  '((((background dark)) (:foreground "#C29D6F156F15"))    ; ~ salmon
+    (t                   (:foreground "#00006DE06DE0"))) ; ~ dark cyan
+  "*Face used for files whose names are omitted based on the extension.
+See also face `diredp-omit-file-name'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
 (defface diredp-omit-file-name
-  (if (assq :inherit custom-face-attributes)
-      '((t  (:inherit diredp-ignored-file-name))) ; Maybe add this?  :strike-through "Firebrick"
+  (if (assq :inherit custom-face-attributes) ; Emacs 22+
+      '((((background dark)) (:inherit diredp-ignored-file-name :strike-through "#555555555555")) ; ~ dark gray
+        (t                   (:inherit diredp-ignored-file-name :strike-through "#AAAAAAAAAAAA"))) ; ~ light gray
     '((((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
       (t                   (:foreground "#00006DE06DE0")))) ; ~ dark cyan
   "*Face used for files whose names will be omitted in `dired-omit-mode'.
-This means file names that match regexp `dired-omit-files'.
-File names matching `dired-omit-extensions' are highlighted with face
-`diredp-ignored-file-name' instead."
+This means file names that match regexp `diredp-omit-files-regexp'.
+\(File names matching `dired-omit-extensions' are highlighted with face
+`diredp-ignored-file-name' instead.)"
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-omit-file-name 'diredp-omit-file-name)
 
@@ -3592,8 +3646,8 @@ In particular, inode number, number of hard links, and file size."
        ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
 
    ;; Files to ignore.
-   ;;   Face `diredp-ignored-file-name' for omission by extension.
-   ;;   Face `diredp-omit-file-name' for omission by file name.
+   ;;   Use face `diredp-ignored-file-name' for omission by file-name extension.
+   ;;   Use face `diredp-omit-file-name' for omission by entire file name.
    (let* ((omit-exts   (or (and (boundp 'dired-omit-extensions)  dired-omit-extensions)
                            completion-ignored-extensions))
           (omit-exts   (and omit-exts  (mapconcat #'regexp-quote omit-exts "\\|")))
@@ -3601,8 +3655,9 @@ In particular, inode number, number of hard links, and file size."
                             (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "\\|")))))
      (list (concat "^  \\(.*\\(" omit-exts compr-exts "\\)[*]?\\)$") ; [*]? allows for executable flag (*).
            1 diredp-ignored-file-name t))
-   ;; FIXME: Could insert [*]? before $ in each component of `dired-omit-files'.  Not bothering to, so far.
-   `(,dired-omit-files 0 diredp-omit-file-name t)
+   `(,(concat "^.*" dired-move-to-filename-regexp
+              "\\(" diredp-omit-files-regexp "\\).*[*]?$") ; [*]? allows for executable flag (*).
+     (0 diredp-omit-file-name t))
 
    ;; Compressed-file (suffix)
    (list (concat "\\(" (funcall #'regexp-opt diredp-compressed-extensions) "\\)[*]?$")
