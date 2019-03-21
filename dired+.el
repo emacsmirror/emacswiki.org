@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 20 19:37:45 2019 (-0700)
+;; Last-Updated: Wed Mar 20 20:35:35 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11515
+;;     Update #: 11516
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -21,9 +21,9 @@
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
-;;   `crosshairs', `dired', `dired+', `dired-aux', `dired-loaddefs',
-;;   `dired-x', `easymenu', `fit-frame', `font-lock', `font-lock+',
+;;   `cl', `cl-lib', `cmds-menu', `col-highlight', `crosshairs',
+;;   `dired', `dired+', `dired-aux', `dired-loaddefs', `dired-x',
+;;   `easymenu', `fit-frame', `font-lock', `font-lock+',
 ;;   `format-spec', `frame-fns', `gv', `help+', `help-fns',
 ;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
 ;;   `highlight', `hl-line', `hl-line+', `image', `image-dired',
@@ -3518,19 +3518,6 @@ See also face `diredp-omit-file-name'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
-(defface diredp-omit-file-name
-  (if (assq :inherit custom-face-attributes) ; Emacs 22+
-      '((((background dark)) (:inherit diredp-ignored-file-name :strike-through "#555555555555")) ; ~ dark gray
-        (t                   (:inherit diredp-ignored-file-name :strike-through "#AAAAAAAAAAAA"))) ; ~ light gray
-    '((((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
-      (t                   (:foreground "#00006DE06DE0")))) ; ~ dark cyan
-  "*Face used for files whose names will be omitted in `dired-omit-mode'.
-This means file names that match regexp `diredp-omit-files-regexp'.
-\(File names matching `dired-omit-extensions' are highlighted with face
-`diredp-ignored-file-name' instead.)"
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-omit-file-name 'diredp-omit-file-name)
-
 (defface diredp-link-priv
     '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
       (t                   (:foreground "DarkOrange")))
@@ -3563,6 +3550,19 @@ This means file names that match regexp `diredp-omit-files-regexp'.
 In particular, inode number, number of hard links, and file size."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-number 'diredp-number)
+
+(defface diredp-omit-file-name
+  (if (assq :inherit custom-face-attributes) ; Emacs 22+
+      '((((background dark)) (:inherit diredp-ignored-file-name :strike-through "#555555555555")) ; ~ dark gray
+        (t                   (:inherit diredp-ignored-file-name :strike-through "#AAAAAAAAAAAA"))) ; ~ light gray
+    '((((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
+      (t                   (:foreground "#00006DE06DE0")))) ; ~ dark cyan
+  "*Face used for files whose names will be omitted in `dired-omit-mode'.
+This means file names that match regexp `diredp-omit-files-regexp'.
+\(File names matching `dired-omit-extensions' are highlighted with face
+`diredp-ignored-file-name' instead.)"
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-omit-file-name 'diredp-omit-file-name)
 
 (defface diredp-other-priv
     '((((background dark)) (:background "#111117175555")) ; ~ dark blue
