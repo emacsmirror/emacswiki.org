@@ -124,6 +124,8 @@ Besides the %%EmacsWiki%% ElispArea, which always has the latest source files fo
 
 ----
 
+[:BulkDownloadCompileLoad]
+
 If you wish to load the latest '''Bookmark+''' from the %%EmacsWiki%%, then you can add the following to your startup elisp, which will download and byte-compile all files for you, and load the library.
 
 
