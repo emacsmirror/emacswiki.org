@@ -117,6 +117,13 @@ second single-click, not on a double-click or (b) let
 
 
 
+
+
+
+
+
+
+[:CustomizedPopUpMenu]
 == Customized Pop-Up Menu ==
 
 If you choose for `mouse-3' to pop up a menu then you can customize
@@ -183,7 +190,7 @@ items.
 
 
 
-
+[:ModeSpecificPopupMenu]
 == Mode-Specific Popup Menu ==
 
 You can provide mode-specific behavior by either replacing the
@@ -244,6 +251,8 @@ You can see the popup menus for '''Dired+''' [[DiredPlus#Mouse3PopupMenus|here]]
 
 
 
+
+[:DefaultMenuWithNOTextSelected]
 == Default Menu with No Text Selected ==
 
 When no text selected (i.e., no non-empty [[active region]]), the default `mouse-3' menu has title '''No Region'''.  Different menu items are enabled depending on the type of thing under the [[mouse pointer]].
@@ -258,6 +267,10 @@ When no text selected (i.e., no non-empty [[active region]]), the default `mouse
 
 
 
+
+
+
+[:DefaultMenusWithTextSelected]
 == Default Menus with Text Selected ==
 
 When text is selected (i.e., with an [[active region]]), the default `mouse-3' menu has title '''Region'''.  By default it has only one submenu, '''Thing at Pointer''', apart from the major-mode menu ('''Emacs-Lisp''' mode, here), which is included if [[option]] `mouse3-popup-include-global-menus-flag' is non-`nil'.
