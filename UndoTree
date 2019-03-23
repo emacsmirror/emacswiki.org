@@ -4,7 +4,7 @@ Emacs's undo system allows you to recover ''any'' past state of a buffer. To do 
 
 Instead of treating undo/redo as a linear sequence of changes, ##undo-tree-mode## treats undo history as a branching tree of changes, similar to the way Vim handles it. This makes it substantially easier to undo and redo any change, while preserving the entire history of past states. The undo-tree visualizer is particularly helpful in complex cases. An added side bonus is that undo history can in some cases be stored more efficiently, allowing more changes to accumulate before Emacs starts discarding history. Undo history can be saved persistently across sessions with Emacs 24.3 and later. It also sports various other nifty features: storing and restoring past buffer states in registers, a diff view of the changes that will be made by undoing, and probably more besides.
 
-For more information, see the Commentary at the top of the ##undo-tree.el## file.
+For more information, see the Commentary at the top of the ##undo-tree.el## file. (http://www.dr-qubit.org/undo-tree/undo-tree.txt)
 
 == Downloading ==
 
