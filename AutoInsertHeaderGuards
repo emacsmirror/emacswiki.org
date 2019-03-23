@@ -1,5 +1,16 @@
 Insert Header guards constructed from the filename.  If you have blah.h opened up without any text then header guards and a simple class definition are inserted.  If there is already some text in the file then only the header guards are inserted.
 
+  (defun maybe-add-newline-at-buf-start ()
+    (if (and (char-equal (char-after (point-min)) ?\n)
+             (char-equal (char-after (1+ (point-min))) ?\n))
+        ""
+      "\n"))
+  (defun maybe-add-newline-at-buf-end ()
+    (if (and (char-equal (char-before (point-max)) ?\n)
+             (char-equal (char-before (1- (point-max))) ?\n))
+        ""
+      "\n"))
+  
   ; Create Header Guards with f12
   (global-set-key [f12] 
   		'(lambda () 
@@ -7,7 +18,8 @@ Insert Header guards constructed from the filename.  If you have blah.h opened u
   		   (if (buffer-file-name)
   		       (let*
   			   ((fName (upcase (file-name-nondirectory (file-name-sans-extension buffer-file-name))))
-  			    (ifDef (concat "#ifndef " fName "_H" "\n#define " fName "_H" "\n"))
+  			    (ifDef (concat "#ifndef " fName "_H" "\n#define " fName "_H"
+                               (maybe-add-newline-at-buf-start)))
   			    (begin (point-marker))
   			    )
   			 (progn
@@ -25,7 +37,7 @@ Insert Header guards constructed from the filename.  If you have blah.h opened u
   			   (goto-char (point-min))
   			   (insert ifDef)
   			   (goto-char (point-max))
-  			   (insert "\n#endif" " //" fName "_H")
+  			   (insert (maybe-add-newline-at-buf-end) "#endif" " //" fName "_H")
   			   (goto-char begin))
   			 )
   		     ;else
