@@ -85,7 +85,7 @@ tmux is not used to its fullest extent here, e.g. it also lets you
 share a standard emacs (or vim) session (if the clients use "tmux -S
 /tmp/tmux-shared/myshare attach" instead), but I don't think anyone
 other than the host can do the editing in that case. And tmux can do
-[http://tmux.sourceforge.net/ lots more].
+[https://github.com/tmux/tmux/wiki lots more].
 
 We could also use GNU screen to acheive the same, but unfortunately it
 has to run with root permissions to allow sharing between different
