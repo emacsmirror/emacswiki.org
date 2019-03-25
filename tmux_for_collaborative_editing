@@ -39,7 +39,7 @@ Put this at the end of ~/.emacs if it's not already there:
     (global-set-key (kbd "<f8>") 'highlight-changes-remove-highlight)
 
 
-The, assuming all concerned users are members of the group <code>users</code>
+Then, assuming all concerned users are members of the group <code>users</code>
 (or some other group if you prefer):
 
     mkdir /tmp/tmux-shared
