@@ -27,9 +27,6 @@ If you are interested in its development please use it and report any bugs you f
 to emacs-devel@gnu.org. This mode will eventually be much better than the current mode
 but, for someone who just wants to use GDB, the current mode in released Emacs 23.1
 is probably a better option.
-
-This [http://users.snap.net.nz/~nickrob/multi-threaded.png screenshot] shows what it
-looks like debugging Emacs.
  
 ----
 CategoryDebug
