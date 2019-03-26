@@ -31,7 +31,7 @@ Similar settings make sense for other ComintMode based code such as
 ShellMode.
 
 == Compilation inside an existing Comint buffer == 
-Sometimes you'd like to run a compilation within an existing comint buffer instead of starting a new buffer like `M-x compile`.  To send the default compile command to a comint buffer called <code>*PowerShell*</code> running a process called <code>shell</code>, you can use the following command: 
+Sometimes you'd like to run a compilation within an existing comint buffer instead of starting a new buffer like ##M-x compile##.  To send the default compile command to a comint buffer called <code>*PowerShell*</code> running a process called <code>shell</code>, you can use the following command: 
 
 <pre>
 (defun my-compile (&optional arg)
@@ -46,7 +46,7 @@ Sometimes you'd like to run a compilation within an existing comint buffer inste
 
 == Clearing the buffer ==
 
-Lots of times, the buffer just grows and grows, especially if you do a lot of commands in shell mode.  If I'm doing interative work like looking through repeated find results, I clear the buffer constantly so C-a C-s will search through only what I care about.
+Lots of times, the buffer just grows and grows, especially if you do a lot of commands in shell mode.  If I'm doing interative work like looking through repeated find results, I clear the buffer constantly so ##C-a C-s## will search through only what I care about.
 
   (defun cmg:shell-clear-region ()
     (interactive)
@@ -59,7 +59,7 @@ Lots of times, the buffer just grows and grows, especially if you do a lot of co
 
 You can use [[Icicles]] [[completion]] in Comint mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
 
-You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Comint Inputs]].
+You can also use ##C-`## to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Comint Inputs]].
 
 == Handy functions for navigating history ==
 
@@ -95,7 +95,7 @@ interested in recovering multiline statements from the history.
 
 == Problems ==
 
-If you find that the input prompt does not redisplay after output has been received try adding a function to `comint-output-filter-functions' to pause a short while:
+If you find that the input prompt does not redisplay after output has been received try adding a function to ##comint-output-filter-functions## to pause a short while:
 
   (add-hook 'comint-output-filter-functions (lambda (arg) (sleep-for 0.05)) t)
 
