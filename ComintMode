@@ -53,6 +53,8 @@ Lots of times, the buffer just grows and grows, especially if you do a lot of co
     (delete-region (point-min) (point-max))
     (comint-send-input))
 
+##C-c M-o## (##comint-clear-buffer##) can also be used directly.
+
 == Icicles Enhancements to Comint Mode ==
 
 You can use [[Icicles]] [[completion]] in Comint mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
