@@ -1,1 +1,184 @@
-Pish Posh! Surely Emacswiki has precautions against such attacks!
+'''Key-chord''' lets you bind commands to combinations of key-strokes.
+Here a "key chord" means two keys pressed simultaneously,
+or a single key quickly pressed twice. (*)
+
+The same keys used on their own (or with other keys not defined
+as key chords) retain their original command bindings.
+
+There are some info and examples in the elisp-file: Lisp:key-chord.el
+
+The code is available on https://github.com/emacsorphanage/key-chord .
+
+(*) (In other emacs related texts, pressing SHIFT and/or
+META plus another key is sometimes call a "[[chord]]", but not here.
+However SHIFT plus _two_ normal keys might be a "key chord".)
+
+-- DavidAndersson
+
+Note: With key-chord, order doesn't matter: <code>ab</code> is the same chord as <code>ba</code>. If you want to define chords where the order of keys matter, check out [https://github.com/vlevit/key-seq.el key-seq.el].
+
+== Settings ==
+
+    ;; Max time delay between two key presses to be considered a key chord
+    (setq key-chord-two-keys-delay 0.1) ; default 0.1
+    
+    ;; Max time delay between two presses of the same key to be considered a key chord.
+    ;; Should normally be a little longer than `key-chord-two-keys-delay'.
+    (setq key-chord-one-key-delay 0.2) ; default 0.2
+
+
+== Discussion ==
+
+[new:ipstone:2018-11-01]
+Missing minor mode line info:
+When in keychord mode, there is no mode line information displaying whether we are in keychord mode. It would be fine if we use key-chord-mode always; but at times, it will conflict with vi related mode. The following code will add 'KeyC' to the mode-line:
+{{{
+;; Add key-chord-mode to minor-mode-alist
+(if (not (assq 'key-chord-mode minor-mode-alist))
+      (setq minor-mode-alist
+	    (cons '(key-chord-mode " KeyC ")
+		  minor-mode-alist)))
+
+}}}
+
+Do we know where melpa pull the key-chord-mode from?
+
+[new:rubikitch:2008-11-05 03:40 UTC]
+A thumb is a finger of the strongest! Let's utilize a thumb.
+Small hack to define a key-chord starting with Space.
+Add (key-chord-mode 1) to your .emacs file to activate parent mode.
+
+
+Lisp:space-chord.el  -- [[rubikitch]]
+
+[new:ipstone:2013-04-18]
+Love key-chord! here's a setup to use keychord and viper mode 
+more seamlessly - [[toggle-viper-keychord]].
+-- [[ipstone]]
+
+[new:PatRegan:2009-02-19 05:23 UTC]
+key-chord and space-chord both looked interesting to me.  space-chord didn't seem to want to work at all, but I didn't investigate that at all.
+
+key-chord seems to pick up my typing as chords.  I tried setting key-chord-two-keys-delay and key-chord-one-key-delay to lower values.  I halved them a few times, I had key-chord-two-keys-delay down to 0.0125.  Maybe I just type too fast, or maybe the effective delay can only go so low.
+
+-- PatRegan
+
+[new:DavidAndersson:2009-03-06 12:13 UTC]
+Pat: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). See the "Tips" commentary in the source. When you have decided on a candidate ("xy"), check it on your own texts with this command (on any non-windows computer):
+
+ egrep -R --include='*.txt' --include='*.cc' 'xy|yx' .
+
+-- DavidAndersson
+
+[new]
+If you use german, here are some you could check (rare letter combinations): dp, dv, gw, hu, ms, mt, rw, fg, fw, hp, iy, sv, hö, bf, bh, bp, cd, cf, cg, cp, cq, cv, cw, cy, dc, dm, fb, fc, fm, fy, fz, gc, gm, gy, hb, hy, hz, iq, md, mf, mg, mv, mw, nx, pb, pc, pz, qc, qi, qr, qt, rq, sx, sz, tq, uu, uv, vc, vm, vu, vy, wc, wm, ww, wy, xn, xs, yc, yf, yg, yh, yv, yw, yy, zh, zp, zs, ,a, ,b, ,c, ,i, ,m, ,o, ,u, ,x, ,y, ,z, ,ä, ,ü, .a, .b, .c, .i, .m, .o, .u, .x, .y, .z, .ä, .ü, a,, a., aj, aq, aß, b,, b., bd, bj, bk, bq, bv, bw, c,, c., cj, cß, db, dq, dx, dz, dä, dö, dü, fq, fv, fx, fö, gq, gx, gz, gä, gü, hx, i,, i., ij, ja, jb, jc, ji, jm, jo, jr, jt, jx, jy, jz, jä, jü, kb, kx, ky, kz, kä, kü, lx, lz, lö, lü, m,, m., mj, mq, mß, o,, o., oj, oq, ox, oä, pq, pä, pö, pü, qa, qb, qd, qf, qg, qm, qo, qp, qs, qw, qx, qy, qz, qä, qü, rj, rß, sq, sä, sö, tö, u,, u., ux, vb, vf, vg, vx, vz, vä, vö, vü, wb, wq, wx, wö, x,, x., xd, xf, xg, xh, xj, xk, xl, xo, xq, xu, xv, xw, xy, y,, y., yj, yk, yq, yx, yß, z,, z., zc, zd, zf, zg, zj, zk, zl, zq, zv, zz, ßa, ßc, ßm, ßr, ßy, ä,, ä., äd, äg, äj, äk, äo, äp, äq, äs, äv, öd, öf, öl, öp, ös, öt, öv, öw, ü,, ü., üd, üg, üj, ük, ül, üp, üq, üv, ,,, ,q, ,ö, .w, .ö, bß, cz, cö, fj, gv, iä, jf, jg, jö, kd, kk, kq, nq, oü, q,, qö, tj, vw, w., wv, xß, xö, xü, yä, zx, zß, ßb, ßd, ßt, ßx, ßz, ßä, ßö, äa, äy, äß, ää, ö,, ö., öc, öj, öq, öx, öß, öö, üo, üx, ,w, .q, aä, bb, bz, dk, dß, fß, gj, hh, iü, kv, lq, oö, pw, qk, ql, qn, qq, rx, sß, tß, vk, vv, w,, wp, xx, xz, zb, ßf, ßg, ßs, äi, äö, öo, öä, üi, üm, üä, kf, äx, ,., .,, äü, xr, pv, vp, mü, jj, fk, öi, q., gß, xä, p,, yü, iö, üy, ,p, ßß, v,, hq, qh, cx, xc, ,v, mx, öü, üa, jv, vj, aü, lj, üö, ßv, jl, xm, vß, jh, ßj, jß, öu, hj, zy, lß, ßh, nj, kj, yz, jk, ßl, jn, öy, yö, hß, uö, zä, ßn, nß, j,, jp, pj, äz, ,j, äb, bä, ß,, ßk, kß, jw, ,ß, wj, ßp, pß, .v, v., k., .k, ßw, wß, zü, k,, öb, bö, üz, üu, ,k, uü, ,f, f,, j., .j, vq, bx, qv, zo, xb, oz, ß., öa, .ß, aö, jq, qj, ßq, qß, kw, wk, zö, öz, 
+
+-- ArneBab
+
+[new]
+Arne: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). Even very infrequent clashes can be very irritating. I am not fluent in german, but the above list match a lot of not so uncommon words: s**oz**ial, **zo**gen, Schu**lz**, plöt**zl**ich, M**aj**or, **Ja**hre, Kau**fm**ann, U**mf**ang, Se**gm**ent, **Gm**bH, Wol**fg**ang, sor**gf**ältig, e**rw**arten, Ve**rw**altung, bestim**mt**, Ers**tm**al, Sa**ms**tag, Ministeriu**ms**, Sch**ul**e, r**uh**ig, and many hundreds more. And sorry to say, the letter+dot and letter+comma is just stupid. I have also seen other examples where key-chord is used with way to common letter pairs. Please check your texts thorolly before chosing chords.
+-- DavidAndersson
+[new]
+David: Chords I’ve now been using for several years are bv x1 x0 xs bf bk cf and vc. I also have xo, but that always created problems. Which I just found to be logical, because it’s at position 1000 in a combined list of the most common bigrams in German and English I compiled for another project: https://bitbucket.org/ArneBab/evolve-keyboard-layout/src/c4df8323467538ac274c58f28c1b82ea5d58efa1/2-gramme.15.txt
+I’m now replacing xo by xö and xc, which are much less common.
+
+-- ArneBab
+
+[new]
+If, like me you need to undefine a key chord and key-chord-unset-global does not help, try the following:
+{{{
+(defun alf/key-chord-undefine (keys)
+  "Undefine the key chord identified by KEYS.
+This should be done by key-chord-unset-global, however that
+does not work for me."
+  (let ((key1 (logand 255 (aref keys 0)))
+        (key2 (logand 255 (aref keys 1))))
+    (if (eq key1 key2)
+        (global-unset-key (vector 'key-chord key1 key2))
+      ;; else
+      (global-unset-key (vector 'key-chord key1 key2))
+      (global-unset-key (vector 'key-chord key2 key1)))))
+}}}
+
+-- Alf Lervåg
+
+: Sorry, in version 0.6 there is a bug in 'key-chord-unset-global`. It will be fixed in the next version. (In the mean time, your workaround should work, but I have not tested it. Or you could set a null command to unset a chord: <code>(key-chord-define-global "xy" nil)</code> .) -- DavidAndersson
+
+[new:AlexDaniel:2014-11-01 19:25 UTC]
+This is amazing! But I have to point out one negative effect... When I started learning emacs, I was frustrated by all of the weird key combinations I had to use. It felt very uncomfortable so I started searching for a solution and found KeyChord. Since then I was mapping every command to chords if I used it at least once in two days. It feels great!
+
+However, I have a real tough time when I'm not using my config (for example, if something went wrong and my config failed). I barely remember how to open a file in pure emacs. And I always imagine someone standing behind me and looking how I type "how to save a buffer in emacs" into the search engine... So embarrassing!
+
+--AlexDaniel
+
+[new]
+Sometimes I stumble over chords when they occur in normal typing. To avoid that, it would be great if key-chord-mode could only trigger chords when there was a short break between other characters and the chord. Or more generally: When the time difference between hitting the keys in the chord is much shorter than the difference between the first key of the chord and the key which came before it and the second key of the chord and the key which came after it.
+
+That should catch most of the false positives.
+
+--ArneBab
+: To consider events /after/ a chord would be a bit complicated. Currently it holds the 1st key of a chord for a short while, waiting for the 2nd key. With this suggestion it would have to hold the 1st and 2nd key, waiting for a 3rd key, before deciding what to do with the 1st and 2nd key. This would increase the time lag when typing chars that are part of a chord. It would be much more noticable since the timeout for the 3rd key would be larger than the timout currently used for the 2nd key. (The percieved lag of the 1st key would be both timeouts added togehter). It would also make the program much more complicated.
+: To consider events /before/ a chord should not have any adverse effects on the lag. It would make the program a bit more complicated, but probably not by much. I still hesitate about it. I imagine someone typing fast before a chord would be quite irritated if a chord is not recognized because they typed /too/ fast. False negatives are at least as important to consider as false positives, since they may cause edits in a file you did not intend to edit (if you have chords for movement, buffer switching, etc.).
+: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). -- DavidAndersson
+
+[new]
+There is a key-pair frequency table here:
+http://english.stackexchange.com/questions/110576/what-are-the-most-common-letters-used-in-pairs-after-others-in-the-english-alpha
+
+[new]
+I adjusted key-chord to sample my current typing frequency. That helps to avoid most of the accidental chord activations. It is not merged with the most recent versions of key-chord.el, though. The main change is this:
+{{{
+;; ########   History   ########################################
+;;
+;; 0.6 (2015-07-29) arne_bab(at)web.de
+;;      Use the typing speed as lower limit for two-key chords
+;; Keep track of the typing speed during the past few letters to avoid
+;; firing chords while typing.
+(defvar key-chord-last-delays nil)
+(defvar key-chord-last-time nil)
+(defvar key-chord-averaging-window-length 10)
+(defvar key-chord-max-delay-divisor 4
+  "Divisor for the estimated expected delay while typing to keep
+  key-chord-mode from firing while you write regular text.")
+
+(defun key-chord-sample-typing-speed ()
+  "Track the frequency of the past few keypresses.
+\nUpdates the list key-chord-last-delays."
+  (if (not key-chord-last-time)
+    (setq key-chord-last-time (float-time))
+    (let* ((curtime (float-time))
+           (curdelay (- curtime key-chord-last-time)))
+      (setq key-chord-last-time (float-time))
+      (push curdelay key-chord-last-delays)
+      (if (< key-chord-averaging-window-length (length key-chord-last-delays))
+          (nbutlast key-chord-last-delays)))))
+
+(defun key-chord-recent-typing-delay ()
+  "Estimate the recent normal typing delay.
+\nThese are used as maximum delay for firing a key chord to avoid
+disturbing regular writing. Falls back to key-chord-one-key-delay if
+there are no delay values yet."
+  ; need at least 2 values to do reasonable timing.
+  (if (> 2 (length key-chord-last-delays))
+      key-chord-one-key-delay
+      (let ((last-delay (car key-chord-last-delays))
+            (lower-quartile-delay (nth (/ (length key-chord-last-delays) 4)
+                                       (sort key-chord-last-delays '<))))
+        (/ (max lower-quartile-delay last-delay)
+           key-chord-max-delay-divisor))))
+
+(defun key-chord-input-method (first-char)
+  "Input method controlled by key bindings with the prefix `key-chord'."
+  (key-chord-sample-typing-speed) ; update the average time
+  (if (and (not (eq first-char key-chord-last-unmatched))
+	   (key-chord-lookup-key (vector 'key-chord first-char)))
+      (let ((delay (if (key-chord-lookup-key (vector 'key-chord first-char first-char))
+		       (min key-chord-one-key-delay (key-chord-recent-typing-delay))
+		     ;; else
+		     (min key-chord-two-keys-delay (key-chord-recent-typing-delay)))))
+ ;; ... and so forth from key-chord 0.5 ...
+)))
+}}}
+----
+CategoryKeys
+
