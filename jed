@@ -1,0 +1,21 @@
+'''JED''' is a [[text editor]] that makes extensive use of the [[S-Lang (programming library)|S-Lang]] library. It is highly cross-platform compatible; JED runs on [[Microsoft Windows|Windows]] and all flavors on [[Linux]] and [[Unix]]. Older versions are available for [[DOS]]. It is also very lightweight (meaning very parsimonious in its use of system resources), which makes it an ideal editor for older systems, [[embedded system]]s, etc.
+
+==Features==
+From the JED homepage:
+*Color [[syntax highlighting]] on color terminals
+*[[Code folding]] support
+*Drop-down menus on all terminals and platforms
+*Emulates editors [[Emacs]], [[EDT (Digital)|EDT]], [[WordStar]], [[Borland]], [[Brief (text editor)|Brief]]
+*Extensible in the C-like language S-Lang, making the editor highly customizable
+*Can read [[Texinfo]] (GNU info) files from within JED's info browser
+*A variety of programming modes (with syntax highlighting) are available including [[C (programming language)|C]], [[C++]], [[Fortran]], [[TeX]], [[HTML]], [[Bourne shell|sh]],  [[Perl (programming language)|Perl]], [[Python (programming language)|Python]], [[IDL specification language|IDL]], [[DIGITAL Command Language|DCL]], [[nroff]], more
+*Edits TeX files with AUC-TeX style editing, BiBTeX support
+*Asynchronous subprocess support allowing one to compile from within the editor
+*Built-in support for the [[GPM (software)|GPM]] mouse driver on Linux console
+*Abbreviation and dynamic abbreviation modes
+*[[8-bit clean]] with mute/dead key support
+*Rectangular cut/paste; regular expressions; [[incremental search]]es; search replace across multiple files; multiple windows; multiple buffers; shell modes; directory editor (dired); mail; rmail; ispell; and much, much more.
+Variants:
+*"jed" is the name of the console version, whether for the Windows command-box, or for any Unix-like console.
+*"xjed" is a thin GUI wrapper for [[X Window System|X]].
+*"wjed" is a thin GUI wrapper for MS Windows.
