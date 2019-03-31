@@ -20,7 +20,7 @@ Other implementations still alive:
 ** [[Climacs]], a Common Lisp Implementation of Emacs
 ** Second Climacs (successor to Climacs, in development)
 ** [[PortableHemlock]], a Common Lisp variant of Hemlock „to free Hemlock from its CMUCL prison”
-
+* [[jed]] -- JED is a text editor that makes extensive use of the S-Lang library. 
 
 Other more or less obscure implementations:
 * ErlangEmacs
