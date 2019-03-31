@@ -20,7 +20,7 @@ Other implementations still alive:
 ** [[Climacs]], a Common Lisp Implementation of Emacs
 ** Second Climacs (successor to Climacs, in development)
 ** [[PortableHemlock]], a Common Lisp variant of Hemlock „to free Hemlock from its CMUCL prison”
-* [[jed]] -- JED is a text editor that makes extensive use of the S-Lang library. 
+
 
 Other more or less obscure implementations:
 * ErlangEmacs
@@ -43,6 +43,10 @@ Not locally documented:
 * PceEmacs at http://www.swi-prolog.org/PceEmacs.html
 
 
+Emulations, not implementations:
+* [[jed]] -- JED is a text editor that makes extensive use of the S-Lang library. 
+
+
 == Complete List ==
 * http://www.finseth.com/emacs.html
 
@@ -58,6 +62,8 @@ This document is also gradually acquiring the role of a repository of
 to itself, this document will probably serve until someone (<i>not</i>
 the author!) writes one.
 
+
+----
 [new]
 
 Would it make sense to host a mirror of CraigFinseth's list here on
