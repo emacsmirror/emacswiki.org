@@ -1,7 +1,7 @@
 '''JED''' is a [[text editor]] that makes extensive use of the [[S-Lang (programming library)|S-Lang]] library. It is highly cross-platform compatible; JED runs on [[Microsoft Windows|Windows]] and all flavors on [[Linux]] and [[Unix]]. Older versions are available for [[DOS]]. It is also very lightweight (meaning very parsimonious in its use of system resources), which makes it an ideal editor for older systems, [[embedded system]]s, etc.
 
 ==Features==
-From the JED homepage:
+From the [[https://www.jedsoft.org/jed/|JED homepage]]:
 * Color [[syntax highlighting]] on color terminals
 * [[Code folding]] support
 * Drop-down menus on all terminals and platforms
