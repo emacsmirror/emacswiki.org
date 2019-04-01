@@ -187,8 +187,8 @@ different files, for example if they use something bash-it. Currently as I know 
 
 == Dynamically loading aliases from Bash environment ==
 
-I just played with eshell a bit again, and hacked simple way to load aliases dynamically. Unlike sed version above
-it seems to work much smoother sibce ut asks Bash for the list of currently available aliases instead of parsing .bashrc file. It means that alias changes will be mirrored in eshell when .bashrc is changed. I also use only temporary buffer, and does not read files at all which seems to be a bit faster as well. Gotcha is that I was too lazy to make it properly (it works well for me). First caveat is that it expects a list of single quoted aliases: 
+I just played with Eshell a bit again, and hacked simple way to load aliases dynamically. Unlike Sed version above
+it seems to work much smoother since it asks Bash for the list of currently available aliases instead of parsing .bashrc file. It means that alias changes will be mirrored in Eshell when .bashrc is changed. I also use only temporary buffer, and does not read files at all which seems to be a bit faster as well. Gotcha is that I was too lazy to make it properly (it works well for me). First caveat is that it expects a list of single quoted aliases: 
 
 '''alias md='mkdir'
 
