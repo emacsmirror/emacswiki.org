@@ -4,37 +4,56 @@ buffer -- the Dired buffer you chose it in is not deleted.
 Some don't like this behavior, because as you navigate around the
 directory tree you accumulate Dired buffers, one for each directory you visit.
 
-It's easy to bury these buffers with `q', which is bound to `quit-window' in DiredMode.
+You can bury Dired buffers with `q', which is bound to `quit-window' in DiredMode.  But that does not kill the buffers -- they still accumulate, whether or not they are displayed.
 
-== Simple solution ==
 
-Since Emacs 22, DiredMode ships by default with the `a' command.  This calls `dired-find-alternate-file' instead of `dired-find-file'.  The latter is bound to `e', `f', or `RET'.  In Dired, the `a' command uses the standard command `find-alternate-file', which replaces the current buffer with another file.
 
-Emacs will give a warning the first time you use it.  To avoid the warning add the following to your .emacs:
+
+
+
+== Libraries that Provide Reuse ==
+
+* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `diredp-toggle-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
+Use `diredp-toggle-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(diredp-toggle-find-file-reuse-dir 1)##.
+Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
+
+* <tt>[[joseph-single-dired.el]]</tt>
+* <tt>[[https://github.com/crocket/dired-single|dired-single]]</tt>, derived from <tt>joseph-single-dired.el<tt> 
+* [[Sunrise_Commander]] kills automatically all unused Dired buffers (though selected buffers can be prevented from being disposed using tabs).
+* Not a library, but see also [[http://ergoemacs.org/emacs/emacs_dired_tips.html|Xah Lee's page of Emacs Dired Customizations]], section "How to make dired use the same buffer for viewing directory?"
+
+
+
+
+
+
+== Do It Yourself? ==
+
+For those who do not want to load a library (too easy!) ---
+
+Starting with Emacs 22, `a' is bound in DiredMode by default to `dired-find-alternate-file' instead of `dired-find-file' (which is bound to `e', `f', and `RET').   Command `dired-find-alternate-file' (like command `find-alternate-file`) replaces the current Dired buffer with another buffer (it kills the current buffer).  If the cursor is on a directory line then the replacement buffer is a Dired buffer for that directory.  If the cursor is on a file line then the replacement buffer is for that file.
+
+The first time you try to use `a' Emacs tells you that you've invoked a command that is disabled by default because new users might find its behavior confusing.  The behavior is described, and Emacs asks you whether or not you want to disable the command.  You can also try it temporarily but leave it disabled in general.
+
+You can also just put this code in your InitFile to enable the command:
 
     (put 'dired-find-alternate-file 'disabled nil)
 
-To use `a' all the time, you can customize DiredMode by adding a ModeHooks to your .emacs 
+You could also of course bind `dired-find-alternate-file' to the other keys for visiting a directory or file at [[point]].   By default this means keys `e', `f', and `RET'.  But it's likely that you will want at least one key that visits a file or directory at point *without* killing the current Dired buffer.
 
-    (add-hook 'dired-mode-hook
-      (lambda ()
-        (define-key dired-mode-map "e"  'dired-find-alternate-file)
-        (define-key dired-mode-map "f"  'dired-find-alternate-file)
-        (define-key dired-mode-map "\r" 'dired-find-alternate-file)))
+In any case, the approach of just using `dired-find-alternate-file' does not help with *mouse* clicks to visit a file or directory.
 
-This method does not affect mouse clicks on directory names, however.  That requires more advanced solutions.
 
-== Advanced solutions ==
+Command `dired-find-alternate-file' also does not help when you use `^' to move up to the parent directory.  If you want that behavior but also want to kill the current directory (the child) then you can do this:
 
-When moving to parent directory by `^´, Dired by default creates a new buffer for each movement up. The following rebinds `^´ to use the same buffer.
+
 <pre>
 (add-hook 'dired-mode-hook
- (lambda ()
-  (define-key dired-mode-map (kbd "^")
-    (lambda () (interactive) (find-alternate-file "..")))
-  ; was dired-up-directory
- ))
+          (lambda ()
+            (define-key dired-mode-map (kbd "^")
+                        (lambda () (interactive) (find-alternate-file "..")))))
 </pre>  
+
 
 
 
@@ -91,24 +110,18 @@ And here are two ways to advise `dired-find-file', so it reuses a directory buff
      	     (dired up)
      	     (dired-goto-file dir))))))
 
+
 == Experiences ==
 
+[new]
 I used to hate those Dired buffers cluttering up my Emacs so I had one of these hacks enabled for years. However, for some years now I have gone back to the default behaviour which has (at least) one advantage that is worth more to me than to have less buffers: performance when opening Dired buffers for directories on slow servers. I open a lot of directories on shares at different servers at work, many in remote locations. As with many Emacs concepts I have now got used to it and suspect that there was actually some thought behind this from the beginning even if it seems strange at first. Also, since I have F5 bound to a helper command to kill buffers, it is really easy to get rid of the dired buffers when I want to. And, sometimes when I drill down from one directory to a sub directory I discover that I wanted to go to the parent. Then for me I can just kill the current one (F5) or switch to the previous one (bound to F1 in my setup). So, that's my experience and I just thought I should share it :) -- MaDa
+
+[new]
 : That is my experience as well, I struck a fine balance by using the `subdir' commands—that way I don't need to work on a buffer-per-directory basis. -- Iceland_jack
 
 
-== See also ==
 
-* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `diredp-toggle-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
 
-:: Use `diredp-toggle-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(diredp-toggle-find-file-reuse-dir 1)##.
-
-:: Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
-
-* Lisp:joseph-single-dired.el
-* dired-single.el, derived from joseph-single-dired.el above: [[https://github.com/crocket/dired-single|dired-single]]
-* The [[Sunrise_Commander]] kills automatically all unused Dired buffers (though selected buffers can be prevented from being disposed using tabs).
-* [[http://ergoemacs.org/emacs/emacs_dired_tips.html|Xah Lee's page of Emacs Dired Customizations]], especially under the section entitled, "How to make dired use the same buffer for viewing directory?"
 
 
 ----
