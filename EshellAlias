@@ -184,4 +184,47 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
 I have edited code above - added get-string-from-file and commented away unnecessary line (groups (or ... )))) to make it work on my Emacs, however this is noticeably slow. The solution will neither take into consideration that users might have their aliases spread in
 different files, for example if they use something bash-it. Currently as I know the best solution is to export aliases from bash to alias file as suggested in 'sed' snippet.
 
+
+== Dynamically loading aliases from Bash environment ==
+
+I just played with eshell a bit again, and hacked simple way to load aliases dynamically. Unlike sed version above
+it seems to work much smoother sibce ut asks Bash for the list of currently available aliases instead of parsing .bashrc file. It also does not need to be updated every time .bashrc is changed, and uses only temporary buffer, and does not do any file handling so it is a bit faster as well. Gotcha is that I was too lazy to make it properly (it works well for me). First caveat is that it expects a list of single quoted aliases: 
+
+'''alias md='mkdir'
+
+Also, you can't use something like alias md="mkdir". Second issue is that it expects no white spaces after the alias line. So cleanup you bashrc file before you run it or adapt to use regular expressions with both quotes and more flexible white spaces.
+
+----
+
+    (require 'eshell)
+    
+    (defun eshell-load-bash-aliases ()
+           "Reads bash aliases from Bash and inserts
+    them into the list of eshell aliases."
+           (interactive)
+           (progn
+                   (message "Parsing aliases")
+                   (shell-command "alias" "bash-aliases" "bash-errors")
+                   (switch-to-buffer "bash-aliases")
+                   (replace-string "alias " "")
+                   (goto-char 1)
+                   (replace-string "='" " ")
+                   (goto-char 1)
+                   (replace-string "'\n" "\n")
+                   (goto-char 1)
+                   (let ((alias-name) (command-string) (alias-list))
+                        (while (not (eobp))
+                               (setq alias-name (current-word))
+                               (forward-word 1)
+                               (setq command-string (buffer-substring-no-properties (point) (line-end-position)))
+                               (setq alias-list (cons (list alias-name command-string) alias-list))
+                               (forward-line 1))
+                        (setq eshell-command-aliases-list alias-list))
+                   (kill-buffer "bash-aliases")
+                   (kill-buffer "bash-errors")))
+    (add-hook 'eshell-mode-hook 'eshell-load-bash-aliases)
+----
+
+
+-- 2019-04-01 [[Arthur Miller]]:
 CategoryEshell
