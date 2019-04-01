@@ -216,15 +216,12 @@ Also, you can't use something like alias md="mkdir". Second issue is that it exp
                         (while (not (eobp))
                            (while (not (char-equal (char-after) 32))
                                   (forward-char 1))
-
                                (setq alias-name
                                (buffer-substring-no-properties (line-beginning-position) (point)))
                                (forward-char 1)
-
                                (setq command-string (buffer-substring-no-properties (point) (line-end-position)))
                                (setq alias-list (cons (list alias-name command-string) alias-list))
                                (forward-line 1))
-
                         (setq eshell-command-aliases-list alias-list))
                (if (get-buffer "bash-aliases")(kill-buffer "bash-aliases"))
                (if (get-buffer "bash-errors")(kill-buffer "bash-errors"))))
