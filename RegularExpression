@@ -297,10 +297,15 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 Does Emacs support lookahead/lookbehind?
 :   [i]No, Emacs does not support Perl-style lookahead/lookbehind expressions.[/i]
 
-[new]
-Does Emacs support possessive quantifiers such as <code>?+</code>, <code>*+</code>, <code>++</code> ?
+*Note:* If you have Python installed, you can add the package [https://github.com/benma/visual-regexp-steroids.el/  visual regexp steroids], to use python based regular expressions. Interactive regular expressions (such as isearch-forward-regexp and regexp-replace) written using this package do support lookahead and lookbehind expressions.
 
 [new]
+Does Emacs support possessive quantifiers such as <code>?+</code>, <code>*+</code>, <code>++</code> ?
+:   [i]No, Emacs does not support possessive quantifiers.[/i]
+[new]
+
+
+
 The escape sequence \c[i]C[/i] represents any character of category "[i]C[/i]", and according to Emacs documentation invoked by "M-x describe-categories", \c6 ought to match any digit. Yet the ASCII digits 0-9 are not matched by \c6. Is this an error, or just something on the to-do list?
 ----
 CategoryRegexp
