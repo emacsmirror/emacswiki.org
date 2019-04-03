@@ -15,8 +15,8 @@ The following techniques do not take character width into account; they are base
 [:goto-long-line]
 * Command `goto-long-line' goes to the next line that is at least ##LEN## characters long. Use a prefix arg to provide ##LEN##. Plain `C-u' (no number) uses `fill-column' as ##LEN##. Repeat to visit other such lines. Displays a message about the long line, e.g., ##Line 234: 76 chars##. Command `goto-long-line' is available with library <tt>[[misc-cmds.el]]</tt>.
 
-[:M-s h r]
-* Command `M-s h r C-u 81 .`: enables coloring of lines as you type them and they become longer than 80 characters. The highlight goes away when the line's length reduces to <=80 characters. Also affects existing lines.
+[:highlight-regexp]
+* `##M-s h r C-u 81 .##' highlights lines as you type them and they become longer than 80 characters. The highlight goes away when the line's length reduces to <=80 characters. Also affects existing lines.
 
 === Variable Character Width ===
 
