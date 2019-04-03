@@ -1,15 +1,1 @@
-This method is no longer supported in emacs-26 (from git as of 10 July 2017)
-
-cmd shell on Windows 10
-
-> vcvars64.bat
-> cd emacs/nt
-> .\configure
-
-<pre>
-****************************************************************
-*** THIS METHOD OF BUILDING EMACS IS NO LONGER SUPPORTED.     **
-*** INSTEAD, FOLLOW THE INSTRUCTIONS IN THE FILE INSTALL.     **
-*** IN THE SAME DIRECTORY AS THIS BATCH FILE.                 **
-****************************************************************
-</pre>
+DeletedPage
