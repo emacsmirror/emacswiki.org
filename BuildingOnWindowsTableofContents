@@ -1,22 +1,9 @@
-There seem to be eight(!) different ways of building GNU Emacs on Windows; this page aims to list all of them in a nice regular way.  Each of the eight methods has its own page.  The name of each page consists of three parts:
-* The Emacs version -- <nowiki>"TwentyOneThree" or "CVS"</nowiki>
-* The type of built Emacs -- "Cygwin" or "W32"
-* The tools used for the build -- <nowiki>"Cygwin", "MinGW", or "Msvc"</nowiki>
+There are three method of building GNU Emacs on Windows:
 
-* CygWin Emacs
-** 21.3
-*** built with CygWin: BuildingTwentyOneThreeCygwinCygwin
-** recent CVS
-*** built with CygWin: BuildingCvsCygwinCygwin
-* Win32 Emacs
-** 21.3
-*** built with CygWin: BuildingTwentyOneThreeWThirtyTwoCygwin
-*** built with MSVC: BuildingTwentyOneThreeWThirtyTwoMsvc (no longer supported)
-*** built with MinGW: BuildingTwentyOneThreeWThirtyTwoMingw
-** recent CVS
-*** built with CygWin: BuildingCvsWThirtyTwoCygwin
-*** built with MSVC: BuildingCvsWThirtyTwoMsvc
-*** built with MinGW: BuildingCvsWThirtyTwoMingw
+* Using MinGW, consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL nt/INSTALL] in the source distribution.
+* Using [[MinGW64]], consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL.W64 nt/INSTALL.W64] in the source distribution.
+* Using [[Cygwin]], consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/INSTALL INSTALL] at the top-level in the source distribution (i.e., the standard BuildingEmacs instructions apply).
 
-For completeness, I'll mention <nowiki>BuildingTwentyOneThreeCygwinMingw, BuildingTwentyOneThreeCygwinMsvc, BuildingCvsCygwinMingw, and BuildingCvsCygwinMsvc</nowiki>, none of which are applicable, since non-Cygwin toolchains cannot create Cygwin binaries.
+----
 
+CategoryBuilding CategoryWThirtyTwo
