@@ -4,3 +4,10 @@ where can i find step by step instruction for building emacs on mingw?
 
 -- xyzzy user 2014-03-01 05:17 UTC
 
+
+----
+
+Yes, this information is all obsolete.  See nt/INSTALL or nt/INSTALL.W64 in the emacs source tree for up to date instructions.
+
+-- npostavs 2019-04-03 15:58 UTC
+
