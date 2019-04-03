@@ -1,6 +1,6 @@
 The official and detailed directions on building Emacs can be found in
-the [http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/INSTALL INSTALL] and
-[http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/INSTALL.BZR INSTALL.BZR]
+the [https://git.savannah.gnu.org/cgit/emacs.git/tree/INSTALL INSTALL] and
+[https://git.savannah.gnu.org/cgit/emacs.git/tree/INSTALL.REPO INSTALL.REPO]
 files distributed with Emacs.
 
 Because these instructions have been repeated so many times on this wiki,
