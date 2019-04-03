@@ -44,11 +44,7 @@ If you prefer, there are two commands that can call grep for you, and then proce
 
 * GrepEd
 
-* Lisp:color-moccur.el
-
-* dmoccur -- [http://www.bookshelf.jp/soft/flash/dmoccur.html demo] 
-
-* Lisp:moccur-edit.el -- [http://www.bookshelf.jp/soft/flash/moccuredit.html demo] With this packege, you can edit moccur buffer and to apply the changes to the file. 
+* Lisp:moccur-edit.el -- With this packege, you can edit moccur buffer and to apply the changes to the file, requires Lisp:color-moccur.el.
 
 * [[Icicles - Search-And-Replace]] -- Search and replace across multiple files or buffers.
 
