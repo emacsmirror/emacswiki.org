@@ -8,10 +8,7 @@ This page is not to be confused with //sandbox.el// at
 http://panix.com/~tehom/my-code/, which can be used to help check the
 security of new elisp code.
 
-This page is the place to '''try stuff'''. You can also use the
-[http://www.emacswiki.org/cgi-bin/test Test Wiki] for testing.
-If you need your own wiki, try the
-[http://communitywiki.org/odd Oddwiki].
+This page is the place to '''try stuff'''.
 
 '''Please make all edits here minor:''' check the box below the
 editing field marked "This change is a minor edit."
