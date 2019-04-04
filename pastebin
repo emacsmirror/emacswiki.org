@@ -16,6 +16,10 @@ The code is downloadable from the wiki here: [[pastebin.el]]
 The code is also on a [https://github.com/nicferrier/elpastebin github repo here.]
 ----
 
+A more generic solution, [https://github.com/etu/webpaste.el webpaste] that has been updated more recently (in last 25 days 04/04/2019)  [https://github.com/etu/webpaste.el github repo] 
+
+----
+
 There are two versions of pastebin's code. One is the main site available on the Internet, the other is an earlier downloadable version. The pastebin elisp library supports both of these via configuration which allows the version supported by a particular domain to be specified.
 
 ----
