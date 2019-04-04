@@ -1,15 +1,13 @@
-repeatable.el helps with RepeatingCommands by being able to advise commands that are bound
-to sequences with multiple keys by automatically repeating the command when the
-last key stroke is successively hit.
-
-An example should make this clear: after advising kmacro-end-and-call-macro
-(bound to `C-x e'), you can call this command repeatedly -- the first
+Repeatable commands can be called again by repeatedly hitting the last key stroke.
+An example should make this clear: you can call kmacro-end-and-call-macro (bound to `C-x e') repeatedly -- the first
 time with `C-x e' and with only `e' subsequently. After you press another
 key, things are back to normal.
 
-A clean implementation for emacs 24.x can be found on https://github.com/leoliu/repeatable.el
+The following packages can be used to make other commands repeatable:
 
-Get it here: http://furius.ca/pubcode/
+* http://furius.ca/pubcode/pub/conf/lib/elisp/blais/repeatable.el - `defadvice'-based implementation
+* https://github.com/leoliu/repeatable.el - An `fset'+`set-transient-map'-based implementation, for emacs 24+
+* [[Hydra]] also allows repetition over groups of commands, among other features.
 
 ----
 CategoryCommands
