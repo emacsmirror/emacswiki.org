@@ -1,16 +1,22 @@
-EmacsLisp library ##color-theme.el## provides many predefined [[ColorTheme|color theme]]
+EmacsLisp library <tt>[[color-theme.el]]</tt> provides many predefined [[ColorTheme|color theme]]
 for your use, and you can easily define additional themes.  
 
-The library has not been updated since 2009, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24).
-It doesn't work anymore with Emacs 26, <https://savannah.nongnu.org/bugs/?54329>, because of <code>Symbol's function definition is void: make-variable-frame-local</code> (`make-variable-frame-local' has been deprecated long ago).
+The library has not really been well maintained since 2009, but you can use it with any Emacs version since Emacs 20.
 
-If you look at the themes provided via [[ELPA]] and [[MELPA]], you'll see that they all implemented using [[CustomThemes|custom themes]]. If you are going to write your own themes, please consider writing a /custom theme/ instead of using ##color-theme.el##.
+[new:DrewAdams:2019-04-04 19:23 UTC]
+The version of <tt>[[color-theme.el]]</tt> on the wiki (6.6.1) is a quick fix to the last version (6.6.0) maintained by XavierMaillard, which no longer worked starting with Emacs 26 because it still used `make-variable-frame-local'.  Beyond <tt>[[color-theme.el]]</tt> itself, please refer to http://www.nongnu.org/color-theme/ for all other info (e.g. ##README## file).
+[new]
+
+If you look at the themes provided via [[ELPA]] and [[MELPA]], you'll see that they all implemented using [[CustomThemes|custom themes]], not color themes. If you are going to write your own theme, you might therefore prefer to write a /custom/ theme instead of a /color/ theme.
+
+Vanilla Emacs CustomThemes are similar to color themes, but ''they '''do not replace''' color themes'' -- [[CustomThemes#ComparedToColorThemes|each approach has its advantages]].  Custom themes that have been based on some color themes can be found [https://github.com/emacs-jp/replace-colorthemes|here].
 
 See the color-theme web page at http://www.nongnu.org/color-theme for how to get
 started with ##color-theme.el##.
 For questions about color-theme, see ColorThemeQuestions.  
 
-Vanilla Emacs CustomThemes are similar to color themes, but ''they '''do not replace''' color themes'' -- [[CustomThemes#ComparedToColorThemes|each approach has its advantages]].  Custom themes that have been based on some color themes can be found [https://github.com/emacs-jp/replace-colorthemes|here].
+
+
 
 
 
@@ -21,16 +27,16 @@ Vanilla Emacs CustomThemes are similar to color themes, but ''they '''do not rep
 
 [See http://www.nongnu.org/color-theme for the latest information.]
 
-Put the file color-theme.el and the folder "themes" (with the files color-theme-example.el and color-theme-library.el) in a directory on your LoadPath. The main function to
+Put the file <tt>[[color-theme.el]]</tt> and the folder ##themes## (with the files ##color-theme-example.el## and ##color-theme-library.el##) in a directory on your LoadPath. The main function to
 use is `color-theme-select'. It creates the Color Theme Selection
 buffer that allows you to test the themes before choosing one.
 
-M-x load-library RET color-theme RET
-M-x color-theme-select RET
+    M-x load-library RET color-theme RET
+    M-x color-theme-select RET
 
 The easiest way is to install a chosen color theme is to require the
 file and call the appropriate color theme function. Put the
-appropriate code in your .emacs file:
+appropriate code in your InitFile:
 
     (require 'color-theme)
     (color-theme-initialize)
@@ -42,29 +48,17 @@ If it doesn't seem to work, try adding one more line:
    (setq color-theme-is-global t)
    (color-theme-robin-hood)
 
-If you like putting globals in default.el and local customizations in
-.emacs then, add the require to default.el and use this in .emacs
+If you like putting globals in ##default.el## and local customizations in
+your InitFile then add the `require' to ##default.el## and use this in your InitFile:
 
      (eval-after-load "color-theme" '(color-theme-robin-hood))
 
-Use the `?' in the Color Theme Selection buffer to find the name of
+Use `?' in the Color Theme Selection buffer to find the name of
 the appropriate color theme function.
 
 If the colors seem to get reset (such as background color changing to white on startup or when creating a new frame), consider checking ColorsAndKde.
 
 
-If on loading emacs, you get an error like 
-
-     Debugger entered--Lisp error: (wrong-type-argument keymapp nil)
-     define-key(nil [menu-bar Tools] ("Tools" keymap "Tools"))
-
-Change lines 589 and 590 in color-theme.el to:
-
-     (easy-menu-add-item nil '("tools") "--")
-     (easy-menu-add-item  nil '("tools")
-                     ["Color Themes" color-theme-select t])
-
-Note the "tools" vs "Tools". 
 
 
 
