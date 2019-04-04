@@ -1,13 +1,51 @@
-Repeatable commands can be called again by repeatedly hitting the last key stroke.
-An example should make this clear: you can call kmacro-end-and-call-macro (bound to `C-x e') repeatedly -- the first
+A repeatable command can be called again by repeatedly hitting (or just holding down) the last key stroke/chord.
+
+For example: You can call the repeatable command `kmacro-end-and-call-macro' (bound to `C-x e') repeatedly -- the first
 time with `C-x e' and with only `e' subsequently. After you press another
 key, things are back to normal.
 
-The following packages can be used to make other commands repeatable:
+But you cannot call the non-repeatable command `transpose-lines' (bound to `C-x C-t' repeatedly. That is, you cannot use `C-x C-t C-t C-t'..., holding `C-t' pressed, to repeat the action of transposing lines.
 
-* http://furius.ca/pubcode/pub/conf/lib/elisp/blais/repeatable.el - `defadvice'-based implementation
-* https://github.com/leoliu/repeatable.el - An `fset'+`set-transient-map'-based implementation, for emacs 24+
-* [[Hydra]] also allows repetition over groups of commands, among other features.
+
+
+
+== Simple Code To Make a Command Repeatable ==
+
+{{{
+(defun repeat-command (command)
+  "Repeat COMMAND."
+  (require 'repeat)
+  (let ((repeat-previous-repeated-command  command)
+        (repeat-message-function           #'ignore)
+        (last-repeatable-command           'repeat))
+    (repeat nil)))
+}}}
+
+Given an ordinary, non-repeatable command `foo', just do this to get a repeatable one:
+
+
+{{{
+(defun repeatable-foo (arg) ; or whatever other arguments
+  "whatever..."
+  (interactive "P") ; or whatever else
+  (repeat-command 'foo)
+}}}
+
+I use this in several of my libraries: [[Bookmark+]], [[Zones]], [[Isearch+]], [[Icicles]], <tt>[[misc-cmds.el]]</tt>, [[thing-cmds.el]]</tt>. -- DrewAdams
+
+
+
+
+== Packages To Make a Command Repeatable ==
+
+* [[Hydra]]
+* ##repeatable.el##
+** [[http://furius.ca/pubcode/pub/conf/lib/elisp/blais/repeatable.el|repeatable.el]] - `defadvice'-based implementation
+** [[https://github.com/leoliu/repeatable.el|repeatable.el]] - An `fset' + `set-transient-map'-based implementation (Emacs 24+)
+
+
+
+
 
 ----
 CategoryCommands
