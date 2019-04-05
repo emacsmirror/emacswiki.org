@@ -64,9 +64,9 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * Alley Stoughton, [[http://people.cis.ksu.edu/~stough/emacs-vm-mac/|Support for Using Emacs/VM for Reading and Sending Mail on a Mac]], undated.
 
-* Bill Clementson, [[http://bc.tech.coop/blog/061023.html|VM and Gmail Setup for Dummies]], October 23, 2006.  Although a bit dated, and uses POP for Gmail, it has useful information on setting up starttls.
+* Bill Clementson, [[https://web.archive.org/web/20130727162940/http://bc.tech.coop/blog/061023.html|VM and Gmail Setup for Dummies]], October 23, 2006.  Although a bit dated, and uses POP for Gmail, it has useful information on setting up starttls.
 
-* Andreas Viklund, [[http://obfuscatedcode.wordpress.com/2007/04/26/configuring-emacs-for-gmails-smtp/|Configuring Emacs for GMail's SMTP over SSL]], April 26, 2007.  Another article on configuring Emacs SMTP for GMail starttls.
+* Andreas Viklund, [[https://web.archive.org/web/20130630024125/https://obfuscatedcode.wordpress.com/2007/04/26/configuring-emacs-for-gmails-smtp/|Configuring Emacs for GMail's SMTP over SSL]], April 26, 2007.  Another article on configuring Emacs SMTP for GMail starttls.
 
 * XEmacs, [[http://www.xemacs.org/Documentation/21.5/html/xemacs-faq_7.html|XEmacs 21.5 FAQ section on Connecting to the Internet]], includes FAQ's on VM.
 
