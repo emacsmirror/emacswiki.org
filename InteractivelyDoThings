@@ -4,7 +4,7 @@
 
 = Overview of Ido =
 
-The ido.el package by KimStorm lets you interactively do things with buffers and files.
+The ido.el package by KimStorm lets you interactively do things with buffers and files. As an example, while searching for a file with "C-x f", ido can helpfully suggest the files whose paths are closest to your current string, allowing you to find your files more quickly.
 
 To activate, place this in your InitFile:
 
