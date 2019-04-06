@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-08-26 14:22:12
-;; Version: 4.2
-;; Last-Updated: 2019-01-29 20:46:00
+;; Version: 4.4
+;; Last-Updated: 2019-04-06 22:01:49
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/color-rg.el
 ;; Keywords:
@@ -67,6 +67,16 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/04/06
+;;      * Add commands: `color-rg-search-input-in-project' and `color-rg-search-symbol-in-project'.
+;;
+;; 2019/03/20
+;;      * Add `ignore-errors' to make sure cursor will back to color-rg buffer.
+;;
+;; 2019/03/07
+;;      * add `olor-rg-rerun-change-exclude-files' which can filter searched files by glob, This is the opposite of `olor-rg-rerun-change-files'
+;;      * add `color-rg-customized-search' which give users more power and freedom.
 ;;
 ;; 2019/01/29
 ;;      * Automatically expand the block of matching keywords in org files and adjust column along with org link syntax.
@@ -225,7 +235,7 @@
 (defcustom color-rg-mode-hook '()
   "color-rg mode hook."
   :type 'hook
-  :group 'color-rg-mode)
+  :group 'color-rg)
 
 (defcustom color-rg-custom-type-aliases
   '(("gn" .    "*.gn *.gni")
@@ -354,7 +364,6 @@ used to restore window configuration after apply changed.")
 
 (defvar color-rg-files-history nil "History for files args.")
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; color-rg mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar color-rg-mode-map
   (let ((map (make-sparse-keymap)))
@@ -385,6 +394,8 @@ used to restore window configuration after apply changed.")
     (define-key map (kbd "s") 'color-rg-rerun-regexp)
     (define-key map (kbd "d") 'color-rg-rerun-change-dir)
     (define-key map (kbd "z") 'color-rg-rerun-change-files)
+    (define-key map (kbd "Z") 'color-rg-rerun-change-exclude-files)
+    (define-key map (kbd "C") 'color-rg-customized-search)
 
     (define-key map (kbd "e") 'color-rg-switch-to-edit-mode)
     (define-key map (kbd "q") 'color-rg-quit)
@@ -527,10 +538,11 @@ This function is called from `compilation-filter-hook'."
 (cl-defstruct (color-rg-search (:constructor color-rg-search-create)
                                (:constructor color-rg-search-new (pattern dir))
                                (:copier nil))
-  keyword                               ; search keyword
-  dir                                   ; base directory
-  files                                 ; files to search
-  literal                               ; literal patterh (t or nil)
+  keyword       ; search keyword
+  dir           ; base directory
+  files         ; files to search
+  file-exclude  ; toggle exclude files, t means not search these files
+  literal       ; literal patterh (t or nil)
   case-sensitive                        ; case-sensitive (t or nil)
   no-ignore                             ; toggle no-ignore (t or nil)
   mode                                  ; view or edit mode
@@ -591,7 +603,7 @@ excluded."
   "Return non nil if FILES is a custom file pattern."
   (not (assoc files (color-rg-get-type-aliases))))
 
-(defun color-rg-build-command (keyword dir files &optional literal no-ignore case-sensitive)
+(defun color-rg-build-command (keyword dir files &optional literal no-ignore case-sensitive file-exclude)
   "Create the command line for KEYWORD.
 LITERAL determines if search will be literal or regexp based.
 NO-IGNORE determinies if search not ignore the ignored files.
@@ -623,7 +635,9 @@ CASE-SENSITIVE determinies if search is case-sensitive."
             (list "--fixed-strings"))
 
           (when (not (equal files "everything"))
-            (list "--type <F>"))
+            (if file-exclude
+                (list "--type-not <F>")
+              (list "--type <F>")))
 
           (list "-e <R>" dir))))
 
@@ -632,8 +646,8 @@ CASE-SENSITIVE determinies if search is case-sensitive."
      keyword
      (if (color-rg-is-custom-file-pattern files) "custom" files))))
 
-(defun color-rg-search (keyword directory files &optional literal no-ignore case-sensitive)
-  (let* ((command (color-rg-build-command keyword directory files literal no-ignore case-sensitive)))
+(defun color-rg-search (keyword directory files &optional literal no-ignore case-sensitive file-exclude)
+  (let* ((command (color-rg-build-command keyword directory files literal no-ignore case-sensitive file-exclude)))
     ;; Reset visit temp buffers.
     (setq color-rg-temp-visit-buffers nil)
     ;; Reset hit count.
@@ -661,6 +675,7 @@ CASE-SENSITIVE determinies if search is case-sensitive."
                      :keyword keyword
                      :dir directory
                      :files files
+                     :file-exclude file-exclude
                      :no-ignore no-ignore
                      :literal literal
                      :case-sensitive case-sensitive
@@ -671,6 +686,38 @@ CASE-SENSITIVE determinies if search is case-sensitive."
     (pop-to-buffer color-rg-buffer)
     (goto-char (point-min))
     ))
+
+(defun color-rg-customized-search ()
+  "Rerun rg with customized arguments. This function will give
+user more freedom to use rg with special arguments."
+  (interactive)
+  (let* ((command (read-from-minibuffer "Customized search: " (car compilation-arguments))))
+    ;; Reset visit temp buffers.
+    (setq color-rg-temp-visit-buffers nil)
+    ;; Reset hit count.
+    (setq color-rg-hit-count 0)
+    ;; Erase or create search result.
+    (if (get-buffer color-rg-buffer)
+        (with-current-buffer color-rg-buffer
+          (let ((inhibit-read-only t))
+            ;; Switch to `color-rg-mode' first, otherwise `erase-buffer' will cause "save-excursion: end of buffer" error.
+            (color-rg-mode)
+            ;; Erase buffer content.
+            (read-only-mode -1)
+            (erase-buffer)))
+      (generate-new-buffer color-rg-buffer))
+    (setq color-rg-changed-lines nil)
+
+    ;; Run search command.
+    (with-current-buffer color-rg-buffer
+      ;; Start command.
+      (compilation-start command 'color-rg-mode)
+
+      (color-rg-update-header-line))
+
+    ;; Pop search buffer.
+    (pop-to-buffer color-rg-buffer)
+    (goto-char (point-min))))
 
 (defun color-rg-read-input ()
   (let* ((current-symbol (color-rg-pointer-string))
@@ -970,9 +1017,13 @@ This assumes that `color-rg-in-string-p' has already returned true, i.e.
       hit-count)))
 
 (defun color-rg-read-file-type (format-string)
-  (let ((files (color-rg-search-files color-rg-cur-search)))
+  (let* ((files (color-rg-search-files color-rg-cur-search))
+         (default-files (if (and (color-rg-search-file-exclude color-rg-cur-search)
+                                 (equal files "everything"))
+                            "nothing"
+                          files)))
     (completing-read
-     (format format-string files)
+     (format format-string default-files)
      (color-rg-get-type-aliases)
      nil nil nil 'color-rg-files-history
      files)))
@@ -1014,9 +1065,15 @@ This assumes that `color-rg-in-string-p' has already returned true, i.e.
       (expand-file-name (cdr project))
     default-directory))
 
+(defalias 'color-rg-search-input-in-project 'color-rg-search-project)
+
 (defun color-rg-search-project ()
   (interactive)
   (color-rg-search-input (color-rg-read-input) (color-rg-project-root-dir)))
+
+(defun color-rg-search-symbol-in-project ()
+  (interactive)
+  (color-rg-search-input (color-rg-pointer-string) (color-rg-project-root-dir)))
 
 (defun color-rg-search-project-with-type ()
   (interactive)
@@ -1102,11 +1159,12 @@ from `color-rg-cur-search'."
   (let ((keyword (color-rg-search-keyword color-rg-cur-search))
         (dir (color-rg-search-dir color-rg-cur-search))
         (files (color-rg-search-files color-rg-cur-search))
+        (file-exclude (color-rg-search-file-exclude color-rg-cur-search))
         (literal (color-rg-search-literal color-rg-cur-search))
         (case-sensitive (color-rg-search-case-sensitive color-rg-cur-search))
         (no-ignore (color-rg-search-no-ignore color-rg-cur-search)))
     (setcar compilation-arguments
-            (color-rg-build-command keyword dir files literal no-ignore case-sensitive))
+            (color-rg-build-command keyword dir files literal no-ignore case-sensitive file-exclude))
     ;; Reset hit count.
     (setq color-rg-hit-count 0)
 
@@ -1132,7 +1190,16 @@ from `color-rg-cur-search'."
 (defun color-rg-rerun-change-files ()
   "Rerun last search but prompt for new files."
   (interactive)
+  (setf (color-rg-search-file-exclude color-rg-cur-search) nil)
   (setf (color-rg-search-files color-rg-cur-search) (color-rg-read-file-type "Repeat search in files (default: [ %s ]): "))
+  (color-rg-rerun))
+
+(defun color-rg-rerun-change-exclude-files ()
+  "Rerun last search but prompt for new files which will NOT be searched.
+This function is the opposite of `color-rg-rerun-change-files'"
+  (interactive)
+  (setf (color-rg-search-file-exclude color-rg-cur-search) t)
+  (setf (color-rg-search-files color-rg-cur-search) (color-rg-read-file-type "Repeat search exclude files (default: [ %s ]): "))
   (color-rg-rerun))
 
 (defun color-rg-rerun-change-dir ()
@@ -1268,16 +1335,19 @@ from `color-rg-cur-search'."
       (unless match-buffer
         (add-to-list 'color-rg-temp-visit-buffers (current-buffer)))
       ;; Jump to match point.
-      (cond ((color-rg-is-org-file match-file)
-             ;; Jump to match position.
-             (color-rg-move-to-point match-line match-column)
-             ;; Expand org block if current file is *.org file.
-             (org-reveal)
-             ;; Jump to link beginning if keyword in content area.
-             (when in-org-link-content-p
-               (search-backward-regexp "\\[\\[" (line-beginning-position) t)))
-            (t
-             (color-rg-move-to-point match-line match-column)))
+      ;; We use `ignore-errors' to make sure cursor will back to color-rg buffer
+      ;; even target line is not exists in search file (such as delete by user).
+      (ignore-errors
+        (cond ((color-rg-is-org-file match-file)
+               ;; Jump to match position.
+               (color-rg-move-to-point match-line match-column)
+               ;; Expand org block if current file is *.org file.
+               (org-reveal)
+               ;; Jump to link beginning if keyword in content area.
+               (when in-org-link-content-p
+                 (search-backward-regexp "\\[\\[" (line-beginning-position) t)))
+              (t
+               (color-rg-move-to-point match-line match-column))))
       ;; Flash match line.
       (color-rg-flash-line))
     ;; Keep cursor in search buffer's window.
