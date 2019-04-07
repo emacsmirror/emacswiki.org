@@ -132,11 +132,11 @@ Many of the commands that manipulate zones are bound on keymap '''`narrow-map'''
 * '''`C-x n p''''   (`narrow-to-page') (standard, except that it is advised to update the current list of zones with the narrowing)
 * '''`C-x n r''''   (`zz-add-zones-matching-regexp') -- Add [[regexp]] matches as zones.
 * '''`C-x n R''''   (`zz-set-zones-matching-regexp') -- Set zone set to [[regexp]] matches.
+* '''`C-x n s''''   (`zz-select-zone-repeat') -- Cycle zones as the active [[region]]: '''`##C-x n s s s ...##'''' (negative arg removes zone)
 * '''`C-x n u''''   (`zz-unite-zones') -- Unite (coalesce) zones.
 * '''`C-x n v''''   (`zz-set-izones-var') -- Make another zones variable current.
 * '''`C-x n w''''   (`widen') -- Standard.
 * '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle or pop zones as [[Narrowing|narrowings]]: '''`##C-x n x x x ...##''''
-* '''`C-x n C-x''''   (`zz-select-zone-repeat') -- Cycle zones as the active [[region]]: '''`##C-x n C-x C-x C-x ...##''''
 
 
 The above descriptions speak of the "current list" of zones.  You can have any number of variables whose value is a list of zones, and you can switch among them.  The variables can be buffer-local or global (e.g., with positions recorded from multiple buffers).
