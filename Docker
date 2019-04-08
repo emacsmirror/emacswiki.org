@@ -11,3 +11,7 @@ See https://github.com/spotify/dockerfile-mode
 === Tramp integration ===
 
 See [[TrampAndDocker]]
+
+=== Docker Images with Emacs ===
+
+https://hub.docker.com/r/silex/emacs/ provides a set of various configurations and versions, with links to other repositories with more alternatives.
