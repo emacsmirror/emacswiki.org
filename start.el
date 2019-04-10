@@ -4,51 +4,65 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 21 15:27:39 2018 (-0700)
+;; Last-Updated: Wed Apr 10 14:43:59 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3087
+;;     Update #: 3097
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `assoc',
-;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
-;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `cl', `color-moccur', `compile', `compile+20',
-;;   `compile-20', `cus-edit', `cus-edit+', `cus-face', `cus-load',
-;;   `cus-start', `cus-theme', `custom', `dired', `dired+',
-;;   `dired-aux', `dired-details', `dired-details+',
-;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
-;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `em-joc', `emacsbug',
-;;   `eshell-auto', `eyedropper', `facemenu', `facemenu+', `faces',
-;;   `faces+', `ffap', `files+', `find-dired', `find-dired+',
-;;   `find-where', `finder', `finder+', `finder-inf', `fit-frame',
-;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `header2', `help+20', `hexrgb', `highlight',
-;;   `highlight-chars', `image-dired', `image-file', `imenu',
-;;   `imenu+', `info', `info+20', `isearch+', `iso-transl', `kmacro',
-;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `ansi-color', `apropos', `apropos+', `apropos-fn+var',
+;;   `auth-source', `autofit-frame', `avoid', `backquote',
+;;   `bindings+', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
+;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+', `button',
+;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `cmds-menu', `col-highlight', `color', `color-moccur', `comint',
+;;   `compile', `compile+', `compile-', `crosshairs', `cus-edit',
+;;   `cus-edit+', `cus-face', `cus-load', `cus-start', `cus-theme',
+;;   `custom', `descr-text', `descr-text+', `diff-mode-', `dired',
+;;   `dired+', `dired-aux', `dired-loaddefs', `dired-sort-menu',
+;;   `dired-sort-menu+', `dired-x', `doremi', `doremi-cmd',
+;;   `doremi-frm', `easymenu', `echo-bell', `ediff+', `ediff-diff',
+;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
+;;   `ediff-util', `ediff-wind', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `em-joc', `epg-config', `eshell-auto',
+;;   `face-remap', `face-remap+', `facemenu', `facemenu+', `faces',
+;;   `faces+', `files+', `find-dired', `find-dired+', `find-func',
+;;   `find-func+', `find-where', `finder', `finder+', `finder-inf',
+;;   `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
+;;   `framemove', `fuzzy-match', `grep', `grep+', `gv', `header2',
+;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `help-mode+', `hexrgb', `hide-comnt', `highlight',
+;;   `highlight-chars', `highlight-symbol', `hl-line', `hl-line+',
+;;   `hl-spotlight', `iedit', `image', `image-dired', `image-file',
+;;   `image-mode', `imenu', `imenu+', `info', `info+', `isearch+',
+;;   `isearch-prop', `iso-transl', `kmacro', `lacarte',
+;;   `lib-requires', `linkd', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
-;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
-;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
-;;   `pp+', `pp-c-l', `printing', `ps-print', `replace+', `ring',
-;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
-;;   `setup-keys', `simple+', `speedbar', `start', `strings',
-;;   `subr+', `subr-21', `swiss-move', `synonyms', `thing-cmds',
-;;   `thingatpt', `thingatpt+', `thumb-frm', `time-date', `timer',
-;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
-;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `window+', `zones', `zoom-frm'.
+;;   `ls-lisp-verbosity', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `moccur-edit', `modeline-char',
+;;   `modeline-posn', `modeline-win', `mouse', `mouse+', `mwheel',
+;;   `naked', `narrow-indirect', `occur-schroeder', `oneonone',
+;;   `package', `palette', `paren', `parse-time', `password-cache',
+;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `pretty-lambdada',
+;;   `printing', `ps-def', `ps-print', `ps-print-loaddefs',
+;;   `radix-tree', `regexp-opt', `replace', `replace+', `ring',
+;;   `ring+', `savehist-20+', `second-sel', `seq', `setup',
+;;   `setup-keys', `simple+', `start', `strings', `subr+',
+;;   `swiss-move', `synonyms', `syntax', `tabbar', `tabulated-list',
+;;   `text-mode', `thing-cmds', `thingatpt', `thingatpt+',
+;;   `thumb-frm', `time-date', `timer', `tool-bar', `tool-bar+',
+;;   `ucs-cmds', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `window+', `zones', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,6 +98,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2019/04/10 dadams
+;;     Do not require zones.el for < Emacs 22.
 ;; 2018/09/21 dadams
 ;;     Require modeline-win.el, modeline-char.el.
 ;; 2017/10/11 dadams
@@ -448,7 +464,8 @@
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
 (when (> emacs-major-version 22)        ; Need Emacs 23+ version of `ucs-insert' (`C-x 8 RET').
   (require 'ucs-cmds nil t))            ; Enhanced `C-x 8 RET'.
-(require 'zones nil t)                  ; Ring/stack of buffer zones (including narrowings).
+(when (> emacs-major-version 21)
+  (require 'zones nil t))               ; Ring/stack of buffer zones (including narrowings).
 ;;; ;; Use my update to Francis Wright's version of `ls-lisp.el', if available.
 ;;; (when (and (< emacs-major-version 21) (memq system-type '(windows-nt ms-dos macos)))
 ;;;   ;; If you don't have my version, from https://www.emacswiki.org/emacs/download/ls-lisp.el, and
@@ -697,6 +714,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;;   (eval-after-load "calendar" '(require 'calendar+ nil t)) ; Calendar, diary, appointment stuff.
 ;;;   (eval-after-load "cal-french" '(require 'calendar+ nil t))
 ;;;   (eval-after-load "diary-lib" '(require 'calendar+ nil t)))
+
 (cond ((> emacs-major-version 21)
        (eval-after-load "diff" '(require 'diff+ nil t)) ; Extensions to `diff.el'.
        (require 'diff-mode- nil t))     ; Extensions to `diff-mode.el'.
