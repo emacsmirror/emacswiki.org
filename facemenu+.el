@@ -4,13 +4,13 @@
 ;; Description: Extensions to `facemenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2019, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 28 09:20:50 2018 (-0800)
+;; Last-Updated: Wed Apr 10 14:40:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 1959
+;;     Update #: 1963
 ;; URL: https://www.emacswiki.org/emacs/download/facemenu%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CustomizingFaces
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -19,10 +19,15 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `doremi', `doremi-frm', `easymenu', `eyedropper',
-;;   `facemenu', `faces', `faces+', `font-lock-menus', `frame-cmds',
-;;   `frame-fns', `hexrgb', `misc-fns', `mwheel', `ring', `strings',
-;;   `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `button', `bytecomp', `cconv', `cl',
+;;   `cl-lib', `col-highlight', `crosshairs', `custom', `doremi',
+;;   `doremi-frm', `easymenu', `facemenu', `faces', `faces+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help-fns',
+;;   `help-fns+', `help-mode', `hexrgb', `hl-line', `hl-line+',
+;;   `info', `macroexp', `misc-cmds', `misc-fns', `mwheel', `naked',
+;;   `palette', `radix-tree', `ring', `strings', `thingatpt',
+;;   `thingatpt+', `timer', `vline', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -211,6 +216,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/10 dadams
+;;     Do not require zones.el for < Emacs 22.
 ;; 2018/12/28 dadams
 ;;     facemenup-add-face-to-regions: Pass explicit list of zones to zz-izone-limits.
 ;; 2015/08/16 dadams
@@ -392,8 +399,9 @@
     (or (require 'palette nil t)  (require 'eyedropper))
   (require 'eyedropper))
 
-(require 'zones nil t) ;; (no error if not found
-                       ;; zz-izone-limits, zz-izone-limits-in-bufs
+(when (> emacs-major-version 21)
+  (require 'zones nil t)) ;; (no error if not found
+                          ;; zz-izone-limits, zz-izone-limits-in-bufs
 
 ;; (require 'icicles nil t) ;; (no error if not found):
                             ;; icicle-read-color-WYSIWYG, icicle-read-string-completing
@@ -409,6 +417,7 @@
 ;; Quiet the byte-compiler.
 (defvar facemenu-self-insert-data) ;; In `facemenu.el'
 (defvar palette-action)            ;; In `palette.el'.
+(defvar zz-izones-var)             ;; In `zones.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
