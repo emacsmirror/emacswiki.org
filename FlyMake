@@ -1,25 +1,12 @@
-FlyMake performs on-the-fly syntax checks on the files being edited using the external syntax check tool (usually the compiler). Highlights erroneous lines and displays associated error messages.  Flymake is part of Emacs 23 and some of the tips below works out-of-the-box there.
+FlyMake performs on-the-fly syntax checks on the files being edited using the external syntax check tool (usually the compiler). Highlights erroneous lines and displays associated error messages. 
 
-* http://flymake.sourceforge.net/
+The project has been part of Emacs since Emacs 23, was then abandoned/maintained in various projects outside of Emacs for some years, but has recently had a revival in Emacs 26, so that many major modes now are supported out of the box, if you just enable Flymake.
 
-Unfortunately, this project is outdated and last change was 3 years ago.
+Much of this page is probably obsolete after the Emacs 26 revival?
 
-For a modern alternative, check out [[Flycheck]]
+=== Keyboard support for showing the errors ===
 
-Currently new and improved version of Flymake is maintained by Sam Graham and available on github:
-
-* https://github.com/illusori/emacs-flymake
-
-More info here:
-
-* http://www.illusori.co.uk/projects/emacs-flymake/
-
-
-From its home page:
-
-: "Flymake is implemented as an Emacs minor mode. It runs the syntax check tool in the background, passing it a temporary copy of the current buffer, and parses the output for known error/warning message patterns. Flymake then highlights erroneous lines (that is, lines for which at least one error or warning has been reported), and displays an overall buffer status in the mode line."
-
-Flymake's author is PavelKobiakov
+Type "C-h ." This is the standard shortcut for help-at-point
 
 == Language Support ==
 
