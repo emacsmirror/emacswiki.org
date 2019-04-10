@@ -12,7 +12,7 @@
 ;; Version: 0.5.6
 ;; Last-Updated: Fri Aug 17 19:42:29 2012 (-0400)
 ;;           By: Samuel Bronson
-;; URL: http://www.emacswiki.org/emacs/download/irfc.el
+;; URL: https://www.emacswiki.org/emacs/download/irfc.el
 ;; Keywords: RFC, IETF
 ;; Compatibility: GNU Emacs 22 ~ 23
 ;;
@@ -108,7 +108,7 @@
 ;; Command `irfc-follow' will visit RFC document around point,
 ;; example you stay cursor at "[RFC3986]", and type "o" will
 ;; open rfc3986.txt in storage directory.  If have not found
-;; this file in directory, will download from `http://www.ietf.org/rfc/'
+;; this file in directory, will download from `https://www.ietf.org/rfc/'
 ;; and open it when download complete.
 ;;
 ;; And command ‘irfc-follow’ can also use at title of RFC document.
@@ -366,7 +366,7 @@ Default is nil."
   :type 'string
   :group 'irfc)
 
-(defcustom irfc-download-base-url "http://www.ietf.org/rfc/"
+(defcustom irfc-download-base-url "https://www.ietf.org/rfc/"
   "The base URL for downloading RFC documents."
   :type 'string
   :group 'irfc)
