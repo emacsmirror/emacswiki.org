@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 10 15:45:31 2019 (-0700)
+;; Last-Updated: Wed Apr 10 16:01:13 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11524
+;;     Update #: 11525
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -6003,7 +6003,7 @@ When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'
 
 ;; FIXME: Factor out code that is common with `dired-mark-sexp'.
 ;;
-(when (> emacs-major-version 21) ;; minibuffer-with-setup-hook
+(when (fboundp 'minibuffer-with-setup-hook) ; Emacs 22+
 
   (defun diredp-mark-sexp-recursive (predicate &optional arg details) ; Bound to `M-+ M-(', `M-+ * ('
     "Mark files here and below for which PREDICATE returns non-nil.
