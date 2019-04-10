@@ -84,24 +84,13 @@ Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyf
 ====Flycheck====
 [[Flycheck]] integrates flake8 and pylint.  It can be used with multiple checkers per buffer.
 ==== Flymake====
-=====pylint=====
-Pylint can be configured to use [[FlyMake]], as documented at http://docs.pylint.org/ide-integration.
 
-=====flake8 / pyflakes=====
-[https://melpa.org/#/flymake-python-pyflakes flymake-python-pyflakes] is a FlyMake handler using pyflakes or flake8, although the author suggests you might be better served using [[Flycheck]].
+[[FlyMake]] uses pyflakes out of the box - just enable Flymake.
 
-[https://github.com/jorgenschaefer/elpy Elpy] supports using FlyMake with flake8.
+You can also configure Flymake to use flake8 or pylint.
 
-===== Using multiple checkers =====
-Flymake only natively supports a single checker per buffer. However, more than 
-one code checker can be applied by using a
-wrapper script that runs the desired tools and combines their output.
-This has lots of issues, one being that flymake does not seem to show
-more than one error message per line of code, meaning that an error or
-warning which is intentionally left unfixed can mask an error or
-warning that would get more attention.
+Old versions of Flymake didn't support having multiple checkers per buffer, but this is now supported natively.
 
-One of the best-maintained such scripts is [https://github.com/justinvanwinkle/config-files/blob/master/bin/lintrunner.py lintrunner.py].  There are others [http://python.pastebin.com/f627691e0 here], [http://pastebin.ca/1797770 here], [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py here], and [http://bitbucket.org/jek/sandbox/src/tip/pycheckers here].
 
 ===Refactoring===
 ====Refactoring libraries====
