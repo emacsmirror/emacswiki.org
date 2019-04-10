@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 20 20:35:35 2019 (-0700)
+;; Last-Updated: Wed Apr 10 15:45:31 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11516
+;;     Update #: 11524
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -536,18 +536,19 @@
 ;;    `diredp-mark-files-tagged-not-all',
 ;;    `diredp-mark-files-tagged-some',
 ;;    `diredp-mark-files-tagged-regexp', `diredp-mark-region-files',
-;;    `diredp-mark-sexp-recursive', `diredp-mark/unmark-autofiles',
-;;    `diredp-mark/unmark-extension', `diredp-mouse-3-menu',
-;;    `diredp-mouse-backup-diff', `diredp-mouse-copy-tags',
-;;    `diredp-mouse-describe-autofile', `diredp-mouse-describe-file',
-;;    `diredp-mouse-diff', `diredp-mouse-do-bookmark',
-;;    `diredp-mouse-do-byte-compile', `diredp-mouse-do-chgrp',
-;;    `diredp-mouse-do-chmod', `diredp-mouse-do-chown',
-;;    `diredp-mouse-do-compress', `diredp-mouse-do-copy',
-;;    `diredp-mouse-do-delete', `diredp-mouse-do-grep',
-;;    `diredp-mouse-do-hardlink', `diredp-mouse-do-load',
-;;    `diredp-mouse-do-print', `diredp-mouse-do-remove-all-tags',
-;;    `diredp-mouse-do-rename', `diredp-mouse-do-set-tag-value',
+;;    `diredp-mark-sexp-recursive' (Emacs 22+),
+;;    `diredp-mark/unmark-autofiles', `diredp-mark/unmark-extension',
+;;    `diredp-mouse-3-menu', `diredp-mouse-backup-diff',
+;;    `diredp-mouse-copy-tags', `diredp-mouse-describe-autofile',
+;;    `diredp-mouse-describe-file', `diredp-mouse-diff',
+;;    `diredp-mouse-do-bookmark', `diredp-mouse-do-byte-compile',
+;;    `diredp-mouse-do-chgrp', `diredp-mouse-do-chmod',
+;;    `diredp-mouse-do-chown', `diredp-mouse-do-compress',
+;;    `diredp-mouse-do-copy', `diredp-mouse-do-delete',
+;;    `diredp-mouse-do-grep', `diredp-mouse-do-hardlink',
+;;    `diredp-mouse-do-load', `diredp-mouse-do-print',
+;;    `diredp-mouse-do-remove-all-tags', `diredp-mouse-do-rename',
+;;    `diredp-mouse-do-set-tag-value',
 ;;    `diredp-mouse-do-shell-command', `diredp-mouse-do-symlink',
 ;;    `diredp-mouse-do-tag', `diredp-mouse-do-untag',
 ;;    `diredp-mouse-downcase', `diredp-mouse-ediff',
@@ -640,7 +641,8 @@
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-nonempty-region-p', `diredp-parent-dir',
 ;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
-;;    `diredp-read-bookmark-file-args', `diredp-read-include/exclude',
+;;    `diredp-read-bookmark-file-args', `diredp-read-expression'
+;;    (Emacs 22+), `diredp-read-include/exclude',
 ;;    `diredp-read-regexp', `diredp-recent-dirs',
 ;;    `diredp-refontify-buffer', `diredp-remove-if',
 ;;    `diredp-remove-if-not', `diredp--reuse-dir-buffer-helper',
@@ -790,6 +792,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/10 dadams
+;;     Added diredp-read-expression (forgot it when added diredp-mark-sexp-recursive).
+;;     diredp-mark-sexp-recursive is thus only for Emacs 22+.
 ;; 2019/03/20 dadams
 ;;     Added option diredp-omit-files-regexp.
 ;;     Face diredp-omit-file-name: Added strike-through.
@@ -5998,9 +6003,10 @@ When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'
 
 ;; FIXME: Factor out code that is common with `dired-mark-sexp'.
 ;;
-;;;###autoload
-(defun diredp-mark-sexp-recursive (predicate &optional arg details) ; Bound to `M-+ M-(', `M-+ * ('
-  "Mark files here and below for which PREDICATE returns non-nil.
+(when (> emacs-major-version 21) ;; minibuffer-with-setup-hook
+
+  (defun diredp-mark-sexp-recursive (predicate &optional arg details) ; Bound to `M-+ M-(', `M-+ * ('
+    "Mark files here and below for which PREDICATE returns non-nil.
 Like `diredp-mark-sexp', but act recursively on subdirs.
 
 A non-negative prefix arg means to unmark those files instead.
@@ -6046,144 +6052,163 @@ refer at all to the underlying file system.  Contrast this with
 `find-dired', which might be preferable for the task at hand.
 
 When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
-  ;; Using `sym' = "", instead of nil, for non-linked files avoids the trap of
-  ;; (string-match "foo" sym) into which a user would soon fall.
-  ;; Use `equal' instead of `=' in the example, as it works on integers and strings.
-  ;;@@@  (interactive "xMark if (vars: inode,blks,mode,nlink,uid,gid,size,time,name,sym): \nP")
+    ;; Using `sym' = "", instead of nil, for non-linked files avoids the trap of
+    ;; (string-match "foo" sym) into which a user would soon fall.
+    ;; Use `equal' instead of `=' in the example, as it works on integers and strings.
+    ;; (interactive "xMark if (vars: inode,blks,mode,nlink,uid,gid,size,time,name,sym): \nP")
 
-  (interactive
-   (let* ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
-          (unmark  (and numarg  (>= numarg 0))))
-     (diredp-get-confirmation-recursive)
-     (list (diredp-read-expression (format "%s if (Lisp expr): " (if current-prefix-arg "UNmark" "Mark")))
-           current-prefix-arg)))
+    (interactive
+     (let* ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+            (unmark  (and numarg  (>= numarg 0))))
+       (diredp-get-confirmation-recursive)
+       (list (diredp-read-expression (format "%s if (Lisp expr): " (if current-prefix-arg "UNmark" "Mark")))
+             current-prefix-arg)))
 
-  (message "%s" predicate)
-  (let* ((numarg             (and arg  (prefix-numeric-value arg)))
-         (unmark             (and numarg  (>= numarg 0)))
-         (ignorep            (and numarg  (<= numarg 0)))
-         (dired-marker-char  (if unmark ?\040 dired-marker-char))
-         (inode              nil)
-         (blks               ())
-         (matched            0)
-         (changed            0)
-         dbufs chg.mtch mode nlink uid gid size time name sym)
-    (dolist (dir  (cons default-directory (diredp-get-subdirs ignorep details)))
-      (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
-        (with-current-buffer (car dbufs)
-          (setq chg.mtch
-                (diredp-mark-if
-                 (save-excursion
-                   (and
-                    ;; Sets vars INODE BLKS MODE NLINK UID GID SIZE TIME NAME and SYM
-                    ;; according to current file line.  Returns `t' for success, nil if
-                    ;; there is no file line.  Upon success, these vars are set, to either
-                    ;; nil or the appropriate value, so they need not be initialized.
-                    ;; Moves point within the current line.
-                    (dired-move-to-filename)
-                    (let ((mode-len             10) ; Length of `mode' string.
-                          ;; As in `dired.el', but with subexpressions \1=inode, \2=blks:
-                          ;; GNU `ls -hs' suffixes the block count with a unit and prints it as a float
-                          ;; FreeBSD does neither.
-                          ;; $$$$$$ (dired-re-inode-size  "\\s *\\([0-9]*\\)\\s *\\([0-9]*\\) ?")
-                          (dired-re-inode-size  (if (> emacs-major-version 24)
-                                                    "\\=\\s *\\([0-9]+\\s +\\)?\
+    (message "%s" predicate)
+    (let* ((numarg             (and arg  (prefix-numeric-value arg)))
+           (unmark             (and numarg  (>= numarg 0)))
+           (ignorep            (and numarg  (<= numarg 0)))
+           (dired-marker-char  (if unmark ?\040 dired-marker-char))
+           (inode              nil)
+           (blks               ())
+           (matched            0)
+           (changed            0)
+           dbufs chg.mtch mode nlink uid gid size time name sym)
+      (dolist (dir  (cons default-directory (diredp-get-subdirs ignorep details)))
+        (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+          (with-current-buffer (car dbufs)
+            (setq chg.mtch
+                  (diredp-mark-if
+                   (save-excursion
+                     (and
+                      ;; Sets vars INODE BLKS MODE NLINK UID GID SIZE TIME NAME and SYM
+                      ;; according to current file line.  Returns `t' for success, nil if
+                      ;; there is no file line.  Upon success, these vars are set, to either
+                      ;; nil or the appropriate value, so they need not be initialized.
+                      ;; Moves point within the current line.
+                      (dired-move-to-filename)
+                      (let ((mode-len             10) ; Length of `mode' string.
+                            ;; As in `dired.el', but with subexpressions \1=inode, \2=blks:
+                            ;; GNU `ls -hs' suffixes the block count with a unit and prints it as a float
+                            ;; FreeBSD does neither.
+                            ;; $$$$$$ (dired-re-inode-size  "\\s *\\([0-9]*\\)\\s *\\([0-9]*\\) ?")
+                            (dired-re-inode-size  (if (> emacs-major-version 24)
+                                                      "\\=\\s *\\([0-9]+\\s +\\)?\
 \\(?:\\([0-9]+\\(?:\\.[0-9]*\\)?[BkKMGTPEZY]?\\)? ?\\)"
-                                                  "\\s *\\([0-9]*\\)\\s *\\([0-9]*\\) ?"))
-                          pos)
-                      (beginning-of-line)
-                      (forward-char 2)
-                      (search-forward-regexp dired-re-inode-size nil t)
-                      ;; `INODE', `BLKS', `MODE'
-                      ;; XXX Might be a size not followed by a unit prefix.
-                      ;; Could set `blks' to `inode' if it were otherwise nil, with similar reasoning
-                      ;; as for setting `gid' to `uid', but it would be even more whimsical.
-                      (setq inode  (and (match-string 1)  (string-to-number (match-string 1)))
-                            blks   (and (match-string 2)  (if (fboundp 'dired-x--string-to-number) ; Emacs 25+
-                                                              (dired-x--string-to-number (match-string 2))
-                                                            (string-to-number (match-string 2))))
-                            mode   (buffer-substring (point) (+ mode-len (point))))
-                      (forward-char mode-len)
-                      ;; Skip any extended attributes marker ("." or "+").
-                      (unless (diredp-looking-at-p " ") (forward-char 1))
-                      (setq nlink  (read (current-buffer))) ; `NLINK'
+                                                    "\\s *\\([0-9]*\\)\\s *\\([0-9]*\\) ?"))
+                            pos)
+                        (beginning-of-line)
+                        (forward-char 2)
+                        (search-forward-regexp dired-re-inode-size nil t)
+                        ;; `INODE', `BLKS', `MODE'
+                        ;; XXX Might be a size not followed by a unit prefix.
+                        ;; Could set `blks' to `inode' if it were otherwise nil, with similar reasoning
+                        ;; as for setting `gid' to `uid', but it would be even more whimsical.
+                        (setq inode  (and (match-string 1)  (string-to-number (match-string 1)))
+                              blks   (and (match-string 2)  (if (fboundp 'dired-x--string-to-number) ; Emacs 25+
+                                                                (dired-x--string-to-number (match-string 2))
+                                                              (string-to-number (match-string 2))))
+                              mode   (buffer-substring (point) (+ mode-len (point))))
+                        (forward-char mode-len)
+                        ;; Skip any extended attributes marker ("." or "+").
+                        (unless (diredp-looking-at-p " ") (forward-char 1))
+                        (setq nlink  (read (current-buffer))) ; `NLINK'
 
-                      ;; `UID'
-                      ;; Another issue is that GNU `ls -n' right-justifies numerical UIDs and GIDs,
-                      ;; while FreeBSD left-justifies them, so do not rely on a specific whitespace
-                      ;; layout.  Both of them right-justify all other numbers, though.
-                      ;; XXX Return a number if the `uid' or `gid' seems to be numerical?
-                      ;; $$$$$$ (setq uid  (buffer-substring (+ (point) 1) (progn (forward-word 1) (point))))
-                      (setq uid  (buffer-substring (progn (skip-chars-forward " \t")  (point))
-                                                   (progn (skip-chars-forward "^ \t") (point))))
-                      (cond ((> emacs-major-version 24)
-                             (dired-move-to-filename)
-                             (save-excursion
-                               (setq time ; `TIME'
-                                     ;; The regexp below tries to match from the last digit of the size
-                                     ;; field through a space after the date.  Also, dates may have
-                                     ;; different formats depending on file age, so the date column need
-                                     ;; not be aligned to the right.
-                                     (buffer-substring
-                                      (save-excursion (skip-chars-backward " \t") (point))
-                                      (progn (re-search-backward directory-listing-before-filename-regexp)
-                                             (skip-chars-forward "^ \t")
-                                             (1+ (point))))
+                        ;; `UID'
+                        ;; Another issue is that GNU `ls -n' right-justifies numerical UIDs and GIDs,
+                        ;; while FreeBSD left-justifies them, so do not rely on a specific whitespace
+                        ;; layout.  Both of them right-justify all other numbers, though.
+                        ;; XXX Return a number if the `uid' or `gid' seems to be numerical?
+                        ;; $$$$$$ (setq uid  (buffer-substring (+ (point) 1) (progn (forward-word 1) (point))))
+                        (setq uid  (buffer-substring (progn (skip-chars-forward " \t")  (point))
+                                                     (progn (skip-chars-forward "^ \t") (point))))
+                        (cond ((> emacs-major-version 24)
+                               (dired-move-to-filename)
+                               (save-excursion
+                                 (setq time ; `TIME'
+                                       ;; The regexp below tries to match from the last digit of the size
+                                       ;; field through a space after the date.  Also, dates may have
+                                       ;; different formats depending on file age, so the date column need
+                                       ;; not be aligned to the right.
+                                       (buffer-substring
+                                        (save-excursion (skip-chars-backward " \t") (point))
+                                        (progn (re-search-backward directory-listing-before-filename-regexp)
+                                               (skip-chars-forward "^ \t")
+                                               (1+ (point))))
 
-                                     size ; `SIZE'
-                                     (dired-x--string-to-number
-                                      ;; We know that there's some kind of number before point because
-                                      ;; the regexp search above succeeded.  Not worth doing an extra
-                                      ;; check for leading garbage.
-                                      (buffer-substring (point) (progn (skip-chars-backward "^ \t") (point))))
-                                     ;; If no `gid' is displayed, `gid' will be set to `uid' but user
-                                     ;; will then not reference it anyway in PREDICATE.
+                                       size ; `SIZE'
+                                       (dired-x--string-to-number
+                                        ;; We know that there's some kind of number before point because
+                                        ;; the regexp search above succeeded.  Not worth doing an extra
+                                        ;; check for leading garbage.
+                                        (buffer-substring (point) (progn (skip-chars-backward "^ \t") (point))))
+                                       ;; If no `gid' is displayed, `gid' will be set to `uid' but user
+                                       ;; will then not reference it anyway in PREDICATE.
 
-                                     gid ; `GID'
-                                     (buffer-substring (progn (skip-chars-backward " \t") (point))
-                                                       (progn (skip-chars-backward "^ \t") (point)))))
-                             ;; `NAME', `SYM'
-                             (setq name  (buffer-substring (point)
-                                                           (or (dired-move-to-end-of-filename t)  (point)))
-                                   sym   (if (diredp-looking-at-p " -> ")
-                                             (buffer-substring (progn (forward-char 4) (point))
-                                                               (line-end-position))
-                                           "")))
-                            (t
-                             (re-search-forward
-                              (if (< emacs-major-version 20)
-                                  "\\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\)"
-                                dired-move-to-filename-regexp))
-                             (goto-char (match-beginning 1))
-                             (forward-char -1)
-                             (setq size ; `SIZE'
-                                   (string-to-number (buffer-substring (save-excursion (backward-word 1)
-                                                                                       (setq pos  (point)))
-                                                                       (point))))
-                             (goto-char pos)
-                             (backward-word 1)
-                             ;; `GID', `TIME', `NAME', `SYM'
-                             ;; if no `gid' is displayed, `gid' will be set to `uid' but user will then
-                             ;; not reference it anyway in PREDICATE.
-                             (setq gid   (buffer-substring (save-excursion (forward-word 1) (point)) (point))
-                                   time  (buffer-substring (match-beginning 1) (1- (dired-move-to-filename)))
-                                   name  (buffer-substring (point) (or (dired-move-to-end-of-filename t)
-                                                                       (point)))
-                                   sym   (if (diredp-looking-at-p " -> ")
-                                             (buffer-substring (progn (forward-char 4) (point))
-                                                               (line-end-position))
-                                           "")))))
-                    ;; Vanilla Emacs uses `lexical-binding' = t, and it passes bindings to `eval'
-                    ;; as a second arg.  We use `lexical-binding' = nil, and anyway there should
-                    ;; be no need to pass the bindings.
-                    (eval predicate)))
-                 (format "'%s file" predicate)))
-          (setq changed   (+ changed (or (car chg.mtch)  0))
-                matched   (+ matched (or (cdr chg.mtch)  0))))))
-    (message "%s file%s%s%s newly %s" matched (dired-plural-s matched)
-             (if (not (= matched changed)) " matched, " "")
-             (if (not (= matched changed)) changed "")
-             (if (eq ?\040 dired-marker-char) "unmarked" "marked"))))
+                                       gid ; `GID'
+                                       (buffer-substring (progn (skip-chars-backward " \t") (point))
+                                                         (progn (skip-chars-backward "^ \t") (point)))))
+                               ;; `NAME', `SYM'
+                               (setq name  (buffer-substring (point)
+                                                             (or (dired-move-to-end-of-filename t)  (point)))
+                                     sym   (if (diredp-looking-at-p " -> ")
+                                               (buffer-substring (progn (forward-char 4) (point))
+                                                                 (line-end-position))
+                                             "")))
+                              (t
+                               (re-search-forward
+                                (if (< emacs-major-version 20)
+                                    "\\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\)"
+                                  dired-move-to-filename-regexp))
+                               (goto-char (match-beginning 1))
+                               (forward-char -1)
+                               (setq size ; `SIZE'
+                                     (string-to-number (buffer-substring (save-excursion (backward-word 1)
+                                                                                         (setq pos  (point)))
+                                                                         (point))))
+                               (goto-char pos)
+                               (backward-word 1)
+                               ;; `GID', `TIME', `NAME', `SYM'
+                               ;; if no `gid' is displayed, `gid' will be set to `uid' but user will then
+                               ;; not reference it anyway in PREDICATE.
+                               (setq gid   (buffer-substring (save-excursion (forward-word 1) (point)) (point))
+                                     time  (buffer-substring (match-beginning 1) (1- (dired-move-to-filename)))
+                                     name  (buffer-substring (point) (or (dired-move-to-end-of-filename t)
+                                                                         (point)))
+                                     sym   (if (diredp-looking-at-p " -> ")
+                                               (buffer-substring (progn (forward-char 4) (point))
+                                                                 (line-end-position))
+                                             "")))))
+                      ;; Vanilla Emacs uses `lexical-binding' = t, and it passes bindings to `eval'
+                      ;; as a second arg.  We use `lexical-binding' = nil, and anyway there should
+                      ;; be no need to pass the bindings.
+                      (eval predicate)))
+                   (format "'%s file" predicate)))
+            (setq changed   (+ changed (or (car chg.mtch)  0))
+                  matched   (+ matched (or (cdr chg.mtch)  0))))))
+      (message "%s file%s%s%s newly %s" matched (dired-plural-s matched)
+               (if (not (= matched changed)) " matched, " "")
+               (if (not (= matched changed)) changed "")
+               (if (eq ?\040 dired-marker-char) "unmarked" "marked"))))
+
+  (if (fboundp 'read--expression)       ; Emacs 24.4+
+      (defalias 'diredp-read-expression 'read--expression)
+    (defun diredp-read-expression (prompt &optional initial-contents)
+      (let ((minibuffer-completing-symbol  t))
+        (minibuffer-with-setup-hook
+            (lambda ()       ; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
+              (add-function :before-until (local 'eldoc-documentation-function)
+                            #'elisp-eldoc-documentation-function)
+              (eldoc-mode 1)
+              (add-hook 'completion-at-point-functions #'elisp-completion-at-point nil t)
+              (run-hooks 'eval-expression-minibuffer-setup-hook))
+          (read-from-minibuffer
+           prompt initial-contents (if (boundp 'pp-read-expression-map)
+                                       pp-read-expression-map
+                                     read-expression-map)
+           t 'read-expression-history)))))
+
+  )
 
 ;;;###autoload
 (defun diredp-mark-autofiles-recursive (&optional arg details) ; Bound to `M-+ * B'
