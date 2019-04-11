@@ -243,7 +243,7 @@ Also, ensure that the mode has tabs activated. Some modes, such as [[#VHDL|VhdlM
 
 The wheel appears to have been reinvented a number of times:
 
-* A [http://article.gmane.org/gmane.emacs.cc-mode.general/5139 quick hack] by Alan Mackenzie on the CC Mode mailing list, from 2008. The idea here is to use CC Mode's notion of "syntactic contexts" to distinguish continuation lines from the rest, and then add a hook function which re-encodes the leading whitespace of such lines.
+* A [https://sourceforge.net/p/cc-mode/mailman/message/19079716/ quick hack] by Alan Mackenzie on the CC Mode mailing list, from 2008. The idea here is to use CC Mode's notion of "syntactic contexts" to distinguish continuation lines from the rest, and then add a hook function which re-encodes the leading whitespace of such lines.
 * [http://stianse.wordpress.com/2008/11/17/indent-with-tabs-align-with-spaces/ A more complete approach], by StianSelnes.
 * [http://bytes.inso.cc/wp/2009/01/07/dot-emacs-smarter-indentation-with-tabs-and-spaces/ Another], used by the [http://wiki.xmms2.xmms.se/wiki/Emacs_C_style XMMS2] project.
 * A [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html custom CC mode], from the web archive.
