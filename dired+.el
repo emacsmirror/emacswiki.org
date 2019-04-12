@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 10 16:01:13 2019 (-0700)
+;; Last-Updated: Fri Apr 12 09:45:41 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11525
+;;     Update #: 11534
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -792,6 +792,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/12 dadams
+;;     dired-get-marked-files: Do not add t to RESULT.  Thx to Jeff Spencer for bug report.
+;;                             If all marked is (t) for some reason reset it to nil, per vanilla Emacs 24+.
 ;; 2019/04/10 dadams
 ;;     Added diredp-read-expression (forgot it when added diredp-mark-sexp-recursive).
 ;;     diredp-mark-sexp-recursive is thus only for Emacs 22+.
@@ -2612,6 +2615,7 @@ version in these respects:
                                                               nil
                                                               distinguish-one-marked))))
         result)
+    (when (equal all '(t)) (setq all  nil)) ; Added by vanilla Emacs 24+.
     (if (and distinguish-one-marked  (eq (car all) t))
         (if (not filter)
             all
@@ -2620,9 +2624,7 @@ version in these respects:
         (when (or (not filter)  (funcall filter file)) (push file result)))
       (when (and (null result)  error-if-none-p)
         (diredp-user-error (if (stringp error-if-none-p) error-if-none-p "No files specified")))
-      (if (and distinguish-one-marked  (= 1 (length result)))
-          (cons t result)
-        result))))
+      result)))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
