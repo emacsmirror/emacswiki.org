@@ -4,6 +4,12 @@ Format your elisp code and save your time, you don't need to format elisp code l
 ElispFormat is a mode that format elisp code.
 
 ==Install==
+
+=== From MELPA ===
+There is a slightly updated version at https://github.com/Yuki-Inoue/elisp-format, which can be installed by `M-x package-install elisp-format', after configuring package.el to use the [[MELPA]] repository.
+
+=== From EmacsWiki ===
+
 : Put Lisp:elisp-format.el in your load-path, and add
 {{{
         (require 'elisp-format)
