@@ -10,9 +10,7 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
-===Need to type a space after " characters on Mac====
-[new]
-I'm using Emacs on a Mac for the first time. While working with files, at first everything is fine, and then I lose my ability to type the characters " and ^. (Maybe others too, that I haven't encountered yet.) When I want to type " or ^, I have to type a space after them. If I don't, they appear in the mini-buffer with an underline underneath them, such that I can't do a regex search on, say, "ˆ." (beginning of line followed by any character). I've tried changing my coding system to no avail. Thank you!
+
 
 ===Adding options to mudraw in DocViewMode===
 [new]
