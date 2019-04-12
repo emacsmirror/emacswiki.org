@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr 12 09:45:41 2019 (-0700)
+;; Last-Updated: Fri Apr 12 10:13:52 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11534
+;;     Update #: 11535
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -795,6 +795,7 @@
 ;; 2019/04/12 dadams
 ;;     dired-get-marked-files: Do not add t to RESULT.  Thx to Jeff Spencer for bug report.
 ;;                             If all marked is (t) for some reason reset it to nil, per vanilla Emacs 24+.
+;;     diredp-compressed-extensions: Added .rar, .rev.
 ;; 2019/04/10 dadams
 ;;     Added diredp-read-expression (forgot it when added diredp-mark-sexp-recursive).
 ;;     diredp-mark-sexp-recursive is thus only for Emacs 22+.
@@ -2063,7 +2064,7 @@ support the use of such keys then customize this option to nil."
 
 ;;;###autoload
 (defcustom diredp-compressed-extensions '(".tar" ".taz" ".tgz" ".arj" ".lzh"
-                                          ".lzma" ".xz" ".zip" ".z" ".Z" ".gz" ".bz2")
+                                          ".lzma" ".xz" ".zip" ".z" ".Z" ".gz" ".bz2" ".rar" ".rev")
   "*List of compressed-file extensions, for highlighting.
 
 Note: If you change the value of this option then you need to restart
