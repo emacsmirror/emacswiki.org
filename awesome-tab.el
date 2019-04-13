@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 3.1
-;; Last-Updated: 2019-03-19 07:08:20
+;; Version: 3.2
+;; Last-Updated: 2019-03-21 22:27:46
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -86,6 +86,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/03/21
+;;      * Make `awesome-tab-last-sticky-func-name' as buffer variable.
 ;;
 ;; 2019/03/19
 ;;      * If `tab-index' more than length of visible tabs, selet the last tab.
@@ -286,50 +289,6 @@ Default is `awesome-tab-adjust-buffer-order', you can write your own rule.")
     (if (fboundp 'force-window-update)
         #'(lambda () (force-window-update (selected-window)))
       'force-mode-line-update)))
-
-(defun awesome-tab-shorten (str width)
-  "Return a shortened string from STR that fits in the given display WIDTH.
-WIDTH is specified in terms of character display width in the current
-buffer; see also `char-width'.  If STR display width is greater than
-WIDTH, STR is truncated and an ellipsis string \"...\" is inserted at
-end or in the middle of the returned string, depending on available
-room."
-  (let* ((n  (length str))
-         (sw (string-width str))
-         (el "...")
-         (ew (string-width el))
-         (w  0)
-         (i  0))
-    (cond
-     ;; STR fit in WIDTH, return it.
-     ((<= sw width)
-      str)
-     ;; There isn't enough room for the ellipsis, STR is just
-     ;; truncated to fit in WIDTH.
-     ((<= width ew)
-      (while (< w width)
-        (setq w (+ w (char-width (aref str i)))
-              i (1+ i)))
-      (substring str 0 i))
-     ;; There isn't enough room to insert the ellipsis in the middle
-     ;; of the truncated string, so put the ellipsis at end.
-     ((zerop (setq sw (/ (- width ew) 2)))
-      (setq width (- width ew))
-      (while (< w width)
-        (setq w (+ w (char-width (aref str i)))
-              i (1+ i)))
-      (concat (substring str 0 i) el))
-     ;; Put the ellipsis in the middle of the truncated string.
-     (t
-      (while (< w sw)
-        (setq w (+ w (char-width (aref str i)))
-              i (1+ i)))
-      (setq w (+ w ew))
-      (while (< w width)
-        (setq n (1- n)
-              w (+ w (char-width (aref str n)))))
-      (concat (substring str 0 i) el (substring str n)))
-     )))
 
 ;; Copied from s.el
 (defun awesome-tab-truncate-string (len s &optional ellipsis)
@@ -1434,6 +1393,7 @@ That is, a string used to represent it on the tab bar."
   "Get buffer name of tab.
 Will merge sticky function name in tab if option `awesome-tab-display-sticky-function-name' is non-nil."
   (if (and awesome-tab-display-sticky-function-name
+           (boundp 'awesome-tab-last-sticky-func-name)
            awesome-tab-last-sticky-func-name
            (equal tab-buffer (current-buffer)))
       (format "%s [%s]" (buffer-name tab-buffer) awesome-tab-last-sticky-func-name)
@@ -1441,9 +1401,6 @@ Will merge sticky function name in tab if option `awesome-tab-display-sticky-fun
 
 (defvar awesome-tab-last-scroll-y 0
   "Holds the scroll y of window from the last run of post-command-hooks.")
-
-(defvar awesome-tab-last-sticky-func-name nil
-  "Holds the sticky function name.")
 
 (defun awesome-tab-monitor-window-scroll ()
   "This function is used to monitor the window scroll.
@@ -1456,8 +1413,10 @@ Currently, this function is only use for option `awesome-tab-display-sticky-func
           (let ((func-name (save-excursion
                              (goto-char scroll-y)
                              (which-function))))
-            (unless (equal func-name awesome-tab-last-sticky-func-name)
-              (setq awesome-tab-last-sticky-func-name func-name)
+            (when (or
+                   (not (boundp 'awesome-tab-last-sticky-func-name))
+                   (not (equal func-name awesome-tab-last-sticky-func-name)))
+              (set (make-local-variable 'awesome-tab-last-sticky-func-name) func-name)
 
               ;; Use `ignore-errors' avoid integerp error when execute `awesome-tab-line-format'.
               (ignore-errors
@@ -1841,8 +1800,8 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
         (when (featurep 'helm)
           (require 'helm)
           (helm-build-sync-source "Awesome-Tab Group"
-            :candidates #'awesome-tab-get-groups
-            :action '(("Switch to group" . awesome-tab-switch-group))))))
+                                  :candidates #'awesome-tab-get-groups
+                                  :action '(("Switch to group" . awesome-tab-switch-group))))))
 
 ;; Ivy source for switching group in ivy.
 (defvar ivy-source-awesome-tab-group nil)
