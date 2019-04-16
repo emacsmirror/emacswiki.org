@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2017.10.23
+;; Version: 2019.04.16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 16 11:27:37 2019 (-0700)
+;; Last-Updated: Tue Apr 16 11:31:41 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11543
+;;     Update #: 11544
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
