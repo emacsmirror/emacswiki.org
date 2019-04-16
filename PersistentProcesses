@@ -91,7 +91,13 @@ as the command, instead of
 just as you would in the shell. 
 
 Q: What if it is too late. Can I somehow disown my already created process?
+
 [new]
+Yes--bash has a builtin
+
+   "disown -a"
+
+which makes it so that SIGHUP is not sent to the command if the shell receives a SIGHUP 
 
 == W32 Specific ==
 Try the EmacsLisp function `w32-shell-execute'
