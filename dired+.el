@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr 12 10:13:52 2019 (-0700)
+;; Last-Updated: Tue Apr 16 11:27:37 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11535
+;;     Update #: 11543
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -615,8 +615,9 @@
 ;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
-;;    `diredp-delete-dups', `diredp-delete-if-not',
-;;    `diredp-directories-within', `diredp-dired-plus-description',
+;;    `diredp-delete-dups', `diredp-delete-if',
+;;    `diredp-delete-if-not', `diredp-directories-within',
+;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
 ;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
@@ -792,6 +793,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/16 dadams
+;;     Added: diredp-delete-if.
+;;     dired-map-over-marks-check: Added &rest argument FUN-ARGS, so FUN can accept arguments.
 ;; 2019/04/12 dadams
 ;;     dired-get-marked-files: Do not add t to RESULT.  Thx to Jeff Spencer for bug report.
 ;;                             If all marked is (t) for some reason reset it to nil, per vanilla Emacs 24+.
@@ -2471,6 +2475,20 @@ This operation is destructive, reusing conses of XS whenever possible."
       (if (not (funcall predicate (cadr cl-p))) (setcdr cl-p (cddr cl-p)) (setq cl-p  (cdr cl-p)))))
   xs)
 
+;; Same as `imenup-delete-if'.
+;;
+(defun diredp-delete-if (predicate xs)
+  "Remove all elements of list XS that satisfy PREDICATE.
+This operation is destructive, reusing conses of XS whenever possible."
+  (while (and xs  (funcall predicate (car xs)))
+    (setq xs  (cdr xs)))
+  (let ((cl-p  xs))
+    (while (cdr cl-p)
+      (if (funcall predicate (cadr cl-p))
+          (setcdr cl-p (cddr cl-p))
+        (setq cl-p  (cdr cl-p)))))
+  xs)
+
 ;; Same as `tap-string-match-p' in `thingatpt+.el'.
 (if (fboundp 'string-match-p)
     (defalias 'diredp-string-match-p 'string-match-p) ; Emacs 23+
@@ -2630,31 +2648,36 @@ version in these respects:
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
 ;;
-(defun dired-map-over-marks-check (fun arg op-symbol &optional show-progress)
+;; 1. Define here to make use of my `dired-map-over-marks'.
+;; 2. Added &rest arg FUN-ARGS.
+;; 3. Added doc string.
+;;
+(defun dired-map-over-marks-check (fun mark-arg op-symbol &optional show-progress &rest fun-args)
   "Map FUN over marked lines and display failures.
-FUN takes zero args.  It returns non-nil (the offending object, e.g.
-the short form of the filename) for a failure and probably logs a
-detailed error explanation using function `dired-log'.
+FUN is passed FUN-ARGS as its arguments.
 
-ARG is as in `dired-map-over-marks'.
+FUN returns non-nil (the offending object, e.g. the short form of the
+filename) for a failure and probably logs a detailed error explanation
+using function `dired-log'.
+
+MARK-ARG is as the second argument of `dired-map-over-marks'.
 
 OP-SYMBOL is a symbol describing the operation performed (e.g.
 `compress').  It is used with `dired-mark-pop-up' to prompt the user
 \(e.g. with `Compress * [2 files]? ') and to display errors (e.g.
-`Failed to compress 1 of 2 files - type W to see why (\"foo\")')
+`Failed to compress 1 of 2 files - type ? for details (\"foo\")')
 
 SHOW-PROGRESS if non-nil means redisplay Dired after each file."
-  (and (dired-mark-confirm op-symbol arg)
-       (let* ((total-list  (dired-map-over-marks (funcall fun) arg show-progress)) ; Return vals.
+  (and (dired-mark-confirm op-symbol mark-arg)
+       (let* ((total-list  (dired-map-over-marks (apply fun fun-args) mark-arg show-progress)) ; Return values.
               (total       (length total-list))
               (failures    (delq nil total-list))
               (count       (length failures))
               (string      (if (eq op-symbol 'compress)
                                "Compress or uncompress"
                              (capitalize (symbol-name op-symbol)))))
-         (if (not failures)
+         (if (null failures)
              (message "%s: %d file%s." string total (dired-plural-s total))
-           ;; end this bunch of errors:
            (dired-log-summary (format "Failed to %s %d of %d file%s"
                                       (downcase string) count total (dired-plural-s total))
                               failures)))))
@@ -7976,9 +7999,10 @@ Otherwise, apply FUNCTION to each file name.
 Any other prefix arg behaves according to the ARG argument of
 `dired-get-marked-files'.  In particular, `C-u C-u' operates on all
 files in the Dired buffer."
-  (interactive (list (read (completing-read "Function: " obarray 'functionp nil nil
-                                            (and (boundp 'function-name-history)  'function-name-history)))
-                     current-prefix-arg))
+  (interactive (progn (diredp-ensure-mode)
+                      (list (read (completing-read "Function: " obarray 'functionp nil nil
+                                                   (and (boundp 'function-name-history)  'function-name-history)))
+                            current-prefix-arg)))
   (if (and (consp arg)  (< (car arg) 16))
       (dolist (file  (dired-get-marked-files))
         (with-current-buffer (find-file-noselect file) (funcall function)))
