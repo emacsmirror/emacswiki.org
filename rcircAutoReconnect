@@ -5,6 +5,6 @@ Being very annoyed with rcirc not knowing how to automatically reconnect I ([[av
 I hope this is useful for somebody else.
 
 [new]
-The above page no longer exists. The following page has some code which can do reconnection. https://www.emacswiki.org/emacs/rcircReconnect
+The above page no longer exists. [[rcircReconnect]] has some code which can do reconnection.
 
 -- Emacschamp
