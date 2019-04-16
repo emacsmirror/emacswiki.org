@@ -2,14 +2,10 @@ Irchat is an InternetRelayChat (IRC) client for Emacs.
 
 It's available at:
 
-* http://people.ssh.fi/tri/irchat/
-
+* https://timo.rinne.ws/irchat/
+* https://github.com/rinne/elisp-irchat "salvaged from the darkness of CVS"
 
 Irchat support dcc and encryption using an external process. Like LieceIrcClient it has separate buffers for input and output.
 
 ----
 CategoryModes
-
-[new]
-The link redirects to another address. It's deleted or moved. 
--- Emacachamp
