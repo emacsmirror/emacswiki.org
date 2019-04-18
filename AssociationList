@@ -30,5 +30,13 @@ Alternatively, APEL provides [http://git.chise.org/gitweb/?p=elisp/apel.git;a=bl
 
 See also AlistVsPlist.
 
+
+[new]
+If you are working with an alist that results from using (json-read) to parse JSON: there's a macro let-alist, that will bind each key in the alist to a variable.
+Check out it's documentation, there are also a few articles about it online. The Emacs manual doesn't mention anything about it yet but it's madly useful!
+-- SebastianMonia
+
+
+
 ----
 CategoryCode
