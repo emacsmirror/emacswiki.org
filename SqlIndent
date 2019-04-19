@@ -4,9 +4,11 @@ This is a very quick hack that allows me to indent SQL statements.  You can use 
 
 You can get it here:
 
-* https://github.com/bsvingen/sql-indent
+* https://github.com/alex-hhh/emacs-sql-indent
 
 An older version lives here:
+
+* https://github.com/bsvingen/sql-indent
 
 * Lisp:sql-indent.el
 
