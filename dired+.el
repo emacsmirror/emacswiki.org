@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2019.04.16
+;; Version: 2019.04.20
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 16 11:31:41 2019 (-0700)
+;; Last-Updated: Sat Apr 20 10:58:58 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11544
+;;     Update #: 11584
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -484,11 +484,11 @@
 ;;    `diredp-do-chgrp-recursive', `diredp-do-chown-recursive',
 ;;    `diredp-do-copy-recursive', `diredp-do-decrypt-recursive',
 ;;    `diredp-do-delete-recursive', `diredp-do-display-images' (Emacs
-;;    22+), `diredp-do-encrypt-recursive',
+;;    22+), `diredp-do-emacs-command', `diredp-do-encrypt-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-hardlink-recursive',
 ;;    `diredp-do-isearch-recursive',
-;;    `diredp-do-isearch-regexp-recursive',
+;;    `diredp-do-isearch-regexp-recursive', `diredp-do-lisp-sexp',
 ;;    `diredp-do-move-recursive', `diredp-do-paste-add-tags',
 ;;    `diredp-do-paste-replace-tags', `diredp-do-print-recursive',
 ;;    `diredp-do-query-replace-regexp-recursive',
@@ -597,7 +597,8 @@
 ;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
 ;;    `diredp-bind-problematic-terminal-keys',
 ;;    `diredp-compressed-extensions', `diredp-count-.-and-..-flag'
-;;    (Emacs 22+), `diredp-dwim-any-frame-flag' (Emacs 22+),
+;;    (Emacs 22+), `diredp-do-report-echo-limit',
+;;    `diredp-dwim-any-frame-flag' (Emacs 22+),
 ;;    `diredp-image-preview-in-tooltip', `diff-switches',
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles-mode',
@@ -613,7 +614,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
-;;    `diredp-ancestor-dirs', `diredp-bookmark',
+;;    `diredp-ancestor-dirs', `diredp-apply-function-to-file-name',
+;;    `diredp-bookmark',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-delete-dups', `diredp-delete-if',
 ;;    `diredp-delete-if-not', `diredp-directories-within',
@@ -624,8 +626,11 @@
 ;;    (Emacs 22+), `diredp-do-chxxx-recursive',
 ;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
 ;;    `diredp-ensure-bookmark+', `diredp-ensure-mode',
-;;    `diredp-existing-dired-buffer-p', `diredp-fewer-than-2-files-p',
-;;    `diredp-fileset-1', `diredp-find-a-file-read-args',
+;;    `diredp-eval-lisp-sexp', `diredp-existing-dired-buffer-p',
+;;    `diredp-fewer-than-2-files-p',
+;;    `diredp-fewer-than-echo-limit-files-p',
+;;    `diredp-fewer-than-N-files-p', `diredp-fileset-1',
+;;    `diredp-find-a-file-read-args',
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
@@ -635,10 +640,12 @@
 ;;    `diredp-hide/show-details' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles', `diredp-image-dired-required-msg',
 ;;    `diredp-get-image-filename', `diredp-internal-do-deletions',
+;;    `diredp-invoke-emacs-command', `diredp-invoke-function-no-args',
 ;;    `diredp-list-file', `diredp-list-files', `diredp-looking-at-p',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
-;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
+;;    `diredp-map-over-marks-and-report', `diredp-marked-here',
+;;    `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-nonempty-region-p', `diredp-parent-dir',
 ;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
@@ -646,9 +653,10 @@
 ;;    (Emacs 22+), `diredp-read-include/exclude',
 ;;    `diredp-read-regexp', `diredp-recent-dirs',
 ;;    `diredp-refontify-buffer', `diredp-remove-if',
-;;    `diredp-remove-if-not', `diredp--reuse-dir-buffer-helper',
-;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
-;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
+;;    `diredp-remove-if-not', `diredp-report-file-result',
+;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
+;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
+;;    `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp--set-up-font-locking', `diredp-string-match-p',
 ;;    `diredp-tag', `diredp-this-file-marked-p',
 ;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
@@ -793,6 +801,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/20 dadams
+;;     Added:
+;;       diredp-map-over-marks-and-report, diredp-do-emacs-command, diredp-invoke-emacs-command,
+;;       diredp-do-lisp-sexp, diredp-eval-lisp-sexp, diredp-report-file-result, diredp-do-report-echo-limit,
+;;       diredp-fewer-than-N-files-p, diredp-fewer-than-echo-limit-files-p, diredp-apply-function-to-file-name,
+;;       diredp-invoke-function-no-args.
+;;     diredp-do-apply-function: Redefine to use diredp-map-over-marks-and-report.
 ;; 2019/04/16 dadams
 ;;     Added: diredp-delete-if.
 ;;     dired-map-over-marks-check: Added &rest argument FUN-ARGS, so FUN can accept arguments.
@@ -2081,6 +2096,16 @@ Emacs to see the effect of the new value on font-locking."
     :type 'boolean :group 'Dired-Plus))
 
 ;;;###autoload
+(defcustom diredp-do-report-echo-limit 5
+  "Echo result for each file, for fewer than this many files.
+If more than this many files are acted on then there is no echoing.
+
+Used by some map-and-report commands such as `diredp-do-lisp-sexp'.
+Results that are not echoed are anyway reported by `dired-log', so you
+can show them with `?' in the Dired buffer."
+  :type '(restricted-sexp :match-alternatives (wholenump)) :group 'Dired-Plus)
+
+;;;###autoload
 (defcustom diredp-dwim-any-frame-flag pop-up-frames
   "*Non-nil means the target directory can be in a window in another frame.
 Only visible frames are considered.
@@ -2654,8 +2679,6 @@ version in these respects:
 ;;
 (defun dired-map-over-marks-check (fun mark-arg op-symbol &optional show-progress &rest fun-args)
   "Map FUN over marked lines and display failures.
-FUN is passed FUN-ARGS as its arguments.
-
 FUN returns non-nil (the offending object, e.g. the short form of the
 filename) for a failure and probably logs a detailed error explanation
 using function `dired-log'.
@@ -2667,20 +2690,54 @@ OP-SYMBOL is a symbol describing the operation performed (e.g.
 \(e.g. with `Compress * [2 files]? ') and to display errors (e.g.
 `Failed to compress 1 of 2 files - type ? for details (\"foo\")')
 
-SHOW-PROGRESS if non-nil means redisplay Dired after each file."
+SHOW-PROGRESS if non-nil means redisplay Dired after each file.
+
+FUN-ARGS is the list of any remaining args to
+`dired-map-over-marks-check'.  Function FUN is applied to these
+arguments."
   (and (dired-mark-confirm op-symbol mark-arg)
-       (let* ((total-list  (dired-map-over-marks (apply fun fun-args) mark-arg show-progress)) ; Return values.
-              (total       (length total-list))
-              (failures    (delq nil total-list))
-              (count       (length failures))
-              (string      (if (eq op-symbol 'compress)
-                               "Compress or uncompress"
-                             (capitalize (symbol-name op-symbol)))))
+       (let* ((results     (dired-map-over-marks (apply fun fun-args) mark-arg show-progress)) ; FUN return vals.
+              (nb-results  (length results))
+              (failures    (delq nil results))
+              (nb-fail     (length failures))
+              (op-strg     (if (eq op-symbol 'compress) "Compress or uncompress" (capitalize
+                                                                                  (symbol-name op-symbol)))))
          (if (null failures)
-             (message "%s: %d file%s." string total (dired-plural-s total))
+             (message "%s: %d file%s." op-strg nb-results (dired-plural-s nb-results))
            (dired-log-summary (format "Failed to %s %d of %d file%s"
-                                      (downcase string) count total (dired-plural-s total))
+                                      (downcase op-strg) nb-fail nb-results (dired-plural-s nb-results))
                               failures)))))
+
+;; Like `dired-map-over-marks-check', but `dired-log-summary' is always called, and first arg passed is different.
+;;
+(defun diredp-map-over-marks-and-report (fun mark-arg op-symbol &optional show-progress &rest fun-args)
+  "Map FUN over marked lines and report the results.
+FUN returns non-nil (the offending object, e.g. the short form of the
+filename) for a failure and probably logs a detailed error explanation
+using function `dired-log'.
+
+MARK-ARG is as the second argument of `dired-map-over-marks'.
+
+OP-SYMBOL is a symbol describing the operation performed (e.g.
+`compress').  It is used with `dired-mark-pop-up' to prompt the user
+\(e.g. with `Compress * [2 files]? ') and to display errors (e.g.
+`Failed to compress 1 of 2 files - type ? to see why (\"foo\")')
+
+SHOW-PROGRESS if non-nil means redisplay Dired after each file.
+
+FUN-ARGS is the list of any remaining args to
+`diredp-map-over-marks-and-report'.  Function FUN is applied to these
+arguments."
+  (and (dired-mark-confirm op-symbol mark-arg)
+       (let* ((results     (dired-map-over-marks (apply fun fun-args) mark-arg show-progress)) ; FUN return vals.
+              (nb-results  (length results))
+              (failures    (delq nil results))
+              (nb-fail     (length failures))
+              (op-strg     (capitalize (symbol-name op-symbol))))
+         (dired-log-summary (format "%s for %d file%s%s"
+                                    op-strg nb-results (dired-plural-s nb-results)
+                                    (if failures (format ": %d failures" nb-fail) ""))
+                            failures))))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -3383,6 +3440,7 @@ A prefix argument ARG specifies files to use instead of those marked.
                               (diredp-fewer-than-2-files-p arg)))
 
 (defun diredp-display-image ()
+  "Display image file at point.  Log an error using `dired-log'."
   (let ((file     (dired-get-filename 'LOCAL 'NO-ERROR))
         (failure  nil))
     (save-excursion
@@ -3429,6 +3487,90 @@ Note:
             (display-buffer image-dired-display-image-buffer)
             (image-dired-display-image img-file (not arg))))
       (message "No image file here")))) ; An error is handled by `diredp-get-image-filename'.
+
+(defun diredp-report-file-result (file result failure echop)
+  (cond (failure
+         (when echop (message "Error for %s:\n%s\n" file failure) (sit-for 1))
+         (dired-log "Error for %s:\n%s\n" file failure)
+         (dired-make-relative file))   ; Return file name for failure.
+        (t
+         (when echop (message "Result for %s:\n%s\n" file result) (sit-for 1))
+         (dired-log "Result for %s:\n%s\n" file result)
+         nil)))                      ; Return nil for success.
+
+;;;###autoload
+(defun diredp-do-emacs-command (command &optional arg)
+  "Invoke an Emacs COMMAND in each marked file.
+Visit each marked file at its beginning, then invoke COMMAND.
+You are prompted for the COMMAND.
+
+The result returned for each file is logged by `dired-log'.  Use `?'
+to see all such results and any error messages.  If there are fewer
+marked files than `diredp-do-report-echo-limit' then each result is
+also echoed momentarily.
+
+A prefix argument behaves according to the ARG argument of
+`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
+files in the Dired buffer."
+  (interactive (progn (diredp-ensure-mode)
+                      (list (diredp-read-command) current-prefix-arg)))
+  (save-selected-window
+    (diredp-map-over-marks-and-report
+     #'diredp-invoke-emacs-command arg 'invoke\ emacs\ command (diredp-fewer-than-2-files-p arg)
+     command (diredp-fewer-than-echo-limit-files-p arg))))
+
+(defun diredp-invoke-emacs-command (command &optional echop)
+  "Visit file of this line at its beginning, then invoke COMMAND.
+Log the result returned or any error.
+Non-nil optional arg ECHOP means also echo the result."
+  (let* ((file     (dired-get-filename))
+         (failure  (not (file-exists-p file)))
+         result)
+    (unless failure
+      (condition-case err
+          (with-current-buffer (find-file-noselect file)
+            (save-excursion
+              (goto-char (point-min))
+              (setq result  (call-interactively command))))
+        (error (setq failure  err))))
+    (diredp-report-file-result file result failure echop)))
+
+;;;###autoload
+(defun diredp-do-lisp-sexp (sexp &optional arg)
+  "Evaluate an Emacs-Lisp SEXP in each marked file.
+Visit each marked file at its beginning, then evaluate SEXP.
+You are prompted for the SEXP.
+
+The result returned for each file is logged by `dired-log'.  Use `?'
+to see all such results and any error messages.  If there are fewer
+marked files than `diredp-do-report-echo-limit' then each result is
+also echoed momentarily.
+
+A prefix argument behaves according to the ARG argument of
+`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
+files in the Dired buffer."
+  (interactive (progn (diredp-ensure-mode)
+                      (list (diredp-read-expression "Sexp: ") current-prefix-arg)))
+  (save-selected-window
+    (diredp-map-over-marks-and-report
+     #'diredp-eval-lisp-sexp arg 'eval\ elisp\ sexp (diredp-fewer-than-2-files-p arg)
+     sexp (diredp-fewer-than-echo-limit-files-p arg))))
+
+(defun diredp-eval-lisp-sexp (sexp &optional echop)
+  "Visit file of this line at its beginning, then evaluate SEXP.
+Log the result returned or any error.
+Non-nil optional arg ECHOP means also echo the result."
+  (let* ((file     (dired-get-filename))
+         (failure  (not (file-exists-p file)))
+         result)
+    (unless failure
+      (condition-case err
+          (with-current-buffer (find-file-noselect file)
+            (save-excursion
+              (goto-char (point-min))
+              (setq result  (eval-expression sexp))))
+        (error (setq failure  err))))
+    (diredp-report-file-result file result failure echop)))
  
 ;;; Face Definitions
 
@@ -6395,7 +6537,8 @@ When called from Lisp, optional arg DETAILS is passed to
 ;;;###autoload
 (defun diredp-do-apply-function-recursive (function &optional arg details) ; Bound to `M-+ @'
   "Apply FUNCTION to the marked files.
-Like `diredp-do-apply-function' but act recursively on subdirs.
+Like `diredp-do-apply-function' but act recursively on subdirs and do
+no result or error logging or echoing.
 
 The files acted on are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
@@ -7979,34 +8122,88 @@ Try to guess a useful default value for FILE2, as follows:
                                  (t file)))))))
   (ediff-files (dired-get-filename) file2)) ; In `ediff.el'.
 
+(defun diredp-fewer-than-N-files-p (arg n)
+  "Return non-nil iff fewer than N files are to be treated by dired.
+More precisely, return non-nil iff ARG is nil and fewer than N
+files are marked, or the absolute value of ARG is less than N."
+  (if arg
+      (and (integerp arg)  (< (abs arg) n)) ; Next or previous file (or none).
+    (not (save-excursion                ; Fewer than two marked files.
+           (goto-char (point-min))
+           (re-search-forward (dired-marker-regexp) nil t n)))))
+
 (defun diredp-fewer-than-2-files-p (arg)
   "Return non-nil iff fewer than two files are to be treated by dired.
 More precisely, return non-nil iff ARG is nil and fewer than two
 files are marked, or ARG is -1, 0 or 1."
-  (if arg
-      (and (integerp arg)  (< (abs arg) 2)) ; Next or previous file (or none).
-    (not (save-excursion                ; Fewer than two marked files.
-           (goto-char (point-min))
-           (re-search-forward (dired-marker-regexp) nil t 2)))))
+  (diredp-fewer-than-N-files-p arg 2))
+
+(defun diredp-fewer-than-echo-limit-files-p (arg)
+  "Return non-nil iff < `diredp-do-report-echo-limit' files marked.
+More precisely, return non-nil iff ARG is nil and fewer than two
+files are marked, or ARG is -1, 0 or 1."
+  (diredp-fewer-than-N-files-p arg diredp-do-report-echo-limit))
 
 ;;;###autoload
 (defun diredp-do-apply-function (function &optional arg) ; Bound to `@'
   "Apply FUNCTION to the marked files.
+You are prompted for the FUNCTION.
+
 With a plain prefix ARG (`C-u'), visit each file and invoke FUNCTION
  with no arguments.
 Otherwise, apply FUNCTION to each file name.
 
-Any other prefix arg behaves according to the ARG argument of
-`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
-files in the Dired buffer."
+Any prefix arg other than single `C-u' behaves according to the ARG
+argument of `dired-get-marked-files'.  In particular, `C-u C-u'
+operates on all files in the Dired buffer.
+
+The result returned for each file is logged by `dired-log'.  Use `?'
+to see all such results and any error messages.  If there are fewer
+marked files than `diredp-do-report-echo-limit' then each result is
+also echoed momentarily."
   (interactive (progn (diredp-ensure-mode)
                       (list (read (completing-read "Function: " obarray 'functionp nil nil
-                                                   (and (boundp 'function-name-history)  'function-name-history)))
+                                                   (and (boundp 'function-name-history)
+                                                        'function-name-history)))
                             current-prefix-arg)))
-  (if (and (consp arg)  (< (car arg) 16))
-      (dolist (file  (dired-get-marked-files))
-        (with-current-buffer (find-file-noselect file) (funcall function)))
-    (dolist (file  (dired-get-marked-files nil arg)) (funcall function file))))
+  (let ((use-no-args-p  (and (consp arg)  (< (car arg) 16))))
+    (when use-no-args-p (setq arg  ()))
+    (save-selected-window
+      (diredp-map-over-marks-and-report
+       (if use-no-args-p #'diredp-invoke-function-no-args #'diredp-apply-function-to-file-name)
+       arg
+       'apply\ function (diredp-fewer-than-2-files-p arg)
+       function
+       (diredp-fewer-than-echo-limit-files-p arg)))))
+
+(defun diredp-invoke-function-no-args (fun &optional echop)
+  "Visit file of this line at its beginning, then invoke function FUN.
+No arguments are passed to FUN.
+Log the result returned or any error.
+Non-nil optional arg ECHOP means also echo the result."
+  (let* ((file     (dired-get-filename))
+         (failure  (not (file-exists-p file)))
+         result)
+    (unless failure
+      (condition-case err
+          (with-current-buffer (find-file-noselect file)
+            (save-excursion
+              (goto-char (point-min))
+              (setq result  (funcall fun))))
+        (error (setq failure  err))))
+    (diredp-report-file-result file result failure echop)))
+
+(defun diredp-apply-function-to-file-name (fun &optional echop)
+  "Apply function FUN to (absolute) file name on this line.
+Log the result returned or any error.
+Non-nil optional arg ECHOP means also echo the result."
+  (let ((file     (dired-get-filename))
+        (failure  nil)
+        result)
+    (condition-case err
+        (setq result  (funcall fun file))
+      (error (setq failure  err)))
+    (diredp-report-file-result file result failure echop)))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
