@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.20
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr 20 12:31:19 2019 (-0700)
+;; Last-Updated: Sat Apr 20 13:59:03 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11606
+;;     Update #: 11659
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -606,8 +606,8 @@
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
-;;    `diredp-max-frames', `diredp-move-file-dirs' (Emacs 24+),
-;;    `diredp-omit-files-regexp'
+;;    `diredp-list-file-attributes', `diredp-max-frames',
+;;    `diredp-move-file-dirs' (Emacs 24+), `diredp-omit-files-regexp'
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-visit-ignore-extensions', `diredp-visit-ignore-regexps',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
@@ -807,11 +807,15 @@
 ;;       diredp-map-over-marks-and-report, diredp-do-emacs-command, diredp-invoke-emacs-command,
 ;;       diredp-read-command, diredp-do-lisp-sexp, diredp-eval-lisp-sexp, diredp-report-file-result,
 ;;       diredp-do-report-echo-limit, diredp-fewer-than-N-files-p, diredp-fewer-than-echo-limit-files-p,
-;;       diredp-apply-function-to-file-name, diredp-invoke-function-no-args.
+;;       diredp-apply-function-to-file-name, diredp-invoke-function-no-args, diredp-list-file-attributes.
 ;;     diredp-do-apply-function: Redefine to use diredp-map-over-marks-and-report.
 ;;     diredp-dired-plus-description, diredp-menu-bar-multiple-menu:
 ;;       Added diredp-do-emacs-command, diredp-do-lisp-sexp.
 ;;     diredp-menu-bar-multiple-menu: Reordered items.
+;;     diredp-list-marked, diredp-*-recursive, diredp-describe-marked-autofiles:
+;;       Use diredp-list-file-attributes for DETAILS arg interactively.
+;;     diredp-yank-files, dired-query: Use diredp-list-file-attributes, not harcoded list (5 8).
+;;     diredp-set-bookmark-file-bookmark-for-marked-recursive: Corrected interactive spec.
 ;; 2019/04/16 dadams
 ;;     Added: diredp-delete-if.
 ;;     dired-map-over-marks-check: Added &rest argument FUN-ARGS, so FUN can accept arguments.
@@ -2207,6 +2211,14 @@ minimum window height, not necessarily the image scale (height).
 special-display buffer by your Emacs setup, then a nil value of this
 option has no effect.)"
   :type 'boolean :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-list-file-attributes (list '(5 8) 'auto)
+  "Which file attributes `diredp-list-file' uses, and when."
+  :group 'Dired-Plus :type '(list (repeat integer)
+                                  (choice
+                                   (const :tag "Show automatically, immediately" 'auto)
+                                   (const :tag "Show on demand via `l'" 'on-demand))))
 
 ;;;###autoload
 (defcustom diredp-max-frames 200
@@ -4745,7 +4757,7 @@ When called from Lisp:
  Non-nil optional arg PREDICATE is a file-name predicate.  List only
   the files for which it returns non-nil.
  Non-nil optional arg DETAILS is passed to `diredp-list-files'."
-  (interactive (progn (diredp-ensure-mode) (list current-prefix-arg nil t)))
+  (interactive (progn (diredp-ensure-mode) (list current-prefix-arg nil t diredp-list-file-attributes)))
   (let ((files  (dired-get-marked-files nil arg predicate 'DISTINGUISH-ONE interactivep)))
     (diredp-list-files files nil nil nil details)))
 
@@ -5100,7 +5112,8 @@ With a non-negative prefix arg you are instead prompted for the target
  directory.
 With a non-positive prefix arg you can see details about the copied
  files if you hit `l' when prompted to confirm pasting.  Otherwise you
- see only the file names.
+ see only the file names.  The details you see are defined by option
+ `diredp-list-file-attributes'.
 
 You should have copied the list of file names as a string to the kill
 ring using \\<dired-mode-map>`M-0 \\[dired-copy-filename-as-kill]' or \
@@ -5116,7 +5129,9 @@ Optional arg DETAILS is passed to `diredp-y-or-n-files-p'."
   (interactive (list (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))
                           (expand-file-name (read-directory-name "Yank files to directory: ")))
                      nil
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0)  '(5 8))))
+                     (and current-prefix-arg
+                          (<= (prefix-numeric-value current-prefix-arg) 0)
+                          diredp-list-file-attributes)))
   (setq dir  (or dir  (and (derived-mode-p 'dired-mode)  (dired-current-directory))))
   (unless (file-directory-p dir) (error "Not a directory: `%s'" dir))
   (let ((files  diredp-last-copied-filenames))
@@ -5181,7 +5196,8 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-  (interactive (progn (diredp-get-confirmation-recursive 'subdirs) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive 'subdirs)
+                      (list current-prefix-arg diredp-list-file-attributes)))
   (dolist (subdir  (diredp-get-files ignore-marks-p #'file-directory-p 'INCLUDE-SUBDIRS-P nil nil details))
     (dired-maybe-insert-subdir subdir)))
 
@@ -5210,7 +5226,7 @@ When called from Lisp, optional arg DETAILS is passed to
                                  ;; Guess cmd based only on files marked in current (top) dir.
                                  (dired-guess-shell-command prompt (dired-get-marked-files t))
                                (read-shell-command prompt nil nil))))))
-            (list cmd current-prefix-arg))))
+            (list cmd current-prefix-arg diredp-list-file-attributes))))
   (dired-do-shell-command command nil (diredp-get-files ignore-marks-p nil nil nil nil details)))
 
 (when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
@@ -5240,7 +5256,7 @@ When called from Lisp, optional arg DETAILS is passed to
                                    ;; Guess cmd based only on files marked in current (top) dir.
                                    (dired-guess-shell-command prompt (dired-get-marked-files t))
                                  (read-shell-command prompt nil nil))))))
-              (list cmd current-prefix-arg))))
+              (list cmd current-prefix-arg diredp-list-file-attributes))))
     (dired-do-async-shell-command command nil (diredp-get-files ignore-marks-p nil nil nil nil details))))
 
 ;;;###autoload
@@ -5258,7 +5274,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-create-files-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-do-create-files-recursive #'make-symbolic-link "Symlink" ignore-marks-p details))
 
 (when (fboundp 'dired-do-relsymlink)
@@ -5279,7 +5295,8 @@ For absolute symlinks, use \\[diredp-do-symlink-recursive].
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-create-files-recursive'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (diredp-do-create-files-recursive #'dired-make-relative-symlink "RelSymLink" ignore-marks-p details))
 
   )
@@ -5299,7 +5316,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-create-files-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-do-create-files-recursive #'dired-hardlink "Hardlink" ignore-marks-p details))
 
 ;;;###autoload
@@ -5317,7 +5334,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (let* ((file-list  (diredp-get-files ignore-marks-p nil nil nil nil details))
          (command    (dired-mark-read-string
                       "Print %s with: "
@@ -5346,7 +5363,7 @@ When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive (progn (diredp-image-dired-required-msg)
                       (diredp-get-confirmation-recursive)
-                      (list current-prefix-arg)))
+                      (list current-prefix-arg nil nil diredp-list-file-attributes)))
   (let ((buf  (image-dired-create-thumbnail-buffer))
         thumb-name files dired-buf)
     (setq files      (diredp-get-files ignore-marks-p nil nil nil nil details)
@@ -5386,7 +5403,7 @@ When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive (progn (diredp-image-dired-required-msg)
                       (diredp-get-confirmation-recursive)
-                      (list current-prefix-arg)))
+                      (list current-prefix-arg diredp-list-file-attributes)))
   (let ((tag  (read-string "Tags to add (separate tags with a semicolon): ")))
     (image-dired-write-tags (mapcar (lambda (x) (cons x tag))
                                     (diredp-get-files ignore-marks-p nil nil nil nil details)))))
@@ -5406,7 +5423,7 @@ When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive (progn (diredp-image-dired-required-msg)
                       (diredp-get-confirmation-recursive)
-                      (list current-prefix-arg)))
+                      (list current-prefix-arg diredp-list-file-attributes)))
   (image-dired-remove-tag (diredp-get-files ignore-marks-p nil nil nil nil details)
                           (read-string "Tag to remove: ")))
 
@@ -5426,12 +5443,13 @@ When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive (progn (diredp-image-dired-required-msg)
                       (diredp-get-confirmation-recursive)
-                      (list current-prefix-arg)))
+                      (list current-prefix-arg diredp-list-file-attributes)))
   (let ((comment  (image-dired-read-comment)))
     (image-dired-write-comments (mapcar (lambda (curr-file) (cons curr-file comment))
                                         (diredp-get-files ignore-marks-p nil nil nil nil details)))))
 
 (when (> emacs-major-version 22)
+
   (defun diredp-do-decrypt-recursive (&optional ignore-marks-p details) ; Bound to `M-+ : d'
     "Decrypt marked files, including those in marked subdirs.
 Like `epa-dired-do-decrypt', but act recursively on subdirs to pick up
@@ -5446,11 +5464,11 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (dolist (file  (diredp-get-files ignore-marks-p nil nil nil nil details))
       (epa-decrypt-file (expand-file-name file)))
     (revert-buffer))
-
 
   (defun diredp-do-verify-recursive (&optional ignore-marks-p details) ; Bound to `M-+ : v'
     "Verify marked files, including those in marked subdirs.
@@ -5466,7 +5484,8 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (dolist (file  (diredp-get-files ignore-marks-p nil nil nil nil details))
       (epa-verify-file (expand-file-name file)))
     (revert-buffer))
@@ -5485,7 +5504,8 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (dolist (file  (diredp-get-files ignore-marks-p nil nil nil nil details))
       (epa-sign-file (expand-file-name file)
                      (epa-select-keys (epg-make-context) "Select keys for signing.
@@ -5507,7 +5527,8 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (dolist (file  (diredp-get-files ignore-marks-p nil nil nil nil details))
       (epa-encrypt-file (expand-file-name file)
                         (epa-select-keys (epg-make-context) "Select recipients for encryption.
@@ -5530,7 +5551,8 @@ When called from Lisp, optional arg DETAILS is passed to
   (interactive (progn (diredp-get-confirmation-recursive)
                       (list current-prefix-arg
                             (and diredp-prompt-for-bookmark-prefix-flag
-                                 (read-string "Prefix for bookmark name: ")))))
+                                 (read-string "Prefix for bookmark name: "))
+                            diredp-list-file-attributes)))
   (dolist (file  (diredp-get-files ignore-marks-p nil nil nil nil details))
     (diredp-bookmark prefix file 'NO-MSG-P)))
 
@@ -5567,7 +5589,7 @@ When called from Lisp, optional arg DETAILS is passed to
   (interactive (progn (unless (featurep 'bookmark+)
                         (error "You need library `Bookmark+' for this command"))
                       (diredp-get-confirmation-recursive 'subdirs)
-                      (list current-prefix-arg t)))
+                      (list current-prefix-arg diredp-list-file-attributes t)))
   (diredp-ensure-mode)
   (let ((sdirs   (diredp-get-subdirs ignore-marks-p nil details))
         (snames  ())
@@ -5599,17 +5621,24 @@ Marked subdirectories are handled recursively in the same way.
 With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively.
 
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-get-files'."
+When called from Lisp:
+ * Optional arg BFILE-BOOKMARKP non-nil means create a bookmark-file
+   bookmark for BOOKMARK-FILE.
+ * Optional arg DETAILS is passed to `diredp-get-files'."
   (interactive
    (progn (diredp-get-confirmation-recursive)
           (let ((d-r-b-f-args  (diredp-read-bookmark-file-args)))
-            (list (car d-r-b-f-args) (cadr d-r-b-f-args) (car (cddr d-r-b-f-args))))))
+            (list (car d-r-b-f-args)
+                  (cadr d-r-b-f-args)
+                  (car (cddr d-r-b-f-args))
+                  nil
+                  diredp-list-file-attributes))))
   (diredp-do-bookmark-in-bookmark-file bookmark-file prefix nil bfile-bookmarkp
                                        (diredp-get-files ignore-marks-p nil nil nil nil details)))
 
 ;;;###autoload
-(defun diredp-set-bookmark-file-bookmark-for-marked-recursive (bookmark-file &optional prefix arg details)
+(defun diredp-set-bookmark-file-bookmark-for-marked-recursive (bookmark-file
+                                                               &optional prefix ignore-marks-p details)
                                         ; Bound to `M-+ C-M-b'
   "Bookmark the marked files and create a bookmark-file bookmark for them.
 Like `diredp-set-bookmark-file-bookmark-for-marked', but act
@@ -5625,9 +5654,14 @@ Dired buffer and all subdirs, recursively.
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-bookmark-in-bookmark-file-recursive'."
   (interactive (progn (diredp-get-confirmation-recursive)
-                      (diredp-read-bookmark-file-args)))
+                      (let ((d-r-b-f-args  (diredp-read-bookmark-file-args)))
+                        (list (car d-r-b-f-args)
+                              (cadr d-r-b-f-args)
+                              (car (cddr d-r-b-f-args))
+                              diredp-list-file-attributes))))
   (diredp-ensure-bookmark+)
-  (diredp-do-bookmark-in-bookmark-file-recursive bookmark-file prefix arg 'CREATE-BOOKMARK-FILE-BOOKMARK details))
+  (diredp-do-bookmark-in-bookmark-file-recursive
+   bookmark-file prefix ignore-marks-p 'CREATE-BOOKMARK-FILE-BOOKMARK details))
 
 ;;;###autoload
 (defun diredp-do-find-marked-files-recursive (&optional arg details) ; Bound to `M-+ F'
@@ -5652,7 +5686,7 @@ the files to be shown in separate frames.
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive (progn (diredp-get-confirmation-recursive)
-                      (list current-prefix-arg)))
+                      (list current-prefix-arg diredp-list-file-attributes)))
   (let ((narg  (prefix-numeric-value arg)))
     (dired-simultaneous-find-file (diredp-get-files (<= narg 0) nil nil nil nil details)
                                   (and arg  (>= narg 0)  narg))))
@@ -5666,7 +5700,8 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (multi-isearch-files (diredp-get-files ignore-marks-p nil nil nil nil details)))
 
   (defun diredp-do-isearch-regexp-recursive (&optional ignore-marks-p details) ; `M-+ M-s a C-M-s'
@@ -5676,7 +5711,8 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (multi-isearch-files-regexp (diredp-get-files ignore-marks-p nil nil nil nil details))))
 
 (defun diredp-do-search-recursive (regexp &optional ignore-marks-p details) ; Bound to `M-+ A'
@@ -5691,7 +5727,8 @@ When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive (progn (diredp-get-confirmation-recursive)
                       (list (read-string "Search marked files (regexp): ")
-                            current-prefix-arg)))
+                            current-prefix-arg
+                            diredp-list-file-attributes)))
   (tags-search regexp '(diredp-get-files ignore-marks-p nil nil nil nil details)))
 
 ;;;###autoload
@@ -5721,7 +5758,8 @@ When called from Lisp, optional arg DETAILS is passed to
                       (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
                         (list (nth 0 common)
                               (nth 1 common)
-                              current-prefix-arg))))
+                              current-prefix-arg
+                              diredp-list-file-attributes))))
   (let* ((narg                  (and arg  (prefix-numeric-value arg)))
          (delimited             (and narg  (<= narg 0)))
          (ignore-marks-p        (and narg  (>= narg 0)))
@@ -5752,7 +5790,8 @@ When called from Lisp, optional arg DETAILS is passed to
                                   grep-command
                                 (and grep-command  (or (not grep-use-null-device)  (eq grep-use-null-device t))))
                         (grep-compute-defaults))
-                      (list (diredp-do-grep-1 (diredp-get-files current-prefix-arg nil nil nil nil details)))))
+                      (list (diredp-do-grep-1
+                             (diredp-get-files current-prefix-arg nil nil nil nil diredp-list-file-attributes)))))
   (grep command-args))
 
 ;;;###autoload
@@ -5772,7 +5811,8 @@ is used as the name of the new Dired buffer.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list nil current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (list nil current-prefix-arg diredp-list-file-attributes)))
   (dired (cons (or dirname  (generate-new-buffer-name (buffer-name)))
                (diredp-get-files ignore-marks-p nil nil nil nil details))))
 
@@ -5782,7 +5822,8 @@ When called from Lisp, optional arg DETAILS is passed to
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list nil current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (list nil current-prefix-arg diredp-list-file-attributes)))
   (dired-other-window
    (cons (or dirname  (generate-new-buffer-name (buffer-name)))
          (diredp-get-files ignore-marks-p nil nil nil nil details))))
@@ -5802,11 +5843,12 @@ If `tooltip-mode' is on then moving the mouse over image-file names
 shows image previews.
 
 When called from Lisp:
+ Non-nil optional arg IGNORE-MARKS-P means ignore marks.
  Non-nil optional arg PREDICATE is a file-name predicate.  List only
   the files for which it returns non-nil.
  Non-nil optional arg DETAILS is passed to `diredp-list-files'."
   (interactive ; No need for `diredp-get-confirmation-recursive' here.
-   (progn (diredp-ensure-mode) (list current-prefix-arg)))
+   (progn (diredp-ensure-mode) (list current-prefix-arg nil diredp-list-file-attributes)))
   (let ((files  (diredp-get-files ignore-marks-p predicate))) (diredp-list-files files nil nil nil details)))
 
 ;;;###autoload
@@ -5820,7 +5862,7 @@ descendant directories.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-mark-recursive-1'."
-  (interactive "P")
+  (interactive (list current-prefix-arg diredp-list-file-attributes))
   (let ((dired-marker-char  dired-del-marker))
     (diredp-mark-recursive-1 arg "auto-save files" "auto-save file" '(diredp-looking-at-p "^.* #.+#$") details)))
 
@@ -5850,7 +5892,7 @@ When called from Lisp:
             (let* ((cursor-in-echo-area  t)
                    (old                  (progn (message "Change (old mark): ") (read-char)))
                    (new                  (progn (message "Change `%c' marks to (new mark): " old) (read-char))))
-              (list old new current-prefix-arg))))
+              (list old new current-prefix-arg nil diredp-list-file-attributes))))
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
@@ -5888,7 +5930,8 @@ subdirs.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-unmark-all-files-recursive'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (diredp-unmark-all-files-recursive ?\r arg details))
 
   (defun diredp-unmark-all-files-recursive (mark &optional arg predicate details) ; `M-+ M-DEL'
@@ -5917,7 +5960,7 @@ When called from Lisp:
      (progn (diredp-get-confirmation-recursive)
             (let* ((cursor-in-echo-area  t)
                    (mrk                  (progn (message "Remove marks (RET means all): ") (read-char))))
-              (list mrk current-prefix-arg))))
+              (list mrk current-prefix-arg nil diredp-list-file-attributes))))
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
@@ -5961,7 +6004,8 @@ marked subdir, then all files in the directory are included.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-    (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+    (interactive (progn (diredp-get-confirmation-recursive)
+                        (list current-prefix-arg diredp-list-file-attributes)))
     (let ((files  (diredp-get-files ignore-marks-p nil nil nil nil details)))
       (while files
         (w32-browser (car files))
@@ -5996,7 +6040,7 @@ The names are copied to the kill ring and to variable
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
   (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
-   (progn (diredp-ensure-mode) (list current-prefix-arg)))
+   (progn (diredp-ensure-mode) (list current-prefix-arg diredp-list-file-attributes)))
   (let* ((files   (mapcar (cond ((zerop (prefix-numeric-value arg)) #'identity)
                                 ((consp arg) (lambda (fn) (concat (dired-current-directory t)
                                                                   (file-name-nondirectory fn))))
@@ -6022,7 +6066,7 @@ way.
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-copy-filename-as-kill-recursive'."
   (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
-   (progn (diredp-ensure-mode) (list current-prefix-arg)))
+   (progn (diredp-ensure-mode) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-copy-filename-as-kill-recursive 0 details)
   (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
 
@@ -6060,7 +6104,8 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                       (ignorep  (and numarg  (<= numarg 0))))
                  (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " files (regexp): "))
                        (and unmark  ?\040)
-                       ignorep)))
+                       ignorep
+                       diredp-list-file-attributes)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
         (sdirs              (diredp-get-subdirs ignore-marks-p details))
@@ -6115,10 +6160,9 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                       (ignorep  (and numarg  (<= numarg 0))))
                  (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " files containing (regexp): "))
                        (and unmark  ?\040)
-                       ignorep)))
+                       ignorep
+                       diredp-list-file-attributes)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
-
-
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
         (sdirs              (diredp-get-subdirs ignore-marks-p details))
         (matched            0)
@@ -6179,7 +6223,8 @@ When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'
   (interactive (let* ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
                       (unmark  (and numarg  (>= numarg 0))))
                  (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " extension: "))
-                       current-prefix-arg)))
+                       current-prefix-arg
+                       diredp-list-file-attributes)))
   (let* ((numarg   (and arg  (prefix-numeric-value arg)))
          (unmark   (and numarg  (>= numarg 0)))
          (ignorep  (and numarg  (<= numarg 0))))
@@ -6252,8 +6297,8 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
             (unmark  (and numarg  (>= numarg 0))))
        (diredp-get-confirmation-recursive)
        (list (diredp-read-expression (format "%s if (Lisp expr): " (if current-prefix-arg "UNmark" "Mark")))
-             current-prefix-arg)))
-
+             current-prefix-arg
+             diredp-list-file-attributes)))
     (message "%s" predicate)
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (unmark             (and numarg  (>= numarg 0)))
@@ -6412,7 +6457,7 @@ descendant directories.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-mark-recursive-1'."
-  (interactive "P")
+  (interactive (list current-prefix-arg diredp-list-file-attributes))
   (diredp-ensure-bookmark+)
   (diredp-ensure-mode)
   (diredp-mark-recursive-1 arg "autofiles" "autofile"
@@ -6436,7 +6481,7 @@ descendant directories.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-mark-recursive-1'."
-  (interactive "P")
+  (interactive (list current-prefix-arg diredp-list-file-attributes))
   (diredp-mark-recursive-1 arg "executable files" "executable file" '(diredp-looking-at-p dired-re-exe) details))
 
 ;;;###autoload
@@ -6454,7 +6499,7 @@ descendant directories.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-mark-recursive-1'."
-  (interactive "P")
+  (interactive (list current-prefix-arg diredp-list-file-attributes))
   (diredp-mark-recursive-1 arg "directories" "directory" '(and (diredp-looking-at-p dired-re-dir)
                                                            (not (diredp-looking-at-p dired-re-dot)))
                            details))
@@ -6473,13 +6518,11 @@ descendant directories.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-subdirs'."
-  (interactive "P")
+  (interactive (list current-prefix-arg diredp-list-file-attributes))
   (diredp-mark-recursive-1 arg "symlinks" "symbolic link" '(diredp-looking-at-p dired-re-sym) details))
 
 (defun diredp-mark-recursive-1 (arg plural singular predicate-sexp details)
-  "Helper for `diredp-mark-*-recursive' commands.
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-get-subdirs'."
+  "Helper for `diredp-mark-*-recursive' commands."
   (let* ((numarg             (and arg  (prefix-numeric-value arg)))
          (unmark             (and numarg  (>= numarg 0)))
          (ignorep            (and numarg  (<= numarg 0)))
@@ -6516,7 +6559,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-create-files-non-directory-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-create-files-non-directory-recursive
    #'dired-rename-file #'capitalize "Rename by capitalizing:" ignore-marks-p details))
 
@@ -6534,7 +6577,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-create-files-non-directory-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-create-files-non-directory-recursive
    #'dired-rename-file #'upcase "Rename to uppercase:" ignore-marks-p details))
 
@@ -6552,7 +6595,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-create-files-non-directory-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-create-files-non-directory-recursive
    #'dired-rename-file #'downcase "Rename to lowercase:" ignore-marks-p details))
 
@@ -6579,7 +6622,8 @@ When called from Lisp, optional arg DETAILS is passed to
   (interactive (progn (diredp-get-confirmation-recursive) 
                       (list (read (completing-read "Function: " obarray 'functionp nil nil
                                                    (and (boundp 'function-name-history)  'function-name-history)))
-                            current-prefix-arg)))
+                            current-prefix-arg
+                            diredp-list-file-attributes)))
   (if (and (consp arg)  (< (car arg) 16))
       (dolist (file  (diredp-get-files)) (with-current-buffer (find-file-noselect file) (funcall function)))
     (dolist (file  (diredp-get-files arg nil nil nil nil details)) (funcall function file))))
@@ -6595,7 +6639,7 @@ subdirectories are handled recursively in the same way.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files' and `diredp-get-subdirs'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (unless arg
     (ding)
     (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
@@ -6661,7 +6705,7 @@ Renames any buffers that are visiting the files.
 
 The default suggested for the target directory depends on the value of
 `dired-dwim-target', which see."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-do-create-files-recursive #'dired-rename-file "Move" ignore-marks-p details))
 
 ;;;###autoload
@@ -6692,7 +6736,7 @@ command `cp -d'.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-create-files-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (let ((dired-recursive-copies  nil))  ; Doesn't have to be nil, but let's not go overboard now.
     (diredp-do-create-files-recursive #'dired-copy-file "Copy" ignore-marks-p details)))
 
@@ -6820,7 +6864,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files' and `diredp-do-redisplay-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (let* ((files    (diredp-get-files ignore-marks-p nil nil nil nil details))
          (modestr  (and (stringp (car files))  (nth 8 (file-attributes (car files)))))
          (default  (and (stringp modestr)
@@ -6850,7 +6894,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-chxxx-recursive'."
-    (interactive "P")
+    (interactive (list current-prefix-arg diredp-list-file-attributes))
     (diredp-do-chxxx-recursive "Group" "chgrp" 'chgrp ignore-marks-p nil details)))
 
 (unless (memq system-type '(windows-nt ms-dos))
@@ -6861,7 +6905,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-chxxx-recursive'."
-    (interactive "P")
+    (interactive (list current-prefix-arg diredp-list-file-attributes))
     (diredp-do-chxxx-recursive "Owner" dired-chown-program 'chown ignore-marks-p nil details)))
 
 ;;;###autoload
@@ -6878,7 +6922,7 @@ Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-chxxx-recursive'."
-  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-do-chxxx-recursive "Timestamp" (if (boundp 'dired-touch-program)
                                              dired-touch-program ; Emacs 22+
                                            "touch")
@@ -6899,7 +6943,7 @@ When called from Lisp, optional arg DETAILS is passed to
   (interactive (progn (diredp-ensure-mode)
                       (unless (y-or-n-p "Act on all marked file lines in and UNDER this dir? ")
                         (error "OK, canceled"))
-                      (list nil t)))
+                      (list diredp-list-file-attributes t)))
   (when msgp (message "Redisplaying..."))
   (dolist (dir  (cons default-directory
                       (diredp-get-files nil #'file-directory-p 'INCLUDE-SUBDIRS 'DONT-ASK nil details)))
@@ -8540,7 +8584,7 @@ The user can type:
  `y' or `SPC' to accept once
  `n' or `DEL' to skip once
  `!' to accept this and subsequent queries
- `l' list the files
+ `l' list the files, showing details per `diredp-list-file-attributes'
  `q' or `ESC' to decline this and subsequent queries
 
 If SYM is already bound to a non-nil value, this function may return
@@ -8562,7 +8606,7 @@ SYM is `q' or ESC, return nil."
                                           " [Type y, n, l, q or !] ")))
                   (set sym (setq char  (read-char-choice prompt char-choices)))
                   (when (eq char ?l)    ; List files and prompt again.
-                    (diredp-list-files args nil nil nil '(5 8))
+                    (diredp-list-files args nil nil nil diredp-list-file-attributes)
                     (set sym (setq char  (read-char-choice prompt char-choices))))
                   (and (memq char '(?y ?\   ?!))  t))) ; Use ?\  , not ?\s, for Emacs 20.
         (when (get-buffer list-buf)
@@ -8589,7 +8633,7 @@ The user can type:
  `y' or `SPC' to accept once
  `n' or `DEL' to skip once
  `!' to accept this and subsequent queries
- `l' list the files
+ `l' list the files, showing details per `diredp-list-file-attributes'
  `q' or `ESC' to decline this and subsequent queries
 
 Store answer in symbol VAR (which must initially be bound to nil).
@@ -8613,7 +8657,7 @@ Binding variable `help-form' will help the user who types the help key."
                  (apply #'message qprompt qs-args)
                  (setq char  (set qs-var (read-event)))
                  (when (eq char ?l)     ; List files and prompt again.
-                   (diredp-list-files qs-args nil nil nil '(5 8))
+                   (diredp-list-files qs-args nil nil nil diredp-list-file-attributes)
                    (apply #'message qprompt qs-args)
                    (setq char  (set qs-var (read-event))))
                  (if (numberp char)
@@ -10348,7 +10392,7 @@ You need library `bookmark+.el' for this command.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-  (interactive "P\np")
+  (interactive (list current-prefix-arg t diredp-list-file-attributes))
   (diredp-ensure-bookmark+)
   (let ((help-xref-following  nil))
     (help-setup-xref (list `(lambda (_buf)
