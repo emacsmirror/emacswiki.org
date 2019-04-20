@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.20
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr 20 10:58:58 2019 (-0700)
+;; Last-Updated: Sat Apr 20 12:31:19 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11584
+;;     Update #: 11606
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -488,9 +488,10 @@
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-hardlink-recursive',
 ;;    `diredp-do-isearch-recursive',
-;;    `diredp-do-isearch-regexp-recursive', `diredp-do-lisp-sexp',
-;;    `diredp-do-move-recursive', `diredp-do-paste-add-tags',
-;;    `diredp-do-paste-replace-tags', `diredp-do-print-recursive',
+;;    `diredp-do-isearch-regexp-recursive', `diredp-do-lisp-sexp'
+;;    (Emacs 22+), `diredp-do-move-recursive',
+;;    `diredp-do-paste-add-tags', `diredp-do-paste-replace-tags',
+;;    `diredp-do-print-recursive',
 ;;    `diredp-do-query-replace-regexp-recursive',
 ;;    `diredp-do-redisplay-recursive',
 ;;    `diredp-do-relsymlink-recursive', `diredp-do-remove-all-tags',
@@ -626,8 +627,8 @@
 ;;    (Emacs 22+), `diredp-do-chxxx-recursive',
 ;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
 ;;    `diredp-ensure-bookmark+', `diredp-ensure-mode',
-;;    `diredp-eval-lisp-sexp', `diredp-existing-dired-buffer-p',
-;;    `diredp-fewer-than-2-files-p',
+;;    `diredp-eval-lisp-sexp' (Emacs 22+),
+;;    `diredp-existing-dired-buffer-p', `diredp-fewer-than-2-files-p',
 ;;    `diredp-fewer-than-echo-limit-files-p',
 ;;    `diredp-fewer-than-N-files-p', `diredp-fileset-1',
 ;;    `diredp-find-a-file-read-args',
@@ -649,14 +650,14 @@
 ;;    `diredp-mark-files-tagged-some/not-all',
 ;;    `diredp-nonempty-region-p', `diredp-parent-dir',
 ;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
-;;    `diredp-read-bookmark-file-args', `diredp-read-expression'
-;;    (Emacs 22+), `diredp-read-include/exclude',
-;;    `diredp-read-regexp', `diredp-recent-dirs',
-;;    `diredp-refontify-buffer', `diredp-remove-if',
-;;    `diredp-remove-if-not', `diredp-report-file-result',
-;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
-;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
-;;    `diredp-set-tag-value', `diredp-set-union',
+;;    `diredp-read-bookmark-file-args', `diredp-read-command',
+;;    `diredp-read-expression' (Emacs 22+),
+;;    `diredp-read-include/exclude', `diredp-read-regexp',
+;;    `diredp-recent-dirs', `diredp-refontify-buffer',
+;;    `diredp-remove-if', `diredp-remove-if-not',
+;;    `diredp-report-file-result', `diredp--reuse-dir-buffer-helper',
+;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
+;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp--set-up-font-locking', `diredp-string-match-p',
 ;;    `diredp-tag', `diredp-this-file-marked-p',
 ;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
@@ -804,10 +805,13 @@
 ;; 2019/04/20 dadams
 ;;     Added:
 ;;       diredp-map-over-marks-and-report, diredp-do-emacs-command, diredp-invoke-emacs-command,
-;;       diredp-do-lisp-sexp, diredp-eval-lisp-sexp, diredp-report-file-result, diredp-do-report-echo-limit,
-;;       diredp-fewer-than-N-files-p, diredp-fewer-than-echo-limit-files-p, diredp-apply-function-to-file-name,
-;;       diredp-invoke-function-no-args.
+;;       diredp-read-command, diredp-do-lisp-sexp, diredp-eval-lisp-sexp, diredp-report-file-result,
+;;       diredp-do-report-echo-limit, diredp-fewer-than-N-files-p, diredp-fewer-than-echo-limit-files-p,
+;;       diredp-apply-function-to-file-name, diredp-invoke-function-no-args.
 ;;     diredp-do-apply-function: Redefine to use diredp-map-over-marks-and-report.
+;;     diredp-dired-plus-description, diredp-menu-bar-multiple-menu:
+;;       Added diredp-do-emacs-command, diredp-do-lisp-sexp.
+;;     diredp-menu-bar-multiple-menu: Reordered items.
 ;; 2019/04/16 dadams
 ;;     Added: diredp-delete-if.
 ;;     dired-map-over-marks-check: Added &rest argument FUN-ARGS, so FUN can accept arguments.
@@ -2100,7 +2104,7 @@ Emacs to see the effect of the new value on font-locking."
   "Echo result for each file, for fewer than this many files.
 If more than this many files are acted on then there is no echoing.
 
-Used by some map-and-report commands such as `diredp-do-lisp-sexp'.
+Used by some do-and-report commands such as `diredp-do-emacs-command'.
 Results that are not echoed are anyway reported by `dired-log', so you
 can show them with `?' in the Dired buffer."
   :type '(restricted-sexp :match-alternatives (wholenump)) :group 'Dired-Plus)
@@ -3535,9 +3539,25 @@ Non-nil optional arg ECHOP means also echo the result."
         (error (setq failure  err))))
     (diredp-report-file-result file result failure echop)))
 
-;;;###autoload
-(defun diredp-do-lisp-sexp (sexp &optional arg)
-  "Evaluate an Emacs-Lisp SEXP in each marked file.
+(defun diredp-read-command (&optional prompt default)
+  "Read the name of a command and return a symbol with that name.
+\(A command is anything that satisfies predicate `commandp'.)
+Prompt with PROMPT, which defaults to \"Command: \".
+By default, return the command named DEFAULT (or, with Emacs 23+, its
+first element if DEFAULT is a list).  (If DEFAULT does not name a
+command then it is ignored.)"
+  (setq prompt  (or prompt  "Command: "))
+  (let ((name  (completing-read prompt obarray #'commandp t nil
+                                'extended-command-history default)))
+    (while (string= "" name)
+      (setq name  (completing-read prompt obarray #'commandp t nil
+                                   'extended-command-history default)))
+    (intern name)))
+
+(when (fboundp 'diredp-read-expression) ; Emacs 22+
+
+  (defun diredp-do-lisp-sexp (sexp &optional arg)
+    "Evaluate an Emacs-Lisp SEXP in each marked file.
 Visit each marked file at its beginning, then evaluate SEXP.
 You are prompted for the SEXP.
 
@@ -3549,28 +3569,30 @@ also echoed momentarily.
 A prefix argument behaves according to the ARG argument of
 `dired-get-marked-files'.  In particular, `C-u C-u' operates on all
 files in the Dired buffer."
-  (interactive (progn (diredp-ensure-mode)
-                      (list (diredp-read-expression "Sexp: ") current-prefix-arg)))
-  (save-selected-window
-    (diredp-map-over-marks-and-report
-     #'diredp-eval-lisp-sexp arg 'eval\ elisp\ sexp (diredp-fewer-than-2-files-p arg)
-     sexp (diredp-fewer-than-echo-limit-files-p arg))))
+    (interactive (progn (diredp-ensure-mode)
+                        (list (diredp-read-expression "Sexp: ") current-prefix-arg)))
+    (save-selected-window
+      (diredp-map-over-marks-and-report
+       #'diredp-eval-lisp-sexp arg 'eval\ elisp\ sexp (diredp-fewer-than-2-files-p arg)
+       sexp (diredp-fewer-than-echo-limit-files-p arg))))
 
-(defun diredp-eval-lisp-sexp (sexp &optional echop)
-  "Visit file of this line at its beginning, then evaluate SEXP.
+  (defun diredp-eval-lisp-sexp (sexp &optional echop)
+    "Visit file of this line at its beginning, then evaluate SEXP.
 Log the result returned or any error.
 Non-nil optional arg ECHOP means also echo the result."
-  (let* ((file     (dired-get-filename))
-         (failure  (not (file-exists-p file)))
-         result)
-    (unless failure
-      (condition-case err
-          (with-current-buffer (find-file-noselect file)
-            (save-excursion
-              (goto-char (point-min))
-              (setq result  (eval-expression sexp))))
-        (error (setq failure  err))))
-    (diredp-report-file-result file result failure echop)))
+    (let* ((file     (dired-get-filename))
+           (failure  (not (file-exists-p file)))
+           result)
+      (unless failure
+        (condition-case err
+            (with-current-buffer (find-file-noselect file)
+              (save-excursion
+                (goto-char (point-min))
+                (setq result  (eval-expression sexp))))
+          (error (setq failure  err))))
+      (diredp-report-file-result file result failure echop)))
+
+  )
  
 ;;; Face Definitions
 
@@ -11478,7 +11500,7 @@ Marked (or next prefix arg) files & subdirs here
     "  \\[diredp-list-marked]\t\t- List marked files and directories
   \\[diredp-insert-subdirs]\t\t- Insert marked subdirectories
   \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
-  \\[diredp-copy-abs-filenames-as-kill]\t\t- Copy absolute names for pasting
+  M-o \\[dired-copy-filename-as-kill]\t\t- Copy absolute names for pasting
   \\[diredp-yank-files]\t\t- Paste files whose absolute names you copied
   \\[dired-do-find-marked-files]\t\t- Visit
   \\[dired-do-copy]\t\t- Copy
@@ -11511,12 +11533,17 @@ Marked (or next prefix arg) files & subdirs here
 
     "  \\[dired-do-shell-command]\t\t- Run shell command
   \\[diredp-marked-other-window]\t\t- Dired
-  \\[diredp-do-apply-function]\t\t- Apply Lisp function
   \\[dired-do-compress]\t\t- Compress
   \\[dired-do-byte-compile]\t\t- Byte-compile
   \\[dired-do-load]\t\t- Load (Emacs Lisp)
+  \\[diredp-do-apply-function]\t\t- Apply Lisp function
+  \\[diredp-do-emacs-command]\t\t- Invoke Emacs command
+"
+    (and (fboundp 'diredp-read-expression) ; Emacs 22+
+         "  \\[diredp-do-lisp-sexp]\t\t- Evaluate Lisp sexp
+")
 
-  \\[diredp-omit-marked]\t- Omit
+    "  \\[diredp-omit-marked]\t- Omit
   \\[diredp-omit-unmarked]\t- Omit unmarked
 "
 
@@ -11910,26 +11937,26 @@ windows there, then delete its window (toggle : show/hide the file)."
       :help "Change the timestamp of file at cursor, using `touch'")))
 (define-key diredp-menu-bar-single-menu [separator-change] '("--")) ; -----------------------
 
-(define-key diredp-menu-bar-single-menu [load]
-  '(menu-item "Load" diredp-load-this-file
-    :help "Load this Emacs Lisp file"))
-(define-key diredp-menu-bar-single-menu [compile]
-  '(menu-item "Byte Compile" diredp-byte-compile-this-file
-    :help "Byte-compile this Emacs Lisp file"))
-(define-key diredp-menu-bar-single-menu [diredp-async-shell-command-this-file]
-  '(menu-item "Asynchronous Shell Command..." diredp-async-shell-command-this-file
-    :help "Run a shell command asynchronously on file at cursor"))
-(define-key diredp-menu-bar-single-menu [command]
-  '(menu-item "Shell Command..." diredp-shell-command-this-file
-    :help "Run a shell command on file at cursor"))
-(define-key diredp-menu-bar-single-menu [compress]
-  '(menu-item "Compress/Uncompress" diredp-compress-this-file
-    :help "Compress/uncompress file at cursor"))
-(define-key diredp-menu-bar-single-menu [grep]
-  '(menu-item "Grep..." diredp-grep-this-file :help "Grep file at cursor"))
 (define-key diredp-menu-bar-single-menu [print]
   '(menu-item "Print..." diredp-print-this-file
     :help "Print file at cursor, supplying print command"))
+(define-key diredp-menu-bar-single-menu [grep]
+  '(menu-item "Grep..." diredp-grep-this-file :help "Grep file at cursor"))
+(define-key diredp-menu-bar-single-menu [compress]
+  '(menu-item "Compress/Uncompress" diredp-compress-this-file
+    :help "Compress/uncompress file at cursor"))
+(define-key diredp-menu-bar-single-menu [command]
+  '(menu-item "Shell Command..." diredp-shell-command-this-file
+    :help "Run a shell command on file at cursor"))
+(define-key diredp-menu-bar-single-menu [diredp-async-shell-command-this-file]
+  '(menu-item "Asynchronous Shell Command..." diredp-async-shell-command-this-file
+    :help "Run a shell command asynchronously on file at cursor"))
+(define-key diredp-menu-bar-single-menu [compile]
+  '(menu-item "Byte Compile" diredp-byte-compile-this-file
+    :help "Byte-compile this Emacs Lisp file"))
+(define-key diredp-menu-bar-single-menu [load]
+  '(menu-item "Load" diredp-load-this-file
+    :help "Load this Emacs Lisp file"))
 
 (when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key diredp-menu-bar-single-menu [mkhtml-dired-files]
@@ -12219,28 +12246,35 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Change the timestamp of the marked files, using `touch'")))
 (define-key diredp-menu-bar-multiple-menu [separator-change] '("--")) ; -------------------------
 
-(define-key diredp-menu-bar-multiple-menu [load]
-  '(menu-item "Load" dired-do-load :help "Load marked Emacs Lisp files"))
-(define-key diredp-menu-bar-multiple-menu [compile]
-  '(menu-item "Byte Compile" dired-do-byte-compile :help "Byte-compile marked Emacs Lisp files"))
-(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
-  (define-key diredp-menu-bar-multiple-menu [async-command]
-    '(menu-item "Asynchronous Shell Command..." dired-do-async-shell-command
-      :help "Run a shell command asynchronously on each marked file")))
-(define-key diredp-menu-bar-multiple-menu [command]
-  '(menu-item "Shell Command..." dired-do-shell-command
-    :help "Run a shell command on each marked file"))
+(when (fboundp 'diredp-read-expression) ; Emacs 22+
+  (define-key diredp-menu-bar-multiple-menu [diredp-do-lisp-sexp]
+    '(menu-item "Eval Sexp..." diredp-do-lisp-sexp
+                :help "Evaluate an Emacs-Lisp sexp in each marked file")))
+(define-key diredp-menu-bar-multiple-menu [diredp-do-emacs-command]
+    '(menu-item "Invoke Emacs Command..." diredp-do-emacs-command
+      :help "Invoke an Emacs command in each marked file"))
+(define-key diredp-menu-bar-multiple-menu [diredp-do-apply-function]
+    '(menu-item "Apply Function..." diredp-do-apply-function
+      :help "Apply a Lisp function to each marked file name (`C-u': file contents, not name)"))
+(define-key diredp-menu-bar-multiple-menu [print]
+  '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
+(define-key diredp-menu-bar-multiple-menu [compress]
+  '(menu-item "Compress/Uncompress" dired-do-compress :help "Compress/uncompress marked files"))
 (when (fboundp 'dired-do-compress-to)
   (define-key diredp-menu-bar-multiple-menu [compress-to]
     '(menu-item "Compress to..." dired-do-compress-to
       :help "Compress marked files and dirs together, in the same archive")))
-(define-key diredp-menu-bar-multiple-menu [compress]
-  '(menu-item "Compress/Uncompress" dired-do-compress :help "Compress/uncompress marked files"))
-(define-key diredp-menu-bar-multiple-menu [diredp-do-apply-function]
-    '(menu-item "Apply Lisp Function..." diredp-do-apply-function
-      :help "Apply a Lisp function to each marked file name (`C-u': file contents, not name)"))
-(define-key diredp-menu-bar-multiple-menu [print]
-  '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
+(define-key diredp-menu-bar-multiple-menu [command]
+  '(menu-item "Shell Command..." dired-do-shell-command
+    :help "Run a shell command on each marked file"))
+(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
+  (define-key diredp-menu-bar-multiple-menu [async-command]
+    '(menu-item "Asynchronous Shell Command..." dired-do-async-shell-command
+      :help "Run a shell command asynchronously on each marked file")))
+(define-key diredp-menu-bar-multiple-menu [compile]
+  '(menu-item "Byte Compile" dired-do-byte-compile :help "Byte-compile marked Emacs Lisp files"))
+(define-key diredp-menu-bar-multiple-menu [load]
+  '(menu-item "Load" dired-do-load :help "Load marked Emacs Lisp files"))
 
 (unless (require 'bookmark+ nil t)
   (define-key diredp-menu-bar-multiple-menu [diredp-bookmark-this-file]
@@ -12576,19 +12610,19 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Change timestamp of marked files, including those in marked subdirs")))
 (define-key diredp-multiple-recursive-menu [separator-change] '("--")) ; ----------------
 
-(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
-  (define-key diredp-multiple-recursive-menu [diredp-do-async-shell-command-recursive]
-    '(menu-item "Asynchronous Shell Command..." diredp-do-async-shell-command-recursive
-      :help "Run shell command asynchronously on marked files, including in marked subdirs")))
-(define-key diredp-multiple-recursive-menu [diredp-do-shell-command-recursive]
-    '(menu-item "Shell Command..." diredp-do-shell-command-recursive
-      :help "Run shell command on the marked files, including those in marked subdirs"))
 (define-key diredp-multiple-recursive-menu [diredp-do-apply-function-recursive]
     '(menu-item "Apply Lisp Function..." diredp-do-apply-function-recursive
       :help "Apply a Lisp function to the marked files, including those in marked subdirs"))
 (define-key diredp-multiple-recursive-menu [diredp-do-print-recursive]
     '(menu-item "Print..." diredp-do-print-recursive
       :help "Print the marked files, including those in marked subdirs"))
+(define-key diredp-multiple-recursive-menu [diredp-do-shell-command-recursive]
+    '(menu-item "Shell Command..." diredp-do-shell-command-recursive
+      :help "Run shell command on the marked files, including those in marked subdirs"))
+(when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
+  (define-key diredp-multiple-recursive-menu [diredp-do-async-shell-command-recursive]
+    '(menu-item "Asynchronous Shell Command..." diredp-do-async-shell-command-recursive
+      :help "Run shell command asynchronously on marked files, including in marked subdirs")))
 
 (when (fboundp 'diredp-unmark-all-marks-recursive) ; Emacs 22+
   (define-key diredp-multiple-recursive-menu [separator-1] '("--")) ; ------------
