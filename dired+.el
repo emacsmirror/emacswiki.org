@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2019.04.20
+;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr 20 13:59:03 2019 (-0700)
+;; Last-Updated: Sun Apr 21 07:08:54 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11659
+;;     Update #: 11670
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -765,6 +765,8 @@
 ;;
 ;;  `dired-do-byte-compile', `dired-do-compress', `dired-do-load' -
 ;;     Redisplay only if at most one file is being treated.
+;;  `dired-do-find-regexp', `dired-do-find-regexp-and-replace' -
+;;     Prefix arg lets you act on files other than those marked.
 ;;  `dired-do-isearch', `dired-do-isearch-regexp',
 ;;     `dired-do-query-replace-regexp', `dired-do-search' -
 ;;        Use new `dired-get-marked-files'.
@@ -802,6 +804,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/21 dadams
+;;     Added redefinitions of dired-do-find-regexp, dired-do-find-regexp-and-replace.
+;;     diredp-multiple-search-menu: Added "Using TAGS Table" for dired-do-(query-replace|search).
 ;; 2019/04/20 dadams
 ;;     Added:
 ;;       diredp-map-over-marks-and-report, diredp-do-emacs-command, diredp-invoke-emacs-command,
@@ -8377,7 +8382,7 @@ When invoked interactively, raise an error if no files are marked."
   )
 
 
-;; REPLACE ORIGINAL in `dired.el':
+;; REPLACE ORIGINAL in `dired-aux.el':
 ;;
 ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
 ;; 2. Added optional arg INTERACTIVEP.
@@ -8405,7 +8410,7 @@ When invoked interactively, raise an error if no files are marked."
   (tags-search regexp `(dired-get-marked-files nil ',arg 'dired-nondirectory-p nil ,interactivep)))
 
 
-;; REPLACE ORIGINAL in `dired.el':
+;; REPLACE ORIGINAL in `dired-aux.el':
 ;;
 ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
 ;; 2. Added optional arg INTERACTIVEP.
@@ -8451,6 +8456,89 @@ with the command \\[tags-loop-continue]."
         (when (and buffer  (with-current-buffer buffer buffer-read-only))
           (error "File `%s' is visited read-only" file))))
     (tags-query-replace from to delimited `',dgmf-arg)))
+
+
+(when (fboundp 'xref-collect-matches)   ; Emacs 25+
+
+
+  ;; REPLACE ORIGINAL in `dired-aux.el':
+  ;;
+  ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
+  ;; 2. Added optional arg INTERACTIVEP.
+  ;; 3. Do not raise error if no files when not INTERACTIVEP.
+  ;;
+  (defun dired-do-find-regexp (regexp &optional arg interactivep)
+    "Find all matches for REGEXP in all marked files.
+For any marked directory, all of its files are searched recursively.
+However, files matching `grep-find-ignored-files' and subdirectories
+matching `grep-find-ignored-directories' are skipped in the marked
+directories.
+
+A prefix arg behaves as follows:
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file.
+
+When invoked interactively, raise an error if no files are marked.
+
+REGEXP should use constructs supported by your local `grep' command."
+    (interactive (let* ((arg  current-prefix-arg)
+                        (C-u  (and (consp arg)  arg)))
+                   (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                   (list (diredp-read-regexp "Search marked files (regexp): ")
+                         arg
+                         t)))
+    (require 'grep)
+    (defvar grep-find-ignored-files)
+    (defvar grep-find-ignored-directories)
+    (let* ((files    (dired-get-marked-files nil arg nil nil interactivep))
+           (ignores  (nconc (mapcar (lambda (s) (concat s "/")) grep-find-ignored-directories)
+                            grep-find-ignored-files))
+           (xrefs    (mapcan (lambda (file)
+                               (xref-collect-matches
+                                regexp "*" file (and (file-directory-p file)  ignores)))
+                             files)))
+      (if xrefs
+          (xref--show-xrefs xrefs nil t)
+        (when interactivep (diredp-user-error "No matches for: %s" regexp)))))
+
+
+  ;; REPLACE ORIGINAL in `dired-aux.el':
+  ;;
+  ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
+  ;; 2. Added optional arg INTERACTIVEP.
+  ;; 3. Do not raise error if no files when not INTERACTIVEP.
+  ;;
+;;;###autoload
+  (defun dired-do-find-regexp-and-replace (from to &optional arg interactivep)
+    "Replace matches of FROM with TO, in all marked files.
+For any marked directory, matches in all of its files are replaced,
+recursively.  However, files matching `grep-find-ignored-files'
+and subdirectories matching `grep-find-ignored-directories' are skipped
+in the marked directories.
+
+A prefix arg behaves as follows:
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file.
+
+When invoked interactively, raise an error if no files are marked.
+
+REGEXP should use constructs supported by your local `grep' command."
+    (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t))
+                       (arg     current-prefix-arg)
+                       (C-u     (and (consp arg)  arg)))
+                   (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                   (list (nth 0 common)
+                         (nth 1 common)
+                         arg
+                         t)))
+    (with-current-buffer (dired-do-find-regexp from arg interactivep)
+      (xref-query-replace-in-results from to)))
+
+  )
 
 ;;;###autoload
 (defun diredp-do-grep (command-args)    ; Bound to `C-M-G'
@@ -12547,19 +12635,20 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Incrementally search marked files for string")))
 (when (fboundp 'dired-do-find-regexp-and-replace)
   (define-key diredp-multiple-search-menu [find-query-replace]
-    '(menu-item "Query Replace using `find'..." dired-do-find-regexp-and-replace
+    '(menu-item "Query Replace Using `find'..." dired-do-find-regexp-and-replace
       :help "Replace regexp in marked files using `find'")))
 (define-key diredp-multiple-search-menu [query-replace]
   (if (< emacs-major-version 21)
-      '(menu-item "Query Replace..." dired-do-query-replace)
-    '(menu-item "Query Replace..." dired-do-query-replace-regexp
-      :help "Replace regexp in marked files")))
+      '(menu-item "Query Replace Using TAGS Table..." dired-do-query-replace)
+    '(menu-item "Query Replace Using TAGS Table..." dired-do-query-replace-regexp
+      :help "Replace regexp in marked files using tags in a TAGS table")))
 (when (fboundp 'dired-do-find-regexp)
   (define-key diredp-multiple-search-menu [find-regexp]
-    '(menu-item "Search Files using `find'..." dired-do-find-regexp
+    '(menu-item "Search Files Using `find'..." dired-do-find-regexp
       :help "Search marked files for regexp using `find'")))
 (define-key diredp-multiple-search-menu [search]
-  '(menu-item "Search Files..." dired-do-search :help "Search marked files for regexp"))
+  '(menu-item "Search Files Using TAGS Table..." dired-do-search
+              :help "Search marked files for regexp using tags in a TAGS table"))
 (define-key diredp-multiple-search-menu [grep]
   '(menu-item "Grep..." diredp-do-grep :help "Grep marked, next N, or all files shown"))
 
