@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 18 22:33:46 2019 (-0800)
+;; Last-Updated: Sun Apr 21 11:02:10 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16496
+;;     Update #: 16497
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/04/21 dadams
+;;     bmkp-temporary-bookmarking-mode: When enable mode reset bmkp-temporary-bookmarking-mode to nil.
 ;; 2019/02/18
 ;;     bmkp-autofile-bookmark-p, bmkp-file-target-set, bmkp-autofile-add-tags,
 ;;       bmkp-get-autofile-bookmark:
