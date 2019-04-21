@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Feb 18 22:27:48 2019 (-0800)
+;; Last-Updated: Sun Apr 21 11:00:39 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8873
+;;     Update #: 8874
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -12922,6 +12922,7 @@ Don't forget to mention your Emacs and library versions."))
                          (bookmark-insert-file-format-version-stamp))
                        (insert "(\n)"))
                      (bmkp-empty-file new-file)
+                     (setq bmkp-last-as-first-bookmark-file  nil) ; Prevent starting from a file of temp bmks.
                      (bookmark-load new-file t 'nosave) ; Saving was done just above.
                      (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file (interactive-p))))
                    (when (interactive-p) (message "Bookmarking is now TEMPORARY")))
