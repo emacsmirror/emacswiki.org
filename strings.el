@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Mon Jan  1 15:53:53 2018 (-0800)
+;;; Last-Updated: Sun Apr 21 08:11:53 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 567
+;;     Update #: 576
 ;; URL: https://www.emacswiki.org/emacs/download/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -43,11 +43,12 @@
 ;;    `display-in-minibuffer', `display-lines-containing',
 ;;    `echo-in-buffer', `empty-name-p', `erase-inactive-minibuffer',
 ;;    `erase-nonempty-inactive-minibuffer', `fill-string',
-;;    `frame-alist', `insert-in-minibuffer', `minibuffer-empty-p',
-;;    `non-empty-name-p', `ordinal-suffix', `pick-some-words',
-;;    `read-any-variable', `read-number', `region-description',
-;;    `set-minibuffer-empty-p', `string-w-face',
-;;    `symbol-name-before-point', `word-before-point'.
+;;    `frame-alist', `insert-in-minibuffer', `insert-string' (Emacs
+;;    26+), `minibuffer-empty-p', `non-empty-name-p',
+;;    `ordinal-suffix', `pick-some-words', `read-any-variable',
+;;    `read-number', `region-description', `set-minibuffer-empty-p',
+;;    `string-w-face', `symbol-name-before-point',
+;;    `word-before-point'.
 ;;
 ;;  Variables defined here:
 ;;
@@ -65,6 +66,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/21 dadams
+;;     Added insert-string for Emacs 26+ (Emacs removed it).
+;;     read-buffer: Added optional arg PREDICATE, like recent vanilla Emacs.
+;;     buffer-alist: Use dolist, not mapcar.
 ;; 2017/02/10 dadams
 ;;     display-lines-containing: Quote minibuffer-history.
 ;;     frame-alist: Use code for get-frame-name, not the function (in frame-fns.el).
@@ -413,6 +418,16 @@ variables that are respected."
     (setq string  (buffer-substring (point-min) (point-max))))
   string)
 
+;; Emacs removed this starting with Emacs 26.  Put it back.
+;;
+(unless (fboundp 'insert-string)
+  (defun insert-string (&rest args)
+    "Mocklisp-compatibility insert function.
+Like the function `insert' except that any argument that is a number
+is converted into a string by expressing it in decimal."
+    (dolist (el args)
+      (insert (if (integerp el) (number-to-string el) el)))))
+
 (defun string-w-face (arg)
   "Convert ARG (of form (FACE OBJECT)) to a string with face FACE.
 If ARG is already a string, any text (face) properties are preserved.
@@ -498,7 +513,7 @@ NOTE: For versions of Emacs that do not have faces, a list of
 ;; 2. Emacs 23+ compatible: handles `read-buffer-function'
 ;;    and `read-buffer-completion-ignore-case'.
 ;;
-(defun read-buffer (prompt &optional default require-match)
+(defun read-buffer (prompt &optional default require-match predicate)
   "Read the name of a buffer and return it as a string.
 Prompt with first arg, PROMPT (a string).
 
@@ -516,6 +531,10 @@ which case the first name in the list is returned on empty input.
 Non-nil REQUIRE-MATCH means to allow only names of existing buffers.
 It is the same as for `completing-read'.
 
+Non-nil PREDICATE is a function that accepts a completion candidate (a
+cons whose car is a buffer name) as its first arg.  Candidates for
+which PREDICATE returns nil are excluded as completion candidates.
+
 Case sensitivity is determined by
 `read-buffer-completion-ignore-case', if defined, or
 `completion-ignore-case' otherwise."
@@ -526,7 +545,7 @@ Case sensitivity is determined by
                                     (another-buffer nil t)
                                   (other-buffer (current-buffer))))))
     ;; Need a string as default.
-    (when (bufferp default) (setq default (buffer-name default)))
+    (when (bufferp default) (setq default  (buffer-name default)))
     (let ((completion-ignore-case  (if (boundp 'read-buffer-completion-ignore-case)
                                        read-buffer-completion-ignore-case
                                      completion-ignore-case)))
@@ -535,17 +554,17 @@ Case sensitivity is determined by
                   'internal-complete-buffer ; Emacs 22+
                 (mapcar (lambda (b) (and (buffer-live-p b) (list (buffer-name b))))
                         (buffer-list)))
-       nil require-match nil 'buffer-name-history default nil))))
+       predicate require-match nil 'buffer-name-history default nil))))
 
 (defun buffer-alist (&optional nospacep)
   "Alist of (BUF-NAME . BUF) items, where BUF-NAME (a string) names BUF,
 which is in (buffer-list).  Non-nil NOSPACEP means do not include
 buffers whose names start with SPACE."
-  (let (bn-alist)
-    (mapcar (lambda (buf) (let ((bn (buffer-name buf)))
-                            (unless (and nospacep (equal " " (substring bn 0 1)))
-                              (push (cons bn buf) bn-alist))))
-            (buffer-list))
+  (let (bn-alist bn)
+    (dolist (buf  (buffer-list))
+      (setq bn  (buffer-name buf))
+      (unless (and nospacep  (equal " " (substring bn 0 1)))
+        (push (cons bn buf) bn-alist)))
     (reverse bn-alist)))
 
 ;; Same as Emacs 22 standard definition, except:
