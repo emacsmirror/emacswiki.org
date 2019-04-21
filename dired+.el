@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 21 07:08:54 2019 (-0700)
+;; Last-Updated: Sun Apr 21 07:21:10 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11670
+;;     Update #: 11671
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4554,11 +4554,6 @@ instead of collecting all files if none are marked.  This argument is
 ignored if IGNORE-MARKS-P is non-nil.
 
 Optional arg DETAILS is passed to `diredp-y-or-n-files-p'."
-;;;;@@@@@@@@@   ;; Set IGNORE-MARKS-P to non-nil if nothing marked here.
-;;;;   (let ((dired-marker-char ?*))
-;;;;     (save-excursion
-;;;;       (goto-char (point-min))
-;;;;       (unless (re-search-forward (dired-marker-regexp) nil t) (setq ignore-marks-p  t))))
   (let ((askp  (list nil)))             ; The cons's car will be set to `t' if need to ask user.
     (if ignore-marks-p
         (diredp-files-within (directory-files default-directory 'FULL diredp-re-no-dot)
