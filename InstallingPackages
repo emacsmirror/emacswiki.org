@@ -30,6 +30,11 @@ You may want to start by installing the <code>paradox</code> package.  This will
 
 If you move to a different system and you would like to quickly install all of your previously installed packages, look into `M-x package-install-selected-packages'. If you use UsePackage, the <code>:ensure t</code> property will tell Emacs to install a package if it hasn't already been installed.
 
+== Shortlisting Packages ==
+
+If you are looking for a package or a feature, it is more likely that it is already in [http://melpa.org/ MELPA]. As on April 2019, MELPA has upwards of 4000 packages.   So, start your search for a package in that repository.  Alternately, you can shortlist packages right within Emacs using the <code>[https://github.com/politza/tablist tablist]</code> package.  See [https://emacsnotes.wordpress.com/2019/04/16/how-i-shortlist-add-ons-for-my-emacs-introducing-tablist/ How I shortlist add-ons for my Emacs: Introducing `tablist`] for a nice tutorial on how you can do this.
+
+
 == Working with network proxies ==
 
 If you are behind a firewall that requires the use of a proxy, you may need to configure HTTP or HTTPS proxies in order to list or install packages.
