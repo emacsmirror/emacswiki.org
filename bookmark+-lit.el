@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Mon Feb 18 22:16:09 2019 (-0800)
+;; Last-Updated: Mon Apr 22 09:19:36 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 959
+;;     Update #: 962
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -94,6 +94,7 @@
 ;;    `bmkp-bmenu-unlight-marked', `bmkp-bookmarks-lighted-at-point',
 ;;    `bmkp-cycle-lighted-this-buffer',
 ;;    `bmkp-cycle-lighted-this-buffer-other-window',
+;;    `bmkp-describe-bookmark-lighted-here',
 ;;    `bmkp-light-autonamed-this-buffer', `bmkp-light-bookmark',
 ;;    `bmkp-light-bookmark-this-buffer', `bmkp-light-bookmarks',
 ;;    `bmkp-light-bookmarks-in-region',
@@ -1130,6 +1131,24 @@ See `bmkp-next-lighted-this-buffer-repeat'."
   (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-lighted-this-buffer))
 
+;;;###autoload (autoload 'bmkp-describe-bookmark-lighted-here "bookmark+")
+(defun bmkp-describe-bookmark-lighted-here (&optional position defn) ; `C-x p ?'
+  "Describe a highlighted bookmark at point or the same line.
+If there is more than one highlighted bookmark present then which one
+is described is undefined.  When multiple highlighted bookmarks are
+present you might want to use `\\[bmkp-bookmarks-lighted-at-point]' to see the names of all of the
+bookmarks at point, and then use `\\[bmkp-describe-bookmark]' to describe one of them.
+
+When called from Lisp:
+ * Use POSITION, not point.
+ * DEFN corresponds to the prefix arg: non-nil means show show the
+   internal definition of the bookmark."
+  (interactive (list (point) current-prefix-arg))
+  (let ((bmk  (or (bmkp-a-bookmark-lighted-at-pos position 'FULL)
+                  (bmkp-a-bookmark-lighted-on-this-line 'FULL))))
+    (unless bmk (error "No highlighted bookmark on this line"))
+    (bmkp-describe-bookmark bmk defn)))
+
 
 ;;(@* "Other Functions")
 ;;  *** Other Functions ***
@@ -1353,11 +1372,12 @@ If nil, check overlays for both autonamed and non-autonamed bookmarks."
 (defun bmkp-make/move-overlay-of-style (style pos autonamedp bookmark &optional overlay)
   "Return a bookmark overlay of STYLE at position POS for BOOKMARK.
 AUTONAMEDP non-nil means the bookmark is autonamed.
-If OVERLAY is non-nil it is the overlay to use - change to STYLE.
-  Otherwise, create a new overlay.
+Regardless of STYLE, set `help-echo' to the bookmark description.
+If OVERLAY is non-nil:
+  Then it is the overlay to use - change to STYLE and return overlay.
+  Otherwise, create a new overlay and return it.
 If STYLE is `none' then:
-  If OVERLAY is non-nil, delete it.
-  Return nil."
+  If OVERLAY is non-nil, delete it and return nil."
   (let ((ov  overlay))
     (when (and (< emacs-major-version 22)  (not (rassq style bmkp-light-styles-alist)))
       (message "Fringe styles not supported before Emacs 22 - changing to `line' style")
@@ -1399,6 +1419,7 @@ If STYLE is `none' then:
                        (overlay-put ov 'before-string nil) ; Remove any fringe highlighting.
                        (move-overlay ov pos (1+ pos))))
       (none          (when ov (delete-overlay ov))  (setq ov nil)))
+    (when ov (overlay-put ov 'help-echo (bmkp-bookmark-description bookmark)))
     ov))
 
 ;; Not used for Emacs 20-21.
