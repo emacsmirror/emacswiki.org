@@ -2816,7 +2816,7 @@ You'll figure it out ;-).
 Other important keys pertaining to tags (the keys in parentheses
 work in any buffer, not just buffer `##*Bookmark List*##'):
 
-* '''`##C-h RET##'''' ('''`##C-x p ?##'''') shows you the tags that belong to a
+* '''`##C-h RET##'''' ('''`C-h M'''') shows you the tags that belong to a
   bookmark.  With a prefix argument it shows you the full internal
   form of the tags, that is, the name+value pairs.
 
@@ -4282,7 +4282,7 @@ You can use command '''`bmkp-insert-bookmark-link'''' to create links in
 any Emacs text that jump to particular bookmarks when you follow
 them (by hitting `RET' or clicking `mouse-2').  If you hit `##?##' or
 double-click `mouse-1' on such a bookmark link then the bookmark
-is described, showing the same information as `##C-x p ?##'
+is described, showing the same information as `C-h M'
 (`bmkp-describe-bookmark').
 
 You are prompted for the bookmark to link.  If the [[region]] is
