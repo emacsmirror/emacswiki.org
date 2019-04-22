@@ -589,9 +589,16 @@ to the modes.
 
 * Information about individual bookmarks.
 
-** Anywhere in Emacs, '''`##C-x p ?##'''' (command '''`bmkp-describe-bookmark'''' describes
+** Anywhere in Emacs, '''`C-h M'''' (command '''`bmkp-describe-bookmark'''' describes
 any bookmark.  With a [[prefix argument]], it shows you the
 full information that defines it (internal form).
+
+** With the cursor on a highlighted bookmark, '''`##C-x p ?##'''' shows
+the same description, and a [[prefix argument]] has the same effect
+(show internal form).
+
+** Hovering your mouse over a ''highlighted'' bookmark shows the
+same description, in a [[tooltip]].
 
 ** In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
 the bookmark under the [[cursor]].  The description is as
