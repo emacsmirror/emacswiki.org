@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-201, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 18 22:48:44 2019 (-0800)
+;; Last-Updated: Mon Apr 22 09:30:26 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 15299
+;;     Update #: 15305
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -568,10 +568,17 @@
 ;;
 ;;     - Information about individual bookmarks.
 ;;
-;;       . Anywhere in Emacs, `C-x p ?'  (command
+;;       . Anywhere in Emacs, `C-x h M'  (command
 ;;         `bmkp-describe-bookmark') describes any bookmark.  With a
 ;;         prefix argument, it shows you the full information that
 ;;         defines it (internal form).
+;;
+;;       . With the cursor on a highlighted bookmark, `C-x p ?' shows
+;;         the same description, and a prefix argment has the same
+;;         effect (show internal form).
+;;
+;;       . Hovering your mouse over a highlighted bookmark shows the
+;;         same description, in a tooltip.
 ;;
 ;;       . In the bookmark list, `C-h RET' (or `C-h C-RET') describes
 ;;         the bookmark under the cursor.  The description is as
@@ -2561,7 +2568,7 @@
 ;;  Other important keys pertaining to tags (the keys in parentheses
 ;;  work in any buffer, not just buffer `*Bookmark List*'):
 ;;
-;;  * `C-h RET' (`C-x p ?') shows you the tags that belong to a
+;;  * `C-h RET' (`C-h M') shows you the tags that belong to a
 ;;    bookmark.  With a prefix argument it shows you the full internal
 ;;    form of the tags, that is, the name+value pairs.
 ;;
@@ -3828,7 +3835,7 @@
 ;;  any Emacs text that jump to particular bookmarks when you follow
 ;;  them (by hitting `RET' or clicking `mouse-2').  If you hit `?' or
 ;;  double-click `mouse-1' on such a bookmark link then the bookmark
-;;  is described, showing the same information as `C-x p ?'
+;;  is described, showing the same information as `C-h M'
 ;;  (`bmkp-describe-bookmark').
 ;;
 ;;  You are prompted for the bookmark to link.  If the region is
