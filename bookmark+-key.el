@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Mon Feb 18 22:15:59 2019 (-0800)
+;; Last-Updated: Mon Apr 22 09:09:00 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 805
+;;     Update #: 808
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -201,6 +201,9 @@ Each value of the list is a prefix key bound to keymap
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
 
+;; `help-map'
+(define-key help-map "M"  'bmkp-describe-bookmark)
+
 ;; `bookmark-map'
 
 ;; (define-key ctl-x-map "p" bookmark-map)
@@ -231,7 +234,7 @@ Each value of the list is a prefix key bound to keymap
   (define-key bookmark-map "\C-u" 'bmkp-unlight-bookmark-here)                        ; `C-x p C-u'
   (define-key bookmark-map "="    'bmkp-bookmarks-lighted-at-point))                  ; `C-x p ='
 (define-key bookmark-map ","      'bmkp-this-file/buffer-bmenu-list)                  ; `C-x p ,'
-(define-key bookmark-map "?"      'bmkp-describe-bookmark)                            ; `C-x p ?'
+(define-key bookmark-map "?"      'bmkp-describe-bookmark-lighted-here)               ; `C-x p ?'
 (define-key bookmark-map ":"      'bmkp-choose-navlist-of-type)                       ; `C-x p :'
 (define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete)         ; `C-x p RET'
 (define-key bookmark-map [delete] 'bmkp-delete-bookmarks)                             ; `C-x p delete'
