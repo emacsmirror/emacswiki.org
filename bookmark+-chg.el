@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 21 11:02:10 2019 (-0700)
+;; Last-Updated: Mon Apr 22 09:45:56 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16497
+;;     Update #: 16503
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2035,6 +2035,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2019/04/22 dadams
+;;     Bind bmkp-describe-bookmark to C-h M, bmkp-describe-bookmark-lighted-here to C-x p ?.
 ;; 2018/10/10 dadams
 ;;     Bound bookmark-jump-other-frame to C-x 5 B, C-x j 5 globally, and J 5 in bookmark-list buffer.
 ;; 2017/10/14 dadams
@@ -2180,6 +2182,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2019/04/22 dadams
+;;     Added bmkp-describe-bookmark-lighted-here.
+;;     bmkp-make/move-overlay-of-style: Put bookmark description on overlay help-echo property.
 ;; 2018/09/21 dadams
 ;;     Added: bmkp--pop-to-buffer-same-window.  (Added also to bookmark+-bmu.el.)
 ;;     bmkp-lighted-jump: Use bmkp--pop-to-buffer-same-window, not switch-to-buffer.
@@ -2313,8 +2318,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2019/04/22 dadams
+;;     Version 2019.04.22
+;; 2019/04/22 dadams
+;;     Version 2019.02.18
 ;; 2018/10/17 dadams
-;;     Version 2018-10-17.
+;;     Version 2018.10.17.
 ;; 2018/09/21 dadams
 ;;     Version 2017.09.21.
 ;; 2017/03/31 dadams
