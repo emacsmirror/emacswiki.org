@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 21 07:21:10 2019 (-0700)
+;; Last-Updated: Mon Apr 22 04:51:55 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11671
+;;     Update #: 11676
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -804,6 +804,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/22 dadams
+;;     Added diredp-move-files-named-in-kill-ring.  Bound to C-w.
 ;; 2019/04/21 dadams
 ;;     Added redefinitions of dired-do-find-regexp, dired-do-find-regexp-and-replace.
 ;;     diredp-multiple-search-menu: Added "Using TAGS Table" for dired-do-(query-replace|search).
@@ -5110,9 +5112,9 @@ This is the same as using a zero prefix arg with command
   "Paste files, whose absolute names you copied, to the current directory.
 With a non-negative prefix arg you are instead prompted for the target
  directory.
-With a non-positive prefix arg you can see details about the copied
- files if you hit `l' when prompted to confirm pasting.  Otherwise you
- see only the file names.  The details you see are defined by option
+With a non-positive prefix arg you can see details about the files if
+ you hit `l' when prompted to confirm pasting.  Otherwise you see only
+ the file names.  The details you see are defined by option
  `diredp-list-file-attributes'.
 
 You should have copied the list of file names as a string to the kill
@@ -5137,13 +5139,51 @@ Optional arg DETAILS is passed to `diredp-y-or-n-files-p'."
   (let ((files  diredp-last-copied-filenames))
     (unless (stringp files)  (error "No copied file names"))
     (setq files  (diredp-delete-if-not (lambda (file) (file-name-absolute-p file)) (split-string files)))
-    (unless files  (error "No copied absolute file names (Did you use `M-0 w'?)"))
+    (unless files  (error "No copied *absolute* file names (Did you use `M-0 w'?)"))
     (if (and (not no-confirm-p)
              (diredp-y-or-n-files-p "Paste files whose names you copied? " files nil details))
         (dired-create-files #'dired-copy-file "Copy" files
                             (lambda (from) (expand-file-name (file-name-nondirectory from) dir)))
       (message "OK, file-pasting canceled"))))
 
+;;;###autoload
+(defun diredp-move-files-named-in-kill-ring (&optional dir no-confirm-p details) ; Bound to `C-w'
+  "Move files, whose absolute names you copied, to the current directory.
+With a non-negative prefix arg you are instead prompted for the target
+ directory.
+With a non-positive prefix arg you can see details about the files if
+ you hit `l' when prompted to confirm pasting.  Otherwise you see only
+ the file names.  The details you see are defined by option
+ `diredp-list-file-attributes'.
+
+You should have copied the list of file names as a string to the kill
+ring using \\<dired-mode-map>`M-0 \\[dired-copy-filename-as-kill]' or \
+\\[diredp-copy-abs-filenames-as-kill].
+Those commands also set variable `diredp-last-copied-filenames' to the
+same string.  `diredp-move-files-named-in-kill-ring' uses the value of
+that variable, not whatever is currently at the head of the kill ring.
+
+When called from Lisp:
+
+Optional arg NO-CONFIRM-P means do not ask for confirmation to move.
+Optional arg DETAILS is passed to `diredp-y-or-n-files-p'."
+  (interactive (list (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg))
+                          (expand-file-name (read-directory-name "Move files to directory: ")))
+                     nil
+                     (and current-prefix-arg
+                          (<= (prefix-numeric-value current-prefix-arg) 0)
+                          diredp-list-file-attributes)))
+  (setq dir  (or dir  (and (derived-mode-p 'dired-mode)  (dired-current-directory))))
+  (unless (file-directory-p dir) (error "Not a directory: `%s'" dir))
+  (let ((files  diredp-last-copied-filenames))
+    (unless (stringp files)  (error "No copied file names"))
+    (setq files  (diredp-delete-if-not (lambda (file) (file-name-absolute-p file)) (split-string files)))
+    (unless files  (error "No copied (absolute* file names (Did you use `M-0 w'?)"))
+    (if (and (not no-confirm-p)
+             (diredp-y-or-n-files-p "MOVE files whose names you copied? " files nil details))
+        (dired-create-files #'dired-rename-file "Move" files
+                            (lambda (from) (expand-file-name (file-name-nondirectory from) dir)))
+      (message "OK, file-moves canceled"))))
 
 
 ;;; Commands operating on marked at all levels below (recursively)
@@ -13569,6 +13609,7 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key dired-mode-map [(control meta shift ?t)] 'dired-do-touch))    ; `C-M-T' (aka `C-M-S-t')
 (define-key dired-mode-map "\M-u"    'diredp-upcase-this-file)              ; `M-u'
 (define-key dired-mode-map "y"       'diredp-relsymlink-this-file)          ; `y'
+(define-key dired-mode-map "\C-w"    'diredp-move-files-named-in-kill-ring) ; `C-w'
 (define-key dired-mode-map "\C-y"    'diredp-yank-files)                    ; `C-y'
 (define-key dired-mode-map "z"       'diredp-compress-this-file)            ; `z'
 (when (fboundp 'dired-show-file-type)
