@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Apr 21 11:00:39 2019 (-0700)
+;; Last-Updated: Mon Apr 22 09:15:37 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8874
+;;     Update #: 8875
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -8613,7 +8613,7 @@ link text, and it is inserted at POSITION (point if POSITION is nil)."
 ;;  *** Other Bookmark+ Functions (`bmkp-*') ***
 
 ;;;###autoload (autoload 'bmkp-describe-bookmark "bookmark+")
-(defun bmkp-describe-bookmark (bookmark &optional defn) ; Bound to `C-x p ?'
+(defun bmkp-describe-bookmark (bookmark &optional defn) ; Bound to `C-h M'
   "Describe BOOKMARK.
 With a prefix argument, show the internal definition of the bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
