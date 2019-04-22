@@ -145,6 +145,7 @@ The doc string for command `help-for-help' (`C-h C-h') was rewritten to be more 
 == See Also ==
 
 * HelpMenuBarPlus -- extensions to the MenuBar '''Help''' menu
+* BookmarkPlus -- defines `describe-bookmark`: `C-h M`.
 
 ----
 DrewsElispLibraries referenced here: Lisp:help-macro+.el, Lisp:help+.el, Lisp:help+20.el, Lisp:help-fns+.el, Lisp:help-mode+.el
