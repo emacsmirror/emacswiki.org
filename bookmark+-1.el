@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr 22 09:15:37 2019 (-0700)
+;; Last-Updated: Tue Apr 23 06:35:08 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8875
+;;     Update #: 8878
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -619,8 +619,8 @@
 ;;    `bmkp-position-post-context',
 ;;    `bmkp-position-post-context-region',
 ;;    `bmkp-position-pre-context', `bmkp-position-pre-context-region',
-;;    `bmkp-printable-vars+vals', `bmkp-readable-p',
-;;    `bmkp-read-bookmark-file-default',
+;;    `bmkp-printable-vars+vals', `bmkp-propertize',
+;;    `bmkp-readable-p', `bmkp-read-bookmark-file-default',
 ;;    `bmkp-read-bookmark-file-name', `bmkp-read-from-whole-string',
 ;;    `bmkp-read-regexp', `bmkp-read-tag-completing',
 ;;    `bmkp-read-tags', `bmkp-read-tags-completing',
@@ -3871,6 +3871,15 @@ use `regexp-history'."
                                           (mapconcat #'isearch-text-char-description default "")))
                          (t (format "%s: " prompt)))
                    nil (or history  'regexp-history) default))))
+
+;; Same as `icicle-propertize'.  (Not used yet.)
+;;
+(defun bmkp-propertize (object &rest properties)
+  "Like `propertize', but for all Emacs versions.
+If OBJECT is not a string, then use `prin1-to-string' to get a string."
+  (let ((new  (if (stringp object) (copy-sequence object) (prin1-to-string object))))
+    (add-text-properties 0 (length new) properties new)
+    new))
 
 (defun bmkp-new-bookmark-default-names (&optional first-def)
   "Return a list of default names (strings) for a new bookmark.
