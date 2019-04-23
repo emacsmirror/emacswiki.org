@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Mon Apr 22 09:19:36 2019 (-0700)
+;; Last-Updated: Tue Apr 23 06:39:49 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 962
+;;     Update #: 970
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -124,7 +124,8 @@
 ;;    `bmkp-light-left-fringe-bitmap' (Emacs 22+),
 ;;    `bmkp-light-priorities', `bmkp-light-right-fringe-bitmap' (Emacs
 ;;    22+), `bmkp-light-style-autonamed',
-;;    `bmkp-light-style-non-autonamed', `bmkp-light-threshold'.
+;;    `bmkp-light-style-non-autonamed', `bmkp-light-threshold',
+;;    `bmkp-tooltip-content-function'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -288,6 +289,18 @@ This face must be combinable with face `bmkp-t-mark'."
       (t (:background "turquoise")))
   "*Face used to highlight a non-autonamed bookmark (except in the fringe)."
   :group 'bookmark-plus :group 'faces)
+
+;; Emacs bug # prevents making use of a face in a tooltip.
+;;
+;; (defface bmkp-tooltip-content-face
+;;   '((((class color))
+;;      :background "lightyellow"
+;;      :foreground "black"
+;;      :family     "Courier")
+;;     (t
+;;      :family     "Courier"))
+;;   "Face for mouseover tooltip content for highlighted bookmarks."
+;;   :group 'bookmark-plus :group 'faces :group 'tooltip)
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
@@ -410,6 +423,15 @@ This option is not used for Emacs versions before Emacs 22."
 (defcustom bmkp-light-threshold 100000
   "*Maximum number of bookmarks to highlight."
   :type 'integer :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-tooltip-content-function "bookmark+")
+(defcustom bmkp-tooltip-content-function 'bmkp-bookmark-description
+  "Function providing mouseover tooltip content for highlighted bookmarks.
+It should accept a bookmark name or record as its first arg and return
+a value acceptable as a `help-echo' property value.  (To prevent
+showing any tooltip you can use a function, such as `ignore', that
+returns nil.)"
+  :type 'function :group 'bookmark-plus :group 'tooltip)
  
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
@@ -1419,7 +1441,11 @@ If STYLE is `none' then:
                        (overlay-put ov 'before-string nil) ; Remove any fringe highlighting.
                        (move-overlay ov pos (1+ pos))))
       (none          (when ov (delete-overlay ov))  (setq ov nil)))
-    (when ov (overlay-put ov 'help-echo (bmkp-bookmark-description bookmark)))
+
+    ;; Emacs bug # prevents making use of a face in a `help-echo' tooltip.
+    ;; (when ov (overlay-put ov 'help-echo (bmkp-propertize (funcall bmkp-tooltip-content-function bookmark)
+    ;;                                                      'face 'bmkp-tooltip-content-face)))
+    (when ov (overlay-put ov 'help-echo (funcall bmkp-tooltip-content-function bookmark)))
     ov))
 
 ;; Not used for Emacs 20-21.
