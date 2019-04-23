@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr 22 09:30:26 2019 (-0700)
+;; Last-Updated: Tue Apr 23 11:51:37 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 15305
+;;     Update #: 15307
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -578,7 +578,13 @@
 ;;         effect (show internal form).
 ;;
 ;;       . Hovering your mouse over a highlighted bookmark shows the
-;;         same description, in a tooltip.
+;;         same description, in a tooltip.  Actually, you can
+;;         customize the description using option
+;;         `bmkp-tooltip-content-function'.  The default value is
+;;         `bmkp-bookmark-description', which describes the bookmark.
+;;         A value of `bmkp-annotation-or-bookmark-description', for
+;;         example, shows the bookmark annotation if there is one, or
+;;         the full description if not.
 ;;
 ;;       . In the bookmark list, `C-h RET' (or `C-h C-RET') describes
 ;;         the bookmark under the cursor.  The description is as
