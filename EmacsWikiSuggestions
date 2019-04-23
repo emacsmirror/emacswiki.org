@@ -340,5 +340,11 @@ Perhaps you want that [https://www.emacswiki.org/emacs?action=browse;id=CSS;css=
 
 -- Alex Schroeder
 
+== Add "random" button to sidebar==
+
+[http://www.emacswiki.org/emacs/?action=random] is a pretty neat tool, it would be nice to just be able to click it from the side bar.
+
+--Billy
+
 ----
 CategoryEmacsWikiSite
