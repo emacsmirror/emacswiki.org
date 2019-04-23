@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Feb 18 22:24:41 2019 (-0800)
+;; Last-Updated: Tue Apr 23 08:15:14 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3992
+;;     Update #: 4004
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5743,9 +5743,6 @@ are marked or ALLP is non-nil."
     :enable (> bookmark-alist-modification-count 0)))
 
 (define-key bmkp-bmenu-menubar-menu [top-sep5] '("--")) ; ----------
-(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-edit-marked]
-  '(menu-item "Edit Internal Records of Marked (Lisp)..." bmkp-bmenu-edit-marked
-    :help "Edit the internal records of the marked bookmarks" :keys "E"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-relocate-marked]
   '(menu-item "Relocate Marked..." bmkp-bmenu-relocate-marked
     :help "Relocate the marked bookmarks to a directory"))
@@ -5794,6 +5791,10 @@ are marked or ALLP is non-nil."
 (defvar bmkp-bmenu-sort-menu (make-sparse-keymap "Sort")
     "`Sort' submenu for menu-bar `Bookmark+' menu.")
 (define-key bmkp-bmenu-menubar-menu [sort] (cons "Sort" bmkp-bmenu-sort-menu))
+
+(defvar bmkp-bmenu-edit-menu (make-sparse-keymap "Edit")
+    "`Edit' submenu for menu-bar `Bookmark+' menu.")
+(define-key bmkp-bmenu-menubar-menu [edit] (cons "Edit" bmkp-bmenu-edit-menu))
 
 (defvar bmkp-bmenu-show-menu (make-sparse-keymap "Show")
     "`Show' submenu for menu-bar `Bookmark+' menu.")
@@ -6088,7 +6089,7 @@ are marked or ALLP is non-nil."
   '(menu-item "Rename Tag..." bmkp-rename-tag
     :help "Rename a tag in all bookmarks, even those not showing"))
 (define-key bmkp-bmenu-tags-menu [bmkp-bmenu-edit-marked]
-  '(menu-item "Edit Tags of Marked (Lisp)..." bmkp-bmenu-edit-marked
+  '(menu-item "Edit Tags of Marked (Lisp)" bmkp-bmenu-edit-marked
     :help "Edit internal records of marked bookmarks (which include their tags)"
     :keys "T > e"))
 (define-key bmkp-bmenu-tags-menu [bmkp-bmenu-set-tag-value-for-marked]
@@ -6179,11 +6180,25 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-reverse-sort-order]
   '(menu-item "Reverse" bmkp-reverse-sort-order :help "Reverse the current bookmark sort order"))
 
+;;; `Edit' submenu ---------------------------------------------------
+(define-key bmkp-bmenu-edit-menu [bmkp-bmenu-edit-marked]
+  '(menu-item "Edit Full Records of Marked (Lisp)" bmkp-bmenu-edit-marked
+    :help "Edit the full internal records of the marked bookmarks" :keys "E"))
+(define-key bmkp-bmenu-edit-menu [bmkp-bmenu-edit-bookmark-record]
+  '(menu-item "Edit Full Record (Lisp)" bmkp-bmenu-edit-bookmark-record
+    :help "Edit full record (Lisp sexp) for this bookmark, in another window"))
+(define-key bmkp-bmenu-edit-menu [bookmark-bmenu-edit-annotation]
+  '(menu-item "Edit/Create Annotation" bookmark-bmenu-edit-annotation
+    :help "Edit annotation for this bookmark (create if none), in another window" :keys "C-u a"))
 
 ;;; `Show' submenu ---------------------------------------------------
 (define-key bmkp-bmenu-show-menu [bookmark-bmenu-show-all-annotations]
-  '(menu-item "Show Annotations" bookmark-bmenu-show-all-annotations
+  '(menu-item "Show All Annotations" bookmark-bmenu-show-all-annotations
     :help "Show the annotations for all bookmarks (in another window)"))
+(define-key bmkp-bmenu-show-menu [bookmark-bmenu-show-annotation]
+  '(menu-item "Show Annotation" bookmark-bmenu-show-annotation
+    :help "Show the annotation for this bookmark (in another window)" :keys "a"
+    :enable (bookmark-get-annotation (bookmark-bmenu-bookmark))))
 (define-key bmkp-bmenu-show-menu [bookmark-bmenu-toggle-filenames]
   '(menu-item "Show/Hide File Names" bookmark-bmenu-toggle-filenames
     :help "Toggle whether filenames are shown in the bookmark list"))
