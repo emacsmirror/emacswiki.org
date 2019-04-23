@@ -598,7 +598,13 @@ the same description, and a [[prefix argument]] has the same effect
 (show internal form).
 
 ** Hovering your mouse over a ''highlighted'' bookmark shows the
-same description, in a [[tooltip]].
+same description, in a [[tooltip]].  Actually, you can
+customize the description using option
+`bmkp-tooltip-content-function'.  The default value is
+`bmkp-bookmark-description', which describes the bookmark.
+A value of `bmkp-annotation-or-bookmark-description', for
+example, shows the bookmark annotation if there is one, or
+the full description if not.
 
 ** In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
 the bookmark under the [[cursor]].  The description is as
