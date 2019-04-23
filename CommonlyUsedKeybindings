@@ -25,6 +25,7 @@ Please contribute to this list, and if there are any disagreements we can straig
 || U || unmark all items ||
 || C-+ / C-x + / C-c +  || increase something (e.g. volume, font size)          ||
 || C-- / C-x - / C-c - || decrease something ||
+|| C-c C-c || execute the next "reasonable" action in a sequence, as implied by context (e.g., compile; [[VC]] commit; toggle [[OrgMode|Org]] checkbox) ||
 == Proposed keys ==
 == Discussion ==
 
