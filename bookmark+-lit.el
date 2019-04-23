@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Apr 23 06:39:49 2019 (-0700)
+;; Last-Updated: Tue Apr 23 11:51:32 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 970
+;;     Update #: 971
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -428,9 +428,14 @@ This option is not used for Emacs versions before Emacs 22."
 (defcustom bmkp-tooltip-content-function 'bmkp-bookmark-description
   "Function providing mouseover tooltip content for highlighted bookmarks.
 It should accept a bookmark name or record as its first arg and return
-a value acceptable as a `help-echo' property value.  (To prevent
-showing any tooltip you can use a function, such as `ignore', that
-returns nil.)"
+a value acceptable as a `help-echo' property value.
+
+One alternative to the default value of `bmkp-bookmark-description' is
+`bmkp-annotation-or-bookmark-description', which shows the bookmark
+annotation if there is one, or the full description if not.
+
+To prevent showing any tooltip you can use a function, such as
+`ignore', that returns nil."
   :type 'function :group 'bookmark-plus :group 'tooltip)
  
 ;;(@* "Internal Variables")
