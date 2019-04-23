@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 23 06:35:08 2019 (-0700)
+;; Last-Updated: Tue Apr 23 11:56:33 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8878
+;;     Update #: 8880
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -482,8 +482,9 @@
 ;;    `bmkext-jump-woman', `bmkp-all-exif-data',
 ;;    `bmkp-all-tags-alist-only', `bmkp-all-tags-regexp-alist-only',
 ;;    `bmkp-alpha-cp', `bmkp-alpha-p', `bmkp-annotated-alist-only',
-;;    `bmkp-annotated-bookmark-p', `bmkp-autofile-alist-only',
-;;    `bmkp-autofile-all-tags-alist-only',
+;;    `bmkp-annotated-bookmark-p',
+;;    `bmkp-annotation-or-bookmark-description',
+;;    `bmkp-autofile-alist-only', `bmkp-autofile-all-tags-alist-only',
 ;;    `bmkp-autofile-all-tags-regexp-alist-only',
 ;;    `bmkp-autofile-bookmark-p',
 ;;    `bmkp-autofile-some-tags-alist-only',
@@ -8856,6 +8857,12 @@ If it is a record then it need not belong to `bookmark-alist'."
                                 (pp-to-string bmk))))
     (bmkp-with-help-window "*Help*" (princ help-text))
     help-text))
+
+(defun bmkp-annotation-or-bookmark-description (bookmark)
+  "Return the annotation or description of BOOKMARK as a string.
+If BOOKMARK has an annotation then use that; else the description."
+  (or (bookmark-get-annotation bookmark)
+      (bmkp-bookmark-description bookmark)))
 
 ;;;###autoload (autoload 'bmkp-list-defuns-in-commands-file "bookmark+")
 (defun bmkp-list-defuns-in-commands-file ()
