@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr 22 09:45:56 2019 (-0700)
+;; Last-Updated: Tue Apr 23 08:18:10 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16503
+;;     Update #: 16509
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/04/23 dadams
+;;     Added bmkp-propertize.
 ;; 2019/04/21 dadams
 ;;     bmkp-temporary-bookmarking-mode: When enable mode reset bmkp-temporary-bookmarking-mode to nil.
 ;; 2019/02/18
@@ -1386,6 +1388,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2019/04/23 dadams
+;;     Added bmkp-bmenu-edit-menu.
+;;     Moved bmkp-bmenu-edit-marked to bmkp-bmenu-edit-menu from main Bookmark+ menu.
+;;     bmkp-bmenu-show-menu: Added bookmark-bmenu-show-annotation.
 ;; 2018/11/24 dadams
 ;;     bookmark-bmenu-other-(window|frame):
 ;;       Added missing bookmark-name arg to b-j-o-(window|frame).  Thx to Alan Wehmann.
@@ -2182,6 +2188,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2019/04/23 dadams
+;;     Added bmkp-tooltip-content-function.
+;;     bmkp-make/move-overlay-of-style: Use bmkp-tooltip-content-function.
 ;; 2019/04/22 dadams
 ;;     Added bmkp-describe-bookmark-lighted-here.
 ;;     bmkp-make/move-overlay-of-style: Put bookmark description on overlay help-echo property.
