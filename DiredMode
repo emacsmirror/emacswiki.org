@@ -49,6 +49,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * DiredEfap -- Rename the file at [[point]] in Dired.
 * [[Diredful]] -- Colorful file names in dired buffers.
 * [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
+* [https://github.com/Fuco1/dired-hacks dired-hacks] -- Collection of useful dired additions.
 * DiredPower -- Various Dired tips and features.
 * DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
 * DiredSorting -- Dired tips and addons for sorting listings
