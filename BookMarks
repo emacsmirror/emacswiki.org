@@ -138,6 +138,54 @@ Add this to your .emacs:
         (kill-buffer (current-buffer))))
 
 
+
+== Syncing Bookmarks with fish ==
+
+With the previous approach, you can also write the variables for fish:
+
+
+    (defadvice bookmark-write-file 
+      (local-directory-bookmarks-to-fish))
+
+    (defun local-directory-bookmarks-to-fish () 
+      (interactive)
+      (when (and (require 'tramp nil t)
+                 (require 'bookmark nil t))
+        (set-buffer (find-file-noselect "~/.fish.bmk" t t))
+        (delete-region (point-min) (point-max))
+        (insert "# -*- mode:fish -*-\n")
+        (let (collect-names)
+          (mapc (lambda (item)
+                  (let ((name (replace-regexp-in-string "-" "_" (car item)))
+                        (file (cdr (assoc 'filename 
+                                           (if (cddr item) item (cadr item))))))
+                    (when (and (not (tramp-tramp-file-p file))
+                               (file-directory-p file))
+                      (setq collect-names (cons (concat "~" name) collect-names))
+                      (insert (format "set -Ux %s \"%s\"\n" name (expand-file-name file) name)))))
+                bookmark-alist)
+          (insert ": " (mapconcat 'identity collect-names " ") "\n"))
+        (let ((backup-inhibited t)) (save-buffer))
+        (kill-buffer (current-buffer))))
+
+You will need to load the bookmarks file in ./config/fish/config.fish:
+
+    source ~/.fish.bmk
+
+and override the cd function .config/fish/functions/cd.fish:
+
+    #!/bin/env fish
+    
+    function cd -d "change directory, and activate virtualenvs, if available"
+        # first and foremost, change directory
+        builtin cd $argv 2> /dev/null
+    
+        if test $status -gt 0
+            builtin cd $$argv
+        end
+    end
+
+
 == Info Bookmarks ==
 
 You can bookmark [[Info]] nodes.  As an alternative, you can use [[Info+]] to create a virtual Info book and use Info to navigate its nodes. If you also use [[Icicles]] you can have any number of ''persistent'' virtual Info books.
