@@ -133,7 +133,7 @@ It's pretty configurable and runs on OSX 10.3 / 10.4. Most customizations are de
 
 === Emacs environment variables when running from the Finder ===
 
-When running from the Finder, applications do not get the same enviroment that command line tools see. This may prevent Emacs from seeing stuff in ''/usr/local/bin'' or other places.
+When running from the Finder, applications do not get the same enviroment that command line tools see. This may prevent Emacs from seeing stuff in ''/usr/local/bin'' or other places. See [[EmacsApp|EmacsApp section PATH]] for more info.
 
 This is how add stuff to the PATH variable, a must if you try to use Emacs for TeX work. Add this to your .emacs file:
 
