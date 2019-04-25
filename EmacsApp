@@ -102,6 +102,23 @@ Under OS X 10.8, /etc/launchd.conf does not exist by default, so you may have to
 
     % echo \`/usr/libexec/path_helper -c\` | sudo bash -c "cat - >> /etc/launchd.conf"
 
+=== PATH set from Info.plist in app bundle ===
+
+For current versions of macOS (10.14 Mojave and before) [https://developer.apple.com/documentation/bundleresources/information_property_list  it is recommended] to put environment variables in ##Info.plist##. To edit this file find your ##Emacs.app## where you installed it or in ##/Applications##. This dir may be translated to your language, when you use the Finder. After right click ##Emacs.app## choose /Show Package Contents/. Open the folder ##Contents## to find ##Info.plist##. Open it with Xcode or a text editor of your choice ;-). Find or add the key [https://developer.apple.com/documentation/bundleresources/information_property_list/lsenvironment LSEnvironment]. Add this:
+
+  <key>LSEnvironment</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/bin:/bin:...</string>
+  </dict>
+
+After saving restart Emacs.
+
+If the change does not affect the settings inside Emacs, try to reset the launch service cache. Enter in Terminal:
+
+  /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -seed
+
+
 ===getenv/setenv variants===
 
 Note that using any of these, PATH and exec-path will not be kept in sync automatically so you will may want set exec-path as well, e.g.:
