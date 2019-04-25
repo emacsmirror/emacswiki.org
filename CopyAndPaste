@@ -31,7 +31,8 @@ Yes, you can have Emacs use both at the same time.
 
 This does not affect pasting using the middle mouse button. By default, this uses ##mouse-yank-primary##, which will only look at the /primary/ selection. If you want the middle mouse button to insert the /clipboard/ instead, use the following:
 
-  (global-set-key (kbd "<mouse-2>") 'x-clipboard-yank)
+  (global-set-key (kbd "<mouse-2>") 'clipboard-yank)
+  ;; before Emacs 25 it was called 'x-clipboard-yank
 
 Finally, in other applications, pasting usually replaces the selected text with the contents of the clipboard. To enable this behavior in Emacs, use DeleteSelectionMode with the following:
 
