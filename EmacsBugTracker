@@ -18,6 +18,8 @@ Here are some useful preset queries of the bug database.
 
 * [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=tags:patch;exclude=tags:wontfix Submitted patches]
 
+Given a bug number (e.g., 12345), a particular bug can be accessed as https://debbugs.gnu.org/12345.  Alternatively, the [https://guix.info/ Guix] project maintains a more "modern" looking web frontend: https://issues.guix.info/issue/12345.
+
 Discussions about bug counts on the [[emacs-devel]] mailing list:
 
 * 2010-06-23: [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00932.html Bug statistics] by Glenn Morris
