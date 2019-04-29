@@ -19,11 +19,14 @@ setup.  Thereafter, Supercite's many commands and formatting styles are
 available in that reply buffer until the reply is sent.  Supercite is
 re-initialized in each new reply buffer.
 
+As said in [https://www.gnu.org/software/emacs/manual/html_node/sc/Getting-Connected.html (sc) Getting Connected]:
 
-An online html version of the manual (both Spanish and English) can be viewed at
+: In most cases, all that is necessary to begin using Supercite is to add
+the following to ‘~.emacs’:
 
-* http://gnu.manticore.es/manual-supercite-emacs  (English)
-* http://www.manticore.es/cgi-bin/info2html.cgi?(sc.es-utf8)Top  (Spanish)
+     (add-hook 'mail-citation-hook 'sc-cite-original)
+
+The manual should come with Emacs, ##<f1> i m SC RET##, and online at https://www.gnu.org/software/emacs/manual/html_node/sc/index.html.
 
 ----
 CategoryMailAddons
