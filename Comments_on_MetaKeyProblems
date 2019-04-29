@@ -2,3 +2,10 @@ On MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports) macOS 10.12.6, you have
 
 -- dantezy 2017-09-12 07:32 UTC
 
+
+----
+
+In Iterm2, macOS Mojave, MacBookPro 15,1，you need to set option to `+Esc`, rather than `Meta`
+
+-- [http:// https://gitpress.io/c/dante dantezy] 2019-04-29 12:41 UTC
+
