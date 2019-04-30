@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 22 07:19:46 2018 (-0800)
+;; Last-Updated: Tue Apr 30 16:24:52 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 1503
+;;     Update #: 1505
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `hexrgb', `thingatpt', `thingatpt+', `zones'.
+;;   `backquote', `bytecomp', `cconv', `cl', `cl-lib', `color', `gv',
+;;   `macroexp', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -356,6 +357,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/04/30 dadams
+;;     isearchp-add/remove-dim-overlay: Act only on isearchp-dimmed-overlays that are in current buffer.
 ;; 2018/11/22 dadams
 ;;     isearchp-zones-1: Message or error if no zones.
 ;; 2018/11/20 dadams
@@ -1872,7 +1875,9 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
 ;; This does not, itself, use `with-silent-modifications', so code that calls this needs to use it.
 (defun isearchp-add/remove-dim-overlay (beg end addp)
   "Add dim overlay from BEG to END, or remove overlays between BEG and END.
-Non-nil ADDP means add an overlay; nil means remove any present.
+Non-nil ADDP means add an overlay; nil means remove any present in the
+current buffer.
+
 But reverse the effect of ADDP if `isearchp-complement-domain-p'
 is non-nil.
 
@@ -1887,11 +1892,12 @@ it begins before END and it ends after BEG."
         (t
          (let (obeg oend)
            (dolist (dim-ov  isearchp-dimmed-overlays)
-             (setq obeg  (overlay-start dim-ov)
-                   oend  (overlay-end   dim-ov))
-             (when (and obeg  oend  (< beg oend)  (< obeg end))
-               (delete-overlay dim-ov)
-               (setq isearchp-dimmed-overlays  (delete dim-ov isearchp-dimmed-overlays))))))))
+             (when (eq (overlay-buffer dim-ov) (current-buffer))
+               (setq obeg  (overlay-start dim-ov)
+                     oend  (overlay-end   dim-ov))
+               (when (and obeg  oend  (< beg oend)  (< obeg end))
+                 (delete-overlay dim-ov)
+                 (setq isearchp-dimmed-overlays  (delete dim-ov isearchp-dimmed-overlays)))))))))
 
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
