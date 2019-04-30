@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2019.04.07
+;; Version: 2019.04.30
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  7 17:13:06 2019 (-0700)
+;; Last-Updated: Tue Apr 30 16:47:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3122
+;;     Update #: 3126
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -573,6 +573,8 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2019/04/30 dadams
+;;     zz-add-zones-matching-regexp: Bug fix: was adding complement before search hit as zone instead of hit.
 ;; 2019/04/07 dadams
 ;;     Added: zz-add-region-as-izone, zz-auto-add-region-as-izone-mode, zz-auto-remove-empty-izones-flag,
 ;;            zz-remove-empty-izones, zz-empty-zone-p, zz-same-position-p, zz-numeric-position.
@@ -1581,7 +1583,7 @@ arg, and the parameters when called from Lisp."
                    (c-end       (if beg (match-beginning 0) (min end (point-max))))) ; Truncate.
               (isearchp-add/remove-dim-overlay c-beg c-end 'ADD)
               (cond ((not (string= "" hit-string))
-                     (zz-add-zone c-beg c-end variable not-buf-local-p set-var-p)
+                     (zz-add-zone hit-beg hit-end variable not-buf-local-p set-var-p)
                      (isearchp-add/remove-dim-overlay hit-beg hit-end nil))
                     (t
                      (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD))))
