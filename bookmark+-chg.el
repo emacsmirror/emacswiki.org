@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 23 08:18:10 2019 (-0700)
+;; Last-Updated: Wed May  1 16:54:08 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16509
+;;     Update #: 16513
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,8 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/05/01 dadams
+;;     Added bmkp-jump-to-list.
 ;; 2019/04/23 dadams
-;;     Added bmkp-propertize.
+;;     Added bmkp-annotation-or-bookmark-description, bmkp-propertize.
 ;; 2019/04/21 dadams
 ;;     bmkp-temporary-bookmarking-mode: When enable mode reset bmkp-temporary-bookmarking-mode to nil.
 ;; 2019/02/18
@@ -2041,6 +2043,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2019/05/01 dadams
+;;     Bind bmkp-jump-to-list to C-x p C-l, C-x j C-l.
 ;; 2019/04/22 dadams
 ;;     Bind bmkp-describe-bookmark to C-h M, bmkp-describe-bookmark-lighted-here to C-x p ?.
 ;; 2018/10/10 dadams
@@ -2188,6 +2192,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2019/05/01 dadams
+;;     Added bmkp-lighted-jump-to-list.
 ;; 2019/04/23 dadams
 ;;     Added bmkp-tooltip-content-function.
 ;;     bmkp-make/move-overlay-of-style: Use bmkp-tooltip-content-function.
