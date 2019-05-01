@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2019.04.30
+;; Version: 2019.4.30
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 30 16:47:57 2019 (-0700)
+;; Last-Updated: Tue Apr 30 17:07:29 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3126
+;;     Update #: 3127
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -574,7 +574,7 @@
 ;;(@* "Change Log")
 ;;
 ;; 2019/04/30 dadams
-;;     zz-add-zones-matching-regexp: Bug fix: was adding complement before search hit as zone instead of hit.
+;;     zz-add-zones-matching-regexp: Bug fix: was adding complement before search hit as zone, instead of hit.
 ;; 2019/04/07 dadams
 ;;     Added: zz-add-region-as-izone, zz-auto-add-region-as-izone-mode, zz-auto-remove-empty-izones-flag,
 ;;            zz-remove-empty-izones, zz-empty-zone-p, zz-same-position-p, zz-numeric-position.
