@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Apr 23 11:51:32 2019 (-0700)
+;; Last-Updated: Wed May  1 16:28:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 971
+;;     Update #: 975
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -101,7 +101,7 @@
 ;;    `bmkp-light-navlist-bookmarks',
 ;;    `bmkp-light-non-autonamed-this-buffer',
 ;;    `bmkp-light-this-buffer', `bmkp-lighted-jump',
-;;    `bmkp-lighted-jump-other-window',
+;;    `bmkp-lighted-jump-other-window', `bmkp-lighted-jump-to-list',
 ;;    `bmkp-next-lighted-this-buffer',
 ;;    `bmkp-next-lighted-this-buffer-repeat',
 ;;    `bmkp-previous-lighted-this-buffer',
@@ -597,6 +597,18 @@ See `bmkp-lighted-jump'."
      (list (bookmark-completing-read "Jump to highlighted bookmark in another window" nil alist)
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
+
+;;;###autoload (autoload 'bmkp-lighted-jump-to-list "bookmark+")
+(defun bmkp-lighted-jump-to-list (bookmark &optional position msgp) ; Not bound.
+  "Jump to lighted BOOKMARK in `*Bookmark List*'.
+You are prompted for BOOKMARK (a bookmark name).
+Completion candidates are the lighted bookmarks at point."
+  (interactive (let* ((bmks  (bmkp-bookmarks-lighted-at-point (point) nil 'MSG))
+                      (bmk   (bookmark-completing-read "Bookmark" (car bmks) bmks)))
+                 (list bmk (point) t)))
+  (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+  (bookmark-bmenu-list)
+  (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmark "bookmark+")
 (defun bmkp-unlight-bookmark (bookmark &optional noerrorp msgp)
