@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Apr 23 11:56:33 2019 (-0700)
+;; Last-Updated: Wed May  1 16:29:29 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8880
+;;     Update #: 8889
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -200,9 +200,10 @@
 ;;    `bmkp-jump-in-navlist-other-window',
 ;;    `bmkp-jump-to-bookmark-linked-at' (Emacs 22+),
 ;;    `bmkp-jump-to-bookmark-linked-at-mouse' (Emacs 22+),
-;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
-;;    `bmkp-list-all-tags', `bmkp-list-defuns-in-commands-file',
-;;    `bmkp-local-file-jump', `bmkp-local-file-jump-other-window',
+;;    `bmkp-jump-to-list', `bmkp-jump-to-type',
+;;    `bmkp-jump-to-type-other-window', `bmkp-list-all-tags',
+;;    `bmkp-list-defuns-in-commands-file', `bmkp-local-file-jump',
+;;    `bmkp-local-file-jump-other-window',
 ;;    `bmkp-local-non-dir-file-jump',
 ;;    `bmkp-local-non-dir-file-jump-other-window',
 ;;    `bmkp-make-bookmark-savable', `bmkp-make-bookmark-temporary',
@@ -4702,6 +4703,24 @@ Raise an error if the entire string was not used."
                                t)
                       (end-of-file nil))))
     (if more-left (error "Can't read whole string") (car read-data))))
+
+;;;###autoload (autoload 'bmkp-jump-to-list "bookmark+")
+(defun bmkp-jump-to-list (bookmark
+                          &optional position msgp) ; Bound globally to `C-x j C-l', `C-x p C-l'
+  "Jump to BOOKMARK entry in `*Bookmark List*'.
+You are prompted for BOOKMARK (a bookmark name).
+If you use library `bookmark+-lit.el':
+ * The defaults for BOOKMARK are the lighted bookmarks at point.
+ * A prefix arg means only lighted bookmarks at point are candidates."
+  (interactive (let* ((litp   (fboundp 'bmkp-bookmarks-lighted-at-point))
+                      (lbmks  (and litp  (bmkp-bookmarks-lighted-at-point (point) nil 'MSG)))
+                      (bmk    (bookmark-completing-read (if current-prefix-arg "Lighted bookmark" "Bookmark")
+                                                        (and litp  (if current-prefix-arg (car lbmks) lbmks))
+                                                        (and current-prefix-arg  lbmks))))
+                 (list bmk (point) t)))
+  (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+  (bookmark-bmenu-list)
+  (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
 ;;;###autoload (autoload 'bmkp-make-function-bookmark "bookmark+")
 (defun bmkp-make-function-bookmark (bookmark-name function &optional msg-p) ; Bound globally to `C-x p c F'.
