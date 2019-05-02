@@ -55,8 +55,8 @@ directories or those prioritized libraries at the beginning of `load-path'.
 }}}
 
 Assuming that you install packages in ##~/.emacs.d/lisp/## and
-that some of the installed packages are single libraries while others
-are placed inside their own descendant directories you need to combine the
+that some of the installed packages have only a single file while others
+have multiple files inside a package-specific directory, you need to combine the
 steps from above.
 
 {{{
