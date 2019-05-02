@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed May  1 16:29:29 2019 (-0700)
+;; Last-Updated: Thu May  2 09:28:35 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8889
+;;     Update #: 8898
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -480,9 +480,10 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `bmkext-jump-gnus', `bmkext-jump-man', `bmkext-jump-w3m',
-;;    `bmkext-jump-woman', `bmkp-all-exif-data',
-;;    `bmkp-all-tags-alist-only', `bmkp-all-tags-regexp-alist-only',
-;;    `bmkp-alpha-cp', `bmkp-alpha-p', `bmkp-annotated-alist-only',
+;;    `bmkext-jump-woman', `bmkp-add-jump-to-list-button',
+;;    `bmkp-all-exif-data', `bmkp-all-tags-alist-only',
+;;    `bmkp-all-tags-regexp-alist-only', `bmkp-alpha-cp',
+;;    `bmkp-alpha-p', `bmkp-annotated-alist-only',
 ;;    `bmkp-annotated-bookmark-p',
 ;;    `bmkp-annotation-or-bookmark-description',
 ;;    `bmkp-autofile-alist-only', `bmkp-autofile-all-tags-alist-only',
@@ -8664,7 +8665,7 @@ Starting with Emacs 22, if the file is an image file then:
     (setq bookmark  (bookmark-get-bookmark bookmark))
     (help-setup-xref (list #'bmkp-describe-bookmark bookmark) (interactive-p))
     (let ((help-text  (bmkp-bookmark-description bookmark)))
-      (bmkp-with-help-window "*Help*" (princ help-text))
+      (bmkp-with-help-window "*Help*" (princ help-text) (bmkp-add-jump-to-list-button bookmark))
       (with-current-buffer "*Help*"
         (save-excursion
           (goto-char (point-min))
@@ -8683,10 +8684,10 @@ Starting with Emacs 22, if the file is an image file then:
                                                  (keymap
                                                   (mouse-2
                                                    . (lambda (e) (interactive "e")
-                                                             (find-file ,image-file)))
+                                                       (find-file ,image-file)))
                                                   (13
                                                    . (lambda () (interactive)
-                                                             (find-file ,image-file))))))))
+                                                       (find-file ,image-file))))))))
                    (buffer-read-only  nil))
               (replace-match image-string)))))
       help-text)))
@@ -8846,6 +8847,21 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                     (error nil))))))
       help-text)))
 
+(defun bmkp-add-jump-to-list-button (bookmark)
+  "Add a [Show in `*Bookmark List*'] button for BOOKMARK."
+  (with-current-buffer "*Help*"
+    (let ((buffer-read-only  nil))
+      ;; Add button to go to the bookmark entry in `*Bookmark List*'.
+      ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
+      (when (and (> emacs-major-version 21) ; In `help-mode.el'.
+                 (condition-case nil (require 'help-mode nil t) (error nil))
+                 (fboundp 'help-insert-xref-button))
+        (goto-char (point-min)) (forward-line 2)
+        (help-insert-xref-button "[Show in `*Bookmark List*']"
+                                 #'bmkp-jump-to-list-button
+                                 (bookmark-name-from-record bookmark))
+        (insert "\n")))))
+
 ;; This is the same as `help-all-exif-data' in `help-fns+.el', but we avoid requiring that library.
 (defun bmkp-all-exif-data (file)
   "Return all EXIF data from FILE, using command-line tool `exiftool'."
@@ -8875,6 +8891,7 @@ If it is a record then it need not belong to `bookmark-alist'."
          (help-text     (format "Bookmark `%s'\n%s\n\n%s" bname (make-string (+ 11 (length bname)) ?-)
                                 (pp-to-string bmk))))
     (bmkp-with-help-window "*Help*" (princ help-text))
+    (bmkp-add-jump-to-list-button bookmark)
     help-text))
 
 (defun bmkp-annotation-or-bookmark-description (bookmark)
