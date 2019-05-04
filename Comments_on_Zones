@@ -28,3 +28,14 @@ Thanks, but is there anyway to stop the Compile Log from popping up all the time
 
 -- neil 2019-05-04 15:16 UTC
 
+
+----
+
+I don't know why it would pop up - perhaps it's because you're using it as a package (?) instead of just loading it as a library (`require' or `load-library')? Have you tried just byte-compiling it (`M-x byte-compile-file') and then `(require 'zones)' (after making sure `zones.elc' is in your `load-path')?
+
+You should only need to compile it once (e.g. when you get a new version), not each time you start Emacs. Dunno how the package system handles this. I see no such `*Compile Log*' when I start Emacs - I just load the byte-compiled file.
+
+I'm probably not understanding just what you're doing or what Emacs is doing, but there definitely is no reason to compile it more than once.
+
+-- DrewAdams 2019-05-04 21:04 UTC
+
