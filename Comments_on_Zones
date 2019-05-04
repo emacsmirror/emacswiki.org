@@ -35,6 +35,8 @@ I don't know why it would pop up - perhaps it's because you're using it as a pac
 
 You should only need to compile it once (e.g. when you get a new version), not each time you start Emacs. Dunno how the package system handles this. I see no such `*Compile Log*' when I start Emacs - I just load the byte-compiled file.
 
+I see that you show `Package-Requires' in the message. You might want to ask ##help-gnu-emacs@gnu.org## or emacs.StackExchange about this. I'm no expert on the package system.
+
 I'm probably not understanding just what you're doing or what Emacs is doing, but there definitely is no reason to compile it more than once.
 
 -- DrewAdams 2019-05-04 21:04 UTC
