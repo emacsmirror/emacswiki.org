@@ -12,3 +12,12 @@ Is there any way I can stop this happening? thanks
 
 -- neil 2019-05-04 11:11 UTC
 
+
+----
+
+Please ignore all such warnings, which are benign.  They come from the library being compatible also with older Emacs versions.
+
+But if you see a warning you are not sure about please feel free to let me know (as you've just done), and I'll check.  Thx - Drew
+
+-- DrewAdams 2019-05-04 14:24 UTC
+
