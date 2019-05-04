@@ -1,0 +1,14 @@
+I think this is a really useful package to have in emacs, so many thanks for writing it, however I keep getting this message in a *Compile-log* buffer when starting Emacs 26.1....
+
+Warning (bytecomp): ‘interactive-p’ is an obsolete function (as of 23.2); use ‘called-interactively-p’ instead. [6 times]
+
+Using Zones.el
+
+Version: 2019.4.30
+Package-Requires: ()
+Last-Updated: Tue Apr 30 17:07:29 2019 (-0700)
+
+Is there any way I can stop this happening? thanks
+
+-- neil 2019-05-04 11:11 UTC
+
