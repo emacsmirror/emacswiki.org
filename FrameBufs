@@ -20,6 +20,20 @@ Put the package file  [[frame-bufs.el]] in your load path and put:
 in your ##.emacs##.  To enable frame-bufs, use the command
 ##frame-bufs-mode##, or put ##(frame-bufs-mode t)## in your ##.emacs##.
 
+Note that [[frame-bufs.el]] has a bug in ##frame-bufs--ok-to-display-p##:
+
+    (or (not (functionp other-pred) (funcall other-pred buf)))
+
+This should be:
+
+    (or (not (functionp other-pred)) (funcall other-pred buf))
+
+Or perhaps:
+
+    (and (functionp other-pred) (funcall other-pred buf))
+
+The author doesn't have their code in source control or any place where I can submit a patch, and I'm reluctant to just edit their code in this wiki, so I'm noting it here.
+
 === Features Overview ===
 
 When frame-bufs-mode is enabled, it keeps a record of which buffers are
