@@ -20,10 +20,11 @@ Here are some useful preset queries of the bug database.
 
 Given a bug number (e.g., 12345), a particular bug can be accessed as https://debbugs.gnu.org/12345.  Alternatively, the [https://guix.info/ Guix] project maintains a more "modern" looking web frontend: https://issues.guix.info/issue/12345.
 
-Discussions about bug counts on the [[emacs-devel]] mailing list:
+Discussions about bug counts on the [[emacs-devel]] mailing list (stats compiled by Glenn Morris):
 
-* 2010-06-23: [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00932.html Bug statistics] by Glenn Morris
+* 2010-06-23: [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00932.html Bug statistics]
 ** [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00942.html continued] [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00951.html continued]
+* 2017-03-10: [https://lists.gnu.org/r/emacs-devel/2017-03/msg00222.html Bug report statistics on OS and arch]
 
 == Using the Bug Tracker ==
 
