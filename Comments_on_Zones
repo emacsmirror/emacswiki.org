@@ -59,3 +59,21 @@ Or is there some change to be made in `zones.el'? (I need `defadvice' instead of
 
 -- DrewAdams 2019-05-05 17:05 UTC
 
+
+----
+
+@DrewAdams
+
+Yep, I have byte-compiled Zones and have my init.el file setup with its folder as a 'load-path' and a (require 'zones) straight after it and that's all.
+
+I also tried a:
+
+(let ((after-init-time t))
+      (require 'zones))
+
+instead of the (require 'zones)
+
+But that just caused the *Compile-Log* to popup at Emacs start as well.
+
+-- neil 2019-05-05 20:21 UTC
+
