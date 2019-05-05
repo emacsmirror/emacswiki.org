@@ -48,3 +48,14 @@ The unexpected compilation is due to `defadvice', similar to this case: https://
 
 -- npostavs 2019-05-05 02:31 UTC
 
+
+----
+
+@npostavs:
+
+I see; thanks. I don't really follow it all, but it sounds like something introduced by `package.el'. Is that right? Is it a bug or a design consequence/limitation? If either, is there a bug filed for it, or is there an emacs-devel thread that tries to "fix" it?
+
+Or is there some change to be made in `zones.el'? (I need `defadvice' instead of nadvice because of compatibility with older Emacs versions.)
+
+-- DrewAdams 2019-05-05 17:05 UTC
+
