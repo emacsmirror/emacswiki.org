@@ -41,3 +41,10 @@ I'm probably not understanding just what you're doing or what Emacs is doing, bu
 
 -- DrewAdams 2019-05-04 21:04 UTC
 
+
+----
+
+The unexpected compilation is due to `defadvice', similar to this case: https://lists.gnu.org/archive/html/emacs-devel/2017-02/msg00631.html
+
+-- npostavs 2019-05-05 02:31 UTC
+
