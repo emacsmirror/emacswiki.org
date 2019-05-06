@@ -77,3 +77,10 @@ But that just caused the *Compile-Log* to popup at Emacs start as well.
 
 -- neil 2019-05-05 20:21 UTC
 
+
+----
+
+@neil: Are you saying (in your last post) that you still have the problem, even if you don't use `package.el' and you just put the byte-compiled file (`zones.elc') in a directory in your `load-path' and do `(require 'zones)' in your init file? That's what I do, and I don't see the problem myself.
+
+-- DrewAdams 2019-05-06 03:12 UTC
+
