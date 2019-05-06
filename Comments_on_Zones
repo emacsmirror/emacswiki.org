@@ -84,3 +84,24 @@ But that just caused the *Compile-Log* to popup at Emacs start as well.
 
 -- DrewAdams 2019-05-06 03:12 UTC
 
+
+----
+
+@DrewAdams
+
+Yep
+
+*Compile-Log*
+
+Warning (bytecomp): ‘interactive-p’ is an obsolete function (as of 23.2); use ‘called-interactively-p’ instead. [6 times]
+
+I have this line in my init.el….
+
+(package-initialize)
+
+Is that what you mean by package.el?
+
+And if I remove it, will it affect any other packages?
+
+-- neil 2019-05-06 11:43 UTC
+
