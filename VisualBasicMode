@@ -40,6 +40,13 @@ where you can find for example visual-basic-mode.el
 
 ==Discussion of Availability==
 
+The latest version of this file I can find on the Wayback Machine is
+1.4.1, from August 1998:
+
+* https://web.archive.org/web/20040405070247/http://ftp.gnu.org/gnu/windows/emacs/docs/ntemacs/contrib/visual-basic-mode.el
+
+If you can find a newer version in the version history below, please
+post an updated link! -- Nick
 
 The HtmlHelperMode homepage has a link to a VB mode.  There seems to
 be a newer version out, however.  KevinWhitefoot has extended
