@@ -127,3 +127,12 @@ Ive also got this block of code further on in my init.el file could this have an
 
 -- neil 2019-05-06 11:48 UTC
 
+
+----
+
+@neil: No idea.  Try just what I suggested - nothing "packagy", as a test. I don't get any such `*Compile Log*'. I just byte-compile the file and load (`require') the byte-compiled file.
+
+Anyway, if it's due to something like that then I think you'll just have to live with it; sorry. If it really bothers you then you can remove comment out the `defadvice` code in zones.el, or you can replace it with nadvice code, assuming your Emacs version has nadvice.el.
+
+-- DrewAdams 2019-05-07 03:28 UTC
+
