@@ -1,0 +1,8 @@
+I found it hard to distinguish differences between MailMode and MessageMode.  All I found was: "Message mode handles MIME attachments. This is the main benefit over the default mail mode." on MessageMode page but there is probably something more. 
+
+Also it looks like *MailMode is not a default anymore*.  I found old mail discussion from 2009 regarding switching to MessageMode https://lists.gnu.org/archive/html/emacs-devel/2009-11/msg00471.html So probably MessageMode is a default since Emacs 23.2.  I haven't read the whole conversation so its just a guess.  But in my Emacs 26.1 default value for <code>mail-user-agent</code> was <code>message-user-agent</code>.
+
+I would like to know why someone would like to use MailMode and why MessageMode is a default.
+
+-- gum3n 2019-05-07 02:45 UTC
+
