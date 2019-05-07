@@ -23,8 +23,9 @@ The latest code is maintained by JariAalto. Report bugs to [http://savannah.nong
 Add the following to your ~/.emacs InitFile and then every opened file
 will be searched for folding marks:
 
-  (load "folding" 'nomessage 'noerror)
-  (folding-mode-add-find-file-hook)
+    (if (require 'folding nil 'noerror)
+        (folding-mode-add-find-file-hook)
+      (message "Library `folding' not found"))
 
 Folding mode is based on comments, and it uses the
 <code>folding-top-mark</code> and <code>folding-bottom-mark</code> to
