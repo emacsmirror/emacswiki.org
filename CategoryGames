@@ -6,6 +6,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * <tt>5x5</tt> - fill in all the squares
 * <tt>animate</tt> - make text dance
 * <tt>blackbox</tt> - find objects by firing beams into a black box
+* <tt>bubbles</tt> - remove as many bubbles as possible in as few moves as possible.
 * DecipherMode - help for cracking a simple alphabetic substitution cipher
 * DissociatedPress -- fun with gibberish
 * EmacsDoctor - psychological help from a Rogerian analyst, for when it's all getting too much for you
