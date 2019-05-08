@@ -23,6 +23,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * <tt>pong</tt> - two-player computerized ping-pong
 * <tt>snake</tt> - guide a snake around the screen, eat to grow
 * <tt>solitaire</tt> - balls on an 8x8 cross shaped grid
+* <tt>spook</tt> - Generates words to get government's attention
 * <tt>studlify-region</tt> - convert text to stUdlY caps
 * TetrisMode - arrange falling blocks (see also: https://github.com/skeeto/autotetris-mode)
 * <tt>yow</tt> - random Zippy quote
