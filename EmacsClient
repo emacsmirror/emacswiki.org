@@ -215,7 +215,7 @@ em()
 
     # check if the user wants TUI mode
     for arg in "$@"; do
-    	if [ "$arg" = "-nw" ] || [ "$arg" = "-t" ] || [ "$arg" = "--tty"]
+    	if [ "$arg" = "-nw" ] || [ "$arg" = "-t" ] || [ "$arg" = "--tty" ]
 	then
     	    nw=true
     	fi
