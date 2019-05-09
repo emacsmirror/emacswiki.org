@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu May  2 09:28:35 2019 (-0700)
+;; Last-Updated: Thu May  9 09:10:24 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8898
+;;     Update #: 8899
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5142,6 +5142,7 @@ If the current buffer is not visiting a file, prompt for the file name."
   "Show the bookmark list just for bookmarks for the current buffer.
 Set `bmkp-last-specific-buffer' to the current buffer name."
   (interactive)
+  (unless bookmark-alist (bookmark-maybe-load-default-file))
   (let ((orig-last-spec-buf  bmkp-last-specific-buffer)
         (orig-filter-fn      bmkp-bmenu-filter-function)
         (orig-title          bmkp-bmenu-title)
