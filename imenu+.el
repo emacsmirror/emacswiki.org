@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 17 16:19:17 2018 (-0700)
+;; Last-Updated: Thu May  9 14:44:51 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 1110
+;;     Update #: 1122
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -28,14 +28,14 @@
 ;;
 ;;   User options defined here:
 ;;
-;;    `imenup-sort-ignores-case-flag'.
+;;    `imenup-show-bookmarks-flag', `imenup-sort-ignores-case-flag'.
 ;;
 ;;   Commands defined here:
 ;;
 ;;    `imenup-add-defs-to-menubar',
 ;;    `imenup-toggle-case-sensitive-sorting',
 ;;    `imenup-toggle-ignoring-comments' (Emacs 22+),
-;;    `imenup-toggle-sort',
+;;    `imenup-toggle-showing-bookmarks', `imenup-toggle-sort',
 ;;
 ;;   Non-interactive functions defined here:
 ;;
@@ -86,6 +86,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/05/09 dadams
+;;     Added: imenup-show-bookmarks-flag, imenup-toggle-showing-bookmarks.
+;;     imenu--make-index-alist: Respect imenup-show-bookmarks-flag (Bookmarks Here menu).
+;;     imenu--mouse-menu: Do not use imenu--create-keymap-1 for Emacs 22+ (bug fix?).
 ;; 2018/07/17 dadams
 ;;     Added imenup-delete-if.  Removed imenup-delete-if-not.
 ;;     imenu--generic-function: Return result of nconc.
@@ -259,6 +263,17 @@ Don't forget to mention your Emacs and library versions."))
     :type 'boolean :group 'imenu))
 
 ;;;###autoload
+(defcustom imenup-show-bookmarks-flag t
+  "*Non-nil means that Imenu adds menu items for bookmarks.
+The bookmarks are only for this file/buffer.
+
+After you change the option value, you will need to choose `*Rescan*'
+in any existing Imenu menu, for the new value to take effect.
+
+This option has no effect if you do not use library Bookmark+."
+  :type 'boolean :group 'Imenu-Plus)
+
+;;;###autoload
 (defcustom imenup-sort-ignores-case-flag nil
   "*Non-nil means that `imenu--sort-by-name' sorts case-insensitively."
   :type 'boolean :group 'Imenu-Plus)
@@ -397,6 +412,16 @@ See `imenu-generic-expression'.")
             (setq imenu-generic-expression  imenup-emacs-lisp-generic-expression)
             (condition-case nil (imenup-add-defs-to-menubar) (error nil))))
 
+;;;###autoload
+(defun imenup-toggle-showing-bookmarks ()
+  "Toggle option `imenup-show-bookmarks-flag'.
+That option (and thus this command) has no effect if you do not use
+library Bookmark+."
+  (interactive)
+  (setq imenup-show-bookmarks-flag  (not imenup-show-bookmarks-flag))
+  (imenu--menubar-select imenu--rescan-item)
+  (message "Showing bookmarks in this file/buffer is now %s" 
+           (if imenup-show-bookmarks-flag "ON" "OFF")))
 
 ;;;###autoload
 (defun imenup-toggle-sort (&optional arg)
@@ -542,6 +567,7 @@ NOT share structure with ALIST."
 (eval-and-compile
  (when (< emacs-major-version 22)
 
+
    ;; REPLACE ORIGINAL in `imenu.el'.
    ;;
    ;; Use Emacs 22+ definition, which is vacuous.  Otherwise, if byte-compile in Emacs < 22 and use
@@ -553,7 +579,8 @@ NOT share structure with ALIST."
 
 ;; REPLACE ORIGINAL in `imenu.el'.
 ;;
-;; Add Imenu+ toggle commands to menu.
+;; 1. Add Imenu+ toggle commands to menu.
+;; 2. If you use Bookmark+ then also (optionally) add bookmarks to menu.
 ;;
 (defun imenu--make-index-alist (&optional noerror)
   "Create an index alist for the definitions in the current buffer.
@@ -573,15 +600,37 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
           (user-error "No items suitable for an index found in this buffer")
         (error "No items suitable for an index found in this buffer")))
   (or imenu--index-alist  (setq imenu--index-alist  (list nil)))
-  (cons imenu--rescan-item              ; `*Rescan*'.
-        (cons '("Toggle Case-Sensitive Name-Sort" IGNORE
-                (lambda (&rest _ignore) (imenup-toggle-case-sensitive-sorting)))
-              (cons '("Toggle Sorting" IGNORE (lambda (&rest _ignore) (imenup-toggle-sort)))
-                    (if (fboundp 'imenup-toggle-ignoring-comments)
-                        (cons '("Toggle Ignoring Commented Defs" IGNORE
-                                (lambda (&rest _ignore) (imenup-toggle-ignoring-comments)))
-                               imenu--index-alist)
-                      imenu--index-alist)))))
+  (let ((bookmarks-available-here-p  (and (fboundp 'bmkp-exists-bookmark-satisfying-p)
+                                          (bmkp-exists-bookmark-satisfying-p
+                                           (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)))))
+    (append (cons imenu--rescan-item    ; `*Rescan*'.
+                  (append (and bookmarks-available-here-p
+                               `(("Toggle Showing Bookmarks Here" IGNORE
+                                  (lambda (&rest _ignore) (imenup-toggle-showing-bookmarks)))))
+                          (cons '("Toggle Case-Sensitive Name-Sort" IGNORE
+                                  (lambda (&rest _ignore) (imenup-toggle-case-sensitive-sorting)))
+                                (cons '("Toggle Sorting" IGNORE (lambda (&rest _ignore) (imenup-toggle-sort)))
+                                      (if (fboundp 'imenup-toggle-ignoring-comments)
+                                          (cons '("Toggle Ignoring Commented Defs" IGNORE
+                                                  (lambda (&rest _ignore) (imenup-toggle-ignoring-comments)))
+                                                imenu--index-alist)
+                                        imenu--index-alist)))))
+            (and imenup-show-bookmarks-flag
+                 bookmarks-available-here-p
+                 `(("Bookmarks Here" .
+                    (,@(mapcar
+                        (lambda (bmk)
+                          (cons (bookmark-name-from-record bmk) (bookmark-get-position bmk)))
+                        (bmkp-this-file/buffer-alist-only))
+                     (,@(and (not imenu-sort-function) '("----" IGNORE ignore)))
+                     ("Next Bookmark Here" IGNORE
+                      (lambda (&rest _ignore)
+                        (bmkp-next-bookmark-this-file/buffer-repeat current-prefix-arg)))
+                     ("Previous Bookmark Here" IGNORE
+                      (lambda (&rest _ignore)
+                        (bmkp-previous-bookmark-this-file/buffer-repeat current-prefix-arg)))
+                     ("Show Bookmark List for All Bookmarks Here" IGNORE
+                      (lambda (&rest _ignore) (bmkp-this-file/buffer-bmenu-list))))))))))
 
 ;; Same as `thgcmd-invisible-p' in `thing-cmds.el', and `icicle-invisible-p' in `icicles-cmd2.el'.
 (defun imenup-invisible-p (position)
@@ -858,9 +907,11 @@ Returns t for rescan, or else an element or subelement of INDEX-ALIST."
         (popup-menu map event))
     (let ((menu  (imenu--split-menu index-alist (or title  (buffer-name))))
           position)
-      (setq menu      (imenu--create-keymap-1 (car menu) (if (< 1 (length (cdr menu)))
-                                                             (cdr menu)
-                                                           (cdr (cadr menu))))
+      (setq menu      (if (>= emacs-major-version 22)
+                          (imenu--create-keymap (car menu)
+                                                (cdr (if (< 1 (length (cdr menu))) menu (cadr menu))))
+                        (imenu--create-keymap-1 (car menu)
+                                                (if (< 1 (length (cdr menu))) (cdr menu) (cdr (cadr menu)))))
             position  (x-popup-menu event menu))
       (cond ((eq position nil)
              position)
