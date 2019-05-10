@@ -3,14 +3,14 @@
 Here is the *problem*: if you simply bind a key to a lambda with `define-key' like this ...
 
 <pre>
-(define-key global-map "\C-h=" 
-  '(lambda () "insert foo" (interactive) (insert "foo")))
+(define-key global-map [pause] 
+  '(lambda () "say foo" (interactive) (message "foo")))
 </pre>
 
 ... then the key will be reported by `describe-bindings' like this ...
 
 <pre>
-C-h =           ??
+<pause>         ??
 </pre>
 
 A *solution* is to give the lambda a name describing its function.
@@ -27,14 +27,14 @@ This *wrapper* can be used to turn the documentation string into a name ...
 Then after ...
 
 <pre>
-(lambda-key global-map "\C-h=" 
-  '(lambda () "insert foo" (interactive) (insert "foo")))
+(lambda-key global-map [pause] 
+  '(lambda () "say foo" (interactive) (message "foo")))
 </pre>
 
 ... the key binding will be described like this:
 
 <pre>
-C-h =           insert foo
+<pause>         say foo
 </pre>
 
 Since `lambda-key' has the same signature as `define-key',  
