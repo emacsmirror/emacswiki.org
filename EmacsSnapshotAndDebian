@@ -15,7 +15,7 @@ Unofficial packages built from stable releases are available in [[https://launch
 
 == Installing from source on Debian and similar ==
 
-To install a bleeding-edge version of Emacs direct from Bazaar, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, one can use [[https://github.com/rrthomas/src-emacs-on-debian|this handy script and Debian package]] by Michael Olson. 
+To install a bleeding-edge version of Emacs direct from Git, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, one can use [[https://github.com/rrthomas/src-emacs-on-debian|this handy script and Debian package]] by Michael Olson. 
 
 Alternatively, do it yourself. First, use git to get the sources:
 
