@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 23 11:51:37 2019 (-0700)
+;; Last-Updated: Fri May 10 16:29:04 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 15307
+;;     Update #: 15322
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -177,6 +177,7 @@
 ;;    (@> "Using Highlighted Bookmarks")
 ;;    (@> "Bookmark Links")
 ;;      (@> "Org Mode Links that Jump To Bookmarks")
+;;    (@> "Bookmark Menus")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
@@ -433,6 +434,15 @@
 ;;       the menu-bar `Edit' menu, is modified by adding several items
 ;;       from the `Bookmark+' menu, including submenus `Jump To',
 ;;       `Tags', and `Highlight'.
+;;
+;;     - Bookmark+ adds two items to the menu bar `Edit' menu:
+;;
+;;       . Save the active region text as a bookmark.
+;;       . Jump to the bookmark to copy the text to the kill ring, so
+;;         you can then yank it anywhere.
+;;
+;;     - Some modes provide a `Bookmarks Here' menu-bar submenu with
+;;       items to access bookmarks for the current file/buffer.
 ;;
 ;;  * Improvements for the bookmark-list display.
 ;;
@@ -3895,6 +3905,33 @@
 ;;  prompt.  In Org mode you can use the usual Org key bindings to
 ;;  follow the link.  In any mode you can use standard Org command
 ;;  `org-open-at-point-global' (not bound to a key by default).
+ 
+;;(@* "Bookmark Menus")
+;;  ** Bookmark Menus **
+;;
+;;  Two menu-bar menus for Bookmark+ have already been mentioned:
+;;
+;;  * Menu `Bookmark+', for the bookmark-list display (buffer
+;;    `*Bookmark List*').
+;;
+;;  * Menu `Bookmarks', which is typically a submenu of the menu-bar
+;;    `Edit' menu (available also with vanilla Emacs but enhanced by
+;;    Bookmark+).
+;;
+;;  Access to bookmarks for the currently visited file or current
+;;  buffer is available as a `Bookmarks Here' submenu of the
+;;  major-mode menu-bar menu in modes Info and Buffer-Menu.
+;;
+;;  The menu items let you cycle among bookmarks in the current
+;;  file/buffer or access the bookmark-list display for only those
+;;  bookmarks.
+;;
+;;  If you use library Dired+ then the same access is available in
+;;  Dired mode on menu-bar menu `Dir' > `Bookmark' > `Here'.
+;;
+;;  If you use library Imenu+ then the same access is available in an
+;;  Imenu submenu `Bookmarks Here'.  In this case there are also menu
+;;  items to jump to each bookmark in the file/buffer.
  
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
