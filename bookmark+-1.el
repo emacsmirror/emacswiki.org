@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu May  9 09:10:24 2019 (-0700)
+;; Last-Updated: Sat May 11 07:13:26 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8899
+;;     Update #: 8900
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -8847,6 +8847,15 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                                       all))))
                     (error nil))))))
       help-text)))
+
+(when (and (> emacs-major-version 21)
+           (condition-case nil (require 'help-mode nil t) (error nil))
+           (get 'help-xref 'button-category-symbol)) ; In `button.el'
+  (define-button-type 'bmkp-jump-to-list-button
+    :supertype 'help-xref
+    'help-function #'bmkp-jump-to-list
+    'help-echo
+    (purecopy "mouse-2, RET: Show in `*Bookmark List*'")))
 
 (defun bmkp-add-jump-to-list-button (bookmark)
   "Add a [Show in `*Bookmark List*'] button for BOOKMARK."
