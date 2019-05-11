@@ -55,3 +55,5 @@ Suggested uses:
 * Expression evaluator for scientific or financial applications - evaluate complex expressions with conditions and loops. 
 * Hand configuration of JavaBeans - write them out with the save() command. 
 * Debugging - Work and play inside any Java VM!
+
+CategoryNeedsAttention (Irrelevant. Delete.)
