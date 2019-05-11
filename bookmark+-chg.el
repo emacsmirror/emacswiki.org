@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu May  9 09:13:08 2019 (-0700)
+;; Last-Updated: Sat May 11 07:14:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16516
+;;     Update #: 16517
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/05/11 dadams
+;;     Added bmkp-jump-to-list-button button type.  Forgot it on 2019-05-02.
 ;; 2019/05/09 dadams
 ;;     bmkp-this-buffer-bmenu-list: Call bookmark-maybe-load-default-file at outset.
 ;; 2019/05/02 dadams
