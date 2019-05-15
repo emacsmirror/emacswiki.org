@@ -102,7 +102,7 @@ folder and add a link to it following this steps:
 
 === Install Arduino-cli tools ===
 
-We need this [http://mjo.tc/atelier/2009/02/arduino-cli.html tools] in order to create the Makefile file. I downloaded them 
+We need this [https://github.com/sudar/Arduino-Makefile tools] in order to create the Makefile file. I downloaded them 
 in my /opt/local/share dir.
 
 <pre>
