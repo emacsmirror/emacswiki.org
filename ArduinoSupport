@@ -6,7 +6,7 @@ The Arduino IDE is useful for beginners, but Emacs is better.
 * [https://github.com/bookest/arduino-mode arduino-mode.el] - major mode for editing .ino and .pde files.
 * CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports Arduino sketch projects, enabling compilation and uploading sketches to your microcontroller.
 
-To compile sketches outside of the Arduino IDE, you will need to use [http://mjo.tc/atelier/2009/02/arduino-cli.html Arduino.mk] which comes with the Arduino development environment.  This enables command line compilation of your sketches, and is used by the CEDET support.
+To compile sketches outside of the Arduino IDE, you will need to use [https://github.com/sudar/Arduino-Makefile Arduino.mk] which comes with the Arduino development environment.  This enables command line compilation of your sketches, and is used by the CEDET support.
 
 Alternately, to use the Arduino IDE for compilation, but edit in Emacs, open the preferences in the IDE, and choose "Use External Editor".
 
@@ -106,7 +106,7 @@ We need this [https://github.com/sudar/Arduino-Makefile tools] in order to creat
 in my /opt/local/share dir.
 
 <pre>
-/opt/local/share $ sudo git clone git://github.com/mjoldfield/Arduino-Makefile.git
+/opt/local/share $ sudo git clone git://github.com/sudar/Arduino-Makefile.git
 </pre>
 
 Edit the Aduino.mk file inside the new Arduino-Makefile/arduino-mk directory. Modify and uncomment this lines 
