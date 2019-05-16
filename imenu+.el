@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May  9 14:44:51 2019 (-0700)
+;; Last-Updated: Thu May 16 08:58:34 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 1122
+;;     Update #: 1127
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/05/16 dadams
+;;     Change default value of imenup-show-bookmarks-flag to nil.
 ;; 2019/05/09 dadams
 ;;     Added: imenup-show-bookmarks-flag, imenup-toggle-showing-bookmarks.
 ;;     imenu--make-index-alist: Respect imenup-show-bookmarks-flag (Bookmarks Here menu).
@@ -263,9 +265,12 @@ Don't forget to mention your Emacs and library versions."))
     :type 'boolean :group 'imenu))
 
 ;;;###autoload
-(defcustom imenup-show-bookmarks-flag t
+(defcustom imenup-show-bookmarks-flag nil
   "*Non-nil means that Imenu adds menu items for bookmarks.
 The bookmarks are only for this file/buffer.
+
+The default value is nil because checking whether there are such
+bookmarks can take a little time.
 
 After you change the option value, you will need to choose `*Rescan*'
 in any existing Imenu menu, for the new value to take effect.
