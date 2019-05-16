@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu May 16 08:23:17 2019 (-0700)
+;; Last-Updated: Thu May 16 08:41:14 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16528
+;;     Update #: 16530
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2051,8 +2051,8 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
 ;; 2019/05/16 dadams
-;;     Added: bmkp-here-menu, bmkp-bookmarks-here-menu-command-entries,
-;;            bmkp-exists-bookmark-satisfying-p, bmkp-exists-this-file/buffer-bookmarks-p.
+;;     Added: bmkp-add-bookmarks-here-menu-flag, bmkp-here-menu, bmkp-exists-bookmark-satisfying-p,
+;;            bmkp-exists-this-file/buffer-bookmarks-p, bmkp-bookmarks-here-menu-command-entries,
 ;;     Add bmkp-here-menu to menu-bar-bookmark-map, Buffer-menu-mode-map, Info-mode-menu,
 ;;         diredp-bookmark-menu or dired-mode-map.
 ;;     Add bmkp-dired-this-dir-jump to diredp-bookmark-menu or dired-mode-map.
