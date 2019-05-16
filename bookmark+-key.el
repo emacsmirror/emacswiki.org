@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Thu May 16 08:16:29 2019 (-0700)
+;; Last-Updated: Thu May 16 08:39:10 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 832
+;;     Update #: 839
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -56,6 +56,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `bmkp-add-bookmarks-here-menu-flag',
 ;;    `bmkp-bookmark-map-prefix-key', `bmkp-jump-map-prefix-key',
 ;;    `bmkp-jump-other-window-map-prefix-key'.
 ;;
@@ -163,6 +164,13 @@ Each value of the list is a prefix key bound to keymap
                     :value [ignore])))
   :set 'bmkp-set-map-prefix-key
   :group 'bookmark-plus)
+
+(defcustom bmkp-add-bookmarks-here-menu-flag nil
+  "Non-nil means add a `Bookmarks Here' menu to some menu-bar menus.
+The menu is added only if there are in fact bookmarks for the current
+buffer or file.  The default value is nil because checking whether
+there are such bookmarks can take a little time."
+  :type 'boolean :group 'bookmark-plus)
 
 
 
@@ -610,8 +618,9 @@ Menu for bookmarks that target this file/buffer.")
   (setcdr bmkp-here-menu bmkp-bookmarks-here-menu-command-entries)
   (define-key menu-bar-bookmark-map [bookmarks-here]
     `(menu-item "Here" bmkp-here-menu
-                :enable (bmkp-exists-bookmark-satisfying-p
-                         (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)))))
+                :enable (and bmkp-add-bookmarks-here-menu-flag
+                             (bmkp-exists-bookmark-satisfying-p
+                              (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p))))))
 
 ;; Add commands to other keymaps: Buffer-menu, Dired, EWW, Gnus, Info, Man, Woman, W3M.
 
@@ -621,7 +630,8 @@ Menu for bookmarks that target this file/buffer.")
               (define-key Buffer-menu-mode-map "j" 'bmkp-non-file-jump)) ; `j'
             (define-key Buffer-menu-mode-map [menu-bar Buffer-menu-mode here]
               `(menu-item "Bookmarks Here" bmkp-here-menu
-                          :enable (bmkp-exists-this-file/buffer-bookmarks-p)))))
+                          :enable (and bmkp-add-bookmarks-here-menu-flag
+                                       (bmkp-exists-this-file/buffer-bookmarks-p))))))
 
 (add-hook 'dired-mode-hook
           (lambda ()
@@ -649,7 +659,8 @@ Menu for bookmarks that target this file/buffer.")
                                    :help "Jump to a bookmarked Dired buffer"))
                      (define-key map [bookmarks-here]
                        `(menu-item "Here" bmkp-here-menu
-                                   :enable (bmkp-exists-this-file/buffer-bookmarks-p))))
+                                   :enable (and bmkp-add-bookmarks-here-menu-flag
+                                                (bmkp-exists-this-file/buffer-bookmarks-p)))))
                     (t
                      (define-key map (apply #'vector sep) '("--")) ;------------------------
                      (define-key map (apply #'vector bdjc)
@@ -660,7 +671,8 @@ Menu for bookmarks that target this file/buffer.")
                                    :help "Jump to a bookmarked Dired buffer"))
                      (define-key map [bookmarks-here]
                        `(menu-item "Here" bmkp-here-menu
-                                   :enable (bmkp-exists-this-file/buffer-bookmarks-p))))))))
+                                   :enable (and bmkp-add-bookmarks-here-menu-flag
+                                                (bmkp-exists-this-file/buffer-bookmarks-p)))))))))
 
 (when (fboundp 'bmkp-eww-jump)          ; Emacs 24.4+
   (add-hook 'eww-mode-hook
@@ -681,7 +693,8 @@ Menu for bookmarks that target this file/buffer.")
               'Go\ to\ Node\.\.\.) ; Used by `info(+).el' - corresponds to `Info-goto-node'.
             (define-key Info-mode-menu [bookmarks-here]
               `(menu-item "Bookmarks Here" bmkp-here-menu
-                          :enable (bmkp-exists-this-file/buffer-bookmarks-p)))))
+                          :enable (and bmkp-add-bookmarks-here-menu-flag
+                                       (bmkp-exists-this-file/buffer-bookmarks-p))))))
 
 (add-hook 'Man-mode-hook
           (lambda () (unless (lookup-key Man-mode-map "j")
