@@ -81,7 +81,7 @@ Put the directory of these libraries in your `load-path' and add this to your [[
 That will load all of the '''Bookmark+''' libraries.  If you do not care about bookmark highlighting then simply do not put ##bookmark+-lit.el## in your
 `load-path'. 
 
-By default (see option `bmkp-crosshairs-flag'), when you visit a
+By default (see [[option]] '''`bmkp-crosshairs-flag''''), when you visit a
 bookmark that has no [[region]] it is highlighted temporarily using
 crosshairs, for easy recognition.  (This temporary highlighting is
 independent of the highlighting provided by ##bookmark+-lit.el##.)
@@ -161,14 +161,14 @@ If you wish to load the latest '''Bookmark+''' from the %%EmacsWiki%%, then you 
 [:bookmark-default-file]
 === Bookmark+ Load Order and Option `bookmark-default-file' ===
 
-Standard option '''`bookmark-default-file'''' defines the default
+Standard [[option]] '''`bookmark-default-file'''' defines the default
 location of your bookmark file.  '''Bookmark+''' does not change the
 value.  You can change the value, of course, either by customizing
 it (recommended) or using Lisp code (including in your [[init file]]).
 
 However, the value of `bookmark-default-file' is used when you
 load '''Bookmark+''' to ''initialize some other variables'', in particular
-option '''`bmkp-last-as-first-bookmark-file'''' and internal variable
+[[option]] '''`bmkp-last-as-first-bookmark-file'''' and internal variable
 '''`bmkp-current-bookmark-file''''.
 
 This means that if you modify `bookmark-default-file' in your init
@@ -181,8 +181,8 @@ load that library after you have modified `bookmark-default-file'.
 An example of this is '''[[Icicles]]''', which loads '''Bookmark+''' if '''Bookmark+'''
 is in your `load-path'.
 
-In general, with '''Bookmark+''' I recommend that you simply set option
-`bookmark-default-file' once and for all at the outset, preferably
+In general, with '''Bookmark+''' I recommend that you simply set [[option]]
+'''`bookmark-default-file'''' once and for all at the outset, preferably
 by customizing it.  You can use '''`bmkp-switch-bookmark-file-create''''
 at any time to switch to a different bookmark file - it is bound
 to `C-x p L'.  You can also invoke it in your init file, provided
@@ -269,7 +269,7 @@ name.)
      activation is not supported for Gnus bookmarks.)
 You can define your own region handler for bookmarks that
 record regions.  (This is in addition to being able to define
-bookmark handlers.)  Use option '''`bmkp-handle-region-function''''
+bookmark handlers.)  Use [[option]] '''`bmkp-handle-region-function''''
 for this.  As one example, command
 '''`bmkp-region-jump-narrow-indirect-other-window'''' binds the
 option to a function that narrows the targeted region in a
@@ -277,7 +277,7 @@ cloned indirect buffer.  (You need library
 <tt>[[narrow-indirect.el]]</tt> for this command.)
 
 
-* Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
+* Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user [[option]] '''`bookmark-save-new-location-flag'''' to `nil'.
 
 
 
@@ -316,11 +316,11 @@ loads the bookmarks in the file.
 ('''`C-x p K'''').  You can "jump" to a desktop bookmark (that is, restore its
 saved desktop).  A desktop includes:
 
-** Some global [[variable]]s.  To exclude variables normally saved, see option '''`bmkp-desktop-no-save-vars''''.
+** Some global [[variable]]s.  To exclude variables normally saved, see [[option]] '''`bmkp-desktop-no-save-vars''''.
 
 ** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
 
-: If option '''`bmkp-desktop-jump-save-before-flag'''' is non-`nil',
+: If [[option]] '''`bmkp-desktop-jump-save-before-flag'''' is non-`nil',
 and if the current desktop was made current by jumping to a
 bookmark, then it is saved before jumping to the next
 desktop.  If you want to save the last desktop jumped to when
@@ -420,7 +420,7 @@ The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', 
 ** "Jump to" the bookmark to copy the text to the [[kill ring]], so you can then [[yank]] it anywhere.
 
 
-* Some modes provide a '''[[BookmarkMenus|Bookmarks Here]]''' menu-bar submenu with items to access bookmarks for the current file/buffer.
+* Some modes provide a '''[[BookmarkMenus|Bookmarks Here]]''' menu-bar submenu with items to access bookmarks for the current file/buffer.  Display of this menu is controlled by [[option]] '''`bmkp-add-bookmarks-here-menu-flag'''' (`nil' by default because computing the menu can take a little time).
 
 
 
@@ -613,8 +613,8 @@ the same description, and a [[prefix argument]] has the same effect
 
 ** Hovering your mouse over a ''highlighted'' bookmark shows the
 same description, in a [[tooltip]].  Actually, you can
-customize the description using option
-`bmkp-tooltip-content-function'.  The default value is
+customize the description using [[option]]
+'''`bmkp-tooltip-content-function''''.  The default value is
 `bmkp-bookmark-description', which describes the bookmark.
 A value of `bmkp-annotation-or-bookmark-description', for
 example, shows the bookmark annotation if there is one, or
@@ -684,7 +684,7 @@ You can then relocate or delete those bookmarks.
 
 When you jump to a bookmark, the
 destination (position) is highlighted temporarily using
-[[CrosshairHighlighting|crosshairs]], to make it stand out.  Option
+[[CrosshairHighlighting|crosshairs]], to make it stand out.  [[option|Option]]
 '''`bmkp-crosshairs-flag'''' controls this, and this feature
 is available only if you also use library <tt>[[crosshairs.el]]</tt>.
 
@@ -719,8 +719,8 @@ your `load-path' (it will then be loaded by ##bookmark+.el##).
 === Better, user-configurable bookmark-name defaults. ===
 
 See the doc strings of command `bookmark-set' ('''Bookmark+'''
-version) and options `bmkp-new-bookmark-default-names' and
-`bmkp-default-bookmark-name'.
+version) and [[option]]s '''`bmkp-new-bookmark-default-names'''' and
+'''`bmkp-default-bookmark-name''''.
 
 
 
@@ -784,7 +784,7 @@ add, rename, delete, etc. a bookmark, this list is updated.
 The bookmark list (#1) is the current value of internal variable
 `bookmark-alist'.  The bookmark file (#2) can be anywhere.  Its
 default filename is the value of [[user option]]
-`bookmark-default-file'.
+'''`bookmark-default-file''''.
 
 The bookmark list is typically initialized from the bookmark file
 --- referred to as '''loading''' your bookmarks, but you can also create
@@ -872,11 +872,11 @@ clearly once: '''Back up your bookmark file(s)!'''
 ('''Bookmark+''' creates backups when your bookmark file is saved.
 Until bug #12507 is fixed, vanilla Emacs does not.)
 
-I recommend that you set option '''`bookmark-version-control'''' to `t',
+I recommend that you set [[option]] '''`bookmark-version-control'''' to `t',
 so that you get ''numbered backups''.
 
 If you do use numbered backups then you might also want to
-customize option '''`delete-old-versions'''', setting the value to `t',
+customize [[option]] '''`delete-old-versions'''', setting the value to `t',
 so that you are not bothered by this prompt each time bookmarks
 are saved:
 
@@ -885,7 +885,7 @@ are saved:
 See also nodes `##Backup Names##'
 and `##Backup Deletion##' in the Emacs manual. 
 
-User option '''`bookmark-save-flag'''' controls whether and how often to
+User [[option]] '''`bookmark-save-flag'''' controls whether and how often to
 automatically save the bookmark list to the bookmark file.  You
 can toggle this option using '''`##M-~##'''' in the bookmark-list display.
 
@@ -905,7 +905,7 @@ save any modifications you are sure of before you move on to
 others.  If only one bookmark is modified then reverting to the
 bookmark file effectively unmodifies that bookmark.
 
-When you consult the doc for option `bookmark-save-flag' you see
+When you consult the doc for option '''`bookmark-save-flag'''' you see
 that besides values of `nil' and `t', meaning off and on, it can
 have a value that is the number of bookmark modifications to
 allow before automatically saving.  If the value is 10, for
@@ -924,7 +924,7 @@ will be automatically saved.  And that does not give you an
 opportunity to cancel the changes (e.g., by quitting without
 saving).
 
-This is the reason for option '''`bmkp-count-multi-mods-as-one-flag'''',
+This is the reason for [[option]] '''`bmkp-count-multi-mods-as-one-flag'''',
 whose default value is `t', which means count all of a sequence of
 modifications together as one modification, as far as
 `bookmark-save-flag' is concerned.
@@ -1112,7 +1112,7 @@ In the annotation edit buffer, make your changes and then use `C-c C-c' to save 
 changes.  You can also use `C-x C-q' and then `y' to confirm
 reverting the changes.
 
-Non-`nil' user option '''`bookmark-automatically-show-annotations''''
+Non-`nil' [[user option]] '''`bookmark-automatically-show-annotations''''
 means that a bookmark's annotation is popped up whenever you jump
 to the bookmark.  If the non-`nil' value is '''`edit'''' then the
 annotation buffer is in edit mode; if it is any other non-`nil'
@@ -1127,7 +1127,7 @@ A bookmark annotation is ''stored as part of the bookmark itself''.
 For this reason, you typically want to keep the text fairly short.  In
 '''Bookmark+''', the mode for viewing and editing a bookmark annotation
 is [[OrgMode|Org mode]], by default.  (To change the mode used,
-customize option '''`bmkp-annotation-modes-inherit-from''''.)
+customize [[option]] '''`bmkp-annotation-modes-inherit-from''''.)
 
 You can obtain the effect of using longer annotations, and some
 other advantages as well, by using "'''[::external annotations]'''".  These
@@ -1228,7 +1228,7 @@ indicates whether the file is tagged.
 : [[image:DrewsEmacsDiredAutofiles]]
 
 By default, you create bookmarks without tags and add tags to them
-later.  If you prefer, you can customize option
+later.  If you prefer, you can customize [[option]]
 '''`bmkp-prompt-for-tags-flag'''' to non-`nil' so that you are prompted to
 add tags immediately whenever you set (create or update) a bookmark.  
 
@@ -1391,7 +1391,7 @@ tree-like bookmarks menu.  But jump commands that use tags let you
 match any number of tags at the same time, not just one.
 
 Completion against the set of existing tags is also available when
-you add tags to a bookmark.  And if option
+you add tags to a bookmark.  And if [[option]]
 '''`bmkp-prompt-for-tags-flag'''' is non-`nil' then you are prompted to
 add tags whenever you create or update a bookmark.  But unlike the
 case for web-browser bookmark creation, classifying a bookmark
@@ -1821,7 +1821,7 @@ different ways to do this.
 [:QuittingSavesState]
 === Quitting Saves the Bookmark-List State ===
 
-If option '''`bmkp-bmenu-state-file'''' is non-`nil', which it is by
+If [[option]] '''`bmkp-bmenu-state-file'''' is non-`nil', which it is by
 default, then '''Bookmark+'''
 remembers the last state of the bookmark list when you quit it or
 you quit Emacs, and it restores that state when you show the list
@@ -1832,7 +1832,7 @@ stepping stone to the files and directories you use most.
 If, for example, when you quit the bookmark list you are showing only bookmarks to [[Info]] nodes and UNIX manual pages, sorted in a particular way, and with some of them marked with '''`##>##'''' for particular processing, then the next time you open the list the same state is restored: the same set of bookmarks is shown, in the same order, with the same markings.  Deletion flags ('''`D'''') and
 modification indicators ('''`##*##'''') are purposefully ''not'' saved as part of the display state --- they are lost when you quit the display.
 
-You can turn off this automatic [[#BookmarkListDisplay|bookmark-list display]] state saving, if you want, by customizing option '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`##C-M-~##'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `##C-M-~##' before quitting the bookmark list.
+You can turn off this automatic [[#BookmarkListDisplay|bookmark-list display]] state saving, if you want, by customizing [[option]] '''`bmkp-bmenu-state-file'''' to `nil'. And you can toggle this option at any time, using '''`##C-M-~##'''' in the bookmark list (command '''`bmkp-toggle-saving-menu-list-state''''). In particular, if you want your next visit to the bookmark list to start out with a ''previously'' recorded state instead of the current state, just hit `##C-M-~##' before quitting the bookmark list.
 
 
 
@@ -1870,7 +1870,7 @@ prompted for the name of the new command.  Use the command anytime
 (including in another Emacs session) to restore the bookmark list.
 
 Define any number of such commands for the views you use.  The
-file for saving the definitions (see option
+file for saving the definitions (see [[option]]
 '''`bmkp-bmenu-commands-file'''') is never overwritten, so you can
 also add other code to it manually, if you want.  The file is read
 the first time the bookmark list is displayed in a given Emacs
@@ -2072,7 +2072,7 @@ pieces or images (slideshow).  (See [[#CyclingNavList|Cycling the Navigation Lis
 Together with the use of bookmark tags, this gives you a handy way
 to organize and access objects of any kind.  See [[#BookmarkTags|Bookmark Tags]].
 
-You use option '''`bmkp-default-handlers-for-file-types'''' to control
+You use [[option]] '''`bmkp-default-handlers-for-file-types'''' to control
 which operation (bookmark handler) to use for which file type.
 This is a set of associations (an [[alist]]) with each key being a [[regexp]]
 matching a file name, and with each associated value being a Lisp [[sexp]] that evaluates to either
@@ -2107,7 +2107,7 @@ target file if it is PostScript (extension `##.ps##')
 extension is `##.doc##' (e.g., a Microsoft Word file)
 
 The default value of `bmkp-default-handlers-for-file-types' is taken
-from the value of option '''`dired-guess-shell-alist-user'''' (from
+from the value of [[option]] '''`dired-guess-shell-alist-user'''' (from
 [[Dired X]]).  
 
 The associations are checked in order, and the first one that
@@ -2116,7 +2116,7 @@ deal with overlapping file-name patterns.
 
 
 If no matching file association is found in
-`bmkp-default-handlers-for-file-types', and if option
+`bmkp-default-handlers-for-file-types', and if [[option]]
 '''`bmkp-guess-default-handler-for-file-flag'''' is non-`nil' (it is `nil'
 by default), then '''Bookmark+''' will ''guess'' a shell command to use.  It does this by matching the file name against
 `dired-guess-shell-alist-default' (also from [[Dired X]]).  In Emacs 23 and later, if it finds no
@@ -2239,7 +2239,7 @@ certain ways.  For example, '''`bmkp-autofile-some-tags-regexp-jump''''
 one tag matching a given regexp.  See [[#TaggingFiles|Tagging Files]].
 
 You can create autofiles automatically whenever you use an Emacs
-file-cache command, by customizing user option
+file-cache command, by customizing [[user option]]
 '''`bmkp-autofile-filecache''''.
 
 This optional bookmark creation can replace adding the file to the
@@ -2257,7 +2257,7 @@ function, directly or indirectly:
 
 See FileNameCache and the Emacs manual, node [[Manual:File Name Cache|`File Name Cache']].
 
-If option '''`bmkp-autofile-access-invokes-bookmark-flag'''' is
+If [[option]] '''`bmkp-autofile-access-invokes-bookmark-flag'''' is
 non-`nil' then regular access of a file or directory (e.g. `find-file') invokes the
 associated autofile bookmark, if there is one.  This has the
 effect of updating the bookmark data, such as the number of
@@ -2334,7 +2334,7 @@ associate metadata (e.g. tags) with files or directories, then you will want to
 create autofiles.  You can do this when you invoke these commands,
 by providing a prefix argument.  Thus, for example, `##C-u C-x j C-f
 foo.doc##' opens file `##foo.doc##', respecting any handler recorded for
-it via option `bmkp-default-handlers-for-file-types' -- but it also
+it via [[option]] '''`bmkp-default-handlers-for-file-types'''' -- but it also
 creates an autofile bookmark for it.
 
 Whenever an autofile bookmark is used, regardless of whether you
@@ -2524,7 +2524,7 @@ in buffer `##*Bookmark List*##', not the actual set of available
 bookmarks.
 
 The bookmarks available to you are defined in a ''bookmark file''.  By
-default, they are stored in the file named by option
+default, they are stored in the file named by [[option]]
 '''`bmkp-last-as-first-bookmark-file'''', if non-`nil', otherwise in the file named by option 
 '''`bookmark-default-file'''' (`##~/.emacs.bmk##', by default).
 
@@ -2562,7 +2562,7 @@ globally) and you don't use a [[prefix argument]], they are saved in
 the current bookmark file.
 
 You can turn off the automatic saving of the current bookmark
-file, by customizing option '''`bookmark-save-flag'''' to `nil'.  And you
+file, by customizing [[option]] '''`bookmark-save-flag'''' to `nil'.  And you
 can toggle this option at any time, using '''`##M-~##'''' in the bookmark
 list (command '''`bmkp-toggle-saving-bookmark-file'''').
 
@@ -2726,7 +2726,7 @@ File and Directory Bookmarks
 }}}
 
 ('''Bookmark+''' does not use the sliding header line of vanilla Emacs
-24+, which means that option `bookmark-bmenu-use-header-line' has
+24+, which means that [[option]] '''`bookmark-bmenu-use-header-line'''' has
 no effect.  You do not need to see `Bookmark' and `File' column
 headers as you scroll.)
 
@@ -3212,7 +3212,7 @@ or sorted in different ways, for easy recognition, comparison, and
 access.
 
 Bookmarks shown in the bookmark list are sorted using the current
-value of option '''`bmkp-sort-comparer''''.  (If that is `nil', they are
+value of [[option]] '''`bmkp-sort-comparer''''.  (If that is `nil', they are
 unsorted, which means they appear in reverse chronological
 order of their creation.)
 
@@ -3220,7 +3220,7 @@ You can use '''`##s s##''''... (repeat hitting the `s' key) to cycle among
 the various sort orders possible, updating the display
 accordingly.  By default, you cycle among all available sort
 orders, but you can shorten the cycling list by
-customizing option '''`bmkp-sort-orders-for-cycling-alist''''.
+customizing [[option]] '''`bmkp-sort-orders-for-cycling-alist''''.
 
 You can also change directly to one of the main sort orders
 (without cycling) using '''`##s >##'''', '''`##s n##'''', '''`##s f n##'''', etc.  There are many such predefined sort orders bound to keys with the prefix `s' --- use `C-h m' or `?'  for more info.
@@ -3264,8 +3264,8 @@ different sets of bookmarks -- bookmarks of different kinds
 
 Finally, you can easily define your own sorting commands and sort
 orders.  See macro '''`bmkp-define-sort-command'''' and the
-documentation for option `bmkp-sort-comparer'.   ('''Bookmark+'''
-uses option '''`bmkp-sort-comparer''''; it ''ignores'' vanilla Emacs
+documentation for [[option]] '''`bmkp-sort-comparer''''.   ('''Bookmark+'''
+uses option `bmkp-sort-comparer'; it ''ignores'' vanilla Emacs
 option `bookmark-sort-flag'.)
 
 Of particular note is that you can interactively define commands
@@ -3405,7 +3405,7 @@ If you use MS Windows, you can take advantage of your existing file
 associations to open your bookmarks using the appropriate program -- no need to define a new bookmark type and handler.
 See [[#BookmarkingFilesYouCannotVisitWithEmacs|Bookmarking Files That You Cannot Visit with Emacs]].
 
-Note: The default value of option `bmkp-use-region' is `t', not
+Note: The default value of [[option]] '''`bmkp-use-region'''' is `t', not
 `cycling-too', which means that when you cycle to a bookmark its
 recorded region (if any) is not activated.  This is probably what
 you want most of the time.  Cycling is a repetitive action, and if
@@ -3682,7 +3682,7 @@ changed.  In that case, the position you jump to has been
 automatically relocated using the recorded bookmark context (some
 buffer text surrounding the original position).
 
-If option '''`bmkp-save-new-location-flag'''' is non-`nil' then, after
+If [[option]] '''`bmkp-save-new-location-flag'''' is non-`nil' then, after
 jumping, the recorded position of the bookmark is automatically
 updated to reflect the new location jumped to.  This is true for
 any bookmark.
@@ -3743,7 +3743,7 @@ that they are automatically deleted by adding
   (add-hook 'kill-buffer-hook 'bmkp-delete-autonamed-this-buffer-no-confirm)
   (add-hook 'kill-emacs-hook  'bmkp-delete-autonamed-no-confirm)
 
-You can customize the format of autonamed bookmarks using options
+You can customize the format of autonamed bookmarks using [[option]]s
 '''`bmkp-autoname-bookmark-function'''' and
 '''`bmkp-autoname-format''''.
 
@@ -3812,7 +3812,7 @@ bookmarks get saved automatically?
 === Temporary Bookmarking Mode ===
 
 As always, you can control whether the bookmarks in the current
-bookmark list are saved automatically using option
+bookmark list are saved automatically using [[option]]
 '''`bookmark-save-flag''''.  Remember that you can toggle this option
 using command `bmkp-toggle-saving-bookmark-file' (bound to '''`##M-~##''''
 in the bookmark-list buffer).  Remember too that you can at any
@@ -3884,7 +3884,7 @@ temporary/savable status of the marked bookmarks ('''`M-X''''), to
 mark the temporary bookmarks ('''`##X M##''''), and to show only the
 temporary bookmarks ('''`##X S##'''').
 
-* At the ''bookmark-type'' level, you can customize user option
+* At the ''bookmark-type'' level, you can customize [[user option]]
 '''`bmkp-autotemp-bookmark-predicates''''.  It is a list of bookmark
 predicates -- typically type predicates -- that define which
 bookmarks are automatically made temporary whenever they are
@@ -4009,7 +4009,7 @@ which means that it is [[buffer]]-specific.  The command of the same name
 turns the mode on and off.  When the
 mode is on, the minor-mode indicator ("lighter") `Auto-Bmk' is shown in the
 [[mode line]] for the buffer.  You can [[Customize|customize]] this indicator (removing it, if you
-like), using option '''`bmkp-auto-idle-bookmark-mode-lighter''''.
+like), using [[option]] '''`bmkp-auto-idle-bookmark-mode-lighter''''.
 
 Command '''`bmkp-global-auto-idle-bookmark-mode'''' turns on the mode in
 all buffers, that is, it is ''global'', not local.  Regardless of
@@ -4019,7 +4019,7 @@ buffer must be current (selected) for an automatic bookmark to be
 created there -- it is not enough that the mode be enabled in the
 buffer.
 
-Option '''`bmkp-auto-idle-bookmark-mode-set-function'''' defines the bookmark-setting function.  By
+[[option|Option]] '''`bmkp-auto-idle-bookmark-mode-set-function'''' defines the bookmark-setting function.  By
 default, its value is `bmkp-set-autonamed-bookmark-at-line', which sets an
 autonamed bookmark at (the beginning of) the current line.  If you want
 bookmarks to be created automatically then you typically want them to be autonamed, both because the
@@ -4029,7 +4029,7 @@ like as the option value.  (You can always rename an autonamed
 bookmark later, if you want to keep it and give it a meaningful
 name.)
 
-Option '''`bmkp-auto-idle-bookmark-min-distance'''' is the minimum
+[[option|Option]] '''`bmkp-auto-idle-bookmark-min-distance'''' is the minimum
 number of characters between automatic bookmark positions.  If the
 [[cursor]] is currently closer to some existing automatically created
 bookmark, then no automatic bookmark is set at [[point]].  If you set
@@ -4039,7 +4039,7 @@ position.)
 
 
 If you want the automatically created bookmarks to be temporary
-(not saved to your bookmark file), then customize option
+(not saved to your bookmark file), then customize [[option]]
 '''`bmkp-autotemp-bookmark-predicates'''' so that it includes the kind
 of bookmarks that are set by
 `bmkp-auto-idle-bookmark-mode-set-function'.  For example, if
@@ -4051,7 +4051,7 @@ toggle whether a given bookmark is temporary or savable, using
 '''`M-X'''' in the [[#BookmarkListDisplay|bookmark-list display]] (buffer `##*Bookmark List*##').
 
 If you want the bookmarks to be automatically highlighted, then
-customize option '''`bmkp-auto-light-when-set'''' to highlight bookmarks
+customize [[option]] '''`bmkp-auto-light-when-set'''' to highlight bookmarks
 of the appropriate kind.  For example, to highlight autonamed
 bookmarks set it to `autonamed-bookmark'.
 
@@ -4223,7 +4223,7 @@ or face to use:
 === Highlighting Automatically ===
 
 You can also highlight automatically, whenever you ''set'' (create) a bookmark
-or ''jump'' to one.  This is controlled by these options:
+or ''jump'' to one.  This is controlled by these [[option]]s:
 
 * '''`bmkp-auto-light-when-set''''
 * '''`bmkp-auto-light-when-jump''''
@@ -4384,7 +4384,7 @@ Two [[MenuBar|menu-bar]] menus for '''Bookmark+''' have already been mentioned:
 
 Access to bookmarks for the currently visited file or current
  buffer is available as a '''Bookmarks Here''' submenu of the
- major-mode menu-bar menu in modes [[InfoMode|Info]] and [[BufferMenu|Buffer-Menu]].
+ major-mode menu-bar menu in modes [[InfoMode|Info]] and [[BufferMenu|Buffer-Menu]], if [[option]] '''`bmkp-add-bookmarks-here-menu-flag'''' is non-`nil'.
 
 The menu items let you cycle among bookmarks in the current
  file/buffer or access the bookmark-list display for only those
@@ -4395,7 +4395,7 @@ If you use library [[Dired+]] then the same access is available in
 
 If you use library [[ImenuMode#ImenuPlus|Imenu+]] then the same access is available in an
  [[ImenuMode|Imenu]] submenu '''Bookmarks Here'''.  In this case there are also menu
- items to jump to each bookmark in the file/buffer.
+ items to jump to each bookmark in the file/buffer.  For Imenu, display of the menu is controlled by [[option]] '''`imenup-show-bookmarks-flag''''.
 
 
 
@@ -4547,7 +4547,7 @@ But for best results, if you have bookmarks that you created using
 '''Bookmark+''' then use '''Bookmark+''', not vanilla Emacs, to access them.
 This section provides details.
 
-Set user option '''`bmkp-propertize-bookmark-names-flag'''', depending
+Set user [[option]] '''`bmkp-propertize-bookmark-names-flag'''', depending
 on your usage scenario (the default is `t' for Emacs 21 and later, `nil' for Emacs 20):
 
 # Set it to `nil' if you will often be going back and forth
@@ -4791,7 +4791,7 @@ Here are screenshots for the `##*Bookmark List*##' help display (available via `
 
 ----
 
-Here is an icon you can use to indicate image-file bookmarks in the `##*Bookmark List*##' display, if you don't have another that you prefer.  Save it and set option `bmkp-image-bookmark-image-file' to its location.
+Here is an icon you can use to indicate image-file bookmarks in the `##*Bookmark List*##' display, if you don't have another that you prefer.  Save it and set [[option]] '''`bmkp-image-bookmark-image-file'''' to its location.
 
 [[image:BookmarkPlusImageFileDefaultIcon]]
 
