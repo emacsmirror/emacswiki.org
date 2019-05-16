@@ -262,6 +262,8 @@ There are a number of ways to accomplish this feat, depending on your operating 
 
 == AceJump Integration ==
 
+See [https://gist.github.com/cofi/4963125 this gist].
+
 <include gist "https://gist.github.com/4963125">
 
 == Changing the mode-line color by state ==
