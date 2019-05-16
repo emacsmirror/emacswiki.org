@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri May 10 16:29:04 2019 (-0700)
+;; Last-Updated: Thu May 16 09:15:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 15322
+;;     Update #: 15327
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -443,6 +443,9 @@
 ;;
 ;;     - Some modes provide a `Bookmarks Here' menu-bar submenu with
 ;;       items to access bookmarks for the current file/buffer.
+;;       Display of this menu is controlled by option
+;;       `bmkp-add-bookmarks-here-menu-flag' (`nil' by default
+;;       because computing the menu can take a little time).
 ;;
 ;;  * Improvements for the bookmark-list display.
 ;;
@@ -3920,7 +3923,8 @@
 ;;
 ;;  Access to bookmarks for the currently visited file or current
 ;;  buffer is available as a `Bookmarks Here' submenu of the
-;;  major-mode menu-bar menu in modes Info and Buffer-Menu.
+;;  major-mode menu-bar menu in modes Info and Buffer-Menu, if option
+;;  `bmkp-add-bookmarks-here-menu-flag' is non-`nil'.
 ;;
 ;;  The menu items let you cycle among bookmarks in the current
 ;;  file/buffer or access the bookmark-list display for only those
@@ -3931,7 +3935,9 @@
 ;;
 ;;  If you use library Imenu+ then the same access is available in an
 ;;  Imenu submenu `Bookmarks Here'.  In this case there are also menu
-;;  items to jump to each bookmark in the file/buffer.
+;;  items to jump to each bookmark in the file/buffer.  For Imenu,
+;;  display of the menu is controlled by option
+;;  `imenup-show-bookmarks-flag'.
  
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
