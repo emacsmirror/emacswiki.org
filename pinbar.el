@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2007 Gaofeng Huang
 
-;; Author: Gaofeng Huang <poppyer@gmail.com>
+;; Author: Poppyer Huang <poppyer@gmail.com>
 ;; Created: 18 May 2007
 ;; Keywords: convenience
 ;; Revision: $Id: pinbar.el,v 0.1 2007/05/18 $
