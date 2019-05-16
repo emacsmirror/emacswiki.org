@@ -1,6 +1,6 @@
 ;;; pinbar.el --- Display a pin bar in the header line
 
-;; Copyright (C) 2007 Gaofeng Huang
+;; Copyright (C) 2007 Poppyer Huang
 
 ;; Author: Poppyer Huang <poppyer@gmail.com>
 ;; Created: 18 May 2007
