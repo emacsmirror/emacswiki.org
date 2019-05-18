@@ -3,7 +3,7 @@ for many common functions.  I basically do not have a very high
 opinion of many of the decisions that were made in Common Lisp.
 -- RichardStallman [http://article.gmane.org/gmane.emacs.devel/16216]
 
-Keyword arguments are used in CommonLisp. What's their purpose (advantage)? They let you provide certain optional arguments in ''any order''. If function `my-func' is defined with keyword parameters ##:foo##, ##:bar##, and ##:titi##, then you can, for example, write any of the following:
+Keyword arguments are used in CommonLisp, but are not supported as part of the EmacsLisp language. What's their purpose (advantage)? They let you provide certain optional arguments in ''any order''. If function `my-func' is defined with keyword parameters ##:foo##, ##:bar##, and ##:titi##, then you can, for example, write any of the following:
 
  (my-func :foo foo-val :titi titi-val)
  (my-func :titi titi-val :foo foo-val :bar bar-val)
