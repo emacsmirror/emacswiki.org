@@ -38,6 +38,16 @@ Unfortunately this only worked if I evaluated it manualy (with M-x eval-region o
 
 (and then did M-x byte-compile-file compile.el). Of course this will not survive a reinstallation of Emacs!
 
+Addendum/Edit:
+Yes <code>(require 'compile)</code> just before (add-hook...), c.f. below, solves the problem. Here is
+another example, to chatch a failed C assertion (works with gcc/clang/icc):
+
+    (require 'compile)
+    (add-hook 'c-mode-common-hook (lambda()
+      ;; bunch of settings for C-mode 
+      (add-to-list 'compilation-error-regexp-alist '("^Assertion failed: .*, file \\(.*?\\), line \\([0-9]+\\)." 1 2))
+    ))
+
 -- KristjánJónasson
 
 [new]
