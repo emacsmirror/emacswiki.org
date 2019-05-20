@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu May 16 08:41:14 2019 (-0700)
+;; Last-Updated: Sun May 19 18:54:55 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16530
+;;     Update #: 16533
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/05/19 dadams
+;;     Bind print-gensym wherever we bind print-circle.
 ;; 2019/05/11 dadams
 ;;     Added bmkp-jump-to-list-button button type.  Forgot it on 2019-05-02.
 ;; 2019/05/09 dadams
@@ -1397,6 +1399,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2019/05/19 dadams
+;;     Bind print-gensym wherever we bind print-circle.
 ;; 2019/04/23 dadams
 ;;     Added bmkp-bmenu-edit-menu.
 ;;     Moved bmkp-bmenu-edit-marked to bmkp-bmenu-edit-menu from main Bookmark+ menu.
