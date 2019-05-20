@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Apr 23 08:15:14 2019 (-0700)
+;; Last-Updated: Sun May 19 19:00:41 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4004
+;;     Update #: 4009
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -4434,6 +4434,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
       (let ((print-length           nil)
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
+            (print-gensym           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -4484,6 +4485,7 @@ Use the command at any time to restore them."
       (let ((print-length           nil)
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
+            (print-gensym           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -4563,6 +4565,7 @@ the omit list and the sort & filter information."
       (let ((print-length           nil)
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
+            (print-gensym           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -4579,7 +4582,7 @@ the omit list and the sort & filter information."
         (unless errorp (message "Command `%s' defined and saved in file `%s'"
                                 fn bmkp-bmenu-commands-file))))))
 
-;; We use this because Emacs 20 has no `print-circle'. and otherwise
+;; We use this because Emacs 20 has no `print-circle' or `print-gensym'. and otherwise
 ;; property `bmkp-full-record' would make the state file unreadable.
 ;;
 (defun bmkp-maybe-unpropertize-bookmark-names (list &optional copy)
@@ -4689,6 +4692,7 @@ If you use this function non-interactively, be sure to load library
       (let ((print-length           nil)
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
+            (print-gensym           bmkp-propertize-bookmark-names-flag)
             (version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
@@ -5430,6 +5434,7 @@ prefix arg, any that are marked are included."
       (if defn
           (let* ((bname         (bmkp-bookmark-name-from-record bmk))
                  (print-circle  bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
+                 (print-gensym  bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
                  (print-length  nil)    ; For `pp-to-string'
                  (print-level   nil)    ; For `pp-to-string'
                  (help-text     (format "%s\n%s\n\n%s"
