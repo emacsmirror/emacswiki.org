@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun May 19 18:42:47 2019 (-0700)
+;; Last-Updated: Sun May 19 18:52:37 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8902
+;;     Update #: 8908
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3349,7 +3349,8 @@ operations such as `find-coding-systems-region'."
 ;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
 ;; 6. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
 ;;    Remove them also from bookmark names in a sequence bookmark `sequence' entry.
-;; 7. Bind `print-circle' around `pp', to record bNAME with `bmkp-full-record' prop, when appropriate.
+;; 7. Bind `print-circle' and `print-gensym' around `pp', to record bNAME with `bmkp-full-record' prop, when
+;;    appropriate.
 ;; 8. Use `case', not `cond'.
 ;; 9. Run `bmkp-write-bookmark-file-hook' functions after writing the bookmark file.
 ;;
@@ -3429,7 +3430,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
                      (put-text-property 0 (length bname) (car (cadr entry)) nil bname)))))
           (setcar bmk bname)
           (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
-          (let ((print-circle  bmkp-propertize-bookmark-names-flag))
+          (let ((print-circle  bmkp-propertize-bookmark-names-flag)
+                (print-gensym  bmkp-propertize-bookmark-names-flag))
             (if (not (and rem-all-p  (bmkp-sequence-bookmark-p bmk)))
                 (pp bmk (current-buffer))
               ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
@@ -4451,7 +4453,9 @@ BOOKMARK is a bookmark name or a bookmark record."
                 ";; either a string or a cons whose key is a string.\n;;\n"
                 ";; DO NOT MODIFY THESE COMMENTS.\n;;\n"
                 ";; Type \\<bmkp-edit-tags-mode-map>`\\[bmkp-edit-tags-send]' when done.\n\n")))
-      (let ((print-circle  bmkp-propertize-bookmark-names-flag)) (pp btags))
+      (let ((print-circle  bmkp-propertize-bookmark-names-flag)
+            (print-gensym  bmkp-propertize-bookmark-names-flag))
+        (pp btags))
       (goto-char (point-min)))
     (pop-to-buffer edbuf)
     (buffer-enable-undo)
@@ -4653,6 +4657,7 @@ Non-interactively, optional arg MSG-P means display progress messages."
         (let ((print-length           nil)
               (print-level            nil)
               (print-circle           bmkp-propertize-bookmark-names-flag)
+              (print-gensym           bmkp-propertize-bookmark-names-flag)
               (version-control        (case bookmark-version-control
                                         ((nil)      nil)
                                         (never      'never)
@@ -8707,6 +8712,7 @@ the file is an image file then the description includes the following:
   `exiftool'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (let ((print-circle     bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
+        (print-gensym     bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
         (print-length     nil)          ; For `pp-to-string'
         (print-level      nil)          ; For `pp-to-string'
         (bname            (bmkp-bookmark-name-from-record bookmark))
@@ -8896,6 +8902,7 @@ If it is a record then it need not belong to `bookmark-alist'."
          (IGNORE        (set-text-properties 0 (length bname) nil bname)) ; Strip properties from name.
          (bmk           (cons bname (bmkp-bookmark-data-from-record bookmark))) ; Fake bmk with stripped name.
          (print-circle  bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
+         (print-gensym  bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
          (print-length  nil)            ; For `pp-to-string'
          (print-level   nil)            ; For `pp-to-string'
          (help-text     (format "Bookmark `%s'\n%s\n\n%s" bname (make-string (+ 11 (length bname)) ?-)
@@ -9965,7 +9972,7 @@ VARIABLES is the list of variables.  Each entry in VARIABLES is either
     (when unprintables (message "Unsavable (unreadable) vars: %S" unprintables)  (sit-for 3))
     vars+vals))
 
-;; Same as `savehist-printable' in `savehist-20+.el', except added `print-circle' binding.
+;; Same as `savehist-printable' in `savehist-20+.el', except added `print-circle' and `print-gensym' bindings.
 (defun bmkp-readable-p (value)
   "Return non-nil if VALUE is Lisp-readable if printed using `prin1'."
   (cond ((numberp value))
@@ -9979,7 +9986,8 @@ VARIABLES is the list of variables.  Each entry in VARIABLES is either
              (condition-case nil
                  (let ((print-readably  t)
                        (print-level     nil)
-                       (print-circle    bmkp-propertize-bookmark-names-flag))
+                       (print-circle    bmkp-propertize-bookmark-names-flag)
+                       (print-gensym    bmkp-propertize-bookmark-names-flag))
                    (prin1 value (current-buffer)) ; Print value into a buffer and try to read back.
                    (read (point-min-marker))
                    t)
