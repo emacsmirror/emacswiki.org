@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat May 11 07:13:26 2019 (-0700)
+;; Last-Updated: Sun May 19 18:42:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8900
+;;     Update #: 8902
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -17,11 +17,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bookmark', `bookmark+-1', `bytecomp', `cconv',
-;;   `cl-lib', `col-highlight', `crosshairs', `font-lock',
-;;   `font-lock+', `hl-line', `hl-line+', `kmacro', `macroexp', `pp',
-;;   `replace', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline'.
+;;   `backquote', `bookmark', `bookmark+-1', `button', `bytecomp',
+;;   `cconv', `cl-lib', `col-highlight', `crosshairs', `font-lock',
+;;   `font-lock+', `help-mode', `hl-line', `hl-line+', `kmacro',
+;;   `macroexp', `pp', `replace', `syntax', `text-mode', `thingatpt',
+;;   `thingatpt+', `vline'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -10073,7 +10073,7 @@ BOOKMARK is a bookmark name or a bookmark record."
       (handler . bmkp-jump-eww)))
 
   (add-hook 'eww-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
-                                           'bmkp-make-eww-record)))
+                                      'bmkp-make-eww-record)))
 
   (defun bmkp-eww-new-buffer-name ()
     "Return a new buffer name for the current `eww-mode' buffer.
@@ -10094,14 +10094,14 @@ BOOKMARK is a bookmark name or a bookmark record."
                                       (generate-new-buffer "*eww*"))) ; Might get renamed later.
           ;; VAR `bmkp-eww-new-buf-name' is free here.  It is bound in `bmkp-eww-rename-buffer'.
           (after-render-function  `(lambda ()
-                                    (when (and bmkp-eww-buffer-renaming  bmkp-eww-new-buf-name)
-                                      (kill-buffer)
-                                      (set-buffer bmkp-eww-new-buf-name))
-                                    (bookmark-default-handler
-                                     `("" (buffer . ,(current-buffer))
-                                       . ,(bmkp-bookmark-data-from-record ,(car bookmark))))
-                                    (dolist (var  '(bmkp-eww-jumping-p eww-after-render-hook))
-                                      (kill-local-variable var)))))
+                                     (when (and bmkp-eww-buffer-renaming  bmkp-eww-new-buf-name)
+                                       (kill-buffer)
+                                       (set-buffer bmkp-eww-new-buf-name))
+                                     (bookmark-default-handler
+                                      `("" (buffer . ,(current-buffer))
+                                        . ,(bmkp-bookmark-data-from-record ,(car bookmark))))
+                                     (dolist (var  '(bmkp-eww-jumping-p eww-after-render-hook))
+                                       (kill-local-variable var)))))
       (setq bmkp-eww-jumping-p  t)
       (with-current-buffer buffer
         (eww-mode)
@@ -10126,14 +10126,14 @@ that `bmkp-jump-eww' will use the already visited buffer."
   ;; The EWW buffer is renamed on each visit, if `bmkp-eww-buffer-renaming' is non-nil.
   (eval-after-load "eww"
     '(when (> emacs-major-version 24)   ; Emacs 25+
-      (add-hook   'eww-after-render-hook      'bmkp-eww-rename-buffer)
-      (advice-add 'eww-restore-history :after 'bmkp-eww-rename-buffer)))
+       (add-hook   'eww-after-render-hook      'bmkp-eww-rename-buffer)
+       (advice-add 'eww-restore-history :after 'bmkp-eww-rename-buffer)))
 
 
   ;; Eval this so that even if the library is byte-compiled with Emacs 20,
   ;; loading it into Emacs 22+ will define variable `bmkp-eww-auto-bookmark-mode'.
   (eval '(define-minor-mode bmkp-eww-auto-bookmark-mode
-          "Toggle automatically setting a bookmark when you visit a URL with EWW.
+           "Toggle automatically setting a bookmark when you visit a URL with EWW.
 The bookmark name is the title of the web page.
 
 If option `bmkp-eww-auto-type' is `create-or-update' then such a
@@ -10142,24 +10142,29 @@ is `update-only' then no new bookmark is created automatically, but an
 existing bookmark is updated.  (Updating a bookmark increments the
 recorded number of visits.)  You can toggle the option using
 `\\[bmkp-toggle-eww-auto-type]'."
-          :init-value nil :global t :group 'bookmark-plus :require 'bookmark+
-          :lighter bmkp-auto-idle-bookmark-mode-lighter ; @@@@@ RENAME THIS?
-          :link `(url-link :tag "Send Bug Report"
-                  ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+           :init-value nil :global t :group 'bookmark-plus :require 'bookmark+
+           :lighter bmkp-auto-idle-bookmark-mode-lighter ; @@@@@ RENAME THIS?
+           :link `(url-link :tag "Send Bug Report"
+                            ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 Bookmark bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-          :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
-          :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
-          :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
-          (cond (bmkp-eww-auto-bookmark-mode
-                 (add-hook   'eww-after-render-hook      'bmkp-set-eww-bookmark-here)
-                 (advice-add 'eww-restore-history :after 'bmkp-set-eww-bookmark-here))
-                (t
-                 (remove-hook   'eww-after-render-hook   'bmkp-set-eww-bookmark-here)
-                 (advice-remove 'eww-restore-history     'bmkp-set-eww-bookmark-here)))
-          (when (interactive-p)
-            (message "Automatic EWW bookmarking is now %s" (if bmkp-eww-auto-bookmark-mode "ON" "OFF")))))
+           :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+           :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
+           :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
+           (cond (bmkp-eww-auto-bookmark-mode
+                  (add-hook   'eww-after-render-hook      'bmkp-set-eww-bookmark-here)
+                  (advice-add 'eww-restore-history :after 'bmkp-set-eww-bookmark-here))
+                 (t
+                  (remove-hook   'eww-after-render-hook   'bmkp-set-eww-bookmark-here)
+                  (advice-remove 'eww-restore-history     'bmkp-set-eww-bookmark-here)))
+           (when (interactive-p)
+             (message "Automatic EWW bookmarking is now %s"
+                      (if bmkp-eww-auto-bookmark-mode
+                          (if (eq bmkp-eww-auto-type 'update-only)
+                              "ON, updating only"
+                            "ON, creating or UPDATING")
+                        "OFF")))))
 
   (defun bmkp-set-eww-bookmark-here (&optional nomsg)
     "Set an EWW bookmark for the URL of the current EWW buffer.
