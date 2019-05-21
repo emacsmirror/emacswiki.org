@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun May 19 19:00:41 2019 (-0700)
+;; Last-Updated: Tue May 21 12:46:03 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4009
+;;     Update #: 4019
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1533,15 +1533,15 @@ C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Delete all autonamed bookma
 Cycle Bookmarks (anywhere)
 ---------------
 
-\\[bmkp-next-bookmark-this-file/buffer-repeat] ...\t- Next bookmark in buffer         (C-x p n, C-x p C-n)
-\\[bmkp-previous-bookmark-this-file/buffer-repeat] ...\t- Prev bookmark in buffer         (C-x p p, \
+\\[bmkp-next-bookmark-this-file/buffer-repeat]...\t- Next bookmark in buffer         (C-x p n, C-x p C-n)
+\\[bmkp-previous-bookmark-this-file/buffer-repeat]...\t- Prev bookmark in buffer         (C-x p p, \
 C-x p C-p)
-\\[bmkp-next-bookmark-repeat] ...\t- Next bookmark in navlist        (C-x p f, C-x p C-f)
-\\[bmkp-previous-bookmark-repeat] ...\t- Prev bookmark in navlist        (C-x p b, C-x p C-b)
-\\[bmkp-next-bookmark-w32-repeat] ...\t- MS Windows `Open' next     bookmark in navlist
-\\[bmkp-next-bookmark-w32-repeat] ...\t- MS Windows `Open' previous bookmark in navlist
-\\[bmkp-next-lighted-this-buffer-repeat]...\t- Next highlighted bookmark in buffer
-\\[bmkp-previous-lighted-this-buffer-repeat] ...\t- Prev highlighted bookmark in buffer
+\\[bmkp-next-bookmark-repeat]...- Next bookmark in navlist        (C-x p f, C-x p C-f)
+\\[bmkp-previous-bookmark-repeat]...\t- Prev bookmark in navlist        (C-x p b, C-x p C-b)
+\\[bmkp-next-bookmark-w32-repeat]...\t- MS Windows `Open' next     in navlist   (C-x p next)
+\\[bmkp-previous-bookmark-w32-repeat]...- MS Windows `Open' previous in navlist  (C-x p prior)
+\\[bmkp-next-lighted-this-buffer-repeat]...- Next highlighted bookmark in buffer  (C-x p C-down)
+\\[bmkp-previous-lighted-this-buffer-repeat]...\t- Prev highlighted bookmark in buffer     (C-x p C-up)
 
 
 Search-and-Replace in Bookmark Targets (here, in sort order)
@@ -1813,7 +1813,7 @@ bmkp-bmenu-omitted-bookmarks     - List of omitted bookmarks
 bmkp-bmenu-state-file            - File to save bookmark-list state
                                    (\"home\") nil: do not save/restore
 bmkp-sort-comparer               - Initial sort
-bmkp-sort-orders-for-cycling-alist - Sort orders that `\\[bmkp-bmenu-change-sort-order-repeat]' ... cycles
+bmkp-sort-orders-for-cycling-alist - Sort orders that `\\[bmkp-bmenu-change-sort-order-repeat]'... cycles
 
 
 Other Options
