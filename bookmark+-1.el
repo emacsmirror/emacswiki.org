@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun May 19 18:52:37 2019 (-0700)
+;; Last-Updated: Tue May 21 12:18:07 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8908
+;;     Update #: 8910
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3398,7 +3398,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                                             nil t))
                             (error "Invalid bookmark-file")))
             end    (and start
-                        (or (save-excursion (goto-char start) (and (looking-at ")") start)) ; Empty bmk list: ().
+                        (or (save-excursion (goto-char start) (and (looking-at ")") start)) ; Bmk list = ().
                             (save-excursion (goto-char (point-max)) (re-search-backward "^)" nil t))
                             (error "Invalid bookmark-file"))))
       (if (not start)                   ; New file, no header yet.
@@ -10459,7 +10459,9 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-dired-remember-*-marks (beg end)
   "Return a list of the files and subdirs marked `*' in Dired."
-  (when selective-display (let ((inhibit-read-only  t)) (subst-char-in-region beg end ?\r ?\n)))
+  (if (fboundp 'dired--unhide)          ; Emacs 27+ uses invisible text, not `selective-display'.
+      (dired--unhide (point-min) (point-max))
+    (when selective-display (let ((inhibit-read-only  t)) (subst-char-in-region beg end ?\r ?\n))))
   (let ((mfiles  ())
         fil)
     (save-excursion (goto-char beg)
