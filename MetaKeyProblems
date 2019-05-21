@@ -208,7 +208,7 @@ If you're in a hurry, ESC maps to Meta, so you can type <code>ESC x</code> inste
 
 When running emacs from Terminal, you can set Terminal's preferences/settings/keyboard and check "Use option as meta key", and the option/alt key should properly behave as the Meta key. You can also remap the Command key to be a control key under System Preferences/Keyboard/Keyboard/Modifier Keys to use emacs in Terminal. The downside to this approach is that it does not retain the Command key's functionality for use in other Mac applications, 
 
-If you use **Item2**, you should edit Item2's profile/Keys, and check Left Alt Key to **Esc+**.
+If you use **Iterm2**, you should edit Iterm2's profile/Keys, and check Left Alt Key to **Esc+**.
 
 ==== X11 ====
 
