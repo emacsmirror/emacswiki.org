@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 21 15:14:21 2018 (-0700)
+;; Last-Updated: Tue May 21 15:00:22 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6407
+;;     Update #: 6409
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -20,14 +20,15 @@
 ;;
 ;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `cl', `cmds-menu', `col-highlight',
-;;   `crosshairs', `fit-frame', `font-lock', `font-lock+',
-;;   `frame-fns', `help+', `help-fns', `help-fns+', `help-macro',
-;;   `help-macro+', `help-mode', `hl-line', `hl-line+', `info',
-;;   `info+', `kmacro', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `naked', `pp', `pp+', `second-sel', `strings',
-;;   `syntax', `thingatpt', `thingatpt+', `view', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `crosshairs', `fit-frame',
+;;   `font-lock', `font-lock+', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
+;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -253,6 +254,15 @@
 ;;      a node by its links.  Uses faces to make clear which nodes are
 ;;      most important to you, or which are related to this or that
 ;;      general topic.
+;;
+;;    - You can use command `Info-make-node-unvisited' to make a node
+;;      be considered unvisited.  By default the node at point is
+;;      used.  For a node that is not bookmarked this also gives links
+;;      to the node face `info-xref', which indicates that their
+;;      targets are unvisited.  If for some reason you want to make
+;;      links to a bookmarked node also have this face then just use
+;;      command `Info-set-face-for-bookmarked-xref', specifying face
+;;      `info-xref'.
 ;;
 ;;    - If option `Info-node-access-invokes-bookmark-flag' is non-nil
 ;;      then going to a bookmarked Info node invokes its bookmark, so
