@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May 21 12:46:03 2019 (-0700)
+;; Last-Updated: Tue May 21 13:25:29 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4019
+;;     Update #: 4036
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1543,6 +1543,25 @@ C-x p C-p)
 \\[bmkp-next-lighted-this-buffer-repeat]...- Next highlighted bookmark in buffer  (C-x p C-down)
 \\[bmkp-previous-lighted-this-buffer-repeat]...\t- Prev highlighted bookmark in buffer     (C-x p C-up)
 
+ Similar, but not bound to keys by default:
+  \\[bmkp-next-autonamed-bookmark-repeat]        (and `previous')
+  \\[bmkp-next-bookmark-list-bookmark-repeat]    (and `previous')
+  \\[bmkp-next-desktop-bookmark-repeat]          (and `previous')
+  \\[bmkp-next-dired-bookmark-repeat]            (and `previous')
+  \\[bmkp-next-eww-bookmark-repeat]              (and `previous')
+  \\[bmkp-next-file-bookmark-repeat]             (and `previous')
+  \\[bmkp-next-gnus-bookmark-repeat]             (and `previous')
+  \\[bmkp-next-info-bookmark-repeat]             (and `previous')
+  \\[bmkp-next-lighted-bookmark-repeat]          (and `previous')
+  \\[bmkp-next-local-file-bookmark-repeat]       (and `previous')
+  \\[bmkp-next-man-bookmark-repeat]              (and `previous')
+  \\[bmkp-next-non-file-bookmark-repeat]         (and `previous')
+  \\[bmkp-next-remote-file-bookmark-repeat]      (and `previous')
+  \\[bmkp-next-specific-buffers-bookmark-repeat] (and `previous')
+  \\[bmkp-next-specific-files-bookmark-repeat]   (and `previous')
+  \\[bmkp-next-url-bookmark-repeat]              (and `previous')
+  \\[bmkp-next-variable-list-bookmark-repeat]    (and `previous')
+
 
 Search-and-Replace in Bookmark Targets (here, in sort order)
 --------------------------------------
@@ -1764,8 +1783,8 @@ bookmarks (`C-u': remote also)
 \\[bmkp-bmenu-show-only-region-bookmarks]\t- Show only region bookmarks
 \\[bmkp-bmenu-show-only-function-bookmarks]\t- Show only function bookmarks
 \\[bmkp-bmenu-show-only-url-bookmarks]\t- Show only URL bookmarks
-\\[bmkp-bmenu-show-only-eww-bookmarks]\t- Show only EWW (URL) bookmarks
-\\[bmkp-bmenu-show-only-w3m-bookmarks]\t- Show only W3M (URL) bookmarks
+\\[bmkp-bmenu-show-only-eww-bookmarks]\t- Show only EWW bookmarks
+\\[bmkp-bmenu-show-only-w3m-bookmarks]\t- Show only W3M bookmarks
 \\[bmkp-bmenu-show-only-variable-list-bookmarks]\t- Show only variable-list bookmarks
 \\[bmkp-bmenu-show-only-tagged-bookmarks]\t- Show only tagged bookmarks
 \\[bmkp-bmenu-show-only-untagged-bookmarks]\t- Show only untagged bookmarks
