@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 19 18:54:55 2019 (-0700)
+;; Last-Updated: Tue May 21 12:16:34 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16533
+;;     Update #: 16535
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/05/21 dadams
+;;     bmkp-dired-remember-*-marks: Updated per dired-remember-marks, for Emacs 27+.
 ;; 2019/05/19 dadams
 ;;     Bind print-gensym wherever we bind print-circle.
 ;; 2019/05/11 dadams
