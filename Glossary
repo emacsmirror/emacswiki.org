@@ -91,7 +91,7 @@ See also Emacs' official [[Manual:Glossary]].
 * [[text property]] -- a property attached to a character that affects its display or behavior
 * TtyFrames -- Teletype (TTY), or terminal, screens
 * [[universal argument]] -- the command bound to `C-u'
-* '''[::user option]''' (aka '''[::user variable]''', aka '''[::option]''') -- a [[variable]] that can be customized using Customize or set using `M-x set-variable'
+* [[user option]] (aka '''[::user variable]''', aka '''[::option]''') -- a [[variable]] that can be customized using Customize or set using `M-x set-variable'
 * '''[::value cell]''' -- the value of a [[symbol]] (variable); aka '''[::symbol value]'''
 * '''[::variable]''' -- a [[symbol]], whether [[bound variable|bound]] or not
 * [[window]] -- a [[frame]] pane; it shows a [[buffer]]
