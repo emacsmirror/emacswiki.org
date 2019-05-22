@@ -97,5 +97,8 @@ See also Emacs' official [[Manual:Glossary]].
 * [[window]] -- a [[frame]] pane; it shows a [[buffer]]
 * '''[::yank]''' -- paste
 
+[new]
+When translating this page, please change all the permanent anchors from ##[::something]## to ##[::etwas anderes]## (a translation of the term into your language), or make them unique such as ##[::something Deutsch]## (add your language as a prefix or suffix).
+
 ----
 CategoryGlossary
