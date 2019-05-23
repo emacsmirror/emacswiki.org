@@ -370,3 +370,13 @@ The fifteen default custom themes are located here:
 == Some Key Sequences Won't Work? Meta Key Not Working? Meta Key Entering Special Characters? ==
 
 If some key sequences don't work, or your <code>Option</code> key suddenly stops working as the Meta key it's probably because you hit the key sequence <code>C-;</code>, which toggles the function of the <code>Option</code> key to instead enter special characters, like the symbol for pi.  To get your Meta key working again, hit <code>C-;</code> (note what it says in the minibuffer).  You can do the same thing through the Aquamacs menu:  <code>Options > Option, Command, Meta keys > Option is Meta</code>.
+
+== Accessing the MELPA archive does not work in Aquamacs ==
+
+Aquamacs 3.4 does not have support for https URLs, so until this known
+issue is resolved, you can use a plain http URL to access the MELPA
+package archives, i.e. add them to package-archives with something like
+
+    (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+
+The issue is being tracked at https://github.com/davidswelt/aquamacs-emacs/issues/133
