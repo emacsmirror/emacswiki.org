@@ -1,3 +1,4 @@
+[[zh:设置字体]]
 The most important info first. Here's how to change the default font in your InitFile: use ##M-x customize-face## to customize the ##default## face.
 
 
