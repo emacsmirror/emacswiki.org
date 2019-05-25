@@ -21,3 +21,28 @@ if you leave off the "%1" then it wont open the file you click.
 
 -- Anonymous 2015-02-16 20:44 UTC
 
+
+----
+
+The powershell script for setting up the server upon startup doesn't seem to be working. What worked for me is:
+{{{
+# Path to startup file
+$startup_file = "$([Environment]::GetFolderPath('Startup'))\StartEmacsServer.bat"
+
+# Introduce variable HOME:
+# 1. for simplicity
+# 2. runemacs.exe expects it to be
+#
+# %APPDATA% is chosen because runemacs.exe operates there
+#	https://www.gnu.org/software/emacs/manual/html_node/emacs/Find-Init.html#Find-Init
+#	https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#General-Variables
+New-Item $startup_file -type file
+Set-Content -Path $startup_file -Value "set HOME=%APPDATA%"
+
+# Clean previous server file info first
+Add-Content -Path $startup_file -Value "del /Q ""%HOME%/.emacs.d/server/*"""
+Add-Content -Path $startup_file -Value "runemacs.exe --daemon"
+}}}
+
+-- [https://github.com/DmitrySenin/ Dmitry] 2019-05-25 21:01 UTC
+
