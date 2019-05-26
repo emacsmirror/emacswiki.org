@@ -174,7 +174,7 @@ F8 will call [http://www.emacswiki.org/emacs/InteractiveSpell ispell] (or aspell
 
 Ctrl-Shift-F8 enables/disables FlySpell for your current buffer (highlights misspelled words as you type)
 
-Crtl-Meta-F8 runs FlySpell on your current buffer (highlights all misspelled words in the buffer)
+Ctrl-Meta-F8 runs FlySpell on your current buffer (highlights all misspelled words in the buffer)
 
 Ctrl-F8 calls ispell for the FlySpell highlighted word prior to the cursor's position
 
