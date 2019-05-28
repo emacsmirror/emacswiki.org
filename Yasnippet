@@ -19,10 +19,10 @@ The usual `M-x package-install yasnippet' should suffice, see also https://githu
 
 == User contributed templates ==
 
-
-See http://coderepos.org/share/browser/config/yasnippet for a repository.
+See https://github.com/AndreaCrotti/yasnippet-snippets for a repository.
 
 Here are some templates for the JSP Standard Tag Library: http://github.com/eentzel/yasnippet-jstl/
+
 [new]
 There are four packages to automatically create yasnippets:
 
@@ -34,31 +34,39 @@ There are four packages to automatically create yasnippets:
 
 * [https://github.com/ejmr/php-auto-yasnippets php-auto-yasnippets] -- Creates snippets for php-mode
 
-== Select snippet using helm (anything.el) ==
+== Customizing snippet prompts ==
+
+See [http://joaotavora.github.io/yasnippet/snippet-reference.html#yas-prompt-functions `yas-prompt-functions'].
+
+=== With ido ===
+
+As of yasnippet version 0.9.1, prompts will using `ido' if `ido-mode' is enabled by default.
+
+=== With Helm (anything.el) ===
 
   (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
     "Use helm to select a snippet. Put this into `yas-prompt-functions.'"
     (interactive)
-    (setq display-fn (or display-fn 'identity))
-    (if (require 'helm-config)
-        (let (tmpsource cands result rmap)
-          (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
-          (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
-          (setq tmpsource
-                (list
-                 (cons 'name prompt)
-                 (cons 'candidates cands)
-                 '(action . (("Expand" . (lambda (selection) selection))))
-                 ))
-          (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
-          (if (null result)
-              (signal 'quit "user quit!")
-            (cdr (assoc result rmap))))
+    (if (require 'helm-config nil t)
+        (let ((result (helm-other-buffer
+                       (list `((name . ,prompt)
+                               (candidates . ,(if display-fn (mapcar display-fn choices)
+                                                choices))
+                               (action . (("Expand" . identity)))))
+                       "*helm-select-yasnippet")))
+          (cond ((null results)
+                 (signal 'quit "user quit!"))
+                (display-fn
+                 (catch 'result
+                   (dolist (choice choices)
+                     (when (equal (funcall display-fn choice) result)
+                       (throw 'result choice)))))
+                (t result)))
       nil))
 
-There is also the MELPA package helm-c-yasnippet which can be used outside of the yas itself.
+There is also the MELPA package `helm-c-yasnippet' which can be used outside of the yas itself.
 
-== Popup menu for yas-choose-value ==
+=== With Popup menu ===
 
 Taken from http://blog.iany.me/2012/03/use-popup-isearch-for-yasnippet-prompt/
 
@@ -90,57 +98,18 @@ Note: yasnippet from git (ver. 0.8) (new yas-* instead of yas/* functions and va
      :isearch t
      )))
 
-(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
+(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-maybe-ido-prompt yas-completing-prompt yas-no-prompt))
 }}}
-
-== ido-complete yasnippet keys ==
-
-Note: requires newer yas than v0.8.
-
-Evaluate this snippet:
-{{{
-;; Completing point by some yasnippet key
-(defun yas-ido-expand ()
-  "Lets you select (and expand) a yasnippet key"
-  (interactive)
-    (let ((original-point (point)))
-      (while (and
-              (not (= (point) (point-min) ))
-              (not
-               (string-match "[[:space:]\n]" (char-to-string (char-before)))))
-        (backward-word 1))
-    (let* ((init-word (point))
-           (word (buffer-substring init-word original-point))
-           (list (yas-active-keys)))
-      (goto-char original-point)
-      (let ((key (remove-if-not
-                  (lambda (s) (string-match (concat "^" word) s)) list)))
-        (if (= (length key) 1)
-            (setq key (pop key))
-          (setq key (ido-completing-read "key: " list nil nil word)))
-        (delete-char (- init-word original-point))
-        (insert key)
-        (yas-expand)))))
-}}}
-and map yas-ido-expand with a chord, e.g.:
-
-    (define-key yas-minor-mode-map (kbd "<C-tab>")     'yas-ido-expand)
-
-enjoy ;)
-
-[[rubikitch]] has some additional yasnippet-related functions in  Lisp:yasnippet-config.el
 
 == See also ==
 
+* [[rubikitch]] has some additional yasnippet-related functions in  Lisp:yasnippet-config.el
+* https://github.com/mattfidler/textmate-to-yas.el -- import snippets from TextMate.
+
+=== Similar packages ===
 * [[SkeletonMode]] -- special-purpose mini-language for automatic insertion of customized templates 
 * [[TempoSnippets]] -- a snippet.el-like interface for tempo templates
 * https://github.com/Kungsgeten/yankpad -- keep multiple snippets in a single org file
 
-== Discussion ==
-
-[new]
-I created a new method of importing TextMate templates entirely in Emacs Lisp.  Perhaps later it might be integrated into yasnippet itself.  Here is the code Lisp: [[textmate-to-yas.el]]  -- MatthewFidler
-
-(old discussions removed to reduce confusion about yasnippet versions)
 ----
 CategoryTemplates
