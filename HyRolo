@@ -1,16 +1,16 @@
-HyRolo is a fast, hierarchical record-based contact manager that is part
+%%HyRolo%% is a fast, hierarchical record-based contact manager that is part
 of the GNU [[Hyperbole]] package.  The text of each record is completely
 free-form and full-text searches are done during lookups so any record
 with a matching term is always found.
 
-HyRolo manages and searches rolo files.  A "rolo file" consists of an
+%%HyRolo%% manages and searches rolo files.  A "rolo file" consists of an
 optional header that starts and ends with a line of equal signs (at
 least three equal signs starting at the beginning of a line), followed
 by zero or more rolo records.  You must manually add a header to any
 rolo file if you want it to have one.
 
 Here is an example of a simple rolo file.  The date at the end is
-automatically added by HyRolo whenever a new record is added.
+automatically added by %%HyRolo%% whenever a new record is added.
 
      ==================================================================
                                PERSONAL ROLO
@@ -28,7 +28,7 @@ character than do their parents.  Top-level entries begin with a single
 
 Beyond this initial delimiter, entries are completely free-form text.
 It is best to use a "lastname, firstname" format, however, when adding
-contact entries into a rolo.  Then HyRolo will automatically keep your
+contact entries into a rolo.  Then %%HyRolo%% will automatically keep your
 entries alphabetized as you enter them.  Then you can sort the entries
 if you ever need.  This ordering is what the rolo will use if you accept
 the default entry with which it prompts you when adding a new entry.
