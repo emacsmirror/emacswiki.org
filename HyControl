@@ -2,138 +2,138 @@ HyControl is part of the GNU [[Hyperbole]] package.  It includes the fastest, ea
 
 %%HyControl%% interactively adjusts the layout of your windows and frames down to the pixel-level if desired.  You adjust the location, size and display elements of your windows and frames until they look as you like and then simply quit %%HyControl%% and go back to work.
 
-Hyperbole typically binds the key {'C-c \'} to invoke %%HyControl%% window control; otherwise, the Screen/WindowsControl minibuffer menu item, {'C-h h s w'}, will do the same thing.
+Hyperbole typically binds the key `##C-c '##' to invoke %%HyControl%% window control; otherwise, the Screen/WindowsControl minibuffer menu item, '##C-h h s w##', will do the same thing.
 
-Once in %%HyControl%%, your minibuffer window at the bottom of the selected frame will display a summary of keys you may use to adjust your windows until you press {'q'} to quit from %%HyControl%%.  The key, {'t'}, will always toggle between controlling frames and windows, the "submodes" of %%HyControl%%, with the upper left of the minibuffer prompt showing which type of control is active.
+Once in %%HyControl%%, your minibuffer window at the bottom of the selected frame will display a summary of keys you may use to adjust your windows until you press {'q'} to quit from %%HyControl%%.  The key, `t', will always toggle between controlling frames and windows, the "submodes" of %%HyControl%%, with the upper left of the minibuffer prompt showing which type of control is active.
 
-A number of commands take a single numeric argument, e.g.  movement and sizing, which you can enter by typing a period to clear the argument, followed by any positive number up to 1000.  You may also use the {'C-u'} universal argument key to apply a multiplier of 4 to the argument, any number of times.  Any entry that pushes the argument over 1000, restarts it, so 10005 would produce an argument of 5.
+A number of commands take a single numeric argument, e.g.  movement and sizing, which you can enter by typing a period to clear the argument, followed by any positive number up to 1000.  You may also use the `C-u' universal argument key to apply a multiplier of 4 to the argument, any number of times.  Any entry that pushes the argument over 1000, restarts it, so 10005 would produce an argument of 5.
 
 The table below explains what each key does in %%HyControl%% mode.  If the explanation does not say otherwise, then the key applies in both window and frame submodes.
 
-'.'
+##.##
      Clear the argument to a value of 0.
 
-'0-9'
+##0-9##
      Multiply the argument by 10 and add the digit pressed.
 
-'h'
+##h##
      Increase height by argument lines (line height determined by buffer
      character height).
 
-'s'
+##s##
      Shorten height by argument lines.
 
-'w'
+##w##
      Widen by argument characters.
 
-'n'
+##n##
      Narrow by argument characters.
 
-'%'
+##%##
      In FRAME mode, resize frame's height and width to about argument
      percent of the screen size.
 
-'H'
+##H##
      In FRAME mode, resize frame's height to about argument percent of
      the screen size.
 
-'W'
+##W##
      In FRAME mode, resize frame's width to about argument percent of
      the screen size.
 
-'up'
-'down'
-'left'
-'right'
+##up##
+##down##
+##left##
+##right##
      Move frame in the specified direction by argument pixels.
 
-'c'
+##c##
      In FRAME mode, with each press, cycle the selected frame's position
      clockwise through the middle of edges and corners of the screen.
      With an argument of 0, reset the cycle position to the upper left
      corner.  Respects the pixel edge offsets returned by
-     'hycontrol-get-screen-offsets'.
+     `hycontrol-get-screen-offsets'.
 
-'keypad number'
+keypad number
      In FRAME mode, move the frame directly to the screen edge position
      given by the numeric keypad layout.  For example, 3 moves the frame
      to the bottom right corner and 8 moves it to the middle of the top
      edge.  Keypad numeric keys do not adjust the argument.  Respects
-     the pixel edge offsets returned by 'hycontrol-get-screen-offsets'.
+     the pixel edge offsets returned by `hycontrol-get-screen-offsets'.
 
-'d'
+##d##
      Delete selected window or frame based on mode.
-'D'
+##D##
      Prompt for confirmation and then delete non-selected windows or
      frames based on mode.
 
-'o'
+##o##
      Select the next window in the window list, across all visible
      frames.
-'O'
+##O##
      Select the next visible frame.
 
-'['
+##[##
      Create a new atop window or frame depending on mode.  If a frame,
      it is sized to the same size as the selected window and offset from
      the selected frame by the pixel amounts given by
-     'hycontrol-frame-offset'.
-']'
+     `hycontrol-frame-offset'.
+##]##
      Create a new sideways window or frame depending on mode.
 
-'('
+##(##
      Save the current window or frame configuration based on mode.
      Whenever, %%HyControl%% is invoked, the current window and frame
      configurations are saved automatically.  So use this command only
      if you have changed the configuration and wish to save it
      temporarily.
-')'
+##)##
      After confirmation, restore the last saved window or frame
      configuration based on mode.
 
-'f'
+##f##
      In WINDOW mode, delete the selected window and redisplay its buffer
      in a new frame.
 
-'i'
-'j'
-'k'
-'m'
+##i##
+##j##
+##k##
+##m##
      In Frame mode, expand the selected frame to the associated screen
      edge based on key layout.  i=top, j=left, k=right and m=bottom
      screen edge.  Respects the pixel edge offsets returned by
-     'hycontrol-get-screen-offsets'.
+     `hycontrol-get-screen-offsets'.
 
-'='
+##=##
      Make the current frame's windows or all frames approximately the
      same size based on mode.  In FRAME mode, all visible frames are set
      to the size of the selected frame.
 
-'-'
+##-##
      Make the selected window or frame (based on mode) as small as
      possible while still displaying it.
-'+'
+##+##
      Make the window or frame (based on mode) as large as possible.  In
      FRAME mode, a second press of this key restores its size to
      whatever it was prior to the first use of this command.
 
-'b'
+##b##
      Bury the selected buffer within the buffer list, displaying the
      next buffer.
-'u'
+##u##
      Unbury the bottom buffer in the buffer list and display it in the
      selected window.
 
-'~'
+##~##
      Swap two buffers between the selected window or frame and one
      other.  In WINDOW mode, there must be precisely two windows in the
      selected frame.  In FRAME mode, the second frame mush have a single
      window.
 
-'Z'
+##Z##
      Zoom in selected window or frame text based on mode, increasing
      default face size.
-'z'
+##z##
      Zoom out selected window or frame text based on mode, increasing
      default face size.  Zooming supports an argument of between 1 and 9
      (any other value sets the argument to 1).  The argument determines
@@ -142,18 +142,18 @@ The table below explains what each key does in %%HyControl%% mode.  If the expla
      FRAME mode zooming requires the separately available 'zoom-frm.el'
      library.  WINDOW zooming works without this library.
 
-'t'
+##t##
      Toggle between WINDOW and FRAME submodes.
 
-'q'
+##q##
      Quit from %%HyControl%% mode and restore normal key bindings.
 
 
 The rest of this section goes into some technicalities about %%HyControl%% settings.  You may ignore it if you are not familiar with Emacs variables and functions.
 
-%%HyControl%% allows placement of frames at screen edges and corners. with the frame cycle command, {'c'}, and direct placement matching the layout of the numeric keypad keys, if available.  (Note that a screen may span multiple physical monitors).  To prevent widgets and toolbars at the corners of the screen from being obscured, %%HyControl%% can offset each frame from each screen edge by a fixed number of pixels.  These offsets are specified by the variable, 'hycontrol-screen-offset-alist' and can differ for each type of screen; see its documentation for details.  If you change its value, then call 'hycontrol-set-screen-offsets' to set any new offset values.  'hycontrol-get-screen-offsets' returns the list of offsets in clockwise order starting from the top edge.  Both functions display a minibuffer message with the current offsets when called interactively.
+%%HyControl%% allows placement of frames at screen edges and corners. with the frame cycle command, `c', and direct placement matching the layout of the numeric keypad keys, if available.  (Note that a screen may span multiple physical monitors).  To prevent widgets and toolbars at the corners of the screen from being obscured, %%HyControl%% can offset each frame from each screen edge by a fixed number of pixels.  These offsets are specified by the variable, `hycontrol-screen-offset-alist' and can differ for each type of screen; see its documentation for details.  If you change its value, then call `hycontrol-set-screen-offsets' to set any new offset values.  `hycontrol-get-screen-offsets' returns the list of offsets in clockwise order starting from the top edge.  Both functions display a minibuffer message with the current offsets when called interactively.
 
-When %%HyControl%% creates a new frame, it automatically sizes it to the same size as the previously selected frame and offsets it from that frame by the (X .  Y) number of pixels given in the variable, 'hycontrol-frame-offset'.
+When %%HyControl%% creates a new frame, it automatically sizes it to the same size as the previously selected frame and offsets it from that frame by the ##(X .  Y)## number of pixels given in the variable, `hycontrol-frame-offset'.
 
 ----
 
