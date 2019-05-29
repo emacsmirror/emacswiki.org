@@ -1,14 +1,14 @@
-HyControl is part of the GNU [[Hyperbole]] package.  It includes the fastest, easiest-to-use Emacs window and frame management system available, HyControl.  If you use a lot of Emacs windows or frames (typically, window system windows) then this chapter is for you.
+HyControl is part of the GNU [[Hyperbole]] package.  It includes the fastest, easiest-to-use Emacs window and frame management system available, %%HyControl%%.  If you use a lot of Emacs windows or frames (typically, window system windows) then this chapter is for you.
 
-HyControl interactively adjusts the layout of your windows and frames down to the pixel-level if desired.  You adjust the location, size and display elements of your windows and frames until they look as you like and then simply quit HyControl and go back to work.
+%%HyControl%% interactively adjusts the layout of your windows and frames down to the pixel-level if desired.  You adjust the location, size and display elements of your windows and frames until they look as you like and then simply quit %%HyControl%% and go back to work.
 
-Hyperbole typically binds the key {'C-c \'} to invoke HyControl window control; otherwise, the Screen/WindowsControl minibuffer menu item, {'C-h h s w'}, will do the same thing.
+Hyperbole typically binds the key {'C-c \'} to invoke %%HyControl%% window control; otherwise, the Screen/WindowsControl minibuffer menu item, {'C-h h s w'}, will do the same thing.
 
-Once in HyControl, your minibuffer window at the bottom of the selected frame will display a summary of keys you may use to adjust your windows until you press {'q'} to quit from HyControl.  The key, {'t'}, will always toggle between controlling frames and windows, the "submodes" of HyControl, with the upper left of the minibuffer prompt showing which type of control is active.
+Once in %%HyControl%%, your minibuffer window at the bottom of the selected frame will display a summary of keys you may use to adjust your windows until you press {'q'} to quit from %%HyControl%%.  The key, {'t'}, will always toggle between controlling frames and windows, the "submodes" of %%HyControl%%, with the upper left of the minibuffer prompt showing which type of control is active.
 
 A number of commands take a single numeric argument, e.g.  movement and sizing, which you can enter by typing a period to clear the argument, followed by any positive number up to 1000.  You may also use the {'C-u'} universal argument key to apply a multiplier of 4 to the argument, any number of times.  Any entry that pushes the argument over 1000, restarts it, so 10005 would produce an argument of 5.
 
-The table below explains what each key does in HyControl mode.  If the explanation does not say otherwise, then the key applies in both window and frame submodes.
+The table below explains what each key does in %%HyControl%% mode.  If the explanation does not say otherwise, then the key applies in both window and frame submodes.
 
 '.'
      Clear the argument to a value of 0.
@@ -83,7 +83,7 @@ The table below explains what each key does in HyControl mode.  If the explanati
 
 '('
      Save the current window or frame configuration based on mode.
-     Whenever, HyControl is invoked, the current window and frame
+     Whenever, %%HyControl%% is invoked, the current window and frame
      configurations are saved automatically.  So use this command only
      if you have changed the configuration and wish to save it
      temporarily.
@@ -146,14 +146,14 @@ The table below explains what each key does in HyControl mode.  If the explanati
      Toggle between WINDOW and FRAME submodes.
 
 'q'
-     Quit from HyControl mode and restore normal key bindings.
+     Quit from %%HyControl%% mode and restore normal key bindings.
 
 
-The rest of this section goes into some technicalities about HyControl settings.  You may ignore it if you are not familiar with Emacs variables and functions.
+The rest of this section goes into some technicalities about %%HyControl%% settings.  You may ignore it if you are not familiar with Emacs variables and functions.
 
-HyControl allows placement of frames at screen edges and corners. with the frame cycle command, {'c'}, and direct placement matching the layout of the numeric keypad keys, if available.  (Note that a screen may span multiple physical monitors).  To prevent widgets and toolbars at the corners of the screen from being obscured, HyControl can offset each frame from each screen edge by a fixed number of pixels.  These offsets are specified by the variable, 'hycontrol-screen-offset-alist' and can differ for each type of screen; see its documentation for details.  If you change its value, then call 'hycontrol-set-screen-offsets' to set any new offset values.  'hycontrol-get-screen-offsets' returns the list of offsets in clockwise order starting from the top edge.  Both functions display a minibuffer message with the current offsets when called interactively.
+%%HyControl%% allows placement of frames at screen edges and corners. with the frame cycle command, {'c'}, and direct placement matching the layout of the numeric keypad keys, if available.  (Note that a screen may span multiple physical monitors).  To prevent widgets and toolbars at the corners of the screen from being obscured, %%HyControl%% can offset each frame from each screen edge by a fixed number of pixels.  These offsets are specified by the variable, 'hycontrol-screen-offset-alist' and can differ for each type of screen; see its documentation for details.  If you change its value, then call 'hycontrol-set-screen-offsets' to set any new offset values.  'hycontrol-get-screen-offsets' returns the list of offsets in clockwise order starting from the top edge.  Both functions display a minibuffer message with the current offsets when called interactively.
 
-When HyControl creates a new frame, it automatically sizes it to the same size as the previously selected frame and offsets it from that frame by the (X .  Y) number of pixels given in the variable, 'hycontrol-frame-offset'.
+When %%HyControl%% creates a new frame, it automatically sizes it to the same size as the previously selected frame and offsets it from that frame by the (X .  Y) number of pixels given in the variable, 'hycontrol-frame-offset'.
 
 ----
 
