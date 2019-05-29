@@ -34,7 +34,7 @@ People often ask us about the differences between Org mode and Hyperbole.  Altho
 \\
 \\
 * Org-mode manages todos, time entries and some basic project management.
-* Hyperbole does none of this but allows you can integrate with whatever todo management you like.
+* Hyperbole does none of this but allows you to integrate with whatever other tools you like, including Org mode’s tools.
 \\
 \\
 * Org-mode doesn't have any contact management builtin, only through add-on packages.
@@ -45,8 +45,8 @@ People often ask us about the differences between Org mode and Hyperbole.  Altho
 * Hyperbole has a fast, thoughtfully designed window and frame manager that lets you quickly arrange your Emacs artifacts as you like.  Eventually, these window and frame configurations will be saveable and will be able to be the target of links, so you can have quick access buttons that arrange things for different work tasks (similar to Workspaces but integrated with all of Hyperbole's other features).
 \\
 \\
-* Org-mode does nothing for management of libraries of information.
-* Hyperbole helps organize, link, search and retrieve libraries of text files.
+* Org-mode does nothing for quick management of large, existing libraries of information.
+* Hyperbole helps organize, link, search and retrieve libraries of any kind of text files.
 \\
 \\
 * Hyperbole also has features that speed code browsing and structured code editing and support for using the mouse keys as Control and Meta modifiers so you can point and operate on screen entities quickly.
