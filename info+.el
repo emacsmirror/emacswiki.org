@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 21 15:00:22 2019 (-0700)
+;; Last-Updated: Fri May 31 16:27:12 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6409
+;;     Update #: 6417
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -476,6 +476,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/05/31 dadams
+;;     Info-emphasis-regexp: Add another possible value to doc string.
 ;; 2018/09/21 dadams
 ;;     Added: Info--pop-to-buffer-same-window.
 ;;     Info-find-node, Info-(next|prev|up), info-display-manual: Use Info--pop-to-buffer-same-window, not switch-to-buffer.
@@ -1226,12 +1228,21 @@ generally has symbol syntax in Info.
 
 Some possible values include:
 
- _\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\)*\\)\\|\\(\\(\\s-\\|\\sw\\|\\s.\\)\\sw*\\)\\)_ (default)
- _\\(\\(\\s-\\|\\sw\\|\\s.\\)+\\)_ (word, punctuation, whitespace)
- _\\(\\sw+\\)_\t\t  (single words)
- _\\(\\s-*\\sw+\\s-*\\)_\t  (single words, maybe whitespace-separated)
- _\\([^_\\n]+\\)_\t\t  (anything except newlines)
- _\\([^_]+\\)_\t\t  (anything)
+_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\)*\\)\\|\\(\\(\\s-\\|\\sw\\|\\s.\\)\\sw*\\)\\)_ (default)
+
+_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\|\\s(\\|\\s)\\)*\\)\\|
+\\(\\(\\s-\\|\\sw\\|\\s.\\|\\s(\\|\\s)\\)\\sw*\\)\\)_ (but joined, with no newline)
+  (like default, but also open and close delimiters, such as ()[])
+
+_\\(\\(\\s-\\|\\sw\\|\\s.\\)+\\)_ (word, punctuation, whitespace)
+
+_\\(\\sw+\\)_\t\t  (single words)
+
+_\\(\\s-*\\sw+\\s-*\\)_\t  (single words, maybe whitespace-separated)
+
+_\\([^_\\n]+\\)_\t\t  (anything except newlines)
+
+_\\([^_]+\\)_\t\t  (anything)
 
 Note that any value can be problematic for some Info text - see
 `Info-fontify-emphasis-flag'."
