@@ -4,8 +4,8 @@ You will need to install git.
 
 There is a Debian package called <code>git-core</code> that you can
 install if you use Debian or Ubuntu.  If you are using Windows, then
-visit http://code.google.com/p/msysgit/.  Mac OS X users may
-visit http://code.google.com/p/git-osx-installer/.  Otherwise, visit
+visit https://gitforwindows.org/.  Mac OS X users may
+visit https://git-scm.com/download/mac.  Otherwise, visit
 http://git.or.cz and download the latest source.
 
 == Shared project repo ==
@@ -52,8 +52,7 @@ Here is a description of the available branches.
 
 || <code>HEAD</code> || The branch you are currently on ||
 || <code>master</code> || Main development branch ||
-|| <code>emacs24</code> || Emacs 24 branch ||
-
+|| <code>emacsNN</code> || Emacs stable branch for major version `NN' ||
 
 If you want to browse the available branches via the web, visit
 http://git.sv.gnu.org/gitweb/?p=emacs.git;a=summary.
@@ -135,16 +134,11 @@ message.  Add a brief one-line description of your changes at the top
 of the file.
 
 The rest of the file (keeping a blank line after the very first line)
-is for describing your changes in detail.  If you want, you can either
-leave this blank or just copy the relevant part of your ChangeLog
-entry here.  The information you use here will appear in the
+is for describing your changes in detail.  Include your ChangeLog formatted entry here.
+The information you use here will appear in the
 [http://lists.gnu.org/mailman/listinfo/erc-commit erc-commit mailing
 list] when you are done, once you have either pushed your changes or a
 developer has committed a patch that you have sent.
-
-Make sure that you have described your changes in the ChangeLog file
-before committing, or at minimum, use ChangeLog-style syntax in your
-log entries (or something similar to it).
 
 Here is one example of an acceptable commit log.
 
@@ -187,11 +181,8 @@ git format-patch -M origin
 </pre>
 
 and then sending the generated patch files to the emacs-devel
-mailing list.  Be sure to describe your changes and include a sample
-ChangeLog entry for them.  Be sure that the patch is the body of the
-message, and not an attachment.  Any comments that you wish to make,
-but don't want to appear in the commit log, should be placed between
-the "<code>---</code>" and the diffstat.
+mailing list.  Be sure to describe your changes and include a
+ChangeLog entry in the commit message for them.
 
 If you want to send the resulting patches from the commandline, rather
 than opening up an email client, you can do the following, where
@@ -221,7 +212,7 @@ DVC (see DistributedVersionControl) is a highly-recommended Emacs
 add-on that allows you to see changes that you have made, log
 messages, and (eventually) merging changes easily between branches.
 
-Alternatively, the development version of Emacs should include some
+Alternatively, the recent versions of Emacs should include some
 regular VC bindings for git, so that you can use the same key-bindings
 that you would use for CVS.
 
