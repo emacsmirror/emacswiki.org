@@ -214,7 +214,6 @@ ErcProxy has some more information on how things are right now and what you can 
 
 * ErcBugs -- bugs, bug fix history, planned features, wishlist
 * ErcDevelopment -- details on how to use git to hack on ERC
-* ErcCvs -- more about the bleeding edge
 * ErcCommit -- how to commit changes on the bleeding edge
 * ErcCatalog -- multilingual/customizable messages
 * ErcHooks -- almost everything is based on hooks in ERC
