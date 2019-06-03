@@ -69,6 +69,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * [[Conx]] -- like the built-in DissociatedPress
 * [https://github.com/krameshkrr/Emacs/tree/master/Turing-machine Turing machine] -- Turing machine puzzle game (Same as Alan Turing's 100th Birthday google doodle)
 * [https://github.com/codingteam/pacmacs.el Pacmacs] -- Pacman-like game for Emacs
+* [https://github.com/federicotdn/key-quiz Key Quiz] -- Guess the correct key sequence for different commands
 
 == Other modes for games related things ==
 
