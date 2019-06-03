@@ -26,3 +26,10 @@ I think The `Symbol’s value as variable is void: dired-omit-files` error menti
 
 -- DrewAdams 2019-06-03 22:31 UTC
 
+
+----
+
+DrewAdams: I can't see how your change will help, the reference to `dired-omit-files' in an autoloaded `defucstom' remains.  Expressions (or `defcustom' default values) which are `;;;###autoload'ed get evaluated before the file itself is loaded.  (I won't go as far as saying defcustoms should *never* be autoloaded, but in this case I can't see any justification for it.)
+
+-- npostavs 2019-06-03 23:14 UTC
+
