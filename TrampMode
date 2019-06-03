@@ -18,7 +18,7 @@ Faster than the default scp
 
     (setq tramp-default-method "ssh")
 
-For GNU Emacs
+For GNU Emacs (if you don't give a filename, syntax still requires an appended colon)
 
     C-x C-f /remotehost:filename  RET (or /method:user@remotehost:filename)
 
