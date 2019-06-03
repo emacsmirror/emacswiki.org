@@ -1,3 +1,7 @@
+As of Emacs 25.1, the `/reconnect' command, as well as `rcirc-reconnect-delay' for auto-reconnection, are built in to rcirc.
+
+----
+
 After waking my laptop from sleep, [[rcirc]] is usually disconnected from the server, but doesn't know it.
 
 The new ##/reconnect## command will force a reconnect.
