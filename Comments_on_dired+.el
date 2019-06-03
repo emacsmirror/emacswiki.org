@@ -19,3 +19,10 @@ I think The `Symbol’s value as variable is void: dired-omit-files` error menti
 
 -- npostavs 2019-06-03 20:36 UTC
 
+
+----
+
+[[npostavs]]: Thanks for the heads-up. I updated dired+.el to fix it differently. (I disagree that defcustoms should never be autoloaded.)
+
+-- DrewAdams 2019-06-03 22:31 UTC
+
