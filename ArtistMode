@@ -15,11 +15,6 @@ You will use the mouse for drawing and painting if you are running Emacs in an X
 and move the TextCursor around -- you are drawing a poly-line.
 
 Look at the artist-mode documentation (C-h m RET) for full explanation.
-----
-
-[new:BasKok:2007-05-16 20:27 UTC] A screencast says more than a thousand words:
-http://www.cinsk.org/emacs/emacs-artist.html
--- BasKok
 
 ----
 Beta version of xemacs port could be found at Lisp:artist-xmas.el
