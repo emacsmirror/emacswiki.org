@@ -10,3 +10,12 @@ There is a 404 error when you click on the link/button "[Dired+ Help on the Web]
 
 -- DrewAdams 2017-08-18 21:13 UTC
 
+
+----
+
+https://emacs.stackexchange.com/questions/50815/managing-libraries-hosted-on-emacswiki/50819?noredirect=1#comment78274_50819
+
+I think The `Symbol’s value as variable is void: dired-omit-files` error mentioned in the link above is because `dired+' is referencing `dired-omit-files' in an `;;;###autoload' statement (the default value for `diredp-omit-files-regexp').  There shouldn't be any need to autoload `defcustom`s, as far as I know.
+
+-- npostavs 2019-06-03 20:36 UTC
+
