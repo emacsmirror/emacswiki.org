@@ -54,6 +54,17 @@ By default, Image-Dired does not respect the EXIF rotation field when displaying
            (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-temp-image-options))))
 }}}
 
+As of version ??:
+
+{{{
+(eval-after-load "image-dired"
+  '(progn
+     (setq image-dired-cmd-create-thumbnail-options
+           (cons "-auto-orient" image-dired-cmd-create-thumbnail-options)
+           image-dired-cmd-create-temp-image-options
+           (cons "-auto-orient" image-dired-cmd-create-temp-image-options))))
+}}}
+
 
 == Gallery generation ==
 
