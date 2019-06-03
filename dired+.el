@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Apr 22 04:51:55 2019 (-0700)
+;; Last-Updated: Mon Jun  3 15:24:16 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11676
+;;     Update #: 11697
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -804,6 +804,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/06/03 dadams
+;;     Hard-require dired-x.el.  (No reason not to.)  Removed fboundp guards for it.
 ;; 2019/04/22 dadams
 ;;     Added diredp-move-files-named-in-kill-ring.  Bound to C-w.
 ;; 2019/04/21 dadams
@@ -1459,7 +1461,7 @@
 ;;     Factored bookmark stuff into Bookmark(s) submenus.
 ;;     diredp-menu-bar-immediate-menu: Added dired-kill-subdir, [goto-subdir].
 ;;     diredp-dired-this-subdir, dired-maybe-insert-subdir: Corrected :visible/enable.
-;;     diredp-dired-inserted-subdirs: Do dired-(remember-marks|mark-rememberd) in this-buff.
+;;     diredp-dired-inserted-subdirs: Do dired-(remember-marks|mark-remembered) in this-buff.
 ;;     diredp-mouse-3-menu:
 ;;       Do not use save-excursion, because some commands move point on purpose.  Just return to
 ;;         original point unless command intends to MOVEP.
@@ -1900,7 +1902,7 @@
 (require 'dired-aux) ;; dired-bunch-files, dired-do-chxxx, dired-do-create-files,
                      ;; dired-mark-read-string, dired-read-shell-command,
                      ;; dired-run-shell-command, dired-shell-stuff-it
-(require 'dired-x nil t) ;; (no error if not found) dired-do-relsymlink
+(require 'dired-x) ;; dired-do-relsymlink
 (require 'autofit-frame nil t) ;; (no error if not found) fit-frame-if-one-window
 (require 'bookmark+ nil t) ;; (no error if not found)
  ;; bmkp-autofile-add-tags, bmkp-autofile-remove-tags, bmkp-autofile-set, bmkp-copied-tags,
@@ -4486,10 +4488,8 @@ Markings and current Dired switches are preserved."
          (save-selected-window
            (dolist (entry  dired-subdir-alist)
              (unless (string= (car entry) this-dir)
-               (setq marked
-                     (with-current-buffer this-buff
-                       (dired-remember-marks (dired-get-subdir-min entry)
-                                             (dired-get-subdir-max entry))))
+               (setq marked  (with-current-buffer this-buff
+                               (dired-remember-marks (dired-get-subdir-min entry) (dired-get-subdir-max entry))))
                (if (not no-show-p)
                    (dired-other-window (car entry) dired-actual-switches)
                  (dired-noselect (car entry) dired-actual-switches)
@@ -5317,10 +5317,8 @@ When called from Lisp, optional arg DETAILS is passed to
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
   (diredp-do-create-files-recursive #'make-symbolic-link "Symlink" ignore-marks-p details))
 
-(when (fboundp 'dired-do-relsymlink)
-
-  (defun diredp-do-relsymlink-recursive (&optional ignore-marks-p details) ; Bound to `M-+ Y'
-    "Relative symlink all marked files, including those in marked subdirs into a dir.
+(defun diredp-do-relsymlink-recursive (&optional ignore-marks-p details) ; Bound to `M-+ Y'
+  "Relative symlink all marked files, including those in marked subdirs into a dir.
 Like `dired-do-relsymlink', but act recursively on subdirs to pick up the
 files to link.
 
@@ -5335,11 +5333,9 @@ For absolute symlinks, use \\[diredp-do-symlink-recursive].
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-do-create-files-recursive'."
-    (interactive (progn (diredp-get-confirmation-recursive)
-                        (list current-prefix-arg diredp-list-file-attributes)))
-    (diredp-do-create-files-recursive #'dired-make-relative-symlink "RelSymLink" ignore-marks-p details))
-
-  )
+  (interactive (progn (diredp-get-confirmation-recursive)
+                      (list current-prefix-arg diredp-list-file-attributes)))
+  (diredp-do-create-files-recursive #'dired-make-relative-symlink "RelSymLink" ignore-marks-p details))
 
 ;;;###autoload
 (defun diredp-do-hardlink-recursive (&optional ignore-marks-p details) ; Bound to `M-+ H'
@@ -10267,7 +10263,7 @@ Makes the first char of the name uppercase and the others lowercase."
 (defun diredp-relsymlink-this-file ()   ; Bound to `y'
   "In Dired, make a relative symbolic link to file on cursor line."
   (interactive)
-  (let ((use-file-dialog  nil)) (and (fboundp 'dired-do-relsymlink)  (dired-do-relsymlink 1))))
+  (let ((use-file-dialog  nil)) (dired-do-relsymlink 1)))
 
 ;;;###autoload
 (defun diredp-symlink-this-file ()      ; Not bound
@@ -10938,8 +10934,7 @@ With non-nil prefix arg, mark them instead."
                              ["Downcase" diredp-downcase-this-file]
                              "--"       ; ------------------------------------------------------
                              ["Copy to..." diredp-copy-this-file]
-                             ["Symlink to (Relative)..." diredp-relsymlink-this-file
-                              :visible (fboundp 'dired-do-relsymlink)] ; In `dired-x.el'.
+                             ["Symlink to (Relative)..." diredp-relsymlink-this-file]
                              ["Symlink to..." diredp-symlink-this-file]
                              ["Hardlink to..." diredp-hardlink-this-file]
                              "--"       ; ------------------------------------------------------
@@ -11597,7 +11592,7 @@ Marking
   \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
 "
 
-    (and (fboundp 'dired-mark-omitted)  ; In `dired-x.el'
+    (and (fboundp 'dired-mark-omitted)  ; In `dired-x.el' Emacs 22+.
          "  \\[dired-mark-omitted]\t\t- Mark omitted
 ")
 
@@ -12242,16 +12237,12 @@ windows there, then delete its window (toggle : show/hide the file)."
 (define-key diredp-single-move-copy-link-menu [single-hardlink]
   '(menu-item "Hardlink to..." diredp-hardlink-this-file
     :help "Make hard links for current or marked files"))
-(if (not (fboundp 'dired-do-relsymlink))
-    (define-key diredp-single-move-copy-link-menu [single-symlink]
-      '(menu-item "Symlink to..." diredp-symlink-this-file
-        :visible (fboundp 'make-symbolic-link) :help "Make symbolic link for file at cursor"))
-  (define-key diredp-single-move-copy-link-menu [single-symlink]
-    '(menu-item "Symlink to (Absolute)..." diredp-symlink-this-file
-      :help "Make absolute symbolic link for file at cursor"))
-  (define-key diredp-single-move-copy-link-menu [single-relsymlink]
-    '(menu-item "Symlink to (Relative)..." diredp-relsymlink-this-file ; In `dired-x.el'.
-      :help "Make relative symbolic link for file at cursor")))
+(define-key diredp-single-move-copy-link-menu [single-symlink]
+  '(menu-item "Symlink to (Absolute)..." diredp-symlink-this-file
+              :help "Make absolute symbolic link for file at cursor"))
+(define-key diredp-single-move-copy-link-menu [single-relsymlink]
+  '(menu-item "Symlink to (Relative)..." diredp-relsymlink-this-file
+              :help "Make relative symbolic link for file at cursor"))
 (define-key diredp-single-move-copy-link-menu [single-copy]
   '(menu-item "Copy to..." diredp-copy-this-file :help "Copy file at cursor"))
 (define-key diredp-single-move-copy-link-menu [single-rename]
@@ -12560,17 +12551,12 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-hardlink]
   '(menu-item "Hardlink to..." dired-do-hardlink
     :help "Make hard links for current or marked files"))
-(if (not (fboundp 'dired-do-relsymlink))
-    (define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-symlink]
-      '(menu-item "Symlink to..." dired-do-symlink
-        :visible (fboundp 'make-symbolic-link)
-        :help "Make symbolic links for current or marked files"))
-  (define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-symlink]
-    '(menu-item "Symlink to (Absolute)..." dired-do-symlink
-      :help "Make absolute symbolic links for current or marked files"))
-  (define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-relsymlink] ; In `dired-x.el'.
-    '(menu-item "Symlink to (Relative)..." dired-do-relsymlink
-      :help "Make relative symbolic links for current or marked files")))
+(define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-symlink]
+  '(menu-item "Symlink to (Absolute)..." dired-do-symlink ; In `dired-aux.el'.
+              :help "Make absolute symbolic links for current or marked files"))
+(define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-relsymlink]
+  '(menu-item "Symlink to (Relative)..." dired-do-relsymlink ; In `dired-x.el'.
+              :help "Make relative symbolic links for current or marked files"))
 (define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-copy]
   '(menu-item "Copy to..." dired-do-copy :help "Copy current file or all marked files"))
 (define-key diredp-multiple-move-copy-link-menu [multiple-move-copy-link-rename]
@@ -12814,17 +12800,12 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-multiple-recursive-menu [diredp-do-hardlink-recursive]
   '(menu-item "Hardlink to..." diredp-do-hardlink-recursive
     :help "Make hard links for marked files, including those in marked subdirs"))
-(if (not (fboundp 'dired-do-relsymlink))
-    (define-key diredp-multiple-recursive-menu [diredp-do-symlink-recursive]
-      '(menu-item "Symlink to..." diredp-do-symlink-recursive
-        :visible (fboundp 'make-symbolic-link)
-        :help "Make symbolic links for marked files, including those in marked subdirs"))
-  (define-key diredp-multiple-recursive-menu [diredp-do-symlink-recursive]
-    '(menu-item "Symlink to (Absolute)..." diredp-do-symlink-recursive
-      :help "Make absolute symbolic links for marked files, including those in marked subdirs"))
-  (define-key diredp-multiple-recursive-menu [diredp-do-relsymlink-recursive]
-    '(menu-item "Symlink to (Relative)..." diredp-do-relsymlink-recursive
-      :help "Make relative symbolic links for marked files, including those in marked subdirs")))
+(define-key diredp-multiple-recursive-menu [diredp-do-symlink-recursive]
+  '(menu-item "Symlink to (Absolute)..." diredp-do-symlink-recursive
+              :help "Make absolute symbolic links for marked files, including those in marked subdirs"))
+(define-key diredp-multiple-recursive-menu [diredp-do-relsymlink-recursive]
+  '(menu-item "Symlink to (Relative)..." diredp-do-relsymlink-recursive
+              :help "Make relative symbolic links for marked files, including those in marked subdirs"))
 (define-key diredp-multiple-recursive-menu [diredp-do-copy-recursive]
     '(menu-item "Copy to..." diredp-do-copy-recursive
       :help "Copy marked files, including in marked subdirs, to a given directory"))
@@ -12980,25 +12961,20 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map [menu-bar regexp] (cons "Regexp" diredp-menu-bar-regexp-menu))
 
 (define-key diredp-menu-bar-regexp-menu [hardlink]
-  '(menu-item "Hardlink to..." dired-do-hardlink-regexp
+  '(menu-item "Hardlink to..." dired-do-hardlink-regexp ; In `dired-aux.el'.
     :help "Make hard links for files matching regexp"))
-(if (not (fboundp 'dired-do-relsymlink-regexp))
-    (define-key diredp-menu-bar-regexp-menu [symlink]
-      '(menu-item "Symlink to..." dired-do-symlink-regexp
-        :visible (fboundp 'make-symbolic-link)
-        :help "Make symbolic links for files matching regexp"))
-  (define-key diredp-menu-bar-regexp-menu [symlink]
-    '(menu-item "Symlink to (Absolute)..." dired-do-symlink-regexp
-      :visible (fboundp 'make-symbolic-link)
-      :help "Make absolute symbolic links for files matching regexp"))
-  (define-key diredp-menu-bar-regexp-menu [relsymlink] ; In `dired-x.el'.
-    '(menu-item "Symlink to (Relative)..." dired-do-relsymlink-regexp
-      :visible (fboundp 'make-symbolic-link)
-      :help "Make relative symbolic links for files matching regexp")))
+(define-key diredp-menu-bar-regexp-menu [symlink]
+  '(menu-item "Symlink to (Absolute)..." dired-do-symlink-regexp ; In `dired-aux.el'.
+              :help "Make absolute symbolic links for files matching regexp"))
+(define-key diredp-menu-bar-regexp-menu [relsymlink]
+  '(menu-item "Symlink to (Relative)..." dired-do-relsymlink-regexp ; In `dired-x.el'.
+              :help "Make relative symbolic links for files matching regexp"))
 (define-key diredp-menu-bar-regexp-menu [copy]
-  '(menu-item "Copy to..." dired-do-copy-regexp :help "Copy marked files matching regexp"))
+  '(menu-item "Copy to..." dired-do-copy-regexp ; In `dired-aux.el'.
+              :help "Copy marked files matching regexp"))
 (define-key diredp-menu-bar-regexp-menu [rename]
-  '(menu-item "Move to..." dired-do-rename-regexp :help "Move marked files matching regexp"))
+  '(menu-item "Move to..." dired-do-rename-regexp ; In `dired-aux.el'.
+              :help "Move marked files matching regexp"))
 (define-key diredp-menu-bar-regexp-menu [flag]
   '(menu-item "Flag..." dired-flag-files-regexp :help "Flag files matching regexp for deletion"))
 (define-key diredp-menu-bar-regexp-menu [image-dired-mark-tagged-files]
@@ -13123,10 +13099,9 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Flag' submenu for Dired menu-bar `Marks' menu.")
 (define-key diredp-menu-bar-marks-menu [mark-flag] (cons "Flag" diredp-marks-flag-menu))
 
-(when (fboundp 'dired-flag-extension)
-  (define-key diredp-marks-flag-menu [marks-flag-extension] ; In `dired-x.el'
-    '(menu-item "Flag Extension..." dired-flag-extension
-      :help "Flag all files that have a certain extension, for deletion")))
+(define-key diredp-marks-flag-menu [marks-flag-extension]
+  '(menu-item "Flag Extension..." dired-flag-extension ; In `dired-x.el'
+              :help "Flag all files that have a certain extension, for deletion"))
 (define-key diredp-marks-flag-menu [marks-flag-garbage-files]
   '(menu-item "Flag Garbage Files" dired-flag-garbage-files
     :help "Flag unneeded files for deletion"))
@@ -13181,13 +13156,12 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Mark' submenu for Dired menu-bar `Marks' menu.")
 (define-key diredp-menu-bar-marks-menu [marks-mark] (cons "Mark" diredp-marks-mark-menu))
 
-(when (fboundp 'dired-mark-sexp)
-  (define-key diredp-marks-mark-menu [marks-mark-sexp] ; In `dired-x.el'.
-    '(menu-item "Mark If..." dired-mark-sexp
-      :help "Mark files that satisfy specified condition")))
+(define-key diredp-marks-mark-menu [marks-mark-sexp]
+  '(menu-item "Mark If..." dired-mark-sexp ; In `dired-x.el'.
+              :help "Mark files that satisfy specified condition"))
 (define-key diredp-marks-mark-menu [marks-image-dired-mark-tagged-files]
   '(menu-item "Mark Image Files Tagged..." image-dired-mark-tagged-files
-    :enable (fboundp 'image-dired-mark-tagged-files)
+    :enable (fboundp 'image-dired-mark-tagged-files) ; In `image-dired.el'.
     :help "Mark image files whose image tags match regexp"))
 (define-key diredp-marks-mark-menu [marks-mark-cont]
   '(menu-item "Mark Content Matching Regexp..." dired-mark-files-containing-regexp
@@ -13195,7 +13169,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-marks-mark-menu [marks-mark...]
   '(menu-item "Mark Name Matching Regexp..." dired-mark-files-regexp
     :help "Mark file names matching regexp"))
-(when (fboundp 'dired-mark-omitted)     ; In `dired-x.el'.
+(when (fboundp 'dired-mark-omitted)     ; In `dired-x.el', Emacs 22+.
   (define-key diredp-marks-mark-menu [marks-mark-omitted]
     '(menu-item "Mark Omitted..." dired-mark-omitted
       :help "Mark all omitted files and subdirectories")))
