@@ -556,6 +556,30 @@ This will show something like:
 
     Projectname > file.ext  (37, 1) [mode]...
 
+
+== Make new tab open on the right of the current tab ==
+
+    (defun tabbar-add-tab (tabset object &optional append)
+        "Override tabbar-add-tab, makes new tab open on the right of the current tab"
+        (let ((tabs (tabbar-tabs tabset)))
+          (if (tabbar-get-tab object tabset)
+              tabs
+            (let ((tab (tabbar-make-tab object tabset))
+                  (previous-tab (tabbar-selected-tab tabset))
+                  (other-tabs (list)))
+              (tabbar-set-template tabset nil)
+              (if append
+                  (progn
+                    (while (not (string= (format "%s" (car previous-tab)) (format "%s" (car (car tabs)))))
+                      (push (car tabs) other-tabs)
+                      (setq tabs (cdr tabs)))
+                    (push (car tabs) other-tabs)
+                    (setq tabs (cdr tabs))
+                    (push tab other-tabs)
+                    (setq other-tabs (reverse other-tabs))
+                    (set tabset (append other-tabs tabs)))
+                (set tabset(cons tab tabs)))))))
+
 == Questions and Answers ==
 
 ----
