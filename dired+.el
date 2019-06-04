@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun  3 15:24:16 2019 (-0700)
+;; Last-Updated: Mon Jun  3 17:58:37 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11697
+;;     Update #: 11699
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -805,6 +805,7 @@
 ;;; Change Log:
 ;;
 ;; 2019/06/03 dadams
+;;     Removed autoload cookie for diredp-omit-files-regexp - it evaluates dired-omit-files, from dired-x.el.
 ;;     Hard-require dired-x.el.  (No reason not to.)  Removed fboundp guards for it.
 ;; 2019/04/22 dadams
 ;;     Added diredp-move-files-named-in-kill-ring.  Bound to C-w.
@@ -2254,7 +2255,6 @@ Target directory names should be absolute."
 ;;          (strg  (replace-regexp-in-string "\\([$]\\)" "" strg 'FIXEDCASE nil))) ; Remove $'s
 ;;     strg))
 
-;;;###autoload
 (defcustom diredp-omit-files-regexp (let* ((strg  dired-omit-files)
                                            (strg  (if (eq ?^ (aref strg 0)) ; Remove initial ^
                                                       (substring strg 1)
