@@ -33,3 +33,10 @@ DrewAdams: I can't see how your change will help, the reference to `dired-omit-f
 
 -- npostavs 2019-06-03 23:14 UTC
 
+
+----
+
+@npovstavs: Duh. Thanks again. Should be OK now.
+
+-- DrewAdams 2019-06-04 01:01 UTC
+
