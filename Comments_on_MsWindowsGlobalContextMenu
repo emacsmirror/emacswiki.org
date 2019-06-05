@@ -1,6 +1,8 @@
 For what it's worth, to get the Ultimate Context Menu to work with Windows 10 x64, I had to change path URLs to their short 8+3 alias names, ie:
 
+{{{
 @="c:\\PROGRA~1\\EMACS2~1.2\\bin\\EMACSC~2.EXE  -n --alternate-editor=\"c:\\PROGRA~1\\EMACS2~1.2\\bin\\runemacs.exe\" -n \"%V\""
+}}}
 
 -- I don 2019-06-05 14:12 UTC
 
@@ -11,3 +13,4 @@ Above comment didn't format right...
 
 -- LittleHouse75 2019-06-05 14:13 UTC
 
+@LittleHouse75 better now?
