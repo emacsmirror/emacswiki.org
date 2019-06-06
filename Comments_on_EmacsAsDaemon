@@ -125,7 +125,7 @@ ExecStart=/usr/bin/emacs --daemon --user %u
 User=%i
 }}}
 
-I get emacs running as ##emacs --daemon --user root##. If I replace ##ExecStart=/usr/bin/emacs --daemon --user %u## with ##ExecStart=/usr/bin/emacs --daemon --user %i## then it works. Is it a typo on the wiki page or an issue with my configuration?
+I get emacs running as ##emacs --daemon --user root##. If I replace ##ExecStart=/usr/bin/emacs --daemon --user %u## with ##ExecStart=/usr/bin/emacs --daemon --user %i## then I get ##emacs --daemon --user arch## as desired. Is it a typo on the wiki page or an issue with my configuration?
 
 -- ArchStanton 2019-06-06 14:50 UTC
 
