@@ -64,7 +64,11 @@ https://github.com/redguardtoo/cliphist
 
 If it's getting to be a bit of a hassle, use https://github.com/thomp/datclip to simply show the primary, secondary, and clipboard selections in the datclip buffer.
 
+==== clipmon ====
 
+Monitor the clipboard and insert any change into the kill-ring.
+It makes it easier to use ##yank-pop## from several inputs outside Emacs.
+https://github.com/bburns/clipmon
 
 ---- 
 CategoryEmulation
