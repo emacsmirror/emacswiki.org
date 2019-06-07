@@ -129,3 +129,17 @@ I get emacs running as ##emacs --daemon --user root##. If I replace ##ExecStart=
 
 -- ArchStanton 2019-06-06 14:50 UTC
 
+
+----
+
+https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Specifiers says 
+
+{{{
+"%i"	Instance name	For instantiated units this is the string between the first "@" character and the type suffix. Empty for non-instantiated units.
+"%u"	User name	This is the name of the user running the service manager instance. In case of the system manager this resolves to "root".
+}}}
+
+So I'm guessing ##--user %i## is the right thing.
+
+-- npostavs 2019-06-07 11:54 UTC
+
