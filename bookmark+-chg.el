@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun  8 14:19:00 2019 (-0700)
+;; Last-Updated: Sat Jun  8 15:42:11 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16537
+;;     Update #: 16538
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2019/06/08 dadams
+;;     bmkp-set-kmacro-bookmark: Do not use read-kbd-macro.
 ;;     bmkp-repeat-command: Same as in zz-repeat-command in zones.el now.
 ;;       Require repeat.el.  Bind repeat-previous-repeated-command.
 ;;     bmkp-(next|previous)(-*)-bookmark(-*)-repeat, 
