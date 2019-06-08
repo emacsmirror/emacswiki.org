@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May 21 12:16:34 2019 (-0700)
+;; Last-Updated: Sat Jun  8 14:19:00 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16535
+;;     Update #: 16537
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2019/06/08 dadams
+;;     bmkp-repeat-command: Same as in zz-repeat-command in zones.el now.
+;;       Require repeat.el.  Bind repeat-previous-repeated-command.
+;;     bmkp-(next|previous)(-*)-bookmark(-*)-repeat, 
 ;; 2019/05/21 dadams
 ;;     bmkp-dired-remember-*-marks: Updated per dired-remember-marks, for Emacs 27+.
 ;; 2019/05/19 dadams
