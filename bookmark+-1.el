@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May 21 12:18:07 2019 (-0700)
+;; Last-Updated: Sat Jun  8 14:13:34 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8910
+;;     Update #: 8912
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7026,8 +7026,10 @@ predicate."
 
 (defun bmkp-repeat-command (command)
   "Repeat COMMAND."
-  (let ((repeat-message-function  'ignore))
-    (setq last-repeatable-command  command)
+  (require 'repeat)                   ; Define its vars before we let-bind them.
+  (let ((repeat-previous-repeated-command  command)
+        (repeat-message-function           #'ignore)
+        (last-repeatable-command           'repeat))
     (repeat nil)))
 
 
@@ -12180,7 +12182,6 @@ This is a repeatable version of `bmkp-next-bookmark'.
 N defaults to 1, meaning the next bookmark.
 Plain `C-u' means start over at the first bookmark (and no repeat)."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-next-bookmark))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-repeat "bookmark+")
@@ -12188,7 +12189,6 @@ Plain `C-u' means start over at the first bookmark (and no repeat)."
   "Jump to the Nth-previous bookmark in the bookmark navigation list.
 See `bmkp-next-bookmark-repeat'."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-bookmark))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-other-window-repeat "bookmark+")
@@ -12198,7 +12198,6 @@ This is a repeatable version of `bmkp-next-bookmark'.
 N defaults to 1, meaning the next bookmark.
 Plain `C-u' means start over at the first bookmark (and no repeat)."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-next-bookmark-other-window))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-other-window-repeat "bookmark+")
@@ -12206,7 +12205,6 @@ Plain `C-u' means start over at the first bookmark (and no repeat)."
   "Jump to Nth-previous bookmark in bookmark navlist in another window.
 See `bmkp-next-bookmark-repeat'."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-bookmark-other-window))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-this-file/buffer "bookmark+")
@@ -12235,7 +12233,6 @@ This is a repeatable version of `bmkp-next-bookmark-this-file/buffer'.
 N defaults to 1, meaning the next one.
 Plain `C-u' means start over at the first one (and no repeat)."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-next-bookmark-this-file/buffer))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-this-file/buffer-repeat "bookmark+")
@@ -12244,7 +12241,6 @@ Plain `C-u' means start over at the first one (and no repeat)."
   "Jump to the Nth previous bookmark for the current file/buffer.
 See `bmkp-next-bookmark-this-file/buffer-repeat'."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-bookmark-this-file/buffer))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-this-file "bookmark+")
@@ -12272,7 +12268,6 @@ This is a repeatable version of `bmkp-next-bookmark-this-file'.
 N defaults to 1, meaning the next one.
 Plain `C-u' means start over at the first one (and no repeat)."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-next-bookmark-this-file))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-this-file-repeat "bookmark+")
@@ -12280,7 +12275,6 @@ Plain `C-u' means start over at the first one (and no repeat)."
   "Jump to the Nth previous bookmark for the current file.
 See `bmkp-next-bookmark-this-file-repeat'."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-bookmark-this-file))
 
 
@@ -12309,7 +12303,6 @@ This is a repeatable version of `bmkp-next-bookmark-this-buffer'.
 N defaults to 1, meaning the next one.
 Plain `C-u' means start over at the first one (and no repeat)."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-next-bookmark-this-buffer))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-this-buffer-repeat "bookmark+")
@@ -12317,7 +12310,6 @@ Plain `C-u' means start over at the first one (and no repeat)."
   "Jump to the Nth previous bookmark in the current buffer.
 See `bmkp-next-bookmark-this-buffer-repeat'."
   (interactive "P")
-  (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-bookmark-this-buffer))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-w32 "bookmark+")
@@ -12346,7 +12338,6 @@ This is a repeatable version of `bmkp-next-bookmark'.
 N defaults to 1, meaning the next bookmark.
 Plain `C-u' means start over at the first one (and no repeat)."
   (interactive "P")
-  (require 'repeat)
   (let ((bmkp-use-w32-browser-p  t))  (bmkp-repeat-command 'bmkp-next-bookmark)))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-w32-repeat "bookmark+")
@@ -12354,7 +12345,6 @@ Plain `C-u' means start over at the first one (and no repeat)."
   "Windows `Open' the Nth previous bookmark in the bookmark navlist.
 See `bmkp-next-bookmark-w32-repeat'."
   (interactive "P")
-  (require 'repeat)
   (let ((bmkp-use-w32-browser-p  t))  (bmkp-repeat-command 'bmkp-previous-bookmark)))
 
 ;; In spite of their names, `bmkp-cycle-specific-(buffers|files)*' just cycle bookmarks in the
