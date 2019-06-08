@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun  8 14:13:34 2019 (-0700)
+;; Last-Updated: Sat Jun  8 15:36:34 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8912
+;;     Update #: 8913
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9860,7 +9860,7 @@ With a prefix arg, use `last-kbd-macro' as the keyboard macro."
        (list bname kmac 'MSG)))
     (let* ((bmk     (bmkp-get-bookmark-in-alist bookmark-name 'NOERROR))
            (exists  (and bmk  (bmkp-function-bookmark-p bmk))))
-      (bmkp-make-function-bookmark bookmark-name (read-kbd-macro keyboard-macro 'NEED-VECTOR) msg-p)
+      (bmkp-make-function-bookmark bookmark-name keyboard-macro msg-p)
       (when msg-p
         (message "Function bookmark `%s' %s" bookmark-name (if exists "replaced" "created")))))
 
