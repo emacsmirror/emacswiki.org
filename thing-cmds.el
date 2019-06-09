@@ -4,13 +4,13 @@
 ;; Description: Commands that use things, as defined by `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2019, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Mon Jan  1 16:03:00 2018 (-0800)
+;; Last-Updated: Sun Jun  9 08:14:17 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 789
+;;     Update #: 792
 ;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `thingatpt', `thingatpt+'.
+;;   `hide-comnt', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,6 +70,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/06/09 dadams
+;;     thgcmd-repeat-command: Same as in zz-repeat-command in zones.el now.
+;;     (next|previous)-visible-thing-repeat
+;;        Removed require of repeat.el (in thgcmd-repeat-command now).
 ;; 2017/03/31 dadams
 ;;     Duplicated here from hide-comnt.el: with-comments-hidden.
 ;; 2014/12/01 dadams
@@ -574,10 +578,13 @@ the bounds of THING.  Return nil if no such THING is found."
           prop
         (or (memq prop buffer-invisibility-spec)  (assq prop buffer-invisibility-spec))))))
 
+;; Same as `zz-repeat-command' in `zones.el'.
 (defun thgcmd-repeat-command (command)
   "Repeat COMMAND."
-  (let ((repeat-message-function  'ignore))
-    (setq last-repeatable-command  command)
+  (require 'repeat)         ; Define its vars before we let-bind them.
+  (let ((repeat-previous-repeated-command  command)
+        (repeat-message-function           #'ignore)
+        (last-repeatable-command           'repeat))
     (repeat nil)))
 
 ;;;###autoload
@@ -585,7 +592,6 @@ the bounds of THING.  Return nil if no such THING is found."
   "Go to and get the next visible THING.
 This is a repeatable version of `next-visible-thing'."
   (interactive)
-  (require 'repeat)
   (let ((DO-NOT-USE-!@$%^&*+  t))  (thgcmd-repeat-command 'next-visible-thing)))
 
 ;;;###autoload
@@ -593,7 +599,6 @@ This is a repeatable version of `next-visible-thing'."
   "Go to and get the previous visible THING.
 This is a repeatable version of `previous-visible-thing'."
   (interactive)
-  (require 'repeat)
   (let ((DO-NOT-USE-!@$%^&*+  t))  (thgcmd-repeat-command 'previous-visible-thing)))
 
 ;;;###autoload
