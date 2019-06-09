@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Jan 12 11:29:58 2019 (-0800)
+;; Last-Updated: Sun Jun  9 08:02:50 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 7456
+;;     Update #: 7459
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -17,19 +17,28 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `cus-theme', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
-;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
-;;   `hexrgb', `icicles-cmd1', `icicles-fn', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+20',
-;;   `isearch+', `kmacro', `levenshtein', `menu-bar', `menu-bar+',
+;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
+;;   `dired', `dired-loaddefs', `doremi', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
+;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `format-spec', `frame-cmds', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `hl-line',
+;;   `hl-line+', `icicles-cmd1', `icicles-fn', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `image', `image-dired',
+;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
+;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `pp', `pp+', `ring', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `password-cache', `pp', `pp+', `radix-tree', `replace', `ring',
+;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
+;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -460,7 +469,7 @@
 (defvar woman-manpath)                  ; In `woman.el'
 (defvar woman-path)                     ; In `woman.el'
 (defvar woman-topic-all-completions)    ; In `woman.el'
-(defvar zz-izones)                      ; In `zones.el'
+(defvar zz-izones-var)                  ; In `zones.el'
 (defvar zz-lighter-narrowing-part)      ; In `zones.el'
 
 ;; (< emacs-major-version 21)
@@ -2472,7 +2481,6 @@ For more flexibility, use multi-command `icicle-font-lock-keyword'."
                          startovr
                          reset
                          'MSGP)))
-    (require 'repeat)
     (icicle-repeat-command 'icicle-next-font-lock-keywords))
 
   (icicle-define-command icicle-font-lock-keyword
