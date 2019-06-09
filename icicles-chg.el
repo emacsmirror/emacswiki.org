@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Oct 17 10:08:59 2018 (-0700)
+;; Last-Updated: Sun Jun  9 07:53:33 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11869
+;;     Update #: 11871
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1210,6 +1210,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2019/06/09 dadams
+;;     icicle-next-font-lock-keywords-repeat:
+;;       Removed require of repeat.el (in icicle-repeat-command now).
 ;; 2018/10/15 dadams
 ;;     icicle-choose-candidate-of-type: Bind icicle-sort-comparer and icicle-buffer-completing-p.
 ;;                                      Do not use icicle-buffer-sort-first-time-p.
@@ -2311,6 +2314,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2019/06/09 dadams
+;;     icicle-repeat-command: Same as in zz-repeat-command in zones.el now.
 ;; 2018/09/21 dadams
 ;;     Added: icicle--pop-to-buffer-same-window.
 ;;     icicle-try-switch-buffer: Use icicle--pop-to-buffer-same-window.
