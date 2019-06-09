@@ -15,7 +15,7 @@ This table lists for each character or character range
 the corresponding syntax class.
 
 Each character belongs to a certain syntax class. This syntax class is
-identified by one of the following symbol.
+identified by one of the following symbols.
 
   -   whitespace character        /   character quote character
   w   word constituent            $   paired delimiter         
