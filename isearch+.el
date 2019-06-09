@@ -4,13 +4,13 @@
 ;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  9 07:47:08 2019 (-0700)
+;; Last-Updated: Sun Jun  9 08:06:58 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6867
+;;     Update #: 6868
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
