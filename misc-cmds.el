@@ -4,20 +4,21 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov  9 11:56:31 2018 (-0800)
+;; Last-Updated: Sun Jun  9 07:30:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3300
+;;     Update #: 3304
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `frame-fns', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,6 +106,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/06/09 dadams
+;;     repeat-command: Same as in zz-repeat-command in zones.el now.
 ;; 2018/07/22 dadams
 ;;     Added to-next-word, to-previous-word.
 ;; 2017/08/23 dadams
@@ -1545,10 +1548,13 @@ E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
 ;; (global-set-key [remap next-buffer]     'next-buffer-repeat)
 
 (when (> emacs-major-version 21)
+
   (defun repeat-command (command)
     "Repeat COMMAND."
-    (let ((repeat-message-function  'ignore))
-      (setq last-repeatable-command  command)
+    (require 'repeat)       ; Define its vars before we let-bind them.
+    (let ((repeat-previous-repeated-command  command)
+          (repeat-message-function           #'ignore)
+          (last-repeatable-command           'repeat))
       (repeat nil)))
 
   (defun previous-buffer-repeat ()
@@ -1572,7 +1578,9 @@ You can repeat this by hitting the last key again...
 See `compare-windows' - this is the same, except repeatable."
     (interactive "P")
     (require 'repeat)
-    (repeat-command 'compare-windows)))
+    (repeat-command 'compare-windows))
+
+  )
 
 ;;;###autoload
 (defun view-X11-colors ()
