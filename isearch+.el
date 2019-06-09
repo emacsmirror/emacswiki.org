@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 30 13:17:38 2018 (-0800)
+;; Last-Updated: Sun Jun  9 07:47:08 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6861
+;;     Update #: 6867
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1234,6 +1234,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2019/06/09 dadams
+;;     isearchp-repeat-command: Same as in zz-repeat-command in zones.el now.
+;;     isearchp-yank-*: Removed soft-require of repeat.el (hard-require in isearchp-repeat-command now).
 ;; 2018/12/30 dadams
 ;;     Define isearch-lazy-highlight-match-function here.  It apparently will not be added to Emacs 27.
 ;; 2018/12/23 dadams
@@ -3963,25 +3966,23 @@ With a numeric prefix arg, append that many copies of the character."
   )
 
 (when (fboundp 'isearch-yank-internal)  ; Emacs 22+
-  (defun isearchp-yank-char ()          ; Bound to `C-y C-c' in `isearch-mode-map'.
+
+  (defun isearchp-yank-char () ; Bound to `C-y C-c' in `isearch-mode-map'.
     "Yank next character from buffer onto search string.
 You can repeat this by hitting the last key again..."
     (interactive)
-    (require 'repeat nil t)
     (isearchp-repeat-command 'isearch-yank-char))
 
-  (defun isearchp-yank-word-or-char ()  ; Bound to `C-w' and `C-y C-w' in `isearch-mode-map'.
+  (defun isearchp-yank-word-or-char () ; Bound to `C-w' and `C-y C-w' in `isearch-mode-map'.
     "Yank next word or character from buffer onto search string.
 You can repeat this by hitting the last key again..."
     (interactive)
-    (require 'repeat nil t)
     (isearchp-repeat-command 'isearch-yank-word-or-char))
 
-  (defun isearchp-yank-line ()          ; Bound to `C-y C-e' in `isearch-mode-map'.
+  (defun isearchp-yank-line () ; Bound to `C-y C-e' in `isearch-mode-map'.
     "Yank text from buffer up to end of line onto search string.
 You can repeat this by hitting the last key again..."
     (interactive)
-    (require 'repeat nil t)
     (isearchp-repeat-command 'isearch-yank-line))
 
   (defun isearchp-yank-symbol-or-char-1 ()
@@ -4022,8 +4023,9 @@ Not intended/needed as a user command."
     "Yank sexp, symbol, subword, word, or char into search string.
 You can repeat this by hitting the last key again..."
     (interactive)
-    (require 'repeat nil t)
-    (isearchp-repeat-command 'isearchp-yank-sexp-symbol-or-char-1)))
+    (isearchp-repeat-command 'isearchp-yank-sexp-symbol-or-char-1))
+
+  )
 
 (defun isearchp-kill-ring-save ()       ; Bound to `M-w' in `isearch-mode-map'.
   "Copy the current search string to the kill ring."
@@ -7105,10 +7107,13 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
         (pop tail))
       (nreverse new))))
 
+;; Same as `zz-repeat-command' in `zones.el'.
 (defun isearchp-repeat-command (command)
   "Repeat COMMAND."
-  (let ((repeat-message-function  'ignore))
-    (setq last-repeatable-command  command)
+  (require 'repeat)          ; Define its vars before we let-bind them.
+  (let ((repeat-previous-repeated-command  command)
+        (repeat-message-function           #'ignore)
+        (last-repeatable-command           'repeat))
     (repeat nil)))
 
 (defun isearchp-assoc-delete-all (key alist)
