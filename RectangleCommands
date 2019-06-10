@@ -31,8 +31,9 @@ and ColumnNumberMode.
 
 == Rectangle Commands ==
 
-* Kill a rectangle: kill-rectangle `C-x r k' 
+* Kill a rectangle: kill-rectangle `C-x r k'
 * Yank the last rectangle killing: yank-rectangle `C-x r y'
+* Copy a rectangle: copy-rectangle-as-kill `C-x r M-w'
 * Insert a text rectangle: string-insert-rectangle (unbound)
 * Insert a text to replace rectangle region: string-rectangle `C-x r t'
 * Delete the selected rectangle: delete-rectangle `C-x r d'
@@ -124,19 +125,6 @@ Contrast:
 `yank-rectangle' -> `insert-register'. -- mon_key
 [new]
 Unfortunately, the design of registers in Emacs is to "do the right thing" with what ever "object" is in the register -- point, window, frame, number, text or rectangle.  I can understand your point.  You're probably suggesting there be a method for inserting a rectangle on *lines of their own*.  It would be desirable for registers to behave this way with rectangles to handle your wish.  I know I have to run `open-line' many times to make room, instead. -- AaronHawley
-
-----
-
-== Copy rectangle ==
-
-Sometimes one wishes to kill a rectangle without actually deleting it.  It's certainly trivial enough to undo the `kill-rectangle' command immediately afterwards and there is a way to copy a rectangle into [[Registers]] with `C-x r r', but here is a function (which simply takes advantage of what kill-rectangle does in a read-only situation) and a suggested key binding for consistency with `C-k' and `M-w'.
-
- (defun my-copy-rectangle (start end)
-   "Copy the region-rectangle instead of `kill-rectangle'."
-   (interactive "r")
-   (setq killed-rectangle (extract-rectangle start end)))
- 
- (global-set-key (kbd "C-x r M-w") 'my-copy-rectangle)
 
 ----
 
