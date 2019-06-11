@@ -14,11 +14,7 @@ See also https://en.wikipedia.org/wiki/List_of_speech_recognition_software
 
 == Interfaces for Emacs ==
 
-There are several packages for driving Emacs through voice input, including:
-
-=== a2x ===
-Allows use of !DragonDictate from an X window system.
-http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html
+There were several packages for driving Emacs through voice input, but none currently maintained.
 
 === Dormant ===
 
@@ -51,6 +47,7 @@ EmacsListen is unmaintained.  The latest commit in its [http://shorttalk-emacs.c
 * JohnWiegley has http://www.gci-net.com/users/j/johnw/Emacs/obsolete/dictation.el [www.gci-net.com timeout, Oct 2013]
 * http://www.codevox.com/alsopbvkit.phtml - with a downloadable kit [returns 404, right now, 9. okt. 2005]
 * http://home.hetnet.nl/~vandamhans/commander/commanderindex.htm [redirects to a generic hosting homepage, Oct 2013]
+* http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html - a2x Allows use of !DragonDictate from an X window system. [download links appear to be dead, as of Jun 2019]
 
 == Microphones ==
 * It is very important to have a very good noise-canceling microphone.   One source I have come across is the compatibility list of (the NON-FREE) dragon naturally speaking software -- go for the few that meet their highest rating (six stars).
