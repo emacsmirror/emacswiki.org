@@ -49,69 +49,12 @@ reading text (as opposed to code).  This is controlled by [[user option]] `hl-sp
 === Discussion ===
 
 [new]
-'''Question:''' I've some troubles installing <tt>[[hl-line+.el]]</tt>. I copied ##hl-line+.el## to ##/usr/local/share/emacs/site-lisp## (debian box), byte-compiled to ##/usr/local/share/emacs/site-lisp/hl-line+.elc## (with message "##** The following functions are not known to be defined: global-hl-line-highlight, global-hl-line-unhighlight##"), and added ##(require 'hl-line+)## and ##(toggle-cursor-type-when-idle 1)## to my InitFile, but I get the error "##Symbol's function definition is void: toggle-cursor-type-when-idle##" while loading it. What do I miss? Thanks. -- host-84-221-75-6.cust-adsl.tiscali.it 
-
-[new:DrewAdams:2007-10-11 17:38 UTC]
-There was a typo in the Commentary. `toggle-cursor-type-when-idle' should be `toggle-hl-line-when-idle'. I corrected this in the latest version. Thx -- DrewAdams
-
-[new]
 '''Question:''' In ~/.emacs ##(toggle-hl-line-when-idle 1)## now works, but ##(flash-line-highlight 1)## gives "Symbol's function definition is void: global-hl-line-highlight". ##(require 'hl-line)## and ##(global-hl-line-mode 1)## both work: so I suppose I'm loading ##hl-line.el## well. I cannot see its content, because it's an .elc installed by debian emacs21 package (21.4). Thanks a lot... maybe I'll upgrade. Bye!
 
 [new:DrewAdams:2007-10-11 22:01 UTC]
 You are apparently using Emacs 21, not Emacs 22. As the ##Compatibility:## field in the header of <tt>[[hl-line+.el]]</tt> states, it works with GnuEmacs 22. It is an extension of ##hl-line.el## of Emacs 22, where `global-hl-line-highlight' is defined. You can try to see if ##hl-line+.el## works at all with Emacs 21, but all bets are off. To try that, you'll need to tweak things a bit, to at least suppress the error message. It is useless to ##(setq global-hl-line-highlight 1)## -- it is a function (in Emacs 22), not a variable. Thx -- DrewAdams
 
 ----
-
-[new:YannHodique:2008-01-28 13:42 UTC]
-For some reason, it seems that having <code>'hl-line-unhighlight-now</code> permanently in <code>'pre-command-hook</code> results in some freezes when scrolling. So I slightly modified hl-line+ in the following way  (all it does is to run <code>hl-line-unhighlight-now</code> exactly when needed)
-
-    (defun hl-line-toggle-when-idle (&optional arg)
-    "Turn on or off using `global-hl-line-mode' when Emacs is idle.
-    When on, use `global-hl-line-mode' whenever Emacs is idle.
-    With prefix argument, turn on if ARG > 0; else turn off."
-      (interactive "P")
-      (setq hl-line-when-idle-p
-            (if arg (> (prefix-numeric-value arg) 0) (not hl-line-when-idle-p)))
-      (cond (hl-line-when-idle-p
-             (timer-activate-when-idle hl-line-idle-timer)
-             (message "Turned ON using `global-hl-line-mode' when Emacs is idle."))
-            (t
-             (cancel-timer hl-line-idle-timer)
-             (message "Turned OFF using `global-hl-line-mode' when Emacs is idle."))))
-    
-    (defun hl-line-highlight-now ()
-      "Turn on `global-hl-line-mode' and highlight current line now."
-      (unless global-hl-line-mode
-        (global-hl-line-mode 1)
-        (global-hl-line-highlight)
-        (add-hook 'pre-command-hook 'hl-line-unhighlight-now)
-        ))
-    
-    (defun hl-line-unhighlight-now ()
-      "Turn off `global-hl-line-mode' and unhighlight current line now."
-      (global-hl-line-mode -1)
-      (global-hl-line-unhighlight)
-      (remove-hook 'pre-command-hook 'hl-line-unhighlight-now))
-
-[new:DrewAdams:2008-01-28 18:12 UTC]
-Thanks, Yann. Assuming you agree, I've updated <tt>[[hl-line+.el]]</tt>. -- DrewAdams
-
-[new]
-'''Question:'''. In Customize Mode, for example, highlighting with ##hl-line-mode## doesn't work properly. Usually, every highlighted line has the background and foreground color of the face called ##highlight## (M-x ##customize-face RET highlight RET##). This works fine for all modes I'm using (e.g. Python, Java, AUCTeX) but not in Customize Mode. Here, some faces keep their colors, for example ##custom-link##. Depending on the face, this makes parts of the buffer unreadable. I use the Robin Hood ColorTheme. Thanks. -- ditch
-
-[new:DrewAdams:2008-11-07 15:22 UTC]
-Please provide a clear recipe to produce the problem, starting with ##emacs -Q##. State your Emacs version and platform. Are you using [[hl-line+.el]] or only ##hl-line.el##? If you are using ##hl-line+.el##, do you also have the problem with only ##hl-line.el##. What happens if you don't use ##color-theme##. Provide any other info you think might be pertinent. Always start from scratch (##emacs -Q##), and provide the minimum recipe needed to reproduce the problem completely. Thx -- DrewAdams
-
-[new:ditch:2008-11-10]
-I use ##hl-line.el## and emacs 23.0.60.1. After ##emacs -Q## I say M-x ##global-hl-line-mode##. The highlighted line differs from an unhighlighted line in that the highlighted line's background color is ##darkseagreen2## (default setting for face ##highlight##). When I move the cursor up in the ##*scratch*## buffer, there's some red text. Moving the cursor over one of those lines has the following effect: foreground color stays red, background color changes from white to darkseagreen2 -- works as expected. The question that arises is what happens if you highlight text which has a foreground color that is very similar or even equal to the ##highlight## face?
-
-I use ##color-theme## -- usually the Robin Hood theme. When I switch to this theme the highlighting behaviour is different. The ##highlight## face now defines foreground and background color. This means that no matter what colors are used in a buffer, a highlighted line always has the same two colors with good contrast, avoiding the aforementioned problem of the ##highlight## face interfering with text color. This works fine in all the modes I need except for Customize Mode. Here, some faces like ##custom-link## "don't care" about the ##highlight## face. They remain the same color when they are in a highlighted line. My knowledege of Emacs limited but I assume that there is some face property that blocks highlighting. Buttons, checkboxes, text fields, etc. in Customize Mode do it too but in their case it makes sense. I apologize for this lenghty explanation. I'm beginning to think that ##hl-line.el## might not be the right place to tackle this problem. Thanks. -- ditch
-
-[new:DrewAdams:2008-11-10 22:01 UTC]
-Not sure I followed all of that. Perhaps someone else can help more. My impression is that you might want to file an Emacs bug: `M-x report-emacs-bug'. -- DrewAdams
-
-[new]
-As usual, I seem to have a weird problem that no one else has. I'll try to make it clear in the bug report. -- ditch.
 
 [new:sylecn:2009-12-18 18:53 UTC]
 '''Question:'''. I'm using (toggle-hl-line-when-idle 1) in my ~/.emacs. and I don't want to highlight line when I'm in Info mode or Help mode etc.
@@ -127,46 +70,6 @@ Good question. No, I'm sorry, there is no simple way to do that. <tt>[[hl-line+.
 You might try to change the definition of `hl-line-idle-timer' to run not `hl-line-highlight-now', but some new command `hl-line-highlight-local-now', which is like the global version but uses `hl-line-mode' etc. instead of `global-hl-line-mode' etc. You will need an unhighlight version too, etc.
 
 If you do that and like what you end up with, I could add it to the library, if you like. -- DrewAdams
-
-[new:sylecn:2009-12-18]
-Hi Drew, I have a simple patch that allow user to define modes that should not be highlighted by hl-line+. It's based on a older version, but you get the idea.
-<pre>
-+(defcustom hl-line-disable-for-modes '(Info-mode help-mode view-mode Man-mode)
-+  "hl-line+ will not hl anything on these modes."
-+  :type 'list
-+  :group 'hl-line)
-+
-... 
- (defun hl-line-highlight-now ()
-   "Turn on `global-hl-line-mode' and highlight current line now."
--  (unless global-hl-line-mode
--    (global-hl-line-mode 1)
--    (global-hl-line-highlight)
--    (add-hook 'pre-command-hook 'hl-line-unhighlight-now)))
-+  (if (not (member major-mode hl-line-disable-for-modes))
-+      (unless global-hl-line-mode
-+	(global-hl-line-mode 1)
-+	(global-hl-line-highlight)
-+	(add-hook 'pre-command-hook 'hl-line-unhighlight-now))))
-</pre>
--- [[sylecn]]
-
-[new:DrewAdams:2009-12-18 21:25 UTC]
-OK, I've added that (assuming you agree). I set the default value to `nil', however. It's not clear to me that any given nonempty list of modes would be good by default, especially since `hl-line-highlight-now' can be called from other code. Thx -- DrewAdams
-
-[new:sylecn:]
-of course I agree:) Thanks Drew. --[[sylecn]]
-
-[new]
-When `global-hl-line-mode' is turned on, `hl-line-inhibit-highlighting-for-modes' does not work anymore. IMO, the inhibiting should work for `global-hl-line-mode', shouldn't it? -- [[Kiwon]]
-
-[new:DrewAdams:2013-06-08 15:12 UTC]
-Yes.  Should be OK now; thanks.  -- DrewAdams
-
-
-
-
-
 
 == Library `highlight-current-line.el' ==
 
