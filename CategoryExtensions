@@ -27,20 +27,21 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Strings ==
 
 * StringUtils -- General string-manipulation utilities
+* [[strings.el]] -- Miscellaneous string functions
+* [https://github.com/magnars/s.el s.el] -- "The long lost Emacs string manipulation library."
 * UcsUtils -- General utilities for Unicode characters, strings, and vectors
 * [[ucs-cmds.el]] -- Create commands that insert Unicode chars
-* [[strings.el]] -- Miscellaneous string functions
 
 == Numbers and Mathematics ==
 
-* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el] -- A simple bigint package for emacs
+* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el] -- A simple bigint package for emacs, obsolete as of Emacs 27 which provides builtin big integers.
 * [[Infix]]    -- Writing infix math expressions
 
 == Sequences ==
 
 * ListUtils -- List-manipulation utility functions
 * [http://www.splode.com/~friedman/software/emacs-lisp/src/list-fns.el list-fns.el] -- list-searching and manipulation functions
-* [http://github.com/magnars/bang.el bang.el] -- a modern list api for Emacs. Does not require 'cl.
+* [https://github.com/magnars/dash.el dash.el] -- "A modern list api for Emacs. No 'cl required."
 * VectorUtils -- Vector-manipulation utility functions
 * [http://www.splode.com/~friedman/software/emacs-lisp/src/obarray-fns.el obarray-fns.el] -- obarray-manipulating routines
 
