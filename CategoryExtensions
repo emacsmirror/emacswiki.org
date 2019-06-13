@@ -26,11 +26,11 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Strings ==
 
-* StringUtils -- General string-manipulation utilities
+* StringUtils -- String-manipulation utilities
 * [[strings.el]] -- Miscellaneous string functions
-* [https://github.com/magnars/s.el s.el] -- "The long lost Emacs string manipulation library."
-* UcsUtils -- General utilities for Unicode characters, strings, and vectors
-* [[ucs-cmds.el]] -- Create commands that insert Unicode chars
+* [https://github.com/magnars/s.el s.el] -- String manipulation functions
+* UcsUtils -- Utilities for Unicode characters, strings, and vectors
+* [[ucs-cmds.el]] -- Functions to define commands that insert Unicode chars
 
 == Numbers and Mathematics ==
 
@@ -40,10 +40,10 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Sequences ==
 
 * ListUtils -- List-manipulation utility functions
-* [http://www.splode.com/~friedman/software/emacs-lisp/src/list-fns.el list-fns.el] -- list-searching and manipulation functions
+* [http://www.splode.com/~friedman/software/emacs-lisp/src/list-fns.el list-fns.el] -- List searching and manipulation functions
 * [https://github.com/magnars/dash.el dash.el] -- List api that does not require ##cl.el##.
-* VectorUtils -- Vector-manipulation utility functions
-* [http://www.splode.com/~friedman/software/emacs-lisp/src/obarray-fns.el obarray-fns.el] -- obarray-manipulating routines
+* VectorUtils -- Vector-manipulation functions
+* [http://www.splode.com/~friedman/software/emacs-lisp/src/obarray-fns.el obarray-fns.el] -- obarray-manipulating functions
 
 == Macros ==
 
@@ -51,97 +51,99 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == New Language Constructs ==
 
-* [http://www.mahalito.net/~harley/elisp/nlet.el nlet.el] -- Scheme's "named let"
-* [http://github.com/skeeto/elisp-fakespace fakespace.el] -- fake namespaces with defpackage
-* [http://github.com/skeeto/emacs-memoize memoize.el] -- memoize functions
-* [[Anaphora]] -- anaphoric macros providing implicit temp variables
-* [http://github.com/funkenblatt/combinators.el combinators.el]
+* [http://www.mahalito.net/~harley/elisp/nlet.el nlet.el] -- Scheme's named let
+* [http://github.com/skeeto/elisp-fakespace fakespace.el] -- Fake namespaces with `defpackage'
+* [http://github.com/skeeto/emacs-memoize memoize.el] -- Memoize functions
+* [[Anaphora]] -- Anaphoric macros that provide implicit temp variables
+* [http://github.com/funkenblatt/combinators.el combinators.el] -- Function combining functions (currying etc.)
 
 == Looping ==
 
-* [[Iterate]] -- an attempt at translating "iterate" Common Lisp library into Emacs Lisp
+* [[Iterate]] -- Translation of Common Lisp `iterate' macros into EmacsLisp
 
 == Concurrency ==
 
-* LaterDo -- Calling functions later, thus do some sort of fake threading
-* AsyncEval -- allows forms to be evaluated in a different Emacs process
-* CoRoutines -- Coroutines for Emacs Lisp
-* [http://github.com/jwiegley/emacs-async async.el] -- a module for doing asynchronous processing
-* See also ConcurrentEmacs
+* LaterDo -- Calling functions later, to fake threading
+* AsyncEval -- Evaluate forms in a different Emacs process
+* CoRoutines -- Coroutines for EmacsLisp
+* [http://github.com/jwiegley/emacs-async async.el] -- Asynchronous processing
+
+See also ConcurrentEmacs
 
 == Parsers and Lexers ==
 
-* See CategoryData
+See CategoryData
 
 == Text Processing ==
 
-* [http://github.com/yuutayamada/stem stem.el] -- routines for stemming English words
+* [http://github.com/yuutayamada/stem stem.el] -- Functions that stem English words
 
 == Buffer Text ==
 
-* ThingAtPoint -- Functions to return various kinds of Emacs Lisp entity at or near point. For example, return the Lisp symbol name nearest point.
+* ThingAtPoint -- Functions to return various kinds of EmacsLisp entity (e.g. a [[symbol]]) at or near point
 
 == User Interface ==
 
-* IncrementalRead -- support building libraries that act incrementally on input.
-* LuiMode -- A Linewise User Interface
-* GIT:emacs-lisp/tabulated-list.el -- display and interact with tables
-* ButtonLockMode -- Clickable text defined by regular expression
+* IncrementalRead -- Build libraries that act incrementally on input
+* LuiMode -- A Line-oriented user interface
+* GIT:emacs-lisp/tabulated-list.el -- Display and interact with tables
+* ButtonLockMode -- Clickable text defined by a [[regexp]]
 * [[Alert]] -- Alternatives to `message'
 * NavFlash -- Briefly highlight the current line
 * UnicodeEnbox -- Surround a string with box-drawing characters
-* AutoOverlays -- Overlays defined by regexps, automatically created, updated and destroyed as buffer is modified.
+* AutoOverlays -- Define overlays by regexps -- automatically updated or destroyed as buffer is modified
 
 == Key Bindings ==
 
-* NaKeD -- Provide for naked key descriptions: no angle brackets.
-* DoReMi -- Incremental change using arrow keys or mouse wheel.
-* UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
-* [[http://github.com/tarsius/keymap-utils keymap-utils]] -- keymap utilities
+* NaKeD -- Allow naked key descriptions: no angle brackets (##<##...##>##)
+* DoReMi -- Incremental change using arrow keys or mouse wheel
+* UseCustomizeForKeyBindings -- Widget and `defcustom' code to use Customize for key bindings
+* [[http://github.com/tarsius/keymap-utils keymap-utils]] -- Keymap utilities
 
 == Menus ==
 
-* EasyMenu -- write menu definitions which work under both, Emacs and XEmacs (provided with Emacs)
+* EasyMenu -- Write menu definitions that work under GnuEmacs and XEmacs 
 
 == Windows ==
 
 * WindowEndVisible --  Find the last visible point in a window
-* [https://github.com/kiwanami/emacs-window-layout window-layout.el] -- window layout manager
+* [https://github.com/kiwanami/emacs-window-layout window-layout.el] -- Window layout manager
 
 == Frames ==
 
+* Lisp:frame-cmds.el -- Frame and window commands
 * Lisp:frame-fns.el -- Non-interactive frame and window functions
-* FontUtils -- utility functions for working with fonts
+* FontUtils -- Utility functions for working with fonts
 
 == Buffers ==
 
-* BufferUtils -- Buffer-manipulation utility functions
+* BufferUtils -- Buffer-manipulation functions
 
 == Modes ==
 
-* GIT:emacs-lisp/easy-mmode.el -- easy definition for major and minor modes (included with Emacs)
-* ModeLocal -- Causing a variable or function to have a value/behavior based on major mode.
+* GIT:emacs-lisp/easy-mmode.el -- Define major and minor modes
+* ModeLocal -- Cause a variable or function to have a local value for a major mode.
 
 == Networking ==
 
-* TcpClient -- Network interface to ease the creation of network related script
+* TcpClient -- Network interface to help create network-related scripts
 * [[Websocket]] -- Emacs <nowiki>WebSocket</nowiki> client and server
-* [[Elnode]] -- simple emacs async HTTP server
-* [ftp://ftp.newartisans.com/pub/emacs/httpd.el httpd.el] -- a web server in Emacs Lisp
-* XmlRpc -- make asynchronous remote procedure calls over http
-* CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol
-* SoapClient -- access to SOAP web-services from Emacs
-* UrlPackage -- parse and handle URLs
-* [http://github.com/leathekd/grapnel grapnel] -- HTTP request lib built on curl with flexible callback dispatch
+* [[Elnode]] -- Async HTTP server
+* [ftp://ftp.newartisans.com/pub/emacs/httpd.el httpd.el] -- Web server
+* XmlRpc -- Make asynchronous remote procedure calls over HTTP
+* CorbaImplementation -- CORBA Dynamic Invocation interface using protocol IIOP
+* SoapClient -- Access to SOAP web-services
+* UrlPackage -- Parse and handle URLs
+* [http://github.com/leathekd/grapnel grapnel] -- HTTP request library built on ##curl## with callback dispatch
 
 == Web APIs ==
 
-* [https://github.com/sigma/gh.el gh.el] -- <nowiki>GitHub</nowiki> Api library making use of Eieio
-* [https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Emacs library for the v3 <nowiki>GitHub</nowiki> API
+* [https://github.com/sigma/gh.el gh.el] -- <nowiki>GitHub</nowiki> API library making use of EIEIO
+* [https://github.com/rsanders/github-api-v3.el github-api-v3.el] -- Library for the v3 <nowiki>GitHub</nowiki> API
 
 == Filesystem ==
 
-* SubdirsToList -- Adding subdirectories to a list recursively
+* SubdirsToList -- Recursively add subdirectories to a list
 
 == Persistence ==
 
@@ -149,13 +151,13 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Security ==
 
-* PasswordGenerator -- generate password strings
+* PasswordGenerator -- Generate password strings
 * OAuthLibrary -- OAuth authentication
-* HmacShaOne -- generate HMAC-SHA1 authentication signatures from strings
+* HmacShaOne -- Generate HMAC-SHA1 authentication signatures from strings
 
 == Project Management ==
 
-* ProjectBufferMode -- a generic mode to handle projects
+* ProjectBufferMode -- Generic mode to handle projects
 
 == Testing ==
 
