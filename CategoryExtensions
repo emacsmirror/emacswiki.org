@@ -34,14 +34,14 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 
 == Numbers and Mathematics ==
 
-* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el] -- A simple bigint package for emacs, obsolete as of Emacs 27 which provides builtin big integers.
+* [http://www.astro.princeton.edu/~rhl/skyserver/bigint.el bigint.el] -- A simple bigint package for Emacs. (But Emacs 27 will provide builtin big integers.)
 * [[Infix]]    -- Writing infix math expressions
 
 == Sequences ==
 
 * ListUtils -- List-manipulation utility functions
 * [http://www.splode.com/~friedman/software/emacs-lisp/src/list-fns.el list-fns.el] -- list-searching and manipulation functions
-* [https://github.com/magnars/dash.el dash.el] -- "A modern list api for Emacs. No 'cl required."
+* [https://github.com/magnars/dash.el dash.el] -- List api that does not require ##cl.el##.
 * VectorUtils -- Vector-manipulation utility functions
 * [http://www.splode.com/~friedman/software/emacs-lisp/src/obarray-fns.el obarray-fns.el] -- obarray-manipulating routines
 
