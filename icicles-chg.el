@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2019, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jun  9 07:53:33 2019 (-0700)
+;; Last-Updated: Sat Jun 15 16:45:27 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11871
+;;     Update #: 11878
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4708,6 +4708,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2019/06/15 dadams
+;;     icicle-abort-recursive-edit:
+;;       Call 1on1-fit-minibuffer-frame with RESETP arg only if (= (minibuffer-depth) 1)
+;;     icicle-delete-windows-on: At the end, refocus and select the originally selected frame.
 ;; 2018/10/17 dadams
 ;;     icicle-change-sort-order: Last occurrence of ORDER-NAMES should be icicle-sort-orders-alist.
 ;; 2018/10/15 dadams
