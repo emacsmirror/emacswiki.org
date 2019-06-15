@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Mon Jan  1 15:15:03 2018 (-0800)
+;; Last-Updated: Sat Jun 15 16:40:32 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3166
+;;     Update #: 3196
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-cmds', `frame-fns', `hexrgb', `misc-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `frame-cmds', `frame-fns', `hexrgb', `macroexp', `misc-fns',
 ;;   `oneonone', `strings', `thingatpt', `thingatpt+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -90,6 +91,12 @@
 ;;  To help you perceive changes to different minibuffer recursion
 ;;  levels, the background color of the minibuffer frame is changed
 ;;  slightly with each recursion-depth change.
+;;
+;;  If `1on1-minibuffer-frame-flag' is non-nil then you can have the
+;;  standalone minibuffer frame be automatically repositioned near the
+;;  cursor (point).  To do that, customize option
+;;  `1on1-move-minibuffer-frame-near-point'.  Available only for Emacs
+;;  24 and later.  For best results use this feature with Icicles.
 ;;
 ;;  This library is especially useful if used in combination with
 ;;  One-on-One Emacs libraries `autofit-frame.el', which automatically
@@ -233,6 +240,7 @@
 ;;    `1on1-minibuffer-frame-top/bottom',
 ;;    `1on1-minibuffer-frame-width',
 ;;    `1on1-minibuffer-frame-width-percent',
+;;    `1on1-move-minibuffer-frame-near-point' (Emacs 24+),
 ;;    `1on1-remap-other-frame-command-flag',
 ;;    `1on1-special-display-frame-alist', `1on1-task-bar-height'
 ;;    (Emacs < 24.4).
@@ -248,8 +256,10 @@
 ;;    `1on1-display-*Completions*-frame', `1on1-display-*Help*-frame',
 ;;    `1on1-filter-no-default-minibuffer',
 ;;    `1on1-flash-ding-minibuffer-frame',
-;;    `1on1-minibuffer-prompt-end', `1on1-reset-minibuffer-frame',
-;;    `1on1-remove-if', `1on1-set-minibuffer-frame-top/bottom',
+;;    `1on1-last-non-minibuffer-buffer', `1on1-minibuffer-prompt-end',
+;;    `1on1-reset-minibuffer-frame', `1on1-remove-if',
+;;    `1on1-reposition-minibuffer-frame' (Emacs 24+),
+;;    `1on1-set-minibuffer-frame-top/bottom',
 ;;    `1on1-set-minibuffer-frame-width',
 ;;    `1on1-setup-minibuffer-frame-coloring', `1on1-setup-mode-line'.
 ;;
@@ -271,6 +281,7 @@
 ;;    `1on1-minibuffer-frame-foreground',
 ;;    `1on1-minibuffer-frame-height',
 ;;    `1on1-minibuffer-frame-mouse-color',
+;;    `1on1-move-minibuffer-frame-max-left-top' (Emacs 24+),
 ;;    `1on1-special-frame-background',
 ;;    `1on1-special-frame-cursor-color', `1on1-special-frame-font',
 ;;    `1on1-special-frame-foreground',
@@ -298,6 +309,13 @@
  
 ;;; Change Log:
 ;;
+;; 2019/06/15 dadams
+;;     Added, for Emacs 24+:
+;;       1on1-move-minibuffer-frame-near-point, 1on1-move-minibuffer-frame-max-left-top,
+;;       1on1-last-non-minibuffer-buffer, 1on1-reposition-minibuffer-frame (and put it on
+;;       minibuffer-setup-hook).
+;;     1on1-reset-minibuffer-frame: No-op if minibuffer-depth is not 1.
+;;     1on1-set-minibuffer-frame-top/bottom: Added `(left 0) to params, to keep it at the left.
 ;; 2017/11/20 dadams
 ;;     1on1-change-cursor-on-input-method: Use color from 1on1-minibuffer-frame-alist before
 ;;                                         that or 1on1-minibuffer-frame-cursor-color.
@@ -685,6 +703,8 @@
 
 
 ;; Quiet the byte compiler.
+(defvar 1on1-move-minibuffer-frame-near-point) ; Here, Emacs 24+
+(defvar 1on1-move-minibuffer-frame-max-left-top) ; Here, Emacs 24+
 (defvar frameset-filter-alist)          ; In `frameset.el', Emacs 24.4+
 (defvar x-pointer-box-spiral)
 (defvar x-pointer-xterm)
@@ -1562,6 +1582,15 @@ show/hide: hold CTRL + click in window"))
     (dolist (x  xs) (unless (funcall pred x) (push x result)))
     (nreverse result)))
 
+;; Same as `icicle-last-non-minibuffer-buffer' in `icicles-mode.el'.
+(defun 1on1-last-non-minibuffer-buffer ()
+  "Return the most recently used non-minibuffer live buffer."
+  (let ((live-bufs  (1on1-remove-if (lambda (buf) (not (buffer-live-p buf))) (buffer-list))))
+    (if (fboundp 'minibufferp)          ; Emacs 22+
+        (let ((bufs  (1on1-remove-if 'minibufferp live-bufs)))
+          (or (car bufs)  (car live-bufs)))
+      (cadr live-bufs)))) ; Punt - but could be just a higher-level minibuffer.
+
 ;; This is inspired by code from Juri Linkov <juri@jurta.org>.
 (defun 1on1-change-cursor-on-input-method ()
   "Set cursor color, depending on whether an input method is used or not."
@@ -1877,7 +1906,7 @@ Also accepts SPC to mean yes, or DEL to mean no."
 
 (defun 1on1-reset-minibuffer-frame ()   ; On `minibuffer-exit-hook'.
   "Reset frame `1on1-minibuffer-frame' to its normal size and position."
-  (when 1on1-minibuffer-frame
+  (when (and 1on1-minibuffer-frame  (= (minibuffer-depth) 1))
     (set-frame-size 1on1-minibuffer-frame
                     (frame-width 1on1-minibuffer-frame)
                     1on1-minibuffer-frame-height)
@@ -1898,7 +1927,8 @@ Else, place minibuffer at bottom of display."
      `((top ,@ (or 1on1-minibuffer-frame-top/bottom
                    (if (not (fboundp 'display-monitor-attributes-list))
                        (- 1on1-task-bar-height)
-                     1on1-minibuffer-frame-bottom-offset)))))))
+                     1on1-minibuffer-frame-bottom-offset)))
+       (left 0)))))
 
 (defun 1on1-set-minibuffer-frame-width ()
   "Set width of minibuffer frame, in characters.
@@ -1997,6 +2027,54 @@ This command requires library `fit-frame.el'."
 (defun 1on1-minibuffer-prompt-end ()
   "Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   (if (fboundp 'minibuffer-prompt-end) (minibuffer-prompt-end) (point-min)))
+
+(when (fboundp 'window-inside-absolute-pixel-edges) ; Emacs 24+
+
+  (defcustom 1on1-move-minibuffer-frame-near-point nil
+    "Whether to move `1on1-minibuffer-frame' near point, and just where.
+nil means do not move it.  A cons (X . Y) means offset `left' by X and
+`top' by Y pixels from point.  For example, (-200 . 30) moves the top
+left frame corner 200 pixels to the left and 30 pixels below point.
+This option has no effect if `1on1-minibuffer-frame' is nil."
+    :group 'One-On-One :type '(choice
+                               (const  :tag "Do not move frame" nil)
+                               (cons   :tag "Offset frame (X . Y) pixels from point"
+                                       (integer :tag "X") (integer :tag "Y"))))
+
+  (defvar 1on1-move-minibuffer-frame-max-left-top '(500 . 100)
+    "Cons (LEFT . TOP) of maximum `left' and `top' positions for frame.")
+
+  (defun 1on1-reposition-minibuffer-frame (&optional position delta-x delta-y)
+    "Move `1on1-minibuffer-frame' to POSITION (default: point).
+The top left corner of the frame is offset from POSITION according to
+`1on1-move-minibuffer-frame-near-point'."
+    (when (and (= (minibuffer-depth) 1)  1on1-move-minibuffer-frame-near-point
+               (frame-live-p 1on1-minibuffer-frame))
+      (let ((buf  (1on1-last-non-minibuffer-buffer)))
+        (when buf 
+          (with-current-buffer buf
+            (setq position  (or position  (point))
+                  delta-x   (or delta-x  (and 1on1-move-minibuffer-frame-near-point
+                                              (car 1on1-move-minibuffer-frame-near-point)))
+                  delta-y   (or delta-y  (and 1on1-move-minibuffer-frame-near-point
+                                              (cdr 1on1-move-minibuffer-frame-near-point))))
+            (let* ((win   (get-buffer-window buf t))
+                   (posn  (posn-at-point position win)))
+              (when posn
+                (let* ((x-y        (posn-x-y posn))
+                       (win-edges  (window-inside-absolute-pixel-edges win))
+                       (left       (min (max 0 (+ (car x-y) (car  win-edges) delta-x))
+                                        (- (x-display-pixel-width)
+                                           (car 1on1-move-minibuffer-frame-max-left-top))))
+                       (top        (min (max 0 (+ (cdr x-y) (cadr win-edges) delta-y))
+                                        (- (x-display-pixel-height)
+                                           (cdr 1on1-move-minibuffer-frame-max-left-top)))))
+                  (modify-frame-parameters 1on1-minibuffer-frame
+                                           `((left . ,left) (top . ,top)))))))))))
+
+  (add-hook 'minibuffer-setup-hook '1on1-reposition-minibuffer-frame)
+
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; oneonone.el ends here
