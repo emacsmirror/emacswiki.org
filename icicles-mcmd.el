@@ -4,11 +4,11 @@
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Oct 17 10:04:54 2018 (-0700)
+;; Last-Updated: Sat Jun 15 16:02:33 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 19866
+;;     Update #: 19870
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,17 +17,27 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cus-theme', `doremi', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `flx', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `help+20', `hexrgb', `icicles-fn', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+20', `isearch+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
-;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
+;;   `dired', `dired-loaddefs', `doremi', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
+;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `format-spec', `frame-fns', `fuzzy', `fuzzy-match', `gv',
+;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `hl-line', `hl-line+', `icicles-fn',
+;;   `icicles-opt', `icicles-var', `image', `image-dired',
+;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
+;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
+;;   `password-cache', `pp', `pp+', `radix-tree', `replace', `ring',
+;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
+;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3183,7 +3193,7 @@ These are the minibuffer bindings when not completing input:
 ;; Taken from the definition of `def-completion-wrapper' in `completion.el'.
 (put 'icicle-abort-recursive-edit 'completion-function 'use-completion-minibuffer-separator)
 
-(defun icicle-abort-recursive-edit ()   ; Bound to `C-]',`C-g' in minibuf, `C-g',`q' in `*Completions*'.
+(defun icicle-abort-recursive-edit () ; Bound to `C-]',`C-g' in minibuf, `C-g',`q' in `*Completions*'.
   "Abort recursive edit or minibuffer input, or just deactivate region.
 If called from the minibuffer, the region is active there, and
 `delete-selection-mode' is turned on, then just deactivate the region.
@@ -3204,7 +3214,7 @@ you do not want this remapping, then customize option
         (when (get-buffer "*Completions*") (kill-buffer (get-buffer "*Completions*")))
       (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; In `oneonone.el'.
                  1on1-fit-minibuffer-frame-flag  (require 'fit-frame nil t))
-        (1on1-fit-minibuffer-frame 'RESET))
+        (1on1-fit-minibuffer-frame (= (minibuffer-depth) 1)))
       (icicle-remove-Completions-window 'FORCE))
     (abort-recursive-edit)))
 
@@ -9306,7 +9316,8 @@ it is the only frame or a standalone minibuffer frame."
   (setq buffer  (get-buffer buffer))    ; Convert to buffer.
   (when buffer                          ; Do nothing if null BUFFER.
     ;; Avoid error message "Attempt to delete minibuffer or sole ordinary window".
-    (let* ((this-buffer-frames  (icicle-frames-on buffer))
+    (let* ((selected-frame      (selected-frame))
+           (this-buffer-frames  (icicle-frames-on buffer))
            (this-frame          (car this-buffer-frames))
            mini-param)
       (unless (and this-frame
@@ -9323,7 +9334,10 @@ it is the only frame or a standalone minibuffer frame."
             (select-window win)
             (if (and (one-window-p t)  (cdr (visible-frame-list))) ; Sole window but not sole frame.
                 (delete-frame)
-              (delete-window (selected-window)))))))))
+              (delete-window (selected-window)))))
+        ;; Deleting frames can put another frame on top of originally selected frame.  Undo that.
+        (when (frame-live-p selected-frame)
+          (select-frame-set-input-focus selected-frame)))))) ; In particular, keep minibuffer frame on top.
 
 (defun icicle-recomplete-from-original-domain (reversep) ; Bound to `C-x C-0' during completion.
   "Recomplete your last typed input, using the original domain.
