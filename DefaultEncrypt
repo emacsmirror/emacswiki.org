@@ -1,8 +1,10 @@
+Note: As of June 2019, [https://gitlab.com/lechten/defaultencrypt DefaultEncrypt is maintained on GitLab].
+
 [https://www.gnu.org/software/emacs/manual/html_node/message/Security.html Gnus supports GnuPG]
 via the insertion of so-called MML secure tags, which contain encryption
 instructions to be performed before a message is sent.
 However, by default those tags need to be added manually, which can easily
-be forgotten.  In contrast, DefaultEncrypt aims to insert those tags
+be forgotten.  In contrast, [https://gitlab.com/lechten/defaultencrypt DefaultEncrypt] aims to insert those tags
 automatically if public keys for all recipients are available.
 
 I assume that you are familiar with GnuPG support for Gnus messages as
@@ -12,7 +14,7 @@ Moreover, DefaultEncrypt is based on EasyPG, the default interface of Emacs for
 OpenPGP and S/MIME, see
 [https://www.gnu.org/software/emacs/manual/html_node/epa/index.html Info node `(epa)'].
 
-DefaultEncrypt aims for automatic insertion of an MML secure encryption
+DefaultEncrypt (file jl-encrypt.el) aims for automatic insertion of an MML secure encryption
 tags into messages if public keys (either GnuPG public keys or S/MIME
 certificates) for all recipients are available.  In addition, before a
 message is sent, the user is asked whether plaintext should really be sent
@@ -43,15 +45,16 @@ you are doing.  See also `mml-secure-bcc-is-safe'.
 If you are interested in S/MIME then I suggest that you read this:
 https://blogs.fsfe.org/jens.lechtenboerger/2013/12/23/openpgp-and-smime/
 If you are still interested in S/MIME afterwards, take a look
-at ExtendSMIME (Lisp:jl-smime.el) in addition to this file.
+at ExtendSMIME (file jl-smime.el) in addition to file jl-encrypt.el.
 
 ==Installation==
-The most recent version of Lisp:jl-encrypt.el is meant for Emacs 25.1 and
-later.  A signed version of DefaultEncrypt (jl-encrypt.el) and an older
-version (for Emacs up to 24.x) are available
+Files jl-encrypt.el and jl-smime.el are maintained on [https://gitlab.com/lechten/defaultencrypt GitLab].
+The master branch is meant for Emacs 25.1 and
+later, while branch [https://gitlab.com/lechten/defaultencrypt/tree/emacs24 emacs24]
+is meant for Emacs up to 24.x.  Signed versions are available
 [http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
 
-Put Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
+Put file jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
 (require 'jl-encrypt)
 }}}
