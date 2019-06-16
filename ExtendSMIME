@@ -1,3 +1,5 @@
+Note: As of June 2019, DefaultEncrypt and ExtendSMIME are maintained on GitLab.
+
 ExtendSMIME enhances DefaultEncrypt to support S/MIME.  Moreover, it allows
 to retrieve certificates via LDAP and to import them into gpgsm.
 
@@ -45,7 +47,7 @@ Message security (as described in
 [https://www.gnu.org/software/emacs/manual/html_node/message/Security.html Info node `(message) Security'])
 automatically prefers EasyPG with gpgsm over openssl if EasyPG is loaded
 first.
-Thus, place Lisp:jl-smime.el and Lisp:jl-encrypt.el into your load-path and add the following to ~/.emacs.
+Thus, place jl-smime.el and jl-encrypt.el into your load-path and add the following to ~/.emacs.
 {{{
 (require 'epa-file)
 (load "jl-smime")
