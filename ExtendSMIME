@@ -1,4 +1,4 @@
-Note: As of June 2019, DefaultEncrypt and ExtendSMIME are maintained on GitLab.
+Note: As of June 2019, DefaultEncrypt and ExtendSMIME are maintained on [https://gitlab.com/lechten/defaultencrypt GitLab].
 
 ExtendSMIME enhances DefaultEncrypt to support S/MIME.  Moreover, it allows
 to retrieve certificates via LDAP and to import them into gpgsm.
