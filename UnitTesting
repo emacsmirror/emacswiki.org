@@ -163,6 +163,9 @@ Does anybody know any mock or stub frameworks in Emacs Lisp? Because many Emacs 
 [new]
 I intended to create ##mock.el##, but I didn't yet ... [[Matsuyama]]
 
+[new]
+The ERT manual says: "ERT does not have built-in support for mocks or stubs.  The package [[EmacsLispMock|‘el-mock’]] offers mocks for Emacs Lisp and can be used in conjunction with ERT."
+
 ----
 CategoryCode
 CategoryExtensions
