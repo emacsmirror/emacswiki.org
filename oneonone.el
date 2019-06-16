@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sat Jun 15 17:24:43 2019 (-0700)
+;; Last-Updated: Sat Jun 15 19:02:27 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3198
+;;     Update #: 3199
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -146,7 +146,7 @@
 ;;
 ;;    (cond ((< emacs-major-version 21)
 ;;           (remove-hook 'same-window-buffer-names "*info*"))
-;;          ((= emacs-version 21)
+;;          ((= emacs-major-version 21)
 ;;           (remove-hook 'same-window-buffer-names "*info*")
 ;;           (remove-hook 'same-window-regexps "\\`\\*Customiz.*\\*\\'"))
 ;;          (t
