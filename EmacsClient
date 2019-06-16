@@ -230,16 +230,17 @@ em()
 	if [[ "$1" == "-" ]]; then
     	    TMP="$(mktemp /tmp/emacsstdin-XXX)"
     	    cat >$TMP
-	    args=($args --eval '(let ((b (create-file-buffer "*stdin*"))) (switch-to-buffer b) (insert-file-contents "'${TMP}'") (delete-file "'${TMP}'") (x-urgent))')
+	    args=($args --eval '(let ((b (generate-new-buffer "*stdin*"))) (switch-to-buffer b) (insert-file-contents "'${TMP}'") (delete-file "'${TMP}'"))')
 	else
 	    args=($@ $args)
 	fi
     fi
 
+    # emacsclient $args
     if $nw; then
-	emacsclient $args
+	emacsclient "${args[@]}"
     else
-	(nohup emacsclient $args > /dev/null 2>&1 &) > /dev/null
+	(nohup emacsclient "${args[@]}" > /dev/null 2>&1 &) > /dev/null
     fi
 }
 </pre>
