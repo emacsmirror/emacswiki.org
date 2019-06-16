@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sat Jun 15 16:40:32 2019 (-0700)
+;; Last-Updated: Sat Jun 15 17:24:43 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3196
+;;     Update #: 3198
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -314,6 +314,8 @@
 ;;       1on1-move-minibuffer-frame-near-point, 1on1-move-minibuffer-frame-max-left-top,
 ;;       1on1-last-non-minibuffer-buffer, 1on1-reposition-minibuffer-frame (and put it on
 ;;       minibuffer-setup-hook).
+;;     1on1-fit-minibuffer-frame: Removed 1on1-set-minibuffer-frame-top/bottom from default
+;;       cond clause - interfered with *-move-minibuffer-frame-near-point and seems unnecessary.
 ;;     1on1-reset-minibuffer-frame: No-op if minibuffer-depth is not 1.
 ;;     1on1-set-minibuffer-frame-top/bottom: Added `(left 0) to params, to keep it at the left.
 ;; 2017/11/20 dadams
@@ -2019,7 +2021,11 @@ This command requires library `fit-frame.el'."
              (fit-frame frame (frame-width frame)))
            ;; $$$$       (when (>= emacs-major-version 21)
            ;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
-           (1on1-set-minibuffer-frame-top/bottom)
+
+           ;; Removed this because it does not seem needed and it interfered with
+           ;;`1on1-move-minibuffer-frame-near-point'.
+           ;; $$$$$$$$ (1on1-set-minibuffer-frame-top/bottom)
+
            ;; $$$$$$ This interfered with `C-e' and inserting text at end.
            ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
            ))))))
