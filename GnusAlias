@@ -34,10 +34,14 @@ And this version adds a few goodies, including support swapping identities in mu
          nil
          "My Name <my.name@emailaddress.com>"
          nil ;; No organization header
-         (("Fcc" . "/home/myname/Mail/Gmail/Archive")) ;; extra headers to save outgoing mail
+         (("Fcc" . "/home/myname/Mail/Gmail/Archive")
+          ("X-Message-SMTP-Method" . "smtp smtp.gmail.com 587")) ;; extra headers to save outgoing mail
          nil ;; No extra body text
          nil ;; No signature))
 </pre>
+
+The above example also shows how to associate an appropriate SMTP server with an alias. Read more about the mail extra
+header in SendingMail.
 
 However, the version of gnus-alias from emacswiki tests to see whether "/home/myname/Mail/Gmail/Archive" is a file and tries to insert its contents, which yields an error since it is a file AND a directory. I think gnus-alias should test whether "/home/myname/Mail/Gmail/Archive" is a file BUT NOT a directory, so I've amended the relevant part of the function gnus-alias-get-value as follows: at around line 1170 change from this:
 
