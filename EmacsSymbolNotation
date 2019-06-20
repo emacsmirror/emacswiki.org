@@ -30,6 +30,7 @@ Here are examples of notational symbols you might find in Emacs and EmacsLisp.
 ; ###<buffer *ielm*>##: it denotes a buffer (not a buffer name) which you can get with ##(get-buffer "*ielm*")##
 ; ###("abc") and #("abc" 0 3 (face bold))##: propertized text strings. Try ##(insert (propertize "abc" 'face 'bold))## on `normal-mode' and you will see that text bold.
 ; ###[(x) "^H\301\\\207" [x 3] 2]##: byte-compiled function (see CompiledFile), in this case the result of ##(byte-compile (lambda (x) (+ x 3)))##. That resulting function can then be called with `funcall'.
-
+; ###\\[foo]##: key-substitution in a docstring. Emacs will auto-magically replace this construct with the current keybinding for function `__foo__`, based upon the current keymap, which starts out as the global one.
+; ##\\<my-keymap>\\[foo]##: key-substitution in a docstring, changing the default keymap to `__my-keymap__`. The new keymap will be used for the remainder of docstring, or until changed again.; ##\\{my-keymap}###: Display all keybindings in `__my-keymap__`. 
 ----
 CategoryGlossary
