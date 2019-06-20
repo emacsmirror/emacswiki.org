@@ -43,8 +43,8 @@ If you want colors in your prompt, use something like this:
 == A fancy prompt ==
 Example of a more fancy eshell prompt with different colors, time, pwd, version control info and horizontal line after each command.
 
-  (defmacro with-face (str &rest properties)
-    `(propertize ,str 'face (list ,@properties)))
+  (defun with-face (str &rest face-plist)
+    (propertize str 'face face-plist))
   
   (defun shk-eshell-prompt ()
     (let ((header-bg "#fff"))
