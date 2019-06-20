@@ -32,9 +32,9 @@ In Emacs 21 however this doesn't work, it's just an ordinary space.  The effect 
                     "some header text")))
 
 == display file path in header line ==
-<pre>
-  (defmacro with-face (str &rest properties)
-    `(propertize ,str 'face (list ,@properties)))
+
+  (defun with-face (str &rest face-plist)
+    (propertize str 'face face-plist))
 
   (defun sl/make-header ()
     ""
@@ -85,8 +85,6 @@ In Emacs 21 however this doesn't work, it's just an ordinary space.  The effect 
 
   (add-hook 'buffer-list-update-hook
             'sl/display-header)
-
-</pre>
 
 
 ----
