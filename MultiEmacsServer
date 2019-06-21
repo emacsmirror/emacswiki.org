@@ -147,9 +147,10 @@ Put this in init.el (replaces the "Multiple XServers (DISPLAYs) + emacsclient" s
 
 <pre>
 (defun check-frames-connection ()
-  (dolist (frame (frame-list))
-    (when (eq (framep frame) 'x)
-      (x-check-frame frame))))
+  (when (functionp 'x-check-frame)
+    (dolist (frame (frame-list))
+      (when (eq (framep frame) 'x)
+        (x-check-frame frame)))))
 
 (setq server-inside-emacs-client nil)
 ; patches the call at server.el:1237
