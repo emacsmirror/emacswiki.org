@@ -13,7 +13,7 @@ Pitfalls:
 1. race condition after closing the fd and calling select will not recognize this.
 2. This currently replaces my "Multiple XServers (DISPLAYs) + emacsclient " solution.
 
-Put this code in xterm.c before the test "/* Flush display of frame F.  */"
+Put this code in xterm.c before the text "/* Flush display of frame F.  */"
 
 <pre>
 
