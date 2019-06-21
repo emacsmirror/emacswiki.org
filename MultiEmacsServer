@@ -1,4 +1,167 @@
+=== A fix for an ssh with x tunnel with xserver goes to sleep making emacs server non-responsive ===
+This happens when:
+1. having emacs daemon running.
+2. connect with sshx and run emacsclient -c
+3. put the computer who connected with sshx to sleep.
+4. awake that computer and connect to sshx and run emacsclient -c.
+5. the emacsclient -c will not start a new frame.
+The cause is the second time the emacsclient -c is running, the emacs daemon will try to do _XReply to the (unrecognized) dead xserver from before the sleep. The _XReply will get stuck in a select/poll because they have not timeout.
+The solution is build from two things - 
+1. A "checker" function which starts a timer before the _XReply is called. If the xserver respond then the timer is destroyed and a success is returned. If the xserver does not respond then the timer will trigger a signal. The signal will close the fd of the xserver in the emacs deamon. Usually, when a signal is happened when select/poll is running then they return EINTR. The XCB code sees this EINTR and call the select again, but this time with a closed fd. Executing poll/select with a closed fd returns a different value from them, so the loop will exit, the error handle of libx11 will be called and the terminal will be closed properly.
 
+Pitfalls:
+1. race condition after closing the fd and calling select will not recognize this.
+2. This currently replaces my "Multiple XServers (DISPLAYs) + emacsclient " solution.
+
+Put this code in xterm.c before the test "/* Flush display of frame F.  */"
+
+<pre>
+
+#define CLOCKID CLOCK_REALTIME
+#define CONN_SIG (SIGRTMAX-1)
+#include <signal.h>
+#include "X11/Xlibint.h"
+
+static int connection_fd = -1;
+void
+connection_timeout_handler (int signum)
+{
+    if (connection_fd != -1) {
+        close(connection_fd);
+        connection_fd = -1;
+    }
+}
+Status
+XCheckConnection (
+    register Display *dpy,
+    Drawable d, int fd, double timeout)
+{
+
+    xGetGeometryReply rep;
+    register xResourceReq *req;
+    LockDisplay(dpy);
+    GetResReq(GetGeometry, d, req);
+    Status res = 0;
+
+    sigset_t origmask;
+    sigset_t sigmask;
+    sigemptyset(&sigmask);
+    pthread_sigmask(SIG_SETMASK, &sigmask, &origmask);
+
+    // Create the timer
+    timer_t timerid;
+    struct sigevent sev;
+    struct itimerspec its;
+    long long freq_nanosecs;
+
+    struct sigaction new_action, old_action;
+
+    new_action.sa_handler = connection_timeout_handler;
+    sigemptyset (&new_action.sa_mask);
+    new_action.sa_flags = 0;
+
+    sigaction (CONN_SIG, &new_action, &old_action);
+
+    sev.sigev_notify = SIGEV_SIGNAL;
+    sev.sigev_signo = CONN_SIG;
+    sev.sigev_value.sival_ptr = &timerid;
+    (void) timer_create(CLOCKID, &sev, &timerid);
+
+    freq_nanosecs  = (long long)(timeout * 1000000000);
+    its.it_value.tv_sec  = freq_nanosecs / 1000000000;
+    its.it_value.tv_nsec = freq_nanosecs % 1000000000;
+    its.it_interval.tv_sec = its.it_value.tv_sec;
+    its.it_interval.tv_nsec = its.it_value.tv_nsec;
+
+    (void) timer_settime(timerid, 0, &its, NULL);
+    connection_fd = fd;
+
+    res = _XReply (dpy, (xReply *)&rep, 0, xTrue);
+
+    (void) timer_delete(timerid);
+    pthread_sigmask(SIG_SETMASK, &origmask, NULL);
+    sigaction (CONN_SIG, &old_action, NULL);
+
+    UnlockDisplay(dpy);
+    SyncHandle();
+    return (int)res;
+}
+
+int check_frame_connection(struct frame * frame, double timeout)
+{
+    block_input ();
+    int fd = ConnectionNumber (FRAME_X_DISPLAY (frame));
+    int res = XCheckConnection (
+        FRAME_X_DISPLAY (frame), FRAME_OUTER_WINDOW (frame), fd, timeout);
+    unblock_input ();
+    return res;
+}
+
+DEFUN ("x-check-frame", Fx_check_frame,
+       Sx_check_frame, 1, 1, 0,
+       doc: /* check the connection with the display of the given frame.  */)
+  (Lisp_Object f)
+{
+    if (!f)
+        return Qnil;
+
+    if (NILP (f))
+        return Qnil;
+
+    if (Fframep(f) != Qx)
+        return Qnil;
+
+    if (!FLOATP (Vx_check_frame_timeout))
+        return Qnil;
+
+    /* Default timeout is 0.5 second. This timeout will occur
+       only when the libx11 did not noticed the frame was 
+       disconnected. */
+    double timeout = XFLOAT_DATA (Vx_check_frame_timeout);
+
+    struct frame *frame = XFRAME (f);
+    int ret = check_frame_connection (frame, timeout);
+    return ret ? Qt : Qnil;
+}
+
+
+
+
+</pre>
+
+
+
+Put this code in syms_of_xterm:
+<pre>
+
+  defsubr (&Sx_check_frame);
+
+  DEFVAR_LISP ("x-check-frame-timeout", Vx_check_frame_timeout,
+    doc: /* How long to wait a display to response. */);
+  Vx_check_frame_timeout = make_float (0.5);
+
+</pre>
+
+Put this in init.el (replaces the "Multiple XServers (DISPLAYs) + emacsclient" solution)
+
+<pre>
+(defun check-frames-connection ()
+  (dolist (frame (frame-list))
+    (when (eq (framep frame) 'x)
+      (x-check-frame frame))))
+
+(setq server-inside-emacs-client nil)
+; patches the call at server.el:1237
+(defun server-create-window-system-frame-hook(orig-fun &rest args)
+  (setq server-inside-emacs-client t)
+  (check-frames-connection)
+  (apply orig-fun args))
+(advice-add 'server-create-window-system-frame :around #'server-create-window-system-frame-hook)
+
+(defun exit-emacs-or-close-frame() (interactive)
+       (if server-inside-emacs-client (delete-frame) (save-buffers-kill-emacs)))
+
+</pre>
 
 === Multiple XServers (DISPLAYs) + emacsclient ===
 Each emacs shell have its own environment variables, which is loaded from the frame-parameters which opened that shell.
