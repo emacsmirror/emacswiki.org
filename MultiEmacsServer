@@ -8,6 +8,7 @@ This happens when:
 The cause is the second time the emacsclient -c is running, the emacs daemon will try to do _XReply to the (unrecognized) dead xserver from before the sleep. The _XReply will get stuck in a select/poll because they have not timeout.
 The solution is build from two things - 
 1. A "checker" function which starts a timer before the _XReply is called. If the xserver respond then the timer is destroyed and a success is returned. If the xserver does not respond then the timer will trigger a signal. The signal will close the fd of the xserver in the emacs deamon. Usually, when a signal is happened when select/poll is running then they return EINTR. The XCB code sees this EINTR and call the select again, but this time with a closed fd. Executing poll/select with a closed fd returns a different value from them, so the loop will exit, the error handle of libx11 will be called and the terminal will be closed properly.
+2. call this checker whenever a new client tries to connect.
 
 Pitfalls:
 1. race condition after closing the fd and calling select will not recognize this.
