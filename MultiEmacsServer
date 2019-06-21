@@ -71,8 +71,8 @@ XCheckConnection (
     freq_nanosecs  = (long long)(timeout * 1000000000);
     its.it_value.tv_sec  = freq_nanosecs / 1000000000;
     its.it_value.tv_nsec = freq_nanosecs % 1000000000;
-    its.it_interval.tv_sec = its.it_value.tv_sec;
-    its.it_interval.tv_nsec = its.it_value.tv_nsec;
+    its.it_interval.tv_sec = 0;
+    its.it_interval.tv_nsec = 0;
 
     (void) timer_settime(timerid, 0, &its, NULL);
     connection_fd = fd;
