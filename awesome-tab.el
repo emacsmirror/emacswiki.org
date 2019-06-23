@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 3.2
-;; Last-Updated: 2019-03-21 22:27:46
+;; Version: 3.7
+;; Last-Updated: 2019-06-23 18:42:03
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -79,13 +79,21 @@
 
 ;;; Customize:
 ;;
-;; `awesome-tab-background-color'
 ;; `awesome-tab-selected'
 ;; `awesome-tab-unselected'
 ;; `awesome-tab-label-fixed-length'
 ;;
 
 ;;; Change log:
+;;
+;; 2019/06/23
+;;      * Render file icon in tab when `all-the-icons' is load.
+;;      * Use `all-the-icons-icon-for-buffer' to display icon for dired mode.
+;;      * Support color icon.
+;;      * Don't customize background of tab, use `default' face's background as tab background.
+;;
+;; 2019/04/14
+;;      * Make `awesome-tab-last-sticky-func-name' default with nil.
 ;;
 ;; 2019/03/21
 ;;      * Make `awesome-tab-last-sticky-func-name' as buffer variable.
@@ -227,14 +235,6 @@ Feel free to add hook in this option. ;)"
   :type '(repeat symbol)
   :group 'awesome-tab)
 
-(defcustom awesome-tab-background-color "black"
-  "*Background color of the tab bar.
-By default, use the background color specified for the
-`awesome-tab-default' face (or inherited from another face), or the
-background color of the `default' face otherwise."
-  :group 'awesome-tab
-  :type 'face)
-
 (defcustom awesome-tab-height 22
   "The height of tab."
   :group 'awesome-tab
@@ -245,7 +245,7 @@ background color of the `default' face otherwise."
   :group 'awesome-tab
   :type 'string)
 
-(defcustom awesome-tab-display-sticky-function-name t
+(defcustom awesome-tab-display-sticky-function-name nil
   "Non-nil to display sticky function name in tab.
 Sticky function is the function at the top of the current window sticky."
   :group 'awesome-tab
@@ -258,10 +258,6 @@ This fucntion accepet tab name, tab will hide if this function return ni.")
 (defvar awesome-tab-current-tabset-function nil
   "Function called with no argument to obtain the current tab set.
 This is the tab set displayed on the tab bar.")
-
-(defvar awesome-tab-tab-label-function nil
-  "Function that obtains a tab label displayed on the tab bar.
-The function is passed a tab and should return a string.")
 
 (defvar awesome-tab-select-tab-function nil
   "Function that select a tab.
@@ -534,12 +530,6 @@ current cached copy."
 
 ;;; Faces
 ;;
-(defface awesome-tab-default
-  '((t
-     (:background "black" :foreground "black")))
-  "Default face used in the tab bar."
-  :group 'awesome-tab)
-
 (defface awesome-tab-unselected
   '((t
      (:background "#3D3C3D" :foreground "grey50")))
@@ -551,36 +541,18 @@ current cached copy."
   "Face used for the selected tab."
   :group 'awesome-tab)
 
-(defface awesome-tab-button
-  '((t
-     :box nil
-     ))
-  "Face used for tab bar buttons."
-  :group 'awesome-tab)
-
 ;;; Tabs
 ;;
-(defsubst awesome-tab-line-tab (tab)
-  "Return the display representation of tab TAB.
-That is, a propertized string used as an `header-line-format' template
-element.
-Call `awesome-tab-tab-label-function' to obtain a label for TAB."
-  (concat (propertize
-           (if awesome-tab-tab-label-function
-               (funcall awesome-tab-tab-label-function tab)
-             tab)
-           'awesome-tab-tab tab
-           'face (if (awesome-tab-selected-p tab (awesome-tab-current-tabset))
-                     'awesome-tab-selected
-                   'awesome-tab-unselected)
-           'pointer 'hand)
-          ))
+(defun awesome-tab-make-header-line-mouse-map (mouse function)
+  (let ((map (make-sparse-keymap)))
+    (define-key map (vector 'header-line mouse) function)
+    map))
 
 (defun awesome-tab-line-format (tabset)
   "Return the `header-line-format' value to display TABSET."
   (let* ((sel (awesome-tab-selected-tab tabset))
          (tabs (awesome-tab-view tabset))
-         (padcolor awesome-tab-background-color)
+         (padcolor (face-background 'default))
          atsel elts)
     ;; Track the selected tab to ensure it is always visible.
     (when awesome-tab--track-selected
@@ -1369,8 +1341,19 @@ The memoization cache is frame-local."
 (defvar awesome-tab-style-right nil)
 
 (defun awesome-tab-select-separator-style (tab-style)
-  (setq awesome-tab-style-left (funcall (intern (format "powerline-%s-right" tab-style)) 'awesome-tab-default nil awesome-tab-height))
-  (setq awesome-tab-style-right (funcall (intern (format "powerline-%s-left" tab-style)) nil 'awesome-tab-default awesome-tab-height)))
+  (setq awesome-tab-style-left (funcall (intern (format "powerline-%s-right" tab-style)) 'default nil awesome-tab-height))
+  (setq awesome-tab-style-right (funcall (intern (format "powerline-%s-left" tab-style)) nil 'default awesome-tab-height)))
+
+(defsubst awesome-tab-line-tab (tab)
+  "Return the display representation of tab TAB.
+That is, a propertized string used as an `header-line-format' template
+element."
+  (propertize
+   (awesome-tab-buffer-tab-label tab)
+   'pointer 'hand
+   'local-map (purecopy (awesome-tab-make-header-line-mouse-map
+                         'mouse-1
+                         `(lambda (event) (interactive "e") (awesome-tab-buffer-select-tab ',tab))))))
 
 (defun awesome-tab-buffer-tab-label (tab)
   "Return a label for TAB.
@@ -1379,15 +1362,53 @@ That is, a string used to represent it on the tab bar."
   (when (or (not awesome-tab-style-left)
             (not awesome-tab-style-right))
     (awesome-tab-select-separator-style awesome-tab-style))
-  ;; Render tab.
-  (awesome-tab-render-separator
-   (list awesome-tab-style-left
-         (format " %s "
-                 (let ((bufname (awesome-tab-buffer-name (car tab))))
-                   (if (> awesome-tab-label-fixed-length 0)
-                       (awesome-tab-truncate-string  awesome-tab-label-fixed-length bufname)
-                     bufname)))
-         awesome-tab-style-right)))
+  (let* ((is-active-tab (awesome-tab-selected-p tab (awesome-tab-current-tabset)))
+         (tab-face (if is-active-tab 'awesome-tab-selected 'awesome-tab-unselected)))
+    (concat
+     ;; Tab left edge.
+     (awesome-tab-separator-render awesome-tab-style-left tab-face)
+     ;; Tab icon.
+     (awesome-tab-icon-for-tab tab tab-face)
+     ;; Tab label.
+     (propertize
+      (format " %s "
+              (let ((bufname (awesome-tab-buffer-name (car tab))))
+                (if (> awesome-tab-label-fixed-length 0)
+                    (awesome-tab-truncate-string  awesome-tab-label-fixed-length bufname)
+                  bufname)))
+      'face tab-face)
+     ;; Tab right edge.
+     (awesome-tab-separator-render awesome-tab-style-right tab-face)
+     )))
+
+(defun awesome-tab-icon-for-tab (tab face)
+  "When tab buffer's file is exists, use `all-the-icons-icon-for-file' to fetch file icon.
+Otherwise use `all-the-icons-icon-for-buffer' to fetch icon for buffer."
+  (let ((icon
+         (when (featurep 'all-the-icons)
+           (let* ((tab-buffer (car tab))
+                  (tab-file (buffer-file-name tab-buffer)))
+             (cond
+              ;; Use `all-the-icons-icon-for-file' if current file is exists.
+              ((and
+                tab-file
+                (file-exists-p tab-file))
+               (all-the-icons-icon-for-file tab-file :v-adjust -0.1 :height 1))
+              ;; Use `all-the-icons-icon-for-buffer' for current tab buffer at last.
+              (t
+               (with-current-buffer tab-buffer
+                 (all-the-icons-icon-for-buffer)))))))
+        (background (face-background face)))
+    ;; Dynamic adjust icon's background,
+    ;; don't use propertized wrap icon, it will cause elisp icon render wrong graphics.
+    (add-face-text-property 0 1 `(:background ,background) nil icon)
+    ;; Add space before icon if found one.
+    (if icon
+        (concat
+         (propertize " " 'face face)
+         icon)
+      icon)
+    ))
 
 (defun awesome-tab-buffer-name (tab-buffer)
   "Get buffer name of tab.
@@ -1426,17 +1447,12 @@ Currently, this function is only use for option `awesome-tab-display-sticky-func
 
 (add-hook 'post-command-hook 'awesome-tab-monitor-window-scroll)
 
-(defun awesome-tab-render-separator (values)
-  "Render a list of powerline VALUES."
-  (mapconcat 'awesome-tab-separator-render values ""))
-
-(defun awesome-tab-separator-render (item)
-  "Render separator."
+(defun awesome-tab-separator-render (item face)
+  "Render ITEM using FACE."
   (cond
    ((and (listp item) (eq 'image (car item)))
-    (propertize " " 'display item
-                'face (plist-get (cdr item) :face)))
-   (item item)))
+    (propertize " " 'display item 'face face))
+   (t item)))
 
 (defun awesome-tab-buffer-select-tab (tab)
   "Select tab."
@@ -1478,7 +1494,6 @@ Run as `awesome-tab-init-hook'."
   (setq awesome-tab--buffers nil
         awesome-tab--buffer-show-groups nil
         awesome-tab-current-tabset-function 'awesome-tab-buffer-tabs
-        awesome-tab-tab-label-function 'awesome-tab-buffer-tab-label
         awesome-tab-select-tab-function 'awesome-tab-buffer-select-tab
         )
   (add-hook 'kill-buffer-hook 'awesome-tab-buffer-track-killed))
@@ -1489,7 +1504,6 @@ Run as `awesome-tab-quit-hook'."
   (setq awesome-tab--buffers nil
         awesome-tab--buffer-show-groups nil
         awesome-tab-current-tabset-function nil
-        awesome-tab-tab-label-function nil
         awesome-tab-select-tab-function nil
         )
   (remove-hook 'kill-buffer-hook 'awesome-tab-buffer-track-killed))
@@ -1800,8 +1814,8 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
         (when (featurep 'helm)
           (require 'helm)
           (helm-build-sync-source "Awesome-Tab Group"
-                                  :candidates #'awesome-tab-get-groups
-                                  :action '(("Switch to group" . awesome-tab-switch-group))))))
+            :candidates #'awesome-tab-get-groups
+            :action '(("Switch to group" . awesome-tab-switch-group))))))
 
 ;; Ivy source for switching group in ivy.
 (defvar ivy-source-awesome-tab-group nil)
@@ -1876,7 +1890,7 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
         (setq awesome-tab-last-focus-buffer current)
 
         ;; Just continue if two buffers are in same group.
-        (when (eq current-group awesome-tab-last-focus-buffer-group)
+        (when (string= current-group awesome-tab-last-focus-buffer-group)
           (let* ((bufset (awesome-tab-get-tabset current-group))
                  (current-group-tabs (awesome-tab-tabs bufset))
                  (current-group-buffers (mapcar 'car current-group-tabs))
