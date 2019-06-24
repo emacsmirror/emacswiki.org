@@ -4,13 +4,13 @@
 ;; Description: Apropos Unicode characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2019, Drew Adams, all rights reserved.
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb 25 11:03:47 2018 (-0800)
+;; Last-Updated: Sun Jun 23 19:11:48 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 832
+;;     Update #: 840
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -21,7 +21,7 @@
 ;;
 ;;   `button', `cl', `cl-lib', `descr-text', `descr-text+', `gv',
 ;;   `help-fns', `help-fns+', `help-mode', `info', `macroexp',
-;;   `naked', `wid-edit', `wid-edit+'.
+;;   `naked', `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -147,6 +147,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/06/23 dadams
+;;     apu-print-chars, apu-print-apropos-matches: Do not use quoted list values.  Use #' for sort fns.
 ;; 2018/02/25 dadams
 ;;     Added: apu-revert-buffer (bound to `g' in apu-mode-map).
 ;;     apu-match-only-displayable-chars-flag and commentary: Mention Emacs 25+ issues.
@@ -738,11 +740,11 @@ The character descriptions are presented in `apu-mode'."
       (apu-mode)
       (goto-char (point-min))
       (setq case-fold-search          t
-            tabulated-list-format     (vector '("Ch"       2 apu-sort-char)
+            tabulated-list-format     (vector (list "Ch"      2 #'apu-sort-char)
                                               ;; Use 30 as a default name width.
-                                              `("Name"     ,(or (car apu--matches)  30) t)
-                                              '("Decimal"  7 apu-sort-char :right-align t)
-                                              '("Hex"      8 apu-sort-char :right-align t))
+                                              (list "Name"    (or (car apu--matches)  30) t)
+                                              (list "Decimal" 7 #'apu-sort-char :right-align t)
+                                              (list "Hex"     8 #'apu-sort-char :right-align t))
             tabulated-list-sort-key   nil
             tabulated-list-entries    (delq nil (mapcar #'apu-make-tablist-entry characters)))
       (tabulated-list-print t)
@@ -867,12 +869,12 @@ Simple tips for matching some common Unicode character names:
         (goto-char (point-min))
         (setq case-fold-search          t
               apu--buffer-invoked-from  apu--orig-buffer
-              tabulated-list-format     (vector '("Ch"       2 apu-sort-char)
+              tabulated-list-format     (vector (list "Ch"      2 #'apu-sort-char)
                                                 ;; Use 30 as a default name width.
-                                                `("Name"     ,(or (car apu--matches)  30) t)
-                                                '("Decimal"  7 apu-sort-char :right-align t)
-                                                '("Hex"      8 apu-sort-char :right-align t))
-              tabulated-list-sort-key   '("Decimal")
+                                                (list "Name"    (or (car apu--matches)  30) t)
+                                                (list "Decimal" 7 #'apu-sort-char :right-align t)
+                                                (list "Hex"     8 #'apu-sort-char :right-align t))
+              tabulated-list-sort-key   (list "Decimal")
               tabulated-list-entries    #'apu-tablist-match-entries)
         (tabulated-list-print t)
         (tabulated-list-init-header)))))
