@@ -26,7 +26,7 @@ your edits to see how they look; you can just click '''Preview'''.
 
 However, I can't get it to actually work.  Either it's broken or the docs are misleading, or I just haven't had enough coffee today.
 
-----
+
 [new] /You haven't had enough coffee!/ (Or perhaps your search engine is also under-caffeinated.)
 
 As of Emacs 24.3, the current working directory is no longer on the <code>desktop-path</code> by default. Refer to the release notes in [https://github.com/jwiegley/emacs-release/blob/adfd5933358fdf6715423dee8169eb3cd7d982db/etc/NEWS#L1725 etc/NEWS]
@@ -37,7 +37,6 @@ If you add the following to your <code>.emacs</code> file, the cd-into-your-desk
 (setq desktop-path '("~/.emacs.d/" "~" "."))
 </pre>
 
-----
 [new] 
 
 These commands do work, but it's inconvenient to manually enter them every time.  I have to start emacs with --no-desktop (which is trivial) and then execute desktop-change-dir and then desktop-save-mode to activate desktop-save-mode.
