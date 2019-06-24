@@ -26,7 +26,7 @@ your edits to see how they look; you can just click '''Preview'''.
 
 However, I can't get it to actually work.  Either it's broken or the docs are misleading, or I just haven't had enough coffee today.
 
----
+----
 
 [quote]You haven't had enough coffee! (Or perhaps your search engine is also under-caffeinated.)[/quote]
 
@@ -38,7 +38,7 @@ If you add the following to your <code>.emacs</code> file, the cd-into-your-desk
 (setq desktop-path '("~/.emacs.d/" "~" "."))
 </pre>
 
----
+----
 
 These commands do work, but it's inconvenient to manually enter them every time.  I have to start emacs with --no-desktop (which is trivial) and then execute desktop-change-dir and then desktop-save-mode to activate desktop-save-mode.
 
