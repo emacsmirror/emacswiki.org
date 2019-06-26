@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun  3 17:58:37 2019 (-0700)
+;; Last-Updated: Tue Jun 25 17:03:00 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11699
+;;     Update #: 11704
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -804,6 +804,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/06/25 dadams
+;;     diredp-mark-if, diredp-this-file-(un)marked-p: Use regexp-quote for marker char.
 ;; 2019/06/03 dadams
 ;;     Removed autoload cookie for diredp-omit-files-regexp - it evaluates dired-omit-files, from dired-x.el.
 ;;     Hard-require dired-x.el.  (No reason not to.)  Removed fboundp guards for it.
@@ -2385,7 +2387,7 @@ Otherwise return a cons (CHANGED . MATCHED), where:
       (while (not (eobp))
         (when ,predicate
           (setq matched  (1+ matched))
-          (unless (diredp-looking-at-p (char-to-string dired-marker-char))
+          (unless (diredp-looking-at-p (regexp-quote (char-to-string dired-marker-char)))
             (delete-char 1) (insert dired-marker-char) (setq changed  (1+ changed))))
         (forward-line 1))
       (when ,singular (message "%s %s%s%s newly %s%s"
@@ -10719,7 +10721,8 @@ Optional arg MARK-CHAR is the type of mark to check.
   (and (dired-get-filename t t)  (save-excursion
                                    (beginning-of-line)
                                    (if mark-char
-                                       (diredp-looking-at-p (concat "^" (char-to-string mark-char)))
+                                       (diredp-looking-at-p
+                                        (concat "^" (regexp-quote (char-to-string mark-char))))
                                      (not (diredp-looking-at-p "^ "))))))
 
 (defun diredp-this-file-unmarked-p (&optional mark-char)
@@ -10731,7 +10734,8 @@ Optional arg MARK-CHAR is the type of mark to check.
   (and (dired-get-filename t t)  (save-excursion
                                    (beginning-of-line)
                                    (if mark-char
-                                       (not (diredp-looking-at-p (concat "^" (char-to-string mark-char))))
+                                       (not (diredp-looking-at-p
+                                             (concat "^" (regexp-quote (char-to-string mark-char)))))
                                      (diredp-looking-at-p "^ ")))))
 
 ;;;###autoload
