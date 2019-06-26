@@ -1,17 +1,17 @@
 == PATTERN or SEPARATORS at the end of the STRING ==
 
-XEmacs and Emacs do not return the same thing if PATTERN or SEPARATORS
-appear at the end of the STRING.
+As of Emacs 22.1, `split-string' includes empty substrings only if the SEPARATORS argument is non-nil.
 
-Emacs has does this: "If there is match for SEPARATORS at the
-beginning of STRING, we do not include a null substring for that.
-Likewise, if there is a match at the end of STRING, we don't include a
-null substring for that."
+As of Emacs 24.4, you can pass a non-nil TRIM argument to remove whitespace or other uninteresting characters from the beginning/end of the string.
+
+XEmacs always returns empty substrings if SEPARATORS matches at the end or beginning of string.  You can `delete' empty strings from the result list.
 
 Therefore in Emacs:
 
     (split-string "a b ")
     => ("a" "b")
+    (split-string "a b " split-string-default-separators)
+    => ("a" "b" "")
 
 And in XEmacs:
 
@@ -25,6 +25,10 @@ Emacs and XEmacs, but it is more wasteful.
     (delete "" (split-string "a b "))
     => ("a" "b")
 
+See [https://web.archive.org/web/20060502032400/http://list-archive.xemacs.org/xemacs-design/200304/msg00096.html XEmacs list archive]
+and [https://lists.gnu.org/archive/html/emacs-devel/2003-04/msg00472.html GNU Emacs list archive] ([https://lists.gnu.org/archive/html/emacs-devel/2003-05/msg00428.html continued here])
+for some discussion of these features.
+
 == The Empty String as PATTERN or SEPARATORS ==
 
 In Emacs, using the empty string, "", as your PATTERN or SEPARATOR produces what you might expect:
@@ -32,37 +36,24 @@ In Emacs, using the empty string, "", as your PATTERN or SEPARATOR produces what
     (split-string "foo bar baz" "")
     => ("f" "o" "o" " " "b" "a" "r" " " "b" "a" "z")
 
-In recent XEmacs versions, the problem described above surfaces:
+In XEmacs, you get empty strings at the beginning and end:
 
     (split-string "foo bar baz" "")
     => ("" "f" "o" "o" " " "b" "a" "r" " " "b" "a" "z" "")
 
-But much worse, in XEmacs 21.1 and earlier, `split-string' will infinite loop when you give it an empty string for the second argument! This is not a good thing. You can get the behavior you want from code like this:
+But see next subsection for a more straightforward to do this.
 
-    (mapcar (lambda (elt)
-              (make-string 1 elt))
-            (string-to-list "foo bar baz"))
-    => ("f" "o" "o" " " "b" "a" "r" " " "b" "a" "z")
-
-
-There has been some recent (as of 2003-05) discussion on making Emacs' split-string behave in the same way as XEmacs'.  
-See the [http://list-archive.xemacs.org/xemacs-design/200304/msg00096.html XEmacs list archive] for details.
-: Update, Stephen Turnbull has submitted a patch to the Emacs developer's list.  This will hopefully make its way into the
-CVS version soon.  See [http://article.gmane.org/gmane.emacs.devel/14010 emacs-devel] for details.
-
-<b>In CVS Emacs split-string is a wonderful mix of new and old</b>. The behavior of split-string has changed when used with a non-nil second argument. It used to omit leading and trailing null strings. It no longer does that unless the third (new) argument OMIT-NULLS is true (this will /also/ omit empty strings in the /middle/ of the list). As a special kludge split-string preserves the old behavior, omitting nulls, in the single argument case.
-
-== Another way to break up a string ==
+=== Breaking strings into characters ===
 
     (append "look no hands" nil)
     => (108 111 111 107 32 110 111 32 104 97 110 100 115)
-   
-    (mapcar 'char-to-string (append "look no hands" nil))
-    => ("l" "o" "o" "k" " " "n" "o" " " "h" "a" "n" "d" "s")
+    (string-to-list "look no hands") ; Clearer name
+    => (108 111 111 107 32 110 111 32 104 97 110 100 115)
 
-mapcar works on a /sequence/, so you don't have to (append ... nil). -- bojohan
+    (mapcar 'char-to-string "look no hands") ; mapcar works on *sequences*, so there is no need to convert first.
+    => ("l" "o" "o" "k" " " "n" "o" " " "h" "a" "n" "d" "s")
    
-    (concat (reverse (append "look no hands" nil)))
+    (concat (reverse (string-to-list "look no hands")))
     => "sdnah on kool"
 
     (global-set-key
@@ -72,21 +63,20 @@ mapcar works on a /sequence/, so you don't have to (append ... nil). -- bojohan
 
 == Match Data ==
 
-Why split-string over-writes match-data but does not save them? This is a nasty side-effect because the match-data from split-string is basically useless for the context where it was called from.
+`split-string' overwrites match-data, therefore if you need to use the match-data, be careful to wrap with `save-match-data' or use the match-data before calling `split-string'.
 
-Got burnt a couple of times by:
+For example, instead of
+
+    (while (re-search-forward re nil t)
+      (push (nconc (split-string (match-string 1)) (split-string (match-string 2)))
+            collections))
+
+Use:
 
    (while (re-search-forward re nil t)
-     (push (nconc (split-string (match-string 1)) (split-string (match-string 2)) collections))
-
-[new:DrewAdams:2014-03-02 02:24 UTC]
-Emacs functions do not, in general, save the match data.  This is an explicit Emacs Dev policy.  There are a few functions that do save match data, and they are (should be) documented as doing so.
-
-Please state why you think it is necessarily the case that the match data from splitting a string is useless.
-
-But anyway, even if that were the case it would be unlikely (IMO) that Emacs Dev would agree to make `split-string' save the match data.  If you think otherwise, consider reporting a bug or enhancment request: `M-x report-emacs-bug'.
-
-In the meantime, it is easy for you to wrap any `split-string' calls you want (in your own code) with `save-match-data'. -- DrewAdams
+      (let ((s1 (match-string 1))
+            (s2 (match-string 2)))
+        (push (nconc (split-string s2) (split-string s1)) collections)))
 
 ----
 ComparativeEmacsology
