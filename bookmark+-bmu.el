@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue May 21 13:25:29 2019 (-0700)
+;; Last-Updated: Fri Jun 28 08:57:29 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4036
+;;     Update #: 4037
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1843,7 +1843,7 @@ bookmark-completion-ignore-case  - Case-sensitive completion?
 bookmark-default-file            - File to save bookmarks in
 bookmark-menu-length             - Max size of bookmark-name menu item
 bookmark-save-flag               - Whether and when to save
-bookmark-use-annotations         - Query for annotation when saving?
+bookmark-use-annotations         - Edit annotation when set bookmark?
 bookmark-version-control         - Numbered backups of bookmark file?
 
 bmkp-autoname-format        - Format of autonamed bookmark name
