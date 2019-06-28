@@ -9,3 +9,10 @@ Feel free to help out?
 
 -- AlexSchroeder 2016-05-17 07:15 UTC
 
+
+----
+
+The second example does not make sense on this Wiki since the CEDET's include with most emacs distributions and The standalone CEDETs are divergent.  For example, the second config setup shows (semantic-load-enabl-code-helpers) which will not work with the CEDET package in emacs.  Instead, you must use the standalone version which this page *DOES NOT MENTION*.
+
+-- Anonymous 2019-06-28 20:24 UTC
+
