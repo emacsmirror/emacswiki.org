@@ -1,5 +1,22 @@
 Emacs uses Git as its version control system.
 
+This is a quick-start guide to using [http://git-scm.com Git] for
+Emacs development.  It presents a simple Git workflow oriented toward
+the "regular contributor," whether a "core" committer, a maintainer of
+a well-defined package (/e.g./, a major mode), or simply someone who
+enjoys occasionally hacking on Emacs and then contributing those
+improvements to the community.
+
+[GitQuickStartForEmacsDevs] provides an alternate, more CVS-like, simpler workflow.
+
+The emphasis is on /necessary/ and
+/simple/, not on "general" nor on maximal efficiency.  Emacs
+developers will surely need various other workflows at times, and
+there are in most cases more highly performant ways of accomplishing
+most tasks.  However, the ways presented here are intended to be
+straightforward, effective, reasonably efficient, and relatively
+simple.
+
 [:Introduction]
 == Introduction ==
 Some features described on EmacsWiki are available only in the latest
@@ -8,19 +25,6 @@ need to build Emacs using the development source code. This page is
 about that source code and how to use it.  First and foremost, every
 contributor should be acquainted with and follow the guidelines in the source code repository
 [http://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file].
-
-This is a quick-start guide to using [http://git-scm.com Git] for
-Emacs development.  It presents a simple Git workflow oriented toward
-the "regular contributor," whether a "core" committer, a maintainer of
-a well-defined package (/e.g./, a major mode), or simply someone who
-enjoys occasionally hacking on Emacs and then contributing those
-improvements to the community.  The emphasis is on /necessary/ and
-/simple/, not on "general" nor on maximal efficiency.  Emacs
-developers will surely need various other workflows at times, and
-there are in most cases more highly performant ways of accomplishing
-most tasks.  However, the ways presented here are intended to be
-straightforward, effective, reasonably efficient, and relatively
-simple.
 
 "VCS means never having to say you're sorry."  It's true, but it's
 still worth being careful, even with git.  In the workflows described
