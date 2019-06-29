@@ -9,9 +9,11 @@ Bazaar is available from http://bazaar-vcs.org.
 * [[DVC]] -- supports Bazaar.
 * Lisp:bazaar.el -- A user interface specific to Bazaar.
 
-== Emacs from Bazaar ==
+== Emacs no longer uses Bazaar ==
 
-see EmacsFromBazaar or BzrForEmacsDevs
+In the past, Emacs used Bazaar. Nowadays, Emacs uses Git instead.
+
+See [EmacsFromGit] or [GitForEmacsDevs].
 
 ----
 CategoryVersionControl
