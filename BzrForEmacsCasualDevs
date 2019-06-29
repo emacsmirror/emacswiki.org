@@ -1,3 +1,12 @@
+Emacs uses Git as its version control system since 2014-11-12. This page is therefore out of date and mainly of historical interest.
+
+Refer instead to:
+* [EmacsFromGit]
+* [GitForEmacsDevs]
+* [GitQuickStartForEmacsDevs]
+
+----
+
 == Bazaar Workflows for Casual Developers ==
 
 This document describes some workflows by which a casual contributor can follow Emacs development, without having the full developer setup.
