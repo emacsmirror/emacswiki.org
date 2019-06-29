@@ -55,7 +55,13 @@ These packages are *not* "complete" front ends but "only" to certain Git feature
 
 == Also see ==
 
-* EmacsFromGit -- A Git mirror of the Emacs bazaar repository is available.
+=== Emacs from Git ===
+
+Emacs uses Git since 2014-11-12.
+
+For more information on building and developing Emacs, see:
+
+* EmacsFromGit
 * GitForEmacsDevs and GitQuickStartForEmacsDevs
 
 === Hosting ===
