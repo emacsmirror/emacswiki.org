@@ -1,3 +1,9 @@
+Emacs uses Git as its version control system since 2014-11-12. This page is therefore out of date and of mainly historical interest.
+
+Refer instead to:
+* [GitForEmacsDevs]
+* [GitQuickStartForEmacsDevs]
+
 == Bazaar quick start guide for Emacs Developers ==
 
 Emacs now uses Bazaar as its version control system.
