@@ -1,6 +1,7 @@
+Emacs uses Git as its version control system.
+
 [:Introduction]
 == Introduction ==
-
 Some features described on EmacsWiki are available only in the latest
 '''[::EmacsDevelopmentVersion]'''. To obtain those features, you will
 need to build Emacs using the development source code. This page is
