@@ -1,3 +1,12 @@
+Emacs uses Git as its version control system since 2014-11-12. This page is therefore out of date and mainly of historical interest.
+
+Refer instead to:
+* [EmacsFromGit]
+* [GitForEmacsDevs]
+* [GitQuickStartForEmacsDevs]
+
+----
+
 = GNU Emacs Is Now In Bazaar =
 
 **2009-12-27:** GNU Emacs has now switched from CVS to [http://bazaar.canonical.com Bazaar].  Please see [[BzrForEmacsDevs]] for more.
