@@ -2,9 +2,6 @@
 [[zh:书签]]
 This page is about Emacs '''[::bookmark]s'''. Bookmarks record locations so you can return to them later.  
 
-
-
-
 == Introduction ==
 
 Emacs bookmarking makes use of three things that are related but different: a bookmark ''list'', a bookmark ''file'', and a bookmark-list ''display''.  Understanding these is important to using Emacs bookmarks.  They are explained at [[BookmarkPlus#BookmarkBasics|Bookmark Basics]].
@@ -24,9 +21,11 @@ Your personal bookmark file is defined by [[option]] `bookmark-default-file', wh
 
 
 [:BookmarkList]
-== `*Bookmark List*' ==
+== Bookmark List ==
 
-The bookmark list (buffer `##*Bookmark List*##') is like [[DiredMode|Dired]] or BufferMenu for bookmarks.  You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list", which is a misnomer.)
+Command `bookmark-bmenu-list', bound to `C-x r l', provides a convenient menu to access bookmarks.
+
+The bookmark list (buffer `##*Bookmark List*##') is like [[DiredMode|Dired]] or BufferMenu for bookmarks.  (Emacs sometimes calls it the "bookmark ''menu'' list", which is a misnomer.)
 
 Some keys in `##*Bookmark List*##':
 
@@ -42,7 +41,7 @@ Some keys in `##*Bookmark List*##':
 
 == Info Bookmarks and Virtual Books ==
 
-You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual. Command `bookmark-bmenu-list', bound to `C-x r l', provides a convenient menu to access bookmarks.
+You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual.
 
 
 == Access File Bookmarks from `C-x C-f' ==
