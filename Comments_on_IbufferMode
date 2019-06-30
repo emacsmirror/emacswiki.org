@@ -120,8 +120,12 @@ I use ibuffer with the scratch buffer hidden. Sometimes I want to kill all the u
 / Geoff
 
 ----
-How can you open the ibuffer in the same window that you;re working in?
+How can you open the ibuffer in the same window that you're working in?
 thanks
 
 -- Anonymous 2013-10-03 19:29 UTC
 
+[new:Stefan Kangas:2019-06-30 08:06 +0200]
+This seems to be the default behaviour when I run `M-x ibuffer'.
+
+-- Stefan Kangas, 2019-06-30
