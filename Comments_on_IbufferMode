@@ -1,3 +1,125 @@
+Is there any way to configure ibuffer so that switching to ibuffer puts the cursor on the most recent buffer? I'm finding that the cursor stays on the same line it was on the previous time ibuffer was invoked, which is a bit confusing when the buffers are sorted in visited order.
+
+Thanks - dab
+
+[new]
+: This works for me
+
+  (defun my-ibuffer ()
+    "Open ibuffer with cursour pointed to most recent buffer name"
+    (interactive)
+    (let ((recent-buffer-name (buffer-name)))
+      (ibuffer)
+      (ibuffer-jump-to-buffer recent-buffer-name)))
+  (global-set-key [(f12)] 'my-ibuffer)
+
+-- Alexander Litvinov
+
+[new]
+That can be converted to advice, to make it more seamless.
+
+  ;; Switching to ibuffer puts the cursor on the most recent buffer
+  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
+    "Open ibuffer with cursor pointed to most recent buffer name"
+    (let ((recent-buffer-name (buffer-name)))
+      ad-do-it
+      (ibuffer-jump-to-buffer recent-buffer-name)))
+  (ad-activate 'ibuffer)
+
+[new]
+Here's a snippet using the new advice system
+
+    (defun ninrod/ibuffer-recent-buffer (old-ibuffer &rest arguments) ()
+         "Open ibuffer with cursor pointed to most recent buffer name"
+         (let ((recent-buffer-name (buffer-name)))
+           (apply old-ibuffer arguments)
+           (ibuffer-jump-to-buffer recent-buffer-name)))
+  (advice-add #'ibuffer :around #'ninrod/ibuffer-recent-buffer)
+
+-- Ninrod
+
+
+[new]
+This will cause an error if you ever enter ibuffer from the minibuffer. Ibuffer complains about "No buffer with name  <code>*Minibuf-1*</code>". Here's my fix:
+
+  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
+             "Open ibuffer with cursor pointed to most recent (non-minibuffer) buffer name"
+             (let ((recent-buffer-name
+                    (if (minibufferp (buffer-name))
+                        (buffer-name
+                         (window-buffer (minibuffer-selected-window)))
+                      (buffer-name (other-buffer)))))
+               ad-do-it
+               (ibuffer-jump-to-buffer recent-buffer-name)))
+  (ad-activate 'ibuffer)
+
+----
+
+[new]
+I set ibuffer-filter-groups like this:
+    (setq ibuffer-filter-groups '(("Dired" ((mode . dired-mode)))))
+ 
+but it doesn't work. Is there an example to show how to set the varibale involved?
+
+-- YeWenbin
+[new]
+: I found this works:
+
+    (require 'ibuf-ext nil t)
+    (when (featurep 'ibuf-ext)
+      (add-hook 'ibuffer-mode-hook (lambda ()
+                                     (setq ibuffer-filter-groups '(
+                                                                   ("*buffer*" (name . "\\*.*\\*"))
+                                                                   ("TAGS" (name . "^TAGS\\(<[0-9]+>\\)?$"))
+                                                                   ("dired" (mode . dired-mode))
+                                                                   )))))
+
+But How to move the Default group to display first?
+
+[new]
+Hi, see above (my original group suggestion) for the answer -- PhilJackson
+
+----
+
+: Use this to reverse the order of groups:
+
+    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
+                                                     activate)
+      (setq ad-return-value (nreverse ad-return-value)))
+
+
+----
+
+When used with ElScreen, Ibuffer tends to remove it's header line with tabs. 
+
+To prevent it, set <code>ibuffer-use-header-line</code> to nil and use the following:
+
+  (defadvice ibuffer-update (around ibuffer-preserve-prev-header activate)
+    "Preserve line-header used before Ibuffer if it doesn't set one"
+    (let ((prev-line-header header-line-format))
+      ad-do-it
+      (unless header-line-format
+        (setq header-line-format prev-line-header))))
+
+
+IvanKorotkov
+
+
+----
+
+How can I set the number of characters that the name will truncate to? Right now, when I use uniquify to get uniqe buffer names, many of my buffer names look like this: 'somedirectory:so...' and I have to look at the filename column to find out that the file in questions was 'somefile'. I would like to raise the number of chars displayed in the name column by ten och fifteen.
+
+/Jeff
+
+[new:stepnem:2010-04-20 11:23 UTC]
+Read the documentation for `ibuffer-formats' and you shall be enlightened.
+
+----
+I use ibuffer with the scratch buffer hidden. Sometimes I want to kill all the unhidden buffers, but then ibuffer complains about there being "No buffers!". The relevant error code is in ibuffer-update and ibuffer-redisplay. Currently I've just redefined these functions with the error code commented out. Is there a better way to do this? Perhaps there could be a simple flag to determine whether ibuffer complains about killing all buffers.
+
+/ Geoff
+
+----
 How can you open the ibuffer in the same window that you;re working in?
 thanks
 
