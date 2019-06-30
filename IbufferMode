@@ -1,13 +1,9 @@
 [[zh:ibufferæ¨¡å¼]]
-Ibuffer is an advanced replacement for BufferMenu, which lets you operate on buffers much in the same manner as [[DiredMode|Dired]].  The most important Ibuffer features are highlighting and various alternate layouts. Ibuffer is part of Emacs 22.
+Ibuffer is an advanced replacement for BufferMenu, which lets you operate on buffers much in the same manner as [[DiredMode|Dired]].  The most important Ibuffer features are highlighting and various alternate layouts. Ibuffer is part of Emacs since version 22.
 
-If you don't have '''[::Ibuffer]''', you can get it from GIT:ibuffer.el (there's also a probably out-of-date [http://gna.org/projects/ibuffer project] at gna.org).  Here's how to install it:
+You could use the following key binding to start using it:
 
     (global-set-key (kbd "C-x C-b") 'ibuffer)
-    (autoload 'ibuffer "ibuffer" "List buffers." t)
-
-See also: BufferMenuPlus, which also provides highlighting and other enhancements of BufferMenu.
-
 
 == Search all marked buffers ==
 
@@ -17,12 +13,6 @@ See also: BufferMenuPlus, which also provides highlighting and other enhancement
 * '''`Q'''' - Query replace in each of the marked buffers.
 * '''`I'''' - As above, with a regular expression.
 * '''`0'''' - Run occur on the marked buffers.
-
-== Search All Marked Buffers with Icicles ==
-
-With [[Icicles]], you can use '''`M-s i'''' in Ibuffer to search all marked buffers  and possibly replace search hits.  You have
-available all of the [[Icicles - Search Commands, Overview|Icicles Search]] features, including accessing search hits directly, in any order.
-
 
 == Hide certain buffers ==
 
@@ -399,130 +389,23 @@ Moreover, the keys `up' and `down' do the same thing but they skip the names of 
 
 -- brust
 
---------
+== Search All Marked Buffers with Icicles ==
 
-== Questions ==
+With [[Icicles]], you can use '''`M-s i'''' in Ibuffer to search all marked buffers  and possibly replace search hits.  You have
+available all of the [[Icicles - Search Commands, Overview|Icicles Search]] features, including accessing search hits directly, in any order.
 
-Is there any way to configure ibuffer so that switching to ibuffer puts the cursor on the most recent buffer? I'm finding that the cursor stays on the same line it was on the previous time ibuffer was invoked, which is a bit confusing when the buffers are sorted in visited order.
+== IBuffer on old Emacs ==
 
-Thanks - dab
+Ibuffer is part of Emacs since version 22.
 
-[new]
-: This works for me
+If you don't have '''[::Ibuffer]''', you can get it from GIT:ibuffer.el (there's also a probably out-of-date [http://gna.org/projects/ibuffer project] at gna.org).  Here's how to install it:
 
-  (defun my-ibuffer ()
-    "Open ibuffer with cursour pointed to most recent buffer name"
-    (interactive)
-    (let ((recent-buffer-name (buffer-name)))
-      (ibuffer)
-      (ibuffer-jump-to-buffer recent-buffer-name)))
-  (global-set-key [(f12)] 'my-ibuffer)
+    (global-set-key (kbd "C-x C-b") 'ibuffer)
+    (autoload 'ibuffer "ibuffer" "List buffers." t)
 
--- Alexander Litvinov
+== See also ==
 
-[new]
-That can be converted to advice, to make it more seamless.
-
-  ;; Switching to ibuffer puts the cursor on the most recent buffer
-  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
-    "Open ibuffer with cursor pointed to most recent buffer name"
-    (let ((recent-buffer-name (buffer-name)))
-      ad-do-it
-      (ibuffer-jump-to-buffer recent-buffer-name)))
-  (ad-activate 'ibuffer)
-
-[new]
-Here's a snippet using the new advice system
-
-    (defun ninrod/ibuffer-recent-buffer (old-ibuffer &rest arguments) ()
-         "Open ibuffer with cursor pointed to most recent buffer name"
-         (let ((recent-buffer-name (buffer-name)))
-           (apply old-ibuffer arguments)
-           (ibuffer-jump-to-buffer recent-buffer-name)))
-  (advice-add #'ibuffer :around #'ninrod/ibuffer-recent-buffer)
-
--- Ninrod
-
-
-[new]
-This will cause an error if you ever enter ibuffer from the minibuffer. Ibuffer complains about "No buffer with name  <code>*Minibuf-1*</code>". Here's my fix:
-
-  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
-             "Open ibuffer with cursor pointed to most recent (non-minibuffer) buffer name"
-             (let ((recent-buffer-name
-                    (if (minibufferp (buffer-name))
-                        (buffer-name
-                         (window-buffer (minibuffer-selected-window)))
-                      (buffer-name (other-buffer)))))
-               ad-do-it
-               (ibuffer-jump-to-buffer recent-buffer-name)))
-  (ad-activate 'ibuffer)
-
-----
-
-[new]
-I set ibuffer-filter-groups like this:
-    (setq ibuffer-filter-groups '(("Dired" ((mode . dired-mode)))))
- 
-but it doesn't work. Is there an example to show how to set the varibale involved?
-
--- YeWenbin
-[new]
-: I found this works:
-
-    (require 'ibuf-ext nil t)
-    (when (featurep 'ibuf-ext)
-      (add-hook 'ibuffer-mode-hook (lambda ()
-                                     (setq ibuffer-filter-groups '(
-                                                                   ("*buffer*" (name . "\\*.*\\*"))
-                                                                   ("TAGS" (name . "^TAGS\\(<[0-9]+>\\)?$"))
-                                                                   ("dired" (mode . dired-mode))
-                                                                   )))))
-
-But How to move the Default group to display first?
-
-[new]
-Hi, see above (my original group suggestion) for the answer -- PhilJackson
-
-----
-
-: Use this to reverse the order of groups:
-
-    (defadvice ibuffer-generate-filter-groups (after reverse-ibuffer-groups ()
-                                                     activate)
-      (setq ad-return-value (nreverse ad-return-value)))
-
-
-----
-
-When used with ElScreen, Ibuffer tends to remove it's header line with tabs. 
-
-To prevent it, set <code>ibuffer-use-header-line</code> to nil and use the following:
-
-  (defadvice ibuffer-update (around ibuffer-preserve-prev-header activate)
-    "Preserve line-header used before Ibuffer if it doesn't set one"
-    (let ((prev-line-header header-line-format))
-      ad-do-it
-      (unless header-line-format
-        (setq header-line-format prev-line-header))))
-
-
-IvanKorotkov
-
-
-----
-
-How can I set the number of characters that the name will truncate to? Right now, when I use uniquify to get uniqe buffer names, many of my buffer names look like this: 'somedirectory:so...' and I have to look at the filename column to find out that the file in questions was 'somefile'. I would like to raise the number of chars displayed in the name column by ten och fifteen.
-
-/Jeff
-
-[new:stepnem:2010-04-20 11:23 UTC]
-Read the documentation for `ibuffer-formats' and you shall be enlightened.
-
-----
-I use ibuffer with the scratch buffer hidden. Sometimes I want to kill all the unhidden buffers, but then ibuffer complains about there being "No buffers!". The relevant error code is in ibuffer-update and ibuffer-redisplay. Currently I've just redefined these functions with the error code commented out. Is there a better way to do this? Perhaps there could be a simple flag to determine whether ibuffer complains about killing all buffers.
-
-/ Geoff
+* BufferMenuPlus, which also provides highlighting and other enhancements of BufferMenu.
 
 ----
 CategoryBufferSwitching
