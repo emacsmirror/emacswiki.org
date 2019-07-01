@@ -143,30 +143,36 @@ Example:
 
 == Parsing/Lispification and Lisp interpreter ==
 
-You may invoke the bot via lisp-commands or via NLP. NLP parsing is very rudimentary; NLP expressions first pre-process into a lisp equivalent. NLP, of course, has many edge-cases and conflicts, and we make no effort to resolve them for you. Please use the precise lisp syntax when you need fine-tuning over such cases. 
 
-Example: "describe emacswiki" is first parsed as "(describe 'emacswiki)" which is then evaluated as a lisp expression. 
-Another example: ,s/foo/bar in baz 2 is parsed as ,(fsi-replace-string "foo" "bar" "baz" 2). 
+To set a new term "myterm" to "my notes", you can type one of three things: (1) ,myterm is my notes (2) ,(fs-set-term "myterm" "my notes"), or finally, (3) ,(set-term "myterm" "my notes"). (1) is referrred to as a nlp- or english- syntax. (2) is the lisp interface form available to the irc user. (3) In case the fs- prefixes are omitted, a codewalker adds them back. Internally, all three expressions eventually convert to the same form (fsi-set-term "myterm" "my notes") before actually getting executed. 
 
-You can ask the bot how it parses any NLP expresison via the function parse (alias: lispify). Here are some examples: 
+You often use the simple nlp-syntax to command the bot, but you will inevitably encounter ambiguities in that case. The best option is to use the precise lisp syntax for more fine-tuned control in such cases. But, you don't remember the equivalent lisp-form and want to look it up. To do that, you ask the bot itself:
 
 
-    <deego> , (lispify "describe emacswiki")
-    <fsbot> (fsi-describe (quote emacswiki))
+    <deego> ,(parse "myterm is my notes")                                                                                                                                                   [20:10]
+    <fsbot> (fs-set-term "myterm" "my notes")
+
+The command 'lispify is aliased to 'parse. As we mentioned above, you can skip the fs- part and it is always automatically added for you.
+
+As you saw above, the bot understands a restricted and modified version of lisp we refer to as fslisp. You have about 1000 such commands available, and you may create more. You may command it via fslisp, you may even (defun) new fs- functions, or even (fmakunbound) and modify them. 
+
+A certain subset of these commands deals with basic bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term), equivalently  (fs-fmakunbound 'fs-set-term) will lead to an error because 'fs-set-term is an immutable function, that sets new terms upon request, as explained above. 
+
+You can query and search among the ~ 1000 commands available to you as follows:
 
 
-    <deego> ,(parse "s/TO/FROM in MyTerm 2")
-   <fsbot> (fsi-replace-string "TO" "FROM" "MyTerm" "2")
- 
+    <deego> , (commands "^a")
+    <fsbot> 7 matches.  (a ac and append apply apropos av)
 
-This gives you an idea of the equivalent lisp-invocation to use. You cannot actually call the fsi- functions directly (The "i" in fsi- refers to these functions being immutable). Instead, almost every fsi- function is aliased to an fs- equivalent, which is then available to you to call. Thus, a lispy way  to invoke "describe emacswiki" is "(fs-describe 'emacswiki"). You can omit the fs- in your bot-commands; it is automatically added for you via a code-walker.
+This is, in essence, an apropos-search restricted to functions with the prefix fs-. A related command is fs-apropos, which - you guessed it - does an apropos over emacs functions/variables, but no longer restricted to the fs- prefix:
 
-To summarize, you may either use ,describe emacswiki or ,(describe 'emacswiki) which both internally get parsed to ,(fs-describe 'emacswiki), which then invokes the alias fsi-describe. 
+    <deego> , (apropos "^ac")
+    <fsbot> 11 matches.  (acapulco accept-process-output access-file
+        accessible-keymaps ache aching acid acons acos
+        activate-input-method active-minibuffer-window)
 
 
-The fs- namespace is meant to be accessible to and writeable by irc users. While the predefined fsi- functions and their corresponding fs- aliases are immutable, you can (defun) as many new fs- functions as you like. Once again, if you skip the fs- prefix, it is automatically added for you. You can also ,fmakunbound (alias: undefun) any user-defined fs- functions.
 
-All functions of the form fs-FOO are also referred to as commands. 
  
 There are about a 1000 such commands available to you, and you can query them via the command fs-commands, as follows: 
 
