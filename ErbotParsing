@@ -28,7 +28,7 @@ As we mentioned, for convenience, you can skip the `fs-' prefix when commanding 
 
 As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
 
-You have about 1000 such `fs-' commands available, referred to as botcommands. Internally, some botcommands are macros and some are functions. These include some powerful building blocks like `fs-while', `fs-mapc', `fs-eval', `fs-read', `fs-error', `fs-setq', `fs-apply', `fs-funcall', `fs-quote', `fs-lambda', etc.  
+You have about 1000 such `fs-' commands available, referred to as botcommands. Internally, some botcommands are macros and some are functions. These include some powerful building blocks like `fs-while', `fs-mapcar' and cousins, `fs-eval', `fs-read', `fs-error', `fs-setq', `fs-apply', `fs-funcall', `fs-quote', `fs-lambda', etc.  
 
 
 Among those included are `fs-defun', `fs-fmakunbound', an `fs-defalias'. In other words, you can build upon the initial botcommands and create - or remove - as many more as you like.
