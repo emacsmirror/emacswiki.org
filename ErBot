@@ -152,11 +152,13 @@ You often use the simple nlp-syntax to command the bot, but you will inevitably 
     <deego> ,(parse "myterm is my notes")                                                                                                                                                   [20:10]
     <fsbot> (fs-set-term "myterm" "my notes")
 
-The command 'lispify is aliased to 'parse. As we mentioned above, you can skip the fs- part and it is always automatically added for you.
+The command 'fs-lispify is aliased to 'fs-parse. 
 
-As you saw above, the bot understands a restricted and modified version of lisp we refer to as fslisp. You have about 1000 such commands available, and you may create more. You may command it via fslisp, you may even (defun) new fs- functions, or even (fmakunbound) and modify them. 
+As we mentioned above, you can skip the fs- part and it is always automatically added for you.
 
-A certain subset of these commands deals with basic bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term), equivalently  (fs-fmakunbound 'fs-set-term) will lead to an error because 'fs-set-term is an immutable function, that sets new terms upon request, as explained above. 
+As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. You have about 1000 such commands available, and you may create more. You may command it via fslisp, you may even (defun) new fs- functions, or even (fmakunbound) and modify them. 
+
+A certain subset of these commands deals with basic bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is an immutable function, that sets new terms upon request, as explained above. 
 
 You can query and search among the ~ 1000 commands available to you as follows:
 
