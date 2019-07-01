@@ -23,7 +23,7 @@ An additional note for an existing term is entered via "is also" whose parse is:
   <fsbot> (fs-set-also "Emacs" "a great OS")
 
 
-As we mentioned, for convenience, you can skip the `fs-' prefix when commanding fsbot, and it is always automatically added for you. Thus, instead of having to type ##(fs-parse)##, you were able to simply type ##(parse...)##.
+As we mentioned, for convenience, you can skip the `fs-' prefix when commanding fsbot, and it is always automatically added for you. Thus, instead of having to type ##(fs-parse ..)##, you were able to simply type ##(parse...)##.
 
 
 As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as **fslisp**. Furthermore, it sandboxes everything to ensure we internally always stay in the `fs-' namespace. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
