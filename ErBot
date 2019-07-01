@@ -184,6 +184,11 @@ This is, in essence, an apropos-search restricted to functions with the prefix f
 Fsbot has interfaces to many other Emacs help facilities, see section
 ErbotEmacs Help above.
 
+
+Why do we use these fs- and fsi- prefixes?  An irc user should be able to defun, forget and edit new (fs-) functions, but should not modify the basic bot-functionality. An example of the latter is fs-set-term that creates new terms upon request. Since that function is bound to its alias fsi-set-term, it is immutable. You may call it, but not modify/fmakunbound it. You may call it in one of three ways: (1) (fs-set-term "myterm" "my notes"). (2) (set-term "myterm" "my notes"), and finally, the nlp equivalent: (3) ,myterm is my notes
+
+
+
 == Merging, moving, copying and forgetting terms ==
 
 Use commands like cp, mv, merge, forget (= rm) for manipulating terms.
