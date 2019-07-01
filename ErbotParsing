@@ -62,7 +62,7 @@ Internally, things get pretty complex. For example, ##(fs-apply SUBJECT OBJECT)#
 
 Here's another reminder that everything you do is actually happening in the `fs-' space. When you  ##,(defun incf (myvar) (+ 1 (apply 'myfun myvar)))##, it first internally gets parsed as ##,(fs-defun fs-incf (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar)))##. That works because `fs-defun', `fs-apply', and `fs-+' are functions/macros that are provided to you in the core functionality, and because you hopefully already `defun'd a `fs-myfun' prior to this. Notice how the parser figures out that it needs to prefix the quoted expression as well. It converts `myfun' to `fs-myfun'. (If it didn't, you would be able to jailbreak to access things like ##'shell-command##). 
 
-When you type ##,(format "%s" 'a)##, on the other hand, you expect the answer to be "a", and indeed, the parser correctly figures out that it should NOT, in this case, convert ##'a## to ##'fs-a##.
+In some contexts, however, quoted expressions should not be prefixed with `fs-. When you type ##,(format "%s" 'a)##, you expect the answer to be "a", and indeed, the parser correctly figures out that it should NOT, in this case, convert ##'a## to ##'fs-a##.
 
 
 === `fs-' stripping ===
