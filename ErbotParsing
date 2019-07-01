@@ -9,7 +9,7 @@ You often use the easiest paren-free english syntax to command the bot, but as i
     <deego> ,(parse "Emacs is a good editor")                                                                                                                                                  
     <fsbot> (fs-set-term "Emacs" "a good editor")
 
-This tells you that sentences of the form "foo is bar" get parsed into an `fs-set-term' form. So far, the bot has merely parsed the command, not actually executed it. 
+This tells you that a sentence of the form "foo is bar" gets parsed into an `fs-set-term' form. So far, the bot has merely parsed the command, not actually executed it. 
 Next, you actually execute the command and tell the bot that Emacs is a good editor:
 
    <deego> ,Emacs is a good editor                                                                                                                                                          
