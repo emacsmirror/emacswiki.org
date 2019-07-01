@@ -2,12 +2,9 @@ Here are some bots (alphabetically) that use ErBot | who runs them | the wikis t
 
 || <b>name</b>|| <b>maintainer</b> || <b>purpose or corresponding wiki</b> || <b>IRC channels they hang out on</b> ||
 || fsbot || [[deego]], #emacsers  || Emacs Wiki, Community wiki || #emacs, #fsedu, #dunnet, #gnu, etc. ||
-|| plugbot || MichaelOlson || Knowledge tracking, [http://plug.student-orgs.purdue.edu/plugwiki/ Purdue Linux Users Group Wiki] || #muse, #pulug  on freenode ||
-|| plugb0t || MichaelOlson || AIM interface for plugbot || Add '''plugb0t''' (name contains a zero) to your AIM buddy list and chat with it ||
-|| singbot || DeepakGoel || "singularity bot", sl4, singularity wiki, AI wiki, futures wiki  || #singularity
- at freenode) and at irc.lucifer.com ||
-|| hurdie || JoseEMarchesi || "hurd.gnufans.org" ||  #hurdie #hurd-es ||
-|| pbot || [[aurelien]] || [https://parabolagnulinux.org Parabola GNU / Linux-libre || #parabola on freenode|| 
+|| donald-bot || [[kaste]], #latex  ||  || #latex ||
+
+
 
 I would be interested in knowing any uses of ErBot.  Please add your
 notes, experiences, anything :) to this page or to the list above.
