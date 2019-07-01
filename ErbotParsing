@@ -43,7 +43,7 @@ You can query and search among the ~ 1000 bot-commands available to you using (f
 
 This means that you have access to the following bot commands that start with the letter a: (fs-a), (fs-ac), (fs-and), (fs-append), etc.
 
-This was, in essence, an apropos-search, but restricted to items with the prefix fs-. A related command is fs-apropos. It searches over all emacs functions/variables, but no longer restricted to the fs- prefix:
+This was, in essence, an apropos-search, but restricted to items with the prefix fs-. A related command is fs-apropos. It searches over all emacs functions/variables, no longer restricting to the fs- prefix:
 
     <deego> , (apropos "^ac")
     <fsbot> 11 matches.  (acapulco accept-process-output access-file
