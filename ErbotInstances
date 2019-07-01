@@ -1,8 +1,8 @@
 Here are some bots (alphabetically) that use ErBot | who runs them | the wikis they usu. keep track of | and the channels they hang out on:
 
-|| <b>name</b>|| <b>maintainer</b> || <b>purpose or corresponding wiki</b> || <b>IRC channels they hang out on</b> ||
-|| fsbot || [[deego]], #emacsers  || Emacs Wiki, Community wiki || #emacs, #fsedu, #dunnet, #gnu, etc. ||
-|| donald-bot || [[kaste]], #latex  ||  || #latex ||
+|| <b>name</b>|| <b>owner</b> || <b>purpose or corresponding wiki</b> || <b>IRC channels they hang out on</b> ||
+|| fsbot || [[deego]] || Emacs Wiki, Community wiki || #emacs, #fsedu, #dunnet, #gnu, etc. ||
+|| donald-bot || [[kaste]] ||  || #latex ||
 
 
 
