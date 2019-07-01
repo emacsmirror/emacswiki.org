@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 3.7
-;; Last-Updated: 2019-06-23 18:42:03
+;; Version: 4.7
+;; Last-Updated: 2019-07-01 22:16:44
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -85,6 +85,29 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/07/01
+;;      * Make awesome-tab's colors change with user selected theme, thank you so much AmaiKinono.
+;;      * Adjust dark mode background tab's color.
+;;      * Remove local-mode code.
+;;      * Refactory code.
+;;
+;; 2019/06/30
+;;      * Add customize option `awesome-tab-display-icon' .
+;;
+;; 2019/06/28
+;;      * Fix messages buffer icon an FontAwesome errors, thanks ema2159. ;)
+;;      * Set height of tab face, avoid tab render error when user don't load any third theme.
+;;      * Make `header-line' background same as default face.
+;;
+;; 2019/06/26
+;;      * Fix error of void function awesome-tab-separator-separator-height
+;;
+;; 2019/06/25
+;;      * Still display tab if all-the-icons cause "Error during redisplay" error in MacOS.
+;;
+;; 2019/06/24
+;;      * Use ema2159's patch to fix icon face performance.
 ;;
 ;; 2019/06/23
 ;;      * Render file icon in tab when `all-the-icons' is load.
@@ -173,6 +196,7 @@
 ;;; Acknowledgements:
 ;;
 ;; casouri: documentation and many useful patches.
+;; AmaiKinono: contributed to the patch that make tab color change with the theme automatically
 ;;
 
 ;;; TODO
@@ -248,6 +272,12 @@ Feel free to add hook in this option. ;)"
 (defcustom awesome-tab-display-sticky-function-name nil
   "Non-nil to display sticky function name in tab.
 Sticky function is the function at the top of the current window sticky."
+  :group 'awesome-tab
+  :type 'boolean)
+
+(defcustom awesome-tab-display-icon t
+  "Non-nil to display icon in tab, this feature need `all-the-icons' is loaded.
+Set this option with nil if you don't like icon in tab."
   :group 'awesome-tab
   :type 'boolean)
 
@@ -530,14 +560,15 @@ current cached copy."
 
 ;;; Faces
 ;;
+
 (defface awesome-tab-unselected
   '((t
-     (:background "#3D3C3D" :foreground "grey50")))
+     (:height 130)))
   "Face used for unselected tabs."
   :group 'awesome-tab)
 
 (defface awesome-tab-selected
-  '((t (:background "#31343E" :foreground "white")))
+  '((t (:height 130)))
   "Face used for the selected tab."
   :group 'awesome-tab)
 
@@ -548,8 +579,73 @@ current cached copy."
     (define-key map (vector 'header-line mouse) function)
     map))
 
+(defun awesome-tab-color-blend (c1 c2 alpha)
+  "Blend two colors C1 and C2 with ALPHA.
+C1 and C2 are hexidecimal strings.
+ALPHA is a number between 0.0 and 1.0 which corresponds to the
+influence of C1 on the result."
+  (apply #'(lambda (r g b)
+             (format "#%02x%02x%02x"
+                     (ash r -8)
+                     (ash g -8)
+                     (ash b -8)))
+         (cl-mapcar
+          (lambda (x y)
+            (round (+ (* x alpha) (* y (- 1 alpha)))))
+          (color-values c1) (color-values c2))))
+
+(defun awesome-tab-adjust-color-with-theme ()
+  "We need adjust awesome-tab's colors when user switch new theme."
+  (let* ((white "#FFFFFF")
+         (black "#000000")
+         (bg-mode (frame-parameter nil 'background-mode))
+         (bg-unspecified (string= (face-background 'default) "unspecified-bg"))
+         (fg-unspecified (string= (face-foreground 'default) "unspecified-fg"))
+         (fg (cond
+              ((and fg-unspecified (eq bg-mode 'dark)) "gray80")
+              ((and fg-unspecified (eq bg-mode 'light)) "gray20")
+              (t (face-foreground 'default))))
+         (bg (cond
+              ((and bg-unspecified (eq bg-mode 'dark)) "gray20")
+              ((and bg-unspecified (eq bg-mode 'light)) "gray80")
+              (t (face-background 'default))))
+         ;; for light themes
+         (bg-dark (awesome-tab-color-blend black bg 0.1))
+         (bg-more-dark (awesome-tab-color-blend black bg 0.25))
+         (fg-dark (awesome-tab-color-blend fg bg-dark 0.7))
+         (fg-more-dark (awesome-tab-color-blend black fg 0.3))
+         ;; for dark themes
+         (bg-light (awesome-tab-color-blend white bg 0.1))
+         (bg-more-light (awesome-tab-color-blend white bg 0.2))
+         (fg-light (awesome-tab-color-blend fg bg 0.7))
+         (fg-more-light (awesome-tab-color-blend white fg 0.3)))
+    ;; Because tab separator is XPM object, we need re-init those XPM object after change theme.
+    (awesome-tab-separator-init-vars)
+    ;; Make `header-line' background same as default face.
+    (set-face-attribute 'header-line nil :background bg)
+    ;; Make tab background same as default face.
+    (awesome-tab-select-separator-style awesome-tab-style)
+    ;; Make tab foreground change with theme.
+    (cond
+     ((eq bg-mode 'dark)
+      (set-face-attribute 'awesome-tab-unselected nil
+                          :background bg-light
+                          :foreground fg-dark)
+      (set-face-attribute 'awesome-tab-selected nil
+                          :background bg-more-light
+                          :foreground fg-more-light))
+     (t
+      (set-face-attribute 'awesome-tab-unselected nil
+                          :background bg-dark
+                          :foreground fg-light)
+      (set-face-attribute 'awesome-tab-selected nil
+                          :background bg-more-dark
+                          :foreground fg-more-dark)))))
+
 (defun awesome-tab-line-format (tabset)
   "Return the `header-line-format' value to display TABSET."
+  (awesome-tab-adjust-color-with-theme)
+
   (let* ((sel (awesome-tab-selected-tab tabset))
          (tabs (awesome-tab-view tabset))
          (padcolor (face-background 'default))
@@ -720,47 +816,6 @@ Depend on the setting of the option `awesome-tab-cycle-scope'."
   (eq (default-value 'header-line-format)
       awesome-tab-header-line-format))
 
-;;; Awesome-Tab-Local mode
-;;
-(defvar awesome-tab--local-hlf nil)
-
-;;;###autoload
-(define-minor-mode awesome-tab-local-mode
-  "Toggle local display of the tab bar.
-With prefix argument ARG, turn on if positive, otherwise off.
-Returns non-nil if the new state is enabled.
-When turned on, if a local header line is shown, it is hidden to show
-the tab bar.  The tab bar is locally hidden otherwise.  When turned
-off, if a local header line is hidden or the tab bar is locally
-hidden, it is shown again.  Signal an error if Awesome-Tab mode is off."
-  :group 'awesome-tab
-  :global nil
-  (unless (awesome-tab-mode-on-p)
-    (error "Awesome-Tab mode must be enabled"))
-;;; ON
-  (if awesome-tab-local-mode
-      (if (and (local-variable-p 'header-line-format)
-               header-line-format)
-          ;; A local header line exists, hide it to show the tab bar.
-          (progn
-            ;; Fail in case of an inconsistency because another local
-            ;; header line is already hidden.
-            (when (local-variable-p 'awesome-tab--local-hlf)
-              (error "Another local header line is already hidden"))
-            (set (make-local-variable 'awesome-tab--local-hlf)
-                 header-line-format)
-            (kill-local-variable 'header-line-format))
-        ;; Otherwise hide the tab bar in this buffer.
-        (setq header-line-format nil))
-;;; OFF
-    (if (local-variable-p 'awesome-tab--local-hlf)
-        ;; A local header line is hidden, show it again.
-        (progn
-          (setq header-line-format awesome-tab--local-hlf)
-          (kill-local-variable 'awesome-tab--local-hlf))
-      ;; The tab bar is locally hidden, show it again.
-      (kill-local-variable 'header-line-format))))
-
 ;;; Awesome-Tab mode
 ;;
 (defvar awesome-tab-prefix-key [(control ?c)]
@@ -772,7 +827,6 @@ hidden, it is shown again.  Signal an error if Awesome-Tab mode is off."
     (define-key km [(control right)] 'awesome-tab-forward)
     (define-key km [(control up)]    'awesome-tab-backward-group)
     (define-key km [(control down)]  'awesome-tab-forward-group)
-    (define-key km [(control f10)]   'awesome-tab-local-mode)
     km)
   "The key bindings provided in Awesome-Tab mode.")
 
@@ -804,14 +858,6 @@ Returns non-nil if the new state is enabled.
         (setq-default header-line-format awesome-tab-header-line-format))
 ;;; OFF
     (when (awesome-tab-mode-on-p)
-      ;; Turn off Awesome-Tab-Local mode globally.
-      (mapc #'(lambda (b)
-                (condition-case nil
-                    (with-current-buffer b
-                      (and awesome-tab-local-mode
-                           (awesome-tab-local-mode -1)))
-                  (error nil)))
-            (buffer-list))
       ;; Restore previous `header-line-format'.
       (setq-default header-line-format awesome-tab--global-hlf)
       (awesome-tab-free-tabsets-store))
@@ -1080,7 +1126,7 @@ destination color, and 2 is the interpolated color between 0 and 1."
     `(defun ,(intern (format "powerline-%s-%s" name (symbol-name dir)))
          (face1 face2 &optional height)
        (when window-system
-         (unless height (setq height (awesome-tab-separator-separator-height)))
+         (unless height (setq height awesome-tab-height))
          (let* ,(append `((color1 (when ,src-face
                                     (awesome-tab-separator-hex-color (awesome-tab-separator-background-color ,src-face))))
                           (color2 (when ,dst-face
@@ -1320,22 +1366,26 @@ The memoization cache is frame-local."
     (modify-frame-parameters nil `((powerline-cache . ,table)))
     table))
 
-(awesome-tab-separator-memoize (awesome-tab-separator-alternate left))
-(awesome-tab-separator-memoize (awesome-tab-separator-alternate right))
-(awesome-tab-separator-memoize (awesome-tab-separator-bar left))
-(awesome-tab-separator-memoize (awesome-tab-separator-bar right))
-(awesome-tab-separator-memoize (awesome-tab-separator-box left))
-(awesome-tab-separator-memoize (awesome-tab-separator-box right))
-(awesome-tab-separator-memoize (awesome-tab-separator-chamfer left))
-(awesome-tab-separator-memoize (awesome-tab-separator-chamfer right))
-(awesome-tab-separator-memoize (awesome-tab-separator-rounded left))
-(awesome-tab-separator-memoize (awesome-tab-separator-rounded right))
-(awesome-tab-separator-memoize (awesome-tab-separator-slant left))
-(awesome-tab-separator-memoize (awesome-tab-separator-slant right))
-(awesome-tab-separator-memoize (awesome-tab-separator-wave left))
-(awesome-tab-separator-memoize (awesome-tab-separator-wave right))
-(awesome-tab-separator-memoize (awesome-tab-separator-zigzag left))
-(awesome-tab-separator-memoize (awesome-tab-separator-zigzag right))
+(defun awesome-tab-separator-init-vars ()
+  (awesome-tab-separator-memoize (awesome-tab-separator-alternate left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-alternate right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-bar left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-bar right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-box left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-box right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-chamfer left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-chamfer right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-rounded left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-rounded right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-slant left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-slant right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-wave left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-wave right))
+  (awesome-tab-separator-memoize (awesome-tab-separator-zigzag left))
+  (awesome-tab-separator-memoize (awesome-tab-separator-zigzag right))
+  )
+
+(awesome-tab-separator-init-vars)
 
 (defvar awesome-tab-style-left nil)
 (defvar awesome-tab-style-right nil)
@@ -1358,10 +1408,6 @@ element."
 (defun awesome-tab-buffer-tab-label (tab)
   "Return a label for TAB.
 That is, a string used to represent it on the tab bar."
-  ;; Init tab style.
-  (when (or (not awesome-tab-style-left)
-            (not awesome-tab-style-right))
-    (awesome-tab-select-separator-style awesome-tab-style))
   (let* ((is-active-tab (awesome-tab-selected-p tab (awesome-tab-current-tabset)))
          (tab-face (if is-active-tab 'awesome-tab-selected 'awesome-tab-unselected)))
     (concat
@@ -1384,31 +1430,38 @@ That is, a string used to represent it on the tab bar."
 (defun awesome-tab-icon-for-tab (tab face)
   "When tab buffer's file is exists, use `all-the-icons-icon-for-file' to fetch file icon.
 Otherwise use `all-the-icons-icon-for-buffer' to fetch icon for buffer."
-  (let ((icon
-         (when (featurep 'all-the-icons)
-           (let* ((tab-buffer (car tab))
-                  (tab-file (buffer-file-name tab-buffer)))
-             (cond
-              ;; Use `all-the-icons-icon-for-file' if current file is exists.
-              ((and
-                tab-file
-                (file-exists-p tab-file))
-               (all-the-icons-icon-for-file tab-file :v-adjust -0.1 :height 1))
-              ;; Use `all-the-icons-icon-for-buffer' for current tab buffer at last.
-              (t
-               (with-current-buffer tab-buffer
-                 (all-the-icons-icon-for-buffer)))))))
-        (background (face-background face)))
-    ;; Dynamic adjust icon's background,
-    ;; don't use propertized wrap icon, it will cause elisp icon render wrong graphics.
-    (add-face-text-property 0 1 `(:background ,background) nil icon)
-    ;; Add space before icon if found one.
-    (if icon
-        (concat
-         (propertize " " 'face face)
-         icon)
-      icon)
-    ))
+  (ignore-errors
+    (when (and awesome-tab-display-icon
+               (featurep 'all-the-icons))
+      (let* ((tab-buffer (car tab))
+             (tab-file (buffer-file-name tab-buffer))
+             (icon
+              (cond
+               ;; Use `all-the-icons-icon-for-file' if current file is exists.
+               ((and
+                 tab-file
+                 (file-exists-p tab-file))
+                (all-the-icons-icon-for-file tab-file :v-adjust -0.1 :height 1))
+               ;; Use `all-the-icons-icon-for-buffer' for current tab buffer at last.
+               (t
+                (with-current-buffer tab-buffer
+                  (all-the-icons-icon-for-buffer))))))
+        (when icon
+          (awesome-tab-change-icon-background icon (face-background face))
+          ;; Add space before icon if found one.
+          (concat (propertize " " 'face face) icon))))))
+
+(defun awesome-tab-change-icon-background (icon background-color)
+  ;; Dynamic adjust icon's background,
+  ;; don't use propertized wrap icon, it will cause elisp icon render wrong graphics.
+  ;;
+  ;; Thanks ema2159 for code block ;)
+  (let ((original-props (get-text-property 0 'face icon)))
+    (remove-text-properties 0 1 '(face nil) icon)
+    (unless (<= (length original-props) 6)
+      (pop original-props))
+    (add-face-text-property 0 1 original-props nil icon)
+    (add-face-text-property 0 1 `(:background ,background-color) nil icon)))
 
 (defun awesome-tab-buffer-name (tab-buffer)
   "Get buffer name of tab.
@@ -1814,8 +1867,8 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
         (when (featurep 'helm)
           (require 'helm)
           (helm-build-sync-source "Awesome-Tab Group"
-            :candidates #'awesome-tab-get-groups
-            :action '(("Switch to group" . awesome-tab-switch-group))))))
+                                  :candidates #'awesome-tab-get-groups
+                                  :action '(("Switch to group" . awesome-tab-switch-group))))))
 
 ;; Ivy source for switching group in ivy.
 (defvar ivy-source-awesome-tab-group nil)
