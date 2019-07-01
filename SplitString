@@ -31,17 +31,12 @@ for some discussion of these features.
 
 == The Empty String as PATTERN or SEPARATORS ==
 
-In Emacs, using the empty string, "", as your PATTERN or SEPARATOR produces what you might expect:
-
-    (split-string "foo bar baz" "")
-    => ("f" "o" "o" " " "b" "a" "r" " " "b" "a" "z")
-
-In XEmacs, you get empty strings at the beginning and end:
+In Emacs 22.1+ and XEmacs, using the empty string, "", as your PATTERN or SEPARATOR produce empty strings at the beginning and end:
 
     (split-string "foo bar baz" "")
     => ("" "f" "o" "o" " " "b" "a" "r" " " "b" "a" "z" "")
 
-But see next subsection for a more straightforward to do this.
+You can remove those using the techniques listed above, but see next subsection for a more straightforward to do this.
 
 === Breaking strings into characters ===
 
