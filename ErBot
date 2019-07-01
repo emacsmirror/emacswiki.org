@@ -148,10 +148,10 @@ still get lispified before being processed.  The lispification
 function itself can be called to see how an English message will be
 lispified:
 
-    <deego> , lispify "describe emacswiki"
+    <deego> , (lispify "describe emacswiki")
     <fsbot> (fs-describe (quote emacswiki))
 
-    <deego> , lispify "(describe \"emacswiki\")"                            
+    <deego> , (lispify "(describe \"emacswiki\")")
     <fsbot> (fs-describe "emacswiki")
 
 As you can see, fsbot also walks through any lisp code you supply and
