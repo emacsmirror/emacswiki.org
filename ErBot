@@ -155,11 +155,13 @@ The command 'fs-lispify is also aliased to 'fs-parse.
 
 As we mentioned above, for convenience, you can skip the fs- part and it is always automatically added for you.
 
-As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. You have about 1000 such fs- commands available, some macros and some functions, including while, mapc*, etc.  Among them are (fs-defun) and (fs-fmakunbound). In other words, you can use the initial 1000 fslisp functions to create - or remove - as many more as you like.
+As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. fs- functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like "rm -rf /", are meant to aid the bot functionality, and are sometimes different from the usual emacs counterparts. For example, (fs-replace-string) is used to replace strings within the notes of terms, and is very different from emacs' (replace-string).
+
+You have about 1000 such fs- commands available, some macros and some functions, including while, mapc*, etc.  Among them are (fs-defun) and (fs-fmakunbound). In other words, you can use the initial 1000 fslisp functions to create - or remove - as many more as you like.
 
 A certain subset of these commands deals with core bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality, as explained above. 
 
-You can query and search among the ~ 1000 commands available to you as follows:
+You can query and search among the ~ 1000 commands available to you using 'fs-commands:
 
 
     <deego> , (commands "^a")
