@@ -148,18 +148,29 @@ To set a new term "myterm" to "my notes", you can type one of three things: (1) 
 
 You often use the simple nlp-syntax to command the bot, but as is inevitable with any nlp parsing, you will inevitably run into ambiguities and edge-cases. We make no effort to provide workarounds, and your best option is to use the precise lisp syntax for more fine-tuned control in such cases. But, you shouldn't have to remember the equivalent lisp-form and should simply be able to look it up! You simply ask the bot itself via (fs-parse) which is also aliased to (fs-lispify): 
 
-    <deego> ,(parse "myterm is my notes")                                                                                                                                                  
-    <fsbot> (fs-set-term "myterm" "my notes")
+    <deego> ,(parse "Emacs is a good editor")                                                                                                                                                  
+    <fsbot> (fs-set-term "Emacs" "a good editor")
+
+This tells you that sentences of the form "foo is bar" get parsed into an (fs-set-term) form. So far, the bot has merely parsed the command, not actually executed it. 
+Next, you actually execute the command and tell the bot that emacs is a good editor:
+
+   <deego> ,Emacs is a good editor                                                                                                                                                          
+   <fsbot> Created new note for "Emacs"
+
+An additional note for an existing term is entered via "is also" whose parse is:
+ 
+  <deego> ,(parse "Emacs is also a great OS")                                                                                                                                          
+  <fsbot> (fs-set-also "Emacs" "a great OS")
 
 
-As we mentioned, for convenience, you can skip the fs- prefix when commanding fsbot, and it is always automatically added for you.
+As we mentioned, for convenience, you can skip the fs- prefix when commanding fsbot, and it is always automatically added for you. Thus, instead of having to type (fs-parse), you were able to simply type (parse...).
+
 
 As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. These fs- functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like (shell-command "rm -rf /"), (eval '(kill-system)), etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they are meant to aid the bot functionality. For example, (fs-replace-string) is used to replace strings within the notes of terms, and is very different from the usual (replace-string) found in emacs.
 
 You have about 1000 such fs- commands available, referred to as botcommands. Internally, some botcommands are macros and some are functions. These include some powerful building blocks like (fs-while), (fs-mapc..), (fs-eval), (fs-read), (fs-error), (fs-setq), (fs-apply), (fs-funcall), (fs-quote), (fs-lambda), etc.  
 
-Among those included are  (fs-defun), (fs-fmakunbound), an (fs-defalias).
-In other words, you can use the initial core fslisp functions to create - or remove - as many more as you like.
+Among those included are  (fs-defun), (fs-fmakunbound), an (fs-defalias). In other words, you can use the initial core fslisp functions to create - or remove - as many more as you like.
 
 Thus, you have read/write access to the fs- space. This rw access applies to all new functions you create, but not to the initial core fs- functionality, which has read-only access. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality. That function helps the bot create new terms, as shown above. It should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed it via a PM.
 
