@@ -174,26 +174,10 @@ This is, in essence, an apropos-search restricted to functions with the prefix f
         activate-input-method active-minibuffer-window)
 
 
-
- 
-There are about a 1000 such commands available to you, and you can query them via the command fs-commands, as follows: 
-
-
-    <deego> , (commands "^a")
-    <fsbot> 7 matches.  (a ac and append apply apropos av)
-
-This is, in essence, an apropos-search restricted to functions with the prefix fs-. A related command is fs-apropos, which - you guessed it - does an apropos over emacs functions/variables, but no longer restricted to the fs- prefix:
-
-    <deego> , (apropos "^ac")
-    <fsbot> 11 matches.  (acapulco accept-process-output access-file
-        accessible-keymaps ache aching acid acons acos
-        activate-input-method active-minibuffer-window)
-
 Fsbot has interfaces to many other Emacs help facilities, see section
 ErbotEmacs Help above.
 
 
-Why do we use these fs- and fsi- prefixes?  An irc user should be able to defun, forget and edit new (fs-) functions, but should not modify the basic bot-functionality. An example of the latter is fs-set-term that creates new terms upon request. Since that function is bound to its alias fsi-set-term, it is immutable. You may call it, but not modify/fmakunbound it. You may call it in one of three ways: (1) (fs-set-term "myterm" "my notes"). (2) (set-term "myterm" "my notes"), and finally, the nlp equivalent: (3) ,myterm is my notes
 
 
 
