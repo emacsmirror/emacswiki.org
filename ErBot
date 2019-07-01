@@ -143,7 +143,7 @@ Example:
 
 == Parsing/Lispification and Lisp interpreter ==
 
-You may communicate with the bot via lisp or nlp. NLP parsing is very rudimentary, and gets pre-processed into a lisp equivalent. NLP, of course, has many edge-cases and conflicts, and we make no effort to resolve them for you. Please use lisp when you need fine-tuning over such cases. 
+You may invoke the bot via lisp-commands or via NLP. NLP parsing is very rudimentary; NLP expressions first pre-process into a lisp equivalent. NLP, of course, has many edge-cases and conflicts, and we make no effort to resolve them for you. Please use lisp when you need fine-tuning over such cases. 
 
 Example: "describe emacswiki" is first parsed as "(describe 'emacswiki)" which is then evaluated as a lisp expression. 
 Another example: ,s/foo/bar in baz 2 is parsed as ,(fsi-replace-string "foo" "bar" "baz" 2). 
