@@ -148,17 +148,16 @@ To set a new term "myterm" to "my notes", you can type one of three things: (1) 
 
 You often use the simple nlp-syntax to command the bot, but you will inevitably encounter ambiguities in that case. The best option is to use the precise lisp syntax for more fine-tuned control in such cases. But, you don't remember the equivalent lisp-form and want to look it up. To do that, you ask the bot itself:
 
-
     <deego> ,(parse "myterm is my notes")                                                                                                                                                  
     <fsbot> (fs-set-term "myterm" "my notes")
 
-The command 'fs-lispify is aliased to 'fs-parse. 
+The command 'fs-lispify is also aliased to 'fs-parse. 
 
-As we mentioned above, you can skip the fs- part and it is always automatically added for you.
+As we mentioned above, for convenience, you can skip the fs- part and it is always automatically added for you.
 
-As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. You have about 1000 such commands available, and you may create more. You may command it via fslisp, you may even (defun) new fs- functions, or even (fmakunbound) and modify them. 
+As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. You have about 1000 such fs- commands available, some macros and some functions, including while, mapc*, etc.  Among them are (fs-defun) and (fs-fmakunbound). In other words, you can use the initial 1000 fslisp functions to create - or remove - as many more as you like.
 
-A certain subset of these commands deals with basic bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is an immutable function, that sets new terms upon request, as explained above. 
+A certain subset of these commands deals with core bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality, as explained above. 
 
 You can query and search among the ~ 1000 commands available to you as follows:
 
