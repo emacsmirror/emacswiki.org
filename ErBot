@@ -156,13 +156,17 @@ As we mentioned, for convenience, you can skip the fs- part when commanding the 
 
 As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. These fs- functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like (shell-command "rm -rf /"), (eval '(kill-system)), etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they are meant to aid the bot functionality. For example, (fs-replace-string) is used to replace strings within the notes of terms, and is very different from the usual (replace-string) found in emacs.
 
-You have about 1000 such fs- commands available, some macros and some functions, including things like 'fs-while, 'fs-mapc*, 'fs-eval, 'fs-read, 'fs-error, 'fs-setq, etc.  Also included are  (fs-defun), (fs-fmakunbound), an (fs-defalias). In other words, you can use the initial core fslisp functions to create - or remove - as many more as you like.
+You have about 1000 such fs- commands available, referred to as botcommands. Internally, some botcommands are macros and some are functions. These include some powerful building blocks like (fs-while), (fs-mapc..), (fs-eval), (fs-read), (fs-error), (fs-setq), (fs-apply), (fs-funcall), (fs-quote), (fs-lambda), etc.  
 
-Thus, you have read/write access to the fs- space. This applies to all new functions you create, but not to the initial core fs- functionality. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality. That function helps the bot create new terms, as shown above. It should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed it via a PM.
+Among those included are  (fs-defun), (fs-fmakunbound), an (fs-defalias).
+In other words, you can use the initial core fslisp functions to create - or remove - as many more as you like.
 
+Thus, you have read/write access to the fs- space. This rw access applies to all new functions you create, but not to the initial core fs- functionality, which has read-only access. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality. That function helps the bot create new terms, as shown above. It should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed it via a PM.
+
+Internally, things get pretty complex. For example, (fs-apply SUBJECT OBJECT) is fairly complex because it uses various codewalkers to handle all kinds of cases in the secure fs- model: the subject could be a quoted expression, a variable, a lisp-expression, a lambda, a quoted symbol, etc. The object could be a lisp expression, a symbol, a variable, or a list. The lisp-expression could result in a symbol, a variable, a list, etc. Among other things, in each case, the codewalker needs to ensure that we don't allow jailbreaking out of the fs- namespace.  
   
 
-You can query and search among the ~ 1000 commands available to you using 'fs-commands:
+You can query and search among the ~ 1000 bot-commands available to you using 'fs-commands:
 
 
     <deego> , (commands "^a")
