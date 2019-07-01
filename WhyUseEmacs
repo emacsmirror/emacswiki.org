@@ -1,8 +1,8 @@
 : ''Emacs is the extensible, customizable, self-documenting real-time display editor.'' -- the EmacsManual
 
-What does this mean? [[Extensible]] refers emacs being built upon a core set of routines hard-coded in C, which are then extended using a language called EmacsLisp. For this reason, emacs remains the most powerful editor ever made - you can customize it to suit your needs perfectly. If there isn't a feature, just add it! Emacs can do anything that can be coded in EmacsLisp, and that is a heck of a lot of things. 
+What does this mean? [[Extensible]] refers to Emacs being built upon a core set of routines hard-coded in C, which are then extended using a language called EmacsLisp. For this reason, Emacs remains the most powerful editor ever made - you can customize it to suit your needs perfectly. If there isn't a feature, just add it! Emacs can do anything that can be coded in EmacsLisp, and that is a heck of a lot of things. 
 
-Here is a short list of emacs features.
+Here is a short list of Emacs features.
 
 || [[undo|Undo]] ||             Hypertext  ||            Archive look-up ||
 || Copy/Paste ||                Alignment   ||           Calendar, diary ||
@@ -22,22 +22,21 @@ Here is a short list of emacs features.
 
 More reading on useful Emacs features:
 
+* OrgMode
 * CategoryProgramming
 * CategoryGnus
 * CategoryHypermedia
 * CategoryJournaling
 * EmacsLisp
-* You want ''useful''? Here's useful: `M-x apropos-zippy RET use'
 
-Why to choose Emacs over other editors:
+Why choose Emacs over other editors:
 
 * ViAndEmacs - Information on why to use Emacs over Vi or [http://www.vim.org/ ViImproved (VIM)].
 * EmacsForDevStudioUsers
 
-External links
+== External links ==
 
 * SachaChua wrote some thoughts on [http://sacha.free.net.ph/notebook/wiki/EmacsTips.php#14 why Emacs is called a self-documenting editor].
 
 ----
 CategoryHelp
-CategoryHumor
