@@ -143,6 +143,7 @@ Example:
 
 == Parsing/Lispification and Lisp interpreter ==
 
+(This section is current as of 2019 -deego)
 
 To set a new term "myterm" to "my notes", you can type one of three things: (1) ,myterm is my notes (2) ,(fs-set-term "myterm" "my notes"), or finally, (3) ,(set-term "myterm" "my notes"). (1) is referrred to as a nlp- or english- syntax. (2) is the lisp interface form available to the irc user. (3) shows that if the fs- prefixes are omitted, a codewalker adds them right back. Internally, all three expressions eventually convert to form (2) which then converts to (fsi-set-term "myterm" "my notes") before actually getting executed. 
 
