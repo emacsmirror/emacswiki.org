@@ -52,7 +52,7 @@ This was, in essence, an apropos-search, but restricted to items with the prefix
         activate-input-method active-minibuffer-window)
 
 
-Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-' functions and set your own `fs-' variables. Once defined, these remain persistent across sessions. These are referred to as **userfunctions** and **uservariables**, respectively, and get stored in the publicly available files **userfunctions.el** and **uservariables.el**. *Uservariables should not be confused with terms*, which are set via `fs-set-term', as illustrated earlier. 
+Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-' functions and set your own `fs-' variables. Once defined, these remain persistent across sessions. These are referred to as **userfunctions** and **uservariables**, respectively, and get stored in the publicly available files **userfunctions.el** and **uservariables.el**. /Uservariables should not be confused with terms/, which are set via `fs-set-term', as illustrated earlier. 
 
 
 === Some notes on the Parser === 
