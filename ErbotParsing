@@ -33,7 +33,7 @@ You have about 1000 such `fs-' commands available, referred to as **botcommands*
 
 Among those included are `fs-defun', `fs-fmakunbound', an `fs-defalias'. In other words, you can build upon the initial botcommands and create - or remove - as many more as you like.
 
-Thus, you have read/write access to the `fs-' space. This rw access applies to all new functions you create, but not to the initial core `fs-' functionality, which has read-only access. Thus, trying ##(fmakunbound 'fmakunbound)## - equivalently  ##(fs-fmakunbound 'fs-fmakunbound)## - will lead to an error because `fs-fmakunbound' is part of the core functionality. Such core functions should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed them via a PM. Another example of a core botcommand is `fs-set-term'.
+Thus, you have read/write access to the `fs-' space. This rw access applies to all new functions you create, but not to the initial core `fs-' functionality, which has read-only access. Thus, trying ##(fmakunbound 'fmakunbound)## - equivalently  ##(fs-fmakunbound 'fs-fmakunbound)## - will lead to an error because `fs-fmakunbound' is part of the core functionality. Such core functions should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed them via a PM. Another example of a **core botcommand** is `fs-set-term'.
 
 
 You can query and search among the ~ 1000 bot-commands available to you using `fs-commands':
