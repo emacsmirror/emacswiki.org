@@ -3,7 +3,11 @@ Other sections:
 * ErbotInstallationItalian --- A (slightly dated) Italian version translated graciously by Enrico Bandiera.
 ----
 
-(1) The instructions below are outdated - by a decade or so. Source is hosted at http://gnufans.net/~fsbot/. Please adapt accordingly. (2) The source code is far from polished; nor is the installation straightforward. You've been warned. :) -deego, 2018
+(1) The instructions below are outdated - by almost two decades. Source is hosted at http://gnufans.net/~fsbot/. Please adapt accordingly. (2) The source code is far from polished; nor is the installation straightforward. You've been warned. :) -deego, 2018
+
+
+----
+Old instructions:
 
 Disclaimer: Please note that ErBot does not come in a nice packaged form for install yet.   :).  Nonetheless, if you want to install it and run it for some channels, here are *step-by-step* instructions.  ErBot is most specially suited to lispy channels like #emacs and may not necessarily be suited for your needs.  Have a look at the bot apt in #debian, and its package bobot++, to see if that suits you better-- in fact, a lot of ErBot's english interface is inspired from apt's.  Having said that, I think I like fsbot's design and syntax more --- allow the user a similar fuzzy english syntax that apt does, but that fuzzy syntax is just an interface to an accurate lisp syntax, which is also available to the user. Also, fsbot does a much smarter search-lookup, has tons of other features and is also a minor lisp interpreter. 
 
