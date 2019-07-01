@@ -2,7 +2,7 @@
 
 (This section is current as of 2019 -deego)
 
-To set a new ***term*** "myterm" to "my notes", you can type one of three things: (1) ##,myterm is my notes## (2) ##,(fs-set-term "myterm" "my notes")##, or finally, (3) ##,(set-term "myterm" "my notes")##. (1) is referrred to as a natural-language- or english- syntax. (2) is the lisp form, and finally, (3) shows that if the `fs-' prefixes are omitted, a codewalker adds them right back. Internally, all three expressions eventually convert to form (2) which then converts to ##(fsi-set-term "myterm" "my notes")## before actually getting executed. 
+To set the **notes** for new **term** "myterm" to "my notes", you can type one of three things: (1) ##,myterm is my notes## (2) ##,(fs-set-term "myterm" "my notes")##, or finally, (3) ##,(set-term "myterm" "my notes")##. (1) is referrred to as a natural-language- or english- syntax. (2) is the lisp form, and finally, (3) shows that if the `fs-' prefixes are omitted, a codewalker adds them right back. Internally, all three expressions eventually convert to form (2) which then converts to ##(fsi-set-term "myterm" "my notes")## before actually getting executed. 
 
 You often use the easiest paren-free english syntax to command the bot, but as is inevitable with any nlp parsing, you will eventually run into ambiguities, edge-cases and conflicts. Your best option in such cases is to use the precise lisp syntax for more fine-tuned control. But, you shouldn't have to remember the equivalent lisp-form. You should simply be able to look it up! You simply ask the bot itself via ##(fs-parse)## which is also aliased to ##(fs-lispify)##: 
 
