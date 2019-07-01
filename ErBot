@@ -143,64 +143,35 @@ Example:
 
 == Parsing/Lispification and Lisp interpreter ==
 
-<<<<<<< you
-You may communicate with the bot via lisp or nlp. NLP parsing is very rudimentary, and gets pre-processed into a lisp equivalent. 
+You may communicate with the bot via lisp or nlp. NLP parsing is very rudimentary, and gets pre-processed into a lisp equivalent. NLP, of course, has many edge-cases and conflicts, and we make no effort to resolve them for you. Please use lisp when you need fine-tuning over such cases. 
+
 Example: "describe emacswiki" is first parsed as "(describe 'emacswiki)" which is then evaluated as a lisp expression. 
-Another example: ,s/foo/bar in baz 2 is parsed as ,(replace-string "foo" "bar" "baz" 2). 
+Another example: ,s/foo/bar in baz 2 is parsed as ,(fsi-replace-string "foo" "bar" "baz" 2). 
 Especially when dealing with NLP ambiguities such as presence of "/" in terms, it is best to use the precise lisp forms instead.
 
 You can ask the bot how it parses any NLP expresison via the function parse (alias: lispify). Here are some examples: 
 
 
     <deego> , (lispify "describe emacswiki")
-    <fsbot> (describe (quote emacswiki))
+    <fsbot> (fsi-describe (quote emacswiki))
 
-    <deego> , (parse 
 
-    <deego> ,(lispify "s/TO/FROM in MyTerm 2")
+    <deego> ,(parse "s/TO/FROM in MyTerm 2")
    <fsbot> (fsi-replace-string "TO" "FROM" "MyTerm" "2")
  
 
-This gives you an idea of the equivalent lisp-invocation to use. You cannot actually call the fsi- functions directly (The "i" in fsi- denotes inaccessible internal functions). Instead, every fsi- should be understood as fs-. Only functions beginning with the fs- prefix are accessible to you. If you omit the prefix fs-, it is added for you. 
+This gives you an idea of the equivalent lisp-invocation to use. You cannot actually call the fsi- functions directly (The "i" in fsi- denotes inaccessible, internal, immutable functions). Instead, almost every fsi- function is aliased to an fs- equivalent, and these are available to you. Thus, a the lisp- way to invoke "describe emacswiki" is "(fs-describe 'emacswiki"). You can omit the fs- in your commands; it is automatically added for you via a code-walker.
 
-Thus, ,(replace-string ...) is parsed as (fs-replace-string ...), which is internally aliased to (fsi-replace-string). 
+To summarize, you can use ,describe emacswiki or you can use ,(describe 'emacswiki) which both internally get parsed to ,(fs-describe 'emacswiki), which then invokes the alias fsi-describe. 
 
-These functions of the form fs-FOO that are available to irc users are also referred to as commands. 
-  
+
+
+The fs- namespace is meant to be available to the end-users. While the predefined fsi- functions and their corresponding fs- aliases are immutable, you can (defun) as many new fs- functions as you like. Once again, if you skip the fs- prefix, it is automatically added for you. 
+
+All functions of the form fs-FOO are also referred to as commands. 
+ 
 There are about a 1000 such commands available to you, and you can query them via the command fs-commands, as follows: 
-||||||| ancestor
-You may prefer to talk to the bot in English, but your message will
-still get lispified before being processed.  The lispification
-function itself can be called to see how an English message will be
-lispified:
 
-    <deego> , lispify "describe emacswiki"
-    <fsbot> (fs-describe (quote emacswiki))
-
-    <deego> , lispify "(describe \"emacswiki\")"                            
-    <fsbot> (fs-describe "emacswiki")
-
-As you can see, fsbot also walks through any lisp code you supply and
-prefixes them with fs-.  The commands accessible to users start with
-fs-. As of Dec. 2004, there are (length (command-list)) == 681 such commands.  Here's how to do
-an apropos search restricted to bot-commands:
-=======
-You may prefer to talk to the bot in English, but your message will
-still get lispified before being processed.  The lispification
-function itself can be called to see how an English message will be
-lispified:
-
-    <deego> , (lispify "describe emacswiki")
-    <fsbot> (fs-describe (quote emacswiki))
-
-    <deego> , (lispify "(describe \"emacswiki\")")
-    <fsbot> (fs-describe "emacswiki")
-
-As you can see, fsbot also walks through any lisp code you supply and
-prefixes them with fs-.  The commands accessible to users start with
-fs-. As of Dec. 2004, there are (length (command-list)) == 681 such commands.  Here's how to do
-an apropos search restricted to bot-commands:
->>>>>>> other
 
     <deego> , (commands "^a")
     <fsbot> 7 matches.  (a ac and append apply apropos av)
