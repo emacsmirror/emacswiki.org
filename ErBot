@@ -159,9 +159,9 @@ You can ask the bot how it parses any NLP expresison via the function parse (ali
    <fsbot> (fsi-replace-string "TO" "FROM" "MyTerm" "2")
  
 
-This gives you an idea of the equivalent lisp-invocation to use. You cannot actually call the fsi- functions directly (The "i" in fsi- refers to these functions being immutable). Instead, almost every fsi- function is aliased to an fs- equivalent, which are available to you. Thus, a the lisp- way to invoke "describe emacswiki" is "(fs-describe 'emacswiki"). You can omit the fs- in your commands; it is automatically added for you via a code-walker.
+This gives you an idea of the equivalent lisp-invocation to use. You cannot actually call the fsi- functions directly (The "i" in fsi- refers to these functions being immutable). Instead, almost every fsi- function is aliased to an fs- equivalent, which is then available to you to call. Thus, a lispy way  to invoke "describe emacswiki" is "(fs-describe 'emacswiki"). You can omit the fs- in your bot-commands; it is automatically added for you via a code-walker.
 
-To summarize, you can use ,describe emacswiki or you can use ,(describe 'emacswiki) which both internally get parsed to ,(fs-describe 'emacswiki), which then invokes the alias fsi-describe. 
+To summarize, you may either use ,describe emacswiki or ,(describe 'emacswiki) which both internally get parsed to ,(fs-describe 'emacswiki), which then invokes the alias fsi-describe. 
 
 
 The fs- namespace is meant to be accessible to and writeable by irc users. While the predefined fsi- functions and their corresponding fs- aliases are immutable, you can (defun) as many new fs- functions as you like. Once again, if you skip the fs- prefix, it is automatically added for you. You can also ,fmakunbound (alias: undefun) any user-defined fs- functions.
