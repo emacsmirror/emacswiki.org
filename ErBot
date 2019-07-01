@@ -146,20 +146,21 @@ Example:
 
 To set a new term "myterm" to "my notes", you can type one of three things: (1) ,myterm is my notes (2) ,(fs-set-term "myterm" "my notes"), or finally, (3) ,(set-term "myterm" "my notes"). (1) is referrred to as a nlp- or english- syntax. (2) is the lisp interface form available to the irc user. (3) shows that if the fs- prefixes are omitted, a codewalker adds them right back. Internally, all three expressions eventually convert to form (2) which then converts to (fsi-set-term "myterm" "my notes") before actually getting executed. 
 
-You often use the simple nlp-syntax to command the bot, but you will inevitably encounter ambiguities in that case. The best option is to use the precise lisp syntax for more fine-tuned control in such cases. But, you don't remember the equivalent lisp-form and want to look it up. To do that, you ask the bot itself:
+You often use the simple nlp-syntax to command the bot, but as is inevitable with any nlp parsing, you will inevitably run into ambiguities and edge-cases. We make no effort to provide workarounds, and your best option is to use the precise lisp syntax for more fine-tuned control in such cases. But, you shouldn't have to remember the equivalent lisp-form and should simply be able to look it up! You simply ask the bot itself via (fs-parse) which is also aliased to (fs-lispify): 
 
     <deego> ,(parse "myterm is my notes")                                                                                                                                                  
     <fsbot> (fs-set-term "myterm" "my notes")
 
-The command 'fs-lispify is also aliased to 'fs-parse. 
 
-As we mentioned above, for convenience, you can skip the fs- part and it is always automatically added for you.
+As we mentioned, for convenience, you can skip the fs- part when commanding the bot, and it is always automatically added for you.
 
-As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. fs- functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like "rm -rf /", are meant to aid the bot functionality, and are sometimes different from the usual emacs counterparts. For example, (fs-replace-string) is used to replace strings within the notes of terms, and is very different from emacs' (replace-string).
+As you saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as fslisp. These fs- functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like (shell-command "rm -rf /"), (eval '(kill-system)), etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they are meant to aid the bot functionality. For example, (fs-replace-string) is used to replace strings within the notes of terms, and is very different from the usual (replace-string) found in emacs.
 
-You have about 1000 such fs- commands available, some macros and some functions, including while, mapc*, etc.  Among them are (fs-defun) and (fs-fmakunbound). In other words, you can use the initial 1000 fslisp functions to create - or remove - as many more as you like.
+You have about 1000 such fs- commands available, some macros and some functions, including things like 'fs-while, 'fs-mapc*, 'fs-eval, 'fs-read, 'fs-error, 'fs-setq, etc.  Also included are  (fs-defun), (fs-fmakunbound), an (fs-defalias). In other words, you can use the initial core fslisp functions to create - or remove - as many more as you like.
 
-A certain subset of these commands deals with core bot-functionality and is immutable. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality, as explained above. 
+Thus, you have read/write access to the fs- space. This applies to all new functions you create, but not to the initial core fs- functionality. Thus, trying (fmakunbound 'set-term) - equivalently  (fs-fmakunbound 'fs-set-term) - will lead to an error because 'fs-set-term is part of the core functionality. That function helps the bot create new terms, as shown above. It should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed it via a PM.
+
+  
 
 You can query and search among the ~ 1000 commands available to you using 'fs-commands:
 
@@ -174,6 +175,8 @@ This is, in essence, an apropos-search restricted to functions with the prefix f
         accessible-keymaps ache aching acid acons acos
         activate-input-method active-minibuffer-window)
 
+
+Since you have access to (fs-setq) and (fs-defun), you can define your own fs- functions and set your own fs- variables. Once defined, these remain persistent across sessions. These are referred to as userfunctions and uservariables, respectively. The latter should not be confused with terms, which are set via (fs-set-term), as illustrated above. 
 
 Fsbot has interfaces to many other Emacs help facilities, see section
 ErbotEmacs Help above.
