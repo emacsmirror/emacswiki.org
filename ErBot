@@ -196,7 +196,8 @@ This was, in essence, an apropos-search restricted to functions with the prefix 
 Since you have access to (fs-defun) and (fs-setq), you can define your own fs- functions and set your own fs- variables. Once defined, these remain persistent across sessions. These are referred to as userfunctions and uservariables, respectively. The latter should not be confused with terms, which are set via (fs-set-term), as illustrated above. 
 
 
-Here's one final reminder that everything you do is actually happening in the fs- space. Example, when you  ,(defun incf (a) (+ 1 a)), it first internally gets parsed as ,(fs-defun fs-incf (fs-a) (fs-+ 1 fs-a)), and it works because fs-defun and fs-+ are functions that are provided to you. 
+Here's one final reminder that everything you do is actually happening in the fs- space. Example, when you  ,(defun incf (a) (+ 1 (apply 'myfun a))), it first internally gets parsed as ,(fs-defun fs-incf (fs-a) (fs-+ 1 (fs-apply 'fs-myfun fs-a))), and it works because fs-defun, fs-apply, and fs-+ are functions that provided to you, and because you hopefully already defun'd a 'fs-myfun prior to this. Notice how the parser figured out that it needs to go and add a fs- to the quoted 'myfun as well.
+
 
 Fsbot has interfaces to many other Emacs help facilities, see section
 ErbotEmacs Help above.
