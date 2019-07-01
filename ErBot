@@ -143,11 +143,10 @@ Example:
 
 == Parsing/Lispification and Lisp interpreter ==
 
-You may invoke the bot via lisp-commands or via NLP. NLP parsing is very rudimentary; NLP expressions first pre-process into a lisp equivalent. NLP, of course, has many edge-cases and conflicts, and we make no effort to resolve them for you. Please use lisp when you need fine-tuning over such cases. 
+You may invoke the bot via lisp-commands or via NLP. NLP parsing is very rudimentary; NLP expressions first pre-process into a lisp equivalent. NLP, of course, has many edge-cases and conflicts, and we make no effort to resolve them for you. Please use the precise lisp syntax when you need fine-tuning over such cases. 
 
 Example: "describe emacswiki" is first parsed as "(describe 'emacswiki)" which is then evaluated as a lisp expression. 
 Another example: ,s/foo/bar in baz 2 is parsed as ,(fsi-replace-string "foo" "bar" "baz" 2). 
-Especially when dealing with NLP ambiguities such as presence of "/" in terms, it is best to use the precise lisp forms instead.
 
 You can ask the bot how it parses any NLP expresison via the function parse (alias: lispify). Here are some examples: 
 
