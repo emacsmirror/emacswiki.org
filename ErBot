@@ -6,7 +6,7 @@ Most of the erbot-docs below are a bit dated (by about two decades). The ErbotPa
 
 Other sections available:
 
-* ErbotParsing - asking erbot to parse your nlp sentence into a lisp expression.
+* ErbotParsing - asking erbot to parse your English sentence into a lisp expression.
 * ErbotPorts -- running erbot on IM, lispy, etc.
 * FsBot - a bot that uses erbot and serves #emacs.
 * ErBotItalian -- a somewhat dated Italian translation of this page, thanks to tr3
