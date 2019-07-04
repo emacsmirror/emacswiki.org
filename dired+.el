@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jun 25 17:03:00 2019 (-0700)
+;; Last-Updated: Wed Jul  3 20:06:35 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11704
+;;     Update #: 11707
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -804,6 +804,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/07/03 dadams
+;;     diredp-mark-if: Use char-after, not diredp-looking-at-p.
 ;; 2019/06/25 dadams
 ;;     diredp-mark-if, diredp-this-file-(un)marked-p: Use regexp-quote for marker char.
 ;; 2019/06/03 dadams
@@ -2387,7 +2389,8 @@ Otherwise return a cons (CHANGED . MATCHED), where:
       (while (not (eobp))
         (when ,predicate
           (setq matched  (1+ matched))
-          (unless (diredp-looking-at-p (regexp-quote (char-to-string dired-marker-char)))
+          (unless (eq dired-marker-char (char-after))
+              (diredp-looking-at-p (regexp-quote (char-to-string dired-marker-char)))
             (delete-char 1) (insert dired-marker-char) (setq changed  (1+ changed))))
         (forward-line 1))
       (when ,singular (message "%s %s%s%s newly %s%s"
