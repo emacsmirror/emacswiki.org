@@ -1,4 +1,4 @@
-Often when setting variables or [MacroBasics writing macros], you need to quote
+Often when setting variables (particularly [AssociationList Alists]) or when [MacroBasics writing macros], you need to quote
 most, but not all of a list.
 
 When this is the case, <code>quote</code> is too "greedy", it quotes
@@ -69,5 +69,8 @@ Corrections, additions, comments, etc... welcome -- LawrenceMitchell
 
 
 Very informative section, thanks! -- GlauberPrado
+
+
+Short but sweet - the prefect intro to backquotes! Thanks! -- [[halloleo]]
 ----
 CategoryCode
