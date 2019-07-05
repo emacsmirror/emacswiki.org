@@ -53,17 +53,16 @@ Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] 
 
 There are many options for building emacs (such as whether to build for the X11 GUI or the Cocoa GUI), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
-The "normal" way to build Emacs under Mac OS X is:
+To build Emacs under Mac OS X:
 
 <pre>
-  ./configure --with-ns 
+  ./configure
   make install
 </pre>
 
 When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
 
-For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
-As of 2010-05-08 Cocoa Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
+For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.
 
 [new:CarlGroner:2011-10-20 18:26 UTC] 
 As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in `autogen/copy_autogen` for more information.
