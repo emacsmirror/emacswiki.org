@@ -8,8 +8,13 @@ Another useful tip is to check for parentheses, with M-x check-parens, especiall
 you're loading a file (e.g your .emacs) and emacs raises weird errors regarding 
 the read syntax. 
 
-== gdb ==
-=== connect to the Emacs process ===
+= gdb =
+
+To debug Emacs using gdb, start with reading [https://git.savannah.gnu.org/gitweb/?p=emacs.git;a=blob_plain;f=etc/DEBUG;hb=refs/heads/master etc/DEBUG] (in repository).
+
+=== Other tips ===
+
+==== connect to the Emacs process ====
 This is what I use to attach gdb to a running Emacs process.  This
 only makes sense if you have the C source code lying somewhere.  This
 way, if Emacs ever crashes (happened a few times only!), I can at
@@ -25,7 +30,7 @@ source directory (this is important for the .gdbinit file there which
 contains some nice Emacs Lisp-debugging things).  Read the etc/DEBUG file
 in your Emacs distribution for more information.
 
-==== Other or older shell script suggestions ====
+===== Other or older shell script suggestions =====
 
 This shell script starts emacs and attaches gdb to it.
 
