@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:11:12 2018 (-0800)
+;; Last-Updated: Fri Jul  5 14:59:59 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 208
+;;     Update #: 211
 ;; URL: https://www.emacswiki.org/emacs/download/narrow-indirect.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -132,6 +132,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/07/05 dadams
+;;     ni-narrow-to-region-indirect-other-window: Handle case where mode-line-buffer-identification is :eval form.
 ;; 2014/09/14 dadams
 ;;     Added: ni-buffer-substring-collapsed-visible.  Thx to Adrian for suggestion.
 ;;     Renamed: ni-narrow-to-defun-other-window  to ni-narrow-to-defun-indirect-other-window,
@@ -277,8 +279,9 @@ See `clone-indirect-buffer'."
            (buf   (clone-indirect-buffer buf nil)))
       (with-current-buffer buf (narrow-to-region start end) (goto-char here))
       (pop-to-buffer buf)
-      (setq mode-line-buffer-identification  (list (propertize (car mode-line-buffer-identification)
-                                                               'face 'ni-mode-line-buffer-id))))))
+      (let ((strg  (car mode-line-buffer-identification)))
+        (when (and (consp strg)  (eq (car strg) ':eval)) (setq strg  (car (eval (cadr strg)))))
+        (setq mode-line-buffer-identification  (list (propertize strg 'face 'ni-mode-line-buffer-id)))))))
 
 (defun ni-buffer-substring-collapsed-visible (start end)
   "Return a suitable string based on buffer content between START and END.
