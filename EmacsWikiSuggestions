@@ -14,6 +14,10 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Is it worth it to create a Category Logging? ==
+
+I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things?
+
 == Revamp the GnuPlot pages ==
 
 The page 'GnuPlot' [[https://www.emacswiki.org/emacs/GnuPlot]] gives a good two sentence description of gnuplot.  But then everything after is out of date. It used to tell how to get the mode written by (dead link)[[BruceRavel]] and a screenshot of the mode.
