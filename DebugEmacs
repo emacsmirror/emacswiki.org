@@ -1,11 +1,11 @@
 The first thing you should do if you want to debug a problem is to set
-the variable `debug-on-error' to t.  You can do that by calling `M-x
-set-variable RET debug-on-error RET t'.  When you get an EmacsLisp
+the variable `debug-on-error' to ##t##.  You can do that by calling ##M-x
+set-variable RET debug-on-error RET t RET##.  When you get an EmacsLisp
 error, this will pop up a BacktraceBuffer.  For more advanced
 EmacsLisp debugging, see SourceLevelDebugger. See also [[EmacsMemoryDebugging]]
 
-Another useful tip is to check for parentheses, with M-x check-parens, especially useful if
-you're loading a file (e.g your .emacs) and emacs raises weird errors regarding 
+Another useful tip is to check for parentheses, with ##M-x check-parens##, especially useful if
+you're loading a file (e.g your ##.emacs##) and emacs raises weird errors regarding 
 the read syntax. 
 
 = gdb =
@@ -21,13 +21,13 @@ way, if Emacs ever crashes (happened a few times only!), I can at
 least provide a backtrace when I send my bug report.
 
  #!/bin/sh
- EMACS_PID=`ps x|sed -n -e "s/ *\([0-9][0-9]*\).*[0-9] emacs-21.1/\1/p"`
+ EMACS_PID=`pgrep emacs`
  cd /usr/local/src/emacs-21.1/src
  exec -a debug-emacs xterm -e gdb /usr/local/bin/emacs $EMACS_PID
 
 You should check the location of your emacs, the location of your
-source directory (this is important for the .gdbinit file there which
-contains some nice Emacs Lisp-debugging things).  Read the etc/DEBUG file
+source directory (this is important for the ##.gdbinit## file there which
+contains some nice Emacs Lisp-debugging things).  Read the ##etc/DEBUG## file
 in your Emacs distribution for more information.
 
 ===== Other or older shell script suggestions =====
@@ -37,58 +37,70 @@ This shell script starts emacs and attaches gdb to it.
  #!/bin/sh
  if [[ "$1" == "--debug" ]]; then
      shift
-     /usr/local/bin/emacs $* &
+     /usr/local/bin/emacs "$@" &
      EMACS_PID=$!
      cd /usr/local/src/emacs-20.7/src/
      gnome-terminal --termname xterm --use-factory --start-factory-server --title "Debug Emacs" --execute gdb /usr/local/bin/emacs $EMACS_PID &
  else
-     /usr/local/bin/emacs $* &
+     /usr/local/bin/emacs "$@" &
  fi
 
-==== What to do to analyze Emacs once you are connected ====
-A backtrace (command: *bt*) can be very cryptic:
+==== Example backtrace ====
 
+* If you don't see line numbers and C source file names, then you haven't built Emacs with debug info 
+** See "Configuring Emacs for debugging" in `etc/DEBUG'.
+* If you don't see the ##Lisp Backtrace:## part in response to ##bt##, then you haven't loaded the ##.gdbinit## file.
+** See "Configuring GDB" in `etc/DEBUG'.
+
+(some frames left out of the backtrace (replaced with "…") to keep this to a reasonable length)
 <pre>
 (gdb) bt
-#0  0x08169113 in buf_charpos_to_bytepos (b=0xfa578e0, charpos=13097) at marker.c:178
-#1  0x081f4140 in Fparse_partial_sexp (from=52388, to=53488, targetdepth=139108554, stopbefore=139108554, oldstate=243681062, 
-    commentstop=139108554) at syntax.c:3344
-#2  0x081bc70e in Ffuncall (nargs=6, args=0xbfcf87e4) at eval.c:2810
-#3  0x081f748c in exec_byte_code (bytestr=137726505, vector=288541077, maxdepth=52, args_template=0, nargs=0, args=0xbfcf8b14)
-    at bytecode.c:899
-#4  0x081bcc7c in funcall_lambda (fun=288541205, nargs=0, arg_vector=0x0) at eval.c:2955
-#5  0x081bc824 in Ffuncall (nargs=1, args=0xbfcf8b10) at eval.c:2838
-#6  0x081bb408 in eval_sub (form=265705694) at eval.c:2119
-#7  0x081b9d5d in internal_lisp_condition_case (var=142845490, bodyform=265705694, handlers=265705646) at eval.c:1252
-#8  0x081f8139 in exec_byte_code (bytestr=137726401, vector=137726421, maxdepth=72, args_template=1024, nargs=0, 
-    args=0xbfcf9068) at bytecode.c:1095
-#9  0x081bcc7c in funcall_lambda (fun=137726373, nargs=0, arg_vector=0x400) at eval.c:2955
-#10 0x081bc824 in Ffuncall (nargs=1, args=0xbfcf9064) at eval.c:2838
-#11 0x081f748c in exec_byte_code (bytestr=171125761, vector=171161333, maxdepth=12, args_template=139108554, nargs=0, 
-    args=0x0) at bytecode.c:899
-#12 0x081bcf02 in funcall_lambda (fun=171161381, nargs=1, arg_vector=0x84aa0ca) at eval.c:3021
-#13 0x081bc824 in Ffuncall (nargs=2, args=0xbfcf9354) at eval.c:2838
-#14 0x081f748c in exec_byte_code (bytestr=171310609, vector=171261757, maxdepth=8, args_template=139108554, nargs=0, args=0x0)
-    at bytecode.c:899
-#15 0x081bcf02 in funcall_lambda (fun=171261797, nargs=0, arg_vector=0x84aa0ca) at eval.c:3021
-#16 0x081bc824 in Ffuncall (nargs=1, args=0xbfcf9644) at eval.c:2838
-#17 0x081f748c in exec_byte_code (bytestr=171185209, vector=171169165, maxdepth=8, args_template=139108554, nargs=0, args=0x0)
-    at bytecode.c:899
-#18 0x081bcf02 in funcall_lambda (fun=171169197, nargs=0, arg_vector=0x84aa0ca) at eval.c:3021
-#19 0x081bc824 in Ffuncall (nargs=1, args=0xbfcf9934) at eval.c:2838
+#0  Fforward_line (n=make_fixnum(10)) at ../../src/cmds.c:124
+#1  0x0000000000659771 in exec_byte_code (bytestr=XIL(0x7fffec58d32c), vector=XIL(0x7fffec58d13d), maxdepth=make_fixnum(5), args_template=XIL(0), nargs=0, 
+    args=0x0) at ../../src/bytecode.c:1167
+#2  0x000000000060bc24 in funcall_lambda (fun=XIL(0x7fffec58d10d), nargs=1, arg_vector=0x7fffec58d13d) at ../../src/eval.c:3076
+#3  0x000000000060aec6 in Ffuncall (nargs=2, args=0x7fffffff48b8) at ../../src/eval.c:2805
+#4  0x0000000000657418 in exec_byte_code (bytestr=XIL(0x7fffec594c5c), vector=XIL(0x7fffec3991c5), maxdepth=make_fixnum(7), args_template=XIL(0), nargs=0, 
+    args=0x0) at ../../src/bytecode.c:633
+#5  0x000000000060bc24 in funcall_lambda (fun=XIL(0x7fffec399195), nargs=2, arg_vector=0x7fffec3991c5) at ../../src/eval.c:3076
+#6  0x000000000060aec6 in Ffuncall (nargs=3, args=0x7fffffff4f48) at ../../src/eval.c:2805
+#7  0x0000000000657418 in exec_byte_code (bytestr=XIL(0x7fffec3e84a4), vector=XIL(0x7fffec3e8405), maxdepth=make_fixnum(4), args_template=XIL(0), nargs=0, 
+    args=0x0) at ../../src/bytecode.c:633
 …
+#59 0x000000000060aec6 in Ffuncall (nargs=2, args=0x7fffffffdf60) at ../../src/eval.c:2805
+#60 0x000000000060a87a in call1 (fn=XIL(0x4080), arg1=XIL(0x7fffeb7b3118)) at ../../src/eval.c:2656
+#61 0x000000000055b095 in command_loop_1 () at ../../src/keyboard.c:1461
+---Type <return> to continue, or q <return> to quit---
+#62 0x00000000006078d4 in internal_condition_case (bfun=0x55a8cd <command_loop_1>, handlers=XIL(0x55b0), hfun=0x55a083 <cmd_error>)
+    at ../../src/eval.c:1352
+#63 0x000000000055a5b5 in command_loop_2 (ignore=XIL(0)) at ../../src/keyboard.c:1091
+#64 0x0000000000607189 in internal_catch (tag=XIL(0xcd80), func=0x55a588 <command_loop_2>, arg=XIL(0)) at ../../src/eval.c:1113
+#65 0x000000000055a553 in command_loop () at ../../src/keyboard.c:1070
+#66 0x0000000000559c52 in recursive_edit_1 () at ../../src/keyboard.c:714
+#67 0x0000000000559dd6 in Frecursive_edit () at ../../src/keyboard.c:786
+#68 0x0000000000557d74 in main (argc=2, argv=0x7fffffffe458) at ../../src/emacs.c:2103
+
+Lisp Backtrace:
+"sgml-html-meta-auto-coding-function" (0xffff48c0)
+"find-auto-coding" (0xffff4f50)
+"set-auto-coding" (0xffff53e8)
+"insert-file-contents" (0xffff9b88)
+"find-file-noselect-1" (0xffffa128)
+"find-file-noselect" (0xffffa868)
+"find-function-C-source" (0xffffad68)
+"find-function-search-for-symbol" (0xffffb318)
+0xec604a40 PVEC_COMPILED
+"apply" (0xffffb940)
+"xref-location-marker" (0xffffbe60)
+"xref-pop-to-location" (0xffffc338)
+"xref--show-defs-buffer" (0xffffc7e0)
+"xref--show-defs" (0xffffcc70)
+"xref--find-definitions" (0xffffd0f8)
+"xref-find-definitions" (0xffffd730)
+"funcall-interactively" (0xffffd728)
+"call-interactively" (0xffffda50)
+"command-execute" (0xffffdf68)
 </pre>
 
-
-Can someone provide some light as to how to understand what is Emacs doing? In particular:
-* when it's in Ffuncall, how to know the name of the Lisp function being called?
-* when it's in exec_byte_code, how to know which file the code is from?
-* when it's executing a Lisp function, how to print the arguments?
-* when it's executing funcall_lambda, how to print the exact function?
-* how to print a Lisp stack trace?
-* etc. 
-
-[new]
-See the mentioned file .gdbinit in the emacs src directory, e.g. *xbacktrace* prints a lisp backtrace.
 ----
 CategoryCode, CategoryDebug
