@@ -23,6 +23,7 @@ Profiling and tracing EmacsLisp:
 * EmacsNativeProfiler
 * EmacsLispBenchmark
 * EmacsLispTracing
+* [[Log4E Logging For Elisp]] - a logging framework for Elisp
 
 Debugging other programs using Emacs:
 
