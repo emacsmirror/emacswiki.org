@@ -16,7 +16,12 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 == Is it worth it to create a Category Logging? ==
 
-I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things?
+I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things? -- [[halloleo]]
+
+[new:DrewAdams:2019-07-06 20:59 UTC]
+No, I don't think so. I added [[Log4E Logging For Elisp]] to CategoryDebug. -- DrewAdams
+
+
 
 == Revamp the GnuPlot pages ==
 
