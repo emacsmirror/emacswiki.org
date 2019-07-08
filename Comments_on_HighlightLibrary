@@ -22,3 +22,24 @@ With emacs 24.5.1, I found I had to set hlt-use-overlays-flag to nil to get any 
 
 -- MarkPurtill 2016-11-04 17:23 UTC
 
+
+----
+
+With the following code...
+
+    (hlt-highlight-regexp-region (point-min) (point-max) "xxxx" 'hi-pink)
+
+...if I have text like xxxxxxxxxxxxxxxxxxxxxxxxxxx, every fifth x does not get highlighted.
+
+I would expect no gaps in the highlighting.
+
+By way of comparison, if I use...
+
+    (highlight-regexp "xxxx" 'hi-pink)
+
+...there are no gaps in the highlighting.
+
+Is this a bug?
+
+-- nomis 2019-07-08 20:46 UTC
+
