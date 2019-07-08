@@ -19,22 +19,24 @@ too large, we'll split it up later.
 
 The empty string (zero-length string, null string, ...):
 
-    (zerop (string-match "" "")) ;; O(n)
+    (string-equal "" "")
     ==> t
 
-    (string-equal "" "") ;; O(n)?
+    (equal "" "")
     ==> t
 
-    (equal "" "") ;; O(n)?
+    (zerop (length ""))
     ==> t
 
-    (zerop (length "")) ;; O(1)
+    ;; `string-empty-p' was added in 24.4.
+    (eval-when-compile (require 'subr-x))
+    (string-empty-p "")
     ==> t
 
 As a (very minor) space and performance optimization, starting with Emacs 23, Emacs keeps an interned copy
 of the empty string as a single object
 
-    (eq "" "") ;; O(1)
+    (eq "" "")
     ==> t ; nil prior to Emacs 23
 
     (eq "" (purecopy ""))
@@ -69,11 +71,13 @@ Buffers:
 
 === starts-with and ends-with predicates ===
 
-Standard functions (version 24.4):
+Standard functions:
 
+    ;; Since Emacs 23.1
     (string-prefix-p "bull" "bulldozer")   ; optional ignore case argument too
     ==> t
 
+    ;; Since Emacs 24.4.
     (string-suffix-p "dozer" "bulldozer")  ; optional ignore case argument too
     ==> t
 
@@ -82,8 +86,7 @@ Custom functions:
     (defun string/ends-with (s ending)
       "Return non-nil if string S ends with ENDING."
       (cond ((>= (length s) (length ending))
-             (let ((elength (length ending)))
-               (string= (substring s (- 0 elength)) ending)))
+             (string= (substring s (- (length ending))) ending))
             (t nil)))
 
     (defun string/starts-with (s begins)
@@ -92,7 +95,7 @@ Custom functions:
              (string-equal (substring s 0 (length begins)) begins))
             (t nil)))
 
-Faster, simpler:
+Alternatively, match using a RegularExpression:
 
     (defun string/ends-with (string suffix)
       "Return t if STRING ends with SUFFIX."
@@ -106,9 +109,9 @@ The first argument to rx-to-string <code>`(: ,suffix eos)</code> is a regular ex
     matches what SEXP1 matches, followed by what SEXP2 matches, etc.
 
 <code>,suffix</code> is SEXP1 and <code>eos</code> is SEXP2
-<code>'(: suffix eos)</code> would create a list of three elements: The symbol named ":", the symbol named "suffix", and the symbol named "eos".  But that's not what this function wants. It wants the *value* of the symbol named "suffix", not the symbol itself.  ` is special syntax (note the backtick, not just tick) that allows some things in the list to be preceded by a comma, which are then evaluated.
+<code>'(: suffix eos)</code> would create a list of three elements: The symbol named ":", the symbol named "suffix", and the symbol named "eos".  But that's not what this function wants. It wants the *value* of the symbol named "suffix", not the symbol itself.  ##`## is special syntax (note the backtick, not just tick) that allows some things in the list to be preceded by a comma, which are then evaluated.
 <code>`(: ,suffix eos)</code> is convenience syntax for <code>(list ': suffix 'eos)</code>.
-The only symbol that is evaluated is suffix.  Because there is no , before : or eos, both : and eos are not evaluated.  Symbols are not evaluated by default in the `( ... ) syntax and require a , if you want them to be evaluated.  Thanks to <forcer> on #emacs-beginners irc channel for the explanation.
+The only symbol that is evaluated is suffix.  Because there is no ##,## before ##:## or ##eos##, both ##:## and ##eos## are not evaluated.  Symbols are not evaluated by default in the ##`( ... )## syntax and require a ##,## if you want them to be evaluated.  Thanks to <forcer> on #emacs-beginners irc channel for the explanation.  See also BackquoteSyntax.
 
 
     (defun string/starts-with (string prefix)
@@ -127,6 +130,15 @@ Reversing a string:
 	     (reverse 
 	      (string-to-list str))))
 
+    ;; Since 24.4
+    (require 'subr-x)
+    (string-reverse "abc")
+    ==> "cba"
+
+    ;; Since 25.1
+    (reverse "abc")
+    ==> "cba"
+
 See CharacterProcessing and StringModification. See [[tr]] for an example mixing strings and characters.
 
 Looking at characters in a temporary buffer:
@@ -139,8 +151,9 @@ Looking at characters in a temporary buffer:
     ==> 2
 
 === Trim whitespace ===
+Since 24.4, you can use `string-trim', `string-trim-left', and `string-trim-right' from `subr-x'.
 
-Trim whitespace from the end of a string:
+Otherwise, trim whitespace from the end of a string:
 
     (setq test-str "abcdefg  ")
     (when (string-match "[ \t]*$" test-str)
@@ -258,9 +271,7 @@ The equivalent of `kill-line' (`C-k') but without kill-ring side effects:
 
 Alternatively, replacing the `let' with `progn'.
 
-  (delete-region (point) (progn (forward-line 1)
-                                (forward-char -1)
-                                (point)))
+  (delete-region (point) (line-end-position))
 
 Or just: ##(delete-region (point) (line-end-position))##
 
