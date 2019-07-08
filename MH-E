@@ -69,9 +69,9 @@ accessed with the `customize-group'.
 
 If you'd like to configure MH-E to be your preferred mail-composing
 system, set the MailclientConfiguration variable `mail-user-agent' to
-"mh-e-user-agent".  If you're using the GnuEmacs, you can also prefer
-MH-E for reading your mail, by setting `read-mail-command' to
-"mh-rmail".
+<code>'mh-e-user-agent</code>.  If you're using the GnuEmacs, you can
+also prefer MH-E for reading your mail, by setting `read-mail-command'
+to <code>'mh-rmail</code>.
 
 It's hard to tell if MH-E is the most widely used MUA for Emacs, or in
 general, but [[tekonivel]] digs it, being such a UnixZealot.
