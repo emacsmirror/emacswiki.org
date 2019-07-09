@@ -60,3 +60,10 @@ This isn't well-tested, so there's a possibility that it breaks things that I ha
 
 -- [http://blogish.nomistech.com/ SimonKatz] 2019-07-09 10:54 UTC
 
+[new:DrewAdams:2019-07-09 17:19 UTC]
+Great bug, and longstanding. Thx. I uploaded what I hope is a fix that doesn't break anything ;-).  The `forward-char' is needed when the search matches an empty string at point.
+
+E.g., without any `forward-char' (e.g. your fix) if you try `C-x X h e' with regexp `.*' near the end of a buffer then it loops forever, because the search is successful by matching the empty string at the end of the first line, and it doesn't advance point.
+
+Please let me know, if you discover a problem with the code now. Thx - DrewAdams
+
