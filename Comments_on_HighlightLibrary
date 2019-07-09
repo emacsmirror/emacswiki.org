@@ -43,3 +43,20 @@ Is this a bug?
 
 -- nomis 2019-07-08 20:46 UTC
 
+
+----
+
+(giving my real name this time…)
+
+I think I've tracked down the cause of the above-mentioned gaps in highlighting to an unnecessary use of <code>forward-char</code>.
+
+BTW, I should have said that this is with Emacs 26.1 (although I also tried the version at https://www.emacswiki.org/emacs/highlight.el).
+
+With Emacs 26.1, I've hacked a fix that seems to work. See https://github.com/simon-katz/nomis-emacs-configuration/blob/cc3da74f36a92ce5602c6dc521a2f87f914b0a3f/emacs-installation/emacs-init-files/manually-installed/nomis-highlight-hacks.el#L56-L57
+
+Now, if I bind <code>*nomis/hlt/no-leave-gaps?*</code> to <code>t</code> before calling <code>hlt-highlight-regexp-region</code>, I don't get gaps in the highlighting.
+
+This isn't well-tested, so there's a possibility that it breaks things that I haven't tried. (I'm only using the absolute basics of this library.)
+
+-- [http://blogish.nomistech.com/ SimonKatz] 2019-07-09 10:54 UTC
+
