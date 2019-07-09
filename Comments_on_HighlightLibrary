@@ -67,3 +67,10 @@ E.g., without any `forward-char' (e.g. your fix) if you try `C-x X h e' with reg
 
 Please let me know, if you discover a problem with the code now. Thx - DrewAdams
 
+
+----
+
+Thanks. The new code is working for me (for my limited use of the library).
+
+-- [http://blogish.nomistech.com/ SimonKatz] 2019-07-09 18:28 UTC
+
