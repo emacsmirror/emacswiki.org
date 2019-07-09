@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 14 21:05:30 2019 (-0800)
+;; Last-Updated: Tue Jul  9 10:11:13 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4169
+;;     Update #: 4175
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -774,6 +774,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2019/07/09 dadams
+;;     hlt-+/--highlight-regexp-region:
+;;       forward-char in loop only when match empty text.  Reported by Simon Katz.
 ;; 2018/12/28 dadams
 ;;     hlt-(un)highlight-regions: Pass zz-izones as explicit arg to zz-izone-limits.
 ;; 2018/11/12 dadams
@@ -2221,9 +2224,10 @@ really want to highlight up to %d chars?  "
               (goto-char start)
               (while (and (< start end)  (not (eobp))  (re-search-forward regexp end t)  (setq hits-p  t))
                 (condition-case nil
-                    (progn (forward-char 1) (setq start  (1+ (point))))
+                    (progn
+                      (when (and hits-p  (equal (match-beginning 0) (match-end 0))) (forward-char 1))
+                      (setq start  (1+ (point))))
                   (end-of-buffer (setq start  end)))
-
                 (if (and regexp-groups  (not unhighlightp))
                     (hlt-highlight-regexp-groups regexp msgp mousep)
                   (funcall (if regexp-groups
