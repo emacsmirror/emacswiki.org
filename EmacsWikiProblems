@@ -136,31 +136,6 @@ The irony being that markup in headers **is** rendered in the (javascript-built)
 
 The link text retains its crude ASCII formatting. -- VegardOye
 
-=== Braces not allowed in links ===
-
-I tried to put braces in a url (because the stupid url required them), eg:
-
-{{{
-https://www.heathrowconnect.com/index.asp?SID={65C76CDC-2EFD-4589-A223-809157EAA164}
-}}}
-
-I tried a few different things, eg:
-
-{{{
-[[https://www.heathrowconnect.com/index.asp?SID={65C76CDC-2EFD-4589-A223-809157EAA164}|Blah]]
-}}}
-
-none of them worked. I think this *should* be ok.
-
-Again though, I'm happy with it not being fixed because we'll fix it with Elwiki.
-
-[new]
-If you read RFC 2396 you'll note that curly braces are deemed "unwise" in section
-2.4.3. Excluded US-ASCII Characters.
-
-
-
-
 == Server Issues ==
 
 === CGI Internal error: 400 Bad request (malformed multipart POST) ===
