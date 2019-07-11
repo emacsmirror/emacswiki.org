@@ -84,3 +84,8 @@ Also it seems that we should limit the size of these as we display?
 
 [new:wi24rd:2019-01-26 07:35 UTC]
 It seems like this function broken for displaying image?
+
+[new]
+Yes, this no longer works unless your image is hosted on the wiki itself (which I don't
+want to encourage) because of CSPR. I think we should just no longer use it. :)
+-- [[Alex Schroeder]]
