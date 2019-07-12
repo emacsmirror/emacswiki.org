@@ -13,7 +13,7 @@ ELPA is the *Emacs Lisp Package Archive*, written originally by TomTromey. It is
 [::GnuELPA]
 The [[http://elpa.gnu.org/ GNU ELPA]] repository contains FSF-sanctioned Emacs packages.  It is the default repository used by ##package.el##.
 
-You can use other repositories. The following examples show how to access [[Marmalade]] and [[MELPA]] repositories, in addition to GNU ELPA.
+You can use other repositories. The following examples show how to add the [[MELPA]] repository, in addition to GNU ELPA.
 
 Add this to your [[init file]]:
 
@@ -72,12 +72,11 @@ section ##Member clone##. Be sure to read the ##README## file in the repository.
 
 You should now be able to push to the ELPA repo.
 
-You might also want to look at the details of MakingPackages for ELPA and Marmalade.
+You might also want to look at the details of MakingPackages for ELPA.
 
 === Contributing to other package repositories ===
 
-There are varying degrees of difficulty and hoops to contribute to
-MarmaladeRepo and [[MELPA]].
+There are varying degrees of difficulty and hoops to contribute to [[MELPA]].
 
 
 == How Packages work in Emacs 24 ==
