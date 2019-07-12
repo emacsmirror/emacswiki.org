@@ -31,6 +31,14 @@ And you can advise a function (see AdvisingFunctions) to prevent it from asking 
              (y-or-n-p (&rest args) t))
         ad-do-it))
 
+Or, since `flet' is deprecated, advising using `cl-letf'.
+
+    (defadvice SOME-FUNCTION (around auto-confirm compile activate)
+      (cl-letf (((symbol-function 'yes-or-no-p) (lambda (&rest args) t))
+                ((symbol-function 'y-or-n-p) (lambda (&rest args) t)))
+        ad-do-it))
+
+
 Without advising, here's another way to force a function to act (assume yes) without asking for confirmation: use ##(no-confirm SOME-FUNCTION)##.
 
   (cl-flet ((always-yes (&rest _) t))
