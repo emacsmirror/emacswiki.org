@@ -2,7 +2,7 @@
 
 The most common method of installing packages of Emacs Lisp since Emacs 24 has been [[ELPA]] packages.
 
-Additional package archives such as [[MELPA]] or [[MarmaladeRepo]] exist to supplement what is in [[ELPA]].
+Additional package archives such as [[MELPA]] exist to supplement what is in [[ELPA]].
 
 [:package-archives]
 == Adding a package source ==
@@ -18,7 +18,7 @@ to your InitFile:
 
 Alternatively, you can use the Customize interface with the command `M-x customize-variable package-archives' .
 
-The value will depend on the package source you want to add. See [[MELPA]] or [[MarmaladeRepo]] for more information.
+The value will depend on the package source you want to add. See [[MELPA]] for more information.
 
 == Installing packages ==
 
