@@ -4,6 +4,7 @@
 
 Skeleton like matching paren insertion is a small part of ParEdit's functionality; its true genius won't be obvious until you code in some list oriented language.
 
+You can install it by configuring [[MELPA]], and then typing M-x package-install RET paredit RET.
 
 '''The latest stable version is available at <tt>[http://mumble.net/~campbell/emacs/paredit.el paredit.el]</tt>.''' See also the [http://mumble.net/~campbell/emacs/paredit.html Reference Table], the [http://mumble.net/~campbell/emacs/paredit.release Release Notes] and the [http://pub.gajendra.net/src/paredit-refcard.pdf Paredit Reference Card] (modeled on the older PareditCheatsheet).  There is an EmacsRocks episode about %%ParEdit%%: http://emacsrocks.com/e14.html
 
