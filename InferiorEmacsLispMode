@@ -3,11 +3,25 @@
 A nice little mode that acts like an interactive Lisp interpreter.
 It doesn't do all the fancy shell stuff such as redirection -- use the EmacsShell if you need that.  IELM is an alternative to Lisp Interactive mode, which is the mode of buffer `*scratch*'.
 
-Start it using `M-x ielm'.
+Start it using `M-x ielm'.  Then type `C-h m' as usual for more help.
 
 It's real little [WikiPedia:Read-eval-print_loop read-eval-print loop] (REPL).
 
 IELM is a ComintMode.
+
+== Common customization ==
+
+You can put this in your init file to enable eldoc mode by default:
+
+    (defun my-ielm-mode-hook ()
+      (turn-on-eldoc-mode))
+    (add-hook 'ielm-mode-hook (lambda () (run-hooks 'my-ielm-mode-hook)))
+
+If you use ParEdit, and already have it installed, you can enable it in IELM automatically by using this instead:
+
+    (defun my-ielm-mode-hook ()
+      (turn-on-eldoc-mode)
+      (and (featurep 'paredit) (paredit-mode 1)))
 
 == Icicles Enhancements to IELM ==
 
