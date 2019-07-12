@@ -36,7 +36,7 @@ The collaboration model for MELPA is like that of the Homebrew package manager o
 = History =
 
 * MELPA used to support packages directly from this wiki, but [https://github.com/melpa/melpa/pull/5008 no longer does] due to security concerns.
-* [[https://www.reddit.com/r/emacs/comments/7vocqa/update_on_melpa_removing_emacswiki_packages_they/dtuhzmt/|Reddit post]] by DrewAdams about those "security concerns" and his libraries on %%EmacsWiki%%.
+* [[https://www.reddit.com/r/emacs/comments/7vocqa/update_on_melpa_removing_emacswiki_packages_they/dtuhzmt/|Reddit post]] by DrewAdams about those security concerns and his libraries on %%EmacsWiki%%.
 
 = External links =
 
