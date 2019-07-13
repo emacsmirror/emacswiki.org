@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun  8 15:36:34 2019 (-0700)
+;; Last-Updated: Sat Jul 13 09:14:49 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8913
+;;     Update #: 8915
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2352,9 +2352,10 @@ Lines beginning with `#' are ignored."
 ;;
 ;; 1. Make it a command (added `interactive' spec).  Prefix arg means add or edit (choose any bookmark).
 ;; 2. Manage buffer-modified-p.
+;; 3. Emacs 26+: Added ignored &rest arg to accommodate vanilla Emacs fix to bug #20150 (not a bug for us).
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation "bookmark+")
-(defun bookmark-edit-annotation (bookmark)
+(defun bookmark-edit-annotation (bookmark &rest _IGNORED)
   "Pop up a buffer for editing bookmark BOOKMARK's annotation.
 Interactively, you are prompted for the bookmark name.  With a prefix
 arg, you can choose any bookmark.  Otherwise, only annotated bookmarks
