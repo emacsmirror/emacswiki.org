@@ -7,20 +7,36 @@ See the commentary in ##so-long.el## for more details.
 [sup]1[/sup] for example, https://code.jquery.com/jquery-git.min.js \\
 [sup]2[/sup] farewell, auf wiedersehen, etc...
 
-==Download==
+==Download and Install==
 
-Download the library from Lisp:so-long.el
+===Emacs 27+===
 
-==Install==
+Included as standard.  Simply enable in your init file with:
 
-Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add the following to your init file:
+ (global-so-long-mode 1)
+
+===Emacs versions < 27 (minimum 24.4)===
+
+Install using one of the options below, and then enable in your init file with:
 
  (when (require 'so-long nil :noerror)
-   (so-long-enable))
+   (global-so-long-mode 1))
+
+====GNU ELPA====
+
+[InstallingPackages Install] the [http://elpa.gnu.org/packages/so-long.html so-long] package from the default [http://elpa.gnu.org/ GNU ELPA] repository:
+
+ M-x package-install RET so-long RET
+
+====Manual installation====
+
+Alternatively, the latest version of [https://git.savannah.nongnu.org/cgit/so-long.git/plain/so-long.el so-long.el] is also available from its Savannah repository (n.b. the code is no longer maintained here at the EmacsWiki).
+
+You must either place the library somewhere in your Emacs load-path, or use ##M-x package-install-file## for the downloaded file.
 
 ==Configure==
 
-See the commentary in the code for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
+See the commentary in the code (or use ##M-x so-long-commentary##) for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
 
 ##M-x customize-group RET so-long RET## to configure the library.
 
@@ -29,24 +45,26 @@ See the commentary in the code for details of controlling the situations in whic
 The following minor modes are disabled by default (even when the buffer-local mode is enabled by a globalized minor mode).
 
 * font-lock-mode
-* highlight-changes-mode
+* diff-hl-amend-mode
+* diff-hl-flydiff-mode
+* diff-hl-mode
+* display-line-numbers-mode
+* dtrt-indent-mode
+* goto-address-mode
+* goto-address-prog-mode
 * hi-lock-mode
+* highlight-changes-mode
 * hl-line-mode
+* hl-sexp-mode
+* idle-highlight-mode
 * linum-mode
 * nlinum-mode
 * prettify-symbols-mode
+* rainbow-delimiters-mode
 * visual-line-mode
 * whitespace-mode
 
-It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Some known examples are as follows. Please contribute to this list, regardless of whether the mode is part of Emacs, or from a third party library or package.
-
-* diff-hl-mode
-* diff-hl-amend-mode
-* diff-hl-flydiff-mode
-* dtrt-indent-mode
-* hl-sexp-mode
-* idle-highlight-mode
-* rainbow-delimiters-mode
+It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Please report any examples you encounter upstream with ##M-x report-emacs-bug## (regardless of whether the mode is part of Emacs, or from a third party library or package), so that
 
 ===Hooks===
 
@@ -68,5 +86,5 @@ If a file is still taking a very long time to load with ##so-long## enabled, you
 
  emacs -Q -l /path/to/so-long.el -f so-long-enable <file>
 
-If the file loads quickly when that command is used, you'll know that there is something in your personal configuration which is causing problems.  If this turns out to be a buffer-local minor mode, or a user option, you can hopefully alleviate the issue by customizing 
+If the file loads quickly when that command is used, you'll know that there is something in your personal configuration which is causing problems.  If this turns out to be a buffer-local minor mode, or a user option, you can hopefully alleviate the issue by customizing
 `so-long-minor-modes' or `so-long-variable-overrides' accordingly.
