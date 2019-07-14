@@ -1,3 +1,7 @@
+DeletedPage
+
+(This library is now maintained at Savannah.)
+
 ;;; so-long.el --- Say farewell to performance problems with minified code.
 ;;
 ;; Author: Phil S.
