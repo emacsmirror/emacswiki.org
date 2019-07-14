@@ -28,6 +28,8 @@ Install using one of the options below, and then enable in your init file with:
 
  M-x package-install RET so-long RET
 
+(n.b. the ELPA package is not yet available at 2019-07-14, but should be in the near future.)
+
 ====Manual installation====
 
 Alternatively, the latest version of [https://git.savannah.nongnu.org/cgit/so-long.git/plain/so-long.el so-long.el] is also available from its Savannah repository (n.b. the code is no longer maintained here at the EmacsWiki).
