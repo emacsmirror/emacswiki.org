@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2019.4.30
+;; Version: 2019.7.13
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 30 17:07:29 2019 (-0700)
+;; Last-Updated: Sat Jul 13 17:40:21 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3127
+;;     Update #: 3130
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -573,6 +573,8 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2019/07/13 dadams
+;;     zz-(add|set)-zones-matching-regexp: Added optional arg SUBEXP.  Used only non-interactively, for now.
 ;; 2019/04/30 dadams
 ;;     zz-add-zones-matching-regexp: Bug fix: was adding complement before search hit as zone, instead of hit.
 ;; 2019/04/07 dadams
@@ -1538,7 +1540,7 @@ Non-interactively:
 
 ;;;###autoload
 (defun zz-add-zones-matching-regexp (regexp ; Bound to `C-x n r'
-                                     &optional variable beg end not-buf-local-p set-var-p msgp)
+                                     &optional variable beg end not-buf-local-p set-var-p subexp msgp)
   "Add matches for REGEXP as zones to the izones of VARIABLE.
 If region is active, limit action to region.  Else, use whole buffer.
 Return the new value of VARIABLE.
@@ -1547,6 +1549,9 @@ If `isearchp-dim-outside-search-area-flag' is non-nil then dim the
 non-contexts.  (You can use `\\[isearchp-remove-dimming]' or \
 `\\[isearchp-toggle-dimming-outside-search-area]' to remove the
 dimming.)
+
+Optional arg SUBEXP is the number of the regexp subgroup to match for
+the zone.  By default, the whole regexp match is used (value 0).
 
 See `zz-add-zone' for a description of VARIABLE, the use of a prefix
 arg, and the parameters when called from Lisp."
@@ -1559,10 +1564,11 @@ arg, and the parameters when called from Lisp."
           (npref  (prefix-numeric-value current-prefix-arg))
           (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
           (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0)))))
-     (list regx var beg end nloc setv t)))
+     (list regx var beg end nloc setv 0 t)))
   (unless (and beg  end) (setq beg  (point-min)
                                end  (point-max)))
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg))))
+  (unless subexp (setq subexp  0))
   (let ((last-beg  nil)
         (num-hits  0))
     (condition-case-unless-debug zz-add-zones-matching-regexp
@@ -1576,9 +1582,9 @@ arg, and the parameters when called from Lisp."
                                (forward-char) (setq beg  (1+ beg)))
                              beg))      ; Stop if no more matches.
             (setq num-hits  (1+ num-hits))
-            (let* ((hit-beg     (match-beginning 0))
-                   (hit-end     (match-end 0))
-                   (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+            (let* ((hit-beg     (match-beginning subexp))
+                   (hit-end     (match-end subexp))
+                   (hit-string  (match-string subexp))
                    (c-beg       last-beg)
                    (c-end       (if beg (match-beginning 0) (min end (point-max))))) ; Truncate.
               (isearchp-add/remove-dim-overlay c-beg c-end 'ADD)
@@ -1603,7 +1609,7 @@ arg, and the parameters when called from Lisp."
 
 ;;;###autoload
 (defun zz-set-zones-matching-regexp (regexp ; Bound to `C-x n R'
-                                     &optional variable beg end not-buf-local-p set-var-p msgp)
+                                     &optional variable beg end not-buf-local-p set-var-p subexp msgp)
   "Replace value of izones variable with zones matching REGEXP.
 Like `zz-add-zones-matching-regexp' (which see), but it replaces any
 current zones instead of adding to them."
@@ -1616,9 +1622,10 @@ current zones instead of adding to them."
           (npref  (prefix-numeric-value current-prefix-arg))
           (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
           (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0)))))
-     (list regx var beg end nloc setv t)))
+     (list regx var beg end nloc setv 0 t)))
   (set variable ())
-  (zz-add-zones-matching-regexp regexp variable beg end not-buf-local-p set-var-p msgp))
+  (unless subexp (setq subexp  0))
+  (zz-add-zones-matching-regexp regexp variable beg end not-buf-local-p set-var-p subexp msgp))
 
 ;;;###autoload
 (defun zz-add-zones-from-highlighting ( ; Bound to `C-x n l'
