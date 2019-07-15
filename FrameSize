@@ -51,6 +51,8 @@ Possibilities:
 
 These libraries let you resize frames either interactively or by program:
 
+[:fit-frame.el]
+[:autofit-frame.el]
 * <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> let you shrink-wrap frames to fit their selected [[window]] ([[buffer]]) or all of their windows (buffers). See [[Shrink-Wrapping Frames]].
 
 * <tt>[[frame-cmds.el]]</tt> lets you ''tile'', ''maximize'', or ''restore'' (toggle maximize) frames horizontally or vertically or both. These commands leave room for the Windows task bar and a standalone minibuffer frame, if present.
