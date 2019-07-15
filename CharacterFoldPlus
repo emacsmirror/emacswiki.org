@@ -24,7 +24,7 @@ Starting with Emacs 25, vanilla Isearch lets you search for a base character to 
 
 If you search for any of the associates then you find only itself.  Vanilla Emacs does not let you search for any of the associates in order to find any of the other associates or the base character. If you search for "é", for example, you will find only that character, "é".  If you search for "Müller" then you will not find matches for "Muller".
 
-Library ##character-fold+.el## lets you do either.  Non-`nil' [[option]] '''`char-fold-symmetric'''' means search symmetrically: treat each of the characters in an equivalence class the same.  If `nil', you get the same behavior as vanilla Emacs.
+Library <tt>[[character-fold+.el]]</tt> lets you do either.  Non-`nil' [[option]] '''`char-fold-symmetric'''' means search symmetrically: treat each of the characters in an equivalence class the same.  If `nil', you get the same behavior as vanilla Emacs.
 
 Symmetric character folding applies also to query-replace, but in that case the equivalence-class matches are not lazily highlighted, as they are in Isearch.
 
