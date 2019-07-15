@@ -3,7 +3,7 @@
 There are several distributions of binaries of Gnu-Emacs for
 MS-Windows to choose from, see [[CategoryWThirtyTwo#toc1]].
 
-There are two general flavours: native Windows and Cygwin builds.  The have drawbacks as detailed [[#below]],
+There are two general flavours: native Windows and Cygwin builds.  The latter have drawbacks as detailed [[#below]],
 so the guidelines here are only about the native Windows builds.
 
 The latest stable version is 26.1.  There are also *snapshot* versions, which are builds of the code currently under development (i.e., having newer features, and possibly more bugs).
