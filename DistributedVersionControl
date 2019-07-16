@@ -4,17 +4,14 @@ DistributedVersionControl (DVC) is a generic Emacs interface to version control 
 http://farm4.static.flickr.com/3483/3829774816_f90e3c0be4.jpg
 
 
-* [http://download.gna.org/dvc/ DVC: Distributed Version Control for Emacs]
-* [http://download.gna.org/dvc/download/ download DVC]
-* [http://download.gna.org/dvc/docs/dvc-snapshot.html DVC manual]
-
-* [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsDVC.html Small article about work with DVC] (hard to understand; poor grammar)
+* [http://www.xsteve.at/prg/emacs_dvc/dvc.html DVC: Distributed Version Control for Emacs]
+* [http://alexott.net/en/writings/emacs-vcs/EmacsDVC.html Small article about work with DVC] (hard to understand; poor grammar)
 
 The mainline is available via bzr, you can get it via the following command:
 
     bzr clone http://bzr.xsteve.at/dvc
 
-The mailing list is at https://mail.gna.org/listinfo/dvc-dev/ and archived at [http://blog.gmane.org/gmane.emacs.dvc.devel gmane.emacs.dvc.devel].
+The mailing list was at https://mail.gna.org/listinfo/dvc-dev/ and archived at https://www.mail-archive.com/dvc-dev@gna.org/.
 
 The bug tracker is at https://bugs.launchpad.net/dvc.
 
