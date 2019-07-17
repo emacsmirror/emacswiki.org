@@ -13,7 +13,7 @@ authentication, and automatically sets your DISPLAY variable for you.
 =Accelerating the connection=
 
 If you're running across slow or clogged link, basically anything less
-than a, say 10 Mb LAN, you propably want to look into ways of
+than a, say 10 Mb LAN, you probably want to look into ways of
 accelerating the X11 traffic.  This will effectively turn CPU-cycles
 into bandwidth, so slow machines on a fast network are propably better
 off without any acceleration.  And "slow" doesn't include your ''old''
