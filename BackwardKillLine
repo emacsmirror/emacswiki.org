@@ -16,7 +16,7 @@ If you needed a command specifically for killing backwards, use the following co
 You may want to bind it to a different key
 
 {{{
-(global-set-key "\C-cu" 'backward-kill-line) ;; `C-c u'
+(global-set-key "\C-c u" 'backward-kill-line) ;; `C-c u'
 }}}
 
 To join a line with the previous use `##M-^##' (`delete-indentation').  It deletes the newline character on the previous line.  To delete the newline at the end of the current line use `##C-u M-^##'.
