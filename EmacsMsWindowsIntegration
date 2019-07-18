@@ -27,6 +27,8 @@ You may want to add a command to "Open in Emacs" when you right click on files i
 
 == Create File Associations ==
 
+NOTE: After following the instructions below, emacs client doesn't work properly. For example, clicking on a .org file will create a new emacs window, even when one is already running (Windows 10, July 2019, Emacs 26.2).
+
 To open text files with the emacs daemon, run cmd.exe as administrator use the commands and `ftype' and `assoc':
 
     ftype txtfile=emacsclientw -na runemacs "%1"
