@@ -1,0 +1,64 @@
+I love Emacs. I'm a bachelor at Hiroshima Univ.
+
+== Dotfiles ==
+* [https://github.com/conao3/dotfiles dotfiles] -- Conao3's dotfiles include init.el, Emacs configuration file
+
+== Author Projects ==
+* [https://github.com/conao3/leaf.el leaf.el] (MELPA) -- Simplify your init.el configuration, extended use-package
+* [https://github.com/conao3/leaf-keywords.el leaf-keywords.el] (MELPA) -- Additional leaf.el keywords for external packages
+* [https://github.com/conao3/leaf-defaults.el leaf-defaults.el] -- 'Leaf' of settings for Emacs
+* [https://github.com/conao3/leaf-browser.el leaf-browser.el] -- Web browser frontend of Emacs customize-mode for leaf.el
+* [https://github.com/conao3/feather.el feather.el] -- Parallel thread modern Emacs package manager
+* [https://github.com/conao3/feather-recipes.el feather-recipes.el] -- Elisp package recipes for feather.el
+* [https://github.com/conao3/seml-mode.el seml-mode.el] (MELPA) -- Major-mode for SEML (S-Expression Markup Language) files
+* [https://github.com/conao3/ddskk-posframe.el ddskk-posframe.el] (MELPA) -- Show Henkan tooltip for ddskk via posframe
+* [https://github.com/conao3/cort-test.el cort-test.el] -- Simplify extended Emacs unit test framework
+* [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
+* [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
+* [https://github.com/conao3/orglyth.el orglyth.el] -- Support static blog site publishing from Org mode files
+
+== Co-maintainer Projects ==
+* [https://github.com/conao3/navbar.el papaeye/navbar.el] -- Navigation bar for Emacs
+* [https://github.com/tumashu/ivy-posframe tumashu/ivy-posframe] -- Using posframe to show Ivy
+* [https://github.com/linktohack/ox-latex-subfigure linktohack/ox-latex-subfigure] -- Turn table into subfigure. More or less a hack atm, easy to incorporate to org-mode though
+
+== Useful Docker Images ==
+* [https://github.com/conao3/docker-emacs docker-emacs] -- Emacs meets docker as a standalone CLI, TUI and GUI tool
+* [https://github.com/conao3/docker-imagick docker-imagick] -- ImageMagick meets docker as a standalone CLI tool
+* [https://github.com/conao3/docker-po4a docker-po4a] -- po4a meets docker as standalone CLI tool
+* [https://github.com/conao3/docker-mustache docker-mustache] -- Mustache meets docker as a standalone CLI tool
+* [https://github.com/conao3/docker-jq docker-jq] -- jq meets docker as standalone CLI tool
+* [https://github.com/conao3/docker-nkf docker-nkf] -- nkf meets docker as a standalone CLI tool
+
+== Contributes ==
+* [https://gitlab.com/oer/org-re-reveal oer/org-re-reveal] -- Build HTML presentations with reveal.js from Org mode source files.
+
+== Blogs ==
+* [https://qiita.com/conao3/items/dc88bdadb0523ef95878 (正式リリース)leaf.elで雑然としたEmacs設定ファイル「init.el」をクリーンにする]
+* [https://qiita.com/conao3/items/82abfea7a4c81f946e60 use-packageからの移行のすゝめ - leaf.elでバージョン安全なinit.elを書く]
+* [https://qiita.com/conao3/items/f81cf964198d4da93a05 org-publishを使ってorgでブログを書く話]
+* [https://qiita.com/conao3/items/098242804eb34da61f49 EmacsのパッケージもTravis Clしてbuild:passingしたい！]
+* [https://qiita.com/conao3/items/851f6dea9e94ce73f385 Makefileで.emacs.dの理想的なディレクトリ構造を生成する話]
+
+== Links ==
+* ((*SNS*
+[https://github.com/conao3 GitHub]
+[https://gitlab.com/conao3 GitLab]
+[https://twitter.com/conao_3 Twitter])
+(*Blogs*
+[https://qiita.com/conao3 Qiita])
+(*CodeAnalysis*
+[https://sourcerer.io/conao3 Sourcerer]
+[https://lapras.com/public/1ZQDDAA LAPRAS]
+[https://findy-code.io/share_profiles/xCDQ1ABcuSVCq Findy]
+[https://portfolio.forkwell.com/@conao3 forkwell]))
+
+== Contact ==
+* Email: conao3 [*at*] gmail.com
+* Slack: Casual chating room about my Packages ([https://conao3-support.slack.com/join/shared_invite/enQtNjUzMDMxODcyMjE1LWUwMjhiNTU3Yjk3ODIwNzAxMTgwOTkxNmJiN2M4OTZkMWY0NjI4ZTg4MTVlNzcwNDY2ZjVjYmRiZmJjZDU4MDE Invite link])
+
+== Comments ==
+
+
+----
+CategoryHomepage
