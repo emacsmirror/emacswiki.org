@@ -1,4 +1,7 @@
 == Changing file associations from command line ==
+
+NOTE: After following the instructions below, emacs client doesn’t work properly. For example, clicking on a .org file will create a new emacs window, even when one is already running (Windows 10, July 2019, Emacs 26.2).
+
 To set up Emacs file associations properly, use the commands `ftype' and `assoc'
 
 
