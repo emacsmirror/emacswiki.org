@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 19 10:13:16 2019 (-0700)
+;; Last-Updated: Fri Jul 19 10:26:06 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11712
+;;     Update #: 11713
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -6790,7 +6790,7 @@ When called from Lisp, optional arg DETAILS is passed to
 Like `dired-do-create-files', but act recursively on subdirs, and
 always keep markings.
 Prompts for the target directory, in which to create the files.
-FILE-CREATOR OPERATION is as in `dired-create-files'.
+FILE-CREATOR and OPERATION are as in `dired-create-files'.
 Non-nil IGNORE-MARKS-P means ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively.
 
