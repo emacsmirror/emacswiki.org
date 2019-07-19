@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul  3 20:06:35 2019 (-0700)
+;; Last-Updated: Fri Jul 19 10:13:16 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11707
+;;     Update #: 11712
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -804,6 +804,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/07/19 dadams
+;;     diredp-change-marks-recursive, diredp-unmark-all-files-recursive,
+;;       diredp-mark-files(-containing)-regexp-recursive, diredp-mark-sexp-recursive, diredp-mark-recursive-1:
+;;         Added missing PREDICATE arg in calls to diredp-get-subdirs.
 ;; 2019/07/03 dadams
 ;;     diredp-mark-if: Use char-after, not diredp-looking-at-p.
 ;; 2019/06/25 dadams
@@ -5938,7 +5942,7 @@ When called from Lisp:
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
            (dired-marker-char  new)
-           (sdirs              (diredp-get-subdirs ignore-marks details))
+           (sdirs              (diredp-get-subdirs ignore-marks predicate details))
            (old-strg           (format "\n%c" old))
            (count              0)
            dbufs)
@@ -6006,7 +6010,7 @@ When called from Lisp:
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
            (dired-marker-char  ?\  )    ; Unmark
-           (sdirs              (diredp-get-subdirs ignore-marks details))
+           (sdirs              (diredp-get-subdirs ignore-marks predicate details))
            (mrk-strg           (format "\n%c" mark))
            (count              0)
            dbufs)
@@ -6149,7 +6153,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                        diredp-list-file-attributes)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
-        (sdirs              (diredp-get-subdirs ignore-marks-p details))
+        (sdirs              (diredp-get-subdirs ignore-marks-p nil details))
         (matched            0)
         (changed            0)
         dbufs chg.mtch)
@@ -6205,7 +6209,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                        diredp-list-file-attributes)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
-        (sdirs              (diredp-get-subdirs ignore-marks-p details))
+        (sdirs              (diredp-get-subdirs ignore-marks-p nil details))
         (matched            0)
         (changed            0)
         dbufs chg.mtch)
@@ -6350,7 +6354,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
            (matched            0)
            (changed            0)
            dbufs chg.mtch mode nlink uid gid size time name sym)
-      (dolist (dir  (cons default-directory (diredp-get-subdirs ignorep details)))
+      (dolist (dir  (cons default-directory (diredp-get-subdirs ignorep nil details)))
         (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
           (with-current-buffer (car dbufs)
             (setq chg.mtch
@@ -6568,7 +6572,7 @@ When called from Lisp, optional arg DETAILS is passed to
          (unmark             (and numarg  (>= numarg 0)))
          (ignorep            (and numarg  (<= numarg 0)))
          (dired-marker-char  (if unmark ?\040 dired-marker-char))
-         (sdirs              (diredp-get-subdirs ignorep details))
+         (sdirs              (diredp-get-subdirs ignorep nil details))
          (changed            0)
          (matched            0)
          dbufs chg.mtch)
