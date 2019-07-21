@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 21 09:25:58 2019 (-0700)
+;; Last-Updated: Sun Jul 21 09:47:33 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11721
+;;     Update #: 11727
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -805,6 +805,7 @@
 ;;; Change Log:
 ;;
 ;; 2019/07/03 dadams
+;;     dired-mark-unmarked-files: Apply fix for Emacs bug #27465.
 ;;     diredp-mark-if, diredp-mark-sexp(-recursive), dired-mark-unmarked-files:
 ;;       Use char-after, not diredp-looking-at-p.
 ;; 2019/07/19 dadams
@@ -9141,8 +9142,9 @@ Non-interactively:
                        nil
                        current-prefix-arg
                        nil))
-    (let ((dired-marker-char  (if unflag-p ?\   dired-marker-char)))
-      (diredp-mark-if (and (eq (char-after) ?\   ) ; Not already marked
+    (let ((dired-marker-char  (if unflag-p ?\   dired-marker-char))
+          (unmarkedp          (eq (char-after) ?\   )))
+      (diredp-mark-if (and (if unflag-p (not unmarkedp) unmarkedp) ; Fixes Emacs bug #27465.
                            (let ((fn  (dired-get-filename localp 'NO-ERROR))) ; Uninteresting
                              (and fn  (diredp-string-match-p regexp fn))))
                       msg))))
