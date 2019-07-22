@@ -39,6 +39,10 @@ Clicking the title heading to search for pages about writing in natural language
 * MemoPop -- Helps you pop up and pop out a specific file buffer easily.
 * AcroBuffer -- Expands acronyms correctly for writing in plain text.
 * PopularWords -- Limit yourself to the most popular words.
+* [[https://github.com/bnbeckwith/writegood-mode writegood-mode]] -- Highlight text based on a set of weasel-words, passive-voice and duplicate words
+* [[https://github.com/sachac/artbollocks-mode artbollocks-mode]] -- Emacs minor mode for avoiding cliches and bad grammar
+when writing about art (or other topics)
+* [[https://www.emacswiki.org/emacs/langtool.el langtool]] Grammer check utility using [[https://www.languagetool.org/ LanguageTool]]
 
 == See Also ==
 ''Note: This page overlaps with material at CategoryEducation, and occasionally may need to synchronize.''
