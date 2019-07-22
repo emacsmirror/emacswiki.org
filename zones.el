@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2019.7.13
+;; Version: 2019.7.22
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 13 17:40:21 2019 (-0700)
+;; Last-Updated: Mon Jul 22 16:58:24 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3130
+;;     Update #: 3149
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -121,13 +121,14 @@
 ;;    `zz-map-zones', `zz-marker-from-object', `zz-markerize',
 ;;    `zz-max', `zz-min', `zz-narrow-advice', `zz-narrowing-lighter',
 ;;    `zz-noncontiguous-region-from-izones',
-;;    `zz-noncontiguous-region-from-zones', `zz-number-or-marker-p',
-;;    `zz-numeric-position', `zz-order-zones', `zz-overlays-to-zones',
-;;    `zz-overlay-to-zone', `zz-overlay-union',
+;;    `zz-noncontiguous-region-from-zones', `zz-numberize',
+;;    `zz-number-or-marker-p', `zz-numeric-position',
+;;    `zz-order-zones', `zz-overlays-to-zones', `zz-overlay-to-zone',
+;;    `zz-overlay-union', `zz-position-from-object',
 ;;    `zz-rassoc-delete-all', `zz-readable-marker',
-;;    `zz-readable-marker-p', `zz-read-any-variable', `zz-read-bufs',
-;;    `zz-regexp-car-member', `zz-remove-empty-izones',
-;;    `zz-remove-if', `zz-remove-if-not',
+;;    `zz-readable-markerize', `zz-readable-marker-p',
+;;    `zz-read-any-variable', `zz-read-bufs', `zz-regexp-car-member',
+;;    `zz-remove-empty-izones', `zz-remove-if', `zz-remove-if-not',
 ;;    `zz-remove-izones-w-other-buffer-markers',
 ;;    `zz-remove-zones-w-other-buffer-markers', `zz-repeat-command',
 ;;    `zz-same-position-p', `zz-set-intersection', `zz-set-union',
@@ -573,6 +574,10 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2019/07/22 dadams
+;;     Added: zz-numberize, zz-readable-markerize, zz-position-from-object.
+;;     zz-do-izones, zz-map-izones: Use zz-izones-from-zones of zz-zone-union, not zz-unite-zones.
+;;                                  IZONES defaults to value of zz-izones-var.  Invalid FUNCTION is not a no-op.
 ;; 2019/07/13 dadams
 ;;     zz-(add|set)-zones-matching-regexp: Added optional arg SUBEXP.  Used only non-interactively, for now.
 ;; 2019/04/30 dadams
@@ -1242,8 +1247,8 @@ zones are first removed from `zz-izones-var'."
              (setq latest  (nreverse latest))
              (when (< arg 0) (setq arg     (abs arg)
                                    latest  ()))
-             (setq val                         (set var (append (nthcdr arg val) latest))
-                   val                         (set var (mapcar #'zz-markerize val)))
+             (setq val  (set var (append (nthcdr arg val) latest))
+                   val  (set var (mapcar #'zz-markerize val)))
              (cond (val
                     (setq zz-lighter-narrowing-part   (format "-%d" (caar val)))
                     (condition-case err
@@ -1879,22 +1884,24 @@ iterate over the resulting list."
 (defun zz-do-izones (function &optional izones unite-p)
   "Like `zz-map-izones', but without returning the result of mapping.
 The return value is undefined."
-  (when (functionp function)
-    (when unite-p (setq izones  (zz-unite-zones izones)))
-    (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone)))))
+  (setq izones  (or izones  (symbol-value zz-izones-var)))
+  (when unite-p
+    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
+  (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone))))
 
 (defun zz-map-izones (function &optional izones unite-p)
   "Map FUNCTION over IZONES.
 Apply FUNCTION to the first three elements of each izone, that is, the
  identifier and the zone limits.
 IZONES is a list like `zz-izones', that is, zones with identifiers.
-By default, IZONES is the value of `zz-izones'.
+IZONES defaults to the value of the variable that is the value of
+`zz-izones-var'.
 Non-nil optional arg UNITE-P means first unite the zones and then
 iterate over the resulting list."
-  (if (not (functionp function))
-      (or izones  zz-izones)
-    (when unite-p (setq izones  (zz-unite-zones izones)))
-    (mapcar (lambda (izone) (funcall function (car izone) (cadr izone) (caddr izone))) izones)))
+  (setq izones  (or izones  (symbol-value zz-izones-var)))
+  (when unite-p
+    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
+  (mapcar (lambda (izone) (funcall function (car izone) (cadr izone) (caddr izone))) izones))
 
 (defun zz-order-zones (&optional zones descendingp)
   "Order each zone in ZONES, so that first limit is less than the second.
@@ -2147,17 +2154,62 @@ Put `zz-narrow' on `mouse-2' for the lighter suffix."
   "Convert IZONE to use markers.
 IZONE is a list of an identifier (a number) and two buffer
 positions (numbers, markers, or readable-marker objects).  Positions
-that are numbers or readable-marker objects are converted to markers.
+that are not markers are converted to them.
 
 This is a non-destructive operation: it returns a new list."
-  (let ((ii   1)
+  (let ((ii  1)
         posn)
-    (while (<  ii 3)
+    (while (< ii 3)
       (setq posn  (nth ii izone))
-      (when (and (not (markerp posn))  (or (natnump posn)  (zz-readable-marker-p posn)))
-        (setcar (nthcdr ii  izone) (zz-marker-from-object posn)))
+      (unless (markerp posn) (setcar (nthcdr ii izone) (zz-marker-from-object posn)))
       (setq ii  (1+ ii))))
   izone)
+
+(defun zz-numberize (izone)
+  "Convert IZONE to use numbers, not markers or readable markers.
+IZONE is a list of an identifier (a number) and two buffer
+positions (numbers, markers, or readable-marker objects).  Positions
+that are not natural numbers are converted to them.
+
+This is a non-destructive operation: it returns a new list."
+  (let ((ii  1)
+        posn)
+    (while (< ii 3)
+      (setq posn  (nth ii izone))
+      (unless (natnump posn) (setcar (nthcdr ii izone) (zz-position-from-object posn)))
+      (setq ii  (1+ ii))))
+  izone)
+
+(defun zz-readable-markerize (izone &optional buffer)
+  "Convert IZONE to use readable markers.
+IZONE is a list of an identifier (a number) and two buffer
+positions (numbers, markers, or readable-marker objects).  Positions
+that are not readable markers objects are converted to them.
+
+If optional arg BUFFER names an existing buffer then use it as the
+readable-marker buffer.  Otherwise, use the current buffer's name.
+
+This is a non-destructive operation: it returns a new list."
+  (let ((ii  1)
+        posn)
+    (while (< ii 3)
+      (setq posn  (nth ii izone))
+      (unless (zz-readable-marker-p posn) (setcar (nthcdr ii izone) (zz-readable-marker posn buffer)))
+      (setq ii  (1+ ii))))
+  izone)
+
+(defun zz-position-from-object (object)
+  "Return a buffer position for OBJECT, as a natural number.
+If OBJECT is not a number, marker, or readable marker then return nil.
+This is a non-destructive operation: OBJECT is not modified.
+
+A readable marker is a sexp of form (marker BUFFER POSITION), where
+BUFFER is a buffer name (string) and POSITION is a buffer position
+\(number)."
+  (cond ((markerp object) (marker-position object))
+        ((natnump object) object)
+        ((zz-readable-marker-p object) (nth 2 object))
+        (t nil)))
 
 (defun zz-marker-from-object (object)
   "Return an equivalent marker for OBJECT.
