@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2019.7.22
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 17:17:57 2019 (-0700)
+;; Last-Updated: Mon Jul 22 17:25:46 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3152
+;;     Update #: 3155
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -577,8 +577,9 @@
 ;; 2019/07/22 dadams
 ;;     Added: zz-numberize, zz-readable-markerize, zz-position-from-object.
 ;;     zz-do-izones, zz-map-izones: Use zz-izones-from-zones of zz-zone-union, not zz-unite-zones.
-;;                                  IZONES defaults to value of zz-izones-var.
-;;     zz-do-(i)zones, zz-map-(i)zones: Invalid FUNCTION is not a no-op.
+;;                                  IZONES defaults to value of zz-izones-var.  Invalid FUNCTION is not a no-op.
+;;     zz-do-zones, zz-map-zones:
+;;       FUNCTION Is unary, not binary - apply it to zone, not its limits.  Invalid FUNCTION is not a no-op.
 ;; 2019/07/13 dadams
 ;;     zz-(add|set)-zones-matching-regexp: Added optional arg SUBEXP.  Used only non-interactively, for now.
 ;; 2019/04/30 dadams
@@ -1867,17 +1868,17 @@ variable)."
 The return value is undefined."
   (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
   (when unite-p (setq zones  (zz-zone-union zones)))
-  (dolist (zone  zones) (funcall function (car zone) (cadr zone))))
+  (dolist (zone  zones) (funcall function zone)))
 
 (defun zz-map-zones (function &optional zones unite-p)
-  "Map binary FUNCTION over ZONES, applying it to the limits of each zone.
+  "Map FUNCTION over ZONES, applying it to each zone.
 ZONES can be a list of basic zones or a list like `zz-izones', that
 is, zones that have identifiers.
 Non-nil optional arg UNITE-P means first unite the zones and then
 iterate over the resulting list."
   (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
   (when unite-p (setq zones  (zz-zone-union zones)))
-  (mapcar (lambda (zone) (funcall function (car zone) (cadr zone))) zones))
+  (mapcar (lambda (zone) (funcall function zone)) zones))
 
 (defun zz-do-izones (function &optional izones unite-p)
   "Like `zz-map-izones', but without returning the result of mapping.
