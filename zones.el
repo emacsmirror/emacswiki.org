@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2019.7.22
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 17:25:46 2019 (-0700)
+;; Last-Updated: Mon Jul 22 17:57:50 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3155
+;;     Update #: 3175
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -577,9 +577,10 @@
 ;; 2019/07/22 dadams
 ;;     Added: zz-numberize, zz-readable-markerize, zz-position-from-object.
 ;;     zz-do-izones, zz-map-izones: Use zz-izones-from-zones of zz-zone-union, not zz-unite-zones.
-;;                                  IZONES defaults to value of zz-izones-var.  Invalid FUNCTION is not a no-op.
-;;     zz-do-zones, zz-map-zones:
-;;       FUNCTION Is unary, not binary - apply it to zone, not its limits.  Invalid FUNCTION is not a no-op.
+;;                                  IZONES defaults to value of zz-izones-var.
+;;     zz-do-(i)zones, zz-map-(i)zones:
+;;       FUNCTION Is unary, not binary (incompatible change).  Invalid FUNCTION is no longer a no-op.
+;;     zz-order-zones: Map with unary function, not binary.
 ;; 2019/07/13 dadams
 ;;     zz-(add|set)-zones-matching-regexp: Added optional arg SUBEXP.  Used only non-interactively, for now.
 ;; 2019/04/30 dadams
@@ -1863,6 +1864,30 @@ variable)."
                                        abs-zones nil t nil 'zz-zone-history (car abs-zones)))))
     (assq (- num) izones)))
 
+(defun zz-order-zones (&optional zones descendingp)
+  "Order each zone in ZONES, so that first limit is less than the second.
+ZONES is normally a list of basic zones.  It can also be a list like
+ `zz-izones', that is, zones that have identifiers, but in that case
+ it is first converted to a list of basic zones with only limits, no
+ extra info.
+Non-nil optional arg DESCENDINGP means put greater limit first."
+  (zz-map-zones (lambda (zone) (let ((lim1  (car  zone))
+                                (lim2  (cadr zone)))
+                            (if (if descendingp (< lim1 lim2) (> lim1 lim2)) (list lim2 lim1) (list lim1 lim2))))
+                zones))
+
+(defun zz-map-zones (function &optional zones unite-p)
+  "Map FUNCTION over ZONES, applying it to each zone.
+ZONES is normally a list of basic zones.  It can also be a list like
+ `zz-izones', that is, zones that have identifiers, but in that case
+ it is first converted to a list of basic zones with only limits, no
+ extra info.
+Non-nil optional arg UNITE-P means first unite the zones and then
+iterate over the resulting list."
+  (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+  (when unite-p (setq zones  (zz-zone-union zones)))
+  (mapcar (lambda (zone) (funcall function zone)) zones))
+
 (defun zz-do-zones (function &optional zones unite-p)
   "Like `zz-map-zones', but without returning the result of mapping.
 The return value is undefined."
@@ -1870,28 +1895,8 @@ The return value is undefined."
   (when unite-p (setq zones  (zz-zone-union zones)))
   (dolist (zone  zones) (funcall function zone)))
 
-(defun zz-map-zones (function &optional zones unite-p)
-  "Map FUNCTION over ZONES, applying it to each zone.
-ZONES can be a list of basic zones or a list like `zz-izones', that
-is, zones that have identifiers.
-Non-nil optional arg UNITE-P means first unite the zones and then
-iterate over the resulting list."
-  (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
-  (when unite-p (setq zones  (zz-zone-union zones)))
-  (mapcar (lambda (zone) (funcall function zone)) zones))
-
-(defun zz-do-izones (function &optional izones unite-p)
-  "Like `zz-map-izones', but without returning the result of mapping.
-The return value is undefined."
-  (setq izones  (or izones  (symbol-value zz-izones-var)))
-  (when unite-p
-    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
-  (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone))))
-
 (defun zz-map-izones (function &optional izones unite-p)
-  "Map FUNCTION over IZONES.
-Apply FUNCTION to the first three elements of each izone, that is, the
- identifier and the zone limits.
+  "Map FUNCTION over IZONES, applying it to each izone.
 IZONES is a list like `zz-izones', that is, zones with identifiers.
 IZONES defaults to the value of the variable that is the value of
 `zz-izones-var'.
@@ -1900,16 +1905,15 @@ iterate over the resulting list."
   (setq izones  (or izones  (symbol-value zz-izones-var)))
   (when unite-p
     (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
-  (mapcar (lambda (izone) (funcall function (car izone) (cadr izone) (caddr izone))) izones))
+  (mapcar (lambda (izone) (funcall function izone)) izones))
 
-(defun zz-order-zones (&optional zones descendingp)
-  "Order each zone in ZONES, so that first limit is less than the second.
-ZONES can be a list of basic zones or a list like `zz-izones', that
-is, zones that have identifiers.
-Non-nil optional arg DESCENDINGP means put greater limit first."
-  (zz-map-zones (lambda (lim1 lim2)
-                  (if (if descendingp (< lim1 lim2) (> lim1 lim2)) (list lim2 lim1) (list lim1 lim2)))
-                zones))
+(defun zz-do-izones (function &optional izones unite-p)
+  "Like `zz-map-izones', but without returning the result of mapping.
+The return value is undefined."
+  (setq izones  (or izones  (symbol-value zz-izones-var)))
+  (when unite-p
+    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
+  (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone))))
 
 (defun zz-zones-complement (zones &optional beg end)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
