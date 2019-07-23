@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2019.7.22
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 16:58:24 2019 (-0700)
+;; Last-Updated: Mon Jul 22 17:17:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3149
+;;     Update #: 3152
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -577,7 +577,8 @@
 ;; 2019/07/22 dadams
 ;;     Added: zz-numberize, zz-readable-markerize, zz-position-from-object.
 ;;     zz-do-izones, zz-map-izones: Use zz-izones-from-zones of zz-zone-union, not zz-unite-zones.
-;;                                  IZONES defaults to value of zz-izones-var.  Invalid FUNCTION is not a no-op.
+;;                                  IZONES defaults to value of zz-izones-var.
+;;     zz-do-(i)zones, zz-map-(i)zones: Invalid FUNCTION is not a no-op.
 ;; 2019/07/13 dadams
 ;;     zz-(add|set)-zones-matching-regexp: Added optional arg SUBEXP.  Used only non-interactively, for now.
 ;; 2019/04/30 dadams
@@ -1864,10 +1865,9 @@ variable)."
 (defun zz-do-zones (function &optional zones unite-p)
   "Like `zz-map-zones', but without returning the result of mapping.
 The return value is undefined."
-  (when (functionp function)
-    (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
-    (when unite-p (setq zones  (zz-zone-union zones)))
-    (dolist (zone  zones) (funcall function (car zone) (cadr zone)))))
+  (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+  (when unite-p (setq zones  (zz-zone-union zones)))
+  (dolist (zone  zones) (funcall function (car zone) (cadr zone))))
 
 (defun zz-map-zones (function &optional zones unite-p)
   "Map binary FUNCTION over ZONES, applying it to the limits of each zone.
@@ -1875,11 +1875,9 @@ ZONES can be a list of basic zones or a list like `zz-izones', that
 is, zones that have identifiers.
 Non-nil optional arg UNITE-P means first unite the zones and then
 iterate over the resulting list."
-  (if (not (functionp function))
-      (or zones  zz-izones)
-    (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
-    (when unite-p (setq zones  (zz-zone-union zones)))
-    (mapcar (lambda (zone) (funcall function (car zone) (cadr zone))) zones)))
+  (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+  (when unite-p (setq zones  (zz-zone-union zones)))
+  (mapcar (lambda (zone) (funcall function (car zone) (cadr zone))) zones))
 
 (defun zz-do-izones (function &optional izones unite-p)
   "Like `zz-map-izones', but without returning the result of mapping.
