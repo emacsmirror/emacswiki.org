@@ -1,0 +1,5 @@
+ed-mode is an ed(1)-like editing mode for Emacsen. It might also be the only ed implementation with syntax highlighting. It's available at https://github.com/ryanprior/ed-mode
+
+----
+CategoryEmulation
+CategoryKeys
