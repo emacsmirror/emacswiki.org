@@ -59,7 +59,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 === Interaction History: ===
 
-To see your session history, type ##,h[istory]##, which prints all previous interactions, assigning a number and a name to each interaction.  Type ##,d[ump] [number or (partial) name]## to dump a log of a previous interaction. The log is presented as a url link.  Your interactions are not public. However, interactions that result in any changes to the `fs-' space or to botbbdb (terms and notes) become part of a public log. The latter can be seen by typing ##,botbbdb [how-many-days-old]##. These dumps present the invocation, its parse, the result, and finally, enough information to undo the change. 
+To see your session history, type ##,h[istory]##, which prints all previous interactions, assigning a number and a name to each interaction.  Type ##,d[ump] [number or (partial) name]## to dump a log of a previous interaction. The log is presented as a url link.  Your interactions are not public. However, interactions that result in any changes to the `fs-' space or to botbbdb (terms and notes) become part of a public log. The latter can be seen by typing ##,botbbdb [how-many-days-old]##. These dumps point you to a permanent url for each interaction. The url stores, for each interaction, the invocation, its parse, the result, and finally, enough information to undo the change.  fsbot itself stores the undo history for a limited time, and that can be accessed by typing ,trashlist. Type ,trashtrash to empty the trashcan.
 
 
 === Some notes on the parser === 
