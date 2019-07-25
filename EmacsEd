@@ -1,9 +1,1 @@
-Emacsed is an ed(1)-like editing mode for Emacsen. It might also be the only ed implementation with syntax highlighting. It's available at http://aon.iki.fi/files/emacsed/emacsed.el (link working again)
-
-* [http://aon.iki.fi/files/emacsed/ChangeLog ChangeLog]
-* [http://aon.iki.fi/files/emacsed/TODO TODO]
-* [http://aon.iki.fi/files/emacsed/emacsed.png Screenshot]
-
-----
-CategoryEmulation
-CategoryKeys
+#REDIRECT EdMode
