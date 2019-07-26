@@ -176,6 +176,9 @@ sketchy". -- DarrenYin) This downloads only Icicles files, not any of its depend
 * Required libraries:
 
         wget https://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el
+
+July 26th 2019, Error 400 - bad request
+
 * Optional libraries:
 
         wget https://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el
