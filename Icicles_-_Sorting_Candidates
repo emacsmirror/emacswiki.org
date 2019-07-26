@@ -322,6 +322,8 @@ repetition of `##C-M-+##' gives the saved sort order more and more
 weight.  Eventually a fixed point is reached: `##C-M-+##' produces no
 further change in the order.
 
+
+[:screenshots]
 For example, consider `icicle-read-color-WYSIWYG'.  With user option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>'''' 
 non-`nil' (e.g. a string) it lets
