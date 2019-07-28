@@ -1,3 +1,7 @@
+== Auto-indent as you type ==
+
+[https://github.com/Malabarba/aggressive-indent-mode Aggressive Indent] does this.
+
 == Auto-indent new lines ==
 
 NOTE: Recent changes, I think during Emacs 24.3, have swapped effects of ##RET## and ##C-j##, so ##RET## typically does ##newline-and-indent##.
