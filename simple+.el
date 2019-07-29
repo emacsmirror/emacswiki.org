@@ -8,9 +8,9 @@
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Mon Jan  1 15:47:07 2018 (-0800)
+;;; Last-Updated: Mon Jul 29 13:20:05 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 499
+;;     Update #: 505
 ;; URL: https://www.emacswiki.org/emacs/download/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -388,15 +388,17 @@ of the variable, which is used as the default value when reading the new value."
 ;;;###autoload
 (defun set-variable (variable value &optional make-local)
   "Set VARIABLE to VALUE.  VALUE is a Lisp object.
-When using this interactively, enter a Lisp object for VALUE.
-If you want VALUE to be a string, you must surround it with doublequotes.
-VALUE is used literally, not evaluated.
+Enter VALUE in Lisp syntax.  For example, if you want VALUE to be a
+string then you must surround it with double-quote chars.  VALUE is
+used literally, not evaluated.
 
-If VARIABLE has a `variable-interactive' property, that is used as if
-it were the arg to `interactive' (which see) to interactively read VALUE.
+If VARIABLE has a `variable-interactive' property then that is used as
+if it were the arg to `interactive', to interactively read VALUE.
 
-If VARIABLE has been defined with `defcustom', then the type information
-in the definition is used to check that VALUE is valid.
+If VARIABLE was defined with `defcustom' then the type information in
+the definition is used to check that VALUE is valid.  But this
+function does not pay attention to any `:set' property the variable
+might have (if you want that, use \\[customize-set-variable] instead).
 
 With a prefix argument, set VARIABLE to VALUE buffer-locally."
   (interactive (read-var-and-value 'read-variable
@@ -427,14 +429,16 @@ With a prefix argument, set VARIABLE to VALUE buffer-locally."
   "Set VARIABLE to VALUE.  VALUE is a Lisp object.
 VARIABLE can be any Lisp variable, unlike `set-variable', where it
 must be a user option.  Enter VALUE in Lisp syntax.  For example, if
-you want VALUE to be a string, you must surround it with doublequotes.
-VALUE is used literally, not evaluated.
+you want VALUE to be a string then you must surround it with
+double-quote chars.  VALUE is used literally, not evaluated.
 
-If VARIABLE has a `variable-interactive' property, that is used as if
-it were the arg to `interactive' (which see) to interactively read value.
+If VARIABLE has a `variable-interactive' property then that is used as
+if it were the arg to `interactive', to interactively read VALUE.
 
-If VARIABLE has been defined with `defcustom', then the type information
-in the definition is used to check that VALUE is valid.
+If VARIABLE was defined with `defcustom' then the type information in
+the definition is used to check that VALUE is valid.  But this
+function does not pay attention to any `:set' property the variable
+might have (if you want that, use \\[customize-set-variable] instead).
 
 With a prefix argument, set VARIABLE to VALUE buffer-locally."
   (interactive (read-var-and-value 'read-any-variable
