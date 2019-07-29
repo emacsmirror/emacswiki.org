@@ -2,7 +2,7 @@
 
 Modern  versions of mg are maintained as a component of the OpenBSD source tree; the editor is included as standard in OpenBSD "because there shouldn't be any reason to learn more editor types than emacs or vi."
 
-A portable version is available for download at [http://homepage.boetes.org/software/mg/ the maintainer's website].
+A portable version is available for download from the [https://github.com/hboetes/mg the maintainer's Github].
 
 ----
 EmacsImplementations
