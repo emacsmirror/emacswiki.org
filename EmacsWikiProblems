@@ -8,26 +8,6 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-== Recent changes in last 14 days shows 0 changes, though changes in last 1, 3, and 7 days show more than 0 changes ==
-
-As the number of days is increased, the number of changes mostly goes up, as one would expect.  Except for the following number, where it shows no changes (or 1 change for couple of these).
-
-* https://www.emacswiki.org/emacs?action=rc;days=6;all=0;showedit=0
-* https://www.emacswiki.org/emacs?action=rc;days=13;all=0;showedit=0
-* https://www.emacswiki.org/emacs?action=rc;days=14;all=0;showedit=0
-* https://www.emacswiki.org/emacs?action=rc;days=20;all=0;showedit=0
-* https://www.emacswiki.org/emacs?action=rc;days=22;all=0;showedit=0
-* https://www.emacswiki.org/emacs?action=rc;days=28;all=0;showedit=0
-* https://www.emacswiki.org/emacs?action=rc;days=30;all=0;showedit=0
-
-[new]
-At first I wanted to say that I couldn't reproduce the problem but as I kept pressing
-Ctrl-Shift-R on my browser I noticed that sometimes (1 in 4, maybe?) the list would
-come up empty. I'm not sure what to make of it. Strange! -- Alex Schroeder
-
-[new]
-At home, on a tablet, I’m not seeing this problem. Now I’m wondering whether this depends on the browser used and perhaps how it handles 304 responses? — Alex
-
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
 -- Thanks for your attention --
