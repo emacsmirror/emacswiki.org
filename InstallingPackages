@@ -2,12 +2,12 @@
 
 The most common method of installing packages of Emacs Lisp since Emacs 24 has been [[ELPA]] packages.
 
-Additional package archives such as [[MELPA]] exist to supplement what is in [[ELPA]].
+Additional package archives such as [[MELPA]] exist to supplement what is in [[GnuELPA]].
 
 [:package-archives]
 == Adding a package source ==
 
-By default, Emacs 24 or later is set up with the [[ELPA]] package
+By default, Emacs 24 or later is set up with the [[GnuELPA]] package
 archive. If you need to add more sources, include Emacs code like this
 to your InitFile:
 
@@ -18,8 +18,9 @@ to your InitFile:
 
 Alternatively, you can use the Customize interface with the command `M-x customize-variable package-archives' .
 
-The value will depend on the package source you want to add. See [[MELPA]] for more information.
+The value will depend on the package source you want to add. See [[ELPA]] and [[MELPA]] for more information.
 
+[:installing-packages]
 == Installing packages ==
 
 Type <code>M-x list-packages</code> to open the package list.  Press `i' to mark for installation, `u' to unmark, and `x' to perform the installation.  Press `RET' to read more about installing and using each package.  
