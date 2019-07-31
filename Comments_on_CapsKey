@@ -1,0 +1,7 @@
+keycode 66 = nabla
+(global-set-key '[8711] 'dabbrev-expand)
+
+that does not work, it still changes CapsLock when using it.
+
+-- [https://gnu.support jmarciano] 2019-07-31 06:52 UTC
+
