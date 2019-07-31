@@ -6,14 +6,15 @@ ELPA is the *Emacs Lisp Package Archive*, written originally by TomTromey. It is
 
 //“Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages.  We supply// ##package.el## //a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code.”//
 
+See [[InstallingPackages#installing-packages|InstallingPackages]] for basic usage information.
+
+[:package-archives]
+=== Package repositories ===
 
 ##package.el## supports multiple ELPA repositories.  Sometimes "ELPA" is used to refer to an ELPA repository.
 
-
-[::GnuELPA]
-The [[http://elpa.gnu.org/ GNU ELPA]] repository contains FSF-sanctioned Emacs packages.  It is the default repository used by ##package.el##.
-
-You can use other repositories. The following examples show how to add the [[MELPA]] repository, in addition to GNU ELPA.
+[::GnuELPA] - The [[http://elpa.gnu.org/ GNU ELPA]] repository contains FSF-sanctioned Emacs packages.  It is the default repository used by ##package.el##.
+The following examples show how to add the [[MELPA]] repository, in addition to GNU ELPA.
 
 Add this to your [[init file]]:
 
