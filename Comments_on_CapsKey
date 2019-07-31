@@ -1,5 +1,5 @@
-keycode 66 = nabla
-(global-set-key '[8711] 'dabbrev-expand)
+    keycode 66 = nabla
+    (global-set-key '[8711] 'dabbrev-expand)
 
 that does not work, it still changes CapsLock when using it.
 
