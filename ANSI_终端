@@ -1,6 +1,5 @@
-[[de:ANSI_终端]]
-[[zh:Ansi终端]]
 [[ja:AnsiTerm-ja]]
+[[zh:Ansi终端]]
 ANSI终端(Ansi term)是用EmacsLisp编写的终端模拟器。 
 你甚至可以在Emacs buffer中运行 vi/ mutt(见 MuttInEmacs)/ Emacs! :)
 
