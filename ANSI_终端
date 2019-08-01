@@ -1,0 +1,18 @@
+[[de:ANSI_终端]]
+[[zh:Ansi终端]]
+[[ja:AnsiTerm-ja]]
+ANSI终端(Ansi term)是用EmacsLisp编写的终端模拟器。 
+你甚至可以在Emacs buffer中运行 vi/ mutt(见 MuttInEmacs)/ Emacs! :)
+
+使用命令 'M-x ansi-term' 开启ANSI 终端。
+
+过去， `M-x ansi-term' 与 `M-x term' 的不同之处在于后者不能呈现颜色. 现在 ([https://lists.gnu.org/archive/html/help-gnu-emacs/2007-12/msg00199.html ref]) 后者也可以显示了, 所以现在最主要的区别在于，“ANSI终端”使用 `C-x' 作为前缀，而原本的“终端”仍然只支持更老的 `C-c' 绑定按键. 与此同时他们使用的buffer名称也不一样。
+
+在Emacs 22/23中，如果在“ANSI终端”中使用标准快捷键无效，试试看加上 `C-x' 前缀。例如，想要输入 `M-x' 命令时需要输入 `C-x M-x'。
+
+更多配置选项参见 AnsiTermHints
+
+注: 虽然 `ansi-term' 和 `term' 二者密切相关，但是不应该忘记他们是两个完全独立的 terminal.el 包(and [http://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?id=emacs-24.4#n909 obsolete as of 24.4])，都可以提供 `M-x terminal-emulator'。
+
+----
+CategoryExternalUtilities
