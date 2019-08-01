@@ -1,3 +1,4 @@
+[[zh:Ansi终端]]
 [[ja:AnsiTerm-ja]]
 This is a terminal emulator written in EmacsLisp.
 Now you can run vi (or mutt! (see MuttInEmacs) (or Emacs! :))) in an Emacs buffer!
