@@ -194,8 +194,6 @@ like this in your ##.psqlr## file:
 
   \set PROMPT1 '// %n@%M %/\n'
 
--- Daniel B.
-
 == Emacs 19 ==
 
 If you are using GNU Emacs 19.34, you will need two additional things:
