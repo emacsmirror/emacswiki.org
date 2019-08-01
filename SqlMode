@@ -188,6 +188,12 @@ This could be set persistently in your ##.psqlrc## file, or else using ##sql-log
        ;; the psql prompt breaking the alignment of query results.)
        (comint-send-string proc "\\set ECHO queries\n"))))
 
+If you can live with not typing on the same line the prompt, you can just add a newline to the end
+of your psql prompt.  Put something like this in your ##.psqlr## file:
+
+  \set PROMPT1 '%n@%M %/\n'
+
+
 == Emacs 19 ==
 
 If you are using GNU Emacs 19.34, you will need two additional things:
