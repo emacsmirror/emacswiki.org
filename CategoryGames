@@ -32,9 +32,10 @@ Click on the header to list some pages related to game playing on Emacs.
 == Add-on games ==
 
 * [[Alienmangel]] -- a graphical action/adventure-game inspired by Rodent's revenge
+* [AnimalGame Animal] -- the computer guesses what animal you're thinking of
 * BefungeMode -- interpreter for the funny Befunge programming language
 * ChessMode
-* [https://github.com/alezost/ducpel Ducpel] -- logic game with sokoban elements.
+* [https://github.com/alezost/ducpel Ducpel] -- logic game with sokoban elements
 * EmacsRobots -- like crobots and friends
 * GoMode -- play GNU Go within Emacs
 ** IgsGoMode -- play Go over the internet
@@ -49,8 +50,8 @@ Click on the header to list some pages related to game playing on Emacs.
 * NBackGame -- A game for brain training which may improve working memory and intelligence
 * NethackMode -- play nethack inside emacs
 * PhutballMode -- play phutball over the net
-* RandomIdleQuote -- not really a game, but fun! Shows a quote when emacs goes into idle.
-* [https://gist.github.com/dto/4112806 RLX], a graphical roguelike engine and development system for Emacs(currently being ported to Common Lisp).
+* RandomIdleQuote -- not really a game, but fun! Shows a quote when emacs goes into idle
+* [https://gist.github.com/dto/4112806 RLX], a graphical roguelike engine and development system for Emacs(currently being ported to Common Lisp)
 * ScrmableSrtnig
 * [http://melpa.org/#/slime-volleyball Slime Volleyball] [https://github.com/fitzsim/slime-volleyball (screenshot)]
 * SokobanMode
