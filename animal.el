@@ -1,5 +1,7 @@
 ;;; animals.el --- guess the animal
 
+;; https://www.emacswiki.org/emacs/AnimalGame
+
 ;; Copyright (C) 1995 Free Software Foundation, Inc.
 
 ;; Author: Keith Gabryelski <ag@yoda.omnicron.com>
