@@ -1,0 +1,8 @@
+Play the "animal" game ("20 questions" with no limit).
+
+The user thinks of an animal and the program uses a tree whose nodes are yes-no questions and whose leaves are animals to try to guess which animal the user is thinking of.  If it fails, the user is invited
+to extend the program's tree by telling it a question to distinguish his animal from the program's best guess.
+
+Possibly inspired by/descended from the 1978 book, [https://www.atariarchives.org/basicgames/showpage.php?page=4 BASIC Computer Games].
+
+[https://animalgame.com/] is an online version of the game, probably only vaguely related to the original BASIC or this Lisp version.
