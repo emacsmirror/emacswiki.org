@@ -5,4 +5,4 @@ to extend the program's tree by telling it a question to distinguish his animal 
 
 Possibly inspired by/descended from the 1978 book, [https://www.atariarchives.org/basicgames/showpage.php?page=4 BASIC Computer Games].
 
-[https://animalgame.com/] is an online version of the game, probably only vaguely related to the original BASIC or this Lisp version.
+There is an [https://animalgame.com/ online version] of the game, probably only vaguely related to the original BASIC or this Lisp version.
