@@ -23,8 +23,7 @@ To produce this regexp (which matches C-style multiline and single line comments
 
     \\*\\(?:.\\|\n\\)*?\\*/\\|//\\(?:.\\|\n\\)*?$
 
-
-
+And there's a package <code>xr</code> that does the opposite conversion, from regexps to a human-readable form.
 
 
 
