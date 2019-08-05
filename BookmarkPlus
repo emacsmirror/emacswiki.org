@@ -944,7 +944,7 @@ modifications together as one modification, as far as
 
 
 
-[:TypeSpecificJumpCommands]
+[:DifferentTypesOfJumpCommands]
 == Different Types of Jump Commands ==
 
 When you jump to a bookmark, you can use [[completion]] to specify the
@@ -2433,7 +2433,7 @@ limit the choices to bookmarks for files and subdirectories of the
 ''current directory''.  By default, the commands across all
 directories are on [[prefix key]] '''`##C-x j t f##'''', and those for the
 current directory only are on prefix key '''`##C-x j t .##''''.  See
-[[#TypeSpecificJumpCommands|Different Types of Jump Commands]] for more about these
+[[#DifferentTypesOfJumpCommands|Different Types of Jump Commands]] for more about these
 commands.
 
 The second kind of command is for visiting tagged files, that is,
@@ -2777,7 +2777,7 @@ outside it.  How can you keep the commands
 straight or remember their keys?
 
 In the bookmark list display, tags-command keys begin with prefix
-key '''`T''''.  Elsewhere, they begin with prefix key '''`##C-x p t##'''' (or '''`##C-x j t##'''', for jump commands -- see [[#TypeSpecificJumpCommands|Different Types of Jump Commands]]).
+key '''`T''''.  Elsewhere, they begin with prefix key '''`##C-x p t##'''' (or '''`##C-x j t##'''', for jump commands -- see [[#DifferentTypesOfJumpCommands|Different Types of Jump Commands]]).
 
 
 `##C-h m##' is your friend, of course.  Likewise '''`##T C-h##'''',
@@ -3475,7 +3475,7 @@ bind that action to a shorter key sequence if you like.)
 
 Besides cycling among the bookmarks of the navlist (see next),
 once you have defined the navigation list you can use '''`C-x j N'''' or
-'''`C-x 4 j N'''' to jump to its bookmarks, as mentioned in section [[#TypeSpecificJumpCommands|Different Types of Jump Commands]].
+'''`C-x 4 j N'''' to jump to its bookmarks, as mentioned in section [[#DifferentTypesOfJumpCommands|Different Types of Jump Commands]].
 
 Note that just because you might have used `C-x p B' to define the
 navlist using a particular bookmark-list bookmark or the current
