@@ -3063,6 +3063,9 @@ match the regexp, `##P F##' shows those whose file names match, `##P A##' shows 
 `##P T##' shows those that have one or more tags that match.
 (See [[#BookmarkTags]], above, for information about tags.)
 
+
+
+[:FilteringByMarking]
 ==== Filtering based on marking ====
 
 Just as in [[DiredMode|Dired]], you can use '''`##% m##'''' to mark the bookmarks that
