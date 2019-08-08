@@ -65,7 +65,7 @@ If you are used to Bazaar, bear in mind that the data you will clone
 when using Git is not for a branch but for the entire repository with all
 its branches.  You can switch between these branches as you need.
 You'll still be pushing commits to a branch, either
-the /master/ branch, or the release branch (currently called /emacs-24/,
+the /master/ branch, or the release branch (currently called /emacs-26/,
 but that will change as future Emacs versions are released).
 
 The command examples are generally given in Unix command-line style,
@@ -406,7 +406,7 @@ When you decide to work on the next task, create a new task branch:
 
 If you are a frequent contributor or a core developer, you will need
 to work both on the master branch and the release branch (the latter
-is currently called "emacs-24", but that changes with every major
+is currently called "emacs-26", but that changes with every major
 release).  In Emacs development, changes that fix bugs that are
 present on the release branch are pushed there and later merged to the
 master branch.  In addition, some changes pushed to master are
@@ -415,7 +415,7 @@ back-ported to the release branch.
 This means you will have to switch frequently between the master and
 the release branch.  Switching branches in git is easy:
 
-      git checkout emacs-24  # switch to the release branch
+      git checkout emacs-26  # switch to the release branch
       git checkout master    # switch to the master branch
 
 In general, you can use the same workflow with the master and the
@@ -439,7 +439,7 @@ This will clone the repository into 2 sibling directories,
 names, of course).  By default, cloning always checks out the master
 branch, so you need to switch to the release branch in the ##emacs-branch## clone:
 
-      cd emacs-branch && git checkout emacs-24
+      cd emacs-branch && git checkout emacs-26
 
 After this one-time setup, you do all the master-related work in
 ##emacs-master## and all the release branch-related work in
@@ -477,7 +477,7 @@ synch with upstream.
 Then load ##gitmerge.el## and invoke ##M-x gitmerge RET## in a buffer
 whose default-directory is the top-level repository directory.  It
 will prompt for the branch from which to merge, defaulting to
-##origin/emacs-24##, which you should accept.
+##origin/emacs-26##, which you should accept.
 
 You will then be presented with a list of commits not yet merged to
 master, with some of them already marked for being skipped (because
@@ -517,9 +517,9 @@ method.  First use the ##git log## command to find the commit you are
 looking for.  Then switch to the release branch, update it, and do the
 cherry-pick:
 
-      cd ../emacs-branch     # only if you use a separate directory for emacs-24
+      cd ../emacs-branch     # only if you use a separate directory for emacs-26
       git pull
-      git checkout emacs-24  # make sure you have the release branch checked-out
+      git checkout emacs-26  # make sure you have the release branch checked-out
       git cherry-pick -xe COMMIT
 
 where COMMIT will typically be the SHA1 checksum of the commit you
