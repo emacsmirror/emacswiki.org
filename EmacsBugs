@@ -12,7 +12,12 @@ You can find bugs that were known at the time of distribution for your version o
 * Please do not add reports of random bugs and work-arounds to this page.
 
 
+== Emacs Bug Statistics ==
 
+You can find Emacs bug statistics here:
+
+* https://debbugs.gnu.org/rrd/emacs.html
+* http://quimby.gnus.org/circus/stats-emacs/stats-emacs.html
 
 [:emacsbugplus]
 == Library `emacsbug+.el' ==
