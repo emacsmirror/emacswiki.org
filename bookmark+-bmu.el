@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jun 28 08:57:29 2019 (-0700)
+;; Last-Updated: Fri Aug  9 08:39:52 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4037
+;;     Update #: 4038
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -578,8 +578,8 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-file-handler
-    '((((background dark)) (:background "#272740402727")) ; ~ dark green
-      (t (:background "Thistle")))
+    '((((background dark)) (:background "#FFFF78CB48E1")) ; ~ dark brown
+      (t (:background "LightBlue")))
   "*Face used for a bookmark that has a `file-handler' attribute."
   :group 'bookmark-plus :group 'faces)
 
