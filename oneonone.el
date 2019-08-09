@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sat Jun 15 19:02:27 2019 (-0700)
+;; Last-Updated: Fri Aug  9 11:07:32 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3199
+;;     Update #: 3212
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -309,6 +309,8 @@
  
 ;;; Change Log:
 ;;
+;; 2019/08/09 dadams
+;;     y-or-n-p: Updated doc string per vanilla Emacs (26.2).
 ;; 2019/06/15 dadams
 ;;     Added, for Emacs 24+:
 ;;       1on1-move-minibuffer-frame-near-point, 1on1-move-minibuffer-frame-max-left-top,
@@ -1846,11 +1848,28 @@ Functions redefined: `y-or-n-p', `top-level'."
   ;; Temporarily colors minibuffer frame to "active" color if at top-level.
   ;;
   (defun y-or-n-p (prompt)
-    "Ask user a \"y or n\" question.  Return t if answer is \"y\".
-Takes one argument, which is the string to display to ask the question.
-It should end in a space; `y-or-n-p' adds `(y or n) ' to it.
-No confirmation of answer is requested; a single character is enough.
-Also accepts SPC to mean yes, or DEL to mean no."
+    "Ask user a \"y or n\" question.
+Return t if answer is \"y\" and nil if it is \"n\".
+
+PROMPT is the string to display to ask the question.  It should end in
+a space; `y-or-n-p' adds \"(y or n) \" to it.
+
+No confirmation of the answer is requested; a single character is
+enough.  SPC also means yes, and DEL means no.
+
+
+This function translates user input into responses by consulting the
+bindings in ‘query-replace-map’ (which see).  For this, the useful
+bindings are ‘act’, ‘skip’, ‘recenter’, ‘scroll-up’, ‘scroll-down’,
+and ‘quit’.
+
+An ‘act’ response means yes, and a ‘skip’ response means no.  A ‘quit’
+response means invoke ‘keyboard-quit’.  If the response is ‘recenter’,
+‘scroll-up’, or ‘scroll-down’ then perform the requested window
+recentering or scrolling action and ask again.
+
+Under a windowing system a dialog box is used if ‘last-nonmenu-event’
+is nil and ‘use-dialog-box’ is non-nil."
     (1on1-color-minibuffer-frame-on-setup)
     ;; Resize echo area if necessary, to show `y-or-n-p' prompt.  Compensates for functions
     ;; like `find-file-literally' that pass multi-line PROMPT args to it.  See Emacs bug #18340.
