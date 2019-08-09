@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul 13 09:09:02 2019 (-0700)
+;; Last-Updated: Fri Aug  9 08:42:15 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16540
+;;     Update #: 16541
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1408,6 +1408,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2019/08/09 dadams
+;;     bmkp-file-handler: Changed default to LightBlue background.
 ;; 2019/05/19 dadams
 ;;     Bind print-gensym wherever we bind print-circle.
 ;; 2019/04/23 dadams
