@@ -1877,8 +1877,8 @@ the first time the bookmark list is displayed in a given Emacs
 session.
 
 The state that is saved and restored using a bookmark-list bookmark or a
-command defined using `c' is only a partial state.  The current
-set of markings and some other information are not saved, in order
+command defined using `C-c C-c' is only a partial state.  The current
+set of *markings* and some other information are not saved, in order
 to save disk space and save/restore time.
 
 [:bmkp-bmenu-define-full-snapshot-command]
@@ -1895,7 +1895,7 @@ quite large, since they each contain a copy of the current
 bookmark list and any accessory lists (hidden and marked bookmarks
 etc.).
 
-Whether you use `c' or `C' to define a state-restoring command or
+Whether you use `C-c C-c' or `C-c C-C' to define a state-restoring command or
 you create a bookmark-list bookmark, you can create a ''sequence
 bookmark'' that combines such bookmark-list restoration with
 activation of other bookmarks.  (To include a state-restoring
