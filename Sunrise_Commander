@@ -110,6 +110,8 @@ You can get a copy of the Sunrise Commander at:
 * https://github.com/sunrise-commander/sunrise-commander
 * Lisp:sunrise-commander.el
 
+Any extensions on this page are also available from the GitHub repository.
+
 ----
 [:ButtonsExt]
 ==The Buttons Extension: making Sunrise a bit more like MC==
@@ -135,8 +137,6 @@ To get a copy of the Sunrise Commander Buttons Extension (including installation
 instructions) go here:
 
 * Lisp:sunrise-x-buttons.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-buttons.el.gz
 
 ----
 [:MirrorExt]
@@ -148,8 +148,6 @@ virtual file system. It is called the Sunrise Mirror Extension and you can get a
 copy of it here:
 
 * Lisp:sunrise-x-mirror.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-mirror.el.gz
 
 For this extension to work you must have:
 
@@ -198,8 +196,6 @@ background).
 You can get a copy of the Sunrise Loop extension here:
 
 * Lisp:sunrise-x-loop.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-loop.el.gz
 
 ----
 [:PopviewerExt]
@@ -224,8 +220,6 @@ So  we  worked  together  to redefine a few functions in Sunrise to do precisely
 this. The resulting code is a new extension called "popviewer", now available at
 
 * Lisp:sunrise-x-popviewer.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-popviewer.el.gz
 
 if  you have the same itch, you can scratch it too :)
 
@@ -262,8 +256,6 @@ To  get  a  copy  of the Sunrise Mode Line extension (including installation and
 usage notes) go to:
 
 * Lisp:sunrise-x-modeline.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-modeline.el.gz
 
 ----
 [:TabsExt]
@@ -283,8 +275,6 @@ untouched. Tabs can be persisted across sessions using the [[DeskTop]] feature.
 To get a copy of the Sunrise Tabs extension go to:
 
 * Lisp:sunrise-x-tabs.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-tabs.el.gz
 
 ----
 [:TreeExt]
@@ -308,8 +298,6 @@ other in console mode (click to enlarge):
 You can get a copy of this extension from:
 
 * Lisp:sunrise-x-tree.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-tree.el.gz
 
 ----
 [:Checkpoints]
@@ -328,8 +316,6 @@ release.
 You can get a copy of this extension at:
 
 * Lisp:sunrise-x-checkpoints.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-checkpoints.el.gz
 
 ----
 [:OldCheckpoints]
@@ -344,8 +330,6 @@ functionality.
 To get a copy of this extension go to:
 
 * Lisp:sunrise-x-old-checkpoints.el
-* http://joseito.republika.pl/sunrise-x-old-checkpoints.el.gz
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
 
 ----
 [:W32Addons]
@@ -369,8 +353,6 @@ You can get a copy of the Sunrise Commander Windows Addons extension
 (including installation and usage notes) from:
 
 * Lisp:sunrise-x-w32-addons.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-x-w32-addons.el.gz
 
 ----
 [:Grognards]
