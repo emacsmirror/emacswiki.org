@@ -107,12 +107,8 @@ Here's a screenshot (click to enlarge):
 
 You can get a copy of the Sunrise Commander at:
 
+* https://github.com/sunrise-commander/sunrise-commander
 * Lisp:sunrise-commander.el
-* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
-* http://joseito.republika.pl/sunrise-commander.el.gz
-* git://github.com/escherdragon/sunrise-commander.git (includes all extensions)
-
-Enjoy ;-)
 
 ----
 [:ButtonsExt]
@@ -408,25 +404,9 @@ For the loop extension, is it possible to delete a directory asynchronously?
 Is there  some mailing  list, project page or  other way to report bugs?
 
 [new]
-
-There is a [https://github.com/escherdragon/sunrise-commander repository on
-github] -- if you have a github account you can report any bugs you find
-there. You can also write to the gnu.emacs.help newsgroup or directly to me:
-mailto:escherdragon@gmail.com
-
-[new]
-It would be great if sunrise commander was in [[ELPA]].
-
-[new]
-Yes! *now SC is available through ELPA* (you will need a recent version of Emacs with support for multiple ELPA repositories).
-
-Just add http://joseito.republika.pl/sunrise-commander/ to your list of ELPA repositories: 
-
-    (setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
-                             ("gnu" . "http://elpa.gnu.org/packages/")
-                             ("SC"  . "http://joseito.republika.pl/sunrise-commander/")))
-
-[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+There is a [https://github.com/sunrise-commander/sunrise-commander] -- if you
+have a github account you can report any bugs you find
+there.
 ----
 [new] 
 I don't know how much time you spent on this, but SR is just amazing. Thanks a million. 
