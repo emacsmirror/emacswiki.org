@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 11 16:40:44 2019 (-0700)
+;; Last-Updated: Tue Aug 13 15:04:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 15333
+;;     Update #: 15334
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1507,6 +1507,12 @@
 ;;  For all but the first of these, you are placed in a separate
 ;;  editing buffer.  Use `C-c C-c' when you are done editing, to save
 ;;  your changes.  (To cancel, just kill the buffer: `C-x k'.)
+;;
+;;  You can also clone (duplicate) a bookmark, using `M-n', and then
+;;  edit any parts of it (e.g. using `e').  By default, the clone has
+;;  the same name, but with "<2>" appended.  With a prefix arg you are
+;;  prompted for the name.  Outside of the bookmark list you can use
+;;  `C-x p 2' to clone a bookmark.
 ;;
 ;;  There are many more keys and commands for editing bookmark tags.
 ;;  You can copy tags (`C-x p t c') from one bookmark and paste them
