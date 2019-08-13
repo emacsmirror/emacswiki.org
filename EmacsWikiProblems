@@ -31,7 +31,25 @@ I don't think I've ever run into this. Anybody else? -- AlexSchroeder
 I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
 
 
+
+
+
+
+
+
+
+
+
+
 == Markup/Generation Issues==
+
+
+=== <tt> Does the Wrong Thing with Double-Quote Chars ===
+
+This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
+
+
+
 
 === Colon line prefix does not indent correctly ===
 
