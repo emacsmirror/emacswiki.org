@@ -5,15 +5,15 @@
 ;; Author: Lynn Slater
 ;;         Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:51:07 2018 (-0800)
+;; Last-Updated: Tue Aug 13 08:48:06 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 1954
+;;     Update #: 2017
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -173,6 +173,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/09/13 dadams
+;;     Cleaned up some code for string vars that might be nil.
 ;; 2016/08/10 dadams
 ;;     Added: make-box-comment-region, make-box-comment-region-replace-prefix-flag
 ;;            (suggestion from Stephen Barrett).
@@ -365,6 +367,7 @@
 ;; Quiet byte-compiler.
 (defvar c-style)
 (defvar explicit-shell-file-name)
+(defvar libreq-file-header)
  
 ;; User Options (Variables) --------------------------------
 
@@ -509,7 +512,7 @@ Any header function may set this.  The last setting will take effect.")
 
 (defvar header-multiline ""
   "Multiline text to be inserted as a comment.
-Leave the global value of this as\"\", and bind the value as needed.")
+Leave the global value of this as \"\", and bind the value as needed.")
 
 (defvar file-header-update-alist ()
   "Used by `update-file-header' to know what to do in a file.
@@ -530,8 +533,8 @@ the function to call if the string is found near the start of the file.")
   (and (not (equal "" comment-end))  comment-end))
 
 (defsubst header-blank ()
-  "Insert an empty comment to file header (after `header-prefix-string')."
-  (insert header-prefix-string  "\n"))
+  "Insert `header-prefix-string' followed by a newline char."
+  (insert (concat header-prefix-string "\n")))
 
 ;; Major section headings
 
@@ -545,7 +548,8 @@ the function to call if the string is found near the start of the file.")
   "Insert buffer's file name and leave room for a description.
 In `emacs-lisp-mode', this should produce the title line for library
 packages."
-  (insert (concat comment-start (and (= 1 (length comment-start)) header-prefix-string)
+  (insert (concat comment-start
+                  (and (= 1 (length comment-start))  header-prefix-string)
                   (if (buffer-file-name)
                       (file-name-nondirectory (buffer-file-name))
                     (buffer-name))
@@ -554,23 +558,24 @@ packages."
 
 (defsubst header-file-name ()
   "Insert \"Filename: \" line, using buffer's file name."
-  (insert header-prefix-string "Filename: "
-          (if (buffer-file-name)
-              (file-name-nondirectory (buffer-file-name))
-            (buffer-name))
-          "\n"))
+  (insert (concat header-prefix-string
+                  "Filename: "
+                  (if (buffer-file-name)
+                      (file-name-nondirectory (buffer-file-name))
+                    (buffer-name))
+                  "\n")))
 
 (defsubst header-description ()
   "Insert \"Description: \" line."
-  (insert header-prefix-string "Description: \n"))
+  (insert (concat header-prefix-string "Description: \n")))
 
 (defsubst header-author ()
   "Insert current user's name (`user-full-name') as this file's author."
-  (insert header-prefix-string "Author: " (user-full-name) "\n"))
+  (insert (concat header-prefix-string "Author: " (user-full-name) "\n")))
 
 (defsubst header-maintainer ()
   "Insert \"Maintainer: \" line."
-  (insert header-prefix-string "Maintainer: \n"))
+  (insert (concat header-prefix-string "Maintainer: \n")))
 
 (defun header-copyright ()
   "Insert `header-copyright-notice', unless nil."
@@ -582,14 +587,14 @@ packages."
         (goto-char (point-min))
         ;; Must now insert header prefix.  Cannot just replace string,
         ;; because that would cause too many undo boundries.
-        (insert header-prefix-string)
+        (insert (concat header-prefix-string))
         (while (progn (skip-chars-forward "^\n") (looking-at "\n"))
-          (forward-char 1) (unless (eolp) (insert header-prefix-string)))
+          (forward-char 1) (unless (eolp) (insert (concat header-prefix-string))))
         (goto-char (point-max))))))
 
 (defsubst header-creation-date ()
   "Insert today's time, date, and time zone as file creation date."
-  (insert header-prefix-string "Created: ")
+  (insert (concat header-prefix-string "Created: "))
   (insert (header-date-string) "\n"))
 
 (defun header-date-string ()
@@ -603,19 +608,19 @@ packages."
 
 (defsubst header-rcs-id ()
   "Insert lines to record RCS id information (\"$Id$\n\")."
-  (insert header-prefix-string "Version: $Id$\n"))
+  (insert (concat header-prefix-string "Version: $Id$\n"))
 
 (defsubst header-version ()
   "Insert lines to record version information."
-  (insert header-prefix-string "Version: \n"))
+  (insert (concat header-prefix-string "Version: \n")))
 
 (defsubst header-sccs ()
   "Insert a line to record SCCS version information."
-  (insert header-prefix-string "Version: %W%    %E%    %U%\n"))
+  (insert (concat header-prefix-string "Version: %W%    %E%    %U%\n")))
 
 (defsubst header-pkg-requires ()
   "Insert a line to record `Package-Requires' information."
-  (insert header-prefix-string "Package-Requires: ()\n"))
+  (insert (concat header-prefix-string "Package-Requires: ()\n")))
 
 (defsubst header-commentary ()
   "Insert \"Commentary: \" line."
@@ -628,35 +633,35 @@ Without this, `make-revision' inserts `header-history-label' after the header."
 
 (defun header-free-software ()
   "Insert text saying that this is free software."
-  (let ((header-multiline  header-free-software))
-    (header-multiline)))
+  (let ((header-multiline  header-free-software)) (header-multiline)))
 
 (defun header-multiline ()
   "Insert multiline comment.  The comment text is in `header-multiline'."
-  (let ((lineno  1)
-        beg end nb-lines)
-    (beginning-of-line)
-    (if (nonempty-comment-end)
-        (insert "\n" comment-start)
-      (header-blank)
-      (insert header-prefix-string))
-    (setq beg  (point))
-    (insert header-multiline)
-    (setq end       (point-marker)
-          nb-lines  (count-lines beg end))
-    (goto-char beg)
-    (forward-line 1)
-    (while (< lineno nb-lines)
-      (insert header-prefix-string)
+  (when header-multiline
+    (let ((lineno  1)
+          beg end nb-lines)
+      (beginning-of-line)
+      (if (nonempty-comment-end)
+          (insert (concat "\n" comment-start))
+        (header-blank)
+        (insert (concat header-prefix-string)))
+      (setq beg  (point))
+      (insert header-multiline)
+      (setq end       (point-marker)
+            nb-lines  (count-lines beg end))
+      (goto-char beg)
       (forward-line 1)
-      (setq lineno  (1+ lineno)))
-    (goto-char end)
-    (when (nonempty-comment-end) (insert "\n"))
-    (insert comment-end)
-    (insert "\n")
-    (unless (nonempty-comment-end)
-      (header-blank)
-      (header-end-line))))
+      (while (< lineno nb-lines)
+        (insert (concat header-prefix-string))
+        (forward-line 1)
+        (setq lineno  (1+ lineno)))
+      (goto-char end)
+      (when (nonempty-comment-end) (insert "\n"))
+      (insert (concat comment-end))
+      (insert "\n")
+      (unless (nonempty-comment-end)
+        (header-blank)
+        (header-end-line)))))
 
 (defsubst header-code ()
   "Insert \"Code: \" line."
@@ -667,76 +672,75 @@ Without this, `make-revision' inserts `header-history-label' after the header."
   (goto-char (point-max))
   (insert "\n")
   (unless (nonempty-comment-end) (header-end-line))
-  (insert comment-start
-          (concat (and (= 1 (length comment-start)) header-prefix-string)
+  (insert (concat comment-start
+                  (and (= 1 (length comment-start))  header-prefix-string)
                   (if (buffer-file-name)
                       (file-name-nondirectory (buffer-file-name))
                     (buffer-name))
                   " ends here"
-                  (or (nonempty-comment-end) "\n"))))
+                  (or (nonempty-comment-end)  "\n"))))
 
 (defsubst header-modification-date ()
   "Insert todays date as the time of last modification.
 This is normally overwritten with each file save."
-  (insert header-prefix-string "Last-Updated: \n"))
+  (insert (concat header-prefix-string "Last-Updated: \n")))
 
 (defsubst header-modification-author ()
   "Insert current user's name as the last person who modified the file.
 This is normally overwritten with each file save."
-  (insert header-prefix-string "          By: \n"))
+  (insert (concat header-prefix-string "          By: \n")))
 
 (defsubst header-update-count ()
   "Insert a count of the number of times the file has been saved."
-  (insert header-prefix-string "    Update #: 0\n"))
+  (insert (concat header-prefix-string "    Update #: 0\n")))
 
 (defsubst header-url ()
   "Insert \"URL: \" line."
-  (insert header-prefix-string "URL: \n"))
+  (insert (concat header-prefix-string "URL: \n")))
 
 (defsubst header-doc-url ()
   "Insert \"Doc URL: \" line."
-  (insert header-prefix-string "Doc URL: \n"))
+  (insert (concat header-prefix-string "Doc URL: \n")))
 
 (defsubst header-keywords ()
   "Insert \"Keywords: \" line."
-  (insert header-prefix-string "Keywords: \n"))
+  (insert (concat header-prefix-string "Keywords: \n")))
 
 (defsubst header-compatibility ()
   "Insert a \"Compatibility: \" line."
-  (insert header-prefix-string "Compatibility: \n"))
+  (insert (concat header-prefix-string "Compatibility: \n")))
 
 (defsubst header-lib-requires ()
   "Insert list of libraries required by this one."
-  (when (and (eq major-mode 'emacs-lisp-mode) (boundp 'libreq-file-header))
+  (when (and (eq major-mode 'emacs-lisp-mode)  (boundp 'libreq-file-header))
     (insert libreq-file-header)         ; Defined in `lib-requires.el'.
     (insert ";;   None\n;;\n")))
 
 (defsubst header-status ()
   "Insert a \"Status: \" line."
-  (insert header-prefix-string "Status: \n"))
+  (insert (concat header-prefix-string "Status: \n")))
 
 (defsubst header-toc ()
   "Insert a \"Table of Contents: \" line."
-  (insert header-prefix-string  "Table of Contents: \n" header-prefix-string
-          "\n"))
+  (insert
+   (concat header-prefix-string "Table of Contents: \n" header-prefix-string "\n")))
 
 (defsubst header-rcs-log ()
   "Insert lines to record RCS log information (\"$Log$\n\")."
-  (insert header-prefix-string
-          (concat "RCS $"               ; String split prevents `vc.el' overwrite.
-                  "Log$\n")))           ; Thanks to Steve Taylor.
+  (insert (concat header-prefix-string
+                   "RCS $"  ; String split prevents `vc.el' overwrite.
+                   "Log$\n")))           ; Thanks to Steve Taylor.
 
 (defsubst header-AFS ()
   "Insert a line to record SHAPE information."
-  (insert header-prefix-string "AFSID: $__Header$\n"))
+  (insert (concat header-prefix-string "AFSID: $__Header$\n")))
 
 (defsubst header-shell ()
   "Insert a kernal shell specifier line.
 Uses the same shell named in `explicit-shell-file-name', the ESHELL
 environment variable, the SHELL environment variable, or
 '/bin/sh'.  (This is the same shell that the shell command uses.)"
-  (insert "#!" (or (and (boundp 'explicit-shell-file-name)
-                        explicit-shell-file-name)
+  (insert "#!" (or (and (boundp 'explicit-shell-file-name)  explicit-shell-file-name)
                    (getenv "ESHELL")
                    (getenv "SHELL")
                    "/bin/sh")
@@ -750,7 +754,7 @@ environment variable, the SHELL environment variable, or
                                       "")
                                     " -*- "))
          (md-length         (length mode-declaration)))
-    (insert (cond ((and comment-start (= 1 (length comment-start)))
+    (insert (cond ((and comment-start  (= 1 (length comment-start)))
                    ;; Assume comment start char is also fill char.
                    (concat comment-start comment-start
                            (make-string (/ (- 77 md-length) 2)
@@ -773,7 +777,7 @@ environment variable, the SHELL environment variable, or
 (defsubst header-end-line ()
   "Insert a divider line."
   (insert (cond ((nonempty-comment-end))
-                ((and comment-start (= 1 (length comment-start)))
+                ((and comment-start  (= 1 (length comment-start)))
                  (make-string 70 (aref comment-start 0)))
                 ((nonempty-comment-start))
                 (t (make-string 70 ?\;)))
@@ -819,41 +823,40 @@ by calling the function named by appending \"-name\" to this string.
 This differs from variable `mode-name' in that this is guaranteed to
 work even when the value has embedded spaces or other junk."
   (let ((major-mode-name  (symbol-name major-mode)))
-    (capitalize (substring major-mode-name 0
-                           (or   (string-match "-mode" major-mode-name)
-                                 (length major-mode-name))))))
+    (capitalize (substring major-mode-name 0 (or (string-match "-mode" major-mode-name)
+                                                 (length major-mode-name))))))
 
 (defun header-prefix-string ()
   "Return a mode-specific prefix string for use in headers.
 It is sensitive to language-dependent comment conventions."
   (cond
-    ;; E.g. Lisp.
-    ((and comment-start (= 1 (length comment-start)))
-     (concat comment-start comment-start " "))
+   ;; E.g. Lisp.
+   ((and comment-start  (= 1 (length comment-start)))
+    (concat comment-start comment-start " "))
 
-    ;; E.g. C++ and ADA.
-    ;; Special case, three letter comment-start where the first and
-    ;; second letters are the same.
-    ((and comment-start (= 3 (length comment-start))
-          (equal (aref comment-start 1) (aref comment-start 0)))
-     comment-start)
+   ;; E.g. C++ and ADA.
+   ;; Special case, three letter `comment-start' where the first and
+   ;; second letters are the same.
+   ((and comment-start  (= 3 (length comment-start))
+         (equal (aref comment-start 1) (aref comment-start 0)))
+    comment-start)
 
-    ;; E.g. C.
-    ;; Other three-letter comment-start -> grab the middle character
-    ((and comment-start (= 3 (length comment-start)))
-     (concat " " (list (aref comment-start 1)) " "))
+   ;; E.g. C.
+   ;; Other three-letter `comment-start' -> grab the middle character
+   ((and comment-start  (= 3 (length comment-start)))
+    (concat " " (list (aref comment-start 1)) " "))
 
-    ((and comment-start  (not (nonempty-comment-end)))
-
-     ;; Note: no comment end implies that the full comment-start must be
-     ;; used on each line.
-     comment-start)
-    (t ";; ")))       ; Use Lisp as default.
+   ((and comment-start  (not (nonempty-comment-end)))
+    ;; Note: no comment end implies full `comment-start' must be used on each line.
+    comment-start)
+   (t ";; ")))       ; Use Lisp as default.
 
 ;; Usable as a programming language mode hook.
 (defun auto-make-header ()
   "Call `make-header' if current buffer is empty and is a file buffer."
-  (and (zerop (buffer-size)) (not buffer-read-only) (buffer-file-name)
+  (and (zerop (buffer-size))
+       (not buffer-read-only)
+       (buffer-file-name)
        (make-header)))
 
 ;;;###autoload
@@ -874,20 +877,17 @@ the comment."
 (defun make-revision ()
   "Prepare for a new history revision.  Insert history line if inexistant."
   (interactive)
-  (setq comment-start  (or comment-start "\;")) ; Use Lisp comment as default.
+  (setq comment-start  (or comment-start  "\;")) ; Use Lisp comment as default.
   (let ((header-prefix-string   (header-prefix-string))
         (logical-comment-start  (if (= 1 (length comment-start))
                                     (concat comment-start comment-start " ")
                                   comment-start)))
     ;; Look for the history line
     (beginning-of-buffer)               ; Leave a mark behind.
-    (if (re-search-forward (concat "^\\(" (and comment-start
-                                               (regexp-quote comment-start))
+    (if (re-search-forward (concat "^\\(" (and comment-start  (regexp-quote comment-start))
                                    (regexp-quote (header-prefix-string)) "\\|"
-                                   (if (and comment-start
-                                            (not (string= "" comment-start)))
-                                       (concat "\\|"
-                                               (regexp-quote comment-start))
+                                   (if (nonempty-comment-start)
+                                       (concat "\\|" (regexp-quote comment-start))
                                      "")
                                    "\\)" " *\\(" header-history-label
                                    "\\|HISTORY\\)") ; Backward compatibility.
@@ -899,27 +899,33 @@ the comment."
       (while (and (< (point) header-max)
                   (looking-at (concat "[ \t]*\\("
                                       (regexp-quote (header-prefix-string))
-                                      (if (and comment-start
-                                               (not (string= "" comment-start)))
+                                      (if (nonempty-comment-start)
                                           (concat "\\|" (regexp-quote comment-start))
                                         "")
-                                      (if (and comment-end (not (string= "" comment-end)))
+                                      (if (nonempty-comment-end)
                                           (concat "\\|" (regexp-quote comment-end))
                                         "")
                                       "\\)")))
         (forward-line 1))
       (insert "\n" logical-comment-start header-history-label)
-      (save-excursion (insert "\n" comment-end)))
+      (save-excursion (insert (concat "\n" comment-end))))
     ;; We are now on the line with the header-history-label label
-    (insert "\n" header-prefix-string
-            (let ((str  (current-time-string)))
-              (concat (if (equal ?\  (aref str 8))
-                          (substring str 9 10)
-                        (substring str 8 10))
-                      "-" (substring str 4 7) "-" (substring str 20 24)))
-            "    " (user-full-name)
-            ;;"  |>Ident<|\n"
-            "  \n" header-prefix-string "   ")
+    (insert (concat "\n"
+                    header-prefix-string
+                    (let ((str  (current-time-string)))
+                      (concat (if (equal ?\  (aref str 8))
+                                  (substring str 9 10)
+                                (substring str 8 10))
+                              "-"
+                              (substring str 4 7)
+                              "-"
+                              (substring str 20 24)))
+                    "    "
+                    (user-full-name)
+                    ;;"  |>Ident<|\n"
+                    "  \n"
+                    header-prefix-string
+                    "   "))
     ;; Add details about the history of the file before its modification
     (when (save-excursion (re-search-backward "Last-Updated[ \t]*: \\(.+\\)$" nil t))
       (insert "Last-Updated: " (buffer-substring (match-beginning 1) (match-end 1)))
@@ -927,7 +933,7 @@ the comment."
         (insert " #" (buffer-substring (match-beginning 1) (match-end 1))))
       (when (save-excursion (re-search-backward "          By[ \t]*: \\(.+\\)$" nil t))
         (insert " (" (buffer-substring (match-beginning 1) (match-end 1)) ")"))
-      (insert "\n" header-prefix-string "   "))))
+      (insert (concat "\n" header-prefix-string "   ")))))
 
 ;;;###autoload
 (defun make-divider (&optional end-col)
@@ -936,12 +942,12 @@ The width is `fill-column', by default.  With a numeric prefix arg,
 use that as the width, except use at least 4 columns."
   (interactive "P")
   (setq end-col  (if end-col (prefix-numeric-value end-col) fill-column))
-  (insert comment-start)
+  (insert (concat comment-start))
   (when (= 1 (length comment-start)) (insert comment-start))
-  (insert (make-string (max 2 (- end-col (length comment-end) (current-column)))
-                       (aref comment-start (if (= 1 (length comment-start)) 0 1)))
-          comment-end
-          "\n"))
+  (insert (concat (make-string (max 2 (- end-col (length comment-end) (current-column)))
+                               (aref comment-start (if (= 1 (length comment-start)) 0 1)))
+                  comment-end
+                  "\n")))
 
 ;;;###autoload
 (defun make-box-comment (&optional end-col)
@@ -952,20 +958,21 @@ returned by function `header-prefix-string'."
   (interactive "P")
   (setq end-col  (if end-col (prefix-numeric-value end-col) fill-column))
   (unless (= 0 (current-column)) (forward-line 1))
-  (insert comment-start)
+  (insert (concat comment-start))
   (when (= 1 (length comment-start)) (insert comment-start))
   (unless (char-equal (preceding-char) ?\  ) (insert ?\  ))
-  (insert (make-string (max 2 (- end-col (length comment-end) (current-column)))
-                       (aref comment-start (if (= 1 (length comment-start)) 0 1)))
+  (insert (concat (make-string (max 2 (- end-col (length comment-end) (current-column)))
+                               (aref comment-start (if (= 1 (length comment-start)) 0 1))))
           "\n"
           (header-prefix-string))
   (save-excursion
-    (insert "\n"
-            (header-prefix-string)
-            (make-string (max 2 (- end-col (length comment-end) (current-column)))
-                         (aref comment-start (if (= 1 (length comment-start)) 0 1)))
-            comment-end
-            "\n")))
+    (insert
+     (concat "\n"
+             (header-prefix-string)
+             (make-string (max 2 (- end-col (length comment-end) (current-column)))
+                          (aref comment-start (if (= 1 (length comment-start)) 0 1)))
+             comment-end
+             "\n")))))
 
 (defun make-box-comment-region (&optional end-col start end)
   "Wrap active region in a box comment, or make an empty box comment.
@@ -977,7 +984,7 @@ Respects `make-box-comment-region-remove-comments'."
   (setq end-col  (if end-col (prefix-numeric-value end-col) fill-column))
   (if (not (and mark-active  (mark)  (> (region-end) (region-beginning))))
       (make-box-comment end-col)
-    (let ((selection    (buffer-substring start end)))
+    (let ((selection  (buffer-substring start end)))
       (kill-region start end)
       (make-box-comment end-col)
       (insert
@@ -1019,12 +1026,12 @@ the strings that cause them to be invoked."
           (setq patterns  (cdr patterns)))))))
 
 (defun auto-update-file-header ()
-  "Update file header if file is modified.
-Call `update-file-header' if:
- `header-auto-update-enabled' is non-nil,
- the file is modified,
- it is longer than 100 chars,
- and the buffer is not read-only.
+  "Update file header if buffer is modified.
+Call `update-file-header' if all of these are true:
+ * `header-auto-update-enabled' is non-nil,
+ * the buffer is longer than 100 chars,
+ * the buffer is modified,
+ * the buffer is not read-only.
 Return nil, for use on a hook."
   (and header-auto-update-enabled
        (> (buffer-size) 100)
@@ -1071,17 +1078,17 @@ Return nil, for use on a hook."
 ;;;                       (error (format "Invalid number for version `%s'" str))))))
 ;;;     (when (>= num most-positive-fixnum)
 ;;;       (error "Version number is too large to increment: `%s'" num))
-;;;     (when (and end (numberp num))
-;;;       (let ((newnum (condition-case err2
-;;;                         (1+ num)
-;;;                       (error (format "Invalid number for version `%s'" str)))))
+;;;     (when (and end  (numberp num))
+;;;       (let ((newnum  (condition-case err2
+;;;                          (1+ num)
+;;;                        (error (format "Invalid number for version `%s'" str)))))
 ;;;         (replace-match (format "%d" newnum) nil nil nil 1)))))
 
 (defsubst update-last-modifier ()
   "Update the line that indicates who last modified the file."
   (delete-and-forget-line)
   (insert (format "%s" (let ((ufn  (user-full-name)))
-                         (if (and ufn (not (string= "" ufn))) ufn (user-login-name))))))
+                         (if (and ufn  (not (string= "" ufn))) ufn (user-login-name))))))
 
 (defsubst update-last-modified-date ()
   "Update the line that indicates the last-modified date."
@@ -1121,8 +1128,8 @@ result of `update-lib-requires'."
           (while (not (looking-at "^;;$")) (delete-and-forget-line) (delete-char 1))
           (delete-and-forget-line) (delete-char 1)
           (condition-case err
-              ;; (let ((load-path (cons (file-name-directory (buffer-file-name))
-              ;;                        load-path)))
+              ;; (let ((load-path  (cons (file-name-directory (buffer-file-name))
+              ;;                         load-path)))
               (libreq-insert-lib-requires-as-comment lib) ; Tries to load LIB.
             ;;   )
             ;; Typically, user just now added `provide' and must load again.
@@ -1131,8 +1138,8 @@ result of `update-lib-requires'."
 
 
 
-;;(setq file-header-update-alist nil)
-;;(setq file-header-update-alist (cdr file-header-update-alist))
+;;(setq file-header-update-alist  nil)
+;;(setq file-header-update-alist  (cdr file-header-update-alist))
 
 ;; Stand-alone Headers
 ;; These functions give the ability to invoke headers from the command line.
@@ -1169,10 +1176,10 @@ result of `update-lib-requires'."
 ;; Define a touch-headers command.  This depends upon Lynn Slater's
 ;; customizations to startup.el to allow command-line-hooks.
 ;; ---------------------------------------------------------------
-;;;(setq command-line-hooks (cons 'touch-headers command-line-hooks))
+;;;(setq command-line-hooks  (cons 'touch-headers command-line-hooks))
 ;(defun touch-headers ()
-;  (if (or (string= argi "-touch") (string= argi "-touch-headers"))
-;      (let ((trim-versions-without-asking t)
+;  (if (or (string= argi "-touch")  (string= argi "-touch-headers"))
+;      (let ((trim-versions-without-asking  t)
 ;            ;; Next line should have a Control-G char, not a space, before `true'.
 ;            (executing-macro " true"));; suppress "Mark Set" messages
 ;        ;; Consume all following arguments until one starts with a "-"
@@ -1184,15 +1191,15 @@ result of `update-lib-requires'."
 ;                (make-revision)
 ;                (write-file nil)
 ;                (kill-buffer (current-buffer))))
-;          (setq command-line-args-left (cdr command-line-args-left))))))
+;          (setq command-line-args-left  (cdr command-line-args-left))))))
 
 
 ;; Define a make-headers command line option.
 ;; ------------------------------------------
-;;;(setq command-line-hooks (cons 'make-headers command-line-hooks))
+;;;(setq command-line-hooks  (cons 'make-headers command-line-hooks))
 ;(defun make-headers ()
-;  (if (or (string= argi "-make-headers") (string= argi "-make"))
-;      (let ((trim-versions-without-asking t)
+;  (if (or (string= argi "-make-headers")  (string= argi "-make"))
+;      (let ((trim-versions-without-asking  t)
 ;            ;; Next line should have a Control-G char, not a space, before `true'.
 ;            (executing-macro " true"));; suppress "Mark Set" messages
 ;        ;; Consume all following arguments until one starts with a "-"
@@ -1208,23 +1215,22 @@ result of `update-lib-requires'."
 ;                (write-file nil)
 ;                (message "  Mode was %s" major-mode)
 ;                (kill-buffer (current-buffer))))
-;          (setq command-line-args-left (cdr command-line-args-left))))))
+;          (setq command-line-args-left  (cdr command-line-args-left))))))
 
 ;; Define a -default-mode command line option.
 ;; -------------------------------------------
-;;;(setq command-line-hooks (cons 'set-header-mode command-line-hooks))
+;;;(setq command-line-hooks  (cons 'set-header-mode command-line-hooks))
 ;(defun set-header-mode ()
-;  (if (or (string= argi "-default-mode")
-;          (string= argi "-default"))
-;      (let ((trim-versions-without-asking t)
+;  (if (or (string= argi "-default-mode")  (string= argi "-default"))
+;      (let ((trim-versions-without-asking  t)
 ;            ;; Next line should have a Control-G char, not a space, before `true'.
 ;            (executing-macro " true");; suppress "Mark Set" messages
 ;            (mode (intern (car command-line-args-left))))
 ;        (if (memq mode (mapcar 'cdr auto-mode-alist))
 ;            (progn
-;              (setq default-major-mode mode)
+;              (setq default-major-mode  mode)
 ;              (message "Default mode is %s" default-major-mode)
-;              (setq command-line-args-left (cdr command-line-args-left)))
+;              (setq command-line-args-left  (cdr command-line-args-left)))
 ;          (message "Mode \"%s\" is invalid.  Try one of %s" mode
 ;                   (uniquify-list (mapcar 'cdr auto-mode-alist)))
 ;          (kill-emacs 1)))))
@@ -1232,19 +1238,18 @@ result of `update-lib-requires'."
 
 ;; Define a -required-mode command line option.
 ;; --------------------------------------------
-;;;(setq command-line-hooks (cons 'set-header-required-mode command-line-hooks))
+;;;(setq command-line-hooks  (cons 'set-header-required-mode command-line-hooks))
 ;(defun set-header-required-mode ()
-;  (if (or (string= argi "-required-mode")
-;          (string= argi "-mode"))
-;      (let ((trim-versions-without-asking t)
+;  (if (or (string= argi "-required-mode")  (string= argi "-mode"))
+;      (let ((trim-versions-without-asking  t)
 ;            ;; Next line should have a Control-G, not a space, char before `true'.
 ;            (executing-macro " true");; suppress "Mark Set" messages
 ;            (mode (intern (car command-line-args-left))))
 ;        (if (memq mode (mapcar 'cdr auto-mode-alist))
 ;            (progn
-;              (setq header-required-mode mode)
+;              (setq header-required-mode  mode)
 ;              (message "Required mode is %s" header-required-mode)
-;              (setq command-line-args-left (cdr command-line-args-left)))
+;              (setq command-line-args-left  (cdr command-line-args-left)))
 ;          (message "Mode \"%s\" is invalid.  Try one of %s" mode
 ;                   (uniquify-list (mapcar 'cdr auto-mode-alist)))
 ;          (kill-emacs 1)))))
