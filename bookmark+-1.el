@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul 13 09:14:49 2019 (-0700)
+;; Last-Updated: Tue Aug 13 16:09:01 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 8915
+;;     Update #: 8940
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -122,11 +122,13 @@
 ;;    `bmkp-bookmark-list-jump',
 ;;    `bmkp-bookmark-set-confirm-overwrite',
 ;;    `bmkp-choose-navlist-from-bookmark-list',
-;;    `bmkp-choose-navlist-of-type', `bmkp-compilation-target-set',
-;;    `bmkp-compilation-target-set-all', `bmkp-convert-eww-bookmarks'
-;;    (Emacs 25+), `bmkp-copy-tags', `bmkp-crosshairs-highlight',
-;;    `bmkp-cycle', `bmkp-cycle-autonamed',
-;;    `bmkp-cycle-autonamed-other-window', `bmkp-cycle-bookmark-list',
+;;    `bmkp-choose-navlist-of-type', `bmkp-clone-bookmark',
+;;    `bmkp-compilation-target-set',
+;;    `bmkp-compilation-target-set-all', `bmkp-copy-bookmark',
+;;    `bmkp-convert-eww-bookmarks' (Emacs 25+), `bmkp-copy-tags',
+;;    `bmkp-crosshairs-highlight', `bmkp-cycle',
+;;    `bmkp-cycle-autonamed', `bmkp-cycle-autonamed-other-window',
+;;    `bmkp-cycle-bookmark-list',
 ;;    `bmkp-cycle-bookmark-list-other-window', `bmkp-cycle-desktop',
 ;;    `bmkp-cycle-dired', `bmkp-cycle-dired-other-window',
 ;;    `bmkp-cycle-eww', `bmkp-cycle-eww-other-window',
@@ -4175,6 +4177,49 @@ That is, switch from read-only mode to edit mode."
     (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
     (set (make-local-variable 'bookmark-annotation-name) bmk)
     (kill-buffer obuf)))
+
+;;;###autoload (autoload 'bmkp-copy-bookmark "bookmark+")
+(defalias 'bmkp-copy-bookmark 'bmkp-clone-bookmark)
+;;;###autoload (autoload 'bmkp-clone-bookmark "bookmark+")
+(defun bmkp-clone-bookmark (bookmark &optional clone confirm-overwrite-p)
+                                        ; Bound to `C-x p 2' (`M-n' in bookmark list)
+  "Duplicate BOOKMARK to produce a clone.
+The clone name is the same as BOOKMARK, but with \"<2>\" appended.
+With a prefix arg you are instead prompted for the clone name.
+
+When called from Lisp:
+ * BOOKMARK is a bookmark name or a bookmark record.
+ * Optional CLONE is the clone name.
+ * Optional non-nil CONFIRM-OVERWRITE-P means prompt to confirm overwriting an existing bookmark."
+  (interactive
+   (let* ((orig     (bookmark-completing-read "Clone bookmark" (bmkp-default-bookmark-name)))
+          ;; Remove any `bmkp-full-record' property from name.
+          (_IGNORE  (remove-text-properties 0 (length orig) '(bmkp-full-record nil) orig))
+          (default  (concat orig "<2>"))
+          (new      (if current-prefix-arg
+                        (bmkp-completing-read-lax "Clone name" default)
+                      default)))
+     (while (equal orig new)
+       (setq new  (bmkp-completing-read-lax "Clone name (must be different)" default)))
+     ;; Remove any `bmkp-full-record' property from name.
+     (remove-text-properties 0 (length new) '(bmkp-full-record nil) new)
+     (list orig new t)))
+  (let ((orig-bmk  (bookmark-get-bookmark bookmark))
+        (new-bmk   (bookmark-get-bookmark clone 'NO-ERROR)))
+    (when (and new-bmk  confirm-overwrite-p)
+      (unless (yes-or-no-p "Another bookmark with that name already exists.  Overwrite it? ")
+        (error "OK; canceled")))
+    (setq new-bmk  (copy-sequence orig-bmk))
+    ;; Get rid of old bookmark name, which might have property `bmkp-full-record'.
+    ;; Need to do that before calling `bookmark-store'.
+    (setcar new-bmk clone)
+    (bookmark-store clone (cdr new-bmk) nil) ; (Puts `bmkp-full-record' on name.)
+    (setq bookmark-current-bookmark  clone)
+    (if (and (get-buffer "*Bookmark List*")  (get-buffer-window (get-buffer "*Bookmark List*") 0))
+        (with-current-buffer (get-buffer "*Bookmark List*")
+          (bmkp-refresh-menu-list clone))
+      (bookmark-bmenu-surreptitiously-rebuild-list))
+    (bmkp-maybe-save-bookmarks)))
 
 ;;;###autoload (autoload 'bmkp-edit-bookmark-name-and-location "bookmark+")
 (defun bmkp-edit-bookmark-name-and-location (bookmark &optional edit-record-p)
