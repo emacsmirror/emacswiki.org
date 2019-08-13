@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 13 08:48:06 2019 (-0700)
+;; Last-Updated: Tue Aug 13 14:42:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 2017
+;;     Update #: 2019
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -608,7 +608,7 @@ packages."
 
 (defsubst header-rcs-id ()
   "Insert lines to record RCS id information (\"$Id$\n\")."
-  (insert (concat header-prefix-string "Version: $Id$\n"))
+  (insert (concat header-prefix-string "Version: $Id$\n")))
 
 (defsubst header-version ()
   "Insert lines to record version information."
@@ -972,7 +972,7 @@ returned by function `header-prefix-string'."
              (make-string (max 2 (- end-col (length comment-end) (current-column)))
                           (aref comment-start (if (= 1 (length comment-start)) 0 1)))
              comment-end
-             "\n")))))
+             "\n"))))
 
 (defun make-box-comment-region (&optional end-col start end)
   "Wrap active region in a box comment, or make an empty box comment.
