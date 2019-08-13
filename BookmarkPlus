@@ -1645,6 +1645,12 @@ All of the editing power of Emacs is available.
 For all but the first of these, you are placed in a separate
 editing buffer.  Use '''`C-c C-c'''' when you are done editing, to save your changes.  (To cancel, just kill the buffer: `C-x k'.)
 
+You can also ''clone'' (duplicate) a bookmark, using '''`M-n'''', and then
+edit any parts of it (e.g. using `e').  By default, the clone has
+the same name, but with '''<tt><2></tt>''' appended.  With a prefix arg you are
+prompted for the name.  Outside of the bookmark list you can use
+'''`C-x p 2'''' to clone a bookmark.
+
 There are many more keys and commands for editing bookmark tags.
 You can ''copy'' tags ('''`C-x p t c'''') from one bookmark and ''paste'' them
 to others, either replacing the original tags ('''`C-x p t C-y'''') or
