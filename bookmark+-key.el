@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Thu May 16 08:39:10 2019 (-0700)
+;; Last-Updated: Tue Aug 13 15:24:14 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 839
+;;     Update #: 846
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -223,6 +223,7 @@ there are such bookmarks can take a little time."
 (define-key ctl-x-map "rK" 'bmkp-set-desktop-bookmark)        ; `C-x r K' (also `C-x p K', `C-x p c K')
 
 (define-key bookmark-map "0"      'bmkp-empty-file)                                   ; `C-x p 0'
+(define-key bookmark-map "2"      'bmkp-clone-bookmark)                               ; `C-x p 2'
 (define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list)            ; `C-x p B'
 ;; `e' is `edit-bookmarks' (aka `bookmark-bmenu-list', from vanilla Emacs.
 (define-key bookmark-map "E"      'bmkp-edit-bookmark-record)                         ; `C-x p E'
@@ -725,10 +726,14 @@ Menu for bookmarks that target this file/buffer.")
 ;; Remove this predefined item - we use `bmkp-edit-bookmark-name-and-location' instead.
 (define-key menu-bar-bookmark-map [rename] nil)
 
+(define-key-after menu-bar-bookmark-map [bmkp-clone-bookmark]
+  '(menu-item "Clone (Duplicate) a Bookmark" bmkp-clone-bookmark
+    :help "Clone this bookmark.  (`\\[bmkp-edit-bookmark-record]' to edit.)")
+  'separator-edit)
 (define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-name-and-location]
   '(menu-item "Rename or Relocate Bookmark..." bmkp-edit-bookmark-name-and-location
     :help "Rename and/or relocate a bookmark")
-  'separator-edit)
+  'bmkp-clone-bookmark)
 (define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-record]
   '(menu-item "Edit Bookmark Record (Lisp)..." bmkp-edit-bookmark-record
     :help "Edit the internal record of a bookmark,a Lisp sexp")
