@@ -89,7 +89,7 @@ Thus, a line can be duplicated with `M-w C-y'.
 
 == whole-line-or-region.el ==
 
-[http://www.northbound-train.com/emacs/whole-line-or-region.el whole-line-or-region.el] is a minor mode which allows functions to operate on the current line when they would normally operate on the region. When yanking, it's smart enough to know that the string to be yanked was killed as a whole line and should be yanked as such, so one doesn't need to position oneself at the start of the line. It also accepts prefix arguments.
+[https://melpa.org/#/whole-line-or-region whole-line-or-region.el] is a minor mode which allows functions to operate on the current line when they would normally operate on the region. When yanking, it's smart enough to know that the string to be yanked was killed as a whole line and should be yanked as such, so one doesn't need to position oneself at the start of the line. It also accepts prefix arguments.
 
 Furthermore, it preserves the position of point. If killing the first line of the following text:
 
