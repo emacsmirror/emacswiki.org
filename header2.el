@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 13 14:42:57 2019 (-0700)
+;; Last-Updated: Wed Aug 14 07:18:29 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 2019
+;;     Update #: 2022
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -764,8 +764,7 @@ environment variable, the SHELL environment variable, or
                                         (aref comment-start 0))))
                   ((nonempty-comment-start) ; Assume spaces fill the gaps.
                    (concat comment-start
-                           (make-string (/ (- 79 md-length
-                                              (length comment-start)) 2)
+                           (make-string (/ (- 79 md-length (length comment-start)) 2)
                                         ?\ )
                            mode-declaration))
                   (t                    ; No comment-start.  Assume Lisp.
@@ -991,7 +990,7 @@ Respects `make-box-comment-region-remove-comments'."
        (replace-regexp-in-string "\n"
                                  (concat "\n" (header-prefix-string))
                                  (if make-box-comment-region-replace-prefix-flag
-                                     (replace-regexp-in-string 
+                                     (replace-regexp-in-string
                                       (concat "^[ \t]*[" (nonempty-comment-start) "]*")
                                       ""
                                       selection)
@@ -1055,8 +1054,8 @@ Return nil, for use on a hook."
 
 (defun update-write-count ()
   (let* ((str  (delete-and-forget-line))
-	 (rem  (read-from-string str))
-	 (num  (car rem)))
+         (rem  (read-from-string str))
+         (num  (car rem)))
     (if (numberp num)
         (insert (format "%s" (1+ num)) (substring str (cdr rem)))
       (insert str)
