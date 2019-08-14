@@ -1,5 +1,5 @@
 [[ja:EmacsClient-ja]]
-EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can setup EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
+EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can set up EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
 
 = Start the Emacs Server =
 
@@ -125,7 +125,7 @@ See here: GnuScreen
 
 ====Opening Server Files Always in a New Frame====
 
-To open the files designated by emacsclient in their own frame, you can use the following hook as a Server Switch Hook which can be setup in customize-group <RET> Server <RET>, or in your InitFile, as such:
+To open the files designated by emacsclient in their own frame, you can use the following hook as a Server Switch Hook which can be set up in customize-group <RET> Server <RET>, or in your InitFile, as such:
 
     (add-hook 'server-switch-hook
               (lambda nil
@@ -135,7 +135,7 @@ To open the files designated by emacsclient in their own frame, you can use the 
 
 If you're setting this up via M-x customize, you'll of course want to drop the  (add-hook) call.
 
-You might also want to close the frame when you're done with it. To do this, setup a Server Done Hook in the same section to call delete-frame.
+You might also want to close the frame when you're done with it. To do this, set up a Server Done Hook in the same section to call delete-frame.
 
     (add-hook 'server-done-hook 'delete-frame)
 
