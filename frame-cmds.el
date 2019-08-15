@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Mon Mar 18 19:49:52 2019 (-0700)
+;; Last-Updated: Thu Aug 15 08:27:30 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3172
+;;     Update #: 3173
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -1577,7 +1577,8 @@ the pixel width and height of the rectangle."
     0))
 
 (defun frcmds-read-args-for-tiling ()
-  "Read arguments for `frcmds-tile-frames'."
+  "Read two frame names and return a list of their frames.
+Return value can be used as second argument for `frcmds-tile-frames'."
   (list
    (list
     ;; Note: `read-frame' puts selected-frame name at front of `frame-name-history'.
