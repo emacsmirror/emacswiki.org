@@ -21,6 +21,12 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/navbar.el papaeye/navbar.el] -- Navigation bar for Emacs
 * [https://github.com/tumashu/ivy-posframe tumashu/ivy-posframe] -- Using posframe to show Ivy
 * [https://github.com/linktohack/ox-latex-subfigure linktohack/ox-latex-subfigure] -- Turn table into subfigure. More or less a hack atm, easy to incorporate to org-mode though
+* [https://github.com/emacsorphanage/helm-swoop emacsorphanage/helm-swoop] -- Efficiently hopping squeezed lines powered by Emacs helm interface
+* [https://github.com/emacsorphanage/helm-css-scss emacsorphanage/helm-css-scss] -- This emacs program makes your CSS/SCSS/LESS coding faster and easier than ever
+* [https://github.com/emacsorphanage/ov emacsorphanage/ov] -- Overlay library for Emacs Lisp
+* [https://github.com/emacsorphanage/swoop emacsorphanage/swoop] -- Peculiar buffer navigation for Emacs
+* [https://github.com/emacsorphanage/manage-minor-mode emacsorphanage/manage-minor-mode] -- Manage your minor-mode on the dedicated interface buffer
+* [https://github.com/emacsorphanage/readability emacsorphanage/readability] -- Get Readability's reading list, and read each article on Emacs
 
 == Useful Docker Images ==
 * [https://github.com/conao3/docker-emacs docker-emacs] -- Emacs meets docker as a standalone CLI, TUI and GUI tool
