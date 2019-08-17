@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Mon Jan  1 14:16:47 2018 (-0800)
+;; Last-Updated: Sat Aug 17 15:44:11 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 10293
+;;     Update #: 10294
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -17,21 +17,31 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `cus-theme', `dired', `dired+', `dired-aux',
-;;   `dired-x', `doremi', `easymenu', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `help+20', `hexrgb', `highlight', `icicles-cmd1',
+;;   `advice', `apropos', `apropos+', `apropos-fn+var',
+;;   `auth-source', `autofit-frame', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `color', `crosshairs', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
+;;   `easymenu', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `el-swank-fuzzy', `epg-config', `ffap', `ffap-', `fit-frame',
+;;   `flx', `font-lock', `font-lock+', `format-spec', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
+;;   `highlight', `hl-line', `hl-line+', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `image-file', `info', `info+20',
-;;   `isearch+', `kmacro', `levenshtein', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `pp', `pp+', `ring', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `icicles-var', `image', `image-dired', `image-file',
+;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
+;;   `kmacro', `levenshtein', `macroexp', `mb-depth', `mb-depth+',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `package', `password-cache', `pp', `pp+',
+;;   `radix-tree', `replace', `ring', `second-sel', `seq', `strings',
+;;   `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -750,7 +760,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
 (define-key icicle-minibuf-history-menu-map [icicle-clear-current-history]
   '(menu-item "Clear History Entries" icicle-clear-current-history
     :help "Clear current minibuffer history of selected entries" :keys "M-K"))
-(define-key icicle-minibuf-history-menu-map [icicle-erase-minibuffer]
+(define-key icicle-minibuf-history-menu-map [icicle-delete-history-element]
   '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
     :visible (memq last-command
               '(previous-history-element next-history-element
@@ -776,7 +786,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
 (defvar icicle-minibuf-edit-menu-map (make-sparse-keymap)
   "`Minibuf' > `Edit' submenu.")
 
-(define-key icicle-minibuf-edit-menu-map [icicle-delete-history-element]
+(define-key icicle-minibuf-edit-menu-map [icicle-erase-minibuffer]
   '(menu-item "Clear (Erase) Minibuffer" icicle-erase-minibuffer-or-history-element
     :visible (not (memq last-command
                    '(previous-history-element next-history-element
