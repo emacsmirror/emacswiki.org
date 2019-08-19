@@ -11,8 +11,9 @@ ELPA packages:
 * ada-mode
 * ada-ref-man
 * other-frame-window
+* uniquify-files
 * wisi
-
+* wisitoken-grammar-mode
 
 
 
