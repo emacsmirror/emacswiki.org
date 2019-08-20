@@ -22,7 +22,7 @@ EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoun
 The links below will help you get started creating your own ideal text editor. 
 
 * LearnEmacsLisp is the main portal page.  Learning Elisp is one of the best ways of LearningEmacs.
-* [[https://emacs-doctor.com/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 minutes]].
+* [[https://emacs-doctor.com/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 minutes]]. (dead link, 20180820)
 * ElispCookbook has useful short examples.
 * PlainLispForMath for an explanation of simple arithmetic expressions in Lisp.
 * An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]].
