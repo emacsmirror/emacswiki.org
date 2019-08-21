@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 13 16:25:10 2019 (-0700)
+;; Last-Updated: Wed Aug 21 11:02:35 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16549
+;;     Update #: 16551
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2228,6 +2228,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2019/08/21 dadams
+;;     bmkp-toggle-auto-light-when-(jump|set): Fix message: symbol-name, not symbol-value.
 ;; 2019/05/01 dadams
 ;;     Added bmkp-lighted-jump-to-list.
 ;; 2019/04/23 dadams
