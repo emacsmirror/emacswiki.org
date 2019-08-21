@@ -159,9 +159,6 @@ lynx -nolist -dump "http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuo""tes" 
 * resolve* it's like feeding pigeons, it only encourages them to come
   back and they're a pest, but it's fun to watch them consume ;-)
 %
-<Riastradh> If you ever come to #macdev, I advise you not to try arguing
-  with BusError; his skull is as thick as C++ is bloated.
-%
 <shapr> telemarketers rarely call me twice.
 <shapr> I try to keep them on the line and find out about their wife and kids.
 %
