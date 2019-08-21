@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Wed May  1 16:28:57 2019 (-0700)
+;; Last-Updated: Wed Aug 21 11:01:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 975
+;;     Update #: 979
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -573,7 +573,7 @@ last non-nil value if nil."
           (setq bmkp-auto-light-when-jump  bmkp-last-auto-light-when-jump)))
   (when msgp (message "Automatic highlighting of bookmarks when jumping is now %s"
                       (if bmkp-auto-light-when-jump
-                          (upcase (symbol-value bmkp-auto-light-when-jump))
+                          (upcase (symbol-name bmkp-auto-light-when-jump))
                         "OFF"))))
                                         
 ;;;###autoload (autoload 'bmkp-lighted-jump "bookmark+")
@@ -725,7 +725,7 @@ last non-nil value if nil."
                                          (setq bmkp-auto-light-when-set  bmkp-last-auto-light-when-set)))
   (when msgp (message "Automatic highlighting of bookmarks when setting is now %s"
                       (if bmkp-auto-light-when-set
-                          (upcase (symbol-value bmkp-auto-light-when-set))
+                          (upcase (symbol-name bmkp-auto-light-when-set))
                         "OFF"))))
                                         
 ;;;###autoload (autoload 'bmkp-set-lighting-for-bookmark "bookmark+")
