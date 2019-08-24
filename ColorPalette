@@ -42,6 +42,7 @@ option '''`palette-font'''' -- see it for more information.  More generally, you
 : [[image:ColorPaletteScreenshotSize3]]
 
 
+[:EyeDropper]
 == Eye Dropper ==
 
 You can at any time, from any Emacs window, pick up the foreground
