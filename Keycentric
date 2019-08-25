@@ -1,0 +1,75 @@
+- [Keycentric &#x2013; putting keybindings of different keymaps into one place](#org5506511)
+- [Features](#org331f8c7)
+- [Limitations](#org576bb04)
+- [Installation](#org3631b6c)
+- [References](#orga3679ac)
+
+
+<a id="org5506511"></a>
+
+# Keycentric &#x2013; putting keybindings of different keymaps into one place
+
+In my Emacs keybindings, a single key-event (e.g. "<f5>") is bound in different minor-mode's keymaps, and usually the functions bound to each key perform similar tasks. To change the binding for a single key-event, I need to visit different places in my file to change it.
+
+This library seek to centralize all key-bindings into one place, by combining all keybindings to the same keyevents in different keymaps into one single place (please see the example above for illustration).
+
+This library does not bind multiple commands to one key, nor does it compose keymaps into a single one as does the built-in function \`make-composed-keymap'.
+
+Below is a (small) example:
+
+```emacs-lisp
+(when (require 'keycentric nil t)
+  (keycentric
+   `(("<f5>" (nil (global-map . backward-up-list)))
+     ("<f6>" (nil (global-map . (lambda () (interactive)
+                                  (and (revert-buffer nil t)
+                                       (message "buffer reverted."))))))
+     ("<f7>" (nil (global-map . isearch-forward-regexp))
+             (isearch (isearch-mode-map . isearch-repeat-forward)))
+     ("<f8>" (eshell (:eval (add-hook 'eshell-mode-hook
+                                      (lambda () (define-key eshell-mode-map
+                                                   keycentric-key
+                                                   #'view-echo-area-messages)))))))))
+```
+
+In the example, "nil" in "(nil (global-map . backward-up-list))" means the subsequent keymaps (the global-map in this example) are supposed to be available at the time this form gets executed.
+
+The :eval form (the last key-binding in the example) is provided for cases when there is no other ways in the library to define the keybinding. In this :eval form, the key-event to be bound could be replaced with the variable \`keycentric-key', which is provided as a convenience (user can still re-type the key-event inside the form instead of using the variable \`keycentric-key'). Keybinding for eshell is used in the example because eshell-mode-map is a local-buffer map that is only activated when eshell-mode is activated, thus to define a keymapping for eshell-mode-map one may need to add-hook as in the example.
+
+
+<a id="org331f8c7"></a>
+
+# Features
+
+-   Key-binding based on key-event instead of on the keymap.
+-   Delaying the keymap binding until the specified feature is loaded.
+-   An :eval keyword to define a form to handle any extraordinary case.
+
+
+<a id="org576bb04"></a>
+
+# Limitations
+
+-   Single point of failure. This library seeks to centralize all key-bindings into one place. However, this library will ignore any error during execution so as to avoid choking in any one place.
+-   Using \`eval-after-load' for delayed key-binding for key-map unavailable at the time of execution: any misconfiguration on the key-binding may remain hidden until the feature gets loaded and error is raised.
+-   Repetition of the keymap names for each key, due to the 1-many mapping of each key to multiple maps.
+
+
+<a id="org3631b6c"></a>
+
+# Installation
+
+After downloading this library to somewhere on your computer (let's call it path-to-keycentric in the code below):
+
+```emacs-lisp
+
+(add-to-list 'load-path path-to-keycentric)
+(require 'keycentric)
+```
+
+
+<a id="orga3679ac"></a>
+
+# References
+
+-   [bind-key (linked to use-package github page)](https://github.com/jwiegley/use-package)
