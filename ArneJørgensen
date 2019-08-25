@@ -2,16 +2,17 @@ portrait:https://secure.gravatar.com/avatar/5b50630eab8c1a6d8b43f91db6d3316e.jpg
 
 I use Emacs and has used it since 1994. Currently I'm using YamamotoMitsuharu's Mac port.
 
-I made a few contributions to Emacs, [[Gnus]] and AUCTeX and created a couple of other  [http://marmalade-repo.org/profile/arne packages distributed via Marmalade Repo].
+I made a few contributions to Emacs, [[Gnus]] and AUCTeX and created a couple of other  [https://marmalade-repo.org/profile/arne packages distributed via Marmalade Repo] and [https://melpa.org/#/?q=arnested Melpa].
 
-As my day job I develop Drupal sites at [https://reload.dk Reload!]
+As my day job I develop Drupal sites at [https://reload.dk Reload].
 
-* Homepage: https://arnested.dk
+* Homepage: [https://arnested.dk arnested.dk]
 * Mail: [mailto:arne@arnested.dk arne@arnested.dk]
-* [EmacsChannel #emacs]: arnested
+* [EmacsChannel #emacs]: arnested (rarely)
 * [https://marmalade-repo.org/profile/arne Marmalade Repo]
-* [https://plus.google.com/+ArneJorgensen?rel=author Google+]
+* [https://twitter.com/arnejoergensen Twitter]
 * [https://github.com/arnested GitHub]
+* [http://keybase.io/arnested Keybase]
 
 From [https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS AUTHORS]:
 <pre>
