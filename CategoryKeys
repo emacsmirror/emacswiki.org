@@ -113,7 +113,7 @@ MenuAccessFromKeyboard provides info about using menus from the keyboard (withou
 * FastNav -- Multiple commands to support quick jump to, replace at, kill at, etc. the next/previous occurences of characters.
 * Lisp:smartrep.el -- Support sequential operation which omitted prefix keys.
 * Lisp:unbound.el -- Find convenient unbound key sequences
-* [[keycentric.el]] -- putting keybindings of different keymaps into one place.
+* [[Keycentric]] -- putting keybindings of different keymaps into one place.
 
 : In GNU Emacs, the ignored part of the filename is visible after typing a slash or tilde, at least until completion is performed with TAB. With the CVS version of GNU Emacs, the behaviour of XEmacs can be approximated by using <code>(file-name-shadow-mode 1)</code> and customizing either <code>file-name-shadow-properties</code> or <code>file-name-shadow-tty-properties</code>. -- MattHodges
 
