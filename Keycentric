@@ -1,4 +1,6 @@
-== Keycentric -- putting key-bindings of different keymaps into one place ==
+Keycentric -- putting key-bindings of different keymaps into one place.
+
+== Introduction ==
 
 In my Emacs key-bindings, a single key-event (e.g. "<f5>") is bound in different minor-mode's keymaps, and usually the functions bound to each key perform similar tasks. To change the binding for a single key-event, I need to visit different places in my file to change it.
 
@@ -55,4 +57,4 @@ After downloading this library to somewhere on your computer (let's call it '''p
 
 == References ==
 
-* [[bind-key (linked to use-package github page)][https://github.com/jwiegley/use-package]]
+* bind-key: [[https://github.com/jwiegley/use-package/blob/master/bind-key.el]]
