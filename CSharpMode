@@ -65,6 +65,21 @@ You can replace that compile command with whatever you like. For example:
 
 yasnippet is a nice snippet expansion package, available elsewhere. csharp-mode defines some snippets automatically for you, and makes them available if you have yasnippet.  This means you can type for<TAB> and get a template of a for loop. There are snips for switch statements, properties, while loops, and so on. Pretty handy. You can also define your own snips.
 
+=== CSharpRepl ===
+
+This starts the repl on C-c C-z:
+<pre>
+(defun my-csharp-repl ()
+    "Switch to the CSharpRepl buffer, creating it if necessary."
+    (interactive)
+    (if-let ((buf (get-buffer "*CSharpRepl*")))
+        (pop-to-buffer buf)
+      (when-let ((b (make-comint "CSharpRepl" "csharp")))
+        (switch-to-buffer-other-window b))))
+(define-key csharp-mode-map (kbd "C-c C-z") 'my-csharp-repl)
+</pre>
+
+
 === Other tidbits ===
 
 There's codedoc support starting with version v0.7.2 (but you should really upgrade to v0.8.?).  For the code doc: position point above a method/class, and type three slashes; you will get a codedoc template inserted into the buffer, similar to the effect you may have seen in VisualStudio.  Fill-paragraph works as expected in the documentation string; there should be no need to setq paragraph-separate in your csharp-mode hook function.  -- DinoChiesa
