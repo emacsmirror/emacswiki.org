@@ -1,5 +1,4 @@
 Basecamp is a project management system from 37signals. This page is for emacs code that interacts with Basecamp.
 
-* [https://github.com/0x4b/org-camp/ org-camp] --  Provides functions to import Basecamp todo items into org-mode 
 * [https://github.com/arvixx/timelog-mode/ timelog-mode] --  Provides functions for logging time from emacs timeclock to Basecamp.
 
