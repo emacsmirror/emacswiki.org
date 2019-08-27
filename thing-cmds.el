@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Sun Jun  9 08:14:17 2019 (-0700)
+;; Last-Updated: Tue Aug 27 14:55:34 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 792
+;;     Update #: 804
 ;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -70,6 +70,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/08/27 dadams
+;;     thgcmd-bounds-of-thing-at-point:
+;;       Fixed for SYNTAX-TABLE (nil or not) when not using thingatpt+.el and Emacs < 21.
 ;; 2019/06/09 dadams
 ;;     thgcmd-repeat-command: Same as in zz-repeat-command in zones.el now.
 ;;     (next|previous)-visible-thing-repeat
@@ -216,14 +219,19 @@ Note that prior to Emacs 21, this never hides comments."
 ;; Same as `icicle-bounds-of-thing-at-point'.
 (defun thgcmd-bounds-of-thing-at-point (thing &optional syntax-table)
   "`thingatpt+.el' version of `bounds-of-thing-at-point', if possible.
-`tap-bounds-of-thing-at-point' if defined, else
-`bounds-of-thing-at-point'.
-if non-nil, set SYNTAX-TABLE for the duration."
+This is `tap-bounds-of-thing-at-point' (from `thingatpt+.el') if
+available, else it is vanilla `bounds-of-thing-at-point'.
+
+If non-nil, arg SYNTAX-TABLE is a syntax table.  The current syntax
+table is set to it for the command duration.  (If `thingatpt+.el' is
+not loaded and Emacs version is less than 20 then SYNTAX-TABLE is
+ignored.)"
   (if (fboundp 'tap-bounds-of-thing-at-point)
       (tap-bounds-of-thing-at-point thing syntax-table)
-    (if (fboundp 'with-syntax-table)    ; Emacs 21+.
-        (with-syntax-table syntax-table (bounds-of-thing-at-point thing syntax-table))
-      (bounds-of-thing-at-point thing syntax-table))))
+    (if (and syntax-table
+             (fboundp 'with-syntax-table)) ; Emacs 21+.
+        (with-syntax-table syntax-table (bounds-of-thing-at-point thing))
+      (bounds-of-thing-at-point thing))))
 
 (defun thgcmd-defined-thing-p (thing)
   "Return non-nil if THING (type) is defined as a thing-at-point type."
