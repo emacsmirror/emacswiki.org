@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Tue Aug 27 14:55:34 2019 (-0700)
+;; Last-Updated: Wed Aug 28 16:41:57 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 804
+;;     Update #: 813
 ;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -48,9 +48,10 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `thgcmd-bounds-of-thing-at-point', `thgcmd-invisible-p',
-;;    `thgcmd-next-visible-thing-1', `thgcmd-next-visible-thing-2',
-;;    `thgcmd-repeat-command', `thgcmd-things-alist'.
+;;    `thgcmd-bounds-of-thing-at-point', `thgcmd-forward-op-p',
+;;    `thgcmd-invisible-p', `thgcmd-next-visible-thing-1',
+;;    `thgcmd-next-visible-thing-2', `thgcmd-repeat-command',
+;;    `thgcmd-things-alist'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -70,6 +71,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/08/28 dadams
+;;     Added: thgcmd-forward-op-p.
+;;     thgcmd-things-alist: Added optional arg REQUIRE-FWD-P.
+;;     mark-thing: If THING (e.g. color) has no forward-THING operation then do nothing.
 ;; 2019/08/27 dadams
 ;;     thgcmd-bounds-of-thing-at-point:
 ;;       Fixed for SYNTAX-TABLE (nil or not) when not using thingatpt+.el and Emacs < 21.
@@ -234,7 +239,8 @@ ignored.)"
       (bounds-of-thing-at-point thing))))
 
 (defun thgcmd-defined-thing-p (thing)
-  "Return non-nil if THING (type) is defined as a thing-at-point type."
+  "Return non-nil if THING (type) is defined as a thing-at-point type.
+THING is a symbol."
   (let ((forward-op    (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing))))
         (beginning-op  (get thing 'beginning-op))
         (end-op        (get thing 'end-op))
@@ -280,20 +286,30 @@ Command `cycle-thing-region' cycles through this list, in order."
 
 (defvar thgcmd-last-thing-type 'sexp "Last thing type (a symbol) used by various commands.")
 
-(defun thgcmd-things-alist ()
+(defun thgcmd-things-alist (&optional require-fwd-p)
   "List of most thing types currently defined.
 Each is a string that names a type of text entity for which there is a
-either a corresponding `forward-'thing operation, or corresponding
-`beginning-of-'thing and `end-of-'thing operations.  The list includes
-the names of the symbols that satisfy `thgcmd-defined-thing-p', but
-with these excluded: `thing', `buffer', `point'."
+either a corresponding `forward-' thing operation, or corresponding
+`beginning-of-' thing and `end-of-' thing operations.  The list
+includes the names of the symbols that satisfy
+`thgcmd-defined-thing-p', but with these excluded: `thing', `buffer',
+`point'.
+
+Non-nil arg REQUIRE-FWD-P means exclude THINGs that do not have an
+associated `forward-THING' function."
   (let ((types  ()))
     (mapatoms
      (lambda (tt)
-       (when (thgcmd-defined-thing-p tt) (push (symbol-name tt) types))))
+       (when (and (thgcmd-defined-thing-p tt)
+                  (or (not require-fwd-p)  (thgcmd-forward-op-p (intern-soft tt))))
+         (push (symbol-name tt) types))))
     (dolist (typ  '("thing" "buffer" "point")) ; Remove types that do not make sense.
       (setq types (delete typ types)))
     (setq types  (sort types #'string-lessp))))
+
+(defun thgcmd-forward-op-p (thing)
+  "Return non-nil if THING has a forward operation."
+  (functionp (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing)))))
 
 ;;;###autoload
 (defun thing-region (thing)
@@ -348,58 +364,67 @@ successive things of the same type, but to do that you must first use
 ;;;###autoload
 (defun mark-thing (thing &optional arg allow-extend)
   "Set point at one end of THING and set mark ARG THINGs from point.
+THING is a symbol that names a type of thing.  Interactively, you are
+prompted for it.  Completion is available (lax).
+
+\(If THING doesn't have an associated `forward-'THING operation then
+do nothing.)
+
 Put mark at the same place command `forward-'THING would move point
 with the same prefix argument.
 
 Put point at the beginning of THING, unless the prefix argument (ARG)
 is negative, in which case put it at the end of THING.
 
-THING is a symbol that names a type of thing.  Interactively, you are
-prompted for it.  Completion is available (lax).
-
 If `mark-thing' is repeated or if the mark is active (in Transient
 Mark mode), then it marks the next ARG THINGs, after the ones already
-marked.  The type of THING used is whatever was used the last time
-`mark-thing' was called.
+marked.  In this case the type of THING used is whatever was used the
+last time `mark-thing' was called - you are not prompted for it.
 
 This region extension reusing the last type of THING happens even if
 the active region is empty.  This means that you can, for instance,
 just use `C-SPC' to activate an empty region and then use `mark-thing'
 to select more THINGS of the last kind selected."
-  (interactive "i\nP\np")               ; THING arg is nil (ignored) interactively.
+  (interactive "i\nP\np")  ; THING arg is nil (ignored) interactively.
   (let ((this-cmd  this-command)
         (last-cmd  last-command)
         (regionp   mark-active))
     (cond ((and allow-extend  (or (and (eq last-cmd this-cmd)  (mark t))
                                   (and transient-mark-mode  mark-active)))
            (setq arg  (if arg  (prefix-numeric-value arg)  (if (< (mark) (point)) -1 1)))
-           (set-mark (save-excursion (goto-char (mark))
-                                     (forward-thing thgcmd-last-thing-type arg)
-                                     (point))))
+           (when (thgcmd-forward-op-p thgcmd-last-thing-type)
+             (set-mark (save-excursion (goto-char (mark))
+                                       (forward-thing thgcmd-last-thing-type arg)
+                                       (point)))))
           (t
            (setq thgcmd-last-thing-type
                  (or thing
                      (prog1 (let ((icicle-sort-function  nil))
-                              (intern (completing-read
-                                       "Thing (type): " (thgcmd-things-alist) nil nil nil nil
-                                       (symbol-name thgcmd-last-thing-type))))
+                              (intern
+                               (completing-read
+                                "Thing (type): "
+                                (thgcmd-things-alist 'REQUIRE-FWD) nil nil nil nil
+                                (symbol-name thgcmd-last-thing-type))))
                        (setq this-command  this-cmd))))
-           (push-mark (save-excursion
-                        (forward-thing thgcmd-last-thing-type (prefix-numeric-value arg))
-                        (point))
-                      nil t)))
-    (let ((bnds  (thgcmd-bounds-of-thing-at-point thgcmd-last-thing-type)))
-      (unless (or regionp  bnds)
-        ;; If we are not on a thing, use `thing-region' to capture one.
-        ;; Because it always puts point after mark, flip them if necessary.
-        (thing-region (symbol-name thgcmd-last-thing-type))
-        (when (natnump (prefix-numeric-value arg)) (exchange-point-and-mark)))
-      ;; If we are not extending existing region, and we are in a thing (BNDS non-nil), then:
-      ;; We have moved forward (or backward if ARG < 0) to the end of the thing.
-      ;; Now we extend the region backward (or forward if ARG < 0) up to its beginning
-      ;; (or end if ARG < 0), to select the whole thing.
-      (unless (or regionp  (not bnds)  (eql (point) (car bnds)))
-        (forward-thing thgcmd-last-thing-type (if (< (mark) (point)) 1 -1)))))
+           (when (thgcmd-forward-op-p thgcmd-last-thing-type)
+             (push-mark (save-excursion
+                          (forward-thing thgcmd-last-thing-type (prefix-numeric-value arg))
+                          (point))
+                        nil t))))
+    (if (thgcmd-forward-op-p thgcmd-last-thing-type)
+        (let ((bnds  (thgcmd-bounds-of-thing-at-point thgcmd-last-thing-type)))
+          (unless (or regionp  bnds)
+            ;; If we are not on a thing, use `thing-region' to capture one.
+            ;; Because it always puts point after mark, flip them if necessary.
+            (thing-region (symbol-name thgcmd-last-thing-type))
+            (when (natnump (prefix-numeric-value arg)) (exchange-point-and-mark)))
+          ;; If not extending existing region, and inside a thing (BNDS non-nil), then:
+          ;; We have moved forward (or backward if ARG < 0) to the end of the thing.
+          ;; Now we extend the region backward (or forward if ARG < 0) up to its beginning
+          ;; (or end if ARG < 0), to select the whole thing.
+          (unless (or regionp  (not bnds)  (eql (point) (car bnds)))
+            (forward-thing thgcmd-last-thing-type (if (< (mark) (point)) 1 -1))))
+      (message "Can't determine how to move over a %s" thgcmd-last-thing-type)))
   (setq deactivate-mark  nil))
 
 ;;;###autoload
