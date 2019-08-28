@@ -1,4 +1,8 @@
-Keycentric -- centralizing key-bindings into one place ([[https://gitlab.com/haicnguyen/keycentric-el.git download]])
+Keycentric -- centralizing key-bindings into one place.
+
+
+([[https://gitlab.com/haicnguyen/keycentric-el.git download)]]
+
 
 == Introduction ==
 
@@ -42,6 +46,11 @@ A simple example:
 (keycentric `(("<f5>" (nil (global-map . backward-up-list)))))
 </pre>
 
+which is equivalent to
+
+<pre>
+(define-key global-map (kbd "<f5>") 'backward-up-list)
+</pre>
 
 In the example, "nil" in "(nil (global-map . backward-up-list))" means the subsequent keymaps (the global-map in this example) are supposed to be available at the time this form gets executed, so that key-binding can be execute now instead of doing \`eval-after-load' it.
 
