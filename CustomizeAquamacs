@@ -400,6 +400,10 @@ It can happen that new windows are smaller nevertheless. This might be the resul
 to your ##Preferences.el## or InitFile.
 
 
+== Making Aquamacs less ... GUI ==
+
+I turned off <code>tabbar-mode</code> and <code>toolbar-mode</code>, and also had to disable "Option is Meta" to be able to use AltGr to type characters which require this modifier key on my Scandinavian keyboard. 
+
 == Previewing TeX/LaTeX output in TeXniscope ==
 
 Check out AquamacsTexniscope.
