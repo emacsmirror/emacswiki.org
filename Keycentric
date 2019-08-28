@@ -161,15 +161,6 @@ This is equivalent to
 In this :eval form, the key-event to be bound could be replaced with the variable `keycentric-key', which is provided as a convenience (user can still re-type the key-event inside the form instead of using the variable `keycentric-key'). Key-Binding for eshell is used in the example because eshell-mode-map is a local-buffer map that is only activated when eshell-mode is activated, thus to define a keymapping for eshell-mode-map one may need to add-hook as in the example.
 
 
-Last but not least, any arguments in the form can be a list, like this:
-
-<pre>
-(keycentric `((("<f5>" "<S-f5>") ((nil lisp-mode) (global-map . backward-up-list) (lisp-mode-map . backward-up-list) (slime-mode-map . backward-up-list)))))
-</pre>
-
-but error may be raised if any of the keymap in the form above has not yet been loaded at the time of execution.
-
-
 == References ==
 
 * [[https://github.com/jwiegley/use-package/blob/master/bind-key.el bind-key.el]] viewed 2019-08-25.
