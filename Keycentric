@@ -8,33 +8,13 @@ This library seek to centralize all key-bindings into one place, by combining al
 
 This library does not bind multiple commands to one key, nor does it compose keymaps into a single one as does the built-in function `make-composed-keymap'.
 
-Below is an example:
-
-<pre>
-(when (require 'keycentric nil t)
-  (keycentric
-   `(("<f5>" (nil (global-map . backward-up-list)))
-     ("<f6>" (nil (global-map . (lambda () (interactive)
-                                  (and (revert-buffer nil t)
-                                       (message "buffer reverted."))))))
-     ("<f7>" (nil (global-map . isearch-forward-regexp))
-             (isearch (isearch-mode-map . isearch-repeat-forward)))
-     ("<f8>" (eshell (:eval (add-hook 'eshell-mode-hook
-                                      (lambda () (define-key eshell-mode-map
-                                                   keycentric-key
-                                                   #'view-echo-area-messages)))))))))
-</pre>
-
-In the example, "nil" in "(nil (global-map . backward-up-list))" means the subsequent keymaps (the global-map in this example) are supposed to be available at the time this form gets executed.
-
-The :eval form (the last key-binding in the example) is provided for cases when there is no other ways in the library to define the key-binding. In this :eval form, the key-event to be bound could be replaced with the variable `keycentric-key', which is provided as a convenience (user can still re-type the key-event inside the form instead of using the variable `keycentric-key'). Key-Binding for eshell is used in the example because eshell-mode-map is a local-buffer map that is only activated when eshell-mode is activated, thus to define a keymapping for eshell-mode-map one may need to add-hook as in the example.
-
 
 == Features ==
 
-* Key-Binding based on key-event instead of on the keymap.
+* Easy to search and update key-bindings bound to the same key-event.
 * Delaying the keymap binding until the specified feature is loaded.
 * An :eval keyword to define a form to handle any extraordinary case.
+* Binding multiple keys for multiple (major/minor) modes for multiple keymaps, all in the same form (please see the example below).
 
 
 == Limitations ==
@@ -49,12 +29,143 @@ The :eval form (the last key-binding in the example) is provided for cases when 
 After downloading this library to somewhere on your computer (let's call it '''path-to-keycentric''' in the code below):
 
 <pre>
-
 (add-to-list 'load-path path-to-keycentric)
 (require 'keycentric)
 </pre>
 
 
+== Usage ==
+
+A simple example:
+
+<pre>
+(keycentric `(("<f5>" (nil (global-map . backward-up-list)))))
+</pre>
+
+
+In the example, "nil" in "(nil (global-map . backward-up-list))" means the subsequent keymaps (the global-map in this example) are supposed to be available at the time this form gets executed, so that key-binding can be execute now instead of doing \`eval-after-load' it.
+
+
+Now for defining the same key event "<f5>" for multiple modes (2 modes in the example below: nil (ie. the always-present "global" mode) and lisp-mode):
+
+<pre>
+(keycentric `(("<f5>" (nil (global-map . backward-up-list)))))
+                      (lisp-mode (lisp-mode-map . up-list))
+</pre>
+
+Assume that `lisp-mode' has not been loaded at the time of execution of this example, then it is equivalent to:
+
+<pre>
+(define-key global-map (kbd "<f5>") 'backward-up-list)
+(eval-after-load "lisp-mode"
+    `(define-key ,lisp-mode-map (kbd "<f5>") up-list))
+</pre>
+
+If `lisp-mode' has already been loaded, then it is equivalent to:
+
+<pre>
+(define-key global-map (kbd "<f5>") 'backward-up-list)
+(define-key lisp-mode-map (kbd "<f5>") 'up-list)
+</pre>
+
+To define for multiple key-events ("<f5>" and "<S-f5>" below):
+
+<pre>
+(keycentric `((("<f5>" "<S-f5>")    (nil (global-map . backward-up-list))
+                                    (lisp-mode (lisp-mode-map . up-list)))))
+</pre>
+
+This is equivalent to (assuming `lisp-mode' has not been loaded):
+
+<pre>
+(define-key global-map (kbd "<f5>") 'backward-up-list)
+(define-key global-map (kbd "<S-f5>") 'backward-up-list)
+(eval-after-load "lisp-mode"
+    `(define-key ,lisp-mode-map (kbd "<f5>") up-list))
+(eval-after-load "lisp-mode"
+    `(define-key ,lisp-mode-map (kbd "<S-f5>") up-list))
+</pre>
+
+
+[remap <function>] and lambda form works just like using `define-key':
+
+<pre>
+(keycentric `(([remap pop-to-mark-command]
+                        (nil (global-map . (lambda ()
+                                            (interactive)
+                                            (and (revert-buffer nil t)
+                                            (message "buffer reverted."))))))))
+</pre>
+
+which is equivalent to
+
+<pre>
+(define-key global-map [remap pop-to-mark-command]
+                        (lambda ()
+                          (interactive)
+                          (and (revert-buffer nil t)
+                          (message "buffer reverted."))))
+</pre>
+
+
+And for multiple keymaps:
+
+<pre>
+(keycentric `((("<f5>" "<S-f5>")
+               (elisp-mode ((lisp-mode-map emacs-lisp-mode-map lisp-interaction-mode-map) . backward-up-list)))))
+</pre>
+
+which is equivalent to:
+
+<pre>
+(define-key lisp-mode-map (kbd "<f5>") 'backward-up-list)
+(define-key lisp-mode-map (kbd "<S-f5>") 'backward-up-list)
+(define-key emacs-lisp-mode-map (kbd "<f5>") 'backward-up-list)
+(define-key emacs-lisp-mode-map (kbd "<S-f5>") 'backward-up-list)
+(define-key lisp-interaction-mode-map (kbd "<f5>") 'backward-up-list)
+(define-key lisp-interaction-mode-map (kbd "<S-f5>") 'backward-up-list)
+</pre>
+
+
+If there are multiple forms starting with the same key-event (eg. multiple forms starting with "<f5>" key-event), then the effect will be the sequential execution of all such forms, from the first to the last.
+
+
+And to use :eval for flexibility:
+
+<pre>
+("<f8>" (eshell (:eval (add-hook 'eshell-mode-hook
+                                 (lambda () (define-key eshell-mode-map
+                                              keycentric-key
+                                              #'view-echo-area-messages))))))
+</pre>
+
+This is equivalent to
+
+<pre>
+(eval-after-load "eshell"
+  `(add-hook ,eshell-mode-hook (lambda ()
+                                (define-key ,eshell-mode-map
+                                            (kbd "<f8>")
+                                            view-echo-area-messages))))
+</pre>
+
+In this :eval form, the key-event to be bound could be replaced with the variable `keycentric-key', which is provided as a convenience (user can still re-type the key-event inside the form instead of using the variable `keycentric-key'). Key-Binding for eshell is used in the example because eshell-mode-map is a local-buffer map that is only activated when eshell-mode is activated, thus to define a keymapping for eshell-mode-map one may need to add-hook as in the example.
+
+
+Last but not least, any arguments in the form can be a list, like this:
+
+<pre>
+(keycentric `((("<f5>" "<S-f5>") ((nil lisp-mode) (global-map . backward-up-list) (lisp-mode-map . backward-up-list) (slime-mode-map . backward-up-list)))))
+</pre>
+
+but error may be raised if any of the keymap in the form above has not yet been loaded at the time of execution.
+
+
 == References ==
 
-* bind-key: [[https://github.com/jwiegley/use-package/blob/master/bind-key.el]]
+* [[https://github.com/jwiegley/use-package/blob/master/bind-key.el bind-key.el]] viewed 2019-08-25.
+
+
+----
+
+CategoryKeys
