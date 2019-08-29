@@ -12,7 +12,7 @@ Or
 
  `C-u M-! date +"%B %e, %Y" RET'
 
-Running this command will give something like:
+Running this command (you can use any format string for the date command) will give something like:
 
  December  2, 2005
 
@@ -54,6 +54,11 @@ The functionality of the above two commands are combined into a single command, 
 
 [new]
 There is a trade-off between simplicity and flexibility, and most solutions seem to favor simplicity over flexibility.  Here is an attempt to support the user's preference for different date and time formats while still minimizing keystrokes: Lisp:insert-time-string.el
+
+== Using org-mode ==
+Simply 
+
+ org-time-stamp
 
 ----
 CategoryCalendar
