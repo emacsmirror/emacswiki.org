@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Wed Aug 28 16:41:57 2019 (-0700)
+;; Last-Updated: Wed Aug 28 20:50:29 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 813
+;;     Update #: 814
 ;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -334,7 +334,9 @@ Non-interactively, THING is a string naming a thing type."
            (setq deactivate-mark  nil)
            thing)                       ; Return thing.
           (t
-           (message "No `%s' near point" thing)
+           (message "No `%s' %s point" thing (if (fboundp 'bounds-of-thing-nearest-point)
+                                                 'near
+                                               'at))
            (setq deactivate-mark  nil)
            nil))))                      ; Return nil: no thing found.
 
