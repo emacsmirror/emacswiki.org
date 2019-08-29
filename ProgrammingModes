@@ -38,6 +38,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * DoxyMacs -- Doxygen
 * ECMAScriptMode -- similar to JavaScriptMode
 * ElDoc -- documentation for EmacsLisp
+* ElixirMode
 * ElseMode -- minor mode with code templates for various languages
 * EmacsCodeBrowser (ECB)
 * EmacsLispMode
