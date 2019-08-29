@@ -1,6 +1,6 @@
 <code>yaml-mode.el</code> helps you edit [http://www.yaml.org/ YAML] <code>.yml</code> files.
 
-Get it on http://github.com/yoshiki/yaml-mode
+Get it on http://github.com/yoshiki/yaml-mode (Looking for a new maintainer, see on github page.)
 
 And also available as DebianPackage:yaml-mode.
 
