@@ -5,20 +5,38 @@ See BuildTags for how to build or update a [[tags file]] with a command-line pro
 
 == Navigating using tags ==
 
+=== Using Xref (Emacs 25+) ===
+
+As of Emacs 25, the keybindings for tag navigation are mostly given to `xref', a newer package which abstracts over multiple identifier searching backends (one of them being the tags backend).  Not all tags functionality has an equivalent in `xref' (at least, as of this writing).
+
+* `##M-.##' (`xref-find-definitions') -- find a tag, that is, use the Tags
+  file to look up a definition.  If the backend returns multiple hits
+  with the same name, a window will pop up showing all the hits, use
+  `n' and `p' to navigate and press `RET' to jump to a particular
+  match.
+* `##C-x 4 .##' (`xref-find-definitions-other-window') -- selects the buffer containing the tag's definition in another window, and move point there.
+* `##M-,##' (`xref-pop-marker-stack') -- jump back
+* `##C-M-.##' (`xref-find-apropos') -- Find all meaningful symbols that match a regexp or word list
+* `##M-?##' (`xref-find-references') -- Find all references to the identifier at point
+
+For more information, see the Emacs manual, node [[Manual:Xref]] (emacs).
+
+=== Using tags (Emacs 24 bindings) ===
+
 Once you have a [[tags file]] and M-x visit-tags-table, you can follow tags (of functions, variables, macros, whatever) to their definitions. These are the basic commands:
 
 * `##M-.##' (`find-tag') -- find a tag, that is, use the Tags file to look up a definition.  If there are multiple tags in the project with the same name, use `##C-u M-.##' to go to the next match.
 * `M-x find-tag-other-window' -- selects the buffer containing the tag's definition in another window, and move point there.
-* `##M-,##' (`##M-*##' if Emacs < 25) (`pop-tag-mark') -- jump back
+* `##M-*##' (`pop-tag-mark') -- jump back
 * `M-x tags-search' -- [[regexp]]-search through the source files indexed by a tags file (a bit like `grep')
 * `M-x tags-query-replace' -- query-replace through the source files indexed by a tags file
 * `##M-,##’ (`tags-loop-continue') -- resume  `tags-search'  or `tags-query-replace' starting at [[point]] in a source file
 * `M-x tags-apropos' -- list all tags in a tags file that match a regexp
 * `M-x list-tags' -- list all tags defined in a source file
 
-See the Emacs manual, node '''Tags''' for more information: Manual:Tags.
+For more information, see the Emacs manual, node [[Manual:Tags Tables]] (emacs).
 
-=== View tag other window ===
+==== View tag other window ====
 
 This function acts like `find-tag-other-window' but lets the point on current buffer:
 
