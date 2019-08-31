@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Wed Aug 28 20:50:29 2019 (-0700)
+;; Last-Updated: Fri Aug 30 19:10:39 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 814
+;;     Update #: 882
 ;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -36,11 +36,14 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `cycle-thing-region', `mark-enclosing-list',
-;;    `mark-enclosing-list-backward', `mark-enclosing-list-forward',
-;;    `mark-thing', `next-visible-thing', `next-visible-thing-repeat',
+;;    `cycle-select-something', `cycle-thing-region',
+;;    `mark-enclosing-list', `mark-enclosing-list-backward',
+;;    `mark-enclosing-list-forward', `mark-things',
+;;    `next-visible-thing', `next-visible-thing-repeat',
 ;;    `previous-visible-thing', `previous-visible-thing-repeat',
-;;    `select-thing-near-point', `thgcmd-bind-keys', `thing-region'.
+;;    `select-enclosing-list', `select-enclosing-list-backward',
+;;    `select-enclosing-list-forward', `select-thing',
+;;    `select-things', `thgcmd-bind-keys', `thing-region'.
 ;;
 ;;  User options defined here:
 ;;
@@ -71,6 +74,16 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/08/30 dadams
+;;     Added: thgcmd-use-nearest-thing-flag.
+;;     Renamed: mark-thing to select-things, thing-region to select-thing, cycle-thing-region to
+;;              cycle-select-something, mark-enclosing-list* to select-enclosing-list*.
+;;     Aliased mark-things to select-things, thing-region to select-thing, cycle-thing-region to
+;;             cycle-select-something, mark-enclosing-list* to select-enclosing-list*.
+;;     Removed select-thing-near-point (was alias of cycle-thing-region).
+;;     select-thing:
+;;       Respect thgcmd-use-nearest-thing-flag.
+;;       Use tap-bounds-of-thing-nearest-point, not bounds-of-thing-nearest-point.
 ;; 2019/08/28 dadams
 ;;     Added: thgcmd-forward-op-p.
 ;;     thgcmd-things-alist: Added optional arg REQUIRE-FWD-P.
@@ -180,17 +193,18 @@
 ;; Quiet the byte compiler.
 
 (defvar ignore-comments-flag)
+(defvar thgcmd-use-nearest-thing-flag)
 
 ;;----------
 
 (when (< emacs-major-version 22) (eval-when-compile (require 'cl))) ;; for Emacs 20: dolist
 
 (require 'thingatpt) ;; bounds-of-thing-at-point
-(when (and (require 'thingatpt+ nil t)  ; (no error if not found): tap-bounds-of-thing-at-point
+(when (and (require 'thingatpt+ nil t)  ; (no error if not found):
+           ;; tap-bounds-of-thing-at-point, tap-bounds-of-thing-nearest-point
            (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
   (tap-define-aliases-wo-prefix)
   (tap-put-thing-at-point-props))
-  ;; tap-bounds-of-thing-at-point, bounds-of-thing-nearest-point
 
 (when (> emacs-major-version 20)       ; `hide-comnt.el' is for Emacs 21+.
   (require 'hide-comnt)) ;; hide/show-comments, ignore-comments-flag.
@@ -277,12 +291,22 @@ The default value includes the names of most symbols that satisfy
 `thgcmd-defined-thing-p' at the time the `defcustom' is evaluated.
 These types are excluded: `thing', `buffer', `point'.
 
-Command `cycle-thing-region' cycles through this list, in order."
+`\\[cycle-select-something]' cycles through this list, in order."
   :type '(repeat string) :group 'lisp :group 'editing)
 
-(defvar thgcmd-thing-region-index 0 "Index of current thing in `thing-types'.")
+(when (featurep 'thingatpt+)
 
-(defvar thgcmd-thing-region-point nil "Position of point before invoking `cycle-thing-region'.")
+  (defcustom thgcmd-use-nearest-thing-flag nil
+    "Non-nil means `thgcmd-*' commands use a thing near, not necessarily at, point."
+    :type 'boolean :group 'editing)
+
+  )
+
+(defvar thgcmd-thing-region-index 0
+  "Index of current thing in `thing-types', for `cycle-select-something'.")
+
+(defvar thgcmd-thing-region-point nil
+  "Position of point before invoking `cycle-select-something'.")
 
 (defvar thgcmd-last-thing-type 'sexp "Last thing type (a symbol) used by various commands.")
 
@@ -312,43 +336,51 @@ associated `forward-THING' function."
   (functionp (or (get thing 'forward-op)  (intern-soft (format "forward-%s" thing)))))
 
 ;;;###autoload
-(defun thing-region (thing)
-  "Set the region around a THING near the cursor.
+(defalias 'thing-region 'select-thing)
+;;;###autoload
+(defun select-thing (thing)
+  "Set the region around a THING at or near the cursor.
 You are prompted for the type of thing.  Completion is available (lax).
 The cursor is placed at the end of the region.  You can return it to
 the original location by using `C-u C-SPC' twice.
-Non-interactively, THING is a string naming a thing type."
+Non-interactively, THING is a string naming a thing type.
+
+If option `thgcmd-use-nearest-thing-flag' and non-nil then use a thing
+that is near, not necessarily at, point."
   (interactive (list (let ((icicle-sort-function  nil))
                        (completing-read "Thing (type): " (thgcmd-things-alist) nil nil nil nil
                                         (symbol-name thgcmd-last-thing-type)))))
   (setq thgcmd-last-thing-type  (intern thing))
-  (let* ((bds    (if (fboundp 'bounds-of-thing-nearest-point) ; In `thingatpt+.el'.
-                     (bounds-of-thing-nearest-point (intern thing))
-                   (thgcmd-bounds-of-thing-at-point (intern thing))))
-         (start  (car bds))
-         (end    (cdr bds)))
+  (let* ((use-near-p  (and (boundp 'thgcmd-use-nearest-thing-flag) ; In `thingatpt+.el'.
+                           thgcmd-use-nearest-thing-flag))
+         (bds         (if use-near-p
+                          (tap-bounds-of-thing-nearest-point (intern thing))
+                        (thgcmd-bounds-of-thing-at-point (intern thing))))
+         (start       (car bds))
+         (end         (cdr bds)))
     (cond ((and start  end)
-           (push-mark (point) t)        ; Mark position, so can use `C-u C-SPC'.
+           (push-mark (point) t) ; Mark position, so can use `C-u C-SPC'.
            (goto-char end)
            (push-mark start t 'activate)
            (setq deactivate-mark  nil)
            thing)                       ; Return thing.
           (t
-           (message "No `%s' %s point" thing (if (fboundp 'bounds-of-thing-nearest-point)
-                                                 'near
-                                               'at))
+           (message "No `%s' %s point" thing (if use-near-p 'near 'at))
            (setq deactivate-mark  nil)
            nil))))                      ; Return nil: no thing found.
 
 ;;;###autoload
-(defalias 'select-thing-near-point 'cycle-thing-region)
+(defalias 'cycle-thing-region 'cycle-select-something)
 ;;;###autoload
-(defun cycle-thing-region ()
-  "Select a thing near point.  Successive uses select different things.
+(defun cycle-select-something ()
+  "Select something at or near point.  Successively select different things.
 The default thing type is the first element of option `thing-types'.
-In Transient Mark mode, you can follow this with `\\[mark-thing]' to select
+In Transient Mark mode, you can follow this with `\\[select-things]' to select
 successive things of the same type, but to do that you must first use
-`C-x C-x': `\\[cycle-thing-region] C-x C-x \\[mark-thing]'"
+`C-x C-x': `\\[cycle-select-something] C-x C-x \\[select-things]'.
+
+If option `thgcmd-use-nearest-thing-flag' and non-nil then use a thing
+that is near, not necessarily at, point."
   (interactive)
   (if (eq last-command this-command)
       (goto-char thgcmd-thing-region-point)
@@ -364,7 +396,9 @@ successive things of the same type, but to do that you must first use
       (setq thgcmd-thing-region-index  0))))
 
 ;;;###autoload
-(defun mark-thing (thing &optional arg allow-extend)
+(defalias 'mark-things 'select-things)
+;;;###autoload
+(defun select-things (thing &optional arg allow-extend)
   "Set point at one end of THING and set mark ARG THINGs from point.
 THING is a symbol that names a type of thing.  Interactively, you are
 prompted for it.  Completion is available (lax).
@@ -378,15 +412,18 @@ with the same prefix argument.
 Put point at the beginning of THING, unless the prefix argument (ARG)
 is negative, in which case put it at the end of THING.
 
-If `mark-thing' is repeated or if the mark is active (in Transient
+If `select-things' is repeated or if the mark is active (in Transient
 Mark mode), then it marks the next ARG THINGs, after the ones already
 marked.  In this case the type of THING used is whatever was used the
-last time `mark-thing' was called - you are not prompted for it.
+last time `select-things' was called - you are not prompted for it.
 
 This region extension reusing the last type of THING happens even if
 the active region is empty.  This means that you can, for instance,
-just use `C-SPC' to activate an empty region and then use `mark-thing'
-to select more THINGS of the last kind selected."
+just use `C-SPC' to activate an empty region and then use
+`select-things' to select more THINGS of the last kind selected.
+
+If there is no THING at point, and `thgcmd-use-nearest-thing-flag' is
+non-nil, then select a THING near point."
   (interactive "i\nP\np")  ; THING arg is nil (ignored) interactively.
   (let ((this-cmd  this-command)
         (last-cmd  last-command)
@@ -416,9 +453,9 @@ to select more THINGS of the last kind selected."
     (if (thgcmd-forward-op-p thgcmd-last-thing-type)
         (let ((bnds  (thgcmd-bounds-of-thing-at-point thgcmd-last-thing-type)))
           (unless (or regionp  bnds)
-            ;; If we are not on a thing, use `thing-region' to capture one.
-            ;; Because it always puts point after mark, flip them if necessary.
-            (thing-region (symbol-name thgcmd-last-thing-type))
+            ;; If we are not on a thing, use `select-thing' to capture one.
+            ;; Because it always puts point after mark, flip point and mark if necessary.
+            (select-thing (symbol-name thgcmd-last-thing-type))
             (when (natnump (prefix-numeric-value arg)) (exchange-point-and-mark)))
           ;; If not extending existing region, and inside a thing (BNDS non-nil), then:
           ;; We have moved forward (or backward if ARG < 0) to the end of the thing.
@@ -430,7 +467,9 @@ to select more THINGS of the last kind selected."
   (setq deactivate-mark  nil))
 
 ;;;###autoload
-(defun mark-enclosing-list (&optional arg allow-extend) ; `C-M-U' (aka `C-M-S-u')
+(defalias 'mark-enclosing-list 'select-enclosing-list)
+;;;###autoload
+(defun select-enclosing-list (&optional arg allow-extend) ; `C-M-U' (aka `C-M-S-u')
   "Select a list surrounding the current cursor position.
 If the mark is active (e.g. when the command is repeated), widen the
 region to a list that encloses it.
@@ -464,20 +503,24 @@ comment."
          (up-list arg))))
 
 ;;;###autoload
-(defun mark-enclosing-list-forward (&optional arg) ; `C-M-F' or maybe `C-M-)'
-  "`mark-enclosing-list' leaving point at region end."
+(defalias 'mark-enclosing-list-forward 'select-enclosing-list-forward)
+;;;###autoload
+(defun select-enclosing-list-forward (&optional arg) ; `C-M-F' or maybe `C-M-)'
+  "`select-enclosing-list' leaving point at region end."
   (interactive "P")
   (if (or (and (eq last-command this-command)  (mark t))  (and transient-mark-mode  mark-active))
-      (mark-enclosing-list nil t)
-    (mark-enclosing-list (prefix-numeric-value arg) t)))
+      (select-enclosing-list nil t)
+    (select-enclosing-list (prefix-numeric-value arg) t)))
 
 ;;;###autoload
-(defun mark-enclosing-list-backward (&optional arg) ; `C-M-B' or maybe `C-M-('
-  "`mark-enclosing-list' leaving point at region start."
+(defalias 'mark-enclosing-list-backward 'select-enclosing-list-backward)
+;;;###autoload
+(defun select-enclosing-list-backward (&optional arg) ; `C-M-B' or maybe `C-M-('
+  "`select-enclosing-list' leaving point at region start."
   (interactive "P")
   (if (or (and (eq last-command this-command)  (mark t))  (and transient-mark-mode  mark-active))
-      (mark-enclosing-list nil t)
-    (mark-enclosing-list (- (prefix-numeric-value arg)) t)))
+      (select-enclosing-list nil t)
+    (select-enclosing-list (- (prefix-numeric-value arg)) t)))
 
 (when (> emacs-major-version 20)        ; `with-comments-hidden' is for Emacs 21+.
   (defun previous-visible-thing (thing start &optional end)
@@ -663,13 +706,13 @@ navigation are `C-x down' and `C-x up'."
   (interactive "p")
   (when (or (not msgp)  (y-or-n-p "Bind thing-command default keys?"))
     ;;   The first two replace the standard bindings for `mark-sexp' & `mark-word':
-    (global-set-key [(control meta ? )] 'mark-thing) ; vs `mark-sexp'
-    (global-set-key [(meta ?@)] 'cycle-thing-region) ; vs `mark-word'
-    (global-set-key [(control meta shift ?u)] 'mark-enclosing-list)
+    (global-set-key [(control meta ? )] 'select-things) ; vs `mark-sexp'
+    (global-set-key [(meta ?@)] 'cycle-select-something) ; vs `mark-word'
+    (global-set-key [(control meta shift ?u)] 'select-enclosing-list)
     (global-set-key [(control meta shift ?b)] ; Alternative to consider: [(control meta ?()]
-                    'mark-enclosing-list-backward)
+                    'select-enclosing-list-backward)
     (global-set-key [(control meta shift ?f)] ; Alternative to consider: [(control meta ?))]
-                    'mark-enclosing-list-forward)
+                    'select-enclosing-list-forward)
     (when (> emacs-major-version 21)
       (define-key ctl-x-map [down]  'next-visible-thing-repeat)
       (define-key ctl-x-map [up]    'previous-visible-thing-repeat))
