@@ -61,7 +61,57 @@ This is my Chinese section in my .emacs file:
 
 --[[maddog]]
 
-== A Different Chinese Input Method ==
+== Other Chinese Input Method ==
+
+=== pyim ===
+
+[https://github.com/tumashu/pyim pyim] is a emacs Chinese input method,
+supports full pinyin, double pinyin, wubi, canggu, and Rime. Check
+[http://tumashu.github.io/pyim pyim online document].
+
+pyim was forked from Eim and is maintained.
+
+pyim is in MELPA. You can easily install it. It is a self contained input
+method in pure elisp. I tried the pinyin engine, it works fine in emacs GUI
+and terminal out of the box.
+
+Project goal is try best to be the most easy to use Emacs Chinese input
+method, specifically
+
+# Fallback: When external input method can't be used, e.g. in console or cygwin environment, let user not worry about Chinese input.
+# Integration: reduce the need to toggle input method. Input Chinese should not interfere with good Emacs experience.
+# Exchange: make using other good input method's phrase db easy.
+
+To use pyim
+
+# config MELPA package archive
+# M-x package-install RET pyim RET
+# add in ~/.emacs
+
+<pre>
+(require 'pyim)
+(require 'pyim-basedict) ; 拼音词库设置，五笔用户 *不需要* 此行设置
+(pyim-basedict-enable)   ; 拼音词库，五笔用户 *不需要* 此行设置
+(setq default-input-method "pyim")
+</pre>
+
+=== zero-el ===
+
+zero-el is a new Chinese input method framework for emacs. A pinyin input
+method is included in zero-el. zero-el is tested to work on emacs 24+, debian
+9 stretch, debian 10 buster, ubuntu 18.04 LTS.
+
+Unlike pyim, which is portable, zero-el pinyin engine has external dependence
+on zero-pinyin-service and zero-panel. As author of zero-el, I would recommend
+user choose pyim instead.
+
+* [https://blog.emacsos.com/zero-el.html introducing zero-el]
+* [https://gitlab.emacsos.com/sylecn/zero-el zero-el source code]
+
+I didn't know about pyim when I started zero-el project. Otherwise, I probably
+won't bother write a new input method. --sylecn
+
+=== Eim ===
 
 Recently, I wrote a package [[Eim]] to input chinese character. I think this is better
 than quail for a chinese input method. I provide two input method
@@ -73,7 +123,7 @@ I test in emacs22 and cvs emacs.
 
 -- [[Ye Wenbin]]
 
-== WuBi ==
+=== WuBi ===
 
 There is a nice wubi package that I use.  Some information and tips are at WritingChineseWithWuBi.
 
