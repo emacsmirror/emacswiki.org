@@ -71,7 +71,7 @@ supports full pinyin, double pinyin, wubi, canggu, and Rime. Check
 
 pyim was forked from Eim and is maintained.
 
-pyim is in MELPA. You can easily install it. It is a self contained input
+pyim is in [[MELPA]]. You can easily install it. It is a self contained input
 method in pure elisp. I tried the pinyin engine, it works fine in emacs GUI
 and terminal out of the box.
 
@@ -84,7 +84,7 @@ method, specifically
 
 To use pyim
 
-# config MELPA package archive
+# [http://melpa.org/#/getting-started config MELPA package archive]
 # M-x package-install RET pyim RET
 # add in ~/.emacs
 
