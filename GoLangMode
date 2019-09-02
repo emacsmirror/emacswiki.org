@@ -15,7 +15,7 @@ go-mode covers the basic features you need for working with the Go code but adds
 * With autocomplete-mode: ''go-autocomplete''
 * Standalone completion: ''go-complete''
 
-You would like [https://github.com/nsf/gocode gocode] utility for autocompletion.
+You would like [https://github.com/mdempsky/gocode gocode] utility for autocompletion.
 
 == Code analysis and refactoring ==
 
