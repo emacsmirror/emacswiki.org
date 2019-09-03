@@ -43,7 +43,8 @@
 
 ;;; Code:
 
-(defconst wsl-path-version "0.1")
+(require 'cl-lib)
+(defconst wsl-path-version "0.2")
 
 (defgroup wsl-path nil
   "Proper handling of windows filenames."
@@ -56,9 +57,9 @@
 
 (defun resolve-file-ignoring-case (file dir)
   "Find a entry in DIR whose name matches FILE to within case."
-  (find (downcase file) (directory-files dir)
-        :key 'downcase
-        :test 'string-equal))
+  (cl-find (downcase file) (directory-files dir)
+           :key 'downcase
+           :test 'string-equal))
 
 (defun resolve-path-ignoring-case (path)
   "Attempt to find a file ignoring case.  PATH must be an simple
@@ -68,21 +69,21 @@ simply return whatever you input."
   (if (file-exists-p path)
       path
     (let* ((filename "/"))
-      (loop for file in (split-string path "/" t)
-            for guess = (concat filename file)
-            do
-            (if (file-exists-p guess)
-                (setf filename (concat guess "/"))
-              (let ((real-file (resolve-file-ignoring-case file filename)))
-                (if real-file
-                    (setf filename (concat filename real-file "/"))
-                  ;; If all else fails, leave it unchanged
-                  (setf filename (concat filename file "/")))))
-            finally (return
-                     ;; Remove trailing slash if not on input
-                     (if (equal ?/ (aref path (- (length path) 1)))
-                         filename
-                       (substring filename 0 (- (length filename) 1))))))))
+      (cl-loop for file in (split-string path "/" t)
+               for guess = (concat filename file)
+               do
+               (if (file-exists-p guess)
+                   (setf filename (concat guess "/"))
+                 (let ((real-file (resolve-file-ignoring-case file filename)))
+                   (if real-file
+                       (setf filename (concat filename real-file "/"))
+                     ;; If all else fails, leave it unchanged
+                     (setf filename (concat filename file "/")))))
+               finally (return
+                        ;; Remove trailing slash if not on input
+                        (if (equal ?/ (aref path (- (length path) 1)))
+                            filename
+                          (substring filename 0 (- (length filename) 1))))))))
 
 (defun wsl-path-run-real-handler (operation args)
   "Run OPERATION with ARGS."
@@ -107,19 +108,20 @@ simply return whatever you input."
 `x:/' to `/mnt/x/'."
   (let ((inhibit-file-name-handlers
          (append '(wsl-path-map-drive-hook-function)
-                 (and (eq inhibit-file-name-operation operation)
+                 (and (eq inhibit-file-name-operation
+                          'substitute-in-file-name)
                       inhibit-file-name-handlers)))
-        (inhibit-file-name-operation operation))
+        (inhibit-file-name-operation 'substitute-in-file-name))
     (cond ((string-match wsl-path-style1-regexp name)
-           (setq filename
-                 (replace-match (concat wsl-path-prefix
-                                        (downcase (substring (match-string 2 name) 0 1)))
-                                t nil name 2))
-           (while (string-match "\\\\" filename)
-             (setq filename
-                   (replace-match "/" t nil filename)))
-           (resolve-path-ignoring-case
-            (substitute-in-file-name filename)))
+           (let ((filename
+                  (replace-match (concat wsl-path-prefix
+                                         (downcase (substring (match-string 2 name) 0 1)))
+                                 t nil name 2)))
+             (while (string-match "\\\\" filename)
+               (setq filename
+                     (replace-match "/" t nil filename)))
+             (resolve-path-ignoring-case
+              (substitute-in-file-name filename))))
           ((string-match wsl-path-style2-regexp name)
            (resolve-path-ignoring-case
             (substitute-in-file-name
