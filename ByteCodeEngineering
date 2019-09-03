@@ -42,7 +42,7 @@ Here is the Emacs VM instruction table for 23.3. (Collected from bytecomp.el and
 ||       +6||: unbind+6               ||num8       ||               ||            ||                                                          ||
 ||       +7||: unbind+7               ||num16      ||               ||            ||                                                          ||
 ||         ||                         ||           ||               ||            ||                                                          ||
-||      070||nth                      ||           ||list, num      ||val         ||                                                          ||
+||      070||nth                      ||           ||num, list      ||val         ||                                                          ||
 ||      071||symbolp                  ||           ||val            ||result      ||                                                          ||
 ||      072||consp                    ||           ||val            ||result      ||                                                          ||
 ||      073||stringp                  ||           ||val            ||result      ||                                                          ||
