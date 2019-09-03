@@ -1,3 +1,4 @@
+<pre>
 (when (featurep 'yaml-mode)
 
   (define-derived-mode cfn-mode yaml-mode
@@ -26,3 +27,4 @@ See `https://github.com/aws-cloudformation/cfn-python-lint'."
 
     (add-to-list 'flycheck-checkers 'cfn-lint)
     (add-hook 'cfn-mode-hook 'flycheck-mode)))
+</pre>
