@@ -75,10 +75,10 @@ These are also supported.
 
 ==3 Usage ==
 
-To use org-jira.el, get the .el files from [https://github.com/baohaojun/org-jira org-jira on github].
+To use org-jira.el, get the .el files from [https://github.com/ahungry/org-jira org-jira on github].
 
 <pre>
-git clone git://github.com/baohaojun/org-jira.git
+git clone git://github.com/ahungry/org-jira.git
 </pre>
 (In my repository, I have included the emacs-soap files, which you can get from its project, but in my version I fixed an utf-8 encoding bug in it so that I can post comments in Chinese).
 
