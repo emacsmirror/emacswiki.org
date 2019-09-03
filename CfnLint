@@ -35,4 +35,7 @@ See `https://github.com/aws-cloudformation/cfn-python-lint'."
     (add-hook 'cfn-mode-hook 'flycheck-mode)))
 </pre>
 
-Here's a screenshot: CfnModeScreenshot
+Here's a screenshot:
+
+[[image:CfnModeScreenshot]]
+
