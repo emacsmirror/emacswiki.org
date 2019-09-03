@@ -2,7 +2,7 @@ The command line tool <tt>cfn-lint</tt> is a linter for CloudFormation templates
 
 You can read more about the tool and how to install it here: https://github.com/aws-cloudformation/cfn-python-lint
 
-I've integrated <tt>cfn-lint</tt> with Emacs using yaml-mode and flycheck with the code below:
+I've integrated <tt>cfn-lint</tt> with Emacs using YamlMode and [[Flycheck]], see the code below:
 
 <pre>
 (when (featurep 'yaml-mode)
