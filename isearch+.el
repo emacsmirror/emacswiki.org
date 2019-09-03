@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  9 08:06:58 2019 (-0700)
+;; Last-Updated: Tue Sep  3 16:30:52 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6868
+;;     Update #: 6870
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1234,6 +1234,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2019/09/03 dadams
+;;     isearch-query-replace: Misplaced paren corrected in (and transient-mark-mode mark-active  " in region").
 ;; 2019/06/09 dadams
 ;;     isearchp-repeat-command: Same as in zz-repeat-command in zones.el now.
 ;;     isearchp-yank-*: Removed soft-require of repeat.el (hard-require in isearchp-repeat-command now).
@@ -4159,7 +4161,7 @@ replacements from Isearch is `M-s w ... M-%'."
                                   " word")))
                          (and isearch-regexp  " regexp")
                          (and backward  " backward")
-                         (and transient-mark-mode mark-active)  " in region")
+                         (and transient-mark-mode mark-active  " in region"))
                  isearch-regexp)
                 t isearch-regexp (or delimited  isearch-word) nil nil
                 (and transient-mark-mode  mark-active  (region-beginning))
