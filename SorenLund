@@ -9,6 +9,8 @@ Find out more about me here: https://about.me/slu or email me at:
 (replace-regexp-in-string "^http://\\([a-z]+\\)\.\\([a-z\.]+\\)/" "\\1@\\2" "http://soren.lund.org/")
 }}}
 
+I've written about integrating CfnLint into Emacs.
+
 [new:AndyStewart:2009-08-20 22:07 UTC]
 Hi, Søren, welcome to wiki! :)  -- AndyStewart
 
