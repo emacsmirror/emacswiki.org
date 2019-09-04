@@ -1,9 +1,25 @@
-This is about installing Emacs into an Android device. See GoogleAndroid for tips about using Emacs to develop Android applications.
+This is about installing Emacs into an Android device. 
+See GoogleAndroid for tips about using Emacs to develop Android applications.
 
 ==Ways to run Emacs on Android devices==
 
 ===Native port (installable Android application)===
-A native Emacs on Android, without requiring root or special setup, can be installed in the [https://termux.com Termux] terminal emulator application by executing:
+A native Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
+
+With UserLand, you can install a variety of different distributions. 
+Here are some of the commands to install emacs on some of them: 
+
+Another solution is [https://termux.com Termux]. There, just Debian is supported. 
+
+In Alpine (recommended)
+
+[code]apk update && apk add emacs[/code]
+
+In Arch Linux
+
+[code]pacman -Syu && pacman -S emacs[/code]
+
+In Debian/Ubuntu
 
 [code]apt update && apt install emacs[/code]
 
@@ -11,14 +27,6 @@ A native Emacs on Android, without requiring root or special setup, can be insta
 ====GNU/Linux in a chroot jail (requires root)====
 For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as ConnectBot shell client and Hacker's Keyboard (including Ctrl, etc. keys) can be used with Emacs in this way.
 
-====GNU/Linux in a ptrace-based container (does not require root)====
-Besides running Emacs inside a true chroot, it's also possible to get a running Emacs from a ready GNU/Linux distro package in an unrooted Android -- as a faster solution compared to the native app option, which would require some work on adapting and recompiling Emacs against the Android environment.
-
-This is possible with the [https://play.google.com/store/apps/details?id=champion.gnuroot GNURoot app]. It allows to use a GNU/Linux distribution like Debian in an unrooted Android.
-
-The GNURoot app does all this by means of a [http://unix.stackexchange.com/a/9188/4319 PTRACE container] implemented by [http://proot.me/ proot]: interception of syscalls and "emulating" what should be done in the different Android and unprivileged environment (redirecting paths, faking the root user privileges, etc.).
-
-It's a pity that [https://github.com/corbinlc/gnuroot the source code for GNURoot] seems not to be well documented, so it's not easy to start hacking with it right away or at least learn how all the things have been compiled and put together from source.
 
 ===Don't run Emacs, use a SSH client to connect to a server which runs Emacs===
 This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed. You could also use VNC if you need graphics.
