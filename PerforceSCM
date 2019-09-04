@@ -2,12 +2,12 @@
 
 There are two packages that integrate Perforce with Emacs:
 
-* **p4.el** is [https://github.com/gareth-rees/p4.el available from GitHub]. This package is suitable for users who are familiar with Perforce and want to have the full power of the Perforce client interface (changelists, jobs, branch specifications, status, resolve, annotate and so on). This package is maintained by [http://garethrees.org/ Gareth Rees]; it is a fork of the the [http://p4el.sourceforge.net/ SourceForge version] by Rajesh Vaidheeswarran and others, which has been dormant since 2005.
+* **p4.el** is [https://github.com/gareth-rees/p4.el available from GitHub]. This package is suitable for users who are familiar with Perforce and want to have the full power of the Perforce client interface (changelists, jobs, branch specifications, status, resolve, annotate and so on). This package is maintained by [http://garethrees.org/ Gareth Rees]; it is a fork of the the [http://p4el.sourceforge.net/ SourceForge version] by Rajesh Vaidheeswarran and others, which has been dormant since 2005. You can check other forks in [https://github.com/filsinger/p4.el/network/members this github-only list].
 
 * **vc-p4.el** is [https://swarm.workshop.perforce.com/files/guest/magnus_henoch/vc-p4 available from the Perforce Public Depot]. This package is suitable for users who are familiar with VersionControl in Emacs and want to work with Perforce in the same way. This integration makes all of the standard Emacs VC commands work with Perforce, and it is fully compatible with p4.el (that is, you can use both at the same time, for example if you need occasional access to the Perforce client features that don't map onto Emacs' VersionControl features). This package was originally written by [mailto:jik@kamens.brookline.ma.us Jonathan Kamens], has been contributed to by [mailto:dann@ics.uci.edu Dan Nicolaescu], and seems to be currently maintained by Magnus Henoch.
 
-p4.el is very good, but has an undesirable [https://github.com/gareth-rees/p4.el/issues/235 interaction with TRAMP] (it doesn't support [https://github.com/gareth-rees/p4.el/issues/132 remote buffers], but its find-file hook tries to process TRAMP buffers and occasionaly causes find-file to fail). 
-Here's a workaround that seems to work:
+p4.el is very good, but has an undesirable [https://github.com/gareth-rees/p4.el/issues/235 interaction with TRAMP] (it doesn't support [https://github.com/gareth-rees/p4.el/issues/132 remote buffers], but its `find-file` hook tries to process TRAMP buffers and causes `find-file`to fail when visiting remote buffers). 
+Here's a workaround that seems to allow you to do `find-file` without hiccups:
 {{{
 (defun p4-tramp-workaround-find-file-hook ()
     "do not let p4.el process remote TRAMP buffers"
