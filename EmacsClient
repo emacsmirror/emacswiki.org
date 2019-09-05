@@ -292,24 +292,21 @@ Also see http://www.gnu.org/s/libtool/manual/emacs/Emacs-Server.html#Emacs-Serve
 Set your color choices in your .emacs file:
 <pre>
 ;; set colors for my emacs server instances
-(defvar esrvname (getenv "ESRVNAME")) ;; is there a var that provides the server-name?
-(ignore-errors ;; this prevents error when environment variable is not set
-  (when (string-match "todo" esrvname)
-    (setq default-frame-alist
-          (append default-frame-alist
-                  '((background-color . "#93DB80")
-                    (cursor-color . "yellow")
-                    )))
-    ;; or set a color-theme, e.g., (color-theme-classic)
-    )
-  (when (string-match "edit" esrvname)
-    (setq default-frame-alist
-          (append default-frame-alist
-                  '((background-color . "yellow")
-                    ;; (foreground-color . "black")
-                    (cursor-color . "blue")
-                    )))
-    )
+(when (string-match "todo" server-name)
+  (setq default-frame-alist
+        (append default-frame-alist
+                '((background-color . "#93DB80")
+                  (cursor-color . "yellow")
+                  )))
+  ;; or set a color-theme, e.g., (color-theme-classic)
+  )
+(when (string-match "edit" server-name)
+  (setq default-frame-alist
+        (append default-frame-alist
+                '((background-color . "yellow")
+                  ;; (foreground-color . "black")
+                  (cursor-color . "blue")
+                  )))
   )
 </pre>
 
