@@ -138,7 +138,7 @@ GUD is one huge monolithic program written in a style that doesn't make much use
 
 The straw that broke Rocky's back was the fact that you could debug only one thing at a time and fixing this was not a simple matter, due to the pervasive global variables.
 
-So Rocky embarked on this journey to rewrite gud from the ground up using more current programming technology (more modularity, better use of Lisp, and more tests), and more current debuggers -- well, okay, they were initially largely Rocky's debuggers. See [https://github.com/rocky/emacs-dbgr/wiki/Debuggers-Supported realgud debuggers supported] though for the current list.
+So Rocky embarked on this journey to rewrite gud from the ground up using more current programming technology (more modularity, better use of Lisp, and more tests), and more current debuggers -- well, okay, they were initially largely Rocky's debuggers. See [https://github.com/realgud/realgud/wiki/Debuggers-Available realgud debuggers available] though for the current list.
 
 ----
 CategoryDebug
