@@ -1,6 +1,6 @@
 == Hello ==
 
-portrait:http://www.emacswiki.org/pics/static/ViniciusJoseLatorrePortrait
+portrait:https://www.emacswiki.org/pics/static/ViniciusJoseLatorrePortrait
 
 Hi, my name is Vinicius José Latorre and you can reach me by email at
 /viniciusjl DOT gnu AT gmail DOT com/, aka. [::viniciusjl].
@@ -42,7 +42,7 @@ Please, put your doubt, suggestion, improvement, etc. at end of the
 
 </pre>
 ; ([Self:action=history;id=actions.el history])  Download:actions.el  ([[Actions]]) : Actions utilities.
-: .:: ''v0.10'' ::.
+: .:: ''v0.13'' ::.
 <pre>
 
 </pre>
@@ -148,21 +148,21 @@ code.
 </pre>
 == Links for ebnf2ps package ==
 
-ABNF :: [http://en.wikipedia.org/wiki/ABNF Augmented BNF for Syntax Specifications: ABNF] :: [http://tools.ietf.org/html/rfc5234 RFC-5234]
+ABNF :: [https://en.wikipedia.org/wiki/ABNF Augmented BNF for Syntax Specifications: ABNF] :: [https://tools.ietf.org/html/rfc5234 RFC-5234]
 
-ISO EBNF :: [http://www.cl.cam.ac.uk/~mgk25/iso-ebnf.html International Standard of the ISO EBNF Notation] :: [http://www.cl.cam.ac.uk/~mgk25/iso-14977.pdf ISO-14977]
+ISO EBNF :: [https://www.cl.cam.ac.uk/~mgk25/iso-ebnf.html International Standard of the ISO EBNF Notation] :: [https://www.cl.cam.ac.uk/~mgk25/iso-14977.pdf ISO-14977]
 
-EBNF :: [http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form Extended BNF]
+EBNF :: [https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form Extended BNF]
 
-EBNFX :: [http://www.w3.org/TR/2004/REC-xml-20040204/#sec-notation Extensible Markup Language (XML) 1.0 (Third Edition) - Section 6. Notation]
+EBNFX :: [https://www.w3.org/TR/2004/REC-xml-20040204/#sec-notation Extensible Markup Language (XML) 1.0 (Third Edition) - Section 6. Notation]
 
-DTD :: [http://www.w3.org/TR/2004/REC-xml-20040204/ Extensible Markup Language (XML) 1.0 (Third Edition)]
+DTD :: [https://www.w3.org/TR/2004/REC-xml-20040204/ Extensible Markup Language (XML) 1.0 (Third Edition)]
 
-WSN :: [http://en.wikipedia.org/wiki/Wirth_Syntax_Notation Wirth Syntax Notation]
+WSN :: [https://en.wikipedia.org/wiki/Wirth_Syntax_Notation Wirth Syntax Notation]
 
-BNF :: [http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form Backus Naur Form]
+BNF :: [https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form Backus Naur Form]
 
-[http://en.wikipedia.org/wiki/Syntax_diagram Syntax Diagram]
+[https://en.wikipedia.org/wiki/Syntax_diagram Syntax Diagram]
 
 
 <pre>
@@ -442,10 +442,6 @@ Aurélien Tisné :: <code>http:</code><code>//aurelien.tisne.free.fr/emacs-pages
 DavePearson :: http://www.davep.org/emacs/
 
 EricMarsden :: http://purl.org/net/emarsden/home/downloads/
-
-FrancisJWright :: http://centaur.maths.qmul.ac.uk/Emacs/
-
-Jesse Rosenthal ::  http://www.columbia.edu/~jr2075/elisp/
 
 JuriLinkov (''Jurta'') :: http://www.jurta.org/emacs/
 
