@@ -1,15 +1,15 @@
 ;;; actions.el --- actions utilities
 
-;; Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 Vinicius Jose Latorre
+;; Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Vinicius Jose Latorre
 
 ;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: convenience
-;; Version: 0.10
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; Version: 0.13
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
-(defconst actions-version "0.10"
-  "actions.el, v 0.10 <2018/08/08 vinicius>
+(defconst actions-version "0.13"
+  "actions.el, v 0.13 <2019/09/02 vinicius>
 
 Please send all bug fixes and enhancements to
 	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
@@ -132,6 +132,10 @@ Please send all bug fixes and enhancements to
      :visible (actions-file-p "\\.zip$")]
     ["Expand .rar"     (actions-call "unrar")
      :visible (actions-file-p "\\.rar$")]
+    ["Edit .dia"       (actions-call "dia")
+     :visible (actions-file-p "\\.dia$")]
+    ["Run file"        (actions-run)
+     :visible (actions-file-executable-p "\\.sh$")]
     ("Read PDF" :visible (actions-file-p "\\.\\(pdf\\|PDF\\)$")
      ["via 'xpdf'"     (actions-call "xpdf") :visible t]
      ["via 'okular'"   (actions-call "okular") :visible t])
@@ -142,13 +146,13 @@ Please send all bug fixes and enhancements to
     ["Qt Designer"     (actions-call "designer")
      :visible (actions-file-p "\\.ui$")]
     ["VLC Video/Audio" (actions-call "vlc")
-     :visible (actions-file-p "\\.\\(MP[34]\\|M4A\\|AAC\\|OPUS\\|mp[34]\\|m4a\\|aac\\|opus\\)$")]
+     :visible (actions-file-p "\\.\\(MP[34]\\|M4A\\|AAC\\|OPUS\\|OGG\\|mp[34]\\|m4a\\|aac\\|opus\\|ogg\\)$")]
     ["LibreOffice Doc" (actions-call "libreoffice")
      :visible (actions-file-p "\\.\\(OD[TF]\\|DOCX?\\|DOCX?\\.ENC\\|PPTX?\\|od[tf]\\|docx?\\|docx?\\.enc\\|pptx?\\)$")]
     ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|XCF\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
-     ["GIMP Image"     (actions-call "gimp") :visible t]
      ["GEEQIE Image"   (actions-call "geeqie")
-      :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")])
+      :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")]
+     ["GIMP Image"     (actions-call "gimp") :visible t])
     ("grep recursively" :visible (region-active-p)
      ["case sensitive"   (actions-grep-r) :visible t]
      ["case insensitive" (actions-grep-r "-i") :visible t])
@@ -249,11 +253,24 @@ manual).  For example, \"z\" for gzip; \"j\" for bz2."
   (actions-call (format "tar x%svf" (or compress ""))))
 
 
+(defun actions-run ()
+  "Run current file in `dired-mode'."
+  (shell-command
+   (format "%s &"
+	   (dired-get-file-for-visit))))
+
+
 (defun actions-file-p (regexp)
   "Returns t if current line in `dired-mode' matches REGEXP and it is a file."
   (and (eq major-mode 'dired-mode)
        (not (car (file-attributes (dired-get-file-for-visit))))
        (string-match regexp (dired-get-file-for-visit))))
+
+
+(defun actions-file-executable-p (regexp)
+  "Returns t if current line in `dired-mode' matches REGEXP and it is an executable file."
+  (and (actions-file-p regexp)
+       (file-executable-p (dired-get-file-for-visit))))
 
 
 (defvar actions-grep-history nil)
