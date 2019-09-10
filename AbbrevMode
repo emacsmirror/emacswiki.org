@@ -274,6 +274,34 @@ you call it like this:
 </pre>
 -- JoeBloggs
 
+== Invoke abbrev expansion with two spaces ==
+
+[https://stackoverflow.com/questions/13212696/emacs-input-decode-map-for-terminal Original conversation on stack exchange]
+
+By invoking abbrev expansion with two space instead of one, you can use more common abbrevs like "alpha" and
+not worry about getting "α" when you really want "alpha": two space expands, one space doesn't do anything.
+
+The easy way is to bind this function to space key:
+
+<pre>
+(defun insert-space-or-expand-abbrev ()
+  "Expand abbrev if previous char is a space, or insert a space."
+  (interactive)
+  (if (not (equal (char-before) ?\s))
+      (insert-char ?\s)
+    (backward-char)
+    (unless (expand-abbrev)
+      (insert-char ?\s))
+    (forward-char)))
+
+(global-set-key " " #'luna-insert-space-or-expand-abbrev)
+</pre>
+
+However, as Stefan mentioned on stack exchange, this binding risks to conflict with modes that does
+special things with space key. He pointed out that one can use `post-self-insert-hook' instead of rebinding space key.
+
+-- YuanFu
+
 ----
 CategoryModes
 CategoryTemplates
