@@ -8,7 +8,7 @@ You can find me on [https://emacs-china.org emacs-china] under the name casouri,
 
 [https://github.com/casouri/lunarymacs My init.el]
 
-== My Favorite EMACS expansion ==
+== My favorite EMACS expansion ==
 
 Emacs Makes A Computer Slow
 
@@ -16,19 +16,16 @@ Emacs Makes A Computer Slow
 
 Here are some packages that I wrote.
 
-- [https://github.com/casouri/trivial-copy trivial-copy]
+* [https://github.com/casouri/trivial-copy trivial-copy]
 
-- [https://github.com/casouri/isolate isolate]
+* [https://github.com/casouri/isolate isolate]
 
-- [https://github.com/casouri/find-char find-char]
+* [https://github.com/casouri/find-char find-char]
 
-- [https://github.com/casouri/eldoc-box eldoc-box]
-
-
+* [https://github.com/casouri/eldoc-box eldoc-box]
 
 
-
-
+== Message board ==
 
 [new:DrewAdams:2019-09-10 14:09 UTC]
 Welcome to the wiki. -- DrewAdams
