@@ -29,7 +29,7 @@
 == Future ideas ==
 
 * The [https://atom.io/ Atom editor] people wrote a protocol called [https://teletype.atom.io/ Teletype] that supposedly implements an editor-neutral robust collaborative editing protocol
-* [http://typeintandem.com/ Tandem] is another such effort which currently supports Sublime Text 3, Neovim and (unofficially) Vim licensed under [https://github.com/typeintandem/tandem/blob/master/LICENSE.txt Apache 2.0]
+* [https://github.com/typeintandem/tandem Tandem] is another such effort which currently supports Sublime Text 3, Neovim and (unofficially) Vim licensed under [https://github.com/typeintandem/tandem/blob/master/LICENSE.txt Apache 2.0]
 
 ----
 CategoryRemoteEmacs
