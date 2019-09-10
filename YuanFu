@@ -1,19 +1,28 @@
-== Yuan Fu ==
+== Me ==
 
 a.k.a casouri.
 
 I started using Emacs in 2017 when I was a freshman in college. I've been playing with it ever since.
-Emacs had opened a new world to me: Lisp, AI, Lisp machine, ancient languages, PLT, etc. 
-I wouldn't find so many amazing things and find my interest in PLT and decide to go in this direction
-once I graduate if I haven't met Emacs.
-I think this is an interesting view on what Emacs can do beyond the pragmatic aspect.
 
-You can find me on [https://emacs-china.org emacs-china] under the name casouri, or visit [https://archive.casouri.co.uk/note my blog]. I put all the packages I wrote on [https://www.github.com/casouri github].
+You can find me on [https://emacs-china.org emacs-china] under the name casouri, or visit [https://archive.casouri.co.uk/note my blog]. I put all the packages I wrote on [https://www.github.com/casouri github]. 
+
+[https://github.com/casouri/lunarymacs My init.el]
 
 == My Favorite EMACS expansion ==
 
 Emacs Makes A Computer Slow
 
+== Development ==
+
+Here are some packages that I wrote.
+
+- [https://github.com/casouri/trivial-copy trivial-copy]
+
+- [https://github.com/casouri/isolate isolate]
+
+- [https://github.com/casouri/find-char find-char]
+
+- [https://github.com/casouri/eldoc-box eldoc-box]
 
 
 
