@@ -1,0 +1,8 @@
+can't discover where the load paths are added, even after reviewing the loadpath page.
+put things in a path that's already in the load path variable, and none of the commands to load the library work
+no description as to where to get the "other two needed files"
+
+I can't see how this page is a functioning guide to colour themes in emacs
+
+-- dave1974 2019-09-11 09:23 UTC
+
