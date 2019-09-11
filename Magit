@@ -46,11 +46,11 @@ Various packages exist which extend Magit, including:
 * [https://github.com/magit/forge forge] Support for PRs and Issues in Git Forges such as GitHub
 * [https://github.com/justbur/evil-magit evil-magit] evil key bindings for Magit
 * [https://github.com/magit/magit-annex magit-annex] use ##git annex## within Magit
-* [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit extension for Gerrit Code Review
+* [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit extension for Gerrit Code Review {[https://github.com/terranpro/magit-gerrit/issues/59 not actively maintained], the fork at https://github.com/darcylee/magit-gerrit may be more up to date}
 * [https://github.com/jtatarik/magit-gitflow magit-gitflow] ## git flow## extension for Magit
 * [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit extension for dealing with GitHub pull requests
-* [https://github.com/magit/magit-stgit magit-stgit] StGit extension for Magit
-* [https://github.com/magit/magit-svn magit-svn] use Magit with ##git svn## repositories
+* [https://github.com/magit/magit-stgit magit-stgit] StGit extension for Magit {[https://github.com/emacsorphanage/magit-stgit/commit/8294f34e4927798d9db883cafe946a9041b7e331 no maintainer]}
+* [https://github.com/magit/magit-svn magit-svn] use Magit with ##git svn## repositories {[https://github.com/emacsorphanage/magit-svn/commit/f7dad9b0f6b81b23550ea5cca0f3219f184b746c no maintainer]}
 * [https://github.com/magit/magit-topgit magit-topgit] Topgit extension for Magit
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
 
