@@ -342,8 +342,6 @@ string including the beginning and quotes.")
 
 * Animated GIFs support in emacs-w3m.
 
-* rcirc support of automatic reconnection.
-
 * full XEmbed-support as per the X11R5, X11R6 and X11R7 specifications.  Emacs-X11 ought to be able to „swallow” other applications or gadgets, and ought to be able to be „swallowed” by another XEmbed-capable application (like, eg., the app-docks of WindowMaker, FVWM or other WMs can do, or programs like „tabbed”).  The current (Emacs 24/25prerelease) implementation of XEmbed via GTK3 and a minor subset of X11 is rather ludic… I mean, unsatisfactory.
 
 * splitting of Emacs and GUI front-end into GUI binaries which chain-load the actual Emacs binary.  No more compiling Emacs with different UI toolkits; just compiling Emacs once and then the toolkit-based frontends one wants/needs (sort of like an emacs.so linked into the UI, or a „dumb” emacs binary streaming I/O into the UI).  This would also make it easier to run Emacs daemonized and connect to it from several terminals and/or accounts on different machines –– with their local UI front-ends.
@@ -436,6 +434,8 @@ these resolved wishes attract a lot of comments, move them to their
 own page.
 
 === Implemented ===
+
+* rcirc support of automatic reconnection. Set `rcirc-reconnect-delay' (since Emacs 25).
 
 * A package manager for Emacs Lisp packages. The features that seam most important to me are a huge (browsable) list of packages and automatic dependency handling. Besides general stability of course.
 ** See [[CategoryCode#Installers]] to find a list of existing package managers.
