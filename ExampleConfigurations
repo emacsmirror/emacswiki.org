@@ -16,10 +16,10 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 * [http://edward.oconnor.cx/config/.emacs EdwardOConnor's .emacs] works in various versions of both Emacsen on several different platforms
 * [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there
 * JesseWeinsteinDotEmacs has some Mac OS X initialization that might be interesting
+* John Zaitseff's [https://www.zap.org.au/~john/emacs/.emacs .emacs] and [https://www.zap.org.au/~john/emacs/.Xresources .Xresources] files contain almost 2600 lines of code and settings tuned for Emacs under X11, the Linux console, Windows, macOS and even old terminals...  These files contain a theme very reminiscent of the old Borland IDE tools
 * [https://github.com/mina86/dot-files/blob/master/emacs/init.el mina86’s init.el] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions
 * [http://www.hollenback.net/index.php?OneTrueEditor Phil Hollenback's .emacs] is well-commented and supports both XEmacs and emacs
 * [http://www.xsteve.at/prg/emacs/ StefanReichoer's .emacs] is HUGE and runs on Windows and Unix platforms
-* John Zaitseff's [https://www.zap.org.au/~john/emacs/.emacs .emacs] and [https://www.zap.org.au/~john/emacs/.Xresources .Xresources] files contain almost 2600 lines of code and settings tuned for Emacs under X11, the Linux console, Windows, macOS and even old terminals...  These files contain a theme very reminiscent of the old Borland IDE tools.
 
 [:please-sir-can-i-have-some-more]
 == Where can I find more? ==
