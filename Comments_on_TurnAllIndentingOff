@@ -5,3 +5,10 @@ However much effort went into coding the "indent engines" does not make them mor
 
 -- Thiboj 2016-04-15 11:15 UTC
 
+
+----
+
+LaTeX mode indenting is just awful. I'm writing text, not code! This wiki-page should be helpful, but alas it is not. A function is given, but how/where do I put it?  How do I customize a variable? The in-editor `Preview' is killer, but I'm wasting time trying to get the indentation right, which is exactly antithetical to the point of LaTeX.
+
+-- Anonymous 2019-09-13 20:44 UTC
+
