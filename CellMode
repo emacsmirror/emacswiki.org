@@ -1,15 +1,8 @@
 =About=
 
-Cell-mode is a system for interactively developing custom applications within GNU Emacs. Cell-mode embeds arbitrary code, data, and user interface elements into a grid of cells much like a SpreadSheet. Unlike traditional spreadsheets, data flows to the right and downward between adjacent cells. Cell behaviors can be defined and customized with Emacs Lisp. Applications are constructed by arranging and connecting cells of different types. Sheets are organized into an interlinked web.
+Cell-mode implements an abstract spreadsheet control in an Emacs buffer.
 
-Cell-mode combines ideas from dataflow languages like Miller Puckette's PureData, emacs packages like EevMode and from wikis. 
-
-Cell-mode may be downloaded from http://github.com/dto/cell-mode (*Link Broken*)
-* can be found at https://github.com/emacsmirror/cell/blob/master/cell.el (as of 2015年01月30日)
-
-For a quick introduction you shoud open cell.el and read the "Instructions for trying out" (missing as of 2007-11-01).
-
-Load cell.el, download and rename cell-wiki-example.cell as cell-wiki.cell, enter in cell-mode and press `C-c C-r'.
+As of 2019 CellMode is in development again and has undergone substantial revision. The current URL is http://xelf.me/cell.html
 
 WikiTodo: Add a better introduction.
 
