@@ -2,7 +2,7 @@
 
 Cell-mode implements an abstract spreadsheet control in an Emacs buffer.
 
-As of 2019 CellMode is in development again and has undergone substantial revision. The current URL is http://xelf.me/cell.html
+As of 2019 %%CellMode%% is in development again and has undergone substantial revision. The current URL is http://xelf.me/cell.html
 
 WikiTodo: Add a better introduction.
 
