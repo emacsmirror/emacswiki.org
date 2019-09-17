@@ -1,0 +1,95 @@
+From the documentation:
+
+[quote]
+In Virtual Dired mode, all commands that do not actually consult the
+filesystem will work.
+
+This is useful if you want to peruse and move around in an ls -lR
+output file...
+[/quote]
+
+Here's one use case: I want to create a text file for every image file
+in a buffer. The images in this directory come from multiple cameras
+with different naming conventions, and some of them were edited and
+thus I cannot sort them by name (the default) nor by modification date
+(using ##s##). What I want is to display and sort them by the ##exif##
+/DateTimeOriginal/ field. And ideally, I want this to work for remote
+directories as well.
+
+(Tools using such text files would be
+[https://www.thregr.org/~wavexx/software/fgallery/ fgallery] and
+[https://alexschroeder.ch/cgit/sitelen-mute/about/ sitelen-mute].)
+
+In the code below, the first function gets the field I want via ##exiftool##, possibly
+from a remote server. The data gets turned into an alist and is used to
+generate a text buffer using all the data without running ##ls##. The
+entire buffer is then put into /Virtual Dired/ mode and we're good to go.
+
+{{{
+(defun asc:image-dired-exif-data (dir)
+  "Return alist of filenames and Date Time Original.
+Do this for all files in DIR, possibly remote."
+  (message "Reading exifdata for %s..." dir)
+  (let* ((default-directory dir)
+	 (data (eshell-command-to-value
+		(eshell-remote-command
+		 "exiftool" (list "-p" "${dateTimeOriginal#;DateFmt('%Y-%m-%d %H:%M:%S')} $fileName"
+				  "-q" "-f" ".")))))
+    (message "Reading exifdata for %s...done" dir)
+    (mapcar (lambda (line)
+	      (if (string= (substring line 0 2) "- ")
+		  (let ((name (substring line 2)))
+		    (cons name		; filename
+			  (format-time-string
+			   "%F %R" (file-attribute-modification-time
+				    (file-attributes name)))))
+		(cons
+		 (substring line 20)	  ; filename
+		 (substring line 0 19)))) ; date and time
+	    (split-string data "\n" t))))
+
+;; (asc:image-dired-exif-data "/ssh:megabombus.local:/Volumes/Data/Pictures/Fotos 2019/Portugal/Album")
+
+(defun asc:image-dired-exif-mode (dir)
+  "Create a virtual buffer for images sorted by creation date.
+Use the apostrophe to edit the text files matching the image file."
+  (interactive "DDirectory: ")
+  (with-current-buffer (get-buffer-create "*images*")
+    (let ((inhibit-read-only t)
+	  (data (asc:image-dired-exif-data dir)))
+      (erase-buffer)
+      (let* ((files (sort (directory-files dir nil "jpg$" t)
+			  (lambda (f1 f2)
+			    (string< (cdr (assoc f1 data))
+				     (cdr (assoc f2 data))))))
+	     (prog (make-progress-reporter "Reading files " 0 (length files)))
+	     (i 0))
+	(insert dir ":\n")
+	(dolist (file files)
+	  (let ((attr (file-attributes (expand-file-name file dir) 'string)))
+	    (insert (format "%s % 3d %s %s % 10d %s %s\n"
+			    (file-attribute-modes attr)
+			    (file-attribute-link-number attr)
+			    (file-attribute-user-id attr)
+			    (file-attribute-group-id attr)
+			    (file-attribute-size attr)
+			    (cdr (assoc file data))
+			    ;; (format-time-string "%F %R" (file-attribute-modification-time attr))
+			    file)))
+	  (progress-reporter-update prog (setq i (1+ i))))
+	(progress-reporter-done prog))
+      (dired-virtual-mode)
+      (local-set-key (kbd "'") 'asc:label-edit))
+    (switch-to-buffer (current-buffer))))
+
+(defun asc:label-edit ()
+  "Edit the text file for the image at point.
+This is used for `asc:image-dired-exif-mode'."
+  (interactive)
+  (find-file (concat (file-name-sans-extension
+		      (dired-file-name-at-point))
+		     ".txt")))
+}}}
+
+----
+DiredMode CategoryDirectory
