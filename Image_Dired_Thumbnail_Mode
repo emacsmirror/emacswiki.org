@@ -1,0 +1,17 @@
+This mode does what [[Tumme]] used to do: it inserts a thumbnail for every image in the directory
+into a special buffer linked to the ##dired## buffer such that moving from one thumbnail to the next
+selects the appropriate file in the linked ##dired## buffer.
+
+Use ##M-x image-dired## to do this.
+
+To increase the margin around images so you can better see which file is currently selected:
+
+{{{
+(setq image-dired-thumb-margin 5)
+}}}
+
+Alternatively, mark some files, e.g. using ##m % jpg$ RET## and use ##C-t C-t## to run ##image-dired-dired-toggle-marked-thumbs##.
+This inserts thumbnails into the dired buffer!
+
+----
+DiredMode CategoryDirectories CategoryModes
