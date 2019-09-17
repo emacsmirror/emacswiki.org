@@ -71,6 +71,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 * OperatingOnFilesInDired – Opening files in associated applications.
 * ThumbsMode -- Modify dired for automatic image previewing.
 * [[Trashcan]] -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems.
+* [[Virtual Dired]] -- edit text files that list files as if they were directory listings.
 
 == Windows specific tips and additional features ==
 
