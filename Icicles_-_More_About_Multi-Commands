@@ -225,6 +225,8 @@ works; some do not.  Consult the doc for any given command to see
 if it does.  Whenever it is defined, the meaning of "delete"
 depends on the particular command you use.
 
+
+[:C-uS-delete]
 `S-delete' deletes only the objects named by the current
 completion candidate.  However, with a prefix argument, it deletes
 '''''ALL''''' objects named by the current set of completion candidates,
