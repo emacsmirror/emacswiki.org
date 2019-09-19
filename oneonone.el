@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Fri Aug  9 11:07:32 2019 (-0700)
+;; Last-Updated: Thu Sep 19 15:55:44 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 3212
+;;     Update #: 3215
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -309,6 +309,9 @@
  
 ;;; Change Log:
 ;;
+;; 2019/09/19 dadams
+;;     1on1-move-minibuffer-frame-near-point, 1on1-reposition-minibuffer-frame:
+;;       Allow just vertical offset too.
 ;; 2019/08/09 dadams
 ;;     y-or-n-p: Updated doc string per vanilla Emacs (26.2).
 ;; 2019/06/15 dadams
@@ -2057,14 +2060,24 @@ This command requires library `fit-frame.el'."
 
   (defcustom 1on1-move-minibuffer-frame-near-point nil
     "Whether to move `1on1-minibuffer-frame' near point, and just where.
-nil means do not move it.  A cons (X . Y) means offset `left' by X and
-`top' by Y pixels from point.  For example, (-200 . 30) moves the top
-left frame corner 200 pixels to the left and 30 pixels below point.
-This option has no effect if `1on1-minibuffer-frame' is nil."
-    :group 'One-On-One :type '(choice
-                               (const  :tag "Do not move frame" nil)
-                               (cons   :tag "Offset frame (X . Y) pixels from point"
-                                       (integer :tag "X") (integer :tag "Y"))))
+* nil means do not move it.  
+
+* A single whole number, Y, means offset `top' by Y pixels from point.
+  The `left' frame position is unchanged.  As always, positive is
+  down (below point), negative is up (above point).
+
+* A cons of two whole numbers, (X . Y), means offset `left' by X and
+  `top' by Y pixels from point.
+
+  For example, (-200 . 30) moves the top left frame corner 200 pixels
+  to the left and 30 pixels below point.  This option has no effect if
+  `1on1-minibuffer-frame' is nil."
+    :group 'One-On-One
+    :type '(choice
+            (const   :tag "Do not move frame" nil)
+            (integer :tag "Offset frame Y pixels below point (above, if negative)" :value 50)
+            (cons    :tag "Offset frame (X . Y) pixels from point"
+                     (integer :tag "X" :value -200) (integer :tag "Y" :value 50))))
 
   (defvar 1on1-move-minibuffer-frame-max-left-top '(500 . 100)
     "Cons (LEFT . TOP) of maximum `left' and `top' positions for frame.")
@@ -2075,25 +2088,30 @@ The top left corner of the frame is offset from POSITION according to
 `1on1-move-minibuffer-frame-near-point'."
     (when (and (= (minibuffer-depth) 1)  1on1-move-minibuffer-frame-near-point
                (frame-live-p 1on1-minibuffer-frame))
-      (let ((buf  (1on1-last-non-minibuffer-buffer)))
+      (let* ((buf  (1on1-last-non-minibuffer-buffer))
+             (both (consp 1on1-move-minibuffer-frame-near-point))
+             (dx   (or delta-x
+                       (and both  (car 1on1-move-minibuffer-frame-near-point))
+                       0))
+             (dy   (or delta-y
+                       (if both
+                           (cdr 1on1-move-minibuffer-frame-near-point)
+                         1on1-move-minibuffer-frame-near-point)
+                       0)))
         (when buf 
           (with-current-buffer buf
-            (setq position  (or position  (point))
-                  delta-x   (or delta-x  (and 1on1-move-minibuffer-frame-near-point
-                                              (car 1on1-move-minibuffer-frame-near-point)))
-                  delta-y   (or delta-y  (and 1on1-move-minibuffer-frame-near-point
-                                              (cdr 1on1-move-minibuffer-frame-near-point))))
+            (setq position  (or position  (point)))
             (let* ((win   (get-buffer-window buf t))
                    (posn  (posn-at-point position win)))
               (when posn
                 (let* ((x-y        (posn-x-y posn))
                        (win-edges  (window-inside-absolute-pixel-edges win))
-                       (left       (min (max 0 (+ (car x-y) (car  win-edges) delta-x))
-                                        (- (x-display-pixel-width)
-                                           (car 1on1-move-minibuffer-frame-max-left-top))))
-                       (top        (min (max 0 (+ (cdr x-y) (cadr win-edges) delta-y))
-                                        (- (x-display-pixel-height)
-                                           (cdr 1on1-move-minibuffer-frame-max-left-top)))))
+                       (left       (if both
+                                       (min (max 0 (+ (car x-y) (car win-edges) dx))
+                                            (- (x-display-pixel-width) dx))
+                                     0))
+                       (top        (min (max 0 (+ (cdr x-y) (cadr win-edges) dy))
+                                        (- (x-display-pixel-height) dy))))
                   (modify-frame-parameters 1on1-minibuffer-frame
                                            `((left . ,left) (top . ,top)))))))))))
 
