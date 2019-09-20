@@ -1,4 +1,4 @@
-This page will cover the GNU Emacs and the Windows Registry: using the Registry to
+This page deals with GNU Emacs and the Windows Registry, especially using the Registry to
 customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#example of setting the registry]]
 
 
@@ -6,7 +6,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
 
 * Change your keyboard keys like Swapping Caps Lock for Control key (see MovingTheCtrlKey). This is probably the most common use.
 * Customize the window size, position, and various other visual or window manager related settings.
-* Set alternate values for Environment Variables, such as <tt>HOME</tt>, <tt>EMACSLOADFOPATH</tt>, <tt>PRELOAD_WINSOCK</tt>
+* Set alternate values for Windows environment variables, such as <tt>HOME</tt>, <tt>EMACSLOADFOPATH</tt>, <tt>PRELOAD_WINSOCK</tt>
 
 
 ==Why does GNU Emacs use the Windows Registry?==
@@ -18,22 +18,18 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
   attempt to read a <tt>%HOME%\.Xresources</tt> file directly, to just
   to use the Windows Registry, because it is also a resource database.
 
-
-==What Registry keys are used? ==
+==What Registry keys does Emacs use? ==
 
 : According to the official documentation (info "(emacs)Resources") , the keys are:
 * <tt>HKEY_CURRENT_USER\SOFTWARE\GNU\Emacs</tt>
 * <tt>HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Emacs</tt>
 
-: In Windows 7 64-bit use:
-* <tt> HKEY_CURRENT_USER\SOFTWARE\Wow6432Node\GNU\Emacs</tt>
-* <tt>HKEY_LOCAL_MACHIN\SOFTWARE\Wow6432Node\GNU\Emacs</tt>
+: Below we use the common abbreviations <tt>HKCU</tt> for <tt>HKEY_CURRENT_USER</tt>
+  and <tt>HKLM</tt> for <tt>HKEY_LOCAL_MACHINE</tt>; but in registry parameter files
+  you must use the full names. See the example below.
 
-: (Usually in disucssions, HKEY_CURRENT_USER is abbreviated as HKCU,
-  and HKEY_LOCAL_MACHINE is similarly HKLM.)
-
-: The keys used may differ on various ports. For example, Meadow 3.00
-  DOES NOT search the above keys, but instead uses the following keys:
+: What keys are used may differ on different ports. For example, Meadow 3.00
+  DOES NOT search the above keys, but instead uses these keys:
 
 * <tt>HKEY_CURRENT_USER\SOFTWARE\GNU\Meadow\Common</tt>
 * <tt>HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Meadow\3.00</tt>
@@ -41,30 +37,33 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
 
 ==Which Registry key should I use?==
 
-: Use the <tt>HKCU</tt> key for personal customization, and use the <tt>HKLM</tt> key
-  for system-wide customization.
-
+: Use <tt>HKCU</tt> for personal customization and <tt>HKLM</tt>
+  for system-wide customization. Prefer <tt>HKCU</tt> for single-user
+  systems.
 
 ==How are the X resources searched for in the Registry?==
 
-: Emacs checks the environment if a particular setting is bound and
-  set. In particular, in the registry keys above, the Emacs will
-  search for String values with particular names.
+: Emacs checks the environment for whether a particular setting is bound and
+  set. In particular, for the registry keys above, Emacs
+  searches for string values with those names.
 
-: For example, it will open HKCU...Emacs key to search for string
-  value "Emacs.Background" and set its background color to what ever
-  string value setting (e.g. "black"). This is before the first frame
-  is created.
+: For example, before opening the first frame it tries to open the
+  HKCU\...\Emacs key to search for
+  the string value named "Emacs.Background", and if it finds that, sets
+  its background color to the value given there
+  (e.g., "black").
 
-
-== What are the X resources searched for in the Registry? ==
+== What X resources does Emacs search for in the Registry? ==
 
 : Although the official documentation has a list (info "(emacs)Table
-  of Resources"), it may not be correct for a Emacs Windows port.
+  of Resources"), it may not be correct for an Emacs Windows port.
 
-: Here is a sample list of String values. It is incomplete, with
+: Here is a sample list of string values. It is incomplete, with
   alternate executable names culled. (This list needs verification)
-  Remember each String value is stored under the HKCU or HKLM key.
+  Remember each string value may be set under the HKCU or HKLM key,
+  depending on whether the value should be for a single user or for
+  all users. If a string value appears in both HKCU and HKLM, the
+  value set under HKCU is the one used.
 
         Emacs.Alpha
         Emacs.AutoRaiseLower
@@ -111,7 +110,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
         Emacs.internalBorder
         Emacs.internalBorderWidth
 
-: Here is a list of String values for Meadow. It is an incomplete list
+: Here is a list of string values for Meadow. It is an incomplete list
   with alternate executable names culled. (It has many more:
   Meadow-exe.* and Meadow_exe.*, for a total of 1590 entries.)
 
@@ -162,18 +161,17 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
         MEADOW.internalBorderWidth
 
 
-== How can I learn of the complete X resources searched for in the Registry? ==
+== How can find all the X resources searched for in the Registry? ==
 
 : You could either hope for documentation (where is it?), read the
-  source code to Emacs or use a Registry sniffer like the freeware
+  source code to Emacs, or use a registry sniffer like the freeware
   SysInternals RegMon. If you try the latter I suggest adding a filter
-  include "GNU", because RegMon is very thorough.
-
+  for "GNU", because without a filter RegMon produces unusable huge
+  amounts of logging output.
 
 ==What do the X Resources mean?==
 
 : Check the official documentation for details.
-
 
 ==Is capitalization important?==
 
@@ -201,7 +199,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
         "Emacs.Background"="black"
         "Emacs.Foreground"="white"
         "Emacs.Font"="-*-Lucida Console-normal-r-*-*-11-82-96-96-c-*-iso8859-1"
-        "Emacs.Geometry"="90x60"
+        "Emacs.Geometry"="90x60+20-20"
 
 : Save the above as a *.reg file, and the double-click it to merge it
   into the Registry.  (aside: "REGEDIT4" is for ANSI text files, and
@@ -209,7 +207,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
   text files.)
 
 
-== Read Windows Registry ==
+== Read the Windows Registry ==
 
 This fn reads a registry key - retrieves all the values and the names of all the subkeys. 
 
@@ -353,8 +351,8 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
 == Verified ==
 
 : All (initial) information tested on Meadow 3.00 (Emacs CVS HEAD 22.0
-  2006/09/08) on Windows XP SP1 and SP2.
-
+  2006/09/08) on Windows XP SP1 and SP2. Some initialization values
+  tested on Windows 10.
 
 == Discussion ==
 
