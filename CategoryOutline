@@ -12,12 +12,13 @@ some must be downloaded.
 * AllOut: extensive outline formatting and manipulation
 * FoldingMode: hides blocks marked with <code>{{{</code> and <code>}}}</code>
 * KoutlineMode: part of GNU Hyperbole, multi-level, autonumbered, hypertextual outliner
-* FoldIngo:  A minor folding mode with mouse/menu/face support.
+* FoldIngo: a minor folding mode with mouse/menu/face support.
 * CategorizingInformationManager: provides ee-outline to operate on outlines
 * FoldDwim: a unified user interface for the folding methods of OutlineMode, HideShow, FoldingMode, AUCTeX folding, and NxmlMode.
 * TaggingMode: add tags to your file, then filter the blocks shown using tags
 * HtmlOutline: shows how to use NxmlMode to fold <ol> based outlines in html.
-* [https://github.com/zenozeng/yafolding.el|Yafolding.el]: simple script folding code blocks based on indentation, so, no special strings are needed. 
+* [https://github.com/zenozeng/yafolding.el|Yafolding.el]: simple script folding code blocks based on indentation, so, no special strings are needed.
+* [https://github.com/gregsexton/origami.el|origami.el]: another text folding mode for Emacs.
 
 There is also ooutline and noutline which all refer to
 some version of `outline', so they are not worth mentioning.
