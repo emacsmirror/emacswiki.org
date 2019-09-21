@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2019, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jun 15 16:45:27 2019 (-0700)
+;; Last-Updated: Sat Sep 21 15:51:56 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11878
+;;     Update #: 11883
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2019/09/21 dadams
+;;     icicle-bbdb-complete-mail: Updated for BBDB v3.2.
+;;       Hash-table predicate for all-completions needs to be binary.
+;;       And the hash table now holds string keys, not symbol keys.
 ;; 2018/09/21 dadams
 ;;     icicle-bbdb-complete-name, icicle-bookmark-jump-1, icicle-buffer(-no-search)
 ;;       icicle-visit-marked-file-of-content-1:
