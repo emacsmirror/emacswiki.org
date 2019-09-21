@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Sep 21 14:56:02 2018 (-0700)
+;; Last-Updated: Sat Sep 21 16:11:13 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 27612
+;;     Update #: 27630
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -17,19 +17,28 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `cus-theme', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
-;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
-;;   `hexrgb', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+20', `isearch+',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
-;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
+;;   `dired', `dired-loaddefs', `doremi', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
+;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `format-spec', `frame-cmds', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `hl-line',
+;;   `hl-line+', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image', `image-dired', `image-mode', `info',
+;;   `info+', `isearch+', `isearch-prop', `kmacro', `levenshtein',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `package', `password-cache', `pp',
+;;   `pp+', `radix-tree', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1527,12 +1536,11 @@ Vanilla `dabbrev--abbrev-at-point' raises an error if no match."
       abv))
 
 
-;; REPLACE ORIGINAL `bbdb-complete-mail' defined in `bbdb.el', version 3.1
+;; REPLACE ORIGINAL `bbdb-complete-mail' defined in `bbdb.el', version 3.2
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; BBDB Version 3.1, the Insidious Big Brother Database, is available from these locations:
-;; * https://download.savannah.gnu.org/releases/bbdb/
-;; * http://melpa.milkbox.net/
+;; BBDB Version 3.2, the Insidious Big Brother Database, is available from this location:
+;; http://elpa.gnu.org/packages/bbdb-3.2.tar
 ;;
 ;; Uses Icicles completion when there are multiple candidates.
 ;;
@@ -1568,7 +1576,7 @@ part of your MUA setup."
   (interactive (list nil current-prefix-arg))
   (unless (and (require 'bbdb nil t)  (require 'bbdb-com nil t)  (fboundp 'bbdb-complete-mail))
     (icicle-user-error "`icicle-bbdb-complete-mail' requires a BBDB version such as 3.1"))
-  (bbdb-buffer)                         ; Make sure the database is initialized.
+  (bbdb-buffer)               ; Make sure the database is initialized.
   ;; Completion should begin after the preceding comma (separating
   ;; two addresses) or colon (separating the header field name
   ;; from the header field body).  We want to ignore these characters
@@ -1604,7 +1612,7 @@ part of your MUA setup."
               (setq state  (parse-partial-sexp start pnt nil nil state)
                     start  pnt)
               (unless (nth 3 state) (setq beg  pnt))))))))
-  ;; Noa meaningful way to set BEG if we are not in a message header.
+  ;; No meaningful way to set BEG if we are not in a message header.
   (unless beg (message "Not a valid buffer position for mail completion") (sit-for 1))
   (let* ((end                     (point))
          (done                    (and (not beg)  'NOTHING))
@@ -1625,14 +1633,13 @@ part of your MUA setup."
       ;; Yet if multiple records match ORIG we can only offer a *Completions* buffer.
       (when (and (stringp completion)  (string-match "," completion))
         (setq completion  (substring completion 0 (match-beginning 0))))
-      ;; We cannot use the return value of function `all-completions' to set
-      ;; var ALL-COMPS because that function converts all symbols into strings
-      (all-completions orig bbdb-hashtable (lambda (sym)
-                                             (when (bbdb-completion-predicate sym)
-                                               (push sym all-comps))))
+      (setq all-comps  (all-completions orig bbdb-hashtable #'bbdb-completion-predicate))
+
       ;; Resolve the records matching ORIG:
       ;; Multiple completions may match the same record
-      (let ((records  (icicle-delete-dups (apply #'append (mapcar #'symbol-value all-comps)))))
+      (let ((records  (icicle-delete-dups (apply #'append (mapcar (lambda (compl)
+                                                                    (gethash compl bbdb-hashtable))
+                                                                  all-comps)))))
         ;; Is there only one matching record?
         (setq one-record  (and (not (cdr records))  (car records))))
       (icicle-remove-Completions-window)
@@ -1683,31 +1690,29 @@ part of your MUA setup."
              (delete-region beg end)
              (insert completion)
              (setq done  'PARTIAL))
-            (completion                 ; Partial match not allowing further partial completion
+            (completion ; Partial match not allowing further partial completion
              (let ((completion-list  (if (eq t bbdb-completion-list)
                                          '(fl-name lf-name mail aka organization)
-                                       bbdb-completion-list))
-                   sname)
+                                       bbdb-completion-list)))
                ;; Now collect all the dwim-addresses for each completion.
                ;; Add it if the mail is part of the completions
-               (dolist (sym  all-comps)
-                 (setq sname  (symbol-name sym))
-                 (dolist (record  (symbol-value sym))
+               (dolist (key  all-comps)
+                 (dolist (record  (gethash key bbdb-hashtable))
                    (let ((mails  (bbdb-record-mail record))
                          accept)
                      (when mails
                        (dolist (field  completion-list)
                          (if (case field
-                               (fl-name      (bbdb-string= sname (bbdb-record-name record)))
-                               (lf-name      (bbdb-string= sname (bbdb-cache-lf-name
-                                                                  (bbdb-record-cache record))))
-                               (aka          (member-ignore-case sname (bbdb-record-field record 'aka-all)))
-                               (organization (member-ignore-case sname (bbdb-record-organization record)))
-                               (primary      (bbdb-string= sname (car mails)))
+                               (fl-name      (bbdb-string= key (bbdb-record-name record)))
+                               (lf-name      (bbdb-string= key (bbdb-cache-lf-name
+                                                                (bbdb-record-cache record))))
+                               (aka          (member-ignore-case key (bbdb-record-field record 'aka-all)))
+                               (organization (member-ignore-case key (bbdb-record-organization record)))
+                               (primary      (bbdb-string= key (car mails)))
                                (otherwise    nil))
                              (push (car mails) accept)
                            (when (eq field 'mail)
-                             (dolist (mail  mails) (when (bbdb-string= sname mail) (push mail accept))))))
+                             (dolist (mail  mails) (when (bbdb-string= key mail) (push mail accept))))))
                        (dolist (mail  (icicle-delete-dups accept))
                          (push (bbdb-dwim-mail record mail) dwim-completions))))))
                (setq dwim-completions  (sort (icicle-delete-dups dwim-completions) 'string<))
@@ -1771,17 +1776,17 @@ part of your MUA setup."
       ;; collection for completion in the usual sense.  It is really a list of replacements.
       (unless (eq (selected-window) (minibuffer-window)) (message "Making completion list..."))
       (icicle-condition-case-no-debug nil
-          (let* ((icicle-show-Completions-initially-flag      t)
-                 (icicle-incremental-completion-p             'display)
-                 (icicle-top-level-when-sole-completion-flag  t)
-                 (completion-ignore-case                      t)
-                 (choice
-                  (save-excursion (completing-read "Complete: " (mapcar #'list dwim-completions)
-                                                   nil t orig nil orig))))
-            (when choice
-              (delete-region beg end)
-              (insert choice)))
-        (error nil))
+                                      (let* ((icicle-show-Completions-initially-flag      t)
+                                             (icicle-incremental-completion-p             'display)
+                                             (icicle-top-level-when-sole-completion-flag  t)
+                                             (completion-ignore-case                      t)
+                                             (choice
+                                              (save-excursion (completing-read "Complete: " (mapcar #'list dwim-completions)
+                                                                               nil t orig nil orig))))
+                                        (when choice
+                                          (delete-region beg end)
+                                          (insert choice)))
+                                      (error nil))
       (unless (eq (selected-window) (minibuffer-window)) (message "Making completion list...done")))
     ;; If DONE is `NOTHING' return nil so that possibly some other code can take over.
     (and (not (eq done 'NOTHING))  done)))
@@ -2034,22 +2039,21 @@ control completion behaviour using `bbdb-completion-type'."
                    (only-one-p           t)
                    (all-the-completions  ())
                    (pred
-                    (lambda (sym)       ; FREE here: ALL-THE-COMPLETIONS, ONLY-ONE-P.
-                      (and (bbdb-completion-predicate sym)
-                           (progn
-                             (when (and only-one-p
-                                        all-the-completions
-                                        (or
-                                         ;; Not sure about this. More than one record attached to the symbol?
-                                         ;; Does that happen?
-                                         (> (length (symbol-value sym)) 1)
-                                         ;; This is the doozy. Multiple syms which all match the same record.
-                                         (delete t (mapcar (lambda (x) ; FREE here: SYM.
-                                                             (equal (symbol-value x) (symbol-value sym)))
-                                                           all-the-completions))))
-                               (setq only-one-p  nil))
-                             (and (not (memq sym all-the-completions))
-                                  (setq all-the-completions  (cons sym all-the-completions)))))))
+                    (lambda (sym val)       ; FREE here: ALL-THE-COMPLETIONS, ONLY-ONE-P.
+                      (when (bbdb-completion-predicate sym val)
+                        (when (and only-one-p
+                                   all-the-completions
+                                   (or
+                                    ;; Not sure about this. More than one record attached to the symbol?
+                                    ;; Does that happen?
+                                    (> (length (symbol-value sym)) 1)
+                                    ;; This is the doozy. Multiple syms which all match the same record.
+                                    (delete t (mapcar (lambda (x) ; FREE here: SYM.
+                                                        (equal (symbol-value x) (symbol-value sym)))
+                                                      all-the-completions))))
+                          (setq only-one-p  nil))
+                        (unless (memq sym all-the-completions)
+                          (setq all-the-completions  (cons sym all-the-completions))))))
                    (completion           (progn (all-completions pattern ht pred)
                                                 (try-completion pattern ht)))
                    (exact-match          (eq completion t)))
