@@ -14,7 +14,7 @@ The title "Ersatz" comes from the category Richard Stallman uses in
 MIT AI Memo 519a to describe those editors that are a surface-deep
 imitation (key bindings) of "real" ITS Emacs. [http://hunter.apana.org.au/~cjb/Code/ersatz.tar.gz]
 
-Common Ersatz Emacsen today include MicroEmacs, GNU [[Zile]], [[Jove]], and [[Mg]]; they enjoy use as lightweight editors (akin to vi) that provide familiar Emacs functionality in low-overhead situations (such as limited environments or system recovery) where a full Emacs may be unavailable.
+Common Ersatz Emacsen today include MicroEmacs, GNU [[Zile]], [[Jove]], [[Mg]], and [https://savannah.nongnu.org/projects/qemacs QEmacs]; they enjoy use as lightweight editors (akin to vi) that provide familiar Emacs functionality in low-overhead situations (such as limited environments or system recovery) where a full Emacs may be unavailable.
 
 ----
 CategoryGlossary
