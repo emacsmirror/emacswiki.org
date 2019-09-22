@@ -118,6 +118,8 @@ elements in the minibuffer.
    placing previously used candidates first.  This is a toggle: repeat it 
    to return to the original order.
 
+
+[:M-pause]
 '''5.''' Command '''`icicle-keep-only-past-inputs'''' ('''`M-pause'''' in the
    minibuffer) restricts the current set of completion candidates
    to those that you have used previously.  In other words, it
@@ -128,6 +130,8 @@ elements in the minibuffer.
    chronologically, most recent first.  Without `C-u', the normal
    sort order is used (`icicle-sort-comparer').
 
+
+[:M-h]
 '''6.''' Command '''`icicle-history'''' ('''`M-h'''' in the minibuffer) matches the
    current input against the minibuffer history directly.  It can
    be used during completion.
