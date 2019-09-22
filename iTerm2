@@ -199,3 +199,52 @@ Now when you press Ctrl+⌘+Option+A, *dired* should pop up.   Proceed with addi
 You can also make combinations with Control and META such as C-c H-o with this technique.  For C-c H-o you would hit C-c and then release the keys, then Ctrl+⌘+Option+o for the H-o part.
 
 Now you can make loads more keybindings for all your favorite Emacs commands.
+
+
+== Import Bindings into iTerm (rather than setting them manually) ==
+
+Now with the fresh 3.3.5 beta version, you can import and export key mappings in iTerm.
+First we want to see what does the format looks like. I manually set a few bindings and exported it:
+
+    "0x61-0x40000":{"Text":"C-a",
+    "Action":11},
+    "0x61-0x100000":{"Text":"s-a",
+    "Action":10},
+    "0x62-0x100000":{"Text":"s-b",
+    "Action":10},
+    "0x7a-0x100000":{"Text":"s-z",
+    "Action":10},
+
+Seems that <code>0x61</code> to <code>0x7A</code> represents <code>a</code> to <code>z</code>, and <code>0x100000</code> represents the command key. Now let’s generate an entry like that. I used the same sequence as in the Wiki page: <code>[1;Pxxx</code>, I just replaced the number with the letters since that’s more clear.
+
+    (format "\"0x%X-0x100000\":{\"Text\":\"[1;P%c\", \"Action\":10}," #x61 ?a)
+    ;;=> "\"0x61-0x100000\":{\"Text\":\"[1;Pa\", \"Action\":10},"
+
+Looks good, now it’s time to generate all of them
+
+    (require 'cl-lib)
+    (message (string-join
+              (cl-loop for hex from #x61 to #x7a
+                       for char from ?a to ?z
+                       collect (format "\"0x%X-0x100000\":{\"Text\":\"[1;P%c\", \"Action\":10}" hex char))
+              ",\n"))
+
+Send them to message buffer and copy & paste is a lazy yet effective approach. Now we create a new file, name it <code>import.itermkeymap</code> and put our configs in.
+
+
+    {"Key Mappings":{
+    "0x61-0x100000":{"Text":"[1;Pa", "Action":10},
+    "0x62-0x100000":{"Text":"[1;Pb", "Action":10},
+    "0x63-0x100000":{"Text":"[1;Pc", "Action":10},
+    ...
+    "0x78-0x100000":{"Text":"[1;Px", "Action":10},
+    "0x79-0x100000":{"Text":"[1;Py", "Action":10},
+    "0x7A-0x100000":{"Text":"[1;Pz", "Action":10}
+    }}
+
+
+If you import this in iTerm you can see indeed all the escape sequences are set. Now we only need to tell emacs to translate those escape sequences to bindings.
+
+
+    (cl-loop for char from ?a to ?z
+             do (define-key input-decode-map (format "\e[1;P%c" char) (kbd (format "s-%c" char))))
