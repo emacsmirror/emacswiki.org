@@ -100,6 +100,7 @@ such menu items to your ''completion'' history, which you access
 using `C-l' (see [[#Which|What Input, What History?]]). 
 
 
+[:M-o]
 '''2.''' Minibuffer [[multi-command]] '''`icicle-insert-history-element'''' ('''`M-o'''' in the
 minibuffer) lets you use completion to insert any number of history
 elements in the minibuffer.
