@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep  3 16:30:52 2019 (-0700)
+;; Last-Updated: Mon Sep 23 11:40:51 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6870
+;;     Update #: 6872
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1234,6 +1234,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2019/09/23 dadams
+;;     isearchp-read-predicate: Protect isearchp-filter-bookmark-alist-only with fboundp.
 ;; 2019/09/03 dadams
 ;;     isearch-query-replace: Misplaced paren corrected in (and transient-mark-mode mark-active  " in region").
 ;; 2019/06/09 dadams
@@ -6238,7 +6240,8 @@ If you do not choose a completion candidate then the value returned by
 `isearchp-read-predicate' is the predicate that you entered."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           (filter-alist                               (append isearchp-current-filter-preds-alist
-                                                              (isearchp-filter-bookmark-alist-only)))
+                                                              (and (fboundp 'isearchp-filter-bookmark-alist-only)
+                                                                   (isearchp-filter-bookmark-alist-only))))
           (completion-extra-properties
            '(:annotation-function
              (lambda (cand)
