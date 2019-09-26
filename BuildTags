@@ -2,7 +2,7 @@ There are several tools to create a [[tags file]].  The two dominant tools are [
 
 ExuberantCtags is no longer being maintained, but a fork, [https://ctags.io/ UniversalCtags] is being actively developed.
 
-== Using ExuberantCtags ==
+== Using UniversalCtags/ExuberantCtags ==
 
 To use ctags with emacs, you must supply the `-e' parameter to instruct ctags to generate an emacs tag file.  The commands below are often sourced into a Makefile and then run with a CompileCommand.
 
