@@ -98,6 +98,10 @@ strings in the buffer, including ''multiple-line'' strings.  Your
 initial regexp is used over and over to
 find the set of matching strings in the region or buffer that you search.  These strings then serve as the completion candidates.
 
+
+[:sentences]
+[:paragraphs]
+[:pages]
 For example, you might use a search-context regexp of "##[A-Z][^.?!]+[.?!]##"
 to search ''sentences'', "##\\(.+\n\\)+##" to search ''paragraphs'', or 
 "##\\([^\f]*[\f]\\|[^\f]+$\\)##" to search ''pages''.  (`##^L##' is the page-separator character.  (That's in fact how convenience commands
