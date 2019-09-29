@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 23 11:40:51 2019 (-0700)
+;; Last-Updated: Sun Sep 29 11:06:47 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 6872
+;;     Update #: 6878
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -204,26 +204,33 @@
 ;;    `isearchp-in-sentence-p' (Emacs 24.4+), `isearchp-in-sexp-p'
 ;;    (Emacs 24.4+), `isearchp-in-string-or-comment-p' (Emacs 24.4+),
 ;;    `isearchp-in-string-p' (Emacs 24.4+), `isearchp-in-symbol-p'
-;;    (Emacs 24.4+), `isearchp-in-url-p' (Emacs 24.4+),
-;;    `isearchp-in-word-p' (Emacs 24.4+),
-;;    `isearchp-last-isearch-advice' (Emacs 24.4+),
+;;    (Emacs 24.4+), `isearchp-in-thing-p' (Emacs 24.4+),
+;;    `isearchp-in-url-p' (Emacs 24.4+), `isearchp-in-word-p' (Emacs
+;;    24.4+), `isearchp-last-isearch-advice' (Emacs 24.4+),
 ;;    `isearchp-match-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-message-prefix', `isearchp-message-suffix',
 ;;    `isearchp-near-after-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-before-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-predicate' (Emacs 24.4+), `isearchp-not-pred'
 ;;    (Emacs 24.4+), `isearchp-not-in-color-p' (Emacs 24.4+),
+;;    `isearchp-not-in-comment-p' (Emacs 24.4+),
+;;    `isearchp-not-in-comment-or-delim-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-decimal-number-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-defun-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-email-address-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-file-name-p' (Emacs 24.4+),
+;;    `isearchp-not-in-file-or-url-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-hex-number-p' (Emacs 24.4+),
-;;    `isearchp-not-in-line-p' (Emacs 24.4+), `isearchp-not-in-list-p'
-;;    (Emacs 24.4+), `isearchp-not-in-number-p' (Emacs 24.4+),
+;;    `isearchp-not-in-line-p' (Emacs 24.4+),
+;;    `isearchp-not-in-lisp-variable-p' (Emacs 24.4+),
+;;    `isearchp-not-in-list-p' (Emacs 24.4+),
+;;    `isearchp-not-in-number-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-page-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-paragraph-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-sentence-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-sexp-p' (Emacs 24.4+),
+;;    `isearchp-not-in-string-or-comment-p' (Emacs 24.4+),
+;;    `isearchp-not-in-string-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-symbol-p' (Emacs 24.4+),
 ;;    `isearchp-not-in-url-p' (Emacs 24.4+), `isearchp-not-in-word-p'
 ;;    (Emacs 24.4+), `isearchp-not-predicate' (Emacs 24.4+),
