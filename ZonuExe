@@ -7,7 +7,7 @@ I am also known as [::tadsan] on Twitter. GitHub and Packagist account is [::zon
 == Project ==
 
 * [https://github.com/ejmr/php-mode PHP Mode] - Maintainer
-* [https://github.com/emacs-php Friends of Emacs-PHP development] - Owner
+* [https://github.com/emacs-php Friends of Emacs-PHP development] - Founder
 * [https://github.com/emacs-jp Emacs JP] - Member
 * [https://github.com/nlamirault/phpunit.el nlamirault/phpunit.el] - Contributor
 
@@ -19,12 +19,15 @@ My Lisp packages available in [[MELPA]]: https://melpa.org/#/?q=zonuexe
 * https://github.com/zonuexe/copyit - Yanking / Clipboard CopyAndPaste
 * https://github.com/zonuexe/emacs-datetime - DateTime formatting helper
 * https://github.com/zonuexe/magic-filetype.el
-* https://github.com/zonuexe/psysh.el - PHP REPL based on ComintMode
-* https://github.com/zonuexe/composer.el - Interface to PHP [[Composer]]
+* https://github.com/emacs-php/psysh.el - PHP REPL based on ComintMode
+* https://github.com/emacs-php/composer.el - Interface to PHP [[Composer]]
 * https://github.com/zonuexe/init-open-recentf.el
-* https://github.com/zonuexe/robots-txt-mode
 * https://github.com/zonuexe/emoji-fontset.el
 * https://github.com/zonuexe/aa-edit-mode - MajorMode for editing ShiftJisArt
+
+=== Major modes ===
+
+* https://github.com/emacs-php/robots-txt-mode
 * https://github.com/zonuexe/maruo-macro-mode.el - MajorMode for editing MaruoMacro script
 * https://github.com/zonuexe/pixiv-novel-mode.el
 
