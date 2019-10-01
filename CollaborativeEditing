@@ -25,6 +25,7 @@
 * [https://github.com/tjim/lockstep Lockstep] synchronizes two frames (cursors and visible buffers) so that the "passenger" sees the edits of the "driver" in real time.
 * [https://github.com/zk-phi/togetherly/ Togetherly] - cleartext simple client/server model, emacs-only
 * [https://floobits.com/help/plugins/emacs Floobits] provides real-time collaboration tools for a variety of editors including an Emacs plugin. Proprietary/commercial service. [https://news.ycombinator.com/item?id=15705013 reports of problems in vim], unclear if it works well with Emacs.
+* [https://github.com/larstvei/shared-buffer-lisp-in-summer-projects Shared Buffer] by Lars Tveito.  "...still at an experimental stage".  Requires quicklisp and a Common Lisp to run the server (SBCL is recommended).  As of 2019-09-30, most recent commit was in April 2014, and there is one issue filed in November 2018.
 
 == Future ideas ==
 
