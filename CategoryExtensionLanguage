@@ -20,6 +20,8 @@ Comparing Different Strategies for Adding Scripting to an Application], especial
 * EmacsObjectOrientedProgrammingSystem -- implements a Smalltalk-80-like language in GNU EmacsLisp
 * [[Zile]] -- uses Lua, in previous versions used Zile Lisp
 * ZileOnGuile - Proof of concept hack of C based Zile with Guile support
+* https://github.com/knupfer/haskell-emacs -- Haskell
+* https://github.com/janestreet/ecaml -- OCaml
 
 Not Emacs but what can we say:
 
