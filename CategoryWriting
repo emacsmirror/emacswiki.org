@@ -25,7 +25,7 @@ Clicking the title heading to search for pages about writing in natural language
 * JournalMode -- Using Emacs to maintain a daily journal. Also required EmacsWikiMode. (not the same as [[Journal]])
 * OrgMode --Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. Particularly good at **org**anizing notes. Like in a journal.
 * [[Screenplay]] -- Write a dramatic screenplay.
-* [[FountainMode]] -- Write a movie screenplay using the [http://fountain.io Fountain markup format].
+* [[FountainMode]] -- Write a movie screenplay or stageplay using the [http://fountain.io Fountain markup format].
 
 === Miscellaneous ===
 * NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
