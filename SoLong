@@ -30,6 +30,12 @@ Install using one of the options below, and then enable in your init file with:
 
 (n.b. the ELPA package is not yet available at 2019-07-14, but should be in the near future.)
 
+====Use-package & Quelpa====
+
+  (use-package so-long
+    :quelpa (so-long :url "https://raw.githubusercontent.com/emacs-mirror/emacs/master/lisp/so-long.el" :fetcher url)
+    :config (global-so-long-mode 1))
+
 ====Manual installation====
 
 Alternatively, the latest version of [https://git.savannah.nongnu.org/cgit/so-long.git/plain/so-long.el so-long.el] is also available from its Savannah repository (n.b. the code is no longer maintained here at the EmacsWiki).
