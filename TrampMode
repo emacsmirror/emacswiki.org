@@ -729,10 +729,6 @@ Use the self-described "kludgy" hostname (see documentation for tramp-open-conne
 
 -- BradRobelForrest
 
-The kludge does not work with plink (at least with plink v.0.60 and tramp coming with emacs 22.2.1), since tramp uses the hard-coded argument -p to specify the port, while plink wants -P (upper case). Need to introduce a customizable variable to this end.
-
--- MstislavElagin
-
 === Using CVS on the remote server ===
 
 If you are using editing files remotely on CVS, and that CVS server is itself a remote machine requiring passphrase via ssh, try this trick. Add "-A" to your argument list for ssh.  "-A" will forward your SSH keys to the remote machine (say remotemachine1), which can then use those keys for the authentication to the remote CVS server (say remotemachine2).  Check this from the command line first:
