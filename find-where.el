@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2018, Drew Adams, all rights reserved.
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
-;; Version: 2018-07-08
+;; Version: 2018-10-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul 22 13:39:16 2018 (-0700)
+;; Last-Updated: Tue Oct  8 13:02:17 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 850
+;;     Update #: 854
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -528,9 +528,9 @@ backward, respectively, by one unit (defaults: `forward-char',
     res))
 
 (defun fw--read-predicate ()
-  "Read a predicate and set `fw-last-pred' to it.
-You are prompted for a function name or lambda expression.
-the function must accept a buffer position as its first arg."
+  "Read a predicate.
+You are prompted for a function name or lambda expression."
+  ;; The function needs to accept a buffer position as its first arg, to be usable by find-where.
   (let (pred)
     (while (not (functionp pred))
       (setq pred  (read (let (this-command) (read-string "Predicate: ")))))
@@ -538,10 +538,8 @@ the function must accept a buffer position as its first arg."
       (let ((arity  (if (subrp pred) (subr-arity pred) (func-arity pred))))
         (while (or (not (>= (car arity) 1))
                    (not (= (car arity) 1))) ; Cannot know how to read ARGS.
-          (setq pred  (read (let (this-command) (read-string "Predicate (at least 1 arg): ")))
-                arity         (if (subrp pred)
-                                  (subr-arity pred)
-                                (func-arity pred))))))
+          (setq pred   (read (let (this-command) (read-string "Predicate (at least 1 arg): ")))
+                arity  (if (subrp pred) (subr-arity pred) (func-arity pred))))))
     pred))
 
 (defun fw-word-char-after-p (pos)
