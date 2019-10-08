@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-10-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Oct  8 13:07:20 2019 (-0700)
+;; Last-Updated: Tue Oct  8 13:25:32 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 855
+;;     Update #: 856
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -313,7 +313,7 @@
 ;;     Renamed find-where.el from gowhere.el.
 ;; 2018/07/04 dadams
 ;;     Added: fw--read-predicate, fw-test-start-p.
-;;     Renamed: fw-to-where-last to fw-last-pred and fw-to-where-last to fw-last-thing.
+;;     Renamed: fw-to-where-last to fw-last-pred and fw-to-thing-last to fw-last-thing.
 ;;     Commands: Added progress messages.
 ;;     fw-thing-start-p: Use fw-test-start-p.
 ;;     fw-to-(next|previous-)(where|thing): Corrected use of prefix arg.
