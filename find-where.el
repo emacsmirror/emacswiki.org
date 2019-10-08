@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-10-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Oct  8 13:02:17 2019 (-0700)
+;; Last-Updated: Tue Oct  8 13:07:20 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 854
+;;     Update #: 855
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -528,7 +528,7 @@ backward, respectively, by one unit (defaults: `forward-char',
     res))
 
 (defun fw--read-predicate ()
-  "Read a predicate.
+  "Read a predicate that accepts at least one argument, a buffer position.
 You are prompted for a function name or lambda expression."
   ;; The function needs to accept a buffer position as its first arg, to be usable by find-where.
   (let (pred)
