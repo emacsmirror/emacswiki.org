@@ -1,14 +1,13 @@
 ;;; highline.el --- minor mode to highlight current line in buffer
 
-;; Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
-;;   2010, 2011  Vinicius Jose Latorre
+;; Copyright (C) 2000-2011  Vinicius Jose Latorre
 
-;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp: <2011/09/07 09:24:25 vinicius>
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Time-stamp: <2019/10/10 01:18:06 vinicius>
 ;; Keywords: faces, frames, editing
 ;; Version: 7.2.2
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
