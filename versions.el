@@ -1,12 +1,12 @@
 ;;; versions.el --- version string comparison
 
-;; Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Vinicius Jose Latorre
+;; Copyright (C) 2005-2019 Vinicius Jose Latorre
 
-;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: help, internal, maintenance, debug
 ;; Version: 1.5
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is part of GNU Emacs (inside `emacs/lisp/subr.el').
 
