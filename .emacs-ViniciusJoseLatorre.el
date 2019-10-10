@@ -1,13 +1,13 @@
 ;;; .emacs --- Minimal Emacs initialization file
 
-;; Copyright (C) 2008, 2009 Vinicius Jose Latorre
+;; Copyright (C) 2008-2019 Vinicius Jose Latorre
 
-;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp: <2009/08/08 09:41:44 vinicius>
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Time-stamp: <2019/10/10 01:17:27 vinicius>
 ;; Keywords: environment, initialization
 ;; Version: 1.1
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 
 ;; Set up the keyboard so the delete key on both the regular keyboard
