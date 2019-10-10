@@ -1,11 +1,10 @@
 ;;; chill-modee.el --- major mode for editing CHILL code.
 
-;; Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998
-;;   Telecomunicacoes Brasileiras SA (TELEBRAS)
+;; Copyright (C) 1993-1998 Telecomunicacoes Brasileiras SA (TELEBRAS)
 
 ;; Authors: (1993) Gustavo Chaves <gustavo@cpqd.com.br>
-;;          (1996) Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;;          (1996) Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Created: Aug 7, 1993
 ;; Revised: Mar 14, 1999
 ;; Version: 3.1
