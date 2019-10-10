@@ -1,13 +1,13 @@
 ;;; switch-file.el --- switch from one file to another.
 
-;; Copyright (C) 2008, 2009, 2010, 2011 Vinicius Jose Latorre
+;; Copyright (C) 2008-2019 Vinicius Jose Latorre
 
-;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Author:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords:	convenience
-;; Time-stamp:	<2011/10/23 12:11:46 vinicius>
-;; Version:	0.3
-;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; Time-stamp:	<2019/10/10 01:57:55 vinicius>
+;; Version:	0.4
+;; X-URL:	https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
@@ -152,7 +152,11 @@ Each path must end with '/'."
 (defcustom switch-major-mode-alist
   '((c-mode   ("c" ".c") ("h" ".h"))
     (c++-mode ("c\\|cc\\|C\\|cpp" ".cc" ".C" ".cpp" ".c")
-	      ("h\\|hh\\|H\\|hpp" ".hh" ".H" ".hpp" ".h")))
+	      ("h\\|hh\\|H\\|hpp" ".hh" ".H" ".hpp" ".h"))
+    (glsl-mode ("fsh?\\|frag"  ".fs" ".fsh" ".frag")
+	       ("vsh?\\|vert"  ".vs" ".vsh" ".vert")
+	       ("gsh?\\|geom"  ".gs" ".gsh" ".geom")
+	       ("tsh?\\|tess?" ".ts" ".tsh" ".tes" ".tess")))
   "*Specify a major mode alist.
 
 The alist element has the following form:
@@ -195,6 +199,13 @@ EXTENSION is a string used for changing the file name extension."
 	    paths (cdr paths)))
     (unless found
       (setq switch-path (cons new-path switch-path)))))
+
+
+;;;###autoload
+(defun switch-current-file ()
+  "Switch from current file depending on current major mode."
+  (interactive)
+  (switch-file-major-mode major-mode))
 
 
 ;;;###autoload
