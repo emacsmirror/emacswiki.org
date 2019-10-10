@@ -1,14 +1,13 @@
 ;;; spell-number.el --- Spell out an integer or currency in words.  -*- coding: utf-8 -*-
 
-;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2006, 2007, 2008, 2009, 2010
-;; Vinicius Jose Latorre
+;; Copyright (C) 1999-2019 Vinicius Jose Latorre
 
-;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp: <2010/07/05 21:27:03 vinicius>
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Time-stamp: <2019/10/10 01:19:45 vinicius>
 ;; Version: 3.1.1
 ;; Keywords: spell, local
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is NOT (yet?) part of GNU Emacs.
 
