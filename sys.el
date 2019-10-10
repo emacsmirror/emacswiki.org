@@ -1,13 +1,13 @@
 ;;; sys.el --- Determine which kind of system Emacs is running.
 
-;; Copyright (C) 2001, 2006 Vinicius Jose Latorre
+;; Copyright (C) 2001-2006 Vinicius Jose Latorre
 
-;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Author:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords:	internal, maintenance, debug
-;; Time-stamp:	<2006/09/14 12:06:24 vinicius>
+;; Time-stamp:	<2019/10/10 01:20:54 vinicius>
 ;; Version:	1.0
-;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL:	https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
