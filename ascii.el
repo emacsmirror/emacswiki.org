@@ -1,14 +1,13 @@
 ;;; ascii.el --- ASCII code display.
 
-;; Copyright (C) 1999, 2000, 2001, 2006, 2007, 2008, 2009, 2010, 2011
-;; Vinicius Jose Latorre
+;; Copyright (C) 1999-2019 Vinicius Jose Latorre
 
-;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp:	<2011/01/12 00:58:17 vinicius>
+;; Author:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Time-stamp:	<2019/10/10 02:14:27 vinicius>
 ;; Keywords:	data, ascii
 ;; Version:	3.1
-;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL:	https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
