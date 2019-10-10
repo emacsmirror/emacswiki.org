@@ -2,11 +2,11 @@
 
 ;; Copyright (C) 2000-2011  Free Software Foundation, Inc.
 
-;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: data, wp
 ;; Version: 13.2.2
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is part of GNU Emacs.
 
