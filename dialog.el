@@ -1,13 +1,13 @@
 ;;; dialog.el --- dialog box interface using widgets, frames and windows
 
-;; Copyright (C) 2008 Vinicius Jose Latorre
+;; Copyright (C) 2008-2019 Vinicius Jose Latorre
 
-;; Time-stamp: <2008/01/22 18:35:17 vinicius>
-;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Time-stamp: <2019/10/10 01:16:31 vinicius>
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: convenience, extensions, hypermedia
 ;; Version: 0.2
-;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
