@@ -1,13 +1,13 @@
 ;;; rational.el --- Rational number in factorial-base format.
 
-;; Copyright (C) 2000, 2001, 2006, 2007 Vinicius Jose Latorre
+;; Copyright (C) 2000-2019 Vinicius Jose Latorre
 
-;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Author:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords:	data, curiosity, mathematics
-;; Time-stamp:	<2007/04/05 01:44:43 vinicius>
+;; Time-stamp:	<2019/10/10 01:18:56 vinicius>
 ;; Version:	1.1.1
-;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL:	https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
