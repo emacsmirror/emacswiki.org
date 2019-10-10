@@ -1,13 +1,13 @@
 ;;; xray.el --- Display internal object structures in a temporary buffer.
 
-;; Copyright (C) 2001, 2002, 2003, 2004, 2006 Vinicius Jose Latorre
+;; Copyright (C) 2001-2006 Vinicius Jose Latorre
 
-;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Author:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer:	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords:	help, internal, maintenance, debug
-;; Time-stamp:	<2006/09/14 12:09:14 vinicius>
+;; Time-stamp:	<2019/10/10 01:27:23 vinicius>
 ;; Version:	3.0
-;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+;; X-URL:	https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
 
