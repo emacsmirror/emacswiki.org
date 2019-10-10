@@ -1,15 +1,15 @@
 ;;; actions.el --- actions utilities
 
-;; Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Vinicius Jose Latorre
+;; Copyright (C) 2011-2019 Vinicius Jose Latorre
 
 ;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: convenience
-;; Version: 0.13
+;; Version: 0.15
 ;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
-(defconst actions-version "0.13"
-  "actions.el, v 0.13 <2019/09/02 vinicius>
+(defconst actions-version "0.15"
+  "actions.el, v 0.15 <2019/11/04 vinicius>
 
 Please send all bug fixes and enhancements to
 	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
@@ -146,7 +146,7 @@ Please send all bug fixes and enhancements to
     ["Qt Designer"     (actions-call "designer")
      :visible (actions-file-p "\\.ui$")]
     ["VLC Video/Audio" (actions-call "vlc")
-     :visible (actions-file-p "\\.\\(MP[34]\\|M4A\\|AAC\\|OPUS\\|OGG\\|mp[34]\\|m4a\\|aac\\|opus\\|ogg\\)$")]
+     :visible (actions-file-p "\\.\\(MP[34]\\|M4A\\|AAC\\|OPUS\\|OGG\\|MIDI\\|MPEG\\|mp[34]\\|m4a\\|aac\\|opus\\|ogg\\|midi\\|mpeg\\)$")]
     ["LibreOffice Doc" (actions-call "libreoffice")
      :visible (actions-file-p "\\.\\(OD[TF]\\|DOCX?\\|DOCX?\\.ENC\\|PPTX?\\|od[tf]\\|docx?\\|docx?\\.enc\\|pptx?\\)$")]
     ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|XCF\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
