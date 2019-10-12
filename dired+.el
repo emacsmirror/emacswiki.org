@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 21 09:47:33 2019 (-0700)
+;; Last-Updated: Sat Oct 12 07:52:42 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11727
+;;     Update #: 11738
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -804,6 +804,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/10/12 dadams
+;;     dired-mark-files-regexp: Fixed prefix arg for LOCALP, to correspond to doc string:
+;;       none, C-u (no dir),  M-+, C-u C-u (rel to default dir), M--, M-0 (absolute)
 ;; 2019/07/03 dadams
 ;;     dired-mark-unmarked-files: Apply fix for Emacs bug #27465.
 ;;     diredp-mark-if, diredp-mark-sexp(-recursive), dired-mark-unmarked-files:
@@ -5783,7 +5786,7 @@ When called from Lisp, optional arg DETAILS is passed to
   "Do `query-replace-regexp' on marked files, including in marked subdirs.
 Query-replace FROM with TO.
 
-Like `dired-do-query-replace', but act recursively on subdirs.
+Like `dired-do-query-replace-regexp', but act recursively on subdirs.
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
 subdirectories are handled recursively in the same way.
@@ -10058,7 +10061,9 @@ against names that are relative to the `default-directory'.
 What Dired+ offers in addition is the possibility to match against
 names that are relative (have no directory part - no prefix arg or
 `C-u' to mark and unmark, respectively) or absolute (`M--' or `M-0',
-respectively).  The default behavior uses relative names because this
+respectively).
+
+The default behavior uses relative names because this
 is likely to be the more common use case.  But matching against
 absolute names gives you more flexibility.
 
@@ -10080,9 +10085,9 @@ Non-interactively:
                                                      "Mark")
                                                    " files (regexp): "))
                        (and raw  (or C-u  C-u-C-u  (zerop num))  ?\040)
-                       (cond ((or (not raw)  C-u)  t) ; none, `C-u' 
-                             ((> num 0)            nil) ; `M-+', `C-u C-u'
-                             (t                    'no-dir))))) ; `M--', `M-0'
+                       (cond ((or (not raw)  C-u)  'no-dir) ; none, `C-u' (no dir)
+                             ((> num 0)            t) ; `M-+', `C-u C-u' (rel to default dir)
+                             (t                    nil))))) ; `M--', `M-0' (absolute)
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (diredp-mark-if (and (not (diredp-looking-at-p dired-re-dot))
