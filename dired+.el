@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.04.21
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 12 07:52:42 2019 (-0700)
+;; Last-Updated: Sat Oct 12 08:01:11 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11738
+;;     Update #: 11739
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -10042,7 +10042,7 @@ The form of a file name used for matching:
  - No prefix arg (to mark) or a plain prefix arg (`C-u', to unmark)
    means use the relative file name (no directory part).
 
- - A negative arg (e.g. `M--', to mark) or a zero arg (e.g. `M-0', to
+ - A negative arg (e.g. `M--', to mark) or a zero arg (e.g. `M-0'), to
    unmark) means use the absolute file name, that is, including all
    directory components.
 
