@@ -19,7 +19,7 @@ TomBreton wrote a nice recipe for skeletons: RecipeForSkeletonMode.
 
 Here is an example that sets up a general LaTeX letter, creating a skeleton with ##define-skeleton##.
 
-The first string is the DocString, a short textual description of the skeleton. Then follows the skeleton itself, which is mostly plain strings inserted as-is. However, the string right after the !DocString, ##"Empfänger: "##, is the ''prompt string'', which the minibuffer uses for prompting for a user-entered value whenever the ##str## symbol occurs in the skeleton. The value entered is substituted in place of ##str##.
+The first string is the DocString, a short textual description of the skeleton. Then follows the skeleton itself, which is mostly plain strings inserted as-is. However, the string right after the !DocString, ##"Type name of user: "##, is the ''prompt string'', which the minibuffer uses for prompting for a user-entered value whenever the ##str## symbol occurs in the skeleton. The value entered is substituted in place of ##str##.
 
 The construct ##str | " *** Empfänger *** "## in the skeleton means that "##*** Empfänger ***##" will be used as the default value if nothing was entered. (If the skeleton doesn't contain any ##str## symbols, the empty symbol ##nil## may be used in place of the prompt string.)
 
