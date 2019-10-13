@@ -13,5 +13,13 @@ which clears the screen/buffer much like clear (Unix) or cls (DOS),
 and a remote command, which lets you send the eshell a command from
 some outside piece of lisp code.
 
+== eshell-autojump ==
+
+[https://www.emacswiki.org/emacs/eshell-autojump.el|eshell-autojump.el] -- Autojump command for Eshell
+
+== eshell-fringe-status ==
+
+[https://github.com/ryuslash/eshell-fringe-status|eshell-fringe-status] -- Show an indicator of the status of the last command run in eshell
+
 ----
 CategoryEshell
