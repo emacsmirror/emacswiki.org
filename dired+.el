@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2019.04.21
+;; Version: 2019.10.13
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 12 08:01:11 2019 (-0700)
+;; Last-Updated: Sun Oct 13 10:16:41 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11739
+;;     Update #: 11763
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -475,6 +475,8 @@
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
 ;;    `diredp-dired-recent-dirs',
 ;;    `diredp-dired-recent-dirs-other-window',
+;;    `diredp-dired-recent-files',
+;;    `diredp-dired-recent-files-other-window',
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
 ;;    `diredp-do-async-shell-command-recursive', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-dirs-recursive',
@@ -616,7 +618,7 @@
 ;;
 ;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-apply-function-to-file-name',
-;;    `diredp-bookmark',
+;;    `diredp-bookmark', `diredp-cannot-revert',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-delete-dups', `diredp-delete-if',
 ;;    `diredp-delete-if-not', `diredp-directories-within',
@@ -804,6 +806,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/10/13 dadams
+;;     Added: diredp-cannot-revert, diredp-recent-files, diredp-dired-recent-files,
+;;            diredp-dired-recent-files-other-window.
+;;     diredp-dired-for-dirs(-other-window): Bind revert-buffer-function to diredp-cannot-revert.
+;;     Bind diredp-dired-for-dirs to C-x D r, diredp-dired-recent-files to C-x D R.
 ;; 2019/10/12 dadams
 ;;     dired-mark-files-regexp: Fixed prefix arg for LOCALP, to correspond to doc string:
 ;;       none, C-u (no dir),  M-+, C-u C-u (rel to default dir), M--, M-0 (absolute)
@@ -4026,7 +4033,7 @@ This means file names that match regexp `diredp-omit-files-regexp'.
 
 ;;;###autoload
 (defun diredp-dired-for-files (arg &optional switches) ; Bound to `C-x D F'
-  "Dired file names that you enter, in a Dired buffer that you name.
+  "Dired the file names that you enter, in a Dired buffer that you name.
 You are prompted for the name of the Dired buffer to use.
 You are then prompted for names of files and directories to list,
  which can be located anywhere.
@@ -4037,19 +4044,21 @@ With a prefix arg you are first prompted for the `ls' switches to use.
 See also `dired' (including the advice)."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
-  (dired arg switches))
+  (dired arg switches)
+  (with-current-buffer (car arg) (setq revert-buffer-function #'diredp-cannot-revert)))
 
 ;;;###autoload
 (defun diredp-dired-for-files-other-window (arg &optional switches) ; Bound to `C-x 4 D F'
   "Same as `diredp-dired-for-files', except uses another window."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
-  (dired-other-window arg switches))
+  (dired-other-window arg switches)
+  (with-current-buffer (car arg) (setq revert-buffer-function #'diredp-cannot-revert)))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x D R'
-  "Open Dired in BUFFER, showing recently used directories.
-You are prompted for BUFFER.
+(defun diredp-dired-recent-files (buffer &optional arg) ; Bound to `C-x D R'
+  "Open Dired in BUFFER, showing recently visited files and directories.
+You are prompted for BUFFER (default: `Recently Visited Files').
 
 No prefix arg or a plain prefix arg (`C-u', `C-u C-u', etc.) means
 list all of the recently used directories.
@@ -4058,24 +4067,67 @@ With a prefix arg:
 * If 0, `-', or plain (`C-u') then you are prompted for the `ls'
   switches to use.
 * If not plain (`C-u') then:
-  * If >= 0 then the directories to include are read, one by one.
-  * If  < 0 then the directories to exclude are read, one by one.
+  * If >= 0 then the files to include are read, one by one.
+  * If  < 0 then the files to exclude are read, one by one.
 
-When entering directories to include or exclude, use `C-g' to end."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
+When entering files to include or exclude, use `C-g' to end."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+                                      "Recently Visited Files")
+                     current-prefix-arg))
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
   (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
-                        (read-string "Dired listing switches: " dired-listing-switches))))
-    (dired (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
+                        (read-string "Dired listing switches: " dired-listing-switches)))
+        (bufname   (generate-new-buffer-name buffer)))
+    (dired (cons bufname (diredp-recent-files arg)) switches)
+    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
-  "Same as `diredp-dired-recent-dirs', but use other window."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
+(defun diredp-dired-recent-files-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
+  "Same as `diredp-dired-recent-files', but use other window."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+                                      "Recently Visited Files")
+                     current-prefix-arg))
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
   (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg)  (eq '- arg))
-                        (read-string "Dired listing switches: " dired-listing-switches))))
-    (dired-other-window (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
+                        (read-string "Dired listing switches: " dired-listing-switches)))
+        (bufname   (generate-new-buffer-name buffer)))
+    (dired-other-window (cons bufname (diredp-recent-files arg)) switches)
+    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
+
+(defun diredp-recent-files (arg)
+  "Return a list of recently used files and directories.
+ARG is as for `diredp-dired-recent-files'."
+  (let ((recent-files  (diredp-remove-if #'diredp-root-directory-p (diredp-delete-dups recentf-list))))
+    (if (and arg  (atom arg))
+        (diredp-read-include/exclude 'File recent-files (not (natnump (prefix-numeric-value arg))))
+      recent-files)))
+
+;;;###autoload
+(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x D r'
+  "Open Dired in BUFFER, showing recently visited directories.
+Like `diredp-dired-recent-files', but limited to recent directories."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+                                      "Recently Visited Directories")
+                     current-prefix-arg))
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
+                        (read-string "Dired listing switches: " dired-listing-switches)))
+        (bufname   (generate-new-buffer-name buffer)))
+    (dired (cons bufname (diredp-recent-dirs arg)) switches)
+    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
+
+;;;###autoload
+(defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 D r'
+  "Same as `diredp-dired-recent-dirs', but use other window."
+  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+                                      "Recently Visited Directories")
+                     current-prefix-arg))
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg)  (eq '- arg))
+                        (read-string "Dired listing switches: " dired-listing-switches)))
+        (bufname   (generate-new-buffer-name buffer)))
+    (dired-other-window (cons bufname (diredp-recent-dirs arg)) switches)
+    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
 
 (defun diredp-recent-dirs (arg)
   "Return a list of recently used directories.
@@ -9462,6 +9514,11 @@ Requires library `autofit-frame.el'."
     (setq mode-line-process  nil)        ; Set by, e.g., `find-dired'.
     (old-dired-revert arg noconfirm)))
 
+(defun diredp-cannot-revert (_ignore-auto _noconfirm)
+  "`revert-buffer-function' for Dired listing of arbitrary files.
+Just raise an error."
+  (error "Cannot revert Dired buffer with arbitrary listing"))
+
 ;; Like `dired-up-directory', but go up to MS Windows drive if in top-level directory.
 ;;
 ;;;###autoload
@@ -11553,6 +11610,7 @@ General Here
 \\<global-map>\
   \\[diredp-add-to-dired-buffer]\t- Add files to a Dired buffer
   \\[diredp-fileset]\t- Open Dired on files in a fileset
+  \\[diredp-dired-recent-files]\t- Open Dired on recently used files and dirs
   \\[diredp-dired-recent-dirs]\t- Open Dired on recently used dirs
   \\[diredp-dired-union]\t- Create union of some Dired buffers
   \\[diredp-dired-for-files]\t- Open Dired on files located anywhere
@@ -13386,7 +13444,11 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-dir-menu [diredp-dired-recent-dirs]
   '(menu-item "Dired Recent Directories..." diredp-dired-recent-dirs
     :visible (boundp 'recentf-list) :enable  (and (boundp 'recentf-list)  (consp recentf-list))
-    :help "Open a Dired buffer for recently used directories"))
+    :help "Open a Dired buffer for recently visited directories"))
+(define-key diredp-menu-bar-dir-menu [diredp-dired-recent-files]
+  '(menu-item "Dired Recent Files..." diredp-dired-recent-files
+    :visible (boundp 'recentf-list) :enable  (and (boundp 'recentf-list)  (consp recentf-list))
+    :help "Open a Dired buffer for recently visited files and directories"))
 (define-key diredp-menu-bar-dir-menu [diredp-dired-inserted-subdirs]
   '(menu-item "Dired Each Inserted Subdir..." diredp-dired-inserted-subdirs
     :enable (cdr dired-subdir-alist)    ; First elt is current dir.  Must have at least one more.
@@ -13448,7 +13510,8 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key ctl-x-map   "D" nil)      ; For Emacs 20
   (define-key ctl-x-map   "DA" 'diredp-add-to-dired-buffer)                ; `C-x D A'
   (define-key ctl-x-map   "DF" 'diredp-dired-for-files)                    ; `C-x D F'
-  (define-key ctl-x-map   "DR" 'diredp-dired-recent-dirs)                  ; `C-x D R'
+  (define-key ctl-x-map   "DR" 'diredp-dired-recent-files)                 ; `C-x D R'
+  (define-key ctl-x-map   "Dr" 'diredp-dired-recent-dirs)                  ; `C-x D r'
   (define-key ctl-x-map   "DS" 'diredp-fileset)                            ; `C-x D S'
   (define-key ctl-x-map   "DU" 'diredp-dired-union))                       ; `C-x D U'
 
@@ -13456,7 +13519,8 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key ctl-x-4-map "D" nil)      ; For Emacs 20
   (define-key ctl-x-4-map "DA" 'diredp-add-to-dired-buffer-other-window)   ; `C-x 4 D A'
   (define-key ctl-x-4-map "DF" 'diredp-dired-for-files-other-window)       ; `C-x 4 D F'
-  (define-key ctl-x-4-map "DR" 'diredp-dired-recent-dirs-other-window)     ; `C-x 4 D R'
+  (define-key ctl-x-4-map "DR" 'diredp-dired-recent-files-other-window)    ; `C-x 4 D R'
+  (define-key ctl-x-4-map "Dr" 'diredp-dired-recent-dirs-other-window)     ; `C-x 4 D r'
   (define-key ctl-x-4-map "DS" 'diredp-fileset-other-window)               ; `C-x 4 D S'
   (define-key ctl-x-4-map "DU" 'diredp-dired-union-other-window))          ; `C-x 4 D U'
 
