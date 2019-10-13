@@ -28,6 +28,15 @@ Vittek (where and whoever he is) release a C/Java version into GPL in 2006 on So
 
 Fully working version for C and Java is on [http:/github.com/thoni56/c-xrefactory GitHub]. Also available as an el-get package for easy installation.
 
+[new]
+I made some patches for an original 1.6.10 version (like parsing initializer lists for structs) and prepared packages for Arch and Ubuntu:
+
+Arch Linux AUR:
+https://aur.archlinux.org/packages/xrefactory/
+
+Ubuntu Linux PPA:
+https://launchpad.net/~litvindev/+archive/ubuntu/ppa
+
 ----
 CategoryProgrammerUtils
 CategoryNavigation
