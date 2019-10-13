@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.10.13
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 13 10:16:41 2019 (-0700)
+;; Last-Updated: Sun Oct 13 15:53:25 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11763
+;;     Update #: 11787
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -811,9 +811,11 @@
 ;;            diredp-dired-recent-files-other-window.
 ;;     diredp-dired-for-dirs(-other-window): Bind revert-buffer-function to diredp-cannot-revert.
 ;;     Bind diredp-dired-for-dirs to C-x D r, diredp-dired-recent-files to C-x D R.
+;;     diredp-menu-bar-regexp-menu, diredp-marks-(un)mark-menu:
+;;       Added items for the different dired-mark-files-regexp behaviors.
 ;; 2019/10/12 dadams
 ;;     dired-mark-files-regexp: Fixed prefix arg for LOCALP, to correspond to doc string:
-;;       none, C-u (no dir),  M-+, C-u C-u (rel to default dir), M--, M-0 (absolute)
+;;       none, C-u (no dir),  M-9, C-u C-u (rel to default dir), M--, M-0 (absolute)
 ;; 2019/07/03 dadams
 ;;     dired-mark-unmarked-files: Apply fix for Emacs bug #27465.
 ;;     diredp-mark-if, diredp-mark-sexp(-recursive), dired-mark-unmarked-files:
@@ -5336,8 +5338,7 @@ When called from Lisp, optional arg DETAILS is passed to
 
 (when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
 
-  (defun diredp-do-async-shell-command-recursive (command &optional ignore-marks-p details)
-                                        ; Bound to `M-+ &'
+  (defun diredp-do-async-shell-command-recursive (command &optional ignore-marks-p details) ; Bound to `M-+ &'
     "Run async shell COMMAND on marked files, including in marked subdirs.
 Like `dired-do-async-shell-command', but act recursively on subdirs.
 The files included are those that are marked in the current Dired
@@ -5529,8 +5530,7 @@ When called from Lisp, optional arg DETAILS is passed to
                           (read-string "Tag to remove: ")))
 
 ;;;###autoload
-(defun diredp-image-dired-comment-files-recursive (&optional ignore-marks-p details)
-                                        ; Bound to `M-+ C-t c'
+(defun diredp-image-dired-comment-files-recursive (&optional ignore-marks-p details) ; Bound to `M-+ C-t c'
   "Add comment to marked files in dired, including those in marked subdirs.
 Like `image-dired-dired-comment-files' but act recursively on subdirs.
 The files included are those that are marked in the current Dired
@@ -5833,8 +5833,7 @@ When called from Lisp, optional arg DETAILS is passed to
   (tags-search regexp '(diredp-get-files ignore-marks-p nil nil nil nil details)))
 
 ;;;###autoload
-(defun diredp-do-query-replace-regexp-recursive (from to &optional arg details)
-                                        ; Bound to `M-+ Q'
+(defun diredp-do-query-replace-regexp-recursive (from to &optional arg details) ; Bound to `M-+ Q'
   "Do `query-replace-regexp' on marked files, including in marked subdirs.
 Query-replace FROM with TO.
 
@@ -5953,7 +5952,7 @@ When called from Lisp:
   (let ((files  (diredp-get-files ignore-marks-p predicate))) (diredp-list-files files nil nil nil details)))
 
 ;;;###autoload
-(defun diredp-flag-auto-save-files-recursive (&optional arg details) ; `M-+ #'
+(defun diredp-flag-auto-save-files-recursive (&optional arg details) ; Bound to `M-+ #'
   "Flag all auto-save files for deletion, including in marked subdirs.
 A non-negative prefix arg means to unmark (unflag) them instead.
 
@@ -5969,7 +5968,7 @@ When called from Lisp, optional arg DETAILS is passed to
 
 (when (fboundp 'char-displayable-p)     ; Emacs 22+
 
-  (defun diredp-change-marks-recursive (old new &optional arg predicate details) ; `M-+ * c'
+  (defun diredp-change-marks-recursive (old new &optional arg predicate details) ; Bound to `M-+ * c'
     "Change all OLD marks to NEW marks, including those in marked subdirs.
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
@@ -6022,7 +6021,7 @@ When called from Lisp:
                       (setq count  (1+ count))))))))))
       (message "%d mark%s changed from `%c' to `%c'" count (dired-plural-s count) old new)))
 
-  (defun diredp-unmark-all-marks-recursive (&optional arg details) ; `M-+ U'
+  (defun diredp-unmark-all-marks-recursive (&optional arg details) ; Bound to `M-+ U'
     "Remove ALL marks everywhere, including in marked subdirs.
 A prefix arg is as for `diredp-unmark-all-files-recursive'.
 Note that a negative prefix arg (e.g. `C--') removes all marks from
@@ -6035,7 +6034,7 @@ When called from Lisp, optional arg DETAILS is passed to
                         (list current-prefix-arg diredp-list-file-attributes)))
     (diredp-unmark-all-files-recursive ?\r arg details))
 
-  (defun diredp-unmark-all-files-recursive (mark &optional arg predicate details) ; `M-+ M-DEL'
+  (defun diredp-unmark-all-files-recursive (mark &optional arg predicate details) ; Bound to `M-+ M-DEL'
     "Remove a given mark (or ALL) everywhere, including in marked subdirs.
 You are prompted for the mark character to remove.  If you hit `RET'
 instead then ALL mark characters are removed.
@@ -10103,7 +10102,7 @@ The form of a file name used for matching:
    unmark) means use the absolute file name, that is, including all
    directory components.
 
- - A positive arg (e.g. `M-+', to mark) or a double plain arg (`C-u
+ - A positive arg (e.g. `M-9', to mark) or a double plain arg (`C-u
    C-u', to unmark) means construct the name relative to
    `default-directory'.  For an entry in an inserted subdir listing,
    this means prefix the relative file name (no directory part) with
@@ -10143,7 +10142,7 @@ Non-interactively:
                                                    " files (regexp): "))
                        (and raw  (or C-u  C-u-C-u  (zerop num))  ?\040)
                        (cond ((or (not raw)  C-u)  'no-dir) ; none, `C-u' (no dir)
-                             ((> num 0)            t) ; `M-+', `C-u C-u' (rel to default dir)
+                             ((> num 0)            t) ; `M-9', `C-u C-u' (rel to default dir)
                              (t                    nil))))) ; `M--', `M-0' (absolute)
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
@@ -13051,18 +13050,52 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-regexp-menu [rename]
   '(menu-item "Move to..." dired-do-rename-regexp ; In `dired-aux.el'.
               :help "Move marked files matching regexp"))
-(define-key diredp-menu-bar-regexp-menu [flag]
-  '(menu-item "Flag..." dired-flag-files-regexp :help "Flag files matching regexp for deletion"))
+(define-key diredp-menu-bar-regexp-menu [unmark-regexp-default-dir]
+  '(menu-item "Unmark (Default Dir)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 t))
+              :help "Unmark files matching regexp with default directory"
+              :keys "C-u C-u \\[dired-mark-files-regexp]"))
+(define-key diredp-menu-bar-regexp-menu [unmark-regexp-absolute]
+  '(menu-item "Unmark (Absolute)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 nil))
+              :help "Unmark files matching regexp against absolute file name"
+              :keys "M-0 \\[dired-mark-files-regexp]"))
+(define-key diredp-menu-bar-regexp-menu [unmark-regexp-relative]
+  '(menu-item "Unmark (Relative)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 'no-dir))
+              :help "Unmark files matching regexp against relative file name"
+              :keys "C-u \\[dired-mark-files-regexp]"))
+(define-key diredp-menu-bar-regexp-menu [mark-regexp-default-dir]
+  '(menu-item "Mark (Default Dir)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char t))
+              :help "Mark files matching regexp with default directory"
+              :keys "M-9 \\[dired-mark-files-regexp]"))
+(define-key diredp-menu-bar-regexp-menu [mark-regexp-absolute]
+  '(menu-item "Mark (Absolute)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char nil))
+              :help "Mark files matching regexp against absolute file name"
+              :keys "M-- \\[dired-mark-files-regexp]"))
+(define-key diredp-menu-bar-regexp-menu [mark-regexp-relative]
+  '(menu-item "Mark (Relative)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char 'no-dir))
+              :help "Mark files matching regexp against relative file name"
+              :keys "\\[dired-mark-files-regexp]"))
+(define-key diredp-menu-bar-regexp-menu [mark-containing]
+  '(menu-item "Mark Containing..." dired-mark-files-containing-regexp
+              :help "Mark files whose contents matches regexp"))
 (define-key diredp-menu-bar-regexp-menu [image-dired-mark-tagged-files]
   '(menu-item "Mark Image Files Tagged..." image-dired-mark-tagged-files
-    :enable (fboundp 'image-dired-mark-tagged-files)
-    :help "Mark image files whose image tags match regexp"))
-(define-key diredp-menu-bar-regexp-menu [mark-cont]
-  '(menu-item "Mark Containing..." dired-mark-files-containing-regexp
-    :help "Mark files whose contents matches regexp"))
-(define-key diredp-menu-bar-regexp-menu [mark]
-  '(menu-item "Mark..." dired-mark-files-regexp
-    :help "Mark files matching regexp"))
+              :enable (fboundp 'image-dired-mark-tagged-files)
+              :help "Mark image files whose image tags match regexp"))
+(define-key diredp-menu-bar-regexp-menu [flag]
+  '(menu-item "Flag..." dired-flag-files-regexp
+              :help "Flag files matching regexp for deletion"))
 
 
 ;; `Regexp' > `Here and Below' menu.
@@ -13071,7 +13104,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-regexp-menu [mark-recursive]
   (cons "Here and Below" diredp-regexp-recursive-menu))
 (define-key diredp-regexp-recursive-menu [diredp-mark-files-regexp-recursive]
-    '(menu-item "Mark Named..." diredp-mark-files-regexp-recursive
+    '(menu-item "Mark Named (Absolute)..." diredp-mark-files-regexp-recursive
       :help "Mark all file names matching a regexp, including those in marked subdirs"))
 (define-key diredp-regexp-recursive-menu [diredp-mark-files-containing-regexp-recursive]
     '(menu-item "Mark Containing..." diredp-mark-files-containing-regexp-recursive
@@ -13205,6 +13238,27 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Unmark' submenu for Dired menu-bar `Marks' menu.")
 (define-key diredp-menu-bar-marks-menu [mark-mark] (cons "Unmark" diredp-marks-unmark-menu))
 
+(define-key diredp-marks-unmark-menu [unmark-regexp-default-dir]
+  '(menu-item "Unmark Name Matching Regexp (Default Dir)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 t))
+              :help "Unmark files matching regexp with default directory"
+              :keys "C-u C-u \\[dired-mark-files-regexp]"))
+(define-key diredp-marks-unmark-menu [unmark-regexp-absolute]
+  '(menu-item "Unmark Name Matching Regexp (Absolute)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp
+                 (diredp-read-regexp "UNmark files (regexp): ")
+                 ?\040
+                 nil))
+              :help "Unmark files matching regexp against absolute file name"
+              :keys "M-0 \\[dired-mark-files-regexp]"))
+(define-key diredp-marks-unmark-menu [unmark-regexp-relative]
+  '(menu-item "Unmark Name Matching Regexp (Relative)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 'no-dir))
+              :help "Unmark files matching regexp against relative file name"
+              :keys "C-u \\[dired-mark-files-regexp]"))
 (define-key diredp-marks-unmark-menu [unmark-autofiles]
   '(menu-item "Unmark Autofiles" diredp-unmark-autofiles
     :help "Unmark all autofiles (bookmarks with same name as file)"
@@ -13232,6 +13286,27 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Mark' submenu for Dired menu-bar `Marks' menu.")
 (define-key diredp-menu-bar-marks-menu [marks-mark] (cons "Mark" diredp-marks-mark-menu))
 
+(define-key diredp-marks-mark-menu [marks-mark-regexp-default-dir]
+  '(menu-item "Mark Name Matching Regexp (Default Dir)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char t))
+              :help "Mark files matching regexp with default directory"
+              :keys "M-9 \\[dired-mark-files-regexp]"))
+(define-key diredp-marks-mark-menu [marks-mark-regexp-absolute]
+  '(menu-item "Mark Name Matching Regexp (Absolute)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char nil))
+              :help "Mark files matching regexp against absolute file name"
+              :keys "M-- \\[dired-mark-files-regexp]"))
+(define-key diredp-marks-mark-menu [marks-mark-regexp-relative]
+  '(menu-item "Mark Name Matching Regexp (Relative)..."
+              (lambda () (interactive)
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char 'no-dir))
+              :help "Mark files matching regexp against relative file name"
+              :keys "\\[dired-mark-files-regexp]"))
+(define-key diredp-marks-mark-menu [marks-mark-containing]
+  '(menu-item "Mark Content Matching Regexp..." dired-mark-files-containing-regexp
+    :help "Mark files whose contents matches regexp"))
 (define-key diredp-marks-mark-menu [marks-mark-sexp]
   '(menu-item "Mark If..." dired-mark-sexp ; In `dired-x.el'.
               :help "Mark files that satisfy specified condition"))
@@ -13239,12 +13314,6 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Mark Image Files Tagged..." image-dired-mark-tagged-files
     :enable (fboundp 'image-dired-mark-tagged-files) ; In `image-dired.el'.
     :help "Mark image files whose image tags match regexp"))
-(define-key diredp-marks-mark-menu [marks-mark-cont]
-  '(menu-item "Mark Content Matching Regexp..." dired-mark-files-containing-regexp
-    :help "Mark files whose contents matches regexp"))
-(define-key diredp-marks-mark-menu [marks-mark...]
-  '(menu-item "Mark Name Matching Regexp..." dired-mark-files-regexp
-    :help "Mark file names matching regexp"))
 (when (fboundp 'dired-mark-omitted)     ; In `dired-x.el', Emacs 22+.
   (define-key diredp-marks-mark-menu [marks-mark-omitted]
     '(menu-item "Mark Omitted..." dired-mark-omitted
@@ -13306,7 +13375,7 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Containing Regexp..." diredp-mark-files-containing-regexp-recursive
     :help "Mark all files with content matching a regexp, including in marked subdirs"))
 (define-key diredp-marks-recursive-menu [diredp-mark-files-regexp-recursive]
-  '(menu-item "Named Regexp..." diredp-mark-files-regexp-recursive
+  '(menu-item "Named Regexp (Absolute)..." diredp-mark-files-regexp-recursive
     :help "Mark all file names matching a regexp, including those in marked subdirs"))
 (define-key diredp-marks-recursive-menu [diredp-mark-extension-recursive]
   '(menu-item "Extension..." diredp-mark-extension-recursive
