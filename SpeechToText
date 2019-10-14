@@ -19,7 +19,7 @@ There were several packages for driving Emacs through voice input, but none curr
 === Dormant ===
 
 ==== VoiceCode ====
-VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink).
+VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink, updated Sept 2, 2019).
 https://sourceforge.net/projects/voicecode/
 The last update to the SVN repository was in 2013.
 
