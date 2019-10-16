@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.10.16
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 16 07:58:41 2019 (-0700)
+;; Last-Updated: Wed Oct 16 15:32:56 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11796
+;;     Update #: 11814
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -478,6 +478,7 @@
 ;;    `diredp-dired-recent-files',
 ;;    `diredp-dired-recent-files-other-window',
 ;;    `diredp-dired-this-subdir', `diredp-dired-union',
+;;    `diredp-do-add-to-recentf',
 ;;    `diredp-do-async-shell-command-recursive', `diredp-do-bookmark',
 ;;    `diredp-do-bookmark-dirs-recursive',
 ;;    `diredp-do-bookmark-in-bookmark-file',
@@ -497,10 +498,10 @@
 ;;    `diredp-do-query-replace-regexp-recursive',
 ;;    `diredp-do-redisplay-recursive',
 ;;    `diredp-do-relsymlink-recursive', `diredp-do-remove-all-tags',
-;;    `diredp-do-search-recursive', `diredp-do-set-tag-value',
-;;    `diredp-do-shell-command-recursive', `diredp-do-sign-recursive',
-;;    `diredp-do-symlink-recursive', `diredp-do-tag',
-;;    `diredp-do-touch-recursive', `diredp-do-untag',
+;;    `diredp-do-remove-from-recentf', `diredp-do-search-recursive',
+;;    `diredp-do-set-tag-value', `diredp-do-shell-command-recursive',
+;;    `diredp-do-sign-recursive', `diredp-do-symlink-recursive',
+;;    `diredp-do-tag', `diredp-do-touch-recursive', `diredp-do-untag',
 ;;    `diredp-do-verify-recursive', `diredp-downcase-recursive',
 ;;    `diredp-downcase-this-file', `diredp-ediff',
 ;;    `diredp-encrypt-this-file', `diredp-fileset',
@@ -616,9 +617,10 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
-;;    `diredp-ancestor-dirs', `diredp-apply-function-to-file-name',
-;;    `diredp-bookmark', `diredp-cannot-revert',
+;;    `derived-mode-p' (Emacs < 22), `diredp-add-file-to-recentf',
+;;    `diredp-all-files', `diredp-ancestor-dirs',
+;;    `diredp-apply-function-to-file-name', `diredp-bookmark',
+;;    `diredp-cannot-revert',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-delete-dups', `diredp-delete-if',
 ;;    `diredp-delete-if-not', `diredp-directories-within',
@@ -656,10 +658,11 @@
 ;;    `diredp-read-expression' (Emacs 22+),
 ;;    `diredp-read-include/exclude', `diredp-read-regexp',
 ;;    `diredp-recent-dirs', `diredp-refontify-buffer',
-;;    `diredp-remove-if', `diredp-remove-if-not',
-;;    `diredp-report-file-result', `diredp--reuse-dir-buffer-helper',
-;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
-;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
+;;    `diredp-remove-file-from-recentf', `diredp-remove-if',
+;;    `diredp-remove-if-not', `diredp-report-file-result',
+;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
+;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
+;;    `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp--set-up-font-locking', `diredp-string-match-p',
 ;;    `diredp-tag', `diredp-this-file-marked-p',
 ;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
@@ -807,6 +810,10 @@
 ;;; Change Log:
 ;;
 ;; 2019/10/16 dadams
+;;     Added: diredp-do-add-to-recentf,  diredp-do-remove-from-recentf, diredp-add-file-to-recentf,
+;;            diredp-remove-file-from-recentf.
+;;     diredp-dired-plus-description: Add diredp-do-(add-to|remove-from)-recentf to doc.
+;;     diredp-menu-bar-multiple-menu: Add diredp-do-(add-to|remove-from)-recentf.
 ;;     diredp-dired-recent-files(-other-window): Provide revert function that keeps listing in recentf-list order.
 ;; 2019/10/15 dadams
 ;;     Set dired-sort-inhibit to t wherever set revert-buffer-function to diredp-cannot-revert.
@@ -2759,10 +2766,11 @@ arguments."
                                       (downcase op-strg) nb-fail nb-results (dired-plural-s nb-results))
                               failures)))))
 
-;; Like `dired-map-over-marks-check', but `dired-log-summary' is always called, and first arg passed is different.
-;;
 (defun diredp-map-over-marks-and-report (fun mark-arg op-symbol &optional show-progress &rest fun-args)
   "Map FUN over marked lines and report the results.
+This is like `dired-map-over-marks-check', but `dired-log-summary' is
+always called, so the message is not necessarily about \"failure\".
+
 FUN returns non-nil (the offending object, e.g. the short form of the
 filename) for a failure and probably logs a detailed error explanation
 using function `dired-log'.
@@ -4094,7 +4102,11 @@ reverse chronological order of opening or writing files you access."
     (dired (cons bufname (diredp-recent-files arg)) switches)
     (with-current-buffer bufname
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (setq revert-buffer-function  `(lambda (_ __) (kill-buffer) (diredp-dired-recent-files ',buffer ',arg))))))
+      (setq revert-buffer-function  `(lambda (_ __)
+                                       (kill-buffer)
+                                       (message "Reverting...")
+                                       (diredp-dired-recent-files ',buffer ',arg)
+                                       (message "Reverting...done"))))))
 
 ;;;###autoload
 (defun diredp-dired-recent-files-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
@@ -4109,7 +4121,11 @@ reverse chronological order of opening or writing files you access."
     (dired-other-window (cons bufname (diredp-recent-files arg)) switches)
     (with-current-buffer bufname
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (setq revert-buffer-function  `(lambda (_ __) (kill-buffer) (diredp-dired-recent-files ',buffer ',arg))))))
+      (setq revert-buffer-function  `(lambda (_ __)
+                                       (kill-buffer)
+                                       (message "Reverting...")
+                                       (diredp-dired-recent-files ',buffer ',arg)
+                                       (message "Reverting...done"))))))
 
 (defun diredp-recent-files (arg)
   "Return a list of recently used files and directories.
@@ -4162,6 +4178,49 @@ ARG is as for `diredp-dired-recent-dirs'."
         (diredp-read-include/exclude 'Dir recent-dirs (not (natnump (prefix-numeric-value arg))))
       recent-dirs)))
          
+;;;###autoload
+(defun diredp-do-add-to-recentf (&optional arg) ; Not bound by default
+  "Add all marked (or next ARG) files to list of recently used files.
+That is, add them from variable `recentf-list'.
+
+\(This does not refresh any Dired buffer listing the recently visited
+files.  You can refresh it manually using `\\[revert-buffer]'."
+  (interactive "P")
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (diredp-ensure-mode)
+  (dired-map-over-marks-check #'diredp-add-file-to-recentf arg 'add\ to\ recentf
+                              (diredp-fewer-than-2-files-p arg)))
+
+;;;###autoload
+(defun diredp-do-remove-from-recentf (&optional arg) ; Not bound by default
+  "Remove all marked (or next ARG) files from list of recently used files.
+That is, remove them from variable `recentf-list'.
+
+\(This does not refresh any Dired buffer listing the recently visited
+files.  You can refresh it manually using `\\[revert-buffer]'."
+  (interactive "P")
+  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
+  (diredp-ensure-mode)
+  (dired-map-over-marks-check #'diredp-remove-file-from-recentf arg 'remove\ from\ recentf
+                              (diredp-fewer-than-2-files-p arg)))
+
+(defun diredp-add-file-to-recentf (&optional file)
+  "Add FILE to the front of `recentf-list'.
+If FILE is already present, move it to the front of the list.
+FILE is an absolute file name.
+In Dired, FILE defaults to the file of the current Dired line."
+  (setq file  (or file  (and (derived-mode-p 'dired-mode)  (dired-get-file-for-visit))))
+  (add-to-list 'recentf-list  file)
+  nil)                                  ; Return nil for success (cannot fail).
+
+(defun diredp-remove-file-from-recentf (&optional file)
+  "Remove FILE from `recentf-list'.
+FILE is an absolute file name.
+In Dired, FILE defaults to the file of the current Dired line."
+  (setq file          (or file  (and (derived-mode-p 'dired-mode)  (dired-get-file-for-visit)))
+        recentf-list  (delete file recentf-list))
+  nil)                                  ; Return nil for success (cannot fail).
+
 (defun diredp-read-include/exclude (thing things &optional exclude)
   "Read which THINGs to include (or to EXCLUDE, if non-nil) from list THINGS.
 The things are read one by one.  `C-g' stops reading.
@@ -11793,14 +11852,16 @@ Marked (or next prefix arg) files & subdirs here
   \\[dired-do-byte-compile]\t\t- Byte-compile
   \\[dired-do-load]\t\t- Load (Emacs Lisp)
   \\[diredp-do-apply-function]\t\t- Apply Lisp function
-  \\[diredp-do-emacs-command]\t\t- Invoke Emacs command
+  \\[diredp-omit-marked]\t- Omit
+  \\[diredp-omit-unmarked]\t- Omit unmarked
+  \\[diredp-do-emacs-command]\t- Invoke Emacs command
 "
     (and (fboundp 'diredp-read-expression) ; Emacs 22+
-         "  \\[diredp-do-lisp-sexp]\t\t- Evaluate Lisp sexp
+         "  \\[diredp-do-lisp-sexp]\t- Evaluate Lisp sexp
 ")
 
-    "  \\[diredp-omit-marked]\t- Omit
-  \\[diredp-omit-unmarked]\t- Omit unmarked
+    "  \\[diredp-do-add-to-recentf]\t\t- Add to recently visited
+  \\[diredp-do-remove-from-recentf]\t- Remove from recently visited
 "
 
     (and (featurep 'bookmark+)
@@ -12498,6 +12559,14 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Change the timestamp of the marked files, using `touch'")))
 (define-key diredp-menu-bar-multiple-menu [separator-change] '("--")) ; -------------------------
 
+(define-key diredp-menu-bar-multiple-menu [diredp-do-remove-from-recentf]
+    '(menu-item "Remove Marked Files From Recent Visits" diredp-do-add-to-recentf
+      :help "Remove the files marked here from the list of recently visited files"
+      :enable (featurep 'recentf)))
+(define-key diredp-menu-bar-multiple-menu [diredp-do-add-to-recentf]
+    '(menu-item "Add Marked Files To Recent Visits" diredp-do-add-to-recentf
+      :help "Add the files marked here to the list of recently visited files"
+      :enable (featurep 'recentf)))
 (when (fboundp 'diredp-read-expression) ; Emacs 22+
   (define-key diredp-menu-bar-multiple-menu [diredp-do-lisp-sexp]
     '(menu-item "Eval Sexp..." diredp-do-lisp-sexp
