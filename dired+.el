@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2019.10.13
+;; Version: 2019.10.16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 13 15:53:25 2019 (-0700)
+;; Last-Updated: Wed Oct 16 07:58:41 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11787
+;;     Update #: 11796
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -806,6 +806,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/10/16 dadams
+;;     diredp-dired-recent-files(-other-window): Provide revert function that keeps listing in recentf-list order.
+;; 2019/10/15 dadams
+;;     Set dired-sort-inhibit to t wherever set revert-buffer-function to diredp-cannot-revert.
 ;; 2019/10/13 dadams
 ;;     Added: diredp-cannot-revert, diredp-recent-files, diredp-dired-recent-files,
 ;;            diredp-dired-recent-files-other-window.
@@ -4047,7 +4051,9 @@ See also `dired' (including the advice)."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
   (dired arg switches)
-  (with-current-buffer (car arg) (setq revert-buffer-function #'diredp-cannot-revert)))
+  (with-current-buffer (car arg)
+    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+    (setq revert-buffer-function #'diredp-cannot-revert)))
 
 ;;;###autoload
 (defun diredp-dired-for-files-other-window (arg &optional switches) ; Bound to `C-x 4 D F'
@@ -4055,7 +4061,9 @@ See also `dired' (including the advice)."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
   (dired-other-window arg switches)
-  (with-current-buffer (car arg) (setq revert-buffer-function #'diredp-cannot-revert)))
+  (with-current-buffer (car arg)
+    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+    (setq revert-buffer-function #'diredp-cannot-revert)))
 
 ;;;###autoload
 (defun diredp-dired-recent-files (buffer &optional arg) ; Bound to `C-x D R'
@@ -4072,7 +4080,10 @@ With a prefix arg:
   * If >= 0 then the files to include are read, one by one.
   * If  < 0 then the files to exclude are read, one by one.
 
-When entering files to include or exclude, use `C-g' to end."
+When entering files to include or exclude, use `C-g' to end.
+
+The file listing is always in the order of `recentf-list', which is
+reverse chronological order of opening or writing files you access."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
                                       "Recently Visited Files")
                      current-prefix-arg))
@@ -4081,7 +4092,9 @@ When entering files to include or exclude, use `C-g' to end."
                         (read-string "Dired listing switches: " dired-listing-switches)))
         (bufname   (generate-new-buffer-name buffer)))
     (dired (cons bufname (diredp-recent-files arg)) switches)
-    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
+    (with-current-buffer bufname
+      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+      (setq revert-buffer-function  `(lambda (_ __) (kill-buffer) (diredp-dired-recent-files ',buffer ',arg))))))
 
 ;;;###autoload
 (defun diredp-dired-recent-files-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
@@ -4094,7 +4107,9 @@ When entering files to include or exclude, use `C-g' to end."
                         (read-string "Dired listing switches: " dired-listing-switches)))
         (bufname   (generate-new-buffer-name buffer)))
     (dired-other-window (cons bufname (diredp-recent-files arg)) switches)
-    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
+    (with-current-buffer bufname
+      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+      (setq revert-buffer-function  `(lambda (_ __) (kill-buffer) (diredp-dired-recent-files ',buffer ',arg))))))
 
 (defun diredp-recent-files (arg)
   "Return a list of recently used files and directories.
@@ -4116,7 +4131,9 @@ Like `diredp-dired-recent-files', but limited to recent directories."
                         (read-string "Dired listing switches: " dired-listing-switches)))
         (bufname   (generate-new-buffer-name buffer)))
     (dired (cons bufname (diredp-recent-dirs arg)) switches)
-    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
+    (with-current-buffer bufname
+      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+      (setq revert-buffer-function #'diredp-cannot-revert))))
 
 ;;;###autoload
 (defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 D r'
@@ -4129,7 +4146,9 @@ Like `diredp-dired-recent-files', but limited to recent directories."
                         (read-string "Dired listing switches: " dired-listing-switches)))
         (bufname   (generate-new-buffer-name buffer)))
     (dired-other-window (cons bufname (diredp-recent-dirs arg)) switches)
-    (with-current-buffer bufname (setq revert-buffer-function #'diredp-cannot-revert))))
+    (with-current-buffer bufname
+      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+      (setq revert-buffer-function #'diredp-cannot-revert))))
 
 (defun diredp-recent-dirs (arg)
   "Return a list of recently used directories.
