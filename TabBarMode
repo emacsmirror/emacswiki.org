@@ -68,6 +68,10 @@ file <code>tabbar.el</code>.
 Tabbar mode has many customizable options, and it supports emacs customization
 system. To customize, type <code>M-x customize-group [RET] tabbar [RET]</code>.
 
+There is also an out-of-the-box configuration available, which features, among
+other things, automatic project grouping, tab movement and multiple tab styles:
+https://github.com/manateelazycat/awesome-tab
+
 === Tab groups ===
 
 To define your own tab grouping, you need to either set
