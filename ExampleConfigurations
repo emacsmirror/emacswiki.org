@@ -7,6 +7,9 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 
 * GuiltyDolphin's [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom .emacs] includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more
 * [[SachaChua]]'s [[http://sachachua.com/dotemacs OrgMode-based .emacs]]
+* https://jamiecollinson.com/blog/my-emacs-config/
+* https://github.com/vidjuheffex/dotemacs/blob/master/emacs.org
+* https://github.com/BrettWitty/dotemacs/blob/master/bew_config.org
 
 [:OtherConfigs]
 == Other configurations ==
