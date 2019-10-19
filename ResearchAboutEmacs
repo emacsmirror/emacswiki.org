@@ -4,10 +4,12 @@ There is also a Zotero group called [https://www.zotero.org/groups/2392126/emacs
 
 Thanks to contributors on [https://www.reddit.com/r/emacs/comments/djrlib/academic_research_about_emacs/ /r/emacs] and [https://emacs.stackexchange.com/questions/53236/academic-research-about-emacs Emacs StackExchange site].
 
-Palmer, J.; Duffy, T.; Gomoll, K; Gomoll, T.; Richards-Palmquist. J. and Trumble, J. A. 1988. "The design and evaluation of online help for Unix EMACS: capturing the user in menu design," in /IEEE Transactions on Professional Communication/, vol. 31, no. 1, pp. 44-51, March 1988. doi: 10.1109/47.6920. Retrieved from https://ieeexplore.ieee.org/abstract/document/6920/references
+Palmer, J.; Duffy, T.; Gomoll, K; Gomoll, T.; Richards-Palmquist. J. and Trumble, J. A. 1988. [https://ieeexplore.ieee.org/abstract/document/6920/references The design and evaluation of online help for Unix EMACS: capturing the user in menu design], in /IEEE Transactions on Professional Communication/, vol. 31, no. 1, pp. 44-51, March 1988. doi:10.1109/47.6920.
 
-Twidale, Michael B.; Jones, M. Cameron. 2005. "Let them use emacs": the interaction of simplicity and appropriation. /International reports on socio-informatics/ 2(2) 66-71. Retrieved from https://www.ideals.illinois.edu/handle/2142/9607
+Twidale, Michael B.; Jones, M. Cameron. 2005. [https://www.ideals.illinois.edu/handle/2142/9607 "Let them use emacs": the interaction of simplicity and appropriation]. /International reports on socio-informatics/ 2(2) 66-71.
 
-Stallman, R. M. (1981). EMACS the Extensible, Customizable Self-documenting Display Editor. /Proceedings of the ACM SIGPLAN SIGOA Symposium on Text Manipulation/, 147–156. https://doi.org/10.1145/800209.806466
+Stallman, R. M. (1981). [https://doi.org/10.1145/800209.806466 EMACS the Extensible, Customizable Self-documenting Display Editor]. /Proceedings of the ACM SIGPLAN SIGOA Symposium on Text Manipulation/, 147–156.
 
-Zhong, Shudan and Xu, Hong. 2019. Intelligently recommending key bindings on physical keyboards with demonstrations in Emacs. In /Proceedings of the 24th International Conference on Intelligent User Interfaces/ (IUI), 12–17. doi:10.1145/3301275.3302272. Retrieved from https://dl.acm.org/citation.cfm?doid=3301275.3302272
+Zhong, Shudan and Xu, Hong. 2019. [https://dl.acm.org/citation.cfm?doid=3301275.3302272 Intelligently recommending key bindings on physical keyboards with demonstrations in Emacs]. In /Proceedings of the 24th International Conference on Intelligent User Interfaces/ (IUI), 12–17. doi:10.1145/3301275.3302272.
+
+Guy Lapalme.  1998.  [https://pdfs.semanticscholar.org/ab48/0568f9a0e4a6fc3b25918c1a481bb1b99c37.pdf Dynamic Tabbing for Automatic Indentation with the Layout Rule].  Journal of Functional Programming, 8(5), pp493-502.
