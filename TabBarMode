@@ -3,6 +3,8 @@
 Tabbar is an emacs minor mode that displays a tab bar at the top,
 similar to the idea of web browser's tabs.
 
+<i><b>Note:</b> Emacs 27.1 will come with two built-in tab modes, <tt>tab-bar-mode</tt> (per-frame) and <tt>tab-line-mode</tt> (per-window).  See documentation for details.</i>
+
 == Download ==
 
 The original code is at: http://sourceforge.net/projects/emhacks/
