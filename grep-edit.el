@@ -148,7 +148,7 @@
           (buffer-name (current-buffer)))
          (string= process-status "exit"))
         (progn
-          (toggle-read-only)
+          (read-only-mode)
           (buffer-enable-undo (current-buffer))
           (grep-edit-set-readonly-area t)
           (setq grep-edit-change-face-flg t)))))
