@@ -17,9 +17,9 @@ Similar to browse-kill-ring -- makes it easy to access and yank text from the ki
 === browse-kill-ring.el ===
  
 ##browse-kill-ring.el## -- a package by ColinWalters, and later maintained by Nick Hurley. You can get it here:
-** https://github.com/browse-kill-ring/browse-kill-ring Created in agreement with Nick Hurley.
-** Debian: ##apt-get install emacs-goodies-el## (DebianPackage:emacs-goodies-el)
-** <tt>[[browse-kill-ring.el]]</tt> is an older version of this package, it lacks some of the features of the github version.
+** https://github.com/browse-kill-ring/browse-kill-ring (Created in agreement with Nick Hurley.)
+** Debian: ##apt-get install elpa-browse-kill-ring## (DebianPackage:elpa-browse-kill-ring)
+** <tt>[[browse-kill-ring.el]]</tt> is an older version of this package which lacks some of the features of the github version.
 
 === browse-kill-ring+.el ===
 
@@ -174,13 +174,6 @@ diff --git a/libs/popup-kill-ring.el b/libs/popup-kill-ring.el
 
 -- ArneBab
 
-[new]
-The problem with browse-kill-ring is that when my frame is split into two windows, a and b, it will open in b if my focus is on a. When I close it (by pressing ‘q’) b is closed and what I had there is buried (I can select that it won’t close the window it creates, but that’s also not good; I might have just one window initially and I don’t want to end up with two). The ideal behaviour would be similar to bs-mode (open in it’s own small window and close when I press ‘q’ or once I select an entry).
-
---user19865
-
-[new]
-The version of browse-kill-ring on github will, by default, preserve the window/buffer configuration when browse-kill-ring is invoked, and restore it when you quit, this should solve the issue of the disappearing window/buffers. 
 ----
 
 CategoryEditing
