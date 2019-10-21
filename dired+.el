@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.10.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 21 14:28:37 2019 (-0700)
+;; Last-Updated: Mon Oct 21 16:47:24 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11884
+;;     Update #: 11890
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -814,6 +814,8 @@
 ;;
 ;; 2019/10/21 dadams
 ;;     Added: diredp-revert-displayed-recentf-buffers, diredp-recent-files-buffer.
+;;     diredp-list-file-attributes: Corrected - either a list of integers or a non-list.
+;;     diredp-list-marked: Pass nil to dired-get-marked-files for DISTINGUISH-ONE-MARKED arg.
 ;;     diredp-dired-recent-files(-other-window): (set (make-local-variable 'diredp-recent-files-buffer) bufname)
 ;;     diredp-do-(add-to|remove-from)-recentf: Call diredp-revert-displayed-recentf-buffers afterward.
 ;;     diredp-add-file-to-recentf, diredp-remove-file-from-recentf:
@@ -875,7 +877,7 @@
 ;;     diredp-menu-bar-multiple-menu: Reordered items.
 ;;     diredp-list-marked, diredp-*-recursive, diredp-describe-marked-autofiles:
 ;;       Use diredp-list-file-attributes for DETAILS arg interactively.
-;;     diredp-yank-files, dired-query: Use diredp-list-file-attributes, not harcoded list (5 8).
+;;     diredp-yank-files, dired-query: Use diredp-list-file-attributes, not hardcoded list (5 8).
 ;;     diredp-set-bookmark-file-bookmark-for-marked-recursive: Corrected interactive spec.
 ;; 2019/04/16 dadams
 ;;     Added: diredp-delete-if.
@@ -2274,12 +2276,14 @@ option has no effect.)"
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
-(defcustom diredp-list-file-attributes (list '(5 8) 'auto)
-  "Which file attributes `diredp-list-file' uses, and when."
-  :group 'Dired-Plus :type '(list (repeat integer)
-                                  (choice
-                                   (const :tag "Show automatically, immediately" 'auto)
-                                   (const :tag "Show on demand via `l'" 'on-demand))))
+(defcustom diredp-list-file-attributes (list 5 8)
+  "Which file attributes `diredp-list-file' uses, and when.
+A list of file attribute numbers means use only the values of those
+attributes.
+A non-list means use all attribute values."
+  :group 'Dired-Plus :type '(choice
+                             (repeat (integer :tag "Use attribute with number"))
+                             (const :tag "Use all attributes" 'all)))
 
 ;;;###autoload
 (defcustom diredp-max-frames 200
@@ -4977,7 +4981,7 @@ When called from Lisp:
   the files for which it returns non-nil.
  Non-nil optional arg DETAILS is passed to `diredp-list-files'."
   (interactive (progn (diredp-ensure-mode) (list current-prefix-arg nil t diredp-list-file-attributes)))
-  (let ((files  (dired-get-marked-files nil arg predicate 'DISTINGUISH-ONE interactivep)))
+  (let ((files  (dired-get-marked-files nil arg predicate nil interactivep)))
     (diredp-list-files files nil nil nil details)))
 
 (defun diredp-list-files (files &optional dir bufname predicate details)
