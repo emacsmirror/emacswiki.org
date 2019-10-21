@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2019.10.18
+;; Version: 2019.10.21
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 18 14:44:41 2019 (-0700)
+;; Last-Updated: Mon Oct 21 14:28:37 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11835
+;;     Update #: 11884
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -451,8 +451,9 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `diredp-add-this-to-recentf', `diredp-add-to-dired-buffer',
-;;    `diredp-add-to-this-dired-buffer', `diredp-do-apply-function',
+;;    `diredp-add-file-to-recentf', `diredp-add-this-to-recentf',
+;;    `diredp-add-to-dired-buffer', `diredp-add-to-this-dired-buffer',
+;;    `diredp-do-apply-function',
 ;;    `diredp-do-apply-function-recursive',
 ;;    `diredp-async-shell-command-this-file',
 ;;    `diredp-bookmark-this-file',
@@ -572,6 +573,7 @@
 ;;    `diredp-prev-subdir', `diredp-print-this-file',
 ;;    `diredp-relsymlink-this-file',
 ;;    `diredp-remove-all-tags-this-file',
+;;    `diredp-remove-file-from-recentf',
 ;;    `diredp-remove-this-from-recentf', `diredp-rename-this-file',
 ;;    `diredp-send-bug-report',
 ;;    `diredp-set-bookmark-file-bookmark-for-marked',
@@ -618,10 +620,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `derived-mode-p' (Emacs < 22), `diredp-add-file-to-recentf',
-;;    `diredp-all-files', `diredp-ancestor-dirs',
-;;    `diredp-apply-function-to-file-name', `diredp-bookmark',
-;;    `diredp-cannot-revert',
+;;    `derived-mode-p' (Emacs < 22), `diredp-all-files',
+;;    `diredp-ancestor-dirs', `diredp-apply-function-to-file-name',
+;;    `diredp-bookmark', `diredp-cannot-revert',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-delete-dups', `diredp-delete-if',
 ;;    `diredp-delete-if-not', `diredp-directories-within',
@@ -658,9 +659,10 @@
 ;;    `diredp-read-bookmark-file-args', `diredp-read-command',
 ;;    `diredp-read-expression' (Emacs 22+),
 ;;    `diredp-read-include/exclude', `diredp-read-regexp',
-;;    `diredp-recent-dirs', `diredp-refontify-buffer',
-;;    `diredp-remove-file-from-recentf', `diredp-remove-if',
+;;    `diredp-recent-dirs', `diredp-recent-files-buffer',
+;;    `diredp-refontify-buffer', `diredp-remove-if',
 ;;    `diredp-remove-if-not', `diredp-report-file-result',
+;;    `diredp-revert-displayed-recentf-buffers',
 ;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
 ;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
 ;;    `diredp-set-tag-value', `diredp-set-union',
@@ -810,6 +812,15 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/10/21 dadams
+;;     Added: diredp-revert-displayed-recentf-buffers, diredp-recent-files-buffer.
+;;     diredp-dired-recent-files(-other-window): (set (make-local-variable 'diredp-recent-files-buffer) bufname)
+;;     diredp-do-(add-to|remove-from)-recentf: Call diredp-revert-displayed-recentf-buffers afterward.
+;;     diredp-add-file-to-recentf, diredp-remove-file-from-recentf:
+;;       Make interactive (commandp).  Use code from recentf.el to add/remove.
+;;       Call diredp-revert-displayed-recentf-buffers afterward.
+;;     diredp-print-this-file, diredp-compress-this-file, diredp-(add|remove)-this-(to|from)-recentf:
+;;       Bind use-file-dialog to nil so get correct file name.
 ;; 2019/10/18 dadams
 ;;     Added: diredp-add-this-to-recentf, diredp-remove-this-from-recentf.
 ;;     diredp-dired-recent-dirs(-other-window): Use diredp-dired-recent-dirs as revert function.
@@ -2373,6 +2384,10 @@ Initialized to the value of option `diredp-hide-details-initially-flag'.")
 ;; Same value as the default value of `icicle-re-no-dot'.
 (defvar diredp-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
   "Regexp that matches anything except `.' and `..'.")
+
+(defvar diredp-recent-files-buffer nil
+  "Non-nil means this buffer is a Dired listing of recently visited files.")
+(make-variable-buffer-local 'diredp-recent-files-buffer)
 
 (defvar diredp-w32-drives-mode-map (let ((map  (make-sparse-keymap)))
                                      (define-key map "q"       'bury-buffer)
@@ -4108,6 +4123,7 @@ reverse chronological order of opening or writing files you access."
         (bufname   (generate-new-buffer-name buffer)))
     (dired (cons bufname (diredp-recent-files arg)) switches)
     (with-current-buffer bufname
+      (setq diredp-recent-files-buffer  bufname)
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
       (setq revert-buffer-function  `(lambda (_ __)
                                        (kill-buffer)
@@ -4127,6 +4143,7 @@ reverse chronological order of opening or writing files you access."
         (bufname   (generate-new-buffer-name buffer)))
     (dired-other-window (cons bufname (diredp-recent-files arg)) switches)
     (with-current-buffer bufname
+      (setq diredp-recent-files-buffer  bufname)
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
       (setq revert-buffer-function  `(lambda (_ __)
                                        (kill-buffer)
@@ -4205,7 +4222,8 @@ files.  You can refresh it manually using `\\[revert-buffer]'."
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
   (diredp-ensure-mode)
   (dired-map-over-marks-check #'diredp-add-file-to-recentf arg 'add\ to\ recentf
-                              (diredp-fewer-than-2-files-p arg)))
+                              (diredp-fewer-than-2-files-p arg))
+  (diredp-revert-displayed-recentf-buffers))
 
 ;;;###autoload
 (defun diredp-do-remove-from-recentf (&optional arg) ; Not bound by default
@@ -4218,36 +4236,56 @@ files.  You can refresh it manually using `\\[revert-buffer]'."
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
   (diredp-ensure-mode)
   (dired-map-over-marks-check #'diredp-remove-file-from-recentf arg 'remove\ from\ recentf
-                              (diredp-fewer-than-2-files-p arg)))
+                              (diredp-fewer-than-2-files-p arg))
+  (diredp-revert-displayed-recentf-buffers))
 
 ;;;###autoload
 (defun diredp-add-this-to-recentf ()
   "In Dired, add this file to the list of recently used files."
   (interactive)
-  (diredp-do-add-to-recentf 1))
+  (let ((use-file-dialog  nil)) (diredp-do-add-to-recentf 1)))
 
 ;;;###autoload
 (defun diredp-remove-this-from-recentf ()
   "In Dired, remove this file from the list of recently used files."
   (interactive)
-  (diredp-do-remove-from-recentf 1))
+  (let ((use-file-dialog  nil)) (diredp-do-remove-from-recentf 1)))
 
-(defun diredp-add-file-to-recentf (&optional file)
+;;;###autoload
+(defun diredp-add-file-to-recentf (&optional file interactivep) ; Not bound by default
   "Add FILE to the front of `recentf-list'.
 If FILE is already present, move it to the front of the list.
-FILE is an absolute file name.
 In Dired, FILE defaults to the file of the current Dired line."
+  (interactive "fFile: \np")
   (setq file  (or file  (and (derived-mode-p 'dired-mode)  (dired-get-file-for-visit))))
-  (add-to-list 'recentf-list  file)
+  (unless file (error "No file"))
+  (recentf-push (recentf-expand-file-name file))
+  (when interactivep (diredp-revert-displayed-recentf-buffers))
   nil)                                  ; Return nil for success (cannot fail).
 
-(defun diredp-remove-file-from-recentf (&optional file)
+;;;###autoload
+(defun diredp-remove-file-from-recentf (&optional file interactivep) ; Not bound by default
   "Remove FILE from `recentf-list'.
-FILE is an absolute file name.
-In Dired, FILE defaults to the file of the current Dired line."
-  (setq file          (or file  (and (derived-mode-p 'dired-mode)  (dired-get-file-for-visit)))
-        recentf-list  (delete file recentf-list))
+In Dired, FILE defaults to the file of the current Dired line.  After
+removing, revert any displayed buffers showing `recentf-list'."
+  (interactive "fFile: \np")
+  (setq file  (or file  (and (derived-mode-p 'dired-mode)  (dired-get-file-for-visit))))
+  (unless file (error "No file"))
+  (let ((memb  (recentf-string-member (recentf-expand-file-name file) recentf-list)))
+    (and memb  (setq recentf-list  (delq (car memb) recentf-list))))
+  (when interactivep (diredp-revert-displayed-recentf-buffers))
   nil)                                  ; Return nil for success (cannot fail).
+
+(defun diredp-revert-displayed-recentf-buffers ()
+  "Revert all displayed Dired buffers showing `recentf-list'."
+  (let (win)
+    (dolist (buf  (buffer-list))
+      (when (setq win  (get-buffer-window buf 0))
+        (select-window win)
+        (when (and (derived-mode-p 'dired-mode)
+                   (local-variable-if-set-p 'diredp-recent-files-buffer)
+                   diredp-recent-files-buffer)
+          (revert-buffer))))))
 
 (defun diredp-read-include/exclude (thing things &optional exclude)
   "Read which THINGs to include (or to EXCLUDE, if non-nil) from list THINGS.
@@ -10464,7 +10502,8 @@ Makes the first char of the name uppercase and the others lowercase."
 ;;;###autoload
 (defun diredp-print-this-file ()        ; Bound to `M-p'
   "In Dired, print this file."
-  (interactive) (dired-do-print 1))
+  (interactive)
+  (let ((use-file-dialog  nil)) (dired-do-print 1)))
 
 ;;;###autoload
 (defun diredp-grep-this-file ()         ; Not bound
@@ -10479,7 +10518,8 @@ Makes the first char of the name uppercase and the others lowercase."
 ;;;###autoload
 (defun diredp-compress-this-file ()     ; Bound to `z'
   "In Dired, compress or uncompress this file."
-  (interactive) (dired-do-compress 1))
+  (interactive)
+  (let ((use-file-dialog  nil)) (dired-do-compress 1)))
 
 ;;;###autoload
 (defun diredp-async-shell-command-this-file (command filelist) ; Not bound
