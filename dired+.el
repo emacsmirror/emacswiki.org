@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.10.22
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 22 10:41:36 2019 (-0700)
+;; Last-Updated: Tue Oct 22 15:45:06 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11926
+;;     Update #: 11929
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4156,8 +4156,11 @@ Do not set this option using `setq' or similar.  Use
   "Open Dired in BUFFER, showing recently visited files and directories.
 You are prompted for BUFFER (default: `Recently Visited Files').
 
+With a numeric prefix arg you can enter names of recent files to
+include or exclude.
+
 No prefix arg or a plain prefix arg (`C-u', `C-u C-u', etc.) means
-list all of the recently used directories.
+list all of the recently used files.
 
 With a prefix arg:
 * If 0, `-', or plain (`C-u') then you are prompted for the `ls'
