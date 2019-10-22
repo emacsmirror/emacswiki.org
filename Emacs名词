@@ -1,6 +1,6 @@
 == 基本名词 ==
 
-* buffer
+* buffer - 缓存。如字面意思，是用来存放正在编辑的文本的地方。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html 文档]]。
 * frame
 * window
 * point
