@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2019.10.21
+;; Version: 2019.10.22
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 21 16:47:24 2019 (-0700)
+;; Last-Updated: Tue Oct 22 10:41:36 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 11890
+;;     Update #: 11926
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -571,6 +571,7 @@
 ;;    `diredp-paste-files', `diredp-paste-replace-tags-this-file',
 ;;    `diredp-prev-dirline', `diredp-previous-line',
 ;;    `diredp-prev-subdir', `diredp-print-this-file',
+;;    `diredp-quit-window-kill' (Emacs 24+),
 ;;    `diredp-relsymlink-this-file',
 ;;    `diredp-remove-all-tags-this-file',
 ;;    `diredp-remove-file-from-recentf',
@@ -615,6 +616,7 @@
 ;;    `diredp-list-file-attributes', `diredp-max-frames',
 ;;    `diredp-move-file-dirs' (Emacs 24+), `diredp-omit-files-regexp'
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diredp-recent-files-quit-kills-flag',
 ;;    `diredp-visit-ignore-extensions', `diredp-visit-ignore-regexps',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
@@ -690,11 +692,12 @@
 ;;    `diredp-multiple-move-copy-link-menu',
 ;;    `diredp-multiple-omit-menu', `diredp-multiple-recursive-menu',
 ;;    `diredp-multiple-rename-menu', `diredp-multiple-search-menu',
-;;    `diredp-navigate-menu', `diredp-regexp-recursive-menu',
-;;    `diredp-re-no-dot', `diredp-single-bookmarks-menu',
-;;    `diredp-single-encryption-menu', `diredp-single-image-menu',
-;;    `diredp-single-move-copy-link-menu', `diredp-single-open-menu',
-;;    `diredp-single-rename-menu', `diredp-w32-drives-mode-map'.
+;;    `diredp-navigate-menu', `diredp-recent-files-map',
+;;    `diredp-regexp-recursive-menu', `diredp-re-no-dot',
+;;    `diredp-single-bookmarks-menu', `diredp-single-encryption-menu',
+;;    `diredp-single-image-menu', `diredp-single-move-copy-link-menu',
+;;    `diredp-single-open-menu', `diredp-single-rename-menu',
+;;    `diredp-w32-drives-mode-map'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -812,6 +815,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/10/22 dadams
+;;     Added: diredp-recent-files-map, diredp-recent-files-quit-kills-flag, diredp-quit-window-kill.
+;;     diredp-dired-recent-files(-other-window):
+;;       (use-local-map diredp-recent-files-map)
+;;       (set (make-local-variable 'revert-buffer-function)...), not setq.
 ;; 2019/10/21 dadams
 ;;     Added: diredp-revert-displayed-recentf-buffers, diredp-recent-files-buffer.
 ;;     diredp-list-file-attributes: Corrected - either a list of integers or a non-list.
@@ -4099,6 +4107,50 @@ See also `dired' (including the advice)."
     (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
     (setq revert-buffer-function #'diredp-cannot-revert)))
 
+(when (fboundp 'quit-restore-window)    ; Emacs 24+
+
+  ;; Use this for `q' because `diredp-dired-recent-files' creates a new unique buffer name.
+  ;;
+  (defun diredp-quit-window-kill (&optional window)
+    "Quit WINDOW, deleting it, and kill its buffer.
+WINDOW must be a live window and defaults to the selected one.
+
+This is similar to the version of `quit-window' that Emacs had before
+the introduction of `quit-restore-window'.  It ignores the information
+stored in WINDOW's `quit-restore' window parameter.
+
+It deletes the WINDOW more often, rather than switching to another
+buffer in it.  If WINDOW is alone in its frame then the frame is
+deleted or iconified, according to option `frame-auto-hide-function'."
+    (interactive "P")
+    (set-window-parameter window 'quit-restore `(frame frame nil ,(current-buffer)))
+    (quit-restore-window window 'kill))
+
+  )
+
+(defvar diredp-recent-files-map (let ((map  (make-sparse-keymap)))
+                                        (set-keymap-parent map dired-mode-map)
+                                        map)
+  "Keymap for Dired buffer listing recently visited files.
+By default this is the same as its parent, `dired-mode-map', except
+that if `diredp-recent-files-quit-kills-flag' is non-nil then `q' is
+bound to `diredp-quit-window-kill' (Emacs 24+).")
+
+(defcustom diredp-recent-files-quit-kills-flag t
+  "Non-nil means `q' in Dired recently visited files buffer kills buffer.
+Non-nil is convenient if you repeat a command that creates such a
+buffer, as it won't add yet another one.  But nil is convenient if you
+frequently use `C-x b' to revisit an existing such buffer.
+
+Do not set this option using `setq' or similar.  Use
+`customize-option' or `customize-set-variable'."
+  :type 'boolean :group 'Dired-Plus
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (when (fboundp 'diredp-quit-window-kill)
+           (define-key diredp-recent-files-map [remap quit-window] (and (symbol-value sym)
+                                                                        'diredp-quit-window-kill)))))
+
 ;;;###autoload
 (defun diredp-dired-recent-files (buffer &optional arg) ; Bound to `C-x D R'
   "Open Dired in BUFFER, showing recently visited files and directories.
@@ -4128,12 +4180,13 @@ reverse chronological order of opening or writing files you access."
     (dired (cons bufname (diredp-recent-files arg)) switches)
     (with-current-buffer bufname
       (setq diredp-recent-files-buffer  bufname)
+      (use-local-map diredp-recent-files-map)
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (setq revert-buffer-function  `(lambda (_ __)
-                                       (kill-buffer)
-                                       (message "Reverting...")
-                                       (diredp-dired-recent-files ',buffer ',arg)
-                                       (message "Reverting...done"))))))
+      (set (make-local-variable 'revert-buffer-function) `(lambda (_ __)
+                                                            (kill-buffer)
+                                                            (message "Reverting...")
+                                                            (diredp-dired-recent-files ',buffer ',arg)
+                                                            (message "Reverting...done"))))))
 
 ;;;###autoload
 (defun diredp-dired-recent-files-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
@@ -4148,12 +4201,13 @@ reverse chronological order of opening or writing files you access."
     (dired-other-window (cons bufname (diredp-recent-files arg)) switches)
     (with-current-buffer bufname
       (setq diredp-recent-files-buffer  bufname)
+      (use-local-map diredp-recent-files-map)
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (setq revert-buffer-function  `(lambda (_ __)
-                                       (kill-buffer)
-                                       (message "Reverting...")
-                                       (diredp-dired-recent-files ',buffer ',arg)
-                                       (message "Reverting...done"))))))
+      (set (make-local-variable 'revert-buffer-function)  `(lambda (_ __)
+                                                             (kill-buffer)
+                                                             (message "Reverting...")
+                                                             (diredp-dired-recent-files ',buffer ',arg)
+                                                             (message "Reverting...done"))))))
 
 (defun diredp-recent-files (arg)
   "Return a list of recently used files and directories.
