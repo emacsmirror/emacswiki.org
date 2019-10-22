@@ -1,7 +1,5 @@
 A mode that comes with Emacs that automagically inserts text into new buffers based on file extension or the major mode.  See GIT:autoinsert.el
 
-For those of you annoyed by the "<tt>Copyright (C) YEAR  Free Software Foundation, Inc.</tt>" that's inserted by default into EmacsLisp buffers, set your <tt>ORGANIZATION</tt> environment variable.
-
 Use it by running `M-x auto-insert-mode'.  Or manually insert new text in files with `M-x auto-insert'.  Try it with an elisp file, for example.  The result is quite impressive: The entire [[GPL]] notice will be inserted for you.
 
 A common way to configure what should be inserted for a type of file is by adding a skeleton to the `auto-insert-alist'.  The syntax is based on SkeletonMode.
