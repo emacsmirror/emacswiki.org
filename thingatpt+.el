@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Thu Sep 19 08:31:25 2019 (-0700)
+;; Last-Updated: Fri Oct 25 08:42:31 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 2385
+;;     Update #: 2390
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
@@ -249,6 +249,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/10/25 dadams
+;;     tap-bounds-of-string-at-point:
+;;       Use char-syntax. Don't respect only " as the string delimiter.
+;;     tap-string-at-point, tap(-bounds-of)-string-contents-at-point:
+;;       Adjust doc string for that change.
 ;; 2019/09/19 dadams
 ;;     Added: tap(-bounds-of)-number-at-point-decimal-whole
 ;;     tap(-bounds-of)-number-at-point-(decimal|hex):
@@ -1611,11 +1616,11 @@ Return nil if none is found."
 Return a consp (START . END), where START /= END.
 Return nil if no string is found at point.
 
-NOTE: The ENCLOSING `\"' CHARACTERS ARE COUNTED - they are part of the
-string syntax.  See `tap-string-at-point'."
+NOTE: The enclosing string-delimiter characters are counted - they are
+part of the string syntax.  See `tap-string-at-point'."
     (save-excursion
       (let (syntax beg end)
-        (if (not (eq ?\" (char-after)))
+        (if (not (eq (char-syntax (char-after)) ?\"))
             (setq syntax  (syntax-ppss))
           (or (progn (forward-char)  (setq syntax  (syntax-ppss))  (nth 3 syntax))
               (progn (backward-char) (setq syntax  (syntax-ppss))  (nth 3 syntax))))
@@ -1631,14 +1636,15 @@ string syntax.  See `tap-string-at-point'."
 
   (defun tap-string-at-point ()         ; Based loosely on `comint-extract-string'.
     "Return the string at point, or nil if there is no string at point.
-Put roughly, there is a string at point if point is on or after a \"
-and on or before a second \".
+Put roughly, there is a string at point if point is on or after a
+string delimiter (e.g. \") and on or before a second, matching string
+delimiter (e.g. a second \").
 
-NOTE: The text returned as a string INCLUDES THE ENCLOSING `\"' chars,
-which are part of the string syntax (the string THING).  If the result
-is read, then the string contents, i.e., the text without the
-delimiting `\"' chars, is returned from that reading.  You can obtain
-those string contents directly using `tap-string-contents-at-point'."
+NOTE: The text returned as a string includes the enclosing delimiter
+chars, which are part of the string syntax (the string THING).  If the
+result is read, then the string contents, i.e., the text without the
+delimiter chars, is returned from that reading.  You can obtain those
+string contents directly using `tap-string-contents-at-point'."
     (let ((bounds  (tap-bounds-of-string-at-point)))
       (and bounds  (buffer-substring (car bounds) (cdr bounds)))))
 
@@ -1651,7 +1657,7 @@ See `tap-string-at-point'."
   (defun tap-bounds-of-string-contents-at-point ()
     "Return the start and end locations for the string contents at point.
 Same as `tap-bounds-of-string-at-point', except that this does not
-include the enclosing `\"' characters."
+include the enclosing string-delimiter characters."
     (let ((full  (tap-bounds-of-string-at-point)))
       (and full  (cons (1+ (car full)) (1- (cdr full))))))
 
@@ -1662,7 +1668,7 @@ include the enclosing `\"' characters."
   (defun tap-string-contents-at-point ()
     "Return the contents of the string at point, or nil if none.
 Same as `tap-string-at-point', except that this does not include the
-enclosing `\"' characters."
+enclosing string-delimiter characters."
     (let ((bounds  (tap-bounds-of-string-contents-at-point)))
       (and bounds  (buffer-substring (car bounds) (cdr bounds)))))
 
