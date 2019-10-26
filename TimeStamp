@@ -4,14 +4,6 @@ Add the following Lisp to your InitFile.
 
   (add-hook 'before-save-hook 'time-stamp)
 
-Even with this added, if you happen to open a file that has
-`time-stamp-pattern' as one of its FileLocalVariables before starting
-Emacs and before ever saving a file or running `time-stamp',
-`time-stamp-pattern' will not have been noticed by Emacs.  To make sure
-it is read, add the following to your InitFile.
-
-  (setq time-stamp-pattern nil)
-
 By default, Emacs can update the time stamp for the following two
 formats if *one* exists in the first 8 lines of the file.
 
