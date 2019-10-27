@@ -1,15 +1,15 @@
 == 基本名词 ==
 
 * buffer - 缓存。如字面意思，是用来存放正在编辑的文本的地方。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html 文档]]。
-* frame
-* window
+* frame - 窗体。在GUI环境下类似其他软件的窗口，在终端环境下则类似可以切换的桌面。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Frames.html 文档]]。
+* window - 窗口。Emacs的窗体可以被分割成多个窗口，每个窗口里显示独立的缓存（文件）。别的编辑器一般把这个叫作pane/窗格。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Windows.html#Windows 文档]]。
 * point
 * region
-* face
-* theme
-* command
-* major mode
-* minor mode
+* face - 字符样式。包括字体、字型、前景背景颜色等等。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Faces.html 文档]]。
+* theme - 主题。相当于一系列样式的集合。Emacs 23之前Emacs没有自带的主题功能，但是有一个第三方插件color theme提供主题功能，Emacs 23后Emacs自带了custom theme功能，现在的主题都是cutom theme了。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Custom-Themes.html 文档]]和[[https://pawelbx.github.io/emacs-theme-gallery/ 主题画廊]]。
+* command - 命令。也就是提供给用户可以直接使用的函数。插入字符、复制粘贴、翻页等一切你可以做的操作都是命令。
+* major mode - 主模式。可以理解为编辑环境：如果在编辑Python源代码，主模式就是`python-mode`，这个环境下Emacs会根据Python语法高亮字符，绑定一些方便的命令，比如`C-c C-p`运行Python解释器，诸如此类。一个缓存只能同时用一个主模式，毕竟你不可能编辑一个既是Pythoon代码又是JavaScript代码的文件。当然有的时候你确实需要多种主模式，比如HTML里的JavaScript，但那超出这个文档的范围了。更多信息参见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Major-Modes.html 主模式文档]]。
+* minor mode - 副模式。不像主模式只能有一个，你可以同时开启多个副模式。一般每个副模式代表一个附加功能，比如语法检查（flymake）和自动补全（company）。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Minor-Modes.html#Minor-Modes 文档]]
 
 
 == 进阶名词 ==
