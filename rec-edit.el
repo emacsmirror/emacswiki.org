@@ -8,9 +8,9 @@
 ;; Created: Sun Oct 27 08:27:03 2019 (-0700)
 ;; Version: 2019.10.27
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 27 14:27:19 2019 (-0700)
+;; Last-Updated: Sun Oct 27 14:36:23 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 76
+;;     Update #: 80
 ;; URL: https://www.emacswiki.org/emacs/download/rec-edit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/RecursiveEdit#rec-edit.el
 ;; Keywords: recursive edit, mode-line
@@ -31,7 +31,7 @@
 ;;
 ;;  This library makes it easier to use in these ways:
 ;;
-;;   * Giving you a single key to enter and exit
+;;   * Giving you a single key to enter and exit.
 ;;
 ;;   * Optionally highlighting the mode-line indication, `[...]', to
 ;;     make clear that you are in a recursive edit.
@@ -40,10 +40,10 @@
 ;;  you see the current recursion depth: `red-modeline-1' through
 ;;  `red-modeline-4' for depths 1 through 4, then 5 through 8, etc.
 ;;
-;;  Global minor mode defines key `C-M-c' (normally bound to
-;;  `exit-recursive-edit') to command `red-recursive-edit', which
-;;  invokes `recursive-edit' when at top level or when used with
-;;  prefix arg.  Otherwise, it invokes `exit-recursive-edit'.
+;;  Global minor mode `rec-edit-mode' defines key `C-M-c' (normally
+;;  bound to `exit-recursive-edit') to command `red-recursive-edit',
+;;  which invokes `recursive-edit' when at top level or when used with
+;;  a prefix argument.  Otherwise, it invokes `exit-recursive-edit'.
 ;;
 ;;  Non-nil option `red-highlight-modeline-flag' means that the
 ;;  mode-line indication of recursive editing (`[...]') is
@@ -123,9 +123,6 @@ rec-edit.el bug: \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download"
                    "https://www.emacswiki.org/emacs/download/rec-edit.el")
-;;; @@@@@@
-;;;   :link '(url-link :tag "Description"
-;;;           "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
   :link '(emacs-commentary-link :tag "Commentary" "rec-edit"))
 
 
@@ -194,9 +191,6 @@ rec-edit.el bug: \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download"
                    "https://www.emacswiki.org/emacs/download/rec-edit.el")
-;;; @@@@@@
-;;;   :link '(url-link :tag "Description"
-;;;           "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
   :link '(emacs-commentary-link :tag "Commentary" "rec-edit")
   (if rec-edit-mode
       (when red-highlight-modeline-flag (red-highlight-modeline))
