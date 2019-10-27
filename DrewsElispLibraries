@@ -106,6 +106,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws -- see '''NotAndOr'''
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
+* <tt>[[rec-edit.el]]</tt> -- recursive-edit enhancements: '''`rec-edit-mode''''.
 * <tt>[[reveal-next.el]]</tt> -- progressively reveal text after the cursor -- see RevealNextTextMode
 * <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions -- see SaveHist.
 * <tt>[[second-sel.el]]</tt> -- secondary-selection enhancements -- see '''[[SecondarySelection]]'''
@@ -258,7 +259,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
-* <tt>[[yes-no.el]]</tt> -- let your users specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
+* <tt>[[rec-edit.el]]</tt> -- recursive-edit enhancements: '''`rec-edit-mode''''.* <tt>[[yes-no.el]]</tt> -- let your users specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
 * <tt>[[zones.el]]</tt> --  -- zones of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 
 
