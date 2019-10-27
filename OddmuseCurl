@@ -10,8 +10,8 @@ Cool features:
 
 The code is maintained on GitHub using [[Git]]:
 
-* [https://github.com/kensanata/emacs-setup/blob/master/lib/oddmuse-curl.el oddmuse-curl.el]
-* [https://github.com/kensanata/emacs-setup/blob/master/lib/vc-oddmuse.el vc-oddmuse.el]
+* [https://github.com/kensanata/oddmuse-curl/blob/master/oddmuse-curl.el oddmuse-curl.el]
+* [https://github.com/kensanata/oddmuse-curl/blob/master/vc-oddmuse.el vc-oddmuse.el]
 
 == Setup ==
 
