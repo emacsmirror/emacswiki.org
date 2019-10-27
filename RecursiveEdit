@@ -11,7 +11,7 @@ recursive edit and resume that command.
 It's not that common, but you can even enter a recursive edit from a
 recursive edit -- any number of levels.  The new recursive edit is one recursion-level deeper.
 
-When you're in a recursive edit the minibuffer usually shows brackets ('''##[...]##''') around the modes information in the mode-line.  A level 2 recursive edit shows '''##[[...]]##''', level 3 shows '''##[[[...]]]##''', and so on.
+When you're in a recursive edit the [[minibuffer]] usually shows brackets ('''##[...]##''') around the modes information in the mode-line.  A level 2 recursive edit shows '''##[[...]]##''', level 3 shows '''##[[[...]]]##''', and so on.
 
 The standard key to exit a recursive edit, popping up one level, is
 `C-M-c' (command `exit-recursive-edit').  Standard key `##C-]##' (command
