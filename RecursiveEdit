@@ -1,68 +1,66 @@
-'''Recursive edit''' helps when you want to break out of the current command that you're currently doing and temporarily pursue something else, with the ability to snap back to where you were before.
+A '''[::recursive edit]''' is an Emacs command loop that was invoked from an
+Emacs command loop.  It's like a separate Emacs session in some ways,
+but it uses much of the same state -- for example, global-variable
+values.
 
-# For example, when replacing some text with `##M-%##' or `##M-C-%##' you can replace and edit the matches with `C-w' or just edit with `C-r' to touch up some of the entries you are replacing along the way when they are a special case.  When you're done you punch `C-M-c' and you snap back into `query-replace' or `query-replace-regexp'.  You can even change buffers or visit other files -- almost anything.
+Because it is typically invoked from an Emacs [[command]], the most common
+situation is that you enter a recursive edit to perform some arbitrary
+editing during a temporary pause from that command, then you exit the
+recursive edit and resume that command.
 
-# While saving buffers with `C-x s', type `C-r' to view the current file in ViewMode.
+It's not that common, but you can even enter a recursive edit from a
+recursive edit -- any number of levels.  The new recursive edit is one recursion-level deeper.
+
+When you're in a recursive edit the minibuffer usually shows brackets ('''##[...]##''') around the modes information in the mode-line.  A level 2 recursive edit shows '''##[[...]]##''', level 3 shows '''##[[[...]]]##''', and so on.
+
+The standard key to exit a recursive edit, popping up one level, is
+`C-M-c' (command `exit-recursive-edit').  Standard key `##C-]##' (command
+`abort-recursive-edit') pops through all intermediate levels, back up
+to top level.
+
+Some commands foresee that you might want to do some recursive editing
+at some point during their execution, so they temporarily provide a
+key, often `C-r', to invoke a recursive edit.
+
+But you can also invoke a recursive edit on demand anytime using
+function `recursive-edit'.  For example, you can use `##M-:
+(recursive-edit)##' at top level.
+
+Examples:
+
+# If you use the EmacsLisp debugger (non-`nil' `debug-on-error' or
+  functions such as `debug' and `debug-on-entry'), then when you enter the
+  debugger you enter a recursive edit.  The recursive edit ends when you exit the debugger.
+
+# When query-replacing some text (`##M-%##' or `##M-C-%##'), `C-r' enters a recursive edit.  
+
+# While saving buffers with `C-x s', `C-r' enters a recursive edit with the current file in ViewMode.
 
 # While querying with `C-x q' in a keyboard macro, `C-r' enters a recursive edit.
 
-# While spell checking the buffer with `M-x ispell-buffer' or a word (or the active region) with `C-$', `C-r' enters a recursive edit.
+# While spell checking a buffer with `M-x ispell-buffer' or a word (or the active region) with `C-$', `C-r' enters a recursive edit.
 
-# You can search the minibuffer history for regexps with `M-s' (next-matching-history-element)
+A recursive minibuffer is a special kind of recursive edit.  It does
+not show the bracket indication in the mode-line.  
 
-# <code>(setq enable-recursive-minibuffers t)</code> allows to use for example `C-u M-! date -I' within the minibuffer, when doing `C-x C-f'. 
-<code>( minibuffer-depth-indicate-mode t)</code> is advisable when former variable is set, because here the recursion depth is not indicated by brackets in the mode line.
+Non-`nil' option `enable-recursive-minibuffers' means that when you
+are in the minibuffer you can invoke a command that, itself, opens a
+new minibuffer; that is, it opens a recursive minibuffer.  If you set this option to non-`nil' then it's usually a good idea to also set option `minibuffer-depth-indicate-mode' to non-`nil' - it shows you the current recursive-minibuffer level.
 
-The EmacsManual says:
-
-: ''It is possible to be in recursive edits within recursive edits.  For
-example, after typing `C-r' in a `query-replace', you may type a
-command that enters the debugger.  This begins a recursive editing level
-for the debugger, within the recursive editing level for `C-r'.  Mode
-lines display a pair of square brackets for each recursive editing
-level currently in progress.''
-
-When are you in recursive edit?:
-
-: ''The mode line shows you when you are in a recursive edit by
-displaying square brackets around the parentheses that always surround
-the major and minor mode names.  Every window's mode line shows this in
-the same way, since being in a recursive edit is true of Emacs as a
-whole rather than any particular window or buffer.''
-
-On exiting:
-
-: ''"Exiting" the recursive edit means returning to the unfinished
-command, which continues execution.  The command to exit is `C-M-c'
-(`exit-recursive-edit').''
-
-: ''You can also "abort" the recursive edit.  This is like exiting, but
-also quits the unfinished command immediately.  Use the command `C-]'
-(`abort-recursive-edit') to do this.''
+For example, while using `C-x C-f', if `enable-recursive-minibuffers'
+is non-`nil then you can do `C-u M-! date -I' to invoke shell command
+`date'.
 
 
-And the most important thing it says for EmacsLisp programmers:
+Some commands are predefined to open a temporary recursive minibuffer,
+regardless of the value of option `enable-recursive-minibuffers'.  And
+standard minibuffer provides some keys that let you temporarily
+use a recursive minibuffer to enter something.  For example, you can
+use `M-s' (command `next-matching-history-element') in the minibuffer
+to search the minibuffer history for an entry that matches a regexp
+you type, and insert that entry.
 
-: ''In general, we try to minimize the use of recursive editing levels in
-GNU Emacs.  This is because they constrain you to "go back" in a
-particular order--from the innermost level toward the top level.  When
-possible, we present different activities in separate buffers so that
-you can switch between them as you please.  Some commands switch to a
-new major mode which provides a command to switch back.  These
-approaches give you more flexibility to go back to unfinished tasks in
-the order you choose.''
-
-Similarly, the ElispManual says this:
-
-: ''Most applications should not use recursive editing, except as part of
-using the minibuffer.  Usually it is more convenient for the user if you
-change the major mode of the current buffer temporarily to a special
-major mode, which should have a command to go back to the previous mode.
-(The `e' command in Rmail uses this technique.)  Or, if you wish to
-give the user different text to edit "recursively," create and select a
-new buffer in a special mode.  In this mode, define a command to
-complete the processing and go back to the previous buffer.  (The `m'
-command in Rmail does this.)''
+See the Emacs manual, node [https://www.gnu.org/software/emacs/manual/html_node/emacs/Recursive-Edit.html Recursive_Edit], and the Elisp manual, node [https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html Recursive_Editing], for more information.
 
 ----
 CategoryCommands
