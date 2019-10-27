@@ -8,9 +8,9 @@
 ;; Created: Sun Oct 27 08:27:03 2019 (-0700)
 ;; Version: 2019.10.27
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 27 14:36:23 2019 (-0700)
+;; Last-Updated: Sun Oct 27 14:43:25 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 80
+;;     Update #: 81
 ;; URL: https://www.emacswiki.org/emacs/download/rec-edit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/RecursiveEdit#rec-edit.el
 ;; Keywords: recursive edit, mode-line
@@ -116,7 +116,7 @@
   "recursive-edit enhancements."
   :prefix "red-"
   :group 'editing-basics :group 'Modeline :group 'Convenience :group 'Help
-  :link '(url-link :tag "Send Bug Report"
+  :link `(url-link :tag "Send Bug Report"
                    ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 rec-edit.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
@@ -184,7 +184,7 @@ Non-nil option `red-highlight-modeline-flag' highlights the mode-line
 recursive-edit indication."
   :init-value nil :global t
   :keymap rec-edit-mode-map :group 'rec-edit :require 'rec-edit
-  :link '(url-link :tag "Send Bug Report"
+  :link `(url-link :tag "Send Bug Report"
                    ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 rec-edit.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
