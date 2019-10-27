@@ -62,6 +62,33 @@ you type, and insert that entry.
 
 See the Emacs manual, node [https://www.gnu.org/software/emacs/manual/html_node/emacs/Recursive-Edit.html Recursive_Edit], and the Elisp manual, node [https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html Recursive_Editing], for more information.
 
+
+
+
+
+
+
+
+
+[:rec-edit.el]
+== Library `rec-edit.el' ==
+
+Library <tt>[[rec-edit.el]]</tt> lets you use recursive edits more easily:
+
+* It gives you a single key (`C-M-c') to enter and exit a recursive edit.
+
+* It optionally highlights the mode-line indication, '''##[...]##''', to make clear that you are in a recursive edit, and what the recursion level is.
+
+Global [[minor mode]] '''`rec-edit-mode'''' binds '''`C-M-c'''' (normally
+bound to `exit-recursive-edit') to command `red-recursive-edit',
+which invokes `recursive-edit' when at top level or when used with a
+[[prefix argument]].  Otherwise, it invokes `exit-recursive-edit'.
+
+Non-`nil' [[option]] '''`red-highlight-modeline-flag'''' means that the
+mode-line indication of recursive editing ('''##[...]##''') is
+highlighted.  Different recursion levels are highlighted with different faces.
+
+
 ----
 CategoryCommands
 CategoryEditing
