@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug 21 11:02:35 2019 (-0700)
+;; Last-Updated: Tue Oct 29 13:31:28 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 16551
+;;     Update #: 16556
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1410,6 +1410,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2019/10/29 dadams
+;;     bookmark-bmenu-relocate: Ensure that arg to bookmark-relocate is not nil.
+;;     bookmark-bmenu-bookmark: Mention in doc: nil return if no bookmark.
+;;     bookmark-bmenu-show-annotation, bmkp-bmenu-w32-open-with-mouse: Raise error if no bookmark.
+;;     bmkp-bmenu-show-menu: Enable bookmark-bmenu-show-annotation only if there is a bookmark.
 ;; 2019/08/13 dadams
 ;;     Added bmkp-bmenu-clone-bookmark, bmkp-bmenu-copy-bookmark (alias).  Bound to M-n in bmk list.
 ;;       Added it to bmkp-bmenu-menubar-menu, bmkp-bmenu-mouse-3-menu.
