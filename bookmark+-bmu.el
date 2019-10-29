@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Aug 13 16:07:35 2019 (-0700)
+;; Last-Updated: Tue Oct 29 11:24:21 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 4070
+;;     Update #: 4075
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -922,7 +922,7 @@ prompting with completion for the new path."
     (interactive)
     (let ((bmk        (bookmark-bmenu-bookmark))
           (thispoint  (point)))
-      (bookmark-relocate bmk)
+      (when bmk (bookmark-relocate bmk))
       (goto-char thispoint))))
  
 ;;(@* "Menu List Replacements (`bookmark-bmenu-*')")
@@ -1346,6 +1346,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
   "Return the name of the bookmark on this line.
 Normally, the string returned is propertized with property
 `bmkp-full-record', which records the full bookmark record.
+Return nil if no bookmark on this line.
 Non-nil optional FULL means return the bookmark record, not the name."
   (condition-case nil
       (let ((name  (save-excursion (forward-line 0) (forward-char bmkp-bmenu-marks-width)
@@ -2121,7 +2122,9 @@ Non-interactively, non-nil MSG-P means display messages."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (let ((bookmark  (bookmark-bmenu-bookmark))) (bookmark-show-annotation bookmark msg-p)))
+  (let ((bmk  (bookmark-bmenu-bookmark)))
+    (unless bmk (error "No bookmark here"))
+    (bookmark-show-annotation bmk msg-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -4216,6 +4219,7 @@ Unlike `bookmark-bmenu-select', this command:
                                    (bmkp-bmenu-barf-if-not-in-menu-list)
                                    (save-excursion (goto-char (posn-point (event-end event)))
                                                    (bookmark-bmenu-bookmark)))))
+    (unless bmk (error "No bookmark here"))
     (bookmark-handle-bookmark bmk)
     ;; Probably do not want this.  Users can use `jump-fn' tag if need be.
     ;; (let ((orig-buff  (current-buffer))) ; Used by `crosshairs-highlight'.
@@ -6250,7 +6254,7 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-menu [bookmark-bmenu-show-annotation]
   '(menu-item "Show Annotation" bookmark-bmenu-show-annotation
     :help "Show the annotation for this bookmark (in another window)" :keys "a"
-    :enable (bookmark-get-annotation (bookmark-bmenu-bookmark))))
+    :enable (and (bookmark-bmenu-bookmark)  (bookmark-get-annotation (bookmark-bmenu-bookmark)))))
 (define-key bmkp-bmenu-show-menu [bookmark-bmenu-toggle-filenames]
   '(menu-item "Show/Hide File Names" bookmark-bmenu-toggle-filenames
     :help "Toggle whether filenames are shown in the bookmark list"))
