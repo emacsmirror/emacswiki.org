@@ -131,7 +131,16 @@ Besides the %%EmacsWiki%% ElispArea, which always has the latest source files fo
 
 ----
 
+
+
+
+
+
+
+
 [:BulkDownloadCompileLoad]
+
+From [[tetris11]]:
 
 If you wish to load the latest '''Bookmark+''' from the %%EmacsWiki%%, then you can add the following to your startup elisp, which will download and byte-compile all files for you, and load the library.
 
@@ -150,6 +159,13 @@ If you wish to load the latest '''Bookmark+''' from the %%EmacsWiki%%, then you 
           (byte-recompile-directory bookmarkplus-dir 0)
           (require 'bookmark+))
 
+-- [[tetris11]]
+
+
+[new:DrewAdams:2019-10-30 16:01 UTC]
+Please, after you download all of the Bookmark+ files, **first load** ##bookmark+-mac.el##, **before** you byte-compile and load all of the files. It contains the latest *Lisp macros needed for proper byte-compiling*.
+
+Thx - DrewAdams
 
 
 
