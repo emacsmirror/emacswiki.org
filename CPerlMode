@@ -23,11 +23,7 @@ Or the more robust equivalent:
            (setcdr pair 'cperl-mode)))
      (append auto-mode-alist interpreter-mode-alist))
 
-cperl-mode is part of Emacs. It's derived from Ilya's original cperl-mode available here:
-
-* http://math.berkeley.edu/~ilya/software/emacs/
-
-Ilya's version targets XEmacs, not GNU Emacs. So you should only use it if you're using XEmacs, otherwise use the GNU Emacs version.
+cperl-mode is part of Emacs.
 
 cperl-mode also used to ship with Perl itself, but was out of date. As of 5.12.1 it no longer ships with Perl at all.
 
@@ -94,13 +90,6 @@ but also other languages), and so does FuncDoc.
 Perhaps the most obvious (and useful?) feature of CPerlMode is Syntax-Highlighting, i.e. the colouring and formatting of keywords, variables, strings, etc, to improve code readability. Syntax-highlighting is also known as "Font Lock" in the Emacs world.
 
 To turn syntax-highlighting on/off use either the ''Options'' menu (if available) and select ''Syntax Highlighting'', or type `M-x font-lock-mode'  (toggles between on and off). To turn on syntax-highlighting automatically see the entry on [http://www.emacswiki.org/cgi-bin/wiki/EnablingFontLock Enabling Font Lock Mode].
-
-If you're having problems with Font-Lock, first check that you're using version 5 of cperl-mode (see above how to check your version).  Version 4.x
-had many problems with syntax highlighting, especially with apostrophes,
-regular expressions, here-documents, and POD.  Version 5.0 fixes many of
-these problems.
-
-
 
 == Customizing CPerl Mode ==
 
@@ -368,17 +357,7 @@ capabilities of the CPerlMode:
 Also note that I didn't test it so it may crash or damage your
 system. ;-) -- XavierMaillard
 
-It seems worth noting that, at least in XEmacs, you'll have to switch font-lock-mode off and on again to get this to take effect. (I did, at any rate.) -- PhilipHazelden
-
 Another suggestion is to make it convenient to obliterate that whitespace.  This has the added bonus of allowing navigation with M-{ and M-} to work. -- DominicMitchell
-
-  (defun global-trim ()
-    "Trim all trailing whitespace in the current buffer."
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "[ \t]+$" nil t)
-        (replace-match "" t t))))
 
 Emacs 21 and later have the function <code>delete-trailing-whitespace</code> builtin.
 
@@ -387,8 +366,6 @@ Emacs 21 and later have the function <code>delete-trailing-whitespace</code> bui
 To make <code>cperl-mode</code> always highlight scalar variables, use:
 
     (setq cperl-highlight-variables-indiscriminately t)
-
-It's not working with CPerlMode 4.23 as shipped with Emacs though.
 
 ----
 
