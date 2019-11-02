@@ -1,0 +1,15 @@
+The last method used by [[SetAutoMode]] in the automatic selection of a major mode. It does the same as [[magic-mode-alist]], which see, but has lower precedence than [[auto-mode-alist]], which is probably often a good idea for the reasons explained on [[magic-mode-alist]].
+
+If you want to move any items already in ##magic-mode-alist## to this lower-precedence alist, you can do so with the following code:
+
+[code]
+
+;; Assume that magic-mode-alist should still have 
+;; higher precedence than the items in the fallback list:
+
+(setq magic-fallback-mode-alist (append 
+                                 magic-mode-alist 
+                                 magic-fallback-mode-alist)
+      magic-mode-alist          nil)
+
+[/code]
