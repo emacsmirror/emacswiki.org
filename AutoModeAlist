@@ -35,7 +35,7 @@ filenames (true, this should be rare...  ;)).
 
 = Recipes =
 
-==Paying attention to precedence==
+===Paying attention to precedence===
 
 The order in which the cons cells appear matters, as the first matching one "wins" (and the rest of the list is simply ignored). The normal case will be that you want your rule to have the higher precedence than what is already in ##auto-mode-alist##:
 
@@ -64,31 +64,55 @@ In some cases, however, it may be preferrable to let take precedence what may al
                   '(("\\.foo\\'" . my-quick-and-dirty-foo-mode)
                     ("\\.bar\\'" . my-fallback-bar-mode))))
 
-==Building the regexp you actually mean==
+===Building the regexp you actually mean===
 
 When building REGEXPs for auto-mode-alist, keep in mind that the
 string matched is the full pathname.  In the examples below,
 the assignment to the list, as detailed above, has been left out
 so we can concentrate on the regexps.
 
-Basically, in file name patterns, two characters, namely ##/## and ##\\.## (or ##[.]##, but not ##.##,
-as the unescaped point is a metacharacter in regexps), and two anchors, namely ##^## 
-(the beginning of the string) and ##\\'## (the end of the string) are especially important. 
+Basically, when matching file names with a regexp, *two characters*, namely the *slash* ##/## and the *dot* (##\\.## or ##[.]##, but not ##.##,
+as the unescaped point is a metacharacter in regexps), and *two anchors*, namely ##^## 
+(the *beginning of the string*) and ##\\'## (the *end of the string*) are especially important. 
 Paying attention to these four is usually much more than half the battle.
 
-Note that although it is often tempting, you cannot use ##~## to specify the home directory, or ##*## 
-to match any file, because this is a /regexp/, not a shell file pattern,
-and thus ##~## has no special meaning (it simply means the character ##~##), 
+====The differences between regexps and shell file patterns====
+
+Because we are matching file names, is often tempting to confuse the 
+regexps used here with <strong><em>shell file patterns</em></strong>: However, you cannot use ##~## to 
+specify the home directory, or ##*## 
+to match any file: ##~## has no special meaning in a regexp (it simply means the character ##~##), 
 and ##*## does not mean "any file name that does not begin with a .", but 
-"the previous character zero or more times".
+"the previous character zero or more times". And regexps do not treat the literal ##.## at the beginning of hidden file names
+in specially, the way shell file patterns do. Thus, if 
+you want to exclude such files (= do not want to match them), 
+you have to do so explicitly with some pattern, such as in ##/[^.][^/]+\\'##.
+
+Finally, it is interesting that expressions such as ##.*## 
+(as an intended equivalent of the shell pattern ##*##) are often
+superfluous, i.e. can be left out. This is because if the regexp
+does not end with ##\\'##, the file name can continue in any
+way it damn well pleases after the match. E.g., the regexp 
+##"^/usr/share/man/"## matches any file name that /begins/ 
+with ##/usr/share/man/## (which can be, of note, not only any file
+directly in that directory, but also any file in any subdirectory).
+The regexp ##"^/usr/share/man/.*"## matches exactly the same files.
+And if you went even further and said ##"^/usr/share/man/.*\\'"##, that
+would /still/ match exactly the same files. 
+
+The basic difference 
+is that shell patterns are /expanded/, possibly (if they contain 
+a special character) to a list of several file names, while a 
+regexp is /matched/ against one given file name. These are completely
+different things, if you look at it.
 
 
-===Examining only the file name itself (the basename)===
+====Examining only the file name itself (the basename)====
 
 The most usual case: Match only the file name extension (enclosed by ##\\.## or ##[.]## and ##\\'##):
 
-    '("\\.sh\\'"    . shell-script-mode) ; match ".sh", and only that
-    '("\\.jpe?g\\'" . image-mode)        ; match both ".jpg" and ".jpeg"
+    '("\\.sh\\'"    . shell-script-mode) ; match ".sh" extension, and only that
+    '("\\.jpe?g\\'" . image-mode)        ; match both ".jpg" and ".jpeg" extensions
 
 
 Match a base name that ends or begins as specified but is not an extension:
@@ -100,7 +124,7 @@ Match the complete basename (enclosed by ##/## and ##\\'##):
 
     '("/mimetypes.list\\'" . conf-desktop-mode)
 
-===Examining also the directory part of the filename===
+====Examining also the directory part of the filename====
 
 Match one and only one specific file (enclosed by ##^/## and ##\\'##):
 
@@ -118,26 +142,29 @@ Match any file _in or somewhere below_ /any/ directory called foo (enclosed by #
 
     '("/foo/" . foo-mode) ; matches if "/foo/" is somewhere in the path name
 
-Match any file directly _in_ a certain directory:
+Match any file directly _in_ a certain directory. The final ##\\'## could be left out here --- can you say why?
 
     '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ is the basename (everything after the last slash)
     '("/foo/[^/]+\\'"      . foo-mode)  ; 
 
-===Combining both===
+====Both: specifying aspects of path and basename====
 
 Both approaches can, of course, be combined. Care must be taken not to miss or duplicate any slashes:
 
-    '("^/tmp/cvs[[:alnum:]]*\\'"                                . 'log-entry-mode)  ; CVS commit message
-    (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'") 'log-entry-mode)) ; with /tmp taken from a variable
-    '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)       ; Conky uses Lua
-    '("/\\.fvwm/\\(.*\\)?config\\'"                               . fvwm-mode)      ; "*config" files below any ".fvwm" directory
+    '("^/tmp/cvs[[:alnum:]]*\\'"                                  . log-entry-mode)  ; CVS commit message
+    (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'")  'log-entry-mode)) ; with /tmp taken from a variable
+    '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)        ; Conky uses Lua
+    '("/\\.fvwm/\\(.*\\)?config\\'"                               . fvwm-mode)       ; "*config" files anywhere below any ".fvwm" directory
 
-= Debugging =
+== Debugging ==
 
 If Emacs keeps starting the wrong mode although the right recipe should be in ##auto-mode-alist##, it should be possible to work out the reason by following these two steps:
 
-# Check if some other method takes precedence before ##auto-mode-alist## (see  SetAutoMode).
-# If that is not the case, run the following command while visiting the file in question:
+# Check if some other method takes precedence before 
+  ##auto-mode-alist## (see  SetAutoMode).
+
+# If that is not the case, run the following command while 
+  visiting the file in question, or specify the file name with a prefix argument:
 
 [code]
 
