@@ -33,21 +33,147 @@ The add-to-list expression associates the .foo extension with foo-mode.
 As mentioned above, the ##\\'## matches the end of the filename; a $ would match newlines within
 filenames (true, this should be rare...  ;)).
 
-== Recipes ==
+= Recipes =
+
+==Paying attention to precedence==
+
+The order in which the cons cells appear matters, as the first matching one "wins" (and the rest of the list is simply ignored). The normal case will be that you want your rule to have the higher precedence than what is already in ##auto-mode-alist##:
+
+    ;; add just one element if it isn't already in the list:
+    (add-to-list 'auto-mode-alist 
+                 '("\\.foo\\'" . foo-mode))
+
+    ;; add several elements at once (may create double entries,
+    ;; but that would not hurt)
+    (setq auto-mode-alist
+          (append '(("\\.foo\\'" . foo-mode)  ; note these are encapsulated in a '() list
+                    ("\\.bar\\'" . bar-mode))
+                   auto-mode-alist))
+
+In some cases, however, it may be preferrable to let take precedence what may already be predefined in ##auto-mode-alist##:
+
+
+    ;; add just one element (at the end) if it isn't already in the list:
+    (add-to-list 'auto-mode-alist 
+                 '("\\.foo\\'" . my-quick-and-dirty-foo-mode) t)
+
+    ;; add several elements at the end (may create double entries,
+    ;; but that would not hurt)
+    (setq auto-mode-alist
+          (append auto-mode-alist
+                  '(("\\.foo\\'" . my-quick-and-dirty-foo-mode)
+                    ("\\.bar\\'" . my-fallback-bar-mode))))
+
+==Building the regexp you actually mean==
 
 When building REGEXPs for auto-mode-alist, keep in mind that the
 string matched is the full pathname.  In the examples below,
-replace the modes with your preference.
+the assignment to the list, as detailed above, has been left out
+so we can concentrate on the regexps.
 
-Match the git commit message filename:
+Basically, in file name patterns, two characters, namely ##/## and ##\\.## (or ##[.]##, but not ##.##,
+as the unescaped point is a metacharacter in regexps), and two anchors, namely ##^## 
+(the beginning of the string) and ##\\'## (the end of the string) are especially important. 
+Paying attention to these four is usually much more than half the battle.
 
-    (add-to-list 'auto-mode-alist '(".*_EDITMSG\\'" . log-entry-mode))
+Note that although it is often tempting, you cannot use ##~## to specify the home directory, or ##*## 
+to match any file, because this is a /regexp/, not a shell file pattern,
+and thus ##~## has no special meaning (it simply means the character ##~##), 
+and ##*## does not mean "any file name that does not begin with a .", but 
+"the previous character zero or more times".
 
-Match the CVS commit message filename:
 
-    (add-to-list 'auto-mode-alist
-                 (cons (concat temporary-file-directory "cvs[[:alnum:]]*\\'")
-                       'log-entry-mode))
+===Examining only the file name itself (the basename)===
+
+The most usual case: Match only the file name extension (enclosed by ##\\.## or ##[.]## and ##\\'##):
+
+    '("\\.sh\\'"    . shell-script-mode) ; match ".sh", and only that
+    '("\\.jpe?g\\'" . image-mode)        ; match both ".jpg" and ".jpeg"
+
+
+Match a base name that ends or begins as specified but is not an extension:
+
+    '("_EDITMSG\\'"         . log-entry-mode) ; git commit message filename
+    '("/cvs[[:alnum:]]*\\'" . log-entry-mode) ; CVS commit message filename
+
+Match the complete basename (enclosed by ##/## and ##\\'##):
+
+    '("/mimetypes.list\\'" . conf-desktop-mode)
+
+===Examining also the directory part of the filename===
+
+Match one and only one specific file (enclosed by ##^/## and ##\\'##):
+
+    '("^/etc/alias\\'"                              . shell-script-mode)
+    (cons (concat "^" (getenv "HOME") "/.alias\\'") . shell-script-mode) ; evaluating a variable
+    (cons (format "^%s/.alias\\'" (getenv "HOME"))  . shell-script-mode) ; same thing
+    ("^~/.alias\\'"                                 . shell-script-mode) ; No! ~ in a regexp is ~, NOT $HOME!
+
+Match /any/ file _in or somewhere below_ one certain directory (enclosed by ##^/## and ##/##):
+
+    '("^/etc/X11/"  . conf-mode)
+    '("^/etc/X11/*" . conf-mode) ; No! This means: zero or more slashes, so would match e.g. "/etc/X11R6"
+
+Match any file _in or somewhere below_ /any/ directory called foo (enclosed by ##/## and ##/##):
+
+    '("/foo/" . foo-mode) ; matches if "/foo/" is somewhere in the path name
+
+Match any file directly _in_ a certain directory:
+
+    '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ is the basename (everything after the last slash)
+    '("/foo/[^/]+\\'"      . foo-mode)  ; 
+
+===Combining both===
+
+Both approaches can, of course, be combined. Care must be taken not to miss or duplicate any slashes:
+
+    '("^/tmp/cvs[[:alnum:]]*\\'"                                . 'log-entry-mode)  ; CVS commit message
+    (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'") 'log-entry-mode)) ; with /tmp taken from a variable
+    '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)       ; Conky uses Lua
+    '("/\\.fvwm/\\(.*\\)?config\\'"                               . fvwm-mode)      ; "*config" files below any ".fvwm" directory
+
+= Debugging =
+
+If Emacs keeps starting the wrong mode although the right recipe should be in ##auto-mode-alist##, it should be possible to work out the reason by following these two steps:
+
+# Check if some other method takes precedence before ##auto-mode-alist## (see  SetAutoMode).
+# If that is not the case, run the following command while visiting the file in question:
+
+[code]
+
+(defun explain-auto-mode (file)
+  "Explain in which mode FILE gets visited according to `auto-mode-alist'.
+With prefix arg, prompt the user for FILE; else, use function `buffer-file-name'."
+  (interactive
+   (list
+    (if current-prefix-arg
+	(read-file-name "Explain the automatic mode of file: ")
+      (buffer-file-name))))
+
+  (if (null file)
+      (error "I need a file name to work with"))
+  
+ (let* ((file (expand-file-name file))
+	(index 0)
+	assoc)
+   (setq assoc
+	 (catch 'match
+	   (while (setq assoc (nth index auto-mode-alist))
+	     (if (string-match (car assoc) file)
+		 (throw 'match assoc)
+	       (setq index (1+ index))))
+	   (setq assoc nil)))
+   
+   (if assoc
+       (message "First match in `auto-mode-alist' is at position %d:
+\"%s\"  <=>  \"%s\".
+The corresponding mode is `%s'."
+		(1+ index)
+		file (car assoc)
+		(cdr assoc))
+     (message "No match in `auto-mode-alist' for %s." file))))
+[/code]
+
 
 ----
 CategoryDotEmacs
