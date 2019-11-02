@@ -1,12 +1,15 @@
 The variable [::magic-mode-alist] (see [[Manual:magic-mode-alist]]) is an AssociationList that is matched against the buffer contents to guess the right MajorMode function.
 
-Each element looks like (/REGEXP/ . /FUNCTION/) or (/MATCH-FUNCTION/ . /FUNCTION/).
+Each element looks like ##(/REGEXP/ . /FUNCTION/)## or ##(/MATCH-FUNCTION/ . /FUNCTION/)##.
 
-It is one of the methods used by the [EmacsWiki:SetAutoMode set-auto-mode function].
+It is one of the methods used by the [EmacsWiki:SetAutoMode set-auto-mode] function (which see for an overview of automatic mode selection).
 This tries each element of the alist in turn and uses the first match.
-If RegularExpression /REGEXP/ matches the text in the buffer, or calling /MATCH-FUNCTION/ returns non-nil, then /FUNCTION/ will be called.
-If the selected /FUNCTION/ is nil, then it is not called and the rest of the alist is ignored.
+If RegularExpression ##/REGEXP/## matches the text in the buffer, resp. calling ##/MATCH-FUNCTION/## returns non-nil, then ##/FUNCTION/## will be called.
+If the selected ##/FUNCTION/## is nil, then it is not called and the rest of the alist is ignored.
 Before applying the alist, the buffer is [EmacsWiki:Narrowing narrowed] to its first few characters, as determined by the `magic-mode-regexp-match-limit' variable (default 4000).
+
+Of note, ##magic-mode-alist## is /higher in precedence/ than ##auto-mode-alist##. This should mean that /in all cases/ where the first matching rule is to be found in ##auto-mode-alist## (which will be the usual cases), ##magic-mode-alist## is needlessly iterated over first, and all the regexps resp. match functions are applied to the beginning of the buffer before ##auto-mode-alist## is finally examined. This is presumedly the reason why [[magic-fallback-mode-alist]] was introduced, which see for a simple recipe of how to move everything there. 
+
 
 [new] What's a good value for Perl? -- DenisHowe
 
