@@ -1,4 +1,4 @@
-The variable [::magic-mode-alist] (see [[Manual:magic-mode-alist]]) is an AssociationList that is matched against the buffer contents to guess the right MajorMode function.
+The variable [::magic-mode-alist] (see [[Manual:magic-mode-alist]]) is an AssociationList that is matched against the buffer contents by [[SetAutoMode]] (which see) to guess the right MajorMode function.
 
 Each element looks like ##(/REGEXP/ . /FUNCTION/)## or ##(/MATCH-FUNCTION/ . /FUNCTION/)##.
 
