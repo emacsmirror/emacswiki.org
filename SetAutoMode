@@ -1,10 +1,33 @@
-When a file is visited, function `set-auto-mode' (see [[Manual:set-auto-mode]]) is called to determine the right MajorMode to use.
+Although major modes can be invoked via a command, e.g. ##M-x emacs-lisp-mode##, in most cases, they will be chosen automatically "behind the scenes": You visit a file, and presto, the right major mode is already in force. 
 
-It looks for a ##mode:## string, then applies these variables in turn:
-* [[auto-mode-interpreter-regexp]]
-* [[magic-mode-alist]]
-* [[auto-mode-alist]]
-* [[magic-fallback-mode-alist]] (new in Emacs 22)
+There are cases, however, when the wrong mode is chosen for reasons that at first seem obscure, or when you want to specify an alternative mode for a certain file type (such as with, say, HTML files, where a myriad of modes now seems available). 
+
+In these cases, it is helpful to know the exact procedure how the mode is chosen, especially as no less than *six methods* are available:
+When a file is visited, the function `set-auto-mode' (see [[Manual:set-auto-mode]]) is called to determine the right MajorMode to use. It first tries three methods, in the order given here, to see if a certain mode for this *individual file* is desired or appropriate: 
+
+# Does the _first line_ (or, in certain cases, the _second_ line) contain a ##-*- ... -*-## pattern?
+## Then, if that pattern contains a file-local variable specification such as ##-*- mode: Lisp;-*-##, that mode is chosen.
+## Or, as a shorthand, ##mode:## may be left out, as in ##-*-Lisp;-*-##.
+# Failing that, it looks for a file-local variable called ##mode:## _at the bottom_ of the buffer (see [[FileLocalVariables]]).
+# Finally, it checks if the _first line_ is a shebang line such as ## #!/bin/sh ## (i.e. if it matches [[auto-mode-interpreter-regexp]]), and if so, it looks for the first entry in ##interpreter-mode-alist## that matches it. This is probably the most frequently used method of these three.
+
+If these three methods do not turn up an appropriate mode, `set-auto-mode' goes on to try three other methods for a *general rule* that somehow matches this type of file. It checks these three alists, in the order given:
+
+# [[magic-mode-alist]]: roughly similar in vein to, but broader than, the Un*x ##file## command, examines the _beginning_ (i.e., _the first 4,000 or so characters_) of the buffer (which seems expensive)
+# [[auto-mode-alist]]: probably the most used method, checks if the full (absolute) _file name_ matches a pattern
+# [[magic-fallback-mode-alist]] (new in Emacs 22): the same as `magic-mode-alist', only with lower precedence than `auto-mode-alist'
+
+It is crucial to understand that *precedence* is the first thing to look at: The _first method that succeeds_ trumps all the rest, i.e. anything further down the lists laid out here is simply ignored. But this precedence rule also applies /within/ all the alists: the first matching entry wins, i.e. if an entry matches, the rest of the list is ignored. This means that if a file is visited in a major mode you did not specify, the reason is (assuming that your rule was specified correctly) always that /something already matched higher up/ --- either in the same alist where you specified your rule, or through one of the methods with higher precedence as laid our here.
+
+With the six methods available (and applied by Emacs for every file visited), you have potentially more control over automatic mode selection than you could ever wish for. But as the reality is messy, all of them can sometimes come in handy, because they allow you to have a major mode automatically selected based on:
+
+* file name extension (##auto-mode-alist##),
+* file base name (##auto-mode-alist##),
+* location of a file under some directory (##auto-mode-alist##),
+* any combination of the above three (##auto-mode-alist##), 
+* interpreter (##interpreter-mode-alist##),
+* an explicit specification in the file (using the ##-*- ... -*-## gizmo at the beginning or a file-local variable ##mode:## at the end of the file),
+* or even any buffer contents at the beginning other than a shebang line or file-local variables (##magic-mode-alist## or ##magic-fallback-mode-alist##).
 
 ----
 CategoryDotEmacs
