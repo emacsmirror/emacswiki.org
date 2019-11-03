@@ -71,20 +71,33 @@ string matched is the full pathname.  In the examples below,
 the assignment to the list, as detailed above, has been left out
 so we can concentrate on the regexps.
 
-Basically, when matching file names with a regexp, *two characters*, namely the *slash* ##/## and the *dot* (##\\.## or ##[.]##, but not ##.##,
-as the unescaped point is a metacharacter in regexps), and *two anchors*, namely ##^## 
-(the *beginning of the string*) and ##\\'## (the *end of the string*) are especially important. 
-Paying attention to these four is usually much more than half the battle.
+Basically, when matching file names with a regexp, it is *two characters* 
+and *two anchors* that are especially important, and if your regexp is 
+constructed with special attention to these four, the rest is usually 
+relatively easy-peasy:
 
-====The differences between regexps and shell file patterns====
+||                   ||Meaning            ||Should be used to ...                                 || Comment  ||
+||##/##              ||the slash character||enclose directory names, mark beginning of a base name||          ||
+||##\\.## or ##[.]## ||the dot character  ||precede any file name extension                       ||not ##.##!||
+||##^##              ||beginning of string||start any /absolute/ filename                         ||          || 
+||##\\'##            ||end of string      ||end any extension or complete base name               ||          ||
+
+Note that ##.##, the unescaped point, is a /meta/character in regexps, matching /any/ character, and using it 
+to mean a dot can, at least in theory, cause subtle bugs: ##.txt\\'##, for example, will match e.g. ##file.txt## 
+as intended, (because ##.## matches the dot like "any character") but also file names without a dot e.g. ##gettxt##.
+##\\.txt\\'## or ##[.]txt\\'## match only ##file.txt##.
+
+
+====Avoid confusion between regexps and shell file patterns====
 
 Because we are matching file names, is often tempting to confuse the 
 regexps used here with <strong><em>shell file patterns</em></strong>: However, you cannot use ##~## to 
 specify the home directory, or ##*## 
 to match any file: ##~## has no special meaning in a regexp (it simply means the character ##~##), 
 and ##*## does not mean "any file name that does not begin with a .", but 
-"the previous character zero or more times". And regexps do not treat the literal ##.## at the beginning of hidden file names
-in specially, the way shell file patterns do. Thus, if 
+"the previous character zero or more times". And regexps do not treat the 
+literal ##.## at the beginning of hidden file names
+specially, the way shell file patterns do. Thus, if 
 you want to exclude such files (= do not want to match them), 
 you have to do so explicitly with some pattern, such as in ##/[^.][^/]+\\'##.
 
@@ -98,7 +111,9 @@ with ##/usr/share/man/## (which can be, of note, not only any file
 directly in that directory, but also any file in any subdirectory).
 The regexp ##"^/usr/share/man/.*"## matches exactly the same files.
 And if you went even further and said ##"^/usr/share/man/.*\\'"##, that
-would /still/ match exactly the same files. 
+would /still/ match exactly the same files. (The same applies for
+the beginning of a path: If the regexp does not begin with ##^##, it is
+not necessary to start it with ##.*## or the like.)
 
 The basic difference 
 is that shell patterns are /expanded/, possibly (if they contain 
@@ -111,8 +126,11 @@ different things, if you look at it.
 
 The most usual case: Match only the file name extension (enclosed by ##\\.## or ##[.]## and ##\\'##):
 
-    '("\\.sh\\'"    . shell-script-mode) ; match ".sh" extension, and only that
-    '("\\.jpe?g\\'" . image-mode)        ; match both ".jpg" and ".jpeg" extensions
+    '("\\.sh\\'"               . shell-script-mode) ; match ".sh" extension, and only that
+    '("\\.jpe?g\\'"            . image-mode)        ; match both ".jpg" and ".jpeg" extensions
+    '("\\.bat\\'"              . bat-mode)          ; MS Windows/DOS batch files
+    '("\\.[Bb][Aa][Tt]\\'"     . bat-mode)          ; match also the upper-case spelling
+    '("\\.\\(BAT\\||bat\\)\\'" . bat-mode)          ; more precise: do not match .Bat, .bAt, BaT, and the like
 
 
 Match a base name that ends or begins as specified but is not an extension:
@@ -128,10 +146,10 @@ Match the complete basename (enclosed by ##/## and ##\\'##):
 
 Match one and only one specific file (enclosed by ##^/## and ##\\'##):
 
-    '("^/etc/alias\\'"                              . shell-script-mode)
-    (cons (concat "^" (getenv "HOME") "/.alias\\'") . shell-script-mode) ; evaluating a variable
-    (cons (format "^%s/.alias\\'" (getenv "HOME"))  . shell-script-mode) ; same thing
-    ("^~/.alias\\'"                                 . shell-script-mode) ; No! ~ in a regexp is ~, NOT $HOME!
+    '("^/etc/alias\\'"                                . shell-script-mode)
+    (cons (concat "^" (getenv "HOME") "/\\.alias\\'")  'shell-script-mode) ; evaluating a variable
+    (cons (format "^%s/.alias\\'" (getenv "HOME"))     'shell-script-mode) ; same thing
+    ("^~/.alias\\'"                                   . shell-script-mode) ; No! ~ in a regexp is ~, NOT $HOME!
 
 Match /any/ file _in or somewhere below_ one certain directory (enclosed by ##^/## and ##/##):
 
@@ -144,7 +162,7 @@ Match any file _in or somewhere below_ /any/ directory called foo (enclosed by #
 
 Match any file directly _in_ a certain directory. The final ##\\'## could be left out here --- can you say why?
 
-    '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ is the basename (everything after the last slash)
+    '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ (everything after the last slash) matches any base name 
     '("/foo/[^/]+\\'"      . foo-mode)  ; 
 
 ====Both: specifying aspects of path and basename====
@@ -156,6 +174,62 @@ Both approaches can, of course, be combined. Care must be taken not to miss or d
     '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)        ; Conky uses Lua
     '("/\\.fvwm/\\(.*\\)?config\\'"                               . fvwm-mode)       ; "*config" files anywhere below any ".fvwm" directory
 
+===Considering both precedence and the file name===
+
+Whenever there is more than one rule that may match the same file name, the order in which they appear in ##auto-mode-alist## obviously matters: Let's say we use OrgMode and keep all our org files in the directory ~/organization. We give them the extension .txt because we regard them essentially as text files. We craft a regexp that matches .txt-files in that directory and add the rule to the end of ##auto-mode-alist## (see above). We open a new file called ##~/organization/timetable.txt## and ...
+
+    '("\\.te?xt\\'"                                                   . text-mode) ; this was already in `auto-mode-alist'
+    (cons (concat "^" (getenv "HOME") "/organization/[^/]+\\.txt\\'")  'org-mode)  ; why doesn't this work?
+
+... the file opens in ##text-mode##. But it is not as if our complicated regexp didn't match the file name (it flawlessly does). It is simply that the first rule already matches ##~/organization/timetable.txt##, and then Emacs stops looking. Thus, in this case, we have to make sure that our more specific rule comes first, and put it at the beginning of ##auto-mode-alist## (see above on how to do that):
+
+    (cons (concat "^" (getenv "HOME") "/organization/[^/]+\\.txt\\'")  'org-mode)  ; matches .txt files in this directory
+    '("\\.te?xt\\'"                                                   . text-mode) ; will match any leftover .txt file
+
+And now, ##~/organization/timetable.txt## will open in ##org-mode##. This probably demonstrates a good rule of thumb: /Make more specific rules come before more general ones/, because the specific ones always leave something over for the general ones, while the other way round the general ones will take everything. 
+
+====A (real) real-life example====
+
+If the example seems slightly artificial (you always use the .org extension for your Org files), issues such as the above easily arise with files without any extension. Classic examples are shell configuration files such as ##.alias##, ##.profile## and the like, but also Windows-style config files, which have become more widespread in Un*x systems. Thus, ##auto-mode-alist## comes with a predefined rule such as follows (I have simplified it for focus):
+
+    '("c\\(?:on\\)?f\\(?:i?g\\)?\\'" . conf-mode) ; matches cfg, .cfg, .config, config, .cfig, etc.
+
+As it happens, the Fvwm window manager looks for its configuration file in ##~/.fvwm##, and its default base name is simply ##config##. The pre-existing rule just laid out matches this file, but I would like to use FvwmMode to edit it, not ##conf-mode##. Thus, I have to add a special rule and put it /before/ the general one (note the second line is implicit, as it is predefined in ##auto-mode-alist##):
+
+    (cons (concat "^" (getenv "HOME") "/[.]fvwm/config\\'")  'fvwm-mode) ; just /home/me/.fvwm/config
+    '("c\\(?:on\\)?f\\(?:i?g\\)?\\'"                        . conf-mode) ; other files matching cfg, .cfg, .config, config, .cfig, etc.
+
+Success! My Fvwm configuration file opens in ##fvwm-mode##, and any other config files in ##conf-mode##. But after a while, I discover that Fvwm features a ##Read## command, which you can use to read in additional files to make a complex configuration better organized. I do that, and I keep these files in ##~/.fvwm## as well and certainly want to edit them in ##fvwm-mode##. I could, of course, give them all an ##.fvwm## extension and add a rule for it. But I don't like that -- rather, my additional files have names such as ##menus##, ##windows##, ##functions##, and the like. Thus, I change my rule to make it more comprehensive. Come to think of it, I don't even have to specify ##config## explicitly (note, again, the second line is implicit, as it is predefined in ##auto-mode-alist##):
+
+    (cons (concat "^" (getenv "HOME") "/[.]fvwm/")  'fvwm-mode) ; all files below /home/me/.fvwm/ (including "config")
+    '("c\\(?:on\\)?f\\(?:i?g\\)?\\'"               . conf-mode) ; other files matching cfg, .cfg, .config, config, .cfig, etc.
+
+Wonderful; ##~/.fvwm/## is now ##fvwm-mode##'s turf. Becoming even more proficient in Fvwm over the years, however, I start to use external scripts in languages such as Perl, Bash, for things such as creating menus on the fly. I do the obvious thing and keep those scripts in a subdirectory, or subdirectories, of ##~/.fvwm##, such as ##~/.fvwm/scripts/pl## and so on. But these scripts open in ##fvwm-mode## because of my above rule, which I have put not only before the general "cfg, .cfg, .config, config etc." rule, but also before any predefined rules for file extensions such as ##.pl## or ##.sh##. If I moved the rule down, ##~/.fvwm/config## (though not the other files) would be opened in ##conf-mode## again. 
+
+So what now? Do I have to make additional rules for ##.pl## files, ##.sh## files below ##~/.fvwm##? Not necessarily. The following solution, which puts one rule /before/ and one rule /after/ the predefined ##auto-mode-alist##, is more elegant (note, the second and third lines are again implicit, as they only demonstrate what is already in ##auto-mode-alist##):
+
+    (cons (concat "^" (getenv "HOME") "/[.]fvwm/config\\'")  'fvwm-mode) ; only /home/me/.fvwm/config
+    '("c\\(?:on\\)?f\\(?:i?g\\)?\\'"                        . conf-mode) ; other files matching cfg, .cfg, .config, config, .cfig, etc.
+    ;; other predefined rules in `auto-mode-alist' concerning .pl, .sh, and whatever else
+    (cons (concat "^" (getenv "HOME") "/[.]fvwm/")           'fvwm-mode) ; any leftover files below /home/me/.fvwm/
+
+This solution has two advantages: First, /any/ files in ##~/.fvwm## for which a default rule exists will get opened according to that rule. Thus, I can now start putting files in still other programming languages there, and e.g. all kinds of image files (such as for desktop backgrounds and icons), and never be bothered with a wrong mode, without changing anything else about the above setup. Second, I am adding only two additional rules, one before, one after the preexisting rules. To wrap it up, this would be the complete, verbatim code:
+
+    (setq auto-mode-alist
+      (append
+        (list
+          (cons (concat "^" (getenv "HOME") "/[.]fvwm/config\\'") 'fvwm-mode))
+        auto-mode-alist
+        (list
+          (cons (concat "^" (getenv "HOME") "/[.]fvwm/")          'fvwm-mode))))
+
+Or, with ##add-to-list##:
+
+    (add-to-list 'auto-mode-alist
+          (cons (concat "^" (getenv "HOME") "/[.]fvwm/config\\'")  'fvwm-mode))
+    (add-to-list 'auto-mode-alist
+          (cons (concat "^" (getenv "HOME") "/[.]fvwm/")           'fvwm-mode) t) ; t for optional APPEND argument
+
 == Debugging ==
 
 If Emacs keeps starting the wrong mode although the right recipe should be in ##auto-mode-alist##, it should be possible to work out the reason by following these two steps:
@@ -163,8 +237,7 @@ If Emacs keeps starting the wrong mode although the right recipe should be in ##
 # Check if some other method takes precedence before 
   ##auto-mode-alist## (see  SetAutoMode).
 
-# If that is not the case, run the following command while 
-  visiting the file in question, or specify the file name with a prefix argument:
+# If that is not the case, find out where exactly ##auto-mode-alist## matches. Because a lot of packages add to this list, and simply printing it out may be hard on the eyes, you can run the following command while visiting the file in question, or specify the file name with a prefix argument:
 
 [code]
 
