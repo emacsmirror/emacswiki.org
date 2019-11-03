@@ -269,7 +269,7 @@ Includes support for Qt code (macros name and qDebug)."
   (font-lock-add-keywords
    'c++-mode
    '(("\\<QT??_[A-Z_]+\\|SIGNAL\\|SLOT\\>" . 'qt-keywords-face)
-     ("\\<qDebug\\>" . 'qt-debug-face)
+     ("\\<qDebug\\|qInfo\\|qWarning\\|qCritical\\|qFatal\\>" . 'qt-debug-face)
      )))
 
 
