@@ -76,16 +76,19 @@ and *two anchors* that are especially important, and if your regexp is
 constructed with special attention to these four, the rest is usually 
 relatively easy-peasy:
 
-||                   ||Meaning            ||Should be used to ...                                 || Comment  ||
-||##/##              ||the slash character||enclose directory names, mark beginning of a base name||          ||
-||##\\.## or ##[.]## ||the dot character  ||precede any file name extension                       ||not ##.##!||
-||##^##              ||beginning of string||start any /absolute/ filename                         ||          || 
-||##\\'##            ||end of string      ||end any extension or complete base name               ||          ||
+||                   ||Meaning            ||Should be used to ...                                 || Comment   ||
+||##/##              ||the slash character||enclose directory names, mark beginning of a base name||           ||
+||##\\.## or ##[.]## ||the dot character  ||precede any file name extension                       ||not ##.## !||
+||##^##              ||beginning of string||start any /absolute/ filename                         ||           || 
+||##\\'##            ||end of string      ||end any extension or complete base name               ||           ||
 
-Note that ##.##, the unescaped point, is a /meta/character in regexps, matching /any/ character, and using it 
-to mean a dot can, at least in theory, cause subtle bugs: ##.txt\\'##, for example, will match e.g. ##file.txt## 
-as intended, (because ##.## matches the dot like "any character") but also file names without a dot e.g. ##gettxt##.
-##\\.txt\\'## or ##[.]txt\\'## match only ##file.txt##.
+Note that ##.##, the unescaped dot, is a /meta/character in regexps, matching /any/ character, and using it 
+to mean a dot can, at least in theory, cause subtle bugs, as demonstrated in the following example, where ##.txt\\'## is 
+erroneously used to match the file extension ##.txt##:
+
+||Expression                    || will match:                                        ||Comment               ||
+||##.txt\\'##                   ||##file.txt## , ##gettxt##, ##atxt##, ##-txt##, etc. ||/also/ matches the dot||
+||##\\.txt\\'## or ##[.]txt\\'##||##file.txt##, ##a.txt##, ##b.txt##, etc.            ||/only/ matches the dot||
 
 
 ====Avoid confusion between regexps and shell file patterns====
@@ -172,7 +175,6 @@ Both approaches can, of course, be combined. Care must be taken not to miss or d
     '("^/tmp/cvs[[:alnum:]]*\\'"                                  . log-entry-mode)  ; CVS commit message
     (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'")  'log-entry-mode)) ; with /tmp taken from a variable
     '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)        ; Conky uses Lua
-    '("/\\.fvwm/\\(.*\\)?config\\'"                               . fvwm-mode)       ; "*config" files anywhere below any ".fvwm" directory
 
 ===Considering both precedence and the file name===
 
