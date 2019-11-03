@@ -53,7 +53,9 @@ This uses a timer to turn the colors back to what they were.
 == Flash the mode-line ==
 
 Having the whole screen flash can be jarring, and fast full-screen flashes look bad with jaggies because they're not synced with you monitor's screen refresh.
-Instead, you can flash just the mode line, which is still easy to notice without feeling like an electric shock:
+Instead, you can flash just the mode line, which is still easy to notice without feeling like an electric shock.
+
+Install the [[MELPA]] package `mode-line-bell' or code it yourself likes this:
 
 {{{
 (setq visible-bell nil
