@@ -82,9 +82,10 @@ relatively easy-peasy:
 ||##^##              ||beginning of string||start any /absolute/ filename                         ||           || 
 ||##\\'##            ||end of string      ||end any extension or complete base name               ||           ||
 
-Note that ##.##, the unescaped dot, is a /meta/character in regexps, matching /any/ character, and using it 
-to mean a dot can, at least in theory, cause subtle bugs, as demonstrated in the following example, where ##.txt\\'## is 
-erroneously used to match the file extension ##.txt##:
+Note that ##.##, the unescaped dot, is a /metacharacter/ in regexps, and means "match /any/ character". 
+Treacherously, using it to mean a dot will work (i.e. will match the dot), but can, at least in theory, 
+cause subtle bugs, as demonstrated in the following example, where ##.txt\\'## 
+is erroneously used to match the file extension ##.txt##:
 
 ||Expression                    || will match:                                        ||Comment               ||
 ||##.txt\\'##                   ||##file.txt## , ##gettxt##, ##atxt##, ##-txt##, etc. ||/also/ matches the dot||
@@ -163,7 +164,7 @@ Match any file _in or somewhere below_ /any/ directory called foo (enclosed by #
 
     '("/foo/" . foo-mode) ; matches if "/foo/" is somewhere in the path name
 
-Match any file directly _in_ a certain directory. The final ##\\'## could be left out here --- can you say why?
+Match any file directly _in_ a certain directory. (BTW: The final ##\\'## could be left out here -- can you say why?)
 
     '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ (everything after the last slash) matches any base name 
     '("/foo/[^/]+\\'"      . foo-mode)  ; 
