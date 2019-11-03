@@ -248,7 +248,7 @@ The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
 
 ==== Using Return Key as Ctrl ====
 
-Another recommendation is to use the return key as Ctrl as well. This makes pressing keys on the left with Ctrl a lot easier. If another key is pressed while Return key pressed, it acts as a Ctrl. If Return key is presses and released alone then it acts as the Return. More details, an AutoHotKey script, and a compiled exe can be found [https://usman.io/emacs-ergonomics-using-caps-and-enter-as-ctrls/ here].
+Another recommendation is to use the return key as Ctrl when it is held down. This makes pressing keys on the left side of the keyboard in conjunction with Ctrl a lot easier. If another key is pressed while the Return key is pressed, the return key acts as a Ctrl. If the Return key is pressed and released alone then it acts as the Return. More details, an AutoHotKey script, and a compiled exe to do the above can be found [https://usman.io/emacs-ergonomics-using-caps-and-enter-as-ctrls/ here].
 
 === Registry ===
 * Applies across all user accounts.
