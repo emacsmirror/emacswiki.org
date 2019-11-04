@@ -69,9 +69,8 @@ The built-in [https://www.emacswiki.org/emacs/ProgrammingWithPythonDotEl python.
   (setq imenu-create-index-function
         #'python-imenu-create-flat-index))
 
-(eval-after-load 'python
-  '(add-hook 'python-mode-hook
-             #'python-imenu-use-flat-index))
+(add-hook 'python-mode-hook
+          #'python-imenu-use-flat-index)
 }}}
 
 The tools built on jedi support using it to find definitions. [https://github.com/tkf/emacs-jedi-direx jedi-direx] provides a tree-style source code viewer for Python buffers but is not on MELPA.
