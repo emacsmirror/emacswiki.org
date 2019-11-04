@@ -64,10 +64,14 @@ An experiment:
 The built-in [https://www.emacswiki.org/emacs/ProgrammingWithPythonDotEl python.el] has support for [https://www.emacswiki.org/emacs/ImenuMode imenu] code navigation. By default it uses a tree structure for navigation which presents only top level definitions that can then be 'drilled in to'. If you prefer a flat menu then you can add the following snippet (retrieved from [https://github.com/fgallina/python.el/issues/135#issuecomment-18459589 GitHub]) to your [https://www.emacswiki.org/emacs/InitFile init file] (requires that ##python## has been loaded or to be protected by an ##eval-after-load## form or similar):
 
 {{{
-(add-hook 'python-mode-hook 
-          (lambda () 
-            (set (make-local-variable 'imenu-create-index-function)
-                 #'python-imenu-create-index)))
+(defun python-imenu-use-flat-index
+    ()
+  (setq imenu-create-index-function
+        #'python-imenu-create-flat-index))
+
+(eval-after-load 'python
+  '(add-hook 'python-mode-hook
+             #'python-imenu-use-flat-index))
 }}}
 
 The tools built on jedi support using it to find definitions. [https://github.com/tkf/emacs-jedi-direx jedi-direx] provides a tree-style source code viewer for Python buffers but is not on MELPA.
