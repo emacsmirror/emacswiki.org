@@ -261,7 +261,9 @@ manual).  For example, \"z\" for gzip; \"j\" for bz2."
 
 
 (defun actions-file-p (regexp)
-  "Returns t if current line in `dired-mode' matches REGEXP and it is a file."
+  "Returns t if current line in `dired-mode' matches REGEXP and it is a file.
+
+The matching is case insensitive."
   (and (eq major-mode 'dired-mode)
        (not (car (file-attributes (dired-get-file-for-visit))))
        (let ((case-fold-search t))	;; ignore case
