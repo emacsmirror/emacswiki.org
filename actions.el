@@ -5,11 +5,11 @@
 ;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: convenience
-;; Version: 0.15
+;; Version: 0.16
 ;; X-URL: https://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
-(defconst actions-version "0.15"
-  "actions.el, v 0.15 <2019/11/04 vinicius>
+(defconst actions-version "0.16"
+  "actions.el, v 0.16 <2019/11/05 vinicius>
 
 Please send all bug fixes and enhancements to
 	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
@@ -125,7 +125,7 @@ Please send all bug fixes and enhancements to
     ["Expand .tar"     (actions-untar)
      :visible (actions-file-p "\\.tar$")]
     ["Expand .tar.***" (actions-untar)
-     :visible (actions-file-p "\\.\\(tar\\.\\(gz\\|Z\\|bz2\\|lz\\|lzma\\|lzo\\|xz\\)\\|tgz\\|taz\\|taZ\\|tz2\\|tbz2\\|tbz\\|tlz\\)$")]
+     :visible (actions-file-p "\\.\\(tar\\.\\(gz\\|z\\|bz2\\|lz\\|lzma\\|lzo\\|xz\\)\\|tgz\\|taz\\|taz\\|tz2\\|tbz2\\|tbz\\|tlz\\)$")]
     ["Expand .gz"      (actions-call "gunzip")
      :visible (actions-file-p "\\.gz$")]
     ["Expand .zip"     (actions-call "unzip")
@@ -136,22 +136,22 @@ Please send all bug fixes and enhancements to
      :visible (actions-file-p "\\.dia$")]
     ["Run file"        (actions-run)
      :visible (actions-file-executable-p "\\.sh$")]
-    ("Read PDF" :visible (actions-file-p "\\.\\(pdf\\|PDF\\)$")
+    ("Read PDF" :visible (actions-file-p "\\.pdf$")
      ["via 'xpdf'"     (actions-call "xpdf") :visible t]
      ["via 'okular'"   (actions-call "okular") :visible t])
     ["Read PS"         (actions-call "gv")
-     :visible (actions-file-p "\\.\\(ps\\|PS\\)$")]
+     :visible (actions-file-p "\\.ps$")]
     ["Read PS.GZ"      (actions-call "gv")
-     :visible (actions-file-p "\\.\\(ps\\|PS\\)\\.\\(gz\\|GZ\\)$")]
+     :visible (actions-file-p "\\.ps\\.gz$")]
     ["Qt Designer"     (actions-call "designer")
      :visible (actions-file-p "\\.ui$")]
     ["VLC Video/Audio" (actions-call "vlc")
-     :visible (actions-file-p "\\.\\(MP[34]\\|M4A\\|AAC\\|OPUS\\|OGG\\|MIDI\\|MPEG\\|mp[34]\\|m4a\\|aac\\|opus\\|ogg\\|midi\\|mpeg\\)$")]
+     :visible (actions-file-p "\\.\\(mp[34]\\|m4a\\|aac\\|opus\\|ogg\\|midi\\|mpeg\\|mkv\\)$")]
     ["LibreOffice Doc" (actions-call "libreoffice")
-     :visible (actions-file-p "\\.\\(OD[TF]\\|DOCX?\\|DOCX?\\.ENC\\|PPTX?\\|od[tf]\\|docx?\\|docx?\\.enc\\|pptx?\\)$")]
-    ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|XCF\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
+     :visible (actions-file-p "\\.\\(od[tf]\\|docx?\\|docx?\\.enc\\|pptx?\\)$")]
+    ("Image" :visible (actions-file-p "\\.\\(jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
      ["GEEQIE Image"   (actions-call "geeqie")
-      :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")]
+      :visible (actions-file-p "\\.\\(jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")]
      ["GIMP Image"     (actions-call "gimp") :visible t])
     ("grep recursively" :visible (region-active-p)
      ["case sensitive"   (actions-grep-r) :visible t]
@@ -191,7 +191,7 @@ It is used by `actions-action'."
 (defcustom actions-options
   '(("grep"
      ("--exclude-dir="
-      ".svn" "tmp" ".cccc")
+      ".svn" "tmp" ".cccc" ".git")
      ("--exclude="
       "lib*" "*.ui" "*.txt" "*.log" "*.html" "Makefile*" "makefile*")
      )
@@ -264,7 +264,8 @@ manual).  For example, \"z\" for gzip; \"j\" for bz2."
   "Returns t if current line in `dired-mode' matches REGEXP and it is a file."
   (and (eq major-mode 'dired-mode)
        (not (car (file-attributes (dired-get-file-for-visit))))
-       (string-match regexp (dired-get-file-for-visit))))
+       (let ((case-fold-search t))	;; ignore case
+	 (string-match regexp (dired-get-file-for-visit)))))
 
 
 (defun actions-file-executable-p (regexp)
