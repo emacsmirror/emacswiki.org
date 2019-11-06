@@ -14,7 +14,7 @@ A good way to approach rectangles is to consider them a text-version of the "cro
 
 Rectangle commands were originally part of Emacs's PictureMode and therefore were intended as handlers on ''visual rectangles of data''.  Rectangles are useful in situations where editing is otherwise unnecessarily difficult, frustrating, or region-oriented Emacs commands are lacking.
 
-One typically utilizes rectangles in a manner similar to that of the region.  Rectangles can be killed or copied onto the kill ring which is convenient for yanking rectangles into ordinary buffers.  As buffer objects, rectangles are fundamentally different from the region and aren't afforded the same status.  Moreover, this difference is orthogonal to most of the Emacs commands that operate on the region and rectangles can not be relied upon to always "Do the right thing".  This is in contrast to insertion of region registers which honor buffer markers and don't clobber buffer text unless it was intended.  See [[#Registers]] below.
+One typically utilizes rectangles in a manner similar to that of the region.  Rectangles can be killed or copied. They are *not* stored in the kill ring, however, but in a separate global variable called ##killed-rectangle##. This variable is not organized as a ring or list, but holds only *one* rectangle. Accordingly, they cannot be yanked with the normal `yank' command, i.e. ##C-y##, but with `yank-rectangle' (see below). This is convenient for yanking rectangles into ordinary buffers.  As buffer objects, rectangles are fundamentally different from the region and aren't afforded the same status.  Moreover, this difference is orthogonal to most of the Emacs commands that operate on the region and rectangles can not be relied upon to always "Do the right thing".  This is in contrast to insertion of region registers which honor buffer markers and don't clobber buffer text unless it was intended.  See [[#Registers]] below.
 
 Because rectangles are a second-class citizen, using them programmatically in Elisp functions should be approached with caution especially with newer versions of Emacs (23 and later) which depart from a static line and column orientation buffer display with fixed width fonts and where 80 columns of text isn't always 80 columns.  Despite these detractors rectangles remain exceedingly useful for certain types of edits.
 
@@ -29,17 +29,25 @@ Rectangle commands were originally part of Emacs's PictureMode.
 See also RectangleMark
 and ColumnNumberMode.
 
-== Rectangle Commands ==
+== Traditional rectangle commands ==
 
 * Kill a rectangle: kill-rectangle `C-x r k'
-* Yank the last rectangle killing: yank-rectangle `C-x r y'
+* Yank the last killed rectangle: yank-rectangle `C-x r y'
 * Copy a rectangle: copy-rectangle-as-kill `C-x r M-w'
-* Insert a text rectangle: string-insert-rectangle (unbound)
 * Insert a text to replace rectangle region: string-rectangle `C-x r t'
+* Insert a text rectangle: string-insert-rectangle (unbound). This command is almost superfluous, as you can achieve the same result by marking an "empty rectangle" as described above, and then call `string-rectangle'. The one tiny difference, though, is that `string-insert-rectangle' will leave point after the rectangle you have marked. In my case, that does not justify a separate command.
 * Delete the selected rectangle: delete-rectangle `C-x r d'
 * Insert a whitespace rectangle into the region: open-rectangle `C-x r o'
-* Number lines in rectangle: number-to-register `C-x r N'. This command also inserts a column of spaces after numbers.
-* Toggle Rectangle Mark mode (rectangle-mark-mode): `C-x SPC'. Introduced in Emacs version 24.4. From the manual: "When this mode is active, the region-rectangle is highlighted and can be shrunk/grown, and the standard kill and yank commands operate on it."
+* Number lines in rectangle: number-to-register `C-x r N'. This command also inserts a column of spaces after numbers, and can conveniently be used to convert consecutive lines into a numbered list. With optional arguments START-WITH and FORMAT (prompted for if you prefix with C-u), you can number, say, 5 consecutive lines with, "3.)" to "7.)".
+
+== Toggle Rectangle Mark mode ==
+Activated by `C-x SPC'. This was introduced in Emacs version 24.4 and deserves a section of its own, as it seems to have introduced new ways of dealing with rectangular regions. The manual states that: "When this mode is active, the region-rectangle is highlighted and can be shrunk/grown, ...", which can indeed be done very conveniently with the ordinary movement commands. (Try it out.) The difference to the "traditional" rectangle commands listed above is that the region now /appears/ rectangular provided 'transient-mark-mode' is activated, and that the keybindings are transiently different (for, it seems, an arbitrary number of movement commands, and one "action" command). But the differences are apparently not limited to the user interface:
+
+The manual then goes on to say that "... the standard kill and yank commands operate on it [i.e. the rectangular region]." What exactly these "standard kill and yank commands" are, however, is a bit mysterious: The only non-movement keys that seem to be transiently rebound are ##C-t## (`string-rectangle') and ##C-o## (`open-rectangle'). You will, nevertheless, find that ##C-w## kills the rectangle, ##M-w## copies it, ##DEL## deletes it, as one would expect (and, as I would say, is what the manual promises). 
+
+And then it gets interesting, because these kill and copy operations /do/ use the kill ring, /not/ `killed-rectangle'. There, the rectangle is primarily stored as a simple string (while `killed-rectangle' stores it as a list of strings, one string for each line), but with the property ##yank-handler##, which specifies the simple and intelligent (but undocumented) function `rectangle--insert-for-yank' (which in turn inserts a list of strings all at the same column in consecutive lines). This means that you can simply insert a rectangle killed in this way with `yank', i.e. ##C-y##. (You can also hack around with `rectangle--insert-for-yank' and insert strings of /different/ length, by the way!)
+
+This seems to mean that with `rectangle-mark-mode', a more general way of handling rectangles seems to have been found, which is distinct from the other rectangle commands. The documentation on that, however, still seems to be somewhat mum on that as of Emacs 26.3.
 
 == Use case: Copying tables from a Web browser ==
 
