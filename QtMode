@@ -231,21 +231,21 @@ Nowadays c++-mode highlights Qt signals and slots keywords, so I'm using the fol
 
 ;; make new font for rest of qt keywords
 
-(defface qt-keywords-face
+(defface qt-macros-face
   '((((class color) (background dark))
      :foreground "DarkKhaki")
     (((class color) (background light))
      :foreground "khaki")
     (t :inverse-video t))
-  "Basic face for Qt keywords.")
+  "Basic face for Qt macro names.")
 
-(defface qt-debug-face
+(defface qt-keywords-face
   '((((class color) (background dark))
      :foreground "NavajoWhite")
     (((class color) (background light))
      :foreground "NavajoWhite")
     (t :inverse-video t))
-  "Basic face for Qt debug name.")
+  "Basic face for Qt keywords.")
 
 (defun jk/c-mode-common-hook ()
   "Set up c-mode and related modes.
@@ -265,11 +265,11 @@ Includes support for Qt code (macros name and qDebug)."
   ;; qt keywords and stuff ...
   ;; set up indenting correctly for new qt kewords
   (setq indent-tabs-mode nil)
-  ;; modify the colour of slots to match public, private, etc ...
+  ;; highlight Qt macros, keywords
   (font-lock-add-keywords
    'c++-mode
-   '(("\\<QT??_[A-Z_]+\\|SIGNAL\\|SLOT\\>" . 'qt-keywords-face)
-     ("\\<qDebug\\|qInfo\\|qWarning\\|qCritical\\|qFatal\\>" . 'qt-debug-face)
+   '(("\\<\\(QT??_[A-Z_]+\\|SIGNAL\\|SLOT\\)\\>" . 'qt-macros-face)
+     ("\\<\\(qDebug\\|qInfo\\|qWarning\\|qCritical\\|qFatal\\|tr\\)\\>" . 'qt-keywords-face)
      )))
 
 
