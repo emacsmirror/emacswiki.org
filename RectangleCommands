@@ -47,7 +47,7 @@ The manual then goes on to say that "... the standard kill and yank commands ope
 
 And then it gets interesting, because these kill and copy operations /do/ use the kill ring, /not/ `killed-rectangle'. There, the rectangle is primarily stored as a simple string (while `killed-rectangle' stores it as a list of strings, one string for each line), but with the property ##yank-handler##, which specifies the simple and intelligent (but undocumented) function `rectangle--insert-for-yank' (which in turn inserts a list of strings all at the same column in consecutive lines). This means that you can simply insert a rectangle killed in this way with `yank', i.e. ##C-y##. (You can also hack around with `rectangle--insert-for-yank' and insert strings of /different/ length, by the way!)
 
-This seems to mean that with `rectangle-mark-mode', a more general way of handling rectangles seems to have been found, which is distinct from the other rectangle commands. The documentation on that, however, still seems to be somewhat mum on that as of Emacs 26.3.
+This seems to mean that with `rectangle-mark-mode', a more general way of handling rectangles seems to have been found, which is distinct from the other rectangle commands. The documentation (the docstring as well as Emacs and Emacs Lisp info manuals), however, still seems to be somewhat mum on that as of Emacs 26.3.
 
 == Use case: Copying tables from a Web browser ==
 
