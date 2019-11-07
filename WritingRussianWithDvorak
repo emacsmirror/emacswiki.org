@@ -14,6 +14,8 @@ lines into your ~/.emacs file:
 (setq default-input-method "cyrillic-dvorak")
 </pre>
 
+Alternatively, you can use the following package: [https://github.com/alezost/dvorak-layouts.el dvorak-layouts].
+
 == Keyboard Layout ==
 You can as well define your keyboard layout via quail. Here is an example that defines two types of dvorak layout as well as chooses one of them.
 <pre>
