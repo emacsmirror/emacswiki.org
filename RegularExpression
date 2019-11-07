@@ -76,7 +76,7 @@ Characters are organized by category. Use ##C-u C-x =## to display the category 
   \cl      latin character
   \cg      greek character
 
-Here are some [[Manual:Syntax Descriptors|syntax classes]], also known as character classes, that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
+Here are some [[Manual:Syntax Descriptors|syntax classes]], also known as character classes, that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##. View all syntax classes [https://www.gnu.org/software/emacs/manual/html_node/elisp/Char-Classes.html here]
 
   [:digit:]  a digit, same as [0-9]
   [:alpha:]  a letter (an alphabetic character)
@@ -90,6 +90,7 @@ Here are some [[Manual:Syntax Descriptors|syntax classes]], also known as charac
   [:xdigit:] an hexadecimal digit
   [:cntrl:]  a control character
   [:ascii:]  an ascii character
+  [:nonascii:]  any non ascii character
 
 Syntax classes:
 
