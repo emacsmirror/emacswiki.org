@@ -12,11 +12,11 @@ such that
 
 = Demo =
 
-http://cloud.github.com/downloads/hchbaw/eval-sexp-fu.el/evalsexpfu-mini.gif
+https://github.com/hchbaw/eval-sexp-fu.el/raw/blob/evalsexpfu-mini.gif
 
 You can see the Lisp:eval-sexp-fu.el in action.
 
-( [http://wiki.github.com/hchbaw/eval-sexp-fu.el/longversionofthedemo Here] is much longer version of the demo.)
+( [https://github.com/hchbaw/eval-sexp-fu.el/wiki/LongVersionOfTheDemo Here] is much longer version of the demo.)
 
 = Special thanks =
 
