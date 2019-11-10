@@ -22,3 +22,17 @@ Instructions: Please change the path of vim/gvim to where it is on your computer
       (error "Current buffer doesn't point to a file yet."))
     (unless result (find-file gvim-file-name))))
 }}}
+
+
+This code [https://stackoverflow.com/a/52587681] will preserve the location of the line and allow emacs to be returned to if vim is closed (great if your snippets for a particular language are in vim):
+
+{{{
+(defun my-open-current-file-in-vim ()
+  (interactive)
+  (async-shell-command
+   (format "gvim +%d %s"
+       (+ (if (bolp) 1 0) (count-lines 1 (point)))
+       (shell-quote-argument buffer-file-name))))
+}}}
+
+
