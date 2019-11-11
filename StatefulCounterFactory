@@ -4,7 +4,7 @@ A recent project required that I maintain counts of different things, for exampl
 of specific words in text.  Association lists are one easy way to do this
 
 {{{
-(("Burt" 3)("Ernie" 7)("BigBird" 43))
+(("Burt" 3)('counter-list 7)(13 43))
 }}}
 
 but I had to increment the 
@@ -13,7 +13,7 @@ accidentally clobbering the counts.
 
 Instead I used Emacs Lisp's lexical binding option to create closures---functions that maintain their
 internal state.  The following factory macro creates counters that count "things"---meaning anything that can be used
-as a key in an association list, e.g. strings, symbols, numbers, functions.  You can define multiple 
+as a key in an association list, e.g. strings, symbols, numbers, ....  You can define multiple 
 counters, each of which will maintain its own state.
 
 {{{
