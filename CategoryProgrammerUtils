@@ -95,3 +95,4 @@ See also CategoryVersionControl.
 * <tt>[[vhdl-goto-def.el]]</tt>, <tt>[[vhdl-process-wave.el]]</tt> -- For VHDL coders.
 * [http://code.google.com/p/flyparse-mode/  Flyparse-mode] -- Use external parsers to generate s-expression ASTs for language files, as they are being edited. Language modes are then able to query these ASTs using a declarative search syntax. 
 * [[WTFSubmit]] -- Submit some horrible code to TheDailyWTF.com
+* StatefulCounterFactory -- generate lexical closures that maintain counts of things
