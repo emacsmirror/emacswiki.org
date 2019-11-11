@@ -526,6 +526,56 @@ Build a date based on the day of the year.
                       (encode-time 0 0 0 44 1 2012))
   ==> "044"
 
+=== A factory macro for stateful counters ===
+
+A recent project required that I maintain counts of different things, for example the number of occurrences 
+of specific words in text.  Association lists are one easy way to do this, but I had to increment the 
+counts from several different functions.  Keeping the list as a global variable would work, but risked
+accidentally clobbering the counts.
+
+Instead I used Emacs Lisp's lexical binding option to create closures---functions that maintain their
+internal state.  The following factory macro creates counters that count "things"---meaning anything that can be used
+as a key in an association list, e.g. strings, symbols, numbers, functions.  You can define multiple 
+counters, each of which will maintain its own state.
+
+{{{
+(defmacro make-counter (counter-closure)
+  "This macro creates a closure used for counting things.
+The produced function counts things using an association list.
+You can think of thie as an array indexed by the things
+being couinted.  The first element of each of the association
+cells is one of the things to be counted (analogous to an
+array index).  The second is a list containing a count of
+those things.  This function always returns the current list
+of counts.  Calling this function with a non-nil value of thing
+either increments the count, or, if thing hasn't been seen
+before, it creates a count for thing initializing it to 1.
+Calling it with a nil argument returns the
+count-list without changing any of the counts.
+;;; Usage examples for make-counter
+;; (make-counter named-counter) ;; creates a counter named \"named-counter\"
+;; (funcall named-counter 1) ;; starts the count for 1 yielding ((1 1))
+;; (funcall named-counter 1) ;; bumps the count for 1 yielding ((1 2))
+;; (funcall named-counter 1) ;; bumps the count for 1 yielding ((1 3))
+;; (funcall named-counter \"a\") ;; starts the count for \"a\" yielding (((1 3)(\"a\" 1))
+;; (funcall named-counter) ;; returns the count list unchanged yielding (((1 3)(\"a\" 1))"
+  (list 'let (list (list 'count-list nil))
+	(list 'setq counter-closure
+	      (list 'lambda (list '&optional 'thing)
+		    (list 'cond
+			  (list (list 'and 'thing 'count-list)
+				(list 'let (list (list 'count-pair (list 'assoc 'thing 'count-list)))
+				      (list 'if 'count-pair
+					    (list 'let (list (list 'current-count (list 'car (list 'cdr 'count-pair))))
+						  (list 'setcdr 'count-pair (list 'list (list  '1+ 'current-count))))
+					    (list 'setq 'count-list (list 'cons (list 'list 'thing 1) 'count-list)))
+				      'count-list))
+			  (list 'thing
+				(list 'setq 'count-list (list 'list (list 'list 'thing 1)))) 
+			  (list t
+				'count-list))))))
+}}}
+
 == Pattern matching ==
 
 "Patterns" refers to RegularExpression""s.
