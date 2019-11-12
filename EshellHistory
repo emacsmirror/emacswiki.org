@@ -63,6 +63,12 @@ The downsides to this method are:
 * you have to alter the eshell source, which might have undesireable side-effects.
 
 ----
+I *really* want to be able to recall input given to a command from within
+eshell.  (Not just the shell commands, but input given to a command which was 
+invoked from eshell.)
+Neither the link above to shellhist.el nor the link above to esh-mode.patch are alive.
+Does anyone have a copy of shellhist.el or any other solution?  Please post here.
+----
 
 In eshell currently (24.3.1) you can't use !$ to refer to the last component of the previous command. (I use this all the time in other shells). Anyway, here's a quick fix:
 
