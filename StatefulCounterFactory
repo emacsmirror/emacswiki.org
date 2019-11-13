@@ -30,6 +30,8 @@ either increments the count, or, if thing hasn't been seen
 before, it creates a count for thing initializing it to 1.
 Calling it with a nil argument returns the
 count-list without changing any of the counts.
+Calling it with two non-nil arguments resets the 
+current counter to the first argument
 ;;; Usage examples for make-counter
 ;; (make-counter named-counter) ;; creates a counter named \"named-counter\"
 ;; (funcall named-counter 1) ;; starts the count for 1 yielding ((1 1))
@@ -37,6 +39,7 @@ count-list without changing any of the counts.
 ;; (funcall named-counter 1) ;; bumps the count for 1 yielding ((1 3))
 ;; (funcall named-counter \"a\") ;; starts the count for \"a\" yielding (((1 3)(\"a\" 1))
 ;; (funcall named-counter) ;; returns the count list unchanged yielding (((1 3)(\"a\" 1))"
+;; (funcall named-counter '((1 3)(2 4)) t) ;; resets the counter to '((1 3)(2 4))
   (list 'let (list (list 'count-list nil))
         (list 'setq counter-closure
               (list 'lambda (list '&optional 'thing 'thing2)
