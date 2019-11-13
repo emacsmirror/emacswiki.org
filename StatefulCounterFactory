@@ -21,10 +21,10 @@ counters, each of which will maintain its own state.
   "This macro creates a closure used for counting things.
 The produced function counts things using an association list.
 You can think of thie as an array indexed by the things
-being couinted.  The first element of each of the association
+being counted.  The first element of each of the association
 cells is one of the things to be counted (analogous to an
-array index).  The second is a list containing a count of
-those things.  This function always returns the current list
+array index).  The second is a count of those things.  
+This function always returns the current list
 of counts.  Calling this function with a non-nil value of thing
 either increments the count, or, if thing hasn't been seen
 before, it creates a count for thing initializing it to 1.
@@ -96,4 +96,5 @@ make changes to make-counter."
 	   (message "Function test-make-counter failed"))))))
 
 (test-make-counter)
+
 }}}
