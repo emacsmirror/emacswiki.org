@@ -19,7 +19,6 @@ counters, each of which will maintain its own state.
 {{{
 (defmacro make-counter (counter-closure)
   "This macro creates a closure used for counting things.
-The argument is the name of the counter returned.
 The produced function counts things using an association list.
 You can think of thie as an array indexed by the things
 being couinted.  The first element of each of the association
@@ -39,18 +38,62 @@ count-list without changing any of the counts.
 ;; (funcall named-counter \"a\") ;; starts the count for \"a\" yielding (((1 3)(\"a\" 1))
 ;; (funcall named-counter) ;; returns the count list unchanged yielding (((1 3)(\"a\" 1))"
   (list 'let (list (list 'count-list nil))
-	(list 'setq counter-closure
-	      (list 'lambda (list '&optional 'thing)
-		    (list 'cond
-			  (list (list 'and 'thing 'count-list)
-				(list 'let (list (list 'count-pair (list 'assoc 'thing 'count-list)))
-				      (list 'if 'count-pair
-					    (list 'let (list (list 'current-count (list 'car (list 'cdr 'count-pair))))
-						  (list 'setcdr 'count-pair (list 'list (list  '1+ 'current-count))))
-					    (list 'setq 'count-list (list 'cons (list 'list 'thing 1) 'count-list)))
-				      'count-list))
-			  (list 'thing
-				(list 'setq 'count-list (list 'list (list 'list 'thing 1)))) 
-			  (list t
+        (list 'setq counter-closure
+              (list 'lambda (list '&optional 'thing 'thing2)
+		    ;; (list 'message (list 'concat (list 'format "%s" 'thing)))
+                    (list 'cond
+			  (list (list 'and 'thing 'thing2)
+				(list 'if (list 'listp 'thing)
+				      (list 'setq 'count-list 'thing)
+				      (list 'message  "make-counter: attempted to reset counter to non-list")))
+			  (list (list 'and 'thing 'count-list) ;; bump the count for thing
+                                (list 'let (list (list 'count-pair (list 'assoc 'thing 'count-list)))
+				      ;; (list 'message "bumping existing count")
+                                      (list 'if 'count-pair
+                                            (list 'let (list (list 'current-count (list 'car (list 'cdr 'count-pair))))
+                                                  (list 'setcdr 'count-pair (list 'list (list  '1+ 'current-count))))
+                                            (list 'setq 'count-list (list 'cons (list 'list 'thing 1) 'count-list)))
+                                      'count-list))
+                          (list 'thing ;; start the count list
+				;; (list 'message "starting new count")
+                                (list 'setq 'count-list (list 'list (list 'list 'thing 1))))
+                          (list t
 				'count-list))))))
+	  
+(provide 'make-counter)
+
+(defun test-make-counter ()
+  "This function tests that the result of a local counter
+is equal to a local known result list.  Firt it prints both 
+the local counter and the local test list, then prints
+a pass/fail message.  This should still run after you
+make changes to make-counter."
+   (let ((test-list '(("b" 1)(c 1)("a" 4)(1 4)))
+	 (test-list2 '((1 1) (2 2)))
+	 (junk (make-counter local-counter)))
+     (setq junk nil)
+     (funcall local-counter 1)
+     ;; (message (concat "local-counter was: " (format "%s" (funcall local-counter))))
+     (funcall local-counter "a")
+     (funcall local-counter "a")
+     (funcall local-counter "a")
+     (funcall local-counter 1)
+     (funcall local-counter 1)
+     (funcall local-counter 'c)
+     (funcall local-counter "b")
+     (funcall local-counter "a")
+     (funcall local-counter 1)
+     (message "The next message should be an error")
+     (funcall local-counter 1 t)
+     (let ((check-list (funcall local-counter)))
+       (message (concat "result of counter test list was: " (format "%s" check-list)))
+       (message (concat "       desired counter list was: " (format "%s" test-list)))
+       (let ((check-list2 (funcall local-counter test-list2 t)))
+	 (message (concat "result of counter test list was: " (format "%s" check-list2)))
+	 (message (concat "       desired counter list was: " (format "%s" test-list2)))
+	 (if (and (equal check-list test-list) (equal test-list2 check-list2))
+	     (message "Function test-make-counter passed")
+	   (message "Function test-make-counter failed"))))))
+
+(test-make-counter)
 }}}
