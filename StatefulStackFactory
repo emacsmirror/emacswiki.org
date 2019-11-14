@@ -1,0 +1,76 @@
+This factory macro generates closures to use as stacks.  They maintain their internal states which can only be accessed through {{{funcall}} with appropriate arguments.
+
+There is also a test function so that you can easily check modifications.
+
+{{{
+(defmacro make-stack (stack-name)
+  "This macro returns a closure that can be used as a stack.
+When called with t, it returns the current stack.
+When called with a non-nil argument other than t it pushes the 
+argument onto the stack and returns the stack.
+When called with no argument, it pops the stack and returns the result
+When called with two non-nil arguments, it replaces the current
+stack with the first argument allowning the stack to be reset or
+returned to a previously saved state. Report error if replacement
+thing isn't a list.
+;;; Examples of use taken in order
+;; (make-stack named-stack) ;; creates a stack named \"named-stack\"
+;; (funcall named-stack 1) ;; yields (1)
+;; (funcall named-stack 2) ;; yields (2 1)
+;; (funcall named-stack 3) ;; yields (3 2 1)
+;; (funcall named-stack t) ;; yields (3 2 1)
+;; (funcall named-stack) ;; yields 3
+;; (funcall named-stack t) ;; yields (2 1)
+;; (funcall named-stack '(5 4 3) t) ;; yields (5 4 3)
+;; (funcall named-stack) ;; yields 5
+;; (funcall named-stack t) ;; yields (4 3)"
+  (list 'let (list (list 'stack-list nil))
+	(list 'setq stack-name
+	      (list 'lambda (list '&optional 'thing 'thing2) ;; manipulate the stack
+		    (list 'cond
+			  (list (list 'and 'thing 'thing2) ;; if two arguments, reset stack
+				(list 'if (list 'listp 'thing) ;; only reset with a list
+				      (list 'setq 'stack-list 'thing)
+				      (list 'error "In make-stack closure: reset argument must be list, was: %s"
+					    'thing)))
+			  (list (list 'eq 'thing t) ;; return current stack
+				'stack-list)
+			  (list 'thing ;; push to front of stack
+				(list 'push 'thing 'stack-list))
+			  (list t ;; did nothing else, so pop stack
+				(list 'pop 'stack-list)))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun test-make-stack ()
+  (let ((junk (make-stack local-stack))
+	(check-stack '(1 2 3 4 5))
+	(check-pop 1)
+	(remainder-stack '(2 3 4 5))
+	(reset-stack '(7 8 9)))
+    (setq junk nil) ;; keeps debugger from complaining
+    (funcall local-stack 5)
+    (funcall local-stack 4)
+    (funcall local-stack 3)
+    (funcall local-stack 2)
+    (funcall local-stack 1)
+    (let ((push-result (funcall local-stack t)))
+	    (message "test-make-stack: desired stack: '(1 2 3 4 5)")
+	    (message (concat "test-make-stack: actual stack: " (format "%s" push-result)))
+	    (let ((popped (funcall local-stack)))
+	      (message "test-make-stack: desired popped element: 1")
+	      (message (concat "test-make-stack: actual popped element: "(format "%s" popped)))
+	      (let ((remaining-stack (funcall local-stack t)))
+		(message "test-make-stack: desired remainder stack: '(2 3 4 5)")
+		(message (concat "test-make-stack: actual remainder stack: "(format "%s" remaining-stack)))
+		(let ((new-stack (funcall local-stack '(7 8 9) t)))
+		  (message "test-make-stack: desired reset stack: '(7 8 9)")
+		  (message (concat "test-make-stack: actual reset stack: "(format "%s" new-stack)))
+		  (message "Next message should be an error. There should be no messages after that")
+		  (funcall local-stack 0 t)
+		  (message "You shouldn't see this. An error should have terminated function before this")))))))
+
+		  
+(test-make-stack)
+}}}
