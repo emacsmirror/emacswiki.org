@@ -27,6 +27,9 @@ This code depends on lexical binding as established above.
 {{{
 ;;;;;;;;;; Definition of make-counter factory macro ;;;;;;;;
 
+;;; This code is in the public domain
+;;; There is absolutely no warranty of any kind.
+
 (defmacro make-counter (counter-closure)
   "This macro creates a closure used for counting things.
 The produced function counts things using an association list.
