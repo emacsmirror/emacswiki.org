@@ -1,6 +1,16 @@
-This factory macro generates closures to use as stacks.  They maintain their internal states which can only be accessed through {{{funcall}} with appropriate arguments.
+This factory macro uses Emacs's lexical binding environment to generate closures to use as stacks.  They maintain their internal states which can only be accessed through {{{funcall}} with appropriate arguments.
 
 There is also a test function so that you can easily check modifications.
+
+Use one of the two following lines to set up lexical binding
+
+{{{
+;;;-*- mode: Emacs-lisp; lexical-binding: t ; -*-
+
+(setq lexical-binding t)
+}}}
+
+This code won't work without lexical binding, see above.
 
 {{{
 (defmacro make-stack (stack-name)
@@ -44,6 +54,13 @@ thing isn't a list.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun test-make-stack ()
+ "This function tests the make-stack factory macro.
+It first creates a local stack, then exercises its
+internal functions. The results can be seen in the
+*Messages* buffer.  The desired results are output
+just above the ones produced by the local stack.
+The function exits with an error, so the last
+line shouldn't be seen."
   (let ((junk (make-stack local-stack))
 	(check-stack '(1 2 3 4 5))
 	(check-pop 1)
