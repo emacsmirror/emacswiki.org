@@ -13,6 +13,10 @@ Use one of the two following lines to set up lexical binding
 This code won't work without lexical binding, see above.
 
 {{{
+
+;;; This code is in the public domain
+;;; There is absolutely no warranty of any kind.
+
 (defmacro make-stack (stack-name)
   "This macro returns a closure that can be used as a stack.
 When called with t, it returns the current stack.
