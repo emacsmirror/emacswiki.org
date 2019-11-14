@@ -19,11 +19,12 @@
 ;; MA 02111-1307 USA
 
 ;; Installation:
-;; 
-;; 1. Copy this file into your .emacs.d/ directory
+;;
+;; 1. Copy this file into a directory of your choice, 
+;;    such as ~/.emacs.d/lisp/
 ;; 2. Add these lines to your .emacs file:
 ;;      (defvar workspace-dir "~/YOUR/WORKSPACE/DIR")
-;;      (load "~/.emacs.d/ifind-mode.el")
+;;      (load "~/.emacs.d/lisp/ifind-mode.el")
 ;;
 ;; Replace YOUR/WORKSPACE/DIR above by your actual workspace directory
 
