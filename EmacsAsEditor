@@ -6,15 +6,15 @@ In order to connect from other applications to the same Emacs instance use Emacs
 
 = How to keep file metadata =
 
-One problem when using Emacs to edit files which "belong" to other applA good place to start is ications can be that file metadat the operating system/file system stores along the fle content are not preserved.
+One problem when using Emacs to edit files which "belong" to other applications can be that file metadata the operating system/file system stores along the fele content are not preserved on saving the file in Emacs.
 
 === Solution for macOS ===
 
 In macOS  Finder tags are in danger of being lost when editing a file with Emacs.
 
-But if in Emacs the variable `backup-by-copying` is set to `t`  Emacs will create backups by *copying* (instead of renaming) and therefore write the new content to the same file (i.e. inode) as before. This will keep the Finder tags intact.
+But if in Emacs the variable `backup-by-copying` is set to `t`  Emacs will create backups by /copying/ (instead of renaming) and therefore write the new content to the same file (i.e. inode) as before. This will keep the Finder tags intact.
 
-*Very* helpful for document management systems like [https://www.devontechnologies.com/apps/devonthink DEVONthink]  which rely on Finder tags.
+/Very/ helpful for document management systems like [https://www.devontechnologies.com/apps/devonthink DEVONthink]  which rely on Finder tags.
 
 ----
 CategoryExternalUtilities
