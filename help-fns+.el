@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2019, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 10 15:48:56 2018 (-0700)
+;; Last-Updated: Fri Nov 15 14:41:32 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 2428
+;;     Update #: 2431
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
+;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
+;;   `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/11/15 dadams
+;;     help-documentation: Added optional arg REMOVE-SIG.  Use it in describe-mode, to fix Emacs bug #38222.
 ;; 2018/05/10 dadams
 ;;     describe-face: Correct face-at-point call for Emacs 23.
 ;; 2018/04/15 dadams
@@ -449,12 +452,19 @@
 ;; Need Emacs 23 for version of `make-text-button' that accepts a string.
 (when (> emacs-major-version 22)
 
-  (defun help-documentation (function &optional raw add-help-buttons)
-    "Same as `documentation', but optionally adds buttons for help.
+  (defun help-documentation (function &optional raw add-help-buttons remove-sig)
+    "Like `documentation', but maybe add help buttons and remove signature.
 Non-nil optional arg ADD-HELP-BUTTONS does that, adding buttons to key
-descriptions, which link to the key's command help."
+ descriptions, which link to the key's command help.
+Non-nil optional arg REMOVE-SIG means do not include `(fn...)' at end."
     (let ((raw-doc  (documentation function 'RAW)))
-      (if raw raw-doc (help-substitute-command-keys raw-doc add-help-buttons))))
+      (if raw
+          raw-doc
+        (help-substitute-command-keys
+         (if remove-sig                 ; Use in `describe-mode' to fix Emacs bug #38222.
+             (replace-regexp-in-string "\n\n(fn[^)]*?)\\'" "" raw-doc)
+           raw-doc
+         add-help-buttons)))))
 
   (defun help-documentation-property (symbol prop &optional raw add-help-buttons)
     "Same as `documentation-property', but optionally adds buttons for help.
@@ -946,7 +956,7 @@ have their own back/forward buttons."
                   (save-excursion
                     (fill-region-as-paragraph (line-beginning-position 0) (line-end-position 0) nil t t))
                   (with-current-buffer standard-output
-                    (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
+                    (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS 'REMOVE-SIGNATURE)))
                   (Info-make-manuals-xref mode-function
                                           t nil (not (called-interactively-p 'interactive)))) ; Link manuals.
                 (insert-button pretty-minor-mode 'action (car help-button-cache)
@@ -974,7 +984,7 @@ have their own back/forward buttons."
             (save-excursion
               (fill-region-as-paragraph (line-beginning-position 0) (line-end-position 0) nil t t))))
         (let* ((maj      major-mode)
-               (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS)))
+               (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS 'REMOVE-SIGNATURE)))
           (with-current-buffer standard-output
             (insert maj-doc)
             (Info-make-manuals-xref
