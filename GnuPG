@@ -1,3 +1,5 @@
+= Use with MailCrypt =
+
 To use GnuPG with MailCrypt you should
 
 <pre>
@@ -13,8 +15,34 @@ and I didn't want to depend on cygwin's sh.exe,
 so I wrote an independent gpg mode that only requires
 a working gpg setup: Lisp:dgpg.el    -- DavidElentok
 
+= Updating ELPA Certs on Windows =
+
+I've added the following to my startup scripts to support PGP under Windows 10 (GnuPG, see [[See also]]:
+<pre>
+;; windows/dos GNUPG setup
+(if (memq system-type '(windows-nt ms-dos))
+    (custom-set-variables
+     '(epg-gpg-home-directory "C:/GnuPG")
+     '(epg-gpg-program (concat epg-gpg-home-directory "/bin/gpg.exe"))
+     '(epg-gpgconf-program  (concat epg-gpg-home-directory "/bin/gpgconf.exe"))))
+</pre>
+
+This is especially handy for getting [use-package] <pre>:ensure</pre> to behave when updating the ELPA PGP signatures:
+
+<pre>
+(let ((my/old package-check-signature))
+  (use-package gnu-elpa-keyring-update
+    :ensure t
+    :init   (setq package-check-signature nil)
+    :config (setq package-check-signature my/old)))
+</pre>
+
+Note, the <pre>let</pre> here allows us to update signatures when our present ones are expired already.
+ ~ Corwin Brust
+
 = See also =
 
+* [[https://www.gnupg.org GnuPG] - GNU PGP for Microsoft Windows, 
 * EasyPG - an all-in-one GnuPG interface for Emacs
 
 ----
