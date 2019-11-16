@@ -1,0 +1,22 @@
+Предложение
+
+Перемещение от одного преложения к другому ##`M-a'## и ##`M-e'##.
+
+Выделить текст от текущего положения курсора до конца предложения `M-x mark-end-of-sentence'.
+
+Удалить текст от текущего положения курсора до конца предложения `M-k'.
+
+Удалить текст от начала предложения до текущего положения курсора `C-x DEL'
+
+Раздел о предложении в руководстве EmacsManual можно посмотреть.  ##(info "(emacs)
+Sentences")##
+
+'''Обратите внимание''': В Emacs предполагается, что предложение заканчивается двумя пробелами или новой строкой. Первое требование можно  поменять  изменив значение `sentence-end-double-space' на `nil'. 
+
+Также:
+
+* Command `<tt>[[Icicles - Other Search Commands#SearchingThingAtPointThings|icicle-search-sentences]]</tt>' -- Sentences as search contexts: search within selected or all sentences, ignoring non-sentence text. Various kinds of search patterns ([[regexp]]s etc.).
+* SentenceHighlight -- Сделать так чтобы текущее предложение выделялось визуально. 
+
+
+
