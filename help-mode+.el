@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-mode.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2019, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:28:45 2018 (-0800)
+;; Last-Updated: Sun Nov 17 14:07:12 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 215
+;;     Update #: 225
 ;; URL: https://www.emacswiki.org/emacs/download/help-mode%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `help-mode', `view'.
+;;   `button', `cl-lib', `help-mode', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -44,7 +44,10 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2018/01/1 dadams
+;; 2019/11/17 dadams
+;;     help-make-xrefs: Typo for help-xref-button 7: help-character-set -> help-input-method.
+;;                      Added clause for describe-symbol-backends, if defined (Emacs 25+).
+;; 2018/01/01 dadams
 ;;     help-make-xrefs:
 ;;       Bug #12686: Promote type tests after cond tests to be inside them with the match tests.
 ;; 2014/01/17 dadams
@@ -197,7 +200,7 @@ that."
                                      (charsetp sym)
                                      (help-xref-button 7 'help-character-set sym)))
                                ((assoc data input-method-alist)
-                                (help-xref-button 7 'help-character-set data))
+                                (help-xref-button 7 'help-input-method data))
                                ((and sym  (coding-system-p sym))
                                 (help-xref-button 7 'help-coding-system sym))
                                ((and sym  (charsetp sym))
@@ -237,6 +240,11 @@ that."
                                 ;;       (pop-to-buffer (car location))
                                 ;; 	(goto-char (cdr location))))
                                 (help-xref-button 8 'help-function-def sym))
+                               ((and (boundp 'describe-symbol-backends) ; Emacs 25+
+                                     (fboundp 'cl-some)
+                                     (cl-some (lambda (x) (funcall (nth 1 x) sym))
+                                     describe-symbol-backends))
+                                (help-xref-button 8 'help-symbol sym))
                                ((and (facep sym)
                                      (save-match-data (looking-at "[ \t\n]+face\\W")))
                                 (help-xref-button 8 'help-face sym))
