@@ -142,7 +142,7 @@ How do I download e-mails with movemail from remote POP3 mailboxes
 with SSL? The GNU mailutils movemail version doesn't seem to support
 SSL, only TLS encryption.
 
--- TLS is just a synonim for SSL, to setting rmail-movemail-flags to "--tls" does the job.
+-- TLS is just a synonym for SSL, to setting rmail-movemail-flags to "--tls" does the job.
 
 -- No way, I tried and movemail says some "I/O error", I don't know why.  On the movemail list people raccomend using `stunnel' to tunnel the connection using SSL.  So really TLS != SSL.  I think I'm back to fetchmail.  And maybe another more modern emacs e-mail client that has built-in support for such basic things as MIME...  Any suggestions?
 
