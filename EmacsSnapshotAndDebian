@@ -31,7 +31,7 @@ The following packages are available through apt-get/aptitude and might need to 
 * texinfo -- is not essential but if you want the manuals you need it
 * build-essential
 * xorg-dev
-* libgtk2.0-dev
+* libgtk-3-dev
 * libjpeg-dev
 * libncurses5-dev
 * libdbus-1-dev
@@ -47,7 +47,7 @@ The following packages are available through apt-get/aptitude and might need to 
 Copy and paste this for easy apt-get lines:
 
 {{{
-autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev
+autoconf automake libtool texinfo build-essential xorg-dev libgtk-3-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev
 }}}
 
 === Building from the source ===
