@@ -2,3 +2,10 @@ La Carte seems to no longer be in elpa. What happened?
 
 -- Anonymous 2019-11-18 14:02 UTC
 
+
+----
+
+It was never in GNU ELPA. It was on MELPA. MELPA no longer pulls from Emacs Wiki. Please get it from Emacs Wiki.
+
+-- DrewAdams 2019-11-18 15:55 UTC
+
