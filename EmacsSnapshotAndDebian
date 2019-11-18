@@ -43,11 +43,12 @@ The following packages are available through apt-get/aptitude and might need to 
 * libotf-dev
 * libgnutls28-dev
 * libxml2-dev -- necessary for the eww-browser
+* libxpm-dev
 
 Copy and paste this for easy apt-get lines:
 
 {{{
-autoconf automake libtool texinfo build-essential xorg-dev libgtk-3-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev
+autoconf automake libtool texinfo build-essential xorg-dev libgtk-3-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev libxpm-dev
 }}}
 
 === Building from the source ===
