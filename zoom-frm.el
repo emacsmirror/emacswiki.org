@@ -4,13 +4,13 @@
 ;; Description: Commands to zoom frame font size.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2019, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Mon Jan  1 16:31:06 2018 (-0800)
+;; Last-Updated: Tue Nov 19 11:44:22 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 344
+;;     Update #: 348
 ;; URL: https://www.emacswiki.org/emacs/download/zoom-frm.el
 ;; Doc URL: https://emacswiki.org/emacs/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-cmds', `frame-fns', `misc-fns', `strings',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `frame-cmds', `frame-fns', `macroexp', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -118,13 +119,24 @@
 ;;                      [C-mouse-wheel])    ; Emacs 20, 21
 ;;                    'zoom-in)
 ;;    (when (boundp 'mouse-wheel-up-event) ; Emacs 22+
-;;      (global-set-key (vector (list 'control mouse-wheel-up-event))
+;;      (global-set-key (vector (list 'control 
+;;                                    mouse-wheel-up-event))
 ;;                      'zoom-out))
 ;;
 ;;    (global-set-key [S-mouse-1]    'zoom-in)
 ;;    (global-set-key [C-S-mouse-1]  'zoom-out)
 ;;    ;; Get rid of `mouse-set-font' or `mouse-appearance-menu':
 ;;    (global-set-key [S-down-mouse-1] nil)
+;;
+;;    And perhaps (Emacs 22 and later):
+;;
+;;    (when (fboundp 'set-face-attribute)     ; Emacs 22+
+;;      (global-set-key (vector (list 'control 'meta
+;;                                    mouse-wheel-down-event))
+;;                      'zoom-all-frames-in)
+;;      (global-set-key (vector (list 'control 'meta
+;;                                    mouse-wheel-up-event))
+;;                      'zoom-all-frames-out))
 ;;
 ;;  Some of the commands are not autoloaded by default, because this
 ;;  library works with old as well as recent Emacs releases.  The
@@ -424,7 +436,8 @@ Remember that you can also use `C-u' when you are done zooming."
                      (define-key map "\C-u" `(lambda () (interactive) (zoom-in/out ',arg)))
                      map)))))))
 
-;; These are not so useful, but some people might like them.
+;; These two are less useful, but you might like to use them.
+;;
 (when (fboundp 'set-face-attribute)     ; Emacs 22+
   (defun zoom-all-frames-in (&optional flip)
     "Zoom all frames in by `frame-zoom-font-difference', making text larger.
