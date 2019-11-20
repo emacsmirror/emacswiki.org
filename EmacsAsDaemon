@@ -109,6 +109,12 @@ Further customizations can be done through the
 You may also create individual <code>/etc/conf.d/emacs.</code>''username''
 files for "multiplexed" user configuration.
 
+== NixOS ==
+
+Just add the relevant configuration option as described in the [https://nixos.org/nixos/manual/index.html#module-services-emacs-enabling manual]. To restart the daemon after changing the user configuration, run
+
+: systemctl --user emacs restart
+
 === OS X ===
 
 If you're running Emacs 23 or higher, you can run Emacs Daemon via OS X's launchd. The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
