@@ -113,7 +113,30 @@ files for "multiplexed" user configuration.
 
 Just add the relevant configuration option as described in the [https://nixos.org/nixos/manual/index.html#module-services-emacs-enabling manual]. To restart the daemon after changing the user configuration, run
 
-: systemctl --user emacs restart
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{{{
+systemctl --user emacs restart
+}}}
 
 === OS X ===
 
