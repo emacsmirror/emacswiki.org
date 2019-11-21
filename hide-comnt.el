@@ -4,13 +4,13 @@
 ;; Description: Hide/show comments in code.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2019, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:33:43 2018 (-0800)
+;; Last-Updated: Thu Nov 21 08:18:51 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 230
+;;     Update #: 232
 ;; URL: https://www.emacswiki.org/emacs/download/hide-comnt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -26,7 +26,7 @@
 ;;
 ;;    Hide/show comments in code.
 ;;
-;;  Comments are hidden by giving them and `invisible' property of
+;;  Comments are hidden by giving them an `invisible' property with
 ;;  value `hide-comment'.
 ;;
 ;;
