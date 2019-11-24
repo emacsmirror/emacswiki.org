@@ -17,7 +17,7 @@ a working gpg setup: Lisp:dgpg.el    -- DavidElentok
 
 = Updating ELPA Certs on Windows =
 
-I've added the following to my startup scripts to support PGP under Windows 10 (for more information on !GnuPG, see [https://www.gpg4win.org/ GPG4WIN] or [https://www.gnupg.org the GnuPG Offical Site]:
+I've added the following to my startup scripts to support PGP under Windows 10 (for more information on !GnuPG, see [https://www.gpg4win.org/ GPG4WIN] or [https://www.gnupg.org the GnuPG Offical Site]):
 <pre>
 ;; windows/dos GNUPG setup
 (if (memq system-type '(windows-nt ms-dos))
@@ -42,8 +42,9 @@ Note, the ##let## here allows us to update signatures when our present ones are 
 
 = See also =
 
-* [[https://www.gnupg.org GnuPG]] - GNU PGP for Microsoft Windows, 
-* EasyPG - an all-in-one GnuPG interface for Emacs
+* https://www.gpg4win.org/ - GNU PGP for Microsoft Windows
+* https://www.gnupg.org/ - the GnuPG Offical Site]
+* https://epg.osdn.jp/ - EasyPG, an all-in-one GnuPG interface for Emacs
 
 ----
 CategoryCryptography
