@@ -83,9 +83,11 @@ relatively easy-peasy:
 ||##^##              ||beginning of string||start any /absolute/ filename                         ||           || 
 ||##\\'##            ||end of string      ||end any extension or complete base name               ||           ||
 
-Note that ##.##, the unescaped dot, is a /metacharacter/ in regexps, and means "match /any/ character". 
-Treacherously, using it to mean a dot will work (i.e. will match the dot), but can, at least in theory, 
-cause subtle bugs, as demonstrated in the following example, where ##.txt\\'## 
+Note that ##.##, the unescaped dot, is a /metacharacter/ in regexps, 
+and means "match /any/ character". Treacherously, using it to mean a 
+literal dot (which happens all too easily) will even work (i.e. will
+match the dot), but can, at least in theory, cause subtle bugs, as 
+demonstrated in the following example, where ##.txt\\'## 
 is erroneously used to match the file extension ##.txt##:
 
 ||Expression                    || will match:                                        ||Comment               ||
@@ -97,20 +99,21 @@ is erroneously used to match the file extension ##.txt##:
 
 Because we are matching file names, one might be tempted to confuse the 
 regexps used here with <strong><em>shell file patterns</em></strong> in 
-yet other ways than using an unescaped dot to mean a dot: one might try to use ##~## 
-to specify the home directory, or ##*## to match any file, both of which will 
-lead to surprises. Also, regexps do not treat the literal ##.## at the beginning of 
-hidden file names specially, the way shell file patterns do. 
+yet other ways than using an unescaped dot to mean a dot: one might try 
+to use ##~## to specify the home directory, or ##*## to match any file, 
+for example, both of which will not work as intended. Also, regexps do 
+not treat the literal ##.## at the beginning of hidden file names specially, 
+the way shell file patterns do. 
 
 If you feel you do need a close regexp equivalent of a shell file pattern,
 the following should help:
 
 || Shell file pattern       || Meaning                         || Closest regexp equivalent ||
-|| ##*##                    || all visible files in a directory|| ##[^./][^/]+\\'##||
-|| ##/## as first character || the root directory              || ##^/## ||
+|| ##*##                    || all visible files in a directory|| ##[^./][^/]+\\'##         ||
+|| ##/## as first character || the root directory              || ##^/##                    ||
 || ##/*/##                  || all visible directories somewhere in a path name|| ##/[^./][^/]+/##||
-|| ##?##                    || any character in a file name    || ##.##||
-|| ##[...]##                || any of the characters between the braces || ##[...]##||
+|| ##?##                    || any character in a file name    || ##.##                     ||
+|| ##[...]##                || any of the characters between the braces || ##[...]##        ||
 || ##~##                    || the current user's home directory || none in regexp; ##(getenv "HOME")## in Elisp||
 
 However, it is interesting to note that it is often not /necessary/ 
@@ -128,10 +131,10 @@ The first three are exactly equivalent; of note, they match not only any file
 directly in ##/usr/share/man##, but also any file in any of its /subdirectories/
 (because the regexp does not end with ##\\'##, the file names it matches can 
 continue in any way they damn well please /after/ the match). The fourth example 
-excludes files in subdirectories and is the only one that
-can be expressed in a shell file pattern. The first three are far more
-powerful simply because unlike shell patterns, regexps do not treat the 
-##/## specially, so any number of them (= any level of subdirectories) can follow.
+excludes files in subdirectories and is the only one that can be expressed in a 
+shell file pattern. The first three are far more powerful simply because unlike 
+shell patterns, regexps do not treat the ##/## specially, so any number of them 
+(= any level of subdirectories) can follow.
 
 Similar examples could be constructed for the beginning of a path: 
 If the regexp does not begin with ##^##, it is not necessary 
@@ -185,14 +188,14 @@ Match the complete basename (enclosed by ##/## and ##\\'##):
 
 Match one and only one specific file (enclosed by ##^/## and ##\\'##):
 
-    '("^/etc/alias\\'"                                . shell-script-mode)
-    ("^~/.alias\\'"                                   . shell-script-mode) ; No! ~ in a regexp is ~, NOT $HOME!
-    (cons (concat "^" (getenv "HOME") "/\\.alias\\'")  'shell-script-mode) ; but this will work
-    (cons (format "^%s/.alias\\'" (getenv "HOME"))     'shell-script-mode) ; same thing
+    '("^/etc/alias\\'"                                  . shell-script-mode)
+    ("^~/.alias\\'"                                     . shell-script-mode) ; No! ~  and . are used incorrectly
+    (cons (concat "^" (getenv "HOME") "/\\.alias\\'")    'shell-script-mode) ; but this will work
+    (cons (format "^%s/[.]alias\\'" (getenv "HOME"))     'shell-script-mode) ; same thing
 
 Match /any/ file _in or somewhere below_ one certain directory (enclosed by ##^/## and ##/##):
 
-    '("^/etc/X11/*" . conf-mode) ; No! /* means: zero or more slashes, so would match e.g. "/etc/X11R6"
+    '("^/etc/X11/*" . conf-mode) ; No! "/*" means: "zero or more slashes", so e.g. "/etc/X11R6" matches.
     '("^/etc/X11"   . conf-mode) ; Also bad, matches the same files as the first example.
     '("^/etc/X11/"  . conf-mode) ; this is perfect
 
@@ -211,7 +214,7 @@ Match any file directly _in_ a certain directory:
 Both approaches can, of course, be combined. Care must be taken not to miss or duplicate any slashes:
 
     '("^/tmp/cvs[[:alnum:]]*\\'"                                  . log-entry-mode)  ; CVS commit message
-    (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'")  'log-entry-mode)) ; with /tmp taken from a variable
+    (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'")  'log-entry-mode)) ; using a variable
     '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)        ; Conky uses Lua
 
 
