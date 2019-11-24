@@ -151,7 +151,7 @@ if you look at it.
 
 = Recipes =
 
-In order to be gentle to the readers' attention, the examples here always 
+In order to be gentle to the readers' eyes, the examples here always 
 (with a rare exception) omit the code needed to prepend or append it
 to the already existing ##auto-mode-alist##. (See above for that.) 
 Mostly, successive lines are meant as independent from one another
