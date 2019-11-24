@@ -159,6 +159,7 @@ Mostly, successive lines are meant as independent from one another
 and is supposed to mean that lines that come first also come first in 
 ##auto-mode-alist##.
 
+
 === Examining only the file name itself (the basename) ===
 
 The most usual case: Match only the file name extension (enclosed by ##\\.## or ##[.]## and ##\\'##):
@@ -179,6 +180,7 @@ Match the complete basename (enclosed by ##/## and ##\\'##):
 
     '("/mimetypes.list\\'" . conf-desktop-mode)
 
+
 === Examining also the directory part of the filename ===
 
 Match one and only one specific file (enclosed by ##^/## and ##\\'##):
@@ -190,17 +192,19 @@ Match one and only one specific file (enclosed by ##^/## and ##\\'##):
 
 Match /any/ file _in or somewhere below_ one certain directory (enclosed by ##^/## and ##/##):
 
-    '("^/etc/X11/"  . conf-mode)
-    '("^/etc/X11/*" . conf-mode) ; No! This means: zero or more slashes, so would match e.g. "/etc/X11R6"
+    '("^/etc/X11/*" . conf-mode) ; No! /* means: zero or more slashes, so would match e.g. "/etc/X11R6"
+    '("^/etc/X11"   . conf-mode) ; Also bad, matches the same files as the first example.
+    '("^/etc/X11/"  . conf-mode) ; this is perfect
 
 Match any file _in or somewhere below_ /any/ directory called foo (enclosed by ##/## and ##/##):
 
-    '("/foo/" . foo-mode) ; matches if "/foo/" is somewhere in the path name
+    '("/foo/" . foo-mode) ; matches as soon as "/foo/" is somewhere in the path name
 
 Match any file directly _in_ a certain directory:
 
-    '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ (everything after the last slash) matches any base name 
-    '("/foo/[^/]+\\'"      . foo-mode)  ; 
+    '("^/etc/X11/[^/]+\\'" . conf-mode) ; with absolute path
+    '("/foo/[^/]+\\'"      . foo-mode)  ; not absolute, directory can be anywhere in the tree
+
 
 === Both: specifying aspects of path and basename ===
 
@@ -210,19 +214,20 @@ Both approaches can, of course, be combined. Care must be taken not to miss or d
     (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'")  'log-entry-mode)) ; with /tmp taken from a variable
     '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)        ; Conky uses Lua
 
+
 === Considering both precedence and the file name ===
 
-Whenever there is more than one rule that may match the same file name, the order in which they appear in ##auto-mode-alist## obviously matters: Let's say we use OrgMode and keep all our org files in the directory ~/organization. We give them the extension .txt because we regard them essentially as text files. We craft a regexp that matches .txt-files in that directory and add the rule to the end of ##auto-mode-alist## (see above). We open a new file called ##~/organization/timetable.txt## and ...
+Whenever there is _more than one rule that may match the same file name_, the order in which they appear in ##auto-mode-alist## obviously matters: Let's say we use OrgMode and keep all our org files in the directory ##~/organization##. We give them the extension ##.txt## because we essentially regard them as text files. We craft a regexp that matches ##.txt## files in that directory and add the rule to the end of ##auto-mode-alist## (see above): 
 
     '("\\.te?xt\\'"                                                   . text-mode) ; this was already in `auto-mode-alist'
-    (cons (concat "^" (getenv "HOME") "/organization/[^/]+\\.txt\\'")  'org-mode)  ; why doesn't this work?
+    (cons (concat "^" (getenv "HOME") "/organization/[^/]+\\.txt\\'")  'org-mode)  ; why doesn't this apply???
 
-... the file opens in ##text-mode##. But it is not as if our complicated regexp didn't match the file name (it flawlessly does). It is simply that the first rule already matches ##~/organization/timetable.txt##, and then Emacs stops looking. Thus, in this case, we have to make sure that our more specific rule comes first, and put it at the beginning of ##auto-mode-alist## (see above on how to do that):
+Now we open a new file called ##~/organization/timetable.txt## and ... the file opens in ##text-mode##. But it is not as if our complicated regexp didn't match the file name (it flawlessly does). It is simply that the first rule already /matches/ ##~/organization/timetable.txt##, and then Emacs simply stops looking. Thus, in this case, we have to make sure that our more specific rule comes first, and put it at the beginning of ##auto-mode-alist## (see above on how to do that):
 
     (cons (concat "^" (getenv "HOME") "/organization/[^/]+\\.txt\\'")  'org-mode)  ; matches .txt files in this directory
     '("\\.te?xt\\'"                                                   . text-mode) ; will match any leftover .txt file
 
-And now, ##~/organization/timetable.txt## will open in ##org-mode##. This probably demonstrates a good rule of thumb: /Make more specific rules come before more general ones/, because the specific ones always leave something over for the general ones, while the other way round the general ones will take everything. 
+And now, ##~/organization/timetable.txt## will open in ##org-mode##. This probably demonstrates a good rule of thumb: /Make more specific rules come before more general ones/, because the specific ones always leave something over for the general ones, while the other way round, the general ones will already match everything and leave nothing over for the more specific ones. 
 
 ==== A (real) complex real-life example ====
 
