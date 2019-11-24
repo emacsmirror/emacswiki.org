@@ -17,7 +17,7 @@ a working gpg setup: Lisp:dgpg.el    -- DavidElentok
 
 = Updating ELPA Certs on Windows =
 
-I've added the following to my startup scripts to support PGP under Windows 10 (GnuPG, see [[See also]]:
+I've added the following to my startup scripts to support PGP under Windows 10 (for more information on !GnuPG, see [https://www.gpg4win.org/ GPG4WIN] or [https://www.gnupg.org the GnuPG Offical Site]:
 <pre>
 ;; windows/dos GNUPG setup
 (if (memq system-type '(windows-nt ms-dos))
@@ -27,7 +27,7 @@ I've added the following to my startup scripts to support PGP under Windows 10 (
      '(epg-gpgconf-program  (concat epg-gpg-home-directory "/bin/gpgconf.exe"))))
 </pre>
 
-This is especially handy for getting [use-package] <pre>:ensure</pre> to behave when updating the ELPA PGP signatures:
+This is especially handy for getting [[use-package]] ##:ensure## to behave when updating the ELPA PGP signatures on a machine with expired ELPA PGP signatures:
 
 <pre>
 (let ((my/old package-check-signature))
@@ -37,12 +37,12 @@ This is especially handy for getting [use-package] <pre>:ensure</pre> to behave 
     :config (setq package-check-signature my/old)))
 </pre>
 
-Note, the <pre>let</pre> here allows us to update signatures when our present ones are expired already.
+Note, the ##let## here allows us to update signatures when our present ones are expired already.
  ~ Corwin Brust
 
 = See also =
 
-* [[https://www.gnupg.org GnuPG] - GNU PGP for Microsoft Windows, 
+* [[https://www.gnupg.org GnuPG]] - GNU PGP for Microsoft Windows, 
 * EasyPG - an all-in-one GnuPG interface for Emacs
 
 ----
