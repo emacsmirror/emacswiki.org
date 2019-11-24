@@ -184,9 +184,9 @@ Match the complete basename (enclosed by ##/## and ##\\'##):
 Match one and only one specific file (enclosed by ##^/## and ##\\'##):
 
     '("^/etc/alias\\'"                                . shell-script-mode)
-    (cons (concat "^" (getenv "HOME") "/\\.alias\\'")  'shell-script-mode) ; evaluating a variable
-    (cons (format "^%s/.alias\\'" (getenv "HOME"))     'shell-script-mode) ; same thing
     ("^~/.alias\\'"                                   . shell-script-mode) ; No! ~ in a regexp is ~, NOT $HOME!
+    (cons (concat "^" (getenv "HOME") "/\\.alias\\'")  'shell-script-mode) ; but this will work
+    (cons (format "^%s/.alias\\'" (getenv "HOME"))     'shell-script-mode) ; same thing
 
 Match /any/ file _in or somewhere below_ one certain directory (enclosed by ##^/## and ##/##):
 
