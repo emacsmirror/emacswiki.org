@@ -254,7 +254,7 @@ So what now? Do I have to make additional rules for ##.pl## files, ##.sh## files
     ;; other predefined rules in `auto-mode-alist' concerning .pl, .sh, and whatever else
     (cons (concat "^" (getenv "HOME") "/[.]fvwm/")           'fvwm-mode) ; any leftover files below /home/me/.fvwm/
 
-This solution has two advantages: First, /any/ files in ##~/.fvwm## for which a default rule exists will get opened according to that rule. Thus, I can now start putting files in still other programming languages there, and e.g. all kinds of image files (such as for desktop backgrounds and icons), and never be bothered with a wrong mode, without changing anything else about the above setup. Second, I am adding only two additional rules, one before, one after the preexisting rules. To wrap it up, this would be the complete, verbatim code:
+This solution has two advantages: First, /any/ files in ##~/.fvwm## for which a default rule exists will get opened according to that rule, ##config## being the sole exception. Thus, I can now start putting all kinds of files there that need a different mode than ##fvwm-mode##, e.g. yet other programming languages and all kinds of image files (such as for desktop backgrounds and icons), and always get the correct mode automatically, without changing anything else about the above setup. Second, it is quite elegant because I am adding only two additional rules, one before, one after the preexisting rules. To wrap it up, this would be the complete, verbatim code:
 
     (setq auto-mode-alist
       (append
@@ -269,7 +269,8 @@ Or, with ##add-to-list##:
     (add-to-list 'auto-mode-alist
           (cons (concat "^" (getenv "HOME") "/[.]fvwm/config\\'")  'fvwm-mode))
     (add-to-list 'auto-mode-alist
-          (cons (concat "^" (getenv "HOME") "/[.]fvwm/")           'fvwm-mode) t) ; t for optional APPEND argument
+          (cons (concat "^" (getenv "HOME") "/[.]fvwm/")           'fvwm-mode) t) ; t for APPEND
+
 
 = Debugging =
 
