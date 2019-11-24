@@ -33,11 +33,11 @@ The add-to-list expression associates the .foo extension with foo-mode.
 As mentioned above, the ##\\'## matches the end of the filename; a $ would match newlines within
 filenames (true, this should be rare...  ;)).
 
-= Recipes =
+= Specifying your own rules: basic considerations =
 
-===Paying attention to precedence===
+=== Paying attention to precedence ===
 
-The order in which the cons cells appear matters, as the first matching one "wins" (and the rest of the list is simply ignored). The normal case will be that you want your rule to have the higher precedence than what is already in ##auto-mode-alist##:
+The order in which the cons cells appear matters, as the first matching one "wins" (and the rest of the list is simply ignored). The normal case will be that you want your rule to have the higher precedence than what is already in ##auto-mode-alist##, so you will put it at the beginning of the list:
 
     ;; add just one element if it isn't already in the list:
     (add-to-list 'auto-mode-alist 
@@ -50,12 +50,13 @@ The order in which the cons cells appear matters, as the first matching one "win
                     ("\\.bar\\'" . bar-mode))
                    auto-mode-alist))
 
-In some cases, however, it may be preferrable to let take precedence what may already be predefined in ##auto-mode-alist##:
+In some cases, however, it may be preferrable to let take precedence what may already 
+be predefined in ##auto-mode-alist##, so you will put your rule at the end of the list:
 
 
     ;; add just one element (at the end) if it isn't already in the list:
     (add-to-list 'auto-mode-alist 
-                 '("\\.foo\\'" . my-quick-and-dirty-foo-mode) t)
+                 '("\\.foo\\'" . my-quick-and-dirty-foo-mode) t) ; t for APPEND (at the end)
 
     ;; add several elements at the end (may create double entries,
     ;; but that would not hurt)
@@ -64,7 +65,7 @@ In some cases, however, it may be preferrable to let take precedence what may al
                   '(("\\.foo\\'" . my-quick-and-dirty-foo-mode)
                     ("\\.bar\\'" . my-fallback-bar-mode))))
 
-===Building the regexp you actually mean===
+=== Building the regexp you actually mean ===
 
 When building REGEXPs for auto-mode-alist, keep in mind that the
 string matched is the full pathname.  In the examples below,
@@ -92,41 +93,65 @@ is erroneously used to match the file extension ##.txt##:
 ||##\\.txt\\'## or ##[.]txt\\'##||##file.txt##, ##a.txt##, ##b.txt##, etc.            ||/only/ matches the dot||
 
 
-====Avoid confusion between regexps and shell file patterns====
+=== Avoiding any confusion between regexps and shell file patterns ===
 
-Because we are matching file names, is often tempting to confuse the 
-regexps used here with <strong><em>shell file patterns</em></strong>: However, you cannot use ##~## to 
-specify the home directory, or ##*## 
-to match any file: ##~## has no special meaning in a regexp (it simply means the character ##~##), 
-and ##*## does not mean "any file name that does not begin with a .", but 
-"the previous character zero or more times". And regexps do not treat the 
-literal ##.## at the beginning of hidden file names
-specially, the way shell file patterns do. Thus, if 
-you want to exclude such files (= do not want to match them), 
-you have to do so explicitly with some pattern, such as in ##/[^.][^/]+\\'##.
+Because we are matching file names, one might be tempted to confuse the 
+regexps used here with <strong><em>shell file patterns</em></strong> in 
+yet other ways than using an unescaped dot to mean a dot: one might try to use ##~## 
+to specify the home directory, or ##*## to match any file, both of which will 
+lead to surprises. Also, regexps do not treat the literal ##.## at the beginning of 
+hidden file names specially, the way shell file patterns do. 
 
-Finally, it is interesting that expressions such as ##.*## 
-(as an intended equivalent of the shell pattern ##*##) are often
-superfluous, i.e. can be left out. This is because if the regexp
-does not end with ##\\'##, the file name can continue in any
-way it damn well pleases after the match. E.g., the regexp 
-##"^/usr/share/man/"## matches any file name that /begins/ 
-with ##/usr/share/man/## (which can be, of note, not only any file
-directly in that directory, but also any file in any subdirectory).
-The regexp ##"^/usr/share/man/.*"## matches exactly the same files.
-And if you went even further and said ##"^/usr/share/man/.*\\'"##, that
-would /still/ match exactly the same files. (The same applies for
-the beginning of a path: If the regexp does not begin with ##^##, it is
-not necessary to start it with ##.*## or the like.)
+If you feel you do need a close regexp equivalent of a shell file pattern,
+the following should help:
 
-The basic difference 
-is that shell patterns are /expanded/, possibly (if they contain 
-a special character) to a list of several file names, while a 
-regexp is /matched/ against one given file name. These are completely
-different things, if you look at it.
+|| Shell file pattern       || Meaning                         || Closest regexp equivalent ||
+|| ##*##                    || all visible files in a directory|| ##[^./][^/]+\\'##||
+|| ##/## as first character || the root directory              || ##^/## ||
+|| ##/*/##                  || all visible directories somewhere in a path name|| ##/[^./][^/]+/##||
+|| ##?##                    || any character in a file name    || ##.##||
+|| ##[...]##                || any of the characters between the braces || ##[...]##||
+|| ##~##                    || the current user's home directory || none in regexp; ##(getenv "HOME")## in Elisp||
 
+However, it is interesting to note that it is often not /necessary/ 
+to substitute shell patterns like this. This is because as long as
+a regexp does not both begin with a ##^## and end with a ##\\'##, it
+need only match a /part/ of the filename:
 
-====Examining only the file name itself (the basename)====
+||Regexp                             || will match:                     ||
+||##"^/usr/share/man/"##             || any file name that /begins/ with ##/usr/share/man/## ||
+||##"^/usr/share/man/.*"##           || exactly the same files||
+||##"^/usr/share/man/.*\\'"##        || /still/ exactly the same files||
+||##"^/usr/share/man/[^./][^/]+\\'"##|| the same files as shell pattern ##/usr/share/man/*##||
+
+The first three are exactly equivalent; of note, they match not only any file
+directly in ##/usr/share/man##, but also any file in any of its /subdirectories/
+(because the regexp does not end with ##\\'##, the file names it matches can 
+continue in any way they damn well please /after/ the match). The fourth example 
+excludes files in subdirectories and is the only one that
+can be expressed in a shell file pattern. The first three are far more
+powerful simply because unlike shell patterns, regexps do not treat the 
+##/## specially, so any number of them (= any level of subdirectories) can follow.
+
+Similar examples could be constructed for the beginning of a path: 
+If the regexp does not begin with ##^##, it is not necessary 
+to start it with ##.*## or the like. Or for the middle of a path,
+when the regexp starts neither with ##^## nor ends with ##\\'##.
+
+The bottom line is that it is probably best to try to forget 
+how shell patterns work when crafting a regular expression 
+to match file names, not only because their special characters mostly 
+mean different things (partly because the former were invented for file
+names only, the latter for any kind of string), but also because 
+their use is actually different: Shell patterns are /expanded/, 
+possibly (if they contain a special character) to a list of *several* 
+file names (try, e.g., ##echo /usr/share/man/*##), while a regexp is 
+/matched/ against *one* given file name. These are quite different things, 
+if you look at it.
+
+= Recipes =
+
+=== Examining only the file name itself (the basename) ===
 
 The most usual case: Match only the file name extension (enclosed by ##\\.## or ##[.]## and ##\\'##):
 
@@ -146,7 +171,7 @@ Match the complete basename (enclosed by ##/## and ##\\'##):
 
     '("/mimetypes.list\\'" . conf-desktop-mode)
 
-====Examining also the directory part of the filename====
+=== Examining also the directory part of the filename ===
 
 Match one and only one specific file (enclosed by ##^/## and ##\\'##):
 
@@ -164,12 +189,12 @@ Match any file _in or somewhere below_ /any/ directory called foo (enclosed by #
 
     '("/foo/" . foo-mode) ; matches if "/foo/" is somewhere in the path name
 
-Match any file directly _in_ a certain directory. (BTW: The final ##\\'## could be left out here -- can you say why?)
+Match any file directly _in_ a certain directory:
 
     '("^/etc/X11/[^/]+\\'" . conf-mode) ; the [^/]+ (everything after the last slash) matches any base name 
     '("/foo/[^/]+\\'"      . foo-mode)  ; 
 
-====Both: specifying aspects of path and basename====
+=== Both: specifying aspects of path and basename ===
 
 Both approaches can, of course, be combined. Care must be taken not to miss or duplicate any slashes:
 
@@ -177,7 +202,7 @@ Both approaches can, of course, be combined. Care must be taken not to miss or d
     (cons (concat temporary-file-directory "/cvs[[:alnum:]]*\\'")  'log-entry-mode)) ; with /tmp taken from a variable
     '("/\\.config/conky/.*[.]conf\\'"                             . lua-mode)        ; Conky uses Lua
 
-===Considering both precedence and the file name===
+=== Considering both precedence and the file name ===
 
 Whenever there is more than one rule that may match the same file name, the order in which they appear in ##auto-mode-alist## obviously matters: Let's say we use OrgMode and keep all our org files in the directory ~/organization. We give them the extension .txt because we regard them essentially as text files. We craft a regexp that matches .txt-files in that directory and add the rule to the end of ##auto-mode-alist## (see above). We open a new file called ##~/organization/timetable.txt## and ...
 
@@ -191,9 +216,9 @@ Whenever there is more than one rule that may match the same file name, the orde
 
 And now, ##~/organization/timetable.txt## will open in ##org-mode##. This probably demonstrates a good rule of thumb: /Make more specific rules come before more general ones/, because the specific ones always leave something over for the general ones, while the other way round the general ones will take everything. 
 
-====A (real) real-life example====
+==== A (real) complex real-life example ====
 
-If the example seems slightly artificial (you always use the .org extension for your Org files), issues such as the above easily arise with files without any extension. Classic examples are shell configuration files such as ##.alias##, ##.profile## and the like, but also Windows-style config files, which have become more widespread in Un*x systems. Thus, ##auto-mode-alist## comes with a predefined rule such as follows (I have simplified it for focus):
+If the example above seems slightly artificial (since you always use the .org extension for your Org files), issues such as the above easily arise with files without any extension. Classic examples are shell configuration files such as ##.alias##, ##.profile## and the like, but also Windows-style config files, which have become more widespread in Un*x systems. Thus, ##auto-mode-alist## comes with a predefined rule such as follows (I have simplified it for focus):
 
     '("c\\(?:on\\)?f\\(?:i?g\\)?\\'" . conf-mode) ; matches cfg, .cfg, .config, config, .cfig, etc.
 
@@ -233,7 +258,7 @@ Or, with ##add-to-list##:
     (add-to-list 'auto-mode-alist
           (cons (concat "^" (getenv "HOME") "/[.]fvwm/")           'fvwm-mode) t) ; t for optional APPEND argument
 
-== Debugging ==
+= Debugging =
 
 If Emacs keeps starting the wrong mode although the right recipe should be in ##auto-mode-alist##, it should be possible to work out the reason by following these two steps:
 
