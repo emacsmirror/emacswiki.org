@@ -151,6 +151,14 @@ if you look at it.
 
 = Recipes =
 
+In order to be gentle to the readers' attention, the examples here always 
+(with a rare exception) omit the code needed to prepend or append it
+to the already existing ##auto-mode-alist##. (See above for that.) 
+Mostly, successive lines are meant as independent from one another
+(i.e. just a number of examples), but when indicated, their order matters
+and is supposed to mean that lines that come first also come first in 
+##auto-mode-alist##.
+
 === Examining only the file name itself (the basename) ===
 
 The most usual case: Match only the file name extension (enclosed by ##\\.## or ##[.]## and ##\\'##):
