@@ -88,4 +88,4 @@ On OS X running Aquamacs (version 3.x development) : force Aquamacs to become th
          (lambda ()
            (do-applescript "tell application \"Aquamacs\" to activate")))
 
-I've described [http://aaron.baugher.biz/emacs/org-mode/saving-blog-comments-in-org-part-2 how to integrate edit-server with org-mode] to save edits to an org-mode task and clock the time spent on them.
+I've described [https://aaron.baugher.biz/post/saving-blog-comments-in-org-part-2/ how to integrate edit-server with org-mode] to save edits to an org-mode task and clock the time spent on them.
