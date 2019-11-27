@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  9 07:30:57 2019 (-0700)
+;; Last-Updated: Tue Nov 26 16:17:07 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3304
+;;     Update #: 3343
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -106,6 +106,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/11/26 dadams
+;;     (beginning|end)-of(-visual)-line+, mark-whole-word, goto-longest-line:
+;;       Use command name, not this-command, in case called-interactively.
 ;; 2019/06/09 dadams
 ;;     repeat-command: Same as in zz-repeat-command in zones.el now.
 ;; 2018/07/22 dadams
@@ -387,8 +390,8 @@
 Move cursor to next position where an overlay starts or ends.
 If there are no more overlay boundaries, move to (point-max)."
   (interactive "p")
-  (setq arg (or arg 1))
-  (setq arg (1- arg))
+  (setq arg  (or arg  1)
+        arg  (1- arg))
   (while (natnump arg) (goto-char (next-overlay-change (point))) (decf arg)))
 
 ;;;###autoload
@@ -399,11 +402,12 @@ Returns the signed number of chars moved if /= ARG, else returns nil."
   (let* ((start                      (point))
          (fwd-p                      (natnump arg))
          (inhibit-field-text-motion  t) ; Just to be sure, for `end-of-line'.
-         (max (save-excursion (if fwd-p (end-of-line) (beginning-of-line))
-                              (- (point) start))))
+         (max                        (save-excursion
+                                       (if fwd-p (end-of-line) (beginning-of-line))
+                                       (- (point) start))))
     (setq arg  (prefix-numeric-value arg))
     (forward-char (if fwd-p (min max arg) (max max arg)))
-    (and (< (abs max) (abs arg)) max)))
+    (and (< (abs max) (abs arg))  max)))
 
 ;;;###autoload
 (defun to-indentation-repeat-backward ()
@@ -439,8 +443,8 @@ This is similar to `end-of-line', but:
      the (N-1)th next line."
   (interactive
    (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-  (unless n (setq n 0))                 ; non-interactive with no arg
-  (if (and (eq this-command last-command) (not current-prefix-arg))
+  (unless n (setq n  0))                 ; non-interactive with no arg
+  (if (and (eq 'end-of-line+ last-command)  (not current-prefix-arg))
       (forward-line 1)
     (forward-line n))
   (let ((inhibit-field-text-motion  t))  (end-of-line)))
@@ -460,8 +464,8 @@ This is similar to `beginning-of-line', but:
       the beginning of the (N-1)th next line."
   (interactive
    (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-  (unless n (setq n 0))                 ; non-interactive with no arg
-  (if (and (eq this-command last-command) (not current-prefix-arg))
+  (unless n (setq n  0))                ; non-interactive with no arg
+  (if (and (eq 'beginning-of-line+ last-command)  (not current-prefix-arg))
       (forward-line -1)
     (forward-line (- n))))
 
@@ -482,9 +486,9 @@ This is similar to `end-of-visual-line', but:
      the end of the (N-1)th next line."
     (interactive
      (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-    (unless n (setq n 0))               ; non-interactive with no arg
+    (unless n (setq n  0))              ; non-interactive with no arg
     (let ((line-move-visual  t))
-      (if (and (eq this-command last-command)  (not current-prefix-arg))
+      (if (and (eq 'end-of-visual-line+ last-command)  (not current-prefix-arg))
           (line-move 1 t)
         (line-move n t)))
     ;; Unlike `move-beginning-of-line', `move-end-of-line' doesn't
@@ -509,10 +513,10 @@ This is the similar to `beginning-of-visual-line', but:
       line."
     (interactive
      (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-    (unless n (setq n 0))               ; non-interactive with no arg
+    (unless n (setq n  0))              ; non-interactive with no arg
     (let ((opoint  (point)))
       (let ((line-move-visual  t))
-        (if (and (eq this-command last-command)  (not current-prefix-arg))
+        (if (and (eq 'beginning-of-visual-line+ last-command)  (not current-prefix-arg))
             (line-move -1 t)
           (line-move n t)))
       (vertical-motion 0)
@@ -554,14 +558,14 @@ Like `transpose-sexps', but:
  1. Leaves point after the moved sexp.
  2. When repeated, a negative prefix arg flips the direction."
   (interactive "p")
-  (when (eq last-command 'rev-transp-sexps-back) (setq arg  (- arg)))
+  (when (eq 'rev-transp-sexps-back last-command) (setq arg  (- arg)))
   (transpose-sexps arg)
   (unless (natnump arg)
     (when (or (> emacs-major-version 24) ; Emacs 24.4+
               (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
       (backward-sexp (abs arg))
       (skip-syntax-backward " ."))
-    (setq this-command 'rev-transp-sexps-back)))
+    (setq this-command  'rev-transp-sexps-back)))
 
 ;;;###autoload
 (defun beginning-or-indentation (&optional n)
@@ -573,7 +577,7 @@ Else, move to indentation position of this line.
 With arg N, move backward to the beginning of the Nth previous line.
 Interactively, N is the prefix arg."
   (interactive "P")
-  (cond ((or (bolp) n)
+  (cond ((or (bolp)  n)
          (forward-line (- (prefix-numeric-value n))))
         ((save-excursion (skip-chars-backward " \t") (bolp)) ; At indentation.
          (forward-line 0))
@@ -704,11 +708,11 @@ With prefix ARG, move current line to window-line ARG.
 Top and bottom destinations are actually `scroll-conservatively' lines
 from true top and bottom."
   (interactive "P")
-  (cond ((and (eq this-command last-command) (not arg))
-         (setq this-command 'recenter-top-bottom-top)
+  (cond ((and (eq this-command last-command)  (not arg))
+         (setq this-command  'recenter-top-bottom-top)
          (recenter scroll-conservatively))
-        ((and (eq 'recenter-top-bottom-top last-command) (not arg))
-         (setq this-command 'recenter-top-bottom-bottom)
+        ((and (eq 'recenter-top-bottom-top last-command)  (not arg))
+         (setq this-command  'recenter-top-bottom-bottom)
          (recenter (1- (- scroll-conservatively))))
         (t (recenter arg))))
 
@@ -798,14 +802,12 @@ words, where NUM is the numeric prefix argument.  (Negative NUM
 selects backward.)"
     (interactive "P\np")
     (let ((num  (prefix-numeric-value arg)))
-      (unless (eq last-command this-command)
+      (unless (eq 'mark-whole-word last-command)
         (if (natnump num)
             (skip-syntax-forward "\\s-")
           (skip-syntax-backward "\\s-")))
-      (unless (or (eq last-command this-command)
-                  (if (natnump num)
-                      (looking-at "\\b")
-                    (looking-back "\\b")))
+      (unless (or (eq 'mark-whole-word last-command)
+                  (if (natnump num) (looking-at "\\b") (looking-back "\\b")))
         (if (natnump num)
             (if (fboundp 'left-word)    ; Emacs 24+
                 (left-word)
@@ -871,20 +873,20 @@ buffer, you can use `C-SPC' to set the mark, then use this
      (if (< (point) (mark))
          (list (point) (mark))
        (list (mark) (point)))))
-  (when (and (not mark-active) (= beg end)) (error "The buffer is empty"))
-  (when (and mark-active (> (point) (mark))) (exchange-point-and-mark))
-  (when (< end beg) (setq end (prog1 beg (setq beg end))))
-  (when (eq this-command last-command)
-    (forward-line 1) (setq beg (point)))
+  (when (and (not mark-active)  (= beg end)) (error "The buffer is empty"))
+  (when (and mark-active  (> (point) (mark))) (exchange-point-and-mark))
+  (when (< end beg) (setq end  (prog1 beg (setq beg  end))))
+  (when (eq 'goto-longest-line last-command)
+    (forward-line 1) (setq beg  (point)))
   (goto-char beg)
   (when (eobp) (error "End of buffer"))
   (cond ((<= end (save-excursion (goto-char beg) (forward-line 1) (point)))
          (let ((inhibit-field-text-motion  t))  (beginning-of-line))
-         (when (and (> emacs-major-version 21) (require 'hl-line nil t))
+         (when (and (> emacs-major-version 21)  (require 'hl-line nil t))
            (let ((hl-line-mode  t))  (hl-line-highlight))
            (add-hook 'pre-command-hook #'hl-line-unhighlight nil t))
          (let ((lineno  (line-number-at-pos))
-               (chars   (let ((inhibit-field-text-motion t))
+               (chars   (let ((inhibit-field-text-motion  t))
                           (save-excursion (end-of-line) (current-column)))))
            (message "Only line %d: %d chars" lineno chars)
            (let ((visible-bell  t))  (ding))
@@ -897,7 +899,7 @@ buffer, you can use `C-SPC' to set the mark, then use this
                 (inhibit-field-text-motion  t)
                 long-lines col)
            (when (eobp) (error "End of buffer"))
-           (while (and (not (eobp)) (< (point) end))
+           (while (and (not (eobp))  (< (point) end))
              (end-of-line)
              (setq col  (current-column))
              (when (>= col max-width)
@@ -909,10 +911,10 @@ buffer, you can use `C-SPC' to set the mark, then use this
              (setq line  (1+ line)))
            (setq long-lines  (nreverse long-lines))
            (let ((lines  long-lines))
-             (while (and lines (> start-line (car lines))) (pop lines))
+             (while (and lines  (> start-line (car lines))) (pop lines))
              (goto-char (point-min))
              (when (car lines) (forward-line (1- (car lines)))))
-           (when (and (> emacs-major-version 21) (require 'hl-line nil t))
+           (when (and (> emacs-major-version 21)  (require 'hl-line nil t))
              (let ((hl-line-mode  t))  (hl-line-highlight))
              (add-hook 'pre-command-hook #'hl-line-unhighlight nil t))
            (when (interactive-p)
@@ -938,7 +940,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
         (len-found                  0)
         (found                      nil)
         (inhibit-field-text-motion  t))
-    (while (and (not found) (not (eobp)))
+    (while (and (not found)  (not (eobp)))
       (forward-line 1)
       (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
     (if found
@@ -1200,7 +1202,7 @@ With prefix ARG < 0:  `prepend-to-buffer':
 With no prefix ARG (nil): `copy-to-buffer'.
   Write region to BUFFER, replacing any previous contents."
   (interactive
-   (let ((arg  (and current-prefix-arg (prefix-numeric-value current-prefix-arg))))
+   (let ((arg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
      (list (region-beginning)
            (region-end)
            (read-buffer (concat (if arg
@@ -1333,7 +1335,7 @@ region was active then its content was already added to the ring.)"
   (when bounds
     (let* ((file       (buffer-substring (car bounds) (cdr bounds)))
            (absfile    (expand-file-name (buffer-substring (car bounds) (cdr bounds))))
-           (dir        (or (file-name-directory absfile) default-directory))
+           (dir        (or (file-name-directory absfile)  default-directory))
            (true-dir   (file-truename dir))
            (relfile    (file-name-nondirectory absfile))
            (true-file  (concat true-dir relfile)))
@@ -1352,11 +1354,11 @@ region was active then its content was already added to the ring.)"
   "Prompt for shell COMMAND, using current buffer's file as default arg.
 If buffer is not associated with a file, you are prompted for a file.
 COMMAND is a symbol."
-  (let ((file (or (buffer-file-name) (read-file-name "File: "))))
-    (setq file     (and file (file-name-nondirectory file))
+  (let ((file  (or (buffer-file-name)  (read-file-name "File: "))))
+    (setq file     (and file  (file-name-nondirectory file))
           command  (format "%s  " command)) ; Convert to string.
     (read-from-minibuffer
-     "" (cons (concat command (and file (concat " " file)))  (length command)))))
+     "" (cons (concat command (and file  (concat " " file))) (length command)))))
 
 ;;;###autoload
 (defun chmod (cmd)
@@ -1473,7 +1475,7 @@ The indirect buffer can have a different major mode from current."
 With prefix arg, clear also the regular-expression search history."
   (interactive "P")
   (setq search-ring  ())
-  (when regexp-too-p (setq regexp-search-ring nil)))
+  (when regexp-too-p (setq regexp-search-ring  ())))
 
 ;;;###autoload
 (defalias 'clear-regexp-search-ring 'clear-regexp-search-history)
@@ -1482,15 +1484,15 @@ With prefix arg, clear also the regular-expression search history."
   "Clear the regular-expression search history (empty it).
 With prefix arg, clear also the simple search history."
   (interactive "P")
-  (setq regexp-search-ring ())
-  (when simple-too-p (setq search-ring nil)))
+  (setq regexp-search-ring  ())
+  (when simple-too-p (setq search-ring  ())))
 
 ;;;###autoload
 (defun clear-search-histories ()
   "Clear both search histories: simple search and regexp search."
   (interactive)
-  (setq regexp-search-ring ())
-  (setq search-ring nil))
+  (setq regexp-search-ring  ()
+        search-ring         ()))
 
 ;;;###autoload
 (defun switch-to-alternate-buffer (buffer &optional norecord force-same-window)
