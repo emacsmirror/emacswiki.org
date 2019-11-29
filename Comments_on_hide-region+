@@ -1,0 +1,4 @@
+I exchanged emails with Mathais.  Since he's not using this at present I'm marking myself as maintainer with this version. I will probably add open/close hidden regions with mouse soonish.  I'm also thinking of adding some sort of option to use buffer-invisibility-spec to toggle instead of completely removing the regions.  If I've understood the Info this could be much more performant on long buffers, especially if the user is likely to "toggle-all" a great deal.
+
+-- Corwin 2019-11-29 10:37 UTC
+
