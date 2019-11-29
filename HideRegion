@@ -44,6 +44,14 @@ I make an enhance of hide-region.el, named it [[hide-region+]], add three more f
   unhide all the region in the current buffer
 3 hide-region-toggle
   toggle all the gide region in the current buffer
+
+[new]
+Updates to [[hide-region+]], Version bump to 1.0.2:
+* hide-region-hide now returns the newly created region
+* moved face for "handles" (region pre/postfix) to defcust
+* various docstring and misc fixups
+* mark myself as maintainer (after checking-in with Mathais)
+
 ----
 CategoryHideStuff
 CategoryRegion
