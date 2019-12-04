@@ -67,8 +67,8 @@ This is likely to be due to intermediate tmp files (guessing here) with the Tram
 
 === Tramp hangs ===
 
-If you're wondering why tramp just hangs then check that ssh hasn't
-just suddenly died.  This may be due to pppd, routers or whatever.  In
+If you're wondering why tramp just hangs first check if you can connect to the host using the terminal (you should make sure that the server's fingerprint has been added to the ~/.ssh/known_hosts file).
+Otherwise check that ssh hasn't just suddenly died.  This may be due to pppd, routers or whatever.  In
 any case neither ssh on the client nor sshd on the server notice that
 the connection has disappeared.  When the next command is sent,
 however, ssh notices that the line has been dropped and exits.  And
