@@ -243,13 +243,18 @@ There is a MidnightMode to clear unused buffers at midnight. I find that I need 
 }}}
 
 
-== Killing Buffers with Anything ==
-[[Anything]] is a candidate selection framework.
+== Killing Buffers with Helm ==
+[[Helm]] is a candidate selection framework. Previously, it was called [[Anything]].
 
-Start with M-x anything-kill-buffers, narrow the list by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-With TAB actions can be selected if the selected buffer has more than one possible action.
-With C-z kills buffer without quitting anything session.
+Start with M-x helm-mini. Narrow the list by typing some patterns (multiple patterns are space-delimited string). For example, to show just dired buffers, type "*dired".
+
+Move on the list with up/down/pgup/pgdown/C-p/C-n/C-v/M-v.
+
+To mark (select) a buffer for action, type C-SPC. To mark all buffers listed, type M-m.
+
+With TAB, actions can be selected if the selected buffer(s) has more than one possible action.
+
+To kill a buffer, choose "Kill buffer(s)" on the list of actions, or type M-D (capital D, so in fact it is M-Shift-d).
 
 == Killing Buffers of asynchronous processes with dying-mode ==
 Say, you want to kill buffers for asynchronous processes by default 10 minutes after the corresponding process exits.
