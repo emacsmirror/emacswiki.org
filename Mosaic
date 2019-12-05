@@ -1,0 +1,10 @@
+The [http://xelf.me/scheme-mosaic.html Mosaic] project builds on
+[https://ecasound.seul.org/ecasound/ Ecasound] and
+[https://ccrma.stanford.edu/software/snd/snd/snd.html Snd]
+to implement a concatenative synthesis system and music sequencer with a spreadsheet-based UI.
+The UI is based on [http://xelf.me/cell.html Cell-mode].
+
+Check out [https://www.youtube.com/playlist?list=PL0nuOl15T_6X0YL6mMBfm8zBSTmDpaRxh some videos on YouTube].
+
+----
+CategoryMusic
