@@ -2,31 +2,8 @@
 is a very flexible audio multichannel
 recording and mixing tool by KaiVehmanen.
 
-Visit the [http://www.eca.cx/ecasound/ Ecasound homepage] for more information.
+It comes with [http://delysid.org/emacs/ecasound-el.html an Emacs mode] by MarioLang
+(in the ecatools folder).
 
-I am currently trying to write Emacs modes for the different
-Ecasound file formats, and for the ecasound Interactive Mode (ecasound -i)
-derived from comint-mode.
-
-You can find the current version of what I have here:
-
-[http://delysid.org/emacs/ecasound-el.html ecasound.el] -- All ecasound related code finally collapsed into one file. 
-
-Long term aim of this project is making Emacs understand
-as much as possible of ecasound command syntax, to be able
-to provide generic and helpful completion functions and
-in the future, eventually base some wizards on the underlying
-data.
-
-Alot of the above goals were met this week since I've written
-ECI support for ecasound.el.  You can now complete all native effects
-and ladspa effects, and get help for their individual arguments simply
-by hitting tab.  The wizard thing also works, you can do M-x ecasound-cop-add RET
-to interactively add a chainoperator for instance.
-As a bonus, you can now write ECI based applications in Emacs-lisp using
-ecasound.el, see functions eci-example and ecasound-normalize for examples on what
-this means.
-
---MarioLang
-
+--
 CategoryExternalUtilities CategoryMusic
