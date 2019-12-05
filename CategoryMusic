@@ -9,3 +9,7 @@ Modes and setups to help you write and perform music:
 * [http://chuck.cs.princeton.edu/ ChucK] Mode by Kao Cardoso Félix, based on code by Mikael Johansson, is [https://bitbucket.org/kaofelix/chuck-mode available from Bitbucket]
 
 * [https://github.com/repl-electric/sonic-pi.el sonic-pi.el] A Emacs plugin to enable live coding music in Ruby communicating with [http://sonic-pi.net/ SonicPi]
+
+* [EcasoundMode]: Ecasound is a very flexible audio multichannel recording and mixing tool
+
+* 
