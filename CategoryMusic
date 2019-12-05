@@ -10,6 +10,8 @@ Modes and setups to help you write and perform music:
 
 * [https://github.com/repl-electric/sonic-pi.el sonic-pi.el] A Emacs plugin to enable live coding music in Ruby communicating with [http://sonic-pi.net/ SonicPi]
 
-* [EcasoundMode]: Ecasound is a very flexible audio multichannel recording and mixing tool
+* [EcasoundMode]: Ecasound is a very flexible audio multichannel recording and mixing tool and comes with an Emacs mode
 
-* 
+* [https://ccrma.stanford.edu/software/snd/snd/snd.html Snd] Several packages are available for controlling JACK from within Emacs, and the plain-but-powerful Stanford University Snd editor also includes a comprehensive Emacs mode
+
+* [[Mosaic]] is a concatenative synthesis system and music sequencer with a spreadsheet-based user-interface
