@@ -1,6 +1,7 @@
 A package to integrate Google Contacts into Emacs.
 
 * http://julien.danjou.info/projects/emacs-packages#google-contacts
+** https://github.com/jd/google-contacts.el  <-- NEW?
 
 See also:
 GoogleClient
