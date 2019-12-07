@@ -1,6 +1,7 @@
 undo-browse.el --  Powerful Undo system. Back/forth/movie/redo/hilit. 
 
 * http://www.gnufans.net/~deego/emacspub/lisp-mine/undo-browse/
+* Lisp:undo-browse.el
 
 In ub terminology, the undo-history is seen as a movie, each step
 being a frame of the movie. You can play (back/forth) the color-coded
