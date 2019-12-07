@@ -405,6 +405,7 @@ If you don't have '''[::Ibuffer]''', you can get it from GIT:ibuffer.el (there's
 
 == See also ==
 
+* [https://www.emacswiki.org/emacs/Comments_on_IbufferMode Comments on IbufferMode]
 * BufferMenuPlus, which also provides highlighting and other enhancements of BufferMenu.
 
 ----
