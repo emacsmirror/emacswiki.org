@@ -8,7 +8,6 @@
 ;; Author: D. Goel <deego@gnufans.org>
 ;; Keywords:
 ;; Version: 0.1dev
-;; URL: http://gnufans.net/~deego
 ;; * -- this file contains code from highlight-chg.el which is
 ;;      Copyright FSF.
 
