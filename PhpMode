@@ -141,7 +141,7 @@ https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif
 == Debugging ==
 
 [https://github.com/emacs-lsp/dap-mode/ dap-mode]  
-Emacs client/library for Debug Adapter Protocol is a wire protocol for communication between client and Debug Server. It’s similar to the LSP but provides integration with debug server. It is excellent.
+Emacs client/library for Debug Adapter Protocol is a wire protocol for communication between client and Debug Server. It’s similar to the LSP but provides integration with debug server. It is an excellent solution for debugging PHP in Emacs.
 
 [https://code.google.com/p/geben-on-emacs/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. Emacs debug mode using XDebug). -M
 [new]
