@@ -99,6 +99,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
 * [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities other than programming
 * [[CategoryGames|Games]] -- play in Emacs
+* [[CategoryGopher|Gopher]] -- browsing Gopher sites
 * [[CategoryInterface|Interface]] -- accessing web services
 ** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
 ** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
