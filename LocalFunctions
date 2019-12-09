@@ -1,3 +1,6 @@
+See also: LocalCommands, FileLocalVariables, DirectoryVariables
+
+
 Some [[Lisp]] dialects, such as Scheme and EuLisp, are Lisp1's, which
 means symbols have a single binding that you can establish with `let'.
 In such a Lisp, the following code locally binds the `add-one' function:
