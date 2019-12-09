@@ -22,6 +22,8 @@ If you wish to have Return key automatically indent cursor on new line, add the 
 
 Another good accompanying mode for editing YAML files (and some other structured texts like Python) is  [https://gitlab.com/emacs-stuff/indent-tools/ indent-tools] as it provides functionality related to tree indentation, navigation and commenting.
 
+The [https://github.com/antonj/Highlight-Indentation-for-Emacs highlight-indentation] Package visualizes the indentation.  It also allows to show the current column prominently.
+
 ----
 CategoryModes
 DataModes
