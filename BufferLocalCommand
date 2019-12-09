@@ -1,3 +1,7 @@
+: Buffer-local command: an Emacs interactive command local to a specific buffer.
+
+----
+
 Sometimes a user only wants to run some ephemeral commands relevant to a particular buffer, and defining commands (and functions) on the global scope is a waste because once the buffer is gone the commands and functions are still there doing nothing (unless the user takes care to unbind them, which necessitates some extra coding). There should be a simpler way to do it.
 
 
@@ -55,3 +59,6 @@ then whenever the key M-X (that is M-<Shift>-x, not M-x) is pressed, "Hello worl
 Reference
 
 Chapuis, S 2019. "Frame local". Accessed 09 December 2019, https://github.com/sebastiencs/frame-local.
+
+----
+CategoryCode 
