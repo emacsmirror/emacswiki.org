@@ -1,3 +1,5 @@
+See also: BufferLocalCommand
+
 Variables can have a different value in every buffer.  If you are in
 such a buffer, the variable is said to be buffer-local.  In order to
 set a variable for one buffer only, use the following idiom:
