@@ -14,7 +14,7 @@ The following code uses `b' (like Lynx) and `l' (like Eww) to go back, and it us
   (let* ((address (elpher-node-address node))
 	 (selector (elpher-address-selector address))
 	 (up (file-name-directory (directory-file-name selector))))
-    (when up
+    (when (not (string= up selector))
       (elpher-make-node (concat "Up from " (elpher-node-display-string elpher-current-node))
 			(elpher-make-address ?1
 					     up
