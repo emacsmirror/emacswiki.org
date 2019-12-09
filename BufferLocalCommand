@@ -9,7 +9,7 @@ The nice things of this approach:
 - once the buffer is gone, the buffer-local defined functions are automatically gone too. Clean and simple.
 
 
-There is an edge case of the buffer-local symbol has the same name as a global-obarray's symbol, which needs to be explored.
+There is an edge case of the buffer-local symbol has the same name as a global-obarray's symbol, which needs to be further explored.
 
 
 Anyway, here is the quick and dirty code for demonstration.
@@ -50,7 +50,7 @@ and in a target buffer, eval this:
    (message "Hello world!"))
 
 
-then whenever the key M-X (that's is M-<Shift>-x, not M-x) is pressed, "Hello world!" should appear in the echo area:
+then whenever the key M-X (that is M-<Shift>-x, not M-x) is pressed, "Hello world!" should appear in the echo area.
 
 
 Reference
