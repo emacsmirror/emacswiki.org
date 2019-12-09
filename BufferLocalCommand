@@ -17,10 +17,9 @@ Anyway, here is the quick and dirty code for demonstration.
 
 
  (defvar-local my-local-obarray nil)
-
-
+ ;;
  (defmacro my-local-defun (name arglist &optional docstring &rest body)
-   ""
+   "A macro to define a buffer-local function. Its argument list is the same as the `defun' macro."
    nil
    (unless my-local-obarray
      (setq-local my-local-obarray (make-vector 8 0)))
@@ -28,9 +27,10 @@ Anyway, here is the quick and dirty code for demonstration.
      ;; this function symbol will be only visible in the buffer-local
      ;; `my-local-obarray':
      `(defun ,newname ,arglist ,docstring ,@body)))
-
-
+ ;;
+ ;; buffer-local command:
  (defun my-local-execute-extended-command ()
+   "A convenience command to select and execute a buffer-local command."
    (interactive)
    (call-interactively (intern-soft
                    (completing-read "M-x (buffer-local) "
@@ -38,8 +38,7 @@ Anyway, here is the quick and dirty code for demonstration.
                                     'commandp
                                     'require-match)
                    my-local-obarray)))
-
-
+ ;;
  ;; convenience key to run buffer-local command
  (define-key global-map (kbd "M-X") #'my-local-execute-extended-command)
 
