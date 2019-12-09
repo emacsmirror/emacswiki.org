@@ -2,7 +2,7 @@ Elpher uses `u' for "back", which often works if you're exploring a hierarchical
 
 The following code uses `b' (like Lynx) and `l' (like Eww) to go back, and it uses `u' to "go up", assuming that the current selector allows one to go up.
 
-```
+{{{
 (add-hook 'elpher-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "u") 'elpher-up)
@@ -30,7 +30,7 @@ The following code uses `b' (like Lynx) and `l' (like Eww) to go back, and it us
     (if up
 	(elpher-visit-node up)
       (error "No way up"))))
-```
+}}}
 
 ----
 CategoryGopher
