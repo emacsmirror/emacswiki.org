@@ -80,6 +80,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 
 * SearchFixedSetOfFiles does what its name suggests.
 * BufferMenuPlus, IbufferMode -- enhancements to the standard buffer menu
+* BufferLocalCommand -- defining commands local to a specific buffer
 * IswitchBuffers -- Incremental picking of buffers, including the middle of names, i.e. entering "scr" can pick the "*scratch*" buffer.
 * [[InteractivelyDoThings]] (ido.el) is part of post-21.3 GNU Emacs and does like IswitchBuffers, but also for files.
 * [[Icicles]] -- Like IswitchBuffers and ##ido.el##, but with more: complete regexp matching of virtually any minibuffer input (files, buffers, commands...). Cycle completion candidates; perform actions on candidates, manipulate sets of candidates...
