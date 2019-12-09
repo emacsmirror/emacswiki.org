@@ -1,6 +1,6 @@
 =Local variables=
 
-See also: FileLocalVariables, DirectoryVariables
+See also: FileLocalVariables, DirectoryVariables, LocalFunctions, LocalCommands
 
 There are two things you can do to force variable changes local to files, when you load them.
 
