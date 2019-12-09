@@ -1,0 +1,36 @@
+Elpher uses `u' for "back", which often works if you're exploring a hierarchical site. When jumping into a hierarchy from some other site, this gets confusing: "back" means that you return to the site you came from where as "up" would mean that you're guessing the new site has a directory structure and you can just change to the parent directory, so to speak.
+
+The following code uses `b' (like Lynx) and `l' (like Eww) to go back, and it uses `u' to "go up", assuming that the current selector allows one to go up.
+
+```
+(add-hook 'elpher-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "u") 'elpher-up)
+	    (local-set-key (kbd "b") 'elpher-back)
+	    (local-set-key (kbd "l") 'elpher-back)))
+
+(defun elpher-node-up (node)
+  "Does the node have a selector that looks like a path?"
+  (let* ((address (elpher-node-address node))
+	 (selector (elpher-address-selector address))
+	 (up (file-name-directory (directory-file-name selector))))
+    (when up
+      (elpher-make-node (concat "Up from " (elpher-node-display-string elpher-current-node))
+			(elpher-make-address ?1
+					     up
+					     (elpher-address-host address)
+					     (elpher-address-port address)
+					     (elpher-address-use-tls-p address))
+			elpher-current-node))))
+
+(defun elpher-up ()
+  "Go up in a gopher site."
+  (interactive)
+  (let ((up (elpher-node-up elpher-current-node)))
+    (if up
+	(elpher-visit-node up)
+      (error "No way up"))))
+```
+
+----
+CategoryGopher
