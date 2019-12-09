@@ -1,0 +1,58 @@
+Sometimes a user only wants to run some ephemeral commands relevant to a particular buffer, and defining commands (and functions) on the global scope is a waste because once the buffer is gone the commands and functions are still there doing nothing (unless the user takes care to unbind them, which necessitates some extra coding). There should be a simpler way to do it.
+
+
+Chapuis (2019) has shown a nifty trick to make buffer-local operation: using a buffer-local obarray (for using frame-local data, in his case). This trick could be used in our case: using an obarray to store buffer-local functions, and define an interactive command that access these functions.
+
+
+The nice things of this approach:
+- buffer-local functions will be easily searched without having to search in the global obarray.
+- once the buffer is gone, the buffer-local defined functions are automatically gone too. Clean and simple.
+
+
+There is an edge case of the buffer-local symbol has the same name as a global-obarray's symbol, which needs to be explored.
+
+
+Anyway, here is the quick and dirty code for demonstration.
+
+
+
+ (defvar-local my-local-obarray nil)
+
+
+ (defmacro my-local-defun (name arglist &optional docstring &rest body)
+   ""
+   nil
+   (unless my-local-obarray
+     (setq-local my-local-obarray (make-vector 8 0)))
+   (let* ((newname (intern (symbol-name name) my-local-obarray)))
+     ;; this function symbol will be only visible in the buffer-local
+     ;; `my-local-obarray':
+     `(defun ,newname ,arglist ,docstring ,@body)))
+
+
+ (defun my-local-execute-extended-command ()
+   (interactive)
+   (call-interactively (intern-soft
+                   (completing-read "M-x (buffer-local) "
+                                    my-local-obarray
+                                    'commandp
+                                    'require-match)
+                   my-local-obarray)))
+
+
+ ;; convenience key to run buffer-local command
+ (define-key global-map (kbd "M-X") #'my-local-execute-extended-command)
+
+and in a target buffer, eval this:
+
+ (my-local-defun my-local-command ()
+   (interactive)
+   (message "Hello world!"))
+
+
+then whenever the key M-X (that's is M-<Shift>-x, not M-x) is pressed, "Hello world!" should appear in the echo area:
+
+
+Reference
+
+Chapuis, S 2019. "Frame local". Accessed 09 December 2019, https://github.com/sebastiencs/frame-local.
