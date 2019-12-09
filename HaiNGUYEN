@@ -4,7 +4,11 @@ I have enjoyed EmacsWiki very much. It is a great place to learn and have fun.
 
 Please find below my EmacsWiki page(s):
 
-* [[Keycentric]] - centralizing keybindings into one place.
+* Buffer
+** [[BufferLocalCommand]] - defining Emacs interactive commands local to a buffer.
+* Key
+** [[Keycentric]] - centralizing keybindings into one place.
+
 
 
 [new:DrewAdams:2019-08-25 16:34 UTC]
