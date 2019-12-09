@@ -1,0 +1,20 @@
+Gopher is a very simple network protocol that was widely popular before the web took off.
+It basically works like the `finger` protocol, but on port 70: use telnet to connect
+and send a "selector" and a newline, and the server sends back some text. Done.
+
+Gopher also came with the idea of special "maps". These are files that work like directory
+indices.
+
+Emacs has at least two Gopher client implementations:
+
+* [https://github.com/msnyder-info/gopher.el gopher.el]
+* [https://thelambdalab.xyz/elpher/ Elpher Gopher Client]
+
+And some customization examples:
+
+* [[Up command for Elpher]]
+
+== Recommendations
+
+[new]
+I recommend Elpher. -- [[Alex Schroeder]]
