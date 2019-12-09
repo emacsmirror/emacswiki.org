@@ -1,4 +1,4 @@
-: Buffer-local command: an Emacs interactive command local to a specific buffer.
+: Buffer-local command: an interactive command local to a specific buffer.
 
 ----
 
@@ -61,4 +61,5 @@ Reference
 Chapuis, S 2019. "Frame local". Accessed 09 December 2019, https://github.com/sebastiencs/frame-local.
 
 ----
-CategoryCode 
+
+EmacsNiftyTricks
