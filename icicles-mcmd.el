@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Jun 15 16:02:33 2019 (-0700)
+;; Last-Updated: Tue Dec 10 13:36:23 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 19870
+;;     Update #: 19871
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2039,8 +2039,9 @@ on again (e.g. because there are fewer candidates)."
                                          (icicle-default-value                    t) ; Put current in prompt.
                                          (icicle-sort-comparer                    'icicle-case-string-less-p)
                                          (icicle-sort-orders-alist                nil) ; No choices here.
-                                         (icicle-default-in-prompt-format-function
-                                          (lambda (def) (format " (NOW: %s)" def))))
+;;;                                          (icicle-default-in-prompt-format-function
+;;;                                           (lambda (def) (format " (NOW: %s)" def)))
+                                         )
                                      (save-selected-window
                                        (completing-read
                                         (format "New %ssort order: " (if alternativep "alternative " ""))
