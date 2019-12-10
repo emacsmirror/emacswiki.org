@@ -28,7 +28,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/emacsorphanage/swoop emacsorphanage/swoop] -- Peculiar buffer navigation for Emacs
 * [https://github.com/emacsorphanage/manage-minor-mode emacsorphanage/manage-minor-mode] -- Manage your minor-mode on the dedicated interface buffer
 * [https://github.com/emacsorphanage/readability emacsorphanage/readability] -- Get Readability's reading list, and read each article on Emacs
-* [https://github.com/emacsorphanage/gnuplot] -- A major mode for Emacs for interacting with Gnuplot
+* [https://github.com/emacsorphanage/gnuplot emacsorphanage/gnuplot] -- A major mode for Emacs for interacting with Gnuplot
 
 == Useful Docker Images ==
 * [https://github.com/conao3/docker-emacs docker-emacs] -- Emacs meets docker as a standalone CLI, TUI and GUI tool
