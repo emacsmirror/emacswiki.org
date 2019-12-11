@@ -52,7 +52,7 @@ Look at the manual node for complete information. But here are the formats for s
 
 ; Keymap: ##\\<map>## displays the keymap `map', use this before key bindings and the functions' keybinding will be interpreted as in `map'. E.g., ##\\<html-mode-map>##
 
-; List all the keys of a keymap: ##\\{map}##. This lists all the keys in `map' like what you would see in a major mdoe's doc string.
+; List all the keys of a keymap: ##\\{map}##. This lists all the keys in `map' like what you would see in a major mode's doc string.
 
 ; Change function signature in the documentation: add ##\(fn signature)## to the end of doc string. E.g., in `dolist' they have this line ##\(fn (VAR LIST [RESULT]) BODY...)##. This changes the actual signature ##(spec &rest body)## to ##(VAR LIST [RESULT] BODY...)## which is clearly more helpful.
 
