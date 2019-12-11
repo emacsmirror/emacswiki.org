@@ -1,10 +1,10 @@
 == Project Info ==
 
-post-mode has a new [http://post-mode.sourceforge.net home] and is now hosted on Sourceforge.  You can download it from the [http://sourceforge.net/projects/post-mode/ Sourceforge project site].
+post-mode is a major mode for editing emails and newsgroup posts when using clients like Mutt and slrn. It is available from [https://github.com/Boruch-Baum/post-mode here].
 
 == Configuration ==
 
-Extract post.el with <code>gunzip post.el.gz</code>. Put post.el in your load-path and add the following snipplet to your .emacs file:
+Put post.el in your load-path and add the following snipplet to your .emacs file:
 
  (require 'post)
 
@@ -12,7 +12,7 @@ Extract post.el with <code>gunzip post.el.gz</code>. Put post.el in your load-pa
 
 A French howto was available but seems to have gone missing.  Please update this page if you know where it is.
 
-Otherwise, all documentation can be found on [http://sourceforge.net/docman/?group_id=206008 the Sourceforge project site].
+Otherwise, all documentation can be found on [https://github.com/Boruch-Baum/post-mode the Github project site].
 
 ----
 CategoryMailAddons | CategoryModes
