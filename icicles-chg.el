@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2019, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Sep 21 15:51:56 2019 (-0700)
+;; Last-Updated: Tue Dec 10 18:06:10 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 11883
+;;     Update #: 11887
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4712,6 +4712,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2019/12/10 dadams
+;;     icicle-change-sort-order: Changed indication of default value in prompt: NOW was misleading.
 ;; 2019/06/15 dadams
 ;;     icicle-abort-recursive-edit:
 ;;       Call 1on1-fit-minibuffer-frame with RESETP arg only if (= (minibuffer-depth) 1)
