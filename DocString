@@ -40,21 +40,21 @@ More information about doc strings can be found in [https://www.gnu.org/software
 
 Look at the manual node for complete information. But here are the formats for some rich text in doc strings:
 
-; Arguments: all caps, e.g., ##ARG## in ##ARG is used as...##
+; Arguments: All caps, e.g., ##ARG## in ##ARG is used as...##
 
-; Elisp symbols (variable/function/etc): surround single quote, e.g, ##‘car’##. You can easily type single quotes with `electric-quote-mode' enabled.
+; Elisp symbols (variable/function/etc): Surround single quote, e.g, ##‘car’##. You can easily type single quotes with `electric-quote-mode' enabled.
 
-; Info node: also surround with a single quote, but also preceded with `info node', `Info node', `info anchor' or `Info anchor', e.g, ##Info node ‘(elisp)Font Lock Basics’## where "Font Lock Basics" is the node title.
+; Info node: Also surround with a single quote, but also preceded with `info node', `Info node', `info anchor' or `Info anchor', e.g, ##Info node ‘(elisp)Font Lock Basics’## where "Font Lock Basics" is the node title.
 
 ; URL: Similar to Info node, surround with single quotes and stick `URL' in the front - ##URL ‘http://https://www.emacswiki.org/’##
 
-; Key binding for commands: ##\\[function]## will display the current key binding for `function', e.g., ##\\[forward-char]##
+; Key binding for commands: ##\\[function]## will display the current key binding for `function', e.g., ##\\[forward-char]##, which is usually rendered to ##C-f##.
 
 ; Keymap: ##\\<map>## displays the keymap `map', use this before key bindings and the functions' keybinding will be interpreted as in `map'. E.g., ##\\<html-mode-map>##
 
 ; List all the keys of a keymap: ##\\{map}##. This lists all the keys in `map' like what you would see in a major mode's doc string.
 
-; Change function signature in the documentation: add ##\(fn signature)## to the end of doc string. E.g., in `dolist' they have this line ##\(fn (VAR LIST [RESULT]) BODY...)##. This changes the actual signature ##(spec &rest body)## to ##(VAR LIST [RESULT] BODY...)## which is clearly more helpful.
+; Change function signature in the documentation: Add ##\(fn signature)## to the end of doc string. E.g., in `dolist' they have this line ##\(fn (VAR LIST [RESULT]) BODY...)##. This changes the actual signature ##(spec &rest body)## to ##(VAR LIST [RESULT] BODY...)## which is clearly more helpful.
 
 ----
 CategoryDocumentation
