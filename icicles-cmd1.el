@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Sep 21 16:11:13 2019 (-0700)
+;; Last-Updated: Fri Dec 13 13:06:39 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 27630
+;;     Update #: 27634
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -350,10 +350,12 @@
 ;;    `icicle-find-file-abs-of-content-action',
 ;;    `icicle-find-file-abs-of-content-other-window-action',
 ;;    `icicle-find-file-abs-of-content-ro-action',
-;;    `icicle-find-file-abs-of-content-ro-ow-action',
+;;    `icicle-find-file-abs-of-content-ro-ow-action', (+)
+;;    `icicle-find-file-no-search-1',
 ;;    `icicle-find-file-no-search-action',
 ;;    `icicle-find-file-no-search-other-window-action',
-;;    (+)`icicle-find-file-no-search-in-tags-table-1',
+;;    (+)`icicle-find-file-no-search-in-tags-table-1', (+)
+;;    `icicle-find-file-of-content-1',
 ;;    (+)`icicle-find-file-of-content-in-tags-table-1',
 ;;    `icicle-find-file-of-content-ro-action',
 ;;    `icicle-find-file-of-content-ro-ow-action',
@@ -375,7 +377,8 @@
 ;;    `icicle-pp-display-expression',
 ;;    `icicle-read-args-w-val-satisfying',
 ;;    `icicle-read-choose-window-args', `icicle-read--expression'
-;;    (Emacs 24.4+), (+)`icicle-recent-file-of-content-1',
+;;    (Emacs 24.4+), (+)`icicle-recent-file-of-content-1', (+)
+;;    `icicle-recent-file-no-search-1',
 ;;    `icicle-recent-files-without-buffers.',
 ;;    `icicle-remove-buffer-candidate-action',
 ;;    `icicle-remove-buffer-config-action',
