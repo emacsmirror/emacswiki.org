@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Dec 13 16:00:13 2019 (-0800)
+;; Last-Updated: Fri Dec 13 17:41:12 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3180
+;;     Update #: 3181
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -36,8 +36,11 @@
 ;;    Load this library from your init file (~/.emacs or _emacs).
 ;;    Add the suggested key bindings (below) to  your init file.
 ;;    Use `M-up|down|left|right' to move frames around incrementally.
-;;    Use `C-S-v', `M-S-v', `C-S-next', `C-S-prior' to move frames to screen edges.
+;;    Use `C-S-v', `M-S-v', `C-S-next', `C-S-prior' to move frames to
+;;        screen edges.
 ;;    Use `C-M-up|down|left|right' to resize frames incrementally.
+;;    Use `C-x {', `C-x }', `C-x ^', and `C-u C-x ^' to resize windows
+;;        incrementally.
 ;;    Use `C-M-z' or `C-x C-z' to iconify/hide all frames.
 ;;    Use `C-M-z' in a lone frame to restore all frames.
 ;;    Use `C-mouse-1' in the minibuffer to restore all frames.
