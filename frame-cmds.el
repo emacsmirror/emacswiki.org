@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Thu Aug 15 08:27:30 2019 (-0700)
+;; Last-Updated: Fri Dec 13 16:00:13 2019 (-0800)
 ;;           By: dradams
-;;     Update #: 3173
+;;     Update #: 3180
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -107,8 +107,9 @@
 ;;    `delete/iconify-window', `delete/iconify-windows-on',
 ;;    `delete-other-frames', `delete-windows-for', `enlarge-font',
 ;;    `enlarge-frame', `enlarge-frame-horizontally',
-;;    `hide-everything', `hide-frame', `iconify-everything',
-;;    `iconify/map-frame', `iconify/show-frame',
+;;    `enlarge/shrink-window', `enlarge/shrink-window-repeat',
+;;    `enlarge-window-repeat', `hide-everything', `hide-frame',
+;;    `iconify-everything', `iconify/map-frame', `iconify/show-frame',
 ;;    `increase-frame-transparency' (Emacs 23+),
 ;;    `jump-to-frame-config-register', `maximize-frame',
 ;;    `maximize-frame-horizontally', `maximize-frame-vertically',
@@ -128,6 +129,7 @@
 ;;    `show-a-frame-on', `show-buffer-menu', `show-frame',
 ;;    `show-hide', `shrink-frame', `shrink-frame-horizontally',
 ;;    `split-frame-horizontally', `split-frame-vertically',
+;;    `shrink-window-horizontally-repeat', `shrink-window-repeat',
 ;;    `tell-customize-var-has-changed', `tile-frames',
 ;;    `tile-frames-horizontally', `tile-frames-side-by-side',
 ;;    `tile-frames-top-to-bottom', `tile-frames-vertically',
@@ -147,9 +149,9 @@
 ;;    `frcmds-frame-number', `frcmds-new-frame-position',
 ;;    `frcmds-read-args-for-tiling',
 ;;    `frcmds-read-buffer-for-delete-windows',
-;;    `frcmds-set-difference', `frcmds-smart-tool-bar-pixel-height',
-;;    `frcmds-split-frame-1', `frcmds-tile-frames', `nbutlast' (Emacs
-;;    20).
+;;    `frcmds-repeat-command', `frcmds-set-difference',
+;;    `frcmds-smart-tool-bar-pixel-height', `frcmds-split-frame-1',
+;;    `frcmds-tile-frames', `nbutlast' (Emacs 20).
 ;;
 ;;  Error symbols defined here:
 ;;
@@ -185,6 +187,9 @@
 ;;   (global-set-key [(control meta right)]         'enlarge-frame-horizontally)
 ;;   (global-set-key [(control meta up)]            'shrink-frame)
 ;;   (global-set-key [(control meta left)]          'shrink-frame-horizontally)
+;;   (global-set-key [remap enlarge-window-horizontally] 'enlarge-window-horizontally-repeat)
+;;   (global-set-key [remap shrink-window-horizontally]  'shrink-window-horizontally-repeat)
+;;   (global-set-key [remap enlarge-window]         'enlarge/shrink-window-repeat)
 ;;   (global-set-key (kbd "C-M-S-<down>")           'increase-frame-transparency)
 ;;   (global-set-key (kbd "C-M-S-<up>")             'decrease-frame-transparency)
 ;;   (global-set-key [(control ?x) (control ?z)]    'iconify-everything)
@@ -284,6 +289,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2019/12/13 dadams
+;;     Added: frcmds-repeat-command, (enlarge|shrink)-window(-horizontally)-repeat,
+;;            enlarge/shrink-window(-repeat).
 ;; 2019/03/18 dadams
 ;;     clone-frame: Use frame-geom-value-numeric.
 ;; 2019/03/03 dadams
@@ -1674,6 +1682,64 @@ space occupied by a standalone minibuffer, if any."
                      (frcmds-available-screen-pixel-bounds)
                    (frcmds-effective-screen-pixel-bounds))))
     (- (cadddr bounds) (cadr bounds)))) ; Y1 - Y0
+
+;; Same as `zz-repeat-command' in `zones.el'.
+;;
+(defun frcmds-repeat-command (command)  ; Emacs 22+
+  "Repeat COMMAND."
+  (require 'repeat)         ; Define its vars before we let-bind them.
+  (let ((repeat-previous-repeated-command  command)
+        (repeat-message-function           #'ignore)
+        (last-repeatable-command           'repeat))
+    (repeat nil)))
+
+;;;###autoload
+(defun enlarge-window-horizontally-repeat () ; Emacs 22+
+  "Enlarge selected window horizontally by one column.
+You can repeat this by hitting the last key again..."
+  (interactive)
+  (require 'repeat)
+  (frcmds-repeat-command 'enlarge-window-horizontally))
+
+;;;###autoload
+(defun shrink-window-horizontally-repeat () ; Emacs 22+
+  "Srhink selected window horizontally by one column.
+You can repeat this by hitting the last key again..."
+  (interactive)
+  (require 'repeat)
+  (frcmds-repeat-command 'shrink-window-horizontally))
+
+;;;###autoload
+(defun enlarge-window-repeat ()         ; Emacs 22+
+  "Enlarge selected window vertically by one line.
+You can repeat this by hitting the last key again..."
+  (interactive)
+  (require 'repeat)
+  (frcmds-repeat-command 'enlarge-window))
+
+;;;###autoload
+(defun shrink-window-repeat ()          ; Emacs 22+
+  "Shrink selected window vertically by one line.
+You can repeat this by hitting the last key again..."
+  (interactive)
+  (require 'repeat)
+  (frcmds-repeat-command 'shrink-window))
+
+;;;###autoload
+(defun enlarge/shrink-window (arg)      ; Emacs 22+
+  "Enlarge selected window vertically by one line.
+With a prefix arg, shrink it."
+  (interactive "P")
+  (if arg (shrink-window 1) (enlarge-window 1)))
+
+;;;###autoload
+(defun enlarge/shrink-window-repeat ()  ; Emacs 22+
+  "Enlarge selected window vertically by one line.
+With a prefix arg, shrink it.
+You can repeat this by hitting the last key again..."
+  (interactive)
+  (require 'repeat)
+  (frcmds-repeat-command 'enlarge/shrink-window))
 
 ;; Inspired by `sk-grow-frame' from Sarir Khamsi [sarir.khamsi@raytheon.com]
 ;;;###autoload
