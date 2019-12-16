@@ -1,5 +1,7 @@
 Use this command in an ##sql-interactive-mode## buffer to open a connected ##sql-mode## buffer, in which you can edit queries to send to the database process (check ##C-h m## for the keybindings to do that).
 
+ (defvar my-sql-query-buffer)
+ 
  (defun my-sql-query-buffer (arg)
    "Open a `sql-mode' buffer which interacts with the current SQLi buffer.
  
