@@ -1,8 +1,8 @@
-: Because serendipity is too important to be left to chance...
+: /Because serendipity is too important to be left to chance./
 
-From the web page:
+From http://www.remem.org/:
 
-Remembrance Agents are a set of applications that watch over a user's
+[quote]Remembrance Agents are a set of applications that watch over a user's
 shoulder and suggest information relevant to the current
 situation. While query-based memory aids help with direct recall,
 remembrance agents are an augmented associative memory. For example,
@@ -12,13 +12,11 @@ buffer. These suggested documents can be any text files that might be
 relevant to what you are currently writing or reading. They might be
 old emails related to the mail you are currently reading, or abstracts
 from papers and newspaper articles that discuss the topic of your
-writing.
+writing.[/quote]
 
 We are experimenting with remembrance agents in word processors, web
 browsers, and on wearable computers. The word-processor version works
 in Emacs and XEmacs.
-
-* http://www.remem.org/
 
 == What it does ==
 
@@ -71,8 +69,6 @@ Then I use a data defining fn for each of the novel's voices.
 </pre>
 
 -- RichardHarris
-
-== next ==
 
 It has been a while since I used it.  I ended up not finding it
 useful, perhaps there wasn't really that much personal data around,
