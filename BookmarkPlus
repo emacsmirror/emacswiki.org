@@ -1452,6 +1452,9 @@ examples of region bookmarks, which restore the [[active region]], and
 [[Dired]] bookmarks, which restore Dired markings, switches,
 inserted subdirectories, and hidden (sub)directories.
 
+[:functionBookmark]
+[:windowConfig]
+[:frameConfig]
 A '''function bookmark''' simply invokes some function --- any function.
 You can, for instance, define a window or frame configuration and
 record the configuration as a bookmark.  Then jump to the bookmark to switch
