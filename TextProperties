@@ -2,22 +2,34 @@ A '''[::text property]''' is a property attached to characters in a [[buffer]] o
 
 In a buffer without font-lock, evaluate the following:
 
-    (let ((s "Alex"))
-      (put-text-property 0 (length s) 'face 'bold s)
-      (insert s))
+{{{
+(let ((s "Alex"))
+  (put-text-property 0 (length s) 'face 'bold s)
+  (insert s))
+}}}
 
 This should insert a bold "Alex" into the buffer. If it doesn't seem to work, try it in fundamental-mode, as some major modes will override the face.
 
 As another example, InvisibleText uses the text property `invisible'. If a non-`nil' `invisible' property
 is attached to a character, that character is invisible.
 
-
-Text-properties exist in GNU Emacs.  XEmacs provides a compatibility layer
-that translates TextProperties to XEmacsExtents.
-
 Text-properties affect text in strings and buffers.  When text is
 killed in one buffer and yanked in another buffer, the text-properties
-stick with it.
+stick with it. This can be annoying, if you're yanking invisible text,
+or text with a `display' property that makes it display as something
+else, and so on.
+
+The following defines a command that lets you remove all text-properties
+in the region:
+
+{{{
+(defun remove-display-text-property (start end)
+  "Remote all text properties from START to END.
+This is useful when copying stuff with a display property set
+from elsewhere."
+  (interactive "r")
+  (set-text-properties start end nil))
+}}}
 
 Text-properties start between characters and end between characters.
 Text-properties affect a range of characters.  If a text-property is
@@ -29,8 +41,13 @@ This may lead to a problem if you want to include the first character
 into the range.  The solution is to use front-sticky property like this
 (as explained by MilesBader on the newsgroup):
 
-      (put-text-property 1 2 'front-sticky t)
-      (put-text-property 1 2 'read-only t)
+{{{
+(put-text-property 1 2 'front-sticky t)
+(put-text-property 1 2 'read-only t)
+}}}
+
+Text-properties exist in GNU Emacs.  XEmacs provides a compatibility layer
+that translates TextProperties to XEmacsExtents.
 
 See also: EmacsOverlays, the answer to XEmacsExtents.
 
