@@ -69,7 +69,10 @@ And here's an example of how to pre-assign the default foreground
 colour to an annoying nick that shows up all the time in English:
 
 {{{
-(puthash "s" (cons 'foreground (face-foreground 'default)) rcirc-color-mapping)
+;; make sure the nick "s" gets no colour (create hash-map if the file hasn't
+;; been loaded, yet
+(setq rcirc-color-mapping (make-hash-table :test 'equal))
+(puthash "s" (list :foreground (face-foreground 'default)) rcirc-color-mapping)
 }}}
 
 == Listing the colors assigned interactively using /color ==
