@@ -11,13 +11,17 @@ Source:
 
 To install, put it in your LoadPath and add the following to your InitFile:
 
-    (eval-after-load 'rcirc '(require 'rcirc-color))
+{{{
+(eval-after-load 'rcirc '(require 'rcirc-color))
+}}}
 
 == Determining the colors available in your init file ==
 
 You can set your favorite colors manually:
 
-    (setq rcirc-colors '("lemon chiffon" "lavender" "cornflower blue"))
+{{{
+(setq rcirc-colors '("lemon chiffon" "lavender" "cornflower blue"))
+}}}
 
 Now new nicks will get assigned one of the three colors at random.
 
@@ -38,7 +42,9 @@ that you're limited to 16 colors anyway.
 
 If you never want automatic colors, set `rcirc-colors' to nil:
 
-    (setq rcirc-colors nil)
+{{{
+(setq rcirc-colors nil)
+}}}
 
 Only the colors you assign using ##/color NICK COLOR## will take effect.
 
@@ -49,13 +55,22 @@ initialize the mapping table.  The alist you see in the code
 has elements with a color as the key and a list of nicks as
 the value.
 
-    (setq rcirc-colors nil
-          rcirc-color-mapping (make-hash-table :test 'equal))
-    (dolist (group '(("red" "forcer" "kilobug")
-		     ("green" "kensanata")
-                     ("gray" "fsbot" "birny" "lisppaste" "specbot")))
-      (dolist (nick (cdr group))
-	(puthash nick (cons 'foreground (car group)) rcirc-color-mapping)))
+{{{
+(setq rcirc-colors nil
+      rcirc-color-mapping (make-hash-table :test 'equal))
+(dolist (group '(("red" "forcer" "kilobug")
+                 ("green" "kensanata")
+                 ("gray" "fsbot" "birny" "lisppaste" "specbot")))
+  (dolist (nick (cdr group))
+    (puthash nick (cons 'foreground (car group)) rcirc-color-mapping)))
+}}}
+
+And here's an example of how to pre-assign the default foreground
+colour to an annoying nick that shows up all the time in English:
+
+{{{
+(puthash "s" (cons 'foreground (face-foreground 'default)) rcirc-color-mapping)
+}}}
 
 == Listing the colors assigned interactively using /color ==
 
@@ -75,7 +90,7 @@ originally from [[fledermaus]] from the EmacsChannel [http://paste.lisp.org/disp
 It is based on the same colour metrics [http://www.compuphase.com/cmetric.htm]
 Emacs 22 uses.
 
-<pre>
+{{{
 (defconst colour-triplet-regex
   "\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)")
 
@@ -106,7 +121,7 @@ If FRAME is unspecified or nil, the current frame is used."
          (rmu (lsh (+ (car   colour-a) (car   colour-b)) -9)))
     ;; and now the magic formula-fu
     (+ (lsh (* (+ 512 rmu) r r) -8) (* 4 g g) (lsh (* (- 767 rmu) b b) -8)) ))
-</pre>
+}}}
 
 An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug report submitted):
 
