@@ -1,0 +1,17 @@
+You can use QR codes to transfer strings such as passwords to your phone using the camera.
+The code below uses the [https://fukuchi.org/works/qrencode/index.html.en qrencode] command-line tool.
+
+{{{
+(defun qr-code-region (start end)
+  "Show a QR code of the region.
+A simple way to transfer text to the phone..."
+  (interactive "r")
+  (let ((buf (get-buffer-create "*QR*"))
+	(inhibit-read-only t))
+    (with-current-buffer buf
+      (erase-buffer))
+    (let ((coding-system-for-read 'raw-text))
+      (shell-command-on-region start end "qrencode -o -" buf))
+    (switch-to-buffer buf)
+    (image-mode)))
+}}}
