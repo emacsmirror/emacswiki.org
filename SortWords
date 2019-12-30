@@ -9,7 +9,7 @@ Sorting words in a [[region]] can be done with:
   
     See `sort-regexp-fields'."
       (interactive "*P\nr")
-      (sort-regexp-fields reverse "\\w+[(-\\w+)]*" "\\&" beg end))
+      (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 
 Run it with `M-x sort-words':
 
