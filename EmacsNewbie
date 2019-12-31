@@ -1,33 +1,47 @@
 [[ja:Emacsビギナー]]
-[[es:CategoriaAyuda]]
 [[fr:NouvelUtilisateurEmacs]]
 
-* WikiPedia:Emacs -- Overview of Emacs.
-* EmacsNewbieStories -- Stories and anecdotes from users new to Emacs.
 
-= Getting Started =
 
-* A [http://www.gnu.org/software/emacs/tour/ guided tour] of GnuEmacs.
-* LearningEmacs -- Different ways to learn Emacs.
+== Getting Started ==
 
-= Help =
+* [http://www.gnu.org/software/emacs/tour/ Guided tour]: GnuEmacs
+* WikiPedia:Emacs -- Overview
+* LearningEmacs -- Ways to learn
 
-* CommonProblems -- Common sources of confusion.
-* EmacsNewbieHelpReference -- Explore the built-in documentation.
-* GetHelp -- Tips for getting help when you're stuck
 
-= Tools =
+== Help ==
 
-* EmacsNewbieWithIcicles – Help while you use Emacs (discovery, feedback).
+* '''[[CategoryHelp|Help Central]]'''
+
+* EmacsNewbieHelpReference -- Main help commands and keys
+* GetHelp -- Getting help when you're stuck
+* CommonProblems -- Some gotchas
+* EmacsNewbieWithIcicles – Help with what you're doing, discovery
+
+
+== Community ==
+
+* EmacsNewbieStories -- Stories from users new to Emacs
+
+
+
+== Reference ==
+
+* CategoryGlossary -- Emacs terminology
+* CategoryReferenceSheet -- Emacs key reference sheet
+* EmacsNewbieKeyReference -- Commonly used commands
+* EmacsNewbieMouseReference -- How the Emacs mouse works
+
+
+
+== Next Steps ==
+
 * KeyboardMacros -- Automate repetitive actions by recording what you do (mouse, menu, keyboard) and then playing it back again.
+* CategoryDocumentation -- Read on...
 
-= Reference =
-
-* CategoryGlossary -- Emacs terminology - you don't have to memorize all of these terms, but it's handy to be able to look them up.
-* CategoryReferenceSheet -- Emacs key reference sheet.
-* EmacsNewbieKeyReference -- Commonly used commands. 
-* EmacsNewbieMouseReference -- How the Emacs mouse works.
 
 ----
 CategoryHelp
+[[es:CategoriaAyuda]]
 CategoryDocumentation
