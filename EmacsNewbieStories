@@ -1,0 +1,11 @@
+Stories and anecdotes from users new to Emacs, e.g. how they came to Emacs, what they've learned, what they're using it for.
+
+Organizing by year should be helpful.
+
+== 2019 ==
+
+* [https://www.reddit.com/r/emacs/comments/ehnj3x/my_journey_so_far_as_an_emacs_newbie/ Orgmonics: My Journey So Far as an Emacs Newbie]: Uses Org, Magit, and Spacemacs, on FreeBSD.
+
+[quote][i]I can move around so fast now with Spacemacs that my coworkers have commented a few times that they can't even follow exactly what's happening when I am presenting or they are watching me when I am trying to help with something.[/i]
+
+[i]I have also gone from average skills with git to being the git solver/go to guy with magit. There are things that I wouldn't attempt with the git CLI that I can now do, and I am the only one on the team that can do those things.[/i][/quote]
