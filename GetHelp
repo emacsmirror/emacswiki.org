@@ -3,18 +3,21 @@ Getting stuck?  Trying to figure something out?
 == Built-in Help ==
 
 * Use the Emacs help commands to find out more about what's going on.  If you are not familiar with them, use '''`##C-h C-h##`''' now, to learn.  
-* HelpMenuBarPlus can help. It has a '''[[HelpMenuBarPlus#Whoops|Whoops!?]]''' submenu just for when you're stuck.
 
-== Get Un-stuck == 
 
-* Use '''`C-g'''' to basically cancel whatever command you're in.  
-* Use `##C-]##' (`abort-recursive-edit') like a super-`C-g', and command '''`top-level'''' as well.
+== Get Un-stuck ==
+
+* Use '''`C-g'''' to cancel whatever command you're in. 
+Use more than one `C-g', if necessary, to quit some operations.  An alternative is `ESC ESC ESC'.
+* Use '''`##C-]##'''' (`abort-recursive-edit') like a super-`C-g', and command '''`top-level'''' as well.
 * In many uneditable buffers, such as ##* help## buffers, '''`q'''' often quits that buffer/window.
+* HelpMenuBarPlus can help. It has a '''[[HelpMenuBarPlus#Whoops|Whoops!?]]''' submenu of menu '''Help''', just for when you're stuck.
 
 == Check your configuration ==
 
-* If starting emacs with ##emacs -q## fixes the problem, the problem is probably due to something in your configuration. Check your InitFile.
-* If ##emacs -q## has problems but ##emacs -Q## doesn't, it might be related to your Emacs distribution or your local setup.
+* If starting Emacs with '''##emacs -q##''' fixes the problem then the problem is probably due to something in your configuration. Check your InitFile.
+* If ##emacs -q## has problems but '''##emacs -Q##''' doesn't, it might be related to your Emacs distribution or your local setup.
+
 
 == Search for help ==
 
@@ -27,11 +30,17 @@ Getting stuck?  Trying to figure something out?
 
 === Where to ask for help ===
 
-* You can post a message in the appropriate EmacsMailingLists or EmacsNewsgroups.
-* Reddit's [https://old.reddit.com/r/emacs /r/Emacs] and [https://old.reddit.com/r/orgmode /r/Orgmode] subreddits are active and friendly.
-* The EmacsChannel can be good for real-time help if you can explain your problem concisely. If you need to share your config, use a service such as Gist or Pastebin.
-* You can post technical questions on EmacsStackExchange (http://emacs.stackexchange.com). Remember to accept correct answers in order to recognize people's help and make it easy for other people to find the answers.
-* You can pay for real-time help through services like https://www.codementor.io/emacs-experts
+You can post questions:
+
+* In the appropriate EmacsMailingLists or EmacsNewsgroups.
+* On [[EmacsStackExchange|relevant Stack Exchange sites]]. Please:
+** Pose specific, concrete questions.
+** Accept correct answers, to recognize people's help and make it easy for other people to find the most helpful answers.
+
+* On Reddit's [https://old.reddit.com/r/emacs /r/Emacs] and [https://old.reddit.com/r/orgmode /r/Orgmode] subreddits. These are more discussion-oriented than are question-and-answer sites such as Stack Exchange.
+* On the EmacsChannel. If you need to share your config, use a service such as Gist or Pastebin.
+* With ''pay'' services such as https://www.codementor.io/emacs-experts/
+
 
 == Feeling frustrated? ==
 
