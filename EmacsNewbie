@@ -3,19 +3,30 @@
 [[fr:NouvelUtilisateurEmacs]]
 
 * WikiPedia:Emacs -- Overview of Emacs.
-* CategoryGlossary -- Emacs terminology - you don't have to memorize all of these terms, but it's handy to be able to look them up
+* EmacsNewbieStories -- Stories and anecdotes from users new to Emacs.
+
+= Getting Started =
+
 * A [http://www.gnu.org/software/emacs/tour/ guided tour] of GnuEmacs.
 * LearningEmacs -- Different ways to learn Emacs.
-* EmacsNewbieStories -- Stories and anecdotes from users new to Emacs.
-* EmacsNewbieHelpReference -- Explore the built-in documentation.
-* EmacsNewbieKeyReference -- Commonly used commands. 
-* EmacsNewbieMouseReference -- How the Emacs mouse works.
-* EmacsNewbieWithIcicles – Help while you use Emacs (discovery, feedback).
-* KeyboardMacros -- Automate repetitive actions by recording what you do (mouse, menu, keyboard) and then playing it back again.
-* CategoryReferenceSheet -- Emacs key reference sheet.
+
+= Help =
+
 * CommonProblems -- Common sources of confusion.
 * GetHelp -- Tips for getting help when you're stuck
 
+= Tools =
+
+* EmacsNewbieWithIcicles – Help while you use Emacs (discovery, feedback).
+* KeyboardMacros -- Automate repetitive actions by recording what you do (mouse, menu, keyboard) and then playing it back again.
+
+= Reference =
+
+* CategoryGlossary -- Emacs terminology - you don't have to memorize all of these terms, but it's handy to be able to look them up.
+* CategoryReferenceSheet -- Emacs key reference sheet.
+* EmacsNewbieHelpReference -- Explore the built-in documentation.
+* EmacsNewbieKeyReference -- Commonly used commands. 
+* EmacsNewbieMouseReference -- How the Emacs mouse works.
 
 ----
 CategoryHelp
