@@ -1,15 +1,31 @@
-Getting stuck? Trying to figure something out?
+Getting stuck?  Trying to figure something out?
 
-* **Ask Emacs!** - Use the Emacs help commands to find out more about what's going on.  If you are not familiar with them, use '''`##C-h C-h##`''' now, to learn.  And learn '''`C-g'''' and `##C-]##' (`abort-recursive-edit' - like a super-`C-g') and command '''`top-level''''. Know too that in many uneditable buffers, such as help buffers, '''`q'''' often quits that buffer/window.
+== Built-in Help ==
 
+* Use the Emacs help commands to find out more about what's going on.  If you are not familiar with them, use '''`##C-h C-h##`''' now, to learn.  
 * HelpMenuBarPlus can help. It has a '''[[HelpMenuBarPlus#Whoops|Whoops!?]]''' submenu just for when you're stuck.
 
+== Get Un-stuck == 
 
-* If starting emacs with ##emacs -q## fixes the problem, the problem is probably due to something in your configuration. Check your InitFile. If ##emacs -q## has problems but ##emacs -Q## doesn't, it might be related to your Emacs distribution or your local setup.
-* Emacs has so many options, and the defaults might not be what you expect. You might get better help if you describe what you want and politely ask for suggestions instead of saying that Emacs is broken.
+* Use '''`C-g'''' to basically cancel whatever command you're in.  
+* Use `##C-]##' (`abort-recursive-edit') like a super-`C-g', and command '''`top-level'''' as well.
+* In many uneditable buffers, such as ##* help## buffers, '''`q'''' often quits that buffer/window.
+
+== Check your configuration ==
+
+* If starting emacs with ##emacs -q## fixes the problem, the problem is probably due to something in your configuration. Check your InitFile.
+* If ##emacs -q## has problems but ##emacs -Q## doesn't, it might be related to your Emacs distribution or your local setup.
+
+== Search for help ==
+
 * Search this wiki and other Emacs sites for tips, links, and recommendations.
 
-= Where to get help from people =
+== Ask for help ==
+
+* Remember that Emacs has many options, and the defaults might not be what you expect.  
+* You might get better help if you describe what you want and politely ask for suggestions instead of saying that Emacs is broken.
+
+=== Where to ask for help ===
 
 * You can post a message in the appropriate EmacsMailingLists or EmacsNewsgroups.
 * The EmacsChannel can be good for real-time help if you can explain your problem concisely. If you need to share your config, use a service such as Gist or Pastebin.
