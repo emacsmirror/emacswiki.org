@@ -43,6 +43,14 @@ I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefr
 
 == Markup/Generation Issues==
 
+=== Need for canonical syntax for keyboard input ===
+
+For example, on GetHelp, I count at least 4, slightly differing syntaxes used to markup keyboard input.
+
+It would be helpful if there were one official syntax.
+
+And it would be helpful if it rendered in HTML using ##<kbd></kbd>## tags, which tend to look distinct in current browsers.
+
 
 === <tt> Does the Wrong Thing with Double-Quote Chars ===
 
