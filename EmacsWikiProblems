@@ -51,13 +51,19 @@ It would be helpful if there were one official syntax.
 
 And it would be helpful if it rendered in HTML using ##<kbd></kbd>## tags, which tend to look distinct in current browsers.
 
+[new]
+What do you suggest we do?
+Some regular expression to specify how to recognise the markup would be great. Perhaps simply highlight any sequence of ##(<[A-Z]>|\b[SMF]-(\S|f[0-9]))\b)## and don't rely on weird quotes?
+– [[Alex Schroeder]]
 
-=== <tt> Does the Wrong Thing with Double-Quote Chars ===
+=== tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
 
-
-
+[new]
+Yeah, tt simply changes the font to teletype, it doesn't mean "code" and thus I think the result is correct.
+##<code>"<2>"</code>## might do what you want: <code>"<2>"</code>.
+– [[Alex Schroeder]]
 
 === Colon line prefix does not indent correctly ===
 
