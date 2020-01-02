@@ -64,7 +64,7 @@ This question has also been raised on [[https://emacs.meta.stackexchange.com/q/1
 
 I disagree with a proposal to use something like ##<kbd>## for Emacs key sequences. (I [[https://emacs.meta.stackexchange.com/a/31/105|said the same thing]] in that emacs.SE thread.)
 
-##<kbd>## (e.g. as rendered on Stack Exchange) is OK for indicating ''physical' keyboard keys, such as `Alt', `Ctrl` (or `Control`) and `Enter` (or `Return`).
+##<kbd>## (e.g. as rendered on Stack Exchange) is OK for indicating ''physical'' keyboard keys, such as `Alt', `Ctrl' (or `Control') and `Enter' (or `Return').
 
 It is not great for indicating Emacs ''key sequences'', which are logical.
 
