@@ -56,6 +56,9 @@ What do you suggest we do?
 Some regular expression to specify how to recognise the markup would be great. Perhaps simply highlight any sequence of ##(<[A-Z]>|\b[SMF]-(\S|f[0-9]))\b)## and don't rely on weird quotes?
 – [[Alex Schroeder]]
 
+[new]
+I'd suggest a dedicated syntax for keyboard input, probably ##<kbd></kbd>##.  Simple, explicit, already an HTML tag.  No magic or edge cases.
+
 === tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
