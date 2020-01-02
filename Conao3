@@ -16,6 +16,8 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
 * [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
 * [https://github.com/conao3/orglyth.el orglyth.el] -- Support static blog site publishing from Org mode files
+* [https://github.com/conao3/indent-lint.el indent-lint.el] (MELPA) -- Async indentation checker
+* [https://github.com/conao3/ppp.el ppp.el] (MELPA) -- Extended pretty printer for Emacs Lisp
 
 == Co-maintainer Projects ==
 * [https://github.com/conao3/navbar.el papaeye/navbar.el] -- Navigation bar for Emacs
