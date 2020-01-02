@@ -59,6 +59,24 @@ Some regular expression to specify how to recognise the markup would be great. P
 [new]
 I'd suggest a dedicated syntax for keyboard input, probably ##<kbd></kbd>##.  Simple, explicit, already an HTML tag.  No magic or edge cases.
 
+[new:DrewAdams:2020-01-02 17:15 UTC]
+This question has also been raised on [[https://emacs.meta.stackexchange.com/q/15/105|emacs.StackExchange]].
+
+I disagree with a proposal to use something like ##<kbd>## for Emacs key sequences. (I [[https://emacs.meta.stackexchange.com/a/31/105|said the same thing]] in that emacs.SE thread.)
+
+##<kbd>## (e.g. as rendered on Stack Exchange) is OK for indicating ''physical' keyboard keys, such as `Alt', `Ctrl` (or `Control`) and `Enter` (or `Return`).
+
+It is not great for indicating Emacs ''key sequences'', which are logical.
+
+In the printed versions, the Emacs manuals make a similar distinction (physical vs logical keys).
+
+We should generally use the same notation that Emacs itself uses for key sequences: `C-x'.
+
+I say "we should generally use...", but more importantly, we should let people use whatever they prefer, as long as it gets the message across clearly.
+
+
+
+
 === tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
@@ -67,6 +85,8 @@ This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not
 Yeah, tt simply changes the font to teletype, it doesn't mean "code" and thus I think the result is correct.
 ##<code>"<2>"</code>## might do what you want: <code>"<2>"</code>.
 – [[Alex Schroeder]]
+
+
 
 === Colon line prefix does not indent correctly ===
 
