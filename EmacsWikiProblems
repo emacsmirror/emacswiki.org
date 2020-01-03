@@ -95,7 +95,7 @@ And as a contributor, which syntax should I use?  Why are some so much more cumb
 
 Fundamentally, what is the point of *not* having a canonical syntax for this?  All it does it make the task harder for readers and contributors.  Marking up keyboard input/key sequences/whatever is a fundamental part of writing Emacs documentation, and there is currently far too much friction to doing so here.  Issues like this definitely deter potential contributors.  It's one of the reasons I've preferred publishing my own documentation, like [https://github.com/alphapapa/emacs-package-dev-handbook this], rather than contributing here.
 
-So, FWIW, I request that a simple, consistent syntax be designated for marking up keyboard input, one that renders nicely and is easy to read and input as markup.  Whether it's `<kbd></kbd>' or something else, what matters most is that there is one syntax that is designated as correct, documented clearly as such, and renders cleanly.  I can only speak for myself, but I will be much more interested in contributing here if this issue is solved.
+So, FWIW, I request that a simple, consistent syntax be designated for marking up keyboard input, one that renders nicely and is easy to read and input as markup.  Whether it's ##<kbd></kbd>## or something else, what matters most is that there is one syntax that is designated as correct, documented clearly as such, and renders cleanly.  I can only speak for myself, but I will be much more interested in contributing here if this issue is solved.
 
 
 === tt does the Wrong Thing with Double-Quote Chars ===
