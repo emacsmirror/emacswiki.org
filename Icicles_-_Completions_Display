@@ -174,7 +174,8 @@ Also starting with Emacs 23 (whether or not you use
 ##doremi-frm.el##), you can specify an initial text-scale amount
 for the `*Completions*' text, by customizing option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-text-scale-decrease|icicle-Completions-text-scale-decrease]]</tt>''''.  This controls the
-default appearance.
+default appearance.  (The option has no effect for terminal
+Emacs.  It is used only for graphic display (GUI Emacs).
 
 You typically use these features to make the `*Completions*' text a bit 
 smaller and thus save screen real estate -- show more candidates
