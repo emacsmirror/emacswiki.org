@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Mar  2 08:52:24 2018 (-0800)
+;; Last-Updated: Fri Jan  3 13:54:34 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 28662
+;;     Update #: 28666
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4053,7 +4053,8 @@
 ;;    `doremi-frm.el'), you can specify an initial text-scale amount
 ;;    for the `*Completions*' text, by customizing option
 ;;    `icicle-Completions-text-scale-decrease'.  This controls the
-;;    default appearance.
+;;    default appearance.  (The option has no effect for terminal
+;;    Emacs.  It is used only for graphic display (GUI Emacs).
 ;;
 ;;    You typically use these features to make the `*Completions*'
 ;;    text a bit smaller and thus save screen real estate - show more
