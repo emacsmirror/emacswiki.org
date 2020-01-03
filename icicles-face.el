@@ -4,11 +4,11 @@
 ;; Description: Faces for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Last-Updated: Mon Jan  1 14:09:58 2018 (-0800)
+;; Last-Updated: Fri Jan  3 09:50:23 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 745
+;;     Update #: 746
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-face.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
