@@ -4,13 +4,13 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2018.10.15
+;; Version: 2020.01.04
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 15 19:38:36 2018 (-0700)
+;; Last-Updated: Fri Jan  3 10:35:18 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 23738
+;;     Update #: 23739
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -19,22 +19,32 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `advice', `advice-preload', `apropos', `apropos+',
-;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `cus-theme', `dired', `dired+', `dired-aux',
-;;   `dired-x', `doremi', `easymenu', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `help+20', `hexrgb', `highlight', `icicles-cmd1',
+;;   `advice', `apropos', `apropos+', `apropos-fn+var',
+;;   `auth-source', `autofit-frame', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `color', `crosshairs', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
+;;   `easymenu', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `el-swank-fuzzy', `epg-config', `ffap', `ffap-', `fit-frame',
+;;   `flx', `font-lock', `font-lock+', `format-spec', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
+;;   `highlight', `hl-line', `hl-line+', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
-;;   `image-file', `info', `info+20', `isearch+', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `pp', `pp+', `ring',
-;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image',
+;;   `image-dired', `image-file', `image-mode', `info', `info+',
+;;   `isearch+', `isearch-prop', `kmacro', `levenshtein', `macroexp',
+;;   `mb-depth', `mb-depth+', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `package',
+;;   `password-cache', `pp', `pp+', `radix-tree', `replace', `ring',
+;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
+;;   `url-parse', `url-vars', `vline', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
