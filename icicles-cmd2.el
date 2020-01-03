@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jun  9 08:02:50 2019 (-0700)
+;; Last-Updated: Fri Jan  3 09:20:19 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 7459
+;;     Update #: 7460
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
