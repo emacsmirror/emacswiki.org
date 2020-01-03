@@ -1204,7 +1204,9 @@ own frame, and it is not used in Emacs releases prior to 21.
 
 Starting with Emacs 23, you can use option
 '''`icicle-Completions-text-scale-decrease'''' to change the size of
-the text used in buffer `*Completions*'.
+the text used in buffer `*Completions*'.    (This option has no
+effect for terminal Emacs.  It is used only for graphic display
+(GUI Emacs).)
 
 ----
 [:icicle-candidate-width-factor]
