@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Dec 10 18:06:10 2019 (-0800)
+;; Last-Updated: Fri Jan  3 10:39:15 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11887
+;;     Update #: 11890
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2318,6 +2318,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2020/01/03 dadams
+;;     icicle-fit-completions-window: Do not text-scale if terminal Emacs.  Thx to Ron Parker.
 ;; 2019/06/09 dadams
 ;;     icicle-repeat-command: Same as in zz-repeat-command in zones.el now.
 ;; 2018/09/21 dadams
@@ -9333,6 +9335,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2020/01/03 dadams
+;;     Version 2020.01.04
 ;; 2018/10/15 dadams
 ;;     Version 2018.10.15.
 ;; 2018/02/13 dadams
