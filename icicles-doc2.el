@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Mar  2 08:40:07 2018 (-0800)
+;; Last-Updated: Fri Jan  3 10:43:59 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 30062
+;;     Update #: 30064
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5650,7 +5650,9 @@
 ;;
 ;;  * Starting with Emacs 23, you can use option
 ;;    `icicle-Completions-text-scale-decrease' to change the size of
-;;    the text used in buffer `*Completions*'.
+;;    the text used in buffer `*Completions*'.  (This option has no
+;;    effect for terminal Emacs.  It is used only for graphic display
+;;    (GUI Emacs).)
 ;;
 ;;  * User option `icicle-candidate-width-factor' controls how many
 ;;    columns of completion candidates are displayed in
