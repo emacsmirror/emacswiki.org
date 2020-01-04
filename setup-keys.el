@@ -4,28 +4,36 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov  9 12:00:13 2018 (-0800)
+;; Last-Updated: Fri Jan  3 18:42:42 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 1353
+;;     Update #: 1357
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cl', `cus-theme', `doremi',
-;;   `doremi-cmd', `doremi-frm', `easymenu', `eyedropper', `faces',
-;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `help+20',
-;;   `hexrgb', `highlight', `info', `info+20', `isearch+',
-;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
-;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
+;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
+;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `faces',
+;;   `faces+', `fit-frame', `font-lock', `font-lock+', `frame-cmds',
+;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `highlight-symbol', `hl-line', `hl-line+', `info', `info+',
+;;   `isearch+', `isearch-prop', `iso-transl', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
+;;   `mouse+', `mwheel', `naked', `palette', `pp', `pp+',
+;;   `radix-tree', `replace', `replace+', `ring', `second-sel',
+;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -75,6 +83,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/01/03 dadams
+;;     Applied renamings from thing-cmd.el:
+;;       mark-thing to select-things, cycle-thing-region to cycle-select-something.
 ;; 2018/11/09 dadams
 ;;     Change binding of to-indentation-repeat-backward to M-p.
 ;; 2018/09/22 dadams
@@ -639,8 +650,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 ;; These replace the bindings for `mark-sexp' and `mark-word'.  Defined in `thing-cmds.el'.
 (eval-after-load "thing-cmds"
   '(progn
-    (global-set-key [(control meta ? )] 'mark-thing)                             ; `C-M-SPC'
-    (global-set-key [(meta ?@)] 'cycle-thing-region)))                           ; `M-@'
+    (global-set-key [(control meta ? )] 'select-things)                          ; `C-M-SPC'
+    (global-set-key [(meta ?@)] 'cycle-select-something)))                       ; `M-@'
 
 (eval-after-load "crosshairs"
   '(global-set-key [(control ?+)] 'crosshairs-mode))                             ; `C-+'
