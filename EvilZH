@@ -1,0 +1,448 @@
+[[zh:EvilZH]]
+[[image/right:EvilLogo]]
+
+'''Evil'''，即 '''e'''xtensible '''vi''' '''l'''ayer for Emacs，是构建于Emacs之上的模拟层。提供了诸多Vim的特性，比如Visual selection或text objects，算是已经过时的[[Vimpulse]]及[VimMode vim-mode]的继承者。[https://github.com/emacs-evil/evil 主页]。
+
+当前稳定版本：**1.2.13**
+
+于YouTube的四分钟[http://youtu.be/Uz_0i27wYbg demo]，由Bailey Ling摄制。Bailey在演示中的输入，可于角落的字幕找到。
+
+== 快速安装 ==
+
+安装最新版的Emacs和其内置的包管理系统。将以下代码置于~/.emacs或~/.emacs.d/init.el，启动Emacs：
+
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
+
+然后:
+
+  M-x package-refresh-contents
+  M-x package-install RET evil
+
+
+可以在[[MELPA]]里安装最新的版本。若是在包管理系统UI内安装，可以：
+
+
+移动光标到evil， 然后：
+
+  i
+  x
+
+i标记了package用于安装，x意为执行操作。
+
+浏览[http://ergoemacs.org/emacs/emacs_package_system.html How to Install Packages Using ELPA, MELPA, Marmalade]获取更多信息。
+
+安装后，将如下代码置于启动文件（即.emacs或init.el)：
+
+  (require 'evil)
+  (evil-mode 1)
+
+==通过el-get安装==
+
+Evil还可以这样安装：
+   
+    M-x el-get-install RET evil RET
+
+==通过QUELPA安装==
+
+    M-x quelpa RET evil RET
+
+==通过源码安装==
+
+Evil托管在Github，下载：
+
+    git clone https://github.com/emacs-evil/evil.git
+
+如果你没安装Git，通过[https://github.com/emacs-evil/evil/archive/master.tar.gz 此链接]下载打包文件（解压： ##tar -xzf master.tar.gz## )。
+
+移动文件夹到 ##~/.emacs.d/evil## （或者于你 ##load-path## 里的其他路径）。然后添加如下代码于启动文件：
+
+
+    (add-to-list 'load-path "~/.emacs.d/evil")
+    (require 'evil)
+    (evil-mode 1)
+
+如果你的启动文件有一节用于设置变量，你需将其置于上述代码后面。
+
+Evil要求 [UndoTree undo-tree.el] 于 ##load-path## ，若是需要相关功能。要不然会采用普通的Emacs undo。
+
+== 文档 ==
+
+一份简短的PDF版的 [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf Evil手册] 。
+
+Noctuid为evil写了一篇 [https://github.com/noctuid/evil-guide 导引]。
+
+== 插件 ==
+
+* [https://github.com/timcharper/evil-surround evil-surround]: Port of Vim's surround script.
+
+* [https://github.com/cofi/evil-numbers evil-numbers]: Vim-like increment and decrement.
+
+* [https://github.com/cofi/evil-leader evil-leader]: Port of Vim's mapleader.
+
+* [https://github.com/antono/evil-rails evil-rails]: Port of rails.vim.
+
+* [https://github.com/redguardtoo/evil-nerd-commenter evil-nerd-commenter]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=1218 Nerd-Commenter]
+
+* [https://github.com/linktohack/evil-commentary evil-commentary]: Port of [https://github.com/tpope/vim-commentary vim-commentary]
+
+* [https://github.com/redguardtoo/evil-mark-replace evil-mark-replace]: Replace the thing in EVIL way. The thing is either the symbol under cursor or the selected text.
+
+* [https://github.com/redguardtoo/evil-matchit evil-matchit]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=39 matchit], support html/python/latex/java/c/ruby/...., any language
+
+* [https://github.com/Dewdrops/evil-exchange evil-exchange]: Port of vim-exchange
+
+* [https://github.com/Dewdrops/evil-extra-operator evil-extra-operator]: Operators for evaluating codes, translating text, taking notes, searching via google, etc.
+
+* [https://github.com/wcsmith/evil-args evil-args]: Motions and text objects for delimited arguments in Evil.
+
+* [https://github.com/bling/evil-jumper evil-jumper]: Replaces the implementation of the jump list such that it mimics more closely with Vim's behavior
+
+* [https://github.com/bling/evil-visualstar evil-visualstar]: Uses current visual selection when * or # is pressed.
+
+* [https://github.com/jbranso/evil-dvorak evil-dvorak]: Use evil mode with dvorak friendly key-bindings
+
+* [https://github.com/hlissner/evil-snipe evil-snipe]: Port of [https://github.com/justinmk/vim-sneak vim-sneak]/[https://github.com/goldfeld/vim-seek vim-seek].
+
+* [https://github.com/noctuid/emacs-sentence-navigation sentence-navigation]: Port of [https://github.com/reedes/vim-textobj-sentence vim-textobj-sentence] that gives sentence text objects that ignore abbreviations.
+
+* [https://github.com/noctuid/evil-textobj-anyblock evil-textobj-anyblock]: Port of [https://github.com/rhysd/vim-textobj-anyblock vim-textobj-anyblock] that gives text objects for matching the closest of various types of blocks.
+
+* [https://github.com/noctuid/evil-textobj-word-column evil-textobj-word-column]: Port of vim's [https://github.com/coderifous/textobj-word-column.vim textobj-word-column] that gives text objects for acting on a column with width word or big WORD.
+
+* [https://github.com/GuiltyDolphin/org-evil org-evil]: Provides integration with [[OrgMode]].
+
+* [https://github.com/noctuid/vertigo.el vertigo]: Port of [https://github.com/prendradjaja/vim-vertigo vim-vertigo] that gives commands for jumping lines using the home row (instead of using something like 34j).
+== Bug报告 ==
+
+若是发现了bug或有建议，可以提交[https://github.com/emacs-evil/evil/issues 至此]。（对所有人开放）
+
+
+== 管理keymaps ==
+
+如果你想充分以Vim方式使用Emacs（例：通过主轴单键的组合执行命令，而非一长串没多少意义的复合键）（主轴：手自然放置于键盘时手指所在的那一行），这章会给予一些指导。这章假设你读过Evil手册的 “Modes and states”以及“Keymaps”小节。
+
+=== 覆盖和截取 ===
+
+Emacs modes 提供了自己的key bindings，和Evil相互独立。[[BufferMenu]]，[[Ediff]]，以及[[Edebug]]是一些例子。默认情况下，Emacs的会覆盖Evil的。可设置evil-overriding-maps以及evil-intercept-maps变量[http://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html 改变]其默认行为。如果设置两者为nil，Evil的keymaps会优先于其它的。比如，若没特意设置，Buffer Menu下的n会调用Buffer-menu-mode定义的key binding，光标往下移一行。但若是Buffer-menu-mode-map从evil-overriding-maps中移除，n会调用Evil下的key binding，移向下一个搜索结果。
+
+即便通过这些设置，仍会有不少熟悉的Evil key bindings不能适用于Buffer Menu。比如一些用于文本编辑的指令，在Buffer Menu下并无多少意义。因此，进入Buffer Menu mode时，会直接进入Evil的motion state，由此，Buffer Menu下的指令，比如x或d可以直接使用。
+
+=== 暂时于Emacs state执行指令 ===
+你可能仍想使用某一mode的key bindings，然后决定将其key map从evil-overridng-maps或evil-intercept-maps里删掉。Evil定义了\指令，用于暂时将之后的输入视为Emacs state下的输入。比如想使用Buffer Menu下的b指令，可以用\b实现。如果不想多输一个\，你可以用evil-define-key函数定义它。
+
+=== 各mode下的初始state ===
+
+开启Buffer Menu会直接进入motion state，其它的，比如Ediff，会直接进入Emacs state。你可以通过修改evil-*-state-modes变量，改变某一mode的初始state。Minibuffer是一个例外，它始终设置在evil-emacs-state-modes里。可以去除evil-emacs-state-mode里的所有成员，并将其置于evil-motion-state-mode：
+
+   (setq evil-motion-state-modes (append evil-emacs-state-modes evil-motion-state-modes))
+   (setq evil-emacs-state-modes nil)
+
+=== 充分利用RET和SPC（回车和空格） ===
+
+很常见，Emacs的各mode会为RET和SPC创建key binding。Evil在evil-motion-state-map里创建了它们的key binding。然而，这些指令对vim老手而言没什么用，他们用j和l指令实现同样的事。所以可能把它们从evil-motion-state-map删掉好些，这样可以直接使用mode定义的RET和SPC。
+
+   (defun my-move-key (keymap-from keymap-to key)
+     "Moves key binding from one keymap to another, deleting from the old location. "
+     (define-key keymap-to key (lookup-key keymap-from key))
+     (define-key keymap-from key nil))
+   (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+   (my-move-key evil-motion-state-map evil-normal-state-map " ")
+
+=== Key Translations (simple) ===
+
+Key Translations是Emacs的一个方便功能，它允许一个输入序列被翻译成另外一个，并优先于Emacs的Key Lookup。不过有一个局限，一个Evil的[https://github.com/emacs-evil/evil/issues/177 bug]使得Key Translations在operator state发挥不了作用。
+
+如下是一个例子：你可以将ch译为C-h，cx译为C-x。为了做到这一点，先要让c变成一个Prefix Key，于是Emacs的Key Lookup不会终止在c。
+
+   (define-key evil-normal-state-map "c" nil)
+   (define-key evil-motion-state-map "cu" 'universal-argument)
+
+第二行自动让c成为Prefix Key。现在来定义Key Translation：
+
+   (define-key key-translation-map (kbd "ch") (kbd "C-h"))
+   (define-key key-translation-map (kbd "cx") (kbd "C-x"))
+
+注意这改动不会影响到在insert state下输入c，因为此时evil-motion-state-map并不生效。
+
+=== Key Translations (better) ===
+
+上述方法有两个缺点：一，它不允许翻译单个字符，二，如果一些mode提供了它自己对ch和cx的binding，那么你将用不了这些binding（甚至\也不行）。为了解决这些问题，你需要使用24.3及以后的Emacs版本。
+
+除了更新Emacs版本，你还要允许lexical binding。这样做可能会使得你的其它依赖dynamic binding的Elisp文件无法改动。将如下加入到启动文件的第一行：
+
+   ;; -*- lexical-binding: t -*-
+
+C-x是一个常用Prefix Key，要是把它设为一个主轴单键会很方便。可以通过如下代码将ch翻译成C-h，cx翻译成C-x：
+
+   ;; Note: lexical-binding must be t in order for this to work correctly.
+   (defun make-conditional-key-translation (key-from key-to translate-keys-p)
+     "Make a Key Translation such that if the translate-keys-p function returns true,
+   key-from translates to key-to, else key-from translates to itself.  translate-keys-p
+   takes key-from as an argument. "
+     (define-key key-translation-map key-from
+       (lambda (prompt)
+         (if (funcall translate-keys-p key-from) key-to key-from))))
+   (defun my-translate-keys-p (key-from)
+     "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
+     (and
+       ;; Only allow a non identity translation if we're beginning a Key Sequence.
+       (equal key-from (this-command-keys))
+       (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
+   (define-key evil-normal-state-map "c" nil)
+   (define-key evil-motion-state-map "cu" 'universal-argument)
+   (make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
+   (make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-p)
+
+如果有keymap定义了ch，你可以以\ch使用它，因为在Emacs state，my-translate-keys-p返回了false，结果就是ch被翻译成了它自己。
+
+在非insert state，你可以输入g3来split-window-right，输入go移动到其它窗口，…。这代码只适用于被翻译的键在输入序列的头部的时候，sg不会被翻译成sC-x。
+
+如果你怀念Evil的g指令，只要用C-x重新定义它就好：
+
+   (define-key evil-motion-state-map "\C-x\C-]" 'find-tag)
+
+查看evil-maps.el获取所有Evil的g指令。
+
+可以对其它c<char>做相同的转化：
+
+  (when (fboundp 'cl-loop)
+        ;; cl-loop iterates from ASCII '!' to ASCII '~'.
+        (cl-loop for ascii-code-i from 33 to 126 by 1 do
+                 (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
+                                                   (kbd (format "C-%c" ascii-code-i))
+                                                   'my-translate-keys-p)))
+
+== 创建新的text object ==
+浏览Gordon Gustafson在stackoverflow的回答： http://stackoverflow.com/questions/18102004/emacs-evil-mode-how-to-create-a-new-text-object-to-select-words-with-any-non-sp 
+
+注意有两种途径，用于最新版的，以及用于1.0.9的稳定版的。
+
+== 定义你自己的Esc键 ==
+
+你可以定义任何字符序列来实现从insert state回到normal state。C-c在Vim中默认生效，但Evil因为Emacs的编程标准，不能占用C-c。
+
+如下代码展示了如何将C-c定义为Esc键，通过Key Translation。
+
+   ;;; C-c as general purpose escape key sequence.
+   ;;;
+   (defun my-esc (prompt)
+     "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
+     (cond
+      ;; If we're in one of the Evil states that defines [escape] key, return [escape] so as
+      ;; Key Lookup will use it.
+      ((or (evil-insert-state-p) (evil-normal-state-p) (evil-replace-state-p) (evil-visual-state-p)) [escape])
+      ;; This is the best way I could infer for now to have C-c work during evil-read-key.
+      ;; Note: As long as I return [escape] in normal-state, I don't need this.
+      ;;((eq overriding-terminal-local-map evil-read-key-map) (keyboard-quit) (kbd ""))
+      (t (kbd "C-g"))))
+   (define-key key-translation-map (kbd "C-c") 'my-esc)
+   ;; Works around the fact that Evil uses read-event directly when in operator state, which
+   ;; doesn't use the key-translation-map.
+   (define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
+   ;; Not sure what behavior this changes, but might as well set it, seeing the Elisp manual's
+   ;; documentation of it.
+   (set-quit-char "C-c")
+
+在Emacs，C-g和Vim里的C-c意思相近，并且C-c更接近人体工程学，我决定当已经从insert state退出的时候，将C-c翻译成C-g。
+
+Emacs定义C-c为方便的全局Prefix Key。为了继续使用它，你可以通过Key Translation把cc翻译成C-c，因为Emacs不会把一个序列翻译两次，所以cc不会变成Esc。
+
+还有另一种方法，使用keychord.el定义Esc。例如，如下代码定义了,,为Esc。
+
+   (key-chord-define evil-normal-state-map ",," 'evil-force-normal-state)
+   (key-chord-define evil-visual-state-map ",," 'evil-change-to-previous-state)
+   (key-chord-define evil-insert-state-map ",," 'evil-normal-state)
+   (key-chord-define evil-replace-state-map ",," 'evil-normal-state)
+
+== 将Caps键设为Ctrl及Esc ==
+
+很多Emacs用户替换了Caps和Ctrl。还有一部分vim用户替换了Caps和Esc。在Evil里，也许同时做到两者会更好。
+
+有很多方法，决定于你在用什么系统。 [https://www.dannyguo.com/blog/remap-caps-lock-to-escape-and-control/ a guide for Linux/Mac/Windows folks]
+
+
+== AceJump Integration ==
+
+See [https://gist.github.com/cofi/4963125 this gist].
+
+<include gist "https://gist.github.com/4963125">
+
+== 根据状态改变mode-line的颜色 ==
+
+在vim里我喜欢当进入到insert模式或文件需要保存时改变状态栏的颜色。这件事在Emacs里比在vim简单。
+
+   ;; change mode-line color by evil state
+   (lexical-let ((default-color (cons (face-background 'mode-line)
+                                      (face-foreground 'mode-line))))
+     (add-hook 'post-command-hook
+       (lambda ()
+         (let ((color (cond ((minibufferp) default-color)
+                            ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+                            ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+                            ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+                            (t default-color))))
+           (set-face-background 'mode-line (car color))
+           (set-face-foreground 'mode-line (cdr color))))))
+
+== Make the most out of search and replace ==
+
+The `cgn' command is "change next search object", which is perfect for search and replace.
+I've read an article called (I guess) "Why Vim doesn't need multiple cursors",
+which mentioned that `cgn' + rectangle selection can cover 90% what multiple cursors can do.
+
+Back to the topic, the default evil searching with `/' is:
+
+# Hit `/'
+# Insert regex
+# Hit enter and search
+# Hit "N" if you jump to the next match
+# Hit `cgn' to start replacing
+
+This workflow has two downsides:
+
+# You need to insert the text again
+# If you are on the text you want to replace and you start the search,
+  evil automatically jumps to the next match, ew.
+
+How about this:
+
+# Go to visual mode and select what you want to replace
+# Hit `.' 
+# hit `cgn' and replace
+
+Here is the code:
+
+  ;; . in visual mode
+  (defun moon/make-region-search-history ()
+    "Make region a histroy so I can use cgn."
+    (interactive)
+    (let ((region (strip-text-properties (funcall region-extract-function nil))))
+      (push region evil-ex-search-history)
+      (setq evil-ex-search-pattern (evil-ex-make-search-pattern region))
+      (evil-ex-search-activate-highlight evil-ex-search-pattern)
+      (deactivate-mark)))
+
+Bind this command to `.' in visual mode and you are set!
+
+Here are some advice functions that can insert the selected text for you
+in evil search:
+
+  ;; / in visual mode will start search immediately
+  (defun moon-evil-ex-start-search-with-region-string ()
+    (let ((selection (with-current-buffer (other-buffer (current-buffer) 1)
+                       (when (evil-visual-state-p)
+                         (let ((selection (buffer-substring-no-properties (region-beginning)
+                                                                          (1+ (region-end)))))
+                           (evil-normal-state)
+                           selection)))))
+      (when selection
+        (evil-ex-remove-default)
+        (insert selection)
+        (evil-ex-search-activate-highlight (list selection
+                                                 evil-ex-search-count
+                                                 evil-ex-search-direction)))))
+
+  (advice-add #'evil-ex-search-setup :after #'moon-evil-ex-start-search-with-region-string)
+
+  ;; # in visual mode
+  (defun moon-evil-ex-search-word-backward-advice (old-func count &optional symbol)
+    (if (evil-visual-state-p)
+        (let ((region (buffer-substring-no-properties
+                       (region-beginning) (1+ (region-end)))))
+          (setq evil-ex-search-pattern region)
+          (deactivate-mark)
+          (evil-ex-search-full-pattern region count 'backward))
+      (apply old-func count symbol)))
+
+  ;; * in visual mode
+  (defun moon-evil-ex-search-word-forward-advice (old-func count &optional symbol)
+    (if (evil-visual-state-p)
+        (let ((region (buffer-substring-no-properties
+                       (region-beginning) (1+ (region-end)))))
+          (setq evil-ex-search-pattern region)
+          (deactivate-mark)
+          (evil-ex-search-full-pattern region count 'forward))
+      (apply old-func count symbol)))
+
+  (advice-add #'evil-ex-search-word-backward :around #'moon-evil-ex-search-word-backward-advice)
+  (advice-add #'evil-ex-search-word-forward :around #'moon-evil-ex-search-word-forward-advice))
+
+
+
+== Powerline Integration ==
+
+[https://github.com/Dewdrops/powerline Here] is a powerline fork tuned for Evil user.
+
+== counsel-yank-pop (or yank-pop) intergration in visual mode ==
+
+`counsel-yank-pop' in visual mode does not replace the region, instead it just inserts the text.
+To fix this behavior, I simply advise `counsel-yank-pop' with a function that kills the region. 
+
+
+    (defun moon-override-yank-pop (&optional arg)
+          "Delete the region before inserting poped string."
+          (when (and evil-mode (eq 'visual evil-state))
+            (kill-region (region-beginning) (region-end))))
+
+    (advice-add 'counsel-yank-pop :before #'moon-override-yank-pop)
+
+
+== Discussion ==
+
+: ''(Evil is also discussed at the [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list gmane.emacs.vim-emulation] mailing list and in our IRC channel #evil-mode on irc.freenode.net.)''
+
+[new]
+It would be nice with a brief overview over the objectives and difference to [ViperMode Viper].
+
+: The main difference is that while Viper emulates classical vi, Evil emulates Vim. It therefore sports additional features like Visual selection and text objects. Evil also attempts to integrate with Emacs: for example, repetition is implemented in terms of keyboard macros. At the most basic level, Evil is just a collection of key bindings that can be extended and adapted to any Emacs mode.
+
+=== Vim tabs ===
+The first thing I missed of Vim were the tabs. With elscreen.el and its dependencies installed, the following code emulates part of the Vim behaviour:
+
+    (load "elscreen" "ElScreen" t)
+    (elscreen-start)
+    (define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;create tab
+    (define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill) ;kill tab
+
+    (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
+    (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
+
+=== Toggle input method ===
+Add below code into ~/.emacs:
+
+    (defun evil-toggle-input-method ()
+      "when toggle on input method, switch to evil-insert-state if possible.
+    when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
+      (interactive)
+      (if (not current-input-method)
+          (if (not (string= evil-state "insert"))
+              (evil-insert-state))
+        (if (string= evil-state "insert")
+            (evil-normal-state)
+            ))
+      (toggle-input-method))
+    
+    (global-set-key (kbd "C-\\") 'evil-toggle-input-method)
+
+=== ESC key under GNU Screen ===
+You may find that the ESC key does not work as expected when running "emacs -nw" under GNU Screen. I.e. pressing ESC does not get you out of insert mode if you press quickly. The fix is to put this in your .screenrc
+
+    maptimeout 5
+
+See details on this [http://vim.wikia.com/wiki/GNU_Screen_integration|link]
+
+=== ESC key under tmux ===
+Like GNU Screen above, the ESC key may not work as expected when running emacs within tmux. This can be alleviated by setting the option 'escape-time' to 0. You can perform the following in runtime, or add it to your tmux configuration file:
+
+    set -s escape-time 0
+
+This fix was found on [https://stackoverflow.com/questions/23259366/emacs-evil-mode-ctrl-irritating-delay-switching-to-normal-mode|this page]
+
+Setting this to 0 causes issues with tmux keybindings beginning with alt.  This fixed it for me (same timeout as the screen timeout above):
+
+    set -s escape-time 5
+
+----
+CategoryKeys CategoryEmulation
