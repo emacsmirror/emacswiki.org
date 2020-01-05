@@ -1,3 +1,4 @@
+[[zh:EvilZH]]
 [[image/right:EvilLogo]]
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to the now-obsolete [[Vimpulse]] and [VimMode vim-mode]. Its [https://github.com/emacs-evil/evil home page].
