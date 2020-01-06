@@ -17,3 +17,6 @@ Gnus is able to read RSS feeds natively.  See [[GnusRss]].
 == Gatewaying RSS to e-mail ==
 
 If your inbox is not full enough, you can gateway RSS to e-mail using rss2email.  See [[HOWTOReadFeedsInEmacsViaEmail]].
+
+== Reading RSS using Emacs Application Framework ==
+[https://github.com/manateelazycat/emacs-application-framework Emacs Application Framework] is an application framework that extends GNU Emacs to PyQt applications. EAF-RSS-Reader is an EAF application that provides multi-thread RSS reader with full graphical rendering.
