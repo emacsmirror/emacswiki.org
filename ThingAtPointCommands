@@ -14,7 +14,7 @@ The commands select various Lisp objects and text entities that are at or near [
 
 If you invoke command '''`thgcmd-bind-keys'''' (e.g. in your [[init file]]) then the following [[key binding]]s are created:
 
-* '''`C-M-SPC'''' -- `<tt>[[#mark-thing]]</tt>' (overwrites the standard binding for `mark-sexp'; `<tt>[[sexp]]</tt>' is the default thing type)
+* '''`C-M-SPC'''' -- `<tt>[[select-things]]</tt>' (overwrites the standard binding for `mark-sexp'; `<tt>[[sexp]]</tt>' is the default thing type)
 * '''`##M-@##'''' -- `<tt>[[#cycle-thing-region]]</tt>' (overwrites the standard binding for `mark-word')
 * '''`C-M-U'''' (aka `C-M-S-u') -- `<tt>[[#mark-enclosing-list]]</tt>'
 * '''`C-M-F'''' (aka `C-M-S-f') -- `<tt>[[#mark-enclosing-list-forward]]</tt>'
@@ -26,16 +26,17 @@ If you invoke command '''`thgcmd-bind-keys'''' (e.g. in your [[init file]]) then
 
 
 
-[:mark-thing]
-== `mark-thing' ==
+[:mark-things]
+[:select-things]
+== `select-things' ==
 
-Command '''`mark-thing'''' marks, that is selects, successive things, starting at [[point]].  Point is moved to the beginning of the enclosing thing (or to the end, if you use a negative [[prefix argument]]). [[mark|Mark]] is put at the same place that command `forward-'''thing'' would put it using the same prefix argument.
+Command '''`select-things'''' (alias `mark-things`) selects, that is marks, successive things, starting at [[point]].  Point is moved to the beginning of the enclosing thing (or to the end, if you use a negative [[prefix argument]]). [[mark|Mark]] is put at the same place that command `forward-'''thing'' would put it using the same prefix argument.
 
 If the [[region]] is not [[active region|active]], you are prompted for the type of thing to use -- completion is available. The default type for completion is the first element in [[user option]] `thing-types' (which, by default, is `<tt>[[sexp]]</tt>').
 
-If the region is active, you are not prompted, and the last-used type of thing is used again. On consecutive uses of `mark-thing', the region is active, so you are not prompted, and the region is extended to successive things of the same type. 
+If the region is active, you are not prompted, and the last-used type of thing is used again. On consecutive uses of `select-things', the region is active, so you are not prompted, and the region is extended to successive things of the same type. 
 
-This is true even if the region is empty -- as long as it is active, it is extended using the last-used type of thing, without any prompting. You can thus just hit `C-SPC' to set mark and activate an empty region, then use `mark-thing' to select successive things of the last type used.
+This is true even if the region is empty -- as long as it is active, it is extended using the last-used type of thing, without any prompting. You can thus just hit `C-SPC' to set mark and activate an empty region, then use `select-things' to select successive things of the last type used.
 
 
 
@@ -45,7 +46,7 @@ This is true even if the region is empty -- as long as it is active, it is exten
 
 Command '''`cycle-thing-region'''' selects a single thing near the [[cursor]].  You are not prompted for the type of thing. Instead, successive uses of the command select a different type of thing. The first type of thing selected is determined by the first element in option `thing-types' (which, by default, is `<tt>[[sexp]]</tt>').
 
-In TransientMarkMode, you can follow this with `mark-thing' to select successive things
+In TransientMarkMode, you can follow this with `select-things' to select successive things
 of the same type, but to do that you must first use `C-x C-x' (`exchange-point-and-mark'): Using the bindings created by command `thgcmd-bind-keys', this becomes `##M-@ C-x C-x C-M-SPC##'.  This command has an alias: '''`select-thing-near-point''''. 
 
 
