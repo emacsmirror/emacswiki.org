@@ -4,13 +4,13 @@
 ;; Description: Commands that use things, as defined by `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2020, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Fri Aug 30 19:10:39 2019 (-0700)
+;; Last-Updated: Mon Jan  6 08:15:53 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 882
+;;     Update #: 883
 ;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
