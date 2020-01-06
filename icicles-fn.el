@@ -4,11 +4,11 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Jan  3 09:50:50 2020 (-0800)
+;; Last-Updated: Sun Jun  9 07:37:28 2019 (-0700)
 ;;           By: dradams
-;;     Update #: 15290
+;;     Update #: 15286
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -449,7 +449,7 @@
   ;; icicle-default-value, icicle-list-join-string, icicle-mark-position-in-candidate,
   ;; icicle-point-position-in-candidate, icicle-regexp-quote-flag, icicle-require-match-flag,
   ;; icicle-shell-command-candidates-cache, icicle-show-Completions-help-flag, icicle-sort-comparer,
-  ;; icicle-special-candidate-regexp, icicle-transform-function,
+  ;; icicle-sort-orders-alist, icicle-special-candidate-regexp, icicle-transform-function,
   ;; icicle-use-~-for-home-dir-flag
 
 (require 'icicles-var)
@@ -3714,9 +3714,8 @@ Window fitting is available only for Emacs 24+, because
 windows).
 
 Text size scaling uses `icicle-Completions-text-scale-decrease' and is
-available only for graphic displays (GUI, not terminal, Emacs) with
-Emacs 23+.  (No scaling in any case if using `oneonone.el' with a
-`*Completions*' frame.)."
+available only for Emacs 23+.  (No scaling in any case if using
+`oneonone.el' with a `*Completions*' frame.)."
   (unless (or (eq arg 'scale-only)
               (= emacs-major-version 23) ; `fit-window-to-buffer' is broken before 24: removes windows.
               (= emacs-major-version 22))
@@ -3728,8 +3727,7 @@ Emacs 23+.  (No scaling in any case if using `oneonone.el' with a
            (or (icicle-get-safe icicle-last-top-level-command 'icicle-Completions-window-max-height)
                icicle-Completions-window-max-height))))))
   (unless (eq arg 'fit-only)
-    (when (and (graphic-display-p)                              ; Not terminal Emacs
-               (boundp 'icicle-Completions-text-scale-decrease) ; Emacs 23+
+    (when (and (boundp 'icicle-Completions-text-scale-decrease) ; Emacs 23+
                (eq major-mode 'completion-list-mode)
                (or (not (boundp '1on1-*Completions*-frame-flag))  (not 1on1-*Completions*-frame-flag)))
       (text-scale-decrease icicle-Completions-text-scale-decrease))))
