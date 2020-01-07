@@ -1,15 +1,21 @@
 Various XML parsers. See also XmlModes for XML editing environments.
 
 
-== libxml2 and dom.el (New in Emacs 25.1) ==
+== libxml2 (New in Emacs 24) and dom.el (New in Emacs 25) ==
 
-Starting with Emacs 25.1, Emacs is by default compiled to use the library //libxml2//, such as in the function <code>libxml-parse-xml-region</code>.
+Starting with Emacs 24.1, Emacs is by default compiled to use the library //libxml2//, such as in the function <code>libxml-parse-xml-region</code>.
 Like the included //xml.el// library, it creates a list structure of each node in the XML or HTML tree.
-There is also a newly included library, //dom.el//, for working with the output of the XML and HTML parsing functions 
-(including that from //xml.el//).
 
-* XML parsing documentation: https://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-HTML_002fXML.html
-* DOM parsing documentation: https://www.gnu.org/software/emacs/manual/html_node/elisp/Document-Object-Model.html
+Starting with Emacs 25.1,there is a new library, //dom.el//, for working with the output of the XML and HTML parsing functions 
+(including that from //xml.el//).
+That output is a list-based representation of the standardized [https://en.wikipedia.org/wiki/Document_Object_Model Document Object Model], or "DOM".
+
+These features are used, for example, in [[eww]], a web browser included with Emacs.
+
+Documentation is available on-line at the following locations:
+
+* XML parsing: https://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-HTML_002fXML.html
+* DOM parsing: https://www.gnu.org/software/emacs/manual/html_node/elisp/Document-Object-Model.html
 
 A basic example: 
 
