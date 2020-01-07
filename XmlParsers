@@ -24,9 +24,7 @@ A basic example:
                        (insert-file-contents "my-file.xml")
                        (libxml-parse-xml-region (point-min) (point-max))))
        ;; Get first level children with "img" tag.
-       (img-nodes (seq-filter (lambda (node) 
-                                (eq (dom-tag node) 'img))
-                              (dom-children xml-dom-tree))))
+       (img-nodes (dom-by-tag xml-dom-tree 'img))
   ;; Further processing
   ...)
 </pre> 
