@@ -97,6 +97,9 @@ Fundamentally, what is the point of *not* having a canonical syntax for this?  A
 
 So, FWIW, I request that a simple, consistent syntax be designated for marking up keyboard input, one that renders nicely and is easy to read and input as markup.  Whether it's ##<kbd></kbd>## or something else, what matters most is that there is one syntax that is designated as correct, documented clearly as such, and renders cleanly.  I can only speak for myself, but I will be much more interested in contributing here if this issue is solved.
 
+[new]
+Sounds reasonable to me. I see no harm in adding it: ##<kbd>C-x C-s</kbd>## → <kbd>C-x C-s</kbd>
+– Alex Schroeder
 
 === tt does the Wrong Thing with Double-Quote Chars ===
 
