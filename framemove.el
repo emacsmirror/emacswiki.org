@@ -12,7 +12,7 @@
 ;; Provide a simple set of keystrokes to move the input/focus
 ;; between windows.
 ;;
-;; Version 0.9
+;; Version 0.10
 ;;
 ;; This software is licensed under the GPL version 3.
 ;;
@@ -28,7 +28,12 @@
 ;;    (setq framemove-hook-into-windmove t)
 ;; 
 ;; Compatibility: GNU Emacs 22.x, 23.x
-;;
+;; v0.10: change remove-if-not to cl-remove-if-not
+;;        req cl-seq in an eval-when-compile
+;;        quote lambdas with #'
+
+;;; Code:
+(eval-when-compile (require 'cl-seq))
 
 (defvar framemove-hook-into-windmove nil
   "When non-nil, try moving frames if moving windows fails.")
@@ -106,24 +111,24 @@
          (coords-projected-in-dir (fm-project current-coords thisframe dir))
          (possible-frames
           (sort
-           (remove-if-not
+           (cl-remove-if-not
             '(lambda (f) (fm-frame-is-to-dir-of f dir thisframe))
             (visible-frame-list))
-           '(lambda (f1 f2) (fm-frame-is-to-dir-of f1 (fm-opposite dir) f2)))))
+           #'(lambda (f1 f2) (fm-frame-is-to-dir-of f1 (fm-opposite dir) f2)))))
     (if possible-frames
         (let ((frames-in-line-of-cursor
                ;; try to find frame in line with cursor
-               (remove-if-not
+               (cl-remove-if-not
                 '(lambda (f) (fm-coord-in-range current-coords dir f))
                 possible-frames))
               (frames-in-line-of-frame
                ;; find frame that overlaps current frame
                ;; need to sort by distance from cursor
                (sort
-                (remove-if-not
+                (cl-remove-if-not
                  '(lambda (f) (fm-range-overlap thisframe f dir))
                  possible-frames)
-                '(lambda (f1 f2)
+                #'(lambda (f1 f2)
                    (< (fm-dist-from-coords coords-projected-in-dir f1)
                       (fm-dist-from-coords coords-projected-in-dir f2))))))
           (select-frame-set-input-focus
