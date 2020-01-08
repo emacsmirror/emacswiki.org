@@ -20,9 +20,7 @@ Currently, when focus shifts to a new frame - the point does not change inside t
 
 Download from Lisp:framemove.el
 
-If you get errors due to remove-if-not not being defined, you might need some common-lisp stuff:
-
-    (require 'cl)
+v0.10 (2019-01-08): The linked source is updated to also address #6 as well as a note that was in this space about errors related to 'remove-if-not'; those should also be addressed by this version which byte compiles cleanly for me under GNU 26.3 on Windows 10x64. ~corwin
 
 ----
 
@@ -85,6 +83,7 @@ If you get errors due to remove-if-not not being defined, you might need some co
            (select-frame-set-input-focus
 }}}
 
+  *Done*
 
 ----
 
