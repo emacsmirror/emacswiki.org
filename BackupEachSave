@@ -28,5 +28,40 @@ backup-each-save.el works well for me, but I had a problem with the variable "fi
 [new]
 That should only be an issue for fairly old versions of Emacs, however the version of backup-each-save.el hosted here at the Wiki (at least; I can't access the other URL) looks like it accounts for this possibility.
 
+
+[new]
+Sadly I have to use windows at my workplace and 'backup-each-save' didn't worked out of the box. When I saved a file, the function tried to create folders with that kind of path : "c:/some/path/c:/some/path" resulting in failure to do so (invalid argument).
+
+I know almost nothing in elips but I managed to fix the issue with the following code, at line 125 of the 1.4 version ( https://www.emacswiki.org/emacs/download/backup-each-save.el ) :
+<pre>
+this :
++ (replace-regexp-in-string "c:/" "" containing-dir))))
+Instead of this :
+- containing-dir)))
+</pre>
+
+Here is the code in context :
+
+    (defun backup-each-save-compute-location (filename)
+       (let* ((containing-dir (file-name-directory filename))
+             (basename (file-name-nondirectory filename))
+             (backup-container
+              (format "%s/%s"
+                      backup-each-save-mirror-location
+    ;;                containing-dir))) ;; Here is the original code
+                      (replace-regexp-in-string "c:/" "" containing-dir)))) ;; Here is my modification to make it work on windows
+         (when (not (file-exists-p backup-container))
+          (make-directory backup-container t))
+        (format "%s/%s-%s" backup-container basename
+                (format-time-string backup-each-save-time-format))))
+
+
+It's probably hacky but it works for me. I hope it will be useful to other (unwilling) windows users. I tried to emailed the author, but the mail couldn't be delivered.
+
+-- Max
+
+[new]
+
+
 ----
 CategoryFiles
