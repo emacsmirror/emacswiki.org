@@ -1,4 +1,4 @@
-Emacs keeps track of files that you are currently editing by creating a symbolic link that looks like .#-emacsa08196. Unlike AutoSave files or BackupFiles, these cannot be moved to a different directory. You can disable them in Emacs versions >= 24.3 with the following configuration:
+Emacs keeps track of files that you are currently editing by creating a symbolic link that looks like .#-emacsa08196. Unlike Manual:AutoSave files or Manual:BackupFiles, these [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=31908 cannot] be moved to a different directory. You can disable them in Emacs versions >= 24.3 with the following configuration:
 
    (setq create-lockfiles nil)
 
