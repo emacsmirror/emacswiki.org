@@ -190,7 +190,7 @@ This could be set persistently in your ##.psqlrc## file, or else using ##sql-log
 
 If you can live with not typing on the same line as the prompt, you
 can just add a newline to the end of your psql prompt.  Put something
-like this in your ##.psqlr## file:
+like this in your ##.psqlrc## file:
 
   \set PROMPT1 '// %n@%M %/\n'
 
