@@ -200,12 +200,15 @@ Rather than having you try to manage such complexity ahead of time using options
 
 In sum, '''Icicles''' keeps it simple, and leaves it up to you to choose the appropriate sort order for any given context. This design choice is one reason why '''Icicles''' makes it easy to choose a sort even while you are completing input -- each act of completion is different. 
 
+[:slow-sorts]
 It can help you choose, however, to know which of the predefined '''Icicles''' sort orders are more complex, and therefore tend to be slower. Here they are:
 
 || '''Sort Order''' || '''Sort Function Used''' ||
 || by previous use alphabetically || `icicle-historical-alphabetic-p' ||
 || by last use as input || `icicle-latest-input-first-p' ||
 || by last use || `icicle-latest-use-first-p' ||
+
+
 
 The reason these sorts are slower is that they check the current minibuffer history, to see whether, and where, each candidate is located in the history list. If you, like I, have very long history lists, then this can take a while. I use histories of virtually unlimited length -- I let SaveHist (<tt>[[savehist-20+.el]]</tt>) save all of my histories from one Emacs session to the next.
 
