@@ -45,7 +45,7 @@ This is the configuration he uses:
 I found that semantic-idle-completions-mode interferes with autocomplete and had to disable it for autocomplete to work normally. - TaylanUB
 
 [new]
-The example obove is very outdated and brought up many errors. As this is more an everyone-always-butts-in-Wiki, I want to share my own version of this code which worked for me:
+The example above is very outdated and brought up many errors. As this is more an everyone-always-butts-in-Wiki, I want to share my own version of this code which worked for me:
 
 {{{
 (setq package-enable-at-startup nil)
