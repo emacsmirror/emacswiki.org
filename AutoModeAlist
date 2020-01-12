@@ -292,12 +292,12 @@ With prefix arg, prompt the user for FILE; else, use function `buffer-file-name'
   (interactive
    (list
     (if current-prefix-arg
-	(read-file-name "Explain the automatic mode of file: ")
+	(read-file-name "Explain the automatic mode of (possibly non-existing) file: " )
       (buffer-file-name))))
 
-  (if (null file)
-      (error "I need a file name to work with"))
-  
+ (if (equal "" file)
+   (error "I need some file name to work with"))
+
  (let* ((file (expand-file-name file))
 	(index 0)
 	assoc)
