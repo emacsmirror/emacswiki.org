@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 29 13:31:28 2019 (-0700)
+;; Last-Updated: Sun Jan 12 17:00:34 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16556
+;;     Update #: 16579
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,18 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/01/12 dadams
+;;     Added: bmkp-make-obsolete, bmkp-make-obsolete-variable.  Use everywhere instead of vanilla.
+;;     bookmark-completing-read, bmkp-completing-read-(1|bookmarks|lax):
+;;       Added optional arg USE-NIL-ALIST-P.
+;;     bmkp-completing-read-1: Made all args except PROMPT optional.
+;;     Protect defvaralias for bmkp-w3m-allow-multi-tabs-flag, for Emacs 20-21.
+;;     bookmark-edit-annotation: If no prefix arg, pass non-nil USE-NIL-ALIST-P arg.
+;;     bookmark-set: If numeric prefix arg, pass non-nil USE-NIL-ALIST-P arg.
+;;     bookmark-show-annotation, bmkp-retrieve-icicle-search-hits-1, bmkp-set-sequence-bookmark:
+;;       Pass non-nil USE-NIL-ALIST-P arg.
+;;     Renamed bmkp-bookmark-valid-p to bmkp-bookmark-type-valid-p.
+;;     bmkp-bookmark-type-valid-p: Restored missing definition (was bmkp-bookmark-type).
 ;; 2019/08/13 dadams
 ;;     Added bmkp-clone-bookmark, bmkp-copy-bookmark (alias).
 ;; 2019/07/13 dadams
@@ -177,7 +189,7 @@
 ;;       bmkp-get-autofile-bookmark:
 ;;         Handle a directory like a file.
 ;; 2018/12/23 dadams
-;;     Added: bmkp-bookmark-type-valid-p., bmkp-buffer-bookmark-p, bmkp-buffer-alist-only.
+;;     Added: bmkp-bookmark-type-valid-p, bmkp-buffer-bookmark-p, bmkp-buffer-alist-only.
 ;;     Removed: bmkp-bookmark-type - use bmkp-bookmark-type-valid-p instead.
 ;;     bmkp-edit-tags-send: Use bmkp-bookmark-type-valid-p.
 ;; 2018/11/22 dadams
@@ -2233,6 +2245,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2020/01/12 dadams
+;;     bmkp-lighted-jump-to-list: Raise error if no highlighted bookmarks at point.
+;;     bmkp-(un)light-bookmark-this-buffer: Pass non-nil USE-NIL-ALIST-P to bookmark-completing-read.
 ;; 2019/08/21 dadams
 ;;     bmkp-toggle-auto-light-when-(jump|set): Fix message: symbol-name, not symbol-value.
 ;; 2019/05/01 dadams
@@ -2376,6 +2391,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2020/01/12 dadams
+;;     Version 2020.01.12
 ;; 2019/04/22 dadams
 ;;     Version 2019.04.22
 ;; 2019/04/22 dadams
