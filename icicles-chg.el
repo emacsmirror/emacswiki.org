@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jan  3 10:39:15 2020 (-0800)
+;; Last-Updated: Sun Jan 12 16:12:10 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11890
+;;     Update #: 11891
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2318,6 +2318,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2020/01/12 dadams
+;;     icicle-fit-completions-window: Fix last change, for Emacs 20.
 ;; 2020/01/03 dadams
 ;;     icicle-fit-completions-window: Do not text-scale if terminal Emacs.  Thx to Ron Parker.
 ;; 2019/06/09 dadams
