@@ -42,6 +42,90 @@ I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefr
 
 == Markup/Generation Issues==
 
+=== Need for canonical syntax for keyboard input ===
+
+For example, on GetHelp, I count at least 4, slightly differing syntaxes used to markup keyboard input.
+
+It would be helpful if there were one official syntax.
+
+And it would be helpful if it rendered in HTML using ##<kbd></kbd>## tags, which tend to look distinct in current browsers.
+
+[new]
+What do you suggest we do?
+Some regular expression to specify how to recognise the markup would be great. Perhaps simply highlight any sequence of ##(<[A-Z]>|\b[SMF]-(\S|f[0-9]))\b)## and don't rely on weird quotes?
+– [[Alex Schroeder]]
+
+[new]
+I'd suggest a dedicated syntax for keyboard input, probably ##<kbd></kbd>##.  Simple, explicit, already an HTML tag.  No magic or edge cases.
+
+[new:DrewAdams:2020-01-02 17:15 UTC]
+This question has also been raised on [[https://emacs.meta.stackexchange.com/q/15/105|emacs.StackExchange]].
+
+I disagree with a proposal to use something like ##<kbd>## for Emacs key sequences. (I [[https://emacs.meta.stackexchange.com/a/31/105|said the same thing]] in that emacs.SE thread.)
+
+##<kbd>## (e.g. as rendered on Stack Exchange) is OK for indicating ''physical'' keyboard keys, such as `Alt', `Ctrl' (or `Control') and `Enter' (or `Return').
+
+It is not great for indicating Emacs ''key sequences'', which are logical.
+
+In the printed versions, the Emacs manuals make a similar distinction (physical vs logical keys).
+
+We should generally use the same notation that Emacs itself uses for key sequences: `C-x'.
+
+I say "we should generally use...", but more importantly, we should let people use whatever they prefer, as long as it gets the message across clearly.
+
+[new]
+
+I think the distinction between physical keys and logical key sequences isn't important enough, in the context of EmacsWiki, to discard the idea of using ##<kbd></kbd>## syntax in wiki pages, because there are very few instances of writing out a full key name (like `Control')--almost every case is a key sequence.  The benefit, of having a consistent syntax to represent input, would remain.  
+
+As Alex has written in the MissionStatement, etc, EmacsWiki is not the Emacs manual, and it serves a different purpose, so it need not match the same standards, especially when doing so would have a significant drawback.
+
+In this case, I think the drawback is indeed significant.  As someone who has used Emacs for years but not contributed to this wiki often, when I wanted to make some contributions recently, it was a chore to do something that ought to be very straightforward: look up the correct syntax to represent keyboard input.  Looking at, e.g. the source of GetHelp, as I mentioned, there were 4 different syntaxes used within the space of a few paragraphs, and it was not clear which one was correct or preferred.  Looking at TextFormattingRules, it was also not helpful at all (no hits searching for `keyboard' or `input').
+
+From a reader's perspective, having several different syntaxes used to represent input makes it difficult to learn.  How is the reader to know if there is a meaningful distinction between these syntaxes?
+
+* '''`##C-h C-h##`'''
+* '''`C-h C-h''''
+* `C-h C-h'
+* '''##C-h C-h##'''
+
+I can easily imagine a new user wondering if some of those quotes around the key sequences are also supposed to be input, because why else would they be displayed sometimes and not others?
+
+And as a contributor, which syntax should I use?  Why are some so much more cumbersome to type?
+
+Fundamentally, what is the point of *not* having a canonical syntax for this?  All it does it make the task harder for readers and contributors.  Marking up keyboard input/key sequences/whatever is a fundamental part of writing Emacs documentation, and there is currently far too much friction to doing so here.  Issues like this definitely deter potential contributors.  It's one of the reasons I've preferred publishing my own documentation, like [https://github.com/alphapapa/emacs-package-dev-handbook this], rather than contributing here.
+
+So, FWIW, I request that a simple, consistent syntax be designated for marking up keyboard input, one that renders nicely and is easy to read and input as markup.  Whether it's ##<kbd></kbd>## or something else, what matters most is that there is one syntax that is designated as correct, documented clearly as such, and renders cleanly.  I can only speak for myself, but I will be much more interested in contributing here if this issue is solved.
+
+[new]
+Sounds reasonable to me. I see no harm in adding it: ##<kbd>C-x C-s</kbd>## → <kbd>C-x C-s</kbd>
+– Alex Schroeder
+
+[new]
+Thanks, Alex.  Based on your addition, I added this mention to TextFormattingRules:
+
+[quote]
+* To represent keyboard input, use ##<kbd></kbd>## tags, like:
+** ##<kbd>C-x C-s</kbd>## -> <kbd>C-x C-s</kbd>
+[/quote]
+
+However, Drew then changed it, advocating a different syntax:
+
+[quote]
+* To represent keyboard input, you can wrap the key sequence with ##<kbd></kbd>## tags or with backquote and apostrophe, like this (You can also use just <kbd>##</kbd>...<kbd>##</kbd>): 
+** ##<kbd>C-x C-s</kbd>## -> <kbd>C-x C-s</kbd>
+** ##`C-x C-s'## -> `C-x C-s'
+[/quote]
+
+So instead of one recommended syntax, three different ones are presented, with no guidance to users, and no apparent benefit to using one over the other.
+
+Now I'm not a zealous practitioner of the Zen of Python, but neither am I an uncritical follower of TMTOWTDI.  Even if multiple syntaxes are allowed, for historical reasons if nothing else, there is no reason to recommend three different ways of doing it.  There's no reason to make users, who are searching for simple reference information about how to do the simple task of marking up keyboard input, wonder about which of 3 apparently equally valid choices to use.
+
+Of course, this is your wiki, and Drew's put a lot of work into this over the years as well, so I'm not trying to disrespect either of you or usurp your authority.
+
+What I am trying to do is reach a consensus about a consistent syntax, for all of the reasons I already stated.  What benefit is there to advocating two slightly different syntaxes that are intended to mean the same thing?  It doesn't help readers or writers.
+
+So I request that the two of you pick one syntax and document it as the recommended one, without also recommending unnecessary alternatives on the TextFormattingRules page, which is already very complicated.  This may seem like a small issue, but I think it contributes to "death by a thousand papercuts" here.
+
 === tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
