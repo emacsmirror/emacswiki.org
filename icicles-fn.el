@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Jan  5 20:40:55 2020 (-0800)
+;; Last-Updated: Sun Jan 12 16:07:09 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15291
+;;     Update #: 15292
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3728,7 +3728,7 @@ Emacs 23+.  (No scaling in any case if using `oneonone.el' with a
            (or (icicle-get-safe icicle-last-top-level-command 'icicle-Completions-window-max-height)
                icicle-Completions-window-max-height))))))
   (unless (eq arg 'fit-only)
-    (when (and (display-graphic-p)                              ; Not terminal Emacs
+    (when (and (if (fboundp 'display-graphic-p) (display-graphic-p) window-system) ; Not terminal Emacs
                (boundp 'icicle-Completions-text-scale-decrease) ; Emacs 23+
                (eq major-mode 'completion-list-mode)
                (or (not (boundp '1on1-*Completions*-frame-flag))  (not 1on1-*Completions*-frame-flag)))
