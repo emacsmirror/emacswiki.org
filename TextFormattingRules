@@ -36,6 +36,8 @@ does ''not'' work:
 ** ##--## -> -- 
 * For a long punctuation dash (//em//-dash) in a sentence use three hyphens (##---##).
 ** ##---## -> ---
+* To represent keyboard input, use ##<kbd></kbd>## tags, like: 
+** ##<kbd>C-x C-s</kbd>## -> <kbd>C-x C-s</kbd>
 
 The official documentation is here:
 
