@@ -4,11 +4,11 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Wed Aug 21 11:01:57 2019 (-0700)
+;; Last-Updated: Sun Jan 12 14:43:37 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 979
+;;     Update #: 988
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -600,10 +600,11 @@ See `bmkp-lighted-jump'."
 
 ;;;###autoload (autoload 'bmkp-lighted-jump-to-list "bookmark+")
 (defun bmkp-lighted-jump-to-list (bookmark &optional position msgp) ; Not bound.
-  "Jump to lighted BOOKMARK in `*Bookmark List*'.
+  "Jump to location in `*Bookmark List*' for a lighted bookmark at point.
 You are prompted for BOOKMARK (a bookmark name).
 Completion candidates are the lighted bookmarks at point."
-  (interactive (let* ((bmks  (bmkp-bookmarks-lighted-at-point (point) nil 'MSG))
+  (interactive (let* ((bmks    (bmkp-bookmarks-lighted-at-point (point) nil 'MSG))
+                      (IGNORE  (unless bmks (error "No highlighted bookmarks at point")))
                       (bmk   (bookmark-completing-read "Bookmark" (car bmks) bmks)))
                  (list bmk (point) t)))
   (pop-to-buffer (get-buffer-create "*Bookmark List*"))
@@ -641,8 +642,8 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-unlight-bookmark-this-buffer (bookmark &optional noerrorp msgp) ; `C-x p u'
   "Unhighlight a BOOKMARK in this buffer.
 BOOKMARK is a bookmark name or a bookmark record.
-With a prefix arg, choose from all bookmarks, not just those in this
-buffer."
+With a prefix arg, choose from all lighted bookmarks, not just those
+in this buffer."
   (interactive
    (let ((lighted-bmks  (if current-prefix-arg
                             (bmkp-lighted-alist-only)
@@ -651,19 +652,22 @@ buffer."
      (unless lighted-bmks (error "No highlighted bookmarks%s" msg-suffix))
      (list (bookmark-completing-read (format "UNhighlight bookmark%s in this buffer" msg-suffix)
                                      (bmkp-default-lighted)
-                                     lighted-bmks)
+                                     lighted-bmks
+                                     nil
+                                     nil
+                                     'USE-NIL-ALIST-P)
            nil
            'MSG)))
   (bmkp-unlight-bookmark bookmark noerrorp msgp))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmarks "bookmark+")
 (defun bmkp-unlight-bookmarks (&optional overlays-symbols this-buffer-p msgp) ; `C-x p U'
-  "Unhighlight bookmarks.
+  "Unhighlight lighted bookmarks.
 A prefix argument determines which bookmarks to unhighlight:
- none    - Current buffer, all bookmarks.
- >= 0    - Current buffer, autonamed bookmarks only.
- < 0     - Current buffer, non-autonamed bookmarks only.
- C-u     - All buffers (all bookmarks)."
+ none    - Current buffer, all lighted bookmarks.
+ >= 0    - Current buffer, only autonamed lighted bookmarks.
+ < 0     - Current buffer, only non-autonamed lighted bookmarks.
+ C-u     - All buffers (all lighted bookmarks)."
   (interactive (list (cond ((or (not current-prefix-arg)  (consp current-prefix-arg))
                             '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
                            ((natnump current-prefix-arg) '(bmkp-autonamed-overlays))
@@ -911,7 +915,12 @@ With a prefix arg you are prompted for the style and/or face to use:
  Numeric negative arg: prompt for style.
 See `bmkp-light-boookmark' for argument descriptions."
   (interactive
-   (let* ((bmk  (bookmark-completing-read "Highlight bookmark" nil (bmkp-this-buffer-alist-only)))
+   (let* ((bmk  (bookmark-completing-read "Highlight bookmark"
+                                          nil
+                                          (bmkp-this-buffer-alist-only)
+                                          nil
+                                          nil
+                                          'USE-NIL-ALIST-P))
           (sty  (and current-prefix-arg  (or (consp current-prefix-arg)
                                              (<= (prefix-numeric-value current-prefix-arg) 0))
                      (cdr (assoc (let ((completion-ignore-case  t))
