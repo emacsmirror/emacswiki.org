@@ -15,6 +15,13 @@ it is working properly, right-click the printer icon and select /Properties/.
 Check the /Ports/ tab and make a note of the port that is being used by the
 Windows printer driver.
 
+: **Windows 10:** the /printername Properties/ window that contains the /Ports/ tab for the selected printer can be reached either via
+\\/Start/ → /Windows System/ → /Control Panel/ → /Devices and Printers/, right-click the icon/name/tile (depending on the view that is active in the /Devices and Printers/ window) of the chosen printer and select /Printer Properties/ from the popup menu
+\\or via\\
+/Start/ → /Settings/ → /Devices/ → /Printers and Scanners/, click the selected printer and choose /Manage/, click /Printer Properties/.
+\\(In the /Ports/ tab it may be necessary to scroll the list to find the assigned port. For example, the port identifier for the first printer connected to the computer via a USB cable is likely to be USB001, which is near the bottom of the list).
+\\Close the /printername Properties/ window once the assigned port is noted.
+
 Now use the /Add Printer/ wizard to install a Generic/Text printer driver
 (the Manufacturer name is /Generic/ and the model name is
 <i>Generic/Text Only</i>). Specify the port that you noted down (that is, the port
@@ -26,10 +33,37 @@ port as the full Windows driver.  Then use the /Print Test Page/ button on the
 Properties/ dialog box to make sure the generic driver is working properly.
 It <u>must</u> work successfully before you carry on.
 
+: **Windows 10:** The procedure to add a printer in Windows 10 is more intricate than in previous versions of Windows. Here are the steps:
+** **From the** ''Devices and Printers'' **window** click /Add a printer/, the /Add a device/ dialogue box is displayed, click /The printer that I want isn’t listed/. (It is not necessary to wait for the list to be populated before clicking).
+\\**Or from the** ''Printers and Scanners'' **window** click //Add printers & scanners//, when the /The printer that I want isn’t listed/ link appears, click it. (It is not necessary to wait for the list to be populated before clicking).
+
+** In the /Add printer/ dialogue box choose /Add a local printer or network printer with manual settings/, click /Next/.
+
+** In the /Choose a printer port/ dialogue box select /Use an existing port/, click in the ports drop down list and choose the Windows port from the list that was noted previously. Click /Next/.
+
+** In the /Install the printer driver/ dialogue select /Generic/ from the /Manufacturer/ list and ''Generic/Text'' Only from the /Printers/ list. Click /Next/.
+
+** In the /Which version of the driver do you want to use?/  dialogue box select ''Use the driver that is currently installed (recommended)'', click /Next/.
+
+** In the /Type a printer name/ dialogue box change the printer name from the default, ''Generic/Text Only'', to the name desired for it, e.g. /printername Generic Text/. (The name supplied here is of no consequence to Emacs, but it should identify the printer clearly for the users of the computer). Click /Next/.
+
+** In the /Printer Sharing/ dialogue box choose /Share this printer so that others on your network can find and use it/, the default /Share name/ is the name already given to the printer. Click /Next/. (Although the first step in the next section is to do this, since the dialogue is open it may as well be done now. The sharing of the printer is required; if it is not done Emacs will not be able to print to the printer).
+
+** In the /You've successfully added newprintername/ dialogue click the /Print a test page/ button. When the test page has successfully printed, click /Finish/.
+
+: It should be noted that performing the above procedure does not add a new printer to the list of printers in Windows 10, it creates a new queue for the chosen printer. To verify this perform the following steps:
+
+** In the ''Devices and Printers'' window right-click on the icon/name/tile of the printer to which the printer driver was attached and hover over the /Printer Properties/ item on the popup menu, verify that the printer name that was added appears in the secondary popup menu, then click the name of the printer that was added.\\
+Or in the ''Printers and Scanners'' window click the name of the printer to which the printer driver was attached, click the /Manage/ button that appears, on the /Settings/ page click the drop down box that appears below the text /This device has a few different functions. Pick one to manage settings for that function./ Verify that the printer name that was added appears in the list and click it, click the /Printer Properties/ link on the page.
+
+** In the /newprintername Properties/ window that appears, select the /Ports/ tab and verify
+that the port assigned is the one specified previously.
+
+
 == Map the Generic Printer to a DOS Device ==
 
 Right-click the Generic printer icon, select the /Sharing/ tab and share the
-printer, giving it a suitable share name.  Check that this worked by using
+printer, giving it a suitable share name. \\Check that this worked by using
 Emacs /shell/ or a command prompt window and entering the following command:-
 
 : ##net view \\127.0.0.1##
