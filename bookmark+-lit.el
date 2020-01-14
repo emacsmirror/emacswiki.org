@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Jan 12 14:43:37 2020 (-0800)
+;; Last-Updated: Tue Jan 14 10:07:22 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 988
+;;     Update #: 989
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -913,7 +913,7 @@ With a prefix arg you are prompted for the style and/or face to use:
  Plain prefix arg (`C-u'): prompt for both style and face.
  Numeric non-negative arg: prompt for face.
  Numeric negative arg: prompt for style.
-See `bmkp-light-boookmark' for argument descriptions."
+See `bmkp-light-bookmark' for argument descriptions."
   (interactive
    (let* ((bmk  (bookmark-completing-read "Highlight bookmark"
                                           nil
