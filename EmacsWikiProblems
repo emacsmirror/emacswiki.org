@@ -126,6 +126,54 @@ What I am trying to do is reach a consensus about a consistent syntax, for all o
 
 So I request that the two of you pick one syntax and document it as the recommended one, without also recommending unnecessary alternatives on the TextFormattingRules page, which is already very complicated.  This may seem like a small issue, but I think it contributes to "death by a thousand papercuts" here.
 
+
+
+
+
+[new:DrewAdams:2020-01-14 16:13 UTC]
+I disagree that there is a '''Need''' ''for canonical syntax for keyboard input''.  I disagree that '''what matters most''' ''is that there is one syntax that is designated as correct''.  This yearning for one correct way sounds a bit OCD, to me.  Why is it necessary?
+
+The complaint is that I changed the ''Use this'' directive to ''You can use''.  The complaint is that now we're recommending two, not one, syntax.  I disagree that we're recommending anything, here; we're just saying what editing syntaxes you can use, to get what effects.  It's just a description of what the rendering system does.
+
+I don't have a problem with (Anonymous?) preferring ##<kbd>##.  I have a problem with our seeming to impose a single editing syntax -- as opposed to just telling users ''how different syntaxes get rendered'', and then letting them do whatever they want to get whatever effect they want.  But I've said all of this before.
+
+And it's not just key bindings.  The same goes for representation of input and output, file names, and other things.  And in fact a single editing syntax is not sufficient here for all uses.  Consider, for instance, a linked file name, such as <tt>[[apu.el]]</tt>.  For that, I need to use ##<tt>##.
+
+Let users use what they want to do what they want.  The argument that newbies will wonder whether they should input the quotes too, as part of a key sequence (or file name or command name or...) when they see `C-x e' is hardly convincing.
+
+Users see `C-x e' when they interact with Emacs help.  Are they thus confused also by Emacs help?  Even if they were, we're better off with a representation that reflects what users see in Emacs help.  After all, we're also teaching Emacs here.
+
+And ideally, editing to produce such rendering should be just as easy as with Emacs - just type quote marks.
+
+And there's a reason that Emacs itself uses quotes, even beyond the obvious one that the default font is typically the same one used for key sequences and the like (a fixed-width font): When you have a key sequence such as ##C-x n a a## a reader can mistake the sequence limits.  Quotes set the thing that is quoted off from the surrounding text.
+
+Typing quote marks doesn't suffice on the wiki, however, for some key sequences and other fixed-width font renderings.  Which means that we resort to something slightly different (usually involving using both (1) quote marks, to get the quote-mark representation, and (2) `##', to get the code font.
+
+Let me be more clear.  I'm ''not'' a fan of inventing ''N'' different ways to get rendering that looks more or less like Emacs help.  And I do think it's a bit unfortunate that in some cases (e.g. some key sequences) the only thing we can get, that approximates Emacs help, involves a different form of single-quote chars.
+
+On emacs.StackExchange there is a single editing syntax for getting a code font: wrapping with backquote chars.  And that suffices for 99.9% of our needs for Emacs.  It's only a bit hairy when it comes to embedding/rendering backquote chars themselves.
+
+(The main drawback to using that SE convention with Emacs stuff is that it's not sufficient to just paste text from Emacs, e.g. Emacs help.  If you want quoted stuff, e.g., `something', to be rendered in a code font then you have to change the apostrophe to a backquote char.)
+
+Unfortunately, we don't have such a simple, single editing syntax here (AFAIK).  Hence the resort to multiple ones.  It's not as if people wanted to invent multiple such.  It's that the simple ones of using <code>##</code>, or backquote followed by apostrophe (like Emacs), or ##<code>## or ##<tt>## each have their drawbacks in some contexts (including for some key sequences).
+
+If you haven't actually tried to represent lots of different keys or code sequences here then it might be easy to suppose that a single editing syntax is an obvious approach.
+
+AFAIK, we don't have such a thing.  I first try `...' everywhere (often I copy+paste from commentary in Lisp files).  Then I preview, to see which things didn't render well.  Then I fix those up using quote chars plus `##', or whatever.  Yes, it's a bit of a pain, and somewhat error prone (you need to check well), but that's what it takes.  I certainly don't use a combination of different editing syntaxes ''gratuitously'' -- I do so only when I see that I have to.
+
+And even if ##<kbd>## were now such a cure-all thing (which I doubt, but haven't tested), it's certainly a verbose way of editing (a minor pain).  And it means that when copy+pasting from Emacs itself, you need to change ##`something'## to ##<kbd>something</kbd>## everywhere -- a royal pain.  And the editing syntax is less readable.  And the rendered result doesn't show the quote marks that users see in Emacs help.
+
+No one here disagrees with Occam's razor: ''Don't multiply things unnecessarily.''  I much prefer the simple approach used at emacs.SE, even if it means I have to change apostrophes in pasted code to backquotes.  It's a rare exception when I have to fiddle there (embedded backquote chars).  It is uncommon, but not rare, that I have to fiddle here.
+
+Another consideration is the zillions of existing occurrences here.  I'd disagree with an attempt to, e.g., change existing pages to substitute ##<kbd>##.  
+
+I'm pretty sure, based on what's happened with other blanket editing-syntax changes made here, that doing that systematically would break rendering here & there, and I wouldn't even discover that things had broken until much later.  (Five consecutive apostrophes used to produce bold italic, for example.  Now it can sometimes do crazy things, depending on where it occurs.)
+
+
+
+
+
+
 === tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
