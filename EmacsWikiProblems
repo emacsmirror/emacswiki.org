@@ -169,10 +169,12 @@ Another consideration is the zillions of existing occurrences here.  I'd disagre
 
 I'm pretty sure, based on what's happened with other blanket editing-syntax changes made here, that doing that systematically would break rendering here & there, and I wouldn't even discover that things had broken until much later.  (Five consecutive apostrophes used to produce bold italic, for example.  Now it can sometimes do crazy things, depending on where it occurs.)
 
+[new]
+Drew, I appreciate your taking the time to write that response, but it doesn't address the arguments I've made since I started this discussion.  I explained them clearly in my comments above.  
 
+My points remain, as does my request: That there be a single recommended keyboard-input markup; that it be clearly presented in TextFormattingRules as the recommended markup; that alternative markup not be equally recommended.  Note that I have not requested that support for alternative markups be eliminated, nor that uses of them be replaced across the wiki.
 
-
-
+The bottom line is that having four different markups to represent the same thing is unhelpful for readers and contributors.  Choice overload and ambiguity have real costs.  It may be technically impractical to enforce a single markup now, but we can at least recommend consistency and simplify the documentation, to start inching toward improvements.
 
 === tt does the Wrong Thing with Double-Quote Chars ===
 
