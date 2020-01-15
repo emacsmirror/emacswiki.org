@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Oct 29 11:24:21 2019 (-0700)
+;; Last-Updated: Wed Jan 15 10:04:08 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4075
+;;     Update #: 4077
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1759,8 +1759,8 @@ access
 \\[bmkp-bmenu-sort-by-last-local-file-update]\t- Sort by last local file update (edit)
 
 
-Hide/Show (`*Bookmark List*')
------------------------------
+Hide/Show (Filtering `*Bookmark List*')
+---------------------------------------
 
 \\[bmkp-bmenu-show-all]\t- Show all bookmarks
 \\[bmkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
