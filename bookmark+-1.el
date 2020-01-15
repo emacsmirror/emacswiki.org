@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan 12 16:30:42 2020 (-0800)
+;; Last-Updated: Wed Jan 15 13:12:51 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9006
+;;     Update #: 9008
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -6823,9 +6823,10 @@ name.  They are therefore excluded from the returned alist."
 (defun bmkp-specific-files-alist-only (&optional files)
   "`bookmark-alist', filtered to retain only bookmarks to files FILES.
 FILES is a list of absolute file names.
-It defaults to a singleton list with the current buffer's file name.
+It defaults to a singleton list with the current buffer's file name,
+ or to the empty list if the buffer is not visiting a file.
 A new list is returned (no side effects)."
-  (unless files  (setq files  (list (buffer-file-name))))
+  (unless files  (setq files  (and (buffer-file-name)  (list (buffer-file-name)))))
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lexical-let ((ff  files)) (lambda (bmk) (member (bookmark-get-filename bmk) ff)))
                       bookmark-alist))
