@@ -8,5 +8,9 @@ The list of topics relating to Gnus is in the page '''[[CategoryGnus]]'''.
 
 Gnus is a great way to sort the high-volume alt.risks.lion group.
 
+== Gmane ==
+
+[[Gmane]] is especially useful with Gnus.
+
 ----
 CategoryGnus CategoryMail
