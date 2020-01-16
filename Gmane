@@ -1,11 +1,15 @@
-Gmane is a Mail2News Gateway which host many mailinglists.
+Gmane provides an NNTP gateway to many Free Software-related mailing lists.  It's especially useful to read and post to mailing lists in [[Gnus]] as newsgroups, rather than having to subscribe to them as mailing lists.  It was created and is administrated by LarsMagneIngebrigtsen.
 
-Homepage: http://gmane.org/
+== Using in Gnus ==
 
-It's administrated by LarsMagneIngebrigtsen.
+Set `gnus-select-method' to ##news.gmane.io##.
 
-=== Emacs related groups/hierachies ===
+== Emacs-related hierarchies ==
 
-* gmane.emacs.ALL -- many groups for emacs and his applications
-* gmane.mail.wanderlust.ALL
-* gmane.mail.mew.ALL
+* gmane.emacs -- many groups for emacs and his applications
+* gmane.mail.wanderlust
+* gmane.mail.mew
+
+== News ==
+
+* 15 January 2020: https://lars.ingebrigtsen.no/2020/01/15/news-gmane-org-is-now-news-gmane-io/
