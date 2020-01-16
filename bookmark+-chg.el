@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan 12 17:00:34 2020 (-0800)
+;; Last-Updated: Wed Jan 15 21:58:19 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16579
+;;     Update #: 16584
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/01/15 dadams
+;;     bmkp-specific-files-alist-only: If no FILES arg and buffer is not visiting a file, use ().
 ;; 2020/01/12 dadams
 ;;     Added: bmkp-make-obsolete, bmkp-make-obsolete-variable.  Use everywhere instead of vanilla.
 ;;     bookmark-completing-read, bmkp-completing-read-(1|bookmarks|lax):
@@ -1422,6 +1424,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/01/15 dadams
+;;     Added: bmkp-bmenu-edit-annotations-for-marked.
+;;     Bind bookmark-bmenu-(show|edit)-annotation, bookmark-bmenu-show-all-annotations,
+;;          bmkp-bmenu-edit-annotations-for-marked to new prefix key a (a, e, A, >) and in
+;;          bmkp-bmenu-(edit|show)-menu and bmkp-bmenu-mouse-3-menu.
+;;     No longer bind bmkp-bmenu-show-or-edit-annotation.
 ;; 2019/10/29 dadams
 ;;     bookmark-bmenu-relocate: Ensure that arg to bookmark-relocate is not nil.
 ;;     bookmark-bmenu-bookmark: Mention in doc: nil return if no bookmark.
