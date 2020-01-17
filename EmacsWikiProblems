@@ -179,6 +179,19 @@ The bottom line is that having four different markups to represent the same thin
 [new]
 I read TextFormattingRules again and it seems pretty good to me. Of all the thousands of words on that page, the point of contention is that the sentence «To represent keyboard input, you can wrap the key sequence with <kbd></kbd> tags or with backquote and apostrophe, like this (You can also use just ##…##)» should be shortened to «To represent keyboard input, you can wrap the key sequence with <kbd></kbd> tags» – that sounds like a simple change to make. All the other formatting rules are still explained on the page, after all. -- AlexSchroeder
 
+[new:DrewAdams:2020-01-17 21:35 UTC]
+I disagree that we should *recommend* that users use ##<kbd>## to represent key sequences.  Just one opinion.
+
+And if all ##<kbd>## does is exactly what %%##%% does (dunno whether that's the case) then it's a lot easier for users to use the latter. If they're the same then why recommend the one that's much harder to type?
+
+A user can usually just copy+paste key sequences from Emacs Help, which uses backquote+apostrophe, or from Info, which uses curly quotes.  In most cases that works fine for the wiki.  But now we're telling them that they *should* convert each such quoted key sequence (obtained from Emacs) to ##<kbd>##-embedded sequences (for the wiki).  What's gained by such a recommendation?
+
+
+
+
+
+
+
 === tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
