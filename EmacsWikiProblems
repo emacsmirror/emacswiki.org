@@ -186,10 +186,8 @@ And if all ##<kbd>## does is exactly what %%##%% does (dunno whether that's the 
 
 A user can usually just copy+paste key sequences from Emacs Help, which uses backquote+apostrophe, or from Info, which uses curly quotes.  In most cases that works fine for the wiki.  But now we're telling them that they *should* convert each such quoted key sequence (obtained from Emacs) to ##<kbd>##-embedded sequences (for the wiki).  What's gained by such a recommendation?
 
-
-
-
-
+[new]
+I think that if people are reading through that page, that's not the message they're getting. They'll see multiple ways to do things, and if they want to specifically highlight keypresses, then they can do it. If they don't actually care about markup, then they can stop reading as soon as they're happy. And if it turns out that nobody ever uses the kbd element, then we can remove it again. -- Alex
 
 
 === tt does the Wrong Thing with Double-Quote Chars ===
