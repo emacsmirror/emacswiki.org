@@ -176,6 +176,9 @@ My points remain, as does my request: That there be a single recommended keyboar
 
 The bottom line is that having four different markups to represent the same thing is unhelpful for readers and contributors.  Choice overload and ambiguity have real costs.  It may be technically impractical to enforce a single markup now, but we can at least recommend consistency and simplify the documentation, to start inching toward improvements.
 
+[new]
+I read TextFormattingRules again and it seems pretty good to me. Of all the thousands of words on that page, the point of contention is that the sentence «To represent keyboard input, you can wrap the key sequence with <kbd></kbd> tags or with backquote and apostrophe, like this (You can also use just ##…##)» should be shortened to «To represent keyboard input, you can wrap the key sequence with <kbd></kbd> tags» – that sounds like a simple change to make. All the other formatting rules are still explained on the page, after all. -- AlexSchroeder
+
 === tt does the Wrong Thing with Double-Quote Chars ===
 
 This: ##<tt>"<2>"</tt>## gets rendered with two closing curly double-quotes, not with straight double-quotes: <tt>"<2>"</tt>.  But %%##"<2>"##%% renders correctly: ##"<2>"##.
