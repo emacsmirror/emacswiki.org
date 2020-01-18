@@ -1,6 +1,52 @@
-I was amazed to find that there's no mode for editing grammar files in BNF format. Here's a small contribution which does some syntax highlighting.
+== Introduction ==
 
-<pre>
+**bnf-mode** is a GNU Emacs major mode for editing BNF grammars.
+
+Currently provides basic syntax and font-locking for BNF files. BNF notation is supported exactly form as it was first announced in the ALGOL 60 report.
+EBNF and ABNF are not supported but they are planned for the near future.
+
+When developing this mode, the following documents were taken into account:
+
+* [https://www.masswerk.at/algol60/report.htm Revised Report on the Algorithmic Language Algol 60]
+* [https://tools.ietf.org/html/rfc822 RFC822] (~Standard for ARPA Internet Text Messages~)
+* [https://tools.ietf.org/html/rfc5234 RFC5234] (~Augmented BNF for Syntax Specifications: ABNF~)
+* [https://tools.ietf.org/html/rfc7405 RFC7405] (~Case-Sensitive String Support in ABNF~)
+
+=== Features ===
+
+* Basic syntax definition
+* Syntax highlighting
+
+== Installation and Activation ==
+
+Known to work with GNU Emacs 24.3 and later. BNF Mode may work with older versions of Emacs, or with other flavors of Emacs (e.g. XEmacs) but this is ~not~ guaranteed.
+
+The recommended way is to use [https://elpa.gnu.org/ ELPA], [https://stable.melpa.org/ MELPA Stable] or [https://melpa.org/ MELPA]. If either is in your
+`package-archives', do <kbd>M-x</kbd> `package-install' <kbd>RET</kbd> `bnf-mode' <kbd>RET</kbd>. To learn on how to use any other installation methods refer to relevant documentation.
+
+== Usage ===
+
+=== Interactive Commands ====
+
+Command for the <kbd>M-x</kbd> prompt are:
+
+* `bnf-mode' - Switches to BNF Mode.
+
+By default any file that matches the glob *.bnf is automatically opened in `bnf-mode'.
+
+== Customization ==
+
+To customize various options, use command as follows: <kbd>M-x</kbd> `customize-group' <kbd>RET</kbd> `bnf' <kbd>RET</kbd>.
+
+== Support ==
+
+Feel free to ask question or make suggestions in [https://github.com/sergeyklay/bnf-mode/issues issue tracker].
+
+== History of this page ==
+
+Previously this page contained a way to create a simple mode for editing grammar files in BNF format. Here's a small contribution which does some syntax highlighting. This approach has small issues which may not affect your workflow.
+
+{{{
 (define-generic-mode 'bnf-mode
  () ;; comment char: inapplicable because # must be at start of line
  nil ;; keywords
@@ -14,7 +60,7 @@ I was amazed to find that there's no mode for editing grammar files in BNF forma
  '("\\.bnf\\'") ;; filename suffixes
  nil ;; extra function hooks
  "Major mode for BNF highlighting.")
-</pre>
+}}}
 
 By jmmcd (jamesmichaelmcdermott ATTTT gmail)
 
