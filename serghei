@@ -1,0 +1,29 @@
+Hello,
+
+I'm Serghei Iakovlev.
+
+I'm a software engineer at [https://www.airslate.com/ airSlate]. I live in
+Kyiv, Ukraine with my family.  You can find me on
+[https://github.com/sergeyklay GitHub] or send me an email to
+[mailto:egrep@protonmail.com egrep at protonmail dot com].
+
+I use GNU Emacs.
+
+
+* [https://serghei.blog/ Blog] (~In Russian~)
+
+* [https://serghei.blog/assets/images/sergheis-emacs-26.3.png Emacs Screenshot]
+
+I am also known as [::klay] on IRC and various public chats like Discord and
+Gitter.
+
+== Code ==
+
+* https://github.com/sergeyklay/.emacs.d -- My personal configuration for GNU
+  Emacs
+
+* https://github.com/sergeyklay/bnf-mode -- GNU Emacs major mode for editing
+  BNF grammars.
+
+----
+CategoryHomepage
