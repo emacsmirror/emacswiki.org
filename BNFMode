@@ -8,9 +8,9 @@ EBNF and ABNF are not supported but they are planned for the near future.
 When developing this mode, the following documents were taken into account:
 
 * [https://www.masswerk.at/algol60/report.htm Revised Report on the Algorithmic Language Algol 60]
-* [https://tools.ietf.org/html/rfc822 RFC822] (~Standard for ARPA Internet Text Messages~)
-* [https://tools.ietf.org/html/rfc5234 RFC5234] (~Augmented BNF for Syntax Specifications: ABNF~)
-* [https://tools.ietf.org/html/rfc7405 RFC7405] (~Case-Sensitive String Support in ABNF~)
+* [https://tools.ietf.org/html/rfc822 RFC8 22] -- ~Standard for ARPA Internet Text Messages~
+* [https://tools.ietf.org/html/rfc5234 RFC 5234] -- ~Augmented BNF for Syntax Specifications: ABNF~
+* [https://tools.ietf.org/html/rfc7405 RFC 7405] -- ~Case-Sensitive String Support in ABNF~
 
 === Features ===
 
