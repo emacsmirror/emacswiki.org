@@ -154,6 +154,20 @@ None of the above worked for me so I decided to just change the SHELL environmen
 }}}
 --EzeBirman
 
+[new:ThomasSchneider:2020-01-19 19:09 UTC]
+None of the methods above have had success for me, because later parts in my zsh config overwrote it.  But one can easily inhibit loading them:
+{{{
+if [ $TERM = tramp ]; then
+        unset RPROMPT
+        unset RPS1
+        PS1="$ "
+        unsetopt zle
+        unsetopt rcs  # Inhibit loading of further config files
+fi
+}}}
+This is at the very top of my ##~/.zprofile##.
+--ThomasSchneider
+
 === Tramp hangs #4: UTF8 LANG ===
 
 To connect to a very old system I had to switch the remote, default LANG to a ''non''-utf8 one (in ##/etc/sysconfig/i18n##) Otherwise tramp would hang right after sending ##exec /bin/sh##. Tracing showed any utf8 LANG to somehow output extra CRs characters, causing tramp to wait the prompt forever. This could be locale bug.
