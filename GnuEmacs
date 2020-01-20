@@ -6,10 +6,7 @@ display editor.
 GNU stands for "GNU's Not Unix," and it represents the work of the
 FreeSoftwareFoundation (FSF) and its founder RichardStallman.  Part of
 the project to create a Unix that was FreeSoftware included a highly
-functional editor as well as some sort of Lisp system.  While I don't
-think that RMS had planned for Emacs to become the Lisp support for
-the GNU system, in fact it has pretty much been the only Lisp to be
-found in the implementation of the operating system known as GNU/Linux.
+functional editor as well as some sort of Lisp system.
 
 See EmacsHistory for its history.
 
@@ -17,8 +14,8 @@ See EmacsHistory for its history.
 * [http://www.gnu.org/software/emacs/#Obtaining Download]
 * WikiPedia:Emacs -- extensive overview, with historical description and up-to-date reference links
 
-The latest release of GNU Emacs is 26.1 (announced May 28, 2018). Details are
-[https://lists.gnu.org/archive/html/emacs-devel/2018-05/msg00765.html here].
+The latest release of GNU Emacs is 26.3 (announced 28 Aug 2019). Details are
+[https://lists.gnu.org/archive/html/emacs-devel/2019-08/msg00577.html here].
 The GNU Emacs software is subject to version 3 of the GnuGeneralPublicLicense.
 
 FSF Emacs or GNU Emacs?
