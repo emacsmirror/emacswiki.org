@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Jan  3 09:20:19 2020 (-0800)
+;; Last-Updated: Mon Jan 20 11:47:49 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 7460
+;;     Update #: 7464
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5865,9 +5865,10 @@ This function respects `icicle-search-complement-domain-p',
 `icicle-hide-whitespace-before-comment-flag'."
   (let ((add-bufname-p  (and buffer  icicle-show-multi-completion-flag))
         (temp-list      ())
-        (last-beg       nil))
+        (last-beg       nil)
+        (last-hit-end   nil))
     (unless buffer (setq buffer  (current-buffer)))
-    (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
+    (when (bufferp buffer)     ; Do nothing if BUFFER is not a buffer.
       (with-current-buffer buffer
         (unless beg (setq beg  (point-min)))
         (unless end (setq end  (point-max)))
@@ -5875,90 +5876,83 @@ This function respects `icicle-search-complement-domain-p',
         (icicle-with-comments-hidden
          beg end
          (icicle-condition-case-no-debug icicle-search-thing-scan
-             (save-excursion
-               (goto-char (setq last-beg  beg)) ; `icicle-next-visible-thing-and-bounds' uses point.
-               (while (and last-beg  (< last-beg end))
-                 (while (and (< beg end)  (icicle-invisible-p beg)) ; Skip invisible, overlay or text.
-                   (when (get-char-property beg 'invisible)
-                     (setq beg  (icicle-next-single-char-property-change beg 'invisible nil end))))
-                 (let ((thg+bnds  (icicle-next-visible-thing-and-bounds thing beg end)))
-                   (if (and (not thg+bnds)  (not icicle-search-complement-domain-p))
-                       (setq beg  end)
-                     (let* ((thg-beg       (cadr thg+bnds))
-                            (thg-end       (cddr thg+bnds))
-                            (tr-thg-beg    thg-beg)
-                            (tr-thg-end    thg-end)
-                            (hit-beg       (if icicle-search-complement-domain-p
-                                               last-beg
-                                             tr-thg-beg))
-                            (hit-end       (if icicle-search-complement-domain-p
-                                               (or tr-thg-beg  end)
-                                             tr-thg-end))
-                            (hit-string    (buffer-substring hit-beg hit-end))
-                            (end-marker    (copy-marker hit-end))
-                            (filteredp     (or (not predicate)
-                                               (not thg+bnds)
-                                               (funcall predicate thg+bnds)))
-                            (new-thg+bnds  (if icicle-search-complement-domain-p
-                                               thg+bnds
-                                             (and filteredp
-                                                  thg+bnds
-                                                  (if transform-fn
-                                                      (funcall transform-fn thg+bnds)
-                                                    thg+bnds)))))
-                       (when (and (not (string= "" hit-string)) ; No-op if empty hit.
-                                  (or new-thg+bnds  icicle-search-complement-domain-p))
-                         (when (and transform-fn  (not icicle-search-complement-domain-p))
-                           (setq hit-string  (car  new-thg+bnds)
-                                 tr-thg-beg  (cadr new-thg+bnds)
-                                 tr-thg-end  (cddr new-thg+bnds)
-                                 end-marker  (copy-marker tr-thg-end)))
+                                         (save-excursion
+                                           (goto-char (setq last-beg  beg)) ; `icicle-next-visible-thing-and-bounds' uses point.
+                                           (while (and last-beg  (< last-beg end))
+                                             (while (and (< beg end)  (icicle-invisible-p beg)) ; Skip invisible, overlay or text.
+                                               (when (get-char-property beg 'invisible)
+                                                 (setq beg  (icicle-next-single-char-property-change beg 'invisible nil end))))
+                                             (let ((thg+bnds  (icicle-next-visible-thing-and-bounds thing beg end)))
+                                               (if (and (not thg+bnds)  (not icicle-search-complement-domain-p))
+                                                   (setq beg  end)
+                                                 (let* ((thg-beg       (cadr thg+bnds))
+                                                        (thg-end       (cddr thg+bnds))
+                                                        (tr-thg-beg    thg-beg)
+                                                        (tr-thg-end    thg-end)
+                                                        (hit-beg       (if icicle-search-complement-domain-p
+                                                                           last-beg
+                                                                         tr-thg-beg))
+                                                        (hit-end       (if icicle-search-complement-domain-p
+                                                                           (or tr-thg-beg  end)
+                                                                         tr-thg-end))
+                                                        (hit-string    (buffer-substring hit-beg hit-end))
+                                                        (end-marker    (copy-marker hit-end))
+                                                        (filteredp     (or (not predicate)
+                                                                           (not thg+bnds)
+                                                                           (funcall predicate thg+bnds)))
+                                                        (new-thg+bnds  (if icicle-search-complement-domain-p
+                                                                           thg+bnds
+                                                                         (and filteredp
+                                                                              thg+bnds
+                                                                              (if transform-fn
+                                                                                  (funcall transform-fn thg+bnds)
+                                                                                thg+bnds)))))
+                                                   (when (and (not (string= "" hit-string)) ; No-op if empty hit.
+                                                              (or new-thg+bnds  icicle-search-complement-domain-p))
+                                                     (when (and transform-fn  (not icicle-search-complement-domain-p))
+                                                       (setq hit-string  (car  new-thg+bnds)
+                                                             tr-thg-beg  (cadr new-thg+bnds)
+                                                             tr-thg-end  (cddr new-thg+bnds)
+                                                             end-marker  (copy-marker tr-thg-end)))
+                                                     (setq last-hit-end  tr-thg-end)
+                                                     (when (and icicle-ignore-comments-flag  icicle-search-complement-domain-p)
+                                                       (put-text-property 0 (length hit-string) 'invisible nil hit-string))
 
-                         (when (and icicle-ignore-comments-flag  icicle-search-complement-domain-p)
-                           (put-text-property 0 (length hit-string) 'invisible nil hit-string))
-
-                         (icicle-candidate-short-help
-                          (concat (and add-bufname-p  (format "Buffer: `%s', "
-                                                              (buffer-name (marker-buffer end-marker))))
-                                  (format "Bounds: (%d, %d), Length: %d"
-                                          hit-beg hit-end (length hit-string)))
-                          hit-string)
-                         (push (cons (if add-bufname-p
-                                         (list hit-string
-                                               (let ((string  (copy-sequence (buffer-name))))
-                                                 (put-text-property
-                                                  0 (length string)
-                                                  'face 'icicle-candidate-part string)
-                                                 string))
-                                       hit-string)
-                                     end-marker)
-                               temp-list)
-                         ;; Highlight search context in buffer.
-                         (when (and (not (equal hit-beg hit-end))
-                                    (or (eq t icicle-search-highlight-threshold)
-                                        (<= (+ (length temp-list) (length icicle-candidates-alist))
-                                            icicle-search-highlight-threshold)))
-                           (let ((ov  (make-overlay hit-beg hit-end)))
-                             (push ov icicle-search-overlays)
-                             (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
-                             (overlay-put ov 'face 'icicle-search-main-regexp-others))))
-                       (if thg-end
-                           ;; $$$$$$
-                           ;; The correct code here is (setq beg end).  However, unless you use my
-                           ;; library `thingatpt+.el' or unless Emacs bug #9300 is fixed (hopefully
-                           ;; in Emacs 24), that will loop forever.  In that case we move forward a
-                           ;; char to prevent looping, but that means that the position just after
-                           ;; a THING is considered to be covered by the THING (which is incorrect).
-                           (setq beg  (if (or (featurep 'thingatpt+)  (> emacs-major-version 23))
-                                          thg-end
-                                        (1+ thg-end)))
-                         ;; If visible then no more things - skip to END.
-                         (unless (icicle-invisible-p beg) (setq beg  end)))))
-                   (setq last-beg  beg)))
-               (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
-           (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
-           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-                  (error "%s" (error-message-string icicle-search-thing-scan)))))))))
+                                                     (icicle-candidate-short-help
+                                                      (concat (and add-bufname-p
+                                                                   (format "Buffer: `%s', "
+                                                                           (buffer-name (marker-buffer end-marker))))
+                                                              (format "Bounds: (%d, %d), Length: %d"
+                                                                      hit-beg hit-end (length hit-string)))
+                                                      hit-string)
+                                                     (push (cons (if add-bufname-p
+                                                                     (list hit-string
+                                                                           (let ((string  (copy-sequence (buffer-name))))
+                                                                             (put-text-property
+                                                                              0 (length string)
+                                                                              'face 'icicle-candidate-part string)
+                                                                             string))
+                                                                   hit-string)
+                                                                 end-marker)
+                                                           temp-list)
+                                                     ;; Highlight search context in buffer.
+                                                     (when (and (not (equal hit-beg hit-end))
+                                                                (or (eq t icicle-search-highlight-threshold)
+                                                                    (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                                                        icicle-search-highlight-threshold)))
+                                                       (let ((ov  (make-overlay hit-beg hit-end)))
+                                                         (push ov icicle-search-overlays)
+                                                         (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
+                                                         (overlay-put ov 'face 'icicle-search-main-regexp-others))))
+                                                   (if thg-end
+                                                       (setq beg  (if (= last-hit-end  tr-thg-end) (1+ thg-end) thg-end))
+                                                     ;; If visible then no more things - skip to END.
+                                                     (unless (icicle-invisible-p beg) (setq beg  end)))))
+                                               (setq last-beg  beg)))
+                                           (setq icicle-candidates-alist  (append icicle-candidates-alist (nreverse temp-list))))
+                                         (quit (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup)))
+                                         (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
+                                                (error "%s" (error-message-string icicle-search-thing-scan)))))))))
 
 ;; Same as `thgcmd-invisible-p' in `thing-cmds.el'.
 (defun icicle-invisible-p (position)
