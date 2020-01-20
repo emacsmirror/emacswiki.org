@@ -335,16 +335,23 @@ Also see: http://www.gnu.org/s/libtool/manual/emacs/emacsclient-Options.html#ema
 
 The Emacs server can be used to edit text fields in web browsers using plugins.
 
-===== Firefox Add-on: It's All Text =====
+===== Extension for webextension-compatible browsers: Edit with Emacs =====
+[https://addons.mozilla.org/en-US/firefox/addon/edit-with-emacs1|Edit with Emacs] is an extension for webextension-compatible browsers such as GNU Icecat, Mozilla Firefox and Chromium-based browsers.
+This extension allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of emacsclient or gnuclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
+
+===== Discontinued Firefox extensions =====
+
+/It's All Text/ and  /MozEx/ cannot be found on the Firefox add-ons store and seem to have been discontinued.
+
+======= It's All Text =======
 
 To execute emacsclient From Firefox to call Windows Native Emacs to edit web pages, see [[Mozilla]] page and comments about add-on /It's all text/.
 
 There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
 You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
 
-===== Chrome extension: Edit with Emacs =====
-*Edit with Emacs - a Google Chrome browser extension*: Source: http://github.com/stsquad/emacs_chrome or https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh to install in Chrome.
-This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
+
+======= MozEx =======
 
 *MozEx* is a Firefox extension which allows the user to use external programs for editing TEXTAREAs, viewing page source, handling mailto, news, telnet and FTP links.  http://mozex.mozdev.org/
 
