@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan 12 16:12:10 2020 (-0800)
+;; Last-Updated: Mon Jan 20 11:44:23 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11891
+;;     Update #: 11892
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1214,6 +1214,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2020/01/20 dadams
+;;     icicle-search-thing-scan:
+;;       Fix off-by-1 hack to handle vanilla thing-at-point, which returns thing even if before point.
 ;; 2019/06/09 dadams
 ;;     icicle-next-font-lock-keywords-repeat:
 ;;       Removed require of repeat.el (in icicle-repeat-command now).
