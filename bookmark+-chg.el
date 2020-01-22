@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jan 22 11:18:05 2020 (-0800)
+;; Last-Updated: Wed Jan 22 13:01:16 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16599
+;;     Update #: 16603
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -150,6 +150,7 @@
 ;;     Added: bmkp-write-alist-bookmarks-to-file, bmkp-save-bookmarks-this-file/buffer,
 ;;            bmkp-switch-to-bookmark-file-this-file/buffer.
 ;;     bmkp-switch-bookmark-file-create: Added optional arg SWITCH-TO-LASTP (C-u behavior).
+;;     bmkp-save-menu-list-state: Save also last-previous-bookmark-file.
 ;; 2020/01/15 dadams
 ;;     bmkp-specific-files-alist-only: If no FILES arg and buffer is not visiting a file, use ().
 ;; 2020/01/12 dadams
@@ -1429,6 +1430,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2020/01/22 dadams
+;;     bookmark-bmenu-list: Restore bookmark-bmenu-list to saved value, last-previous-bookmark-file.
 ;;     bookmark-bmenu-mode: Added to doc: *-(switch-to-bookmark-file|save-bookmarks)-this-file/buffer.
 ;;     bmkp-bmenu-bookmark-file-menu: Added bmkp-switch(-to-last)-bookmark-file(-create).  Reordered.
 ;; 2020/01/15 dadams
