@@ -4,11 +4,11 @@
 ;; Description: Bookmark+ key and menu bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Tue Aug 13 15:24:14 2019 (-0700)
+;; Last-Updated: Wed Jan 22 11:08:44 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 846
+;;     Update #: 868
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -229,14 +229,16 @@ there are such bookmarks can take a little time."
 (define-key bookmark-map "E"      'bmkp-edit-bookmark-record)                         ; `C-x p E'
 ;; The original `bookmark-insert-location' in `bookmark.el' was `f'.
 (define-key bookmark-map "I"      'bookmark-insert-location)                          ; `C-x p I'
+(define-key bookmark-map "\C-j"   'bmkp-jump-to-list)                                 ; `C-x p C-j'
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark) ; `C-x p K' (also `C-x r K', `C-x p c K')
 (define-key bookmark-map "L"      'bmkp-switch-bookmark-file-create)                  ; `C-x p L'
-(define-key bookmark-map "\C-l"   'bmkp-jump-to-list)                                 ; `C-x p C-l'
+(define-key bookmark-map "\C-l"   'bmkp-switch-to-bookmark-file-this-file/buffer)     ; `C-x p C-l'
 (define-key bookmark-map "m"      'bmkp-bookmark-set-confirm-overwrite)               ; `C-x p m'
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list)                           ; `C-x p N'
 (define-key bookmark-map "o"      'bookmark-jump-other-window)           ; `C-x p o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window)           ; `C-x p q' (also `C-x 4 j j')
 (define-key bookmark-map "r"      'bmkp-edit-bookmark-name-and-location)              ; `C-x p r'
+(define-key bookmark-map "\C-s"   'bmkp-save-bookmarks-this-file/buffer)              ; `C-x p C-s'
 (define-key bookmark-map "\M-w"   'bmkp-set-snippet-bookmark)        ; `C-x p M-w' (also `C-x p c M-w')
 (define-key bookmark-map "x"      'bmkp-toggle-autotemp-on-set)                       ; `C-x p x'
 (define-key bookmark-map "y"      'bmkp-set-bookmark-file-bookmark)                   ; `C-x p y'
@@ -465,11 +467,11 @@ there are such bookmarks can take a little time."
 (put 'bookmark-jump-other-window :advertised-binding "\C-x4jj")
 (put 'jump-other :advertised-binding "\C-x4jj")
 
+(define-key bmkp-jump-map              "\C-j" 'bmkp-jump-to-list)                         ; `C-x j C-j'
 (define-key bmkp-jump-map              "K"    'bmkp-desktop-jump)                           ; `C-x j K'
 (define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump)           ; SAME COMMAND: `C-x 4 j K'
 (define-key bmkp-jump-map              "l"    'bmkp-local-file-jump)                        ; `C-x j l'
 (define-key bmkp-jump-other-window-map "l"    'bmkp-local-file-jump-other-window)         ; `C-x 4 j l'
-(define-key bmkp-jump-map              "\C-l" 'bmkp-jump-to-list)                         ; `C-x j C-l'
 (define-key bmkp-jump-map              "m"    'bmkp-man-jump)                               ; `C-x j m'
 (define-key bmkp-jump-other-window-map "m"    'bmkp-man-jump-other-window)                ; `C-x 4 j m'
 (define-key bmkp-jump-map              "n"    'bmkp-remote-file-jump)         ; `C-x j n' ("_n_etwork")
@@ -606,9 +608,19 @@ Put differently, return t iff the filtered alist is non-empty."
 	      :help "Jump to the previous bookmark in this file/buffer")
 	(list 'bmkp-this-file/buffer-bmenu-list
 	      'menu-item
-	      "Show Bookmark List for All Bookmarks Here"
+	      "Show Bookmark List for Bookmarks Here"
 	      'bmkp-this-file/buffer-bmenu-list
-	      :help "Show the bookmark list for bookmarks for the current file/buffer"))
+	      :help "Show the bookmark list for bookmarks for the current file/buffer")
+        (list 'bmkp-switch-to-bookmark-file-this-file/buffer
+	      'menu-item
+	      "Switch to Bookmark File for Bookmarks Here..."
+	      'bmkp-switch-to-bookmark-file-this-file/buffer
+	      :help "Switch to a bookmark file for bookmarks in this file/buffer")
+	(list 'bmkp-save-bookmarks-this-file/buffer
+	      'menu-item
+	      "Save Bookmarks Here To Bookmark File..."
+	      'bmkp-save-bookmarks-this-file/buffer
+	      :help "Save bookmarks defined for this file/buffer to a file"))
   "Menu entries for general commands in `Bookmarks' > `Here' menu.")
 
 (progn
