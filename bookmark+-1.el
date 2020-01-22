@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jan 22 10:50:36 2020 (-0800)
+;; Last-Updated: Wed Jan 22 12:48:09 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9028
+;;     Update #: 9029
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -4779,7 +4779,12 @@ Non-interactively, optional arg MSG-P means display progress messages."
              (last-bookmark-file                    . ,(copy-sequence
                                                         (convert-standard-filename
                                                          (expand-file-name
-                                                          bmkp-current-bookmark-file)))))))
+                                                          bmkp-current-bookmark-file))))
+             (last-previous-bookmark-file           . ,(and bmkp-last-bookmark-file
+                                                            (copy-sequence
+                                                             (convert-standard-filename
+                                                              (expand-file-name
+                                                               bmkp-last-bookmark-file))))))))
       (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect bmkp-bmenu-state-file))
         (goto-char (point-min))
         (delete-region (point-min) (point-max))
