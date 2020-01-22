@@ -22,6 +22,12 @@ For GNU Emacs (if you don't give a filename, syntax still requires an appended c
 
     C-x C-f /remotehost:filename  RET (or /method:user@remotehost:filename)
 
+For GNU Emacs 26.1 or newer with Tramp 2.3 or newer, the method is required. If you prefer the older syntax:
+
+    (customize-set-variable 'tramp-syntax 'simplified)
+
+    see [https://emacs.stackexchange.com/questions/50532/tramp-default-method-has-no-effect/50545#50545 this stackexchange article]
+
 For [S]XEmacs use the syntax
 
     C-x C-f /[method/user@remotehost]/filename
