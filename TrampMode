@@ -26,7 +26,7 @@ For GNU Emacs 26.1 or newer with Tramp 2.3 or newer, the method is required. If 
 
     (customize-set-variable 'tramp-syntax 'simplified)
 
-    see [https://emacs.stackexchange.com/questions/50532/tramp-default-method-has-no-effect/50545#50545 this stackexchange article]
+see [https://emacs.stackexchange.com/questions/50532/tramp-default-method-has-no-effect/50545#50545 this stackexchange article]
 
 For [S]XEmacs use the syntax
 
