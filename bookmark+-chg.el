@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jan 15 21:58:19 2020 (-0800)
+;; Last-Updated: Wed Jan 22 11:18:05 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16584
+;;     Update #: 16599
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/01/22 dadams
+;;     Added: bmkp-write-alist-bookmarks-to-file, bmkp-save-bookmarks-this-file/buffer,
+;;            bmkp-switch-to-bookmark-file-this-file/buffer.
+;;     bmkp-switch-bookmark-file-create: Added optional arg SWITCH-TO-LASTP (C-u behavior).
 ;; 2020/01/15 dadams
 ;;     bmkp-specific-files-alist-only: If no FILES arg and buffer is not visiting a file, use ().
 ;; 2020/01/12 dadams
@@ -1424,6 +1428,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/01/22 dadams
+;;     bookmark-bmenu-mode: Added to doc: *-(switch-to-bookmark-file|save-bookmarks)-this-file/buffer.
+;;     bmkp-bmenu-bookmark-file-menu: Added bmkp-switch(-to-last)-bookmark-file(-create).  Reordered.
 ;; 2020/01/15 dadams
 ;;     Added: bmkp-bmenu-edit-annotations-for-marked.
 ;;     Bind bookmark-bmenu-(show|edit)-annotation, bookmark-bmenu-show-all-annotations,
@@ -2095,6 +2102,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2020/01/22 dadams
+;;     Bind bmkp-switch-to-bookmark-file-this-file/buffer to C-x p C-l,
+;;          bmkp-save-bookmarks-this-file/buffer to C-x p C-s.
+;;     Change bmkp-jump-to-list from C-x [pj] C-l to C-x [pj] C-j.
+;;     bmkp-bookmarks-here-menu-command-entries:
+;;       Added bmkp-(switch-to-bookmark-file|save-bookmarks)-this-file/buffer.
 ;; 2019/08/13 dadams
 ;;     Bind bmkp-clone-bookmark to C-x p 2.
 ;;     menu-bar-bookmark-map: Add bmkp-clone-bookmark.
@@ -2399,6 +2412,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2020/01/22 dadams
+;;     Version 2020.01.22
 ;; 2020/01/12 dadams
 ;;     Version 2020.01.12
 ;; 2019/04/22 dadams
