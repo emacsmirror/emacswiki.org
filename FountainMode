@@ -6,29 +6,23 @@ format, visit http://fountain.io.
 == Features ==
 
 * Support for Fountain 1.1 specification
-* WYSIWYG auto-align elements (display only, does not modify file contents)
-  specific to script format, e.g. screenplay, stageplay or user-defined format
-* Traditional <kbd>TAB</kbd> writing style for auto-upcasing character names
-  (see [Do What I Mean])
-* Export to plain text, HTML, LaTeX, Final Draft (FDX), or Fountain
-* Export to standalone document or snippet
-* Optionally show approximate page count (current page of total pages) in
-  mode-line
-* Include external files with {{ include: FILENAME }}
-* Integration with outline to fold/cycle visibility of sections and scenes
-  (see [Outlining])
-* Integration with imenu (sections, scene headings, notes)
-* Intergration with auto-insert for title page metadata
-* Add/remove automatic continuation string to successively speaking characters
+* WYSIWYG auto-align elements (display only, does not modify file
+  contents) specific to script format, e.g. screenplay, stageplay or
+  user-defined format
+* Traditional TAB auto-completion writing style
 * Navigation by section, scene, character name, or page
+* Integration with `outline' to fold/cycle visibility of sections and
+  scenes
+* Integration with `imenu' (sections, scene headings, notes)
+* Intergration with `auto-insert' for title page metadata
+* Automatically add/remove character (CONT’D)
+* Toggle visibility of emphasis delimiters and syntax characters
+* 3 levels of syntax highlighting
 * Optionally display scene numbers in the right margin
 * Intelligent insertion of a page breaks
-* 3 levels of element syntax highlighting
-* Automatic loading for *.fountain files
-* Include or omit a title page
-* Emphasis (bold, italic, underlined text)
-* Toggle visibility of emphasis delimiters and syntax characters
-* Everything is customizable
+
+Most common features are accessible from the menu. For a full list of
+functions and key-bindings, type `C-h m'.
 
 == Installation ==
 
