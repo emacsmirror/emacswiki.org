@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jan 15 21:52:49 2020 (-0800)
+;; Last-Updated: Wed Jan 22 11:00:21 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4088
+;;     Update #: 4112
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1411,6 +1411,7 @@ Bookmark Files
 
 \\[bmkp-toggle-saving-bookmark-file]\t- Toggle autosaving to the current bookmark file
 \\[bookmark-bmenu-save]\t- Save bookmarks now     (`C-u': Save As... - prompt for file)
+\\[bmkp-empty-file]\t- Empty existing bookmark file or create new, empty one
 
 C-u \\[bmkp-bmenu-refresh-menu-list]\t- Revert to bookmarks in the bookmark file    (overwrite load)
 \\[bmkp-switch-bookmark-file-create]\t- Switch to a different bookmark file         (overwrite load)
@@ -1423,7 +1424,6 @@ C-u \\[bmkp-switch-bookmark-file-create]\t- Switch back to the previous bookmark
 \\[bmkp-bmenu-copy-marked-to-bookmark-file]\t- Copy the marked bookmarks to a bookmark file
 \\[bmkp-bmenu-create-bookmark-file-from-marked]\t- Copy the marked bookmarks to a new bookmark file
 C-u \\[bmkp-bmenu-create-bookmark-file-from-marked]\t- Same, plus create bookmark-file bookmark for it
-\\[bmkp-empty-file]\t- Empty a bookmark file or create a new, empty bookmark file
 
 
 General
@@ -1443,11 +1443,15 @@ Anywhere:
 \\[bmkp-set-bookmark-file-bookmark]\t- Create a bookmark to a bookmark file (`j y' to load it)
 \\[bmkp-delete-bookmarks]\t- Delete some bookmarks at point or all in buffer
 \\[bmkp-make-function-bookmark]\t- Create a function bookmark
+
 \\[bmkp-choose-navlist-of-type]\t- Set the navlist to the bookmarks of a type you choose
 \\[bmkp-choose-navlist-from-bookmark-list]\t- Set the navlist to the bookmarks of a \
 bookmark-list bookmark
 \\[bmkp-navlist-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in navlist
+
 \\[bmkp-this-file/buffer-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in current file/buffer
+\\[bmkp-switch-to-bookmark-file-this-file/buffer]\t- Switch to bookmark file for current file/buffer
+\\[bmkp-save-bookmarks-this-file/buffer]\t- Save bookmarks for current file/buffer to a file
 \\<bookmark-bmenu-mode-map>
 
 
@@ -5644,8 +5648,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "KS"                   'bmkp-bmenu-show-only-desktop-bookmarks)
 (define-key bookmark-bmenu-mode-map "L"                    'bmkp-switch-bookmark-file-create)
 (define-key bookmark-bmenu-mode-map [(control shift ?l)]   'bookmark-bmenu-locate) ; `C-L' (aka `C-S-l')
-(define-key bookmark-bmenu-mode-map "\M-l"
-  'bmkp-bmenu-load-marked-bookmark-file-bookmarks)
+(define-key bookmark-bmenu-mode-map "\M-l"                 'bmkp-bmenu-load-marked-bookmark-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-L"                 'bmkp-temporary-bookmarking-mode)
 (define-key bookmark-bmenu-mode-map "M"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "MM"                   'bmkp-bmenu-mark-man-bookmarks)
@@ -5921,9 +5924,6 @@ are marked or ALLP is non-nil."
 
 
 ;;; `Bookmark File' submenu ------------------------------------------
-(define-key bmkp-bmenu-bookmark-file-menu [bmkp-empty-file]
-  '(menu-item "Empty Bookmark File..." bmkp-empty-file
-    :help "Empty an existing bookmark file or create a new, empty bookmark file"))
 (define-key bmkp-bmenu-bookmark-file-menu [bmkp-bmenu-set-bookmark-file-bookmark-from-marked]
   '(menu-item "Set Bookmark-File Bookmark from Marked..."
     bmkp-bmenu-set-bookmark-file-bookmark-from-marked
@@ -5944,19 +5944,33 @@ are marked or ALLP is non-nil."
   '(menu-item "Load Marked Bookmark-File Bookmarks..." bmkp-bmenu-load-marked-bookmark-file-bookmarks
     :help "Load the marked bookmark-file bookmarks, in order"))
 (define-key bmkp-bmenu-bookmark-file-menu [bmkp-bmenu-load-marking-unmark-first]
-  '(menu-item "Load Bookmark File, Mark Only Loaded...." bmkp-bmenu-load-marking-unmark-first
-    :help "`bookmark-load', marking only bookmarks that are loaded."))
+  '(menu-item "Load Bookmarks, Mark Only Those Loaded...." bmkp-bmenu-load-marking-unmark-first
+    :help "`bookmark-load', marking those loaded, unmarking others"))
 (define-key bmkp-bmenu-bookmark-file-menu [bmkp-bmenu-load-marking]
-  '(menu-item "Load Bookmark File, Mark Loaded...." bmkp-bmenu-load-marking
-    :help "`bookmark-load', marking bookmarks that are loaded."))
-(define-key bmkp-bmenu-bookmark-file-menu [bookmark-bmenu-load]
-  '(menu-item "Add Bookmarks from File..." bookmark-bmenu-load
-    :help "Load additional bookmarks from a bookmark file"))
+  '(menu-item "Load Bookmarks, Mark Those Loaded...." bmkp-bmenu-load-marking
+    :help "`bookmark-load', marking bookmarks that are loaded"))
+(define-key bmkp-bmenu-bookmark-file-menu [bf-sep2] '("--")) ; ------------
+;;; (define-key bmkp-bmenu-bookmark-file-menu [bmkp-save-bookmarks-this-file/buffer]
+;;;   '(menu-item "Save Bookmarks Here to File (No Switch)..." bmkp-save-bookmarks-this-file/buffer
+;;;     :help "Save bookmarks defined for the current file or buffer to file"))
+;;; (define-key bmkp-bmenu-bookmark-file-menu [bmkp-switch-to-bookmark-file-this-file/buffer]
+;;;   '(menu-item "Switch to Bookmarks Here..." bmkp-switch-to-bookmark-file-this-file/buffer
+;;;     :help "Switch to a bookmark file with only bookmarks for this file or buffer"))
+(define-key bmkp-bmenu-bookmark-file-menu [bmkp-switch-to-last-bookmark-file]
+  '(menu-item "Switch to Last Bookmark File" bmkp-switch-to-last-bookmark-file
+    :help "Switch back to last set of bookmarks used, *replacing* current set" :keys "C-u L"))
 (define-key bmkp-bmenu-bookmark-file-menu [bmkp-switch-bookmark-file-create]
-  '(menu-item "Switch to Bookmark File..." bmkp-switch-bookmark-file-create
-    :help "Switch to a different bookmark file, *replacing* the current set of bookmarks"))
+  '(menu-item "Switch to Bookmarks..." bmkp-switch-bookmark-file-create
+    :help "Switch to another bookmark file, *replacing* the current set of bookmarks"))
+(define-key bmkp-bmenu-bookmark-file-menu [bookmark-bmenu-load]
+  '(menu-item "Load (Add) Bookmarks..." bookmark-bmenu-load
+    :help "Load additional bookmarks from a bookmark file"))
+(define-key bmkp-bmenu-bookmark-file-menu [bf-sep1] '("--")) ; ------------
+(define-key bmkp-bmenu-bookmark-file-menu [bmkp-empty-file]
+  '(menu-item "Empty Bookmark File..." bmkp-empty-file
+    :help "Empty an existing bookmark file or create a new, empty bookmark file"))
 (define-key bmkp-bmenu-bookmark-file-menu [bmkp-revert-bookmark-file]
-  '(menu-item "Revert to Saved Bookmark File..." bmkp-revert-bookmark-file
+  '(menu-item "Revert to Saved Bookmarks..." bmkp-revert-bookmark-file
     :help "Revert to bookmarks in current bookmark file, as last saved" :keys "C-u g"))
 
 
