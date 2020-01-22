@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Wed Jan 22 11:08:44 2020 (-0800)
+;; Last-Updated: Wed Jan 22 14:43:27 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 868
+;;     Update #: 879
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1296,7 +1296,7 @@ Menu for bookmarks that target this file/buffer.")
     (define-key menu-bar-file-menu [bmkp-find-file-other-window] ; Emacs 20-21
       '(menu-item "Find File or Autofile..." bmkp-find-file-other-window))
   (defvar bmkp-find-file-menu (make-sparse-keymap)
-    "`Bookmarked File' submenu for menu-bar `File' menu.")
+    "`Find File or Autofile' submenu for menu-bar `File' menu.")
   (define-key menu-bar-file-menu [bmkp-find-file-menu]
     (list 'menu-item "Find File or Autofile" bmkp-find-file-menu))
   (define-key bmkp-find-file-menu [bmkp-find-file-all-tags-regexp-other-window]
