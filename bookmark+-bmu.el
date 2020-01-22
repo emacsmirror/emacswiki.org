@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jan 22 11:00:21 2020 (-0800)
+;; Last-Updated: Wed Jan 22 12:53:11 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4112
+;;     Update #: 4114
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1200,21 +1200,22 @@ Non-interactively:
                         (or (not last-bookmark-file-from-state)
                             (bmkp-same-file-p last-bookmark-file-from-state
                                               bmkp-current-bookmark-file)))
-               (setq bmkp-sort-comparer                (cdr (assq 'last-sort-comparer           state))
-                     bmkp-reverse-sort-p               (cdr (assq 'last-reverse-sort-p          state))
-                     bmkp-reverse-multi-sort-p         (cdr (assq 'last-reverse-multi-sort-p    state))
-                     bmkp-latest-bookmark-alist        (cdr (assq 'last-latest-bookmark-alist   state))
-                     bmkp-bmenu-omitted-bookmarks      (cdr (assq 'last-bmenu-omitted-bookmarks state))
-                     bmkp-bmenu-marked-bookmarks       (cdr (assq 'last-bmenu-marked-bookmarks  state))
-                     bmkp-bmenu-filter-function        (cdr (assq 'last-bmenu-filter-function   state))
-                     bmkp-bmenu-filter-pattern         (or (cdr (assq 'last-bmenu-filter-pattern state))
+               (setq bmkp-sort-comparer                (cdr (assq 'last-sort-comparer                state))
+                     bmkp-reverse-sort-p               (cdr (assq 'last-reverse-sort-p               state))
+                     bmkp-reverse-multi-sort-p         (cdr (assq 'last-reverse-multi-sort-p         state))
+                     bmkp-latest-bookmark-alist        (cdr (assq 'last-latest-bookmark-alist        state))
+                     bmkp-bmenu-omitted-bookmarks      (cdr (assq 'last-bmenu-omitted-bookmarks      state))
+                     bmkp-bmenu-marked-bookmarks       (cdr (assq 'last-bmenu-marked-bookmarks       state))
+                     bmkp-bmenu-filter-function        (cdr (assq 'last-bmenu-filter-function        state))
+                     bmkp-bmenu-filter-pattern         (or (cdr (assq 'last-bmenu-filter-pattern     state))
                                                            "")
-                     bmkp-bmenu-title                  (cdr (assq 'last-bmenu-title             state))
-                     bmkp-last-bmenu-bookmark          (cdr (assq 'last-bmenu-bookmark          state))
-                     bmkp-last-specific-buffer         (cdr (assq 'last-specific-buffer         state))
-                     bmkp-last-specific-file           (cdr (assq 'last-specific-file           state))
-                     bookmark-bmenu-toggle-filenames   (cdr (assq 'last-bmenu-toggle-filenames  state))
-                     bmkp-last-bookmark-file           bmkp-current-bookmark-file
+                     bmkp-bmenu-title                  (cdr (assq 'last-bmenu-title                  state))
+                     bmkp-last-bmenu-bookmark          (cdr (assq 'last-bmenu-bookmark               state))
+                     bmkp-last-specific-buffer         (cdr (assq 'last-specific-buffer              state))
+                     bmkp-last-specific-file           (cdr (assq 'last-specific-file                state))
+                     bookmark-bmenu-toggle-filenames   (cdr (assq 'last-bmenu-toggle-filenames       state))
+                     bmkp-last-bookmark-file           (or  (cdr (assq 'last-previous-bookmark-file  state))
+                                                            bmkp-current-bookmark-file)
                      bmkp-current-bookmark-file        last-bookmark-file-from-state
                      bmkp-bmenu-before-hide-marked-alist
                      (cdr (assq 'last-bmenu-before-hide-marked-alist   state))
