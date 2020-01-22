@@ -4,13 +4,13 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 19 21:33:55 2018 (-0800)
+;; Last-Updated: Wed Jan 22 14:50:54 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 3803
+;;     Update #: 3827
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -18,11 +18,17 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `fit-frame', `frame-fns',
-;;   `help+20', `info', `info+20', `menu-bar', `misc-cmds',
-;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `crosshairs', `fit-frame',
+;;   `font-lock', `font-lock+', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
+;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -128,6 +134,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/01/22 dadams
+;;     Added: menu-bar-search-xref-menu.  Added it to Search menu, for Xref stuff.
+;;     menu-bar-bookmark-map, menu-bar-goto-menu: Moved from Search menu to File menu.
+;;     menu-bar-goto-menu: Removed Xref stuff, since moved it to Search menu.
 ;; 2018/01/19 dadams
 ;;     make-frame(-on-display), delete-this-frame: Guard with (boundp 'menu-bar-frames-menu).
 ;; 2017/12/21 dadams
@@ -445,6 +455,7 @@
 (defvar menu-bar-select-buffer-function)
 (unless (> emacs-major-version 23) (defvar menu-barp-select-buffer-function))
 (defvar select-enable-clipboard)
+(defvar menu-bar-search-xref-menu)
 
 ;;;;;;;;;;;;;;;;;;;;
 
@@ -802,17 +813,41 @@ submenu of the \"Help\" menu."))
 
 (define-key-after menu-bar-file-menu [separator-new] '("--") 'new-directory)
 
+(define-key-after menu-bar-file-menu [bookmark]
+  '(menu-item "Bookmarks" menu-bar-bookmark-map
+    :help "Record locations, jump to them...")
+  'separator-new)
+
+(unless (< emacs-major-version 21)
+  ;; Remove `Find' stuff from `Go To' submenu, since we moved it to `Search' menu.
+  (define-key menu-bar-goto-menu [set-tags-name] nil)
+  (define-key menu-bar-goto-menu [separator-tag-file] nil)
+  (define-key menu-bar-goto-menu [xref-pop] nil)
+  (define-key menu-bar-goto-menu [xref-apropos] nil)
+  (define-key menu-bar-goto-menu [xref-find-otherw] nil)
+  (define-key menu-bar-goto-menu [xref-find-def] nil)
+  (define-key menu-bar-goto-menu [separator-xref] nil)
+
+  (define-key-after menu-bar-file-menu [goto] (cons "Go To" menu-bar-goto-menu)
+    'bookmark))
+
+(define-key-after menu-bar-file-menu [separator-open] '("--")
+  (if (< emacs-major-version 21) 'bookmark 'goto))
+
 (define-key-after menu-bar-file-menu [exec-cmd]
   '(menu-item "Execute Command" execute-extended-command
-    :help "Prompts for a command to execute") 'separator-exit)
+    :help "Prompts for a command to execute")
+  'separator-exit)
 (define-key-after menu-bar-file-menu [repeat-cmd]
   '(menu-item "Repeat Earlier Command" repeat-complex-command
-    :help "Edit and re-evaluate last complex command") 'exec-cmd)
+    :help "Edit and re-evaluate last complex command")
+  'exec-cmd)
 
 (define-key-after menu-bar-file-menu [separator-execute] '("--") 'repeat-cmd)
 (define-key-after menu-bar-file-menu [exit-emacs]
   '(menu-item "Exit Emacs" save-buffers-kill-emacs
-    :help "Save unsaved buffers, then exit") 'separator-execute)
+    :help "Save unsaved buffers, then exit" :keys "C-x C-c")
+  'separator-execute)
 
 
 ;; REPLACE ORIGINAL in `menu-bar.el'.
@@ -849,10 +884,12 @@ But if invoked in the minibuffer just invoke `abort-recursive-edit'."
   '(menu-item "File with Revision..." vc-ediff :help "Compare file versions using `ediff'"))
 (define-key-after menu-bar-ediff-menu [vc-diff] ; Defined in `vc+.el'.
   '(menu-item "File with Revision using Diff" vc-diff
-    :help "Display diffs between file versions using `diff'") 'ediff-revision)
+    :help "Display diffs between file versions using `diff'")
+  'ediff-revision)
 (define-key-after menu-bar-ediff-menu [diff]
   '(menu-item "Two Files using Diff..." diff ; `diff+.el'
-    :help "Display diffs between two files using `diff'") 'ediff-files)
+    :help "Display diffs between two files using `diff'")
+  'ediff-files)
 
 (define-key menu-bar-edit-menu [undo]
   '(menu-item "Undo" undo :help "Undo last operation"
@@ -968,7 +1005,8 @@ But if invoked in the minibuffer just invoke `abort-recursive-edit'."
   'select-paste)
 (define-key-after menu-bar-edit-menu [mark-whole-buffer]
   '(menu-item "Select All" mark-whole-buffer
-    :help "Select everything in buffer (for a subsequent cut/copy)") 'clear)
+    :help "Select everything in buffer (for a subsequent cut/copy)")
+  'clear)
 
 ;;--------------------
 (define-key-after menu-bar-edit-menu [separator-edit-delete-lines] '("--") 'mark-whole-buffer)
@@ -993,7 +1031,8 @@ But if invoked in the minibuffer just invoke `abort-recursive-edit'."
   'separator-edit-select-all)
 (define-key-after menu-bar-edit-menu [fill]
   `(menu-item "Fill" ,menu-bar-edit-fill-menu
-    :help "Fill text" :enable (not buffer-read-only)) 'props)
+    :help "Fill text" :enable (not buffer-read-only))
+  'props)
 
 (defvar menu-bar-edit-region-menu (make-sparse-keymap "Edit Region"))
 (defalias 'menu-bar-edit-region-menu (symbol-value 'menu-bar-edit-region-menu))
@@ -1166,13 +1205,9 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (defalias 'menu-bar-search-tags-menu (symbol-value 'menu-bar-search-tags-menu))
 (define-key menu-bar-search-menu [tags] (cons "Tags" menu-bar-search-tags-menu))
 
-(define-key menu-bar-search-menu [bookmark]
-  '(menu-item "Bookmarks" menu-bar-bookmark-map
-    :help "Record buffer positions (\"bookmarks\"), and jump between them"))
-
-(unless (< emacs-major-version 21)
-  (define-key menu-bar-search-menu [goto] (cons "Go To" menu-bar-goto-menu)))
-
+(defvar menu-bar-search-xref-menu (make-sparse-keymap "Xref"))
+(defalias 'menu-bar-search-xref-menu (symbol-value 'menu-bar-search-xref-menu))
+(define-key menu-bar-search-menu [xref] (cons "Xref" menu-bar-search-xref-menu))
 
 (defvar menu-bar-search-replace-menu (make-sparse-keymap "Replace"))
 (defalias 'menu-bar-search-replace-menu (symbol-value 'menu-bar-search-replace-menu))
@@ -1317,6 +1352,25 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Search backward for a string"))
   (define-key menu-bar-search-menu [search-forward]
     '(menu-item "Forward..." nonincremental-search-forward :help "Search forward for a string")))
+
+
+;;; `Search' > `Xref' submenu.
+(when (boundp 'menu-bar-search-xref-menu)
+
+  (define-key menu-bar-search-xref-menu [xref-pop]
+    '(menu-item "Back" xref-pop-marker-stack
+                :visible (and (featurep 'xref)  (not (xref-marker-stack-empty-p)))
+                :help "Back to the position of the last search"))
+  (define-key menu-bar-search-xref-menu [xref-apropos]
+    '(menu-item "Find Apropos..." xref-find-apropos
+                :help "Find function/variables whose names match regexp"))
+  (define-key menu-bar-search-xref-menu [xref-find-otherw]
+    '(menu-item "Find Definition in Other Window..." xref-find-definitions-other-window
+                :help "Find tags matching a regexp"))
+  (define-key menu-bar-search-xref-menu [xref-find-def]
+    '(menu-item "Find Definition..." xref-find-definitions
+                :help "Find definition of function or variable"))
+  )
 
 
 ;;; `Search' > `Tags' submenu.
@@ -1539,7 +1593,8 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   'separator-current)
 (define-key-after menu-bar-describe-menu [list-keybindings] ; `Current Key Bindings'
   '(menu-item "Current Key Bindings" describe-bindings
-    :help "List all current keybindings, with brief descriptions") 'describe-mode)
+    :help "List all current keybindings, with brief descriptions")
+  'describe-mode)
 (define-key-after menu-bar-describe-menu [describe-syntax] ; `Current Syntax'
   '(menu-item "Current Syntax" describe-syntax
     :help "Describe the syntax specifications in the current syntax table")
