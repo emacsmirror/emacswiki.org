@@ -1,10 +1,12 @@
 There are five screenplay libraries known, two of which share the same name :(
 
+* FountainMode -- by PaulRankin
 * http://www.nongnu.org/screenplay/ -- by VanceSimpson
 * http://www.nongnu.org/screenwriter/ -- improved fork of VanceSimpson's screenplay.el
 * Lisp:screenplay.el -- by AlexSchroeder
 * RubyTwoMode -- uses emacs + python + LaTeX to give industry standard Final Draft scripts.
-* FountainMode -- by PaulRankin
+
+Of these, FountainMode is the most mature and capable of producing a screenplay.
 
 There is also a LaTeX Document Class called "plari" by Antti-Juhani Kaijanaho for screen plays.
 You can find it on any CTAN-mirror.  
@@ -60,7 +62,7 @@ Notably, there are a few conventions in screenplays that are considered more tra
 
 * (CONT'D) - to indicate a character's dialog is continuous in the event that the character's lines are interrupted by an action block.
 
-* CONTINUED: - when a scene extends beyond a page break, it is traditional to indicate that the scene is CONTINUED: at the bottom of the page.
+* CONTINUED: - when a scene extends beyond a page break, it is traditional (although only in production) to indicate that the scene is CONTINUED: at the bottom of the page.
 
 * (Dialogue direction) - when a screenwriter wishes to specify how an actor says a line if it is not immediately obvious; this appears after the character name and before the dialogue.
 ** This can be manually entered but .
