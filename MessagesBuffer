@@ -26,7 +26,17 @@ For me, this buffer is useless, and annoying for its getting in the way. Unfortu
     (and (not (char-equal ?\  (aref name 0))) (not (string= name "*Messages*"))) ))
 </pre>
 
+= Inhibiting message display in elisp =
 
+Binding `inhibit-message' to non-nil prevents messages from being displayed in the echo area.
+
+Binding `message-log-max' to nil prevents messages from being added to the <code>*Messages*</code> buffer.
+
+E.g.:
+
+ (let ((inhibit-message t)
+       (message-log-max nil))
+   ...do-something...)
 
 ----
 CategoryHelp
