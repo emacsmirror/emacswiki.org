@@ -58,7 +58,7 @@ remote file names.  Relative name completion as provided by
 Tramp (or ange-ftp, prior to Emacs 22).  When using relative name
 completion, you can save time in these ways:
 
-* Turn off [[incremental completion]] (using `C-#'), so that Tramp is
+* Turn off [[incremental completion]] (using ##`C-#'##), so that Tramp is
   used only when you hit `TAB' or `S-TAB', not with each character
   you type or delete!
 
