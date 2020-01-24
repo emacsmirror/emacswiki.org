@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Fri Jan 24 13:06:08 2020 (-0800)
+;; Last-Updated: Fri Jan 24 15:33:55 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 915
+;;     Update #: 926
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -62,16 +62,17 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `bookmark-name-from-full-record', `bookmark-name-from-record',
 ;;    `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-name-from-record',
 ;;    `bmkp-exists-bookmark-satisfying-p',
 ;;    `bmkp-exists-this-file/buffer-bookmarks-p',
-;;    `bmkp-set-map-prefix-key'.
+;;    `bmkp-set-map-prefix-key', `bookmark-name-from-full-record',
+;;    `bookmark-name-from-record'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `bmkp-here-menu', `bmkp-bookmarks-here-menu-command-entries',
+;;    `bmkp-annotate-map', `bmkp-annotate-menu', `bmkp-here-menu',
+;;    `bmkp-bookmarks-here-menu-command-entries',
 ;;    `bmkp-find-file-menu', `bmkp-highlight-menu', `bmkp-jump-map',
 ;;    `bmkp-jump-menu', `bmkp-jump-other-window-map',
 ;;    `bmkp-jump-tags-menu', `bmkp-set-map', `bmkp-tags-map',
@@ -308,12 +309,27 @@ there are such bookmarks can take a little time."
     (define-key bookmark-map [C-up]     'bmkp-previous-lighted-this-buffer-repeat))) ; `C-x p C-up'
 
 
+;; `bmkp-annotate-map': prefix `C-x p a'
+
+(defvar bmkp-annotate-map nil "Keymap containing bindings for bookmark annotation commands.")
+
+(define-prefix-command 'bmkp-annotate-map)
+(define-key bookmark-map "a"      bmkp-annotate-map)                           ; `C-x p a' for annotate
+
+(define-key bmkp-annotate-map "a" 'bmkp-annotate-bookmark)                     ; `C-x p a a'
+(define-key bmkp-annotate-map "b" 'bmkp-annotate-bookmark-this-file/buffer)    ; `C-x p a b'
+(define-key bmkp-annotate-map "B" 'bmkp-annotate-all-bookmarks-this-file/buffer) ; `C-x p a B'
+(define-key bmkp-annotate-map "e" 'bookmark-edit-annotation)                   ; `C-x p a e'
+(define-key bmkp-annotate-map "s" 'bookmark-show-annotation)                   ; `C-x p a s'
+(define-key bmkp-annotate-map "S" 'bookmark-show-all-annotations)              ; `C-x p a S'
+
+
 ;; `bmkp-set-map': prefix `C-x p c'
 
 (defvar bmkp-set-map nil "Keymap containing bindings for bookmark set commands.")
 
 (define-prefix-command 'bmkp-set-map)
-(define-key bookmark-map "c"  bmkp-set-map)                                    ; `C-x p c' for create
+(define-key bookmark-map "c"    bmkp-set-map)                                  ; `C-x p c' for create
 
 (define-key bmkp-set-map "a"    'bmkp-autofile-set)                            ; `C-x p c a'
 (define-key bmkp-set-map "f"    'bmkp-file-target-set)                         ; `C-x p c f'
@@ -659,12 +675,7 @@ Put differently, return t iff the filtered alist is non-empty."
     "`Here' submenu for menu-bar `Bookmarks' menu.
 Menu for bookmarks that target this file/buffer.")
   (define-prefix-command 'bmkp-here-menu)
-  (setcdr bmkp-here-menu bmkp-bookmarks-here-menu-command-entries)
-  (define-key menu-bar-bookmark-map [bookmarks-here]
-    `(menu-item "Here" bmkp-here-menu
-                :enable (and bmkp-add-bookmarks-here-menu-flag
-                             (bmkp-exists-bookmark-satisfying-p
-                              (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p))))))
+  (setcdr bmkp-here-menu bmkp-bookmarks-here-menu-command-entries))
 
 ;; Add commands to other keymaps: Buffer-menu, Dired, EWW, Gnus, Info, Man, Woman, W3M.
 
@@ -788,13 +799,8 @@ Menu for bookmarks that target this file/buffer.")
   '(menu-item "Show Bookmark List" bookmark-bmenu-list
     :help "Open the list of bookmarks in buffer `*Bookmark List*'")
   'separator-show)
-;;;;; (define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
-;;;;;   '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
-;;;;;     :help "Open `*Bookmark List*' for the bookmarks in the current file or buffer (only)"
-;;;;;     :enable (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-file/buffer-alist-only)))
-;;;;;   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-this-file/buffer-bmenu-list]
-  '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-buffer-file/bmenu-list
+  '(menu-item "Show Bookmark List for This File/Buffer" bmkp-this-file/buffer-bmenu-list
     :help "Open `*Bookmark List*' for the bookmarks in the current file or buffer (only)")
   'edit)
 (define-key-after menu-bar-bookmark-map [bmkp-navlist-bmenu-list]
@@ -852,6 +858,29 @@ Menu for bookmarks that target this file/buffer.")
   '(menu-item "Empty Bookmark File..." bmkp-empty-file
     :help "Empty an existing bookmark file or create a new, empty bookmark file")
   'load)
+
+
+;; `bmkp-annotate-menu' of vanilla `Bookmarks' menu: `Annotate'
+
+(defvar bmkp-annotate-menu (make-sparse-keymap)
+  "`Annotate' submenu for menu-bar `Bookmarks' menu.")
+(define-key menu-bar-bookmark-map [annotate] (cons "Annotate" bmkp-annotate-menu))
+
+(define-key bmkp-annotate-menu [bookmark-show-all-annotations]
+  '(menu-item "Show All Annotations" bookmark-show-all-annotations
+              :help "Show the annotations for all bookmarks"))
+(define-key bmkp-annotate-menu [bookmark-show-annotation]
+  '(menu-item "Show an Annotation" bookmark-show-annotation
+              :help "Show the annotation for a bookmark, or follow it if external"))
+(define-key bmkp-annotate-menu [bmkp-annotate-all-bookmarks-this-file/buffer]
+  '(menu-item "Annotate All Bookmarks Here" bmkp-annotate-all-bookmarks-this-file/buffer
+              :help "Pop up an annotation-editing buffer for each bookmark in this file/buffer"))
+(define-key bmkp-annotate-menu [bmkp-annotate-bookmark-this-file/buffer]
+  '(menu-item "Annotate a Bookmark Here" bmkp-annotate-bookmark-this-file/buffer
+              :help "Annotate an existing bookmark in this file or buffer"))
+(define-key bmkp-annotate-menu [bmkp-annotate-bookmark]
+  '(menu-item "Annotate a Bookmark" bmkp-annotate-bookmark
+              :help "Pop up a buffer to add or edit an annotation for a bookmark"))
 
 
 ;; `bmkp-highlight-menu' of vanilla `Bookmarks' menu: `Highlight'
@@ -943,6 +972,15 @@ Menu for bookmarks that target this file/buffer.")
     (define-key bmkp-highlight-menu [bmkp-set-lighting-for-bookmark]
       '(menu-item "Set Highlighting for One..." bmkp-set-lighting-for-bookmark
                   :help "Set individual highlighting for a bookmark"))))
+
+
+;; `bmkp-here-menu' of vanilla `Bookmarks' menu: `Here'
+
+(define-key menu-bar-bookmark-map [bookmarks-here]
+  `(menu-item "Here" bmkp-here-menu
+              :enable (and bmkp-add-bookmarks-here-menu-flag
+                           (bmkp-exists-bookmark-satisfying-p
+                            (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)))))
 
 
 ;; `bmkp-delete-menu' of vanilla `Bookmarks' menu: `Delete'
