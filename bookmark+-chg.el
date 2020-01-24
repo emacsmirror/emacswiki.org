@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 24 13:01:46 2020 (-0800)
+;; Last-Updated: Fri Jan 24 15:37:26 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16612
+;;     Update #: 16621
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2107,11 +2107,15 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
 ;; 2020/01/24 dadams
+;;     Added: bmkp-annotate-map, bmkp-annotate-menu.
 ;;     bmkp-bookmarks-here-menu-command-entries, bmkp-highlight-menu:
 ;;       Added: bmkp-describe-bookmark-lighted-here.
 ;;     bmkp-bookmarks-here-menu-command-entries:
 ;;       Added: bmkp-light-bookmarks, bmkp-bookmarks-lighted-at-point,
 ;;              bmkp-annotate-bookmark-this-file/buffer, bmkp-annotate-all-bookmarks-this-file/buffer.
+;;     Bind annotation commands to prefix C-x p a (bmkp-annotate-map).
+;;     Move Here submenu before Highlight submenu.
+;;     Typo in name when binding: bmkp-this-file/buffer-bmenu-list.
 ;; 2020/01/22 dadams
 ;;     Bind bmkp-switch-to-bookmark-file-this-file/buffer to C-x p C-l,
 ;;          bmkp-save-bookmarks-this-file/buffer to C-x p C-s.
