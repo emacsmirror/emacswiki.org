@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Fri Jan 24 10:30:04 2020 (-0800)
+;; Last-Updated: Fri Jan 24 13:06:08 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 911
+;;     Update #: 915
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -608,7 +608,7 @@ Put differently, return t iff the filtered alist is non-empty."
 	      :help "Jump to the previous bookmark in this file/buffer")
         (list 'bmkp-describe-bookmark-lighted-here
               'menu-item
-              "Describe A Highlighted Bookmark Here (`C-u': internal form)"
+              "Describe Highlighted Bookmark This Line (`C-u': internal form)"
               'bmkp-describe-bookmark-lighted-here
               :help "Describe a highlighted bookmark on this line.  `C-u': internal description"
               :enable '(and (fboundp 'bmkp-describe-bookmark-lighted-here)
@@ -620,18 +620,28 @@ Put differently, return t iff the filtered alist is non-empty."
               'bmkp-bookmarks-lighted-at-point
               :help "List the bookmarks at point that are highlighted"
               :enable '(bmkp-bookmarks-lighted-at-point))
+	(list 'bmkp-annotate-bookmark-this-file/buffer
+	      'menu-item
+	      "Annotate a Bookmark Here"
+	      'bmkp-annotate-bookmark-this-file/buffer
+	      :help "Annotate a bookmark in this file or buffer")
         (list 'bmkp-here-sep1 'menu-item "--")
 	(list 'bmkp-light-bookmarks
 	      'menu-item
 	      "Highlight Bookmarks Here"
 	      'bmkp-light-bookmarks
-	      :help "Highlight the bookmarks for the current file/buffer"
+	      :help "Highlight the bookmarks in this file/buffer"
               :visible (featurep 'bookmark+-lit))
+	(list 'bmkp-annotate-all-bookmarks-this-file/buffer
+	      'menu-item
+	      "Annotate All Bookmarks Here"
+	      'bmkp-annotate-all-bookmarks-this-file/buffer
+	      :help "Annotate each bookmark in this file/buffer")
 	(list 'bmkp-this-file/buffer-bmenu-list
 	      'menu-item
 	      "Show Bookmark List for Bookmarks Here"
 	      'bmkp-this-file/buffer-bmenu-list
-	      :help "Show the bookmark list for bookmarks for the current file/buffer")
+	      :help "Show the bookmark list for bookmarks in this file/buffer")
         (list 'bmkp-switch-to-bookmark-file-this-file/buffer
 	      'menu-item
 	      "Switch to Bookmark File for Bookmarks Here..."
