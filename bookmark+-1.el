@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jan 22 12:48:09 2020 (-0800)
+;; Last-Updated: Fri Jan 24 12:50:59 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9029
+;;     Update #: 9033
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -100,8 +100,10 @@
 ;;    `bmkp-add-tags', `bmkp-all-tags-jump',
 ;;    `bmkp-all-tags-jump-other-window', `bmkp-all-tags-regexp-jump',
 ;;    `bmkp-all-tags-regexp-jump-other-window',
-;;    `bmkp-annotate-bookmark', `bmkp-autofile-add-tags',
-;;    `bmkp-autofile-all-tags-jump',
+;;    `bmkp-annotate-all-bookmarks-this-file/buffer',
+;;    `bmkp-annotate-bookmark',
+;;    `bmkp-annotate-bookmark-this-file/buffer',
+;;    `bmkp-autofile-add-tags', `bmkp-autofile-all-tags-jump',
 ;;    `bmkp-autofile-all-tags-jump-other-window',
 ;;    `bmkp-autofile-all-tags-regexp-jump',
 ;;    `bmkp-autofile-all-tags-regexp-jump-other-window',
@@ -4169,6 +4171,30 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-insert-annotation bookmark)
   (bookmark-edit-annotation-mode)
   (set (make-local-variable 'bookmark-annotation-name) bookmark))
+
+;;;###autoload (autoload 'bmkp-annotate-bookmark-this-file/buffer "bookmark+")
+(defun bmkp-annotate-bookmark-this-file/buffer (bookmark)
+  "Annotate an existing bookmark in this file or buffer.
+You are prompted for the name of a bookmark here, with completion."
+  (interactive
+   (let ((alist  (bmkp-this-file/buffer-alist-only)))
+     (list (bookmark-completing-read (format "Add or edit annotation for bookmark"
+                                             (if current-prefix-arg "Add or edit" "Edit"))
+                                     (or (and (fboundp 'bmkp-bookmarks-lighted-at-point)
+                                              (bmkp-bookmarks-lighted-at-point))
+                                         (bmkp-default-bookmark-name alist))
+                                     alist
+                                     nil
+                                     nil
+                                     (not current-prefix-arg)))))
+  (bookmark-edit-annotation bookmark))
+
+;;;###autoload (autoload 'bmkp-annotate-all-bookmarks-this-file/buffer "bookmark+")
+(defun bmkp-annotate-all-bookmarks-this-file/buffer ()
+  "Pop up annotation-editing buffer for each bookmark in this file/buffer."
+  (interactive)
+  (dolist (bmk  (bmkp-this-file/buffer-alist-only))
+    (bookmark-edit-annotation bmk)))
 
 ;;;###autoload (autoload 'bmkp-show-this-annotation-read-only "bookmark+")
 (defun bmkp-show-this-annotation-read-only ()
