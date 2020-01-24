@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jan 22 13:01:16 2020 (-0800)
+;; Last-Updated: Fri Jan 24 09:31:19 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16603
+;;     Update #: 16605
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2104,6 +2104,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2020/01/24 dadams
+;;     bmkp-bookmarks-here-menu-command-entries: Added bmkp-light-bookmarks.
 ;; 2020/01/22 dadams
 ;;     Bind bmkp-switch-to-bookmark-file-this-file/buffer to C-x p C-l,
 ;;          bmkp-save-bookmarks-this-file/buffer to C-x p C-s.
