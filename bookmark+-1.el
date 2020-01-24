@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jan 24 12:50:59 2020 (-0800)
+;; Last-Updated: Fri Jan 24 15:42:39 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9033
+;;     Update #: 9042
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2386,7 +2386,7 @@ Lines beginning with `#' are ignored."
 ;; 3. Emacs 26+: Added ignored &rest arg to accommodate vanilla Emacs fix to bug #20150 (not a bug for us).
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation "bookmark+")
-(defun bookmark-edit-annotation (bookmark &rest _IGNORED)
+(defun bookmark-edit-annotation (bookmark &rest _IGNORED) ; Bound to `C-x p a e'
   "Pop up a buffer for editing bookmark BOOKMARK's annotation.
 Interactively, you are prompted for the bookmark name.  With a prefix
 arg, you can choose any bookmark.  Otherwise, only annotated bookmarks
@@ -3726,7 +3726,7 @@ bookmark files that were created using the bookmark functions."
 ;; 12. Restore frame selection.
 ;;
 ;;;###autoload (autoload 'bookmark-show-annotation "bookmark+")
-(defun bookmark-show-annotation (bookmark &optional msg-p)
+(defun bookmark-show-annotation (bookmark &optional msg-p) ; Bound to `C-x p a s'
   "Show the annotation for BOOKMARK, or follow it if external.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
@@ -3785,7 +3785,7 @@ read-only and edit mode using `C-x C-q'."
 ;; 8. Restore frame selection.
 ;;
 ;;;###autoload (autoload 'bookmark-show-all-annotations "bookmark+")
-(defun bookmark-show-all-annotations ()
+(defun bookmark-show-all-annotations () ; Bound to `C-x p a S'
   "Display the annotations for all bookmarks.
 If called from buffer `*Bookmark List*' then the annotations are shown
 in the current sort order."
@@ -4157,7 +4157,7 @@ Non-nil optional arg SAME-COUNT-P means do not increment
   (when (bookmark-time-to-save-p) (bookmark-save)))
 
 ;;;###autoload (autoload 'bmkp-annotate-bookmark "bookmark+")
-(defun bmkp-annotate-bookmark (bookmark)
+(defun bmkp-annotate-bookmark (bookmark) ; Bound to `C-x p a a'
   "Annotate BOOKMARK.  Pop up a buffer to add or edit the annotation.
 Interactively, this is the same as using command
 `bookmark-edit-annotation' with a prefix arg.  You are prompted for
@@ -4173,7 +4173,7 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
   (set (make-local-variable 'bookmark-annotation-name) bookmark))
 
 ;;;###autoload (autoload 'bmkp-annotate-bookmark-this-file/buffer "bookmark+")
-(defun bmkp-annotate-bookmark-this-file/buffer (bookmark)
+(defun bmkp-annotate-bookmark-this-file/buffer (bookmark) ; Bound to `C-x p a b'
   "Annotate an existing bookmark in this file or buffer.
 You are prompted for the name of a bookmark here, with completion."
   (interactive
@@ -4190,7 +4190,7 @@ You are prompted for the name of a bookmark here, with completion."
   (bookmark-edit-annotation bookmark))
 
 ;;;###autoload (autoload 'bmkp-annotate-all-bookmarks-this-file/buffer "bookmark+")
-(defun bmkp-annotate-all-bookmarks-this-file/buffer ()
+(defun bmkp-annotate-all-bookmarks-this-file/buffer () ; Bound to `C-x p a B'
   "Pop up annotation-editing buffer for each bookmark in this file/buffer."
   (interactive)
   (dolist (bmk  (bmkp-this-file/buffer-alist-only))
@@ -5053,7 +5053,7 @@ When called from Lisp:
   file)
 
 ;;;###autoload (autoload 'bmkp-switch-to-bookmark-file-this-file/buffer "bookmark+")
-(defun bmkp-switch-to-bookmark-file-this-file/buffer (file &optional batchp)
+(defun bmkp-switch-to-bookmark-file-this-file/buffer (file &optional batchp) ; Bound to `C-x p C-l'
   "Switch to a bookmark file for bookmarks in this file or buffer.
 If visiting a file, the bookmarks are ‘bmkp-this-file-alist-only’.
 Otherwise, they are ‘bmkp-this-buffer-alist-only’.
@@ -5148,7 +5148,7 @@ FILE (updating them if already present)."
           (bookmark-write-file file))))))
 
 ;;;###autoload (autoload 'bmkp-save-bookmarks-this-file/buffer "bookmark+")
-(defun bmkp-save-bookmarks-this-file/buffer (file &optional addp batchp)
+(defun bmkp-save-bookmarks-this-file/buffer (file &optional addp batchp) ; Bound to `C-x p C-s'
   "Save bookmarks defined for the current file/buffer to FILE.
 If visiting a file, the bookmarks are ‘bmkp-this-file-alist-only’.
 Otherwise, they are ‘bmkp-this-buffer-alist-only’.
