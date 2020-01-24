@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Wed Jan 22 14:43:27 2020 (-0800)
+;; Last-Updated: Fri Jan 24 09:16:40 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 879
+;;     Update #: 881
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -606,6 +606,13 @@ Put differently, return t iff the filtered alist is non-empty."
 	      "Previous Bookmark Here"
 	      'bmkp-previous-bookmark-this-file/buffer-repeat
 	      :help "Jump to the previous bookmark in this file/buffer")
+        (list 'bmkp-here-sep1 'menu-item "--")
+	(list 'bmkp-light-bookmarks
+	      'menu-item
+	      "Highlight Bookmarks Here"
+	      'bmkp-light-bookmarks
+	      :help "Highlight the bookmarks for the current file/buffer"
+              :visible (featurep 'bookmark+-lit))
 	(list 'bmkp-this-file/buffer-bmenu-list
 	      'menu-item
 	      "Show Bookmark List for Bookmarks Here"
