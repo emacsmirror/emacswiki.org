@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 24 10:34:18 2020 (-0800)
+;; Last-Updated: Fri Jan 24 13:01:46 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16609
+;;     Update #: 16612
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/01/24 dadams
+;;     Added: bmkp-annotate-bookmark-this-file/buffer, bmkp-annotate-all-bookmarks-this-file/buffer.
 ;; 2020/01/22 dadams
 ;;     Added: bmkp-write-alist-bookmarks-to-file, bmkp-save-bookmarks-this-file/buffer,
 ;;            bmkp-switch-to-bookmark-file-this-file/buffer.
@@ -2108,7 +2110,8 @@
 ;;     bmkp-bookmarks-here-menu-command-entries, bmkp-highlight-menu:
 ;;       Added: bmkp-describe-bookmark-lighted-here.
 ;;     bmkp-bookmarks-here-menu-command-entries:
-;;       Added: bmkp-light-bookmarks, bmkp-bookmarks-lighted-at-point.
+;;       Added: bmkp-light-bookmarks, bmkp-bookmarks-lighted-at-point,
+;;              bmkp-annotate-bookmark-this-file/buffer, bmkp-annotate-all-bookmarks-this-file/buffer.
 ;; 2020/01/22 dadams
 ;;     Bind bmkp-switch-to-bookmark-file-this-file/buffer to C-x p C-l,
 ;;          bmkp-save-bookmarks-this-file/buffer to C-x p C-s.
