@@ -4737,6 +4737,9 @@ The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 
 ;;; '''With Tags''' submenu of '''Jump To''' submenu of '''Bookmark+''' menu-bar menu (Emacs 21+ only): [[image:BookmarkPlusMenuBarMenuWithTags]]
 
+[:ToggleMenu]
+;; '''Toggle''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuToggle]]
+
 ;; '''Delete''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuDelete]]
 
 [:MarkMenu]
@@ -4756,8 +4759,6 @@ The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 ;; '''Tags''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuTags]]
 ;; '''Highlight''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuHighlight]]
 
-[:ToggleMenu]
-;; '''Toggle''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuToggle]]
 ;; '''Bookmark File''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuBookmarkFile]]
 ;; '''Define Command''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
@@ -4774,7 +4775,10 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 ;; '''Toggle''' submenu of '''Bookmarks''' menu-bar menu: Same as '''Bookmark+''' [[#ToggleMenu|submenu]] '''Toggle'''
 ;; '''New/Update''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksNewUpdateMenu]]
 ;; '''Delete''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksDeleteMenu]]
+;; '''Here (This File/Buffer)''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksHereMenu]]
 ;; '''Highlight''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksHighlightMenu]]
+;; '''Annotate''' submenu of '''Bookmarks''' menu-bar menu: [[image:BookmarkPlusBookmarksAnnotateMenu]]
+
 
 
 
