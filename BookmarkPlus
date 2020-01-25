@@ -4749,6 +4749,8 @@ The '''Show''' Menu has submenu '''Only Bookmarks of Type'''.
 ;; '''Show''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuShow]]
 ;;; '''Only Bookmarks of Type''' submenu of '''Show''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuShowOfType]]
 
+;; '''Edit''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuEdit]] 
+
 ;; '''Sort''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuSort]] 
 ;; '''Search''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuSearch]] 
 ;; '''Tags''' submenu of '''Bookmark+''' menu-bar menu: [[image:BookmarkPlusMenuBarMenuTags]]
