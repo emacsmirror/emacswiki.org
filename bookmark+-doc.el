@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 13 15:04:47 2019 (-0700)
+;; Last-Updated: Sat Jan 25 14:55:34 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15334
+;;     Update #: 15336
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2802,9 +2802,10 @@
 ;;
 ;;    The commands for this are bound to keys that start with `P' (for
 ;;    "pattern").  For example, `P B' shows only bookmarks whose names
-;;    match the regexp, `P F' shows those whose file names match, and
-;;    `P T' shows those that have one or more tags that match.
-;;    (See (@> "Bookmark Tags"), above, for information about tags.)
+;;    match the regexp, `P F' shows those whose file names match, `P
+;;    A' shows those whose annotations match, and `P T' shows those
+;;    that have one or more tags that match.  (See (@> "Bookmark Tags"),
+;;    above, for information about tags.)
 ;;
 ;;  * Filtering based on marking
 ;;
