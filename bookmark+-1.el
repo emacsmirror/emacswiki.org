@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jan 24 15:42:39 2020 (-0800)
+;; Last-Updated: Sat Jan 25 10:58:11 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9042
+;;     Update #: 9052
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -160,7 +160,9 @@
 ;;    `bmkp-dired-jump-other-window', `bmkp-dired-this-dir-jump',
 ;;    `bmkp-dired-this-dir-jump-other-window',
 ;;    `bmkp-edit-bookmark-name-and-location',
-;;    `bmkp-edit-bookmark-record', `bmkp-edit-bookmark-record-send',
+;;    `bmkp-edit-bookmark-record',
+;;    `bmkp-edit-bookmark-record-file/buffer',
+;;    `bmkp-edit-bookmark-record-send',
 ;;    `bmkp-edit-bookmark-records-send', `bmkp-edit-tags',
 ;;    `bmkp-edit-tags-send', `bmkp-edit-this-annotation',
 ;;    `bmkp-empty-file', `bmkp-eww-jump' (Emacs 25+),
@@ -4536,6 +4538,30 @@ Non-interactively, optional arg MSG-P means display progress messages."
       (bmkp-refresh/rebuild-menu-list bmk-name (not msg-p)))
     (unless read-error-msg
       (setq bmkp-edit-bookmark-orig-record  nil)))) ; Reset it, but keep it if error so can try again.
+
+;;;###autoload (autoload 'bmkp-edit-bookmark-record-file/buffer "bookmark+")
+(defun bmkp-edit-bookmark-record-file/buffer (bookmark) ; Not bound
+  "Edit the full record (the Lisp sexp) of a bookmark in this buffer.
+You are prompted for the name of a bookmark here, with completion."
+  (interactive
+   (let ((alist  (bmkp-this-file/buffer-alist-only)))
+     (list (bookmark-completing-read (format "Add or edit annotation for bookmark"
+                                             (if current-prefix-arg "Add or edit" "Edit"))
+                                     (or (and (fboundp 'bmkp-bookmarks-lighted-at-point)
+                                              (bmkp-bookmarks-lighted-at-point))
+                                         (bmkp-default-bookmark-name alist))
+                                     alist
+                                     nil
+                                     nil
+                                     (not current-prefix-arg)))))
+  (bmkp-edit-bookmark-record bookmark))
+
+;;; ;;;###autoload (autoload 'bmkp-edit-all-bookmark-records-this-file/buffer "bookmark+")
+;;; (defun bmkp-edit-all-bookmark-records-this-file/buffer () ; Not bound
+;;;   "Pop up a record-editing buffer for each bookmark in this file/buffer."
+;;;   (interactive)
+;;;   (dolist (bmk  (bmkp-this-file/buffer-alist-only))
+;;;     (bmkp-edit-bookmark-record bmk)))
 
 (define-derived-mode bmkp-edit-tags-mode emacs-lisp-mode
     "Edit Bookmark Tags"
