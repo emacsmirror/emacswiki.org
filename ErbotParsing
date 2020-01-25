@@ -65,7 +65,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 *Privacy:* Every interaction, especially when *rw*, enters a permanent, public record. Please plan accordingly! Though *ro* interactions are somewhat semi-private to you, as explained below, I can make no guarantee of privacy even for this case. 
 
-*ro* and *rw*: *rw* refers to an interaction that attempts to make any changes to the bot database, set any term or alter any functions or variables  (even temporarily.).  *ro* refers to interactions that merely query a bot for information as opposed to changing anything.
+*ro* and *rw*: *rw* refers to an interaction that attempts to make any changes to the bot database, set any term or alter any functions or variables  (even temporarily.).  *ro* refers to other interactions that merely query a bot for information.
 
 *Logtmp:* Every interaction generates a temporary log, available in an unlisted url under the logtmp/ folder.  These logs are subject to periodic deletion. 
 
