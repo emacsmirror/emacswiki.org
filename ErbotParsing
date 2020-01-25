@@ -71,7 +71,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 *History:* When /query-ing the bot, ##,history## will list all your interactions within this session. In a channel, it lists a history of the entire channel's interactions and their names. 
 
-*Dump:* ##,dump N## will dump the n'th-oldest interaction. ##,dump <partial-name>## is another way to dump the interaction, where the name was looked up the names via typing ##,history##.
+*Dump:* ##,dump N## will dump the n'th-oldest interaction. ##,dump <partial-name>## is another way to dump the interaction, where the name was looked up via typing ##,history##.
 
 *Logfull:* rw interactions also get listed under the logfull/ folder. Unlike logtmp, these logs are permanent. As mentioned above, the record includes all undo-information.
 
