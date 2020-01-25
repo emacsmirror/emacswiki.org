@@ -61,36 +61,31 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 
 
-*Interaction:* Every interaction with the bot, whether ##ro## or ##rw##,  is logged via multiple logging mechanisms, detailed below. An ##interaction## refers to a record of (your command, its parse, the bot's response, and finally, any undo-information it generated.) Each interaction is assigned a random, unique name.  
+*Interaction:* Every interaction with the bot, *ro* or *rw*,  is logged via multiple logging mechanisms, detailed below. An *interaction (record)* refers to (your command, its parse, the bot's response, and finally, any undo-information it generated.) Each interaction is assigned a random, unique name.
 
-#Privacy:# Every interaction, especially when ##rw##, enters a permanent, public record. Please plan accordingly! Though ##ro## interactions are somewhat semi-private to you, as explained below, I can make no guarantee of privacy even for this case. 
+*Privacy:* Every interaction, especially when *rw* enters a permanent, public record. Please plan accordingly! Though *ro* interactions are somewhat semi-private to you, as explained below, I can make no guarantee of privacy even for this case. 
 
-#RO and RW:# #rw# refers to an interaction that attempts to make any changes to the bot database, set any term or alter any functions or variables  (even temporarily.).  #ro# refers to interactions that merely query a bot for information as opposed to changing anything.
+*RO and RW:* *rw* refers to an interaction that attempts to make any changes to the bot database, set any term or alter any functions or variables  (even temporarily.).  *ro* refers to interactions that merely query a bot for information as opposed to changing anything.
+
+*Logtmp:* Every interaction generates a temporary log, available in an unlisted url under the logtmp/ folder.  These logs are subject to periodic deletion. 
+
+*History:* When /query-ing the bot, ##,history## will list all your interactions within this session. In a channel, it lists a history of the entire channel's interactions and their names. 
+
+*Dump:* ##,dump N## will dump the n'th-oldest interaction. ##,dump <partial-name>## is another way to dump the interaction, where the name was looked up the names via typing ##,history##.
+
+*Logfull:* rw interactions also get listed under the logfull/ folder. Unlike logtmp, these logs are permanent. As mentioned above, the record includes all undo-information.
+
+*Botlog:* Also available in the botlog/ folder on the web. ##,botlog N## will list all rw changes made on day #(today - N), by any user, in any channel. Every change will also list a pointer to its logfull-record.
+
+*UNDO:* Every rw interaction also generates a complete UNDO-information, with enough information to reconstruct the original database. This information becomes part of a permanent public record. It also gets stored in the *trashcan*. 
 
 
-#Logtmp:# Every interaction generates a temporary log, available in an unlisted url under the ##logtmp/## folder.  These logs are subject to periodic deletion. 
-
-#History:# When /query-ing the bot, ##,history## will list all your interactions within this session. In a channel, it lists a history of the entire channel's interactions and their names. 
-
-#Dump:# ##,dump N## will dump the n'th-oldest interaction. ##,dump <partial-name>## is another way to dump the interaction, where the name was looked up the names via typing ##,history##.
-
-#Logfull:# rw interactions also get listed under the logfull/ folder. Unlike logtmp, these logs are permanent. As mentioned above, the record includes all undo-information.
-
-#Botlog:# Also available in the botlog/ folder on the web. ##,botlog N## will list all rw changes made on day #(today - N), by any user, in any channel. Every change will also list a pointer to its logfull-record.
-
-#UNDO:# Every rw interaction also generates a complete UNDO-information, with enough information to reconstruct the original database. This information becomes part of a permanent public record. It also gets stored in the trashcan. 
-
-
-#Trashcan:# While any undo-information is part of a permanent public record, it is also stored in the bot's db temporarily via a trash-mechanism. A trash-term is simply a term that starts with "FsTrash". Whenever any undo-information is created, new trash-term(s) are created. ##,trashlist## returns a list of trash-terms, which can then be queried like any other term. You can then use this information to undo any accidental damage. ##,trashtrash## empties the trashcan.
-
+*Trashcan:* While all undo-information is part of a permanent public record, it is also stored in the bot's db temporarily via a trash-mechanism. A *trash-term* is simply a term that starts with "FsTrash". Whenever any undo-information is created, new trash-term(s) are created. ##,trashlist## returns a list of trash-terms, which can then be queried like any other term. You can then use this information to undo any accidental damage. ##,trashtrash## empties the trashcan.
 
 
 
 
 
-=== tmp old: Interaction History: ===
-
-To see your session history, type ##,h[istory]##, which prints all previous interactions, assigning a number and a name to each interaction.  Type ##,d[ump] [number or (partial) name]## to print the link to the log of a previous interaction. The log is presented in an (unlisted) url.  Your interactions are not public. However, interactions that attempt any changes to the `fs-' space or to the botbbdb (terms and notes) become part of a permanent public log. The latter can be seen by typing ##,botbbdb [how-many-days-old]##. The resulting urls list, for each interaction, the invocation, its parse, the result, and finally, enough information to undo the change.  While the url is permanent, the bot itself stores an undo history - for every rw change - for a limited time. That can be accessed by typing ##,trashlist##. Type ##,trashtrash## to empty the trashcan.
 
 
 === Some notes on the parser === 
