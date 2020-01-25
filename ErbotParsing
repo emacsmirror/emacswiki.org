@@ -61,7 +61,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 
 
-*Interaction:* Every interaction with the bot, *ro* or *rw*,  is logged via multiple logging mechanisms, detailed below. (The full record of) an *interaction* refers to (your command, its parse, the bot's response, and finally, any *undo-information* it generated.) Each interaction is assigned a random, unique name.
+*Interaction:* Every interaction with the bot is logged via multiple logging mechanisms, detailed below. (The full record of) an *interaction* refers to (your command, its parse, the bot's response, and finally, any *undo-information* it generated.) Each interaction is assigned a random, unique name.
 
 *Privacy:* Every interaction, especially when *rw* enters a permanent, public record. Please plan accordingly! Though *ro* interactions are somewhat semi-private to you, as explained below, I can make no guarantee of privacy even for this case. 
 
