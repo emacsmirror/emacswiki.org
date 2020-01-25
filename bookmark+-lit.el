@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Jan 14 10:07:22 2020 (-0800)
+;; Last-Updated: Sat Jan 25 10:25:23 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 989
+;;     Update #: 998
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -612,7 +612,7 @@ Completion candidates are the lighted bookmarks at point."
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmark "bookmark+")
-(defun bmkp-unlight-bookmark (bookmark &optional noerrorp msgp)
+(defun bmkp-unlight-bookmark (bookmark &optional noerrorp msgp) ; Not bound
   "Unhighlight BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
   (interactive
@@ -696,7 +696,7 @@ A prefix argument determines which bookmarks to unhighlight:
                         count-auto count-non-auto))))
 
 ;;;###autoload (autoload 'bmkp-unlight-autonamed-this-buffer "bookmark+")
-(defun bmkp-unlight-autonamed-this-buffer (&optional everywherep)
+(defun bmkp-unlight-autonamed-this-buffer (&optional everywherep) ; Not bound
   "Unhighlight autonamed bookmarks.
 No prefix arg: unhighlight them only in the current buffer.
 Prefix arg, unhighlight them everywhere."
@@ -704,7 +704,7 @@ Prefix arg, unhighlight them everywhere."
   (bmkp-unlight-bookmarks '(bmkp-autonamed-overlays) (not everywherep)))
 
 ;;;###autoload (autoload 'bmkp-unlight-non-autonamed-this-buffer "bookmark+")
-(defun bmkp-unlight-non-autonamed-this-buffer (&optional everywherep)
+(defun bmkp-unlight-non-autonamed-this-buffer (&optional everywherep) ; Not bound
   "Unhighlight non-autonamed bookmarks.
 No prefix arg: unhighlight them only in the current buffer.
 Prefix arg, unhighlight them everywhere."
@@ -712,7 +712,7 @@ Prefix arg, unhighlight them everywhere."
   (bmkp-unlight-bookmarks '(bmkp-non-autonamed-overlays) (not everywherep)))
 
 ;;;###autoload (autoload 'bmkp-unlight-this-buffer "bookmark+")
-(defun bmkp-unlight-this-buffer ()
+(defun bmkp-unlight-this-buffer ()      ; Not bound
   "Unhighlight all bookmarks in the current buffer."
   (interactive)
   (bmkp-unlight-bookmarks))
@@ -733,7 +733,7 @@ last non-nil value if nil."
                         "OFF"))))
                                         
 ;;;###autoload (autoload 'bmkp-set-lighting-for-bookmark "bookmark+")
-(defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp light-now-p)
+(defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp light-now-p) ; Not bound
   "Set the `lighting' entry for bookmark BOOKMARK-NAME.
 You are prompted for the bookmark, highlight STYLE, FACE, and
 condition (WHEN) that make up the property-list value of the
@@ -769,7 +769,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
   (when light-now-p (bmkp-light-bookmark bookmark-name nil nil msgp))) ; This msg is more informative.
 
 ;;;###autoload (autoload 'bmkp-set-lighting-for-buffer "bookmark+")
-(defun bmkp-set-lighting-for-buffer (buffer style face when &optional msgp light-now-p)
+(defun bmkp-set-lighting-for-buffer (buffer style face when &optional msgp light-now-p) ; Not bound
   "Set the `lighting' entry for each of the bookmarks for BUFFER.
 You are prompted for the highlight STYLE, FACE, and condition (WHEN).
 With a prefix argument, do not highlight now.
@@ -787,7 +787,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
    style face when msgp light-now-p))
 
 ;;;###autoload (autoload 'bmkp-set-lighting-for-this-buffer "bookmark+")
-(defun bmkp-set-lighting-for-this-buffer (style face when &optional msgp light-now-p)
+(defun bmkp-set-lighting-for-this-buffer (style face when &optional msgp light-now-p) ; Not bound
   "Set the `lighting' entry for each of the bookmarks for this buffer.
 You are prompted for the highlight STYLE, FACE, and condition (WHEN).
 With a prefix argument, do not highlight now.
@@ -812,7 +812,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
   (when light-now-p (bmkp-light-bookmarks alist nil msgp))) ; Do separately so we get its message.
 
 ;;;###autoload (autoload 'bmkp-light-bookmark "bookmark+")
-(defun bmkp-light-bookmark (bookmark &optional style face msgp pointp)
+(defun bmkp-light-bookmark (bookmark &optional style face msgp pointp) ; Not bound
   "Highlight BOOKMARK.
 With a prefix arg you are prompted for the style and/or face to use:
  Plain prefix arg (`C-u'): prompt for both style and face.
@@ -1042,7 +1042,7 @@ It must be provided: if nil then do not highlight any bookmarks."
                         new-auto new-non-auto nb-auto nb-non-auto total))))
 
 ;;;###autoload (autoload 'bmkp-light-navlist-bookmarks "bookmark+")
-(defun bmkp-light-navlist-bookmarks (&optional overlays-symbols msgp)
+(defun bmkp-light-navlist-bookmarks (&optional overlays-symbols msgp) ; Not bound
   "Highlight bookmarks in the navigation list.
 No prefix arg:   all bookmarks.
 Prefix arg >= 0: autonamed bookmarks only.
@@ -1055,7 +1055,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
   (bmkp-light-bookmarks bmkp-nav-alist overlays-symbols msgp))
 
 ;;;###autoload (autoload 'bmkp-light-this-buffer "bookmark+")
-(defun bmkp-light-this-buffer (&optional overlays-symbols msgp)
+(defun bmkp-light-this-buffer (&optional overlays-symbols msgp) ; Not bound
   "Highlight bookmarks in the current buffer.
 No prefix arg:   all bookmarks.
 Prefix arg >= 0: autonamed bookmarks only.
@@ -1068,7 +1068,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
   (bmkp-light-bookmarks (bmkp-this-buffer-alist-only) overlays-symbols msgp))
 
 ;;;###autoload (autoload 'bmkp-light-bookmarks-in-region "bookmark+")
-(defun bmkp-light-bookmarks-in-region (start end &optional overlays-symbols msgp)
+(defun bmkp-light-bookmarks-in-region (start end &optional overlays-symbols msgp) ; Not bound
   "Highlight bookmarks in the region.
 No prefix arg:   all bookmarks.
 Prefix arg >= 0: autonamed bookmarks only.
@@ -1086,20 +1086,20 @@ Prefix arg < 0:  non-autonamed bookmarks only."
                         overlays-symbols msgp))
 
 ;;;###autoload (autoload 'bmkp-light-autonamed-this-buffer "bookmark+")
-(defun bmkp-light-autonamed-this-buffer (&optional msgp)
+(defun bmkp-light-autonamed-this-buffer (&optional msgp) ; Not bound
   "Highlight all autonamed bookmarks."
   (interactive (list 'MSG))
   (bmkp-light-bookmarks (bmkp-autonamed-this-buffer-alist-only) '(bmkp-autonamed-overlays) msgp))
 
 ;;;###autoload (autoload 'bmkp-light-non-autonamed-this-buffer "bookmark+")
-(defun bmkp-light-non-autonamed-this-buffer (&optional msgp)
+(defun bmkp-light-non-autonamed-this-buffer (&optional msgp) ; Not bound
   "Highlight all non-autonamed bookmarks."
   (interactive (list 'MSG))
   (bmkp-light-bookmarks (bmkp-remove-if #'bmkp-autonamed-bookmark-p (bmkp-this-buffer-alist-only))
                         '(bmkp-non-autonamed-overlays) msgp))
 
 ;;;###autoload (autoload 'bmkp-cycle-lighted-this-buffer "bookmark+")
-(defun bmkp-cycle-lighted-this-buffer (increment &optional other-window startoverp)
+(defun bmkp-cycle-lighted-this-buffer (increment &optional other-window startoverp) ; Not bound
   "Cycle through highlighted bookmarks in this buffer by INCREMENT.
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
 Interactively, the prefix arg determines INCREMENT:
@@ -1137,14 +1137,14 @@ In Lisp code:
     (message "Invalid bookmark: `%s'" (bmkp-bookmark-name-from-record bmkp-current-nav-bookmark))))
 
 ;;;###autoload (autoload 'bmkp-cycle-lighted-this-buffer-other-window "bookmark+")
-(defun bmkp-cycle-lighted-this-buffer-other-window (increment &optional startoverp)
+(defun bmkp-cycle-lighted-this-buffer-other-window (increment &optional startoverp) ; Not bound
   "Same as `bmkp-cycle-lighted-this-buffer' but uses another window."
   (interactive (let ((startovr  (consp current-prefix-arg)))
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
   (bmkp-cycle-lighted-this-buffer increment 'OTHER-WINDOW startoverp))
 
 ;;;###autoload (autoload 'bmkp-next-lighted-this-buffer "bookmark+")
-(defun bmkp-next-lighted-this-buffer (n &optional startoverp) ; Repeatable key, e.g. `S-f2'
+(defun bmkp-next-lighted-this-buffer (n &optional startoverp) ; Repeatable key (e.g. `S-f2'), not bound
   "Jump to the Nth-next highlighted bookmark in the current buffer.
 N defaults to 1, meaning the next one.
 Plain `C-u' means start over at the first one.
@@ -1154,7 +1154,7 @@ See also `bmkp-cycle-lighted-this-buffer'."
   (bmkp-cycle-lighted-this-buffer n nil startoverp))
 
 ;;;###autoload (autoload 'bmkp-previous-lighted-this-buffer "bookmark+")
-(defun bmkp-previous-lighted-this-buffer (n &optional startoverp) ; Repeatable key, e.g. `f2'
+(defun bmkp-previous-lighted-this-buffer (n &optional startoverp) ; Repeatable key (e.g. `f2'), not bound
   "Jump to the Nth-previous highlighted bookmark in the current buffer.
 See `bmkp-next-lighted-this-buffer'."
   (interactive (let ((startovr  (consp current-prefix-arg)))
