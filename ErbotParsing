@@ -61,7 +61,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 
 
-*Interaction:* Every interaction with the bot, *ro* or *rw*,  is logged via multiple logging mechanisms, detailed below. (The full record of) an *interaction* refers to (your command, its parse, the bot's response, and finally, any undo-information it generated.) Each interaction is assigned a random, unique name.
+*Interaction:* Every interaction with the bot, *ro* or *rw*,  is logged via multiple logging mechanisms, detailed below. (The full record of) an *interaction* refers to (your command, its parse, the bot's response, and finally, any *undo-information* it generated.) Each interaction is assigned a random, unique name.
 
 *Privacy:* Every interaction, especially when *rw* enters a permanent, public record. Please plan accordingly! Though *ro* interactions are somewhat semi-private to you, as explained below, I can make no guarantee of privacy even for this case. 
 
@@ -77,7 +77,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 
 *Botlog:* Also available in the botlog/ folder on the web. ##,botlog N## will dump a list of all rw interactions on day #(today - N). This includes changes made by any user, on every channel. Every interaction will also include a pointer to its logfull-record.
 
-*UNDO:* Every rw interaction also generates a complete UNDO-information, with enough information to reconstruct the original database. This information becomes part of a permanent public record. It also gets stored in the *trashcan*. 
+*Undo:* Every rw interaction's record also includes an *undo* entry: enough information to reconstruct the original database. This information becomes part of a permanent public record. It also gets stored in the *trashcan*. 
 
 
 *Trashcan:* While all undo-information is part of a permanent public record, it is also stored in the bot's db temporarily via a trash-mechanism. A *trash-term* is simply a term that starts with "FsTrash". Whenever any undo-information is created, new trash-term(s) are created. ##,trashlist## returns a list of trash-terms, which can then be queried like any other term. You can then use this information to undo any accidental damage. ##,trashtrash## empties the trashcan; that is, it deletes all terms starting with FsTrash.
