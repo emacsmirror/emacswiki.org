@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 25 14:55:34 2020 (-0800)
+;; Last-Updated: Sun Jan 26 09:26:50 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15336
+;;     Update #: 15338
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2915,6 +2915,25 @@
 ;;  (without cycling) using `s >', `s n', `s f n', etc.  There are
 ;;  many such predefined sort orders bound to keys with the prefix `s'
 ;;  - use `C-h m' or `?'  for more info.
+;;
+;;  `s >'   – Sort marked (`>') before unmarked
+;;  `s *'   – Sort modified (`*') before unmodified
+;;  `s 0'   – Sort by bookmark creation date/time
+;;  `s b'   – Sort by last buffer or file access
+;;  `s a'   – Sort annotated (`a') before unannotated
+;;  `s d'   – Sort by last bookmark access date/time
+;;  `s D'   – Sort flagged (`D') before unflagged
+;;  `s f d' – Sort by last local file access date/time
+;;  `s f k' – Sort by local file kind: file, symlink, dir
+;;  `s f n' – Sort by file name
+;;  `s f s' – Sort by local file size
+;;  `s f u' – Sort by last local file update (edit) date/time
+;;  `s g'   – Sort by Gnus thread: group, article, message.
+;;  `s i'   – Sort by Info manual, node, position
+;;  `s k'   – Sort by bookmark type (kind)
+;;  `s n'   – Sort by bookmark name
+;;  `s t'   – Sort tagged (`t') before untagged
+;;  `s v'   – Sort by visit frequency
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
 ;;  using `s r'.  Also, repeating any of the main sort-order commands
