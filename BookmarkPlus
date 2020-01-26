@@ -3,7 +3,7 @@ This page is about package '''[::Bookmark+]''', which enhances vanilla Emacs [[b
 * Emacs manual, node `Bookmarks': Manual:Bookmarks
 * [[#BookmarkBasics|Bookmark Basics]], below
 * [[BookMarks|Bookmarks]]
-
+`
 The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. But see also [[#Compatibility]], below.
@@ -3251,12 +3251,13 @@ orders, but you can shorten the cycling list by
 customizing [[option]] '''`bmkp-sort-orders-for-cycling-alist''''.
 
 You can also change directly to one of the main sort orders
-(without cycling) using '''`##s >##'''', '''`##s n##'''', '''`##s f n##'''', etc.  There are many such predefined sort orders bound to keys with the prefix `s' --- use `C-h m' or `?'  for more info.
+(without cycling) using '''`##s >##'''', '''`##s n##'''', '''`##s f n##'''', etc.  There are many such predefined sort orders bound to keys with the prefix `s' --- use `C-h m' or `##?##' for more info.
 
 * '''`##s >##'''' -- Sort marked (`##>##') before unmarked
 * '''`##s *##'''' -- Sort modified (`##*##') before unmodified
 * '''`##s 0##'''' -- Sort by bookmark creation date/time
 * '''`##s b##'''' -- Sort by last __b__uffer or file access
+* '''`##s a##'''' -- Sort __a__nnotated (`##a##') before unannotated
 * '''`##s d##'''' -- Sort by last bookmark access __d__ate/time
 * '''`##s D##'''' -- Sort flagged (`##D##') before unflagged
 * '''`##s f d##'''' -- Sort by last local __f__ile access __d__ate/time
@@ -3268,7 +3269,7 @@ You can also change directly to one of the main sort orders
 * '''`##s i##'''' -- Sort by __I__nfo manual, node, position
 * '''`##s k##'''' -- Sort by bookmark type (__k__ind)
 * '''`##s n##'''' -- Sort by bookmark __n__ame
-* '''`##s t##'''' -- Sort tagged (`##t##') before untagged
+* '''`##s t##'''' -- Sort __t__agged (`##t##') before untagged
 * '''`##s v##'''' -- Sort by __v__isit frequency
 
 You can __r__everse the current sort direction (ascending/descending)
