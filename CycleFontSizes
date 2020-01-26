@@ -1,4 +1,4 @@
-Sets up a list of fonts that can be toggled using C-- (zoom out), C-= (zoom in) and C-0 (reset to default font size).  I find it useful when I need to
+Sets up a list of fonts that can be toggled using ##C--## (zoom out), ##C-=## (zoom in) and ##C-0## (reset to default font size).  I find it useful when I need to
 zoom out and browse the organization of a file at a higher level.
 
     ;; Firefox-like zooming of fonts.
