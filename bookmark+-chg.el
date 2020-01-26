@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 25 13:14:44 2020 (-0800)
+;; Last-Updated: Sun Jan 26 09:08:46 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16629
+;;     Update #: 16634
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/01/26 dadams
+;;     Added: bmkp-annotated-cp.
 ;; 2020/01/25 dadams
 ;;     Added: bmkp-edit-bookmark-record-file/buffer.
 ;; 2020/01/24 dadams
@@ -1433,6 +1435,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/01/26 dadams
+;;     Added: bmkp-bmenu-sort-annotated-before-unannotated.  So updated doc of bookmark-bmenu-mode.
 ;; 2020/01/22 dadams
 ;;     bookmark-bmenu-list: Restore bookmark-bmenu-list to saved value, last-previous-bookmark-file.
 ;;     bookmark-bmenu-mode: Added to doc: *-(switch-to-bookmark-file|save-bookmarks)-this-file/buffer.
