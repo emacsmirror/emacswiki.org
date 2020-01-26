@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan 25 10:58:11 2020 (-0800)
+;; Last-Updated: Sun Jan 26 08:51:09 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9052
+;;     Update #: 9054
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -493,7 +493,7 @@
 ;;    `bmkp-all-exif-data', `bmkp-all-tags-alist-only',
 ;;    `bmkp-all-tags-regexp-alist-only', `bmkp-alpha-cp',
 ;;    `bmkp-alpha-p', `bmkp-annotated-alist-only',
-;;    `bmkp-annotated-bookmark-p',
+;;    `bmkp-annotated-bookmark-p', `bmkp-annotated-cp',
 ;;    `bmkp-annotation-or-bookmark-description',
 ;;    `bmkp-autofile-alist-only', `bmkp-autofile-all-tags-alist-only',
 ;;    `bmkp-autofile-all-tags-regexp-alist-only',
@@ -7536,6 +7536,24 @@ Similarly, SUFFIX-MSG is appended, after appending \".  \"."
 
 ;;(@* "Sorting - General Predicates")
 ;;  *** Sorting - General Predicates ***
+
+(defun bmkp-annotated-cp (b1 b2)
+  "True if bookmark B1 is annotated and bookmark B2 is not.
+Return nil if incomparable as described.
+
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((m1  (bmkp-annotated-bookmark-p b1))
+        (m2  (bmkp-annotated-bookmark-p b2)))
+    (cond ((and m1 m2)  nil)
+          (m1           '(t))
+          (m2           '(nil))
+          (t            nil))))
 
 (defun bmkp-flagged-cp (b1 b2)
   "True if bookmark B1 is flagged for deletion and bookmark B2 is not.
