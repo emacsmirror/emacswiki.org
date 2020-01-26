@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jan 22 12:53:11 2020 (-0800)
+;; Last-Updated: Sun Jan 26 09:01:49 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4114
+;;     Update #: 4120
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -209,6 +209,7 @@
 ;;    `bmkp-bmenu-show-or-edit-annotation',
 ;;    `bmkp-bmenu-show-this-annotation+move-down',
 ;;    `bmkp-bmenu-show-this-annotation+move-up',
+;;    `bmkp-bmenu-sort-annotated-before-unannotated',
 ;;    `bmkp-bmenu-sort-by-bookmark-name',
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
 ;;    `bmkp-bmenu-sort-by-bookmark-type',
@@ -1747,6 +1748,7 @@ to cycle)
 \\[bmkp-bmenu-sort-flagged-before-unflagged]\t- Sort flagged (`D') bookmarks first
 \\[bmkp-bmenu-sort-modified-before-unmodified]\t- Sort modified (`*') bookmarks first
 \\[bmkp-bmenu-sort-tagged-before-untagged]\t- Sort tagged (`t') bookmarks first
+\\[bmkp-bmenu-sort-annotated-before-unannotated]\t- Sort annotated (`a') bookmarks first
 
 \\[bmkp-bmenu-sort-by-creation-time]\t- Sort by bookmark creation time
 \\[bmkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
@@ -4214,6 +4216,9 @@ arg, any that are marked are included."
   (setq bmkp-last-bmenu-bookmark  (bookmark-bmenu-bookmark))
   ;; No marked bookmarks.  Mark this bookmark, so that `C-c C-c' in edit buffer will find it.
   (unless bmkp-bmenu-marked-bookmarks (bookmark-bmenu-mark))
+  ;; FIXME - Should we re-sort, if it was not annotated and now is, or vice versa, and if `s a'?
+  ;; We do that for adding/removing tags - see `bmkp-bmenu-add-tags' and `bmkp-bmenu-remove-tags'.
+  ;; If we do it, then do it also for `bookmark-bmenu-edit-annotation' (which is just vanilla, so far).
   (let ((bmks  (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p)))
     (unless bmks (error "No marked bookmarks"))
     (dolist (bmk  (bmkp-sort-omit bmks)) (bookmark-edit-annotation bmk))))
@@ -5358,6 +5363,12 @@ Otherwise alphabetize by bookmark name.")
  "Sort bookmarks by the time of their creation.
 When one or both of the bookmarks does not have a `created' entry),
 compare them by bookmark name.")
+
+(bmkp-define-sort-command               ; Bound to `s a' in bookmark list
+ "annotated before unannotated" ; `bmkp-bmenu-sort-annotated-before-unannotated'
+ ((bmkp-annotated-cp) bmkp-alpha-p)
+ "Sort bookmarks by putting annotated before unannotated.
+Otherwise alphabetize by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s b' in bookmark list
  "by last buffer or file access"        ; `bmkp-bmenu-sort-by-last-buffer-or-file-access'
