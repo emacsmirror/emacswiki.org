@@ -18,8 +18,10 @@ interested in.
 
 Gnus is bundled with recent versions of Emacs.  Open it with
 M-x&nbsp;gnus&nbsp;RET.  Within Gnus, type `V' and look at the minibuffer.  It
-should say something like `Gnus v5.14'.  If Gnus reports that it is older than
-5.13, please consider upgrading to a more recent version.
+should say something like `Gnus v5.13'.  You can find out the latest upstream
+version of Gnus by searching for "##defconst gnus-version-number##" in [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el]
+(note that the version number there will sometimes reflect a version of Gnus that hasn't been released yet).
+If the version of Gnus in your Emacs is old, please consider upgrading Emacs.
 
 == Fundamental Configuration ==
 
