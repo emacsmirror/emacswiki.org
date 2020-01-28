@@ -1,12 +1,7 @@
 = Connect to servers that allow authenticating with SASL =
-JosephGay has a patched version of [[ERC]] with SASL support on GitHub.
+JosephGay had a patched version of [[ERC]] with SASL support on GitHub.  The [https://github.com/joseph-gay/erc-sasl GitHub repo] was deleted, but a copy is available from https://gitlab.com/psachin/erc-sasl (see also https://debbugs.gnu.org/29108#31)
 
-https://github.com/joseph-gay/erc-sasl
-
-
-The important file to get is https://github.com/joseph-gay/erc-sasl/blob/sasl/erc-sasl.el
-
-When you've put either his [[ERC]] or the erc-sasl in your load-path edit your [[.emacs]] with
+When you've put erc-sasl in your load-path edit your [[.emacs]] with
 
   (require 'erc-sasl)
   (add-to-list 'erc-sasl-server-regexp-list "host\\.server\\.com") ;; e.g. irc\\.freenode\\.net, or .* for any host
