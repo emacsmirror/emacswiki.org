@@ -52,6 +52,10 @@ On Debian Woody (thanks to MilesBader) that list should be:
 
 libc6-dev libjpeg62-dev libncurses5-dev libpng-dev libtiff3g-dev libungif4-dev xaw3dg-dev zlib1g-dev xlibs-dev
 
+On Debian Buster that list should be:
+
+libc6-dev libjpeg62-turbo libncurses5-dev libpng-dev libtiff5-dev libgif-dev xaw3dg-dev zlib1g-dev libx11-dev
+
 
 Fedora 20:
 
