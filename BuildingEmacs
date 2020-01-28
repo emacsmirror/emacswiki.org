@@ -56,6 +56,8 @@ On Debian Buster that list should be:
 
 libc6-dev libjpeg62-turbo libncurses5-dev libpng-dev libtiff5-dev libgif-dev xaw3dg-dev zlib1g-dev libx11-dev
 
+For an improved X11 experience consider adding the dependencies and configure options listed in this [https://superuser.com/a/1129052/114341 StackExchange Answer]
+
 
 Fedora 20:
 
