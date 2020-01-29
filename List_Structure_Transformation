@@ -1,0 +1,43 @@
+Imagine you have the following input of a list of <code>(group value)</code> pairs:
+
+  (setq input '(("fruit" "apple") ("veg" "cucumber") ("fruit" "banana")
+                ("veg" "cabbage") ("fruit" "orange") ("fruit" "grapes")))
+
+
+and you wish to transform it such that all the values are grouped together, with either ''"fruit"'' or ''"veg"'' taking the ''car'' position, to yield:
+
+  '(("veg" "cucumber" "cabbage") ("fruit" "apple" "banana" "orange" "grapes"))
+
+
+== Method 1: Build an Alist ==
+
+Here we will iterate through each pair, appending a fruit or veg type into our outmap variable. 
+
+  (let ((outmap nil)
+        (testfn 'string=)) ;; use string equality as the test function
+    (dolist (paired input outmap)
+      (let ((group (first paired)) ;; "fruit" or "veg"
+            (value (last paired))) ;; "apple" or "cucumber" or ...
+        (if (map-contains-key outmap group testfn)
+            ;; Append value to the group if the group already exists
+            (let ((mapvals (map-elt input group nil testfn)))
+              (map-put outmap group (append mapvals value) testfn))
+          ;; Otherwise, initialise key value pair
+          (map-put outmap group value testfn)))))
+  ;; outmap => (("veg" "cucumber" "cabbage") ("fruit" "apple" "banana" "orange" "grapes"))
+
+
+== Method 2: Group by Car ==
+
+This more elegant solution ([https://github.com/alphapapa/emacs-package-dev-handbook/pull/11#issuecomment-579008184 courtesy of AlphaPapa]) performs an initial pass through the list, where it groups the items via the <code>seq-group-by function</code>, and then uses the <code>--map</code> function to replace each pair with its second element.
+
+   (->> '(("fruit" "apple") ("veg" "cucumber") ("fruit" "banana")
+       ("veg" "cabbage") ("fruit" "orange") ("fruit" "grapes"))
+     (seq-group-by #'car))
+   ;;=> (("veg" ("veg" "cucumber") ("veg" "cabbage"))
+   ;;    ("fruit" ("fruit" "apple") ("fruit" "banana") ("fruit" "orange") ("fruit" "grapes"))
+   (--map (cons (car it) (-map #'cadr (cdr it)))))
+   ;;=> (("veg" "cucumber" "cabbage") ("fruit" "apple" "banana" "orange" "grapes"))
+
+
+
