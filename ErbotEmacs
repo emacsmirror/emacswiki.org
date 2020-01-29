@@ -156,7 +156,7 @@ VARIABLES:
  <fsbot> Press C-x C-e after: (info  "(ediff)Quick Help Commands")
 </pre>
 
-fsbot has special functions info-efaq, info-emacs, info-eintr and info-elisp defined for EmacsManual, EmacsLispReference, Emacs FAQ and Elisp intro respectively. 
+fsbot has special functions info-emacs, info-elisp, info-efaq, and info-eintr defined for EmacsManual, EmacsLispReference, Emacs FAQ and Elisp intro respectively. 
 
 <pre>
 <deego> ,info-efaq "foo"						
