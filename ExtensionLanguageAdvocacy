@@ -130,6 +130,12 @@ Just to add to these rants ;-)
 
 
 
-
+[new]
+Everyone here seems to have the misconception that Emacs "plugins" are second-class citizens. 
+That is not true -- "plugin" code is indistinguishable from editor code.
+An extension written in your favourite language can only communicate with the editor through a
+pre-defined interface, and avoiding "pre-defined interfaces" is part of the power of Emacs.
+Extensions totally miss the point of Emacs. Go figure.
+ 
 ----
 CategoryExtensionLanguage
