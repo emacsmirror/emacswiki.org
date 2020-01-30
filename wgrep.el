@@ -5,7 +5,7 @@
 ;; URL: http://github.com/mhayashi1120/Emacs-wgrep/raw/master/wgrep.el
 ;; URL: http://www.emacswiki.org/emacs/download/wgrep.el
 ;; Emacs: GNU Emacs 22 or later
-;; Version: 1.0.0
+;; Version: 1.0.1
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -69,6 +69,12 @@
 ;; * Change face easy to see.
 ;; * Reinforce checking error.
 ;; * Support removing whole line include new-line.
+;;
+;; 2020-01-30 Max Mikhanosha
+;; * Fix for Emacs 26, use the match group number from grep-regexp-alist when
+;;   extracting line number instead of hardcoded (match-string 3), and ignore 
+;;   the "Grep finished with N matches" line, which is somehow also matched 
+;;   by Emacs-26 grep-regexp-alist
 
 ;;; Code:
 
@@ -158,7 +164,9 @@
 ;; GNU Emacs have this variable at least version 21 or later
 (defvar auto-coding-regexp-alist)
 
-(defconst wgrep-line-file-regexp (caar grep-regexp-alist))
+(defconst wgrep-line-file-regexp (nth 0 (car grep-regexp-alist)))
+(defconst wgrep-line-expression (nth 2 (car grep-regexp-alist)))
+
 
 (add-hook 'grep-setup-hook 'wgrep-setup)
 
@@ -221,9 +229,10 @@
 
 (defun wgrep-get-line-info (&optional flush)
   (forward-line 0)
-  (when (looking-at (concat wgrep-line-file-regexp "\\([^\n]*$\\)"))
+  (when (and (looking-at (concat wgrep-line-file-regexp "\\([^\n]*$\\)"))
+             (match-string-no-properties wgrep-line-expression)) ;; stops at the "Grep finished with N matches string
     (let ((name (match-string-no-properties 1))
-          (line (match-string-no-properties 3))
+          (line (match-string-no-properties wgrep-line-expression))
           (text (and (not flush) (match-string-no-properties 4)))
           (start (match-beginning 4))
           ov)
@@ -543,7 +552,7 @@ This command result immediately reflect to file buffer, although not saved.
         (error "Not a grep result"))
       (let* ((header (match-string-no-properties 0))
              (file (match-string-no-properties 1))
-             (line (string-to-number (match-string 3)))
+             (line (string-to-number (match-string wgrep-line-expression)))
              (origin (wgrep-get-original-value header))
              (info (wgrep-get-line-info t))
              (buffer (wgrep-get-file-buffer file)))
@@ -582,9 +591,10 @@ This command result immediately reflect to file buffer, although not saved.
   (wgrep-goto-first-found)
   (while (not (eobp))
     (cond
-     ((looking-at wgrep-line-file-regexp)
+     ((and (looking-at wgrep-line-file-regexp)
+           (match-string-no-properties wgrep-line-expression))
       (let ((filename (match-string 1))
-            (line (string-to-number (match-string 3))))
+            (line (string-to-number (match-string wgrep-line-expression))))
         ;; delete backward and forward following options.
         ;; -A (--after-context) -B  (--before-context) -C (--context)
         (save-excursion
