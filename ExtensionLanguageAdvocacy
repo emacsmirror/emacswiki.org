@@ -53,6 +53,7 @@ The idea of having a bunch of different "scripting" languages seems to rest on t
 
 [new]
 Good idea, improve Emacs Lisp ! Would you mind implementing threads, as a start ? :) -- LucasBonnet
+We already have threads, they're just not parallel. Oh and even if you did get your fancy scripting interface, threads wouldn't do much good either, since Emacs itself is incompatible with parallelism (this is also why a GuileEmacs wouldn't have parallelism either)
 
 [new]
 EmacsLispForRuby is also available.
