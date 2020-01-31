@@ -599,6 +599,12 @@ There are the following possibilities to deal with the situation above:
 //Please, put here your comments, suggestions, doubts, improvements, etc.//
 
 [new]
+-------------
+indentation::space - bug or am I a newbie?
+
+I have indentation::space in my whitespace-style, and expected it would cause leading TAB characters to be highlighted, but it seems to highlight 8 or more leading spaces. I thought that would only be done by indentation::tabs ??? Other style settings seem to work as I expected from the documentation.
+
+[new]
 
   -------------------------------------------------------------------
   Fri, 15 Feb 2008 08:26:15 +0100
