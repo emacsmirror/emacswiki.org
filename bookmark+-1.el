@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan 26 08:51:09 2020 (-0800)
+;; Last-Updated: Fri Jan 31 07:36:20 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9054
+;;     Update #: 9055
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -10766,7 +10766,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-dired-remember-*-marks (beg end)
   "Return a list of the files and subdirs marked `*' in Dired."
   (if (fboundp 'dired--unhide)          ; Emacs 27+ uses invisible text, not `selective-display'.
-      (dired--unhide (point-min) (point-max))
+      (with-silent-modifications (dired--unhide (point-min) (point-max)))
     (when selective-display (let ((inhibit-read-only  t)) (subst-char-in-region beg end ?\r ?\n))))
   (let ((mfiles  ())
         fil)
