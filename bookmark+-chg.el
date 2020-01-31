@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan 26 09:08:46 2020 (-0800)
+;; Last-Updated: Fri Jan 31 07:38:04 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16634
+;;     Update #: 16638
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/01/31 dadams
+;;     bmkp-dired-remember-*-marks:
+;;       Wrap dired--unhide with with-silent-modifications.  Thx to Tino Calancha. 
 ;; 2020/01/26 dadams
 ;;     Added: bmkp-annotated-cp.
 ;; 2020/01/25 dadams
@@ -1436,7 +1439,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
 ;; 2020/01/26 dadams
-;;     Added: bmkp-bmenu-sort-annotated-before-unannotated.  So updated doc of bookmark-bmenu-mode.
+;;     Added: bmkp-bmenu-sort-annotated-before-unannotated (bound to s a).
 ;; 2020/01/22 dadams
 ;;     bookmark-bmenu-list: Restore bookmark-bmenu-list to saved value, last-previous-bookmark-file.
 ;;     bookmark-bmenu-mode: Added to doc: *-(switch-to-bookmark-file|save-bookmarks)-this-file/buffer.
@@ -2112,6 +2115,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2020/01/27 dadams
+;;     Bind bookmark-jump-other-frame to 5 in bookmark-map.
 ;; 2020/01/25 dadams
 ;;     bmkp-bookmarks-here-menu-command-entries:
 ;;       Added bmkp-edit-bookmark-record-file/buffer, bmkp-set-lighting-for-this-buffer,
