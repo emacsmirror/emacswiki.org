@@ -1,8 +1,5 @@
 == Hello ==
-portrait:https://s.gravatar.com/avatar/dd432bfdae9d47dc37b838173ccb6494?s=80 I am occasionally found on various Lists and [[IRC]] #emacs under the nickname of [::m43cap]. See my [[http://www.colin-baxter.com/|web-page]] for more information.
-
-== My Relationship with Emacs ==
-I came to Emacs late in life, after using just about every rubbish editor and word-processor known to mankind. Then beginning with AUCTeX and using Emacs as a writing tool, I gradually moved over several years to adopting Emacs as my default application for command-line work, (AnsiTerm), file management (DiredMode), email, Internet browser (WThreeM), a universal organiser (OrgMode), etc., etc. The abandonment of most other applications has wonderfully removed desktop clutter! :) I do not do very much programming these days, except the occasional perl (PerlDevelopEnvironment) and fortran (FortranMode).
+portrait:https://s.gravatar.com/avatar/dd432bfdae9d47dc37b838173ccb6494?s=80 I am occasionally found on various Lists and [[IRC]] #emacs under the nickname of [::m43cap]. See my [[http://www.colin-baxter.com/|web-page]] for more information about me. I used to contribute to emacs.stackexchange, but I found it unwelcoming for non-cs members, like myself. So I deleted my account and left. Their loss not mine. I came to Emacs late in life, but I arrived here in the end.
 
 ----
 CategoryHomepage
