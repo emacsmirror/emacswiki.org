@@ -1,0 +1,6 @@
+This package uses Emacs built-in undo, avoiding any incompatibility or complications that can arise when manipulating undo history,
+adding commands for more typical undo/redo functionality. 
+
+This is available as a package "undo-fu" on Melpa, for the main repository, see:
+
+* https://gitlab.com/ideasman42/emacs-undo-fu
