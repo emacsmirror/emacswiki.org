@@ -11,6 +11,7 @@ In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page in
 * TrackChanges -- view changes to a file
 * RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
 * BackupFiles -- Let Emacs keep old copies of the file around.
+* UndoFu -- Thin wrapper around built-in undo, offering more conventional undo/redo functionality, without loosing access to the full undo history. 
 * UndoTree -- Replace Emacs' undo system with one that treats undo history as what it is: a branching tree of changes.  Includes an undo-tree visualizer to view and browse around the undo history.
 * ViewUndo is a quick hack that shows a buffer's undo list in one message.
 It doesn't modify the undo list, but it does change the `undo' state from undoing to redoing, a definite problem.  Only tested with GNU Emacs 21.2.1 on Mac OS 10.3.7.
