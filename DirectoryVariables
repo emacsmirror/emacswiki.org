@@ -36,7 +36,7 @@ Sometimes you'll see examples of .dir-locals.el files using fewer dots and paren
 
     (info "(elisp) Dotted Pair Notation")
 
-Note that the `add-dir-local-variable' command updates the file using non-dotted notation.
+Note that the `add-dir-local-variable' command uses dotted pair notation since version 27.1; older versions of Emacs update the file using non-dotted notation.
 
 == Without a .dir-locals.el file ==
 
