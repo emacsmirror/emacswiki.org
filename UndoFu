@@ -1,7 +1,7 @@
 This package uses Emacs built-in undo, avoiding any incompatibility or complications that can arise when manipulating undo history,
 adding commands for more typical undo/redo functionality. 
 
-The full undo history is still accessible using "Unconstrained" undo/redo, accessed by pressing Ctrl-G before undo or redo.
+The full undo history is still accessible using "Unconstrained" undo/redo, accessed by pressing Ctrl-G before undo or redo which behave much the same as the default undo command.
 
 This is available as a package "undo-fu" on Melpa, for the main repository, see:
 
