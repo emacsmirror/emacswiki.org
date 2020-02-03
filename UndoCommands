@@ -36,6 +36,11 @@ Binding undo to `C-z' makes it easier to use (and the command `suspend-frame' is
 
 == Different Undo Commands ==
 
+=== UndoFu ===
+Is a thin-convenience wrapper, adding undo/redo functionality over emacs built-in undo.
+
+The UndoFu package does this without intrusive hooks or undo history manipulation which can be error prone.
+
 === UndoTree ===
 Some people have trouble with the lack of redo or a way to browse the undo tree. There is no built-in way to do these things (aside from mentally trying to keep track of a long string of changes including undos, which some people find very difficult). The UndoTree package solves this issue nicely.
 
