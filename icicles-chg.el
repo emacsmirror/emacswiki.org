@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jan 20 11:44:23 2020 (-0800)
+;; Last-Updated: Mon Feb  3 11:33:25 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11892
+;;     Update #: 11895
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1214,6 +1214,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2020/02/03 dadams
+;;     icicle-search-read-context-regexp: Use icicle-read-number if available.
 ;; 2020/01/20 dadams
 ;;     icicle-search-thing-scan:
 ;;       Fix off-by-1 hack to handle vanilla thing-at-point, which returns thing even if before point.
@@ -2321,6 +2323,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2020/02/03 dadams
+;;     icicle-read-number:
+;;       Updated for Emacs 27+.  Added HIST arg (default read-number-history).  Thx to Tino Calancha.
 ;; 2020/01/12 dadams
 ;;     icicle-fit-completions-window: Fix last change, for Emacs 20.
 ;; 2020/01/03 dadams
@@ -4719,6 +4724,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2020/02/03 dadams
+;;     icicle-candidate-set-truncate: Use icicle-read-number if available.
 ;; 2019/12/10 dadams
 ;;     icicle-change-sort-order: Changed indication of default value in prompt: NOW was misleading.
 ;; 2019/06/15 dadams
