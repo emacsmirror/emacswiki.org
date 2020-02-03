@@ -22,6 +22,7 @@ Undo utilities:
 * RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
 * TrackChanges -- view changes to a file
 * UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
+* UndoFuSession -- persistent undo/redo data which can be used between sessions.
 
 Besides changes to [[buffer]]s, you can undo some other changes to your current Emacs state. In most cases, this undoing really means cycling or popping recorded states.
 
