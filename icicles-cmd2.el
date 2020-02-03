@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Jan 20 11:47:49 2020 (-0800)
+;; Last-Updated: Mon Feb  3 11:28:05 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 7464
+;;     Update #: 7466
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4614,10 +4614,12 @@ The arguments are for use by `completing-read' to read the regexp.
       (setq regexp  (icicle-completing-read-history prompt 'regexp-history pred init def i-i-m)))
     (setq prompt                       "Subgroup to use as search context [0, 1, 2,...]: "
           icicle-search-context-level  (if (string-match "\\\\(" regexp)
-                                           (truncate (if (fboundp 'read-number)
-                                                         (read-number prompt 0)
-                                                       (read-from-minibuffer ; Hope for a number.
-                                                        prompt nil nil nil nil 0)))
+                                           (truncate (if (fboundp 'icicle-read-number) ; Emacs 22+
+                                                         (icicle-read-number prompt 0)
+                                                       (if (fboundp 'read-number)
+                                                           (read-number prompt 0)
+                                                         (read-from-minibuffer ; Hope for a number.
+                                                          prompt nil nil nil nil 0))))
                                          0))
     regexp))
 
@@ -5945,7 +5947,7 @@ This function respects `icicle-search-complement-domain-p',
                                                          (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
                                                          (overlay-put ov 'face 'icicle-search-main-regexp-others))))
                                                    (if thg-end
-                                                       (setq beg  (if (= last-hit-end  tr-thg-end) (1+ thg-end) thg-end))
+                                                       (setq beg  (if (= last-hit-end tr-thg-end) (1+ thg-end) thg-end))
                                                      ;; If visible then no more things - skip to END.
                                                      (unless (icicle-invisible-p beg) (setq beg  end)))))
                                                (setq last-beg  beg)))
