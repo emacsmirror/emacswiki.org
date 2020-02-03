@@ -3,19 +3,25 @@ Click the page title to find all pages related to undoing.
 In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page includes discussion of related ways to "undo" other aspects of your Emacs session.
 
 * UndoCommands -- Commands available in Emacs
-* GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
+
+Undo replacements:
+
 * RedoMode -- simplify the current undo mechanism to be more MS Windows like (and thus less powerful)
 * RedoPlus -- a fork of redo.el which can correctly work in newer version of Emacs
 * SelectiveUndo -- only undo changes in a certain region
-* UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
-* TrackChanges -- view changes to a file
-* RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
-* BackupFiles -- Let Emacs keep old copies of the file around.
 * UndoFu -- Thin wrapper around built-in undo, offering more conventional undo/redo functionality, without loosing access to the full undo history. 
 * UndoTree -- Replace Emacs' undo system with one that treats undo history as what it is: a branching tree of changes.  Includes an undo-tree visualizer to view and browse around the undo history.
 * ViewUndo is a quick hack that shows a buffer's undo list in one message.
 It doesn't modify the undo list, but it does change the `undo' state from undoing to redoing, a definite problem.  Only tested with GNU Emacs 21.2.1 on Mac OS 10.3.7.
 * Lisp:old-fashioned-undo.el -- Undo/Redo in very simple, and old fashioned way.
+
+Undo utilities:
+
+* GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
+* UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
+* TrackChanges -- view changes to a file
+* RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
+* BackupFiles -- Let Emacs keep old copies of the file around.
 * Lisp:volatile-highlights.el - Volatile highlights mode brings visual
 feedback of "undo" operation by making highlights on text inserted by "undo" command.
 
