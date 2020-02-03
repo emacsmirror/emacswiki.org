@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Jan 12 16:07:09 2020 (-0800)
+;; Last-Updated: Mon Feb  3 11:17:54 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15292
+;;     Update #: 15294
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1995,9 +1995,11 @@ This binds variable `icicle-buffer-name-input-p' to non-nil."
   (unless (fboundp 'icicle-ORIG-read-number)
     (defalias 'icicle-ORIG-read-number (symbol-function 'read-number)))
 
-  (defun icicle-read-number (prompt &optional default)
+  (defun icicle-read-number (prompt &optional default hist)
     "Read a number in the minibuffer, prompting with PROMPT (a string).
 DEFAULT is returned if the user hits `RET' without typing anything.
+HIST is a history list variable, passed to `completing-read'.  It
+ defaults to `read-number-history' (Emacs 27+).
 
 If option `icicle-add-proxy-candidates-flag' is non-nil, the user can
 also enter the name of a numeric variable - its value is returned.
@@ -2033,6 +2035,8 @@ whose value or whose custom type is compatible with type `integer',
            (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt))
            (while (progn
                     (let ((str  (completing-read prompt nil nil nil nil nil
+                                                 (or hist  (and (boundp 'read-number-history)
+                                                                'read-number-history))
                                                  (if (consp default)
                                                      (mapcar #'number-to-string default)
                                                    (and default1  (number-to-string default1)))))
