@@ -8,11 +8,6 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-==== indentation::space - bug or am I a newbie? ====
-
-I have indentation::space in my whitespace-style, and expected it would cause leading TAB characters to be highlighted, but it seems to highlight 8 or more leading spaces.  I thought that would only be done by indentation::tabs ???  Other style settings seem to work as I expected from the documentation.
-
-
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
 -- Thanks for your attention --
