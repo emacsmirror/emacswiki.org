@@ -1,0 +1,5 @@
+This package stores the buffers undo state on save, restoring it when the file is next loaded.
+
+This is available as a package "undo-fu-session" on Melpa, for the main repository, see:
+
+* https://gitlab.com/ideasman42/emacs-undo-fu-session
