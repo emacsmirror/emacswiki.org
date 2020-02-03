@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jan  3 09:51:40 2020 (-0800)
+;; Last-Updated: Mon Feb  3 11:32:22 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 19873
+;;     Update #: 19874
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7435,7 +7435,12 @@ The first N candidates are kept.  N is read."
            (setq icicle-saved-completion-candidates-internal  icicle-completion-candidates)
            (if current-prefix-arg
                (prefix-numeric-value current-prefix-arg)
-             (read-number "Number of candidates to keep: ")))))
+             (let ((prompt  "Number of candidates to keep: "))
+               (if (fboundp 'icicle-read-number) ; Emacs 22+
+                   (icicle-read-number prompt)
+                 (if (fboundp 'read-number)
+                     (read-number prompt)
+                   (read-from-minibuffer prompt)))))))) ; Hope for a number.
   (setq icicle-completion-candidates  icicle-saved-completion-candidates-internal)
   (setcdr (nthcdr (1- n) icicle-completion-candidates) nil)
   (icicle-maybe-sort-and-strip-candidates)
