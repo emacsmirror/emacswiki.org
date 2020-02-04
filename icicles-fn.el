@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Feb  3 11:17:54 2020 (-0800)
+;; Last-Updated: Tue Feb  4 11:02:15 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15294
+;;     Update #: 15295
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2034,7 +2034,7 @@ whose value or whose custom type is compatible with type `integer',
                                 "[ \t]*\\'" (format " (default %s) " default1) prompt t t)))))
            (when icicle-proxy-candidates (put-text-property 0 1 'icicle-fancy-candidates t prompt))
            (while (progn
-                    (let ((str  (completing-read prompt nil nil nil nil nil
+                    (let ((str  (completing-read prompt nil nil nil nil
                                                  (or hist  (and (boundp 'read-number-history)
                                                                 'read-number-history))
                                                  (if (consp default)
