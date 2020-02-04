@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Feb  3 11:33:25 2020 (-0800)
+;; Last-Updated: Tue Feb  4 11:04:23 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11895
+;;     Update #: 11896
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2323,7 +2323,7 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
-;; 2020/02/03 dadams
+;; 2020/02/04 dadams
 ;;     icicle-read-number:
 ;;       Updated for Emacs 27+.  Added HIST arg (default read-number-history).  Thx to Tino Calancha.
 ;; 2020/01/12 dadams
