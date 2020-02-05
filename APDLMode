@@ -1,6 +1,6 @@
   APDL (Ansys Parametric Design Language) is the solver scripting
-  language of the FEA (Finite Element Analysis) suite [https://www.ansys.com/ ANSYS] (ANalysis
-  SYStem, registered TM).
+  language of the FEA (Finite Element Analysis) suite
+  [https://www.ansys.com ANSYS] (ANalysis SYStem, registered TM).
 
   APDL-Mode (formerly ANSYS-Mode) represents, in conjunction with the
   GNU-Emacs editor, an advanced APDL environment with features like
