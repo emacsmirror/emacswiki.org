@@ -1,25 +1,26 @@
-  APDL (Ansys Parametric Design Language) is the solver scripting
-  language of the FEA (Finite Element Analysis) suite
-  [https://www.ansys.com ANSYS] (ANalysis SYStem, registered TM).
+The GNU-Emacs major mode for the programming language APDL
 
-  APDL-Mode (formerly ANSYS-Mode) represents, in conjunction with the
-  GNU-Emacs editor, an advanced APDL environment with features like
-  solver communication (GNU-Linux only), license reporting, keyword
-  completion, code templates, dedicated keybindings, etc.  Over the
-  years it has accumulated lots of features for writing and debugging
-  complete FEA models in APDL code. Please convince yourself with the
-  APDL-Mode in-depth documentation.
+APDL (Ansys Parametric Design Language) is the solver scripting
+language of the FEA (Finite Element Analysis) suite
+[https://www.ansys.com ANSYS] (ANalysis SYStem, registered TM).
 
-  With the advent of the modern ANSYS GUIs - like `WorkBench' or
-  `AIM' - the usage of APDL as a wholesale modelling language has
-  diminished.  But APDL is here to stay: `WorkBench' and `AIM' operate
-  exclusively the ANSYS solver with it!  They are sending APDL input
-  (.dat) files to the solver.  For a true understanding of the GUIs'
-  inner workings a study of their APDL code is prerequisite.
+APDL-Mode (formerly ANSYS-Mode) represents, in conjunction with the
+GNU-Emacs editor, an advanced APDL environment with features like
+solver communication (GNU-Linux only), license reporting, keyword
+completion, code templates, dedicated keybindings, etc.  Over the
+years it has accumulated lots of features for writing and debugging
+complete FEA models in APDL code. Please convince yourself with the
+APDL-Mode in-depth documentation.
 
-  On the other hand the GUIs are not supporting all solver features.
-  So APDL `Command Snippets' enhance the GUIs' modeling capabilities.
+With the advent of the modern ANSYS GUIs - like `WorkBench' or
+`AIM' - the usage of APDL as a wholesale modelling language has
+diminished.  But APDL is here to stay: `WorkBench' and `AIM' operate
+exclusively the ANSYS solver with it!  They are sending APDL input
+(.dat) files to the solver.  For a true understanding of the GUIs'
+inner workings a study of their APDL code is prerequisite.
 
+On the other hand the GUIs are not supporting all solver features.
+So APDL `Command Snippets' enhance the GUIs' modeling capabilities.
 
 ----
 CategoryModes
