@@ -1,20 +1,3 @@
-http://duenenhof-wilhelm.de/img/ansys+emacs_bw.png
+Ansys Mode is now APDLMode.
 
-The project supports your workflows with the FEA (Finite Element Analysis) suite
-[http://www.ansys.com ANSYS] (ANalysis SYStem, registered TM). The code is hosted on [https://github.com/dieter-wilhelm/ansys-mode GitHub].
-The latest stable version you'll find on [https://github.com/dieter-wilhelm/ansys-mode/releases GitHub's ANSYS-Mode's releases page].
-
-ANSYS-Mode is an add-on to the [http://www.gnu.org/software/emacs GNU Emacs editor] for
-investigating and coding APDL (Ansys Parametric Design Language).  The
-mode offers also managing and communication capabilities for various
-ANSYS processes, like interactive code debugging with the solver or
-inquiring the license manager status, etc.  Some features are quite
-sophisticated but its documentation is targeted for ANSYS users with
-little Emacs experience.
-
-Advantages compared to other APDL editors: Largest feature set, user
-extensible, cost-free, Emacs integrated tools, available for all OS,
-for in-built help no ANSYS installation necessary.
-
-The complete online documentation you'll find [http://dieter-wilhelm.github.io/ansys-mode/ here].
 
