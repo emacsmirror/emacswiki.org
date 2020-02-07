@@ -75,6 +75,18 @@ Settings for minor modes are held in a global variable and tend to take immediat
 
 Also bear in mind that some modes may dynamically update these values themselves (for instance dired-mode updates mode-name if you change the sorting criteria) in which cases this library may prove inadequate.
 
+==Conflict with c-mode and related major modes==
+
+Major modes based on cc-mode.el (including `c-mode', ##‘c++-mode’##, and derivatives such as `php-mode') cannot be delighted, due to Emacs bug https://debbugs.gnu.org/cgi/bugreport.cgi?bug=2034
+
+cc-mode.el assumes that `mode-name' is always a string (which was true in Emacs 22 and earlier), while delight.el makes use of the fact that `mode-name' can (since Emacs 23) contain any mode-line construct.  The two are therefore incompatible.
+
+The conflicting function is `c-update-modeline' which adds the various suffix characters documented at ##M-: (info "(ccmode) Minor Modes")##.  (E.g. In the mode line of a `c-mode' buffer, the name ##C## might be changed to ##C/*l## or similar, depending on the minor modes.)
+
+If you are willing (or indeed wishing) to eliminate those suffixes entirely for all relevant major modes, then you can work around this conflict between the two libraries by disabling `c-update-modeline' entirely, like so:
+
+ (advice-add 'c-update-modeline :override #'ignore)
+
 ==Integration with powerline, and other libraries==
 
 With the exception of Emacs' default mode line rendering, anything rendering a mode line construct will call ##format-mode-line##. By default, delight.el wants to display delighted major mode names <em>only</em> in the mode line and not elsewhere, and so delighted major mode names are inhibited during calls to ##format-mode-line##.
