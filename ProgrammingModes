@@ -5,7 +5,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * AdmbMode -- AD Model Builder
 * AnsysMode
 * AntlrMode
-* APDLMode -- Major mode for the APDL scripting language
+* [[APDLMode]] -- Major mode for the APDL scripting language
 * AugeasMode
 * AutoconfMode -- for autoconf configure scripts
 * AutoExpMode -- for Microsoft Visual Studio's autoexp.dat file
