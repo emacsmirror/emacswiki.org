@@ -4,7 +4,7 @@ In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page in
 
 * UndoCommands -- Commands available in Emacs
 
-Undo replacements:
+Undo Replacements:
 
 * Lisp:old-fashioned-undo.el -- Undo/Redo in very simple, and old fashioned way.
 * RedoMode -- simplify the current undo mechanism to be more MS Windows like (and thus less powerful)
@@ -12,9 +12,8 @@ Undo replacements:
 * SelectiveUndo -- only undo changes in a certain region
 * UndoFu -- Thin wrapper around built-in undo, offering more conventional undo/redo functionality, without loosing access to the full undo history.
 * UndoTree -- Replace Emacs' undo system with one that treats undo history as what it is: a branching tree of changes.  Includes an undo-tree visualizer to view and browse around the undo history.
-* ViewUndo is a quick hack that shows a buffer's undo list in one message. It doesn't modify the undo list, but it does change the `undo' state from undoing to redoing, a definite problem.  Only tested with GNU Emacs 21.2.1 on Mac OS 10.3.7.
 
-Undo utilities:
+Undo Utilities:
 
 * BackupFiles -- Let Emacs keep old copies of the file around.
 * GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
@@ -23,10 +22,11 @@ Undo utilities:
 * TrackChanges -- view changes to a file
 * UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
 * UndoFuSession -- persistent undo/redo data which can be used between sessions.
+* ViewUndo is a quick hack that shows a buffer's undo list in one message. It doesn't modify the undo list, but it does change the `undo' state from undoing to redoing, a definite problem.  Only tested with GNU Emacs 21.2.1 on Mac OS 10.3.7.
 
 Besides changes to [[buffer]]s, you can undo some other changes to your current Emacs state. In most cases, this undoing really means cycling or popping recorded states.
 
-Frame configurations:
+Frame Configurations:
 
 * `M-x cycle-frame-configs' -- cycle among previous [[FrameConfiguration]]s, seeming to undo configuration changes. See FramesAndRegisters.
 * `M-x jump-to-frame-config-register' -- restore the last saved [[FrameConfiguration]], seeming to undo the current config. See FramesAndRegisters.
