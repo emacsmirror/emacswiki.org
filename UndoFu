@@ -1,7 +1,23 @@
+== About ==
+
+Emacs's undo system allows you to recover ''any'' past state of a buffer.
+
+While this can be useful, it complicates navigating the undo-history, especially in situations where a simple undo/redo commands are sufficient.
+
 This package uses Emacs built-in undo, avoiding any incompatibility or complications that can arise when manipulating undo history,
 adding commands for more typical undo/redo functionality. 
 
-The full undo history is still accessible using "Unconstrained" undo/redo, accessed by pressing Ctrl-G before undo or redo which behave much the same as the default undo command.
+== Usage ==
+
+By default the commands undo-fu-only-undo & undo-fu-only-redo perform undo and redo as you would expect in a word-processor for example.
+
+This allows you to hold the undo-key to reach an earlier part of the document, then hold the redo-key to go back to the state where undo was initiated.
+
+Unlike undo most editors, a single edit after undoing doesn't remove all edits.
+
+The full undo history is still accessible using "Unconstrained" undo/redo, accessed by pressing Ctrl-G before undo or redo which behave much the same as the default 'undo' command. 
+
+== Downloading ==
 
 This is available as a package "undo-fu" on Melpa, for the main repository, see:
 
