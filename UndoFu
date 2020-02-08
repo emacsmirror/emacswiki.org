@@ -13,7 +13,7 @@ By default the commands undo-fu-only-undo & undo-fu-only-redo perform undo and r
 
 This allows you to hold the undo-key to reach an earlier part of the document, then hold the redo-key to go back to the state where undo was initiated.
 
-Unlike undo most editors, a single edit after undoing doesn't remove all edits.
+However, unlike undo in most editors, a single edit after undoing doesn't remove all edits.
 
 The full undo history is still accessible using "Unconstrained" undo/redo, accessed by pressing Ctrl-G before undo or redo which behave much the same as the default 'undo' command. 
 
