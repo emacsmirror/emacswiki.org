@@ -81,6 +81,10 @@ Major modes based on cc-mode.el (including `c-mode', ##‘c++-mode’##, and der
 
 cc-mode.el assumes that `mode-name' is always a string (which was true in Emacs 22 and earlier), while delight.el makes use of the fact that `mode-name' can (since Emacs 23) contain any mode-line construct.  The two are therefore incompatible.
 
+The symptom of this conflict is the following error (where the ##...## varies):
+
+ (wrong-type-argument stringp (inhibit-mode-name-delight ...))
+
 The conflicting function is `c-update-modeline' which adds the various suffix characters documented at ##M-: (info "(ccmode) Minor Modes")##.  (E.g. In the mode line of a `c-mode' buffer, the name ##C## might be changed to ##C/*l## or similar, depending on the minor modes.)
 
 If you are willing (or indeed wishing) to eliminate those suffixes entirely for all relevant major modes, then you can work around this conflict between the two libraries by disabling `c-update-modeline' entirely, like so:
