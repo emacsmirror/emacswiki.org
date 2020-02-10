@@ -19,6 +19,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/indent-lint.el indent-lint.el] (MELPA) -- Async indentation checker
 * [https://github.com/conao3/indent-lint.el flycheck-indent.el] (MELPA) -- Flycheck frontend for indent-lint.el
 * [https://github.com/conao3/ppp.el ppp.el] (MELPA) -- Extended pretty printer for Emacs Lisp
+* [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
 
 == Co-maintainer Projects ==
 * [https://github.com/conao3/navbar.el papaeye/navbar.el] -- Navigation bar for Emacs
