@@ -330,6 +330,17 @@ there is such a ''someone'' to do something similar for a Microsoft product.
 -- RolfUnger
 
 [new]
+But there is a rather crude workaround: add "-q" and "select '1>' to sql-ms-options and you can get it
+to work. This tells sqlcmd to execute a query without exit. And so sqlcmd ends up in interactive
+mode
+{{{
+(add-to-list sql-ms-options "-q")
+(add-to-list sql-ms-options "select '1>'")
+}}}
+
+-- KaiEdinger 
+
+[new]
 There's a way to fix the interaction so that you can use Enter instead of C-j for a new line. For MSSQL, there's no prompt continuation regex in sql.el, and that causes errors when parsing the output of the tool.
 You can fix it by adding the same regex than for regular prompts, like this:
 {{{
