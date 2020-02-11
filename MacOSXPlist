@@ -20,19 +20,11 @@ To edit OSX binary and xml plist files, use the compressed file framework and th
 
 --KevinLynch
 
-== Use environment.plist For Emacs Environment ==
+== Plist Parser ==
 
-[http://edward.oconnor.cx/elisp/osx-plist.el osx-plist.el] is an Emacs lisp parser for MacOSX's plist files.
-
-If you'd like Emacs to update its environment based on the contents of ~/.MacOSX/environment.plist, install this library and add the following to your .emacs file:
+[https://github.com/ferdy/osx-plist osx-plist] is an Emacs lisp parser for MacOSX's plist files.
 
  (require 'osx-plist)
- (osx-plist-update-environment)
-
-Share and Enjoy!
-
--- EdwardOConnor
-
 This file (tagged version 1.0.0 in its source) only parses plist files whose root node is a dict.
 
 If you want to use it to parse plist files whose root node is an array, a quick fix is to replace the defun on line 84:
