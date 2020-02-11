@@ -155,8 +155,7 @@ Or to get self-compiled/alternative python to work when Emacs.app is launched fr
  (setq exec-path
     (cons "/Library/Frameworks/Python.framework/Versions/2.7/bin" exec-path))
 
-Alternatively, you can set up the path for all applications launched from the Finder by editing <code>~/.MacOSX/environment.plist</code> [http://developer.apple.com/qa/qa2001/qa1067.html]
-[http://www.astro.washington.edu/users/rowen/AquaEnvVar.html].
+Alternatively, you can set up the path for all applications launched from the Finder by editing <code>~/.MacOSX/environment.plist</code> [http://developer.apple.com/qa/qa2001/qa1067.html].
 
 Emacs lisp support for Mac OS X plist files (including the environment plist file used by the Finder) is here: [[MacOSXPlist]]
 
