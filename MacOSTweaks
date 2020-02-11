@@ -155,12 +155,6 @@ Or to get self-compiled/alternative python to work when Emacs.app is launched fr
  (setq exec-path
     (cons "/Library/Frameworks/Python.framework/Versions/2.7/bin" exec-path))
 
-Alternatively, you can set up the path for all applications launched from the Finder by editing <code>~/.MacOSX/environment.plist</code> [http://developer.apple.com/qa/qa2001/qa1067.html].
-
-Emacs lisp support for Mac OS X plist files (including the environment plist file used by the Finder) is here: [[MacOSXPlist]]
-
-Changing the Finder's environment variables doesn't take effect until you log out entirely and back in, though.  Whether this is a problem depends on whether you're in the habit of rebooting (ever), or not.
-
 A final alternative: if you spend most of your time in Terminal.app and would like emacs to inherit your shell's environment, 
 <code>open /Applications/Emacs.app</code> will accomplish this.
 
