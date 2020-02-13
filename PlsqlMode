@@ -2,8 +2,13 @@
 
 PL/SQL mode is an extension of SqlMode that provides supports writing
 PL/SQL code.  It uses SqlMode to provide keyword fontification,
-symbol-tables, and interaction with the database.  In addition to
-fixing some bugs, this mode also provides the following:
+symbol-tables, and interaction with the database.
+
+Note: Most of its features should be provided by the combination of SqlMode with SqlIndent, nowadays.
+
+-----------------------------------------------------------------------
+
+In addition to fixing some bugs, this mode also provides the following:
 
 * A Fast and sophisticated indentation function `plsql-indent' (normally bound to TAB) which can help to present (and maintain) complex code in a readable form.
 
