@@ -1,5 +1,11 @@
  sql-indent.el --- indentation of SQL statements
 
+This package is available from GNU ELPA: https://elpa.gnu.org/packages/sql-indent.html
+
+SqlMode will automatically use it when it's installed.
+
+----------------------------------------
+
 This is a very quick hack that allows me to indent SQL statements.  You can use it together with SqlMode.  This code still needs improvements in order to reach the level of sophistication Emacs users are used to in other indentation engines.
 
 You can get it here:
