@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan 26 09:26:50 2020 (-0800)
+;; Last-Updated: Fri Feb 14 09:48:59 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15338
+;;     Update #: 15339
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2390,6 +2390,12 @@
 ;;  (`bmkp-bmenu-create-bookmark-file-from-marked') to create a new
 ;;  bookmark file by copying the marked bookmarks.  With a prefix arg,
 ;;  `Y > 0' creates also a bookmark-file bookmark.
+;;
+;;  In any location (any file or any buffer that can be bookmarked),
+;;  you can switch to a bookmark file that has only bookmarks for the
+;;  current file or buffer, creating such a file on the fly if none
+;;  exists.  To do this, use `C-x p C-l'
+;;  (`bmkp-switch-to-bookmark-file-this-file/buffer').
 ;;
 ;;  NOTE:
 ;;
