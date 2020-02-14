@@ -2641,6 +2641,15 @@ can use '''`##Y > 0##'''' (`bmkp-bmenu-create-bookmark-file-from-marked') to cre
 marked bookmarks.   With a [[prefix argument]],
 `##Y > 0##' creates also a bookmark-file bookmark.
 
+In any location (any file or any buffer that can be bookmarked),
+you can switch to a bookmark file that has only *bookmarks for the
+current file or buffer*, creating such a file on the fly if none
+exists.  To do this, use '''`C-x p C-l''''
+(`bmkp-switch-to-bookmark-file-this-file/buffer').
+
+
+
+
 
 '''NOTE:'''
 
