@@ -1,0 +1,17 @@
+msmtpQ is /usr/share/doc/msmtp/examples/msmtpq/msmtpq on my Debian.
+
+For it to work well with notmuch, I had to make it be quiet when used as a pipe, but not as msmtp-queue :
+
+    --- /usr/share/doc/msmtp/examples/msmtpq/msmtpq	2019-05-02 19:37:03.000000000 +0200
+    +++ /home/olivier/local/bin/msmtpq	2020-02-16 18:29:13.871688458 +0100
+    @@ -501,6 +501,7 @@
+     #
+     
+     if [ ! "$1" = '--q-mgmt' ] ; then    # msmtpq - sendmail mode
+    +    EMAIL_QUEUE_QUIET=t
+       lock_queue                         # lock here
+       make_id                            # make base queue filename id for this mail
+       # write mail body text to queue .mail file
+
+-- OlivierBerger 2020-02-16 18:02 UTC
+
