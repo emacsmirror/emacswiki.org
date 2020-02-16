@@ -1,0 +1,29 @@
+aka Neil Okamoto
+
+=== Intro ===
+
+I was first introduced to Emacs in 1987 in the "Fishbowl" which was one of the ProjectAthena clusters for student use at MIT. In those days, Athena ran on DEC Vaxstations and IBM RT PCs. GNUS had just been released. We used [https://en.wikipedia.org/wiki/Zephyr_(protocol) Zephyr] for instant messaging between students, and for asking TAs for help. 
+
+Most of my career has been spent in technology for the animation and visual effects industry.
+
+=== Contact ===
+
+* Github: [https://github.com/gonewest818 gonewest818]
+* Reddit: u/gonewest818
+* Freenode IRC: gonewest818
+
+=== Emacs packages ===
+
+I'm author of:
+* [https://github.com/gonewest818/dimmer.el dimmer.el]: Interactively highlight which buffer is active by dimming the others
+* [https://github.com/gonewest818/geolocation.el geolocation.el]: Get your location on Earth
+* [https://github.com/gonewest818/adafruit-wisdom.el adafruit-wisdom.el]: Grab an inspirational tech quote at random from https://adafruit.com
+
+I also adopted, and now maintain:
+* [https://github.com/gonewest818/elisp-lint elisp-lint]: Basic linter for Emacs lisp
+* [https://github.com/gonewest818/osx-plist osx-plist]: Parser for Mac OSX .plist files
+
+Working on:
+* sf511.el: Emacs mode to view realtime transit information from the Bay Area 511.org API 
+
+and from time to time I contribute fixes to other open source projects.
