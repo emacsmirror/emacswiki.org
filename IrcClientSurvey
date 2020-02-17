@@ -3,13 +3,13 @@ Send a CTCP VERSION to all of #emacs. This is potentially rude, so don't do this
 Actually, you now need to do this manually for every single nick in the channel as simply sending the request to the channel will give you an error: "Cannot send to nick/channel".
 Thus, what an OP needs to do:
 
-# `/msg chanserv set #emacs mlock` to remove the mode lock
-# `/ctcp #emacs version` to send a command to all the channel members
-# `/msg chanserv set #emacs mlock +Cn` to set the mode lock again
+# ##/msg chanserv set #emacs mlock## to remove the mode lock
+# ##/ctcp #emacs version## to send a command to all the channel members
+# ##/msg chanserv set #emacs mlock +Cn## to set the mode lock again
 
-`+C` sets the mode that prevents people from sending CTCP requests to the entire channel.
+##+C## sets the mode that prevents people from sending CTCP requests to the entire channel.
 
-`+n` prevents people from sending messages to the channel without joining it.
+##+n## prevents people from sending messages to the channel without joining it.
 
 Place point at the beginning of the output and invoke `M-x irc-version-summary' defined as follows:
 
