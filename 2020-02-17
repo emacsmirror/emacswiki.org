@@ -1,36 +1,57 @@
 It’s time for the irregular EmacsChannel ChatClient test again!
 
 {{{
-  55 weechat
-  54 znc
-  19 irccloud
-  17 erc
-  13 thelounge
-  12 hexchat
-  10 matrix
-   8 rcirc
-   6 quassel
-   4 textual
-   4 irssi
-   3 unknown
-   2 konversation
+ 147 weechat
+ 128 znc
+  82 irssi
+  56 irccloud
+  43 erc
+  33 hexchat
+  23 quassel
+  20 thelounge
+  16 rcirc
+  16 matrix
+   8 textual
+   7 circe
+   5 unknown
+   4 konversation
+   3 irc
+   3 bip
+   3 limechat
+   2 purple
+   1 andchat
+   1 communi
+   1 x.org
+   1 telnet
+   1 cl
+   1 nil
+   1 colloquy
+   1 racal
+   1 thunderbird
+   1 netcat
+   1 ctcp
+   1 un
+   1 i'm
+   1 ti
+   1 weebchat
+   1 xchat
+   1 girc
+   1 it's
+   1 version
+   1 go
    1 cheese
    1 free
    1 nice
    1 rasis
    1 kvirc
    1 gnu
-   1 circe
    1 hail
-   1 bip
    1 erc+znc
    1 butterfly
-   1 purple
-   1 limechat
    1 mirc
    1 nbs
 ----
- 222 total
+ 630 total
 }}}
 
 See IrcClientSurvey for the code I used. -- AlexSchroeder
