@@ -9,7 +9,7 @@ Thus, what an OP needs to do:
 
 ##+C## sets the mode that prevents people from sending CTCP requests to the entire channel.
 
-##+n## prevents people from sending messages to the channel without joining it.
+##+n## prevents people from sending messages to the channel without joining it. Every channel needs this!
 
 Place point at the beginning of the output and invoke `M-x irc-version-summary' defined as follows:
 
