@@ -1,0 +1,38 @@
+It’s time for the irregular EmacsChannel ChatClient test again!
+
+{{{
+  55 weechat
+  54 znc
+  19 irccloud
+  17 erc
+  13 thelounge
+  12 hexchat
+  10 matrix
+   8 rcirc
+   6 quassel
+   4 textual
+   4 irssi
+   3 unknown
+   2 konversation
+   1 cheese
+   1 free
+   1 nice
+   1 rasis
+   1 kvirc
+   1 gnu
+   1 circe
+   1 hail
+   1 bip
+   1 erc+znc
+   1 butterfly
+   1 purple
+   1 limechat
+   1 mirc
+   1 nbs
+----
+ 222 total
+}}}
+
+See IrcClientSurvey for the code I used. -- AlexSchroeder
+
+Previous issues: [[2016-11-17]]
