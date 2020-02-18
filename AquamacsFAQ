@@ -347,6 +347,8 @@ To interact with a running Aquamacs instance, you can use the built-in Emacs ser
 
 In order to use the "aquamacs" and "emacsclient" command-line tools, from the Aquamacs menu bar, <code>Tools->Install Command Line Tools</code>. If you are upgrading Aquamacs, you may need to re-install the Command Line Tools.
 
+<i>Hint: make sure you are not using <code>/usr/bin/emacsclient</code> which would reach <code>/usr/bin/emacs</code> instead.</i>
+
 == Disable startup message in the echo area ==
 
 Put this in your Preferences.el:
