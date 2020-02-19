@@ -22,6 +22,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
 
 == Co-maintainer Projects ==
+* [https://github.com/skk-dev/ddskk skk-dev/ddskk] -- Daredevil SKK (Simple Kana to Kanji conversion program)
 * [https://github.com/conao3/navbar.el papaeye/navbar.el] -- Navigation bar for Emacs
 * [https://github.com/tumashu/ivy-posframe tumashu/ivy-posframe] -- Using posframe to show Ivy
 * [https://github.com/rejeep/ert-async.el rejeep/ert-async.el] -- Async support for ERT
