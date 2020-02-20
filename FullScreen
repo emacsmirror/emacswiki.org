@@ -54,12 +54,14 @@ These methods may be useful with older versions of Emacs, or ports where the 'fu
 
 === MS Windows ===
 
+==== Emacs 24.4 ====
+Emacs 24.4 fully supports fullscreen on Windows. Use M-x toggle-frame-fullscreen to toggle it. The window will go fullscreen on the window's owning screen.
+This is bound to F11 by default (at least in 26.3).
+
+==== Older versions ====
 The simplest way to get near fullscreen editing is to hide the Windows taskbar and maximize the current Emacs frame. You can use the control panel to make the taskbar always hidden (autohide), or call [http://www.ctrl-alt-del.com.au/CAD_TSUtils.htm TSTBARSET] from the command line with the appropriate flag to toggle the taskbar's visibility. (TSTBARSET is a utility to manipulate the taskbar from the command line; scroll near the bottom of linked page to download it).
 
 If the menubar on the emacs frame still bothers you, a call to emacs-fullscreen-win32 listed below will get rid of it.
-
-==== Emacs 24.4 ====
-Emacs 24.4 fully supports fullscreen on Windows. Use M-x toggle-frame-fullscreen to toggle it. The window will go fullscreen on the window's owning screen.
 
 ==== darkroom-mode ====
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
