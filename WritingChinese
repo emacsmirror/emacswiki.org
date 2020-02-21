@@ -92,6 +92,7 @@ To use pyim
 (require 'pyim)
 (require 'pyim-basedict) ; 拼音词库设置，五笔用户 *不需要* 此行设置
 (pyim-basedict-enable)   ; 拼音词库，五笔用户 *不需要* 此行设置
+(setq pyim-dcache-backend 'pyim-dregcache) ; 对低配置电脑使用更节省内存启动更快的引擎， *只对*拼音用户有效 
 (setq default-input-method "pyim")
 </pre>
 
