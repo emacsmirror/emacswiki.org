@@ -1,14 +1,18 @@
-== Emacs, Xemacs and related packages in debian ==
+== Emacs and related packages in Debian GNU/Linux ==
 
 One can obtain Debian and Ubuntu packages newer than those included in the official versions, as well as build from source: see details [[EmacsSnapshotAndDebian|here]].
 
-=== Debian related emacs libraries === 
+=== Debian related Emacs libraries === 
 
-One can find lots of emacs-related Debian packages with [[http://www.debian.org/distrib/packages#search_packages|its search engine]] or with your favorite [[https://en.wikipedia.org/wiki/Advanced_Packaging_Tool|APT]] package management tool.
+One can find lots of Emacs-related Debian packages with [[http://www.debian.org/distrib/packages#search_packages|its search engine]] or with your favorite [[https://en.wikipedia.org/wiki/Advanced_Packaging_Tool|APT]] package management tool.
 
-* Debian emacs documentation is (as of 2013-06-05) in package `*emacs24-common-non-dfsg*` if `C-h i' isn't working for you.
+* Debian Emacs documentation is in package `*emacs-common-non-dfsg*` if `C-h i' isn't working for you.
 
-* Debian package `emacs-goodies-el': Miscellaneous add-ons for Emacs at https://alioth.debian.org/projects/pkg-goodies-el
+* Many ELPA packages can be installed using the debian package manager. Try running "apt search ^elpa-" in the terminal.
+
+* Note that tho old Debian package `emacs-goodies-el' is "now a metapackage that installs the elpa-* packages corresponding to some of the previously bundled add-ons".
+
+=== Misc ===
 
 * http://www.netfort.gr.jp/~dancer/software/devscripts-el.html.en "Debian Developer's emacs utilities"
 * apt-cache.el
