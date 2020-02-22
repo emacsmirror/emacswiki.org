@@ -16,3 +16,12 @@ All right, I'll try to make this more descriptive tomorrow, with a link to the c
 
 -- jannis 2014-02-12 23:12 UTC
 
+
+----
+
+It looks like the current implementation fails to release the current named session's lock upon kill-emacs. Once Emacs has been killed, re-opening it and attempting to reload the session warns that the lock still exists, prompting for a confirmation.
+
+This does not break functionality (the session does save correctly during the kill-emacs routine), but it might be worth looking into at some point down the road.
+
+-- kalista 2020-02-22 18:58 UTC
+
