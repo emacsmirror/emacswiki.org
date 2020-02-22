@@ -10,7 +10,7 @@ One can find lots of Emacs-related Debian packages with [[http://www.debian.org/
 
 * Many ELPA packages can be installed using the debian package manager. Try running "apt search ^elpa-" in the terminal.
 
-* Note that tho old Debian package `emacs-goodies-el' is "now a metapackage that installs the elpa-* packages corresponding to some of the previously bundled add-ons".
+* Note that the old Debian package `emacs-goodies-el' is "now a metapackage that installs the elpa-* packages corresponding to some of the previously bundled add-ons".
 
 === Misc ===
 
