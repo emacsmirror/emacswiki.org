@@ -66,6 +66,9 @@ Obviously, default HTML output does not look nice at all. Here are some themes y
 
 * https://github.com/thi-ng/org-spec – which is basically [[https://github.com/thi-ng/org-spec/blob/master/css/style.css just one css file]]. No external dependencies, [[http://demo.thi.ng/org-spec/ looks great]].
 
+
+* Modifying the structure of the HTML output is also fairly straight forwards.  https://gileschamberlin.wordpress.com/2020/02/25/writing-a-new-org-mode-exporter-back-end/#more-64
+
 [:conflicts]
 == Conflicts ==
 
