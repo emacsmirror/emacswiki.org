@@ -293,57 +293,72 @@ A hack to make Eldoc show the argument list in the echo area only after you type
 </pre>
 
 [:ContextHelp]
-== Context elisp help in the *Help* buffer ==
+== Contextual elisp help in the *Help* buffer ==
 RichardRiley
-
-Update : 23 Oct 2008 - Added lisp-interaction-mode to the context help modes
 
 The default eldoc output for functions is a little lacking for new programmers. I wrote this to provide
 context help on the function or variable under the cursor. You can toggle it on or off - change key
 binding to suit...
 
+Update : 25 Feb 2020 - Now using the (derived) code from https://emacs.stackexchange.com/a/22139 by suggestion of RichardRiley
 
 <pre>
+(define-minor-mode my-contextual-help-mode
+  "Show help for the elisp symbol at point in the current *Help* buffer.
 
-(defun rgr/toggle-context-help ()
-  "Turn on or off the context help.
-Note that if ON and you hide the help buffer then you need to
-manually reshow it. A double toggle will make it reappear"
+Advises `eldoc-print-current-symbol-info'."
+  :lighter " C-h"
+  :global t
+  (require 'help-mode) ;; for `help-xref-interned'
+  (when (eq this-command 'my-contextual-help-mode)
+    (message "Contextual help is %s" (if my-contextual-help-mode "on" "off")))
+  (and my-contextual-help-mode
+       (eldoc-mode 1)
+       (if (fboundp 'eldoc-current-symbol)
+           (eldoc-current-symbol)
+         (elisp--current-symbol))
+       (my-contextual-help :force)))
+
+(defadvice eldoc-print-current-symbol-info (before my-contextual-help activate)
+  "Triggers contextual elisp *Help*. Enabled by `my-contextual-help-mode'."
+  (and my-contextual-help-mode
+       (derived-mode-p 'emacs-lisp-mode)
+       (my-contextual-help)))
+
+(defvar-local my-contextual-help-last-symbol nil
+  ;; Using a buffer-local variable for this means that we can't
+  ;; trigger changes to the help buffer simply by switching windows,
+  ;; which seems generally preferable to the alternative.
+  "The last symbol processed by `my-contextual-help' in this buffer.")
+
+(defun my-contextual-help (&optional force)
+  "Describe function, variable, or face at point, if *Help* buffer is visible."
+  (let ((help-visible-p (get-buffer-window (help-buffer))))
+    (when (or help-visible-p force)
+      (let ((sym (if (fboundp 'eldoc-current-symbol)
+                     (eldoc-current-symbol)
+                   (elisp--current-symbol))))
+        ;; We ignore keyword symbols, as their help is redundant.
+        ;; If something else changes the help buffer contents, ensure we
+        ;; don't immediately revert back to the current symbol's help.
+        (and (not (keywordp sym))
+             (or (not (eq sym my-contextual-help-last-symbol))
+                 (and force (not help-visible-p)))
+             (setq my-contextual-help-last-symbol sym)
+             sym
+             (save-selected-window
+               (help-xref-interned sym)))))))
+
+(defun my-contextual-help-toggle ()
+  "Intelligently enable or disable `my-contextual-help-mode'."
   (interactive)
-  (with-current-buffer (help-buffer)
-    (unless (local-variable-p 'context-help)
-      (set (make-local-variable 'context-help) t))
-    (if (setq context-help (not context-help))
-	(progn
-	   (if (not (get-buffer-window (help-buffer)))
-	       (display-buffer (help-buffer)))))
-    (message "Context help %s" (if context-help "ON" "OFF"))))
+  (if (get-buffer-window (help-buffer))
+      (my-contextual-help-mode 'toggle)
+    (my-contextual-help-mode 1)))
 
-(defun rgr/context-help ()
-  "Display function or variable at point in *Help* buffer if visible.
-Default behaviour can be turned off by setting the buffer local
-context-help to false"
-  (interactive)
-  (let ((rgr-symbol (symbol-at-point))) ; symbol-at-point http://www.emacswiki.org/cgi-bin/wiki/thingatpt%2B.el
-    (with-current-buffer (help-buffer)
-     (unless (local-variable-p 'context-help)
-       (set (make-local-variable 'context-help) t))
-     (if (and context-help (get-buffer-window (help-buffer))
-         rgr-symbol)
-       (if (fboundp  rgr-symbol)
-           (describe-function rgr-symbol) 
-	 (if (boundp  rgr-symbol) (describe-variable rgr-symbol)))))))
+(my-contextual-help-mode 1)
 
-(defadvice eldoc-print-current-symbol-info
-  (around eldoc-show-c-tag activate)
-  (cond 
-	((eq major-mode 'emacs-lisp-mode) (rgr/context-help) ad-do-it)
-	((eq major-mode 'lisp-interaction-mode) (rgr/context-help) ad-do-it)
-	((eq major-mode 'apropos-mode) (rgr/context-help) ad-do-it)
-	(t ad-do-it)))
-
-(global-set-key (kbd "C-c h") 'rgr/toggle-context-help)
-
+(global-set-key (kbd "C-c h") #'my-contextual-help-toggle)
 </pre>
 
 
