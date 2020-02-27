@@ -90,7 +90,6 @@ See <code>enum Lisp_Type</code> in <code>lisp.h:243</code>. It's the value of ea
 
 * Integer
 * Symbol
-* Misc. (see <code>enum Lisp_Misc_Type</code>)
 * String
 * Vector-like
 * Cons
@@ -110,7 +109,6 @@ There are several macros defined to extract the relevant data from a
 * <code>XSTRING(x)</code> returns a <code>struct Lisp_String*</code>
 * <code>XSYMBOL(x)</code> returns a <code>struct Lisp_Symbol*</code>
 * <code>XFLOAT(x)</code> returns a <code>struct Lisp_Float*</code>
-* <code>XMISC(x)</code> returns a <code>union Lisp_Misc*</code>
 * <code>XMARKER(x)</code> returns a <code>struct Lisp_Marker*</code>
 * <code>XOVERLAY(x)</code> returns a <code>struct Lisp_Overlay*</code>
 * <code>XSAVE_VALUE(x)</code> returns a <code>struct Lisp_Save_Value*</code>
@@ -140,7 +138,6 @@ There's a bunch of type predicates macros:
 * <code>BUFFERP(x)</code>
 * <code>FRAMEP(x)</code>
 
-* <code>MISCP(x)</code>
 * <code>VECTORLIKEP(x)</code>
 * <code>OVERLAYP(x)</code>
 * <code>MARKERP(x)</code>
