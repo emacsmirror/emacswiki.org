@@ -183,6 +183,14 @@ make_xyzzy (Lisp_Object foo, int baz, void *quux)
   return retv;
 }
 </pre>
+To convert between the returned struct, and the corresponding Lisp_Object, a
+common idiom is to define a macro in lisp.h, that invokes the macro XSETPSEUDOVECTOR,
+which sets the field <code>a</code> to the Lisp_Object representation of the pseudovector
+<code>b</code>.  For example:
+
+<pre>
+#define XSETXYZZY(a, b) XSETPSEUDOVECTOR (a, b, PVEC_XYZZY)
+</pre> 
 
 When creating pseudovectors, a new switch clause should be placed in <code>print_vectorlike</code>
 (a C function in print.c), which prints a textual representation of the Lisp_Vectorlike.  For our
