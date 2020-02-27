@@ -146,10 +146,10 @@ There's a bunch of type predicates macros:
 
 == Pseudovector types ==
 Due to having limited available tag space, most Lisp_Objects are internally
-represented as vector-like objects. These objects are tagged structs each
+represented as vector-like objects.  These objects are tagged structs each
 containing a <code>union vectorlike_header</code> at the beginning (which
 stores tag and type information), a section composed of Lisp_Objects, and
-a section optionally containing miscellaneous information. Here is a typical
+a section optionally containing miscellaneous information.  Here is a typical
 Lisp_Vectorlike struct:
 <pre>
 struct xyzzy
@@ -162,6 +162,42 @@ struct xyzzy
   /* Miscellaneous fields follow */
   int baz;
   void *quux;
+}
+</pre>
+Lisp_Vectorlike types are stored in the enum pvec_types, in <code> lisp.h </code>. 
+A new type should be created with each new vectorlike.
+
+Lisp_Vectorlikes should be allocated with ALLOCATE_PSEUDOVECTOR, a macro in lisp.h 
+which accepts the C type of the pseudovector, the name of the last Lisp field in 
+the pseudovector, and the pvec_type of the pseudovector.  Assuming that PVEC_XYZZY
+is the pvec_type of the pseudovector, a typical make_xyzzy function would read:
+<pre>
+struct xyzzy *
+make_xyzzy (Lisp_Object foo, int baz, void *quux)
+{
+  struct xyzzy *retv = ALLOCATE_PSEUDOVECTOR (struct xyzzy, foo, PVEC_XYZZY);
+  retv->foo = foo;
+  retv->bar = Ffoobar (foo);
+  retv->baz = baz;
+  retv->quux = quux;
+  return retv;
+}
+</pre>
+
+When creating pseudovectors, a new switch clause should be placed in <code>print_vectorlike</code>
+(a C function in print.c), which prints a textual representation of the Lisp_Vectorlike.  For our
+hypothetical xyzzy object, a typical entry would read:
+<pre>
+static bool
+print_vectorlike (Lisp_Object obj ... Lisp_Object printcharfun ...)
+{
+  switch (PSEUDOVECTOR_TYPE (XVECTOR (obj))
+    {
+       ...
+    case PVEC_XYZZY:
+      print_c_string ("#<xyzzy>", printcharfun);
+      break;
+    }
 }
 </pre>
 === Defining functions ===
