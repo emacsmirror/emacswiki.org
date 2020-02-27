@@ -144,6 +144,26 @@ There's a bunch of type predicates macros:
 * <code>SAVE_VALUEP(x)</code>
 * <code>IMAGEP(x)</code>
 
+== Pseudovector types ==
+Due to having limited available tag space, most Lisp_Objects are internally
+represented as vector-like objects. These objects are tagged structs each
+containing a <code>union vectorlike_header</code> at the beginning (which
+stores tag and type information), a section composed of Lisp_Objects, and
+a section optionally containing miscellaneous information. Here is a typical
+Lisp_Vectorlike struct:
+<code>
+struct xyzzy
+{
+  /* This is our vectorlike header */
+  union vectorlike_header header; 
+  /* A few Lisp_Object fields follow */
+  Lisp_Object foo;
+  Lisp_Object bar;
+  /* Miscellaneous fields follow */
+  int baz;
+  void *quux;
+}
+</code>
 === Defining functions ===
 
 There is a <code>DEFUN</code> macro in <code>lisp.h:1987</code>. Have a look at the manual,
