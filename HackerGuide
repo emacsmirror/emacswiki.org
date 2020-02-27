@@ -151,7 +151,7 @@ containing a <code>union vectorlike_header</code> at the beginning (which
 stores tag and type information), a section composed of Lisp_Objects, and
 a section optionally containing miscellaneous information. Here is a typical
 Lisp_Vectorlike struct:
-<code>
+<pre>
 struct xyzzy
 {
   /* This is our vectorlike header */
@@ -163,7 +163,7 @@ struct xyzzy
   int baz;
   void *quux;
 }
-</code>
+</pre>
 === Defining functions ===
 
 There is a <code>DEFUN</code> macro in <code>lisp.h:1987</code>. Have a look at the manual,
