@@ -16,7 +16,7 @@ APDL-Mode in-depth documentation.
 
 With the advent of the modern ANSYS GUIs - like `WorkBench' or
 `AIM' - the usage of APDL as a wholesale modelling language has
-diminished.  But APDL is here to stay: `WorkBench' and `AIM' operate
+diminished.  But APDL is here to stay: `WorkBench' and `Discovery AIM' operate
 exclusively the ANSYS solver with it!  They are sending APDL input
 (.dat) files to the solver.  For a true understanding of the GUIs'
 inner workings a study of their APDL code is prerequisite.
