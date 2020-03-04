@@ -1,6 +1,6 @@
 == Description ==
 
-Short messages to the user appear commonly in the '''[::echo area]'''. This area is shared with the [[minibuffer]]. The space occupied by the minibuffer for input is thus also used by the echo area for output. There are two names for this space because the behavior is different. The minibuffer is used for input; the echo area is used for output. Because it is used only for output, the echo area is read-only.
+Short messages to the user appear commonly in the echo area. This area is shared with the [[minibuffer]]. The space occupied by the minibuffer for input is thus also used by the echo area for output. There are two names for this space because the behavior is different. The minibuffer is used for input; the echo area is used for output. Because it is used only for output, the echo area is read-only.
 
 The echo area is not a [[buffer]] -- you cannot edit anything there. It is simply a space for displaying messages. Most text written to the echo area is also logged to the MessagesBuffer.
 
