@@ -1,4 +1,4 @@
-How-to use highlightening for ansys-files
+How-to use highlightening for ANSYS macro files (i.e. files in the APDL language or WorkBench Command (APDL) objects).
 
 Get it at http://www.mecheng.adelaide.edu.au/~will/ansys/ansys-mod.el  
 (The file at http://ansys.net/ansys/tools/ansys-mod.el is broken.)
