@@ -11,5 +11,5 @@ Get it at http://www.mecheng.adelaide.edu.au/~will/ansys/ansys-mod.el
     (add-to-list 'auto-mode-alist '("\\.ans\\'" . ansys-mode))
 
 
-[new]
- For a more powerful and up to date Ansys mode, based on Ansys 12.0 and written for Emacs 23, please have a look at AnsysMode -- [[dida]]
+[new]]]
+ For a more powerful and up to date Ansys mode, based on ANSYS v19 and written for Emacs 25 and later, please have a look at [[APDLMode]] -- [[dida]]
