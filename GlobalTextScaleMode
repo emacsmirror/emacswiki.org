@@ -42,7 +42,7 @@ Until then, this globalized version will be just fine for me !
   
 = A better way to get the same effect =
 
-A far better way to get the same effect is to cutomize the size of the default
+A far better way to get the same effect is to customize the size of the default
 face to make the size of the default font larger.  I assume that's what you want
 since you talk of zooming each buffer separately.  Note that you *must* use a
 whole number for the size; this specifies the absolute size of the face.  If you
