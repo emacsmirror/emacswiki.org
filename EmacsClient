@@ -87,7 +87,7 @@ ExternalDotExe shows a way to edit text fields in many applications with Emacs c
 
 ====Edit in a new frame or in the current frame====
 
-Open a new frame from you shell by adding to your .bashrc or .zshrc
+Open a new frame from your shell by adding to your .bashrc or .zshrc
 
    new-frame() {
       emacsclient -e "(new-frame)"
