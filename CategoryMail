@@ -11,8 +11,8 @@
 
 Many packages exist for reading mail in Emacs.  Even out of the box Emacs
 comes with several competing solutions.  These are all well tested and
-have a large user base, which certainly is a major advantage if search for
-documentation or need help.
+have a large user base, which certainly are major advantages if searching for
+documentation or needing help.
 
 Note that several of the mail packages use incompatible mailbox storage
 formats.  While there are programs for converting between formats, it is
