@@ -87,7 +87,7 @@ There are varying degrees of difficulty and hoops to contribute to [[MELPA]].
 
 So packages are initialized //AFTER// the init.el is loaded.  This means you should //NOT// put package specific initialization into your init.el except in a few ways:
 
-* customization variables for a package are fine, they can be set before a package has loaded
+* customization variables for a package are fine; they can be set before a package has loaded
 * auto-mode-alist changes can be made in a way that does not require the package to be loaded before they are setup:
 
 {{{
@@ -208,7 +208,7 @@ Now, type the command 'package-install-file' and load file ~/.emacs.d/elpa/aucte
 
 == How packages work in Emacs 23 ==
 
-You can make packages work in Emacs 23, you need to add something like this to your //init.el//:
+You can make packages work in Emacs 23.  Add something like this to your //init.el//:
 
 {{{
 (require 'package)
