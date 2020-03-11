@@ -1,4 +1,4 @@
- sql-indent.el --- indentation of SQL statements
+sql-indent.el --- indentation of SQL statements
 
 This package is available from GNU ELPA: https://elpa.gnu.org/packages/sql-indent.html
 
@@ -6,24 +6,21 @@ SqlMode will automatically use it when it's installed.
 
 ----------------------------------------
 
-This is a very quick hack that allows me to indent SQL statements.  You can use it together with SqlMode.  This code still needs improvements in order to reach the level of sophistication Emacs users are used to in other indentation engines.
+This was a very quick hack to indent SQL statements and over the years it grew to something actually usable.  You can use it together with SqlMode.  The SQL grammar is large so this code may still need improvement in order to reach the level of sophistication Emacs users are used to in other indentation engines.  Help welcome.
 
-You can get it here:
+There are a few other attempts at auto-indenting SQL in Emacs:
 
-* https://github.com/alex-hhh/emacs-sql-indent
+* http://elpa.gnu.org/packages/sql-smie.html
 
-An older version lives here:
+* https://github.com/deactivated/sql-smie-mode
+
+Older versions:
 
 * https://github.com/bsvingen/sql-indent
 
 * Lisp:sql-indent.el
 
 As the indentation of SQL statements depends not only on the previous line but also on the current line, empty lines cannot always be indented correctly.  Hitting TAB on a line containing only whitespace will remove all whitespace and make the line empty; hitting TAB on an empty line will indent the line to the same column as the previous line; hitting TAB again will indent or outdent the line one step.  Hitting TAB after certain keywords will insert a tab character as well as indent the line.
-
-Usage note: Loading this file will make all SQL mode buffers created from then on use `sql-indent' for indentation.  A possible way to install sql-indent.el would be to add the following to your .emacs:
-
-    (eval-after-load "sql"
-      (load-library "sql-indent"))
 
 ----
 CategorySql
