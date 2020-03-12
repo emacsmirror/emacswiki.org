@@ -1,4 +1,8 @@
-An Emacs mode for editing Julia code, called ‘julia-mode’, is part of the Julia: https://github.com/JuliaLang/julia-emacs/blob/master/julia-mode.el
+The official Emacs mode for editing Julia programs.
+
+* [https://github.com/JuliaEditorSupport/julia-emacs julia-mode.el]
+
+See also JuliaProgrammingLanguage
 
 ----
 Categories: CategoryProgramming, ProgrammingModes
