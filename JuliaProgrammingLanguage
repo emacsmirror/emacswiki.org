@@ -1,12 +1,29 @@
-Julia is a high-level, high-performance dynamic programming language for technical computing, with syntax that is familiar to users of other technical computing environments. 
+[[http://julialang.org/ Julia]] is a high-level, high-performance dynamic programming language for technical computing, with syntax that is familiar to users of other technical computing environments.
 
-http://julialang.org/
+== Major Mode for Editing Julia Code ==
 
-An Emacs mode for editing Julia code, called `julia-mode', is part of the Julia: https://github.com/JuliaLang/julia-emacs/blob/master/julia-mode.el
+* [https://github.com/JuliaEditorSupport/julia-emacs/blob/master/julia-mode.el julia-mode.el] -- The official Emacs mode for editing Julia programs.
 
-EmacsSpeaksStatistics also features Julia support.
+== Julia REPL ==
 
-A blog post about editing Julia code with Emacs http://www.wilfred.me.uk/blog/2014/11/16/editing-julia-code-with-emacs/
+* [https://github.com/tpapp/julia-repl julia-repl.el] -- A minor mode for interacting with a Julia REPL running inside Emacs.
+* [https://gist.github.com/shg/181010bd700997609d54c199e380bcd6 julia-repl-vterm.el] -- Another inferior Julia REPL using emacs-libvterm.
+
+== IDE ==
+
+* EmacsSpeaksStatistics
+* [https://github.com/gcv/julia-snail Julia Snail]
+
+== Jupyter integration ==
+
+These support IJulia, the Julia kernel for Jupyter.
+
+* [https://github.com/millejoh/emacs-ipython-notebook ein]
+* [https://github.com/dzop/emacs-jupyter emacs-jupyter]
+
+== Other Information ==
+
+* A blog post about editing Julia code with Emacs http://www.wilfred.me.uk/blog/2014/11/16/editing-julia-code-with-emacs/
 
 ----
 Categories: CategoryProgramming, ProgrammingModes
