@@ -8,8 +8,9 @@ Language-specific:
 * CProgrammingLanguage -- C specific programming.
 * DProgrammingLanguage -- D specific programming.
 * CategoryJavaScript -- (including JScript) also see FlashActionscript.
-* [[JavaLanguage]] -- Java programming with Emacs.
 * ErlangLanguage -- Erlang specific programming
+* [[JavaLanguage]] -- Java programming with Emacs.
+* [[Julia]] -- The Julia programming language.
 * MozillaDevelopmentEnvironmentforEmacs -- support for Mozilla technologies in Emacs.
 * MythrylLanguage -- Mythryl specific programming
 * PerlLanguage -- Perl specific programming.
