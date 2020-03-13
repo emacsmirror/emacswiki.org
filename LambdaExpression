@@ -29,6 +29,8 @@ to it, once the code has run).
 It is important to mention that EmacsLisp does not support true lexical 
 closures like Common Lisp or Scheme. See DynamicBindingVsLexicalBinding.
 
+As of Emacs 24 we now have lexical binding --WouldOldosfan
+
 ----
 CategoryCode
 CategoryGlossary
