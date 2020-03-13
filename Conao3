@@ -42,8 +42,10 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/rubikitch/savekill rubikitch/savekill] -- Save kill ring to disk
 * [https://github.com/rubikitch/save-load-path rubikitch/save-load-path] -- Save load-path and reuse it to test
 * [https://github.com/rubikitch/sequential-command rubikitch/sequential-command] -- Many commands into one command
+* [https://github.com/rubikitch/sticky rubikitch/sticky] -- Sticky key for capital letters
 * [https://github.com/rubikitch/sudo-ext rubikitch/sudo-ext] -- Sudo support
 * [https://github.com/rubikitch/time-ext rubikitch/time-ext] -- More function for time/date
+* [https://github.com/rubikitch/usage-memo rubikitch/usage-memo] -- Integration of Emacs help system and memo
 * [https://github.com/rubikitch/viewer rubikitch/viewer] -- View-mode extension
 
 * [https://github.com/emacsorphanage/helm-swoop emacsorphanage/helm-swoop] -- Efficiently hopping squeezed lines powered by Emacs helm interface
