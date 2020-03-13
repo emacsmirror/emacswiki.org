@@ -26,10 +26,7 @@ useful in this little piece of code.  That's why it is anonymous, and
 will be garbage collected soon after (since there is no way to refer
 to it, once the code has run).
 
-It is important to mention that EmacsLisp does not support true lexical 
-closures like Common Lisp or Scheme. See DynamicBindingVsLexicalBinding.
-
-As of Emacs 24 we now have lexical binding --WouldOldosfan
+EmacsLisp, like Common Lisp, supports both lexical and dynamic binding.  See DynamicBindingVsLexicalBinding.
 
 ----
 CategoryCode
