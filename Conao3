@@ -21,7 +21,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/ppp.el ppp.el] (MELPA) -- Extended pretty printer for Emacs Lisp
 * [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
 
-== Co-maintainer Projects ==
+== Co-maintainer Projects in MELPA ==
 * [https://github.com/skk-dev/ddskk skk-dev/ddskk] -- Daredevil SKK (Simple Kana to Kanji conversion program)
 * [https://github.com/conao3/navbar.el papaeye/navbar.el] -- Navigation bar for Emacs
 * [https://github.com/tumashu/ivy-posframe tumashu/ivy-posframe] -- Using posframe to show Ivy
@@ -29,6 +29,23 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/linktohack/ox-latex-subfigure linktohack/ox-latex-subfigure] -- Turn table into subfigure. More or less a hack atm, easy to incorporate to org-mode though
 * [https://gitlab.com/oer/org-re-reveal oer/org-re-reveal] -- Build HTML presentations with reveal.js from Org mode source files.
 * [https://github.com/stardiviner/major-mode-icons stardiviner/major-mode-icons] -- Show major-mode with icons on mode-line
+* [https://github.com/rubikitch/all-ext rubikitch/all-ext] -- M-x all with helm-swoop/anything/multiple-cursors/line-number
+* [https://github.com/rubikitch/archive-region rubikitch/archive-region] -- Move region to archive file instead of killing
+* [https://github.com/rubikitch/auto-async-byte-compile rubikitch/auto-async-byte-compile] -- Automatically byte-compile when saved
+* [https://github.com/rubikitch/emacs-git-dwim rubikitch/emacs-git-dwim] -- Context-aware git commands such as branch handling
+* [https://github.com/rubikitch/hippie-exp-ext rubikitch/hippie-exp-ext] -- Extension of hippie-expand
+* [https://github.com/rubikitch/lispxmp rubikitch/lispxmp] -- Automagic emacs lisp code annotation
+* [https://github.com/rubikitch/minor-mode-hack rubikitch/minor-mode-hack] -- Change priority of minor-mode keymaps
+* [https://github.com/rubikitch/open-junk-file rubikitch/open-junk-file] -- Open a junk (memo) file to try-and-error
+* [https://github.com/rubikitch/recentf-ext rubikitch/recentf-ext] -- Recentf extensions
+* [https://github.com/rubikitch/replace-from-region rubikitch/replace-from-region] -- Replace commands whose query is from region
+* [https://github.com/rubikitch/savekill rubikitch/savekill] -- Save kill ring to disk
+* [https://github.com/rubikitch/save-load-path rubikitch/save-load-path] -- Save load-path and reuse it to test
+* [https://github.com/rubikitch/sequential-command rubikitch/sequential-command] -- Many commands into one command
+* [https://github.com/rubikitch/sudo-ext rubikitch/sudo-ext] -- Sudo support
+* [https://github.com/rubikitch/time-ext rubikitch/time-ext] -- More function for time/date
+* [https://github.com/rubikitch/viewer rubikitch/viewer] -- View-mode extension
+
 * [https://github.com/emacsorphanage/helm-swoop emacsorphanage/helm-swoop] -- Efficiently hopping squeezed lines powered by Emacs helm interface
 * [https://github.com/emacsorphanage/helm-css-scss emacsorphanage/helm-css-scss] -- This emacs program makes your CSS/SCSS/LESS coding faster and easier than ever
 * [https://github.com/emacsorphanage/ov emacsorphanage/ov] -- Overlay library for Emacs Lisp
@@ -36,6 +53,13 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/emacsorphanage/manage-minor-mode emacsorphanage/manage-minor-mode] -- Manage your minor-mode on the dedicated interface buffer
 * [https://github.com/emacsorphanage/readability emacsorphanage/readability] -- Get Readability's reading list, and read each article on Emacs
 * [https://github.com/emacsorphanage/gnuplot emacsorphanage/gnuplot] -- A major mode for Emacs for interacting with Gnuplot
+
+== Co-maintainer Projects ==
+* [https://github.com/rubikitch/auto-document rubikitch/auto-document] -- Automatic document generator of Emacs Lisp
+* [https://github.com/rubikitch/dayly-emacs-jp rubikitch/dayly-emacs-jp] -- Rubikitch blog 
+* [https://github.com/rubikitch/git-push-or-pull-request rubikitch/git-push-or-pull-request] -- Auto push or pull-request
+* [https://github.com/rubikitch/helm-anything rubikitch/helm-anything] -- Bridge between anything and helm
+* [https://github.com/rubikitch/pgrepper rubikitch/pgrepper] -- (Peco|Powerful|Parallel) Grepper
 
 == Useful Docker Images ==
 * [https://github.com/conao3/docker-emacs docker-emacs] -- Emacs meets docker as a standalone CLI, TUI and GUI tool
