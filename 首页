@@ -14,6 +14,20 @@
 * WikiDownload -- 如何获取此网站的副本
 * EmacsWikiAdministrators -- 处理本网站上的恶意破坏和垃圾邮件
 
+[:LearningEmacs]
+==初识 Emacs==
+* [[https://www.gnu.org/software/emacs/ GNU Emacs Homepage]] 这里有官方发布的 Emacs 和文档.
+* EmacsNewbie -- 基本概念, 词汇, 本文中用到的术语
+* [[CategoryDocumentation|Documentation]] -- learn why Emacs is called the self-documenting text editor.
+* [[CategoryHelp|Help]] -- Emacs 本身的在线帮助
+* [[LearningEmacs|Learning Emacs]] -- 有许多学习 Emacs 的资源和方法, 获取帮助
+* [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp 是 Emacs 的核心和灵魂
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryGlossary|Glossary]] -- Emacs 术语
+* [[EmacsNiftyTricks|Nifty Tricks]] -- 一些非凡的技巧
+* RandomPage -- for serendipitous visitors
+* [[CategoryCommunity|Emacs Communities]] -- connect with other people who use Emacs
+
 ==了解==
 * [[什么是Emacs]] -- Emacs没有那么神秘。
 * [[Emacs能做什么]] -- Emacs 都有哪些功能？
