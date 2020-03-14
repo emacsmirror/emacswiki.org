@@ -268,12 +268,12 @@ Leave email addresses for mailing lists.
 
 Replace the spam page with a link to "DeletedPage".
 
-== URL abbreviations ==
+== URL 缩写 ==
 
 You can find a list of possible abbreviations on the InterMap page.
 It lists supported URL abbreviations and their expansions.
 
-Here are some examples of the more interesting ones:
+这里有一些有趣的例子:
 
 * MeatBall:StartingPoints
 * Google:emacswiki
@@ -288,7 +288,7 @@ wiki goes, I think the following holds true:
 go to the wiki.
 * Bugs in the Emacs/XEmacs manuals should be reported to the
 maintainers.
-* Examples, typical usage, customizations, and code snipplets should
+* 示例, 典型用法, 自定义, and code snipplets should
 go to the wiki.
 * Bug reports and bug fixes to packages should be reported to the
 appropriate maintainers.
