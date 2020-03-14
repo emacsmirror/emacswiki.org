@@ -195,7 +195,7 @@ This usually looks like this at the end of the page:
     CategoryFoo
    
 
-== Adding Images to EmacsWiki Pages ==
+== 向 EmacsWiki 页面添加图像 ==
 
 You can create a Web page that has only an image on it (see [[Standalone Images]]), and you can make an image appear in line, on the same page as text or other images (see [[Inline Images]]). For additional information, see Oddmuse:TextFormatting.
 
