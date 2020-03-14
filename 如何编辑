@@ -1,0 +1,35 @@
+[[zh:怎么编辑]]
+[[ja:編集の仕方]]
+[[es:ComoEditar]]
+[[fr:CommentEditer]]
+A '''wiki''' is a collaborative web site.  '''''You can contribute'''''. Before doing so, take a moment to visit WikiOrganization to learn how EmacsWiki is organized.
+
+== How to edit and contribute ==
+
+* [EmacsWiki:action=edit;id=HowToEdit Edit an existing wiki page] by clicking the "'''Edit this page'''" link at the bottom of the page or by pressing a keyboard shortcut. 
+** In most browsers: '''<code>Alt e</code>''', 
+** Firefox in Mac OS X: '''<code>Ctrl Alt e</code>'''. 
+** Firefox in Windows/Linux: '''<code>Alt Shift e</code>'''. 
+** See AccessKey for a complete list of shortcuts and more information.
+* [EmacsWiki:Yaoddmuse Yaoddmuse mode]-- edit EmacsWiki in Emacs. It is a rewrite of [[OddmuseMode]] and should work in other Oddmuse wikis as well.
+* TextFormattingRules -- How to ''format'' a wiki page, ''create links'', and so on. The Emacs Wiki uses the [http://www.oddmuse.org/ Oddmuse] wiki engine, which defines the formatting rules.
+* CreateNewPages -- How to ''create new wiki pages''. A good way to start your first page is by adding your UserName to CategoryHomepage.
+* DeletedPage -- Deleting pages.
+* StyleGuide -- how to write well and help your neighbour
+* ElispArea -- How to ''upload'' an Emacs Lisp file.
+* UploadingImages -- How to add images to wiki pages.
+* UserName -- How to sign your wiki contributions with your user name.
+* UsingPortraits -- How to use an image ("avatar") for discussion
+
+
+== Policy ==
+* MinorEdit --  About the "This change is a minor edit" checkbox. 
+* IfYouRenameOrDeletePages -- If you rename or delete an EmacsWiki page you're responsible for fixing any links that pointed to the page.
+* PageRedirection -- Redirecting requests for a page to another page.
+* TranslationHelp -- How to translate pages, and how to link to translations
+* AppropriateMedia -- When to use the wiki.
+* CrossPosting -- About crossposting messages from other discussion media.
+
+
+----
+HowTo
