@@ -1,7 +1,5 @@
 <include "WikiLanguageMenu">
 
-欢迎来到EmacsWiki， EmacsWiki 是全世界Emacs黑客智慧的聚集地 ， 这里每天都有新的冒险等你去探索！  -- AndyStewart
-
 该 '''EmacsWiki''' 专门用于记录和讨论 EmacsAndXEmacs 以及 EmacsLisp。请参阅 MissionStatement 获取更多信息。
 
 你可以通过本网页以及其他网页底部的 '''编辑本页''' 链接编辑本网页。然而，''在编辑首页前，请查看 [[Comments on SiteMap]]''。
