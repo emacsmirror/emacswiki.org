@@ -29,15 +29,15 @@
 * [[CategoryCommunity|Emacs Communities]] -- connect with other people who use Emacs
 
 [:GeneralUse]
-==Emacs Use In-Depth==
-* [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
+==Emacs 进阶==
+* [[CategoryAccessibility|Accessibility]] -- Emacs 如何让一台电脑更方便使用
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
-* [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
-* [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command|commands]], `M-x'
-* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
+* [[CategoryBufferSwitching|BufferSwitching]] -- 在不同的 [[buffer|buffers]] 间切换
+* [[CategoryCommands|Commands]] -- 调用和定义 Emacs [[command|commands]], `M-x'
+* [[CategoryComparing|Comparing]] -- 比较合并文本, 或代码
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
 * [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
-** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
+** [[CategoryFaces|Faces]] -- text appearance: 高亮, 颜色, font-lock, 语法高亮
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
 ** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal)
 * [[CategoryEditing|Editing]] -- general information about text editing, including
