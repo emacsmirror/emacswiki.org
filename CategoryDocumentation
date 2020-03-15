@@ -6,15 +6,15 @@
 
 Emacs 有一个教程, 可以通过键入 <tt>C-h t</tt> 访问, 或帮助菜单.  它有一个手把手教程带你学习 Emacs 作为编辑器的基本用法. 参见 EmacsTutorial.
 
-Emacs also comes with a complete manual, called the EmacsManual. It might be helpful to know some EmacsDocumentationNotation.
+Emacs 有一个完整的手册, 它叫 EmacsManual. It might be helpful to know some EmacsDocumentationNotation.
 
 如果你希望扩展 Emacs, 你可以使用 EmacsLisp, 或简称 Elisp.  你可以通过阅读 EmacsLispIntro, 学习简单的 Emacs Lisp 编程, 一个完整的 Emacs Lisp 参考手册可以参考这里 EmacsLispReference.
 
 参见 EmacsNewbieHelpReference for finding help in Emacs.    
 
-Emacs comes with ReferenceCards.  Emacs is known as "the SelfDocumenting" editor, though, so while the refcard can be useful, one should learn to rely on InfoMode for most of the more complicated features of this editor.
+Emacs 来自于 ReferenceCards.  Emacs 被认为是 "the SelfDocumenting" 编辑器, though, so while the refcard can be useful, one should learn to rely on InfoMode for most of the more complicated features of this editor.
 
-If you need information on a specific library within Emacs, use FinderCommentary.  And FinderMode lists available libraries by keyword categories.
+如果你需要寻找 Emacs 中特殊的库, 使用 FinderCommentary.  FinderMode lists available libraries by keyword categories.
 
 Reading within Emacs documentation that is not about Emacs but about other parts of the system is available with WoMan, ManMode, and InfoMode.
 
