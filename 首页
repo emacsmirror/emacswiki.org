@@ -47,6 +47,12 @@
 ==更多==
 * [http://emacswiki.org/emacs-en 英文社区] -- 这里只是起点， 要学的更多， 请加入全球Emacs黑客阵营： 英文社区
 
+[:CustomInstallations]
+==Installing Custom Emacs Builds==
+* [[CategoryBuilding|Building]] -- 从源代码构建 Emacs
+* [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
+* [[CategoryWSL|WSL]] -- Windows 10: 在 WSL (Windows Subsystem for Linux) 上安装 Emacs 25
+
 [:Bugs]
 ==Emacs Bugs==
 
