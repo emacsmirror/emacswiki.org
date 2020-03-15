@@ -47,8 +47,16 @@
 ==更多==
 * [http://emacswiki.org/emacs-en 英文社区] -- 这里只是起点， 要学的更多， 请加入全球Emacs黑客阵营： 英文社区
 
+[:Customization]
+==Emacs 自定义==
+* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryPackaging|Packages]] -- Emacs 软件包管理
+* [[CategoryWThirtyTwo|Emacs on Windows]] -- 为 MS Windows 自定义 Emacs 
+* [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
+
 [:ProgrammingEmacs]
-== Programming Emacs in Lisp and C ==
+==用 Lisp 和 C 为 Emacs 编程==
 * [[CategoryCode|Code]] -- EmacsLisp 编码技巧
 * [[CategoryDebug|Debug]] -- 调试 Emacs, 使用 Emacs 调试, 调试 EmacsLisp
 * [[CategoryPatches|Patches]] -- Emacs 的补丁, C-level 扩展
