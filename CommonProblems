@@ -1,8 +1,8 @@
 This page discusses possible pitfalls and gotchas.  See also the section "Lossage" in the EmacsManual about "dealing with Emacs trouble".
 
-Emacs key sequences can vary, depending on whether you use an X window system, the console, a terminal emulation, SSH, and so on.
+Emacs 键序是有差异的, 基于你使用哪种环境: X window system, the console, a terminal emulation, SSH 等等.
 
-* ScrollLock -- MS Windows users: If your '''Caps Lock''' seems to be having no effect, hit your '''Scroll Lock''' key.
+* ScrollLock -- MS Windows 用户: 如果你的 '''Caps Lock''' 没有响应, 试一下 '''Scroll Lock''' 键.
 
 Replace highlighted text with what I type rather than just inserting at point.  Add the following to your ~/.emacs file:
 
@@ -12,10 +12,9 @@ Replace highlighted text with what I type rather than just inserting at point.  
 
 The environment may change how the BackspaceKey, `C-h' or `F1' are interpreted. 
 
-* Try `C-h ?'.
-* If that does not work, try `F1 ?'.
-* If that does not work, try `M-x help-with-tutorial': hit `ESC' (Escape), then
-hit `x', then type `help-with-tutorial', then hit Enter or Return.
+* 试一下 `C-h ?'.
+* 如果这不工作, 试一下 `F1 ?'.
+* 如果这不工作, 试一下 `M-x help-with-tutorial': 敲击 `ESC' (Escape), 然后键入 `x', 然后输入 `help-with-tutorial', 然后敲击 Enter 或 Return.
 
 
 ----
