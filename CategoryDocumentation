@@ -2,7 +2,7 @@
 [[es:CategoriaDocumentacion]]
 此文档关于 '''''Emacs''''' 文档. 参见 CategoryHelp.
 
-There is also a page on other BooksAboutEmacs. 关于 Emacs 简介, 参见 EmacsNewbie.
+这也是 BooksAboutEmacs 中的一个章节. 关于 Emacs 简介, 参见 EmacsNewbie.
 
 Emacs 有一个教程, 可以通过键入 <tt>C-h t</tt> 访问, 或帮助菜单.  它有一个手把手教程带你学习 Emacs 作为编辑器的基本用法. 参见 EmacsTutorial.
 
