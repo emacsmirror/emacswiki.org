@@ -123,7 +123,7 @@
 * [[CategoryExtensionLanguage|ExtensionLanguage]] -- 扩展 Emacs 以便使用基于 EmacsLisp 的其它语言: Guile, Erlang, Python
 
 [:CustomInstallations]
-==Installing Custom Emacs Builds==
+==自定义安装 Emacs==
 * [[CategoryBuilding|Building]] -- 从源代码构建 Emacs
 * [[CategoryPorts|Ports]] -- MS Windows, Mac, GNU/Linux 和免费 BSD 的二进制版本
 * [[CategoryWSL|WSL]] -- Windows 10: 在 WSL (Windows Subsystem for Linux) 上安装 Emacs 25
