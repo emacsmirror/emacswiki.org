@@ -1,9 +1,9 @@
 Here are some pointers for getting help for [[EmacsNewbie]]s:
 
-Try `C-h C-h' (`help-for-help') to access Emacs help. You can also use the `Help' menu. The EmacsManual is available
+试着键入 `C-h C-h' (`help-for-help') 访问 Emacs 帮助. 或者使用 `Help' 菜单. The EmacsManual is available
 through `Help' -> `Info' -> `Emacs'. The command names associated with the individual help keys can sometimes help you remember the keys themselves.
 
-Useful help [[key]]s and [[command]]s include these (this info is available via `C-h C-h'):
+有帮助的 [[key]] 和 [[command]] 包括这些 (this info is available via `C-h C-h'):
 
 ; `C-h t' (`help-with-tutorial'): Present the learn-by-doing EmacsTutorial
 ; `C-h k' (`describe-key'): Describe the Emacs command that a keyboard/menu/mouse sequence invokes: You enter a [[key sequence]], and Emacs tells you what it does.
@@ -21,9 +21,9 @@ Useful help [[key]]s and [[command]]s include these (this info is available via 
 * Emacs 22 (`apropos-documentation'): Show documentation for Lisp [[symbol]]s whose documentation matches a word or [[regexp]].
 
 
-; `C-h m' (`describe-mode'): Describe the modes of the current [[buffer]], including the main keys and commands available.
+; `C-h m' (`describe-mode'): 描述当前 [[buffer]] 的模式, including the main keys and commands available.
 ; `C-h b' (`describe-bindings'): List all of the key bindings currently in effect for the current buffer.
-; `C-h r' (`info-emacs-manual'): Access the EmacsManual. (Emacs 22 or later only)
+; `C-h r' (`info-emacs-manual'): 访问 EmacsManual. (Emacs 22 or later only)
 ; `C-h i' (`info'): Open [[InfoMode|Info]], the documentation browser: Access to a menu of available manuals.
 ; `C-h p' (`finder-by-keyword', FinderByKeyword):  List available EmacsLisp packages. Go to a package.
 ; `M-x search-emacs-glossary': Open the Glossary page of the Emacs manual.
