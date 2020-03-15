@@ -58,5 +58,10 @@ An extension built upon hexl to provide a convenient way to view binary data:
 
 [new:]
 HexviewMode
+
+[new:]
+As of March 2020, the best hex mode for Emacs appears to be nhexl-mode (https://elpa.gnu.org/packages/nhexl-mode.html). It comes with nhexl-nibble-edit-mode, which lets you edit the hex codes directly (as requested above).
+-- Ivar
+
 ----
 CategoryModes
