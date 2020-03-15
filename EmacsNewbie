@@ -3,42 +3,40 @@
 
 
 
-== Getting Started ==
+==开始==
 
 * [http://www.gnu.org/software/emacs/tour/ Guided tour]: GnuEmacs
-* WikiPedia:Emacs -- Overview
-* LearningEmacs -- Ways to learn
+* WikiPedia:Emacs -- 概览
+* LearningEmacs -- 为何学习
 
 
-== Help ==
+==帮助==
 
 * '''[[CategoryHelp|Help Central]]'''
 
-* EmacsNewbieHelpReference -- Main help commands and keys
+* EmacsNewbieHelpReference -- 主要帮助命令和键
 * GetHelp -- Getting help when you're stuck
-* CommonProblems -- Some gotchas
+* CommonProblems -- 常见问题
 * EmacsNewbieWithIcicles – Help with what you're doing, discovery
 
 
-== Community ==
+==社区==
 
 * EmacsNewbieStories -- Stories from users new to Emacs
 
 
 
-== Reference ==
+==参考==
 
-* CategoryGlossary -- Emacs terminology
-* CategoryReferenceSheet -- Emacs key reference sheet
-* EmacsNewbieKeyReference -- Commonly used commands
-* EmacsNewbieMouseReference -- How the Emacs mouse works
+* CategoryGlossary -- Emacs 术语
+* CategoryReferenceSheet -- Emacs 键参考表
+* EmacsNewbieKeyReference -- 常用命令
+* EmacsNewbieMouseReference -- Emacs 的鼠标如何工作
 
+==下一步==
 
-
-== Next Steps ==
-
-* KeyboardMacros -- Automate repetitive actions by recording what you do (mouse, menu, keyboard) and then playing it back again.
-* CategoryDocumentation -- Read on...
+* KeyboardMacros -- 通过反复记录你的操作(鼠标, 菜单, 键盘)自动化重复工作
+* CategoryDocumentation -- 继续读...
 
 
 ----
