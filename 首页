@@ -74,27 +74,27 @@
 
 [:EmacsApplications]
 ==Emacs 中的应用程序==
-* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
-* [[CategoryCalculators|Calculators]] -- math operations
-** [[CategoryFinancial|Financial]] -- money management and accounting
-* [[CategoryCalendar|Calendar]] -- calendar, diary, task and appointment reminders
-** [[CategoryTodo|Todo]] -- maintaining to-do lists
-** [[CategoryTimeTracking|TimeTracking]] -- tracking your time spent
-* [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
-* [[CategoryDatabase|Databases]] -- databases in Emacs
+* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- 基于 Emacs 的 AI 和专家系统
+* [[CategoryCalculators|Calculators]] -- 数学计算
+** [[CategoryFinancial|Financial]] -- 现金管理和记账
+* [[CategoryCalendar|Calendar]] -- 日历, 日记, 任务和会议提醒
+** [[CategoryTodo|Todo]] -- 维护待办事项
+** [[CategoryTimeTracking|TimeTracking]] -- 记录你的时间
+* [[CategoryCryptography|Cryptography]] -- 加密/解密你编辑的文件
+* [[CategoryDatabase|Databases]] -- Emacs 的数据库
 * [[CategoryEducation|Education]] -- learn something new, use a dictionary, or grade students
 * [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
 * [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities other than programming
-* [[CategoryGames|Games]] -- play in Emacs
+* [[CategoryGames|Games]] -- Emacs 游戏
 * [[CategoryGopher|Gopher]] -- browsing Gopher sites
-* [[CategoryInterface|Interface]] -- accessing web services
-** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
-** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
-* [[CategoryMail|Mail]] -- reading email in Emacs
-** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
+* [[CategoryInterface|Interface]] -- 访问 web services
+** [[CategoryChatClient|ChatClient]] -- 使用 Emacs 聊天
+** [[CategoryJournaling|Journaling]] -- Emacs 的博客接口
+* [[CategoryMail|Mail]] -- 在 Emacs 中读取邮件
+** [[CategoryGnus|Gnus]] -- 一个 Emacs 新闻和邮件阅读其
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
 ** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
-** [[WanderLust|WanderLust]] -- another Emacs news and mail reader
+** [[WanderLust|WanderLust]] -- 另一个 Emacs 新闻和邮件阅读器
 ** [[mu4e]] -- another Emacs based mail program.
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
