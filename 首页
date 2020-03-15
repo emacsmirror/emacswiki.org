@@ -29,7 +29,7 @@
 [:GeneralUse]
 ==Emacs 进阶==
 * [[CategoryAccessibility|Accessibility]] -- Emacs 如何让一台电脑更方便使用
-* [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
+* [[CategoryBookmarking|Bookmarking]] -- 使用书签
 * [[CategoryBufferSwitching|BufferSwitching]] -- 在不同的 [[buffer|buffers]] 间切换
 * [[CategoryCommands|Commands]] -- 调用和定义 Emacs [[command|commands]], `M-x'
 * [[CategoryComparing|Comparing]] -- 比较合并文本, 或代码
@@ -42,7 +42,7 @@
 ** [[CategoryAlignment|Alignment]] -- 文本对齐, 列, 注释或其它编程语言
 ** [[CategoryIndentation|Indentation]] -- 文本或代码缩进
 ** [[CategoryComments|Comments]] -- 控制使用代码注释
-** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
+** [[CategoryFilling|Filling]] -- 换行
 ** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
 ** [[CategoryRegion|Region]] -- 选择文本的 [[region]], 以便 (复制, 剪切, 粘贴, ...)
 ** [[CategorySpelling|Spelling]] -- 拼写检查
@@ -54,21 +54,21 @@
 * [[CategoryInternationalization|Internationalization]] -- 自然语言支持, 字符集
 * [[CategoryKeys|Keys]] -- 理解并自定义 [[key]] 绑定 ("hotkeys", aka."keyboard shortcuts")
 * [[CategoryMouse|Mouse]] -- 鼠标绑定和鼠标的使用
-* [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
+* [[CategoryModes|Modes]] -- 杂项 [[MajorMode|editing modes]] provided in Emacs
 ** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
 ** [[CategoryHypermedia|Hypermedia]] -- 创建和使用超文本: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
-** [[CategoryTables|Tables]] -- working with tabular data
+** [[CategoryTables|Tables]] -- 表格
 ** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
-** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
+** [[ProgrammingModes|Programming Modes]] 编程模式 (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
 ** [[CategoryXML|XML]] -- XML 技术
 * [[CategoryMenus|Menus]] -- Emacs 菜单, ([[menu bar]] and popup)
-* [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
-* [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
+* [[CategoryPaths|Paths]] -- 如何在 Emacs 中访问 OS 路径
+* [[CategoryPersistence|Persistence]] -- 在 Emacs 会话间保存状态
 * [[CategoryPrinting|Printing]] -- 打印文件, [[buffer|buffers]], the [[region]] ...
-* [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
+* [[CategoryProject|Project Organization]] -- 导航, 组织, 管理软件项目
 * [[CategoryProgramming|Programming]] -- 作为一个开发环境使用 Emacs
-* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
-* [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
+* [[CategoryRegexp|Regexp]] -- 定义和使用 [[regular expression|regular expressions]]
+* [[CategorySearchAndReplace|SearchAndReplace]] - 搜索和替换文本, 包含 [[regexp]] 搜索
 * [[CategoryWriting|Writing]] -- 作为散文编辑器使用 Emacs
 
 [:EmacsApplications]
