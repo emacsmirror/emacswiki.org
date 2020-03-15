@@ -18,6 +18,6 @@ If you need information on a specific library within Emacs, use FinderCommentary
 
 Reading within Emacs documentation that is not about Emacs but about other parts of the system is available with WoMan, ManMode, and InfoMode.
 
-ExternalDocumentation is about integrating other sources of information, it explains how to install Info-format documentation for Git manual, Python manual, etc.
+ExternalDocumentation 是关于集成其它信息的资源, 它解释如何安装 Git 手册, Python 手册等文档.
 
 如果, 因为某些原因, 你要访问 Emacs 文档而不是 Emacs 它自己, 可以访问在线帮助: [http://bruce-connor.github.io/emacs-online-documentation/ Emacs Online Documentation].
