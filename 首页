@@ -50,7 +50,7 @@
 [:CustomInstallations]
 ==Installing Custom Emacs Builds==
 * [[CategoryBuilding|Building]] -- 从源代码构建 Emacs
-* [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
+* [[CategoryPorts|Ports]] -- MS Windows, Mac, GNU/Linux 和免费 BSD 的二进制版本
 * [[CategoryWSL|WSL]] -- Windows 10: 在 WSL (Windows Subsystem for Linux) 上安装 Emacs 25
 
 [:Bugs]
