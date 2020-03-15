@@ -28,24 +28,85 @@
 * RandomPage -- for serendipitous visitors
 * [[CategoryCommunity|Emacs Communities]] -- connect with other people who use Emacs
 
-==了解==
-* [[什么是Emacs]] -- Emacs没有那么神秘。
-* [[Emacs能做什么]] -- Emacs 都有哪些功能？
-* [[Emacs的魅力]] -- Emacs是对技术极限不懈追求的信仰！
+[:GeneralUse]
+==Emacs Use In-Depth==
+* [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
+* [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
+* [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
+* [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command|commands]], `M-x'
+* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
+* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
+* [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
+** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
+** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
+** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal)
+* [[CategoryEditing|Editing]] -- general information about text editing, including
+** [[CategoryAlignment|Alignment]] -- aligning text, columns, comments or other programming-language constructs
+** [[CategoryIndentation|Indentation]] -- indenting text, including source code
+** [[CategoryComments|Comments]] -- manipulating and using code comments
+** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
+** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
+** [[CategoryRegion|Region]] -- selecting a [[region]] of text to act on it (copy, cut, paste, ...)
+** [[CategorySpelling|Spelling]] -- spell-checking
+** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (file headers, templates, forms)
+** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
+* [[CategoryFiles|Files]] -- files and directories: local, remote, backup. (see also [[CategoryDirectories|Directories]] and DiredMode)
+* [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]], including 
+[[CategoryOutline|outlining]] and folding
 
-==使用==
-* [[基本操作]] -- 十分钟入门Emacs
-* [[简单调整]] -- Emacs 默认配置有一些与其他编辑软件的习惯有偏差的地方， 通过简单调整让Emacs更加友好易用
-* [[Emacs名词]] -- Emacs里专有名词的解释和中英文对照
+* [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
+* [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("hotkeys", aka."keyboard shortcuts")
+* [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
+* [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
+** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
+** [[CategoryHypermedia|Hypermedia]] -- creating and using hypertext: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
+** [[CategoryTables|Tables]] -- working with tabular data
+** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
+** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
+** [[CategoryXML|XML]] -- XML technologies
+* [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
+* [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
+* [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
+* [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
+* [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
+* [[CategoryProgramming|Programming]] -- using Emacs as a development environment
+* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
+* [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
+* [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
 
-==探索==
-*  [[怎么探索Emacs]] -- Emacs 是一个不折不扣的操作系统
 
-==贡献==
-* [[怎么变成贡献者]] -- 学完Elisp不是探索的终点， 而是乐趣的开始!
-
-==更多==
-* [http://emacswiki.org/emacs-en 英文社区] -- 这里只是起点， 要学的更多， 请加入全球Emacs黑客阵营： 英文社区
+[:EmacsApplications]
+==Applications within Emacs==
+* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
+* [[CategoryCalculators|Calculators]] -- math operations
+** [[CategoryFinancial|Financial]] -- money management and accounting
+* [[CategoryCalendar|Calendar]] -- calendar, diary, task and appointment reminders
+** [[CategoryTodo|Todo]] -- maintaining to-do lists
+** [[CategoryTimeTracking|TimeTracking]] -- tracking your time spent
+* [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
+* [[CategoryDatabase|Databases]] -- databases in Emacs
+* [[CategoryEducation|Education]] -- learn something new, use a dictionary, or grade students
+* [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
+* [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities other than programming
+* [[CategoryGames|Games]] -- play in Emacs
+* [[CategoryGopher|Gopher]] -- browsing Gopher sites
+* [[CategoryInterface|Interface]] -- accessing web services
+** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
+** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
+* [[CategoryMail|Mail]] -- reading email in Emacs
+** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
+** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
+** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
+** [[WanderLust|WanderLust]] -- another Emacs news and mail reader
+** [[mu4e]] -- another Emacs based mail program.
+* [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
+** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
+* [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
+* [[CategoryRelated|Related]] -- Emacs environments run in other programs (browsers, terminal emulators,...)
+* [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host
+* [[CategoryShell|Shell]] -- interact with a shell inside Emacs, including  [[CategoryEshell|eshell]], a cross-platform shell implemented in EmacsLisp
+* [[CategoryVersionControl|VersionControl]] -- using version-control systems in Emacs (Git, Mercurial, SVN...)
+* [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
 
 [:Customization]
 ==Emacs 自定义==
@@ -84,3 +145,23 @@
 
 ----
 CategoryEmacsWikiSite
+
+
+==了解==
+* [[什么是Emacs]] -- Emacs没有那么神秘。
+* [[Emacs能做什么]] -- Emacs 都有哪些功能？
+* [[Emacs的魅力]] -- Emacs是对技术极限不懈追求的信仰！
+
+==使用==
+* [[基本操作]] -- 十分钟入门Emacs
+* [[简单调整]] -- Emacs 默认配置有一些与其他编辑软件的习惯有偏差的地方， 通过简单调整让Emacs更加友好易用
+* [[Emacs名词]] -- Emacs里专有名词的解释和中英文对照
+
+==探索==
+*  [[怎么探索Emacs]] -- Emacs 是一个不折不扣的操作系统
+
+==贡献==
+* [[怎么变成贡献者]] -- 学完Elisp不是探索的终点， 而是乐趣的开始!
+
+==更多==
+* [http://emacswiki.org/emacs-en 英文社区] -- 这里只是起点， 要学的更多， 请加入全球Emacs黑客阵营： 英文社区
