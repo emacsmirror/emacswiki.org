@@ -41,20 +41,19 @@
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
 ** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal)
 * [[CategoryEditing|Editing]] -- general information about text editing, including
-** [[CategoryAlignment|Alignment]] -- aligning text, columns, comments or other programming-language constructs
-** [[CategoryIndentation|Indentation]] -- indenting text, including source code
-** [[CategoryComments|Comments]] -- manipulating and using code comments
+** [[CategoryAlignment|Alignment]] -- 文本对齐, 列, 注释或其它编程语言
+** [[CategoryIndentation|Indentation]] -- 文本或代码缩进
+** [[CategoryComments|Comments]] -- 控制使用代码注释
 ** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
 ** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
 ** [[CategoryRegion|Region]] -- selecting a [[region]] of text to act on it (copy, cut, paste, ...)
-** [[CategorySpelling|Spelling]] -- spell-checking
+** [[CategorySpelling|Spelling]] -- 拼写检查
 ** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (file headers, templates, forms)
-** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
-* [[CategoryFiles|Files]] -- files and directories: local, remote, backup. (see also [[CategoryDirectories|Directories]] and DiredMode)
-* [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]], including 
-[[CategoryOutline|outlining]] and folding
+** [[CategoryUndo|Undo]] -- 撤销, 重做及查找变更
+* [[CategoryFiles|Files]] -- 文件和目录: 本地, 远程, 备份. (参见 [[CategoryDirectories|Directories]] 和 DiredMode)
+* [[CategoryHideStuff|HideStuff]] -- 隐藏 [[buffer]] 的一部分, 包括 [[CategoryOutline|outlining]] 和目录
 
-* [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
+* [[CategoryInternationalization|Internationalization]] -- 自然语言支持, 字符集
 * [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("hotkeys", aka."keyboard shortcuts")
 * [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
 * [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
