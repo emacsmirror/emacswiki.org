@@ -33,44 +33,43 @@
 * [[CategoryBufferSwitching|BufferSwitching]] -- 在不同的 [[buffer|buffers]] 间切换
 * [[CategoryCommands|Commands]] -- 调用和定义 Emacs [[command|commands]], `M-x'
 * [[CategoryComparing|Comparing]] -- 比较合并文本, 或代码
-* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
-* [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
+* [[CategoryCompletion|Completion]] -- 在 [[minibuffer]] 或其它 [[buffer|buffers]] 中完成文本编辑
+* [[CategoryDisplay|Display]] -- Emacs 如何显示信息 ([[frame|frames]], [[face|faces]], 字体...)
 ** [[CategoryFaces|Faces]] -- text appearance: 高亮, 颜色, font-lock, 语法高亮
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
 ** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal)
-* [[CategoryEditing|Editing]] -- general information about text editing, including
+* [[CategoryEditing|Editing]] -- 关于文本编辑的常规信息, 包括:
 ** [[CategoryAlignment|Alignment]] -- 文本对齐, 列, 注释或其它编程语言
 ** [[CategoryIndentation|Indentation]] -- 文本或代码缩进
 ** [[CategoryComments|Comments]] -- 控制使用代码注释
 ** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
 ** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
-** [[CategoryRegion|Region]] -- selecting a [[region]] of text to act on it (copy, cut, paste, ...)
+** [[CategoryRegion|Region]] -- 选择文本的 [[region]], 以便 (复制, 剪切, 粘贴, ...)
 ** [[CategorySpelling|Spelling]] -- 拼写检查
-** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (file headers, templates, forms)
+** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (文件头, 模版, 表单)
 ** [[CategoryUndo|Undo]] -- 撤销, 重做及查找变更
 * [[CategoryFiles|Files]] -- 文件和目录: 本地, 远程, 备份. (参见 [[CategoryDirectories|Directories]] 和 DiredMode)
 * [[CategoryHideStuff|HideStuff]] -- 隐藏 [[buffer]] 的一部分, 包括 [[CategoryOutline|outlining]] 和目录
 
 * [[CategoryInternationalization|Internationalization]] -- 自然语言支持, 字符集
-* [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("hotkeys", aka."keyboard shortcuts")
-* [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
+* [[CategoryKeys|Keys]] -- 理解并自定义 [[key]] 绑定 ("hotkeys", aka."keyboard shortcuts")
+* [[CategoryMouse|Mouse]] -- 鼠标绑定和鼠标的使用
 * [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
 ** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
-** [[CategoryHypermedia|Hypermedia]] -- creating and using hypertext: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
+** [[CategoryHypermedia|Hypermedia]] -- 创建和使用超文本: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
 ** [[CategoryTables|Tables]] -- working with tabular data
 ** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
 ** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
-** [[CategoryXML|XML]] -- XML technologies
-* [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
+** [[CategoryXML|XML]] -- XML 技术
+* [[CategoryMenus|Menus]] -- Emacs 菜单, ([[menu bar]] and popup)
 * [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 * [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
-* [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
+* [[CategoryPrinting|Printing]] -- 打印文件, [[buffer|buffers]], the [[region]] ...
 * [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
-* [[CategoryProgramming|Programming]] -- using Emacs as a development environment
+* [[CategoryProgramming|Programming]] -- 作为一个开发环境使用 Emacs
 * [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
 * [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
-* [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
-
+* [[CategoryWriting|Writing]] -- 作为散文编辑器使用 Emacs
 
 [:EmacsApplications]
 ==Emacs 中的应用程序==
