@@ -47,6 +47,13 @@
 ==更多==
 * [http://emacswiki.org/emacs-en 英文社区] -- 这里只是起点， 要学的更多， 请加入全球Emacs黑客阵营： 英文社区
 
+[:ProgrammingEmacs]
+== Programming Emacs in Lisp and C ==
+* [[CategoryCode|Code]] -- EmacsLisp 编码技巧
+* [[CategoryDebug|Debug]] -- 调试 Emacs, 使用 Emacs 调试, 调试 EmacsLisp
+* [[CategoryPatches|Patches]] -- Emacs 的补丁, C-level 扩展
+* [[CategoryExtensionLanguage|ExtensionLanguage]] -- 扩展 Emacs 以便使用基于 EmacsLisp 的其它语言: Guile, Erlang, Python
+
 [:CustomInstallations]
 ==Installing Custom Emacs Builds==
 * [[CategoryBuilding|Building]] -- 从源代码构建 Emacs
