@@ -47,6 +47,13 @@
 ==更多==
 * [http://emacswiki.org/emacs-en 英文社区] -- 这里只是起点， 要学的更多， 请加入全球Emacs黑客阵营： 英文社区
 
+[:Bugs]
+==Emacs Bugs==
+
+* EmacsBugs -- 如何报告 bugs, 或寻找那些已经报告的 Bug 清单
+* [[CategoryWishList|WishList]] -- "Emacs isn't perfect already?"
+* [[Proposals|Proposals]] -- 正式的 Emacs 改进建议
+
 [:EmacsInfo]
 ==其它 Emacs 相关的信息==
 * EmacsImplementations -- 一份 Emacsen 列表和它的模仿者
