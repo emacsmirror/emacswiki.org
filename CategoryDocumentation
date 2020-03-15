@@ -8,7 +8,7 @@ Emacs 有一个教程, 可以通过键入 <tt>C-h t</tt> 访问, 或帮助菜单
 
 Emacs also comes with a complete manual, called the EmacsManual. It might be helpful to know some EmacsDocumentationNotation.
 
-如果你希望扩展 Emacs, you can do so using EmacsLisp, or Elisp for short.  You can learn the basics of simple Emacs Lisp programming by reading the EmacsLispIntro, and a complete reference manual for Emacs Lisp is available in the EmacsLispReference.
+如果你希望扩展 Emacs, 你可以使用 EmacsLisp, 或简称 Elisp.  你可以通过阅读 EmacsLispIntro, 学习简单的 Emacs Lisp 编程, 一个完整的 Emacs Lisp 参考手册可以参考这里 EmacsLispReference.
 
 参见 EmacsNewbieHelpReference for finding help in Emacs.    
 
