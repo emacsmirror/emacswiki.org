@@ -26,6 +26,14 @@ The following unit test frameworks exist for Emacs Lisp.
 
 '''ErtTestLibrary''' -- Elisp Regression Testing (ERT) by Christian M. Ohler is now included in Emacs. The framework provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively.
 
+=== Best non-core ===
+
+This page had gotten a little stale but I'm far too lazy to test all below and update more fully this content.
+
+[https://github.com/jorgenschaefer/emacs-buttercup buttercup] is available from [MELPA] and most recommend for general use by irc.Freenode,net#emacs from 2019-2020Q1 (now current).  It appears to work well with Emacs 27 pre-release and 28 e.g. build of GNU Emacs from git master.  
+
+While its semantics follow BDD and therefore impose some potentially undesired test design, this solution above all is robust and aggressively maintained.  It is also depended upon by many heavily used Emacs projects such as [https://github.com/bbatsov/projectile/blob/master/test/projectile-test.el projectile].
+
 === xUnit-like ===
 
 '''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides visual feedback with [[FringeHelper|fringe-helper.el]] and a number of specialized assertion macros like ##assert-equal##, ##assert-nil##, etc.
