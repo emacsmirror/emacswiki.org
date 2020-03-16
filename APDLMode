@@ -1,6 +1,6 @@
 The GNU-Emacs major mode for the programming language APDL
 
-You can install APDL-Mode from [https://melpa.org Melpa] or you'll
+You can install APDL-Mode from [https://melpa.org Melpa] and you'll
 find the code on its [https://github.com/dieter-wilhelm/apdl-mode Github page].
 
 APDL (Ansys Parametric Design Language) is the solver scripting
