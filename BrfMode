@@ -29,8 +29,10 @@ https://bitbucket.org/MikeWoolley/brf-mode/src/master/
 
 Installing the `brf' package from MELPA is the easiest way.
 
-`brf' can also be installed manually by downloading the archive directly from the project [https://bitbucket.org/MikeWoolley/brf-mode/src/master/
- homepage].
+Make sure [https://melpa.org/#/getting-started MELPA is in your package archives list], and `M-x package-install brf'.
+
+`brf' can also be installed manually by downloading the archive directly from [https://melpa.org/#/brf MELPA]
+or the project [https://bitbucket.org/MikeWoolley/brf-mode/src/master/ homepage].
 
 Manual installation is really only necessary on GNU Emacs older than 24 and on XEmacs.
 
