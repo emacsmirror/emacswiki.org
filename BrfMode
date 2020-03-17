@@ -1,0 +1,32 @@
+= Brf Mode =
+
+Brf Mode is not a strict emulation of the old DOS editor `Brief', but
+rather provides an *accurate* implementation of specific features that I miss
+from `Brief'. So in other words, rather than turning Emacs into Brief, it adds some `Brief' features to Emacs: 
+
+* Line-mode cut and paste.
+* Column-mode cut and paste.
+* Fully reversible paging and scrolling.
+* Temporary bookmarks.
+* Cursor motion undo.
+* Easy window management.
+
+However they have been implemented in an Emacs-style. This means the functions respond to prefix args and where they override Emacs functions, they live on the Emacs key bindings as well as the original Brief keys.
+
+Moreover, functionality has been extended to those parts of Emacs that were never part of Brief. For example, text cut/copied in line or column-mode can be saved/recalled in registers.
+
+Also some functionality was never part of Brief nor Emacs (for example `List Bookmarks' and the mode uses the prefix `C-c C-b' for such commands.
+
+= Details =
+
+See the more detailed description at the project homepage:
+
+https://bitbucket.org/MikeWoolley/brf-mode/src/master/
+
+= Installation =
+
+Installing the `brf' package from MELPA is the easiest way.
+
+
+
+
