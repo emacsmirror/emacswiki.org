@@ -1,10 +1,10 @@
 = Brf Mode =
 
-Brf Mode is not a strict emulation of the old DOS editor `Brief', but
-rather provides an *accurate* implementation of specific features that I miss
-from `Brief'. 
+Brf Mode is not a strict emulation of the old DOS editor `Brief' and does not turn Emacs into Brief.
 
-So in other words, rather than turning Emacs into Brief, it adds the following `Brief' features to Emacs: 
+Rather it provides an *accurate* implementation of specific features that I miss from `Brief'. 
+
+Principally these features are:
 
 * Line-mode cut and paste.
 * Column-mode cut and paste.
@@ -21,7 +21,7 @@ Also some functionality was never part of Brief nor Emacs (for example `List Boo
 
 = Details =
 
-See the more detailed description at the project homepage:
+See the detailed description at the project homepage:
 
 https://bitbucket.org/MikeWoolley/brf-mode/src/master/
 
@@ -29,10 +29,24 @@ https://bitbucket.org/MikeWoolley/brf-mode/src/master/
 
 Installing the `brf' package from MELPA is the easiest way.
 
+`brf' can also be installed manually by downloading the archive directly from the project [https://bitbucket.org/MikeWoolley/brf-mode/src/master/
+ homepage].
 
+Manual installation is really only necessary on GNU Emacs older than 24 and on XEmacs.
 
+= Screenshots =
 
+*Line-Marking Mode*
 
+[[image:BrfModeLineMode]]
+
+*Column-Marking Mode*
+
+[[image:BrfModeColumnMode]]
+
+*Bookmarks*
+
+[[image:BrfModeBookmarks]]
 
 ----
 CategoryEmulation
