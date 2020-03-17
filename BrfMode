@@ -2,7 +2,9 @@
 
 Brf Mode is not a strict emulation of the old DOS editor `Brief', but
 rather provides an *accurate* implementation of specific features that I miss
-from `Brief'. So in other words, rather than turning Emacs into Brief, it adds some `Brief' features to Emacs: 
+from `Brief'. 
+
+So in other words, rather than turning Emacs into Brief, it adds the following `Brief' features to Emacs: 
 
 * Line-mode cut and paste.
 * Column-mode cut and paste.
