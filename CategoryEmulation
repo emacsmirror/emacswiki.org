@@ -1,7 +1,9 @@
 Click on the heading to search for all pages related to emulating other software and systems in Emacs.
 
 * AnsiTerm -- Use any terminal-based program from within Emacs.
-* BriefMode -- An once popular editor "Brief" which was famous for easy-to-learn.
+* Brief
+** BriefMode -- An once popular editor "Brief" which was famous for easy-to-learn.
+** BrfMode -- Add functionality from the editor Brief to Emacs.
 * CuaMode -- Use C-x, C-c and C-v to CopyAndPaste and more.
 * EdMode -- ed mode for Emacs
 * Imitating window and session management of GnuScreen
