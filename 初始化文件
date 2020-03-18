@@ -1,5 +1,5 @@
 [[en:InitFile]]
-你的 '''[::初始化文件]''' 包含你自己的 EmacsLisp 代码, 当你启动 Emacs 时会运行它们.
+你的 《初始化文件》 包含你自己的 EmacsLisp 代码, 当你启动 Emacs 时会运行它们.
 
 参见 Emacs 手册 (`C-h r'), node 
 [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html Init File]].
