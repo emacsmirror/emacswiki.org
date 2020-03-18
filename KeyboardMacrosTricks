@@ -85,6 +85,12 @@ This can also be achieved with : <code>C-x e e e e e</code> (keep your finger on
 ** `icicle-kmacro', bound to `f5' in ''Icicle'' mode. Execute a keyboard macro according to its position in `kmacro-ring'.
 ** `icicle-execute-named-keyboard-macro', bound to `C-x M-e' in ''Icicle'' mode. Execute a named keyboard macro by name. Unlike `M-x', the completion candidates are only the keyboard macro names.
 
+* If your keyboard macro is a little wrong, and can't be immediately re-invoked because of a small, easily corrected mistake, use the name-last-kbd-macro command to save your macro, and make another keyboard macro that invokes your now-named keyboard macro, and then fixes the small, easily corrected mistake.
+
+* Displaying two buffers at the same time, and operating on them with a keyboard macro is helpful for more complex transformations.
+
+* Keyboard macros are very powerful but relatively slow, compared to many other operations. Anything that can be done with a keyboard macro can be performed with a sufficiently long regular expression query replace.
+
 
 === Saving a macro ===
 
