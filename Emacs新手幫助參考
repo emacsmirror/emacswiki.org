@@ -1,3 +1,4 @@
+[[en:EmacsNewbieHelpReference]]
 Here are some pointers for getting help for [[EmacsNewbie]]s:
 
 试着键入 `C-h C-h' (`help-for-help') 访问 Emacs 帮助. 或者使用 `Help' 菜单. The EmacsManual is available
@@ -39,8 +40,10 @@ Help on anything at all, with one click: '''`help-on-click/key'''' in <tt>[[help
 [new]
 Bind `l' to `help-go-back' in `help-mode', to make it behave a tiny bit more like Info mode:
 
+{{{
   (add-hook 'help-mode-hook
     (lambda () (define-key help-mode-map "l" 'help-go-back)))
+}}}
 
 ----
 EmacsNewbie
