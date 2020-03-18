@@ -1,0 +1,24 @@
+[[en:CategoryDocumentation]]
+[[ja:カテゴリ・ドキュメント]]
+[[es:CategoriaDocumentacion]]
+此文档关于 '''''Emacs''''' 文档. 参见 CategoryHelp.
+
+这也是 BooksAboutEmacs 中的一个章节. 关于 Emacs 简介, 参见 EmacsNewbie.
+
+Emacs 有一个教程, 可以通过键入 <tt>C-h t</tt> 访问, 或帮助菜单.  它有一个手把手教程带你学习 Emacs 作为编辑器的基本用法. 参见 EmacsTutorial.
+
+Emacs 有一个完整的手册, 它叫 EmacsManual. It might be helpful to know some EmacsDocumentationNotation.
+
+如果你希望扩展 Emacs, 你可以使用 EmacsLisp, 或简称 Elisp.  你可以通过阅读 EmacsLispIntro, 学习简单的 Emacs Lisp 编程, 一个完整的 Emacs Lisp 参考手册可以参考这里 EmacsLispReference.
+
+参见 EmacsNewbieHelpReference for finding help in Emacs.    
+
+Emacs 来自于 ReferenceCards.  Emacs 被认为是 "the SelfDocumenting" 编辑器, though, so while the refcard can be useful, one should learn to rely on InfoMode for most of the more complicated features of this editor.
+
+如果你需要寻找 Emacs 中特殊的库, 使用 FinderCommentary.  FinderMode lists available libraries by keyword categories.
+
+Reading within Emacs documentation that is not about Emacs but about other parts of the system is available with WoMan, ManMode, and InfoMode.
+
+ExternalDocumentation 是关于集成其它信息的资源, 它解释如何安装 Git 手册, Python 手册等文档.
+
+如果, 因为某些原因, 你要访问 Emacs 文档而不是 Emacs 它自己, 可以访问在线帮助: [http://bruce-connor.github.io/emacs-online-documentation/ Emacs Online Documentation].
