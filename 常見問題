@@ -1,3 +1,4 @@
+[[en:CommonProblems]]
 This page discusses possible pitfalls and gotchas.  See also the section "Lossage" in the EmacsManual about "dealing with Emacs trouble".
 
 Emacs 键序是有差异的, 基于你使用哪种环境: X window system, the console, a terminal emulation, SSH 等等.
