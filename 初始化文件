@@ -1,0 +1,40 @@
+[[en:InitFile]]
+你的 '''[::初始化文件]''' 包含你自己的 EmacsLisp 代码, 当你启动 Emacs 时会运行它们.
+
+参见 Emacs 手册 (`C-h r'), node 
+[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html Init File]].
+
+* 若是 GnuEmacs, 你的 init 文件位于 '''##~/.emacs##''', '''##~/.emacs.el##''', 或 '''##~/.emacs.d/init.el##'''.  You can choose to use any of these names. '~/' 指的是你的个人目录.  
+* 若是 [[XEmacs]], 它是 ##~/.xemacs## 或 ##~/.xemacs/init.el##.
+* 若是 AquamacsEmacs, 它是 ##~/.emacs## 或 ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
+
+如果你不知道你的 init 文件位于那里, 或者你没有它并且想创建一个, 只要在 Emacs 中键入以下命令:
+
+   C-x C-f ~/.emacs.d/init.el RET
+
+当你在你自己的 init 文件中编写 Emacs Lisp 代码, 它会在你重启 Emacs 后生效. 或者, 使用 `M-x eval-buffer' 命令使其立即生效, 或者使用 `M-x eval-region' 命令使你选中的一部分生效, or just `C-x C-e' (command `eval-last-sexp') to evaluate the Emacs Lisp expression immediately before your [[cursor]].  参见 EvaluatingExpressions.
+
+If it seems like your init file is not being read, type `C-h e' to see if there is a chance there was a problem with it loading.  See DebugFileLoading for more troubleshooting tips.
+
+It's often better to break up a lengthy init file into a number of EmacsLisp libraries and a small, top-level init file that loads those libraries, especially if you define commands and other functions. Some of the init files posted on %%EmacsWiki%% are organized in this way, as a set of library files.
+
+For info about how to load an EmacsLisp file automatically when you start Emacs, see InstallingPackages.
+
+You can also have a separate CustomFile reserved strictly for customizations recorded by [[Customize]].
+
+使用指定的 init 文件启动 Emacs:
+
+   emacs -q -l ~/my-init-file.el
+
+For more information about init files and custom files (Emacs 22 or later):
+
+: ##C-h r i init-file RET## or ##M-: (info "(emacs) Init File")## 
+: ##M-: (info "(emacs) Saving Customizations")##
+: ##M-: (info "(elisp) Init File")##
+
+See the pages in CategoryDotEmacs for configuration suggestions and tips.
+
+----
+CategoryHelp
+CategoryDotEmacs
+CategoryGlossary
