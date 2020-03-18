@@ -1,19 +1,17 @@
-[[zh:初始化文件]]
-Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
+你的 '''[::init file]''' 包含你自己的 EmacsLisp 代码, 当你启动 Emacs 时会运行它们.
 
-See the Emacs manual (`C-h r'), node 
+参见 Emacs 手册 (`C-h r'), node 
 [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html Init File]].
 
-* For GnuEmacs, your init file is '''##~/.emacs##''', '''##~/.emacs.el##''', or '''##~/.emacs.d/init.el##'''.  You can choose to use any of these names.  ‘~/’ stands for your home directory.  
-* For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
-* For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
+* 若是 GnuEmacs, 你的 init 文件位于 '''##~/.emacs##''', '''##~/.emacs.el##''', 或 '''##~/.emacs.d/init.el##'''.  You can choose to use any of these names. '~/' 指的是你的个人目录.  
+* 若是 [[XEmacs]], 它是 ##~/.xemacs## 或 ##~/.xemacs/init.el##.
+* 若是 AquamacsEmacs, 它是 ##~/.emacs## 或 ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
-If you do not know where your init file is located or you do not have one and want to create it, then
-just open it for editing in Emacs:
+如果你不知道你的 init 文件位于那里, 或者你没有它并且想创建一个, 只要在 Emacs 中键入以下命令:
 
    C-x C-f ~/.emacs.d/init.el RET
 
-When you add Emacs Lisp code to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer' to evaluate everything, or `M-x eval-region' to evaluate a part you select, or just `C-x C-e' (command `eval-last-sexp') to evaluate the Emacs Lisp expression immediately before your [[cursor]].  See EvaluatingExpressions.
+当你在你自己的 init 文件中编写 Emacs Lisp 代码, 它会在你重启 Emacs 后生效. 或者, 使用 `M-x eval-buffer' 命令使其立即生效, 或者使用 `M-x eval-region' 命令使你选中的一部分生效, or just `C-x C-e' (command `eval-last-sexp') to evaluate the Emacs Lisp expression immediately before your [[cursor]].  参见 EvaluatingExpressions.
 
 If it seems like your init file is not being read, type `C-h e' to see if there is a chance there was a problem with it loading.  See DebugFileLoading for more troubleshooting tips.
 
@@ -23,7 +21,7 @@ For info about how to load an EmacsLisp file automatically when you start Emacs,
 
 You can also have a separate CustomFile reserved strictly for customizations recorded by [[Customize]].
 
-Start Emacs with a specific init file:
+使用指定的 init 文件启动 Emacs:
 
    emacs -q -l ~/my-init-file.el
 
