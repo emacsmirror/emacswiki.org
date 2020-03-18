@@ -1,3 +1,4 @@
+[[zh:常見問題]]
 This page discusses possible pitfalls and gotchas.  See also the section "Lossage" in the EmacsManual about "dealing with Emacs trouble".
 
 Emacs key sequences can vary, depending on whether you use an X window system, the console, a terminal emulation, SSH, and so on.
