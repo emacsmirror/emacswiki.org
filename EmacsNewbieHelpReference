@@ -1,3 +1,4 @@
+[[zh:Emacs新手幫助參考]]
 Here are some pointers for getting help for [[EmacsNewbie]]s:
 
 Try `C-h C-h' (`help-for-help') to access Emacs help. You can also use the `Help' menu. The EmacsManual is available
