@@ -1,0 +1,50 @@
+Here are some pointers for getting help for [[EmacsNewbie]]s:
+
+试着键入 `C-h C-h' (`help-for-help') 访问 Emacs 帮助. 或者使用 `Help' 菜单. The EmacsManual is available
+through `Help' -> `Info' -> `Emacs'. The command names associated with the individual help keys can sometimes help you remember the keys themselves.
+
+有帮助的 [[key]] 和 [[command]] 包括这些 (this info is available via `C-h C-h'):
+
+; `C-h t' (`help-with-tutorial'): Present the learn-by-doing EmacsTutorial
+; `C-h k' (`describe-key'): Describe the Emacs command that a keyboard/menu/mouse sequence invokes: You enter a [[key sequence]], and Emacs tells you what it does.
+; `C-h K' (`Info-goto-emacs-key-command-node'): Go to the Emacs manual section that describes a key sequence that you type.
+; `C-h w' (`where-is'): List the (keyboard/menu/mouse) keys that invoke an Emacs command. This is the inverse of `C-h k'.
+; `C-h f' (`describe-function'): Describe an Emacs [[command]] (non-interactive function).
+; `C-h F': 
+
+* Emacs 20, 21 (`view-emacs-FAQ'): Show the Emacs FAQ (frequently asked questions). (This is `C-h C-f' in Emacs 22.)
+* Emacs 22 (`Info-goto-emacs-command-node'): Go to the Emacs manual section that describes an Emacs command.
+; `C-h a' (`apropos-command'): List Emacs commands whose names match a given pattern. Example: `C-h a file' lists the commands with "##file##" in their name.
+; `C-h d':
+
+* Emacs 20, 21 (`describe-function'): Same as `C-h f'.
+* Emacs 22 (`apropos-documentation'): Show documentation for Lisp [[symbol]]s whose documentation matches a word or [[regexp]].
+
+
+; `C-h m' (`describe-mode'): 描述当前 [[buffer]] 的模式, including the main keys and commands available.
+; `C-h b' (`describe-bindings'): List all of the key bindings currently in effect for the current buffer.
+; `C-h r' (`info-emacs-manual'): 访问 EmacsManual. (Emacs 22 or later only)
+; `C-h i' (`info'): Open [[InfoMode|Info]], the documentation browser: Access to a menu of available manuals.
+; `C-h p' (`finder-by-keyword', FinderByKeyword):  List available EmacsLisp packages. Go to a package.
+; `M-x search-emacs-glossary': Open the Glossary page of the Emacs manual.
+; `C-h C-n' (`view-emacs-news'): Describe what's new in the current version of Emacs, compared to the previous version.
+; `C-h l' (`view-lossage'): Show your last 100 keystrokes.
+; `C-h v' (`describe-variable'): Describe an Emacs [[user option]] or internal variable.
+
+There are several more.
+
+[new]
+Help on anything at all, with one click: '''`help-on-click/key'''' in <tt>[[help+.el]]</tt>: Gives help on a [[key sequence]] or an object clicked with the mouse. See HelpPlus.
+
+[new]
+Bind `l' to `help-go-back' in `help-mode', to make it behave a tiny bit more like Info mode:
+
+  (add-hook 'help-mode-hook
+    (lambda () (define-key help-mode-map "l" 'help-go-back)))
+
+----
+EmacsNewbie
+CategoryHelp
+CategoryKeys
+CategoryReferenceSheet
+
