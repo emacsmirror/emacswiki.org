@@ -1,3 +1,4 @@
+[[zh:初始化文件]]
 Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
 
 See the Emacs manual (`C-h r'), node 
