@@ -420,3 +420,13 @@ Will you set something up? I'm willing to write some code to connect elisp sourc
 [new]
 I believe we maybe should think more about the structure needed first.
 And how we can lower the threshold for users to use it (or perhaps whether there are any benefits of lowering the threshold?).
+
+----
+
+== suggestion concerning version control ==
+
+Why is everyone so frantic about git with all of its drawbacks? GitHub, GitLab and their likes are not only overkill for the hundreds of thousands of one-file or a-handful-of-files packages, but also have the same weird policy and accessibility issues which almost broke SourceForge's neck and made thousands of people remove their projects from there.  Bazaar, SVN or CVS may be different to set up, but they are a better solution for most of the elisp projects.
+Even better suited to all of those thousands of mini-projects would be a site consisting of small fossil repos (http://fossil-scm.org), since wiki, bug-tracker etc are included by default.
+
+-- mangledmind 2020-03-20 15:41 UTC
+
