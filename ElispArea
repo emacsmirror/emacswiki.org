@@ -67,6 +67,8 @@ Use [http://savannah.gnu.org/ Savannah], "the software forge for people committe
 
 Use [[Gists]]: "Gist is a simple way to share snippets and pastes with others. All gists are git repositories, so they are automatically *versioned*, *forkable* and usable as a *git repository*."
 
+…or use [http:/fossil-scm.org/ Fossil] for all of those mini-projects and sync them via vc-fossil.  Wiki, bug-tracker etc. included by default, easily clone- and forkable.
+
 == Code snippets ==
 
 For a small set of functions or code snippets, just
@@ -147,7 +149,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 306%
+%Id: 307%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
