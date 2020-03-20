@@ -20,5 +20,5 @@ And some customization examples:
 I recommend Elpher. -- [[Alex Schroeder]]
 
 [new]
-Both of them are merely rudimentary implementations which do only support very limited subsets of Gopher link types.  Yet, Elpher is the better one.
+Both of them are merely rudimentary implementations which do only support very limited subsets of Gopher link types.  Yet, Elpher is the better one — technically, ie., seen from lisp coding standards.  But gopher.el is much faster and more easily extendable to add the missing link types (and the type hints in the buffer display), yet misses customization options.  Elpher takes several seconds or longer to retrieve a single item, which ought to take place within tenths of a second.
   —mangledmind
