@@ -33,3 +33,5 @@ This is a port of the inkpot color theme from VIM with a few changes added in. I
          (font-lock-type-face ((t (:foreground "#ff8bff"))))
          (font-lock-variable-name-face ((t nil)))
          (font-lock-warning-face ((t (:foreground "#ffffff" :background "#ff0000")))))))
+
+Note that a more complete inkpot theme is available in melpa, see: https://melpa.org/#/inkpot-theme
