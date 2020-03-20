@@ -1,9 +1,11 @@
-Gopher is a very simple network protocol that was widely popular before the web took off.
-It basically works like the `finger` protocol, but on port 70: use telnet to connect
-and send a "selector" and a newline, and the server sends back some text. Done.
+Gopher is a plain-text based network protocol which was widely popular before the HTTP-based web came into existance; de facto, it is the direct predecessor of modern HTTP servers, but with a simpler screen layout due to its simpler markup standard.  It supports informational text and hyperlinks as well as up- and download of files of several types, search queries, scripting, and a few other things.  Like HTTP, it is a server-client protocol; there are several dozen gopher clients for almost all platforms of different ability and quality.
+  Gopher works similar to the `finger` protocol, but on port 70; instead of a regular gopher client, you can use telnet to connect and send a "selector" and a newline, and the server sends back some text. Done.
 
-Gopher also came with the idea of special "maps". These are files that work like directory
-indices.
+Gopher also came with the idea of special "maps". These are files alike to an index.html which basically are combined explanatory text files and directory indices.
+
+For more information, see http://gopher.floodgap.com (or gopher://gopher.floodgap.com) and gopher://gopherproject.org.
+
+== implementations in Emacs Lisp ==
 
 Emacs has at least two Gopher client implementations:
 
