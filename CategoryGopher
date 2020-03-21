@@ -26,3 +26,7 @@ I recommend Elpher. -- [[Alex Schroeder]]
 [new]
 Both of them are merely rudimentary implementations which do only support very limited subsets of Gopher link types.  Yet, Elpher is the better one — technically, ie., seen from lisp coding standards.  But gopher.el is much faster and more easily extendable to add the missing link types (and the type hints in the buffer display), yet misses customization options.  Elpher takes several seconds or longer to retrieve a single item, which ought to take place within tenths of a second.
   —mangledmind
+
+[new]
+Just a quick hint for those interested in setting up their own Gopher server: I recommend either Geomyidae or Gophernicus, since they are written in C and thus more secure and stable than any script based ones (because they're independant from any libraries and script bases).  In addidion, I am slightly biased towards Gophernicus because of its better/easier gophermap structure, more supported link types, and flexibility.
+ — mangledmind
