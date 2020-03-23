@@ -77,6 +77,18 @@ widget "*emacs-menuitem*" style "menufont"
 
 Using ##widget "*" ...## will change all "toolkit" fonts (menus, dialogs).
 
+[new]
+When using gtk emacs on a remote 4k display, I would get an small black menubar with tiny white lettering.
+
+I initially started digging into all these settings to change the menubar font size and color to be more readable.
+
+In the end I found the GDK_SCALE, GDK_DPI_SCALE and GTK_THEME environment variables were a quick shortcut to the readability I wanted.  For example I settled on:
+
+<code>$ GDK_SCALE=1.7 GDK_DPI_SCALE=1.7 GTK_THEME=Adwaita emacs &</code>
+
+You may have to fiddle because it's a little unclear to me how the scale variables affect things, even reading this documentation: https://developer.gnome.org/gtk3/stable/gtk-x11.html
+
+
 [:ChangingFontSize]
 == Changing Font Size ==
 
