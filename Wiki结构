@@ -1,1 +1,20 @@
-整个Wiki的组织架构非常简单。我们同时使用自上而下的方式(也被称作[MeatBall:ForwardIndex forward index])和自下而上的方式(也被称作[MeatBall:ReverseIndex reverse index])
+整个Wiki的组织架构非常简单。我们同时使用自上而下的方式(也被称作[MeatBall:ForwardIndex forward index])和自下而上的方式(也被称作[MeatBall:ReverseIndex reverse index])。
+# 首页(站点地图)链接到一些高级别的目录页。
+# 目录页链接到目录中所有的页面。
+# 每个页面''应当''链接到它属于的目录页。
+
+当页面拥有“父”页面或者属于一个特定的目录页，应该手动添加可见的返回链接。适当的父页面或者目录标签的添加应该通过在页面内指向它或者把它放在页面的末尾。返回链接应当可以被自动地搜索到。点击标题可以列出所有指向你正在浏览页面的其他页面。这个搜索方式只是普通搜索(plain ol’ regular search)。
+
+页面末尾通常是这样的：
+
+    ----
+    一个目录
+
+返回链接并不是自动的，原因如下： a) 自动的链接需要维护独立的链接数据库 b) 在被多次链接的情况下，一个页面有被大量无关页面指向的可能性，所以你不会总是想把这些无关页面列在页面末尾。因此，采取手动在末尾添加目录标签或者父页面的方式。
+
+参考
+CreateNewPages,
+HowToNavigate.
+
+----
+CategoryEmacsWikiSite
