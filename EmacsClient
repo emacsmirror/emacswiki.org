@@ -395,5 +395,19 @@ I expect that this will fail if you are running multiple servers.
 
 = KDE =
 In KDE, you can set File Associations to open in emacsclient instead of KWrite.
+
+
+= Socket forwarding with OpenSSH =
+
+The OpenSSH implementation of the ssh client and server can forward Unix sockets. It's possible
+to use this to connect to a remote Emacs server.
+
+<pre>
+local$ ssh -R /tmp/emacs-server:/tmp/emacs$UID/server remote
+remote$ mkdir /tmp/emacs$UID
+remote$ mv /tmp/emacs-server /tmp/emacs$UID/server
+remote$ export EDITOR="emacsclient --tramp=/ssh:remote:"
+</pre>
+
 ----
 CategoryExternalUtilities
