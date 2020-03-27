@@ -13,6 +13,9 @@ It would be cool if it would use xpm's or some sort of icon in X frames. Unfortu
 [new]
 You can try https://github.com/atykhonov/lunar-mode-line . I just updated lunar-mode-line so it can represent moon phases by means of images.
 
+[new]
+just wonderful!  I had to change extract-calendar-day to calendar-extract-day for it to work (and -month and -year)
+
 ----
 CategoryModeLine
 CategoryModeLineConfiguration
