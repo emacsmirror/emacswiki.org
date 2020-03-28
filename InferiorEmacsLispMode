@@ -29,7 +29,7 @@ You can use [[Icicles]] [[completion]] in IELM. Whenever there are multiple comp
 
 == Emacs as an `inferior-lisp-program` ==
 
-You can use [http://people.internetconnection.net/2009/06/emacs-as-an-inferior-lisp-program/ emacs itself as an inferior-lisp-program] which means you're still sending lisp forms to an external process.
+You can use [https://web.archive.org/web/20160404232014/http://people.internetconnection.net/2009/06/emacs-as-an-inferior-lisp-program/ emacs itself as an inferior-lisp-program] (Archive.org link) which means you're still sending lisp forms to an external process.
 
 
 ----
