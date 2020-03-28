@@ -167,6 +167,10 @@ and then run:
 
  $ sudo dpkg-reconfigure -phigh console-setup
 
+[new]
+On 2020/03/28, Aju said: "Linux Mint 19.3 Tricia x86_64 Cinnamon 4.4.8 running the dpkg-reconfigure command did not change things for me but logging out and logging back in did."
+[new]
+
 ==== On Gentoo Linux ====
 
 For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set
