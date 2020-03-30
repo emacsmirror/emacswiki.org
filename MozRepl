@@ -1,8 +1,8 @@
 Remote read-eval-print-loop to access and modify Mozilla and Firefox apps from the inside.  Comes with a minor mode for Emacs integration.
 
-* MozRepl: http://wiki.github.com/bard/mozrepl
+* MozRepl: https://github.com/bard/mozrepl/wiki
 * Movie: http://www.youtube.com/watch?v=5RSnHN6S52c
-* Emacs Integration: http://wiki.github.com/bard/mozrepl/emacs-integration
+* Emacs Integration: https://github.com/bard/mozrepl/wiki/Emacs-integration
 ** NOTE: instructions link to 2.0 Beta 8 (from Dec 2006) version of javascript.el; we're up to at least  2.2.1 as of Dec, 2008
 * Main project: http://hyperstruct.net/projects/mozlab
 
