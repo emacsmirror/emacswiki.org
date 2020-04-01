@@ -44,11 +44,11 @@ Cette partie fournit une information générale à propos d'Emacs. Elle présent
 Dans la documentation Emacs :
 : '''C-''' veut dire (appuyez sur) la touche Control
 : '''M-''' veut dire la touche Meta (cle Alt sur la plupart de claviers)
-: '''DEL''' veut dire la touche Backspace (non ''pas'' la touche Delete)
-: '''RET''' veut dire la touche Entrée
-: '''SPC''' veut dire la barre d'espacement
-: '''ESC''' veut dire la touche d'echappement: Escape
-: '''TAB''' veut dire la touche Tab
+: '''DEL''' veut dire la touche Backspace (⭠) (non ''pas'' la touche Delete)
+: '''RET''' veut dire la touche Entrée: (⏎) Return
+: '''SPC''' veut dire la barre d'espacement : (⏘)  Space
+: '''ESC''' veut dire la touche d'échappement: (Esc) Escape
+: '''TAB''' veut dire la touche Tab (⭾)
 
 Une combinaison comme `C-M-' (ou `M-C-') veut dire 'appuyez en même temps sur  les touches Control et Meta (Alt)'.
 
