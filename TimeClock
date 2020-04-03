@@ -12,6 +12,10 @@ Does anyone know where to find documentation for timeclock?  The info page has s
 
 : Did you read the comment in the source-file timeclock.el? You can give a project name during timeclock-in. Works fine for me. -- MartinStemplinger
 
+:: Here are docs for some other implementations of timeclock format (not timeclock.el specifically): 
+:: * https://www.ledger-cli.org/3.0/doc/ledger3.html#Time-Keeping
+:: * https://hledger.org/timeclock.html
+
 --
 
 There are some extensions for timeclock.el in Lisp:timeclock-x.el
