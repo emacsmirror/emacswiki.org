@@ -4,6 +4,8 @@ is a GNU Emacs window session manager modeled after
 
 WorkInProgressPage XavierMaillard
 
+2020-04-03: ElScreen needs a maintainer, see: https://github.com/shosti/elscreen
+
 == Introduction ==
 
 GNU Emacs is more of an "environment" than just an editor, since it
