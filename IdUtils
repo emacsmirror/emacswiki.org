@@ -8,7 +8,8 @@ code, similar to EmacsTags but it works with binary files rather than text sourc
 ElScreen-GF (in conjunction with EmacsLispScreen) is an yet another
 interface to GNU ID utilities.
 
-* http://www.morishima.net/~naoto/software/elscreen/
+* http://www.morishima.net/~naoto/software/elscreen/ (Broken as of 2018)
+* https://github.com/shosti/elscreen 
 
 CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) has support for using ID Utils as a back end for several tasks.
 Those tasks include:
