@@ -12,7 +12,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/feather-recipes.el feather-recipes.el] -- Elisp package recipes for feather.el
 * [https://github.com/conao3/seml-mode.el seml-mode.el] (MELPA) -- Major-mode for SEML (S-Expression Markup Language) files
 * [https://github.com/conao3/ddskk-posframe.el ddskk-posframe.el] (MELPA) -- Show Henkan tooltip for ddskk via posframe
-* [https://github.com/conao3/cort-test.el cort-test.el] -- Simplify extended Emacs unit test framework
+* [https://github.com/conao3/cort.el cort.el] (MELPA) -- Simplify extended Emacs unit test framework
 * [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
 * [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
 * [https://github.com/conao3/orglyth.el orglyth.el] -- Support static blog site publishing from Org mode files
