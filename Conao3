@@ -30,7 +30,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/rejeep/ert-async.el rejeep/ert-async.el] -- Async support for ERT
 * [https://github.com/linktohack/ox-latex-subfigure linktohack/ox-latex-subfigure] -- Turn table into subfigure. More or less a hack atm, easy to incorporate to org-mode though
 * [https://gitlab.com/oer/org-re-reveal oer/org-re-reveal] -- Build HTML presentations with reveal.js from Org mode source files.
-* [https://github.com/abingham/outline-toc.el outline-toc.el] -- Table-of-contents sidebar for Emacs
+* [https://github.com/abingham/outline-toc.el abingham/outline-toc.el] -- Table-of-contents sidebar for Emacs
 * [https://github.com/stardiviner/major-mode-icons stardiviner/major-mode-icons] -- Show major-mode with icons on mode-line
 * [https://github.com/rubikitch/all-ext rubikitch/all-ext] -- M-x all with helm-swoop/anything/multiple-cursors/line-number
 * [https://github.com/rubikitch/archive-region rubikitch/archive-region] -- Move region to archive file instead of killing
