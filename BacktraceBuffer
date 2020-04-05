@@ -39,6 +39,9 @@ lines tell you how Emacs got there.  The last line tells you what
 started all of this.  Note how I obviously called `eval-last-sexp' to
 start the computation.
 
+[new]
+Is there a way to go to the file and line corresponding to a stack frame?
+
 == Evaluation ==
 
 To evaluate an expression in the example above, use `e'.  In my case,
