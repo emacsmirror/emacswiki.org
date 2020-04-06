@@ -183,3 +183,13 @@ Note: I use the VHDL-Mode from http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.
 ----
 
 I try to use this with auctex, but it doesn’t seem to work. It works in my other buffers – so there seem to be a package conflict here.
+
+----
+
+I just tested minimap, and in principle like it for certain large buffers.
+However, somehow I think there's an interaction with buffers that have rainbow-mode on, that keeps emacs from starting up properly; I get weird errors like unknown function caddr in rainbow code and when I disable rainbow-mode, other weird errors with unknown function when-if* (if memory serves).
+In the end I had to remove the package entirely to get my emacs to fire up again.
+Pity.
+
+-- [http://- bjd] 2020-04-06 21:22 UTC
+
