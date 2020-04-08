@@ -370,7 +370,7 @@ $ emacsclient -c
 "
   (interactive)
   (server-force-delete)
-  (server-start))
+  (server-start)
   )
 (define-key special-event-map [sigusr1] 'signal-restart-server)
 </pre>
