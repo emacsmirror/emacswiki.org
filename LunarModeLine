@@ -3,7 +3,7 @@ lunar-mode-line.el is a ModeLineConfiguration package allowing to display the cu
 It is available as a Git repository:
 
 <code>
-git clone git://gaffer.ptitcanardnoir.org/lunar-mode-line.git
+git clone https://gaffer.boum.org/intrigeri/git/lunar-mode-line.git
 </code>
 
 ---
