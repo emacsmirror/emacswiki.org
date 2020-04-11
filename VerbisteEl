@@ -2,8 +2,8 @@ verbiste.el is a package allowing to use the [http://perso.b2b2c.ca/~sarrazip/de
 
 It is available in:
 
- * Git: https://salsa.debian.org/debian/verbiste/-/blob/master/debian/verbiste.el
- * Debian: https://tracker.debian.org/pkg/elpa-verbiste
+* Git: https://salsa.debian.org/debian/verbiste/-/blob/master/debian/verbiste.el
+* Debian: https://tracker.debian.org/pkg/elpa-verbiste
 
 I have made a different version which has (I think) a nicer display:
 
