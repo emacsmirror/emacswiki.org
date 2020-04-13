@@ -25,6 +25,10 @@ Similarly, if you want to activate it for a particular mode, proceed as follows:
 
     (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
 
+If you would like to enable auto fill for all major modes, you can add this single line to your configuration:
+
+     (setq-default auto-fill-function 'do-auto-fill)
+
 To automatically fill comments but not code in ProgrammingModes, something like this can be used.
 
     (add-hook 'c-mode-common-hook
