@@ -88,7 +88,7 @@ See CategoryData
 * LuiMode -- A Line-oriented user interface
 * GIT:emacs-lisp/tabulated-list.el -- Display and interact with tables
 * ButtonLockMode -- Clickable text defined by a [[regexp]]
-* [[Alert]] -- Alternatives to `message'
+* [[Express]] -- Alternatives to `message'
 * NavFlash -- Briefly highlight the current line
 * UnicodeEnbox -- Surround a string with box-drawing characters
 * AutoOverlays -- Define overlays by regexps -- automatically updated or destroyed as buffer is modified
