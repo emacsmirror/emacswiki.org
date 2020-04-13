@@ -1,0 +1,140 @@
+==Overview==
+
+Alternatives to Emacs "message".
+
+Express.el provides alternatives to Emacs' built-in `message' function.
+This library is generally only useful when programming in Emacs Lisp.
+However, some end-users may find it useful to control messaging,
+especially for the case of quietening chatty libraries in their
+~/.emacs files (see "message alternatives" section below).
+
+==express==
+The principal `express' function by default works differently from
+`message' in almost every respect.
+
+The arguments to the familiar `message' function are a format string
+followed by any number of arguments which may be substituted into the
+format string.  This flexible syntax obviates any arguments to control
+the *behavior* of `message'.
+
+`Express', by contrast, takes as its first argument a preformatted
+string, followed by a number of optional arguments to control
+its behavior.  The full argument spec is:
+
+    content &optional quiet seconds nocolor log notify popup
+
+`Express' transiently and noticeably displays CONTENT in the echo area.
+
+CONTENT should be a pre-formatted string.
+
+Optional QUIET suppresses the bell, which is on by default.
+
+Optional SECONDS determines the number of seconds CONTENT will be
+displayed before reverting to the previous content of the echo
+area.  Default is `express-message-seconds'.  If SECONDS is 0, or
+non-numeric, the message is not timed out, and remains visible
+until the next write to the echo area.
+
+Optional NOCOLOR suppresses coloring the message with face held
+in the variable `express-face'.
+
+Optional LOG enables logging of CONTENT for any non-nil value.
+If LOG is 'log-only, then CONTENT goes only to the \*Messages\*
+buffer and all other options are ignored.
+
+Optional NOTIFY enables sending the message via the notifications
+system of the underlying OS.  The default is nil.  If NOTIFY is
+'replace-echo, then the notification will be used instead of the
+echo area.  For any other non-nil value, the notification will be
+used in addition to the echo area.
+
+Optional POPUP enables sending the message via `popup-tip' from
+popup.el.  The default is nil.  If POPUP is 'replace-echo, then
+the popup will be used instead of the echo area.  For any other 
+non-nil value, the popup will be used in addition to the echo area.
+
+The behavior of `express' is very different from `message':
+
+* CONTENT must already be formatted.
+
+* The content is displayed with added color.
+
+* The bell is rung.
+
+* CONTENT is not written to the messages buffer (log).
+
+* After display, the previous contents of the echo area are restored.
+
+The following forms using `message' and `express' are equivalent:
+
+    (message "hello, %s" name)
+    (express (format "hello, %s" name) 'quiet 0 'nocolor 'log)
+
+==message alternatives==
+The following functions provided by this library are drop-in
+alternatives to `message':
+
+    express-message-nolog
+    express-message-logonly
+    express-message-highlight
+    express-message-insert
+    express-message-notify
+    express-message-popup
+    express-message-temp
+
+which may be useful in an `flet' construct to control messaging.
+For example, the following code would redirect messages from a very
+chatty library to the log:
+
+    (flet ((message (&rest args)
+                    (apply 'express-message-logonly args)))
+      (require 'very-chatty-library))
+
+The same method may also be handy with `defadvice':
+
+    (defadvice very-chatty-function (around very-chatty-redirect activate)
+      (flet ((message (&rest args)
+                      (apply 'express-message-logonly args)))
+        ad-do-it))
+
+Similarly, important messages may be redirected to a more visible
+form:
+
+    (defadvice an-important-function (around an-important-function activate)
+      (flet ((message (&rest args)
+                      (apply 'express-message-notify args)))
+        ad-do-it))
+
+==Notes==
+The function `express-install-aliases' provides shorter aliases
+for the message alternative functions, outside of the `express-'
+namespace.
+
+The function `message-noformat' is also available, but it is
+not quite a drop-in replacement for `message'.
+
+Some of the functions require the availability of notify.el,
+todochiku.el or popup.el.  In all cases, the function will
+degrade to an ordinary message if the external library is not
+present.
+
+==Compatibility and Requirements==
+
+Tested only on GNU Emacs version 24.1
+
+Uses if present: StringUtils, [[notify.el]], ToDoChiKu,
+popup.el
+
+==Availability==
+
+Express.el is available at github:
+
+: https://github.com/rolandwalker/express
+
+and via <nowiki>EmacsWiki</nowiki>:
+
+: Lisp:express.el
+
+----
+CategoryDisplay
+CategoryExtensions
