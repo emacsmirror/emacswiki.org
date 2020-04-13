@@ -1,3 +1,4 @@
+DeletedPage
 ;;; alert.el --- Alternatives to `message'
 ;;
 ;; Copyright (c) 2012 Roland Walker
