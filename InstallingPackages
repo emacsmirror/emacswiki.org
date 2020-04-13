@@ -77,5 +77,19 @@ autoloads for installed packages. Then you can use <code>(require 'package-name)
 something like the UsePackage macro to organize your package-related
 configuration.
 
+== Error: file not found while loading a package ==
+
+While installing a package `foo', you may get an error like:
+
+<code>file-error "http://melpa.org/packages/foo-20161202.1657.tar" "Not found"</code>
+
+In this case, you may have to update some internal variable corresponding to the cached list of packages with either:
+
+<code>M-x package-refresh-contents</code>
+
+or, from within <code>M-x list-packages</code>, press `U' to update the list.
+
+As this update process might take a while, it shouldn't really be part of the init file for every time you fire up Emacs.
+
 ----
 CategoryPackaging
