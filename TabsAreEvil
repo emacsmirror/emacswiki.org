@@ -299,6 +299,15 @@ A factor I don't see mentioned is that there are many tools that manipulate asci
 
 dd-b 2018-05-11
 
+[new]
+I love TAB character, I think it is one of the best characters. 
+But the problem is editors and people starting using it for indentation. 
+Tab was never supposed to do indentations. When people use it for indentation, 
+ofc they turn to the war of "what indentation size should be". 
+I think TAB is best choice for alignments in code up to this day.
+When I generate some data files, I will always use TAB for inter-column space
+separation. And in code, when I need parallel columns, Tab is the only solution.
+
 ----
 
 See UntabifyUponSave to make Emacs save all your files replacing spaces with tabs because by running `M-x untabify' automatically on each save.
