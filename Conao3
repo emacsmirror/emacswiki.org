@@ -8,6 +8,7 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 * [https://github.com/conao3/leaf-keywords.el leaf-keywords.el] (MELPA) -- Additional leaf.el keywords for external packages
 * [https://github.com/conao3/leaf-convert.el leaf-convert.el] (MELPA) -- Convert Elisp config sexp to leaf form
 * [https://github.com/conao3/leaf-tree.el leaf-tree.el] (MELPA) -- Interactive side-bar feature for leaf based init.el
+* [https://github.com/conao3/leaf-manager.el leaf-manager.el] (MELPA) -- Configuration manager for leaf based init.el
 * [https://github.com/conao3/leaf-defaults.el leaf-defaults.el] -- 'Leaf' of settings for Emacs
 * [https://github.com/conao3/leaf-browser.el leaf-browser.el] -- Web browser frontend of Emacs customize-mode for leaf.el
 * [https://github.com/conao3/feather.el feather.el] (MELPA) -- Parallel thread modern Emacs package manager
