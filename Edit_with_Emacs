@@ -27,8 +27,7 @@ There are currently two hooks
 
 If you're already running an instance of Emacs in <code>--daemon</code> mode then you can wrap the code in something like:
 <pre>
- (when (and (daemonp) (locate-library "edit-server"))
-   (require 'edit-server)
+ (when (and (daemonp) (require 'edit-server nil :noerror))
    (edit-server-start))
 </pre>
 
@@ -36,8 +35,7 @@ The edit
 To open pages for editing in a new buffer instead of a new frame on
 your running Emacs instance do:
 <pre>
-(when (locate-library "edit-server")
-  (require 'edit-server)
+(when (require 'edit-server nil :noerror)
   (setq edit-server-new-frame nil)
   (edit-server-start))
 </pre>
