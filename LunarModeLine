@@ -1,10 +1,8 @@
 lunar-mode-line.el is a ModeLineConfiguration package allowing to display the current lunar phase in the ModeLine.
 
-It is available as a Git repository:
+It is available on Debian's GitLab:
 
-<code>
-git clone https://gaffer.boum.org/intrigeri/git/lunar-mode-line.git
-</code>
+https://salsa.debian.org/intrigeri/lunar-mode-line.el
 
 ----
 CategoryModeLine
