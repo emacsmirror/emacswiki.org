@@ -326,6 +326,29 @@ I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mo
 
 I have generalized this to a lisp add-on file Lisp:linum-off.el 
 
+[new]
+
+A modification to the display-line-numbers mode to excempt certain major modes (based on [[FlorianAdamsky]] for linum-mode):
+
+
+(require 'display-line-numbers)
+(defcustom display-line-numbers-exempt-modes '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode)
+  "Major modes on which to disable the linum mode, exempts them from global requirement"
+  :group 'display-line-numbers
+  :type 'list
+  :version "26.1")
+
+(defun display-line-numbers--turn-on ()
+  "turn on line numbers but excempting certain majore modes defined in `display-line-numbers-exempt-modes'"
+  (if (and
+       (not (member major-mode display-line-numbers-exempt-modes))
+       (not (minibufferp)))
+      (display-line-numbers-mode)))
+
+(global-display-line-numbers-mode)
+
+
+
 -- MatthewFidler
 
 == Linum: Select lines by clicking ==
