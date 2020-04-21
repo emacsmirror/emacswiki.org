@@ -75,17 +75,17 @@ there is no redundancy, by default: each TOC entry is listed
 only once, not multiple times.  (This is controlled by option
 '''`Info-toc-outline-no-redundancy-flag''''.)
 
-:: You can have any number of such TOCs, for the same manual or for
+** You can have any number of such TOCs, for the same manual or for
 different manuals.
 
-:: Outline minor mode lets you hide and show, and promote and demote, various parts of the
+** Outline minor mode lets you hide and show, and promote and demote, various parts of the
 TOC tree for a manual.  And since the TOC is editable you can
 make other changes to it: ''sort'' parts of it, ''delete'' parts of it, ''duplicate'' parts of it, move parts around in an ad hoc way, 
 and so on.  '''Info+''' makes the outlining commands behave, so that
 hidden Info text (e.g. markup text such as '''`*note'''' ... '''`::''''
 surrounding links) is kept hidden.
 
-:: Especially when combined with '''`<tt>[[#Info-persist-history-mode]]</tt>'''',
+** Especially when combined with '''`<tt>[[#Info-persist-history-mode]]</tt>'''',
 command '''`<tt>[[#Info-change-visited-status]]</tt>'''' ('''`C-x DEL''''), and
 the '''Info+''' [[#bookmarking-enhancements|bookmarking enhancements]] (e.g., special link highlighting and
 persistently tracking the number of visits per node),
