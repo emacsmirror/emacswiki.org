@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 31 16:27:12 2019 (-0700)
+;; Last-Updated: Tue Apr 21 12:26:57 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6417
+;;     Update #: 6437
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -75,10 +75,10 @@
 ;;    `Info-describe-bookmark' (Emacs 24.2+),
 ;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
 ;;    `Info-history-clear', `Info-make-node-unvisited', `info-manual',
-;;    `Info-merge-subnodes',
+;;    `info-manual+node-buffer-name-mode', `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-outline-demote', `Info-outline-promote',
-;;    `Info-persist-history-mode' (Emacs 24.4+),
+;;    `Info-persist-history-mode' (Emacs 24.4+), `info-rename-buffer',
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
 ;;    `Info-set-face-for-bookmarked-xref' (Emacs 24.2+),
 ;;    `Info-toggle-breadcrumbs-in-header',
@@ -105,7 +105,7 @@
 ;;  Options (user variables) defined here:
 ;;
 ;;    `Info-bookmarked-node-xref-faces' (Emacs 24.2+),
-;;    `Info-breadcrumbs-in-header-flag',
+;;    `Info-breadcrumbs-in-header-flag', `info-buffer-name-function',
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
@@ -125,6 +125,7 @@
 ;;    `Info--pop-to-buffer-same-window', `Info-bookmark-for-node',
 ;;    `Info-bookmark-name-at-point', `Info-bookmark-named-at-point',
 ;;    `Info-bookmark-name-for-node',
+;;    `info-buffer-name-function-default',
 ;;    `Info-display-node-default-header', `info-fontify-quotations',
 ;;    `info-fontify-reference-items',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
@@ -222,7 +223,7 @@
 ;;  -------------
 ;;
 ;;  Library `info+.el' extends the standard Emacs library `info.el' in
-;;  several ways.  It provides:
+;;  several ways.  It provides these features:
 ;;
 ;;  * Association of additional information (metadata) with Info
 ;;    nodes.  You do this by bookmarking the nodes.  Library Bookmark+
@@ -345,9 +346,9 @@
 ;;    For example, command `Info-toggle-fontify-emphasis' toggles
 ;;    option `Info-fontify-emphasis-flag'.
 ;;
-;;  * You can show breadcrumbs in the mode line or the header line, or
-;;    both. See where you are in the Info hierarchy, and access higher
-;;    nodes directly.
+;;  * Optionally showing breadcrumbs in the mode line or the header
+;;    line, or both. See where you are in the Info hierarchy, and
+;;    access higher nodes directly.
 ;;
 ;;    - In the mode line.  Turned on by default.
 ;;
@@ -365,7 +366,13 @@
 ;;      line, this can occasionally throw off the destination accuracy
 ;;      of cross references and searches slightly.
 ;;
-;;  * Some of the commands defined here:
+;;  * Optional automatic renaming of Info buffers to include the
+;;    manual (file) and node names, using minor mode
+;;    `info-manual+node-buffer-name-mode'.  You can use option
+;;    `info-buffer-name-function' to customize the format of the
+;;    buffer names.
+;;
+;;  * Additional commands, including:
 ;;
 ;;    - `Info-virtual-book' (bound to `v') – Open a virtual Info
 ;;      manual of saved nodes from any number of manuals.  The nodes
@@ -476,6 +483,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/04/21 dadams
+;;     Added: info-buffer-name-function, info-buffer-name-function-default, info-rename-buffer,
+;;            info-manual+node-buffer-name-mode.
 ;; 2019/05/31 dadams
 ;;     Info-emphasis-regexp: Add another possible value to doc string.
 ;; 2018/09/21 dadams
@@ -1211,6 +1221,23 @@ Don't forget to mention your Emacs and library versions."))
   "*Non-nil means breadcrumbs are shown in the header line."
   :type 'boolean :group 'Info-Plus)
 
+(defun info-buffer-name-function-default (file node)
+  "Default function value for `info-buffer-name-function'."
+  (format "*info* (%s) %s" file node))
+
+;;;###autoload
+(defcustom info-buffer-name-function 'info-buffer-name-function-default
+  "Function to name Info buffer, or nil to use default buffer naming.
+This is used by `info-manual+node-buffer-name-mode' and command
+`info-rename-buffer'.
+
+The function must accept the current Info file and node names as its
+first two args, in that order."
+  :type '(choice
+          (const    :tag "Use default Info buffer naming" nil)
+          (function :tag "Function accepting Info file and node names, returning string"))
+  :group 'Info-Plus)
+
 ;;;###autoload
 (defcustom Info-display-node-header-fn 'Info-display-node-default-header
   "*Function to insert header by `Info-merge-subnodes'."
@@ -1673,6 +1700,30 @@ line from non-nil `Info-use-header-line'."
                           (if Info-node-access-invokes-bookmark-flag 'ON 'OFF)))))
 
   )
+
+;;;###autoload (autoload 'info-manual+node-buffer-name-mode "info+")
+(define-minor-mode info-manual+node-buffer-name-mode
+  "Name Info buffers using the Info manual (file) and node names."
+  :init-value nil :global t :group 'Info-Plus
+  (if (and info-buffer-name-function  info-manual+node-buffer-name-mode)
+      (add-hook 'Info-selection-hook #'info-rename-buffer)
+    (remove-hook 'Info-selection-hook #'info-rename-buffer)))
+
+;;;###autoload (autoload 'info-rename-buffer "info+")
+(defun info-rename-buffer (&optional msgp)
+  "Rename current Info buffer, per `info-buffer-name-function'.
+To do this automatically when you visit any Info buffer, use
+`info-manual+node-buffer-name-mode'."
+  (interactive "p")
+  (when info-buffer-name-function
+    (unless Info-current-file (error "This function must be invoked from Info"))
+    (let* ((manual    (file-name-sans-extension (file-name-nondirectory Info-current-file)))
+           (node      Info-current-node)
+           (bufname   (funcall info-buffer-name-function manual node)))
+      (unless (equal (buffer-name) bufname)
+        (rename-buffer bufname t)
+        (when msgp (message "Info buffer renamed to `%s'" bufname))))))
+
 
 (when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
            (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
