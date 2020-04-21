@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 21 12:26:57 2020 (-0700)
+;; Last-Updated: Tue Apr 21 14:48:29 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6437
+;;     Update #: 6439
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -290,23 +290,25 @@
 ;;    only once, not multiple times.  (This is controlled by option
 ;;    `Info-toc-outline-no-redundancy-flag'.)
 ;;
-;;    You can have any number of such TOCs, for the same manual or for
-;;    different manuals.
+;;    - You can have any number of such TOCs, for the same manual or
+;;      for different manuals.
 ;;
-;;    Outline minor mode lets you hide and show, and promote and
-;;    demote, various parts of the TOC tree for a manual.  And since
-;;    the TOC is editable you can make other changes to it: sort parts
-;;    of it, delete parts of it, duplicate parts of it, move parts
-;;    aroundin an ad hoc way, and so on.  Info+ makes the outlining
-;;    commands behave, so that hidden Info text (e.g. markup text such
-;;    as `*note'...`::' surrounding links) is kept hidden.
+;;    - Outline minor mode lets you hide and show, and promote and
+;;      demote, various parts of the TOC tree for a manual.  And since
+;;      the TOC is editable you can make other changes to it: sort
+;;      parts of it, delete parts of it, duplicate parts of it, move
+;;      parts aroundin an ad hoc way, and so on.  Info+ makes the
+;;      outlining commands behave, so that hidden Info text
+;;      (e.g. markup text such as `*note'...`::' surrounding links) is
+;;      kept hidden.
 ;;
-;;    Especially when combined with `Info-persist-history-mode',
-;;    command `Info-change-visited-status' (`C-x DEL', see below), and
-;;    the Info+ bookmarking enhancements (e.g., special link
-;;    highlighting and persistently tracking the number of visits per
-;;    node), `Info-toc-outline' gives you a way to organize access and
-;;    visibility of a manual's nodes, to reflect how you use it.
+;;    - Especially when combined with `Info-persist-history-mode',
+;;      command `Info-change-visited-status' (`C-x DEL', see below),
+;;      and the Info+ bookmarking enhancements (e.g., special link
+;;      highlighting and persistently tracking the number of visits
+;;      per node), `Info-toc-outline' gives you a way to organize
+;;      access and visibility of a manual's nodes, to reflect how you
+;;      use it.
 ;;
 ;;  * Additional, finer-grained Info highlighting.  This can make a
 ;;    big difference in readability.
@@ -336,15 +338,15 @@
 ;;      macros, special forms, syntax classes, user options, and other
 ;;      variables.
 ;;
-;;    Be aware that such highlighting is not 100% foolproof.
-;;    Especially for a manual such as Emacs or Elisp, where arbitrary
-;;    keys and characters can be present anywhere, the highlighting
-;;    can be thrown off.
+;;    - Be aware that such highlighting is not 100% foolproof.
+;;      Especially for a manual such as Emacs or Elisp, where
+;;      arbitrary keys and characters can be present anywhere, the
+;;      highlighting can be thrown off.
 ;;
-;;    You can toggle each of the `Info-fontify-*-flag' options from
-;;    the `Info' menu or using an `Info-toggle-fontify-*' command.
-;;    For example, command `Info-toggle-fontify-emphasis' toggles
-;;    option `Info-fontify-emphasis-flag'.
+;;    - You can toggle each of the `Info-fontify-*-flag' options from
+;;      the `Info' menu or using an `Info-toggle-fontify-*' command.
+;;      For example, command `Info-toggle-fontify-emphasis' toggles
+;;      option `Info-fontify-emphasis-flag'.
 ;;
 ;;  * Optionally showing breadcrumbs in the mode line or the header
 ;;    line, or both. See where you are in the Info hierarchy, and
