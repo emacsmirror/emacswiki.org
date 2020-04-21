@@ -113,17 +113,17 @@ then there is no such highlighting, and that option has no
 effect.)
 ** In the Emacs Lisp manual, reference items are highlighted, so they stand out.  This means: constants, [[command]]s, functions, [[macro]]s, special forms, syntax classes, [[user option]]s, and other [[variable]]s.
 
-:: Be aware that such highlighting is not 100% foolproof.
+** Be aware that such highlighting is not 100% foolproof.
 Especially for a manual such as Emacs or Elisp, where arbitrary
 keys and characters can be present anywhere, the highlighting
 can be thrown off.
 
 
-:: You can toggle each of the `Info-fontify-*-flag' options from the `Info' menu or using an `Info-toggle-fontify-*' command.
+** You can toggle each of the `Info-fontify-*-flag' options from the `Info' menu or using an `Info-toggle-fontify-*' command.
 For example, command `Info-toggle-fontify-emphasis' toggles
 option `Info-fontify-emphasis-flag'.
 
-:: Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
+** Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
 
 :: [[image:DrewsEmacsInfoImage]]
 
@@ -132,13 +132,29 @@ option `Info-fontify-emphasis-flag'.
 
 
 
-* You can show breadcrumbs in the [[mode line]] or the [[header line]], or both.  See where you are in the Info hierarchy, and access higher nodes directly. 
+* Optionally showing breadcrumbs in the [[mode line]] or the [[header line]], or both.  See where you are in the Info hierarchy, and access higher nodes directly. 
 
 ** In the mode line. Turned ''on'' by default. See `##Toggle Breadcrumbs##' in `mouse-3' mode-line menu and `##Toggle Breadcrumbs in Mode Line##' in `Info' menu (e.g. in the minor-mode indicator). You can customize [[option]] '''`Info-breadcrumbs-in-mode-line-mode'''' if you want to turn it off by default. (Available for Emacs 23+ only.)
 
 ** In the header (just below the header line).  I added this to vanilla Emacs 23. Turned ''off'' by default in '''Info+'''.  See `##Toggle Breadcrumbs in Header Line##' in `Info' menu.  Be aware that unlike breadcrumbs in the mode line, this can occasionally throw off the destination accuracy of cross references and searches slightly. Here is a screenshot showing breadcrumbs in the header line (only):
 
 :: [[image:DrewsEmacsInfoCrumbsInHeaderImage]]
+
+
+
+
+
+
+
+*  Optional automatic renaming of Info [[buffers]] to include the
+manual (file) and node names, using [[minor mode]]
+'''<tt>`info-manual+node-buffer-name-mode'</tt>'''.  You can use [[option]]
+'''`info-buffer-name-function'''' to customize the format of the
+buffer names.
+
+
+
+
 
 
 
