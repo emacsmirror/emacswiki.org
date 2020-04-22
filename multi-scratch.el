@@ -6,16 +6,16 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-01-25 01:00:38
-;; Version: 0.2
-;; Last-Updated: 2009-03-13 16:43:56
-;;           By: Andy Stewart
+;; Version: 0.3
+;; Last-Updated: 2020-04-22 20:27:36
+;;           By: Hongxin Liang
 ;; URL: http://www.emacswiki.org/emacs/download/multi-scratch.el
 ;; Keywords:
-;; Compatibility: GNU Emacs 22 ~ 23
+;; Compatibility: GNU Emacs 24.3 ~ 27
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `cl'
+;; `cl-lib'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -63,6 +63,7 @@
 
 ;;; Customize:
 ;;
+;; `multi-scratch-buffer-mode' The mode of scratch buffer.
 ;; `multi-scratch-buffer-name' The name of scratch buffer.
 ;; `multi-scratch-try-create' Try to create new scratch buffer
 ;; when no scratch buffers exist.
@@ -72,6 +73,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2020/04/22
+;;      * Possible to customize the mode to load when creating a new scratch buffer
+;;      * Require `cl-lib' instead of `cl' which has been deprecated
 ;;
 ;; 2009/03/13
 ;;      * If type `C-u' before command `multi-scratch-new'
@@ -92,7 +97,7 @@
 ;;
 
 ;;; Require
-(require 'cl)
+(require 'cl-lib)
 
 ;;; Code:
 
@@ -100,6 +105,11 @@
 (defgroup multi-scratch nil
   "Multiple scratch manager."
   :group 'lisp)
+
+(defcustom multi-scratch-buffer-mode #'lisp-interaction-mode
+  "The mode of scratch buffer."
+  :type 'function
+  :group 'multi-scratch)
 
 (defcustom multi-scratch-buffer-name "multi-scratch"
   "The name of scratch buffer."
@@ -118,16 +128,16 @@ scratch buffer if no scratch buffers exist."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun multi-scratch-new (&optional prefix)
   "Create a new multi-scratch buffer.
-Load `lisp-interaction' mode when PREFIX is nil."
+Load `multi-scratch-buffer-mode' when PREFIX is nil."
   (interactive)
   ;; Set prefix if prefix is nil.
   (or prefix (setq prefix current-prefix-arg))
   ;; Create new scratch.
   (let* ((scratch-buffer (multi-scratch-get-buffer)))
     (set-buffer scratch-buffer)
-    ;; Load `lisp-interaction' mode when prefix is nil.
+    ;; Load `multi-scratch-buffer-mode' when prefix is nil.
     (unless prefix
-      (lisp-interaction-mode))
+      (funcall multi-scratch-buffer-mode))
     ;; Switch scratch buffer
     (switch-to-buffer scratch-buffer)))
 
