@@ -4832,7 +4832,9 @@ Here are screenshots for the `##*Bookmark List*##' help display (available via `
 [[image:BookmarkPlusHelp5]]
 [[image:BookmarkPlusHelp6]]
 [[image:BookmarkPlusHelp7]]
-
+[[image:BookmarkPlusHelp8]]
+[[image:BookmarkPlusHelp9]]
+[[image:BookmarkPlusHelp10]]
 ----
 
 Here is an icon you can use to indicate image-file bookmarks in the `##*Bookmark List*##' display, if you don't have another that you prefer.  Save it and set [[option]] '''`bmkp-image-bookmark-image-file'''' to its location.
