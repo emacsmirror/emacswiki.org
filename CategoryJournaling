@@ -54,6 +54,7 @@ depend on plain text.
 
 * NewsTicker -- watches RSS feeds for you
 * GnusRss -- read RSS feeds in Gnus
+* [[Elfeed]] -- RSS and Atom feed reader inspired by notmuch
 * WThreeMShimbun -- read various web articles in Gnus, Wanderlust, or Mew.
 * HOWTOReadFeedsInEmacsViaEmail
 
