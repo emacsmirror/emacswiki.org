@@ -128,7 +128,7 @@ However, it seems that articles being cached by the gnus agent do not contain th
 
 rss2email, a different way of reading RSS feeds: [http://rss2email.infogami.com/]
 
-NewsTicker, WThreeMShimbun, GnusRssScreenshot
+NewsTicker, WThreeMShimbun, GnusRssScreenshot, [[Elfeed]]
 ----
 CategoryJournaling
 CategoryGnus
