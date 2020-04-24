@@ -12,7 +12,7 @@ Gnus is able to read RSS feeds natively.  See [[GnusRss]].
 
 == Reading RSS using elfeed ==
 
-[https://github.com/skeeto/elfeed Elfeed] is a traditional feed reader for Emacs.  It is available in MELPA.
+[[Elfeed]] is a traditional feed reader for Emacs.  It is available in MELPA.
 
 == Gatewaying RSS to e-mail ==
 
