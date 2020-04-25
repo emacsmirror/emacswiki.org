@@ -181,7 +181,7 @@ Also sets xml mode"
 ----
 == PSGML Extensions ==
 
-* PsgmlSuperedit -- additional editing functions for PSGML
+* PsgmlUtils -- a set of extensions for PSGML
 
 ----
 CategoryModes
