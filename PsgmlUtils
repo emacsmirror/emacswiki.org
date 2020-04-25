@@ -1,0 +1,10 @@
+== PSGML-Utils ==
+
+[https://hg.sr.ht/~nolda/psgml-utils PSGML-Utils] by Andreas Nolda is a set of extensions for PsgmlMode. They consist of the following files:
+
+* [https://hg.sr.ht/~nolda/psgml-utils/browse/psgml-superedit.el psgml-superedit.el]:
+  additional editing functions for use with PSGML
+* [https://hg.sr.ht/~nolda/psgml-utils/browse/psgml-run.el psgml-run.el]:
+  functions for running validation and transformation scenarios in PSGML
+* [https://hg.sr.ht/~nolda/psgml-utils/browse/psgml-xml.el psgml-xml.el]:
+  an XML mode derived from PSGML's SGML mode
