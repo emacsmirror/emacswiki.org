@@ -13,7 +13,7 @@ You can add more rules to this function call.
 (with-temp-buffer
   (activate-input-method "TeX") ;; the input method has to be triggered for `quail-package-alist' to be non-nil
   (let ((quail-current-package (assoc "TeX" quail-package-alist)))
-   (quail-define-rules (('append . t))
+   (quail-define-rules ((append . t))
                        ("^\\alpha" ?ᵅ))))
 
 }}}
