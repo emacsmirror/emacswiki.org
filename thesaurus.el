@@ -372,7 +372,7 @@ in that order.
           (with-current-buffer buf
             (rename-buffer (concat "*thesaurus* - " word) t)
             (goto-char (point-min))
-            (if (> (thesaurus-process-http-headers) 0)
+            (if (> (thesaurus-process-http-headers) -1)
                 (while (not (= (point-min) (point-max)))
                   (let ((elt (thesaurus-parse-one-line)))
                     (if elt
