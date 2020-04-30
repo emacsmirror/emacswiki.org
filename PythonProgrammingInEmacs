@@ -254,6 +254,8 @@ Round out support features in line with https://lists.gnu.org/archive/html/emacs
 
 Add sections on: profiling, semantic editing (?), 
 
-Extend sections on: refactoring, code navigation
+Extend sections on: refactoring, code navigation.
+
+Include new jupyter package: https://github.com/dzop/emacs-jupyter.
 ----
 Categories: CategoryProgramming, ProgrammingModes
