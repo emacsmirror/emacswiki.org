@@ -119,5 +119,20 @@ Just be careful to exit existing emacs frame before restarting the emacs daemon.
 
 -- Billy.Zheng (zw963)
 
+----
+
+[new]
+I've made little modification of Billy.Zheng (zw963) script, instead using delete-frame-functions I use after-save-hook, so the session is save every time buffer is save to file without waiting to exit the frame of emacs.
+
+{{{
+(require 'session)
+(session-jump-to-last-change)
+(session-initialize)
+;; session will be save if a buffer is save to a file.
+(add-hook 'after-save-hook #'session-save-session)
+}}}
+
+-- kenardes
+
 CategoryPersistence
 SessionManagement
