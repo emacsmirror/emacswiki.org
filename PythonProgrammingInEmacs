@@ -249,6 +249,24 @@ ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode=
 ===Editing pip requirements files===
 [https://melpa.org/#/pip-requirements pip-requirements] is a major mode for editing pip requirements files, with support for syntax highlighting, togglable comments and auto-completion of package names from !PyPI.
 
+===Running IPython within Emacs====
+IPython complains about incomplete shell (e.g. for help(func)). 
+
+Solution is to create an IPython profile then put
+
+import pydoc
+import sys
+pydoc.help = pydoc.Helper(output = sys.stdout)
+
+into nopager10.py in ~/.ipython/profile_default/startup/
+
+and set for python.el
+
+(setq python-shell-interpreter "ipython")
+(setq python-shell-interpreter-args "-i --simple-prompt --InteractiveShell.display_page=True")
+
+in init.el
+
 ===How to improve this page===
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
 
