@@ -253,18 +253,18 @@ ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode=
 IPython complains about incomplete shell (e.g. for help(func)). 
 
 Solution is to create an IPython profile then put
-
+<pre>
 import pydoc
 import sys
 pydoc.help = pydoc.Helper(output = sys.stdout)
-
+</pre>
 into nopager10.py in ~/.ipython/profile_default/startup/
 
 and set for python.el
-
+<pre>
 (setq python-shell-interpreter "ipython")
 (setq python-shell-interpreter-args "-i --simple-prompt --InteractiveShell.display_page=True")
-
+</pre>
 in init.el
 
 ===How to improve this page===
