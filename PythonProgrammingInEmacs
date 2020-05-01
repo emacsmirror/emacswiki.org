@@ -15,6 +15,8 @@ These provide powerful and relatively complete environments by combining and cus
 * [https://github.com/proofit404/anaconda-mode anaconda-mode] 
 * [https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Blang/python Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
 * [ProgrammingWithPythonModeDotEl python-mode.el].  Replaces the `python-mode' in python.el.
+* [https://github.com/joaotavora/eglot eglot]
+* [https://github.com/emacs-lsp/lsp-mode lsp-mode]
 == Support Features ==
 Various features that can be added to or improved in Emacs.  Note that the IDE packages listed above provide many of these using packages referred to below.
 
