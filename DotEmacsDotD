@@ -1,3 +1,4 @@
+[[ru:DotEmacsDotDru]]
 The directory ##~/.emacs.d/## is a standard location for '''additional per-user Emacs-specific files'''. Various packages store information in this directory. Since it is located in the home directory (##~/##), it is unique for each user, just like the ##~/.emacs## [[init file]]. Note that as ##.emacs.d## begins with a dot, it is normally '''hidden''' on Unix systems and only turns up in directory listings if all files and folders are shown (##ls -a##).
 
 Starting with Emacs 22, if ##~/.emacs## does not exist, Emacs will try ##~/.emacs.d/init.el## and ##~/.emacs.d/init.elc##. You can also put the shell init file ##.emacs_SHELL## under ##~/.emacs.d##.
