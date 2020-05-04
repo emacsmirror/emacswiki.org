@@ -24,3 +24,12 @@ Here is why:
 
 -- AlexSchroeder 2016-11-01 16:54 UTC
 
+
+----
+
+The wiki claims "After installation, using the emacs command in the terminal or shell will run the -nw version of Emacs." but this is appears to be untrue: after installing with 'brew cask install emacs' using the emacs command opens the windowed application. Inspection of the Ruby script symlinked by the Homebrew installation, /usr/local/bin/emacs -> /Applications/Emacs.app/Contents/MacOS/Emacs, gives no indication that the emacs command from teh terminal or shell will run emacs with the -nw.
+
+This statement in the wiki needs to be either corrected to reflect the actual behaviour or, if this is a bug which needs to be fixed, instructions for resolving the buggy behaviour needs to be provided.
+
+-- jwq 2020-05-04 08:18 UTC
+
