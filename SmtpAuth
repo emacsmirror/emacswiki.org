@@ -10,7 +10,7 @@ Here's how you would configure it:
     (setq smtpmail-local-domain "YOUR DOMAIN NAME")
     (setq smtpmail-sendto-domain "YOUR DOMAIN NAME")
     (setq smtpmail-debug-info t) ; only to debug problems
-    (setq smtpmail-auth-credentials  ; or use ~/.authinfo; as of Emacs 24.1, 'smtpmail-auth-credentials' doesn't work anymore
+    (setq smtpmail-auth-credentials  ; or use ~/.authinfo; since Emacs 24.1, 'smtpmail-auth-credentials' isn't used anymore
           '(("YOUR SMTP HOST" 25 "username" "password")))
     (setq smtpmail-starttls-credentials
           '(("YOUR SMTP HOST" 25 "~/.my_smtp_tls.key" "~/.my_smtp_tls.cert")))
@@ -42,7 +42,7 @@ For some reason I found I needed to set the GNU TLS parameters explicitly, becau
 The variable `smtpmail-auth-credentials' is set to a filename by default: "~/.authinfo".
 See GnusAuthinfo.
 
-**Note:** As of Emacs 24.1, the variable `smtpmail-auth-credentials' doesn't work anymore. Now, "~/.authinfo" is used automatically.
+**Note:** Since Emacs 24.1, the variable `smtpmail-auth-credentials' doesn't work / isn't used anymore. Now, "~/.authinfo" is searched automatically.
 
 Look at https://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication for further details.
 
