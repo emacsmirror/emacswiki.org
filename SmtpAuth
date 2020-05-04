@@ -37,14 +37,12 @@ For some reason I found I needed to set the GNU TLS parameters explicitly, becau
     (setq starttls-gnutls-program "gnutls-cli")
     (setq starttls-extra-arguments nil)
 
+Note: Since Emacs 24.1, the variable `smtpmail-auth-credentials' doesn't work / isn't used anymore. Now, "~/.authinfo" is searched automatically. Look at https://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication for further details. -- alpabrz 2020-05-04
+
 == Using a File ==
 
 The variable `smtpmail-auth-credentials' is set to a filename by default: "~/.authinfo".
 See GnusAuthinfo.
-
-**Note:** Since Emacs 24.1, the variable `smtpmail-auth-credentials' doesn't work / isn't used anymore. Now, "~/.authinfo" is searched automatically.
-
-Look at https://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication for further details.
 
 == Other Mail Transfer Agent ==
 
