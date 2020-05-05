@@ -169,7 +169,7 @@ completion:''
 [new]
 
 
-
+[:completionprocess]
 For '''Icicles''' it is the completion '''process''' that is important, and this
 process can serve several goals.  So instead of focusing on the goal
 of entering a final input ('''[[#v2]]'''), let's consider the overall process:
