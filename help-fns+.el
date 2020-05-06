@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 15 14:44:07 2019 (-0800)
+;; Last-Updated: Wed May  6 10:12:13 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2432
+;;     Update #: 2455
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/05/06 
+;;     help-documentation: Corrected last change (paren-scope typo):
+;;       ADD-HELP-BUTTONS is separate arg to help-substitute-command-keys.
+;;     help-fns--signature, describe-function-1: Use help-commands-to-key-buttons, not (help-)substitute-command-keys.
 ;; 2019/11/15 dadams
 ;;     help-documentation: Added optional arg REMOVE-SIG.  Use it in describe-mode, to fix Emacs bug #38222.
 ;; 2018/05/10 dadams
@@ -461,10 +465,10 @@ Non-nil optional arg REMOVE-SIG means do not include `(fn...)' at end."
       (if raw
           raw-doc
         (help-substitute-command-keys
-         (if remove-sig                 ; Use in `describe-mode' to fix Emacs bug #38222.
+         (if remove-sig ; Use in `describe-mode' to fix Emacs bug #38222.
              (replace-regexp-in-string "\n\n(fn[^)]*?)\\'" "" raw-doc)
-           raw-doc
-         add-help-buttons)))))
+           raw-doc)
+         add-help-buttons))))
 
   (defun help-documentation-property (symbol prop &optional raw add-help-buttons)
     "Same as `documentation-property', but optionally adds buttons for help.
@@ -1440,7 +1444,8 @@ Return the description that was displayed, as a string."
 
   ;; REPLACE ORIGINAL in `help-fns.el'
   ;;
-  ;; Add key-description buttons to command help: Use `help-documentation', not `documentation'.
+  ;; Add key-description buttons to command help:
+  ;; Use `help-documentation', not `documentation' and `help-commands-to-key-buttons', not `substitute-command-keys'.
   ;;
   (defun help-fns--signature (function doc real-def real-function buffer)
     "Insert usage at point and return docstring."
@@ -1477,7 +1482,7 @@ Return the description that was displayed, as a string."
                            (let (subst-use1 subst-doc)
                              (with-current-buffer buffer
                                (setq subst-use1  (substitute-command-keys use1)
-                                     subst-doc   (substitute-command-keys doc)))
+                                     subst-doc   (help-commands-to-key-buttons doc)))
                              (help-highlight-arguments subst-use1 subst-doc))
                          (cons use1 doc))))
           (let ((fill-begin  (point))
@@ -1564,7 +1569,7 @@ Return the description that was displayed, as a string."
                                   help-enable-auto-load
                                   (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
                                   (load (cadr real-def) t))
-                             (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
+                             (help-commands-to-key-buttons doc-raw)
                            (condition-case err
                                (help-documentation function nil 'ADD-HELP-BUTTONS)
                              (error (format "No Doc! %S" err))))))
@@ -1674,7 +1679,7 @@ Return the description that was displayed, as a string."
                                         help-enable-auto-load
                                         (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
                                         (autoload-do-load real-def))
-                                   (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
+                                   (help-commands-to-key-buttons doc-raw)
                                  (condition-case err
                                      (help-documentation function nil 'ADD-HELP-BUTTONS)
                                    (error (format "No Doc! %S" err))))))
@@ -1722,7 +1727,7 @@ Return the description that was displayed, as a string."
                            help-enable-auto-load
                            (string-match-p "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
                            (autoload-do-load real-def))
-                      (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
+                      (help-commands-to-key-buttons doc-raw)
                     (condition-case err
                         (help-documentation function nil 'ADD-HELP-BUTTONS)
                       (error (format "No Doc! %S" err))))))
