@@ -928,9 +928,24 @@ I didn't learn to read and write, so that I could communicate using a crude syst
          machines at this point
 <q[corwin]> and emacs is still a better OS
 %
+[...]
 * technomancy reflashes his keyboard to use firmware written in scheme
 <technomancy> aaaaaah that's the sff
 <technomancy> stuff
 <technomancy> dammit
+%
+<hmatheisen> I was thinking of using Gnus but I've read that it can't really
+      be used with gmail
+<deego> hmatheisen: if you use gnus for email, write yourself a little
+      facility to backup all mail before every run.
+<hmatheisen> deego: thanks i'll look into it :)
+<Misha_B> gnus runs fine with gmail
+<didi> hmatheisen: I use it with gmail, but I also use ,,fetchmail,, to
+      retrieve the messages.
+<fsbot> try:  fetchmail-mode.el FetchmailMode GetMailsWithFetchmail
+<didi> hmatheisen: Again, expect power and pain.
+<bpalmer> If you want to shoot lightning out of your hands, you have to put up
+      with being shocked now and again.
+<hmatheisen> didi: I think that's what brought me here
 %
 </pre>
