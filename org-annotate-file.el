@@ -68,6 +68,9 @@ location in the file")
   "non-nil means always expand the full tree when you visit
 `org-annotate-file-storage-file'.")
 
+(defvar org-annotate-file-make-relative nil
+  "non-nil means make all path links relative between file being annotated and file containing annotations.")
+
 (defun org-annotate-file-prettyfy-desc (string)
   "Strip starting and ending whitespace and replace any chars
 after the 60th with '...'"
@@ -89,7 +92,9 @@ after the 60th with '...'"
 (defun org-annotate-file-show-section (&optional buffer)
   "Visit the buffer named `org-annotate-file-storage-file' and
 show the relevant section"
-  (let* ((filename (abbreviate-file-name (or buffer (buffer-file-name))))
+  (let* ((filename (if (not org-annotate-file-make-relative)
+		       (abbreviate-file-name (or buffer (buffer-file-name)))
+		     (file-relative-name (or buffer (buffer-file-name)) (file-name-directory org-annotate-file-storage-file))))
          (line (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
          (link (org-make-link-string (concat "file:" filename)))
          (search-link (org-make-link-string
