@@ -7,6 +7,7 @@ Ranked in terms of popularity, as measured by the number of stars on their !GitH
 || Doom Emacs           ||  1.7k ||           27 ||    4336 ||               142 || https://github.com/hlissner/doom-emacs ||
 || Prelude              ||  2723 ||          100 ||    1188 ||                80 || https://github.com/bbatsov/prelude ||
 || purcell emacs.d      ||  2417 ||           13 ||    2427 ||                60 || https://github.com/purcell/emacs.d || 
+|| Centaur Emacs        ||   952 ||           15 ||    3408 ||               200 || https://github.com/seagle0128/.emacs.d ||
 || magnars emacs.d      ||   910 ||            6 ||    1359 ||               500 || https://github.com/magnars/.emacs.d ||
 || Emacs Starter Kit    ||   630 ||           19 ||     568 ||               190 || https://github.com/eschulte/emacs-starter-kit || 
 || oh-my-emacs          ||   540 ||           10 ||     325 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
@@ -18,5 +19,5 @@ Ranked in terms of popularity, as measured by the number of stars on their !GitH
 || Rho Emacs            ||     3 ||            1 ||    1    ||                 ~ || https://github.com/GChristensen/rho-emacs || 
 
 
-
+asdf
 
