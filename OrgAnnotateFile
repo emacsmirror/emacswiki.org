@@ -39,6 +39,8 @@ C-c C-l (on the above line for example) you will get:
 
 Note that both of the above will be links.
 
+To make links relative set `org-annotate-file-make-relative` to non-nil value.
+
 = OrgAnnotateFile and Bookmark-Mode =
 
 You can very easily integrate OrgAnnotateFile with bookmark mode
@@ -69,4 +71,4 @@ command with the following:
 * [[InPlaceAnnotations]] In place annotations.
 * [[Annotate]] Simple annotation system for files.
 * [http://github.com/dto/radio/tree/master radio.el] Another org based annotation system
-* [https://bitbucket.org/nickdaly/org-annotate-file/src/tip/org-annotate-file.el org-annotate-file.el] A fork of org-annotate-file that appends new entries to the end of the list and adds a "show-annotations" command to view annotations without adding new ones.
+* [https://web.archive.org/web/20150919231650/https://bitbucket.org/nickdaly/org-annotate-file/src/tip/org-annotate-file.el?fileviewer=file-view-default] A fork of org-annotate-file that appends new entries to the end of the list and adds a "show-annotations" command to view annotations without adding new ones.
