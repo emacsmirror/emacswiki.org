@@ -7,6 +7,34 @@ Bleeding-edge snapshots are generated weekly for amd64 Debian/unstable. Packages
 For Debian testing, stable and oldstable you can find packages built directly from Emacs git master here:
 [[http://emacs.ganneff.de/|http://emacs.ganneff.de/]] - Build status can be seen at [[https://git.nsb-software.de/joerg/emacs/pipelines||https://git.nsb-software.de/joerg/emacs/pipelines]]
 
+To use:
+
+To enable adding a private repository.
+
+{{{
+sudo apt-get install software-properties-common
+sudo apt-get update
+}}}
+
+To get the Apt signing key
+{{{
+wget -q http://emacs.ganneff.de/apt.key -O- | sudo apt-key add
+}}}
+
+Replace Buster with your version.
+{{{
+sudo add-apt-repository "deb http://emacs.ganneff.de/ buster main"
+sudo apt-get update
+sudo apt-get install emacs-snapshot
+}}}
+
+Update Alternatives to ensure it uses the snapshot version of emacsclient. 
+
+{{{ 
+sudo update-alternatives --config emacsclient
+}}}
+
+
 == Ubuntu packages ==
 
 The [[https://launchpad.net/~ubuntu-elisp|“Ubuntu Emacs Lisp” team]] maintain [[https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa|The Official ;-) Ubuntu Emacs Daily Snapshot PPA]].
