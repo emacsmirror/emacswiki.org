@@ -51,32 +51,16 @@ Alternatively, do it yourself. First, use git to get the sources:
 
 === Required Packages ===
 
-The following packages are available through apt-get/aptitude and might need to be installed. Check the output from the configure stage described below.
-
-* autoconf
-* automake
-* libtool
-* texinfo -- is not essential but if you want the manuals you need it
-* build-essential
-* xorg-dev
-* libgtk-3-dev
-* libjpeg-dev
-* libncurses5-dev
-* libdbus-1-dev
-* libgif-dev
-* libtiff-dev
-* libm17n-dev
-* libpng-dev -- if this doesn't work on older Debian versions (prior to 2016), try libpng12-dev
-* librsvg2-dev
-* libotf-dev
-* libgnutls28-dev
-* libxml2-dev -- necessary for the eww-browser
-* libxpm-dev
-
-Copy and paste this for easy apt-get lines:
+The following packages are available through apt and might need to be installed. Check the output from the configure stage described below. Git is for the git clone mentioned above. 
 
 {{{
-autoconf automake libtool texinfo build-essential xorg-dev libgtk-3-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev libxpm-dev
+sudo apt install build-essential git
+}}}
+
+Get the required dependencies with build-dep.
+
+{{{
+sudo apt build-dep emacs25
 }}}
 
 === Building from the source ===
