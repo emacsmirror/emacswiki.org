@@ -4,7 +4,7 @@ Note added August, 2017: `M-x erc-tls' might just work without further configura
 
 For the purposes of this guide, head on over to the following OFTC page to get an idea on how to create the necessary certificates
 
-* http://www.oftc.net/oftc/NickServ/CertFP#AddCertFPtoNS/
+* https://www.oftc.net/NickServ/CertFP/
 
 == Getting Started ==
 
