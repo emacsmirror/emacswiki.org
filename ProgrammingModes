@@ -89,6 +89,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * [[PDDLMode]] -- Planning Domain Definition Language
 * PerlMode -- see CPerlMode instead!
 * PhpMode
+* PhpsMode -- Major mode for PHP with Semantic integration
 * PlsqlMode
 * [[Processing]] -- mode for editing Processing <code>.pde</code> files
 * ProgMode -- Base mode for other programming modes, provided by Emacs
