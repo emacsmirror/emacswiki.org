@@ -372,8 +372,6 @@ Try also this new indenting/coloring/syntax detection multi-mode (otherwise usin
 
 https://github.com/traceypooh/php-htm-mode
 
-
-
 == Discussion ==
 
 [new]
@@ -411,5 +409,10 @@ Can we get instructions for '''semantic-php-simplest-grammar.by'''? I've found [
 
 [new]
 apparently, heredoc/newdoc syntax is not recognized and auto-indentation fails badly (tab/spaces before doc-string ending, which is not allowed)
+
+== See also ==
+
+* [https://elpa.gnu.org/packages/phps-mode.html phps-mode], available from GNU ELPA.
+
 ----
 CategoryModes
