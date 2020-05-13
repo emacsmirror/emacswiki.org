@@ -412,7 +412,7 @@ apparently, heredoc/newdoc syntax is not recognized and auto-indentation fails b
 
 == See also ==
 
-* [https://elpa.gnu.org/packages/phps-mode.html phps-mode], available from GNU ELPA.
+* PhpsMode, available from GNU ELPA.
 
 ----
 CategoryModes
