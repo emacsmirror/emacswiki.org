@@ -1,0 +1,17 @@
+= PHPs - Another Semantic Major-Mode for PHP in Emacs =
+
+Goal: An Emacs major mode for PHP scripting language which aims at making a full semantic integration. Currently at /usable/ stage.
+
+This mode does not require PHP installed on your computer because it has a built-in elisp based semantic lexer. It supports all PHP versions and Emacs >= 26.
+
+== See also ==
+
+* PhpMode
+
+== External Links ==
+
+* https://elpa.gnu.org/packages/phps-mode.html
+* https://github.com/cjohansson/emacs-phps-mode
+
+----
+CategoryModes
