@@ -1,22 +1,22 @@
-On 2005-11-21 new icons by AndrewZhilin where [http://lists.gnu.org/archive/html/emacs-devel/2005-11/msg00982.html added] to Emacs.
+On 2005-11-21 new icons by AndrewZhilin were [https://lists.gnu.org/archive/html/emacs-devel/2005-11/msg00982.html added] to Emacs.
 These icons use the letters E and M stylized as the horns of a gnu.
 The dark blue icons come in 16 and 24 pixel sizes and there is are alternatives sized 32 and 48 pixel looking like spiral-bound (paper) notebooks.
 
 They are expected to be used by operating system distributors who combine GNU Emacs in conjuction with desktop systems like Gnome.  The icons are mentioned in the <tt>FOR-RELEASE</tt> file in Emacs's source distribution for the very purpose of noting Emacs package maintainers.
 
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/16x16/apps/emacs22.png ||A small 16 by 16 pixel Emacs icon. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/24x24/apps/emacs22.png ||A larger 24 by 24 pixel Emacs icon. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/32x32/apps/emacs22.png ||A 32 by 32 pixel Emacs icon appearing on a slanted notebook. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/48x48/apps/emacs22.png ||A larger 48 by 48 pixel Emacs icon appearing on a slanted notebook. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/16x16/apps/emacs22.png ||A small 16 by 16 pixel Emacs icon. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/24x24/apps/emacs22.png ||A larger 24 by 24 pixel Emacs icon. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/32x32/apps/emacs22.png ||A 32 by 32 pixel Emacs icon appearing on a slanted notebook. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/48x48/apps/emacs22.png ||A larger 48 by 48 pixel Emacs icon appearing on a slanted notebook. ||
 
 Emacs 23 will use OSX style icons by KentaroOhkouchi:
 
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/16x16/apps/emacs.png ||A small 16 by 16 pixel Emacs icon. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/24x24/apps/emacs.png ||A larger 24 by 24 pixel Emacs icon. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/32x32/apps/emacs.png ||A 32 by 32 pixel Emacs icon with a pen. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/48x48/apps/emacs.png ||A larger 48 by 48 pixel Emacs icon with a pen. ||
-|| http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/128x128/apps/emacs.png ||A large 128 by 128 pixel Emacs icon with a pen. ||
-|| [http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/scalable/apps/emacs.svg SVG file] ||A scalable version of the Emacs icon, by ChongYidong. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/16x16/apps/emacs.png ||A small 16 by 16 pixel Emacs icon. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/24x24/apps/emacs.png ||A larger 24 by 24 pixel Emacs icon. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/32x32/apps/emacs.png ||A 32 by 32 pixel Emacs icon with a pen. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/48x48/apps/emacs.png ||A larger 48 by 48 pixel Emacs icon with a pen. ||
+|| https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/128x128/apps/emacs.png ||A large 128 by 128 pixel Emacs icon with a pen. ||
+|| [https://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/images/icons/hicolor/scalable/apps/emacs.svg SVG file] ||A scalable version of the Emacs icon, by ChongYidong. ||
 
 See also EmacsLogo, EmacsPowered, EmacsWallpaper.
 
@@ -25,9 +25,9 @@ See also EmacsLogo, EmacsPowered, EmacsWallpaper.
 || Traditional overflowing [[TheKitchenSink|kitchen sink]]; see the [http://catb.org/~esr/jargon/html/E/EMACS.html Emacs Jargon File entry] || [[image:KitchenSinkBW]] [[image:KitchenSinkWhite]] ||
 || Long-time icons for EmacsForWindows by [http://users.adelphia.net/~rob.davenport/gnuicons.html Rob Davenport], the 16x16 variant visible in the taskbar was hard to recognize || [[image:GnuHeadDavenport]] ||
 || [http://lists.gnu.org/archive/html/help-emacs-windows/2004-06/msg00036.html Proposed icon] suggested by [http://norman.walsh.name/ Norman Walsh] ("That's not my design on that page. I don't have that much artistic talent. I found it on the web somewhere.") || [[image:GnuHeadWalsh]] ||
-|| CarbonEmacs uses the colored gnu head by [http://www.gnu.org/graphics/reiss-gnuhead.html Joseph W. Reiss] || [[image:GnuHeadReiss]] ||
+|| CarbonEmacs uses the colored gnu head by [https://www.gnu.org/graphics/reiss-gnuhead.html Joseph W. Reiss] || [[image:GnuHeadReiss]] ||
 || CarbonEmacsPackage uses the OSX-style variant by K. Ohkouchi || [[image:CarbonEmacsPackageIcon]] ||
 || AquamacsEmacs uses the gnu head by [http://www.ing.unipi.it/~d9615/homepage/mac.html Massimiliano Gubinelli] || [[image:GnuHeadGubinelli]] ||
-|| [http://www.gentoo.org/ Gentoo] used to have several round versions of the gnu head. || http://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_TXT_emacs.png http://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_TXT_emacs2.png http://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_CLR_emacs.png http://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_PUR_emacs.png ||
-|| MilesBader made some [http://download.savannah.gnu.org/releases/emacs/icons very shiny raytraced icons] in a vaguely OSX style (see the linked-to page for various sizes, up to 1920x1920) || http://download.savannah.gnu.org/releases/emacs/icons/emacs5-128.png http://download.savannah.gnu.org/releases/emacs/icons/emacs6-128.png ||
-|| [http://emacs.sexy/ Emacs is Sexy] has some [http://emacs.sexy/img/emacsV1.iconset.zip alternative] [http://emacs.sexy/img/emacs.iconset.zip Icons]. || 
+|| [https://www.gentoo.org/ Gentoo] used to have several round versions of the gnu head. || https://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_TXT_emacs.png https://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_TXT_emacs2.png https://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_CLR_emacs.png https://sources.gentoo.org/viewcvs.py/*checkout*/gentoo/xml/images/icons/l33t_PUR_emacs.png ||
+|| MilesBader made some [https://download.savannah.gnu.org/releases/emacs/icons very shiny raytraced icons] in a vaguely OSX style (see the linked-to page for various sizes, up to 1920x1920) || https://download.savannah.gnu.org/releases/emacs/icons/emacs5-128.png https://download.savannah.gnu.org/releases/emacs/icons/emacs6-128.png ||
+|| [http://emacs.sexy/ Emacs is Sexy] has some [https://emacs.sexy/img/emacsV1.iconset.zip alternative] [https://emacs.sexy/img/emacs.iconset.zip Icons]. || 
