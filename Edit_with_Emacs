@@ -1,9 +1,10 @@
-Edit with Emacs is an extension for editing text areas in [[Google Chrome]].
+Edit with Emacs is an extension for editing text areas in [[Google Chrome]] and [[FireFox]].
 
-* Extension: https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh
+* Chrome Extension: https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh
+* FireFox Add-On: https://addons.mozilla.org/en-US/firefox/addon/edit-with-emacs1/
 * Development: http://github.com/stsquad/emacs_chrome
 
-The extension requires an "edit server" to handle edit requests from Chrome(ium). This is due to the security model of Chrome preventing the execution of external applications. Fortunately the extension comes with a native elisp edit server which can run in your Emacs daemon session.
+The extension requires an "edit server" to handle edit requests from Chrome(ium)/FireFox. This is due to the security model of Chrome preventing the execution of external applications. Fortunately the extension comes with a native elisp edit server which can run in your Emacs daemon session.
 
 == Tips and Tricks ==
 
