@@ -18,6 +18,10 @@ Now type "emacs <term>" in the adressbar to search the wiki for a term.
 
 == Editing text areas with Emacs ==
 
+=== Firefox add-on: Edit with Emacs ===
+
+The [[Edit with Emacs]] add-on allows you to edit text areas in Firefox directly in Emacs. As of 2020, this is the only add-on listed on this page that works with current versions of Mozilla Firefox. The following add-ons have ceased development but [i]may[/i] still work on forks of Mozilla Firefox.
+
 === Firefox add-on: It's all text ===
 
 You can also use [https://addons.mozilla.org/en-US/firefox/addon/4125 It's All
