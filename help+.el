@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:10:54 2018 (-0800)
+;; Last-Updated: Sat May 16 09:58:03 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2201
+;;     Update #: 2203
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -18,9 +18,17 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `fit-frame', `frame-fns', `help-macro',
-;;   `help-macro+', `info', `info+20', `misc-fns', `naked',
-;;   `strings', `thingatpt', `thingatpt+'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `crosshairs', `fit-frame',
+;;   `font-lock', `font-lock+', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
+;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -59,7 +67,7 @@
 ;;
 ;;  The following bindings are made here:
 ;;
-;;    `C-h u'      `manual-entry'
+;;    `C-h u'      `man'
 ;;    `C-h C-a'    `apropos'
 ;;    `C-h C-l'    `locate-library'
 ;;    `C-h RET'    `help-on-click/key'
@@ -155,7 +163,7 @@
 (defvar help-origin-buffer nil "Buffer that we left, to go to *Help*.")
 
 (define-key help-map [?\C-m] 'help-on-click/key) ; RET
-(define-key help-map "u" 'manual-entry) ; in `man.el'
+(define-key help-map "u" 'man) ; in `man.el'
 (define-key help-map "\C-a" 'apropos)
 (define-key help-map "\M-o" 'pop-to-help-toggle)
 (define-key help-map "\C-l" 'locate-library)
@@ -379,7 +387,7 @@ MORE ADVANCED HELP
 \\[finder-by-keyword]:   Finds Emacs-Lisp libraries that match a topic.
 \\[describe-syntax]:   Describes the current syntax table.
 \\[info-lookup-symbol]:   Finds a symbol in the manual for the current buffer's language.
-\\[manual-entry]:   Finds a topic in the Unix manual.
+\\[man]:   Finds a topic in the Unix manual.
 \\[where-is]:   Identifies a keyboard/menu/mouse sequence that invokes a command.
 \\[apropos]: Shows Emacs functions and variables that match a regexp.
 \\[describe-key-briefly]: Identifies the command bound to a keyboard/menu/mouse sequence.
