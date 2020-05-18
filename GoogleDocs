@@ -5,30 +5,6 @@ In this page, we are providing methods/tools to interact with Google Drive Docs.
 Note that Google Doc files aren't plain-text. So, they have to be converted to a suitable format for editing by Emacs. A popular way to do this is to convert Google Docs to Markdown/rST using *pandoc* and then edit it using Emacs. After editing, it is then again converted back to Google Docs using *pandoc*.
 
 
-== Using GoogleCL ==
-
-You can use [http://code.google.com/p/googlecl/ this commandline program] to edit a Google Doc with your local EDITOR:
-
-  google docs list
-  google docs edit --title "title of Google Doc you wish to edit"
-
-I put the following in my .bashrc:
-
-    alias gdl='google docs list'
-    gde() {
-	google docs edit --title "$@"
-    }
-
-    export EDITOR=/home/bshanks/bin/myemacsclient
-
--- BayleShanks
-
-=== UPDATE (12 May 2017) ===
-GoogleCL has been broken since 2015. See the official Google Announcement: https://code.google.com/archive/p/googlecl/
-
-However, there is a fork of the project, which probably is working: https://github.com/vinitkumar/googlecl
-
-
 == Using GDrive ==
 Another option using [[https://github.com/prasmussen/gdrive gdrive]] (requires helm for completion)
 
@@ -52,3 +28,7 @@ Another option using [[https://github.com/prasmussen/gdrive gdrive]] (requires h
                        (format "gdrive list -q \"'%s' in parents\"" gdocs-folder-id)) "\n"))))
       (insert (replace-regexp-in-string (string ?\C-m) (string ?\C-j) (shell-command-to-string
       (format "gdrive download -s --format txt --id %s" (car (split-string doc " ")))))))
+
+== Access Google Drive filesystem ==
+
+This will not let you edit Google Doc files by itself, but you can access a Google Drive and Nextcloud file systems using the built-in [https://www.gnu.org/software/emacs/manual/html_node/tramp/Quick-Start-Guide.html TRAMP]. This requires GVFS (the GNOME Virtual File System).
