@@ -9,3 +9,12 @@ What announcement?  I just see a 404 page.
 
 -- npostavs 2017-05-13 02:12 UTC
 
+
+----
+
+I see: "8 June 2015: GoogleCL is currently broken due to the OAuth1 turndown, and likely to remain so. Thanks for your support over the years, and apologies for the lack of prior notice."
+
+Anyways, I removed all information on GoogleCL, since the rewrite also seems defunct. All code was removed in February 2019 due to being broken and nothing has happened since.  Here's a link to the rewrite in case it takes off again: https://github.com/vinitkumar/googlecl
+
+-- Stefan Kangas 2020-05-18 10:18 UTC
+
