@@ -4,6 +4,8 @@ In this page, we are providing methods/tools to interact with Google Drive Docs.
 
 Note that Google Doc files aren't plain-text. So, they have to be converted to a suitable format for editing by Emacs. A popular way to do this is to convert Google Docs to Markdown/rST using *pandoc* and then edit it using Emacs. After editing, it is then again converted back to Google Docs using *pandoc*.
 
+Note: Google Docs is [[https://www.gnu.org/philosophy/who-does-that-server-really-serve.html Software as a Service]]. [[https://nextcloud.com/ NextCloud]] is a free alternative with support for plain markdown files, editable from Emacs.
+
 
 == Using GDrive ==
 Another option using [[https://github.com/prasmussen/gdrive gdrive]] (requires helm for completion)
