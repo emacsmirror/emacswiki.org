@@ -8,8 +8,7 @@
 ;; This file is not part of GNU Emacs.
 
 ;; ada-gpr is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published
-by
+;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 
@@ -44,8 +43,7 @@ by
             "for"
             "\\)\\>[ \t]*"
             "\\(\\sw+\\(\\.\\sw*\\)*\\)?")
-           '(1 font-lock-keyword-face) '(2
-font-lock-function-name-face nil t))
+           '(1 font-lock-keyword-face) '(2 font-lock-function-name-face nil t))
      ;;
      ;; Main keywords
      (list (concat "\\<"
@@ -55,11 +53,9 @@ font-lock-function-name-face nil t))
                    "\\>")
            '(1 font-lock-keyword-face))
      ;;
-     ;; Anything following end and not already fontified is a body
-name.
+     ;; Anything following end and not already fontified is a body name.
      '("\\<\\(end\\)\\>\\([ \t]+\\)?\\(\\(\\sw\\|[_.]\\)+\\)?"
-       (1 font-lock-keyword-face) (3 font-lock-function-name-face nil
-t))
+       (1 font-lock-keyword-face) (3 font-lock-function-name-face nil t))
      ;;
      ))
   "Default expressions to highlight in GNAT project file (gpr) mode.")
@@ -73,8 +69,7 @@ t))
 
   (set (make-local-variable 'require-final-newline) t)
 
-  ;;  Set the paragraph delimiters so that one can select a whole
-block
+  ;;  Set the paragraph delimiters so that one can select a whole block
   ;;  simply with M-h
   (set (make-local-variable 'paragraph-start) "[ \t\n\f]*$")
   (set (make-local-variable 'paragraph-separate) "[ \t\n\f]*$")
@@ -86,16 +81,11 @@ block
   ;; used by autofill and indent-new-comment-line
   (set (make-local-variable 'comment-start-skip) "---*[ \t]*")
 
-  ;; used by autofill to break a comment line and continue it on
-another line.
-  ;; The reason we need this one is that the default behavior does not
-work
-  ;; correctly with the definition of paragraph-start above when the
-comment
-  ;; is right after a multi-line subprogram declaration (the comments
-are
-  ;; aligned under the latest parameter, not under the declaration
-start).
+  ;; used by autofill to break a comment line and continue it on another line.
+  ;; The reason we need this one is that the default behavior does not work
+  ;; correctly with the definition of paragraph-start above when the comment
+  ;; is right after a multi-line subprogram declaration (the comments are
+  ;; aligned under the latest parameter, not under the declaration start).
   (set (make-local-variable 'comment-line-break-function)
        (lambda (&optional soft) (let ((fill-prefix nil))
                                   (indent-new-comment-line soft))))
@@ -115,8 +105,7 @@ start).
        'ada-fill-comment-paragraph)
 
   ;;  font-lock support :
-  ;;  We need to set some properties for XEmacs, and define some
-variables
+  ;;  We need to set some properties for XEmacs, and define some variables
   ;;  for Emacs
 
   (if ada-xemacs
@@ -130,8 +119,7 @@ variables
            nil t
            ((?\_ . "w") (?# . "."))
            beginning-of-line
-           (font-lock-syntactic-keywords .
-ada-font-lock-syntactic-keywords)))
+           (font-lock-syntactic-keywords . ada-font-lock-syntactic-keywords)))
     )
 
   ;;  Support for ispell : Check only comments
@@ -175,8 +163,7 @@ ada-font-lock-syntactic-keywords)))
     (progn
       (ada-initialize-properties)
       (make-local-hook 'font-lock-mode-hook)
-      (add-hook 'font-lock-mode-hook 'ada-deactivate-properties nil
-t)))
+      (add-hook 'font-lock-mode-hook 'ada-deactivate-properties nil t)))
 
   (if ada-auto-case
       (ada-activate-keys-for-case)))
@@ -188,6 +175,4 @@ t)))
 ;;; provide ourselves
 (provide 'ada-gpr-mode)
 (provide 'ada-gpr)
-;;; ada-gpr.el ends here 
-
-CategoryNeedsAttention (The download link is broken.)
+;;; ada-gpr.el ends here
