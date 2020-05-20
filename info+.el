@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 16 10:06:32 2020 (-0700)
+;; Last-Updated: Wed May 20 11:42:11 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6440
+;;     Update #: 6442
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -485,6 +485,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/05/20 dadams
+;;            Info-insert-dir: Typo: missing paren.  Thx to Phil Hudson.
 ;; 2020/05/16 dadams
 ;;            Info-insert-dir: Removed use of Info-following-node-name.  Emacs Dev replaced it by its code.
 ;; 2020/04/21 dadams
@@ -3142,7 +3144,7 @@ Non-nil NOMSG means do not show a status message."
                     nodename end)
                 (re-search-backward "^\^_")
                 (search-forward "Node: ")
-                (setq nodename  (and (looking-at (Info-following-node-name-re))  (match-string-no-properties 1))
+                (setq nodename  (and (looking-at (Info-following-node-name-re))  (match-string-no-properties 1)))
                 (search-forward "\n\^_" nil 'move)
                 (beginning-of-line)
                 (setq end  (point))
