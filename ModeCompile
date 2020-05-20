@@ -5,7 +5,7 @@ Compile commands are defined for CcMode, CPlusPlusMode, MakefileMode, DiredMode,
 
 For other modes a default behaviour is provided.
 
-You can get the latest version here:
+You used to be able to get the latest version here, but this link is dead as of May 2020:
 
 * http://www.tls.cena.fr/~boubaker/Emacs/
 
