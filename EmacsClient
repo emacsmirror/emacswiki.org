@@ -343,19 +343,6 @@ This extension allows users to edit web-page TEXTAREAs with Emacs.  It's nice to
 
 /It's All Text/ and  /MozEx/ cannot be found on the Firefox add-ons store and seem to have been discontinued.
 
-======= It's All Text =======
-
-To execute emacsclient From Firefox to call Windows Native Emacs to edit web pages, see [[Mozilla]] page and comments about add-on /It's all text/.
-
-There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
-You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
-
-
-======= MozEx =======
-
-*MozEx* is a Firefox extension which allows the user to use external programs for editing TEXTAREAs, viewing page source, handling mailto, news, telnet and FTP links.  http://mozex.mozdev.org/
-
-
 = Troubleshooting = 
 
 "No connection could be made because the target machine actively refused it"
