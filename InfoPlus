@@ -275,6 +275,8 @@ Thx -- DrewAdams
 ----
 [new]
 Typo introduced in latest mod at line 3145 results in unbalanced parens, so lib won't compile. -- PhilHudson
+[new:DrewAdams:2020-05-20 18:46 UTC]
+Thanks, Phil. Corrected. - DrewAdams
 
 
 ----
