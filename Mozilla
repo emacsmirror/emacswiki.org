@@ -22,26 +22,6 @@ Now type "emacs <term>" in the adressbar to search the wiki for a term.
 
 The [[Edit with Emacs]] add-on allows you to edit text areas in Firefox directly in Emacs. As of 2020, this is the only add-on listed on this page that works with current versions of Mozilla Firefox. The following add-ons have ceased development but [i]may[/i] still work on forks of Mozilla Firefox.
 
-=== Firefox add-on: It's all text ===
-
-You can also use [https://addons.mozilla.org/en-US/firefox/addon/4125 It's All
-Text] for this. In the preferences for the extension, point it toward either
-emacs or emacsclient. Note that you might have to then restart the browser in
-order for the editor to be recognized. This extension gives you a cute little
-button that hovers near the text area to click in order to start the editing.
-It also has hotkey support, and you can specify what extension is used for the
-temporary file -- which is handy for having it trigger the correct emacs mode.
-It's All Text does not block Firefox while editing, and you don't have to close
-the editor to update the text area.
-
-To use Native Windows Emacs from Firefox to edit HTML input text areas
-(like Wikipedia and other Wiki pages), see a small
-[https://github.com/jaalto/project--windows-emacs-client-for-firefox
-Github Cygwin project] by JariAalto. It contains source
-code to build a utility that can be used in /It's All Text/
-add-on to call running Emacs, provided that you start Emacs with <code>M-x
-server-start</code>.
-
 === Firefox add-on: Firemacs ===
 
 [https://addons.mozilla.org/en-US/firefox/addon/4141 Firemacs]
@@ -94,10 +74,10 @@ Please feel free to save this as a file somewhere and replace the actual code he
 
 == Other Browsers ==
 
+* [[https://next.atlas.engineer/ Next browser]]
+
 Stuff for Emacs Wiki users with Mozilla browsers. Stuff that is specific to
 FireFox is found there.
-
-[[Conkeror]] might be an interesting Firefox alternative.
 
 MozMacs helps a little.
 
