@@ -1,17 +1,5 @@
-nxml-mode is a major mode for editing XML.
-It works well with Emacs 21+ and will be included in Emacs 23; unfortunately it
-won't run on Emacs 20 or XEmacs [http://www.thaiopensource.com/nxml-mode/] as
-it currently requires some specific features of the recent GNU Emacsen (however
-this is being worked on, see for instance [http://permalink.gmane.org/gmane.emacs.devel/97623]).
-
-As of 2009-09-18, the next release of Emacs will make nXML the default mode for XML files instead of XmlMode.[http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00533.html]
-
-Please send bug reports to the Emacs maintainers
-(possibly first discussing the problem on the emacs-nxml-mode mailing lists
-where you can find people who know this mode very well).
-
-Note that nxml-mode is incompatible with MuleUCS.
-This is not a problem if you are using Emacs 22 where mule-ucs is not necessary.
+nxml-mode is the default major mode for editing XML, although emacs
+still includes its prior implementation, called xmlMode.
 
 * NxmlModeForXHTML
 * UsingNxmlModeWithDocBook
@@ -19,9 +7,7 @@ This is not a problem if you are using Emacs 22 where mule-ucs is not necessary.
 specialized for editing XHTML and template languages like php, genshi etc.
 
 External links:
-* [http://www.thaiopensource.com/nxml-mode/ nxml-mode home page]
-* [http://www.thaiopensource.com/download/ download]
-* [http://www.dpawson.co.uk/relaxng/nxml/index.html FAQ]
+* [http://www.thaiopensource.com/nxml-mode/ Old nxml-mode home page]
 
 Comments:
 
@@ -37,34 +23,12 @@ To download schemas, visit NxmlModeSchemas.
 
 == Autoloading ==
 
-To have files automatically loaded with nxml-mode with various file extensions:
-
-{{{
-;path to where nxml is
-(set 'nxml-path (concat site-lisp-path "nxml-mode/"))
-
-(load (concat nxml-path "rng-auto.el"))
-
- (add-to-list 'auto-mode-alist
-              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
-                    'nxml-mode))
-
-  (unify-8859-on-decoding-mode)
-
-    (setq magic-mode-alist
-	  (cons '("<＼＼?xml " . nxml-mode)
-	  magic-mode-alist))
-   (fset 'xml-mode 'nxml-mode)
-
-}}}
-
-and add
+if you would like to edit html files in nxml-mode:
 {{{
    (fset 'html-mode 'nxml-mode)
 }}}
-if you would like to edit html files in nxml-mode.
 
-[new]
+=== magic-mode-alist ===
 If you have xml files for which the first element is html, you end up in html mode instead of nxml mode.  This is because of the default magic-mode-alist.
 
 I don't know how to write elisp to remove html-mode from magic-mode-alist, but
@@ -88,7 +52,7 @@ works for me. -- TrentBuck
 
 For me magic-mode-alist is nil, but using auto-mode-alist instead of magic-mode-alist in the above works. -- StephenPowell
 
-=== set-auto-mode ===
+=== for files not being recognized as XML ===
 
 Being an XML newbie, I had been creating documents without the beginning "<\\?xml" tag.
 
