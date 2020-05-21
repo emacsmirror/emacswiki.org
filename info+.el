@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 20 11:42:11 2020 (-0700)
+;; Last-Updated: Thu May 21 08:06:55 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6442
+;;     Update #: 6444
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -486,8 +486,6 @@
 ;;; Change Log:
 ;;
 ;; 2020/05/20 dadams
-;;            Info-insert-dir: Typo: missing paren.  Thx to Phil Hudson.
-;; 2020/05/16 dadams
 ;;            Info-insert-dir: Removed use of Info-following-node-name.  Emacs Dev replaced it by its code.
 ;; 2020/04/21 dadams
 ;;     Added: info-buffer-name-function, info-buffer-name-function-default, info-rename-buffer,
@@ -2472,7 +2470,7 @@ argument says to include Info nodes recorded as bookmarks."
 (defun Info-goto-node-web (node &optional flip-new-win)
   "Use `browse-url' to go to Info node NODE using a Web browser.
 With a prefix arg, reverse the effect of option
-option`browse-url-new-window-flag'.
+option `browse-url-new-window-flag'.
 
 NODE is the name of a node in the GNU Emacs or Elisp manual.
 Alternatively, NODE can have the form (MANUAL)NODE, where MANUAL is
