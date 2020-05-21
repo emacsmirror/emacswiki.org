@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 21 08:06:55 2020 (-0700)
+;; Last-Updated: Thu May 21 08:10:35 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6444
+;;     Update #: 6445
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -2470,7 +2470,7 @@ argument says to include Info nodes recorded as bookmarks."
 (defun Info-goto-node-web (node &optional flip-new-win)
   "Use `browse-url' to go to Info node NODE using a Web browser.
 With a prefix arg, reverse the effect of option
-option `browse-url-new-window-flag'.
+`browse-url-new-window-flag'.
 
 NODE is the name of a node in the GNU Emacs or Elisp manual.
 Alternatively, NODE can have the form (MANUAL)NODE, where MANUAL is
