@@ -8,7 +8,7 @@ yourself, too, using `C-u C-x ='.  What Emacs doesn't know is which
 font it should use.  This information comes from the fontset currently
 active.
 
-Emacs comes with two fontsets:  The default (startup) fontset, and the
+Emacs comes with three fontsets:  The startup fontset, the default fontset, and the
 standard fontset.  You can add more using `create-fontset-from-fontset-spec':
 
     (create-fontset-from-fontset-spec
