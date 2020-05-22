@@ -70,7 +70,7 @@ Here is an example of using fontconfig's font name for a font, specifying the "S
                             (decode-char 'ucs #x1cff))
                       "Siddhanta")
 
-The "Siddhanta" font is a rather classic looking font (i.e. rather "calligraphic") which actually looks nice in emacs. You can download Siddhanta [http://svayambhava.org/index.php/en/fonts here]. Another more "sans serif" font is "Lohit Devanagari" and it also displays nicely in emacs, but it does not yet cover the "Vedic Extensions" block. (Both these fonts fix an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (!FreeSans), for example wildly displaced diacritic u.)
+The "Siddhanta" font is a rather classic looking font (i.e. rather "calligraphic") which actually looks nice in emacs. You can download Siddhanta [https://sites.google.com/site/bayaryn/ here]. Another more "sans serif" font is "Lohit Devanagari" and it also displays nicely in emacs, but it does not yet cover the "Vedic Extensions" block. (Both these fonts fix an annoying display bug in emacs 23 and 24 for the default font selected for devanagari in Debian (!FreeSans), for example wildly displaced diacritic u.)
 
 In the same manner, for Greek and Classical Greek you could use the nice font "!GentiumAlt" or the monospaced "Ubuntu Mono", just using these font names in the two script snippets for Greek above (you must change both Greek and Greek extended for consistent font display).
 
