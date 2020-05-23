@@ -68,6 +68,8 @@ information is used as the property list of the resulting overlay.
 
 
 
+
+
 You can do the following with a list of zones:
 
 * Sort them.
@@ -139,6 +141,11 @@ Many of the commands that manipulate zones are bound on keymap '''`narrow-map'''
 * '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle or pop zones as [[Narrowing|narrowings]]: '''`##C-x n x x x ...##''''
 
 
+
+
+
+[:ZoneSet]
+[:ZoneVariable]
 The above descriptions speak of the "current list" of zones.  You can have any number of variables whose value is a list of zones, and you can switch among them.  The variables can be buffer-local or global (e.g., with positions recorded from multiple buffers).
 
 Most zone commands let you use a [[prefix argument]] to be prompted for a different zones variable to use from the current one (the value of variable `zz-izones-var').  The use can be just for the current command (e.g., add a zone to the list of zones in a particular variable). Or it can be also for subsequent zone commands, by making the variable you entered the current one (setting `zz-izones-var' to it).
