@@ -1,5 +1,7 @@
 This page is about library '''<tt>[[keysee.el]]</tt>''', which provides completion of key sequences and menu-bar menus.
 
+It is essentially a reduced-functionality version of [[https://www.emacswiki.org/emacs/Icicles_-_Key_Completion|Icicles key completion]].
+
 Turn on minor mode '''`kc-mode'''' to enable key and menu completion.
 Or just complete keys or menu-bar menus on demand, using command
 '''`kc-complete-keys'''' or '''`kc-complete-menu-bar'''', respectively.
