@@ -93,6 +93,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
 * <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
 * <tt>[[isearch-prop.el]]</tt> -- search character-property contexts (zones with given text or overlay properties)
+* <tt>[[keysee.el]]</tt> -- key and menu completion -- see KeySee
 * <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[completion]] and cycling, to access [[menu bar]] menus -- see '''LaCarte'''
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
@@ -130,6 +131,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 === Emacs 24 or Later  (will not work in older versions) ===
 
 * <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
+* <tt>[[keysee.el]]</tt> -- key and menu completion -- see KeySee
 * <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
 * <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws -- see '''NotAndOr'''
 
