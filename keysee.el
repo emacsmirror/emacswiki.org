@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 24 11:35:10 2020 (-0700)
+;; Last-Updated: Sun May 24 11:48:53 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 123
+;;     Update #: 126
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion
@@ -57,14 +57,14 @@
 ;;  * Choosing `PREFIX-KEY = ...' takes you down a level, to the keys
 ;;    on that PREFIX-KEY.  For example, at top level, choosing
 ;;    completion candidate `C-x = ...' takes you to completions for
-;;    `C-x'.
+;;    prefix key `C-x'.
 ;;
 ;;  * Choosing `KEY  =  COMMAND' invokes COMMAND.
 ;;
 ;;  Completion uses the completion styles defined by option
 ;;  `kc-completion-styles', not those of standard option
-;;  `completion-styles'.  By default, it favors flex (Emacs 27 or
-;;  later) or substring completion.
+;;  `completion-styles'.  By default, it favors substring or flex
+;;  (Emacs 27 or later) completion.
 ;;
 ;;  You can use option `kc-separator' to customize the separator
 ;;  `  =  '.  The default value has 2 space chars on each side of `=',
@@ -88,7 +88,7 @@
 ;;
 ;;  Suggested key binding:
 ;;
-;;  `kc-complete-menu-bar' -- `S-f10'.
+;;    (global-set-key (kbd "S-<f10>") kc-complete-menu-bar)
 ;;
 ;;
 ;;  Commands defined here:
