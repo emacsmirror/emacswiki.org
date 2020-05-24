@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 24 11:00:25 2020 (-0700)
+;; Last-Updated: Sun May 24 11:20:50 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 121
+;;     Update #: 122
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion
@@ -31,7 +31,7 @@
 ;;  when you use a prefix key.  (The default value is t.)
 ;;
 ;;  You can also complete on demand, using `S-TAB'.  (You can
-;;  customize the keys for this, using options `kc-completion-keys'.)
+;;  customize the keys for this, using option `kc-completion-keys'.)
 ;;
 ;;  You can always complete on demand at top level.  If `kc-auto-flag'
 ;;  is nil then you can also complete on demand after a prefix key.
