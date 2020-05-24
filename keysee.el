@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 24 11:20:50 2020 (-0700)
+;; Last-Updated: Sun May 24 11:35:10 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 122
+;;     Update #: 123
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion
@@ -54,9 +54,9 @@
 ;;   top level.  When `..' is a candidate it is the default, so you
 ;;   can just hit `RET' to go up a level.
 ;;
-;;  * Choosing `PREFIX-KEY  =  ...' takes you down a level, to the
-;;    keys on that PREFIX-KEY.  For example, at top level, choosing
-;;    competion candidate `C-x  =  ...' takes you to completions for
+;;  * Choosing `PREFIX-KEY = ...' takes you down a level, to the keys
+;;    on that PREFIX-KEY.  For example, at top level, choosing
+;;    completion candidate `C-x = ...' takes you to completions for
 ;;    `C-x'.
 ;;
 ;;  * Choosing `KEY  =  COMMAND' invokes COMMAND.
