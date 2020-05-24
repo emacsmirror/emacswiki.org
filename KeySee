@@ -1,0 +1,75 @@
+This page is about library '''<tt>[[keysee.el]]</tt>''', which provides completion of key sequences and menu-bar menus.
+
+Turn on minor mode '''`kc-mode'''' to enable key and menu completion.
+Or just complete keys or menu-bar menus on demand, using command
+'''`kc-complete-keys'''' or '''`kc-complete-menu-bar'''', respectively.
+
+If [[option]] '''`kc-auto-flag'''' is non-`nil' then completion is automatic
+when you use a prefix key.  (The default value is `t'.)
+
+You can also complete ''on demand'', using '''`S-TAB''''.  (You can
+customize the keys for this, using [[option]] '''`kc-completion-keys''''.)
+
+You can always complete on demand at top level.  If `kc-auto-flag'
+is nil then you can also complete on demand after a prefix key.
+
+Completion shows you all possible keys you can use, at any level.
+When completions are shown, the completion candidates have one of
+these forms:
+
+<pre>
+  ..
+  PREFIX-KEY  =  ...
+  KEY  =  COMMAND
+</pre>
+
+
+* The first of these, '''`##..##'''', is shown only when completing a [[prefix key]].  Choosing it takes you back ''up one level'', to the parent
+ prefix key, or to the top level if there is no parent.
+ For example, if you are currently completing prefix key `C-x 4',
+ then `##..##' takes you back up to the completions for prefix key
+ `C-x'.  Using `##..##' there then takes you up from that level to the
+ top level.  When `##..##' is a candidate it is the default, so you
+ can just hit `RET' to go up a level.
+
+* Choosing '''`##PREFIX-KEY  =  ...##'''' takes you ''down a level'', to the
+  keys on that ##PREFIX-KEY##.  For example, at top level, choosing
+  completion candidate `##C-x  =  ...##' takes you to completions for prefix key `C-x'.
+
+* Choosing '''`##KEY  =  COMMAND##'''' invokes ##COMMAND##.
+
+Completion uses the completion styles defined by [[option]]
+'''`kc-completion-styles'''', not those of standard option
+`completion-styles'.  By default, it favors `substring'  or `flex' (Emacs 27 or
+later) completion.
+
+You can use [[option]] '''`kc-separator'''' to customize the separator
+'''`##  =  ##''''.  The default value has 2 space chars on each side of `##=##',
+so you can more easily match menu candidates that contain a space
+char.
+
+Completion is as usual in vanilla Emacs: type characters to match
+completion candidates, use `TAB' to complete, use `RET' to accept
+a completion.
+
+For top-level key completion (keys in `kc-completion-keys',
+e.g. `S-TAB'), you can use [[option]] '''`kc-keymaps-for-key-completion''''
+to choose which keymaps in which to bind `S-TAB' to
+`kc-complete-keys'.  Normally, if a key in
+`kc-keymaps-for-key-completion' is already bound in a map listed
+in that option value then that binding is respected - the key is
+not bound to `kc-complete-keys'.  You can override this by
+customizing [[option]] '''`kc-bind-completion-keys-anyway-flag'''' to
+non-`nil'.
+
+
+Suggested key binding:
+
+  (global-set-key (kbd "S-<f10>") kc-complete-menu-bar)
+
+
+----
+
+CategoryCompletion
+CategoryHelp
+CategoryKeys
