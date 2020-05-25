@@ -24,7 +24,7 @@ My PcSelectionMode is working for emacs-22 in an XWindow console but it's not wo
  (custom-set-variables
   '(pc-selection-mode t nil (pc-select))
 
-
+[new]
 I believe it is called shift-select-mode now.
 ----
 CategoryEmulation
