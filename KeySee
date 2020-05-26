@@ -54,6 +54,18 @@ Completion is as usual in vanilla Emacs: type characters to match
 completion candidates, use `TAB' to complete, use `RET' to accept
 a completion.
 
+The following completion-candidate sort orders are available.  You can
+''cycle'' among them during completion using the key that is the value of
+[[option]] '''`kc-sort-cycle-key'''' ('''`##C-,##'''' by default).
+
+* By key name alphabetically, ''prefix keys'' first
+* By key name alphabetically, ''local keys'' first
+* By ''command name'' alphabetically
+* Off - no sorting
+
+You can cycle candidates using `TAB', according to [[option]]
+`completion-cycle-threshold'.
+
 For top-level key completion (keys in `kc-completion-keys',
 e.g. `S-TAB'), you can use [[option]] '''`kc-keymaps-for-key-completion''''
 to choose which keymaps in which to bind `S-TAB' to
