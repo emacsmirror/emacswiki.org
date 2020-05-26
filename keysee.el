@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 24 11:48:53 2020 (-0700)
+;; Last-Updated: Tue May 26 09:24:02 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 126
+;;     Update #: 226
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion
@@ -93,42 +93,58 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `kc-complete-keys', `kc-complete-menu-bar', `kc-mode'.
+;;    `kc-complete-keys', `kc-complete-menu-bar',
+;;    `kc-cycle-sort-order', `kc-mode'.
 ;;
 ;;  Faces defined here:
 ;;
-;;    `kc-key-local', `kc-key-non-local', `kc-menu-local', `',
+;;    `kc-key-local', `kc-key-non-local', `kc-menu-local',
 ;;    `kc-menu-non-local', `kc-msg-emphasis'.
 ;;
 ;;  User options defined here:
 ;;
 ;;    `kc-auto-delay', `kc-auto-flag',
 ;;    `kc-bind-completion-keys-anyway-flag', `kc-completion-keys',
-;;    `kc-completion-styles', `kc-ignored-prefix-keys',
-;;    `kc-keymaps-for-key-completion', `kc-prefix-in-mode-line-flag',
-;;    `kc-self-insert-ranges', `kc-separator'.
+;;    `kc-completion-styles', `kc-cycle-sort-order',
+;;    `kc-ignored-prefix-keys', `kc-keymaps-for-key-completion',
+;;    `kc-prefix-in-mode-line-flag', `kc-self-insert-ranges',
+;;    `kc-separator', `kc-sort-order', `kc-sort-cycle-key'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `kc-add-key+cmd', `kc-auto',
+;;    `kc-add-key+cmd', `kc-auto', `kc-bind-sort-cycle-key',
 ;;    `kc-bind-key-completion-keys-for-map-var',
 ;;    `kc-bind-key-completion-keys-in-keymaps-from',
-;;    `kc-complete-keys-1', `kc-complete-keys-action',
-;;    `kc-keys+cmds-w-prefix', `kc-lighter', `kc-remove-lighter',
+;;    `kc-case-string-less-p', `kc-command-names-alphabetic-p',
+;;    `kc-completion-function', `kc-complete-keys-1',
+;;    `kc-complete-keys-action', `kc-keys+cmds-w-prefix',
+;;    `kc-lighter', `kc-local-key-binding-p', `kc-local-keys-first-p',
+;;    `kc-minibuffer-setup', `kc-prefix-keys-first-p',
+;;    `kc-remove-lighter',
 ;;    `kc-remove-lighter-unless-completing-prefix',
-;;    `kc-same-vector-keyseq-p', `kc-some',
+;;    `kc-same-vector-keyseq-p', `kc-some', `kc-sort-by-command-name',
+;;    `kc-sort-local-keys-first', `kc-sort-prefix-keys-first',
 ;;    `kc-this-command-keys-prefix',
 ;;    `kc-unbind-key-completion-keys-for-map-var',
 ;;    `kc-unbind-key-completion-keys-in-keymaps-from', `kc-unlist'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `kc-auto-idle-timer', `kc-keys-alist'.
+;;    `kc-auto-idle-timer', `kc-keys-alist', `kc-sort-orders'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2020/05/25 dadams
+;;     Added: kc-sort-cycle-key, kc-sort-order, kc-sort-orders, kc-minibuffer-setup,
+;;            kc-bind-sort-cycle-key, kc-cycle-sort-order, kc-completion-function,
+;;            kc-sort-prefix-keys-first, kc-sort-local-keys-first, kc-sort-by-command-name,
+;;            kc-prefix-keys-first-p, kc-local-keys-first-p, kc-local-key-binding-p,
+;;            kc-case-string-less-p, kc-command-names-alphabetic-p.
+;;     kc-mode: Bind sort-cycling key, and restore.
+;;     kc-complete-keys-1: Use kc-minibuffer-setup, completing-read-default, kc-completion-function.
+;;     kc-msg-emphasis: Changed default appearance.
 ;; 2020/05/24 dadams
 ;;     Created.
 ;;
@@ -222,8 +238,8 @@ highlighted with face `kc-menu-non-local'."
   :group 'keysee :group 'faces)
 
 (defface kc-msg-emphasis
-  '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
-    (t (:foreground "DarkGreen")))
+  '((((background dark)) (:foreground "Yellow"))
+    (t (:foreground "Blue")))
   "Face used to emphasize (part of) a message."
   :group 'keysee :group 'faces)
 
@@ -271,6 +287,10 @@ of the maps, to `kc-complete-keys'."
 Key completion binds `completion-styles' (which see) to this
 value for the duration."
   :type completion--styles-type)
+
+(defcustom kc-sort-cycle-key (kbd "C-,")
+  "Key to use for cycling `kc-mode' sort orders."
+  :group 'keysee :type 'key-sequence)
 
 (defcustom kc-ignored-prefix-keys ()
   "Prefix keys for `kc-complete-keys' to ignore.
@@ -372,6 +392,13 @@ Upper ranges:
   "Characters that separate keys from their commands, in key completions."
   :type 'string :group 'keysee)
 
+(defcustom kc-sort-order 'prefix-keys
+  "Current sort order for `kc-mode' key candidates."
+  :group 'keysee :type '(choice 
+                         (const :tag "By key name, prefix keys first" 'prefix-keys)
+                         (const :tag "By key name, local keys first"  'local-keys)
+                         (const :tag "By command name"                'command)
+                         (const :tag "Unsorted"                       nil)))
 
 (defvar kc-auto-idle-timer nil
   "Timer used to automatically complete a key sequence when Emacs is idle.")
@@ -387,6 +414,14 @@ Each alist element is of the form (NAME KEY . BINDING), where:
 
 \(The separator between KEY and BINDING-NAME is the value of option
 `kc-separator'.  Its default value is \"  =  \".)")
+
+(defvar kc-sort-orders (let ((rng  (make-ring 4)))
+                         (ring-insert rng nil)
+                         (ring-insert rng 'command)
+                         (ring-insert rng 'local-keys)
+                         (ring-insert rng 'prefix-keys)
+                         rng)
+  "Ring of sort orders for cycling with `kc-bind-sort-cycle-key'.")
 
 
 (defun kc-auto ()
@@ -419,26 +454,25 @@ these forms:
   PREFIX-KEY  =  ...
   KEY  =  COMMAND
 
-* The first of these, `..', is shown only when completing a prefix
-  key.  Choosing it takes you back up one level, to the parent prefix
-  key, or to the top level if there is no parent.
+ * The first of these, `..', is shown only when completing a prefix
+   key.  Choosing it takes you back up one level, to the parent prefix
+   key, or to the top level if there is no parent.
 
-  For example, if you are currently completing prefix key `C-x 4',
-  then `..' takes you back up to the completions for prefix key `C-x'.
-  Using `..' there then takes you up from that level to the top level.
-  When `..' is a candidate it is the default, so you can just hit
-  `RET' to go up a level.
+   For example, if you are currently completing prefix key `C-x 4',
+   then `..' takes you back up to the completions for prefix key
+   `C-x'.  Using `..' there then takes you up from that level to the
+   top level.  When `..' is a candidate it is the default, so you can
+   just hit `RET' to go up a level.
 
-* Choosing `PREFIX-KEY  =  ...' takes you down a level, to the keys
-  on that PREFIX-KEY.  For example, at top level, choosing completion
-  candidate `C-x  =  ...' takes you to completions for `C-x'.
+ * Choosing `PREFIX-KEY = ...' takes you down a level, to the keys on
+   that PREFIX-KEY.  For example, at top level, choosing completion
+   candidate `C-x = ...' takes you to completions for `C-x'.
 
-* Choosing `KEY  =  COMMAND' invokes COMMAND.
+ * Choosing `KEY  =  COMMAND' invokes COMMAND.
 
 Completion uses the completion styles defined by option
 `kc-completion-styles', not those of standard option
-`completion-styles'.  By default, it favors flex (Emacs 27 or
-later) or substring completion.
+`completion-styles'.  By default, it favors substring completion.
 
 You can use option `kc-separator' to customize the separator
 `  =  '.  The default value has 2 space chars on each side of `=',
@@ -448,6 +482,18 @@ char.
 Completion is as usual in vanilla Emacs: type characters to match
 completion candidates, use `TAB' to complete, use `RET' to accept
 a completion.
+
+The following completion-candidate sort orders are available.  You can
+cycle among them during completion using the key that is the value of
+option `kc-sort-cycle-key' (`C-,' by default).
+
+ * By key name alphabetically, prefix keys first
+ * By key name alphabetically, local keys first
+ * By command name alphabetically
+ * Off - no sorting
+
+You can cycle candidates using `TAB', according to option
+`completion-cycle-threshold'.
 
 For top-level key completion (keys in `kc-completion-keys',
 e.g. `S-TAB'), you can use option `kc-keymaps-for-key-completion'
@@ -459,18 +505,24 @@ You can override this by customizing option
 `kc-bind-completion-keys-anyway-flag' to non-nil."
   :global t :group 'keysee :init-value nil
   (when (timerp kc-auto-idle-timer) (cancel-timer kc-auto-idle-timer))
-  (cond (kc-mode
-         (when kc-auto-flag
-           (setq kc-auto-idle-timer  (run-with-idle-timer kc-auto-delay t 'kc-auto)))
-         (kc-bind-key-completion-keys-in-keymaps-from (current-global-map))
-         (dolist (map  kc-keymaps-for-key-completion) (kc-bind-key-completion-keys-for-map-var map))
-         (add-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
-         (advice-add 'abort-recursive-edit :before 'kc-lighter))
-        (t
-         (kc-unbind-key-completion-keys-in-keymaps-from (current-global-map))
-         (dolist (map  kc-keymaps-for-key-completion) (kc-unbind-key-completion-keys-for-map-var map))
-         (remove-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
-         (advice-remove 'abort-recursive-edit 'kc-lighter)))
+  (let* ((cycle-key-binding  (lookup-key minibuffer-local-map kc-sort-cycle-key))
+         (unbind-cycle-key   (lambda ()
+                               (define-key minibuffer-local-map
+                                 kc-sort-cycle-key cycle-key-binding))))
+    (cond (kc-mode
+           (when kc-auto-flag
+             (setq kc-auto-idle-timer  (run-with-idle-timer kc-auto-delay t 'kc-auto)))
+           (kc-bind-key-completion-keys-in-keymaps-from (current-global-map))
+           (dolist (map  kc-keymaps-for-key-completion) (kc-bind-key-completion-keys-for-map-var map))
+           (add-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
+           (add-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
+           (advice-add 'abort-recursive-edit :before 'kc-lighter))
+          (t
+           (kc-unbind-key-completion-keys-in-keymaps-from (current-global-map))
+           (dolist (map  kc-keymaps-for-key-completion) (kc-unbind-key-completion-keys-for-map-var map))
+           (remove-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
+           (remove-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
+           (advice-remove 'abort-recursive-edit 'kc-lighter))))
   (message "Turning %s %sKC mode..."
            (propertize (if kc-mode "ON" "OFF") 'face 'kc-msg-emphasis)
            (if kc-auto-flag "AUTO " ""))
@@ -660,13 +712,39 @@ completions are found for PREFIX-VECT."
            (prompt   (concat "Complete keys"
                              (and (not (string= "" keydesc)) (concat " " keydesc))
                              ": ")))
-      (let ((completion-styles  kc-completion-styles))
-	(minibuffer-with-setup-hook
-            #'minibuffer-complete
+      (let ((completion-styles      kc-completion-styles))
+        (minibuffer-with-setup-hook #'kc-minibuffer-setup
           (kc-complete-keys-action
-           (completing-read prompt kc-keys-alist nil t nil nil (if (equal [] prefix-vect) nil ".."))
+           (completing-read-default prompt (kc-completion-function kc-keys-alist)
+                                    nil t nil nil (if (equal [] prefix-vect) nil ".."))
            prefix-vect
            (this-command-keys-vector))))))) ; For error report - e.g. mouse command.
+
+(defun kc-minibuffer-setup ()
+  "Bind `kc-sort-cycle-key', then complete the minibuffer contents."
+  (kc-bind-sort-cycle-key)
+  (minibuffer-complete))
+
+(defun kc-bind-sort-cycle-key ()
+  "Bind `kc-sort-cycle-key' to command `kc-cycle-sort-order'."
+  (define-key minibuffer-local-map kc-sort-cycle-key #'kc-cycle-sort-order))
+
+(defun kc-cycle-sort-order (&optional msgp)
+  "Cycle to the next key-candidate sort order."
+  (interactive "p")
+  (setq kc-sort-order  (ring-next kc-sort-orders kc-sort-order)
+        last-command   'ignore)
+  (minibuffer-complete)
+  (when msgp (message "Sorting is now %s%s"
+                      (if kc-sort-order
+                          (format "%s" (if (eq kc-sort-order 'command) "by " "by key name, "))
+                        "turned ")
+                      (propertize (cl-case kc-sort-order
+                                    (prefix-keys "prefix keys first")
+                                    (local-keys  "local keys first")
+                                    (command     "command name")
+                                    (t           "OFF"))
+                                  'face 'kc-msg-emphasis))))
 
 (defun kc-complete-keys-action (candidate prefix-vect this-cmd-keys-vect)
   "Complete CANDIDATE, invoking its command.
@@ -707,6 +785,116 @@ The default value when completing a prefix key is `..'."
                  ;; Bind so vanilla context when invoke chosen command.
                  (call-interactively binding nil this-cmd-keys-vect))))
       (select-window action-window))))
+
+(defun kc-completion-function (items)
+  "Key-completion function for `kc-mode'."
+  (lambda (string pred action)
+    (if (eq action 'metadata)
+        (let ((order  (cl-case kc-sort-order
+                        (prefix-keys 'kc-sort-prefix-keys-first)
+                        (local-keys  'kc-sort-local-keys-first)
+                        (command     'kc-sort-by-command-name)
+                        (t      nil))))
+          `(metadata ,@(and order  `((display-sort-function . ,order)
+                                     (cycle-sort-function . ,order)))
+                     (category . key)))
+      (complete-with-action action items string pred))))
+
+(defun kc-sort-prefix-keys-first (candidates)
+  "Sort CANDIDATES (strings) so that prefix keys are first."
+  (let ((cands  (copy-sequence candidates)))
+    (sort cands #'kc-prefix-keys-first-p)))
+
+(defun kc-sort-local-keys-first (candidates)
+  "Sort CANDIDATES (strings) so that local keys are first."
+  (let ((cands  (copy-sequence candidates)))
+    (sort cands #'kc-local-keys-first-p)))
+
+(defun kc-sort-by-command-name (candidates)
+  "Sort CANDIDATES (strings) by command name, alphabetically."
+  (let ((cands  (copy-sequence candidates)))
+    (sort cands #'kc-command-names-alphabetic-p)))
+
+(defun kc-prefix-keys-first-p (s1 s2)
+  "Non-nil if S1 is a prefix key and S2 is not or S1 < S2 (alphabet).
+For this function, a prefix key is represented by a string that ends
+in \"...\".
+
+When used as a comparison function for completion candidates, this
+makes prefix keys that match your input available first (at the top of
+buffer `*Completions*').  Candidates are effectively in two groups,
+each of which is sorted alphabetically separately: prefix keys,
+followed by non-prefix keys.  Letter case is ignored.
+
+The special key representation \"..\" is, however, less than all other
+keys, including prefix keys."
+  (let* ((prefix-string           (concat kc-separator "\\.\\.\\.$"))
+         (parent-string           "..")
+         (s1-prefix-p             (string-match-p prefix-string s1))
+         (s2-prefix-p             (string-match-p prefix-string s2))
+         (completion-ignore-case  t))
+    (and (not (string= parent-string s2))
+         (or (string= parent-string s1)
+             (and (not s1-prefix-p)  (not s2-prefix-p)  (kc-case-string-less-p s1 s2))
+             (and s1-prefix-p  (not s2-prefix-p))
+             (and s1-prefix-p  s2-prefix-p  (kc-case-string-less-p s1 s2))))))
+
+(defun kc-local-keys-first-p (s1 s2)
+  "Non-nil if S1 is a local key and S2 is not or S1 < S2 (alphabet).
+This makes local keys that match your input available first (at the
+top of buffer `*Completions*').  Candidates are effectively in two
+groups, each of which is sorted alphabetically separately: local keys,
+followed by non-prefix keys.  Letter case is ignored.
+
+The special key representation \"..\" is, however, less than all other
+keys, including local keys."
+  (or (string= ".." s1)
+      (and (not (string= ".." s2))
+           (let ((s1-local  (kc-local-key-binding-p s1))
+                 (s2-local  (kc-local-key-binding-p s2)))
+             (or (and s1-local  (not s2-local))
+                 (and (not s1-local)  (not s2-local)  (kc-case-string-less-p s1 s2))
+                 (and      s1-local        s2-local   (kc-case-string-less-p s1 s2)))))))
+
+(defun kc-local-key-binding-p (candidate)
+  "Return non-nil if CANDIDATE is a local key binding."
+  (let ((fprop  (get-text-property 0 'face candidate)))
+    (if (facep fprop)
+        (or (eq 'kc-key-local fprop)  (eq   'kc-menu-local fprop))
+      (or (memq 'kc-key-local fprop)  (memq 'kc-menu-local fprop)))))
+
+(defun kc-case-string-less-p (s1 s2)
+  "`string-<', but respect `case-fold-search', `completion-ignore-case'."
+  (when (or case-fold-search  completion-ignore-case)
+    (setq s1  (upcase s1)
+          s2  (upcase s2)))
+  (string-lessp s1 s2))
+
+(defun kc-command-names-alphabetic-p (s1 s2)
+  "Non-nil if command name of S1 is `kc-case-string-less-p' that of S2.
+Prefix keys are sorted after candidates with command names, and they
+are alphabetically."
+  (or (string= ".." s1)
+      (and (not (string= ".." s2))
+           (let* ((pref-pat   (concat kc-separator "\\.\\.\\.$"))
+                  (s1-pre-fp  (string-match-p pref-pat s1))
+                  (s2-pref-p  (string-match-p pref-pat s2)))
+             (or (and (not s1-pre-fp)  s2-pref-p) ; K1  =  cmd, K2  =  ...
+                 (cond ((and s1-pre-fp  (not s2-pref-p)) nil) ; K1  =  ..., K2  =  cmd
+                       ((and s1-pre-fp  s2-pref-p) ; K1  =  ..., K2  =  ...
+                        (let* ((key-pat  (concat "\\(^.*\\)" kc-separator))
+                               (___1     (string-match key-pat s1))
+                               (key1     (match-string 1 s1))
+                               (___2     (string-match key-pat s2))
+                               (key2     (match-string 1 s2)))
+                          (kc-case-string-less-p key1 key2)))
+                       (t               ; K1  =  cmd1, K2  =  cmd2
+                        (let* ((rhs-pat  (concat kc-separator "\\(.+\\)"))
+                               (___1     (string-match rhs-pat s1))
+                               (cmd1     (match-string 1 s1))
+                               (___2     (string-match rhs-pat s2))
+                               (cmd2     (match-string 1 s2)))
+                          (kc-case-string-less-p cmd1 cmd2)))))))))
 
 (defun kc-keys+cmds-w-prefix (prefix-vect)
   "Fill `kc-keys-alist' for prefix key PREFIX-VECT (a vector)."
