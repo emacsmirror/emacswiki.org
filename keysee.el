@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 26 09:24:02 2020 (-0700)
+;; Last-Updated: Tue May 26 15:04:11 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 226
+;;     Update #: 233
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion
@@ -47,16 +47,16 @@
 ;; * The first of these, `..', is shown only when completing a prefix
 ;;   key.  Choosing it takes you back up one level, to the parent
 ;;   prefix key, or to the top level if there is no parent.
-;; 
+;;
 ;;   For example, if you are currently completing prefix key `C-x 4',
 ;;   then `..' takes you back up to the completions for prefix key
 ;;   `C-x'.  Using `..' there then takes you up from that level to the
 ;;   top level.  When `..' is a candidate it is the default, so you
 ;;   can just hit `RET' to go up a level.
 ;;
-;;  * Choosing `PREFIX-KEY = ...' takes you down a level, to the keys
-;;    on that PREFIX-KEY.  For example, at top level, choosing
-;;    completion candidate `C-x = ...' takes you to completions for
+;;  * Choosing `PREFIX-KEY  =  ...' takes you down a level, to the
+;;    keys on that PREFIX-KEY.  For example, at top level, choosing
+;;    completion candidate `C-x  =  ...' takes you to completions for
 ;;    prefix key `C-x'.
 ;;
 ;;  * Choosing `KEY  =  COMMAND' invokes COMMAND.
@@ -66,15 +66,26 @@
 ;;  `completion-styles'.  By default, it favors substring or flex
 ;;  (Emacs 27 or later) completion.
 ;;
-;;  You can use option `kc-separator' to customize the separator
-;;  `  =  '.  The default value has 2 space chars on each side of `=',
-;;  so you can more easily match menu candidates that contain a space
-;;  char.
+;;  You can use option `kc-separator' to customize separator `  =  '.
+;;  The default value has 2 space chars on each side of `=', so you
+;;  can more easily match menu candidates that contain a space char.
 ;;
 ;;  Completion is as usual in vanilla Emacs: type characters to match
 ;;  completion candidates, use `TAB' to complete, use `RET' to accept
 ;;  a completion.
 ;;
+;;  The following completion-candidate sort orders are available.  You
+;;  can cycle among them during completion using the key that is the
+;;  value of option `kc-sort-cycle-key' (`C-,' by default).
+;;
+;;  * By key name alphabetically, prefix keys first
+;;  * By key name alphabetically, local keys first
+;;  * By command name alphabetically
+;;  * Off - no sorting
+;;
+;;  You can cycle candidates using `TAB', according to option
+;;  `completion-cycle-threshold'.
+
 ;;  For top-level key completion (keys in `kc-completion-keys',
 ;;  e.g. `S-TAB'), you can use option `kc-keymaps-for-key-completion'
 ;;  to choose which keymaps in which to bind `S-TAB' to
@@ -394,7 +405,7 @@ Upper ranges:
 
 (defcustom kc-sort-order 'prefix-keys
   "Current sort order for `kc-mode' key candidates."
-  :group 'keysee :type '(choice 
+  :group 'keysee :type '(choice
                          (const :tag "By key name, prefix keys first" 'prefix-keys)
                          (const :tag "By key name, local keys first"  'local-keys)
                          (const :tag "By command name"                'command)
@@ -464,9 +475,9 @@ these forms:
    top level.  When `..' is a candidate it is the default, so you can
    just hit `RET' to go up a level.
 
- * Choosing `PREFIX-KEY = ...' takes you down a level, to the keys on
-   that PREFIX-KEY.  For example, at top level, choosing completion
-   candidate `C-x = ...' takes you to completions for `C-x'.
+ * Choosing `PREFIX-KEY  =  ...' takes you down a level, to the keys
+   on that PREFIX-KEY.  For example, at top level, choosing completion
+   candidate `C-x  =  ...' takes you to completions for `C-x'.
 
  * Choosing `KEY  =  COMMAND' invokes COMMAND.
 
