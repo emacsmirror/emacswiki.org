@@ -4,8 +4,6 @@ It is similar in purpose to DiminishedModes but it accounts for major modes as w
 
 Another alternative to delight is [https://github.com/alezost/dim.el dim].
 
-Some libraries also implement direct support for custom lighters.  For example, the [https://github.com/bbatsov/projectile/blob/master/doc/configuration.md#mode-line-indicator Projectile documentation] describes a collection of user options affecting what it displays in the mode line.
-
 ==Download and Install==
 
 [InstallingPackages Install] the [http://elpa.gnu.org/packages/delight.html delight] package from the default [http://elpa.gnu.org/ GNU ELPA] repository:
@@ -72,6 +70,8 @@ See `mode-line-format' for information about mode-line constructs, and ##M-: (in
 Settings for minor modes are held in a global variable and tend to take immediate effect upon calling `delight'. Major mode names are held in buffer-local variables, however, so changes to these will not take effect in a given buffer unless the major mode is called again, or the buffer is reverted. Calling ##M-x normal-mode## is sufficient in most cases.
 
 Also bear in mind that some modes may dynamically update these values themselves (for instance dired-mode updates mode-name if you change the sorting criteria) in which cases this library may prove inadequate.
+
+Some modes also implement direct support for customizing these values.  For example, the [https://github.com/bbatsov/projectile/blob/master/doc/configuration.md#mode-line-indicator Projectile documentation] describes a collection of user options affecting what it displays in the mode line.  If delight is not sufficient for a particular mode, be sure to check whether the library in question provides its own way of doing this.
 
 ==Conflict with c-mode and related major modes==
 
