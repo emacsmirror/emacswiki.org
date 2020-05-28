@@ -3,6 +3,8 @@ I love Emacs. I'm a university student at Hiroshima Univ.
 == Dotfiles ==
 * [https://github.com/conao3/dotfiles dotfiles] -- Conao3's dotfiles include init.el, Emacs configuration file
 
+This repository is now private. If you want to get this code, please join my [https://www.patreon.com/conao3 Patreon].
+
 == Author Projects ==
 * [https://github.com/conao3/leaf.el leaf.el] (MELPA) -- Simplify your init.el configuration, extended use-package
 * [https://github.com/conao3/leaf-keywords.el leaf-keywords.el] (MELPA) -- Additional leaf.el keywords for external packages
