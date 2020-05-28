@@ -27,7 +27,7 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
 * [https://github.com/conao3/transient-dwim.el transient-dwim.el] (MELPA) -- Useful preset transient commands
 * [https://github.com/conao3/oj.el oj.el] (MELPA) -- Competitive programming tools client for AtCoder, Codeforces
-
+* [https://github.com/conao3/scratch-comment.el scratch-comment.el] (MELPA) -- Insert Elisp result as comment in scratch buffer
 
 == Co-maintainer Projects in MELPA ==
 * [https://github.com/skk-dev/ddskk skk-dev/ddskk] -- Daredevil SKK (Simple Kana to Kanji conversion program)
