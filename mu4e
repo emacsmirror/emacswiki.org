@@ -22,7 +22,7 @@ To quote Prof. Shirky: /It's not information overload. It's filter failure/. mu4
 * Yet another simple setup with gmail (2012/10/12) : https://gist.github.com/areina/3879626
 * Some more advanced configurations (2013): http://zmalltalker.com/linux/mu.html
 
-mu4e's first release is as part of mu 0.9.8, end of January 2012, and the most recent one is 0.9.18, released in December 2016 (see https://github.com/djcb/mu/releases).
+mu4e's first release is as part of mu 0.9.8, end of January 2012, and the most recent one is 1.4.8, released in May 2020 (see https://github.com/djcb/mu/releases).
 
 == Recipes ==
 === Context templates ===
