@@ -19,6 +19,8 @@ You can filter it to specific extensions if needed:
   cd /path/to/my/project
   ctags -e -R *.cpp *.hpp *.h
 
+If you use macports on macOS, universal ctags are installed as uctags.
+
 === From within Emacs ===
 
 Put this in your [[init file]]:
