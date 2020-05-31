@@ -8,6 +8,9 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Invalid link ==
+https://www.emacswiki.org/emacs/LiCE page has an invalid link, you may want to edit it.
+
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
 -- Thanks for your attention --
@@ -362,8 +365,7 @@ https://www.emacswiki.org/emacs?action=browse;diff=1;id=UsingPortraits
 [new]
 Yeah. Thanks for the heads up. I fixed Gists. The server now fetches them and includes them in the HTML (slowing things down). I don't think the server should fetch and cache portraits from elsewhere, though. So I think I'm just going to remove that functionality. Right now I feel that all that we need to keep is the ##[new]## element, what do you think? -- [[Alex Schroeder]]
 
-== Invalid link ==
-https://www.emacswiki.org/emacs/LiCE page has an invalid link, you may want to edit it.
+
 
 ----
 CategoryEmacsWikiSite
