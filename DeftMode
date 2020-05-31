@@ -42,4 +42,31 @@ Thanks for pointing this out.  I believe this is fixed now, by [http://jblevins.
 [new:]
 It is a powerful tool to manage my journal and blogs. But is there any way to manage multiple projects with deft-mode? -- LdBeth
 ----
+
+[new:2020-05-31:2020-05-31 14:56 UTC]
+Multiple projects can be done by
+{{{
+; form http://pragmaticemacs.com/category/deft/
+(defun bjm-deft (dir)
+  "Run deft in directory DIR"
+  (setq deft-directory dir)
+  (switch-to-buffer "*Deft*")
+  (kill-this-buffer)
+  (deft)
+  )
+}}}
+If you only want to set the folder temporary, you can do 
+{{{
+(defun z-deft (dir)
+  "Run deft in directory DIR but doesn't change deft-directory"
+  (let ((temp deft-directory))
+  (setq deft-directory dir)
+  (switch-to-buffer "*Deft*")
+  (kill-this-buffer)
+  (deft)
+  (setq deft-directory temp)
+  ))
+}}}
+
+
 CategoryWriting
