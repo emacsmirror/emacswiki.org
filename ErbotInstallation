@@ -9,7 +9,7 @@ Other sections:
 ----
 Old instructions:
 
-Disclaimer: Please note that ErBot does not come in a nice packaged form for install yet.   :).  Nonetheless, if you want to install it and run it for some channels, here are *step-by-step* instructions.  ErBot is most specially suited to lispy channels like #emacs and may not necessarily be suited for your needs.  Have a look at the bot apt in #debian, and its package bobot++, to see if that suits you better-- in fact, a lot of ErBot's english interface is inspired from apt's.  Having said that, I think I like fsbot's design and syntax more --- allow the user a similar fuzzy english syntax that apt does, but that fuzzy syntax is just an interface to an accurate lisp syntax, which is also available to the user. Also, fsbot does a much smarter search-lookup, has tons of other features and is also a minor lisp interpreter. 
+Disclaimer: Please note that ErBot does not come in a nice packaged form for install yet.   :).  Nonetheless, if you want to install it and run it for some channels, here are step-by-step instructions.  ErBot is most specially suited to lispy channels like #emacs and may not necessarily be suited for your needs.  Have a look at the bot apt in #debian, and its package bobot++, to see if that suits you better-- in fact, a lot of ErBot's english interface is inspired from apt's.  Having said that, I think I like fsbot's design and syntax more --- allow the user a similar fuzzy english syntax that apt does, but that fuzzy syntax is just an interface to an accurate lisp syntax, which is also available to the user. Also, fsbot does a much smarter search-lookup, has tons of other features and is also a minor lisp interpreter. 
 
 ----
 
@@ -109,7 +109,7 @@ Place all these files in ~/elisp/.
 ** M-x erbot-join-servers RETURN
 
 
-=== Erbot can google. Want google? ===
+=== Google (outdated, not functional) ===
 
 
 * Write to google to request a license-key (expect immediate automated reply) and a permission (don't really expect a reply, IME, YMMV) for your bot to serve google search results.  Check out  http://www.google.com/apis/ .   Put that license key into mybot's ~/.emacs.private, like this:
@@ -290,13 +290,6 @@ erbot usually defines its functions to not conflict with existing lisp functions
 
 However, many people (esp. on nonlispy channels) don't care much for elisp's functions, and the first thing they try for removing entries is (remove).  Mybot's default .emacs makes that (remove) work through (erbunlisp-install)..  That function takes special care of these rare "conflicts".  IOW, (erbunlisp-install) ensures that (remove) gets passed to ERBOT's (fs-rm) function instead of lisp's (remove). REMOVE is just an example, (erbunlisp-install) shall seek to usually take care of all similar issues.
 
-
-
-* .emacs.private is probably the right place to edit erbot-ignore-nicks, which is a list of regexps which erbot will not reply to. The primary purpose of that variable is to avoid bots getitng into infinite loops with other bots :)
-
-
-* See the .emacs of mybot, it has useful stuff bound to f6 f6.  This helps keep track of channels in which mybot's circuits got triggerred in response to something, (whether or not it replied anything is a different matter).  Pressing f6 f7 resets this list. 
-
 * Defun functions like (fs-foo) to the bot's ~/.emacs to add any more
   functions to your bot.  To disable a pre-existing function,
   (fmakunbound 'fs-foo) should work.  Note that anyone and everyone on
@@ -312,24 +305,6 @@ However, many people (esp. on nonlispy channels) don't care much for elisp's fun
   instead of fs-foo.  Defun these functions at the top of your
   .emacs. When loading, the engine converts all such functions to
   fs-foo but marks them immutable.
-
-* This might be useful.  To the end of mybot's .bashrc, add umask 022.  Add yourself to mybot's group, say via: adduser deego mybot. Also su to mybot and "chmod -R -g+rw .". Now log back out and login, Now you (deego)should be able to edit mybot's .emacs etc. without having to su to mbot.
-
-* While it is best for you, the bot operator, to learn how to do edit botdata by talking to the bot (See the manual at ErBot), you can also edit them more easily by going to bot's emacs and typing M-x bbdb ...  if you know what you are doing...
-
-
-
-* ErBot has many other undocumented or work-in-progress features, just chat with the author(s) for what you may have in mind, or explore the sources.  If you add/improve something or complete a feature in your sources, please contribute it back upstream :).
-
-
-
-== More help ==
-
-
-
-Start xchat (or how about an Emacs-based InternetRelayChat client?), go to #emacs (EmacsChannel) on the server irc.freenode.net (port 6667), and catch hold of deego or hroptatyr or any of fsbot's other authors in #fsbot or the helpful folks in #emacs.  Or send deego an email @gnufans.org.  
-
-
 
 
 ----
