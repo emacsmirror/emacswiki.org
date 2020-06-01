@@ -15,6 +15,9 @@ https://www.emacswiki.org/emacs/LiCE page has an invalid link, you may want to e
 Is there a problem that prevents you from editing the page? Editing is open to all.
 Anyway, as I couldn’t find any info on the project I simply unlinked it. — Alex Schroeder
 
+[new]
+Thanks, I wasn't totally sure what the rules are for removing contents (link in this case).
+
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
 -- Thanks for your attention --
