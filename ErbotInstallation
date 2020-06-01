@@ -56,10 +56,6 @@ apt-get -u install [-t stable] emacs21-el. The package emacs21-el helps with ErB
 ** OR: Simply wget the latest tar.gz dated dev "release" and gunzip it
    and untar it to ~/elisp/erbot.
 
-* Here are the files in CVS: 
-** http://savannah.nongnu.org/cgi-bin/viewcvs/erbot/erbot/ 
-** http://savannah.nongnu.org/projects/erbot/
-
 
 * cd ~/elisp/erbot
 
