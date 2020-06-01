@@ -1,3 +1,3 @@
-LiCE is an Emacs clone written in Common Lisp. It runs on top of Movitz, an implementation of Common Lisp for the x86 architecture.
+/LiCE/ is an Emacs clone written in Common Lisp. It runs on top of Movitz, an implementation of Common Lisp for the x86 architecture.
 
 Then again, when looking at [https://www.cliki.net/CL-Emacs CL-Emacs] there seems to be no link to a project so the assumption is that it’s dead. 
