@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Jan  3 10:43:59 2020 (-0800)
+;; Last-Updated: Tue Jun  2 13:12:08 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 30064
+;;     Update #: 30074
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4164,7 +4164,8 @@
 ;;  * `Jaro-Winkler' - This method gives matching weight to having
 ;;    both (a) more characters that match in the right positions
 ;;    (Jaro) and (b) a longer exact prefix within the first four
-;;    characters (Winkler).
+;;    characters (Winkler).  Library `fuzzy.el', which is part of
+;;    package `auto-complete', is required.
 ;;
 ;;  If you have your own method of matching then you can use that too,
 ;;  by adding it to option `icicle-S-TAB-completion-methods-alist' for
@@ -4197,7 +4198,8 @@
 ;;  * `M-(' (command `icicle-next-S-TAB-completion-method') to cycle
 ;;    `S-TAB' completion methods: `apropos', `scatter', `SPC scatter',
 ;;    `Levenshtein', `Levenshtein strict', and `Jaro-Winkler' (only if
-;;    you have the Autocomplete library `fuzzy.el').
+;;    you have library `fuzzy.el', which is part of package
+;;    `auto-complete').
 ;;
 ;;  Repeating `C-(' and `TAB' or `M-(' and `S-TAB' on the fly for the
 ;;  same input can be a good way to learn the differences between the
@@ -4310,9 +4312,12 @@
 ;;(@* "Swank (Fuzzy Symbol) Completion")
 ;;  *** Swank (Fuzzy Symbol) Completion ***
 ;;
+;;  Library `el-swank-fuzzy.el' is required for Icicles to use
+;;  fuzzy-symbol completion.
+;;
 ;;  If you choose `swank' `TAB' completion, what you get in Icicles is
 ;;  fuzzy completion, but only for symbols.  Symbols are completed
-;;  using the algorithm of `el-swank-fuzzy.el' - see that library for
+;;  using the algorithm of `el-swank-fuzzy.el'.  See that library for
 ;;  details.
 ;;
 ;;  Icicles options `icicle-swank-timeout' and
@@ -4345,11 +4350,14 @@
 ;;(@* "Fuzzy-Match Completion")
 ;;  *** Fuzzy-Match Completion ***
 ;;
+;;  Library `fuzzy-match.el' is required for Icicles to use
+;;  fuzzy-match completion.
+;;
 ;;  Fuzzy-match completion (`S-TAB' completion method `fuzzy') takes
 ;;  more explaining.  It is described in detail in the commentary of
-;;  library `fuzzy-match.el'; please refer to that documentation.
-;;  Here are some things to keep in mind when you use Icicles
-;;  fuzzy-match completion, which goes by the name `fuzzy':
+;;  library `fuzzy-match.el'.  Here are some things to keep in mind
+;;  when you use Icicles fuzzy-match completion, which goes by the
+;;  name `fuzzy':
 ;;
 ;;  * It reverts to basic prefix completion for file names.  That is,
 ;;    file-name completion is never fuzzy.
@@ -4493,6 +4501,9 @@
 ;;(@* "Levenshtein Completion")
 ;;  *** Levenshtein Completion ***
 ;;
+;;  Library `levenshtein.el' is required for Icicles to use
+;;  Levenshtein completion.
+;;
 ;;  The "Levenshtein distance" is the maximum number of character
 ;;  insertions, deletions, or replacements that are needed to
 ;;  transform one string to another.  The more similar two strings
@@ -4533,6 +4544,9 @@
 ;;
 ;;(@* "Jaro-Winkler Completion")
 ;;  ***  Jaro-Winkler Completion ***
+;;
+;;  Library `fuzzy.el', from package `auto-complete', is required for
+;;  Icicles to use Jaro-Winkler completion.
 ;;
 ;;  The Jaro-Winkler `S-TAB' completion method was originally
 ;;  developed for comparing names for the U.S. census.  It tends to
