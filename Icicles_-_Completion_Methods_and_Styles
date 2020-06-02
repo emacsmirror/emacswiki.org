@@ -199,7 +199,8 @@ matching arbitrary text at the separations between those parts.
 * '''<tt>[[#JaroWinklerMatchCompletion|`Jaro-Winkler']]</tt>''' -- This method gives matching weight to having
   both (a) more characters that match in the right positions
   (Jaro) and (b) a longer exact prefix within the first four
-  characters (Winkler).
+  characters (Winkler).  Library '''##fuzzy.el##''', which is part of
+package `auto-complete', is required.
 
 If you have your own method of matching then you can use that too,
 by adding it to option `icicle-S-TAB-completion-methods-alist' for
@@ -238,7 +239,8 @@ by hitting a key in the [[minibuffer]]:
 `fuzzy' only if you have library <tt>[[fuzzy-match.el]]</tt>; `swank' only if you have library <tt>[[el-swank-fuzzy.el]]</tt>).
 
 * '''`##M-(##'''' (command '''`icicle-next-S-TAB-completion-method'''') to cycle `S-TAB' completion methods: `apropos', `scatter', `SPC scatter',
-`Levenshtein', `##Levenshtein strict##', and `Jaro-Winkler' (only if you have the Autocomplete library ##fuzzy.el##.
+`Levenshtein', `##Levenshtein strict##', and `Jaro-Winkler' (only if you have library ##fuzzy.el##, which is part of package
+`auto-complete'.
 
 Repeating `##C-(##' and `TAB' or `##M-(##' and `S-TAB' on the fly for the same input
 can be a good way to learn the differences between the various
@@ -391,8 +393,10 @@ characters between `abc' and `def', and two between `def' and `gh').
 [:FuzzySymbolCompletion]
 === Swank (Fuzzy Symbol) Completion ===
 
+Library '''<tt>[[el-swank-fuzzy.el]]</tt>''' is required for '''Icicles''' to use fuzzy-symbol completion.
+
 If you choose `swank' `TAB' completion, what you get in '''Icicles''' is [[#FuzzyMatchCompletion|fuzzy-match]] completion, but only for [[symbol]]s.  Symbols are completed
-using the algorithm of <tt>[[el-swank-fuzzy.el]]</tt> -- see that library for
+using the algorithm of <tt>[[el-swank-fuzzy.el]]</tt>.  See that library for
 details.
 
 '''Icicles''' options '''`<tt>[[Icicles - Customization and General Tips#icicle-swank-timeout|icicle-swank-timeout]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-swank-prefix-length|icicle-swank-prefix-length]]</tt>'''' give you some control over the
@@ -435,8 +439,10 @@ the minibuffer to sort candidates differently has no effect.
 [:FuzzyMatchCompletion]
 === Fuzzy-Match Completion ===
 
+Library '''<tt>[[fuzzy-match.el]]</tt>''' is required for '''Icicles''' to use fuzzy-match completion.
+
 Fuzzy-match completion (`S-TAB' completion method `fuzzy') takes more explaining.  It is described in detail in the commentary of library
-<tt>[[fuzzy-match.el]]</tt>; please refer to that documentation.  Here are
+<tt>[[fuzzy-match.el]]</tt>.  Here are
 some things to keep in mind when you use '''Icicles''' fuzzy-match completion, which goes by the name `fuzzy':
 
 * It reverts to basic prefix completion for file names.  That is,
@@ -513,6 +519,9 @@ One takeaway here is that fuzzy-match completion is complicated. Rather than try
 [:LevenshteinMatchCompletion]
 === Levenshtein Completion ===
 
+Library '''<tt>[[levenshtein.el]]</tt>''' is required for '''Icicles''' to use
+Levenshtein completion.
+
 The "[[LevenshteinDistance|Levenshtein distance]]" is the maximum number of character
 insertions, deletions, or replacements that are needed to
 transform one string to another.  The more similar two strings
@@ -560,6 +569,8 @@ no doubt want to turn off incremental completion (`##C-###').
 
 [:JaroWinklerMatchCompletion]
 === Jaro-Winkler Completion ===
+
+Library '''##fuzzy.el##''', from package `auto-complete', is required for '''Icicles''' to use Jaro-Winkler completion.
 
 The Jaro-Winkler `S-TAB' completion method was originally developed for comparing names for the
 U.S. census.  It tends to take into account some typical spelling
