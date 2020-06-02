@@ -44,7 +44,7 @@ To use %%ParEdit%% with ElDoc, you should make !ElDoc aware of %%ParEdit%%'s mos
 
 Whenever the listed commands are used, !ElDoc will automatically refresh the minibuffer.
 
-== ParEdit and SLIME REPL == 
+== ParEdit and SLIME REPL ==
 
    (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
 
@@ -60,7 +60,7 @@ paredit's normal operation. To alleviate this problem use the following code:
 
 == ParEdit and "Electric RETURN" ==
 
-ParEdit works particularly well with an "electric" ##RETURN## function. 
+ParEdit works particularly well with an "electric" ##RETURN## function.
 
 If ##RETURN## is pressed when the cursor is before a closing paren, the following code will add an extra newline.  The extra newlines are re-gathered by ##paredit-close-round##, which ParEdit binds to "##)##" by default.
 
@@ -78,7 +78,7 @@ The code is loosely based on code on the AutoPairs page:
     (interactive "P")
     (let ((case-fold-search nil))
       (if (looking-at electrify-return-match)
-	  (save-excursion (newline-and-indent)))
+      (save-excursion (newline-and-indent)))
       (newline arg)
       (indent-according-to-mode)))
 
@@ -90,21 +90,21 @@ The code is loosely based on code on the AutoPairs page:
 Here's a '''[https://web.archive.org/web/20121024123050/http://img8.imageshack.us/img8/9479/openparen.gif short video demonstration]'''
 of %%ParEdit%% working with %%ElDoc%% and %%Show-Paren%% minor modes along with the electric ##RETURN## function defined above.
 
-Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the video: 
+Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the video:
 
   (add-hook 'emacs-lisp-mode-hook
-	    (lambda ()
-	      (paredit-mode t)
+        (lambda ()
+          (paredit-mode t)
 
-	      (turn-on-eldoc-mode)
-	      (eldoc-add-command
-	       'paredit-backward-delete
-	       'paredit-close-round)
+          (turn-on-eldoc-mode)
+          (eldoc-add-command
+           'paredit-backward-delete
+           'paredit-close-round)
 
-	      (local-set-key (kbd "RET") 'electrify-return-if-match)
-	      (eldoc-add-command 'electrify-return-if-match)
+          (local-set-key (kbd "RET") 'electrify-return-if-match)
+          (eldoc-add-command 'electrify-return-if-match)
 
-	      (show-paren-mode t)))
+          (show-paren-mode t)))
 
 == ParEdit, and extreme barfarge and slurpage ==
 
@@ -183,20 +183,23 @@ Evaluate the following after paredit is loaded:
 
 It's currently possible to use ##delete-indentation## (aka ##join-lines##) to pull code up from one line and stick it into the end-of-line comment of another line, invalidating the code. The following replacement for ##delete-indentation## ought to prevent that from happening by always making sure the comment is replaced at the end of the line.
 
+  ;; FIXME Mishandles adjoining whole-line comments (reinserts preceding at end)
   (defun paredit-delete-indentation (&optional arg)
     "Handle joining lines that end in a comment."
     (interactive "*P")
     (let (comt)
       (save-excursion
         (move-beginning-of-line (if arg 1 0))
+        ;; FIXME This misidentifies a semicolon inside a string as a comment
+        ;; in lisp
         (when (skip-syntax-forward "^<" (point-at-eol))
-	  (setq comt (delete-and-extract-region (point) (point-at-eol)))))
+      (setq comt (delete-and-extract-region (point) (point-at-eol)))))
       (delete-indentation arg)
       (when comt
         (save-excursion
-      	  (move-end-of-line 1)
-	  (insert " ")
-	  (insert comt)))))
+          (move-end-of-line 1)
+      (insert " ")
+      (insert comt)))))
   (define-key paredit-mode-map (kbd "M-^") 'paredit-delete-indentation)
 
 == Discussion ==
