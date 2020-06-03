@@ -1035,7 +1035,7 @@ or delete input, but not initially.
 [:icicle-incremental-completion]
 ==== Option icicle-incremental-completion====
 
-User option '''`icicle-incremental-completion-flag'''' controls whether or not `*Completions*' is updated incrementally (icompletion) as you type. 
+User option '''`icicle-incremental-completion'''' controls whether or not `*Completions*' is updated incrementally (icompletion) as you type. 
 You can cycle the option among its three possible
 values at any time using '''`<tt>C-#</tt>''''. For more
 information, see [[Icicles - Icompletion]].
