@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 26 15:04:11 2020 (-0700)
+;; Last-Updated: Wed Jun  3 13:13:25 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 233
+;;     Update #: 246
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion
@@ -17,7 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl-lib', `cl-macs', `gv', `macroexp'.
+;;   None
 ;;
 ;;; Commentary:
 ;;
@@ -133,7 +133,8 @@
 ;;    `kc-minibuffer-setup', `kc-prefix-keys-first-p',
 ;;    `kc-remove-lighter',
 ;;    `kc-remove-lighter-unless-completing-prefix',
-;;    `kc-same-vector-keyseq-p', `kc-some', `kc-sort-by-command-name',
+;;    `kc-reverse-order', `kc-same-vector-keyseq-p', `kc-some',
+;;    `kc-sort-by-command-name', `kc-sort-function',
 ;;    `kc-sort-local-keys-first', `kc-sort-prefix-keys-first',
 ;;    `kc-this-command-keys-prefix',
 ;;    `kc-unbind-key-completion-keys-for-map-var',
@@ -147,6 +148,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/03 dadams
+;;     Added: kc-reverse-order, kc-sort-function.
+;;     kc-cycle-sort-order: Prefix arg reverses sort order (doesn't cycle).  Use kc-sort-function.
+;;     kc-completion-function: Use kc-sort-function.
 ;; 2020/05/25 dadams
 ;;     Added: kc-sort-cycle-key, kc-sort-order, kc-sort-orders, kc-minibuffer-setup,
 ;;            kc-bind-sort-cycle-key, kc-cycle-sort-order, kc-completion-function,
@@ -740,13 +745,21 @@ completions are found for PREFIX-VECT."
   "Bind `kc-sort-cycle-key' to command `kc-cycle-sort-order'."
   (define-key minibuffer-local-map kc-sort-cycle-key #'kc-cycle-sort-order))
 
-(defun kc-cycle-sort-order (&optional msgp)
-  "Cycle to the next key-candidate sort order."
-  (interactive "p")
-  (setq kc-sort-order  (ring-next kc-sort-orders kc-sort-order)
-        last-command   'ignore)
+(defun kc-cycle-sort-order (&optional reversep msgp)
+  "Cycle to the next key-candidate sort order.
+With a prefix arg, just reverse the current sort order (don't cycle).
+\(A prefix key has no effect if sorting is currently turned off.)"
+  (interactive "P\np")
+  (let ((sort-fn  (kc-sort-function)))
+    (cond ((and reversep  sort-fn)
+           (if (advice-member-p 'kc-reverse-order sort-fn)
+               (advice-remove sort-fn 'kc-reverse-order)
+             (advice-add sort-fn :around 'kc-reverse-order)))
+          (t
+           (setq kc-sort-order  (ring-next kc-sort-orders kc-sort-order)))))
+  (setq last-command  'ignore)
   (minibuffer-complete)
-  (when msgp (message "Sorting is now %s%s"
+  (when msgp (message "Sorting is now %s%s%s"
                       (if kc-sort-order
                           (format "%s" (if (eq kc-sort-order 'command) "by " "by key name, "))
                         "turned ")
@@ -755,7 +768,12 @@ completions are found for PREFIX-VECT."
                                     (local-keys  "local keys first")
                                     (command     "command name")
                                     (t           "OFF"))
-                                  'face 'kc-msg-emphasis))))
+                                  'face 'kc-msg-emphasis)
+                      (if (advice-member-p 'kc-reverse-order (kc-sort-function)) " REVERSED" ""))))
+
+(defun kc-reverse-order (old-fn candidates)
+  "Reverse the result of calling OLD-FN with single argument CANDIDATES."
+  (setq candidates  (nreverse (funcall old-fn candidates))))
 
 (defun kc-complete-keys-action (candidate prefix-vect this-cmd-keys-vect)
   "Complete CANDIDATE, invoking its command.
@@ -798,18 +816,24 @@ The default value when completing a prefix key is `..'."
       (select-window action-window))))
 
 (defun kc-completion-function (items)
-  "Key-completion function for `kc-mode'."
+  "Key-completion function for `kc-mode'.
+It provides metadata for display and cycle sorting, based
+on`kc-sort-function'.  And it provides metadata category `key'."
   (lambda (string pred action)
     (if (eq action 'metadata)
-        (let ((order  (cl-case kc-sort-order
-                        (prefix-keys 'kc-sort-prefix-keys-first)
-                        (local-keys  'kc-sort-local-keys-first)
-                        (command     'kc-sort-by-command-name)
-                        (t      nil))))
+        (let ((order  (kc-sort-function)))
           `(metadata ,@(and order  `((display-sort-function . ,order)
                                      (cycle-sort-function . ,order)))
                      (category . key)))
       (complete-with-action action items string pred))))
+
+(defun kc-sort-function ()
+  "Return the sort function for the current value of `kc-sort-order'."
+  (cl-case kc-sort-order
+    (prefix-keys 'kc-sort-prefix-keys-first)
+    (local-keys  'kc-sort-local-keys-first)
+    (command     'kc-sort-by-command-name)
+    (t           nil)))
 
 (defun kc-sort-prefix-keys-first (candidates)
   "Sort CANDIDATES (strings) so that prefix keys are first."
