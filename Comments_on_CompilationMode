@@ -1,0 +1,21 @@
+Compilation mode tracks entering and leaving of directories with messages in `GNU make' style.  This does not work when your `make' is internationalized.  There are workarounds:
+
+* complex
+
+{{{
+(when (equal "ru_RU.UTF-8" (getenv "LANG"))
+  ;; Automatically detecting entering/leaving directories in Russian
+  (setf compilation-directory-matcher
+	'("\\(?:вход в каталог\\|выход из каталог\\(а\\)\\) «\\(.+\\)»$" (2 . 1))))
+}}}
+
+* simple
+
+{{{
+M-x compile RET LANG=en_US.UTF-8 make RET
+}}}
+
+or even set LANG to English for Emacs
+
+-- Аноним 2020-06-04 15:07 UTC
+
