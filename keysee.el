@@ -5,14 +5,14 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
-;; Version: 0
+;; Version: 1
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun  3 13:13:25 2020 (-0700)
+;; Last-Updated: Thu Jun  4 16:19:25 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 246
+;;     Update #: 332
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
-;; Keywords: key completion
+;; Keywords: key completion sorting
 ;; Compatibility: GNU Emacs 24.x, 25.x, 26.x, 27.x
 ;;
 ;; Features that might be required by this library:
@@ -76,7 +76,7 @@
 ;;
 ;;  The following completion-candidate sort orders are available.  You
 ;;  can cycle among them during completion using the key that is the
-;;  value of option `kc-sort-cycle-key' (`C-,' by default).
+;;  value of option `sorti-cycle-key' (`C-,' by default).
 ;;
 ;;  * By key name alphabetically, prefix keys first
 ;;  * By key name alphabetically, local keys first
@@ -104,50 +104,68 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `kc-complete-keys', `kc-complete-menu-bar',
-;;    `kc-cycle-sort-order', `kc-mode'.
+;;    `kc-complete-keys', `kc-complete-menu-bar', `kc-mode'.
 ;;
 ;;  Faces defined here:
 ;;
 ;;    `kc-key-local', `kc-key-non-local', `kc-menu-local',
-;;    `kc-menu-non-local', `kc-msg-emphasis'.
+;;    `kc-menu-non-local'.
 ;;
 ;;  User options defined here:
 ;;
 ;;    `kc-auto-delay', `kc-auto-flag',
 ;;    `kc-bind-completion-keys-anyway-flag', `kc-completion-keys',
-;;    `kc-completion-styles', `kc-cycle-sort-order',
-;;    `kc-ignored-prefix-keys', `kc-keymaps-for-key-completion',
-;;    `kc-prefix-in-mode-line-flag', `kc-self-insert-ranges',
-;;    `kc-separator', `kc-sort-order', `kc-sort-cycle-key'.
+;;    `kc-completion-styles', `kc-ignored-prefix-keys',
+;;    `kc-keymaps-for-key-completion', `kc-prefix-in-mode-line-flag',
+;;    `kc-self-insert-ranges', `kc-separator'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `kc-add-key+cmd', `kc-auto', `kc-bind-sort-cycle-key',
+;;    `kc-add-key+cmd', `kc-auto',
 ;;    `kc-bind-key-completion-keys-for-map-var',
 ;;    `kc-bind-key-completion-keys-in-keymaps-from',
-;;    `kc-case-string-less-p', `kc-command-names-alphabetic-p',
-;;    `kc-completion-function', `kc-complete-keys-1',
+;;    `kc-case-string-less-p', `kc-collection-function',
+;;    `kc-command-names-alphabetic-p', `kc-complete-keys-1',
 ;;    `kc-complete-keys-action', `kc-keys+cmds-w-prefix',
 ;;    `kc-lighter', `kc-local-key-binding-p', `kc-local-keys-first-p',
-;;    `kc-minibuffer-setup', `kc-prefix-keys-first-p',
-;;    `kc-remove-lighter',
+;;    `kc-prefix-keys-first-p', `kc-remove-lighter',
 ;;    `kc-remove-lighter-unless-completing-prefix',
-;;    `kc-reverse-order', `kc-same-vector-keyseq-p', `kc-some',
-;;    `kc-sort-by-command-name', `kc-sort-function',
-;;    `kc-sort-local-keys-first', `kc-sort-prefix-keys-first',
-;;    `kc-this-command-keys-prefix',
+;;    `kc-same-vector-keyseq-p', `kc-some', `kc-sort-by-command-name',
+;;    `kc-sort-function-chooser', `kc-sort-local-keys-first',
+;;    `kc-sort-prefix-keys-first', `kc-this-command-keys-prefix',
 ;;    `kc-unbind-key-completion-keys-for-map-var',
 ;;    `kc-unbind-key-completion-keys-in-keymaps-from', `kc-unlist'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `kc-auto-idle-timer', `kc-keys-alist', `kc-sort-orders'.
+;;    `kc-auto-idle-timer', `kc-current-order', `kc-keys-alist',
+;;    `kc-orig-current-order', `kc-orig-sort-fn-chooser',
+;;    `kc-orig-sort-order', `kc-orig-sort-orders-alist',
+;;    `kc-orig-sort-orders-ring', `kc-sort-orders-alist',
+;;    `kc-sort-orders-ring'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/04 dadams
+;;     Version 1.
+;;     Factored out sorting and cycling stuff as new library sortie.el.  Require that.
+;;     Added: kc-current-order, kc-orig-current-order, kc-orig-sort-order, kc-orig-sort-orders-alist,
+;;            kc-orig-sort-orders-ring, kc-sort-orders-alist.
+;;     Renamed: kc-completion-function to kc-collection-function,
+;;              kc-sort-function to kc-sort-function-chooser,
+;;              kc-sort-orders to kc-sort-orders-ring.
+;;     Removed: kc-bind-sort-cycle-key, kc-cycle-sort-order, kc-minibuffer-setup, kc-msg-emphasis,
+;;              kc-reverse-order, kc-sort-cycle-key, kc-sort-order.  Use sorti- versions instead.
+;;     kc-mode: kc-sort-cycle-key -> sorti-cycle-key.
+;;              Backup and restore:
+;;                sorti-current-order, sorti-sort-orders-alist, sorti-sort-orders-ring,
+;;                sorti-sort-function-chooser.
+;;              Message shows current sort order.  Use sorti-msg-emphasis.
+;;     kc-complete-keys-1: Use sorti-minibuffer-setup.
+;;                         Just use completing-read, not completing-read-default.
+;;     kc-sort-function-chooser: kc-sort-order -> sorti-current-order.
 ;; 2020/06/03 dadams
 ;;     Added: kc-reverse-order, kc-sort-function.
 ;;     kc-cycle-sort-order: Prefix arg reverses sort order (doesn't cycle).  Use kc-sort-function.
@@ -183,7 +201,8 @@
 ;;
 ;;; Code:
 
-(require 'cl-macs) ;; cl-loop
+(require 'cl-macs) ;; cl-case, cl-loop
+(require 'sortie)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -253,12 +272,6 @@ Local menus and menu items (i.e., not for the current mode) are
 highlighted with face `kc-menu-non-local'."
   :group 'keysee :group 'faces)
 
-(defface kc-msg-emphasis
-  '((((background dark)) (:foreground "Yellow"))
-    (t (:foreground "Blue")))
-  "Face used to emphasize (part of) a message."
-  :group 'keysee :group 'faces)
-
 
 (defcustom kc-auto-delay 1.0
   "Seconds to wait when idle, before automatically completing a key.
@@ -303,10 +316,6 @@ of the maps, to `kc-complete-keys'."
 Key completion binds `completion-styles' (which see) to this
 value for the duration."
   :type completion--styles-type)
-
-(defcustom kc-sort-cycle-key (kbd "C-,")
-  "Key to use for cycling `kc-mode' sort orders."
-  :group 'keysee :type 'key-sequence)
 
 (defcustom kc-ignored-prefix-keys ()
   "Prefix keys for `kc-complete-keys' to ignore.
@@ -408,18 +417,19 @@ Upper ranges:
   "Characters that separate keys from their commands, in key completions."
   :type 'string :group 'keysee)
 
-(defcustom kc-sort-order 'prefix-keys
-  "Current sort order for `kc-mode' key candidates."
-  :group 'keysee :type '(choice
-                         (const :tag "By key name, prefix keys first" 'prefix-keys)
-                         (const :tag "By key name, local keys first"  'local-keys)
-                         (const :tag "By command name"                'command)
-                         (const :tag "Unsorted"                       nil)))
-
 (defvar kc-auto-idle-timer nil
   "Timer used to automatically complete a key sequence when Emacs is idle.")
 
-(defvar kc-keys-alist () "Alist of keys and their bindings.
+(defvar kc-current-order 'prefix-keys
+  "Current sort order for `kc-mode' key candidates.
+It is one of these symbols, with the indicated meanings:
+ `prefix-keys': Sort by key name, prefix keys first.
+ `local-keys' : Sort by keynme, local keys first.
+ `command'    : Sort by command name.
+ `nil'        : Do not sort.")
+
+(defvar kc-keys-alist ()
+  "Alist of keys and their bindings.
 Each alist element is of the form (NAME KEY . BINDING), where:
  NAME is a string naming the key and its binding, whose name has form:
    KEYNAME  =  BINDING-NAME
@@ -431,13 +441,39 @@ Each alist element is of the form (NAME KEY . BINDING), where:
 \(The separator between KEY and BINDING-NAME is the value of option
 `kc-separator'.  Its default value is \"  =  \".)")
 
-(defvar kc-sort-orders (let ((rng  (make-ring 4)))
-                         (ring-insert rng nil)
-                         (ring-insert rng 'command)
-                         (ring-insert rng 'local-keys)
-                         (ring-insert rng 'prefix-keys)
-                         rng)
-  "Ring of sort orders for cycling with `kc-bind-sort-cycle-key'.")
+(defvar kc-orig-current-order nil
+  "Original value of `sorti-current-order', before `kc-mode'.
+Used to restore `sorti-sort-orders-ring', after `kc-mode'.")
+
+(defvar kc-orig-sort-fn-chooser 'ignore
+  "Original value of `sorti-sort-function-chooser', before `kc-mode'.
+Used to restore `sorti-sort-function-chooser', after `kc-mode'.")
+
+(defvar kc-orig-sort-order ()
+  "Original value of `sorti-current-order' before `kc-mode'.
+Used to restore `sorti-current-order', after `kc-mode'.")
+
+(defvar kc-orig-sort-orders-alist ()
+  "Original value of `sort-orders-alist', before `kc-mode'.
+Used to restore `sorti-sort-orders-alist', after `kc-mode'.")
+
+(defvar kc-orig-sort-orders-ring nil
+  "Original value of `sorti-sort-orders-ring', before `kc-mode'.
+Used to restore `sorti-sort-orders-ring', after `kc-mode'.")
+
+(defvar kc-sort-orders-alist '((prefix-keys . "prefix keys first")
+                               (local-keys  . "local keys first")
+                               (command     . "command name"))
+  "Alist of sort-orders for completing keys.
+Used for `sorti-sort-orders-alist'.")
+
+(defvar kc-sort-orders-ring (let ((rng  (make-ring 4)))
+                              (ring-insert rng nil)
+                              (ring-insert rng 'command)
+                              (ring-insert rng 'local-keys)
+                              (ring-insert rng 'prefix-keys)
+                              rng)
+  "Ring of key-completion sort orders for `sorti-bind-cycle-key' cycling.")
 
 
 (defun kc-auto ()
@@ -501,7 +537,7 @@ a completion.
 
 The following completion-candidate sort orders are available.  You can
 cycle among them during completion using the key that is the value of
-option `kc-sort-cycle-key' (`C-,' by default).
+option `sorti-cycle-key' (`C-,' by default).
 
  * By key name alphabetically, prefix keys first
  * By key name alphabetically, local keys first
@@ -521,31 +557,54 @@ You can override this by customizing option
 `kc-bind-completion-keys-anyway-flag' to non-nil."
   :global t :group 'keysee :init-value nil
   (when (timerp kc-auto-idle-timer) (cancel-timer kc-auto-idle-timer))
-  (let* ((cycle-key-binding  (lookup-key minibuffer-local-map kc-sort-cycle-key))
+  (let* ((cycle-key-binding  (lookup-key minibuffer-local-map sorti-cycle-key))
          (unbind-cycle-key   (lambda ()
                                (define-key minibuffer-local-map
-                                 kc-sort-cycle-key cycle-key-binding))))
+                                 sorti-cycle-key cycle-key-binding))))
     (cond (kc-mode
            (when kc-auto-flag
              (setq kc-auto-idle-timer  (run-with-idle-timer kc-auto-delay t 'kc-auto)))
+           (setq kc-orig-sort-order           sorti-current-order
+                 kc-orig-sort-orders-alist    sorti-sort-orders-alist
+                 kc-orig-sort-orders-ring     sorti-sort-orders-ring
+                 kc-orig-sort-fn-chooser      sorti-sort-function-chooser
+                 sorti-current-order          kc-current-order
+                 sorti-sort-orders-alist      kc-sort-orders-alist
+                 sorti-sort-orders-ring       kc-sort-orders-ring
+                 sorti-sort-function-chooser  'kc-sort-function-chooser)
            (kc-bind-key-completion-keys-in-keymaps-from (current-global-map))
            (dolist (map  kc-keymaps-for-key-completion) (kc-bind-key-completion-keys-for-map-var map))
            (add-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
            (add-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-add 'abort-recursive-edit :before 'kc-lighter))
           (t
+           (setq sorti-current-order          kc-orig-sort-order
+                 sorti-sort-orders-alist      kc-orig-sort-orders-alist
+                 sorti-sort-function-chooser  kc-orig-sort-fn-chooser
+                 sorti-sort-orders-ring       kc-orig-sort-orders-ring)
            (kc-unbind-key-completion-keys-in-keymaps-from (current-global-map))
            (dolist (map  kc-keymaps-for-key-completion) (kc-unbind-key-completion-keys-for-map-var map))
            (remove-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
            (remove-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-remove 'abort-recursive-edit 'kc-lighter))))
   (message "Turning %s %sKC mode..."
-           (propertize (if kc-mode "ON" "OFF") 'face 'kc-msg-emphasis)
+           (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
            (if kc-auto-flag "AUTO " ""))
   (run-hooks 'kc-mode-hook)
-  (message "Turning %s %sKC mode...done"
-           (propertize (if kc-mode "ON" "OFF") 'face 'kc-msg-emphasis)
-           (if kc-auto-flag "AUTO " "")))
+  (message "%sKC mode is now %s%s"
+           (if kc-auto-flag "AUTO " "")
+           (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
+           (if (not kc-mode)
+               ""
+             (format ".  Sorting: %s%s"
+                     (if sorti-current-order
+                         (format "%s" (propertize
+                                       (cdr (assq sorti-current-order sorti-sort-orders-alist))
+                                       'face 'sorti-msg-emphasis))
+                       (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
+                     (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
+                         " REVERSED"
+                       "")))))
 
 (defun kc-bind-key-completion-keys-for-map-var (keymap-var &optional keys)
   "Bind `S-TAB' in keymaps accessible from keymap KEYMAP-VAR.
@@ -728,52 +787,13 @@ completions are found for PREFIX-VECT."
            (prompt   (concat "Complete keys"
                              (and (not (string= "" keydesc)) (concat " " keydesc))
                              ": ")))
-      (let ((completion-styles      kc-completion-styles))
-        (minibuffer-with-setup-hook #'kc-minibuffer-setup
+      (let ((completion-styles  kc-completion-styles))
+        (minibuffer-with-setup-hook #'sorti-minibuffer-setup
           (kc-complete-keys-action
-           (completing-read-default prompt (kc-completion-function kc-keys-alist)
-                                    nil t nil nil (if (equal [] prefix-vect) nil ".."))
+           (completing-read prompt (kc-collection-function kc-keys-alist)
+                            nil t nil nil (if (equal [] prefix-vect) nil ".."))
            prefix-vect
            (this-command-keys-vector))))))) ; For error report - e.g. mouse command.
-
-(defun kc-minibuffer-setup ()
-  "Bind `kc-sort-cycle-key', then complete the minibuffer contents."
-  (kc-bind-sort-cycle-key)
-  (minibuffer-complete))
-
-(defun kc-bind-sort-cycle-key ()
-  "Bind `kc-sort-cycle-key' to command `kc-cycle-sort-order'."
-  (define-key minibuffer-local-map kc-sort-cycle-key #'kc-cycle-sort-order))
-
-(defun kc-cycle-sort-order (&optional reversep msgp)
-  "Cycle to the next key-candidate sort order.
-With a prefix arg, just reverse the current sort order (don't cycle).
-\(A prefix key has no effect if sorting is currently turned off.)"
-  (interactive "P\np")
-  (let ((sort-fn  (kc-sort-function)))
-    (cond ((and reversep  sort-fn)
-           (if (advice-member-p 'kc-reverse-order sort-fn)
-               (advice-remove sort-fn 'kc-reverse-order)
-             (advice-add sort-fn :around 'kc-reverse-order)))
-          (t
-           (setq kc-sort-order  (ring-next kc-sort-orders kc-sort-order)))))
-  (setq last-command  'ignore)
-  (minibuffer-complete)
-  (when msgp (message "Sorting is now %s%s%s"
-                      (if kc-sort-order
-                          (format "%s" (if (eq kc-sort-order 'command) "by " "by key name, "))
-                        "turned ")
-                      (propertize (cl-case kc-sort-order
-                                    (prefix-keys "prefix keys first")
-                                    (local-keys  "local keys first")
-                                    (command     "command name")
-                                    (t           "OFF"))
-                                  'face 'kc-msg-emphasis)
-                      (if (advice-member-p 'kc-reverse-order (kc-sort-function)) " REVERSED" ""))))
-
-(defun kc-reverse-order (old-fn candidates)
-  "Reverse the result of calling OLD-FN with single argument CANDIDATES."
-  (setq candidates  (nreverse (funcall old-fn candidates))))
 
 (defun kc-complete-keys-action (candidate prefix-vect this-cmd-keys-vect)
   "Complete CANDIDATE, invoking its command.
@@ -815,21 +835,21 @@ The default value when completing a prefix key is `..'."
                  (call-interactively binding nil this-cmd-keys-vect))))
       (select-window action-window))))
 
-(defun kc-completion-function (items)
+(defun kc-collection-function (items)
   "Key-completion function for `kc-mode'.
-It provides metadata for display and cycle sorting, based
-on`kc-sort-function'.  And it provides metadata category `key'."
+Provides metadata for display and cycle sorting, based on
+`kc-sort-function-chooser'.  And provides metadata category `key'."
   (lambda (string pred action)
     (if (eq action 'metadata)
-        (let ((order  (kc-sort-function)))
+        (let ((order  (kc-sort-function-chooser)))
           `(metadata ,@(and order  `((display-sort-function . ,order)
                                      (cycle-sort-function . ,order)))
                      (category . key)))
       (complete-with-action action items string pred))))
 
-(defun kc-sort-function ()
-  "Return the sort function for the current value of `kc-sort-order'."
-  (cl-case kc-sort-order
+(defun kc-sort-function-chooser ()
+  "Return the sort function for the current value of `sorti-current-order'."
+  (cl-case sorti-current-order
     (prefix-keys 'kc-sort-prefix-keys-first)
     (local-keys  'kc-sort-local-keys-first)
     (command     'kc-sort-by-command-name)
