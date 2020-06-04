@@ -15,7 +15,7 @@ You can bury Dired buffers with `q', which is bound to `quit-window' in DiredMod
 
 * '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `diredp-toggle-find-file-reuse-dir', to let you choose whether or not to reuse Dired buffers.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. 
 Use `diredp-toggle-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse: ##(diredp-toggle-find-file-reuse-dir 1)##.
-Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
+Dired+ also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like. If you want mouse-1 clicks to reuse the buffers, you have to bind `mouse-2' (rather than `mouse-1') to `diredp-mouse-find-file-reuse-dir-buffer'."
 
 * <tt>[[joseph-single-dired.el]]</tt>
 * <tt>[[https://github.com/crocket/dired-single|dired-single]]</tt>, derived from <tt>joseph-single-dired.el<tt> 
