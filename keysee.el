@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  5 11:58:44 2020 (-0700)
+;; Last-Updated: Fri Jun  5 14:13:39 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 334
+;;     Update #: 335
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -475,7 +475,7 @@ Used for `sorti-sort-orders-alist'.")
                               (ring-insert rng 'local-keys)
                               (ring-insert rng 'prefix-keys)
                               rng)
-  "Ring of key-completion sort orders for `sorti-bind-cycle-key' cycling.")
+  "Ring of key-completion sort orders for `sorti-cycle-key' cycling.")
 
 
 (defun kc-auto ()
