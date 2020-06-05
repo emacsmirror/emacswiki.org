@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  4 16:19:25 2020 (-0700)
+;; Last-Updated: Fri Jun  5 11:58:44 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 332
+;;     Update #: 334
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -148,6 +148,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/05 dadams
+;;     Fixed typo: sorti-minibuffer-setup -> sorti-bind-cycle-key-and-complete.
 ;; 2020/06/04 dadams
 ;;     Version 1.
 ;;     Factored out sorting and cycling stuff as new library sortie.el.  Require that.
@@ -163,7 +165,7 @@
 ;;                sorti-current-order, sorti-sort-orders-alist, sorti-sort-orders-ring,
 ;;                sorti-sort-function-chooser.
 ;;              Message shows current sort order.  Use sorti-msg-emphasis.
-;;     kc-complete-keys-1: Use sorti-minibuffer-setup.
+;;     kc-complete-keys-1: Use sorti-bind-cycle-key-and-complete.
 ;;                         Just use completing-read, not completing-read-default.
 ;;     kc-sort-function-chooser: kc-sort-order -> sorti-current-order.
 ;; 2020/06/03 dadams
@@ -788,7 +790,7 @@ completions are found for PREFIX-VECT."
                              (and (not (string= "" keydesc)) (concat " " keydesc))
                              ": ")))
       (let ((completion-styles  kc-completion-styles))
-        (minibuffer-with-setup-hook #'sorti-minibuffer-setup
+        (minibuffer-with-setup-hook #'sorti-bind-cycle-key-and-complete
           (kc-complete-keys-action
            (completing-read prompt (kc-collection-function kc-keys-alist)
                             nil t nil nil (if (equal [] prefix-vect) nil ".."))
