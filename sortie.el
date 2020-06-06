@@ -8,9 +8,9 @@
 ;; Created: Wed Jun  3 13:54:04 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  4 15:39:46 2020 (-0700)
+;; Last-Updated: Fri Jun  5 19:36:06 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 200
+;;     Update #: 205
 ;; URL: https://www.emacswiki.org/emacs/download/sortie.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Sortie
 ;; Keywords: completion sorting cycling
@@ -55,8 +55,8 @@
 ;;  then it echoes your choice.
 ;;
 ;;  The two sort orders used here are called `order1' and `order2'.
-;;  They're associated with the string descriptions `"alphabetical"
-;;  and "by length", respectively, and they're inserted in a ring, for
+;;  They're associated with the string descriptions "alphabetical" and
+;;  "by length", respectively, and they're inserted in a ring, for
 ;;  cycling.
 ;;
 ;;  Function `my-collection-fn' dynamically computes the completion
