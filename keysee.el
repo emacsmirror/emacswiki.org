@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun  6 00:14:13 2020 (-0700)
+;; Last-Updated: Sat Jun  6 16:40:03 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 391
+;;     Update #: 413
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -153,16 +153,24 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `kc-auto-idle-timer', `kc-current-order', `kc-keys-alist',
-;;    `kc-orig-current-order', `kc-orig-sort-fn-chooser',
-;;    `kc-orig-sort-order', `kc-orig-sort-orders-alist',
-;;    `kc-orig-sort-orders-ring', `kc-sort-orders-alist',
+;;    `kc-auto-idle-timer', `kc-keys-alist', `kc-sort-orders-alist',
 ;;    `kc-sort-orders-ring'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/06 dadams
+;;     Removed: kc-current-order, kc-orig-*.
+;;     kc-complete-keys, kc-complete-menu-bar: Removed binding of completion-ignore-case.
+;;     kc-complete-keys-1: Bind completion-ignore-case, sorti-sort-orders-alist,
+;;                         sorti-sort-orders-ring, sorti-sort-function-chooser.
+;;     kc-mode: Do not set kc-orig-*, sorti-current-order, sorti-sort-orders-alist, sorti-sort-orders-ring,
+;;                         sorti-sort-function-chooser.
+;;              Do not reset sorti-current-order, sorti-sort-orders-alist,
+;;                           sorti-sort-function-chooser, sorti-sort-orders-ring to kc-orig-*.
+;;              Reset sorti-current-order to nil.
+;;     kc-(auto-)mode: Do not put sort order in message.
 ;; 2020/06/05 dadams
 ;;     Added: kc-auto-mode - automatic completion part of kc-mode.
 ;;     Removed: kc-auto-flag.
@@ -438,14 +446,6 @@ Upper ranges:
 (defvar kc-auto-idle-timer nil
   "Timer used to automatically complete a key sequence when Emacs is idle.")
 
-(defvar kc-current-order 'prefix-keys
-  "Current sort order for `kc-mode' key candidates.
-It is one of these symbols, with the indicated meanings:
- `prefix-keys': Sort by key name, prefix keys first.
- `local-keys' : Sort by keynme, local keys first.
- `command'    : Sort by command name.
- `nil'        : Do not sort.")
-
 (defvar kc-keys-alist ()
   "Alist of keys and their bindings.
 Each alist element is of the form (NAME KEY . BINDING), where:
@@ -458,26 +458,6 @@ Each alist element is of the form (NAME KEY . BINDING), where:
 
 \(The separator between KEY and BINDING-NAME is the value of option
 `kc-separator'.  Its default value is \"  =  \".)")
-
-(defvar kc-orig-current-order nil
-  "Original value of `sorti-current-order', before `kc-mode'.
-Used to restore `sorti-sort-orders-ring', after `kc-mode'.")
-
-(defvar kc-orig-sort-fn-chooser 'ignore
-  "Original value of `sorti-sort-function-chooser', before `kc-mode'.
-Used to restore `sorti-sort-function-chooser', after `kc-mode'.")
-
-(defvar kc-orig-sort-order ()
-  "Original value of `sorti-current-order' before `kc-mode'.
-Used to restore `sorti-current-order', after `kc-mode'.")
-
-(defvar kc-orig-sort-orders-alist ()
-  "Original value of `sort-orders-alist', before `kc-mode'.
-Used to restore `sorti-sort-orders-alist', after `kc-mode'.")
-
-(defvar kc-orig-sort-orders-ring nil
-  "Original value of `sorti-sort-orders-ring', before `kc-mode'.
-Used to restore `sorti-sort-orders-ring', after `kc-mode'.")
 
 (defvar kc-sort-orders-alist '((prefix-keys . "prefix keys first")
                                (local-keys  . "local keys first")
@@ -532,19 +512,7 @@ the mode."
              (propertize (if kc-auto-mode "ON" "OFF") 'face 'sorti-msg-emphasis)))
   (run-hooks 'kc-auto-mode-hook)
   (when (called-interactively-p 'any)
-    (message "AUTO KC mode is now %s%s"
-             (propertize (if kc-auto-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
-             (if (not kc-auto-mode)
-                 ""
-               (format ".  Sorting: %s%s"
-                       (if sorti-current-order
-                           (format "%s" (propertize
-                                         (cdr (assq sorti-current-order sorti-sort-orders-alist))
-                                         'face 'sorti-msg-emphasis))
-                         (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
-                       (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
-                           " REVERSED"
-                         ""))))))
+    (message "AUTO KC mode is now %s" (propertize (if kc-auto-mode "ON" "OFF") 'face 'sorti-msg-emphasis))))
 
 (define-minor-mode kc-mode
   "KC mode: complete keys on demand, using `S-TAB'.
@@ -628,14 +596,6 @@ the mode."
                                (define-key minibuffer-local-map
                                  sorti-cycle-key cycle-key-binding))))
     (cond (kc-mode
-           (setq kc-orig-sort-order           sorti-current-order
-                 kc-orig-sort-orders-alist    sorti-sort-orders-alist
-                 kc-orig-sort-orders-ring     sorti-sort-orders-ring
-                 kc-orig-sort-fn-chooser      sorti-sort-function-chooser
-                 sorti-current-order          kc-current-order
-                 sorti-sort-orders-alist      kc-sort-orders-alist
-                 sorti-sort-orders-ring       kc-sort-orders-ring
-                 sorti-sort-function-chooser  'kc-sort-function-chooser)
            (kc-bind-key-completion-keys-in-keymaps-from (current-global-map))
            (dolist (map  kc-keymaps-for-key-completion) (kc-bind-key-completion-keys-for-map-var map))
            (add-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
@@ -643,10 +603,7 @@ the mode."
            (advice-add 'abort-recursive-edit :before 'kc-lighter))
           (t
            (when kc-auto-mode (kc-auto-mode -1)) ; Turn off KC AUTO mode.
-           (setq sorti-current-order          kc-orig-sort-order
-                 sorti-sort-orders-alist      kc-orig-sort-orders-alist
-                 sorti-sort-function-chooser  kc-orig-sort-fn-chooser
-                 sorti-sort-orders-ring       kc-orig-sort-orders-ring)
+           (setq sorti-current-order  nil) ; Reset, to remove KC order.
            (kc-unbind-key-completion-keys-in-keymaps-from (current-global-map))
            (dolist (map  kc-keymaps-for-key-completion) (kc-unbind-key-completion-keys-for-map-var map))
            (remove-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
@@ -657,19 +614,7 @@ the mode."
              (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)))
   (run-hooks 'kc-mode-hook)
   (when (called-interactively-p 'any)
-    (message "KC mode is now %s%s"
-             (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
-             (if (not kc-mode)
-                 ""
-               (format ".  Sorting: %s%s"
-                       (if sorti-current-order
-                           (format "%s" (propertize
-                                         (cdr (assq sorti-current-order sorti-sort-orders-alist))
-                                         'face 'sorti-msg-emphasis))
-                         (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
-                       (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
-                           " REVERSED"
-                         ""))))))
+    (message "KC mode is now %s" (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis))))
 
 (defun kc-bind-key-completion-keys-for-map-var (keymap-var &optional keys)
   "Bind `S-TAB' in keymaps accessible from keymap KEYMAP-VAR.
@@ -751,8 +696,7 @@ Does nothing also if `kc-prefix-in-mode-line-flag' is nil."
 This is just a restriction of `kc-complete-keys' to menu-bar menus and
 submenus."
   (interactive)
-  (let ((completion-ignore-case  t)) ; Not case-sensitive, by default.
-    (kc-complete-keys-1 [menu-bar])))
+  (kc-complete-keys-1 [menu-bar]))
 
 (defun kc-complete-keys ()
   "Complete a key sequence for the currently invoked prefix key.
@@ -801,8 +745,7 @@ best to use only small ranges for good performance.  In general, you
 will want to leave this option value as `nil' and use command
 `ucs-insert' (`C-x 8 RET') to insert characters."
   (interactive)
-  (let ((completion-ignore-case  t)) ; Not case-sensitive, by default.
-    (kc-complete-keys-1 (kc-this-command-keys-prefix))))
+  (kc-complete-keys-1 (kc-this-command-keys-prefix)))
 
 (defun kc-this-command-keys-prefix ()
   "Return the prefix of the currently invoked key sequence.
@@ -852,7 +795,11 @@ completions are found for PREFIX-VECT."
            (prompt   (concat "Complete keys"
                              (and (not (string= "" keydesc)) (concat " " keydesc))
                              ": ")))
-      (let ((completion-styles  kc-completion-styles))
+      (let ((completion-styles            kc-completion-styles)
+            (completion-ignore-case       t)
+            (sorti-sort-orders-alist      kc-sort-orders-alist)
+            (sorti-sort-orders-ring       kc-sort-orders-ring)
+            (sorti-sort-function-chooser  'kc-sort-function-chooser))
         (minibuffer-with-setup-hook #'sorti-bind-cycle-key-and-complete
           (kc-complete-keys-action
            (completing-read prompt (kc-collection-function kc-keys-alist)
