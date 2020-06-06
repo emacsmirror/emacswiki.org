@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  5 14:13:39 2020 (-0700)
+;; Last-Updated: Fri Jun  5 19:14:04 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 335
+;;     Update #: 375
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -17,42 +17,50 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `cl-lib', `cl-macs', `gv', `macroexp', `sortie'.
 ;;
 ;;; Commentary:
 ;;
 ;;    Key and menu completion.
 ;;
-;;  Turn on minor mode `kc-mode' to enable key and menu completion.
-;;  Or just complete keys or menu-bar menus on demand, using command
-;;  `kc-complete-keys' or `kc-complete-menu-bar', respectively.
+;;  Turn on minor mode `kc-mode' to enable completion on demand,
+;;  whenever you hit `S-TAB', for keys and menu-bar menus.  (You can
+;;  customize the key(s) for this, using option `kc-completion-keys'.)
 ;;
-;;  If option `kc-auto-flag' is non-nil then completion is automatic
-;;  when you use a prefix key.  (The default value is t.)
+;;  This means you can hit `S-TAB' at top level, to see all possible
+;;  keys, or after any prefix key, to see all possible keys at that
+;;  level.
 ;;
-;;  You can also complete on demand, using `S-TAB'.  (You can
-;;  customize the keys for this, using option `kc-completion-keys'.)
+;;  If you want to complete just menu-bar menus, you can use command
+;;  `kc-complete-menu-bar'.
 ;;
-;;  You can always complete on demand at top level.  If `kc-auto-flag'
-;;  is nil then you can also complete on demand after a prefix key.
+;;  In addition to key completion on demand, you can automatically
+;;  complete prefix keys using minor mode `kc-auto-mode'.  After a
+;;  short delay when you hit a prefix key, it provides the same kind
+;;  of completion as `kc-mode'.  You can customize the delay with
+;;  option `kc-auto-delay'.
 ;;
-;;  Completion shows you all possible keys you can use, at any level.
+;;  `kc-auto-mode' includes the on-demand completion of `kc-mode', so
+;;  you can still use `S-TAB' at top level.  And if you have a long
+;;  enough `kc-auto-delay' you can take time to think or use `S-TAB'
+;;  at any level to show completions immediately.
+;;
 ;;  When completions are shown, the completion candidates have one of
 ;;  these forms:
 ;;
-;;    ..
-;;    PREFIX-KEY  =  ...
-;;    KEY  =  COMMAND
+;;  1.  ..
+;;  2.  PREFIX-KEY  =  ...
+;;  3.  KEY  =  COMMAND
 ;;
-;; * The first of these, `..', is shown only when completing a prefix
-;;   key.  Choosing it takes you back up one level, to the parent
-;;   prefix key, or to the top level if there is no parent.
+;;  * The first of these, `..', is shown only when completing a prefix
+;;    key.  Choosing it takes you back up one level, to the parent
+;;    prefix key, or to the top level if there is no parent.
 ;;
-;;   For example, if you are currently completing prefix key `C-x 4',
-;;   then `..' takes you back up to the completions for prefix key
-;;   `C-x'.  Using `..' there then takes you up from that level to the
-;;   top level.  When `..' is a candidate it is the default, so you
-;;   can just hit `RET' to go up a level.
+;;    For example, if you are currently completing prefix key `C-x 4',
+;;    then `..' takes you back up to the completions for prefix key
+;;    `C-x'.  Using `..' there then takes you up from that level to
+;;    the top level.  When `..' is a candidate it is the default, so
+;;    you can just hit `RET' to go up a level.
 ;;
 ;;  * Choosing `PREFIX-KEY  =  ...' takes you down a level, to the
 ;;    keys on that PREFIX-KEY.  For example, at top level, choosing
@@ -63,8 +71,9 @@
 ;;
 ;;  Completion uses the completion styles defined by option
 ;;  `kc-completion-styles', not those of standard option
-;;  `completion-styles'.  By default, it favors substring or flex
-;;  (Emacs 27 or later) completion.
+;;  `completion-styles'.  This means you can have different preferred
+;;  styles for key completion.  By default, the setting favors
+;;  substring, and then flex (Emacs 27 or later) completion.
 ;;
 ;;  You can use option `kc-separator' to customize separator `  =  '.
 ;;  The default value has 2 space chars on each side of `=', so you
@@ -99,12 +108,13 @@
 ;;
 ;;  Suggested key binding:
 ;;
-;;    (global-set-key (kbd "S-<f10>") kc-complete-menu-bar)
+;;    (global-set-key (kbd "S-<f10>") 'kc-complete-menu-bar)
 ;;
 ;;
 ;;  Commands defined here:
 ;;
-;;    `kc-complete-keys', `kc-complete-menu-bar', `kc-mode'.
+;;    `kc-auto-mode', `kc-complete-keys', `kc-complete-menu-bar',
+;;    `kc-mode'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -113,22 +123,22 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `kc-auto-delay', `kc-auto-flag',
-;;    `kc-bind-completion-keys-anyway-flag', `kc-completion-keys',
-;;    `kc-completion-styles', `kc-ignored-prefix-keys',
-;;    `kc-keymaps-for-key-completion', `kc-prefix-in-mode-line-flag',
-;;    `kc-self-insert-ranges', `kc-separator'.
+;;    `kc-auto-delay', `kc-bind-completion-keys-anyway-flag',
+;;    `kc-completion-keys', `kc-completion-styles',
+;;    `kc-ignored-prefix-keys', `kc-keymaps-for-key-completion',
+;;    `kc-prefix-in-mode-line-flag', `kc-self-insert-ranges',
+;;    `kc-separator'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `kc-add-key+cmd', `kc-auto',
-;;    `kc-bind-key-completion-keys-for-map-var',
+;;    `kc-add-key+cmd', `kc-bind-key-completion-keys-for-map-var',
 ;;    `kc-bind-key-completion-keys-in-keymaps-from',
 ;;    `kc-case-string-less-p', `kc-collection-function',
 ;;    `kc-command-names-alphabetic-p', `kc-complete-keys-1',
-;;    `kc-complete-keys-action', `kc-keys+cmds-w-prefix',
-;;    `kc-lighter', `kc-local-key-binding-p', `kc-local-keys-first-p',
-;;    `kc-prefix-keys-first-p', `kc-remove-lighter',
+;;    `kc-complete-keys-action', `kc-complete-this-prefix-key',
+;;    `kc-keys+cmds-w-prefix', `kc-lighter', `kc-local-key-binding-p',
+;;    `kc-local-keys-first-p', `kc-prefix-keys-first-p',
+;;    `kc-remove-lighter',
 ;;    `kc-remove-lighter-unless-completing-prefix',
 ;;    `kc-same-vector-keyseq-p', `kc-some', `kc-sort-by-command-name',
 ;;    `kc-sort-function-chooser', `kc-sort-local-keys-first',
@@ -149,6 +159,12 @@
 ;;; Change Log:
 ;;
 ;; 2020/06/05 dadams
+;;     Removed: kc-auto-flag.
+;;     Renamed: kc-auto to kc-complete-this-prefix-key.
+;;     kc-mode: Factored out automatic completion to kc-auto-mode:
+;;                Removed canceling and running idle timer.
+;;                Turn off kc-auto-mode when turn off kc-mode.
+;;              Show message only when called-interactively-p.  Remove AUTO from message.
 ;;     Fixed typo: sorti-minibuffer-setup -> sorti-bind-cycle-key-and-complete.
 ;; 2020/06/04 dadams
 ;;     Version 1.
@@ -280,12 +296,6 @@ highlighted with face `kc-menu-non-local'."
 This has an effect only when `kc-mode' is on and `kc-auto-flag' is
 non-nil."
   :type 'number :group 'keysee)
-
-(defcustom kc-auto-flag t
-  "Non-nil means `kc-mode' automatically shows prefix-key completions.
-If you change the value while `kc-mode' is on, then you must toggle
-`kc-mode', to have the new value take effect."
-  :type 'boolean :group 'keysee)
 
 (defcustom kc-bind-completion-keys-anyway-flag nil
   "Non-nil means bind `S-TAB' for key completion even if already bound.
@@ -478,7 +488,7 @@ Used for `sorti-sort-orders-alist'.")
   "Ring of key-completion sort orders for `sorti-cycle-key' cycling.")
 
 
-(defun kc-auto ()
+(defun kc-complete-this-prefix-key ()
   "Auto-complete the last key."
   (let* ((this-c-k-vector  (this-command-keys-vector))
          (this-event       (and (not (equal [] this-c-k-vector))  (elt this-c-k-vector 0))))
@@ -490,16 +500,54 @@ Used for `sorti-sort-orders-alist'.")
       (kc-complete-keys-1 this-c-k-vector 'NO-ERROR)
       (clear-this-command-keys))))
 
-(define-minor-mode kc-mode "KC mode: complete keys.
-If option `kc-auto-flag' is non-nil then completion is automatic
-when you use a prefix key.  (The default value is t.)
+(define-minor-mode kc-auto-mode
+  "Complete prefix keys automatically, after a short idle delay.
+In addition, like `kc-mode' (which see), you can complete on demand at
+top level (or any level), using `S-TAB'.
 
-You can also complete on demand, using `S-TAB'.  (You can customize
-the keys for this, using option `kc-completion-keys'.)
+Interactively, toggle the mode.  But with a prefix arg, enable the
+mode if the numeric value is positive, and disable it otherwise.
+___
 
-You can always complete on demand at top level.  If `kc-auto-flag' is
-nil then you can also complete on demand after a prefix key.
-Completion shows you all possible keys you can use, at any level.
+If called from Lisp, toggle the mode if the optional arg is ‘toggle’.
+Otherwise, handle it as the prefix arg: disable the mode if
+`prefix-numeric-value' of the arg is non-positive, and enable it
+otherwise.  This implies that if the arg is nil or absent then enable
+the mode."
+  :global t :group 'keysee :init-value nil
+  (when (timerp kc-auto-idle-timer) (cancel-timer kc-auto-idle-timer))
+  (when kc-auto-mode
+    (setq kc-auto-idle-timer  (run-with-idle-timer kc-auto-delay t 'kc-complete-this-prefix-key))
+    (kc-mode 1))                        ; Turn on KC mode.
+  (when (called-interactively-p 'any)
+    (message "Turning %s AUTO KC mode..."
+             (propertize (if kc-auto-mode "ON" "OFF") 'face 'sorti-msg-emphasis)))
+  (run-hooks 'kc-auto-mode-hook)
+  (when (called-interactively-p 'any)
+    (message "AUTO KC mode is now %s%s"
+             (propertize (if kc-auto-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
+             (if (not kc-auto-mode)
+                 ""
+               (format ".  Sorting: %s%s"
+                       (if sorti-current-order
+                           (format "%s" (propertize
+                                         (cdr (assq sorti-current-order sorti-sort-orders-alist))
+                                         'face 'sorti-msg-emphasis))
+                         (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
+                       (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
+                           " REVERSED"
+                         ""))))))
+
+(define-minor-mode kc-mode
+  "KC mode: complete keys on demand, using `S-TAB'.
+\(You can customize the key(s) for this, using option
+`kc-completion-keys'.)
+
+Interactively, toggle the mode.  But with a prefix arg, enable the
+mode if the numeric value is positive, and disable it otherwise.
+
+You can complete at top level or after any prefix key.  Completion
+shows you all of the keys you can use, at any level.
 
 When completions are shown, the completion candidates have one of
 these forms:
@@ -556,16 +604,20 @@ to choose which keymapsin which to bind `S-TAB' to
 already bound in a map listed in that option value then that
 binding is respected - the key is not bound to `kc-complete-keys'.
 You can override this by customizing option
-`kc-bind-completion-keys-anyway-flag' to non-nil."
+`kc-bind-completion-keys-anyway-flag' to non-nil.
+___
+
+If called from Lisp, toggle the mode if the optional arg is ‘toggle’.
+Otherwise, handle it as the prefix arg: disable the mode if
+`prefix-numeric-value' of the arg is non-positive, and enable it
+otherwise.  This implies that if the arg is nil or absent then enable
+the mode."
   :global t :group 'keysee :init-value nil
-  (when (timerp kc-auto-idle-timer) (cancel-timer kc-auto-idle-timer))
   (let* ((cycle-key-binding  (lookup-key minibuffer-local-map sorti-cycle-key))
          (unbind-cycle-key   (lambda ()
                                (define-key minibuffer-local-map
                                  sorti-cycle-key cycle-key-binding))))
     (cond (kc-mode
-           (when kc-auto-flag
-             (setq kc-auto-idle-timer  (run-with-idle-timer kc-auto-delay t 'kc-auto)))
            (setq kc-orig-sort-order           sorti-current-order
                  kc-orig-sort-orders-alist    sorti-sort-orders-alist
                  kc-orig-sort-orders-ring     sorti-sort-orders-ring
@@ -580,6 +632,7 @@ You can override this by customizing option
            (add-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-add 'abort-recursive-edit :before 'kc-lighter))
           (t
+           (kc-auto-mode -1)            ; Turn off KC AUTO mode.
            (setq sorti-current-order          kc-orig-sort-order
                  sorti-sort-orders-alist      kc-orig-sort-orders-alist
                  sorti-sort-function-chooser  kc-orig-sort-fn-chooser
@@ -589,24 +642,24 @@ You can override this by customizing option
            (remove-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
            (remove-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-remove 'abort-recursive-edit 'kc-lighter))))
-  (message "Turning %s %sKC mode..."
-           (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
-           (if kc-auto-flag "AUTO " ""))
+  (when (called-interactively-p 'any)
+    (message "Turning %s KC mode..."
+             (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)))
   (run-hooks 'kc-mode-hook)
-  (message "%sKC mode is now %s%s"
-           (if kc-auto-flag "AUTO " "")
-           (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
-           (if (not kc-mode)
-               ""
-             (format ".  Sorting: %s%s"
-                     (if sorti-current-order
-                         (format "%s" (propertize
-                                       (cdr (assq sorti-current-order sorti-sort-orders-alist))
-                                       'face 'sorti-msg-emphasis))
-                       (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
-                     (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
-                         " REVERSED"
-                       "")))))
+  (when (called-interactively-p 'any)
+    (message "KC mode is now %s%s"
+             (propertize (if kc-mode "ON" "OFF") 'face 'sorti-msg-emphasis)
+             (if (not kc-mode)
+                 ""
+               (format ".  Sorting: %s%s"
+                       (if sorti-current-order
+                           (format "%s" (propertize
+                                         (cdr (assq sorti-current-order sorti-sort-orders-alist))
+                                         'face 'sorti-msg-emphasis))
+                         (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
+                       (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
+                           " REVERSED"
+                         ""))))))
 
 (defun kc-bind-key-completion-keys-for-map-var (keymap-var &optional keys)
   "Bind `S-TAB' in keymaps accessible from keymap KEYMAP-VAR.
