@@ -7,9 +7,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  5 19:14:04 2020 (-0700)
+;; Last-Updated: Sat Jun  6 00:14:13 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 375
+;;     Update #: 391
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -44,6 +44,11 @@
 ;;  you can still use `S-TAB' at top level.  And if you have a long
 ;;  enough `kc-auto-delay' you can take time to think or use `S-TAB'
 ;;  at any level to show completions immediately.
+;;
+;;  Turning on `kc-auto-mode' thus turns on `kc-mode'.  Turning either
+;;  mode off turns off the other as well.  So if you want both, turn
+;;  on `kc-auto-mode'; if you want only on-demand completion, turn on
+;;  `kc-mode'.
 ;;
 ;;  When completions are shown, the completion candidates have one of
 ;;  these forms:
@@ -159,6 +164,7 @@
 ;;; Change Log:
 ;;
 ;; 2020/06/05 dadams
+;;     Added: kc-auto-mode - automatic completion part of kc-mode.
 ;;     Removed: kc-auto-flag.
 ;;     Renamed: kc-auto to kc-complete-this-prefix-key.
 ;;     kc-mode: Factored out automatic completion to kc-auto-mode:
@@ -502,11 +508,12 @@ Used for `sorti-sort-orders-alist'.")
 
 (define-minor-mode kc-auto-mode
   "Complete prefix keys automatically, after a short idle delay.
-In addition, like `kc-mode' (which see), you can complete on demand at
-top level (or any level), using `S-TAB'.
-
 Interactively, toggle the mode.  But with a prefix arg, enable the
 mode if the numeric value is positive, and disable it otherwise.
+
+When turned on, `kc-mode' is also turned on, so you can also complete
+on demand at top level (or any level), using `S-TAB'.  When turned
+off, `kc-mode' is also turned off.
 ___
 
 If called from Lisp, toggle the mode if the optional arg is ‘toggle’.
@@ -516,9 +523,10 @@ otherwise.  This implies that if the arg is nil or absent then enable
 the mode."
   :global t :group 'keysee :init-value nil
   (when (timerp kc-auto-idle-timer) (cancel-timer kc-auto-idle-timer))
-  (when kc-auto-mode
+  (if (not kc-auto-mode)
+      (kc-mode -1)                      ; Turn KC mode OFF.
     (setq kc-auto-idle-timer  (run-with-idle-timer kc-auto-delay t 'kc-complete-this-prefix-key))
-    (kc-mode 1))                        ; Turn on KC mode.
+    (kc-mode 1))                        ; Turn KC mode ON.
   (when (called-interactively-p 'any)
     (message "Turning %s AUTO KC mode..."
              (propertize (if kc-auto-mode "ON" "OFF") 'face 'sorti-msg-emphasis)))
@@ -545,6 +553,8 @@ the mode."
 
 Interactively, toggle the mode.  But with a prefix arg, enable the
 mode if the numeric value is positive, and disable it otherwise.
+
+When turned off, `kc-auto-mode' is also turned off.
 
 You can complete at top level or after any prefix key.  Completion
 shows you all of the keys you can use, at any level.
@@ -632,7 +642,7 @@ the mode."
            (add-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-add 'abort-recursive-edit :before 'kc-lighter))
           (t
-           (kc-auto-mode -1)            ; Turn off KC AUTO mode.
+           (when kc-auto-mode (kc-auto-mode -1)) ; Turn off KC AUTO mode.
            (setq sorti-current-order          kc-orig-sort-order
                  sorti-sort-orders-alist      kc-orig-sort-orders-alist
                  sorti-sort-function-chooser  kc-orig-sort-fn-chooser
