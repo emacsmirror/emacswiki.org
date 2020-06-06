@@ -1,1 +1,80 @@
-== TBD ==
+This page is about library '''<tt>[[sortie.el]]</tt>''', which lets you sort completion candidates in different ways interactively.
+
+During completion you can use the key that is the value of [[option]]
+'''`sorti-cycle-key'''' ('''`##C-,##'''' by default) to cycle among a list of sort
+orders.
+
+If you use a [[prefix argument]] with `sorti-cycle-key' then, instead of
+cycling to the next sort order, the current sort order is
+''reversed''.
+
+To enable cycling of sort orders for your completion code, put
+function '''`sorti-bind-cycle-key-and-complete'''' or
+'''`sorti-bind-cycle-key'''' on `minibuffer-setup-hook', to make
+`sorti-cycle-key' available.  The former shows completion
+candidates ''initially''.  The latter shows them only when you hit
+`TAB'.
+
+    (minibuffer-with-setup-hook #'sorti-bind-cycle-key-and-complete
+      ...<COMPLETION CODE>...
+      )
+
+Your completion function can use the function that is the value of
+'''`sorti-sort-function-chooser'''' to dynamically set the display and
+cycling sort functions, as ''completion metadata'' entries
+`display-sort-function' and `cycle-sort-function'.
+
+'''Here's an example:'''
+
+It defines a command that prompts you to
+choose a completion candidate, showing them all initially, and
+then it echoes your choice.
+
+The two sort orders used here are called `order1' and `order2'.
+They're associated with the string descriptions '''##"alphabetical"##'''
+and '''##"by length"##''', respectively, and they're inserted in a [[ring]], for
+cycling.
+
+Function '''`my-collection-fn'''' dynamically computes the completion
+candidates according to the current sort function, which is picked
+by '''`my-sort-fn-chooser'''' based on the current sort order,
+'''`sorti-current-order''''.  Each sort function uses `sort', passing it
+a binary string-comparison predicate.
+
+    (defun my-collection-fn (candidates)
+     "Collection function that provides metadata for sorting.
+    Sorting is per the current value of `my-sort-fn-chooser'."
+     (lambda (string pred action)
+       (if (eq action 'metadata)
+           (let ((order  (my-sort-fn-chooser)))
+             `(metadata ,@(and order
+                               `((display-sort-function . ,order)
+                                 (cycle-sort-function   . ,order)))))
+         (complete-with-action action candidates string pred))))
+
+    (defun my-sort-fn-chooser ()
+     "Return sort function for current value of `sorti-current-order'."
+     (if (eq 'order2 sorti-current-order)
+         'my-sort-by-length
+       'my-sort-alphabetically))
+
+    (defun my-sort-alphabetically (candidates)
+     "Sort CANDIDATES alphabetically"
+     (let ((cands  (copy-sequence candidates)))
+       (sort cands #'string<)))
+
+    (defun my-sort-by-length (candidates)
+     "Sort CANDIDATES by their length"
+     (let ((cands  (copy-sequence candidates)))
+       (sort cands (lambda (s1 s2) (< (length s1) (length s2))))))
+
+For a more interesting example, see library '''<tt>[[keysee.el]]</tt>''' ('''KeySee''').  It
+provides ''key completion'', and you can cycle among three sort
+orders: ''prefix keys first'', ''local keys first'', and alphabetically by
+''command name''.
+
+----
+CategoryCompletion
+
+
+
