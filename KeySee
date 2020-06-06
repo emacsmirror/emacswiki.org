@@ -22,6 +22,11 @@ you can still use `S-TAB' at top level.  And if you have a long
 enough `kc-auto-delay' you can take time to think or use `S-TAB'
 at any level to show completions immediately.
 
+Turning on `kc-auto-mode' thus turns on `kc-mode'.  Turning either
+mode off turns off the other as well.  So if you want both, turn
+on `kc-auto-mode'; if you want only on-demand completion, turn on
+`kc-mode'.
+
 When completions are shown, the completion candidates have one of
 these forms:
 
