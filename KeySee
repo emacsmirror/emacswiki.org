@@ -1,21 +1,27 @@
-This page is about library '''<tt>[[keysee.el]]</tt>''', which provides completion of key sequences and menu-bar menus.
+This page is about library '''<tt>[[keysee.el]]</tt>''', which provides completion of key sequences and menu-bar menus.  It requires library '''<tt>[[sortie.el]]</tt>''', which lets you sort completion candidates in different ways interactively.
 
 It is essentially a reduced-functionality version of [[https://www.emacswiki.org/emacs/Icicles_-_Key_Completion|Icicles key completion]].
 
-Turn on minor mode '''`kc-mode'''' to enable key and menu completion.
-Or just complete keys or menu-bar menus on demand, using command
-'''`kc-complete-keys'''' or '''`kc-complete-menu-bar'''', respectively.
+Turn on minor mode '''`kc-mode'''' to enable completion on demandwhenever you hit '''`S-TAB'''', for keys and menu-bar menus.  (You can customize the key(s) for this, using [[option]] '''`kc-completion-keys''''.)
 
-If [[option]] '''`kc-auto-flag'''' is non-`nil' then completion is automatic
-when you use a prefix key.  (The default value is `t'.)
+This means you can hit `S-TAB' at ''top level'', to see all possible
+keys, or ''after any prefix key'', to see all possible keys at that
+level.
 
-You can also complete ''on demand'', using '''`S-TAB''''.  (You can
-customize the keys for this, using [[option]] '''`kc-completion-keys''''.)
+If you want to complete just [[menu-bar]] menus, you can use command
+'''`kc-complete-menu-bar''''.
 
-You can always complete on demand at top level.  If `kc-auto-flag'
-is nil then you can also complete on demand after a prefix key.
+In addition to key completion on demand, you can automatically
+complete prefix keys using minor mode '''`kc-auto-mode''''.  After a
+short delay when you hit a prefix key, it provides the same kind
+of completion as `kc-mode'.  You can customize the delay with
+[[option]] '''`kc-auto-delay''''.
 
-Completion shows you all possible keys you can use, at any level.
+`kc-auto-mode' includes the on-demand completion of `kc-mode', so
+you can still use `S-TAB' at top level.  And if you have a long
+enough `kc-auto-delay' you can take time to think or use `S-TAB'
+at any level to show completions immediately.
+
 When completions are shown, the completion candidates have one of
 these forms:
 
@@ -42,7 +48,8 @@ these forms:
 
 Completion uses the completion styles defined by [[option]]
 '''`kc-completion-styles'''', not those of standard option
-`completion-styles'.  By default, it favors `substring'  or `flex' (Emacs 27 or
+`completion-styles'.  This means you can have different preferred
+styles for key completion.  By default, the setting favors `substring', and then `flex' (Emacs 27 or
 later) completion.
 
 You can use [[option]] '''`kc-separator'''' to customize the separator
@@ -56,7 +63,7 @@ a completion.
 
 The following completion-candidate sort orders are available.  You can
 ''cycle'' among them during completion using the key that is the value of
-[[option]] '''`kc-sort-cycle-key'''' ('''`##C-,##'''' by default).
+[[option]] '''`sorti-sort-cycle-key'''' ('''`##C-,##'''' by default).
 
 * By key name alphabetically, ''prefix keys'' first
 * By key name alphabetically, ''local keys'' first
