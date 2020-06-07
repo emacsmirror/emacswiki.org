@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
-;; Package-Requires: ()
-;; Last-Updated: Sat Jun  6 16:40:03 2020 (-0700)
+;; Package-Requires: ((sortie "0"))
+;; Last-Updated: Sun Jun  7 13:38:50 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 413
+;;     Update #: 414
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
