@@ -1,4 +1,4 @@
-A nifty macro that generates regular expressions for you, from reasonably-comprehensible s-expressions.  Inspired by something similar in Olin Shivers' "scsh".
+A nifty macro that generates regular expressions for you, from reasonably-comprehensible s-expressions.  Inspired by something similar in Olin Shivers' "scsh". Use ##decribe-function## found by pressing  <kbd>C-h f</kbd>  then enter ##rx## to find the full documentation with all usable keywords. 
 
 Example:
 {{{
