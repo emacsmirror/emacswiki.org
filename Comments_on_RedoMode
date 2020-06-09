@@ -1,0 +1,9 @@
+In emacs 27 there are two new commands included 'undo-only and 'undo-redo. They are equivalent to undo and redo in other editors. So a config like:
+
+(global-set-key [remap undo] 'undo-only)
+(global-set-key (kbd "C-M-_") 'undo-redo)
+
+should be enough without any external package.
+
+-- Ergus 2020-06-09 00:32 UTC
+
