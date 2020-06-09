@@ -2,13 +2,12 @@ You can reach me at < zenitani at mac.com >.  Aka. [::zenitani].
 
 My Emacs pages:
 * CarbonEmacsPackage
-* [http://th.nao.ac.jp/MEMBER/zenitani/elisp-j.html Emacs Lisp TIPS] (in Japanese language)
+* [https://sci.nao.ac.jp/MEMBER/zenitani/elisp-j.html Emacs Lisp TIPS] (in Japanese language)
 
 My codes:
 * SeijiZenitaniDotEmacs
 * [https://github.com/zenitani/elisp/blob/master/smart-compile.el Github:smart-compile.el] --- SmartCompile
-* Lisp:smart-dnd.el --- This code provides a user-configurable drag & drop feature: For example, when you drop a jpg file to the buffer visiting an html file, ##<img src="...## will be inserted.
-* MacKeyMode --- Tools for CarbonEmacsPackage
+* [https://github.com/zenitani/elisp/blob/master/smart-dnd.el Github:smart-dnd.el] --- This code provides a user-configurable drag & drop feature: For example, when you drop a jpg file to the buffer visiting an html file, ##<img src="...## will be inserted.
 
 ----
 
