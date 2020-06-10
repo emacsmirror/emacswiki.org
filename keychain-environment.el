@@ -9,7 +9,11 @@
 ;; Keywords: keychain, ssh, gpg, agent
 ;; Created: 18 Dec 2008
 
-;; Version: 1.1.0
+;; Version: 1.2.0
+;; 
+;; Honestly you probably want to use the version here,
+;; its just neater in some ways:
+;; https://github.com/tarsius/keychain-environment
 
 ;; This file is not part of GNU Emacs.
 
@@ -66,6 +70,7 @@
 ;; 2010-07-27 Added GPG_AGENT support
 ;;            (by Michael Markert: markert dot michael at googlemail dot com)
 ;; 2011-08-10 Rolled several patches together
+;; 2020-06-10 Cleaned up keychain-host and keychain-refresh-environment
 
 ;;; Code: 
 
@@ -80,16 +85,14 @@
   :link '(url-link "Homepage" "http://www.emacswiki.org/emacs/download/keychain-environment.el")
   :prefix "keychain-")
 
-(defcustom keychain-dir (concat (getenv "HOME") "/.keychain/" )
+(defcustom keychain-dir (expand-file-name "~/.keychain/")
   "Location of keychain directory. Normally `$HOME/.keychain'"
   :type 'string
   :group 'keychain)
 
 ;; This should increase portability as this is how keychain does it.
 (defcustom keychain-host
-  (if (executable-find "uname")
-      (replace-regexp-in-string "\n$" "" (shell-command-to-string "uname -n"))
-    (car (split-string system-name "\\." t)))
+  (system-name)
   "The hostname used to compose keychain filenames, goes between `keychain-dir' and `keychain-ssh-suffix' or `keychain-gpg-suffix'"
   :type 'string
   :group 'keychain)
@@ -122,9 +125,9 @@
 
 ;; Thanks to Philip Hudson, only parse variables if theres data and
 ;; Jonas Bernoulli only set variables if their valid.
+;; tipper: I rewrote this to abuse sideeffects of setenv for setq-ing June 2020
 (defun keychain-refresh-environment ()
-  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
-and GPG_AGENT variables into the environment and returns them as a list."
+  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID, and GPG_AGENT variables into the environment and returns them as a list."
   (interactive)
   (let* ((ssh-data (keychain-read-file keychain-ssh-file))
          (gpg-data (keychain-read-file keychain-gpg-file))
@@ -132,29 +135,24 @@ and GPG_AGENT variables into the environment and returns them as a list."
          ssh-auth-sock
          ssh-auth-pid
          gpg-agent-info)
-    
+
+    ;; Extract SSH variables
     (unless (string= "" ssh-data)
       (setq ssh-auth-sock
-            (progn
-              (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
-              (match-string 1 ssh-data)))
+            (if (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
+                (setenv "SSH_AUTH_SOCK" (match-string 1 ssh-data))
+              'nil))
       (setq ssh-auth-pid
-            (progn
-              (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
-              (match-string 1 ssh-data))))
-    
+            (if (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
+                (setenv "SSH_AGENT_PID" (match-string 1 ssh-data))
+              'nil)))
+
+    ;; Extract GPG variables
     (unless (string= "" gpg-data)
       (setq gpg-agent-info
-            (progn
-              (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
-              (match-string 1 gpg-data))))
-    
-    (unless (string= "" ssh-auth-sock)
-      (setenv "SSH_AUTH_SOCK" ssh-auth-sock))
-    (unless (string= "" ssh-auth-pid)
-      (setenv "SSH_AUTH_PID" ssh-auth-pid))
-    (unless (string= "" gpg-agent-info)
-      (setenv "GPG_AGENT_INFO" gpg-agent-info))
+            (if (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
+                (setenv "GPG_AGENT_INFO" (match-string 1 gpg-data))
+              'nil)))
     
     (list ssh-auth-sock ssh-auth-pid gpg-agent-info)))
 
