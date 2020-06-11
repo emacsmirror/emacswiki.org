@@ -98,7 +98,7 @@ Here's another reminder that everything you do is actually happening in the `fs-
 
 In some contexts, however, quoted expressions should not be prefixed with `fs-'. When you type ##,(format "%s" 'a)##, you expect the answer to be "a", and indeed, the parser correctly figures out that it should NOT, in this case, convert ##'a## to ##'fs-a##.
 
-`fs-parse' is idempotent. Thus, lisp-messages stay unaltered after parsing.
+`fs-parse' is idempotent. Thus, others than the fs-prefix codewalker, lisp-messages stay unaltered after parsing.
 
 === `fs-' stripping ===
 The definition of `fs-increment' that you just created is built upon several other `fs-' functions. As we alluded to above, you can immediately see your new function in the publicly available file userfunctions.el. Or you can ask fsbot to `find-function' the function for you and return a pretty-printed output. When you type ##,(find-function 'fs-increment)##, fsbot will return a readable version of the definition, by stripping all the `fs-' prefixes. Thus, when you see the bot returning this definition: ##(lambda (myvar) (+ 1 (apply 'myfun myvar)))##, keep in mind that's just a readable shorthand for ##(lambda (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar)))##. The former does not always equal the latter. Fsbot's output is readable but inaccurate if taken literally. If you want the bot to retain the `fs-' prefixes when printing the definition, you can use other botcommands such as `find-function-literally' or `ffl'.
