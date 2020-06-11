@@ -144,7 +144,7 @@ There's a bunch of type predicates macros:
 * <code>SAVE_VALUEP(x)</code>
 * <code>IMAGEP(x)</code>
 
-== Pseudovector types ==
+=== Pseudovector types ===
 Due to having limited available tag space, most Lisp_Objects are internally
 represented as vector-like objects.  These objects are tagged structs each
 containing a <code>union vectorlike_header</code> at the beginning (which
