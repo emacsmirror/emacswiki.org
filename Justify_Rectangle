@@ -1,0 +1,56 @@
+The suggested key-bindings and the functions provided allow you to justify text inside a rectangle.
+
+Assume you're writing a text like the following in ArtistMode:
+
+{{{
+   Client                               	Server
+      | Read a page                               |
+      | gemini://alexschroeder.ch/Test            |
+      |------------------------------------------>|
+      |                     Text of the Test page |
+      |                            10 text/gemini |
+      |<------------------------------------------|
+}}}
+
+By marking the rectangle appropriately, you can now use ##C-x r >## to flush it to the right, and ##C-x r <## to flush it back to the left.
+
+{{{
+I was having trouble 
+
+```
+(global-set-key (kbd "C-x r >") 'rectangle-text-flush-right)
+(global-set-key (kbd "C-x r <") 'rectangle-text-flush-left)
+
+(defun rectangle-text-flush-right (start end)
+  "Justify right the text in the rectangle."
+  (interactive "r")
+  (apply-on-rectangle
+   (lambda (col1 col2)
+     (let ((from (+ (point) col1))
+	   (to (+ (point) col2)))
+       (goto-char to)
+       (let ((n (skip-syntax-backward " " from)))
+	 (delete-region (point) to)
+	 (goto-char from)
+	 (insert-char ?  (- n)))))
+   start
+   end))
+
+(defun rectangle-text-flush-left (start end)
+  "Justify left the text in the rectangle."
+  (interactive "r")
+  (apply-on-rectangle
+   (lambda (col1 col2)
+     (let ((from (+ (point) col1))
+	   (to (+ (point) col2)))
+       (goto-char from)
+       (let ((n (skip-syntax-forward " " to)))
+	 (goto-char to)
+	 (insert-char ?  n)
+	 (delete-region from (+ from n)))))
+   start
+   end))
+}}}
+
+----
+CategoryAlignment
