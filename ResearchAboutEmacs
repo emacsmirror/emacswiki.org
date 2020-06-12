@@ -20,8 +20,13 @@ Twidale, Michael B.; Jones, M. Cameron. (2005). [https://www.ideals.illinois.edu
 
 Zhong, Shudan and Xu, Hong. (2019). [https://dl.acm.org/citation.cfm?doid=3301275.3302272 Intelligently recommending key bindings on physical keyboards with demonstrations in Emacs]. In /Proceedings of the 24th International Conference on Intelligent User Interfaces/ (IUI), 12–17. doi:10.1145/3301275.3302272.
 
-= Other research of unclear academic publication status =
+Monnier, Stefan and Sperber, Michael. (2020). [https://dl.acm.org/doi/abs/10.1145/3386324
+Evolution of Emacs Lisp]. /ACM HOPL'2020/.
 
-Monnier, Stefan, & Sperber, Michael. (2018). [https://www.iro.umontreal.ca/~monnier/hopl-4-emacs-lisp.pdf Evolution of Emacs Lisp]. A draft submitted to /ACM HOPL'2020/.
+Stefan Monnier (2020). [https://programming-journal.org/2021/5/1/
+SMIE: Weakness is Power! Auto-indentation with incomplete information]. 
+ <Programming> Journal, Volume 5, issue 1.
+
+= Other research of unclear academic publication status =
 
 Voit, K. (2013). [http://arxiv.org/abs/1304.1332 What really happened on September 15th 2008? Getting The Most from Your Personal Information with Memacs]. ArXiv:1304.1332 [Cs].
