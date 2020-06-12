@@ -1,7 +1,6 @@
-There are facilities provided by emacs to align text, comments, assignments, or columns.
+There are facilities provided by Emacs to align text, comments, assignments, or columns.
 
-* AlignCommands explains how to use the <code>align</code>, <code>align-current</code> and <code>align-regexp</code> commands provided with emacs.
-
+* AlignCommands explains how to use the <code>align</code>, <code>align-current</code> and <code>align-regexp</code> commands provided with Emacs.
 
 * AlignColumn deals with the <code>align.el</code> extension written by
 Matthias Helmling. Do not confuse with the align.el lisp file
@@ -13,14 +12,14 @@ provided with recent emacs versions and described above.
 <code>columnize-text</code> command, which lines up words or numbers, 
 either by rows or columns.  This function is designed to be used manually
 when editing buffers.
-
   
 * AlignLet is meant to align <code>let</code> assignments in Lisp code.
   The align-let.el extension is written by Kevin Ryde.
 
+* [[Justify Rectangle]] can be used to justify text inside a rectangle.
+  This is mostly useful when working on diagrams in ArtistMode.
 
-
-<b>Other ways to align text or figures</b>
+== Tables ==
 
 [English:CategoryTables Tables] can also be used to line up text. 
 The extension <code>table.el</code>, by
@@ -34,7 +33,8 @@ and a newline as the row delimiter (the newline can be entered by
 hitting <code>C-q C-j</code> or <code>C-o</code>). The table is then
 removed with <code>M-x table-release</code>, leaving the default left
 alignment.
-  
+
+{{{  
                              +---------+--------+
  Firstname  Lastname         |Firstname|Lastname|         Firstname Lastname
  Alice Liddell          =>   +---------+--------+    =>                       
@@ -42,3 +42,4 @@ alignment.
                              +---------+--------+                           
                              |Lewis    |Carroll |         Lewis     Carroll 
                              +---------+--------+
+}}}
