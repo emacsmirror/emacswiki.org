@@ -7,7 +7,7 @@ One of the nice features of Gopher is its flexibility in terms of connectability
 
 For more information, see http://gopher.floodgap.com (or gopher://gopher.floodgap.com) and gopher://gopherproject.org.
 
-*Gemini* is a similar project, but newer: it makes many changes to bring non-HTTP and non-HTML but decentralized hypertext to the masses:
+[https://gemini.circumlunar.space/ Gemini] is a similar project, but newer: it makes many changes to bring non-HTTP and non-HTML but decentralized hypertext to the masses:
 
 * there's a limited Gemini format defined in addition to the Gemini protocol
 * MIME-types
