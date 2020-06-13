@@ -7,16 +7,28 @@ One of the nice features of Gopher is its flexibility in terms of connectability
 
 For more information, see http://gopher.floodgap.com (or gopher://gopher.floodgap.com) and gopher://gopherproject.org.
 
-== implementations in Emacs Lisp ==
+*Gemini* is a similar project, but newer: it makes many changes to bring non-HTTP and non-HTML but decentralized hypertext to the masses:
+
+* there's a limited Gemini format defined in addition to the Gemini protocol
+* MIME-types
+* UTF-8
+* TLS
+* none of that menu vs. files dichotomy
+
+== Implementations in Emacs Lisp ==
 
 Emacs has at least two Gopher client implementations:
 
 * [https://github.com/msnyder-info/gopher.el gopher.el]
 * [https://thelambdalab.xyz/elpher/ Elpher Gopher Client]
 
+/Elpher/ is also a Gemini client.
+
 And some customization examples:
 
 * [[Up command for Elpher]]
+* [https://git.carcosa.net/jmcbray/gemini.el Gemini Mode] to edit Gemini format files
+* [[Gemini Write]]
 
 == Recommendations ==
 
