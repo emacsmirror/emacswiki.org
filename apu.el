@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 23 19:11:48 2019 (-0700)
+;; Last-Updated: Sun Jun 14 14:00:23 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 840
+;;     Update #: 908
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -125,10 +125,10 @@
 ;;    `apu-add-to-pats+bufs', `apu-buf-name-for-matching',
 ;;    `apu-char-at-point', `apu-char-displayable-p', `apu-char-here',
 ;;    `apu-char-name', `apu-char-names', `apu-char-name-here',
-;;    `apu-char-string-here', `apu-chars-narrow-1',
-;;    `apu-chars-read-pattern-arg', `apu-compute-matches',
-;;    `apu-copy-char-to-second-sel', `apu-filter',
-;;    `apu-full-word-match', `apu-get-a-hash-key',
+;;    `apu-char-string-here', `apu-chars-in-region-1',
+;;    `apu-chars-narrow-1', `apu-chars-read-pattern-arg',
+;;    `apu-compute-matches', `apu-copy-char-to-second-sel',
+;;    `apu-filter', `apu-full-word-match', `apu-get-a-hash-key',
 ;;    `apu-get-hash-keys', `apu-hash-table-to-alist',
 ;;    `apu-make-tablist-entry', `apu-match-type-msg',
 ;;    `apu-print-apropos-matches', `apu-print-chars',
@@ -137,16 +137,22 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `apu--buffer-invoked-from', `apu-latest-pattern-set',
-;;    `apu--matches', `apu--match-two-or-more', `apu--match-type',
+;;    `apu--buffer-invoked-from', `apu--chars', `apu--matches',
+;;    `apu--match-two-or-more', `apu--match-type',
 ;;    `apu--match-words-exactly', `apu--orig-buffer',
 ;;    `apu--pats+bufs', `apu--patterns', `apu--patterns-not',
-;;    `apu--refresh-p', `apu--unnamed-chars'.
+;;    `apu--refresh-p', `apu--unnamed-chars',
+;;    `apu-latest-pattern-set'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/14 dadams
+;;     Added: apu-chars-in-region-1, apu--chars.
+;;     apu-revert-buffer: Added code to revert buffer for apu-chars-in-region, using var apu--chars.
+;;     apu-chars-in-region: Use region chars in buffer name (possibly truncated).
+;;                          Set or use apu--chars (in code factored out as apu-chars-in-region-1).
 ;; 2019/06/23 dadams
 ;;     apu-print-chars, apu-print-apropos-matches: Do not use quoted list values.  Use #' for sort fns.
 ;; 2018/02/25 dadams
@@ -373,6 +379,12 @@ Used in a list buffer to point to where it was invoked.")
 (make-variable-buffer-local 'apu--buffer-invoked-from)
 (put 'apu--buffer-invoked-from 'permanent-local t)
 
+(defvar apu--chars nil
+  "String of chars used by `apu-chars-in-region'.
+Used when reverting.")
+(make-variable-buffer-local 'apu--chars)
+(put 'apu--chars 'permanent-local t)  ; Use only in list-output buffer.
+
 (defvar apu--matches ()
   "Result of matching character names in `apu--buffer-invoked-from'.
 A cons whose car is the maximum width of the matching character names
@@ -509,15 +521,6 @@ Does nothing if current pattern is a regexp instead of a word list."
   (setq apu--match-type  'MATCH-TWO-OR-MORE)
   (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
-
-(defun apu-revert-buffer ()
-  "Revert current APU buffer.
-This will cause any partly elided (`...') char names to be shown
-completely"
-  (interactive)
-  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
-  (run-hooks 'apu-revert-hook)
-  (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches)))
 
 (define-derived-mode apu-mode tabulated-list-mode "Apropos Unicode"
   "Major mode for `apropos-char' output.
@@ -714,6 +717,18 @@ Non-nil POSITION means use the character at POSITION."
   (x-show-tip (propertize (char-to-string (char-after position))
                           'face `(:foreground "red" :height ,(* 200 height)))))
 
+(defun apu-revert-buffer ()
+  "Revert current APU buffer.
+This will cause any partly elided (`...') char names to be shown
+completely"
+  (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
+  (run-hooks 'apu-revert-hook)
+  (if apu--buffer-invoked-from
+      (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
+    (unless apu--chars (error "`apu-revert-buffer': Cannot revert buffer"))
+    (apu-chars-in-region-1)))
+
 ;;;###autoload
 (defalias 'describe-chars-in-region 'apu-chars-in-region)
 ;;;###autoload
@@ -725,18 +740,29 @@ The character descriptions are presented in `apu-mode'."
   (interactive "r\nP")
   (setq apu--orig-buffer  (current-buffer)
         apu--refresh-p    t)
-  (let ((chars  (buffer-substring start end)))
+  (let* ((chars  (buffer-substring start end))
+         (bname  (generate-new-buffer-name
+                  (truncate-string-to-width (format "*Chars in Region* \"%s\"" chars) 50 nil nil t))))
     (unless include-dups (setq chars  (cl-delete-duplicates chars :from-end t)))
-    (apu-print-chars chars (generate-new-buffer-name "*Unicode Text in Region*"))
-    (when apu--unnamed-chars
-      (display-message-or-buffer
-       (format "The following chars are not recognized as Unicode:\n%s"
-               (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n"))))))
+    (apu-chars-in-region-1 chars bname)))
 
-(defun apu-print-chars (characters buffer-name)
-  "Show information about Unicode CHARACTERS, in buffer BUFFER-NAME."
-  (with-help-window buffer-name
-    (with-current-buffer buffer-name
+(defun apu-chars-in-region-1 (&optional chars list-buffer)
+  "Helper for `apu-chars-in-region'.
+CHARS defaults to `apu--chars'.
+LIST-BUFFER defaults to the current buffer."
+  (if (not (and chars  list-buffer))
+      (apu-print-chars apu--chars (current-buffer))
+    (apu-print-chars chars list-buffer)
+    (setq apu--chars  chars))
+  (when apu--unnamed-chars
+    (display-message-or-buffer
+     (format "The following chars are not recognized as Unicode:\n%s"
+             (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n")))))
+
+(defun apu-print-chars (characters buffer)
+  "Show information about CHARACTERS, in BUFFER."
+  (with-help-window buffer
+    (with-current-buffer buffer
       (apu-mode)
       (goto-char (point-min))
       (setq case-fold-search          t
