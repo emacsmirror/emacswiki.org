@@ -1,0 +1,6 @@
+Cool.  Alternatively, you might consider just binding ##C-x r >##, and having it alternate when repeated: right, left, right... (compare `this-command' with `last-command').
+
+One less key to bind/sacrifice on `C-x r'.  But left-justifying (less common?) would mean one more key to type: `##C-x r > >##'.  Just an idea.
+
+-- DrewAdams 2020-06-14 21:07 UTC
+
