@@ -15,9 +15,6 @@ Assume you're writing a text like the following in ArtistMode:
 By marking the rectangle appropriately, you can now use ##C-x r >## to flush it to the right, and ##C-x r <## to flush it back to the left.
 
 {{{
-I was having trouble 
-
-```
 (global-set-key (kbd "C-x r >") 'rectangle-text-flush-right)
 (global-set-key (kbd "C-x r <") 'rectangle-text-flush-left)
 
