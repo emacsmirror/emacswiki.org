@@ -136,20 +136,6 @@ I'm not versed enough in emacs lisp to modify the sr-speedbar code to use some o
 Hope it helps.
 
 ----
-*Make Sr-speedbar open files in the next window, instead of in the previous window:*
-{{{
-(defun select-next-window ()
-  (other-window 1))
-
-(defun my-sr-speedbar-open-hook ()
-  (add-hook 'speedbar-before-visiting-file-hook 'select-next-window t)
-  (add-hook 'speedbar-before-visiting-tag-hook 'select-next-window t)
-  )
-
-(advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)
-}}}
-
-----
 *Sr-speedbar doesn't appear to control Speedbar:*
 
 I had this problem using Emacs on OSX (25.1) and found the solution here: http://emacs-leuven.readthedocs.io/en/stable/#speedbar-frames
