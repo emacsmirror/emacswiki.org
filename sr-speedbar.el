@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, Peter Lunicks, all rights reversed.
 ;; Created: 2008
-;; Version: 20161025
+;; Version: 20200616
 ;; X-Original-Version: 0.1.10
-;; Last-Updated: 2016-10-25
+;; Last-Updated: 2020-06-16
 ;; URL: http://www.emacswiki.org/emacs/download/sr-speedbar.el
 ;; Keywords: speedbar, sr-speedbar.el
 ;; Compatibility: GNU Emacs 22 ~ GNU Emacs 25
@@ -78,6 +78,11 @@
 ;;      M-x customize-group RET sr-speedbar RET
 
 ;;; Change log:
+;; * 16 Jun 2020:
+;;   * Bo Yao <icerove@gmail.com> (submitted by him on 16 Jul 2018 to the Emacs Orphanage mirror version at GitHub)
+;;      * Always open file in most recently selected window (the one before switching to
+;;        sr-speedbar).
+;;
 ;; * 25 Oct 2016:
 ;;   * Hong Xu <hong@topbug.net>
 ;;      * Fix compilation warning when `helm-alive-p' is not defined.
@@ -520,19 +525,19 @@ Otherwise return nil."
 
 (defun sr-speedbar-before-visiting-file-hook ()
   "Function that hook `speedbar-before-visiting-file-hook'."
-  (select-window (previous-window)))
+  (select-window (get-mru-window)))
 
 (defun sr-speedbar-before-visiting-tag-hook ()
   "Function that hook `speedbar-before-visiting-tag-hook'."
-  (select-window (previous-window)))
+  (select-window (get-mru-window)))
 
 (defun sr-speedbar-visiting-file-hook ()
   "Function that hook `speedbar-visiting-file-hook'."
-  (select-window (previous-window)))
+  (select-window (get-mru-window)))
 
 (defun sr-speedbar-visiting-tag-hook ()
   "Function that hook `speedbar-visiting-tag-hook'."
-  (select-window (previous-window)))
+  (select-window (get-mru-window)))
 
 (defun sr-speedbar-kill-buffer-hook ()
   "Function that hook `kill-buffer-hook'."
