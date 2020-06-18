@@ -1,0 +1,29 @@
+== Open Buffer In VS Code ==
+
+The following elisp can be used to open the current buffer in VSCode, this is particularly useful for previewing markdown:
+
+{{{
+
+(defun my-open-current-file-in-vscode ()
+  (interactive)
+  (async-shell-command
+                                       
+   (format "code --add ~/Notes/MD/notes --goto %S:%d"
+           (shell-quote-argument buffer-file-name)
+           (+ (if (bolp) 1 0) (count-lines 1 (point)))
+           )))
+
+(global-set-key (kbd "C-c v") 'my-open-current-file-in-vscode)
+
+}}}
+
+Alternatively if you wanted to simply preview markdown marktext could be used instead:
+
+
+{{{
+(defun my-open-current-file-in-marktext ()
+  (interactive)
+  (async-shell-command
+   (format "marktext %S"
+           (shell-quote-argument buffer-file-name))))
+}}}
