@@ -4,10 +4,11 @@ The following elisp can be used to open the current buffer in VSCode, this is pa
 
 {{{
 
- (save-window-excursion
-
 (defun my-open-current-file-in-vscode ()
   (interactive)
+
+ (save-window-excursion
+
   (async-shell-command
                                        
    (format "code --add ~/Notes/MD/notes --goto %S:%d"
@@ -24,10 +25,11 @@ Alternatively if you wanted to simply preview markdown marktext could be used in
 
 {{{
 
- (save-window-excursion
-
 (defun my-open-current-file-in-marktext ()
   (interactive)
+
+ (save-window-excursion
+
   (async-shell-command
    (format "marktext %S"
            (shell-quote-argument buffer-file-name)))))
