@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 31 07:38:04 2020 (-0800)
+;; Last-Updated: Sat Jun 20 10:14:14 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 16638
+;;     Update #: 16640
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2115,6 +2115,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2020/06/20 dadams
+;;     Correctly added bmkp-compilation-target-set(-all) to compilation and grep maps.
 ;; 2020/01/27 dadams
 ;;     Bind bookmark-jump-other-frame to 5 in bookmark-map.
 ;; 2020/01/25 dadams
