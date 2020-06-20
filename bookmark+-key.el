@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sat Jun 20 10:09:13 2020 (-0700)
+;; Last-Updated: Sat Jun 20 10:17:29 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 971
+;;     Update #: 972
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -109,6 +109,12 @@
 ;; bmkp-menu-bar-make-toggle
 
 (eval-when-compile (require 'cl)) ;; case
+
+;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Quiet the byte-compiler
+
+(defvar grep-mode-map)
 
 
 ;; Prefix keys.
