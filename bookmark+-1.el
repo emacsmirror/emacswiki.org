@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jan 31 07:36:20 2020 (-0800)
+;; Last-Updated: Sat Jun 20 11:12:49 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9055
+;;     Update #: 9058
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -407,6 +407,7 @@
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
 ;;    `bmkp-set-dired-bookmark-for-files',
 ;;    `bmkp-set-eww-bookmark-here' (Emacs 25+),
+;;    `bmkp-set-grep-command-bookmark' (Emacs 26+),
 ;;    `bmkp-set-icicle-search-hits-bookmark',
 ;;    `bmkp-set-info-bookmark-with-node-name' (Emacs 22+),
 ;;    `bmkp-set-izones-bookmark', `bmkp-set-kmacro-bookmark' (Emacs
@@ -4970,6 +4971,26 @@ You need library `Dired+' for this command."
    bookmark-name
    `(lambda () (diredp-add-to-dired-buffer ',dired-name ',to-add ',switches))
    msg-p))
+
+(when (boundp 'grep-history)            ; Emacs 26+
+  (defun bmkp-set-grep-command-bookmark (bookmark-name &optional grep-cmd msg-p)
+    "Create a bookmark to run the last grep command.
+With a prefix arg, you are prompted for the grep command to record,
+ with lax completion against your previous `grep' inputs in this
+ session."
+    (interactive
+     (let ((parg  current-prefix-arg))
+       (unless grep-history (error "Emacs command `grep' has not yet been run"))
+       (list (bmkp-completing-read-lax "Bookmark")
+             (and parg
+                  (completing-read "Grep command: "
+                                   grep-history nil t nil 'grep-history (car grep-history)))
+             'MSG)))
+    (setq grep-cmd  (or grep-cmd  (car grep-history)))
+    (unless (stringp grep-cmd) (error "Emacs command `grep' has not yet been run"))
+    (bmkp-make-function-bookmark bookmark-name
+                                 `(lambda () (funcall #'grep ,grep-cmd))
+                                 msg-p)))
 
 ;;;###autoload (autoload 'bmkp-revert-bookmark-file "bookmark+")
 (defun bmkp-revert-bookmark-file (&optional msg-p) ; Same as `C-u g' in bookmark list (but not bound).
