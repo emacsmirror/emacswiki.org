@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sat Jan 25 13:01:16 2020 (-0800)
+;; Last-Updated: Sat Jun 20 10:09:13 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 957
+;;     Update #: 971
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -225,6 +225,7 @@ there are such bookmarks can take a little time."
 
 (define-key bookmark-map "0"      'bmkp-empty-file)                                   ; `C-x p 0'
 (define-key bookmark-map "2"      'bmkp-clone-bookmark)                               ; `C-x p 2'
+(define-key bookmark-map "5"      'bookmark-jump-other-frame)                         ; `C-x p 5'
 (define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list)            ; `C-x p B'
 ;; `e' is `edit-bookmarks' (aka `bookmark-bmenu-list', from vanilla Emacs.
 (define-key bookmark-map "E"      'bmkp-edit-bookmark-record)                         ; `C-x p E'
@@ -358,21 +359,42 @@ there are such bookmarks can take a little time."
               (define-key occur-mode-map [(control ?c) (control meta shift ?b)]
                 'bmkp-occur-create-autonamed-bookmarks)))) ; `C-c C-M-B' (aka `C-c C-M-S-b')
 
-(when (fboundp 'bmkp-compilation-target-set)
+(when (fboundp 'bmkp-compilation-target-set) ; Emacs 22+
+
   (add-hook 'compilation-mode-hook
             (lambda ()
-              (unless (lookup-key occur-mode-map "\C-c\C-b")
-                (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
-              (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
-                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all)))))
+              (unless (lookup-key compilation-mode-map "\C-c\C-b")
+                (define-key compilation-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
+              (unless (lookup-key compilation-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+                (define-key compilation-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
 
-(when (fboundp 'bmkp-compilation-target-set)
-  (add-hook 'compilation-minor-mode-hook
-            (lambda ()
-              (unless (lookup-key occur-mode-map "\C-c\C-b")
-                (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
-              (unless (lookup-key occur-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
-                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all)))))
+  (when (fboundp 'compilation-minor-mode) ; Emacs 26+
+
+    (add-hook
+     'grep-mode-hook
+     (lambda ()
+       (unless (lookup-key grep-mode-map "\C-c\C-b")
+         (define-key grep-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
+       (unless (lookup-key grep-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+         (define-key grep-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
+
+    (add-hook
+     'compilation-minor-mode-hook
+     (lambda ()
+       (unless (lookup-key compilation-minor-mode-map "\C-c\C-b")
+         (define-key compilation-minor-mode-map "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
+       (unless (lookup-key compilation-minor-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+         (define-key compilation-minor-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
+
+    (add-hook
+     'compilation-shell-minor-mode-hook
+     (lambda ()
+       (unless (lookup-key compilation-shell-minor-mode-map "\C-c\C-b")
+         (define-key compilation-shell-minor-mode-map
+           "\C-c\C-b" 'bmkp-compilation-target-set)) ; `C-c C-b'
+       (unless (lookup-key compilation-shell-minor-mode-map "\C-c\C-\M-b") ; `C-c C-M-b'
+         (define-key compilation-shell-minor-mode-map
+           "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))))
 
 
 ;; `bmkp-tags-map': prefix `C-x p t'
