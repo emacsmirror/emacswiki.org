@@ -6,6 +6,10 @@ Traditionally, Unix uses the ^H keystroke to send a backspace from or to a termi
 
 Note: This does not work on Linux Mint and probably all debian based distros.
 
+Try instead:
+  
+  (normal-erase-is-backspace-mode 1)
+
 : Personally, I prefer##(keyboard-translate ?\C-h ?\C-?)##; that way, the key does whatever it is supposed to do regardless of mode. -- Anonymous
 
 Note: This also does not work on Linux Mint.
