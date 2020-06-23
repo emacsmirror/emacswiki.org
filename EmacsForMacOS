@@ -164,8 +164,7 @@ This creates a symlink and not an alias. So Spotlight may not find it (tested on
 $ osascript -e "tell application \"Finder\" to make alias file to (POSIX file \"/usr/local/Cellar/emacs-plus/25.3/Emacs.app\") at POSIX file \"$HOME/Applications\""
 </pre>
 
-After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
-to run the Cocoa version using this command, you simply add a line to your <tt>.bash_profile</tt>.
+After installation, using the <tt>emacs</tt> command in the terminal defaults to opening Emacs.app in a new window, separate from the terminal. This represents a change in behaviour from the version of <tt>emacs</tt> pre-installed on macOS 10.14 and earlier. If you want to run <tt>emacs</tt> in the terminal then it must be invoked with the <tt>-nw</tt> "non-windowed" flag. You are required to configure environment variables (EDITOR and/or VISUAL), shell profiles (.bash_profile) and other configuration files (.git_config) to invoke <tt>emacs -nw</tt> if this is your desired default.
 
 ==== Emacs-Plus version in tap ====
 
