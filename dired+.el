@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2019.12.05
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec  5 15:28:37 2019 (-0800)
+;; Last-Updated: Wed Jun 24 09:19:47 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 11995
+;;     Update #: 12542
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -815,6 +815,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/24 dadams
+;;     dired-do-find-regexp-and-replace: Bug fix: let -> let*.
 ;; 2019/12/05 dadams
 ;;     Added: diredp-invoke/eval-in-this-file.
 ;;     Renamed: diredp-do-apply-function(-recursive) to diredp-do-apply/eval(-recursive).
@@ -8872,9 +8874,9 @@ A prefix arg behaves as follows:
 When invoked interactively, raise an error if no files are marked.
 
 REGEXP should use constructs supported by your local `grep' command."
-    (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t))
-                       (arg     current-prefix-arg)
-                       (C-u     (and (consp arg)  arg)))
+    (interactive (let* ((common  (query-replace-read-args "Query replace regexp in marked files" t t))
+                        (arg     current-prefix-arg)
+                        (C-u     (and (consp arg)  arg)))
                    (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
                    (list (nth 0 common)
                          (nth 1 common)
