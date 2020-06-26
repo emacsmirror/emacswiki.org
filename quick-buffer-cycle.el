@@ -1,5 +1,7 @@
 ;;; quick-buffer-cycle.el --- Quickly cycle between buffers
 
+;; Copyright (C) 2020  Mathias Dahl
+
 ;; Author: Mathias Dahl <mathias.dahl@gmail.com>
 ;; Maintainer: Mathias Dahl <mathias.dahl@gmail.com>
 ;; Version: 1.0.0
