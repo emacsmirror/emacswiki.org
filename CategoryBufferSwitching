@@ -34,6 +34,7 @@ The following are specific tricks and packages for buffer switching.
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
 * PointStack -- go back to places in buffers that you've marked
 * [https://github.com/renard/quick-buffer-switch Quick Buffer Switch] -- Switch to buffer using intelligent predicates.
+* QuickBufferCycle -- Quickly switch to the previous buffer or the Nth previous one by pressing the same key repeatedly.
 * RecreateScratchBuffer -- when ##*scratch*## disappears
 * [[ShortList]] -- an efficient way to access a short list of buffers
 * SwBuff -- another way to cycle among buffers
