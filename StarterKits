@@ -3,11 +3,11 @@ There are several so-called "starter kits" which provide default Emacs configura
 Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (all numbers as of 2016-01-16, except for the updated 2018-08-25 numbers on Spacemacs and Doom Emacs):
 
 || Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            || 20.2k ||          568 ||    7430 ||              6040 || https://github.com/syl20bnr/spacemacs ||
-|| Doom Emacs           ||  6.9k ||           27 ||    4336 ||               142 || https://github.com/hlissner/doom-emacs ||
-|| purcell emacs.d      ||  5.5k ||           13 ||    2427 ||                60 || https://github.com/purcell/emacs.d ||
-|| Prelude              ||  4.4k ||          100 ||    1188 ||                80 || https://github.com/bbatsov/prelude ||
-|| Centaur Emacs        ||   995 ||           15 ||    3408 ||               200 || https://github.com/seagle0128/.emacs.d ||
+|| Spacemacs            || 20.2k ||          561 ||   10904 ||              6040 || https://github.com/syl20bnr/spacemacs ||
+|| Doom Emacs           ||  6.9k ||          318 ||   13704 ||               142 || https://github.com/hlissner/doom-emacs ||
+|| purcell emacs.d      ||  5.5k ||           21 ||    3092 ||                60 || https://github.com/purcell/emacs.d ||
+|| Prelude              ||  4.4k ||          152 ||    1360 ||                80 || https://github.com/bbatsov/prelude ||
+|| Centaur Emacs        ||   995 ||           17 ||    3447 ||               200 || https://github.com/seagle0128/.emacs.d ||
 || magnars emacs.d      ||   910 ||            6 ||    1359 ||               500 || https://github.com/magnars/.emacs.d ||
 || Emacs Starter Kit    ||   630 ||           19 ||     568 ||               190 || https://github.com/eschulte/emacs-starter-kit || 
 || oh-my-emacs          ||   540 ||           10 ||     325 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
