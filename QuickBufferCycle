@@ -2,6 +2,7 @@ Lisp:quick-buffer-cycle.el
 
 Since I'm lazy I'm just copying the Commentary section here:
 
+<pre>
 ;;; Commentary:
 ;;
 ;; For a long time (*) I have had the F1 key bound to a command that
@@ -76,4 +77,11 @@ Since I'm lazy I'm just copying the Commentary section here:
 ;; of buffers to show in the hint is 4 but this can be customized by
 ;; setting `quick-buffer-cycle-hint-limit' to the number of buffers to
 ;; be shown.
-;;
+</pre>
+
+Yeah, that's it...
+
+Enjoy!
+----
+CategoryBufferSwitching
+
