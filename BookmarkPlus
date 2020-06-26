@@ -2242,6 +2242,7 @@ use an autofile bookmark much as you would use a file or directory.
 To create a new autofile bookmark, you can use '''`bmkp-bookmark-a-file'''' (aka '''`bmkp-autofile-set''''), which is
 bound by default to '''`##C-x p c a##''''.  (In general, the key '''`a'''' is used in key sequences for autofile bookmarks.)
 
+[:bmkp-propertize-bookmark-names-flag]
 If [[user option]] '''`bmkp-propertize-bookmark-names-flag'''' is non-`nil',
 which it is by default with Emacs 21 and later, then you can have
 ''multiple bookmarks with the same name''.  This is important for
