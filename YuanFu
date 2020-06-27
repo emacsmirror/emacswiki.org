@@ -29,6 +29,9 @@ Here are some of the packages that I wrote.
 
 * [https://github.com/casouri/isolate isolate]: Like evil-surround.
 
+* [https://github.com/casouri/valign valign]: 
+Align org tables, even when there are variable font characters/images/CJK characters.
+
 Here are some site-lisp's I wrote.
 
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/color-outline.el color-outline.el]: 
