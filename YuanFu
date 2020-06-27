@@ -15,7 +15,7 @@ You can find me on [https://emacs-china.org emacs-china] under the name casouri,
     Emacs       Makes          A          Computer     Slow
     Elsewhere   Maybe          All        Commands are Simple
     Excellent   Manuals        Are        Clearly      Suppressed
-    Embarrassed Manual-Writer  Accused of Communist    Subversion     ;; for the record, Emacs has a fantastic manual
+    Embarrassed Manual-Writer  Accused of Communist    Subversion    ;; for the record, Emacs has a fantastic manual
 
 
 
@@ -29,11 +29,27 @@ Here are some of the packages that I wrote.
 
 * [https://github.com/casouri/isolate isolate]: Like evil-surround.
 
-* [https://github.com/casouri/find-char find-char]: Like `f' in vim.
+Here are some site-lisp's I wrote.
 
-* [https://github.com/casouri/eldoc-box eldoc-box]: eldoc + childframe. At first, I use it with eglot. Now I don't use it anymore since I wrote ghelp.
+* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/color-outline.el color-outline.el]: 
+Outline for programming modes.
 
-Here are some utilities I wrote.
+* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/outline%2B.el outline+.el]:
+Cycle outline headers like in Org mode.
+
+* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/info%2B.el info+.el]: 
+Prettify Info buffers.
+
+* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/sidebar.el sidebar.el]: 
+Show an outline sidebar.
+
+* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/quanjiao.el quanjiao.el]:
+智能全角引号。
+
+* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/transform.el transform.el]:
+TeXmacs-like symbol insertion.
+
+Here are some Emacs utilities I wrote.
 
 * [https://archive.casouri.cat/note/2019/display-console-in-emacs Display console]
 
@@ -48,10 +64,6 @@ Welcome to the wiki. -- DrewAdams
 
 [new:YuanFu:2019-09-10 16:19 UTC]
 Thanks :) -- Yuan
-
-
-
-
 
 
 ----
