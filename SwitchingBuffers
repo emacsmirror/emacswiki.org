@@ -79,7 +79,7 @@ The Emacs key bindings for `previous-buffer' and `next-buffer' (by default, `##C
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
 With `TAB' actions can be selected if the selected candidate has more than one possible action.
 With `C-z' contents of selected candidate are displayed.
-
+* QuickBufferCycle
 
 
 [:SwitchingBetweenTwoBuffers]
