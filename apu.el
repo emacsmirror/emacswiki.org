@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 14 14:00:23 2020 (-0700)
+;; Last-Updated: Sat Jun 27 15:05:19 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 908
+;;     Update #: 929
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -79,13 +79,14 @@
 ;;
 ;;  NOTE:
 ;;
-;;    Starting with Emacs 25, `char-displayable-p' can be EXTREMELY
-;;    SLOW if the new variable `inhibit-compacting-font-caches' is
-;;    `nil', which it is by default, and if you have many, or large,
-;;    fonts installed.  For this reason the default value of
+;;    Starting with Emacs 25, predicate `char-displayable-p' can be
+;;    EXTREMELY SLOW if the new variable
+;;    `inhibit-compacting-font-caches' is `nil', which it is by
+;;    default, and if you have many, or large, fonts installed.  (This
+;;    seems to be the case if you have MS Windows TrueType fonts
+;;    installed, for instance.)  For this reason, the default value of
 ;;    `apu-match-only-displayable-chars-flag' is `nil' for Emacs 25
-;;    and later.  This seems to be the case if you have MS Windows
-;;    TrueType fonts installed, for instance.
+;;    and later.
 ;;
 ;;    If you want to be able to exclude non-displayable chars in Emacs
 ;;    25+, then set `apu-match-only-displayable-chars-flag' to
@@ -148,6 +149,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/06/27 dadams
+;;     apu-chars(-refresh)-matching-(full-words|two-or-more-words|words-as-substrings),
+;;       apu-chars-next-match-method, apu-chars-refresh-with-next-match-method, apu-chars-narrow-1:
+;;         Raise error if not in APU mode. 
+;;     apu-revert-buffer: Added autoload cookie.
 ;; 2020/06/14 dadams
 ;;     Added: apu-chars-in-region-1, apu--chars.
 ;;     apu-revert-buffer: Added code to revert buffer for apu-chars-in-region, using var apu--chars.
@@ -213,7 +219,7 @@
 ;;            apu-chars-read-pattern-arg, apu-print, apu-compute-matches, apu-filter, apu-chars-narrow.
 ;;     Bind apu-chars-refresh* to C-c (n|s|w|2).
 ;;     Renamed apu--insertion-buffer to apu--buffer-invoked-from.
-;;     Removed apu-revert-buffer.
+;;     Removed: apu-revert-buffer, apu--pattern (use apu--patterns).
 ;;     apu-chars: Factored code out, to new functions.  Removed arg.
 ;;     apu-match-type-msg: Test apu--match-type.
 ;;     apu-tablist-entries: Use apu-compute-matches.
@@ -360,7 +366,7 @@ Any other value acts like `MATCH-WORDS-AS-SUBSTRINGS'")
   "Buffer current when `apropos-char' was last invoked.")
 
 ;; A buffer where `apu-chars*' is invoked can have multiple list buffers, which show matches for
-;; different sets of patterns.  `apu--pattern' is local to the list buffer that shows the matches.
+;; different sets of patterns.  `apu--patterns' is local to the list buffer that shows the matches.
 (defvar apu--pats+bufs ()
   "Alist of patterns and their list buffers.
 Each entry has form (PATTERN PATTERN-NOT . BUFFER), where
@@ -427,6 +433,7 @@ They are for the last apu command associated with this output buffer.")
 (defun apu-chars-next-match-method ()   ; Not bound by default.
   "Cycle among the methods of matching character names."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (call-interactively
    (case apu--match-type
@@ -441,6 +448,7 @@ Same as `apropos-char' with a non-nil value of
 `apu-match-words-exactly-flag': match each entry of a word-list
 pattern as a full word."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
   (let ((list-buf  (get-buffer-create (apu-buf-name-for-matching (car apu-latest-pattern-set)
@@ -457,6 +465,7 @@ Same as `apropos-char' with a nil value of
 `apu-match-two-or-more-words-flag': match two or more entries of a
 word-list pattern, as a full word."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
   (let ((list-buf  (get-buffer-create (apu-buf-name-for-matching (car apu-latest-pattern-set)
@@ -473,6 +482,7 @@ Same as `apropos-char' with a nil value of
 `apu-match-words-exactly-flag': match each entry of a word-list
 pattern as a substring."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
   (let ((list-buf  (get-buffer-create (apu-buf-name-for-matching (car apu-latest-pattern-set)
@@ -485,6 +495,7 @@ pattern as a substring."
 (defun apu-chars-refresh-with-next-match-method () ; Bound to `C-c n'.
   "Refresh matches for the same pattern, but using the next matching method."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (call-interactively
    (case apu--match-type
@@ -497,6 +508,7 @@ pattern as a substring."
 I.e., match again, as if `apu-match-words-exactly-flag' were non-nil.
 Does nothing if current pattern is a regexp instead of a word list."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu--match-type  'MATCH-WORDS-EXACTLY)
   (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
@@ -507,6 +519,7 @@ Does nothing if current pattern is a regexp instead of a word list."
 I.e., match again, as if `apu-match-words-exactly-flag' were nil.
 Does nothing if current pattern is a regexp instead of a word list."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu--match-type  'MATCH-WORDS-AS-SUBSTRINGS)
   (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
@@ -517,10 +530,24 @@ Does nothing if current pattern is a regexp instead of a word list."
 I.e., match again, as if `apu-match-two-or-more-words-flag' were t.
 Does nothing if current pattern is a regexp instead of a word list."
   (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu--match-type  'MATCH-TWO-OR-MORE)
   (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
+
+;;;###autoload
+(defun apu-revert-buffer ()
+  "Revert current APU buffer.
+This will cause any partly elided (`...') char names to be shown
+completely"
+  (interactive)
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
+  (run-hooks 'apu-revert-hook)
+  (if apu--buffer-invoked-from
+      (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
+    (unless apu--chars (error "`apu-revert-buffer': Cannot revert buffer"))
+    (apu-chars-in-region-1)))
 
 (define-derived-mode apu-mode tabulated-list-mode "Apropos Unicode"
   "Major mode for `apropos-char' output.
@@ -716,18 +743,6 @@ Non-nil POSITION means use the character at POSITION."
   (unless height (setq height  1))
   (x-show-tip (propertize (char-to-string (char-after position))
                           'face `(:foreground "red" :height ,(* 200 height)))))
-
-(defun apu-revert-buffer ()
-  "Revert current APU buffer.
-This will cause any partly elided (`...') char names to be shown
-completely"
-  (interactive)
-  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
-  (run-hooks 'apu-revert-hook)
-  (if apu--buffer-invoked-from
-      (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
-    (unless apu--chars (error "`apu-revert-buffer': Cannot revert buffer"))
-    (apu-chars-in-region-1)))
 
 ;;;###autoload
 (defalias 'describe-chars-in-region 'apu-chars-in-region)
@@ -1055,6 +1070,7 @@ You are prompted for the PATTERN, which is as for `apropos-char'."
 
 (defun apu-chars-narrow-1 (pattern &optional notp)
   "Helper for `apu-chars-narrow' and `apu-chars-narrow-not'."
+  (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (let ((orig-pats   (if notp 'apu--patterns-not 'apu--patterns))
         (bufs-entry  (rassoc (current-buffer)
