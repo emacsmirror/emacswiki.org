@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 27 15:05:19 2020 (-0700)
+;; Last-Updated: Sat Jun 27 15:24:18 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 929
+;;     Update #: 931
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -68,6 +68,11 @@
 ;;  word or only any two or more words.  If matching each word, you
 ;;  can match them as substrings or as full words.  You can use `C-c
 ;;  n' to refresh the matches, cycling among these word-match methods.
+;;  There are also separate commands for each kind of matching:
+;;
+;;    `C-c s' - Use substring matching
+;;    `C-c 2' - Use pairwise full-word matching (match two+ words)
+;;    `C-c w' - Use full-word matching for each list entry
 ;;
 ;;  Non-`nil' option `apu-match-only-displayable-chars-flag' means
 ;;  that commands such as `apropos-unicode' display only Unicode chars
