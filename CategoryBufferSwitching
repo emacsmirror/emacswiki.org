@@ -6,6 +6,7 @@ This page is about different libraries and ways to ''switch buffers''. As always
 The following are specific tricks and packages for buffer switching.
 
 * [[Anything]] -- can be used to switch to a buffer
+* BubbleBuffer - Similar to CycleBuffer, QuickBufferCycle, etc.
 * BufferMenu -- Like [[Dired]], but for buffers -- same thing as %%ListBuffers%%, but lets you also act on the buffers
 * BufferMenuPlus -- %%BufferMenu%% and %%ListBuffers%% enhancements
 * BufferQuickSwitcher -- Another way to switch buffers
