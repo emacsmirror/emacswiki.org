@@ -1,13 +1,32 @@
-Gopher is a plain-text based network protocol which was widely popular before the HTTP-based web came into existance; de facto, it is the direct predecessor of modern HTTP servers, but with a simpler screen layout due to its simpler markup standard.  It supports informational text and hyperlinks as well as up- and download of files of several types, search queries, host-side scripting, and a few other things like Telnet sessions and automated access to and updates from other server types (SQL databases, whois/wais servers, finger servers, and much more).  Like HTTP, it is a server-client protocol; there are several dozen gopher clients for almost all platforms and of different ability and quality.
+Gopher is a plain-text based network protocol which was widely popular
+before the HTTP-based web came into existance; de facto, it is the
+direct predecessor of modern HTTP servers, but with a simpler screen
+layout due to its simpler markup standard. It supports informational
+text and hyperlinks as well as up- and download of files of several
+types, search queries, host-side scripting, and a few other things
+like Telnet sessions and automated access to and updates from other
+server types (SQL databases, whois/wais servers, finger servers, and
+much more). Like HTTP, it is a server-client protocol; there are
+several dozen gopher clients for almost all platforms and of different
+ability and quality.
 
-Gopher's directory structure is centered around so-called "gophermaps". These are files alike to an index.html which basically are combined explanatory text files and directory indices, and containing hyperlinks and script calls.
+Gopher's directory structure is centered around so-called
+"gophermaps". These are files alike to an index.html which basically
+are combined explanatory text files and directory indices, and
+containing hyperlinks and script calls.
 
-One of the nice features of Gopher is its flexibility in terms of connectability; with many gopher servers, you can use telnet to connect (on port :70 instead of telnet's port, :23) instead of using a full-blown gopher client, send a "selector" and a newline, and the server sends back the according gophermap or file as plain-text.
+One of the nice features of Gopher is its flexibility in terms of
+connectability; with many gopher servers, you can use telnet to
+connect (on port :70 instead of telnet's port, :23) instead of using a
+full-blown gopher client, send a "selector" and a newline, and the
+server sends back the according gophermap or file as plain-text.
 
+For more information, see http://gopher.floodgap.com (or
+gopher://gopher.floodgap.com) and gopher://gopherproject.org.
 
-For more information, see http://gopher.floodgap.com (or gopher://gopher.floodgap.com) and gopher://gopherproject.org.
-
-[https://gemini.circumlunar.space/ Gemini] is a similar project, but newer: it makes many changes to bring non-HTTP and non-HTML but decentralized hypertext to the masses:
+[https://gemini.circumlunar.space/ Gemini] is a similar project, but
+newer: it makes many changes to bring non-HTTP and non-HTML but
+decentralized hypertext to the masses:
 
 * there's a limited Gemini format defined in addition to the Gemini protocol
 * MIME-types
@@ -27,6 +46,7 @@ Emacs has at least two Gopher client implementations:
 And some customization examples:
 
 * [[Up command for Elpher]]
+* [[Integrate Gopher and Gemini into Eww using Elpher]]
 * [https://git.carcosa.net/jmcbray/gemini.el Gemini Mode] to edit Gemini format files
 * [[Gemini Write]]
 
