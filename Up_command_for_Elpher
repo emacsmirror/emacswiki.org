@@ -1,6 +1,13 @@
-Elpher uses `u' for "back", which often works if you're exploring a hierarchical site. When jumping into a hierarchy from some other site, this gets confusing: "back" means that you return to the site you came from where as "up" would mean that you're guessing the new site has a directory structure and you can just change to the parent directory, so to speak.
+Elpher uses `u' for "back", which often works if you're exploring a
+hierarchical site. When jumping into a hierarchy from some other site,
+this gets confusing: "back" means that you return to the site you came
+from where as "up" would mean that you're guessing the new site has a
+directory structure and you can just change to the parent directory,
+so to speak.
 
-The following code uses `b' (like Lynx) and `l' (like Eww) to go back, and it uses `u' to "go up", assuming that the current selector allows one to go up.
+The following code uses `b' (like Lynx) and `l' (like Eww) to go back,
+and it uses `u' to "go up", assuming that the current selector allows
+one to go up.
 
 {{{
 (add-hook 'elpher-mode-hook
