@@ -1,0 +1,15 @@
+This code allows you to follow Gopher and Gemini links in [[eww]],
+using [[Elpher]] to handle the Gopher and Gemini protocol.
+
+{{{
+(advice-add 'eww-browse-url :around 'elpher:eww-browse-url)
+
+(defun elpher:eww-browse-url (original url &optional new-window)
+  "Handle gemini links."
+  (cond ((string-match-p "\\`\\(gemini\\|gopher\\)://" url)
+	 (require 'elpher)
+	 (elpher-go url))
+	(t (funcall original url new-window))))
+}}}
+
+CategoryGopher
