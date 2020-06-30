@@ -6,11 +6,11 @@ Another alternative to delight is [https://github.com/alezost/dim.el dim].
 
 ==Download and Install==
 
-[InstallingPackages Install] the [http://elpa.gnu.org/packages/delight.html delight] package from the default [http://elpa.gnu.org/ GNU ELPA] repository:
+[InstallingPackages Install] the [https://elpa.gnu.org/packages/delight.html delight] package from the default [https://elpa.gnu.org/ GNU ELPA] repository:
 
  M-x package-install RET delight RET
 
-The latest version of [http://git.savannah.gnu.org/cgit/delight.git/plain/delight.el delight.el] is also available from its Savannah repository (n.b. the code is no longer maintained here at the EmacsWiki).
+The latest version of [https://git.savannah.gnu.org/cgit/delight.git/plain/delight.el delight.el] is also available from its Savannah repository (n.b. the code is no longer maintained here at the EmacsWiki).
 
 ==Example usage==
 
