@@ -18,10 +18,6 @@ You could use the following key binding to start using it:
 
 Here's how to hide all buffers starting with an asterisk.
 
-    (add-to-list 'ibuffer-never-show-regexps "^\\*")
-[new]
-It does not contain in emacs 23.2's ibuffer.el, use following instead -- coldnew
-
     (require 'ibuf-ext)
     (add-to-list 'ibuffer-never-show-predicates "^\\*")
 
