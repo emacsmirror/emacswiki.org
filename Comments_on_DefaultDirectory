@@ -1,0 +1,9 @@
+This works fine for me :
+
+(add-hook 'pre-command-hook '(lambda() (when (and (not (buffer-file-name))
+						  (string= default-directory invocation-directory)
+						  )
+					 (setq default-directory "~/"))))
+
+-- moyentoto 2020-07-02 11:02 UTC
+
