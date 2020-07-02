@@ -3399,7 +3399,7 @@ only those bookmarks.  ('''`##,##'''' stands generally for "this-buffer" in '''B
 
 
 
-[:CyclingNavlist]
+[:CyclingNavList]
 == Cycling, Navigation List ==
 
 Using completion to jump to a bookmark is handy.  It lets you
