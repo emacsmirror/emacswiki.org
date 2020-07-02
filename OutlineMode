@@ -86,13 +86,17 @@ For [http://en.wikipedia.org/ Wikipedia] or [http://txt2tags.sourceforge.net/ tx
 
  "^[=]+"
 
-JohanBockgård uses "[A-Z]\\|\\s-+[-+]" to give this result
+JohanBockgård uses:
 
-OPTIONS...
+ "[A-Z]\\|\\s-+[-+]"
 
-     -help   This causes xterm to print  out  a  verbose  message...
+to give this result:
 
-     -132    Normally, the VT102  DECCOLM  escape  sequence  that...
+ OPTIONS...
+ 
+    -help   This causes xterm to print  out  a  verbose  message...
+ 
+    -132    Normally, the VT102  DECCOLM  escape  sequence  that...
 
 == Customizing Outline ellipsis ==
 
