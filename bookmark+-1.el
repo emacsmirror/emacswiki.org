@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jun 20 11:12:49 2020 (-0700)
+;; Last-Updated: Thu Jul  2 23:47:02 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9058
+;;     Update #: 9059
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7003,7 +7003,15 @@ It defaults to a singleton list with the current buffer's file name,
 A new list is returned (no side effects)."
   (unless files  (setq files  (and (buffer-file-name)  (list (buffer-file-name)))))
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lexical-let ((ff  files)) (lambda (bmk) (member (bookmark-get-filename bmk) ff)))
+  (bmkp-remove-if-not (lexical-let ((ff  files))
+                        (lambda (bmk)
+                          (let ((bf  (bookmark-get-filename bmk))) 
+                            (and bf
+                                 ;; If we loaded `cl-seq.el': (cl-member bf ff :test #'bmkp-same-file-p)
+                                 (catch 'bmkp-specific-files-alist-only
+                                   (dolist (f  ff)
+                                     (or (bmkp-same-file-p f bf)  (throw 'bmkp-specific-files-alist-only nil)))
+                                   t)))))
                       bookmark-alist))
 
 (defun bmkp-tagged-alist-only ()
