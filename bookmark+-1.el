@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul  3 14:17:41 2020 (-0700)
+;; Last-Updated: Fri Jul  3 14:41:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9149
+;;     Update #: 9152
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5286,11 +5286,11 @@ Optional arg ALIST is an alternative alist of bookmarks to use."
                                         (and (not (eq bmkp-bmenu-filter-function
                                                       'bmkp-omitted-alist-only))
                                              bmkp-bmenu-omitted-bookmarks))
-            bmkp-current-nav-bookmark  (car bmkp-nav-alist))))
-  (message "Bookmark navigation list is now %s"
-           (if (and (string= "CURRENT *Bookmark List*" bname)  (not (get-buffer "*Bookmark List*")))
-               "the global bookmark list"
-             (format "`%s'" bname))))
+            bmkp-current-nav-bookmark  (car bmkp-nav-alist))
+      (message "Bookmark navigation list is now %s"
+               (if (and (string= "CURRENT *Bookmark List*" bname)  (not (get-buffer "*Bookmark List*")))
+                   "the global bookmark list"
+                 (format "`%s'" bname))))))
 
 (defun bmkp-current-bookmark-list-state ()
   "Pseudo-bookmark for the current `*Bookmark List*' state."
@@ -11168,7 +11168,7 @@ for info about using a prefix argument."
            current-prefix-arg)))
   (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-gnus-alist-only))))
-  (bmkp-jump-1 bookmark-name 'bmkp--pop-to-buffer-same-window flip-use-region-p))
+  (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
 ;;;###autoload (autoload 'bmkp-gnus-jump-other-window "bookmark+")
 (defun bmkp-gnus-jump-other-window (bookmark &optional flip-use-region-p) ; `C-x 4 j g'
