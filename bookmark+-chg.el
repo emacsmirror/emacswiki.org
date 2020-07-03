@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 20 10:14:14 2020 (-0700)
+;; Last-Updated: Thu Jul  2 23:48:16 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 16640
+;;     Update #: 16643
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/07/02 dadams
+;;     bmkp-specific-files-alist-only: Don't use member, use bmkp-same-file-p as equality test.
+;; 2020/06/20 dadams
+;;     Added: bmkp-set-grep-command-bookmark.
 ;; 2020/01/31 dadams
 ;;     bmkp-dired-remember-*-marks:
 ;;       Wrap dired--unhide with with-silent-modifications.  Thx to Tino Calancha. 
