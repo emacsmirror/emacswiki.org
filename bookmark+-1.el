@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul  4 12:58:00 2020 (-0700)
+;; Last-Updated: Sat Jul  4 13:34:01 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9158
+;;     Update #: 9162
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2408,7 +2408,7 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
   (pop-to-buffer (generate-new-buffer-name "*Bookmark Annotation Compose*"))
   (bookmark-insert-annotation bookmark)
   (bookmark-edit-annotation-mode)
-  (set (make-local-variable 'bookmark-annotation-name) bookmark))
+  (setq bookmark-annotation-name  bookmark))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3772,7 +3772,7 @@ read-only and edit mode using `C-x C-q'."
               (goto-char (point-min))
               (bookmark-show-annotation-mode)
               (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
-              (set (make-local-variable 'bookmark-annotation-name) bmk))
+              (setq bookmark-annotation-name  bmk))
             (select-frame-set-input-focus oframe)))))))
 
 
@@ -4173,7 +4173,7 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
   (pop-to-buffer (generate-new-buffer-name "*Bookmark Annotation Compose*"))
   (bookmark-insert-annotation bookmark)
   (bookmark-edit-annotation-mode)
-  (set (make-local-variable 'bookmark-annotation-name) bookmark))
+  (setq bookmark-annotation-name  bookmark))
 
 ;;;###autoload (autoload 'bmkp-annotate-bookmark-this-file/buffer "bookmark+")
 (defun bmkp-annotate-bookmark-this-file/buffer (bookmark) ; Bound to `C-x x a b'
@@ -4228,7 +4228,7 @@ That is, switch from edit mode to read-only mode."
       (goto-char (point-min))
       (bookmark-show-annotation-mode)
       (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
-      (set (make-local-variable 'bookmark-annotation-name) bmk)
+      (setq bookmark-annotation-name  bmk)
       (kill-buffer obuf))))
 
 ;;;###autoload (autoload 'bmkp-edit-this-annotation "bookmark+")
@@ -4248,7 +4248,7 @@ That is, switch from read-only mode to edit mode."
       (set-buffer-modified-p buf-modified-p))
     (bookmark-edit-annotation-mode)
     (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
-    (set (make-local-variable 'bookmark-annotation-name) bmk)
+    (setq bookmark-annotation-name  bmk)
     (kill-buffer obuf)))
 
 ;;;###autoload (autoload 'bmkp-copy-bookmark "bookmark+")
