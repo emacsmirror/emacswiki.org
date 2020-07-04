@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  4 13:09:51 2020 (-0700)
+;; Last-Updated: Sat Jul  4 13:34:21 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 16688
+;;     Update #: 16695
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -151,6 +151,9 @@
 ;;     Same commands as 7/03: Remove bmkp-propertize-*-flag as part of test for getting full bmk.
 ;;     Changed all references to `C-x p' to `C-x x'.
 ;;     Replaced string *Bookmark List* with bookmark-bmenu-buffer (for Emacs 28).
+;;     bookmark-(edit|show)-annotation, bmkp-annotate-bookmark,
+;;       bmkp-(edit|show)-this-annotation(-read-only):
+;;         Replaced set make-local-variable bookmark-annotation-name by setq (auto-local in Emacs 28).
 ;; 2020/07/03 dadams
 ;;     bmkp-read-bookmark-for-type:
 ;;       Use bmkp-bookmark-record-from-name to return full bookmark from ALIST.
@@ -2479,7 +2482,8 @@
 ;;
 ;; 2020/07/04 dadams
 ;;     Version 2020.07.04
-;;     Added defconst for bookmark-bmenu-buffer.
+;;     Added defconst for bookmark-bmenu-buffer (Emacs 28).
+;;     Added defvar, make-variable-buffer-local declaration for bookmark-annotation-name (Emacs 28).
 ;; 2020/07/03 dadams
 ;;     Version 2020.07.03
 ;; 2020/01/22 dadams
