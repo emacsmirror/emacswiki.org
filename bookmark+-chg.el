@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul  2 23:48:16 2020 (-0700)
+;; Last-Updated: Sat Jul  4 09:49:34 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 16643
+;;     Update #: 16680
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,16 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/07/03 dadams
+;;     bmkp-read-bookmark-for-type:
+;;       Use bmkp-bookmark-record-from-name to return full bookmark from ALIST.
+;;     bmkp-(choose-navlist-from-bookmark-list|bookmark-file(-load|-switch)-jump|
+;;       snippet-to-kill-ring|desktop-delete|
+;;       (autonamed(-*)|dired(-*)|eww|(local|remote(-*)-|non-dir-)file(-*)|gnus|image|info|man|
+;;       non-file|specific-(buffers|files)|temporary|this-buffer|url|w3m|autofile)-jump*|
+;;       (bookmark-list|desktop|variable-list|w32-browser)-jump):
+;;         Use bmkp-get-bookmark-in-alist to get full bmk.
+;;     bmkp-jump-to-type*: Raise error if bookmark name, not record.
 ;; 2020/07/02 dadams
 ;;     bmkp-specific-files-alist-only: Don't use member, use bmkp-same-file-p as equality test.
 ;; 2020/06/20 dadams
@@ -2449,6 +2459,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2020/07/03 dadams
+;;     Version 2020.07.03
 ;; 2020/01/22 dadams
 ;;     Version 2020.01.22
 ;; 2020/01/12 dadams
