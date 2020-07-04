@@ -29,6 +29,7 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/conao3/oj.el oj.el] (MELPA) -- Competitive programming tools client for AtCoder, Codeforces
 * [https://github.com/conao3/scratch-comment.el scratch-comment.el] (MELPA) -- Insert Elisp result as comment in scratch buffer
 * [https://github.com/conao3/iceberg-theme.el iceberg-theme.el] (MELPA) -- Well-designed, eye-friendly, dark blue color scheme
+* [https://github.com/conao3/org-generate.el org-generate.el] (MELPA) --  Generate template files/folders from one org document 
 
 == Co-maintainer Projects in MELPA ==
 * [https://github.com/skk-dev/ddskk skk-dev/ddskk] -- Daredevil SKK (Simple Kana to Kanji conversion program)
