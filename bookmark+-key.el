@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sat Jul  4 10:11:40 2020 (-0700)
+;; Last-Updated: Sat Jul  4 12:59:54 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 974
+;;     Update #: 975
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1352,7 +1352,7 @@ Menu for bookmarks that target this file or buffer.")
   '(menu-item "Marked" bmkp-bmenu-jump-to-marked
     :help "Jump to each bookmark marked `>', in another window"
     :enable (and bmkp-bmenu-marked-bookmarks  (equal (buffer-name (current-buffer))
-                                               "*Bookmark List*"))))
+                                               bookmark-bmenu-buffer))))
 
 
 ;; `bmkp-jump-tags-menu' of vanilla `Bookmarks' menu: `Jump To' > `With Tags'
