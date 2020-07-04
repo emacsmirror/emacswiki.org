@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul  4 09:59:11 2020 (-0700)
+;; Last-Updated: Sat Jul  4 10:22:17 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9153
+;;     Update #: 9157
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2389,7 +2389,7 @@ Lines beginning with `#' are ignored."
 ;; 3. Emacs 26+: Added ignored &rest arg to accommodate vanilla Emacs fix to bug #20150 (not a bug for us).
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation "bookmark+")
-(defun bookmark-edit-annotation (bookmark &rest _IGNORED) ; Bound to `C-x p a e'
+(defun bookmark-edit-annotation (bookmark &rest _IGNORED) ; Bound to `C-x x a e'
   "Pop up a buffer for editing bookmark BOOKMARK's annotation.
 Interactively, you are prompted for the bookmark name.  With a prefix
 arg, you can choose any bookmark.  Otherwise, only annotated bookmarks
@@ -2568,7 +2568,7 @@ property.  Point is irrelevant and unaffected."
 ;; 12. Run `bmkp-after-set-hook'.
 ;;
 ;;;###autoload (autoload 'bookmark-set "bookmark+")
-(defun bookmark-set (&optional name parg interactivep no-refresh-p) ; `C-x r M', `C-x p c M'
+(defun bookmark-set (&optional name parg interactivep no-refresh-p) ; `C-x r M', `C-x x c M'
   "Set a bookmark named NAME, then run `bmkp-after-set-hook'.
 If the region is active (`transient-mark-mode') and nonempty, then
 record the region limits in the bookmark.
@@ -2863,7 +2863,7 @@ If it is a record then it need not belong to `bookmark-alist'."
 ;; 4. Added note about Icicles `S-delete' to doc string.
 ;;
 ;;;###autoload (autoload 'bookmark-jump "bookmark+")
-(defun bookmark-jump (bookmark          ; Bound to `C-x j j', `C-x r b', `C-x p g'
+(defun bookmark-jump (bookmark          ; Bound to `C-x j j', `C-x r b', `C-x x g'
                       &optional display-function flip-use-region-p)
   "Jump to bookmark BOOKMARK.
 You may have a problem using this function if the value of variable
@@ -2902,7 +2902,7 @@ Non-nil FLIP-USE-REGION-P flips the value of `bmkp-use-region'."
 ;;
 ;;;###autoload (autoload 'bookmark-jump-other-window "bookmark+")
 (defun bookmark-jump-other-window (bookmark &optional flip-use-region-p)
-                                        ; Bound to `C-x 4 j j', `C-x p j', `C-x p o', `C-x p q'
+                                        ; Bound to `C-x 4 j j', `C-x x j', `C-x x o', `C-x x q'
   "Jump to bookmark BOOKMARK in another window.
 See `bookmark-jump', in particular for info about using a prefix arg."
   (interactive (list (bookmark-completing-read "Jump to bookmark (in another window)"
@@ -3149,7 +3149,7 @@ is not nil then insert that."
 ;; 4. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
 ;;;###autoload (autoload 'bookmark-insert-location "bookmark+")
-(defun bookmark-insert-location (bookmark-name &optional no-history) ; `C-x p I' (original: `C-x p f')
+(defun bookmark-insert-location (bookmark-name &optional no-history) ; `C-x x I' (original: `C-x x f')
   "Insert file or buffer name for the bookmark named BOOKMARK-NAME.
 If a file is bookmarked, insert the recorded file name.
 If a non-file buffer is bookmarked, insert the recorded buffer name.
@@ -3254,7 +3254,7 @@ candidate."
 (fset 'bmkp-ORIG-bookmark-insert (symbol-function 'bookmark-insert)))
 
 ;;;###autoload (autoload 'bookmark-insert "bookmark+")
-(defun bookmark-insert (bookmark-name)  ; Bound to `C-x p i'
+(defun bookmark-insert (bookmark-name)  ; Bound to `C-x x i'
   "Insert the text of a bookmarked file.
 BOOKMARK-NAME is the name of the bookmark.
 You may have a problem using this function if the value of variable
@@ -3279,7 +3279,7 @@ candidate."
 ;; 7. Increment `bookmark-alist-modification-count' even when BATCHP is non-nil.
 ;;
 ;;;###autoload (autoload 'bookmark-delete "bookmark+")
-(defun bookmark-delete (bookmark &optional batchp) ; Bound to `C-x p d'
+(defun bookmark-delete (bookmark &optional batchp) ; Bound to `C-x x d'
   "Delete the BOOKMARK from the bookmark list.
 BOOKMARK is a bookmark name or a bookmark record.
 Interactively, default to the \"current\" bookmark (that is, the one
@@ -3328,7 +3328,7 @@ candidate.  In this way, you can delete multiple bookmarks."
 ;; 4. Call `bmkp-refresh/rebuild-menu-list'.
 ;;
 ;;;###autoload (autoload 'bookmark-save "bookmark+")
-(defun bookmark-save (&optional parg file) ; Bound to `C-x p s'
+(defun bookmark-save (&optional parg file) ; Bound to `C-x x s'
   "Save currently defined bookmarks.
 Save by default in the file named by variable
 `bmkp-current-bookmark-file'.  With a prefix arg, you are prompted for
@@ -3598,7 +3598,7 @@ Return non-nil if the bookmark was renamed, nil otherwise."
 ;; 10. Call `bmkp-bmenu-refresh-menu-list' at end, if interactive.
 ;;
 ;;;###autoload (autoload 'bookmark-load "bookmark+")
-(defun bookmark-load (file &optional overwrite batchp) ; Bound to `C-x p l'
+(defun bookmark-load (file &optional overwrite batchp) ; Bound to `C-x x l'
   "Load bookmarks from FILE (which must be in the standard format).
 Return the list of bookmarks read from FILE.
 Without a prefix argument (argument OVERWRITE is nil), add the newly
@@ -3729,7 +3729,7 @@ bookmark files that were created using the bookmark functions."
 ;; 12. Restore frame selection.
 ;;
 ;;;###autoload (autoload 'bookmark-show-annotation "bookmark+")
-(defun bookmark-show-annotation (bookmark &optional msg-p) ; Bound to `C-x p a s'
+(defun bookmark-show-annotation (bookmark &optional msg-p) ; Bound to `C-x x a s'
   "Show the annotation for BOOKMARK, or follow it if external.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
@@ -3788,7 +3788,7 @@ read-only and edit mode using `C-x C-q'."
 ;; 8. Restore frame selection.
 ;;
 ;;;###autoload (autoload 'bookmark-show-all-annotations "bookmark+")
-(defun bookmark-show-all-annotations () ; Bound to `C-x p a S'
+(defun bookmark-show-all-annotations () ; Bound to `C-x x a S'
   "Display the annotations for all bookmarks.
 If called from buffer `*Bookmark List*' then the annotations are shown
 in the current sort order."
@@ -4160,7 +4160,7 @@ Non-nil optional arg SAME-COUNT-P means do not increment
   (when (bookmark-time-to-save-p) (bookmark-save)))
 
 ;;;###autoload (autoload 'bmkp-annotate-bookmark "bookmark+")
-(defun bmkp-annotate-bookmark (bookmark) ; Bound to `C-x p a a'
+(defun bmkp-annotate-bookmark (bookmark) ; Bound to `C-x x a a'
   "Annotate BOOKMARK.  Pop up a buffer to add or edit the annotation.
 Interactively, this is the same as using command
 `bookmark-edit-annotation' with a prefix arg.  You are prompted for
@@ -4176,7 +4176,7 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
   (set (make-local-variable 'bookmark-annotation-name) bookmark))
 
 ;;;###autoload (autoload 'bmkp-annotate-bookmark-this-file/buffer "bookmark+")
-(defun bmkp-annotate-bookmark-this-file/buffer (bookmark) ; Bound to `C-x p a b'
+(defun bmkp-annotate-bookmark-this-file/buffer (bookmark) ; Bound to `C-x x a b'
   "Annotate an existing bookmark in this file or buffer.
 You are prompted for the name of a bookmark here, with completion."
   (interactive
@@ -4193,7 +4193,7 @@ You are prompted for the name of a bookmark here, with completion."
   (bookmark-edit-annotation bookmark))
 
 ;;;###autoload (autoload 'bmkp-annotate-all-bookmarks-this-file/buffer "bookmark+")
-(defun bmkp-annotate-all-bookmarks-this-file/buffer () ; Bound to `C-x p a B'
+(defun bmkp-annotate-all-bookmarks-this-file/buffer () ; Bound to `C-x x a B'
   "Pop up annotation-editing buffer for each bookmark in this file/buffer."
   (interactive)
   (dolist (bmk  (bmkp-this-file/buffer-alist-only))
@@ -4255,7 +4255,7 @@ That is, switch from read-only mode to edit mode."
 (defalias 'bmkp-copy-bookmark 'bmkp-clone-bookmark)
 ;;;###autoload (autoload 'bmkp-clone-bookmark "bookmark+")
 (defun bmkp-clone-bookmark (bookmark &optional clone confirm-overwrite-p)
-                                        ; Bound to `C-x p 2' (`M-n' in bookmark list)
+                                        ; Bound to `C-x x 2' (`M-n' in bookmark list)
   "Duplicate BOOKMARK to produce a clone.
 The clone name is the same as BOOKMARK, but with \"<2>\" appended.
 With a prefix arg you are instead prompted for the clone name.
@@ -4296,7 +4296,7 @@ When called from Lisp:
 
 ;;;###autoload (autoload 'bmkp-edit-bookmark-name-and-location "bookmark+")
 (defun bmkp-edit-bookmark-name-and-location (bookmark &optional edit-record-p)
-                                        ; Bound to `C-x p r' (`r' in bookmark list)
+                                        ; Bound to `C-x x r' (`r' in bookmark list)
   "Edit BOOKMARK's name and location, and maybe save them.
 Return a list of the new bookmark name and new location.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -4467,7 +4467,7 @@ When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
 (define-key bmkp-edit-bookmark-record-mode-map "\C-c\C-c" 'bmkp-edit-bookmark-record-send)
 
 ;;;###autoload (autoload 'bmkp-edit-bookmark-record "bookmark+")
-(defun bmkp-edit-bookmark-record (bookmark) ; Bound to `C-x p E'.
+(defun bmkp-edit-bookmark-record (bookmark) ; Bound to `C-x x E'.
   "Edit the full record (the Lisp sexp) for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
 When you finish editing, use \\<bmkp-edit-bookmark-record-mode-map>\
@@ -4576,7 +4576,7 @@ When you have finished composing, type \\[bmkp-edit-tags-send]."
 (define-key bmkp-edit-tags-mode-map "\C-c\C-c" 'bmkp-edit-tags-send)
 
 ;;;###autoload (autoload 'bmkp-edit-tags "bookmark+")
-(defun bmkp-edit-tags (bookmark)        ; Bound to `C-x p t e'
+(defun bmkp-edit-tags (bookmark)        ; Bound to `C-x x t e'
   "Edit BOOKMARK's tags, and maybe save the result.
 The edited value must be a list each of whose elements is either a
  string or a cons whose key is a string.
@@ -4742,7 +4742,7 @@ This excludes the pseudo file name `bmkp-non-file-filename'."
     files))
 
 ;;;###autoload (autoload 'bmkp-bookmark-set-confirm-overwrite "bookmark+")
-(defun bmkp-bookmark-set-confirm-overwrite (&optional name parg interactivep) ; Bound `C-x r m', `C-x p c m'.
+(defun bmkp-bookmark-set-confirm-overwrite (&optional name parg interactivep) ; Bound `C-x r m', `C-x x c m'.
   "Set a bookmark named NAME, then run `bmkp-after-set-hook'.
 This is the same as `bookmark-set', except that with no prefix arg you
 are asked to confirm overwriting an existing bookmark of the same
@@ -4899,7 +4899,7 @@ Raise an error if the entire string was not used."
 
 ;;;###autoload (autoload 'bmkp-jump-to-list "bookmark+")
 (defun bmkp-jump-to-list (bookmark
-                          &optional position msgp) ; Bound globally to `C-x j C-j', `C-x p C-j'
+                          &optional position msgp) ; Bound globally to `C-x j C-j', `C-x x C-j'
   "Jump to BOOKMARK entry in `*Bookmark List*'.
 You are prompted for BOOKMARK (a bookmark name).
 If you use library `bookmark+-lit.el':
@@ -4916,7 +4916,7 @@ If you use library `bookmark+-lit.el':
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
 ;;;###autoload (autoload 'bmkp-make-function-bookmark "bookmark+")
-(defun bmkp-make-function-bookmark (bookmark-name function &optional msg-p) ; Bound globally to `C-x p c F'.
+(defun bmkp-make-function-bookmark (bookmark-name function &optional msg-p) ; Bound globally to `C-x x c F'.
   "Create a bookmark that invokes FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
 But with a prefix arg the last keyboard macro defined is used instead
@@ -5037,7 +5037,7 @@ Optional arg BATCHP is passed to `bookmark-load'."
   (bookmark-load file t batchp))        ; Treat it interactively, if this command is called interactively.
 
 ;;;###autoload (autoload 'bmkp-switch-to-last-bookmark-file "bookmark+")
-(defun bmkp-switch-to-last-bookmark-file (&optional batchp) ; Not bound to key, but effectively `C-u C-x p L'
+(defun bmkp-switch-to-last-bookmark-file (&optional batchp) ; Not bound to key, but effectively `C-u C-x x L'
   "Switch back to the last-used bookmark file.
 Replace all currently existing bookmarks with those newly loaded from
 the last-used file.  Swap the values of `bmkp-last-bookmark-file' and
@@ -5050,7 +5050,7 @@ Optional arg BATCHP is passed to `bookmark-load'."
 
 ;;;###autoload (autoload 'bmkp-switch-bookmark-file-create "bookmark+")
 (defun bmkp-switch-bookmark-file-create (file &optional switch-to-lastp batchp)
-                                        ; Bound to `C-x p L', (`L' in bookmark list)
+                                        ; Bound to `C-x x L', (`L' in bookmark list)
   "Switch to bookmark file FILE, creating it as empty if it does not exist.
 With a prefix arg, switch to the last bookmark file used.
 Otherwise, you are prompted for FILE.
@@ -5100,7 +5100,7 @@ When called from Lisp:
   file)
 
 ;;;###autoload (autoload 'bmkp-switch-to-bookmark-file-this-file/buffer "bookmark+")
-(defun bmkp-switch-to-bookmark-file-this-file/buffer (file &optional batchp) ; Bound to `C-x p C-l'
+(defun bmkp-switch-to-bookmark-file-this-file/buffer (file &optional batchp) ; Bound to `C-x x C-l'
   "Switch to a bookmark file for bookmarks in this file or buffer.
 If visiting a file, the bookmarks are ‘bmkp-this-file-alist-only’.
 Otherwise, they are ‘bmkp-this-buffer-alist-only’.
@@ -5140,7 +5140,7 @@ A value to use if you want a default and there is none better."
     "~/.emacs.bmk"))
 
 ;;;###autoload (autoload 'bmkp-empty-file "bookmark+")
-(defun bmkp-empty-file (file &optional confirmp) ; Bound to `C-x p 0'
+(defun bmkp-empty-file (file &optional confirmp) ; Bound to `C-x x 0'
   "Empty the bookmark file FILE, or create FILE (empty) if it does not exist.
 In either case, FILE will become an empty bookmark file.  Return FILE.
 
@@ -5195,7 +5195,7 @@ FILE (updating them if already present)."
           (bookmark-write-file file))))))
 
 ;;;###autoload (autoload 'bmkp-save-bookmarks-this-file/buffer "bookmark+")
-(defun bmkp-save-bookmarks-this-file/buffer (file &optional addp batchp) ; Bound to `C-x p C-s'
+(defun bmkp-save-bookmarks-this-file/buffer (file &optional addp batchp) ; Bound to `C-x x C-s'
   "Save bookmarks defined for the current file/buffer to FILE.
 If visiting a file, the bookmarks are ‘bmkp-this-file-alist-only’.
 Otherwise, they are ‘bmkp-this-buffer-alist-only’.
@@ -5245,7 +5245,7 @@ You need library `crosshairs.el' to use this command."
         (crosshairs-highlight)))))
 
 ;;;###autoload (autoload 'bmkp-choose-navlist-from-bookmark-list "bookmark+")
-(defun bmkp-choose-navlist-from-bookmark-list (bookmark &optional alist) ; Bound to `C-x p B'
+(defun bmkp-choose-navlist-from-bookmark-list (bookmark &optional alist) ; Bound to `C-x x B'
   "Choose a bookmark-list bookmark and set the bookmark navigation list.
 The navigation-list variable, `bmkp-nav-alist', is set to the list of
 bookmarks that would be displayed by `bookmark-bmenu-list' (`C-x r l')
@@ -5298,7 +5298,7 @@ Optional arg ALIST is an alternative alist of bookmarks to use."
   (cons "CURRENT *Bookmark List*" (bmkp-make-bookmark-list-record)))
 
 ;;;###autoload (autoload 'bmkp-choose-navlist-of-type "bookmark+")
-(defun bmkp-choose-navlist-of-type (type) ; Bound to `C-x p :'
+(defun bmkp-choose-navlist-of-type (type) ; Bound to `C-x x :'
   "Set the bookmark navigation list to the bookmarks of a type you choose.
 The pseudo-type `any' sets the navigation list to all bookmarks.
 This sets variable `bmkp-nav-alist'."
@@ -5405,7 +5405,7 @@ BOOKMARK is a bookmark name or a bookmark record."
     (if namep (bmkp-bookmark-name-from-record bookmark) bookmark))) ; Return updated bookmark or name.
 
 ;;;###autoload (autoload 'bmkp-this-file/buffer-bmenu-list "bookmark+")
-(defun bmkp-this-file/buffer-bmenu-list () ; Bound to `C-x p ,'
+(defun bmkp-this-file/buffer-bmenu-list () ; Bound to `C-x x ,'
   "Show the bookmark list just for bookmarks for the current file/buffer.
 If visiting a file, this is `bmkp-this-file-bmenu-list'.  Otherwise,
 this is `bmkp-this-buffer-bmenu-list'."
@@ -5482,7 +5482,7 @@ Set `bmkp-last-specific-buffer' to the current buffer name."
                     (error "%s" (error-message-string err)))))))
 
 ;;;###autoload (autoload 'bmkp-navlist-bmenu-list "bookmark+")
-(defun bmkp-navlist-bmenu-list ()       ; Bound to `C-x p N'
+(defun bmkp-navlist-bmenu-list ()       ; Bound to `C-x x N'
   "Show the bookmark list just for bookmarks from the navigation list."
   (interactive)
   (unless bmkp-nav-alist
@@ -5745,7 +5745,7 @@ determining the tags to use per option `bmkp-tags-for-completion'."
 
 ;;;###autoload (autoload 'bmkp-list-all-tags "bookmark+")
 (defun bmkp-list-all-tags (fullp current-only-p &optional msg-p)
-                                        ; Bound to `C-x p t l', (`T l' in bookmark list)
+                                        ; Bound to `C-x x t l', (`T l' in bookmark list)
   "List bookmark tags.
 Show the list in the minibuffer or, if not enough space, in buffer
 `*All Tags*'.  The tags are listed alphabetically, respecting option
@@ -5839,7 +5839,7 @@ Otherwise, return an alist of the full tags."
 
 ;;;###autoload (autoload 'bmkp-remove-all-tags "bookmark+")
 (defun bmkp-remove-all-tags (bookmark &optional no-update-p msg-p)
-                                        ; Bound to `C-x p t 0', (`T 0' in bookmark list)
+                                        ; Bound to `C-x x t 0', (`T 0' in bookmark list)
   "Remove all tags from BOOKMARK.
 Non-interactively:
  - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
@@ -5859,7 +5859,7 @@ Non-interactively:
 
 ;;;###autoload (autoload 'bmkp-add-tags "bookmark+")
 (defun bmkp-add-tags (bookmark tags &optional no-update-p msg-p)
-                                        ; `C-x p t + b' (`b' for bookmark), (`T +' in bookmark list)
+                                        ; `C-x x t + b' (`b' for bookmark), (`T +' in bookmark list)
   "Add TAGS to BOOKMARK.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
@@ -5899,7 +5899,7 @@ is negative."
 
 ;; $$$$$$ Not yet used
 ;;;###autoload (autoload 'bmkp-set-tag-value-for-navlist "bookmark+")
-(defun bmkp-set-tag-value-for-navlist (tag value &optional msg-p) ; Bound to `C-x p t V'
+(defun bmkp-set-tag-value-for-navlist (tag value &optional msg-p) ; Bound to `C-x x t V'
   "Set the value of TAG to VALUE, for each bookmark in the navlist.
 If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (interactive (list (bmkp-read-tag-completing) (read (read-string "Value: ")) 'msg))
@@ -5917,7 +5917,7 @@ If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
   (bmkp-refresh/rebuild-menu-list nil (not msg-p)))
 
 ;;;###autoload (autoload 'bmkp-set-tag-value "bookmark+")
-(defun bmkp-set-tag-value (bookmark tag value &optional no-update-p msg-p) ; Bound to `C-x p t v'
+(defun bmkp-set-tag-value (bookmark tag value &optional no-update-p msg-p) ; Bound to `C-x x t v'
   "For BOOKMARK's TAG, set the value to VALUE.
 If BOOKMARK has no tag named TAG, then add one with value VALUE.
 Non-interactively:
@@ -5943,7 +5943,7 @@ Non-interactively:
 
 ;;;###autoload (autoload 'bmkp-remove-tags "bookmark+")
 (defun bmkp-remove-tags (bookmark tags &optional no-update-p msg-p)
-                                        ; `C-x p t - b' (`b' for bookmark), (`T -' in bookmark list)
+                                        ; `C-x x t - b' (`b' for bookmark), (`T -' in bookmark list)
   "Remove TAGS from BOOKMARK.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter the bookmark name and each tag.
@@ -5988,7 +5988,7 @@ is negative."
         nb-removed))))
 
 ;;;###autoload (autoload 'bmkp-remove-tags-from-all "bookmark+")
-(defun bmkp-remove-tags-from-all (tags &optional msg-p) ; Bound to `C-x p t d', (`T d' in bookmark list)
+(defun bmkp-remove-tags-from-all (tags &optional msg-p) ; Bound to `C-x x t d', (`T d' in bookmark list)
   "Remove TAGS from all bookmarks.
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag.
@@ -6013,7 +6013,7 @@ Non-interactively:
   (when msg-p (message "Tags removed from all bookmarks: %S" tags)))
 
 ;;;###autoload (autoload 'bmkp-rename-tag "bookmark+")
-(defun bmkp-rename-tag (tag newname &optional msg-p) ; Bound to `C-x p t r', (`T r' in bookmark list)
+(defun bmkp-rename-tag (tag newname &optional msg-p) ; Bound to `C-x x t r', (`T r' in bookmark list)
   "Rename TAG to NEWNAME in all bookmarks, even those not showing.
 Non-interactively, non-nil MSG-P means display a message about the
 deletion."
@@ -6040,7 +6040,7 @@ deletion."
   (when msg-p (message "Renamed")))
 
 ;;;###autoload (autoload 'bmkp-copy-tags "bookmark+")
-(defun bmkp-copy-tags (bookmark &optional msg-p) ; Bound to `C-x p t c', `C-x p t M-w'
+(defun bmkp-copy-tags (bookmark &optional msg-p) ; Bound to `C-x x t c', `C-x x t M-w'
   "Copy tags from BOOKMARK, so you can paste them to another bookmark.
 Note that you can copy from a BOOKMARK that has no tags or has an
 empty tags list.  In that case, the copied-tags list is empty, so if
@@ -6055,7 +6055,7 @@ number of tags copied."
     (when msg-p (message "%d tags now available for pasting" (length btags)))))
 
 ;;;###autoload (autoload 'bmkp-paste-add-tags "bookmark+")
-(defun bmkp-paste-add-tags (bookmark &optional no-update-p msg-p) ; Bound to `C-x p t p', `C-x p t C-y'
+(defun bmkp-paste-add-tags (bookmark &optional no-update-p msg-p) ; Bound to `C-x x t p', `C-x x t C-y'
   "Add tags to BOOKMARK that were previously copied from another bookmark.
 Return the number of tags added.
 The tags are copied from `bmkp-copied-tags'.
@@ -6069,7 +6069,7 @@ Non-interactively:
   (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msg-p))
 
 ;;;###autoload (autoload 'bmkp-paste-replace-tags "bookmark+")
-(defun bmkp-paste-replace-tags (bookmark &optional no-update-p msg-p) ; Bound to `C-x p t q'
+(defun bmkp-paste-replace-tags (bookmark &optional no-update-p msg-p) ; Bound to `C-x x t q'
   "Replace tags for BOOKMARK with those copied from another bookmark.
 Return the number of tags for BOOKMARK.
 The tags are copied from `bmkp-copied-tags'.
@@ -8244,7 +8244,7 @@ If TRUTH is nil, return nil."
 
 ;;;###autoload (autoload 'bmkp-url-target-set "bookmark+")
 (defun bmkp-url-target-set (url &optional arg name/prefix no-overwrite-p no-refresh-p msg-p)
-                                        ; Bound globally to `C-x p c u'.
+                                        ; Bound globally to `C-x x c u'.
   "Set a bookmark for a URL.  Return the bookmark.
 Interactively you are prompted for the URL.  Completion is available.
 Use `M-n' to pick up the url at point as the default.
@@ -8312,7 +8312,7 @@ Non-interactively:
 
 ;;;###autoload (autoload 'bmkp-file-target-set "bookmark+")
 (defun bmkp-file-target-set (file &optional arg name/prefix no-overwrite no-refresh-p msg-p)
-                                        ; Bound to `C-x p c f'
+                                        ; Bound to `C-x x c f'
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file (0).
 Interactively you are prompted for FILE.  Completion is available.
@@ -8451,7 +8451,7 @@ visits."
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
 ;;;###autoload (autoload 'bmkp-autofile-set "bookmark+")
-(defun bmkp-autofile-set (file &optional dir prefix no-refresh-p msg-p) ; Bound to `C-x p c a'
+(defun bmkp-autofile-set (file &optional dir prefix no-refresh-p msg-p) ; Bound to `C-x x c a'
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
 Interactively, you are prompted for FILE.  You can use `M-n' to pick
@@ -8552,7 +8552,7 @@ except possibly for their directory parts (see previous)."
       nil)))
 
 ;;;###autoload (autoload 'bmkp-tag-a-file "bookmark+")
-(defalias 'bmkp-tag-a-file 'bmkp-autofile-add-tags) ; Bound to `C-x p t + a'
+(defalias 'bmkp-tag-a-file 'bmkp-autofile-add-tags) ; Bound to `C-x x t + a'
 ;;;###autoload (autoload 'bmkp-autofile-add-tags "bookmark+")
 (defun bmkp-autofile-add-tags (file tags &optional dir prefix no-update-p msg-p)
   "Add TAGS to the autofile bookmark for FILE (a file or directory name).
@@ -8598,7 +8598,7 @@ Non-interactively:
   (bmkp-add-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msg-p))
 
 ;;;###autoload (autoload 'bmkp-untag-a-file "bookmark+")
-(defalias 'bmkp-untag-a-file 'bmkp-autofile-remove-tags) ; Bound to `C-x p t - a'
+(defalias 'bmkp-untag-a-file 'bmkp-autofile-remove-tags) ; Bound to `C-x x t - a'
 ;;;###autoload (autoload 'bmkp-autofile-remove-tags "bookmark+")
 (defun bmkp-autofile-remove-tags (file tags &optional dir prefix no-update-p msg-p)
   "Remove TAGS from autofile bookmark for FILE.
@@ -9541,7 +9541,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 ;; Bookmark-file bookmarks.
 ;;;###autoload (autoload 'bmkp-set-bookmark-file-bookmark "bookmark+")
-(defun bmkp-set-bookmark-file-bookmark (file &optional msg-p) ; Bound to `C-x p y', `C-x p c y'
+(defun bmkp-set-bookmark-file-bookmark (file &optional msg-p) ; Bound to `C-x x y', `C-x x c y'
   "Create a bookmark that loads bookmark-file FILE when \"jumped\" to.
 You are prompted for the names of the bookmark file and the bookmark.
 When entering the bookmark name you can use completion against
@@ -9661,7 +9661,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; Inspired by emacs-devel@gnu.org post from Masatake Yamato [yamato@redhat.com], 2012-01-06.
 ;;;###autoload (autoload 'bmkp-set-snippet-bookmark "bookmark+")
 (defun bmkp-set-snippet-bookmark (beg end &optional promptp msgp)
-                                        ; Bound globally to `C-x p c M-w'.
+                                        ; Bound globally to `C-x x c M-w'.
   "Save the text of the active region as a bookmark.
 The bookmark is automatically named with the first line of the region
 text.  With a prefix argument you are prompted for the name instead.
@@ -9702,7 +9702,7 @@ This is a specialization of `bookmark-jump' for snippet bookmarks."
 ;; Desktop bookmarks
 ;;;###autoload (autoload 'bmkp-set-desktop-bookmark "bookmark+")
 (defun bmkp-set-desktop-bookmark (desktop-file &optional nosavep)
-                                        ; Bound globally to `C-x p K', `C-x r K', `C-x p c K'
+                                        ; Bound globally to `C-x x K', `C-x r K', `C-x x c K'
   "Save the desktop as a bookmark.
 You are prompted for the desktop-file location and the bookmark name.
 The default value for the desktop-file location is the current value
@@ -10043,7 +10043,7 @@ Non-interactively, VARIABLE is the restrictions variable to use."
 
 ;;;###autoload (autoload 'bmkp-wrap-bookmark-with-last-kbd-macro "bookmark+")
 (defun bmkp-wrap-bookmark-with-last-kbd-macro (sequence bookmark &optional arg msgp)
-                                        ; Bound globally to `C-x p C-k'.
+                                        ; Bound globally to `C-x x C-k'.
   "Return a SEQUENCE bookmark that invokes BOOKMARK plus `last-kbd-macro'.
 If bookmark SEQUENCE does not yet exist, create it.  Else, update it.
 You are prompted for the SEQUENCE and BOOKMARK names.
@@ -10080,7 +10080,7 @@ The form of the input is (marker MARKER-BUFFER MARKER-POSITION."
 
 ;;;###autoload (autoload 'bmkp-set-sequence-bookmark "bookmark+")
 (defun bmkp-set-sequence-bookmark (seqname bookmark-names &optional arg msgp)
-                                        ; Bound globally to `C-x p c s'.
+                                        ; Bound globally to `C-x x c s'.
   "Create or update a sequence bookmark named SEQNAME from BOOKMARK-NAMES.
 If a sequence bookmark named SEQNAME does not exist then create one.
 Else act on the existing bookmarks in bookmark SEQNAME as follows:
@@ -12640,7 +12640,7 @@ See `bmkp-next-bookmark'."
   (bmkp-cycle (- n) 'OTHER-WINDOW startoverp))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-repeat "bookmark+")
-(defun bmkp-next-bookmark-repeat (arg)  ; `C-x p right', `C-x p f', `C-x p C-f'
+(defun bmkp-next-bookmark-repeat (arg)  ; `C-x x right', `C-x x f', `C-x x C-f'
   "Jump to the Nth-next bookmark in the bookmark navigation list.
 This is a repeatable version of `bmkp-next-bookmark'.
 N defaults to 1, meaning the next bookmark.
@@ -12649,14 +12649,14 @@ Plain `C-u' means start over at the first bookmark (and no repeat)."
   (bmkp-repeat-command 'bmkp-next-bookmark))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-repeat "bookmark+")
-(defun bmkp-previous-bookmark-repeat (arg) ; `C-x p left', `C-x p b', `C-x p C-b'
+(defun bmkp-previous-bookmark-repeat (arg) ; `C-x x left', `C-x x b', `C-x x C-b'
   "Jump to the Nth-previous bookmark in the bookmark navigation list.
 See `bmkp-next-bookmark-repeat'."
   (interactive "P")
   (bmkp-repeat-command 'bmkp-previous-bookmark))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-other-window-repeat "bookmark+")
-(defun bmkp-next-bookmark-other-window-repeat (arg)  ; `C-x p right', `C-x p f', `C-x p C-f'
+(defun bmkp-next-bookmark-other-window-repeat (arg)  ; `C-x x right', `C-x x f', `C-x x C-f'
   "Jump to Nth-next bookmark in bookmark navlist in another window.
 This is a repeatable version of `bmkp-next-bookmark'.
 N defaults to 1, meaning the next bookmark.
@@ -12665,7 +12665,7 @@ Plain `C-u' means start over at the first bookmark (and no repeat)."
   (bmkp-repeat-command 'bmkp-next-bookmark-other-window))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-other-window-repeat "bookmark+")
-(defun bmkp-previous-bookmark-other-window-repeat (arg) ; `C-x p left', `C-x p b', `C-x p C-b'
+(defun bmkp-previous-bookmark-other-window-repeat (arg) ; `C-x x left', `C-x x b', `C-x x C-b'
   "Jump to Nth-previous bookmark in bookmark navlist in another window.
 See `bmkp-next-bookmark-repeat'."
   (interactive "P")
@@ -12691,7 +12691,7 @@ See `bmkp-next-bookmark-this-file/buffer'."
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-this-file/buffer-repeat "bookmark+")
 (defun bmkp-next-bookmark-this-file/buffer-repeat (arg)
-                                        ; `C-x p down', `C-x p n', `C-x p C-n', `C-x p mouse-wheel-up'
+                                        ; `C-x x down', `C-x x n', `C-x x C-n', `C-x x mouse-wheel-up'
   "Jump to the Nth next bookmark for the current file/buffer.
 This is a repeatable version of `bmkp-next-bookmark-this-file/buffer'.
 N defaults to 1, meaning the next one.
@@ -12701,7 +12701,7 @@ Plain `C-u' means start over at the first one (and no repeat)."
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-this-file/buffer-repeat "bookmark+")
 (defun bmkp-previous-bookmark-this-file/buffer-repeat (arg)
-                                        ; `C-x p up', `C-x p p', `C-x p C-p', `C-x p mouse-wheel-down'
+                                        ; `C-x x up', `C-x x p', `C-x x C-p', `C-x x mouse-wheel-down'
   "Jump to the Nth previous bookmark for the current file/buffer.
 See `bmkp-next-bookmark-this-file/buffer-repeat'."
   (interactive "P")
@@ -12796,7 +12796,7 @@ See `bmkp-next-bookmark-w32'."
   (let ((bmkp-use-w32-browser-p  t))  (bmkp-cycle (- n) nil startoverp)))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-w32-repeat "bookmark+")
-(defun bmkp-next-bookmark-w32-repeat (arg) ; `C-x p next'
+(defun bmkp-next-bookmark-w32-repeat (arg) ; `C-x x next'
   "Windows `Open' the Nth next bookmark in the bookmark navigation list.
 This is a repeatable version of `bmkp-next-bookmark'.
 N defaults to 1, meaning the next bookmark.
@@ -12805,7 +12805,7 @@ Plain `C-u' means start over at the first one (and no repeat)."
   (let ((bmkp-use-w32-browser-p  t))  (bmkp-repeat-command 'bmkp-next-bookmark)))
 
 ;;;###autoload (autoload 'bmkp-previous-bookmark-w32-repeat "bookmark+")
-(defun bmkp-previous-bookmark-w32-repeat (arg) ; `C-x p prior'
+(defun bmkp-previous-bookmark-w32-repeat (arg) ; `C-x x prior'
   "Windows `Open' the Nth previous bookmark in the bookmark navlist.
 See `bmkp-next-bookmark-w32-repeat'."
   (interactive "P")
@@ -13035,7 +13035,7 @@ See `bmkp-next-bookmark-w32-repeat'."
 
 ;;;###autoload (autoload 'bmkp-toggle-autonamed-bookmark-set/delete "bookmark+")
 (defun bmkp-toggle-autonamed-bookmark-set/delete (&optional position allp)
-                                        ; Bound globally to `C-x p RET', `C-x p c RET'
+                                        ; Bound globally to `C-x x RET', `C-x x c RET'
   "If there is an autonamed bookmark at point, delete it, else create one.
 The bookmark created has no region.  Its name is formatted according
 to option `bmkp-autoname-bookmark-function'.
@@ -13516,7 +13516,7 @@ positive.  Non-interactively there is no prompt for confirmation."
                                    ,bmkp-temporary-bookmarking-mode-lighter)))
 
 ;;;###autoload (autoload 'bmkp-toggle-autotemp-on-set "bookmark+")
-(defun bmkp-toggle-autotemp-on-set (&optional msg-p) ; Bound to `C-x p x'
+(defun bmkp-toggle-autotemp-on-set (&optional msg-p) ; Bound to `C-x x x'
   "Toggle automatically making any bookmark temporary whenever it is set.
 Non-interactively, non-nil MSG-P means display a status message."
   (interactive "p")
@@ -13592,7 +13592,7 @@ Non-interactively, non-nil MSG-P means display a status message."
     (bmkp-refresh/rebuild-menu-list nil 'BATCHP))) ; Now refresh, after iterate.
 
 ;;;###autoload (autoload 'bmkp-delete-bookmarks "bookmark+")
-(defun bmkp-delete-bookmarks (&optional position allp alist msg-p) ; Bound to `C-x p delete'
+(defun bmkp-delete-bookmarks (&optional position allp alist msg-p) ; Bound to `C-x x delete'
   "Delete some bookmarks at point or all bookmarks in the buffer.
 With no prefix argument, delete some bookmarks at point.
 If there is more than one, require confirmation for each.
