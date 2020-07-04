@@ -13,26 +13,30 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/conao3/leaf-manager.el leaf-manager.el] (MELPA) -- Configuration manager for leaf based init.el
 * [https://github.com/conao3/leaf-defaults.el leaf-defaults.el] -- 'Leaf' of settings for Emacs
 * [https://github.com/conao3/leaf-browser.el leaf-browser.el] -- Web browser frontend of Emacs customize-mode for leaf.el
+
 * [https://github.com/conao3/feather.el feather.el] (MELPA) -- Parallel thread modern Emacs package manager
 * [https://github.com/conao3/feather-recipes.el feather-recipes.el] -- Elisp package recipes for feather.el
-* [https://github.com/conao3/seml-mode.el seml-mode.el] (MELPA) -- Major-mode for SEML (S-Expression Markup Language) files
-* [https://github.com/conao3/ddskk-posframe.el ddskk-posframe.el] (MELPA) -- Show Henkan tooltip for ddskk via posframe
-* [https://github.com/conao3/cort.el cort.el] (MELPA) -- Simplify extended Emacs unit test framework
-* [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
-* [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
-* [https://github.com/conao3/orglyth.el orglyth.el] -- Support static blog site publishing from Org mode files
-* [https://github.com/conao3/indent-lint.el indent-lint.el] (MELPA) -- Async indentation checker
-* [https://github.com/conao3/indent-lint.el flycheck-indent.el] (MELPA) -- Flycheck frontend for indent-lint.el
-* [https://github.com/conao3/ppp.el ppp.el] (MELPA) -- Extended pretty printer for Emacs Lisp
-* [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
-* [https://github.com/conao3/transient-dwim.el transient-dwim.el] (MELPA) -- Useful preset transient commands
-* [https://github.com/conao3/oj.el oj.el] (MELPA) -- Competitive programming tools client for AtCoder, Codeforces
-* [https://github.com/conao3/scratch-comment.el scratch-comment.el] (MELPA) -- Insert Elisp result as comment in scratch buffer
-* [https://github.com/conao3/iceberg-theme.el iceberg-theme.el] (MELPA) -- Well-designed, eye-friendly, dark blue color scheme
-* [https://github.com/conao3/org-generate.el org-generate.el] (MELPA) --  Generate template files/folders from one org document 
+
 * [https://github.com/conao3/keg.el keg.el] (MELPA) --  Modern Elisp package development system
 * [https://github.com/conao3/keg.el keg-mode.el] (MELPA) -- Major-mode for editing Keg file
 * [https://github.com/conao3/keg.el flycheck-keg.el] (MELPA) -- Flycheck integration for Keg project
+
+* [https://github.com/conao3/cort.el cort.el] (MELPA) -- Simplify extended Emacs unit test framework
+* [https://github.com/conao3/ddskk-posframe.el ddskk-posframe.el] (MELPA) -- Show Henkan tooltip for ddskk via posframe
+* [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
+* [https://github.com/conao3/indent-lint.el flycheck-indent.el] (MELPA) -- Flycheck frontend for indent-lint.el
+* [https://github.com/conao3/iceberg-theme.el iceberg-theme.el] (MELPA) -- Well-designed, eye-friendly, dark blue color scheme
+* [https://github.com/conao3/indent-lint.el indent-lint.el] (MELPA) -- Async indentation checker
+* [https://github.com/conao3/oj.el oj.el] (MELPA) -- Competitive programming tools client for AtCoder, Codeforces
+* [https://github.com/conao3/org-generate.el org-generate.el] (MELPA) --  Generate template files/folders from one org document 
+* [https://github.com/conao3/ppp.el ppp.el] (MELPA) -- Extended pretty printer for Emacs Lisp
+* [https://github.com/conao3/scratch-comment.el scratch-comment.el] (MELPA) -- Insert Elisp result as comment in scratch buffer
+* [https://github.com/conao3/seml-mode.el seml-mode.el] (MELPA) -- Major-mode for SEML (S-Expression Markup Language) files
+* [https://github.com/conao3/transient-dwim.el transient-dwim.el] (MELPA) -- Useful preset transient commands
+
+* [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
+* [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
+* [https://github.com/conao3/orglyth.el orglyth.el] -- Support static blog site publishing from Org mode files
 
 == Co-maintainer Projects in MELPA ==
 * [https://github.com/skk-dev/ddskk skk-dev/ddskk] -- Daredevil SKK (Simple Kana to Kanji conversion program)
@@ -47,6 +51,7 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/ChillarAnand/real-auto-save ChillarAnand/real-auto-save] -- Automatically save your all your buffers/files at regular intervals
 * [https://github.com/rejeep/ansi.el rejeep/ansi.el] -- Emacs library to convert strings into ansi
 * [https://github.com/mkcms/ivy-yasnippet mkcms/ivy-yasnippet] -- Preview yasnippets with ivy
+
 * [https://github.com/rubikitch/all-ext rubikitch/all-ext] -- M-x all with helm-swoop/anything/multiple-cursors/line-number
 * [https://github.com/rubikitch/archive-region rubikitch/archive-region] -- Move region to archive file instead of killing
 * [https://github.com/rubikitch/auto-async-byte-compile rubikitch/auto-async-byte-compile] -- Automatically byte-compile when saved
