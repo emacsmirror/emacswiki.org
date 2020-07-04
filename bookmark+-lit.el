@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Jan 25 10:25:23 2020 (-0800)
+;; Last-Updated: Sat Jul  4 13:01:05 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 998
+;;     Update #: 999
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -528,7 +528,7 @@ You are prompted for the highlight STYLE, FACE, and condition (WHEN)."
                                              ,@(and style  (not (eq style 'none))  `(:style ,style))
                                              ,@(and when   (not (eq when 'auto))   `(:when ,when)))
                                          ())))
-    (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list curr-bmk)))
+    (when (get-buffer-create bookmark-bmenu-buffer) (bmkp-refresh-menu-list curr-bmk)))
   (when msgp (message "Setting highlighting...done")))
 
 
@@ -607,7 +607,7 @@ Completion candidates are the lighted bookmarks at point."
                       (IGNORE  (unless bmks (error "No highlighted bookmarks at point")))
                       (bmk   (bookmark-completing-read "Bookmark" (car bmks) bmks)))
                  (list bmk (point) t)))
-  (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+  (pop-to-buffer (get-buffer-create bookmark-bmenu-buffer))
   (bookmark-bmenu-list)
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
@@ -764,7 +764,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
                                                    ,@(and style  (not (eq style 'none))  `(:style ,style))
                                                    ,@(and when   (not (eq when 'auto))   `(:when ,when)))
                                                ()))
-  (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list bookmark-name))
+  (when (get-buffer-create bookmark-bmenu-buffer) (bmkp-refresh-menu-list bookmark-name))
   (when msgp (message "Setting highlighting...done"))
   (when light-now-p (bmkp-light-bookmark bookmark-name nil nil msgp))) ; This msg is more informative.
 
