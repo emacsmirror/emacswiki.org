@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul  3 14:41:41 2020 (-0700)
+;; Last-Updated: Sat Jul  4 09:59:11 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9152
+;;     Update #: 9153
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5265,7 +5265,7 @@ Optional arg ALIST is an alternative alist of bookmarks to use."
                                         'bmkp-bookmark-list-history "Choose ")
            bookmark-alist)))
   (setq alist  (or alist  (cons (bmkp-current-bookmark-list-state) (bmkp-bookmark-list-alist-only))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR alist)))
   (let ((state  (let ((bookmark-alist  alist)) (bookmark-prop-get bookmark 'bookmark-list))))
     (let ((bname                            (bmkp-bookmark-name-from-record bookmark))
@@ -9616,7 +9616,7 @@ BOOKMARK is a bookmark name or a bookmark record."
    (let ((alist  (bmkp-bookmark-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "bookmark-file" alist nil nil 'bmkp-bookmark-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-bookmark-file-alist-only))))
   (bmkp-jump-bookmark-file bookmark switchp no-msg))
 
@@ -9631,7 +9631,7 @@ BOOKMARK is a bookmark name or a bookmark record."
    (let ((alist  (bmkp-bookmark-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "bookmark-file" alist nil nil 'bmkp-bookmark-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-bookmark-file-alist-only))))
   (let ((file  (bookmark-prop-get bookmark 'bookmark-file)))
     (bookmark-load file nil (if nosavep t 'save))
@@ -9649,7 +9649,7 @@ BOOKMARK is a bookmark name or a bookmark record."
    (let ((alist  (bmkp-bookmark-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "bookmark-file" alist nil nil 'bmkp-bookmark-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-bookmark-file-alist-only))))
   (let ((file  (bookmark-prop-get bookmark 'bookmark-file)))
     (bookmark-load file t (if nosavep t 'save))
@@ -9695,7 +9695,7 @@ This is a specialization of `bookmark-jump' for snippet bookmarks."
    (let ((alist  (bmkp-snippet-alist-only)))
      (list (bmkp-read-bookmark-for-type "snippet" alist nil nil 'bmkp-snippet-history nil
                                         "Copy snippet to kill ring"))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-snippet-alist-only))))
   (bmkp-jump-1 bookmark 'ignore))
 
@@ -9925,7 +9925,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   (interactive
    (let ((alist  (bmkp-desktop-alist-only)))
      (list (bmkp-read-bookmark-for-type "desktop" alist nil nil 'bmkp-desktop-history "Delete "))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-desktop-alist-only))))
   (let ((desktop-file  (bookmark-prop-get bookmark 'desktop-file)))
     (unless desktop-file (error "Not a desktop-bookmark: `%s'" bookmark))
@@ -10966,7 +10966,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-autonamed-alist-only)))
      (list (bmkp-read-bookmark-for-type "autonamed" alist nil nil 'bmkp-autonamed-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-autonamed-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window))
 
@@ -10976,7 +10976,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-autonamed-alist-only)))
      (list (bmkp-read-bookmark-for-type "autonamed" alist t nil 'bmkp-autonamed-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-autonamed-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window))
 
@@ -10987,7 +10987,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-autonamed-this-buffer-alist-only)))
      (list (bmkp-read-bookmark-for-type "autonamed" alist nil nil 'bmkp-autonamed-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-autonamed-this-buffer-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window))
 
@@ -10997,7 +10997,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-autonamed-this-buffer-alist-only)))
      (list (bmkp-read-bookmark-for-type "autonamed" alist t nil 'bmkp-autonamed-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-autonamed-this-buffer-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window))
 
@@ -11010,7 +11010,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-bookmark-list-alist-only)))
      (list (bmkp-read-bookmark-for-type "bookmark-list" alist nil nil 'bmkp-bookmark-list-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-bookmark-list-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11028,7 +11028,7 @@ particular for info about using a prefix argument."
      (list (bmkp-read-bookmark-for-type "desktop" alist nil nil 'bmkp-desktop-history)
            current-prefix-arg)))
   (when bmkp-desktop-jump-save-before-flag (bmkp-desktop-save-as-last))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-desktop-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p)
   (setq bmkp-desktop-current-file  (bookmark-prop-get bookmark 'desktop-file)))
@@ -11042,7 +11042,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-dired-alist-only)))
      (list (bmkp-read-bookmark-for-type "Dired" alist nil nil 'bmkp-dired-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-dired-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11053,7 +11053,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-dired-alist-only)))
      (list (bmkp-read-bookmark-for-type "Dired" alist t nil 'bmkp-dired-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-dired-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11066,7 +11066,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-dired-this-dir-alist-only)))
      (list (bmkp-read-bookmark-for-type "Dired-for-this-dir " alist nil nil 'bmkp-dired-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-dired-this-dir-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11077,7 +11077,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-dired-this-dir-alist-only)))
      (list (bmkp-read-bookmark-for-type "Dired-for-this-dir" alist t nil 'bmkp-dired-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-dired-this-dir-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11092,7 +11092,7 @@ for info about using a prefix argument."
      (let ((alist  (bmkp-eww-alist-only)))
        (list (bmkp-read-bookmark-for-type "EWW" alist nil nil 'bmkp-eww-history)
              current-prefix-arg)))
-    (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+    (when (stringp bookmark)
       (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-eww-alist-only))))
     (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11103,7 +11103,7 @@ for info about using a prefix argument."
      (let ((alist  (bmkp-eww-alist-only)))
        (list (bmkp-read-bookmark-for-type "EWW" alist t nil 'bmkp-eww-history)
              current-prefix-arg)))
-    (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+    (when (stringp bookmark)
       (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-eww-alist-only))))
     (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11118,7 +11118,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "file" alist nil nil 'bmkp-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11129,7 +11129,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "file" alist t nil 'bmkp-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11142,7 +11142,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-file-this-dir-alist-only)))
      (list (bmkp-read-bookmark-for-type "file-in-this-dir" alist nil nil 'bmkp-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-file-this-dir-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11153,7 +11153,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-file-this-dir-alist-only)))
      (list (bmkp-read-bookmark-for-type "file-in-this-dir" alist t nil 'bmkp-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-file-this-dir-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11166,7 +11166,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-gnus-alist-only)))
      (list (bmkp-read-bookmark-for-type "Gnus" alist nil nil 'bmkp-gnus-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-gnus-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11177,7 +11177,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-gnus-alist-only)))
      (list (bmkp-read-bookmark-for-type "Gnus" alist t nil 'bmkp-gnus-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-gnus-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11190,7 +11190,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-image-alist-only)))
      (list (bmkp-read-bookmark-for-type "image" alist nil nil 'bmkp-image-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-image-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11201,7 +11201,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-image-alist-only)))
      (list (bmkp-read-bookmark-for-type "image" alist t nil 'bmkp-image-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-image-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11214,7 +11214,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-info-alist-only)))
      (list (bmkp-read-bookmark-for-type "Info" alist nil nil 'bmkp-info-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-info-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11225,7 +11225,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-info-alist-only)))
      (list (bmkp-read-bookmark-for-type "Info" alist t nil 'bmkp-info-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-info-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11238,7 +11238,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-local-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "local file" alist nil nil 'bmkp-local-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-local-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11249,7 +11249,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-local-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "local file" alist t nil 'bmkp-local-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-local-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11262,7 +11262,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-local-non-dir-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "local non-dir file" alist nil nil 'bmkp-local-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-local-non-dir-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11273,7 +11273,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-local-non-dir-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "local non-dir file" alist t nil 'bmkp-local-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-local-non-dir-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11286,7 +11286,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-man-alist-only)))
      (list (bmkp-read-bookmark-for-type "`man'" alist nil nil 'bmkp-man-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-man-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11297,7 +11297,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-man-alist-only)))
      (list (bmkp-read-bookmark-for-type "`man'" alist t nil 'bmkp-man-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-man-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11310,7 +11310,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-non-dir-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "non-dir file" alist nil nil 'bmkp-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-non-dir-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11321,7 +11321,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-non-dir-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "non-dir file" alist t nil 'bmkp-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-non-dir-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11334,7 +11334,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-non-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "non-file (buffer)" alist nil nil 'bmkp-non-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-non-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11345,7 +11345,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-non-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "non-file (buffer)" alist t nil 'bmkp-non-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-non-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11403,7 +11403,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-remote-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "remote file" alist nil nil 'bmkp-remote-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-remote-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11414,7 +11414,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-remote-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "remote file" alist t nil 'bmkp-remote-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-remote-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11427,7 +11427,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-remote-non-dir-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "remote non-dir file" alist nil nil 'bmkp-remote-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-remote-non-dir-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11438,7 +11438,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-remote-non-dir-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "remote non-dir file" alist t nil 'bmkp-remote-file-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-remote-non-dir-file-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11457,7 +11457,7 @@ for info about using a prefix argument."
      (let ((alist  (bmkp-specific-buffers-alist-only buffs)))
        (list buffs (bmkp-read-bookmark-for-type "specific-buffers" alist nil nil 'specific-buffers-history)
              current-prefix-arg))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-specific-buffers-alist-only buffers))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11473,7 +11473,7 @@ for info about using a prefix argument."
      (let ((alist  (bmkp-specific-buffers-alist-only buffs)))
        (list buffs (bmkp-read-bookmark-for-type "specific-buffers" alist t nil 'specific-buffers-history)
              current-prefix-arg))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-specific-buffers-alist-only buffers))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11494,7 +11494,7 @@ for info about using a prefix argument."
        (list fils
              (bmkp-read-bookmark-for-type "specific-files" alist nil nil 'specific-files-history)
              current-prefix-arg))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-specific-files-alist-only files))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11512,7 +11512,7 @@ for info about using a prefix argument."
        (list fils
              (bmkp-read-bookmark-for-type "specific-files" alist t nil 'specific-files-history)
              current-prefix-arg))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-specific-files-alist-only files))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11522,7 +11522,7 @@ for info about using a prefix argument."
 This is a specialization of `bookmark-jump', but without a prefix arg."
   (interactive (list (bmkp-read-bookmark-for-type "temporary" (bmkp-temporary-alist-only) nil nil
                                                   'bmkp-temporary-history)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-temporary-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window))
 
@@ -11531,7 +11531,7 @@ This is a specialization of `bookmark-jump', but without a prefix arg."
   "`bmkp-temporary-jump', but in another window."
   (interactive (list (bmkp-read-bookmark-for-type "temporary" (bmkp-temporary-alist-only) t nil
                                                   'bmkp-temporary-history)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-temporary-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window))
 
@@ -11546,7 +11546,7 @@ for info about using a prefix argument."
      (list (bookmark-completing-read "Jump to bookmark for this buffer"
                                      (bmkp-default-bookmark-name alist) alist)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-this-buffer-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11559,7 +11559,7 @@ for info about using a prefix argument."
      (list (bookmark-completing-read "Jump to bookmark for this buffer in another window"
                                      (bmkp-default-bookmark-name alist) alist)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-this-buffer-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11604,7 +11604,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-variable-list-alist-only)))
      (list (bmkp-read-bookmark-for-type "variable-list" alist nil nil 'bmkp-variable-list-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-variable-list-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window))
 
@@ -11618,7 +11618,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-url-alist-only)))
      (list (bmkp-read-bookmark-for-type "URL" alist nil nil 'bmkp-url-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-url-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11629,7 +11629,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-url-alist-only)))
      (list (bmkp-read-bookmark-for-type "URL" alist t nil 'bmkp-url-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-url-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11642,7 +11642,7 @@ This is a specialization of `bookmark-jump'."
                                       ;; Use a predicate, since `w32-browser' is a handler, not a type name.
                                       (bmkp-handler-pred 'w32-browser)
                                       'bmkp-w32-browser-history)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR)))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window))
 
@@ -11655,7 +11655,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-w3m-alist-only)))
      (list (bmkp-read-bookmark-for-type "W3M" alist nil nil 'bmkp-w3m-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-w3m-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window flip-use-region-p))
 
@@ -11666,7 +11666,7 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-w3m-alist-only)))
      (list (bmkp-read-bookmark-for-type "W3M" alist t nil 'bmkp-w3m-history)
            current-prefix-arg)))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-w3m-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -11971,7 +11971,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-autofile-alist-only)))
      (list (bmkp-read-bookmark-for-type "autofile" alist nil nil 'bmkp-autofile-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-autofile-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp--pop-to-buffer-same-window))
 
@@ -11981,7 +11981,7 @@ This is a specialization of `bookmark-jump'."
   (interactive
    (let ((alist  (bmkp-autofile-alist-only)))
      (list (bmkp-read-bookmark-for-type "autofile" alist t nil 'bmkp-autofile-history))))
-  (when (and (stringp bookmark)  bmkp-propertize-bookmark-names-flag)
+  (when (stringp bookmark)
     (setq bookmark  (bmkp-get-bookmark-in-alist bookmark 'NOERROR (bmkp-autofile-alist-only))))
   (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window))
 
