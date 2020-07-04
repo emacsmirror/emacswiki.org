@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  4 09:49:34 2020 (-0700)
+;; Last-Updated: Sat Jul  4 10:00:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 16680
+;;     Update #: 16681
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/07/04 dadams
+;;     Same commands as 7/03: Remove bmkp-propertize-*-flag as part of test for getting full bmk.
 ;; 2020/07/03 dadams
 ;;     bmkp-read-bookmark-for-type:
 ;;       Use bmkp-bookmark-record-from-name to return full bookmark from ALIST.
