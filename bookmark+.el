@@ -8,9 +8,9 @@
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
 ;; Version: 2020.07.04
-;; Last-Updated: Sat Jul  4 13:05:00 2020 (-0700)
+;; Last-Updated: Sat Jul  4 13:26:02 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 15054
+;;     Update #: 15055
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -182,8 +182,13 @@
   (message "Bookmark+, version %s" bmkp-version-number))
 
 ;; This was added for vanilla Emacs 28.  Add it here for older releases.
-(defconst bookmark-bmenu-buffer "*Bookmark List*"
-  "Name of buffer used for Bookmark List.")
+(defconst bookmark-bmenu-buffer "*Bookmark List*" "Name of buffer used for Bookmark List.")
+
+;; This was made automatically buffer-local for vanilla Emacs 28.  Do it here, for all Bookmark+ files.
+(defvar bookmark-annotation-name nil
+  "Name of bookmark under edit in `bookmark-edit-annotation-mode'.")
+(make-variable-buffer-local 'bookmark-annotation-name)
+
 
 
 ;; Load Bookmark+ libraries.
