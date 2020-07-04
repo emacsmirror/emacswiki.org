@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jan 26 09:01:49 2020 (-0800)
+;; Last-Updated: Sat Jul  4 10:24:43 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 4120
+;;     Update #: 4122
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1129,7 +1129,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
 ;;;###autoload (autoload 'list-bookmarks "bookmark+")
 (defalias 'list-bookmarks 'bookmark-bmenu-list)
 ;;;###autoload (autoload 'bookmark-bmenu-list "bookmark+")
-(defun bookmark-bmenu-list (&optional filteredp msg-p) ; Bound to `C-x p e', `C-x r l'
+(defun bookmark-bmenu-list (&optional filteredp msg-p) ; Bound to `C-x x e', `C-x r l'
   "Display a list of existing bookmarks, in buffer `*Bookmark List*'.
 The leftmost column of a bookmark entry shows `D' if the bookmark is
  flagged for deletion, or `>' if it is marked normally.
@@ -1543,15 +1543,15 @@ C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Delete all autonamed bookma
 Cycle Bookmarks (anywhere)
 ---------------
 
-\\[bmkp-next-bookmark-this-file/buffer-repeat]...\t- Next bookmark in buffer         (C-x p n, C-x p C-n)
-\\[bmkp-previous-bookmark-this-file/buffer-repeat]...\t- Prev bookmark in buffer         (C-x p p, \
-C-x p C-p)
-\\[bmkp-next-bookmark-repeat]...- Next bookmark in navlist        (C-x p f, C-x p C-f)
-\\[bmkp-previous-bookmark-repeat]...\t- Prev bookmark in navlist        (C-x p b, C-x p C-b)
-\\[bmkp-next-bookmark-w32-repeat]...\t- MS Windows `Open' next     in navlist   (C-x p next)
-\\[bmkp-previous-bookmark-w32-repeat]...- MS Windows `Open' previous in navlist  (C-x p prior)
-\\[bmkp-next-lighted-this-buffer-repeat]...- Next highlighted bookmark in buffer  (C-x p C-down)
-\\[bmkp-previous-lighted-this-buffer-repeat]...\t- Prev highlighted bookmark in buffer     (C-x p C-up)
+\\[bmkp-next-bookmark-this-file/buffer-repeat]...\t- Next bookmark in buffer         (C-x x n, C-x x C-n)
+\\[bmkp-previous-bookmark-this-file/buffer-repeat]...\t- Prev bookmark in buffer         (C-x x p, \
+C-x x C-p)
+\\[bmkp-next-bookmark-repeat]...- Next bookmark in navlist        (C-x x f, C-x x C-f)
+\\[bmkp-previous-bookmark-repeat]...\t- Prev bookmark in navlist        (C-x x b, C-x x C-b)
+\\[bmkp-next-bookmark-w32-repeat]...\t- MS Windows `Open' next     in navlist   (C-x x next)
+\\[bmkp-previous-bookmark-w32-repeat]...- MS Windows `Open' previous in navlist  (C-x x prior)
+\\[bmkp-next-lighted-this-buffer-repeat]...- Next highlighted bookmark in buffer  (C-x x C-down)
+\\[bmkp-previous-lighted-this-buffer-repeat]...\t- Prev highlighted bookmark in buffer     (C-x x C-up)
 
  Similar, but not bound to keys by default:
   \\[bmkp-next-autonamed-bookmark-repeat]        (and `previous')
@@ -5693,6 +5693,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "s>"                   'bmkp-bmenu-sort-marked-before-unmarked)
 (define-key bookmark-bmenu-mode-map "s*"                   'bmkp-bmenu-sort-modified-before-unmodified)
 (define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-time)
+(define-key bookmark-bmenu-mode-map "sa"                   'bmkp-bmenu-sort-annotated-before-unannotated)
 (define-key bookmark-bmenu-mode-map "sb"                   'bmkp-bmenu-sort-by-last-buffer-or-file-access)
 (define-key bookmark-bmenu-mode-map "sd"                   'bmkp-bmenu-sort-by-last-bookmark-access)
 (define-key bookmark-bmenu-mode-map "sD"                   'bmkp-bmenu-sort-flagged-before-unflagged)
