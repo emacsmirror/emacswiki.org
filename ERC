@@ -1,53 +1,38 @@
 ERC is a powerful, modular, and extensible Emacs InternetRelayChat client.
 
 == Obtaining ERC ==
-ERC is part of the GNU project.  It is included with recent versions of GNU Emacs.
-
-With an older version of Emacs, you might need to install it separately, e.g. under Ubuntu you would do something like <code>sudo apt-get install erc</code>.
+ERC is part of the GNU project.  It is included with reasonably recent versions of GNU Emacs.
 
 For a brief history of the development of ERC and access to older versions, code repositories, and mailing list archives see ErcProjectHistory.
 
 === Included with GNU Emacs ===
-ERC is included in released versions of GNU Emacs since v22.3.
+ERC is included in released versions of GNU Emacs since v22.3 (released on September 2008).
 
 See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
 
 === Ports and packages ===
-The XEmacs ERC Package sources are at http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/erc/
 
-Debian users can just apt-get install erc, or use one of the emacs22 or emacs-snapshot-* packages in experimental and unstable.  The Debian ERC package is updated at every major or minor release.  Usually, you should expect a new release every month or two.
-
-Gentoo users can just emerge app-emacs/erc or app-xemacs/erc (for some reason portage has a hard time figuring out which). At present this is the latest release candidate.
+Gentoo users can just emerge app-emacs/erc or app-xemacs/erc (for some reason portage has a hard time figuring out which).  At present this is the latest release candidate.
 
 === Development version ===
-See ErcDevelopment to find instructions on how to get the development version using git. Or if you prefer, you can download the most recent development snapshot: [http://mwolson.org/static/dist/erc-latest.tar.gz erc-latest.tar.gz] or [http://mwolson.org/static/dist/erc-latest.zip erc-latest.zip].
+See ErcDevelopment to find instructions on how to get the development version using git.
 
-ERC also comes bundled with EmacsFromCVS[http://article.gmane.org/gmane.emacs.erc.general/750].
+ERC also comes bundled with EmacsFromGit.
 
-Note that ErcDevelopment and EmacsFromCvs can contain two separate branches of ERC and are therefore not quite identical. The modules ErcBbdb and ErcSpeak are not available in the Emacs version, for example.
+Note that ErcDevelopment and EmacsFromGit can contain two separate branches of ERC and are therefore not quite identical.  The modules ErcBbdb and ErcSpeak are not available in the Emacs version, for example.
 
 == User manual ==
 An info manual is now included with ERC.  It's also available on-line in several forms:
 
 # HTML (single file):https://www.gnu.org/software/emacs/manual/html_mono/erc.html
 # HTML (multiple files):https://www.gnu.org/software/emacs/manual/html_node/erc/index.html
- 
+
 
 == Quickstart ==
-* Download the .tar.gz file and extract it (tar -xzf ''filename'')
-: the latest release, erc-5.3.tar.gz (or erc-5.3.zip), extracts to a directory called erc-5.3/
-: Development snapshots extract to a directory called erc/
-* Move the newly created directory to, for example, ~/elisp/erc
-* And put the following in your InitFile:
-{{{
-(add-to-list 'load-path "~/elisp/erc")
-(require 'erc)
-}}}
-* XEmacs users skip the above and get the [http://www.xemacs.org/Develop/packages.html#erc XEmacs erc Package]
 
-* To connect, call M-x erc (better: M-x erc-select)
+* To connect, call M-x erc
 * To customize how ERC works: M-x customize-group RET erc RET
-* ERC comes with a lot of small modules that do stuff for you. Recent versions of ERC let you just M-x customize-variable RET erc-modules RET. For previous versions, add a (require 'erc-FOO) to your InitFile to use them.
+* ERC comes with a lot of small modules that do stuff for you.  Recent versions of ERC let you just M-x customize-variable RET erc-modules RET.
 
 == Introduction ==
 
@@ -198,7 +183,7 @@ You should be able to find documentation on how to set them up on their pages.
 * ErcOSD -- Be notified on gnome / Linux systems when someone messages your nick.
 * ErcGrowl -- Get notified via Growl (Mac OS X) whenever your name is mentioned.
 * ErcViewLog -- View ERC logs with the same look as a real ERC buffer
-* [https://github.com/atomontage/erc-crypt erc-crypt.el] -- Per buffer PSK encryption for ERC 
+* [https://github.com/atomontage/erc-crypt erc-crypt.el] -- Per buffer PSK encryption for ERC
 * [https://github.com/vapniks/erc-list-cache erc-list-cache.el] -- Cache IRC server channel lists so they load faster
 
 == Proxies ==
@@ -206,7 +191,7 @@ You should be able to find documentation on how to set them up on their pages.
 Currently not supported.  See http://desproxy.sourceforge.net/ or
 http://transconnect.sourceforge.net/ for software to use.
 
-ErcProxy has some more information on how things are right now and what you can do to use erc through a proxy. 
+ErcProxy has some more information on how things are right now and what you can do to use erc through a proxy.
 
 == For developers ==
 
@@ -222,7 +207,7 @@ ErcProxy has some more information on how things are right now and what you can 
 
 == Mailing lists ==
 
-If you need help with ERC, you can ask on the erc-discuss mailing list. If you encounter ErcBugs, please let us know about them by sending an email to the erc-discuss mailing list.  Feel free to send us the corresponding patches if you're able to fix things.
+If you need help with ERC, you can ask on the erc-discuss mailing list.  If you encounter ErcBugs, please let us know about them by sending an email to the erc-discuss mailing list.  Feel free to send us the corresponding patches if you're able to fix things.
 
 Check the [https://savannah.gnu.org/mail/?group=erc Savannah mailing page for ERC] for subscription information.
 
