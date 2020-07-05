@@ -71,7 +71,7 @@ Settings for minor modes are held in a global variable and tend to take immediat
 
 Also bear in mind that some modes may dynamically update these values themselves (for instance dired-mode updates mode-name if you change the sorting criteria) in which cases this library may prove inadequate.
 
-Some modes also implement direct support for customizing these values.  For example, the [https://github.com/bbatsov/projectile/blob/master/doc/configuration.md#mode-line-indicator Projectile documentation] describes a collection of user options affecting what it displays in the mode line.  If delight is not sufficient for a particular mode, be sure to check whether the library in question provides its own way of doing this.
+Some modes also implement direct support for customizing these values.  For example, the [https://docs.projectile.mx/projectile/configuration.html#mode-line-indicator Projectile documentation] describes a collection of user options affecting what it displays in the mode line.  If delight is not sufficient for a particular mode, be sure to check whether the library in question provides its own way of doing this.
 
 ==Conflict with c-mode and related major modes==
 
