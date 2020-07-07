@@ -1,7 +1,6 @@
 <code>yaml-path.el</code> provides a function to display a Ruby expression (or an xpath-like string) for the yaml element on the current line. It's meant to complement Yoshiki Kurihara's YamlMode.
 
-Get it at http://alpheus.me/src/emacs/yaml-path/yaml-path.el
-(The link was broken. After some search, I guess this is the "official" link: https://github.com/craig-ludington/yaml-path/blob/master/yaml-path.el)
+Get it at: https://github.com/craig-ludington/yaml-path/blob/master/yaml-path.el.
 
 <code>yaml-path.el</code> doesn't strictly depend on yaml-mode, but works better with yaml-mode.  (That's because yaml-mode makes syntax-ppss usable for locating comments.)
 
