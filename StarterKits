@@ -1,19 +1,19 @@
 There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration.
 
-Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (all numbers as of 2016-01-16, except for the updated 2018-08-25 numbers on Spacemacs and Doom Emacs):
+Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2020-07; some size numbers from 2016-01-16):
 
 || Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            || 20.2k ||          561 ||   10904 ||              6040 || https://github.com/syl20bnr/spacemacs ||
-|| Doom Emacs           ||  6.9k ||          318 ||   13704 ||               142 || https://github.com/hlissner/doom-emacs ||
-|| purcell emacs.d      ||  5.5k ||           21 ||    3092 ||                60 || https://github.com/purcell/emacs.d ||
-|| Prelude              ||  4.4k ||          152 ||    1360 ||                80 || https://github.com/bbatsov/prelude ||
-|| Centaur Emacs        ||   995 ||           17 ||    3447 ||               200 || https://github.com/seagle0128/.emacs.d ||
-|| magnars emacs.d      ||   910 ||            6 ||    1359 ||               500 || https://github.com/magnars/.emacs.d ||
-|| Emacs Starter Kit    ||   630 ||           19 ||     568 ||               190 || https://github.com/eschulte/emacs-starter-kit || 
-|| oh-my-emacs          ||   540 ||           10 ||     325 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
-|| scimax || 480 || 17 || 1631 || || https://github.com/jkitchin/scimax ||
-|| Better Defaults      ||   379 ||            2 ||      11 ||                 4 || https://github.com/technomancy/better-defaults || 
-|| Graphene             ||   189 ||            2 ||     335 ||                40 || https://github.com/rdallasgray/graphene || 
-|| ohai-emacs           ||   180 ||            4 ||     124 ||               170 || https://github.com/bodil/ohai-emacs || 
-|| ergoemacs-mode       ||   115 ||           13 ||    2570 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode || 
-|| Rho Emacs            ||     3 ||            1 ||    1    ||                 ~ || https://github.com/GChristensen/rho-emacs || 
+|| Spacemacs            || 20.3k ||          561 ||   10932 ||              9700 || https://github.com/syl20bnr/spacemacs/tree/develop ||
+|| Doom Emacs           ||  7.0k ||          320 ||   13718 ||               989 || https://github.com/hlissner/doom-emacs ||
+|| purcell emacs.d      ||  5.5k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
+|| Prelude              ||  4.4k ||          152 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
+|| magnars emacs.d      ||  1.3k ||            9 ||    1490 ||               526 || https://github.com/magnars/.emacs.d ||
+|| Centaur Emacs        ||  1.0k ||           17 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
+|| Better Defaults      ||   841 ||            2 ||      32 ||                 4 || https://github.com/technomancy/better-defaults || 
+|| Emacs Starter Kit    ||   784 ||           21 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit/ || 
+|| oh-my-emacs          ||   711 ||           10 ||     333 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
+|| scimax || 517 || 17 || 1631 || || https://github.com/jkitchin/scimax ||
+|| ohai-emacs           ||   373 ||            4 ||     124 ||               170 || https://github.com/bodil/ohai-emacs || 
+|| Graphene             ||   279 ||            2 ||     347 ||                40 || https://github.com/rdallasgray/graphene || 
+|| ergoemacs-mode       ||   214 ||           13 ||    2570 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode || 
+|| Rho Emacs            ||     7 ||            1 ||    8    ||                 ~ || https://github.com/GChristensen/rho-emacs || 
