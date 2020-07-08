@@ -33,6 +33,8 @@ You can evaluate lisp code here, too:
 
 ...but Emacs will ask you whether you want to arbitrarily run this code when you open the document, to save you from Trojan horses and the like.  You can change this by changing <code>enable-local-eval</code> to t.  Don't do this.
 
+Consult with <code>inhibit-local-variables-regexps</code> is case of file local variables are not
+initialized from the sections.
 ----
 
 ==mode hooks and local variables==
