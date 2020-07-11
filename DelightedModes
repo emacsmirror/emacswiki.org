@@ -95,7 +95,7 @@ With the exception of Emacs' default mode line rendering, anything rendering a m
 
 Libraries like PowerLine call ##format-mode-line##, but for the purpose of replacing the standard mode line rendering, in which case we <em>do</em> want to see the delighted major mode names.
 
-As of version 1.04, delight.el will respect the value of ##inhibit-mode-name-delight## if it has been bound by something else, and so it is possible for other libraries/advice to let-bind this variable to ##nil## around calls to ##format-mode-line## in order that the delighted value will be used for major modes.
+As of version 1.4, delight.el will respect the value of ##inhibit-mode-name-delight## if it has been bound by something else, and so it is possible for other libraries/advice to let-bind this variable to ##nil## around calls to ##format-mode-line## in order that the delighted value will be used for major modes.
 
 DelightedPowerLine is a small library implementing this behaviour for PowerLine specifically.
 
