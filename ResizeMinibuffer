@@ -2,5 +2,9 @@ In Emacs 20 we used resize-minibuffer-mode, but in Emacs 21 this is
 the default.  The size of the EchoArea (not the MiniBuffer) is
 controlled by max-mini-window-height.
 
+== Discussion ==
+
+To answer the question of everyone who comes to this page interested in learning how to resize the minibuffer: click and drag on the border. Something so obvious it's not worth writing down, it seems. -- KHilliard
+
 ----
 CategoryModes
