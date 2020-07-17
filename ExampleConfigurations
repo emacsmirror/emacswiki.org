@@ -15,7 +15,7 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 [:OtherConfigs]
 == Other configurations ==
 
-* AlexSchroederConfigWindows at work
+* [[Alex Schroeder]]'s [https://alexschroeder.ch/cgit/emacs-setup/about/ Emacs Setup]
 * [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file]
 * [http://edward.oconnor.cx/config/.emacs EdwardOConnor's .emacs] works in various versions of both Emacsen on several different platforms
 * [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there
