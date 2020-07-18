@@ -18,7 +18,7 @@ Sometimes you will encounter links to libraries with neither the '''Lisp:''' nor
 
 Besides downloading individual libraries, you can also use Wget, Rsync or a *version control system* to download the files.  See WikiDownload.
 
-* [Self:action=elisp-area;context=0 Alphabetical list of all Elisp libraries on this Wiki]
+* [Self:action=elisp-area Alphabetical list of all Elisp libraries on this Wiki]
 * [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological list of all Elisp libraries on this Wiki]
 ([EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;days=7;showedit=1 last seven days])
 * By Category -- Most of the links off of SiteMap are to '''categories''' pages, which link to relevant 
@@ -149,7 +149,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 307%
+%Id: 308%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
