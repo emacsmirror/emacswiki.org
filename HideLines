@@ -1,7 +1,3 @@
-This package is not so useful because this feature was support by iedit as a subfunction.
-
-https://github.com/victorhge/iedit/issues/93
-
 This page is about `M-x hide-lines' written by MarkHulmeJones. It provides a function to quickly hide lines based on a regexp. 
 
 * Lisp:hide-lines.el
