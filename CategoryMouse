@@ -35,6 +35,7 @@ These pages are in category Mouse:
 * [[Region]] -- Use the mouse to select, copy, cut, and paste selected text.
 * SecondarySelection -- A second selection (like a second [[region]]).  You can create, copy, cut, and paste it using the mouse, the same way you manipulate the region.
 * StrokeMode -- Trace patterns with the mouse to execute commands.
+* [[DelicateMouseClick]] -- More delicate/accurate cursor placement on mouse click.
 
 ----
 CategoryKeys CategoryDisplay
