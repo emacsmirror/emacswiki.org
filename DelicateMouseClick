@@ -32,3 +32,7 @@ Anyway, the following mode archives that behavior (place cursor on the right whe
       (if delicate-click-mode
           (advice-add 'mouse-set-point :after #'adjust-point-after-click)
         (advice-remove 'mouse-set-point #'adjust-point-after-click)))
+
+
+----
+CategoryMouse
