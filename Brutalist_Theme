@@ -70,5 +70,17 @@ depending on the time of day."
  '(rcirc-prompt ((t (:inherit bold)))))
 }}}
 
+== Setting the colours for ANSI escape codes ==
+
+See [https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters SGR parameters] on Wikipedia.
+The ansi colours are used in shells, Elpher, etc.
+
+{{{
+(custom-theme-set-variables
+ 'brutalist-dark
+ '(ansi-color-names-vector
+   ["black" "salmon" "yellow green" "light goldenrod" "steel blue" "orchid" "turquoise" "#eeeee8"]))
+}}}
+
 ----
 ColorTheme
