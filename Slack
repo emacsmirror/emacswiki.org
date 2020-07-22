@@ -3,3 +3,5 @@
 [https://github.com/yuya373/emacs-slack emacs-slack] is a Slack client for emacs
 
 [https://github.com/sshaw/copy-as-format copy-as-format] Copy buffer locations as GitHub/[[Slack]]/JIRA/HipChat… formatted code
+
+[https://github.com/titaniumbones/ox-slack ox-slack] Slack export backend for Emacs org-mode
