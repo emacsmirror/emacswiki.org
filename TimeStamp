@@ -58,14 +58,21 @@ universal date with the `time-stamp-time-zone' variable.
   <!-- End: -->
 
 You might not want to pollute all your HTML files with the local
-variables.  Customize HtmlMode to affect all your HTML files with the
+variables.  Using DirectoryVariables could help reduce the clutter, 
+e.g., put the following in ##.dir-locals.el## to set the variables 
+for all html-mode files under that directory:
+
+    ((html-mode . ((time-stamp-pattern . "-8/<p>Last modified:[ \t]+%3a %3b %02H:%02M:%02S %Z %:y by %u</p>")
+                   (time-stamp-time-zone . "UTC"))))
+
+Alternatively, customize HtmlMode to affect all your HTML files with the
 following hook.
 
-  (eval-after-load 'sgml-mode
-    '(add-hook 'html-mode-hook (lambda ()
-                                 (set (make-local-variable 'time-stamp-pattern)
-                                      "-8/<p>Last modified:[ \t]+%3a %3b %02H:%02M:%02S %Z %:y by %u</p>")
-                                 (set (make-local-variable 'time-stamp-time-zone) "UTC"))))
+    (add-hook 'html-mode-hook (lambda ()
+                                (set (make-local-variable 'time-stamp-pattern)
+                                     "-8/<p>Last modified:[ \t]+%3a %3b %02H:%02M:%02S %Z %:y by %u</p>")
+                                (set (make-local-variable 'time-stamp-time-zone) "UTC")))
+
 
 See also:
 
