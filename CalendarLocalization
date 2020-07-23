@@ -158,7 +158,8 @@ names.
           calendar-day-abbrev-array ["Вск" "Пнд" "Втр" "Сре" "Чтв" "Птн" "Суб"]
           calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
                                      "Июнь" "Июль" "Август" "Сентябрь"
-                                     "Октябрь" "Ноябрь" "Декабрь"])
+                                     "Октябрь" "Ноябрь" "Декабрь"]
+          calendar-month-abbrev-array ["Янв" "Фев" "Мар" "Апр" "Май" "Июн" "Июл" "Авг" "Сен" "Окт" "Ноя" "Дек"])
 
 === Spanish (Castillian) ===
 Week starts with monday, use also Spanish weekday and month names. Editor specially dislikes jueves. :)
