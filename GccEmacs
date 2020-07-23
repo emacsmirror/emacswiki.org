@@ -1,0 +1,3 @@
+!GccEmacs refers to the ##feature/native-comp## branch of Emacs, which adds support for compiling Elisp to native code by leveraging ##libgccjit##.
+
+The official development log can be found [http://akrl.sdf.org/gccemacs.html here].
