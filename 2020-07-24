@@ -1,6 +1,8 @@
 I got two reports to day of people trying to edit Emacs Wiki pages who couldn't save. Oops! The monitoring I have just checks whether the wiki itself is reachable, from the same server, and apparently that just kept on working.
 Let's hope the restart fixed it.
 
+Hah, apparently not! The problem was that I had decided some days ago that a 10s timeout was a good idea for the wiki. After 10s, the process is terminated. Sadly, if it was saving a page in those 10s, it would leave a lock behind. And before attempting to remove stale locks it would wait, you guessed it, more than 10s! Oh well...
+
 If you run into this, don't hesitate to [https://alexschroeder.ch/wiki/Contact contact me].
 
 – Alex Schroeder
