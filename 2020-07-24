@@ -1,0 +1,6 @@
+I got two reports to day of people trying to edit Emacs Wiki pages who couldn't save. Oops! The monitoring I have just checks whether the wiki itself is reachable, from the same server, and apparently that just kept on working.
+Let's hope the restart fixed it.
+
+If you run into this, don't hesitate to [https://alexschroeder.ch/wiki/Contact contact me].
+
+– Alex Schroeder
