@@ -1,0 +1,30 @@
+And another problem. I was getting SSL errors every now and then, using Firefox.
+Calling `openssl s_client www.emacswiki.org:443` did in fact say that it was expired:
+
+{{{
+depth=0 CN = emacswiki.org
+verify error:num=10:certificate has expired
+notAfter=Jul 25 03:49:05 2020 GMT
+}}}
+
+But my ACME client disagreed:
+
+{{{
+Processing emacswiki.org with alternative names: www.emacswiki.org
+ + Hook: Nothing to do...
+ + Checking domain name(s) of existing cert... unchanged.
+ + Checking expire date of existing cert...
+ + Valid till Sep 26 03:48:59 2020 GMT (Longer than 30 days). Skipping renew!
+ + Hook: Nothing to do...
+}}}
+
+Uhhhh... What?
+
+Then I remembered... Restarting Apache fixed the issue.
+
+I still don't get it. I do and ##service apache2 reload## when a new cert is deployed.
+But somehow that doesn't work.
+
+Anyway, I'm sorry if this caused you any issues.
+
+– Alex
