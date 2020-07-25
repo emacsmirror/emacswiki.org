@@ -1,5 +1,5 @@
 And another problem. I was getting SSL errors every now and then, using Firefox.
-Calling `openssl s_client www.emacswiki.org:443` did in fact say that it was expired:
+Calling ##openssl s_client www.emacswiki.org:443## did in fact say that it was expired:
 
 {{{
 depth=0 CN = emacswiki.org
