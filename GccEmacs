@@ -43,6 +43,42 @@ First, checkout the ##feature/native-comp## branch of Emacs, and configure it wi
     $ ./autogen.sh
     $ ./configure --with-nativecomp
 
-You should see "Does Emacs have native lisp compiler? yes" near the end of the configure output if native compilation has been enabled.
+You should see //"Does Emacs have native lisp compiler? yes"// near the end of the configure output if native compilation has been enabled.
 
 Complete the build with ##make## and ##make install## as usual.
+
+== Usage ==
+
+By default, only the Elisp code which ships with Emacs is native-compiled.  To native-compile your third-party packages, a few different approaches are available.
+
+=== Deferred compilation ===
+
+Deferred compilation refers to //"just-in-time"// native compilation of Elisp.  When a byte-compiled Elisp module is loaded, it gets queued for native compilation.  Once native compilation has finished, the native-compiled definitions automatically replace the byte-compiled versions.
+
+This is simple to use, but may be frustrating if native compilation kicks unexpectedly or at an inconvenient time.  You may prefer an //"ahead-of-time"// solution described further below.
+
+To enable deferred compilation, add the following to your Emacs config:
+
+    ;; enable just-in-time native compilation
+    (setq comp-deferred-compilation t)
+
+=== Ahead-of-time compilation ===
+
+The simplest solution for //"ahead-of-time"// compilation is to use a package manager which supports it:
+
+* **package.el**: The built-in package manager currently does **not support** native compilation.
+* **straight.el**: The [https://github.com/raxod502/straight.el straight.el] package manager native-compiles packages by default.
+
+Otherwise, you'll need to manually native-compile your packages:
+
+    ;; native-compile all Elisp files under a directory
+    (native-compile-async "/path/to/packages" 'recursively)
+
+This will add all Elisp files under that directory to the queue for asynchronous native compilation.
+
+If you're running native compilation from a script, you'll need to block the Emacs process until the async jobs have completed:
+
+    ;; block until native compilation has finished
+    (while (or comp-files-queue
+               (> (comp-async-runnings) 0))
+      (sleep-for 1))
