@@ -1,4 +1,4 @@
-!GccEmacs refers to the ##feature/native-comp## branch of Emacs, which adds support for compiling EmacsLisp to native code by leveraging ##libgccjit##. All of the Elisp packages shipped with Emacs are native-compiled during the build process, providing a noticeable performance improvement out-of-the-box. Third-party and user modules may also be compiled to achieve further performance improvements.
+!GccEmacs refers to the ##feature/native-comp## branch of Emacs, which adds support for compiling EmacsLisp to native code using ##libgccjit##. All of the Elisp packages shipped with Emacs are native-compiled, providing a noticeable performance improvement out-of-the-box. Third-party packages may also be compiled to achieve further performance improvements.
 
 The official development log can be found on [http://akrl.sdf.org/gccemacs.html the gccemacs page].
 
@@ -20,14 +20,14 @@ Install it with your favourite AUR helper, or use the following commands to do i
 
 An ##emacs-native-comp## package is available [https://github.com/flatwhatson/guix-channel in this channel].
 
-Add the channel to your ~/.config/guix/channels.scm, or use the following commands to install it as a one-off:
+Add the channel to your ##~/.config/guix/channels.scm##, or use the following commands to install it as a one-off:
 
     $ git clone https://github.com/flatwhatson/guix-channel.git
     $ guix install --load-path=./guix-channel emacs-native-comp
 
 === Nix ===
 
-An emacsGcc package is available from the Nix community's [https://github.com/nix-community/emacs-overlay Emacs overlay].
+An ##emacsGcc## package is available from the Nix community's [https://github.com/nix-community/emacs-overlay Emacs overlay].
 
 Detailed installation instructions are available [https://gist.github.com/mjlbach/179cf58e1b6f5afcb9a99d4aaf54f549 in this Gist].
 
@@ -41,6 +41,8 @@ First, checkout the ##feature/native-comp## branch of Emacs, and configure it wi
     $ cd emacs
     $ git checkout feature/native-comp
     $ ./autogen.sh
-    $ './configure --with-nativecomp
+    $ ./configure --with-nativecomp
 
-You should see "Does Emacs have native lisp compiler? yes" near the end of the configure output if native compilation has been enabled. Complete the build with ##make## and ##make install## as usual.
+You should see "Does Emacs have native lisp compiler? yes" near the end of the configure output if native compilation has been enabled.
+
+Complete the build with ##make## and ##make install## as usual.
