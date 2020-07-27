@@ -4,7 +4,7 @@ That's fine when the cursor is a box, which appears to be on the character.
 But when the cursor is a bar, and you click on the right half of the character,
 you would expect the cursor to be placed on the right of the character.
 This is more obvious with fatter characters like CJK ones.
-Anyway, the following mode archives that behavior (place cursor on the right when clicked on the right).
+Anyway, the following mode achieves that behavior (place cursor on the right when clicked on the right).
 
     (defun adjust-point-after-click (event &optional _)
       "Adjust point.
