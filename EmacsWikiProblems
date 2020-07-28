@@ -8,6 +8,9 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Duckduckgo URL is wrong ==
+The parts of EmacsWiki that link to Duckduckgo, such as the search function and assorted links, link to `www.duckduckgo.com` -- which doesn't connect.  The correct domain is `duckduckgo.com` - without the `www`.  I'm guessing this is a recent change.
+
 == Invalid link ==
 https://www.emacswiki.org/emacs/LiCE page has an invalid link, you may want to edit it.
 
