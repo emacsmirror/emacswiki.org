@@ -48,5 +48,8 @@ The specific file to be profiled (i.e. ~/.emacs) is hardcoded within profile-dot
 </code>
 ==Download ==
 
-You can always get the latest version from
-http://randomsample.de/profile-dotemacs.el
+[s]You can always get the latest version from
+http://randomsample.de/profile-dotemacs.el[/s] (Apparently broken)
+
+The last version is available at https://web.archive.org/web/20190904064127/http://randomsample.de/profile-dotemacs.el
+
