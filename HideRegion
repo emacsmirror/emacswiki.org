@@ -15,6 +15,8 @@ Get the code here: Lisp:hide-region.el
 
 '''See Also:'''
 
+* fold-this -- Just fold the active region, please. Available in melpa.
+
 * HighLight -- Hide/show multiple regions, arbitrary text, text with a given set of faces. Use regexps, a highlighter pen, region.
 
 * MarkerPens -- Invisible pen which hides the region (sounds similar to this but doesn't mark the invisible text with a configurable string).
