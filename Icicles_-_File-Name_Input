@@ -333,7 +333,7 @@ candidate file it is ''not'' visited read-only.)
 Starting with Emacs 23, the '''Icicles''' commands that read file names
 let you
 optionally provide a [[regexp]] pattern to match against file
-'''''content'''''.  In this they are similar to the buffer-switching
+'''content'''.  In this they are similar to the buffer-switching
 multi-command `icicle-buffer'.
 
 Versions of the file-finding commands are also available that do
