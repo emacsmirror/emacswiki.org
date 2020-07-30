@@ -1,5 +1,5 @@
 [https://alexschroeder.ch/cgit/gemini-write/about/ gemini-write] can
-be used to edit a site that follows the [https://alexschroeder.ch/wiki/2020-06-04_Gemini_Upload Gemini Write proposal].
+be used to edit a site that is [https://communitywiki.org/wiki/Titan Titan-enabled].
 It is based on the Gemini browser [https://thelambdalab.xyz/elpher/ Elpher].
 It uses [https://git.carcosa.net/jmcbray/gemini.el Gemini Mode] to get Gemini highlighting.
 
