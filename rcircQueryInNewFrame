@@ -2,7 +2,7 @@ I want query windows to pop up a new frame.
 
 Here is what I'd normally use:
 
-<code>
+<pre>
 (defun buffer-mode (buffer-or-string)
   ;; This function was snarfed from Stack Exchange.
   "Returns the major mode associated with a buffer."
@@ -22,16 +22,16 @@ query conversations "
 (push
  (cons 'query-pred display-buffer--other-frame-action)
  display-buffer-alist)
-</code>
+</pre>
 
 But, rcirc doesn't respect the normal display-buffer stuff. (A bug?)
 
 Here is a quick workaround for that that seems to work:
 
-<code>
+<pre>
 (defun display-and-return (bon)
   (display-buffer bon)
   bon)
 
 (advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)
-</code>
+</pre>
