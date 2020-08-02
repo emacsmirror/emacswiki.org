@@ -1,5 +1,7 @@
 I hate Discord very much and I don't advocate for using it but if you are in a channel that uses [https://github.com/reactiflux/discord-irc this fantastic irc bridge], you might find the following snippets useful. There are "personal" bridges too, using libpurple, this is not for that. This is for when there's a bot in a channel on a normal IRC network that relays what the people on the Discord say, and vice versa.
 
+The code on this pages advises [[rcirc]].
+
 The first one removes the "<BridgeName> " before every sender.
 
 <pre>
