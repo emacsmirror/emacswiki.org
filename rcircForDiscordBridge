@@ -5,15 +5,12 @@ The code on this pages advises [[rcirc]].
 The first one removes the "<BridgeName> " before every sender.
 
 <pre>
-(defun un-bridge (orig-fun &rest args)
-  "Make it look like bridged senders are sending directly."
-  (if (string= "Put in the bot's name here! Without brackets" (cadr args))
-      (let ((rcirc-response-formats
-	     '((t . "%m"))))
-	(apply orig-fun args))
-    (apply orig-fun args)))
+(defun unbridge (sender response)
+  (goto-char 0)
+  (while (re-search-forward "^\\([0-9: ]*\\)<BridgeName> " nil t)
+    (replace-match (match-string 1))))
 
-(advice-add 'rcirc-format-response-string :around #'un-bridge)
+(add-hook 'rcirc-markup-text-functions 'unbridge)
 </pre>
 
 
