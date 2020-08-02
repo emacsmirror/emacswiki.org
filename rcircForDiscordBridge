@@ -1,0 +1,35 @@
+I hate Discord very much and I don't advocate for using it but if you are in a channel that uses [https://github.com/reactiflux/discord-irc this fantastic irc bridge], you might find the following snippets useful. There are "personal" bridges too, using libpurple, this is not for that. This is for when there's a bot in a channel on a normal IRC network that relays what the people on the Discord say, and vice versa.
+
+The first one removes the "<BridgeName> " before every sender.
+
+<pre>
+(defun un-bridge (orig-fun &rest args)
+  "Make it look like bridged senders are sending directly."
+  (if (string= "Put in the bot's name here! Without brackets" (cadr args))
+      (let ((rcirc-response-formats
+	     '((t . "%m"))))
+	(apply orig-fun args))
+    (apply orig-fun args)))
+
+(advice-add 'rcirc-format-response-string :around #'un-bridge)
+</pre>
+
+
+And here is one that blackens spoiler tags. I guess these spoiler tags are useful even without the bridge.
+
+<pre>
+(defun discord-spoilers (sender response)
+  (while (re-search-forward "||[^|][^|]*||" nil t)
+    (replace-match (rcirc-facify (match-string 0) '(:background "black" :foreground "black")))))
+
+(add-hook 'rcirc-markup-text-functions 'discord-spoilers)
+</pre>
+
+Here is a variant that rot13's them instead:
+<pre>
+(defun discord-spoilers (sender response)
+  (while (re-search-forward "||[^|][^|]*||" nil t)
+    (replace-match (rot13 (match-string 0)))))
+
+(add-hook 'rcirc-markup-text-functions 'discord-spoilers)
+</pre>
