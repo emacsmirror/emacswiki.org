@@ -1,0 +1,37 @@
+I want query windows to pop up a new frame.
+
+Here is what I'd normally use:
+
+<code>
+(defun buffer-mode (buffer-or-string)
+  ;; This function was snarfed from Stack Exchange.
+  "Returns the major mode associated with a buffer."
+  (with-current-buffer buffer-or-string
+     major-mode))
+
+(defun query-pred (buf act)
+  "Predicate to check it is an rcirc-buffer that starts with a
+normal letter, not an & or a #. Because I only want to match
+query conversations "
+  ;; FIXME Add more magic to exclude server buffers too.
+  (and
+   (eql 'rcirc-mode (buffer-mode buf))
+   (string-match "^[a-zA-Z]" buf)))
+
+;; Then as per normal display-buffer-alist usage:
+(push
+ (cons 'query-pred display-buffer--other-frame-action)
+ display-buffer-alist)
+</code>
+
+But, rcirc doesn't respect the normal display-buffer stuff. (A bug?)
+
+Here is a quick workaround for that that seems to work:
+
+<code>
+(defun display-and-return (bon)
+  (display-buffer bon)
+  bon)
+
+(advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)
+</code>
