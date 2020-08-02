@@ -35,3 +35,4 @@ Here is a quick workaround for that that seems to work:
 
 (advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)
 </pre>
+It can't be a long term solution because [[AdviceVsHooks]].
