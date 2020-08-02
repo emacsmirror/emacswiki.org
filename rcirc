@@ -95,6 +95,8 @@ There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanatio
 ; [[rcircUnambiguousNickCompletion]]: Don't cycle-complete nicks if there is ambiguity
 ; [[rcircAlwaysKickBastard]]: Start your session by kicking the evil bastard that's stealing your nick
 ; [[rcircPresence]]: Make rcirc tell something else about your presence status (I'm away!)
+; [[rcircQueryInNewFrame]]: I want query windows to pop up a new frame
+; [[rcircForDiscordBridge]]: When someone is running a Discord bridge in your channel
 ; rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simply add to your InitFile <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
 <pre>
 (defun rcirc-switch-buffer-or-screen (buffer)
