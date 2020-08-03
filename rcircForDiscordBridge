@@ -2,15 +2,18 @@ I hate Discord very much and I don't advocate for using it but if you are in a c
 
 The code on this pages advises [[rcirc]].
 
-The first one removes the "<BridgeName> " before every sender.
+The first one translate the senders for rcirc-print. Change "BridgeName" to the name of your bridge bot.
 
 <pre>
-(defun unbridge (sender response)
-  (goto-char 0)
-  (while (re-search-forward "^\\([0-9: ]*\\)<BridgeName> " nil t)
-    (replace-match (match-string 1))))
+(defun bridge-list (args)
+  (if (string= "BridgeName" (cadr args))
+      (destructuring-bind (process sender response target text activity)
+	  args
+	(string-match "<\\([^>][^>]*\\)> \\(.*\\)" text)
+	(list process (match-string 1 text) response target (match-string 2 text) activity))
+      args))
 
-(add-hook 'rcirc-markup-text-functions 'unbridge)
+(advice-add 'rcirc-print :filter-args #'bridge-list)
 </pre>
 
 
