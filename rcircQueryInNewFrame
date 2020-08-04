@@ -2,37 +2,29 @@ I want query windows to pop up a new frame in [[rcirc]].
 
 Here is what I'd normally use:
 
-<pre>
-(defun buffer-mode (buffer-or-string)
-  ;; This function was snarfed from Stack Exchange.
-  "Returns the major mode associated with a buffer."
-  (with-current-buffer buffer-or-string
-     major-mode))
-
-(defun query-pred (buf act)
-  "Predicate to check it is an rcirc-buffer that starts with a
-normal letter, not an & or a #. Because I only want to match
-query conversations "
-  ;; FIXME Add more magic to exclude server buffers too.
+<pre>(defun query-p (buf act)
   (and
-   (eql 'rcirc-mode (buffer-mode buf))
-   (string-match "^[a-zA-Z]" buf)))
+   (eql 'rcirc-mode
+	(with-current-buffer buf
+	  major-mode))
+   (string-match "^[a-zA-Z]"
+		 (with-current-buffer buf
+		   (buffer-name)))))
 
-;; Then as per normal display-buffer-alist usage:
 (push
  (cons 'query-pred display-buffer--other-frame-action)
- display-buffer-alist)
-</pre>
+ display-buffer-alist)</pre>
 
 But, rcirc doesn't respect the normal display-buffer stuff. (A bug?)
+It's good that it defaults to opening stuff in the background, but…
 
-Here is a quick workaround for that that seems to work:
+For now, here is a quick workaround for that that seems to work, when
+used together with the above:
 
-<pre>
-(defun display-and-return (bon)
-  (display-buffer bon)
+<pre>(defun display-and-return (bon)
+  (when (query-p bon nil)
+   (display-buffer bon))
   bon)
 
-(advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)
-</pre>
-It can't be a long term solution because [[AdviceVsHooks]].
+(advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)</pre>
+
