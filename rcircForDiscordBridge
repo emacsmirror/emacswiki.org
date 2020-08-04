@@ -16,6 +16,8 @@ The first one translate the senders for rcirc-print. Change "BridgeName" to the 
 (advice-add 'rcirc-print :filter-args #'bridge-list)
 </pre>
 
+If you have colored nicks on in your bridge's conf file, '''which is the default''', you should instead search for <code>"<.[0-9]*\\([^>][^>]*\\).> \\(.*\\)"</code> so be aware of that.
+
 
 And here is one that blackens spoiler tags. I guess these spoiler tags are useful even without the bridge.
 
