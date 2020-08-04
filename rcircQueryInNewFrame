@@ -2,7 +2,8 @@ I want query windows to pop up a new frame in [[rcirc]].
 
 Here is what I'd normally use:
 
-<pre>(defun query-p (buf act)
+<pre>
+(defun query-p (buf act)
   (and
    (eql 'rcirc-mode
 	(with-current-buffer buf
@@ -13,7 +14,8 @@ Here is what I'd normally use:
 
 (push
  (cons 'query-pred display-buffer--other-frame-action)
- display-buffer-alist)</pre>
+ display-buffer-alist)
+</pre>
 
 But, rcirc doesn't respect the normal display-buffer stuff. (A bug?)
 It's good that it defaults to opening stuff in the background, but…
@@ -21,10 +23,12 @@ It's good that it defaults to opening stuff in the background, but…
 For now, here is a quick workaround for that that seems to work, when
 used together with the above:
 
-<pre>(defun display-and-return (bon)
+<pre>
+(defun display-and-return (bon)
   (when (query-p bon nil)
    (display-buffer bon))
   bon)
 
-(advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)</pre>
+(advice-add 'rcirc-get-buffer-create :filter-return #'display-and-return)
+</pre>
 
