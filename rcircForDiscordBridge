@@ -6,7 +6,7 @@ The first one translate the senders for rcirc-print. Change "BridgeName" to the 
 
 <pre>
 (defun bridge-list (args)
-  (if (string= "BridgeName" (cadr args))
+  (if (and (string= "PRIVMSG" (caddr args)) (string= "BridgeName" (cadr args)))
       (destructuring-bind (process sender response target text activity)
 	  args
 	(string-match "<\\([^>][^>]*\\)> \\(.*\\)" text)
