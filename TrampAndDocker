@@ -51,3 +51,8 @@ My Docker container names often have underscores and your Perl split is breaking
         (setq ad-return-value dockernames))
     ad-do-it))
 }}}
+
+Docker has a [https://docs.docker.com/engine/reference/commandline/ps/#formatting --format] option, which may give the names (including the trailing colon) directly
+{{{
+docker ps --format '{{.Names}}{{":"}}'
+}}}
