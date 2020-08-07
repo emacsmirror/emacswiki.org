@@ -1,18 +1,14 @@
 ERC is a powerful, modular, and extensible Emacs InternetRelayChat client.
 
+It is part of the GNU project and included in Emacs.
+
 == Obtaining ERC ==
-ERC is part of the GNU project.  It is included with reasonably recent versions of GNU Emacs.
+ERC is included in Emacs since v22.3 (released on September 2008).
 
 For a brief history of the development of ERC and access to older versions, code repositories, and mailing list archives see ErcProjectHistory.
 
-=== Included with GNU Emacs ===
-ERC is included in released versions of GNU Emacs since v22.3 (released on September 2008).
-
+=== Some modules not included with GNU Emacs ===
 See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
-
-=== Ports and packages ===
-
-Gentoo users can just emerge app-emacs/erc or app-xemacs/erc (for some reason portage has a hard time figuring out which).  At present this is the latest release candidate.
 
 === Development version ===
 See ErcDevelopment to find instructions on how to get the development version using git.
@@ -21,12 +17,15 @@ ERC also comes bundled with EmacsFromGit.
 
 Note that ErcDevelopment and EmacsFromGit can contain two separate branches of ERC and are therefore not quite identical.  The modules ErcBbdb and ErcSpeak are not available in the Emacs version, for example.
 
+=== Ports and packages ===
+
+Gentoo users can just emerge app-emacs/erc or app-xemacs/erc (for some reason portage has a hard time figuring out which).  At present this is the latest release candidate.
+
 == User manual ==
-An info manual is now included with ERC.  It's also available on-line in several forms:
+An info manual is included with ERC.  It's also available on-line in several forms:
 
 # HTML (single file):https://www.gnu.org/software/emacs/manual/html_mono/erc.html
 # HTML (multiple files):https://www.gnu.org/software/emacs/manual/html_node/erc/index.html
-
 
 == Quickstart ==
 
