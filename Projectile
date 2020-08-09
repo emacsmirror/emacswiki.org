@@ -18,7 +18,7 @@ This library provides easy project management and navigation. The concept of a p
 More information and installation instructions are available on [https://github.com/bbatsov/projectile GitHub].
 
 = Work with ECB=
-The following code will set ECB source path automatically using ##projectile-get-project-directories## 
+The following code will set Emacs Code Browser ([https://www.emacswiki.org/emacs/EmacsCodeBrowser ECB]) source path automatically using ##projectile-get-project-directories## 
 {{{
 (defvar default-ecb-source-path (list '("~/Documents/workspace" "Workspace")
 								 '("~/" "~/")
