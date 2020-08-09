@@ -1,0 +1,16 @@
+For [[rcirc]]
+
+<pre>
+21:11 <snan> on rcirc, how can i join passworded channels? /join
+             tries to join multiple space-separated channels 
+21:11 <snan> https://www.quakenet.org/help/general/what-channel-modes-are-available-on-quakenet
+21:19 <snan> wow I managed to do it by evaluating
+             (rcirc-send-string (rcirc-process-list) "JOIN
+             #channelname password") directly
+21:19 <snan> i don't get why there isn't a normal join
+(defun-rcirc-command normal-join (channels)
+  "Join one CHANNEL. Normally."
+  (interactive "sJoin one channel: ")
+  (rcirc-send-string process (concat "JOIN " channels)))
+21:24 <snan> satisfied♥
+</pre>
