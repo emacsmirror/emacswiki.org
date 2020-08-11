@@ -13,6 +13,9 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 * Justin Abrahms: https://justin.abrah.ms/dotfiles/emacs.html
 * https://gitlab.com/Kaligule/emacs-config
 * https://github.com/KaratasFurkan/.emacs.d
+* https://lccambiaghi.github.io/.doom.d/readme.html - Doom Emacs
+* https://www.thedigitalcatonline.com/blog/2020/07/18/emacs-configuration-for-python-javascript-terraform-and-blogging/
+* https://emacs.nasy.moe/ - geared towards macOS
 * [[SachaChua]]'s [[http://sachachua.com/dotemacs OrgMode-based .emacs]]
 * https://tecosaur.github.io/emacs-config/config.html
 * https://github.com/vidjuheffex/dotemacs/blob/master/emacs.org
