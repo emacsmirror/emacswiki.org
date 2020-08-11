@@ -5,7 +5,9 @@ This page contains links to various users' Emacs configurations.
 
 Self-documenting Emacs configurations that make use of a mixture of Org and Emacs Lisp with literate programming techniques.
 
+* https://github.com/Bassmann/emacs-config
 * https://github.com/BrettWitty/dotemacs/blob/master/bew_config.org
+* https://github.com/grettke/lolsmacs
 * GuiltyDolphin's [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom .emacs] includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more
 * https://jamiecollinson.com/blog/my-emacs-config/
 * Justin Abrahms: https://justin.abrah.ms/dotfiles/emacs.html
@@ -20,8 +22,9 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 
 * [[Alex Schroeder]]'s [https://alexschroeder.ch/cgit/emacs-setup/about/ Emacs Setup]
 * [[DirkJanBinnema]]'s [http://www.djcbsoftware.nl/dot-emacs.html init file]
-* [http://edward.oconnor.cx/config/.emacs EdwardOConnor's .emacs] works in various versions of both Emacsen on several different platforms
+* [http://tess.oconnor.cx/config/.emacs TessOConnor's .emacs] works in various versions of both Emacsen on several different platforms
 * [http://www.mygooglest.com/fni/dot-emacs.html FabriceNiessen's .emacs] is huge, well-commented and excellent. You can find something interesting there
+* https://github.com/glasserc/ethan-wspace
 * JesseWeinsteinDotEmacs has some Mac OS X initialization that might be interesting
 * John Zaitseff's [https://www.zap.org.au/~john/emacs/.emacs .emacs] and [https://www.zap.org.au/~john/emacs/.Xresources .Xresources] files contain almost 2600 lines of code and settings tuned for Emacs under X11, the Linux console, Windows, macOS and even old terminals...  These files contain a theme very reminiscent of the old Borland IDE tools
 * [https://github.com/mina86/dot-files/blob/master/emacs/init.el mina86’s init.el] with almost 2k lines of elisp code. Tested mostly with GNU Emacs from CVS but should work with other versions
