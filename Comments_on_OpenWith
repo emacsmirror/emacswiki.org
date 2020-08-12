@@ -1,3 +1,77 @@
+<<<<<<< you
+changes highlighted by "garberw" (email william.garber (at) att.net ):  on line 111 of openwith.el: <br>
+        (when (save-match-data (string-match (car oa) file)) <br>
+          (let ((params (mapcar (lambda (x) (if (eq x 'file) file x)) <br>
+                                (nth 2 oa)))) <br>
+            (when (or (not openwith-confirm-invocation) <br>
+                      (y-or-n-p (format "%s %s? " (cadr oa) <br>
+                                        (mapconcat #'identity params " ")))) <br>
+              ;; garberw myprocess LINE 110 HERE <br>
+              (let ((myprocess (if (eq system-type 'windows-nt) <br>
+                                   (openwith-open-windows file) <br>
+                                 (openwith-open-unix (cadr oa) params)) )) <br>
+                (set-process-query-on-exit-flag myprocess nil) <br>
+                myprocess) <br>
+              (kill-buffer nil) <br>
+              (when (featurep 'recentf) <br>
+                (recentf-add-file file)) <br>
+              ;; inhibit further actions                                                             <br>
+              (error "Opened %s in external program" <br>
+                     (file-name-nondirectory file)))))))) <br>
+ <BR>
+-- Anonymous 2020-08-12 15:27 UTC <br>
+||||||| ancestor
+changes highlighted by "garberw" (email william.garber (at) att.net ):  on line 111 of openwith.el:
+        (when (save-match-data (string-match (car oa) file))
+          (let ((params (mapcar (lambda (x) (if (eq x 'file) file x))
+                                (nth 2 oa))))
+            (when (or (not openwith-confirm-invocation)
+                      (y-or-n-p (format "%s %s? " (cadr oa)
+                                        (mapconcat #'identity params " "))))
+              ;; garberw myprocess LINE 110 HERE
+              (let ((myprocess (if (eq system-type 'windows-nt)
+                                   (openwith-open-windows file)
+                                 (openwith-open-unix (cadr oa) params)) ))
+                (set-process-query-on-exit-flag myprocess nil)
+                myprocess)
+              (kill-buffer nil)
+              (when (featurep 'recentf)
+                (recentf-add-file file))
+              ;; inhibit further actions                                                            
+              (error "Opened %s in external program"
+                     (file-name-nondirectory file))))))))
+
+-- Anonymous 2020-08-12 15:27 UTC
+
+
+----
+
+;;;
+<code>
+;;; changes highlighted by "garberw" (email william.garber (at) att.net ) on line 111 of openwith.el
+        (when (save-match-data (string-match (car oa) file))
+          (let ((params (mapcar (lambda (x) (if (eq x 'file) file x))
+                                (nth 2 oa))))
+            (when (or (not openwith-confirm-invocation)
+                      (y-or-n-p (format "%s %s? " (cadr oa)
+                                        (mapconcat #'identity params " "))))
+              ;; garberw myprocess                                                                  
+              (let ((myprocess (if (eq system-type 'windows-nt)
+                                   (openwith-open-windows file)
+                                 (openwith-open-unix (cadr oa) params)) ))
+                (set-process-query-on-exit-flag myprocess nil)
+                myprocess)
+              (kill-buffer nil)
+              (when (featurep 'recentf)
+                (recentf-add-file file))
+              ;; inhibit further actions                                                            
+              (error "Opened %s in external program"
+                     (file-name-nondirectory file))))))))
+</code>
+
+-- Anonymous 2020-08-12 15:35 UTC
+
+=======
 changes highlighted by "garberw" (email william.garber (at) att.net ):  on line 111 of openwith.el: <BR>
         (when (save-match-data (string-match (car oa) file)) <BR>
           (let ((params (mapcar (lambda (x) (if (eq x 'file) file x)) <BR>
@@ -19,3 +93,4 @@ changes highlighted by "garberw" (email william.garber (at) att.net ):  on line 
                      (file-name-nondirectory file)))))))) <BR>
  <BR>
 -- Anonymous 2020-08-12 15:27 UTC <BR>
+>>>>>>> other
