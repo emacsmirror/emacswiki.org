@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Feb  3 11:32:22 2020 (-0800)
+;; Last-Updated: Fri Aug 14 10:13:18 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 19874
+;;     Update #: 19875
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2977,8 +2977,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Cycle among completion candidates       right, left, \
 \\[icicle-move-to-next-completion], \\[icicle-move-to-previous-completion]
        Within a `*Completions*' column       down, up
-     Choose a completion candidate           \\[choose-completion], \
-\\[mouse-choose-completion]\\<minibuffer-local-completion-map>
+     Choose a completion candidate           \\[choose-completion]\\<minibuffer-local-completion-map>
 
  * Cycle among input candidates.
      Completion candidates
