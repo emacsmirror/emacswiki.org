@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 22 14:50:54 2020 (-0800)
+;; Last-Updated: Fri Aug 14 09:59:18 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 3827
+;;     Update #: 3829
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -134,6 +134,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/08/14 dadams
+;;     describe-menubar: Use help-print-return-message, not print-help-return-message.
 ;; 2020/01/22 dadams
 ;;     Added: menu-bar-search-xref-menu.  Added it to Search menu, for Xref stuff.
 ;;     menu-bar-bookmark-map, menu-bar-goto-menu: Moved from Search menu to File menu.
@@ -541,7 +543,9 @@ The \"Help\" menu extends the \"Help\" menu described in the Emacs manual (`\\[i
 
 For information on a menu item, use the \"This\" item in the \"Describe\"
 submenu of the \"Help\" menu."))
-    (print-help-return-message)
+    (if (fboundp 'help-print-return-message)
+        (help-print-return-message)
+      (print-help-return-message))
     (with-current-buffer standard-output
       (help-mode)
       (buffer-string))))                ; Return the text we displayed.
