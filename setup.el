@@ -8,17 +8,18 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 21 10:11:04 2018 (-0800)
+;; Last-Updated: Fri Aug 14 11:28:48 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 812
+;;     Update #: 813
 ;; URL: https://www.emacswiki.org/emacs/download/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-cmds', `frame-fns', `header2',
-;;   `hexrgb', `lib-requires', `loadhist', `misc-fns', `oneonone',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `fit-frame', `frame-cmds', `frame-fns', `header2', `hexrgb',
+;;   `lib-requires', `loadhist', `macroexp', `misc-fns', `oneonone',
 ;;   `paren', `strings', `thingatpt', `thingatpt+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -314,71 +315,74 @@ such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
 
 (eval-after-load "misc-fns"
   '(progn
-    (add-hook 'emacs-lisp-mode-hook       'notify-user-of-mode 'append)
-    (add-hook 'lisp-mode-hook             'notify-user-of-mode 'append)
-    (add-hook 'cmulisp-mode-hook          'notify-user-of-mode 'append)
-    (add-hook 'ccl-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'c-mode-hook                'notify-user-of-mode 'append)
-    (add-hook 'c++-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'hide-ifdef-mode-hook       'notify-user-of-mode 'append)
-    (add-hook 'makefile-mode-hook         'notify-user-of-mode 'append)
-    (add-hook 'fortran-mode-hook          'notify-user-of-mode 'append)
-    (add-hook 'cmushell-mode-hook         'notify-user-of-mode 'append)
-    (add-hook 'comint-mode-hook           'notify-user-of-mode 'append)
-    (add-hook 'ps-mode-hook               'notify-user-of-mode 'append)
-    (add-hook 'sh-mode-hook               'notify-user-of-mode 'append)
-    (add-hook 'shell-mode-hook            'notify-user-of-mode 'append)
-    (add-hook 'dired-after-readin-hook    'notify-user-of-mode 'append)
-    (add-hook 'buffer-menu-mode-hook      'notify-user-of-mode 'append)
-    (add-hook 'compilation-mode-hook      'notify-user-of-mode 'append)
-    (add-hook 'electric-help-mode-hook    'notify-user-of-mode 'append)
-    (add-hook 'calc-edit-mode-hook        'notify-user-of-mode 'append)
-    (add-hook 'calc-mode-hook             'notify-user-of-mode 'append)
-    (add-hook 'calc-trail-mode-hook       'notify-user-of-mode 'append)
-    (add-hook 'fixed-width-text-mode-hook 'notify-user-of-mode 'append)
-    (add-hook 'texinfo-mode-hook          'notify-user-of-mode 'append)
-    (add-hook 'latex-mode-hook            'notify-user-of-mode 'append)
-    (add-hook 'tex-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'slitex-mode-hook           'notify-user-of-mode 'append)
-    (add-hook 'plain-tex-mode-hook        'notify-user-of-mode 'append)
-    (add-hook 'bibtex-mode-hook           'notify-user-of-mode 'append)
-    (add-hook 'math-mode-hook             'notify-user-of-mode 'append)
-    (add-hook 'mfe-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'mh-letter-mode-hook        'notify-user-of-mode 'append)
-    (add-hook 'mh-mode-hook               'notify-user-of-mode 'append)
-    (add-hook 'sql-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'terminal-mode-hook         'notify-user-of-mode 'append)
-    (add-hook 'array-mode-hook            'notify-user-of-mode 'append)
-    (add-hook 'asm-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'awk-mode-hook              'notify-user-of-mode 'append)
-    (add-hook 'change-log-mode-hook       'notify-user-of-mode 'append)
-    (add-hook 'occur-mode-hook            'notify-user-of-mode 'append)
-    ;;(add-hook 'text-mode-hook             'notify-user-of-mode)
-    (add-hook 'list-options-hook          'notify-user-of-mode 'append)
-    ;; (add-hook 'lisp-mode-hook
-    ;;          (function (lambda () (setq  imenu-create-index-function
-    ;;                                     'imenu-example--create-lisp-index))))
-    ;; (add-hook 'lisp-mode-hook             'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'cmulisp-mode-hook
-    ;;          (function (lambda () (setq  imenu-create-index-function
-    ;;                                     'imenu-example--create-lisp-index))))
-    ;; (add-hook 'cmulisp-mode-hook          'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'ccl-mode-hook
-    ;;          (function (lambda () (setq  imenu-create-index-function
-    ;;                                     'imenu-example--create-ccl-index))))
-    ;; (add-hook 'ccl-mode-hook              'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'c-mode-hook
-    ;;          (function (lambda () (setq  imenu-create-index-function
-    ;;                                     'imenu-example--create-c-index))))
-    ;; (add-hook 'c-mode-hook                'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'c++-mode-hook
-    ;;          (function (lambda () (setq  imenu-create-index-function
-    ;;                                     'imenu-example--create-c++-index))))
-    ;; (add-hook 'c++-mode-hook              'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'hide-ifdef-mode-hook       'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'makefile-mode-hook         'imenu-add-defs-to-search-menu)
-    ;; (add-hook 'fortran-mode-hook          'imenu-add-defs-to-search-menu)
-    ))
+     (add-hook 'emacs-lisp-mode-hook       'notify-user-of-mode 'append)
+     (add-hook 'lisp-mode-hook             'notify-user-of-mode 'append)
+     (add-hook 'cmulisp-mode-hook          'notify-user-of-mode 'append)
+     (add-hook 'ccl-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'c-mode-hook                'notify-user-of-mode 'append)
+     (add-hook 'c++-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'hide-ifdef-mode-hook       'notify-user-of-mode 'append)
+     (add-hook 'makefile-mode-hook         'notify-user-of-mode 'append)
+     (add-hook 'fortran-mode-hook          'notify-user-of-mode 'append)
+     (add-hook 'cmushell-mode-hook         'notify-user-of-mode 'append)
+     (add-hook 'comint-mode-hook           'notify-user-of-mode 'append)
+     (add-hook 'ps-mode-hook               'notify-user-of-mode 'append)
+     (add-hook 'sh-mode-hook               'notify-user-of-mode 'append)
+     (add-hook 'shell-mode-hook            'notify-user-of-mode 'append)
+     (add-hook 'dired-after-readin-hook    'notify-user-of-mode 'append)
+     (add-hook (if (boundp 'Buffer-menu-mode-hook)
+                   Buffer-menu-mode-hook
+                 buffer-menu-mode-hook)
+               'notify-user-of-mode 'append)
+     (add-hook 'compilation-mode-hook      'notify-user-of-mode 'append)
+     (add-hook 'electric-help-mode-hook    'notify-user-of-mode 'append)
+     (add-hook 'calc-edit-mode-hook        'notify-user-of-mode 'append)
+     (add-hook 'calc-mode-hook             'notify-user-of-mode 'append)
+     (add-hook 'calc-trail-mode-hook       'notify-user-of-mode 'append)
+     (add-hook 'fixed-width-text-mode-hook 'notify-user-of-mode 'append)
+     (add-hook 'texinfo-mode-hook          'notify-user-of-mode 'append)
+     (add-hook 'latex-mode-hook            'notify-user-of-mode 'append)
+     (add-hook 'tex-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'slitex-mode-hook           'notify-user-of-mode 'append)
+     (add-hook 'plain-tex-mode-hook        'notify-user-of-mode 'append)
+     (add-hook 'bibtex-mode-hook           'notify-user-of-mode 'append)
+     (add-hook 'math-mode-hook             'notify-user-of-mode 'append)
+     (add-hook 'mfe-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'mh-letter-mode-hook        'notify-user-of-mode 'append)
+     (add-hook 'mh-mode-hook               'notify-user-of-mode 'append)
+     (add-hook 'sql-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'terminal-mode-hook         'notify-user-of-mode 'append)
+     (add-hook 'array-mode-hook            'notify-user-of-mode 'append)
+     (add-hook 'asm-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'awk-mode-hook              'notify-user-of-mode 'append)
+     (add-hook 'change-log-mode-hook       'notify-user-of-mode 'append)
+     (add-hook 'occur-mode-hook            'notify-user-of-mode 'append)
+     ;;(add-hook 'text-mode-hook             'notify-user-of-mode)
+     (add-hook 'list-options-hook          'notify-user-of-mode 'append)
+     ;; (add-hook 'lisp-mode-hook
+     ;;          (function (lambda () (setq  imenu-create-index-function
+     ;;                                     'imenu-example--create-lisp-index))))
+     ;; (add-hook 'lisp-mode-hook             'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'cmulisp-mode-hook
+     ;;          (function (lambda () (setq  imenu-create-index-function
+     ;;                                     'imenu-example--create-lisp-index))))
+     ;; (add-hook 'cmulisp-mode-hook          'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'ccl-mode-hook
+     ;;          (function (lambda () (setq  imenu-create-index-function
+     ;;                                     'imenu-example--create-ccl-index))))
+     ;; (add-hook 'ccl-mode-hook              'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'c-mode-hook
+     ;;          (function (lambda () (setq  imenu-create-index-function
+     ;;                                     'imenu-example--create-c-index))))
+     ;; (add-hook 'c-mode-hook                'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'c++-mode-hook
+     ;;          (function (lambda () (setq  imenu-create-index-function
+     ;;                                     'imenu-example--create-c++-index))))
+     ;; (add-hook 'c++-mode-hook              'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'hide-ifdef-mode-hook       'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'makefile-mode-hook         'imenu-add-defs-to-search-menu)
+     ;; (add-hook 'fortran-mode-hook          'imenu-add-defs-to-search-menu)
+     ))
 
 ;;; ****** End stuff to do at the end ***********
 
