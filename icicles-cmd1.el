@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jan  3 14:11:46 2020 (-0800)
+;; Last-Updated: Fri Aug 14 12:05:47 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 27637
+;;     Update #: 27646
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5820,7 +5820,10 @@ You probably do not want to use this.  Use
     (unless bookmark (error "No such bookmark: `%s'" input-bmk)))
   (if (fboundp 'bookmark--jump-via)
       (bookmark--jump-via bookmark (if other-window-p 'pop-to-buffer 'icicle--pop-to-buffer-same-window))
-    (let ((cell  (bookmark-jump-noselect bookmark))) ; Emacs < 23 and without `Bookmark+'.
+    (let ((cell  (if (fboundp 'bookmark-jump-noselect)
+                     (bookmark-jump-noselect bookmark) ; Emacs < 23 and without `Bookmark+'.
+                   (save-excursion (bookmark-handle-bookmark bookmark)
+                                   (cons (current-buffer) (point))))))
       (when cell
         (if other-window-p
             (pop-to-buffer (car cell) 'other-window)
@@ -9202,7 +9205,7 @@ then consider using `icicle-locate-of-content' instead of
 Remember that you can save the set of files matching your input using
 \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]' or \
-`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
+`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve them quickly later using
 `\\[icicle-candidate-set-retrieve]' or \
 `\\[icicle-candidate-set-retrieve-persistent]'.
 
@@ -9319,7 +9322,7 @@ the name, including directory components.
 Remember that you can save the set of files matching your input using
 \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]' or \
-`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
+`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve them quickly later using
 `\\[icicle-candidate-set-retrieve]' or \
 `\\[icicle-candidate-set-retrieve-persistent]'.
 
@@ -9875,7 +9878,7 @@ then consider using `icicle-locate-no-search' instead of
 Remember that you can save the set of files matching your input using
 \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]' or \
-`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
+`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve them quickly later using
 `\\[icicle-candidate-set-retrieve]' or \
 `\\[icicle-candidate-set-retrieve-persistent]'.
 
@@ -9993,7 +9996,7 @@ the name, including directory components.
 Remember that you can save the set of files matching your input using
 \\<minibuffer-local-completion-map>\
 `\\[icicle-candidate-set-save]' or \
-`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
+`\\[icicle-candidate-set-save-persistently]'.  You can then retrieve them quickly later using
 `\\[icicle-candidate-set-retrieve]' or \
 `\\[icicle-candidate-set-retrieve-persistent]'.
 
