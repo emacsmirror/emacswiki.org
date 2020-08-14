@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Feb  4 11:04:23 2020 (-0800)
+;; Last-Updated: Fri Aug 14 12:01:05 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 11896
+;;     Update #: 11904
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1214,6 +1214,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2020/08/14 dadams
+;;     icicle-search-define-candidates, icicle-char-properties-in-buffers:
+;;       bookmark-jump-noselect is obsolete.
+;;     icicle-add-key+cmd: generic-char-p is obsolete.
+;;     icicle-font: Typo in doc string: non-nil -> nil.
 ;; 2020/02/03 dadams
 ;;     icicle-search-read-context-regexp: Use icicle-read-number if available.
 ;; 2020/01/20 dadams
@@ -2323,6 +2328,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2020/08/14 dadams
+;;     icicle-display-completion-list: Use help-print-return-message, not print-help-return-message.
 ;; 2020/02/04 dadams
 ;;     icicle-read-number:
 ;;       Updated for Emacs 27+.  Added HIST arg (default read-number-history).  Thx to Tino Calancha.
@@ -4724,6 +4731,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2020/08/14 dadams
+;;     icicle-help-string-completion: mouse-choose-completion is obsolete (removed).
+;;     icicle-choose-completion, icicle-current-completion-in-Completions,
+;;       icicle-mouse-candidate-read-fn-invoke, icicle-Completions-mouse-3-menu,
+;;       icicle-mouse-save/unsave-candidate: completion-base-size is obsolete (removed).
 ;; 2020/02/03 dadams
 ;;     icicle-candidate-set-truncate: Use icicle-read-number if available.
 ;; 2019/12/10 dadams
