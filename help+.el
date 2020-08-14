@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 16 09:58:03 2020 (-0700)
+;; Last-Updated: Fri Aug 14 09:51:38 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2203
+;;     Update #: 2205
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -85,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/08/14 dadams
+;;     describe-key Use help-print-return-message, not print-help-return-message.
 ;; 2017/10/21 dadams
 ;;     describe-key: Do not redefine for Emacs 26+ (not worth it).
 ;;     help-on-click/key-lookup: Use help--analyze-key, if defined, instead of describe-key.
@@ -312,7 +314,9 @@ runs the command %S, which is "
                                       mouse-1-click-follows-link
                                       defn-up-tricky))
                        (describe-function-1 defn-up-tricky)))
-                   (print-help-return-message))
+                   (if (fboundp 'help-print-return-message)
+                       (help-print-return-message)
+                     (print-help-return-message)))
                (with-output-to-temp-buffer (help-buffer) ; Emacs 22-24.3.
                  (princ (help-key-description key untranslated))
                  (princ (format "\
@@ -344,7 +348,9 @@ runs the command %S, which is "
                                     mouse-1-click-follows-link
                                     defn-up-tricky))
                      (describe-function-1 defn-up-tricky)))
-                 (print-help-return-message)))))))) ; Return t: defined.
+                 (if (fboundp 'help-print-return-message)
+                     (help-print-return-message)
+                   (print-help-return-message))))))))) ; Return t: defined.
 
 
 ;; REPLACES ORIGINAL in `help.el':
