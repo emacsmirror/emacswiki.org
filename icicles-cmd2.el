@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Feb  3 11:28:05 2020 (-0800)
+;; Last-Updated: Fri Aug 14 11:43:29 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 7466
+;;     Update #: 7471
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2275,9 +2275,9 @@ names in `*Completions*' more or less in their own font, and
 abbreviated to not include the last 8 XLFD fields (PIXELS, HEIGHT,
 HORIZ, VERT, SPACING, WIDTH, REGISTRY, and ENCODING).
 
-If `icicle-WYSIWYG-Completions-flag' is non-nil then the font names
-are not shown using their fonts and full XLFD font names are used.
-Full names means that all available variants are available as separate
+If `icicle-WYSIWYG-Completions-flag' is nil then the font names are
+not shown using their fonts and full XLFD font names are used.  Full
+names means that all available variants are available as separate
 candidates (different REGISTRY entries etc.).
 
 You can toggle `icicle-WYSIWYG-Completions-flag' using `C-S-pause',
@@ -4755,7 +4755,10 @@ The arguments are the same as for `icicle-search'."
                (message "%d contexts; searching %d/%d: `%s'"
                         (length icicle-candidates-alist) nb-contexts nb-objects
                         bmk)
-               (setq buf+beg  (bookmark-jump-noselect bmk)
+               (setq buf+beg  (if (fboundp 'bookmark-jump-noselect)
+                                  (bookmark-jump-noselect bmk) ; Emacs < 23 and without `Bookmark+'.
+                                (save-excursion (bookmark-handle-bookmark bmk)
+                                                (cons (current-buffer) (point))))
                      buf      (car buf+beg)
                      beg      (cdr buf+beg)
                      end      (bmkp-get-end-position bmk))
@@ -6317,7 +6320,10 @@ text properties, or both, respectively."
          (unless (require 'bookmark+ nil t) (icicle-user-error "You need library `Bookmark+' for this"))
          (let (buf+beg buf beg end)
            (dolist (bmk  where)
-             (setq buf+beg  (bookmark-jump-noselect bmk)
+             (setq buf+beg  (if (fboundp 'bookmark-jump-noselect)
+                                (bookmark-jump-noselect bmk) ; Emacs < 23 and without `Bookmark+'.
+                              (save-excursion (bookmark-handle-bookmark bmk)
+                                              (cons (current-buffer) (point))))
                    buf      (car buf+beg)
                    beg      (cdr buf+beg)
                    end      (bmkp-get-end-position bmk))
@@ -9117,9 +9123,14 @@ completions are found for PREFIX."
                                  (put candidate 'icicle-special-candidate t))))))))
             ((and
               ;; Include BINDING if key (EVENT) is on `icicle-key-prefix-2'.
-              ;; Do not include a shadowed binding to a command.  Always include binding if it's a keymap,
+              ;; Do not include a shadowed binding to a command.  But always include a shadowed binding if it's a keymap,
               ;; because the same prefix key can be bound to different keymaps without any of those keymaps
               ;; shadowing all of the bindings in another of them.
+              ;;
+              ;; Note that for a shadowed binding that's a keymap, the highlighting will be for the highest binding that
+              ;; shadows it.  E.g., a keymap bound to ESC at the top level shadows one at a lower level, and if the higher
+              ;; one is local then even the lower one will be highlighted as local.
+              ;; This is because the alist uses interned symbols, and the same symbol has only one 'face property.
               (or (keymapp bndg)
                   (and (commandp bndg)
                        (equal bndg (key-binding (vconcat icicle-key-prefix-2 (vector event)) nil 'NO-REMAP))
@@ -9157,7 +9168,7 @@ completions are found for PREFIX."
                  (if (and (stringp mitem)  (keymapp bndg))
                      (put candidate 'icicle-special-candidate '(face icicle-key-complete-menu-local))
                    (put candidate 'icicle-special-candidate t)))))
-            ((and (integerp event)  (generic-char-p event) ; Insert generic char (Emacs 22).
+            ((and (integerp event)  (fboundp 'generic-char-p)  (generic-char-p event) ; Insert generic char (Emacs 22).
                   (eq 'self-insert-command bndg))
              (ignore)))))               ; Placeholder for future use.
 
