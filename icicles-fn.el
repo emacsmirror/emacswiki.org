@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Feb  4 11:02:15 2020 (-0800)
+;; Last-Updated: Fri Aug 14 10:28:45 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 15295
+;;     Update #: 15300
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3544,11 +3544,12 @@ Non-nil optional third arg NB-CANDS is the length of COMPLETIONS."
             (insert cand-intro-string)))
         ;; $$$$$$$$ Emacs 23 nonsense.  Revisit this when Stefan finally removes that crud.
         ;; This is done in Emacs 23 `display-completion-list'.
-        (when (and completions  (fboundp 'completion-all-sorted-completions)) ; Emacs 23
+        (when (and completions  (fboundp 'completion-all-sorted-completions))
           (let ((last  (last completions)))
-            ;; Set base-size from the tail of the list.
-            (set (make-local-variable 'completion-base-size)
-                 (or (cdr last)  (and (minibufferp mainbuf)  0)))
+            ;; Set `completion-base-size' from the tail of the list.
+            (when (boundp 'completion-base-size)
+              (set (make-local-variable 'completion-base-size)
+                   (or (cdr last)  (and (minibufferp mainbuf)  0))))
             (setcdr last nil)))         ; Make completions a properly nil-terminated list.
         (icicle-insert-candidates completions nb-cands)))
     ;; In vanilla Emacs < 23, the hook is run with `completion-common-substring' bound to
