@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May  6 10:12:13 2020 (-0700)
+;; Last-Updated: Fri Aug 14 09:56:15 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2455
+;;     Update #: 2456
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,9 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
-;;   `radix-tree', `wid-edit', `wid-edit+'.
+;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
+;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/08/14 dadams
+;;     describe-function, describe-variable (< Emacs 23): Use help-print-return-message, not print-help-return-message.
 ;; 2020/05/06 
 ;;     help-documentation: Corrected last change (paren-scope typo):
 ;;       ADD-HELP-BUTTONS is separate arg to help-substitute-command-keys.
@@ -1066,7 +1067,9 @@ Return the description that was displayed, as a string."
               ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
               (princ " is ")
               (describe-function-1 function)
-              (print-help-return-message)
+              (if (fboundp 'help-print-return-message)
+                  (help-print-return-message)
+                (print-help-return-message))
               (with-current-buffer standard-output (buffer-string))))))))) ; Return help text.
 
 
@@ -1950,7 +1953,9 @@ it is displayed along with the global value."
                   (with-current-buffer standard-output
                     (save-excursion (re-search-backward (concat "\\(" customize-label "\\)") nil t)
                                     (help-xref-button 1 'help-customize-variable variable)))))
-              (print-help-return-message)
+              (if (fboundp 'help-print-return-message)
+                  (help-print-return-message)
+                (print-help-return-message))
               (with-current-buffer standard-output (buffer-string)))))))) ; Return the text displayed.
   )
 
