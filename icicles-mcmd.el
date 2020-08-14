@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 14 10:13:18 2020 (-0700)
+;; Last-Updated: Fri Aug 14 10:37:22 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 19875
+;;     Update #: 19879
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -716,7 +716,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
       (run-hooks 'mouse-leave-buffer-hook)
       (with-current-buffer (window-buffer (posn-window (event-start event)))
         (let ((buffer           completion-reference-buffer)
-              (base-size        completion-base-size)
+              (base-size        (or (and (boundp 'completion-base-size)  completion-base-size)  0))
               (choice
                (save-excursion
                  (goto-char (posn-point (event-start event)))
@@ -5292,7 +5292,7 @@ Non-interactively, optional arg COMPLETION is the completion to insert."
   "The completion candidate under the cursor in buffer `*Completions*'.
 Return the name as a string."           ; See also `choose-completion' and `mouse-choose-completion'.
   (let ((buffer          completion-reference-buffer)
-        (base-size       completion-base-size)
+        (base-size       (or (and (boundp 'completion-base-size)  completion-base-size)  0))
         (start-of-cands  (icicle-start-of-candidates-in-Completions))
         beg end)
     (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
@@ -6562,7 +6562,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
     (with-current-buffer (window-buffer posn-win)
       (save-excursion
         ;; $$$$$$ (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-        (setq base-size  completion-base-size)
+        (setq base-size  (or (and (boundp 'completion-base-size)  completion-base-size)  0))
         (goto-char (posn-point (event-start event)))
         (let (beg end)
           (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
@@ -6653,7 +6653,7 @@ which can position mouse pointer on a standalone minibuffer frame."
     (with-current-buffer (window-buffer posn-win)
       (save-excursion
         ;; $$$$$$ (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-        (setq base-size  completion-base-size)
+        (setq base-size  (or (and (boundp 'completion-base-size)  completion-base-size)  0))
         (goto-char (posn-point (event-start event)))
         (let (beg end)
           (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
@@ -7627,7 +7627,7 @@ If the candidate is already saved, then unsave it; otherwise, save it."
     (with-current-buffer (window-buffer posn-win)
       (save-excursion
         ;; $$$$$$ (when completion-reference-buffer (setq buffer  completion-reference-buffer))
-        (setq base-size  completion-base-size)
+        (setq base-size  (or (and (boundp 'completion-base-size)  completion-base-size)  0))
         (goto-char (posn-point (event-start event)))
         (let (beg end)
           (when (and (not (eobp))  (get-text-property (point) 'mouse-face))
