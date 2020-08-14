@@ -9,9 +9,9 @@
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:41:06 2018 (-0800)
+;; Last-Updated: Fri Aug 14 09:45:06 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 216
+;;     Update #: 218
 ;; URL: https://www.emacswiki.org/emacs/download/font-lock-menus.el
 ;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
@@ -19,7 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -81,6 +81,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/08/14 dadams
+;;     flm-list-fonts: Use help-print-return-message, not print-help-return-message.
 ;; 2012/11/13 dadams
 ;;     Renamed from font-menus-da.el to font-lock-menus.el.
 ;;     Added defgroup and prefixed names with flm-.
@@ -190,7 +192,9 @@ Any other non-nil value cycles only among font-lock levels."
       (set-buffer standard-output)
       (mapcar (lambda (font) (insert font "\n"))
 	      (sort (x-list-fonts "*") #'string-lessp)))
-    (print-help-return-message)))
+    (if (fboundp 'help-print-return-message)
+        (help-print-return-message)
+      (print-help-return-message))))
 
 (define-key-after facemenu-menu [flm-list-fonts] '("Display Fonts" . flm-list-fonts) 'dc)
 
