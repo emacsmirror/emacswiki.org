@@ -1,6 +1,15 @@
-Write a few words about your relationship to Emacs: I have a very string relationship with Emacs start around 1987.
+Write a few words about your relationship to Emacs: I have a very string relationship with Emacs that started around 1987.
 
 I use GNU Emacs as it is the One True Emacs™
+
+* I tend to tuck these all over the place:
+(sundry pre-27-configs)
+
+https://github.com/cpc26-ripco/gibson
+
+https://github.com/patrickcarr/dot/tree/master/emacs
+
+
 
 * init file: https://github.com/colincarr/home/blob/master/.emacs
 I am going to start cleaning this up and this is actually a "clean" one and my current in a portfolio of .emacs files.
@@ -8,21 +17,9 @@ Right now I use so many systems and I need to change the character of this as I 
 jwiegley has an interesting macro that I will leverage to organize this and future .emacs
 https://github.com/jwiegley/use-package
 
+
 * ~/.gnus: 
 This one I am holding because I am off gnus for a while but I want to clean that up too.
-
-
-
-
-[new:DrewAdams:2014-02-15 00:42 UTC]
-Welcome to the wiki. -- DrewAdams
-
-
-
-
-
-
-
 
 ----
 CategoryHomepage
