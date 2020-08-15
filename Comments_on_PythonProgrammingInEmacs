@@ -2,3 +2,12 @@ I feel like https://github.com/gabrielelanaro/emacs-for-python should get mentio
 
 -- [http://mrmagooey.me mrmagooey] 2013-05-28 23:39 UTC
 
+
+----
+
+Thanks for collecting all this information! But it would be nice to have more information to help select among the various packages. What does Jedi do that eglot doesn't, and vice versa? Are they widely used and actively maintained? You mention that many of the "support features" are already provided by some of the IDEs. Which ones provide added value?
+
+Thanks again!
+
+-- [https://www.linkedin.com/in/macrakis/ macrakis] 2020-08-15 16:32 UTC
+
