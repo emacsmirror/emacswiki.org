@@ -34,12 +34,6 @@ You can also add repositories one at a time:
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 }}}
 
-Emacs users in China mainland can use popkit.org(http://elpa.popkit.org/) archive:
-{{{
-(add-to-list 'package-archives
-          '("popkit" . "http://elpa.popkit.org/packages/"))
-}}}
-
 You can also customize [[option]] `package-archives':
 
 {{{
