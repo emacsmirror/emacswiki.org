@@ -28,8 +28,6 @@ Install using one of the options below, and then enable in your init file with:
 
  M-x package-install RET so-long RET
 
-(n.b. the ELPA package is not yet available at 2020-01-15)
-
 ====Use-package & Quelpa====
 
   (use-package so-long
