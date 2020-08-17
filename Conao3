@@ -21,8 +21,10 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/conao3/keg.el keg-mode.el] (MELPA) -- Major-mode for editing Keg file
 * [https://github.com/conao3/keg.el flycheck-keg.el] (MELPA) -- Flycheck integration for Keg project
 
-* [https://github.com/conao3/cort.el cort.el] (MELPA) -- Simplify extended Emacs unit test framework
 * [https://github.com/conao3/ddskk-posframe.el ddskk-posframe.el] (MELPA) -- Show Henkan tooltip for ddskk via posframe
+* [https://github.com/conao3/dired-posframe.el dired-posframe.el] (MELPA) -- Glimpse dired items using posframe
+
+* [https://github.com/conao3/cort.el cort.el] (MELPA) -- Simplify extended Emacs unit test framework
 * [https://github.com/conao3/dired-git.el dired-git.el] (MELPA) -- Show git repository information in dired buffer
 * [https://github.com/conao3/indent-lint.el flycheck-indent.el] (MELPA) -- Flycheck frontend for indent-lint.el
 * [https://github.com/conao3/iceberg-theme.el iceberg-theme.el] (MELPA) -- Well-designed, eye-friendly, dark blue color scheme
@@ -33,7 +35,6 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/conao3/scratch-comment.el scratch-comment.el] (MELPA) -- Insert Elisp result as comment in scratch buffer
 * [https://github.com/conao3/seml-mode.el seml-mode.el] (MELPA) -- Major-mode for SEML (S-Expression Markup Language) files
 * [https://github.com/conao3/transient-dwim.el transient-dwim.el] (MELPA) -- Useful preset transient commands
-* [https://github.com/conao3/dired-posframe.el dired-posframe.el] (MELPA) -- Glimpse dired items using posframe
 
 * [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
 * [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
