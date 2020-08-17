@@ -40,15 +40,19 @@ Alternatively, the latest version of [https://git.savannah.nongnu.org/cgit/so-lo
 
 You must either place the library somewhere in your Emacs load-path, or use ##M-x package-install-file## for the downloaded file.
 
+==Documentation==
+
+Extensive documentation is included in the library itself; use ##M-x so-long-commentary## to read it in OutlineMode inside Emacs.  This documentation is also displayed (more plainly) at https://elpa.gnu.org/packages/so-long.html or if you view ##so-long.el## itself.
+
 ==Configure==
 
-See the commentary in the code (or use ##M-x so-long-commentary##) for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
+See ##M-x so-long-commentary## for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
 
 ##M-x customize-group RET so-long RET## to configure the library.
 
 ===Minor modes===
 
-The following minor modes are disabled by default (even when the buffer-local mode is enabled by a globalized minor mode).
+Numerous minor modes are disabled by default (if they were enabled in the first place; including when the buffer-local mode is enabled by a globalized minor mode).  These include the likes of:
 
 * font-lock-mode
 * diff-hl-amend-mode
@@ -71,6 +75,10 @@ The following minor modes are disabled by default (even when the buffer-local mo
 * whitespace-mode
 
 It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Please report any examples you encounter upstream with ##M-x report-emacs-bug## (regardless of whether the mode is part of Emacs, or from a third party library or package), so that
+
+===Variable Overrides===
+
+Several variables are also set buffer-locally to improve performance when long lines are detected.  Again, refer to ##M-x so-long-commentary## for all of the details.
 
 ===Hooks===
 
