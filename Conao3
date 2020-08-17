@@ -33,6 +33,7 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/conao3/scratch-comment.el scratch-comment.el] (MELPA) -- Insert Elisp result as comment in scratch buffer
 * [https://github.com/conao3/seml-mode.el seml-mode.el] (MELPA) -- Major-mode for SEML (S-Expression Markup Language) files
 * [https://github.com/conao3/transient-dwim.el transient-dwim.el] (MELPA) -- Useful preset transient commands
+* [https://github.com/conao3/dired-posframe.el dired-posframe.el] (MELPA) -- Glimpse dired items using posframe
 
 * [https://github.com/conao3/liskk.el liskk.el] -- Yet another ddskk (Daredevil Simple Kana to Kanji conversion)
 * [https://github.com/conao3/liskk-dict.el liskk-dict.el] -- Dictionary files for liskk.el
