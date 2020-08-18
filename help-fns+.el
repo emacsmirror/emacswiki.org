@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:56:15 2020 (-0700)
+;; Last-Updated: Tue Aug 18 11:35:45 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2456
+;;     Update #: 2459
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
+;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
+;;   `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/08/18 dadams
+;;     help-substitute-command-keys: Corrected handling \= by advancing ii to jj after skipping \=.
 ;; 2020/08/14 dadams
 ;;     describe-function, describe-variable (< Emacs 23): Use help-print-return-message, not print-help-return-message.
 ;; 2020/05/06 
@@ -242,7 +245,8 @@
 ;; 2012/09/24 dadams
 ;;     describe-file: Added optional arg NO-ERROR-P.
 ;; 2012/09/22 dadams
-;;     Info-index-occurrences, Info-first-index-occurrence: Replace Info-directory call by short version.  Better Searching msg.
+;;     Info-index-occurrences, Info-first-index-occurrence:
+;;       Replace Info-directory call by short version.  Better Searching msg.
 ;; 2012/09/21 dadams
 ;;     Renamed Info-any-index-occurrences-p to Info-first-index-occurrence.
 ;;     Info-any-index-occurrences-p: Return the first successful lookup, not t.
@@ -540,7 +544,7 @@ descriptions, which link to the key's command help."
                              newstrg  (if odd
                                           (concat newstrg
                                                   (substring strg 0 escaped) ; Before \='s
-                                                  (substring strg (+ 2 escaped) ii)) ; After \='s
+                                                  (substring strg (+ 2 escaped) (setq ii  jj))) ; After \='s
                                         (concat newstrg (substring strg 0 ii)))))))))
 
           (when ma
