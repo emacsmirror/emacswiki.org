@@ -15,7 +15,7 @@ You may have to define the QTDIR environment variable and extend the PATH enviro
 
 = Integration within Emacs =
 
-You can automaticaly enable CcMode for Qt source files, extend the path where specific files are searched, and feed the SemanticBovinator (note that the variable 'qt-base-directory' is defined in the previous code snippet):
+You can automatically enable CcMode for Qt source files, extend the path where specific files are searched, and feed the SemanticBovinator (note that the variable 'qt-base-directory' is defined in the previous code snippet):
 
 <pre>
 (require 'semantic/bovine/c)
@@ -196,13 +196,6 @@ http://furius.ca/pubcode/pub/conf/lib/elisp/blais/qtdoc.el -- EDIT: This link wa
 
 ----
 
-A quick major mode for editing QMake project files, nothing fancy just font-locking of the keywords and comments:
-http://www.tolchz.net/wp-content/uploads/2008/01/qt-pro.el
-
-----
-Another major mode for editing Qmake project files can be found http://code.google.com/p/qmake-mode/
-
-----
 Nowadays c++-mode highlights Qt signals and slots keywords, so I'm using the following code as qt-mode:
 
 <pre>
@@ -282,6 +275,15 @@ Includes support for Qt code (macros name and qDebug)."
 ;;; qt-mode.el ends here
 </pre>
 
+= Editing QMake Project Files =
+
+A quick major mode for editing QMake project files, nothing fancy just font-locking of the keywords and comments:
+http://www.tolchz.net/wp-content/uploads/2008/01/qt-pro.el
+
+----
+Another major mode for editing Qmake project files can be found http://code.google.com/p/qmake-mode/
+
+----
 There is also a Qt Pro/Pri major mode here
 https://github.com/EricCrosson/qt-pro-mode
 
