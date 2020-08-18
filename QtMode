@@ -277,14 +277,15 @@ Includes support for Qt code (macros name and qDebug)."
 
 = Editing QMake Project Files =
 
-A quick major mode for editing QMake project files, nothing fancy just font-locking of the keywords and comments:
-http://www.tolchz.net/wp-content/uploads/2008/01/qt-pro.el
-
-----
-Another major mode for editing Qmake project files can be found http://code.google.com/p/qmake-mode/
-
-----
-There is also a Qt Pro/Pri major mode here
+qt-pro-mode is a quick major mode for editing QMake project files, nothing fancy just font-locking of the keywords and comments:
 https://github.com/EricCrosson/qt-pro-mode
+qt-pro-mode is available on MELPA.
+It's also here: Lisp:qt-pro-mode.el
 
-I had updated the code in the link above to deal with Qt v5.10 pro/pri files (Lisp:qt-pro-mode.el).
+qmake-mode provides syntax highlighting, indentation and find-file-at-point support:
+https://github.com/jobor/qmake-mode
+
+And inspiration of qmake-mode is the unmaintained qmake.el from http://code.google.com/p/qmake-mode/
+This contains some rudimentary project handling facilities.
+
+
