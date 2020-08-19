@@ -95,6 +95,6 @@ I prefer that Dired remember my omit state: when enabling/disabling `omit-mode',
 
 ===  Using `ls' Switches Instead of Omit Mode  ===
 
-An alternative to using Omit mode: Use `C-u s' to change the `ls' switches and immediately refresh. (`C-u s' refreshes also, so there is very little typing involved.)  Usually you will want to remove ##-a## from the switches, to hide dot files. 
+An alternative to using Omit mode: Use `C-u s' to change the `ls' switches and immediately refresh. (`C-u s' refreshes also, so there is very little typing involved.)  You can remove ##-a## from the switches to hide dot files, or add ##-B## to hide files ending with ##~##.
 
 With this approach you can do everything you can do in the shell console, which is far more than what a simple Omit mode toggle can offer (at the cost of some extra keypresses). And there is a history of previous flags available, so toggling is pretty fast with this approach also. -- [[190-216-58-35.static.impsat.net.ar]]
