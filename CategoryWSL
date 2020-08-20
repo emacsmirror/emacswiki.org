@@ -60,3 +60,23 @@ this workaround (as discovered here too https://alexschroeder.ch/wiki/2015-09-18
 "sudo chmod go+rw /dev/tty"
 
 DISCLAIMER: It's left to your own judgement if this opens any security issues or not (I don't know).
+== Windows Terminal ==
+
+This section covers [https://github.com/microsoft/terminal Windows Terminal (WT)]
+running wsl.exe running emacs -nw.
+
+=== Key bindings ===
+
+Many default WT bindings use the control key, which causes some problems for emacs.
+
+=== Disable C-c C-v ===
+
+C-c and C-v invokes Windows copy and paste. To disable this and pass them to emacs instead:
+
+# Edit the [https://docs.microsoft.com/en-us/windows/terminal/get-started#configuration settings].
+# Comment out these bindings:
+
+    //{ "command": {"action": "copy", "singleLine": false }, "keys": "ctrl+c" },
+    //{ "command": "paste", "keys": "ctrl+v" },
+
+# Save the changes.
