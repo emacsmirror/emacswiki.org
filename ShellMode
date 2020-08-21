@@ -17,6 +17,10 @@ However, cygwin-builds of bash since 2001-06-06 seem to confuse Emacs.  There is
 
 This way, bash doesn't get ^M from Emacs, but Emacs removes ^M it gets from bash.  You no longer need to add `comint-strip-ctrl-m' to the filter functions.
 
+== Moving the cursor in the shell buffer ==
+
+Most of the normal movement keybindings are unchanged, but specifically paragraph movement is done using [b]M-{[/b] and [b]M-}[/b] for `backward-paragraph' and `forward-paragraph', respectively.
+
 == Setting Up a Cygwin Shell ==
 
 For some instructions on how to setup the cygwin shell with emacs, see http://www.khngai.com/emacs/cygwin.php
