@@ -2,7 +2,7 @@ Tetris is part of Emacs.  `M-x tetris'
 
 It used to have a neat bug that allows even _very_ slow people to play it: Push 'p' (for pause) and continue to play. The pieces stop dropping, but you can still move them around and drop them manually with the space bar. This bug appears to have been fixed as of emacs version 24.3.1.
 
-And EmacSpeak advices it to enable on to play Tetris completely eye-free
+EmacSpeak enables play without requiring any visuals.
 
 If you dislike having the high-scores buffer popping up, when the game is over, you can add this to your ~/.emacs
 
