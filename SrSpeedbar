@@ -109,11 +109,14 @@ Setting window-size-fixed permanently on the sr-speedbar buffer prevents you fro
 
 {{{
 (defun jjf-sr-speedbar-protect-speedbar-size (orig &rest args)
-  (with-current-buffer sr-speedbar-buffer-name
-    (setq window-size-fixed 'width))
-  (apply orig args)
-  (with-current-buffer sr-speedbar-buffer-name
-    (setq window-size-fixed nil)))
+  (let ((b (get-buffer sr-speedbar-buffer-name)))
+    (when b
+      (with-current-buffer b
+        (setq window-size-fixed 'width)))
+    (apply orig args)
+    (when b
+      (with-current-buffer b
+        (setq window-size-fixed nil)))))
 
 (eval-after-load 'sr-speedbar
   '(advice-add 'delete-window :around #'jjf-sr-speedbar-protect-speedbar-size))
