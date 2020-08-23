@@ -103,6 +103,22 @@ sr-speedbar-open
 
 â Chen Xian'an
 ----
+How to keep speed bar window width after resizing? (alternative)
+
+Setting window-size-fixed permanently on the sr-speedbar buffer prevents you from manually resizing that window with the mouse. Here is a snippet that advises `delete-window` to temporarily set this variable.
+
+{{{
+(defun jjf-sr-speedbar-protect-speedbar-size (orig &rest args)
+  (with-current-buffer sr-speedbar-buffer-name
+    (setq window-size-fixed 'width))
+  (apply orig args)
+  (with-current-buffer sr-speedbar-buffer-name
+    (setq window-size-fixed nil)))
+
+(eval-after-load 'sr-speedbar
+  '(advice-add 'delete-window :around #'jjf-sr-speedbar-protect-speedbar-size))
+}}}
+----
 How to integrate sr-speedbar with ERC's erc-speedbar-browser?
 
 ----
