@@ -88,6 +88,7 @@ Similar packages:
 * CycleBuffer
 * SwBuf
 * SwitchingBuffers#BufferCycling
+* ControlTABbufferCycling - A page that focuses on this approach, which is not really "cycling".
 
 Enjoy!
 
