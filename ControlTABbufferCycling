@@ -234,5 +234,11 @@ Yet another way to do it. It cycles only through the normal text buffers (i.e., 
 
 Flip through emacs buffers Alt-Tab style with an emphasis on minimizing keystrokes.
 
+= Quick Buffer Cycle =
+
+My own take on this. Uses a timer/timeout: QuickBufferCycle
+
+-- MaDa
+
 ---- 
 CategoryBufferSwitching
