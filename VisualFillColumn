@@ -1,7 +1,9 @@
-##visual-fill-column-mode## is a small Emacs minor mode that mimics the effect of FillColumn in VisualLineMode.  Instead of wrapping lines at the window edge, which is the standard behaviour of ##visual-line-mode##, it wraps lines at ##fill-column##.  If ##fill-column## is too large for the window, the text is wrapped at the window edge.
+Visual Fill Column is a small Emacs minor mode that mimics the effect of FillColumn in VisualLineMode.  Instead of wrapping lines at the window edge, which is the standard behaviour of ##visual-line-mode##, it wraps lines at ##fill-column##.  If ##fill-column## is too large for the window, the text is wrapped at the window edge.
 
-And thus is is more of an analog to the (now defunct) LongLines mode, than the previously recommended / linked VisualLineMode.
+And thus it is more of an analog to the (now defunct) LongLines mode, than the previously recommended / linked VisualLineMode (at least by itself).  So perhaps it is more accurate to say, the two of them put together are the new analog to the old LongLines mode.
 
-As this may best be told in images, you might want to take a quick look at the home page of their GitHub repo: https://github.com/joostkremers/visual-fill-column where they have a photo clearly demonstrating this.
+For a visual representation, you might want to take a quick look at the home page of their GitHub repo: https://github.com/joostkremers/visual-fill-column where they have a photo clearly demonstrating the feature.
 
-Page created 2020-08-27 - I had been looking for something like this for years and only discovered it last night, so I wanted to share.  -Trs80
+If you are looking for a similar (soft) wrap on the *left* side, without indenting *everything* in the way that say, OrgIndentMode does, you may be interested in AdaptiveWrap.
+
+Page created 2020-08-27 - I had been looking for some things like this for years and only discovered it last night, so I wanted to share.  -[[Trs80]]
