@@ -1,4 +1,4 @@
-*Note:* Long Lines is obsolete and has been replaced by VisualLineMode.
+*Note:* Long Lines is obsolete and has been replaced by VisualFillColumn.
 
 Long Lines is a [[minor mode]] that helps you edit text files that have long lines.
 
