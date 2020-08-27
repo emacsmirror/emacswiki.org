@@ -317,6 +317,19 @@ I know this is fairly simple to do for emacs only, but I've never looked into ho
 
 :: %%EmacsW32%% , with w32-enable-caps-lock set to nil , reads that key as <capslock>.  It should be possible to tell Emacs to treat it as a control.  (define-key function-key-map [(capslock)] 'event-apply-control-modifier) gets close.
 
+=== PowerToys Keyboard Manager ===
+
+[https://github.com/microsoft/PowerToys PowerToys]
+[https://github.com/microsoft/PowerToys/wiki/Keyboard-Manager-Overview Keyboard Manager]
+for Windows 10 does not work with
+[https://docs.microsoft.com/en-us/windows/wsl WSL]
+and
+[https://docs.microsoft.com/en-us/windows/terminal Windows Terminal]
+as of August 2020.
+
+With the most straight forward configuration, you can tell it is not
+working because holding the remapped caps lock key causes the region
+to activate and deactivate continually.
 
 [:Android]
 == Android ==
