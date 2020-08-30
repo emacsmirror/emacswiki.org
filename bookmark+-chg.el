@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  4 13:34:21 2020 (-0700)
+;; Last-Updated: Sun Aug 30 13:50:21 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 16695
+;;     Update #: 16698
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2020/08/30 dadams
+;;     Added: Info-bookmark-use-only-node-not-file-flag, redefinition of Info-bookmark-jump.
 ;; 2020/07/04 dadams
 ;;     Same commands as 7/03: Remove bmkp-propertize-*-flag as part of test for getting full bmk.
 ;;     Changed all references to `C-x p' to `C-x x'.
