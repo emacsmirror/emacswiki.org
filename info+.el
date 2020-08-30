@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 15:13:41 2020 (-0700)
+;; Last-Updated: Sun Aug 30 15:17:55 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6500
+;;     Update #: 6501
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -2637,11 +2637,10 @@ candidates."
      ["Incrementally...(Regexp)" isearch-forward-regexp
       :help "Search for regular expression incrementally (`C-M-r': backward)"]
      ["Non-incrementally...(Regexp)" Info-search :help "Search nonincrementally for regular expression"]
-     ["  Again" Info-search-next :keys "s"
-      :help "Search nonincrementally for another occurrence"]
+     ["  Again" Info-search-next :help "Search nonincrementally for another occurrence"]
      ["Non-incrementally Case-Sensitively..." Info-search-case-sensitively
       :help "Search nonincrementally and case sensitively for regular expression"]
-     ["  Again" Info-search-case-sensitively-next :keys "S"
+     ["  Again" Info-search-case-sensitively-next
       :help "Search nonincrementally and case sensitively for another occurrence"])
     ("History"
      ["Back (History)" Info-history-back
