@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 12:37:56 2020 (-0700)
+;; Last-Updated: Sun Aug 30 13:54:59 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6453
+;;     Update #: 6469
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -105,6 +105,7 @@
 ;;  Options (user variables) defined here:
 ;;
 ;;    `Info-bookmarked-node-xref-faces' (Emacs 24.2+),
+;;    `Info-bookmark-use-only-node-not-file-flag',
 ;;    `Info-breadcrumbs-in-header-flag', `info-buffer-name-function',
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
@@ -156,6 +157,8 @@
 ;;                   Use other window if not already in Info.
 ;;  `Info-apropos-matches' - Added optional arg REGEXP-P.
 ;;  `Info-backward-node' - Prefix arg clones buffer.
+;;  `Info-bookmark-jump' -
+;;     Respect option `Info-bookmark-use-only-node-not-file-flag'.
 ;;  `Info-directory' - Prefix arg clones buffer.
 ;;  `info-display-manual' - Use completion to input manual name.
 ;;  `Info-find-emacs-command-nodes' - Added arg MSGP and message.
@@ -485,8 +488,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/08/30 dadams
+;;     Added: Info-bookmark-use-only-node-not-file-flag, redefinition of Info-bookmark-jump.
 ;; 2020/05/20 dadams
-;;            Info-insert-dir: Removed use of Info-following-node-name.  Emacs Dev replaced it by its code.
+;;     Info-insert-dir: Removed use of Info-following-node-name.  Emacs Dev replaced it by its code.
 ;; 2020/04/21 dadams
 ;;     Added: info-buffer-name-function, info-buffer-name-function-default, info-rename-buffer,
 ;;            info-manual+node-buffer-name-mode.
@@ -1223,6 +1228,26 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
+
+;; This and the version of function `Info-bookmark-jump' defined here are also defined in `bookmark+-1.el',
+;; so that their feature is available if you use either `Info+' or `Bookmark+'.
+;;
+;;;###autoload
+(defcustom Info-bookmark-use-only-node-not-file-flag t
+  "Non-nil means an Info bookmark uses only the node name.
+The recorded Info file name is ignored.  This means use only manuals
+corresponding to the current Emacs session, regardless of the Emacs
+version or platform used to record the bookmark.
+
+A nil value means use the manuals whose absolute file names are
+recorded in the bookmarks.  (But if the file doesn't exist or is
+unreadable, then act as if the value is non-nil.)
+
+A non-nil value means you can use the same bookmark with different
+Emacs installations, including on different platforms.  A nil value
+means that you can use a bookmark to consult the Info manual for a
+different Emacs version from that of the current session."
+  :type 'boolean :group 'Info-Plus)
 
 ;;;###autoload
 (defcustom Info-breadcrumbs-in-header-flag nil
@@ -5351,6 +5376,34 @@ These are all of the current Info Mode bindings:
   (Info-set-mode-line)
   (set (make-local-variable 'bookmark-make-record-function) 'Info-bookmark-make-record)
   (run-mode-hooks 'Info-mode-hook))
+
+
+;; REPLACES ORIGINAL in `info.el':
+;;
+;; Respect `Info-bookmark-use-only-node-not-file-flag'.
+;;
+;; This code and the definition of `Info-bookmark-use-only-node-not-file-flag' are also in `bookmark+-1.el',
+;; so that their feature is available if you use either `Info+' or `Bookmark+'.
+;;
+;; Note: This function name doesn't respect the naming convention for bookmark handler functions.
+;;       This name gives the impression that this is a jump command.
+;;
+;;;###autoload (autoload 'Info-bookmark-jump "info+")
+(defun Info-bookmark-jump (bookmark)
+  "Handler function for record returned by `Info-bookmark-make-record'.
+BOOKMARK is a bookmark name or a bookmark record.
+
+If `Info-bookmark-use-only-node-not-file-flag' is nil, and the
+recorded Info file is readable, then use it.  If not, then go to the
+recorded Info node in the manual for the current Emacs version."
+  (let* ((absfile    (bookmark-prop-get bookmark 'filename))
+         (file       (if (or Info-bookmark-use-only-node-not-file-flag  (not (file-readable-p absfile)))
+                         (file-name-nondirectory absfile)
+                       absfile))
+         (info-node  (bookmark-prop-get bookmark 'info-node))
+         (buf        (save-window-excursion ; Vanilla FIXME: doesn't work with frames!
+                       (Info-find-node file info-node) (current-buffer))))
+    (bookmark-default-handler `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bookmark)))))
 
 
 ;; REPLACES ORIGINAL in `info.el':
