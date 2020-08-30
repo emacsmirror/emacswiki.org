@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 13:54:59 2020 (-0700)
+;; Last-Updated: Sun Aug 30 15:13:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6469
+;;     Update #: 6500
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -79,7 +79,8 @@
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-outline-demote', `Info-outline-promote',
 ;;    `Info-persist-history-mode' (Emacs 24.4+), `info-rename-buffer',
-;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
+;;    `Info-save-current-node', `Info-search-case-sensitively-next',
+;;    `Info-set-breadcrumbs-depth',
 ;;    `Info-set-face-for-bookmarked-xref' (Emacs 24.2+),
 ;;    `Info-toggle-breadcrumbs-in-header',
 ;;    `Info-toggle-fontify-angle-bracketed',
@@ -489,7 +490,9 @@
 ;;; Change Log:
 ;;
 ;; 2020/08/30 dadams
-;;     Added: Info-bookmark-use-only-node-not-file-flag, redefinition of Info-bookmark-jump.
+;;     Added: Info-bookmark-use-only-node-not-file-flag, redefinition of Info-bookmark-jump (fixes Emacs
+;;            bug #42993), Info-search-case-sensitively-next.
+;;     Restructure Info menu (fixes Emacs bug #43115).
 ;; 2020/05/20 dadams
 ;;     Info-insert-dir: Removed use of Info-following-node-name.  Emacs Dev replaced it by its code.
 ;; 2020/04/21 dadams
@@ -2619,9 +2622,48 @@ candidates."
     ["Quit" quit-window t]))
 
 (easy-menu-define
-    Info-mode-menu Info-mode-map
+  Info-mode-menu Info-mode-map
   "Menu for Info files."
   '("Info"
+    ("Index"
+     ["Find with Index..." Info-index :help "Look for a string in the index"]
+     ["Find Again with Index" Info-index-next
+      :active Info-index-alternatives :help "Look for string again in index"]
+     ["Find In All Indexes..." info-apropos :help "Look for a string in the indexes of all manuals"]
+     ["Virtual Index..." Info-virtual-index
+      :visible (fboundp 'Info-virtual-index) :help "Open virtual index matching input pattern"])
+    ("Search"
+     ["Incrementally..." isearch-forward :help "Search incrementally (`C-r': backward)"]
+     ["Incrementally...(Regexp)" isearch-forward-regexp
+      :help "Search for regular expression incrementally (`C-M-r': backward)"]
+     ["Non-incrementally...(Regexp)" Info-search :help "Search nonincrementally for regular expression"]
+     ["  Again" Info-search-next :keys "s"
+      :help "Search nonincrementally for another occurrence"]
+     ["Non-incrementally Case-Sensitively..." Info-search-case-sensitively
+      :help "Search nonincrementally and case sensitively for regular expression"]
+     ["  Again" Info-search-case-sensitively-next :keys "S"
+      :help "Search nonincrementally and case sensitively for another occurrence"])
+    ("History"
+     ["Back (History)" Info-history-back
+      :active Info-history :help "Go back in history to the last node you were at"]
+     ["Forward (History)" Info-history-forward :active Info-history-forward :help "Go forward in history"]
+     ["History List" Info-history :active Info-history-list :help "Go to menu of visited nodes"])
+    ("Navigation"
+     ("Menu Item" ["You should never see this" report-emacs-bug t])
+     ("Reference" ["You should never see this" report-emacs-bug t])
+     ["Top" Info-directory :help "Go to the list of manuals (Info top level)"]
+     ["Up" Info-up :active (Info-check-pointer "up") :help "Go up in the Info tree"]
+     ["Next" Info-next :active (Info-check-pointer "next") :help "Go to the next node"]
+     ["Previous" Info-prev :active (Info-check-pointer "prev[ious]*") :help "Go to the previous node"]
+     ["Go to Node..." Info-goto-node :help "Go to a named node"]
+     ["Go to Node on Web..." Info-goto-node-web :help "Go to a named node on the Web (HTML doc)"]
+   
+     "--"
+     ["Forward" Info-forward-node :help "Go forward one node, considering all as a sequence"]
+     ["Backward" Info-backward-node :help "Go backward one node, considering all as a sequence"]
+     ["First in File" Info-top-node :help "Go to top node of file"]
+     ["Last in File" Info-final-node :help "Go to final node in this file"]
+     ["Beginning of This Node" beginning-of-buffer :help "Go to beginning of this node"])
     ("Toggle"
      ["Highlighting _..._ (emphasis)" Info-toggle-fontify-emphasis
       :visible info-fontify-emphasis :style toggle :selected Info-fontify-emphasis-flag
@@ -2654,36 +2696,6 @@ candidates."
     ["Editable Outline TOC" Info-toc-outline :help "Go to editable table of contents with outline support"]
     ["Virtual Book" Info-virtual-book :help "Open table of contents of a virtual book" :active Info-saved-nodes]
     ["Save Current Node" Info-save-current-node :help "Save current node name for virtual book"]
-    ["Find...(Regexp)" Info-search :help "Search for regular expression in this Info file"]
-    ["Find Case-Sensitively..." Info-search-case-sensitively
-     :help "Search case sensitively for regular expression"]
-    ["Find Again" Info-search-next :help "Search for another occurrence of same regular expression"]
-    ("Index"
-     ["Find with Index..." Info-index :help "Look for a string in the index"]
-     ["Find Again with Index" Info-index-next
-      :active Info-index-alternatives :help "Look for string again in index"]
-     ["Find In All Indexes..." info-apropos :help "Look for a string in the indexes of all manuals"])
-    "--"
-    ["Back (History)" Info-history-back
-     :active Info-history :help "Go back in history to the last node you were at"]
-    ["Forward (History)" Info-history-forward :active Info-history-forward :help "Go forward in history"]
-    ["History List" Info-history :active Info-history-list :help "Go to menu of visited nodes"]
-    "--"
-    ["Top" Info-directory :help "Go to the list of manuals (Info top level)"]
-    ["Up" Info-up :active (Info-check-pointer "up") :help "Go up in the Info tree"]
-    ["Next" Info-next :active (Info-check-pointer "next") :help "Go to the next node"]
-    ["Previous" Info-prev :active (Info-check-pointer "prev[ious]*") :help "Go to the previous node"]
-    ("Menu Item" ["You should never see this" report-emacs-bug t])
-    ("Reference" ["You should never see this" report-emacs-bug t])
-    ["Go to Node on Web..." Info-goto-node-web :help "Go to a named node on the Web (HTML doc)"]
-    ["Go to Node..." Info-goto-node :help "Go to a named node"]
-   
-    "--"
-    ["Forward" Info-forward-node :help "Go forward one node, considering all as a sequence"]
-    ["Backward" Info-backward-node :help "Go backward one node, considering all as a sequence"]
-    ["First in File" Info-top-node :help "Go to top node of file"]
-    ["Last in File" Info-final-node :help "Go to final node in this file"]
-    ["Beginning of This Node" beginning-of-buffer :help "Go to beginning of this node"]
     "--"
     ["Clone Info Buffer" clone-buffer :help "Create a twin copy of the current Info buffer."]
     ["Copy Node Name" Info-copy-current-node-name :help "Copy the name of the current node into the kill ring"]
@@ -4884,8 +4896,7 @@ over.  To remove the highlighting, just start an incremental search:
                (icicle-read-string-completing prompt nil nil 'Info-search-history)
              (read-string prompt nil 'Info-search-history)))))
   (deactivate-mark)
-  (when (equal regexp "")
-    (setq regexp  (car Info-search-history)))
+  (when (equal regexp "") (setq regexp  (car Info-search-history)))
   (when regexp
     (prog1
         (let (found beg-found give-up
@@ -5000,6 +5011,14 @@ over.  To remove the highlighting, just start an incremental search:
         (message (substitute-command-keys
                   "Use \\<Info-mode-map>`\\[Info-search] RET' to search again for `%s'.")
                  regexp)))))
+
+(defun Info-search-case-sensitively-next ()
+  "Search for next regexp from a previous `Info-search-case-sensitively'."
+  (interactive)
+  (let ((case-fold-search  Info-search-case-fold))
+    (if Info-search-history
+        (Info-search (car Info-search-history))
+      (call-interactively #'Info-search-case-sensitively))))
 
 
 ;; REPLACES ORIGINAL in `info.el':
