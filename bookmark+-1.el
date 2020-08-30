@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul  4 13:34:01 2020 (-0700)
+;; Last-Updated: Sun Aug 30 13:56:00 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 9162
+;;     Update #: 9177
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -770,11 +770,10 @@
 ;;    `bookmarks-already-loaded' (doc string only).
 ;;
 ;;
-;;  ***** NOTE: The following functions defined in `info.el'
-;;              have been REDEFINED HERE:
+;;  ***** NOTE: The following function defined in `info.el'
+;;              has been REDEFINED HERE:
 ;;
-;;    `Info-bookmark-jump' (Emacs 20-22), `Info-bookmark-make-record'
-;;    (Emacs 20-22).
+;;    `Info-bookmark-make-record' (Emacs 20-22).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1639,7 +1638,8 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
 ;;;###autoload (autoload 'bmkp-w3m-allow-multiple-buffers-flag "bookmark+")
 (when (fboundp 'defvaralias)            ; Emacs 22+
   (defvaralias 'bmkp-w3m-allow-multi-tabs-flag 'bmkp-w3m-allow-multiple-buffers-flag))
-(bmkp-make-obsolete-variable 'bmkp-w3m-allow-multi-tabs-flag 'bmkp-w3m-allow-multiple-buffers-flag "2017-01-10")
+(bmkp-make-obsolete-variable 'bmkp-w3m-allow-multi-tabs-flag 'bmkp-w3m-allow-multiple-buffers-flag
+                             "2017-01-10")
 
 (defcustom bmkp-w3m-allow-multiple-buffers-flag t
   "*Non-nil means jump to a W3M bookmark in a new buffer."
@@ -1651,6 +1651,26 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
 Each function should accept the bookmark file name as first argument.
 Used after `after-save-hook'."
   :type 'hook :group 'bookmark-plus)
+
+;; This and the version of function `Info-bookmark-jump' defined here are also defined in `info+.el',
+;; so that their feature is available if you use either `Info+' or `Bookmark+'.
+;;
+;;;###autoload
+(defcustom Info-bookmark-use-only-node-not-file-flag t
+  "Non-nil means an Info bookmark uses only the node name.
+The recorded Info file name is ignored.  This means use only manuals
+corresponding to the current Emacs session, regardless of the Emacs
+version or platform used to record the bookmark.
+
+A nil value means use the manuals whose absolute file names are
+recorded in the bookmarks.  (But if the file doesn't exist or is
+unreadable, then act as if the value is non-nil.)
+
+A non-nil value means you can use the same bookmark with different
+Emacs installations, including on different platforms.  A nil value
+means that you can use a bookmark to consult the Info manual for a
+different Emacs version from that of the current session."
+  :type 'boolean :group 'bookmark-plus)
  
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
@@ -2025,23 +2045,8 @@ Implements `bookmark-make-record-function' for Info nodes."
         (handler . Info-bookmark-jump)
         (defaults . ,defaults))))
 
-  ;; Requires `info.el' explicitly (not autoloaded for `Info-find-node'.
-  (defun Info-bookmark-jump (bookmark)
-    "Jump to Info bookmark BOOKMARK.
-BOOKMARK is a bookmark name or a bookmark record."
-    (require 'info)
-    ;; Implements the `handler' for the record type returned by `Info-bookmark-make-record'.
-    (let* ((file       (bookmark-prop-get bookmark 'filename))
-           (info-node  (bookmark-prop-get bookmark 'info-node))
-           (buf        (save-window-excursion ; VANILLA EMACS FIXME: doesn't work with frames!
-                         (Info-find-node file info-node)
-                         (current-buffer))))
-      ;; Use `bookmark-default-handler' to move to appropriate location within Info node.
-      (bookmark-default-handler
-       `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
-
   (add-hook 'Info-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
-                                            'Info-bookmark-make-record)))
+                                       'Info-bookmark-make-record)))
 
   (defvar bookmark-make-record-function 'bookmark-make-record-default
     "Function called with no arguments, to create a bookmark record.
@@ -10367,6 +10372,35 @@ BOOKMARK is a bookmark name or a bookmark record."
       (sit-for 3)))
 
   )
+
+
+;; REPLACES ORIGINAL in `info.el':
+;;
+;; Respect `Info-bookmark-use-only-node-not-file-flag'.
+;;
+;; This code and the definition of `Info-bookmark-use-only-node-not-file-flag' are also in `info+.el',
+;; so that their feature is available if you use either `Info+' or `Bookmark+'.
+;;
+;; Note: This function name doesn't respect the naming convention for bookmark handler functions.
+;;       This name gives the impression that this is a jump command.
+;;
+;;;###autoload (autoload 'Info-bookmark-jump "bookmark+")
+(defun Info-bookmark-jump (bookmark)
+  "Handler function for record returned by `Info-bookmark-make-record'.
+BOOKMARK is a bookmark name or a bookmark record.
+
+If `Info-bookmark-use-only-node-not-file-flag' is nil, and the
+recorded Info file is readable, then use it.  If not, then go to the
+recorded Info node in the manual for the current Emacs version."
+  (require 'info) ; Needed only for Emacs 20-22: not autoloaded for `Info-find-node'.
+  (let* ((absfile    (bookmark-prop-get bookmark 'filename))
+         (file       (if (or Info-bookmark-use-only-node-not-file-flag  (not (file-readable-p absfile)))
+                         (file-name-nondirectory absfile)
+                       absfile))
+         (info-node  (bookmark-prop-get bookmark 'info-node))
+         (buf        (save-window-excursion ; Vanilla FIXME: doesn't work with frames!
+                       (Info-find-node file info-node) (current-buffer))))
+    (bookmark-default-handler `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bookmark)))))
 
 (defun bmkp-jump-variable-list (bookmark)
   "Jump to variable-list bookmark BOOKMARK, restoring the recorded values.
