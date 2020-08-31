@@ -34,7 +34,7 @@ jumps to 40% of a buffer.
 
 Tweet of @_wilfredh about stopping Emacs (2015)(https://twitter.com/_wilfredh/status/659499112677642242):
 
-//Emacs tip: If your instance hangs and won't respond to C-g, you can use `pkill -SIGUSR2 emacs` to force emacs to stop whatever it's doing.//
+//Emacs tip: If your instance hangs and won't respond to C-g, you can use `pkill -sigusr2 emacs` to force emacs to stop whatever it's doing.//
 
 ==Historic==
 
