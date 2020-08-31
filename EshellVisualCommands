@@ -19,13 +19,13 @@ How to use `eshell-visual-subcommands':
  
 An alist of the form
 <pre>
- ((COMMAND1 (SUBCOMMAND1 SUBCOMMAND2...))
-  (COMMAND2 (SUBCOMMAND1 ...)))
+ ((COMMAND1 SUBCOMMAND1 SUBCOMMAND2...)
+  (COMMAND2 SUBCOMMAND1 ...))
 </pre>
 of commands with subcommands that present their output in a
 visual fashion.  A likely entry is
 <pre>
-("git" ("log" "diff" "show"))
+("git" "log" "diff" "show")
 </pre>
 
 This shows <code>git log</code> in an ANSI terminal.
