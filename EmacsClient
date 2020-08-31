@@ -32,7 +32,7 @@ emacsclient -create-frame --alternate-editor=""
 }}}
 
 The emacsclient program will connect to a running instance of Emacs if it exists. <tt>-c</tt> tells Emacs to open the file in a new frame, which is optional. 
- Specifying <tt>-a=""</tt> tells emacsclient to start an an instance of emacs if it cannot find one already running.
+ Specifying <tt>-a=""</tt> tells emacsclient to start an instance of emacs if it cannot find one already running.
 
 
 To use emacsclient as your editor, add the following to your .bashrc:
