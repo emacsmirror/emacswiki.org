@@ -1,5 +1,7 @@
 See also: ProgrammableCompletion.
 
+Many good and simple examples can be found in Emacs.  See the files pcmpl-unix.el, pcmpl-linux.el and so on.
+
 : (I could not find any simple examples for pcomplete, and so am
   starting this page.  Please improve my example below, and add more.
   -- DeepakGoel)
@@ -69,10 +71,6 @@ pcomplete-foo-setup.  From then on M-x pcomplete works as expected.
 **Q:** Is there a package for Emacs to complete an interactive call to load-library() just like XEmacs does?
 
 **A:** There's a find-lib.el 
-----
-
-For a very simple example of supporting pcomplete from within [EshellCompletion Eshell], see Lisp:pcmpl-ssh.el (PcompleteSSH)
-
 ----
 
 For more complicated examples, browse the sources of erc-pcomplete.el and of eshell.
