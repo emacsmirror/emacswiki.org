@@ -4,7 +4,11 @@ With that out of the way, back to basics:
 
 To match any number of characters, use this: ##.*## -- the problem is that ##.## matches any character /except/ newline.  What many people propose next works, but is inefficient if you assume that newlines are not /that/ common in your text: ##"\\(.\\|\n\\)"##.  Better match multiple lines instead: ##".*\\(\n.*\\)*"##.  The newline is optional so that the expression can end in the middle of a line.  An alternative can be ##"[\0-\377[:nonascii:]]*"##.  All options tend to suffer from "stack overflow" when used in "large" buffers, tho some eat up the stack faster than others.  An option which uses less stack space (proportional to the number of lines rather than the number of characters) could be ##\\(.*\n\\)*.*##.
 
-Note: For a newline in IncrementalSearch use `C-q C-j'.  Typing "\n" does not work.  You don't have to use C-q C-m C-q C-j or similar variants for Windows or Mac files. 
+== Incremental search ==
+
+By default, in IncrementalSearch, " " (space) is interpreted to mean one or more of any whitespace character *except* newline. If you want to match a phrase which may have been wrapped by ##auto-fill-mode##, this is inconvenient, but you can customize ##search-whitespace-regexp## to something like "[ \t\r\n]+" as the documentation suggests, in order to include newlines. (You might have to set ##isearch-regexp-lax-whitespace## to t in order to leverage this.)
+
+For a literal newline in IncrementalSearch use `C-q C-j'.  Typing "\n" does not work.  You don't have to use C-q C-m C-q C-j or similar variants for Windows or Mac files. 
 
 == Parsing example ==
 
