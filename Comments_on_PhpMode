@@ -1,0 +1,4 @@
+I love the colored text, I love the status (PHPs:OK) or (PHPs:Error). I absolutely hate the (Special) buffer that splits the window or switches buffers in another pane.  It pops up everytime I am too slow to close a quote string, closes parenthesis or braces.  If I start a command and want to use your mouse to paste some other code (common when working with SQL) then I am constantly hitting ^X1 to having to go reset the other buffer so I can see the code I wanted to paste from.  I KNOW I will need to close a quote, the status mentioned above tells me that ... how do I stop the needless window setup corruption from occuring 1/2 second after I start?  A USEFUL feature would be a emacs command to check the syntax when "I" want to.
+
+-- [http://bieneks.net Mike Bienek] 2020-09-05 17:59 UTC
+
