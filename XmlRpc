@@ -1,55 +1,31 @@
 == Overview ==
 
-*NOTE:* xml-rpc.el is available at: Emacs 24 package manager repository [[ELPA]]/Marmalade
-
-XMLRPC (XML Remote Procedure Calls) is a protocol for remote procedure calling using HTTP as the transport and XML as the encoding. XML-RPC is designed to be as simple as possible, while allowing complex data structures to be transmitted, processed and returned.
+XML-RPC (XML Remote Procedure Calls) is a protocol for remote procedure calling using HTTP as the transport and XML as the encoding. XML-RPC is designed to be as simple as possible, while allowing complex data structures to be transmitted, processed and returned.
 
 The spec can be found at http://www.xmlrpc.com/.
 
 == xml-rpc.el ==
 
-This is an XML-RPC client implementation in elisp, capable of both
+This is an XML-RPC client implementation in Emacs Lisp, capable of both
 synchronous and asynchronous method calls (using the url package's async
 retrieval functionality).
-
-XML-RPC is remote procedure calls over HTTP using XML to describe the
-function call and return values.
 
 xml-rpc.el represents XML-RPC datatypes as lisp values, automatically
 converting to and from the XML datastructures as needed, both for method
 parameters and return values, making using XML-RPC methods fairly
-transparent to the lisp code.
+transparent to the Lisp code.
 
-This is an implementation of XML-RPC in EmacsLisp. It allows Emacs to
-make asynchronous remote procedure calls over http.
+You can install it via [[MELPA]] or find the source code here:
 
-You can find it on Github:
 https://github.com/hexmode/xml-rpc-el
 
-Or install it via [[MELPA]].
+Currently maintained by MarkHershberger.
+
+=== Comments ===
 
 It could probably be useful for communicating with EmacsWiki using the
 MeatBall:XmlRpcToWiki API.  See the WikiRemote for further discussion
 on the topic.  -- DanielLundin
-
-== Older Versions ==
-
-Following are versions that other people have had at one time or
-other.  I’ve tried to incorporate them into the Savannah version of
-the code.
-
-* http://elisp.info/package/xml-rpc/xml-rpc.el (My old code.  I’ll put a redirect on this soon.)
-* http://purl.org/NET/wence/xml-rpc.el.patch (The latest xml-rpc.el (there are several versions floating around on the net, but the above link seems to be the most recent) is broken. A patch that I found here seems to fix it)
-* http://blogs.openaether.org/data/weblogger.el-wordpress.patch  
-* http://blogs.openaether.org/?p=126 
-
-elisp.info hasn't been updated in almost a year, so I figured this would be a good idea. The versions here work together perfectly for BloggerMode.
-
-ErikHollensbe
-
-(elisp.info should be updated as soon as I can move the weblog to my current weblog system. — MarkAHershberger)
-
-Currently maintained by MarkHershberger.
 
 ----
 CategoryXML
