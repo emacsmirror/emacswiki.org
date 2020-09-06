@@ -1,0 +1,16 @@
+[https://www.gnu.org/software/emacs/ Emacs 27.1] was released on August 10, 2020!
+
+It has a wide variety of new features, including:
+
+* Built-in support for arbitrary-size integers
+* Text shaping with HarfBuzz
+* Native support for JSON parsing
+* Better support for Cairo drawing
+* Portable dumping used instead of unexec
+* Support for XDG conventions for init files
+* Additional early-init initialization file
+* Built-in support for tab bar and tab-line
+* Support for resizing and rotating of images without ImageMagick
+
+
+See the full list of user-visible changes in the [https://www.gnu.org/software/emacs/news/NEWS.27.1 NEWS] file.
