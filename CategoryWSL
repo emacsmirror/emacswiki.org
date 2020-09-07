@@ -60,6 +60,33 @@ this workaround (as discovered here too https://alexschroeder.ch/wiki/2015-09-18
 "sudo chmod go+rw /dev/tty"
 
 DISCLAIMER: It's left to your own judgement if this opens any security issues or not (I don't know).
+
+== Clipboard ==
+
+Without GUI integration using X or xrdp, these functions provide basic
+copy/paste between emacs and Windows clipboard.
+
+{{{
+(defun wsl-copy-region-to-clipboard (start end)
+  "Copy region to Windows clipboard."
+  (interactive "r")
+  (call-process-region start end "clip.exe" nil 0))
+
+(defun wsl-clipboard-to-string ()
+  "Return Windows clipboard as string."
+  (let ((coding-system-for-read 'dos))
+    (substring				; remove added trailing \n
+     (shell-command-to-string
+      "powershell.exe -Command Get-Clipboard") 0 -1)))
+
+(defun wsl-paste-from-clipboard (arg)
+  "Insert Windows clipboard at point. With prefix ARG, also add to kill-ring"
+  (interactive "P")
+  (let ((clip (wsl-clipboard-to-string)))
+    (insert clip)
+    (if arg (kill-new clip))))
+}}}
+
 == Windows Terminal ==
 
 This section covers [https://github.com/microsoft/terminal Windows Terminal (WT)]
