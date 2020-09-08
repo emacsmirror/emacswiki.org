@@ -1,6 +1,6 @@
 == About Emacs 25 in WSL ==
 
-With Windows 10, Microsoft offers the 'Windows Subsystem for Linux (WSL)' that runs Linux binaries, including the BASH Shell, and emacs, natively on Windows. 
+With Windows 10, Microsoft offers the 'Windows Subsystem for Linux (WSL)' that runs Linux binaries, including the Bash Shell, and Emacs, natively on Windows. 
 
 You can install Linux distros from the Windows Store. Currently Ubuntu, openSUSE and SUSE Linux are available, with several other distros on the way. You can also install and run multiple distros side-by-side on the same machine, and you can use each distro's package manager to install all your favorite tools and apps.
 
