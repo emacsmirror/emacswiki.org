@@ -6,7 +6,7 @@ You can install Linux distros from the Windows Store. Currently Ubuntu, openSUSE
 
 WSL is improving rapidly in terms of completeness and compatibility, though you may encounter the occasional issue, in which case, please search and (if not found) file an issue on the WSL team's GitHub Issues Repo: https://github.com/microsoft/wsl.
 
-Here is how I install emacs 25:
+Here is how I install Emacs 25.
 
 == Install & Activate WSL =
 
