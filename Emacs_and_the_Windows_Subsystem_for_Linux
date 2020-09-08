@@ -8,7 +8,7 @@ WSL is improving rapidly in terms of completeness and compatibility, though you 
 
 Here is how I install emacs 25:
 
-= Install & Activate WSL =
+== Install & Activate WSL =
 
 The official WSL Installation Guide:
 https://msdn.microsoft.com/commandline/wsl/install_guide
@@ -17,7 +17,7 @@ Check OS Type and Build of you System, there are minimal requirements. There is 
 
 Be sure to specify a non-su username and password when prompted - Linux usernames and password are separate from your Windows username and password.
 
-= Install a graphical Linux environment = 
+== Install a graphical Linux environment = 
 Although only Linux commandline tools are officially supported on WSL many X applications work fine.  In addition, you may want to install a Linux GUI/desktop, though this will require having all X applications in a dedicated toplevel window --- follow the instructions on this page:
 https://solarianprogrammer.com/2017/04/16/windows-susbsystem-for-linux-xfce-4/
 
@@ -35,7 +35,7 @@ DISCLAIMER: doing point 3 (fixing dbus) is entirely at you own risk! It worked f
 
 At the time of this writing, you need all this to make the Emacs package manager work. Running the installed Emacs 25 as -nw works just fine without X environment, but then you have to figure out yourself how to get your favorite packages.
 
-= Install Emacs 25 =
+== Install Emacs 25 =
 
 Follow the instructions on this page (a big THANKS  to SolarianProgrammer for his excellents Blog Posts):
 
@@ -49,7 +49,7 @@ Funny enough, the graphical Emacs only accepted keyboard input 'M-x' after I onc
 
 Furthermore, one has to answer a prompt where to put the ELPA directory. I'm not yet settled on this decision, since this is a critical point (accidentally editing Linux files with Windows Tools might corrupt the whole system, its recommended to make those files (maybe edited by both systems) Windows files under /mnt or so (see last paragraph of the installation guide: https://msdn.microsoft.com/de-de/commandline/wsl/install_guide) 
 
-= Fix /dev/tty problem =
+== Fix /dev/tty problem =
 
 If "sudo emacs -nw" works, but "emacs -nw" results in:
 
