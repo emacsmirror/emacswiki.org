@@ -140,7 +140,6 @@ extensions
 ==Installing Custom Emacs Builds==
 * [[CategoryBuilding|Building]] -- building Emacs from source code
 * [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
-* [[CategoryWSL|WSL]] -- Windows 10: installing Emacs 25 in WSL (Windows Subsystem for Linux)
 
 [:Bugs]
 ==Emacs Bugs==
