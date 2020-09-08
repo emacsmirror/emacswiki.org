@@ -21,6 +21,7 @@ Here are the pages for platforms / distributions with binary packages:
 * EmacsOnAndroid -- run Emacs on your google phone
 * MaemoEmacs -- Emacs on Nokia N800, N810, N900
 * EmacsForChromeBooks -- run Emacs on a ChromeBook or in the Chrome browser
+* [[Emacs and the Windows Subsystem for Linux]] (WSL)
 
 How well alternate versions of
 emacs match the capabilities of Emacs and XEmacs is documented
