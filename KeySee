@@ -2,7 +2,7 @@ This page is about library '''<tt>[[keysee.el]]</tt>''', which provides completi
 
 It is essentially a reduced-functionality version of [[https://www.emacswiki.org/emacs/Icicles_-_Key_Completion|Icicles key completion]].
 
-Turn on minor mode '''`kc-mode'''' to enable completion on demandwhenever you hit '''`S-TAB'''', for keys and menu-bar menus.  (You can customize the key(s) for this, using [[option]] '''`kc-completion-keys''''.)
+Turn on minor mode '''`kc-mode'''' to enable completion on demand whenever you hit '''`S-TAB'''', for keys and menu-bar menus.  (You can customize the key(s) for this, using [[option]] '''`kc-completion-keys''''.)
 
 This means you can hit `S-TAB' at ''top level'', to see all possible
 keys, or ''after any prefix key'', to see all possible keys at that
