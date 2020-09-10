@@ -303,6 +303,16 @@ I have some buffer groups that i prefer do be collapsed by default. Since i foun
 (ad-activate 'ibuffer)
 </pre>
 
+Another way to do this is to add the names of the groups to be hidden to the '''`ibuffer-hidden-filter-groups'''' variable in '''`ibuffer-mode-hook'''':
+<pre>
+(add-hook 'ibuffer-mode-hook
+  (lambda ()
+    (ibuffer-switch-to-saved-filter-groups "default")
+    (setq ibuffer-hidden-filter-groups (list "Helm" "*Internal*"))
+    (ibuffer-update nil t)
+  )
+)
+</pre>
 
 
 == Wraparound Cursor Movement ==
