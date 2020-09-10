@@ -2,7 +2,11 @@ If you enjoy playing on a MUSH or a MUD, you need a mode for it.  You can of cou
 
 But there are other alternatives -- mu.el and [[eMUDs]].  Some of us use Lisp:mudel.el written by JorgenSchaefer.
 
-= mu.el =
+== RMOO =
+
+[https://github.com/lisdude/rmoo RMOO], with an eye to do actual programming.
+
+== mu.el =
 
 Mu uses ComintMode to do its job.  This has the added benefit of providing you with an entire communication infrastructure.  MinibufferHistory, moving between prompts, highlighting of SGR (escape sequences controlling colors on a tty) using AnsiColor, etc. 
 
@@ -12,7 +16,7 @@ Get it from https://gitlab.com/aidalgol/mu.el
 
 mu.el was written by AlexSchroeder (still available here: Lisp:mu.el), and [[aidalgol|AidanGauland]] forked it in 2013.
 
-== colors ==
+=== colors ==
 
 Use AnsiColor.  Here's how to install it in your ~/.emacs:
 
