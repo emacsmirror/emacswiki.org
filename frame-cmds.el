@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Fri Dec 13 17:41:12 2019 (-0800)
+;; Last-Updated: Sun Sep 13 14:15:03 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 3181
+;;     Update #: 3182
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -137,7 +137,7 @@
 ;;    `tile-frames-horizontally', `tile-frames-side-by-side',
 ;;    `tile-frames-top-to-bottom', `tile-frames-vertically',
 ;;    `toggle-max-frame', `toggle-max-frame-horizontally',
-;;    `toggle-max-frame-vertically'.
+;;    `toggle-max-frame-vertically', `toggle-menu-bar-for-frame'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -292,6 +292,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/13 dadams
+;;     Added: toggle-menu-bar-for-frame.
 ;; 2019/12/13 dadams
 ;;     Added: frcmds-repeat-command, (enlarge|shrink)-window(-horizontally)-repeat,
 ;;            enlarge/shrink-window(-repeat).
@@ -858,6 +860,15 @@ A negative prefix arg deiconifies all iconified frames."
   (select-window (posn-window (event-start event)))
   (when rename-frame-when-iconify-flag (rename-non-minibuffer-frame))
   (iconify-or-deiconify-frame))
+
+;;;###autoload
+(defun toggle-menu-bar-for-frame (&optional frame)
+  "Toggle showing the menu-bar for selected frame.
+When called from Lisp, optional arg FRAME is used instead of the
+selected frame."
+  (interactive)
+  (let ((now  (or (frame-parameter frame 'menu-bar-lines)  0)))
+    (set-frame-parameter frame 'menu-bar-lines (if (zerop now) 1 0))))
 
 
 
