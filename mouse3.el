@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:07:26 2018 (-0800)
+;; Last-Updated: Sun Sep 13 10:51:00 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 1810
+;;     Update #: 1829
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -18,8 +18,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-fns', `isearch+', `misc-cmds', `misc-fns',
-;;   `naked', `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `color', `frame-fns', `gv', `hexrgb', `isearch+',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `naked',
+;;   `strings', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -39,12 +41,40 @@
 ;; there are often other actions on the selected text that you might
 ;; want to take instead.
 ;;
-;; The redefined `mouse-save-then-kill' command in `mouse3.el' just
-;; uses function `mouse3-second-click-command' to handle a second
-;; click at the same spot.  That function returns the command that
+;; The redefined `mouse-save-then-kill' command in `mouse3.el' uses
+;; function `mouse3-second-click-command' to handle a `mouse-3' click.
+;;
+;; If option `mouse3-menu-always-flag' is nil (default value) then
+;; only a second click at the same spot does this.  If non-nil then
+;; every `mouse-3' click does this.
+;;
+;; Non-nil `mouse3-menu-always-flag' is not recommended, but it might
+;; be preferred by some new users who always expect a `mouse-3'
+;; context menu.  Non-nil means you cannot take advantage of the
+;; normal Emacs `mouse-3' behavior of selecting and deleting text.
+;; This includes the ability to extend the selection by increments
+;; determined by multiple-click selection.
+;;
+;; If you're not used to the Emacs `mouse-3' behavior of extending the
+;; existing selection, take the time to read about it on page `Mouse
+;; Commands' of the Emacs manual: `C-h r g Mouse Commands'.  You may
+;; be surprised how useful it is.  In particular, this:
+;;
+;;   If you originally specified the region using a double or triple
+;;   `mouse-1', so that the region is defined to consist of entire
+;;   words or lines (*note Word and Line Mouse::), then adjusting the
+;;   region with `mouse-3' also proceeds by entire words or lines.
+;;
+;; Library `mouse3.el' is specially designed to let you take advantage
+;; of this feature but _also_ be able to use `mouse-3' to show a
+;; context menu.  Setting option `mouse3-menu-always-flag' to non-nil
+;; gives you the context menu but removes the Emacs `mouse-3' feature
+;; of extending the selection.
+;;
+;; Function `mouse3-second-click-command' returns the command that
 ;; `mouse-save-then-kill' invokes: either the command that is the
 ;; value of variable `mouse3-save-then-kill-command' or, if that is
-;; nil the command that is the value of user option
+;; nil then the command that is the value of user option
 ;; `mouse3-second-click-default-command'.
 ;;
 ;; Special contexts can bind variable `mouse3-save-then-kill-command'
@@ -256,7 +286,7 @@
 ;; User options defined here:
 ;;
 ;;   `mouse3-dired-function', `mouse3-double-click-command',
-;;   `mouse3-noregion-popup-entries',
+;;   `mouse3-menu-always-flag', `mouse3-noregion-popup-entries',
 ;;   `mouse3-noregion-popup-x-popup-panes',
 ;;   `mouse3-picture-mode-x-popup-panes',
 ;;   `mouse3-popup-include-global-menus-flag',
@@ -280,8 +310,7 @@
 ;;   `mouse3-dired-add-region-menu',
 ;;   `mouse3-dired-set-to-toggle-marks',
 ;;   `mouse3-dired-this-file-marked-p',
-;;   `mouse3-dired-this-file-unmarked-p',
-;;   `mouse3-dired-toggle-marks-in-region', `mouse3-ffap-guesser',
+;;   `mouse3-dired-this-file-unmarked-p', `mouse3-ffap-guesser',
 ;;   `mouse3-file-or-dir', `mouse3-nonempty-region-p',
 ;;   `mouse3-region-popup-choice', `mouse3-region-popup-choice-1',
 ;;   `mouse3-region-popup-custom-entries',
@@ -315,6 +344,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/13 dadams
+;;     Added option mouse3-menu-always-flag.
+;;     mouse-save-then-kill: respect mouse3-menu-always-flag.
+;;     Updated commentary description.
+;; 2020/03/10 dadams
+;;     mouse3-dired-(un)mark-region-files, mouse3-dired-flag-region-files-for-deletion:
+;;       Added (when (bolp) (backward-char)) for end pos (Emacs bug #39902).
 ;; 2017/11/12 dadams
 ;;     Added: mouse3-region-popup-search/replace-submenu.
 ;;     mouse3-region-popup-x-popup-panes: Added Search/Replace entries.
@@ -577,6 +613,22 @@ single-click event.  See `(elisp) Repeat Events'."
          (global-set-key [right-fringe double-mouse-3] value))
   :initialize 'custom-initialize-set
   :group 'mouse3)
+
+;;;###autoload
+(defcustom mouse3-menu-always-flag nil
+  "Non-nil means `mouse-3' always shows a menu.
+If nil, `mouse-3' behavior respects options
+`mouse3-second-click-default-command' and
+`mouse3-double-click-command'.
+
+Non-nil is not recommended, but it might be preferred by some new
+users who always expect a `mouse-3' context menu.
+
+Non-nil means you cannot take advantage of the normal Emacs `mouse-3'
+behavior of selecting and deleting text.  This includes the ability to
+extend the selection by increments determined by multiple-click
+selection."
+  :type 'boolean :group 'mouse3)
 
 ;;;###autoload
 (defcustom mouse3-popup-include-global-menus-flag t
@@ -1829,7 +1881,8 @@ is the menu title and PANE-TITLE is a submenu title.
 
 ;; REPLACE ORIGINAL in `mouse.el'.
 ;;
-;; 1. Use `mouse3-second-click-command' to determine the action for a second `mouse-3' click.
+;; 1. Use `mouse3-second-click-command' to determine the action for a `mouse-3' click.
+;;    If `mouse3-menu-always-flag' is non-nil, use it always.  If nil, use it on second click.
 ;; 2. Added optional arg PREFIX.
 ;;
 ;;;###autoload
@@ -1848,9 +1901,11 @@ is the menu title and PANE-TITLE is a submenu title.
                             mouse-selection-click-count
                           0)))
     (cond ((not (numberp click-pt)) nil)
-          ((and (eq last-command 'mouse-save-then-kill) ; User clicked without moving point.
-                (eq click-pt mouse-save-then-kill-posn)
-                (eq window (selected-window)))
+          ((or mouse3-menu-always-flag
+	       ;; Second click, same spot.
+	       (and (eq last-command 'mouse-save-then-kill) ; User clicked without moving point.
+                    (eq click-pt mouse-save-then-kill-posn)
+                    (eq window (selected-window))))
            (funcall (mouse3-second-click-command) click prefix)
            (setq mouse-selection-click-count  0
                  mouse-save-then-kill-posn    nil))
@@ -1961,7 +2016,7 @@ If you use Dired+ (`dired+.el') then this is a no-op."
 ;;; Only the prefix was changed, from `diredp-' to `mouse3-dired-'.
 
 ;;;###autoload
-(defun mouse3-dired-toggle-marks-in-region (start end) ; Same as `diredp-toggle-marks-in-region.
+(defun mouse3-dired-toggle-marks-in-region (start end) ; Same as `diredp-toggle-marks-in-region'.
   "Toggle marks in the region."
   (interactive "r")
   (save-excursion
@@ -1975,6 +2030,7 @@ If you use Dired+ (`dired+.el') then this is a no-op."
             (goto-char start)
             (setq start  (line-beginning-position))
             (goto-char end)
+            (when (bolp) (backward-char)) 
             (setq end    (line-end-position))
             (narrow-to-region start end)
             (dired-do-toggle)
@@ -2015,7 +2071,7 @@ With non-nil prefix arg, unmark them instead."
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
     (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
-          end  (save-excursion (goto-char end) (line-end-position)))
+          end  (save-excursion (goto-char end) (when (bolp) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p))
                      "region file"))))
@@ -2029,7 +2085,7 @@ With non-nil prefix arg, mark them instead."
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
     (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
-          end  (save-excursion (goto-char end) (line-end-position)))
+          end  (save-excursion (goto-char end) (when (bolp) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  (if mark-p dired-marker-char ?\040)))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-marked-p))
                      "region file"))))
@@ -2042,7 +2098,7 @@ With non-nil prefix arg, mark them instead."
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
     (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
-          end  (save-excursion (goto-char end) (line-end-position)))
+          end  (save-excursion (goto-char end) (when (bolp) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  dired-del-marker))
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p ?\D))
                      "region file"))))
