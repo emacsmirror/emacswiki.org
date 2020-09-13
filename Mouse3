@@ -114,11 +114,52 @@ second single-click, not on a double-click or (b) let
 `mouse3-kill/delete-region'.
 
 
-What if I just want `mouse-3' to *always* pop up the menus that library ##mouse3.el## provides?  That is, I don't want to do that only when I click again at the same spot.  To get that behavior, customize option `mouse3-menu-always-flag' to non-`nil'.
+
+
+----
+
+What if you just want `mouse-3' to ''always'' pop up the menus that library ##mouse3.el## provides?  That is, you don't want to do that only when you click again at the same spot.
+
+To get that behavior, customize option `mouse3-menu-always-flag' to non-`nil'.
 
 I do *not* recommend this, however, as it means you lose the great Emacs `mouse-3' behavior of extending (or deleting) the selection.  But some new Emacs users who always expect a `mouse-3'
 context menu might prefer this behavior.
 
+If you're sure that you never want the usual `mouse-3' behavior
+(select, delete, or extend/reduce the region), then an alternative way to
+get the same behavior as setting option `mouse3-menu-always-flag'
+to non-`nil' is to bind `mouse-3' to command
+`mouse3-action-wo-save-then-kill':
+
+    (global-set-key [mouse-3] 'mouse3-action-wo-save-then-kill).
+
+But the option lets you leave the standard key binding
+(`mouse-save-then-kill') as is.  Then you can easily change the
+behavior by changing the option value.  Again, though, I don't
+recommend such behavior.
+
+If you're not used to the Emacs `mouse-3' behavior of
+extending/reducing/deleting the existing selection, take some time
+to read about it on the [[Manual:Mouse Commands]] page of the Emacs manual:
+`C-h r g Mouse Commands'.  You might be surprised how useful it is.
+In particular:
+
+  If you originally specified the region using a double or triple
+  `mouse-1', so that the region is defined to consist of entire
+  words or lines, then adjusting the region with `mouse-3' also
+  proceeds by entire words or lines.
+
+You can triple-click to select a line, then click `mouse-3' to add
+the `mouse-3'-clicked line and all intervening lines to the
+selection.  Or if you click `mouse-3' within the existing selection
+of lines then the selection loses, instead of gains, lines.
+
+Library ##mouse3.el## is specially designed to let you take advantage
+of this feature but _also_ be able to use `mouse-3' to show a
+context menu or perform some other action.  Setting option
+`mouse3-menu-always-flag' to non-`nil' gives you the alternative
+action (e.g. show a menu), but it removes the Emacs `mouse-3'
+selection features.
 
 
 
