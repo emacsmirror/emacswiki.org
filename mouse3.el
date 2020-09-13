@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 13 10:51:00 2020 (-0700)
+;; Last-Updated: Sun Sep 13 16:28:49 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 1829
+;;     Update #: 1877
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -34,42 +34,66 @@
 ;; way to give you custom behavior for a second `mouse-3' click at the
 ;; same spot.
 ;;
-;; Vanilla Emacs hard-wires the behavior to kill or delete the region
-;; (depending on the value of `mouse-drag-copy-region').  That action
-;; can be handy, but it is sometimes inappropriate (e.g., in a
-;; read-only buffer).  In any case, it is only one possible action;
-;; there are often other actions on the selected text that you might
-;; want to take instead.
+;; Vanilla Emacs hard-wires the `mouse-3' behavior.  For example, if
+;; you click it twice at the same spot then it kills or deletes the
+;; region (depending on the value of `mouse-drag-copy-region').
+;;
+;; The hard-wired action can be handy, but sometimes (e.g., deleting
+;; in a read-only buffer) it's inappropriate.  In any case, it's only
+;; one possible action.  There are often other actions that you might
+;; want to take instead, either regarding text selection or something
+;; else.
 ;;
 ;; The redefined `mouse-save-then-kill' command in `mouse3.el' uses
 ;; function `mouse3-second-click-command' to handle a `mouse-3' click.
 ;;
-;; If option `mouse3-menu-always-flag' is nil (default value) then
-;; only a second click at the same spot does this.  If non-nil then
-;; every `mouse-3' click does this.
+;; By default, only a second click at the same spot does this.  This
+;; lets you take advantage of both the usual Emacs `mouse-3' behavior
+;; of selecting or deleting text, and then, with a second click at the
+;; same spot, to get another behavior, typically to show a popup menu.
 ;;
-;; Non-nil `mouse3-menu-always-flag' is not recommended, but it might
-;; be preferred by some new users who always expect a `mouse-3'
-;; context menu.  Non-nil means you cannot take advantage of the
-;; normal Emacs `mouse-3' behavior of selecting and deleting text.
-;; This includes the ability to extend the selection by increments
-;; determined by multiple-click selection.
+;; I recommend this default behavior.  But if you customize option
+;; `mouse3-menu-always-flag' to non-nil then every `mouse-3' click
+;; gives you only that other behavior (e.g. show a menu).  In this
+;; case, you can't take advantage of `mouse-3' clicks to select, or
+;; extend/reduce/delete the selection.  This includes the ability to
+;; extend/reduce by increments determined by multiple-click selection.
 ;;
-;; If you're not used to the Emacs `mouse-3' behavior of extending the
-;; existing selection, take the time to read about it on page `Mouse
-;; Commands' of the Emacs manual: `C-h r g Mouse Commands'.  You may
-;; be surprised how useful it is.  In particular, this:
+;; If you're sure that you never want the usual `mouse-3' behavior
+;; (select, delete, or extend/reduce the region), then an alternative
+;; way to get the same behavior as setting option
+;; `mouse3-menu-always-flag' to non-nil is to bind `mouse-3' to
+;; command `mouse3-action-wo-save-then-kill':
+;;
+;;   (global-set-key [mouse-3] 'mouse3-action-wo-save-then-kill).
+;;
+;; But the option lets you leave the standard key binding
+;; (`mouse-save-then-kill') as is.  Then you can easily change the
+;; behavior by changing the option value.  Again, though, I don't
+;; recommend such behavior.
+;;
+;; If you're not used to the Emacs `mouse-3' behavior of
+;; extending/reducing/deleting the existing selection, take some time
+;; to read about it on the `Mouse Commands' page of the Emacs manual:
+;; `C-h r g Mouse Commands'.  You might be surprised how useful it is.
+;; In particular:
 ;;
 ;;   If you originally specified the region using a double or triple
 ;;   `mouse-1', so that the region is defined to consist of entire
-;;   words or lines (*note Word and Line Mouse::), then adjusting the
-;;   region with `mouse-3' also proceeds by entire words or lines.
+;;   words or lines, then adjusting the region with `mouse-3' also
+;;   proceeds by entire words or lines.
+;;
+;; You can triple-click to select a line, then click `mouse-3' to add
+;; the `mouse-3'-clicked line and all intervening lines to the
+;; selection.  Or if you click `mouse-3' within the existing selection
+;; of lines then the selection loses, instead of gains, lines.
 ;;
 ;; Library `mouse3.el' is specially designed to let you take advantage
 ;; of this feature but _also_ be able to use `mouse-3' to show a
-;; context menu.  Setting option `mouse3-menu-always-flag' to non-nil
-;; gives you the context menu but removes the Emacs `mouse-3' feature
-;; of extending the selection.
+;; context menu or perform some other action.  Setting option
+;; `mouse3-menu-always-flag' to non-nil gives you the alternative
+;; action (e.g. show a menu), but it removes the Emacs `mouse-3'
+;; selection features.
 ;;
 ;; Function `mouse3-second-click-command' returns the command that
 ;; `mouse-save-then-kill' invokes: either the command that is the
@@ -297,7 +321,8 @@
 ;;
 ;; Commands defined here:
 ;;
-;;   `mouse3-dired', `mouse3-dired-flag-region-files-for-deletion',
+;;   `mouse3-action-wo-save-then-kill', `mouse3-dired',
+;;   `mouse3-dired-flag-region-files-for-deletion',
 ;;   `mouse3-dired-mark-region-files', `mouse3-dired-other-window',
 ;;   `mouse3-dired-toggle-marks-in-region',
 ;;   `mouse3-dired-toggle-marks-in-region-from-mouse',
@@ -345,7 +370,7 @@
 ;;; Change Log:
 ;;
 ;; 2020/09/13 dadams
-;;     Added option mouse3-menu-always-flag.
+;;     Added option mouse3-menu-always-flag, mouse3-action-wo-save-then-kill.
 ;;     mouse-save-then-kill: respect mouse3-menu-always-flag.
 ;;     Updated commentary description.
 ;; 2020/03/10 dadams
@@ -1887,7 +1912,29 @@ is the menu title and PANE-TITLE is a submenu title.
 ;;
 ;;;###autoload
 (defun mouse-save-then-kill (click &optional prefix)
-  "Like vanilla `mouse-save-then-kill', but uses `mouse3-second-click-command'."
+  "Act on the region according to CLICK, a mouse click event.
+Assuming this command is bound to `mouse-3':
+
+* If double-clicked then kill the region (or delete it if
+  `mouse-drag-copy-region' is non-nil).
+
+* If clicked twice in succession at the same place (slower than a
+  double-click), then use `mouse3-save-then-kill-command', if non-nil,
+  else `mouse3-second-click-default-command'.
+
+* Otherwise:
+
+  If the region is inactive, activate it.  Set mark at the original
+  point, and move point to the position of CLICK.
+
+  If the region is already active, adjust it.  Normally, do this by
+  moving point or mark, whichever is closer, to CLICK.  But if you
+  have selected whole words or lines, then move point or mark to the
+  word or line boundary closest to CLICK instead.
+
+  If `mouse-drag-copy-region' is non-nil, this command also saves the
+  new region to the kill ring (replacing the previous kill if the
+  previous region was just saved to the kill ring)."
   (interactive "e\nP")
   (mouse-minibuffer-check click)
   (let* ((posn          (event-start click))
@@ -1943,6 +1990,25 @@ is the menu title and PANE-TITLE is a submenu title.
                  (kill-new (filter-buffer-substring (mark t) (point))))
              (kill-new (buffer-substring (point) (mark t)))) ; Emacs 20 & 21.
            (setq mouse-save-then-kill-posn  click-pt)))))
+
+;;;###autoload
+(defun mouse3-action-wo-save-then-kill (click &optional prefix)
+  "Command determined by `mouse3' options.
+It is the value of `mouse3-save-then-kill-command' if non-nil, else
+it is the value of `mouse3-second-click-default-command'.
+
+You can bind this to `mouse-3' as an alternative to setting option
+`mouse3-menu-always-flag' to non-nil:
+
+  (global-set-key [mouse-3] 'mouse3-action-wo-save-then-kill)
+
+Like a non-nil value for `mouse3-menu-always-flag', this is not
+recommended, but some users might prefer it to the Emacs way, which is
+to provide `mouse-save-then-kill' behavior."
+  (interactive "e\nP")
+  (funcall (mouse3-second-click-command) click prefix)
+  (setq mouse-selection-click-count  0
+        mouse-save-then-kill-posn    nil))
  
 ;;; Behavior for particular modes.
 
