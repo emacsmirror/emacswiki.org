@@ -114,6 +114,11 @@ second single-click, not on a double-click or (b) let
 `mouse3-kill/delete-region'.
 
 
+What if I just want `mouse-3' to *always* pop up the menus that library ##mouse3.el## provides?  That is, I don't want to do that only when I click again at the same spot.  To get that behavior, customize option `mouse3-menu-always-flag' to non-`nil'.
+
+I do *not* recommend this, however, as it means you lose the great Emacs `mouse-3' behavior of extending (or deleting) the selection.  But some new Emacs users who always expect a `mouse-3'
+context menu might prefer this behavior.
+
 
 
 
