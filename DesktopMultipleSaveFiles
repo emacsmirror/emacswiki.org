@@ -68,3 +68,25 @@ The first two lines check for the existence of the environment variable EMACSSAV
 
 [new:DrewAdams:2017-02-28 14:53 UTC]
 If you use [[Bookmark+]] then you can easily have any number of desktops and flip between them simply. It's as easy as doing '''`C-x p K'''', to bookmark the current desktop (saving it to a desktop file), and '''`C-x j K'''' to jump to a desktop bookmark (restoring that desktop).  You give each desktop bookmark a name, and use that name (with completion) to update the desktop or jump to it.  Your desktop files can be located anywhere.  In particular, you can have more than one desktop file in the same directory. -- DrewAdams
+
+[new:rjhwelsh:2020-09-17]
+I use an md5 of the commandline arguments to save the desktop for when I am editing a particular project.
+Typically, I just point emacs to the directory I want and proceed from there.
+
+Commandline example.
+<pre>
+/usr/bin/emacs /a/new/project
+</pre>
+
+Emacs customization.
+<pre>
+   ;; Hash representing session
+  (setq desktop-hash 
+     (secure-hash 'md5 (apply 'concat command-line-args)))
+  ;; Adjusted desktop names, kept in a default single directory
+  (setq 
+      desktop-base-file-name (concat ".emacs.desktop" desktop-hash)
+      desktop-base-lock-name (concat ".emacs.desktop" desktop-hash ".lock"))
+</pre>
+
+-- rjhwelsh
