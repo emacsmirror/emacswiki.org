@@ -19,3 +19,27 @@ https://bugzilla.redhat.com/show_bug.cgi?id=1859417
 
 -- Anonymous 2020-09-17 02:51 UTC
 
+
+----
+
+could not find anything meaningful about this after searching web.
+I am using fedora32, Xorg, mate desktop + marco window manager, 
+xterm, and emacs -nw, and dired mode with OpenWith melpa emacs package.
+it is very common to work e.g. on a list of items in emacs dired mode,
+successively launching a second Xorg window (e.g. a pdf viewer)
+to deal with each item.  when done with the second window, 
+return to where you were in the first window.  
+This has always been the standard.
+
+Focus switches from the emacs window to 
+the pdf viewer (e.g. evince).  
+When I close the pdf file (evince), NO WINDOW has the
+focus.  I would expect the emacs window to have the focus.
+This same behavior may apply to other applications, not just emacs, 
+xterm and evince.  I am also suspicious that mate/marco are to blame.
+I think the problem may go away when you switch from marco to compiz either running under mate.
+posted also on 
+https://bugzilla.redhat.com/show_bug.cgi?id=1859417
+
+-- Anonymous 2020-09-17 02:57 UTC
+
