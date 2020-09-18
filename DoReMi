@@ -76,6 +76,9 @@ The `doremi' command is just a start. The main aim is to ''suggest the kind of t
 
 To test the idea out, and also to provide a few useful commands, I wrote libraries '''<tt>[[doremi-frm.el]]</tt>''', '''<tt>[[doremi-cmd.el]]</tt>''', and '''<tt>[[thumb-frm.el]]</tt>''', which provide commands that use the arrow keys and mouse wheel to change things incrementally or cycle through enumerations.
 
+
+[:doremi-frm.el]
+[:doremi-cmd.el]
 For example, these are some of the commands defined in '''<tt>[[doremi-frm.el]]</tt>''' and '''<tt>[[doremi-cmd.el]]</tt>''' :
 
 * `'''<tt>doremi-window-width+</tt>'''' and `'''<tt>doremi-window-height+</tt>'''' -- Change ''width'' and ''height'' of a window incrementally.
