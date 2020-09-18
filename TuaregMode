@@ -14,10 +14,10 @@ To install, put the Tuareg files in ~/.elisp/tuareg-mode and add the following t
     (add-to-list 'load-path "~/.elisp/tuareg-mode")
     (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
     (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
-    (autoload 'tuareg-imenu-set-imenu "tuareg-imenu" 
-      "Configuration of imenu for tuareg" t) 
+    (autoload 'tuareg-imenu-set-imenu "tuareg-imenu" ; tuareg-imenu.el is not part of in Tuareg 2.2.0,
+      "Configuration of imenu for tuareg" t)         ; so this is unlikely to work
 
-    (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+    (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu) ; does not work in Tuareg 2.2.0
 
     (setq auto-mode-alist 
         (append '(("\\.ml[ily]?$" . tuareg-mode)
