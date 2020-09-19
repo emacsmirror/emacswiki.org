@@ -76,3 +76,5 @@ Tools and Utilities
 
 * HmacShaOne -- Generate HMAC-SHA1 authentication codes
 * OAuthLibrary -- Authentication using OAuth
+* GoTranslate -- Google Translate interface
+* GoogleTranslate -- Google Translate interface
