@@ -3,7 +3,11 @@ Improved Google Translate interface with asynchronous request and better user ex
 https://github.com/lorniu/go-translate
 
 Main features are:
+
 - Completely **asynchronous**, without any blocking problems, so very smoothly
+
 - Optimize the display of translation results, the interface is more **beautiful** and natural
+
 - It is **convenient** for switch between different languages, and support many interactive operations
+
 - The code is clean, and **easy to expand**. New functions can be constructed very simply
