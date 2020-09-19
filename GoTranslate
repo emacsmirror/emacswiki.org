@@ -4,8 +4,7 @@ Improved Google Translate interface with asynchronous request and better user ex
 
 https://github.com/lorniu/go-translate
 
-== Main features ==
-
+Main features:
 # Completely **asynchronous**, without any blocking problems, so very smoothly
 # Optimize the display of translation results, the interface is more **beautiful** and natural
 # It is **convenient** for switch between different languages, and support many interactive operations
@@ -45,7 +44,7 @@ If you have any other translation plans, then put them into go-translate-extra-d
 
 ;; or
 (setq go-translate-extra-directions '(("ja" . "ru") ("en" . "fr")))
-<pre>
+</pre>
 
 Other customizations you can look into custom-group - go-translate, eg:
 
