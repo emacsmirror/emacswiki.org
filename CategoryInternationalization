@@ -42,6 +42,7 @@ Getting started:
 * TypographicalPunctuationMarks -- en-dashes, em-dashes and typographical quotation marks (aka "smart quotes")
 * TextTranslator -- text translation package
 * GoTranslate -- Google Translate interface
+* GoogleTranslate -- Google Translate interface
 * TransEJ -- English-Japanese translator using multiple Web translation services
 * Lisp:eijiro.el -- Search Eijiro, Japanese <=> English dictionary, with [[Anything]]
 * [https://www.mojotech.com/blog/automating-internationalization-workflow-in-emacs/ Internationalization WorkFlow]
