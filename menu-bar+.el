@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:59:18 2020 (-0700)
+;; Last-Updated: Sun Sep 20 08:47:09 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 3829
+;;     Update #: 3841
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -108,8 +108,9 @@
 ;;    `menu-bar-edit-sort-menu', `menu-bar-emacs-lisp-manual-menu',
 ;;    `menu-bar-emacs-manual-menu', `menu-bar-frames-menu',
 ;;    `menu-bar-i-search-menu' (Emacs < 22),
-;;    `menu-bar-search-replace-menu', `menu-bar-search-tags-menu',
-;;    `menu-bar-whereami-menu', `yank-menu'.
+;;    `menu-bar-non-i-search-menu', `menu-bar-search-replace-menu',
+;;    `menu-bar-search-tags-menu', `menu-bar-whereami-menu',
+;;    `yank-menu'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `menu-bar.el' have
@@ -134,6 +135,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/20 dadams
+;;     Added: menu-bar-non-i-search-menu as Search > Incremental Search.
+;;     Removed: menu-bar-i-search-menu for Emacs 22+ (not needed).
+;;     Move nonincremental search items to it.  (For Emacs 23+ only - don't bother for < 23.)
 ;; 2020/08/14 dadams
 ;;     describe-menubar: Use help-print-return-message, not print-help-return-message.
 ;; 2020/01/22 dadams
@@ -453,6 +458,7 @@
 
 ;; To quiet the Emacs 20 byte compiler
 (defvar menu-bar-goto-menu)
+(defvar menu-bar-i-search-menu)
 (defvar menu-bar-last-search-type)
 (defvar menu-bar-select-buffer-function)
 (unless (> emacs-major-version 23) (defvar menu-barp-select-buffer-function))
@@ -1151,6 +1157,7 @@ A prefix argument means justify as well as fill."
 (define-key menu-bar-edit-sort-menu [reverse-region]
   '(menu-item "Reverse" reverse-region :help "Reverse the order of the selected lines"))
 
+
 ;;; `Search' menu.
 (when (< emacs-major-version 22)
   (defun nonincremental-repeat-word-search-forward ()
@@ -1217,26 +1224,6 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (defalias 'menu-bar-search-replace-menu (symbol-value 'menu-bar-search-replace-menu))
 (define-key menu-bar-search-menu [replace] (cons "Replace" menu-bar-search-replace-menu))
 
-(unless (< emacs-major-version 22)
-  (defvar menu-bar-i-search-menu
-    (make-sparse-keymap "Incremental Search"))
-  (define-key menu-bar-i-search-menu [isearch-backward-regexp]
-    '(menu-item "     Backward..." isearch-backward-regexp
-      :help "Search backwards for a regular expression as you type it"))
-  (define-key menu-bar-i-search-menu [isearch-forward-regexp]
-    '(menu-item "Regexp Forward..." isearch-forward-regexp
-      :help "Search forward for a regular expression as you type it"))
-  (define-key menu-bar-i-search-menu [isearch-backward]
-    '(menu-item "     Backward..." isearch-backward
-      :help "Search backwards for a literal string as you type it"))
-  (define-key menu-bar-i-search-menu [isearch-forward]
-    '(menu-item "Forward..." isearch-forward
-      :help "Search forward for a literal string as you type it"))
-  (define-key menu-bar-search-menu [i-search]
-    (list 'menu-item "Incremental Search" menu-bar-i-search-menu))
-  ;;--------------------
-  (define-key menu-bar-search-menu [separator-search-replace] '("--")))
-
 (when (< emacs-major-version 22)
   ;;--------------------
   (define-key menu-bar-search-menu [separator-search-word] '("--"))
@@ -1286,7 +1273,28 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   (define-key menu-bar-search-menu [search-forward]
     '(menu-item "Forward..." nonincremental-search-forward :help "Search forward for a string")))
 
+
+;;; `Search' > `Xref' submenu.
+(when (boundp 'menu-bar-search-xref-menu)
+
+  (define-key menu-bar-search-xref-menu [xref-pop]
+    '(menu-item "Back" xref-pop-marker-stack
+                :visible (and (featurep 'xref)  (not (xref-marker-stack-empty-p)))
+                :help "Back to the position of the last search"))
+  (define-key menu-bar-search-xref-menu [xref-apropos]
+    '(menu-item "Find Apropos..." xref-find-apropos
+                :help "Find function/variables whose names match regexp"))
+  (define-key menu-bar-search-xref-menu [xref-find-otherw]
+    '(menu-item "Find Definition in Other Window..." xref-find-definitions-other-window
+                :help "Find tags matching a regexp"))
+  (define-key menu-bar-search-xref-menu [xref-find-def]
+    '(menu-item "Find Definition..." xref-find-definitions
+                :help "Find definition of function or variable")))
+
+
+;;; `Search' > `Nonincremental Search' submenu.
 (unless (< emacs-major-version 22)
+
   (defun nonincremental-repeat-search-forward ()
     "Search forward for the previous search string or regexp."
     (interactive)
@@ -1327,54 +1335,62 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       (isearch-update-ring word nil)
       (word-search-backward word)))
 
-  (define-key menu-bar-search-menu [repeat-search-back]
+  (defvar menu-bar-non-i-search-menu
+    (make-sparse-keymap "Nonincremental Search"))
+
+  (define-key menu-bar-non-i-search-menu [repeat-search-back]
     '(menu-item "     Backward" nonincremental-repeat-search-backward
-      :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
-               (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
-      :help "Repeat last search backward"))
-  (define-key menu-bar-search-menu [repeat-search-fwd]
+                :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
+                            (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
+                :help "Repeat last nonincremental search backward"))
+  (define-key menu-bar-non-i-search-menu [repeat-search-fwd]
     '(menu-item "Repeat Forward" nonincremental-repeat-search-forward
-      :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
-               (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
-      :help "Repeat last search forward"))
+                :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
+                            (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
+                :help "Repeat last nonincremental search forward"))
   ;;--------------------
-  (define-key menu-bar-search-menu [separator-repeat-search] '(menu-item "--"))
-  (define-key menu-bar-search-menu [menu-bar-word-search-backward]
+  (define-key menu-bar-non-i-search-menu [separator-repeat-search] '(menu-item "--"))
+  (define-key menu-bar-non-i-search-menu [menu-bar-word-search-backward]
     '(menu-item "     Backward..." menu-bar-word-search-backward
-      :help "Search backward, ignoring differences in punctuation"))
-  (define-key menu-bar-search-menu [menu-bar-word-search-forward]
+                :help "Search backward nonincrementally, ignoring differences in punctuation"))
+  (define-key menu-bar-non-i-search-menu [menu-bar-word-search-forward]
     '(menu-item "Word Forward..." menu-bar-word-search-forward
-      :help "Search forward, ignoring differences in punctuation"))
-  (define-key menu-bar-search-menu [re-search-backward]
+                :help "Search forward nonincrementally, ignoring differences in punctuation"))
+  (define-key menu-bar-non-i-search-menu [re-search-backward]
     '(menu-item "     Backward..." nonincremental-re-search-backward
-      :help "Search backward for a regular expression"))
-  (define-key menu-bar-search-menu [re-search-forward]
+                :help "Search backward nonincrementally for a regular expression"))
+  (define-key menu-bar-non-i-search-menu [re-search-forward]
     '(menu-item "Regexp Forward..." nonincremental-re-search-forward
-      :help "Search forward for a regular expression"))
-  (define-key menu-bar-search-menu [search-backward]
+                :help "Search forward nonincrementally for a regular expression"))
+  (define-key menu-bar-non-i-search-menu [search-backward]
     '(menu-item "     Backward..." nonincremental-search-backward
-      :help "Search backward for a string"))
-  (define-key menu-bar-search-menu [search-forward]
-    '(menu-item "Forward..." nonincremental-search-forward :help "Search forward for a string")))
+                :help "Search backward nonincrementally for a string"))
+  (define-key menu-bar-non-i-search-menu [search-forward]
+    '(menu-item "Forward..." nonincremental-search-forward
+                :help "Search forward nonincrementally for a string"))
+  (define-key menu-bar-search-menu [non-i-search]
+    (list 'menu-item "Nonincremental Search" menu-bar-non-i-search-menu)))
 
 
-;;; `Search' > `Xref' submenu.
-(when (boundp 'menu-bar-search-xref-menu)
+;;; `Search' > `Incremental Search' submenu.
+(unless (< emacs-major-version 22)
 
-  (define-key menu-bar-search-xref-menu [xref-pop]
-    '(menu-item "Back" xref-pop-marker-stack
-                :visible (and (featurep 'xref)  (not (xref-marker-stack-empty-p)))
-                :help "Back to the position of the last search"))
-  (define-key menu-bar-search-xref-menu [xref-apropos]
-    '(menu-item "Find Apropos..." xref-find-apropos
-                :help "Find function/variables whose names match regexp"))
-  (define-key menu-bar-search-xref-menu [xref-find-otherw]
-    '(menu-item "Find Definition in Other Window..." xref-find-definitions-other-window
-                :help "Find tags matching a regexp"))
-  (define-key menu-bar-search-xref-menu [xref-find-def]
-    '(menu-item "Find Definition..." xref-find-definitions
-                :help "Find definition of function or variable"))
-  )
+  (define-key menu-bar-i-search-menu [isearch-backward-regexp]
+    '(menu-item "     Backward..." isearch-backward-regexp
+                :help "Search backwards for a regular expression as you type it"))
+  (define-key menu-bar-i-search-menu [isearch-forward-regexp]
+    '(menu-item "Regexp Forward..." isearch-forward-regexp
+                :help "Search forward for a regular expression as you type it"))
+  (define-key menu-bar-i-search-menu [isearch-backward]
+    '(menu-item "     Backward..." isearch-backward
+                :help "Search backwards for a literal string as you type it"))
+  (define-key menu-bar-i-search-menu [isearch-forward]
+    '(menu-item "Forward..." isearch-forward
+                :help "Search forward for a literal string as you type it"))
+  (define-key menu-bar-search-menu [i-search]
+    (list 'menu-item "Incremental Search" menu-bar-i-search-menu))
+  ;;--------------------
+  (define-key menu-bar-search-menu [separator-search-replace] '("--")))
 
 
 ;;; `Search' > `Tags' submenu.
