@@ -30,7 +30,6 @@ an inspector and a stepping Debugger.
 There are a number of helpful modes and elisp packages to working with javascript as well:
 * FlymakeJavaScript
 * [[Ejacs]], which is an Ecma-262 compliant Javascript interpreter written IN Emacs lisp
-* QuickMode to execute your current JS buffer
 * [EmacsJs emacs.js] aims to be a ready-to-use Emacs setup for JavaScript coding
 * [https://github.com/jakoblind/js-import js-import] Emacs package to automatically import JavaScript files from the current project or dependencies.
 * [https://github.com/magnars/js2-refactor.el js2-refactor] a minor mode providing a collection of refactorings for JavaScript.
