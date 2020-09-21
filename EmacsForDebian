@@ -19,7 +19,7 @@ One can find lots of Emacs-related Debian packages with [[http://www.debian.org/
 * AptMode -- easy running of Debian apt-related software from Emacs.
 * TinyDebian -- the TinyTools contains also a package with some utilities for Debian users;
   especially controlling [http://www.debian.org/Bugs/ Debian BTS] via mail interface.
-* AptUpgrade -- major mode for selecting packages to upgrade.
+* :( AptUpgrade :(  (Link dead since 2008!)-- major mode for selecting packages to upgrade.
 
 * Debian package `debian-el': Emacs helpers specific to Debian users.  Contains:
 
