@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 20 08:47:09 2020 (-0700)
+;; Last-Updated: Mon Sep 21 14:12:59 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 3841
+;;     Update #: 3846
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -135,6 +135,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/21 dadams
+;;     menu-bar-non-i-search-menu: Added :keys (suggestion from Juri Linkov).
 ;; 2020/09/20 dadams
 ;;     Added: menu-bar-non-i-search-menu as Search > Incremental Search.
 ;;     Removed: menu-bar-i-search-menu for Emacs 22+ (not needed).
@@ -1352,22 +1354,28 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   (define-key menu-bar-non-i-search-menu [separator-repeat-search] '(menu-item "--"))
   (define-key menu-bar-non-i-search-menu [menu-bar-word-search-backward]
     '(menu-item "     Backward..." menu-bar-word-search-backward
-                :help "Search backward nonincrementally, ignoring differences in punctuation"))
+                :help "Search backward nonincrementally, ignoring differences in punctuation"
+                :keys "M-s w C-r RET"))
   (define-key menu-bar-non-i-search-menu [menu-bar-word-search-forward]
     '(menu-item "Word Forward..." menu-bar-word-search-forward
-                :help "Search forward nonincrementally, ignoring differences in punctuation"))
+                :help "Search forward nonincrementally, ignoring differences in punctuation"
+                :keys "M-s w RET"))
   (define-key menu-bar-non-i-search-menu [re-search-backward]
     '(menu-item "     Backward..." nonincremental-re-search-backward
-                :help "Search backward nonincrementally for a regular expression"))
+                :help "Search backward nonincrementally for a regular expression"
+                :keys "C-M-r RET"))
   (define-key menu-bar-non-i-search-menu [re-search-forward]
     '(menu-item "Regexp Forward..." nonincremental-re-search-forward
-                :help "Search forward nonincrementally for a regular expression"))
+                :help "Search forward nonincrementally for a regular expression"
+                :keys "C-M-s RET"))
   (define-key menu-bar-non-i-search-menu [search-backward]
     '(menu-item "     Backward..." nonincremental-search-backward
-                :help "Search backward nonincrementally for a string"))
+                :help "Search backward nonincrementally for a string"
+                :keys "C-r RET"))
   (define-key menu-bar-non-i-search-menu [search-forward]
     '(menu-item "Forward..." nonincremental-search-forward
-                :help "Search forward nonincrementally for a string"))
+                :help "Search forward nonincrementally for a string"
+                :keys "C-s RET"))
   (define-key menu-bar-search-menu [non-i-search]
     (list 'menu-item "Nonincremental Search" menu-bar-non-i-search-menu)))
 
