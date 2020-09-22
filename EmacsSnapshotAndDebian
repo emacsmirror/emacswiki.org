@@ -10,7 +10,8 @@ actual packages are here: [[http://emacs.secretsauce.net/pool/main/e/emacs-snaps
 
 === ganneff.de ===
 Maintains ~5 months of debian packages based upon emac git snapshots.
-Each's build status can be reviewed at the developer's gitlab
+Each git snapshot is built for debian stable (~egd10), oldstable (~egd9), and
+oldoldstable (~egd8). Each's build status can be reviewed at the developer's gitlab
 instance:
 [[https://git.nsb-software.de/joerg/emacs/pipelines|https://git.nsb-software.de/joerg/emacs/pipelines]].
 The actual repository root is at
@@ -56,7 +57,8 @@ Unofficial packages built from stable releases are available in [[https://launch
 
 To install a bleeding-edge version of Emacs direct from Git, or build it from source for any other reason, and still integrate with Debian, so your version of Emacs can act as a dependency, one can use [[https://github.com/rrthomas/src-emacs-on-debian|this handy script and Debian package]] by Michael Olson. 
 
-Alternatively, do it yourself. First, use git to get the sources:
+Alternatively, do it yourself. First, use git to get the sources
+(~40Mb as a compressed archive):
 
     git clone --depth 1 git://git.sv.gnu.org/emacs.git
 
