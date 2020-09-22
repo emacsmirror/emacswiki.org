@@ -2,36 +2,47 @@ There are good Debian and Ubuntu packages that provide emacs versions newer than
 
 == Debian packages ==
 
-Bleeding-edge snapshots are generated weekly for amd64 Debian/unstable. Packages available here: [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]
+=== secretsauce.net ===
+Generates and publishes a single weekly snapshot for amd64
+Debian/unstable. Instructions and further details are available at:
+[[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]. The
+actual packages are here: [[http://emacs.secretsauce.net/pool/main/e/emacs-snapshot/|http://emacs.secretsauce.net/pool/main/e/emacs-snapshot/]].
 
-For Debian testing, stable and oldstable you can find packages built directly from Emacs git master here:
-[[http://emacs.ganneff.de/|http://emacs.ganneff.de/]] - Build status can be seen at [[https://git.nsb-software.de/joerg/emacs/pipelines||https://git.nsb-software.de/joerg/emacs/pipelines]]
+=== ganneff.de ===
+Maintains ~5 months of debian packages based upon emac git snapshots.
+Each's build status can be reviewed at the developer's gitlab
+instance:
+[[https://git.nsb-software.de/joerg/emacs/pipelines|https://git.nsb-software.de/joerg/emacs/pipelines]].
+The actual repository root is at
+[[http://emacs.ganneff.de/|http://emacs.ganneff.de/]], and the package
+listing is at [[http://emacs.ganneff.de/pool/main/e/emacs-snapshot/|http://emacs.ganneff.de/pool/main/e/emacs-snapshot/]]
 
-To use:
+The ganneff.de repository does not include an instructions page. To
+use it:
 
-To enable adding a private repository.
+1. enable adding a private repository.
 
 {{{
-sudo apt-get install software-properties-common
-sudo apt-get update
+    sudo apt-get install software-properties-common
+    sudo apt-get update
 }}}
 
-To get the Apt signing key
+2. get the repository's Apt signing key
 {{{
-wget -q http://emacs.ganneff.de/apt.key -O- | sudo apt-key add
+    wget -q http://emacs.ganneff.de/apt.key -O- | sudo apt-key add
 }}}
 
-Replace Buster with your version.
+3. Add the repository (replace Buster with your version).
 {{{
-sudo add-apt-repository "deb http://emacs.ganneff.de/ buster main"
-sudo apt-get update
-sudo apt-get install emacs-snapshot
+    sudo add-apt-repository "deb http://emacs.ganneff.de/ buster main"
+    sudo apt-get update
+    sudo apt-get install emacs-snapshot
 }}}
 
-Update Alternatives to ensure it uses the snapshot version of emacsclient. 
+4. Update Alternatives to ensure it uses the snapshot version of emacsclient. 
 
 {{{ 
-sudo update-alternatives --config emacsclient
+    sudo update-alternatives --config emacsclient
 }}}
 
 
@@ -54,13 +65,13 @@ Alternatively, do it yourself. First, use git to get the sources:
 The following packages are available through apt and might need to be installed. Check the output from the configure stage described below. Git is for the git clone mentioned above. 
 
 {{{
-sudo apt install build-essential git
+    sudo apt install build-essential git
 }}}
 
 Get the required dependencies with build-dep.
 
 {{{
-sudo apt build-dep emacs25
+    sudo apt build-dep emacs25
 }}}
 
 === Building from the source ===
@@ -68,22 +79,22 @@ sudo apt build-dep emacs25
 In order to build after installing required dependencies:
 
 {{{
-cd emacs
-./autogen.sh
-./configure
-make bootstrap
-sudo make install
+    cd emacs
+    ./autogen.sh
+    ./configure
+    make bootstrap
+    sudo make install
 }}}
 
 A good alternative is to not do a root install:
 
 {{{
-mkdir ~/emacs-20131123 # for example
-cd emacs
-./autogen.sh
-./configure --prefix=/home/me/emacs-20131123 # for example
-make bootstrap
-make install
+    mkdir ~/emacs-20131123 # for example
+    cd emacs
+    ./autogen.sh
+    ./configure --prefix=/home/me/emacs-20131123 # for example
+    make bootstrap
+    make install
 }}}
 
 Then use ##~/emacs-20131123/bin/emacs## to start it.
@@ -94,13 +105,13 @@ Then use ##~/emacs-20131123/bin/emacs## to start it.
 For non-latin scripts you might want to add:
 
 {{{
-libm17n-dev
+    libm17n-dev
 }}}
 
 as a library and:
 
 {{{
---with--m17n-flt
+    --with--m17n-flt
 }}}
 
 as a configure option.
@@ -111,17 +122,17 @@ as a configure option.
 You can use git pull to keep pulling. Emacs is often released against tags so you can pull those too:
 
 {{{
-git checkout -t tag-name
+    git checkout -t tag-name
 }}}
 
 To rebuild it's best to:
 
 {{{
-git clean -dxf  ## cleans up old files
-./autogen.sh
-./configure
-make bootstrap
-sudo make install
+    git clean -dxf  ## cleans up old files
+    ./autogen.sh
+    ./configure
+    make bootstrap
+    sudo make install
 }}}
 
 or use the alternative method to have a prefixed emacs.
