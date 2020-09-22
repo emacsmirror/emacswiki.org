@@ -14,7 +14,9 @@ If you have python or jsonlint installed, Flycheck can report errors in json-mod
 ([https://github.com/zaach/jsonlint jsonlint] can give schema-based validation, but the python-based validator is handy too for simply catching missing commas etc.)
 
 ==formatting by hand==
-As https://irreal.org/blog/?p=354 wrote, you can simply
+https://github.com/gongo/json-reformat mentions that Emacs 24.4+ has built-in <code>json-pretty-print</code> and <code>json-pretty-print-buffer</code> functions.
+
+As https://irreal.org/blog/?p=354 wrote, you can also simply
 
    C-u M-| python -m json.tool
 
