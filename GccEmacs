@@ -31,6 +31,10 @@ An ##emacsGcc## package is available from the Nix community's [https://github.co
 
 Detailed installation instructions are available [https://gist.github.com/mjlbach/179cf58e1b6f5afcb9a99d4aaf54f549 in this Gist].
 
+=== Docker ===
+
+An ##emacs-nativecomp## docker image is [https://hub.docker.com/r/andreacorallo/emacs-nativecomp available]. Also examine the gitlab repo for the [https://gitlab.com/koral/emacs-nativecomp-dockerfile dockerfile].
+
 === Manual ===
 
 To build the native-comp branch of Emacs, you will need ##libgccjit## in addition to the other dependencies described in BuildingEmacs.
