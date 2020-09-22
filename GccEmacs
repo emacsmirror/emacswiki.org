@@ -57,10 +57,7 @@ Deferred compilation refers to //"just-in-time"// native compilation of Elisp.  
 
 This is simple to use, but may be frustrating if native compilation kicks unexpectedly or at an inconvenient time.  You may prefer an //"ahead-of-time"// solution described further below.
 
-To enable deferred compilation, add the following to your Emacs config:
-
-    ;; enable just-in-time native compilation
-    (setq comp-deferred-compilation t)
+Deferred compilation is enabled by default and controlled by the ##comp-deferred-compilation## customize.
 
 === Ahead-of-time compilation ===
 
