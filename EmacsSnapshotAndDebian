@@ -3,8 +3,8 @@ There are good Debian and Ubuntu packages that provide emacs versions newer than
 == Debian packages ==
 
 === secretsauce.net ===
-Generates and publishes a single weekly snapshot, only for amd64
-Debian *unstable*. Instructions and further details are available at:
+Generates and publishes a single weekly snapshot for amd64
+Debian/unstable. Instructions and further details are available at:
 [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]. The
 actual packages are here: [[http://emacs.secretsauce.net/pool/main/e/emacs-snapshot/|http://emacs.secretsauce.net/pool/main/e/emacs-snapshot/]].
 
@@ -58,7 +58,11 @@ To install a bleeding-edge version of Emacs direct from Git, or build it from so
 
 Alternatively, do it yourself. First, use git to get the sources:
 
-    git clone --depth 1 git://git.sv.gnu.org/emacs.git
+    git clone --depth 1 --branch emacs-27 https://git.savannah.gnu.org/git/emacs.git
+
+Note that even with the space-saving options '--depth 1 --branch
+emacs-27', this initial git download will be more than 200 Mb. Compare
+with a source tarball for emacs27 of 40 Mb.
 
 === Required Packages ===
 
