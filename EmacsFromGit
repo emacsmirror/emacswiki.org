@@ -2,24 +2,24 @@
 
 After the release of Emacs 24.4, the [[Bazaar]] repository was converted to a Git repository.
 
-The official git repository is available from Emacs's Savannah page. See [http://savannah.gnu.org/git/?group=emacs this] page on Savannah for further instructions on how to clone or browse the repository.
+The official git repository is available from Emacs's Savannah page. See [https://savannah.gnu.org/git/?group=emacs this] page on Savannah for further instructions on how to clone or browse the repository.
 
 To clone (download) Emacs:
 
 <pre>
-git clone git://git.savannah.gnu.org/emacs.git
+git clone https://git.savannah.gnu.org/emacs.git
 </pre>
 
 You can also get Emacs speedily from git by ignoring a lot of Emacs history. This makes the download size much smaller:
 
 <pre>
-git clone --depth 1 git://git.savannah.gnu.org/emacs.git
+git clone --depth 1 https://git.savannah.gnu.org/emacs.git
 </pre>
 
 and if you just want a particular branch
 <pre>
 git ls-remote (to see a list of remote branches)
-git clone --depth 1 --branch emacs-24.4 git://git.savannah.gnu.org/emacs.git
+git clone --depth 1 --branch emacs-24.4 https://git.savannah.gnu.org/emacs.git
 </pre>
 
 Lars Ingebrigtsen has written a helpful guide on [http://lars.ingebrigtsen.no/2014/11/13/welcome-new-emacs-developers/ compiling Emacs] for Debian and Ubuntu users.
@@ -31,7 +31,7 @@ The GNU Elpa package repository is also maintained using Git.
 You can clone (download) the repository with this command:
 
 <pre>
-git clone git://git.savannah.gnu.org/emacs/elpa.git
+git clone https://git.savannah.gnu.org/emacs/elpa.git
 </pre>
 
 == Also see ==
