@@ -61,13 +61,13 @@ Deferred compilation refers to //"just-in-time"// native compilation of Elisp.  
 
 This is simple to use as does not require any user intervention.  You may prefer an //"ahead-of-time"// solution described further below.
 
-Deferred compilation is enabled by default and controlled by the ##comp-deferred-compilation## customize.
+Deferred compilation is **enabled by default** and controlled by the ##comp-deferred-compilation## customize.
 
 === Ahead-of-time compilation ===
 
 The simplest solution for //"ahead-of-time"// compilation is to use a package manager which supports it:
 
-* **package.el**: The built-in package manager currently does **not support** native compilation.
+* **package.el**: The built-in package manager currently does **not** support ahead-of-time native compilation (files will still be native compiled but on demand by deferred compilation).
 * **straight.el**: The [https://github.com/raxod502/straight.el straight.el] package manager native-compiles packages by default.
 
 Otherwise, you'll need to manually native-compile your packages:
