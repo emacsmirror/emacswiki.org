@@ -8,6 +8,20 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Failed to verify signature archive contents ==
+
+Text of error response to "package-list-packages" follows - 
+
+Failed to verify signature archive-contents.sig:
+No public key for 066DAFCB81E42C40 created at 2020-09-23T16:05:02-0500 using RSA
+Command output:
+gpg: Signature made Wed 23 Sep 2020 04:05:02 PM CDT
+gpg:                using RSA key C433554766D3DDC64221BFAA066DAFCB81E42C40
+gpg: Can't check signature: No public key
+
+Question: is this a problem at the melpa site or do I have to have gpg installed and operational to use melpa?
+
+
 == Duckduckgo URL is wrong ==
 The parts of EmacsWiki that link to Duckduckgo, such as the search function and assorted links, link to `www.duckduckgo.com` -- which doesn't connect.  The correct domain is `duckduckgo.com` - without the `www`.  I'm guessing this is a recent change.
 
