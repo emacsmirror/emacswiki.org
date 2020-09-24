@@ -22,6 +22,10 @@ For GNU Emacs (if you don't give a filename, syntax still requires an appended c
 
     C-x C-f /remotehost:filename  RET (or /method:user@remotehost:filename)
 
+Newer or customized emacs installations may require prepending `ssh:`
+
+    C-x C-f /ssh:remotehost RET
+
 For GNU Emacs 26.1 or newer with Tramp 2.3 or newer, the method is required. If you prefer the older syntax:
 
     (customize-set-variable 'tramp-syntax 'simplified)
