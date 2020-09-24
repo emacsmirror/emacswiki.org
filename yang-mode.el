@@ -1,4 +1,4 @@
-;;; yang-mode.el
+;;; yang-mode.el --- major mode for editing YANG files
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -15,12 +15,41 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+;; Author: Martin Bjorklund <mbj4668@gmail.com>
+;; Version: 0.9.9
+
 ;;; Commentary:
 
 ;; Note: The interface used in this file requires CC Mode 5.30 or
 ;; later.
 
-;; Version:
+;; History:
+;;   0.9.9 - 2019-05-07
+;;        added support for YANG multiline string literals; contributed
+;;          by Tripp Lilley
+;;   0.9.8 - 2018-03-06
+;;        yet another autoload fix; contributed by Christian Hopps
+;;   0.9.7 - 2017-03-23
+;;        one more autoload fix
+;;   0.9.6 - 2017-03-21
+;;        autoload fix, tested with use-package
+;;   0.9.5 - 2017-02-13
+;;        autoload fix
+;;   0.9.4 - 2016-12-20
+;;        derive from prog-mode if available, otherwise nil
+;;        use proper syntax-table
+;;   0.9.3 - 2016-12-13
+;;        derive from nil
+;;   0.9.2 - 2016-12-13
+;;        derive mode from prog-mode in order to get correct hook behavior
+;;   0.9.1 - 2016-12-12
+;;        use define-derived-mode
+;;        yang-fill-paragraph now works in Emacs 23
+;;   0.9 - 2016-12-09
+;;        workaround Emacs bug #18845 (for 24.4+)
+;;   00.8 - 2016-10-27
+;;        rfc7950 compliant
+;;        added yang-fill-paragraph for better string fill
 ;;   00.7 - 2016-03-15
 ;;        draft-ietf-netmod-rfc6020bis-11 compliant
 ;;        added support for new 1.1 keywords
@@ -32,7 +61,7 @@
 ;;        classify all keywords as decl-start gives better indentation
 ;;   00.4 - 2010-04-30
 ;;        draft-ietf-netmod-yang-12 compliant,
-;;        added instructions for emacs 23
+;;        added instructions for Emacs 23
 ;;   00.3 - 2009-12-19
 ;;        draft-ietf-netmod-yang-09 compliant,
 ;;   00.2 - 2008-11-04
@@ -42,24 +71,29 @@
 
 ;; Useful tips:
 ;;
-;;   For use with emacs 23, put this in your .emacs:
+;;   If you're using use-package, put this in your .emacs:
+;;     (use-package yang-mode
+;;       :ensure t)
+;;
+;;   Otherwise, put this in your .emacs:
+;;     (require 'yang-mode)
+;;
+;;   For use with Emacs 23, put this in your .emacs:
 ;;     (autoload 'yang-mode "yang-mode" "Major mode for editing YANG modules."
 ;;               t)
 ;;     (add-to-list 'auto-mode-alist '("\\.yang$" . yang-mode))
 ;;
-;;   Some users have reported other errors with emacs 23, and have found
+;;   Some users have reported other errors with Emacs 23, and have found
 ;;   that removing the byte-compiled cc-mode.elc file fixes these problems.
 ;;   (e.g. /usr/share/emacs/23.1/lisp/progmodes/cc-mode.elc)
 ;;
-;;   For use with emacs 22, just use:
-;;     (require 'yang-mode nil t)
 ;;
 ;;   For editing somewhat larger YANG modules, add this to your .emacs
 ;;     (setq blink-matching-paren-distance nil)
 ;;
 ;;   Common YANG layout:
 ;;     (defun my-yang-mode-hook ()
-;;       "Configuration for YANG Mode. Add this to `yang-mode-hook'."
+;;       "Configuration for YANG Mode.  Add this to `yang-mode-hook'."
 ;;       (if window-system
 ;;         (progn
 ;;           (c-set-style "BSD")
@@ -70,9 +104,8 @@
 ;;
 ;;     (add-hook 'yang-mode-hook 'my-yang-mode-hook)
 ;;
-;;   Use the oultine minor mode for YANG.
-;;   This is very useful to get a good overview of the structure of
-;;   a module.
+;;   Using the outline minor mode for YANG is very useful to get a
+;;   good overview of the structure of a module.
 ;;
 ;;   Put this in your .emacs:
 ;;
@@ -129,7 +162,18 @@
   ;; mode as the fallback for the constants we don't change here.
   ;; This needs to be done also at compile time since the language
   ;; constants are evaluated then.
-  (c-add-language 'yang-mode 'java-mode))
+  (c-add-language 'yang-mode 'java-mode)
+
+  ;; compatibility with emacs < 24
+  (defalias 'yang-mode-prog-mode
+    (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
+  )
+
+
+;; Work around Emacs bug #18845, cc-mode expects cl to be loaded
+(eval-and-compile
+  (if (and (= emacs-major-version 24) (>= emacs-minor-version 4))
+    (require 'cl)))
 
 ;; YANG has no primitive types in the C/Java sense.
 (c-lang-defconst c-primitive-type-kwds
@@ -137,6 +181,9 @@
 
 (c-lang-defconst c-modifier-kwds
   yang '())
+
+(c-lang-defconst c-multiline-string-start-char
+  yang t)
 
 (c-lang-defconst c-label-kwds
   yang '())
@@ -255,37 +302,71 @@
   "Default expressions to highlight in YANG mode.")
 
 (defvar yang-mode-syntax-table nil
-  "Syntax table used in yang-mode buffers.")
+  "Syntax table used in `yang-mode' buffers.")
 (or yang-mode-syntax-table
     (setq yang-mode-syntax-table
           (funcall (c-lang-const c-make-mode-syntax-table yang))))
 
-(defvar yang-mode-abbrev-table nil
-  "Abbreviation table used in yang-mode buffers.")
-(c-define-abbrev-table 'yang-mode-abbrev-table
-  ;; Keywords that if they occur first on a line might alter the
-  ;; syntactic context, and which therefore should trig reindentation
-  ;; when they are completed.
-  '())
-
 (defvar yang-mode-map (let ((map (c-make-inherited-keymap)))
                       ;; Add bindings which are only useful for YANG
                       map)
-  "Keymap used in yang-mode buffers.")
+  "Keymap used in `yang-mode' buffers.")
 
 (easy-menu-define yang-menu yang-mode-map "YANG Mode Commands"
-                  ;; Can use `yang' as the language for `c-mode-menu'
-                  ;; since its definition covers any language.  In
-                  ;; this case the language is used to adapt to the
-                  ;; nonexistence of a cpp pass and thus removing some
-                  ;; irrelevant menu alternatives.
-                  (cons "YANG" (c-lang-const c-mode-menu yang)))
+  ;; Can use `yang' as the language for `c-mode-menu'
+  ;; since its definition covers any language.  In
+  ;; this case the language is used to adapt to the
+  ;; nonexistence of a cpp pass and thus removing some
+  ;; irrelevant menu alternatives.
+  (cons "YANG" (c-lang-const c-mode-menu yang)))
+
+(defun yang-fill-paragraph (&optional arg)
+  "Like \\[c-fill-paragraph] but handles first line in strings properly.
+
+   Optional prefix ARG means justify paragraph as well."
+  ;; c-fill-paragraph narrows the region to the contents of a string
+  ;; before filling, and this means that the start quote character
+  ;; will be in column 1 in the narrowed region.  Thus the first line
+  ;; line will not be filled properly.
+  ;; This function handles this by temporarily inserting a newline
+  ;; followed by whitespaces to line up the first line before filling.
+  (interactive)
+  (save-excursion
+    (let ((limits (c-literal-limits))
+          (tmppoint nil)
+          (col nil))
+      (if (eq (c-literal-type limits) 'string)
+          (let ((curpoint (point)))
+            (backward-paragraph)
+            (if (< (point) (car limits))
+                ;; do this in the first paragraph of a string
+                (let ((first-char (+ 1 (car limits))))
+                  (goto-char first-char)
+                  (beginning-of-line)
+                  (setq col (- first-char (point)))
+                  (goto-char first-char)
+                  (setq tmppoint (point))
+                  (insert-char ?\n 1)
+                  (insert-char ?\s col))
+              (goto-char curpoint))))
+      (c-fill-paragraph arg)
+      (if tmppoint
+          (progn
+            (goto-char tmppoint)
+            (delete-char (+ 1 col))))))
+  ;; Always return t.  This has the effect that if filling isn't done
+  ;; above, it isn't done at all, and it's therefore effectively
+  ;; disabled in normal code.
+  t)
+
+;; It doesn't suffice to put `yang-fill-paragraph' on
+;; `fill-paragraph-function' since `yang-fill-paragraph' must be called
+;; before any fill prefix adaption is done.
+(substitute-key-definition 'c-fill-paragraph 'yang-fill-paragraph
+                           yang-mode-map c-mode-map)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.yang\\'" . yang-mode))
-
-;;;###autoload
-(defun yang-mode ()
+(define-derived-mode yang-mode yang-mode-prog-mode "YANG"
   "Major mode for editing YANG modules.
 
 The hook `c-mode-common-hook' is run with no args at mode
@@ -293,32 +374,26 @@ initialization, then `yang-mode-hook'.
 
 Key bindings:
 \\{yang-mode-map}"
-  (interactive)
-  (kill-all-local-variables)
+  :syntax-table yang-mode-syntax-table
   (c-initialize-cc-mode t)
-  (set-syntax-table yang-mode-syntax-table)
-  (setq major-mode 'yang-mode
-        mode-name "YANG"
-        local-abbrev-table yang-mode-abbrev-table
-        abbrev-mode t)
-  (use-local-map c-mode-map)
-  ;; `c-init-language-vars' is a macro that is expanded at compile
-  ;; time to a large `setq' with all the language variables and their
-  ;; customized values for our language.
   (c-init-language-vars yang-mode)
-  ;; `c-common-init' initializes most of the components of a CC Mode
-  ;; buffer, including setup of the mode menu, font-lock, etc.
-  ;; There's also a lower level routine `c-basic-common-init' that
-  ;; only makes the necessary initialization to get the syntactic
-  ;; analysis and similar things working.
   (c-common-init 'yang-mode)
+
   ;; Allow auto-fill in strings
   (setq c-ignore-auto-fill '(cpp code))
-  (easy-menu-add yang-menu)
-  (run-hooks 'c-mode-common-hook)
-  (run-hooks 'yang-mode-hook)
-  (c-update-modeline))
+
+  ;; Install `yang-fill-paragraph' on `fill-paragraph-function' so
+  ;; that a direct call to `fill-paragraph' behaves better.
+  (make-local-variable fill-paragraph-function)
+  (setq fill-paragraph-function 'yang-fill-paragraph)
+  ;; we derive from prog-mode/nil rather than c-mode in order to not run
+  ;; c-mode-hooks; this means that we need to run c-mode-common-hook
+  ;; explicitly.
+  (c-run-mode-hooks 'c-mode-common-hook))
+
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.yang\\'" . yang-mode))
 
 (provide 'yang-mode)
 
-;;; yang.el ends here
+;;; yang-mode.el ends here
