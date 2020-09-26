@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:51:38 2020 (-0700)
+;; Last-Updated: Sat Sep 26 11:26:17 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2205
+;;     Update #: 2207
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -85,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/26 dadams
+;;     help-on-click/key-lookup: Fix change from 2017-10-21 - describe-key if analyzed non-nil.
 ;; 2020/08/14 dadams
 ;;     describe-key Use help-print-return-message, not print-help-return-message.
 ;; 2017/10/21 dadams
@@ -504,12 +506,12 @@ Function `Info-goto-emacs-key-command-node' is used to look up KEY."
         pp-key  (or pp-key  (if (fboundp 'naked-key-description)
                                 (naked-key-description key)
                               (key-description key))))
-  (let* ((described-p   (if (fboundp 'help--analyze-key) ; Emacs 26+
-                            (cadr (help--analyze-key key nil))
-                          (describe-key key)))
-         ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
-         ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
-         (documented-p  (Info-goto-emacs-key-command-node key))) ; nil if have only std version
+  (let ((described-p   (if (fboundp 'help--analyze-key) ; Emacs 26+
+                           (and (cadr (help--analyze-key key nil))  (describe-key key))
+                         (describe-key key)))
+        ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
+        ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
+        (documented-p  (Info-goto-emacs-key-command-node key))) ; nil if have only std version
     (when (and (not documented-p)  (get-buffer-window "*info*" 'visible)) (Info-exit))
     (cond ((and described-p  documented-p)
            (when (fboundp 'show-*Help*-buffer) (show-*Help*-buffer))
