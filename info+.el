@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 15:17:55 2020 (-0700)
+;; Last-Updated: Sat Sep 26 12:02:22 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6501
+;;     Update #: 6505
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -489,6 +489,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/26 dadams
+;;     Info-goto-emacs-key-command-node: If this-file is nil then return nil.
 ;; 2020/08/30 dadams
 ;;     Added: Info-bookmark-use-only-node-not-file-flag, redefinition of Info-bookmark-jump (fixes Emacs
 ;;            bug #42993), Info-search-case-sensitively-next.
@@ -3508,6 +3510,7 @@ COMMAND must be a symbol or string."
 ;; 1. If key's command is not found, then `Info-search' for key sequence in text.
 ;; 2. Added optional arg MSGP (interactive-p).
 ;; 3. Message for repeating.
+;; 4. Return non-nil for found, nil for not found.
 ;;
 ;;;###autoload
 (defun Info-goto-emacs-key-command-node (key &optional msgp)
@@ -3548,8 +3551,9 @@ If key's command cannot be found by looking in indexes, then
                          (1- num-cmd-matches) (if (> num-cmd-matches 2) "ies" "y")
                          (if (> num-cmd-matches 2) "them" "it"))))
                     num-cmd-matches)  ; RETURN num-cmd-matches: found.
-                   (t ;; Couldn't find key's command via a manual index.
-                    ;; Get back to where we were.
+                   (this-file
+                    ;; Couldn't find key's command via a manual index.
+                    ;; Get back to where we were, if in Info.
                     ;; Would be better if there were a save-xxx-excursion-xxx
                     ;; that would work.
                     (Info-goto-node (concat "(" this-file ")" this-node))
@@ -3567,7 +3571,8 @@ If key's command cannot be found by looking in indexes, then
                                      pp-key))
                           t)            ; RETURN t: found.
                       (search-failed (when msgp (message "No documentation found for key `%s'." pp-key))
-                                     nil))))))))) ; RETURN nil: not found.
+                                     nil))) ; RETURN nil: not found.
+                   (t nil))))))) ; RETURN nil: not found.
 
 
 ;; REPLACES ORIGINAL in `info.el':
