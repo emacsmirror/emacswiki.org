@@ -16,5 +16,7 @@ You can also insert something like:
 
 If you want to rewrap comments afterwards, see CodeBeautifying.
 
+See also: package [https://github.com/lassik/emacs-format-all-the-code format-all]
+
 ----
 CategoryIndentation
