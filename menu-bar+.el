@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep 21 14:12:59 2020 (-0700)
+;; Last-Updated: Sat Sep 26 18:03:57 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 3846
+;;     Update #: 3894
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -30,7 +30,7 @@
 ;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
 ;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
-          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
 ;;
@@ -135,6 +135,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/09/26 dadams
+;;     menu-bar-search-tags-menu, item tags-continue: Updated for Emacs 27+.
+;;     menu-bar-search-replace-menu: Added tags-repl-continue.
+;;                                   tags-query-replace: Removed key reminder.
 ;; 2020/09/21 dadams
 ;;     menu-bar-non-i-search-menu: Added :keys (suggestion from Juri Linkov).
 ;; 2020/09/20 dadams
@@ -1410,8 +1414,13 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 ;----------------------
 (define-key menu-bar-search-tags-menu [separator-tags-misc] '("--"))
 (define-key menu-bar-search-tags-menu [tags-continue]
-  '(menu-item "Continue Tags Search/Replace" tags-loop-continue
-    :help "Continue last tags search or replace operation"))
+  `(menu-item "    Continue Search/Replace" ,(if (featurep 'fileloop)
+                                                 'fileloop-continue ; Emacs 27+
+                                               'tags-loop-continue) ; Emacs < 27
+              :help "Continue last tags search or replace operation"
+              :enable (or (and (featurep 'fileloop) ; Emacs 27+
+                               (not (eq fileloop--operate-function 'ignore)))
+                          (< emacs-major-version 27))))
 (define-key menu-bar-search-tags-menu [tags-search]
   '(menu-item "Search Tagged Files..." tags-search
     :help "Search for a regexp in all tagged files"))
@@ -1445,10 +1454,18 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     :enable (not buffer-read-only)))
 ;;--------------------
 (define-key menu-bar-search-replace-menu [separator-search-replace-global] '("--"))
+(define-key menu-bar-search-replace-menu [tags-repl-continue]
+  `(menu-item "                Continue Search/Replace" ,(if (featurep 'fileloop)
+                                                             'fileloop-continue ; Emacs 27+
+                                                           'tags-loop-continue) ; Emacs < 27
+              :help "Continue last tags search or replace operation"
+              :enable (or (and (featurep 'fileloop) ; Emacs 27+
+                               (not (eq fileloop--operate-function 'ignore)))
+                          (< emacs-major-version 27))))
 (define-key menu-bar-search-replace-menu [tags-query-replace]
-  '(menu-item (substitute-command-keys "            Tags... (again: \\[tags-loop-continue])")
-    tags-query-replace
-    :help "Replace a regexp in tagged files, with confirmation"))
+  '(menu-item "            Tags..." tags-query-replace
+              :help "Replace a regexp in tagged files, with confirmation"))
+
 (define-key menu-bar-search-replace-menu [map-query-replace-regexp]
   '(menu-item "            Map..." map-query-replace-regexp
     :help "Replace regexp matches with various strings, in rotation."
