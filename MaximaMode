@@ -16,7 +16,7 @@ Add this to your .emacs:
  (autoload 'maxima "maxima" "Maxima interaction" t)
  (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
  (setq imaxima-use-maxima-mode-flag t)
- (add-to-list 'auto-mode-alist '("\\.ma[cx]" . maxima-mode))
+ (add-to-list 'auto-mode-alist '("\\.ma[cx]\\'" . maxima-mode))
 
 Then M-x imaxima.
 
