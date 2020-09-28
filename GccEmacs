@@ -16,6 +16,12 @@ Install it with your favourite AUR helper, or use the following commands to do i
     $ cd emacs-native-comp-git
     $ makepkg --syncdeps --install
 
+==== Daemon systemd service crashing on startup ====
+
+If ##systemctl --user start emacs.service## immediately crashes and ##journalctl --user -u emacs## mentions a long path mentioning ##native-lisp## and ending with ##.elm##, add the following line to the ##[Service]## section in ##/usr/lib/systemd/user/emacs.service##:
+
+    WorkingDirectory=/usr/lib/emacs/28.0.50/x86_64-pc-linux-gnu/
+
 === Guix ===
 
 An ##emacs-native-comp## package is available [https://github.com/flatwhatson/guix-channel in this channel].
