@@ -2,7 +2,36 @@ From its documentation:
 
 : //GNU Hyperbole (pronounced Hi-per-bo-lee) is a mature, efficient, and programmable hypertextual information management and outliner system for GNU Emacs.//
 
+Hyperbole is like Markdown for hypertext.  Hyperbole automatically
+recognizes dozens of common patterns in any buffer regardless of mode
+and can instantly activate them as hyperbuttons with a single key:
+email addresses, URLs, grep -n outputs, programming backtraces,
+sequences of Emacs keys, programming identifiers, Texinfo and Info
+cross-references, Org links, Markdown links and on and on.  All you do
+is load Hyperbole and then your text comes to life with no extra
+effort or complex formatting.
+
+Hyperbole interlinks all your working information within Emacs for
+fast access and editing, not just within special modes.  Every button
+is automatically assigned a type and new types can be developed for
+your own buttons with simple function definitions.  You can create
+your own buttons by simply dragging between two buffers.
+
+But Hyperbole is also a hub controller for your information supplying
+built-in capabilities of contact management/hierarchical record
+lookup, legal-numbered outlines with hyperlinkable views and a unique
+window and frame manager.  It is even Org-compatible so you can use
+all of Org's capabilities together with Hyperbole.
+
+Hyperbole is unique, powerful, extensively documented, and free.  Like
+Emacs, Org, Counsel and Helm, Hyperbole has many different uses all
+based around the theme of reducing cognitive load and improving your
+everyday information management.  Then as you grow with it across
+time, it helps you build new capabilities that continue to speed your
+work.
+
 GNU Hyperbole is available as a quick install package from GNU [[ELPA]]. The project home page is https://www.gnu.org/software/hyperbole. That page includes screenshots, download and installation instructions, and resource links.
+
 [new]
 A major new release of Hyperbole, version 7, the Git Ready for Action Release, was released on November 15, 2017.  It includes easily embeddable cross-references to git and Github objects, social media hashtag and user page links, rapid drags for displaying buffers and files in any desired window and window grids for displaying many buffers/files in a specified grid of windows, e.g. 3 rows by 5 columns.
 
