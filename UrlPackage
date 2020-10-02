@@ -179,7 +179,7 @@ On Windows, a good HTTP Debugging Proxy is [http://www.fiddler2.com/fiddler2/ Fi
 If you just want to download HTTP documents but you don't have url.el yet,
 try a very simple hack on DownloadFilesViaHttp.
 
-See also: HttpPost, HttpGet and family
+See also: HttpPost, HttpGet and family; [https://github.com/tkf/emacs-request request]; [https://github.com/federicotdn/verb verb];
 
 ----
 CategoryHypermedia
