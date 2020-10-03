@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 26 12:02:22 2020 (-0700)
+;; Last-Updated: Sat Oct  3 14:00:25 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6505
+;;     Update #: 6527
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -489,6 +489,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/03 dadams
+;;     Info-read-bookmarked-node-name: remove-if-not -> bmkp-remove-if-not.
+;;     Everywhere: added nil second arg to looking-back (arg is required now).
+;;     Added more defvars to quiet byte-compiler, for Emacs 27+.
+;;     info-double-quoted-name, Info-fontify-quotations-flag, info-quotation-regexp, info-quoted+<>-regexp:
+;;       Escape " chars in doc string.  Thx to noosphere.
 ;; 2020/09/26 dadams
 ;;     Info-goto-emacs-key-command-node: If this-file is nil then return nil.
 ;; 2020/08/30 dadams
@@ -986,7 +992,10 @@
 
 ;; Quiet the byte compiler a bit.
 ;;
-(defvar browse-url-new-window-flag)     ; In `browse-url.el'
+(defvar apropos-regexp)                 ; In `apropos.el'.
+(defvar bookmark-alist)                 ; In `bookmark.el'.
+(defvar bookmark-make-record-function)  ; In `bookmark.el'.
+(defvar browse-url-new-window-flag)     ; In `browse-url.el'.
 (defvar desktop-save-buffer)
 (defvar header-line-format)
 (defvar Info-breadcrumbs-depth)
@@ -994,7 +1003,6 @@
 (defvar Info-breadcrumbs-in-header-flag)
 (defvar Info-breadcrumbs-in-mode-line-mode)
 (defvar Info-current-node-virtual)
-(defvar isearch-filter-predicate)
 (defvar Info-bookmarked-node-xref-faces) ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-bookmarked-xrefs-flag) ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-visited-nodes)
@@ -1022,9 +1030,12 @@
 (defvar info-tool-bar-map)
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
+(defvar infop-node-name)                ; Here, in `Info-merge-subnodes'.
+(defvar isearch-filter-predicate)
 (defvar isearch-lax-whitespace)         ; In `isearch.el'.
 (defvar isearch-regexp-lax-whitespace)  ; In `isearch.el'.
-(defvar infop-node-name)                ; Here, in `Info-merge-subnodes'.
+(defvar isearchp-reg-beg)               ; In `isearch+.el'.
+(defvar isearchp-reg-end)               ; In `isearch+.el'.
 (defvar outline-heading-alist)          ; In `outline.el'.
 (defvar widen-automatically)
 
@@ -1087,7 +1098,7 @@ Don't forget to mention your Emacs and library versions."))
 (defface info-double-quoted-name        ; For “...”
     '((((background dark)) (:inherit font-lock-string-face :foreground "Cyan"))
       (t (:inherit font-lock-string-face :foreground "DarkOrange")))
-  "*Face for names enclosed in curly double-quotes (“...”) in `info'."
+  "*Face for names enclosed in curly double-quotes (\“...\”) in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
@@ -1402,7 +1413,7 @@ way to turn off all matching of `Info-emphasis-regexp'."
 ;;;###autoload
 (defcustom Info-fontify-quotations-flag t
   "*Non-nil means `info' fontifies text between quotes.
-This applies to double-quoted text (“...” or \"...\") and text
+This applies to double-quoted text (\“...\” or \\\"...\\\") and text
 between single-quotes (‘...’ or `...').
 
 Note: This fontification can never be 100% reliable.  It aims to be
@@ -1520,7 +1531,7 @@ If nil then emphasis is never fontified, regardless of that flag.")
    "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"      ; ‘...’
    "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”"         ; “...”
    )
-  "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
+  "Regexp to match `...', ‘...’, \“...\”, \\\"...\\\", or just '.
 If ... contains an end char then that char must be backslashed.")
 
 ;; (rx (or (seq ?\"
@@ -1541,7 +1552,7 @@ If ... contains an end char then that char must be backslashed.")
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|"             ; "..."
    "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"                  ; `...'
    "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"                  ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”\\|"                  ; “...”
+   "\“\\(?:[^\”]\\|\\\\\\(?:.\\|\n\\)\\)*\”\\|"               ; “...”
    "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)*\\)>" ; <...>
    )
   "Same as `info-quotation-regexp', but matches also <...>.
@@ -1895,7 +1906,7 @@ A bookmarked node name has the form \"(MANUAL) NODE\", referring to
 NODE in MANUAL.
 Optional arg LOCALP means read a node name from the current manual."
     (let* ((completion-ignore-case  t)
-           (bmks                    (remove-if-not
+           (bmks                    (bmkp-remove-if-not
                                      (lambda (bmk) (string-match-p
                                                (if (and localp  Info-current-file)
                                                    (format "\\`(%s) "
@@ -2168,8 +2179,8 @@ refontifies the buffer to hide link prefix `*Note'."
                 (skip-syntax-backward " ")
                 (when (memq (char-before) '(?\( ?\[ ?\{))
                   (skip-syntax-backward " (")) ; Check whether the paren is preceded by an end of sentence.
-                (setq other-tag  (cond ((save-match-data (looking-back "\\<see")) "")
-                                       ((save-match-data (looking-back "\\<in")) "")
+                (setq other-tag  (cond ((save-match-data (looking-back "\\<see" nil)) "")
+                                       ((save-match-data (looking-back "\\<in" nil)) "")
                                        ((memq (char-before) '(nil ?\. ?! ??)) "See ")
                                        ((save-match-data (save-excursion (search-forward "\n\n" start t))) "See ")
                                        (t "see "))))
@@ -3731,9 +3742,9 @@ If key's command cannot be found by looking in indexes, then
                       ;; Check whether the paren is preceded by
                       ;; an end of sentence
                       (skip-syntax-backward " ("))
-                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see"))
+                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see" nil))
                                             "")
-                                           ((save-match-data (looking-back "\\<in"))
+                                           ((save-match-data (looking-back "\\<in" nil))
                                             "")
                                            ((memq (char-before) '(nil ?\. ?! ??))
                                             "See ")
@@ -4101,8 +4112,8 @@ If key's command cannot be found by looking in indexes, then
                     (skip-syntax-backward " ")
                     (when (memq (char-before) '(?\( ?\[ ?\{))
                       (skip-syntax-backward " (")) ; Check whether the paren is preceded by an end of sentence
-                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see")) "")
-                                           ((save-match-data (looking-back "\\<in")) "")
+                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see" nil)) "")
+                                           ((save-match-data (looking-back "\\<in" nil)) "")
                                            ((memq (char-before) '(nil ?\. ?! ??)) "See ")
                                            ((save-match-data (save-excursion (search-forward "\n\n" start t)))
                                             "See ")
@@ -4465,8 +4476,8 @@ If key's command cannot be found by looking in indexes, then
                     (skip-syntax-backward " ")
                     (when (memq (char-before) '(?\( ?\[ ?\{))
                       (skip-syntax-backward " (")) ; Check whether the paren is preceded by an end of sentence
-                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see")) "")
-                                           ((save-match-data (looking-back "\\<in")) "")
+                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see" nil)) "")
+                                           ((save-match-data (looking-back "\\<in" nil)) "")
                                            ((memq (char-before) '(nil ?\. ?! ??)) "See ")
                                            ((save-match-data (save-excursion (search-forward "\n\n" start t)))
                                             "See ")
