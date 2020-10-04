@@ -1,4 +1,4 @@
-!GccEmacs refers to the ##feature/native-comp## branch of Emacs, which adds support for compiling EmacsLisp to native code using ##libgccjit##. All of the Elisp packages shipped with Emacs are native-compiled, providing a noticeable performance improvement out-of-the-box. Third-party packages may also be compiled to achieve further performance improvements.
+!GccEmacs refers to the ##feature/native-comp## branch of Emacs, which adds support for compiling EmacsLisp to native code using ##libgccjit##. All of the Elisp packages shipped with Emacs are native-compiled, providing a noticeable performance improvement out-of-the-box. Third-party packages are also compiled to achieve further performance improvements.
 
 The official development log can be found on [http://akrl.sdf.org/gccemacs.html the gccemacs page].
 
