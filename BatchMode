@@ -163,6 +163,8 @@ echo "$@" | emacs --batch -l ~/.emacs.d/lisp/mything.el -f mything
 
 that can be called like `mything.sh "here's some input"` to have "here's some input" passed to the mything function defined in mything.el. I used to maintain two versions of some things for use from emacs and from command line but now porting everything to elisp and making stub scripts like this.
 
+You can also access the variable {{{command-line-args-left}}} to read any arguments that have not been processed yet.
+
 ==Discussion==
 
 We need a term more descriptive than "scripting" for this, since some people
