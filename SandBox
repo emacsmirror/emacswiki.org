@@ -22,6 +22,8 @@ your edits to see how they look; you can just click '''Preview'''.
 
 (your test stuff goes here... don't forget the minor change checkbox!)
 
+This is the original:  / .emacs/ and it doesn't italicize correctly
+This is what I think it needs to be:  ./emacs/ but maybe this will work /.emacs/
 
 
 However, I can't get it to actually work.  Either it's broken or the docs are misleading, or I just haven't had enough coffee today.
