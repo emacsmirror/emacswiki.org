@@ -8,9 +8,9 @@
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 17 14:07:12 2019 (-0800)
+;; Last-Updated: Thu Oct  8 12:32:36 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 225
+;;     Update #: 227
 ;; URL: https://www.emacswiki.org/emacs/download/help-mode%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -44,6 +44,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/08 dadams
+;;     Added define-button-type for help-symbol, to show C-h S binding.
 ;; 2019/11/17 dadams
 ;;     help-make-xrefs: Typo for help-xref-button 7: help-character-set -> help-input-method.
 ;;                      Added clause for describe-symbol-backends, if defined (Emacs 25+).
@@ -368,6 +370,19 @@ that."
   :supertype 'help-xref
   'help-function #'(lambda (x) (find-library (symbol-name x)))
   'help-echo (purecopy "mouse-2, RET: find this library"))
+
+
+;; REPLACES ORIGINAL IN `help-mode.el'.
+;;
+;; Add `C-h S' mention.
+;;
+(define-button-type 'help-symbol
+  :supertype 'help-xref
+  'help-function #'describe-symbol
+  'help-echo
+  (purecopy "mouse-2, RET: describe this symbol, \
+C-h S RET: check manuals"))
+
 
 ;; $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 ;; REPLACES ORIGINAL IN `help-mode.el'.
