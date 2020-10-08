@@ -20,6 +20,9 @@ If you've ever found yourself reading the backlog of messages in an ERC channel 
 
 == Number of members in a channel ==
 
+I have wrapped the below slightly more formally.  It's currently wrapped with my init stuff and not published as a seperate project or gist but may remain findable via
+[https://gitlab.com/mplscorwin/dotfiles/-/blob/09135326920b2dc19a6cbf606defe2852255a406/elisp/site-lisp/erc-count-users-mode.el gitlab permalink]. -Corwin
+
 Add this to your .emacs to see the number of opped/voiced/normal members of the current channel in the modeline:
 
     (define-minor-mode ncm-mode "" nil
