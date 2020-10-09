@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct  8 18:15:44 2020 (-0700)
+;; Last-Updated: Fri Oct  9 15:22:23 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2475
+;;     Update #: 2503
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/09 dadams
+;;     help-cross-reference-manuals: nil cdr for default value now.
+;;     Info-make-manuals-xref: Allow non-nil cdr to open an Info Index buffer even for just Emacs and Elisp manuals.
 ;; 2020/10/08 dadams
 ;;     help-info-manual-lookup button: Use info-lookup-symbol if BOOKS is the symbol emacs-elisp.
 ;;     help-cross-reference-manuals: Change default value to have non-nil cdr.  Update doc about car = emacs + elisp.
@@ -618,24 +621,34 @@ Clicking the button shows the help for COMMAND."
 
 (when (boundp 'Info-virtual-files)      ; Emacs 23.2+
 
-  (defcustom help-cross-reference-manuals '(("emacs" "elisp") . t)
-    "*Manuals to search, for a `*Help*' buffer link to the manuals.
-A cons.
+  (defcustom help-cross-reference-manuals '(("emacs" "elisp"))
+    "Manuals to search, for a `*Help*' buffer link to the manuals.
+The default value is ((\"emacs\" \"elisp\")).  Clicking the
+cross-reference link in `*Help*' uses `info-lookup-symbol' to take you
+directly to the relevant doc in the Emacs or Elisp manual.  This is
+very quick.
 
- The car is a list of manuals to search, or the symbol `all', to
+Any other value means that clicking the link searches the indexes of
+the specified manuals and then opens an Info Index buffer with links
+to the relevant manuals.  This can take a while, and if there are no
+matches then the `*info*' buffer shown is empty.  The advantage of
+this approach is that you can get to a hit in more than one manual.
+
+The option value is a cons: (MANUALS . SEARCH-FIRST).
+
+ MANUALS is the list of manuals to search, or the symbol `all', to
   search all.  If `nil' then do not create a cross-reference link.
 
- The cdr is a boolean:
+ SEARCH-FIRST is a Boolean value.  If MANUALS specifies other than
+ just the Emacs and Elisp manuals (both) then:
 
-  Non-`nil' means search the manuals, then create a cross-ref link:
-        create it only if some search hits are found.
+  * `nil' SEARCH-FIRST means create a cross-reference link
+    immediately, whether or not there are actually any matches.
 
-  `nil' means create a cross-ref link without searching manuals
-        first (but only if there are some manuals to search).
-
-If the car has manuals \"emacs\" and \"elisp\", and only those (this
-is the default), then the cdr is ignored and the behavior is as if it
-were non-`nil'."
+  * Non-`nil' SEARCH-FIRST means search the indexes, and create a link
+    only if there are matches.  The indexes are thus searched before
+    populating buffer `*Help*', which takes time.  You probably do not
+    want to use this possibility."
     :set #'(lambda (sym defs) (custom-set-default sym defs) (setq Info-indexed-nodes  ()))
     :type '(cons
             (choice :tag "Which Manuals"
@@ -686,7 +699,7 @@ so that matches are exact (ignoring case).")
                                      ))
 
   (defun Info-make-manuals-xref (object &optional no-newlines-after-p manuals-spec nomsg)
-    "Create a cross-ref link for index entries for OBJECT in manuals.
+    "Create a cross-ref link for entries for OBJECT in manuals.
 Non-`nil' optional arg NO-NEWLINES-AFTER-P means do not add two
 newlines after the cross reference.
 
@@ -695,10 +708,35 @@ the same form as option `help-cross-reference-manuals', and it
 defaults to the value of that option.
 
 Do nothing if the car of MANUALS-SPEC is nil (no manuals to search).
-If its cdr is `nil', and the car does not have only the manuals
-\"emacs\" and \"elisp\", then create the link without first searching
-any manuals.  Otherwise, create the link only if there are search hits
-in the manuals."
+
+Otherwise, there are 3 cases:
+
+1. The cdr is `nil' and the car has the two manuals \"emacs\" and
+   \"elisp\", and only these (this is the default).
+
+   Create the link without first searching any manuals.  Clicking the
+   link uses `help-lookup-symbol'.
+
+2. The cdr is `nil' and the car does not have just those two manuals.
+
+   Create the link without first searching any manuals.  Clicking the
+   link then searches the manuals.
+
+3. The cdr is non-`nil'.
+
+   Create the link only if there are search hits in the manuals.
+   This takes time.
+
+In cases #1 and #2, clicking the link might find that there are no
+search hits in the manuals.  In case #3, if there is a link then it is
+sure to lead to hits.
+
+In cases #2 and #3, clicking the link brings up an Info index buffer
+for the manuals with hits.  In case #1, clicking the link takes you
+directly to a hit in one of the manuals, Emacs or Elisp.
+
+Cases #1 and #2 create the `*Help'* buffer quickly.  Case #3 takes
+time to create it - possibly considerable time."
     (when (or (stringp object)  (symbolp object)) ; Exclude, e.g., a keymap as OBJECT.
       (unless manuals-spec (setq manuals-spec  help-cross-reference-manuals))
       (when (car manuals-spec) ; Create no link if no manuals to search.
@@ -706,7 +744,7 @@ in the manuals."
               (symb-name  (if (stringp object) object (symbol-name object))))
           (when (or (equal books '("emacs" "elisp"))  (equal books '("elisp" "emacs")))
             (setq books  'emacs-elisp))
-          (setq search-now-p  (or (cdr manuals-spec)  (eq books 'emacs-elisp)))
+          (setq search-now-p  (cdr manuals-spec))
           (when (or (not search-now-p)
                     (eq books 'emacs-elisp)
                     (save-current-buffer (Info-first-index-occurrence symb-name () books nomsg)))
@@ -715,8 +753,9 @@ in the manuals."
                                                  (eq ?\n (char-before (1- (point))))) "")
                                            ((eq ?\n (char-before))                    "\n")
                                            (t                                         "\n\n"))))
-              (insert (format "%sFor more information %s the " nl-before (if search-now-p "see" "check")))
-              (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books)
+              (insert (format "%sFor more information %s the "
+                              nl-before (if (or (eq books 'emacs-elisp)  search-now-p) "see" "check")))
+              (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books search-now-p)
               (insert ".")
               (unless no-newlines-after-p (insert "\n\n"))))))))
 
@@ -726,9 +765,10 @@ in the manuals."
              (get 'help-xref 'button-category-symbol)) ; In `button.el'
     (define-button-type 'help-info-manual-lookup
       :supertype 'help-xref
-      'help-function #'(lambda (string &optional index-nodes books nomsg)
-                         (if (eq books 'emacs-elisp)
+      'help-function #'(lambda (string &optional index-nodes books search-now-p nomsg)
+                         (if (and (eq books 'emacs-elisp)  (not search-now-p))
                              (info-lookup-symbol (intern string))
+                           (when (eq books 'emacs-elisp) (setq books  (list "emacs" "elisp")))
                            (Info-index-entries-across-manuals string () books nomsg)))
       'help-echo "mouse-2, RET: Look it up in the manuals"))
 
