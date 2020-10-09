@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 11:35:45 2020 (-0700)
+;; Last-Updated: Thu Oct  8 18:15:44 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2459
+;;     Update #: 2475
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/08 dadams
+;;     help-info-manual-lookup button: Use info-lookup-symbol if BOOKS is the symbol emacs-elisp.
+;;     help-cross-reference-manuals: Change default value to have non-nil cdr.  Update doc about car = emacs + elisp.
+;;     Info-make-manuals-xref: If MANUALS-SPEC is the help-cross-reference-manuals default then use "see", not "check".
 ;; 2020/08/18 dadams
 ;;     help-substitute-command-keys: Corrected handling \= by advancing ii to jj after skipping \=.
 ;; 2020/08/14 dadams
@@ -614,12 +618,12 @@ Clicking the button shows the help for COMMAND."
 
 (when (boundp 'Info-virtual-files)      ; Emacs 23.2+
 
-  (defcustom help-cross-reference-manuals '(("emacs" "elisp"))
+  (defcustom help-cross-reference-manuals '(("emacs" "elisp") . t)
     "*Manuals to search, for a `*Help*' buffer link to the manuals.
 A cons.
 
  The car is a list of manuals to search, or the symbol `all', to
-  search all.  If nil, then do not create a cross-reference link.
+  search all.  If `nil' then do not create a cross-reference link.
 
  The cdr is a boolean:
 
@@ -627,12 +631,16 @@ A cons.
         create it only if some search hits are found.
 
   `nil' means create a cross-ref link without searching manuals
-        first (but only if there are some manuals to search)."
+        first (but only if there are some manuals to search).
+
+If the car has manuals \"emacs\" and \"elisp\", and only those (this
+is the default), then the cdr is ignored and the behavior is as if it
+were non-`nil'."
     :set #'(lambda (sym defs) (custom-set-default sym defs) (setq Info-indexed-nodes  ()))
     :type '(cons
             (choice :tag "Which Manuals"
-             (repeat :tag "Specific Manuals (files)" string)
-             (const  :tag "All Manuals" all))
+                    (repeat :tag "Specific Manuals (files)" string)
+                    (const  :tag "All Manuals"              all))
             (boolean :tag "Search Before Creating Button?"))
     :group 'help)
 
@@ -687,35 +695,42 @@ the same form as option `help-cross-reference-manuals', and it
 defaults to the value of that option.
 
 Do nothing if the car of MANUALS-SPEC is nil (no manuals to search).
-If its cdr is `nil' then create the link without first searching any
-manuals.  Otherwise, create the link only if there are search hits in
-the manuals."
+If its cdr is `nil', and the car does not have only the manuals
+\"emacs\" and \"elisp\", then create the link without first searching
+any manuals.  Otherwise, create the link only if there are search hits
+in the manuals."
     (when (or (stringp object)  (symbolp object)) ; Exclude, e.g., a keymap as OBJECT.
       (unless manuals-spec (setq manuals-spec  help-cross-reference-manuals))
       (when (car manuals-spec) ; Create no link if no manuals to search.
-        (let ((books         (car manuals-spec))
-              (search-now-p  (cdr manuals-spec))
-              (symb-name     (if (stringp object) object (symbol-name object))))
+        (let ((books      (car manuals-spec))
+              (symb-name  (if (stringp object) object (symbol-name object))))
+          (when (or (equal books '("emacs" "elisp"))  (equal books '("elisp" "emacs")))
+            (setq books  'emacs-elisp))
+          (setq search-now-p  (or (cdr manuals-spec)  (eq books 'emacs-elisp)))
           (when (or (not search-now-p)
+                    (eq books 'emacs-elisp)
                     (save-current-buffer (Info-first-index-occurrence symb-name () books nomsg)))
             (let ((buffer-read-only  nil)
                   (nl-before         (cond ((and (eq ?\n (char-before)) ; Quicker than `looking-back', apparently.
                                                  (eq ?\n (char-before (1- (point))))) "")
                                            ((eq ?\n (char-before))                    "\n")
                                            (t                                         "\n\n"))))
-              (insert (format "%sFor more information %s the " nl-before (if (cdr manuals-spec) "see" "check")))
+              (insert (format "%sFor more information %s the " nl-before (if search-now-p "see" "check")))
               (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books)
               (insert ".")
               (unless no-newlines-after-p (insert "\n\n"))))))))
+
 
   (when (and (> emacs-major-version 21)
              (condition-case nil (require 'help-mode nil t) (error nil))
              (get 'help-xref 'button-category-symbol)) ; In `button.el'
     (define-button-type 'help-info-manual-lookup
-        :supertype 'help-xref
-        'help-function #'(lambda (string &optional index-nodes books nomsg)
-                           (Info-index-entries-across-manuals string () books nomsg))
-        'help-echo "mouse-2, RET: Look it up in the manuals"))
+      :supertype 'help-xref
+      'help-function #'(lambda (string &optional index-nodes books nomsg)
+                         (if (eq books 'emacs-elisp)
+                             (info-lookup-symbol (intern string))
+                           (Info-index-entries-across-manuals string () books nomsg)))
+      'help-echo "mouse-2, RET: Look it up in the manuals"))
 
   (defun Info-index-entries-across-manuals (string &optional index-nodes manuals nomsg)
     "Look up STRING in Info MANUALS on your system.
@@ -846,10 +861,10 @@ Optional arg NOMSG non-nil means do not display a progress message."
                                     (while (progn (goto-char (point-min))
                                                   (when (re-search-forward pattern nil t)
                                                     (throw 'Info-first-index-occurrence
-                                                      (list manual
-                                                            (match-string-no-properties 1)
-                                                            (match-string-no-properties 2)
-                                                            (match-string-no-properties 3))))
+                                                           (list manual
+                                                                 (match-string-no-properties 1)
+                                                                 (match-string-no-properties 2)
+                                                                 (match-string-no-properties 3))))
                                                   (setq index-nodes  (cdr index-nodes)
                                                         node         (car index-nodes)))
                                       (Info-goto-node node))))
