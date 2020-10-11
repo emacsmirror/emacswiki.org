@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct  9 14:03:04 2020 (-0700)
+;; Last-Updated: Sun Oct 11 08:59:54 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6532
+;;     Update #: 6537
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -489,6 +489,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/11 dadams
+;;     Info-fontify-node (Emacs 24.2+): Use header-line-highlight for mouse-face.
 ;; 2020/10/09 dadams
 ;;     Info-read-bookmarked-node-name: remove-if-not -> bmkp-remove-if-not.
 ;;     Everywhere: added nil second arg to looking-back (arg is required now).
@@ -4375,7 +4377,9 @@ If key's command cannot be found by looking in indexes, then
               (if (string-equal (downcase tag) "node")
                   (put-text-property nbeg nend 'font-lock-face 'info-header-node)
                 (put-text-property nbeg nend 'font-lock-face 'info-header-xref)
-                (put-text-property tbeg nend 'mouse-face 'highlight)
+                (put-text-property tbeg nend 'mouse-face (if (facep 'header-line-highlight) ; Emacs 26+
+                                                             'header-line-highlight
+                                                           'highlight))
                 (put-text-property tbeg nend
                                    'help-echo
                                    (concat "mouse-2: Go to node "
@@ -4495,7 +4499,9 @@ If key's command cannot be found by looking in indexes, then
                  (list 'help-echo (if (or (match-end 5)  (not (equal (match-string 4) "")))
                                       (concat "mouse-2: go to " (or (match-string 5)  (match-string 4)))
                                     "mouse-2: go to this node")
-                       'mouse-face 'highlight)))
+                       'mouse-face (if (facep 'header-line-highlight) ; Emacs 26+
+                                       'header-line-highlight
+                                     'highlight))))
               (when (or not-fontified-p  fontify-bookmarked-p  fontify-visited-p)
                 (setq rbeg  (match-beginning 2)
                       rend  (match-end 2))
@@ -4606,7 +4612,9 @@ If key's command cannot be found by looking in indexes, then
                                                                  (not (equal (match-string 3) "")))
                                                             (concat "mouse-2: go to " (match-string 3))
                                                           "mouse-2: go to this node")
-                                             'mouse-face 'highlight)))
+                                             'mouse-face (if (facep 'header-line-highlight) ; Emacs 26+
+                                                             'header-line-highlight
+                                                           'highlight))))
                 (when (or not-fontified-p  fontify-bookmarked-p  fontify-visited-p)
                   (let (node)
                     (put-text-property
@@ -4679,9 +4687,12 @@ If key's command cannot be found by looking in indexes, then
         (goto-char (point-min))
         (when not-fontified-p        ; Fontify http and ftp references
           (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
-            (add-text-properties (match-beginning 0) (match-end 0) '(font-lock-face info-xref
-                                                                     mouse-face highlight
-                                                                     help-echo "mouse-2: go to this URL"))))
+            (add-text-properties (match-beginning 0) (match-end 0)
+                                 `(font-lock-face info-xref
+                                                  mouse-face ,(if (facep 'header-line-highlight) ; Emacs 26+
+                                                                  'header-line-highlight
+                                                                'highlight)
+                                                  help-echo "mouse-2: go to this URL"))))
         (goto-char (point-max))
         (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
