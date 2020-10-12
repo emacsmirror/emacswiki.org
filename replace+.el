@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  3 09:29:57 2018 (-0700)
+;; Last-Updated: Mon Oct 12 15:07:07 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 1901
+;;     Update #: 1907
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -18,12 +18,19 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cl', `easymenu', `fit-frame',
-;;   `frame-cmds', `frame-fns', `help+20', `highlight', `info',
-;;   `info+20', `isearch+', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `easymenu',
+;;   `fit-frame', `font-lock', `font-lock+', `frame-cmds',
+;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `highlight',
+;;   `hl-line', `hl-line+', `info', `info+', `isearch+',
+;;   `isearch-prop', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `radix-tree',
+;;   `replace', `second-sel', `strings', `syntax', `text-mode',
+;;   `thingatpt', `thingatpt+', `vline', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -141,6 +148,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/12 dadams
+;;     replace-highlight: Recycle faces isearchp-regexp-level-* when more than 8 group matches.
 ;; 2018/06/03 dadams
 ;;     replace-highlight: Do not try to highlight regexp groups if REGEXP-FLAG is nil.
 ;; 2017/07/31 dadams
@@ -1137,7 +1146,8 @@ then highlight each regexp group differently."
       ;; Highlight each regexp group differently.
       (save-match-data
         (let ((level         1)
-              (max-levels    (min (regexp-opt-depth search-string) 8))
+              (levelh        1)
+              (max-levels    (regexp-opt-depth search-string))
               (rep-priority  (or (overlay-get replace-overlay 'priority) ; `replace-overlay' is 1001.
                                  1001)))
           (save-excursion
@@ -1145,13 +1155,15 @@ then highlight each regexp group differently."
             (when (looking-at search-string)
               (condition-case nil
                   (while (<= level max-levels)
+                    (when (> levelh 8) (setq levelh  1))
                     (unless (equal (match-beginning level) (match-end level))
                       (let ((ov  (make-overlay (match-beginning level) (match-end level))))
                         (push ov isearchp-regexp-level-overlays)
                         (overlay-put ov 'priority (+ rep-priority 200 level))
                         (overlay-put ov 'face (intern (concat "isearchp-regexp-level-"
-                                                              (number-to-string level))))))
-                    (setq level  (1+ level)))
+                                                              (number-to-string levelh))))))
+                    (setq level   (1+ level)
+                          levelh  (1+ levelh)))
                 (error nil)))))))
     (when query-replace-lazy-highlight
       (let ((isearch-string                 search-string)
