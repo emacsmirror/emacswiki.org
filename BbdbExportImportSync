@@ -27,3 +27,9 @@ Be sure to search the [http://www.mail-archive.com/bbdb-info@lists.sourceforge.n
 CardDAV is a IETF standards-track protocol designed from the ground up for keeping PIM clients in sync with a contacts server. It has emerged as the most generic and open standard for contacts synchronization. Apple Addressbook can connect to a CardDav server for synchronisation. Gmail can act as a contacts server (you can think of the contacts UI in gmail as google's CardDAV client). CardDAV is based on vCard format for storing individual contact information.
 
 ASynK (http://asynk.io/) supports bidirectional BBDB ⟷ CardDAV (at least with BBDB3). See also the github page (https://github.com/skarra/ASynK/). ASynK has been reported to work with the following standalone CardDAV server implementations: OwnCloud, Baikal, Apple CalendarServer
+
+
+===Record Format===
+
+The way records are stored is another interesting question.
+If the only thing you are interested in is one-time import/export (exect a lot of pain when merging), you can export your phone contacts into a .vcf (vCard) format, and reimport with the help of the bbdb-vcard MELPA package. (Occasionaly broken, but still useful.)
