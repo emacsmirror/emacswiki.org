@@ -7,7 +7,7 @@
 ==如何使用本站点==
 * [[如何导航]] -- 怎样找到你需要的信息？
 * [[如何编辑]] -- 怎样为此站点做贡献?
-* ElispArea -- 上传和下载 EmacsLisp 源代码
+* ElispArea -- 上传和下载 Emacs Lisp 源代码
 * [EmacsWiki:CSS Appearance] -- 如何改变此网站展现给你的外观
 * WikiDownload -- 如何获取此网站的副本
 * EmacsWikiAdministrators -- 处理本网站上的恶意破坏和垃圾邮件
@@ -19,8 +19,8 @@
 * [[CategoryDocumentation|Documentation]] -- 为什么 Emacs 叫 self-documenting text editor.
 * [[CategoryHelp|Help]] -- Emacs 本身的在线帮助
 * [[LearningEmacs|Learning Emacs]] -- 有许多学习 Emacs 的资源和方法, 获取帮助
-* [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp 是 Emacs 的核心和灵魂
-* [[CategoryDotEmacs|DotEmacs]] -- 使用 EmacsLisp 代码写一个在启动是运行的 [[init file]] 
+* [[LearnEmacsLisp|Learn Emacs Lisp]] -- Emacs Lisp 是 Emacs 的核心和灵魂
+* [[CategoryDotEmacs|DotEmacs]] -- 使用 Emacs Lisp 代码写一个在启动时运行的 [[init file]] 
 * [[CategoryGlossary|Glossary]] -- Emacs 术语
 * [[EmacsNiftyTricks|Nifty Tricks]] -- 一些非凡的技巧
 * RandomPage -- for serendipitous visitors
