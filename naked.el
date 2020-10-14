@@ -8,9 +8,9 @@
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 13 20:37:25 2020 (-0700)
+;; Last-Updated: Tue Oct 13 21:26:45 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 185
+;;     Update #: 205
 ;; URL: https://www.emacswiki.org/emacs/download/naked.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -91,11 +91,23 @@
 ;;
 ;;  Enjoy!
 ;;
+;;
+;;  Command defined here:
+;;
+;;    `naked-read-kbd-macro'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `naked', `naked-edmacro-parse-keys', `naked-key-description',
+;;    `naked-read-kbd-macro', `naked-string-match-p'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2020/10/13 dadams
+;;     Added: naked-string-match-p.
+;;     naked-edmacro-parse-keys: Use naked-string-match-p when don't need to set match data.
 ;;     naked-read-kbd-macro: Fixed typo: \P -> \nP.
 ;; 2017/04/18 dadams
 ;;     Added forgotten compile-time require of cl.el, for macro loop.
@@ -137,6 +149,12 @@
 (eval-when-compile (require 'cl)) ;; loop
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(if (fboundp 'string-match-p)
+    (defalias 'naked-string-match-p 'string-match-p) ; Emacs 23+
+  (defun naked-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 ;; Same as `icicle-key-description' in `icicles-fn.el'.
 (defun naked-key-description (keys &optional prefix angles)
@@ -184,27 +202,27 @@ ANGLES."
         (when (string-match "\\([0-9]+\\)\\*." word)
           (setq times  (string-to-number (substring word 0 (match-end 1)))
                 word   (substring word (1+ (match-end 1)))))
-        (cond ((string-match "^<<.+>>$" word)
+        (cond ((naked-string-match-p "^<<.+>>$" word)
                (setq key  (vconcat (if (eq (key-binding [?\M-x]) 'execute-extended-command)
                                        [?\M-x]
-                                     (or (car (where-is-internal 'execute-extended-command))
-                                         [?\M-x]))
+                                     (or (car (where-is-internal 'execute-extended-command))  [?\M-x]))
                                    (substring word 2 -2) "\r")))
 
               ;; Must test this before [ACHMsS]- etc., to prevent match.
-              ((or (equal word "REM") (string-match "^;;" word))
-               (setq pos  (string-match "$" string pos)))
+              ((or (equal word "REM")  (naked-string-match-p "^;;" word))
+               (setq pos  (naked-string-match-p "$" string pos)))
 
               ;; Straight `edmacro-parse-keys' case - ensure same behavior.
               ;; Includes same bugged handling of `TAB'.  That is Emacs bug #12535.
               ;; The bug fix is to add `TAB' to the list in this clause.
-	      ((and angles  (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
+	      ((and angles
+                    (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
 		    (progn
 		      (setq word  (concat (substring word (match-beginning 1)
                                                      (match-end 1))
                                           (substring word (match-beginning 3)
                                                      (match-end 3))))
-		      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
+		      (not (naked-string-match-p "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
 	       (setq key  (list (intern word))))
 
               ;; NaKeD handling of <...>.  Recognize it anyway, even without non-nil ANGLES.
@@ -213,33 +231,31 @@ ANGLES."
                     (progn
                       (setq word  (concat (substring word (match-beginning 1) (match-end 1))
                                           (substring word (match-beginning 3) (match-end 3))))
-                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
-                                         word))))
+                      (not (naked-string-match-p "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$" word))))
                (setq key  (list (intern word))))
 
               ;; NaKeD handling of names without <...>.
               ((and (not angles)
                     (string-match "^\\(\\([ACHMsS]-\\)*\\)\\([^ \t\f\n][^ \t\f\n]+\\)$" word)
                     ;; Do not count `C-' etc. when at end of string.
-                    (save-match-data (not (string-match "\\([ACHMsS]-.\\)+$" word)))
+                    (not (naked-string-match-p "\\([ACHMsS]-.\\)+$" word))
                     (progn
                       (setq word  (concat (substring word (match-beginning 1) (match-end 1))
                                           (substring word (match-beginning 3) (match-end 3))))
-                      (not (string-match "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$"
-                                         word))))
+                      (not (naked-string-match-p "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\|TAB\\)$" word))))
                (setq key  (list (intern word))))
 
               (t
                (let ((orig-word  word)
                      (prefix     0)
                      (bits       0))
-                 (while (string-match "^[ACHMsS]-." word)
+                 (while (naked-string-match-p "^[ACHMsS]-." word)
                    (incf bits (cdr (assq (aref word 0) '((?A . ?\A-\^@) (?C . ?\C-\^@)
                                                          (?H . ?\H-\^@) (?M . ?\M-\^@)
                                                          (?s . ?\s-\^@) (?S . ?\S-\^@)))))
                    (incf prefix 2)
                    (callf substring word 2))
-                 (when (string-match "^\\^.$" word)
+                 (when (naked-string-match-p "^\\^.$" word)
                    (incf bits ?\C-\^@)
                    (incf prefix)
                    (callf substring word 1))
@@ -247,22 +263,26 @@ ANGLES."
                                              ("ESC" . "\e") ("SPC" . " ") ("DEL" . "\177")
                                              ("TAB" . "\t")))))
                    (when found (setq word  (cdr found))))
-                 (when (string-match "^\\\\[0-7]+$" word)
+                 (when (naked-string-match-p "^\\\\[0-7]+$" word)
                    (loop for ch across word
                          for n = 0 then (+ (* n 8) ch -48)
                          finally do (setq word  (vector n))))
                  (cond ((= bits 0) (setq key  word))
-                       ((and (= bits ?\M-\^@) (stringp word)  (string-match "^-?[0-9]+$" word))
+                       ((and (= bits ?\M-\^@)
+                             (stringp word)
+                             (naked-string-match-p "^-?[0-9]+$" word))
                         (setq key  (loop for x across word collect (+ x bits))))
                        ((/= (length word) 1)
                         (error "%s must prefix a single character, not %s"
                                (substring orig-word 0 prefix) word))
-                       ((and (/= (logand bits ?\C-\^@) 0) (stringp word)
+                       ((and (/= (logand bits ?\C-\^@) 0)
+                             (stringp word)
                              ;; Used to accept `.' and `?' here, but `.' is simply wrong,
                              ;; and `C-?' is not used (so use `DEL' instead).
-                             (string-match "[@-_a-z]" word))
+                             (naked-string-match-p "[@-_a-z]" word))
                         (setq key  (list (+ bits (- ?\C-\^@) (logand (aref word 0) 31)))))
-                       (t (setq key  (list (+ bits (aref word 0)))))))))
+                       (t
+                        (setq key  (list (+ bits (aref word 0)))))))))
         (when key (loop repeat times do (callf vconcat res key)))))
     (when (and (>= (length res) 4)  (eq (aref res 0) ?\C-x)  (eq (aref res 1) ?\()
                (eq (aref res (- (length res) 2)) ?\C-x)  (eq (aref res (- (length res) 1)) ?\)))
