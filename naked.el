@@ -8,9 +8,9 @@
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 13 21:26:45 2020 (-0700)
+;; Last-Updated: Wed Oct 14 08:46:05 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 206
 ;; URL: https://www.emacswiki.org/emacs/download/naked.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -218,10 +218,8 @@ ANGLES."
 	      ((and angles
                     (string-match "^\\(\\([ACHMsS]-\\)*\\)<\\(.+\\)>$" word)
 		    (progn
-		      (setq word  (concat (substring word (match-beginning 1)
-                                                     (match-end 1))
-                                          (substring word (match-beginning 3)
-                                                     (match-end 3))))
+		      (setq word  (concat (substring word (match-beginning 1) (match-end 1))
+                                          (substring word (match-beginning 3) (match-end 3))))
 		      (not (naked-string-match-p "\\<\\(NUL\\|RET\\|LFD\\|ESC\\|SPC\\|DEL\\)$" word))))
 	       (setq key  (list (intern word))))
 
