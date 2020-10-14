@@ -5,6 +5,8 @@ A package to integrate Google Contacts into Emacs.
 See also:
 GoogleClient (Likely to be dead.)
 
+* This project is likely to need a serious update after Google decommissions the Contacts API (it is officially replaced with the People API).
+
 == Questions ==
 [new:]
 Can this be made to work without entering a passphrase each time it is used?  
