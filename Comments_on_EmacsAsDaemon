@@ -49,3 +49,18 @@ So I'm guessing ##--user %i## is the right thing.
 
 -- npostavs 2019-06-07 11:54 UTC
 
+
+----
+
+It seems that emacs built with gtk can not save things like recentf files when poweroff machine, see
+https://emacs.stackexchange.com/questions/16567/emacs-cant-save-history-of-recent-visited-files-opened-in-current-session-befor
+and
+https://emacs.stackexchange.com/questions/55528/make-emacs-systemd-service-kill-when-logging-out-shutting-down/60754#60754
+Solutions I have found is either
+a. do the save manually.
+b. add things like this to your .emacs 
+(run-at-time (current-time) 300 'recentf-save-list)(from https://emacs.stackexchange.com/questions/55528/make-emacs-systemd-service-kill-when-logging-out-shutting-down/60754#60754)
+c. don't bulid emacs with gtk.  As for me, on Gentoo, it is to enable useflag "motif" and disable useflag "athena" "gtk" "Xaw3d".
+
+-- C-Entropy 2020-10-14 12:42 UTC
+
