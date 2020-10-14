@@ -4,13 +4,13 @@
 ;; Description: Provide for naked key descriptions: no angle brackets.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:09:07 2018 (-0800)
+;; Last-Updated: Tue Oct 13 20:37:25 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 183
+;;     Update #: 185
 ;; URL: https://www.emacswiki.org/emacs/download/naked.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -95,6 +95,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/13 dadams
+;;     naked-read-kbd-macro: Fixed typo: \P -> \nP.
 ;; 2017/04/18 dadams
 ;;     Added forgotten compile-time require of cl.el, for macro loop.
 ;; 2013/02/26 dadams
@@ -267,7 +269,7 @@ ANGLES."
       (setq res  (edmacro-subseq res 2 -2)))
     (if (and (not need-vector)
 	     (loop for ch across res
-		   always (and (if (fboundp 'characterp)  (characterp ch)  (char-valid-p ch))
+		   always (and (if (fboundp 'characterp) (characterp ch) (char-valid-p ch))
 			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
 				 (and (>= ch2 0)  (<= ch2 127))))))
 	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0)  ch  (+ ch 128))))
@@ -286,7 +288,7 @@ brackets.  For example:
 
  (naked-read-kbd-macro  \"mode-line\"  t)   returns [mode-line]
  (naked-read-kbd-macro \"<mode-line>\" t t) returns [mode-line]"
-  (interactive "r\P")
+  (interactive "r\nP")
   (if (stringp start)
       (naked-edmacro-parse-keys start end angles)
     (setq last-kbd-macro  (naked-edmacro-parse-keys (buffer-substring start end) nil angles))))
