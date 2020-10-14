@@ -2,9 +2,9 @@
 
 https://melpa.org
 
-* rope-read-mode.  A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  Get it with M-x package-install rope-read-mode.  For the code see https://gitlab.com/marcowahl/rope-read-mode.  I actually use rope read sometimes.
+* rope-read-mode.  A mode for rearranging text in “rope read“ style.  For the code see https://gitlab.com/marcowahl/rope-read-mode.  I actually use rope read sometimes.
 
-* emacsshot.  Take a screenshot of Emacs from within Emacs.  Get it with M-x package-install emacsshot.  For the code see https://gitlab.com/marcowahl/emacsshot.
+* emacsshot.  Take a screenshot of Emacs from within Emacs. For the code see https://gitlab.com/marcowahl/emacsshot.
 
 == Activity ==
 
