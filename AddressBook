@@ -1,3 +1,5 @@
+=As of 2020, this project seems to be dead.=
+
 AddressBook is a simple vCard based addressbook for Emacs. It is still in development.
 
 It is similar to the insidious big brother database, but instead of using a custom format for data storage, it uses the 
