@@ -6,6 +6,22 @@ The feature is discussed in detail in the talk [https://www.youtube.com/watch?v=
 
 == Installation ==
 
+=== From source ===
+
+To build the native-comp branch of Emacs, you will need ##libgccjit## in addition to the other dependencies described in BuildingEmacs.
+
+First, checkout the ##feature/native-comp## branch of Emacs, and configure it with the ##--with-nativecomp## flag:
+
+    $ git clone git://git.savannah.gnu.org/emacs.git -b feature/native-comp
+    $ cd emacs
+    $ ./autogen.sh
+    $ ./configure --with-nativecomp
+    $ make -j$(nproc)
+
+You should see //"Does Emacs have native lisp compiler? yes"// near the end of the configure output if native compilation has been enabled.
+
+If you wish install conventionally with ##make install## otherwise run it from the build tree with ##./src/emacs##.
+
 === ArchLinux ===
 
 An ##emacs-native-comp-git## package is available [https://aur.archlinux.org/packages/emacs-native-comp-git/ on the AUR].
@@ -40,22 +56,6 @@ Detailed installation instructions are available [https://gist.github.com/mjlbac
 === Docker ===
 
 An ##emacs-nativecomp## docker image is [https://hub.docker.com/r/andreacorallo/emacs-nativecomp available]. Also examine the gitlab repo for the [https://gitlab.com/koral/emacs-nativecomp-dockerfile dockerfile].
-
-=== Manual ===
-
-To build the native-comp branch of Emacs, you will need ##libgccjit## in addition to the other dependencies described in BuildingEmacs.
-
-First, checkout the ##feature/native-comp## branch of Emacs, and configure it with the ##--with-nativecomp## flag:
-
-    $ git clone git://git.savannah.gnu.org/emacs.git
-    $ cd emacs
-    $ git checkout feature/native-comp
-    $ ./autogen.sh
-    $ ./configure --with-nativecomp
-
-You should see //"Does Emacs have native lisp compiler? yes"// near the end of the configure output if native compilation has been enabled.
-
-Complete the build with ##make## and ##make install## as usual.
 
 == Usage ==
 
