@@ -8,9 +8,18 @@ https://melpa.org
 
 * org-pretty-tags. Represent Org tags as non-ascii text or an image. 
 
-* rope-read-mode.  A mode for rearranging text in “rope read“ style.  For the code see https://gitlab.com/marcowahl/rope-read-mode.  I actually use rope read sometimes.
+* rope-read-mode.  A mode for rearranging text in “rope read“ style.
 
-* emacsshot.  Take a screenshot of Emacs from within Emacs. For the code see https://gitlab.com/marcowahl/emacsshot.
+* emacsshot.  Take a screenshot of Emacs from within Emacs.
+
+* underline-with-char. Convenient underlining with a char e.g. '-'.
+
+
+For the code see the respective subpages at https://gitlab.com/marcowahl.
+
+I actually use the packages above.
+
+Everything there is open for participation. 
 
 == Activity ==
 
