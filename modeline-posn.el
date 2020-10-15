@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:01:52 2018 (-0800)
+;; Last-Updated: Thu Oct 15 10:13:00 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 846
+;;     Update #: 848
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,8 +53,8 @@
 ;;  format string that you use: one for each `%' construct.
 ;;
 ;;  Choice (d) is provided so that you can choose alternative
-;;  formatting styles.  For example, instead of ` 256 ch, 13 l', you
-;;  could show ` (256 chars, 13 lines)'.  But (d) can really show
+;;  formatting styles.  For example, instead of `256 ch, 13 l', you
+;;  could show `(256 chars, 13 lines)'.  But (d) can really show any
 ;;  information at all.  It need not have anything to do with the
 ;;  region, but it is nevertheless shown when the region is active.
 ;;
@@ -164,8 +164,7 @@
 ;;
 ;;    `keep-lines-read-args', `map-query-replace-regexp',
 ;;    `perform-replace', `query-replace-read-args',
-;;    `query-replace-read-from', `query-replace-read-to',
-;;    `replace-dehighlight'.
+;;    `query-replace-read-from', `query-replace-read-to'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `register.el' have
@@ -190,6 +189,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/15 dadams
+;;     Removed advice for replace-dehighlight.  Do it in around advice for perform-replace.
+;;     perform-replace advice: Change to around advice, and bind, don't set, modelinepos-region-acting-on.
 ;; 2017/02/27 dadams
 ;;     modelinepos-style: Wrap calls to rectangle--pos-cols with save-excursion (Emacs bug #25777).
 ;; 2017/02/19 dadams
@@ -620,14 +622,15 @@ For some commands, it may be appropriate to ignore the value of
                (region-end))))))
 
 ;; Turn on highlighting for act of (query-)replacing.
-(defadvice perform-replace (before bind-modelinepos-region-acting-on activate)
+(defadvice perform-replace (around bind-modelinepos-region-acting-on activate)
   "\(Not used for Emacs 22.)"
-  (setq modelinepos-region-acting-on  (or (use-region-p)  (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+  (let ((modelinepos-region-acting-on  (or (use-region-p)  (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+    ad-do-it))
 
-;; Turn it off after highlighting for replacement commands.  There is no hook, so use `replace-dehighlight'.
-(defadvice replace-dehighlight (after bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
-  (setq modelinepos-region-acting-on  nil))
+;; ;; Turn it off after highlighting for replacement commands.  There is no hook, so use `replace-dehighlight'.
+;; (defadvice replace-dehighlight (after bind-modelinepos-region-acting-on activate)
+;;   "\(Not used for Emacs 22.)"
+;;   (setq modelinepos-region-acting-on  nil))
 
 
 ;;; Commands from `simple.el' and `files.el' (loaded by default; `files.el' has no `provide').
