@@ -205,16 +205,16 @@ The display on which the new frame should be opened can optionally be specified.
 
 {{{
 (defun client-save-kill-emacs(&optional display)
-  " This is a function that can bu used to shutdown save buffers and 
+  " This is a function that can bu used to save buffers and 
 shutdown the emacs daemon. It should be called using 
 emacsclient -e '(client-save-kill-emacs)'.  This function will
-check to see if there are any modified buffers or active clients
-or frame.  If so an x window will be opened and the user will
+check to see if there are any modified buffers, active clients
+or frame.  If so, an x window will be opened and the user will
 be prompted."
 
   (let (new-frame modified-buffers active-clients-or-frames)
 
-    ; Check if there are modified buffers or active clients or frames.
+    ; Check if there are modified buffers, active clients or frames.
     (setq modified-buffers (modified-buffers-exist))
     (setq active-clients-or-frames ( or (> (length server-clients) 1)
 					(> (length (frame-list)) 1)
@@ -234,9 +234,9 @@ be prompted."
 
 
     ; When displaying the number of clients and frames: 
-    ; subtract 1 from the clients for this client.
-    ; subtract 2 from the frames this frame (that we just created) and the default frame.
-    (when ( or (not active-clients-or-frames)
+    ; subtract 1 from clients (this client).
+    ; subtract 2 from frames (the frame just created and the default frame.)
+    (when (or (not active-clients-or-frames)
 	       (yes-or-no-p (format "There are currently %d clients and %d frames. Exit anyway?" (- (length server-clients) 1) (- (length (frame-list)) 2)))) 
       
       ; If the user quits during the save dialog then don't exit emacs.
