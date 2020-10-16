@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Aug 14 11:43:29 2020 (-0700)
+;; Last-Updated: Fri Oct 16 10:31:21 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 7471
+;;     Update #: 7480
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -23,22 +23,23 @@
 ;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
-;;   `dired', `dired-loaddefs', `doremi', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
-;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `dired', `dired-loaddefs', `doremi', `easymenu', `eieio',
+;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `epg-config',
+;;   `ffap', `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
 ;;   `format-spec', `frame-cmds', `frame-fns', `fuzzy',
 ;;   `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `hl-line',
-;;   `hl-line+', `icicles-cmd1', `icicles-fn', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `image', `image-dired',
-;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
-;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `password-cache', `pp', `pp+', `radix-tree', `replace', `ring',
-;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
-;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `zones'.
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `hl-line', `hl-line+', `icicles-cmd1', `icicles-fn',
+;;   `icicles-mcmd', `icicles-opt', `icicles-var', `image',
+;;   `image-dired', `image-mode', `info', `info+', `isearch+',
+;;   `isearch-prop', `kmacro', `levenshtein', `macroexp', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
+;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -464,6 +465,9 @@
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar imenu-after-jump-hook)          ; In `imenu.el' (Emacs 22+)
+(defvar package-alist)                  ; In `package.el' (Emacs 25+)
+(defvar package-archive-contents)       ; In `package.el' (Emacs 25+)
+(defvar package--builtins)              ; In `package.el' (Emacs 25+)
 (defvar replace-count)                  ; In `replace.el'
 (defvar woman-expanded-directory-path)  ; In `woman.el'
 (defvar woman-manpath)                  ; In `woman.el'
@@ -3623,14 +3627,15 @@ Each candidate for completion is a symbol name plus its type
 components are separated by `icicle-list-join-string' (\"^G^J\", by
 default).  You can match an input regexp against the symbol name,
 type, or the documentation or any combination of the three.  Use
-`C-M-j' (equivalent here to `C-q C-g C-j') to input the default
+\\<minibuffer-local-completion-map>`\\[icicle-insert-list-join-string]' \
+\(equivalent here to `C-q C-g C-j') to input the default
 separator.
 
 With a prefix argument, use the same documentation that was gathered
 the last time `icicle-doc' was called.  Use a prefix arg to save the
 time that would be needed to gather the documentation.
 
-You can use `C-$' during completion to toggle filtering the domain of
+You can use `\\[icicle-toggle-transforming]' during completion to toggle filtering the domain of
 initial candidates between all functions, variables, and faces and
 only commands, user options and faces.
 
@@ -5252,8 +5257,7 @@ FIXEDCASE is as for `replace-match'.  Non-nil means do not alter case."
                      (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
                    compiled)
                  fixedcase icicle-search-replace-literally-flag nil (match-data)
-                 nil))                  ; BACKWARD parameter for Emacs 24.4+ - see bug #18388
-            ;; @@@@@@ Hopefully this is only a temporary hack, until Emacs bug #18388 is fixed.
+                 nil)) ; BACKWARD parameter is required for Emacs 24 (only) - see bug #18388.
             (wrong-number-of-arguments
              (condition-case icicle-search-replace-match3
                  (replace-match-maybe-edit
@@ -8478,13 +8482,21 @@ candidates to packages of different kinds."
                                       packages nil t nil nil guess)))
            (list (if (equal val "") guess (intern val)))))))
     (if (not (or (and (fboundp 'package-desc-p)  (package-desc-p package))
-                 (and package (symbolp package))))
+                 (and package  (symbolp package))))
         (when (called-interactively-p 'interactive) (message "No package specified"))
       (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
       (with-help-window (help-buffer)
         (with-current-buffer standard-output
           (describe-package-1 package)
-          (when (fboundp 'package-desc-name)  (setq package  (package-desc-name package))) ; Emacs 24.4+
+          (when (fboundp 'package-desc-name)
+            (let* ((desc  (or (and (package-desc-p package)  package)
+                              (cadr (assq package package-alist))
+                              (let ((built-in  (assq package package--builtins)))
+                                (if built-in
+                                    (package--from-builtin built-in)
+                                  (cadr (assq package package-archive-contents))))))
+                   (name  (if desc (package-desc-name desc) package)))
+              (setq package  name)))
           (when (fboundp 'Info-make-manuals-xref) ; In `help-fns+.el', for Emacs 23.2+.
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))))
