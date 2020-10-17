@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 13 08:06:32 2020 (-0700)
+;; Last-Updated: Sat Oct 17 09:25:09 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6539
+;;     Update #: 6554
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -489,6 +489,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/17 dadams
+;;     Do not bind mouse-4 and mouse-5 to history movement on systems where they scroll window instead.
 ;; 2020/10/13 dadams
 ;;     Info-fontify-node (Emacs 24.2+): Use header-line-highlight for mouse-face in header.
 ;; 2020/10/09 dadams
@@ -1036,6 +1038,7 @@
 (defvar isearch-regexp-lax-whitespace)  ; In `isearch.el'.
 (defvar isearchp-reg-beg)               ; In `isearch+.el'.
 (defvar isearchp-reg-end)               ; In `isearch+.el'.
+(defvar mouse-wheel-up-event)           ; In `mwheel.el', Emacs 22+.
 (defvar outline-heading-alist)          ; In `outline.el'.
 (defvar widen-automatically)
 
@@ -1071,8 +1074,12 @@
 ;; Mouse back and forward buttons
 (define-key Info-mode-map [S-down-mouse-2]  'Info-mouse-follow-nearest-node-new-window)
 (define-key Info-mode-map [S-return]        'Info-follow-nearest-node-new-window)
-(define-key Info-mode-map [mouse-4]         'Info-history-back)
-(define-key Info-mode-map [mouse-5]         'Info-history-forward)
+
+;; For other than `w32-win' and `ns-win', `mouse-4' and `mouse-4' scroll, so cannot be used for history movement.
+(when (and (boundp 'mouse-wheel-up-event) ; Emacs 22+
+           (eq mouse-wheel-up-event 'wheel-down))
+  (define-key Info-mode-map [mouse-4]       'Info-history-back)
+  (define-key Info-mode-map [mouse-5]       'Info-history-forward))
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
@@ -1445,7 +1452,7 @@ Each node name is a string.  The node name can be absolute, including
 a filename, such as \"(emacs)Basic\", or it can be relative, such as
 \"Basic\".
 You can customize this option, but you can also add node names to it
-easily using `\\<Info-mode-map>\\[Info-save-current-node]'."
+easily using `\\[Info-save-current-node]' (`Info-save-current-node')."
   :type '(repeat (string :tag "Node name")) :group 'info)
 
 ;;;###autoload
@@ -2476,8 +2483,14 @@ Non-nil optional arg INCLUDE-BOOKMARK-NODES-P means that all Info
 nodes recorded as bookmarks are included in the virtual book.
 
 Interactively, you are prompted for the name of the virtual book, and
-the nodes are those in `Info-saved-nodes'.  Interactively, a prefix
-argument says to include Info nodes recorded as bookmarks."
+the nodes are those in `Info-saved-nodes'.
+
+Interactively, a prefix argument says to include Info nodes recorded
+as bookmarks.
+
+In addition to creating a virtual book by customizing option
+`Info-saved-nodes', you can add nodes to that option (and thus to the
+virtual book) using \\<Info-mode-map>`\\[Info-save-current-node]' (`Info-save-current-node')."
   (interactive (list (read-from-minibuffer "Virtual book name: " nil nil nil nil "Virtual Book")
                      Info-saved-nodes
                      current-prefix-arg))
@@ -3406,7 +3419,7 @@ If COMMAND has no property, the variable `Info-file-list-for-emacs'
 defines heuristics for which Info manual to try.
 
 The locations are of the format used in variable `Info-history', that
-is, (FILENAME NODENAME BUFFERPOS\), where BUFFERPOS is the line number
+is, (FILENAME NODENAME BUFFERPOS), where BUFFERPOS is the line number
 of the first element of the returned list (which is treated specially
 in `Info-goto-emacs-command-node'), and 0 for the other elements of
 the list."
