@@ -1,32 +1,10 @@
-==1 Introduction ==
+==Introduction ==
 
-For a more updated introduction the visit new maintainer's [https://github.com/ahungry/org-jira project on github]. 
+##org-jira## is a mode for interacting with [https://www.atlassian.com/software/jira Jira] from OrgMode.
 
-[http://orgmode.org Org-mode] is the best GTD (get things done) tool I have used. If you didn't use it, please consider give it a shot.
-
-Jira is, well, a very popular Bug Tracking system. Two companies in a row where I worked chose Jira for bug tracking, task management, etc.
-
-As an emacs enthusiast, I very much want to be able to use Jira within Emacs. Thus I started digging the web for a solution.
-
-To use Jira without the browser, you can use a) xml-rpc, b) soap, c) REST. I don't know what the last one is, but their supported degree by Jira is in ascending order. The former 2 protocols has both been supported by Emacs plugin: [https://launchpad.net/xml-rpc-el xml-rpc] and [http://code.google.com/p/emacs-soap-client/ soap].
-
-For xml-rpc, there is already a [http://www.emacswiki.org/emacs/jira.el jira.el], but it is not satisfactory for me:
-
-* xml-rpc is not as well supported as soap by Jira.
-* jira.el is a stand-alone tool, while I want to integrate with org-mode.
-
-Luckily, the emacs-soap-client guy(s) already provided a sample
-jira2.el, so I started hacking by combining jira.el and jira2.el, the
-result is jiralib.el [http://github.com/baohaojun/org-jira/raw/master/jiralib.el here] (people suggested jira2.el is not a good
-name, as it can be quite confusing what the 2 means, and I totally
-agree, thus the name jiralib).
-
-After browsing Jira with jira2.el is implemented, I checked [https://github.com/punchagan/org2blog org2blog] for ideas of how to hack on org-mode, and started from his org2blog.el and hacked into a new [http://github.com/baohaojun/org-jira/raw/master/org-jira.el org-jira.el].
-
-==2 Features ==
-
-===2.1 Sync Jira tickets into Org-mode todo items in a batch mode ===
-
+It was created by BaoHaojun in 2011, and has been maintained by Matthew Carter since 2016 at https://github.com/ahungry/org-jira. Its access library ##jiralib.el## is based in part on SoapClient's sample jira2.el and [[jira.el]]. Its org layer uses some ideas from [https://github.com/punchagan/org2blog org2blog].
+==Features ==
+===Sync Jira tickets into Org-mode todo items in a batch mode ===
 Jira ticket attributes such as priority, status, resolution, summary, description, etc. are supported. New ones can be added if desired by hacking the elisp.
 
 See the following example. Jira ticket summary has been used as the Org TODO headline; most Jira ticket attributes have been made into Org entry; Jira description attribute is made into a separate subtitle because unlike most attributes it is multi-line.
@@ -51,65 +29,28 @@ test comment
 </pre>
 Also note the ID Org entry, both the Jira issue and Jira comment has an attribute ideal for this entry. Org-mode has an API for finding heading from ID entry.
 
-===2.2 Update Org-mode new edits back to Jira ===
+===Update Org-mode new edits back to Jira ===
 
 After you edit the attributes, such as change priority from "Major" to "Minor", you can post it back the Jira.
 
-===2.3 Progress Jira ticket workflow in Org-mode ===
+===Progress Jira ticket workflow in Org-mode ===
 
 You can Resolve/Close/Reopen the jira ticket and so on, without leaving org-mode!
 
-===2.4 Create new Jira issue in org mode ===
+===Create new Jira issue in org mode ===
 
 You can create new Jira issue within org mode. You will be prompted for Jira ticket information such as create in which project, assign to whom, and one-line summary, etc.
 
-===2.5 Convert existing org mode TODO item into Jira ticket ===
+===Convert existing org mode TODO item into Jira ticket ===
 
 This one is similar to the create-new-issue case, except the existing TODO headline can be used for Jira ticket summary.
 
 The old TODO is deleted. But you will not lose a TODO entry, instead, you will trade a normal TODO for a Jira ticket tracked TODO.
 
-===2.6 Edit existing Jira comments / add new comment ===
+===Edit existing Jira comments / add new comment ===
 
 These are also supported.
 
-==3 Usage ==
+==Usage ==
 
-To use org-jira.el, get the .el files from [https://github.com/ahungry/org-jira org-jira on github].
-
-<pre>
-git clone git://github.com/ahungry/org-jira.git
-</pre>
-(In my repository, I have included the emacs-soap files, which you can get from its project, but in my version I fixed an utf-8 encoding bug in it so that I can post comments in Chinese).
-
-Then put the following in your .emacs,
-<pre>
-(setq jiralib-url "http://jira-host/jira") 
-;; you need make sure whether the "/jira" at the end is 
-;; necessary or not, see discussion at the end of this page
-
-(require 'org-jira) 
-;; jiralib is not explicitly required, since org-jira will load it.
-
-</pre>
-(If you have a ~/.authinfo file and corresponding entry for jira-host, the username and password will be computed from that; or else you will be prompted for password).
-
-Then start syncing with M-x org-jira-get-issues .
-
-Date: 2012-01-01 23:23:36 China Standard Time
-
-Author:
-
-Org version 7.7 with Emacs version 24
-
-[http://validator.w3.org/check?uri=referer Validate XHTML 1.0]
-
-[new:BaoHaojun:2012-01-07 02:52 UTC]
-
-The jiralib-url should be set to your jira server home page without the "/secure/Dashboard.jspa" part. For e.g., after I login to APACHE jira server in Firefox, I am on "https://issues.apache.org/jira/secure/Dashboard.jspa", thus I should set the jiralib-url to "https://issues.apache.org/jira".
-----
-[new]
-Actually, there is another, fourth, way to use Jira without the browser, this is [https://bobswift.atlassian.net/wiki/display/ACLI/2012/02/26/Atlassian+CLI+Release+2.5.0 Atlassian command line interface]. It doesn't seem to be influenced by the limitations of xml-rpc or REST interfaces. Actually, I think the right Jira mode for Emacs should be built around this set of utilites. Being written in Java, the tools are a bit awkward and slow, but you can do anything with them, even some things not normally possible through web interface. - DmitriMinaev
-----
-[new]
-THIS IS FIXED as of 1/28/2013 - I noticed there is a problem if the description of the Jira item contains  a "* Something" in it. This is used to create itemized list in Jira but org mode makes them headings, which get separated from the rest of the Jira item.
+See [https://github.com/ahungry/org-jira org-jira on github] for setup and usage instructions.
