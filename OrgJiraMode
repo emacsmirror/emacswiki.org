@@ -2,7 +2,7 @@
 
 ##org-jira## is a mode for interacting with [https://www.atlassian.com/software/jira Jira] from OrgMode.
 
-It was created by BaoHaojun in 2011, and has been maintained by Matthew Carter since 2016 at https://github.com/ahungry/org-jira. Its access library ##jiralib.el## is based in part on SoapClient's sample jira2.el and [[jira.el]]. Its org layer uses some ideas from [https://github.com/punchagan/org2blog org2blog].
+It was created by BaoHaojun in 2011, and has been maintained by Matthew Carter since 2016 at https://github.com/ahungry/org-jira. Its access library jiralib.el is based in part on SoapClient's sample jira2.el and [[jira.el]]. Its org layer uses some ideas from [https://github.com/punchagan/org2blog org2blog].
 ==Features ==
 ===Sync Jira tickets into Org-mode todo items in a batch mode ===
 Jira ticket attributes such as priority, status, resolution, summary, description, etc. are supported. New ones can be added if desired by hacking the elisp.
