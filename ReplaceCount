@@ -1,33 +1,6 @@
-The thread at the time (Groups:copy-down-and-increment) had people
-posting code which allowed you to "auto-increment" numbers, or similar
-stuff.  The general solution, however, seems to be M-x
-query-replace-regexp-eval.  Here's the post by Miles that explains the
-usage of it for a simple case:
+This page concerns auto-incrementing numbers in otherwise-repeating lines, based on the thread [https://groups.google.com/g/gnu.emacs.help/c/eHIOTcw5Tm0/m/XnVIjh9wshkJ here], from 1996.  
 
- From: MilesBader
- Subject: Re: copy-down-and-increment
- Newsgroups: gnu.emacs.sources
- Date: Fri, 15 Mar 2002 16:27:50 GMT
-
- Francesco Potorti` <pot@gnu.org> writes:
- >    Vladimir Alexiev wrote this cool piece of code to copy the first line
- >    down and increment every number is finds.
- > 
- > I sometimes repost my old code which I routinely use.  It does not make
- > use of rectangles, which it should, because a number such as 000 is
- > incremente to 1, not 001.  Anyway, here it is:
-
-A very, very useful tool for this sort of thing which is standard in emacs
-(21 at least), is `query-replace-regexp-eval', which lets you write a
-_lisp expression_ as the replacement.  It also binds the variable
-`replace-count' to the current number of the replacement when it evals it.
-
-So for instance, using it you can simply insert a template line 20 times with
-XXX where the number should be, and then use query-replace-regexp-eval to
-replace XXX with (format "%03d" replace-count).
-
-See also ReplaceRegexp, IncrementNumber and RenumberList for additional details.
-
+Since Emacs22, such tasks can be accomplished as described by Drew Adams below.  See ReplaceRegexpWithLispExpressions for further examples.
 
 [new:DrewAdams:2007-04-29 04:12 UTC]
 In Emacs 22, you can just use '''`<tt>\#</tt>'''' in the replacement string of `query-replace-regexp', to get the number of the current replacement. Use that to increment instead of using ##(format "%03d" replace-count)## with `query-replace-regexp-eval'.  You can also use '''`<tt>\#</tt>'''' in a replacement string in [[Icicles]] -- see [[Icicles - Search-And-Replace]]. -- DrewAdams
