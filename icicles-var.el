@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Fri Jan  3 10:30:26 2020 (-0800)
+;; Last-Updated: Sun Oct 18 08:53:33 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 1893
+;;     Update #: 1895
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1220,7 +1220,10 @@ Depending on the value of option
 `icicle-unpropertize-completion-result-flag', it may also remove all
 text properties.")
 
-;; Same as `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+.
+;; Same as the default value of `diredp-re-no-dot'.
+;; Cf. `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+,
+;; but changed in Emacs 27+.
+;; See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html
 (defconst icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
   "Regexp that matches anything except `.' and `..'.")
 
