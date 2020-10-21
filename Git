@@ -66,6 +66,8 @@ For more information on building and developing Emacs, see:
 
 === Hosting ===
 
+Publicly hosted git repositories are also known as /forges/.
+
 * [http://github.com github] is a popular website to host and browse git repositories.  See GitHub.
 * [http://bitbucket.org bitbucket] is another popular website to host and browse git repositories.  See BitBucket.
 * [http://gitlab.com gitlab] is the commercial version of the self-hosted opensource platform to host and browse git repositories.  See GitLab
