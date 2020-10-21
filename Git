@@ -70,6 +70,7 @@ For more information on building and developing Emacs, see:
 * [http://bitbucket.org bitbucket] is another popular website to host and browse git repositories.  See BitBucket.
 * [http://gitlab.com gitlab] is the commercial version of the self-hosted opensource platform to host and browse git repositories.  See GitLab
 * [http://notabug.org NotABug] is a free-software code collaboration platform for freely licensed projects.  See NotABug.
+* [http://sourcehut.org Sourcehut] is a newer (2018?) option dedicated to being faster and more lightweight than the others, without requiring JavaScript, and made with 100% free and open source software.
 
 === Blog posts ===
 
