@@ -1,0 +1,26 @@
+I am working with emacs25 25.2+1-6 amd64, on Linux Mint.
+my .emacs file:
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#ffffff" :foreground "#221f1e" :inverse-video ni$
+
+(setq x-select-enable-clipboard t)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+(add-hook 'before-save-hook 'time-stamp)
+
+The updating is not working. Do you see any mistakes; or do you have any suggestions?
+
+-- [http://www.worddoer.com edhe] 2020-10-21 15:37 UTC
+
