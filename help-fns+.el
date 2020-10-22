@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct  9 15:22:23 2020 (-0700)
+;; Last-Updated: Thu Oct 22 10:11:03 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 2503
+;;     Update #: 2517
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,9 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
-;;   `radix-tree', `wid-edit', `wid-edit+'.
+;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
+;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,6 +117,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/22 dadams
+;;     Require cl-lib (or cl, for Emacs < 24), for gentemp.
+;;     Info-make-manuals-xref: Restore missing let binding for var search-now-p.
 ;; 2020/10/09 dadams
 ;;     help-cross-reference-manuals: nil cdr for default value now.
 ;;     Info-make-manuals-xref: Allow non-nil cdr to open an Info Index buffer even for just Emacs and Elisp manuals.
@@ -431,7 +433,10 @@
 (when (or (> emacs-major-version 23)  (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
   (require 'info)) ;; Info-virtual-files
 
-(eval-when-compile (require 'cl)) ;; case, gentemp
+(eval-when-compile (require 'cl)) ;; case
+
+(unless (require 'cl-lib nil t) ;; gentemp - Emacs 24+
+  (require 'cl))                ;; Emacs < 24
 
 
 ;; Quiet the byte-compiler.
@@ -741,7 +746,8 @@ time to create it - possibly considerable time."
       (unless manuals-spec (setq manuals-spec  help-cross-reference-manuals))
       (when (car manuals-spec) ; Create no link if no manuals to search.
         (let ((books      (car manuals-spec))
-              (symb-name  (if (stringp object) object (symbol-name object))))
+              (symb-name  (if (stringp object) object (symbol-name object)))
+              search-now-p)
           (when (or (equal books '("emacs" "elisp"))  (equal books '("elisp" "emacs")))
             (setq books  'emacs-elisp))
           (setq search-now-p  (cdr manuals-spec))
@@ -1249,8 +1255,7 @@ Return the description that was displayed, as a string."
                                 ((let ((fun  function))
                                    (while (and (symbolp fun)
                                                (setq fun  (symbol-function fun))
-                                               (not (setq usage  (help-split-fundoc (documentation fun)
-                                                                                    function)))))
+                                               (not (setq usage  (help-split-fundoc (documentation fun) function)))))
                                    usage)
                                  (car usage))
                                 ((or (stringp def)  (vectorp def))
