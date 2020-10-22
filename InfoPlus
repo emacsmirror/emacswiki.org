@@ -119,7 +119,7 @@ keys and characters can be present anywhere, the highlighting
 can be thrown off.
 
 
-** You can toggle each of the `Info-fontify-*' options from the `Info' menu or using an `Info-toggle-fontify-*' command.
+** You can cycle or toggle the `Info-fontify-*' options from the `Info' menu or using command `Info-cycle-fontify-quotations' or an `Info-toggle-fontify-*' command.
 For example, command `Info-toggle-fontify-emphasis' toggles
 option `Info-fontify-emphasis-flag'.
 
