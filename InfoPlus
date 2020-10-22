@@ -103,9 +103,9 @@ visibility of a manual's nodes, to reflect how you use it.
 
 
 * Additional, finer-grained Info highlighting.  This can make a big difference in readability.
-** Quoted names, like this: ##‘name-stands-out’## or ##`name-stands-out'##, and strings, like this: ##"string-stands-out"## are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
+** Quoted names, like this: ##‘name-stands-out’## or ##`name-stands-out'##, and strings, like this: ##"string-stands-out"## are highlighted if '''`Info-fontify-quotations'''' is non-`nil'.
 ** Angle-bracketed names, like this: ##<tab>##, are highlighted if '''`Info-fontify-angle-bracketed-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
-** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
+** Isolated single quotes and backquotes, like this: ##'foobar## and ##`foobar##, are highlighted if '''`Info-fontify-isolated-quote-flag'''' and `Info-fontify-quotations' are both non-`nil'.
 ** Emphasized text, that is, text enclosed in underscore characters, like this: ##_this is emphasized text_## ,is
 highlighted if `Info-fontify-emphasis-flag' is non-`nil'.
 (But if internal variable `info-fontify-emphasis' is `nil'
@@ -119,7 +119,7 @@ keys and characters can be present anywhere, the highlighting
 can be thrown off.
 
 
-** You can toggle each of the `Info-fontify-*-flag' options from the `Info' menu or using an `Info-toggle-fontify-*' command.
+** You can toggle each of the `Info-fontify-*' options from the `Info' menu or using an `Info-toggle-fontify-*' command.
 For example, command `Info-toggle-fontify-emphasis' toggles
 option `Info-fontify-emphasis-flag'.
 
@@ -242,9 +242,9 @@ info-quoted-name highlight it. -- [[ahei]]
 
 
 [new:DrewAdams:2009-11-06 18:40 UTC]
-Only if it is followed (somewhere) by a normal single-quote: ##'##. But yes, otherwise, you are correct.
+Only if it is followed (by default on the same line) by a normal single-quote char: ##'##. But yes, otherwise, you are correct.
 
-Highlighting ##‘...’## or ##`...'##, and ##"..."## strings is problematic. In general, the results are good, but there are several things that can throw it off. Fortunately, these things do not occur that commonly in manuals -- but they do occur. The more typical problem is an isolated ##"## character referred to as such in the manual (e.g. ##?"##). You'll just have to live with it or, if you think it's not worth it, customize `Info-fontify-quotations-flag' to nil. -- DrewAdams
+Highlighting ##‘...’## or ##`...'##, and ##"..."## strings is problematic. In general, the results are good, but there are several things that can throw it off. Fortunately, these things do not occur that commonly in manuals -- but they do occur. The more typical problem is an isolated ##"## character referred to as such in the manual (e.g. ##?"##). You'll just have to live with it or, if you think it's not worth it, customize `Info-fontify-quotations' to nil. -- DrewAdams
 
 [new]
 OK, I see -- [[ahei]]
