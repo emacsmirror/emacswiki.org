@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 19 17:08:29 2020 (-0700)
+;; Last-Updated: Thu Oct 22 15:56:14 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6612
+;;     Update #: 6649
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -87,7 +87,7 @@
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
 ;;    `Info-toggle-fontify-emphasis',
-;;    `Info-toggle-fontify-single-quote',
+;;    `Info-toggle-fontify-isolated-quote',
 ;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
 ;;    `Info-toc-outline', `Info-toc-outline-refontify-region',
 ;;    `Info-url-for-node', `Info-virtual-book'.
@@ -96,12 +96,12 @@
 ;;
 ;;    `info-command-ref-item', `info-constant-ref-item',
 ;;    `info-double-quoted-name', `info-emphasis', `info-file',
-;;    `info-function-ref-item',`info-macro-ref-item', `info-menu',
+;;    `info-function-ref-item', `info-isolated-backquote',
+;;    `info-isolated-quote', `info-macro-ref-item', `info-menu',
 ;;    `info-node', `info-quoted-name', `info-reference-item',
-;;    `info-single-quote', `info-special-form-ref-item',
-;;    `info-string', `info-syntax-class-item',
-;;    `info-user-option-ref-item', `info-variable-ref-item',
-;;    `info-xref-bookmarked' (Emacs 24.2+).
+;;    `info-special-form-ref-item', `info-string',
+;;    `info-syntax-class-item', `info-user-option-ref-item',
+;;    `info-variable-ref-item', `info-xref-bookmarked' (Emacs 24.2+).
 ;;
 ;;  Options (user variables) defined here:
 ;;
@@ -111,9 +111,9 @@
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
-;;    `Info-fontify-emphasis-flag', `Info-fontify-quotations',
+;;    `Info-fontify-emphasis-flag',
+;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
-;;    `Info-fontify-single-quote-flag',
 ;;    `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+),
 ;;    `Info-saved-history-file' (Emacs 24.4+), `Info-saved-nodes',
 ;;    `Info-subtree-separator', `Info-toc-outline-no-redundancy-flag'.
@@ -140,6 +140,7 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `Info-breadcrumbs-depth-internal', `info-fontify-emphasis',
+;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
 ;;    `Info-merged-map', `Info-mode-syntax-table',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
 ;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
@@ -179,12 +180,13 @@
 ;;     8. If `Info-fontify-quotations', then fontify ‘...’ or
 ;;        `...' in face `info-quoted-name', “...” in face
 ;;        `info-double-quoted-name',  and "..." in face `info-string'.
-;;     9. If `Info-fontify-angle-bracketed-flag' and
-;;        `Info-fontify-quotations' then fontify <...> in face
-;;        `info-quoted-name'.
-;;    10. If `Info-fontify-single-quote-flag' and
-;;        `Info-fontify-quotations', then fontify ' in face
-;;        `info-single-quote'.
+;;     9. If `Info-fontify-quotations' and
+;;        `Info-fontify-angle-bracketed-flag' then fontify <...> in
+;;        face `info-quoted-name'.
+;;    10. If `Info-fontify-quotations' and
+;;        `Info-fontify-isolated-quote-flag' then fontify ' in face
+;;        `info-isolated-quote', and fontify ` in face
+;;        `info-isolated-backquote'.
 ;;  `Info-forward-node' - Prefix arg clones buffer.
 ;;  `Info-goto-emacs-command-node' -
 ;;     1. Uses `completing-read' in interactive spec, with,
@@ -330,9 +332,9 @@
 ;;      `Info-fontify-angle-bracketed-flag' and
 ;;      `Info-fontify-quotations' are both non-`nil'.
 ;;
-;;    - Isolated single quotes, like this: 'foobar, are highlighted if
-;;      `Info-fontify-single-quote-flag' and `Info-fontify-quotations'
-;;      are both non-`nil'.
+;;    - Isolated single quotes and backquote chars, as in 'foobar and
+;;      `foobar, are highlighted if `Info-fontify-quotations' and
+;;      `Info-fontify-isolated-quote-flag' are both non-`nil'.
 ;;
 ;;    - Emphasized text, that is, text enclosed in underscore
 ;;      characters, like this: _this is emphasized text_, is
@@ -493,6 +495,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/22 dadams
+;;     Added: info-isolated-backquote, info-isolated-backquote-regexp, info-isolated-quote-regexp.
+;;     Renamed: Info-toggle-fontify-single-quote to Info-toggle-fontify-isolated-quote,
+;;              Info-fontify-single-quote-flag to Info-fontify-isolated-quote-flag
+;;              info-single-quote to info-isolated-quote.
+;;     info-isolated-quote face: changed default value.
+;;     info-fontify-quotations: Handle Info-fontify-isolated-quote-flag - separate loops.
 ;; 2020/10/19 dadams
 ;;     Quotation highlighting is now same-line only, by default.
 ;;       Added: info-quotation-same-line-regexp, info-quoted+<>-same-line-regexp.
@@ -1156,10 +1165,20 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
-(defface info-single-quote              ; For '
-    '((((background dark)) (:inherit font-lock-keyword-face :foreground "Green"))
-      (t (:inherit font-lock-keyword-face :foreground "Magenta")))
-  "Face for isolated single-quote marks (') in `info'."
+(defface info-isolated-quote            ; For 'foobar, '(...) etc.
+  '((((background dark)) (:inherit font-lock-keyword-face :foreground "Green"  :background "SlateGray2"))
+    (t (:inherit font-lock-keyword-face :foreground "Magenta" :background "SlateGray2")))
+  "Face for an isolated single-quote mark (') in `info'.
+That is, one that is not part of `...'."
+  :group 'Info-Plus :group 'faces)
+(define-obsolete-face-alias 'info-single-quote' info-isolated-quote "2020-10-22")
+
+;;;###autoload
+(defface info-isolated-backquote        ; For `foobar, `(...) etc.
+  '((((background dark)) (:inherit info-isolated-quote :background "Magenta"))
+    (t (:inherit info-isolated-quote :background "Chartreuse1")))
+  "Face for an isolated backquote mark (`) in `info'.
+That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
 
 ;; Standard faces from vanilla Emacs `info.el', but without `:weight', `:height' and `:inherit'.
@@ -1480,7 +1499,7 @@ easily using `\\[Info-save-current-node]' (`Info-save-current-node')."
   :type '(repeat (string :tag "Node name")) :group 'info)
 
 ;;;###autoload
-(defcustom Info-fontify-single-quote-flag t
+(defcustom Info-fontify-isolated-quote-flag t
   "Non-nil means `info' fontifies ' when not preceded by `....
 A non-nil value has no effect unless `Info-fontify-quotations' is also
 non-nil.
@@ -1490,9 +1509,10 @@ useful in most Info texts, but it can occasionally result in
 fontification that you might not expect.  This is not a bug; it is
 part of the design to be able to appropriately fontify a great variety
 of texts.  Set this flag to nil if you do not find this fontification
-useful.  You can use command `Info-toggle-fontify-single-quote' to
+useful.  You can use command `Info-toggle-fontify-isolated-quote' to
 toggle the option value."
   :type 'boolean :group 'Info-Plus)
+(define-obsolete-variable-alias 'Info-fontify-single-quote-flag 'Info-fontify-isolated-quote-flag "2020-10-22")
 
 ;;;###autoload
 (defcustom Info-subtree-separator "\n* "
@@ -1654,6 +1674,16 @@ If ... contains an end char then that char must be backslashed.")
 ;;              (or (seq (any alpha) (zero-or-more (not (any ?>))))
 ;;                  (zero-or-more (seq ?\\ anything)))
 ;;              ?>)))
+
+(defvar info-isolated-quote-regexp
+  "[^`]\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'"
+  "Regexp to match an isolated single-quote character.
+That is, one that is not part of `...'.")
+
+(defvar info-isolated-backquote-regexp
+  "\\(`\\)\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*[^']"
+  "Regexp to match an isolated backquote character.
+That is, one that is not part of `...'.")
 
 (defvar Info-toc-outline-map (let ((map  (make-sparse-keymap))) (set-keymap-parent map Info-mode-map))
   "Keymap for Info TOC with outlining.")
@@ -1930,18 +1960,20 @@ are prompted for NODE."
                                                               (t          "ON (same line only)")))))
 
 
-;;;###autoload (autoload 'Info-toggle-fontify-single-quote "info+")
-(defun Info-toggle-fontify-single-quote (&optional msgp)
-  "Toggle option `Info-fontify-single-quote-flag'."
+;;;###autoload (autoload 'Info-toggle-fontify-isolated-quote "info+")
+(defun Info-toggle-fontify-isolated-quote (&optional msgp)
+  "Toggle option `Info-fontify-isolated-quote-flag'."
   (interactive "p")
-  (setq Info-fontify-single-quote-flag  (not Info-fontify-single-quote-flag))
+  (setq Info-fontify-isolated-quote-flag  (not Info-fontify-isolated-quote-flag))
   (when (eq major-mode 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
       (Info-fontify-node))
-    (when msgp (message "`Info-fontify-single-quote-flag' is now %s"
-                        (if Info-fontify-single-quote-flag 'ON 'OFF)))))
+    (when msgp (message "`Info-fontify-isolated-quote-flag' is now %s"
+                        (if Info-fontify-isolated-quote-flag 'ON 'OFF)))))
+(define-obsolete-function-alias 'Info-toggle-fontify-single-quote 'Info-toggle-fontify-isolated-quote
+  "2020-10-22")
 
 ;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
 (defun Info-toggle-fontify-angle-bracketed (&optional msgp)
@@ -2777,9 +2809,9 @@ candidates."
      ["Highlighting <...>" Info-toggle-fontify-angle-bracketed
       :style toggle :selected Info-fontify-angle-bracketed-flag
       :help "Toggle option `Info-fontify-angle-bracketed-flag'"]
-     ["Highlighting Single '" Info-toggle-fontify-single-quote
-      :style toggle :selected Info-fontify-single-quote-flag
-      :help "Toggle option `Info-fontify-single-quote-flag'"]
+     ["Highlighting Single '" Info-toggle-fontify-isolated-quote
+      :style toggle :selected Info-fontify-isolated-quote-flag
+      :help "Toggle option `Info-fontify-isolated-quote-flag'"]
      ["Highlighting Bookmarked Links" Info-toggle-fontify-bookmarked-xrefs
       :style toggle :selected (and (boundp 'Info-fontify-bookmarked-xrefs-flag)
                                    Info-fontify-bookmarked-xrefs-flag)
@@ -3679,14 +3711,15 @@ If key's command cannot be found by looking in indexes, then
 
 
 ;; REPLACES ORIGINAL in `info.el':
+;;
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-emphasis-flag', fontify _..._.
-;; 3. If `Info-fontify-quotations', fontify ‘...’ or `...' in face `info-quoted-name',
+;; 3. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
 ;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
-;; 4. If `Info-fontify-quotations' and `Info-fontify-single-quote-flag' then
-;;    fontify ' in face `info-single-quote'.
-;; 5. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
+;; 4. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
 ;;    fontify <...> in face `info-quoted-name'.
+;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
+;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
 ;;
 (when (not (fboundp 'Info-breadcrumbs)) ; Emacs 23.1, not 23.2+
 
@@ -3746,9 +3779,9 @@ If key's command cannot be found by looking in indexes, then
                 ;; or copied in the header line.
                 (put-text-property tbeg nend 'keymap
                                    (cond
-                                     ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
-                                     ((string-equal (downcase tag) "next") Info-next-link-keymap)
-                                     ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
+                                    ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
+                                    ((string-equal (downcase tag) "next") Info-next-link-keymap)
+                                    ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
           (when (and Info-breadcrumbs-in-header-flag  (> Info-breadcrumbs-depth 0))
             (Info-insert-breadcrumbs))
 
@@ -3914,7 +3947,7 @@ If key's command cannot be found by looking in indexes, then
                   ;; Unhide the file name of the external reference in parens
                   (if (and (match-string 6)  (not (eq Info-hide-note-references 'hide)))
                       (remove-text-properties (match-beginning 6) (match-end 6) '(invisible t front-sticky nil
-                                                                                  rear-nonsticky t)))
+                                                                                            rear-nonsticky t)))
                   ;; Unhide newline because hidden newlines cause too long lines
                   (save-match-data (let ((beg3  (match-beginning 3))
                                          (end3  (match-end 3)))
@@ -3924,7 +3957,7 @@ If key's command cannot be found by looking in indexes, then
                                          (remove-text-properties (+ beg3 (match-beginning 0))
                                                                  (+ beg3 (match-end 0))
                                                                  '(invisible t front-sticky nil
-                                                                   rear-nonsticky t))))))
+                                                                             rear-nonsticky t))))))
                 (when (and Info-refill-paragraphs  Info-hide-note-references)
                   (push (set-marker (make-marker) start) paragraph-markers))))))
 
@@ -4041,8 +4074,8 @@ If key's command cannot be found by looking in indexes, then
           (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
             (add-text-properties (match-beginning 0) (match-end 0)
                                  '(font-lock-face info-xref
-                                   mouse-face highlight
-                                   help-echo "mouse-2: go to this URL"))))
+                                                  mouse-face highlight
+                                                  help-echo "mouse-2: go to this URL"))))
         (goto-char (point-max))
         (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
@@ -4055,12 +4088,12 @@ If key's command cannot be found by looking in indexes, then
 ;;
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-emphasis-flag', fontify _..._.
-;; 3. If `Info-fontify-quotations', fontify ‘...’ or `...' in face `info-quoted-name',
+;; 3. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
 ;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
-;; 4. If `Info-fontify-quotations' and `Info-fontify-single-quote-flag' then
-;;    fontify ' in face `info-single-quote'.
-;; 5. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
+;; 4. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
 ;;    fontify <...> in face `info-quoted-name'.
+;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
+;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
 ;;
 (when (and (fboundp 'Info-breadcrumbs)  ; Emacs 23.2 through 24.1
            (or (= emacs-major-version 23)
@@ -4121,9 +4154,9 @@ If key's command cannot be found by looking in indexes, then
                 ;; or copied in the header line.
                 (put-text-property tbeg nend 'keymap
                                    (cond
-                                     ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
-                                     ((string-equal (downcase tag) "next") Info-next-link-keymap)
-                                     ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
+                                    ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
+                                    ((string-equal (downcase tag) "next") Info-next-link-keymap)
+                                    ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
 
           ;; Treat header line.
           (when Info-use-header-line
@@ -4398,8 +4431,8 @@ If key's command cannot be found by looking in indexes, then
           (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
             (add-text-properties (match-beginning 0) (match-end 0)
                                  '(font-lock-face info-xref
-                                   mouse-face highlight
-                                   help-echo "mouse-2: go to this URL"))))
+                                                  mouse-face highlight
+                                                  help-echo "mouse-2: go to this URL"))))
         (goto-char (point-max))
         (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
@@ -4412,12 +4445,12 @@ If key's command cannot be found by looking in indexes, then
 ;;
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-emphasis-flag', fontify _..._.
-;; 3. If `Info-fontify-quotations', fontify ‘...’ or `...' in face `info-quoted-name',
+;; 3. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
 ;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
-;; 4. If `Info-fontify-quotations' and `Info-fontify-single-quote-flag' then
-;;    fontify ' in face `info-single-quote'.
-;; 5. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
+;; 4. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
 ;;    fontify <...> in face `info-quoted-name'.
+;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
+;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
 ;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.2+
           (and (= emacs-major-version 24)  (> emacs-minor-version 1)))
@@ -4796,9 +4829,9 @@ You are prompted for the depth value."
   (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line)))
 
 (defun info-fontify-quotations ()
-  "Fontify ‘...’, `...', “...”, \"...\", and possibly <...> and single '.
-If `Info-fontify-angle-bracketed-flag' then fontify <...> also.
-If `Info-fontify-single-quote-flag' then fontify singleton ' also.
+  "Fontify ‘...’, `...', “...”, \"...\", <...>, and isolated ' and `.
+Fontify <...> only if `Info-fontify-angle-bracketed-flag'.
+Fontify isolated ' and ` only if `Info-fontify-isolated-quote-flag'.
 
 This respects option `Info-fontify-quotations'.
 
@@ -4849,17 +4882,26 @@ This respects option `Info-fontify-quotations'.
             ((and (goto-char (match-beginning 0)) ; "...": If " preceded by \, then skip it
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
-            ((and Info-fontify-single-quote-flag
-                  (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; Single ': 'foo
-             (put-text-property (match-beginning 0) (match-end 0)
-                                property 'info-single-quote)
-             (goto-char (match-end 0)) (forward-char 1))
+;;; @@@@            ((and Info-fontify-isolated-quote-flag
+;;;                   (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; Single ': 'foo
+;;;              (put-text-property (match-beginning 0) (match-end 0)
+;;;                                 property 'info-single-quote)
+;;;             (goto-char (match-end 0)) (forward-char 1))
             ((and (not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
                   (not (string= "’" (buffer-substring (match-beginning 0) (match-end 0)))))
              (put-text-property (match-beginning 0) (match-end 0) property 'info-string)
              (goto-char (match-end 0)) (forward-char 1))
             (t
-             (goto-char (match-end 0)) (forward-char 1))))))
+             (goto-char (match-end 0)) (forward-char 1))))
+    (when Info-fontify-isolated-quote-flag
+      (goto-char (point-min))
+      (while (condition-case nil (re-search-forward info-isolated-quote-regexp nil t) (error nil))
+        (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
+        (goto-char (match-end 0)) (forward-char 1))
+      (goto-char (point-min))
+      (while (condition-case nil (re-search-forward info-isolated-backquote-regexp nil t) (error nil))
+        (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
+        (goto-char (match-end 0)) (forward-char 1)))))
 
 (defun info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
@@ -5445,13 +5487,14 @@ in its Menu.
 User options you can customize
 ------------------------------
 `Info-fontify-quotations' -
-  Fontify quoted names (‘...’ or `...') and strings (\"...\").
+  Fontify quoted text (‘...’, `...', “...”) and strings (\"...\").
   Cycle with \\[Info-cycle-fontify-quotations].
 `Info-fontify-angle-bracketed-flag' -
   Fontify angle-bracketd names (<...>).
   Toggle with \\[Info-toggle-fontify-angle-bracketed].
-`Info-fontify-single-quote-flag' - Fontify single quotes (').
-  Toggle with \\[Info-toggle-fontify-single-quote].
+`Info-fontify-isolated-quote-flag' -
+  Fontify isolated quote and backquote (', `).
+  Toggle with \\[Info-toggle-fontify-isolated-quote].
 `Info-saved-nodes' - Node names you can visit using `\\[Info-virtual-book]'.
 `Info-subtree-separator' - See `Info-merge-subnodes'.
 
