@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 22 15:56:14 2020 (-0700)
+;; Last-Updated: Thu Oct 22 16:17:07 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6649
+;;     Update #: 6652
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -353,10 +353,11 @@
 ;;      arbitrary keys and characters can be present anywhere, the
 ;;      highlighting can be thrown off.
 ;;
-;;    - You can toggle each of the `Info-fontify-*-flag' options from
-;;      the `Info' menu or using an `Info-toggle-fontify-*' command.
-;;      For example, command `Info-toggle-fontify-emphasis' toggles
-;;      option `Info-fontify-emphasis-flag'.
+;;    - You can cycle or toggle the `Info-fontify-*' options from the
+;;      `Info' menu, or using command `Info-cycle-fontify-quotations'
+;;      or an `Info-toggle-fontify-*' command.  For example, command
+;;      `Info-toggle-fontify-emphasis' toggles option
+;;      `Info-fontify-emphasis-flag'.
 ;;
 ;;  * Optionally showing breadcrumbs in the mode line or the header
 ;;    line, or both. See where you are in the Info hierarchy, and
