@@ -57,9 +57,8 @@ This makes all key-bindings repeatable even "single"-key shortcuts like `C-f' or
 		     (t (char-to-string (aref key-str (1- (length key-str)))))))
 	 (map (make-sparse-keymap)))
     (define-key map (kbd last) com)
-    (if (eq this-command 'self-insert-command)
-	(global-set-key (kbd "n") 'self-insert-command)
-      (set-transient-map map t))))
+    (if (not (eq this-command 'self-insert-command))
+             (set-transient-map map t))))
 (add-hook 'post-command-hook 'easy-repeat)
 
 }}}
