@@ -41,7 +41,7 @@ This makes all key-bindings repeatable even "single"-key shortcuts like `C-f' or
 
 {{{
 (defun easy-repeat ()
-  "Repeat last command by typing it's last key again or pressing SPC"
+  "Repeat last command by typing it's last key again."
   (interactive)
   (let* ((com this-command)
 	 (case-fold-search nil)
