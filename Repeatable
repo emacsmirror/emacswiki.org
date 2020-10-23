@@ -36,7 +36,8 @@ I use this in several of my libraries: [[Bookmark+]], [[Zones]], [[Isearch+]], [
 
 == Simple code to make EVERY command repeatable ==
 
-This makes all key-bindings repeatable even "single"-key shortcuts like C-f or M-C-f (both repeated by subsequent f). Stuff like C-x o is repeated with o, C-x C-@ repeats with @. There is no need to explicitly configure functions or shortcuts to make them repeatable, because this works on all commands. On the other hand, there is no option to (easily) configure exceptions. So far this wasn't a Problem for me.
+This makes all key-bindings repeatable even "single"-key shortcuts like `C-f' or `M-C-f' (both repeated by subsequent `f'). Stuff like `C-x o' is repeated with `o' and
+`C-x C-@' repeats with `@'. There is no need to explicitly configure functions or shortcuts to make them repeatable, because this works on all commands. On the other hand, there is no option to (easily) configure exceptions. So far this wasn't a Problem for me.
 
 {{{
 (defun easy-repeat ()
