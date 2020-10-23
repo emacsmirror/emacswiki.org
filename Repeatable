@@ -52,15 +52,15 @@ This makes all key-bindings repeatable even "single"-key shortcuts like `C-f' or
 		    nil))
 	 (last (cond ((= (length key-str) 1) key-str)
 		     ((string-match "^<[a-z]*>$" key-str) key-str)
-  		     ((setq i (string-match "-.*>$" key-str)) (concat "<" (substring key-str (1+ i))))
-		     ((setq i (string-match "-.*$" key-str)) (substring key-str (1+ i)))
+		     ((setq i (string-match "-.*>$" key-str)) (concat "<" (substring key-str (1+ i))))
+                     ((setq i (string-match "-[A-Z]+$" key-str)) (substring key-str (1+ i)))
+		     ((setq i (string-match "-[a-z]$" key-str)) (substring key-str (1+ i)))
 		     (t (char-to-string (aref key-str (1- (length key-str)))))))
 	 (map (make-sparse-keymap)))
     (define-key map (kbd last) com)
-    (if (not (eq this-command 'self-insert-command))
-             (set-transient-map map t))))
+    (if (not (eq com 'self-insert-command))
+	(set-transient-map map t))))
 (add-hook 'post-command-hook 'easy-repeat)
-
 }}}
 
 
