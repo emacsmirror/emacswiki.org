@@ -34,6 +34,34 @@ Given an ordinary, non-repeatable command `foo', just do this to get a repeatabl
 I use this in several of my libraries: [[Bookmark+]], [[Zones]], [[Isearch+]], [[Icicles]], <tt>[[misc-cmds.el]]</tt>, [[thing-cmds.el]]</tt>. -- DrewAdams
 
 
+== Simple code to make EVERY command repeatable ==
+
+This makes all key-bindings repeatable even "single"-key shortcuts like C-f or M-C-f (both repeated by subsequent f). Stuff like C-x o is repeated with o, C-x C-@ repeats with @. There is no need to explicitly configure functions or shortcuts to make them repeatable, because this works on all commands. On the other hand, there is no option to (easily) configure exceptions. So far this wasn't a Problem for me.
+
+{{{
+(defun easy-repeat ()
+  "Repeat last command by typing it's last key again or pressing SPC"
+  (interactive)
+  (let* ((com this-command)
+	 (case-fold-search nil)
+	 (keys (recent-keys))
+	 (key (aref keys (1- (length keys))))
+	 (key-str (if (or (integerp key) (symbolp key) (listp key))
+		      (single-key-description key)
+		    nil))
+	 (last (cond ((= (length key-str) 1) key-str)
+		     ((string-match "^<[a-z]*>$" key-str) key-str)
+  		     ((setq i (string-match "-.*>$" key-str)) (concat "<" (substring key-str (1+ i))))
+		     ((setq i (string-match "-.*$" key-str)) (substring key-str (1+ i)))
+		     (t (char-to-string (aref key-str (1- (length key-str)))))))
+	 (map (make-sparse-keymap)))
+    (define-key map (kbd last) com)
+    (if (eq this-command 'self-insert-command)
+	(global-set-key (kbd "n") 'self-insert-command)
+      (set-transient-map map t))))
+(add-hook 'post-command-hook 'easy-repeat)
+
+}}}
 
 
 == Packages To Make a Command Repeatable ==
