@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 22 16:17:07 2020 (-0700)
+;; Last-Updated: Fri Oct 23 09:01:05 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6652
+;;     Update #: 6656
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -496,7 +496,7 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2020/10/22 dadams
+;; 2020/10/23 dadams
 ;;     Added: info-isolated-backquote, info-isolated-backquote-regexp, info-isolated-quote-regexp.
 ;;     Renamed: Info-toggle-fontify-single-quote to Info-toggle-fontify-isolated-quote,
 ;;              Info-fontify-single-quote-flag to Info-fontify-isolated-quote-flag
@@ -1167,7 +1167,8 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defface info-isolated-quote            ; For 'foobar, '(...) etc.
-  '((((background dark)) (:inherit font-lock-keyword-face :foreground "Green"  :background "SlateGray2"))
+  '((((background dark))
+     (:inherit font-lock-keyword-face :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
     (t (:inherit font-lock-keyword-face :foreground "Magenta" :background "SlateGray2")))
   "Face for an isolated single-quote mark (') in `info'.
 That is, one that is not part of `...'."
