@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 23 09:01:05 2020 (-0700)
+;; Last-Updated: Sun Oct 25 07:35:07 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6656
+;;     Update #: 6659
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1945,12 +1945,14 @@ are prompted for NODE."
 
 ;;;###autoload (autoload 'Info-cycle-fontify-quotations "info+")
 (defun Info-cycle-fontify-quotations (&optional msgp)
-  "Cycle option `Info-fontify-quotations'."
+  "Cycle option `Info-fontify-quotations'.
+The three states are off (nil), multiline (symbol `multiline'), and
+same line (other non-nil value)."
   (interactive "p")
   (setq Info-fontify-quotations  (case Info-fontify-quotations
-                                   ((nil)      t)
-                                   ((t)        'multiline)
-                                   (t          nil)))
+                                   ((nil)  t)
+                                   ((t)    'multiline)
+                                   (t      nil)))
   (when (eq major-mode 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
@@ -1958,8 +1960,8 @@ are prompted for NODE."
       (Info-fontify-node)))
   (when msgp (message "`Info-fontify-quotations' is now %s" (case Info-fontify-quotations
                                                               ((nil)      'OFF)
-                                                              (multiline  "ON (multiline too)")
-                                                              (t          "ON (same line only)")))))
+                                                              (multiline  "on (MULTILINE too)")
+                                                              (t          "on (SAME LINE only)")))))
 
 
 ;;;###autoload (autoload 'Info-toggle-fontify-isolated-quote "info+")
@@ -2811,7 +2813,7 @@ candidates."
      ["Highlighting <...>" Info-toggle-fontify-angle-bracketed
       :style toggle :selected Info-fontify-angle-bracketed-flag
       :help "Toggle option `Info-fontify-angle-bracketed-flag'"]
-     ["Highlighting Single '" Info-toggle-fontify-isolated-quote
+     ["Highlighting Isolated ' and `" Info-toggle-fontify-isolated-quote
       :style toggle :selected Info-fontify-isolated-quote-flag
       :help "Toggle option `Info-fontify-isolated-quote-flag'"]
      ["Highlighting Bookmarked Links" Info-toggle-fontify-bookmarked-xrefs
