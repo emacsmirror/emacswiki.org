@@ -5,7 +5,7 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 * Learn Emacs using its SelfDocumentation. '''Asking Emacs''' directly is the best way to get to know it. (Start by asking it how to ask it...)
 * Stuck? GetHelp
 * Use AproposMode to find functions and variables based on words in their documentation or parts of their name.
-* Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]].
+* Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]] or in [[http://epub-manuals.ourproject.org/blog/gnu-emacs-manual/ epub format]].
 * LearnEmacsLisp to learn Emacs -- Emacs '''is''' a Lisp environment. You don't have to become a Lisp expert to take advantage of this connection. Knowing a little Lisp helps you '''ask Emacs'''.
 * Watch EmacsScreencasts
 * Some beginner-oriented tutorials written by users:
