@@ -396,5 +396,67 @@ remote$ mv /tmp/emacs-server /tmp/emacs$UID/server
 remote$ export EDITOR="emacsclient --tramp=/ssh:remote:"
 </pre>
 
+
+
+
+= Convenient wrappers around emacsclient =
+
+All my personal aliases and scripts start with a comma.  <COMMA>-<TAB> in the shell gives a complete list.  These convenience-wrappers are especially handy with a tiling window managers, such as i3.
+
+,ecn: Loads one or several files into Emacs, opens a separate frame for each file.  Returns immediatelly.  This is what I use when I want to open a file in a fresh Emacs frame.
+
+<pre>
+$ cat `which ,ecn`
+#!/bin/sh
+
+for filename in "$@"; do
+    emacsclient -n -c "$filename"
+done
+</pre>
+
+,ec: Loads one or several files into Emacs, opens a separate frame for each file.  Does not return until the user closes the frame with C-x #.  My environment variable $VISUAL is set to ,ec.  The main use is editing commit messages.
+
+<pre>
+$ cat `which ,ec`
+#!/bin/sh
+
+for filename in "$@"; do
+    emacsclient -c "$filename"
+done
+</pre>
+
+
+,es: Loads one or several files into Emacs, opens no frames.  Returns immediatelly.  Once the file(s) is/are loaded, once can reuse an existing Emacs frame to select the appropriate buffer or press <F12> to open the buffer of the last file loaded by ,es.  For this to work it is necessary to add the following lines to .emacs:
+
+<pre>
+(defun load-last-file ()
+  "Load file from variable _lastfile_ set by ,es script."
+  (interactive)
+  (find-file _lastfile_))
+(global-set-key (kbd "<f12>") 'load-last-file)
+</pre>
+
+<pre>
+$ cat `which ,es`
+#!/usr/bin/env perl
+
+sub to_emacs_string
+{
+  s/\\/\\\\/g;
+  s/"/\\"/g;
+
+  return qq{"$_"};
+}
+
+$lst = join " ", map(to_emacs_string, @ARGV);
+
+$_ = `readlink -f $ARGV[-1]`;
+chomp;
+$f = to_emacs_string;
+
+exec "emacsclient", "-e", "(progn (setq _lastfile_ $f) (setq lst '($lst)) (while lst (find-file-noselect (car lst)) (setq lst (cdr lst))))";
+</pre>
+
+
 ----
 CategoryExternalUtilities
