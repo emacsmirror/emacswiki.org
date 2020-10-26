@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 26 15:59:42 2020 (-0700)
+;; Last-Updated: Mon Oct 26 16:32:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6740
+;;     Update #: 6749
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -238,7 +238,7 @@
 ;;  -------------
 ;;
 ;;  Library `info+.el' extends the standard Emacs library `info.el' in
-;;  several ways.  It provides these features:
+;;  many ways.  It provides these features:
 ;;
 ;;  * Association of additional information (metadata) with Info
 ;;    nodes.  You do this by bookmarking the nodes.  Library Bookmark+
@@ -328,15 +328,20 @@
 ;;  * Additional, finer-grained Info highlighting.  This can make a
 ;;    big difference in readability.
 ;;
+;;    - In the Emacs Lisp manual, reference items are highlighted, so
+;;      they stand out.  This means: constants, commands, functions,
+;;      macros, special forms, syntax classes, user options, and other
+;;      variables.
+;;
 ;;    - Single-quoted text, like `text' or ‘text’, and double-quoted
-;;      names, like "text" or “text”, is highlighted if option
+;;      text, like "text" or “text”, is highlighted if option
 ;;      `Info-fontify-quotations' is non-`nil'.  If the non-nil value
 ;;      is `t' (the default) then, for the case of `...', only text
 ;;      quoted on the same line is highlighted.  If the non-nil value
 ;;      is `multiline' then even multiline text quoted with `...' is
 ;;      highlighted.
 ;;
-;;    - Angle-bracketed names, like this: <tab>, are highlighted if
+;;    - Angle-bracketed names, like <tab>, are highlighted if
 ;;      `Info-fontify-angle-bracketed-flag' and
 ;;      `Info-fontify-quotations' are both non-`nil'.
 ;;
@@ -345,18 +350,21 @@
 ;;      `Info-fontify-isolated-quote-flag' are both non-`nil'.
 ;;
 ;;    - Emphasized text, that is, text enclosed in underscore
-;;      characters, like this: _this is emphasized text_, is
+;;      characters, like _this is emphasized text_, is
 ;;      highlighted if `Info-fontify-emphasis-flag' is non-`nil'.
 ;;      (But if internal variable `info-fontify-emphasis' is `nil'
 ;;      then there is no such highlighting, and that option has no
 ;;      effect.)
 ;;
-;;    - In the Emacs Lisp manual, reference items are highlighted, so
-;;      they stand out.  This means: constants, commands, functions,
-;;      macros, special forms, syntax classes, user options, and other
-;;      variables.
+;;    - Glossary words, that is, words that are defined in a manual's
+;;      `Glossary' node, are highlighted and linked to their glossary
+;;      entries, if option `Info-fontify-glossary-words' is non-nil.
+;;      By default, a mouseover or `RET' on such a link shows a
+;;      tooltip with the word's definition from the glossary.
+;;      (Currently only the Emacs and Semantic manuals have `Glossary'
+;;      nodes, as far as I know.)
 ;;
-;;    - Be aware that such highlighting is not 100% foolproof.
+;;    - Be aware that any such highlighting is not 100% foolproof.
 ;;      Especially for a manual such as Emacs or Elisp, where
 ;;      arbitrary keys and characters can be present anywhere, the
 ;;      highlighting can be thrown off.
@@ -2087,7 +2095,7 @@ same line (other non-nil value)."
     (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
                         (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
 
-;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
+;;;###autoload (autoload 'Info-toggle-fontify-glossary-words "info+")
 (defun Info-toggle-fontify-glossary-words (&optional msgp)
   "Toggle option `Info-fontify-glossary-words'."
   (interactive "p")
@@ -2923,6 +2931,9 @@ candidates."
      ["Highlighting Isolated ' and `" Info-toggle-fontify-isolated-quote
       :style toggle :selected Info-fontify-isolated-quote-flag
       :help "Toggle option `Info-fontify-isolated-quote-flag'"]
+     ["Highlighting Glossary Words" Info-toggle-fontify-glossary-words
+      :style toggle :selected Info-toggle-fontify-glossary-words
+      :help "Toggle option `Info-fontify-glossary-words'"]
      ["Highlighting Bookmarked Links" Info-toggle-fontify-bookmarked-xrefs
       :style toggle :selected (and (boundp 'Info-fontify-bookmarked-xrefs-flag)
                                    Info-fontify-bookmarked-xrefs-flag)
@@ -5752,6 +5763,13 @@ User options you can customize
 `Info-fontify-isolated-quote-flag' -
   Fontify isolated quote and backquote (', `).
   Toggle with \\[Info-toggle-fontify-isolated-quote].
+`Info-fontify-glossary-words' -
+  Fontify and link glossary words.
+  Toggle with \\[Info-toggle-fontify-glossary-words].
+`Info-fontify-bookmarked-xrefs-flag' -
+  Fontify references to bookmarked nodes.
+  Toggle with \\[Info-toggle-fontify-bookmarked-xrefs].
+  (You need library Bookmark+ for this one.)
 `Info-saved-nodes' - Node names you can visit using `\\[Info-virtual-book]'.
 `Info-subtree-separator' - See `Info-merge-subnodes'.
 
