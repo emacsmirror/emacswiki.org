@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 26 12:58:52 2020 (-0700)
+;; Last-Updated: Mon Oct 26 15:59:42 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6730
+;;     Update #: 6740
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -148,10 +148,11 @@
 ;;
 ;;    `Info-breadcrumbs-depth-internal', `info-fontify-emphasis',
 ;;    `info-glossary-link-map', `info-isolated-backquote-regexp',
-;;    `info-isolated-quote-regexp', `Info-merged-map',
-;;    `Info-mode-syntax-table', `info-quotation-regexp',
-;;    `info-quotation-same-line-regexp', `info-quoted+<>-regexp',
-;;    `info-quoted+<>-same-line-regexp', `Info-toc-outline-map'.
+;;    `info-isolated-quote-regexp', `Info-link-faces',
+;;    `Info-merged-map', `Info-mode-syntax-table',
+;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
+;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
+;;    `Info-toc-outline-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -504,9 +505,11 @@
 ;;; Change Log:
 ;;
 ;; 2020/10/26 dadams
-;;     Added: Info-toggle-fontify-glossary-words, Info--member-string-nocase.
+;;     Added: Info-toggle-fontify-glossary-words, Info--member-string-nocase, Info-link-faces.
 ;;     Info-fontify-node, Info-fontify-glossary-words: Made glossary stuff work also with Emacs < 24.
-;;     Info-fontify-glossary-words: Don't fontify glossary words in an Index.
+;;     Info-fontify-node: Move Info-fontify-glossary-words after link highlighting.
+;;     Info-fontify-glossary-words: Don't fontify glossary words in an Index.  Don't fontify a word in Glossary
+;;                                  unless its occurrence is in a definition other than its own.
 ;; 2020/10/25 dadams
 ;;     Added:
 ;;       info-glossary-word face, Info-fontify-glossary-words option and function, Info-case-insensitive-string=,
@@ -1607,6 +1610,11 @@ If nil then emphasis is never fontified, regardless of that flag.")
                                     (define-key map [mouse-2] 'Info-goto-glossary-definition)
                                     map)
   "Keymap for glossary-word links.")
+
+(defvar Info-link-faces '(info-xref info-xref-visited info-xref-bookmarked)
+  "List of `font-lock-face' property faces used for links in Info.
+Used to prevent glossary-word highlighting and linkingfrom overriding
+node links, when` Info-fontify-glossary-words' is non-nil.")
 
 ;; I reported this as Emacs bug #3312.  If it gets fixed, this can be removed.
 (defvar Info-mode-syntax-table
@@ -3973,11 +3981,6 @@ If key's command cannot be found by looking in indexes, then
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
-        ;; Fontify glossary words
-        (goto-char (point-min))
-        (forward-line 4)
-        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
-
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
@@ -4215,6 +4218,14 @@ If key's command cannot be found by looking in indexes, then
                                                                                      '(space :align-to 26)
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
+
+        ;; Fontify glossary words
+        ;;
+        ;; Do this AFTER fontifying menu items and references.
+        (goto-char (point-min))
+        (forward-line 4)
+        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
+
         ;; Fontify menu headers
         (goto-char (point-min))
         (when (and not-fontified-p ; Add face `info-menu-header' to any header before a menu entry
@@ -4353,11 +4364,6 @@ If key's command cannot be found by looking in indexes, then
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
-        ;; Fontify glossary words
-        (goto-char (point-min))
-        (forward-line 4)
-        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
-
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
@@ -4487,6 +4493,7 @@ If key's command cannot be found by looking in indexes, then
                                                 '(invisible t front-sticky nil rear-nonsticky t))))))
                 (when (and Info-refill-paragraphs  Info-hide-note-references)
                   (push (set-marker (make-marker) start) paragraph-markers))))))
+
         ;; Refill paragraphs (experimental feature)
         (when (and not-fontified-p  Info-refill-paragraphs  paragraph-markers)
           (let ((fill-nobreak-invisible          t)
@@ -4504,6 +4511,7 @@ If key's command cannot be found by looking in indexes, then
                     (fill-individual-paragraphs beg (point) nil nil)
                     (goto-char beg))))
               (set-marker m nil))))
+
         ;; Fontify menu items
         (goto-char (point-min))
         (when (and (or not-fontified-p  fontify-visited-p)
@@ -4579,6 +4587,14 @@ If key's command cannot be found by looking in indexes, then
                                                                                      '(space :align-to 26)
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
+
+        ;; Fontify glossary words
+        ;;
+        ;; Do this AFTER fontifying menu items and references.
+        (goto-char (point-min))
+        (forward-line 4)
+        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
+
         ;; Fontify menu headers
         (goto-char (point-min))
         ;; Add face `info-menu-header' to any header before a menu entry
@@ -4724,11 +4740,6 @@ If key's command cannot be found by looking in indexes, then
         ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
-
-        ;; Fontify glossary words
-        (goto-char (point-min))
-        (forward-line 4)
-        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
 
         ;; Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
@@ -4966,6 +4977,13 @@ If key's command cannot be found by looking in indexes, then
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
 
+        ;; Fontify glossary words
+        ;;
+        ;; Do this AFTER fontifying menu items and references.
+        (goto-char (point-min))
+        (forward-line 4)
+        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
+
         ;; Fontify menu headers
         (goto-char (point-min))
         (when (and not-fontified-p ; Add face `info-menu-header' to any header before a menu entry
@@ -4990,18 +5008,19 @@ If key's command cannot be found by looking in indexes, then
 
   )
 
-;; FIXME: In `Glossary' node itself, if first occurrence is an entry title, don't fontify it.
-;; Instead, fontify the next one (it's not a title), if any.
-;;
 (defun Info-fontify-glossary-words ()
   "Fontify words in current node defined glossary of current manual.
 Do nothing if the current node is `dir' or if the manual has no
-`Glossary' node."
-  (unless (equal "dir" Info-current-file)
-    (let ((words-here  ())
-          (ht-var      (intern (concat (file-name-sans-extension
-                                        (file-name-nondirectory Info-current-file))
-                                       "-glossary-hash-table")))
+`Glossary' node.
+
+Don't fontify anything in an Index.  Don't fontify a word in node
+`Glossary' unless its occurrence is in a definition other than its
+own."
+  (unless (equal "dir"   Info-current-file)
+    (let ((words-here    ())
+          (ht-var        (intern (concat (file-name-sans-extension (file-name-nondirectory Info-current-file))
+                                         "-glossary-hash-table")))
+          (gloss-node-p  (equal Info-current-node "Glossary"))
           wbeg wend word def)
       (when (and (boundp ht-var)
                  (hash-table-p (symbol-value ht-var)) ; Just to be safe.
@@ -5009,8 +5028,20 @@ Do nothing if the current node is `dir' or if the manual has no
         (while (and (not (eobp))  (forward-word))
           (setq wend  (prog1 (point) (save-excursion (backward-word) (setq wbeg  (point))))
                 word  (buffer-substring wbeg wend))
-          (unless (Info--member-string-nocase word words-here)
-            (when (setq def  (gethash word (symbol-value ht-var)))
+          (unless (or (Info--member-string-nocase word words-here) ; Fontify only the first occurrence in node.
+                      ;; Don't fontify an existing link.
+                      (let ((face  (get-text-property 0 'font-lock-face word)))
+                        (and face  (memq face Info-link-faces))))
+            (when (and (setq def  (gethash word (symbol-value ht-var))) ; WORD is defined in the glossary.
+                       (or (not gloss-node-p)
+                           (let ((case-fold-search  t)) ; Node is `Glossary'.  Fontify WORD only if in diff def.
+                             (save-excursion
+                               (forward-line 0)
+                               (when (looking-at-p "[ ]+") ; Inside a definition
+                                 (while (looking-at-p "[ ]+") (forward-line -1))
+                                 (not (string-match-p ; Don't fontify if term being defined matches WORD.
+                                       (buffer-substring (line-beginning-position) (line-end-position))
+                                       word)))))))
               (setq words-here  (cons word words-here))
               (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
                 (add-text-properties wbeg wend
