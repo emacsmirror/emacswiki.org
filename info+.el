@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 25 07:35:07 2020 (-0700)
+;; Last-Updated: Sun Oct 25 21:56:39 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6659
+;;     Update #: 6699
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -96,9 +96,10 @@
 ;;
 ;;    `info-command-ref-item', `info-constant-ref-item',
 ;;    `info-double-quoted-name', `info-emphasis', `info-file',
-;;    `info-function-ref-item', `info-isolated-backquote',
-;;    `info-isolated-quote', `info-macro-ref-item', `info-menu',
-;;    `info-node', `info-quoted-name', `info-reference-item',
+;;    `info-function-ref-item', `info-glossary-word',
+;;    `info-isolated-backquote', `info-isolated-quote',
+;;    `info-macro-ref-item', `info-menu', `info-node',
+;;    `info-quoted-name', `info-reference-item',
 ;;    `info-special-form-ref-item', `info-string',
 ;;    `info-syntax-class-item', `info-user-option-ref-item',
 ;;    `info-variable-ref-item', `info-xref-bookmarked' (Emacs 24.2+).
@@ -111,7 +112,7 @@
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
-;;    `Info-fontify-emphasis-flag',
+;;    `Info-fontify-emphasis-flag', `Info-fontify-glossary-words',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+),
@@ -128,8 +129,13 @@
 ;;    `Info-bookmark-name-at-point', `Info-bookmark-named-at-point',
 ;;    `Info-bookmark-name-for-node',
 ;;    `info-buffer-name-function-default',
-;;    `Info-display-node-default-header', `info-fontify-quotations',
-;;    `info-fontify-reference-items',
+;;    `Info-case-insensitive-string=',
+;;    `Info-case-insensitive-string-hash',
+;;    `Info-display-node-default-header',
+;;    `Info-fontify-glossary-words', `Info-fontify-quotations',
+;;    `Info-fontify-reference-items',
+;;    `Info-get-glossary-hash-table-create',
+;;    `Info-goto-glossary-definition', `Info-no-glossary-manuals',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
 ;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
@@ -140,11 +146,11 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `Info-breadcrumbs-depth-internal', `info-fontify-emphasis',
-;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
-;;    `Info-merged-map', `Info-mode-syntax-table',
-;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
-;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
-;;    `Info-toc-outline-map'.
+;;    `info-glossary-link-map', `info-isolated-backquote-regexp',
+;;    `info-isolated-quote-regexp', `Info-merged-map',
+;;    `Info-mode-syntax-table', `info-quotation-regexp',
+;;    `info-quotation-same-line-regexp', `info-quoted+<>-regexp',
+;;    `info-quoted+<>-same-line-regexp', `Info-toc-outline-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -496,6 +502,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/25 dadams
+;;     Added:
+;;       info-glossary-word face, Info-fontify-glossary-words option and function, Info-case-insensitive-string=,
+;;       Info-case-insensitive-string-hash, Info-get-glossary-hash-table-create, Info-goto-glossary-definition,
+;;       info-glossary-link-map, Info-no-glossary-manuals.
+;;     Renamed: info-fontify-(quotations|reference-items) to Info-fontify-(quotations|reference-items).
+;;     Info-find-node-2: create glossary-words hash table.
+;;     Info-fontify-node: If Info-fontify-glossary-words then fontify glossary words.
 ;; 2020/10/23 dadams
 ;;     Added: info-isolated-backquote, info-isolated-backquote-regexp, info-isolated-quote-regexp.
 ;;     Renamed: Info-toggle-fontify-single-quote to Info-toggle-fontify-isolated-quote,
@@ -1143,6 +1157,12 @@ Don't forget to mention your Emacs and library versions."))
   "Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
+(defface info-glossary-word
+  '((t (:box (:line-width 1 :style pressed-button))))
+  "Face for first occurrences of glossary words in an `info' node."
+  :group 'Info-Plus :group 'faces)
+
+;;;###autoload
 (defface info-menu
     '((((background dark)) (:foreground "Yellow"))
       (t (:foreground "Blue")))
@@ -1450,6 +1470,32 @@ never highlighted, and this option has no effect.  This gives you a
 way to turn off all matching of `Info-emphasis-regexp'."
   :type 'boolean :group 'Info-Plus)
 
+;;;###autoload
+(defcustom Info-fontify-glossary-words t
+  "Non-nil means `info' fontifies first occurrences of glossary words.
+In addition, you can click `mouse-2' on such a highlighted word, or
+use `RET' on it, to go to its definition in the `Glossary' node of the
+current manual.
+
+You can optionally also have a mouseover action show the definition
+immediately, as a tooltip (or in the echo area if `tooltip-mode' is
+turned off).
+
+* A value of `link-only' means do not also show the definition on
+  mouseover.
+
+* Any other non-nil value means show the definition on mouseover.
+
+Glossary terms of more than one word are not highlighted or linked.
+
+This option has no effect for a manual that has no node named
+`Glossary'."
+  :type '(choice
+          (const :tag "OFF - don't fontify and link glossary words"   nil)
+          (const :tag "Fontify and link, but don't show tooltip"      link-only)
+          (other :tag "Fontify, link, and show tooltip on mouseover"  t))
+  :group 'Info-Plus)
+
 (define-obsolete-variable-alias 'Info-fontify-quotations-flag 'Info-fontify-quotations "2020-10-19")
 ;;;###autoload
 (defcustom Info-fontify-quotations t
@@ -1543,6 +1589,12 @@ nodes can be repeated because they are in more than one section."
   "Non-nil means allow `Info-fontify-emphasis-flag' to work.
 If nil then emphasis is never fontified, regardless of that flag.")
 
+(defvar info-glossary-link-map (let ((map  (make-sparse-keymap)))
+                                    (define-key map (kbd "RET") 'Info-goto-glossary-definition)
+                                    (define-key map [mouse-2] 'Info-goto-glossary-definition)
+                                    map)
+  "Keymap for glossary-word links.")
+
 ;; I reported this as Emacs bug #3312.  If it gets fixed, this can be removed.
 (defvar Info-mode-syntax-table
   (let ((table  (copy-syntax-table text-mode-syntax-table)))
@@ -1563,6 +1615,29 @@ If nil then emphasis is never fontified, regardless of that flag.")
   (define-key Info-merged-map "q" 'quit-window)
   (define-key Info-merged-map "s" 'nonincremental-re-search-forward)
   (define-key Info-merged-map "\M-s" 'nonincremental-re-search-forward))
+
+(defvar Info-no-glossary-manuals '(info efaq efaq-32 elisp eintr
+                                        ada-mode ccmode idlwave
+                                        octave-mode org vhdl-mode
+                                        nxml-mode erc eudc
+                                        emacs-gnutls gnus mh-e
+                                        mairix-el message newsticker
+                                        pgg rcirc sasl sc sieve tramp
+                                        autotype bovine calc dired-x
+                                        ede edt eieio ert eww epa
+                                        ebrowse ediff eshell flymake
+                                        forms htmlfontify ido pcl-cvs
+                                        reftex remember ses srecode
+                                        speedbar todo-mode vip viper
+                                        wisent woman auth cl dbus
+                                        emacs-mime smtpmail url widget)
+  ;; Emacs and Semantic manuals have a glossary.
+  "List of Info manuals that have no manuals.
+The elements are symbols whose names can be used as string arg to
+`info'.
+
+You can set this manually, but you need not do so.  Manuals are added
+automatically, when Emacs can't find a `Glossary' node in them.")
 
 (defvar Info-breadcrumbs-depth-internal Info-breadcrumbs-depth
   "Current breadcrumbs depth for Info.")
@@ -3084,8 +3159,9 @@ Non-nil NOMSG means do not show a status message."
 
 ;; REPLACE ORIGINAL in `info.el':
 ;;
-;; 1. Call `fit-frame' if `Info-fit-frame-flag'.
-;; 2. Added optional arg NOMSG.
+;; 1. Added optional arg NOMSG.
+;; 2. Call `fit-frame' if `Info-fit-frame-flag'.
+;; 3. If `Info-fontify-glossary-words' and NODENAME is `Glossary' then create glossary-words hash table.
 ;;
 (defun Info-find-node-2 (filename nodename &optional no-going-back strict-case nomsg)
   (buffer-disable-undo (current-buffer))
@@ -3093,165 +3169,168 @@ Non-nil NOMSG means do not show a status message."
   (widen)
   (setq Info-current-node  nil)
   (unwind-protect
-       (let ((case-fold-search  t)
-             (virtual-fun       (and (fboundp 'Info-virtual-fun) ; Emacs 23.2.
-                                     (Info-virtual-fun 'find-node (or filename  Info-current-file) nodename)))
-             anchorpos)
-         (cond ((functionp virtual-fun)
-                (let ((filename  (or filename  Info-current-file)))
-                  (setq buffer-read-only               nil
-                        Info-current-file              filename
-                        Info-current-subfile           nil
-                        Info-current-file-completions  ()
-                        buffer-file-name               nil)
-                  (erase-buffer)
-                  (Info-virtual-call virtual-fun filename nodename no-going-back)
-                  (set-marker Info-tag-table-marker nil)
-                  (setq buffer-read-only  t)
-                  (set-buffer-modified-p nil)
-                  (if (> emacs-major-version 24)
-                      (setq Info-current-node-virtual  t)
-                    (set (make-local-variable 'Info-current-node-virtual) t))))
-               ((not (and (or (not (boundp 'Info-current-node-virtual))  (not Info-current-node-virtual))
-                          (or (null filename)  (equal Info-current-file filename))))
-                ;; Switch files if necessary
-                (let ((inhibit-read-only  t))
-                  (when (and (boundp 'Info-current-node-virtual)  Info-current-node-virtual)
-                    ;; When moving from a virtual node.
-                    (if (> emacs-major-version 24)
-                        (setq Info-current-node-virtual  nil)
-                      (set (make-local-variable 'Info-current-node-virtual) nil))
-                    (unless filename (setq filename  Info-current-file)))
-                  (setq Info-current-file              nil
-                        Info-current-subfile           nil
-                        Info-current-file-completions  ()
-                        buffer-file-name               nil)
-                  (erase-buffer)
-                  ;; Erase any memory of the previous coding-system, so that `info-insert-file-contents' sets the
-                  ;; buffer's encoding to what the Info file specifies.
-                  (set-buffer-file-coding-system 'undecided t)
-                  (cond ((eq filename t)        (Info-insert-dir nomsg))
-                        ((eq filename 'apropos) (insert-buffer-substring " *info-apropos*"))
-                        ((eq filename 'history) (insert-buffer-substring " *info-history*"))
-                        ((eq filename 'toc)     (insert-buffer-substring " *info-toc*"))
-                        (t (info-insert-file-contents filename nil)
-                           (setq default-directory  (file-name-directory filename))))
-                  (set-buffer-modified-p nil)
-                  (if (> emacs-major-version 24)
-                      (setq Info-file-supports-index-cookies  (Info-file-supports-index-cookies filename))
-                    (set (make-local-variable 'Info-file-supports-index-cookies)
-                         (Info-file-supports-index-cookies filename)))
-                  ;; See whether file has a tag table.  Record the location if yes.
-                  (goto-char (point-max))
-                  (forward-line -8)
-                  ;; Use string-equal, not equal, to ignore text props.
-                  (if (not (or (string-equal nodename "*")
-                               (not (search-forward "\^_\nEnd tag table\n" nil t))))
-                      (let (pos)
-                        ;; We have a tag table.  Find its beginning.  Is this an indirect file?
-                        (search-backward "\nTag table:\n")
-                        (setq pos  (point))
-                        (if (save-excursion (forward-line 2) (looking-at "(Indirect)\n"))
-                            ;; It is indirect.
-                            ;; Copy it to another buffer and record that the tag table is in that buffer.
-                            (let ((buf     (current-buffer))
-                                  (tagbuf  (or Info-tag-table-buffer
-                                               (generate-new-buffer " *info tag table*"))))
-                              (setq Info-tag-table-buffer  tagbuf)
-                              (with-current-buffer tagbuf
-                                (buffer-disable-undo (current-buffer))
-                                (setq case-fold-search  t)
-                                (erase-buffer)
-                                (insert-buffer-substring buf))
-                              (set-marker Info-tag-table-marker (match-end 0) tagbuf))
-                          (set-marker Info-tag-table-marker pos)))
-                    (set-marker Info-tag-table-marker nil))
-                  (setq Info-current-file  filename))))
-         (if (string-equal nodename "*") ; Use `string-equal', not `equal', to ignore text props.
-             (progn (setq Info-current-node  nodename) (Info-set-mode-line))
-           ;; Possibilities:
-           ;;
-           ;; 1. Anchor found in tag table
-           ;; 2. Anchor *not* in tag table
-           ;;
-           ;; 3. Node found in tag table
-           ;; 4. Node *not* found in tag table, but found in file
-           ;; 5. Node *not* in tag table, and *not* in file
-           ;;
-           ;; *Or* the same, but in an indirect subfile.
-           ;;
-           ;;
-           ;; Search file for a suitable node.
-           (let ((guesspos  (point-min))
-                 (regexp    (concat "\\(Node:\\|Ref:\\) *\\("  (if (stringp nodename) (regexp-quote nodename) "")
-                                    "\\) *[,\t\n\177]")))
-             (catch 'foo
-               ;; First, search a tag table, if any
-               (when (marker-position Info-tag-table-marker)
-                 (let* ((m      Info-tag-table-marker)
-                        (found  (if (or (> emacs-major-version 24) ; Emacs 24.4+
-                                        (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
-                                    (Info-find-in-tag-table m regexp strict-case)
-                                  (Info-find-in-tag-table m regexp))))
-                   (when found          ; FOUND is (ANCHOR POS MODE)
-                     (let ((filepos  (nth 1 found))) ; File position in bytes.
-                       ;; If this is an indirect file, determine which file really holds this node and read it in.
-                       (unless (eq (nth 2 found) 'Info-mode)
-                         ;; The current buffer must be the *info* buffer on entry to `Info-read-subfile'.
-                         ;; Thus the hackery above.
-                         (setq filepos  (Info-read-subfile filepos)))
-                       (setq guesspos  (if (fboundp 'filepos-to-bufferpos)
-                                           (filepos-to-bufferpos filepos 'approximate)
-                                         filepos)))
-                     (when (nth 0 found) ; Handle anchor
-                       (goto-char (setq anchorpos  guesspos)) (throw 'foo t)))))
-               ;; Else we may have a node, which we search for.
-               (goto-char (max (point-min) (- (if (> emacs-major-version 24) guesspos (byte-to-position guesspos))
-                                              1000)))
-               ;; Now search from our advised position (or from beg of buffer) to find the actual node.
-               ;; First, check whether the node is right where we are, in case the buffer begins with a node.
-               (when (> emacs-major-version 24)
-                 (let ((pos  (Info-find-node-in-buffer regexp strict-case)))
-                   (when pos (goto-char pos) (throw 'foo t)))
-                 ;; If the Texinfo source had an @ifnottex block of text before the Top node,
-                 ;; makeinfo 5.0 and 5.1 mistakenly omitted that block's size from the starting
-                 ;; position of the 1st subfile, which makes GUESSPOS overshoot the correct
-                 ;; position by the length of that text.  So we try again with a larger slop.
-                 (goto-char (max (point-min) (- guesspos 10000))))
-               (let ((pos  (if (<= emacs-major-version 23)
-                               (Info-find-node-in-buffer regexp)
-                             (Info-find-node-in-buffer regexp strict-case))))
-                 (when pos (goto-char pos) (throw 'foo t)))
-               (when (string-match "\\([^.]+\\)\\." nodename)
-                 (let (Info-point-loc)
-                   (Info-find-node-2 filename (match-string 1 nodename) no-going-back strict-case nomsg))
-                 (widen)
-                 (throw 'foo t))
-               ;; No such anchor in tag table or node in tag table or file
-               (info-user-error "No such node or anchor: `%s'" nodename))
-             (Info-select-node)
-             (goto-char (point-min))
-             (forward-line 1)           ; skip header line
-             (when (and (not (fboundp 'Info-breadcrumbs)) ; Before Emacs 23.2
-                        Info-breadcrumbs-in-header-flag
-                        (> Info-breadcrumbs-depth 0))
-               (forward-line 1))        ; skip breadcrumbs line
-             (cond (anchorpos
-                    (let ((new-history  (list Info-current-file (substring-no-properties nodename))))
-                      ;; Add anchors to the history too
-                      (setq Info-history-list  (cons new-history (delete new-history Info-history-list))))
-                    (goto-char anchorpos))
-                   ((numberp Info-point-loc)
-                    (forward-line (- Info-point-loc 2))
-                    (setq Info-point-loc  nil))
-                   ((stringp Info-point-loc)
-                    (Info-find-index-name Info-point-loc)
-                    (setq Info-point-loc  nil)))))
-         (when (and (one-window-p t)
-                    (not (window-minibuffer-p))
-                    (fboundp 'fit-frame) ; Defined in `fit-frame.el'.
-                    Info-fit-frame-flag)
-           (fit-frame)))
+      (let ((case-fold-search  t)
+            (virtual-fun       (and (fboundp 'Info-virtual-fun) ; Emacs 23.2.
+                                    (Info-virtual-fun 'find-node (or filename  Info-current-file) nodename)))
+            anchorpos)
+        (cond ((functionp virtual-fun)
+               (let ((filename  (or filename  Info-current-file)))
+                 (setq buffer-read-only               nil
+                       Info-current-file              filename
+                       Info-current-subfile           nil
+                       Info-current-file-completions  ()
+                       buffer-file-name               nil)
+                 (erase-buffer)
+                 (Info-virtual-call virtual-fun filename nodename no-going-back)
+                 (set-marker Info-tag-table-marker nil)
+                 (setq buffer-read-only  t)
+                 (set-buffer-modified-p nil)
+                 (if (> emacs-major-version 24)
+                     (setq Info-current-node-virtual  t)
+                   (set (make-local-variable 'Info-current-node-virtual) t))))
+              ((not (and (or (not (boundp 'Info-current-node-virtual))  (not Info-current-node-virtual))
+                         (or (null filename)  (equal Info-current-file filename))))
+               ;; Switch files if necessary
+               (let ((inhibit-read-only  t))
+                 (when (and (boundp 'Info-current-node-virtual)  Info-current-node-virtual)
+                   ;; When moving from a virtual node.
+                   (if (> emacs-major-version 24)
+                       (setq Info-current-node-virtual  nil)
+                     (set (make-local-variable 'Info-current-node-virtual) nil))
+                   (unless filename (setq filename  Info-current-file)))
+                 (setq Info-current-file              nil
+                       Info-current-subfile           nil
+                       Info-current-file-completions  ()
+                       buffer-file-name               nil)
+                 (erase-buffer)
+                 ;; Erase any memory of the previous coding-system, so that `info-insert-file-contents' sets the
+                 ;; buffer's encoding to what the Info file specifies.
+                 (set-buffer-file-coding-system 'undecided t)
+                 (cond ((eq filename t)        (Info-insert-dir nomsg))
+                       ((eq filename 'apropos) (insert-buffer-substring " *info-apropos*"))
+                       ((eq filename 'history) (insert-buffer-substring " *info-history*"))
+                       ((eq filename 'toc)     (insert-buffer-substring " *info-toc*"))
+                       (t (info-insert-file-contents filename nil)
+                          (setq default-directory  (file-name-directory filename))))
+                 (set-buffer-modified-p nil)
+                 (if (> emacs-major-version 24)
+                     (setq Info-file-supports-index-cookies  (Info-file-supports-index-cookies filename))
+                   (set (make-local-variable 'Info-file-supports-index-cookies)
+                        (Info-file-supports-index-cookies filename)))
+                 ;; See whether file has a tag table.  Record the location if yes.
+                 (goto-char (point-max))
+                 (forward-line -8)
+                 ;; Use string-equal, not equal, to ignore text props.
+                 (if (not (or (string-equal nodename "*")
+                              (not (search-forward "\^_\nEnd tag table\n" nil t))))
+                     (let (pos)
+                       ;; We have a tag table.  Find its beginning.  Is this an indirect file?
+                       (search-backward "\nTag table:\n")
+                       (setq pos  (point))
+                       (if (save-excursion (forward-line 2) (looking-at "(Indirect)\n"))
+                           ;; It is indirect.
+                           ;; Copy it to another buffer and record that the tag table is in that buffer.
+                           (let ((buf     (current-buffer))
+                                 (tagbuf  (or Info-tag-table-buffer
+                                              (generate-new-buffer " *info tag table*"))))
+                             (setq Info-tag-table-buffer  tagbuf)
+                             (with-current-buffer tagbuf
+                               (buffer-disable-undo (current-buffer))
+                               (setq case-fold-search  t)
+                               (erase-buffer)
+                               (insert-buffer-substring buf))
+                             (set-marker Info-tag-table-marker (match-end 0) tagbuf))
+                         (set-marker Info-tag-table-marker pos)))
+                   (set-marker Info-tag-table-marker nil))
+                 (setq Info-current-file  filename))))
+        (if (string-equal nodename "*") ; Use `string-equal', not `equal', to ignore text props.
+            (progn (setq Info-current-node  nodename) (Info-set-mode-line))
+          ;; Possibilities:
+          ;;
+          ;; 1. Anchor found in tag table
+          ;; 2. Anchor *not* in tag table
+          ;;
+          ;; 3. Node found in tag table
+          ;; 4. Node *not* found in tag table, but found in file
+          ;; 5. Node *not* in tag table, and *not* in file
+          ;;
+          ;; *Or* the same, but in an indirect subfile.
+          ;;
+          ;;
+          ;; Search file for a suitable node.
+          (let ((guesspos  (point-min))
+                (regexp    (concat "\\(Node:\\|Ref:\\) *\\("  (if (stringp nodename) (regexp-quote nodename) "")
+                                   "\\) *[,\t\n\177]")))
+            (catch 'foo
+              ;; First, search a tag table, if any
+              (when (marker-position Info-tag-table-marker)
+                (let* ((m      Info-tag-table-marker)
+                       (found  (if (or (> emacs-major-version 24) ; Emacs 24.4+
+                                       (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+                                   (Info-find-in-tag-table m regexp strict-case)
+                                 (Info-find-in-tag-table m regexp))))
+                  (when found           ; FOUND is (ANCHOR POS MODE)
+                    (let ((filepos  (nth 1 found))) ; File position in bytes.
+                      ;; If this is an indirect file, determine which file really holds this node and read it in.
+                      (unless (eq (nth 2 found) 'Info-mode)
+                        ;; The current buffer must be the *info* buffer on entry to `Info-read-subfile'.
+                        ;; Thus the hackery above.
+                        (setq filepos  (Info-read-subfile filepos)))
+                      (setq guesspos  (if (fboundp 'filepos-to-bufferpos)
+                                          (filepos-to-bufferpos filepos 'approximate)
+                                        filepos)))
+                    (when (nth 0 found) ; Handle anchor
+                      (goto-char (setq anchorpos  guesspos)) (throw 'foo t)))))
+              ;; Else we may have a node, which we search for.
+              (goto-char (max (point-min) (- (if (> emacs-major-version 24) guesspos (byte-to-position guesspos))
+                                             1000)))
+              ;; Now search from our advised position (or from beg of buffer) to find the actual node.
+              ;; First, check whether the node is right where we are, in case the buffer begins with a node.
+              (when (> emacs-major-version 24)
+                (let ((pos  (Info-find-node-in-buffer regexp strict-case)))
+                  (when pos (goto-char pos) (throw 'foo t)))
+                ;; If the Texinfo source had an @ifnottex block of text before the Top node,
+                ;; makeinfo 5.0 and 5.1 mistakenly omitted that block's size from the starting
+                ;; position of the 1st subfile, which makes GUESSPOS overshoot the correct
+                ;; position by the length of that text.  So we try again with a larger slop.
+                (goto-char (max (point-min) (- guesspos 10000))))
+              (let ((pos  (if (<= emacs-major-version 23)
+                              (Info-find-node-in-buffer regexp)
+                            (Info-find-node-in-buffer regexp strict-case))))
+                (when pos (goto-char pos) (throw 'foo t)))
+              (when (string-match "\\([^.]+\\)\\." nodename)
+                (let (Info-point-loc)
+                  (Info-find-node-2 filename (match-string 1 nodename) no-going-back strict-case nomsg))
+                (widen)
+                (throw 'foo t))
+              ;; No such anchor in tag table or node in tag table or file
+              (info-user-error "No such node or anchor: `%s'" nodename))
+            (Info-select-node)
+            (goto-char (point-min))
+            (forward-line 1)            ; skip header line
+            (when (and (not (fboundp 'Info-breadcrumbs)) ; Before Emacs 23.2
+                       Info-breadcrumbs-in-header-flag
+                       (> Info-breadcrumbs-depth 0))
+              (forward-line 1))         ; skip breadcrumbs line
+            (cond (anchorpos
+                   (let ((new-history  (list Info-current-file (substring-no-properties nodename))))
+                     ;; Add anchors to the history too
+                     (setq Info-history-list  (cons new-history (delete new-history Info-history-list))))
+                   (goto-char anchorpos))
+                  ((numberp Info-point-loc)
+                   (forward-line (- Info-point-loc 2))
+                   (setq Info-point-loc  nil))
+                  ((stringp Info-point-loc)
+                   (Info-find-index-name Info-point-loc)
+                   (setq Info-point-loc  nil)))))
+        (when (and (one-window-p t)
+                   (not (window-minibuffer-p))
+                   (fboundp 'fit-frame) ; Defined in `fit-frame.el'.
+                   Info-fit-frame-flag)
+          (fit-frame))
+        (when (and Info-fontify-glossary-words  (not (equal nodename "Glossary")))
+          (Info-get-glossary-hash-table-create
+           (file-name-sans-extension (file-name-nondirectory Info-current-file)))))
     ;; If we did not finish finding the specified node, go to the previous one or to `Top' node.
     (unless (or Info-current-node  no-going-back)
       (if Info-history
@@ -3261,6 +3340,54 @@ Non-nil NOMSG means do not show a status message."
             (goto-char (nth 2 hist)))
         (Info-find-node Info-current-file "Top" t t nomsg)))) ; Pass STRICT-CASE?  Emacs bug #31137.
   (Info-set-mode-line))
+
+(defun Info-get-glossary-hash-table-create (&optional manual resetp)
+  "Get glossary hash table for MANUAL, creating it if it doesn't exist.
+Non-nil RESETP means re-create an existing hash table."
+  (unless (equal "dir" Info-current-file)
+    (unless manual (setq manual "emacs"))
+    (let ((ht-var  (intern (concat manual "-glossary-hash-table")))
+          (onode   Info-current-node))
+      (when (and (or (not (boundp ht-var))  resetp)
+                 (not (memq (intern manual) Info-no-glossary-manuals)))
+        (if (not (ignore-errors (progn (Info-find-node manual "Glossary" 'NO-GOING-BACK) t)))
+            (progn (add-to-list 'Info-no-glossary-manuals (intern manual))
+                   (Info-find-node manual onode 'NO-GOING-BACK nil 'NOMSG))
+          (let (def dbeg dend term)
+            (re-search-forward "Glossary\n\\*+\n")
+            (eval `(defvar ,ht-var nil ,(format "Glossary hash table for manual %s." (capitalize manual))))
+            (set ht-var (make-hash-table :test 'Info-case-insensitive-string=))
+            (while (not (eobp))
+              (setq def  "")
+              (re-search-forward "^[^[:space:]].*")
+              (setq term  (match-string 0)
+                    dbeg  (match-end 0))
+              (forward-char)
+              ;; Skip over any blank lines between term and its definition.
+              ;; This is the case for glossary entry `Text', for instance.
+              (while (looking-at-p "^$") (forward-line))
+              (setq dbeg  (point))
+              (while (looking-at-p "^[[:space:]].*") ; Gather lines of the definition.
+                (setq def  (concat def (buffer-substring dbeg (progn (forward-line)
+                                                                     (setq dbeg  (point)))))))
+              (setq def  (replace-regexp-in-string "\\(     \\)" "" def nil nil 1)
+                    def  (replace-regexp-in-string "\\`\n+" "" def)
+                    def  (replace-regexp-in-string "\n\n\\'" "" def))
+              (puthash term def (symbol-value ht-var))))
+          (Info-find-node manual onode nil nil 'NOMSG))))))
+
+(define-hash-table-test
+  'Info-case-insensitive-string=
+  'Info-case-insensitive-string=
+  'Info-case-insensitive-string-hash)
+
+(defun Info-case-insensitive-string= (string1 string2)
+  "Return non-nil if STRING1 and STRING2 are the same, ignoring case."
+  (eq t (compare-strings string1 nil nil string2 nil nil 'IGNORE-CASE)))
+
+(defun Info-case-insensitive-string-hash (string)
+  "Return hash code for `upcase' of STRING."
+  (sxhash (upcase string)))
 
 
 ;; REPLACE ORIGINAL in `info.el':
@@ -3820,11 +3947,11 @@ If key's command cannot be found by looking in indexes, then
 
         ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
-        (when Info-fontify-quotations (info-fontify-quotations))
+        (when Info-fontify-quotations (Info-fontify-quotations))
 
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
-        (when Info-fontify-reference-items-flag (info-fontify-reference-items))
+        (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
 
         ;; Fontify titles
         (goto-char (point-min))
@@ -4195,11 +4322,11 @@ If key's command cannot be found by looking in indexes, then
 
         ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
-        (when Info-fontify-quotations (info-fontify-quotations))
+        (when Info-fontify-quotations (Info-fontify-quotations))
 
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
-        (when Info-fontify-reference-items-flag (info-fontify-reference-items))
+        (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
 
         ;; Fontify titles
         (goto-char (point-min))
@@ -4455,6 +4582,7 @@ If key's command cannot be found by looking in indexes, then
 ;;    fontify <...> in face `info-quoted-name'.
 ;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
 ;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
+;; 6. If `Info-fontify-glossary-words' then fontify glossary words.
 ;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.2+
           (and (= emacs-major-version 24)  (> emacs-minor-version 1)))
@@ -4561,11 +4689,16 @@ If key's command cannot be found by looking in indexes, then
 
         ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
-        (when Info-fontify-quotations (info-fontify-quotations))
+        (when Info-fontify-quotations (Info-fontify-quotations))
+
+        ;; Fontify glossary words
+        (goto-char (point-min))
+        (forward-line 4)
+        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
 
         ;; Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
-        (when Info-fontify-reference-items-flag (info-fontify-reference-items))
+        (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
 
         ;; Fontify titles
         (goto-char (point-min))
@@ -4798,6 +4931,7 @@ If key's command cannot be found by looking in indexes, then
                                                                                      '(space :align-to 26)
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
+
         ;; Fontify menu headers
         (goto-char (point-min))
         (when (and not-fontified-p ; Add face `info-menu-header' to any header before a menu entry
@@ -4820,6 +4954,46 @@ If key's command cannot be found by looking in indexes, then
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil))))
 
+  ;; FIXME: In `Glossary' node itself, if first occurrence is an entry title, don't fontify it.
+  ;; Instead, fontify the next one (it's not a title), if any.
+  ;;
+  (defun Info-fontify-glossary-words ()
+    "Fontify words in current node defined glossary of current manual.
+Do nothing if the current node is `dir' or if the manual has no
+`Glossary' node."
+    (unless (equal "dir" Info-current-file)
+      (let ((words-here  ())
+            (ht-var      (intern (concat (file-name-sans-extension
+                                          (file-name-nondirectory Info-current-file))
+                                         "-glossary-hash-table")))
+            wbeg wend word def)
+        (when (and (boundp ht-var)  (hash-table-p (symbol-value ht-var))) ; Just to be safe.
+          (while (and (not (eobp))  (forward-word))
+            (setq wend  (prog1 (point) (save-excursion (backward-word) (setq wbeg  (point))))
+                  word  (buffer-substring wbeg wend))
+            (unless (cl-member word words-here :test #'Info-case-insensitive-string=)
+              (when (setq def  (gethash word (symbol-value ht-var)))
+                (setq words-here  (cons word words-here))
+                (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
+                  (add-text-properties wbeg wend
+                                       (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
+                                                            link-echo
+                                                          (concat def "\n\n" link-echo))
+                                             'face 'info-glossary-word
+                                             'mouse-face 'highlight
+                                             'keymap info-glossary-link-map))))))))))
+
+  (defun Info-goto-glossary-definition (&optional event)
+    "Go to definition of glossary word indicated by `mouse-2' or `RET'."
+    (interactive (list last-nonmenu-event))
+    (goto-char (posn-point (event-start event)))
+    (let ((word  (word-at-point)))
+      (ignore-errors
+        (Info-goto-node "Glossary")
+        (goto-char (point-min))
+        (forward-line 4)
+        (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
+
   )
 
 ;;;###autoload (autoload 'Info-set-breadcrumbs-depth "info+")
@@ -4832,7 +5006,7 @@ You are prompted for the depth value."
                                                       Info-breadcrumbs-depth-internal))
   (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line)))
 
-(defun info-fontify-quotations ()
+(defun Info-fontify-quotations ()
   "Fontify ‘...’, `...', “...”, \"...\", <...>, and isolated ' and `.
 Fontify <...> only if `Info-fontify-angle-bracketed-flag'.
 Fontify isolated ' and ` only if `Info-fontify-isolated-quote-flag'.
@@ -4907,7 +5081,7 @@ This respects option `Info-fontify-quotations'.
         (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
         (goto-char (match-end 0)) (forward-char 1)))))
 
-(defun info-fontify-reference-items ()
+(defun Info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
   (while (re-search-forward "^ --? \\(Command:\\|Constant:\\|Function:\\|Macro:\\|Special Form:\\|\
 Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\(\n          \\(.*\\)\\)*"
