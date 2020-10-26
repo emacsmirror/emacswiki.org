@@ -7,7 +7,7 @@
 == Julia REPL ==
 
 * [https://github.com/tpapp/julia-repl julia-repl.el] -- A minor mode for interacting with a Julia REPL running inside Emacs.
-* [https://github.com/shg/julia-repl-vterm.el julia-repl-vterm.el] -- Another inferior Julia REPL using emacs-libvterm.
+* [https://github.com/shg/julia-vterm.el julia-vterm.el] -- Another inferior Julia REPL using emacs-libvterm.
 
 == IDE ==
 
