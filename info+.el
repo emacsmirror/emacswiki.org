@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 25 21:56:39 2020 (-0700)
+;; Last-Updated: Mon Oct 26 12:58:52 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6699
+;;     Update #: 6730
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -87,6 +87,7 @@
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
 ;;    `Info-toggle-fontify-emphasis',
+;;    `Info-toggle-fontify-glossary-words',
 ;;    `Info-toggle-fontify-isolated-quote',
 ;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
 ;;    `Info-toc-outline', `Info-toc-outline-refontify-region',
@@ -125,9 +126,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `Info--pop-to-buffer-same-window', `Info-bookmark-for-node',
-;;    `Info-bookmark-name-at-point', `Info-bookmark-named-at-point',
-;;    `Info-bookmark-name-for-node',
+;;    `Info--member-string-nocase', `Info--pop-to-buffer-same-window',
+;;    `Info-bookmark-for-node', `Info-bookmark-name-at-point',
+;;    `Info-bookmark-named-at-point', `Info-bookmark-name-for-node',
 ;;    `info-buffer-name-function-default',
 ;;    `Info-case-insensitive-string=',
 ;;    `Info-case-insensitive-string-hash',
@@ -502,6 +503,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/26 dadams
+;;     Added: Info-toggle-fontify-glossary-words, Info--member-string-nocase.
+;;     Info-fontify-node, Info-fontify-glossary-words: Made glossary stuff work also with Emacs < 24.
+;;     Info-fontify-glossary-words: Don't fontify glossary words in an Index.
 ;; 2020/10/25 dadams
 ;;     Added:
 ;;       info-glossary-word face, Info-fontify-glossary-words option and function, Info-case-insensitive-string=,
@@ -1489,7 +1494,15 @@ turned off).
 Glossary terms of more than one word are not highlighted or linked.
 
 This option has no effect for a manual that has no node named
-`Glossary'."
+`Glossary'.
+
+Note: This fontification can never be 100% reliable.  It aims to be
+useful in most Info texts, but it can occasionally result in
+fontification that you might not expect.  This is not a bug; it is
+part of the design to be able to appropriately fontify a great variety
+of texts.  Set this flag to nil if you do not find this fontification
+useful.  You can use command `Info-toggle-fontify-glossary-words' to
+toggle the option value."
   :type '(choice
           (const :tag "OFF - don't fontify and link glossary words"   nil)
           (const :tag "Fontify and link, but don't show tooltip"      link-only)
@@ -2038,7 +2051,6 @@ same line (other non-nil value)."
                                                               (multiline  "on (MULTILINE too)")
                                                               (t          "on (SAME LINE only)")))))
 
-
 ;;;###autoload (autoload 'Info-toggle-fontify-isolated-quote "info+")
 (defun Info-toggle-fontify-isolated-quote (&optional msgp)
   "Toggle option `Info-fontify-isolated-quote-flag'."
@@ -2066,6 +2078,18 @@ same line (other non-nil value)."
       (Info-fontify-node))
     (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
                         (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
+(defun Info-toggle-fontify-glossary-words (&optional msgp)
+  "Toggle option `Info-fontify-glossary-words'."
+  (interactive "p")
+  (setq Info-fontify-glossary-words  (not Info-fontify-glossary-words))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-glossary-words' is now %s" (if Info-fontify-glossary-words 'ON 'OFF)))))
 
 ;;;###autoload (autoload 'Info-save-current-node "info+")
 (defun Info-save-current-node (&optional msgp)
@@ -3949,6 +3973,11 @@ If key's command cannot be found by looking in indexes, then
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
+        ;; Fontify glossary words
+        (goto-char (point-min))
+        (forward-line 4)
+        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
+
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
@@ -4323,6 +4352,11 @@ If key's command cannot be found by looking in indexes, then
         ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
+
+        ;; Fontify glossary words
+        (goto-char (point-min))
+        (forward-line 4)
+        (when Info-fontify-glossary-words (Info-fontify-glossary-words))
 
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
@@ -4954,47 +4988,61 @@ If key's command cannot be found by looking in indexes, then
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil))))
 
-  ;; FIXME: In `Glossary' node itself, if first occurrence is an entry title, don't fontify it.
-  ;; Instead, fontify the next one (it's not a title), if any.
-  ;;
-  (defun Info-fontify-glossary-words ()
-    "Fontify words in current node defined glossary of current manual.
+  )
+
+;; FIXME: In `Glossary' node itself, if first occurrence is an entry title, don't fontify it.
+;; Instead, fontify the next one (it's not a title), if any.
+;;
+(defun Info-fontify-glossary-words ()
+  "Fontify words in current node defined glossary of current manual.
 Do nothing if the current node is `dir' or if the manual has no
 `Glossary' node."
-    (unless (equal "dir" Info-current-file)
-      (let ((words-here  ())
-            (ht-var      (intern (concat (file-name-sans-extension
-                                          (file-name-nondirectory Info-current-file))
-                                         "-glossary-hash-table")))
-            wbeg wend word def)
-        (when (and (boundp ht-var)  (hash-table-p (symbol-value ht-var))) ; Just to be safe.
-          (while (and (not (eobp))  (forward-word))
-            (setq wend  (prog1 (point) (save-excursion (backward-word) (setq wbeg  (point))))
-                  word  (buffer-substring wbeg wend))
-            (unless (cl-member word words-here :test #'Info-case-insensitive-string=)
-              (when (setq def  (gethash word (symbol-value ht-var)))
-                (setq words-here  (cons word words-here))
-                (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
-                  (add-text-properties wbeg wend
-                                       (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
-                                                            link-echo
-                                                          (concat def "\n\n" link-echo))
-                                             'face 'info-glossary-word
-                                             'mouse-face 'highlight
-                                             'keymap info-glossary-link-map))))))))))
+  (unless (equal "dir" Info-current-file)
+    (let ((words-here  ())
+          (ht-var      (intern (concat (file-name-sans-extension
+                                        (file-name-nondirectory Info-current-file))
+                                       "-glossary-hash-table")))
+          wbeg wend word def)
+      (when (and (boundp ht-var)
+                 (hash-table-p (symbol-value ht-var)) ; Just to be safe.
+                 (not (string-match-p "\\bIndex\\b" Info-current-node)))
+        (while (and (not (eobp))  (forward-word))
+          (setq wend  (prog1 (point) (save-excursion (backward-word) (setq wbeg  (point))))
+                word  (buffer-substring wbeg wend))
+          (unless (Info--member-string-nocase word words-here)
+            (when (setq def  (gethash word (symbol-value ht-var)))
+              (setq words-here  (cons word words-here))
+              (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
+                (add-text-properties wbeg wend
+                                     (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
+                                                          link-echo
+                                                        (concat def "\n\n" link-echo))
+                                           'face 'info-glossary-word
+                                           'mouse-face 'highlight
+                                           'keymap info-glossary-link-map))))))))))
 
-  (defun Info-goto-glossary-definition (&optional event)
-    "Go to definition of glossary word indicated by `mouse-2' or `RET'."
-    (interactive (list last-nonmenu-event))
-    (goto-char (posn-point (event-start event)))
-    (let ((word  (word-at-point)))
-      (ignore-errors
-        (Info-goto-node "Glossary")
-        (goto-char (point-min))
-        (forward-line 4)
-        (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
+(if (> emacs-major-version 23) ; Emacs < 24 `cl-member' doesn't accept `:test'.  Just use dumb recursion.
+    (defun Info--member-string-nocase (string list)
+      "`cl-member' with `:test' as `Info-case-insensitive-string='."
+      (cl-member string list :test #'Info-case-insensitive-string=))      
+  (defun Info--member-string-nocase (string list)
+    "`cl-member' with `:test' as `Info-case-insensitive-string='.
+But usable with Emacs < 24 too."
+    (let ((lst  list))
+      (and list  (if (Info-case-insensitive-string= string (car lst))
+                     lst
+                   (Info--member-string-nocase string (cdr lst)))))))
 
-  )
+(defun Info-goto-glossary-definition (&optional event)
+  "Go to definition of glossary word indicated by `mouse-2' or `RET'."
+  (interactive (list last-nonmenu-event))
+  (goto-char (posn-point (event-start event)))
+  (let ((word  (word-at-point)))
+    (ignore-errors
+      (Info-goto-node "Glossary")
+      (goto-char (point-min))
+      (forward-line 4)
+      (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
 
 ;;;###autoload (autoload 'Info-set-breadcrumbs-depth "info+")
 (defun Info-set-breadcrumbs-depth ()
