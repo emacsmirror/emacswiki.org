@@ -240,6 +240,13 @@ that means colons are removed before attempting to use the functions in alist, s
 
 will make finding Perl modules work again
 
+[new]
+I found that I had to
+
+    (setq ffap-lax-url nil)
+
+Otherwise I could not ffap modules with ::
+
 ==Finding Perl modules==
 
 As an alternative to the ffap version above, the following will find a given Perl module, using
