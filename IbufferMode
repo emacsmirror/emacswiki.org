@@ -149,7 +149,7 @@ Was it eventually added to Emacs? -- DianeMurray
     
       (define-key ibuffer-mode-map (kbd "s p") 'ibuffer-do-sort-by-pathname))
     
-    (add-hook 'ibuffer-mode-hooks 'my-ibuffer-hook)
+    (add-hook 'ibuffer-mode-hook 'my-ibuffer-hook)
 
 [new]
 I modified the above, works with GNU Emacs 22.0.92.1, should this work? --DavidBoon
