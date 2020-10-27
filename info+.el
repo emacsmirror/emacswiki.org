@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 26 16:32:41 2020 (-0700)
+;; Last-Updated: Tue Oct 27 13:28:35 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6749
+;;     Update #: 6757
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -73,7 +73,7 @@
 ;;    `Info-breadcrumbs-in-mode-line-mode',
 ;;    `Info-change-visited-status' (Emacs 24+),
 ;;    `Info-cycle-fontify-quotations', `Info-describe-bookmark' (Emacs
-;;    24.2+), `Info-follow-nearest-node-new-window',
+;;    24.2+), `Info-follow-nearest-node-new-window', `Info-glossary',
 ;;    `Info-goto-node-web', `Info-history-clear',
 ;;    `Info-make-node-unvisited', `info-manual',
 ;;    `info-manual+node-buffer-name-mode', `Info-merge-subnodes',
@@ -512,6 +512,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/27 dadams
+;;     Added: Info-glossary.
 ;; 2020/10/26 dadams
 ;;     Added: Info-toggle-fontify-glossary-words, Info--member-string-nocase, Info-link-faces.
 ;;     Info-fontify-node, Info-fontify-glossary-words: Made glossary stuff work also with Emacs < 24.
@@ -5075,6 +5077,7 @@ But usable with Emacs < 24 too."
                      lst
                    (Info--member-string-nocase string (cdr lst)))))))
 
+;;;###autoload (autoload 'Info-goto-glossary-definition "info+")
 (defun Info-goto-glossary-definition (&optional event)
   "Go to definition of glossary word indicated by `mouse-2' or `RET'."
   (interactive (list last-nonmenu-event))
@@ -5085,6 +5088,33 @@ But usable with Emacs < 24 too."
       (goto-char (point-min))
       (forward-line 4)
       (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
+
+;;;###autoload (autoload 'Info-glossary "info+")
+(defun Info-glossary (term)
+  "Look up a string TERM in glossary for this manual, and go to it.
+If there are no exact matches for TERM, choose the first term that has
+TERM as a case-insensitive substring.
+Use an empty TERM name to go to the `Glossary' node itself."
+  (interactive
+   (progn
+     (unless (derived-mode-p 'Info-mode)   (info-user-error "You must be in Info to use this command"))
+     (when (equal Info-current-file "dir")
+       (info-user-error "The Info directory node has no glossary; use `m' to select a manual"))
+     (list (let ((completion-ignore-case  t))
+             (condition-case nil
+                 (completing-read
+                  "Glossary term: "
+                  (eval (intern (concat (file-name-sans-extension (file-name-nondirectory Info-current-file))
+                                        "-glossary-hash-table"))))
+               (error (error "Manual `%s' has no glossary"
+                             (file-name-sans-extension (file-name-nondirectory Info-current-file)))))))))
+  (condition-case nil
+      (Info-goto-node "Glossary")
+    (error (error "Manual `%s' has no glossary"
+                  (file-name-sans-extension (file-name-nondirectory Info-current-file)))))
+  (goto-char (point-min))
+  (forward-line 4)
+  (let ((case-fold-search  t)) (re-search-forward (format "^%s$" term) nil t)))
 
 ;;;###autoload (autoload 'Info-set-breadcrumbs-depth "info+")
 (defun Info-set-breadcrumbs-depth ()
