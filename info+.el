@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 28 14:55:16 2020 (-0700)
+;; Last-Updated: Wed Oct 28 15:41:35 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6759
+;;     Update #: 6764
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -514,6 +514,7 @@
 ;;
 ;; 2020/10/28 dadams
 ;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
+;;     Info-get-glossary-hash-table-create: Bind Info-fit-frame-flag to nil, to avoid unnecessary frame-fit.
 ;; 2020/10/27 dadams
 ;;     Added: Info-glossary.
 ;; 2020/10/26 dadams
@@ -3393,8 +3394,9 @@ Non-nil NOMSG means do not show a status message."
 Non-nil RESETP means re-create an existing hash table."
   (unless (equal "dir" Info-current-file)
     (unless manual (setq manual "emacs"))
-    (let ((ht-var  (intern (concat manual "-glossary-hash-table")))
-          (onode   Info-current-node))
+    (let ((ht-var               (intern (concat manual "-glossary-hash-table")))
+          (onode                Info-current-node)
+          (Info-fit-frame-flag  nil))
       (when (and (or (not (boundp ht-var))  resetp)
                  (not (memq (intern manual) Info-no-glossary-manuals)))
         (if (not (ignore-errors (progn (Info-find-node manual "Glossary" 'NO-GOING-BACK) t)))
