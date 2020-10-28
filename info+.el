@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 27 13:28:35 2020 (-0700)
+;; Last-Updated: Wed Oct 28 14:55:16 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6757
+;;     Update #: 6759
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -512,6 +512,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/28 dadams
+;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
 ;; 2020/10/27 dadams
 ;;     Added: Info-glossary.
 ;; 2020/10/26 dadams
@@ -2934,7 +2936,7 @@ candidates."
       :style toggle :selected Info-fontify-isolated-quote-flag
       :help "Toggle option `Info-fontify-isolated-quote-flag'"]
      ["Highlighting Glossary Words" Info-toggle-fontify-glossary-words
-      :style toggle :selected Info-toggle-fontify-glossary-words
+      :style toggle :selected Info-fontify-glossary-words
       :help "Toggle option `Info-fontify-glossary-words'"]
      ["Highlighting Bookmarked Links" Info-toggle-fontify-bookmarked-xrefs
       :style toggle :selected (and (boundp 'Info-fontify-bookmarked-xrefs-flag)
