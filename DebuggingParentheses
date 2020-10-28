@@ -1,7 +1,6 @@
-Unbalanced parentheses will cause errors in elisp files when they are loaded.
+Unbalanced parentheses will cause errors in Emacs Lisp files when they are loaded.
 
-As of GNU Emacs 21.1, the command `check-parens' checks
-for unbalanced parentheses automagically.
+The command `check-parens' checks for unbalanced parentheses automagically.
 Without it, use C-M-f and C-M-b across [[Sexps]].
 These include balanced parentheses, so when it fails, you know you
 have reached the problematic spot.
