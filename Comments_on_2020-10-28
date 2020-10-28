@@ -2,3 +2,12 @@ Sorry, but I don't understand. I tried putting "gemini://emacswiki.org" in my br
 
 -- DrewAdams 2020-10-28 22:07 UTC
 
+
+----
+
+There's a Gopher and Gemini client for Emacs called [[Elpher]].
+
+No web browser I know of has implemented the Gemini protocol. There are a bunch of other clients that you could use instead. [https://gemini.circumlunar.space/clients.html Gemini Clients] has a list.
+
+-- Alex Schroeder 2020-10-28 22:55 UTC
+
