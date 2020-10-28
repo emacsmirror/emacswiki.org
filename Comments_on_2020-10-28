@@ -5,7 +5,7 @@ Sorry, but I don't understand. I tried putting "gemini://emacswiki.org" in my br
 
 ----
 
-There's a Gopher and Gemini client for Emacs called [[Elpher]].
+There's a Gopher and Gemini client for Emacs called [https://thelambdalab.xyz/elpher/ Elpher].
 
 No web browser I know of has implemented the Gemini protocol. There are a bunch of other clients that you could use instead. [https://gemini.circumlunar.space/clients.html Gemini Clients] has a list.
 
