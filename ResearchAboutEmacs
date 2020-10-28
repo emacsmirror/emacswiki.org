@@ -6,6 +6,8 @@ Thanks to contributors on [https://www.reddit.com/r/emacs/comments/djrlib/academ
 
 Aspinall, David. (2000). [http://proofgeneral.inf.ed.ac.uk/papers/pgoutline.ps.gz Proof General: A Generic Tool for Proof Development]. In /Tools and Algorithms for the Construction and Analysis of Systems/ (TACAS'00), LNCS 1785.  Plus a few related articles at https://proofgeneral.github.io/pubs/
 
+Corallo, Andrea; Nassi, Luca; Manca, Nicola.  (2020).  [https://zenodo.org/record/3736363 Bringing GNU Emacs to Native Code]. 13th European Lisp Symposium (ELS 2020) (ELS'20), Zurich, 27-28 April 2020.
+
 Crestani, Marcus.  (2005).  [http://crestani.de/xemacs/pdf/thesis-newgc.pdf A New Garbage Collector for XEmacs].  Masters thesis, Univertät Tübingen.
 
 Lapalme, Guy.  (1998).  [https://pdfs.semanticscholar.org/ab48/0568f9a0e4a6fc3b25918c1a481bb1b99c37.pdf Dynamic Tabbing for Automatic Indentation with the Layout Rule].  Journal of Functional Programming (JFP), 8(5), pp 493-502.
