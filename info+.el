@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 28 15:41:35 2020 (-0700)
+;; Last-Updated: Wed Oct 28 23:23:00 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6764
+;;     Update #: 6773
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -515,6 +515,9 @@
 ;; 2020/10/28 dadams
 ;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
 ;;     Info-get-glossary-hash-table-create: Bind Info-fit-frame-flag to nil, to avoid unnecessary frame-fit.
+;;     info-glossary-link-map: Added follow-link.
+;;     Info-fontify-glossary-words: Swapped order of help-echo text: put mouse-2 text before definition, so it
+;;                                  gets changed to mouse-1 when mouse-1-click-follows-link is non-nil.
 ;; 2020/10/27 dadams
 ;;     Added: Info-glossary.
 ;; 2020/10/26 dadams
@@ -1621,6 +1624,7 @@ If nil then emphasis is never fontified, regardless of that flag.")
 (defvar info-glossary-link-map (let ((map  (make-sparse-keymap)))
                                     (define-key map (kbd "RET") 'Info-goto-glossary-definition)
                                     (define-key map [mouse-2] 'Info-goto-glossary-definition)
+                                    (define-key map [follow-link] 'mouse-2)
                                     map)
   "Keymap for glossary-word links.")
 
@@ -3951,9 +3955,7 @@ If key's command cannot be found by looking in indexes, then
                 (put-text-property nbeg nend 'font-lock-face 'info-header-xref)
                 (put-text-property tbeg nend 'mouse-face 'highlight)
                 (put-text-property tbeg nend
-                                   'help-echo
-                                   (concat "mouse-2: Go to node "
-                                           (buffer-substring nbeg nend)))
+                                   'help-echo (concat "mouse-2: Go to node " (buffer-substring nbeg nend)))
                 ;; Always set up the text property keymap.
                 ;; It will either be used in the buffer
                 ;; or copied in the header line.
@@ -4334,9 +4336,7 @@ If key's command cannot be found by looking in indexes, then
                 (put-text-property nbeg nend 'font-lock-face 'info-header-xref)
                 (put-text-property tbeg nend 'mouse-face 'highlight)
                 (put-text-property tbeg nend
-                                   'help-echo
-                                   (concat "mouse-2: Go to node "
-                                           (buffer-substring nbeg nend)))
+                                   'help-echo (concat "mouse-2: Go to node " (buffer-substring nbeg nend)))
                 ;; Always set up the text property keymap.
                 ;; It will either be used in the buffer
                 ;; or copied in the header line.
@@ -4705,9 +4705,7 @@ If key's command cannot be found by looking in indexes, then
                                                              'header-line-highlight
                                                            'highlight))
                 (put-text-property tbeg nend
-                                   'help-echo
-                                   (concat "mouse-2: Go to node "
-                                           (buffer-substring nbeg nend)))
+                                   'help-echo (concat "mouse-2: Go to node " (buffer-substring nbeg nend)))
                 ;; Set up the text property keymap.  Depending on
                 ;; `Info-use-header-line', it is either used in the
                 ;; buffer, or copied to the header line.  A symbol value
@@ -5061,13 +5059,17 @@ own."
                                        word)))))))
               (setq words-here  (cons word words-here))
               (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
-                (add-text-properties wbeg wend
-                                     (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
-                                                          link-echo
-                                                        (concat def "\n\n" link-echo))
-                                           'face 'info-glossary-word
-                                           'mouse-face 'highlight
-                                           'keymap info-glossary-link-map))))))))))
+                (add-text-properties
+                 wbeg wend
+                 (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
+                                      link-echo
+                                    ;; Need to put `link-echo' before `def', because for the text to magically
+                                    ;; change from `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link'
+                                    ;; the text needs to start with `mouse-2'.  This is an undocumented "feature".
+                                    (concat link-echo "\n\n" def ))
+                       'face 'info-glossary-word
+                       'mouse-face 'highlight
+                       'keymap info-glossary-link-map))))))))))
 
 (if (> emacs-major-version 23) ; Emacs < 24 `cl-member' doesn't accept `:test'.  Just use dumb recursion.
     (defun Info--member-string-nocase (string list)
