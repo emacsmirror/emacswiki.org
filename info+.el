@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 28 23:32:58 2020 (-0700)
+;; Last-Updated: Wed Oct 28 23:55:26 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6775
+;;     Update #: 6776
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -5058,7 +5058,7 @@ own."
                                        (buffer-substring (line-beginning-position) (line-end-position))
                                        word)))))))
               (setq words-here  (cons word words-here))
-              (let ((link-echo  "(mouse-2: go to Glossary entry for this word)"))
+              (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
                 (add-text-properties
                  wbeg wend
                  (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
