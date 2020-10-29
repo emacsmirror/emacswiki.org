@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 28 23:23:00 2020 (-0700)
+;; Last-Updated: Wed Oct 28 23:25:38 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6773
+;;     Update #: 6774
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -359,10 +359,10 @@
 ;;    - Glossary words, that is, words that are defined in a manual's
 ;;      `Glossary' node, are highlighted and linked to their glossary
 ;;      entries, if option `Info-fontify-glossary-words' is non-nil.
-;;      By default, a mouseover or `RET' on such a link shows a
-;;      tooltip with the word's definition from the glossary.
-;;      (Currently only the Emacs and Semantic manuals have `Glossary'
-;;      nodes, as far as I know.)
+;;      By default, a mouseover on such a link shows a tooltip with
+;;      the word's definition from the glossary.  (Currently only the
+;;      Emacs and Semantic manuals have `Glossary' nodes, as far as I
+;;      know.)
 ;;
 ;;    - Be aware that any such highlighting is not 100% foolproof.
 ;;      Especially for a manual such as Emacs or Elisp, where
