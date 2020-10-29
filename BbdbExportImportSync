@@ -1,7 +1,7 @@
 CategoryBbdb
 
 =Synchronization=
-as
+
 If you are interested in a one time import or export from BBDB to some other contacts store format, you should see BbdbImporters and BbdbExporters. See B for simple import/export utilities. 
 
 Synchronization, as distinct from the above, is a stateful bi-directional operation. This page talks about the software, utilities and general issues related to keeping your BBDB in sync with other PIM (personal information management) systems.
@@ -33,3 +33,4 @@ ASynK (http://asynk.io/) supports bidirectional BBDB ⟷ CardDAV (at least with 
 
 The way records are stored is another interesting question.
 If the only thing you are interested in is one-time import/export (exect a lot of pain when merging), you can export your phone contacts into a .vcf (vCard) format, and reimport with the help of the bbdb-vcard MELPA package. (Occasionaly broken, but still useful.)
+ 
