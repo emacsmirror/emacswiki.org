@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 10:24:40 2020 (-0700)
+;; Last-Updated: Fri Oct 30 11:08:17 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6787
+;;     Update #: 6797
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -512,6 +512,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/10/30 dadams
+;;     info-(quotation|quoted+<>)(-same-line)-regexp: Use +, not *, for all but "..." string.
+;;     info-isolated-(back)quote-regexp: Simplify to just any char after ` and before '.  (Performance.)
 ;; 2020/10/28 dadams
 ;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
 ;;     Info-get-glossary-hash-table-create: Bind Info-fit-frame-flag to nil, to avoid unnecessary frame-fit.
@@ -1705,9 +1708,9 @@ automatically, when Emacs can't find a `Glossary' node in them.")
 (defvar info-quotation-regexp
   (concat
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
-   "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"      ; `...'
-   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"      ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”"         ; “...”
+   "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"      ; `...'
+   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"      ; ‘...’
+   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”"         ; “...”
    )
   "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
 If ... contains an end char then that char must be backslashed.")
@@ -1728,9 +1731,9 @@ If ... contains an end char then that char must be backslashed.")
 (defvar info-quotation-same-line-regexp
   (concat
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
-   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"    ; `...' on one line
-   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"      ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”"         ; “...”
+   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"    ; `...' on one line
+   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"      ; ‘...’
+   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”"         ; “...”
    )
   "Like `info-quotation-regexp', but for `...' only if on the same line.")
 
@@ -1750,10 +1753,10 @@ If ... contains an end char then that char must be backslashed.")
 (defvar info-quoted+<>-regexp
   (concat
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|"             ; "..."
-   "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"                  ; `...'
-   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"                  ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”\\|"                  ; “...”
-   "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)*\\)>" ; <...>
+   "`\\(?:[^']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"                  ; `...'
+   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"                  ; ‘...’
+   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”\\|"                  ; “...”
+   "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)+\\)>" ; <...>
    )
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains an end char then that char must be backslashed.")
@@ -1778,10 +1781,10 @@ If ... contains an end char then that char must be backslashed.")
 (defvar info-quoted+<>-same-line-regexp
   (concat
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
-   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'\\|"    ; `...' on one line
-   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)*’\\|"      ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)*”\\|"      ; “...”
-   "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)*\\)>" ; <...>
+   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"    ; `...' on one line
+   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"      ; ‘...’
+   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”\\|"      ; “...”
+   "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)+\\)>" ; <...>
    )
   "`info-quoted+<>-same-line-regexp', but `...' only if on the same line.")
 
@@ -1802,13 +1805,16 @@ If ... contains an end char then that char must be backslashed.")
 ;;                  (zero-or-more (seq ?\\ anything)))
 ;;              ?>)))
 
-(defvar info-isolated-quote-regexp
-  "[^`]\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'"
+(defvar info-isolated-quote-regexp "\\(.\\|\n\\)'"
+  ;; Another possibility: "[^']'"
+  ;; "[^`]\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'" ; Can be way too slow in rare cases.
   "Regexp to match an isolated single-quote character.
 That is, one that is not part of `...'.")
 
-(defvar info-isolated-backquote-regexp
-  "\\(`\\)\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*[^']"
+(defvar info-isolated-backquote-regexp "`\\(.\\|\n\\)"
+  ;; Another possibility: "[^`]`"
+  ;; OK in practice, since backquote is rarer than quote, but still, play safe as with quote.
+  ;; "\\(`\\)\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*[^']"
   "Regexp to match an isolated backquote character.
 That is, one that is not part of `...'.")
 
