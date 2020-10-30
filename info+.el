@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 28 23:55:26 2020 (-0700)
+;; Last-Updated: Fri Oct 30 10:24:40 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6776
+;;     Update #: 6787
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1195,25 +1195,34 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
 ;;;###autoload
 (defface info-quoted-name               ; For ‘...’ and `...'
-    '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ bright green
-      (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
-      (t (:foreground "yellow")))
+  ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
+  ;;     '((((background dark)) (:inherit fixed-pitch :foreground "#6B6BFFFF2C2C")) ; ~ bright green
+  ;;       (((background light)) (:inherit fixed-pitch :foreground "DarkViolet"))
+  '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ bright green
+    (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
+    (t (:foreground "yellow")))
   "Face for quoted names (‘...’ or `...') in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
 ;;;###autoload
 (defface info-string                    ; For "..."
-    '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
-      (t (:inherit font-lock-string-face :foreground "red3")))
+  ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
+  ;;    '((((background dark)) (:inherit fixed-pitch :foreground "Orange"))
+  ;;    (t (:inherit fixed-pitch :foreground "red3")))
+  '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
+    (t (:inherit font-lock-string-face :foreground "red3")))
   "Face for strings (\"...\") in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-isolated-quote            ; For 'foobar, '(...) etc.
   '((((background dark))
-     (:inherit font-lock-keyword-face :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
-    (t (:inherit font-lock-keyword-face :foreground "Magenta" :background "SlateGray2")))
+     ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
+     ;;      (:inherit fixed-pitch :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
+     ;;     (t (:inherit fixed-pitch :foreground "Magenta" :background "SlateGray2")))
+     (:inherit font-lock-string-face :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
+    (t (:inherit font-lock-string-face :foreground "Magenta" :background "SlateGray2")))
   "Face for an isolated single-quote mark (') in `info'.
 That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
@@ -1283,8 +1292,11 @@ That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-reference-item
-    '((((background dark)) (:background "DimGray"))
-      (t (:background "LightGray")))
+  ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
+  ;;     '((((background dark)) (:inherit fixed-pitch :background "DimGray"))
+  ;;       (t (:inherit fixed-pitch :background "LightGray")))
+  '((((background dark)) (:inherit font-lock-string-face :background "DimGray"))
+    (t (:inherit font-lock-string-face :background "LightGray")))
   "Face used for reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
@@ -1400,9 +1412,9 @@ _\\(\\sw+\\)_\t\t  (single words)
 
 _\\(\\s-*\\sw+\\s-*\\)_\t  (single words, maybe whitespace-separated)
 
-_\\([^_\\n]+\\)_\t\t  (anything except newlines)
+_\\([^_\\n]+\\)_\t\t  (anything except underscore and newline chars)
 
-_\\([^_]+\\)_\t\t  (anything)
+_\\([^_]+\\)_\t\t  (anything except underscore chars)
 
 Note that any value can be problematic for some Info text - see
 `Info-fontify-emphasis-flag'."
@@ -1622,8 +1634,8 @@ nodes can be repeated because they are in more than one section."
 If nil then emphasis is never fontified, regardless of that flag.")
 
 (defvar info-glossary-link-map (let ((map  (make-sparse-keymap)))
-                                    (define-key map (kbd "RET") 'Info-goto-glossary-definition)
-                                    (define-key map [mouse-2] 'Info-goto-glossary-definition)
+                                    (define-key map (kbd "RET")   'Info-goto-glossary-definition)
+                                    (define-key map [mouse-2]     'Info-goto-glossary-definition)
                                     (define-key map [follow-link] 'mouse-2)
                                     map)
   "Keymap for glossary-word links.")
@@ -5066,7 +5078,7 @@ own."
                                     ;; Need to put `link-echo' before `def', because for the text to magically
                                     ;; change from `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link'
                                     ;; the text needs to start with `mouse-2'.  This is an undocumented "feature".
-                                    (concat link-echo "\n\n" def ))
+                                    (concat link-echo "\n\n" def))
                        'face 'info-glossary-word
                        'mouse-face 'highlight
                        'keymap info-glossary-link-map))))))))))
@@ -5186,11 +5198,6 @@ This respects option `Info-fontify-quotations'.
             ((and (goto-char (match-beginning 0)) ; "...": If " preceded by \, then skip it
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
-;;; @@@@            ((and Info-fontify-isolated-quote-flag
-;;;                   (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; Single ': 'foo
-;;;              (put-text-property (match-beginning 0) (match-end 0)
-;;;                                 property 'info-single-quote)
-;;;             (goto-char (match-end 0)) (forward-char 1))
             ((and (not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
                   (not (string= "’" (buffer-substring (match-beginning 0) (match-end 0)))))
              (put-text-property (match-beginning 0) (match-end 0) property 'info-string)
