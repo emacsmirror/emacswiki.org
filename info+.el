@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 11:08:17 2020 (-0700)
+;; Last-Updated: Fri Oct 30 11:44:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6797
+;;     Update #: 6808
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -515,6 +515,7 @@
 ;; 2020/10/30 dadams
 ;;     info-(quotation|quoted+<>)(-same-line)-regexp: Use +, not *, for all but "..." string.
 ;;     info-isolated-(back)quote-regexp: Simplify to just any char after ` and before '.  (Performance.)
+;;     Info-emphasis-regexp: Use single word as default, to avoid converting names in code.
 ;; 2020/10/28 dadams
 ;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
 ;;     Info-get-glossary-hash-table-create: Bind Info-fit-frame-flag to nil, to avoid unnecessary frame-fit.
@@ -1392,8 +1393,7 @@ first two args, in that order."
   :type 'function :group 'Info-Plus)
 
 ;;;###autoload
-(defcustom Info-emphasis-regexp
-  "_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\)*\\)\\|\\(\\(\\s-\\|\\sw\\|\\s.\\)\\sw*\\)\\)_"
+(defcustom Info-emphasis-regexp "_\\(\\sw+\\)_"
   "Regexp to match text enclosed in underscore (`_') characters.
 
 The default value matches the following (enclosed in underscores):
@@ -1403,21 +1403,21 @@ generally has symbol syntax in Info.
 
 Some possible values include:
 
-_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\)*\\)\\|\\(\\(\\s-\\|\\sw\\|\\s.\\)\\sw*\\)\\)_ (default)
-
-_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\|\\s(\\|\\s)\\)*\\)\\|
-\\(\\(\\s-\\|\\sw\\|\\s.\\|\\s(\\|\\s)\\)\\sw*\\)\\)_ (but joined, with no newline)
-  (like default, but also open and close delimiters, such as ()[])
-
-_\\(\\(\\s-\\|\\sw\\|\\s.\\)+\\)_ (word, punctuation, whitespace)
-
 _\\(\\sw+\\)_\t\t  (single words)
 
-_\\(\\s-*\\sw+\\s-*\\)_\t  (single words, maybe whitespace-separated)
+_\\(\\sw+\\(\\s-+\\sw+\\)*\\)_\t  (single words, maybe whitespace-separated)
 
 _\\([^_\\n]+\\)_\t\t  (anything except underscore and newline chars)
 
 _\\([^_]+\\)_\t\t  (anything except underscore chars)
+
+_\\(\\(\\s-\\|\\sw\\|\\s.\\)+\\)_ (word, punctuation, whitespace)
+
+_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\)*\\)\\|\\(\\(\\s-\\|\\sw\\|\\s.\\)\\sw*\\)\\)_
+
+_\\(\\(\\sw\\(\\s-\\|\\sw\\|\\s.\\|\\s(\\|\\s)\\)*\\)\\|
+\\(\\(\\s-\\|\\sw\\|\\s.\\|\\s(\\|\\s)\\)\\sw*\\)\\)_ (but joined, with no newline)
+  (like previous, but also open and close delimiters, such as ()[])
 
 Note that any value can be problematic for some Info text - see
 `Info-fontify-emphasis-flag'."
