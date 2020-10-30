@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 11:44:41 2020 (-0700)
+;; Last-Updated: Fri Oct 30 15:35:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6808
+;;     Update #: 6829
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -83,12 +83,14 @@
 ;;    `Info-save-current-node', `Info-search-case-sensitively-next',
 ;;    `Info-set-breadcrumbs-depth',
 ;;    `Info-set-face-for-bookmarked-xref' (Emacs 24.2+),
-;;    `Info-toggle-breadcrumbs-in-header',
+;;    `Info-toggle-breadcrumbs-in-header', `Info-toggle-fontify-all',
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
 ;;    `Info-toggle-fontify-emphasis',
 ;;    `Info-toggle-fontify-glossary-words',
 ;;    `Info-toggle-fontify-isolated-quote',
+;;    `Info-toggle-fontify-reference-items',
+;;    `Info-toggle-fontify-visited-nodes',
 ;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
 ;;    `Info-toc-outline', `Info-toc-outline-refontify-region',
 ;;    `Info-url-for-node', `Info-virtual-book'.
@@ -513,9 +515,12 @@
 ;;; Change Log:
 ;;
 ;; 2020/10/30 dadams
+;;     Added: Info-toggle-fontify-all, Info-toggle-fontify-reference-items, Info-toggle-fontify-visited-nodes.
+;;     Info-mode-menu: Added those toggle commands to submenu Toggle/Cycle.
 ;;     info-(quotation|quoted+<>)(-same-line)-regexp: Use +, not *, for all but "..." string.
 ;;     info-isolated-(back)quote-regexp: Simplify to just any char after ` and before '.  (Performance.)
 ;;     Info-emphasis-regexp: Use single word as default, to avoid converting names in code.
+;;     Info-fontify-glossary-words: Use text property font-lock-face, not face.
 ;; 2020/10/28 dadams
 ;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
 ;;     Info-get-glossary-hash-table-create: Bind Info-fit-frame-flag to nil, to avoid unnecessary frame-fit.
@@ -2060,6 +2065,62 @@ are prompted for NODE."
 
   )
 
+;;;###autoload (autoload 'Info-toggle-fontify-all "info+")
+(defun Info-toggle-fontify-all (&optional msgp)
+  "Toggle all Info+ fontify options.
+This turns all of these options off (sets them to nil), if any of them
+is on, and it turns them all on, if any is off:
+
+ Info-fontify-angle-bracketed-flag
+ Info-fontify-bookmarked-xrefs-flag (if defined)
+ Info-fontify-emphasis-flag
+ Info-fontify-glossary-words
+ Info-fontify-isolated-quote-flag
+ Info-fontify-quotations
+ Info-fontify-reference-items-flag
+ Info-fontify-visited-nodes"
+  (interactive "p")
+  (let ((opts  (append '(Info-fontify-angle-bracketed-flag
+                         Info-fontify-emphasis-flag
+                         Info-fontify-glossary-words
+                         Info-fontify-isolated-quote-flag
+                         Info-fontify-quotations
+                         Info-fontify-reference-items-flag
+                         Info-fontify-visited-nodes)
+                       (and (boundp 'Info-fontify-bookmarked-xrefs-flag)
+                            '(Info-fontify-bookmarked-xrefs-flag)))))
+    (if (or Info-fontify-angle-bracketed-flag
+            (and (boundp 'Info-fontify-bookmarked-xrefs-flag)
+                 Info-fontify-bookmarked-xrefs-flag)
+            Info-fontify-emphasis-flag
+            Info-fontify-glossary-words
+            Info-fontify-isolated-quote-flag
+            Info-fontify-quotations
+            Info-fontify-reference-items-flag
+            Info-fontify-visited-nodes)
+        (dolist (opt  opts) (set opt nil))
+      (dolist (opt  opts) (set opt t))))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "Info+ fontify options are now ALL %s"
+                        (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
+(defun Info-toggle-fontify-angle-bracketed (&optional msgp)
+  "Toggle option `Info-fontify-angle-bracketed-flag'."
+  (interactive "p")
+  (setq Info-fontify-angle-bracketed-flag  (not Info-fontify-angle-bracketed-flag))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
+                        (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
+
 ;;;###autoload (autoload 'Info-toggle-fontify-emphasis "info+")
 (defun Info-toggle-fontify-emphasis (&optional msgp)
   "Toggle option `Info-fontify-emphasis-flag'."
@@ -2073,6 +2134,59 @@ are prompted for NODE."
       (Info-fontify-node))
     (when msgp (message "`Info-fontify-emphasis-flag' is now %s"
                         (if Info-fontify-emphasis-flag 'ON 'OFF)))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-glossary-words "info+")
+(defun Info-toggle-fontify-glossary-words (&optional msgp)
+  "Toggle option `Info-fontify-glossary-words'."
+  (interactive "p")
+  (setq Info-fontify-glossary-words  (not Info-fontify-glossary-words))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-glossary-words' is now %s" (if Info-fontify-glossary-words 'ON 'OFF)))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-isolated-quote "info+")
+(defun Info-toggle-fontify-isolated-quote (&optional msgp)
+  "Toggle option `Info-fontify-isolated-quote-flag'."
+  (interactive "p")
+  (setq Info-fontify-isolated-quote-flag  (not Info-fontify-isolated-quote-flag))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-isolated-quote-flag' is now %s"
+                        (if Info-fontify-isolated-quote-flag 'ON 'OFF)))))
+(define-obsolete-function-alias 'Info-toggle-fontify-single-quote 'Info-toggle-fontify-isolated-quote
+  "2020-10-22")
+
+;;;###autoload (autoload 'Info-toggle-fontify-reference-items "info+")
+(defun Info-toggle-fontify-reference-items (&optional msgp)
+  "Toggle option `Info-fontify-reference-items-flag'."
+  (interactive "p")
+  (setq Info-fontify-reference-items-flag  (not Info-fontify-reference-items-flag))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-reference-items-flag' is now %s"
+                        (if Info-fontify-reference-items-flag 'ON 'OFF)))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-visited-nodes "info+")
+(defun Info-toggle-fontify-visited-nodes (&optional msgp)
+  "Toggle option `Info-fontify-visited-nodes'."
+  (interactive "p")
+  (setq Info-fontify-visited-nodes  (not Info-fontify-visited-nodes))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-visited-nodes' is now %s"
+                        (if Info-fontify-visited-nodes 'ON 'OFF)))))
 
 ;;;###autoload (autoload 'Info-cycle-fontify-quotations "info+")
 (defun Info-cycle-fontify-quotations (&optional msgp)
@@ -2093,46 +2207,6 @@ same line (other non-nil value)."
                                                               ((nil)      'OFF)
                                                               (multiline  "on (MULTILINE too)")
                                                               (t          "on (SAME LINE only)")))))
-
-;;;###autoload (autoload 'Info-toggle-fontify-isolated-quote "info+")
-(defun Info-toggle-fontify-isolated-quote (&optional msgp)
-  "Toggle option `Info-fontify-isolated-quote-flag'."
-  (interactive "p")
-  (setq Info-fontify-isolated-quote-flag  (not Info-fontify-isolated-quote-flag))
-  (when (eq major-mode 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-isolated-quote-flag' is now %s"
-                        (if Info-fontify-isolated-quote-flag 'ON 'OFF)))))
-(define-obsolete-function-alias 'Info-toggle-fontify-single-quote 'Info-toggle-fontify-isolated-quote
-  "2020-10-22")
-
-;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
-(defun Info-toggle-fontify-angle-bracketed (&optional msgp)
-  "Toggle option `Info-fontify-angle-bracketed-flag'."
-  (interactive "p")
-  (setq Info-fontify-angle-bracketed-flag  (not Info-fontify-angle-bracketed-flag))
-  (when (eq major-mode 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
-                        (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
-
-;;;###autoload (autoload 'Info-toggle-fontify-glossary-words "info+")
-(defun Info-toggle-fontify-glossary-words (&optional msgp)
-  "Toggle option `Info-fontify-glossary-words'."
-  (interactive "p")
-  (setq Info-fontify-glossary-words  (not Info-fontify-glossary-words))
-  (when (eq major-mode 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-glossary-words' is now %s" (if Info-fontify-glossary-words 'ON 'OFF)))))
 
 ;;;###autoload (autoload 'Info-save-current-node "info+")
 (defun Info-save-current-node (&optional msgp)
@@ -2947,11 +3021,10 @@ candidates."
      ["Last in File" Info-final-node :help "Go to final node in this file"]
      ["Beginning of This Node" beginning-of-buffer :help "Go to beginning of this node"])
     ("Toggle/Cycle"
+     ["Highlighting All" Info-toggle-fontify-all
+      :help "Toggle all Info+ fontify options"]
      ["Highlighting ‘...’ or `...', and \"...\"" Info-cycle-fontify-quotations
       :help "Cycle option `Info-fontify-quotations'"]
-     ["Highlighting _..._ (emphasis)" Info-toggle-fontify-emphasis
-      :visible info-fontify-emphasis :style toggle :selected Info-fontify-emphasis-flag
-      :help "Toggle option `Info-fontify-emphasis-flag'"]
      ["Highlighting <...>" Info-toggle-fontify-angle-bracketed
       :style toggle :selected Info-fontify-angle-bracketed-flag
       :help "Toggle option `Info-fontify-angle-bracketed-flag'"]
@@ -2961,6 +3034,15 @@ candidates."
      ["Highlighting Glossary Words" Info-toggle-fontify-glossary-words
       :style toggle :selected Info-fontify-glossary-words
       :help "Toggle option `Info-fontify-glossary-words'"]
+     ["Highlighting Reference Items" Info-toggle-fontify-reference-items
+      :style toggle :selected Info-fontify-reference-items-flag
+      :help "Toggle option `Info-fontify-reference-items-flag'"]
+     ["Highlighting _..._ (emphasis)" Info-toggle-fontify-emphasis
+      :visible info-fontify-emphasis :style toggle :selected Info-fontify-emphasis-flag
+      :help "Toggle option `Info-fontify-emphasis-flag'"]
+     ["Highlighting Visited Nodes" Info-toggle-fontify-visited-nodes
+      :style toggle :selected Info-fontify-visited-nodes
+      :help "Toggle option `Info-fontify-visited-nodes'"]
      ["Highlighting Bookmarked Links" Info-toggle-fontify-bookmarked-xrefs
       :style toggle :selected (and (boundp 'Info-fontify-bookmarked-xrefs-flag)
                                    Info-fontify-bookmarked-xrefs-flag)
@@ -5085,7 +5167,7 @@ own."
                                     ;; change from `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link'
                                     ;; the text needs to start with `mouse-2'.  This is an undocumented "feature".
                                     (concat link-echo "\n\n" def))
-                       'face 'info-glossary-word
+                       'font-lock-face 'info-glossary-word
                        'mouse-face 'highlight
                        'keymap info-glossary-link-map))))))))))
 
