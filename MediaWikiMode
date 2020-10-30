@@ -18,7 +18,7 @@ Usage:
 * You should now be editting the default page.  If you didn't specify one, you are now logged in.
 * M-x mediawiki-open RET Main Page RET # for example
 
-Keybindings in a mediawiki mode
+Keybindings in a mediawiki mode:
 
 * C-x C-s -- save this page
 * C-c C-c -- save this page and bury the buffer
@@ -27,12 +27,17 @@ Keybindings in a mediawiki mode
 * M-n -- next page in the page ring
 * M-p -- previous page in the page ring
 * M-g -- reload the current page
-
+* C-c C-o -- open page
+* C-c C-s -- save
+* C-c C-f C-l -- insert internal link
+* C-c C-f C-b -- insert bold text
+* C-c C-f C-e -- insert header
 Please send any bug reports to me [mailto:mah@everybody.org via email].
 
 TODO:
 
 * Optionally use org-mode formatting for editing and translate that to mw
 * Better error handling for token timeout, etc.
+* Keybinding for minor edits
 
 CategoryModes CategoryHypermedia
