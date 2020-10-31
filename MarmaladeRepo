@@ -1,14 +1,18 @@
-[https://marmalade-repo.org/ Marmalade] was an [[ELPA]] compatible
-package repository that allowed users to upload their own packages.
-Package maintainers did not have to be the same as the maintainers of
-the original code. This is somewhat like major GNU/Linux distributions.
-
-The repository had availability problems and is now discontinued.
+[https://marmalade-repo.org/ Marmalade] (HTTP only) is an [[ELPA]] compatible package repository that allows users to upload their own packages. Package maintainers don't have to be the same as the maintainers of the original code. This is somewhat like major GNU/Linux distributions.
 
 == About Marmalade ==
 
-Marmalade is a fully EmacsLisp project. There is an [[Elnode]] web application by NicFerrier in
-[[http://github.com/nicferrier/elmarmalade|github]].
+Marmalade endeavours to deliver stable releases. This means some
+packages are considered stale. The repository has had availability problems and is now managed by NicFerrier who says he is slowly fixing things.  A recent edit to this page incorrectly identified the project as discontinued; however. as of [[https://twitter.com/nicferrier/status/1322566510578159616 a 2020-10-31 twitter conversation]] Nik is still interested in learning of new outages/breakage.  Issues are tracked on the project's [[https://github.com/nicferrier/elmarmalade/issues github repository]].
+
+== Marmalade vs ELPA vs MELPA ==
+Unlike [[MELPA]], but like GnuELPA, Marmalade cannot automatically
+upload libraries from the %%EmacsWiki%% ElispArea.\\
+This is considered a feature by Marmalade users.
+Unlike [[MELPA]], but like GnuELPA, Marmalade is restricted to only free software packages. Unlike GnuELPA, but like MELPA, Marmalade requires no signing of FSF
+Copyright papers. Marmalade uses an [[http://marmalade-repo.org/packages/marmalade-client Emacs client]] to upload and download packages.
+
+Marmalade is a fully EmacsLisp project. There is an [[Elnode]] web application by NicFerrier in [[http://github.com/nicferrier/elmarmalade|github]].
 
 ----
 CategoryPackaging
