@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 20:43:41 2020 (-0700)
+;; Last-Updated: Fri Oct 30 21:00:14 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6849
+;;     Update #: 6853
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1738,7 +1738,7 @@ If ... contains an end char then that char must be backslashed.")
   (concat
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
    "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"    ; `...' on one line
-   "‘\\(?:[^\n’]\\|\\\\\\(?:.\\|\n\\)\\)+’"       ; ‘...’ on one line
+   "‘\\(?:[^\n’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"    ; ‘...’ on one line
    "“\\(?:[^\n”]\\|\\\\\\(?:.\\|\n\\)\\)+”"       ; “...” on one line
    )
   "`info-quotation-regexp', but on same line (all but \"...\").")
@@ -1771,13 +1771,13 @@ If ... contains an end char then that char must be backslashed.")
 ;;              (zero-or-more (or (not (any ?\" ?\\))  (seq ?\\ anything)))
 ;;              ?\")
 ;;         (seq ?\`
-;;              (zero-or-more (or (not (any ?'))  (seq ?\\ anything)))
+;;              (zero-or-more (or (not (any ?'))       (seq ?\\ anything)))
 ;;              ?\')
 ;;         (seq ?‘
-;;              (zero-or-more (or (not (any ?’))  (seq ?\\ anything)))
+;;              (zero-or-more (or (not (any ?’))       (seq ?\\ anything)))
 ;;              ?’)
 ;;         (seq ?“
-;;              (zero-or-more (or (not (any ?”))  (seq ?\\ anything)))
+;;              (zero-or-more (or (not (any ?”))       (seq ?\\ anything)))
 ;;              ?”)
 ;;         (seq ?<
 ;;              (or (seq (any alpha) (zero-or-more (not (any ?>))))
