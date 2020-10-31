@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 20:41:12 2020 (-0700)
+;; Last-Updated: Fri Oct 30 20:43:41 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6848
+;;     Update #: 6849
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1706,8 +1706,6 @@ automatically, when Emacs can't find a `Glossary' node in them.")
 ;; Match has, inside “...”, "...", ‘...’, or `...', zero or more of these characters:
 ;;   - any character except ”, ", ’, or ', respectively
 ;;   - \ followed by any character
-;;
-;; The `... in `...' is optional, so the regexp can also match just '.
 ;;
 ;; The regexp matches also ‘...’, `...', “...”, and "..." where at least one of the
 ;; ‘, ’, `, ', “, ”, or " is escaped by a backslash.
