@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 20:28:12 2020 (-0700)
+;; Last-Updated: Fri Oct 30 20:41:12 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6847
+;;     Update #: 6848
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1720,7 +1720,7 @@ automatically, when Emacs can't find a `Glossary' node in them.")
    "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"      ; ‘...’
    "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”"         ; “...”
    )
-  "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
+  "Regexp to match `...', ‘...’, “...”, \"...\".
 If ... contains an end char then that char must be backslashed.")
 
 ;; (rx (or (seq ?\"
