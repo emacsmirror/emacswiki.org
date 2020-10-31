@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 15:35:41 2020 (-0700)
+;; Last-Updated: Fri Oct 30 20:28:12 2020 (-0700)
 ;;           By: dradams
-;;     Update #: 6829
+;;     Update #: 6847
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -518,9 +518,12 @@
 ;;     Added: Info-toggle-fontify-all, Info-toggle-fontify-reference-items, Info-toggle-fontify-visited-nodes.
 ;;     Info-mode-menu: Added those toggle commands to submenu Toggle/Cycle.
 ;;     info-(quotation|quoted+<>)(-same-line)-regexp: Use +, not *, for all but "..." string.
+;;     Info-fontify-quotations: Adjust doc to reflect new regexps for same line (only "..." is not same line).
+;;                              Use \\= to ensure ` and ' appear without conversion.
 ;;     info-isolated-(back)quote-regexp: Simplify to just any char after ` and before '.  (Performance.)
 ;;     Info-emphasis-regexp: Use single word as default, to avoid converting names in code.
 ;;     Info-fontify-glossary-words: Use text property font-lock-face, not face.
+;;     Face info-isolated-backquote: Use PaleGreen1, not Chartreuse1, for background.
 ;; 2020/10/28 dadams
 ;;     Info-mode-menu: Typo: had Info-toggle-fontify-glossary-words instead of Info-fontify-glossary-words as var.
 ;;     Info-get-glossary-hash-table-create: Bind Info-fit-frame-flag to nil, to avoid unnecessary frame-fit.
@@ -1240,7 +1243,7 @@ That is, one that is not part of `...'."
 ;;;###autoload
 (defface info-isolated-backquote        ; For `foobar, `(...) etc.
   '((((background dark)) (:inherit info-isolated-quote :background "Magenta"))
-    (t (:inherit info-isolated-quote :background "Chartreuse1")))
+    (t (:inherit info-isolated-quote :background "PaleGreen1")))
   "Face for an isolated backquote mark (`) in `info'.
 That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
@@ -1553,14 +1556,14 @@ toggle the option value."
 (defcustom Info-fontify-quotations t
   "Non-nil means `info' fontifies text between quotes.
 This applies to double-quoted text (“...” or \"...\") and text
-between single-quotes (‘...’ or `...').
+between single-quotes (‘...’ or \\=`...\\=').
 
-A value of `multiline' means fontify all such quotations, even `...'
+A value of `multiline' means fontify all such quotations, even those
 that span multiple lines.
 
 Any other non-nil value (`t' is the default value) means highlight all
-such quotations, but in the case of `...', do so only if the quoted
-sexp is all on the same line.
+such quotations, but in the case of all except \"...\" (strings), do
+so only if the quoted sexp is all on the same line.
 
 Note: This fontification can never be 100% reliable.  It aims to be
 useful in most Info texts, but it can occasionally result in
@@ -1572,7 +1575,7 @@ cycle the option value."
   :type '(choice
           (const :tag "OFF - no quotations"                      nil)
           (const :tag "All quotations, even multiline"           multiline)
-          (other :tag "All quotations, but only same-line `...'" t))
+          (other :tag "All quotations, but on same-line except \"...\"" t))
   :group 'Info-Plus)
 
 ;;;###autoload
@@ -1737,22 +1740,22 @@ If ... contains an end char then that char must be backslashed.")
   (concat
    "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
    "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"    ; `...' on one line
-   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"      ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”"         ; “...”
+   "‘\\(?:[^\n’]\\|\\\\\\(?:.\\|\n\\)\\)+’"       ; ‘...’ on one line
+   "“\\(?:[^\n”]\\|\\\\\\(?:.\\|\n\\)\\)+”"       ; “...” on one line
    )
-  "Like `info-quotation-regexp', but for `...' only if on the same line.")
+  "`info-quotation-regexp', but on same line (all but \"...\").")
 
 ;; (rx (or (seq ?\"
 ;;              (zero-or-more (or (not (any ?\" ?\\))  (seq ?\\ anything)))
 ;;              ?\")
 ;;         (seq ?\`
-;;              (zero-or-more (or (not (any ?\n ?'))  (seq ?\\ anything)))
+;;              (one-or-more  (or (not (any ?\n ?'))   (seq ?\\ anything)))
 ;;              ?\')
 ;;         (seq ?‘
-;;              (zero-or-more (or (not (any ?’))  (seq ?\\ anything)))
+;;              (one-or-more  (or (not (any ?\n ?’))   (seq ?\\ anything)))
 ;;              ?’)
 ;;         (seq ?“
-;;              (zero-or-more (or (not (any ?”))  (seq ?\\ anything)))
+;;              (one-or-more  (or (not (any ?\n ?”))   (seq ?\\ anything)))
 ;;              ?”)))
 
 (defvar info-quoted+<>-regexp
@@ -1785,29 +1788,29 @@ If ... contains an end char then that char must be backslashed.")
 
 (defvar info-quoted+<>-same-line-regexp
   (concat
-   "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
-   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"    ; `...' on one line
-   "‘\\(?:[^’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"      ; ‘...’
-   "“\\(?:[^”]\\|\\\\\\(?:.\\|\n\\)\\)+”\\|"      ; “...”
-   "<\\(?:[[:alpha:]][^>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)+\\)>" ; <...>
+   "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|"               ; "..."
+   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"                  ; `...'
+   "‘\\(?:[^\n’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"                  ; ‘...’
+   "“\\(?:[^\n”]\\|\\\\\\(?:.\\|\n\\)\\)+”\\|"                  ; “...”
+   "<\\(?:[[:alpha:]][^\n>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)+\\)>" ; <...>
    )
-  "`info-quoted+<>-same-line-regexp', but `...' only if on the same line.")
+  "`info-quoted+<>-same-line-regexp', but on same line (all but \"...\").")
 
 ;; (rx (or (seq ?\"
 ;;              (zero-or-more (or (not (any ?\" ?\\))  (seq ?\\ anything)))
 ;;              ?\")
 ;;         (seq ?\`
-;;              (zero-or-more (or (not (any ?\n ?'))  (seq ?\\ anything)))
+;;              (one-or-more  (or (not (any ?\n ?'))   (seq ?\\ anything)))
 ;;              ?\')
 ;;         (seq ?‘
-;;              (zero-or-more (or (not (any ?’))  (seq ?\\ anything)))
+;;              (one-or-more  (or (not (any ?\n ?’))   (seq ?\\ anything)))
 ;;              ?’)
 ;;         (seq ?“
-;;              (zero-or-more (or (not (any ?”))  (seq ?\\ anything)))
+;;              (one-or-more  (or (not (any ?\n ?”))   (seq ?\\ anything)))
 ;;              ?”)
 ;;         (seq ?<
-;;              (or (seq (any alpha) (zero-or-more (not (any ?>))))
-;;                  (zero-or-more (seq ?\\ anything)))
+;;              (or (seq (any alpha) (zero-or-more (not (any ?\n ?>))))
+;;                  (one-or-more (seq ?\\ anything)))
 ;;              ?>)))
 
 (defvar info-isolated-quote-regexp "\\(.\\|\n\\)'"
@@ -5239,10 +5242,10 @@ Fontify isolated ' and ` only if `Info-fontify-isolated-quote-flag'.
 
 This respects option `Info-fontify-quotations'.
 
- ‘...’, `...', and <...>\t- use face `info-quoted-name'.
- “...” uses face `info-double-quoted-name'.
- \"...\"\t- uses face `info-string'.
- '\t- uses face `info-single-quote'."
+ ‘...’, `...', and <...> use face `info-quoted-name'.
+ “...”\t uses face `info-double-quoted-name'.
+ \"...\"\t uses face `info-string'.
+ '\t uses face `info-single-quote'."
   (let ((regexp    (if (eq Info-fontify-quotations 'multiline)
                        (if Info-fontify-angle-bracketed-flag
                            info-quoted+<>-regexp
