@@ -17,8 +17,8 @@ There is also an IRC bouncer, a proxy, to make your IRC connections persistent:
 
 == Instant Messaging ==
 * Matrix protocol clients
-** http://savannah.nongnu.org/projects/maelstrom-el
-** https://github.com/jgkamat/matrix-client-el/
+** https://savannah.nongnu.org/projects/maelstrom-el
+** https://github.com/alphapapa/matrix-client.el
 ** https://github.com/mujx/nheko
 
 * Jabber clients
