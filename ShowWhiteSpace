@@ -44,7 +44,7 @@ You can turn on/off the highlighting provided by library ##highlight-chars.el##:
 
 
 
-[::highlight.el]
+
 === Not Just Whitespace - Highlight Any Set of Characters ===
 
 Unlike what is offered by libraries such as ##whitespace.el##, with library ##highlight-chars.el## you are not limited to whitespace highlighting.  You can highlight ''any set of characters''.  You can define the set using any number of entries of any of these kinds:
