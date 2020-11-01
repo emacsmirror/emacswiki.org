@@ -11,9 +11,9 @@ If you're editing emacs-lisp code, why not turn on check-parens on a save? Here'
 
  ; could be bad, will not let you save at all, until you correct the error
  (add-hook 'emacs-lisp-mode-hook
-  (function (lambda ()
+  (lambda ()
    (add-hook 'local-write-file-hooks 
-    'check-parens))))  
+    'check-parens)))
 
 
 ----
