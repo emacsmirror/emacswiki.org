@@ -31,6 +31,7 @@ Keybindings in a mediawiki mode:
 * C-c C-s -- save
 * C-c C-f C-l -- insert internal link
 * C-c C-f C-b -- insert bold text
+* C-c C-f TAB -- insert italic text
 * C-c C-f C-e -- insert header
 * M-g -- reload page
 
