@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 30 21:00:14 2020 (-0700)
+;; Last-Updated: Sun Nov  1 16:59:13 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6853
+;;     Update #: 6895
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -129,8 +129,9 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `Info--member-string-nocase', `Info--pop-to-buffer-same-window',
-;;    `Info-bookmark-for-node', `Info-bookmark-name-at-point',
-;;    `Info-bookmark-named-at-point', `Info-bookmark-name-for-node',
+;;    `info--user-search-failed', `Info-bookmark-for-node',
+;;    `Info-bookmark-name-at-point', `Info-bookmark-named-at-point',
+;;    `Info-bookmark-name-for-node',
 ;;    `info-buffer-name-function-default',
 ;;    `Info-case-insensitive-string=',
 ;;    `Info-case-insensitive-string-hash',
@@ -223,6 +224,7 @@
 ;;  `Info-read-node-name'   - Added optional arg DEFAULT.
 ;;  `Info-search' - 1. Fits frame.
 ;;                  2. Highlights found regexp if `search-highlight'.
+;;  `Info--search-loop' - Use `Info-search-beg' and `Info-search-end'.
 ;;  `Info-set-mode-line' - Handles breadcrumbs in the mode line.
 ;;  `Info-mouse-follow-nearest-node' - With prefix arg, show node in
 ;;                                     a new Info buffer.
@@ -514,6 +516,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/01 dadams
+;;     Added: info--user-search-failed, (redefinition of) Info--search-loop.
+;;     Info-search: Bind isearchp-restrict-to-region-flag to (not Info-isearch-search), for isearch+.el.
+;;                  Update for recent Emacs as of 26.3.
+;;     Info-isearch-search: Updated for Emacs 25+.
 ;; 2020/10/30 dadams
 ;;     Added: Info-toggle-fontify-all, Info-toggle-fontify-reference-items, Info-toggle-fontify-visited-nodes.
 ;;     Info-mode-menu: Added those toggle commands to submenu Toggle/Cycle.
@@ -1105,7 +1112,8 @@
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
 (defvar infop-node-name)                ; Here, in `Info-merge-subnodes'.
-(defvar isearch-filter-predicate)
+(defvar isearch-adjusted)               ; In `isearch.el', Emacs 25+.
+(defvar isearch-filter-predicate)       ; In `isearch.el', Emacs 23+.
 (defvar isearch-lax-whitespace)         ; In `isearch.el'.
 (defvar isearch-regexp-lax-whitespace)  ; In `isearch.el'.
 (defvar isearchp-reg-beg)               ; In `isearch+.el'.
@@ -5378,10 +5386,6 @@ Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\(\n          \\(.*\\)\\)*"
       (let ((isearch-search-fun-function  nil)) (isearch-search-fun)))))
 
 
-;; REPLACES ORIGINAL in `info.el':
-;;
-;; Use `Info-isearch-search-p', not var `Info-isearch-search'.
-;;
 (when (> emacs-major-version 23)        ; Emacs 24+
 
   (unless (boundp 'isearch-lax-whitespace) ; Emacs 24.1, 24.2.
@@ -5404,34 +5408,54 @@ variable by the command `isearch-toggle-lax-whitespace'.")
 
     )
 
-  (defun Info-isearch-search () ; Use `Info-isearch-search-p', not var `Info-isearch-search'.
+
+
+  ;; REPLACES ORIGINAL in `info.el':
+  ;;
+  ;; 1. Use function `Info-isearch-search-p', not variable `Info-isearch-search'.
+  ;; 2. 
+  ;;
+  (defun Info-isearch-search ()
     (if (Info-isearch-search-p)
         (lambda (string &optional bound noerror count)
-          (let ((Info-search-whitespace-regexp  (if (if isearch-regexp
-                                                        isearch-regexp-lax-whitespace
-                                                      isearch-lax-whitespace)
-                                                    search-whitespace-regexp)))
-            (Info-search (cond (isearch-word ; Lax version of word search
-                                (let ((lax  (not (or isearch-nonincremental
-                                                     (eq (length string) (length (isearch--state-string
-                                                                                  (car isearch-cmds))))))))
-                                  (if (functionp isearch-word)
-                                      (funcall isearch-word string lax)
-                                    (word-search-regexp string lax))))
-                               (isearch-regexp string)
-                               (t (regexp-quote string)))
-                         bound noerror count (unless isearch-forward 'backward)))
-          (point))
+	  (let ((isearch-symbols-fn  (if (boundp 'isearch-regexp-function)
+                                         isearch-regexp-function ; Emacs 25+
+                                       isearch-word)) ; Emacs 24
+                (Info-search-whitespace-regexp
+	         (if (if isearch-regexp
+		         isearch-regexp-lax-whitespace
+		       isearch-lax-whitespace)
+		     search-whitespace-regexp)))
+	    (Info-search
+	     (cond (isearch-symbols-fn
+                    ;; Lax version of word search
+	            (let ((lax  (if (fboundp 'isearch--lax-regexp-function-p)
+                                    (and (not bound)  (isearch--lax-regexp-function-p)) ; Emacs 25+
+                                  (not (or isearch-nonincremental ; Emacs 24
+                                           (eq (length string)
+                                               (length (isearch--state-string (car isearch-cmds)))))))))
+	              (when lax (setq isearch-adjusted  t))
+	              (if (functionp isearch-symbols-fn)
+		          (funcall isearch-symbols-fn string lax)
+		        (word-search-regexp string lax))))
+	           (isearch-regexp string)
+	           (t (regexp-quote string)))
+	     bound noerror count (unless isearch-forward 'backward)))
+	  (point))
       (isearch-search-fun-default)))
 
   )
 
+(defun info--user-search-failed ()      ; Needed for Emacs < 24, which doesn't have `user-search-failed'.
+  "`user-search-failed', if `user-error' is defined.  Else `search-failed'."
+  (if (fboundp 'user-error) 'user-search-failed 'search-failed))
 
 ;; REPLACES ORIGINAL in `info.el':
 ;;
 ;; 1. Fit frame if `one-window-p'.
 ;; 2. Highlight the found regexp if `search-highlight'.
-;; 3. Respect restriction to active region.
+;; 3. If `isearch+.el' is loaded, search only the active region if `isearchp-restrict-to-region-flag' is non-nil.
+;; 4. Use `info--user-search-failed' for compatibility with older Emacs.
 ;;
 ;;;###autoload (autoload 'Info-search "info+")
 (defun Info-search (regexp &optional bound _noerror _count direction)
@@ -5458,110 +5482,87 @@ over.  To remove the highlighting, just start an incremental search:
   (when (equal regexp "") (setq regexp  (car Info-search-history)))
   (when regexp
     (prog1
-        (let (found beg-found give-up
-                    (backward    (eq direction 'backward))
-                    (onode       Info-current-node)
-                    (ofile       Info-current-file)
-                    (opoint      (point))
-                    (opoint-min  (Info-search-beg))
-                    (opoint-max  (Info-search-end))
-                    (ostart      (window-start))
-                    (osubfile    Info-current-subfile))
-          (setq Info-search-case-fold  case-fold-search) ; `Info-search-case-fold' is free here.
-          (save-excursion
-            (save-restriction
-              (widen)
-              (when backward
-                (narrow-to-region (save-excursion ; Hide Info file header for backward search
-                                    (goto-char (Info-search-beg))
-                                    (search-forward "\n\^_")
-                                    (1- (point)))
-                                  (Info-search-end)))
-              (while (and (not give-up)  (or (null found)
-                                             (not (funcall isearch-filter-predicate beg-found found))))
-                (let ((search-spaces-regexp  Info-search-whitespace-regexp))
-                  (if (if backward
-                          (re-search-backward regexp bound t)
-                        (re-search-forward regexp bound t))
-                      (setq found      (point)
-                            beg-found  (if backward (match-end 0) (match-beginning 0)))
-                    (setq give-up  t))))))
-          (when (and isearch-mode
-                     (Info-isearch-search-p)
-                     (not Info-isearch-initial-node) ; `Info-isearch-initial-node' is free here.
-                     (not bound)
-                     (or give-up  (and found  (not (and (> found opoint-min) (< found opoint-max))))))
-            (signal 'search-failed (list regexp "end of node")))
-          (when give-up              ; If no subfiles, give error now.
-            (if (null Info-current-subfile)
-                (let ((search-spaces-regexp  Info-search-whitespace-regexp))
-                  (if backward (re-search-backward regexp) (re-search-forward regexp)))
-              (setq found  nil)))
-          (when (and bound  (not found)) (signal 'search-failed (list regexp)))
+        (let* ((backward                          (eq direction 'backward))
+               (onode                             Info-current-node)
+               (ofile                             Info-current-file)
+               (opoint                            (point))
+               (opoint-min                        (Info-search-beg))
+               (opoint-max                        (Info-search-end))
+               (ostart                            (window-start))
+               (osubfile                          Info-current-subfile)
+               (found                             (save-excursion
+                                                    (save-restriction
+                                                      (widen)
+                                                      (Info--search-loop regexp bound backward))))
+               (isearchp-restrict-to-region-flag  (not Info-isearch-search))) ; For `isearch+.el'.
+
+          (setq Info-search-case-fold  case-fold-search)
+          (unless (or (not isearch-mode)  (not (Info-isearch-search))
+                      Info-isearch-initial-node ; `Info-isearch-initial-node' is free here.
+                      bound
+                      (and found  (> found opoint-min)  (< found opoint-max)))
+	    (signal (info--user-search-failed) (list regexp "(end of node)")))
+
+          (unless (or found  Info-current-subfile) ; If no subfiles, give error now.
+            (if isearch-mode
+                (signal (info--user-search-failed) (list regexp "end of manual"))
+              (let ((search-spaces-regexp  Info-search-whitespace-regexp))
+                (unless (if backward
+                            (re-search-backward regexp nil t)
+                          (re-search-forward regexp nil t))
+                  (signal (info--user-search-failed) (list regexp))))))
+          (when (and bound  (not found)) (signal (info--user-search-failed) (list regexp)))
           (unless (or found  bound)
-            (unwind-protect
-                 (let ((list  ()))      ; Try other subfiles.
-                   (with-current-buffer (marker-buffer Info-tag-table-marker)
-                     (goto-char (Info-search-beg))
-                     (search-forward "\n\^_\nIndirect:")
-                     (save-restriction
-                       (narrow-to-region (point) (progn (search-forward "\n\^_") (1- (point))))
-                       (goto-char (Info-search-beg))
-                       (search-forward (concat "\n" osubfile ": ")) ; Find the subfile we just searched.
-                       (forward-line (if backward 0 1)) ; Skip that one.
-                       (if backward (forward-char -1))
-                       ;; Make a list of all following subfiles.
-                       ;; Each elt has the form (VIRT-POSITION . SUBFILENAME).
-                       (while (not (if backward (bobp) (eobp)))
-                         (if backward
-                             (re-search-backward "\\(^.*\\): [0-9]+$")
-                           (re-search-forward "\\(^.*\\): [0-9]+$"))
-                         (goto-char (+ (match-end 1) 2))
-                         (setq list  (cons (cons (+ (Info-search-beg) (read (current-buffer)))
-                                                 (match-string-no-properties 1))
-                                           list))
-                         (goto-char (if backward (1- (match-beginning 0)) (1+ (match-end 0)))))
-                       (setq list  (nreverse list)))) ; Put in forward order
-                   (while list
-                     (when (interactive-p) (message "Searching subfile %s..." (cdr (car list))))
-                     (Info-read-subfile (car (car list)))
-                     (when backward
-                       ;; Hide Info file header for backward search
-                       (narrow-to-region (save-excursion (goto-char (Info-search-beg))
-                                                         (search-forward "\n\^_")
-                                                         (1- (point)))
-                                         (Info-search-end))
-                       (goto-char (Info-search-end)))
-                     (setq list     (cdr list)
-                           give-up  nil
-                           found    nil)
-                     (while (and (not give-up)  (or (null found)
-                                                    (not (funcall isearch-filter-predicate beg-found found))))
-                       (let ((search-spaces-regexp  Info-search-whitespace-regexp))
-                         (if (if backward
-                                 (re-search-backward regexp nil t)
-                               (re-search-forward regexp nil t))
-                             (setq found      (point)
-                                   beg-found  (if backward (match-end 0) (match-beginning 0)))
-                           (setq give-up  t))))
-                     (when give-up (setq found  nil))
-                     (when found (setq list  ())))
-                   (if found (message "") (signal 'search-failed (list regexp))))
-              (unless found
+	    (unwind-protect
+	        (let ((list  ()))       ; Try other subfiles.
+	          (with-current-buffer (marker-buffer Info-tag-table-marker)
+		    (goto-char (Info-search-beg))
+		    (search-forward "\n\^_\nIndirect:")
+		    (save-restriction
+		      (narrow-to-region (point) (progn (search-forward "\n\^_") (1- (point))))
+		      (goto-char (Info-search-beg))
+		      (search-forward (concat "\n" osubfile ": ")) ; Find the subfile we just searched.
+		      (forward-line (if backward 0 1)) ; Skip that one.
+		      (if backward (forward-char -1))
+                      ;; Make a list of all following subfiles.
+                      ;; Each elt has the form (VIRT-POSITION . SUBFILENAME).
+		      (while (not (if backward (bobp) (eobp)))
+		        (if backward
+		            (re-search-backward "\\(^.*\\): [0-9]+$")
+		          (re-search-forward "\\(^.*\\): [0-9]+$"))
+		        (goto-char (+ (match-end 1) 2))
+                        (setq list  (cons (cons (+ (Info-search-beg) (read (current-buffer)))
+                                                (match-string-no-properties 1))
+                                          list))
+		        (goto-char (if backward (1- (match-beginning 0)) (1+ (match-end 0)))))
+		      (setq list  (nreverse list)))) ; Put in forward order.
+	          (while list
+		    (when (interactive-p) (message "Searching subfile %s..." (cdar list)))
+		    (Info-read-subfile (caar list))
+		    (when backward
+                      (goto-char (Info-search-end)))
+		    (setq list   (cdr list)
+                          found  (Info--search-loop regexp nil backward))
+		    (when found (setq list  ())))
+	          (if found
+		      (message "")
+                    (signal (info--user-search-failed) `(,regexp ,@(and isearch-mode  '("end of manual"))))))
+	      (unless found
                 (Info-read-subfile osubfile)
                 (goto-char opoint)
                 (Info-select-node)
                 (set-window-start (selected-window) ostart))))
-          (if (and (string= osubfile Info-current-subfile)  (> found opoint-min) (< found opoint-max))
-              (goto-char found)       ; Search landed in the same node
+          (if (and (string= osubfile Info-current-subfile)  (> found opoint-min)  (< found opoint-max))
+              (goto-char found)      ; Search landed in the same node.
             (widen)
             (goto-char found)
             (save-match-data (Info-select-node)))
+          ;; Highlight the regexp match.  If `isearch+.el' is loaded this can highlight subgroups.
           (when search-highlight (isearch-highlight (match-beginning 0) (match-end 0))) ; Highlight regexp.
           ;; Use `string-equal', not `equal', to ignore text props.
           (or (and (string-equal onode Info-current-node)  (equal ofile Info-current-file))
-              (and isearch-mode isearch-wrapped  (eq opoint (if isearch-forward opoint-min opoint-max)))
-              (setq Info-history  (cons (list ofile onode opoint) Info-history)))
+              (and isearch-mode  isearch-wrapped  (eq opoint (if isearch-forward opoint-min opoint-max)))
+	      (setq Info-history  (cons (list ofile onode opoint) Info-history)))
           (when (and (one-window-p t)  (not (window-minibuffer-p)) ; Fit the frame, if appropriate.
                      (fboundp 'fit-frame) ; Defined in `fit-frame.el'.
                      Info-fit-frame-flag)
@@ -5570,6 +5571,30 @@ over.  To remove the highlighting, just start an incremental search:
         (message (substitute-command-keys
                   "Use \\<Info-mode-map>`\\[Info-search] RET' to search again for `%s'.")
                  regexp)))))
+
+
+;; REPLACES ORIGINAL in `info.el', Emacs 24+:
+;;
+;; Use `Info-search-beg' and `Info-search-end', not `point-min' and `point-max'.
+;;
+(defun Info--search-loop (regexp bound backward)
+  (when backward
+    (narrow-to-region (save-excursion ; Hide Info file header for backward search.
+                        (goto-char (Info-search-beg))
+                        (search-forward "\n\^_")
+                        (1- (point)))
+                      (Info-search-end)))
+  (let ((give-up    nil)
+        (found      nil)
+        (beg-found  nil))
+    (while (not (or give-up  (and found  (funcall isearch-filter-predicate beg-found found))))
+      (let ((search-spaces-regexp  Info-search-whitespace-regexp))
+        (if (funcall (if backward #'re-search-backward #'re-search-forward) regexp bound t)
+            (setq found      (point)
+                  beg-found  (if backward (match-end 0) (match-beginning 0)))
+          (setq give-up  t
+                found    nil))))
+    found))
 
 (defun Info-search-case-sensitively-next ()
   "Search for next regexp from a previous `Info-search-case-sensitively'."
