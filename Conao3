@@ -83,6 +83,7 @@ This repository is now private. If you want to get this code, please join my [ht
 * [https://github.com/emacsorphanage/gnuplot emacsorphanage/gnuplot] -- A major mode for Emacs for interacting with Gnuplot
 
 == Co-maintainer Projects ==
+* [https://github.com/markuplint/markuplint] -- A Linter for All Markup Languages
 * [https://github.com/rubikitch/auto-document rubikitch/auto-document] -- Automatic document generator of Emacs Lisp
 * [https://github.com/rubikitch/dayly-emacs-jp rubikitch/dayly-emacs-jp] -- Rubikitch blog 
 * [https://github.com/rubikitch/git-push-or-pull-request rubikitch/git-push-or-pull-request] -- Auto push or pull-request
