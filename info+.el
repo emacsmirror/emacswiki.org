@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  1 16:59:13 2020 (-0800)
+;; Last-Updated: Mon Nov  2 20:41:26 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6895
+;;     Update #: 6905
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -516,6 +516,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/02 dadams
+;;     Faces info-file, info-*-item, info-xref-bookmarked: Tweaked defaults.
 ;; 2020/11/01 dadams
 ;;     Added: info--user-search-failed, (redefinition of) Info--search-loop.
 ;;     Info-search: Bind isearchp-restrict-to-region-flag to (not Info-isearch-search), for isearch+.el.
@@ -1196,8 +1198,8 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defface info-file
-    '((((background dark)) (:foreground "Yellow" :background "DimGray"))
-      (t (:foreground "Blue" :background "LightGray")))
+    '((((background dark)) (:inherit info-reference-item :foreground "Yellow"))
+      (t (:inherit info-reference-item :foreground "Blue")))
   "Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
@@ -1285,65 +1287,64 @@ That is, one that is not part of `...'."
 ;;; Faces for highlighting reference items
 ;;;###autoload
 (defface info-command-ref-item
-    '((((background dark)) (:foreground "#7474FFFF7474" :background "DimGray")) ; ~ light green
-      (t (:foreground "Blue" :background "LightGray")))
+    '((((background dark)) (:inherit info-reference-item :foreground "#7474FFFF7474")) ; ~ light green
+      (t (:inherit info-reference-item :foreground "Blue")))
   "Face used for \"Command:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-constant-ref-item
     '((((background dark))
-       (:foreground "DeepPink" :background "DimGray"))
-      (t (:foreground "DeepPink" :background "LightGray")))
+       (:inherit info-reference-item :foreground "DeepPink"))
+      (t (:inherit info-reference-item :foreground "DeepPink")))
   "Face used for \"Constant:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-function-ref-item
     '((((background dark))
-       (:foreground "#4D4DDDDDDDDD" :background "DimGray")) ; ~ cyan
-      (t (:foreground "DarkBlue" :background "LightGray")))
+       (:inherit info-reference-item :foreground "#4D4DDDDDDDDD")) ; ~ cyan
+      (t (:inherit info-reference-item :foreground "DarkBlue")))
   "Face used for \"Function:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-macro-ref-item
     '((((background dark))
-       (:foreground "Yellow" :background "DimGray"))
-      (t (:foreground "DarkMagenta" :background "LightGray")))
+       (:inherit info-reference-item :foreground "Yellow"))
+      (t (:inherit info-reference-item :foreground "DarkMagenta")))
   "Face used for \"Macro:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-reference-item
   ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
-  ;;     '((((background dark)) (:inherit fixed-pitch :background "DimGray"))
-  ;;       (t (:inherit fixed-pitch :background "LightGray")))
-  '((((background dark)) (:inherit font-lock-string-face :background "DimGray"))
-    (t (:inherit font-lock-string-face :background "LightGray")))
+  ;;     '((((background dark)) (:inherit fixed-pitch :background "gray12"))
+  ;;       (t (:inherit fixed-pitch :background "gray88")))
+  '((((background dark)) (:inherit font-lock-string-face :background "gray12"))
+    (t (:inherit font-lock-string-face :background "gray88")))
   "Face used for reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-special-form-ref-item
     '((((background dark))
-       (:foreground "Yellow" :background "DimGray"))
-      (t (:foreground "DarkMagenta" :background "LightGray")))
+       (:inherit info-reference-item :foreground "Green")) ; ~ pink
+      (t (:inherit info-reference-item :foreground "Magenta")))
   "Face used for \"Special Form:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-syntax-class-item
     '((((background dark))
-       (:foreground "#FFFF9B9BFFFF" :background "DimGray")) ; ~ pink
-      (t (:foreground "DarkGreen" :background "LightGray")))
+       (:inherit info-reference-item :foreground "#FFFF9B9BFFFF")) ; ~ pink
+      (t (:inherit info-reference-item :foreground "DarkGreen")))
   "Face used for \"Syntax Class:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-user-option-ref-item
-    '((((background dark)) (:foreground "Red" :background "DimGray"))
-      (t (:foreground "Red" :background "LightGray")))
+    '((t (:inherit info-reference-item :foreground "Red")))
   "Face used for \"User Option:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-variable-ref-item
     '((((background dark))
-       (:foreground "Orange" :background "DimGray"))
-      (t (:foreground "FireBrick" :background "LightGray")))
+       (:inherit info-reference-item :foreground "Orange"))
+      (t (:inherit info-reference-item :foreground "FireBrick")))
   "Face used for \"Variable:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 
@@ -1351,7 +1352,7 @@ That is, one that is not part of `...'."
            (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
 
   (defface info-xref-bookmarked
-      '((((background dark)) (:foreground "violet"))
+      '((((background dark)) (:foreground "Violet"))
         (t (:foreground "DarkGreen")))
     "Face for bookmarked Info nodes."
     :group 'Info-Plus :group 'faces)
@@ -2274,7 +2275,7 @@ Optional arg LOCALP means read a node name from the current manual."
 
 ;; REPLACE ORIGINAL in `outline.el':
 ;;
-;; See Emacs bug #28080.
+;; Changed from `defsubst' to `defun'.  See Emacs bug #28080.
 ;;
 (defun outline-invisible-p (&optional pos)
   "Non-nil if the character after point has been made invisible by Outline."
