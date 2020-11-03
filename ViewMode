@@ -144,6 +144,17 @@ I had a look at it, for me it works if I advice two functions. Try the following
 Great Thanks!  Works for me. I hesitate to reveal the path I went down to attempt accomplishing the same :P I've been wondering about a solution for that puzzle for quite awhile now. I'd be curious to learn if there is a way to accomplish the same without advice... --mon_key
 
 [new]
+As of Emacs 27.1 at least, the `help-function' property mentioned [https://emacs.stackexchange.com/a/3678 here] has been made a named function, so it can be advised. Moreover, it now runs the hook `find-function-after-hook'. It's found in "help-mode.el" if you want to check whether this holds in earlier versions. As a result, the following code can be used to enable `view-mode' when following the source links:
+
+	(add-hook 'find-function-after-hook #'view-mode-enter) ; or #'view-mode
+
+Despite the hook's name, this also enables `view-mode' for source code from <kbd> C-h v </kbd> for some reason.
+
+Warning: this will enable `view-mode' even if the file was previous open and not in `view-mode'. On the other hand, leaving `view-mode' should be as easy as <kbd> e </kbd>.
+
+The only problem with this is that it's not carried over if you go to a different file using <kbd> M-. </kbd> or `imenu'. That could maybe be implemented with a minor mode for "viewing sources" and advising those functions to preserve `view-mode' and the new mode when it's enabled.
+
+[new]
 You can use DirectoryVariables to make the Lisp directory read-only, but not in view-mode.
 
   ;; Always open installed Emacs files as read-only.
