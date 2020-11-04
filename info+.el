@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov  2 20:41:26 2020 (-0800)
+;; Last-Updated: Wed Nov  4 14:03:54 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6905
+;;     Update #: 6937
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -73,7 +73,8 @@
 ;;    `Info-breadcrumbs-in-mode-line-mode',
 ;;    `Info-change-visited-status' (Emacs 24+),
 ;;    `Info-cycle-fontify-quotations', `Info-describe-bookmark' (Emacs
-;;    24.2+), `Info-follow-nearest-node-new-window', `Info-glossary',
+;;    24.2+), `Info-define-custom-delimiting',
+;;    `Info-follow-nearest-node-new-window', `Info-glossary',
 ;;    `Info-goto-node-web', `Info-history-clear',
 ;;    `Info-make-node-unvisited', `info-manual',
 ;;    `info-manual+node-buffer-name-mode', `Info-merge-subnodes',
@@ -86,6 +87,7 @@
 ;;    `Info-toggle-breadcrumbs-in-header', `Info-toggle-fontify-all',
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
+;;    `Info-toggle-fontify-custom-delimited',
 ;;    `Info-toggle-fontify-emphasis',
 ;;    `Info-toggle-fontify-glossary-words',
 ;;    `Info-toggle-fontify-isolated-quote',
@@ -98,11 +100,11 @@
 ;;  Faces defined here:
 ;;
 ;;    `info-command-ref-item', `info-constant-ref-item',
-;;    `info-double-quoted-name', `info-emphasis', `info-file',
-;;    `info-function-ref-item', `info-glossary-word',
-;;    `info-isolated-backquote', `info-isolated-quote',
-;;    `info-macro-ref-item', `info-menu', `info-node',
-;;    `info-quoted-name', `info-reference-item',
+;;    `info-custom-delimited', `info-double-quoted-name',
+;;    `info-emphasis', `info-file', `info-function-ref-item',
+;;    `info-glossary-word', `info-isolated-backquote',
+;;    `info-isolated-quote', `info-macro-ref-item', `info-menu',
+;;    `info-node', `info-quoted-name', `info-reference-item',
 ;;    `info-special-form-ref-item', `info-string',
 ;;    `info-syntax-class-item', `info-user-option-ref-item',
 ;;    `info-variable-ref-item', `info-xref-bookmarked' (Emacs 24.2+).
@@ -115,7 +117,8 @@
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
-;;    `Info-fontify-emphasis-flag', `Info-fontify-glossary-words',
+;;    `Info-fontify-custom-delimited', `Info-fontify-emphasis-flag',
+;;    `Info-fontify-glossary-words',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+),
@@ -134,10 +137,10 @@
 ;;    `Info-bookmark-name-for-node',
 ;;    `info-buffer-name-function-default',
 ;;    `Info-case-insensitive-string=',
-;;    `Info-case-insensitive-string-hash',
-;;    `Info-display-node-default-header',
-;;    `Info-fontify-glossary-words', `Info-fontify-quotations',
-;;    `Info-fontify-reference-items',
+;;    `Info-case-insensitive-string-hash', `info-custom-delim-1',
+;;    `info-custom-delim-2', `Info-display-node-default-header',
+;;    `Info-fontify-custom-delimited', `Info-fontify-glossary-words',
+;;    `Info-fontify-quotations', `Info-fontify-reference-items',
 ;;    `Info-get-glossary-hash-table-create',
 ;;    `Info-goto-glossary-definition', `Info-no-glossary-manuals',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
@@ -149,10 +152,11 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `Info-breadcrumbs-depth-internal', `info-fontify-emphasis',
-;;    `info-glossary-link-map', `info-isolated-backquote-regexp',
-;;    `info-isolated-quote-regexp', `Info-link-faces',
-;;    `Info-merged-map', `Info-mode-syntax-table',
+;;    `Info-breadcrumbs-depth-internal',
+;;    `info-custom-delimited-same-line-regexp',
+;;    `info-fontify-emphasis', `info-glossary-link-map',
+;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
+;;    `Info-link-faces', `Info-merged-map', `Info-mode-syntax-table',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
 ;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
 ;;    `Info-toc-outline-map'.
@@ -516,6 +520,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/04 dadams
+;;     Added: face info-custom-delimited, option and function Info-fontify-custom-delimited,
+;;            var info-custom-delimited-same-line-regexp, info-custom-delim-1, info-custom-delim-2,
+;;            Info-define-custom-delimiting, Info-toggle-fontify-custom-delimited.
+;;     Info-mode-menu: Added Info-define-custom-delimiting, Info-toggle-fontify-custom-delimited.
+;;     Info-fontify-node: Added custom-delimited fontifying( Info-fontify-custom-delimited).
 ;; 2020/11/02 dadams
 ;;     Faces info-file, info-*-item, info-xref-bookmarked: Tweaked defaults.
 ;; 2020/11/01 dadams
@@ -1183,23 +1193,31 @@ Don't forget to mention your Emacs and library versions."))
   )
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
+
+;;;###autoload
+(defface info-custom-delimited
+  '((((background dark)) (:inherit font-lock-string-face :foreground "Red"))
+    (t (:inherit font-lock-string-face :foreground "Red")))
+  "Face for text surrounded by custom delimiter chars on the same line."
+  :group 'Info-Plus :group 'faces)
+
 ;;;###autoload
 (defface info-double-quoted-name        ; For “...”
-    '((((background dark)) (:inherit font-lock-string-face :foreground "Cyan"))
-      (t (:inherit font-lock-string-face :foreground "DarkOrange")))
+  '((((background dark)) (:inherit font-lock-string-face :foreground "Cyan"))
+    (t (:inherit font-lock-string-face :foreground "DarkOrange")))
   "Face for names enclosed in curly double-quotes (“...”) in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-emphasis                  ; For _..._
-    '((t (:inherit italic)))
+  '((t (:inherit italic)))
   "Face for emphasizing text enclosed with underscores (_..._) in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-file
-    '((((background dark)) (:inherit info-reference-item :foreground "Yellow"))
-      (t (:inherit info-reference-item :foreground "Blue")))
+  '((((background dark)) (:inherit info-reference-item :foreground "Yellow"))
+    (t (:inherit info-reference-item :foreground "Blue")))
   "Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
@@ -1210,8 +1228,8 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defface info-menu
-    '((((background dark)) (:foreground "Yellow"))
-      (t (:foreground "Blue")))
+  '((((background dark)) (:foreground "Yellow"))
+    (t (:foreground "Blue")))
   "Face used for menu items in `info'." :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
@@ -1261,55 +1279,55 @@ That is, one that is not part of `...'."
 ;; Standard faces from vanilla Emacs `info.el', but without `:weight', `:height' and `:inherit'.
 ;;;###autoload
 (defface info-title-1
-    '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
-      (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
+  '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
+    (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
   "Face for info titles at level 1."
   :group 'info)
 
 ;;;###autoload
 (defface info-title-2
-    '((((type tty pc) (class color)) :foreground "lightblue" :weight bold))
+  '((((type tty pc) (class color)) :foreground "lightblue" :weight bold))
   "Face for info titles at level 2."
   :group 'info)
 
 ;;;###autoload
 (defface info-title-3
-    '((((type tty pc) (class color)) :weight bold))
+  '((((type tty pc) (class color)) :weight bold))
   "Face for info titles at level 3."
   :group 'info)
 
 ;;;###autoload
 (defface info-title-4
-    '((((type tty pc) (class color)) :weight bold))
+  '((((type tty pc) (class color)) :weight bold))
   "Face for info titles at level 4."
   :group 'info)
 
 ;;; Faces for highlighting reference items
 ;;;###autoload
 (defface info-command-ref-item
-    '((((background dark)) (:inherit info-reference-item :foreground "#7474FFFF7474")) ; ~ light green
-      (t (:inherit info-reference-item :foreground "Blue")))
+  '((((background dark)) (:inherit info-reference-item :foreground "#7474FFFF7474")) ; ~ light green
+    (t (:inherit info-reference-item :foreground "Blue")))
   "Face used for \"Command:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-constant-ref-item
-    '((((background dark))
-       (:inherit info-reference-item :foreground "DeepPink"))
-      (t (:inherit info-reference-item :foreground "DeepPink")))
+  '((((background dark))
+     (:inherit info-reference-item :foreground "DeepPink"))
+    (t (:inherit info-reference-item :foreground "DeepPink")))
   "Face used for \"Constant:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-function-ref-item
-    '((((background dark))
-       (:inherit info-reference-item :foreground "#4D4DDDDDDDDD")) ; ~ cyan
-      (t (:inherit info-reference-item :foreground "DarkBlue")))
+  '((((background dark))
+     (:inherit info-reference-item :foreground "#4D4DDDDDDDDD")) ; ~ cyan
+    (t (:inherit info-reference-item :foreground "DarkBlue")))
   "Face used for \"Function:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-macro-ref-item
-    '((((background dark))
-       (:inherit info-reference-item :foreground "Yellow"))
-      (t (:inherit info-reference-item :foreground "DarkMagenta")))
+  '((((background dark))
+     (:inherit info-reference-item :foreground "Yellow"))
+    (t (:inherit info-reference-item :foreground "DarkMagenta")))
   "Face used for \"Macro:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
@@ -1323,28 +1341,28 @@ That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-special-form-ref-item
-    '((((background dark))
-       (:inherit info-reference-item :foreground "Green")) ; ~ pink
-      (t (:inherit info-reference-item :foreground "Magenta")))
+  '((((background dark))
+     (:inherit info-reference-item :foreground "Green")) ; ~ pink
+    (t (:inherit info-reference-item :foreground "Magenta")))
   "Face used for \"Special Form:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-syntax-class-item
-    '((((background dark))
-       (:inherit info-reference-item :foreground "#FFFF9B9BFFFF")) ; ~ pink
-      (t (:inherit info-reference-item :foreground "DarkGreen")))
+  '((((background dark))
+     (:inherit info-reference-item :foreground "#FFFF9B9BFFFF")) ; ~ pink
+    (t (:inherit info-reference-item :foreground "DarkGreen")))
   "Face used for \"Syntax Class:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-user-option-ref-item
-    '((t (:inherit info-reference-item :foreground "Red")))
+  '((t (:inherit info-reference-item :foreground "Red")))
   "Face used for \"User Option:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-variable-ref-item
-    '((((background dark))
-       (:inherit info-reference-item :foreground "Orange"))
-      (t (:inherit info-reference-item :foreground "FireBrick")))
+  '((((background dark))
+     (:inherit info-reference-item :foreground "Orange"))
+    (t (:inherit info-reference-item :foreground "FireBrick")))
   "Face used for \"Variable:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 
@@ -1352,8 +1370,8 @@ That is, one that is not part of `...'."
            (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
 
   (defface info-xref-bookmarked
-      '((((background dark)) (:foreground "Violet"))
-        (t (:foreground "DarkGreen")))
+    '((((background dark)) (:foreground "Violet"))
+      (t (:foreground "DarkGreen")))
     "Face for bookmarked Info nodes."
     :group 'Info-Plus :group 'faces)
 
@@ -1496,6 +1514,33 @@ The face used is `info-xref-bookmarked'."
     :type 'boolean :group 'Info-Plus)
 
   )
+
+;;;###autoload
+(defcustom Info-fontify-custom-delimited (list nil ?' ?')
+  "Non-nil means `info' fontifies text between delimiters you specify.
+The text that is highlighted matches the value of variable
+`info-custom-delimited-same-line-regexp'.
+
+The option value is a list (ON/OFF BEG END), where:
+
+ * Non-nil ON/OFF means fontifying is on, and nil means it is OFF.
+ * BEG is the beginning delimiter character.
+ * END is the ending delimiter character.
+
+By default, this fontifying is off.  When turned on, by default the
+text between apostrophes ('...') is fontified.
+
+You can use command `Info-toggle-fontify-custom-delimited' to toggle
+this fontifying on/off.  With a prefix arg, that command also prompts
+you for the (new) delimiters to use.
+
+You can use command `Info-define-custom-delimiting' to just do the
+latter: set the delimiters.
+
+For example, if you have an Info file that uses {...}, you can
+highlight the enveloped ... text by setting the delimiters to chars {
+and }, and turning the option on."
+  :type 'boolean :group 'Info-Plus)
 
 ;;;###autoload
 (defcustom Info-fontify-emphasis-flag t
@@ -1820,6 +1865,14 @@ If ... contains an end char then that char must be backslashed.")
 ;;                  (one-or-more (seq ?\\ anything)))
 ;;              ?>)))
 
+(defvar info-custom-delimited-same-line-regexp "'\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'"
+  "Regexp to match text between custom delimiters.
+You can use command `Info-define-custom-delimiting' (or command
+`Info-toggle-fontify-custom-delimited' with `C-u') to define the
+regexp.  They prompt you for the delimiters to use.
+
+\(You can of course also let-bind this in Lisp code.\)")
+
 (defvar info-isolated-quote-regexp "\\(.\\|\n\\)'"
   ;; Another possibility: "[^']'"
   ;; "[^`]\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'" ; Can be way too slow in rare cases.
@@ -2074,6 +2127,57 @@ are prompted for NODE."
                           (if Info-fontify-bookmarked-xrefs-flag 'ON 'OFF)))))
 
   )
+
+(defsubst info-custom-delim-1 ()
+  "Beginning custom delimiter."
+  (cadr Info-fontify-custom-delimited))
+
+(defsubst info-custom-delim-2 ()
+  "Ending custom delimiter."
+  (car (cddr Info-fontify-custom-delimited)))
+
+;;;###autoload (autoload 'Info-define-custom-delimiting "info+")
+(defun Info-define-custom-delimiting (&optional msgp)
+  "Read custom delimiter chars and set fontifying regexp from them.
+You can also do this when toggling fontification of the delimited text
+with command `Info-toggle-fontify-custom-delimited', by using a prefix
+argument.
+
+The default value uses ' (apostrophe) for both beginning and ending
+delimiter, with the result that in '...' the ... is fontified."
+  (interactive "p")
+  (let ((read-fn  (if (fboundp 'read-char-from-minibuffer)
+                      'read-char-from-minibuffer ; Emacs 27+
+                    'read-char-exclusive)))
+    (setcar (cdr Info-fontify-custom-delimited)  (funcall read-fn "Beginning delimiter (character): "
+                                                          'INHERIT-INPUT-METHOD 5))
+    (setcar (cddr Info-fontify-custom-delimited) (funcall read-fn "Ending delimiter (character): "
+                                                          'INHERIT-INPUT-METHOD 5))
+    (setq info-custom-delimited-same-line-regexp  (format "[%c]\\(?:[^\n%c]\\|\\\\\\(?:.\\|\n\\)\\)+[%c]"
+                                                          (info-custom-delim-1)
+                                                          (info-custom-delim-2)
+                                                          (info-custom-delim-2))))
+  (when msgp (message "Custom delimiters are now `%c' and `%c'" (info-custom-delim-1) (info-custom-delim-2))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-custom-delimited "info+")
+(defun Info-toggle-fontify-custom-delimited (&optional newp msgp)
+  "Toggle option `Info-fontify-custom-delimited'.
+With a prefix arg, also set the beginning and ending delimiter chars -
+you are prompted for the chars to use."
+  (interactive "P\np")
+  (setq Info-fontify-custom-delimited (cons (not (car Info-fontify-custom-delimited))
+                                            (cdr Info-fontify-custom-delimited)))
+  (when newp (call-interactively #'Info-define-custom-delimiting))
+  (when (eq major-mode 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node))
+    (when msgp (message "`Info-fontify-custom-delimited' is now %s%s"
+                        (if (car Info-fontify-custom-delimited) 'ON 'OFF)
+                        (if newp
+                            (format ", with delimiters %c and %c" (info-custom-delim-1) (info-custom-delim-2))
+                          "")))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-all "info+")
 (defun Info-toggle-fontify-all (&optional msgp)
@@ -3050,6 +3154,13 @@ candidates."
      ["Highlighting _..._ (emphasis)" Info-toggle-fontify-emphasis
       :visible info-fontify-emphasis :style toggle :selected Info-fontify-emphasis-flag
       :help "Toggle option `Info-fontify-emphasis-flag'"]
+     ["Highlighting Custom Delimited" Info-toggle-fontify-custom-delimited
+      :style toggle :selected (car Info-fontify-custom-delimited)
+      :help "Toggle option `Info-fontify-custom-delimited'"]
+     ["     Set Custom Delimiters" Info-define-custom-delimiting
+      ;; < Emacs 27, doesn't work if menu used with mouse, because first read is swallowed by mouse event.
+      :visible (fboundp 'read-char-from-minibuffer)
+      :help "Read custom delimiter chars and set fontifying regexp from them."]
      ["Highlighting Visited Nodes" Info-toggle-fontify-visited-nodes
       :style toggle :selected Info-fontify-visited-nodes
       :help "Toggle option `Info-fontify-visited-nodes'"]
@@ -4110,6 +4221,10 @@ If key's command cannot be found by looking in indexes, then
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
+        ;; Fontify custom-delimited
+        (goto-char (point-min))
+        (when (car Info-fontify-custom-delimited) (Info-fontify-custom-delimited))
+
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
@@ -4491,6 +4606,10 @@ If key's command cannot be found by looking in indexes, then
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
+        ;; Fontify custom-delimited
+        (goto-char (point-min))
+        (when (car Info-fontify-custom-delimited) (Info-fontify-custom-delimited))
+
         ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
@@ -4865,6 +4984,10 @@ If key's command cannot be found by looking in indexes, then
         ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
+
+        ;; Fontify custom-delimited
+        (goto-char (point-min))
+        (when (car Info-fontify-custom-delimited) (Info-fontify-custom-delimited))
 
         ;; Fontify reference items: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
@@ -5311,6 +5434,12 @@ This respects option `Info-fontify-quotations'.
       (while (condition-case nil (re-search-forward info-isolated-backquote-regexp nil t) (error nil))
         (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
         (goto-char (match-end 0)) (forward-char 1)))))
+
+(defun Info-fontify-custom-delimited ()
+  "Fontify text between custom delimiters."
+  (while (condition-case nil (re-search-forward info-custom-delimited-same-line-regexp nil t) (error nil))
+    (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
+    (goto-char (match-end 0)) (forward-char 1)))
 
 (defun Info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
