@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Aug 14 10:28:45 2020 (-0700)
+;; Last-Updated: Thu Nov  5 15:38:07 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15300
+;;     Update #: 15301
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2584,7 +2584,7 @@ A face-name variable is a variable with custom-type `face'.
 
 If library `palette.el' or `eyedropper.el' is used, then you can also
 choose proxy candidate `*point face name*' to use the face at point."
-         (or (require 'palette nil t)  (require 'eyedropper nil t))
+         (or (condition-case nil (require 'palette nil t) (error nil))  (require 'eyedropper nil t))
          (let ((faceprop       (or (get-char-property (point) 'read-face-name)
                                    (get-char-property (point) 'face)))
                (aliasfaces     ())
@@ -2708,7 +2708,7 @@ A face-name variable is a variable with custom-type `face'.
 
 If library `palette.el' or `eyedropper.el' is used, then you can also
 choose proxy candidate `*point face name*' to use the face at point."
-         (or (require 'palette nil t)  (require 'eyedropper nil t))
+         (or (condition-case nil (require 'palette nil t) (error nil))  (require 'eyedropper nil t))
          (when (and default  (not (stringp default)))
            (setq default  (cond ((symbolp default) (symbol-name default))
                                 (multiple (mapconcat (lambda (fc) (if (symbolp fc) (symbol-name fc) fc))
