@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Oct 16 11:31:46 2020 (-0700)
+;; Last-Updated: Thu Nov  5 15:42:09 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11905
+;;     Update #: 11907
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1214,6 +1214,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2020/11/05 dadams
+;;     icicle-color-completion-setup: 
+;;       Wrap soft-require of palette in condition-case to ignore error hard-requiring vline.el.
 ;; 2020/10/16 dadams
 ;;     icicle-describe-package: Updated for Emacs 25+ (sync with help-fns+.el).
 ;; 2020/08/14 dadams
@@ -2330,6 +2333,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2020/11/05 dadams
+;;     icicle-read-face-name:
+;;       Wrap soft-require of palette in condition-case to ignore error hard-requiring vline.el.
 ;; 2020/08/14 dadams
 ;;     icicle-display-completion-list: Use help-print-return-message, not print-help-return-message.
 ;; 2020/02/04 dadams
