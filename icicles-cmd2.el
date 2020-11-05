@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Oct 16 10:31:21 2020 (-0700)
+;; Last-Updated: Thu Nov  5 15:44:30 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 7480
+;;     Update #: 7481
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1502,7 +1502,7 @@ Sets these variables, which are assumed to be already `let'-bound:
 Puts property `icicle-fancy-candidates' on string `icicle-prompt'."
     (if (< emacs-major-version 22)
         (require 'eyedropper nil t)
-      (or (require 'palette nil t)  (require 'eyedropper nil t)))
+      (or (condition-case nil (require 'palette nil t) (error nil))  (require 'eyedropper nil t)))
     (when (stringp icicle-prompt)       ; Sanity check - should be true.
       (put-text-property 0 1 'icicle-fancy-candidates t icicle-prompt))
     (icicle-highlight-lighter)
