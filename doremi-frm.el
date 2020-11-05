@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Mon Jan  1 11:03:28 2018 (-0800)
+;; Last-Updated: Thu Nov  5 15:32:22 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 3074
+;;     Update #: 3076
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-frm.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -18,9 +18,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `doremi', `eyedropper', `faces', `faces+',
-;;   `frame-cmds', `frame-fns', `hexrgb', `misc-fns', `mwheel',
-;;   `ring', `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `col-highlight', `crosshairs', `custom', `doremi', `faces',
+;;   `faces+', `frame-cmds', `frame-fns', `hexrgb', `hl-line',
+;;   `hl-line+', `macroexp', `misc-cmds', `misc-fns', `mwheel',
+;;   `palette', `ring', `strings', `thingatpt', `thingatpt+',
+;;   `timer', `vline', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -322,6 +325,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/05 dadams
+;;     Wrap soft-require of palette.el with condition-case to ignore error if error hard-requiring vline.el.
 ;; 2015/07/26 dadams
 ;;     Added: doremi-customization-status, doremi-update-face-customization-status.
 ;;     doremi-increment-color, doremi-face-(bg|fg)-hue-stepping-saturation+,
@@ -632,9 +637,11 @@
   (require 'ring+)) ;; ring-insert, ring-member, ring-next
 (require 'frame-fns) ;; frame-geom-spec-cons, frame-geom-value-cons, get-a-frame
 (require 'faces+) ;; face-background-20+, face-foreground-20+, Emacs 20: read-face-name
+
+;; eyedrop-picked-background, eyedrop-picked-foreground
 (if (fboundp 'defvaralias) ;; Emacs 22
-    (require 'palette nil t) ;; eyedrop-picked-background, eyedrop-picked-foreground
-  (require 'eyedropper nil t)) ;; eyedrop-picked-background, eyedrop-picked-foreground
+    (condition-case nil (require 'palette nil t) (error nil)) ; Requires `vline.el'.
+  (require 'eyedropper nil t))
 (require 'frame-cmds nil t) ;; (no error if not found):
                             ;; frame-configuration-to-register, enlarge-font
                             ;; jump-to-frame-config-register
