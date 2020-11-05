@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 10 14:40:47 2019 (-0700)
+;; Last-Updated: Thu Nov  5 15:26:44 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 1963
+;;     Update #: 1966
 ;; URL: https://www.emacswiki.org/emacs/download/facemenu%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CustomizingFaces
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -216,6 +216,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/05 dadams
+;;     list-colors-print (Emacs 23):
+;;       Don't create button help-facemenu-edit-color if palette.el not loaded.
 ;; 2019/04/10 dadams
 ;;     Do not require zones.el for < Emacs 22.
 ;; 2018/12/28 dadams
@@ -1682,12 +1685,13 @@ Also, close the *Faces* display."
           (insert (apply 'format rgb-format (mapcar (lambda (c) (lsh c -8))
                                                     (color-values (car color)))))
           ;; Hyperlink to open palette on the color.
-          (save-excursion
-            (save-match-data
-              (forward-line 0)
-              (re-search-forward ".*")
-              (setq help-xref-stack-item  `(list-colors-display ,list))
-              (help-xref-button 0 'help-facemenu-edit-color (if (consp color) (car color) color))))
+          (when (fboundp 'palette)
+            (save-excursion
+              (save-match-data
+                (forward-line 0)
+                (re-search-forward ".*")
+                (setq help-xref-stack-item  `(list-colors-display ,list))
+                (help-xref-button 0 'help-facemenu-edit-color (if (consp color) (car color) color)))))
           (insert "\n")))
       (goto-char (point-min))))
 
@@ -1699,10 +1703,11 @@ Also, close the *Faces* display."
       (setq exp  (/ exp 12))
       (format "#%%0%dx%%0%dx%%0%dx" exp exp exp)))
 
-  (define-button-type 'help-facemenu-edit-color
+  (when (fboundp 'palette)
+    (define-button-type 'help-facemenu-edit-color
       :supertype 'help-xref
       'help-function 'palette
-      'help-echo (purecopy "mouse-2, RET: Open palette on color"))
+      'help-echo (purecopy "mouse-2, RET: Open palette on color")))
 
 
 
