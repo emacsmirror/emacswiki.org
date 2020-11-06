@@ -21,24 +21,7 @@ Thanks for that additional info.
 
 ----
 
-{{{
----- ERROR -----
-
-When attempting to retrieve gemini://emacswiki.org/do/comment/Gemini_Write?Great%21%20You%20transformed%20Wiki%20to%20gemini%20instance.%20It%20is%20so%20much%20better%20than%20eww%21%20Thank%20you.:
-Gemini server reports PERMANENT FAILURE for this request: 59 Got HTTP code 403 Forbidden (http://localhost:4002/wiki aftertext=Great%21+You+transformed+Wiki+to+gemini+instance.+It+is+so+much+better+than+eww%21+Thank+you.&answer=hello&gemini=1&title=Comments_on_Gemini_Write&username=bugs%40gnu.support)
-
-----------------
-
-Press 'u' to return to the previous page.
-}}}
-Delete this comment when solved.
-
--- [https://gnu.support JeanLouis] 2020-11-05 13:48 UTC
-
-
-----
-
-Testing...
+Testing from Gemini... Guess short and long comments are fixed!
 
 -- Alex 2020-11-06 19:24 UTC
 
