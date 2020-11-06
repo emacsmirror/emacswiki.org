@@ -1,0 +1,10 @@
+ rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
+receiving incremental file list
+rsync: change_dir#1 "/home/admin//emacswiki" failed: Permission denied (13)
+rsync error: errors selecting input/output files, dirs (code 3) at main.c(639) [Receiver=3.1.3]
+rsync error: errors selecting input/output files, dirs (code 3) at io.c(1642) [sender=3.1.3]
+
+How big is download? And why rsync does not work?
+
+-- [https://gnu.support JeanLouis] 2020-11-06 15:47 UTC
+
