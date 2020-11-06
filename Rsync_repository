@@ -12,6 +12,8 @@ rsync theshire.emacs.cl::
 Here's how to get or update a copy into the ##emacswiki## directory, for example:
 
 {{{
+mkdir emacswiki
+cd emacswiki
 rsync -avz --no-perms theshire.emacs.cl::emacswiki .
 }}}
 
