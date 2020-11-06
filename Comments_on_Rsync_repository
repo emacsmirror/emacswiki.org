@@ -8,3 +8,12 @@ How big is download? And why rsync does not work?
 
 -- [https://gnu.support JeanLouis] 2020-11-06 15:47 UTC
 
+
+----
+
+Everything looked OK on the server but I did restart the daemon just to be sure. As for the command: I think it expects the destination directory to be there. I changed the commands on the main page to make this easier.
+
+And I added a size indication. It's about 1.2G of data (since it also includes a copy of the git repository).
+
+-- Alex Schroeder 2020-11-06 19:17 UTC
+
