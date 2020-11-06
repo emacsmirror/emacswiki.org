@@ -5,11 +5,15 @@ to read them!
 
 List what's available:
 
-    rsync theshire.emacs.cl::
+{{{
+rsync theshire.emacs.cl::
+}}}
 
 Here's how to get or update a copy into the ##emacswiki## directory, for example:
 
-    rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
+{{{
+rsync -avz --no-perms theshire.emacs.cl::emacswiki .
+}}}
 
 (Back to WikiDownload.)
 
@@ -19,8 +23,17 @@ You will get the files you need to run your own copy of the wiki.
 Actually getting the wiki to run is going to require some [http://www.oddmuse.org/ Oddmuse]
 and webserver experience.
 
-; emacswiki: The data directory. This is what you'd store in a database, if you wanted to.
-; emacswiki.org: The document root of the web site. This is where the ##emacs.pl## script is which runs Oddmuse.
+*emacswiki* is the data directory. This is what you'd store in a database, if you wanted to.
+
+*emacswiki.org* is the document root of the web site.
+
+As for what to expect:
+
+{{{
+kensanata@theshire:~$ du -sh emacswiki emacswiki.org
+1.2G	emacswiki
+55M	emacswiki.org
+}}}
 
 (Back to WikiDownload.)
 
