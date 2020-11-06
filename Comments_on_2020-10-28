@@ -21,7 +21,7 @@ Thanks for that additional info.
 
 ----
 
-```
+{{{
 ---- ERROR -----
 
 When attempting to retrieve gemini://emacswiki.org/do/comment/Gemini_Write?Great%21%20You%20transformed%20Wiki%20to%20gemini%20instance.%20It%20is%20so%20much%20better%20than%20eww%21%20Thank%20you.:
@@ -30,7 +30,7 @@ Gemini server reports PERMANENT FAILURE for this request: 59 Got HTTP code 403 F
 ----------------
 
 Press 'u' to return to the previous page.
-```
+}}}
 Delete this comment when solved.
 
 -- [https://gnu.support JeanLouis] 2020-11-05 13:48 UTC
