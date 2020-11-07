@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jul  4 13:03:08 2020 (-0700)
+;; Last-Updated: Fri Nov  6 22:54:38 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4124
+;;     Update #: 4128
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2489,10 +2489,10 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (unwind-protect
-       (progn (setq bmkp-bmenu-filter-timer
-                    (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
-                                    #'bmkp-bmenu-filter-alist-by-bookmark-name-regexp))
-              (bmkp-bmenu-read-filter-input))
+      (progn (setq bmkp-bmenu-filter-timer
+                   (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
+                                        #'bmkp-bmenu-filter-alist-by-bookmark-name-regexp))
+             (bmkp-bmenu-read-filter-input))
     (bmkp-bmenu-cancel-incremental-filtering)))
 
 (defun bmkp-bmenu-filter-alist-by-bookmark-name-regexp ()
@@ -2510,10 +2510,10 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (unwind-protect
-       (progn (setq bmkp-bmenu-filter-timer
-                    (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
-                                    #'bmkp-bmenu-filter-alist-by-file-name-regexp))
-              (bmkp-bmenu-read-filter-input))
+      (progn (setq bmkp-bmenu-filter-timer
+                   (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
+                                        #'bmkp-bmenu-filter-alist-by-file-name-regexp))
+             (bmkp-bmenu-read-filter-input))
     (bmkp-bmenu-cancel-incremental-filtering)))
 
 (defun bmkp-bmenu-filter-alist-by-file-name-regexp ()
@@ -2531,10 +2531,10 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (unwind-protect
-       (progn (setq bmkp-bmenu-filter-timer
-                    (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
-                                    #'bmkp-bmenu-filter-alist-by-annotation-regexp))
-              (bmkp-bmenu-read-filter-input))
+      (progn (setq bmkp-bmenu-filter-timer
+                   (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
+                                        #'bmkp-bmenu-filter-alist-by-annotation-regexp))
+             (bmkp-bmenu-read-filter-input))
     (bmkp-bmenu-cancel-incremental-filtering)))
 
 (defun bmkp-bmenu-filter-alist-by-annotation-regexp ()
@@ -2552,10 +2552,10 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (unwind-protect
-       (progn (setq bmkp-bmenu-filter-timer
-                    (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
-                                    #'bmkp-bmenu-filter-alist-by-tags-regexp))
-              (bmkp-bmenu-read-filter-input))
+      (progn (setq bmkp-bmenu-filter-timer
+                   (run-with-idle-timer bmkp-incremental-filter-delay 'REPEAT
+                                        #'bmkp-bmenu-filter-alist-by-tags-regexp))
+             (bmkp-bmenu-read-filter-input))
     (bmkp-bmenu-cancel-incremental-filtering)))
 
 (defun bmkp-bmenu-filter-alist-by-tags-regexp ()
@@ -2572,10 +2572,11 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (setq bmkp-bmenu-filter-pattern  "")
   (let ((curr-bmk  (bookmark-bmenu-bookmark)))
     (when (eq 'QUIT
-              (let ((tmp-list                    ())
-                    (bmkp-bmenu-title            bmkp-bmenu-title)
-                    (bmkp-bmenu-filter-function  bmkp-bmenu-filter-function)
-                    (inhibit-quit                t)
+              (let ((tmp-list                                  ())
+                    (bmkp-bmenu-title                          bmkp-bmenu-title)
+                    (bmkp-bmenu-filter-function                bmkp-bmenu-filter-function)
+                    (inhibit-quit                              t)
+                    (prefix-command-echo-keystrokes-functions  ()) ; 25+  See Emacs bug #44500.
                     char)
                 (catch 'bmkp-bmenu-read-filter-input
                   (while (condition-case nil
