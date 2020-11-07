@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Sun Apr 21 08:11:53 2019 (-0700)
+;;; Last-Updated: Fri Nov  6 23:44:59 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 576
+;;     Update #: 577
 ;; URL: https://www.emacswiki.org/emacs/download/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -31,10 +31,6 @@
 ;;   (require 'strings)
 ;;   (add-hook 'pre-command-hook 'erase-nonempty-inactive-minibuffer))
 ;;
-;;
-;;  Macros defined here:
-;;
-;;    `empty-name-p', `non-empty-name-p'.
 ;;
 ;;  Functions defined here:
 ;;
@@ -66,6 +62,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/06 dadams
+;;     Removed: (non-)empty-name-p.
 ;; 2019/04/21 dadams
 ;;     Added insert-string for Emacs 26+ (Emacs removed it).
 ;;     read-buffer: Added optional arg PREDICATE, like recent vanilla Emacs.
@@ -187,16 +185,6 @@
   "Absolute value of the difference between two numbers.
 M and N are the numbers."
   (if (< m n) (- n m) (- m n)))
-
-;;;###autoload
-(defmacro empty-name-p (name)
-  "Nil if NAME is nil or \"\", else t."
-  `(or (null ,name) (string= "" ,name)))
-
-;;;###autoload
-(defmacro non-empty-name-p (name)       ; Error if NAME is neither nil nor a string.
-  "NAME if non-nil and not \"\", else nil."
-  `(and ,name (not (string= "" ,name)) ,name))
 
 ;; Stolen from `diary.el' (`diary-ordinal-suffix').
 (defun ordinal-suffix (n)
