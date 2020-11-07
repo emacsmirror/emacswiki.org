@@ -6,14 +6,13 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 30 13:50:21 2020 (-0700)
+;; Last-Updated: Fri Nov  6 22:50:33 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16698
+;;     Update #: 16701
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
-;;
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.
 ;; Features that might be required by this library:
 ;;
 ;;   None
@@ -1462,6 +1461,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/11/06 dadams
+;;     bmkp-bmenu-read-filter-input:
+;;       Bind prefix-command-echo-keystrokes-functions to nil.  See Emacs bug #44500.
 ;; 2020/07/04 dadams
 ;;     Changed all references to `C-x p' to `C-x x'.
 ;;     Replaced string *Bookmark List* with bookmark-bmenu-buffer (for Emacs 28).
