@@ -27,7 +27,7 @@ These builds are based on the development version of GNU Emacs and do not contai
 
 Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
 
-* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on the latest stable release of GNU Emacs (26.2 as of 2019-07-05) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
+* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on the latest stable release of GNU Emacs (27.1 as of 2020-11) (26.2 as of 2019-07-05) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
 
 * [http://aquamacs.org AquamacsEmac]s is a convenient distribution based on GNU Emacs 25.3.  Aquamacs comes preconfigured with a large number of packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.  Recommended for Mac users who want an Emacs that is tailored to the Mac.   [http://aquamacs.org/nightlies.shtml Experimental versions] based on GNU Emacs 25 are also available.
 
@@ -178,7 +178,7 @@ brew install emacs-plus
 
 ==== Mitsuharu version in tap ====
 
-To instead use the Yamamoto Mitsuharu version of Emacs 26.2 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
+To instead use the Yamamoto Mitsuharu version of Emacs (27.1 as of 2020-11) (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
 
 <pre>
 brew tap railwaycat/emacsmacport
@@ -235,7 +235,7 @@ It's also possible to build the development version of GNU Emacs with ATSUI -- A
 
 ==== Mitsuharu version in MacPorts ====
 
-To instead use the Yamamoto Mitsuharu version of Emacs 26.2 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
+To instead use the Yamamoto Mitsuharu version of Emacs (27.1 as of 2020-11) (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
 
 <pre>
 sudo port install emacs-mac-app
