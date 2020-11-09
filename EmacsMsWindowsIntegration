@@ -9,7 +9,7 @@ Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-c
 Use this code for a desktop/task-bar shortcut. Right-click in a file folder, select New -> Shortcut, and enter: 
 
 {{{
-c:\path\to\emacs\bin\emacsclientw.exe -c -n -a runemacs.exe
+c:\path\to\emacs\bin\emacsclientw.exe -c -n -a c:\path\to\emacs\bin\runemacs.exe
 }}}
 
 This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is running, otherwise opens a new frame.
