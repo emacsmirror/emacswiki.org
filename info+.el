@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  8 16:16:24 2020 (-0800)
+;; Last-Updated: Sun Nov  8 16:23:11 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6968
+;;     Update #: 6969
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -5302,7 +5302,11 @@ If key's command cannot be found by looking in indexes, then
   )
 
 (defun Info-fontify-glossary-words ()
-  "Fontify words in current node defined glossary of current manual.
+  "Fontify words in current node that are defined in the glossary.
+The glossary is that of the current manual, if there is one.
+Otherwise, it is the glossary specified by option
+`Info-glossary-fallbacks-alist', if any.
+
 Do nothing if the current node is `dir' or if the manual has no
 `Glossary' node.
 
