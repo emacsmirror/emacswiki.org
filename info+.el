@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov  4 14:03:54 2020 (-0800)
+;; Last-Updated: Sun Nov  8 16:16:24 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6937
+;;     Update #: 6968
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -121,6 +121,7 @@
 ;;    `Info-fontify-glossary-words',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
+;;    `Info-glossary-fallbacks-alist',
 ;;    `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+),
 ;;    `Info-saved-history-file' (Emacs 24.4+), `Info-saved-nodes',
 ;;    `Info-subtree-separator', `Info-toc-outline-no-redundancy-flag'.
@@ -139,6 +140,7 @@
 ;;    `Info-case-insensitive-string=',
 ;;    `Info-case-insensitive-string-hash', `info-custom-delim-1',
 ;;    `info-custom-delim-2', `Info-display-node-default-header',
+;;    `info-fallback-manual-for-glossary',
 ;;    `Info-fontify-custom-delimited', `Info-fontify-glossary-words',
 ;;    `Info-fontify-quotations', `Info-fontify-reference-items',
 ;;    `Info-get-glossary-hash-table-create',
@@ -520,6 +522,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/08 dadams
+;;     Be able to use glossary of another manual (Emacs manual, by default) for manuals that don't have one:
+;;       Added: Info-glossary-fallbacks-alist (option), info-fallback-manual-for-glossary.
+;;       Info-find-node-2, Info-fontify-glossary-words: Use fallback glossary, if specified.
+;;       Info-find-node-2: Don't try to get/create hash table if it already exists.
+;;       Info-get-glossary-hash-table-create:
+;;         If manual already has a hash table, return it.  Return to (original node in) original manual.
+;;       Info-goto-glossary-definition: Add manual to destination, so go to fallback glossary, if appropriate.
 ;; 2020/11/04 dadams
 ;;     Added: face info-custom-delimited, option and function Info-fontify-custom-delimited,
 ;;            var info-custom-delimited-same-line-regexp, info-custom-delim-1, info-custom-delim-2,
@@ -1463,23 +1473,6 @@ Note that any value can be problematic for some Info text - see
   "Non-nil means call `fit-frame' on Info buffer."
   :type 'boolean :group 'Info-Plus :group 'Fit-Frame)
 
-(when (and (require 'bookmark+ nil t)   ; Emacs 24.4+
-           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
-
-  (defcustom Info-node-access-invokes-bookmark-flag t
-    "Non-nil means invoke the bookmark when you access an Info node.
-This applies to Info bookmarks whose names correspond to the default
-name.  This is normally the full node name, `(MANUAL) NODE', where
-MANUAL is the lowercase name of the Info manual.  For example, node
-`Modes' in the Emacs manual has full name `(emacs) Modes', and the
-bookmark must have that same name.
-
-This automatic bookmark invocation can be useful to update the
-bookmark data, such as the number of visits to the node."
-    :type 'boolean :group 'Info-Plus)
-
-  )
-
 ;;;###autoload
 (defcustom Info-fontify-angle-bracketed-flag t
   "Non-nil means `info' fontifies text within <...>.
@@ -1605,6 +1598,24 @@ toggle the option value."
           (other :tag "Fontify, link, and show tooltip on mouseover"  t))
   :group 'Info-Plus)
 
+
+(define-obsolete-variable-alias 'Info-fontify-single-quote-flag 'Info-fontify-isolated-quote-flag "2020-10-22")
+;;;###autoload
+(defcustom Info-fontify-isolated-quote-flag t
+  "Non-nil means `info' fontifies ' when not preceded by `....
+A non-nil value has no effect unless `Info-fontify-quotations' is also
+non-nil.
+
+Note: This fontification can never be 100% reliable.  It aims to be
+useful in most Info texts, but it can occasionally result in
+fontification that you might not expect.  This is not a bug; it is
+part of the design to be able to appropriately fontify a great variety
+of texts.  Set this flag to nil if you do not find this fontification
+useful.  You can use command `Info-toggle-fontify-isolated-quote' to
+toggle the option value."
+  :type 'boolean :group 'Info-Plus)
+
+
 (define-obsolete-variable-alias 'Info-fontify-quotations-flag 'Info-fontify-quotations "2020-10-19")
 ;;;###autoload
 (defcustom Info-fontify-quotations t
@@ -1637,6 +1648,39 @@ cycle the option value."
   "Non-nil means `info' fontifies reference items such as \"Function:\"."
   :type 'boolean :group 'Info-Plus)
 
+;;;###autoload
+(defcustom Info-glossary-fallbacks-alist '((emacs . t))
+  "Alist of fallback manuals to use for glossary links.
+Each element is of the form (GLOSSARY-MANUAL . MANUALS).  The glossary
+of GLOSSARY-MANUALis used to create glossary links for each manual in
+MANUALS, if it has no glossary of its own.  If MANUALS is `t' then all
+manuals use the glossary of GLOSSARY-MANUAL.
+
+This has no effect if option `Info-fontify-glossary-words' is nil."
+  :type '(alist
+          :key-type   (symbol :tag "Fallback manual (use its glossary)")
+          :value-type (choice
+                       (repeat (symbol :tag "A manual that uses fallback manual's glossary"))
+                       (const :tag "Use fallback for all manuals with no glossary" t)))
+  :group 'Info-Plus)
+
+(when (and (require 'bookmark+ nil t)   ; Emacs 24.4+
+           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+
+  (defcustom Info-node-access-invokes-bookmark-flag t
+    "Non-nil means invoke the bookmark when you access an Info node.
+This applies to Info bookmarks whose names correspond to the default
+name.  This is normally the full node name, `(MANUAL) NODE', where
+MANUAL is the lowercase name of the Info manual.  For example, node
+`Modes' in the Emacs manual has full name `(emacs) Modes', and the
+bookmark must have that same name.
+
+This automatic bookmark invocation can be useful to update the
+bookmark data, such as the number of visits to the node."
+    :type 'boolean :group 'Info-Plus)
+
+  )
+
 (when (fboundp 'advice-add)             ; Emacs 24.4+
 
   (defcustom Info-saved-history-file (locate-user-emacs-file "info-history" ".emacs.info-history")
@@ -1654,22 +1698,6 @@ a filename, such as \"(emacs)Basic\", or it can be relative, such as
 You can customize this option, but you can also add node names to it
 easily using `\\[Info-save-current-node]' (`Info-save-current-node')."
   :type '(repeat (string :tag "Node name")) :group 'info)
-
-;;;###autoload
-(defcustom Info-fontify-isolated-quote-flag t
-  "Non-nil means `info' fontifies ' when not preceded by `....
-A non-nil value has no effect unless `Info-fontify-quotations' is also
-non-nil.
-
-Note: This fontification can never be 100% reliable.  It aims to be
-useful in most Info texts, but it can occasionally result in
-fontification that you might not expect.  This is not a bug; it is
-part of the design to be able to appropriately fontify a great variety
-of texts.  Set this flag to nil if you do not find this fontification
-useful.  You can use command `Info-toggle-fontify-isolated-quote' to
-toggle the option value."
-  :type 'boolean :group 'Info-Plus)
-(define-obsolete-variable-alias 'Info-fontify-single-quote-flag 'Info-fontify-isolated-quote-flag "2020-10-22")
 
 ;;;###autoload
 (defcustom Info-subtree-separator "\n* "
@@ -1707,7 +1735,7 @@ If nil then emphasis is never fontified, regardless of that flag.")
 
 (defvar Info-link-faces '(info-xref info-xref-visited info-xref-bookmarked)
   "List of `font-lock-face' property faces used for links in Info.
-Used to prevent glossary-word highlighting and linkingfrom overriding
+Used to prevent glossary-word highlighting and linking from overriding
 node links, when` Info-fontify-glossary-words' is non-nil.")
 
 ;; I reported this as Emacs bug #3312.  If it gets fixed, this can be removed.
@@ -3437,6 +3465,8 @@ Non-nil NOMSG means do not show a status message."
 ;; 3. If `Info-fontify-glossary-words' and NODENAME is `Glossary' then create glossary-words hash table.
 ;;
 (defun Info-find-node-2 (filename nodename &optional no-going-back strict-case nomsg)
+  "Helper for `Info-find-node'.
+\(Same arguments.)"
   (buffer-disable-undo (current-buffer))
   (or (eq major-mode 'Info-mode)  (Info-mode))
   (widen)
@@ -3602,8 +3632,11 @@ Non-nil NOMSG means do not show a status message."
                    Info-fit-frame-flag)
           (fit-frame))
         (when (and Info-fontify-glossary-words  (not (equal nodename "Glossary")))
-          (Info-get-glossary-hash-table-create
-           (file-name-sans-extension (file-name-nondirectory Info-current-file)))))
+          (let* ((manual  (file-name-sans-extension (file-name-nondirectory Info-current-file)))
+                 (ht-var  (intern (concat manual "-glossary-hash-table"))))
+            ;; If no glossary hash table, try to get one, possibly using fallback manual.
+            (unless (and (boundp ht-var)  (hash-table-p (symbol-value ht-var)))
+              (Info-get-glossary-hash-table-create (info-fallback-manual-for-glossary manual))))))
     ;; If we did not finish finding the specified node, go to the previous one or to `Top' node.
     (unless (or Info-current-node  no-going-back)
       (if Info-history
@@ -3616,39 +3649,51 @@ Non-nil NOMSG means do not show a status message."
 
 (defun Info-get-glossary-hash-table-create (&optional manual resetp)
   "Get glossary hash table for MANUAL, creating it if it doesn't exist.
+MANUAL defaults to \"emacs\".
 Non-nil RESETP means re-create an existing hash table."
   (unless (equal "dir" Info-current-file)
-    (unless manual (setq manual "emacs"))
+    (unless manual (setq manual  "emacs"))
     (let ((ht-var               (intern (concat manual "-glossary-hash-table")))
+          (omanual              Info-current-file)
           (onode                Info-current-node)
           (Info-fit-frame-flag  nil))
-      (when (and (or (not (boundp ht-var))  resetp)
-                 (not (memq (intern manual) Info-no-glossary-manuals)))
-        (if (not (ignore-errors (progn (Info-find-node manual "Glossary" 'NO-GOING-BACK) t)))
-            (progn (add-to-list 'Info-no-glossary-manuals (intern manual))
-                   (Info-find-node manual onode 'NO-GOING-BACK nil 'NOMSG))
-          (let (def dbeg dend term)
-            (re-search-forward "Glossary\n\\*+\n")
-            (eval `(defvar ,ht-var nil ,(format "Glossary hash table for manual %s." (capitalize manual))))
-            (set ht-var (make-hash-table :test 'Info-case-insensitive-string=))
-            (while (not (eobp))
-              (setq def  "")
-              (re-search-forward "^[^[:space:]].*")
-              (setq term  (match-string 0)
-                    dbeg  (match-end 0))
-              (forward-char)
-              ;; Skip over any blank lines between term and its definition.
-              ;; This is the case for glossary entry `Text', for instance.
-              (while (looking-at-p "^$") (forward-line))
-              (setq dbeg  (point))
-              (while (looking-at-p "^[[:space:]].*") ; Gather lines of the definition.
-                (setq def  (concat def (buffer-substring dbeg (progn (forward-line)
-                                                                     (setq dbeg  (point)))))))
-              (setq def  (replace-regexp-in-string "\\(     \\)" "" def nil nil 1)
-                    def  (replace-regexp-in-string "\\`\n+" "" def)
-                    def  (replace-regexp-in-string "\n\n\\'" "" def))
-              (puthash term def (symbol-value ht-var))))
-          (Info-find-node manual onode nil nil 'NOMSG))))))
+      (if (and (boundp ht-var)  (hash-table-p (symbol-value ht-var)))
+          (symbol-value ht-var)
+        (when (and (or (not (boundp ht-var))  resetp)
+                   (not (memq (intern manual) Info-no-glossary-manuals)))
+          (if (not (ignore-errors (progn (Info-find-node manual "Glossary" 'NO-GOING-BACK) t)))
+              (progn (add-to-list 'Info-no-glossary-manuals (intern manual))
+                     (Info-find-node manual onode 'NO-GOING-BACK nil 'NOMSG))
+            (let (def dbeg dend term)
+              (re-search-forward "Glossary\n\\*+\n")
+              (eval `(defvar ,ht-var nil ,(format "Glossary hash table for manual %s." (capitalize manual))))
+              (set ht-var (make-hash-table :test 'Info-case-insensitive-string=))
+              (while (not (eobp))
+                (setq def  "")
+                (re-search-forward "^[^[:space:]].*")
+                (setq term  (match-string 0)
+                      dbeg  (match-end 0))
+                (forward-char)
+                ;; Skip over any blank lines between term and its definition.
+                ;; This is the case for glossary entry `Text', for instance.
+                (while (looking-at-p "^$") (forward-line))
+                (setq dbeg  (point))
+                (while (looking-at-p "^[[:space:]].*") ; Gather lines of the definition.
+                  (setq def  (concat def (buffer-substring dbeg (progn (forward-line)
+                                                                       (setq dbeg  (point)))))))
+                (setq def  (replace-regexp-in-string "\\(     \\)" "" def nil nil 1)
+                      def  (replace-regexp-in-string "\\`\n+" "" def)
+                      def  (replace-regexp-in-string "\n\n\\'" "" def))
+                (puthash term def (symbol-value ht-var))))
+            (Info-find-node omanual onode nil nil 'NOMSG)))))))
+
+(defun info-fallback-manual-for-glossary (manual)
+  "Name of manual whose glossary is to be used for MANUAL, or nil if none."
+  (catch 'info-fallback-manual-for-glossary
+    (dolist (entry  Info-glossary-fallbacks-alist)
+      (when (or (eq t (cdr entry))  (memq (intern manual) (cdr entry)))
+        (throw 'info-fallback-manual-for-glossary (symbol-name (car entry)))))
+    nil))
 
 (define-hash-table-test
   'Info-case-insensitive-string=
@@ -5265,11 +5310,13 @@ Don't fontify anything in an Index.  Don't fontify a word in node
 `Glossary' unless its occurrence is in a definition other than its
 own."
   (unless (equal "dir"   Info-current-file)
-    (let ((words-here    ())
-          (ht-var        (intern (concat (file-name-sans-extension (file-name-nondirectory Info-current-file))
-                                         "-glossary-hash-table")))
-          (gloss-node-p  (equal Info-current-node "Glossary"))
-          wbeg wend word def)
+    (let* ((manual        (file-name-sans-extension (file-name-nondirectory Info-current-file)))
+           (ht-var        (intern (concat manual "-glossary-hash-table")))
+           (words-here    ())
+           (gloss-node-p  (equal Info-current-node "Glossary"))
+           wbeg wend word def)
+      (unless (and (boundp ht-var)  (hash-table-p (symbol-value ht-var)))
+        (setq ht-var  (intern (concat (info-fallback-manual-for-glossary manual) "-glossary-hash-table"))))
       (when (and (boundp ht-var)
                  (hash-table-p (symbol-value ht-var)) ; Just to be safe.
                  (not (string-match-p "\\bIndex\\b" Info-current-node)))
@@ -5323,7 +5370,9 @@ But usable with Emacs < 24 too."
   (goto-char (posn-point (event-start event)))
   (let ((word  (word-at-point)))
     (ignore-errors
-      (Info-goto-node "Glossary")
+      (Info-goto-node (format "(%s)Glossary" (file-name-sans-extension
+                                              (file-name-nondirectory
+                                               (info-fallback-manual-for-glossary Info-current-file)))))
       (goto-char (point-min))
       (forward-line 4)
       (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
