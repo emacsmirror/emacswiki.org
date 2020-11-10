@@ -7,15 +7,19 @@
 ;; Copyright (C) 2007-2008 Anupam Sengupta, all rights reserved.
 ;; Created: Wed May 24 14:05:13 2007
 ;; Version: 1.0
-;; Last-Updated: Fri May 22 12:57:40 2009 (-0700)
+;; Last-Updated: Tue Nov 10 09:44:06 2020 (-0800)
 ;;           By: dradams
-;; URL: http://www.emacswiki.org/emacs/icicles-install.el
+;; URL: http://www.emacswiki.org/emacs/download/icicles-install.el
 ;; Keywords: package, download
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x, GNU Emacs 22.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `url'.
+;;   `auth-source', `cl-generic', `cl-lib', `cl-macs', `eieio',
+;;   `eieio-core', `eieio-loaddefs', `gv', `macroexp', `mailcap',
+;;   `password-cache', `url', `url-cookie', `url-domsuf',
+;;   `url-expand', `url-history', `url-methods', `url-parse',
+;;   `url-privacy', `url-proxy', `url-util', `url-vars'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -57,6 +61,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2020/11/10 dadams
+;;     Just updated Emacs-Wiki download URL for this file.
 ;; 2012/01/14 dadams
 ;;     icicle-files-to-download-list: Added ring+.el (needed by doremi.el).
 ;; 2009/05/22 dadams
