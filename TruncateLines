@@ -77,6 +77,12 @@ Nano truncates lines so that when you scroll toward the end of one,
 the line itself moves to the left independently of the rest of the
 text.  I've had a surprisingly hard time finding any talk of this 
 feature in emacs.  Is it possible?
+
+: Yes, this will have that effect:
+{{{
+(setq auto-hscroll-mode 'current-line)
+}}}
+
 ----
 CategoryDisplay
 CategoryFilling
