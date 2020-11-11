@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Nov 11 09:59:03 2020 (-0800)
+;; Last-Updated: Wed Nov 11 10:42:05 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 3219
+;;     Update #: 3222
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -336,6 +336,7 @@
 ;;; Change Log:
 ;;
 ;; 2020/11/11 dadams
+;;     1on1-fit-minibuffer-frame: Invoke raise-frame at the end.
 ;;     Updated commentary/doc to suggest using M-up, not C-o, for 1on1-fit-minibuffer-frame.
 ;; 2019/09/19 dadams
 ;;     1on1-move-minibuffer-frame-near-point, 1on1-reposition-minibuffer-frame:
@@ -2035,50 +2036,51 @@ This command requires library `fit-frame.el'."
     (let* ((frame         (window-frame (minibuffer-window)))
            (frame-height  (frame-height frame)))
       (cond
-        (resetp
-         (set-frame-height frame 1on1-minibuffer-frame-height) ; Reset to default.
-         (1on1-set-minibuffer-frame-top/bottom))
-        ((eq last-command '1on1-fit-minibuffer-frame)
-         (set-frame-height frame (1+ (frame-height frame)))
-         (1on1-set-minibuffer-frame-top/bottom)
-         ;; $$$$$$ This interfered with `C-e' and inserting text at end.
-         ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
-         )
-        (t
-         (let* ((beg                                     (1on1-minibuffer-prompt-end))
-                (fit-frame-max-height                    1on1-fit-minibuffer-frame-max-height)
-                (fit-frame-max-height-percent
-                 1on1-fit-minibuffer-frame-max-height-percent)
-                (fit-frame-min-height                    1on1-minibuffer-frame-height)
-                (window-min-height                       1on1-minibuffer-frame-height)
-                (fit-frame-empty-height                  1on1-minibuffer-frame-height)
-                (fit-frame-empty-special-display-height  1on1-minibuffer-frame-height))
-           (if (> emacs-major-version 22)
-               ;; In principle, that test could have been (fboundp 'count-screen-lines), which
-               ;; is defined for Emacs 21+.  But doing that makes the frame jump up and down
-               ;; inappropriately in Emacs 21-22.  So do it only for Emacs 23+.
+       (resetp
+        (set-frame-height frame 1on1-minibuffer-frame-height) ; Reset to default.
+        (1on1-set-minibuffer-frame-top/bottom))
+       ((eq last-command '1on1-fit-minibuffer-frame)
+        (set-frame-height frame (1+ (frame-height frame)))
+        (1on1-set-minibuffer-frame-top/bottom)
+        ;; $$$$$$ This interfered with `C-e' and inserting text at end.
+        ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
+        )
+       (t
+        (let* ((beg                                     (1on1-minibuffer-prompt-end))
+               (fit-frame-max-height                    1on1-fit-minibuffer-frame-max-height)
+               (fit-frame-max-height-percent
+                1on1-fit-minibuffer-frame-max-height-percent)
+               (fit-frame-min-height                    1on1-minibuffer-frame-height)
+               (window-min-height                       1on1-minibuffer-frame-height)
+               (fit-frame-empty-height                  1on1-minibuffer-frame-height)
+               (fit-frame-empty-special-display-height  1on1-minibuffer-frame-height))
+          (if (> emacs-major-version 22)
+              ;; In principle, that test could have been (fboundp 'count-screen-lines), which
+              ;; is defined for Emacs 21+.  But doing that makes the frame jump up and down
+              ;; inappropriately in Emacs 21-22.  So do it only for Emacs 23+.
 
-               ;; The reason for the different code for Emacs 23+:
-               ;; For `icomplete.el', Emacs 23+ uses an overlay instead of inserting text into
-               ;; the buffer.  `fit-frame' cannot take the height of that overlay into account.
-               ;; So we use `count-screen-lines' to get the height.
-               (fit-frame frame (frame-width frame)
-                          ;; Need to be sure to use the right buffer.  Some commands etc. can
-                          ;; pop up a frame and select it, or otherwise change the selected buf.
-                          (with-current-buffer (or (window-buffer (active-minibuffer-window))
-                                                   (current-buffer))
-                            (1+ (count-screen-lines))))
-             (fit-frame frame (frame-width frame)))
-           ;; $$$$       (when (>= emacs-major-version 21)
-           ;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
+              ;; The reason for the different code for Emacs 23+:
+              ;; For `icomplete.el', Emacs 23+ uses an overlay instead of inserting text into
+              ;; the buffer.  `fit-frame' cannot take the height of that overlay into account.
+              ;; So we use `count-screen-lines' to get the height.
+              (fit-frame frame (frame-width frame)
+                         ;; Need to be sure to use the right buffer.  Some commands etc. can
+                         ;; pop up a frame and select it, or otherwise change the selected buf.
+                         (with-current-buffer (or (window-buffer (active-minibuffer-window))
+                                                  (current-buffer))
+                           (1+ (count-screen-lines))))
+            (fit-frame frame (frame-width frame)))
+          ;; $$$$       (when (>= emacs-major-version 21)
+          ;;              (set-frame-height frame (1+ (frame-height frame)))) ; A little extra.
 
-           ;; Removed this because it does not seem needed and it interfered with
-           ;;`1on1-move-minibuffer-frame-near-point'.
-           ;; $$$$$$$$ (1on1-set-minibuffer-frame-top/bottom)
+          ;; Removed this because it does not seem needed and it interfered with
+          ;;`1on1-move-minibuffer-frame-near-point'.
+          ;; $$$$$$$$ (1on1-set-minibuffer-frame-top/bottom)
 
-           ;; $$$$$$ This interfered with `C-e' and inserting text at end.
-           ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
-           ))))))
+          ;; $$$$$$ This interfered with `C-e' and inserting text at end.
+          ;; (condition-case nil (scroll-down (frame-height frame)) (error nil))
+          ))))
+    (raise-frame)))
 
 (defun 1on1-minibuffer-prompt-end ()
   "Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
