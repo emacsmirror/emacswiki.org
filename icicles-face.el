@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Last-Updated: Fri Jan  3 09:50:23 2020 (-0800)
+;; Last-Updated: Thu Nov 12 14:54:16 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 746
+;;     Update #: 748
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-face.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -101,6 +101,9 @@
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'hexrgb nil t) ;; (no error if not found):
+ ;; hexrgb-increment-hue, hexrgb-saturation
  
 ;;(@* "Groups, Organized Alphabetically")
 
