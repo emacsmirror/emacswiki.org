@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Nov  5 15:42:09 2020 (-0800)
+;; Last-Updated: Thu Nov 12 14:56:19 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11907
+;;     Update #: 11909
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2197,6 +2197,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2020/11/12 dadams
+;;     Added soft-require of hexrgb.el (but not really needed).
 ;; 2014/10/19 dadams
 ;;     icicle-historical-candidate-other: Updated doc string for icicle-Info-highlight-visited-nodes.
 ;; 2013/07/07 dadams
