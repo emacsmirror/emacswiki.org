@@ -79,6 +79,8 @@ multiple versions of Emacs, and that fact provokes compiler
 warnings.  If you get byte-compiler errors (not warnings), then
 please report a bug, using `M-x icicle-send-bug-report'.
 
+=== Updating ===
+
 Whenever you update '''Icicles''' (i.e., download new versions of
 '''Icicle''' source files), I recommend that you do the following:
 
@@ -113,7 +115,6 @@ problems with function `read-file-name' because it is tweaked by
 both Viper and Icicles.  If you load '''Icicles''' before Viper, you
 should not encounter this problem (but you might encounter other
 problems: both '''Icicles''' and Viper try to control the minibuffer).
-
 
 
 
