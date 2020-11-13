@@ -59,7 +59,9 @@ An ##emacs-nativecomp## docker image is [https://hub.docker.com/r/andreacorallo/
 
 == Usage ==
 
-By default, only the Elisp code which ships with Emacs is native-compiled.  To native-compile your third-party packages, a few different approaches are available.
+By default Emacs ships only native compiling the files included in the Emacs image.
+
+The native compilation of the remaining Emacs distribution and external packages happen automatically and asynchronously (See Deferred compilation).
 
 === Deferred compilation ===
 
@@ -70,6 +72,14 @@ This is simple to use as does not require any user intervention.  You may prefer
 Deferred compilation is **enabled by default** and controlled by the ##comp-deferred-compilation## customize.
 
 === Ahead-of-time compilation ===
+
+==== Emacs distribution ====
+
+Is possible to native compile ahead-of-time all the Emacs distribution using the ##NATIVE_FULL_AOT##, ex:
+
+    $ make NATIVE_FULL_AOT=1 -j$(nproc)
+
+==== External packages ====
 
 The simplest solution for //"ahead-of-time"// compilation is to use a package manager which supports it:
 
