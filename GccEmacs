@@ -2,7 +2,7 @@
 
 The official development log can be found on [http://akrl.sdf.org/gccemacs.html the gccemacs page].
 
-The feature is discussed in detail in the talk [https://www.youtube.com/watch?v=zKHYZOAc_bQ "Bringing GNU Emacs to native code"].
+The feature is discussed in detail in the paper [https://zenodo.org/record/3736363 "Bringing GNU Emacs to native code"] and related [https://www.youtube.com/watch?v=zKHYZOAc_bQ "talk"].
 
 == Installation ==
 
