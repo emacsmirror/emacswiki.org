@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  8 16:23:11 2020 (-0800)
+;; Last-Updated: Fri Nov 13 15:57:04 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6969
+;;     Update #: 6983
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -374,6 +374,12 @@
 ;;      Emacs and Semantic manuals have `Glossary' nodes, as far as I
 ;;      know.)
 ;;
+;;    - Text between two delimiters that you specify, if the car of
+;;      option `Info-fontify-custom-delimited' is non-nil.
+;;
+;;    - Any extra highglighting you want in a node, as defined by the
+;;      value of variable `Info-fontify-extra-function'.
+;;
 ;;    - Be aware that any such highlighting is not 100% foolproof.
 ;;      Especially for a manual such as Emacs or Elisp, where
 ;;      arbitrary keys and characters can be present anywhere, the
@@ -522,6 +528,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/12 dadams
+;;     Added: Info-fontify-extra-function.
+;;     Info-fontify-node: Invoke Info-fontify-extra-function if non-nil.
 ;; 2020/11/08 dadams
 ;;     Be able to use glossary of another manual (Emacs manual, by default) for manuals that don't have one:
 ;;       Added: Info-glossary-fallbacks-alist (option), info-fallback-manual-for-glossary.
@@ -1726,11 +1735,19 @@ nodes can be repeated because they are in more than one section."
   "Non-nil means allow `Info-fontify-emphasis-flag' to work.
 If nil then emphasis is never fontified, regardless of that flag.")
 
+(defvar Info-fontify-extra-function nil
+  "If non-nil then a function used to provide additional highlighting.
+The function is passed no arguments.
+
+The function is invoked by `Info-fontify-node', before fontifying
+reference items (`Info-fontify-reference-items').  When it is called,
+point is at `point-min' in the node to be fontified.")
+
 (defvar info-glossary-link-map (let ((map  (make-sparse-keymap)))
-                                    (define-key map (kbd "RET")   'Info-goto-glossary-definition)
-                                    (define-key map [mouse-2]     'Info-goto-glossary-definition)
-                                    (define-key map [follow-link] 'mouse-2)
-                                    map)
+                                 (define-key map (kbd "RET")   'Info-goto-glossary-definition)
+                                 (define-key map [mouse-2]     'Info-goto-glossary-definition)
+                                 (define-key map [follow-link] 'mouse-2)
+                                 map)
   "Keymap for glossary-word links.")
 
 (defvar Info-link-faces '(info-xref info-xref-visited info-xref-bookmarked)
@@ -4189,10 +4206,9 @@ If key's command cannot be found by looking in indexes, then
                    (< (- (point-max) (point-min)) Info-fontify-maximum-menu-size)))
              rbeg rend)
 
-        ;; Fontify emphasis: _..._
+        ;; Fontify EMPHASIS: _..._
         ;;
         ;; Do this first because it can remove existing highlighting.
-        ;;
         (when info-fontify-emphasis
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
@@ -4204,7 +4220,7 @@ If key's command cannot be found by looking in indexes, then
                          '(invisible t front-sticky nil rear-nonsticky t))
                 (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))
 
-        ;; Fontify header line
+        ;; Fontify HEADER LINE
         (goto-char (point-min))
         (when (and not-fontified-p  (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
           (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-file))
@@ -4262,19 +4278,24 @@ If key's command cannot be found by looking in indexes, then
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
-        ;; Fontify ‘...’, `...', “...”, and "..."
+        ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
-        ;; Fontify custom-delimited
+        ;; Fontify CUSTOM-DELIMITED: text between custom delimiters
         (goto-char (point-min))
         (when (car Info-fontify-custom-delimited) (Info-fontify-custom-delimited))
 
-        ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
+        ;; Fontify EXTRA: something else
+        (when Info-fontify-extra-function
+          (goto-char (point-min))
+          (funcall Info-fontify-extra-function))
+
+        ;; Fontify REFERENCE ITEMS: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
 
-        ;; Fontify titles
+        ;; Fontify TITLES
         (goto-char (point-min))
         (when (and font-lock-mode not-fontified-p)
           (while (and (re-search-forward "\n\\([^ \t\n].+\\)\n\\(\\*\\*+\\|==+\\|--+\\|\\.\\.+\\)$" nil t)
@@ -4298,7 +4319,7 @@ If key's command cannot be found by looking in indexes, then
               (add-text-properties (1- (match-beginning 2)) (match-end 2)
                                    '(invisible t front-sticky nil rear-nonsticky t)))))
 
-        ;; Fontify cross references
+        ;; Fontify CROSS REFERENCES
         (goto-char (point-min))
         (when (or not-fontified-p  fontify-visited-p)
           (while (re-search-forward
@@ -4413,7 +4434,7 @@ If key's command cannot be found by looking in indexes, then
                 (when (and Info-refill-paragraphs  Info-hide-note-references)
                   (push (set-marker (make-marker) start) paragraph-markers))))))
 
-        ;; Refill paragraphs (experimental feature)
+        ;; REFILL PARAGRAPHS (experimental feature)
         (when (and not-fontified-p  Info-refill-paragraphs  paragraph-markers)
           (let ((fill-nobreak-invisible          t)
                 (fill-individual-varying-indent  nil)
@@ -4431,7 +4452,7 @@ If key's command cannot be found by looking in indexes, then
                     (goto-char beg))))
               (set-marker m nil))))
 
-        ;; Fontify menu items
+        ;; Fontify MENU ITEMS
         (goto-char (point-min))
         (when (and (or not-fontified-p  fontify-visited-p)
                    (search-forward "\n* Menu:" nil t)
@@ -4508,14 +4529,14 @@ If key's command cannot be found by looking in indexes, then
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
 
-        ;; Fontify glossary words
+        ;; Fontify GLOSSARY WORDS
         ;;
         ;; Do this AFTER fontifying menu items and references.
         (goto-char (point-min))
         (forward-line 4)
         (when Info-fontify-glossary-words (Info-fontify-glossary-words))
 
-        ;; Fontify menu headers
+        ;; Fontify MENU HEADERS
         (goto-char (point-min))
         (when (and not-fontified-p ; Add face `info-menu-header' to any header before a menu entry
                    (re-search-forward "^\\* Menu:" nil t))
@@ -4524,20 +4545,26 @@ If key's command cannot be found by looking in indexes, then
           (while (re-search-forward "\n\n\\([^*\n ].*\\)\n\n?[*]" nil t)
             (put-text-property (match-beginning 1) (match-end 1)
                                'font-lock-face 'info-menu-header)))
+
+        ;; Hide index line numbers
         (goto-char (point-min))
-        (when (and not-fontified-p  (Info-index-node)) ; Hide index line numbers
+        (when (and not-fontified-p  (Info-index-node))
           (while (re-search-forward "[ \t\n]*(line +[0-9]+)" nil t)
             (put-text-property (match-beginning 0) (match-end 0)
                                'invisible t)))
+
+        ;; Fontify HTTP AND FTP REFERENCES
         (goto-char (point-min))
-        (when not-fontified-p        ; Fontify http and ftp references
+        (when not-fontified-p
           (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
             (add-text-properties (match-beginning 0) (match-end 0)
                                  '(font-lock-face info-xref
                                                   mouse-face highlight
                                                   help-echo "mouse-2: go to this URL"))))
+
+        ;; Hide any empty lines at the end of the node.
         (goto-char (point-max))
-        (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
+        (skip-chars-backward "\n")
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil))))
 
@@ -4574,10 +4601,9 @@ If key's command cannot be found by looking in indexes, then
                    (< (- (point-max) (point-min)) Info-fontify-maximum-menu-size)))
              rbeg rend)
 
-        ;; Fontify emphasis: _..._
+        ;; Fontify EMPHASIS: _..._
         ;;
         ;; Do this first because it can remove existing highlighting.
-        ;;
         (when info-fontify-emphasis
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
@@ -4589,7 +4615,7 @@ If key's command cannot be found by looking in indexes, then
                          '(invisible t front-sticky nil rear-nonsticky t))
                 (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))
 
-        ;; Fontify header line
+        ;; Fontify HEADER LINE
         (goto-char (point-min))
         (when (and not-fontified-p  (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
           (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-file))
@@ -4647,19 +4673,24 @@ If key's command cannot be found by looking in indexes, then
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
-        ;; Fontify ‘...’, `...', “...”, and "..."
+        ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
-        ;; Fontify custom-delimited
+        ;; Fontify CUSTOM-DELIMITED: text between custom delimiters
         (goto-char (point-min))
         (when (car Info-fontify-custom-delimited) (Info-fontify-custom-delimited))
 
-        ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
+        ;; Fontify EXTRA: something else
+        (when Info-fontify-extra-function
+          (goto-char (point-min))
+          (funcall Info-fontify-extra-function))
+
+        ;; Fontify REFERENCE ITEMS: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
 
-        ;; Fontify titles
+        ;; Fontify TITLES
         (goto-char (point-min))
         (when (and font-lock-mode  not-fontified-p)
           (while (and (re-search-forward "\n\\([^ \t\n].+\\)\n\\(\\*\\*+\\|==+\\|--+\\|\\.\\.+\\)$" nil t)
@@ -4680,7 +4711,7 @@ If key's command cannot be found by looking in indexes, then
               (add-text-properties (1- (match-beginning 2)) (match-end 2)
                                    '(invisible t front-sticky nil rear-nonsticky t)))))
 
-        ;; Fontify cross references
+        ;; Fontify CROSS REFERENCES
         (goto-char (point-min))
         (when (or not-fontified-p  fontify-visited-p)
           (while (re-search-forward
@@ -4785,7 +4816,7 @@ If key's command cannot be found by looking in indexes, then
                 (when (and Info-refill-paragraphs  Info-hide-note-references)
                   (push (set-marker (make-marker) start) paragraph-markers))))))
 
-        ;; Refill paragraphs (experimental feature)
+        ;; REFILL PARAGRAPHS (experimental feature)
         (when (and not-fontified-p  Info-refill-paragraphs  paragraph-markers)
           (let ((fill-nobreak-invisible          t)
                 (fill-individual-varying-indent  nil)
@@ -4803,7 +4834,7 @@ If key's command cannot be found by looking in indexes, then
                     (goto-char beg))))
               (set-marker m nil))))
 
-        ;; Fontify menu items
+        ;; Fontify MENU ITEMS
         (goto-char (point-min))
         (when (and (or not-fontified-p  fontify-visited-p)
                    (search-forward "\n* Menu:" nil t)
@@ -4879,34 +4910,40 @@ If key's command cannot be found by looking in indexes, then
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
 
-        ;; Fontify glossary words
+        ;; Fontify GLOSSARY WORDS
         ;;
         ;; Do this AFTER fontifying menu items and references.
         (goto-char (point-min))
         (forward-line 4)
         (when Info-fontify-glossary-words (Info-fontify-glossary-words))
 
-        ;; Fontify menu headers
+        ;; Fontify MENU HEADERS
         (goto-char (point-min))
         ;; Add face `info-menu-header' to any header before a menu entry
         (when (and not-fontified-p  (re-search-forward "^\\* Menu:" nil t))
           (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-menu-header)
           (while (re-search-forward "\n\n\\([^*\n ].*\\)\n\n?[*]" nil t)
             (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-menu-header)))
+
+        ;; Hide index line numbers
         (goto-char (point-min))
-        (when (and not-fontified-p  (Info-index-node)) ; Hide index line numbers
+        (when (and not-fontified-p  (Info-index-node))
           (while (re-search-forward "[ \t\n]*(line +[0-9]+)" nil t)
             (put-text-property (match-beginning 0) (match-end 0)
                                'invisible t)))
+
+       ; ; Fontify HTTP AND FTP REFERENCES
         (goto-char (point-min))
-        (when not-fontified-p        ; Fontify http and ftp references
+        (when not-fontified-p
           (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
             (add-text-properties (match-beginning 0) (match-end 0)
                                  '(font-lock-face info-xref
                                                   mouse-face highlight
                                                   help-echo "mouse-2: go to this URL"))))
+
+        ;; Hide any empty lines at the end of the node.
         (goto-char (point-max))
-        (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
+        (skip-chars-backward "\n")
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil))))
 
@@ -4946,10 +4983,9 @@ If key's command cannot be found by looking in indexes, then
                                            (and where  (not (= where (point-max)))))))
              paragraph-markers rbeg rend)
 
-        ;; Fontify emphasis: _..._
+        ;; Fontify EMPHASIS: _..._
         ;;
         ;; Do this first because it can remove existing highlighting.
-        ;;
         (goto-char (point-min))
         (when (and font-lock-mode  not-fontified-p)
           (while (re-search-forward Info-emphasis-regexp nil t)
@@ -4960,7 +4996,7 @@ If key's command cannot be found by looking in indexes, then
                        '(invisible t front-sticky nil rear-nonsticky t))
               (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis)))))
 
-        ;; Fontify header line
+        ;; Fontify HEADER LINE
         (goto-char (point-min))
         (when (and not-fontified-p  (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
           (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-file))
@@ -5026,19 +5062,24 @@ If key's command cannot be found by looking in indexes, then
                                             header-end t)
                          (put-text-property (match-beginning 1) (match-end 1) 'invisible t)))))))
 
-        ;; Fontify ‘...’, `...', “...”, and "..."
+        ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
 
-        ;; Fontify custom-delimited
+        ;; Fontify CUSTOM-DELIMITED: text between custom delimiters
         (goto-char (point-min))
         (when (car Info-fontify-custom-delimited) (Info-fontify-custom-delimited))
 
-        ;; Fontify reference items: `-- Function:', `-- Variable:', etc.
+        ;; Fontify EXTRA: something else
+        (when Info-fontify-extra-function
+          (goto-char (point-min))
+          (funcall Info-fontify-extra-function))
+
+        ;; Fontify REFERENCE ITEMS: `-- Function:', `-- Variable:', etc.
         (goto-char (point-min))
         (when Info-fontify-reference-items-flag (Info-fontify-reference-items))
 
-        ;; Fontify titles
+        ;; Fontify TITLES
         (goto-char (point-min))
         (when (and font-lock-mode  not-fontified-p)
           (while (and (re-search-forward "\n\\([^ \t\n].+\\)\n\\(\\*\\*+\\|==+\\|--+\\|\\.\\.+\\)$" nil t)
@@ -5059,7 +5100,7 @@ If key's command cannot be found by looking in indexes, then
               (add-text-properties (1- (match-beginning 2)) (match-end 2)
                                    '(invisible t front-sticky nil rear-nonsticky t)))))
 
-        ;; Fontify cross references
+        ;; Fontify CROSS REFERENCES
         (goto-char (point-min))
         (when (or not-fontified-p  fontify-bookmarked-p  fontify-visited-p)
           (while (re-search-forward
@@ -5168,7 +5209,8 @@ If key's command cannot be found by looking in indexes, then
                                                 '(invisible t front-sticky nil rear-nonsticky t))))))
                 (when (and Info-refill-paragraphs  Info-hide-note-references)
                   (push (set-marker (make-marker) start) paragraph-markers))))))
-        ;; Refill paragraphs (experimental feature)
+
+        ;; REFILL PARAGRAPHS (experimental feature)
         (when (and not-fontified-p  Info-refill-paragraphs  paragraph-markers)
           (let ((fill-nobreak-invisible          t)
                 (fill-individual-varying-indent  nil)
@@ -5186,7 +5228,7 @@ If key's command cannot be found by looking in indexes, then
                     (goto-char beg))))
               (set-marker m nil))))
 
-        ;; Fontify menu items
+        ;; Fontify MENU ITEMS
         (goto-char (point-min))
         (when (and (or not-fontified-p  fontify-bookmarked-p  fontify-visited-p)
                    (search-forward "\n* Menu:" nil t)
@@ -5270,32 +5312,38 @@ If key's command cannot be found by looking in indexes, then
                                                                                    '(space :align-to 24)))
                     (setq cont  t)))))))
 
-        ;; Fontify glossary words
+        ;; Fontify GLOSSARY WORDS
         ;;
         ;; Do this AFTER fontifying menu items and references.
         (goto-char (point-min))
         (forward-line 4)
         (when Info-fontify-glossary-words (Info-fontify-glossary-words))
 
-        ;; Fontify menu headers
+        ;; Fontify MENU HEADERS
         (goto-char (point-min))
         (when (and not-fontified-p ; Add face `info-menu-header' to any header before a menu entry
                    (re-search-forward "^\\* Menu:" nil t))
           (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-menu-header)
           (while (re-search-forward "\n\n\\([^*\n ].*\\)\n\n?[*]" nil t)
             (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-menu-header)))
+
+        ;; Hide index line numbers
         (goto-char (point-min))
-        (when (and not-fontified-p  (Info-index-node)) ; Hide index line numbers
+        (when (and not-fontified-p  (Info-index-node))
           (while (re-search-forward "[ \t\n]*(line +[0-9]+)" nil t)
             (put-text-property (match-beginning 0) (match-end 0) 'invisible t)))
+
+        ;; Fontify HTTP AND FTP REFERENCES
         (goto-char (point-min))
-        (when not-fontified-p        ; Fontify http and ftp references
+        (when not-fontified-p
           (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
             (add-text-properties
              (match-beginning 0) (match-end 0)
              '(font-lock-face info-xref mouse-face highlight help-echo "mouse-2: go to this URL"))))
+
+        ;; Hide any empty lines at the end of the node.
         (goto-char (point-max))
-        (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
+        (skip-chars-backward "\n")
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil))))
 
