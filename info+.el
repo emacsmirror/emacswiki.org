@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 13 15:57:04 2020 (-0800)
+;; Last-Updated: Sat Nov 14 16:03:00 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 6983
+;;     Update #: 6989
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -528,6 +528,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/11/14 dadams
+;;     Info-fontify-quotations, Info-fontify-custom-delimited, info-display-manual:
+;;       Use ignore-errors instead of nil condition-case.
 ;; 2020/11/12 dadams
 ;;     Added: Info-fontify-extra-function.
 ;;     Info-fontify-node: Invoke Info-fontify-extra-function if non-nil.
@@ -5485,7 +5488,7 @@ This respects option `Info-fontify-quotations'.
                          info-quoted+<>-same-line-regexp
                        info-quotation-same-line-regexp)))
         (property  'font-lock-face))
-    (while (condition-case nil (re-search-forward regexp nil t) (error nil))
+    (while (ignore-errors (re-search-forward regexp nil t))
       (cond ((and (eq (aref (match-string 0) 0) ?`) ; Single-quote wrapped backslashes: `\', `\\', `\\\', etc.
                   (goto-char (match-beginning 0))
                   (save-match-data (looking-at "\\(`\\\\+'\\)")))
@@ -5528,17 +5531,17 @@ This respects option `Info-fontify-quotations'.
              (goto-char (match-end 0)) (forward-char 1))))
     (when Info-fontify-isolated-quote-flag
       (goto-char (point-min))
-      (while (condition-case nil (re-search-forward info-isolated-quote-regexp nil t) (error nil))
+      (while (ignore-errors (re-search-forward info-isolated-quote-regexp nil t))
         (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
         (goto-char (match-end 0)) (forward-char 1))
       (goto-char (point-min))
-      (while (condition-case nil (re-search-forward info-isolated-backquote-regexp nil t) (error nil))
+      (while (ignore-errors nil (re-search-forward info-isolated-backquote-regexp nil t))
         (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
         (goto-char (match-end 0)) (forward-char 1)))))
 
 (defun Info-fontify-custom-delimited ()
   "Fontify text between custom delimiters."
-  (while (condition-case nil (re-search-forward info-custom-delimited-same-line-regexp nil t) (error nil))
+  (while (ignore-errors (re-search-forward info-custom-delimited-same-line-regexp nil t))
     (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
     (goto-char (match-end 0)) (forward-char 1)))
 
@@ -6262,23 +6265,20 @@ With a prefix arg (Emacs 24.4+), completion candidates are limited to
 currently visited manuals."
   (interactive
    (let ((manuals  (and (fboundp 'info--manual-names)
-                        (condition-case nil
-                            (info--manual-names current-prefix-arg) ; Arg was added in Emacs 25.
-                          (error nil)))))
+                        (ignore-errors (info--manual-names current-prefix-arg))))) ; Arg was added in Emacs 25.
      (unless manuals
-       (condition-case nil
-           (with-temp-buffer
-             (Info-mode)
-             (Info-directory)
-             (goto-char (point-min))
-             (re-search-forward "\\* Menu: *\n" nil t)
-             (let (manual)
-               (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
-                 ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
-                 (setq manual  (match-string 1))
-                 (set-text-properties 0 (length manual) nil manual)
-                 (add-to-list 'manuals (list manual)))))
-         (error nil)))
+       (ignore-errors
+         (with-temp-buffer
+           (Info-mode)
+           (Info-directory)
+           (goto-char (point-min))
+           (re-search-forward "\\* Menu: *\n" nil t)
+           (let (manual)
+             (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
+               ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
+               (setq manual  (match-string 1))
+               (set-text-properties 0 (length manual) nil manual)
+               (add-to-list 'manuals (list manual)))))))
      (list (completing-read "Display manual: " manuals nil t))))
   (let ((blist             (buffer-list))
         (manual-re         (concat "\\(/\\|\\`\\)" manual "\\(\\.\\|\\'\\)"))
