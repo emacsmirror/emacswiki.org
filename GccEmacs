@@ -75,7 +75,7 @@ Deferred compilation is **enabled by default** and controlled by the ##comp-defe
 
 ==== Emacs distribution ====
 
-Is possible to native compile ahead-of-time all the Emacs distribution using the ##NATIVE_FULL_AOT##, ex:
+It is possible to native compile ahead-of-time all the Emacs distribution using the ##NATIVE_FULL_AOT##, for example:
 
     $ make NATIVE_FULL_AOT=1 -j$(nproc)
 
