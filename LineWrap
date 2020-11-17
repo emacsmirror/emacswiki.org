@@ -35,6 +35,10 @@ If you don't want to use the visual-line-mode command because you don't want the
 
 Usage of the word-wrap feature is really dependent on whether or not you like to horizontally scroll or not (with `truncate-lines'). I don't, since I'm using Emacs to write at the moment and this makes it much easier to read.  If you're just truncating and wrapping, I highly recommend it. -- [[sword]]
 
+Emacs 28 provides an additional word wrapping feature that is called ##word-wrap-by-category##. This is supposed to improve word-wrapping for CJK and in similar contexts. But it can be also used, alternatively, for other unicode regions. For example, turning this boolean flag on ##(setq word-wrap-by-category t)##, and setting ##(modify-category-entry '(45 . 47) ?|)## adds ##",-/"## to the set of characters emacs will consider as word wrapping boundaries. This is helpful when using long URLs: e.g. if ##LINK## is longer than the line length, the line ##* LINK##, will be wrapped at the first space -- then the first line will be just ##*##, and LINK will start from the next line, and will be broken in half anyway because it's long. The modification described above will break LINK in the middle, so the first line will be ##* LIN## for some decently long prefix ##LIN## of ##LINK##, and the second line will contain just ##K##. 
+
+-- volhovm
+
 == Line-Wrap Character ==
 
 To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
