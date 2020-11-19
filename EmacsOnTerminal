@@ -23,46 +23,30 @@ When Emacs starts, it tries to load a library called
 "term/''value_of_term''", f.ex. "term/vt420".  These usually set quite
 decent defaults.
 
-You do want to have hardware flowcontrol, and turn it on from the
+You do want to have hardware flow control, and turn it on from the
 terminal itself, and for the ''getty'' process too which is the thing
 that initializes the terminal line.  Well, you can use '''stty'''(1)
-too, to tweak you serial line.  So you'll propably wan't to have a
-''null-modem cable'', or real modems if you're a bit further away, or
-got some extras lying about.
+too, to tweak you serial line.  So you'll probably want to have a
+''null-modem cable'', or real modems if you're a bit further away.
 
-The flowcontrol is crucial at speeds above 9600bps.  The XON/XOFF
-protocol, which sucks anyway, might interfere with Emacs'
-<code>C-s</code> and <code>C-q</code> events, so you do want RTS/CTS.
-The library ''flow-ctrl'' provides some convenience features, most
-notably the command <code>enable-flow-control</code> which also remaps
-these keys.  Other ways to handle use of XON/XOFF include using the
-unix command <code>stty -ixon</code> or <code>(set-input-mode t nil
-t)</code> from Emacs.  Either way, no matter what your setting will
-be, you will miss the command <code>recenter</code> that will re-draw
-the screen.  By default it's bound to <code>C-l</code>.
+Flow control is crucial at speeds above 9600bps.  The XON/XOFF protocol, which sucks anyway, will interfere with Emacs' <code>C-s</code> and <code>C-q</code> events, so you do want hardware flow control (RTS/CTS).  If you must use software flow control, the library ''flow-ctrl'' provides some convenience features, most
+notably the command <code>enable-flow-control</code> which also remaps these keys.  Other ways to handle use of XON/XOFF include using the unix command <code>stty -ixon</code> or <code>(set-input-mode t nil t)</code> from Emacs.  Either way, no matter what your setting will be, you will miss the command <code>recenter</code> that will re-draw the screen.  By default it's bound to <code>C-l</code>.
 
 =Notes about certain terminals=
 
 ==DEC's VT-series of terminals==
 
-Terminals by Digital Equipment Corporation, or
-<code>|d|i|g|i|t|a|l|</code> are common, and often emulated.  Maybe
-the most common terminal mode of all is the ''vt100'', and also
-''vt101'', ''vt102'' and ''vt220''.  Emacs handles there terminals
-quite well.
+Terminals by Digital Equipment Corporation, or <code>|d|i|g|i|t|a|l|</code> are common, and often emulated.  Perhaps the most common terminal mode of all is the ''vt100'', and also ''vt102'' and ''vt220''.  Emacs handles these terminals quite well.
 
-Most of the special keys work by default, tho there's some quirks.  At
-least the VT420, like many other DEC terminals don't have a proper
-"ESC" key, but the sequence can be generated with <code>C-3</code> or
-with <code>C-[</code>.  Emacs' term/ libraries also map the f11 key as
-an additional ESC for some DEC terminals (vt220, vt320 and vt420 at
-least), so there's three to choose from.
+Note that modern Emacs provides only two term compatibility files for DEC terminals, ''vt100'' and ''vt200''. It provides a number of aliases in the variable <code>term-file-alias</code> by default, including ''vt102'', ''vt125'', ''vt201'' (is this even a real DEC terminal; I can't find any info on this model number), ''vt220'', ''vt240'', ''vt300'', ''vt320'', ''vt400'', ''vt420''. However, this is not an exhaustive list of DEC terminal models supported by terminfo. If you are using another DEC terminal, e.g. a vt330 or vt340, you will need to add an alias for that to <code>term-file-alias</code>, otherwise Emacs won't recognize it at all, and you'll encounter all manner of keyboard and display glitches.
 
-Make sure you use the "vt420 mode, 7bit controls", not with 8bit
-controls.  These 8bit controls are not defined, and rarely used with
-unixy computers, which is bit of a pity...
+Make sure you use the "vt200/300/420 mode", 7bit controls, space parity in your terminal communication settings. Do not use the 8bit controls, as they will cause glitches.
 
-The Alt key doesn't work as expected.
+Most of the special keys work by default, though some quirks exist.  The VT200-400 series keyboard, the LK201, lacks an "ESC" key, but the sequence can be generated with <code>C-3</code> or with <code>C-[</code>.  Emacs' term/ libraries also map the f11 key as an additional ESC for some DEC terminals (vt220, vt320 and vt420 at least), so there are usable alternatives.
+
+The "Alt Function" key is not an Alt/Meta key.
+
+Another quirk of the LK201 keyboard is the "<" and ">" symbols appear as the shift-character of the "," and "." keys respectively, but shift does not appear to activate those symbols; instead, a dedicated key with both "<" and ">" on it is provided next to the left shift key.
 
 Certain values for the keyboard type from the terminal's menus
 (f.ex. "Finnish keyboard") make the <code>S-3</code> produce
