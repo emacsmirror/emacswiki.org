@@ -19,9 +19,7 @@ COLUMNS and LINES, and these should match your terminals settings too.
 I won't get into line-characteristics here, like speed, number of data
 and stop bits.
 
-When Emacs starts, it tries to load a library called
-"term/''value_of_term''", f.ex. "term/vt420".  These usually set quite
-decent defaults.
+When Emacs starts in a terminal, it tries to load terminal-specific lisp code at "term/${TERM}.el", for example, "term/vt420.el".  These libraries usually set reasonable defaults for keybindings and other aspects of the terminal.
 
 You do want to have hardware flow control, and turn it on from the
 terminal itself, and for the ''getty'' process too which is the thing
