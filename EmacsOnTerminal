@@ -27,7 +27,7 @@ that initializes the terminal line.  Well, you can use '''stty'''(1)
 too, to tweak you serial line.  So you'll probably want to have a
 ''null-modem cable'', or real modems if you're a bit further away.
 
-Flow control is crucial at speeds above 9600bps.  The XON/XOFF protocol, which sucks anyway, will interfere with Emacs' <code>C-s</code> and <code>C-q</code> events, so you do want hardware flow control (RTS/CTS).  If you must use software flow control, the library ''flow-ctrl'' provides some convenience features, most
+Flow control is crucial at speeds above 9600bps.  The software flow control protocol (XON/XOFF) will interfere with Emacs' <code>C-s</code> and <code>C-q</code> events, so you'll want hardware flow control (RTS/CTS).  If you must use software flow control, the library ''flow-ctrl'' provides some convenience features, most
 notably the command <code>enable-flow-control</code> which also remaps these keys.  Other ways to handle use of XON/XOFF include using the unix command <code>stty -ixon</code> or <code>(set-input-mode t nil t)</code> from Emacs.  Either way, no matter what your setting will be, you will miss the command <code>recenter</code> that will re-draw the screen.  By default it's bound to <code>C-l</code>.
 
 =Notes about certain terminals=
