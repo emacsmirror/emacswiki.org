@@ -40,11 +40,11 @@ Note that modern versions of Emacs provide only two compatibility files for DEC 
 
 Make sure you use the "vt200/300/420 mode", 7bit controls, space parity in your terminal communication settings. Do not use the 8bit controls, as they will cause glitches.
 
-Most of the special keys work by default, though some quirks exist.  The VT200-400 series keyboard, the LK201, lacks an "ESC" key, but the sequence can be generated with <code>C-3</code> or with <code>C-[</code>.  Emacs' term/ libraries also map the f11 key as an additional ESC for some DEC terminals (vt220, vt320 and vt420 at least), so there are usable alternatives.
+Most of the special keys work by default, though some quirks exist.  The VT200-400 series keyboard, the LK201, lacks an "ESC" key, but the sequence can be generated with <code>C-3</code> or with <code>C-[</code>.  Emacs' term/ libraries also map the f11 key as an additional ESC for some DEC terminals (vt220, vt320 and vt420 at least), so there are usable alternatives. The VT200-400 series has no concept of <code>C-_</code>, so for undo it's recommended to use <code>C-/</code> instead.
 
 The "Alt Function" key is not an Alt/Meta key.
 
-Another quirk of the LK201 keyboard is the "<" and ">" symbols appear as the shift-character of the "," and "." keys respectively, but shift does not appear to activate those symbols; instead, a dedicated key with both "<" and ">" on it is provided next to the left shift key.
+Another quirk of the LK201 keyboard is the shift key does not modify the "," and "." keys. Instead, a dedicated key with both "<" and ">" (the latter being shift-activated) on it is provided immediately to to the right of the left shift key.
 
 Certain values for the keyboard type from the terminal's menus
 (f.ex. "Finnish keyboard") make the <code>S-3</code> produce
