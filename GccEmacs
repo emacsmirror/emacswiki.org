@@ -67,11 +67,13 @@ The native compilation of the remaining Emacs distribution and external packages
 
 Deferred compilation refers to //"just-in-time"// native compilation of Elisp.  When a byte-compiled Elisp module is loaded, it gets queued for native compilation.  Once native compilation has finished, the native-compiled definitions automatically replace the byte-compiled versions.
 
-This is simple to use as does not require any user intervention.  You may prefer an //"ahead-of-time"// solution described further below.
+This is simple to use as it does not require any user intervention.  You may prefer an //"ahead-of-time"// solution described further below.
 
 Deferred compilation is **enabled by default** and controlled by the ##comp-deferred-compilation## customize.
 
 === Ahead-of-time compilation ===
+
+Sometimes it is useful to compile ahead-of-time, for example if you are packaging Emacs for others.
 
 ==== Emacs distribution ====
 
@@ -81,19 +83,22 @@ It is possible to native compile ahead-of-time all the Emacs distribution using 
 
 ==== External packages ====
 
-The simplest solution for //"ahead-of-time"// compilation is to use a package manager which supports it:
+The built-in package manager package.el supports ahead-of-time native compilation when installing a package. Customize the user option `package-native-compile' or add this to your init file to enable it:
 
-* **package.el**: The built-in package manager currently does **not** support ahead-of-time native compilation (files will still be native compiled but on demand by deferred compilation).
-* **straight.el**: The [https://github.com/raxod502/straight.el straight.el] package manager native-compiles packages by default.
+    (setq package-native-compile t)
 
-Otherwise, you'll need to manually native-compile your packages:
+Some third-party package managers also support ahead-of-time native compilation:
+
+* [https://github.com/raxod502/straight.el straight.el] native-compiles packages by default.
+
+You can native-compile your packages manually:
 
     ;; native-compile all Elisp files under a directory
     (native-compile-async "/path/to/packages" 'recursively)
 
-This will add all Elisp files under that directory to the queue for asynchronous native compilation.
+This will add all Emacs Lisp files under that directory to the queue for asynchronous native compilation.
 
-If you're running native compilation from a script, you'll need to block the Emacs process until the async jobs have completed:
+If you are running native compilation from a script, you will need to block the Emacs process until the async jobs have completed:
 
     ;; block until native compilation has finished
     (while (or comp-files-queue
