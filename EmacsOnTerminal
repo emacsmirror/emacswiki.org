@@ -44,9 +44,9 @@ Note that modern versions of Emacs provide only two compatibility files for DEC 
 Most of the special keys of the VT200-400 series keyboard, the LK201 (and its nearly identical successor the LK401), work by default, though some quirks exist.
 
 * The LK201 lacks an <code>ESC</code> key, but the sequence can be generated with <code>C-3</code> or with <code>C-[</code>. Emacs' ''term/vt200.el'' library also maps the <code>F11</code> key as an <code>ESC</code>.
-* The VT200-400 series has no concept of <code>C-_</code>, so for ''undo'' it's recommended to use <code>C-/</code> instead.
-* The "Alt Function" key is not an Alt/Meta key.
-* The Shift key does not modify the "," and "." keys. Instead, a dedicated key with both "<" and ">" (the latter being shift-activated) is provided immediately to to the right of the left Shift key.
+* The VT200-400 series produces no sequences when pressing <code>C-_</code>. However, pressing <code>C-/</code> produces the sequence <code>^_</code> and also happens to be a default Emacs keybinding for undo, so use that instead.
+* The <code>Alt Function</code> key is not an Alt or Meta key.
+* The Shift key does not modify the "," and "." keys. Instead, a dedicated key with both "<" and ">" (the latter being shift-activated) is provided to to the right of the left Shift key.
 
 Certain values for the keyboard type from the terminal's menus
 (f.ex. "Finnish keyboard") make the <code>S-3</code> produce
