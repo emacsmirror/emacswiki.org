@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Aug 30 13:56:00 2020 (-0700)
+;; Last-Updated: Sun Nov 22 10:15:23 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9177
+;;     Update #: 9179
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -8293,7 +8293,7 @@ Non-interactively:
           (no-overw                                    (and parg  (atom current-prefix-arg))))
      (list (if (require 'ffap nil t)
                (ffap-read-file-or-url "URL: " default-url)
-             (read-file-name "URL: " nil default-url))
+             (read-from-minibuffer "URL: " nil nil nil nil default-url))
            prefix-only
            (if prefix-only
                (read-string "Prefix for bookmark name: ")
