@@ -1,27 +1,15 @@
-%%HideShow%% is a minor mode similar to OutlineMode -- it hides and shows blocks of text. In particular, it hides balanced-expression code blocks and multi-line comment blocks.
+%%HideShow%% is a minor mode included in Emacs that hides and shows blocks of text -- in particular, it hides balanced-expression code blocks and multi-line comment blocks.
 
-See HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
-See HideOrIgnoreComments mode for a way to only hide and show comments.
+It is documented at [https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html Hideshow minor mode] in the Emacs manual.
+
+See
+* HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
+* HideOrIgnoreComments mode for a way to only hide and show comments.
+* OutlineMode for similar support for non-code text arranged in hierarchical outlines.
 
 == Common Use ==
 
-Invoke HideShow mode with M-x hs-minor-mode.
-
-For Emacs 21:
-
-* C-c @ C-M-s show all
-* C-c @ C-M-h hide all
-* C-c @ C-s show block
-* C-c @ C-h hide block
-* C-c @ C-c toggle hide/show
-
-For Emacs 20:
-
-* C-c S show all
-* C-c H hide all
-* C-c s show block
-* C-c h hide block
-
+Invoke HideShow mode with M-x hs-minor-mode.  The default key bindings are documented at [https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html Hideshow minor mode].
 
 == Example ==
 
