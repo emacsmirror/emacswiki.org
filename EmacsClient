@@ -28,7 +28,7 @@ EmacsAsDaemon details various ways to run this command in different distribution
 Simply replace every place you'd run <tt>emacs</tt> with this command instead. 
 
 {{{
-emacsclient -create-frame --alternate-editor=""
+emacsclient --create-frame --alternate-editor=""
 }}}
 
 The emacsclient program will connect to a running instance of Emacs if it exists. <tt>-c</tt> tells Emacs to open the file in a new frame, which is optional. 
