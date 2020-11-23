@@ -1,45 +1,30 @@
-This is a node about running Emacs on so called "dumb terminals".  Well,
-they're not that dumb really, because they can do all sorts of things
-by themselves, and most people emulate these things on a daily basis.
+This is a node about running Emacs on serial text terminals, often erroneously called "dumb terminals". These type of terminals were primarily manufactured from the mid-70s to the mid-90s. The protocols used by the most popular of these terminals, DEC ''vt100'' and ''vt220'' are emulated by all modern Unix-like operating systems, such as GnuIsNotUnix and the BSDs. This node is not about running Emacs on these terminal emulators, but about running it on actual, physical serial terminals. Emacs includes support for not only ''vt100'' and ''vt220'' but many other terminal types.
 
-Most of this applies to unixy systems, like the GnuIsNotUnix, often
-erroneously called Linux.  EmacsOnVMS is also a candidate topic here,
-and ''maybe'' EmacsForOSTwo, but other systems are not likely to be
-accessed via a terminal.
+Most of this applies to Unix-like systems, like the GnuIsNotUnix and the BSDs. EmacsOnVMS is also a candidate topic here, and perhaps EmacsForOSTwo, but other systems are not likely to be accessed via a serial terminal. A lot of reference information for terminals, especially DEC and compatible terminals, is located at http://vt100.net.
 
-There's a lot of goodies for terminals at http://vt100.net.
+The most basic environment variable on the Unix-like operating systems that affects serial terminals is <code>TERM</code>. Under most circumstances, it gets its setting from the program that first launches the serial connection for the terminal. For <code>xterm</code> and other graphical terminal emulators, it is set by the emulator program itself. For actual serial terminals, it is set by the <code>getty</code> program (usually <code>agetty</code> on GnuIsNotUnix systems) that controls the serial socket. On sysvinit-based systems, this is usually controlled by the <code>init</code> process and configured in <code>/etc/inittab</code>, while on newer systemd-based systems, it is configured by a serial console unit file (usually stored in <code>/lib/systemd/system/serial-getty@.service</code>, but this varies depening on the distribution). Note that, contrary to advice found throughout the Internet, in most circumstances you should not set <code>TERM</code> in your ''.profile'' because under most circumstances, it should be set for you by either your terminal emulator software or by the ''getty'' process that controls your terminal.
 
-The most basic variable on the unix-machines is <code>TERM</code>, and
-it gets it's default from the configuration file of mother of all
-processes, the ''init''.  This file is usually called "/etc/inittab".
-The value of this variable should obviously match the capabilities of
-you terminal.  If in doubt, "vt220" covers most of the terminals, and
-"vt100" almost all.  Other variables for shells of the sh-family are
-COLUMNS and LINES, and these should match your terminals settings too.
-I won't get into line-characteristics here, like speed, number of data
-and stop bits.
+The value of the <code>TERM</code> variable will be used by command line programs to look up terminal capabilities in the ''terminfo'' database on your system. Therefore, its value should be set carefully to match the capabilities of your terminal. Consult your operating system's ''terminfo'' database for a full list of supported terminal types. When in doubt, many terminals are compatible with ''vt220'', and most are compatible with ''vt100'', although using these as fallbacks may result in some of the capabilities of a more advanced terminal being disabled. Other relevant environment variables for shells of the sh-family are <code>COLUMNS</code> and <code>LINES</code>. These should match your terminal configuration, but in most cases you won't have to set them yourself.
 
 When Emacs starts in a terminal, it tries to load terminal-specific lisp code at "term/${TERM}.el", for example, "term/vt420.el".  These libraries usually set reasonable defaults for keybindings and other aspects of the terminal.
 
-You do want to have hardware flow control, and turn it on from the
-terminal itself, and for the ''getty'' process too which is the thing
-that initializes the terminal line.  Well, you can use '''stty'''(1)
-too, to tweak you serial line.  So you'll probably want to have a
-''null-modem cable'', or real modems if you're a bit further away.
+You will want to have hardware flow control, and you must turn it on for both the terminal itself, and for the <code>getty</code> process. Alternatively, you can use '''stty'''(1) command, to tweak your serial line parameters.
 
-Flow control is crucial at speeds above 9600bps.  The software flow control protocol (XON/XOFF) will interfere with Emacs' <code>C-s</code> and <code>C-q</code> events, so you'll want hardware flow control (DTR/DSR or RTS/CTS).  If you must use software flow control, the library ''flow-ctrl'' provides some convenience features, most notably the command <code>enable-flow-control</code> which also remaps these keys.  Other ways to handle use of XON/XOFF include using the unix command <code>stty -ixon</code> or <code>(set-input-mode t nil t)</code> from Emacs.  Either way, no matter what your setting will be, you will miss the command <code>recenter</code> that will re-draw the screen.  By default it's bound to <code>C-l</code>.
+Flow control is crucial at speeds above 9600bps.  The software flow control protocol (XON/XOFF) will interfere with Emacs' <code>C-s</code> and <code>C-q</code> events, so you'll want hardware flow control (DTR/DSR or RTS/CTS).  If you must use software flow control, the Emacs library ''flow-ctrl'' provides some convenience features, most notably the command <code>enable-flow-control</code> which remaps the <code>C-s</code> and <code>C-q</code>  keys. Other ways to handle use of XON/XOFF include using the unix command <code>stty -ixon</code> or <code>(set-input-mode t nil t)</code> from Emacs.
+
+If the Emacs display does end up glitching out, use the command <code>recenter</code> to re-draw the screen. By default it's bound to <code>C-l</code>.
 
 =Notes about certain terminals=
 
 ==DEC's VT-series of terminals==
 
-Terminals by Digital Equipment Corporation, or <code>|d|i|g|i|t|a|l|</code> are common, and often emulated.  Perhaps the most common terminal mode of all is the ''vt100'', and also ''vt102'' and ''vt220''.  Emacs handles these terminals fairly well, although there is room for improvement.
+Terminals by Digital Equipment Corporation, or <code>|d|i|g|i|t|a|l|</code> are common, and often emulated.  Perhaps the most common terminal mode of all is the ''vt100'', followed closely by ''vt220''.  Emacs handles these terminals fairly well, although there is room for improvement.
 
 Make sure you use the "vt200/300/400 mode", 7bit controls, space parity in your terminal communication settings. Do not use the 8bit controls, as they will cause glitches. Don't try to open files containing Unicode characters; no VT terminal supports Unicode.
 
 The VT200-400 series cannot process more than 9600bps (regardless of the serial connection speeds of which they're capable) and have no hardware flow control. The software flow control protocol (XON/XOFF) will wreak havoc with Emacs keybindings, as discussed above, so the best advice for a local connection is to set the terminal to 9600bps or lower.
 
-Note that modern versions of Emacs provide only two compatibility files for DEC terminals, ''vt100'' and ''vt200''. Aliases in the variable <code>term-file-alias</code> are provided by default, including ''vt102'', ''vt125'', ''vt220'', ''vt240'', ''vt300'', ''vt320'', ''vt400'', ''vt420''. However, this is not an exhaustive list of DEC terminal models supported by terminfo. If you are using another DEC terminal, e.g. a ''vt131'', ''vt132'', ''vt330'', or ''vt340'', you will need to add an alias for that to your <code>term-file-alias</code>, otherwise Emacs won't properly recognize your terminal, and you'll encounter all manner of keyboard and display glitches.
+Note that modern versions of Emacs provide only two compatibility files for DEC terminals, ''vt100'' and ''vt200''. Aliases in the variable <code>term-file-alias</code> are provided by default, including ''vt102'', ''vt125'', ''vt220'', ''vt240'', ''vt300'', ''vt320'', ''vt400'', ''vt420''. However, this is not an exhaustive list of DEC terminal models supported by the ''terminfo'' database. If you are using another supported DEC terminal, e.g. a ''vt131'', ''vt132'', ''vt330'', or ''vt340'', you will need to add an alias for that to your <code>term-file-alias</code>, otherwise Emacs won't properly recognize your terminal, and you'll encounter all manner of keyboard and display glitches.
 
 Most of the special keys of the VT200-400 series keyboard, the LK201 (and its nearly identical successor the LK401), work by default, though some quirks exist.
 
