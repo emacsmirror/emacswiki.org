@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 22 10:31:35 2020 (-0800)
+;; Last-Updated: Mon Nov 23 09:36:54 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16703
+;;     Update #: 16704
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,8 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
-;; 2020/11/22 dadams
+;; 2020/11/23 dadams
 ;;     bmkp-url-target-set: Use read-from-minibuffer, not read-file-name, as fallback if no ffap.
+;;                          TEMPORARILY work around Emacs bug #44822 with phony default URL.
 ;; 2020/08/30 dadams
 ;;     Added: Info-bookmark-use-only-node-not-file-flag, redefinition of Info-bookmark-jump.
 ;; 2020/07/04 dadams
