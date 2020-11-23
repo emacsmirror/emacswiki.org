@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Nov 22 10:15:23 2020 (-0800)
+;; Last-Updated: Mon Nov 23 09:32:11 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 9179
+;;     Update #: 9180
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -8287,7 +8287,9 @@ Non-interactively:
    (let* ((icicle-unpropertize-completion-result-flag  t)
           (default-url                                 (or (bmkp-thing-at-point 'url)
                                                            (and (fboundp 'url-get-url-at-point)
-                                                                (url-get-url-at-point))))
+                                                                (url-get-url-at-point))
+                                                           ;; TEMPORARY hack to work around Emacs bug #44822.
+                                                           "https://example.com"))
           (parg                                        current-prefix-arg)
           (prefix-only                                 (and parg  (natnump (prefix-numeric-value parg))))
           (no-overw                                    (and parg  (atom current-prefix-arg))))
