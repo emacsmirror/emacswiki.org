@@ -86,7 +86,7 @@ limiting the available range of integers. This is problematic on
 
 === Lisp types ===
 
-See <code>enum Lisp_Type</code> in <code>lisp.h:243</code>. It's the value of each tag.
+See <code>enum Lisp_Type</code> in <code>lisp.h:472</code>. It's the value of each tag.
 
 * Integer
 * Symbol
@@ -130,6 +130,8 @@ There's a bunch of type predicates macros:
 * <code>CONSP(x)</code>
 * <code>FLOATP(x)</code>
 * <code>VECTORP(x)</code>
+* <code>BIGNUMP(x)</code>
+* <code>NUMBERP(x)</code>
 
 * <code>PROCESSP(x)</code>
 * <code>WINDOWP(x)</code>
