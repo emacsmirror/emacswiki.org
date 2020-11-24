@@ -15,7 +15,7 @@ __Using the keyboard__
 * `C-a C-SPC C-n M-w' copies the current line, including the newline.
 * `C-a C-k C-k C-y' kills the line with newline and yanks it back, in effect saving it to the kill ring. If ##kill-whole-line## is non-##nil##, it saves /two/ lines. 
 * `C-a C-k C-y' kills and yanks back the line without newline if ##kill-whole-line## is ##nil##, or including the newline otherwise. But this cause Emacs thinks the buffer is modified.
-* `C-a C-k C-/` kills the line without newline if ##kill-whole-line## is ##nil##, or including the newline otherwise. Then the buffer is reverted back. 
+* `C-a C-k C-/' kills the line without newline if ##kill-whole-line## is ##nil##, or including the newline otherwise. Then the buffer is reverted back. 
 * `C-S-backspace C-y' Kills an entire line at once (##kill-whole-line##) and yanks it back.
 
 In the key sequences above, `C-a' goes to beginning of line, `C-e' goes to the end of line, `C-n' goes to the next line, `C-SPC' sets the mark, `M-w' saves the region, `C-k' kills from point to the end of line, and `C-y' yanks the last kill back.
