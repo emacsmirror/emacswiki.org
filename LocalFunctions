@@ -1,5 +1,4 @@
 
-
 Some [[Lisp]] dialects, such as Scheme and EuLisp, are Lisp1's, which
 means symbols have a single binding that you can establish with `let'.
 In such a Lisp, the following code locally binds the `add-one' function:
@@ -36,6 +35,8 @@ recursive functions, you must use `labels':
               (t (add-positive-integers (- a 1) (+ b 1))))))
    (add-positive-integers 6 4))
  => 10
+
+[[Jin: As of [2020-11-26], `flet' does support recursively defined body. However, `cl-flet' does not. One can check this by replacing `labels' in the above example by `flet' and `cl-flet' respectively.]]
 
 Actually, if you are really sneaky, you *can* do recursion with
 flet as well.  The following would look nicer in a Lisp1 dialect,
