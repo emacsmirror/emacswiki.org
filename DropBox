@@ -30,3 +30,5 @@ If you don't want to clutter up your Dropbox directory with auto-save files and 
     (add-to-list 'backup-directory-alist '("\\`.*/Dropbox/.*" . "/tmp/"))
 
 --JuriLinkov
+
+If Emacs BackupFiles is set to make backups by renaming files, Dropbox will often prompt if the file being backed-up/renamed should be removed from Dropbox.  This can be worked around by setting `backup-by-copying' to `t'.
