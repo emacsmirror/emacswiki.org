@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 23 09:36:54 2020 (-0800)
+;; Last-Updated: Thu Nov 26 22:14:36 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16704
+;;     Update #: 16706
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1464,6 +1464,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/11/26 dadams
+;;     bmkp-bmenu-read-filter-input:
+;;       Set, don't bind, bmkp-bmenu-filter-(title|function).  Restore them and pattern, if C-g.
 ;; 2020/11/06 dadams
 ;;     bmkp-bmenu-read-filter-input:
 ;;       Bind prefix-command-echo-keystrokes-functions to nil.  See Emacs bug #44500.
