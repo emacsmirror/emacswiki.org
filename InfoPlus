@@ -119,8 +119,9 @@ highlighted if '''`Info-fontify-emphasis-flag'''' is non-`nil'.
 then there is no such highlighting, and that option has no
 effect.)
 
-** Glossary words, that is, words that are defined in a manual's '''`Glossary'''' node, are highlighted and linked to their glossary entries, if option '''`Info-fontify-glossary-words'''' is non-`nil'.  By default, a mouseover or `RET' on such a link shows a
-tooltip with the word's definition from the glossary.
+** Glossary words, that is, words that are defined in a manual's '''`Glossary'''' node, are highlighted and linked to their glossary entries, if option '''`Info-fontify-glossary-words'''' is non-`nil'.  By default, a mouseover on such a link shows a
+tooltip with the word's definition from the glossary, and either `mouse-2' or `RET' on a link takes you to the entry in the Glossary.  And glossary entries that mention other entries link to them.
+
 (Currently only the Emacs and Semantic manuals have `Glossary' nodes, as far as I know.)
 
 ** Be aware that any such highlighting is not 100% foolproof.
