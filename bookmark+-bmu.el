@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Nov  6 22:54:38 2020 (-0800)
+;; Last-Updated: Thu Nov 26 22:09:43 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4128
+;;     Update #: 4129
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2570,11 +2570,12 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
 (defun bmkp-bmenu-read-filter-input ()
   "Read input and add it to `bmkp-bmenu-filter-pattern'."
   (setq bmkp-bmenu-filter-pattern  "")
-  (let ((curr-bmk  (bookmark-bmenu-bookmark)))
+  (let ((curr-bmk       (bookmark-bmenu-bookmark))
+        (orig-title     bmkp-bmenu-title)
+        (orig-filt-fn   bmkp-bmenu-filter-function)
+        (orig-filt-pat  bmkp-bmenu-filter-pattern))
     (when (eq 'QUIT
               (let ((tmp-list                                  ())
-                    (bmkp-bmenu-title                          bmkp-bmenu-title)
-                    (bmkp-bmenu-filter-function                bmkp-bmenu-filter-function)
                     (inhibit-quit                              t)
                     (prefix-command-echo-keystrokes-functions  ()) ; 25+  See Emacs bug #44500.
                     char)
@@ -2595,6 +2596,9 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                       (t          (push (text-char-description char) tmp-list))) ; Accumulate CHAR.
                     (setq bmkp-bmenu-filter-pattern  (mapconcat #'identity (reverse tmp-list) ""))))))
       (message "Restoring display prior to incremental filtering...")
+      (setq bmkp-bmenu-title            orig-title
+            bmkp-bmenu-filter-function  orig-filt-fn
+            bmkp-bmenu-filter-pattern   orig-filt-pat)
       (bookmark-bmenu-list 'FILTEREDP)
       (bmkp-bmenu-goto-bookmark-named curr-bmk)
       (message "Restoring display prior to incremental filtering...done"))))
