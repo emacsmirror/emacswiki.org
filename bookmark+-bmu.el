@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Nov 26 22:09:43 2020 (-0800)
+;; Last-Updated: Fri Nov 27 17:23:39 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4129
+;;     Update #: 4145
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -4518,7 +4518,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
                                 fn bmkp-bmenu-commands-file))))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-define-command "bookmark+")
-(defun bmkp-bmenu-define-command ()     ; Bound to `C-c C-c' in bookmark list
+(defun bmkp-bmenu-define-command () ; Bound to `C-c C-c' in bookmark list
   "Define a command to use the current sort order, filter, and omit list.
 Prompt for the command name.  Save the command definition in
 `bmkp-bmenu-commands-file'.
@@ -4527,26 +4527,40 @@ The current sort order, filter function, omit list, and title for
 buffer `*Bookmark List*' are encapsulated as part of the command.
 Use the command at any time to restore them."
   (interactive)
-  (let* ((fn   (intern (read-string "Define sort+filter command: " nil
-                                    bmkp-bmenu-define-command-history)))
-         (def  `(defun ,fn ()
-                 (interactive)
-                 (setq
-                  bmkp-sort-comparer               ',bmkp-sort-comparer
-                  bmkp-reverse-sort-p              ',bmkp-reverse-sort-p
-                  bmkp-reverse-multi-sort-p        ',bmkp-reverse-multi-sort-p
-                  bmkp-bmenu-filter-function       ',bmkp-bmenu-filter-function
-                  bmkp-bmenu-filter-pattern        ',bmkp-bmenu-filter-pattern
-                  bmkp-bmenu-omitted-bookmarks     ',(bmkp-maybe-unpropertize-bookmark-names
-                                                      bmkp-bmenu-omitted-bookmarks)
-                  bmkp-bmenu-title                 ',bmkp-bmenu-title
-                  bookmark-bmenu-toggle-filenames  ',bookmark-bmenu-toggle-filenames)
-                 (bmkp-bmenu-refresh-menu-list)
-                 (when (interactive-p)
-                   (bmkp-msg-about-sort-order
-                    (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
+  (let* ((fn       (intern (read-string "Define sort+filter command: " nil
+                                        bmkp-bmenu-define-command-history)))
+         (_IGNORE  (when (fboundp fn)
+                     (if (y-or-n-p (format "`%s' already defined.  Redfine? " fn))
+                         (fmakunbound fn)
+                       (error "OK, canceled"))))  
+         (def      `(defun ,fn ()
+                      (interactive)
+                      (setq
+                       bmkp-sort-comparer               ',bmkp-sort-comparer
+                       bmkp-reverse-sort-p              ',bmkp-reverse-sort-p
+                       bmkp-reverse-multi-sort-p        ',bmkp-reverse-multi-sort-p
+                       bmkp-bmenu-filter-function       ',bmkp-bmenu-filter-function
+                       bmkp-bmenu-filter-pattern        ',bmkp-bmenu-filter-pattern
+                       ;; Use `copy-sequence' here, because some code modifies the list structure.
+                       bmkp-bmenu-omitted-bookmarks     (copy-sequence
+                                                         ',(bmkp-maybe-unpropertize-bookmark-names
+                                                            bmkp-bmenu-omitted-bookmarks))
+                       bmkp-bmenu-title                 ',bmkp-bmenu-title
+                       bookmark-bmenu-toggle-filenames  ',bookmark-bmenu-toggle-filenames)
+                      (bmkp-bmenu-refresh-menu-list)
+                      (when (interactive-p)
+                        (bmkp-msg-about-sort-order
+                         (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
+      (goto-char (point-min)) ; Delete any preexisting defs of the same command.
+      (let (sexp)
+        (condition-case nil
+            (while (setq sexp  (read (current-buffer)))
+              (when (and (consp sexp)  (eq 'defun (car sexp))
+                         (eq fn (cadr sexp)))
+                (delete-region (point) (save-excursion (backward-sexp) (point)))))
+          (error nil)))
       (goto-char (point-max))
       (let ((print-length           nil)
             (print-level            nil)
@@ -4580,53 +4594,75 @@ bookmarks, marked bookmarks, etc.).  For a lighter weight command, use
 `bmkp-bmenu-define-full-snapshot-command' instead.  That records only
 the omit list and the sort & filter information."
   (interactive)
-  (let* ((fn   (intern (read-string "Define restore-snapshot command: " nil
-                                    bmkp-bmenu-define-command-history)))
-         (def  `(defun ,fn ()
-                 (interactive)
-                 (setq
-                  bmkp-sort-comparer                     ',bmkp-sort-comparer
-                  bmkp-reverse-sort-p                    ',bmkp-reverse-sort-p
-                  bmkp-reverse-multi-sort-p              ',bmkp-reverse-multi-sort-p
-                  bmkp-latest-bookmark-alist             ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-latest-bookmark-alist)
-                  bmkp-bmenu-omitted-bookmarks           ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-omitted-bookmarks 'COPY)
-                  bmkp-bmenu-marked-bookmarks            ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-marked-bookmarks 'COPY)
-                  bmkp-bmenu-filter-function             ',bmkp-bmenu-filter-function
-                  bmkp-bmenu-filter-pattern              ',bmkp-bmenu-filter-pattern
-                  bmkp-bmenu-title                       ',bmkp-bmenu-title
-                  bmkp-last-bmenu-bookmark               ',(and (get-buffer bookmark-bmenu-buffer)
-                                                                (with-current-buffer
-                                                                    (get-buffer bookmark-bmenu-buffer)
-                                                                  (bmkp-maybe-unpropertize-string
-                                                                   (bookmark-bmenu-bookmark) 'COPY)))
-                  ;; Use `copy-sequence' here just in case, to avoid circular references when
-                  ;; `bmkp-propertize-bookmark-names-flag' is nil.
-                  bmkp-last-specific-buffer              ',(copy-sequence bmkp-last-specific-buffer)
-                  bmkp-last-specific-file                ',(copy-sequence bmkp-last-specific-file)
-                  bookmark-bmenu-toggle-filenames        ',bookmark-bmenu-toggle-filenames
-                  bmkp-bmenu-before-hide-marked-alist    ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-before-hide-marked-alist 'COPY)
-                  bmkp-bmenu-before-hide-unmarked-alist  ',(bmkp-maybe-unpropertize-bookmark-names
-                                                            bmkp-bmenu-before-hide-unmarked-alist 'COPY)
-                  bmkp-last-bookmark-file                ',(copy-sequence
-                                                            (convert-standard-filename
-                                                             (expand-file-name bmkp-last-bookmark-file)))
-                  bmkp-current-bookmark-file             ',(copy-sequence
-                                                            (convert-standard-filename
-                                                             (expand-file-name
-                                                              bmkp-current-bookmark-file))))
-                 (let ((bookmark-alist  (bmkp-refresh-latest-bookmark-list))) ; Sets *-latest-* also.
-                   (bmkp-bmenu-list-1 'filteredp nil (interactive-p)))
-                 (when bmkp-last-bmenu-bookmark
-                   (with-current-buffer (get-buffer bookmark-bmenu-buffer)
-                     (bmkp-bmenu-goto-bookmark-named bmkp-last-bmenu-bookmark)))
-                 (when (interactive-p)
-                   (bmkp-msg-about-sort-order (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
+  (let* ((fn       (intern (read-string "Define restore-snapshot command: " nil
+                                        bmkp-bmenu-define-command-history)))
+         (_IGNORE  (when (fboundp fn)
+                     (if (y-or-n-p (format "`%s' already defined.  Redfine? " fn))
+                         (fmakunbound fn)
+                       (error "OK, canceled"))))
+         (def      `(defun ,fn ()
+                      (interactive)
+                      ;; Use `copy-sequence' here, to avoid circular references when
+                      ;; `bmkp-propertize-bookmark-names-flag' is nil, and for other
+                      ;; strings and lists (such as `bmkp-bmenu-marked-bookmarks'),
+                      ;; because some code modifies them.
+                      ;;
+                      (setq
+                       bmkp-sort-comparer                     ',bmkp-sort-comparer
+                       bmkp-reverse-sort-p                    ',bmkp-reverse-sort-p
+                       bmkp-reverse-multi-sort-p              ',bmkp-reverse-multi-sort-p
+                       bmkp-latest-bookmark-alist             (copy-sequence
+                                                               ',(bmkp-maybe-unpropertize-bookmark-names
+                                                                  bmkp-latest-bookmark-alist))
+                       bmkp-bmenu-omitted-bookmarks           (copy-sequence
+                                                               ',(bmkp-maybe-unpropertize-bookmark-names
+                                                                  bmkp-bmenu-omitted-bookmarks 'COPY))
+                       bmkp-bmenu-marked-bookmarks            (copy-sequence
+                                                               ',(bmkp-maybe-unpropertize-bookmark-names
+                                                                  bmkp-bmenu-marked-bookmarks 'COPY))
+                       bmkp-bmenu-filter-function             ',bmkp-bmenu-filter-function
+                       bmkp-bmenu-filter-pattern              ',bmkp-bmenu-filter-pattern
+                       bmkp-bmenu-title                       ',bmkp-bmenu-title
+                       bmkp-last-bmenu-bookmark               ',(and (get-buffer bookmark-bmenu-buffer)
+                                                                     (with-current-buffer
+                                                                         (get-buffer bookmark-bmenu-buffer)
+                                                                       (bmkp-maybe-unpropertize-string
+                                                                        (bookmark-bmenu-bookmark) 'COPY)))
+                       bmkp-last-specific-buffer              ',(copy-sequence bmkp-last-specific-buffer)
+                       bmkp-last-specific-file                ',(copy-sequence bmkp-last-specific-file)
+                       bookmark-bmenu-toggle-filenames        ',bookmark-bmenu-toggle-filenames
+                       bmkp-bmenu-before-hide-marked-alist    (copy-sequence
+                                                               ',(bmkp-maybe-unpropertize-bookmark-names
+                                                                  bmkp-bmenu-before-hide-marked-alist 'COPY))
+                       bmkp-bmenu-before-hide-unmarked-alist  (copy-sequence
+                                                               ',(bmkp-maybe-unpropertize-bookmark-names
+                                                                  bmkp-bmenu-before-hide-unmarked-alist 'COPY))
+                       bmkp-last-bookmark-file                ',(copy-sequence
+                                                                 (convert-standard-filename
+                                                                  (expand-file-name bmkp-last-bookmark-file)))
+                       bmkp-current-bookmark-file             ',(copy-sequence
+                                                                 (convert-standard-filename
+                                                                  (expand-file-name
+                                                                   bmkp-current-bookmark-file))))
+                      ;; $$$$$$ (let ((bookmark-alist  (bmkp-refresh-latest-bookmark-list))) ; Sets *-latest-* also.
+                      (let ((bookmark-alist  (or bmkp-latest-bookmark-alist
+                                                 (bmkp-refresh-latest-bookmark-list)))) ; Sets *-latest-* also.
+                        (bmkp-bmenu-list-1 'filteredp nil (interactive-p)))
+                      (when bmkp-last-bmenu-bookmark
+                        (with-current-buffer (get-buffer bookmark-bmenu-buffer)
+                          (bmkp-bmenu-goto-bookmark-named bmkp-last-bmenu-bookmark)))
+                      (when (interactive-p)
+                        (bmkp-msg-about-sort-order (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
+      (goto-char (point-min)) ; Delete any preexisting defs of the same command.
+      (let (sexp)
+        (condition-case nil
+            (while (setq sexp  (read (current-buffer)))
+              (when (and (consp sexp)  (eq 'defun (car sexp))
+                         (eq fn (cadr sexp)))
+                (delete-region (point) (save-excursion (backward-sexp) (point)))))
+          (error nil)))
       (goto-char (point-max))
       (let ((print-length           nil)
             (print-level            nil)
