@@ -43,6 +43,9 @@ Cycle outline headers like in Org mode.
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/info%2B.el info+.el]: 
 Prettify Info buffers.
 
+[new:DrewAdams:2020-11-28 02:14 UTC]
+Please consider renaming your library. [Info+](https://www.emacswiki.org/emacs/InfoPlus) has been around since at least as long ago as **1996**. An infinite number of names are available. There's really no reason to confuse people by using the same name as a longstanding library. Thx - DrewAdams
+
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/sidebar.el sidebar.el]: 
 Show an outline sidebar.
 
