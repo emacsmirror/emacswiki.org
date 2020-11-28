@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2019, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Mon Feb 18 22:16:19 2019 (-0800)
+;; Last-Updated: Sat Nov 28 15:32:34 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 211
+;;     Update #: 217
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -98,7 +98,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `bmkp-define-cycle-command',
+;;    `bmkp-define-cycle-command', `bmkp-define-history-variables',
 ;;    `bmkp-define-next+prev-cycle-commands',
 ;;    `bmkp-define-show-only-command', `bmkp-define-sort-command',
 ;;    `bmkp-define-file-sort-predicate', `bmkp-menu-bar-make-toggle',
@@ -109,7 +109,7 @@
 ;;
 ;;    `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-name-from-record',
-;;    `bmkp-replace-regexp-in-string',
+;;    `bmkp-replace-regexp-in-string', `bmkp-types-alist',
 ;;    `bookmark-name-from-full-record', `bookmark-name-from-record'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -468,6 +468,38 @@ If either is a record then it need not belong to `bookmark-alist'."
              '(nil))
             (t;; Neither is a file.
              nil)))))
+
+;; `bmkp-types-alist' is in this file, and not in `bookmark+-1.el',
+;; only to allow Emacs 20 to byte-compile that file without error,
+;; after loading `bookmark+-mac.el'.
+;;
+;;;###autoload (autoload 'bmkp-types-alist "bookmark+")
+(defun bmkp-types-alist ()
+  "Alist of bookmark types used by `bmkp-jump-to-type'.
+Keys are bookmark type names.  Values are corresponding history variables.
+The alist is used in commands such as `bmkp-jump-to-type'."
+  (let ((entries  ()))
+    (mapatoms
+     (lambda (sym)
+       (let ((name  (symbol-name sym)))
+         (when (string-match "\\`bmkp-\\(.+\\)-alist-only\\'" name)
+           (push (cons (match-string 1 name)
+                       (intern (format "bmkp-%s-history" (match-string 1 name))))
+                 entries)))))
+    entries))
+
+;; Macro that defines Bookmark+ history variables.
+;; Use this after you define any new filter function, `bmkp-*-alist-only',
+;; for a new kind of bookmark.
+;;
+;;;###autoload (autoload 'bmkp-define-history-variables "bookmark+")
+(defmacro bmkp-define-history-variables ()
+  "Create and eval defvars for Bookmark+ history variables.
+The variables are the cdrs of `bmkp-types-alist'.  They are used in
+commands such as `bmkp-jump-to-type'."
+  (dolist (entry  (bmkp-types-alist))
+    `(defvar,(cdr entry) ()
+       ,(format "History for %s bookmarks." (car entry)))))
 
 ;; This is compatible with Emacs 20 and later.
 ;;;###autoload (autoload 'bmkp-menu-bar-make-toggle "bookmark+")
