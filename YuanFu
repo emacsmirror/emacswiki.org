@@ -27,7 +27,7 @@ Here are some of the packages that I wrote.
 
 * [https://github.com/casouri/trivial-copy trivial-copy]: Copy paste files like you do in Finder. 
 
-* [https://github.com/casouri/isolate isolate]: Like evil-surround.
+* [https://github.com/casouri/ftable ftable]: Fill (auto-layout) table. (Like fill-paragraph but for tables.)
 
 * [https://github.com/casouri/valign valign]: 
 Align org tables, even when there are variable font characters/images/CJK characters.
