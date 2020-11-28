@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Nov 26 22:14:36 2020 (-0800)
+;; Last-Updated: Fri Nov 27 17:24:51 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16706
+;;     Update #: 16714
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1464,6 +1464,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/11/27 dadams
+;;     bmkp-bmenu-define-command, bmkp-bmenu-define-full-snapshot-command:
+;;       Use copy-sequence for lists, because some code modifies the list structure.
+;;       If command already defined then prompt to overwrite its definition (replace all existing).
+;;     bmkp-bmenu-define-full-snapshot-command:
+;;       Bind bookmark-alist to non-nil bmkp-latest-bookmark-alist. NB: Contradicts 2015-02-22 change.
 ;; 2020/11/26 dadams
 ;;     bmkp-bmenu-read-filter-input:
 ;;       Set, don't bind, bmkp-bmenu-filter-(title|function).  Restore them and pattern, if C-g.
