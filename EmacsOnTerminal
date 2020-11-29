@@ -20,7 +20,7 @@ If the Emacs display does end up glitching out, use the command <code>recenter</
 
 Terminals by Digital Equipment Corporation, or <code>|d|i|g|i|t|a|l|</code> are common, and often emulated.  Perhaps the most common terminal mode of all is the ''vt100'', followed closely by ''vt220''.  Emacs handles these terminals fairly well, although there is room for improvement.
 
-Make sure you use the "vt200/300/400 mode", 7bit controls, space parity in your terminal communication settings. Do not use the 8bit controls, as they will cause glitches. Don't try to open files containing Unicode characters; no VT terminal supports Unicode.
+Make sure you use the "vt200/300/400 mode", 7-bit, space parity in your terminal communication settings; do not use the 8-bit controls. (This is per ''etc/TERMS'' which is admittedly over 20 years old, so perhaps 8-bit controls work now.) Don't try to open files containing Unicode characters; no VT terminal supports Unicode.
 
 The VT200-400 series cannot process more than 9600bps (regardless of the serial connection speeds of which they're capable) and have no hardware flow control. The software flow control protocol (XON/XOFF) will wreak havoc with Emacs keybindings, as discussed above, so the best advice for a local connection is to set the terminal to 9600bps or lower.
 
