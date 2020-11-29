@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  4 10:16:57 2020 (-0700)
+;; Last-Updated: Sat Nov 28 16:51:57 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 15340
+;;     Update #: 15351
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -323,7 +323,21 @@
 ;;     - Bookmarks are relocated better than for vanilla Emacs when
 ;;       the contextual text changes.
 ;;
+;;  * Additional ways to bookmark.
+;;
+;;     - You can bookmark the file or URL named at point (or any other
+;;       file or URL), without first visiting it.
+;;
+;;     - You can bookmark the targets of the hits in a compilation
+;;       buffer or an `occur' buffer, without first visiting them.
+;;
+;;     - You can bookmark all of the marked files in Dired at once.
+;;
 ;;  * Additional types of bookmarks.
+;;
+;;    Bookmark+ adds over 70 types of bookmark. (You can see what they
+;;    all are by invoking function `bmkp-types-alist'.) Here are the
+;;    main ones:
 ;;
 ;;     - Autofile bookmarks.  You can bookmark a file without visiting
 ;;       it or naming the bookmark.  The bookmark name is the same as
@@ -337,7 +351,7 @@
 ;;       are hidden.
 ;;
 ;;     - Dired-tree bookmarks.  A set of Dired bookmarks that
-;  ;     represent a directory hierarchy and are opened together.
+;;       represent a directory hierarchy and are opened together.
 ;;
 ;;     - Bookmark-list bookmarks.  You can bookmark the current state
 ;;       of buffer `*Bookmark List*' - a list of bookmarks.  Jumping
@@ -408,15 +422,38 @@
 ;;     bookmarks): Dired, Dired tree, bookmark-list, bookmark-file,
 ;;     and desktop bookmarks.
 ;;
-;;  * Additional ways to bookmark.
+;;  * Type-specific jump commands.
 ;;
-;;     - You can bookmark the file or URL named at point (or any other
-;;       file or URL), without first visiting it.
+;;     - When you want to jump to a bookmark of a specific type
+;;       (e.g. Dired), you can use a command that offers only such
+;;       bookmarks as completion candidates.
 ;;
-;;     - You can bookmark the targets of the hits in a compilation
-;;       buffer or an `occur' buffer, without first visiting them.
+;;     - You can also use generic command `bmkp-jump-to-type', bound
+;;       to `C-x j :'.  It prompts you for the bookmark type, then
+;;       offers only bookmarks of that type as completion candidates.
 ;;
-;;     - You can bookmark all of the marked files in Dired at once.
+;;  * Define your own new bookmark types.
+;;
+;;    Just as for vanilla Emacs, you can easily define your own
+;;    bookmark types, by defining a function to create its record,
+;;    using function `bookmark-make-record', or by binding variable
+;;    `bookmark-make-record-function' for a given context.
+;;
+;;    But you can also make jumping to a new type of bookmarks
+;;    type-specific, usable with `bmkp-jump-to-type' (`C-x j :') or
+;;    with your own type-specific jump command.
+;;
+;;    For that, just:
+;;
+;;    1. Define a function `bmkp-TYPE-alist-only', which returns an
+;;       alist of bookmarks that are only of your new TYPE, for use
+;;       with `bookmark-completing-read'.  The alist should have the
+;;       same form as `bookmark-alist'.  (And you can use your alist
+;;       for more than just completion.)
+;;
+;;    2. Evaluate `(bmkp-define-history-variables)', to add a history
+;;       variable for your type, again, for use with
+;;       `bookmark-completing-read'.
 ;;
 ;;  * Extensive menus.
 ;;
@@ -522,12 +559,6 @@
 ;;       when you choose a file to switch to, so it is easy to go back
 ;;       and forth between two bookmark files.
 ;;       See (@> "Using Multiple Bookmark Files").
-;;
-;;  * Type-specific jump commands.
-;;
-;;     - When you want to jump to a bookmark of a specific type
-;;       (e.g. Dired), you can use a command that offers only such
-;;       bookmarks as completion candidates.
 ;;
 ;;  * Dedicated keymaps as prefix keys.
 ;;
