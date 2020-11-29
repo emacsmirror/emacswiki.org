@@ -425,33 +425,6 @@ Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
 
 
 
-[:ExtensiveMenus]
-=== Extensive menus. ===
-
-* In the `##*Bookmark List*##' display, a '''`mouse-3'''' [[#Mouse3PopupMenu|popup menu]] has actions for the
-individual bookmark that you point to when you click the mouse.
-
-* In the `##*Bookmark List*##' display, a complete [[menu bar]] menu, '''[[#BookmarkPlusMenu|Bookmark+]]''', is available.
-The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', '''Mark''', '''Omit''', '''Show''', '''Sort''', '''Tags''', '''Highlight''' (needs library <tt>[[bookmark+-lit.el]]</tt>, and '''Define Command'''.
-
-* The vanilla '''[[#VanillaBookmarksMenu|Bookmarks]]''' menu, which is typically a submenu of the menu-bar '''Edit''' menu, is modified by adding several items from the '''`Bookmark+'''' menu, including submenus '''Jump To''', '''Tags''', and '''Highlight'''.
-
-* '''Bookmark+''' adds [[#EditMenu|two items]] to the [[menu bar]] '''Edit''' menu:
-
-** Save the [[active region]] text as a bookmark.
-** "Jump to" the bookmark to copy the text to the [[kill ring]], so you can then [[yank]] it anywhere.
-
-
-* Some modes provide a '''[[BookmarkMenus|Bookmarks Here]]''' menu-bar submenu with items to access bookmarks for the current file/buffer.  Display of this menu is controlled by [[option]] '''`bmkp-add-bookmarks-here-menu-flag'''' (`nil' by default because computing the menu can take a little time).
-
-
-
-
-
-
-
-
-
 
 
 
@@ -553,8 +526,69 @@ easy to go back and forth between two bookmark files.  See [[#UsingMultipleBookm
 [:TypeSpecificJumpCommands]
 === Type-specific jump commands. ===
 
-When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as [[completion]] candidates.
+* When you want to jump to a bookmark of a specific type (e.g. Dired), you can use a command that offers only such bookmarks as [[completion]] candidates.
 
+* You can also use generic command `bmkp-jump-to-type', bound
+to '''`##C-x j :##''''.  It prompts you for the bookmark type, then offers only bookmarks of that type as completion candidates.
+
+
+
+
+
+
+
+
+
+[:DefineBookmarkTypes]
+=== Define your own bookmark types. ===
+
+Just as for vanilla Emacs, you can easily define your own
+bookmark types, by defining a function to create its record,
+using function `bookmark-make-record', or by binding variable
+`bookmark-make-record-function' for a given context.
+
+But you can also make ''jumping'' to a new type of bookmarks
+''type-specific'', usable with `bmkp-jump-to-type' (`##C-x j :##') or
+with your own type-specific jump command.
+
+For that, just:
+
+1. Define a function `bmkp-TYPE-alist-only', which returns an
+alist of bookmarks that are only of your new ''##TYPE##'', for use with
+`bookmark-completing-read'.  The alist should have the same
+form as `bookmark-alist'.  (And you can use your alist for
+more than just completion.)
+
+2. Evaluate `##(bmkp-define-history-variables)##', to add a history variable for your type, again, for use with
+`bookmark-completing-read'.
+
+
+
+
+
+
+
+
+
+
+[:ExtensiveMenus]
+=== Extensive menus. ===
+
+* In the `##*Bookmark List*##' display, a '''`mouse-3'''' [[#Mouse3PopupMenu|popup menu]] has actions for the
+individual bookmark that you point to when you click the mouse.
+
+* In the `##*Bookmark List*##' display, a complete [[menu bar]] menu, '''[[#BookmarkPlusMenu|Bookmark+]]''', is available.
+The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', '''Mark''', '''Omit''', '''Show''', '''Sort''', '''Tags''', '''Highlight''' (needs library <tt>[[bookmark+-lit.el]]</tt>, and '''Define Command'''.
+
+* The vanilla '''[[#VanillaBookmarksMenu|Bookmarks]]''' menu, which is typically a submenu of the menu-bar '''Edit''' menu, is modified by adding several items from the '''`Bookmark+'''' menu, including submenus '''Jump To''', '''Tags''', and '''Highlight'''.
+
+* '''Bookmark+''' adds [[#EditMenu|two items]] to the [[menu bar]] '''Edit''' menu:
+
+** Save the [[active region]] text as a bookmark.
+** "Jump to" the bookmark to copy the text to the [[kill ring]], so you can then [[yank]] it anywhere.
+
+
+* Some modes provide a '''[[BookmarkMenus|Bookmarks Here]]''' menu-bar submenu with items to access bookmarks for the current file/buffer.  Display of this menu is controlled by [[option]] '''`bmkp-add-bookmarks-here-menu-flag'''' (`nil' by default because computing the menu can take a little time).
 
 
 
