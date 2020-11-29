@@ -427,26 +427,6 @@ Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
 
 
 
-
-[:MultipleBookmarkFiles]
-=== Multiple bookmark files. ===
-
-Although vanilla Emacs lets you load different bookmark
-files, it does not support this feature well, and the
-behavior can even be contradictory.  With '''Bookmark+''' you can easily (a) switch among
-alternative bookmark files or (b) load multiple files into the
-same session, accumulating their bookmark definitions.  The last file you used is the default when you choose a file to switch to, so it is
-easy to go back and forth between two bookmark files.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
-
-
-
-
-
-
-
-
-
-
 [:TypeSpecificJumpCommands]
 === Type-specific jump commands. ===
 
@@ -513,6 +493,157 @@ The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', 
 
 
 * Some modes provide a '''[[BookmarkMenus|Bookmarks Here]]''' menu-bar submenu with items to access bookmarks for the current file/buffer.  Display of this menu is controlled by [[option]] '''`bmkp-add-bookmarks-here-menu-flag'''' (`nil' by default because computing the menu can take a little time).
+
+
+
+
+
+
+
+
+
+
+
+
+[:MultipleBookmarkFiles]
+=== Multiple bookmark files. ===
+
+Although vanilla Emacs lets you load different bookmark
+files, it does not support this feature well, and the
+behavior can even be contradictory.  With '''Bookmark+''' you can easily (a) switch among
+alternative bookmark files or (b) load multiple files into the
+same session, accumulating their bookmark definitions.  The last file you used is the default when you choose a file to switch to, so it is
+easy to go back and forth between two bookmark files.  See [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]].
+
+
+
+
+
+
+
+
+
+[:BookmarkPrefixKeys]
+=== Dedicated keymaps as prefix keys. ===
+
+* Prefix '''`C-x x'''' is used for bookmark keys, in general.  The
+vanilla keys on prefix `C-x r' are still available also, but that
+prefix is shared with [[register]] commands, making it less convenient for bookmarks.  Using `C-x x' lets
+you focus on bookmarks.
+
+* Prefix '''`C-x x c'''' is for ''setting'' various kinds of bookmarks.
+
+* Prefixes '''`C-x j'''' and '''`C-x 4 j'''' (for other-window) are used for bookmark ''jump'' commands. Again, a dedicated [[prefix key]]
+helps you focus on one kind of action (jumping).
+
+All of these prefix keys correspond to prefix-map [[variable]]s, so
+you need not use these particular prefixes.  You can bind these
+maps to any prefix keys you want.  These are the maps, together
+with their predefined bindings.
+
+* '''`bookmark-map''''               -- '''`C-x x''''
+* '''`bmkp-set-map''''               -- '''`C-x x c''''
+* '''`bmkp-tags-map''''              -- '''`C-x x t''''
+* '''`bmkp-jump-map''''              -- '''`C-x j''''
+* '''`bmkp-jump-other-window-map'''' -- '''`C-x 4 j''''
+
+Those are the prefix keys that are available by ''default''.  To
+change them, just customize these [[option|user options]], each of which
+is a list of the key sequences to use as prefix key.
+
+* '''`bmkp-bookmark-map-prefix-keys''''  -- default: '''##("^Xp")##'''
+* '''`bmkp-jump-map-prefix-keys''''      -- default: '''##("^Xj")##'''
+* '''`bmkp-jump-other-window-map-prefix-keys'''' -- default: '''##("^X4j")##'''
+
+(##^X## here is actually the Control-X character.)
+
+Keymaps `bmkp-set-map' and `bmkp-tags-map' are always on
+`bookmark-map', whatever prefix keys it is on.  So if, for example, you
+customize `bmkp-bookmark-map-prefix-keys' to be '''##("^Xp" [f9])##''' then
+the keys in `bmkp-set-map' have both prefix `C-x x c' and
+prefix `##<f9> c##'.
+
+
+
+In addition to keys on '''Bookmark+''' keymaps, '''Bookmark+''' binds some mode-specific bookmarking commands in
+some other modes: Occur, Compilation (including Grep),
+Buffer-menu, [[EWW]], Gnus, [[Info]], Man, Woman, W3M, and [[Dired]] (if you use library '''[[Dired+]]''').  These keys let you set or jump to bookmarks specific
+to the modes.
+
+
+
+
+
+
+
+
+
+[:BookmarkHelp]
+=== Helpful help. ===
+
+* Information about individual bookmarks.
+
+** Anywhere in Emacs, '''`C-h M'''' (command '''`bmkp-describe-bookmark'''' describes
+any bookmark.  With a [[prefix argument]], it shows you the
+full information that defines it (internal form).
+
+** With the cursor on a highlighted bookmark, '''`##C-x x ?##'''' shows
+the same description, and a [[prefix argument]] has the same effect
+(show internal form).
+
+** Hovering your mouse over a ''highlighted'' bookmark shows the
+same description, in a [[tooltip]].  Actually, you can
+customize the description using [[option]]
+'''`bmkp-tooltip-content-function''''.  The default value is
+`bmkp-bookmark-description', which describes the bookmark.
+A value of `bmkp-annotation-or-bookmark-description', for
+example, shows the bookmark annotation if there is one, or
+the full description if not.
+
+** In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
+the bookmark under the [[cursor]].  The description is as
+complete as possible -- for example, for an image-file
+bookmark the complete EXIF image metadata is shown.  (This
+is only for Emacs 22 and later, and only if you have
+command-line tool `exiftool' installed.  See standard Emacs library
+##image-dired.el## for more information about `exiftool'.)  And
+again, a prefix arg (`C-u C-h RET') means
+show the full (internal) bookmark information.
+'''`##C-h >##'''' shows the same information that `C-h RET' shows,
+but for all of the ''marked'' bookmarks, in the current sort
+order.  That is, it describes each of the marked bookmarks.
+'''`C-down'''' and '''`C-up'''' move the cursor down and up a line,
+respectively, but they also show the description of the
+bookmark corresponding to the new cursor location.  This is
+a quick way to cycle among bookmark descriptions, in the
+current sort order.
+
+
+
+
+* General '''Bookmark+''' documentation.
+
+** Anywhere in Emacs, '''`##M-x bmkp-bmenu-mode-status-help##''''  shows detailed information about the current state of the bookmark list. Click button `##Doc in Commentary##' or button `##Doc on the Web##' to
+access the complete documentation.  (Use button `Customize' to customize all '''Bookmark+''' [[face]]s and [[option]]s.)
+
+** In the bookmark list, '''`##?##'''' and '''`C-h m'''' are the same as `M-x bmkp-bmenu-mode-status-help'.    (`C-h m' in the bookmark list does not show you info about minor modes. If you want that, use `M-x describe-mode'.)
+
+** In the `bookmark-plus' group customization buffer (`M-x customize-group bookmark-plus'), click button `Commentary'.
+
+
+* It is easy to recognize orphaned and invalid bookmarks.
+
+** Invalid bookmarks are shown in a special face in the [[#BookmarkListDisplay|bookmark-list display]].
+
+** You can easily mark all of the orphaned bookmarks, that is,
+those whose recorded files have been renamed or deleted.
+You can then relocate or delete those bookmarks.
+
+
+* It is easy to recognize modified (i.e., unsaved) bookmarks.  They are marked with '''`##*##''''.  Likewise, bookmarks that have tags
+(marked with '''`t''''); bookmarks that have annotations ('''`a''''); and bookmarks that are temporary ('''`X''''), meaning that they will not be saved.
+
+
 
 
 
@@ -590,144 +721,6 @@ This feature is available starting with Emacs 24.3.  (For
 prior versions I removed it because [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12867|Emacs bug #12867]] can
 cause Emacs to crash.)
 
-
-
-
-
-
-
-
-
-[:BookmarkPrefixKeys]
-=== Dedicated keymaps as prefix keys. ===
-
-* Prefix '''`C-x x'''' is used for bookmark keys, in general.  The
-vanilla keys on prefix `C-x r' are still available also, but that
-prefix is shared with [[register]] commands, making it less convenient for bookmarks.  Using `C-x x' lets
-you focus on bookmarks.
-
-* Prefix '''`C-x x c'''' is for ''setting'' various kinds of bookmarks.
-
-* Prefixes '''`C-x j'''' and '''`C-x 4 j'''' (for other-window) are used for bookmark ''jump'' commands. Again, a dedicated [[prefix key]]
-helps you focus on one kind of action (jumping).
-
-All of these prefix keys correspond to prefix-map [[variable]]s, so
-you need not use these particular prefixes.  You can bind these
-maps to any prefix keys you want.  These are the maps, together
-with their predefined bindings.
-
-* '''`bookmark-map''''               -- '''`C-x x''''
-* '''`bmkp-set-map''''               -- '''`C-x x c''''
-* '''`bmkp-tags-map''''              -- '''`C-x x t''''
-* '''`bmkp-jump-map''''              -- '''`C-x j''''
-* '''`bmkp-jump-other-window-map'''' -- '''`C-x 4 j''''
-
-Those are the prefix keys that are available by ''default''.  To
-change them, just customize these [[option|user options]], each of which
-is a list of the key sequences to use as prefix key.
-
-* '''`bmkp-bookmark-map-prefix-keys''''  -- default: '''##("^Xp")##'''
-* '''`bmkp-jump-map-prefix-keys''''      -- default: '''##("^Xj")##'''
-* '''`bmkp-jump-other-window-map-prefix-keys'''' -- default: '''##("^X4j")##'''
-
-(##^X## here is actually the Control-X character.)
-
-Keymaps `bmkp-set-map' and `bmkp-tags-map' are always on
-`bookmark-map', whatever prefix keys it is on.  So if, for example, you
-customize `bmkp-bookmark-map-prefix-keys' to be '''##("^Xp" [f9])##''' then
-the keys in `bmkp-set-map' have both prefix `C-x x c' and
-prefix `##<f9> c##'.
-
-
-
-In addition to keys on '''Bookmark+''' keymaps, '''Bookmark+''' binds some mode-specific bookmarking commands in
-some other modes: Occur, Compilation (including Grep),
-Buffer-menu, [[EWW]], Gnus, [[Info]], Man, Woman, W3M, and [[Dired]] (if you use library '''[[Dired+]]''').  These keys let you set or jump to bookmarks specific
-to the modes.
-
-
-
-
-
-
-
-
-
-
-[:BookmarkHelp]
-=== Helpful help. ===
-
-* Information about individual bookmarks.
-
-** Anywhere in Emacs, '''`C-h M'''' (command '''`bmkp-describe-bookmark'''' describes
-any bookmark.  With a [[prefix argument]], it shows you the
-full information that defines it (internal form).
-
-** With the cursor on a highlighted bookmark, '''`##C-x x ?##'''' shows
-the same description, and a [[prefix argument]] has the same effect
-(show internal form).
-
-** Hovering your mouse over a ''highlighted'' bookmark shows the
-same description, in a [[tooltip]].  Actually, you can
-customize the description using [[option]]
-'''`bmkp-tooltip-content-function''''.  The default value is
-`bmkp-bookmark-description', which describes the bookmark.
-A value of `bmkp-annotation-or-bookmark-description', for
-example, shows the bookmark annotation if there is one, or
-the full description if not.
-
-** In the bookmark list, '''`C-h RET'''' (or '''`C-h C-RET'''') describes
-the bookmark under the [[cursor]].  The description is as
-complete as possible -- for example, for an image-file
-bookmark the complete EXIF image metadata is shown.  (This
-is only for Emacs 22 and later, and only if you have
-command-line tool `exiftool' installed.  See standard Emacs library
-##image-dired.el## for more information about `exiftool'.)  And
-again, a prefix arg (`C-u C-h RET') means
-show the full (internal) bookmark information.
-'''`##C-h >##'''' shows the same information that `C-h RET' shows,
-but for all of the ''marked'' bookmarks, in the current sort
-order.  That is, it describes each of the marked bookmarks.
-'''`C-down'''' and '''`C-up'''' move the cursor down and up a line,
-respectively, but they also show the description of the
-bookmark corresponding to the new cursor location.  This is
-a quick way to cycle among bookmark descriptions, in the
-current sort order.
-
-
-
-
-* General '''Bookmark+''' documentation.
-
-** Anywhere in Emacs, '''`##M-x bmkp-bmenu-mode-status-help##''''  shows detailed information about the current state of the bookmark list. Click button `##Doc in Commentary##' or button `##Doc on the Web##' to
-access the complete documentation.  (Use button `Customize' to customize all '''Bookmark+''' [[face]]s and [[option]]s.)
-
-** In the bookmark list, '''`##?##'''' and '''`C-h m'''' are the same as `M-x bmkp-bmenu-mode-status-help'.    (`C-h m' in the bookmark list does not show you info about minor modes. If you want that, use `M-x describe-mode'.)
-
-** In the `bookmark-plus' group customization buffer (`M-x customize-group bookmark-plus'), click button `Commentary'.
-
-
-
-
-
-
-
-
-* It is easy to recognize orphaned and invalid bookmarks.
-
-** Invalid bookmarks are shown in a special face in the [[#BookmarkListDisplay|bookmark-list display]].
-
-** You can easily mark all of the orphaned bookmarks, that is,
-those whose recorded files have been renamed or deleted.
-You can then relocate or delete those bookmarks.
-
-
-
-
-
-
-* It is easy to recognize modified (i.e., unsaved) bookmarks.  They are marked with '''`##*##''''.  Likewise, bookmarks that have tags
-(marked with '''`t''''); bookmarks that have annotations ('''`a''''); and bookmarks that are temporary ('''`X''''), meaning that they will not be saved.
 
 
 
