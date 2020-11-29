@@ -503,6 +503,82 @@ The same menu is available on '''`C-mouse-3''''. It has submenus '''Jump To''', 
 
 
 
+[:BookmarkListImprovements]
+=== Improvements for the bookmark-list display. ===
+
+This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer), which you display using '''`C-x x e'''' (or `C-x r l').  See [[#BookmarkListDisplay|Bookmark List Display]].
+
+
+* The last display ''state is saved'' (by default), and is restored
+     the next time you show the list.  (''Tip:'' Use the bookmark list
+     as your ''Home'' page at Emacs startup.)
+
+* You can ''save'' the current bookmark-list state at ''any time'' and return to it later.  There are a few ways to do this, including
+''bookmarking the list'' itself. See [[#BookmarkListViews]].
+
+* ''Marking''/unmarking is enhanced.  It is similar to [[DiredMode|Dired]]'s.
+
+* You can easily mark or show different ''classes'' of bookmarks.
+
+* ''[[Face]]s'' distinguish bookmarks by type:
+
+** [[Info]] nodes
+** [[Gnus]] articles
+** [[w3m|W3M]] URLs
+** Man pages (from `[[ManMode|man]]' or `[[WoMan|woman]]')
+** local files with [[region]]s
+** local files without regions
+** local directories
+** remote files or directories
+** remote files or directories that must be accessed by `su' or `sudo' (`root')
+** [[#BookmarkListViews|bookmark-list]] bookmarks
+** [[DeskTop|desktop]] bookmarks
+** [[#FunctionSequenceVarlistBookmarks|function]] bookmarks
+** [[#FunctionSequenceVarlistBookmarks|sequence]] bookmarks
+** [[#FunctionSequenceVarlistBookmarks|variable-list]] bookmarks
+** non-file buffers
+** buffers that don't currently exist
+** possibly invalid bookmarks
+
+* You can ''[[#SortingBookmarks|sort]]'' bookmarks in many ways.  You can easily define your own sort orders, even complex ones.
+
+* You can ''regexp-search'' ('''`M-a'''') or ''query-replace'' ('''`M-q'''') the
+     targets (destination files or buffers) of the marked bookmarks, in the
+     current bookmark-list sort order.  For Emacs 23 and later, you can even search
+     incrementally (`M-s a C-s', or `M-s a C-M-s' for [[regexp]]).
+
+* You can use '''`##M-d >##'''' to ''open [[Dired]]'' for just the local file bookmarks that are marked (`##>##').
+
+* If you use Emacs on Microsoft Windows, you can open bookmarks
+according to ''Windows file associations''.  (You will also need
+library <tt>[[w32-browser.el]]</tt>.)
+
+* You can use (lax) ''[[completion]] when you set'' a bookmark using  `C-x r m' (`bmkp-bookmark-set-confirm-overwrite'),
+choosing from existing bookmarks for the same buffer.  This
+makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric prefix argument]] (or if there are no bookmarks for the buffer), you can choose from all bookmarks.
+
+
+* You can ''edit'' a bookmark: its name and file name/location, its tags, or its complete defining internal Lisp record.
+
+* The mode line shows the number of bookmarks that are marked (`##>##'), flagged for deletion (`##D##'), tagged (`t'), temporary (`X'), annotated (`a'), and modified (unsaved) (`##*##').  It also shows the current sort order.
+For each of the number indicators (e.g., the number marked):
+If the current line has the indicator (e.g. `##>##') and there
+are other lines with the same indicator that are listed after
+the current line, then the indicator shows `N/M', where ''N'' is
+the number indicated through the current line and ''M'' is the
+total number indicated.  Otherwise, it shows just `N'.
+This feature is available starting with Emacs 24.3.  (For
+prior versions I removed it because [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12867|Emacs bug #12867]] can
+cause Emacs to crash.)
+
+
+
+
+
+
+
+
+
 
 
 [:MultipleBookmarkFiles]
@@ -644,82 +720,6 @@ You can then relocate or delete those bookmarks.
 (marked with '''`t''''); bookmarks that have annotations ('''`a''''); and bookmarks that are temporary ('''`X''''), meaning that they will not be saved.
 
 
-
-
-
-
-
-
-
-
-
-[:BookmarkListImprovements]
-=== Improvements for the bookmark-list display. ===
-
-This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer), which you display using '''`C-x x e'''' (or `C-x r l').  See [[#BookmarkListDisplay|Bookmark List Display]].
-
-
-* The last display ''state is saved'' (by default), and is restored
-     the next time you show the list.  (''Tip:'' Use the bookmark list
-     as your ''Home'' page at Emacs startup.)
-
-* You can ''save'' the current bookmark-list state at ''any time'' and return to it later.  There are a few ways to do this, including
-''bookmarking the list'' itself. See [[#BookmarkListViews]].
-
-* ''Marking''/unmarking is enhanced.  It is similar to [[DiredMode|Dired]]'s.
-
-* You can easily mark or show different ''classes'' of bookmarks.
-
-* ''[[Face]]s'' distinguish bookmarks by type:
-
-** [[Info]] nodes
-** [[Gnus]] articles
-** [[w3m|W3M]] URLs
-** Man pages (from `[[ManMode|man]]' or `[[WoMan|woman]]')
-** local files with [[region]]s
-** local files without regions
-** local directories
-** remote files or directories
-** remote files or directories that must be accessed by `su' or `sudo' (`root')
-** [[#BookmarkListViews|bookmark-list]] bookmarks
-** [[DeskTop|desktop]] bookmarks
-** [[#FunctionSequenceVarlistBookmarks|function]] bookmarks
-** [[#FunctionSequenceVarlistBookmarks|sequence]] bookmarks
-** [[#FunctionSequenceVarlistBookmarks|variable-list]] bookmarks
-** non-file buffers
-** buffers that don't currently exist
-** possibly invalid bookmarks
-
-* You can ''[[#SortingBookmarks|sort]]'' bookmarks in many ways.  You can easily define your own sort orders, even complex ones.
-
-* You can ''regexp-search'' ('''`M-a'''') or ''query-replace'' ('''`M-q'''') the
-     targets (destination files or buffers) of the marked bookmarks, in the
-     current bookmark-list sort order.  For Emacs 23 and later, you can even search
-     incrementally (`M-s a C-s', or `M-s a C-M-s' for [[regexp]]).
-
-* You can use '''`##M-d >##'''' to ''open [[Dired]]'' for just the local file bookmarks that are marked (`##>##').
-
-* If you use Emacs on Microsoft Windows, you can open bookmarks
-according to ''Windows file associations''.  (You will also need
-library <tt>[[w32-browser.el]]</tt>.)
-
-* You can use (lax) ''[[completion]] when you set'' a bookmark using  `C-x r m' (`bmkp-bookmark-set-confirm-overwrite'),
-choosing from existing bookmarks for the same buffer.  This
-makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric prefix argument]] (or if there are no bookmarks for the buffer), you can choose from all bookmarks.
-
-
-* You can ''edit'' a bookmark: its name and file name/location, its tags, or its complete defining internal Lisp record.
-
-* The mode line shows the number of bookmarks that are marked (`##>##'), flagged for deletion (`##D##'), tagged (`t'), temporary (`X'), annotated (`a'), and modified (unsaved) (`##*##').  It also shows the current sort order.
-For each of the number indicators (e.g., the number marked):
-If the current line has the indicator (e.g. `##>##') and there
-are other lines with the same indicator that are listed after
-the current line, then the indicator shows `N/M', where ''N'' is
-the number indicated through the current line and ''M'' is the
-total number indicated.  Otherwise, it shows just `N'.
-This feature is available starting with Emacs 24.3.  (For
-prior versions I removed it because [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12867|Emacs bug #12867]] can
-cause Emacs to crash.)
 
 
 
