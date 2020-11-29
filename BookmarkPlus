@@ -301,8 +301,28 @@ cloned indirect buffer.  (You need library
 
 
 
+[:AdditionalWaysToBookmark]
+=== Additional ways to bookmark. ===
+
+* You can bookmark the ''file or URL named at point'' (or any other file or URL), without first visiting it.
+
+* You can bookmark the ''targets of the hits'' in a compilation buffer or an `occur' buffer, without first visiting them.
+
+* You can bookmark all of the ''marked files'' in [[Dired]] at once.
+
+
+
+
+
+
+
+
+
+
 [:AdditionalTypes]
 === Additional types of bookmarks. ===
+
+'''Bookmark+''' adds over 70 types of bookmark. (You can see what they all are by invoking function `bmkp-types-alist'.) Here are the main ones:
 
 * '''[[#AutofileBookmarks|Autofile]] bookmarks.'''  You can bookmark a file without visiting
 it or naming the bookmark.  The bookmark name is the same as
@@ -398,20 +418,6 @@ Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
 
 
 
-
-
-
-
-
-
-[:AdditionalWaysToBookmark]
-=== Additional ways to bookmark. ===
-
-* You can bookmark the ''file or URL named at point'' (or any other file or URL), without first visiting it.
-
-* You can bookmark the ''targets of the hits'' in a compilation buffer or an `occur' buffer, without first visiting them.
-
-* You can bookmark all of the ''marked files'' in [[Dired]] at once.
 
 
 
