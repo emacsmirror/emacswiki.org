@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 28 15:56:13 2020 (-0800)
+;; Last-Updated: Sat Nov 28 21:09:15 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16724
+;;     Update #: 16727
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,10 +147,12 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2020/11/28 dadams
-;;     Removed: variable (defconst) bmkp-types-alist, and all history variables.
+;;     Removed:
+;;       bmkp-bookmark-type-valid-p, variable (defconst) bmkp-types-alist, and all history variables.
 ;;     Replaced all occurrences of variable bmkp-types-alist with function bmkp-types-alist.
 ;;     Invoke macro bmkp-define-history-variables to define history vars, after defining filter fns.
-;;     Moved filter-function definitions to beginning of Bookmark+ functions section..
+;;     Moved filter-function definitions to beginning of Bookmark+ functions section.
+;;     bmkp-edit-tags-send: Don't use bmkp-bookmark-type-valid-p - needs to work with unknown types.
 ;; 2020/11/23 dadams
 ;;     bmkp-url-target-set: Use read-from-minibuffer, not read-file-name, as fallback if no ffap.
 ;;                          TEMPORARILY work around Emacs bug #44822 with phony default URL.
