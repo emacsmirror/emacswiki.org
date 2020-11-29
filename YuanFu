@@ -48,6 +48,10 @@ Please consider renaming your library. [Info+](https://www.emacswiki.org/emacs/I
 I understand, I'll just hide the package, it's not super important. -- YuanFu
 [new:YuanFu:2020-11-28 04:10 UTC]
 
+[new:DrewAdams:2020-11-29 05:11 UTC]
+Thanks. (Feel free to remove these comments.) - DrewAdams
+[new:DrewAdams:2020-11-29 05:12 UTC]
+
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/sidebar.el sidebar.el]: 
 Show an outline sidebar.
 
