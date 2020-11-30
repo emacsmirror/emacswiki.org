@@ -3,7 +3,7 @@
 * buffer - 缓存。如字面意思，是用来存放正在编辑的文本的地方。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html 文档]]。
 * frame - 窗体。在GUI环境下类似其他软件的窗口，在终端环境下则类似可以切换的桌面。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Frames.html 文档]]。
 * window - 窗口。Emacs的窗体可以被分割成多个窗口，每个窗口里显示独立的缓存（文件）。别的编辑器一般把这个叫作pane/窗格。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Windows.html#Windows 文档]]。
-* point
+* point - 光标
 * region
 * face - 字符样式。包括字体、字型、前景背景颜色等等。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Faces.html 文档]]。
 * theme - 主题。相当于一系列样式的集合。Emacs 23之前Emacs没有自带的主题功能，但是有一个第三方插件color theme提供主题功能，Emacs 23后Emacs自带了custom theme功能，现在的主题都是cutom theme了。更多见[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Custom-Themes.html 文档]]和[[https://pawelbx.github.io/emacs-theme-gallery/ 主题画廊]]。
