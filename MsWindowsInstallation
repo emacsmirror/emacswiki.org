@@ -6,25 +6,25 @@ MS-Windows to choose from, see [[CategoryWThirtyTwo#toc1]].
 There are two general flavours: native Windows and Cygwin builds.  The latter have drawbacks as detailed [[#below]],
 so the guidelines here are only about the native Windows builds.
 
-The latest stable version is 26.1.  There are also *snapshot* versions, which are builds of the code currently under development (i.e., having newer features, and possibly more bugs).
-The current development version is 27.0.50 (snapshot versions always have a large 3rd number).
+The latest stable version is 27.1.  There are also *snapshot* versions, which are builds of the code currently under development (i.e., having newer features, and possibly more bugs).
+The current development version is 28.0.50 (snapshot versions always have a large 3rd number).
 
 ==Guidelines for installing Emacs on MS Windows==
 
 To install the *official stable binaries*:
 
-: Visit https://ftp.gnu.org/gnu/emacs/windows/emacs-26/ (or https://ftpmirror.gnu.org/emacs/windows/emacs-26 to use a nearby [https://www.gnu.org/prep/ftp mirror]).
+: Visit https://ftp.gnu.org/gnu/emacs/windows/emacs-27/ (or https://ftpmirror.gnu.org/emacs/windows/emacs-27/ to use a nearby [https://www.gnu.org/prep/ftp mirror]).
   Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed (currently
-  ##emacs-26.1-x86_64.zip## and ##emacs-26.1-i686.zip##, respectively). You might also want to read the [https://ftp.gnu.org/gnu/emacs/windows/README README] file at the same site (not the one inside
+  ##emacs-27.1-x86_64.zip## and ##emacs-27.1-i686.zip##, respectively). You might also want to read the [https://ftp.gnu.org/gnu/emacs/windows/README README] file at the same site (not the one inside
   the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
   (faster) and extract all the files into a directory of your choice
-  (e.g. ##c:\packages\emacs-26.1##).
+  (e.g. ##c:\packages\emacs-27.1##).
 
 To install the *official snapshot binaries*:
 
-: Visit https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-27/.
+: Visit https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-28/.
   Download the installer.exe with the latest date (again with x86_64 and i686 indicating 64 bit or 32 bit, respectively). 
-  As of this writing, those are ##emacs-27.0.50-snapshot-2018-05-03-x86_64-installer.exe## and ##emacs-27.0.50-snapshot-2018-05-03-i686-installer.exe##.
+  As of this writing, those are ##emacs-28.0.50-snapshot-2020-07-05-x86_64-installer.exe## and ##emacs-28.0.50-snapshot-2020-07-05-i686-installer.exe##.
   Run the executable to extract the Emacs installation into the directory of your choice.
   Alternatively, you can download snapshots in zip format, like for the stable release.
 
