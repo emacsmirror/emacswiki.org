@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec  1 16:19:28 2020 (-0800)
+;; Last-Updated: Tue Dec  1 16:31:34 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 12716
+;;     Update #: 12721
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -848,6 +848,7 @@
 ;;     dired-mark-files-regexp: For Lisp, swapped nil and non-nil (other than no-dir) cases of
 ;;       last arg, to be compatible with vanilla Emacs.  (No change to interactive behavior.)
 ;;       So it's no longer true that the last arg is just passed to dired-get-filename as LOCALP.
+;;     diredp-menu-bar-regexp-menu, diredp-marks-(un)mark-menu: Adjusted last arg to dired-mark-files-regexp.
 ;; 2020/10/12 dadams
 ;;     diredp--add-dired-to-invisibility-hook: Correction for Emacs 20.
 ;; 2020/10/06 dadams
@@ -14632,13 +14633,13 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-regexp-menu [unmark-regexp-default-dir]
   '(menu-item "Unmark (Default Dir)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 t))
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 nil))
               :help "Unmark files matching regexp with default directory"
               :keys "C-u C-u \\[dired-mark-files-regexp]"))
 (define-key diredp-menu-bar-regexp-menu [unmark-regexp-absolute]
   '(menu-item "Unmark (Absolute)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 nil))
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 t))
               :help "Unmark files matching regexp against absolute file name"
               :keys "M-0 \\[dired-mark-files-regexp]"))
 (define-key diredp-menu-bar-regexp-menu [unmark-regexp-relative]
@@ -14650,13 +14651,13 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-regexp-menu [mark-regexp-default-dir]
   '(menu-item "Mark (Default Dir)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char t))
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char nil))
               :help "Mark files matching regexp with default directory"
               :keys "M-9 \\[dired-mark-files-regexp]"))
 (define-key diredp-menu-bar-regexp-menu [mark-regexp-absolute]
   '(menu-item "Mark (Absolute)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char nil))
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char t))
               :help "Mark files matching regexp against absolute file name"
               :keys "M-- \\[dired-mark-files-regexp]"))
 (define-key diredp-menu-bar-regexp-menu [mark-regexp-relative]
@@ -14820,7 +14821,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-marks-unmark-menu [unmark-regexp-default-dir]
   '(menu-item "Unmark Name Matching Regexp (Default Dir)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 t))
+                (dired-mark-files-regexp (diredp-read-regexp "UNmark files (regexp): ") ?\040 nil))
               :help "Unmark files matching regexp with default directory"
               :keys "C-u C-u \\[dired-mark-files-regexp]"))
 (define-key diredp-marks-unmark-menu [unmark-regexp-absolute]
@@ -14829,7 +14830,7 @@ If no one is selected, symmetric encryption will be performed.  "
                 (dired-mark-files-regexp
                  (diredp-read-regexp "UNmark files (regexp): ")
                  ?\040
-                 nil))
+                 t))
               :help "Unmark files matching regexp against absolute file name"
               :keys "M-0 \\[dired-mark-files-regexp]"))
 (define-key diredp-marks-unmark-menu [unmark-regexp-relative]
@@ -14868,13 +14869,13 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-marks-mark-menu [marks-mark-regexp-default-dir]
   '(menu-item "Mark Name Matching Regexp (Default Dir)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char t))
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char nil))
               :help "Mark files matching regexp with default directory"
               :keys "M-9 \\[dired-mark-files-regexp]"))
 (define-key diredp-marks-mark-menu [marks-mark-regexp-absolute]
   '(menu-item "Mark Name Matching Regexp (Absolute)..."
               (lambda () (interactive)
-                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char nil))
+                (dired-mark-files-regexp (diredp-read-regexp "Mark files (regexp): ") dired-marker-char t))
               :help "Mark files matching regexp against absolute file name"
               :keys "M-- \\[dired-mark-files-regexp]"))
 (define-key diredp-marks-mark-menu [marks-mark-regexp-relative]
