@@ -20,7 +20,7 @@ First, checkout the ##feature/native-comp## branch of Emacs, and configure it wi
 
 You should see //"Does Emacs have native lisp compiler? yes"// near the end of the configure output if native compilation has been enabled.
 
-If you wish install conventionally with ##make install## otherwise run it from the build tree with ##./src/emacs##.
+If you wish, install conventionally with ##make install## otherwise run it from the build tree with ##./src/emacs##.
 
 === ArchLinux ===
 
