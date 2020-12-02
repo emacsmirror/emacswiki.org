@@ -1,0 +1,284 @@
+
+===Fontspec for Unicode coverage in Emacs===
+
+Set fonts to be used for particular Unicode blocks (for more detail see [[https://www.emacswiki.org/emacs/unicode-fonts.el unicode-fonts.el]])
+
+    (set-fontset-font t '(#x0000 . #x001F) spec) ;; Control character
+    (set-fontset-font t '(#x0020 . #x007F) spec) ;; Basic Latin
+    (set-fontset-font t '(#x0080 . #x00FF) spec) ;; Latin-1 Supplement
+    (set-fontset-font t '(#x0100 . #x017F) spec) ;; Latin Extended-A
+    (set-fontset-font t '(#x0180 . #x024F) spec) ;; Latin Extended-B
+    (set-fontset-font t '(#x0250 . #x02AF) spec) ;; IPA Extensions
+    (set-fontset-font t '(#x02B0 . #x02FF) spec) ;; Spacing Modifier Letters
+    (set-fontset-font t '(#x0300 . #x036F) spec) ;; Combining Diacritical Marks
+    (set-fontset-font t '(#x0370 . #x03FF) spec) ;; Greek and Coptic
+    (set-fontset-font t '(#x0400 . #x04FF) spec) ;; Cyrillic
+    (set-fontset-font t '(#x0500 . #x052F) spec) ;; Cyrillic Supplement
+    (set-fontset-font t '(#x0530 . #x058F) spec) ;; Armenian
+    (set-fontset-font t '(#x0590 . #x05FF) spec) ;; Hebrew
+    (set-fontset-font t '(#x0600 . #x06FF) spec) ;; Arabic
+    (set-fontset-font t '(#x0700 . #x074F) spec) ;; Syriac
+    (set-fontset-font t '(#x0750 . #x077F) spec) ;; Arabic Supplement
+    (set-fontset-font t '(#x0780 . #x07BF) spec) ;; Thaana
+    (set-fontset-font t '(#x07C0 . #x07FF) spec) ;; NKo
+    (set-fontset-font t '(#x0800 . #x083F) spec) ;; Samaritan
+    (set-fontset-font t '(#x0840 . #x085F) spec) ;; Mandaic
+    (set-fontset-font t '(#x0860 . #x086F) spec) ;; Syriac Supplement
+    (set-fontset-font t '(#x08A0 . #x08FF) spec) ;; Arabic Extended-A
+    (set-fontset-font t '(#x0900 . #x097F) spec) ;; Devanagari
+    (set-fontset-font t '(#x0980 . #x09FF) spec) ;; Bengali
+    (set-fontset-font t '(#x0A00 . #x0A7F) spec) ;; Gurmukhi
+    (set-fontset-font t '(#x0A80 . #x0AFF) spec) ;; Gujarati
+    (set-fontset-font t '(#x0B00 . #x0B7F) spec) ;; Oriya
+    (set-fontset-font t '(#x0B80 . #x0BFF) spec) ;; Tamil
+    (set-fontset-font t '(#x0C00 . #x0C7F) spec) ;; Telugu
+    (set-fontset-font t '(#x0C80 . #x0CFF) spec) ;; Kannada
+    (set-fontset-font t '(#x0D00 . #x0D7F) spec) ;; Malayalam
+    (set-fontset-font t '(#x0D80 . #x0DFF) spec) ;; Sinhala
+    (set-fontset-font t '(#x0E00 . #x0E7F) spec) ;; Thai
+    (set-fontset-font t '(#x0E80 . #x0EFF) spec) ;; Lao
+    (set-fontset-font t '(#x0F00 . #x0FFF) spec) ;; Tibetan
+    (set-fontset-font t '(#x1000 . #x109F) spec) ;; Myanmar
+    (set-fontset-font t '(#x10A0 . #x10FF) spec) ;; Georgian
+    (set-fontset-font t '(#x1100 . #x11FF) spec) ;; Hangul Jamo
+    (set-fontset-font t '(#x1200 . #x137F) spec) ;; Ethiopic
+    (set-fontset-font t '(#x1380 . #x139F) spec) ;; Ethiopic Supplement
+    (set-fontset-font t '(#x13A0 . #x13FF) spec) ;; Cherokee
+    (set-fontset-font t '(#x1400 . #x167F) spec) ;; Unified Canadian Aboriginal Syllabics
+    (set-fontset-font t '(#x1680 . #x169F) spec) ;; Ogham
+    (set-fontset-font t '(#x16A0 . #x16FF) spec) ;; Runic
+    (set-fontset-font t '(#x1700 . #x171F) spec) ;; Tagalog
+    (set-fontset-font t '(#x1720 . #x173F) spec) ;; Hanunoo
+    (set-fontset-font t '(#x1740 . #x175F) spec) ;; Buhid
+    (set-fontset-font t '(#x1760 . #x177F) spec) ;; Tagbanwa
+    (set-fontset-font t '(#x1780 . #x17FF) spec) ;; Khmer
+    (set-fontset-font t '(#x1800 . #x18AF) spec) ;; Mongolian
+    (set-fontset-font t '(#x18B0 . #x18FF) spec) ;; Unified Canadian Aboriginal Syllabics Extended
+    (set-fontset-font t '(#x1900 . #x194F) spec) ;; Limbu
+    (set-fontset-font t '(#x1950 . #x197F) spec) ;; Tai Le
+    (set-fontset-font t '(#x1980 . #x19DF) spec) ;; New Tai Lue
+    (set-fontset-font t '(#x19E0 . #x19FF) spec) ;; Khmer Symbols
+    (set-fontset-font t '(#x1A00 . #x1A1F) spec) ;; Buginese
+    (set-fontset-font t '(#x1A20 . #x1AAF) spec) ;; Tai Tham
+    (set-fontset-font t '(#x1AB0 . #x1AFF) spec) ;; Combining Diacritical Marks Extended
+    (set-fontset-font t '(#x1B00 . #x1B7F) spec) ;; Balinese
+    (set-fontset-font t '(#x1B80 . #x1BBF) spec) ;; Sundanese
+    (set-fontset-font t '(#x1BC0 . #x1BFF) spec) ;; Batak
+    (set-fontset-font t '(#x1C00 . #x1C4F) spec) ;; Lepcha
+    (set-fontset-font t '(#x1C50 . #x1C7F) spec) ;; Ol Chiki
+    (set-fontset-font t '(#x1C80 . #x1C8F) spec) ;; Cyrillic Extended C
+    (set-fontset-font t '(#x1CC0 . #x1CCF) spec) ;; Sundanese Supplement
+    (set-fontset-font t '(#x1CD0 . #x1CFF) spec) ;; Vedic Extensions
+    (set-fontset-font t '(#x1D00 . #x1D7F) spec) ;; Phonetic Extensions
+    (set-fontset-font t '(#x1D80 . #x1DBF) spec) ;; Phonetic Extensions Supplement
+    (set-fontset-font t '(#x1DC0 . #x1DFF) spec) ;; Combining Diacritical Marks Supplement
+    (set-fontset-font t '(#x1E00 . #x1EFF) spec) ;; Latin Extended Additional
+    (set-fontset-font t '(#x1F00 . #x1FFF) spec) ;; Greek Extended
+    (set-fontset-font t '(#x2000 . #x206F) spec) ;; General Punctuation
+    (set-fontset-font t '(#x2070 . #x209F) spec) ;; Superscripts and Subscripts
+    (set-fontset-font t '(#x20A0 . #x20CF) spec) ;; Currency Symbols
+    (set-fontset-font t '(#x20D0 . #x20FF) spec) ;; Combining Diacritical Marks for Symbols
+    (set-fontset-font t '(#x2100 . #x214F) spec) ;; Letterlike Symbols
+    (set-fontset-font t '(#x2150 . #x218F) spec) ;; Number Forms
+    (set-fontset-font t '(#x2190 . #x21FF) spec) ;; Arrows
+    (set-fontset-font t '(#x2200 . #x22FF) spec) ;; Mathematical Operators
+    (set-fontset-font t '(#x2300 . #x23FF) spec) ;; Miscellaneous Technical
+    (set-fontset-font t '(#x2400 . #x243F) spec) ;; Control Pictures
+    (set-fontset-font t '(#x2440 . #x245F) spec) ;; Optical Character Recognition
+    (set-fontset-font t '(#x2460 . #x24FF) spec) ;; Enclosed Alphanumerics
+    (set-fontset-font t '(#x2500 . #x257F) spec) ;; Box Drawing
+    (set-fontset-font t '(#x2580 . #x259F) spec) ;; Block Elements
+    (set-fontset-font t '(#x25A0 . #x25FF) spec) ;; Geometric Shapes
+    (set-fontset-font t '(#x2600 . #x26FF) spec) ;; Miscellaneous Symbols
+    (set-fontset-font t '(#x2700 . #x27BF) spec) ;; Dingbats
+    (set-fontset-font t '(#x27C0 . #x27EF) spec) ;; Miscellaneous Mathematical Symbols-A
+    (set-fontset-font t '(#x27F0 . #x27FF) spec) ;; Supplemental Arrows-A
+    (set-fontset-font t '(#x2800 . #x28FF) spec) ;; Braille Patterns
+    (set-fontset-font t '(#x2900 . #x297F) spec) ;; Supplemental Arrows-B
+    (set-fontset-font t '(#x2980 . #x29FF) spec) ;; Miscellaneous Mathematical Symbols-B
+    (set-fontset-font t '(#x2A00 . #x2AFF) spec) ;; Supplemental Mathematical Operators
+    (set-fontset-font t '(#x2B00 . #x2BFF) spec) ;; Miscellaneous Symbols and Arrows
+    (set-fontset-font t '(#x2C00 . #x2C5F) spec) ;; Glagolitic
+    (set-fontset-font t '(#x2C60 . #x2C7F) spec) ;; Latin Extended-C
+    (set-fontset-font t '(#x2C80 . #x2CFF) spec) ;; Coptic
+    (set-fontset-font t '(#x2D00 . #x2D2F) spec) ;; Georgian Supplement
+    (set-fontset-font t '(#x2D30 . #x2D7F) spec) ;; Tifinagh
+    (set-fontset-font t '(#x2D80 . #x2DDF) spec) ;; Ethiopic Extended
+    (set-fontset-font t '(#x2DE0 . #x2DFF) spec) ;; Cyrillic Extended-A
+    (set-fontset-font t '(#x2E00 . #x2E7F) spec) ;; Supplemental Punctuation
+    (set-fontset-font t '(#x2E80 . #x2EFF) spec) ;; CJK Radicals Supplement
+    (set-fontset-font t '(#x2F00 . #x2FDF) spec) ;; Kangxi Radicals
+    (set-fontset-font t '(#x2FF0 . #x2FFF) spec) ;; Ideographic Description Characters
+    (set-fontset-font t '(#x3000 . #x303F) spec) ;; CJK Symbols and Punctuation
+    (set-fontset-font t '(#x3040 . #x309F) spec) ;; Hiragana
+    (set-fontset-font t '(#x30A0 . #x30FF) spec) ;; Katakana
+    (set-fontset-font t '(#x3100 . #x312F) spec) ;; Bopomofo
+    (set-fontset-font t '(#x3130 . #x318F) spec) ;; Hangul Compatibility Jamo
+    (set-fontset-font t '(#x3190 . #x319F) spec) ;; Kanbun
+    (set-fontset-font t '(#x31A0 . #x31BF) spec) ;; Bopomofo Extended
+    (set-fontset-font t '(#x31C0 . #x31EF) spec) ;; CJK Strokes
+    (set-fontset-font t '(#x31F0 . #x31FF) spec) ;; Katakana Phonetic Extensions
+    (set-fontset-font t '(#x3200 . #x32FF) spec) ;; Enclosed CJK Letters and Months
+    (set-fontset-font t '(#x3300 . #x33FF) spec) ;; CJK Compatibility
+    (set-fontset-font t '(#x3400 . #x4DBF) spec) ;; CJK Unified Ideographs Extension A
+    (set-fontset-font t '(#x4DC0 . #x4DFF) spec) ;; Yijing Hexagram Symbols
+    (set-fontset-font t '(#x4E00 . #x9FFF) spec) ;; CJK Unified Ideographs
+    (set-fontset-font t '(#xA000 . #xA48F) spec) ;; Yi Syllables
+    (set-fontset-font t '(#xA490 . #xA4CF) spec) ;; Yi Radicals
+    (set-fontset-font t '(#xA4D0 . #xA4FF) spec) ;; Lisu
+    (set-fontset-font t '(#xA500 . #xA63F) spec) ;; Vai
+    (set-fontset-font t '(#xA640 . #xA69F) spec) ;; Cyrillic Extended-B
+    (set-fontset-font t '(#xA6A0 . #xA6FF) spec) ;; Bamum
+    (set-fontset-font t '(#xA700 . #xA71F) spec) ;; Modifier Tone Letters
+    (set-fontset-font t '(#xA720 . #xA7FF) spec) ;; Latin Extended-D
+    (set-fontset-font t '(#xA800 . #xA82F) spec) ;; Syloti Nagri
+    (set-fontset-font t '(#xA830 . #xA83F) spec) ;; Common Indic Number Forms
+    (set-fontset-font t '(#xA840 . #xA87F) spec) ;; Phags-pa
+    (set-fontset-font t '(#xA880 . #xA8DF) spec) ;; Saurashtra
+    (set-fontset-font t '(#xA8E0 . #xA8FF) spec) ;; Devanagari Extended
+    (set-fontset-font t '(#xA900 . #xA92F) spec) ;; Kayah Li
+    (set-fontset-font t '(#xA930 . #xA95F) spec) ;; Rejang
+    (set-fontset-font t '(#xA960 . #xA97F) spec) ;; Hangul Jamo Extended-A
+    (set-fontset-font t '(#xA980 . #xA9DF) spec) ;; Javanese
+    (set-fontset-font t '(#xA9E0 . #xA9FF) spec) ;; Myanmar Extended-B
+    (set-fontset-font t '(#xAA00 . #xAA5F) spec) ;; Cham
+    (set-fontset-font t '(#xAA60 . #xAA7F) spec) ;; Myanmar Extended-A
+    (set-fontset-font t '(#xAA80 . #xAADF) spec) ;; Tai Viet
+    (set-fontset-font t '(#xAAE0 . #xAAFF) spec) ;; Meetei Mayek Extensions
+    (set-fontset-font t '(#xAB00 . #xAB2F) spec) ;; Ethiopic Extended-A
+    (set-fontset-font t '(#xAB30 . #xAB6F) spec) ;; Latin Extended-E
+    (set-fontset-font t '(#xAB70 . #xABBF) spec) ;; Cherokee Supplement
+    (set-fontset-font t '(#xABC0 . #xABFF) spec) ;; Meetei Mayek
+    (set-fontset-font t '(#xAC00 . #xD7AF) spec) ;; Hangul Syllables
+    (set-fontset-font t '(#xD7B0 . #xD7FF) spec) ;; Hangul Jamo Extended-B
+    (set-fontset-font t '(#xD800 . #xDB7F) spec) ;; High Surrogates
+    (set-fontset-font t '(#xDB80 . #xDBFF) spec) ;; High Private Use Surrogates
+    (set-fontset-font t '(#xDC00 . #xDFFF) spec) ;; Low Surrogates
+    (set-fontset-font t '(#xE000 . #xF8FF) spec) ;; Private Use Area
+    (set-fontset-font t '(#xF900 . #xFAFF) spec) ;; CJK Compatibility Ideographs
+    (set-fontset-font t '(#xFB00 . #xFB4F) spec) ;; Alphabetic Presentation Forms
+    (set-fontset-font t '(#xFB50 . #xFDFF) spec) ;; Arabic Presentation Forms-A
+    (set-fontset-font t '(#xFE00 . #xFE0F) spec) ;; Variation Selectors
+    (set-fontset-font t '(#xFE10 . #xFE1F) spec) ;; Vertical Forms
+    (set-fontset-font t '(#xFE20 . #xFE2F) spec) ;; Combining Half Marks
+    (set-fontset-font t '(#xFE30 . #xFE4F) spec) ;; CJK Compatibility Forms
+    (set-fontset-font t '(#xFE50 . #xFE6F) spec) ;; Small Form Variants
+    (set-fontset-font t '(#xFE70 . #xFEFF) spec) ;; Arabic Presentation Forms-B
+    (set-fontset-font t '(#xFF00 . #xFFEF) spec) ;; Halfwidth and Fullwidth Forms
+    (set-fontset-font t '(#xFFF0 . #xFFFF) spec) ;; Specials
+    (set-fontset-font t '(#x10000 . #x1007F) spec) ;; Linear B Syllabary
+    (set-fontset-font t '(#x10080 . #x100FF) spec) ;; Linear B Ideograms
+    (set-fontset-font t '(#x10100 . #x1013F) spec) ;; Aegean Numbers
+    (set-fontset-font t '(#x10140 . #x1018F) spec) ;; Ancient Greek Numbers
+    (set-fontset-font t '(#x10190 . #x101CF) spec) ;; Ancient Symbols
+    (set-fontset-font t '(#x101D0 . #x101FF) spec) ;; Phaistos Disc
+    (set-fontset-font t '(#x10280 . #x1029F) spec) ;; Lycian
+    (set-fontset-font t '(#x102A0 . #x102DF) spec) ;; Carian
+    (set-fontset-font t '(#x102E0 . #x102FF) spec) ;; Coptic Epact Numbers
+    (set-fontset-font t '(#x10300 . #x1032F) spec) ;; Old Italic
+    (set-fontset-font t '(#x10330 . #x1034F) spec) ;; Gothic
+    (set-fontset-font t '(#x10350 . #x1037F) spec) ;; Old Permic
+    (set-fontset-font t '(#x10380 . #x1039F) spec) ;; Ugaritic
+    (set-fontset-font t '(#x103A0 . #x103DF) spec) ;; Old Persian
+    (set-fontset-font t '(#x10400 . #x1044F) spec) ;; Deseret
+    (set-fontset-font t '(#x10450 . #x1047F) spec) ;; Shavian
+    (set-fontset-font t '(#x10480 . #x104AF) spec) ;; Osmanya
+    (set-fontset-font t '(#x104B0 . #x104FF) spec) ;; Osage
+    (set-fontset-font t '(#x10500 . #x1052F) spec) ;; Elbasan
+    (set-fontset-font t '(#x10530 . #x1056F) spec) ;; Caucasian Albanian
+    (set-fontset-font t '(#x10600 . #x1077F) spec) ;; Linear A
+    (set-fontset-font t '(#x10800 . #x1083F) spec) ;; Cypriot Syllabary
+    (set-fontset-font t '(#x10840 . #x1085F) spec) ;; Imperial Aramaic
+    (set-fontset-font t '(#x10860 . #x1087F) spec) ;; Palmyrene
+    (set-fontset-font t '(#x10880 . #x108AF) spec) ;; Nabataean
+    (set-fontset-font t '(#x108E0 . #x108FF) spec) ;; Hatran
+    (set-fontset-font t '(#x10900 . #x1091F) spec) ;; Phoenician
+    (set-fontset-font t '(#x10920 . #x1093F) spec) ;; Lydian
+    (set-fontset-font t '(#x10980 . #x1099F) spec) ;; Meroitic Hieroglyphs
+    (set-fontset-font t '(#x109A0 . #x109FF) spec) ;; Meroitic Cursive
+    (set-fontset-font t '(#x10A00 . #x10A5F) spec) ;; Kharoshthi
+    (set-fontset-font t '(#x10A60 . #x10A7F) spec) ;; Old South Arabian
+    (set-fontset-font t '(#x10A80 . #x10A9F) spec) ;; Old North Arabian
+    (set-fontset-font t '(#x10AC0 . #x10AFF) spec) ;; Manichaean
+    (set-fontset-font t '(#x10B00 . #x10B3F) spec) ;; Avestan
+    (set-fontset-font t '(#x10B40 . #x10B5F) spec) ;; Inscriptional Parthian
+    (set-fontset-font t '(#x10B60 . #x10B7F) spec) ;; Inscriptional Pahlavi
+    (set-fontset-font t '(#x10B80 . #x10BAF) spec) ;; Psalter Pahlavi
+    (set-fontset-font t '(#x10C00 . #x10C4F) spec) ;; Old Turkic
+    (set-fontset-font t '(#x10C80 . #x10CFF) spec) ;; Old Hungarian
+    (set-fontset-font t '(#x10E60 . #x10E7F) spec) ;; Rumi Numeral Symbols
+    (set-fontset-font t '(#x11000 . #x1107F) spec) ;; Brahmi
+    (set-fontset-font t '(#x11080 . #x110CF) spec) ;; Kaithi
+    (set-fontset-font t '(#x110D0 . #x110FF) spec) ;; Sora Sompeng
+    (set-fontset-font t '(#x11100 . #x1114F) spec) ;; Chakma
+    (set-fontset-font t '(#x11150 . #x1117F) spec) ;; Mahajani
+    (set-fontset-font t '(#x11180 . #x111DF) spec) ;; Sharada
+    (set-fontset-font t '(#x111E0 . #x111FF) spec) ;; Sinhala Archaic Numbers
+    (set-fontset-font t '(#x11200 . #x1124F) spec) ;; Khojki
+    (set-fontset-font t '(#x11280 . #x112AF) spec) ;; Multani
+    (set-fontset-font t '(#x112B0 . #x112FF) spec) ;; Khudawadi
+    (set-fontset-font t '(#x11300 . #x1137F) spec) ;; Grantha
+    (set-fontset-font t '(#x11400 . #x1147F) spec) ;; Newa
+    (set-fontset-font t '(#x11480 . #x114DF) spec) ;; Tirhuta
+    (set-fontset-font t '(#x11580 . #x115FF) spec) ;; Siddham
+    (set-fontset-font t '(#x11600 . #x1165F) spec) ;; Modi
+    (set-fontset-font t '(#x11660 . #x1167F) spec) ;; Mongolian Supplement
+    (set-fontset-font t '(#x11680 . #x116CF) spec) ;; Takri
+    (set-fontset-font t '(#x11700 . #x1173F) spec) ;; Ahom
+    (set-fontset-font t '(#x118A0 . #x118FF) spec) ;; Warang Citi
+    (set-fontset-font t '(#x11A00 . #x11A4F) spec) ;; Zanabazar Square
+    (set-fontset-font t '(#x11A50 . #x11AAF) spec) ;; Soyombo
+    (set-fontset-font t '(#x11AC0 . #x11AFF) spec) ;; Pau Cin Hau
+    (set-fontset-font t '(#x11C00 . #x11C6F) spec) ;; Bhaiksuki
+    (set-fontset-font t '(#x11C70 . #x11CBF) spec) ;; Marchen
+    (set-fontset-font t '(#x11D00 . #x11D5F) spec) ;; Masaram Gondi
+    (set-fontset-font t '(#x12000 . #x123FF) spec) ;; Cuneiform
+    (set-fontset-font t '(#x12400 . #x1247F) spec) ;; Cuneiform Numbers and Punctuation
+    (set-fontset-font t '(#x12480 . #x1254F) spec) ;; Early Dynastic Cuneiform
+    (set-fontset-font t '(#x13000 . #x1342F) spec) ;; Egyptian Hieroglyphs
+    (set-fontset-font t '(#x14400 . #x1467F) spec) ;; Anatolian Hieroglyphs
+    (set-fontset-font t '(#x16800 . #x16A3F) spec) ;; Bamum Supplement
+    (set-fontset-font t '(#x16A40 . #x16A6F) spec) ;; Mro
+    (set-fontset-font t '(#x16AD0 . #x16AFF) spec) ;; Bassa Vah
+    (set-fontset-font t '(#x16B00 . #x16B8F) spec) ;; Pahawh Hmong
+    (set-fontset-font t '(#x16F00 . #x16F9F) spec) ;; Miao
+    (set-fontset-font t '(#x16FE0 . #x16FFF) spec) ;; Ideographic Symbols and Punctuation
+    (set-fontset-font t '(#x17000 . #x187FF) spec) ;; Tangut
+    (set-fontset-font t '(#x18800 . #x18AFF) spec) ;; Tangut Components
+    (set-fontset-font t '(#x1B000 . #x1B0FF) spec) ;; Kana Supplement
+    (set-fontset-font t '(#x1B100 . #x1B12F) spec) ;; Kana Extended-A
+    (set-fontset-font t '(#x1B170 . #x1B2FF) spec) ;; Nushu
+    (set-fontset-font t '(#x1BC00 . #x1BC9F) spec) ;; Duployan
+    (set-fontset-font t '(#x1BCA0 . #x1BCAF) spec) ;; Shorthand Format Controls
+    (set-fontset-font t '(#x1D000 . #x1D0FF) spec) ;; Byzantine Musical Symbols
+    (set-fontset-font t '(#x1D100 . #x1D1FF) spec) ;; Musical Symbols
+    (set-fontset-font t '(#x1D200 . #x1D24F) spec) ;; Ancient Greek Musical Notation
+    (set-fontset-font t '(#x1D300 . #x1D35F) spec) ;; Tai Xuan Jing Symbols
+    (set-fontset-font t '(#x1D360 . #x1D37F) spec) ;; Counting Rod Numerals
+    (set-fontset-font t '(#x1D400 . #x1D7FF) spec) ;; Mathematical Alphanumeric Symbols
+    (set-fontset-font t '(#x1D800 . #x1DAAF) spec) ;; Sutton SignWriting
+    (set-fontset-font t '(#x1E000 . #x1E02F) spec) ;; Glagolitic Supplement
+    (set-fontset-font t '(#x1E800 . #x1E8DF) spec) ;; Mende Kikakui
+    (set-fontset-font t '(#x1E900 . #x1E95F) spec) ;; Adlam
+    (set-fontset-font t '(#x1EE00 . #x1EEFF) spec) ;; Arabic Mathematical Alphabetic Symbols
+    (set-fontset-font t '(#x1F000 . #x1F02F) spec) ;; Mahjong Tiles
+    (set-fontset-font t '(#x1F030 . #x1F09F) spec) ;; Domino Tiles
+    (set-fontset-font t '(#x1F0A0 . #x1F0FF) spec) ;; Playing Cards
+    (set-fontset-font t '(#x1F100 . #x1F1FF) spec) ;; Enclosed Alphanumeric Supplement
+    (set-fontset-font t '(#x1F200 . #x1F2FF) spec) ;; Enclosed Ideographic Supplement
+    (set-fontset-font t '(#x1F300 . #x1F5FF) spec) ;; Miscellaneous Symbols and Pictographs
+    (set-fontset-font t '(#x1F600 . #x1F64F) spec) ;; Emoticons (Emoji)
+    (set-fontset-font t '(#x1F650 . #x1F67F) spec) ;; Ornamental Dingbats
+    (set-fontset-font t '(#x1F680 . #x1F6FF) spec) ;; Transport and Map Symbols
+    (set-fontset-font t '(#x1F700 . #x1F77F) spec) ;; Alchemical Symbols
+    (set-fontset-font t '(#x1F780 . #x1F7FF) spec) ;; Geometric Shapes Extended
+    (set-fontset-font t '(#x1F800 . #x1F8FF) spec) ;; Supplemental Arrows-C
+    (set-fontset-font t '(#x1F900 . #x1F9FF) spec) ;; Supplemental Symbols and Pictographs
+    (set-fontset-font t '(#x20000 . #x2A6DF) spec) ;; CJK Unified Ideographs Extension B
+    (set-fontset-font t '(#x2A700 . #x2B73F) spec) ;; CJK Unified Ideographs Extension C
+    (set-fontset-font t '(#x2B740 . #x2B81F) spec) ;; CJK Unified Ideographs Extension D
+    (set-fontset-font t '(#x2B820 . #x2CEAF) spec) ;; CJK Unified Ideographs Extension E
+    (set-fontset-font t '(#x2CEB0 . #x2EBEF) spec) ;; CJK Unified Ideographs Extension F
+    (set-fontset-font t '(#x2F800 . #x2FA1F) spec) ;; CJK Compatibility Ideographs Supplement
+    (set-fontset-font t '(#xE0000 . #xE007F) spec) ;; Tags
+    (set-fontset-font t '(#xE0100 . #xE01EF) spec) ;; Variation Selectors Supplement
