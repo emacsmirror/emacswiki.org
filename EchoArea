@@ -32,8 +32,8 @@ Here is a hack to allowing filtering certain messages so that they go to the Mes
     (let ((formatted-string (apply 'format (ad-get-args 0))))
       (if (and (stringp formatted-string)
                (some (lambda (re) (string-match re formatted-string)) message-filter-regexp-list))
-          (with-temp-buffer
-            (with-current-buffer "*Messages*")
+          (save-excursion
+            (set-buffer "*Messages*")
             (goto-char (point-max))
             (insert formatted-string "\n"))
         (progn
