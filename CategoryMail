@@ -42,13 +42,16 @@ The [[emacs-w3m]] web browser can be used with webmail:
 
 * Gmail (see [[http://www.emacswiki.org/emacs/emacs-w3m#EmacsW3WithGmail instructions]])
 
-And then there are some less commonly used and/or badly maintained
-packages:
+And then there are some less commonly used packages:
 
 * [https://github.com/nicferrier/emacs-maildir maildir] -- read and manage mail in a local maildir
+* SimpleIMAPClient -- for entertainment purposes only
+
+Unmaintained and minimally-maintained packages:
+
 * [http://cmail.sourceforge.jp/ CMail] -- is only documented in Japanese
   and hasn't been updated in a long time
 * [[imapua]] -- an IMAP mua based on gnus' imap library
 * [[http://www1.mirai.ne.jp/~gyo/xyzzy/kamail.html KaMail]] (dead link) -- is only documented in Japanese
 * [[http://www.sfu.ca/~sabetts/mailx.el mailx.el]] (dead link) -- a front-end to mailx
-* SimpleIMAPClient -- for entertainment purposes only
+
