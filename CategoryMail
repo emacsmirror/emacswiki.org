@@ -45,6 +45,7 @@ The [[emacs-w3m]] web browser can be used with webmail:
 And then there are some less commonly used and/or badly maintained
 packages:
 
+* [https://github.com/nicferrier/emacs-maildir maildir] -- read and manage mail in a local maildir
 * [http://cmail.sourceforge.jp/ CMail] -- is only documented in Japanese
   and hasn't been updated in a long time
 * [[imapua]] -- an IMAP mua based on gnus' imap library
