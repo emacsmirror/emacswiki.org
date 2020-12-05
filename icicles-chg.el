@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Nov 12 14:56:19 2020 (-0800)
+;; Last-Updated: Sat Dec  5 10:01:40 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 11909
+;;     Update #: 11910
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8885,6 +8885,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2020/12/05 dadams
+;;     icicle-re-no-dot:
+;;       Changed value to be that of directory-files-no-dot-files-regexp.  See comment in code.
+;;       This value is OK for use by directory-files, at least.
+;;       See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html and followups.
 ;; 2018/10/15 dadams
 ;;     Removed icicle-(buffer|file)-sort-first-time-p.
 ;; 2018/02/13 dadams
