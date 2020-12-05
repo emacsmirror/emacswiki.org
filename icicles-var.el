@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Oct 18 08:53:33 2020 (-0700)
+;; Last-Updated: Sat Dec  5 10:03:14 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 1895
+;;     Update #: 1898
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1220,11 +1220,22 @@ Depending on the value of option
 `icicle-unpropertize-completion-result-flag', it may also remove all
 text properties.")
 
-;; Same as the default value of `diredp-re-no-dot'.
-;; Cf. `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+,
-;; but changed in Emacs 27+.
-;; See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html
-(defconst icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
+;; 2020-12-05.
+;;
+;; This was previously "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*".  Changed to be the same as
+;; `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+, but changed in
+;; Emacs 27+ to this value.  This value is a bit quicker than the previous value, and it can
+;; match file names containing ^J.
+;;
+;; This value is OK, as long as no use is made of the match data.  In particular, as long as
+;; the match data is not used to capture the file name.  That's the case (it's OK) for use by
+;; `directory-files', which is currently the only use here.
+;;
+;; See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html, msg01247, msg01305
+;;
+;; Same as the default value of `diredp-re-no-dot' in `dired+.el'.
+;;
+(defconst icicle-re-no-dot "[^.]\\|\\.\\.\\."
   "Regexp that matches anything except `.' and `..'.")
 
 (defvar icicle-require-match-p nil
