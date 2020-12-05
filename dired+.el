@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec  5 09:37:21 2020 (-0800)
+;; Last-Updated: Sat Dec  5 10:02:55 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 12728
+;;     Update #: 12733
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -2580,17 +2580,20 @@ Initialized to the value of option `diredp-hide-details-initially-flag'.")
   (make-variable-buffer-local 'diredp-hide-details-toggled))
 
 ;; 2020-12-05.
-;; This was previously the same as `icicle-re-no-dot': "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
-;; Changed to be the same as `directory-files-no-dot-files-regexp' in `files.el',
-;; available for Emacs 23+, but changed in Emacs 27+ to this value.
-;; This value is a bit quicker than the `icicle-re-no-dot' value,
-;; and it can match file names containing ^J.
+;;
+;; This was previously "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*".  Changed to be the same as
+;; `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+, but changed in
+;; Emacs 27+ to this value.  This value is a bit quicker than the previous value, and it can
+;; match file names containing ^J.
 ;;
 ;; This value is OK, as long as no use is made of the match data.  In particular, as long as
 ;; the match data is not used to capture the file name.  That's the case (it's OK) for use by
 ;; `directory-files', which is currently the only use here.
 ;;
 ;; See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html, msg01247, msg01305
+;;
+;; Same as the default value of `icicle-re-no-dot', in `icicles-var.el'.
+;;
 (defvar diredp-re-no-dot "[^.]\\|\\.\\.\\."
   "Regexp that matches any nonempty file name except `.' and `..'.
 Default value is same as `directory-files-no-dot-files-regexp'.")
