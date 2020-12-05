@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec  1 16:31:34 2020 (-0800)
+;; Last-Updated: Sat Dec  5 09:37:21 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 12721
+;;     Update #: 12728
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -844,6 +844,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/05 dadams
+;;     diredp-re-no-dot:
+;;       Changed value to be that of directory-files-no-dot-files-regexp.  See comment in code.
+;;       This value is OK for use by directory-files, at least.
+;;       See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html and followups.
 ;; 2020/12/01 dadams
 ;;     dired-mark-files-regexp: For Lisp, swapped nil and non-nil (other than no-dir) cases of
 ;;       last arg, to be compatible with vanilla Emacs.  (No change to interactive behavior.)
@@ -2574,11 +2579,21 @@ Initialized to the value of option `diredp-hide-details-initially-flag'.")
     "Non-nil means you have already toggled hiding details in this buffer.")
   (make-variable-buffer-local 'diredp-hide-details-toggled))
 
-;; Same as `icicle-re-no-dot'.
-;; Cf. `directory-files-no-dot-files-regexp' in `files.el', available for Emacs 23+, but changed in Emacs 27+.
-;; See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html
-(defvar diredp-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
-  "Regexp that matches anything except `.' and `..'.")
+;; 2020-12-05.
+;; This was previously the same as `icicle-re-no-dot': "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
+;; Changed to be the same as `directory-files-no-dot-files-regexp' in `files.el',
+;; available for Emacs 23+, but changed in Emacs 27+ to this value.
+;; This value is a bit quicker than the `icicle-re-no-dot' value,
+;; and it can match file names containing ^J.
+;;
+;; This value is OK, as long as no use is made of the match data.  In particular, as long as
+;; the match data is not used to capture the file name.  That's the case (it's OK) for use by
+;; `directory-files', which is currently the only use here.
+;;
+;; See https://lists.gnu.org/archive/html/emacs-devel/2020-04/msg00764.html, msg01247, msg01305
+(defvar diredp-re-no-dot "[^.]\\|\\.\\.\\."
+  "Regexp that matches any nonempty file name except `.' and `..'.
+Default value is same as `directory-files-no-dot-files-regexp'.")
 
 (defvar diredp-recent-files-buffer nil
   "Non-nil means this buffer is a Dired listing of recently visited files.")
