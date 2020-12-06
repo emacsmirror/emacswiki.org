@@ -1,12 +1,12 @@
 '''Image-Dired''' extends [[Dired]] to create an image and image thumbnail viewer.  Using Image-Dired you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
 
-Image-Dired has been part of GNU Emacs since version 22.1 - prior to that it was known as Tumme, which means thumb in Swedish. If you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
+Image-Dired has been part of GNU Emacs since version 22.1 - prior to that it was known as Tumme, which means thumb in Swedish.  If you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
 
-The code is here: 
+The code is here:
 
 : GIT:image-dired.el
 
-You can read more about [https://www.gnu.org/software/emacs/manual/html_node/emacs/Image_002dDired.html Image-Dired in the Emacs Manual]. For more background and basic usage, reading the Commentary section in ##image-dired.el## is strongly recommended.
+You can read more about [https://www.gnu.org/software/emacs/manual/html_node/emacs/Image_002dDired.html Image-Dired in the Emacs Manual].  For more background and basic usage, reading the Commentary section in ##image-dired.el## is strongly recommended.
 
 See also [[BookmarkPlus#BookmarkTags|Bookmark Tags]], for another way to tag image files, view tag listings, etc.
 
@@ -22,10 +22,10 @@ Current version is 0.4.11.
 * From thumbnail buffer, view thumbnail's original image in external viewer or, automatically resized, in an Emacs buffer
 * Rotate thumbnail images.
 * Comment and tag support (writing, reading, marking by tag).
-* Lossless rotation of JPEG files using jpegTRAN.
+* Lossless rotation of JPEG files using jpegtran.
 * Generation of a simple, static image gallery.
-* Supports browing of all images types that Emacs and ImageMagick supports.
-* Functions to write and extract EXIF comments using [http://www.sno.phy.queensu.ca/~phil/exiftool/ Exiftool].
+* Supports browsing all images types that Emacs and ImageMagick supports.
+* Functions to write and extract Exif comments using [https://exiftool.org/ ExifTool].
 * Configurable thumbnail storage (per-directory or in a central location)
 * Because it is based on dired, you can do further file manipulation and image processing by using `dired-do-shell-command'.
 * And, of course, infinitely customizable :)
@@ -34,17 +34,26 @@ Current version is 0.4.11.
 
 [[image:TummePic01]]
 
-The picture above shows how Image-Dired displays the original image's file name and tags in the echo area and how the movement in the thumbnail buffer have been mirrored automatically in the associated dired buffer. You can also see an automatically sized (Image-Dired creates one on the fly) version in an extra buffer below the thumbnail buffer.
+The picture above shows how Image-Dired displays the original image's file name and tags in the echo area and how the movement in the thumbnail buffer have been mirrored automatically in the associated dired buffer.  You can also see an automatically sized (Image-Dired creates one on the fly) version in an extra buffer below the thumbnail buffer.
 
 [[image:TummePic05]]
 
 This image shows how well Image-Dired works with its buffers in different frames.
 
 
-== EXIF rotation ==
+== Exif rotation ==
 
-By default, Image-Dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert. For example, you can write the following to add this option to the two variables without knowing too much about their content:
+By default, Image-Dired does not respect the Exif orientation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert.  For example, you can write the following to add this option to the two variables without knowing too much about their content:
 
+{{{
+(with-eval-after-load 'image-dired
+  (add-to-list 'image-dired-cmd-create-thumbnail-options "-auto-orient")
+  (add-to-list 'image-dired-cmd-create-temp-image-options "-auto-orient")
+  (add-to-list 'image-dired-cmd-create-standard-thumbnail-options
+               "-auto-orient"))
+}}}
+
+On old versions:
 {{{
 (eval-after-load "image-dired"
   '(progn
@@ -54,33 +63,21 @@ By default, Image-Dired does not respect the EXIF rotation field when displaying
            (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-temp-image-options))))
 }}}
 
-As of version ??:
-
-{{{
-(eval-after-load "image-dired"
-  '(progn
-     (setq image-dired-cmd-create-thumbnail-options
-           (cons "-auto-orient" image-dired-cmd-create-thumbnail-options)
-           image-dired-cmd-create-temp-image-options
-           (cons "-auto-orient" image-dired-cmd-create-temp-image-options))))
-}}}
-
-
 == Gallery generation ==
 
 As of version 0.4.5, Image-Dired has a command to generate a simple gallery from your tagged images:
 
 [[image:TummePic02]]
 
-The picture above shows the index page, with links to each tag-page. Navigating to one of the tags, you see a page like this:
+The picture above shows the index page, with links to each tag-page.  Navigating to one of the tags, you see a page like this:
 
 [[image:TummePic03]]
 
-Some images has un-linked text under it. That is the image's comment (no one in the screenshot above has one though...). Under the image is also displayed additional tags that this file might have, and you can jump to those tag-pages from here:
+Some images has un-linked text under it.  That is the image's comment (no one in the screenshot above has one though...).  Under the image is also displayed additional tags that this file might have, and you can jump to those tag-pages from here:
 
 [[image:TummePic04]]
 
-That's it. Simple. Works. I guess that it doesn't get more sexy :), at least not as long as it is a static gallery. I plan to add an option to include a CSS-file so that you can customize the look of it. I don't know much about CSS and stuff, but I guess I need to add the class-attribute to each page element. Suggestions on this subject are welcome.
+That's it.  Simple.  Works.  I guess that it doesn't get more sexy :), at least not as long as it is a static gallery.  I plan to add an option to include a CSS-file so that you can customize the look of it.  I don't know much about CSS and stuff, but I guess I need to add the class-attribute to each page element.  Suggestions on this subject are welcome.
 
 Btw, if my server is up (you can see the URL in the screenshots, I won't place a link to it in pure text because I'm not sure I want much traffic in there), you can test it live.
 
