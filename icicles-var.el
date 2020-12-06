@@ -887,7 +887,7 @@ Any function that reads from the minibuffer and accepts a default
 value or initial value should, before reading, put that value in
 `icicle-initial-value'.  For example, `completing-read' does that.
 
-In addition, `completing-read' and `read-file-name' will respect this
+In addition, `completing-read' and `read-file-name' respect this
 value, using it as the initial value if none is provided explicitly.
 This means that you can bind `icicle-initial-value' around an
 expression that calls `completing-read' or `read-file-name', and the
