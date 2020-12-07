@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 21 14:21:14 2018 (-0700)
+;; Last-Updated: Sun Dec  6 20:51:09 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 722
+;;     Update #: 726
 ;; URL: https://www.emacswiki.org/emacs/download/grep%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `compile', `compile+', `compile-', `fit-frame',
-;;   `frame-fns', `grep', `misc-fns', `thingatpt', `thingatpt+'.
+;;   `ansi-color', `avoid', `comint', `compile', `compile+',
+;;   `compile-', `fit-frame', `frame-fns', `grep', `misc-fns',
+;;   `regexp-opt', `ring', `thingatpt', `thingatpt+', `tool-bar'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -80,7 +81,7 @@
 ;;  ***** NOTE: The following variables defined in `grep.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;  `grep-mode-font-lock-keywords', `grep-regexp-alist' (Emacs < 24)
+;;  `grep-mode-font-lock-keywords', `grep-regexp-alist'
 ;;    - Mouse-over the whole line.
 ;;
 ;;
@@ -101,6 +102,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/06 dadams
+;;     grep-regexp-alist: Put mouse-face on whole line for Emacs > 24 also.
 ;; 2018/09/21 dadams
 ;;     grepp-new-grep-buffer, grepp-choose-grep-buffer: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2016/09/23 dadams
@@ -502,35 +505,46 @@ between /* and */."
 ;;; Use mouseover on whole line.  Same as original, except for this.
 ;;;
 (unless (featurep 'grep+)
-  (when (< emacs-major-version 24)
-    (setq grep-regexp-alist
-          `(
-            ;; Use as tight a regexp as possible to try to handle weird file names (with colons) as well as
-            ;; possible.  E.g. use [1-9][0-9]* rather than [0-9]+ so as to accept ":034:" in file names.
-            ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2.*" ; Appended `.*'
-              1 3
-              ;; Calculate column positions (col . end-col) of first grep match on a line
-              ((lambda ()
-                 (when grep-highlight-matches
-                   (let* ((beg   (match-end 0))
-                          (end   (save-excursion (goto-char beg) (line-end-position)))
-                          (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
-                                                                                 grep-match-face
-                                                                                 'match))))
-                     (and mbeg (- mbeg beg)))))
-               .
-               (lambda ()
-                 (when grep-highlight-matches
-                   (let* ((beg   (match-end 0))
-                          (end   (save-excursion (goto-char beg) (line-end-position)))
-                          (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
-                                                                                 grep-match-face
-                                                                                 'match)))
-                          (mend  (and mbeg (next-single-property-change mbeg 'font-lock-face nil end))))
-                     (and mend (- mend beg))))))
-              nil
-              nil) ; DREW ADAMS changed HIGHLIGHT to nil, to highlight whole match.
-            ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1)))))
+  (if (< emacs-major-version 24)
+      (setq grep-regexp-alist
+            `(
+              ;; Use as tight a regexp as possible to try to handle weird file names (with colons) as well as
+              ;; possible.  E.g. use [1-9][0-9]* rather than [0-9]+ so as to accept ":034:" in file names.
+              ;;
+              ;; Appended `.*', to match whole line for `mouse-face'.
+              ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2.*"
+               1 3
+               ;; Calculate column positions (col . end-col) of first grep match on a line
+               ((lambda ()
+                  (when grep-highlight-matches
+                    (let* ((beg   (match-end 0))
+                           (end   (save-excursion (goto-char beg) (line-end-position)))
+                           (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
+                                                                                  grep-match-face
+                                                                                'match))))
+                      (and mbeg (- mbeg beg)))))
+                .
+                (lambda ()
+                  (when grep-highlight-matches
+                    (let* ((beg   (match-end 0))
+                           (end   (save-excursion (goto-char beg) (line-end-position)))
+                           (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
+                                                                                  grep-match-face
+                                                                                'match)))
+                           (mend  (and mbeg (next-single-property-change mbeg 'font-lock-face nil end))))
+                      (and mend (- mend beg))))))
+               nil
+               nil) ; DREW ADAMS changed HIGHLIGHT to nil, to highlight whole match.
+              ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1)))
+
+    ;; Gross hack.  Append ".*" to regexps (but put it before a $ at end, if present).
+    ;; If HIGHLIGHT is nil then the whole line will get `mouse-face'.
+    (dolist (entry  grep-regexp-alist)
+      (when (and (consp entry)  (stringp (car entry)))
+        (let* ((regexp      (car entry))
+               (up-to-last  (substring regexp 0 -1))
+               (last        (substring regexp -1)))
+          (setcar entry (if (string= "$" last) (concat up-to-last ".*$") (concat regexp ".*"))))))))
 
 
 
