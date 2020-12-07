@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec  6 20:51:09 2020 (-0800)
+;; Last-Updated: Sun Dec  6 21:08:14 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 726
+;;     Update #: 733
 ;; URL: https://www.emacswiki.org/emacs/download/grep%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -104,6 +104,7 @@
 ;;
 ;; 2020/12/06 dadams
 ;;     grep-regexp-alist: Put mouse-face on whole line for Emacs > 24 also.
+;;     grep-mode-font-lock-keywords: Updated for Emacs 26.3.
 ;; 2018/09/21 dadams
 ;;     grepp-new-grep-buffer, grepp-choose-grep-buffer: Use pop-to-buffer-same-window, not switch-to-buffer.
 ;; 2016/09/23 dadams
@@ -555,7 +556,7 @@ between /* and */."
 (unless (featurep 'grep+)
   (setq grep-mode-font-lock-keywords
         (if (> emacs-major-version 23)
-            '( ;; Command output lines.
+            '(;; Command output lines.
               ("^\\(.+?\\):\\([0-9]+\\):.*" (0 '(face nil mouse-face compilation-mouseover)))
 
               (": \\(.+\\): \\(?:Permission denied\\|No such \\(?:file or directory\\|device or \
@@ -564,7 +565,7 @@ address\\)\\)$"
               ;; Remove match from `grep-regexp-alist' before fontifying.
               ("^Grep[/a-zA-z]* started.*"
                (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t))
-              ("^Grep[/a-zA-z]* finished \\(?:(\\(matches found\\))\\|with \\(no matches found\\)\\).*"
+              ("^Grep[/a-zA-z]* finished with \\(?:\\(\\(?:[0-9]+ \\)?matches found\\)\\|\\(no matches found\\)\\).*"
                (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t)
                (1 compilation-info-face nil t)
                (2 compilation-warning-face nil t))
@@ -573,10 +574,13 @@ code \\([0-9]+\\)\\)?.*"
                (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t)
                (1 grep-error-face)
                (2 grep-error-face nil t))
-              ("^.+?-[0-9]+-.*\n" (0 grep-context-face)))
+              ;; "filename-linenumber-" format is used for context lines in GNU grep,
+              ;; "filename=linenumber=" for lines with function names in "git grep -p".
+              ("^.+?\\([-=\0]\\)[0-9]+\\([-=]\\).*\n" (0 grep-context-face)
+               (1 (and (eq (char-after (match-beginning 1)) ?\0)  `(face nil display ,(match-string 2))))))
 
           ;; Emacs 22, 23
-          '( ;; Command output lines.
+          '(;; Command output lines.
             ("^\\(.+?\\):\\([0-9]+\\):.*" (0 '(face nil mouse-face compilation-mouseover)))
             (": \\(.+\\): \\(?:Permission denied\\|No such \\(?:file or directory\\|device or \
 address\\)\\)$"
