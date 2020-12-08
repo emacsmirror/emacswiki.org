@@ -40,18 +40,6 @@ Outline for programming modes.
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/outline%2B.el outline+.el]:
 Cycle outline headers like in Org mode.
 
-[new:DrewAdams:2020-11-28 02:14 UTC]
-Please consider renaming your library. [Info+](https://www.emacswiki.org/emacs/InfoPlus) has been around since at least as long ago as **1996**. An infinite number of names are available. There's really no reason to confuse people by using the same name as a longstanding library. Thx - DrewAdams
-[new:DrewAdams:2020-11-28 02:14 UTC]
-
-[new:YuanFu:2020-11-28 04:10 UTC]
-I understand, I'll just hide the package, it's not super important. -- YuanFu
-[new:YuanFu:2020-11-28 04:10 UTC]
-
-[new:DrewAdams:2020-11-29 05:11 UTC]
-Thanks. (Feel free to remove these comments.) - DrewAdams
-[new:DrewAdams:2020-11-29 05:12 UTC]
-
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/sidebar.el sidebar.el]: 
 Show an outline sidebar.
 
