@@ -3,6 +3,6 @@ This mode warns you if you use any word that is not one of the 1000 or 2000 most
 
 The list of words is from the 2000 most frequent words from the [WikiPedia:Brown_Corpus Brown Corpus]. You can find them all over the Internet.
 
-[https://github.com/kensanata/elisp/blob/master/1000-words.el 1000-words.el]
+[https://github.com/kensanata/1000-words 1000-words]
 ----
 CategoryWriting
