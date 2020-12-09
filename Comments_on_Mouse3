@@ -1,0 +1,4 @@
+In the 2nd para you have "The command bound to ‘mouse-3’ is ‘mouse-save-then-kill’. It is a complicated command ...". Reading on, to me this was confusing. It had me wondering if at this time you were talking about emacs/default or about mouse3.el. Again reading on, it became apparent (but not without the prior confusion, and to my surprise) that you were talking about emacs/default.
+
+-- bjd 2020-12-09 21:42 UTC
+
