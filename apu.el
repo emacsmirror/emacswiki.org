@@ -4,13 +4,13 @@
 ;; Description: Apropos Unicode characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2020, Drew Adams, all rights reserved.
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 27 15:24:18 2020 (-0700)
+;; Last-Updated: Thu Dec 10 15:04:48 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 931
+;;     Update #: 943
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -66,13 +66,16 @@
 ;;  `apu-match-two-or-more-words-flag' to specify your preference for
 ;;  the kind of word matching to use by default.  You can match each
 ;;  word or only any two or more words.  If matching each word, you
-;;  can match them as substrings or as full words.  You can use `C-c
-;;  n' to refresh the matches, cycling among these word-match methods.
-;;  There are also separate commands for each kind of matching:
+;;  can match them as substrings or as full words.  `C-c RET' in the
+;;  help buffer tells you what the current match type is.
 ;;
-;;    `C-c s' - Use substring matching
-;;    `C-c 2' - Use pairwise full-word matching (match two+ words)
-;;    `C-c w' - Use full-word matching for each list entry
+;;  You can use `C-c C-n' to refresh the matches, cycling among these
+;;  word-match methods.  There are also separate commands for each
+;;  kind of matching:
+;;
+;;    `C-c C-s' - Use substring matching
+;;    `C-c 2'   - Use pairwise full-word matching (match two+ words)
+;;    `C-c C-w' - Use full-word matching for each list entry
 ;;
 ;;  Non-`nil' option `apu-match-only-displayable-chars-flag' means
 ;;  that commands such as `apropos-unicode' display only Unicode chars
@@ -116,7 +119,8 @@
 ;;    `apu-chars-refresh-matching-as-substrings',
 ;;    `apu-chars-refresh-matching-full-words',
 ;;    `apu-chars-refresh-matching-two-or-more-words',
-;;    `apu-chars-refresh-with-next-match-method', `apu-revert-buffer',
+;;    `apu-chars-refresh-with-next-match-method',
+;;    `apu-match-type-msg', `apu-revert-buffer',
 ;;    `apu-show-char-details', `apu-zoom-char-here',
 ;;    `apu-zoom-char-at-point', `describe-chars-in-region'.
 ;;
@@ -136,10 +140,9 @@
 ;;    `apu-compute-matches', `apu-copy-char-to-second-sel',
 ;;    `apu-filter', `apu-full-word-match', `apu-get-a-hash-key',
 ;;    `apu-get-hash-keys', `apu-hash-table-to-alist',
-;;    `apu-make-tablist-entry', `apu-match-type-msg',
-;;    `apu-print-apropos-matches', `apu-print-chars',
-;;    `apu-remove-if-not', `apu-sort-char', `apu-substring-match',
-;;    `apu-tablist-match-entries'.
+;;    `apu-make-tablist-entry', `apu-print-apropos-matches',
+;;    `apu-print-chars', `apu-remove-if-not', `apu-sort-char',
+;;    `apu-substring-match', `apu-tablist-match-entries'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -154,6 +157,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/10 dadams
+;;     apu-match-type-msg: Made it a command, bound to C-c RET.
+;;     Changed bindings of apu-chars-refresh-* commands to C-c followed C-n|s|w.
 ;; 2020/06/27 dadams
 ;;     apu-chars(-refresh)-matching-(full-words|two-or-more-words|words-as-substrings),
 ;;       apu-chars-next-match-method, apu-chars-refresh-with-next-match-method, apu-chars-narrow-1:
@@ -497,7 +503,7 @@ pattern as a substring."
   (setq apu--match-type  'MATCH-WORDS-AS-SUBSTRINGS)
   (apu-chars))
 
-(defun apu-chars-refresh-with-next-match-method () ; Bound to `C-c n'.
+(defun apu-chars-refresh-with-next-match-method () ; Bound to `C-c C-n'.
   "Refresh matches for the same pattern, but using the next matching method."
   (interactive)
   (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
@@ -508,7 +514,7 @@ pattern as a substring."
      (MATCH-TWO-OR-MORE         #'apu-chars-refresh-matching-full-words)
      (t                         #'apu-chars-refresh-matching-as-substrings))))
 
-(defun apu-chars-refresh-matching-full-words () ; Bound to `C-c w'.
+(defun apu-chars-refresh-matching-full-words () ; Bound to `C-c C-w'.
   "Refresh matches for the same pattern, but match full words.
 I.e., match again, as if `apu-match-words-exactly-flag' were non-nil.
 Does nothing if current pattern is a regexp instead of a word list."
@@ -519,7 +525,7 @@ Does nothing if current pattern is a regexp instead of a word list."
   (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
 
-(defun apu-chars-refresh-matching-as-substrings () ; Bound to `C-c s'.
+(defun apu-chars-refresh-matching-as-substrings () ; Bound to `C-c C-s'.
   "Refresh matches for the same pattern, but match as substrings.
 I.e., match again, as if `apu-match-words-exactly-flag' were nil.
 Does nothing if current pattern is a regexp instead of a word list."
@@ -544,8 +550,7 @@ Does nothing if current pattern is a regexp instead of a word list."
 ;;;###autoload
 (defun apu-revert-buffer ()
   "Revert current APU buffer.
-This will cause any partly elided (`...') char names to be shown
-completely"
+This also shows any partly elided (`...') char names completely."
   (interactive)
   (unless (derived-mode-p 'apu-mode) (error "The current buffer is not in APU mode"))
   (run-hooks 'apu-revert-hook)
@@ -569,24 +574,25 @@ See command `apropos-char' for more information.
   (update-glyphless-char-display 'glyphless-char-display-control glyphless-char-display-control))
 
 (when (featurep 'ucs-cmds)
-  (define-key apu-mode-map "c"         'apu-define-insert-command))
-(define-key apu-mode-map   "g"         'apu-revert-buffer)
-(define-key apu-mode-map   "i"         'apu-google-char)
-(define-key apu-mode-map   "k"         'apu-global-set-insertion-key)
-(define-key apu-mode-map   "l"         'apu-local-set-insertion-key)
-(define-key apu-mode-map   "z"         'apu-zoom-char-here)
-(define-key apu-mode-map   "^"         'apu-insert-char)
-(define-key apu-mode-map   "*"         'apu-chars-narrow)
-(define-key apu-mode-map   "-"         'apu-chars-narrow-not)
-(define-key apu-mode-map (kbd "C-c n") 'apu-chars-refresh-with-next-match-method)
-(define-key apu-mode-map (kbd "C-c s") 'apu-chars-refresh-matching-as-substrings)
-(define-key apu-mode-map (kbd "C-c w") 'apu-chars-refresh-matching-full-words)
-(define-key apu-mode-map (kbd "C-c 2") 'apu-chars-refresh-matching-two-or-more-words)
-(define-key apu-mode-map (kbd "RET")   'apu-show-char-details)
-(define-key apu-mode-map [mouse-2]     'apu-show-char-details)
-(define-key apu-mode-map (kbd "C-y")   'apu-copy-char-here-as-kill)
+  (define-key apu-mode-map "c"           'apu-define-insert-command))
+(define-key apu-mode-map   "g"           'apu-revert-buffer)
+(define-key apu-mode-map   "i"           'apu-google-char)
+(define-key apu-mode-map   "k"           'apu-global-set-insertion-key)
+(define-key apu-mode-map   "l"           'apu-local-set-insertion-key)
+(define-key apu-mode-map   "z"           'apu-zoom-char-here)
+(define-key apu-mode-map   "^"           'apu-insert-char)
+(define-key apu-mode-map   "*"           'apu-chars-narrow)
+(define-key apu-mode-map   "-"           'apu-chars-narrow-not)
+(define-key apu-mode-map (kbd "C-c RET") 'apu-match-type-msg)
+(define-key apu-mode-map (kbd "C-c C-n") 'apu-chars-refresh-with-next-match-method)
+(define-key apu-mode-map (kbd "C-c C-s") 'apu-chars-refresh-matching-as-substrings)
+(define-key apu-mode-map (kbd "C-c C-w") 'apu-chars-refresh-matching-full-words)
+(define-key apu-mode-map (kbd "C-c 2")   'apu-chars-refresh-matching-two-or-more-words)
+(define-key apu-mode-map (kbd "RET")     'apu-show-char-details)
+(define-key apu-mode-map [mouse-2]       'apu-show-char-details)
+(define-key apu-mode-map (kbd "C-y")     'apu-copy-char-here-as-kill)
 (when (featurep 'second-sel)
-  (define-key apu-mode-map (kbd "M-y") 'apu-copy-char-here-to-second-sel))
+  (define-key apu-mode-map (kbd "M-y")   'apu-copy-char-here-to-second-sel))
 
 ;;;###autoload
 (defun apu-char-name-at-point (&optional position msgp) ; Not bound by default.
@@ -836,13 +842,16 @@ these words (in both pair orders), so you get some results that match
 only two of the three words.  This might not be what you want in most
 cases.
 
-You can use `C-c n' to refresh the matches using the next match type.
-Instead of cycling among match types this way, you can change the
-match type directly during refresh, as follows:
+In a buffer in `apu-mode', `C-c RET' displays a message identifying
+the current match type.  And you can use `C-c C-n' to refresh the
+matches using the next match type.
 
- C-c s\t- Use substring matching
+Instead of cycling among match types with `C-c C-n', you can change
+the match type directly during refresh, as follows:
+
+ C-c C-s\t- Use substring matching
  C-c 2\t- Use pairwise full-word matching (match two or more words)
- C-c w\t- Use full-word matching for each list entry
+ C-c C-w\t- Use full-word matching for each list entry
 
 See also these global commands, which use the different match
 methods (without changing the option values):
@@ -895,6 +904,7 @@ Simple tips for matching some common Unicode character names:
 
 (defun apu-match-type-msg ()
   "Message stating current match type."
+  (interactive)
   (message (case apu--match-type
              (MATCH-TWO-OR-MORE    "Matching at least TWO entries as full words now")
              (MATCH-WORDS-EXACTLY  "Matching EACH entry as a FULL WORD now")
