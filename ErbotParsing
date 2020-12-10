@@ -11,11 +11,18 @@ You often use the easiest paren-free English syntax to command the bot, but as i
     <deego> ,(parse "Emacs is a good editor")                                                                                                                                                  
     <fsbot> (fs-set-term "Emacs" "a good editor")
 
+
 This tells you that a sentence of the form "foo is bar" gets parsed into an `fs-set-term' form. So far, the bot has merely parsed the command, not actually executed it. 
 Next, you actually execute the command and tell the bot that Emacs is a good editor:
 
    <deego> ,Emacs is a good editor                                                                                                                                                          
    <fsbot> Created new note for "Emacs"
+
+As should be clear by now, you could have also used the lisp-form to effect the above:
+
+    <deego>  ,(set-term "Emacs" "a good editor")
+    <fsbot> Created new note for "Emacs"                     
+
 
 This sets the term, persistent across sessions, in the publicly available file **botbbdb**.
 
