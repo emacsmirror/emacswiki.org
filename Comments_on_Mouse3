@@ -2,3 +2,20 @@ In the 2nd para you have "The command bound to ‘mouse-3’ is ‘mouse-save-th
 
 -- bjd 2020-12-09 21:42 UTC
 
+
+----
+
+Not sure what would make it clearer.
+
+In this order, these are the points made there:
+
+1. `mouse-3' is bound to that command.
+
+2. Some info about that command - complexity, limitations.
+
+3. ##mouse3.el## '''redefines''' that command, to make it more flexible.
+
+: Library mouse3.el lets you define the behavior. It **redefines standard command ‘mouse-save-then-kill’** in a trivial way to give you custom behavior for a second ‘mouse-3’ click at the same spot.
+
+-- DrewAdams 2020-12-10 20:29 UTC
+
