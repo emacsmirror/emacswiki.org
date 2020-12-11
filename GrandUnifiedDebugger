@@ -166,6 +166,7 @@ lisp code, that func extract *\"runargs* as the name of debugee(gud-common-init 
 [new]
 I have a problem in gud.el in Emacs27.1. The `gud-display-line' function display the source code window only in current selected frame (the same frame of gud). It is fine when I am working on a laptop and there is only one monitor.  But when I have two monitors, I want two emacs frames, one show the gud buffer and the other show source code file, displayed on the two monitors. To do that, I have to modify the function code `gud-display-line'. The change is very simple, just pass `t' to the get-buffer-window function call:
 
+<pre>
 (defun gud-display-line (true-file line)
   (let* ((last-nonmenu-event t)
 	 (buffer
@@ -177,6 +178,7 @@ I have a problem in gud.el in Emacs27.1. The `gud-display-line' function display
 	 (pos))
    ... ...
 )
+</pre>
 
 I can't figure out other solution without modifying the gud.el source codes. I wish this change will be added in future releases.
 -- Pan Xie
