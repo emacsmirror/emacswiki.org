@@ -2,12 +2,12 @@ The following are tools that can convert files in Emacs's OutlineMode format to 
 
 * BhlMode -- if it correctly guesses that your `bhl-sectioning-default-style' is `aster'.  See [http://www.cognition.ens.fr/~guerry/bhl/manuals/bhl.html#Sections Sections in the BHL manual].
 
-* Hyperbole -- The Koutliner mode can import Emacs/Org outlines and then export them to nicely structured HTML with hierarchically-numbered hyperlink anchors for each outline heading/cell.
-  See [https://www.gnu.org/software/hyperbole/man/hyperbole.html#Koutliner].
+* Hyperbole -- the Koutliner mode can import Emacs/Org outlines and then export them to nicely structured HTML with hierarchically-numbered hyperlink anchors for each outline heading/cell.
+  See the [https://www.gnu.org/software/hyperbole/man/hyperbole.html#Koutliner Hyperbole Manual Koutliner].
 
 * OrgMode -- this is an extension of OutlineMode, and publishes HTML files.
 
 * [http://www.gweep.net/~rocko/emo2html/ Emacs Outline to HTML Converter] by Mike Andrews is a perl script.  Perl: [[emo2html.pl]].
 
 ----
-CategoryOutline
+CategoryOutline PersonalInformationManager
