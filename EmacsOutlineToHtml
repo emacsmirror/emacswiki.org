@@ -10,4 +10,4 @@ The following are tools that can convert files in Emacs's OutlineMode format to 
 * [http://www.gweep.net/~rocko/emo2html/ Emacs Outline to HTML Converter] by Mike Andrews is a perl script.  Perl: [[emo2html.pl]].
 
 ----
-CategoryOutline PersonalInformationManager
+CategoryOutline CategoryPersonalInformationManager
