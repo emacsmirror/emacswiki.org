@@ -5,6 +5,7 @@ Related: CategoryHideStuff
 Emacs provides several outline features, some come bundled,
 some must be downloaded.
 
+* Hyperbole: a package in GNU ELPA; includes the Koutliner, the most advanced yet simple outliner for Emacs
 * OutlineMode: hides blocks of text in a hierarchy
 * OutlineMinorMode: hides block definitions in languages such as C/C++
 * HideShow: hides block definitions in languages such as C/C++
