@@ -8,6 +8,10 @@ unimportant."// -- RichardStallman
 
 See GettingMail, WritingMail, and SendingMail for setup examples.
 
+Setup example by cadadr: [https://cadadr.dreamwidth.org/828.html My email setup with Emacs, Rmail, msmtp/mpop, mairix, and then some more]:
+“A lot of "my email setup" posts start with telling how the author deals with thousands or millions of messages with probably tens or hundreds of interactions each day.
+This blog post instead is about how I deal with a humane level of email messaging, with a local-first approach, using a smallish variety of software, which you can just set up and forget about.”
+
 == Basic Usage ==
 
 Start it using `M-x rmail'.  This moves all your mail from your local
