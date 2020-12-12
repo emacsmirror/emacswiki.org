@@ -1,0 +1,5 @@
+The Emacs Multimedia Special Interest Group (EMSIG) meets on freenode #emsig. Topics include media players, media authoring, editing, annotation, connection of Emacs with external tools such as Supercollider and Snd, EMMS / MPV DJing, VJing, FFMPEG, scripting, tagging, file searching, synthesis, and more fun.
+
+Add your name/project/area of interest below.
+
+* David O'Toole, SchemeMosaic [[http://xelf.me/scheme-mosaic.html]] is a hybrid Elisp/Scheme system for concatenative synthesis.
