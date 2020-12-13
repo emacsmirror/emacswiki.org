@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 10 14:43:59 2019 (-0700)
+;; Last-Updated: Sun Dec 13 10:55:36 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 3097
+;;     Update #: 3100
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -98,6 +98,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2020/12/13 dadams
+;;     Autoload yow.el.
 ;; 2019/04/10 dadams
 ;;     Do not require zones.el for < Emacs 22.
 ;; 2018/09/21 dadams
@@ -812,6 +814,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (require 'browse-kill-ring nil t) (require 'browse-kill-ring+ nil t))
 
 (when (> emacs-major-version 20) (autoload 'column-marker-1 "column-marker" "Highlight a column." t))
+
+(autoload 'yow "yow" "Return, display, or insert a random Zippy quotation." t)
 
 (when (fboundp 'define-minor-mode) (require 'highlight-symbol nil t))
 
