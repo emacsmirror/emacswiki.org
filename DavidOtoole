@@ -2,15 +2,14 @@ My website is http://xelf.me
 
 I have written several things for GnuEmacs. 
 
-* org-publish.el adds website-publishing management support to OrgMode. It is part of the OrgMode distribution.
-* Cell Mode is a weird spreadsheet thing that I am currently rewriting. https://gitlab.com/dto/mosaic-el/blob/master/cell.el  
+* org-publish.el adds website-publishing management support to OrgMode. It is now part of the OrgMode distribution.
+* Cell Mode is a weird spreadsheet thing that I am currently rewriting. https://gitlab.com/dto/cell-mode  
 * A cell mode screenshot: http://xelf.me/cell.png
 * Cell Mode is part of EmacsMosaic/SchemeMosaic: https://gitlab.com/dto/mosaic-el
 
-
 List of cool people I know: EduardoOchs SachaChua CarstenDominik MichaelOlson
 
-Visit me on EmacsChannel, or email dto AT xelf DOT me 
+Visit me on EmacsChannel, or email deeteeoh1138 AT gmail DOT com.
 
 Aka. [::dto].
 
