@@ -93,7 +93,17 @@ construct a path to one of its descendant directories.
 Note the use of `convert-standard-file-name' to construct a path
 that is valid on all supported platforms.
 
-
+Here is another method. Adds subdirectories containing ##".el"## files to load-path inside the directory ##user-emacs-directory/lisp##.
+If ##user-emacs-directory/lisp## does not exist, create it. If already exists, then add the subdirs to load-path.
+{{{
+  ;; Place to put local packages.
+  (let* ((path ;; let* requires emacs-27
+          (expand-file-name "lisp" user-emacs-directory))
+         (local-pkgs (mapcar 'file-name-directory (directory-files-recursively path ".*\\.el"))))
+    (if (file-accessible-directory-p path)
+        (mapc (apply-partially 'add-to-list 'load-path) local-pkgs)
+      (make-directory path :parents)))
+}}}
 == Default value of `load-path' ==
 
 On GNU/Linux, the default value of `load-path' includes two special directories
