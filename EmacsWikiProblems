@@ -302,6 +302,22 @@ The link text retains its crude ASCII formatting. -- VegardOye
 
 == Server Issues ==
 
+=== EWW gets 403 with default url-user-agent ===
+
+    (let ((url-user-agent 'default))
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://www.emacswiki.org/emacs/eww")
+        (buffer-substring 1 13)))
+    => "HTTP/1.1 403"
+
+    (let (url-user-agent)
+      (with-current-buffer
+            (url-retrieve-synchronously
+             "https://www.emacswiki.org/emacs/eww")
+          (buffer-substring 1 13)))
+    => "HTTP/1.1 200"
+
 === CGI Internal error: 400 Bad request (malformed multipart POST) ===
 
 I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
