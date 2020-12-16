@@ -1,0 +1,4 @@
+I suddenly found company-mode popping up a suggestion for nearly every word I typed in normal org-mode text buffer. Annoying, especially since I had to hit space twice after every word to get past the suggestion.  <code>(setq company-global-modes '(not org-mode))</code> solved it, though.
+
+-- Anonymous 2020-12-16 21:35 UTC
+
