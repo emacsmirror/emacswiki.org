@@ -148,7 +148,7 @@ You can use any of the following to increase or decrease the font size for the c
 
 
 
-
+[:ResizeFrameFontUsingLisp]
 === Resize Frame Font using Lisp ===
 
 You can change the size of a font for the current frame ''non''-incrementally
