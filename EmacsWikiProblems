@@ -318,6 +318,24 @@ The link text retains its crude ASCII formatting. -- VegardOye
           (buffer-substring 1 13)))
     => "HTTP/1.1 200"
 
+[new]
+Hm, eww works for me, and my url-user-agent is set to default. When I evaluate the first code snippet, I get "HTTP/1.1 200". There are several hundred regular expressions banning user agents of various sorts, so what you're saying could definitely happen. I'm just surprised that I cannot reproduce it. Now, the doc string explains: ‘default’ (to compute a value according to ‘url-privacy-level’). I wonder what that means, exactly. Apparently our url-privacy-level differs? The value of that is (email) for me. What about you?
+
+I just tried the following:
+
+{{{
+(let* ((url-privacy-level 'paranoid)
+       (url-user-agent 'default))
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://www.emacswiki.org/emacs/eww")
+    (buffer-substring 1 13)))
+}}}
+
+Still works...
+
+– Alex
+
 === CGI Internal error: 400 Bad request (malformed multipart POST) ===
 
 I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
