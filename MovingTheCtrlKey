@@ -14,7 +14,9 @@ Note that separate keyboard mappings are often used for X (graphical sessions) a
 
 === GNOME Desktop Environment ===
 
-This setting is in the GNOME Tweak Tool.
+This setting is in the GNOME Tweak Tool. In some versions of the tool, you will need to tap on the "Keyboard & Mouse" section in the left navigation pane, and then tap the "Additional Layout Options" button in the "Keyboard & Mouse" main content area. The "Additional Layout Options" window should appear, and you can navigate to the "Ctrl position" section to place a check mark next to the "Caps Lock as Ctrl" listing.
+
+For others who have a different version of the GNOME Tweak Tool, try using these screenshots to guide you through your process.
 
 [[image:Gnome_Tweek_Tool_Icon.png|Gnome Tweak Tool Icon]]
 
