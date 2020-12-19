@@ -3,62 +3,103 @@ machines, spool files, ...) and also how you can read them.
 
 == Getting Mail ==
 
-To help get you started here is how you specify a pop3 hosted maildrop for
-...
+The default behaviour using the POP protocol is to *move* the mail to your local system, that is: it *deletes the mail on your server*. If you also want to read mail using your phone, you should either switch from POP to IMAP and use a mail client that can handle it, or you must tell the tools you are using that you want to "preserve" your inbox.
 
-[[Rmail]]:
+[[Rmail]] using movemail (but see the note on movemail below):
 
- (setenv "MAILHOST" "pop3server")
- (setq rmail-primary-inbox-list '("po:username")
-       rmail-pop-password-required t)
+{{{
+(setenv "MAILHOST" "pop3server")
+(setq rmail-primary-inbox-list '("po:username")
+      rmail-pop-password-required t)
+;; if you don't want movemail to delete your mail on the server!
+(setq rmail-preserve-inbox t)
+}}}
 
-[[Gnus]]:
+[[Gnus]] using the nnml backend with POP:
 
- (setq gnus-secondary-select-methods '((nnml ""))
-       mail-sources '((pop :server "pop3server"
-                           :user "username")))
+{{{
+(setq gnus-secondary-select-methods '((nnml ""))
+      mail-sources '((pop :server "pop3server"
+                          :user "username")))
+}}}
 
-ViewMail:
+[[Gnus]] using IMAP:
 
- (setq vm-spool-files '("pop3server:110:pass:username:*" "~/INBOX"))
+{{{
+(setq gnus-secondary-select-methods
+      '((nnimap "gmail"
+                ;; It could also be imap.googlemail.com if that's your server.
+                (nnimap-address "imap.gmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream ssl)))
+      ;; Gmail system labels have the prefix [Gmail], which matches
+      ;; the default value of gnus-ignored-newsgroups. That's why we
+      ;; redefine it.
+      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+}}}
 
-'''Note:''' All three will want to clear your maildrop once they have retrieved
-the messages, so <b>if you are testing and wish to continue using your old mail tool</b> you need to take steps to prevent that action (i.e., set rmail-preserve-inbox to t, use epop3.el (and read more in order to install it), or set vm-pop-expunge-after-retrieving to nil, respectively).
+ViewMail using POP:
 
-This is a bit silly.  I know of several people (myself included) who said to themselves "Gee, maybe I'll try to use Emacs to read my mail" only to have their mail gobbled up and whisked away to an undisclosed location.  After the shock has worn off and the person has rescued their mail, they do not touch their mail with Emacs again.  It seems that the default behavior should be non-destructive.
+{{{
+(setq vm-spool-files '("pop3server:110:pass:username:*" "~/INBOX"))
+}}}
 
-'''Note''': The whole Emacs process is blocked during mail retrieval if Emacs does it itself. So if you are downloading large mails and tend to use Emacs for almost everything, you lose the '''multitasking''' features of your environment. It might be a better idea to use another process like '''fetchmail''' to retrieve the mails and offer them in a mailbox to Emacs or to switch to another advanced Mail User Agent like '''mutt''' which is able to use Emacs as its editor, see MuttInEmacs.
+{{{
+}}}
 
-[new]
+== Blocking Emacs
+
+The whole Emacs process is blocked during mail retrieval if Emacs does it itself. So if you are downloading large mails and tend to use Emacs for almost everything, you lose the '''multitasking''' features of your environment. It might be a better idea to use another process like *fetchmail* to retrieve the mails and offer them in a mailbox to Emacs or to switch to another advanced Mail User Agent like *mutt* or *aerc* which is able to use Emacs as its editor, see MuttInEmacs.
+
+== mpop (and msmtp)
+
+These days many people don't want to touch their local mail system, if they have one. A simple alternative would be ##mpop##: a program like movemail, except that you configure and run it outside of Emacs. For example:
+
+{{{
+defaults
+tls on
+tls_starttls off
+keep off
+password
+account default
+host pop.migadu.com
+port 995
+user alex@alexschroeder.ch
+delivery mbox "/home/alex/mail/inbox"
+# if you like to use pass
+passwordeval "pass show cadadr@example.com"
+# if you like to use gpg
+# passwordeval gpg --no-tty --quiet --decrypt ~/.config/mpop/password.gpg
+}}}
+
+##mpop## then fetches your mail and moves it into the inbox you provided, and you get it from there.
+
+== A note on movemail
+
 Rmail and maybe other packages use the "movemail" program for getting e-mail (for example from remote POP3 mailboxes). You specify the mailbox as an URL:
 
- pop://username:password@hostname:port
+{{{
+pop://username:password@hostname:port
+}}}
 
-However if your username contains the '@' character, you can't access your mailbox because movemail's URL parser interprets everything after the @ as the host name of the POP3 server. For example, gmail uses the username@gmail.com notation for usernames... Silly, it got me headaches.
-
-Better use fetchmail, movemail is just stupid, somebody should fix it's URL parser to parse the @ at the end of the string.
+However if your username contains the '@' character, you can't access your mailbox because movemail's URL parser interprets everything after the @ as the host name of the POP3 server. For example, Gmail uses the username@gmail.com notation for usernames... Use *fetchmail* instead.
 
 Is the situation any better with Gnus or VM? Any really good and sane e-mail client for Emacs?
 
-Using hex for the at-sign like ##pop://username%40hostname:password@hostname:port## doesn't work either.  It seems movemail doesn't support SSL encryption (it does support TLS, but doesn't work) and somebody on the movemail list suggested using the separate `stunnel' program for SSL tunneling the connection to the server.  However I can't modify Rmail's invocation of movemail.
-
-I think I'm back to fetchmail.  I'm also searching for a new mail client that has built-in support for MIME.  Suggestions?
+Using %40 for the at-sign like ##pop://username%40hostname:password@hostname:port## doesn't work either.  It seems movemail doesn't support SSL encryption (it does support TLS, but doesn't work) and somebody on the movemail list suggested using the separate `stunnel' program for SSL tunneling the connection to the server.  However I can't modify Rmail's invocation of movemail.
 
 == Reading mail ==
 
 Reading mail is just like WritingMail. There is no generic way to call
-the Right tool for you. Some third party package may be mua-aware and
+the right tool for you. Some third party package may be mua-aware and
 thus should be informed of your preference. You have to set
 `read-mail-command' to do so.
 
 Here are some examples:
 
-* Easiest and default way is [[Rmail]]:
+* Easiest and default way is [[Rmail]]: use M-x rmail to read your mail. set `read-mail-command' to 'rmail.
 
-Use M-x rmail to read your mail. set `read-mail-command' to 'rmail.
-
-* [[Gnus]] users should type M-x gnus instead and set
-`read-mail-command' to 'gnus.
+* [[Gnus]] users should type M-x gnus instead and set `read-mail-command' to 'gnus.
 
 * [[MH-E]]: M-x mh-rmail and set `read-mail-command' to 'mh-rmail.
 
