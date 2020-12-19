@@ -71,7 +71,9 @@ passwordeval "pass show cadadr@example.com"
 
 ##mpop## then fetches your mail and moves it into the inbox you provided, and you get it from there.
 
-== A note on movemail
+There's a perfect complement to ##mpop## for sending mail, by the same author: ##mstmtp##.
+
+== A note on movemail ==
 
 Rmail and maybe other packages use the "movemail" program for getting e-mail (for example from remote POP3 mailboxes). You specify the mailbox as an URL:
 
