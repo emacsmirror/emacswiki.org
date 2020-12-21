@@ -7,7 +7,7 @@ The official git repository is available from Emacs's Savannah page. See [https:
 To clone (download) Emacs:
 
 <pre>
-git clone https://git.savannah.gnu.org/emacs.git
+git clone https://git.savannah.gnu.org/git/emacs.git
 </pre>
 
 You can also get Emacs speedily from git by ignoring a lot of Emacs history. This makes the download size much smaller:
