@@ -123,17 +123,14 @@ Add the following line to ~/.gnupg/gpg-agent.conf:
 gpg-agent adheres to DISPLAY if set, and GPG_TTY if otherwise, to decide where and how to perform pinentry.  If you use emacs --daemon with a mix of GUI and console terminal, GPG_TTY was probably inherited from emacs --daemon's shell and will be totally irrelevant and wrong; on the other hand, if you open even one GUI emacsclient frame at any time, gpg-agent/pinentry will attempt to use that frame's setting of DISPLAY.  So I made this small function to manipulate DISPLAY and GPG_TTY when the user changes emacsclients.
 
 {{{
-(defun wg/kludge-gpg-agent
-    ()
-  (if
-      (display-graphic-p)
-      (setenv "DISPLAY"
-              (terminal-name))
-    (setenv "GPG_TTY"
-            (terminal-name))
-    (setenv "DISPLAY")))
+(defun wg/kludge-gpg-agent ()
+  "Setting GPG_TTY to get appropriate pinentry for each terminal or GUI frame."
+  (if (display-graphic-p)
+      (setenv "DISPLAY" (terminal-name))
+    (progn (setenv "GPG_TTY" (terminal-name))
+           (setenv "DISPLAY"))))
 
-(add-hook 'window-configuration-change-hook 'wg/kludge-gpg-agent)
+(add-hook 'window-configuration-change-hook #'wg/kludge-gpg-agent)
 }}}
 
 N.B.: This hack used to use <code>after-make-frame-functions</code>, but <code>window-configuration-change-hook</code> works more smoothly, as it now handles the case of switching between existing emacsclient frames as well as making new ones.
