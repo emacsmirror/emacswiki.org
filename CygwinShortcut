@@ -30,6 +30,14 @@ else
 fi
 </pre>
 
+
+== Another approach ==
+I found this page when looking for a way to just open an emacs window from a Windows shortcut.  It was surprising to me how little information I found out there about how to do this.  I managed to get what I wanted by creating a Windows shortcut to run.exe in the cygwin bin directory and then changing the target to be:
+
+<pre>
+C:\cygwin64\bin\run.exe bash -c "/bin/emacs-w32.exe"
+</pre>
+
 ----
 [[Cygwin]]
 CategoryWThirtyTwo
