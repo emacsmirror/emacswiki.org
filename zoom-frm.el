@@ -4,13 +4,13 @@
 ;; Description: Commands to zoom frame font size.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Tue Nov 19 13:15:54 2019 (-0800)
+;; Last-Updated: Thu Dec 24 11:53:58 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 359
+;;     Update #: 361
 ;; URL: https://www.emacswiki.org/emacs/download/zoom-frm.el
 ;; Doc URL: https://emacswiki.org/emacs/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -126,7 +126,7 @@
 ;;    (when (boundp 'mouse-wheel-up-event) ; Emacs 22+
 ;;      (global-set-key (vector (list 'control 
 ;;                                    mouse-wheel-up-event))
-;;                      'zoom-out))
+;;                      'zoom-out)
 ;;      (global-set-key (vector (list 'control 'meta
 ;;                                    mouse-wheel-up-event))
 ;;                      'zoom-all-frames-out))
