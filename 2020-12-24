@@ -1,2 +1,2 @@
 [new]
-I've been making some changes to the wiki engine, adding header, nav, and footer elements instead of using divs with classes. This means that some CSS files might break in unexpected ways. If you notice anything weird, please let me know by leaving a comment, here. – [[Alex Schroeder]]
+I've been making some changes to the wiki engine, adding header, nav, and footer elements instead of using divs with classes. This means that some [[CSS]] files might break in unexpected ways. If you notice anything weird, please let me know by leaving a comment, here. – [[Alex Schroeder]]
