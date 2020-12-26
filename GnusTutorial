@@ -954,8 +954,8 @@ When reading mail, by default Gnus marks as read each message that you
 read. If you want to mark it as expirable, you have to hit E. Many
 people are subscribed to mailing lists and they configure Gnus to put
 mails from a mailing list into their own group. Most messages in such
-groups should be expirable, once read. But hitting E all the gets old
-real quick. Hence, auto-expire and total-expire were invented.
+groups should be expirable, once read. But hitting E all the time gets
+old real quick. Hence, auto-expire and total-expire were invented.
 
 
 ==== Auto-expire vs. total-expire ====
