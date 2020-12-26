@@ -1,3 +1,4 @@
+[[zh:1]]
 Starting with GNU Emacs 23, there is relatively complete Unicode support.  See the Emacs manual for more information.  Some starter tips about entering (inserting) Unicode characters:
 
 * You can use one of the Emacs InputMethods.
