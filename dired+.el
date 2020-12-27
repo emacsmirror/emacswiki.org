@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec  5 10:02:55 2020 (-0800)
+;; Last-Updated: Sun Dec 27 11:25:46 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 12733
+;;     Update #: 12736
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -844,6 +844,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/27 dadams
+;;     dired(p)-do-find-marked-files(-recursive): Don't pass plain C-u as arg to dired-simultaneous-find-file.
 ;; 2020/12/05 dadams
 ;;     diredp-re-no-dot:
 ;;       Changed value to be that of directory-files-no-dot-files-regexp.  See comment in code.
@@ -6222,7 +6224,7 @@ When called from Lisp, optional arg DETAILS is passed to
                       (list current-prefix-arg diredp-list-file-attributes)))
   (let ((narg  (prefix-numeric-value arg)))
     (dired-simultaneous-find-file (diredp-get-files (<= narg 0) nil nil nil nil details)
-                                  (and arg  (>= narg 0)  narg))))
+                                  (and arg  (not (consp arg))  (>= narg 0)  narg))))
 
 (when (fboundp 'dired-do-isearch-regexp) ; Emacs 23+
 
@@ -10767,7 +10769,7 @@ When invoked interactively, raise an error if no files are marked."
   (interactive "P\np")
   (dired-simultaneous-find-file
    (dired-get-marked-files nil (and (consp arg)  arg) nil nil interactivep)
-   (and arg  (prefix-numeric-value arg))))
+   (and arg  (not (consp arg))  (prefix-numeric-value arg))))
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
