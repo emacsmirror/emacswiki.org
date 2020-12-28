@@ -1,4 +1,4 @@
-<code>yaml-mode.el</code> helps you edit [http://www.yaml.org/ YAML] <code>.yml</code> files.
+<code>yaml-mode.el</code> helps you edit [http://www.yaml.org/ YAML] <code>.yml</code> and <code>.yaml</code> files.
 
 Get it on http://github.com/yoshiki/yaml-mode (Looking for a new maintainer, see on github page.)
 
