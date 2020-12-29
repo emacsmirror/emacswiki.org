@@ -236,7 +236,7 @@ EmacsLisp project, an [[Elnode]] webapp.
 == Create Local Repositories ==
 https://github.com/redguardtoo/elpa-mirror creates a local fallback repository from installed packages.
 
-For example, you successfully installed all the packages from https://melpa.org at home computer. You can run command `M-x elpamr-create-mirror-from-installed` to create a local repository which containing all the packages you are using. 
+For example, you successfully installed all the packages from https://melpa.org at home computer. You can run command `M-x elpamr-create-mirror-for-installed` to create a local repository which containing all the packages you are using. 
 
 At office computer you can use that local repository to install packages if corp firewall blocks https://melpa.org
 ----
