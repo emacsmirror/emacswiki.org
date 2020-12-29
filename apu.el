@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 10 15:04:48 2020 (-0800)
+;; Last-Updated: Mon Dec 28 16:14:41 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 943
+;;     Update #: 959
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -157,6 +157,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/28 dadams
+;;     apu-chars-in-region-1:
+;;       Invoke display-message-or-buffer in output buffer, because apu--unnamed-chars is buffer-local.
 ;; 2020/12/10 dadams
 ;;     apu-match-type-msg: Made it a command, bound to C-c RET.
 ;;     Changed bindings of apu-chars-refresh-* commands to C-c followed C-n|s|w.
@@ -432,7 +435,7 @@ Default value is from `apu-match-words-exactly-flag'.")
 (put 'apu--patterns-not 'permanent-local t)
 
 (defvar apu--unnamed-chars ()
-  "Chars not recognized as Unicode.
+  "List of characters not recognized as Unicode.
 They are for the last apu command associated with this output buffer.")
 (make-variable-buffer-local 'apu--unnamed-chars)
 (put 'apu--unnamed-chars 'permanent-local t)
@@ -780,10 +783,11 @@ LIST-BUFFER defaults to the current buffer."
       (apu-print-chars apu--chars (current-buffer))
     (apu-print-chars chars list-buffer)
     (setq apu--chars  chars))
-  (when apu--unnamed-chars
-    (display-message-or-buffer
-     (format "The following chars are not recognized as Unicode:\n%s"
-             (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n")))))
+  (with-current-buffer (or list-buffer  (current-buffer)) ; `apu--unnamed-chars' is buffer-local.
+    (when apu--unnamed-chars
+      (display-message-or-buffer
+       (format "The following chars are not recognized as Unicode:\n%s"
+               (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n"))))))
 
 (defun apu-print-chars (characters buffer)
   "Show information about CHARACTERS, in BUFFER."
