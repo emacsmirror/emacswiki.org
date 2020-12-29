@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Nov 27 17:23:39 2020 (-0800)
+;; Last-Updated: Tue Dec 29 12:30:23 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 4145
+;;     Update #: 4149
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -6661,7 +6661,10 @@ are marked or ALLP is non-nil."
 
 ;;; `Edit' menu-bar menu
 
-(require 'menu-bar+ nil t)              ; It redefines `menu-bar-edit-menu'.
+;; `menu-bar+.el' redefines `menu-bar-edit-menu'.
+;; Soft-require it in `condition-case' because it soft-requires Bookmark+.
+(condition-case nil (require 'menu-bar+ nil t) (error nil))
+
 (define-key-after menu-bar-edit-menu [separator-snippet] '("--")  'mark-whole-buffer)
 (define-key-after menu-bar-edit-menu [bmkp-set-snippet-bookmark]
   '(menu-item "Region to Snippet..." bmkp-set-snippet-bookmark
