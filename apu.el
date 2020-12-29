@@ -4,13 +4,13 @@
 ;; Description: Apropos Unicode characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2021, Drew Adams, all rights reserved.
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec 28 16:14:41 2020 (-0800)
+;; Last-Updated: Tue Dec 29 13:45:01 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 959
+;;     Update #: 972
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -42,8 +42,15 @@
 ;;  prefix argument it has a line describing each occurrence of each
 ;;  character in the region.
 ;;
+;;  By default, `describe-chars-in-region' includes characters with
+;;  names that are not known to Emacs.  This includes Private Use Area
+;;  (PUA) characters.  If you customize option
+;;  `apu-include-unnamed-chars-flag' to `nil' then such characters are
+;;  excluded, and they are reported in the echo area (and buffer
+;;  `*Messages*').
+;;
 ;;  For each of these commmands, in the help buffer describing the
-;;  characters you can use these keys to act on the character
+;;  characters you can use the following keys to act on the character
 ;;  described on the current line:
 ;;
 ;;   * `RET' or `mouse-2' - see detailed information about it.
@@ -126,6 +133,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `apu-include-unnamed-chars-flag',
 ;;    `apu-match-only-displayable-chars-flag',
 ;;    `apu-match-two-or-more-words-flag',
 ;;    `apu-match-words-exactly-flag', `apu-synonyms'.
@@ -157,6 +165,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/29 dadams
+;;     Added apu-include-unnamed-chars-flag.
+;;     apu-chars-in-region-1: Report unnamed chars only if apu-include-unnamed-chars-flag is non-nil.
+;;     apu-make-tablist-entry: Use `-- no name --' for included unnamed chars.
 ;; 2020/12/28 dadams
 ;;     apu-chars-in-region-1:
 ;;       Invoke display-message-or-buffer in output buffer, because apu--unnamed-chars is buffer-local.
@@ -299,6 +311,13 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/apu.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/AproposUnicode")
   :link '(emacs-commentary-link :tag "Commentary" "apu"))
+
+(defcustom apu-include-unnamed-chars-flag t
+  "Non-nil means `apu-chars-in-region' includes chars with unknown names.
+This means chars whose names are not recognized, which includes
+Private Use Area (PUA) chars.  If nil, such chars are excluded, and
+they are reported in the echo area (and buffer `*Messages*')."
+  :type 'boolean :group 'apu)
 
 ;; Emacs bug #30539: If `apu-match-only-displayable-chars-flag' is non-nil and you have many fonts
 ;; installed then `apropos-char' (aka `apu-chars') queries can be very long.  Until that bug is fixed,
@@ -765,7 +784,10 @@ Non-nil POSITION means use the character at POSITION."
   "Describe the Unicode characters in the region.
 By default, list each distinct char only once.  With a prefix arg,
 list a given char once for each of its occurrences in the region.
-The character descriptions are presented in `apu-mode'."
+The character descriptions are presented in `apu-mode'.
+
+Option `apu-include-unnamed-chars-flag' controls whether chars whose
+names are not recognized are included in the listing."
   (interactive "r\nP")
   (setq apu--orig-buffer  (current-buffer)
         apu--refresh-p    t)
@@ -783,11 +805,12 @@ LIST-BUFFER defaults to the current buffer."
       (apu-print-chars apu--chars (current-buffer))
     (apu-print-chars chars list-buffer)
     (setq apu--chars  chars))
-  (with-current-buffer (or list-buffer  (current-buffer)) ; `apu--unnamed-chars' is buffer-local.
-    (when apu--unnamed-chars
-      (display-message-or-buffer
-       (format "The following chars are not recognized as Unicode:\n%s"
-               (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n"))))))
+  (unless apu-include-unnamed-chars-flag
+    (with-current-buffer (or list-buffer  (current-buffer)) ; `apu--unnamed-chars' is buffer-local.
+      (when apu--unnamed-chars
+        (display-message-or-buffer
+         (format "The following chars are not recognized as Unicode:\n%s"
+                 (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n")))))))
 
 (defun apu-print-chars (characters buffer)
   "Show information about CHARACTERS, in BUFFER."
@@ -965,6 +988,8 @@ If CHAR is not recognized then it is added to the buffer-local list
 `apu--unnamed-chars'.  This list of chars is then displayed."
   (let ((name  (if (consp char) (car char) (apu-char-name char)))
         (code  (if (consp char) (cdr char) char)))
+    (when (and (not name)  apu-include-unnamed-chars-flag)
+      (setq name  "-- no name --"))
     (if name
         (list code (vector (char-to-string code) name (format "%6d" code) (format "%#8x" code)))
       (push code apu--unnamed-chars)
