@@ -4,13 +4,13 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 26 18:03:57 2020 (-0700)
+;; Last-Updated: Tue Dec 29 09:13:01 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 3894
+;;     Update #: 3919
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -135,6 +135,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/29 dadams
+;;     Soft-require bookmark+.el.
+;;     menu-bar-goto-menu:
+;;       Add, rename, and reorder items: Bookmark submenu, move-to-column, (next|previous)-error.
 ;; 2020/09/26 dadams
 ;;     menu-bar-search-tags-menu, item tags-continue: Updated for Emacs 27+.
 ;;     menu-bar-search-replace-menu: Added tags-repl-continue.
@@ -454,6 +458,7 @@
 (if (> emacs-major-version 22)
     (require 'info+ nil t) ;; (no error if not found): menu-bar-read-lispref, info-emacs-manual
   (require 'info+20) nil t)
+(require 'bookmark+ nil t) ;; (no error if not found): bmkp-jump-menu
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
 (require 'second-sel nil t) ;; (no error if not found):
                             ;; primary-to-secondary, secondary-to-primary, yank-secondary
@@ -835,6 +840,7 @@ submenu of the \"Help\" menu."))
   'separator-new)
 
 (unless (< emacs-major-version 21)
+
   ;; Remove `Find' stuff from `Go To' submenu, since we moved it to `Search' menu.
   (define-key menu-bar-goto-menu [set-tags-name] nil)
   (define-key menu-bar-goto-menu [separator-tag-file] nil)
@@ -844,8 +850,38 @@ submenu of the \"Help\" menu."))
   (define-key menu-bar-goto-menu [xref-find-def] nil)
   (define-key menu-bar-goto-menu [separator-xref] nil)
 
+  ;; Move `Go To' menu to `File' menu.
   (define-key-after menu-bar-file-menu [goto] (cons "Go To" menu-bar-goto-menu)
-    'bookmark))
+    'bookmark)
+
+  ;; Add some `Go To' items.  Rename standard items, to remove "Goto " prefix.  Reorder items.
+  (define-key menu-bar-goto-menu [go-to-line]
+    '(menu-item "Line..." goto-line
+                :help "Read a line number and go to that line"))
+  (define-key-after menu-bar-goto-menu [move-to-column]
+    '(menu-item "Column (Position in Line)..." move-to-column
+                :help "Read position in line and go to it.")
+    'go-to-line)
+  (define-key-after menu-bar-goto-menu [go-to-pos]
+    '(menu-item "Buffer Position..." goto-char
+                :help "Read a buffer position and go to it")
+    'move-to-column)
+  (define-key-after menu-bar-goto-menu [beg-of-buf]
+    '(menu-item "Beginning of Buffer" beginning-of-buffer)
+    'go-to-pos)
+  (define-key-after menu-bar-goto-menu [end-of-buf]
+    '(menu-item "End of Buffer" end-of-buffer)
+    'beg-of-buf)
+  (define-key-after menu-bar-goto-menu [next-error]
+    '(menu-item "Next Error" next-error)
+    'end-of-buf)
+  (define-key-after menu-bar-goto-menu [previous-error]
+    '(menu-item "Previous Error" previous-error)
+    'next-error)
+
+  (when (boundp 'bmkp-jump-menu)      ; Defined in `bookmark+-key.el'.
+    (define-key menu-bar-goto-menu [bmkp-jump] (cons "Bookmark" bmkp-jump-menu)))
+  )
 
 (define-key-after menu-bar-file-menu [separator-open] '("--")
   (if (< emacs-major-version 21) 'bookmark 'goto))
