@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 28 21:09:15 2020 (-0800)
+;; Last-Updated: Tue Dec 29 12:32:22 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 16727
+;;     Update #: 16730
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1471,6 +1471,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2020/12/29 dadams
+;;     Wrap soft-require of menu-bar+.el in null condition-case, because it soft-requires Bookmark+.
 ;; 2020/11/27 dadams
 ;;     bmkp-bmenu-define-command, bmkp-bmenu-define-full-snapshot-command:
 ;;       Use copy-sequence for lists, because some code modifies the list structure.
