@@ -4,11 +4,11 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2021, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Jul  4 13:01:05 2020 (-0700)
+;; Last-Updated: Tue Dec 29 12:37:12 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 999
+;;     Update #: 1000
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
