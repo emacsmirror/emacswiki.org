@@ -191,7 +191,7 @@ Alternatively, if you would just like to customize specific fonts, see the next 
 
 To change the font used to display the current frame, go to the font panel.  You can do this via the menu: Options -> Appearance -> Font for ___-Mode....  Once there, select the font you want.
 
-To make the current frame's font the default for all files of this type, select Options -> Appearance -> Adopt Face and Frame Parameters as Default. Then be sure to save your options with Options -> Save Options.
+To make the current frame's font the default for all files of this type, select Options -> Appearance -> Custom Themes, and use the button to migrate your current settings into a theme. Then be sure to save your options with the Save Theme Settings button.
 
 To set the default font for all buffers, use emacs face customization menu: ##M-x customize-face## and type in ##default##. Then place the cursor in the ##Font Family## input area and type in a new font family name, e.g. ##apple-bitstream vera sans mono##. Click ##Save for Future Sessions## and ##Finish##. 
 
