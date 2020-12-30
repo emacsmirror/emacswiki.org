@@ -1,0 +1,43 @@
+This page contains and old conversation about using IsearchPlus with IdoUbiquitous enabled.
+
+== Searching for Unicode characters with IsearchPlus when IdoUbiquitous is enabled ==
+
+In Emacs 24.2.1, and maybe other versions, if you use IsearchPlus with Ido Ubiquitous (see: InteractivelyDoThings) enabled, you find that you can't search for unicode charaters and if you try an error is generated.  In Emacs 24.2.1 the solution is to disable Ido's advice around `completing-read' when `isearchp-read-unicode-char' is called.  This can be done by putting:
+
+<code>
+     (ido-ubiquitous-disable-in isearchp-read-unicode-char)
+</code>
+
+in your .emacs file.  When I first did this, I evaluated the form interactively and it didn't seem to fix the problem - I don't know why - but it worked next time I started up Emacs. --- [[Bernard Hurley]]
+
+[new:DrewAdams:2012-12-13 16:22 UTC]
+Good to know, for Ido users.  If you investigate a bit more and figure out why it sometimes does not work, would this be something that should be done automatically in '''Isearch+'''?  Or do you think some users would not want it done (in which case perhaps it should be an [[option]] or an Isearch toggle)?  Would you like to try patching ##isearch+.el## to DTRT?  Seems like we should be able to take care of this kind of thing automatically, so users do not need to do anything. -- DrewAdams
+
+[new:[[Bernard Hurley]]]
+Ido seems to work by advising `completing-read' and advising various functions that call it.  Ido code doesn't look very clear to me, but I think that's what it does.  It also turns off this advice for functions that the Ido developers know about but haven't got round to advising. This is obviously going to cause problems if you write a function that calls `completing-read', as yours does, and are returned an unexpected value.  I can't imagine any users not wanting this fixed automatically.  My own thoughts are that since Ido makes this quite radical change to a core Emacs function, it's better if it's done automatically in that package.  I have emailed the developers to gently suggest this.  However I will look farther into it in case they don't want to do so.  -- [[Bernard Hurley]]
+
+
+[new:DrewAdams:2012-12-14 01:31 UTC]
+Thanks for the update.  FYI, I renamed `isearchp-read-unicode-char' to `isearchp-insert-char-by-name' in keeping with an updated definition and an expectation that Emacs 24.4 might include this (as `isearch-insert-char-by-name').
+
+[new:DrewAdams:2013-06-27 21:47 UTC]
+:: Now that it is included in vanilla GnuEmacs 24.4, it is named `isearch-char-by-name'. -- DrewAdams
+[new]
+
+I still have the same question as above:
+
+: [W]ould this be something that should be done automatically in '''Isearch+'''?  Or do you think some users would not want it done (in which case perhaps it should be an [[option]] or an Isearch toggle)?
+
+Please let me know, when you can.  It would be good to take care of this problem automatically, if that is appropriate.  Thx -- DrewAdams
+
+[new:[[Bernard Hurley]]:2012-12-16 11:27 UTC]
+
+Since searching for unicode characters in isearch+ is virtually impossible
+without the fix, I think it should be done automatically.  Ido users might be a
+bit surprised not to get an Ido search at this point but Ido isn't guaranteed to
+work everywhere, so I can't see why anyone shouldn't want the fix.  -- [[Bernard Hurley]]
+
+
+[new:DrewAdams:2012-12-16 15:56 UTC]
+OK, thanks.  Can you provide a patch?  Note that the same feature might well be added to Emacs --- see this thread:
+http://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00234.html.  So you might want to bring JuriLinkov into the loop about fixing this wrt Ido.  He might also have a suggestion.  Please cc me if you do so by email.  Thx -- DrewAdams
