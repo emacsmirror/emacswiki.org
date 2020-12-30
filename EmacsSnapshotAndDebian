@@ -9,7 +9,7 @@ Debian/unstable. Instructions and further details are available at:
 actual packages are here: [[http://emacs.secretsauce.net/pool/main/e/emacs-snapshot/|http://emacs.secretsauce.net/pool/main/e/emacs-snapshot/]].
 
 === ganneff.de ===
-Maintains ~5 months of debian packages based upon emac git snapshots.
+Maintains debian packages based upon emac git snapshots.
 Each's build status can be reviewed at the developer's gitlab
 instance:
 [[https://git.nsb-software.de/joerg/emacs/pipelines|https://git.nsb-software.de/joerg/emacs/pipelines]].
