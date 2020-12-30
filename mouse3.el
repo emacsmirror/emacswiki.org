@@ -4,13 +4,13 @@
 ;; Description: Customizable behavior for `mouse-3'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 13 16:28:49 2020 (-0700)
+;; Last-Updated: Wed Dec 30 13:47:11 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 1877
+;;     Update #: 1890
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -18,10 +18,18 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `color', `frame-fns', `gv', `hexrgb', `isearch+',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `naked',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `easymenu',
+;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
+;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `highlight', `hl-line', `hl-line+', `info',
+;;   `info+', `isearch+', `isearch-prop', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
+;;   `pp+', `radix-tree', `replace', `second-sel', `strings',
+;;   `syntax', `text-mode', `thingatpt', `thingatpt+', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -369,6 +377,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2020/12/26 dadams
+;;     mouse3-region-popup-(change-text-submenu|x-popup-panes): Added transpose-regions, indent-rigidly.
+;;     mouse3-region-popup-(check-convert-submenu|x-popup-panes): Added: org-table-convert-region.
 ;; 2020/09/13 dadams
 ;;     Added option mouse3-menu-always-flag, mouse3-action-wo-save-then-kill.
 ;;     mouse-save-then-kill: respect mouse3-menu-always-flag.
@@ -641,7 +652,7 @@ single-click event.  See `(elisp) Repeat Events'."
 
 ;;;###autoload
 (defcustom mouse3-menu-always-flag nil
-  "Non-nil means `mouse-3' always shows a menu.
+  "*Non-nil means `mouse-3' always shows a menu.
 If nil, `mouse-3' behavior respects options
 `mouse3-second-click-default-command' and
 `mouse3-double-click-command'.
@@ -803,7 +814,9 @@ restore it by yanking."
      ("Fill"                                    . fill-region)
      ("Fill as Paragraph"                       . fill-region-as-paragraph)
      ("Canonically Space"                       . canonically-space-region)
+     ("Transpose"                               . transpose-regions)
      ("Indent"                                  . indent-region)
+     ("Indent Rigidly"                          . indent-rigidly)
      ("--")
      ("Capitalize"                              . capitalize-region)
      ("Upcase"                                  . upcase-region)
@@ -820,6 +833,9 @@ restore it by yanking."
      ,@`,(and (fboundp 'whitespace-cleanup-region) ; Defined in `whitespace.el'.  Emacs 22+.
               '(("Check Whitespace"             . whitespace-report-region)
                 ("Clean Up Whitespace"          . whitespace-cleanup-region)))
+
+     ,@`,(and (fboundp 'org-table-convert-region) ; Definded in `org-table.el'.
+              '(("Convert to Org Table"         . org-table-convert-region)))
      ("Printify"                                . printify-region)
      ("PR Printify"                             . pr-printify-region)
      ("Compose Characters"                      . compose-region)
@@ -1287,7 +1303,9 @@ restore it by yanking."
        (fill                        menu-item "Fill" fill-region)
        (fill-as-para                menu-item "Fill as Paragraph" fill-region-as-paragraph)
        (canonically-space           menu-item "Canonically Space" canonically-space-region)
+       (transpose                   menu-item "Transpose" transpose-regions)
        (indent                      menu-item "Indent" indent-region)
+       (indent-rigidly              menu-item "Indent Rigidly" indent-rigidly)
        (sep-word-case "--")
        (capitalize                  menu-item "Capitalize" capitalize-region)
        (upcase                      menu-item "Upcase" upcase-region)
@@ -1308,9 +1326,11 @@ restore it by yanking."
        (ispell-region             menu-item "Ispell" ispell-region)
        (flyspell-region           menu-item "Flyspell" flyspell-region)
        (whitespace-report-region  menu-item "Check Whitespace" whitespace-report-region
-        :visible (fboundp 'whitespace-cleanup-region))
+        :visible (fboundp 'whitespace-report-region))
        (whitespace-cleanup-region menu-item "Clean Up Whitespace" whitespace-cleanup-region
         :visible (and (fboundp 'whitespace-cleanup-region)  (not buffer-read-only)))
+       (org-table-convert-region  menu-item "Convert to Org Table" org-table-convert-region
+        :visible (fboundp 'org-table-convert-region))
        (printify-region           menu-item "Printify" printify-region
         :visible (not buffer-read-only))
        (pr-printify-region        menu-item "PR Printify" pr-printify-region
@@ -1692,8 +1712,8 @@ and not empty.)"
 
 (defcustom mouse3-noregion-popup-entries `(,mouse3-noregion-popup-misc-submenu)
   "*Entries for the `mouse-3' popup menu when no nonempty active region.
-Other than the use context, this has the same description as
-`mouse3-noregion-popup-entries' - which see."
+Other than the use context (region or no region), this has the same
+description as `mouse3-region-popup-entries' - which see."
   ;; Could define this `:type' and so reuse the definition for both `*-region-*' and `*-noregion-*'.
   :type  '(repeat
            (choice
