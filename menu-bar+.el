@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 29 09:13:01 2020 (-0800)
+;; Last-Updated: Wed Dec 30 20:21:37 2020 (-0800)
 ;;           By: dradams
-;;     Update #: 3919
+;;     Update #: 3922
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -135,10 +135,11 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2020/12/29 dadams
+;; 2020/12/30 dadams
 ;;     Soft-require bookmark+.el.
 ;;     menu-bar-goto-menu:
-;;       Add, rename, and reorder items: Bookmark submenu, move-to-column, (next|previous)-error.
+;;       Add, rename, and reorder items:
+;;         Bookmark submenu, move-to-column, (next|previous)-error, dired-jump.
 ;; 2020/09/26 dadams
 ;;     menu-bar-search-tags-menu, item tags-continue: Updated for Emacs 27+.
 ;;     menu-bar-search-replace-menu: Added tags-repl-continue.
@@ -873,11 +874,15 @@ submenu of the \"Help\" menu."))
     '(menu-item "End of Buffer" end-of-buffer)
     'beg-of-buf)
   (define-key-after menu-bar-goto-menu [next-error]
-    '(menu-item "Next Error" next-error)
+    '(menu-item "Next Error" next-error :enable next-error-last-buffer)
     'end-of-buf)
   (define-key-after menu-bar-goto-menu [previous-error]
-    '(menu-item "Previous Error" previous-error)
+    '(menu-item "Previous Error" previous-error :enable next-error-last-buffer)
     'next-error)
+  (define-key-after menu-bar-goto-menu [dired-jump]
+    '(menu-item "Dired for This File" dired-jump
+                :visible (buffer-file-name))
+    'previous-error)
 
   (when (boundp 'bmkp-jump-menu)      ; Defined in `bookmark+-key.el'.
     (define-key menu-bar-goto-menu [bmkp-jump] (cons "Bookmark" bmkp-jump-menu)))
