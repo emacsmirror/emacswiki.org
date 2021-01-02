@@ -1,12 +1,18 @@
-This package creates a call-tree for a single buffer -- a data structure saying which
-function calls which function within the buffer .
+There are two major versions of this package.  Both create a call-tree for a single buffer -- a data structure saying which
+functions are called by each function in the buffer.
 
+The first major version was created by Alex Schroder as simple-call-tree.el c. 2003.  Its code is short (138 lines) and is available at
+* Lisp:simple-call-tree-original.el
+
+The second major version was created by GitHub user vapniks, originally as simple-call-tree-ext, now renamed simple-call-tree, described as thus: "is based on simple-call-tree.el and provides a major mode for displaying and navigating the call tree. You can invert the tree, change the depth, narrow to a particular branch, perform query replacements on functions (useful for refactoring), and it also works with follow mode if you have that installed (http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el)." Its code is much longer than the original (over 2000 lines of code) and versions of it are available at 
+* Lisp:simple-call-tree+.el
 * Lisp:simple-call-tree.el
+* https://github.com/vapniks/simple-call-tree
+* https://melpa.org/#/simple-call-tree
 
-Use `M-x simple-call-tree-analyze' to run it on a buffer.  This uses
-`font-lock-function-name' to identify function names and sets `simple-call-tree-alist', which maps callers to their callees, with the callees represented as a list.  Callers without callees are included.
+Basic use for both versions is as below.  Both versions set `simple-call-tree-alist', which maps callers to their callees, with the callees represented as a list.  Callers without callees are included.
 
-Gotcha: Each caller or callee is represented in the alist as a singleton list containing a string (with properties) rather than as a string.  See `plain-call-tree' below for a way to flatten these. 
+There are some helper functions below written for the original simple-call-tree.  They are incompatible with vapniks's version, in which each caller or callee is represented in the alist as a singleton list containing a string (with properties) rather than as a plain string.  See `plain-call-tree' below for a way to flatten these to the form used by the original simple-call-tree. 
 
 ==Basic use==
 # open the buffer you want to analyze
@@ -15,7 +21,6 @@ Gotcha: Each caller or callee is represented in the alist as a singleton list co
 # use other functions (in the package, below, your own ...) to process `simple-call-tree-alist'
 
 == Pretty Printing ==
-
 After calling `simple-call-tree-analyze', the function below can be used to list callers and callees in a buffer:
 
 <pre>
@@ -26,8 +31,8 @@ After calling `simple-call-tree-analyze', the function below can be used to list
     (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
     (erase-buffer)
     (dolist (entry list)
-      (let ((functions (mapconcat #'car (cdr entry) ", ")))
-        (insert (caar entry) " calls "
+      (let ((functions (mapconcat #'identity (cdr entry) ", ")))
+        (insert (car entry) " calls "
                 (if (string= functions "")
                     "no functions"
                   functions)
@@ -63,13 +68,13 @@ Then save the file as \"my-file.dot\" and run
                       (lambda (defun-list)
                         "Called for each element (list) of `simple-call-tree-alist',
                          create all the 'caller -> callee;' strings."
-                        (let ((caller (caar defun-list))
+                        (let ((caller (car defun-list))
                               (callees (cdr defun-list)))
                           (if (null callees)
                               (concat "\"" caller "\"")
                             (mapconcat (lambda (callee)
                                          "Called with each callee, create 'caller -> callee' pairs."
-                                         (concat "\"" caller "\"" " -> " "\"" (car callee) "\""))
+                                         (concat "\"" caller "\"" " -> " "\"" callee "\""))
                                        callees
                                        ";\n"))))
                       simple-call-tree-alist)
@@ -77,13 +82,11 @@ Then save the file as \"my-file.dot\" and run
           ";\n}"))
 </pre>
 
-==Simplifying simple-call-tree-alist==
-The function below can be used to convert `simple-call-tree-alist' to a simpler form using strings rather than singleton lists of strings.  
+==Flattening simple-call-tree-alist to plain form ==
+The function below can be used to convert `simple-call-tree-alist' as created by simple-call-tree-ext to one compatible with the original simple-call-tree.  
 <pre>
 (defun plain-call-tree ()
-  "Return an alist of callers to callees based on
-`simple-call-tree-alist' in which each caller is a plain string and the
-callees are lists of plain strings."
+  "Convert `simple-call-tree-alist' to the format used in the original package."
   
   (mapcar
    (lambda (caller-callees)
@@ -92,21 +95,5 @@ callees are lists of plain strings."
              caller-callees))
    simple-call-tree-alist))
 </pre>
-== Use with Helm ==
-See [https://github.com/qilicun/emacs.d/blob/master/site-lisp/helm/helm-call-tree.el helm-call-tree.el] for one integration (I have not tested this). 
-
-==simple-call-tree+.el==
-
-The following library is based on simple-call-tree.el and provides a major mode for
-displaying and navigating the call tree. You can invert the tree, change the depth,
-narrow to a particular branch, perform query replacements on functions (useful for refactoring),
-and it also works with follow mode if you have that installed (http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el).
-
-Feel free to help develop it further, here is the github page: https://github.com/vapniks/simple-call-tree-ext
-
-* Lisp:simple-call-tree+.el
-
--- JoeBloggs
-
 ----
 CategoryCode CategoryProgrammerUtils CategoryNavigation
