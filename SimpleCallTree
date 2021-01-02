@@ -4,143 +4,50 @@ function calls which function.
 * Lisp:simple-call-tree.el
 
 Use `M-x simple-call-tree-analyze' to run it on a buffer.  This uses
-`font-lock-function-name' to identify function names.  Therefore, you
-might have to wait for a bit until the stealth font lock has actually
-fontified all of the buffer, not only the visible part. Alternatively
-you might want to call `jit-lock-fontify-now' explicitly (e.g. by inserting
-`(when jit-lock-mode (jit-lock-fontify-now))' right after `(interactive)'
-in `simple-call-tree-alist' below), especially if you use jit-lock-mode and your
-Jit Lock Stealth Time is "never" (what is the default, I think).
+`font-lock-function-name' to identify function names and sets `simple-call-tree-alist', which maps callers to their callees, with the callees represented as a list.  Callers without callees are included.
 
-For CPerl, some keywords like -f are also hilighted using
-font-lock-function-name.  In order to exclude these, use
-`M-x simple-call-tree-analyze-perl'.
+Gotcha: Each caller or callee is represented in the alist as a singleton list containing a string (with properties) rather than as a string.  See `plain-call-tree' below for a way to flatten these. 
 
-For any kind of literate programs consider calling `simple-call-tree-analyze'
-on the [http://en.wikipedia.org/wiki/Literate_programming "tangled" code].
-
-The output in ielm (see InferiorEmacsLispMode):
-
-<pre>
-    ELISP> simple-call-tree-alist
-    (("DoShowVisitors")
-     ("AddUserToRecentVisitors" "T" "GetParam" "UpdateRecentVisitors")
-     ("UpdateRecentVisitors" "T" "ReadRecentVisitors" "WriteRecentVisitors")
-     ("WriteRecentVisitors" "T" "WriteStringToFile")
-     ("ReadRecentVisitors" "T" "ReadFile")
-     ("DoShowVersion" "T" "GetHeader" "GetCommonFooter")
-     ...
-</pre>
-
-To see which functions are called at all:
-
-<pre>
-    ELISP> (setq simple-call-tree-used (mapcar 'car (simple-call-tree-invert simple-call-tree-alist)))
-    ("DoOtherRequest" "DoBrowseRequest" "InitRequest" "DoCacheBrowse" "InitLinkPatterns" ...
-</pre>
-
-To see which functions are not called:
-
-<pre>
-    ELISP> (set-difference (mapcar 'car simple-call-tree-alist) simple-call-tree-used)
-    ("DoWikiRequest")
-</pre>
-
-== Use with Anything ==
-'''[[Anything]]''' is a candidate selection framework.
-
-Start with `M-x anything-simple-call-tree', narrow the list by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-
-With C-z function definitions (by rotation) are displayed without quitting anything session.
-
-== Discussion ==
-
-Hm, could be that the last function is not analyzed correctly... -- AlexSchroeder
-
-[new]
-
-Somebody make it write out dotty files please! :-) (see http://www.research.att.com/sw/tools/graphviz/)
-
-[new]
-
-For a simple graphviz solution (with dot), see my suggestion below in the Visualization part -- PeterTury
-
-[new]
-
-I can't get this to work properly for me. It will only recognize functions if they have already been displayed in a window.
-I suppose that emacs only updates the text-properties when it needs to (i.e. when the text is displayed in a window). 
-Is there any way to force emacs to evaluate the text properties of a buffer? -- Aleblanc
-
-[new]
-
-Aleblanc, please check my suggestion with `jit-lock-fontify-now' above -- PeterTury
-
-[new]
-
-See `font-lock-support-mode'. Instant fontification could be slow for large buffers, though. That's why it is not usually used as a source of syntax information. - anon
-
-[new]
-
-As we need to call `jit-lock-fontify-now', why not adding it in simple-call-tree-analyse, just before the `let' ? -- DanielDehennin
-
-[new]
-Shouldn't you call `font-lock-fontify-buffer' if you want the buffer to be fontified right now? -- LennartBorgman
+==Basic use==
+# open the buffer you want to analyze
+# ensure it's fontified, e.g. call `font-lock-fontify-buffer' 
+# call `simple-call-tree-analyze'
+# use other functions (in the package, below, your own ...) to process `simple-call-tree-alist'
 
 == Pretty Printing ==
 
-To show a pretty-printed representation of functions and their callers, you could use something like:
+After calling `simple-call-tree-analyze', the function below can be used to list callers and callees in a buffer:
 
 <pre>
-    (defun simple-call-tree-list-functions-and-callers ()
-      "List functions and callers in `simple-call-tree-alist'."
-      (interactive)
-      (let ((list (simple-call-tree-invert simple-call-tree-alist)))
-        (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
-        (erase-buffer)
-        (dolist (entry list)
-          (let ((callers (mapconcat #'identity (cdr entry) ", ")))
-            (insert (car entry) " is called by "
-                    (if (string= callers "")
-                        "no functions."
-                        callers)
-                    ".\n")))))
+(defun simple-call-tree-list-callers-and-functions ()
+  "List callers and functions in `simple-call-tree-alist'."
+  (interactive)
+  (let ((list simple-call-tree-alist))
+    (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
+    (erase-buffer)
+    (dolist (entry list)
+      (let ((functions (mapconcat #'car (cdr entry) ", ")))
+        (insert (caar entry) " calls "
+                (if (string= functions "")
+                    "no functions"
+                  functions)
+                ".\n")))))
 </pre>
-
-Alternatively, if you wanted to list which callers and the functions they call, you could use something like:
-
-<pre>
-    (defun simple-call-tree-list-callers-and-functions ()
-      "List callers and functions in `simple-call-tree-alist'."
-      (interactive)
-      (let ((list simple-call-tree-alist))
-        (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
-        (erase-buffer)
-        (dolist (entry list)
-          (let ((functions (mapconcat #'identity (cdr entry) ", ")))
-            (insert (car entry) " calls "
-                    (if (string= functions "")
-                        "no functions"
-                        functions)
-                    ".\n")))))
-</pre>
-
 == Visualization ==
+One way to visualize using http://www.graphviz.org/ is below.  This could be adapted, e.g. called from an OrgMode buffer.
 
-A simple (and rather manual) way (using http://www.graphviz.org/) can be:
+Prerequisites
+# install graphviz
+# ensure `sct-dot' (see below) is defined
 
-# make sure you have graphviz installed (use e.g. Synaptic in Ubuntu...)
-# "tangle" your source file (in case of literal programs)
-# fontify your whole buffer (maybe explicitly with `jit-lock-fontify-now')
+Usage
+# open the buffer you want to analyze
+# ensure it's fontified, e.g. call `font-lock-fontify-buffer' 
 # call `simple-call-tree-analyze'
-# create `sct-dot' (see below)
-# switch to an empty buffer
-# evaluate this in the minibuffer (`M-:'): `(insert (sct-dot))'
-# save the buffer as (e.g.) 'my-file.dot'
-# run graphviz's dot program. E.g. from command line: `dot -Tjpg /path/to/my-file.dot -o result.jpg'
-# enjoy! ;)
+# switch to an empty
+# evaluate `(insert (sct-dot))'
+# you can then save the buffer and use graphviz's dot to visualize it
 
-Evaluate this expression (C-M-x) to create function `sct-dot':
 <pre>
 (defun sct-dot ()
   "Generate dot file for graphviz from `simple-call-tree-alist'.
@@ -169,6 +76,24 @@ Then save the file as \"my-file.dot\" and run
                      ";\n")
           ";\n}"))
 </pre>
+
+==Simplifying simple-call-tree-alist==
+The function below can be used to convert `simple-call-tree-alist' to a simpler form using strings rather than singleton lists of strings.  
+<pre>
+(defun plain-call-tree ()
+  "Return an alist of callers to callees based on
+`simple-call-tree-alist' in which each caller is a plain string and the
+callees are lists of plain strings."
+  
+  (mapcar
+   (lambda (caller-callees)
+     (mapcar (lambda (func-list)
+                     (substring-no-properties (car func-list)))
+             caller-callees))
+   simple-call-tree-alist))
+</pre>
+== Use with Helm ==
+See [https://github.com/qilicun/emacs.d/blob/master/site-lisp/helm/helm-call-tree.el helm-call-tree.el] for one integration (I have not tested this). 
 
 ==simple-call-tree+.el==
 
