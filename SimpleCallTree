@@ -154,15 +154,15 @@ Then save the file as \"my-file.dot\" and run
           (mapconcat 'identity ;; end each line with a ";"
                      (mapcar
                       (lambda (defun-list)
-                        "Called for each elemet (list) of `simple-call-tree-alist',
+                        "Called for each element (list) of `simple-call-tree-alist',
                          create all the 'caller -> callee;' strings."
-                        (let ((caller (car defun-list))
+                        (let ((caller (caar defun-list))
                               (callees (cdr defun-list)))
                           (if (null callees)
                               (concat "\"" caller "\"")
                             (mapconcat (lambda (callee)
                                          "Called with each callee, create 'caller -> callee' pairs."
-                                         (concat "\"" caller "\"" " -> " "\"" callee "\""))
+                                         (concat "\"" caller "\"" " -> " "\"" (car callee) "\""))
                                        callees
                                        ";\n"))))
                       simple-call-tree-alist)
