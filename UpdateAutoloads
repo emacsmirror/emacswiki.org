@@ -34,4 +34,4 @@ This didn't seem to work on my system, but after playing around for a bit, it ap
 
     (local/prepare-local-lisp (locate-user-emacs-file "lisp"))
 
-It checks every directory in [code]~/.emacs/lisp[/code] and updates the autoload data/compiles it if necessary.
+It checks every directory in <tt>~/.emacs/lisp</tt> and updates the autoload data/compiles it if necessary.
