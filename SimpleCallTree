@@ -44,7 +44,7 @@ Usage
 # open the buffer you want to analyze
 # ensure it's fontified, e.g. call `font-lock-fontify-buffer' 
 # call `simple-call-tree-analyze'
-# switch to an empty
+# switch to an empty buffer
 # evaluate `(insert (sct-dot))'
 # you can then save the buffer and use graphviz's dot to visualize it
 
