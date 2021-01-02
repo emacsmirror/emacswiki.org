@@ -15,3 +15,23 @@ And if all goes well, add
     (load (concat my-lisp-dir "lisp/loaddefs") t)
 
 to your .emacs. Voila! Of course you have to `M-x my-update-autoloads' every time you add a new library. Oh, and be prepared to find buggy magic autoload comments. 
+
+[new:pkal:2021-01-02 14:52 UTC]
+
+This didn't seem to work on my system, but after playing around for a bit, it appears that the following works well
+
+    ;;; load local lisp files
+    (defun local/prepare-local-lisp (dir)
+      "Prepare (compile + autoload) all packages in directory DIR."
+      (require 'autoload)
+      (let ((generated-autoload-file (expand-file-name "al.el" dir)))
+	(dolist (dir (directory-files dir t "^[^.]"))
+	  (when (file-directory-p dir)
+	    (byte-recompile-directory dir 0)
+	    (update-directory-autoloads dir)))
+	(add-to-list 'load-path dir)
+	(load generated-autoload-file nil t)))
+
+    (local/prepare-local-lisp (locate-user-emacs-file "lisp"))
+
+It checks every directory in [code]~/.emacs/lisp[/code] and updates the autoload data/compiles it if necessary.
