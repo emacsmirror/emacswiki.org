@@ -4,7 +4,7 @@ functions are called by each function in the buffer.
 The first major version was created by Alex Schroder as simple-call-tree.el c. 2003.  Its code is short (138 lines) and is available at
 * Lisp:simple-call-tree-original.el
 
-The second major version was created by GitHub user vapniks, originally as simple-call-tree-ext, now renamed simple-call-tree, described as thus: "is based on simple-call-tree.el and provides a major mode for displaying and navigating the call tree. You can invert the tree, change the depth, narrow to a particular branch, perform query replacements on functions (useful for refactoring), and it also works with follow mode if you have that installed (http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el)." Its code is much longer than the original (over 2000 lines of code) and versions of it are available at 
+The second major version was created by GitHub user vapniks, originally as simple-call-tree-ext and referred to as such below, now renamed simple-call-tree, described as thus: "is based on simple-call-tree.el and provides a major mode for displaying and navigating the call tree. You can invert the tree, change the depth, narrow to a particular branch, perform query replacements on functions (useful for refactoring), and it also works with follow mode if you have that installed (http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el)." It is a much more substantial package (over 2000 lines of code) and versions of it are available at 
 * Lisp:simple-call-tree+.el
 * Lisp:simple-call-tree.el
 * https://github.com/vapniks/simple-call-tree
@@ -12,7 +12,7 @@ The second major version was created by GitHub user vapniks, originally as simpl
 
 Basic use for both versions is as below.  Both versions set `simple-call-tree-alist', which maps callers to their callees, with the callees represented as a list.  Callers without callees are included.
 
-There are some helper functions below written for the original simple-call-tree.  They are incompatible with vapniks's version, in which each caller or callee is represented in the alist as a singleton list containing a string (with properties) rather than as a plain string.  See `plain-call-tree' below for a way to flatten these to the form used by the original simple-call-tree. 
+There are some helper functions below written for the original simple-call-tree.  They are incompatible with simple-call-tree-ext, in which each caller or callee is represented in the alist as a singleton list containing a string (with properties) rather than as a plain string.  See `plain-call-tree' below for a way to flatten these to the form used by the original simple-call-tree, but note that simple-call-tree-ext has many helper functions of its own, which it's probably better to use. 
 
 ==Basic use==
 # open the buffer you want to analyze
@@ -20,9 +20,26 @@ There are some helper functions below written for the original simple-call-tree.
 # call `simple-call-tree-analyze'
 # use other functions (in the package, below, your own ...) to process `simple-call-tree-alist'
 
-== Pretty Printing ==
-After calling `simple-call-tree-analyze', the function below can be used to list callers and callees in a buffer:
+== Pretty Printing - callees to callers ==
+The function below can be used to list which callees are called by which callers in a buffer:
+<pre>
+(defun simple-call-tree-list-functions-and-callers ()
+  "List functions and callers in `simple-call-tree-alist'."
+  (interactive)
+  (let ((list (simple-call-tree-invert simple-call-tree-alist)))
+    (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
+    (erase-buffer)
+    (dolist (entry list)
+      (let ((callers (mapconcat #'identity (cdr entry) ", ")))
+        (insert (car entry) " is called by "
+                (if (string= callers "")
+                    "no functions."
+                  callers)
+                ".\n")))))
+</pre>
 
+== Pretty Printing - callers to callees ==
+The function below can be used to list which callers call which callees in a buffer:
 <pre>
 (defun simple-call-tree-list-callers-and-functions ()
   "List callers and functions in `simple-call-tree-alist'."
