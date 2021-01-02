@@ -1,5 +1,5 @@
-This package creates a call-tree -- a data structure saying which
-function calls which function.
+This package creates a call-tree for a single buffer -- a data structure saying which
+function calls which function within the buffer .
 
 * Lisp:simple-call-tree.el
 
