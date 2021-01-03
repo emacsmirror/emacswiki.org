@@ -4,17 +4,17 @@
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec  6 21:08:14 2020 (-0800)
+;; Last-Updated: Sun Jan  3 15:53:42 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 733
+;;     Update #: 766
 ;; URL: https://www.emacswiki.org/emacs/download/grep%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
 ;; Keywords: tools, processes, compile
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -102,6 +102,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/01/03 dadams
+;;     grep-default-command: Use grep-tag-default for Emacs 27.
+;;     Don't bother to modify grep-tag-default for Emacs 26+.
+;;     grep-mode-font-lock-keywords: Updated per vanilla Emacs 27.
+;;     grep-mode: Use regexp-unmatchable for compilation-directory-matcher, for Emacs 27+.
 ;; 2020/12/06 dadams
 ;;     grep-regexp-alist: Put mouse-face on whole line for Emacs > 24 also.
 ;;     grep-mode-font-lock-keywords: Updated for Emacs 26.3.
@@ -255,13 +260,14 @@ first of these that references a defined function:
   "String holding the arguments of the last `grep' command used.")
 
 
-
 ;;; REPLACE ORIGINAL in `grep.el'
 ;;;
-;;; Added optional argument TAG-DEFAULT, passed from `grep'.  Needs to be optional, in case called elsewhere.
+;;; Added optional arg TAG-DEFAULT, passed from `grep'.  Needs to be optional, in case called elsewhere.
 ;;;
 (defun grep-default-command (&optional tag-default)
-  (let ((quoted-tag-def  (shell-quote-argument (or tag-default  "")))
+  (let ((quoted-tag-def  (shell-quote-argument (or tag-default  (if (fboundp 'grep-tag-default) ; Emacs 27+
+                                                                    (grep-tag-default)
+                                                                  ""))))
 	;; Regexp to match single shell arguments.
         (sh-arg-re     "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
         (grep-default  (or (car grep-history) grep-command)))
@@ -287,7 +293,6 @@ first of these that references a defined function:
       (replace-match quoted-tag-def t t grep-default 1))))
 
 
-
 ;;; REPLACE ORIGINAL in `grep.el'
 ;;;
 ;;; Use `grepp-default-regexp-fn' to define default search string (aka "tag default").
@@ -295,6 +300,8 @@ first of these that references a defined function:
 ;;;###autoload
 (defun grep (command-args &optional highlight-regexp)
   "Run `grep', with user-specified args, and collect output in a buffer.
+The output goes to buffer `*grep*'.
+
 COMMAND-ARGS are the user-specified arguments.
 While `grep' runs asynchronously, you can use
 \\[next-error] (M-x next-error), or \\<grep-mode-map>\\[compile-goto-error]
@@ -336,7 +343,7 @@ temporarily highlight in visited source lines."
                                    grep-command
                                    (if (and transient-mark-mode mark-active
                                             (not (eq (region-beginning) (region-end))))
-                                       ;; $$$$$ Would it be better to use `shell-quote-argument' on the region?
+                                       ;; $$$$$ Would it be better to use `shell-quote-argument' on region?
                                        (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
                                      tag-default)
                                    " "))
@@ -349,7 +356,7 @@ temporarily highlight in visited source lines."
              (concat grep-command
                      (if (and transient-mark-mode mark-active
                               (not (eq (region-beginning) (region-end))))
-                         ;; $$$$$ Would it be better to use `shell-quote-argument' on the region?
+                         ;; $$$$$ Would it be better to use `shell-quote-argument' on region?
                          (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
                        tag-default)
                      " "))
@@ -500,53 +507,51 @@ between /* and */."
   'grepp-remove-comments)
 
 
-
 ;;; REPLACE ORIGINAL `grep-regexp-alist' defined in `grep.el'.
 ;;;
 ;;; Use mouseover on whole line.  Same as original, except for this.
+;;; Don't bother to even try for Emacs 26+, since it won't work with `xref' etc.
 ;;;
-(unless (featurep 'grep+)
-  (if (< emacs-major-version 24)
-      (setq grep-regexp-alist
-            `(
-              ;; Use as tight a regexp as possible to try to handle weird file names (with colons) as well as
-              ;; possible.  E.g. use [1-9][0-9]* rather than [0-9]+ so as to accept ":034:" in file names.
-              ;;
-              ;; Appended `.*', to match whole line for `mouse-face'.
-              ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2.*"
-               1 3
-               ;; Calculate column positions (col . end-col) of first grep match on a line
-               ((lambda ()
-                  (when grep-highlight-matches
-                    (let* ((beg   (match-end 0))
-                           (end   (save-excursion (goto-char beg) (line-end-position)))
-                           (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
-                                                                                  grep-match-face
-                                                                                'match))))
-                      (and mbeg (- mbeg beg)))))
-                .
-                (lambda ()
-                  (when grep-highlight-matches
-                    (let* ((beg   (match-end 0))
-                           (end   (save-excursion (goto-char beg) (line-end-position)))
-                           (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
-                                                                                  grep-match-face
-                                                                                'match)))
-                           (mend  (and mbeg (next-single-property-change mbeg 'font-lock-face nil end))))
-                      (and mend (- mend beg))))))
-               nil
-               nil) ; DREW ADAMS changed HIGHLIGHT to nil, to highlight whole match.
-              ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1)))
-
-    ;; Gross hack.  Append ".*" to regexps (but put it before a $ at end, if present).
-    ;; If HIGHLIGHT is nil then the whole line will get `mouse-face'.
-    (dolist (entry  grep-regexp-alist)
-      (when (and (consp entry)  (stringp (car entry)))
-        (let* ((regexp      (car entry))
-               (up-to-last  (substring regexp 0 -1))
-               (last        (substring regexp -1)))
-          (setcar entry (if (string= "$" last) (concat up-to-last ".*$") (concat regexp ".*"))))))))
-
+(unless (or (featurep 'grep+)  (> emacs-major-version 24))
+  (if (= emacs-major-version 24)
+      ;; Gross hack.  Append ".*" to regexps (but put it before a $ at end, if present).
+      ;; If HIGHLIGHT is nil then the whole line will get `mouse-face'.
+      (dolist (entry  grep-regexp-alist)
+        (when (and (consp entry)  (stringp (car entry)))
+          (let* ((regexp      (car entry))
+                 (up-to-last  (substring regexp 0 -1))
+                 (last        (substring regexp -1)))
+            (setcar entry (if (string= "$" last) (concat up-to-last ".*$") (concat regexp ".*"))))))
+    (setq grep-regexp-alist
+          `(
+            ;; Use as tight a regexp as possible to try to handle weird file names (with colons) as well as
+            ;; possible.  E.g. use [1-9][0-9]* rather than [0-9]+ so as to accept ":034:" in file names.
+            ;;
+            ;; Appended `.*', to match whole line for `mouse-face'.
+            ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2.*"
+             1 3
+             ;; Calculate column positions (col . end-col) of first grep match on a line
+             ((lambda ()
+                (when grep-highlight-matches
+                  (let* ((beg   (match-end 0))
+                         (end   (save-excursion (goto-char beg) (line-end-position)))
+                         (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
+                                                                                grep-match-face
+                                                                              'match))))
+                    (and mbeg (- mbeg beg)))))
+              .
+              (lambda ()
+                (when grep-highlight-matches
+                  (let* ((beg   (match-end 0))
+                         (end   (save-excursion (goto-char beg) (line-end-position)))
+                         (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
+                                                                                grep-match-face
+                                                                              'match)))
+                         (mend  (and mbeg (next-single-property-change mbeg 'font-lock-face nil end))))
+                    (and mend (- mend beg))))))
+             nil
+             nil)
+            ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1)))))
 
 
 ;;; REPLACE ORIGINAL `grep-mode-font-lock-keywords' defined in `grep.el'.
@@ -563,13 +568,14 @@ between /* and */."
 address\\)\\)$"
                1 grep-error-face)
               ;; Remove match from `grep-regexp-alist' before fontifying.
-              ("^Grep[/a-zA-z]* started.*"
+              ("^Grep[/a-zA-Z]* started.*"
                (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t))
-              ("^Grep[/a-zA-z]* finished with \\(?:\\(\\(?:[0-9]+ \\)?matches found\\)\\|\\(no matches found\\)\\).*"
+              ("^Grep[/a-zA-Z]* finished with \\(?:\\(\\(?:[0-9]+ \\)?match\\(?:es\\)? \
+found\\)\\|\\(no matches found\\)\\).*"
                (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t)
                (1 compilation-info-face nil t)
                (2 compilation-warning-face nil t))
-              ("^Grep[/a-zA-z]* \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with \
+              ("^Grep[/a-zA-Z]* \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with \
 code \\([0-9]+\\)\\)?.*"
                (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t)
                (1 grep-error-face)
@@ -577,7 +583,15 @@ code \\([0-9]+\\)\\)?.*"
               ;; "filename-linenumber-" format is used for context lines in GNU grep,
               ;; "filename=linenumber=" for lines with function names in "git grep -p".
               ("^.+?\\([-=\0]\\)[0-9]+\\([-=]\\).*\n" (0 grep-context-face)
-               (1 (and (eq (char-after (match-beginning 1)) ?\0)  `(face nil display ,(match-string 2))))))
+               (1 (and (eq (char-after (match-beginning 1)) ?\0)  `(face nil display ,(match-string 2)))))
+              ("^find \\(\\. -type d .*\\\\)\\)" ; Hide excessive part of `rgrep' command
+               (1 (if grep-find-abbreviate
+                      grep-find-abbreviate-properties
+                    '(face nil abbreviated-command t))))
+              ("^grep \\( *--exclude.*--exclude[^ ]+\\)" ; Hide excessive part of `lgrep' command
+               (1 (if grep-find-abbreviate
+                      grep-find-abbreviate-properties
+                    '(face nil abbreviated-command t)))))
 
           ;; Emacs 22, 23
           '(;; Command output lines.
@@ -586,17 +600,17 @@ code \\([0-9]+\\)\\)?.*"
 address\\)\\)$"
              1 grep-error-face)
             ;; Remove match from grep-regexp-alist before fontifying.
-            ;; Set both `compilation-message' and `message' to nil, since Emacs before version 24 uses `message'.
-            ("^Grep[/a-zA-z]* started.*"
+            ;; Set `compilation-message' and `message' to nil: Emacs before version 24 uses `message'.
+            ("^Grep[/a-zA-Z]* started.*"
              (0 '(face nil compilation-message nil message nil help-echo nil mouse-face nil) t))
-            ("^Grep[/a-zA-z]* finished \\(?:(\\(matches found\\))\\|with \\(no matches found\\)\\).*"
-             ;; Set both `compilation-message' and `message' to nil, since Emacs before version 24 uses `message'.
+            ("^Grep[/a-zA-Z]* finished \\(?:(\\(matches found\\))\\|with \\(no matches found\\)\\).*"
+             ;; Set `compilation-message' and `message' to nil: Emacs before version 24 uses `message'.
              (0 '(face nil compilation-message nil message nil help-echo nil mouse-face nil) t)
              (1 compilation-info-face nil t)
              (2 compilation-warning-face nil t))
-            ("^Grep[/a-zA-z]* \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with \
+            ("^Grep[/a-zA-Z]* \\(exited abnormally\\|interrupt\\|killed\\|terminated\\)\\(?:.*with \
 code \\([0-9]+\\)\\)?.*"
-             ;; Set both `compilation-message' and `message' to nil, since Emacs before version 24 uses `message'.
+             ;; Set `compilation-message' and `message' to nil: Emacs before version 24 uses `message'.
              (0 '(face nil compilation-message nil message nil help-echo nil mouse-face nil) t)
              (1 grep-error-face)
              (2 grep-error-face nil t))
@@ -634,7 +648,9 @@ code \\([0-9]+\\)\\)?.*"
   (set (make-local-variable 'compilation-error-regexp-alist) grep-regexp-alist)
   ;; compilation-directory-matcher can't be nil, so we set it to a regexp that
   ;; can never match.
-  (set (make-local-variable 'compilation-directory-matcher) '("\\`a\\`"))
+  (set (make-local-variable 'compilation-directory-matcher) (if (boundp 'regexp-unmatchable)
+                                                                (list regexp-unmatchable) ; Emacs 27+
+                                                              '("\\`a\\`")))
   (set (make-local-variable 'compilation-process-setup-function) 'grep-process-setup)
   (set (make-local-variable 'compilation-disable-input) t)
   (set (make-local-variable 'compilation-error-screen-columns)
