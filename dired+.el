@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 27 11:25:46 2020 (-0800)
+;; Last-Updated: Sun Jan  3 15:41:16 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12736
+;;     Update #: 12774
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -844,6 +844,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/01/02 dadams
+;;     Updates for Emacs 27.1.
+;;       dired-map-over-marks-check: Use ngettext for Emacs 27.
+;;       dired-do-search, dired-do-query-replace-regexp: Use fileloop-initialize-(search|replace) for Emacs 27.
+;;       dired-do-find-regexp: Require xref.el.  Map over rgrep-find-ignored-directories.
+;;                             For Emacs 27+, xref--show-xrefs needs a fetcher function, not a file list.
 ;; 2020/12/27 dadams
 ;;     dired(p)-do-find-marked-files(-recursive): Don't pass plain C-u as arg to dired-simultaneous-find-file.
 ;; 2020/12/05 dadams
@@ -2268,6 +2274,8 @@ of that nature."
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
 (defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
 (defvar recentf-list)                             ; In `recentf.el'
+;; Really a function, not a var - this quiets Emacs 20 byte-compiler, which doesn't recognize `declare-function'.
+;; (defvar rgrep-find-ignored-directories)
 (defvar save-some-buffers-action-alist)           ; In `files.el'
 (defvar switch-to-buffer-preserve-window-point)   ; In `window.el', Emacs 24+
 (defvar tooltip-mode)                             ; In `tooltip.el'
@@ -3081,10 +3089,16 @@ a function that does not just return nil for success, use function
               (op-strg     (if (eq op-symbol 'compress) "Compress or uncompress" (capitalize
                                                                                   (symbol-name op-symbol)))))
          (if (null failures)
-             (message "%s: %d file%s." op-strg nb-results (dired-plural-s nb-results))
-           (dired-log-summary (format "Failed to %s %d of %d file%s"
-                                      (downcase op-strg) nb-fail nb-results (dired-plural-s nb-results))
-                              failures)))))
+             (if (fboundp 'ngettext)    ; Emacs 27+
+                 (message (ngettext "%s: %d file." "%s: %d files." nb-results) op-strg nb-results)
+               (message "%s: %d file%s." op-strg nb-results (dired-plural-s nb-results)))
+           (dired-log-summary
+            (if (fboundp 'ngettext)    ; Emacs 27+
+                (format (ngettext "Failed to %s %d of %d file" "Failed to %s %d of %d files" nb-results)
+                        (downcase op-strg) nb-fail nb-results)
+              (format "Failed to %s %d of %d file%s"
+                      (downcase op-strg) nb-fail nb-results (dired-plural-s nb-results)))
+            failures)))))
 
 (defun diredp-map-over-marks-and-report (fun mark-arg op-symbol &optional show-progress &rest fun-args)
   "Map FUN over marked lines and report the results.
@@ -9731,12 +9745,15 @@ When invoked interactively, raise an error if no files are marked."
 ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
 ;; 2. Added optional arg INTERACTIVEP.
 ;; 3. Do not raise error if no files when not INTERACTIVEP.
+;; 4. Works also for Emacs < 27.
 ;;
 ;;;###autoload
 (defun dired-do-search (regexp &optional arg interactivep)
   "Search through all marked files for a match for REGEXP.
 Stops when a match is found.
-To continue searching for next match, use command \\[tags-loop-continue].
+To continue searching for next match, use:
+ * `\\[fileloop-continue]'  (Emacs 27+) or
+ * `\\[tags-loop-continue]' (older Emacs versions)
 
 A prefix arg behaves as follows:
  * An integer means use the next ARG files (previous -ARG, if < 0).
@@ -9751,7 +9768,11 @@ When invoked interactively, raise an error if no files are marked."
                  (list (diredp-read-regexp "Search marked files (regexp): ")
                        arg
                        t)))
-  (tags-search regexp `(dired-get-marked-files nil ',arg 'dired-nondirectory-p nil ,interactivep)))
+  (if (< emacs-major-version 27)
+      (tags-search regexp `(dired-get-marked-files nil ',arg #'dired-nondirectory-p nil ,interactivep))
+    (fileloop-initialize-search
+     regexp `(dired-get-marked-files nil ',arg #'dired-nondirectory-p nil ,interactivep) 'default)
+    (fileloop-continue)))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el':
@@ -9799,7 +9820,10 @@ with the command \\[tags-loop-continue]."
       (let ((buffer  (get-file-buffer file)))
         (when (and buffer  (with-current-buffer buffer buffer-read-only))
           (error "File `%s' is visited read-only" file))))
-    (tags-query-replace from to delimited `',dgmf-arg)))
+    (if (< emacs-major-version 27)
+        (tags-query-replace from to delimited `',dgmf-arg)
+      (fileloop-initialize-replace from to `',dgmf-arg (and (not (equal from (downcase from)))  'default) delimited)
+      (fileloop-continue))))
 
 
 (when (fboundp 'xref-collect-matches)   ; Emacs 25+
@@ -9810,6 +9834,7 @@ with the command \\[tags-loop-continue]."
   ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
   ;; 2. Added optional arg INTERACTIVEP.
   ;; 3. Do not raise error if no files when not INTERACTIVEP.
+  ;; 4. Works also for Emacs < 27.
   ;;
   (defun dired-do-find-regexp (regexp &optional arg interactivep)
     "Find all matches for REGEXP in all marked files.
@@ -9834,18 +9859,40 @@ REGEXP should use constructs supported by your local `grep' command."
                          arg
                          t)))
     (require 'grep)
+    (when (> emacs-major-version 26) (require 'xref)) ; Emacs 27+
     (defvar grep-find-ignored-files)
-    (defvar grep-find-ignored-directories)
-    (let* ((files    (dired-get-marked-files nil arg nil nil interactivep))
-           (ignores  (nconc (mapcar (lambda (s) (concat s "/")) grep-find-ignored-directories)
-                            grep-find-ignored-files))
-           (xrefs    (mapcan (lambda (file)
-                               (xref-collect-matches
-                                regexp "*" file (and (file-directory-p file)  ignores)))
-                             files)))
-      (if xrefs
-          (xref--show-xrefs xrefs nil t)
-        (when interactivep (diredp-user-error "No matches for: %s" regexp)))))
+    (if (> emacs-major-version 26)
+        (declare-function rgrep-find-ignored-directories "grep" (dir))
+      (defvar grep-find-ignored-directories))
+    (let* ((marked    (dired-get-marked-files nil arg nil nil interactivep))
+           (ignores   (nconc (mapcar #'file-name-as-directory
+                                     (if (> emacs-major-version 26)
+                                         (rgrep-find-ignored-directories default-directory)
+                                       grep-find-ignored-directories))
+                             grep-find-ignored-files))
+           (xrefs-26  (and (< emacs-major-version 27)
+                           (mapcan (lambda (file)
+                                     (xref-collect-matches
+                                      regexp "*" file (and (file-directory-p file)  ignores)))
+                                   marked)))
+           (fetcher   (and (> emacs-major-version 26)
+                           `(lambda ()
+                              (let ((files  ())
+                                    (xrefs  ()))
+                                (mapc (lambda (file)
+                                        (if (file-directory-p file)
+                                            (setq files  (nconc (project--files-in-directory file ignores "*") files))
+                                          (push file files)))
+                                      (nreverse ',marked))
+                                (setq xrefs  (xref-matches-in-files regexp files))
+                                (when (and (null xrefs)  `,interactivep)
+                                  (diredp-user-error "No matches for: %s" regexp))
+                                xrefs)))))
+      (if fetcher
+          (xref--show-xrefs fetcher nil) ; Emacs 27+
+        (if xrefs-26                     ; Emacs < 27
+            (xref--show-xrefs xrefs-26 nil t)
+          (when interactivep (diredp-user-error "No matches for: %s" regexp))))))
 
 
   ;; REPLACE ORIGINAL in `dired-aux.el':
