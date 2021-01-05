@@ -1,21 +1,12 @@
 There are two major variants of ##python.el##
 * [https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/progmodes/python.el the official python.el]. See [[ProgrammingWithPythonDotElGallina]] for more information.
-* [http://www.loveshack.ukfsn.org/emacs/python.el 'loveshack' python.el] was used in Emacs 24.1 and before.  This is now maintained at https://github.com/leoliu/python-el; "feature requests and bug reports are welcome. I'll try my best to fix them. - Leo"
+* [http://www.loveshack.ukfsn.org/emacs/python.el 'loveshack' python.el], which this page refers to, was used in Emacs 24.1 and before.  This is now maintained at https://github.com/leoliu/python-el; "feature requests and bug reports are welcome. I'll try my best to fix them. - Leo"
 * "the main raison d'être for python.el was that we couldn't get copyright papers for python-mode.el for inclusion in Emacs [http://mail.python.org/pipermail/python-mode/2009-January/000514.html].
 
-This page refers to loveshack python.el.
-
 == Newline-and-indent ==
-In python-mode.el RET is bound to py-newline-and-indent, which indents the next line if necessary.  In python.el you can get this with this in your InitFile:
+In python.el you can get this with this in your InitFile:
 
  (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-m" 'newline-and-indent)))
-
-== python-complete-symbol ==
-Using python-complete-symbol in the inferior python buffer causes an infinite loop in python.el as of 080117, changing python-imports from the default nil to 'None' solves this. 2008-01-17, patch submitted.
-
-== py-help-at-point bug ==
-:I'm a little confused - It appears when I set flymake-mode to be automatically on for python mode, py-help-at-point doesn'tt work. I tried switching from python-mode.el to python.el, but this doesn't seem to solve it; However, there is no advice here on *how* to use python.el, so I'm not entirely sure I'm doing it right...
-:: The above refers to python.el as packaged with Emacs 22; loveshack- python.el completion can't generally work in the inferior buffer because it sends input to that buffer.  The loveshack- python.el doesn't actually define python-complete-symbol.  You can use the interpreter rlcompleter module as normal if you want.
 
 == YaSnippet ===
 
@@ -89,3 +80,12 @@ It seems like point has to be at the very bottom, with a clear prompt, for pytho
           (goto-char oldpoint))))
     (ad-enable-advice 'python-send-region 'around 'advice-python-send-region-goto-end)
     (ad-activate 'python-send-region)
+
+=== python-complete-symbol ===
+Using python-complete-symbol in the inferior python buffer causes an infinite loop in python.el as of 080117, changing python-imports from the default nil to 'None' solves this. 2008-01-17, patch submitted.
+
+=== py-help-at-point bug ===
+:I'm a little confused - It appears when I set flymake-mode to be automatically on for python mode, py-help-at-point doesn'tt work. I tried switching from python-mode.el to python.el, but this doesn't seem to solve it; However, there is no advice here on *how* to use python.el, so I'm not entirely sure I'm doing it right...
+:: The above refers to python.el as packaged with Emacs 22; loveshack- python.el completion can't generally work in the inferior buffer because it sends input to that buffer.  The loveshack- python.el doesn't actually define python-complete-symbol.  You can use the interpreter rlcompleter module as normal if you want.
+
+
