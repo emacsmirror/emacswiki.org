@@ -1,4 +1,3 @@
 Gallina's python.el is the python.el included in Emacs 24.2 and onwards (as of revno [http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/108614 108614]).
 
-* [https://github.com/fgallina/python.el Fabián Ezequiel Gallina's python.el], included as the Emacs trunk
 * [http://lists.gnu.org/archive/html/emacs-devel/2012-04/msg00583.html Motivation for this mode]
