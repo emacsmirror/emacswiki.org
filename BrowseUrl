@@ -451,6 +451,30 @@ I have this in my .emacs:
 hth Memnon
 [new]
 
+Alternatively, to use C-u to give a choice between opening in an internal or an external browser, with that choice persisting until reset:
+
+{{{
+(setq browse-url-browser-function 'eww-browse-url)
+
+(defun choose-browser (url &rest args)
+  "Ask the user to choose between an internal and external web browser, the choice then persisting."
+  (interactive "sURL: ")
+  (if (y-or-n-p "Use external browser? ")
+      (progn
+        (setq browse-url-browser-function 'browse-url-firefox)
+        (browse-url-firefox url args))
+    (progn
+      (setq browse-url-browser-function 'eww-browse-url)
+      (eww-browse-url url))))
+
+(defun mg/browse-url (args)
+  "Call choose-browser function if the universal argument is used."
+  (interactive "P")
+  (if (equal current-prefix-arg '(4))
+      (setq browse-url-browser-function 'choose-browser)))
+
+(advice-add 'browse-url :before #'mg/browse-url)
+}}}
 
 ===More integrated way of invoking the default browser under Mac OSX in Emacs 23===
 
