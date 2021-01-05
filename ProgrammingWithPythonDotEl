@@ -3,11 +3,6 @@ There are two major variants of ##python.el##
 * [http://www.loveshack.ukfsn.org/emacs/python.el 'loveshack' python.el], which this page refers to, was used in Emacs 24.1 and before.  This is now maintained at https://github.com/leoliu/python-el; "feature requests and bug reports are welcome. I'll try my best to fix them. - Leo"
 * "the main raison d'être for python.el was that we couldn't get copyright papers for python-mode.el for inclusion in Emacs [http://mail.python.org/pipermail/python-mode/2009-January/000514.html].
 
-== Newline-and-indent ==
-In python.el you can get this with this in your InitFile:
-
- (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-m" 'newline-and-indent)))
-
 == YaSnippet ===
 
 see [http://groups.google.com/group/smart-snippet/browse_thread/thread/d1eae085ceebf839 this post]
@@ -34,6 +29,11 @@ Since indentation is significant in python, correct indent functions are vital, 
 : tab to guess or max indent, backspace to reduce? This appear to be a function already. -- CH
 
 See SmartTabs (toc5) or TabCompletion (tabkey2 stuff)
+
+=== Newline-and-indent ===
+In python.el you can get this with this in your InitFile:
+
+ (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
 == Useful Functions ===
 
