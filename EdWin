@@ -1,6 +1,6 @@
 '''EdWin''' is part of MitSlashGnuScheme.  It's a remarkably Emacs-like editor written entirely in Scheme.  Early editions of the ''MIT Scheme User Manual'' listed the differences between '''Emacs 18''' and Edwin.
 
-* [http://www.gnu.org/software/mit-scheme/documentation/mit-scheme-user/Edwin.html Edwin User Manual]
+* [https://www.gnu.org/software/mit-scheme/documentation/stable/mit-scheme-user/Edwin.html Edwin User Manual]
 * EdwinScheme - About Edwin's scheme programming language, with a comparison with EmacsLisp. 
 * HackingEdwinScheme - Notes on how to extend and customize Edwin.
 
