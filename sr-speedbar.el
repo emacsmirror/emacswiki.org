@@ -78,6 +78,10 @@
 ;;      M-x customize-group RET sr-speedbar RET
 
 ;;; Change log:
+;; * 07 Jan 2021:
+;;   * Jacob First <jacob.first@member.fsf.org>
+;;     * Fix inconsistent window selection when opening speedbar on the right side vs. on the left.
+;;
 ;; * 16 Jun 2020:
 ;;   * Bo Yao <icerove@gmail.com> (submitted by him on 16 Jul 2018 to the Emacs Orphanage mirror version at GitHub)
 ;;      * Always open file in most recently selected window (the one before switching to
@@ -507,21 +511,10 @@ Otherwise return nil."
 
 (defun sr-speedbar-get-window ()
   "Get `sr-speedbar' window."
-  (let ((current-window (selected-window))
-        ;; Get split new window.
-        (new-window (split-window
-                     (selected-window)
-                     (if sr-speedbar-right-side
-                         (- (sr-speedbar-current-window-take-width) sr-speedbar-width)
-                       sr-speedbar-width)
-                     t)))
-    ;; Select split window.
-    (setq sr-speedbar-window
-          (if sr-speedbar-right-side
-              ;; Select right window when `sr-speedbar-right-side' is enable.
-              new-window
-            ;; Otherwise select left widnow.
-            current-window))))
+  (setq sr-speedbar-window
+        (split-window (selected-window)
+                      (- sr-speedbar-width)
+                      (if sr-speedbar-right-side 'right 'left))))
 
 (defun sr-speedbar-before-visiting-file-hook ()
   "Function that hook `speedbar-before-visiting-file-hook'."
