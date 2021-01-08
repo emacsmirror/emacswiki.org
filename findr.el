@@ -4,7 +4,7 @@
 
 ;; Author: David Bakhash <cadet@bu.edu>
 ;; Maintainer: David Bakhash <cadet@bu.edu>
-;; Version: 0.9.11
+;; Version: 0.9.13
 ;; Created: Tue Jul 27 12:49:22 EST 1999
 ;; Keywords: files
 
@@ -109,10 +109,10 @@
 ;; 0.9.9: Call message less frequent by attila.lendvai@gmail.com
 ;; 0.9.10: match findr-skip-directory-regexp agaisnt the whole path by attila.lendvai@gmail.com
 ;; 0.9.11: Fix header line to use ELPA-compliant triple dash by Steve Purcell
+;; 0.9.12: Use cl-labels to avoid obsolete warning by attila.lendvai@gmail.com
+;; 0.9.13: Minor changes by attila.lendvai@gmail.com
 
 (require 'cl)
-
-(provide 'findr)
 
 (defgroup findr nil
   "findr configuration."
@@ -150,10 +150,11 @@
 (defmacro findr-with-infrequent-message (&rest body)
   (let ((last-message-at (gensym "last-message-at")))
     `(let ((,last-message-at 0))
-       (labels ((message* (message &rest args)
-                  (when (> (- (time-to-seconds) ,last-message-at) 0.5)
-                    (setq ,last-message-at (time-to-seconds))
-                    (apply 'message message args))))
+       (cl-labels
+           ((message* (message &rest args)
+              (when (> (- (time-to-seconds) ,last-message-at) 0.5)
+                (setq ,last-message-at (time-to-seconds))
+                (apply 'message message args))))
          ,@body))))
 
 (defun findr-propertize-prompt (string)
@@ -224,10 +225,11 @@ search result\(s\)."
     (let ((*dirs* (findr-make-queue))
           (seen-directories (make-hash-table :test 'equal))
           *found-files*)
-      (labels ((findr-1 (dir)
-                 (message* "Collecting in dir %s" dir)
-                 (let ((files (directory-files dir t "\\w")))
-                   (loop
+      (cl-labels
+          ((findr-1 (dir)
+             (message* "Collecting in dir %s" dir)
+             (let ((files (directory-files dir t "\\w")))
+               (loop
                      for file in files
                      for fname = (file-relative-name file dir)
                      when (and (file-directory-p file)
@@ -260,15 +262,18 @@ search result\(s\)."
                      (when (and prompt-p
                                 (y-or-n-p (format "Find file %s? " file)))
                        (find-file file)
-                       (sit-for 0)	; redisplay hack
+                       (sit-for 0)      ; redisplay hack
                        )))))
-        (unwind-protect
-             (progn
-               (findr-enqueue dir *dirs*)
-               (while (findr-queue-contents *dirs*)
-                 (findr-1 (findr-dequeue *dirs*)))
-               (message "Searching... done."))
-          (return-from findr (nreverse *found-files*)))))))
+      (condition-case err
+           (progn
+             (findr-enqueue dir *dirs*)
+             (while (findr-queue-contents *dirs*)
+               (findr-1 (findr-dequeue *dirs*)))
+             (message "Searching... done.")
+             (nreverse *found-files*))
+        (error (progn
+                 (message "Searching... unwinded. Error %s" err)
+                 (nreverse *found-files*))))))))
 
 (defun findr-query-replace (from to name dir)
   "Do `query-replace-regexp' of FROM with TO, on each file found by findr.
@@ -326,5 +331,7 @@ To continue searching for next match, use command \\[tags-loop-continue]."
 
 (defsubst findr-queue-contents (q)
   (cdr q))
+
+(provide 'findr)
 
 ;;; findr.el ends here
