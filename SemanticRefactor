@@ -1,4 +1,4 @@
-[https://github.com/tuhdo/semantic-refactor Semantic Refactor] is a refactoring tool based on the [[Semantic parser]] framework.  It mainly supports C++, but also Lisp formatting.
+[https://github.com/tuhdo/semantic-refactor Semantic Refactor] is a refactoring tool based on the [[Semantic]] parser framework.  It mainly supports C++, but also Lisp formatting.
 
 =C++ features=
 This package includes the following features:
