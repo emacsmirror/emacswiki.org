@@ -1,0 +1,13 @@
+From the Semantic manual, available [https://www.gnu.org/software/emacs/manual/html_node/semantic/index.html online] or in the GNU Info documentation included with Emacs.
+
+"Semantic is a suite of Emacs libraries and utilities for parsing source
+code.  At its core is a lexical analyzer and two parser generators
+(‘bovinator’ and ‘wisent’) written in Emacs Lisp.  Semantic provides a
+variety of tools for making use of the parser output, including user
+commands for code navigation and completion, as well as enhancements for
+imenu, speedbar, whichfunc, eldoc, hippie-expand, and several other
+parts of Emacs."
+
+See
+* The [https://www.gnu.org/software/emacs/manual/html_node/emacs/Semantic.html Semantic] node in the main Emacs Info documentation.
+* SemanticBovinator
