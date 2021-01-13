@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 13 10:55:06 2021 (-0800)
+;; Last-Updated: Wed Jan 13 11:06:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 6998
+;;     Update #: 7000
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -5693,8 +5693,7 @@ variable by the command `isearch-toggle-lax-whitespace'.")
 ;; 1. Fit frame if `one-window-p'.
 ;; 2. Highlight the found regexp if `search-highlight'.
 ;; 3. If `isearch+.el' is loaded, search only the active region if `isearchp-restrict-to-region-flag' is non-nil.
-;; 4. If `isearch+.el' is loaded, deactivate mark only if search moves to a different node or
-;;    `isearchp-deactivate-region-flag' is non-nil.
+;; 4. Deactivate mark only if search moves to a different node or `isearchp-deactivate-region-flag' is non-nil.
 ;; 5. Use `info--user-search-failed' for compatibility with older Emacs.
 ;;
 ;;;###autoload (autoload 'Info-search "info+")
@@ -5718,8 +5717,7 @@ over.  To remove the highlighting, just start an incremental search:
            (if (fboundp 'icicle-read-string-completing)
                (icicle-read-string-completing prompt nil nil 'Info-search-history)
              (read-string prompt nil 'Info-search-history)))))
-  ;; Don't do this here.  Do it later, and only if moved to new node
-  ;;                                         or if `isearchp-deactivate-region-flag' is undefined or non-nil.
+  ;; Deactivate mark later, and only if moved to new node or `isearchp-deactivate-region-flag' is non-nil.
   ;; (deactivate-mark)
   (when (equal regexp "") (setq regexp  (car Info-search-history)))
   (when regexp
