@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 14 16:03:00 2020 (-0800)
+;; Last-Updated: Wed Jan 13 10:55:06 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 6989
+;;     Update #: 6998
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -528,6 +528,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/01/13 dadams
+;;     Info-search: Deactivate mark only if search moves to a different node or isearchp-deactivate-region-flag
+;;                  is undefined or non-nil.
 ;; 2020/11/14 dadams
 ;;     Info-fontify-quotations, Info-fontify-custom-delimited, info-display-manual:
 ;;       Use ignore-errors instead of nil condition-case.
@@ -1145,15 +1148,16 @@
 (defvar info-tool-bar-map)
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
-(defvar infop-node-name)                ; Here, in `Info-merge-subnodes'.
-(defvar isearch-adjusted)               ; In `isearch.el', Emacs 25+.
-(defvar isearch-filter-predicate)       ; In `isearch.el', Emacs 23+.
-(defvar isearch-lax-whitespace)         ; In `isearch.el'.
-(defvar isearch-regexp-lax-whitespace)  ; In `isearch.el'.
-(defvar isearchp-reg-beg)               ; In `isearch+.el'.
-(defvar isearchp-reg-end)               ; In `isearch+.el'.
-(defvar mouse-wheel-up-event)           ; In `mwheel.el', Emacs 22+.
-(defvar outline-heading-alist)          ; In `outline.el'.
+(defvar infop-node-name)                 ; Here, in `Info-merge-subnodes'.
+(defvar isearch-adjusted)                ; In `isearch.el', Emacs 25+.
+(defvar isearch-filter-predicate)        ; In `isearch.el', Emacs 23+.
+(defvar isearch-lax-whitespace)          ; In `isearch.el'.
+(defvar isearch-regexp-lax-whitespace)   ; In `isearch.el'.
+(defvar isearchp-deactivate-region-flag) ; In `isearch+.el'.
+(defvar isearchp-reg-beg)                ; In `isearch+.el'.
+(defvar isearchp-reg-end)                ; In `isearch+.el'.
+(defvar mouse-wheel-up-event)            ; In `mwheel.el', Emacs 22+.
+(defvar outline-heading-alist)           ; In `outline.el'.
 (defvar widen-automatically)
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -5689,7 +5693,9 @@ variable by the command `isearch-toggle-lax-whitespace'.")
 ;; 1. Fit frame if `one-window-p'.
 ;; 2. Highlight the found regexp if `search-highlight'.
 ;; 3. If `isearch+.el' is loaded, search only the active region if `isearchp-restrict-to-region-flag' is non-nil.
-;; 4. Use `info--user-search-failed' for compatibility with older Emacs.
+;; 4. If `isearch+.el' is loaded, deactivate mark only if search moves to a different node or
+;;    `isearchp-deactivate-region-flag' is non-nil.
+;; 5. Use `info--user-search-failed' for compatibility with older Emacs.
 ;;
 ;;;###autoload (autoload 'Info-search "info+")
 (defun Info-search (regexp &optional bound _noerror _count direction)
@@ -5712,7 +5718,9 @@ over.  To remove the highlighting, just start an incremental search:
            (if (fboundp 'icicle-read-string-completing)
                (icicle-read-string-completing prompt nil nil 'Info-search-history)
              (read-string prompt nil 'Info-search-history)))))
-  (deactivate-mark)
+  ;; Don't do this here.  Do it later, and only if moved to new node
+  ;;                                         or if `isearchp-deactivate-region-flag' is undefined or non-nil.
+  ;; (deactivate-mark)
   (when (equal regexp "") (setq regexp  (car Info-search-history)))
   (when regexp
     (prog1
@@ -5791,6 +5799,11 @@ over.  To remove the highlighting, just start an incremental search:
             (widen)
             (goto-char found)
             (save-match-data (Info-select-node)))
+          ;; Deactivate only if moved to new node or `isearchp-deactivate-region-flag' is undefined or non-nil.
+          (unless (and (boundp 'isearchp-deactivate-region-flag)
+                       (not isearchp-deactivate-region-flag)
+                       (string-equal onode Info-current-node))
+            (deactivate-mark))
           ;; Highlight the regexp match.  If `isearch+.el' is loaded this can highlight subgroups.
           (when search-highlight (isearch-highlight (match-beginning 0) (match-end 0))) ; Highlight regexp.
           ;; Use `string-equal', not `equal', to ignore text props.
