@@ -180,6 +180,7 @@ buffer names.
 * Redefinitions of some standard Emacs functions
 ** An Info [[frame]] is dynamically shrink-wrapped to fit each node individually (if `Info-fit-frame-flag' is non-`nil').
 ** Searching highlights the found regexp (if `search-highlight' is non-`nil').
+** Searching does not deactivate the region if search stays within the same node.  If you also use library IsearchPlus then option `isearchp-deactivate-region-flag' controls whether it's deactivated when search stays within the node.  You can toggle that option anytime while searching, with `##M-= C-SPC##'.
 ** Better default values for input.
 ** More informative messages -- e.g. how many additional matches found.
 * `*info*' has been removed from `same-window-buffer-names', so that a separate window can be used if you so choose.
