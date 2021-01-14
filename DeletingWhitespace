@@ -1,11 +1,11 @@
 [[fr:emacswiki]]
 Emacs has several commands to delete whitespace.
 
-== Just one space ==
+== Built-in point-based commands ==
+=== Fixup whitespace around point ===
+To fixup white space between objects around point according to the context, use `M-x fixup-whitespace'
 
-To make sure two words are separated by ''just one space'', use `M-SPC' or `M-x just-one-space'.
-
-== Join two words ==
+=== Join two words ===
 
 To ''join two words'' (or any non-space characters) together by deleting all whitespace between them, use any of the following:
 
@@ -24,22 +24,44 @@ To ''join two words'' (or any non-space characters) together by deleting all whi
                   (re-search-forward "[ \t\r\n]+" nil t)
                   (replace-match "" nil nil))))))
 
+=== Just one space ===
 
-== Remove trailing whitespace ==
+To make sure two words are separated by ''just one space'', use `M-SPC' or `M-x just-one-space'.
 
-To ''remove trailing whitespace'' from the entire buffer, use any of the following:
+=== Cycle spacing around point ===
 
-* `M-x delete-trailing-whitespace' (GnuEmacs version 21 or later). You can put this in `before-save-hook' to ensure that your files have no trailing whitespace:
+To cycle the whitespace around point in a smart way (between one or N spaces, no space, and its
+original value, use `M-x cycle-space'. 
 
-        (add-hook 'before-save-hook 'delete-trailing-whitespace)
+=== Delete extra blank lines between paragraphs ===
 
+To delete extra blank lines between paragraphs, leaving just zero or one blank lines, use `M-x delete-blank-lines'.
 
-: or you can add this hook locally for particular mode: 
+=== Join lines and fix up whitespace ===
 
-        (add-hook 'c-mode-hook
-                (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+To join this line to the previous one and fix up whitespace and fill prefixes, use `M-^' or `M-x delete-indentation'.
 
-== Remove even the last trailing newline ==
+== Built-in region/buffer-based commands ==
+=== Indent/unindent a block of lines ===
+
+To ''indent'' (or ''unindent'') a block of lines together rigidly (adding or removing whitespace at the line beginning):
+## Select all the lines to indent
+## Ensure the TextCursor is at the beginning of the last line to indent.
+## <code>C-u NUM C-x TAB</code> to indent <code>NUM</code> columns. A negative <code>NUM</code> (e.g., <code>C-- 4 C-x TAB</code>) un-indents, removing a rectangle of whitespace
+
+=== Delete trailing whitespace ===
+
+To ''delete trailing whitespace'' from the entire buffer, use `M-x delete-trailing-whitespace'.
+
+=== Perform general whitespace cleanup ===
+
+To perform a general whitespace cleanup, use one of these commands from the WhiteSpace package:
+* `whitespace-cleanup' :  Cleanup some blank problems in all buffer or at region.
+* `whitespace-cleanup-region' : Cleanup some blank problems at region.
+By default the cleanup includes both deleting and other fixes.
+
+== Miscellaneous commands ==
+=== Remove even the last trailing newline ===
 
        (defun my-other-delete-trailing-blank-lines ()
           "Deletes all blank lines at the end of the file, even the last one"
@@ -54,22 +76,18 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
                     (progn
                       (delete-char trailnewlines)))))))
 
-=== With PictureMode ===
+==== With PictureMode ====
 
 * PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
 
-=== nuke-trailing-whitespace ===
+==== nuke-trailing-whitespace ====
 
 * `M-x nuke-trailing-whitespace'
 
 [new]
 : *Note:* I've had some corruption problems with `nuke-trailing-whitespace' and Unicode files. In addition to the trailing newlines getting deleted, a few non-whitespace characters get deleted too. I've done a quick fix by replacing the `delete-region' with `delete-blank-lines'.
 
-=== whitespace.el ===
-
-* <tt>[http://www.splode.com/~friedman/software/emacs-lisp/src/whitespace.el whitespace.el]</tt>. -- GregFenton
-
-=== Simple function ===
+==== Simple function ====
 
 * This command (e.g. bind to `C-x C-h'):
 
@@ -80,39 +98,31 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
             (if (not (bolp)) (forward-line 1))
             (delete-whitespace-rectangle (point) end nil)))
 
-=== ethan-wspace ===
+==== ethan-wspace ====
 
 * [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
 
-=== DeleteNlSpaces ==
+==== DeleteNlSpaces ===
 
 * DeleteNlSpaces - a non intrusive minor mode for deleting needless spaces
 
-== Version control friendly options (modify only the lines you have edited) ==
+=== Version control friendly options (modify only the lines you have edited) ===
 
-When working with version-control, you never want Emacs to modify lines which you didn't edit, so automatically deleting all trailing whitespace from a file is a bad idea.
-
-The following libraries automatically remove unwanted trailing whitespace from the lines you've edited (only).
+When working with version-control, you may not want Emacs to modify lines which you didn't edit. The following libraries automatically remove unwanted trailing whitespace from (only) the lines you've edited.
 
 * [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.el] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
 
 ** From the commentary: "This package contains tools to do various sorts of whitespace trimming on buffer lines.  The main part is WS Trim mode, which is a minor mode that automatically trims whitespace on text lines. You can control how thorough this mode should be, e.g. whether all lines or only lines you edit should be trimmed."
 
-** ws-trim has been updated to provide compatibility with Emacs 24 (support for Emacs 20 and below has been dropped).
-
 * [https://github.com/lewang/ws-butler ws-butler] - An alternative to ws-trim which leverages highlight-changes-mode to track modified lines.
 
-== Show trailing whitespace ==
-
-To ''show'' (highlight) trailing whitespace, see ShowWhiteSpace. There are several ways, depending on what you want and what Emacs version you have.
-
-== Remove whitespace at the end of the document ==
+=== Remove whitespace at the end of the document ===
 
 To remove whitespace at the ''end of a document'', use any of the following:
 
 * `C-x C-o' (`delete-blank-lines') at the end of the buffer (`##M->##').
 
-: However, be aware that if `require-final-newline' is non-`nil', then a (single) newline will be added automatically at the end of the file. (The particular non-`nil' value determines when it is added -- see `C-h v require-final-newline'.)
+: However, be aware that if `require-final-newline' is non-`nil', then a newline will be added automatically at the end of the file. (The particular non-`nil' value determines when it is added -- see `C-h v require-final-newline'.)
 
 * This code:
 
@@ -125,23 +135,11 @@ To remove whitespace at the ''end of a document'', use any of the following:
           (goto-char (point-max))
           (delete-blank-lines))))
 
-== Delete extra blank lines between paragraphs ==
-
-`C-x C-o' (`delete-blank-lines') also deletes any extra blank lines between two paragraphs, leaving just one blank line.
-
-== Prevent adding newlines at end of buffer ==
+=== Prevent adding newlines at end of buffer ===
 
 To ''prevent adding newlines'' when you move the [[cursor]] forward at the end of the buffer, customize `next-line-add-newlines' to `nil'.
 
-
-== Indent/unindent a block of lines ==
-
-To ''indent'' (or ''unindent'') a block of lines together rigidly (adding or removing whitespace at the line beginning):
-## Select all the lines to indent
-## Ensure the TextCursor is at the beginning of the last line to indent.
-## <code>C-u NUM C-x TAB</code> to indent <code>NUM</code> columns. A negative <code>NUM</code> (e.g., <code>C-- 4 C-x TAB</code>) un-indents, removing a rectangle of whitespace
-
-== Whitespace Aware `kill-line' ==
+=== Whitespace Aware `kill-line' ===
 
 This handles whitespace a little better when having indentation and you kill a line.
 
@@ -150,7 +148,7 @@ This handles whitespace a little better when having indentation and you kill a l
       (if (not (bolp))
 	  (delete-region (point) (progn (skip-chars-forward " \t") (point)))))
 
-== Delete adjacent whitespace ==
+=== Delete adjacent whitespace ===
 
 To delete whitespace from ''point to next word'':
 
@@ -199,5 +197,10 @@ If BACKWARD-ONLY is non-nil, only delete them before point.
 
 --CH
 [new]
+
+== Show trailing whitespace ==
+
+To ''show'' trailing whitespace, see ShowWhiteSpace.
+
 ----
 CategoryEditing
