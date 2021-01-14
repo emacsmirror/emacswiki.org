@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 13 11:06:33 2021 (-0800)
+;; Last-Updated: Thu Jan 14 08:04:57 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7000
+;;     Update #: 7001
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -5718,6 +5718,7 @@ over.  To remove the highlighting, just start an incremental search:
                (icicle-read-string-completing prompt nil nil 'Info-search-history)
              (read-string prompt nil 'Info-search-history)))))
   ;; Deactivate mark later, and only if moved to new node or `isearchp-deactivate-region-flag' is non-nil.
+  ;; Emacs bug #45839 now also applies this fix.
   ;; (deactivate-mark)
   (when (equal regexp "") (setq regexp  (car Info-search-history)))
   (when regexp
@@ -5798,6 +5799,7 @@ over.  To remove the highlighting, just start an incremental search:
             (goto-char found)
             (save-match-data (Info-select-node)))
           ;; Deactivate only if moved to new node or `isearchp-deactivate-region-flag' is undefined or non-nil.
+          ;; Emacs bug #45839 now also applies this fix, but without the Isearch+ possibility.
           (unless (and (boundp 'isearchp-deactivate-region-flag)
                        (not isearchp-deactivate-region-flag)
                        (string-equal onode Info-current-node))
