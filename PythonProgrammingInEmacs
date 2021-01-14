@@ -10,13 +10,20 @@ There are a number of Python major modes for Emacs. As well as basic editing the
 * [ProgrammingWithPythonDotEl 'loveshack' python.el] from Emacs 24.1 and before has a number of fans as well.
 == IDE packages==
 These provide powerful and relatively complete environments by combining and customizing other packages, both Emacs Lisp and Python, and resolving conflicts between them. 
+===Elpy===
 * [https://github.com/jorgenschaefer/elpy Elpy]
-* [https://github.com/tkf/emacs-jedi Jedi]
-* [https://github.com/proofit404/anaconda-mode anaconda-mode] 
+===Spacemacs===
 * [https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Blang/python Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
+===Language Server Protocol===
+* See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-pyright' and `treemacs'.
+===python-mode.el===
 * [ProgrammingWithPythonModeDotEl python-mode.el].  Replaces the `python-mode' in python.el.
+===Jedi===
+* [https://github.com/tkf/emacs-jedi Jedi]
+===Anaconda mode===
+* [https://github.com/proofit404/anaconda-mode anaconda-mode] 
+===eglot===
 * [https://github.com/joaotavora/eglot eglot]
-* [https://github.com/emacs-lsp/lsp-mode lsp-mode]
 == Support Features ==
 Various features that can be added to or improved in Emacs.  Note that the IDE packages listed above provide many of these using packages referred to below.
 
