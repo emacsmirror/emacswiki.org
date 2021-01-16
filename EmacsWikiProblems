@@ -342,6 +342,9 @@ Thanks.  Knowing about the server regular expressions allowed me to narrow this 
 [new]
 Done! I simply removed that line. A copy for the curious is on this blog post of mine: [https://alexschroeder.ch/wiki/2020-12-22_Apache_config_file_to_block_user_agents 2020-12-22 Apache config file to block user agents] – Alex
 
+[new]
+That's quite a list.  I just retested and now loading emacswiki.org in EWW works with url-user-agent at its default value, 'default.  Thanks!
+
 === CGI Internal error: 400 Bad request (malformed multipart POST) ===
 
 I just got this error when trying to save a page after some simple (trivial) editing.  No idea what caused it or what the problem is.  I then clicked the browser `Back' button and tried, successfully, to save again.  -- DrewAdams
