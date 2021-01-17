@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library `wid-edit.el'.
 ;; Author: Drew Adams, Lennart Borgman
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 16:21:39 2018 (-0800)
+;; Last-Updated: Sun Jan 17 12:57:56 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 274
+;;     Update #: 294
 ;; URL: https://www.emacswiki.org/emacs/download/wid-edit%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/UseCustomizeForKeyBindings
 ;; Keywords: widget, color
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `wid-edit', `widget'.
+;;   `cl-lib', `macroexp', `wid-edit'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -62,6 +62,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/01/17 dadams
+;;     widgetp-color-match: Use (x-)color-defined-p.
+;;     color widget: Handle empty-list value of defined-colors (bug #45829).
+;;     widgetp-rgb-hex-string-p: Minor improvement for later Emacs releases.
+;;     widgetp-key-def-set:
+;;       Added missing widgetp- prefix to define-key-from-key-def
 ;; 2012/03/20 dadams
 ;;     editable-field: Updated for Emacs 24: added :value-set entry.
 ;; 2008/05/11 dadams
@@ -150,19 +156,21 @@ text in the `:format' string (if specified)."
 
 ;;; `color' widget
 
-(defun widgetp-color-match (widget value)
-  ":match function for `color' widget."
+(defun widgetp-color-match (_widget value)
+  "Non-nil if VALUE is a defined color or an RGB hex string.
+\(`:match' function for `color' widget.\)"
   (and (stringp value)
-       (or (member (downcase value)
-                   (mapcar #'downcase (x-defined-colors)))
+       (or (if (fboundp 'color-defined-p) ; Emacs 22+
+               (color-defined-p value)
+             (x-color-defined-p value))
            (widgetp-rgb-hex-string-p value))))
 
 (defun widgetp-color-validate (widget)
-  ":validate function for `color' widget.
-Return nil if color validates, or WIDGET otherwise."
-  (let ((value (widget-value widget)))
+  "Return nil if WIDGET's value is a valid color value.
+\(`:validate' function for `color' widget.\)"
+  (let ((value  (widget-value widget)))
     (unless (widgetp-color-match widget value)
-      (widget-put widget :error (format "Invalid color: %S" value))
+      (widget-put widget :error (format "Invalid color: `%S'" value))
       widget)))
 
 
@@ -171,9 +179,9 @@ Return nil if color validates, or WIDGET otherwise."
 ;;;
 (defun widget-color-notify (widget child &optional event)
   "Update WIDGET's sample, and notify its PARENT."
-  (let* ((ovly (widget-get widget :sample-overlay))
-         (old-color (overlay-get ovly 'face))
-         (new-color (widget-apply widget :sample-face-get)))
+  (let* ((ovly       (widget-get widget :sample-overlay))
+         (old-color  (overlay-get ovly 'face))
+         (new-color  (widget-apply widget :sample-face-get)))
     (unless (equal old-color new-color) (widgetp-remove-Completions))
     (overlay-put ovly 'face new-color))
   (widget-default-notify widget child event))
@@ -187,10 +195,10 @@ Return nil if color validates, or WIDGET otherwise."
 ;;;
 (defun widget-color-complete (widget)
   "Complete the color value in `color' widget WIDGET."
-  (let* ((prefix (buffer-substring-no-properties
-                  (widget-field-start widget) (point)))
-         (colors (mapcar #'list (x-defined-colors)))
-         (completion (try-completion prefix colors)))
+  (let* ((prefix      (buffer-substring-no-properties
+                       (widget-field-start widget) (point)))
+         (colors      (mapcar #'list (x-defined-colors)))
+         (completion  (try-completion prefix colors)))
     (cond ((eq completion t)
            (widgetp-remove-Completions)
            (message "Sole completion"))
@@ -211,8 +219,14 @@ Return nil if color validates, or WIDGET otherwise."
   "Return non-nil if STRING is an RGB hex string #XXXXXXXXXXXX.
 Each X is a hexadecimal digit.  The number of Xs must be a multiple of
 three, with the same number of Xs for each of red, green, and blue."
-  (save-match-data
-    (string-match "^#\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$" string)))
+  (let ((regx  "^#\\(?:[[:xdigit:]]\\{3\\}\\)\\{1,4\\}$"))
+    (if (fboundp 'string-match-p)       ; Emacs 23+
+        (string-match-p regx string)
+      (save-match-data
+        (string-match (if (> emacs-major-version 21) ; Emacs 22
+                          regx
+                        "^#\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$")
+                      string)))))
 
 
 ;;; REPLACE ORIGINAL `color' widget in `wid-edit.el'.
@@ -222,7 +236,9 @@ three, with the same number of Xs for each of red, green, and blue."
 (define-widget 'color 'editable-field
   "A color widget (with sample)."
   :format   "%{%t%}: %v (%{sample%})\n"
-  :size     (1+ (apply #'max (mapcar #'length (x-defined-colors))))
+  :size     (1+ (apply #'max
+                       13               ; Longest RGB hex string
+                       (mapcar #'length (x-defined-colors))))
   :tag      "Color"
   :match    'widgetp-color-match
   :validate 'widgetp-color-validate
@@ -287,11 +303,11 @@ command COMMAND."
   "Define a key using a key-definition data structure
 Argument KEY-DEF is a list of type `key-definition' or
 `conditional-key-definition'."
-  (let ((map (eval (car key-def)))
-        (key (cadr key-def))
-        (command (caddr key-def))
-        (condition (cadddr key-def)))
-    (when (or (not condition) (eval condition))
+  (let ((map        (eval (car key-def)))
+        (key        (cadr key-def))
+        (command    (caddr key-def))
+        (condition  (cadddr key-def)))
+    (when (or (not condition)  (eval condition))
       (if (symbolp key)
           (define-key map (vector 'remap key) command)
         (define-key map key command)))))
@@ -299,7 +315,7 @@ Argument KEY-DEF is a list of type `key-definition' or
 (defun widgetp-key-def-set (var key-def)
   "Set function for types `key-definition', `conditional-key-definition'."
   (custom-set-default var key-def)
-  (define-key-from-key-def key-def))
+  (widgetp-define-key-from-key-def key-def))
  
 
 ;;; Helper functions
@@ -312,7 +328,7 @@ Argument KEY-DEF is a list of type `key-definition' or
 (defun widgetp-display-Completions (string table)
   "Display matches of STRING against TABLE in *Completions* window.
 Arguments are as for `all-completions'."
-  (let ((orig-frame (selected-frame)))
+  (let ((orig-frame  (selected-frame)))
     (with-output-to-temp-buffer "*Completions*"
       (display-completion-list (all-completions string table nil)))
     (select-frame-set-input-focus orig-frame)))
