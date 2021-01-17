@@ -52,9 +52,6 @@ If you are using a development snapshot for what will become Emacs 24.4 then see
 
 (There needs to be an explanation for how to set fonts for particular modes or buffers here. Including a set-face-attribute hook as described above for a particular mode does not work; once you enter that mode the new font is set, but it is applied <i>globally</i> to all other open buffers!)
 
-===Change font for the current buffer===
-To change the font of the current buffer, use the following command, in this example changing to the font Arial:
-(face-remap-add-relative 'default :family "Arial" :height 140)
 
 ====Global Fonts, .Xresources, and Emacs Daemon====
 
@@ -66,6 +63,10 @@ I found that the only way to set fonts so that they remain consistent across ema
 
 in my ~/.Xresources and ~/.emacs, respectively.
 
+
+===Change font for the current buffer===
+To change the font of the current buffer, use the following command, in this example changing to the font Arial:
+(face-remap-add-relative 'default :family "Arial" :height 140)
 
 [:ChangingGtkFonts]
 == Changing the (buffer) menu fonts for GTK emacs ==
