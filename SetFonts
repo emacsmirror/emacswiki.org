@@ -64,7 +64,7 @@ I found that the only way to set fonts so that they remain consistent across ema
 in my ~/.Xresources and ~/.emacs, respectively.
 
 
-===Change font for the current buffer===
+===Change the Font for the Current Buffer===
 To change the font of the current buffer, use the following command, in this example changing to the font Arial:
 (face-remap-add-relative 'default :family "Arial" :height 140)
 
