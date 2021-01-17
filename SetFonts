@@ -66,7 +66,7 @@ in my ~/.Xresources and ~/.emacs, respectively.
 
 ===Change the Font for the Current Buffer===
 To change the font of the current buffer, use the following command, in this example changing to the font Arial:
-(face-remap-add-relative 'default :family "Arial" :height 140)
+: ##(face-remap-add-relative 'default :family "Arial" :height 140)
 
 [:ChangingGtkFonts]
 == Changing the (buffer) menu fonts for GTK emacs ==
