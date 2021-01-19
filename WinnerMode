@@ -1,4 +1,4 @@
-Winner Mode is a global minor mode that allows you to "undo" and "redo" changes in WindowConfiguration.  It is included in GNU Emacs, and documented as Manual:winner-mode.
+Winner Mode is a global minor mode that allows you to "undo" and "redo" changes in WindowConfiguration.  It is included in GNU Emacs, and documented as Manual:winner-mode .
 
 Winner Mode helps when you use different Emacs window configurations, e.g. to read code you want one window, to use IRC you want six windows, etc. With Winner Mode going back to a previous session is easy.
 
