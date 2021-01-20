@@ -15,7 +15,11 @@ These provide powerful and relatively complete environments by combining and cus
 ===Spacemacs===
 * [https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Blang/python Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
 ===Language Server Protocol===
-* See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-pyright' and `treemacs'.
+Any of the main [LanguageServerProtocol] packages should support Python programming with a variety of backends.  [LspMode] provides these guides to configuring backends
+* [https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/ Palantir's python-language-server], also based on Jedi
+* [https://emacs-lsp.github.io/lsp-mode/page/lsp-jedi/ Jedi language server]
+* [https://emacs-lsp.github.io/lsp-python-ms/ Microsoft's python-language-server]
+* [https://emacs-lsp.github.io/lsp-pyright/ Microsoft's Pyright language server].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
 ===python-mode.el===
 * [ProgrammingWithPythonModeDotEl python-mode.el].  Replaces the `python-mode' in python.el.
 ===Jedi===
