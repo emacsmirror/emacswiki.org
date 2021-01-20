@@ -287,8 +287,6 @@ Add sections on: profiling, semantic editing (?),
 
 Extend sections on: refactoring, code navigation.
 
-Add section about language servers, i.e. eglot and lsp-mode
-
 Include new jupyter package: https://github.com/dzop/emacs-jupyter.
 ----
 Categories: CategoryProgramming, ProgrammingModes
