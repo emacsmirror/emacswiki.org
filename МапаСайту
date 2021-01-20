@@ -1,0 +1,160 @@
+[[it:Mappa_del_sito]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[se:InnehållsFörteckning]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+[[es:MapaDelSitio]]
+[[de:Übersicht]]
+[[uk:МапаСайту]]
+<include "WikiLanguageMenu">
+
+'''EmacsWiki''' призначена для документування і обговорення EmacsAndXEmacs та EmacsLisp. Детальніше дивіться MissionStatement.
+
+Ви можете змінювати цей вебсайт. Внизу цієї сторінки, та інших, є кнопка '''Edit this page''' (Редагувати цю сторінку).
+
+==Як користуватися цим сайтом?==
+
+* [[HowToNavigate|ЯкПересуватися]] -- як знайти те, що шукаєте? //(англ.)//
+* [[HowToEdit|ЯкРедагувати]] -- як дописувати в цьому сайті? //(англ.)//
+* ElispArea -- викладання і завантаження сирців EmacsLisp //(англ.)//
+* [EmacsWiki:CSS Вигляд] -- змінити зовнішній вигляд цього сайту
+* WikiDownload -- отримати копію цього сайту //(англ.)//
+* EmacsWikiAdministrators -- опрацювання вандалізму і спаму на цьому сайті /(англ.)/
+
+[:LearningEmacs]
+==Вивчення Emacs==
+* [[https://www.gnu.org/software/emacs/ Домашня сторінка GNU Emacs]] офіційні випуски Emacs і документація. //(англ.)//
+* [[EmacsNewbie|ПочатківціEmacs]] -- основні поняття, словниковий запас, позначення що використовуються у документації //(англ.)//
+* [[CategoryDocumentation|Документація]] -- вивчіть чому Emacs називається само-документованим текстовим редактором. //(англ.)//
+* [[CategoryHelp|Help]] -- online help from Emacs itself and its users
+* [[LearningEmacs|ВивченняEmacs]] -- there are many resources ways to learn Emacs, and lots of aids to learning
+* [[LearnEmacsLisp|ВивченняEmacsLisp]] -- EmacsLisp is the heart and soul of Emacs.
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryGlossary|Глосарій]] -- термінологія Emacs /(англ.)/
+* [[EmacsNiftyTricks|Nifty Tricks]] -- some extra tips
+* RandomPage -- for serendipitous visitors
+* [[CategoryCommunity|СпільнотиEmacs]] -- гуртуйтеся з іншими людьми, які використовують Emacs /(англ.)/
+
+
+[:GeneralUse]
+==Emacs Use In-Depth==
+* [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
+* [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
+* [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
+* [[CategoryCommands|Команди]] -- invoking and defining Emacs [[command|commands]], `M-x'
+* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
+* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
+* [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
+** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
+** [[CategoryFrames|Фрейми]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows") /(англ.)/
+** [[CategoryWindows|Вікна]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal) /(англ.)/
+* [[CategoryEditing|Редагування]] -- general information about text editing, including
+** [[CategoryAlignment|Alignment]] -- aligning text, columns, comments or other programming-language constructs
+** [[CategoryIndentation|Indentation]] -- indenting text, including source code
+** [[CategoryComments|Коментарі]] -- manipulating and using code comments
+** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
+** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
+** [[CategoryRegion|Region]] -- selecting a [[region]] of text to act on it (copy, cut, paste, ...)
+** [[CategorySpelling|Spelling]] -- spell-checking
+** [[CategoryTemplates|Шаблони]] -- using boilerplate text and snippets (file headers, templates, forms)
+** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
+* [[CategoryFiles|Файли]] -- files and directories: local, remote, backup. (see also [[CategoryDirectories|Directories]] and DiredMode)
+* [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]], including 
+[[CategoryOutline|outlining]] and folding
+
+* [[CategoryInternationalization|Інтернаціоналізація]] -- підтримка живої мови, набори символів /(англ.)/
+* [[CategoryKeys|Клавіші]] -- розуміння та налаштування поєднань [[key|клавіш]] ("швидкі клавіші", також "клавіатурні скорочення") /(англ.)/
+* [[CategoryMouse|Миша]] -- mouse bindings and different uses of the mouse
+* [[CategoryModes|Режими]] -- різні [[MajorMode|режими редагування]] в Emacs
+** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
+** [[CategoryHypermedia|Гіпермедія]] -- створення та використання гіпертексту: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], вікі
+** [[CategoryTables|Таблиці]] -- робота з табличними даними /(англ.)/
+** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
+** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
+** [[CategoryXML|XML]] -- технології XML /(англ.)/
+* [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
+* [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
+* [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
+* [[CategoryPrinting|Друк]] -- друк файлів, [[buffer|буферів]], [[регіонів]] ... /(англ.)/
+* [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
+* [[CategoryProgramming|Програмування]] -- використання Emacs як середовище розробки /(англ.)/
+* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
+* [[CategorySearchAndReplace|ПошукТаЗаміна]] - searching and replacing text, including [[regexp]] search
+* [[CategoryWriting|Writing]] -- використання Emacs для написання прози /(англ.)/
+
+
+[:EmacsApplications]
+==Застосунки в Emacs==
+* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
+* [[CategoryCalculators|Розрахунки]] -- математичні операції /(англ.)/
+** [[CategoryFinancial|Фінанси]] -- money management and accounting
+* [[CategoryCalendar|Календар]] -- calendar, diary, task and appointment reminders
+** [[CategoryTodo|Todo]] -- maintaining to-do lists
+** [[CategoryTimeTracking|ВідстеженняЧасу]] -- відстежуйте час, який ви витрачаєте /(англ.)/
+* [[CategoryCryptography|Криптографія]] -- шифрування і дешифрування файлів, які ви редагуєте /(англ.)/
+* [[CategoryDatabase|БазиДаних]] -- бази даних в Emacs /(англ.)/
+* [[CategoryEducation|Навчання]] -- learn something new, use a dictionary, or grade students
+* [[CategoryEmulation|Емуляція]] -- emulating environments of other systems and software in Emacs
+* [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities other than programming
+* [[CategoryGames|Ігри]] -- грай в Emacs /(англ.)/
+* [[CategoryGopher|Gopher]] -- browsing Gopher sites
+* [[CategoryInterface|Інтерфейс]] -- доступ до вебсервісів /(англ.)/
+** [[CategoryChatClient|ChatClient]] -- використання Emacs для чату /(англ.)/
+** [[CategoryJournaling|Journaling]] -- інтерфейси Emacs для блоґів /(англ.)/
+* [[CategoryMail|Пошта]] -- читання пошти в Emacs /(англ.)/
+** [[CategoryGnus|Gnus]] -- читач новин і пошти в Emacs /(англ.)/
+** [[CategoryMailAddons|MailAddons]] -- додатки для роботи з поштою (не пов'язані з Gnus). /(англ.)/
+** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
+** [[WanderLust|WanderLust]] -- інший читач новин та пошти в Emacs /(англ.)/
+** [[mu4e]] -- another Emacs based mail program.
+* [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
+** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": зберігання номерів телефону, поштових адрес /(англ.)/
+* [[CategoryProgrammerUtils|ProgrammerUtils]] -- засоби для програмістів (напр. переглядачі коду)
+* [[CategoryRelated|Related]] -- Emacs environments run in other programs (browsers, terminal emulators,...)
+* [[CategoryRemoteEmacs|ВіддаленийEmacs]] -- запуск Emacs на віддаленому комп'ютері /(англ.)/
+* [[CategoryShell|Shell]] -- interact with a shell inside Emacs, including  [[CategoryEshell|eshell]], a cross-platform shell implemented in EmacsLisp
+* [[CategoryVersionControl|КонтрольВерсій]] -- використання системи контролю версій в Emacs (Git, Mercurial, SVN...) /(англ.)/
+* [[CategoryWebBrowser|Вебоглядач]] -- перегляд вебфайлів та сайтів /(англ.)/
+
+
+[:Customization]
+==Налаштування Emacs під себе==
+* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
+* [[CategoryPackaging|Пакунки]] -- керування пакунками Emacs
+* [[CategoryWThirtyTwo|Emacs on Windows]] -- configuring Emacs for MS Windows
+* [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
+
+
+[:ProgrammingEmacs]
+== Programming Emacs in Lisp and C ==
+* [[CategoryCode|Код]] -- поради для написання коду на EmacsLisp /(англ.)/
+* [[CategoryDebug|Зневадження]] -- зневадження Emacs, зневадження з Emacs, зневадження EmacsLisp /(англ.)/
+* [[CategoryPatches|Патчі]] -- патчі для Emacs, здебільшого для розширень на рівні мови C /(англ.)/
+extensions
+* [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
+
+[:CustomInstallations]
+==Встановлення власних збірок Emacs==
+* [[CategoryBuilding|Компіляція]] -- компіляція Emacs з вихідного коду /(англ.)/
+* [[CategoryPorts|Портування]] -- бінарні файли для MS Windows, Mac, GNU/Linux та FreeBSD /(англ.)/
+
+[:Bugs]
+==Помилки в Emacs==
+
+* EmacsBugs -- how to report bugs and where to find a list of those already reported
+* [[CategoryWishList|СписокПобажань]] -- "Emacs isn't perfect already?"
+* [[Proposals|Пропозиції]] -- Formal proposals for improvements to Emacs.
+
+[:EmacsInfo]
+==Інша пов'язана з Emacs інформація==
+* [[EmacsImplementations|РеалізаціїEmacs]] -- a list of Emacsen and their impersonators
+* [[CategoryHistory|Історія]] -- історія Emacs /(англ.)/
+* [[ResearchAboutEmacs]] –– академічні, публіцистичні досліди про Emacs /(англ.)/
+* [[CategoryHumor|Гумор]] -- веселе про Emacs та Emacs-користувачів. /(англ.)/
+
+----
+CategoryEmacsWikiSite
