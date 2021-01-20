@@ -68,7 +68,7 @@ the message is from a previous emacs session, you may have to
 put it manually in message mode by typing <code>M-x message-mode</code>. There is only support for saving a single postponed message. For a better handling of postponed messages, please consider using message mode from gnus.
 
 
-Finally, recall that you can activate mail adresses in any buffer at any time by typing <code> M-x goto-address</code>. Cliking on a mail address will then bring a message buffer.
+Finally, recall that you can activate mail addresses in any buffer at any time by typing <code> M-x goto-address</code>. Cliking on a mail address will then bring a message buffer.
 
 == sending contents of buffer ==
 This will send the contents of the current buffer to a one of a predefined list of email addresses that you're likely to send buffer contents to (stored in the variable <code>known-email-addresses</code>). It has special handling for eww buffers to get the current pages URL instead of just setting the subject to "*eww*". If you use w3m, you can set <code>w3m-use-title-buffer-name</code>.
