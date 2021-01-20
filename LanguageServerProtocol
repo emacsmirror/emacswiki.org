@@ -1,0 +1,10 @@
+Per Wikipedia: "The Language Server Protocol (LSP) is an open, JSON-RPC-based protocol for use between source code editors or integrated development environments (IDEs) and servers that provide programming language-specific features. The goal of the protocol is to allow programming language support to be implemented and distributed independently of any given editor or IDE."
+
+See:
+* https://microsoft.github.io/language-server-protocol/ - Microsoft's official page for LSP
+* https://en.wikipedia.org/wiki/Language_Server_Protocol
+* https://langserver.org/ - community site
+
+These Emacs packages support LSP 
+* [LspMode]
+* [https://github.com/joaotavora/eglot eglot]
