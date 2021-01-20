@@ -288,5 +288,7 @@ Add sections on: profiling, semantic editing (?),
 Extend sections on: refactoring, code navigation.
 
 Include new jupyter package: https://github.com/dzop/emacs-jupyter.
+
+Mention dap-mode under debugging
 ----
 Categories: CategoryProgramming, ProgrammingModes
