@@ -1,0 +1,19 @@
+* [[HowToNavigate|Пересування]] і [[HowToSearch|пошук]] у цій вікі.
+* [[HowToEdit|Редагування]] цієї вікі (враховуючи викладання бібліотек EmacsLisp).
+* Бажаєте завести [[TextFormattingRules#Dialog|розмову]] -- почніть текст з [<nowiki>new::</nowiki>] у рядку, тоді ім'я та час заповняться самостійно.
+* Використовуйте різні живі [[HowLanguagesWork|мови]] в цій вікі.
+* Змінити [[CSS|тему]] цієї вікі за допомогою стилів CSS (напр.: 
+[EmacsWiki:action=browse;bootstrap=0;id=HowTo;theme=;css= Класична], 
+[EmacsWiki:action=browse;bootstrap=0;id=HowTo;css=/css/pedia.css Вікіпедія],
+[EmacsWiki:action=browse;bootstrap=0;id=HowTo;css=/css/ruby.css Ruby], [EmacsWiki:action=browse;bootstrap=1;id=HowTo стандартна], 
+[[CSS|інші...]]).
+
+* [[WikiDownload|Завантажити]] всі або деякі сторінки з бази даних вікі.
+* Допоможіть із завданнями [[WikiMaintenance|підтримки]] вікі.
+
+EmacsWiki є кооперативним вебсайтом. Дивіться WikiIntro. 
+
+Потрібна допомога? Відвідайте WikiQuestions або повідомте про проблему на EmacsWikiProblems.
+
+----
+CategoryEmacsWikiSite
