@@ -45,6 +45,8 @@ Commands start with a slash.  Here are the most important ones:
 You can join several channels at a time.  ERC will create a new buffer for each
 channel you join.
 
+NOTE: If you can't join #emacs channel or any other which requires you to be identified visit https://freenode.net/kb/answer/registration to see the instructions to identify yourself.
+
 
 == Moving on ==
 
