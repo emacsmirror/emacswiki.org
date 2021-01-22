@@ -8,7 +8,7 @@
 * [[HowToNavigate|Пересування]] і [[HowToSearch|пошук]] у цій вікі.
 * [[HowToEdit|Редагування]] цієї вікі (враховуючи викладання бібліотек EmacsLisp).
 * Бажаєте завести [[TextFormattingRules#Dialog|розмову]] -- почніть текст з [<nowiki>new::</nowiki>] у рядку, тоді ім'я та час заповняться самостійно.
-* Використовуйте різні живі [[HowLanguagesWork|мови]] в цій вікі.
+* Використовуйте різні живі [[ЯкПрацюютьМови|мови]] в цій вікі.
 * Змінити [[CSS|тему]] цієї вікі за допомогою стилів CSS (напр.: 
 [EmacsWiki:action=browse;bootstrap=0;id=HowTo;theme=;css= Класична], 
 [EmacsWiki:action=browse;bootstrap=0;id=HowTo;css=/css/pedia.css Вікіпедія],
