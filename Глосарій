@@ -27,7 +27,7 @@
 * [[InteractiveFunction|ІнтерактивнаФункція]] (InteractiveFunction) -- [[command|команда]]
 * '''[::поєднання клавіш]''' (key binding) -- a mapping (relation) between an Emacs command and a key sequence. A key binding can be a '''[::global key binding]''', a '''[::local key binding]''' (enabled only for a given [[major mode]]), or a '''[::minor-mode key binding]''' (enabled only for a given [[minor mode]])
 * [[keyboard macro|клавіятурний макрос]] (keyboard macro) -- a recording of [[key sequence]]s that you can replay
-* '''[::мапа клавіш]'' (keymap)' -- колекція [[key binding|поєднань клавіш]], тобто поєднання між [[command|команда]]ми Emacs і [[key sequence|послідовностями клавіш]]. Бувають '''[::глобальні мапи клавіш]''', '''[::локальні мапи клавіш]''' (застосовується лише у вибраному [[major mode|основному режимі]]), або '''[::мапа клавіш додаткового режиму]''' (застосовується лише у вибраному [[minor mode|додатковому режимі]])
+* '''[::мапа клавіш]''' (keymap) -- колекція [[key binding|поєднань клавіш]], тобто поєднання між [[command|команда]]ми Emacs і [[key sequence|послідовностями клавіш]]. Бувають '''[::глобальні мапи клавіш]''', '''[::локальні мапи клавіш]''' (застосовується лише у вибраному [[major mode|основному режимі]]), або '''[::мапа клавіш додаткового режиму]''' (застосовується лише у вибраному [[minor mode|додатковому режимі]])
 * [[key sequence|послідовність клавіш]] (key sequence) -- послідовність клавіш можна прив'язати до [[command|команди]], щоб потім виконувати її
 * '''[::вбити]''' (kill) -- вирізати, тобто видалити і скопіювати у [[kill ring]]
 * '''[::крутити вбитим]''' (kill ring) -- ring of previously killed (cut) or copied text snippets; the value of [[variable]] `kill-ring'
