@@ -15,3 +15,19 @@ If you want me to use anything else, let me know!
 
 -- Alex Schroeder 2021-01-23 21:12 UTC
 
+
+----
+
+Thanks, it is written in Russian. Ukrainian be:
+
+{{{
+# $Translate{'Article'} = 'Стаття';
+# $Translate{'Talk'} = 'Дискусії';
+# $RCName     = 'ОстанніЗміни';
+# $HomePage   = 'МапаСайту';
+# @UserGotoBarPages = ($HomePage, $RCName, 'РозділElisp', 'ЯкЗробити',
+# 		     'Новини');
+}}}
+
+-- AndMizyk 2021-01-23 22:45 UTC
+
