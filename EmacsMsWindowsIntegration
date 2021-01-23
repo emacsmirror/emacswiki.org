@@ -108,13 +108,13 @@ The following is an adaptation (clarification?) of the above.  It's not clear wh
 Open Windows Explorer with `Win+E' and navigate to `shell:startup'.  Create a new file `StartEmacsServer.bat' using the right click context menu.  Right click this new file, select "Edit", and insert:
 
 {{{
-rem StartEmacsServer.bat
-rem Sets HOME for current prompt
+rem Sets HOME for current shell
 set HOME=%APPDATA%
 
 rem Clean previous server file info first
 del /q ""%HOME%\\.emacs.d\\server\\*""
-C:\emacs-27.1-x86_64\bin\runemacs.exe --daemon
+C:\emacs-27.1-x86_64\bin\runemacs.exe --daemon -c ""(setq default-directory "~/")""
+rem start "" "C:\Users\<user>\Desktop\emacsclientw.exe - Shortcut.lnk"
 }}}
 
 `rem' is the Windows batch keyword for comments.  This script sets a HOME environment variable for the current cmd process, meaning it will not exist beyond the running of the script.  It then deletes the folder which contains Emacs server information.  `/q' means "quiet"; the user is not prompted whether to delete.  Double quotes are used to provide single quotes around the path, in case it contains spaces.  Finally, `runemacs.exe' is called with the `--daemon' flag, starting a background instance.  If you want to modify/debug this script, put `pause' at the end and the prompt will remain open.
@@ -125,7 +125,7 @@ Double clicking the script will start a new Emacs daemon.  To create a new frame
 C:\emacs-27.1-x86_64\bin\emacsclientw.exe -create-frame --alternate-editor=""
 }}}
 
-This tells `emacsclientw.exe' to create a new frame within the Emacs daemon process.  If it fails, don't use another editor.  Use this shortcut as the main entry point to Emacs.
+This tells `emacsclientw.exe' to create a new frame within the Emacs daemon process.  If it fails, no alternative editor is to be opened.  Use this shortcut as the main entry point to Emacs.  In the last line of the above script, correct the path to match your shortcut and delete the leading `rem' to have a client frame open on startup.
 
 
 == Debug Version ==
