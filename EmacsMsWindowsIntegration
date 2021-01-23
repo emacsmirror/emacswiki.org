@@ -136,6 +136,21 @@ Right click newly created shortcut and choose properties.
 In ##target## field type: ##"X:\path\to\emacs\bin\emacs.exe" --debug-init##
 Close properties dialog.
 
+== No-Window Mode Over SSH ==
+Emacs runs surprisingly well within the Windows command prompt over SSH.  I had challenges, however, setting the HOME directory and initializing init.el.  Emacs also complained about wanting to use `cmdproxy.exe'.  My solution was to create this batch file, place it the default connection directory, and run it immediately on login:
+
+{{{
+rem Sets HOME for current shell; didn't seem to take, but won't hurt to set it
+set HOME=%APPDATA%
+rem Set SHELL to the Emacs provided cmdproxy, rather than the default cmd.
+set SHELL="C:\emacs-27.1-x86_64\libexec\emacs\27.1\x86_64-w64-mingw32\cmdproxy.exe"
+
+rem Forced the default directory by first changing dirs
+cd %APPDATA%
+rem The init didn't automatically load, regardless of where I started.  So, call it explicitly
+C:\emacs-27.1-x86_64\bin\emacs.exe -nw -load .emacs.d\init.el
+}}}
+
 ----
 
 CategoryWThirtyTwo
