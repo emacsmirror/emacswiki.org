@@ -1,0 +1,17 @@
+Welcome to the wiki and thank you for your translation efforts!
+
+I actually have an Ukranian config file that is 100% commented out.
+
+{{{
+# $Translate{'Article'} = 'Статья';
+# $Translate{'Talk'} = 'Обсуждение';
+# $RCName      = 'ПоследниеИзменения';
+# $HomePage    = 'КартаСайта';
+# @UserGotoBarPages = ($HomePage, $RCName, 'ТерриторияЕмаксЛиспа', 'КакИчто',
+# 		     'Известия');
+}}}
+
+If you want me to use anything else, let me know!
+
+-- Alex Schroeder 2021-01-23 21:12 UTC
+
