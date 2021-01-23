@@ -21,10 +21,10 @@
 * [[HowToEdit|ЯкРедагувати]] -- як дописувати в цьому сайті? //(англ.)//
 * ElispArea -- викладання і завантаження сирців EmacsLisp //(англ.)//
 * [EmacsWiki:CSS Вигляд] -- змінити зовнішній вигляд цього сайту
-* WikiDownload -- отримати копію цього сайту //(англ.)//
+* [[WikiDownload|ЗавантажитиВікі]] -- отримати копію цього сайту //(англ.)//
 * [[EmacsWikiAdministrators|АдміністраториEmacsWiki]] -- опрацювання вандалізму і спаму на цьому сайті //(англ.)//
 
-[:LearningEmacs]
+[:ВивченняEmacs]
 ==Вивчення Emacs==
 * [[https://www.gnu.org/software/emacs/ Домашня сторінка GNU Emacs]] офіційні випуски Emacs і документація. //(англ.)//
 * [[EmacsNewbie|ПочатківціEmacs]] -- основні поняття, словниковий запас, позначення що використовуються у документації //(англ.)//
@@ -33,20 +33,20 @@
 * [[LearningEmacs|ВивченняEmacs]] -- there are many resources ways to learn Emacs, and lots of aids to learning
 * [[LearnEmacsLisp|ВивченняEmacsLisp]] -- EmacsLisp - це душа і серце Emacs. //(англ.)//
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
-* [[CategoryGlossary|Глосарій]] -- термінологія Emacs //(англ.)//
+* [[КатегоріяГлосарій|Глосарій]] -- термінологія Emacs
 * [[EmacsNiftyTricks|Nifty Tricks]] -- some extra tips
-* RandomPage -- for serendipitous visitors
+* [[RandomPage|ВипадковаСторінка]] -- для безтурботних відвідувачів //(англ.)//
 * [[CategoryCommunity|СпільнотиEmacs]] -- гуртуйтеся з іншими людьми, які використовують Emacs //(англ.)//
 
 
-[:GeneralUse]
+[:ЗагальнеВикористання]
 ==Нутрощі Emacs==
 * [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
 * [[CategoryCommands|Команди]] -- invoking and defining Emacs [[command|commands]], `M-x'
 * [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
-* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
+* [[CategoryCompletion|Доповнення]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
 * [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
 ** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Фрейми]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows") //(англ.)//
@@ -77,18 +77,18 @@
 ** [[CategoryXML|XML]] -- технології XML //(англ.)//
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
 * [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
-* [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
+* [[CategoryPersistence|Persistence]] -- збереження стану між сесіями Emacs
 * [[CategoryPrinting|Друк]] -- друк файлів, [[buffer|буферів]], [[регіонів]] ... //(англ.)//
 * [[CategoryProject|ОрганізаціяПроєктів]] -- navigating, visualizing, managing software projects
 * [[CategoryProgramming|Програмування]] -- використання Emacs як середовище розробки //(англ.)//
-* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
-* [[CategorySearchAndReplace|ПошукТаЗаміна]] - searching and replacing text, including [[regexp]] search
+* [[CategoryRegexp|Regexp]] -- визначення та використання [[regular expression|регулярних виразів]]
+* [[CategorySearchAndReplace|ПошукТаЗаміна]] - пошук та заміна тексту, враховуючи пошук [[regexp|рег.вир.]]
 * [[CategoryWriting|Writing]] -- використання Emacs для написання прози //(англ.)//
 
 
-[:EmacsApplications]
+[:ЗастосункиEmacs]
 ==Застосунки в Emacs==
-* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
+* [[CategoryArtificialIntelligence|ШтучнийІнтелект]] -- Emacs-based AI and expert systems. //(англ.)//
 * [[CategoryCalculators|Розрахунки]] -- математичні операції //(англ.)//
 ** [[CategoryFinancial|Фінанси]] -- money management and accounting
 * [[CategoryCalendar|Календар]] -- календар, щоденник, нагадування про зустрічі та завдання //(англ.)//
@@ -120,39 +120,39 @@
 * [[CategoryWebBrowser|Вебоглядач]] -- перегляд вебфайлів та сайтів //(англ.)//
 
 
-[:Customization]
+[:Пристосування]
 ==Налаштування Emacs під себе==
-* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
+* [[CategoryCustomize|Пристосування]] -- налаштування Emacs через можливість "легкої персоналізації" `Пристосувати' //(англ.)//
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
 * [[CategoryPackaging|Пакунки]] -- керування пакунками Emacs //(англ.)//
-* [[CategoryWThirtyTwo|Emacs on Windows]] -- configuring Emacs for MS Windows
+* [[CategoryWThirtyTwo|EmacsПідWindows]] -- налаштування Emacs для MS Windows //(англ.)//
 * [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
 
 
-[:ProgrammingEmacs]
+[:ПрограмуванняEmacs]
 == Programming Emacs in Lisp and C ==
 * [[CategoryCode|Код]] -- поради для написання коду на EmacsLisp //(англ.)//
 * [[CategoryDebug|Зневадження]] -- зневадження Emacs, зневадження з Emacs, зневадження EmacsLisp //(англ.)//
 * [[CategoryPatches|Патчі]] -- патчі для Emacs, здебільшого для розширень на рівні мови C //(англ.)//
-* [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
+* [[CategoryExtensionLanguage|МоваРозширень]] -- розширення Emacs використовуючи інші мови поряд з EmacsLisp: Guile, Erlang, Python
 
-[:CustomInstallations]
+[:ВласнеВстановлення]
 ==Встановлення власних збірок Emacs==
 * [[CategoryBuilding|Компіляція]] -- компіляція Emacs з вихідного коду //(англ.)//
 * [[CategoryPorts|Портування]] -- бінарні файли для MS Windows, Mac, GNU/Linux та FreeBSD //(англ.)//
 
-[:Bugs]
+[:Помилки]
 ==Помилки в Emacs==
 
-* EmacsBugs -- how to report bugs and where to find a list of those already reported
-* [[CategoryWishList|СписокПобажань]] -- "Emacs isn't perfect already?"
-* [[Proposals|Пропозиції]] -- Formal proposals for improvements to Emacs.
+* [[EmacsBugs|ПомилкиEmacs]] -- як звітувати про помилки і де знайте список вже прозвітованих? //(англ.)//
+* [[CategoryWishList|СписокПобажань]] -- "Emacs ще не досконалий?" //(англ.)//
+* [[Proposals|Пропозиції]] -- Формальні пропозиції для покращення Emacs. //(англ.)//
 
-[:EmacsInfo]
+[:ЕмаксІнфо]
 ==Інша пов'язана з Emacs інформація==
-* [[EmacsImplementations|РеалізаціїEmacs]] -- a list of Emacsen and their impersonators
+* [[EmacsImplementations|РеалізаціїEmacs]] -- список сімейства Емаксів та його імітатори //(англ.)//
 * [[CategoryHistory|Історія]] -- історія Emacs //(англ.)//
-* [[ResearchAboutEmacs]] –– академічні, публіцистичні досліди про Emacs //(англ.)//
+* [[ResearchAboutEmacs|ДослідженняEmacs]] –– академічні, публіцистичні досліди про Emacs //(англ.)//
 * [[CategoryHumor|Гумор]] -- веселе про Emacs та Emacs-користувачів. //(англ.)//
 
 ----
