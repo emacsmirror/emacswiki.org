@@ -4,33 +4,38 @@
 
 Див. також офіційний [[Manual:Glossary|глосарій]] Emacs.
 
-* [[bookmark|закладка]] (bookmark) -- збережене розташування файла або буфера
-* '''[::пов'язана змінна]''' (bound variable) -- [[variable|змінна]], що має [[symbol value|символьне значення]]
-* [[buffer|буфер]] (buffer) -- редагування відбувається в буферах (workspaces)
-* [[command|команда]] (command) -- ІнтерактивнаФункція
+* [[buffer|буфер]] (buffer) -- редагування відбувається в буферах (робоча область)
+* '''[::вбити]''' (kill) -- вирізати, тобто видалити і скопіювати у [[kill ring|кільце вбитого]]
+* [[text property|властивість тексту]] (text property) -- властивість надана знаку (літері), яка визначає її відображення і поведінку
 * [[completion|доповнення]] (completion) -- доповнення вводу в [[minibuffer|мінібуфері]] або тексту в іншому буфері
-* [[cursor|курсор]] (cursor, text cursor) -- how it differs from the [[pointer]] (mouse pointer); its relation with [[point]]
-* '''[::файл пристосування]''' (custom file) -- файл, інший від вашого [[init file|файлу init]] (##~/.emacs##), в якому зберігаються налаштування персоналізації. Є значенням [[variable|змінної]] `custom-file'.
-* [[Customize|Пристосувати]] (Customize) -- користувацький інтерфейс Emacs для зміни та збереження налаштувань
-* '''[::стандартний каталог]''' (default directory) -- каталог присвоєний поточному буферу; є значенням [[variable|змінної]] `default-directory'
-* [[device|пристрій]] (device) -- під XEmacs, [[frame|фрейм]]и відображаються на пристроях (TTY, X, MS Windows, GTK)
-* [[display|екран]] (display) -- під GNU Emacs, [[frame|фрейм]]и відображаються на екранах (TTY, X)
+* [[display|екран]] (display) -- в GNU Emacs [[frame|фрейм]]и відображаються на екранах (TTY, X)
 * [[Electricity|Електричність]] (Electricity) -- додаткова чи продумана поведінка (див. також [[DWIM]])
 * [[Emacsen|Емакси]] (Emacsen) -- різні реалізації Emacs-а.
-* '''[[EmacsLisp|Emacs Lisp]]''' -- діалект мови [[Lisp]], який використовується в Emacs. Більша частина Emacs написана на Emacs Lisp, ви можете використовувати Emacs Lisp для пристосування та розширення Emacs.
-* [[extensible|розширюваність]] (extensible) -- `E' в "Emacs"
-* [[font|шрифт]] (font) -- ???????? FIXME
-* [[frame|фрейм]] (frame) -- [[window|вікна]] Emacs відображаються у фреймах (називають "вікнами" поза межами Emacs)
-* [[fringe|межа]] (fringe) -- thin strips at the left and right edges of a [[window]], with glyphs that indicate various things
-* [[header line|рядок заголовку]] (header line) -- верх [[window|вікна]], використовується для деяких режимів
-* [[init file|файл init]] (init file) -- ваш особистий файл налаштування, завантажується під час запуску Emacs: ##~/.emacs## або ##~/_emacs##
+* [[bookmark|закладка]] (bookmark) -- збережене розташування файла або буфера
 * [[InteractiveFunction|ІнтерактивнаФункція]] (InteractiveFunction) -- [[command|команда]]
-* '''[::поєднання клавіш]''' (key binding) -- a mapping (relation) between an Emacs command and a key sequence. A key binding can be a '''[::глобальні поєднання клавіш]''', a '''[::локальні поєднання клавіш]''' (enabled only for a given [[major mode]]), or a '''[::поєднання клавіш додаткових режимів ]''' (enabled only for a given [[minor mode]])
-* [[keyboard macro|клавіятурний макрос]] (keyboard macro) -- a recording of [[key sequence]]s that you can replay
+* [[keyboard macro|клавіятурний макрос]] (keyboard macro) -- записана [[key sequence|послідовність клавіш]], яку можна повторювати
+* [[command|команда]] (command) -- ІнтерактивнаФункція
+* [[cursor|курсор]] (текстовий курсор, cursor, text cursor) -- відрізняється від [[pointer|вказівника]] (вказівника миші); зв'язане з [[point|точкою]]
+* '''[::кільце]''' (ring) -- структура даних, яка діє наче вона циклічна (без кінця)
+* '''[::кільце вбитого]''' (kill ring) -- кільце попередньо вбитих (вирізаних) або скопійованих фрагментів тексту; значення [[variable|змінної]] `kill-ring'
+* '''[::кільце позначок]''' (mark ring) -- кільце [[#mark|позначок]].  [[#variable|Змінна]] `mark-ring' містить позначки поточного буфера; змінна `global-mark-ring' містить глобальні позначки (поза всіма буферами).
+* '''[::кільце пошуку]''' (search ring) -- [[ring|кільце]] попередньо використаних пошукових рядків; значення [[variable|змінної]] `search-ring' (див.також [[regexp search ring|кільце пошуку регулярних виразів]])
+* '''[::кільце пошуку регулярних виразів]''' (regexp search ring) -- [[ring|кільце]] попередньо використаних рядків пошуку [[regexp|рег.вир.]]; занчення [[variable|змінної]] `regexp-search-ring' (див.також [[search ring|кільце пошуку]])
 * '''[::мапа клавіш]''' (keymap) -- колекція [[key binding|поєднань клавіш]], тобто поєднання між [[command|команда]]ми Emacs і [[key sequence|послідовностями клавіш]]. Бувають '''[::глобальні мапи клавіш]''', '''[::локальні мапи клавіш]''' (застосовується лише у вибраному [[major mode|основному режимі]]), або '''[::мапа клавіш додаткового режиму]''' (застосовується лише у вибраному [[minor mode|додатковому режимі]])
-* [[key sequence|послідовність клавіш]] (key sequence) -- послідовність клавіш можна прив'язати до [[command|команди]], щоб потім виконувати її
-* '''[::вбити]''' (kill) -- вирізати, тобто видалити і скопіювати у [[kill ring]]
-* '''[::крутити вбитим]''' (kill ring) -- ring of previously killed (cut) or copied text snippets; the value of [[variable]] `kill-ring'
+* [[fringe|межа]] (fringe) -- тонкі смужки з правого і лівого боків [[window|вікна]] зі значками, які позначають різні речі
+* '''[::пов'язана змінна]''' (bound variable) -- [[variable|змінна]], що має [[symbol value|значення символа]]
+* '''[::поєднання клавіш]''' (key binding) -- a mapping (relation) between an Emacs command and a key sequence. A key binding can be a '''[::глобальні поєднання клавіш]''', a '''[::локальні поєднання клавіш]''' (enabled only for a given [[major mode]]), or a '''[::поєднання клавіш додаткових режимів ]''' (enabled only for a given [[minor mode]])
+* [[key sequence|послідовність клавіш]] (key sequence) -- послідовність клавіш можна прив'язати до [[command|команди]], щоб потім її виконувати
+* [[Customize|Пристосувати]] (Customize) -- користувацький інтерфейс Emacs для зміни та збереження налаштувань
+* [[device|пристрій]] (device) -- в XEmacs [[frame|фрейм]]и відображаються на пристроях (TTY, X, MS Windows, GTK)
+* [[extensible|розширюваність]] (extensible) -- `E' в "Emacs"
+* [[header line|рядок заголовку]] (header line) -- верх [[window|вікна]], використовується для деяких режимів
+
+* '''[::файл пристосування]''' (custom file) -- файл, інший від вашого [[init file|файлу init]] (##~/.emacs##), в якому зберігаються налаштування персоналізації. Є значенням [[variable|змінної]] `custom-file'.
+* '''[::стандартний каталог]''' (default directory) -- каталог присвоєний поточному буферу; є значенням [[variable|змінної]] `default-directory'
+* '''[[EmacsLisp|Emacs Lisp]]''' -- діалект мови [[Lisp]], який використовується в Emacs. Більша частина Emacs написана на Emacs Lisp, ви можете використовувати Emacs Lisp для пристосування та розширення Emacs.
+* [[frame|фрейм]] (frame) -- [[window|вікна]] Emacs відображаються у фреймах (називають "вікнами" поза межами Emacs)
+* [[init file|файл init]] (init file) -- ваш особистий файл налаштування, завантажується під час запуску Emacs: ##~/.emacs## або ##~/_emacs##
 * [[line|рядок]] (line) -- рядок тексту. Див. також [[line ending|кінець рядка]].
 * [[line ending|кінець рядка]] (line ending) -- one or more characters at the end of a [[line]]
 * [[LineWrap|перенесення рядка]] (line wrap) -- how [[line]]s that are wider than a [[window]] are displayed (unless they are truncated at the right edge)
@@ -78,24 +83,19 @@
 * [[lambda expression]] -- a function representation that is a [[sexp]] that evaluates to a [[cons]] whose [[car]] is the [[symbol]] `lambda'. (See [[WikiPedia:Lambda calculus]].)
 * [[позначка]] (mark) -- a [[buffer]] location that you can change, return to...
 * '''[::маркер]''' (marker) -- a Lisp object that contains information about a position in a [[buffer]] that is updated to track the same location should edits insert or delete text around it
-* '''[::крутити позначками]''' (mark ring) -- ring of [[#mark]]s.  [[#variable|Variable]] `mark-ring' holds the marks of the current buffer; variable `global-mark-ring' holds the global marks (across all buffers).
-* [[mule]] -- (multilingual environment) багатомовне середовище
+* [[mule]] (multilingual environment) -- багатомовне середовище
 * [[narrowing]]  -- limiting [[buffer]] scope temporarily
 * '''obarray''' -- a [[symbol]] table implemented as a special kind of vector.  Think of it as a hash table for looking up symbols.  The value of [[variable]] `obarray' is the obarray used by default by `intern' and `read'. See [[Manual:Creating Symbols]].
 * [[overlay]] -- a [[property list]] that is similar to a [[text property]] list, but which is associated with [[buffer]] positions, not with characters. Typically used to highlight text.
 * [[regexp]] -- регулярний вираз
-* '''[::крутити пошуком регулярних виразів]''' (regexp search ring) -- [[ring]] of previously used [[regexp]] search strings; the value of [[variable]] `regexp-search-ring' (see also [[search ring]])
 * '''plist''' (aka '''[::список властивостей]''', property list) -- A list with an even number of elements that are treated alternately as keys and their values. Both keys and values can be any Lisp objects. A plist can be part of a [[symbol]] or disembodied (independent of any symbol).
 * '''register''' -- a location for temporarily saving text (a string), a [[rectangle]], a [[buffer]] position, a [[frame]] or [[window]] configuration
 * RequiredFeature -- when Lisp code `require's a Lisp library, or '''feature''', the requirement can be '''hard''' or '''soft'''
-* '''[::крутити пошуком]''' (search ring) -- [[ring]] of previously used search strings; the value of [[variable]] `search-ring' (see also [[regexp search ring]])
 * [[secondary selection]] -- like an additional [[region]], but less ephemeral
 * [[sexp]] -- a symbolic expression in Lisp
 * [[special display buffer]] (aka [[special buffer]]) -- a [[buffer]] that is always displayed in its own, dedicated frame
-* '''symbol''' (aka '''variable''') -- a Lisp object that has a name, a [[value cell]], a [[function cell]], and a [[plist]] (property list)
-* '''[::кільце]''' (ring) -- a data structure that acts as if it is circular (no end)
-* [[text property]] -- a property attached to a character that affects its display or behavior
-* '''value cell''' -- the value of a [[symbol]] (variable); aka '''symbol value'''
+* '''символ''' (те саме, що '''змінна''', symbol) -- a Lisp object that has a name, a [[value cell]], a [[function cell]], and a [[plist]] (property list)
+* '''комірка значення''' (value cell) -- the value of a [[symbol]] (variable); aka '''symbol value'''
 * '''yank''' -- вставити, досл. спустити
 
 ----
