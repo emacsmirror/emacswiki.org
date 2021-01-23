@@ -215,9 +215,9 @@ Elpy supports viewing documentation from jedi/rope, falling back to pydoc.
 ===Viewing the official Python documentation===
 This refers to the documentation at https://www.python.org/doc/.
 ====Using Info====
-You will first need to obtain Info files for the Python documentation.  These can be downloaded pre-built from https://github.com/politza/python-info, or built using the instructions there (They are not available at https://www.python.org/doc/).  
+You will first need to install an Info file for the Python documentation.  These can be downloaded pre-built from https://docs.python.org/3/archives/ and https://www.python.org/ftp/python/doc, and installed per Manual:Installing-Texinfo-documentation   
 
-[https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info], available on MELPA, configures Info to use the Python docs, and provides customized support for Python. 
+[https://github.com/visigoth/pydoc-info pydoc-info] configures Info to use the Python docs, and provides customized support for Python. 
 
 For more basic configuration, so that `info-lookup-symbol' searches the Python docs, customize Info as below. 
 {{{
