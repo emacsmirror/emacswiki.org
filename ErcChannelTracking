@@ -131,6 +131,27 @@ For **zero** distraction, use `erc-track-exclude' instead of `erc-track-priority
 
 You could want to add and remove channel and users from the `erc-track-exclude' variable interactively, just like \ignore and \unignore commands do. So, you could use following commands for this task.
 
+The original commands, which aim for a nice interface such as confirming the command was successful by issuing a message, are better.  These simplified versions were created responding to comments in ERC indicating that the originals no longer work:
+
+==== Simple Versions ====
+
+{{{
+ (defun erc-cmd-TRACK (&optional target)
+	 "Start tracking TARGET (or current channel)."
+	 (interactive)
+	 (let ((target (or target (buffer-name))))
+	   (setq erc-track-exclude (remove target erc-track-exclude))))
+
+(defun erc-cmd-UNTRACK (&optional target)
+	 "Stop tracking TARGET (or current channel)."
+	 (interactive)
+	 (let ((target (or target (buffer-name))))
+	   (setq erc-track-exclude (seq-uniq (append (list target)
+						     erc-track-exclude)))))
+}}}
+
+==== Original Commands ====
+
 {{{
    (defun erc-cmd-UNTRACK (&optional target)
      "Add TARGET to the list of target to be tracked."
