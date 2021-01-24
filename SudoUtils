@@ -1,0 +1,24 @@
+== Overview ==
+
+sudo-utils package provides some useful interactive and non-interactive functions for working with sudo.
+
+== For users ==
+
+After loading the package through <code>(require 'sudo-utils)</code>, just use <code>M-x</code> to invoke <code>sudo-utils-shell-command</code> for executing a shell command via sudo or <code>sudo-utils-program</code> for executing a program via sudo. User password will be requested only if necessary (it depends on sudo configuration).
+
+== For developers ==
+
+This package provides several useful functions to:
+* obtain sudo executable absolute path
+* check if the user can run sudo at all
+* check if the user can run a specific program with sudo
+* check if the user has to enter his own password to run a program with sudo
+* obtain the list of programs that the user can run with sudo providing and not providing his own password
+* execute shell command via sudo in a non-interactive way
+* execute program via sudo in a non-interactive way
+
+Please refer to package documentation for more details.
+
+== How to get the package ==
+
+The package is available on [https://melpa.org/#/sudo-utils MELPA] and [https://github.com/alpha-catharsis/sudo-utils Github].
