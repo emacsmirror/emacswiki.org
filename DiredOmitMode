@@ -1,20 +1,12 @@
 This page is about Omit Mode in [[Dired]], which lets you hide uninteresting files, such as backup files and AutoSave files.
 
-It is defined in the built-in [[Dired X]] package, so need to load that:
+`C-x M-o' in Dired buffers toggles this mode.
 
-    (add-hook 'dired-load-hook '(lambda () (require 'dired-x))) ; Load Dired X when Dired is loaded.
-    (setq dired-omit-mode t) ; Turn on Omit mode.
+To enable omitting in every Dired buffer, you can use:
 
-`C-x M-o' (`M-o' in older versions of Emacs) in Dired buffers toggles hiding of files. Variables `dired-omit-files' and `dired-omit-extensions' together define the uninteresting files. (Versions of Emacs before 22.1 used `dired-omit-files-p').
+    (add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
 
-With most recent Emacs versions no hooks are needed and the following lines in your [[init file]] enable omit mode (in this example dot files are omitted):
-
-    (require 'dired-x)
-    (setq-default dired-omit-files-p t) ; Buffer-local variable
-    (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-
-
-
+Variables `dired-omit-files' and `dired-omit-extensions' together define the uninteresting files.
 
 === Coloring Dot Files?  ===
 
@@ -25,7 +17,6 @@ That dims only the files that match the extensions in `dired-omit-extensions', b
 '''See [[Dired+]]''' for a way to color less-interesting files differently in Dired. Combined with Omit mode, this can do either of the following:
 * Give you two levels of disinterest.
 * Let you ''see'' uninteresting files, but not have them stand out.
-
 
 === No Omit Mode for `recover-session'  ===
 
@@ -38,9 +29,6 @@ Dired ignores ##*~## files, which are used by `recover-session'. The following t
      (let ((dired-mode-hook dired-mode-hook))
        (remove-hook 'dired-mode-hook 'enable-dired-omit-mode)
        ad-do-it))
-
-
-
 
 ===  Toggle Showing Dot Files  ===
 
@@ -58,8 +46,6 @@ Dired ignores ##*~## files, which are used by `recover-session'. The following t
 	       (set (make-local-variable 'dired-dotfiles-show-p) t)))))
 
 -- BenEills
-
-
 
 === Remember Omit State ===
 
@@ -86,7 +72,6 @@ I prefer that Dired remember my omit state: when enabling/disabling `omit-mode',
    (add-hook 'dired-mode-hook 'dired-omit-caller)
 
 --- [[kuanyui]]
-
 
 ===  Using `ls' Switches Instead of Omit Mode  ===
 
