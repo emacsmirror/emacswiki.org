@@ -155,13 +155,16 @@ Elpy supports the standard unittest discovery runner, the Django discovery runne
 
 ====gud====
 The native `python-mode' supports pdb tracking via the GrandUnifiedDebugger: when you execute a block of code that contains some call to Python's pdb (or ipdb) it will prompt the block of code and will follow 
-the execution of pdb marking the current line with an arrow.  
+the execution of pdb, marking the current line with an arrow.  
 
 To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as 
 "python -m pdb foo.py"
 
 ====realgud====
 [https://melpa.org/#/realgud realgud] provides support for pdb, ipdb and trepanning debuggers.  [https://github.com/rocky/emacs-dbgr/wiki/Features Its features not in the gud] include single-keystroke debugger commands inside the source code.
+
+====dap-mode====
+[https://melpa.org/#/dap-mode dap-mode] supports debugging using implementations of the [https://microsoft.github.io/debug-adapter-protocol/ Debug Adapter Protocol], and will be configured automatically by LspMode when available.  See the [https://emacs-lsp.github.io/dap-mode/ main docs] and [https://emacs-lsp.github.io/dap-mode/page/configuration/ configuration guide]. 
 
 === Interactive environments - Shells, REPLs and notebooks ===
 ====Using IPython as the Python shell==
@@ -289,6 +292,5 @@ Extend sections on: refactoring, code navigation.
 
 Include new jupyter package: https://github.com/dzop/emacs-jupyter.
 
-Mention dap-mode under debugging
 ----
 Categories: CategoryProgramming, ProgrammingModes
