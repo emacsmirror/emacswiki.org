@@ -213,7 +213,7 @@ Emacs' native python-mode supports ElDoc via `python-eldoc-at-point'. This retur
 Elpy supports viewing documentation from jedi/rope, falling back to pydoc.
 
 ===Viewing the official Python documentation===
-This refers to the documentation at https://www.python.org/doc/.
+This refers to the documentation at https://www.python.org/doc/, including the Python language reference, documentation for the Python standard library, the Python tutorial, etc.
 ====Using Info====
 You will first need to install an Info file for the Python documentation.  As of Python 3.8.0, these can be downloaded pre-built from https://docs.python.org/3/archives/ and https://www.python.org/ftp/python/doc, and installed per Manual:Installing-Texinfo-documentation   
 
