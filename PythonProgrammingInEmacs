@@ -139,7 +139,7 @@ Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorge
 =====black=====
 [https://github.com/psf/black black] formats Python code to an almost-fixed style, hence "the uncompromising Python code formatter".
 
-[https://melpa.org/#/python-black python-black] and [https://github.com/jorgenschaefer/elpy Elpy] support applying black to the current buffer. 
+Both [https://melpa.org/#/python-black python-black] and [https://github.com/jorgenschaefer/elpy Elpy] support applying black to the current buffer. 
 
 =====Tidying imports=====
 [http://melpa.org/#/py-isort py-isort] using [https://pypi.python.org/pypi/isort isort].
