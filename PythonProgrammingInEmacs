@@ -143,11 +143,13 @@ Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
 [https://github.com/anachronic/importmagic.el importmagic.el] automatically insert missing imports using [https://pypi.python.org/pypi/importmagic importmagic].
 
 ===Running tests===
-[https://melpa.org/#/nose nose] and [https://bitbucket.org/durin42/nosemacs nosemacs] support running nose tests.
+The [http://pytest.org pytest Python package] subsumes several other test packages, as it supports tests written with pytest, nose, unittest and doctest style test suites, including Django and trial.
 
-Elpy supports the standard unittest discovery runner, the Django discovery runner, nose and py.test
+[https://melpa.org/#/python-pytest python-test] supports running pytest with a UI based on [https://melpa.org/#/transient transient], also used by [[Magit]].
 
-[https://melpa.org/#/pytest pytest] supports the [http://pytest.org pytest Python package], thus tests written with pytest, nose, unittest and doctest style test suites, including Django and trial.
+[https://melpa.org/#/pytest pytest] also supports running pytest.
+
+Elpy supports the standard unittest discovery runner, the Django discovery runner, nose and pytest
 
 ===Reporting test coverage===
 [https://melpa.org/#/pycoverage pycoverage] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage as below.
