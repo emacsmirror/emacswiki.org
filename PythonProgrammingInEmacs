@@ -118,7 +118,6 @@ Old versions of Flymake didn't support having multiple checkers per buffer, but 
 
 
 ===Refactoring===
-====Refactoring libraries====
 [https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
 
 [https://github.com/abingham/emacs-traad emacs-traad] also supports refactoring using Rope.
