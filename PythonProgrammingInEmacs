@@ -156,7 +156,31 @@ Elpy supports the standard unittest discovery runner, the Django discovery runne
 [https://melpa.org/#/pytest pytest] supports the [http://pytest.org pytest Python package], thus tests written with pytest, nose, unittest and doctest style test suites, including Django and trial.
 
 ===Reporting test coverage===
-[https://melpa.org/#/pycoverage pycoverage] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage.
+[https://melpa.org/#/pycoverage pycoverage] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage as below.
+{{{
+  (flycheck-define-checker python-pycoverage
+    "A Python test coverage checker checker using the pycoverage tool.
+
+See `https://github.com/mattharrison/pycoverage.el'.
+
+This works after pytest has run by marking lines missing
+coverage (as reported by pytest) as flycheck issues.  If the code
+was updated after pytest was run then nothing is reported.
+"
+    :command
+    ("python" "-c"
+     (eval
+      (mapconcat 'identity
+                 (list
+                  "import sys"
+                  (format "sys.path.insert(0, '%scov2emacs')" (file-name-directory (locate-library "pycoverage")))
+                  "from cov2emacslib.__init__ import main"
+                  "main(sys.argv[1:])")
+                 ";"))
+     "--compile-mode" "--python-file" source-original)
+    :error-patterns ((warning line-start (file-name) ":" line ":" (message) line-end))
+    :modes (python-mode)))
+}}}
 
 ===Debugging===
 
