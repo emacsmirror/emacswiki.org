@@ -125,23 +125,23 @@ Old versions of Flymake didn't support having multiple checkers per buffer, but 
 
 [https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
 
-====Reformatting and PEP8 conformance====
-=====yapf=====
+===Reformatting and PEP8 conformance===
+====yapf====
 [https://github.com/google/yapf Yapf] attempts to format Python code to the best formatting that conforms to a style guide, even if the original code didn't violate the style guide.  The style guide can be customized; predefined ones include pep8 and google.
 
 Both [https://melpa.org/#/py-yapf py-yapf] and [https://github.com/jorgenschaefer/elpy Elpy] support applying yapf to the current buffer.
 
-=====autopep8=====
+====autopep8====
 [https://pypi.python.org/pypi/autopep8/ autopep8] formats Python code to conform to the PEP 8 style guide using [https://pypi.python.org/pypi/pep8 the pep8 tool].
 
 Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorgenschaefer/elpy Elpy] support applying autopep8 to the current buffer.
 
-=====black=====
+====black====
 [https://github.com/psf/black black] formats Python code to an almost-fixed style, hence "the uncompromising Python code formatter".
 
 Both [https://melpa.org/#/python-black python-black] and [https://github.com/jorgenschaefer/elpy Elpy] support applying black to the current buffer. 
 
-=====Tidying imports=====
+====Tidying imports====
 [http://melpa.org/#/py-isort py-isort] using [https://pypi.python.org/pypi/isort isort].
 
 Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
