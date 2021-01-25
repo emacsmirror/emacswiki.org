@@ -38,7 +38,6 @@ There is some built-in support for virtual environments in python.el, but these 
 * [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], written by the author of anaconda-mode.
 * [https://github.com/pwalsh/pipenv.el pipenv.el] - A [https://docs.pipenv.org/ Pipenv] porcelain inside Emacs. 
 * [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper].
-* [https://github.com/aculich/virtualenv.el virtualenv.el] - deprecated. 
 * [https://github.com/necaris/conda.el conda.el] - for working with conda environments.
 * [https://github.com/mukuge/npy.el npy.el] - for a nicer integration of Pipenv virtualenvs and inferior python processes.
 
