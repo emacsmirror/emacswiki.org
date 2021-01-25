@@ -2,12 +2,12 @@
 [[ja:PythonProgrammingInEmacs-ja]]
 This page collects information for creating a usable Python programming environment in Emacs.
 ==Quick start==
-Emacs already has out-of-the-box Python support via `python-mode'.  The IDE packages listed below can be used to set up a more complete environment quickly.
-== Python Modes ==
-There are a number of Python major modes for Emacs. As well as basic editing these all provide a range of IDE-like features, relying on a mix of native Emacs features and external Emacs/Python packages:
-* [ProgrammingWithPythonDotElGallina python.el], which comes with Emacs 24.2 and up.
-* [ProgrammingWithPythonModeDotEl python-mode.el] (same as python-mode.el listed below under IDE packages).
-* [ProgrammingWithPythonDotEl 'loveshack' python.el] from Emacs 24.1 and before has a number of fans as well.
+The quickest way to start is just to open a Python file in Emacs -- the built-in `python-mode' is pretty good and supports, from its help, "Syntax highlighting, Indentation, Movement, Shell interaction, Shell completion, Shell virtualenv support, Shell package support, Shell syntax highlighting, Pdb tracking, Symbol completion, Skeletons, FFAP, Code Check, ElDoc, Imenu."
+
+The IDE packages listed below are a good way to set up a still more complete environment.
+
+A note on Python modes: the built-in `python-mode' comes from the [ProgrammingWithPythonDotElGallina python.el], which comes with Emacs 24.2 and up; this is different from the modes from [ProgrammingWithPythonDotEl 'loveshack' python.el] (the built-in mode up to Emacs 24.1), and [ProgrammingWithPythonModeDotEl python-mode.el] (listed below under IDE packages).
+
 == IDE packages==
 These provide powerful and relatively complete environments by combining and customizing other packages, both Emacs Lisp and Python, and resolving conflicts between them. 
 ===Elpy===
@@ -92,6 +92,8 @@ The tools built on jedi support using it to find definitions. [https://github.co
 [https://melpa.org/#/helm-cscope helm-cscope] provides a Helm interface to [https://melpa.org/#/xcscope xcscope].  [https://pypi.python.org/pypi/pycscope/ pycscope] supports generating the required cscope index of Python source trees.
 
 === Code generation helpers ===
+====python-mode skeletons====
+The built-in python-mode comes with several skeletons (see Manual:autocomplete ) and key bindings for functions to insert them (`python-skeleton-<foo>').  They can be inserted automatically if you have `abbrev-mode' activated and `python-skeleton-autoinsert' set to `t'.
 ====yasnippet====
 [[Yasnippet]] comes with a broad set of templates for Python.
 ====sphinx-doc====
