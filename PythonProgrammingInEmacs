@@ -104,17 +104,13 @@ reformatting (refilling) and highlighting Python docstrings. It understands both
 [https://github.com/tuhdo/org-recipes org-recipes] A code snippet manager with Org and Helm. It is not specific to python and does not expand snippets like yasnippet does, but has the added benefit of combining text with org-mode source blocks that can then be inserted in a buffer via Helm.
 
 ===Lint, style and syntax checkers===
-Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
+Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.  Both support multiple checkers per buffer.
 ====Flycheck====
-[[Flycheck]] integrates flake8 and pylint.  It can be used with multiple checkers per buffer.
+[[Flycheck]] comes with [https://www.flycheck.org/en/latest/languages.html#python built-in Python support] for flake8, pylint, Pyright, mypy and the Python compiler.  Checkers are also available for [https://melpa.org/#/flycheck-cython Cython], [https://melpa.org/#/flycheck-pyre Pyre], and LspMode, which includes its own checker.
 ==== Flymake====
-
 [[FlyMake]] uses pyflakes out of the box - just enable Flymake.
 
 You can also configure Flymake to use flake8 or pylint.
-
-Old versions of Flymake didn't support having multiple checkers per buffer, but this is now supported natively.
-
 
 ===Refactoring===
 [https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
