@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Dec  5 10:01:40 2020 (-0800)
+;; Last-Updated: Mon Jan 25 18:24:01 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 11910
+;;     Update #: 11912
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2335,6 +2335,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2021/01/25 dadams
+;;     icicle-scatter-re: Use version of make-obsolete that's compatible with all Emacs versions.
 ;; 2020/11/05 dadams
 ;;     icicle-read-face-name:
 ;;       Wrap soft-require of palette in condition-case to ignore error hard-requiring vline.el.
