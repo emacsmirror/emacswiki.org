@@ -6,7 +6,7 @@ Tramp was formerly called RCP or rcp.el.
 It allows you transparent access to files on remote access.  "Transparent" means that usually the user doesn't have to worry about anything.  All that changes is the filename convention to indicate that the file resides on a remote system.
 One of the neat things about using Tramp via a remote shell, is that Emacs will then automatically invoke other remote shell commands directly on that server, e.g. when viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc.
 
-You can speed up Tramp by using ssh's "ControlMaster" feature — see http://linux.com/feature/54498 . (Note that this is used automatically in recent versions of Tramp.)
+You can speed up Tramp by using ssh's "ControlMaster" feature — see https://www.linux.com/news/accelerating-openssh-connections-controlmaster/. (Note that this is used automatically in recent versions of Tramp.)
 
 Tramp Documentation:
 
