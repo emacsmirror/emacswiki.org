@@ -6,8 +6,6 @@ The language used on this wiki depends on the language preferences of your brows
 
 If you visit http://www.emacswiki.org/ you will see a main page corresponding to your language preferences, if it exists. If it doesn't, you will see the English main page, SiteMap.
 
-Further, the title of the table of contents, the output of the Oddmuse:UseDiff and [[Oddmuse:Rollback Extension]] appear in the language of the last person who edited the page, not the language specified by your browser.  This is because OddMuse uses the same language variable in the environment for producing these localized texts.
-
 See LanguageIdentification for how the language of a page is identified for languge-specific RecentChanges.
 
 Note that all the various languages are in a single wiki. There are not enough non-English pages to warrant a separate wiki.
@@ -15,10 +13,6 @@ Note that all the various languages are in a single wiki. There are not enough n
 == How to change default language persistently ==
 
 If you follow the _English_ link on the SiteMap, you should end up on the English script.
-
-You can also use the English prefix (eg. English:DrewAdams) to specifically link to a page using the English interface.
-
-If you want readers following a link to the wiki to use a particular interface, use the ISO language code in the URL: http://www.emacswiki.org/cgi-bin/emacs-en will use the English interface.
 
 == How to translate a page ==
 
