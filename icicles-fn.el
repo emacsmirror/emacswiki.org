@@ -4,11 +4,11 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Nov  5 15:38:07 2020 (-0800)
+;; Last-Updated: Mon Jan 25 18:20:49 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 15301
+;;     Update #: 15303
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4271,7 +4271,9 @@ characters.  For example, STRING = \"ure\" matches COMPLETION
 
 
 (defalias 'icicle-scatter 'icicle-scatter-re)
-(make-obsolete 'icicle-scatter 'icicle-scatter-re) ; 2018-01-14
+(if (< emacs-major-version 23)
+    (make-obsolete 'icicle-scatter 'icicle-scatter-re) ; 2018-01-14
+  (make-obsolete 'icicle-scatter 'icicle-scatter-re "2018-01-14"))
 
 (defun icicle-scatter-re (string)
   "Returns a regexp that matches a scattered version of STRING.
