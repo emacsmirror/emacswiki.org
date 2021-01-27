@@ -17,7 +17,7 @@ All these variables may be overridden on a per-directory basis in
 your .dir-locals.el.  See [[Manual:Directory Variables]] for
 details.
 
-Available [https://github.com/technomancy/find-file-in-project on GitHub]
+Available [https://github.com/redguardtoo/find-file-in-project on GitHub]
 
 == Alternatives ==
 
