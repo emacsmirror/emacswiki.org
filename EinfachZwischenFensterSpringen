@@ -28,3 +28,10 @@ Eine Alternative hierzu ist WindMove.  Damit kann man mittels Shift und den Rich
 Installation:
 
     (windmove-default-keybindings)
+
+Shift+Richtungstasten wird normalerweise zum Markieren von Text verwendet. Man kann deshalb auch einen Modifier-Key angeben, z.B. und statt Shift die Alt oder Command (Super)-Taste zu verwenden:
+
+    (windmove-default-keybindings 'super)
+    (windmove-default-keybindings 'meta)
+
+usw.
