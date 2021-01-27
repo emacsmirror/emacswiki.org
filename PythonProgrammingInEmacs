@@ -204,23 +204,14 @@ The support includes completion, syntax highlighting, virtualenvs, enabling a pa
 In Emacs's native python-mode, use:
 {{{
   (setq python-shell-interpreter "ipython"
-       python-shell-interpreter-args "-i")
-}}}
-This should work with any recent IPython, including on Windows.
-
-Since IPython 5 it has a new terminal interface, which is not compatible with Emacs' inferior shells. To fix it, add the --simple-prompt flag to the IPython command:
-
-{{{
-  (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "--simple-prompt -i")
 }}}
+This should work with any recent IPython, including on Windows.  <code>--simple-prompt</code> is needed since IPython 5.
 
-[ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support. 
-
-Note that the built-in commands `python-send-shell-region', `python-send-shell-buffer', etc. do not support ipython magic commands. See [https://github.com/jackkamm/ipython-shell-send-el ipython-send-shell] for replacements that support ipython magic. 
+[https://github.com/jackkamm/ipython-shell-send-el ipython-send-shell] provides replacements for the built-in `python-send-*' commands that support IPython magic commands. 
 
 ====Emacs IPython Notebook (EIN)====
-[https://github.com/millejoh/emacs-ipython-notebook Emacs IPython Notebook (EIN)] provides a IPython Notebook client and integrated REPL (like SLIME) in Emacs. It is available on MELPA as 'ein'.  Replaces [https://github.com/tkf/emacs-ipython-notebook tkf's EIN], which it was [https://github.com/tkf/emacs-ipython-notebook/issues/156 forked from] to keep up with IPython/Jupyter development. 
+[https://github.com/millejoh/emacs-ipython-notebook Emacs IPython Notebook (EIN)] provides an IPython Notebook client and integrated REPL (like SLIME) in Emacs. It is available on MELPA as 'ein'.  This replaces [https://github.com/tkf/emacs-ipython-notebook tkf's EIN], which it was [https://github.com/tkf/emacs-ipython-notebook/issues/156 forked from] to keep up with IPython/Jupyter development. 
 ==== ob-python====
 [http://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html ob-python] provides Org-Babel support for evaluating Python source code.  Python source code blocks in Org Mode can be used to define functions, filter and analyze data, create graphics and figures, and produce reproducible research papers using a style similar to literate programming. It is included in the 'org-plus-contrib' package from [http://orgmode.org/elpa.html the Org Mode ELPA] or [[MELPA]].
 ====ob-ipython====
