@@ -19,7 +19,7 @@ of lines to search from the beginning.  It can be negative for the
 number of lines from the bottom of the file.  After the slash, a
 regular expression will find the beginning of the time stamp in the
 file, followeed by the time format string which you provide and is
-based on the format more precisely described in GIT:time-format.el and
+based on the format more precisely described in GIT:time-stamp.el and
 not the Lisp function `format-time-string'.  The pattern ends with
 another regular expression.  It matches the end of the time stamp.
 
