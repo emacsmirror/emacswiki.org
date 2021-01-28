@@ -2,18 +2,27 @@
 [[ja:PythonProgrammingInEmacs-ja]]
 This page collects information for creating a usable Python programming environment in Emacs.
 ==Quick start==
-The quickest way to start is just to open a Python file in Emacs -- the built-in `python-mode' is pretty good and supports, from its help, "Syntax highlighting, Indentation, Movement, Shell interaction, Shell completion, Shell virtualenv support, Shell package support, Shell syntax highlighting, Pdb tracking, Symbol completion, Skeletons, FFAP, Code Check, ElDoc, Imenu."
+The quickest way to start is just to open a Python file in Emacs -- `python-mode' has a nice feature-set as is -- see below for details.
 
-The IDE packages listed below are a good way to set up a still more complete environment.
+Beyond that, as people ask for recommendations fairly often, the following is a reasonable approach:
+* If you're happy with `python-mode' then stick with that.
+* If you already use one of the StarterKits like [[Spacemacs]] or DoomEmacs, then use its Python configuration.
+* If you want to set up a relatively complete environment quickly, then use one of the IDE packages listed below.  Elpy appears to be the most popular Python-specific IDE package, while LspMode supports many languages and has gained a lot of developer attention.
+* If you want complete control then select any packages you want from the Support Features section.  
 
-A note on Python modes: the built-in `python-mode' comes from the [ProgrammingWithPythonDotElGallina python.el], which comes with Emacs 24.2 and up; this is different from the modes from [ProgrammingWithPythonDotEl 'loveshack' python.el] (the built-in mode up to Emacs 24.1), and [ProgrammingWithPythonModeDotEl python-mode.el] (listed below under IDE packages).
+==Python mode==
+The built-in `python-mode' supports, from its help, "Syntax highlighting, Indentation, Movement, Shell interaction, Shell completion, Shell virtualenv support, Shell package support, Shell syntax highlighting, Pdb tracking, Symbol completion, Skeletons, FFAP, Code Check, ElDoc, Imenu.
+
+Some history: the built-in `python-mode' comes from the [ProgrammingWithPythonDotElGallina 'gallina' python.el], which comes with Emacs 24.2 and up; this is different from the modes from [ProgrammingWithPythonDotEl 'loveshack' python.el] , which was the built-in mode up to Emacs 24.1, and [ProgrammingWithPythonModeDotEl python-mode.el], listed below under IDE packages.
 
 == IDE packages==
 These provide powerful and relatively complete environments by combining and customizing other packages, both Emacs Lisp and Python, and resolving conflicts between them. 
+===Spacemacs===
+* [https://develop.spacemacs.org/layers/+lang/python/README.html Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
+===Doom===
+* [https://github.com/hlissner/doom-emacs/blob/91ced7997537cc692e2a06294a428c5b4037d687/modules/lang/python/README.org Python module] for DoomEmacs.  
 ===Elpy===
 * [https://github.com/jorgenschaefer/elpy Elpy]
-===Spacemacs===
-* [https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Blang/python Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
 ===Language Server Protocol===
 Any of the main [LanguageServerProtocol] packages should support Python programming with a variety of backends.  [LspMode] provides these guides to configuring backends
 * [https://emacs-lsp.github.io/lsp-mode/page/lsp-jedi/ Jedi language server]
@@ -22,8 +31,6 @@ Any of the main [LanguageServerProtocol] packages should support Python programm
 * [https://emacs-lsp.github.io/lsp-pyright/ Microsoft's Pyright language server].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
 ===python-mode.el===
 * [ProgrammingWithPythonModeDotEl python-mode.el].  Replaces the `python-mode' in python.el.
-===Jedi===
-* [https://github.com/tkf/emacs-jedi Jedi]
 ===Anaconda mode===
 * [https://github.com/proofit404/anaconda-mode anaconda-mode] 
 ===eglot===
@@ -33,19 +40,13 @@ Various features that can be added to or improved in Emacs.  Note that the IDE p
 
 ===Virtual Environments==
 There is some built-in support for virtual environments in python.el, but these packages provide more features.
-* [https://github.com/jorgenschaefer/pyvenv pyvenv] - used in elpy, written by the same author. 
-* [https://github.com/tkf/emacs-python-environment python-environment] - used in jedi, written by the same author.
-* [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], written by the author of anaconda-mode.
-* [https://github.com/pwalsh/pipenv.el pipenv.el] - A [https://docs.pipenv.org/ Pipenv] porcelain inside Emacs. 
-* [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper].
-* [https://github.com/necaris/conda.el conda.el] - for working with conda environments.
-* [https://github.com/mukuge/npy.el npy.el] - for a nicer integration of Pipenv virtualenvs and inferior python processes.
+* [https://github.com/jorgenschaefer/pyvenv pyvenv] - used in elpy, written by the same author. [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] provides automatic activation.
+* [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], including automatic activation via [[Projectile]].
+* [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper].  [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] provides automatic activation.
+* [https://github.com/necaris/conda.el conda.el] - for working with conda environments, including automatic activation.  
 
-To automatically activate virtual environment you can use:
-* [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] - uses virtualenvwrapper.
-* [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] - uses pyvenv.
-* [https://github.com/necaris/conda.el conda.el] and its minor mode conda-env-autoactivate-mode.
-* [https://github.com/pwalsh/pipenv.el pipenv.el] - with [http://batsov.com/projectile/ Projectile].
+* [https://github.com/pwalsh/pipenv.el pipenv.el] - A [https://docs.pipenv.org/ Pipenv] porcelain inside Emacs, including automatic activation through [[Projectile]]. 
+* [https://github.com/mukuge/npy.el npy.el] - for a nicer integration of Pipenv virtualenvs and inferior python processes.
 
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
@@ -204,11 +205,20 @@ The support includes completion, syntax highlighting, virtualenvs, enabling a pa
 In Emacs's native python-mode, use:
 {{{
   (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i")
+        python-shell-interpreter-args "-i --simple-prompt --InteractiveShell.display_page=True")
 }}}
-This should work with any recent IPython, including on Windows.  <code>--simple-prompt</code> is needed since IPython 5.
+This should work with any recent IPython, including on Windows, and works around an issue when IPython complains about incomplete shell when calling help (e.g. for help(func)). 
+* <code>--simple-prompt</code> is needed since IPython 5.
+* <code>---InteractiveShell.display_page=True</code> ensures that anything passed to the pager will be displayed as regular output instead
 
-[https://github.com/jackkamm/ipython-shell-send-el ipython-send-shell] provides replacements for the built-in `python-send-*' commands that support IPython magic commands. 
+To get help/pydoc to work fully, run the following, e.g. create an IPython profile then put the code into nopager10.py in ~/.ipython/profile_default/startup/
+<pre>
+import pydoc
+import sys
+pydoc.help = pydoc.Helper(output = sys.stdout)
+</pre>
+
+[https://github.com/jackkamm/ipython-shell-send-el ipython-send-shell] provides replacements for the built-in `python-send-*' commands that support IPython magic commands.
 
 ====Emacs IPython Notebook (EIN)====
 [https://github.com/millejoh/emacs-ipython-notebook Emacs IPython Notebook (EIN)] provides an IPython Notebook client and integrated REPL (like SLIME) in Emacs. It is available on MELPA as 'ein'.  This replaces [https://github.com/tkf/emacs-ipython-notebook tkf's EIN], which it was [https://github.com/tkf/emacs-ipython-notebook/issues/156 forked from] to keep up with IPython/Jupyter development. 
@@ -290,24 +300,6 @@ ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode=
 
 ===Editing pip requirements files===
 [https://melpa.org/#/pip-requirements pip-requirements] is a major mode for editing pip requirements files, with support for syntax highlighting, togglable comments and auto-completion of package names from !PyPI.
-
-===Running IPython within Emacs====
-IPython complains about incomplete shell (e.g. for help(func)). 
-
-Solution is to create an IPython profile then put
-<pre>
-import pydoc
-import sys
-pydoc.help = pydoc.Helper(output = sys.stdout)
-</pre>
-into nopager10.py in ~/.ipython/profile_default/startup/
-
-and set for python.el
-<pre>
-(setq python-shell-interpreter "ipython")
-(setq python-shell-interpreter-args "-i --simple-prompt --InteractiveShell.display_page=True")
-</pre>
-in init.el
 
 ===How to improve this page===
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
