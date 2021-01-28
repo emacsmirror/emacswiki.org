@@ -125,7 +125,7 @@ Homebrew now recommends to use the cask version with the following message: "Ple
 To install the cask version:
 
 <pre>
-brew cask install emacs
+brew install --cask emacs
 </pre>
 
 This installs a pre-built package from https://emacsformacosx.com/
