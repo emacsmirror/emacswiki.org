@@ -5,7 +5,6 @@ This page collects information for creating a usable Python programming environm
 The quickest way to start is just to open a Python file in Emacs -- `python-mode' has a nice feature-set as is -- see below for details.
 
 Beyond that, as people ask for recommendations fairly often, the following is a reasonable approach:
-* If you're happy with `python-mode' then stick with that.
 * If you already use one of the StarterKits like [[Spacemacs]] or DoomEmacs, then use its Python configuration.
 * If you want to set up a relatively complete environment quickly, then use one of the IDE packages listed below.  Elpy appears to be the most popular Python-specific IDE package, while LspMode supports many languages and has gained a lot of developer attention.
 * If you want complete control then select any packages you want from the Support Features section.  
