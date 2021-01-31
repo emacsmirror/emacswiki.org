@@ -157,7 +157,7 @@ Elpy supports the standard unittest discovery runner, the Django discovery runne
 [https://melpa.org/#/pycoverage pycoverage] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage as below.
 {{{
   (flycheck-define-checker python-pycoverage
-    "A Python test coverage checker checker using the pycoverage tool.
+    "A Python test coverage checker using the pycoverage tool.
 
 See `https://github.com/mattharrison/pycoverage.el'.
 
