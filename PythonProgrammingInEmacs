@@ -278,8 +278,14 @@ For more basic configuration, so that `info-lookup-symbol' searches the Python d
 ===Cython===
 See CythonMode
 
-=== Unicode on Mac OS X === 
-When using Emacs 24.1 on Mac OS X compiled via homebrew. The python-shell always used US-ASCII as encoding. To fix it I used:
+===Editing pip requirements files===
+[https://melpa.org/#/pip-requirements pip-requirements] is a major mode for editing pip requirements files, with support for syntax highlighting, togglable comments and auto-completion of package names from !PyPI.
+
+===Troubleshooting===
+==== Unicode encoding in python-shell on Mac OS X ====
+(This problem does not occur when using Python 3, macOS 10.15, and Emacs 27.1 from https://emacsformacosx.com).
+
+When using Emacs 24.1 on Mac OS X compiled via homebrew, the python-shell always used US-ASCII as encoding. To fix it I used:
 <pre>
 (setenv "LC_CTYPE" "UTF-8")
 (setenv "LC_ALL" "en_US.UTF-8")
@@ -296,9 +302,6 @@ Not having the right encoding set leads to errors in ipython:
 <pre>
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
 </pre>
-
-===Editing pip requirements files===
-[https://melpa.org/#/pip-requirements pip-requirements] is a major mode for editing pip requirements files, with support for syntax highlighting, togglable comments and auto-completion of package names from !PyPI.
 
 ===How to improve this page===
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
