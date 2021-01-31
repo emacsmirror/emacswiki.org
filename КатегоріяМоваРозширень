@@ -1,0 +1,33 @@
+[[en:CategoryExtensionLanguage]]
+
+Клацніть на заголовку, щоб переглянути список усіх дискусій про альтернативні мови розширень. Emacs і XEmacs є найпопулярнішими рушіями Lisp. Коли розвиваються нові інтерпретовані мови EmacsLisp не повинен залишатися єдиним вибором. Дивіться ExtensionLanguageAdvocacy для блукання.
+
+Цікавий погляд на мови розширень у статті [http://www.advogato.org/article/550.html#12 Порівняння різних стратегій додавання скриптів у програму], особливо останній коментар.
+
+* ErlangEmacs -- використовує Erlang
+* GuileEmacs -- використовує Guile (Scheme) і Lisp
+* JavaEmacs -- реалізовано на Kawa, тому використовує Scheme і Java
+* PyMacs -- використовує Python для зовнішніх процесів
+* EmacsLispForRuby -- (el4r) використовує Ruby для зовнішніх процесів
+* EmacsEpl -- Perl-модуль Emacs::EPL, щоб використовувати Perl для зовнішніх процесів
+** PerlMacs -- використовує Perl та Lisp (заміняється EPL)
+* CommonLispEmacs -- використовує CommonLisp (ще не юзабельне)
+* EmacsCommonLisp -- бібліотека на EmacsLisp, що дозволяє GNU Emacs і XEmacs розуміти CommonLisp
+* EdWin -- використовує scheme і написано на MitSlashGnuScheme
+* EmacsObjectOrientedProgrammingSystem -- реалізація мов подібних до Smalltalk-80 у GNU EmacsLisp
+* [[Zile]] -- використовує Lua, у попередніх версіях використовувалася Zile Lisp
+* ZileOnGuile - випробування концепції злому Zile на базі C з підтримкою Guile
+* https://github.com/knupfer/haskell-emacs -- Haskell
+* https://github.com/janestreet/ecaml -- OCaml
+
+Не Emacs, але можна згадати:
+
+* TeXmacs -- використовує Guile (Scheme)
+* EfunsEditor -- маленький текстовий редактор, повністю написаний на ObjectiveCaml
+* MicroEmacs -- також маленький, ним користується Лінус, має власну мову розширень
+
+Див.також [[EmacsImplementations|РеалізаціїEmacs]].
+
+----
+КатегоріяКод
+
