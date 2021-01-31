@@ -281,8 +281,8 @@ See CythonMode
 ===Editing pip requirements files===
 [https://melpa.org/#/pip-requirements pip-requirements] is a major mode for editing pip requirements files, with support for syntax highlighting, togglable comments and auto-completion of package names from !PyPI.
 
-===Troubleshooting===
-==== Unicode encoding in python-shell on Mac OS X ====
+==Troubleshooting==
+=== Unicode encoding in python-shell on Mac OS X ===
 (This problem does not occur when using Python 3, macOS 10.15, and Emacs 27.1 from https://emacsformacosx.com).
 
 When using Emacs 24.1 on Mac OS X compiled via homebrew, the python-shell always used US-ASCII as encoding. To fix it I used:
@@ -303,7 +303,7 @@ Not having the right encoding set leads to errors in ipython:
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
 </pre>
 
-===How to improve this page===
+==How to improve this page==
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
 
 Add sections on: profiling, semantic editing (?), 
