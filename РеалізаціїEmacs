@@ -1,0 +1,63 @@
+[[en:EmacsImplementations]]
+[[ja:イーマックスの実装]]
+== Локально документовані ==
+Основна течія GNU Emacs і похідні:
+* GnuEmacs
+* [[XEmacs]] -- колишній LucidEmacs
+* [[SXEmacs]] -- форк від [[XEmacs]]
+
+Інші реалізації, які все ще живі:
+* µEmacs (також знаний як uemacs, також MicroEmacs) --- маленький, легкий консольний Emacs
+** memacs --- японський варіянт µemacs
+** Jasspa MicroEmacs --- напівкомерційна розробка MicroEmacs
+* GNU [[Zile]] -- крихітний клон Emacs.
+* EdWin -- на базі [[Scheme]], міститься у GNU/MIT Scheme.
+* EfunsEditor -- на базі ObjectiveCaml.
+* [[Mg]] -- легкий public-domain клон Emacs 
+* [[Zmacs]], портування редактора інтеґрованого у деякі IDE машин Lisp
+* [[Ymacs]] -- Emacs написаний на мові AJAX для веб (напр., вставляється на вебсторінках)
+* [[9ne]], легкий Emacs для HTML/Java
+* варіянти на CommonLisp:
+** [[Climacs]], реалізація Emacs на Common Lisp
+** Second Climacs (наступник Climacs, в процесі розробки)
+** [[PortableHemlock]], версія Hemlock на Common Lisp, „щоб звільнити ув'язнений у CMUCL Hemlock”
+
+Інші більш-менш незрозумілі реалізації:
+* ErlangEmacs
+* GuileEmacs
+* JavaEmacs
+* [[Jove]]
+* [[QEmacs]]
+
+Історичні реалізації та попередники сучасних Емаксів:
+* TecoEmacs (одна з найперших реалізацій; RMS написав свій перший „Editor MACroS” на мові шифрованих скриптів TECO)
+* [[EINE]] „EINE Is Not Emacs” (навмисний каламбур: eine німецькою - перший)
+* [[ZWEI]] „ZWEI Was EINE Initially” (навмисний каламбур: zwei німецькою - другий)
+* MulticsEmacs
+* [[Hemlock]], входить у CMU Common Lisp як (ed)
+* [[Zmacs]], інтеґрований у деякі середовища розробки на машинах Lisp
+
+
+Не локально документовані:
+* EmACT на http://www.eligis.com/emacs йде з бінарниками Win32.
+* PceEmacs на http://www.swi-prolog.org/PceEmacs.html
+
+
+Емуляції, не реалізації:
+* [[jed]] -- JED це текстовий редактор, що широко використовує бібліотеку S-Lang.
+
+
+== Повний список ==
+* http://www.finseth.com/emacs.html
+
+Дуже довгий список.
+
+Цей документ від CraigFinseth надає частковий і не всеосяжний перелік реалізацій редакторів типу Emacs і літературу до них. Ви можете зробити його більш всеосяжним надіславши автору додаткову інформацію та/або оновлення.
+
+Цей документ поступово набуває ролі репозиторію (принаймні) для історії Emacs.
+Поки хтось (<i>не</i> автор) не напише книжку на цю тему, даний документ, ймовірно, буде її заміняти.
+
+Див.також: EditorsUsedByOthers
+
+----
+КатегоріяІсторія КатегоріяПортування
