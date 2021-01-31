@@ -195,6 +195,11 @@ To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as
 ====dap-mode====
 [https://melpa.org/#/dap-mode dap-mode] supports debugging using implementations of the [https://microsoft.github.io/debug-adapter-protocol/ Debug Adapter Protocol], and will be configured automatically by LspMode when available.  See the [https://emacs-lsp.github.io/dap-mode/ main docs] and [https://emacs-lsp.github.io/dap-mode/page/configuration/ configuration guide]. 
 
+===Profiling===
+Viewing the results from [https://docs.python.org/3/library/profile.html the Python profilers]:
+* [https://github.com/GioBo/py-prof py-prof] provides an interactive table for viewing cProfile output in Emacs
+* The Python [https://docs.python.org/3/library/profile.html#module-pstats pstats] module provides an interactive tool when a script from a regular shell in Emacs; it can also be used in a Python shell running in Emacs.
+
 === Interactive environments - Shells, REPLs and notebooks ===
 ====The Python shell====
 You can open an interactive Python shell with `run-python' ("C-c C-p"), and send code for execution by the shell process using the `python-shell-send-*' functions.
@@ -306,7 +311,7 @@ ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode=
 ==How to improve this page==
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
 
-Add sections on: profiling, semantic editing (?), 
+Add sections on: semantic editing (a la paredit), 
 
 Extend sections on: refactoring, code navigation.
 
