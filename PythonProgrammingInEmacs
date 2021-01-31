@@ -37,7 +37,7 @@ Any of the main [LanguageServerProtocol] packages should support Python programm
 == Support Features ==
 Various features that can be added to or improved in Emacs.  Note that the IDE packages listed above provide many of these using packages referred to below.
 
-===Virtual Environments==
+===Virtual environments==
 There is some built-in support for virtual environments in python.el, but these packages provide more features.
 * [https://github.com/jorgenschaefer/pyvenv pyvenv] - used in elpy, written by the same author. [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] provides automatic activation.
 * [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], including automatic activation via [[Projectile]].
