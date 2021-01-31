@@ -21,7 +21,7 @@ These provide powerful and relatively complete environments by combining and cus
 ===Doom===
 * [https://github.com/hlissner/doom-emacs/blob/91ced7997537cc692e2a06294a428c5b4037d687/modules/lang/python/README.org Python module] for DoomEmacs.  
 ===Elpy===
-* [https://github.com/jorgenschaefer/elpy Elpy]
+* [https://github.com/jorgenschaefer/elpy Elpy].  The installation instructions are [https://elpy.readthedocs.io/en/latest/introduction.html#installation here].
 ===Language Server Protocol===
 Any of the main [LanguageServerProtocol] packages should support Python programming with a variety of backends.  [LspMode] provides these guides to configuring backends
 * [https://emacs-lsp.github.io/lsp-mode/page/lsp-jedi/ Jedi language server]
