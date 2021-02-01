@@ -9,7 +9,7 @@ format, visit http://fountain.io.
 * WYSIWYG auto-align elements (display only, does not modify file contents) specific to script format, e.g. screenplay, stageplay or user-defined format
 * Traditional TAB auto-completion writing style
 * Navigation by section, scene, character name, or page
-* Integration with `outline` to fold/cycle visibility of sections, scenes and notes
+* Integration with `outline' to fold/cycle visibility of sections, scenes and notes
 * Integration with `electric-pair-mode' to insert emphasis delimiters with single key (i.e. `*' or `_')
 * Integration with `imenu' (sections, scene headings, notes)
 * Intergration with `auto-insert' for title page metadata
