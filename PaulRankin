@@ -1,9 +1,12 @@
 Contributions:
 
-* FountainMode
-* Olivetti https://github.com/rnkn/olivetti
+* FountainMode -- screenwriting major mode
+* [https://github.com/rnkn/olivetti Olivetti] -- minor mode to balance window margins
+* [https://github.com/rnkn/binder Binder] -- global minor mode to work with multi-file writing projects
+* [https://github.com/rnkn/freeze-it Freeze-It] -- make your previous writing read-only
+* [https://github.com/rnkn/side-notes Side Notes] -- quick access to a notes file in a side window
 
-Elsewhere: http://www.paulwrankin.com
+Elsewhere: https://bydasein.com
 
 
 [new:DrewAdams:2014-01-27 03:33 UTC]
