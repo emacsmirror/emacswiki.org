@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 30 13:47:11 2020 (-0800)
+;; Last-Updated: Mon Feb  1 15:31:41 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 1890
+;;     Update #: 1897
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -377,6 +377,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/02/01 dadams
+;;     Added: mouse3-mark-region-with-char.
+;;     mouse3-dired-add-region-menu: Added Mark with Char (mouse3-mark-region-with-char).
 ;; 2020/12/26 dadams
 ;;     mouse3-region-popup-(change-text-submenu|x-popup-panes): Added transpose-regions, indent-rigidly.
 ;;     mouse3-region-popup-(check-convert-submenu|x-popup-panes): Added: org-table-convert-region.
@@ -2050,6 +2053,7 @@ Provides commands to act on the selected files and directories."
          `((dired-menu
             "Selected Files" keymap
             (mark-region   menu-item "Mark"                   mouse3-dired-mark-region-files)
+            (mark-region-with-char menu-item "Mark with Char" mouse3-mark-region-with-char)
             (unmark-region menu-item "Unmark"                 mouse3-dired-unmark-region-files)
             (toggle-marked menu-item "Toggle Marked/Unmarked" mouse3-dired-toggle-marks-in-region-from-mouse)
             (flag          menu-item "Flag for Deletion"      mouse3-dired-flag-region-files-for-deletion)
@@ -2148,8 +2152,9 @@ Optional arg MARK-CHAR is the type of mark to check.
                            (not (looking-at (concat "^" (regexp-quote (char-to-string mark-char)))))
                          (looking-at "^ ")))))
 
+ ; Same as `diredp-mark-region-files', except uses `dired-mark-if', not `diredp-mark-if'.
 ;;;###autoload
-(defun mouse3-dired-mark-region-files (&optional unmark-p) ; Same as `diredp-mark-region-files'.
+(defun mouse3-dired-mark-region-files (&optional unmark-p)
   "Mark all of the files in the current region (if it is active).
 With non-nil prefix arg, unmark them instead."
   (interactive "P")
@@ -2162,8 +2167,32 @@ With non-nil prefix arg, unmark them instead."
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p))
                      "region file"))))
 
+;; Same as `diredp-mark-region-files-with-char', except uses `dired-mark-if', not `diredp-mark-if'.
 ;;;###autoload
-(defun mouse3-dired-unmark-region-files (&optional mark-p) ; Same as `diredp-unmark-region-files'.
+(defun mouse3-mark-region-with-char (char &optional unmark-p)
+  "Mark lines in active region with CHAR.
+With non-nil prefix arg, unmark CHAR instead."
+  ;; Need workaround - see Emacs bug #46243.
+  ;;(interactive "cMark region with char: \nP")
+  (interactive
+   (progn (message nil)                 ; Workaround for bug #46243.
+          (list (read-char "Mark region with char: ") current-prefix-arg)))
+  (let ((dired-marker-char  char)
+        (beg                        (min (point) (mark)))
+        (end                        (max (point) (mark)))
+        (inhibit-field-text-motion  t)) ; Just in case.
+    (setq beg  (save-excursion (goto-char beg)
+                               (line-beginning-position))
+          end  (save-excursion (goto-char end)
+                               (when (and (bolp) (> end beg)) (backward-char))
+                               (line-end-position)))
+    (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
+      (dired-mark-if (and (<= (point) end)  (>= (point) beg)  (mouse3-dired-this-file-unmarked-p))
+                     "region file"))))
+
+;; Same as `diredp-mark-region-files-with-char', except uses `dired-mark-if', not `diredp-mark-if'.
+;;;###autoload
+(defun mouse3-dired-unmark-region-files (&optional mark-p)
   "Unmark all of the files in the current region (if it is active).
 With non-nil prefix arg, mark them instead."
   (interactive "P")
@@ -2176,8 +2205,9 @@ With non-nil prefix arg, mark them instead."
       (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-marked-p))
                      "region file"))))
 
+;; Same as `diredp-mark-region-files-with-char', except uses `dired-mark-if', not `diredp-mark-if'.
 ;;;###autoload
-(defun mouse3-dired-flag-region-files-for-deletion () ; Same as `diredp-flag-region-files-for-deletion'.
+(defun mouse3-dired-flag-region-files-for-deletion ()
   "Flag all of the files in the current region (if it is active) for deletion."
   (interactive)
   (let ((beg                        (min (point) (mark)))
