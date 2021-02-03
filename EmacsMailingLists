@@ -36,6 +36,7 @@
 (also one of the EmacsNewsgroups).
 ; [::debian-emacsen], mailto:debian-emacsen@lists.debian.org: Support and developer discussion on Emacs related packages for Debian GNU/Linux. [http://lists.debian.org/debian-emacsen/ List information, archive]
 ; [::macosx-emacs], mailto:macosx-emacs@email.esm.psu.edu: Support for Emacs on Mac OS X, in particular AquamacsEmacs. [http://www.esm.psu.edu/mac-tex/main.shtml List information], [http://news.gmane.org/gmane.emacs.macintosh.osx Archive]
+; [::emacs-humanities], mailto:emacs-humanities@gnu.org: people who use Emacs for things wholly unrelated to programming. [https://lists.gnu.org/archive/html/emacs-humanities/ Archive]. [https://lists.gnu.org/archive/html/emacs-humanities/2020-12/msg00005.html Why Emacs-humanities?]
 
 = Mailing lists via news =
 
