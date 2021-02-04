@@ -1,15 +1,16 @@
-I use this to clean up some conflicting duplicated key bindings. This function is relatively simple to use interactively, and with M-x repeat complex command you can put it somewhere in your .emacs file
+I use this to clean up some conflicting duplicated key bindings. This function is relatively simple to use interactively, and with <kbd>M-x</kbd> <kbd>repeat-complex-command</kbd> you can put it somewhere in your <code>‘~/.emacs’</code> file
 
+{{{
+(defun get-key-combo (key)
+  "Just return the key combo entered by the user" 
+  (interactive "kKey combo: ")
+  key)
+}}}
 
-    (defun get-key-combo (key)
-      "Just return the key combo entered by the user" 
-      (interactive "kKey combo: ")
-      key)
-
-
-  (defun keymap-unset-key (key keymap)
+{{{
+(defun keymap-unset-key (key keymap)
   "Remove binding of KEY in a keymap 
-    KEY is a string or vector representing a sequence of keystrokes."
+KEY is a string or vector representing a sequence of keystrokes."
   (interactive
    (list (call-interactively #'get-key-combo)
 	 (completing-read "Which map: " minor-mode-map-alist nil t)))
@@ -17,21 +18,31 @@ I use this to clean up some conflicting duplicated key bindings. This function i
     (when map
       (define-key map key nil)
       (message  "%s unbound for %s" key keymap))))
+}}}
 
+{{{
+;; <C-right> (translated from <C-S-right>) runs the command paredit-forward-slurp-sexp
+(keymap-unset-key [C-right] "paredit-mode")
+;; It is still bound to C-)
+}}}
 
-    ;; <C-right> (translated from <C-S-right>) runs the command paredit-forward-slurp-sexp
-    (keymap-unset-key [C-right] "paredit-mode")
-    ;; It is still bound to C-)
+{{{
+;; <C-left> (translated from <C-S-left>) runs the command paredit-forward-barf-sexp
+(keymap-unset-key [C-left] "paredit-mode")
+;; It is still bound to C-}
+}}}
 
-    ;; <C-left> (translated from <C-S-left>) runs the command paredit-forward-barf-sexp
-    (keymap-unset-key [C-left] "paredit-mode")
-    ;; It is still bound to C-}
+{{{
+;; <C-M-right> runs the command paredit-backward-barf-sexp
+(keymap-unset-key [C-M-right] "paredit-mode")
+;; It is still bound to C-{, ESC <C-right>.
+}}}
 
-    ;; <C-M-right> runs the command paredit-backward-barf-sexp
-    (keymap-unset-key [C-M-right] "paredit-mode")
-    ;; It is still bound to C-{, ESC <C-right>.
+{{{
+;; <C-M-left> runs the command paredit-backward-slurp-sexp
+(keymap-unset-key [C-M-left] "paredit-mode")
+;; It is still bound to C-(, ESC <C-left>.
+}}}
 
-    ;; <C-M-left> runs the command paredit-backward-slurp-sexp
-    (keymap-unset-key [C-M-left] "paredit-mode")
-    ;; It is still bound to C-(, ESC <C-left>.
-
+----
+CategoryKeys
