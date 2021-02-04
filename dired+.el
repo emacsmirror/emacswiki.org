@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  1 15:37:06 2021 (-0800)
+;; Last-Updated: Thu Feb  4 11:27:34 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12789
+;;     Update #: 12792
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -845,6 +845,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/02/04 dadams
+;;     diredp-mark(-region-files)-with-char: Updated since bug #46243 is now fixed (for Emacs 28+).
 ;; 2021/02/01 dadams
 ;;     Added: diredp-mark-region-files-with-char, diredp-mark-with-char.
 ;;     diredp-marks-mark-menu, diredp-mouse-3-menu: Added items for diredp-mark(-region-files)-with-char.
@@ -12404,10 +12406,10 @@ Optional arg MARK-CHAR is the type of mark to check.
 (defun diredp-mark-with-char (char &optional arg) ; Not bound, except in menus
   "Mark this line with CHAR.
 With numeric prefix arg N, mark the next N lines."
-  ;; Need workaround - see Emacs bug #46243.
+  ;; Need workaround for Emacs < 28 - see Emacs bug #46243.
   ;; (interactive "cMark this line with char: \np")
   (interactive
-   (progn (message nil)                 ; Workaround for bug #46243.
+   (progn (when (< emacs-major-version 28) (message nil)) ; Workaround for bug #46243.
           (list (read-char "Mark this line with char: ")
                 (prefix-numeric-value current-prefix-arg))))
   (let ((dired-marker-char  char)) (dired-mark arg)))
@@ -12416,10 +12418,10 @@ With numeric prefix arg N, mark the next N lines."
 (defun diredp-mark-region-files-with-char (char &optional unmark-p) ; Not bound, except in menus
   "Mark lines in active region with CHAR.
 With non-nil prefix arg, unmark CHAR instead."
-  ;; Need workaround - see Emacs bug #46243.
+  ;; Need workaround for Emacs < 28 - see Emacs bug #46243.
   ;;(interactive "cMark region with char: \nP")
   (interactive
-   (progn (message nil)                 ; Workaround for bug #46243.
+   (progn (when (< emacs-major-version 28) (message nil)) ; Workaround for bug #46243.
           (list (read-char "Mark region with char: ") current-prefix-arg)))
   (let ((dired-marker-char  char)
         (beg                        (min (point) (mark)))
