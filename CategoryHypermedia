@@ -10,10 +10,13 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * [[eww]] --- a light-weight configurable web browser
 * [[w3]] --- another web browser (not to be confused with w3m/emacs-w3m!)
 
-= Web/HTML/XML related ==
+== Web/HTML/XML related ==
+=== Browsing ===
 * CategoryWebBrowser -- Browsing in Emacs, interacting with external web browsers.
 * [[Anything]] -- Open URL via `M-x anything-find-files'
 * BrowseURN -- Resolving URNs with Emacs.
+* [[emacs-w3m]] --- an integration mode for the w3m text mode browser, with graphics
+=== Editing ===
 * CascadingStyleSheetMode -- Simple mode for editing CSS style sheets.
 * HtmlAccent -- Replaces special char by their html representation.
 * HtmlMode -- Editing HTML with Emacs.
@@ -23,13 +26,13 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * AtomBlogger -- Creating/Editting Blogger posts.
 * SaveAsHtml, HtmlFontify -- Save files in HTML format.
 * HtmlLite -- Construct html pages with sexps.
+=== Servers ===
 * HttpServer
 ** EmacsHttpd -- HTTP server embedded in the Emacs.
 ** ElServ -- Another HTTP server embedded in Emacs.
 ** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], yet another HTTP server embedded in Emacs.
 ** Phase -- [http://synthcode.com/emacs/ phase.el], a development server supporting CGI and embedded Emacs Lisp.
 ** [[emacs-server]] --- an HTTP server in ELisp
-* [[emacs-w3m]] --- an integration mode for the w3m text mode browser, with graphics
 
 == Wiki modes ==
 * WikiModes -- Comparing emacs-wiki.el and wiki.el (which see).
@@ -78,3 +81,6 @@ going to be a real mess. Suggestions on what we could do ? -- XavierMaillard
 
 [new]
 How is this for a start?  I took the liberty to put a few categories here and add a bit of useful stuff. ––mangledmind
+
+[new] 
+I followed up with separating out browsing, editing, and serving -- seems like it cleans things up a bit. -- dat
