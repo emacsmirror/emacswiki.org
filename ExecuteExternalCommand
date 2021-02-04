@@ -197,6 +197,6 @@ Answer:
 == See Also ==
 
 * [[ex]] -- Function `ex-defun' defines an EmacsLisp function that does its job by invoking an external interpreted language
-
+* [[https://github.com/bard/emacs-run-command run-command]] -- Package `run-command' allows creating dynamic lists of external commands and selecting from them using auto-completion
 ----
 CategoryExternalUtilities
