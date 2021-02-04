@@ -85,6 +85,7 @@ MenuAccessFromKeyboard provides info about using menus from the keyboard (withou
 * [[iTerm2]] -- For OSX users who use ssh, allows you to bind custom keys to escape sequences really easily
 * [[Accelerate]] -- Change the behaviour of a command when its key is auto-repeated
 * Lisp:speedkey.el -- Create a set of keybindings easily, with a help text
+* [[keymap-unset-key]] -- Find keys that overlap in some keymaps and rebind them
 * Binding <code><return></code> to `RET' -- If your version of Emacs does not bind <code><return></code> to anything, do this:  -- AlexSchroeder
 
              (global-set-key (kbd "<return>") (kbd "RET"))
