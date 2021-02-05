@@ -935,4 +935,5 @@ One option would be to enable whitespace-mode for each buffer instead of global-
 
 CategoryCode,
 CategoryModes,
-CategoryFaces
+CategoryFaces,
+ProgrammingModes
