@@ -78,6 +78,7 @@ MenuAccessFromKeyboard provides info about using menus from the keyboard (withou
 * KeyboardRate -- Change keyboard rate from emacs.
 * MissingKeys -- How to make undefined keys accessible
 * ConsoleKeys -- Emacs keys on the Linux console, even C-M-H-internet
+* FreeBSDConsoleKeys -- Fix minor issues on the FreeBSD console with a new keymap
 * ScreenKeys -- Similar to the above, for screen(1)
 * BindingControlReturn -- How to bind Control-Return in a local mode
 * OpeningQuote -- How to type `this' easily on keyboards where only ' is easily accessed
