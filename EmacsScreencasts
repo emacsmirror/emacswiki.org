@@ -116,6 +116,12 @@ workflows that can help you use Emacs more effectively.
 * [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV John Kitchin's Org Mode playlist, especially the Emacs + org-mode + python in reproducible research; SciPy 2013 Presentation]
 * [https://www.youtube.com/watch?v=CGnt_PWoM5Y Org-mode for Reproducible Research by Evan Misshula] (1:04:15)
 
+== Channels and streams ==
+
+* [https://www.youtube.com/channel/UC0uTPqBCFIpZxlz_Lv1tk_g Protesilaos Stavrou]
+* https://www.youtube.com/c/SystemCrafters
+* https://www.twitch.tv/jordigh
+
 == Tips for creating screencasts ==
 
 * ScreencastMode (everywhere, but only inside Emacs) and ScreencastRecord (GNU/Linux, FreeBSD - ogg, ie only open formats) are modes for creating screencasts from within Emacs easily.
