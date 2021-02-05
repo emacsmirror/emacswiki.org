@@ -23,7 +23,7 @@ and make emacs translate them into M-Fn.
 Some of these are obviously not written yet ;)
 
 * LinuxConsoleKeys -- configuring the Linux Console
-* FreeBSDConsoleKeys
+* FreeBSDConsoleKeys -- minor fixes for issues on the FreeBSD console
 * SolarisConsoleKeys -- this should possibly be called Screen,
 change the title before writing the page, if so.
 
