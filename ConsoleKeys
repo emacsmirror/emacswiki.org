@@ -8,7 +8,7 @@ I first implemented this on the linux console, where the Fn keys are
 represented by a string or sequence of weird characters, which emacs
 will then translate into the appropriate FunctionKeys.
 
-My keyboard has two <> buttons (that is a diamond) that I wanted to
+My keyboard has two ◆ buttons (that is a diamond) that I wanted to
 use as meta keys, so I configured them to act as the meta modifier
 instead of alt, like I had previously done in X.
 
@@ -41,7 +41,9 @@ Please add whatever terminal info you can ;-)
 To make emacs translate your sequence into keys, you add it to
 function-key-map with define-key, like so:
 
-    (define-key function-key-map "^[[^[[[A" (kbd "M-<f1>"))
+{{{
+(define-key function-key-map "^[[^[[[A" (kbd "M-<f1>"))
+}}}
 
 This is the string I chose to represent M-f1, The ^[ is really the ESC
 key, you can insert it into a buffer with C-q ESC.  It is a good idea
