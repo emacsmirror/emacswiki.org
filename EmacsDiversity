@@ -14,7 +14,7 @@ Goals for this page:
 * [https://www.pixelstech.net/article/1375065327-Those-famous-Emacs-users Those famous Emacs users] ([https://www.reddit.com/r/emacs/comments/34sjoc/famous_emacs_users/ Reddit]), [http://wenshanren.org/?p=418 Famous Emacs Users (that are not famous for using Emacs)] ([https://www.reddit.com/r/emacs/comments/1ix4ro/famous_emacs_users_that_are_not_famous_for_using/ Reddit])
 * [https://www.networkworld.com/article/2221149/interview-with-a-pirate.html Amelia Andersdotter]: The Pirate Party, politician
 
-== Non-programming uses ==
+== Non-programming uses and people ==
 
 * [https://bofh.org.uk/2019/02/25/baking-with-emacs/ Running a bakery on Emacs and PostgreSQL]
 * [https://github.com/frankjonen/emacs-for-writers Emacs for writers], [https://jacmoes.wordpress.com/2019/09/24/creative-writing-with-emacs/ Creative writing with Emacs], CategoryWriting
@@ -31,6 +31,7 @@ Goals for this page:
 ** [https://www.reddit.com/r/emacs/comments/jjxatm/whats_your_job_whats_your_daily_emacs_workflow/gahzp63/?utm_source=reddit&utm_medium=web2x&context=3 Economic historian]
 * [https://www.reddit.com/r/emacs/comments/233607/what_do_you_use_emacs_for_other_than/ What do you use emacs for *other* than programming/editing?]
 * [https://emacsconf.org/2020/talks/31/ Lakota languages and Emacs]
+* [https://www.gnu.org/gnu/rms-lisp.en.html]: "Multics Emacs proved to be a great success — programming new editing commands was so convenient that even the secretaries in his office started learning how to use it. They used a manual someone had written which showed how to extend Emacs, but didn't say it was programming. So the secretaries, who believed they couldn't do programming, weren't scared off. They read the manual, discovered they could do useful things and they learned to program."
 
 == Alternative input and output ==
 
