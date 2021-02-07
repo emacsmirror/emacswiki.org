@@ -5,41 +5,48 @@
 
 This category is about help with '''''Emacs'''''. See also CategoryDocumentation.
 
+[:newbie]
 == Newbie and not-so-newbie ==
-* '''EmacsNewbie''' '''''<===== START HERE'''''
+
+* '''EmacsNewbie''' '''''← START HERE'''''
 * CategoryGlossary -- Emacs jargon explained
 * EmacsNewbieHelpReference
 * EmacsNewbieKeyReference
 
-
-==Emacs help from within Emacs ==
+[:emacshelp]
+== Emacs help from within Emacs ==
 
 * AproposMode -- Search Emacs for commands, documentation, variables, and more
 * ElectricHelp
-* InfoMode -- ''complete'' Emacs documentation: `C-h i', then click ''Emacs''
+* InfoMode -- ''complete'' Emacs documentation: <kbd>C-h i</kbd>, then click ''Emacs''
 * LearnEmacsLisp -- Using EmacsLisp with Emacs is helpful.
 * SelfDocumentation -- quick reference on finding help within Emacs
 * [[Context sensitive help]] -- getting help for the major mode you're working with
 
-==Emacs help from the Internet==
+[:internethelp]
+== Emacs help from the Internet ==
 
-* '''OnlineResources''' -- help on the Internet, mailing lists, newsgroups, tutorials...
+* '''OnlineResources''' -- help on the Internet, mailing lists, newsgroups, tutorials…
 * EmacsScreencasts
 * EmacsChannel -- InternetRelayChat, IRC
 * OpenQuestions -- questions and answers about Emacs posted on the wiki
 * CategoryReferenceSheet -- Cheat Sheets and command/keybinding xrefs
 * [http://emacs.stackexchange.com/ Stack Exchange site dedicated to Emacs]
+* EmacsLife -- An organized list of links to resources for beginner & intermediate Emacs users by SachaChua
 
-==Personal initialization files==
+[:initfiles]
+== Personal initialization files ==
 
 * CategoryDotEmacs
 * EmacsMacro
 
-==Loading Emacs libraries==
+[:emacslibs]
+== Loading Emacs libraries ==
 
 * InstallingPackages -- how to load EmacsLisp libraries.
 
-==Packages that extend or modify standard Emacs help==
+[:packages]
+== Packages that extend or modify standard Emacs help ==
 
 * AproposUnicode -- apropos for Unicode characters
 * EmacsReflector (speak-freely conference server)
@@ -51,7 +58,7 @@ This category is about help with '''''Emacs'''''. See also CategoryDocumentation
 * InfoLook -- lookup info documentation for functions, variables etc. in many major modes
 * ReferenceSheetHelpUtils -- Help Emacs help you help Emacs help you...
 * UsageMemo -- integration of Emacs help system and memo
-* [http://user42.tuxfamily.org/help-xref-elfiles/index.html help-xref-elfiles.el] -- buttonize <code>foo.el</code> and <code>.emacs</code> in docstrings
+* [http://user42.tuxfamily.org/help-xref-elfiles/index.html help-xref-elfiles.el] -- buttonize <code>`foo.el'</code> and <code>`.emacs'</code> in docstrings
 
 ----
 
