@@ -20,3 +20,6 @@ I wanted to advise you to send your report to the maintainer of <tt>[[sticky-win
 
 [new]
 For me it works just fine in Emacs 24.3.1. Note that unlocking is done by running the sticky-window-keep-window-visible function with a prefix arg. -- [[PeterAllin]]
+
+[suggestion]
+Perhaps it'd make sense to include https://www.emacswiki.org/emacs/StickyBufferMode as part of this package?  They seem to go together.
