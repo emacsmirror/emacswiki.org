@@ -1,1 +1,8 @@
-Emacs Life: http://emacslife.com
+[http://emacslife.com/ Emacs Life], is a website that can be found at: http://emacslife.com/. It’s an organized list of links to articles, tutorials, videos and other resources from around the web for beginner up to intermediate Emacs users, put together by SachaChua.  A particular focus of the site is starting with, and improving your use of OrgMode.
+
+The site is dual-licensed under the [https://creativecommons.org/licenses/by/4.0/ Creative Commons Attribution] and the [https://www.gnu.org/licenses/fdl-1.3.html#content GNU Free Documentation License].
+
+The site is developed on, and its source repository can be found [https://github.com/sachac/emacs-notes on Sacha Chua’s GitHub].
+
+----
+CategoryHelp
