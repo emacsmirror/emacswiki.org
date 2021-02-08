@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb  4 11:27:34 2021 (-0800)
+;; Last-Updated: Sun Feb  7 18:00:38 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12792
+;;     Update #: 12811
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -536,7 +536,7 @@
 ;;    `diredp-image-show-this-file', `diredp-insert-as-subdir',
 ;;    `diredp-insert-subdirs', `diredp-insert-subdirs-recursive',
 ;;    `diredp-kill-this-tree', `diredp-list-marked-recursive',
-;;    `diredp-load-this-file', `diredp-mark-autofiles',
+;;    `diredp-load-this-file', `diredp-mark', `diredp-mark-autofiles',
 ;;    `diredp-marked', `diredp-marked-other-window',
 ;;    `diredp-marked-recursive',
 ;;    `diredp-marked-recursive-other-window',
@@ -845,6 +845,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/02/07 dadams
+;;     Added: diredp-mark.  Give it dired-mark's keys.
+;;     diredp-mark-region-files: Non-negative prefix arg now prompts for the CHAR to mark with.
 ;; 2021/02/04 dadams
 ;;     diredp-mark(-region-files)-with-char: Updated since bug #46243 is now fixed (for Emacs 28+).
 ;; 2021/02/01 dadams
@@ -10673,7 +10676,7 @@ Use \\[dired-hide-subdir] to (un)hide a particular subdirectory."
 ;; 2. Do not move to the next subdir.
 ;;
 ;;;###autoload
-(defun diredp-hide-subdir-nomove (arg &optional next)
+(defun diredp-hide-subdir-nomove (arg &optional next) ; Bound to `$'
     "Hide or unhide the current directory.
 Unlike `dired-hide-subdir', this does not advance the cursor to the
 next directory header line.
@@ -12402,6 +12405,41 @@ Optional arg MARK-CHAR is the type of mark to check.
                                                      (concat "^" (regexp-quote (char-to-string mark-char)))))
                                              (diredp-looking-at-p "^ ")))))
 
+(put 'diredp-mark 'interactive-only t)
+;;;###autoload
+(defun diredp-mark (arg &optional char) ; Bound to `m', `* m'
+  "Mark current line, lines in active region, or lines in subdir listing.
+If the region is active and nonempty:
+ * Mark the lines in the region.
+ * With a prefix arg, you are prompted for the CHAR to mark with.
+
+If cursor is on a subdir line:
+ * Mark all lines in the subdir listing except dirs `.' and `..'.
+ * With a prefix arg, you are prompted for the CHAR to mark with.
+
+Otherwise, with numeric prefix arg N, mark the next N lines.
+
+Use \\<dired-mode-map>`\\[dired-unmark-all-files]' to remove marks everywhere, \
+or `\\[dired-unmark]' on a subdir line to
+remove marks in the subdir listing."
+  (interactive "P")
+  (let ((dired-marker-char  dired-marker-char))
+    (cond ((diredp-nonempty-region-p)
+           (when arg
+             (when (< emacs-major-version 28) (message nil)) ; Workaround for bug #46243.
+             (setq dired-marker-char  (read-char "Mark region lines with char: ")))
+           (diredp-mark-region-files))
+          ((dired-get-subdir)
+           (when arg
+             (when (< emacs-major-version 28) (message nil)) ; Workaround for bug #46243.
+             (setq dired-marker-char  (read-char "Mark subdir lines with char: ")))
+           (save-excursion (dired-mark-subdir-files)))
+          (t
+           (let ((inhibit-read-only  t))
+             (dired-repeat-over-lines
+              (prefix-numeric-value arg)
+              (lambda () (delete-char 1) (insert dired-marker-char))))))))
+
 ;;;###autoload
 (defun diredp-mark-with-char (char &optional arg) ; Not bound, except in menus
   "Mark this line with CHAR.
@@ -12567,7 +12605,7 @@ With non-nil prefix arg, mark them instead."
                                                'diredp-describe-file
                                                'diredp-describe-autofile)] ; Requires `bookmark+.el'
                              ;; Stuff from `Marks' menu.
-                             ["Mark"  dired-mark
+                             ["Mark"  diredp-mark
                               :visible (not (eql (dired-file-marker file/dir-name)
                                              dired-marker-char))]
                              ["Mark with Char..."  diredp-mark-with-char] ; But see bug #46243.
@@ -13289,12 +13327,15 @@ Mouse
 Marking
 -------
 
-  \\[dired-mark]\t\t- Mark this file/dir
-  \\[dired-unmark]\t\t- Unmark this file/dir
+  \\[diredp-mark]\t\t- Mark this line or those in region or subdir listing
+  \t\t  Prefix arg (region/subdir): mark with a given char
+  \\[dired-unmark]\t\t- Unmark this line
   \\[dired-toggle-marks]\t\t- Toggle marked/unmarked
   \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
   \\[dired-unmark-all-marks]\t\t- Unmark all
   \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
+  \\[dired-mark-files-regexp]\t\t- Mark/unmark files with names matching a regexp
+  \\[dired-mark-files-containing-regexp]\t\t- Mark/unmark files containing a regexp match
 "
 
     (and (fboundp 'dired-mark-omitted)  ; In `dired-x.el' Emacs 22+.
@@ -15357,6 +15398,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "U"       'dired-unmark-all-marks)                       ; `U'
 (substitute-key-definition 'describe-mode 'diredp-describe-mode                     ; `h', `C-h m'
                            dired-mode-map (current-global-map))
+(substitute-key-definition 'dired-mark 'diredp-mark dired-mode-map)                 ; `m', `* m'
 
 ;; Tags - same keys as in `*Bookmark List*'.
 ;;
