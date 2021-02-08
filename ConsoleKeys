@@ -1,31 +1,32 @@
-These are no longer the days of the VT100 -- when emacs had to rely on
+These are no longer the days of the VT100 -- when Emacs had to rely on
 what the VT could send.
 
-This page is dedicated to getting everything out of emacs keys on the
+This page is dedicated to getting everything out of Emacs keys on the
 console and in a terminal emulator such as xterm.
 
-I first implemented this on the linux console, where the Fn keys are
-represented by a string or sequence of weird characters, which emacs
-will then translate into the appropriate FunctionKeys.
+I first implemented this on the Linux console, where the <kbd>Fn</kbd>
+keys are represented by a string or sequence of weird characters, which
+Emacs will then translate into the appropriate FunctionKeys.
 
-My keyboard has two ◆ buttons (that is a diamond) that I wanted to
-use as meta keys, so I configured them to act as the meta modifier
-instead of alt, like I had previously done in X.
+My keyboard has two <kbd>◆</kbd>-keys (that is a diamond) that I wanted
+to use as meta keys, so I configured them to act as the <kbd>Meta</kbd>
+modifier instead of <kbd>Alt</kbd>, like I had previously done in X.
 
-Then I wanted M-Fn to work as well, since I was using (now) A-Fn to
-switch VTs.
+Then I wanted <kbd>M-Fn</kbd> to work as well, since I was using (now)
+<kbd>Alt-Fn</kbd> to switch VTs.
 
-The solution is quite simple, make M-Fn produce another weird sequence
-and make emacs translate them into M-Fn.
+The solution is quite simple, make <kbd>M-Fn</kbd> produce another weird
+sequence and make Emacs translate them into <kbd>M-Fn</kbd>.
 
-== Configuring Your Console or Terminal to Send Weird Characters ==
+== Configuring your console or terminal to send weird characters ==
 
 Some of these are obviously not written yet ;)
 
 * LinuxConsoleKeys -- configuring the Linux Console
-* FreeBSDConsoleKeys -- minor fixes for issues on the FreeBSD console
-* SolarisConsoleKeys -- this should possibly be called Screen,
-change the title before writing the page, if so.
+* FreeBSDConsoleKeys -- Fix for <kbd>Alt</kbd> not working as
+  <kbd>Meta</kbd> on the FreeBSD console by default
+* SolarisConsoleKeys -- this should possibly be called Screen, change
+  the title before writing the page, if so.
 
 * XTermKeys -- configuring the all powerful xterm
 * RxvtKeys
@@ -35,40 +36,45 @@ change the title before writing the page, if so.
 
 Please add whatever terminal info you can ;-)
 
+== Making Emacs change the sequence into keys ===
 
-== Making Emacs Change the Sequence Into Keys ===
-
-To make emacs translate your sequence into keys, you add it to
-function-key-map with define-key, like so:
+To make Emacs translate your sequence into keys, you add it to
+`function-key-map' with <code>define-key</code>, like so:
 
 {{{
 (define-key function-key-map "^[[^[[[A" (kbd "M-<f1>"))
 }}}
 
-This is the string I chose to represent M-f1, The ^[ is really the ESC
-key, you can insert it into a buffer with C-q ESC.  It is a good idea
-not to choose strings that conflict with string the terminal already
-sends.  For me, "^[[[A" is F1, so I choose to prefix it with ESC but
-didn't feel comfortable with two ESC, since one does sometimes want to
-enter them by the numbers into emacs, so I put a "[" between them.
+This is the string I chose to represent <kbd>M-F1</kbd>, The
+<code>^[</code> is really the <kbd>ESC</kbd> key, you can insert it into
+a buffer with <kbd>C-q ESC</kbd>.  It is a good idea not to choose
+strings that conflict with string the terminal already sends.  For me,
+<code>"^[[[A"</code> is <kbd>F1</kbd>, so I choose to prefix it with
+<kbd>ESC</kbd> but didn't feel comfortable with two <kbd>ESC</kbd>,
+since one does sometimes want to enter them by the numbers into Emacs,
+so I put a "[" between them.
 
+''[Why not use <tt>\e</tt> instead of the literal escape char?  That
+would avoid possible problems when transmitting the file over the
+network.]
 
-''[Why not use <tt>\e</tt> instead of the literal escape char?  That would avoid possible problems when transmitting the file over the network.]
-
-''[Note: Emacs documentation for "Translation Keymaps" suggests <tt>local-function-key-map</tt> over <tt>function-key-map</tt>]
-
+''[Note: Emacs documentation for
+[https://www.gnu.org/software/emacs/manual/html_node/elisp/Translation-Keymaps.html#Keymaps-for-Translating-Sequences-of-Events
+“Translation Keymaps”] suggests `local-function-key-map' over
+`function-key-map']
 
 I can only give the following advice when choosing strings:
 
-* Avoid conflicts with existing strings, eg. do not just append
-to a string to make it different.
-* Do not create anything you're likely to actually type, since emacs
-does not see a difference between what you type and what keys insert
-as strings.
+* Avoid conflicts with existing strings, e.g. do not just append to a
+  string to make it different.
+* Do not create anything you're likely to actually type, since Emacs
+  does not see a difference between what you type and what keys insert
+  as strings.
 
-I would also like to point out that using [(meta f1)] did not work
-exactly in emacs 21.3, but (kdb "M-<f1>") did.  It returns [M-F1].
-There seems to be a slight incompatibility in between them.
+I would also like to point out that using <code>[(meta f1)]</code> did
+not work exactly in Emacs 21.3, but <code>(kdb "M-<f1>")</code> did.
+It returns <code>[M-F1]</code>.  There seems to be a slight
+incompatibility in between them.
 
 ----
 CategoryKeys
