@@ -1,0 +1,21 @@
+I do like the old logo, as it was the default logo when I first started
+using Emacswiki many years ago.  So seeing it gives me nice nostalgic
+fuzzy feelings inside :).  I find the current logo quite bland and
+generic, when I first saw it popping up a couple of years ago, I
+initially thought I'd clicked the wrong bookmark.  I’d love to help with
+the CSS but don't have the time right now.  Also, I think it would be
+better to wait until the redesigned HTML5 output of Oddmuse (with
+<code><head></code>, <code><nav></code>, <code><main></code>,
+<code><article></code>, <code><footer></code>, etc.) is stable.
+
+I quite like the current CSS being used [https://oddmuse.org/ on
+Oddmuse’s homepage] right now.  Couldn't we just use that, but with
+links in an orange color and the old Emacswiki logo?  Why are there
+different features there, like syntax highlighting for non-elisp code?
+
+How would one go about contributing to this?  Should I use Brian Burns'
+code in the [https://github.com/bburns/emacswiki-light-theme GitHub
+repo] you link to as a starting point?
+
+-- Anonymous 2021-02-08 14:24 UTC
+
