@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 26 16:17:07 2019 (-0800)
+;; Last-Updated: Mon Feb  8 18:58:02 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 3343
+;;     Update #: 3346
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -29,16 +29,17 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `beginning-of-line+', `beginning-of-visual-line+',
-;;    `beginning-or-indentation', `chgrp', `chmod', `chown',
-;;    `clear-regexp-search-history', `clear-regexp-search-ring'
-;;    `clear-search-history', `clear-search-ring',
-;;    `clear-search-histories', `comment-region-lines',
-;;    `compare-windows-repeat', `count-chars-in-region',
-;;    `delete-extra-windows-for-buffer', `delete-lines',
-;;    `delete-window-maybe-kill-buffer.', `end-of-line+',
-;;    `end-of-visual-line+.', `forward-char-same-line',
-;;    `forward-overlay', `goto-previous-mark',
+;;    `back-to-indentation+', `beginning-of-line+',
+;;    `beginning-of-visual-line+', `beginning-or-indentation',
+;;    `chgrp', `chmod', `chown', `clear-regexp-search-history',
+;;    `clear-regexp-search-ring' `clear-search-history',
+;;    `clear-search-ring', `clear-search-histories',
+;;    `comment-region-lines', `compare-windows-repeat',
+;;    `count-chars-in-region', `delete-extra-windows-for-buffer',
+;;    `delete-lines', `delete-window-maybe-kill-buffer.',
+;;    `end-of-line+', `end-of-visual-line+.',
+;;    `forward-char-same-line', `forward-overlay',
+;;    `forward-to-indentation+', `goto-previous-mark',
 ;;    `indent-rigidly-tab-stops', `indirect-buffer',
 ;;    `kill-buffer-and-its-windows', `list-colors-nearest',
 ;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
@@ -94,8 +95,8 @@
 ;;   (define-key visual-line-mode-map [end]  'end-of-line+)
 ;;   (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
 ;;   (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)
-;;   (global-set-key "\M-p"           'to-indentation-repeat-backward)
-;;   (global-set-key "\M-n"           'to-indentation-repeat-forward)
+;;   (global-set-key "\M-p"           'back-to-indentation+)
+;;   (global-set-key "\M-n"           'forward-to-indentation+)
 ;;
 ;;   (global-set-key [remap mark-word]       'mark-whole-word)
 ;;   (global-set-key [remap previous-buffer] 'previous-buffer-repeat)
@@ -106,6 +107,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/02/08 dadams
+;;     Renamed to-indentation-repeat-(back|for)ward to (back|forward)-to-indentation+.
+;;       Aliased the old names to the new ones.
 ;; 2019/11/26 dadams
 ;;     (beginning|end)-of(-visual)-line+, mark-whole-word, goto-longest-line:
 ;;       Use command name, not this-command, in case called-interactively.
@@ -410,9 +414,12 @@ Returns the signed number of chars moved if /= ARG, else returns nil."
     (and (< (abs max) (abs arg))  max)))
 
 ;;;###autoload
-(defun to-indentation-repeat-backward ()
+(defalias 'to-indentation-repeat-backward 'back-to-indentation+)
+;;;###autoload
+(defun back-to-indentation+ ()
   "Move to the first non-whitespace char on this line, or eol if none.
-If already there then do the same on the previous line."
+If already there then do the same on the previous line.
+This is a repeatable version of `back-to-indentation'."
   (interactive "^")
   (let ((opt  (point)))
     (back-to-indentation)
@@ -421,9 +428,12 @@ If already there then do the same on the previous line."
       (back-to-indentation))))
 
 ;;;###autoload
-(defun to-indentation-repeat-forward ()
+(defalias 'to-indentation-repeat-forward 'forward-to-indentation+)
+;;;###autoload
+(defun forward-to-indentation+ ()
   "Move to the first non-whitespace char on this line, or eol if none.
-If already there do the same on the next line."
+If already there do the same on the next line.
+This is a repeatable version of `forward-to-indentation'."
   (interactive "^")
   (let ((opt  (point)))
     (back-to-indentation)
