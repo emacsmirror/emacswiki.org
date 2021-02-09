@@ -4,13 +4,13 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan  3 18:42:42 2020 (-0800)
+;; Last-Updated: Mon Feb  8 19:07:58 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 1357
+;;     Update #: 1361
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -83,6 +83,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/02/08 dadams
+;;     Renamed to-indentation-repeat-(back|for)ward to (back|forward)-to-indentation+.
 ;; 2020/01/03 dadams
 ;;     Applied renamings from thing-cmd.el:
 ;;       mark-thing to select-things, cycle-thing-region to cycle-select-something.
@@ -393,8 +395,7 @@
                            ;; end-of-line+, goto-longest-line, kill-buffer-and-its-windows,
                            ;; mark-buffer-after-point, mark-buffer-before-point,
                            ;; recenter-top-bottom, region-to-buffer, region-to-file,
-                           ;; to-indentation-repeat-backward, to-indentation-repeat-forward,
-                           ;; undo-repeat
+                           ;; back-to-indentation+, forward-to-indentation+, undo-repeat
 (require 'second-sel nil t) ;; (no error if not found): secondary-yank|select|move|swap,
                             ;; isearch-yank-secondary, yank-pop-commands,
                             ;; isearch-yank-secondary, set-secondary-start,
@@ -901,8 +902,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (global-set-key [S-next]  'swiss-move-line-down)))                        ; `S-next'
 
 ;; [up], [down], [left], [right] keys.
-(global-set-key [S-down] (lambda () (interactive) (scroll-up 1)))             ; `S-down'
-(global-set-key [S-up] (lambda () (interactive) (scroll-down 1)))             ; `S-up'
+(global-set-key [S-down] (lambda () (interactive) (scroll-up 1)))                  ; `S-down'
+(global-set-key [S-up] (lambda () (interactive) (scroll-down 1)))                  ; `S-up'
 ;;(global-set-key [M-up] (lookup-key esc-map "p")) ; Probably not defined.
 ;;(global-set-key [M-down] (lookup-key esc-map "n")) ; Probably not defined.
 ;;(global-set-key [M-left] (lookup-key esc-map "b")) ; Predefined.
@@ -912,8 +913,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (eval-after-load "misc-cmds"
   '(progn
-    (global-set-key "\M-p" 'to-indentation-repeat-backward)                   ; `M-p'
-    (global-set-key "\M-n" 'to-indentation-repeat-forward)))                  ; `M-n'
+    (global-set-key "\M-p" 'back-to-indentation+)                             ; `M-p'
+    (global-set-key "\M-n" 'forward-to-indentation+)))                        ; `M-n'
 
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
 
