@@ -128,6 +128,16 @@ BOTS are a list of bots (nicks) to filter."
 (squiddo-erc-filter-bot "#lisp" '("foo" "bar" "baz"))
 </pre>
 
+nij: The example here might not be secure, as inspecting the variable `erc-after-connect` reveals the password in text. What I did, is to avoid storing the password in any variable.. not 100% sure if this is secure, but this is what I do:
+
+<pre>
+(add-hook 'erc-after-connect
+	  '(lambda (SERVER NICK)
+	     (erc-message "PRIVMSG"
+			  (concat "NickServ identify "
+				  (car (read-lines "~/.erc/.pass"))))))
+</pre>
+
 ----
 
 [[ERC]]
