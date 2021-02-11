@@ -131,6 +131,14 @@ BOTS are a list of bots (nicks) to filter."
 nij: The example here might not be secure, as inspecting the variable `erc-after-connect` reveals the password in text. What I did, is to avoid storing the password in any variable.. not 100% sure if this is secure, but this is what I do:
 
 <pre>
+
+(defun read-lines (filePath)
+  "Return a list of lines of a file at filePath."
+  ;; taken from xah's blog
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (split-string (buffer-string) "\n" t)))
+
 (add-hook 'erc-after-connect
 	  '(lambda (SERVER NICK)
 	     (erc-message "PRIVMSG"
