@@ -5,6 +5,49 @@ Basically, there are three possible approaches to let gnus decide which SMTP ser
 
 Unfortunately, there doesn't exist a built-in feature set to decide which SMTP server should be used by looking at the "From:" header line of the current post. However, this can be easily implemented by using message hooks. Here are a couple of functions that will do this for you.
 
+Based on previous solutions found below and the idea of selecting the SMTP server according to the `From` header, i.e. the sender, I use following functions to set the `X-Message-SMTP-Method` header, which then selects the appropriate server configuration.
+
+
+  ;; Configure known SMTP servers. Emacs prompts for passwords and saves them in ~/.authinfo
+  (setq smtp-accounts          ;; Format: Sender Mail address - SMTP Server - Port - Username
+        '(("manuel.schnecki@gmail.com" "smtp.gmail.com" 587 "manuel.schnecki@gmail.com")
+          ("manuel.schneckenreither@uibk.ac.at" "smtp.uibk.ac.at" 587 "csxx")
+          ("manuel.schneckenreither@student.uibk.ac.at" "smtp.uibk.ac.at" 587 "csap")
+          ("info@globalpont.com" "smtp.easyname.com" 587 "user4")
+          ("ms@globalpont.com" "smtp.easyname.com" 587 "user6")
+          ))
+  
+  ;; Set the SMTP Server according to the mail address we use for sending
+  (defun set-smtp-server-message-send-and-exit ()
+    "Set SMTP server from list of multiple ones and send mail."
+    (interactive)
+    (message-remove-header "X-Message-SMTP-Method") ;; Remove. We always determine it by the From field
+    (let ((sender
+           (message-fetch-field "From")))
+      (loop for (addr server port usr) in smtp-accounts
+            when (string-match addr sender)
+            do (message-add-header (format "X-Message-SMTP-Method: smtp %s %d %s" server port usr)))
+      (let ((xmess
+             (message-fetch-field "X-Message-SMTP-Method")))
+        (if xmess
+            (progn
+              (message (format "Sending message using '%s' with config '%s'" sender xmess))
+              (message-send-and-exit))
+          (error "Could not find SMTP Server for this Sender address: %s. You might want to correct it or add it to the SMTP Server list 'smtp-accounts'" sender)))))
+  
+  ;; Send emails via multiple servers
+  (defun local-gnus-compose-mode ()
+    "Keys."
+    (local-set-key (kbd "C-c C-c")  'set-smtp-server-message-send-and-exit))
+  
+  ;; set in group mode hook
+  (add-hook 'gnus-message-setup-hook 'local-gnus-compose-mode)
+  
+--- Manuel Schneckenreither
+
+
+Different solutions are given below.
+
  ;; Let Gnus change the "From:" line by looking at current group we are in.
  (setq gnus-posting-styles
        '(("foo" (address "me@foo.com"))
