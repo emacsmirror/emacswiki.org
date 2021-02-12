@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Tue Dec 29 12:36:58 2020 (-0800)
+;; Last-Updated: Fri Feb 12 12:06:56 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 976
+;;     Update #: 977
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -487,7 +487,7 @@ there are such bookmarks can take a little time."
     (when bmkp-eww-replace-keys-flag
       (bmkp-remap 'eww-add-bookmark       'bookmark-set                eww-mode-map)
       (bmkp-remap 'eww-list-bookmarks     'bookmark-bmenu-list         eww-mode-map)
-      (bmkp-remap 'eww-next-bookmark      'bmkp-previous-url-bookmark  eww-mode-map)
+      (bmkp-remap 'eww-next-bookmark      'bmkp-next-url-bookmark  eww-mode-map)
       (bmkp-remap 'eww-previous-bookmark  'bmkp-previous-url-bookmark  eww-mode-map))
     (define-key bmkp-jump-map              "e"  'bmkp-eww-jump)                             ; `C-x j e'
     (define-key bmkp-jump-other-window-map "e"  'bmkp-eww-jump-other-window)))            ; `C-x 4 j e'
