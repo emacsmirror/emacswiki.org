@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Dec 29 12:32:22 2020 (-0800)
+;; Last-Updated: Fri Feb 12 12:11:12 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 16730
+;;     Update #: 16733
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2170,6 +2170,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2021/02/12 dadams
+;;     Typo in eval-after-load for EWW: previous -> next.
 ;; 2020/07/04 dadams
 ;;     Changed all `C-x p' to `C-x x'.
 ;;     Replaced string *Bookmark List* with bookmark-bmenu-buffer (for Emacs 28).
@@ -2507,6 +2509,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2021/02/12 dadams
+;;     Version 2021.02.12
 ;; 2020/07/04 dadams
 ;;     Version 2020.07.04
 ;;     Added defconst for bookmark-bmenu-buffer (Emacs 28).
