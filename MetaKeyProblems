@@ -353,7 +353,7 @@ because the kernel will only take around 256 different events.
 
 Before trying this make sure that Meta in other terms like aterm is
 working.  The XTerm converts per default Metacommands. To use the
-Meta-key in XTerm edit follwing:
+Meta-key in XTerm edit following:
 
 <pre>
     ~/.inputrc
@@ -364,6 +364,11 @@ Meta-key in XTerm edit follwing:
     ~/.Xdefaults
     XTerm*metaSendsEscape: true
     XTerm*eightBitInput: false
+</pre>
+
+Reload ~/.Xdefaults:
+<pre>
+    ~$ xrdb merge ~/.Xdefaults
 </pre>
 
 The metaSendsEscape flag can also be tried or toggled by holding
