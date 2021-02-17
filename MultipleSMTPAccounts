@@ -42,7 +42,14 @@ Based on previous solutions found below and the idea of selecting the SMTP serve
   
   ;; set in group mode hook
   (add-hook 'gnus-message-setup-hook 'local-gnus-compose-mode)
-  
+
+
+In ~/.authinfo you can must enter the SMTP logins in case emacs does not ask you for it:
+
+    machine smtp.xxx.com login user4 password "user4password"
+    machine smtp.xxx.com login user6 password "user6password"
+
+
 --- Manuel Schneckenreither
 
 
