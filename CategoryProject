@@ -7,7 +7,7 @@ These libraries (though they may be at varying stages of development) have the g
 It is probably not useful to use more than one of these at the same time, for the same project.
 
 * [http://cedet.sourceforge.net/projects.shtml CEDET]
-* [http://wiki.github.com/jrockway/eproject eproject] -- assign files to projects, programatically
+* [https://github.com/jrockway/eproject/wiki eproject] -- assign files to projects, programatically
 * a different library named [[eproject]] -- Project workspaces for Emacs.
 * EtaskMode
 * [[Icicles - Support for Projects]]
