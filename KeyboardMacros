@@ -56,9 +56,18 @@ following to your initialization file:
 
 This binds the key sequence `C-c a' to the macro `my-macro'.
 
-If you want to edit the macro in future sessions, you need to let the ##kmacro## library know that the symbol is indeed a macro by putting the ##kmacro## property on the symbol.
+On Emacs versions < 27, if you want to edit the macro in future sessions, you need to let the ##kmacro## library know that the symbol is indeed a macro by putting the ##kmacro## property on the symbol.
 
-  (put 'my-macro 'kmacro t)
+   (put 'my-macro 'kmacro t)
+
+To edit a named macro, use `edit-named-kbd-macro'.
+
+As some commands, e.g. `kmacro-step-edit-macro', only work on the last keyboard macro, it can be useful to re-add a named macro back to the `kmacro-ring'. This can be archived by executing:
+
+   (kmacro-push-ring (kmacro-extract-lambda (symbol-function 'my-macro)))
+   ;; move the pushed macro to ring head
+   (kmacro-cycle-ring-previous)
+
 
 '''See Also:'''
 * DotMode -- An Emacs mode inspired by the Vi command of the same name that will redo a set of commands.
