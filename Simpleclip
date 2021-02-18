@@ -81,7 +81,7 @@ The following functions may be useful to call from Lisp:
 	GNU Emacs version 23.3           : yes
 	GNU Emacs version 22.3 and lower : no
 
-No external dependencies
+No external dependencies except the `xsel` command may be required in some X11 environments.
 
 Tested on OS X, X11, and MS Windows
 
