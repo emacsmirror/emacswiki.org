@@ -17,8 +17,8 @@ I am also much indebted to DrewAdams libraries and code, not only for functional
 
 4. Is there a backup of the whole site available as single tar file?
 
-
-----
+5. Can one create a "Personal Area" on the wiki, possibly more than this individual page, something like /user/personaldirectory ?
+ 
 
 === Setup ===
 
@@ -26,7 +26,7 @@ I am currently using Emacs 27.1 mainly on Windows 10 machines.
 
 No predefined EmacsD, my slowly accreted InitEl.
 
-I also use Emacs on all servers I work on.
+I also use Emacs on all servers I work on, mainly [[illumos]] machines.
 
 
 
