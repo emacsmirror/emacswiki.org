@@ -38,5 +38,5 @@ and in ~/.emacs put
 
 Then just M-x offlineimap; if you haven't opened your key this session yet, it'll prompt for the password, otherwise it'll use the agent (if you've set it to do that).
 
-===Dead link that apparantly explains some method===
-"For the popular !OfflineIMAP + Gnus setup [http://quotenil.com/OfflineIMAP-with-Encrypted-Authinfo.html this is how] to make offlineimap use .authinfo.gpg. -- GaborMelis"
+===Another method===
+"For the popular !OfflineIMAP + Gnus setup [http://quotenil.com/offlineimap-with-encrypted-authinfo.html#x-28MGL-PAX-BLOG-3A-40OFFLINEIMAP-WITH-ENCRYPTED-AUTHINFO-20MGL-PAX-3ASECTION-29 this is how] to make offlineimap use .authinfo.gpg. -- GaborMelis"
