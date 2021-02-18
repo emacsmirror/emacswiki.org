@@ -1,4 +1,5 @@
-== Sapta ==
+* [Self:action=rc;rcuseronly=Sapta RSS feed]
+
 
 I have been using Emacs since early 00s.
 
@@ -9,7 +10,15 @@ I am also much indebted to DrewAdams libraries and code, not only for functional
 Many thanks also SachaChua. I learned so much from her pages and tutorials over the years.
 
 
-=== Questions about EmacsWiki use ===
+== Setup ==
+
+I am currently using Emacs 27.1 mainly on Windows 10 machines.
+
+No predefined [[emacs.d]], only a slowly accreted [[init.el]].
+
+I also use Emacs on all servers I work on, mainly [[illumos]] machines.
+
+== Questions about EmacsWiki use ==
 
 1. How can one ping another user?
 
@@ -20,15 +29,6 @@ Many thanks also SachaChua. I learned so much from her pages and tutorials over 
 4. Is there a backup of the whole site available as single tar file?
 
 5. Can one create a "Personal Area" on the wiki, possibly more than this individual page, something like /user/personaldirectory ? Perhaps using a personal CategorySapta category?
- 
-
-=== Setup ===
-
-I am currently using Emacs 27.1 mainly on Windows 10 machines.
-
-No predefined [[emacs.d]], only a slowly accreted [[init.el]].
-
-I also use Emacs on all servers I work on, mainly [[illumos]] machines.
 
 
 
@@ -37,3 +37,7 @@ I also use Emacs on all servers I work on, mainly [[illumos]] machines.
 ----
 
 CategorySapta (Is this fine?)
+
+
+------
+CategoryHomepage
