@@ -14,7 +14,7 @@ Many thanks also SachaChua. I learned so much from her pages and tutorials over 
 
 I am currently using Emacs 27.1 mainly on Windows 10 machines.
 
-No predefined [[emacs.d]], only a slowly accreted [[init.el]].
+No pre-cooked [[emacs.d]]'s, only a slowly accreted [[init.el]].
 
 I also use Emacs on all servers I work on, mainly [[illumos]] machines.
 
@@ -36,7 +36,7 @@ I also use Emacs on all servers I work on, mainly [[illumos]] machines.
 
 ----
 
-CategorySapta (Is this fine?)
+CategorySapta (Is it fine to have a personal category?)
 
 
 ------
