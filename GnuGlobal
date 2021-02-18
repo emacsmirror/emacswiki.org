@@ -102,6 +102,20 @@ GNU Global has a cscope-compatibility utility called "gtags-cscope". This tool h
 Comment: would be interesting to see why xcscope.el is the best of the bunch. ggtags.el was created fairly recently out of frustration with all interfaces to gnu global. At the time they usually lacked one thing or another, or difficult to extend.  -- Leo
 
 ----
+
+=== global-tags.el ===
+
+Another related package with a most un-original yet very informative name is [https://launchpad.net/global-tags.el global-tags.el]
+
+Main features are providing an elisp API/library that can be unit tested. Its design is meant to welcome new maintainers through extensibility and maintainability.
+
+For the every day Emacs user, this translates into a package that plugs into Emacs factory-default project (project.el) and tag searching (xref.el) with Tramp support.
+
+It also includes prefetching commonly used queries as "list/search files" and "list/search tag" in the background. This results in a snappier everyday experience. 
+
+global-tags.el is currently [https://melpa.org/#/global-tags available in MELPA]
+
+
 CategoryProgrammerUtils
 CategoryExternalUtilities
 CategoryCompletion
