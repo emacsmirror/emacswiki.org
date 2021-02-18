@@ -13,7 +13,21 @@ I am also much indebted to DrewAdams libraries and code, not only for functional
 
 2. How can one keep updated with changes to libraries? I would prefer not to use GitHub or other external sites.
 
-3. Is there a backup of the whole site available as single tar file?
+3. How do one know if one of his pages have been edited?
+
+4. Is there a backup of the whole site available as single tar file?
+
+
+----
+
+=== Setup ===
+
+I am currently using Emacs 27.1 mainly on Windows 10 machines.
+
+No predefined EmacsD, my slowly accreted InitEl.
+
+I also use Emacs on all servers I work on.
+
 
 
 -- Han
