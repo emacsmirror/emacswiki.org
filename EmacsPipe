@@ -52,7 +52,7 @@ It's not *quite* the same but I value the simplicity of it. With this you no lon
 
 == Piping things through Emacs ==
 
-I've adapted the above to do something a bit more substantial. **tl;dr** Put that in your pipe and smoke it!
+I've adapted the above to do something a bit more substantial. This variant allows you to run Emacs Lisp functions in your standard process pipelines. **tl;dr** Put that in your pipe and smoke it!
 
 <pre>
 #!/bin/bash
