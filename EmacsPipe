@@ -108,9 +108,9 @@ rm $TMP
 IFS="$oldIFS"
 </pre>
 
-[new]
+== 'Pipes' inside Emacs with Eshell =
 
-If you happen to be using Eshell, you can get this via:
+If you happen to be using Eshell, you can push data around with commands like this:
 
 <pre>
 cat myfile > (switch-to-buffer "*my-buf*")
