@@ -1,6 +1,5 @@
 Using pipe commands with Emacs can be a bit tricky. 
 
-
 == Piping things into Emacs ==
 This snippet will make pipes play nicely with EmacsClient.
 
@@ -50,8 +49,6 @@ fi
 </pre>
 
 It's not *quite* the same but I value the simplicity of it. With this you no longer need 'e -' to indicate STDIN, e will just look for STDIN whenever no files are specified.
-
-[new]
 
 == Piping things through Emacs ==
 
