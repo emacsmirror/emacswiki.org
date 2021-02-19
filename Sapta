@@ -1,41 +1,9 @@
+I have been using Emacs since early 00s. I have learned much from EmacsWiki, many thanks to AlexSchroeder and all the maintainers.
+
+I am especially grateful to DrewAdams for the resourceful libraries and inspiring code. Thanks.
+
+
 * [Self:action=rc;rcuseronly=Sapta RSS feed]
-
-
-I have been using Emacs since early 00s.
-
-I have learned much from EmacsWiki, and owe much to it. Many thanks to AlexSchroeder.
-
-I am also much indebted to DrewAdams libraries and code, not only for functionality, but for teaching many Emacs users practical elisp.
-
-Many thanks also SachaChua. I learned so much from her pages and tutorials over the years.
-
-
-== Setup ==
-
-I am currently using Emacs 27.1 mainly on Windows 10 machines.
-
-No pre-cooked [[emacs.d]]'s, only a slowly accreted [[init.el]].
-
-I also use Emacs on all servers I work on, mainly [[illumos]] machines.
-
-== Questions about EmacsWiki use ==
-
-1. How can one ping another user?
-
-2. How can one keep updated with changes to libraries? I would prefer not to use GitHub or other external sites.
-
-3. How do one know if one of his pages have been edited?
-
-4. Is there a backup of the whole site available as single tar file?
-
-5. Can one create a "Personal Area" on the wiki, possibly more than this individual page, something like /user/personaldirectory ? Perhaps using a personal CategorySapta category?
-
-
-
--- Sapta
-
-
-
 
 
 ------
