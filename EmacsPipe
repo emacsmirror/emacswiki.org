@@ -57,7 +57,7 @@ I've adapted the above to do something a bit more substantial. **tl;dr** Put tha
 <pre>
 #!/bin/bash
 
-# f --- Use emacsclient and a stand-alone elisp function in a pipe
+# f --- Use emacsclient and stand-alone elisp functions in a pipe
 
 # Usage example:
 
@@ -67,18 +67,32 @@ I've adapted the above to do something a bit more substantial. **tl;dr** Put tha
 
 # Notes:
 
-# • we just throw away -e and always
+# • we just throw away -e and always:
 #  • load the code in the path specified by f’s second argument
-#  • run the function named by f’s third argument
+#  • run the function named by f’s third argument,
 #    • passing it the remaining arguments as data
 
-# In the example above, ~/bin/replace-my-regexp.el has contents:
+# For reasons of encapsulation we assume that the function actually
+# resides in the "f/" namespace.  For example,
+# ~/bin/replace-my-regexp.el has contents:
 
-# (defun replace-my-regexp (a b)
+# (defun f/replace-my-regexp (a b)
 #   (goto-char (point-min))
 #   (while (re-search-forward a nil t)
 #     (replace-match b))
 #   (buffer-substring-no-properties (point-min) (point-max)))
+
+# In addition, we unbind f/-functions after we use them with
+# `fmakunbound', so that your Emacs server isn’t cluttered.
+
+# Context:
+
+# The functionality provided should be seen as conceptually similar to
+# Babashka (https://github.com/babashka/babashka), however, f requires
+# a full Emacs server rather than a simplified interpreter like sci
+# (https://github.com/borkdude/sci).
+
+# Happy scripting!
 
 # Code:
 
@@ -97,9 +111,12 @@ emacsclient -a emacs -n $TMP
 OUT=`emacsclient -a emacs -e "(progn (set-buffer (get-buffer (substring \"$TMP\" 5)))"\
 "(let* ((inhibit-message t) (message-log-max nil)"\
 "(args (split-string \"$*\" \"😃\"))"\
-"(ret (progn (load (second args)) (apply (intern (third args)) (nthcdr 3 args)))))"\
-"(save-buffer)"\
+"(debug (progn (goto-char (point-min)) (insert (format \"%s\" args))))"\
+"(f (intern (concat \"f/\" (third args))))"\
+"(ret (progn (load (second args)) (apply f (nthcdr 3 args)))))"\
 "(set-buffer-modified-p nil) (kill-buffer (current-buffer))"\
+"(fmakunbound f)"\
+"(save-buffer)"\
 ")))"`
 
 # cat the contents of the temporary file to standard out
