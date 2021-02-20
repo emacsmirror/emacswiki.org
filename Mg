@@ -4,13 +4,13 @@ Modern versions of <code>mg</code> are maintained as a component of the OpenBSD 
 
 Mg is also available in FreeBSD’s ports in a [https://www.freshports.org/editors/mg/ regular], or <tt>[https://www.freshports.org/editors/mg-static/ rescue(8)]</tt> version.
 
-Recent versions of macOS also include <code>mg</code> by default, presumably as a replacement for the old built-in, GPLv2 licenced, tty-only version of GnuEmacs that Apple used to include, starting with Mac OS X, but has now removed in recent macOS versions.  
+Versions of macOS ≥ 10.15 also include <code>mg</code> by default, presumably as a replacement for the old built-in, GPLv2 licenced, tty-only version of GnuEmacs that Apple used to include, starting with Mac OS X 10.0 (Cheetah), but has now removed from macOS 10.15 Catalina onwards.  
 
 A portable version of <code>mg</code> is available for download from the [https://github.com/hboetes/mg maintainer’s Github].
 
 You can also browse <code>mg</code>’s official sources on:
 * [https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/mg/ OpenBSD’s CVSWeb], or
-* a [https://github.com/openbsd/src/tree/master/usr.bin/mg mirror of those sources on Github.]
+* in a [https://github.com/openbsd/src/tree/master/usr.bin/mg mirror of those sources on Github.]
 
 ----
 EmacsImplementations
