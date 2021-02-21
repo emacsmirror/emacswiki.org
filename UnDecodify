@@ -1,0 +1,25 @@
+*undecodify.el* is a small bit of elisp written by LarsMagneIngebrigtsen, which fixes a problem often encountered on Wordpress where UTF-8 input text characters are wrongly interpreted as Windows CP-1252 (also known as “code page 1252” or “Windows-1252”) characters and then output as UTF-8.
+
+It's basically when a string like: “it’s” turns into: “itâ€™s”.
+
+You can call undecodify.el like this:
+
+{{{
+(undecodify "itâ€™s")
+}}}
+
+Which will then output:
+
+{{{
+"it’s"
+}}}
+
+Lars also [https://lars.ingebrigtsen.no/2019/06/05/ununicode/ wrote a short blogpost about undecodify.el].
+
+Get undecodify.el from:
+
+* [https://github.com/larsmagne/undecodify.el/blob/master/undecodify.el Lars’ GitHub] or
+* [Lisp:undecodify.el EmacsWiki’s ElispArea]
+
+----
+CategoryInternationalization
