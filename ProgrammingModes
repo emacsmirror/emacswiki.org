@@ -51,7 +51,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * FortranMode -- for fixed-format Fortran
 * [[F90Mode]] -- for free-format Fortran
 * FuelMode -- FUEL - Factor's Ultimate Emacs Library an emacs major mode for writing Factor code.
-* GasMode -- A major mode for GNU Emacs to handle assembly language source files
+* GasMode (Lisp:gas-mode.el) -- A major mode for GNU Emacs to handle assembly language source files
 * GaucheScheme -- using Gauche from Emacs
 * GdbMode -- gdb user interface
 * GdlMode
