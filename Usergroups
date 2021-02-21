@@ -4,10 +4,12 @@ Meeting other Emacs geeks is a great way to pick up ideas and learn even more. C
 
 == Upcoming events ==
 
-* Emacs Berlin (virtual, in English) https://emacs-berlin.org/ Wed Feb 24 0930 Vancouver / 1130 Chicago / 1230 Toronto / 1730 GMT / 1830 Berlin / 2300 Kolkata - Thu Feb 25 0130 Singapore
+* Emacs Berlin (virtual, in English) https://emacs-berlin.org/ Wed Feb 24 0930 Vancouver / 1130 Chicago / 1230 Toronto / 1730 GMT / 1830 Berlin / 2300 Kolkata -- Thu Feb 25 0130 Singapore
 * Emacs APAC (virtual, in English) https://emacs-apac.gitlab.io/ Sat Feb 27 0030 Vancouver / 0230 Chicago / 0330 Toronto / 0830 GMT / 0930 Berlin / 1400 Kolkata / 1630 Singapore
-* EmacsNYC: Mail Month https://emacsnyc.org/2021/02/03/monthly-online-meetup-mail-month.html Mon Mar 1 1600 Vancouver / 1800 Chicago / 1900 Toronto - Tue Mar 2 0000 GMT / 0100 Berlin / 0530 Kolkata / 0800 Singapore
-* Emacs Paris (virtual, in French) https://www.emacs-doctor.com/emacs-paris-user-group/  Thu Mar 4 0830 Vancouver / 1030 Chicago / 1130 Toronto / 1630 GMT / 1730 Berlin / 2200 Kolkata - Fri Mar 5 0030 Singapore
+* EmacsNYC: Mail Month https://emacsnyc.org/2021/02/03/monthly-online-meetup-mail-month.html Mon Mar 1 1600 Vancouver / 1800 Chicago / 1900 Toronto -- Tue Mar 2 0000 GMT / 0100 Berlin / 0530 Kolkata / 0800 Singapore
+* M-x Research (virtual) - Avoiding Emacs Pinky https://m-x-research.github.io/ Thu Mar 4 0700 Vancouver / 0900 Chicago / 1000 Toronto / 1500 GMT / 1600 Berlin / 2030 Kolkata / 2300 Singapore
+* Emacs Paris (virtual) https://www.emacs-doctor.com/emacs-paris-user-group/  Thu Mar 4 0830 Vancouver / 1030 Chicago / 1130 Toronto / 1630 GMT / 1730 Berlin / 2200 Kolkata -- Fri Mar 5 0030 Singapore
+* M-x Research (virtual) https://m-x-research.github.io/ Thu Mar 18 0800 Vancouver / 1000 Chicago / 1100 Toronto / 1500 GMT / 1600 Berlin / 2030 Kolkata / 2300 Singapore
 
 You can also add this [https://calendar.google.com/calendar/ical/c_rkq3fc6u8k1nem23qegqc90l6c%40group.calendar.google.com/public/basic.ics ical feed] to your calendar or get  HTML/Org Mode files in various timezones from https://emacslife.com/calendar/
 
@@ -54,6 +56,7 @@ You can also add this [https://calendar.google.com/calendar/ical/c_rkq3fc6u8k1ne
 
 == Other ==
 
+* [https://m-x-research.github.io/ M-x research] - We meet virtually every 1st and 3rd Thursday of every month to dicuss and share Emacs experiences, tips, tricks and tools useful for researchers and research software engineers.
 * EmSig, the Emacs Multimedia Special Interest Group meets on freenode's "#emsig" channel
 * [http://www.meetup.com/find/?allMeetups=false&keywords=emacs&radius=Infinity Search Meetup.com for Emacs meetups]
 
