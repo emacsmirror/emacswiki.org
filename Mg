@@ -1,10 +1,10 @@
-*Mg* is a lightweight public-domain ErsatzEmacs, dating back to 1986. Mg was originally known as *MicroGNUEmacs*, as it strove to adhere more closely to the default behavior of GnuEmacs than other contemporary [[MicroEmacs]]en, but was renamed at the request of RichardStallman.
+*Mg* (<code>mg</code>) is a lightweight public-domain ErsatzEmacs, dating back to 1986. Mg was originally known as *MicroGNUEmacs*, as it strove to adhere more closely to the default behavior of GnuEmacs than other contemporary [[MicroEmacs]]en, but was renamed at the request of RichardStallman.
 
 Modern versions of <code>mg</code> are maintained as a component of the OpenBSD source tree; the editor is included as standard in OpenBSD “because there shouldn't be any reason to learn more editor types than emacs or vi.”  Similarly, the [https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/mg/README?rev=1.14&content-type=text/x-cvsweb-markup README states] that <code>mg</code> “is compatible with GNU [Emacs] because there shouldn't be any reason to learn more than one Emacs flavor.”  “Compatible,” here refers to <code>mg</code>’s command set, like other Ersatz Emacsen, <code>mg</code> has no extension language such as elisp, and is written purely in C.
 
 Mg is also available in FreeBSD’s ports in a [https://www.freshports.org/editors/mg/ regular], or <tt>[https://www.freshports.org/editors/mg-static/ rescue(8)]</tt> version.
 
-Versions of macOS ≥ 10.15 also include <code>mg</code> by default, presumably as a replacement for the old built-in, GPLv2 licenced, tty-only version of GnuEmacs that Apple used to include, starting with Mac OS X 10.0 (Cheetah), but has now removed from macOS 10.15 Catalina onwards.  
+Versions of macOS ≥ 10.15 also include <code>mg</code> by default, presumably as a replacement for the old built-in, GPLv2 licenced, tty-only version of GnuEmacs that Apple used to include, starting with Mac OS X 10.0 (Cheetah), but has now been removed from macOS 10.15 Catalina onwards.  
 
 A portable version of <code>mg</code> is available for download from the [https://github.com/hboetes/mg maintainer’s Github].
 
