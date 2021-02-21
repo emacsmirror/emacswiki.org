@@ -8,6 +8,18 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Source code blocks edited in recent days not being syntax highlighted ==
+
+Source code blocks I, and others, have edited in recent days are not
+being syntax highlighted.  This is affecting the ElispArea too, see
+e.g. Lisp:bookmark+.el by DrewAdams, or Lisp:undecodify.el, also the
+“Make fullscreen work with posframe.el” section on the EmacsForMacOS
+page.  I have tried <code><pre></code> tags as well as the three curly
+braces <code>{{{</code>, both on their own lines before, and after the
+code block, but neither appear to be working at the moment.
+
+---AnonymousCoward
+
 == Failed to verify signature archive contents ==
 
 Text of error response to "package-list-packages" follows - 
