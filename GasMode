@@ -62,9 +62,9 @@ Get gas-mode.el from http://www.hczim.de/software/gas-mode.html
 As of at least 2020, the website of Heike C. Zimmerer (the
 maintainer), [http://www.hczim.de/ hczim.de], is down.  However, I was
 able to find the last published version of gas-mode.el (1.10)
-[https://github.com/nelhage/elisp/blob/master/local/gas-mode.el in Nel
-Hage's elisp GitHub repository].  I have also since uploaded it to the
-Elisp area, Lisp:gas-mode.el, to help preserve it better.
+[https://github.com/nelhage/elisp/blob/master/local/gas-mode.el in
+Nelson Elhage's elisp GitHub repository].  I have also since uploaded
+it to the Elisp area, Lisp:gas-mode.el, to help preserve it better.
 
 == See also ==
 
