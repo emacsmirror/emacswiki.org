@@ -66,6 +66,7 @@ Special Packages:
 * SimpleJapaneseTypesetter
 * ChineseInputMethodImprove
 * Lisp:hanconvert.el -- Convert between simple chinese character and tradition chinese character
+* Lisp:undecodify.el -- Convert UTF-8 encoded as CP-1252 to UTF-8, a common error made by Wordpress [https://github.com/larsmagne/undecodify.el/blob/master/undecodify.el also available from GitHub]
 
 Background Information:
 
