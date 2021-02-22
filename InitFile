@@ -1,3 +1,4 @@
+[[zh:初始化文件]]
 Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
 
 See the Emacs manual (`C-h r'), node 
@@ -7,7 +8,11 @@ See the Emacs manual (`C-h r'), node
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
 * For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
-If you do not know where your init file is located or you do not have one and want to create it, then
+If you do not know where your init file is located, you can check the variable user-init-file:
+
+   M-x describe-variable RET user-init-file RET
+
+Or if you do not have one and want to create it, then
 just open it for editing in Emacs:
 
    C-x C-f ~/.emacs.d/init.el RET
