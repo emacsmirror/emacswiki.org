@@ -1026,11 +1026,11 @@ using option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-c
 
 You can also swap the keys used for these two modes of completion
 dynamically, using command '''`icicle-toggle-completion-mode-keys'''',
-which is bound to '''`C-S-TAB'''' during completion.  This also toggles
+which is bound to '''`M-i TAB'''' during completion.  This also toggles
 the value of option `icicle-default-cycling-mode' (see next).
 When it switches away from whatever persistent values you have for
 the completion-mode key options, it asks you whether you want to
-save the new values.  (That means that using `C-S-TAB' is an easy
+save the new values.  (That means that using `M-i TAB' is an easy
 way to customize all five of these options.)
 
 You can ''cycle'' prefix-completion candidates by using the '''`end'''' and
