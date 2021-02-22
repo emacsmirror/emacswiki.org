@@ -185,7 +185,7 @@ Besides customizing those completion-mode key options
 individually, you can easily swap the keys that for apropos
 completion with those for prefix completion, at any time.  For
 that, use command '''`icicle-toggle-completion-mode-keys'''', which is
-bound to '''`C-S-TAB'''' during completion.  When it switches away from
+bound to '''`M-i TAB'''' during completion.  When it switches away from
 whatever persistent values you have for these options, it asks you
 whether you want to save the new values.  This command also
 toggles the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]</tt>''''.
