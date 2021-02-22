@@ -1,19 +1,37 @@
-You can find more about Jamie at 
-http://www.jwz.org/ and http://www.dnalounge.com/.  You'll almost never see his name "Jamie Zawinski".  If you really want to search on information for him, always use "jwz".  He's one of the few people who can legitimately exist on the net with just his initials.  His LiveJournal weblog is at http://www.livejournal.com/~jwz/.  You can subscribe to the RSS feed at http://www.livejournal.com/~jwz/rss.xml.
+You can find more about Jamie at https://www.jwz.org/ and
+https://www.dnalounge.com/.  You'll almost never see his name "Jamie
+Zawinski".  If you really want to search on information for him,
+always use "jwz".  He's one of the few people who can legitimately
+exist on the net with just his initials.  He used to blog at
+!LiveJournal but now blogs at https://www.jwz.org/blog/.  You can
+subscribe to the RSS feed at https://cdn.jwz.org/blog/feed/.
 
-JWZ was the original maintainer of Lucid Emacs which was supposed to
-become GNU Emacs 19, but instead became XEmacs.  He was also part of
-the original Netscape team.  He also maintains the xscreensaver
-collection, and wrote many of the screensavers.  He uses XEmacs and has a very fine [http://www.jwz.org/doc/emacs-timeline.html Emacs ASCII Art Timeline] on his website.
+JWZ was the original maintainer of [[Lucid Emacs]] which was supposed
+to become [[GNU Emacs]] 19, but instead became [[XEmacs]].  He was
+also part of the original Netscape team, and later petitioned Netscape
+to release their codebase as Open Source/Free Software creating
+Mozilla.  He also maintains the !XScreenSaver collection, and wrote
+many of the screen savers himself.  He used to use XEmacs, but has
+recently (September 2019)
+[https://www.jwz.org/blog/2021/01/very-much-do-not-have-my-emacs-setup-just-how-i-like-it/#comment-214490
+switched to GNU Emacs], and has a very fine
+[http://www.jwz.org/doc/emacs-timeline.html Emacs ASCII Art Timeline]
+on his website.
 
-He was paid to hack on HemLock, CMU CommonLisp's emacs, whilst still at high school.
+He was paid to hack on HemLock, CMU CommonLisp's emacs, whilst still
+at high school.
 
 Author of neato stuff such as:
 
-* Dali Clock (for X and Palms) - not particularly surreal; very calming morphing timepiece
-* BbdbMode - The insidious Big Brother Database
-* XKeyCaps - A graphical front-end to xmodmap 
-* [http://www.jwz.org/webcollage/ Web Collage] - great idea.
+* BbdbMode -- The insidious Big Brother Database
+* XKeyCaps -- A graphical front-end to XModMap
+* [https://www.jwz.org/xdaliclock/ Dali Clock] (for X11, macOS, Palm,
+  iOS, Android and even some smartwatches) -- not particularly
+  surreal; very calming morphing timepiece
+* [https://www.jwz.org/xscreensaver/ XScreenSaver] -- large collection
+  of screen savers for GNU/Linux and other Unix systems, macOS, iOS
+  and Android
+* [http://www.jwz.org/webcollage/ Web Collage] -- great idea.
 
 RepeatedStressInjury:
 
