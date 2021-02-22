@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 22 10:11:03 2020 (-0700)
+;; Last-Updated: Mon Feb 22 15:08:49 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 2517
+;;     Update #: 2539
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/02/22 dadams
+;;     describe-variable (latest): Inserted a blank line before 'Its value is' (Emacs bug #46702).
 ;; 2020/10/22 dadams
 ;;     Require cl-lib (or cl, for Emacs < 24), for gentemp.
 ;;     Info-make-manuals-xref: Restore missing let binding for var search-now-p.
@@ -2350,6 +2352,7 @@ the global value."
                            (with-current-buffer standard-output
                              (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
                                              (help-xref-button 1 'help-variable-def variable file-name)))
+                           (terpri)
                            (if valvoid (princ "It is void as a variable.") (princ "Its ")))
                   (if valvoid (princ " is void as a variable.") (princ "'s "))))
               (unless valvoid
