@@ -1,37 +1,41 @@
 [[de:Bahasa_Indonesia]]
 [:GNU Emacs]
 portrait:http://emacswiki.org/pics/emacs.png
-GNU Emacs is a text editor for Über-Geeks.
-GNU Emacs is the [[extensible]], customizable, SelfDocumenting real-time
-display editor.
+GNU Emacs (or simply Emacs) is a text editor for Über-Geeks.  Emacs is
+the [[extensible]], customizable, SelfDocumenting real-time display
+editor.
 
 GNU stands for "GNU's Not Unix," and it represents the work of the
-FreeSoftwareFoundation (FSF) and its founder RichardStallman.  Part of
-the project to create a Unix that was FreeSoftware included a highly
-functional editor as well as some sort of Lisp system.
+FreeSoftwareFoundation (FSF) and its founder RichardStallman.
+Part of the project to create a Unix that was FreeSoftware included
+a highly functional editor as well as some sort of Lisp system.
 
 See EmacsHistory for its history.
 
-* [http://www.gnu.org/software/emacs/ Homepage]
-* [http://www.gnu.org/software/emacs/#Obtaining Download]
-* WikiPedia:Emacs -- extensive overview, with historical description and up-to-date reference links
+* [https://www.gnu.org/software/emacs/ Homepage]
+* [https://www.gnu.org/software/emacs/download.html Download]
+* WikiPedia:Emacs -- extensive overview, with historical description and
+  up-to-date reference links
 
-The latest release of GNU Emacs is 26.3 (announced 28 Aug 2019). Details are
-[https://lists.gnu.org/archive/html/emacs-devel/2019-08/msg00577.html here].
-The GNU Emacs software is subject to version 3 of the GnuGeneralPublicLicense.
+The latest release of GNU Emacs is version 27.1
+([https://lists.gnu.org/archive/html/emacs-devel/2020-08/msg00237.html
+announced 10 Aug 2020]).  The GNU Emacs is licensed under version 3 of
+the GnuGeneralPublicLicense or any later version published by the FSF.
 
 FSF Emacs or GNU Emacs?
 
-   M-x version RET
+:<kbd>M</kbd>-<kbd>x</kbd> <kbd>version</kbd> <kbd>RET</kbd>
 
 says
 
-   GNU Emacs 24.3.1 (i686-apple-darwin, NS apple-appkit-1038.36) of 2013-03-13 on bob.porkrind.org
+{{{
+GNU Emacs 24.3.1 (i686-apple-darwin, NS apple-appkit-1038.36) of 2013-03-13 on bob.porkrind.org
+}}}
 
 So now you know.
 
-; Emacs vs XEmacs: EmacsSchism has a summary of what went down those days.
-
+; Emacs vs XEmacs: EmacsSchism has a summary of what went down those
+  days.
 ; EmacsLisp or Scheme: See GuileEmacs.
 
 Also see: CategoryBuilding
