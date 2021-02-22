@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Jun  2 13:12:08 2020 (-0700)
+;; Last-Updated: Sun Feb 21 20:25:59 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 30074
+;;     Update #: 30075
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7951,7 +7951,7 @@
 ;;  individually, you can easily swap the keys that for apropos
 ;;  completion with those for prefix completion, at any time.  For
 ;;  that, use command `icicle-toggle-completion-mode-keys', which is
-;;  bound to `C-S-TAB' during completion.  When it switches away from
+;;  bound to `M-i TAB' during completion.  When it switches away from
 ;;  whatever persistent values you have for these options, it asks you
 ;;  whether you want to save the new values.  This command also
 ;;  toggles the value of option `icicle-default-cycling-mode'.
