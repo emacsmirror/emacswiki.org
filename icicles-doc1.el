@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Jan  3 13:54:34 2020 (-0800)
+;; Last-Updated: Sun Feb 21 20:35:08 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 28666
+;;     Update #: 28668
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1365,11 +1365,11 @@
 ;;
 ;;  You can also swap the keys used for these two modes of completion
 ;;  dynamically, using command `icicle-toggle-completion-mode-keys',
-;;  which is bound to `C-S-TAB' during completion.  This also toggles
+;;  which is bound to `M-i TAB' during completion.  This also toggles
 ;;  the value of option `icicle-default-cycling-mode' (see next).
 ;;  When it switches away from whatever persistent values you have for
 ;;  the completion-mode key options, it asks you whether you want to
-;;  save the new values.  (That means that using `C-S-TAB' is an easy
+;;  save the new values.  (That means that using `M-i TAB' is an easy
 ;;  way to customize all five of these options.)
 ;;
 ;;  You can cycle prefix-completion candidates by using the
