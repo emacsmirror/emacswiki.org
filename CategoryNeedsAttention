@@ -1,21 +1,58 @@
-Maybe you found something on the wiki that needs some help.  Great!  Arguably, you should just go ahead and make the change. Be brave!  Old revisions are saved, and stored in source control, so you can't break anything.  That said, maybe there are time pressures with daily life, or maybe you feel like you don't have enough experience, or a host of other reasons.   That's where this category comes in.
+Maybe you found something on the wiki that needs some help.  Great!
+Arguably, you should just go ahead and make the change.  Be brave!  Old
+revisions are saved, and stored in source control, so you can't break
+anything.  That said, maybe there are time pressures with daily life, or
+maybe you feel like you don't have enough experience, or a host of other
+reasons.  That's where this category comes in.
 
-If you flag a with CategoryNeedsAttention, that means another helpful visitor can get in there and fix the problem.   Try to localize the portion of the wiki that needs attention, and put in a small explanation as to what exactly needs attention.  
+If you flag a with CategoryNeedsAttention, that means another helpful
+visitor can get in there and fix the problem.  Try to localize the
+portion of the wiki that needs attention, and put in a small explanation
+as to what exactly needs attention.
 
-There might also be some discussion of areas in need of work in EmacsWikiContent
+There might also be some discussion of areas in need of work in
+EmacsWikiContent
 
-=== How To === 
+== How To ==
 
-Say you find some elisp code that sucks, and doesn't work with a current Emacs. Here's what you do:
+Say you find some elisp code that sucks, and doesn't work with a current
+Emacs.  Here's what you do:
 
 # click the _Administration_ link at the bottom
-# find the item where it says that this page "needs attention" and provide a reason
+# find the item where it says that this page "needs attention" and
+  provide a reason
 # click the Submit button
 
-If you provided "outdated lisp" as the reason, clicking the Submit button adds the following to the bottom of the page:
+If you provided "outdated lisp" as the reason, clicking the Submit
+button adds the following to the bottom of the page:
 
 {{{
 CategoryNeedsAttention (outdated lisp)
 }}}
 
-People interested in fixing pages that need attention can click on the header of this page and find all the pages that mention it.
+People interested in fixing pages that need attention can click on the
+header of this page and find all the pages that mention it.
+
+== List of pages currently in CategoryNeedsAttention ==
+
+* BackspaceKey -- (this page should updated to reflect best practice)
+* BeanShell -- (Irrelevant. Delete.)
+* CategoryJavaScript
+* CoffeeScript
+* EmacsJs
+* [[EmacsW32]] -- (The !EmacsW32 home page seems to be dead)
+* EmacsWikiContent
+* NodeJs
+* OrgMode
+* SwankJs
+* [[オルグモード]]
+
+== See Also ==
+
+* WikiTodo and [EmacsWiki:search=%22WikiTodo%22 pages tagged with
+  “WikiTodo”]
+* All pages on the wiki [EmacsWiki:search=%22FIXME%22 tagged with
+  “FIXME”]
+
+----
+CategoryEmacsWikiSite
