@@ -10,12 +10,12 @@ The feature is discussed in detail in the paper [https://zenodo.org/record/37363
 
 To build the native-comp branch of Emacs, you will need ##libgccjit## in addition to the other dependencies described in BuildingEmacs.
 
-First, checkout the ##feature/native-comp## branch of Emacs, and configure it with the ##--with-nativecomp## flag:
+First, checkout the ##feature/native-comp## branch of Emacs, and configure it with the ##--with-native-compilation## flag:
 
     $ git clone git://git.savannah.gnu.org/emacs.git -b feature/native-comp
     $ cd emacs
     $ ./autogen.sh
-    $ ./configure --with-nativecomp
+    $ ./configure --with-native-compilation
     $ make -j$(nproc)
 
 You should see //"Does Emacs have native lisp compiler? yes"// near the end of the configure output if native compilation has been enabled.
