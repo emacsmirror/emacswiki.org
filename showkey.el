@@ -4,13 +4,13 @@
 ;; Description: Show keys as you use them.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2021, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 10 08:39:55 2018 (-0800)
+;; Last-Updated: Sat Feb 27 13:28:14 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 157
+;;     Update #: 162
 ;; URL: https://www.emacswiki.org/emacs/download/showkey.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowKey
 ;; Keywords: help keys mouse
@@ -247,11 +247,13 @@ seconds."
 
 ;;;###autoload
 (define-minor-mode showkey-tooltip-mode
-    "Global minor mode that logs the keys you use.
+    "Global minor mode that shows the keys you use, using a tooltip.
 See option `showkey-tooltip-ignored-events' for customization.
 
 Note that keys such as `C-g' that quit, and keys that raise an error,
-are not logged."
+are not logged.
+
+See also minor mode `showkey-log-mode'."
   nil nil nil :global t
   (if showkey-tooltip-mode
       (add-hook 'pre-command-hook 'showkey-show-tooltip 'APPEND)
@@ -320,7 +322,9 @@ See options `showkey-log-erase-keys', `showkey-log-ignored-events',
 and `showkey-log-frame-alist' for customization.
 
 Note that keys such as `C-g' that quit, and keys that raise an error,
-are not logged."
+are not logged.
+
+See also minor mode `showkey-tooltip-mode'."
   nil nil nil :global t
   (cond (showkey-log-mode
          (unless (get-buffer "*KEYS*")
