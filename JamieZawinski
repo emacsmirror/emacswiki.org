@@ -1,3 +1,4 @@
+[:jwz]
 You can find more about Jamie at https://www.jwz.org/ and
 https://www.dnalounge.com/.  You'll almost never see his name "Jamie
 Zawinski".  If you really want to search on information for him,
@@ -23,16 +24,20 @@ at high school.
 
 Author of neato stuff such as:
 
-* BbdbMode -- The insidious Big Brother Database
+* BbdbMode -- BBDB, the insidious Big Brother Database
 * XKeyCaps -- A graphical front-end to XModMap
 * [https://www.jwz.org/xdaliclock/ Dali Clock] (for X11, macOS, Palm,
   iOS, Android and even some smartwatches) -- not particularly
   surreal; very calming morphing timepiece
-* [https://www.jwz.org/xscreensaver/ XScreenSaver] -- large collection
+* [https://www.jwz.org/xscreensaver/ XScreenSaver] -- a large collection
   of screen savers for GNU/Linux and other Unix systems, macOS, iOS
   and Android
 * [http://www.jwz.org/webcollage/ Web Collage] -- great idea.
 
+He's also the original author of a bunch of other, smaller stuff
+that's still part of Emacs today, like TarMode.
+
+He's also written extensively about his experience with
 RepeatedStressInjury:
 
 * http://www.jwz.org/gruntle/wrists.html
