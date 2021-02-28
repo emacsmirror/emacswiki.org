@@ -25,7 +25,7 @@ To download schemas, visit NxmlModeSchemas.
 
 if you would like to edit html files in nxml-mode:
 {{{
-   (fset 'html-mode 'nxml-mode)
+(fset 'html-mode 'nxml-mode)
 }}}
 
 === magic-mode-alist ===
@@ -33,20 +33,22 @@ If you have xml files for which the first element is html, you end up in html mo
 
 I don't know how to write elisp to remove html-mode from magic-mode-alist, but
 {{{
-   (fset 'html-mode 'nxml-mode)
+(fset 'html-mode 'nxml-mode)
 }}}
 does the job.  This works if you never edit html in emacs with anything other than nxml-mode. -- DougRansom
 [new]
-This 
+This
 
-    ;;; Use nxml-mode instead of sgml, xml or html mode.
-    (mapc
-     (lambda (pair)
-       (if (or (eq (cdr pair) 'xml-mode)
-               (eq (cdr pair) 'sgml-mode)
-               (eq (cdr pair) 'html-mode))
-           (setcdr pair 'nxml-mode)))
-     magic-mode-alist)
+{{{
+;;; Use nxml-mode instead of sgml, xml or html mode.
+(mapc
+ (lambda (pair)
+   (if (or (eq (cdr pair) 'xml-mode)
+           (eq (cdr pair) 'sgml-mode)
+           (eq (cdr pair) 'html-mode))
+       (setcdr pair 'nxml-mode)))
+ magic-mode-alist)
+}}}
 
 works for me. -- TrentBuck
 
@@ -66,22 +68,26 @@ Unfortunately `set-auto-mode' doesn't respect `auto-mode-alist' unless the mode 
 
 So, to make `set-auto-mode' respect 'auto-mode-alist', say:
 
-    (setq xml-based-modes (cons 'nxml-mode xml-based-modes))
+{{{
+(setq xml-based-modes (cons 'nxml-mode xml-based-modes))
+}}}
 
+But some xml files are not named nicely.  To also force `nxml-mode' for all documents with contents beginning <code>"<\\?xml \\|<!DOCTYPE"</code> say:
 
-But some xml files are not named nicely.  To also force `nxml-mode' for all documents with contents beginning "<\\?xml \\|<!DOCTYPE" say:
-
-    (fset 'xml-mode 'nxml-mode)
-
+{{{
+(fset 'xml-mode 'nxml-mode)
+}}}
 
 An alternative method is to search for an XML prolog at the beginning of the file:
 
- (add-hook 'hack-local-variables-hook
-   (lambda ()
-     (save-excursion
-       (when (search-forward-regexp "^<\\?xml" 6 0)
+{{{
+(add-hook 'hack-local-variables-hook
+  (lambda ()
+    (save-excursion
+      (when (search-forward-regexp "^<\\?xml" 6 0)
          (nxml-mode)
- ))))
+))))
+}}}
 
 ''That is very cool, and it works.'' This alternative method was marked *deprecated*, but there's some dispute over this.
 
