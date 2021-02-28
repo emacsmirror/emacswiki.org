@@ -327,6 +327,11 @@ fi
 
 Above script is tested in Aquamacs, but it may work with Emacs.  What it does, if you click the original App Icon twice, it will just give the focus to the Emacs(Aquamacs), and if you drag a file to it, it will call emacsclient to transfer it to the Emacs process.  If there is no Emacs process, it will create it. -- CinSK
 
+If you want the Automator gear to stop spinning, try replacing the two lines between the last else and fi with 
+<pre>
+  nohup bash --login -c "$EMACS "$@"" >/dev/null 2>&1 &
+</pre>
+
 === Use Alt/Option as Meta Key under terminal emulators ===
 
 For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
