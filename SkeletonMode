@@ -205,7 +205,7 @@ The skeleton language allows to evaluate arbitrary Lisp expressions when Emacs e
 
 === S-Expressions without Quotes ===
 
-S-expressions without a quote must return a string. The skeleton program then inserts this string into the buffer. Example:
+S-expressions without a quote return a substitute skeleton element (including an entire subskeleton). In the simplest case the expression returns a string that the skeleton program inserts into the buffer. Example:
 
 {{{
 (define-skeleton sexpr-example
