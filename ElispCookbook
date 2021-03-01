@@ -672,7 +672,7 @@ Here's an example:
 Another variant which does something similar, but without subexpressions:
 
     (defun regexp-list (regex string)
-      "Return a list of all REGEXP matches in STRING."
+      "Return a list of all REGEX matches in STRING."
       ;; source: http://emacs.stackexchange.com/questions/7148/get-all-regexp-matches-in-buffer-as-a-list
       (let ((pos 0)        ; string marker
             (matches ()))  ; return list
