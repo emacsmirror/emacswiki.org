@@ -1,6 +1,6 @@
 [[ja:regular_expression]]
 [[es:Expresión_Regular]]
-A '''[::regular expression]''' (abbreviated "'''[::regexp]'''" or sometimes just "re") is a search-string with ''wildcards'' -- and more.  It is a ''pattern'' that is ''matched'' against the text to be searched.
+A '''[::regular expression]''' (abbreviated "'''[::regexp]'''" or sometimes just "'''[::re]'''") is a search-string with ''wildcards'' -- and more.  It is a ''pattern'' that is ''matched'' against the text to be searched.
 See [[Manual:Regexps]]. Examples:
 
     "alex"
@@ -30,10 +30,11 @@ And there's a package [https://elpa.gnu.org/packages/xr.html xr (available on GN
 [:RegexpSyntax]
 == Regular Expression Syntax ==
 
-Here is the syntax used by Emacs for regular expressions.
+=== Regexp Syntax Basics ===
+
 Any character matches itself, except for the list below.
 
-The following characters are special : <code> . * + ? ^ $ \ [ </code> 
+The following characters are special : <code> . * + ? ^ $ \ [ </code>
 
 Between brackets ##[]##, the following are special : <code> ] - ^ </code>
 
@@ -66,8 +67,10 @@ Many characters are special when they follow a backslash -- see below.
 
 
 ##*?##,  ##+?##, and ##??## are non-greedy versions of ##*##,  ##+##, and ##?## -- see NonGreedyRegexp.
-Also, ##\W##, ##\B##, and ##\Sc## match any character that does not match 
+Also, ##\W##, ##\B##, and ##\Sc## match any character that does not match
 ##\w##,  ##\b##, and ##\sc##.
+
+=== Character Groups ===
 
 Characters are organized by category. Use ##C-u C-x =## to display the category of the character under the cursor.
 
@@ -76,7 +79,7 @@ Characters are organized by category. Use ##C-u C-x =## to display the category 
   \cl      latin character
   \cg      greek character
 
-Here are some [[Manual:Syntax Descriptors|syntax classes]], also known as character classes, that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##. View all syntax classes [https://www.gnu.org/software/emacs/manual/html_node/elisp/Char-Classes.html here]
+[[Manual:Syntax Descriptors|Syntax classes]] provide a shorthand for representing some groups of related characters, hence they are also known as /character classes/. Syntax classes can themselves be represented in a square-bracket-delimited, and they *must* also be used between square brackets (more below). You can view /all/ syntax classes [https://www.gnu.org/software/emacs/manual/html_node/elisp/Char-Classes.html here]. Some of the more useful square-bracket-delimited syntax classes are:
 
   [:digit:]  a digit, same as [0-9]
   [:alpha:]  a letter (an alphabetic character)
@@ -85,32 +88,42 @@ Here are some [[Manual:Syntax Descriptors|syntax classes]], also known as charac
   [:lower:]  a letter in lowercase
   [:graph:]  a visible character
   [:print:]  a visible character plus the space character
-  [:space:]  a whitespace character, as defined by the syntax table, but typically [ \t\r\n\v\f], which includes the newline character
+  [:space:]  a whitespace character, as defined by the syntax table, but typically
+             [ \t\r\n\v\f ], which includes the newline character
   [:blank:]  a space or tab character
   [:xdigit:] an hexadecimal digit
   [:cntrl:]  a control character
   [:ascii:]  an ascii character
   [:nonascii:]  any non ascii character
 
-Syntax classes:
+Syntax classes can also be represented using backslashes: e.g.,
 
   \s-   whitespace character        \s/   character quote character
-  \sw   word constituent            \s$   paired delimiter         
-  \s_   symbol constituent          \s'   expression prefix        
-  \s.   punctuation character       \s<   comment starter          
-  \s(   open delimiter character    \s>   comment ender            
+  \sw   word constituent            \s$   paired delimiter
+  \s_   symbol constituent          \s'   expression prefix
+  \s.   punctuation character       \s<   comment starter
+  \s(   open delimiter character    \s>   comment ender
   \s)   close delimiter character   \s!   generic comment delimiter
-  \s"   string quote character      \s|   generic string delimiter 
-  \s\   escape character            
+  \s"   string quote character      \s|   generic string delimiter
+  \s\   escape character
 
-You can see the current [[Manual:Syntax Tables|syntax table]] by typing <code>C-h s</code>.
-The syntax table depends on the current mode. As expected,
-letters a..z are listed as word constituents in text-mode.
-Other word constituents in this mode include A..Z, 0..9,
-$, %, currency units, accented letters, kanjis. See EmacsSyntaxTable
-for details.
+You can see the current [[Manual:Syntax Tables|syntax table]] by typing <code>C-h s</code>.  The syntax table depends on the current mode. As expected, letters a..z are listed as word constituents in text-mode.  Other word constituents in this mode include A..Z, 0..9, $, %, currency units, accented letters, kanjis. See EmacsSyntaxTable for details.
 
+==== Syntax Class Usage ====
 
+One must remember that *syntax classes must be used within square brackets*, as one would in specifying any other sequence to match or reject: e.g. ##[[:upper:]\|[:digit:]\.]##. This is easy to overlook when using square-bracket-delimited syntax classes, since they include their own square brackets! E.g., if searching for a single whitespace character in a regexp, this
+
+  [:space:]
+
+will *fail*. Just remember to add a 2nd/outer pair of square brackets: e.g., this
+
+  [[:space:]]
+
+will succeed in finding a single whitespace character, this
+
+  [[:space:]]*
+
+will succeed in finding zero-or-more single whitespace characters, etc.
 
 [:RegexpsInEmacs]
 == Idiosyncrasies of Emacs Regular Expressions ==
@@ -129,9 +142,9 @@ You can enter a newline character using `C-o',
 `C-q C-j', `C-q 012 RET', or as "\n" within an Emacs Lisp string. Note also that ##\s-## matches whitespace, sometimes including newlines, but is mode-dependent.
 
 * Default case handling for replacing commands executes case conversion.
-This means that both upper and lower case match in the 
+This means that both upper and lower case match in the
 regexp, whereas the case in the replacement string is chosen
-according to the match syntax. Try for example replacing 
+according to the match syntax. Try for example replacing
 <code>john</code> by <code>harry</code> below. Case conversion
 can be toggled on/off by typing `M-c' in the minibuffer during search.
 You can also set the variable <code>case-fold-search</code> to <code>nil</code> to disable case conversion; see CaseFoldSearch for more details. In the following example, only the last line would then be replaced.
@@ -139,13 +152,13 @@ You can also set the variable <code>case-fold-search</code> to <code>nil</code> 
                            John  =>  Harry
                            JOHN  =>  HARRY
                            john  =>  harry
- 
-* Backslashes must be double-quoted when 
+
+* Backslashes must be double-quoted when
 used in Lisp code. Regular expressions are often specified using
 strings in EmacsLisp. Some
 abbreviations are available: <code>\n</code> for newline,
 <code>\t</code> for tab, <code>\b</code> for backspace,
-<code>\u3501</code> for character with unicode value 3501, 
+<code>\u3501</code> for character with unicode value 3501,
 and so on.
 Backslashes must be entered as <code>\\</code>.
 Here are two ways to replace the decimal point by a comma
@@ -180,7 +193,7 @@ the expression to get it executed).
 == Some Emacs Commands that Use Regular Expressions ==
 
  C-M-s                   incremental forward search matching regexp
- C-M-r                   incremental backward search matching regexp 
+ C-M-r                   incremental backward search matching regexp
  replace-regexp          replace string matching regexp
  query-replace-regexp    same, but query before each replacement
  align-regexp            align, using strings matching regexp as delimiters
@@ -194,25 +207,25 @@ the expression to get it executed).
  lgrep                   user-friendly interface to the grep command
  rgrep                   recursive grep
  dired-do-copy-regexp    copy files with names matching regexp
- dired-do-rename-regexp  rename files matching regexp 
+ dired-do-rename-regexp  rename files matching regexp
  find-grep-dired         display files containing matches for regexp with Dired
 
-Note that <code>list-matching-lines</code> is an alias for 
+Note that <code>list-matching-lines</code> is an alias for
 <code>occur</code>
-and <code>delete-matching-lines</code> is an alias for 
+and <code>delete-matching-lines</code> is an alias for
 <code>flush-lines</code>.
 The command <code>highlight-regexp</code> is bound to
 <code>C-x w h</code>.
 Also <code>query-replace-regexp</code>
 is bound by default to <code>C-M-%</code>,
-although some people prefer using an alias, like 
+although some people prefer using an alias, like
 <code>M-x qrr</code>.
 Put the following in your InitFile to create such alias.
 
    (defalias 'qrr 'query-replace-regexp)
 
 See also:
-IncrementalSearch, ReplaceRegexp, AlignCommands, 
+IncrementalSearch, ReplaceRegexp, AlignCommands,
 OccurBuffer, DiredPower
 
 
@@ -221,10 +234,10 @@ OccurBuffer, DiredPower
 == Tools for Constructing Regexps ==
 
 * Command `re-builder' constructs a
-regular expression. You enter the regexp in a 
+regular expression. You enter the regexp in a
 small window at the bottom of the frame. The first 200 matches in the [[buffer]] are highlighted, so you can see if the regexp does what you want. Use Lisp syntax, which means doubling backslashes and using ##\\\\## to match a literal backslash.
 
-* Macro `rx' provides user-friendly syntax for 
+* Macro `rx' provides user-friendly syntax for
 regular expressions. For example, ##(rx (one-or-more blank) line-end)##
 returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 
@@ -278,7 +291,7 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 [:RegexpsInIcicles]
 === Use Icicles to Learn about Regexps ===
 
-[[Icicles]] provides these interactive ways to learn about regexps: 
+[[Icicles]] provides these interactive ways to learn about regexps:
 
 * '''`##C-`##'''' (`icicle-search') shows you regexp matches, as does `C-M-s', but it can also show you (that is, highlight) regexp ''subgroup'' matches.  Showing matched subgroups is very helpful for learning.  There are two ways that you can use this Icicles feature:
 
