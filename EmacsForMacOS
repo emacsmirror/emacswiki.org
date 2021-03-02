@@ -29,7 +29,7 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 * [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on the latest stable release of GNU Emacs (27.1 as of 2020-11) (26.2 as of 2019-07-05) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
 
-* [http://aquamacs.org AquamacsEmac]s is a convenient distribution based on GNU Emacs 25.3.  Aquamacs comes preconfigured with a large number of packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.  Recommended for Mac users who want an Emacs that is tailored to the Mac.   [http://aquamacs.org/nightlies.shtml Experimental versions] based on GNU Emacs 25 are also available.
+* AquamacsEmacs (https://aquamacs.org/) is a convenient distribution based on GNU Emacs 25.3.  Aquamacs comes preconfigured with a large number of packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.  Recommended for Mac users who want an Emacs that is tailored to the Mac.   [http://aquamacs.org/nightlies.shtml Experimental versions] based on GNU Emacs 25 are also available.
 
 * [https://vigou3.gitlab.io/emacs-modified-macos/ Emacs Modified for macOS] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS] and AUCTeX. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
 
@@ -192,14 +192,13 @@ ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications
 
 === MacPorts ===
 
-!MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
-(and other unix-alikes for that matter).
+!MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on Mac OS X or macOS
+(and even other Unix-like systems for that matter which !MacPorts also supports).
 
-As of December 15, 2016 it provides the following packages:
-* emacs 25.1
-* emacs-app 25.1
-* emacs23 23.4
-* emacs-mac-app 6.1
+As of March 1, 2021 it provides the following packages:
+* emacs 27.1
+* emacs-app 27.1
+* emacs-mac-app 8.1
 * xemacs 21.4.22
 * and quite a few more...
 
@@ -214,22 +213,28 @@ The emacs-app executable installs to:
 The various emacs packages <nowiki>MacPorts</nowiki> offers (e.g., org-mode) will install to:
 <code>/opt/local/share/emacs/site-lisp/</code>
 
-Note that Mac OS X Lion comes with GNU Emacs 22.1.1, located at:
+Note that Mac OS–X Lion comes with GNU Emacs 22.1.1, located at:
 <code>/usr/bin/emacs</code>
 
 Linux users, add these lines to your //.profile// (or //.bashrc//, etc.) to feel at home:
 
-<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'</code>
+{{{
+alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'
 
-<code>alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'</code>
+alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'
+}}}
 
-For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
+For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
 
-   sudo port install emacs-app
+{{{
+sudo port install emacs-app
+}}}
 
 or (if you prefer a -- usually more recent-- development version)
 
-   sudo port install emacs-app-devel
+{{{
+sudo port install emacs-app-devel
+}}}
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
 
