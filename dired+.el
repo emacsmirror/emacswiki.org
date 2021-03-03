@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb  7 18:00:38 2021 (-0800)
+;; Last-Updated: Tue Mar  2 16:17:18 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12811
+;;     Update #: 12849
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -621,7 +621,8 @@
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
 ;;    `diredp-list-file-attributes', `diredp-max-frames',
-;;    `diredp-move-file-dirs' (Emacs 24+), `diredp-omit-files-regexp'
+;;    `diredp-move-file-dirs' (Emacs 24+), `diredp-omit-files-regexp',
+;;    `diredp-omit-line-regexp',
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-recent-files-quit-kills-flag',
 ;;    `diredp-switches-in-mode-line',
@@ -813,6 +814,7 @@
 ;;        Use new `dired-get-marked-files'.
 ;;  `dired-insert-subdir-newpos' - If not a descendant, put at eob.
 ;;  `dired-insert-subdir-validate' - Do nothing: no restrictions.
+;;  `dired-do-kill-lines' - Added optional arg INIT-COUNT.
 ;;  `dired-maybe-insert-subdir' - Go back to subdir line if in listing.
 ;;  `dired-handle-overwrite' - Added optional arg FROM, for listing.
 ;;  `dired-copy-file(-recursive)', `dired-hardlink', `dired-query',
@@ -831,6 +833,8 @@
 ;;  `dired-mark-sexp' - 1. Variable `s' -> `blks'.
 ;;                      2. Fixes to `uid' and `gid'.
 ;;  `dired-mark-unmarked-files' (Emacs < 24 only) - Emacs 24+ version.
+;;  `dired-omit-expunge' - Added optional args LINEP and INIT-COUNT.
+;;  `dired-omit-mode' -  Call `dired-omit-expunge' with arg LINEP.
 ;;  `dired-simultaneous-find-file' -
 ;;     Use separate frames instead of windows if `pop-up-frames' is
 ;;     non-nil, or if prefix arg < 0.
@@ -845,6 +849,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/02 dadams
+;;     Added: diredp-omit-line-regexp, redefinitions of dired-do-kill-lines, dired-omit-expunge, dired-omit-mode.
 ;; 2021/02/07 dadams
 ;;     Added: diredp-mark.  Give it dired-mark's keys.
 ;;     diredp-mark-region-files: Non-negative prefix arg now prompts for the CHAR to mark with.
@@ -2540,6 +2546,31 @@ Emacs to see the effect of the new value on font-locking."
   :group 'Dired-Plus :type 'regexp)
 
 ;;;###autoload
+(defcustom diredp-omit-line-regexp nil
+  "Regexp matching lines to be omitted by `dired-omit-mode'.
+The value can also be nil, which means no line matching is done.
+
+See command `dired-omit-mode' (\\[dired-omit-mode]).
+
+Some predefined regexp variables for Dired, whose values you can use
+as the option value:
+
+* `dired-re-inode-size'
+* `dired-re-mark'
+* `dired-re-maybe-mark'
+* `dired-re-dir'
+* `dired-re-sym'
+* `dired-re-exe'
+* `dired-re-perms'
+* `dired-re-dot'
+* `dired-re-no-dot'
+* `diredp-re-no-dot'"
+  :type `(choice (const  :tag "Don't match lines" nil)
+                 (regexp :tag "Match lines with regexp (default: executables)"
+                         :value ,dired-re-exe))
+  :group 'Dired-Plus)
+
+;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
   "*Non-nil means prompt for a prefix string for bookmark names."
   :type 'boolean :group 'Dired-Plus)
@@ -3060,6 +3091,46 @@ version in these respects:
       (when (and (null result)  error-if-none-p)
         (diredp-user-error (if (stringp error-if-none-p) error-if-none-p "No files specified")))
       result)))
+
+
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; 1. Added optional arg INIT-COUNT.
+;; 2. Changed doc to speak of removing, not killing.
+;;
+(defun dired-do-kill-lines (&optional arg fmt init-count)
+  "Remove all marked lines, or the next ARG lines.
+The files or directories on those lines are _not_ deleted.  Only the
+Dired listing is affected.  To restore the removals, use `\\[revert-buffer]'.
+
+With a numeric prefix arg, remove that many lines going forward,
+starting with the current line.  (A negative prefix arg removes lines
+going backward.)
+
+If you use a prefix arg to remove the line for a subdir whose listing
+you have inserted into the Dired buffer, then that subdir listing is
+also removed.
+
+To remove a subdir listing _without_ removing the subdir's line in its
+parent listing, go to the header line of the subdir listing and use
+this command with any prefix arg.
+
+When called from Lisp, non-nil INIT-COUNT is added to the number of
+lines removed by this invocation, for the reporting message."
+  ;; Returns count of killed lines.  FMT="" suppresses message.
+  (interactive "P")
+  (if arg
+      (if (dired-get-subdir) (dired-kill-subdir) (dired-kill-line arg))
+    (save-excursion
+      (goto-char (point-min))
+      (let ((count   (or init-count  0))
+            (regexp  (dired-marker-regexp))
+            buffer-read-only)
+        (while (and (not (eobp))  (re-search-forward regexp nil t))
+          (setq count  (1+ count))
+          (delete-region (line-beginning-position) (progn (forward-line 1) (point))))
+        (unless (equal "" fmt) (message (or fmt "Killed %d line%s.") count (dired-plural-s count)))
+        count))))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -9890,7 +9961,8 @@ REGEXP should use constructs supported by your local `grep' command."
                                     (xrefs  ()))
                                 (mapc (lambda (file)
                                         (if (file-directory-p file)
-                                            (setq files  (nconc (project--files-in-directory file ignores "*") files))
+                                            (setq files  (nconc (project--files-in-directory file ignores "*")
+                                                                files))
                                           (push file files)))
                                       (nreverse ',marked))
                                 (setq xrefs  (xref-matches-in-files regexp files))
@@ -10752,6 +10824,109 @@ With a numeric prefix arg N, hide this subdirectory and the next N-1
 ;;;   (interactive "P")
 ;;;   (dired-hide-subdir arg 'NEXT))
 ;;; ----------------------
+
+
+
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; When `diredp-omit-line-regexp' is non-nil, call `dired-omit-expunge' again to omit matching lines.
+;;
+(when (fboundp 'define-minor-mode)      ; Emacs 22+
+
+  ;; Macro `define-minor-mode' is not defined in Emacs 20, so in order to be able to byte-compile
+  ;; this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
+  ;;
+  (eval '(define-minor-mode dired-omit-mode
+           "Toggle omission of uninteresting files in Dired (Dired-Omit mode).
+With prefix argument ARG, enable Dired-Omit mode if ARG is positive,
+and disable it otherwise.
+
+If called from Lisp, enable the mode if ARG is omitted or nil.
+
+Dired-Omit mode is a buffer-local minor mode.
+
+When enabled in a Dired buffer, Dired does not list files whose
+filenames match regexp `dired-omit-files', files ending with
+extensions in `dired-omit-extensions', or files listed on lines
+matching `diredp-omit-line-regexp'.
+
+To enable omitting in every Dired buffer, you can put this in
+your init file:
+
+  (add-hook \\='dired-mode-hook (lambda () (dired-omit-mode)))
+
+See Info node `(dired-x) Omitting Variables' for more information."
+           nil nil nil :group 'Dired-Plus
+           (if (not dired-omit-mode)
+               (revert-buffer)
+             (let ((dired-omit-size-limit  nil)
+                   (file-count             0))
+               ;; Omit by file-name match, then omit by line match.
+               ;; Use count of file-name match as INIT-COUNT for line match.
+               ;; Return total count.  (Return value is not used anywhere, so far).
+               (setq file-count  (dired-omit-expunge))
+               (when diredp-omit-line-regexp (dired-omit-expunge diredp-omit-line-regexp 'LINEP file-count))))))
+
+  (unless (boundp 'dired-omit-verbose)  ; Not in Emacs < 24.
+    (defvar dired-omit-verbose t
+      "When non-nil, show messages when omitting files.
+When nil, don't show messages."))
+
+
+  ;; REPLACE ORIGINAL in `dired-x.el'.
+  ;;
+  ;; Added optional args LINEP and INIT-COUNT.
+  ;;
+  (defun dired-omit-expunge (&optional regexp linep init-count)
+    "Erase all unmarked files whose names match REGEXP.
+With a prefix arg (non-nil LINEP when called from Lisp), match REGEXP
+against the whole line.  Otherwise, match it against the file name.
+
+If REGEXP is nil, use `dired-omit-files', and also omit file names
+ending in `dired-omit-extensions'.
+
+Do nothing if REGEXP is the empty string, `dired-omit-mode' is nil, or
+if called from Lisp and buffer is bigger than `dired-omit-size-limit'.
+
+Optional arg INIT-COUNT is an initial count tha'is added to the number
+of lines omitted by this invocation of `dired-omit-expunge', in the
+status message."
+    (interactive "sOmit files (regexp): \nP")
+    ;; Bind `dired-marker-char' to `dired-omit-marker-char', then call `dired-do-kill-lines'.
+    (if (and dired-omit-mode
+             (or (called-interactively-p 'interactive)
+                 (not dired-omit-size-limit)
+                 (< (buffer-size) dired-omit-size-limit)
+                 (progn
+                   (when dired-omit-verbose
+                     (message "Not omitting: directory larger than %d characters." dired-omit-size-limit))
+                   (setq dired-omit-mode  nil)
+                   nil)))
+        (let ((omit-re         (or regexp  (dired-omit-regexp)))
+              (old-modified-p  (buffer-modified-p))
+              (count           (or init-count  0)))
+          (unless (string= omit-re "")
+            (let ((dired-marker-char  dired-omit-marker-char))
+              (when dired-omit-verbose (message "Omitting..."))
+              (if (not (if linep
+                           (dired-mark-if (and (= (following-char) ?\   ) ; Not already marked
+                                               (string-match-p omit-re (buffer-substring
+                                                                        (line-beginning-position)
+                                                                        (line-end-position))))
+                                          nil)
+                         (dired-mark-unmarked-files
+                          omit-re nil nil dired-omit-localp
+                          (dired-omit-case-fold-p (if (stringp dired-directory)
+                                                      dired-directory
+                                                    (car dired-directory))))))
+                  (when dired-omit-verbose (message "(Nothing to omit)"))
+                (setq count  (+ count
+                                (dired-do-kill-lines nil (if dired-omit-verbose "Omitted %d line%s" "") init-count)))
+                (force-mode-line-update))))
+          ;; Try to preserve modified state of buffer, so `%*' doesn't appear in `mode-line'.
+          (set-buffer-modified-p (and old-modified-p  (save-excursion (goto-char (point-min))
+                                                                      (re-search-forward dired-re-mark nil t))))
+          count))))
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
@@ -13112,7 +13287,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
 
 ;;; Breadcrumbs
 
-(when (fboundp 'define-minor-mode)
+(when (fboundp 'define-minor-mode)      ; Emacs 22+
 
   ;; Macro `define-minor-mode' is not defined in Emacs 20, so in order to be able to byte-compile
   ;; this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
