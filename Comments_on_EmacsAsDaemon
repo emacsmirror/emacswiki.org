@@ -64,3 +64,16 @@ c. don't bulid emacs with gtk.  As for me, on Gentoo, it is to enable useflag "m
 
 -- C-Entropy 2020-10-14 12:42 UTC
 
+
+----
+
+In the Stopping the Daemon, what does the `emacsclient -e '(client-save-kill-emacs)` do compared to running `emacsclient -c -e '(save-buffers-kill-emacs)'`.
+
+As a newcomer a while back I was looking for something that did what `emacsclient -c -e '(save-buffers-kill-emacs)'` does but when I saw that function I thought I had best wait until I became more experienced.
+
+In the mean time, I did `emacsclient -c` and ran `M-x save-buffers-kill-emacs RET`.
+
+I feel `save-buffers-kill-emacs` would be worth mentioning on this page too.
+
+-- [https://philippe-carphin.ca pcarphin] 2021-03-03 03:44 UTC
+
