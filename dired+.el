@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  2 16:17:18 2021 (-0800)
+;; Last-Updated: Tue Mar  2 16:37:04 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12849
+;;     Update #: 12850
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -2548,7 +2548,7 @@ Emacs to see the effect of the new value on font-locking."
 ;;;###autoload
 (defcustom diredp-omit-line-regexp nil
   "Regexp matching lines to be omitted by `dired-omit-mode'.
-The value can also be nil, which means no line matching is done.
+The value can also be nil, which means do no line matching.
 
 See command `dired-omit-mode' (\\[dired-omit-mode]).
 
