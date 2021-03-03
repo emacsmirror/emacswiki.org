@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  2 16:37:04 2021 (-0800)
+;; Last-Updated: Wed Mar  3 10:03:16 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12850
+;;     Update #: 12870
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -100,9 +100,9 @@
 ;;  loaded, which defines the font-lock keywords for Dired.  These
 ;;  options include `diredp-compressed-extensions',
 ;;  `diredp-ignore-compressed-flag', `dired-omit-extensions', and
-;;  `diredp-omit-files-regexp'.  This means that if you change the
-;;  value of such an option then you will see the change only in a new
-;;  Emacs session.
+;;  `diredp-omit-files-font-lock-regexp'.  This means that if you
+;;  change the value of such an option then you will see the change
+;;  only in a new Emacs session.
 ;;
 ;;  (You can see the effect in the same session if you use `C-M-x' on
 ;;  the `defvar' sexp for `diredp-font-lock-keywords-1', and then you
@@ -621,8 +621,9 @@
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
 ;;    `diredp-list-file-attributes', `diredp-max-frames',
-;;    `diredp-move-file-dirs' (Emacs 24+), `diredp-omit-files-regexp',
-;;    `diredp-omit-line-regexp',
+;;    `diredp-move-file-dirs' (Emacs 24+),
+;;    `diredp-omit-files-font-lock-regexp',
+;;    `diredp-omit-lines-regexp',
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-recent-files-quit-kills-flag',
 ;;    `diredp-switches-in-mode-line',
@@ -849,6 +850,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/03 dadams
+;;     Renamed: diredp-omit-files-regexp to diredp-omit-files-font-lock-regexp,
+;;              diredp-omit-line-regexp to diredp-omit-lines-regexp.
+;;     diredp-omit-lines-regexp: Value can also be a variable whose value is a regexp.
+;;     dired-omit-expunge: If REGEXP is a variable, use its value.
 ;; 2021/03/02 dadams
 ;;     Added: diredp-omit-line-regexp, redefinitions of dired-do-kill-lines, dired-omit-expunge, dired-omit-mode.
 ;; 2021/02/07 dadams
@@ -2496,7 +2502,7 @@ Target directory names should be absolute."
     :group 'files :type '(alist :key-type file :value-type directory)))
 
 ;; (Not used - just use the body directly in the option default value.
-;; (defun diredp-omit-files-regexp ()
+;; (defun diredp-omit-files-font-lock-regexp ()
 ;;   "Return regexp to use for font-locking, using `dired-omit-files' as base."
 ;;   (let* ((strg  dired-omit-files)
 ;;          (strg  (if (eq ?^ (aref strg 0)) (substring strg 1) strg)) ; Remove initial ^
@@ -2504,7 +2510,8 @@ Target directory names should be absolute."
 ;;          (strg  (replace-regexp-in-string "\\([$]\\)" "" strg 'FIXEDCASE nil))) ; Remove $'s
 ;;     strg))
 
-(defcustom diredp-omit-files-regexp "\\.?#.*#\\|\\.\\|\\.\\."
+(diredp-make-obsolete-variable 'diredp-omit-files-regexp 'diredp-omit-files-font-lock-regexp "2021-03-03")
+(defcustom diredp-omit-files-font-lock-regexp "\\.?#.*#\\|\\.\\|\\.\\."
   ;;
   ;; This was no good for `#...#'.  There's no rule good enough to work generally.
   ;; Can't just transform `dired-omit-files'.
@@ -2546,14 +2553,15 @@ Emacs to see the effect of the new value on font-locking."
   :group 'Dired-Plus :type 'regexp)
 
 ;;;###autoload
-(defcustom diredp-omit-line-regexp nil
+(defcustom diredp-omit-lines-regexp nil
   "Regexp matching lines to be omitted by `dired-omit-mode'.
+The value can also be a variable whose value is such a regexp.
 The value can also be nil, which means do no line matching.
 
 See command `dired-omit-mode' (\\[dired-omit-mode]).
 
-Some predefined regexp variables for Dired, whose values you can use
-as the option value:
+Some predefined regexp variables for Dired, which you can use as the
+option value:
 
 * `dired-re-inode-size'
 * `dired-re-mark'
@@ -2565,9 +2573,11 @@ as the option value:
 * `dired-re-dot'
 * `dired-re-no-dot'
 * `diredp-re-no-dot'"
-  :type `(choice (const  :tag "Don't match lines" nil)
-                 (regexp :tag "Match lines with regexp (default: executables)"
-                         :value ,dired-re-exe))
+  :type `(choice (const  :tag "Do not match lines to omit" nil)
+                 (regexp :tag "Regexp to match lines to omit (default omits executables)" :value ,dired-re-exe)
+                 (restricted-sexp :tag "Variable with regexp value (default: `dired-re-exe')"
+                                  :match-alternatives ((lambda (obj) (and (symbolp obj) (boundp obj))))
+                                  :value dired-re-exe))
   :group 'Dired-Plus)
 
 ;;;###autoload
@@ -4150,7 +4160,7 @@ In particular, inode number, number of hard links, and file size."
     '((((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
       (t                   (:foreground "#00006DE06DE0")))) ; ~ dark cyan
   "*Face used for files whose names will be omitted in `dired-omit-mode'.
-This means file names that match regexp `diredp-omit-files-regexp'.
+This means file names that match regexp `diredp-omit-files-font-lock-regexp'.
 \(File names matching `dired-omit-extensions' are highlighted with face
 `diredp-ignored-file-name' instead.)"
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
@@ -4248,7 +4258,7 @@ This means file names that match regexp `diredp-omit-files-regexp'.
      (list (concat "^  \\(.*\\(" omit-exts compr-exts "\\)[*]?\\)$") ; [*]? allows for executable flag (*).
            1 diredp-ignored-file-name t))
    `(,(concat "^.*" dired-move-to-filename-regexp
-              "\\(" diredp-omit-files-regexp "\\)[*]?$") ; [*]? allows for executable flag (*).
+              "\\(" diredp-omit-files-font-lock-regexp "\\)[*]?$") ; [*]? allows for executable flag (*).
      (0 diredp-omit-file-name t))
 
    ;; Compressed-file (suffix)
@@ -10829,7 +10839,7 @@ With a numeric prefix arg N, hide this subdirectory and the next N-1
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
 ;;
-;; When `diredp-omit-line-regexp' is non-nil, call `dired-omit-expunge' again to omit matching lines.
+;; When `diredp-omit-lines-regexp' is non-nil, call `dired-omit-expunge' again to omit matching lines.
 ;;
 (when (fboundp 'define-minor-mode)      ; Emacs 22+
 
@@ -10848,7 +10858,7 @@ Dired-Omit mode is a buffer-local minor mode.
 When enabled in a Dired buffer, Dired does not list files whose
 filenames match regexp `dired-omit-files', files ending with
 extensions in `dired-omit-extensions', or files listed on lines
-matching `diredp-omit-line-regexp'.
+matching `diredp-omit-lines-regexp'.
 
 To enable omitting in every Dired buffer, you can put this in
 your init file:
@@ -10865,7 +10875,7 @@ See Info node `(dired-x) Omitting Variables' for more information."
                ;; Use count of file-name match as INIT-COUNT for line match.
                ;; Return total count.  (Return value is not used anywhere, so far).
                (setq file-count  (dired-omit-expunge))
-               (when diredp-omit-line-regexp (dired-omit-expunge diredp-omit-line-regexp 'LINEP file-count))))))
+               (when diredp-omit-lines-regexp (dired-omit-expunge diredp-omit-lines-regexp 'LINEP file-count))))))
 
   (unless (boundp 'dired-omit-verbose)  ; Not in Emacs < 24.
     (defvar dired-omit-verbose t
@@ -10892,6 +10902,7 @@ Optional arg INIT-COUNT is an initial count tha'is added to the number
 of lines omitted by this invocation of `dired-omit-expunge', in the
 status message."
     (interactive "sOmit files (regexp): \nP")
+    (when (and (symbolp regexp)  (boundp regexp)) (setq regexp  (symbol-value regexp)))
     ;; Bind `dired-marker-char' to `dired-omit-marker-char', then call `dired-do-kill-lines'.
     (if (and dired-omit-mode
              (or (called-interactively-p 'interactive)
