@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Dec 29 12:36:09 2020 (-0800)
+;; Last-Updated: Thu Mar  4 09:23:05 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 9224
+;;     Update #: 9226
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -442,11 +442,12 @@
 ;;    `bmkp-toggle-saving-menu-list-state',
 ;;    `bmkp-toggle-temporary-bookmark',
 ;;    `bmkp-turn-on-auto-idle-bookmark-mode' (Emacs 21+),
-;;    `bmkp-unomit-all', `bmkp-untag-a-file', `bmkp-url-target-set',
-;;    `bmkp-url-jump', `bmkp-url-jump-other-window',
-;;    `bmkp-variable-list-jump', `bmkp-version',
-;;    `bmkp-visit-external-annotation', `bmkp-w32-browser-jump',
-;;    `bmkp-w3m-jump', `bmkp-w3m-jump-other-window',
+;;    `bmkp-types-alist', `bmkp-unomit-all', `bmkp-untag-a-file',
+;;    `bmkp-url-target-set', `bmkp-url-jump',
+;;    `bmkp-url-jump-other-window', `bmkp-variable-list-jump',
+;;    `bmkp-version', `bmkp-visit-external-annotation',
+;;    `bmkp-w32-browser-jump', `bmkp-w3m-jump',
+;;    `bmkp-w3m-jump-other-window',
 ;;    `bmkp-wrap-bookmark-with-last-kbd-macro'.
 ;;
 ;;  User options defined here:
@@ -5786,6 +5787,23 @@ Optional arg ALIST is an alternative alist of bookmarks to use."
   "Pseudo-bookmark for the current `*Bookmark List*' state."
   (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
   (cons "CURRENT *Bookmark List*" (bmkp-make-bookmark-list-record)))
+
+;;; This function is used in macro `bmkp-define-history-variables', so
+;;; its definition is also in `bookmark+-mac.el'.
+;;;
+(defun bmkp-types-alist ()
+  "Alist of bookmark types used by `bmkp-jump-to-type'.
+Keys are bookmark type names.  Values are corresponding history variables.
+The alist is used in commands such as `bmkp-jump-to-type'."
+  (let ((entries  ()))
+    (mapatoms
+     (lambda (sym)
+       (let ((name  (symbol-name sym)))
+         (when (string-match "\\`bmkp-\\(.+\\)-alist-only\\'" name)
+           (push (cons (match-string 1 name)
+                       (intern (format "bmkp-%s-history" (match-string 1 name))))
+                 entries)))))
+    entries))
 
 ;;;###autoload (autoload 'bmkp-choose-navlist-of-type "bookmark+")
 (defun bmkp-choose-navlist-of-type (type) ; Bound to `C-x x :'
