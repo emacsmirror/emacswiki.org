@@ -7,7 +7,7 @@
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-01-25 01:00:38
 ;; Version: 0.3
-;; Last-Updated: 2020-04-22 20:27:36
+;; Last-Updated: 2021-03-04 10:10:00
 ;;           By: Hongxin Liang
 ;; URL: http://www.emacswiki.org/emacs/download/multi-scratch.el
 ;; Keywords:
