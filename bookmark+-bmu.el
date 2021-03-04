@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Dec 29 12:30:23 2020 (-0800)
+;; Last-Updated: Thu Mar  4 09:02:22 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 4149
+;;     Update #: 4150
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5559,7 +5559,7 @@ prefix arg, any that are marked are included."
   (interactive (list (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                      (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (help-setup-xref (list #'bmkp-describe-bookmark-marked) (interactive-p))
+  (help-setup-xref (list #'bmkp-bmenu-describe-marked) (interactive-p))
   (bmkp-with-help-window "*Help*"
     (dolist (bmk  (bmkp-sort-omit (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
       (if defn
