@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Feb 12 12:11:12 2021 (-0800)
+;; Last-Updated: Thu Mar  4 09:05:13 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 16733
+;;     Update #: 16734
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1471,6 +1471,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2021/03/04 dadams
+;;     bmkp-bmenu-describe-marked: Typo - bmkp-describe-bookmark-marked -> bmkp-bmenu-describe-marked.
 ;; 2020/12/29 dadams
 ;;     Wrap soft-require of menu-bar+.el in null condition-case, because it soft-requires Bookmark+.
 ;; 2020/11/27 dadams
