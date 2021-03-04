@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Mar  4 09:05:13 2021 (-0800)
+;; Last-Updated: Thu Mar  4 09:22:22 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 16734
+;;     Update #: 16736
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/03/04 dadams
+;;     Added bmkp-types-alist.  The def is also in bookmark+-mac.el.
 ;; 2020/11/28 dadams
 ;;     Removed:
 ;;       bmkp-bookmark-type-valid-p, variable (defconst) bmkp-types-alist, and all history variables.
@@ -2463,6 +2465,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2021/03/04 dadams
+;;     Removed autoload cookie for bmkp-types-alist.  Its def is also in bookmark+-1.el now.
 ;; 2020/11/28 dadams
 ;;     Added: bmkp-define-history-variables, funtion bmkp-types-alist.
 ;; 2017/03/31 dadams
