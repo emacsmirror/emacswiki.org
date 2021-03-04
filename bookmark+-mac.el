@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Tue Dec 29 12:37:29 2020 (-0800)
+;; Last-Updated: Thu Mar  4 09:13:36 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 218
+;;     Update #: 220
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -469,11 +469,9 @@ If either is a record then it need not belong to `bookmark-alist'."
             (t;; Neither is a file.
              nil)))))
 
-;; `bmkp-types-alist' is in this file, and not in `bookmark+-1.el',
-;; only to allow Emacs 20 to byte-compile that file without error,
-;; after loading `bookmark+-mac.el'.
-;;
-;;;###autoload (autoload 'bmkp-types-alist "bookmark+")
+;;; This is also defined in `bookmark+-1.el'.  It is used here to produce the code for
+;;; `bmkp-define-history-variables' and `bmkp-define-sort-command'.
+;;;
 (defun bmkp-types-alist ()
   "Alist of bookmark types used by `bmkp-jump-to-type'.
 Keys are bookmark type names.  Values are corresponding history variables.
