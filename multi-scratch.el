@@ -74,6 +74,9 @@
 
 ;;; Change log:
 ;;
+;; 2021/03/04
+;;      * Fix autoloaded command `remove-if-not' from `cl-seq'
+;;
 ;; 2020/04/22
 ;;      * Possible to customize the mode to load when creating a new scratch buffer
 ;;      * Require `cl-lib' instead of `cl' which has been deprecated
@@ -164,10 +167,10 @@ If OFFSET is `non-nil', will switch previous OFFSET scratch buffer."
 
 (defun multi-scratch-list ()
   "The scratch buffers presently active."
-  ;; Autload command `remove-if-not'.
-  (autoload 'remove-if-not "cl-seq")
+  ;; Autoload command `cl-remove-if-not'.
+  (autoload 'cl-remove-if-not "cl-seq")
   (sort
-   (remove-if-not (lambda (b)
+   (cl-remove-if-not (lambda (b)
                     (string-match
                      (concat "^\*" multi-scratch-buffer-name)
                      (buffer-name b)))
