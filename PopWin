@@ -1,10 +1,18 @@
 == Overview ==
 
-popwin is a popup window manager for Emacs which makes you free from the hell of annoying buffers such like <code>*Help*</code>, <code>*Completions*</code>, <code>*compilation*</code>, and etc.
+popwin is a popup window manager for Emacs which makes you free from
+the hell of annoying buffers such like <code>*Help*</code>,
+<code>*Completions*</code>, <code>*compilation*</code>, and etc.
 
-Take an example. When you complete file names during <code>find-file</code>, the (annoying) <code>*Completions*</code> buffer will appear in a newly splitted window. You might understand the necessity of the window, but you may wonder why the window still remains after completion...
+Take an example.  When you complete file names during
+<code>find-file</code>, the (annoying) <code>*Completions*</code>
+buffer will appear in a newly splitted window.  You might understand
+the necessity of the window, but you may wonder why the window still
+remains after completion...
 
-popwin resolves there problems. Windows of such temporary buffers will be shown as a popup window, and you can close them smoothly by typing <code>C-g</code> in anytime.
+popwin resolves these problems.  Windows of such temporary buffers
+will be shown as a popup window, and you can close them smoothly by
+typing <kbd>C-g</kbd> in anytime.
 
 == Screenshots ==
 
@@ -17,37 +25,48 @@ Please visit a project page for downloading and full documentation.
 https://github.com/m2ym/popwin-el
 
 [new]
-
-This doesn't seem to work when using split buffer with one buffer being ERC. Clue? -- [new:RyanDavis:2011-03-08 10:53 UTC]
+This doesn't seem to work when using split buffer with one buffer
+being ERC.  Clue? -- [new:RyanDavis:2011-03-08 10:53 UTC]
 
 [new]
-
-I have added a ticket for that problem. Matsuyama
+I have added a ticket for that problem.  Matsuyama
 
 https://github.com/m2ym/popwin-el/issues#issue/14
 
 == popwin and special-display-function/special-display-regexps ==
 
-popwin disables the normal <code>special-display-function/special-display-regexps</code> functionality: E.g. when you use popwin just for display-buffer-function</code>, but you set as well <code>special-display-regexps</code> to "("\\*info\\*.*"), info buffers aren't created in their one frame anymore.
+popwin disables the normal
+<code>special-display-function</code>/<code>special-display-regexps</code>
+functionality: E.g. when you use popwin just for
+<code>display-buffer-function</code>, but you set as well
+<code>special-display-regexps</code> to <code>("\\*info\\*.*")</code>,
+info buffers aren't created in their own frame anymore.
 
 My workaround is an in-between <code>display-buffer</code> function:
 
-    ;;
-    ;; to restore special-display-function with pop-win.el
-    ;;
-    (defun leo-popwin:display-buffer (buffer-or-name &optional not-this-window)
-      "Display BUFFER-OR-NAME, if possible, in a popup window, or as
-    usual. This function can be used as a value of
-    `display-buffer-function'."
-      (interactive "BDisplay buffer:\n")
-      ;; `special-display-p' returns either t or a list of frame
-      ;; parameters to pass to `special-display-function'.
-      (let ((pars (special-display-p name-of-buffer)))
-        (if (and pars special-display-function)
-            (funcall special-display-function
-                     buffer (if (listp pars) pars))
-          (popwin:display-buffer buffer-or-name not-this-window))))
-    
-    (setq display-buffer-function 'leo-popwin:display-buffer)
+{{{
+;;
+;; to restore special-display-function with pop-win.el
+;;
+(defun leo-popwin:display-buffer (buffer-or-name &optional not-this-window)
+  "Display BUFFER-OR-NAME, if possible, in a popup window, or as
+usual. This function can be used as a value of
+`display-buffer-function'."
+  (interactive "BDisplay buffer:\n")
+  ;; `special-display-p' returns either t or a list of frame
+  ;; parameters to pass to `special-display-function'.
+  (let ((pars (special-display-p name-of-buffer)))
+    (if (and pars special-display-function)
+        (funcall special-display-function
+                 buffer (if (listp pars) pars))
+      (popwin:display-buffer buffer-or-name not-this-window))))
 
-This is certainly not perfect, but does the job for now. [[halloleo]] 2012-03-09 23:35 UTC
+(setq display-buffer-function 'leo-popwin:display-buffer)
+}}}
+
+[new]
+This is certainly not perfect, but does the job for now.  [[halloleo]]
+2012-03-09 23:35 UTC
+
+----
+CategoryWindows
