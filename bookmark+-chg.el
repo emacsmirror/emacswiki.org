@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Mar  4 09:33:18 2021 (-0800)
+;; Last-Updated: Fri Mar  5 14:04:11 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 16737
+;;     Update #: 16738
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1473,6 +1473,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2021/03/05 dadams
+;;     Face bmkp-no-local: changed default to orange background, from yellow foreground.
 ;; 2021/03/04 dadams
 ;;     bmkp-bmenu-describe-marked: Typo - bmkp-describe-bookmark-marked -> bmkp-bmenu-describe-marked.
 ;; 2020/12/29 dadams
