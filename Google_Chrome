@@ -1,22 +1,47 @@
-Google Chrome and Google Chromium are WebKit based browsers with a souped up JavaScript engine for running complex web-apps.
+Google Chrome and Google Chromium are WebKit based browsers with a
+souped up JavaScript engine for running complex web-apps.
 
 == Integrating with Emacs ==
 
-You can use Emacs to edit textareas in the manner of It's All Text using the [[Edit with Emacs]] Chrom(ium) extension. It comes with its own elisp based "Edit Server" to respond to edit requests from Chrome without needing to use emacsclient.
+You can use Emacs to edit textareas in the manner of It's All Text
+using the [[Edit with Emacs]] Chrome/Chromium) extension.  It comes with its
+own elisp based "Edit Server" to respond to edit requests from Chrome
+without needing to use emacsclient.
 
-Get it from [[https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh|here]]
+Get it from
+[https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh
+the Chrome web store].
 
-For emacs keybindings of browser functions, see:
+For Emacs keybindings of browser functions, see:
 https://chrome.google.com/webstore/detail/bkbaanfaopgmdicplibllmdkfkmfafad
 
 == Atomic Chrome for Emacs ==
 
-The Atom fans have implemented an [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc extension]] to talk to  Chrome over a websocket. The same extension can be used to interface Chrome with Emacs. 
+The Atom fans have implemented an
+[[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc
+extension]] to talk to Chrome over a websocket.  The same extension
+can be used to interface Chrome with Emacs.
 
-As mentioned on the [[https://github.com/alpha22jp/atomic-chrome github page]], there are a few advantages over [[Edit with Emacs]]
+As mentioned on the [[https://github.com/alpha22jp/atomic-chrome
+github page]], there are a few advantages over [[Edit with Emacs]]
 
-* The input on Emacs is reflected to the browser instantly and continuously.
-* You can use both the browser and Emacs at the same time. They are updated to the same content bi-directionally.
-* You can associate the mode based on the URL. e.g. gfm-mode for github.com, textile-mode for redmine, etc.
+* The input on Emacs is reflected to the browser instantly and
+  continuously.
+* You can use both the browser and Emacs at the same time.  They are
+  updated to the same content bi-directionally.
+* You can associate the mode based on the URL.  e.g. gfm-mode for
+  github.com, TextileMode for redmine, etc.
 
-To complete the Emacs side of the setup, you need the atomic-chrome package which is available on melpa.
+To complete the Emacs side of the setup, you need the atomic-chrome
+package which is available on [[MELPA]].
+
+=== Atomic Chrome for Mozilla Firefox with GhostText ===
+
+If you use Mozilla Firefox, you can also use the atomic-chrome MELPA
+package together with the
+[https://addons.mozilla.org/en-US/firefox/addon/ghosttext/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search
+GhostText Firefox extension] enabling you to advantage of the same
+features as Chrome/Chromium above.
+
+----
+CategoryRelated CategoryWebBrowser
