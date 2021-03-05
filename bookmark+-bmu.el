@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Mar  4 09:02:22 2021 (-0800)
+;; Last-Updated: Fri Mar  5 14:01:34 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 4150
+;;     Update #: 4151
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -640,7 +640,7 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-no-local
-    '((t (:foreground "yellow")))
+    '((t (:background "orange")))
   "*Face used for a local file bookmark whose target file does not exist."
   :group 'bookmark-plus :group 'faces)
 
