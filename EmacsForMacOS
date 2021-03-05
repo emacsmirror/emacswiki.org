@@ -459,6 +459,17 @@ See the following blog post for using alt as your meta key:
 
 http://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
 
+=== Use macOS default shortscuts for Cut/Copy/Paste/Select All ===
+
+If you want to use the default shortcuts for copy, paste, cut and select all in macOS, put this is your .init.el:
+
+<pre>
+(global-set-key (kbd "M-c") 'kill-ring-save)
+(global-set-key (kbd "M-x") 'kill-region)
+(global-set-key (kbd "M-v") 'yank)
+(global-set-key (kbd "M-a") 'mark-whole-buffer)
+</pre>
+
 === Maximize Emacs 23.3 and 24+ in Mac OS X Lion ===
 
 Fullscreen mode is not offered in either 23.3 or 24+.  In trying to adapt the "maximize-frame" function below I inadvertently discovered that if one uses the maximize control button once the frame is maximized vertically, twice the frame is maximized both vertically and horizontally and three times results in the frame restored to its original size.  Good enough for me!
