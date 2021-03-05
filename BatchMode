@@ -110,6 +110,11 @@ example-emacs-script.
 
 (Note: Unfortunately these links are all dead. Wouldn't be possible to put the code on EmacsWiki itself?)
 
+(See: 
+* https://web.archive.org/web/20080924142017/http://www.gnufans.net:80/~deego/emacspub/lisp-mine/shs/dev/shs.el 
+* https://web.archive.org/web/20080924142017/http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs-example
+* https://web.archive.org/web/20080924142017/http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs-example-fn.el )
+
 (See: https://lists.gnu.org/archive/html/gnu-emacs-sources/2005-01/msg00013.html)
 
 If active Emacs developers are reading this, we'd like to point out that
