@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar  5 14:04:11 2021 (-0800)
+;; Last-Updated: Fri Mar  5 14:38:50 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 16738
+;;     Update #: 16753
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/03/05 dadams
+;;     Added: bmkp-read-buffers, bmkp-read-files.
+;;     bmkp(autofile|file(-this-dir))-(all|some)-tags(-regexp)-alist-only,
+;;       bmkp-specific-(buffers|files)-alist-only: Put property bmkp-read-arg with read-fn value.
+;;     bmkp-read-regexp: Made PROMPT arg optional.
+;;     bmkp-specific-(buffers|files)-jump(-other-window): Use bmkp-read-(buffers|files).
+;;     bmkp-set-autonamed-regexp-(buffer|region): Removed prompt from call to bmkp-read-regexp.
+;;     bmkp-annotate-bookmark-this-file/buffer, bmkp-edit-bookmark-record-file/buffer:
+;;       Fixed format spec.
 ;; 2021/03/04 dadams
 ;;     Added bmkp-types-alist.  The def is also in bookmark+-mac.el.
 ;; 2020/11/28 dadams
