@@ -1,31 +1,62 @@
 == Create quicksearch for Emacs Wiki pages ==
 
-Create a new bookmark using the Bookmark Manager.
-Use these attributes:
+Create a new bookmark using the Bookmark Manager.  Use these
+attributes:
 
 ; Name: Use "Emacs Wiki Quicksearch" or similar
 ; Location: <nowiki>http://www.emacswiki.org/cgi-bin/wiki?search=%s</nowiki>
 
-Then left-click on the new bookmark and edit its properties. Add the
+Then left-click on the new bookmark and edit its properties.  Add the
 following attribute:
 
 ; Keyword: emacs
 
-Now type "emacs <term>" in the adressbar to search the wiki for a term.
+Now type <kbd>emacs <term></kbd> in the adressbar to search the wiki
+for a term.
 
 == Developing with Firefox ==
-[https://github.com/segv/jss jsSlime] provides an interface for Firefox' JavaScript debugger.
+
+[https://github.com/segv/jss jsSlime] provides an interface for
+Firefox's JavaScript debugger.
 
 == Editing text areas with Emacs ==
 
+There are several options for this.
+
 === Firefox add-on: Edit with Emacs ===
 
-The [[Edit with Emacs]] add-on allows you to edit text areas in Firefox directly in Emacs. As of 2020, this is the only add-on listed on this page that works with current versions of Mozilla Firefox. The following add-ons have ceased development but [i]may[/i] still work on forks of Mozilla Firefox.
+The [[Edit with Emacs]] add-on allows you to edit text areas in
+Firefox directly in Emacs.  As of 2020, this is the only add-on listed
+on this page that works with current versions of Mozilla Firefox.  The
+following add-ons, with the exception of GhostText have ceased
+development but [i]may[/i] still work on forks of Mozilla Firefox.
 
 === Firefox add-on: Firemacs ===
 
 [https://addons.mozilla.org/en-US/firefox/addon/4141 Firemacs]
 (firefox add-on) provides some Emacs-like key bindings for Firefox.
+
+=== Firefox add-on: GhostText ===
+
+[https://addons.mozilla.org/en-US/firefox/addon/ghosttext/ GhostText]
+can be used in combination with the [[MELPA]] package
+[https://github.com/alpha22jp/atomic-chrome atomic-chrome] to allow
+you to edit text areas in a similar way to Edit with Emacs above,
+though with some advantages, namely:
+
+* The input on Emacs is reflected to the browser instantly and
+  continuously.
+* You can use both the browser and Emacs at the same time.  They are
+  updated to the same content bi-directionally.
+* You can associate the mode based on the URL.  e.g. gfm-mode for
+  github.com, TextileMode for redmine, etc.
+
+You can find GhostText at:
+
+* [https://ghosttext.fregante.com/ its homepage,]
+* [https://github.com/GhostText/GhostText its GitHub,] or
+* [https://addons.mozilla.org/en-US/firefox/addon/ghosttext/ its
+  Firefox Addons page.]
 
 === Firefox add-on: KeySnail ===
 
@@ -36,8 +67,9 @@ firefox add-on for Emacs junkies which is similar to
 === Online editor 9ne ===
 
 [http://robrohan.com/projects/9ne 9ne] (pronounced "nine") is an
-online code editor based on Emacs (Copyright 2006 Rob Rohan). 9ne is a
-recursive acronym and joke, and means "9ne is not Emacs".
+online code editor based on Emacs (Copyright 2006 Rob Rohan).  9ne is
+a recursive acronym and joke, and means "9ne is not Emacs".
+
 : Now let's bolt on a [http://www.joeganley.com/code/jslisp.html JavaScript Lisp Interpreter]...
 : Title ideas for Ajax version: Ajacs, Amacs, Amax, Ejacs, Ejax, Emax.
 
@@ -46,38 +78,48 @@ recursive acronym and joke, and means "9ne is not Emacs".
 === Unix or GNU/Linux ===
 
 THEY decided that Emacs compatible keybindings are not What The User
-Wants, and removed them in Firefox 1.0. Luckily, THEY use Gtk, and Gtk
-thinks of us. (This was found [https://bugzilla.mozilla.org/show_bug.cgi?id=257405 on Bugzilla])
+Wants, and removed them in Firefox 1.0.  Luckily, THEY use Gtk, and
+Gtk thinks of us.  (This was found
+[https://bugzilla.mozilla.org/show_bug.cgi?id=257405 on Bugzilla].)
 
 Add the following lines to your ~/.gtkrc-2.0:
 
-   # Get firefox to use emacs keybindings
-   include "/usr/share/themes/Emacs/gtk-2.0-key/gtkrc"
-   gtk-key-theme-name = "Emacs"
+{{{
+# Get firefox to use emacs keybindings
+include "/usr/share/themes/Emacs/gtk-2.0-key/gtkrc"
+gtk-key-theme-name = "Emacs"
+}}}
 
 Be sure that that path exists, it may vary between distributions.
 After that, you should feel at home in most parts of Firefox.
 
-In recent versions of GNOME (3 or later) you need to use the gsettings tool to set the key theme to emacs.
+In recent versions of GNOME (3 or later) you need to use the gsettings
+tool to set the key theme to Emacs.
 
     gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
 
-Recent versions of Firefox are compiled against GTK 3. If you are using Firefox, but not GNOME, you can configure Emacs key bindings by adding the following to your ~/.config/gtk-3.0/settings.ini:
+Recent versions of Firefox are compiled against GTK 3.  If you are
+using Firefox, but not GNOME, you can configure Emacs key bindings by
+adding the following to your `~/.config/gtk-3.0/settings.ini':
 
-   # Get firefox to use emacs keybindings
-   [Settings]
-   gtk-key-theme-name = Emacs
+{{{
+# Get firefox to use emacs keybindings
+[Settings]
+gtk-key-theme-name = Emacs
+}}}
 
-[new]
-Please feel free to save this as a file somewhere and replace the actual code here with a link.  I would have done so myself but I'm not sure where to put it - the Elisp area seems only for elisp.
+[new] Please feel free to save this as a file somewhere and replace
+the actual code here with a link.  I would have done so myself but I'm
+not sure where to put it - the Elisp area seems only for elisp.
+
 ----
 
 == Other Browsers ==
 
 * [[https://next.atlas.engineer/ Next browser]]
 
-Stuff for Emacs Wiki users with Mozilla browsers. Stuff that is specific to
-FireFox is found there.
+Stuff for Emacs Wiki users with Mozilla browsers. Stuff that is
+specific to FireFox is found there.
 
 MozMacs helps a little.
 
@@ -88,13 +130,14 @@ via])
 
 === Windows ===
 
-Unfortunately, setting Gtk environment variables doesn't work on Win32.  The best solution I've found is to edit ##C:\Program Files\Mozilla Firefox\res\builtin\platformHTMLBindings.xml##
+Unfortunately, setting Gtk environment variables doesn't work on
+Win32.  The best solution I've found is to edit ##C:\Program Files\Mozilla Firefox\res\builtin\platformHTMLBindings.xml##
 
-Also try the Keyconfig extension for Firefox, for browser function keys (ie, make "C-s" search instead of "C-f").
+Also try the Keyconfig extension for Firefox, for browser function
+keys (ie, make "<kbd>C-s</kbd>" search instead of "<kbd>C-f</kbd>").
 
-Here's my platformHTMLBindings.xml.  You should be able to just overwrite your existing one.
-
-
+Here's my `platformHTMLBindings.xml'.  You should be able to just
+overwrite your existing one.
 
 <pre>
 <?xml version="1.0"?>
@@ -419,8 +462,7 @@ Here's my platformHTMLBindings.xml.  You should be able to just overwrite your e
     </handlers>
   </binding>
 </bindings>
-
 </pre>
 
 ----
-CategoryRelated
+CategoryRelated CategoryWebBrowser
