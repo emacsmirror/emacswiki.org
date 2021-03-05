@@ -465,7 +465,7 @@ If you want to use the default shortcuts for copy, paste, cut and select all in 
 
 <pre>
 (global-set-key (kbd "M-c") 'kill-ring-save)
-(global-set-key (kbd "M-x") 'kill-region)
+(global-set-key (kbd "M-x") 'kill-region) ;; If you use M-x for Emacs, consider Shift-Cmd-X instead (S-M-x)
 (global-set-key (kbd "M-v") 'yank)
 (global-set-key (kbd "M-a") 'mark-whole-buffer)
 </pre>
