@@ -1,0 +1,4 @@
+When in an inferior prolog frame (after successful call to run-prolog), how it the way to get into [user] state when clauses can be written and in a normal listener Ctrl-Z would get you back to the listener, but in the emacs frame C-z is intercepted and only suspends the frame?
+
+-- csrabak 2021-03-06 20:00 UTC
+
