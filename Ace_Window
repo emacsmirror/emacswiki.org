@@ -1,0 +1,38 @@
+Ace Window (or <code>ace-window</code>) is an Emacs command which is
+designed to improve on and replace Emacs' built-in
+<code>other-window</code> command (which by default is bound to
+<kbd>C-x o</kbd>) for switching between [EmacsWiki:Window Emacs
+Windows].
+
+== How it works ==
+
+When you call the <code>ace-window</code> function (the author
+suggests binding this to <kbd>M-o<kbd> which by default is the prefix
+key for <code>facemenu-*</code>) it will display a character for each
+window, and you can move to that window immediately by typing the
+character.
+
+There are also a bunch of other commands that make working with
+windows easier, like deleting them quickly, and so on.
+
+== Where to find Ace Window ==
+
+Ace Window is in [[MELPA]] and MELPA Stable.
+
+You can also download the code directly
+[https://github.com/abo-abo/ace-window from GitHub].
+
+----
+
+The author, Oleh Krehel (aka abo-abo), has both a
+[https://www.patreon.com/abo_abo Patreon], and a
+[https://liberapay.com/abo-abo Liberapay account] where you can donate
+money for their work on Emacs extensions such as this.
+
+== See also ==
+
+* [[Switch Window]] -- A similar Emacs extension, assigns windows
+  numbers or single letters to select them with one keypress.
+
+----
+CategoryWindows
