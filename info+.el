@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar  6 12:28:33 2021 (-0800)
+;; Last-Updated: Sat Mar  6 14:48:43 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7020
+;;     Update #: 7025
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1228,9 +1228,18 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
 
 ;;;###autoload
-(defface info-fixed-pitch '((t (:inherit (font-lock-string-face fixed-pitch))))
+(defface info-fixed-pitch `((t (:inherit fixed-pitch 
+                                         ,@(and (member "Lucida Console" (font-family-list))
+                                                '(:family "Lucida Console")))))
   "Fixed-pitch face for Info.
-By default, this is inherited by faces `info-quoted-name', `',`', `', `', `', `', `', `'. "
+The default value inherits from face `fixed-pitch', and if you have
+font family Lucida Console then its attributes are merged with those
+of face `fixed-pitch'.
+
+By default, this is inherited by faces
+`info-custom-delimited',`info-double-quoted-name',
+`info-isolated-quote', `info-quoted-name', `info-reference-item', and
+`info-string'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
