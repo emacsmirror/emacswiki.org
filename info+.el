@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar  6 14:48:43 2021 (-0800)
+;; Last-Updated: Sat Mar  6 15:57:19 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7025
+;;     Update #: 7044
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -104,9 +104,9 @@
 ;;    `info-custom-delimited', `info-double-quoted-name',
 ;;    `info-emphasis', `info-file', `info-fixed-pitch',
 ;;    `info-function-ref-item', `info-glossary-word',
-;;    `info-isolated-backquote', `info-isolated-quote',
-;;    `info-macro-ref-item', `info-menu', `info-node',
-;;    `info-quoted-name', `info-reference-item',
+;;    `info-indented-text', `info-isolated-backquote',
+;;    `info-isolated-quote', `info-macro-ref-item', `info-menu',
+;;    `info-node', `info-quoted-name', `info-reference-item',
 ;;    `info-special-form-ref-item', `info-string',
 ;;    `info-syntax-class-item', `info-user-option-ref-item',
 ;;    `info-variable-ref-item', `info-xref-bookmarked' (Emacs 24.2+).
@@ -121,6 +121,7 @@
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
 ;;    `Info-fontify-custom-delimited', `Info-fontify-emphasis-flag',
 ;;    `Info-fontify-glossary-words',
+;;    `Info-fontify-indented-text-flag',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-glossary-fallbacks-alist',
@@ -144,7 +145,8 @@
 ;;    `info-custom-delim-2', `Info-display-node-default-header',
 ;;    `info-fallback-manual-for-glossary',
 ;;    `Info-fontify-custom-delimited', `Info-fontify-glossary-words',
-;;    `Info-fontify-quotations', `Info-fontify-reference-items',
+;;    `Info-fontify-indented-text', `Info-fontify-quotations',
+;;    `Info-fontify-reference-items',
 ;;    `Info-get-glossary-hash-table-create',
 ;;    `Info-goto-glossary-definition', `Info-no-glossary-manuals',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
@@ -361,6 +363,10 @@
 ;;    - Isolated single quotes and backquote chars, as in 'foobar and
 ;;      `foobar, are highlighted if `Info-fontify-quotations' and
 ;;      `Info-fontify-isolated-quote-flag' are both non-`nil'.
+;;
+;;    - Text that is indented at least 10 chars is highlighted if
+;;      option `Info-fontify-indented-text-flag' is non-nil.
+;;      Generally this means blocks of code and ASCII-art diagrams.
 ;;
 ;;    - Emphasized text, that is, text enclosed in underscore
 ;;      characters, like _this is emphasized text_, is
@@ -1263,6 +1269,13 @@ By default, this is inherited by faces
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
+(defface info-indented-text
+  '((((background dark)) (:inherit info-fixed-pitch :foreground "DarkBlue"))
+    (t (:inherit info-fixed-pitch :foreground "DarkBlue")))
+  "Face for indented text such as that used in a code block."
+  :group 'Info-Plus :group 'faces)
+
+;;;###autoload
 (defface info-file
   '((((background dark)) (:inherit info-reference-item :foreground "Yellow"))
     (t (:inherit info-reference-item :foreground "Blue")))
@@ -1630,6 +1643,15 @@ toggle the option value."
           (const :tag "Fontify and link, but don't show tooltip"      link-only)
           (other :tag "Fontify, link, and show tooltip on mouseover"  t))
   :group 'Info-Plus)
+
+;;;###autoload
+(defcustom Info-fontify-indented-text-flag t
+  "Non-nil means fontify text that is indented at least 10 chars.
+Generally this means texts of code and ASCII-art diagrams.
+
+This fontification is not done for nodes named `Top', in order to
+avoid fontifying continuation lines of menu-item descriptions."
+  :type 'boolean :group 'Info-Plus)
 
 
 (define-obsolete-variable-alias 'Info-fontify-single-quote-flag 'Info-fontify-isolated-quote-flag "2020-10-22")
@@ -4318,6 +4340,11 @@ If key's command cannot be found by looking in indexes, then
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
+        ;; Fontify INDENTED TEXT (e.g. code blocks, ASCII diagrams).
+        (goto-char (point-min))
+        (when (and Info-fontify-indented-text-flag  (not (equal "Top" Info-current-node)))
+          (Info-fontify-indented-text))
+
         ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
@@ -4713,6 +4740,11 @@ If key's command cannot be found by looking in indexes, then
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
+        ;; Fontify INDENTED TEXT (e.g. code blocks, ASCII diagrams).
+        (goto-char (point-min))
+        (when (and Info-fontify-indented-text-flag  (not (equal "Top" Info-current-node)))
+          (Info-fontify-indented-text))
+
         ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
@@ -5102,6 +5134,11 @@ If key's command cannot be found by looking in indexes, then
                                             header-end t)
                          (put-text-property (match-beginning 1) (match-end 1) 'invisible t)))))))
 
+        ;; Fontify INDENTED TEXT (e.g. code blocks, ASCII diagrams).
+        (goto-char (point-min))
+        (when (and Info-fontify-indented-text-flag  (not (equal "Top" Info-current-node)))
+          (Info-fontify-indented-text))
+
         ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations (Info-fontify-quotations))
@@ -5442,6 +5479,11 @@ own."
                        'font-lock-face 'info-glossary-word
                        'mouse-face 'highlight
                        'keymap info-glossary-link-map))))))))))
+
+(defun Info-fontify-indented-text ()
+  "Fontify text that is indented at least 10 chars."
+  (while (re-search-forward "^          +.*" nil 'NOERROR)
+    (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-indented-text)))
 
 (if (> emacs-major-version 23) ; Emacs < 24 `cl-member' doesn't accept `:test'.  Just use dumb recursion.
     (defun Info--member-string-nocase (string list)
