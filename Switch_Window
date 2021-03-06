@@ -1,0 +1,19 @@
+Switch Window provides a way to switch between [EmacsWiki:Window Emacs
+Windows] <em>visually</em>.  Depending on how you configure it, it
+will show numbers or letters in each open Window and so you simply
+press a single key to switch to that window.  This is much easier than
+the default Emacs command keybinding <kbd>C-x o</kbd>.
+
+It also provides commands that make it easier to resize Windows than
+the Emacs defaults.
+
+Switch Window used to be [Lisp:switch-window.el hosted in the elisp
+area], but has since moved [https://github.com/dimitri/switch-window
+to GitHub].
+
+There is also a small section about Switch Window
+[https://tapoueh.org/projects/#emacs-switch-window on the author's
+homepage].
+
+----
+CategoryWindows
