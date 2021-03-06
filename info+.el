@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 14 08:04:57 2021 (-0800)
+;; Last-Updated: Sat Mar  6 12:28:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7001
+;;     Update #: 7020
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -95,16 +95,18 @@
 ;;    `Info-toggle-fontify-visited-nodes',
 ;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
 ;;    `Info-toc-outline', `Info-toc-outline-refontify-region',
-;;    `Info-url-for-node', `Info-virtual-book'.
+;;    `Info-url-for-node', `Info-variable-pitch-text-mode',
+;;    `Info-virtual-book'.
 ;;
 ;;  Faces defined here:
 ;;
 ;;    `info-command-ref-item', `info-constant-ref-item',
 ;;    `info-custom-delimited', `info-double-quoted-name',
-;;    `info-emphasis', `info-file', `info-function-ref-item',
-;;    `info-glossary-word', `info-isolated-backquote',
-;;    `info-isolated-quote', `info-macro-ref-item', `info-menu',
-;;    `info-node', `info-quoted-name', `info-reference-item',
+;;    `info-emphasis', `info-file', `info-fixed-pitch',
+;;    `info-function-ref-item', `info-glossary-word',
+;;    `info-isolated-backquote', `info-isolated-quote',
+;;    `info-macro-ref-item', `info-menu', `info-node',
+;;    `info-quoted-name', `info-reference-item',
 ;;    `info-special-form-ref-item', `info-string',
 ;;    `info-syntax-class-item', `info-user-option-ref-item',
 ;;    `info-variable-ref-item', `info-xref-bookmarked' (Emacs 24.2+).
@@ -147,6 +149,7 @@
 ;;    `Info-goto-glossary-definition', `Info-no-glossary-manuals',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
 ;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
+;;    `Info-remap-default-face-to-variable-pitch',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
 ;;    `Info-save-history-list' (Emacs 24.4+), `Info-search-beg',
 ;;    `Info-search-end', `Info-toc-outline-find-node',
@@ -528,6 +531,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/05/06 dadams
+;;     Added Info-remap-default-face-to-variable-pitch, Info-variable-pitch-text-mode, face info-fixed-pitch.
+;;     Faces *-custom-delimited, *(-double)-quoted-name, *-string, *-isolated-quote, *-reference-item:
+;;       Inherit from info-fixed-pitch, not from font-lock-string-face.
 ;; 2021/01/13 dadams
 ;;     Info-search: Deactivate mark only if search moves to a different node or isearchp-deactivate-region-flag
 ;;                  is undefined or non-nil.
@@ -1221,16 +1228,22 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
 
 ;;;###autoload
+(defface info-fixed-pitch '((t (:inherit (font-lock-string-face fixed-pitch))))
+  "Fixed-pitch face for Info.
+By default, this is inherited by faces `info-quoted-name', `',`', `', `', `', `', `', `'. "
+  :group 'Info-Plus :group 'faces)
+
+;;;###autoload
 (defface info-custom-delimited
-  '((((background dark)) (:inherit font-lock-string-face :foreground "Red"))
-    (t (:inherit font-lock-string-face :foreground "Red")))
+  '((((background dark)) (:inherit info-fixed-pitch :foreground "Red"))
+    (t (:inherit info-fixed-pitch :foreground "Red")))
   "Face for text surrounded by custom delimiter chars on the same line."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-double-quoted-name        ; For “...”
-  '((((background dark)) (:inherit font-lock-string-face :foreground "Cyan"))
-    (t (:inherit font-lock-string-face :foreground "DarkOrange")))
+  '((((background dark)) (:inherit info-fixed-pitch :foreground "Cyan"))
+    (t (:inherit info-fixed-pitch :foreground "DarkOrange")))
   "Face for names enclosed in curly double-quotes (“...”) in `info'."
   :group 'Info-Plus :group 'faces)
 
@@ -1261,11 +1274,12 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
 ;;;###autoload
 (defface info-quoted-name               ; For ‘...’ and `...'
-  ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
+  ;; Inheriting now also from `fixed-pitch'.
+  ;; But see Emacs bug #44316.  If that gets fixed then maybe revisit this default definition somehow.
   ;;     '((((background dark)) (:inherit fixed-pitch :foreground "#6B6BFFFF2C2C")) ; ~ bright green
   ;;       (((background light)) (:inherit fixed-pitch :foreground "DarkViolet"))
-  '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ bright green
-    (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
+  '((((background dark)) (:inherit info-fixed-pitch :foreground "#6B6BFFFF2C2C")) ; ~ bright green
+    (((background light)) (:inherit info-fixed-pitch :foreground "DarkViolet"))
     (t (:foreground "yellow")))
   "Face for quoted names (‘...’ or `...') in `info'."
   :group 'Info-Plus :group 'faces)
@@ -1273,22 +1287,18 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
 ;;;###autoload
 (defface info-string                    ; For "..."
-  ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
-  ;;    '((((background dark)) (:inherit fixed-pitch :foreground "Orange"))
-  ;;    (t (:inherit fixed-pitch :foreground "red3")))
-  '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
-    (t (:inherit font-lock-string-face :foreground "red3")))
+  ;; See comment for `info-quoted-name'.
+  '((((background dark)) (:inherit info-fixed-pitch :foreground "Orange"))
+    (t (:inherit info-fixed-pitch :foreground "red3")))
   "Face for strings (\"...\") in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
-(defface info-isolated-quote            ; For 'foobar, '(...) etc.
+(defface info-isolated-quote    ; For 'foobar, '(...) etc.
+  ;; See comment for `info-quoted-name'.
   '((((background dark))
-     ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
-     ;;      (:inherit fixed-pitch :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
-     ;;     (t (:inherit fixed-pitch :foreground "Magenta" :background "SlateGray2")))
-     (:inherit font-lock-string-face :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
-    (t (:inherit font-lock-string-face :foreground "Magenta" :background "SlateGray2")))
+     (:inherit info-fixed-pitch :foreground "Green"  :background "#46462C2C1111")) ; ~ very dark brown
+    (t (:inherit info-fixed-pitch :foreground "Magenta" :background "SlateGray2")))
   "Face for an isolated single-quote mark (') in `info'.
 That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
@@ -1358,11 +1368,9 @@ That is, one that is not part of `...'."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-reference-item
-  ;; If Emacs is ever fixed for bugs like #44316 then revisit making this inherit from `fixed-pitch'.
-  ;;     '((((background dark)) (:inherit fixed-pitch :background "gray12"))
-  ;;       (t (:inherit fixed-pitch :background "gray88")))
-  '((((background dark)) (:inherit font-lock-string-face :background "gray12"))
-    (t (:inherit font-lock-string-face :background "gray88")))
+  ;; See comment for `info-quoted-name'.
+  '((((background dark)) (:inherit info-fixed-pitch :background "gray12"))
+    (t (:inherit info-fixed-pitch :background "gray88")))
   "Face used for reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
@@ -2113,6 +2121,22 @@ line from non-nil `Info-use-header-line'."
                           (if Info-node-access-invokes-bookmark-flag 'ON 'OFF)))))
 
   )
+
+
+;;;###autoload (autoload 'Info-remap-default-face-to-variable-pitch "info+")
+(defun Info-remap-default-face-to-variable-pitch ()
+  "Remap face `default' to face `variable-pitch'."
+  (face-remap-add-relative 'default 'variable-pitch))
+
+;;;###autoload (autoload 'Info-variable-pitch-text-mode "info+")
+(define-minor-mode Info-variable-pitch-text-mode
+  "Use a variable-pitch font for Info text.
+Use this before you use Info, or kill any existing Info buffers first,
+to have this take effect."
+  :init-value nil :global t :group 'Info-Plus
+  (if Info-variable-pitch-text-mode
+      (add-hook 'Info-mode-hook 'Info-remap-default-face-to-variable-pitch)
+    (remove-hook 'Info-mode-hook 'Info-remap-default-face-to-variable-pitch)))
 
 ;;;###autoload (autoload 'info-manual+node-buffer-name-mode "info+")
 (define-minor-mode info-manual+node-buffer-name-mode
