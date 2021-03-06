@@ -16,4 +16,10 @@ There is also a small section about Switch Window
 homepage].
 
 ----
+
+See also: [[Ace Window]] -- a similar Emacs extension which also
+allows you to quickly switch to and operate on windows by pressing a
+single or a few characters
+
+----
 CategoryWindows
