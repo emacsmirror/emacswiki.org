@@ -47,17 +47,17 @@ For more details, see the help of `ace-jump-mode'.
 
 [:HowToUseIt]
 = How do I use it? =
-If you use the default configuration, which binds to "C-c SPC".
+If you use the default configuration, which binds to "<kbd>C-c SPC</kbd>".
 
-* "C-c SPC" ==>  ace-jump-word-mode
+* "<kbd>C-c SPC</kbd>" ==>  ace-jump-word-mode
 
   enter first char of a word, select the highlight key to move to.
 
-* "C-u C-c SPC" ==>  ace-jump-char-mode
+* "<kbd>C-u C-c SPC</kbd>" ==>  ace-jump-char-mode
 
   enter a char for query, select the highlight key to move to.
 
-* "C-u C-u C-c SPC" ==>  ace-jump-line-mode
+* "<kbd>C-u C-u C-c SPC</kbd>" ==>  ace-jump-line-mode
 
   each non-empty line will be marked, select the highlight key to move to.
 
@@ -68,3 +68,6 @@ Please refer to the !GitHub site [https://github.com/winterTTr/ace-jump-mode Ace
 [:AboutMe]
 = About You? =
 [http://about.me/winterTTr winterTTr]
+
+----
+CategorySearchAndReplace
