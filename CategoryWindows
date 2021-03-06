@@ -22,7 +22,7 @@ Move among windows -- alternatives to <kbd>C-x o</kbd>
 ** [[Icicles]]: <kbd>C-u C-x o</kbd> in Icicle mode -- Cycle/filter/complete
    window names to choose a window
 ** NumberedWindows
-** Lisp:switch-window.el shows big numbers in each window, you input
+** [[Switch Window]] -- shows big numbers in each window, you input
    the number to get where you want to.
 ** WindowNumberingMode
 * Use a transient keymap to move among windows
