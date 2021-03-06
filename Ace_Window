@@ -7,15 +7,15 @@ Windows].
 == How it works ==
 
 When you call the <code>ace-window</code> function (the author
-suggests binding this to <kbd>M-o<kbd> which by default is the prefix
-key for <code>facemenu-*</code>) it will display a character for each
-window, and you can move to that window immediately by typing the
-character.
+suggests binding this to <kbd>M-o</kbd>, which by default is the
+prefix key for various <code>facemenu-*</code>) commands, it will
+display a character for each window, and you can move to that window
+immediately by typing the character.
 
 There are also a bunch of other commands that make working with
 windows easier, like deleting them quickly, and so on.
 
-== Where to find Ace Window ==
+== Where to find Ace W indow ==
 
 Ace Window is in [[MELPA]] and MELPA Stable.
 
