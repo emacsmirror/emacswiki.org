@@ -461,13 +461,16 @@ http://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
 
 === Use macOS default shortscuts for Cut/Copy/Paste/Select All ===
 
-If you want to use the default shortcuts for copy, paste, cut and select all in macOS, put this is your .init.el:
+If you want to use the default shortcuts for copy, paste, cut etc. macOS, put this is your .init.el.
+Since M-x is overwritten in line 2, don't forget to reassign it. See the last line as an example.
 
 <pre>
-(global-set-key (kbd "M-c") 'kill-ring-save)
-(global-set-key (kbd "M-x") 'kill-region) ;; If you use M-x for Emacs, consider Shift-Cmd-X instead (S-M-x)
-(global-set-key (kbd "M-v") 'yank)
-(global-set-key (kbd "M-a") 'mark-whole-buffer)
+(global-set-key (kbd "M-c") 'kill-ring-save) ; ⌘-c = Copy
+(global-set-key (kbd "M-x") 'kill-region) ; ⌘-x = Cut
+(global-set-key (kbd "M-v") 'yank) ; ⌘-v = Paste
+(global-set-key (kbd "M-a") 'mark-whole-buffer) ; ⌘-a = Select all
+(global-set-key (kbd "M-z") 'undo) ; ⌘-z = Undo
+(global-set-key (kbd "≈") 'execute-extended-command) ; Replace ≈ with whatever your option-x produces
 </pre>
 
 === Maximize Emacs 23.3 and 24+ in Mac OS X Lion ===
