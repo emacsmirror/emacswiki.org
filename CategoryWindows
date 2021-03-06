@@ -19,6 +19,8 @@ Move among windows -- alternatives to <kbd>C-x o</kbd>
 ** WindMove
 ** WindowNavigation
 * Use a window name or number to choose
+** [[Ace Window]] -- move to another window by typing the first
+   character of the window's name
 ** [[Icicles]]: <kbd>C-u C-x o</kbd> in Icicle mode -- Cycle/filter/complete
    window names to choose a window
 ** NumberedWindows
