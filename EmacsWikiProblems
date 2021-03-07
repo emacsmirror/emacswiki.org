@@ -20,6 +20,12 @@ code block, but neither appear to be working at the moment.
 
 ---AnonymousCoward
 
+[new]
+There is a 2000 character limit, unfortunately.
+If you check the [https://www.emacswiki.org/config config] file and search
+for "elisp_formatting" you'll find the code in question.
+-- Alex
+
 == Failed to verify signature archive contents ==
 
 Text of error response to "package-list-packages" follows - 
