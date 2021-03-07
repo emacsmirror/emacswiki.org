@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar  6 17:13:33 2021 (-0800)
+;; Last-Updated: Sun Mar  7 13:21:06 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7054
+;;     Update #: 7090
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -162,11 +162,12 @@
 ;;    `Info-breadcrumbs-depth-internal',
 ;;    `info-custom-delimited-same-line-regexp',
 ;;    `info-fontify-emphasis', `info-glossary-link-map',
+;;    `info-good-fixed-pitch-font-families',
 ;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
 ;;    `Info-link-faces', `Info-merged-map', `Info-mode-syntax-table',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
 ;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
-;;    `Info-toc-outline-map'.
+;;    `info-remap-default-face-cookie', `Info-toc-outline-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -539,10 +540,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/07 dadams
+;;     Added: info-good-fixed-pitch-font-families, info-remap-default-face-cookie.
+;;     Face info-fixed-pitch: Merge attributes from first family found in info-good-fixed-pitch-font-families.
+;;     Info-remap-default-face-to-variable-pitch: Set info-remap-default-face-cookie.
+;;     Info-variable-pitch-text-mode: No longer on Info-mode-hook - takes effect immediately.
+;;     Info-fontify-indented-text-chars: Default value is now nil (no-op), not 10.
 ;; 2021/05/06 dadams
-;;     Added Info-remap-default-face-to-variable-pitch, Info-variable-pitch-text-mode, face info-fixed-pitch.
+;;     Added Info-remap-default-face-to-variable-pitch, Info-variable-pitch-text-mode, face info-fixed-pitch,
+;;           Info-fontify-indented-text-chars, Info-fontify-indented-text.
 ;;     Faces *-custom-delimited, *(-double)-quoted-name, *-string, *-isolated-quote, *-reference-item:
 ;;       Inherit from info-fixed-pitch, not from font-lock-string-face.
+;;     Info-fontify-node: Use Info-fontify-indented-text if Info-fontify-indented-text-chars.
 ;; 2021/01/13 dadams
 ;;     Info-search: Deactivate mark only if search moves to a different node or isearchp-deactivate-region-flag
 ;;                  is undefined or non-nil.
@@ -1233,18 +1242,27 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "info+")
   )
 
-;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
+(defvar info-good-fixed-pitch-font-families '("Lucida Console" "Lucida Sans Typewriter"
+                                              "Consolas" "ProggyVector" "OCR A Extended")
+  "Some good fixed-pitch font families.
+The default for face `info-fixed-pitch' inherits from the first one
+available, checked in list order.")
 
 ;;;###autoload
-(defface info-fixed-pitch `((t (:inherit fixed-pitch 
-                                         ,@(and (member "Lucida Console" (font-family-list))
-                                                '(:family "Lucida Console")))))
+(defface info-fixed-pitch
+  `((t (:inherit fixed-pitch
+                 ,@(let ((family (catch 'info-fixed-pitch
+                                   (dolist (fam  info-good-fixed-pitch-font-families)
+                                     (when (member fam (font-family-list))
+                                       (throw 'info-fixed-pitch fam))))))
+                     (and family `(:family ,family))))))
   "Fixed-pitch face for Info.
-The default value inherits from face `fixed-pitch', and if you have
-font family Lucida Console then its attributes are merged with those
-of face `fixed-pitch'.
+The default value inherits from face `fixed-pitch'.  And if you have a
+font family listed in variable `info-good-fixed-pitch-font-families',
+then the face attributes of the first one you have listed there are
+merged with those of face `fixed-pitch'.
 
-By default, this is inherited by faces
+By default, face `info-fixed-pitch' is inherited by faces
 `info-custom-delimited',`info-double-quoted-name',
 `info-isolated-quote', `info-quoted-name', `info-reference-item', and
 `info-string'."
@@ -1647,10 +1665,20 @@ toggle the option value."
   :group 'Info-Plus)
 
 ;;;###autoload
-(defcustom Info-fontify-indented-text-chars 10
-  "Non-nil means fontify text that is indented at least that many chars.
-Often such text is code snippets or ASCII-art diagrams.
-The default value is 10.
+(defcustom Info-fontify-indented-text-chars nil
+  "A number means fontify text indented at least that many chars.
+The default value is nil, which does nothing - no such fontifying.
+
+The indented text is fontified with face `info-indented-text', which
+by default uses a fixed-pitch font.
+
+This can be useful especially if minor mode
+`Info-variable-pitch-text-mode' is enabled, by keeping indented code
+block, ASCII-art diagrams etc. in a fixed-pitch font.
+
+A value of 10 works well for the Elisp manual.  But be aware that no
+number works well across multiple manuals, because indented text at
+any level is not necessarily something you want to fontify.
 
 This fontification is not done for nodes named `Top', in order to
 avoid fontifying continuation lines of menu-item descriptions."
@@ -2156,21 +2184,23 @@ line from non-nil `Info-use-header-line'."
 
   )
 
+(defvar info-remap-default-face-cookie nil
+  "Cookie returned by `Info-remap-default-face-to-variable-pitch'.")
 
 ;;;###autoload (autoload 'Info-remap-default-face-to-variable-pitch "info+")
 (defun Info-remap-default-face-to-variable-pitch ()
   "Remap face `default' to face `variable-pitch'."
-  (face-remap-add-relative 'default 'variable-pitch))
+  (setq info-remap-default-face-cookie  (face-remap-add-relative 'default 'variable-pitch)))
 
 ;;;###autoload (autoload 'Info-variable-pitch-text-mode "info+")
 (define-minor-mode Info-variable-pitch-text-mode
-  "Use a variable-pitch font for Info text.
-Use this before you use Info, or kill any existing Info buffers first,
-to have this take effect."
+  "Use a variable-pitch font for Info text."
   :init-value nil :global t :group 'Info-Plus
-  (if Info-variable-pitch-text-mode
-      (add-hook 'Info-mode-hook 'Info-remap-default-face-to-variable-pitch)
-    (remove-hook 'Info-mode-hook 'Info-remap-default-face-to-variable-pitch)))
+  (unless (derived-mode-p 'Info-mode) (info))    
+  (cond (Info-variable-pitch-text-mode
+         (Info-remap-default-face-to-variable-pitch))
+        (info-remap-default-face-cookie
+         (face-remap-remove-relative info-remap-default-face-cookie))))
 
 ;;;###autoload (autoload 'info-manual+node-buffer-name-mode "info+")
 (define-minor-mode info-manual+node-buffer-name-mode
@@ -4246,11 +4276,12 @@ If key's command cannot be found by looking in indexes, then
 ;;
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-emphasis-flag', fontify _..._.
-;; 3. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
+;; 3. If `Info-fontify-indented-text-chars' then fontify text indented at least that many chars.
+;; 4. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
 ;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
-;; 4. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
+;; 5. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
 ;;    fontify <...> in face `info-quoted-name'.
-;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
+;; 6. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
 ;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
 ;;
 (when (not (fboundp 'Info-breadcrumbs)) ; Emacs 23.1, not 23.2+
@@ -4645,11 +4676,12 @@ If key's command cannot be found by looking in indexes, then
 ;;
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-emphasis-flag', fontify _..._.
-;; 3. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
+;; 3. If `Info-fontify-indented-text-chars' then fontify text indented at least that many chars.
+;; 4. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
 ;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
-;; 4. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
+;; 5. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
 ;;    fontify <...> in face `info-quoted-name'.
-;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
+;; 6. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
 ;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
 ;;
 (when (and (fboundp 'Info-breadcrumbs)  ; Emacs 23.2 through 24.1
@@ -5029,13 +5061,14 @@ If key's command cannot be found by looking in indexes, then
 ;;
 ;; 1. File name in face `info-file'.
 ;; 2. If `Info-fontify-emphasis-flag', fontify _..._.
-;; 3. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
+;; 3. If `Info-fontify-indented-text-chars' then fontify text indented at least that many chars.
+;; 4. If `Info-fontify-quotations', fontify ‘...’ and `...' in face `info-quoted-name',
 ;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
-;; 4. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
+;; 5. If `Info-fontify-quotations' and `Info-fontify-angle-bracketed-flag' then
 ;;    fontify <...> in face `info-quoted-name'.
-;; 5. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
+;; 6. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
 ;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
-;; 6. If `Info-fontify-glossary-words' then fontify glossary words.
+;; 7. If `Info-fontify-glossary-words' then fontify glossary words.
 ;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.2+
           (and (= emacs-major-version 24)  (> emacs-minor-version 1)))
@@ -5484,7 +5517,8 @@ own."
                        'keymap info-glossary-link-map))))))))))
 
 (defun Info-fontify-indented-text ()
-  "Fontify text indented `Info-fontify-indented-text-chars' or more."
+  "Fontify text indented `Info-fontify-indented-text-chars' or more.
+It is fontified using face `info-indented-text'."
   (while (re-search-forward "^ \\{10,\\}.*" nil 'NOERROR)
     (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-indented-text)))
 
