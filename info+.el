@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar  6 15:57:19 2021 (-0800)
+;; Last-Updated: Sat Mar  6 17:13:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7044
+;;     Update #: 7054
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -121,7 +121,7 @@
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
 ;;    `Info-fontify-custom-delimited', `Info-fontify-emphasis-flag',
 ;;    `Info-fontify-glossary-words',
-;;    `Info-fontify-indented-text-flag',
+;;    `Info-fontify-indented-text-chars',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-glossary-fallbacks-alist',
@@ -364,9 +364,11 @@
 ;;      `foobar, are highlighted if `Info-fontify-quotations' and
 ;;      `Info-fontify-isolated-quote-flag' are both non-`nil'.
 ;;
-;;    - Text that is indented at least 10 chars is highlighted if
-;;      option `Info-fontify-indented-text-flag' is non-nil.
-;;      Generally this means blocks of code and ASCII-art diagrams.
+;;    - Non-nil option `Info-fontify-indented-text-chars' means
+;;      fontify text that is indented at least that many characters
+;;      (default 10).  In the Elisp manual this generally means blocks
+;;      of code and ASCII-art diagrams.  But in some other manuals it
+;;      can mean some regular text, so caveat emptor.
 ;;
 ;;    - Emphasized text, that is, text enclosed in underscore
 ;;      characters, like _this is emphasized text_, is
@@ -1645,9 +1647,10 @@ toggle the option value."
   :group 'Info-Plus)
 
 ;;;###autoload
-(defcustom Info-fontify-indented-text-flag t
-  "Non-nil means fontify text that is indented at least 10 chars.
-Generally this means texts of code and ASCII-art diagrams.
+(defcustom Info-fontify-indented-text-chars 10
+  "Non-nil means fontify text that is indented at least that many chars.
+Often such text is code snippets or ASCII-art diagrams.
+The default value is 10.
 
 This fontification is not done for nodes named `Top', in order to
 avoid fontifying continuation lines of menu-item descriptions."
@@ -4342,7 +4345,7 @@ If key's command cannot be found by looking in indexes, then
 
         ;; Fontify INDENTED TEXT (e.g. code blocks, ASCII diagrams).
         (goto-char (point-min))
-        (when (and Info-fontify-indented-text-flag  (not (equal "Top" Info-current-node)))
+        (when (and Info-fontify-indented-text-chars  (not (equal "Top" Info-current-node)))
           (Info-fontify-indented-text))
 
         ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
@@ -4742,7 +4745,7 @@ If key's command cannot be found by looking in indexes, then
 
         ;; Fontify INDENTED TEXT (e.g. code blocks, ASCII diagrams).
         (goto-char (point-min))
-        (when (and Info-fontify-indented-text-flag  (not (equal "Top" Info-current-node)))
+        (when (and Info-fontify-indented-text-chars  (not (equal "Top" Info-current-node)))
           (Info-fontify-indented-text))
 
         ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
@@ -5136,7 +5139,7 @@ If key's command cannot be found by looking in indexes, then
 
         ;; Fontify INDENTED TEXT (e.g. code blocks, ASCII diagrams).
         (goto-char (point-min))
-        (when (and Info-fontify-indented-text-flag  (not (equal "Top" Info-current-node)))
+        (when (and Info-fontify-indented-text-chars  (not (equal "Top" Info-current-node)))
           (Info-fontify-indented-text))
 
         ;; Fontify QUOTATIONS: ‘...’, `...', “...”, and "..."
@@ -5481,8 +5484,8 @@ own."
                        'keymap info-glossary-link-map))))))))))
 
 (defun Info-fontify-indented-text ()
-  "Fontify text that is indented at least 10 chars."
-  (while (re-search-forward "^          +.*" nil 'NOERROR)
+  "Fontify text indented `Info-fontify-indented-text-chars' or more."
+  (while (re-search-forward "^ \\{10,\\}.*" nil 'NOERROR)
     (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-indented-text)))
 
 (if (> emacs-major-version 23) ; Emacs < 24 `cl-member' doesn't accept `:test'.  Just use dumb recursion.
