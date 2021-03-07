@@ -8,52 +8,6 @@ syntax. BeanShell supports scripted objects as simple method closures like those
 in Perl and JavaScript(tm).
 
 You can use BeanShell interactively for Java experimentation and debugging or as
-a simple scripting engine for your applications. In short: BeanShell is a
-dynamically interpreted Java, plus some useful stuff. Another way to describe it
-is to say that in many ways BeanShell is to Java as Tcl/Tk is to C: BeanShell is
-embeddable - You can call BeanShell from your Java applications to execute Java
-code dynamically at run-time or to provide scripting extensibility for your
-applications. Alternatively, you can call your Java applications and objects
-from BeanShell; working with Java objects and APIs dynamically. Since BeanShell
-is written in Java and runs in the same space as your application, you can
-freely pass references to "real live" objects into scripts and return them as
-results.
+a simple scripting engine for your applications.
 
-Summary of features:
-* Uses the Java reflection API to provide runtime interpreted execution of Java statements and expressions. 
-* Transparent access to all Java objects and APIs. 
-* Runs in four modes: command line, console, applet, remote session server. 
-* Works in applets as well as applications (no compiler or classloader) 
-* The interpreter is small ~175K jar file (~135K without the utilities). 
-* Pure Java. 
-* It's Free!!! 
-
-Java evaluation features: 
-* Covers the full Java statements and expressions syntax. 
-* Emulation of strongly typed variables and methods 
-* Primitive value handling with correct numeric promotion 
-* Full Java arithmetic, logical, and bitwise operations 
-* Object construction and handling including multi-dimensional arrays 
-* Loops and control structures with breaks and returns 
-* Method invocations with polymorphic/overloaded method resolution 
-* Full exception handling 
-
-Scripting features: 
-* Dynamically typed (un-typed) variables 
-* Scripted methods with strong or loose typing of arguments and return values 
-* Scripted objects (method closures) 
-* Scripted AWT/Swing event handlers. 
-* BeanShell scripts can be used to implement arbitrary Java interfaces (requires JDK1.3+) 
-* Convenience syntax for working with JavaBean properties, hashtables, and primitive wrapper types. 
-* Extensible set of utility commands including things like "load/save(bean)" and "eval(String)". 
-* Namespace/scope modifiers: 'this', 'super', and 'global' 
-
-Suggested uses:
-* Interactive Java - try out object features, APIs and GUI widgets - "hands on". 
-* Scripting extensions for applications - Use BeanShell instead of calling the Java compiler from your apps. 
-* Education - Put a Java development environment right on your web page! 
-* Expression evaluator for scientific or financial applications - evaluate complex expressions with conditions and loops. 
-* Hand configuration of JavaBeans - write them out with the save() command. 
-* Debugging - Work and play inside any Java VM!
-
-CategoryNeedsAttention (Irrelevant. Delete.)
+It is used by the JavaDevelopmentEnvironment.
