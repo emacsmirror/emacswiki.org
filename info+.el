@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar  7 13:21:06 2021 (-0800)
+;; Last-Updated: Sun Mar  7 19:32:41 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7090
+;;     Update #: 7096
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -367,9 +367,10 @@
 ;;
 ;;    - Non-nil option `Info-fontify-indented-text-chars' means
 ;;      fontify text that is indented at least that many characters
-;;      (default 10).  In the Elisp manual this generally means blocks
-;;      of code and ASCII-art diagrams.  But in some other manuals it
-;;      can mean some regular text, so caveat emptor.
+;;      (default 10).  In the Elisp manual this often means blocks of
+;;      code and ASCII-art diagrams.  But in general there's no
+;;      telling what is indented at any given level, so caveat emptor.
+;;      Think of this as an experimental feature.
 ;;
 ;;    - Emphasized text, that is, text enclosed in underscore
 ;;      characters, like _this is emphasized text_, is
@@ -546,6 +547,7 @@
 ;;     Info-remap-default-face-to-variable-pitch: Set info-remap-default-face-cookie.
 ;;     Info-variable-pitch-text-mode: No longer on Info-mode-hook - takes effect immediately.
 ;;     Info-fontify-indented-text-chars: Default value is now nil (no-op), not 10.
+;;     Info-fontify-indented-text: Allow arbitrary indentation level, not just 10.
 ;; 2021/05/06 dadams
 ;;     Added Info-remap-default-face-to-variable-pitch, Info-variable-pitch-text-mode, face info-fixed-pitch,
 ;;           Info-fontify-indented-text-chars, Info-fontify-indented-text.
@@ -1682,7 +1684,10 @@ any level is not necessarily something you want to fontify.
 
 This fontification is not done for nodes named `Top', in order to
 avoid fontifying continuation lines of menu-item descriptions."
-  :type 'boolean :group 'Info-Plus)
+  :type '(choice
+          (const   :tag "OFF - don't fontify indented text"   nil)
+          (integer :tag "Fontify text indented at least this many chars" :value 10))
+  :group 'Info-Plus)
 
 
 (define-obsolete-variable-alias 'Info-fontify-single-quote-flag 'Info-fontify-isolated-quote-flag "2020-10-22")
@@ -5519,8 +5524,9 @@ own."
 (defun Info-fontify-indented-text ()
   "Fontify text indented `Info-fontify-indented-text-chars' or more.
 It is fontified using face `info-indented-text'."
-  (while (re-search-forward "^ \\{10,\\}.*" nil 'NOERROR)
-    (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-indented-text)))
+  (let ((num  (abs Info-fontify-indented-text-chars)))
+    (while (re-search-forward (format "^ \\{%d,\\}.*" num) nil 'NOERROR)
+      (put-text-property (match-beginning 0) (match-end 0) 'font-lock-face 'info-indented-text))))
 
 (if (> emacs-major-version 23) ; Emacs < 24 `cl-member' doesn't accept `:test'.  Just use dumb recursion.
     (defun Info--member-string-nocase (string list)
