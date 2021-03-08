@@ -5,9 +5,9 @@
 ;; Author: Peter Karpiuk <piotr.karpiuk (at) gmail (dot) com>
 ;; Maintainer: Peter Karpiuk <piotr.karpiuk (at) gmail (dot) com>
 ;; Created: 25 Nov 2007
-;; Version 0.9.1
+;; Updated: 8 Mar 2021
+;; Version 0.9.2
 ;; Keywords: sql sqlplus oracle plsql
-;; Package-Version: 20170710.150
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published
