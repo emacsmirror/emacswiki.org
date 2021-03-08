@@ -7,6 +7,7 @@
 ;; Created: 25 Nov 2007
 ;; Version 0.9.1
 ;; Keywords: sql sqlplus oracle plsql
+;; Package-Version: 20170710.150
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published
@@ -2725,7 +2726,7 @@ create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
 								     (erase-buffer)))
 								 (when err-msg
 								   (insert (concat "\n" err-msg)))))))))
-			(process-kill-without-query proc (not sqlplus-kill-processes-without-query-on-exit-flag))
+			(set-process-query-on-exit-flag proc (not sqlplus-kill-processes-without-query-on-exit-flag))
 			(set-process-filter proc 'sqlplus-process-filter)
 			(with-current-buffer (get-buffer process-buffer-name)
 			  (setq sqlplus-process-p connect-string))
