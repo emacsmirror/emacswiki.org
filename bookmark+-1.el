@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar  5 14:38:27 2021 (-0800)
+;; Last-Updated: Tue Mar  9 13:09:35 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 9244
+;;     Update #: 9246
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9406,7 +9406,6 @@ If region was relocated, save it if user confirms saving."
     (cond (reg-retrieved-p
            (when pos (goto-char pos))
            (when end-pos (push-mark end-pos 'nomsg 'activate))
-           (setq deactivate-mark  nil)
            (when bmkp-show-end-of-region-flag
              (let ((end-win  (save-excursion (forward-line (window-height)) (line-end-position))))
                ;; Bounce point and mark.
@@ -9418,8 +9417,12 @@ If region was relocated, save it if user confirms saving."
                (message "Saved relocated region%s" (if (and pos  end-pos)
                                                        (format " (from %d to %d)" pos end-pos)
                                                      ""))
-             (when (and pos  end-pos) (message "Region is from %d to %d" pos end-pos))))
-          ((and pos  end-pos)           ; No region.  Go to old start.  Don't push-mark.
+             (when (and pos  end-pos) (message "Region is from %d to %d" pos end-pos)))
+           (when (and pos  end-pos)
+             (goto-char pos)
+             (push-mark end-pos 'nomsg 'activate)
+             (setq deactivate-mark  nil)))
+          ((and pos  end-pos) ; No region.  Go to old start.  Don't push-mark.
            (goto-char pos) (forward-line 0)
            (message "No region from %d to %d" pos end-pos)))))
 
