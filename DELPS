@@ -151,7 +151,7 @@ Add following to your `~/.emacs' startup InitFile:
 The epackage manager can also be called from command line UI:
 
    # Start command line UI
-   cd epacakge
+   cd epackage
    make ui
 
     # Or if you want to make a shell alias or function, the command needed is
@@ -220,7 +220,7 @@ both the concept (distributed) and the use of tools (version control).
 * ...other than that, sharing and distributing packages has never been this
   easy.
 
-== How to make an epacakge ==
+== How to make an epackage ==
 
 How does it all work? Let's say, we've found <code>example.el</code>
 which seem quite useful. Note that in this example all the proper
@@ -287,7 +287,7 @@ development files. The steps are:
     Edir example-mode
 
     # Fill in package details
-    $EDITOR epacakge/info
+    $EDITOR epackage/info
 }}}
 
 That was it in a nutshell. What's left to do is to check the generated
@@ -304,7 +304,7 @@ the details, see heading /For Package Developers/.
 {{{
     example.el
     |
-    +- epacakge/
+    +- epackage/
        example-epackage-0loaddefs.el
        example-epackage-autoloads.el
        example-epackage-compile.el
