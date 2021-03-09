@@ -3,29 +3,38 @@ This variable is the equivalent of the ##PATH## environment variable for Emacs. 
 
 Here's an example of appending the /sw/bin directory to the exec-path and PATH variables (useful for Mac OS X users running LaTeX):
 
-    (setenv "PATH" (concat (getenv "PATH") ":/sw/bin"))
-    (setq exec-path (append exec-path '("/sw/bin")))
+{{{
+(setenv "PATH" (concat (getenv "PATH") ":/sw/bin"))
+(setq exec-path (append exec-path '("/sw/bin")))
+}}}
 
-----
-CategoryPaths
-
-I found there are difference between exec-path and PATH.
+I found there are difference between `exec-path' and PATH.
 * The value of environment variable “PATH” is used by emacs when you are running a shell in emacs, similar to when you are using a shell in a terminal. 
 * The exec-path is used by emacs itself to find programs it needs for its features, such as spell checking, file compression, compiling, grep, diff, etc.
 Original from http://ergoemacs.org/emacs/emacs_env_var_paths.html
-----
-Aborn Jiang
+—Aborn Jiang
 
-== Set `exec-path` to match shell PATH automatically ==
+== Set ‘exec-path’ to match shell PATH automatically ==
 
-    (defun set-exec-path-from-shell-PATH ()
-      "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
-    This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
-      (interactive)
-      (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
-        (setenv "PATH" path-from-shell)
-        (setq exec-path (split-string path-from-shell path-separator))))
+{{{
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match
+that used by the user's shell.
 
-    (set-exec-path-from-shell-PATH)
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+			  "[ \t\n]*$" "" (shell-command-to-string
+					  "$SHELL --login -i -c 'echo $PATH'"
+						    ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
+}}}
 
 Found at https://agel.readthedocs.io/en/latest/configuration.html#path-to-the-ag-executable
+
+----
+CategoryPaths
