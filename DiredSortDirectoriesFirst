@@ -35,6 +35,8 @@ Here is a better method that is based on the above code, but doesn't break after
 [new:DrewAdams:2004-12-24 22:18 UTC]
 See DiredSortMenu for info on FrancisWright's library <code>dired-sort-menu.el</code>. It lets you do this and much, much more. -- DrewAdams
 
+[new:halloleo:2021-03-08 12:00 UTC]
+Keep in mind <code>dired-sort-menu.el</code> offers the Directory First sorting [i]only[/i] when you use <code>ls-lisp</code>! -- [[halloleo]]
 ----
 
 I don't know if this is a new feature of GNU ls, but you can use the ``--group-directories-first'' option to accomplish this.  Here's what I have in my init.el:
