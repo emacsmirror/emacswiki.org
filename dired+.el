@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  9 21:57:33 2021 (-0800)
+;; Last-Updated: Wed Mar 10 10:59:43 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12872
+;;     Update #: 12876
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -636,6 +636,7 @@
 ;;    `diredp--add-dired-to-invisibility-hook', `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-apply-to-this-file',
 ;;    `diredp-bookmark', `diredp-cannot-revert',
+;;    `diredp-copy-as-kill-from-clipboard',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-delete-dups', `diredp-delete-if',
 ;;    `diredp-delete-if-not', `diredp-directories-within',
@@ -850,6 +851,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/10 dadams
+;;     Added: diredp-copy-as-kill-from-clipboard.
+;;     diredp-yank-files: You can now also yank the file names from the clipboard.
 ;; 2021/03/03 dadams
 ;;     Renamed: diredp-omit-files-regexp to diredp-omit-files-font-lock-regexp,
 ;;              diredp-omit-line-regexp to diredp-omit-lines-regexp.
@@ -5709,11 +5713,26 @@ This is the same as using a zero prefix arg with command
   (interactive (diredp-ensure-mode))
   (dired-copy-filename-as-kill 0))
 
+(defun diredp-copy-as-kill-from-clipboard (files)
+  "Copy file names from clipboard."
+  (when (stringp files)
+    (setq files  (if (diredp-string-match-p "\n" files)
+                     (split-string files "\n" t "\"")
+                   (setq files (split-string files "\"" t "\"")))))
+  (let ((files-string  (mapconcat
+                        (lambda (file)
+                          (unless (file-exists-p file) (message (format "No such file: `%s'" file)))
+                          file)
+                        files
+                        diredp-filename-separator)))
+    (kill-new files-string)
+    (setq diredp-last-copied-filenames  files-string)))
+
 ;;;###autoload
 (defalias 'diredp-paste-files 'diredp-yank-files) ; Bound to `C-y'.
 ;;;###autoload
 (defun diredp-yank-files (&optional dir no-confirm-p details)
-  "Paste files, whose absolute names you copied, to the current directory.
+  "Yank (paste) files to the current directory.
 With a non-negative prefix arg you are instead prompted for the target
  directory.
 With a non-positive prefix arg you can see details about the files if
@@ -5721,12 +5740,19 @@ With a non-positive prefix arg you can see details about the files if
  the file names.  The details you see are defined by option
  `diredp-list-file-attributes'.
 
-You should have copied the list of file names as a string to the kill
-ring using \\<dired-mode-map>`M-0 \\[dired-copy-filename-as-kill]' or \
+The absolute names of the files to be yanked are taken from the
+clipboard or, if that's empty, from names you've copied to the kill
+ring using \\<dired-mode-map>\ `M-0 \\[dired-copy-filename-as-kill]' or \
 \\[diredp-copy-abs-filenames-as-kill].
-Those commands also set variable `diredp-last-copied-filenames' to the
-same string.  `diredp-yank-files' uses the value of that variable, not
-whatever is currently at the head of the kill ring.
+
+Those copy-filename commands also set variable
+`diredp-last-copied-filenames' to the same string.
+`diredp-yank-files' uses the value of that variable, not whatever is
+currently at the head of the kill ring.
+
+\(To copy file names to the clipboard on MS Windows, you can use Windows
+Explorer: Select the file names, then hold `Shift', right-click, and
+choose `Copy as Path' from the menu.)
 
 When called from Lisp:
 
@@ -5740,16 +5766,18 @@ Optional arg DETAILS is passed to `diredp-y-or-n-files-p'."
                           diredp-list-file-attributes)))
   (setq dir  (or dir  (and (derived-mode-p 'dired-mode)  (dired-current-directory))))
   (unless (file-directory-p dir) (error "Not a directory: `%s'" dir))
-  (let ((files  diredp-last-copied-filenames))
+  (let* ((ipf-files  (funcall interprogram-paste-function))
+         (files      (or ipf-files  diredp-last-copied-filenames)))
     (unless (stringp files)  (error "No copied file names"))
+    (when ipf-files (setq files  (diredp-copy-as-kill-from-clipboard files)))
     (setq files  (diredp-delete-if-not (lambda (file) (file-name-absolute-p file))
                                        (split-string files diredp-filename-separator)))
     (unless files  (error "No copied *absolute* file names (Did you use `M-0 w'?)"))
     (if (and (not no-confirm-p)
-             (diredp-y-or-n-files-p "Paste files whose names you copied? " files nil details))
+             (diredp-y-or-n-files-p "Yank files whose names you copied? " files nil details))
         (dired-create-files #'dired-copy-file "Copy" files
                             (lambda (from) (expand-file-name (file-name-nondirectory from) dir)))
-      (message "OK, file-pasting canceled"))))
+      (message "OK, file-yanking canceled"))))
 
 ;;;###autoload
 (defun diredp-move-files-named-in-kill-ring (&optional dir no-confirm-p details) ; Bound to `C-w'
