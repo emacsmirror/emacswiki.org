@@ -19,7 +19,7 @@ Here are some of the things '''Dired+''' does:
 
 * Lets you act not only on the marked files and subdirs in the current Dired buffer but also on the marked files and subdirs within any Dired buffers for the marked subdirs, ''recursively''.  (Separate commands are available for this.)
 
-* Lets you use commands that normally operate on the marked files to operate instead on '''all''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
+* Lets you use commands that normally operate on the marked files to operate instead on '''all''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u C-M-G' (that is, `C-M-S-g') to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
 
 * Lets you open Dired for an arbitrary set of files and (non-root) directories, anywhere.  Just use a non-positive prefix arg (e.g. `C--') with `dired': you are prompted for the Dired buffer name and for each file or dir to include. You can use glob patterns with wildcards to include all of the matching files and dirs at once.
 
