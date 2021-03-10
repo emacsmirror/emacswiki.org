@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Dec 29 12:36:34 2020 (-0800)
+;; Last-Updated: Tue Mar  9 18:51:56 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 15352
+;;     Update #: 15355
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1047,10 +1047,13 @@
 ;;  annotation buffer is in edit mode; if it is any other non-`nil'
 ;;  value then the buffer is in show (read-only) mode.
 ;;
-;;  In the `*Bookmark List*' display, you can use `a' to show or (with
-;;  a prefix arg) edit the existing annotation for the bookmark on the
-;;  current line.  (Bookmarks with annotations are marked by an `a' to
-;;  the left of the bookmark name.)
+;;  In the `*Bookmark List*' display, bookmarks with annotations are
+;;  marked by an `a' to the left of the bookmark name.  You can use `a
+;;  a' to show the annotation for the bookmark on the current line.
+;;  You can use `a e' to create an annotation or edit an existing
+;;  annotation for it.  You can use `a >' to edit annotations for all
+;;  of the marked bookmarks.  You can use `a A' to show a list of the
+;;  names and annotations of all annotated bookmarks.
 ;;
 ;;  A bookmark annotation is stored as part of the bookmark itself.
 ;;  For this reason, you typically want to keep the text fairly short.
