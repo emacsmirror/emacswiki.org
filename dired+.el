@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar  3 10:03:16 2021 (-0800)
+;; Last-Updated: Tue Mar  9 21:57:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 12870
+;;     Update #: 12872
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -112,7 +112,7 @@
 ;;  Act on All Files
 ;;  ----------------
 ;;
-;;  Most of the commands (such as `C' and `M-g') that operate on the
+;;  Most of the commands (such as `C' and `C-M-g') that operate on the
 ;;  marked files have the added feature here that multiple `C-u' use
 ;;  not the files that are marked or the next or previous N files, but
 ;;  *all* of the files in the Dired buffer.  Just what "all" files
