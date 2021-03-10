@@ -1147,7 +1147,7 @@ your choosing.  An annotation is thus ''metadata'' that is associated
 with a bookmark.  You can use it for any purpose you like.
 
 Command '''`bookmark-show-annotation'''' shows an annotation in
-read-only mode.  You can use `C-x C-q' in the annotation buffer to
+read-only mode.  You can use '''`C-x C-q'''' in the annotation buffer to
 switch to edit mode (and back again).
 
 You can use command `bookmark-edit-annotation' or `bmkp-annotate'
@@ -1157,8 +1157,8 @@ that already have annotations.  With a [[prefix argument|prefix arg]], you can c
 any bookmark (and so ''create'' an annotation).  Using '''`bmkp-annotate''''
 is the same as using `bookmark-edit-annotation' with a prefix arg.
 
-In the annotation edit buffer, make your changes and then use `C-c C-c' to save the result.  Use `C-x C-k' if you do not want to save the
-changes.  You can also use `C-x C-q' and then `y' to confirm
+In the annotation edit buffer, make your changes and then use '''`C-c C-c'''' to save the result.  Use '''`C-x C-k'''' if you do not want to save the
+changes.  You can also use '''`C-x C-q'''' and then '''`y'''' to confirm
 reverting the changes.
 
 Non-`nil' [[user option]] '''`bookmark-automatically-show-annotations''''
@@ -1167,10 +1167,8 @@ to the bookmark.  If the non-`nil' value is '''`edit'''' then the
 annotation buffer is in edit mode; if it is any other non-`nil'
 value then the buffer is in show (read-only) mode.
 
-In the `##*Bookmark List*##' display, you can use '''`a'''' to show or (with a
-prefix arg) edit the existing annotation for the bookmark on the
-current line.  (Bookmarks with annotations are marked by an `a' to
-the left of the bookmark name.)
+In the `##*Bookmark List*##' display, bookmarks with annotations are marked by an '''`a'''' to
+the left of the bookmark name.  You can use '''`a a'''' to show the annotation for the bookmark on the current line.  You can use '''`a e'''' to create an annotation or edit an existing annotation for it.  You can use '''`##a >##'''' to edit annotations for all of the marked bookmarks.  You can use '''`a A'''' to show a list of the names and annotations of all annotated bookmarks.
 
 A bookmark annotation is ''stored as part of the bookmark itself''.
 For this reason, you typically want to keep the text fairly short.  In
@@ -2117,7 +2115,7 @@ When you bookmark a target file that Emacs recognizes as an image
 or sound file, an appropriate handler is used automatically.
 
 After you create individual bookmarks for, say, music or image
-files, you can use `##P B##' in the [[#BookmarkListDisplay|bookmark-list display]] to show only
+files, you can use '''`##P B##'''' in the [[#BookmarkListDisplay|bookmark-list display]] to show only
 those bookmarks, and then use `C-x r m' to bookmark that state of
 the bookmark-list.
 
@@ -2655,14 +2653,14 @@ file, then its bookmarks are all deleted -- it is emptied.
 
 Instead of simply copying a bookmark file, you can use
 `bookmark-save' with a prefix argument, or use `bookmark-write'
-(bound to `C-x x w'), to save the currently defined bookmarks to a
+(bound to '''`C-x x w''''), to save the currently defined bookmarks to a
 different bookmark file.
 
 However a bookmark file was created, you can switch to it and then
 add or delete bookmarks selectively, to change its content.
 Remember too that you can delete bookmarks from the current set using
-command `bookmark-delete' (`C-x x d') or, in the bookmark list,
-using `d' plus `x' or marking then `D'.
+command `bookmark-delete' ('''`C-x x d'''') or, in the bookmark list,
+using '''`d'''' plus '''`x'''' or marking then '''`D''''.
 
 [:CopyMoveBookmarks]
 Deleting bookmarks from a bookmark file is one way of editing it.
@@ -2908,7 +2906,7 @@ work in any buffer, not just buffer `##*Bookmark List*##'):
   bookmark.  With a prefix argument it shows you the full internal
   form of the tags, that is, the name+value pairs.
 
-* '''`##C-h >##'''' describes all of the ''marked'' bookmarks, in the current sort order.  The descriptions include the tags.  (You can use `T m * RET' to mark all of the tagged bookmarks.)
+* '''`##C-h >##'''' describes all of the ''marked'' bookmarks, in the current sort order.  The descriptions include the tags.  (You can use '''`T m * RET'''' to mark all of the tagged bookmarks.)
 
 * '''`##T e##'''' ('''`##C-x x t e##'''') lets you edit a bookmark's tags.
 
@@ -3848,7 +3846,7 @@ instead of just `%s', because the format can have multiple `##%##'
 sequences, and the buffer name could be anywhere in the bookmark
 name.  Depending on the buffer, the buffer name could thus be
 confused with other text in the bookmark name, unless you use `##%B##'
-to show where it is.  You can use just `##%s##' for it if there is no
+to show where it is.  You can use just '''`##%s##'''' for it if there is no
 risk of ambiguity.  (Use `##%s##' in `bmkp-autoname-bookmark-function'
 to insert the buffer name.)
 
@@ -4217,7 +4215,7 @@ In the bookmark list (buffer `##*Bookmark List*##'):
 * '''`##H +##''''    -- Set the highlighting for this line's bookmark
 * '''`##H > +##''''  -- Set the highlighting for the marked bookmarks
 
-Globally, you can use `M-x bmkp-set-lighting-for-bookmark' to set
+Globally, you can use '''`M-x bmkp-set-lighting-for-bookmark'''' to set
 the highlighting for a given bookmark.
 
 Each of these commands prompts you (with completion) for the style
@@ -4374,7 +4372,7 @@ You can use command '''`bmkp-insert-bookmark-link'''' to create links in
 any Emacs text that jump to particular bookmarks when you follow
 them (by hitting `RET' or clicking `mouse-2').  If you hit `##?##' or
 double-click `mouse-1' on such a bookmark link then the bookmark
-is described, showing the same information as `C-h M'
+is described, showing the same information as '''`C-h M''''
 (`bmkp-describe-bookmark').
 
 You are prompted for the bookmark to link.  If the [[region]] is
@@ -4412,7 +4410,7 @@ You can also easily define OrgMode links that jump to bookmarks.
 These links are persistent.  Again, the bookmark linked can be of
 any type.
 
-You can use the standard Org command `org-store-link' (`C-c l') in
+You can use the standard Org command `org-store-link' ('''`C-c l'''') in
 buffer `*Bookmark List*' to store a link to the bookmark at point.  (This is also item '''Store Org Link''' in the mouse-3 popup menu.)
 
 Outside buffer `*Bookmark List*' you can use command
