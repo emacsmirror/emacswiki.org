@@ -1,26 +1,30 @@
 == Major Modes ==
 
-* [[JDEE]] - a big IDE type thing for Emacs; mostly defunct
-* [[CEDET]] - massive IDE thing eating all C type languages including Java
-* [[EmacsEclim]] - extensively integrate Emacs and the Eclipse editor
+* [[CEDET]] -- massive IDE thing eating all C type languages including
+  Java
+* [[EmacsEclim]] -- extensively integrate Emacs and the Eclipse editor
+* [[JDEE]] -- a big IDE type thing for Emacs; mostly defunct
+** BeanShell -- an embeddable Java source interpreter (external to
+   Emacs), a dependency of JDEE
 
 == Completion ==
 
-* AutoComplete - works with Java
-* JavaComplete - is an old tags based system that is being looked at again
+* AutoComplete -- works with Java
+* JavaComplete -- is an old tags based system that is being looked at
+  again
 * AutoJavaComplete - tags based system with AutoComplete supported
 
 //these 3 could be combined somehow, NicFerrier is looking at that//
 
 == Indenting ==
 
-* JavaMode is built into Emacs but has some deficiencies
-* IndentingJava is about indenting
+* JavaMode -- is built into Emacs but has some deficiencies
+* IndentingJava -- is about indenting
 
 == Compiling and such ==
 
-* FlymakeJava - how to use flymake with Java
-* MvnCompile - how to setup Maven to be the compile command
+* FlymakeJava -- how to use flymake with Java
+* MvnCompile -- how to setup Maven to be the compile command
 
 ----
 CategoryProgramming
