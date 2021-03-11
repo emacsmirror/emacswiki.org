@@ -15,7 +15,7 @@ Four important things they do:
 Just so as you know, if you don't want to type the full domain all the time, the site is accessible under the alternate http://ddg.gg
 
 == DDG ==
-There is an aplication for using the [http://api.duckduckgo.com DuckDuckGo API] (and use goodies!) composing of three files:
+There is an application for using the [http://api.duckduckgo.com DuckDuckGo API] (and use goodies!) composing of three files:
 
 * Lisp:ddg.el -- A library for retrieving information from !DuckDuckGo. See [[DuckDuckGo-el]].
 * Lisp:ddg-search.el -- Some commands for interactive searching and displaying results. Requires the next library.
