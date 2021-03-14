@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 14 12:35:52 2021 (-0700)
+;; Last-Updated: Sun Mar 14 13:26:19 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2226
+;;     Update #: 2228
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -421,7 +421,7 @@ MORE ADVANCED HELP
 INTERNATIONAL
 -------------
 \\[describe-coding-system]:   Describes a coding system.
-h    Displays the HELLO file, which illustrates scripts and languages.
+\\[view-hello-file]    Displays the HELLO file, which illustrates scripts and languages.
 \\[describe-input-method]:   Describes an input method.
 \\[describe-language-environment]:   Describes a language environment.
 "))
