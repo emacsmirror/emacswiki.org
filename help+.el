@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 14 14:34:42 2021 (-0700)
+;; Last-Updated: Sun Mar 14 14:47:44 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2234
+;;     Update #: 2236
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -410,14 +410,14 @@ MORE ADVANCED HELP
 \\[where-is]:   Identifies a keyboard/menu/mouse sequence that invokes a command.
 \\[apropos]: Shows Emacs functions and variables that match a regexp.
 \\[describe-key-briefly]: Identifies the command bound to a keyboard/menu/mouse sequence.
-\\[describe-distribution]: Shows Emacs ordering information.
 \\[locate-library]: Shows the path name to an Emacs library.
 \\[describe-option-of-type]: Shows value and doc for an Emacs user option of a given type.
-\\[describe-project]: Shows information about the GNU project.
+\\[describe-gnu-project]: Shows information about the GNU project.
 \\[describe-no-warranty]: Shows information about the absence of a warranty.
 \\[describe-copying]: Shows the GNU Emacs General Public License.
 \\[pop-to-help-toggle]: Pops to Help buffer or back to the buffer that sent you to Help.
 \\[tags-apropos]: Shows the tags matched by a given string.
+\\[describe-distribution]: Shows Emacs ordering information.
 
 INTERNATIONAL
 -------------
