@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 14 13:46:30 2021 (-0700)
+;; Last-Updated: Sun Mar 14 14:34:42 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2232
+;;     Update #: 2234
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -86,7 +86,7 @@
 ;;; Change Log:
 ;;
 ;; 2021/03/14 dadams
-;;     Soft-require help-fns+.el.
+;;     Soft-require help-fns+.el at both compile time and runtime.
 ;; 2020/09/26 dadams
 ;;     help-on-click/key-lookup:
 ;;       Fix change from 2017-10-21 - describe-key if analyzed returns non-nil.
@@ -166,7 +166,8 @@
 ;; Get function `help-substitute-command-keys', to put links on key descriptions.
 (eval-when-compile
   (require 'help-macro nil t) ;; (no error if not found) make-help-screen
-  (require 'help-macro+ nil t) ;; (no error if not found): make-help-screen
+  (require 'help-macro+ nil t)) ;; (no error if not found): make-help-screen
+(eval-and-compile
   (require 'help-fns+ nil t)) ;; (no error if not found): help-substitute-command-keys
 
 ;;;;;;;;;;;;;;;;;;;;
