@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 26 11:43:34 2020 (-0700)
+;; Last-Updated: Sun Mar 14 12:35:52 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2211
+;;     Update #: 2226
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -85,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/14 dadams
+;;     Soft-require help-fns+.el.
 ;; 2020/09/26 dadams
 ;;     help-on-click/key-lookup:
 ;;       Fix change from 2017-10-21 - describe-key if analyzed returns non-nil.
@@ -158,11 +160,14 @@
 (require 'frame-fns nil t)  ;; (no error if not found): 1-window-frames-on
 (require 'naked nil t) ;; (no error if not found): naked-key-description
 
-;; Get macro `make-help-screen' when this is compiled,
-;; or run interpreted, but not when the compiled code is loaded.
+;; Get macro `make-help-screen' when this is compiled or run interpreted,
+;; but not when the compiled code is loaded.
+;;
+;; Get function `help-substitute-command-keys', to put links on key descriptions.
 (eval-when-compile
-  (require 'help-macro nil t)   ;; (no error if not found) make-help-screen
-  (require 'help-macro+ nil t)) ;; (no error if not found): make-help-screen
+  (require 'help-macro nil t) ;; (no error if not found) make-help-screen
+  (require 'help-macro+ nil t) ;; (no error if not found): make-help-screen
+  (require 'help-fns+ nil t)) ;; (no error if not found): help-substitute-command-keys
 
 ;;;;;;;;;;;;;;;;;;;;
 
@@ -358,11 +363,14 @@ runs the command %S, which is "
 
 
 ;; REPLACES ORIGINAL in `help.el':
-;; Updated key bindings.
+;;
+;; 1. If `help-fns+.el' is loaded then put links on key descriptions.
+;; 2. Updated key bindings.
 ;;
 (make-help-screen help-for-help-internal
-  "RET [abcCefFhiIkKlLmnopqrsStuvw] C-[\acdeflmoptw] M-[acko] C-M-a (? for more help):"
-  "This is the Emacs `help-command', accessible via `%THIS-KEY%'.
+                  "RET [abcCefFhiIkKlLmnopqrsStuvw] C-[\acdeflmoptw] M-[acko] C-M-a \
+\(? for more help):"
+                  (let ((raw  "This is the Emacs `help-command', accessible via `%THIS-KEY%'.
 Type a help option (below) now, for help on a particular topic.
 Use \\<help-map>`\\[scroll-up]' or `\\[scroll-down]' to scroll this text.  \
 Type `\\[help-quit]' to exit Help.
@@ -416,8 +424,11 @@ INTERNATIONAL
 h    Displays the HELLO file, which illustrates scripts and languages.
 \\[describe-input-method]:   Describes an input method.
 \\[describe-language-environment]:   Describes a language environment.
-"
-  help-map)
+"))
+                    (if (fboundp 'help-substitute-command-keys) ; In `help-fns+.el'.
+                        (help-substitute-command-keys raw 'ADD-HELP-BUTTONS)
+                      raw))
+                  help-map)
 
 
 ;; REPLACES ORIGINAL in `help.el':
