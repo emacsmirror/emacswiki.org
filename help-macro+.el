@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-macro.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:15:38 2018 (-0800)
+;; Last-Updated: Sun Mar 14 12:29:03 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 128
+;;     Update #: 134
 ;; URL: https://www.emacswiki.org/emacs/download/help-macro%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -62,6 +62,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/24 dadams
+;;     make-help-screen: If help-fns+.el is loaded, eval HELP-TEXT, so keys get links.
 ;; 2011/10/07 dadams
 ;;     Added soft require of naked.el.
 ;;     make-help-screen: Use naked-key-description if available.
@@ -109,8 +111,10 @@
 
 
 ;; REPLACES ORIGINAL in `help-macro.el':
-;; Fits frame if `one-window-p'.
-;; Does not iconify *Help* frame.
+;;
+;; 1. If `help-fns+.el' is loaded then `eval' HELP-TEXT, so keys get links.
+;; 2. Fits frame if `one-window-p'.
+;; 3. Does not iconify *Help* frame.
 ;;
 ;;;###autoload
 (defmacro make-help-screen (fname help-line help-text helped-map)
@@ -124,7 +128,9 @@ When FNAME finally does get a command, it executes that command
 and then returns."
   (let ((doc-fn (intern (concat (symbol-name fname) "-doc"))))
     `(progn
-       (defun ,doc-fn () ,help-text)
+       (defun ,doc-fn () ,(if (fboundp 'help-substitute-command-keys) ; In `help-fns+.el'
+                              (eval help-text)
+                            help-text))
        (defun ,fname ()
          "Help command."
          (interactive)
@@ -182,9 +188,9 @@ and then returns."
                          (while (or (memq char (append help-event-list
                                                        (cons help-char
                                                              '(?? ?\C-v ?\ ?\177
-                                                               delete backspace
-                                                               vertical-scroll-bar
-                                                               ?\M-v))))
+                                                                  delete backspace
+                                                                  vertical-scroll-bar
+                                                                  ?\M-v))))
                                     (eq (car-safe char) 'switch-frame)
                                     (equal key "\M-v"))
                            (condition-case nil
@@ -204,24 +210,24 @@ and then returns."
                                                 (if (pos-visible-in-window-p (point-max))
                                                     "" ", or SPACE or DEL to scroll")))
                                    char (aref key 0)))
-                   ;; If this is a scroll bar command, just run it.
-                   (when (eq char 'vertical-scroll-bar)
-                     (command-execute (lookup-key local-map key) nil key)))))
-           ;; We don't need the prompt any more.
-           (message "")
-           ;; Mouse clicks are not part of the help feature,
-           ;; so reexecute them in the standard environment.
-           (if (listp char)
-               (setq unread-command-events (cons char unread-command-events)
-                     config                nil)
-             (let ((defn (lookup-key local-map key)))
-               (if (not defn)
-                   (ding)
-                 (when config
-                   (set-window-configuration config)
-                   (setq config nil))
-                 (when new-frame (delete-frame new-frame))
-                 (call-interactively defn)))))
+                           ;; If this is a scroll bar command, just run it.
+                           (when (eq char 'vertical-scroll-bar)
+                             (command-execute (lookup-key local-map key) nil key)))))
+                   ;; We don't need the prompt any more.
+                   (message "")
+                   ;; Mouse clicks are not part of the help feature,
+                   ;; so reexecute them in the standard environment.
+                   (if (listp char)
+                       (setq unread-command-events (cons char unread-command-events)
+                             config                nil)
+                     (let ((defn (lookup-key local-map key)))
+                       (if (not defn)
+                           (ding)
+                         (when config
+                           (set-window-configuration config)
+                           (setq config nil))
+                         (when new-frame (delete-frame new-frame))
+                         (call-interactively defn)))))
                (unless unread-command-events
                  (when new-frame (delete-frame new-frame)))
                (when config (set-window-configuration config)))))))))
