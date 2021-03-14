@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 14 13:26:19 2021 (-0700)
+;; Last-Updated: Sun Mar 14 13:46:30 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2228
+;;     Update #: 2232
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -372,8 +372,8 @@ runs the command %S, which is "
 \(? for more help):"
                   (let ((raw  "This is the Emacs `help-command', accessible via `%THIS-KEY%'.
 Type a help option (below) now, for help on a particular topic.
-Use \\<help-map>`\\[scroll-up]' or `\\[scroll-down]' to scroll this text.  \
-Type `\\[help-quit]' to exit Help.
+Use \\<help-mode-map>`\\[scroll-up-command]' or `\\[scroll-down-command]' to scroll this text.\
+  Type \\<help-map>`\\[help-quit]' to exit Help.
 \(A \"command\" is any function that you can execute via `M-x'.)
 
 LEARNING EMACS
