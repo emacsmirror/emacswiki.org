@@ -8,9 +8,9 @@
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 14 13:15:53 2021 (-0700)
+;; Last-Updated: Sun Mar 14 14:16:54 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 173
+;;     Update #: 176
 ;; URL: https://www.emacswiki.org/emacs/download/help-macro%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
@@ -133,9 +133,7 @@ and then returns."
   (let ((doc-fn  (intern (concat (symbol-name fname) "-doc"))))
     `(progn
        (defun ,doc-fn ()
-         ,(if (fboundp 'help-substitute-command-keys) ; In `help-fns+.el'
-              (eval help-text)
-            help-text)
+         ,(eval help-text) ; Eval for `help-substitute-command-keys' in `help-fns+.el'.
          nil)
        (defun ,fname ()
          "Help command."
@@ -176,8 +174,8 @@ and then returns."
                      (setq config  (current-window-configuration))
                      (switch-to-buffer-other-window "*Help*")
                      (and (fboundp 'make-frame)
-                          (not (eq (window-frame) prev-frame))
-                          (setq new-frame  (window-frame)
+                          (not (eq (window-frame (selected-window)) prev-frame))
+                          (setq new-frame  (window-frame (selected-window))
                                 config     nil))
                      (setq buffer-read-only  nil)
                      (let ((inhibit-read-only  t))
