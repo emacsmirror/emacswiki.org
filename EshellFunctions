@@ -5,109 +5,123 @@ See EshellAlias for solutions to simpler problems.
 This example is so simple, it could have been solved using an alias.
 This example is also from KaiGrossjohann.
 
-    (defun eshell/pcvs-update (&rest args)
-      "Invoke `M-x cvs-update RET' on the given directory."
-      (cvs-update (pop args) nil))
+{{{
+(defun eshell/pcvs-update (&rest args)
+  "Invoke `M-x cvs-update RET' on the given directory."
+  (cvs-update (pop args) nil))
+}}}
 
 == Dealing With Wildcards and Multiple Files ==
 
-Assume you want to define an alias 'emacs' for 'find-file'. See
+Assume you want to define an alias `emacs' for 'find-file'. See
 EshellAlias for a simple alias solution. The problem is that you
 cannot open multiple files that way. Using wildcards would also be a
 problem if these expand into multiple filenames. Instead of using an
 alias, use the following function.
 
-    (defun eshell/emacs (&rest args)
-      "Open a file in emacs. Some habits die hard."
-      (if (null args)
-          ;; If I just ran "emacs", I probably expect to be launching
-          ;; Emacs, which is rather silly since I'm already in Emacs.
-          ;; So just pretend to do what I ask.
-          (bury-buffer)
-        ;; We have to expand the file names or else naming a directory in an
-        ;; argument causes later arguments to be looked for in that directory,
-        ;; not the starting directory
-        (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
+{{{
+(defun eshell/emacs (&rest args)
+  "Open a file in emacs. Some habits die hard."
+  (if (null args)
+      ;; If I just ran "emacs", I probably expect to be launching
+      ;; Emacs, which is rather silly since I'm already in Emacs.
+      ;; So just pretend to do what I ask.
+      (bury-buffer)
+    ;; We have to expand the file names or else naming a directory in an
+    ;; argument causes later arguments to be looked for in that directory,
+    ;; not the starting directory
+    (mapc #'find-file (mapcar
+    #'expand-file-name (eshell-flatten-list (reverse args))))))
+}}}
 
 The EShell convention has each command line "chunk" appearing as a separate argument to the function.  A command like
 
-    emacs a b c
+{{{
+emacs a b c
+}}}
 
 would receive three arguments.  However, when a chunk is an expandable wildcard, the matches get passed in as a list (even when there is only one match).  This means we need to flatten the arguments.
 
 In addition, we have to take the order of arguments into account.  The chunk arguments are passed in the same order as they appear on the command line, but wildcard expansions appear in reverse alphabetical order:
 
-  "abba" ("baz" "bar") "foo"
+{{{
+"abba" ("baz" "bar") "foo"
+}}}
 
 The solution is to reverse the top-level chunks:
 
-  "foo" ("baz" "bar") "abba"
+{{{
+"foo" ("baz" "bar") "abba"
+}}}
 
 When we call FIND-FILE on the flattened list, the alphabetical first file "abba" will be the topmost buffer, "bar" will be second, etc.
 
 This doesn't help with globs on the command line, though.  Assuming the existance of files a, b, c, and d you get silly results like:
 
-    $ for i in a [bc] d { echo $i }
-    a
-    c
-    b
-    d
+{{{
+$ for i in a [bc] d { echo $i }
+a
+c
+b
+d
+}}}
 
 Here's a hack that tries to do "the right thing" with single files and/or multiple globs.  Somewhat fragile, but e.g. "l mapcar #'identity README *.c *.h" does what you would expect.
 
-  (defvar mapping-funcs nil
-    "* List of \"mapping\" functions.")
-  (defvar seq-names '(seq sequence SEQ SEQUENCE)
-    "* Names of last-parameters that tend to handle any-length sequences.")
-  (defun mapping-func-p (func)
+{{{
+(defvar mapping-funcs nil
+  "* List of \"mapping\" functions.")
+(defvar seq-names '(seq sequence SEQ SEQUENCE)
+  "* Names of last-parameters that tend to handle any-length sequences.")
+(defun mapping-func-p (func)
   "Return true if a function takes a list-like last parameter.
-  XXX: handle e.g. CL-REST, CL-LIST, CL-KEYS here, too."
-    (let ((fn (symbol-function func)))
-      (or (member func mapping-funcs)
-          (member (cond
-                   ((subrp fn)
-                    (let* ((ds (documentation func))
-                           (nls (search "\n\n" ds))
-                           (callseq (when nls (read (substring ds nls)))))
-                      (message "callseq %s %s" func callseq)
-                      (and callseq (listp callseq) (car (last callseq)))))
-                   ((listp fn)
-                    (car (last (cadr fn))))
-                   (t nil))
+XXX: handle e.g. CL-REST, CL-LIST, CL-KEYS here, too."
+  (let ((fn (symbol-function func)))
+    (or (member func mapping-funcs)
+        (member (cond
+                 ((subrp fn)
+                  (let* ((ds (documentation func))
+                         (nls (search "\n\n" ds))
+                         (callseq (when nls (read (substring ds nls)))))
+                    (message "callseq %s %s" func callseq)
+                    (and callseq (listp callseq) (car (last callseq)))))
+                 ((listp fn)
+                  (car (last (cadr fn))))
+                 (t nil))
                 seq-names))))
-  
-  (defun flatten (args)
-    (apply #'nconc (mapcar (lambda (x) (if (consp x) x (list x))) args)))
-  
-  (defun eshell/l (func &rest args)
-  "Try to be intelligent about handling arguments to lisp
-  functions.  eshell has this annoying habit of not flattening
-  globs (e.g. \"ls *.c *.h\" becomes (list (quote ls)
-  list-of-c-files list-of-h-files)).  This function flattens glob
-  lists where it \"makes sense\" to do so."
-    (setq func (if (stringp func) (intern func) func))
-    (let* ((fn (if (symbolp func) (symbol-function func)
-                 func))
-           (arity (cond
-                   ((subrp fn) (cdr (subr-arity fn)))
-                   ((listp fn) (if (member '&rest (cadr fn)) 'many
-                                 (length (cadr fn))))
-                   (t nil))))
-      (cond
-       ;; vararg function -- flatten everything
-       ((eq arity 'many)
-        (apply fn (flatten args)))
-       ;; fixed-arg function with "slurpy" last param
-       ((and arity (mapping-func-p func))
-        (let ((argv nil))
-          (dotimes (i (1- arity))
-            (push (car args) argv)
-            (pop args))
-          (push (flatten args) argv)
-          (apply func (nreverse argv))))
-       ;; non-slurpy -- leave it alone.
-       (t (apply fn args)))))
 
+(defun flatten (args)
+  (apply #'nconc (mapcar (lambda (x) (if (consp x) x (list x))) args)))
+
+(defun eshell/l (func &rest args)
+  "Try to be intelligent about handling arguments to lisp
+functions.  eshell has this annoying habit of not flattening
+globs (e.g. \"ls *.c *.h\" becomes (list (quote ls)
+list-of-c-files list-of-h-files)).  This function flattens glob
+lists where it \"makes sense\" to do so."
+  (setq func (if (stringp func) (intern func) func))
+  (let* ((fn (if (symbolp func) (symbol-function func)
+               func))
+         (arity (cond
+                 ((subrp fn) (cdr (subr-arity fn)))
+                 ((listp fn) (if (member '&rest (cadr fn)) 'many
+                               (length (cadr fn))))
+                 (t nil))))
+    (cond
+     ;; vararg function -- flatten everything
+     ((eq arity 'many)
+      (apply fn (flatten args)))
+     ;; fixed-arg function with "slurpy" last param
+     ((and arity (mapping-func-p func))
+      (let ((argv nil))
+        (dotimes (i (1- arity))
+          (push (car args) argv)
+          (pop args))
+        (push (flatten args) argv)
+        (apply func (nreverse argv))))
+     ;; non-slurpy -- leave it alone.
+     (t (apply fn args)))))
+}}}
 /s
 
 == Analyzing Command Line Arguments ==
@@ -115,69 +129,82 @@ Here's a hack that tries to do "the right thing" with single files and/or multip
 Notice how the following solution checks the first parameter to see
 wether it designates a line to go to instead of a filename.
 
-"Believe it or not, I actually use `vi foo' to edit files from eshell!
-As an added bonus, my function groks `vi +42 foo' to go to a specific
-line number." -- KaiGrossjohann
+"Believe it or not, I actually use <code>vi foo</code> to edit files
+from eshell! As an added bonus, my function groks <code>vi +42
+foo</code> to go to a specific line number." --KaiGrossjohann
 
-    (defun eshell/vi (&rest args)
-      "Invoke `find-file' on the file.
-    \"vi +42 foo\" also goes to line 42 in the buffer."
-      (while args
-        (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
-            (let* ((line (string-to-number (match-string 1 (pop args))))
-                   (file (pop args)))
-              (find-file file)
-              (goto-line line))
-          (find-file (pop args)))))
+{{{
+(defun eshell/vi (&rest args)
+  "Invoke `find-file' on the file.
+\"vi +42 foo\" also goes to line 42 in the buffer."
+  (while args
+    (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+        (let* ((line (string-to-number (match-string 1 (pop args))))
+               (file (pop args)))
+          (find-file file)
+          (goto-line line))
+      (find-file (pop args)))))
+}}}
 
 == Some Trickery Involving Man and Perldoc ==
 
 Here's how to run perldoc like man, also by Kai:
 
-    (defun eshell/perldoc (&rest args)
-      "Like `eshell/man', but invoke `perldoc'."
-      (funcall 'perldoc (apply 'eshell-flatten-and-stringify args)))
+{{{
+(defun eshell/perldoc (&rest args)
+  "Like `eshell/man', but invoke `perldoc'."
+  (funcall 'perldoc (apply 'eshell-flatten-and-stringify args)))
+}}}
 
-Maybe you also want the perldoc function. Here it is:
+Maybe you also want the perldoc function.  Here it is:
 
-    (defun perldoc (man-args)
-      (interactive "sPerldoc: ")
-      (require 'man)
-      (let ((manual-program "perldoc"))
-        (man man-args)))
+{{{
+(defun perldoc (man-args)
+  (interactive "sPerldoc: ")
+  (require 'man)
+  (let ((manual-program "perldoc"))
+    (man man-args)))
+}}}
 
 == Running Commands in the Background ==
 
 Here's how to compile in the background, also by Kai.
 
-    (defun eshell/ec (&rest args)
-      "Use `compile' to do background makes."
-      (if (eshell-interactive-output-p)
-          (let ((compilation-process-setup-function
-                 (list 'lambda nil
-                       (list 'setq 'process-environment
-                             (list 'quote (eshell-copy-environment))))))
-            (compile (eshell-flatten-and-stringify args))
-            (pop-to-buffer compilation-last-buffer))
-        (throw 'eshell-replace-command
-               (let ((l (eshell-stringify-list (eshell-flatten-list args))))
-                 (eshell-parse-command (car l) (cdr l))))))
-    (put 'eshell/ec 'eshell-no-numeric-conversions t)
+{{{
+(defun eshell/ec (&rest args)
+  "Use `compile' to do background makes."
+  (if (eshell-interactive-output-p)
+      (let ((compilation-process-setup-function
+             (list 'lambda nil
+                   (list 'setq 'process-environment
+                         (list 'quote (eshell-copy-environment))))))
+        (compile (eshell-flatten-and-stringify args))
+        (pop-to-buffer compilation-last-buffer))
+    (throw 'eshell-replace-command
+           (let ((l (eshell-stringify-list (eshell-flatten-list args))))
+             (eshell-parse-command (car l) (cdr l))))))
+(put 'eshell/ec 'eshell-no-numeric-conversions t)
+}}}
 
 == C-a to beginning of command line or beginning of line? ==
 
-I use the following code.  It makes C-a go to the beginning of the command line, unless it is already there, in which case it goes to the beginning of the line.  So if you are at the end of the command line and want to go to the real beginning of line, hit C-a twice:
+I use the following code.  It makes <kbd>C-a</kbd> go to the beginning
+of the command line, unless it is already there, in which case it goes
+to the beginning of the line.  So if you are at the end of the command
+line and want to go to the real beginning of line, hit <kbd>C-a</kbd>
+twice:
 
-    (defun eshell-maybe-bol ()
-      (interactive)
-      (let ((p (point)))
-        (eshell-bol)
-        (if (= p (point))
-            (beginning-of-line))))
+{{{
+(defun eshell-maybe-bol ()
+  (interactive)
+  (let ((p (point)))
+    (eshell-bol)
+    (if (= p (point))
+        (beginning-of-line))))
 
-    (add-hook 'eshell-mode-hook
-              '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)))
-
+(add-hook 'eshell-mode-hook
+          '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)))
+}}}
 -- ZwaX
 
 == Changing the default prompt ==
@@ -185,63 +212,89 @@ I use the following code.  It makes C-a go to the beginning of the command line,
 For more examples of changing the prompt, see EshellPrompt (the text below should probably be merged into that page).
 
 Here's how to add a gaudy prompt instead of the default in your
-~/.emacs.  The date and time will be updated with each command as
+InitFile.  The date and time will be updated with each command as
 necessary as it does in bash \w \h or zsh %w %T.  In this case, there
-shouldn't be a need to update eshell-prompt-regexp, but there will be
-if you change the overall format such as adding a 2 line prompt. If
-your prompt is more than one line long, eshell-prompt-regexp should
-only match the last line.
+shouldn't be a need to update `eshell-prompt-regexp', but there will
+be if you change the overall format such as adding a 2-line prompt.
+If your prompt is more than one line long, `eshell-prompt-regexp'
+should only match the last line.
 
-    ;; Change the default eshell prompt
-    (setq eshell-prompt-function
-          (lambda ()
-             (concat "[" (getenv "USER") "@" (getenv "HOSTNAME") "] "
-              "(" (format-time-string "%a %b %e %l:%M %p") ") "
-              (eshell/pwd) (if (= (user-uid) 0) " # " " $ "))))
+{{{
+;; Change the default eshell prompt
+(setq eshell-prompt-function
+      (lambda ()
+        (concat "[" (getenv "USER") "@" (getenv "HOSTNAME") "] "
+		"(" (format-time-string "%a %b %e %l:%M %p") ") "
+		(eshell/pwd) (if (= (user-uid) 0) " # " " $ "))))
+}}}
 
 It will look like this for a non-root user using the 12 hour format:
-[user@hostname] (Fri Dec 28  5:13 AM) ~ $
 
-This is a less gaudy example if you don't want the prompt to take 
-up half the screen: 
+{{{
+[user@hostname] (Fri Dec 28  5:13 AM) ~ $ 
+}}}
 
-    (setq eshell-prompt-function
-          (lambda ()
-                  (concat (getenv "USER") "@"
-                          (car (split-string (getenv "HOSTNAME") "[.]"))
-                          (if (= (user-uid) 0) " # " " $ "))))
+This is a less gaudy example if you don't want the prompt to take up
+half the screen:
 
-which produces: user@host $
+{{{
+(setq eshell-prompt-function
+      (lambda ()
+        (concat (getenv "USER") "@"
+                (car (split-string (getenv "HOSTNAME") "[.]"))
+                (if (= (user-uid) 0) " # " " $ "))))
+}}}
+
+which produces:
+
+{{{
+user@host $ 
+}}}
 
 Note that on systems that have neither variable set, such as Windows,
-these prompts are bogus.  They look either like this: [@], or they
-produce errors, because something is nil instead of a string. However,
-on Windows, you can use the pre-defined emacs variables
-user-login-name and system-name to achieve the same thing.
+these prompts are bogus.  They look either like this:
+<code>[@]</code>, or they produce errors, because something is
+<code>nil</code> instead of a string.  However, on Windows, you can
+use the pre-defined Emacs variables `user-login-name' and
+`system-name' to achieve the same thing.
 
 The following also works without modification of the default value of
-eshell-prompt-regexp:
+`eshell-prompt-regexp':
 
-  (setq eshell-prompt-function
+{{{
+(setq eshell-prompt-function
       (lambda ()
         (concat (eshell/pwd) "\n $ ")))
+}}}
 
-Here is an example where eshell-prompt-regexp has to be modified:
+Here is an example where `eshell-prompt-regexp' has to be modified:
 
-  (setq eshell-prompt-function
-        (lambda ()
-          (concat (eshell/pwd) "\n$"))
-        eshell-prompt-regexp (concat "^" (regexp-quote "$")))
+{{{
+(setq eshell-prompt-function
+      (lambda ()
+        (concat (eshell/pwd) "\n$"))
+      eshell-prompt-regexp (concat "^" (regexp-quote "$")))
+}}}
 
-(I use the eshell-smart module where you can press ENTER to execute
-the last command, maybe that has something to do with it)
+(I use the eshell-smart module where you can press <kbd>RET</kbd> to
+execute the last command, maybe that has something to do with it)
 
-The use of (eshell/pwd) can produce a very long prompt. The following
-prompt shortens a long pathname. It keeps the last three directory names 
-unchanged and replaces the earlier directory names by just their first letter. 
+The use of (eshell/pwd) can produce a very long prompt.  The following
+prompt shortens a long pathname.  It keeps the last three directory
+names unchanged and replaces the earlier directory names by just their
+first letter.
+e.g. it replaces:
 
-e.g. it replaces 'user@host:/usr/local/share/emacs/site-lisp $'
-by 'user@host:/u/l/share/emacs/site-lisp $'.
+{{{
+user@host:/usr/local/share/emacs/site-lisp $
+}}}
+
+with:
+
+{{{
+user@host:/u/l/share/emacs/site-lisp $ 
+}}}
+
 <pre>
 (setq eshell-prompt-function
       (lambda()
@@ -263,126 +316,143 @@ by 'user@host:/u/l/share/emacs/site-lisp $'.
                 (if (= (user-uid) 0) " # " " $ "))))
 </pre>
 
-And, to be utterly gratuitous, here's my Eshell prompt, which is based on my tcsh prompt. For reference, I define my tcsh prompt like so:
+And, to be utterly gratuitous, here's my Eshell prompt, which is based
+on my tcsh prompt.  For reference, I define my tcsh prompt like so:
 
- set prompt = "\n%n in %B%~%b on %B%m%b's %l at %t\n(h=%h, r=%?)%# "
+{{{
+set prompt = "\n%n in %B%~%b on %B%m%b's %l at %t\n(h=%h, r=%?)%# "
+}}}
 
 Here's the equivalent for Eshell:
 
- (defun ted-eshell-prompt ()
-   "An Eshell prompt that's just like my csh prompt."
-   ;; from ~/.cshrc:
-   ;; set prompt = "\n%n in %B%~%b on %B%m%b's %l at %t\n(h=%h, r=%?)%# "
-   ;; set promptchars = ":#"
-   (let ((user (or (getenv "USER") user-login-name "ted"))
-         (wd (eshell/pwd))
-         (host (car (split-string (or (getenv "HOST")
-                                      system-name
-                                      "unknown")
-                                  "\\.")))
-         (term (concat ted-emacs-name (format "/%d" (emacs-pid))))
-         (time (let ((time-1 (downcase (format-time-string "%l:%M%p"))))
-                 (if (char-equal (aref time-1 0) ?\ )
-                     (substring time-1 1)
-                   time-1)))
-         ;; based on `eshell-exit-success-p'
-         (r (if (save-match-data
-                  (string-match "#<\\(Lisp object\\|function .*\\)>"
-                                (or eshell-last-command-name "")))
-                (format "%s" eshell-last-command-result)
-              (number-to-string eshell-last-command-status)))
-         (h (number-to-string (+ 1 (ring-length eshell-history-ring))))
-         (char (if (= (user-uid) 0) "#" ":")))
-     (concat "\n" user
-             " in " wd
-             " on " host "'s " term
-             " at " time
-             "\n"
-             "(h=" h ", "
-             "r=" r ")"
-             char " ")))
+{{{
+(defun ted-eshell-prompt ()
+  "An Eshell prompt that's just like my csh prompt."
+  ;; from ~/.cshrc:
+  ;; set prompt = "\n%n in %B%~%b on %B%m%b's %l at %t\n(h=%h, r=%?)%# "
+  ;; set promptchars = ":#"
+  (let ((user (or (getenv "USER") user-login-name "ted"))
+        (wd (eshell/pwd))
+        (host (car (split-string (or (getenv "HOST")
+                                     system-name
+                                     "unknown")
+                                 "\\.")))
+        (term (concat ted-emacs-name (format "/%d" (emacs-pid))))
+        (time (let ((time-1 (downcase (format-time-string "%l:%M%p"))))
+                (if (char-equal (aref time-1 0) ?\ )
+                    (substring time-1 1)
+                  time-1)))
+        ;; based on `eshell-exit-success-p'
+        (r (if (save-match-data
+                 (string-match "#<\\(Lisp object\\|function .*\\)>"
+                               (or eshell-last-command-name "")))
+               (format "%s" eshell-last-command-result)
+             (number-to-string eshell-last-command-status)))
+        (h (number-to-string (+ 1 (ring-length eshell-history-ring))))
+        (char (if (= (user-uid) 0) "#" ":")))
+    (concat "\n" user
+            " in " wd
+            " on " host "'s " term
+            " at " time
+            "\n"
+            "(h=" h ", "
+            "r=" r ")"
+            char " ")))
+}}}
 
-(Note that `ted-emacs-name' is bound to things like "Emacs-21", "Xemacs-21", etc., for the above to work). -- EdwardOConnor
+(Note that `ted-emacs-name' is bound to things like "Emacs-21",
+"Xemacs-21", etc., for the above to work).  -- EdwardOConnor
 
 == Interfacing with the Debian System ==
 
 Here is a cool function by MilanZamazal that brings lots of Debian
 commands together.  Note how options are defined and documented using
-eshell-eval-using-options.
+<code>eshell-eval-using-options</code>.
 
-    (defun eshell/deb (&rest args)
-      (eshell-eval-using-options
-       "deb" args
-       '((?f "find" t find "list available packages matching a pattern")
-         (?i "installed" t installed "list installed debs matching a pattern")
-         (?l "list-files" t list-files "list files of a package")
-         (?s "show" t show "show an available package")
-         (?v "version" t version "show the version of an installed package")
-         (?w "where" t where "find the package containing the given file")
-         (nil "help" nil nil "show this usage information")
-         :show-usage)
-       (eshell-do-eval
-        (eshell-parse-command
-         (cond
-          (find
-           (format "apt-cache search %s" find))
-          (installed
-           (format "dlocate -l %s | grep '^.i'" installed))
-          (list-files
-           (format "dlocate -L %s | sort" list-files))
-          (show
-           (format "apt-cache show %s" show))
-          (version
-           (format "dlocate -s %s | egrep '^(Package|Status|Version):'" version))
-          (where
-           (format "dlocate %s" where))))
-        t)))
+{{{
+(defun eshell/deb (&rest args)
+  (eshell-eval-using-options
+   "deb" args
+   '((?f "find" t find "list available packages matching a pattern")
+     (?i "installed" t installed "list installed debs matching a pattern")
+     (?l "list-files" t list-files "list files of a package")
+     (?s "show" t show "show an available package")
+     (?v "version" t version "show the version of an installed package")
+     (?w "where" t where "find the package containing the given file")
+     (nil "help" nil nil "show this usage information")
+     :show-usage)
+   (eshell-do-eval
+    (eshell-parse-command
+     (cond
+      (find
+       (format "apt-cache search %s" find))
+      (installed
+       (format "dlocate -l %s | grep '^.i'" installed))
+      (list-files
+       (format "dlocate -L %s | sort" list-files))
+      (show
+       (format "apt-cache show %s" show))
+      (version
+       (format "dlocate -s %s | egrep '^(Package|Status|Version):'" version))
+      (where
+       (format "dlocate %s" where))))
+    t)))
+}}}
 
 == Delete backup files ==
 
 I was not able to do the same using an alias.  -- MarcoMaggesi
 
-    (defun eshell/ro ()
-      "Delete files matching pattern \".*~\" and \"*~\""
-      (eshell/rm (directory-files "." nil "^\\.?.*~$" nil)))
+{{{
+(defun eshell/ro ()
+  "Delete files matching pattern \".*~\" and \"*~\""
+  (eshell/rm (directory-files "." nil "^\\.?.*~$" nil)))
+}}}
 
 I do this with an alias, and it works fine. -- EdwardOConnor
 
-    alias rmb rm -f *~ .*~
+{{{
+alias rmb rm -f *~ .*~
+}}}
 
 == Info Manual ==
 
-With the following, you can type info cvs at the eshell prompt and it
-will work.
+With the following, you can type <code>info cvs</code> at the eshell
+prompt and it will work.
 
-  (defun eshell/info (subject)
-    "Read the Info manual on SUBJECT."
-    (let ((buf (current-buffer)))
-      (Info-directory)
-      (let ((node-exists (ignore-errors (Info-menu subject))))
-        (if node-exists
-            0
-          ;; We want to switch back to *eshell* if the requested
-          ;; Info manual doesn't exist.
-          (switch-to-buffer buf)
-          (eshell-print (format "There is no Info manual on %s.\n"
-                                subject))
-          1))))
+{{{
+(defun eshell/info (subject)
+  "Read the Info manual on SUBJECT."
+  (let ((buf (current-buffer)))
+    (Info-directory)
+    (let ((node-exists (ignore-errors (Info-menu subject))))
+      (if node-exists
+          0
+        ;; We want to switch back to *eshell* if the requested
+        ;; Info manual doesn't exist.
+        (switch-to-buffer buf)
+        (eshell-print (format "There is no Info manual on %s.\n"
+                              subject))
+        1))))
+}}}
 
 This version behaves more like the standalone program 'info' by
 bringing up the directory if no argument is specified or if the
 specified info file doesn't exist:
 
-  (defun eshell/info (&optional subject)
-    "Invoke `info', optionally opening the Info system to SUBJECT."
-    (let ((buf (current-buffer)))
-      (Info-directory)
-      (if (not (null subject))
-          (let ((node-exists (ignore-errors (Info-menu subject))))
-            (if (not node-exists)
-                (format "No menu item `%s' in node `(dir)Top'." subject))))))
+{{{
+(defun eshell/info (&optional subject)
+  "Invoke `info', optionally opening the Info system to SUBJECT."
+  (let ((buf (current-buffer)))
+    (Info-directory)
+    (if (not (null subject))
+        (let ((node-exists (ignore-errors (Info-menu subject))))
+          (if (not node-exists)
+              (format "No menu item `%s' in node `(dir)Top'." subject))))))
+}}}
 
-Note: The above (requires 'cl) to define ignore-errors 
+Note: The above requires <code>(require 'cl)</code> to define
+<code>ignore-errors</code>.
 
 == Pager ==
 
@@ -390,36 +460,38 @@ This is a modified version of the eshell/less that KaiGrossjohann
 wrote which places point after the eshell prompt instead of at the
 beginning of the line after the view-mode buffer exits.
 
-  (defun tyler-eshell-view-file (file)
-    "A version of `view-file' which properly respects the eshell prompt."
-    (interactive "fView file: ")
-    (unless (file-exists-p file) (error "%s does not exist" file))
-    (let ((had-a-buf (get-file-buffer file))
-          (buffer (find-file-noselect file)))
-      (if (eq (with-current-buffer buffer (get major-mode 'mode-class))
-              'special)
-          (progn
-            (switch-to-buffer buffer)
-            (message "Not using View mode because the major mode is special"))
-        (let ((undo-window (list (window-buffer) (window-start)
-                                 (+ (window-point)
-                                    (length (funcall eshell-prompt-function))))))
+{{{
+(defun tyler-eshell-view-file (file)
+  "A version of `view-file' which properly respects the eshell prompt."
+  (interactive "fView file: ")
+  (unless (file-exists-p file) (error "%s does not exist" file))
+  (let ((had-a-buf (get-file-buffer file))
+        (buffer (find-file-noselect file)))
+    (if (eq (with-current-buffer buffer (get major-mode 'mode-class))
+            'special)
+        (progn
           (switch-to-buffer buffer)
-          (view-mode-enter (cons (selected-window) (cons nil undo-window))
-                           'kill-buffer)))))
+          (message "Not using View mode because the major mode is special"))
+      (let ((undo-window (list (window-buffer) (window-start)
+                               (+ (window-point)
+                                  (length (funcall eshell-prompt-function))))))
+        (switch-to-buffer buffer)
+        (view-mode-enter (cons (selected-window) (cons nil undo-window))
+                         'kill-buffer)))))
 
-  (defun eshell/less (&rest args)
-    "Invoke `view-file' on a file. \"less +42 foo\" will go to line 42 in
+(defun eshell/less (&rest args)
+  "Invoke `view-file' on a file. \"less +42 foo\" will go to line 42 in
     the buffer for foo."
-    (while args
-      (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
-          (let* ((line (string-to-number (match-string 1 (pop args))))
-                 (file (pop args)))
-            (tyler-eshell-view-file file)
-            (goto-line line))
-        (tyler-eshell-view-file (pop args)))))
-                                                                                                                        
-  (defalias 'eshell/more 'eshell/less)
+  (while args
+    (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+        (let* ((line (string-to-number (match-string 1 (pop args))))
+               (file (pop args)))
+          (tyler-eshell-view-file file)
+          (goto-line line))
+      (tyler-eshell-view-file (pop args)))))
+
+(defalias 'eshell/more 'eshell/less)
+}}}
 
 ----
 CategoryEshell
