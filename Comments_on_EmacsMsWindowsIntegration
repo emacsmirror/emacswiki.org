@@ -46,3 +46,15 @@ Add-Content -Path $startup_file -Value "runemacs.exe --daemon"
 
 -- [https://github.com/DmitrySenin/ Dmitry] 2019-05-25 21:01 UTC
 
+
+----
+
+For me on two Windows 10 machines, the description in the section "Create a shortcut" does not work.
+What does work is to add an environment variable
+
+ALTERNATE_EDITOR=/path/to/runemacs.exe
+
+and put emacsclientw.exe in the task bar and as the program to use for desired file types.
+
+-- [https://crypto.bit.uni-bonn.de/nuesken/ nuesken] 2021-03-16 15:31 UTC
+
