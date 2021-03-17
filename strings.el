@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous string functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Fri Nov  6 23:44:59 2020 (-0800)
+;;; Last-Updated: Wed Mar 17 13:45:17 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 577
+;;     Update #: 579
 ;; URL: https://www.emacswiki.org/emacs/download/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -62,6 +62,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2020/11/06 dadams
 ;;     Removed: (non-)empty-name-p.
 ;; 2019/04/21 dadams
@@ -403,7 +405,7 @@ variables that are respected."
   (with-temp-buffer
     (insert string)
     (fill-region (point-min) (point-max))
-    (setq string  (buffer-substring (point-min) (point-max))))
+    (setq string  (buffer-string)))
   string)
 
 ;; Emacs removed this starting with Emacs 26.  Put it back.
