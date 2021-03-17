@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan  1 13:51:14 2021 (-0800)
+;; Last-Updated: Wed Mar 17 13:50:00 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7223
+;;     Update #: 7227
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1275,6 +1275,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/01/01 dadams
 ;;     Updates to fit Emacs 27.1.
 ;;       with-isearch-suspended: When quit, reset isearch-suspended to nil.
@@ -3534,7 +3536,7 @@ suspended."
 
 (when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
 
-  (defun isearchp-eval-sexp-and-insert ()
+  (defun isearchp-eval-sexp-and-insert () ; `M-: in `isearch-mode-map'.
     "Prompt for Lisp sexp, eval it, and append value to the search string."
     (interactive)
     (with-isearch-suspended
@@ -3558,6 +3560,7 @@ suspended."
 
   (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
+ARG is the raw prefix arg.
 This suspends Isearch, performs the action, then reinvokes Isearch.
 By default, replace the search hit - see `isearchp-replace-on-demand'.
 Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
@@ -4285,7 +4288,7 @@ You are prompted for the register to use."
         string)
     (with-temp-buffer
       (call-interactively 'insert-register)
-      (setq string  (buffer-substring (point-min) (point-max))))
+      (setq string  (buffer-string)))
     (isearch-yank-string string)))
 
 (defun isearchp-retrieve-last-quit-search () ; Bound to `M-g' in `isearch-mode-map'.
