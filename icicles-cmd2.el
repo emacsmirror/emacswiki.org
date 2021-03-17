@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Nov  5 15:44:30 2020 (-0800)
+;; Last-Updated: Wed Mar 17 13:59:00 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7481
+;;     Update #: 7484
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5183,13 +5183,11 @@ current input matches candidate") (sit-for 2))
           ;; 1. Bind `icicle-whole-candidate-as-text-prop-p' to nil (in `icicle-search-action'
           ;;    and `icicle-search-help').
           ;; 2. Use these two lines, instead of calling `icicle-search-replace-cand-in-mct'.
-          ;;    (icicle-search-replace-cand-in-alist cand+mrker
-          ;;                                         (buffer-substring (point-min) (point-max)))
-          ;;    (setq minibuffer-completion-table
-          ;;          (car (icicle-mctize-all icicle-candidates-alist nil)))
+          ;;    (icicle-search-replace-cand-in-alist cand+mrker (buffer-string))
+          ;;    (setq minibuffer-completion-table  (car (icicle-mctize-all icicle-candidates-alist nil)))
           ;;  If we used that method (as we used to), then users could not sort the search hits.
 
-          (icicle-search-replace-cand-in-mct cand+mrker (buffer-substring (point-min) (point-max)))
+          (icicle-search-replace-cand-in-mct cand+mrker (buffer-string))
 
           ;; If we are replacing input matches within a search context, and there are no more matches
           ;; in the current context, then this context is removed as a candidate. If the current
