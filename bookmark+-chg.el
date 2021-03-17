@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar  9 13:12:29 2021 (-0800)
+;; Last-Updated: Wed Mar 17 14:04:47 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16754
+;;     Update #: 16755
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/03/09 dadams
 ;;     bmkp-handle-region-default: Set region and activate it at the end.
 ;; 2021/03/05 dadams
