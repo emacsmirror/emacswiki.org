@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Mar  9 13:09:35 2021 (-0800)
+;; Last-Updated: Wed Mar 17 13:28:21 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 9246
+;;     Update #: 9247
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9205,7 +9205,7 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
     (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
                                 (format "exiftool -All \"%s\"" file)))
       (error "Could not get EXIF data"))
-    (buffer-substring (point-min) (point-max))))
+    (buffer-string)))
 
 
 ;;;###autoload (autoload 'bmkp-describe-bookmark-internals "bookmark+")
