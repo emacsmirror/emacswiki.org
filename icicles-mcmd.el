@@ -4,11 +4,11 @@
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 14 10:37:22 2020 (-0700)
+;; Last-Updated: Wed Mar 17 13:51:19 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 19879
+;;     Update #: 19882
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -23,21 +23,22 @@
 ;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
-;;   `dired', `dired-loaddefs', `doremi', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
-;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `dired', `dired-loaddefs', `doremi', `easymenu', `eieio',
+;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `epg-config',
+;;   `ffap', `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
 ;;   `format-spec', `frame-fns', `fuzzy', `fuzzy-match', `gv',
 ;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `hl-line', `hl-line+', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `image', `image-dired',
-;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
-;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `password-cache', `pp', `pp+', `radix-tree', `replace', `ring',
-;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
-;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `zones'.
+;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
+;;   `icicles-fn', `icicles-opt', `icicles-var', `image',
+;;   `image-dired', `image-mode', `info', `info+', `isearch+',
+;;   `isearch-prop', `kmacro', `levenshtein', `macroexp', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
+;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2540,7 +2541,7 @@ By default, this is bound to `C-x C-M-l' during completion."
                          (save-excursion
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
-                             (let* ((candidate  (buffer-substring (point-min) (point-max)))
+                             (let* ((candidate  (buffer-string))
                                     (orig-pt    (point))
                                     (start      0)
                                     (end        0)
@@ -6523,7 +6524,7 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
     (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
                                 (format "exiftool -All \"%s\"" file)))
       (error "Could not get EXIF data for image"))
-    (buffer-substring (point-min) (point-max))))
+    (buffer-string)))
 
 (defun icicle-candidate-read-fn-invoke () ; Bound to `M-return' in minibuffer.
   "Read function name.  Invoke function on current completion candidate.
