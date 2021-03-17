@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 22 15:08:49 2021 (-0800)
+;; Last-Updated: Wed Mar 17 14:06:25 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2539
+;;     Update #: 2541
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
+;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
+;;   `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/02/22 dadams
 ;;     describe-variable (latest): Inserted a blank line before 'Its value is' (Emacs bug #46702).
 ;; 2020/10/22 dadams
@@ -2969,7 +2972,7 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
     (unless (eq 0 (call-process shell-file-name nil t nil shell-command-switch
                                 (format "exiftool -All \"%s\"" file)))
       (error "Could not get EXIF data"))
-    (buffer-substring (point-min) (point-max))))
+    (buffer-string)))
 
 (defun describe-keymap (keymap &optional search-symbols-p) ; Bound to `C-h M-k'
   "Describe key bindings in KEYMAP.
