@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jan 25 18:24:01 2021 (-0800)
+;; Last-Updated: Wed Mar 17 13:57:05 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 11912
+;;     Update #: 11915
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1214,6 +1214,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2020/11/05 dadams
 ;;     icicle-color-completion-setup: 
 ;;       Wrap soft-require of palette in condition-case to ignore error hard-requiring vline.el.
@@ -2335,6 +2337,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/01/25 dadams
 ;;     icicle-scatter-re: Use version of make-obsolete that's compatible with all Emacs versions.
 ;; 2020/11/05 dadams
@@ -4743,6 +4747,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2021/03/17 dadams
+;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2020/08/14 dadams
 ;;     icicle-help-string-completion: mouse-choose-completion is obsolete (removed).
 ;;     icicle-choose-completion, icicle-current-completion-in-Completions,
