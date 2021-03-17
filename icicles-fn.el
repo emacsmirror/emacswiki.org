@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Jan 25 18:20:49 2021 (-0800)
+;; Last-Updated: Wed Mar 17 13:35:50 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 15303
+;;     Update #: 15304
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4951,7 +4951,7 @@ environment vars by their values.
 The current buffer must be a minibuffer."
   (let ((input  (if (fboundp 'minibuffer-contents)
                     (minibuffer-contents) ; e.g. Emacs 22
-                  (buffer-substring (point-min) (point-max))))) ; e.g. Emacs 20
+                  (buffer-string)))) ; e.g. Emacs 20
     ;; $$$$$$$$ (if (fboundp 'minibuffer-contents-no-properties)
     ;;              (minibuffer-contents-no-properties) ; e.g. Emacs 22
     ;;            (buffer-substring-no-properties (point-min) (point-max))))) ; e.g. Emacs 20
