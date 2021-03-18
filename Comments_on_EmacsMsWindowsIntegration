@@ -58,3 +58,16 @@ and put emacsclientw.exe in the task bar and as the program to use for desired f
 
 -- [https://crypto.bit.uni-bonn.de/nuesken/ nuesken] 2021-03-16 15:31 UTC
 
+
+----
+
+Update:
+My /path/to contains a blank which causes problems. (Namely emacs opens the desired file and the part after the blank as another one...)
+
+To heal that:
+
+# Make sure the system variable PATH contains /path/to.
+# Put ALTERNATE_EDITOR=runemacs.exe
+
+-- [https://crypto.bit.uni-bonn.de/nuesken/ nuesken] 2021-03-18 09:14 UTC
+
