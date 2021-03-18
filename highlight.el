@@ -1098,10 +1098,12 @@
 ;;; Code:
 
 (eval-when-compile (unless (fboundp 'dolist) (require 'cl))) ;; dolist
+(require 'facemenu) ;; facemenu-add-face, facemenu-add-new-face, facemenu-menu
 (require 'easymenu) ;; easy-menu-add-item
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (require 'menu-bar+ nil t) ;; (no error if not found): menu-bar-edit-region-menu
 (when (> emacs-major-version 21) (require 'font-lock+ nil t)) ;; (no error if not found)
+(require 'facemenu+ nil t) ;; (no error if not found)
 
 ;; Quiet the byte-compiler for Emacs 20
 (defvar facemenu-mouse-menu)            ; In `facemenu+.el'
