@@ -20,12 +20,10 @@ need to put them in double square brackets:
 * ##Manual:show-paren-mode## -> Manual:show-paren-mode
 * ##[[Manual:grep (MS-DOS)]]## -> [[Manual:grep (MS-DOS)]]
 
-You can also provide some *context* in parenthesis, after the link itself. If we're linking to [[Manual:macros]], for example, we are shown two alternatives. If we know that we want the Emacs Lisp Reference link instead of the CC Mode link, we can provide some context: 
+You can also provide some *context* in parenthesis, after the link itself. If we're linking to [[Manual:macros]] or [[Manual:point]], for example, we are shown two or more alternatives. You can provide context in parenthesis: it just needs to match somewhere in the URL or description of the particular entry you want to refer to.
 
 * ##Manual:macros (elisp)## -> Manual:macros (elisp)
 * ##[[Manual:point]] (lisp)## -> [[Manual:point]] (lisp)
-
-The context provided just needs to match somewhere in the link or description of the particular entry you want to refer to.
 
 This features uses the
 [http://www.emacswiki.org/cgi-bin/info-ref info-ref] script.
