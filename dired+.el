@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 19 17:20:16 2021 (-0700)
+;; Last-Updated: Fri Mar 19 20:54:24 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12903
+;;     Update #: 12908
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -22,17 +22,20 @@
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
 ;;   `cl', `cl-lib', `cmds-menu', `col-highlight', `crosshairs',
-;;   `dired', `dired+', `dired-aux', `dired-loaddefs', `dired-x',
-;;   `easymenu', `fit-frame', `font-lock', `font-lock+',
-;;   `format-spec', `frame-fns', `gv', `help+', `help-fns',
-;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
-;;   `highlight', `hl-line', `hl-line+', `image', `image-dired',
-;;   `image-file', `image-mode', `info', `info+', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `custom', `dired', `dired+', `dired-aux', `dired-loaddefs',
+;;   `dired-x', `doremi', `doremi-frm', `easymenu', `facemenu',
+;;   `facemenu+', `faces', `faces+', `fit-frame', `font-lock',
+;;   `font-lock+', `font-lock-menus', `format-spec', `frame-cmds',
+;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `hl-line', `hl-line+', `image', `image-dired', `image-file',
+;;   `image-mode', `info', `info+', `kmacro', `macroexp', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mwheel', `naked',
+;;   `palette', `pp', `pp+', `radix-tree', `replace', `ring',
+;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `vline', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -311,6 +314,22 @@
 ;;     ordinary Dired listing to an explicit list of absolute file
 ;;     names.  With a non-positive prefix arg, you can add extra file
 ;;     and directory names, just as for `diredp-add-to-dired-buffer'.
+;;
+;;  You can open an Emacs fileset in Dired mode, using `C-x D S' or
+;;  `C-x 4 D S'.  See the Emacs manual, node Filesets, or
+;;  https://www.emacswiki.org/emacs/FileSets, for info about filesets.
+;;
+;;  You can visit your recent files or directories in Dired mode,
+;;  using `C-x D R' or `C-x D r'.  Like the other commands on prefix
+;;  key `C-x D', these Dired listings are composed of arbitrary files;
+;;  they're not the output of `ls'.
+;;
+;;  You can sort any Dired buffer of arbitrary files in various ways,
+;;  using `C-M-L' (aka `C-M-S-l').  You're prompted for the sort
+;;  order.  The default sort order for such buffers is determined by
+;;  option `diredp-default-sort-arbitrary-function'.  You can also
+;;  revert such buffers, using `g'.  This applies to all Dired buffers
+;;  created with the commands on prefix keys `C-x D' and `C-x 4 D'.
 ;;
 ;;  You can optionally add a header line to a Dired buffer using
 ;;  toggle command `diredp-breadcrumbs-in-header-line-mode'.  (A
