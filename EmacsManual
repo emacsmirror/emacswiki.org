@@ -23,7 +23,7 @@ need to put them in double square brackets:
 You can also provide some *context* in parenthesis, after the link itself. If we're linking to [[Manual:macros]] or [[Manual:point]], for example, we are shown two or more alternatives. You can provide context in parenthesis: it just needs to match somewhere in the URL or description of the particular entry you want to refer to.
 
 * ##Manual:macros (elisp)## -> Manual:macros (elisp)
-* ##[[Manual:point]] (emacs)## -> [[Manual:point]] (emacs)
+* ##[[Manual:point]] (concept)## -> [[Manual:point]] (concept)
 
 This features uses the
 [http://www.emacswiki.org/cgi-bin/info-ref info-ref] script.
