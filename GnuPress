@@ -1,3 +1,26 @@
-The GNU Press prints free manuals and textbooks and is the publisher of the FreeSoftwareFoundation.
+The '''[http://www.gnupress.org/ GNU Press]''' prints free manuals and
+textbooks, and is the publishing arm of the FreeSoftwareFoundation
+(FSF).
 
-* [http://www.gnupress.org/ visit the GNU Press]
+Currently (as of 2021-03-20), they publish printed versions of the
+following Emacs-related publications:
+
+* The [https://shop.fsf.org/books/gnu-emacs-manual-18th-edition-v-261
+  GNU Emacs Manual, 18th ed.] -- a printed and bound version of the
+  EmacsManual (currently for Emacs version 26.1)
+* [https://shop.fsf.org/books/signed-introduction-programming-emacs-lisp-3rd-edition
+  An Introduction to Programming in Emacs Lisp, 3rd rev. ed.] -- a
+  printed and bound version of the EmacsLispIntro, and
+* an [https://shop.fsf.org/books-docs/emacs-reference-card-v25 Emacs
+  Reference Card] (you can
+  [https://static.fsf.org/nosvn/emacs-25-refcard-en.pdf see a PDF
+  preview of it] before you buy).
+
+You can also get combinations of the above with the
+[https://shop.fsf.org/books-docs/all-things-emacs-bundle All Things
+Emacs] and [https://shop.fsf.org/tshirts-hoodies/emacs-de-luxe-bundle
+Emacs de Luxe] bundles, which also include combinations of other FSF
+[[EmacsMerchandise|Emacs merch]], like stickers, mugs and t-shirts.
+
+----
+EmacsMerchandise
