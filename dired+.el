@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 19 20:54:24 2021 (-0700)
+;; Last-Updated: Sat Mar 20 16:07:26 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12908
+;;     Update #: 12938
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -662,9 +662,9 @@
 ;;    `diredp-delete-if-not', `diredp-directories-within',
 ;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
-;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
-;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
-;;    (Emacs 22+), `diredp-do-chxxx-recursive',
+;;    `diredp-dired-plus-help-link', `diredp--dired-recent-files-1',
+;;    `diredp-dired-union-1', `diredp-dired-union-interactive-spec',
+;;    `diredp-display-image' (Emacs 22+), `diredp-do-chxxx-recursive',
 ;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
 ;;    `diredp-ensure-bookmark+', `diredp-ensure-fn-nonzero-arity',
 ;;    `diredp-ensure-fn-zero-arity', `diredp-ensure-mode',
@@ -874,6 +874,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/20 dadams
+;;     Added: diredp--dired-recent-files-1.
+;;     diredp-recent-files-buffer is for dirs also now.
+;;     diredp-dired-recent-(files|dirs)(-other-window):
+;;       Added FILES arg.  Use diredp--dired-recent-files-1.  Revert-buffer respects prefix arg, else relists same.
+;;     diredp-read-include/exclude: Added optional arg keep-duplicates-p.  Delete dups by default.
 ;; 2021/03/19 dadams
 ;;     Added: diredp-case-fold-search, diredp-default-sort-arbitrary-function, diredp-sort-arbitrary-command,
 ;;            diredp-sort-arbitrary, diredp-string-less-p, diredp-(full|nondir)-file-name-(less|more)-p.
@@ -2717,7 +2723,7 @@ Initialized to the value of option `diredp-hide-details-initially-flag'.")
 Default value is same as `directory-files-no-dot-files-regexp'.")
 
 (defvar diredp-recent-files-buffer nil
-  "Non-nil means this buffer is a Dired listing of recently visited files.")
+  "Non-nil means this buffer is a Dired listing of recent files or dirs.")
 (make-variable-buffer-local 'diredp-recent-files-buffer)
 
 (defvar diredp-w32-drives-mode-map (let ((map  (make-sparse-keymap)))
@@ -4567,7 +4573,7 @@ Do not set this option using `setq' or similar.  Use
                                                                         'diredp-quit-window-kill)))))
 
 ;;;###autoload
-(defun diredp-dired-recent-files (buffer &optional arg) ; Bound to `C-x D R'
+(defun diredp-dired-recent-files (buffer &optional arg files) ; Bound to `C-x D R'
   "Open Dired in BUFFER, showing recently visited files and directories.
 You are prompted for BUFFER (default: `Recently Visited Files').
 
@@ -4586,46 +4592,51 @@ With a prefix arg:
 
 When entering files to include or exclude, use `C-g' to end.
 
-The file listing is always in the order of `recentf-list', which is
-reverse chronological order of opening or writing files you access."
+The file listing is sorted by option
+`diredp-default-sort-arbitrary-function', if non-nil.  If nil (the
+default) then the listing is in reverse chronological order of opening
+or writing files you access.
+
+Use \\<dired-mode-map>`\\[revert-buffer]' to revert the buffer, as usual.  If you use it without a
+prefix arg then the same files are relisted.  A prefix arg is handled
+as for `\\[diredp-dired-recent-files] itself.
+
+When called from Lisp:
+ * ARG corresponds to the raw prefix arg.
+ * FILES is passed to `diredp--dired-recent-files-1'.  It is used only
+   when the command is used as part of the `revert-buffer-function'."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
                                       "Recently Visited Files")
                      current-prefix-arg))
-  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
-                        (read-string "Dired listing switches: " dired-listing-switches)))
-        (bufname   (generate-new-buffer-name buffer)))
-    (dired (cons bufname (diredp-sort-arbitrary #'diredp-recent-files arg)) switches)
-    (with-current-buffer bufname
-      (setq diredp-recent-files-buffer  bufname)
-      (use-local-map diredp-recent-files-map)
-      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (set (make-local-variable 'revert-buffer-function) `(lambda (_ __)
-                                                            (kill-buffer)
-                                                            (message "Reverting...")
-                                                            (diredp-dired-recent-files ',buffer ',arg)
-                                                            (message "Reverting...done"))))))
+  (diredp--dired-recent-files-1 buffer arg files))
 
 ;;;###autoload
-(defun diredp-dired-recent-files-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
+(defun diredp-dired-recent-files-other-window (buffer &optional arg files) ; Bound to `C-x 4 D R'
   "Same as `diredp-dired-recent-files', but use other window."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
                                       "Recently Visited Files")
                      current-prefix-arg))
+  (diredp--dired-recent-files-1 buffer arg files 'OTHER-WINDOW-P))
+
+(defun diredp--dired-recent-files-1 (buffer arg files &optional other-window-p dirs-p)
+  "Helper for `diredp-dired-recent-files(-other-window)."
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg)  (eq '- arg))
-                        (read-string "Dired listing switches: " dired-listing-switches)))
-        (bufname   (generate-new-buffer-name buffer)))
-    (dired-other-window (cons bufname (diredp-sort-arbitrary #'diredp-recent-files arg)) switches)
+  (let* ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg)  (eq '- arg))
+                         (read-string "Dired listing switches: " dired-listing-switches)))
+         (bufname   (generate-new-buffer-name buffer))
+         (fils      (or files  (diredp-sort-arbitrary (if dirs-p #'diredp-recent-dirs #'diredp-recent-files) arg)))
+         (rev-fn    `(lambda (_ __)
+                       (message "Reverting...")
+                       (kill-buffer)
+                       (funcall ,(if dirs-p '#'diredp-dired-recent-dirs '#'diredp-dired-recent-files)
+                                ',buffer current-prefix-arg (and (not current-prefix-arg)  ',fils))
+                       (message "Reverting...done"))))
+    (funcall (if other-window-p #'dired-other-window #'dired) (cons bufname fils) switches)
     (with-current-buffer bufname
       (setq diredp-recent-files-buffer  bufname)
       (use-local-map diredp-recent-files-map)
       (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (set (make-local-variable 'revert-buffer-function) `(lambda (_ __)
-                                                            (kill-buffer)
-                                                            (message "Reverting...")
-                                                            (diredp-dired-recent-files ',buffer ',arg)
-                                                            (message "Reverting...done"))))))
+      (set (make-local-variable 'revert-buffer-function) rev-fn))))
 
 (defun diredp-recent-files (arg)
   "Return a list of recently used files and directories.
@@ -4636,44 +4647,22 @@ ARG is as for `diredp-dired-recent-files'."
       recent-files)))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x D r'
+(defun diredp-dired-recent-dirs (buffer &optional arg files) ; Bound to `C-x D r'
   "Open Dired in BUFFER, showing recently visited directories.
 Like `diredp-dired-recent-files', but limited to recent directories.
 A directory is recent if any of its files is recent."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
                                       "Recently Visited Directories")
                      current-prefix-arg))
-  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg))
-                        (read-string "Dired listing switches: " dired-listing-switches)))
-        (bufname   (generate-new-buffer-name buffer)))
-    (dired (cons bufname (diredp-sort-arbitrary #'diredp-recent-dirs arg)) switches)
-    (with-current-buffer bufname
-      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (set (make-local-variable 'revert-buffer-function) `(lambda (_ __)
-                                                            (kill-buffer)
-                                                            (message "Reverting...")
-                                                            (diredp-dired-recent-dirs ',buffer ',arg)
-                                                            (message "Reverting...done"))))))
+  (diredp--dired-recent-files-1 buffer arg files nil 'DIRS-P))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 D r'
+(defun diredp-dired-recent-dirs-other-window (buffer &optional arg files) ; Bound to `C-x 4 D r'
   "Same as `diredp-dired-recent-dirs', but use other window."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
                                       "Recently Visited Directories")
                      current-prefix-arg))
-  (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
-  (let ((switches  (and (or (zerop (prefix-numeric-value arg))  (consp arg)  (eq '- arg))
-                        (read-string "Dired listing switches: " dired-listing-switches)))
-        (bufname   (generate-new-buffer-name buffer)))
-    (dired-other-window (cons bufname (diredp-sort-arbitrary #'diredp-recent-dirs arg)) switches)
-    (with-current-buffer bufname
-      (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-      (set (make-local-variable 'revert-buffer-function) `(lambda (_ __)
-                                                            (kill-buffer)
-                                                            (message "Reverting...")
-                                                            (diredp-dired-recent-dirs ',buffer ',arg)
-                                                            (message "Reverting...done"))))))
+  (diredp--dired-recent-files-1 buffer arg files 'OTHER-WINDOW-P 'DIRS-P))
 
 (defun diredp-recent-dirs (arg)
   "Return a list of recently used directories.
@@ -4742,8 +4731,10 @@ In Dired, FILE defaults to the file of the current Dired line."
 ;;;###autoload
 (defun diredp-remove-file-from-recentf (&optional file interactivep) ; Not bound by default
   "Remove FILE from `recentf-list'.
-In Dired, FILE defaults to the file of the current Dired line.  After
-removing, revert any displayed buffers showing `recentf-list'."
+In Dired, FILE defaults to the file of the current Dired line.
+
+Interactively: After removing, revert any displayed buffers showing
+`recentf-list' (or part of it)."
   (interactive "fFile: \np")
   (setq file  (or file  (and (derived-mode-p 'dired-mode)  (dired-get-file-for-visit))))
   (unless file (error "No file"))
@@ -4753,7 +4744,7 @@ removing, revert any displayed buffers showing `recentf-list'."
   nil)                                  ; Return nil for success (cannot fail).
 
 (defun diredp-revert-displayed-recentf-buffers ()
-  "Revert all displayed Dired buffers showing `recentf-list'."
+  "Revert displayed Dired buffers showing `recentf-list' (or part of it)."
   (let (win)
     (dolist (buf  (buffer-list))
       (when (setq win  (get-buffer-window buf 0))
@@ -4763,7 +4754,7 @@ removing, revert any displayed buffers showing `recentf-list'."
                    diredp-recent-files-buffer)
           (revert-buffer))))))
 
-(defun diredp-read-include/exclude (thing things &optional exclude)
+(defun diredp-read-include/exclude (thing things &optional exclude keep-duplicates-p)
   "Read which THINGs to include (or to EXCLUDE, if non-nil) from list THINGS.
 The things are read one by one.  `C-g' stops reading.
 
@@ -4771,7 +4762,10 @@ THING is a string or symbol naming the type of thing to read, e.g.,
 `File' or `Directory'.  It is used only in the prompt, which is THING
 followed by \" to exclude\" or \" to include\" and a reminder about `C-g'.
 
-A new list is returned - list THINGS is not modified."
+A new list is returned - list THINGS is not modified.
+
+Unless optional arg KEEP-DUPLICATES-P is non-nil, remove duplicates,
+keeping only the first of a set of `equal' THINGS."
   (let* ((thgs                    (if exclude (copy-sequence things) ()))
          (prompt                  (format "%s to %s (C-g when done): " thing (if exclude 'EXCLUDE 'INCLUDE)))
          (completion-ignore-case  (or (and (boundp 'read-file-name-completion-ignore-case)
@@ -4784,6 +4778,7 @@ A new list is returned - list THINGS is not modified."
              (quit nil))
       (if exclude (delete thing thgs)
         (push thing thgs)))
+    (unless keep-duplicates-p (setq thgs  (diredp-delete-dups thgs)))
     thgs))
 
 ;;; $$$$$$$$
