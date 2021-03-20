@@ -73,6 +73,10 @@ Please see [http://dto.freeshell.org/blog/blog-2007-09-07-2323.html "(require 'c
 and also [http://www.nabble.com/un-deprecating-CL-t4443873.html un-deprecating CL].
 -- [[dto]]
 
+[new]
+Both links are dead as dust (even on the web archive), and frankly, cl-lib and cl-libify buried whatever remaining relevance this discussion had ages ago.  I think it's safe to remove this section.
+-- [[Anonymous]]
+
 ==We should push Emacs to its limits==
 
 The problems we encounter will
