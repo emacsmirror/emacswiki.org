@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 19 16:15:12 2021 (-0700)
+;; Last-Updated: Fri Mar 19 17:20:16 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12889
+;;     Update #: 12903
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -860,6 +860,7 @@
 ;;            diredp-sort-arbitrary, diredp-string-less-p, diredp-(full|nondir)-file-name-(less|more)-p.
 ;;     diredp-dired-recent-(files|dirs)(-other-window): Apply diredp-sort-arbitrary.
 ;;     diredp-dired-recent-dirs(-other-window): Made revert-buffer-function a local var (forgot this).
+;;     diredp-sort-arbitrary-command: Add to diredp-menu-bar-dir-menu and bind to C-M-L.
 ;; 2021/03/10 dadams
 ;;     Added: diredp-copy-as-kill-from-clipboard.
 ;;     diredp-yank-files: You can now also yank the file names from the clipboard.
@@ -2394,7 +2395,7 @@ Emacs to see the effect of the new value on font-locking."
 ;;;###autoload
 (defcustom diredp-default-sort-arbitrary-function nil
   "Sorting used by default for sorting recent-files or dirs
-You can re-sort the buffer using `\\[diredp-sort-arbitrary-command]."
+You can re-sort the buffer using \\<dired-mode-map>`\\[diredp-sort-arbitrary-command]'."
   :type '(choice
           (const :tag "Access order, most recent first"   nil)
           (const :tag "Access order, least recent first"  t)
@@ -3054,7 +3055,7 @@ Ignore case if `diredp-case-fold-search' is non-nil."
       (string-lessp (downcase string1) (downcase string2))
     (string-lessp string1 string2)))
 
-(defalias 'diredp-full-file-name-less-p 'diredp-string-lessp)
+(defalias 'diredp-full-file-name-less-p 'diredp-string-less-p)
 
 (defun diredp-full-file-name-more-p (file1 file2)
   "Return non-nil if full name of FILE1 comes after that of FILE2.
@@ -4818,25 +4819,35 @@ A new list is returned - list THINGS is not modified."
 
 ;;;###autoload
 (defun diredp-sort-arbitrary-command (sort-function)
-  "Sort the current Dired listing of arbitary files."
-  (interactive 
-   (let* ((cands  '(("2: Reverse"              . t)
-                    ("3: Nondir Name, A-to-Z"  . diredp-nondir-file-name-less-p)
-                    ("4: Nondir Name, Z-to-A"  . diredp-nondir-file-name-more-p)
-                    ("5: Full Name, A-to-Z"    . diredp-full-file-name-less-p)
-                    ("6: Full Name, Z-to-A"    . diredp-full-file-name-more-p)
-                    ))
-          (order  (completing-read "Sort order: " cands nil t)))
-     (list (cdr (assoc order cands)))))
+  "Sort the current Dired listing of arbitary files.
+
+NOTE:
+ This is intended for sorting a list of arbitrary file names, not an
+ ordinary Dired listing such as produced by `ls'.
+
+ If the current Dired buffer is *not* already a list of arbitrary file
+ names then you are prompted to confirm converting it to such a list.
+ If you do so it will no longer use `ls' or `dired-listing-switches'.
+ Don't confirm, if you don't want this conversion."
+  (interactive
+   (if (and (atom dired-directory)
+            (not (y-or-n-p "Convert Dired buffer to a list of arbitrary file names? ")))
+       (error "OK, canceled")
+     (let* ((cands  '(("2: Reverse"              . t)
+                      ("3: Nondir Name, A-to-Z"  . diredp-nondir-file-name-less-p)
+                      ("4: Nondir Name, Z-to-A"  . diredp-nondir-file-name-more-p)
+                      ("5: Full Name, A-to-Z"    . diredp-full-file-name-less-p)
+                      ("6: Full Name, Z-to-A"    . diredp-full-file-name-more-p)))
+            (order  (completing-read "Sort order: " cands nil t)))
+       (list (cdr (assoc order cands))))))
   (let ((buf    (buffer-name))
         (files  (copy-sequence (dired-get-marked-files nil '(64)))))
     (kill-buffer)
-    (dired (cons buf
-                 (if sort-function
-                     (if (functionp sort-function)
-                         (sort files sort-function)
-                       (nreverse files))
-                   files))
+    (dired (cons buf (if sort-function
+                         (if (functionp sort-function)
+                             (sort files sort-function)
+                           (nreverse files))
+                       files))
            dired-actual-switches)))
 
 ;;;###autoload
@@ -15552,8 +15563,12 @@ If no one is selected, symmetric encryption will be performed.  "
     '(menu-item "Compare Directories..." dired-compare-directories
       :help "Mark files with different attributes in two Dired buffers")))
 
-(define-key diredp-menu-bar-dir-menu [separator-dired-on-set] '("--")) ; --------------------
+(define-key diredp-menu-bar-dir-menu [separator-dired-misc] '("--")) ; --------------------
 
+(define-key diredp-menu-bar-dir-menu [diredp-sort-arbitrary-command]
+  '(menu-item "Sort Arbitrary File List..." diredp-sort-arbitrary-command
+    :enable (consp dired-directory)
+    :help "Sort Dired buffer of arbitrary files"))
 (define-key diredp-menu-bar-dir-menu [diredp-dired-recent-dirs]
   '(menu-item "Dired Recent Directories..." diredp-dired-recent-dirs
     :visible (boundp 'recentf-list) :enable  (and (boundp 'recentf-list)  (consp recentf-list))
@@ -15579,6 +15594,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-dir-menu [diredp-dired-for-files]
   '(menu-item "Dired Files Located Anywhere" diredp-dired-for-files
     :help "Open Dired on specific files whose names you provide"))
+
+(define-key diredp-menu-bar-dir-menu [separator-dired-on-set] '("--")) ; --------------------
+
 (define-key diredp-menu-bar-dir-menu [diredp-marked-other-window]
   '(menu-item "Dired Marked Files in Other Window" diredp-marked-other-window
     :enable (save-excursion (goto-char (point-min))
@@ -15772,6 +15790,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-i"    'diredp-insert-subdirs)                ; `M-i'
 (define-key dired-mode-map "\M-l"    'diredp-downcase-this-file)            ; `M-l'
 (define-key dired-mode-map "\C-\M-l" 'diredp-list-marked)                   ; `C-M-l'
+(define-key dired-mode-map [(control meta shift ?l)] 'diredp-sort-arbitrary-command) ; `C-M-L' (aka `C-M-S-l')
 (when diredp-bind-problematic-terminal-keys
   (define-key dired-mode-map [(meta shift ?m)] 'diredp-chmod-this-file))    ; `M-M' (aka `M-S-m')
 (define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)         ; `C-o'
