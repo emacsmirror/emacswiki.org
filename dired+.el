@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 20 16:07:26 2021 (-0700)
+;; Last-Updated: Sat Mar 20 16:12:06 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12938
+;;     Update #: 12939
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4605,7 +4605,7 @@ When called from Lisp:
  * ARG corresponds to the raw prefix arg.
  * FILES is passed to `diredp--dired-recent-files-1'.  It is used only
    when the command is used as part of the `revert-buffer-function'."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+  (interactive (list (completing-read "Dired (buffer name): " dired-buffers nil nil nil nil
                                       "Recently Visited Files")
                      current-prefix-arg))
   (diredp--dired-recent-files-1 buffer arg files))
@@ -4613,7 +4613,7 @@ When called from Lisp:
 ;;;###autoload
 (defun diredp-dired-recent-files-other-window (buffer &optional arg files) ; Bound to `C-x 4 D R'
   "Same as `diredp-dired-recent-files', but use other window."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+  (interactive (list (completing-read "Dired in other window (buffer name): " dired-buffers nil nil nil nil
                                       "Recently Visited Files")
                      current-prefix-arg))
   (diredp--dired-recent-files-1 buffer arg files 'OTHER-WINDOW-P))
@@ -4651,7 +4651,7 @@ ARG is as for `diredp-dired-recent-files'."
   "Open Dired in BUFFER, showing recently visited directories.
 Like `diredp-dired-recent-files', but limited to recent directories.
 A directory is recent if any of its files is recent."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+  (interactive (list (completing-read "Dired (buffer name): " dired-buffers nil nil nil nil
                                       "Recently Visited Directories")
                      current-prefix-arg))
   (diredp--dired-recent-files-1 buffer arg files nil 'DIRS-P))
@@ -4659,7 +4659,7 @@ A directory is recent if any of its files is recent."
 ;;;###autoload
 (defun diredp-dired-recent-dirs-other-window (buffer &optional arg files) ; Bound to `C-x 4 D r'
   "Same as `diredp-dired-recent-dirs', but use other window."
-  (interactive (list (completing-read "Dired buffer name: " dired-buffers nil nil nil nil
+  (interactive (list (completing-read "Dired in other window (buffer name): " dired-buffers nil nil nil nil
                                       "Recently Visited Directories")
                      current-prefix-arg))
   (diredp--dired-recent-files-1 buffer arg files 'OTHER-WINDOW-P 'DIRS-P))
