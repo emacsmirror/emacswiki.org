@@ -26,8 +26,8 @@ You can also provide some *context* in parenthesis, after the link itself. If we
 * ##[[Manual:point]] (concept)## -> [[Manual:point]] (concept)
 
 This features uses the
-[http://www.emacswiki.org/cgi-bin/info-ref info-ref] script.
-You can download the [http://www.emacswiki.org/emacs/info-ref.dat database] used.
+[http://www.emacswiki.org/info-ref info-ref] script.
+You can download the [http://www.emacswiki.org/info-ref.dat database] used.
 
 The XEmacs manuals are also available online from here:
 
