@@ -39,9 +39,11 @@ union Dired listing respects the markings, subdirectory insertions, and
 hidden subdirectories of the chosen Dired listings.
 
 [:diredp-fileset]
-* Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').
+* Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').  See the Emacs manual, node [[Manual:Filesets]] (emacs).
 
 * Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x D r'''' and '''`C-x 4 D r'''').
+
+* Lets you ''sort'' Dired buffers that list arbitrary files and dirs (as opposed to Dired buffers that show `ls' output), using '''`C-M-L'''' (aka `C-M-S-l'). This applies to all buffers created using the commands on prefix keys `C-x D' and `C-x 4 D'. You can also revert such listings, using `g'.
 
 * Lets you reuse Dired buffers (`C-M-R', aka `C-M-S-r' toggles this behavior, so you don't accumulate lots of them that you don't want to keep around. If the current Dired buffer is already showing in another window, or if the target for a find-file operation is a directory that is already in a Dired buffer, then there is no reuse (the current Dired buffer is not killed when you visit the target).
 
