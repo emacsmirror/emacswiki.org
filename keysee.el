@@ -4,12 +4,13 @@
 ;; Description: Key and menu completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
+;; Copyright (C) 2020-2021, Drew Adams, all rights reserved.
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Sun Jun  7 13:38:50 2020 (-0700)
+;; Last-Updated: Tue Mar 23 14:23:14 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 414
+;;     Update #: 437
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -88,6 +89,18 @@
 ;;  completion candidates, use `TAB' to complete, use `RET' to accept
 ;;  a completion.
 ;;
+;;  Keys you type are *not* matched as keys against the
+;;  key-description completion candidates.  Instead, keys act normally
+;;  for minibuffer input.  You can then complete your minibuffer input
+;;  (text) against the candidates.  For example, typing the three
+;;  chars `C - x' inserts the string "C-x" in the minibuffer, and
+;;  hitting key `C-f' advances the cursor one char in the minibuffer.
+;; 
+;;  You can, however, type a key and have its description inserted into
+;;  the minibuffer as text, which you can then complete.  To do this,
+;;  precede the key with `M-q'.  So `M-q C-x' inserts "C-x" in the
+;;  minibuffer.
+;;
 ;;  The following completion-candidate sort orders are available.  You
 ;;  can cycle among them during completion using the key that is the
 ;;  value of option `sorti-cycle-key' (`C-,' by default).
@@ -99,7 +112,7 @@
 ;;
 ;;  You can cycle candidates using `TAB', according to option
 ;;  `completion-cycle-threshold'.
-
+;;
 ;;  For top-level key completion (keys in `kc-completion-keys',
 ;;  e.g. `S-TAB'), you can use option `kc-keymaps-for-key-completion'
 ;;  to choose which keymaps in which to bind `S-TAB' to
@@ -119,7 +132,7 @@
 ;;  Commands defined here:
 ;;
 ;;    `kc-auto-mode', `kc-complete-keys', `kc-complete-menu-bar',
-;;    `kc-mode'.
+;;    `kc-insert-key-description', `kc-mode'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -160,6 +173,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/23 dadams
+;;     Added: kc-insert-key-description.
+;;     kc-mode: Bind kc-insert-key-description to M-q in minibuffer-local-must-match-map.
+;;     Added autoload cookies.
 ;; 2020/06/06 dadams
 ;;     Removed: kc-current-order, kc-orig-*.
 ;;     kc-complete-keys, kc-complete-menu-bar: Removed binding of completion-ignore-case.
@@ -556,12 +573,24 @@ Completion uses the completion styles defined by option
 
 You can use option `kc-separator' to customize the separator
 `  =  '.  The default value has 2 space chars on each side of `=',
-so you can more easily match menu candidates that contain a space
-char.
+so you can more easily match menu candidates that themselves contain a
+space char.
 
 Completion is as usual in vanilla Emacs: type characters to match
 completion candidates, use `TAB' to complete, use `RET' to accept
 a completion.
+
+Keys you type are *not* matched as keys against the key-description
+completion candidates.  Instead, keys act normally for minibuffer
+input.  You can then complete your minibuffer input (text) against the
+candidates.  For example, typing the three chars `C - x' inserts the
+string \"C-x\" in the minibuffer, and hitting key `C-f' advances the
+cursor one char in the minibuffer.
+
+You can, however, type a key and have its description inserted into
+the minibuffer as text, which you can then complete.  To do this,
+precede the key with `M-q'.  So `M-q C-x' inserts \"C-x\" in the
+minibuffer.
 
 The following completion-candidate sort orders are available.  You can
 cycle among them during completion using the key that is the value of
@@ -576,13 +605,13 @@ You can cycle candidates using `TAB', according to option
 `completion-cycle-threshold'.
 
 For top-level key completion (keys in `kc-completion-keys',
-e.g. `S-TAB'), you can use option `kc-keymaps-for-key-completion'
-to choose which keymapsin which to bind `S-TAB' to
-`kc-complete-keys'.  Normally, if a key in `kc-completion-keys' is
-already bound in a map listed in that option value then that
-binding is respected - the key is not bound to `kc-complete-keys'.
-You can override this by customizing option
-`kc-bind-completion-keys-anyway-flag' to non-nil.
+e.g. `S-TAB'), you can use option `kc-keymaps-for-key-completion' to
+choose keymaps in which to bind `S-TAB' to `kc-complete-keys'.
+
+Normally, if a key in `kc-completion-keys' is already bound in a map
+listed in that option value then that binding is respected - the key
+is not bound to `kc-complete-keys'.  You can override this by
+customizing option `kc-bind-completion-keys-anyway-flag' to non-nil.
 ___
 
 If called from Lisp, toggle the mode if the optional arg is ‘toggle’.
@@ -598,6 +627,7 @@ the mode."
     (cond (kc-mode
            (kc-bind-key-completion-keys-in-keymaps-from (current-global-map))
            (dolist (map  kc-keymaps-for-key-completion) (kc-bind-key-completion-keys-for-map-var map))
+           (define-key minibuffer-local-must-match-map (kbd "M-q") 'kc-insert-key-description)
            (add-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
            (add-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-add 'abort-recursive-edit :before 'kc-lighter))
@@ -606,6 +636,7 @@ the mode."
            (setq sorti-current-order  nil) ; Reset, to remove KC order.
            (kc-unbind-key-completion-keys-in-keymaps-from (current-global-map))
            (dolist (map  kc-keymaps-for-key-completion) (kc-unbind-key-completion-keys-for-map-var map))
+           (define-key minibuffer-local-must-match-map (kbd "M-q") nil)
            (remove-hook 'minibuffer-inactive-mode-hook #'kc-remove-lighter-unless-completing-prefix)
            (remove-hook 'minibuffer-inactive-mode-hook unbind-cycle-key)
            (advice-remove 'abort-recursive-edit 'kc-lighter))))
@@ -691,6 +722,16 @@ Does nothing also if `kc-prefix-in-mode-line-flag' is nil."
   "Remove KC mode mode-line lighter."
   (setq minor-mode-alist  (cl-remove-if (lambda (xx) (eq (car xx) 'kc-mode)) minor-mode-alist)))
 
+;;;###autoload
+(defun kc-insert-key-description ()    ; Bound to `M-q' in minibuffer for key completion.
+  "Read key and insert its description.
+For example, if the key read is ^F, then \"C-f\" is inserted."
+  (interactive)
+  (let* ((enable-recursive-minibuffers  t)
+         (key                           (progn (minibuffer-message " [Quoting key]") (read-event))))
+    (insert (single-key-description key))))
+
+;;;###autoload
 (defun kc-complete-menu-bar ()
   "Complete a menu-bar menu.
 This is just a restriction of `kc-complete-keys' to menu-bar menus and
@@ -698,6 +739,7 @@ submenus."
   (interactive)
   (kc-complete-keys-1 [menu-bar]))
 
+;;;###autoload
 (defun kc-complete-keys ()
   "Complete a key sequence for the currently invoked prefix key.
 By default, key completion is case insensitive.
