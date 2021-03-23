@@ -8,9 +8,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Tue Mar 23 14:23:14 2021 (-0700)
+;; Last-Updated: Tue Mar 23 14:36:35 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 437
+;;     Update #: 440
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -89,21 +89,26 @@
 ;;  completion candidates, use `TAB' to complete, use `RET' to accept
 ;;  a completion.
 ;;
-;;  Keys you type are *not* matched as keys against the
-;;  key-description completion candidates.  Instead, keys act normally
-;;  for minibuffer input.  You can then complete your minibuffer input
-;;  (text) against the candidates.  For example, typing the three
-;;  chars `C - x' inserts the string "C-x" in the minibuffer, and
-;;  hitting key `C-f' advances the cursor one char in the minibuffer.
-;; 
-;;  You can, however, type a key and have its description inserted into
-;;  the minibuffer as text, which you can then complete.  To do this,
-;;  precede the key with `M-q'.  So `M-q C-x' inserts "C-x" in the
-;;  minibuffer.
+;;  Keys you type are not matched as keys against the key-description
+;;  completion candidates.  Instead, keys act normally for minibuffer
+;;  input.  You can then complete your minibuffer input (text) against
+;;  the candidates.  For example, typing the three chars `C - x'
+;;  inserts the string "C-x" in the minibuffer, and hitting key `C-f'
+;;  advances the cursor one char in the minibuffer.
 ;;
-;;  The following completion-candidate sort orders are available.  You
-;;  can cycle among them during completion using the key that is the
-;;  value of option `sorti-cycle-key' (`C-,' by default).
+;;  An advantage of this is that you can match a key description or a
+;;  command name, or both.  A disadvantage is not being able to just
+;;  type keys and have them matched directly against key-description
+;;  candidates.
+;; 
+;;  You can, however, type a key and have its description inserted
+;;  into the minibuffer as text, which you can then complete.  To do
+;;  this, precede the key with `M-q'.  So `M-q C-x' inserts "C-x" in
+;;  the minibuffer.
+;;
+;;  The following key-completion sort orders are available.  You can
+;;  cycle among them during completion using the key that is the value
+;;  of option `sorti-cycle-key' (`C-,' by default).
 ;;
 ;;  * By key name alphabetically, prefix keys first
 ;;  * By key name alphabetically, local keys first
@@ -580,7 +585,7 @@ Completion is as usual in vanilla Emacs: type characters to match
 completion candidates, use `TAB' to complete, use `RET' to accept
 a completion.
 
-Keys you type are *not* matched as keys against the key-description
+Keys you type are not matched as keys against the key-description
 completion candidates.  Instead, keys act normally for minibuffer
 input.  You can then complete your minibuffer input (text) against the
 candidates.  For example, typing the three chars `C - x' inserts the
