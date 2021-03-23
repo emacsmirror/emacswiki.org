@@ -8,9 +8,9 @@
 ;; Created: Wed Jun  3 13:54:04 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 23 14:16:49 2021 (-0700)
+;; Last-Updated: Tue Mar 23 14:22:26 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 206
+;;     Update #: 208
 ;; URL: https://www.emacswiki.org/emacs/download/sortie.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Sortie
 ;; Keywords: completion sorting cycling
@@ -141,6 +141,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/23 dadams
+;;     Added autoload cookie.
 ;; 2020/06/04 dadams
 ;;     Created.
 ;;
@@ -220,6 +222,7 @@ Use functions such as `ring-insert' to define the ring.")
   (sorti-bind-cycle-key)
   (minibuffer-complete))
 
+;;;###autoload
 (defun sorti-cycle-sort-order (&optional reversep msgp)
   "Cycle to the next completion-candidates sort order.
 With a prefix arg, just reverse the current sort order (don't cycle).
