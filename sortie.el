@@ -4,13 +4,13 @@
 ;; Description: Sorting of completion candidates.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2020, Drew Adams, all rights reserved.
+;; Copyright (C) 2020-2021, Drew Adams, all rights reserved.
 ;; Created: Wed Jun  3 13:54:04 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  5 19:36:06 2020 (-0700)
+;; Last-Updated: Tue Mar 23 14:16:49 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 206
 ;; URL: https://www.emacswiki.org/emacs/download/sortie.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Sortie
 ;; Keywords: completion sorting cycling
