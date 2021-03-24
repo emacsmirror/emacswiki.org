@@ -26,7 +26,7 @@ apps are not started from a shell."
   (interactive)
   (let ((path-from-shell (replace-regexp-in-string
 			  "[ \t\n]*$" "" (shell-command-to-string
-					  "$SHELL --login -i -c 'echo $PATH'"
+					  "$SHELL --login -c 'echo $PATH'"
 						    ))))
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
@@ -34,7 +34,9 @@ apps are not started from a shell."
 (set-exec-path-from-shell-PATH)
 }}}
 
-Found at https://agel.readthedocs.io/en/latest/configuration.html#path-to-the-ag-executable
+Found at https://agel.readthedocs.io/en/latest/configuration.html#path-to-the-ag-executable.
+
+2021-03-23: Deleted the ##-i## flag from the shell invocation in the function. Starting the shell with the ##-i## command causes plumbing errors in the shell's output and the resulting error message confuses the parsing, setting both the env PATH and the exec-path incorrectly.
 
 ----
 CategoryPaths
