@@ -1,0 +1,16 @@
+This packet has compatibility issues when you update and use emacs27.  (When you try to delete any file it complains about the function incf).
+
+There is an easy solution: 
+
+1) Add to the beginning of trashcan.el
+
+    (require 'cl-lib)
+
+   This is the package that has the not deprecated version of incf
+
+2) Change all the functions in trashcan.el that call for the non-deprecated version: cl-incf
+
+I've attached the revised version of trashcan.el that I created after making these two changes.
+
+-- Anonymous 2021-03-24 23:08 UTC
+
