@@ -1,0 +1,10 @@
+[[fr:Custom_Themes]]
+A '''[::custom theme]''' is a package that sets lots of [[Face|faces]] and variables for you. 
+This page collects reviews and recommendations of the various custom themes out there.
+
+These are all implemented using [[CustomThemes|custom themes]].
+
+(There is a separate [[ColorThemes|color-theme.el]] package, which installs themes by modifying Emacs faces directly instead of using the /custom theme/ ([[Customize]]) framework. It hasn't been updated much since 2009, and now it is more common to use /custom themes/. See [[CustomThemes#ComparedToColorThemes|comparing color theme and custom theme]] for a comparison of the two.)
+
+* [[PinkBliss|Pink Bliss]] -- everything is pink, what's not to like? 
+* [[Brutalist Theme]] -- trying to use as few colors as possible
