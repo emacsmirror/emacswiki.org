@@ -1,4 +1,4 @@
-EmacsLisp library <tt>[[color-theme.el]]</tt> provides many predefined [[ColorTheme|color theme]]
+EmacsLisp library <tt>[[color-theme.el]]</tt> provides many predefined color themes
 for your use, and you can easily define additional themes.  
 
 The library has not really been well maintained since 2009, but you can use it with any Emacs version since Emacs 20.
