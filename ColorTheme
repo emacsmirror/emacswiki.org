@@ -1,10 +1,1 @@
-[[fr:Color_Thems]]
-A '''[::color theme]''' is a package that sets a ton of [[Face|faces]] and variables for you. 
-This page collects reviews and recommendations of the various colour themes out there.
-
-These are all implemented using [[CustomThemes|custom themes]].
-
-(There is a separate [[ColorThemes|color-theme.el]] package, which installs color themes by modifying Emacs faces directly instead of using the /custom theme/ ([[Customize]]) framework. It hasn't been updated since 2009, and now it is more common to use /custom theme/. See [[CustomThemes#ComparedToColorThemes|comparing color theme and custom theme]] for a comparison of the two.)
-
-* [[PinkBliss|Pink Bliss]] -- everything is pink, what's not to like? 
-* [[Brutalist Theme]] -- trying to use as few colours as possible
+DeletedPage
