@@ -1,0 +1,4 @@
+I don't understand why having the default value for `kc-separator' as "  =  " (2 spaces either side of an equals symbol) makes it easier to match menu candidates containing a space char. Surely this makes it harder to do that, because it means that typing a space will match all candidates.
+
+-- [https://www.emacswiki.org/emacs/JoeBloggs JoeBloggs] 2021-03-28 18:13 UTC
+
