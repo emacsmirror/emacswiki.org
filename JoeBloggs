@@ -58,7 +58,6 @@ If anyone decides to implement one of these, or finds an already existing implem
 
 * Ability to colorize/format cells in org-tables - this would make it possible to see which cells are generated from formulas for example. The colorized cells should still work in formulas. Even better would be if the coloring could be made persistent (perhaps using enriched mode, or maybe as part of the cell formula). 
 * Ability to split org-table formulas over several lines (they can get very messy).
-* Even better would be persistent colo
 * A general framework for marking and selecting items in a buffer a la DiredMode. I had to write my own code for this for Lisp:simple-call-tree+.el, and have come across a few other libraries that do this kind of thing (e.g. [https://github.com/rejeep/prodigy.el prodigy]). I'm guessing it would be useful in for other libraries yet to be written. If we could be consistent with keybindings as well that would be great.
 * A function to make it easy to format text in different colours/faces, e.g. (format+ "%y, %y, %y" '("red" :foreground "red") '("blue" :background "blue") '("function" 'font-lock-function-name-face))
 * Some way of getting emacs to handle hooks more robustly. It's really annoying when your config file won't load fully because some function that you put on one of the built-in hooks is no longer valid, and you then have to do a load of debugging to track it down. Would be much nicer if emacs just skipped over the dodgy function, reported the error, and then continued.
