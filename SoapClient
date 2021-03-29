@@ -1,4 +1,4 @@
-The `soap-client.el` library provides access to a SOAP web service.  It can load SOAP WSDL descriptors and use them to encode and decode SOAP requests.  The project is located at http://code.google.com/p/emacs-soap-client/
+The `soap-client.el` library provides access to a SOAP web service.  It can load SOAP WSDL descriptors and use them to encode and decode SOAP requests.  The project is located at https://github.com/alex-hhh/emacs-soap-client
 
 A sample interface for accessing JIRA functionality is provided as an example.
 
