@@ -4,13 +4,13 @@
 ;; Description: Incrementally adjust face attributes and frame parameters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2021, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Thu Nov  5 15:32:22 2020 (-0800)
+;; Last-Updated: Tue Mar 30 10:43:56 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3076
+;;     Update #: 3078
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-frm.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -1698,7 +1698,7 @@ See `doremi-face-bg+'; `doremi-face-fg+' is the same, with
 ;;;###autoload
 (defun doremi-face-fg-hue-stepping-saturation+ (face &optional increment pickup-p
                                                 interactive-p)
-  "Increment FACE background hue, stepping saturation down after each cycle.
+  "Increment FACE foreground hue, stepping saturation down after each cycle.
 See `doremi-face-bg+' for info about the other args."
   (interactive (list (if (< emacs-major-version 21)
                          (read-face-name "Face to change: ")
