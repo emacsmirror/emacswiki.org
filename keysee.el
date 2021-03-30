@@ -8,9 +8,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Tue Mar 23 14:36:35 2021 (-0700)
+;; Last-Updated: Tue Mar 30 15:26:10 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 440
+;;     Update #: 442
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -178,6 +178,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/03/30 dadams
+;;     kc-complete-keys-1: Bind sorti-current-order to nil.
 ;; 2021/03/23 dadams
 ;;     Added: kc-insert-key-description.
 ;;     kc-mode: Bind kc-insert-key-description to M-q in minibuffer-local-must-match-map.
@@ -846,6 +848,7 @@ completions are found for PREFIX-VECT."
             (completion-ignore-case       t)
             (sorti-sort-orders-alist      kc-sort-orders-alist)
             (sorti-sort-orders-ring       kc-sort-orders-ring)
+            (sorti-current-order          nil)
             (sorti-sort-function-chooser  'kc-sort-function-chooser))
         (minibuffer-with-setup-hook #'sorti-bind-cycle-key-and-complete
           (kc-complete-keys-action
