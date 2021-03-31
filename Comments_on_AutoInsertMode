@@ -48,3 +48,11 @@ FYI: GNU Emacs 26.3 (build 2, x86_64-pc-linux-gnu, GTK+ Version 3.24.14) of 2020
 
 -- Anonymous 2021-03-31 08:32 UTC
 
+
+----
+
+OK ... Tested: it is not LSP interacting
+I just inverted the two snippets and now it works... Strange...
+
+-- Anonymous 2021-03-31 08:36 UTC
+
