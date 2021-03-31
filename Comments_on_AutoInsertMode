@@ -1,0 +1,50 @@
+When I add both the provided snippets for C and C++ in my "~/.emacs.d/config.org" config file, I got the C++ snippet inserted when I open a file called "test.c"....
+
+--- EXtract of "~/.emacs.d/config.org"
+* C/C++
+#+BEGIN_SRC emacs-lisp
+(add-hook 'c-mode-hook #'lsp) ; Requires installation os OS::clangd
+; Template for minimal C file
+(eval-after-load 'autoinsert
+  '(define-auto-insert '("\\.c\\'" . "C skeleton")
+     '(
+       "Short description: "
+       "/**\n * "
+       (file-name-nondirectory (buffer-file-name))
+       " -- " str \n
+       " *" \n
+       " * Written on " (format-time-string "%A, %e %B %Y.") \n
+       " */" > \n \n
+       "#include <stdio.h>" \n
+       "#include \""
+       (file-name-sans-extension
+        (file-name-nondirectory (buffer-file-name)))
+       ".h\"" \n \n
+       "int main(int arc, char *argv[])" \n
+       "{" > \n
+       > _ \n
+       "}" > \n)))
+; Template for minimal C++ file
+(eval-after-load 'autoinsert
+  '(define-auto-insert
+     '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" . "C++ skeleton")
+     '("Short description: "
+       "/*" \n
+       (file-name-nondirectory (buffer-file-name))
+       " -- " str \n
+       " */" > \n \n
+       "#include <iostream>" \n \n
+       "using namespace std;" \n \n
+       "int main(int argc, char *argv[])" \n
+       "{" \n
+       > _ \n
+       "}" > \n)))
+#+END_SRC
+---
+
+It's really strange as the extensions' regexes are quite well defined. Could it be lsp that interfers?
+
+FYI: GNU Emacs 26.3 (build 2, x86_64-pc-linux-gnu, GTK+ Version 3.24.14) of 2020-03-26, modified by Debian
+
+-- Anonymous 2021-03-31 08:32 UTC
+
