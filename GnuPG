@@ -1,4 +1,12 @@
-= Use with MailCrypt =
+General introduction:
+
+[[Using GPG]].
+
+== Use with Gnus =
+
+[[Gmail, Gnus and GPG]].
+
+== Use with MailCrypt =
 
 To use GnuPG with MailCrypt you should
 
@@ -15,7 +23,7 @@ and I didn't want to depend on cygwin's sh.exe,
 so I wrote an independent gpg mode that only requires
 a working gpg setup: Lisp:dgpg.el    -- DavidElentok
 
-= Updating ELPA Certs on Windows =
+== Updating ELPA Certs on Windows =
 
 I've added the following to my startup scripts to support PGP under Windows 10 (for more information on !GnuPG, see [https://www.gpg4win.org/ GPG4WIN] or [https://www.gnupg.org the GnuPG Offical Site]):
 <pre>
@@ -40,7 +48,7 @@ This is especially handy for getting [[use-package]] ##:ensure## to behave when 
 Note, the ##let## here allows us to update signatures when our present ones are expired already.
  ~ Corwin Brust
 
-= See also =
+== See also =
 
 * https://www.gpg4win.org/ - GNU PGP for Microsoft Windows
 * https://www.gnupg.org/ - the GnuPG Offical Site]
