@@ -1,1 +1,19 @@
 We need some basic tutorial on how to get started using GPG from Emacs before we start talking about using [[GnuPG]] and various email clients.
+
+* how to create a key for yourself 
+* import somebody else's key 
+* encrypt a file for unlocking with  your own key
+* encrypt a file for unlocking with an imported key
+* easily integrate with a linux email client such as Thunderbird or Kmail or Evolution
+* what version of gpg is running?
+* how to create a passphrase
+* how to create, store and use a revocation certificate
+* how to set and edit an expiry date in order to extend a key
+* explain what those weird subkeys are
+* how and where to upload it to public keyservers
+* how to extract and send a key to somebody else, knowing their public key
+* how to import someone else's key
+* how to set trust levels for other's keys
+* explain errors that happen when methods using imported keys throw 'unusable key' errors
+* encrypt/decrypt
+* easy integration
