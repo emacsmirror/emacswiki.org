@@ -1,5 +1,7 @@
 We need some basic tutorial on how to get started using GPG from Emacs before we start talking about using [[GnuPG]] and various email clients.
 
+Here are some ideas from a thread on Mastodon:
+
 * how to create a key for yourself 
 * import somebody else's key 
 * encrypt a file for unlocking with  your own key
