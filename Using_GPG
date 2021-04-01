@@ -19,3 +19,8 @@ Here are some ideas from a thread on Mastodon:
 * explain errors that happen when methods using imported keys throw 'unusable key' errors
 * encrypt/decrypt
 * easy integration
+
+I'm going to start with the text I originally wrote for my
+[[Gmail, Gnus and GPG]] page. Let's see how far I get. I'm going to
+call it [https://alexschroeder.ch/cgit/ugg/about The Using GPG Guide]
+(or UGG for short…).
