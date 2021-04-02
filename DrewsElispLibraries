@@ -1064,7 +1064,9 @@ And the version at one point went from "22.0" to "0". -- JonasBernoulli
 I've removed the spurious `4' - thanks.  The version number (`0') is correct. The library is not versioned. -- DrewAdams
 
 
+------
 
+I am not able to see your packages in MELPA.  For example, icicles is missing in both https://stable.melpa.org/#/ and https://melpa.org/#/.  Can you make your packages available on some ELPA ... be it GNU ELPA, Non-GNU ELPA, MELPA or if you are interested right EWELPA (i.e., Emacswiki ELPA).   If you are interested in my proposal, I can help you with getting your packages to one of these repos (except the GNU ones) ... Let me know
 
 
 
