@@ -1066,7 +1066,16 @@ I've removed the spurious `4' - thanks.  The version number (`0') is correct. Th
 
 ------
 
-I am not able to see your packages in MELPA.  For example, icicles is missing in both https://stable.melpa.org/#/ and https://melpa.org/#/.  Can you make your packages available on some ELPA ... be it GNU ELPA, Non-GNU ELPA, MELPA or if you are interested right EWELPA (i.e., Emacswiki ELPA).   If you are interested in my proposal, I can help you with getting your packages to one of these repos (except the GNU ones) ... Let me know
+I am not able to see your packages in MELPA.  For example, icicles is missing in both https://stable.melpa.org/#/ and https://melpa.org/#/.  Can you make your packages available on some ELPA ... be it GNU ELPA, Non-GNU ELPA, MELPA or if you are interested right EWELPA (i.e., Emacswiki ELPA).   If you are interested in my proposal, I can help you with getting your packages to one of these repos (except the GNU ones) ... Let me know -- [User 6414]
+
+[new:DrewAdams:2021-04-02 18:58 UTC]
+1. No idea what EWELPA is.
+
+2. I prefer to upload to Emacs Wiki (Elisp Area).
+
+3. Anyone is free to mirror from there to some GIT or other repository. That happens anyway, with [[Emacsmirror]].
+
+4. My libraries used to be in MELPA. [[https://www.reddit.com/r/emacs/comments/7vocqa/update_on_melpa_removing_emacswiki_packages_they/dtuhzmt/ This]] is why they no longer are.
 
 
 
