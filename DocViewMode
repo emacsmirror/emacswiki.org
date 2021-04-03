@@ -12,8 +12,6 @@ section of the EmacsManual,
 : ''The needed external tools for this document type have to be available, emacs needs to run in a graphical frame, and PNG image support has to be compiled into emacs.''
 
 
-You can get a snapshot of doc-view.el at [[doc-view.el]].
-
 This can be customized via:
 
   M-x customize-group RET doc-view RET
@@ -39,7 +37,7 @@ I like to visit/read pdf-files in emacs, but one (or two) thing(s) that I miss: 
 And if possible also the slice that I had set. -- Michael
 
 [new]
-I don't know about the latter, but it should be possible to use BookMarks to save the last position within DocView.  It would take making an EmacsLisp function and adding it to `kill-buffer-hook' -- AaronHawley
+I don't know about the latter, but it should be possible to use BookMarks to save the last position within Doc View.  It would take making an EmacsLisp function and adding it to `kill-buffer-hook' -- AaronHawley
 
 ----
 MultimediaModes
