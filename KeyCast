@@ -1,0 +1,26 @@
+[https://github.com/tarsius/keycast keycast]
+
+Similar to command log mode, this package displays the key press and its associated function on the mode line
+
+Great for learning a new major/minor mode and also screen casting 
+
+To make it work with doom-modeline
+
+{{{
+(use-package keycast
+  :config
+  ;; This works with doom-modeline, inspired by this comment:
+  ;; https://github.com/tarsius/keycast/issues/7#issuecomment-627604064
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+	(add-hook 'pre-command-hook 'keycast--update t)
+      (remove-hook 'pre-command-hook 'keycast--update)))
+  (add-to-list 'global-mode-string '("" mode-line-keycast " "))
+  (keycast-mode))
+}}}
+
+----
+CategoryCommands
+CategoryHelp
