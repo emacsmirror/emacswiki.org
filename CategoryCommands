@@ -20,14 +20,16 @@ See also CategoryCode
 * KeyboardMacros -- Record your commands then play them back.
 
 = Packages for command manipulation= 
-* CommandLogMode -- Demonstrate your Emacs editing skills to other people
-* KeyCast -- similar function like command log mode but display the key press and function on the mode line
-* InteractionLogMode -- An exhaustive log of your interactions with Emacs
+
+* ShowKey -- Show a log of keys you use and their commands.
+* CommandLogMode -- Similar to ShowKey.
+* KeyCast -- Similar ShowKey but show the key and command on the mode line, not in a window.
+* InteractionLogMode -- Show an exhaustive log of your interactions with Emacs.
 * DoReMi -- Define commands that change things incrementally.
-* ExecAbbrevCmd -- Execute emacs commands by giving an abbreviation
+* ExecAbbrevCmd -- Execute Emacs commands by typing their abbreviations
 * [[Icicles]] -- Define commands that read and match input (simple or [[regexp]]), providing input-[[completion]] and [[Icicles - Cycling Completions|cycling]] of matching candidates. Define multiple-choice commands and menus easily.
-* CommandSubset -- Like <code>M-x</code> but with only a subset of the available commands. 
+* CommandSubset -- Like `M-x' but with only a subset of the available commands. 
 
 = Packages for command suggestion=
-* [[Recs]] -- Suggests a more efficient command when a command
+* [[Recs]] -- Suggest a more efficient command when a command
 sequence matches a pattern of commands defined as a regular expression.
