@@ -37,7 +37,7 @@
 
 == Other ==
 
-* [http://next.atlas.engineer/ Next] -- a keyboard-oriented, extensible web-browser inspired by Emacs.  The application has familiar key-bindings, is fully configurable and extensible in (Common) Lisp, and has powerful features for productivity.
+* [http://nyxt.atlas.engineer/ Nyxt] -- a keyboard-oriented, extensible web-browser inspired by Emacs.  The application has familiar key-bindings, is fully configurable and extensible in (Common) Lisp, and has powerful features for productivity.
 * [https://github.com/parkouss/webmacs webmacs] -- A great web browser based on qutebrowser,with customizable Emacs keybindings.
 * [[Mozilla]]
 * FireFox
