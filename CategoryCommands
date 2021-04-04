@@ -21,6 +21,7 @@ See also CategoryCode
 
 = Packages for command manipulation= 
 * CommandLogMode -- Demonstrate your Emacs editing skills to other people
+* KeyCast -- similar function like command log mode but display the key press and function on the mode line
 * InteractionLogMode -- An exhaustive log of your interactions with Emacs
 * DoReMi -- Define commands that change things incrementally.
 * ExecAbbrevCmd -- Execute emacs commands by giving an abbreviation
