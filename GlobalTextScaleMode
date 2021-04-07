@@ -39,7 +39,45 @@ Until then, this globalized version will be just fine for me !
                   '(lambda () (interactive) (global-text-scale-adjust 1)))
   (global-set-key (kbd "M--")
                   '(lambda () (interactive) (global-text-scale-adjust -1)))
-  
+
+[new:pkal:2021-04-07 15:45 UTC]
+
+I've updated the code to make it work more like the already exiting text-scale-adjust
+
+    (require 'face-remap)
+
+    (defvar global-text-scale-mode-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map [remap text-scale-adjust] #'global-text-scale-adjust)
+        map))
+
+    (define-globalized-minor-mode
+      global-text-scale-mode
+      text-scale-mode
+      (lambda () (text-scale-mode 1)))
+
+    (defun global-text-scale-adjust (scale)
+      "Set the text scale to SCALE in all buffers."
+      (interactive (let* ((ev last-command-event)
+                          (echo-keystrokes nil)
+                          (base (event-basic-type ev)))
+                     (list (+ (pcase base
+                                ((or ?+ ?=) (1+ text-scale-mode-amount))
+                                ((or ?- ?_) (1- text-scale-mode-amount))
+                                (_ 0))))))
+      (text-scale-set 1)
+      (kill-local-variable 'text-scale-mode-amount)
+      (setq-default text-scale-mode-amount scale)
+      (global-text-scale-mode 1)
+      (set-transient-map
+       (let ((map (make-sparse-keymap)))
+         (dolist (mods '(() (control)))
+           (dolist (key '(?- ?_ ?+ ?= ?0))
+             (define-key map (vector (append mods (list key)))
+               #'global-text-scale-adjust)))
+         map))
+      (message "Use +,-,0 for further adjustment"))
+
 = A better way to get the same effect =
 
 A far better way to get the same effect is to customize the size of the default
