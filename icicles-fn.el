@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Mar 17 13:35:50 2021 (-0700)
+;; Last-Updated: Tue Apr  6 20:32:14 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 15304
+;;     Update #: 15306
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5403,6 +5403,7 @@ string candidates."
                  (cands-read  ())
                  (candidates  ()))
              (message "Retrieving saved candidates from `%s'..." cache-file)
+             (with-current-buffer list-buf (goto-char (point-min)))
              (unwind-protect
                   (condition-case err
                       (when (listp (setq cands-read  (read list-buf)))
