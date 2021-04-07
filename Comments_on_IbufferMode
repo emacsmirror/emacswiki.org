@@ -129,3 +129,16 @@ thanks
 This seems to be the default behaviour when I run `M-x ibuffer'.
 
 -- Stefan Kangas, 2019-06-30
+
+----
+
+I have learned how to use filter /f and then group /g to group and present together some buffers that have file pathname commonalities.
+
+What I would like to do is to move all these /f files to the top of the full buffer list, as a block (meaning: preserving the listed order), but without making them a named group.
+
+Partial solution but a bit cumbersome: make them named group and then C-k kill the named group afterwards (dired directories will not move to the top when I kill the group, though)
+
+Ibuffer is great, otherwise ;-)
+
+-- derkire 2021-04-07 21:31 UTC
+
