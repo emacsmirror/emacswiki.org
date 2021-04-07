@@ -63,3 +63,10 @@ Should be added to `comint-input-filter-functions' like so:
 
 -- [http://noel@burton-krahn.com Noel Burton-Krahn] 2014-09-04 17:58 UTC
 
+
+----
+
+Link http://comments.gmane.org/gmane.emacs.tramp/6996 is broken in section #6
+
+-- Anonymous 2021-04-07 08:36 UTC
+
