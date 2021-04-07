@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Mar 17 13:57:05 2021 (-0700)
+;; Last-Updated: Tue Apr  6 20:29:08 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 11915
+;;     Update #: 11916
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2337,6 +2337,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2021/04/06 dadams
+;;     icicle-get-candidates-from-saved-set: Ensure point is bob before trying to read.
 ;; 2021/03/17 dadams
 ;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/01/25 dadams
