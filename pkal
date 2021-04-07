@@ -6,6 +6,7 @@ I have a personal website, where I sometimes post about Emacs: https://ruzkuku.c
 
 Here are a few packages on mine which I have contributed to ELPA or MELPA:
 
+* [http://elpa.gnu.org/packages/setup.html setup]
 * [http://elpa.gnu.org/packages/shell-command+.html shell-command+]
 * [https://melpa.org/#/0x0 0x0]
 * [https://melpa.org/#/autocrypt autocrypt]
