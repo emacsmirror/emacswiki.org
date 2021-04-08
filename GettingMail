@@ -49,7 +49,7 @@ And here's [[Gnus]] using IMAP:
 
 === ViewMail ===
 
-An example of [[Vm]] using POP:
+An example of [[ViewMail]] using POP:
 
 {{{
 (setq vm-spool-files '("pop3server:110:pass:username:*" "~/INBOX"))
