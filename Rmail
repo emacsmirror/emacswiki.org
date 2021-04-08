@@ -53,7 +53,7 @@ spool file to the Rmail primary file pointed by
 `rmail-file-name' (defaults to ##~/RMAIL##)
 
 In Emacs versions previous to 23, files are saved in a special format called 
-[[Babyl]]. Starting with Emacs 23, [[Rmail]] uses one of [http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html the standard mbox formats], mboxo.  Note: the mboxo format performs some irreversible conversions
+[[Babyl]]. Starting with Emacs 23, [[Rmail]] uses one of [http://web.archive.org/web/20160304055659/http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html the standard mbox formats], mboxo.  Note: the mboxo format performs some irreversible conversions
 such as replacing "From" with ">From" if it occurs at the very start of a line
 of the body of the mail.  For most people this is unimportant.
 
