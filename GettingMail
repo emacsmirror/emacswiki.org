@@ -10,11 +10,11 @@ The default behaviour using the POP protocol is to *move* the mail to your local
 Here's an example of an [[Rmail]] configuration using movemail (also see the note on movemail below).
 
 {{{
-(setenv "MAILHOST" "pop3server")
-(setq rmail-primary-inbox-list '("po:me@example.com")
-      rmail-pop-password-required t)
-;; if you don't want movemail to delete your mail on the server!
-(setq rmail-preserve-inbox t)
+(setq
+  rmail-primary-inbox-list '("pop://me%40example.com@mail.example.com")
+  rmail-preserve-inbox t
+  user-full-name "Funky Turtle"
+  user-mail-address "me@example.com")
 }}}
 
 === Gnus ===
