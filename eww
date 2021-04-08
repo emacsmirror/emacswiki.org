@@ -32,7 +32,12 @@ You may also need to install TLS certificates, as explained in Magnus’ article
 * [[w3]]
 
 == Web links ==
-* https://lars.ingebrigtsen.no/2013/06/16/eww/ -- Announcement by the original author.
+* [https://lars.ingebrigtsen.no/2013/06/16/eww/ Announcement by the original author]
+* [https://www.gnu.org/software/emacs/manual/html_node/eww/index.html#Top Eww in the Emacs manual]
+* [https://ersi.vivaldi.net/2020/02/19/eww-a-web-browser-inside-a-text-editor/ Eww article by ersi]
+* [http://ergoemacs.org/emacs/emacs_eww_web_browser.html Xah Lee's eww page]
+* [https://muto.ca/posts/my-emacs-configuration.html#web-browsing-with-eww Muto's section on eww]
+* [http://www.howardism.org/Technical/Emacs/browsing-in-emacs.html Eww article by howardism]
 
 CategoryHypermedia
 CategoryWebBrowser
