@@ -56,15 +56,15 @@ These days many people don't want to touch their local mail system, if they have
 defaults
 tls on
 tls_starttls off
-keep off
+keep on
 password
 account default
-host pop.migadu.com
+host mail.example.com
 port 995
-user alex@alexschroeder.ch
+user alex@example.com
 delivery mbox "/home/alex/mail/inbox"
 # if you like to use pass
-passwordeval "pass show cadadr@example.com"
+passwordeval "pass show alex@example.com"
 # if you like to use gpg
 # passwordeval gpg --no-tty --quiet --decrypt ~/.config/mpop/password.gpg
 }}}
