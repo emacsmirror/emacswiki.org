@@ -5,17 +5,21 @@ machines, spool files, ...) and also how you can read them.
 
 The default behaviour using the POP protocol is to *move* the mail to your local system, that is: it *deletes the mail on your server*. If you also want to read mail using your phone, you should either switch from POP to IMAP and use a mail client that can handle it, or you must tell the tools you are using that you want to "preserve" your inbox.
 
-[[Rmail]] using movemail (but see the note on movemail below):
+=== Rmail ===
+
+Here's an example of an [[Rmail]] configuration using movemail (also see the note on movemail below).
 
 {{{
 (setenv "MAILHOST" "pop3server")
-(setq rmail-primary-inbox-list '("po:username")
+(setq rmail-primary-inbox-list '("po:me@example.com")
       rmail-pop-password-required t)
 ;; if you don't want movemail to delete your mail on the server!
 (setq rmail-preserve-inbox t)
 }}}
 
-[[Gnus]] using the nnml backend with POP:
+=== Gnus ===
+
+Here's an example of [[Gnus]] using the `nnml` backend with POP:
 
 {{{
 (setq gnus-secondary-select-methods '((nnml ""))
@@ -23,7 +27,7 @@ The default behaviour using the POP protocol is to *move* the mail to your local
                           :user "username")))
 }}}
 
-[[Gnus]] using IMAP:
+And here's [[Gnus]] using IMAP:
 
 {{{
 (setq gnus-secondary-select-methods
@@ -38,7 +42,9 @@ The default behaviour using the POP protocol is to *move* the mail to your local
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 }}}
 
-ViewMail using POP:
+=== ViewMail ===
+
+An example of [[Vm]] using POP:
 
 {{{
 (setq vm-spool-files '("pop3server:110:pass:username:*" "~/INBOX"))
