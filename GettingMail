@@ -1,5 +1,6 @@
-This page describes how to effectively retrieve mail (from remote
-machines, spool files, ...) and also how you can read them.
+This page describes how to retrieve and read email from within Emacs.
+
+Also see [[WritingMail]] and [[Sending Mail]].
 
 == Getting mail ==
 
