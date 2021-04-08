@@ -2,9 +2,28 @@ Mew is yet-another mail reader for emacs.
 
 Homepage: http://www.mew.org/
 
+== Installation ==
+
+=== From the MELPA ===
+
+<code>M-x package install <RET> mew <RET></code>
+
+=== From Source ===
+
+Download Mew and unpack, then build the program:
+
+<pre>
+wget http://www.mew.org/Release/mew-6.8.tar.gz
+tar -xf mew-6.8.tar.gz
+cd  mew-6.8
+./configure
+make
+sudo make install
+</pre>
+
 == Setup ==
 
-To install: download and unpack, run ./configure && make && make install. Initial setup is done in .emacs. Main configuration file for mew is ~/.mew.el, which is loaded //after// mew is started.  If you use emacs 23, you should use at least Mew version 6.2.52 (beta).
+Initial setup for Mew is done in <code>~/.emacs</code>, but the main configuration is in <code>~/.mew.el</code>, which is loaded //after// mew is started.  If you use emacs 23, you should use at least Mew version 6.2.52 (beta).
 
 ~/.emacs:
 
