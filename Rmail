@@ -1,10 +1,9 @@
 Rmail is the default mail reader for GNU Emacs.  With it you can read multiple
 local and remote inboxes.  
 
-//"Rmail is the primary Emacs mail-reader.  I don't know how many people
+::: //Rmail is the primary Emacs mail-reader.  I don't know how many people
 currently use it, but I will ignore any suggestion to treat it as
-unimportant."// -- RichardStallman
-[http://lists.gnu.org/archive/html/emacs-devel/2004-09/msg00328.html]
+unimportant.// -- [[RichardStallman]] [http://lists.gnu.org/archive/html/emacs-devel/2004-09/msg00328.html]
 
 See GettingMail, WritingMail, and SendingMail for more setup examples.
 
