@@ -43,6 +43,8 @@ You can also decide how rmail handles HTML emails with the `shr' variables:
  shr-bullet "• ")   ; A bullet character for <li> elements
 </pre>
 
+Note that the `shr' variables also apply to the [[EmacsWebWowser]]
+
 == Basic Usage ==
 
 Start rmail with `M-x rmail'. With no configuration, this
