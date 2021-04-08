@@ -1,6 +1,20 @@
 [[ja:eww-ja]]
 Eww (the <b>E</b>acs <b>W</b>eb <b>W</b>owser) is a Web browser written in elisp and based on shr.el.  It is included in Emacs 24.4 and later.  It supports some basic CSS and HTML5.
 
+== Configuration ==
+
+Eww uses the `shr' HTML renderer, so we can change how Eww web pages look by setting the shr variables.
+
+<pre>
+(setq
+ browse-url-browser-function 'eww-browse-url ; Use eww as the default browser
+ shr-use-fonts  nil                          ; No special fonts
+ shr-use-colors nil                          ; No colours
+ shr-indentation 2                           ; Left-side margin
+ shr-width 70                                ; Fold text to 70 columns
+ eww-search-prefix "https://ddg.gg/html?q=") ; Use DuckDuckGo for search (default)
+</pre>
+
 == Windows ==
 
 Make sure that libxml2 and GnuTLS are installed and that the executables and DLLs can be found by EMACS. You may add their location to <code>%PATH%</code>. The aforementioned packages are provided by [http://sourceforge.net/projects/ezwinports/files/ ezwinports] or [https://ftp.gnu.org/gnu/emacs/windows/emacs-25-i686-deps.zip Emacs (25, 32-bit)] (same [https://ftp.gnu.org/gnu/emacs/windows/emacs-25-x86_64-deps.zip for 64 bit]).
