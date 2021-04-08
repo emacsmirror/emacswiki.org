@@ -6,14 +6,49 @@ currently use it, but I will ignore any suggestion to treat it as
 unimportant."// -- RichardStallman
 [http://lists.gnu.org/archive/html/emacs-devel/2004-09/msg00328.html]
 
-See GettingMail, WritingMail, and SendingMail for setup examples.
+See GettingMail, WritingMail, and SendingMail for more setup examples.
 
 
+== Configuration ==
+
+You should download the `mailutils' package on your computer if you want the best rmail experience.
+
+Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
+
+<pre>
+(setq
+ ;; The mail URL, specifying a remote mail account
+ rmail-primary-inbox-list
+  '("pop://me%40example.com:Passw0rD@mail.example.com"))
+
+ send-mail-function 'smtpmail-send-it       ; Send mail via SMTP
+ rmail-preserve-inbox 1                     ; Don't delete mail from server
+ rmail-delete-after-output 1                ; Delete original mail after copying
+ rmail-mime-prefer-html nil                 ; Prefer plaintext when possible
+ rmail-file-name   "~/mail/inbox"           ; The path to our inbox file
+ rmail-secondary-file-directory "~/mail"    ; The path to our other mbox files
+ message-default-headers "Fcc: ~/mail/sent" ; Copy sent mail to the "sent" file
+ user-full-name    "Susan"                  ; Our full name
+ user-mail-address "me@example.com"         ; Our return address
+ message-signature "Plop! -S")              ; A signature
+</pre>
+
+You can also decide how rmail handles HTML emails with the `shr' variables:
+
+<pre>
+(setq
+ shr-use-fonts nil  ; Don't load fancy fonts
+ shr-indentation 2  ; A left-margin of 2 columns
+ shr-use-colors nil ; Don't load special colors
+ shr-width 70       ; Fix width to 70 columns
+ shr-bullet "• ")   ; A bullet character for <li> elements
+</pre>
 
 == Basic Usage ==
 
-Start it using `M-x rmail'.  This moves all your mail from your local
-spool file and saves it in the Rmail primary file pointed by
+Start rmail with `M-x rmail'. With no configuration, this
+attempts to move all your mail from your local
+spool file to the Rmail primary file pointed by
 `rmail-file-name' (defaults to ##~/RMAIL##)
 
 In Emacs versions previous to 23, files are saved in a special format called 
