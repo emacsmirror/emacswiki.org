@@ -15,6 +15,27 @@ Eww uses the `shr' HTML renderer, so we can change how Eww web pages look by set
  eww-search-prefix "https://ddg.gg/html?q=") ; Use DuckDuckGo for search (default)
 </pre>
 
+== Usage ==
+
+You can start Eww with `M-x eww'. You'll be asked to enter a search term or URL.
+
+You can see a list of keyboard bindings with `?', but here are a few you might want:
+
+* `TAB' - Next link
+* <code>Shift+TAB</code> - Previous link
+* `b' - Add bookmark
+* `B' - View bookmarks
+* `d' - Download link under point
+* `l' - Go back
+* `r' - Go forward
+* `H' - View history
+* `g' - reload the page
+* `G' - Enter a new URL or search
+* `R' - Attempt to improve readability
+* `w' - Copy the current URL
+* <code>M-<RET></code> - Open link in new tab
+* `s' - Get a list of eww tabs
+
 == Windows ==
 
 Make sure that libxml2 and GnuTLS are installed and that the executables and DLLs can be found by EMACS. You may add their location to <code>%PATH%</code>. The aforementioned packages are provided by [http://sourceforge.net/projects/ezwinports/files/ ezwinports] or [https://ftp.gnu.org/gnu/emacs/windows/emacs-25-i686-deps.zip Emacs (25, 32-bit)] (same [https://ftp.gnu.org/gnu/emacs/windows/emacs-25-x86_64-deps.zip for 64 bit]).
