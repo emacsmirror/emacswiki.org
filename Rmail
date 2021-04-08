@@ -8,9 +8,7 @@ unimportant."// -- RichardStallman
 
 See GettingMail, WritingMail, and SendingMail for setup examples.
 
-Setup example by cadadr: [https://cadadr.dreamwidth.org/828.html My email setup with Emacs, Rmail, msmtp/mpop, mairix, and then some more]:
-“A lot of "my email setup" posts start with telling how the author deals with thousands or millions of messages with probably tens or hundreds of interactions each day.
-This blog post instead is about how I deal with a humane level of email messaging, with a local-first approach, using a smallish variety of software, which you can just set up and forget about.”
+
 
 == Basic Usage ==
 
@@ -139,6 +137,12 @@ Always show headers in the same order -- RmailSortHeaders
 == Searching Mails ==
 
 For quickly searching through your mails, you can use the external program "mairix". There's an Emacs interface for mairix called "mairix.el", which ships with Emacs 23, but which you can also manually install for Emacs 22 (see MairixSearch).
+
+== External Links ==
+
+* [https://cadadr.dreamwidth.org/828.html cadadr's rmail article]
+* [https://muto.ca/posts/actually-using-emacs-rmail.html Muto's rmail article]
+* [https://alexschroeder.ch/wiki/2020-12-17_Rmail Alex Schroder's rmail post]
 
 == Open Questions ==
 
