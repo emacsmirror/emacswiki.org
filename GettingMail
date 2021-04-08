@@ -7,7 +7,7 @@ The default behaviour using the POP protocol is to *move* the mail to your local
 
 === Rmail ===
 
-Here's an example of an [[Rmail]] configuration using movemail (also see the note on movemail below).
+Here's an example of an [[Rmail]] configuration using movemail:
 
 {{{
 (setq
@@ -17,9 +17,14 @@ Here's an example of an [[Rmail]] configuration using movemail (also see the not
   user-mail-address "me@example.com")
 }}}
 
+* Rmail runs on its own, but it's recommended to install the `mailutils' pacakge on your computer.
+* `rmail-primary-inbox-list' uses the URL scheme: <code>protocol:// username @ hostname</code>
+* The <code>%40</code> is an ANSI code representing the <code>@</code> symbol (see the note on movemail below)
+* `rmail-preserve-inbox' tells rmail to copy the mail from the server (don't delete it).
+
 === Gnus ===
 
-Here's an example of [[Gnus]] using the `nnml` backend with POP:
+Here's an example of [[Gnus]] using the `nnml' backend with POP:
 
 {{{
 (setq gnus-secondary-select-methods '((nnml ""))
