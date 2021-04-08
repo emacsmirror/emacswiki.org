@@ -7,7 +7,7 @@ The default behaviour using the POP protocol is to *move* the mail to your local
 
 === Rmail ===
 
-Here's an example of an [[Rmail]] configuration using movemail:
+Here's an example of an [[Rmail]] configuration:
 
 {{{
 (setq
