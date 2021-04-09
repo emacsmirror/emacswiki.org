@@ -74,7 +74,7 @@ account default
 host mail.example.com
 port 995
 user alex@example.com
-delivery mbox "/home/alex/mail/inbox"
+delivery mbox "~/mail/inbox"
 # if you like to use pass
 passwordeval "pass show alex@example.com"
 # if you like to use gpg
