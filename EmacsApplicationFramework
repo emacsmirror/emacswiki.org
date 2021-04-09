@@ -1,7 +1,8 @@
-Everyone has their own dreams, and every emacser  has an own operating system dream!   -- AndyStewart
+Everyone has their own dreams, and every emacser has an own operating system dream! -- AndyStewart
 
 
 == What is Emacs Application Framework? ==
+
 Emacs Application Framework is a development framework that developers can develop any PyQt program and integrate into Emacs.
 
 This framework mainly implements three functions:
@@ -12,8 +13,7 @@ This framework mainly implements three functions:
 
 3. Created a window compositer to make the PyQt program window adapt Emacs's Window/Buffer design
 
-
-Using this framework, you can use PyQt develop powerful graphics programs to extend Emacs
+Using this framework, you can use PyQt develop powerful graphics programs to extend Emacs.
 
 == Some screenshots ==
 
@@ -29,7 +29,7 @@ Using this framework, you can use PyQt develop powerful graphics programs to ext
 
 == Installation ==
 
-1. Install python libraries (below commands use for archlinux)
+1. Install Python libraries (below commands use for Arch Linux)
 
 : sudo pacman -S python-xlib python-pyqt5 python-pymediainfo
 
@@ -39,7 +39,7 @@ Using this framework, you can use PyQt develop powerful graphics programs to ext
 
 == Usage ==
 
-M-x eaf-open
+: M-x eaf-open
 
 Such as,
 * type www.google.com to open browser
@@ -47,13 +47,11 @@ Such as,
 * type /path/video.ogg to open video player, video player only support ogg file because it implement by HTML5 video tag
 
 == Join Us ==
+
 Do you want to make Emacs a real operating system?
-
-Do you want to live in emacs more comfortably?
-
-Want to create unparalleled plugins to extend emacs?
+Do you want to live in Emacs more comfortably?
+Want to create unparalleled plugins to extend Emacs?
 
 == Develop new plugin ==
 
-
-View [https://github.com/manateelazycat/emacs-application-framework Github] to develop new plugin.
+View [https://github.com/manateelazycat/emacs-application-framework GitHub] to develop new plugin.
