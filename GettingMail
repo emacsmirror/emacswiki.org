@@ -56,6 +56,20 @@ An example of [[ViewMail]] using POP:
 (setq vm-spool-files '("pop3server:110:pass:username:*" "~/INBOX"))
 }}}
 
+=== Wanderlust ===
+
+[[WanderLust]] with IMAP.
+
+{{{
+# Inside ~/.folders
+%INBOX:"me@example.com"/clear@mail.example.com:993!  "IN"
+}}}
+
+{{{
+;; In ~/.emacs
+(autoload 'wl "wl" "Wanderlust" t)
+}}}
+
 == Blocking Emacs ==
 
 The whole Emacs process is blocked during mail retrieval if Emacs does it itself. So if you are downloading large mails and tend to use Emacs for almost everything, you lose the '''multitasking''' features of your environment. It might be a better idea to use another process like *fetchmail* to retrieve the mails and offer them in a mailbox to Emacs or to switch to another advanced Mail User Agent like *mutt* or *aerc* which is able to use Emacs as its editor, see MuttInEmacs.
