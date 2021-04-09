@@ -4,22 +4,19 @@ Homepage: [http://www.mew.org/en/ www.mew.org]
 
 == Installation ==
 
-=== From the MELPA ===
-
-<code>M-x package install <RET> mew <RET></code>
-
-=== From Source ===
-
-Download Mew and unpack, then build the program:
+Download and build Mew:
 
 <pre>
-wget http://www.mew.org/Release/mew-6.8.tar.gz
-tar -xf mew-6.8.tar.gz
-cd  mew-6.8
+git clone git://github.com/kazu-yamamoto/Mew.git
+cd  Mew
 ./configure
 make
 sudo make install
 </pre>
+
+You should also install the `mew' package from the [[MELPA]]
+
+<code>M-x package install <RET> mew <RET></code>
 
 == Setup ==
 
