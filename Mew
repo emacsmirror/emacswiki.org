@@ -48,53 +48,57 @@ Initial setup for Mew is done in <code>~/.emacs</code>, but the main configurati
 
 ~/.mew.el:
 
- (setq mew-name "full name")
- (setq mew-user "name")           ; from name@domain
- (setq mew-mail-domain "domain")                                                                
-                                                                                                  
- (setq mew-smtp-user "name@domain")                                                             
- (setq mew-smtp-server "smtp.domain")                                                           
- (setq mew-smtp-auth-list '("LOGIN"))   ; "CRAM-MD5", "PLAIN", and "LOGIN" can be used
-                                                          
- ;; i use fetchmail to get mail from all boxes to /var/mail/banan
- (setq mew-mailbox-type 'mbox)                                                                    
- (setq mew-mbox-command "incm")                                                                   
- (setq mew-mbox-command-arg "-u -d /var/mail/username")                                              
- (setf mew-mail-path "~/.mail")                                                        
-                                                                                                  
- ;; some customization                                                                            
- (setq mew-use-unread-mark t)                                                                     
- (setq mew-summary-form '(type " " (5 date) " " (5 time) "   " (30 from) " " t (0 subj)))         
- (setq mew-summary-form-extract-rule '(address))                                                  
- ;; make mew to show date in "dd/mm" format in summary instead of "mm/dd"                         
- (defun mew-summary-form-date ()                                                                  
-   "A function to return a date, DD/MM."                                                          
-   (let ((s (MEW-DATE)))                                                                          
-     (when (or (string= s "")                                                                     
- 	      (not (string-match mew-time-rfc-regex s)))                                         
-       (setq s (mew-time-ctz-to-rfc                                                               
- 	       (mew-file-get-time (mew-expand-msg (MEW-FLD) (MEW-NUM))))))                       
-     (if (string-match mew-time-rfc-regex s)                                                      
- 	(format "%02d/%02d"                                                                      
- 		(mew-time-rfc-day)                                                               
- 		(mew-time-mon-str-to-int (mew-time-rfc-mon)))                                    
-       "")))                                                                                      
-                        
+{{{
+(setq mew-name "full name")
+(setq mew-user "name")           ; from name@domain
+(setq mew-mail-domain "domain")
+
+(setq mew-smtp-user "name@domain")
+(setq mew-smtp-server "smtp.domain")
+(setq mew-smtp-auth-list '("LOGIN"))   ; "CRAM-MD5", "PLAIN", and "LOGIN" can be used
+
+;; i use fetchmail to get mail from all boxes to /var/mail/banan
+(setq mew-mailbox-type 'mbox)
+(setq mew-mbox-command "incm")
+(setq mew-mbox-command-arg "-u -d /var/mail/username")
+(setf mew-mail-path "~/.mail")
+
+;; some customization
+(setq mew-use-unread-mark t)
+(setq mew-summary-form '(type " " (5 date) " " (5 time) "   " (30 from) " " t (0 subj)))
+(setq mew-summary-form-extract-rule '(address))
+;; make mew to show date in "dd/mm" format in summary instead of "mm/dd"
+(defun mew-summary-form-date ()
+  "A function to return a date, DD/MM."
+  (let ((s (MEW-DATE)))
+    (when (or (string= s "")
+	      (not (string-match mew-time-rfc-regex s)))
+      (setq s (mew-time-ctz-to-rfc
+	       (mew-file-get-time (mew-expand-msg (MEW-FLD) (MEW-NUM))))))
+    (if (string-match mew-time-rfc-regex s)
+	(format "%02d/%02d"
+		(mew-time-rfc-day)
+		(mew-time-mon-str-to-int (mew-time-rfc-mon)))
+      "")))
+}}}
+
 == Fixing problem with sending mail ==
 
 In versions 6.1 and 6.2 I found that I can't send email because of very strange error: draft file was meant to be renamed to +queue, but was deleted before renaming. I wrote to the author, but he didn't reply.
 
 So if you have such a problem, just add this to you .mew.el:
-                                                                          
- ;; bugfix                                                                                        
- ;; draft was deleted before it could be renamed to +queue                                        
- ;; redefine that function to fix this                                                            
- (defun mew-encode-save-draft ()                                                                  
-   (mew-frwlet mew-cs-dummy mew-cs-text-for-write                                                 
-     (write-region (point-min) (point-max) (buffer-file-name) nil 'no-msg)                        
-     (clear-visited-file-modtime)                                                                 
-     ;;;(mew-delete-file buffer-auto-save-file-name)     ; delete draft too early?                  
-     (set-buffer-modified-p nil)))                                                                
+
+{{{
+;; bugfix
+;; draft was deleted before it could be renamed to +queue
+;; redefine that function to fix this
+(defun mew-encode-save-draft ()
+  (mew-frwlet mew-cs-dummy mew-cs-text-for-write
+    (write-region (point-min) (point-max) (buffer-file-name) nil 'no-msg)
+    (clear-visited-file-modtime)
+    ;;;(mew-delete-file buffer-auto-save-file-name)     ; delete draft too early?
+    (set-buffer-modified-p nil)))
+}}}
 
 == BBDB integration ==
 
