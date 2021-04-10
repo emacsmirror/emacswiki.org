@@ -17,6 +17,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
 <pre>
 (setq
  ;; The mail URL, specifying a remote mail account
+ ;; (Omit this to read from /var/mail/user)
  rmail-primary-inbox-list
   '("pop://me%40example.com:Passw0rD@mail.example.com"))
 
