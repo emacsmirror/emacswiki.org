@@ -188,7 +188,7 @@ Always show headers in the same order -- RmailSortHeaders
 
 == Searching Mails ==
 
-For quickly searching through your mails, you can use the external program "mairix". There's an Emacs interface for mairix called "mairix.el", which ships with Emacs 23, but which you can also manually install for Emacs 22 (see MairixSearch).
+You can search through mail with <code>M-s</code>, or with [[MairixSearch]].
 
 == External Links ==
 
