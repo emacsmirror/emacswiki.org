@@ -8,6 +8,28 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== icicle-download-wizard fails and afterwards www.emacswiki.org refuses connections ==
+
+I wanted to try icicles and followed the instructions from icicles-install.el.
+icicle-download-wizard downloads several files but eventually fails:
+{{{
+Download the Icicle files? (y or n) y
+Contacting host: www.emacswiki.org:80
+Saving file ~/icicles/col-highlight.el...
+Wrote /home/erik/icicles/col-highlight.el
+...
+Downloaded ‘icicles-cmd1.el’
+Contacting host: www.emacswiki.org:80
+error in process sentinel: open-network-stream: make client process failed: Connection refused, :name, www.emacswiki.org, :buffer, #<killed buffer>, :host, www.emacswiki.org, :service, 80, :nowait, nil, :tls-parameters, nil
+error in process sentinel: make client process failed: Connection refused, :name, www.emacswiki.org, :buffer, #<killed buffer>, :host, www.emacswiki.org, :service, 80, :nowait, nil, :tls-parameters, nil
+}}}
+
+Afterwards, www.emacswiki.org refuses connections.
+
+Running on:
+GNU Emacs 27.1 (build 1, x86_64-pc-linux-gnu, GTK+ Version 3.24.5)
+
+
 == Source code blocks edited in recent days not being syntax highlighted ==
 
 Source code blocks I, and others, have edited in recent days are not
