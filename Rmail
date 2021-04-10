@@ -1,16 +1,17 @@
-Rmail is the default mail reader for GNU Emacs.  With it you can read multiple
-local and remote inboxes.  
+Rmail is the default mail reader for GNU Emacs.  With it you can read
+multiple local and remote inboxes.
 
-::: //Rmail is the primary Emacs mail-reader.  I don't know how many people
-currently use it, but I will ignore any suggestion to treat it as
-unimportant.// -- [[RichardStallman]] [http://lists.gnu.org/archive/html/emacs-devel/2004-09/msg00328.html]
+::: //Rmail is the primary Emacs mail-reader.  I don't know how many
+people currently use it, but I will ignore any suggestion to treat it
+as unimportant.// -- [[RichardStallman]]
+[http://lists.gnu.org/archive/html/emacs-devel/2004-09/msg00328.html]
 
 See GettingMail, WritingMail, and SendingMail for more setup examples.
 
-
 == Configuration ==
 
-You should download the `mailutils' package on your computer if you want the best rmail experience.
+You should download the `mailutils' package on your computer if you
+want the best rmail experience.
 
 Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
 
@@ -33,7 +34,8 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
  message-signature "Plop! -S")              ; A signature
 </pre>
 
-You can also decide how rmail handles HTML emails with the `shr' variables:
+You can also decide how rmail handles HTML emails with the `shr'
+variables:
 
 <pre>
 (setq
@@ -48,10 +50,9 @@ Note that the `shr' variables also apply to the [[EmacsWebWowser]]
 
 == Basic Usage ==
 
-Start rmail with `M-x rmail'. With no configuration, this
-attempts to move all your mail from your local
-spool file to the Rmail primary file pointed by
-`rmail-file-name' (defaults to ##~/RMAIL##)
+Start rmail with `M-x rmail'. With no configuration, this attempts to
+move all your mail from your local spool file to the Rmail primary
+file pointed by `rmail-file-name' (defaults to ##~/RMAIL##)
 
 Some helpful keys:
 
@@ -69,36 +70,47 @@ Some helpful keys:
 * <code>l</code> - Filter inbox by label
 * <code>M-s</code> - Search all mail
 
-Rmail //used// to store mail in a 
-[[Babyl]] file. As of Emacs 23, rmail uses a standard [http://web.archive.org/web/20160304055659/http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html mbox format]: mboxo. mboxo performs some irreversible conversions
-such as replacing <code>From</code> in the body of a mail with <code>>From</code> if it occurs at the start of a line.  For most people this is unimportant.
+Rmail //used// to store mail in a [[Babyl]] file. As of Emacs 23,
+rmail uses a standard [http://web.archive.org/web/20160304055659/http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html mbox format]:
+mboxo. mboxo performs some irreversible conversions such as replacing
+<code>From</code> in the body of a mail with <code>>From</code> if it
+occurs at the start of a line.  For most people this is unimportant.
 
 == Reading mail ==
 
 Pressing `h' makes a summary window appear.  You can navigate between
-messages with the `n' and `p' keys for next and previous respectively.  The
-space key, `SPC', scrolls down through messages.  When you get to the end of
-a message, it goes on to the next message.  The `DEL' key does the same but in the
-opposite direction.
+messages with the `n' and `p' keys for next and previous respectively.
+The space key, `SPC', scrolls down through messages.  When you get to
+the end of a message, it goes on to the next message.  The `DEL' key
+does the same but in the opposite direction.
 
-You can tell how many messages you want to appear in the summary buffer with `rmail-summary-window-size'.
+You can tell how many messages you want to appear in the summary
+buffer with `rmail-summary-window-size'.
 
 === Mailing lists ===
 
-Use the handy command `M-x undigestify-rmail-message' when viewing a mailing
-list digest to split it into separate messages.  The original message is
-marked for deletion.
+Use the handy command `M-x undigestify-rmail-message' when viewing a
+mailing list digest to split it into separate messages.  The original
+message is marked for deletion.
 
 == Writing mail ==
 
-If you are outside a [[Rmail]] buffer (or summary buffer), you can
-either use 'C-x m' or use 'M-x mail'.
+To start writing a new message, you can use `C-x m' or `M-x mail' from
+anywhere in Emacs.
 
-If in a [[Rmail]] buffer, just press 'm' to create a new mail, 'r' to
-reply to a message, 'f' to forward a message.
+If you are in an rmail buffer, just press `m' to create a new mail, `r' to
+reply to a message, or `f' to forward a message.
 
-Whatever you do, you will end up using MailMode to write a mail (if
-`mail-user-agent' value is 'sendmail-user-agent or derived)
+By default, rmail uses [[MailMode]] for composition. You can change
+this by setting the `mail-user-agent' variable:
+
+<pre>
+;; Use Mail mode to compose messages (default)
+(setq mail-user-agent 'sendmail-user-agent)
+
+;; To use Message mode instead:
+(setq mail-user-agent 'message-user-agent)
+</pre>
 
 == Sorting mail ==
 
@@ -176,7 +188,7 @@ copy: Lisp:rmail-extras.el).
 Thread messages with
 [http://ftp.ccs.neu.edu/pub/people/ratinox/emacs-lisp/trmail.el trmail].
 
-RmailConversationSummary has a 
+RmailConversationSummary has a
 conversation view à la Gmail (no threading in the summary, list sender and
 beginning of message body instead).
 
