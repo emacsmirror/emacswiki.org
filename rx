@@ -27,6 +27,16 @@ Here is one way in which to temporarily extend the keywords used by rx for speci
         ,@body-forms)))
 }}}
 
+For the newer version, use:
+{{{
+(defmacro rx-extra (&rest body-forms)
+  `(rx-let ((file (+ (or alnum digit "." "/" "-" "_")))
+            (ws0 (0+ (any " " "\t")))
+            (ws+ (+ (any " " "\t")))
+            (int (+ digit)))
+     ,@body-forms))
+}}}
+
 Example of using the above rx-extra macro:
 
 {{{ 
