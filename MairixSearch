@@ -1,6 +1,8 @@
 Mairix is a tool for indexing and searching words in locally stored mail
 (see: http://www.rpcurnow.force9.co.uk/mairix/index.html).
 
+Mairix comes with Emacs 23 and above.
+
 With the package mairix.el, you can call mairix from within Emacs to search and
 index your mails. Currently, [[Rmail]], [[Gnus]] and [[VM]] are supported to display the
 search results (mbox format). However, mairix.el tries to be pretty
