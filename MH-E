@@ -1,5 +1,4 @@
 [[es:MheEs]]
-= Introduction to MH and MH-E =
 
 This is the Emacs frontend to '''Rand Mail Handler''', aka MH. 
 MH is a ''mail user agent'' (MUA) for the unix shell.
@@ -7,30 +6,20 @@ Instead of being one monolithic program, all functionality is provided
 by a collection of small tools.  Thus one uses one's shell itself to
 drive it, and because of the way the messages are each in their own
 file, and folders are implemented as file-system directories, any
-general command can be used too. The
-modern MH implementation is called "nmh".  It lives at
-[http://savannah.nongnu.org Savannah], and has a homepage at
-[http://www.nongnu.org/nmh nongnu.org/nmh].
+general command can be used, too. The
+modern MH implementation is called "nmh".
 
-Other, non-Emacs frontends to MH are the various shell commands (see
-the manpages for '''nmh'''(1) or '''mh-chart'''(1) for a list of the
-available commands), the basic X11 '''xmh'''(1x) and exmh, written in
-Tcl%%/%%Tk.  Exmh homepage is at http://exmh.sourceforge.net/.  Another
-Emacs interface called '''tmh''' was written by ThienThiNguyen, but
-since it hasn't been updated since late 1994, it ought to be
-considered of historical interest only.  It has been archived at the
-author's webpage at http://www.gnuvola.org/software/tmh/.
+
 
 = About the documentation =
 
-The MH-E homepage is on SourceForge, at http://mh-e.sourceforge.net.
 MH-E has it's own InfoMode documentation which comes with Emacs. The most recent version
 is 8.0 which is now being kept in sync with the released version of the
 software. [http://sourceforge.net/forum/forum.php?forum_id=566555]
 
-In many MH-E submodes <code>?</code> (`mh-help') provides a quick list of some the most common keybindings.
+In many MH-E submodes, pressing <code>?</code> provides a quick list of keybindings.
 
-Then there is the O'Reilly book by Jerry Peek entitled "MH & nmh: Email for Users & Programmers" which is freely available at http://rand-mh.sourceforge.net/book/ (massive props to Jerry). It used to have a chapter on MH-E, but the official documentation included with Emacs has supplanted it due to Bill Wohler's hard work.
+There is also the book by Jerry Peek: //"MH & nmh: Email for Users & Programmers"//.
 
 = Forums =
 
@@ -39,9 +28,7 @@ Several mailinglists exist on SourceForge, namely "mh-e-announce",
 gatewayed via the marvellous Gmane, which lives at
 http://www.gmane.org.  Through this service one can access the lists
 not only with HTTP (SourceForge provides this too), but with NNTP.
-Fancy that!  Contact the NNTP server '''news.gmane.org''' or see
-webpage http://dir.gmane.org/index.php?prefix=gmane.mail.mh-e for a
-directory of all related groups.  The archives make a good read.
+Fancy that!  Contact the NNTP server '''news.gmane.org'''
 
 = Making MH-E dance to your tune =
 
@@ -64,16 +51,10 @@ user-friendly CustomizingAndSaving interface '''Customize''' to be
 accessed with the `customize-group'.
 
 If you'd like to configure MH-E to be your preferred mail-composing
-system, set the MailclientConfiguration variable `mail-user-agent' to
-<code>'mh-e-user-agent</code>.  If you're using the GnuEmacs, you can
+system, set `mail-user-agent' to
+<code>'mh-e-user-agent</code>.  If you're using GnuEmacs, you can
 also prefer MH-E for reading your mail, by setting `read-mail-command'
 to <code>'mh-rmail</code>.
-
-It's hard to tell if MH-E is the most widely used MUA for Emacs, or in
-general, but [[tekonivel]] digs it, being such a UnixZealot.
-
-[new]
-Some other folks around here are pretty fond of it as well! &#8212;JerameyCrawford
 
 = Basic MH-E setup with nmh, fetchmail and msmtp =
 msmtp is useful when you have more than one mail addresses. It reads "From:" field and uses corresponding account. Should be built with GNU TLS support to be used with gmail (make WITH_GNUTLS=YES).
@@ -136,7 +117,7 @@ mts.conf (mine is here: /usr/local/etc/nmh/mts.conf):
 
 Also place "From: Your Name <username@gmail.com>" before "To:" in these files in ~/Mail: components, replcomps, forwcomps. After that you can send your mail using any of your accounts by editing "From:" field in your mail composing buffer.
 
-How to get gmail certificates for fetchmail: http://www.axllent.org/docs/networking/gmail_pop3_with_fetchmail
+[http://www.axllent.org/docs/networking/gmail_pop3_with_fetchmail How to get gmail certificates for fetchmail]
 
 !ThawtePremiumServerCA.crt for gmail support in msmtp you can get here (I renamed !ThawtePremiumServerCA_b64.txt) : https://www.verisign.com/support/thawte-roots.zip
 
@@ -211,15 +192,13 @@ Important! Do not forget to "$ c_rehash ~/.certs/"
 
 = Add-ons =
 
-MhBiff is apparently a mail-notification tool, with a Japanese webpage
-at http://www.yynet.tama.tokyo.jp/~yokota/mh-biff/ (editors note:
-anyone with a more fluent Japanese than my anime-japanese care to
-summarize the contents of that page onto MhBiff?).  MhCrypt,
-Lisp:mh-crypt.el, is an utility to store the messages in an encrypted
+MhBiff ([http://www.yynet.tama.tokyo.jp/~yokota/mh-biff/ Website])is a mail-notification tool. MhCrypt,
+(Lisp:mh-crypt.el) is an utility to store the messages in an encrypted
 format.  With a quick glance it seems this would break mh outside of
 MH-E.
 
 = Alternative to MhBiff =
+
 For those who do not understand japanese well, there is another way to get mail notification: (display-time) function with some tweaks (useful in case of multiple mail folders)
 
     ;; Notification stuff: use display-time minor mode to notify about new mail
@@ -241,6 +220,28 @@ For those who do not understand japanese well, there is another way to get mail 
           display-time-mail-face 'custom-themed)
     
     (display-time)
+
+= Other MH Clients =
+
+Aside from Emacs' MH-E, you can control MH through various shell commands (see
+the manpages for '''nmh'''(1) or '''mh-chart'''(1))
+
+Then there are the GUI clients, '''xmh''' and exmh, written in
+Tcl%%/%%Tk.
+
+There's another Emacs interface called '''tmh''', written by ThienThiNguyen, but
+since it hasn't been updated since late 1994. It has been archived at the
+author's webpage at 
+= External Links =
+
+* [http://savannah.nongnu.org Savannah]
+* [http://www.nongnu.org/nmh nmh's website]
+* [http://mh-e.sourceforge.net MH-E's homeage]
+* [http://www.yynet.tama.tokyo.jp/~yokota/mh-biff/ MH-Biff]
+* [http://rand-mh.sourceforge.net/book/ Jerry Peek's MH book]
+* [http://exmh.sourceforge.net/ Exmh's homepage]
+* [http://www.gnuvola.org/software/tmh/ tmh archived page]
+* [http://dir.gmane.org/index.php?prefix=gmane.mail.mh-e Directory of MH-E groups]
 
 ----
 
