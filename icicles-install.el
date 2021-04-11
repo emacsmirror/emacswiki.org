@@ -234,7 +234,7 @@ This uses package `url' if available or `wget' otherwise."
 Create the download directory if it does not exist."
   (dolist (file-to-download icicle-files-to-download-list t)
     (icicle-download-and-save-file file-to-download)
-    (sleep-for 2)))            ; Sleep to prevent overloading the site
+    (sleep-for 5)))            ; Sleep to prevent overloading the site
 
 ;;;###autoload
 (defun icicle-byte-compile-downloaded-files ()
