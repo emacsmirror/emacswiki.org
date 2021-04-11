@@ -59,7 +59,7 @@ Some helpful keys:
 * <code>?</code> - Full list of keybindings
 * <code>n</code> - Next message
 * <code>p</code> - Previous message
-* <code>d</code> - Mark current message for deletin
+* <code>d</code> - Mark current message for deletion
 * <code>u</code> - Unmark current message
 * <code>x</code> - Delete all marked messages
 * <code>r</code> - Reply
