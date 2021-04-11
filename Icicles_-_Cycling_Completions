@@ -36,7 +36,8 @@ binding '''`M-k'''' to do that.
 
 A visible and audible signal lets you know when you have reached one
 end of the list of completion candidates, but you can of course
-continue to cycle, wrapping around.
+continue to cycle, wrapping around.  (If you want to
+prevent wrap-around, customize [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-wrap-around-cycling-flag|icicle-wrap-around-cycling-flag]]</tt>''''.)
 
 If the completion candidates are already displayed in buffer `*Completions*' when you try to cycle among them (because you hit `TAB'), then
 the current candidate is ''highlighted'' in `*Completions*' as you access it in the
