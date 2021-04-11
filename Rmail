@@ -46,7 +46,7 @@ variables:
  shr-bullet "• ")   ; A bullet character for <li> elements
 </pre>
 
-Note that the `shr' variables also apply to the [[EmacsWebWowser]]
+Note that the `shr' variables also apply to [[eww]]
 
 == Basic Usage ==
 
