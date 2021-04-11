@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Feb 21 20:30:46 2021 (-0800)
+;; Last-Updated: Sun Apr 11 08:29:41 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 30076
+;;     Update #: 30078
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5437,6 +5437,12 @@
 ;;    `TAB' and `S-TAB' (actually the keys that are the values of
 ;;    options `icicle-prefix-complete-keys' and
 ;;    `icicle-apropos-complete-keys') from also cycling candidates.
+;;
+;;  * Non-`nil' option `icicle-wrap-around-cycling-flag' means cycling
+;;    wraps around to the beginning or end of the current completion
+;;    candidates after it reaches the end or the beginning,
+;;    respectively.  This is the default behavior; customize the value
+;;    to `nil' if you don't want wrap-around.
 ;;
 ;;  * Non-`nil' user option `icicle-TAB-shows-candidates-flag' means
 ;;    that hitting `TAB' for completion immediately shows the
