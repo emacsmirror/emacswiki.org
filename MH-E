@@ -1,16 +1,16 @@
 [[es:MheEs]]
 = Introduction to MH and MH-E =
 
-This is the standard Emacs frontend to '''Rand Mail Handler''', aka MH. 
-MH is a ''mail user agent'' (MUA) for unix shell environment.
+This is the Emacs frontend to '''Rand Mail Handler''', aka MH. 
+MH is a ''mail user agent'' (MUA) for the unix shell.
 Instead of being one monolithic program, all functionality is provided
 by a collection of small tools.  Thus one uses one's shell itself to
 drive it, and because of the way the messages are each in their own
 file, and folders are implemented as file-system directories, any
-general command can be used too in the most natural, UnixWay.  The
+general command can be used too. The
 modern MH implementation is called "nmh".  It lives at
 [http://savannah.nongnu.org Savannah], and has a homepage at
-http://www.nongnu.org/nmh.
+[http://www.nongnu.org/nmh nongnu.org/nmh].
 
 Other, non-Emacs frontends to MH are the various shell commands (see
 the manpages for '''nmh'''(1) or '''mh-chart'''(1) for a list of the
@@ -21,11 +21,6 @@ since it hasn't been updated since late 1994, it ought to be
 considered of historical interest only.  It has been archived at the
 author's webpage at http://www.gnuvola.org/software/tmh/.
 
-We all know this is not the place to get into a MuaWar (though
-reasonable ComparisonOfMuas would be fine) but let's face it, MH-E
-r0xx0rz and h@Rd!  It also has been blessed by inclusion with both
-flavours of Emacsen, and thus is Good.
-
 = About the documentation =
 
 The MH-E homepage is on SourceForge, at http://mh-e.sourceforge.net.
@@ -33,9 +28,9 @@ MH-E has it's own InfoMode documentation which comes with Emacs. The most recent
 is 8.0 which is now being kept in sync with the released version of the
 software. [http://sourceforge.net/forum/forum.php?forum_id=566555]
 
-In many MH-E submodes `?' (`mh-help') provides a quick list of some the most common keybindings.
+In many MH-E submodes <code>?</code> (`mh-help') provides a quick list of some the most common keybindings.
 
-Then there is the book O'Reilly book by Jerry Peek entitled "MH & nmh: Email for Users & Programmers" which is freely available at http://rand-mh.sourceforge.net/book/ (massive props to Jerry). It used to have a chapter on MH-E, but the official documentation included with Emacs has supplanted it due to Bill Wohler's hard work.
+Then there is the O'Reilly book by Jerry Peek entitled "MH & nmh: Email for Users & Programmers" which is freely available at http://rand-mh.sourceforge.net/book/ (massive props to Jerry). It used to have a chapter on MH-E, but the official documentation included with Emacs has supplanted it due to Bill Wohler's hard work.
 
 = Forums =
 
@@ -48,18 +43,19 @@ Fancy that!  Contact the NNTP server '''news.gmane.org''' or see
 webpage http://dir.gmane.org/index.php?prefix=gmane.mail.mh-e for a
 directory of all related groups.  The archives make a good read.
 
-Though it seems most of the people on the IRC EmacsChannel are using
-[[Gnus]] instead, if you wish to discuss MH-E, you're of course most
-welcome.
-
 = Making MH-E dance to your tune =
 
-When configuring, it is often a GoodIdea to tweak the natural files of
-''mh'' itself, the <code>.mh_profile</code> for example.  This is the
+When configuring, it is often a good idea to tweak the natural files of
+''MH'' itself, the <code>.mh_profile</code> for example.  This is the
 general way to configure things, and all the changes will inherit to
-any frontends.  If you shun such a blasphemous suggestion, remember
-that this is only a suggestion of an UnixZealot who wishes to a) also
-use mh via shell, and b) digs generality.  So go ahead, just fiddle
+any frontends.
+If you shun such a blasphemous suggestion, remember
+that this is only a suggestion of an Unix Zealot who wishes to:
+
+* a) also use mh via shell, and
+* b) digs generality.
+
+So go ahead, just fiddle
 with the mh-* variables if you feel like it.  Of course there are many
 options which make no sense to mh itself, and these frontend-specific
 things are to be set within the frontend itself.  Like any large and
