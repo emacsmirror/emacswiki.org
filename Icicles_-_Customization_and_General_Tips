@@ -905,6 +905,19 @@ options `icicle-prefix-complete-keys' and
 
 
 ----
+[:icicle-wrap-around-cycling-flag]
+==== Option icicle-wrap-around-cycling-flag ====
+
+Non-`nil' option '''`icicle-wrap-around-cycling-flag'''' means cycling
+wraps around to the beginning or end of the current completion
+candidates after it reaches the end or the beginning,
+respectively.  This is the default behavior; customize the value
+to `nil' if you don't want wrap-around.
+
+
+
+
+----
 [:icicle-TAB-shows-candidates-flag]
 ==== Option icicle-TAB-shows-candidates-flag ====
 
