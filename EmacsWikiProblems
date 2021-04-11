@@ -33,6 +33,9 @@ GNU Emacs 27.1 (build 1, x86_64-pc-linux-gnu, GTK+ Version 3.24.5)
 The site runs on a very small virtual machine and I'm using fail2ban to monitor regular connections. If there are more than 20 connections in 40s, you get banned for 10min at the firewall level. If this happens three times, you get banned for a week. The problem is that [[icicles-install.el]] waits for exactly 2s, but if you visit Emacs Wiki in another window, or otherwise prod the installer, it will trigger these protective measures. I've simply edited the icicles-install.el page and changed the sleeper from 2s to 5s. Perhaps that helps more people from banning themselves.
 – [[Alex Schroeder]]
 
+[new:DrewAdams:2021-04-11 15:55 UTC]
+Thanks, Alex! -- DrewAdams
+
 == Source code blocks edited in recent days not being syntax highlighted ==
 
 Source code blocks I, and others, have edited in recent days are not
