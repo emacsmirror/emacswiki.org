@@ -184,10 +184,6 @@ Emacs converts Babyl files back into mbox when it first reads them.
 * Lisp:rmail-saver.el - Save single messages to files
 * RmailSortHeaders - Always show headers in the same order
 
-== Searching Mails ==
-
-You can search through mail with <code>M-s</code>, or with .
-
 == Other Formats ==
 
 Rmail supports //mboxo// files. It does not have support for maildir, mh, mboxd, or other formats. Rmail can convert Babyl files to mboxo, though.
