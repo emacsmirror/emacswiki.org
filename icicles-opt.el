@@ -4,11 +4,11 @@
 ;; Description: User options (customizable variables) for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Jan  3 10:41:30 2020 (-0800)
+;; Last-Updated: Sat Apr 10 18:03:16 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 6234
+;;     Update #: 6236
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -240,6 +240,7 @@
 ;;    `icicle-use-anything-candidates-flag',
 ;;    `icicle-use-candidates-only-once-flag',
 ;;    `icicle-widgets-to-redefine', `icicle-word-completion-keys',
+;;    `icicle-wrap-around-cycling-flag',
 ;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
 ;;    `icicle-zap-to-char-candidates' (Emacs 23-25).
 ;;
@@ -5742,6 +5743,11 @@ this to `M-SPC', for instance, in `minibuffer-local-completion-map',
 `minibuffer-local-completion-map', and
 `minibuffer-local-must-match-map'."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
+
+(defcustom icicle-wrap-around-cycling-flag t
+  "Non-nil means wrap around when cycling candidates.
+Move to the first candidate after reaching the last, and vice versa."
+  :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-WYSIWYG-Completions-flag "MMMM"
   "*Non-nil means show candidates in `*Completions*' using WYSIWYG.
