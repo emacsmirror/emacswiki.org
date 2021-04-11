@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Apr  6 20:32:14 2021 (-0700)
+;; Last-Updated: Sat Apr 10 18:11:45 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 15306
+;;     Update #: 15307
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4716,13 +4716,17 @@ This is a destructive operation: the list structure is changed."
     newname))
 
 (defun icicle-increment-cand-nb+signal-end (incr max)
-  "Increment candidate number by INCR modulo MAX, and signal end of cycle."
+  "Increment candidate number by INCR modulo MAX, and signal end of cycle.
+If `icicle-wrap-around-cycling-flag' is nil then don't wrap around."
   (setq icicle-candidate-nb  (if icicle-candidate-nb
                                  (+ incr icicle-candidate-nb)
                                (if (natnump incr) 0 (1- max))))
   (let ((wrapped  (mod icicle-candidate-nb max)))
-    (when (and (/= wrapped icicle-candidate-nb)  (eq last-command this-command))
-      (let ((visible-bell  t))  (ding)))
+    (when (and (/= wrapped icicle-candidate-nb)
+               (eq last-command this-command))
+      (let ((visible-bell  t)) (ding))
+      (unless icicle-wrap-around-cycling-flag
+        (setq wrapped (if (natnump incr) (1- max) 0))))
     (setq icicle-candidate-nb  wrapped)))
 
 (defun icicle-place-cursor (input &optional dont-activate-p)
