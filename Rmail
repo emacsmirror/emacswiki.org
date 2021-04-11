@@ -177,22 +177,12 @@ Emacs converts Babyl files back into mbox when it first reads them.
 
 == Rmail Libraries ==
 
-Read mail from remote inboxes using ange-ftp with rmail-extras
-http://bmrc.berkeley.edu/~trey/emacs/src/rmail-extras.el (dead link? Local
-copy: Lisp:rmail-extras.el).
-
-Thread messages with
-[http://ftp.ccs.neu.edu/pub/people/ratinox/emacs-lisp/trmail.el trmail].
-
-RmailConversationSummary has a
-conversation view à la Gmail (no threading in the summary, list sender and
-beginning of message body instead).
-
-Generate guesses for output and FCC files using rmailgen -- Lisp:rmailgen.el
-
-Save single messages to files using rmail-saver -- Lisp:rmail-saver.el
-
-Always show headers in the same order -- RmailSortHeaders
+* Lisp:rmail-extras.el - Read mail from remote inboxes using ange-ftp
+* [http://ftp.ccs.neu.edu/pub/people/ratinox/emacs-lisp/trmail.el trmail] - Threads in rmail
+* RmailConversationSummary - conversation view à la Gmail (no threading)
+* Lisp:rmailgen.el - Generate guesses for output and FCC files 
+* Lisp:rmail-saver.el - Save single messages to files
+* RmailSortHeaders - Always show headers in the same order
 
 == Searching Mails ==
 
