@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Apr  6 20:29:08 2021 (-0700)
+;; Last-Updated: Sat Apr 10 18:12:14 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 11916
+;;     Update #: 11918
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2337,6 +2337,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2021/04/10 dadams
+;;     icicle-increment-cand-nb+signal-end: Respect new option, icicle-wrap-around-cycling-flag.
 ;; 2021/04/06 dadams
 ;;     icicle-get-candidates-from-saved-set: Ensure point is bob before trying to read.
 ;; 2021/03/17 dadams
@@ -7914,6 +7916,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2021/04/10 dadams
+;;     Added icicle-wrap-around-cycling-flag.
 ;; 2018/03/02 dadams
 ;;     icicle-buffer-candidate-key-bindings: Added icicle-(keep|remove)-buffer-cands-for-indirect.
 ;; 2018/02/13 dadams
