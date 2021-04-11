@@ -68,13 +68,9 @@ Some helpful keys:
 * <code>i</code> - Open an mbox file
 * <code>a</code> - Add label to current message
 * <code>l</code> - Filter inbox by label
-* <code>M-s</code> - Search all mail
+* <code>M-s</code> - Search all mail (also see [[MairixSearch]])
 
-Rmail //used// to store mail in a [[Babyl]] file. As of Emacs 23,
-rmail uses a standard [http://web.archive.org/web/20160304055659/http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html mbox format]:
-mboxo. mboxo performs some irreversible conversions such as replacing
-<code>From</code> in the body of a mail with <code>>From</code> if it
-occurs at the start of a line.  For most people this is unimportant.
+
 
 == Reading mail ==
 
@@ -200,7 +196,27 @@ Always show headers in the same order -- RmailSortHeaders
 
 == Searching Mails ==
 
-You can search through mail with <code>M-s</code>, or with [[MairixSearch]].
+You can search through mail with <code>M-s</code>, or with .
+
+== Other Formats ==
+
+Rmail supports //mboxo// files. It does not have support for maildir, mh, mboxd, or other formats. Rmail can convert Babyl files to mboxo, though.
+
+Rmail //used// to store mail in a [[Babyl]] file. As of Emacs 23,
+rmail uses a standard [http://web.archive.org/web/20160304055659/http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html mbox format]:
+mboxo. mboxo performs some irreversible conversions such as replacing
+<code>From</code> in the body of a mail with <code>>From</code> if it
+occurs at the start of a line.  For most people this is unimportant.
+
+== Encryption ==
+
+You can enable TLS encryption by setting `rmail-movemail-flags':
+
+<pre>
+(setq rmail-movemail-flags "--tls")
+</pre>
+
+Another possible method is by using Stunnel.
 
 == External Links ==
 
@@ -209,24 +225,7 @@ You can search through mail with <code>M-s</code>, or with [[MairixSearch]].
 * [https://muto.ca/posts/actually-using-emacs-rmail.html Muto's rmail article]
 * [https://alexschroeder.ch/wiki/2020-12-17_Rmail Alex Schroder's rmail post]
 * [http://ruzkuku.com/texts/rmail.html Philip K.'s rmail article]
-
-== Open Questions ==
-
-How do I download e-mails with movemail from remote POP3 mailboxes
-with SSL? The GNU mailutils movemail version doesn't seem to support
-SSL, only TLS encryption.
-
--- TLS is just a synonym for SSL, to setting rmail-movemail-flags to "--tls" does the job.
-
--- No way, I tried and movemail says some "I/O error", I don't know why.  On the movemail list people raccomend using `stunnel' to tunnel the connection using SSL.  So really TLS != SSL.  I think I'm back to fetchmail.  And maybe another more modern emacs e-mail client that has built-in support for such basic things as MIME...  Any suggestions?
-
--- "--tls" only worked for me after installing GNU mailutils, although I could get email with rmail before installing GNU mailutils
-
-How do you use Emacs to sort RMAIL email based on SpamAssassin headers?...
-
-Please list instructions for a Postfix Maildir mailbox. These don't work: http://support.cs.utah.edu/index.php?option=com_content&view=article&id=26&Itemid=52 I tried without the "mdmovemail" line since there's a "movemail" in the /usr filesystem. Regards
-
-Can it support mboxrd files?
+* [https://www.stunnel.org/ Stunnel's homepage]
 
 ----
 CategoryMail
