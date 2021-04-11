@@ -74,11 +74,9 @@ Some helpful keys:
 
 == Reading mail ==
 
-Pressing `h' makes a summary window appear.  You can navigate between
-messages with the `n' and `p' keys for next and previous respectively.
-The space key, `SPC', scrolls down through messages.  When you get to
-the end of a message, it goes on to the next message.  The `DEL' key
-does the same but in the opposite direction.
+* The `h' key makes a list of messages (summary) appear.
+* Select the next/previous message with `n' and `p'.
+* Use `Spacebar' and `Backspace' to scroll through the current message.
 
 You can tell how many messages you want to appear in the summary
 buffer with `rmail-summary-window-size'.
