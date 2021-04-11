@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Feb 21 20:35:08 2021 (-0800)
+;; Last-Updated: Sun Apr 11 08:38:46 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 28668
+;;     Update #: 28672
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2542,7 +2542,9 @@
 ;;
 ;;  A visible and audible signal lets you know when you have reached
 ;;  one end of the list of completion candidates, but you can of
-;;  course continue to cycle, wrapping around.
+;;  course continue to cycle, wrapping around.  (If you want to
+;;  prevent wrap-around, customize option
+;;  `icicle-wrap-around-cycling-flag'.)
 ;;
 ;;  If the completion candidates are already displayed in buffer
 ;;  `*Completions*' when you try to cycle among them (because you hit
