@@ -36,6 +36,11 @@ The site runs on a very small virtual machine and I'm using fail2ban to monitor 
 [new:DrewAdams:2021-04-11 15:55 UTC]
 Thanks, Alex! -- DrewAdams
 
+[new]
+Thanks for the help, it solved my problem!
+Feel free to remove the entry.
+--- AnonymousCoward
+
 == Source code blocks edited in recent days not being syntax highlighted ==
 
 Source code blocks I, and others, have edited in recent days are not
