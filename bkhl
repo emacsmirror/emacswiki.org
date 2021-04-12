@@ -2,9 +2,15 @@
 
 Systems engineer working with television and stuff.
 
-; Home page : http://elektrubadur.se/
+; [https://elektrubadur.se/ Elektrubadur] : My home page/blog.
 
 I use Emacs.
+
+== Emacs configuration and packages ==
+
+; [https://gitlab.com/bkhl/dotfiles/-/blob/master/.emacs.d/configuration.org configuration.org] : My Emacs configuration in org-mode format.
+; [https://gitlab.com/bkhl/trimspace-mode trimspace-mode] : Minor mode to handle enabling/disabling of automatic stripping of whitespace.
+ 
 
 ----
 CategoryHomepage
