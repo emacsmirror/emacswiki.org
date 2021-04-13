@@ -1,8 +1,45 @@
-Mpc is major mode providing an interface to the MPD music player daemon, which aims to look and behave a bit like Rhythmbox, bundled with Gnu Emacs 23.2 and later.
-To start using it, follow the instructions at [http://mpd.wikia.com/wiki/Install] to install mpd and run <code>M-x mpc</code>.
+'''Mpc''' is the Emacs frontend to '''MPD''', the Music Player Daemon. It aims to look and feel similar to Rhythmbox.
 
+Mpc first appeared in Emacs 23.2.
 
-----
-Discussion
+== Usage ==
 
-Does it work for someone in a linux console ? -- XavierMaillard
+You will need to install `mpd' on your computer and configure it like so:
+
+{{{
+# inside ~/.config/mpd/mpd.conf
+# This example is for PulseAudio
+
+ bind_to_address "127.0.0.1"
+ music_directory "~/music"
+
+ audio_output {  
+     type       "pulse"  
+     name       "pulse audio"
+     device     "pulse" 
+     mixer_type "hardware" 
+ }  
+
+audio_output {
+    type   "fifo"
+    name   "my_fifo"
+    path   "/tmp/mpd.fifo"
+    format "44100:16:2"
+}
+}}}
+
+Then you can run it with the `mpd' command, and from then you can run `M-x mpc' from inside Emacs.
+
+== Configuration ==
+
+You can use <code>M-x customize-group <RET> mpc </code> to customize the client. You can change some variables in <code>init.el</code> like so:
+
+{{{
+(setq
+  mpc-browser-tags '(Artist Album)
+  mpc-songs-format "%-5{Time} %25{Title} %20{Album} %20{Artist}"
+}}}
+
+== External Links == 
+
+* [https://www.musicpd.org/ MPD's homepage]
