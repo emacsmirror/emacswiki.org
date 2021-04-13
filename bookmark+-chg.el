@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Mar 17 14:04:47 2021 (-0700)
+;; Last-Updated: Tue Apr 13 08:53:25 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16755
+;;     Update #: 16783
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,18 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/04/13 dadams
+;;     Added: bmkp-get-bookmark.  Removed redefinition of vanilla bookmark-get-bookmark.
+;;       Problem was that some 3rd-party code uses bookmark-prop-set with unfinished bookmark record
+;;       that has no name.  Thx to Daniel Fleischer.
+;;     bookmark-prop-set: Added optional arg REQUIRE-NAME-P.  Pass it to bmkp-get-bookmark.
+;;     bookmark-handle-bookmark, bookmark-default-handler, bmkp-jump-1,
+;;      bmkp-show-this-annotation-read-only, bmkp-edit-this-annotation, bmkp-clone-bookmark,
+;;      bmkp-update-autonamed-bookmark, bmkp-*-bookmark-p, bmkp-*-(c)p, bmkp-insert-bookmark-link,
+;;      bmkp-describe-bookmark(-internals), bmkp-bookmark-description, bmkp-handle-region-default,
+;;      bmkp-set-sequence-bookmark, bmkp-set-eww-bookmark-here, bmkp-jump-man,
+;;      bmkp-cycle(-1|-this-(file|buffer)):
+;;        Use bmkp-get-bookmark, not bookmark-get-bookmark.
 ;; 2021/03/17 dadams
 ;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/03/09 dadams
