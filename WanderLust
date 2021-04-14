@@ -146,9 +146,8 @@ If the appropriate elmo-imap4-default-* variables are set then this is no proble
 %/:'username@campus.someuniversity.edu'/clear@serverdomain.com:993!
 
 == Getting Help ==
-Please read the Info Manual carefully:  (<code>M-x info RET >> C-s Wanderlust</code>). 
-as there is an enormous wealth of knowledge and variables to tweak. The most active channel of wanderlust discussion (in English) 
-is the mailing list.
+
+The Manual has loads of info: <code>C-h i m Wanderlust</code>.
 
 === Mailing List ===
 You can get information and help via the mailing list: 
