@@ -99,15 +99,6 @@ In many MH-E submodes, pressing <code>?</code> provides a quick list of keybindi
 
 There is also the book by Jerry Peek: <i>[https://rand-mh.sourceforge.io/book/ MH & nmh: Email for Users & Programmers]</i>.
 
-= Forums =
-
-Several mailinglists exist on SourceForge, namely "mh-e-announce",
-"mh-e-devel" and "mh-e-users".  All of these are bidirectionally
-gatewayed via the marvellous Gmane, which lives at
-http://www.gmane.org.  Through this service one can access the lists
-not only with HTTP (SourceForge provides this too), but with NNTP.
-Fancy that!  Contact the NNTP server '''news.gmane.org'''
-
 = Making MH-E dance to your tune =
 
 When configuring, it is often a good idea to tweak the natural files of
