@@ -9,3 +9,12 @@ I can agree with Claire: MH-E is very cute and smooth! It's a shame nmh doesn't 
 
 -- [https://muto.ca muto] 2021-04-14 04:50 UTC
 
+
+----
+
+The advantage of using Maildir as the backing store is that you could access your mail through IMAP too.  [https://mailutils.org/manual/mailutils.html#mh GNU mailutils has an MH implementation], and I think, is supposed to allow you to have different sorts of mailboxes that you can access with its several frontends.  When I last looked into it (several years ago), the documentation was bad enough that I couldn’t even figure out what it claimed to be able to do, but it seems like it’s been updated since then and has a lot more detail.
+
+Jerry Peek’s book is a fantastic reference; although some things may have changed between MH and nmh, I think the book is probably still mostly relevant, especially for things like filters and formatting strings.
+
+-- ClaireConnelly 2021-04-14 17:39 UTC
+
