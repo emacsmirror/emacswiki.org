@@ -97,7 +97,7 @@ Wanderlust doesn't automatically display your IMAP folders. You can do so by add
 }}}
 
 === Setting up with Gmail ===
-Check that you have enabled IMAP in your Gmail account settings, then put the following in your .wl:
+Check that you have enabled IMAP in your Gmail account settings, then put the following in your init file OR in <code>.wl</code>:
 {{{
 
 ;; For non ascii-characters in folder-names
