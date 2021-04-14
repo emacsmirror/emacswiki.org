@@ -47,41 +47,31 @@ There's tons of more stuff you can do so reading the manual is a must. (<code>M-
 
 
 == Configuration (Quickstart) ==
+
+For the new user, configuration can be confusing. This guide aims to ease that pain.
+
 To get started, add the following line to your InitFile:
 <pre>
 (autoload 'wl "wl" "Wanderlust" t)
 </pre>
 
-As well as your InitFile, wl reads its configuration from two places: ~/.wl and ~/.folders. Samples of each file which include a few tips: [[.wl]] and [[.folders]].
+As well as your init file, wl reads ~/.folders. See [[.wl]] and [[.folders]] for more tips.
 
-For the new user, the configuration can be quite troublesome. I had to look up most info myself in the wl mailing archives, which was a very tiresome process. I hope the following section helps you getting started with wanderlust.
+The first thing you will want to do is setup your folder. In the ''folder'' view, go to the next line after Desktop, hit `m a' and add the folder information. You'll need to read the manual (accessible via info or on the website) about the format and options. If a connection has been established, you can enter the password. `M-x elmo-passwd-alist-save' lets you save your passwords to ~/.elmo/passwd, so that you don't have to enter them every time. `m p' on a folder gives the folder a nickname. `s' on a folder syncs it (checks for updates on the server). `q' exits the current view and asks if changes should be performed.
 
-(This section is only a stub and will be updated gradually.)
+Wanderlust doesn't automatically display your IMAP folders. You can do so by adding <code>%/</code> to your <code>.folders</code> file. There are also other types, as per this example:
 
-The first thing you will want to do is setup your folder. In folder view, go to the next line after Desktop, hit `m a' and add the folder information. You'll need to read the manual (accessible via info or on the website) about the format and options. If a connection has been established, you can enter the password. `M-x elmo-passwd-alist-save' lets you save your passwords to ~/.elmo/passwd, so that you don't have to enter them every time. `m p' on a folder gives the folder a nice pet name (which you can choose, of course). `s' on a folder syncs it (checks for updates on the server). `q' exits the current view and asks if changes should be performed.
+{{{
+# Display all IMAP folders in reverse order.
+# Use 'M s' to sort alphabetically.
+%/
 
-Wanderlust doesn't automatically display all your IMAP folders. Add:
+# Produce a tree of shimbun feeds, which you can browse:
+@/
 
-    %/
-
-to your .folders to get all your folders. This doesn't obey your
-subscribed list, but at least it shows your folders. Annoyingly it all
-sorts them in reverse order.
-
-(It is not difficult to sort them in alphabetical order: simply type
-"m s" on the parent folder.)
-
-You can use the same notation to browse any of wanderlust's folder types. For instance, the following in your .folders file:  
-
-    @/
-
-will produce a hierarchical tree of all shimbun feeds, which you can then browse.
-
-Similarly,
-
-    -/
-
-will show you the complete hierarchy of newsgroups available on your default nntp server. 
+# Show newsgroups available on your default NNTP server:
+~/
+}}}
 
 === Setting up with Gmail ===
 Check that you have enabled IMAP in your Gmail account settings, then put the following in your .wl:
