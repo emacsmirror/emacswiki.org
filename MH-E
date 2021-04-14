@@ -60,13 +60,22 @@ account default : main
 * `user' - The username of our account
 * `password' - Our email password
 * `account default' - Which account to use (we only have the one)
-}}}
 
 Now that SMTP is configured via msmtp, we can send mail!
 
 === MH-E ===
 
-(saving here because i wrote a bit already)
+Start MH-E from Emacs with <code>M-x mh-nmail</code>. This will open your MH inbox.
+
+You can control mh-nmail with the following keys:
+
+* `i' - Get new mail (with the 'inc' command)
+* `o' - Move message to another folder
+* `r' - Reply to current message
+* `s' - Start writing a new email
+* `F v' - Visit another folder
+* `n/p' - Next / previous message in current folder
+* <code>?</code> - See a small help menu.
 
 = About the documentation =
 
