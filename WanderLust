@@ -57,7 +57,30 @@ To get started, add the following line to your InitFile:
 
 As well as your init file, wl reads ~/.folders. See [[.wl]] and [[.folders]] for more tips.
 
-The first thing you will want to do is setup your folder. In the ''folder'' view, go to the next line after Desktop, hit `m a' and add the folder information. You'll need to read the manual (accessible via info or on the website) about the format and options. If a connection has been established, you can enter the password. `M-x elmo-passwd-alist-save' lets you save your passwords to ~/.elmo/passwd, so that you don't have to enter them every time. `m p' on a folder gives the folder a nickname. `s' on a folder syncs it (checks for updates on the server). `q' exits the current view and asks if changes should be performed.
+We want to tell Wanderlust where our email account is. We can do this in <code>~/.folders</code>:
+
+{{{
+# The .folders file: Specify our folders and accounts.
+
+# Connect to an IMAP server with %
+%INBOX:"me@example.com"/clear@mail.example.com:993! "INBOX"
+
+# Or from an MH folder with +
+# +~/mail/inbox
+
+# Or from a maildir folder with .
+# .~/maildir/inbox
+
+# Or from an NNTP server with -
+# -some.group@some.nntp.server
+}}}
+
+Then from inside Emacs, you can use <code>M-x wl</code> to start Wanderlust. If you're connecting directly to your IMAP server, you will be asked for a password. Afterwards, if you use <code>M-x elmo-passwd-alist-save</code>, your password will be stored in <code>~/.elmo/passwd</code>
+
+* `m p' - Give a folder a nickname.
+* `s' - Sync with the server (check for new mail)
+* `q' - Quit Wanderlust
+* <code>?</code> - Get a help menu
 
 Wanderlust doesn't automatically display your IMAP folders. You can do so by adding <code>%/</code> to your <code>.folders</code> file. There are also other types, as per this example:
 
@@ -76,51 +99,37 @@ Wanderlust doesn't automatically display your IMAP folders. You can do so by add
 === Setting up with Gmail ===
 Check that you have enabled IMAP in your Gmail account settings, then put the following in your .wl:
 {{{
-;; IMAP, gmail:
-(setq elmo-imap4-default-server "imap.gmail.com"
-      elmo-imap4-default-user "myname@gmail.com"
-      elmo-imap4-default-authenticate-type 'clear
-      elmo-imap4-default-port '993
-      elmo-imap4-default-stream-type 'ssl
 
-      ;; For non ascii-characters in folder-names
-      elmo-imap4-use-modified-utf7 t)
+;; For non ascii-characters in folder-names
+(setq elmo-imap4-use-modified-utf7 t)
 
 ;; SMTP
-(setq wl-smtp-connection-type 'starttls
-      wl-smtp-posting-port 587
-      wl-smtp-authenticate-type "plain"
-      wl-smtp-posting-user "myname"
-      wl-smtp-posting-server "smtp.gmail.com"
-      wl-local-domain "gmail.com"
-      wl-message-id-domain "smtp.gmail.com")
+(setq
+  wl-smtp-connection-type   'starttls         ; Use TLS
+  wl-smtp-posting-port      587               ; The SMTP port
+  wl-smtp-authenticate-type "plain"           ; Authentication type
+  wl-smtp-posting-user      "myname"          ; Username
+  wl-smtp-posting-server    "smtp.gmail.com"  ; SMTP server
+  wl-local-domain           "gmail.com"       ; The SMTP server again
+  wl-message-id-domain      "smtp.gmail.com") ; And... Again?
 
-(setq wl-from "My Name <myname@gmail.com>"
+(setq
+  ;; All system folders (draft, trash, spam, etc) are placed in the
+  ;; [Gmail]-folder, except inbox. "%" means it's an IMAP-folder
+  wl-default-folder "%inbox"
+  wl-draft-folder   "%[Gmail]/Drafts"
+  wl-trash-folder   "%[Gmail]/Trash"
 
-      ;; All system folders (draft, trash, spam, etc) are placed in the
-      ;; [Gmail]-folder, except inbox. "%" means it's an IMAP-folder
-      wl-default-folder "%inbox"
-      wl-draft-folder   "%[Gmail]/Drafts"
-      wl-trash-folder   "%[Gmail]/Trash"
-      ;; The below is not necessary when you send mail through Gmail's SMTP server,
-      ;; see https://support.google.com/mail/answer/78892?hl=en&rd=1
-      ;; wl-fcc            "%[Gmail]/Sent"
+  ;; The below is not necessary when you send mail through Gmail's SMTP server,
+  ;; see https://support.google.com/mail/answer/78892?hl=en&rd=1
+  ;; wl-fcc            "%[Gmail]/Sent"
 
-      ;; Mark sent messages as read (sent messages get sent back to you and
-      ;; placed in the folder specified by wl-fcc)
-      wl-fcc-force-as-read    t
-
-      ;; For auto-completing foldernames
-      wl-default-spec "%")
+  wl-from "Me <myname@gmail.com>"  ; Our From: header field
+  wl-fcc-force-as-read t           ; Mark sent mail (in the wl-fcc folder) as read
+  wl-default-spec "%")             ; For auto-completion
 }}}
-Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for an example. 
 
-===Setting up NNTP ===
-You can use wl as a NNTP client, and post to usenet newsgroups. In the folder view, type ##m a##, then add an NTTP folder. Try reading the WL mailinglist:
-
-{{{
--gmane.mail.wanderlust.general@news.gmane.org
-}}}
+See [[WlMultipleAccounts]] for a more detailed example.
 
 === Problems ===
 
