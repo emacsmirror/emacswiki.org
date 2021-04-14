@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 14 15:21:19 2021 (-0700)
+;; Last-Updated: Wed Apr 14 15:50:28 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12955
+;;     Update #: 12957
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -12743,20 +12743,20 @@ Optional arg MARK-CHAR is the type of mark to check.
 (put 'diredp-mark 'interactive-only t)
 ;;;###autoload
 (defun diredp-mark (arg &optional char) ; Bound to `m', `* m'
-  "Mark current line, lines in active region, or lines in subdir listing.
+  "Mark current line, lines in active region, or lines in a listing.
 If the region is active and nonempty:
  * Mark the lines in the region.
  * With a prefix arg, you are prompted for the CHAR to mark with.
 
-If cursor is on a subdir line:
- * Mark all lines in the subdir listing except dirs `.' and `..'.
+If cursor is on a listing header line (main dir or a subdir):
+ * Mark all lines in that listing except dirs `.' and `..'.
  * With a prefix arg, you are prompted for the CHAR to mark with.
 
 Otherwise, with numeric prefix arg N, mark the next N lines.
 
 Use \\<dired-mode-map>`\\[dired-unmark-all-files]' to remove marks everywhere, \
-or `\\[dired-unmark]' on a subdir line to
-remove marks in the subdir listing."
+or `\\[dired-unmark]' on a listing header
+line to remove marks in the listing."
   (interactive "P")
   (let ((dired-marker-char  dired-marker-char))
     (cond ((diredp-nonempty-region-p)
