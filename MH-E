@@ -13,6 +13,8 @@ This short example uses:
 * `msmtp' - For sending mail via SMTP
 * `MH-E' - As the client used to manage your mail
 
+Disclaimer: The `inc' command, used in this tutorial, will //delete// the files from your remote inbox after downloading them to your computer. Keep this in mind.
+
 === MH / nmh ===
 
 To use MH-E, you will need MH on your computer. The most popular implementation of MH is `nmh', which you should be able to install from your package manager.
@@ -23,11 +25,21 @@ Once you have nmh, you will need to create a file in your home directory named <
 Path: mail
 Local-Mailbox: Me <me@example.com>
 send: -mts sendmail/pipe -sendmail /usr/bin/msmtp
+inc: -host mail.example.com -user me@example.com
 }}}
 
 * `Path' - Where MH looks for, and stores, email. Relative to the <code>~/.mh_profile</code> file.
 * `Local-Mailbox' - Your "From:" field
 * `send' - How mail is sent. We tell nmh to send mail with sendmail, but we specify msmtp as our sendmail program.
+* `inc' - Our POP account, so MH can download mail directly from the remote server.
+
+If you would like `inc' to store your password, create a file named `~/.netrc' that contains:
+
+{{{
+machine    mail.example.com
+  login    me@example.com
+  password p4ssw0rd
+}}}
 
 === msmtp ===
 
