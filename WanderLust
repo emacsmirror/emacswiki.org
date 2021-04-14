@@ -1,17 +1,17 @@
-Wanderlust is a mail and news reader for Emacs with excellent IMAP support. It was originally developed by Yuuichi Teranishi.
+Wanderlust is a mail and news reader for Emacs. It was originally developed by Yuuichi Teranishi.
 
 Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].  [http://wanderlust.github.io/wl-docs/ Documentation] is also available there or as a local info file.
 
 == Features ==
 
 * Implementation in elisp only.
-* Support of IMAP4rev1, NNTP, POP(POP3/APOP) and MH/Maildir format.
-* Integrated access to messages based on Folder Specifications like Mew.
+* Support of IMAP4rev1, NNTP, POP(POP3/APOP) and MH/Maildir
+* Integrated access to messages based on Folder Specifications like [[Mew]].
 * Key bindings and mark processing like Mew.
 * Management of threads and unread messages.
 * Folder mode that displays all folder you read.
 * Message cache, Disconnected Operation.
-* MH-like FCC (FCC: %Backup is possible).
+* [[MH-E]]-like FCC (FCC: %Backup is possible).
 * Support of MIME (by SEMI or tm).
 * Draft editing of mail and news as a same interface.
 * Icon based interface for the list of Folder.
@@ -28,16 +28,16 @@ Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].  [ht
 * Spamfilter: can train spamassassin, bogofilter, bsfilter or [http://www.geocities.co.jp/SiliconValley-PaloAlto/7043/spamfilter/spamfilter.el.txt spamfilter.el].
 * Can use address manager (included in WL) and/or [[BBDB]] as addressbook
 
-It is the only emacs mail reader that I have used that seems to handle IMAP properly (i.e., leaves messages on server, cacheing, etc.). Gnus (CategoryGnus) users may disagree. It integrates with BBDB (CategoryBbdb), supports MIME, can handle integrating with mailcrypt (cvs version) (WanderLustEncryption). MIME and PGP/MIME is handled via SEMI (SemiIsEmacsMimeInterface). Key-bindings are, at least to me, a little foreign at first. Documentation in English is sufficient though not overwhelming. 
+Wanderlust has //very// good IMAP support; it leaves messages on the server & caches them. It integrates with [[Bbdb]], supports MIME, and can integrate with Mailcrypt. MIME and PGP/MIME is handled via [[Semi]].
 
 == Installing Wanderlust ==
 
 WanderLust is installable via [[MELPA]] or [[el-get]].
 
-You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
+Alternatively, you may be able to find `wanderlust', `wl', or `wl-beta' from your system's package manager.
 
 == Basic Usage ==
-Wanderlust has four basic buffers: Folder buffer, summary buffer, message buffer/view, and draft buffer. 
+Wanderlust has four basic buffers: '''Folder''' buffer, '''Summary''' buffer, '''Message''' buffer/view, and '''Draft''' buffer. 
 
 Wanderlust starts in folder buffer, from which you can open a summary buffer (press "q" to close), which lists a summary of all messages in chosen folder. Navigate up/down with n/p, and N/P (only unread messages). Open a message for viewing with RET, and scroll up/down with SPC/BKSPC or RET/M-RET for line-scrolling. You can jump to the message with "j" for copying text, for instance, and press "q" to go back to summary buffer. Pressing "v" hides the message buffer, and "l" toggles the list of folders (folder buffer). 
 
