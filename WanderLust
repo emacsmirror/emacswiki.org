@@ -150,21 +150,12 @@ If the appropriate elmo-imap4-default-* variables are set then this is no proble
 The Manual has loads of info: <code>C-h i m Wanderlust</code>.
 
 === Mailing List ===
-You can get information and help via the mailing list: 
+You can get help via the mailing list: <code>wl-en@ml.gentei.org</code>
 
-* <code>wl-en@ml.gentei.org</code> (English)
-* <code>wl@ml.gentei.org</code> (Japanese)
-
-To join the mailing list, send an email to:
-
-*<code>wl-en-ctl@ml.gentei.org</code> (English)
-<code>wl-ctl@ml.gentei.org</code> (Japanese)
-
-with //"subscribe YOUR NAME"// as the subject //and// body.
-
-To unsubscribe, email <code>wl-ctl@ml.gentei.org</code> with "unsubscribe" as the body.
+To join the list, send an email to: <code>wl-en-ctl@ml.gentei.org</code> with //"subscribe YOUR NAME"// as the subject //and// body. To unsubscribe, email <code>wl-ctl@ml.gentei.org</code> with "unsubscribe" as the body.
 
 === IRC ===
+
 You can chat on <code>irc.freenode.net</code> on the <code>#wanderlust</code> channel.
 
 == Wanderlust related pages ==
