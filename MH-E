@@ -1,15 +1,35 @@
 [[es:MheEs]]
 
-This is the Emacs frontend to '''Rand Mail Handler''', aka MH. 
+'''MH-E''' is the Emacs frontend to '''MH''' (the //Rand Mail Handler//).
+
 MH is a ''mail user agent'' (MUA) for the unix shell.
-Instead of being one monolithic program, all functionality is provided
-by a collection of small tools.  Thus one uses one's shell itself to
-drive it, and because of the way the messages are each in their own
-file, and folders are implemented as file-system directories, any
-general command can be used, too. The
-modern MH implementation is called "nmh".
+Instead of being one monolithic program, it is a collection of small tools, which makes it easy to use and maintain.
 
+== Usage ==
 
+This short example uses:
+
+* `nmh' - the most popular MH implementation
+* `msmtp' - For sending mail via SMTP
+* `MH-E' - As the client used to manage your mail
+
+=== MH / nmh ===
+
+To use MH-E, you will need MH on your computer. The most popular implementation of MH is `nmh', which you should be able to install from your package manager.
+
+Once you have nmh, you will need to create a file in your home directory named <code>.mh_profile</code>, that looks like this:
+
+{{{
+Path: mail
+Local-Mailbox: Me <me@example.com>
+send: -mts sendmail/pipe -sendmail /usr/bin/msmtp
+}}}
+
+* `Path' - Where MH looks for, and stores, email. Relative to the <code>~/.mh_profile</code> file.
+* `Local-Mailbox' - Your "From:" field
+* `send' - How mail is sent. We tell nmh to send mail with sendmail, but we specify msmtp as our sendmail program.
+
+(saving here because i wrote a bit already)
 
 = About the documentation =
 
