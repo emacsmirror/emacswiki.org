@@ -172,29 +172,16 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * [http://www.emacswiki.org/emacs/MailtoHandler#toc5 MailtoHandler] -- Using wl for <code>mailto:</code> links
 * https://gist.github.com/622291 -- gravatar.el and wl-gravatar.el
 
-=== Tutorials ===
+== External Links ==
 
-* [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client.]
-* [http://emacs-fu.blogspot.com/2009/06/e-mail-with-wanderlust.html emacs-fu: Get started with wanderlust]
-* [http://emacs-fu.blogspot.com/2009/09/wanderlust-tips-and-tricks.html emacs-fu: Wanderlust tips and tricks]
-* [http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html emacs-fu: Showing pop ups]
-* [http://emacs-fu.blogspot.com/2010/02/i-have-been-using-wanderlust-e-mail.html emacs-fu: Wanderlust (part III)]
-* [http://emacs-fu.blogspot.com/2011/03/searching-e-mails-with-wanderlust-and.html emacs-fu: Searching e-mails with wanderlust and mu]
-* [http://emacs-fu.blogspot.com/2009/08/managing-e-mail-addresses-with-bbdb.html emacs-fu: Managing e-mail addresses with bbdb]
-* [http://dis-dot-dat.blogspot.com/2010/04/ive-used-combination-of-mutt-emacs.html james blog: Customizing wanderlust. ]
-* [http://dis-dot-dat.blogspot.com/2010/04/my-wanderlust-setup.html james blog: My wanderlust setup.]
-
-
-=== Configuration files ===
-* [[hgw-init-wl.el]] -- very advanced Wanderlust configuration example
-* http://www.gnumonk.com/my-config/my-wl-1
-* http://www.oxyde.org/patzy/files/dot.wl
-* http://elarson.posterous.com/sending-email-with-wanderlust -- Dual account setup.
-* http://thread.gmane.org/gmane.mail.wanderlust.general.japanese/8534 -- Simple setup from the mailing list.
-* http://www.mail-archive.com/emacs-orgmode@gnu.org/msg20250/wlconfiguration.org -- Good config, in org-mode.
-
-=== Code snippets ===
-* https://gist.github.com/fgilham/e21cbcf27fd70618ad880886981de58a -- A Wanderlust biff "hook" --- actually a timer --- that uses the system notifier to pop up a list of new email messages. It also plays a sound.
+* [http://mihai.bazon.net/articles/emacs/wanderlust-email-client Wanderlust email client]
+* [http://emacs-fu.blogspot.com/search/label/wanderlust Emacs-Fu's Wanderlust articles]
+* [http://dis-dot-dat.blogspot.com/2010/04/ive-used-combination-of-mutt-emacs.html james blog: Wanderlust Config]
+* [http://dis-dot-dat.blogspot.com/2010/04/my-wanderlust-setup.html james blog: Wanderlust Setup]
+* [[hgw-init-wl.el]] -- Advanced Wanderlust configuration example
+* [http://www.gnumonk.com/my-config/my-wl-1 GNU Monk's config]
+* [http://www.mail-archive.com/emacs-orgmode@gnu.org/msg20250/wlconfiguration.org Good config, in org-mode]
+* [https://gist.github.com/fgilham/e21cbcf27fd70618ad880886981de58a A biff timer] -- Use the system notifier to display new mail in a popup.
 
 ----
 CategoryMail
