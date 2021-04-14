@@ -63,7 +63,7 @@ We want to tell Wanderlust where our email account is. We can do this in <code>~
 # The .folders file: Specify our folders and accounts.
 
 # Connect to an IMAP server with %
-%INBOX:"me@example.com"/clear@mail.example.com:993! "INBOX"
+%INBOX:"myname@gmail.com"/clear@imap.gmail.com:993! "INBOX"
 
 # Or from an MH folder with +
 # +~/mail/inbox
