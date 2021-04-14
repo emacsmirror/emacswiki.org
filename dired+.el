@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 20 16:12:06 2021 (-0700)
+;; Last-Updated: Wed Apr 14 15:21:19 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12939
+;;     Update #: 12955
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -874,6 +874,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/04/14 dadams
+;;     diredp-menu-bar-dir-menu: Added dired-undo.
 ;; 2021/03/20 dadams
 ;;     Added: diredp--dired-recent-files-1.
 ;;     diredp-recent-files-buffer is for dirs also now.
@@ -3340,13 +3342,12 @@ Report in the echo area and display a log buffer."
 If on a subdir line, redisplay that subdirectory.  In that case,
 a prefix arg lets you edit the `ls' switches used for the new listing.
 
-Dired remembers switches specified with a prefix arg, so that reverting
-the buffer will not reset them.  However, using `dired-undo' to re-insert
-or delete subdirectories can bypass this machinery.  Hence, you sometimes
-may have to reset some subdirectory switches after a `dired-undo'.
-You can reset all subdirectory switches to the default using
-\\<dired-mode-map>\\[dired-reset-subdir-switches].
-See Info node `(emacs)Subdir switches' for more details."
+Dired remembers switches specified with a prefix arg, so reverting the
+buffer does not reset them.  However, you might sometimes need to
+reset some subdirectory switches after using \\<dired-mode-map>`\\[dired-undo]'.  You can reset all
+subdirectory switches to the default value using
+`\\[dired-reset-subdir-switches]'.
+See Info node `(emacs) Subdir switches' for more details."
     ;; Moves point if the next ARG files are redisplayed.
     (interactive "P\np")
     (if (and test-for-subdir  (dired-get-subdir))
@@ -10425,13 +10426,12 @@ With a prefix arg, you can edit the `ls' switches used for this
 listing.  Add `R' to the switches to expand the directory tree under a
 subdirectory.
 
-Dired remembers the switches you specify with a prefix arg, so
-reverting the buffer does not reset them.  However, you might
-sometimes need to reset some subdirectory switches after a
-`dired-undo'.  You can reset all subdirectory switches to the
-default value using \\<dired-mode-map>\\[dired-reset-subdir-switches].  See \
-Info node
-`(emacs)Subdir switches' for more details."
+Dired remembers switches specified with a prefix arg, so reverting the
+buffer does not reset them.  However, you might sometimes need to
+reset some subdirectory switches after using \\<dired-mode-map>`\\[dired-undo]'.  You can reset all
+subdirectory switches to the default value using
+`\\[dired-reset-subdir-switches]'.
+See Info node `(emacs) Subdir switches' for more details."
   (interactive (list (diredp-this-subdir)
                      (and current-prefix-arg
                           (read-string "Switches for listing: "
@@ -15635,6 +15635,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-dir-menu [insert]
   '(menu-item "Insert/Move-To This Subdir" dired-maybe-insert-subdir
     :help "Move to subdirectory line or listing"))
+(define-key diredp-menu-bar-dir-menu [dired-undo]
+  '(menu-item "Undo" dired-undo :help "Undo changes: marks, killed lines, and subdir listings"))
 (define-key diredp-menu-bar-dir-menu [revert]
   '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
 (define-key diredp-menu-bar-dir-menu [create-directory] ; Moved from "Immediate".
