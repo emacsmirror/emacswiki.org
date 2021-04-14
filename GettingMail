@@ -4,7 +4,7 @@ Also see [[WritingMail]] and [[SendingMail]].
 
 == Getting mail ==
 
-The default behaviour using the POP protocol is to *move* the mail to your local system, that is: it *deletes the mail on your server*. If you also want to read mail using your phone, you should either switch from POP to IMAP and use a mail client that can handle it, or you must tell the tools you are using that you want to "preserve" your inbox.
+Note: Some clients //delete// your mail from the server after downloading it. If you want to keep your mail on the server, you must tell your client to //preserve// it.
 
 === Rmail ===
 
