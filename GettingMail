@@ -48,12 +48,14 @@ And here's [[Gnus]] using IMAP:
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 }}}
 
-=== ViewMail ===
+=== MH-E ===
 
-An example of [[ViewMail]] using POP:
+An example of [[MH-E]] using POP:
 
 {{{
-(setq vm-spool-files '("pop3server:110:pass:username:*" "~/INBOX"))
+#: In ~/.mh_profile
+Path: mail
+inc: -host mail.example.com -user me@example.com
 }}}
 
 === Wanderlust ===
