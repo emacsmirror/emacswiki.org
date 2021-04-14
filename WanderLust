@@ -28,7 +28,7 @@ Wanderlust is a mail and news reader for Emacs. It was originally developed by Y
 * Spamfilter: can train spamassassin, bogofilter, bsfilter or [http://www.geocities.co.jp/SiliconValley-PaloAlto/7043/spamfilter/spamfilter.el.txt spamfilter.el].
 * Can use address manager (included in WL) and/or [[BBDB]] as addressbook
 
-Wanderlust has //very// good IMAP support; it leaves messages on the server & caches them. It integrates with [[Bbdb]], supports MIME, and can integrate with Mailcrypt. MIME and PGP/MIME is handled via [[Semi]].
+Wanderlust has //very// good IMAP support; it leaves messages on the server & caches them. It integrates with [[BBDB]], supports MIME, and can integrate with Mailcrypt. MIME and PGP/MIME is handled via [[Semi]].
 
 == Installing Wanderlust ==
 
