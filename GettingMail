@@ -58,29 +58,27 @@ Path: mail
 inc: -host mail.example.com -user me@example.com
 }}}
 
-== Slowness ==
+== Speending Things Up ==
 
-Emacs freezes up during mail retrieval if Emacs does it itself, so if you are downloading large emails, you will be unable to do ''multitasking''. It may be a better idea to use another program like *mpop* to retrieve mail.
+Emacs freezes up during sending / receiving if Emacs does it itself, so if you are downloading large emails, you will be unable to do ''multitasking''. It may be a better idea to use another program like *mpop* to retrieve mail.
 
-=== mpop and msmtp ===
+=== mpop ===
 
-These days many people don't want to touch their local mail system, if they have one. A simple alternative would be ##mpop##: a program like movemail, except that you configure and run it outside of Emacs. For example:
+Instead of making Emacs retrieve your mail, you can run a program like `mpop' outside of Emacs to download new mail to a folder, before managing it from inside Emacs.
+
+A typical mpop configuration looks like this:
 
 {{{
 defaults
-tls on
-tls_starttls off
+tls  on
 keep on
-password
-account default
-host mail.example.com
-port 995
-user alex@example.com
-delivery mbox "~/mail/inbox"
-# if you like to use pass
-passwordeval "pass show alex@example.com"
-# if you like to use gpg
-# passwordeval gpg --no-tty --quiet --decrypt ~/.config/mpop/password.gpg
+
+account  default
+host     mail.example.com
+port     995
+user     alex@example.com
+password p4ssw0rd
+delivery maildir "~/mail"
 }}}
 
 ##mpop## then fetches your mail and moves it into the inbox you provided, and you get it from there.
