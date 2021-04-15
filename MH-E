@@ -15,7 +15,7 @@ This short example uses:
 
 Disclaimer: The `inc' command, used in this tutorial, will //delete// the files from your remote inbox after downloading them to your computer. Keep this in mind.
 
-=== MH / nmh ===
+=== nmh ===
 
 To use MH-E, you will need MH on your computer. The most popular implementation of MH is `nmh', which you should be able to install from your package manager.
 
