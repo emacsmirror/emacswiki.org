@@ -85,23 +85,44 @@ Running ##mpop## from the commandline fetches your mail and moves it into the in
 
 For sending mail via SMTP, ##msmtp## was written by the same author, and is a popular alternative to sendmail.
 
-== Reading mail ==
+== Other Tips ==
 
-Reading mail is just like WritingMail. There is no generic way to call
-the right tool for you. Some third party package may be mua-aware and
-thus should be informed of your preference. You have to set
-`read-mail-command' to do so.
+Emacs doesn't know which mail client you prefer, but you can tell it by setting the `read-mail-command' variable:
 
-Here are some examples:
+{{{
+;; Uncomment this line if you prefer to read mail with Rmail
+(setq read-mail-command 'rmail)
 
-* Easiest and default way is [[Rmail]]: use M-x rmail to read your mail. set `read-mail-command' to 'rmail.
+;; Or if you're using Gnus:
+(setq read-mail-command 'gnus)
 
-* [[Gnus]] users should type M-x gnus instead and set `read-mail-command' to 'gnus.
+;; Or MH-E:
+(setq read-mail-command 'mh-nmail)
+}}}
 
-* [[MH-E]]: M-x mh-rmail and set `read-mail-command' to 'mh-rmail.
+There's a corresponding variable for /writing/ mail: `mail-user-agent', which tells Emacs which "compose" window should appear when you activate a "Mailto" link:
 
-* WanderLust: set `read-mail-command' to 'wl
+{{{
+;; If you prefer rmail
+(setq mail-user-agent 'sendmail-user-agent)
 
-See also: WritingMail
+;; Or MH-E
+(setq mail-user-agent 'mh-e-user-agent)
+
+;; Or GNUS
+(setq mail-user-agent 'gnus-user-agent)
+}}} 
+
+== See Also ==
+
+* WritingMail
+* [[Rmail]]
+* [[Gnus]]
+* [[MH-E]]
+* [[WanderLust]]
+* [[Mew]]
+* [[VM]]
+
+
 ----
 CategoryMail
