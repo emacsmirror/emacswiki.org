@@ -99,31 +99,19 @@ In many MH-E submodes, pressing <code>?</code> provides a quick list of keybindi
 
 There is also the book by Jerry Peek: <i>[https://rand-mh.sourceforge.io/book/ MH & nmh: Email for Users & Programmers]</i>.
 
-= Making MH-E dance to your tune =
+= Further Configuration =
 
-When configuring, it is often a good idea to tweak the natural files of
-''MH'' itself, the <code>.mh_profile</code> for example.  This is the
-general way to configure things, and all the changes will inherit to
-any frontends.
-If you shun such a blasphemous suggestion, remember
-that this is only a suggestion of an Unix Zealot who wishes to:
+The ##.mh_profile## file is the default MH configuration file, and can be used to set many different MH variables. Changes made here will effect all MH frontends.
 
-* a) also use mh via shell, and
-* b) digs generality.
+In MH-E, you can see all the customization options by running: ##M-x customize-group mh-e##. This will open a CustomizingAndSaving interface.
 
-So go ahead, just fiddle
-with the mh-* variables if you feel like it.  Of course there are many
-options which make no sense to mh itself, and these frontend-specific
-things are to be set within the frontend itself.  Like any large and
-decent EmacsLisp package, MH-E has it's own group for the common
-user-friendly CustomizingAndSaving interface '''Customize''' to be
-accessed with the `customize-group'.
+To set MH-E as your default mail client, you can add the following to init.el:
 
-If you'd like to configure MH-E to be your preferred mail-composing
-system, set `mail-user-agent' to
-<code>'mh-e-user-agent</code>.  If you're using GnuEmacs, you can
-also prefer MH-E for reading your mail, by setting `read-mail-command'
-to <code>'mh-rmail</code>.
+{{{
+(setq
+ mail-user-agent 'mh-e-user-agent
+ read-mail-command 'mh-nmail)
+}}}
 
 = Basic MH-E setup with nmh, fetchmail and msmtp =
 msmtp is useful when you have more than one mail addresses. It reads "From:" field and uses corresponding account. Should be built with GNU TLS support to be used with gmail (make WITH_GNUTLS=YES).
