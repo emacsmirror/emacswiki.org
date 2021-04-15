@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Apr 10 18:12:14 2021 (-0700)
+;; Last-Updated: Thu Apr 15 14:33:00 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 11918
+;;     Update #: 11920
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2021/04/15 dadams
+;;     icicle-file-of-content-apropos-complete-match: Typo: file-name -> input, for date transform.
+;;     icicle-locate-file-of-content:
+;;       Update doc string for middle part of multi-comp, to be like *-recent*-of-content.
 ;; 2019/09/21 dadams
 ;;     icicle-bbdb-complete-mail: Updated for BBDB v3.2.
 ;;       Hash-table predicate for all-completions needs to be binary.
