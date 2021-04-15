@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 14 12:05:47 2020 (-0700)
+;; Last-Updated: Thu Apr 15 14:35:00 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 27646
+;;     Update #: 27649
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -23,22 +23,24 @@
 ;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
-;;   `dired', `dired-loaddefs', `doremi', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
-;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
-;;   `format-spec', `frame-cmds', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `hl-line',
-;;   `hl-line+', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image', `image-dired', `image-mode', `info',
-;;   `info+', `isearch+', `isearch-prop', `kmacro', `levenshtein',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `password-cache', `pp',
-;;   `pp+', `radix-tree', `replace', `ring', `second-sel', `seq',
-;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
-;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `zones'.
+;;   `dired', `dired-loaddefs', `doremi', `doremi-frm', `easymenu',
+;;   `eieio', `eieio-core', `eieio-loaddefs', `el-swank-fuzzy',
+;;   `epg-config', `facemenu', `facemenu+', `faces', `faces+',
+;;   `ffap', `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `hl-line', `hl-line+', `icicles-fn', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `image', `image-dired',
+;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
+;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
+;;   `palette', `password-cache', `pp', `pp+', `radix-tree',
+;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1199,7 +1201,7 @@ Return t if successful."
 
 (defun icicle-comint-replace-by-expanded-filename (&optional replace-to-eol-p)
   "Dynamically complete, expand, and canonicalize the filename at point.
-With a prefix arg, replace everthing past point on the current line.
+With a prefix arg, replace everything past point on the current line.
 Otherwise, replace only the filename-matching text before point.
 
 Like vanilla `comint-replace-by-expanded-filename', but uses Icicles
@@ -9187,6 +9189,30 @@ A prefix argument determines the behavior, as follows:
 * Double plain (`C-u C-u'): You are prompted for the directories and
   candidates include last-modification dates.
 
+Whether or not you use a prefix argument, completion candidates are
+multi-completions, with the first part being the file name and the
+last part being the file contents.  If you use a non-positive or
+double plain prefix arg, then there is a middle part, which is the
+last modification date for the file.
+
+For example, if there is no middle part then you can match files whose
+names contain `quine' and whose contents contain `curry' using this
+input pattern, where `^G^J' stands for the value of
+`icicle-list-join-string':
+
+quine.*^G^J.*curry
+
+If you there is a middle (date) part, then you can match the subset of
+those files whose dates match `2013 11 21', using this input pattern:
+
+quine.*^G^J2013 11 21^G^J.*curry
+
+And if you use a non-positive or double plain prefix arg, so you can
+see the dates in `*Completions*', but you do not care to match the
+date, then you can use this input pattern:
+
+quine.*^G^J.*^G^J.*curry
+
 The absolute names of all files within a directory and all of its
 subdirectories are targets for completion.  Regexp input is matched
 against all parts of the absolute name, not just the file-name part.
@@ -9649,7 +9675,7 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
                                    (icicle-transform-multi-completion file-name)))
                    (date         (and icicle-pref-arg  icicle-abs-file-candidates
                                       (let ((icicle-list-use-nth-parts '(2)))
-                                        (icicle-transform-multi-completion file-name))))
+                                        (icicle-transform-multi-completion input))))
                    (name-pat     (let ((icicle-list-use-nth-parts '(1)))
                                    (icicle-transform-multi-completion input)))
                    (date-pat     (and icicle-pref-arg  icicle-abs-file-candidates
