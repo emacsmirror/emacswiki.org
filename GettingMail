@@ -58,7 +58,7 @@ Path: mail
 inc: -host mail.example.com -user me@example.com
 }}}
 
-== Speending Things Up ==
+== Speeding Things Up ==
 
 Emacs freezes up during sending / receiving if Emacs does it itself, so if you are downloading large emails, you will be unable to do ''multitasking''. It may be a better idea to use another program like *mpop* to retrieve mail.
 
