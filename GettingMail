@@ -87,20 +87,6 @@ passwordeval "pass show alex@example.com"
 
 There's a perfect complement to ##mpop## for sending mail, by the same author: ##mstmtp##.
 
-== A note on movemail ==
-
-Rmail and maybe other packages use the "movemail" program for getting e-mail (for example from remote POP3 mailboxes). You specify the mailbox as an URL:
-
-{{{
-pop://username:password@hostname:port
-}}}
-
-However if your username contains the '@' character, you can't access your mailbox because movemail's URL parser interprets everything after the @ as the host name of the POP3 server. For example, Gmail uses the username@gmail.com notation for usernames... Use *fetchmail* instead.
-
-Is the situation any better with Gnus or VM? Any really good and sane e-mail client for Emacs?
-
-Using %40 for the at-sign like ##pop://username%40hostname:password@hostname:port## doesn't work either.  It seems movemail doesn't support SSL encryption (it does support TLS, but doesn't work) and somebody on the movemail list suggested using the separate `stunnel' program for SSL tunneling the connection to the server.  However I can't modify Rmail's invocation of movemail.
-
 == Reading mail ==
 
 Reading mail is just like WritingMail. There is no generic way to call
