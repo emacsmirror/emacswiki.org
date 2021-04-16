@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Apr 13 08:53:25 2021 (-0700)
+;; Last-Updated: Fri Apr 16 14:10:59 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16783
+;;     Update #: 16792
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/04/16 dadams
+;;     bookmark-get-bookmark-record, bookmark-set-name, bookmark-prop-set, bookmark-location,
+;;       bookmark-delete, bookmark-show-annotation:
+;;         Use bmkp-get-bookmark, not bookmark-get-bookmark, but in vanilla-compatible way.
 ;; 2021/04/13 dadams
 ;;     Added: bmkp-get-bookmark.  Removed redefinition of vanilla bookmark-get-bookmark.
 ;;       Problem was that some 3rd-party code uses bookmark-prop-set with unfinished bookmark record
