@@ -18,7 +18,7 @@ Here's an example of an [[Rmail]] configuration:
   user-mail-address "me@example.com")
 }}}
 
-* Rmail runs on its own, but it's recommended to install the `mailutils' pacakge on your computer.
+* Rmail runs on its own, but it's recommended to install the `mailutils' package on your computer.
 * `rmail-primary-inbox-list' uses the URL scheme: <code>protocol:// username @ hostname</code>
 * The <code>%40</code> is an ANSI code representing the <code>@</code> symbol (see the note on movemail below)
 * `rmail-preserve-inbox' tells rmail to copy the mail from the server (don't delete it).
