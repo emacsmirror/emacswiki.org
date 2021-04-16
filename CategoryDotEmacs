@@ -42,7 +42,7 @@ of selected resources.
 
 * EmacsMacro -- A "portable configuration file that configures itself."
 * [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack
-* [https://github.com/technomancy/better-defaults PhilHagelberg's defaults]
+* [https://git.sr.ht/~technomancy/better-defaults PhilHagelberg's defaults]
 * [[Prelude]] -- aims to enhance the default Emacs experience
 * [[Spacemacs]] -- particularly for Vim converts
 * [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
