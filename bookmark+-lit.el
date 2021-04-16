@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2021, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Dec 29 12:37:12 2020 (-0800)
+;; Last-Updated: Fri Apr 16 14:40:36 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 1000
+;;     Update #: 1002
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -185,7 +185,7 @@
 (eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: push)
 
 (require 'bookmark)
-;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read, bookmark-get-bookmark,
+;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read, bmkp-get-bookmark,
 ;; bookmark-get-position, bookmark-handle-bookmark, bookmark-maybe-load-default-file,
 ;; bookmark-name-from-full-record, bookmark-name-from-record, bookmark-prop-get, bookmark-prop-set
 
@@ -556,7 +556,7 @@ Non-interactively:
           (push (if fullp bmk (bmkp-bookmark-name-from-record bmk)) bmks))))
     (if (not fullp)
         (when msgp (message "%s" bmks))
-      (setq bmks  (mapcar #'bookmark-get-bookmark bmks))
+      (setq bmks  (mapcar #'bmkp-get-bookmark bmks))
       (when msgp (pp-eval-expression 'bmks)))
     bmks))
 
@@ -621,7 +621,7 @@ BOOKMARK is a bookmark name or a bookmark record."
      (list (bookmark-completing-read "UNhighlight bookmark" (bmkp-default-lighted) lighted-bmks)
            nil
            'MSG)))
-  (let* ((bmk         (bookmark-get-bookmark bookmark 'NOERROR))
+  (let* ((bmk         (bmkp-get-bookmark bookmark 'NOERROR))
          (bmk-name    (bmkp-bookmark-name-from-record bmk))
          (autonamedp  (and bmk  (bmkp-autonamed-bookmark-p bmk))))
     (when bmk                           ; Skip bad bookmark, but not already highlighted bookmark.
@@ -843,7 +843,7 @@ Non-interactively:
                        (wrong-number-of-arguments (read-face-name "Face: "))))))
      (list bmk sty fac 'MSG)))
   (let* ((bmkp-use-region  nil)         ; Inhibit region handling.
-         (bmk              (bookmark-get-bookmark bookmark (not msgp))) ; Error if interactive.
+         (bmk              (bmkp-get-bookmark bookmark (not msgp))) ; Error if interactive.
          (bmk-name         (bmkp-bookmark-name-from-record bmk))
          (pos              (and bmk  (bookmark-get-position bmk)))
          (buf              (and bmk  (bmkp-get-buffer-name bmk)))
@@ -982,7 +982,7 @@ It must be provided: if nil then do not highlight any bookmarks."
         bmk bmk-name autonamedp face style pos buf bmk-ov passes-when-p)
     (catch 'bmkp-light-bookmarks
       (dolist (bookmark  alist)
-        (setq bmk            (bookmark-get-bookmark bookmark 'NOERROR) ; Should be a no-op.
+        (setq bmk            (bmkp-get-bookmark bookmark 'NOERROR) ; Should be a no-op.
               bmk-name       (and bmk  (bmkp-bookmark-name-from-record bmk))
               autonamedp     (and bmk  (bmkp-autonamed-bookmark-p bmk-name))
               face           (and bmk  (bmkp-light-face bmk))
@@ -1126,7 +1126,7 @@ In Lisp code:
   (unless bmkp-nav-alist (error "No lighted bookmarks for cycling"))
   (unless (and bmkp-current-nav-bookmark
                (not startoverp)
-               (bookmark-get-bookmark bmkp-current-nav-bookmark 'NOERROR)
+               (bmkp-get-bookmark bmkp-current-nav-bookmark 'NOERROR)
                (bmkp-this-buffer-p bmkp-current-nav-bookmark)) ; Exclude desktops etc.
     (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist)))
   (if (bmkp-cycle-1 increment other-window startoverp)
@@ -1211,7 +1211,7 @@ Returns:
  `bmkp-light-non-autonamed-region' if a non-autonamed region bookmark;
  `bmkp-light-autonamed' if an autonamed non-region bookmark;
  `bmkp-light-non-autonamed' otherwise."
-  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (setq bookmark  (bmkp-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-face bookmark)
       (and bookmark  (if (bmkp-region-bookmark-p bookmark)
                          (if (bmkp-autonamed-bookmark-p bookmark)
@@ -1235,7 +1235,7 @@ Returns:
      recording a region
  * the value of `bmkp-light-style-non-autonamed-region' if autonamed
      and not recording a region"
-  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (setq bookmark  (bmkp-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-style bookmark)
       (and bookmark  (if (bmkp-region-bookmark-p bookmark)
                          (if (bmkp-autonamed-bookmark-p bookmark)
@@ -1249,7 +1249,7 @@ Returns:
   "Return non-nil if BOOKMARK should be highlighted.
 BOOKMARK's  `:when' condition is used to determine this.
 BOOKMARK is a bookmark name or a bookmark record."
-  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (setq bookmark  (bmkp-get-bookmark bookmark 'NOERROR))
   (let ((this-bookmark       bookmark)
         (this-bookmark-name  (bmkp-bookmark-name-from-record bookmark))
         (when-sexp           (bmkp-lighting-when bookmark)))
@@ -1288,7 +1288,7 @@ the value is nil or there is no `:when' entry.)"
   "ATTRIBUTE specified by BOOKMARK's `lighting', or nil if no such attribute.
 BOOKMARK is a bookmark name or a bookmark record.
 ATTRIBUTE is `:style' or `:face'."
-  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (setq bookmark  (bmkp-get-bookmark bookmark 'NOERROR))
   (let* ((lighting  (and bookmark  (bmkp-get-lighting bookmark)))
          (attr      (and (consp lighting)  (plist-get lighting attribute))))
     (when (and (eq 'auto attr)  (not (eq :when attribute)))
@@ -1333,7 +1333,7 @@ Return the bookmark name or, if FULLP non-nil, the full bookmark data."
           (throw 'bmkp-a-bookmark-lighted-on-this-line bmk))
         (setq pos  (1+ pos)))
       nil)
-    (when (and bmk  fullp)  (setq bmk  (bookmark-get-bookmark bmk)))
+    (when (and bmk  fullp)  (setq bmk  (bmkp-get-bookmark bmk)))
     bmk))
 
 (defun bmkp-a-bookmark-lighted-at-pos (&optional position fullp)
@@ -1407,7 +1407,7 @@ A new list is returned (no side effects)."
 BOOKMARK is a bookmark name or a bookmark record.
 Optional arg OVERLAYS is the list of overlays to check.
 If nil, check overlays for both autonamed and non-autonamed bookmarks."
-  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (setq bookmark  (bmkp-get-bookmark bookmark 'NOERROR))
   (and bookmark                         ; Return nil for no such bookmark.
        (catch 'bmkp-overlay-of-bookmark
          (dolist (ov  (if overlays
