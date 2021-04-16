@@ -140,9 +140,9 @@ masquerade: draft_from
 
 ##.msmtp-envelope-from.sh##:
 
+{{{
 #!/bin/sh
 
-{{{
 # can't write "sendmail: /usr/local/bin/msmtp --read-envelope-from"
 # in mts.conf, so here's a little workaround.
 # Make msmtp read the "From:" field and to use that account:
