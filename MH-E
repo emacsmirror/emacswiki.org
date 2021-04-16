@@ -113,64 +113,84 @@ To set MH-E as your default mail client, you can add the following to init.el:
  read-mail-command 'mh-nmail)
 }}}
 
-= Basic MH-E setup with nmh, fetchmail and msmtp =
-msmtp is useful when you have more than one mail addresses. It reads "From:" field and uses corresponding account. Should be built with GNU TLS support to be used with gmail (make WITH_GNUTLS=YES).
+= Multiple Accounts & Gmail =
 
-Assuming you have already installed nmh, fetchmail and msmtp.
+For this tutorial, you'll need the following programs installed:
 
-.emacs:
+* nmh
+* fetchmail
+* msmtp
+                              
+When you have multiple mail addresses, msmtp reads the ##From:## field and uses the corresponding account. msmtp should be built with the ##WITH_GNUTLS=YES## flag.
 
-     (setq mh-send-uses-spost-flag t)
-     (setq mail-user-agent 'mh-e-user-agent)
+##.emacs##:
 
-mts.conf (mine is here: /usr/local/etc/nmh/mts.conf):
+{{{
+(setq mh-send-uses-spost-flag t)
+(setq mail-user-agent 'mh-e-user-agent)
+}}}
 
-     sendmail: /home/username/.msmtp-envelope-from.sh
-     mts: sendmail
-     masquerade: draft_from
+##/etc/nmh/mts.conf##:
 
-.msmtp-envelope-from.sh:
+{{{
+sendmail: /home/username/.msmtp-envelope-from.sh
+mts: sendmail
+masquerade: draft_from
+}}}
 
-     #!/bin/sh
-     # can't just write "sendmail: /usr/local/bin/msmtp --read-envelope-from" in mts.conf
-     # so it's a little workaround
-     # makes msmtp to read "From:" field and to use corresponding account
-     /usr/local/bin/msmtp --read-envelope-from $*
+##.msmtp-envelope-from.sh##:
 
-.mh_profile:
+#!/bin/sh
 
-     Path: Mail
-     postproc: /usr/local/libexec/nmh/spost
+{{{
+# can't write "sendmail: /usr/local/bin/msmtp --read-envelope-from"
+# in mts.conf, so here's a little workaround.
+# Make msmtp read the "From:" field and to use that account:
 
-.fetchmailrc:
+/usr/local/bin/msmtp --read-envelope-from $*
+}}}
 
-     poll pop.yandex.ru with proto POP3
-       user 'username' password 'userpass'
+##.mh_profile##:
+
+{{{
+Path: Mail
+postproc: /usr/local/libexec/nmh/spost
+}}}
+
+##.fetchmailrc##:
+
+{{{
+poll pop.yandex.ru with proto POP3
+  user 'username' password 'userpass'
     
-     poll pop.gmail.com with proto POP3
-       user 'username' password 'userpass' options ssl
-       sslcertck sslcertpath /home/banan/.certs/
+poll pop.gmail.com with proto POP3
+  user 'username' password 'userpass' options ssl
+  sslcertck sslcertpath /home/banan/.certs/
+}}}
 
-.msmtp:
+##.msmtp##:
 
-     # username@yandex.ru
-     account yandex
-     host smtp.yandex.ru
-     from username@yandex.ru
-     auth login
-     user username
-     password userpass
+{{{
+# username@yandex.ru
+account yandex
+host     smtp.yandex.ru
+from     username@yandex.ru
+auth     login
+user     username
+password userpass
  
-     # username@gmail.com
-     account gmail
-     host smtp.gmail.com
-     port 587
-     from username@gmail.com
-     auth on
-     user username@gmail.com
-     password userpass
-     tls on
-     tls_trust_file /home/banan/.certs/ThawtePremiumServerCA.crt
+# username@gmail.com
+account  gmail
+host     smtp.gmail.com
+port     587
+from     username@gmail.com
+auth     on
+user     username@gmail.com
+password userpass
+tls      on
+
+tls_trust_file /home/banan/.certs/ThawtePremiumServerCA.crt
+}}}
 
 Also place "From: Your Name <username@gmail.com>" before "To:" in these files in ~/Mail: components, replcomps, forwcomps. After that you can send your mail using any of your accounts by editing "From:" field in your mail composing buffer.
 
