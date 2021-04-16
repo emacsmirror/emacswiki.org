@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Mar  5 14:01:34 2021 (-0800)
+;; Last-Updated: Fri Apr 16 14:32:09 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 4151
+;;     Update #: 4159
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -421,6 +421,7 @@ Elements of ALIST that are not conses are ignored."
 
 
 ;; (eval-when-compile (require 'bookmark+-1))
+
 ;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-creation-cp,
 ;; bmkp-bookmark-description, bmkp-bookmark-file-bookmark-p,
 ;; bmkp-bookmark-last-access-cp, bmkp-bookmark-list-bookmark-p,
@@ -429,9 +430,8 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-current-sort-order, bmkp-describe-bookmark,
 ;; bmkp-describe-bookmark-internals, bmkp-desktop-bookmark-p,
 ;; bmkp-edit-bookmark-name-and-location, bmkp-file-alpha-cp,
-;; bmkp-file-remote-p, bmkp-function-bookmark-p,
-;; bookmark-get-bookmark, bmkp-get-buffer-name, bmkp-get-tags,
-;; bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
+;; bmkp-file-remote-p, bmkp-function-bookmark-p, bmkp-get-buffer-name,
+;; bmkp-get-tags, bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
 ;; bmkp-incremental-filter-delay, bmkp-image-bookmark-p,
 ;; bmkp-info-bookmark-p, bmkp-info-node-name-cp,
 ;; bmkp-info-position-cp, bmkp-isearch-bookmarks,
@@ -2144,13 +2144,16 @@ Non-interactively, non-nil MSG-P means display messages."
 ;;  3. Delete bookmark on current line (after confirmation) if none are flagged/marked.
 ;;  4. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
 ;;     `bookmark-save' refreshes the bookmark list display, and that removes `D' flags.
-;;  5. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
+;;  5. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmarks when
+;;     they have names with property `bmkp-full-record'.  But don't require that they have names, so
+;;     calls from vanilla or other code won't be bothered.
+;;  6. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
 ;;     `bookmark-bmenu-list', updating the modification count, and saving.
-;;  6. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
-;;  7. Pass full bookmark, not name, to `delete' (and do not use `assoc').
-;;  8. Use `bmkp-bmenu-goto-bookmark-named'.
-;;  9. Added status messages.
-;; 10. Raise error if not in buffer `*Bookmark List*'.
+;;  7. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
+;;  8. Pass full bookmark, not name, to `delete' (and do not use `assoc').
+;;  9. Use `bmkp-bmenu-goto-bookmark-named'.
+;; 10. Added status messages.
+;; 11. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-execute-deletions "bookmark+")
 (defun bookmark-bmenu-execute-deletions (&optional markedp no-confirm-p) ; Bound to `x' in bookmark list
@@ -2186,7 +2189,7 @@ for confirmation."
           (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
           (while (re-search-forward mark-type (point-max) t)
             (let* ((bmk-name  (bookmark-bmenu-bookmark))
-                   (bmk       (bookmark-get-bookmark bmk-name)))
+                   (bmk       (bmkp-get-bookmark bmk-name nil 'NO-NAME-CHECK-P)))
               ;; Inhibit saving until all are deleted, then do it once.  Otherwise, some might not be
               ;; deleted, because `bookmark-save' refreshes the list, which removes `D' flags.
               (let ((bookmark-save-flag  nil))  (bookmark-delete bmk-name 'BATCHP))
@@ -3434,7 +3437,7 @@ Returns the bookmark (internal record) created or updated."
                         (setq count  (1+ count)))))
     (when (zerop count) (error "No marked bookmarks"))
     (bmkp-set-sequence-bookmark seqname (nreverse marked-bmks)))
-  (let ((new  (bookmark-get-bookmark seqname 'NOERROR)))
+  (let ((new  (bmkp-get-bookmark seqname 'NOERROR)))
     (unless (memq new bmkp-latest-bookmark-alist)
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
     (unless dont-omit-p
@@ -3803,7 +3806,7 @@ Non-interactively, non-nil MSG-P means display messages."
                              (bmkp-marked-bookmarks-only)
                            (bmkp-remove-if #'bmkp-omitted-bookmark-p (bmkp-marked-bookmarks-only)))
                          (and (bookmark-bmenu-bookmark)
-                              (list (bookmark-get-bookmark (bookmark-bmenu-bookmark)))))))
+                              (list (bmkp-get-bookmark (bookmark-bmenu-bookmark)))))))
         (curr-bmk  (bookmark-bmenu-bookmark))
         (some-are-now-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
@@ -4962,7 +4965,7 @@ BOOKMARK, which is the full bookmark record, with the string as its
 car.
 
 Return the propertized string (the bookmark name)."
-  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (setq bookmark  (bmkp-get-bookmark bookmark))
   (let* ((bookmark-name   (bmkp-bookmark-name-from-record bookmark))
          (buffp           (bmkp-get-buffer-name bookmark))
 
@@ -5592,7 +5595,7 @@ are marked or ALLP is non-nil."
     (or (if include-omitted-p
             (bmkp-marked-bookmarks-only)
           (bmkp-remove-if #'bmkp-omitted-bookmark-p (bmkp-marked-bookmarks-only)))
-        (and (bookmark-bmenu-bookmark)  (list (bookmark-get-bookmark (bookmark-bmenu-bookmark)))))))
+        (and (bookmark-bmenu-bookmark)  (list (bmkp-get-bookmark (bookmark-bmenu-bookmark)))))))
  
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
