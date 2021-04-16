@@ -76,7 +76,7 @@ For sending mail via SMTP, ##msmtp## was written by the same author, and is a po
 Emacs doesn't know which mail client you prefer, but you can tell it by setting the `read-mail-command' variable:
 
 {{{
-;; Uncomment this line if you prefer to read mail with Rmail
+;; If you're using rmail
 (setq read-mail-command 'rmail)
 
 ;; Or if you're using Gnus:
