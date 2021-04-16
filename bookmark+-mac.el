@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Mar  4 09:13:36 2021 (-0800)
+;; Last-Updated: Fri Apr 16 14:51:59 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 220
+;;     Update #: 222
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -137,7 +137,7 @@
 
 (require 'bookmark)
 ;; bookmark-bmenu-bookmark, bookmark-bmenu-ensure-position,
-;; bookmark-bmenu-surreptitiously-rebuild-list, bookmark-get-bookmark,
+;; bookmark-bmenu-surreptitiously-rebuild-list, bmkp-get-bookmark,
 ;; bookmark-get-filename
 
  
@@ -414,8 +414,8 @@ Treat remote file bookmarks like non-file bookmarks.
 B1 and B2 are full bookmarks (records) or bookmark names.
 If either is a record then it need not belong to `bookmark-alist'."
              att-nb)
-    (setq b1  (bookmark-get-bookmark b1))
-    (setq b2  (bookmark-get-bookmark b2))
+    (setq b1  (bmkp-get-bookmark b1))
+    (setq b2  (bmkp-get-bookmark b2))
     (let (a1 a2)
       (cond (;; Both are file bookmarks.
              (and (bmkp-file-bookmark-p b1) (bmkp-file-bookmark-p b2))
