@@ -119,7 +119,7 @@ Press `l' to show a summary window of the emails with the labels you'd like to
 see.
 
 === Output files ===
-Rmail doesn't use folders, but you can file messages in different rmail
+Rmail doesn't use folders, but you can file messages in different mbox
 files.  Press `o' while viewing a message to add it to another rmail file.
 Note that if the other file is open, you'll need to save it manually.
 
@@ -132,11 +132,7 @@ email addresses.  Then you don't have to type the name of the file each time you
 press `o'.  If you set `rmail-automatic-folder-directives', filing happens
 automatically after the mail is received from the inbox.
 
-== Dealing with spam ==
-
-You can filter out spam by using RmailSpamFilter.  There is also RmailSpamprobe.
-
-== Dealing with attachments and non-ASCII mails ==
+== Attachments & non-ASCII mail ==
 
 You can display attachments using RmailMime.
 
@@ -164,16 +160,7 @@ Pressing `e' in an rmail buffer puts you in editing mode.  If you
 accidentally got there, press `C-c C-]' to abort.  Otherwise, make your changes,
 then press `C-c C-c' to save them and return to reading mode.
 
-== Converting Babyl files to mbox format ==
-
-If you tried Rmail with an Emacs version prior to 23 and
-you decide that Rmail is not for you, you can later read mail from the Babyl
-file if you are using [[Gnus]].  For all other mail readers, you'll have
-to move the mails back into mbox format.  Use `M-x unrmail' to convert the mail file.
-You can also use the command-line tool ##b2m## to do it.  Starting with version 23,
-Emacs converts Babyl files back into mbox when it first reads them.
-
-== Rmail Libraries ==
+== Helpful Libraries ==
 
 * Lisp:rmail-extras.el - Read mail from remote inboxes using ange-ftp
 * [http://ftp.ccs.neu.edu/pub/people/ratinox/emacs-lisp/trmail.el trmail] - Threads in rmail
@@ -181,6 +168,7 @@ Emacs converts Babyl files back into mbox when it first reads them.
 * Lisp:rmailgen.el - Generate guesses for output and FCC files 
 * Lisp:rmail-saver.el - Save single messages to files
 * RmailSortHeaders - Always show headers in the same order
+* Filter out spam with RmailSpamFilter or RmailSpamprobe.
 
 == Other Formats ==
 
@@ -191,6 +179,9 @@ rmail uses a standard [http://web.archive.org/web/20160304055659/http://homepage
 mboxo. mboxo performs some irreversible conversions such as replacing
 <code>From</code> in the body of a mail with <code>>From</code> if it
 occurs at the start of a line.  For most people this is unimportant.
+
+Prior to Emacs 23, rmail used the //babyl// file format. Rmail will automatically convert babyl to mbox, but you can also use `M-x unrmail' or the command-line ##b2m## utility.
+
 
 == Encryption ==
 
