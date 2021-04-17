@@ -244,21 +244,22 @@ For those who do not understand japanese well, there is another way to get mail 
 = Other MH Clients =
 
 Aside from Emacs' MH-E, you can control MH through various shell commands (see
-the manpages for '''nmh'''(1) or '''mh-chart'''(1))
+the manpages for '''nmh''' and '''mh-chart''')
 
 Then there are the GUI clients, '''xmh''' and exmh, written in
 Tcl%%/%%Tk.
 
 There's another Emacs interface called '''tmh''', written by ThienThiNguyen, but
 since it hasn't been updated since late 1994. It has been archived at the
-author's webpage at 
+author's webpage.
+
 = External Links =
 
-* [http://savannah.nongnu.org Savannah]
-* [http://www.nongnu.org/nmh nmh's website]
 * [http://mh-e.sourceforge.net MH-E's homeage]
-* [http://www.yynet.tama.tokyo.jp/~yokota/mh-biff/ MH-Biff]
+* [http://www.nongnu.org/nmh nmh's website]
 * [http://rand-mh.sourceforge.net/book/ Jerry Peek's MH book]
+* [https://muto.ca/posts/the-big-comparison-of-emacs-mail-clients.html#mh-e Muto's section on MH-E]
+* [http://www.yynet.tama.tokyo.jp/~yokota/mh-biff/ MH-Biff]
 * [http://exmh.sourceforge.net/ Exmh's homepage]
 * [http://www.gnuvola.org/software/tmh/ tmh archived page]
 * [http://dir.gmane.org/index.php?prefix=gmane.mail.mh-e Directory of MH-E groups]
