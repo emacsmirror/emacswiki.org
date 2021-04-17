@@ -61,15 +61,15 @@ password p4ssw0rd
 account default : main
 }}}
 
+* `account' - The name of our profile (can be anything)
 * `port' - The SMTP port
 * `tls' - Use TLS (required by some SMTP servers)
-* `account' - The name of our profile (can be anything)
 * `host' - The address of our SMTP server
 * `from' - Our email address
 * `auth' - We're using a username/password
 * `user' - The username of our account
 * `password' - Our email password
-* `account default' - Which account to use (we only have the one)
+* `account default' - Which account to use (in this case, "main")
 
 Now that SMTP is configured via msmtp, we can send mail!
 
