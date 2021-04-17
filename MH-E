@@ -192,80 +192,19 @@ tls      on
 tls_trust_file /home/banan/.certs/ThawtePremiumServerCA.crt
 }}}
 
-Also place "From: Your Name <username@gmail.com>" before "To:" in these files in ~/Mail: components, replcomps, forwcomps. After that you can send your mail using any of your accounts by editing "From:" field in your mail composing buffer.
+Now, in the ##~/Mail## folder, you'll edit the following files:
+
+* components
+* replcomps
+* forwcomps
+
+In each of these files, right before the ##To:## line, add ##From: Me <username@gmail.com>##. Now we can select an account by editing the ##From:## field in your //compose// buffer!
 
 [http://www.axllent.org/docs/networking/gmail_pop3_with_fetchmail How to get gmail certificates for fetchmail]
 
-!ThawtePremiumServerCA.crt for gmail support in msmtp you can get here (I renamed !ThawtePremiumServerCA_b64.txt) : https://www.verisign.com/support/thawte-roots.zip
+[https://www.verisign.com/support/thawte-roots.zip The certificates (zipped)]
 
-When certificates are in ~/.certs/, do "$ c_rehash ~/.certs/"
-
-For lazy guys here are three certificates, ~/.certs/gmail.pem:
-
-   -----BEGIN CERTIFICATE-----
-   MIIC3TCCAkagAwIBAgIDCDijMA0GCSqGSIb3DQEBBQUAME4xCzAJBgNVBAYTAlVT
-   MRAwDgYDVQQKEwdFcXVpZmF4MS0wKwYDVQQLEyRFcXVpZmF4IFNlY3VyZSBDZXJ0
-   aWZpY2F0ZSBBdXRob3JpdHkwHhcNMDcxMDI1MTc1MzE2WhcNMDkxMjI0MTg1MzE2
-   WjBoMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN
-   TW91bnRhaW4gVmlldzEUMBIGA1UEChMLR29vZ2xlIEluYy4xFjAUBgNVBAMTDXBv
-   cC5nbWFpbC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAO03QxerFKZV
-   8yeomuL4zSl8Pr7hMWnKMMgp/CwhwadeBmL0LQHHbjL/6z/Z59ZQvrztqkwhchA2
-   APKzUwRVTyn7Shx6vBqk6oFmTqoOLmY6hbq6l8uVdUv0AfbHwio8CnLpK2+nbuFl
-   flPwx1DH0E3grD8+CrH5SmScfTWbDkcXAgMBAAGjga4wgaswDgYDVR0PAQH/BAQD
-   AgTwMB0GA1UdDgQWBBTJRG/OFpZt+BV43JM3NshHMjpwazA6BgNVHR8EMzAxMC+g
-   LaArhilodHRwOi8vY3JsLmdlb3RydXN0LmNvbS9jcmxzL3NlY3VyZWNhLmNybDAf
-   BgNVHSMEGDAWgBRI5mj5K9KylddH2CMgEE8zmJCf1DAdBgNVHSUEFjAUBggrBgEF
-   BQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQEFBQADgYEAOKr3mhxtwFCS3J6lbeaf
-   3KrHKi935BZkI75sRbON+hog0t2ovcM2i7fxs3xneH8USLsHgfxNBj9tkMogMK/K
-   sO/NUVZ/IfyqcNNkp2619qTQXthKRH42JKpAKgNhT1bdno3pxn+eDEpqmU3CE7IP
-   HDCjWOK1fGkZ/yFAuTxuxAc=
-   -----END CERTIFICATE-----
-
-~/.certs/equifax.pem:
-
-   -----BEGIN CERTIFICATE-----
-   MIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV
-   UzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy
-   dGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1
-   MVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx
-   dWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B
-   AQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f
-   BeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A
-   cJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC
-   AwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ
-   MA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm
-   aWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw
-   ODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj
-   IBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF
-   MAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA
-   A4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y
-   7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh
-   1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4
-   -----END CERTIFICATE-----
-
-~/.certs/!ThawtePremiumServerCA.crt
-
-   -----BEGIN CERTIFICATE-----
-   MIIDJzCCApCgAwIBAgIBATANBgkqhkiG9w0BAQQFADCBzjELMAkGA1UEBhMCWkEx
-   FTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMR0wGwYD
-   VQQKExRUaGF3dGUgQ29uc3VsdGluZyBjYzEoMCYGA1UECxMfQ2VydGlmaWNhdGlv
-   biBTZXJ2aWNlcyBEaXZpc2lvbjEhMB8GA1UEAxMYVGhhd3RlIFByZW1pdW0gU2Vy
-   dmVyIENBMSgwJgYJKoZIhvcNAQkBFhlwcmVtaXVtLXNlcnZlckB0aGF3dGUuY29t
-   MB4XDTk2MDgwMTAwMDAwMFoXDTIwMTIzMTIzNTk1OVowgc4xCzAJBgNVBAYTAlpB
-   MRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEdMBsG
-   A1UEChMUVGhhd3RlIENvbnN1bHRpbmcgY2MxKDAmBgNVBAsTH0NlcnRpZmljYXRp
-   b24gU2VydmljZXMgRGl2aXNpb24xITAfBgNVBAMTGFRoYXd0ZSBQcmVtaXVtIFNl
-   cnZlciBDQTEoMCYGCSqGSIb3DQEJARYZcHJlbWl1bS1zZXJ2ZXJAdGhhd3RlLmNv
-   bTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA0jY2aovXwlue2oFBYo847kkE
-   VdbQ7xwblRZH7xhINTpS9CtqBo87L+pW46+GjZ4X9560ZXUCTe/LCaIhUdib0GfQ
-   ug2SBhRz1JPLlyoAnFxODLz6FVL88kRu2hFKbgifLy3j+ao6hnO2RlNYyIkFvYMR
-   uHM/qgeN9EJN50CdHDcCAwEAAaMTMBEwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG
-   9w0BAQQFAAOBgQAmSCwWwlj66BZ0DKqqX1Q/8tfJeGBeXm43YyJ3Nn6yF8Q0ufUI
-   hfzJATj/Tb7yFkJD57taRvvBxhEf8UqwKEbJw8RCfbz6q1lu1bdRiBHjpIUZa4JM
-   pAwSremkrj/xw0llmozFyD4lt5SZu5IycQfwhl7tUCemDaYj+bvLpgcUQg==
-   -----END CERTIFICATE-----
-
-Important! Do not forget to "$ c_rehash ~/.certs/"
+When certificates are in ##~/.certs/##, do ##$ c_rehash ~/.certs/##
 
 = Add-ons =
 
