@@ -217,25 +217,29 @@ MH-E.
 
 For those who do not understand japanese well, there is another way to get mail notification: (display-time) function with some tweaks (useful in case of multiple mail folders)
 
-    ;; Notification stuff: use display-time minor mode to notify about new mail
-    ;; in mode-line, but omit time and load info. Print comma separated list
-    ;; of folders with new mail in mode-line.
-    (setq display-time-mail-function
-          (lambda ()
-            (let ((input (shell-command-to-string "/usr/local/nmh/bin/flist -all"))
-                  (dirs nil)
-                  (start 0))
-              (while (string-match "^\\([a-z-+]*\\) *has [1-9].*$" input start)
-                (push (match-string 1 input) dirs)
-                (setq start (match-end 0)))
-              (setq display-time-mail-string (mapconcat 'identity dirs ", ")))))
-								  
-    (setq display-time-interval 10
-          display-time-format ""
-          display-time-default-load-average nil
-          display-time-mail-face 'custom-themed)
-    
-    (display-time)
+{{{
+;; Notification stuff: use display-time minor mode to notify about new mail
+;; in mode-line, but omit time and load info. Print comma separated list
+;; of folders with new mail in mode-line.
+
+(setq
+ display-time-interval 10
+ display-time-format ""
+ display-time-default-load-average nil
+ display-time-mail-face 'custom-themed
+
+ display-time-mail-function
+ (lambda ()
+   (let ((input (shell-command-to-string "/usr/bin/flist -all"))
+	 (dirs nil)
+	 (start 0))
+     (while (string-match "^\\([a-z-+]*\\) *has [1-9].*$" input start)
+       (push (match-string 1 input) dirs)
+       (setq start (match-end 0)))
+     (setq display-time-mail-string (mapconcat 'identity dirs ", ")))))
+
+(display-time)
+}}}
 
 = Other MH Clients =
 
