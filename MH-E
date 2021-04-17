@@ -48,11 +48,9 @@ machine    mail.example.com
 Create the file <code>~/.msmtp</code>, which contains something like this:
 
 {{{
-defaults
-
+account  main
 port     587
 tls      on
-account  main
 host     mail.example.com
 from     me@example.com
 
