@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 16 14:09:28 2021 (-0700)
+;; Last-Updated: Sun Apr 18 11:22:42 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 9349
+;;     Update #: 9409
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -752,9 +752,10 @@
 ;;    `bookmark--jump-via', `bookmark-alist-from-buffer',
 ;;    `bookmark-all-names', `bookmark-completing-read',
 ;;    `bookmark-default-handler', `bookmark-edit-annotation' (command
-;;    here), `bookmark-exit-hook-internal',
-;;    `bookmark-get-bookmark-record', `bookmark-get-handler' (Emacs
-;;    20-22), `bookmark-handle-bookmark', `bookmark-import-new-list',
+;;    here), `bookmark-exit-hook-internal', `bookmark-get-bookmark',
+;;    `bookmark-get-bookmark-record' (Emacs 20-22),
+;;    `bookmark-get-handler' (Emacs 20-22),
+;;    `bookmark-handle-bookmark', `bookmark-import-new-list',
 ;;    `bookmark-jump-noselect' (Emacs 20-22), `bookmark-location',
 ;;    `bookmark-make-record', `bookmark-make-record-default',
 ;;    `bookmark-maybe-load-default-file', `bookmark-maybe-rename',
@@ -818,8 +819,8 @@
 ;; bookmark-automatically-show-annotations, bookmark-bmenu-bookmark,
 ;; bookmark-bmenu-surreptitiously-rebuild-list, bookmark-buffer-file-name, bookmark-buffer-name,
 ;; bookmark-completion-ignore-case, bookmark-current-bookmark, bookmark-default-file,
-;; bookmark-edit-annotation, bookmark-get-annotation, bookmark-get-filename,
-;; bookmark-get-front-context-string, bookmark-get-handler, bookmark-get-position,
+;; bookmark-edit-annotation, bookmark-get-annotation, bookmark-get-bookmark, bookmark-get-bookmark-record,
+;; bookmark-get-filename, bookmark-get-front-context-string, bookmark-get-handler, bookmark-get-position,
 ;; bookmark-get-rear-context-string, bookmark-insert-file-format-version-stamp, bookmark-kill-line,
 ;; bookmark-make-record, bookmark-maybe-historicize-string, bookmark-maybe-upgrade-file-format,
 ;; bookmark-menu-popup-paned-menu, bookmark-name-from-full-record, bookmark-name-from-record,
@@ -880,8 +881,7 @@
 ;; bmkp-light-bookmark, bmkp-light-bookmarks, bmkp-light-this-buffer
 
 
-;; Is this still needed?  This was for the redefinition of `bookmark-get-bookmark'.  $$$$$$$$$$
-;;
+;; For the redefinition of `bookmark-get-bookmark'.
 (provide 'bookmark+-1)                  ; Ensure this library is loaded before we compile it.
 (require 'bookmark+-1)                  ; So be sure to put this library in your `load-path' before
                                         ; trying to byte-compile it.
@@ -2109,33 +2109,56 @@ Any other non-nil value opens it in read-only mode.
   :group 'bookmark :group 'bookmark-plus)
 
 
+(when (< emacs-major-version 23)
+
+
+  ;; REPLACES ORIGINAL in `bookmark.el' (Emacs 20-22).
+  ;;
+  ;; Same as Emacs 23+ version of the function.
+  ;; But the behavior is different from vanilla Emacs, because of the different `bookmark-get-bookmark'
+  ;; behavior: Only if BOOKMARK is a name without that property is it looked up in `bookmark-alist'.
+  ;;
+  (defun bookmark-get-bookmark-record (bookmark)
+    "Return the data part of BOOKMARK, that is, all but the name.
+BOOKMARK is a bookmark name or a bookmark record.
+
+If it is a name with text property `bmkp-full-record', or if it is a
+bookmark record, then it is NOT looked up in `bookmark-alist' (it need
+not belong).  Only if it is a name without that property is it looked
+up in `bookmark-alist'."
+    (let ((data  (cdr (bookmark-get-bookmark bookmark))))
+      ;; A bookmark record is either (NAME ALIST) or (NAME . ALIST).
+      (if (and (null (cdr data))  (consp (caar data)))
+          (car data)
+        data)))
+  )
+
+
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Doc string distinguishes cases of bookmark name and bookmark record.
-;; 2. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
-;;    it has a name with property `bmkp-full-record'.  But don't require that BOOKMARK have a name, so
-;;    calls from vanilla or other code won't be bothered.
+;; If BOOKMARK is a bookmark-name string that has non-nil property `bmkp-full-record' then just return that.
+;; Only if BOOKMARK is a name without that property is it looked up in `bookmark-alist'.
 ;;
-(defun bookmark-get-bookmark-record (bookmark)
-  "Return the data part of BOOKMARK, that is, all but the name.
-BOOKMARK is a bookmark name or a bookmark record.
-If it is a bookmark name then it is looked up in `bookmark-alist'.
-If it is a record then it is NOT looked up (need not belong).
-If it is or has a name that has non-nil property `bmkp-full-record',
-then use the bookmark in `bookmark-alist' that is the value of that
-property.  That is, use (bmkp-get-bookmark BOOKMARK nil 'NO-NAME-CHECK-P)."
-  (let ((data  (cdr (bmkp-get-bookmark bookmark nil 'NO-NAME-CHECK-P))))
-    ;; A bookmark record is either (NAME ALIST) or (NAME . ALIST).
-    (if (and (null (cdr data))  (consp (caar data)))
-        (car data)
-      data)))
+(defun bookmark-get-bookmark (bookmark &optional noerror)
+  "Return the full bookmark (record) that corresponds to BOOKMARK.
+This is just `bmkp-get-bookmark' with non-nil NO-NAME-CHECK-P.
+
+If bookmark is a name with text property `bmkp-full-record', or if it
+is a bookmark record, then it is NOT looked up in `bookmark-alist' (it
+need not belong).  Only if it is a name without that property is it
+looked up in `bookmark-alist'.  The vanilla Emacs version of this
+function always looks up a string BOOKMARK in `bookmark-alist'.
+
+If you want to ensure that BOOKMARK is in `bookmark-alist' even when
+BOOKMARK is a string, then use `bmkp-get-bookmark-in-alist', not
+`bookmark-get-bookmark' or `bmkp-get-bookmark'."
+  (bmkp-get-bookmark bookmark noerror 'NO-NAME-CHECK-P))
 
 
 ;; This is like vanilla `bookmark-get-bookmark' in `bookmark.el', but it has these differences:
 ;;
 ;; 1. If BOOKMARK is a bookmark-name string that has non-nil property `bmkp-full-record'
-;;    then look up the bookmark that is the value of that property in `bookmark-alist', and
-;;    if found return it.
+;;    then return the value of that property - do not look up the string in `bookmark-alist'.
 ;; 2. Handle the should-not-happen case of non-string, non-cons.
 ;; 3. Added optional arg NO-NAME-CHECK-P.
 ;; 4. Unless NO-NAME-CHECK-P, to be valid when a cons, the car must be a string.
@@ -2150,7 +2173,8 @@ for these differences:
 1. If BOOKMARK is a bookmark name instead of a full bookmark then
    return what `bmkp-bookmark-record-from-name' (with no MEMP check)
    returns.  That is, if the name has non-nil text property
-   `bmkp-full-record' then use that.
+   `bmkp-full-record' then use that, without looking up the string in
+   `bookmark-alist'.
 
 2. By default, to be considered a valid bookmark record, it must have
    a name.  That is, as a cons, its car must be a string.
@@ -2182,9 +2206,9 @@ This function is like `bmkp-get-bookmark-in-alist', except that
 bookmark name) or a full bookmark.  `bmkp-get-bookmark-in-alist' is
 thus a real test for bookmark existence.  Use `bmkp-get-bookmark' only
 when you do NOT want to look up the bookmark in `bookmark-alist'."
-  ;; If NO-NAME-CHECK-P then this, like `bookmark-get-bookmark', checks only for a cons.
-  ;; Without NO-NAME-CHECK-P, the check is for a cons with a string car.  We test for the string (the
-  ;; bookmark name) so we can distinguish, for example, a list of bookmarks from a single bookmark.
+  ;; Non-nil NO-NAME-CHECK-P means this, like `bookmark-get-bookmark', checks only for a cons.
+  ;; With nil NO-NAME-CHECK-P, the check is for a cons with a string car.  We test for the string (the
+  ;; bookmark name) so that we can distinguish, for example, a list of bookmarks from a single bookmark.
   (cond ((and (consp bookmark)  (or no-name-check-p  (stringp (car bookmark)))) ; No test of alist membership.
          bookmark)
         ((stringp bookmark)             ; No MEMP check.
@@ -2721,21 +2745,23 @@ From Lisp code:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
-;;    it has a name with property `bmkp-full-record'.  But don't require that BOOKMARK have a name, so
-;;    calls from vanilla or other code won't be bothered.
-;; 2. Put full bookmark record on the name as property `bmkp-full-record'.
-;; 3. Add BOOKMARK to `bmkp-modified-bookmarks'.
+;; 1. Put full bookmark record on the name as property `bmkp-full-record'.
+;; 2. Add BOOKMARK to `bmkp-modified-bookmarks'.
+;; 3. The different `bookmark-get-bookmark' behavior from vanilla Emacs means we can get the right bookmark
+;;    if it has a name with property `bmkp-full-record', without looking it up in `bookmark-alist'.
+;;    But we don't require that BOOKMARK have a name, so calls from vanilla or other code aren't bothered.
 ;;
 (defun bookmark-set-name (bookmark newname)
   "Set name of BOOKMARK to NEWNAME.
 BOOKMARK is a bookmark name or a bookmark record.
-If it is a bookmark name then it is looked up in `bookmark-alist'.
-If it is a record then it is NOT looked up (need not belong).
-If it is or has a name that has non-nil property `bmkp-full-record',
-then use the bookmark in `bookmark-alist' that is the value of that
-property.  That is, use (bmkp-get-bookmark BOOKMARK nil 'NO-NAME-CHECK-P)."
-  (setq bookmark  (bmkp-get-bookmark bookmark nil 'NO-NAME-CHECK-P))
+Put the full bookmark on its name as property `bmkp-full-record'.
+Add BOOKMARK to `bmkp-modified-bookmarks'.
+
+If BOOKMARK is a name with text property `bmkp-full-record', or if it
+is a bookmark record, then it is NOT looked up in `bookmark-alist' (it
+need not belong).  If it is a name without that property then it is
+looked up in `bookmark-alist'."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
   (setcar bookmark newname)
   ;; Put the full bookmark on its name as property `bmkp-full-record'.
   ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
@@ -2837,8 +2863,8 @@ DISPLAY-FUNCTION is as in `bookmark-jump'."
 ;;
 ;; 1. Added optional arg REQUIRE-NAME-P.  Pass it to `bmkp-get-bookmark'.
 ;; 2. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
-;;    it has a name with property `bmkp-full-record'.  But don't require that BOOKMARK have a name, so
-;;    calls from vanilla or other code won't be bothered.
+;;    it has a name with property `bmkp-full-record'.  But unless REQUIRE-NAME-P, don't require that BOOKMARK
+;;    have a name, so calls from vanilla or other code won't be bothered.
 ;; 3. Add to beginning, not end, of bookmark record.
 ;; 4. Do not use `nconc'.
 ;; 5. Respect both old and newer bookmark formats.
@@ -2939,12 +2965,9 @@ See `bookmark-jump', in particular for info about using a prefix arg."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Invoke MS Windows `Open' action if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
-;;
 ;; 2. Favor entry `file-handler' over entry `handler'.  If the former is available, apply it to the file.
-;;
 ;; 3. If BOOKMARK has its own handler but that is not a defined function, then use the default handler.
 ;;    This lets Emacs 22, for instance, handle Emacs 23+ image bookmarks.
-;;
 ;; 4. Different relocation message for non-file bookmark.
 ;;
 (defun bookmark-handle-bookmark (bookmark)
@@ -3024,8 +3047,10 @@ is handled as follows:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Support regions, buffer names, and entry `file-handler'.
-;; 2. Handle MS Windows `Open' command if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
+;; 1. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
+;;    it has a name with property `bmkp-full-record'.
+;; 2. Support regions, buffer names, and entry `file-handler'.
+;; 3. Handle MS Windows `Open' command if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
 ;;
 (defun bookmark-default-handler (bookmark)
   "Default handler to jump to the location of BOOKMARK.
@@ -3178,26 +3203,25 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
-;;    it has a name with property `bmkp-full-record'.  But don't require that BOOKMARK have a name, so
-;;    calls from vanilla or other code won't be bothered.
+;; 1. The different `bookmark-get-bookmark' behavior from vanilla Emacs means we can get the right bookmark
+;;    if it has a name with property `bmkp-full-record', without looking it up in `bookmark-alist'.
+;;    But we don't require that BOOKMARK have a name, so calls from vanilla or other code aren't bothered.
 ;; 2. Pass full bookmark to the various "get" functions.
 ;; 3. Location returned can be a buffer name.
 ;;
 (defun bookmark-location (bookmark)
   "Return a description of the location of BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
-If it is a bookmark name then it is looked up in `bookmark-alist'.
-If it is a record then it is NOT looked up (need not belong).
-If it is or has a name that has non-nil property `bmkp-full-record',
-then use the bookmark in `bookmark-alist' that is the value of that
-property.  That is, use (bmkp-get-bookmark BOOKMARK nil 'NO-NAME-CHECK-P).
+If it is a name with text property `bmkp-full-record', or if it is a
+bookmark record, then it is NOT looked up in `bookmark-alist' (it need
+not belong).  If it is a name without that property then it is looked
+up in `bookmark-alist'.
 
 Look first for entry `location', then for entry `buffer-name' or
 `buffer', then for entry `filename'.  Return the first such entry
 found, or \"-- Unknown location --\" if none is found."
   (bookmark-maybe-load-default-file)
-  (setq bookmark  (bmkp-get-bookmark bookmark nil 'NO-NAME-CHECK-P))
+  (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
       (bmkp-get-buffer-name bookmark)   ; Entry `buffer-name'.
       (bookmark-prop-get bookmark 'buffer) ; Entry `buffer'.
@@ -3287,8 +3311,7 @@ candidate."
 ;; 1. Accept a bookmark or a bookmark name as arg.
 ;; 2. Use `bmkp-default-bookmark-name' as default when interactive.
 ;; 3. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
-;;    it has a name with property `bmkp-full-record'.  But don't require that BOOKMARK have a name, so
-;;    calls from vanilla or other code won't be bothered.
+;;    it has a name with property `bmkp-full-record'.
 ;; 4. Use `bmkp-get-bookmark-in-alist', not `bookmark-get-bookmark', when checking `bookmark-current-bookmark'.
 ;; 5. Remove highlighting for the bookmark.
 ;; 6. Doc string includes note about `S-delete' for Icicles.
@@ -3303,9 +3326,9 @@ Interactively, default to the \"current\" bookmark (that is, the one
 most recently used in this file), if it exists.
 
 If BOOKMARK is a name and it has property `bmkp-full-record' then use
-that property along with the name to find the bookmark to delete.
-If it is a name without property `bmkp-full-record' then delete (only)
-the first bookmark in `bookmark-alist' with that name.
+that property along with the name to find the bookmark to delete.  If
+it is or has a name without property `bmkp-full-record' then
+delete (only) the first bookmark in `bookmark-alist' with that name.
 
 Optional arg BATCHP means do not update buffer `*Bookmark List*'.
 
@@ -3733,8 +3756,7 @@ bookmark files that were created using the bookmark functions."
 ;;
 ;;  1. Make it a command (added `interactive' spec).
 ;;  2. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmark if
-;;     it has a name with property `bmkp-full-record'.  But don't require that BOOKMARK have a name, so
-;;     calls from vanilla or other code won't be bothered.
+;;     it has a name with property `bmkp-full-record'.
 ;;  3. Handle external annotations (jump to their destinations).
 ;;  4. Added optional arg MSG-P.  Show message if no annotation.
 ;;  5. If `bookmark-automatically-show-annotations' is `edit' then this is `bookmark-edit-annotation'.
