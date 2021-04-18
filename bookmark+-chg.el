@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 16 14:52:19 2021 (-0700)
+;; Last-Updated: Sun Apr 18 11:02:19 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16803
+;;     Update #: 16814
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/04/18 dadams
+;;     Added back a redefinition of bookmark-get-bookmark, as bmkp-get-bookmark with NO-NAME-CHECK-P.
+;;     bookmark-set-name, bookmark-location:
+;;       Replaced (bmkp-get-bookmark BMK nil 'NO-NAME-CHECK-P) with (bookmark-get-bookmark BMK).
+;;     Doc string and comment improvements, vis a vis uses of bookmark|bmkp-get-bookmark.
 ;; 2021/04/16 dadams
 ;;     bookmark-get-bookmark-record, bookmark-set-name, bookmark-prop-set, bookmark-location,
 ;;       bookmark-delete, bookmark-show-annotation:
