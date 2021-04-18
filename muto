@@ -3,15 +3,46 @@ I'm an Emacs user and a computer programmer from Canada. //Sometimes// I edit th
 == Pages I like ==
 
 * [[Rmail]]
+* [[MH-E]]
 * [[WanderLust]]
-* [[Gnus]]
 * [[OrgMode]]
 * [[ParEdit]]
-* [[ViewMail]]
 * [[eww]]
 * [[GettingMail]]
-* [[Mew]]
-* [[MH-E]]
+
+== My Take on Email in Emacs ==
+
+Short story: Mu4e. Long story...
+
+=== The beginning: rmail ===
+
+I '''LOVE''' rmail. rmail is small, and simple, and it does what it's supposed to. it uses emacs' built-in sendmail-mode for composition, and emacs' bulilt-in SMTP facility. The thing is, I have some "meh" thoughts about it:
+
+* It lacks maildir support. Mbox is nice, but it's not very unixy; having all your mail in a single file is weird. it doesn't make sense.
+* It lacks threading of any kind. Support can be added via external plugins, but that's /external plugins!/
+* It's not intuitive to set up, specifically, with the ##%40## in place of the ##@## symbol.
+
+All of this makes it... Awkward to work with. A certain point in my life showed up when I just thought "okay... I'm getting /lots/ of mail here. My mbox files are going to get big, and they'll only get bigger faster as time goes on". It's not something anyone should have to worry about, so maildir became more important to me.
+
+=== Limbo ===
+
+I hopped around. I tried Alpine (not part of emacs), and it was amazing, but again, it only does mbox files... But it has /perfect/ threading support '''and''' an nntp facility that behaves just like an inbox! beautiful, beautiful, but again... i want me some maildir.
+
+I tried MH-E for a while. Easy to set up with nmh, no maildir //but// it uses MH files, which I'd say are "good nuff" for me. There's some awkwardness to MH-E, though: 
+
+* Emoticons get turned into smileys
+* The "hide superfluous headers" feature is a blacklist, not a whitelist.
+* HTML can't be rendered in the summary
+* The docs are a bit bare & it took time to figure it out
+
+I tried notmuch, but the fact that deleting email can't be done without needing to write a lisp function, I decided to keep looking. I can totally write lisp, but that sort of functionality should come out of the box IMO.
+
+So finally landing on mu4e. It has threading, but not collapsible threads. The thing is, other than that, it's perfect! I don't like to install external packages, but I think mu4e is worth a shot if you're //really// into using email stuff.
+
+=== Conclusion ===
+
+I wish I could keep using rmail forever, but... I can't. I need something /cleaner/. Maybe in the future, rmail will work with maildirs, but until then, it's just not enough. I //really// don't wanna be one of those jerks who blindly love maildir. I have just heard many mail horror stories regarding mbox, and I want to quit before I have my own stories to tell!
+
 
 == External Links ==
 
