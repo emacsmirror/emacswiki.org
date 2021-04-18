@@ -108,27 +108,25 @@ this by setting the `mail-user-agent' variable:
 
 == Sorting mail ==
 
+The two major sorting methods in rmail are '''labels''' and '''files'''.
+
 === Labels (tags) ===
-Simply add one or more labels to an email by pressing `a' while viewing the
-message.  You can add multiple labels at once by separating them with a comma.
 
-To remove labels press `k'.  As with adding labels, you can use a comma in
-between labels to remove more than one.
+You can add one or more labels to a message. You can also filter your inbox to only display certain labels.
 
-Press `l' to show a summary window of the emails with the labels you'd like to
-see.
+* `a' - Add a label, or multiple separated by a comma
+* `k' - Remove label
+* `l' - Sort by label
 
 === Output files ===
-Rmail doesn't use folders, but you can file messages in different mbox
-files.  Press `o' while viewing a message to add it to another rmail file.
-Note that if the other file is open, you'll need to save it manually.
 
-For example, I receive mail in my RMAIL file and add messages to separate
-files such as FAMILY, MAILING_LISTS, etc.  I usually delete those messages
-so that my "inbox" file remains small.
+You can move your mail from the inbox into different mbox files (like "family", "work", etc). These mbox files behave exactly the same as the inbox. 
+
+* `o' - Output message to an mbox file
+* `i' - Visit an mbox file
 
 The variable `rmail-output-file-alist' lets you set default files for specified
-email addresses.  Then you don't have to type the name of the file each time you
+email addresses, so you don't have to type the name of the file each time you
 press `o'.  If you set `rmail-automatic-folder-directives', filing happens
 automatically after the mail is received from the inbox.
 
