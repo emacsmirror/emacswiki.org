@@ -199,6 +199,13 @@ The following will group the tabs by the git repository that the file is in.  Al
      (list (find-git-dir (buffer-file-name (current-buffer)))))
     (setq tabbar-buffer-groups-function 'git-tabbar-buffer-groups)
 
+Replace find-git-dir in the above with find-vc-root defined below to support all known vc-backends.
+
+    (defun find-vc-root ()
+     "Retuns the repository root as per [vc]."
+     (vc-call-backend (vc-responsible-backend default-directory)
+	    	      'root default-directory))
+
 === Sort tabbar buffers by name ===
 
     (defun tabbar-add-tab (tabset object &optional append_ignored)
