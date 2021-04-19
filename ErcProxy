@@ -33,10 +33,9 @@ The location of the socks server is in the variable `socks-server'.  To set it y
 * ##"My socks server"## is the description of the server.
 * ##"socks.host.name"## is the host name for the server.
 * ##1080## is the port number.
-* #5# is the socks version (can be ##4## as well).
+* ##5## is the socks version (can be ##4## as well).
 
-`socks-noproxy' holds a list of regexps for which the network calls are not socksified.
-I've excluded ##localhost## from the connections so that I can still connect to BitlBee.
+`socks-noproxy' holds a list of domains to exclude from the proxy.
 
 == Tor == 
 
