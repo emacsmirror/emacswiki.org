@@ -38,14 +38,19 @@ The location of the socks server is in the variable `socks-server'.  To set it y
 `socks-noproxy' holds a list of regexps for which the network calls are not socksified.
 I've excluded ##localhost## from the connections so that I can still connect to BitlBee.
 
-==  tor (http://tor.eff.org/) == 
+== Tor == 
 
-To use ERC with Tor requires you to have Privoxy installed and configured, as well as the socks.el code from above.  In addition, you need to set socks-server with M-x customize-variable RET socks-server RET.  
+If you run `torsocks emacs' from the command line, Emacs will run through Tor. You can also open ##.onion## links in [[eww]] and Erc.
 
-Set the server to "localhost" if you are running Tor/Privoxy on the localhost, or set it to the server where Tor/Privoxy is running.  Set the port to "9050", and select the "Socks v5" radio button.
+You can also use Privoxy and socks.el to connect to tor. After configuring Privoxy, add this to your InitFile:
 
+{{{
+(setq socks-override-functions 1)
+(setq socks-noproxy '("localhost"))
+(require 'socks)
 
-[[offby1]] just discovered that ##torify emacs##, followed by ##M-x erc-select##, works fine.
+(setq socks-server '("Tor Proxy" "localhost" 9050 5))
+}}}
 
 Does this solutions [http://wiki.torproject.org/noreply/TheOnionRouter/TorFAQ#SOCKSAndDNS leak dns?]
 
