@@ -187,10 +187,14 @@ You should be able to find documentation on how to set them up on their pages.
 
 == Proxies ==
 
-Currently not supported.  See http://desproxy.sourceforge.net/ or
-http://transconnect.sourceforge.net/ for software to use.
+You can connect to HTTP proxies with software such as:
 
-ErcProxy has some more information on how things are right now and what you can do to use erc through a proxy.
+* [http://desproxy.sourceforge.net/ Desproxy]
+* [http://transconnect.sourceforge.net/ Transconnect]
+
+You can connect over //Tor// by using ##torsocks emacs## from the command-line.
+
+See ErcProxy for more tips.
 
 == For developers ==
 
