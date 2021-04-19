@@ -91,10 +91,9 @@ Alternatively, you could run desproxy-socksserver on localhost and tunnel it thr
 == External Links ==
 
 * RFC 3143 -- Known HTTP Proxy/Caching Problems
-* RFC 3205 -- On the use of HTTP as a Substrate.  ESR says “good design advice for anyone considering using HTTP as the underlayer of an application protocol.”
-* [http://www.nocrew.org/software/httptunnel.html GNU httptunnel] -- “httptunnel creates a bidirectional virtual data connection tunnelled in HTTP requests. The HTTP requests can be sent via an HTTP proxy if so desired.
-This can be useful for users behind restrictive firewalls. If WWW access is allowed through a HTTP proxy, it's possible to use httptunnel and, say, telnet or PPP to connect to a computer outside the firewall.”
-* [http://sourceforge.net/projects/desproxy/ desproxy] -- “Bored of having HTTP-only connection to the Internet? Tired of being unable to connect to irc through a HTTP proxy? desproxy (a TCP tunnel for HTTP proxies) just makes you able to tunnel all your TCP traffic through a HTTP proxy!”
+* RFC 3205 -- On the use of HTTP as a Substrate.
+* [http://www.nocrew.org/software/httptunnel.html GNU httptunnel] -- “Bi-directional virtual data connection tunnelled in HTTP requests.
+* [http://sourceforge.net/projects/desproxy/ desproxy] - Tunnel TCP traffic through a HTTP proxy!”
 
 -----
 [[ERC]]
