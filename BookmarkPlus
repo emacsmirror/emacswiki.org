@@ -101,9 +101,56 @@ libraries <tt>[[col-highlight.el]]</tt>, ##hl-line##, <tt>[[hl-line+.el]]</tt>, 
 [:ObtainingBookmarkPlus]
 === Where to Obtain Bookmark+ Files ===
 
-'''UPDATE, 2017-10:'''
+'''UPDATE, 2021-04:'''
+
+[new:DrewAdams:2021-04-19 14:33 UTC]
+
+(See also the update below, from 2017-10.)
+
+A user informs me that there are these additional ways to install and update '''Bookmark+''' automatically, using Quelpa, which lets you download and build packages from various sources, including %%EmacsWiki%%.
+
+
+    (quelpa '(bookmark+ :fetcher wiki
+                        :files
+                        ("bookmark+.el"
+                         "bookmark+-mac.el"
+                         "bookmark+-bmu.el"
+                         "bookmark+-1.el"
+                         "bookmark+-key.el"
+                         "bookmark+-lit.el"
+                         "bookmark+-doc.el"
+                         "bookmark+-chg.el")))
+
+
+And Quelpa can be combined with library `use-package', as follows:
+
+
+    (use-package bookmark+
+                 :quelpa (bookmark+ :fetcher wiki
+                                    :files
+                                    ("bookmark+.el"
+                                     "bookmark+-mac.el"
+                                     "bookmark+-bmu.el"
+                                     "bookmark+-1.el"
+                                     "bookmark+-key.el"
+                                     "bookmark+-lit.el"
+                                     "bookmark+-doc.el"
+                                     "bookmark+-chg.el"))
+                 :defer 2)
+
+
+
+
+
+
+
+
+
 
 ----
+
+'''UPDATE, 2017-10:'''
+
 
 [new:DrewAdams:2017-10-14 22:53 UTC]
 '''Bookmark+''', as well as my other libraries that are on %%EmacsWiki%%, used to be obtainable also from [[MELPA]].  You may still find some of them there, but they are likely ''not up-to-date''.
