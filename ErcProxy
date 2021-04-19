@@ -22,7 +22,7 @@ Alternatively, you can use the following for ERC only:
 The location of the socks server is in the variable `socks-server'.  To set it you can do:
 
 {{{
-(setq socks-server (list "My socks server" "socks.host.name" 1080 5))
+(setq socks-server '("My Proxy" "socks.host.name" 1080 5))
 }}}
 
 * ##"My socks server"## is the description of the server.
