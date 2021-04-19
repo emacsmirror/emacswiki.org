@@ -38,6 +38,12 @@ You can see a list of keyboard bindings with `?', but here are a few you might w
 * <code>M-<RET></code> - Open link in new tab
 * `s' - Get a list of eww tabs
 
+== Proxy ==
+
+To open ##.onion## links from eww, run `torsocks emacs' from the commandline. From then, you should be able to load ##.onion## addresses from within [[Erc]] and eww.
+
+You may also find [[ErcProxy]] helpful, as a lot of the solutions are general-purpose.
+
 == Windows ==
 
 Make sure that libxml2 and GnuTLS are installed and that the executables and DLLs can be found by EMACS. You may add their location to <code>%PATH%</code>. The aforementioned packages are provided by [http://sourceforge.net/projects/ezwinports/files/ ezwinports] or [https://ftp.gnu.org/gnu/emacs/windows/emacs-25-i686-deps.zip Emacs (25, 32-bit)] (same [https://ftp.gnu.org/gnu/emacs/windows/emacs-25-x86_64-deps.zip for 64 bit]).
