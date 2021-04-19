@@ -1,12 +1,4 @@
-We don't have HTTP proxy support for [[ERC]], yet. But see below for some trivials ways of adding it yourself.
-
-Here's some background material:
-
-* RFC 3143 -- Known HTTP Proxy/Caching Problems
-* RFC 3205 -- On the use of HTTP as a Substrate.  ESR says “good design advice for anyone considering using HTTP as the underlayer of an application protocol.”
-* [http://www.nocrew.org/software/httptunnel.html GNU httptunnel] -- “httptunnel creates a bidirectional virtual data connection tunnelled in HTTP requests. The HTTP requests can be sent via an HTTP proxy if so desired.
-This can be useful for users behind restrictive firewalls. If WWW access is allowed through a HTTP proxy, it's possible to use httptunnel and, say, telnet or PPP to connect to a computer outside the firewall.”
-* [http://sourceforge.net/projects/desproxy/ desproxy] -- “Bored of having HTTP-only connection to the Internet? Tired of being unable to connect to irc through a HTTP proxy? desproxy (a TCP tunnel for HTTP proxies) just makes you able to tunnel all your TCP traffic through a HTTP proxy!”
+Emacs has built-in support for Socks proxies. An HTTP proxy can easily be added.
 
 [[Khmar]] thinks socks is easier.
 
@@ -14,25 +6,34 @@ This can be useful for users behind restrictive firewalls. If WWW access is allo
 
 [[alephnull]] says: You could run desproxy-socksserver on localhost and tunnel through your HTTP proxy.
 
-== ERC through a socks proxy ==
+== ERC Through a Socks Proxy ==
 
-socks.el comes with Emacs. (Emacs 22 and older can get it from [[w3]].) If you set `socks-override-functions' before loading the library, all the network functions will be using socks:
+socks.el comes with Emacs. If you set `socks-override-functions' before loading the library, all the network functions will be using socks:
 
- (setq socks-override-functions 1)
- (setq socks-noproxy '("localhost"))
- (require 'socks)
+{{{
+(setq socks-override-functions 1)
+(setq socks-noproxy '("localhost"))
+(require 'socks)
+}}}
 
 Alternatively, you can use the following for ERC only:
 
- (setq socks-noproxy '("localhost"))
- (require 'socks)
- (setq erc-server-connect-function 'socks-open-network-stream)
+{{{
+(setq socks-noproxy '("localhost"))
+(require 'socks)
+(setq erc-server-connect-function 'socks-open-network-stream)
+}}}
 
 The location of the socks server is in the variable `socks-server'.  To set it you can do:
 
- (setq socks-server (list "My socks server" "socks-server-hostname" 1080 5))
+{{{
+(setq socks-server (list "My socks server" "socks.host.name" 1080 5))
+}}}
 
-Where "My socks server" is the description of the server, "socks-server-hostname" is the host name for the server, 1080 is the port, and 5 is the socks version (can be 4 as well)
+* ##"My socks server"## is the description of the server.
+* ##"socks.host.name"## is the host name for the server.
+* ##1080## is the port number.
+* #5# is the socks version (can be ##4## as well).
 
 `socks-noproxy' holds a list of regexps for which the network calls are not socksified.
 I've excluded ##localhost## from the connections so that I can still connect to BitlBee.
@@ -81,6 +82,17 @@ You can use the following to use an unauthenticated HTTP proxy for ERC without e
  (setq erc-server-connect-function 'open-http-proxy-stream)
 
 --[[blorbx]]
+
+== See Also ==
+[[w3]] - Where you can download socks.el for older Emacs versions.
+
+== External Links ==
+
+* RFC 3143 -- Known HTTP Proxy/Caching Problems
+* RFC 3205 -- On the use of HTTP as a Substrate.  ESR says “good design advice for anyone considering using HTTP as the underlayer of an application protocol.”
+* [http://www.nocrew.org/software/httptunnel.html GNU httptunnel] -- “httptunnel creates a bidirectional virtual data connection tunnelled in HTTP requests. The HTTP requests can be sent via an HTTP proxy if so desired.
+This can be useful for users behind restrictive firewalls. If WWW access is allowed through a HTTP proxy, it's possible to use httptunnel and, say, telnet or PPP to connect to a computer outside the firewall.”
+* [http://sourceforge.net/projects/desproxy/ desproxy] -- “Bored of having HTTP-only connection to the Internet? Tired of being unable to connect to irc through a HTTP proxy? desproxy (a TCP tunnel for HTTP proxies) just makes you able to tunnel all your TCP traffic through a HTTP proxy!”
 
 -----
 [[ERC]]
