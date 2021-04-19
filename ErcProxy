@@ -1,8 +1,6 @@
 Emacs has built-in support for Socks proxies. An HTTP proxy can easily be added.
 
 
-[[alephnull]] says: 
-
 == ERC Through a Socks Proxy ==
 
 socks.el comes with Emacs. If you set `socks-override-functions' before loading the library, all the network functions will be using socks:
