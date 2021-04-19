@@ -3,7 +3,7 @@ Emacs has built-in support for Socks proxies. An HTTP proxy can easily be added.
 
 == Socks Proxies ==
 
-socks.el comes with Emacs. If you set `socks-override-functions' before loading the library, all the network functions will be using socks:
+socks.el is built-in to Emacs and can be configured like so:
 
 {{{
 (setq socks-override-functions 1)
@@ -11,10 +11,13 @@ socks.el comes with Emacs. If you set `socks-override-functions' before loading 
 (require 'socks)
 }}}
 
+* ##socks-override-function## - Set this before loading the library to make Emacs use Socks for all networking functions.
+* ##socks-noproxy## - A list of domains to exclude from the proxy.
+* ##(require 'socks)## - Finally, load the socks library.
+
 Alternatively, you can use the following for ERC only:
 
 {{{
-(setq socks-noproxy '("localhost"))
 (require 'socks)
 (setq erc-server-connect-function 'socks-open-network-stream)
 }}}
@@ -29,8 +32,6 @@ The location of the socks server is in the variable `socks-server'.  To set it y
 * ##"socks.host.name"## is the host name for the server.
 * ##1080## is the port number.
 * ##5## is the socks version (can be ##4## as well).
-
-`socks-noproxy' holds a list of domains to exclude from the proxy.
 
 == Tor == 
 
