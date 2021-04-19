@@ -1,7 +1,7 @@
 Emacs has built-in support for Socks proxies. An HTTP proxy can easily be added.
 
 
-== ERC Through a Socks Proxy ==
+== Socks Proxies ==
 
 socks.el comes with Emacs. If you set `socks-override-functions' before loading the library, all the network functions will be using socks:
 
@@ -64,7 +64,7 @@ You may use [http://www.agroman.net/corkscrew/ corkscrew] to tunnel IRC connecti
 
 Of course, you want to install ##corkscrew## first.
 
-== ERC through HTTP Proxy ==
+== Generic HTTP Proxy ==
 
 You can use the following to use an unauthenticated HTTP proxy for ERC without external tools:
 
