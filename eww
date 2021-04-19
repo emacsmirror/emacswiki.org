@@ -15,7 +15,7 @@ Eww uses the `shr' HTML renderer, so we can change how Eww web pages look by set
  eww-search-prefix "https://ddg.gg/html?q=") ; Use DuckDuckGo for search (default)
 </pre>
 
-You can use `M-x customize-group' on `eww' and `shr' to see more options.
+You can use `M-x customize-group' on `eww' or `shr' to see more options.
 
 == Usage ==
 
