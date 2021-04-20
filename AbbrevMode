@@ -270,7 +270,7 @@ same `major-mode'."
 </pre>
 you call it like this:
 <pre>
-(set-local-abbrevs '(("tr" "try it out" nil) ("co" "cool huh?" nil))
+(set-local-abbrevs '(("tr" "try it out" nil) ("co" "cool huh?" nil)))
 </pre>
 -- JoeBloggs
 
