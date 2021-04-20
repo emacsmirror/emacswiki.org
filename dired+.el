@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 14 15:50:28 2021 (-0700)
+;; Last-Updated: Tue Apr 20 13:24:32 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12957
+;;     Update #: 12964
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -789,6 +789,7 @@
 ;;  `dired-mark-pop-up'       - Delete the window or frame popped up,
 ;;                              afterward, and bury its buffer. Do not
 ;;                              show a menu bar for pop-up frame.
+;;  `dired-move-to-filename'  - Made it a command.
 ;;  `dired-other-frame'       - Handle non-positive prefix arg.
 ;;  `dired-other-window'      - Handle non-positive prefix arg.
 ;;  `dired-pop-to-buffer'     - Put window point at bob (bug #12281).
@@ -874,6 +875,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/04/20 dadams
+;;     Added: dired-move-to-filename, and made it a command.
 ;; 2021/04/14 dadams
 ;;     diredp-menu-bar-dir-menu: Added dired-undo.
 ;; 2021/03/20 dadams
@@ -11707,6 +11710,33 @@ Otherwise, an error occurs in these cases."
            (expand-file-name file))
           (t
            (concat (dired-current-directory localp) file)))))
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; 1. Made it a command.
+;; 2. Use `forward-line' instead of `beginning-of-line'.
+;;
+(defun dired-move-to-filename (&optional raise-error eol)
+  "Move to the beginning of the file name on the current line.
+Return the position of the file-name beginning, or nil if none found.
+
+Non-nil RAISE-ERROR means raise an error if no file name is found.
+Non-nil EOL is the search limit.  Default: `line-end-position'."
+  (interactive)
+  (unless eol (setq eol  (line-end-position)))
+  (forward-line 0)
+  (let ((change (next-single-property-change (point) 'dired-filename nil eol)))
+    (cond ((and change (< change eol))
+           (goto-char change))
+          ((re-search-forward directory-listing-before-filename-regexp eol t)
+           (goto-char (match-end 0)))
+          ((re-search-forward dired-permission-flags-regexp eol t)
+           ;; There *is* a file.  Our regexp-from-hell just failed to find it.
+           (when raise-error (error "Unrecognized line!  Check `directory-listing-before-filename-regexp'"))
+           (beginning-of-line)
+           nil)
+          (raise-error (error "No file on this line")))))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
