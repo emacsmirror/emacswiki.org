@@ -5,13 +5,13 @@
 ;; Author: Miles Bader <miles@gnu.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2009, Miles Bader, all rights reserved.
-;; Copyright (C) 2009-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:07:11 2018 (-0800)
+;; Last-Updated: Wed Apr 21 14:53:27 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 128
+;;     Update #: 136
 ;; URL: https://www.emacswiki.org/emacs/download/echo-bell.el
 ;; Keywords: echo area, bell, ding
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
@@ -35,11 +35,16 @@
 ;;  * `echo-bell-background' is the background color to use.
 ;; 
 ;; Initial code was from https://www.emacswiki.org/emacs/MilesBader.
+;; That initial code is now here:
+;; https://github.com/snogglethorpe/emacs-bits/raw/master/echo-area-bell.el.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
 ;;
+;; 2021/04/21 dadams
+;;     echo-bell-update: Use space char, not x, as prefix.
+;;     Updated location of original code, in header.
 ;; 2015/10/07 dadams
 ;;     echo-bell-delay: Changed default value from 0.4 to 0.2.
 ;; 2015/03/01 dadams
@@ -83,7 +88,7 @@
   (setq echo-bell-propertized-string
         (propertize
          (concat (propertize
-                  "x"
+                  " "                   ; Space char
                   'display `(space :align-to (- right ,(string-width echo-bell-string))))
                  echo-bell-string)
          'face `(:background ,(if (boundp 'echo-bell-background) ; For first use only.
@@ -92,7 +97,8 @@
   (setq echo-bell-cached-string  echo-bell-string))
 
 (defcustom echo-bell-string "♪♪♪♪♪♪♪♪♪"
-  "Message shown in the echo area by function `echo-bell'."
+  "Message shown in the echo area by function `echo-bell'.
+\(The actual message displayed includes a prefix of one space char.)"
   :type  'string
   :set   (lambda (sym defs) (custom-set-default sym defs) (echo-bell-update))
   :group 'user)
