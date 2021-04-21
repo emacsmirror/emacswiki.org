@@ -300,10 +300,10 @@ The default eldoc output for functions is a little lacking for new programmers. 
 context help on the function or variable under the cursor. You can toggle it on or off - change key
 binding to suit...
 
-Update : 25 Feb 2020 - Now using the (derived) code from https://emacs.stackexchange.com/a/22139 by suggestion of RichardRiley
+Update : 25 Feb 2020 - Now using the (derived) code from https://emacs.stackexchange.com/a/22139 by suggestion of rileyrg
 
 
-Update : 21 April 2021 - Implemented a standalone minor mode separate from eldoc for popup docstring at point : https://github.com/rileyrg/el-docstring-at-point
+Update : 21 April 2021 - Implemented a standalone minor mode separate from eldoc for popup docstring at point : https://github.com/rileyrg/el-docstring-at-point rileyg
 
 <pre>
 (define-minor-mode my-contextual-help-mode
