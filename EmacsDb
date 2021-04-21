@@ -1,4 +1,4 @@
 An abstract Database interface.
 
-EmacsDb is available from [[Marmalade]] (see http://marmalade-repo.org/packages/db).  It comes with an implementation that uses persistent hash-tables.  Other interfaces are available using PostGreSQL and MongoDb.
+EmacsDb is available from [[Marmalade]] (see [s]http://marmalade-repo.org/packages/db[/s] https://github.com/nicferrier/emacs-db).  It comes with an implementation that uses persistent hash-tables.  Other interfaces are available using PostGreSQL and MongoDb.
 
