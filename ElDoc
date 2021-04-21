@@ -302,6 +302,9 @@ binding to suit...
 
 Update : 25 Feb 2020 - Now using the (derived) code from https://emacs.stackexchange.com/a/22139 by suggestion of RichardRiley
 
+
+Update : 21 April 2021 - Implemented a standalone minor mode separate from eldoc for popup docstring at point : https://github.com/rileyrg/el-docstring-at-point
+
 <pre>
 (define-minor-mode my-contextual-help-mode
   "Show help for the elisp symbol at point in the current *Help* buffer.
