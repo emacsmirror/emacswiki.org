@@ -1,11 +1,6 @@
-ERC is a powerful, modular, and extensible Emacs InternetRelayChat client.
+ERC is an [[IRC]] client. It is included in Emacs as of version 22.3
 
 It is part of the GNU project and included in Emacs.
-
-== Obtaining ERC ==
-ERC is included in Emacs since v22.3 (released on September 2008).
-
-For a brief history of the development of ERC and access to older versions, code repositories, and mailing list archives see ErcProjectHistory.
 
 === Some modules not included with GNU Emacs ===
 See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
@@ -19,7 +14,7 @@ Note that ErcDevelopment and EmacsFromGit can contain two separate branches of E
 
 === Ports and packages ===
 
-Gentoo users can just emerge app-emacs/erc or app-xemacs/erc (for some reason portage has a hard time figuring out which).  At present this is the latest release candidate.
+Gentoo users can just ##emerge app-emacs/erc## or ##app-xemacs/erc## (for some reason portage has a hard time figuring out which).  At present this is the latest release candidate.
 
 == User manual ==
 An info manual is included with ERC.  It's also available on-line in several forms:
@@ -218,6 +213,10 @@ The mailing lists are also available on [http://gmane.org Gmane].
 # [http://news.gmane.org/gmane.emacs.erc.announce gmane.emacs.erc.announce] -- Announcements
 # [http://news.gmane.org/gmane.emacs.erc.general gmane.emacs.erc.general] -- General discussion
 # [http://news.gmane.org/gmane.emacs.erc.cvs gmane.emacs.erc.cvs] -- Log messages for changes to the ERC source code
+
+== See Also ==
+
+* ErcProjectHistory -- A brief history of Erc, and access to older versions.
 
 ----
 CategoryChatClient InternetRelayChat
