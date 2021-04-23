@@ -1,8 +1,34 @@
 ERC is an [[IRC]] client. It is included in Emacs as of version 22.3
 
-It is part of the GNU project and included in Emacs.
+== Quickstart ==
+
+Start ERC with ##M-x erc##. You will be prompted for a server, port, and nickname.
+
+To avoid entering server info every time you run ERC, you can specify details in your InitFile like so:
+
+{{{
+;; Set our nickname & real-name as constant variables
+(setq
+ erc-nick "cowgirl"     ; Our IRC nick
+ erc-full-name "Moo C") ; Our /whois name
+
+;; Define a function to connect to a server
+(defun some-serv ()
+  (erc :server "server.example.com"
+       :port   "6667"))
+
+;; Or assign it to a keybinding
+;; This example is also using erc's TLS capabilities:
+(global-set-key "\C-cen"
+  (erc-tls :server "server2.example.com"
+           :port   "6697"))
+}}}
+
+You can see more options with ##M-x customize-group RET erc RET##
+
 
 === Some modules not included with GNU Emacs ===
+
 See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
 
 === Development version ===
@@ -22,11 +48,7 @@ An info manual is included with ERC.  It's also available on-line in several for
 # HTML (single file):https://www.gnu.org/software/emacs/manual/html_mono/erc.html
 # HTML (multiple files):https://www.gnu.org/software/emacs/manual/html_node/erc/index.html
 
-== Quickstart ==
 
-* To connect, call M-x erc
-* To customize how ERC works: M-x customize-group RET erc RET
-* ERC comes with a lot of small modules that do stuff for you.  Recent versions of ERC let you just M-x customize-variable RET erc-modules RET.
 
 == Introduction ==
 
