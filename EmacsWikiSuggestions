@@ -1,4 +1,6 @@
-This page is for recording (or discussion) of [::Suggestions] about the EmacsWiki Web site. 
+This page is for recording (or discussion) of [::Suggestions] about the EmacsWiki web site.
+
+If you want to suggest changes to a particular page, or if you want to suggest a new page, please just do it. You don't need to create an account to do it.
 
 If you want to record or discuss problems with the Web site (not with Emacs), please do so at EmacsWikiProblems.
 
@@ -13,13 +15,6 @@ Discussion about the "Goto Bar", the links at the top and bottom of each page, i
 Discussion about the TextFormattingRules used in contributing to pages  is at TextFormattingDiscussion.
 
 '''Add your suggestions below this line.'''
-== Proposed solution missing in Meta key issues for Mac OS ==
-
-In reference to the workaround of [[https://www.emacswiki.org/emacs/MetaKeyProblems#h5o-15 using the Option key instead of the Command key]] users who really want to use the command key without remapping/rebinding should be shown the following solution:
-
-(setq mac-command-modifier 'meta)
- 
-
 == Is it worth it to create a Category Logging? ==
 
 I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things? -- [[halloleo]]
