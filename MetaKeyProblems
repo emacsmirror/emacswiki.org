@@ -204,6 +204,14 @@ this is recommended.
 
 If you're in a hurry, ESC maps to Meta, so you can type <code>ESC x</code> instead of <code>M-x</code>. This even works over SSH, on any keyboard layout.
 
+If you're using Emacs in the GUI and you really want to use the Command key without remapping/rebinding, use this:
+
+{{{
+(setq mac-command-modifier 'meta)
+}}}
+
+See the various subsections for more.
+
 ==== Terminal ====
 
 When running emacs from Terminal, you can set Terminal's preferences/settings/keyboard and check "Use option as meta key", and the option/alt key should properly behave as the Meta key. You can also remap the Command key to be a control key under System Preferences/Keyboard/Keyboard/Modifier Keys to use emacs in Terminal. The downside to this approach is that it does not retain the Command key's functionality for use in other Mac applications, 
