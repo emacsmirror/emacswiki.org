@@ -20,8 +20,10 @@ To avoid entering server info every time you run ERC, you can specify details in
 ;; Or assign it to a keybinding
 ;; This example is also using erc's TLS capabilities:
 (global-set-key "\C-cen"
+  (lambda ()
+  (interactive)
   (erc-tls :server "server2.example.com"
-           :port   "6697"))
+           :port   "6697")))
 }}}
 
 You can see more options with ##M-x customize-group RET erc RET##
