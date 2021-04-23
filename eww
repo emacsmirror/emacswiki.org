@@ -40,7 +40,7 @@ You can see a list of keyboard bindings with `?', but here are a few you might w
 
 == Proxy ==
 
-To open ##.onion## links from eww, run `torsocks emacs' from the commandline. From then, you should be able to load ##.onion## addresses from within [[Erc]] and eww.
+To open ##.onion## links from eww, run `torsocks emacs' from the commandline. From then, you should be able to load ##.onion## addresses from within [[ERC]] and eww.
 
 You may also find [[ErcProxy]] helpful, as a lot of the solutions are general-purpose.
 
