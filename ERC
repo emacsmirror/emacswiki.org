@@ -27,29 +27,6 @@ To avoid entering server info every time you run ERC, you can specify details in
 You can see more options with ##M-x customize-group RET erc RET##
 
 
-=== Some modules not included with GNU Emacs ===
-
-See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
-
-=== Development version ===
-See ErcDevelopment to find instructions on how to get the development version using git.
-
-ERC also comes bundled with EmacsFromGit.
-
-Note that ErcDevelopment and EmacsFromGit can contain two separate branches of ERC and are therefore not quite identical.  The modules ErcBbdb and ErcSpeak are not available in the Emacs version, for example.
-
-=== Ports and packages ===
-
-Gentoo users can just ##emerge app-emacs/erc## or ##app-xemacs/erc## (for some reason portage has a hard time figuring out which).  At present this is the latest release candidate.
-
-== User manual ==
-An info manual is included with ERC.  It's also available on-line in several forms:
-
-# HTML (single file):https://www.gnu.org/software/emacs/manual/html_mono/erc.html
-# HTML (multiple files):https://www.gnu.org/software/emacs/manual/html_node/erc/index.html
-
-
-
 == Introduction ==
 
 * ErcFeatures -- an overall idea of ERC features
@@ -70,6 +47,7 @@ The easiest way to configure ERC is to do M-x customize-group RET erc RET.  This
 * ErcTips
 
 === SSL configuration ===
+
 * ErcSSL -- allow connections to ssl/tls-enabled servers (with certificates)
 * ErcSASL -- authenticate with SASL
 
@@ -94,6 +72,7 @@ The easiest way to configure ERC is to do M-x customize-group RET erc RET.  This
 To enable or disable modules use M-x customize-variable RET erc-modules.
 
 === Enabled by default ===
+
 * ErcAutoJoin -- how to automatically join lots of channels
 * ErcButton -- make words and phrases such as URLs clickable
 * ErcChannelTracking -- keep track of activity in hidden channel buffers
@@ -239,6 +218,16 @@ The mailing lists are also available on [http://gmane.org Gmane].
 == See Also ==
 
 * ErcProjectHistory -- A brief history of Erc, and access to older versions.
+* ErcExtraModules -- Extended functionality not included in the base ERC.
+* ErcDevelopment -- The latest development build of ERC
+* ERC also comes bundled with EmacsFromGit.
+
+Note that the development & git branches of ERC and are not quite identical. The modules ErcBbdb and ErcSpeak are not available in the Emacs version, for example.
+
+== External Links ==
+
+* [https://www.gnu.org/software/emacs/manual/html_node/erc/index.html ERC Manual]
+* [https://muto.ca/posts/my-emacs-configuration.html#irc-with-erc Muto's section on ERC]
 
 ----
 CategoryChatClient InternetRelayChat
