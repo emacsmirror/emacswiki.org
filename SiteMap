@@ -105,10 +105,10 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
 ** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
 * [[CategoryMail|Mail]] -- reading email in Emacs
-** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
+** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail.
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
-** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
-** [[WanderLust|WanderLust]] -- another Emacs news and mail reader
+** [[Rmail]] -- the plain, default mail reader.
+** [[WanderLust|WanderLust]] -- another Emacs news and mail reader.
 ** [[mu4e]] -- another Emacs based mail program.
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
