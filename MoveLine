@@ -1,4 +1,4 @@
-C-x C-t is bound to transpose-lines now which does the same https://www.gnu.org/software/emacs/manual/html_node/emacs/Transpose.html . This function exists on emacs 26.3 version.
+As of emacs version 26.3 no need of custom functions. The default key binding C-x C-t which is bound to inbuilt function "transpose-lines" transposed the lines https://www.gnu.org/software/emacs/manual/html_node/emacs/Transpose.html 
 
 This is a move-line function (by Joe Smith) that was discussed on the gnu-help mailing list back in 2008. This function allows the current line to be transposed up and down. This is useful for re-arranging lists in Emacs.
 
