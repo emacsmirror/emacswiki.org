@@ -106,6 +106,18 @@ this by setting the `mail-user-agent' variable:
 (setq mail-user-agent 'message-user-agent)
 </pre>
 
+== Sending Mail ==
+
+When writing a message in mail mode, you can send it with ##C-c C-s##.
+
+If you want to use ##msmtp## (or another MTA) to hnadle sending, you can set the following variables like so:
+
+{{{
+(setq
+  message-send-mail-function 'message-send-mail-with-sendmail
+  sendmail-program "/usr/bin/msmtp")
+}}}
+
 == Sorting mail ==
 
 The two major sorting methods in rmail are '''labels''' and '''files'''.
