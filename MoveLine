@@ -1,4 +1,5 @@
-As of emacs version 26.3 no need of custom functions. The default key binding C-x C-t which is bound to inbuilt function "transpose-lines" transposed the lines https://www.gnu.org/software/emacs/manual/html_node/emacs/Transpose.html 
+[new:DrewAdams:2010-04-23 17:03 UTC]
+See also standard command `transpose-lines', bound to `C-x C-t'. -- DrewAdams
 
 This is a move-line function (by Joe Smith) that was discussed on the gnu-help mailing list back in 2008. This function allows the current line to be transposed up and down. This is useful for re-arranging lists in Emacs.
 
@@ -32,9 +33,6 @@ See MoveRegion if you want to move the entire region. See also the [https://gith
 (global-set-key (kbd "M-<down>") 'move-line-down)
 </pre>
 
-
-[new:DrewAdams:2010-04-23 17:03 UTC]
-See also standard command `transpose-lines', bound to `C-x C-t'. -- DrewAdams
 
 [new:ThomasKappler:2012-10-31 05:23 UTC]
 DrewAdams suggestion of `transpose-lines' works like a charm. It makes the implementation of M-up and M-down trivial. -- ThomasKappler
