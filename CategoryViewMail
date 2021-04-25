@@ -1,11 +1,8 @@
-[::VM]
-is a mail reader that runs inside GNU Emacs and XEmacs.  The name is the short form of "View Mail" and it is also occasionally referred to by its long name (e.g., in the title of this page).
+'''ViewMail''' (VM) is a mail reader that runs on GNU Emacs and XEmacs.
 
-'''Per its [http://download.savannah.gnu.org/releases/viewmail/ Savannah page], as of Jan 2012, the last update was May 2010.'''
+'''As of April 2021, the last update was May 2010.'''
 
-VM is shipped with XEmacs but not with GNU Emacs. You can get the latest version (8.0.0 and up) at its official home: http://www.nongnu.org/viewmail/.  Version 7.19 is hosted at its old official home: http://www.wonderworks.com/vm/.
-
-The code base and the latest pre-releases of VM can be browsed at https://launchpad.net/vm.
+VM comes with XEmacs but not GNU Emacs.
 
 VM is very well documented. It comes with a fine set of info pages, and there are two EmacsNewsgroups dealing with VM. These pages attempt to distill some of the useful information from the other sources.
 
@@ -48,8 +45,12 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * [[http://www.wonderworks.com/vm/vm-procmail.html| FAQ: Using VM with Procmail]], Samuel Mikes at Wonderworks,  April 1998.  Explanation of integrating VM with external mail filtering.
 
-== External Links (tutorials, blogs and configuration files) ==
+== External Links ==
 
+* [http://www.nongnu.org/viewmail/ Official ViewMail Website]
+* [http://download.savannah.gnu.org/releases/viewmail/ ViewMail on Savannah]
+* [https://launchpad.net/vm ViewMail on Launchpad]
+* [http://www.wonderworks.com/vm/ Old ViewMail website]
 * V. L. Simpson, [[http://linuxgazette.net/109/simpson.html| Emacs and Email: The VM Mail Package]], Linux Gazette, December 2004.  A very nice tutorial, which is still valuable despite its age.
 
 * Phil Sung, [[http://web.psung.name/emacstips/vm.html|VM configuration and workflow]], September 13, 2008.  Nice article on setting up VM.
