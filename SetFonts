@@ -302,6 +302,10 @@ As of 23.3.1 TTF support is still quite defective (on Debian at least): for exam
 [new:DrewAdams:2007-04-25 21:28 UTC]
 : I use <nowiki>TrueType</nowiki> fonts with Emacs on MS Windows with no problem. In fact, you even get anti-aliasing. However, I think there appears to be a problem with Emacs 21 -- they work fine in Emacs 20 and 22, at least. -- DrewAdams
 
+== Emacs for Gentoo ==
+
+Make sure you compile with the xft flag enabled. 
+
 
 == CarbonEmacs ==
 
