@@ -1,6 +1,7 @@
 [new:DrewAdams:2010-04-23 17:03 UTC]
 See also standard command `transpose-lines', bound to `C-x C-t'. -- DrewAdams
 
+
 This is a move-line function (by Joe Smith) that was discussed on the gnu-help mailing list back in 2008. This function allows the current line to be transposed up and down. This is useful for re-arranging lists in Emacs.
 
 See MoveRegion if you want to move the entire region. See also the [https://github.com/targzeta/move-lines move-lines], [https://melpa.org/#/move-dup move-dup] and [https://melpa.org/#/move-text move-text] packages for moving indifferently current line or lines surrounding region.
