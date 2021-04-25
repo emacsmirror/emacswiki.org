@@ -110,7 +110,7 @@ this by setting the `mail-user-agent' variable:
 
 When writing a message in mail mode, you can send it with ##C-c C-s##.
 
-If you want to use ##msmtp## (or another MTA) to hnadle sending, you can set the following variables like so:
+If you want to use ##msmtp## (or another MTA) to handle sending, you can set the following variables like so:
 
 {{{
 (setq
