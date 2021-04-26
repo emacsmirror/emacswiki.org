@@ -1,4 +1,4 @@
-!GccEmacs refers to the ##feature/native-comp## branch of Emacs, which adds support for compiling EmacsLisp to native code using ##libgccjit##. All of the Elisp packages shipped with Emacs are native-compiled, providing a noticeable performance improvement out-of-the-box. Third-party packages are also compiled to achieve further performance improvements.
+!GccEmacs refers to the ##--with-native-compilation## configuration option when building Emacs, which adds support for compiling EmacsLisp to native code using ##libgccjit##. All of the Elisp packages shipped with Emacs are native-compiled, providing a noticeable performance improvement out-of-the-box. Third-party packages are also compiled to achieve further performance improvements.
 
 The official development log can be found on [http://akrl.sdf.org/gccemacs.html the gccemacs page].
 
@@ -10,9 +10,9 @@ The feature is discussed in detail in the paper [https://zenodo.org/record/37363
 
 To build the native-comp branch of Emacs, you will need ##libgccjit## in addition to the other dependencies described in BuildingEmacs.
 
-First, checkout the ##feature/native-comp## branch of Emacs, and configure it with the ##--with-native-compilation## flag:
+First, checkout the ##master## branch of Emacs, and configure it with the ##--with-native-compilation## flag:
 
-    $ git clone git://git.savannah.gnu.org/emacs.git -b feature/native-comp
+    $ git clone git://git.savannah.gnu.org/emacs.git
     $ cd emacs
     $ ./autogen.sh
     $ ./configure --with-native-compilation
