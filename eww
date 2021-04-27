@@ -14,7 +14,7 @@ Eww uses the `shr' HTML renderer, so we can change how Eww web pages look by set
  shr-use-colors nil                          ; No colours
  shr-indentation 2                           ; Left-side margin
  shr-width 70                                ; Fold text to 70 columns
- eww-search-prefix "https://ddg.gg/html?q=") ; Use DuckDuckGo for search (default)
+ eww-search-prefix "https://wiby.me/?q=")    ; Use another engine for searching
 </pre>
 
 You can use `M-x customize-group' on `eww' or `shr' to see more options.
