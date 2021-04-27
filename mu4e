@@ -12,15 +12,7 @@
 * Address auto-completion based on your existing messages
 * Extensible with your own code and many already done snippets
  
-==Links==
-* Source code (part of mu): https://github.com/djcb/mu
-* Releases: https://github.com/djcb/mu/releases
-* Homepage, screenshots: http://www.djcbsoftware.nl/code/mu/mu4e.html
-* Introduction: http://emacs-fu.blogspot.com/2012/08/introducing-mu4e-for-email.html 
-* Full documentation:http://www.djcbsoftware.nl/code/mu/mu4e/index.html (includes examples of setups) 
-* Another simple setup with gmail (2013/01/28):  http://wenshanren.org/?p=111
-* Yet another simple setup with gmail (2012/10/12) : https://gist.github.com/areina/3879626
-* Some more advanced configurations (2013): http://zmalltalker.com/linux/mu.html
+
 
 mu4e's first release is as part of mu 0.9.8, end of January 2012, and the most recent one is 1.4.8, released in May 2020 (see https://github.com/djcb/mu/releases).
 
@@ -73,6 +65,16 @@ I use mu4e with mbsync (and GMail). Since it takes a while, mbsync runs in a cro
     (advice-add 'mu4e-update-mail-and-index
                 :around #'rjs/mu4e-update-mail-and-index)
 
+== Links ==
+
+* Source code (part of mu): https://github.com/djcb/mu
+* Releases: https://github.com/djcb/mu/releases
+* Homepage, screenshots: http://www.djcbsoftware.nl/code/mu/mu4e.html
+* Introduction: http://emacs-fu.blogspot.com/2012/08/introducing-mu4e-for-email.html 
+* Full documentation:http://www.djcbsoftware.nl/code/mu/mu4e/index.html (includes examples of setups) 
+* Another simple setup with gmail (2013/01/28):  http://wenshanren.org/?p=111
+* Yet another simple setup with gmail (2012/10/12) : https://gist.github.com/areina/3879626
+* Some more advanced configurations (2013): http://zmalltalker.com/linux/mu.html
 
 
 ----
