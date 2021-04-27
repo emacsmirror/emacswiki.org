@@ -16,16 +16,19 @@ mu4e first appeared in ##mu 0.9.8##.
  
 == Quickstart ==
 
-This quick intro assumes you have used a tool such as ##mbsync## or ##mpop## to retrieve your mail into a maildir folder called ##~/mail##
+This tutorial assumes you have use a tool such as ##mbsync## or ##mpop## to retrieve your mail into a maildir folder called ##~/mail##.
 
-* Download ##mu## from your package manager, then, from the commandline, run:
+Download ##mu## from your package manager, then, from the commandline, run:
 
 {{{
 mu init --maildir=~/mail --my-address=me@example.com
 }}}
 
+From Emacs, download Mu4e with ##M-x package install RET mu4e RET## and run it with ##M-x mu4e##.
 
-== Recipes ==
+Press ##U## to update Mu4e's mail listing, and ##bu## to see all your new mail or ##j## to jump to a maildir folder.
+
+== Tips ==
 
 === Context templates ===
 
