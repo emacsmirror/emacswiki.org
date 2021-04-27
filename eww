@@ -1,5 +1,7 @@
 [[ja:eww-ja]]
-Eww (the <b>E</b>acs <b>W</b>eb <b>W</b>owser) is a Web browser written in elisp and based on shr.el.  It is included in Emacs 24.4 and later.  It supports some basic CSS and HTML5.
+'''Eww''' (the <b>E</b>acs <b>W</b>eb <b>W</b>owser) is a Web browser written in elisp and based on shr.el.
+
+Eww is included in Emacs 24.4 and later.
 
 == Configuration ==
 
