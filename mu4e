@@ -2,6 +2,8 @@
 
 :: //It's not information overload. It's filter failure. mu4e's mission is to be a better filter.// '''--Prof. Shirky'''
 
+mu4e first appeared in ##mu 0.9.8##.
+
 ==Features==
 * Fully search-based: there are no folders, only queries 
 * Fully documented, with example configurations
@@ -12,12 +14,21 @@
 * Address auto-completion based on your existing messages
 * Extensible with your own code and many already done snippets
  
+== Quickstart ==
 
+This quick intro assumes you have used a tool such as ##mbsync## or ##mpop## to retrieve your mail into a maildir folder called ##~/mail##
 
-mu4e's first release is as part of mu 0.9.8, end of January 2012, and the most recent one is 1.4.8, released in May 2020 (see https://github.com/djcb/mu/releases).
+* Download ##mu## from your package manager, then, from the commandline, run:
+
+{{{
+mu init --maildir=~/mail --my-address=me@example.com
+}}}
+
 
 == Recipes ==
+
 === Context templates ===
+
 Defining [http://www.djcbsoftware.nl/code/mu/mu4e/Contexts-example.html mu4e contexts] for multiple email addresses that only differ in the "from" field and maybe signature, while automatically matching their corresponding address using their ##:match-func## (when replying to messages) can quickly get pretty verbose and clunky. To keep it lean and avoid code duplication, one can define a function to build a context based on a template:
 
   (defun my-make-mu4e-context (name address signature)
