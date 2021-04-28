@@ -106,7 +106,7 @@ By default the cleanup includes both deleting and other fixes.
 
 * DeleteNlSpaces - a non intrusive minor mode for deleting needless spaces
 
-=== Version control friendly options (modify only the lines you have edited) ===
+=== Version control friendly options (avoid changing lines you didn't edit) ===
 
 When working with version-control, you may not want Emacs to modify lines which you didn't edit. The following libraries automatically remove unwanted trailing whitespace from (only) the lines you've edited.
 
@@ -115,6 +115,8 @@ When working with version-control, you may not want Emacs to modify lines which 
 ** From the commentary: "This package contains tools to do various sorts of whitespace trimming on buffer lines.  The main part is WS Trim mode, which is a minor mode that automatically trims whitespace on text lines. You can control how thorough this mode should be, e.g. whether all lines or only lines you edit should be trimmed."
 
 * [https://github.com/lewang/ws-butler ws-butler] - An alternative to ws-trim which leverages highlight-changes-mode to track modified lines.
+
+* [https://gitlab.com/bkhl/trimspace-mode/ trimspace-mode] - minor mode that enables trimming of whitespace in the whole file, but only if the file is already "clean" of trailing whitespace. A much simpler package than the other alternatives, but without the ability to selectively delete trailing whitespace only from edited line.
 
 === Remove whitespace at the end of the document ===
 
