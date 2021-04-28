@@ -33,15 +33,19 @@ and
 
 In order to use custom themes, their ##.el## files have to reside in a directory contained in the `custom-theme-load-path' variable, which defaults to `~/.emacs.d'. If you want to put your themes in custom subdirectories in order not to pollute the `~/.emacs.d' folder, you can add them to the list with:
 
-    (add-to-list 'custom-theme-load-path "<themefolder>")
+{{{
+(add-to-list 'custom-theme-load-path "/path/to/themes")
+}}}
 
 If you have lots of themes which you want to group inside a themes folder such as  `~/.emacs.d/themes', the following snippet allows you to conveniently add all its subfolders to the theme load path:
 
-    (let ((basedir "~/.emacs.d/themes/"))
-      (dolist (f (directory-files basedir))
-        (if (and (not (or (equal f ".") (equal f "..")))
-                 (file-directory-p (concat basedir f)))
-            (add-to-list 'custom-theme-load-path (concat basedir f)))))
+{{{
+(let ((basedir "~/.emacs.d/themes/"))
+  (dolist (f (directory-files basedir))
+    (if (and (not (or (equal f ".") (equal f "..")))
+             (file-directory-p (concat basedir f)))
+        (add-to-list 'custom-theme-load-path (concat basedir f)))))
+}}}
 ----
 
 CategoryFaces CategoryCustomize
