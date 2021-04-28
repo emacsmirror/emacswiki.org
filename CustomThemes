@@ -1,5 +1,4 @@
-Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s'''.  See the Emacs manual (`C-h r'), node '''[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Custom-Themes.html#Custom-Themes|Custom Themes]]'''.
-
+'''Custom themes''' was introduced in GnuEmacs 23.
 
 [:ComparedToColorThemes]
 == Comparison with Color Themes ==
@@ -31,13 +30,13 @@ and
 
 == Installation ==
 
-In order to use custom themes, their ##.el## files have to reside in a directory contained in the `custom-theme-load-path' variable, which defaults to `~/.emacs.d'. If you want to put your themes in custom subdirectories in order not to pollute the `~/.emacs.d' folder, you can add them to the list with:
+In order to use custom themes, their ##.el## files have to reside in a directory contained in the `custom-theme-load-path' variable, which defaults to ##~/.emacs.d##. If you want to put your themes in custom subdirectories in order not to pollute the ##~/.emacs.d## folder, you can add them to the list with:
 
 {{{
 (add-to-list 'custom-theme-load-path "/path/to/themes")
 }}}
 
-If you have lots of themes which you want to group inside a themes folder such as  `~/.emacs.d/themes', the following snippet allows you to conveniently add all its subfolders to the theme load path:
+If you have lots of themes which you want to group inside a themes folder such as  ##~/.emacs.d/themes##, the following snippet allows you to conveniently add all its subfolders to the theme load path:
 
 {{{
 (let ((basedir "~/.emacs.d/themes/"))
@@ -46,6 +45,11 @@ If you have lots of themes which you want to group inside a themes folder such a
              (file-directory-p (concat basedir f)))
         (add-to-list 'custom-theme-load-path (concat basedir f)))))
 }}}
+
+== External Links ==
+
+[http://www.gnu.org/software/emacs/manual/html_node/emacs/Custom-Themes.html#Custom-Themes Custom Themes in the Emacs manual]
+
 ----
 
 CategoryFaces CategoryCustomize
