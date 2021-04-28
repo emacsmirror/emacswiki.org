@@ -2,7 +2,7 @@ Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s'''.  
 
 
 [:ComparedToColorThemes]
-=== Comparison with Color Themes ===
+== Comparison with Color Themes ==
 
 Custom themes are similar to '''[[ColorThemes|color themes]]'''.  Though they are newer, they do not ''replace'' color themes –- each approach has its advantages.  Differences between them include:
 
@@ -17,7 +17,7 @@ color themes or not) as something that can function as a (pseudo) color theme, w
 * Custom themes have some [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15740|performance problems]].  Switching among them can be problematic.
 
 
-=== History ===
+== History ==
 
 '''Custom themes''' were first implemented in [[XEmacs]] sometime before 2002 - the idea was to extend the Customization library to handle themes. They were ported to GnuEmacs and made part of the distribution sometime before 2005. They were quite rudimentary then.
 
@@ -29,7 +29,7 @@ and
     http://lists.gnu.org/archive/html/emacs-devel/2005-06/msg01062.html  
 
 
-=== Installation ===
+== Installation ==
 
 In order to use custom themes, their ##.el## files have to reside in a directory contained in the `custom-theme-load-path' variable, which defaults to `~/.emacs.d'. If you want to put your themes in custom subdirectories in order not to pollute the `~/.emacs.d' folder, you can add them to the list with:
 
