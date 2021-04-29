@@ -3,18 +3,20 @@ There are several so-called "starter kits" which provide default Emacs configura
 Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2020-07; some size numbers from 2016-01-16):
 
 || Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            || 20.3k ||          561 ||   10932 ||              9700 || https://github.com/syl20bnr/spacemacs/tree/develop ||
-|| Doom Emacs           ||  7.0k ||          320 ||   13718 ||               989 || https://github.com/hlissner/doom-emacs ||
-|| purcell emacs.d      ||  5.5k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
-|| Prelude              ||  4.4k ||          152 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
-|| magnars emacs.d      ||  1.3k ||            9 ||    1490 ||               526 || https://github.com/magnars/.emacs.d ||
-|| Centaur Emacs        ||  1.0k ||           17 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
+|| Spacemacs            || 21.4k ||          1088 ||   10932 ||              9700 || https://github.com/syl20bnr/spacemacs/tree/develop ||
+|| Doom Emacs           ||  10.5k ||          435 ||   13718 ||               989 || https://github.com/hlissner/doom-emacs ||
+|| purcell emacs.d      ||  5.9k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
+|| Prelude              ||  4.6k ||          166 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
+|| magnars emacs.d      ||  1.4k ||            9 ||    1490 ||               526 || https://github.com/magnars/.emacs.d ||
+|| Centaur Emacs        ||  1.3k ||           22 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
 || Better Defaults      ||   841 ||            2 ||      32 ||                 4 || https://git.sr.ht/~technomancy/better-defaults || 
-|| Emacs Starter Kit    ||   784 ||           21 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit/ || 
-|| oh-my-emacs          ||   711 ||           10 ||     333 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
-|| scimax || 517 || 17 || 1631 || || https://github.com/jkitchin/scimax ||
-|| ohai-emacs           ||   373 ||            4 ||     124 ||               170 || https://github.com/bodil/ohai-emacs || 
-|| Graphene             ||   279 ||            2 ||     347 ||                40 || https://github.com/rdallasgray/graphene || 
-|| ergoemacs-mode       ||   214 ||           13 ||    2570 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode ||
-|| Wakib Emacs          ||    18 ||            1 ||      91 ||                 8 || https://github.com/darkstego/wakib-emacs  ||
-|| Rho Emacs            ||     7 ||            1 ||    8    ||                 ~ || https://github.com/GChristensen/rho-emacs || 
+|| Emacs Starter Kit    ||   792 ||           21 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit/ || 
+|| oh-my-emacs          ||   708 ||           10 ||     333 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
+|| scimax || 628 || 19 || 1631 || || https://github.com/jkitchin/scimax ||
+|| ohai-emacs           ||   379 ||            9 ||     124 ||               170 || https://github.com/bodil/ohai-emacs || 
+|| Graphene             ||   289 ||            4 ||     347 ||                40 || https://github.com/rdallasgray/graphene || 
+|| ergoemacs-mode       ||   237 ||           21 ||    2799 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode ||
+|| Wakib Emacs          ||    23 ||            1 ||      93 ||                 8 || https://github.com/darkstego/wakib-emacs  ||
+|| Rho Emacs            ||    22 ||            1 ||    37    ||                 ~ || https://github.com/GChristensen/rho-emacs ||
+|| Onboard          ||    0 ||            1 ||      45 ||                 8 || https://github.com/monkeyjunglejuice/emacs-onboard ||
+
