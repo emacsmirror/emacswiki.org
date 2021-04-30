@@ -147,7 +147,7 @@ Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
 ===Running tests===
 The [http://pytest.org pytest Python package] subsumes several other test packages, as it supports tests written with pytest, nose, unittest and doctest style test suites, including Django and trial.
 
-[https://melpa.org/#/python-pytest python-test] supports running pytest with a UI based on [https://melpa.org/#/transient transient], also used by [[Magit]].
+[https://melpa.org/#/python-pytest python-pytest] supports running pytest with a UI based on [https://melpa.org/#/transient transient], also used by [[Magit]].
 
 [https://melpa.org/#/pytest pytest] also supports running pytest.
 
