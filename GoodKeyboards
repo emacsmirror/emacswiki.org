@@ -2,6 +2,24 @@ This is a place to recommend and discuss keyboards that work well for Emacs user
 
 [new]
 
+The custom keyboard market has seen rapid growth in the last 5+ years.
+
+The QMK firmware now enables your keyboard to be programmable (just like Emacs), and I strongly advise getting a QMK-enabled keyboard (it will require customization of the config just like .emacs for Emacs)
+
+There are lots of ergo-style keyboards, but I personally don't like them because they take away the inverted arrow clusters and page up/down in their usual locations. And more advanced ergo keyboard like Dactyl manuform will either require lots of work (full day building, soldering, testing) or very expensive to get a prebuilt.
+
+kbdfans.com has kbdfans 75v2, KBD67 rev2 65% and DZ60 REV 3.0 60% supports 3 way split spacebar in this layout:
+
+https://cdn.shopify.cn/s/files/1/1473/3902/files/kbd75_96aecc4f-aee0-4c8f-9f46-f1c3884dc162.jpg
+
+They has assembled keyboard for around $220 (kbd75v2)). It supports QMK out of the box. I configured it with one shot modifiers and have alt, shift under my left thumb, space, ctrl under my right thumb (there's also lctrl on the caplock position and also regular shifts still work)
+
+With this setup, it makes all modifiers very easy to reach and you don't need to hold the mod. Just tap shift, and then alpha or symbol keys. Or tap ctrl, 'x', 2 to split windows etc. Super comfortable as alt,shift,ctrl can be accessed under the thumb (in addition to their normal positions).
+
+QMK has lots of other features like macros, layers, etc. If you love tinkering emacs config and packages, you'd love QMK.
+
+[new]
+
 Bernhard: The [http://www.x7.cn/en/product.asp?id=53 X7 G800V] has 15 freely configurable keys, two located to the left and right of the space bar, and five located directly beneath the space bar. Those keys can be configured to be other keys (also modifier keys) or key combinations. The key actions are stored on an in-keyboard memory and do not need any driver to run. Unfortunately, the program to set those key actions is windows-only, but once set, they also work on Linux. The keyboard stores up to five configurations, which can be cycled with another key. The only downside to this keyboard is that (as this tries to be a gamer keyboard) the w,a,s,d keys are coated with red rubber.
 [new]
 
