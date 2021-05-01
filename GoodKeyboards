@@ -4,19 +4,20 @@ This is a place to recommend and discuss keyboards that work well for Emacs user
 
 The custom keyboard market has seen rapid growth in the last 5+ years.
 
-The QMK firmware now enables your keyboard to be programmable (just like Emacs), and I strongly advise getting a QMK-enabled keyboard (it will require customization of the config just like .emacs for Emacs)
+The QMK firmware enables your keyboard to be programmable (just like Emacs), and I strongly advise getting a QMK-enabled keyboard (it will require customization of the config just like .emacs for Emacs)
 
-There are lots of ergo-style keyboards, but I personally don't like them because they take away the inverted arrow clusters and page up/down in their usual locations. And more advanced ergo keyboard like Dactyl manuform will either require lots of work (full day building, soldering, testing) or very expensive to get a prebuilt.
+There are lots of ergo-style keyboards, but I personally don't like them because they take away the inverted arrow clusters and page up/down, home/end in their usual locations. And more advanced ergo keyboard like Dactyl manuform will either require lots of work (full day building, soldering, testing) or very expensive to get a prebuilt.
 
-kbdfans.com has kbdfans 75v2, KBD67 rev2 65% and DZ60 REV 3.0 60% supports 3 way split spacebar in this layout:
+kbdfans.com has a 75% kbd75v2, 65% KBD67 rev2 and 60% DZ60 REV 3.0. They all support 3 way split spacebar in this layout:
 
 https://cdn.shopify.cn/s/files/1/1473/3902/files/kbd75_96aecc4f-aee0-4c8f-9f46-f1c3884dc162.jpg
 
-They has assembled keyboard for around $220 (kbd75v2)). It supports QMK out of the box. I configured it with one shot modifiers and have alt, shift under my left thumb, space, ctrl under my right thumb (there's also lctrl on the caplock position and also regular shifts still work)
+They also sell assembled keyboard (Around $220 for the kbd75v2 with gateron yellow). 
+It supports QMK out of the box. I configured mine with one shot modifiers and have alt, shift under my left thumb, space, ctrl under my right thumb (there's also ctrl on the capslock position and regular shifts on both sides)
 
 With this setup, it makes all modifiers very easy to reach and you don't need to hold the mod. Just tap shift, and then alpha or symbol keys. Or tap ctrl, 'x', 2 to split windows etc. Super comfortable as alt,shift,ctrl can be accessed under the thumb (in addition to their normal positions).
 
-QMK has lots of other features like macros, layers, etc. If you love tinkering emacs config and packages, you'd love QMK.
+QMK has lots of other features like macros, layers, etc. If you like tinkering emacs config and packages, you'd love QMK.
 
 [new]
 
