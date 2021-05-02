@@ -1,3 +1,7 @@
+Emacs has native support for scroll bars when running in a
+graphic-display mode (eg. GTK, X11). When running Emacs in a terminal
+(ie. nox), scroll bar support is available via MELPA package `yascroll`
+
 Emacs can have a vertical '''[::scroll bar]''' in each [[window]].
 
 In order to disable the display of scroll bars, add the following to your ~/.emacs file, for GnuEmacs:
