@@ -519,6 +519,11 @@ macOS comes with a simple command line audio player called "afplay". This is how
     (setq emms-player-list '(,emms-player-afplay))
 </pre>
 
+[new:DrewAdams:2021-05-03 15:01 UTC]
+That change from backquote to apostrophe can't be correct.
+Please check and fix your edit to whatever is really correct.
+[new]
+
 More here: [https://github.com/danieroux/emacs/blob/master/mine/djr-emms.el]
 
 -- Danie Roux
