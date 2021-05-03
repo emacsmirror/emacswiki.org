@@ -197,6 +197,12 @@ With foo being baz as before, let's string-replace:
     <deego> , foo                                                           
     <fsbot> Perhaps foo is newstring
 
+For a term with multiple entries add a space the entry number, e.g:
+
+      <mplsCorwin> , s/robert/vela/ in fosshost-app 1
+      <fsbot> Changed 1 (of 2) notes when replacing *string* "robert" with "vela"
+              for term "fosshost-app".
+
 Now, a regexp-replace
 
     <deego> , r/^new/old/ in foo                                            
