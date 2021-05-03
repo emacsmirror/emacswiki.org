@@ -10,12 +10,14 @@ To avoid entering server info every time you run ERC, you can specify details in
 ;; Set our nickname & real-name as constant variables
 (setq
  erc-nick "cowgirl"     ; Our IRC nick
- erc-full-name "Moo C") ; Our /whois name
+ erc-user-full-name "Moo C") ; Our /whois name
 
 ;; Define a function to connect to a server
 (defun some-serv ()
+  (lambda ()
+  (interactive)
   (erc :server "server.example.com"
-       :port   "6667"))
+       :port   "6667")))
 
 ;; Or assign it to a keybinding
 ;; This example is also using erc's TLS capabilities:
