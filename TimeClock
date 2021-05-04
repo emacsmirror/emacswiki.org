@@ -42,6 +42,9 @@ Note: The help screen in timeclock-x.el refers to a function "timeclock-generate
 timeclock.el is now part of GNU Emacs, BUT:
 The version of timeclock.el that comes with my older revision of Gnu Emacs (GNU Emacs 21.2.1 that comes with Red Hat 7.3) is buggy.  I fixed this by downloading and using the HEAD revision of the file from the CVS repository, until I can upgrade to a more recent release of Gnu Emacs. -- BrentGoodrick
 
+=== Description or comments ===
+
+To add some comments or extra descriptions, all you need is to write the description after two spaces in front of the "account" name.
 
 ----
 CategoryCalendar
