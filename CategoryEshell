@@ -1,4 +1,4 @@
-'''Eshell'' is a shell written in EmacsLisp.
+'''Eshell''' is a shell written in EmacsLisp.
 
 Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gauland]].  It was added to Emacs 21.
 
