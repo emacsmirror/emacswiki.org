@@ -46,9 +46,7 @@ Originally authored by JohnWiegley, later maintained by [[aidalgol|Aidan Gauland
 * [http://www.howardism.org/Technical/Emacs/eshell-present.html Presenting Eshell]
 * [http://www.howardism.org/Technical/Emacs/eshell-fun.html Eschewing Z-Shell for Eshell]
 * [https://ambrevar.xyz/emacs-eshell/ Eshell as a main shell]
-
-A somewhat similar project:
-* http://sourceforge.net/projects/oneliner-elisp/ , http://oneliner-elisp.sourceforge.net/ : "Oneliner integrates UNIX shell with Emacs text editor. Oneliner provides various syntax for integration. (e.g. You can connect 'shell pipe' and 'Emacs buffer' directly with simple syntax.)"
+* [http://oneliner-elisp.sourceforge.net/ OneLiner] - Integrate the UNIX shell with Emacs
 
 ----
 CategoryShell
