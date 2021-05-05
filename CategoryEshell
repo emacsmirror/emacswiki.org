@@ -1,5 +1,6 @@
-An entire shell written in EmacsLisp.  Great stuff, and very useful for people on weird operating systems without usable shells.
-Originally authored by JohnWiegley, later maintained by [[aidalgol|Aidan Gauland]].  It was added to Emacs 21.
+'''Eshell'' is a shell written in EmacsLisp.
+
+Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gauland]].  It was added to Emacs 21.
 
 == Categories ==
 
