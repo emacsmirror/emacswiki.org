@@ -1,19 +1,7 @@
-An entire shell written in EmacsLisp.  Great stuff, and very useful for people on weird operating systems without usable shells.  
+An entire shell written in EmacsLisp.  Great stuff, and very useful for people on weird operating systems without usable shells.
 Originally authored by JohnWiegley, later maintained by [[aidalgol|Aidan Gauland]].  It was added to Emacs 21.
 
-Source:
-
-* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell GNU Emacs repo] (also accessible from your local Emacs via `M-x find-library eshell RET')
-
-Work-in-progress manual:
-
-* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html Eshell: The Emacs Shell] ([http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/eshell.texi TexInfo source])
-
-Eshell tutorial:
-
-* [http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/ Eshell: mastering Eshell]
-
-More information about eshell :
+== Categories ==
 
 * EshellAlias
 * EshellAndAngeFtp -- using eshell on remote hosts
@@ -49,7 +37,11 @@ More information about eshell :
 ** EshellLnkFileSupport -- support for Windows shortcut
 * EshellAndEmacsServer -- Use eshell like a shell in a terminal-emulator
 
-Blog Posts:
+== External Links ==
+
+* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html The eshell manual] ([http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/eshell.texi TexInfo source])
+* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell eshell source code] (Can be viewed with `M-x find-library eshell RET')
+* [http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/ Eshell: mastering Eshell]
 * [http://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/ Eshell completion for git, bzr, and hg]
 * [http://www.howardism.org/Technical/Emacs/eshell-present.html Presenting Eshell]
 * [http://www.howardism.org/Technical/Emacs/eshell-fun.html Eschewing Z-Shell for Eshell]
