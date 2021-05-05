@@ -70,7 +70,7 @@ As you can see `string=' and `=' know more about the internals of objects than t
 == Generic comparison ==
 
 There's another generic operator that compares object structure and contents, but doesn't understand the details:
-`equal'.  Since it knows aobut object structure, it knows that two strings are "equal" when they contain the same
+`equal'.  Since it knows about object structure, it knows that two strings are "equal" when they contain the same
 characters at the same positions:
 
     (eq "foo" "foo")
