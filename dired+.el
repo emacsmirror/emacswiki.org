@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2020.12.01
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 20 13:24:32 2021 (-0700)
+;; Last-Updated: Mon May 10 09:08:06 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12964
+;;     Update #: 12975
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -851,6 +851,7 @@
 ;;              been REDEFINED HERE:
 ;;
 ;;  `dired-copy-filename-as-kill' -
+;;     Use `diredp-filename-separator', not SPC, as the separator.
 ;;     Put file names also in var `diredp-last-copied-filenames'.
 ;;  `dired-do-find-marked-files' -
 ;;     Call `dired-get-marked-files' with original ARG.
@@ -875,6 +876,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/05/10 dadams
+;;     diredp-copy-filename-as-kill-recursive: use diredp-filename-separator, not SPC.
+;;     dired-copy-filename-as-kill, diredp-yank-files: Mention diredp-filename-separator in doc string.
+;;     diredp-copy-abs-filenames-as-kill-recursive: Corrected doc string to mention diredp-last-copied-filenames.
 ;; 2021/04/20 dadams
 ;;     Added: dired-move-to-filename, and made it a command.
 ;; 2021/04/14 dadams
@@ -5797,11 +5802,14 @@ Copying is done by `dired-copy-filename-as-kill' and related commands.")
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Put text copied to kill ring in variable `diredp-last-copied-filenames'.
+;; 1. Use `diredp-filename-separator', not a space char, as the separator.
+;; 2. Put text copied to kill ring in variable `diredp-last-copied-filenames'.
 ;;
 (defun dired-copy-filename-as-kill (&optional arg)
   "Copy names of marked (or next ARG) files into the kill ring.
-The names are separated by a space.
+The names are separated by the value of variable
+`diredp-filename-separator'.
+
 With a zero prefix arg, use the absolute file name of each marked file.
 With \\[universal-argument], use the file name relative to the Dired buffer's
 `default-directory'.  (This still may contain slashes if in a subdirectory.)
@@ -5870,10 +5878,12 @@ clipboard or, if that's empty, from names you've copied to the kill
 ring using \\<dired-mode-map>\ `M-0 \\[dired-copy-filename-as-kill]' or \
 \\[diredp-copy-abs-filenames-as-kill].
 
-Those copy-filename commands also set variable
-`diredp-last-copied-filenames' to the same string.
-`diredp-yank-files' uses the value of that variable, not whatever is
-currently at the head of the kill ring.
+Those copy-filename commands also:
+ * Use the value of option `diredp-filename-separator' to separate the
+   copied file names.
+ * Set variable `diredp-last-copied-filenames' to the same string.
+   `diredp-yank-files' uses the value of that variable, not whatever
+   is currently at the head of the kill ring.
 
 \(To copy file names to the clipboard on MS Windows, you can use Windows
 Explorer: Select the file names, then hold `Shift', right-click, and
@@ -6831,14 +6841,14 @@ The names are copied to the kill ring and to variable
 When called from Lisp:
 * ARG is a raw prefix arg
 * DETAILS is passed to `diredp-get-files'."
-  (interactive                          ; No need for `diredp-get-confirmation-recursive' here.
+  (interactive ; No need for `diredp-get-confirmation-recursive' here.
    (progn (diredp-ensure-mode) (list current-prefix-arg diredp-list-file-attributes)))
   (let* ((files   (mapcar (cond ((zerop (prefix-numeric-value arg)) #'identity)
                                 ((consp arg) (lambda (fn) (concat (dired-current-directory t)
-                                                                  (file-name-nondirectory fn))))
+                                                             (file-name-nondirectory fn))))
                                 (t (lambda (fn) (file-name-nondirectory fn))))
                           (diredp-get-files nil nil nil nil nil details)))
-         (string  (mapconcat #'identity files " ")))
+         (string  (mapconcat #'identity files diredp-filename-separator)))
     (unless (string= "" string)
       (if (eq last-command 'kill-region) (kill-append string nil) (kill-new string))
       (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
@@ -6848,7 +6858,7 @@ When called from Lisp:
 (defun diredp-copy-abs-filenames-as-kill-recursive (&optional ignore-marks-p details) ; Not bound.
   "Copy absolute names of files marked here and in marked subdirs, recursively.
 The names are copied to the kill ring and to variable
-`dired-copy-filename-as-kill'.
+`diredp-last-copied-filenames'.
 
 The files whose names are copied are those that are marked in the
 current Dired buffer, or all files in the directory if none are
