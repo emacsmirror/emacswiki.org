@@ -45,6 +45,7 @@ Ibuffer has an excellent implementation of Gnus-style grouping. Try this:
                    ("emacs" (or
                              (name . "^\\*scratch\\*$")
                              (name . "^\\*Messages\\*$")))
+                   ("svg" (name . "\\.svg")) ; group by file extension
                    ("gnus" (or
                             (mode . message-mode)
                             (mode . bbdb-mode)
