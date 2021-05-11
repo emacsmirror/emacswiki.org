@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 17 13:50:00 2021 (-0700)
+;; Last-Updated: Tue May 11 07:42:56 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7227
+;;     Update #: 7228
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -22,15 +22,19 @@
 ;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `easymenu',
-;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `highlight', `hl-line', `hl-line+', `info',
-;;   `info+', `isearch-prop', `kmacro', `macroexp', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp', `pp+',
-;;   `radix-tree', `replace', `second-sel', `strings', `syntax',
-;;   `text-mode', `thingatpt', `thingatpt+', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `zones'.
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
+;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
+;;   `info', `info+', `isearch-prop', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mwheel',
+;;   `naked', `palette', `pp', `pp+', `radix-tree', `replace',
+;;   `ring', `second-sel', `strings', `syntax', `text-mode',
+;;   `thingatpt', `thingatpt+', `timer', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3976,7 +3980,7 @@ The following additional command keys are active while editing.
   (defun isearchp-open-recursive-edit () ; Bound to `C-x o' in `isearch-mode-map'.
     "Invoke the editor command loop recursively, during Isearch.
 Use `\\[exit-recursive-edit]' to end the recursive edit and resume searching from there.
-Or use `abort-recursive-edit' to exit the recursive edit and cancel the previous search."
+Or use `\\[abort-recursive-edit]' to exit the recursive edit and cancel the previous search."
     (interactive)
     (with-isearch-suspended (recursive-edit)))
 
