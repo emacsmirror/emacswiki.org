@@ -41,6 +41,10 @@ Install it with your favourite AUR helper, or use the following commands to do i
     $ cd emacs-native-comp-git
     $ makepkg --syncdeps --install
 
+=== Debian/unstalbe ===
+
+The emacs-snapshot packages are now built with this support: http://emacs.secretsauce.net
+
 ==== Daemon systemd service crashing on startup ====
 
 If ##systemctl --user start emacs.service## immediately crashes and ##journalctl --user -u emacs## mentions a long path mentioning ##native-lisp## and ending with ##.eln##, add the following line to the ##[Service]## section in ##/usr/lib/systemd/user/emacs.service##:
