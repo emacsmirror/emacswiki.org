@@ -87,6 +87,8 @@ In older Emacs (prior to 20.7), it may be necessary to use something closer to t
 === Setting the fill column seems not to work ===
 If you see that   C-u 100 C-x f M-q   and   C-u 20 C-x f M-q   and others are doing exactly the same, for instance breaking the lines at column 70, then check the major mode you are in. If possible, change to text-mode (M-x text-mode) and try again there. Some modes (ex: lisp-interaction-mode, the one used in the *scratch* buffer) seem to overwrite the filling rules.
 
+Note: lisp-interaction-mode will respect the fill-column setting if you customize the variable emacs-lisp-docstring-fill-column to t
+
 ----
 
 See also MarginMode and AutoFillMode. And UnfillParagraph.
