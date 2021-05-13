@@ -70,6 +70,15 @@ Detailed installation instructions are available [https://gist.github.com/mjlbac
 
 An ##emacs-nativecomp## docker image is [https://hub.docker.com/r/andreacorallo/emacs-nativecomp available]. Also examine the gitlab repo for the [https://gitlab.com/koral/emacs-nativecomp-dockerfile dockerfile].
 
+=== Windows ===
+
+The ##Gccemacs## prebuilt packages are [https://github.com/kiennq/emacs-build/releases available] and updated semi-monthly using GitHub action.
+The build script is also available in the same [https://github.com/kiennq/emacs-build github repo].
+
+It's also possible to install the package via [https://scoop.sh/ scoop] with [https://github.com/kiennq/scoop-misc/blob/master/emacs-k.json this bucket].
+
+    $ scoop install emacs-k
+
 == Usage ==
 
 By default Emacs ships only native compiling the files included in the Emacs image.
