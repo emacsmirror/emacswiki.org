@@ -27,7 +27,7 @@ To disable this in certain major modes you can redefine ##display-line-numbers--
   :version "green")
 
 (defun display-line-numbers--turn-on ()
-  "turn on line numbers but excempting certain majore modes defined in `display-line-numbers-exempt-modes'"
+  "turn on line numbers but exempting certain major modes defined in `display-line-numbers-exempt-modes'"
   (if (and
        (not (member major-mode display-line-numbers-exempt-modes))
        (not (minibufferp)))
