@@ -1,4 +1,4 @@
-BBDB (The insidious Big Brother Database)
+BBDB (The Insidious Big Brother Database)
 
 It functions as a complete address book for nearly every email and news client written for Emacs, and its functionality supports (by default) making entries in the address book automatically when reading email or posts by people, and easy lookup of addresses while composing messages.  Additionally some work has been done recently to allow it to sync to a Palm Pilot.
 
