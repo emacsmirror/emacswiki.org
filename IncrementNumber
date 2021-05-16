@@ -165,7 +165,7 @@ It is good for adding printf debugging like this:
 
 ----
 
-A package that supports Vim-like incrementing and decrementing is [https://github.com/cofi/evil-numbers evil-numbers], it supports binary, octal, hex and decimal numbers.
+A package that supports Vim-like incrementing and decrementing is [https://github.com/janpath/evil-numbers evil-numbers], it supports binary, octal, hex and decimal numbers.
 
 ----
 
