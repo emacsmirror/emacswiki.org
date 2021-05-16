@@ -61,7 +61,7 @@ KillRingSearch -- incremental search of the kill ring
 
 === view-kill.el ===
 
-[[view-kill.el]] – Displays the entire kill ring as a menu.
+<tt>[[view-kill.el]]</tt> – Displays the entire kill ring as a menu.
 
 === wuxch-browse-kill-ring.el ===
 
