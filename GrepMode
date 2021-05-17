@@ -46,7 +46,7 @@ Alternatively, you can install ##grep## and ##find## in their default locations 
 [:MSYS]
 === MSYS ===
 
-The find and grep utilities from !GnuWin32 (below) are very old versions. To have a recent version of find and grep plus other GNU utilities such as egrep you can install [http://www.mingw.org/wiki/msys/ MSYS]. After installation, put this in your .emacs in order to tell Emacs to use these files over any other executables with the same name, including Windows' own ##find## utility:
+The find and grep utilities from !GnuWin32 (below) are very old versions. To have a recent version of find and grep plus other GNU utilities such as egrep you can install [https://www.msys2.org/]. After installation, put this in your .emacs in order to tell Emacs to use these files over any other executables with the same name, including Windows' own ##find## utility:
 
 <pre>
 (setenv "PATH"
