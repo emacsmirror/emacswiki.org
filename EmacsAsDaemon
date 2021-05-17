@@ -138,9 +138,9 @@ Just add the relevant configuration option as described in the [https://nixos.or
 systemctl --user emacs restart
 }}}
 
-=== OS X ===
+=== macOS ===
 
-If you're running Emacs 23 or higher, you can run Emacs Daemon via OS X's launchd. The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
+If you're running Emacs 23 or higher, you can run Emacs Daemon via macOS's launchd. The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
