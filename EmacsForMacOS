@@ -65,7 +65,7 @@ When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  S
 For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.
 
 [new:CarlGroner:2011-10-20 18:26 UTC] 
-As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in `autogen/copy_autogen` for more information.
+As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in <tt>autogen/copy_autogen</tt> for more information.
 
 ==== Aquamacs ====
 
@@ -452,6 +452,12 @@ See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swa
 
 [new]
 : C-M-f binding is processed properly in Leopard's Terminal.app. I filed a bug-report with Apple when running Tiger and actually received an email reply telling me this would be fixed in Leopard (which it was).
+
+=== Emacs full disk access on Catalina / Big Sur ===
+
+Recent macOS versions require you to separately give Emacs (and Terminal!) access to your disk.
+
+GNU Emacs for OSX runs a Ruby wrapper, so you actually have to grant full disk access both to Emacs and to <tt>/usr/bin/ruby</tt>.
 
 === Emacs Keybindings under X11 ===
 
