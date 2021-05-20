@@ -3,7 +3,7 @@
 The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002].
 You can join using the [https://webchat.freenode.net?channels=%23emacs Freenode web interface], or use your favorite IRC client.
 
-There is currently an ongoing controversy (see [https://www.kline.sh/ freenode now belongs to Andrew Lee, and I'm leaving for a new network.], for a perspective of one of the volunteers leaving to form a new network called [https://libera.chat/ Libera Chat]. Connect by pointing your IRC client to irc.libera.chat:6697 (TLS)  
+There is currently an ongoing controversy. See [https://www.kline.sh/ freenode now belongs to Andrew Lee, and I'm leaving for a new network.], for a perspective of one of the volunteers leaving to form a new network called [https://libera.chat/ Libera Chat]. Connect by pointing your IRC client to irc.libera.chat:6697 (TLS)  
 
 There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. 
 
