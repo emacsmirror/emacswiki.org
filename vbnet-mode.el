@@ -1473,7 +1473,7 @@ fast enough.
 
 (defun vbnet-enable-font-lock ()
   ;; Emacs 19.29 requires a window-system else font-lock-mode errs out.
-  (cond ((or vbnet-xemacs-p window-system)
+  (cond ((or vbnet-xemacs-p window-system (not (string-equal (emacs-version) "19.29")))
 
          ;; In win-emacs this sets font-lock-keywords back to nil!
          (if vbnet-winemacs-p
