@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 23 13:20:19 2021 (-0700)
+;; Last-Updated: Sun May 23 13:42:51 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7105
+;;     Update #: 7107
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1464,8 +1464,11 @@ That is, one that is not part of `...'."
 ;;;###autoload
 (defcustom Info-apropos-manuals 'all
   "Manuals for `info-apropos' to search.
-The default value is the symbol `all'.
-Any other value means search the specified manuals.
+The default value is the symbol `all', which means search all known
+manuals (Info files) on your system.
+
+Any other value is a list of manual names (strings), and it means
+search only those manuals.
 
 Manual names are the Info \"file\" names you see in parens before the
 current node name, in Info, for example, `emacs' and `elisp'."
@@ -3417,7 +3420,7 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
 ;;
 ;; 1. Added optional arg LITERALP.  Use apropos matching, not literal-string matching, by default.
 ;; 2. Prefix arg matches literally.  Use other window, unless already in Info.
-;; 3. Modified doc string, to mention option `Info-apropos-manuals', not just "all" manuals
+;; 3. Modified doc string, to mention option `Info-apropos-manuals', not just "all" manuals.
 ;;
 (defun info-apropos (pattern &optional literalp)
   "Search indexes of known Info files on your system for apropos PATTERN.
