@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar  7 19:32:41 2021 (-0800)
+;; Last-Updated: Sun May 23 13:20:19 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7096
+;;     Update #: 7105
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -113,8 +113,8 @@
 ;;
 ;;  Options (user variables) defined here:
 ;;
-;;    `Info-bookmarked-node-xref-faces' (Emacs 24.2+),
-;;    `Info-bookmark-use-only-node-not-file-flag',
+;;    `Info-apropos-manuals', `Info-bookmarked-node-xref-faces' (Emacs
+;;    24.2+), `Info-bookmark-use-only-node-not-file-flag',
 ;;    `Info-breadcrumbs-in-header-flag', `info-buffer-name-function',
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
@@ -541,6 +541,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/05/23 dadams
+;;     Added: Info-apropos-manuals.
+;;     info-apropos, Info-apropos-matches: Respect Info-apropos-manuals.
 ;; 2021/03/07 dadams
 ;;     Added: info-good-fixed-pitch-font-families, info-remap-default-face-cookie.
 ;;     Face info-fixed-pitch: Merge attributes from first family found in info-good-fixed-pitch-font-families.
@@ -1457,6 +1460,24 @@ That is, one that is not part of `...'."
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
+
+;;;###autoload
+(defcustom Info-apropos-manuals 'all
+  "Manuals for `info-apropos' to search.
+The default value is the symbol `all'.
+Any other value means search the specified manuals.
+
+Manual names are the Info \"file\" names you see in parens before the
+current node name, in Info, for example, `emacs' and `elisp'."
+  :set #'(lambda (sym defs) (custom-set-default sym defs)
+           (with-current-buffer (get-buffer-create "*info*")
+             (setq Info-apropos-nodes  ()
+                   Info-current-node   nil
+                   Info-current-file   Info-apropos-file)))
+  :type '(choice :tag "Which Manuals"
+                 (repeat :tag "Specific Manuals (files)" string)
+                 (const  :tag "All Manuals"              all))
+  :group 'help)
 
 ;; This and the version of function `Info-bookmark-jump' defined here are also defined in `bookmark+-1.el',
 ;; so that their feature is available if you use either `Info+' or `Bookmark+'.
@@ -3394,12 +3415,14 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
 
 ;; REPLACE ORIGINAL in `info.el':
 ;;
-;; Added optional arg LITERALP.  Use apropos matching, not literal-string matching, by default.
-;; Prefix arg matches literally.  Use other window, unless already in Info.
+;; 1. Added optional arg LITERALP.  Use apropos matching, not literal-string matching, by default.
+;; 2. Prefix arg matches literally.  Use other window, unless already in Info.
+;; 3. Modified doc string, to mention option `Info-apropos-manuals', not just "all" manuals
 ;;
 (defun info-apropos (pattern &optional literalp)
-  "Search indexes of all known Info files on your system for apropos PATTERN.
-Build a menu of the possible matches.
+  "Search indexes of known Info files on your system for apropos PATTERN.
+Present a menu of the possible matches.
+The manuals to search are defined by option `Info-apropos-manuals'.
 
 With a prefix arg, match PATTERN as a literal string, not as a regexp
 or keywords.
@@ -3431,12 +3454,15 @@ two (or more) of those words."
 
 ;; REPLACE ORIGINAL in `info.el':
 ;;
-;; Added optional arg REGEXP-P.
+;; 1. Added optional arg REGEXP-P.
+;; 2. Search manuals defined by `Info-apropos-manuals'.
 ;;
 (defun Info-apropos-matches (string &optional regexp-p)
-  "Collect STRING matches from all known Info files on your system.
+  "Collect STRING matches from known Info files on your system.
 Return a list of matches where each element is in the format
 \((FILENAME INDEXTEXT NODENAME LINENUMBER)).
+
+The manuals to search are defined by option `Info-apropos-manuals'.
 
 Non-nil optional REGEXP-P means interpret STRING as a regexp, instead
 of trying to match it literally."
@@ -3461,7 +3487,8 @@ of trying to match it literally."
         (goto-char (point-min))
         (re-search-forward "\\* Menu: *\n" nil t)
         (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
-          (add-to-list 'manuals (match-string 1))) ; Ensure no duplicates in MANUALS, so the `dolist' runs faster.
+          (when (or (eq Info-apropos-manuals 'all)  (member (match-string 1) Info-apropos-manuals))
+            (add-to-list 'manuals (match-string 1)))) ; Ensure no duplicates in MANUALS, so the `dolist' runs faster.
         (dolist (manual  (nreverse manuals))
           (message "Searching %s" manual)
           (condition-case err
