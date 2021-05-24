@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 23 13:42:51 2021 (-0700)
+;; Last-Updated: Mon May 24 10:40:04 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7107
+;;     Update #: 7119
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -135,10 +135,10 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `Info--member-string-nocase', `Info--pop-to-buffer-same-window',
-;;    `info--user-search-failed', `Info-bookmark-for-node',
-;;    `Info-bookmark-name-at-point', `Info-bookmark-named-at-point',
-;;    `Info-bookmark-name-for-node',
+;;    `Info--manuals', `Info--member-string-nocase',
+;;    `Info--pop-to-buffer-same-window', `info--user-search-failed',
+;;    `Info-bookmark-for-node', `Info-bookmark-name-at-point',
+;;    `Info-bookmark-named-at-point', `Info-bookmark-name-for-node',
 ;;    `info-buffer-name-function-default',
 ;;    `Info-case-insensitive-string=',
 ;;    `Info-case-insensitive-string-hash', `info-custom-delim-1',
@@ -541,6 +541,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/05/24 dadams
+;;     Added: Info--manuals - factored out from info-display-manual.
+;;     Info-apropos-manuals: Updated doc string.
+;;     info-apropos: Non-positive prefix arg prompts for the manuals to search.  Added args ARG and NARG.
+;;     info-display-manual: Use Info--manuals.
 ;; 2021/05/23 dadams
 ;;     Added: Info-apropos-manuals.
 ;;     info-apropos, Info-apropos-matches: Respect Info-apropos-manuals.
@@ -1471,13 +1476,23 @@ Any other value is a list of manual names (strings), and it means
 search only those manuals.
 
 Manual names are the Info \"file\" names you see in parens before the
-current node name, in Info, for example, `emacs' and `elisp'."
+current node name, in Info, for example, `emacs' and `elisp'.
+
+NOTE:
+
+ Searching many manuals can take a while.  Once searched for a given
+ pattern the search hits are cached, however, so this is a one-time
+ cost.
+
+ And when you use command `info-apropos', if you use a non-positive
+ prefix arg then you are prompted for the manuals to search, ignoring
+ the value of `Info-apropos-manuals'."
   :set #'(lambda (sym defs) (custom-set-default sym defs)
            (with-current-buffer (get-buffer-create "*info*")
              (setq Info-apropos-nodes  ()
                    Info-current-node   nil
                    Info-current-file   Info-apropos-file)))
-  :type '(choice :tag "Which Manuals"
+  :type '(choice :tag "Manuals to Search"
                  (repeat :tag "Specific Manuals (files)" string)
                  (const  :tag "All Manuals"              all))
   :group 'help)
@@ -3419,8 +3434,12 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
 ;; REPLACE ORIGINAL in `info.el':
 ;;
 ;; 1. Added optional arg LITERALP.  Use apropos matching, not literal-string matching, by default.
-;; 2. Prefix arg matches literally.  Use other window, unless already in Info.
-;; 3. Modified doc string, to mention option `Info-apropos-manuals', not just "all" manuals.
+;; 2. Added optional args ARG and NARG.
+;; 3. Handle prefix arg: can match literally and can choose the manuals to search.
+;; 4. Use other window, unless already in Info.
+;; 5. Updated doc string to reflect enhancements.
+;;
+;; $$$$$$ FIXME: When LITERALP, the `apropos-read-pattern' prompt still says "word list or regexp".
 ;;
 (defun info-apropos (pattern &optional literalp)
   "Search indexes of known Info files on your system for apropos PATTERN.
@@ -6414,7 +6433,8 @@ recorded Info node in the manual for the current Emacs version."
 
 ;; REPLACES ORIGINAL in `info.el':
 ;;
-;; Use completion for inputting the manual name, for all Emacs versions 23+.
+;; 1. Use completion for inputting the manual name, for all Emacs versions 23+.
+;; 2. Use helper, `Info--manuals'.
 ;;
 ;;;###autoload (autoload 'info-display-manual "info+")
 (defun info-display-manual (manual)
@@ -6424,23 +6444,8 @@ Otherwise, visit the manual in a new Info buffer.
 
 With a prefix arg (Emacs 24.4+), completion candidates are limited to
 currently visited manuals."
-  (interactive
-   (let ((manuals  (and (fboundp 'info--manual-names)
-                        (ignore-errors (info--manual-names current-prefix-arg))))) ; Arg was added in Emacs 25.
-     (unless manuals
-       (ignore-errors
-         (with-temp-buffer
-           (Info-mode)
-           (Info-directory)
-           (goto-char (point-min))
-           (re-search-forward "\\* Menu: *\n" nil t)
-           (let (manual)
-             (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
-               ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
-               (setq manual  (match-string 1))
-               (set-text-properties 0 (length manual) nil manual)
-               (add-to-list 'manuals (list manual)))))))
-     (list (completing-read "Display manual: " manuals nil t))))
+  (interactive (let ((manuals  (Info--manuals current-prefix-arg)))
+                 (list (completing-read "Display manual: " manuals nil t))))
   (let ((blist             (buffer-list))
         (manual-re         (concat "\\(/\\|\\`\\)" manual "\\(\\.\\|\\'\\)"))
         (case-fold-search  t)
@@ -6564,6 +6569,25 @@ See `Info-bookmark-name-for-node' for the form of the bookmark name."
           (when Info-fontify-visited-nodes (Info-fontify-node))))))
 
   )
+
+(defun Info--manuals (&optional visited-only)
+  "Version of `info--manual-names' that works for Emacs 23+."
+  (let ((manuals  (and (fboundp 'info--manual-names)
+                       (ignore-errors (info--manual-names visited-only))))) ; Arg was added in Emacs 25.
+    (unless manuals
+      (ignore-errors
+        (with-temp-buffer
+          (Info-mode)
+          (Info-directory)
+          (goto-char (point-min))
+          (re-search-forward "\\* Menu: *\n" nil t)
+          (let (manual)
+            (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
+              ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
+              (setq manual  (match-string 1))
+              (set-text-properties 0 (length manual) nil manual)
+              (add-to-list 'manuals (list manual)))))))
+    manuals))
 
 (if (fboundp 'pop-to-buffer-same-window)
     (defalias 'Info--pop-to-buffer-same-window 'pop-to-buffer-same-window)
