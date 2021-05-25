@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 11 07:42:56 2021 (-0700)
+;; Last-Updated: Tue May 25 13:49:41 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7228
+;;     Update #: 7230
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1279,6 +1279,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/05/25 dadams
+;;     lazy-highlight-buffer-max-at-a-time: Changed default value to 200, per Emacs bug #48581.
 ;; 2021/03/17 dadams
 ;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/01/01 dadams
@@ -2405,7 +2407,7 @@ Isearch."
             (string :tag "Suffix format string"  " [%s of %s]"))
     :group 'isearch :version "27.1")
 
-  (defcustom lazy-highlight-buffer-max-at-a-time 20
+  (defcustom lazy-highlight-buffer-max-at-a-time 200
     "Maximum matches to highlight at a time (for `lazy-highlight-buffer').
 Larger values may reduce Isearch's responsiveness to user input;
 smaller values make matches highlight slowly.
