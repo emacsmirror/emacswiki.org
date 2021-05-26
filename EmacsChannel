@@ -62,7 +62,7 @@ To call the ops, use ##ops <nick-to-complain-about> [reason]##. Make sure you ha
 
 In the background the Libera.Chat servers maintain an *access list* for the channel.  Try it for yourself:
 
-    /msg chanserv access #emacs list
+    /msg chanserv flags #emacs
 
 !ChanServ will reply with a list of people who have some sort of power on the channel. These are the important flags:
 
