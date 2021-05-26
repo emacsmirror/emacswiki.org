@@ -1,9 +1,6 @@
 [[fr:SalleEmacs]]
 
-The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002].
-You can join using the [https://webchat.freenode.net?channels=%23emacs Freenode web interface], or use your favorite IRC client.
-
-There is currently an ongoing controversy. See [https://www.kline.sh/ freenode now belongs to Andrew Lee, and I'm leaving for a new network.], for a perspective of one of the volunteers leaving to form a new network called [https://libera.chat/ Libera Chat]. Connect by pointing your IRC client to irc.libera.chat:6697 (TLS)  
+The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002].  However, this was taken over by the new freenode staff on May 25 2021 UTC and shut down as part of the larger hostile takeover of the freenode network (see [https://www.kline.sh/ freenode now belongs to Andrew Lee, and I'm leaving for a new network] and [https://mastodon.sdf.org/@kline/106299403921451814 andrew lee just seized over 700 channels on freenode because they mentioned libera.chat in their topic]), while the community was in the process of migrating to #emacs on [https://libera.chat/ Libera Chat] (a new network set up by the former freenode staff who were ousted in the takeover), forcing the move to this new network.  Connect by pointing your IRC client to irc.libera.chat:6697 (TLS).  The FSF has yet to make a decision on the official status this channel on the new network.
 
 There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. 
 
@@ -11,7 +8,7 @@ If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|
 
 = About #emacs and related channels =
 
-The freenode [[IRC]] channel '''#emacs''' is a place where people can ask questions and hang out with other Emacs folks.
+The Libera.Chat [[IRC]] channel '''#emacs''' is a place where people can ask questions and hang out with other Emacs folks.
 
 The chatter is in English and EmacsLisp, but other flavours of Lisp and French, Finnish, German, Hindi, Portuguese, Swedish, Icelandic, Tagalog, Persian, and who knows what else are heard from time to time.  Pour les francophones, allez voir aussi SalleEmacsFr. Para la gente hispanoparlante, también vea CanalEmacsEs. See EmacsChannelDemographics to get a sense of who's on the channel.
 
@@ -44,7 +41,7 @@ Public logging of the Emacs channel is forbidden.  (See EmacsChannelLogging.)
 [:Conduct]
 = Conduct =
 
-In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own rules (some of which are redundant):
+In addition to [https://libera.chat/policies Libera.Chat's network-wide policies], we have some of our own rules (some of which are redundant):
 
 * Treat people with respect. No sexism, racism, homophobia, or discrimination against other conditions or factors. Don't be a jerk. Don't put other people down, insult them, or threaten them. If you like teasing people or using sarcasm, please be aware that other people may not know the context or may not be able to read your intent. Avoid that kind of ambiguous communication if possible, or clarify if asked.
 * Be patient. You might not get an answer right away. People are not actively watching the channel all the time. If no one knows the answer to your question, you might not get a response at all. You don't need to repeat the question or ask if people have seen it. While waiting for someone to reply to your question, you might want to participate in other questions, investigate other ways of [[GetHelp|getting help]], or focus on other things. Check back occasionally to see if someone has responded to you.
@@ -63,7 +60,7 @@ If you need the help of a channel *operator* (usually for kicking and banning ob
 
 To call the ops, use ##ops <nick-to-complain-about> [reason]##. Make sure you have a clear reason for getting in touch with the ops, such as code of conduct violations.
 
-In the background the Freenode server maintains an *access list* for the channel.  Try it for yourself:
+In the background the Libera.Chat servers maintain an *access list* for the channel.  Try it for yourself:
 
     /msg chanserv access #emacs list
 
@@ -78,7 +75,7 @@ If you're in trouble:
 
 * To complain about a fellow channel member, talk to an operator (+o flag).
 * To appeal decisions made by an operator, find another operator.
-* If nothing else works, you'll have to contact Freenode staff on #freenode.
+* If nothing else works, you'll have to contact Libera.Chat staff on #libera.
 
 ops can add themselves using ##,ops-list is also <nick>##
 
