@@ -69,7 +69,7 @@ In the background the Libera.Chat servers maintain an *access list* for the chan
 * Anybody with the +t flag may change the *topic* (although topic lock is almost always off)
 * Anybody with the +o flag is a potential *operator*
 
-The most powerful flag is the *founder* flag (+F).  Currently (2013 Apr 25) [[delYsid]], [[johnw]] and [[kensanata]] have it.
+The most powerful flag is the *founder* flag (+F).  Currently (2021 May 26) [[bandali]] has it.
 
 If you're in trouble:
 
