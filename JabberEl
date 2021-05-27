@@ -531,6 +531,9 @@ Hi, I just write a simple extension to upload image or other files using HTTP fi
 
 https://github.com/yuchangyuan/jabber-http-file-upload
 
+[new]
+It looks like some [https://tildegit.org/wgreenhouse/emacs-jabber more recent development work has been happening].
+
 
 ----
 CategoryChatClient
