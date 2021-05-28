@@ -1,5 +1,5 @@
 This has the same goal as ShellDirtrackByPrompt but uses a different approach.
-It doesn't require you to change your shell's rc-file.
+It doesn't require you to change your shell's rc-file.  (Of course, this does require that your OS supports procfs at ##/proc##, which for example ##macOS## does not.)
 
   (defun track-shell-directory/procfs ()
     (shell-dirtrack-mode 0)
