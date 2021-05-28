@@ -1,3 +1,4 @@
+[[de:GNU_general_public_licence]]
 This module highlights nicknames in ERC. It uses the first
 twelve digits of the MD5 message digest of the nickname as color (#rrrrggggbbbb).
 
