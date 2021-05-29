@@ -95,15 +95,12 @@ Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the
   (add-hook 'emacs-lisp-mode-hook
         (lambda ()
           (paredit-mode t)
-
           (turn-on-eldoc-mode)
           (eldoc-add-command
            'paredit-backward-delete
            'paredit-close-round)
-
           (local-set-key (kbd "RET") 'electrify-return-if-match)
           (eldoc-add-command 'electrify-return-if-match)
-
           (show-paren-mode t)))
 
 == ParEdit, and extreme barfarge and slurpage ==
