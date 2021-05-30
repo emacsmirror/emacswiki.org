@@ -14,6 +14,10 @@
 * EmacsSpeaksStatistics
 * [https://github.com/gcv/julia-snail Julia Snail]
 
+== Org integration ==
+
+* [https://github.com/shg/ob-julia-vterm.el.git ob-julia-vterm]
+
 == Jupyter integration ==
 
 These support IJulia, the Julia kernel for Jupyter.
