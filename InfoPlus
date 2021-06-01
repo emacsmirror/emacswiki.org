@@ -133,6 +133,15 @@ can be thrown off.
 For example, command `Info-toggle-fontify-emphasis' toggles
 option `Info-fontify-emphasis-flag'.
 
+** You can define ''specific highlighting for individual manuals''. To do this, you `put' the regexp you want for a given regexp variable on the manual symbol.  For example, if ##MY-REGEXP## is a regexp string then this defines the regexp to use for a
+quotation as being ##MY-REGEXP##, but ''only for the Elisp manual'':
+##(put 'elisp 'info-quotation-regexp MY-REGEXP)##.
+Then you can toggle that highlighting separately, using
+command `Info-toggle-fontify-local-quotation'.  There's such a
+command for each regexp variable.  When you toggle a
+particular kind of manual-local highlighting ''off'' in the
+current manual, the global highlighting for that kind takes over there.
+
 ** Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
 
 :: [[image:DrewsEmacsInfoImage]]
