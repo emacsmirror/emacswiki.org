@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 24 10:40:04 2021 (-0700)
+;; Last-Updated: Tue Jun  1 16:18:09 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7119
+;;     Update #: 7167
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -91,6 +91,14 @@
 ;;    `Info-toggle-fontify-emphasis',
 ;;    `Info-toggle-fontify-glossary-words',
 ;;    `Info-toggle-fontify-isolated-quote',
+;;    `Info-toggle-fontify-local-angle-bracketed',
+;;    `Info-toggle-fontify-local-angle-bracketed-same-line',
+;;    `Info-toggle-fontify-local-custom-delimited',
+;;    `Info-toggle-fontify-local-emphasis',
+;;    `Info-toggle-fontify-local-isolated-backquote',
+;;    `Info-toggle-fontify-local-isolated-quote',
+;;    `Info-toggle-fontify-local-quotation',
+;;    `Info-toggle-fontify-local-quotation-same-line',
 ;;    `Info-toggle-fontify-reference-items',
 ;;    `Info-toggle-fontify-visited-nodes',
 ;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
@@ -145,17 +153,18 @@
 ;;    `info-custom-delim-2', `Info-display-node-default-header',
 ;;    `info-fallback-manual-for-glossary',
 ;;    `Info-fontify-custom-delimited', `Info-fontify-glossary-words',
-;;    `Info-fontify-indented-text', `Info-fontify-quotations',
-;;    `Info-fontify-reference-items',
+;;    `Info-fontify-indented-text', `info-fontifying-regexp',
+;;    `Info-fontify-quotations', `Info-fontify-reference-items',
 ;;    `Info-get-glossary-hash-table-create',
 ;;    `Info-goto-glossary-definition', `Info-no-glossary-manuals',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
+;;    `Info-manual-string', `Info-manual-symbol',
 ;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
 ;;    `Info-remap-default-face-to-variable-pitch',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
 ;;    `Info-save-history-list' (Emacs 24.4+), `Info-search-beg',
 ;;    `Info-search-end', `Info-toc-outline-find-node',
-;;    `Info-toc-outline-refontify-links'.
+;;    `Info-toc-outline-refontify-links', `Info-toggle-fontify-local'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -390,7 +399,7 @@
 ;;    - Text between two delimiters that you specify, if the car of
 ;;      option `Info-fontify-custom-delimited' is non-nil.
 ;;
-;;    - Any extra highglighting you want in a node, as defined by the
+;;    - Any extra highlighting you want in a node, as defined by the
 ;;      value of variable `Info-fontify-extra-function'.
 ;;
 ;;    - Be aware that any such highlighting is not 100% foolproof.
@@ -403,6 +412,21 @@
 ;;      or an `Info-toggle-fontify-*' command.  For example, command
 ;;      `Info-toggle-fontify-emphasis' toggles option
 ;;      `Info-fontify-emphasis-flag'.
+;;
+;;    - You can define specific highlighting for individual manuals.
+;;      To do this, you `put' the regexp you want for a given regexp
+;;      variable on the manual symbol.  For example, if MY-REGEXP is a
+;;      regexp string then this defines the regexp to use for a
+;;      quotation as being MY-REGEXP, but only for the Elisp manual:
+;;
+;;        (put 'elisp 'info-quotation-regexp MY-REGEXP)
+;;
+;;      Then you can toggle that highlighting separately, using
+;;      command `Info-toggle-fontify-local-quotation'.  There's such a
+;;      command for each regexp variable.  When you toggle a
+;;      particular kind of manual-local highlighting OFF in the
+;;      current manual, the global highlighting of that kind takes
+;;      over there.
 ;;
 ;;  * Optionally showing breadcrumbs in the mode line or the header
 ;;    line, or both. See where you are in the Info hierarchy, and
@@ -541,6 +565,23 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/01 dadams
+;;     Added: Info-manual-string, Info-manual-symbol, info-fontifying-regexp, Info-toggle-fontify-local,
+;;            Info-toggle-fontify-local-angle-bracketed, Info-toggle-fontify-local-angle-bracketed-same-line,
+;;            Info-toggle-fontify-local-custom-delimited, Info-toggle-fontify-local-emphasis,
+;;            Info-toggle-fontify-local-isolated-backquote, Info-toggle-fontify-local-isolated-quote,
+;;            Info-toggle-fontify-local-quotation, Info-toggle-fontify-local-quotation-same-line, 
+;;     Added functions (not vars) info-custom-delimited-same-line-regexp, info-isolated-backquote-regexp,
+;;           info-isolated-quote-regexp, info-quotation-regexp, info-quotation-same-line-regexp,
+;;           info-quoted+<>-regexp, info-quoted+<>-same-line-regexp, Info-emphasis-regexp.
+;;     Info-fontify-custom-delimited function: Use function, not var.
+;;     Info-fontify-custom-delimited option: Corrected :type spec.
+;;     Info-emphasis-regexp: Updated doc to say it must have a regexp group.
+;;     Info-fontify-quotations: Use functions, not vars: (info-*-regexp), not info-*-regexp.
+;;     Info-fontify-node: Use function Info-emphasis-regexp, not var.  Wrap stuff in EMPHASIS clause with
+;;       ignore-errors because using the function and in case the regexp is faulty.  This is a special case, because
+;;       we use text property`invisible, not just font-lock.
+;;     Info-bookmark-(for-node|named-at-point): use Info-manual-string.
 ;; 2021/05/24 dadams
 ;;     Added: Info--manuals - factored out from info-display-manual.
 ;;     Info-apropos-manuals: Updated doc string.
@@ -1547,6 +1588,9 @@ first two args, in that order."
 ;;;###autoload
 (defcustom Info-emphasis-regexp "_\\(\\sw+\\)_"
   "Regexp to match text enclosed in underscore (`_') characters.
+It must have at least one regexp group.  Regexp group #1 gets
+highlighted with face `info-emphasis'.  The enclosing underscore chars
+are made invisible.
 
 The default value matches the following (enclosed in underscores):
 word, punctuation, and whitespace characters, plus hyphens, with at
@@ -1640,7 +1684,10 @@ latter: set the delimiters.
 For example, if you have an Info file that uses {...}, you can
 highlight the enveloped ... text by setting the delimiters to chars {
 and }, and turning the option on."
-  :type 'boolean :group 'Info-Plus)
+  :type '(list (boolean :tag "ON or OFF")
+               (character :tag "Open delimiter")
+               (character :tag "Close delimiter"))
+  :group 'Info-Plus)
 
 ;;;###autoload
 (defcustom Info-fontify-emphasis-flag t
@@ -1923,6 +1970,28 @@ automatically, when Emacs can't find a `Glossary' node in them.")
 (defvar Info-breadcrumbs-depth-internal Info-breadcrumbs-depth
   "Current breadcrumbs depth for Info.")
 
+(defvar info-custom-delimited-same-line-regexp "'\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'"
+  "Regexp to match text between custom delimiters.
+You can use command `Info-define-custom-delimiting' (or command
+`Info-toggle-fontify-custom-delimited' with `C-u') to define the
+regexp.  They prompt you for the delimiters to use.
+
+\(You can of course also let-bind this in Lisp code.\)")
+
+(defvar info-isolated-backquote-regexp "`\\(.\\|\n\\)"
+  ;; Another possibility: "[^`]`"
+  ;; OK in practice, since backquote is rarer than quote, but still, play safe as with quote.
+  ;; "\\(`\\)\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*[^']"
+  "Regexp to match an isolated backquote character.
+That is, one that is not part of `...'.")
+
+(defvar info-isolated-quote-regexp "\\(.\\|\n\\)'"
+  ;; Another possibility: "[^']'"
+  ;; "[^`]\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'" ; Can be way too slow in rare cases.
+  "Regexp to match an isolated single-quote character.
+That is, one that is not part of `...'.")
+
+
 ;; Match has, inside “...”, "...", ‘...’, or `...', zero or more of these characters:
 ;;   - any character except ”, ", ’, or ', respectively
 ;;   - \ followed by any character
@@ -2030,27 +2099,6 @@ If ... contains an end char then that char must be backslashed.")
 ;;              (or (seq (any alpha) (zero-or-more (not (any ?\n ?>))))
 ;;                  (one-or-more (seq ?\\ anything)))
 ;;              ?>)))
-
-(defvar info-custom-delimited-same-line-regexp "'\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'"
-  "Regexp to match text between custom delimiters.
-You can use command `Info-define-custom-delimiting' (or command
-`Info-toggle-fontify-custom-delimited' with `C-u') to define the
-regexp.  They prompt you for the delimiters to use.
-
-\(You can of course also let-bind this in Lisp code.\)")
-
-(defvar info-isolated-quote-regexp "\\(.\\|\n\\)'"
-  ;; Another possibility: "[^']'"
-  ;; "[^`]\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*'" ; Can be way too slow in rare cases.
-  "Regexp to match an isolated single-quote character.
-That is, one that is not part of `...'.")
-
-(defvar info-isolated-backquote-regexp "`\\(.\\|\n\\)"
-  ;; Another possibility: "[^`]`"
-  ;; OK in practice, since backquote is rarer than quote, but still, play safe as with quote.
-  ;; "\\(`\\)\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)*[^']"
-  "Regexp to match an isolated backquote character.
-That is, one that is not part of `...'.")
 
 (defvar Info-toc-outline-map (let ((map  (make-sparse-keymap))) (set-keymap-parent map Info-mode-map))
   "Keymap for Info TOC with outlining.")
@@ -2363,6 +2411,38 @@ you are prompted for the chars to use."
                             (format ", with delimiters %c and %c" (info-custom-delim-1) (info-custom-delim-2))
                           "")))))
 
+(defun Info-toggle-fontify-local (regexp-var &optional readp msgp)
+  "Toggle the value of variable REGEXP-VAR.
+Helper for `Info-toggle-fontify-local-*' commands.
+Non-nil READP means read a new value for it, instead of toggling it.
+Non-nil MSGP means show a status message when done."
+  (let* ((manual    (Info-manual-symbol))
+         (val       (get manual regexp-var))
+         (last-var  (intern (format "last-%s" regexp-var)))
+         (last-val  (get manual last-var)))
+    (if (or readp  (and (not val)  (not last-val)))
+        ;; Read new regexp.
+        (let ((newval  (read-regexp (format "Regexp to use for `%s' in `%s': " regexp-var manual))))
+          (put manual regexp-var newval)
+          (put manual last-var (setq last-val  (setq val  newval))))
+      ;; Toggle current value.
+      (let ((newval  (if val nil last-val)))
+        (unless (equal val last-val) (put manual last-var (setq last-val  val)))
+        (put manual regexp-var (setq val  newval))))
+    (when (eq major-mode 'Info-mode)
+      (font-lock-defontify)
+      (let ((modp               (buffer-modified-p))
+            (inhibit-read-only  t))
+        (Info-fontify-node))
+      (when msgp (message "`%s' is now %s" regexp-var (if val 'ON 'OFF))))))
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-custom-delimited "info+")
+(defun Info-toggle-fontify-local-custom-delimited (&optional readp msgp)
+  "Toggle `info-custom-delimited-same-line-regexp' for current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-custom-delimited-same-line-regexp readp msgp))
+
 ;;;###autoload (autoload 'Info-toggle-fontify-all "info+")
 (defun Info-toggle-fontify-all (&optional msgp)
   "Toggle all Info+ fontify options.
@@ -2445,6 +2525,15 @@ is on, and it turns them all on, if any is off:
       (Info-fontify-node))
     (when msgp (message "`Info-fontify-glossary-words' is now %s" (if Info-fontify-glossary-words 'ON 'OFF)))))
 
+;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-backquote "info+")
+(defun Info-toggle-fontify-local-isolated-backquote (&optional readp msgp)
+  "Toggle `info-isolated-backquote-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-isolated-backquote-regexp readp msgp))
+
+;; @@@ THERE IS NO `Info-toggle-fontify-isolated-backquote'!  Do we need one?
+
 ;;;###autoload (autoload 'Info-toggle-fontify-isolated-quote "info+")
 (defun Info-toggle-fontify-isolated-quote (&optional msgp)
   "Toggle option `Info-fontify-isolated-quote-flag'."
@@ -2459,6 +2548,53 @@ is on, and it turns them all on, if any is off:
                         (if Info-fontify-isolated-quote-flag 'ON 'OFF)))))
 (define-obsolete-function-alias 'Info-toggle-fontify-single-quote 'Info-toggle-fontify-isolated-quote
   "2020-10-22")
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-quote "info+")
+(defun Info-toggle-fontify-local-isolated-quote (&optional readp msgp)
+  "Toggle `info-isolated-quote-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-isolated-quote-regexp readp msgp))
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-quotation "info+")
+(defun Info-toggle-fontify-local-quotation (&optional readp msgp)
+  "Toggle `info-quotation-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-quotation-regexp readp msgp))
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-quotation-same-line "info+")
+(defun Info-toggle-fontify-local-quotation-same-line (&optional readp msgp)
+  "Toggle `info-quotation-same-line-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-quotation-same-line-regexp readp msgp))
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-angle-bracketed "info+")
+(defun Info-toggle-fontify-local-angle-bracketed (&optional readp msgp)
+  "Toggle `info-quoted+<>-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-quoted+<>-regexp readp msgp))
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-angle-bracketed-same-line "info+")
+(defun Info-toggle-fontify-local-angle-bracketed-same-line (&optional readp msgp)
+  "Toggle `info-quoted+<>-same-line-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'info-quoted+<>-same-line-regexp readp msgp))
+
+;;;###autoload (autoload 'Info-toggle-fontify-local-emphasis "info+")
+(defun Info-toggle-fontify-local-emphasis (&optional readp msgp)
+  "Toggle `Info-emphasis-regexp' for the current Info manual.
+With a prefix arg, read a new value for it instead.
+
+NOTE: The regexp must match the surrounding underscore chars (`_'),
+      and it must have at least one regexp group.  Regexp group #1
+      gets highlighted with face `info-emphasis'.  The enclosing
+      underscore chars are made invisible."
+  (interactive "P\np")
+  (Info-toggle-fontify-local 'Info-emphasis-regexp readp msgp))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-reference-items "info+")
 (defun Info-toggle-fontify-reference-items (&optional msgp)
@@ -4359,16 +4495,20 @@ If key's command cannot be found by looking in indexes, then
         ;; Fontify EMPHASIS: _..._
         ;;
         ;; Do this first because it can remove existing highlighting.
+        ;; Wrap stuff with `ignore-errors' in case the regexp is faulty.  This is a special case, because we use
+        ;; text property `invisible', not just font-lock.
         (when info-fontify-emphasis
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
-            (while (re-search-forward Info-emphasis-regexp nil t)
-              (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
-                (funcall fn (match-beginning 0) (1+ (match-beginning 0))
-                         '(invisible t front-sticky nil rear-nonsticky t))
-                (funcall fn (1- (match-end 0)) (match-end 0)
-                         '(invisible t front-sticky nil rear-nonsticky t))
-                (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))
+            (let ((regexp  (Info-emphasis-regexp)))
+              (while (ignore-errors (re-search-forward regexp nil t))
+                (ignore-errors
+                  (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
+                    (funcall fn (match-beginning 0) (1+ (match-beginning 0))
+                             '(invisible t front-sticky nil rear-nonsticky t))
+                    (funcall fn (1- (match-end 0)) (match-end 0)
+                             '(invisible t front-sticky nil rear-nonsticky t))
+                    (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))))
 
         ;; Fontify HEADER LINE
         (goto-char (point-min))
@@ -4760,16 +4900,20 @@ If key's command cannot be found by looking in indexes, then
         ;; Fontify EMPHASIS: _..._
         ;;
         ;; Do this first because it can remove existing highlighting.
+        ;; Wrap stuff with `ignore-errors' in case the regexp is faulty.  This is a special case, because we use
+        ;; text property `invisible', not just font-lock.
         (when info-fontify-emphasis
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
-            (while (re-search-forward Info-emphasis-regexp nil t)
-              (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
-                (funcall fn (match-beginning 0) (1+ (match-beginning 0))
-                         '(invisible t front-sticky nil rear-nonsticky t))
-                (funcall fn (1- (match-end 0)) (match-end 0)
-                         '(invisible t front-sticky nil rear-nonsticky t))
-                (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))
+            (let ((regexp  (Info-emphasis-regexp)))
+              (while (ignore-errors (re-search-forward regexp nil t))
+                (ignore-errors
+                  (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
+                    (funcall fn (match-beginning 0) (1+ (match-beginning 0))
+                             '(invisible t front-sticky nil rear-nonsticky t))
+                    (funcall fn (1- (match-end 0)) (match-end 0)
+                             '(invisible t front-sticky nil rear-nonsticky t))
+                    (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))))
 
         ;; Fontify HEADER LINE
         (goto-char (point-min))
@@ -5148,15 +5292,20 @@ If key's command cannot be found by looking in indexes, then
         ;; Fontify EMPHASIS: _..._
         ;;
         ;; Do this first because it can remove existing highlighting.
-        (goto-char (point-min))
-        (when (and font-lock-mode  not-fontified-p)
-          (while (re-search-forward Info-emphasis-regexp nil t)
-            (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
-              (funcall fn (match-beginning 0) (1+ (match-beginning 0))
-                       '(invisible t front-sticky nil rear-nonsticky t))
-              (funcall fn (1- (match-end 0)) (match-end 0)
-                       '(invisible t front-sticky nil rear-nonsticky t))
-              (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis)))))
+        ;; Wrap stuff with `ignore-errors' in case the regexp is faulty.  This is a special case, because we use
+        ;; text property `invisible', not just font-lock.
+        (when info-fontify-emphasis
+          (goto-char (point-min))
+          (when (and font-lock-mode  not-fontified-p)
+            (let ((regexp  (Info-emphasis-regexp)))
+              (while (ignore-errors (re-search-forward regexp nil t))
+                (ignore-errors
+                  (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
+                    (funcall fn (match-beginning 0) (1+ (match-beginning 0))
+                             '(invisible t front-sticky nil rear-nonsticky t))
+                    (funcall fn (1- (match-end 0)) (match-end 0)
+                             '(invisible t front-sticky nil rear-nonsticky t))
+                    (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))))
 
         ;; Fontify HEADER LINE
         (goto-char (point-min))
@@ -5653,11 +5802,11 @@ This respects option `Info-fontify-quotations'.
  '\t uses face `info-single-quote'."
   (let ((regexp    (if (eq Info-fontify-quotations 'multiline)
                        (if Info-fontify-angle-bracketed-flag
-                           info-quoted+<>-regexp
-                         info-quotation-regexp)
+                           (info-quoted+<>-regexp)
+                         (info-quotation-regexp))
                      (if Info-fontify-angle-bracketed-flag
-                         info-quoted+<>-same-line-regexp
-                       info-quotation-same-line-regexp)))
+                         (info-quoted+<>-same-line-regexp)
+                       (info-quotation-same-line-regexp))))
         (property  'font-lock-face))
     (while (ignore-errors (re-search-forward regexp nil t))
       (cond ((and (eq (aref (match-string 0) 0) ?`) ; Single-quote wrapped backslashes: `\', `\\', `\\\', etc.
@@ -5702,19 +5851,22 @@ This respects option `Info-fontify-quotations'.
              (goto-char (match-end 0)) (forward-char 1))))
     (when Info-fontify-isolated-quote-flag
       (goto-char (point-min))
-      (while (ignore-errors (re-search-forward info-isolated-quote-regexp nil t))
-        (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
-        (goto-char (match-end 0)) (forward-char 1))
+      (let ((regexp  (info-isolated-quote-regexp)))
+        (while (ignore-errors (re-search-forward regexp nil t))
+          (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
+          (goto-char (match-end 0)) (forward-char 1)))
       (goto-char (point-min))
-      (while (ignore-errors nil (re-search-forward info-isolated-backquote-regexp nil t))
-        (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
-        (goto-char (match-end 0)) (forward-char 1)))))
+      (let ((regexp  (info-isolated-backquote-regexp)))
+        (while (ignore-errors (re-search-forward regexp nil t))
+          (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
+          (goto-char (match-end 0)) (forward-char 1))))))
 
 (defun Info-fontify-custom-delimited ()
   "Fontify text between custom delimiters."
-  (while (ignore-errors (re-search-forward info-custom-delimited-same-line-regexp nil t))
-    (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
-    (goto-char (match-end 0)) (forward-char 1)))
+  (let ((regexp  (info-custom-delimited-same-line-regexp)))
+    (while (ignore-errors (re-search-forward regexp nil t))
+      (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
+      (goto-char (match-end 0)) (forward-char 1))))
 
 (defun Info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
@@ -6465,6 +6617,58 @@ currently visited manuals."
 ;;(@* "Non-Interactive Functions")
 ;;; Non-Interactive  Functions ---------------------------------------
 
+(defun Info-manual-string ()
+  "String naming the current Info manual (\"emacs\", \"elisp\", etc.)."
+  (file-name-sans-extension (file-name-nondirectory Info-current-file)))
+
+(defun Info-manual-symbol ()
+  "Symbol naming the current Info manual (`emacs', `elisp', etc.)."
+  (intern (Info-manual-string)))
+
+(defun info-fontifying-regexp (variable)
+  "Value of VARIABLE for current manual, if non-nil, else its global value."
+  (or (get (Info-manual-symbol) variable)  (symbol-value variable)))
+
+(defun info-custom-delimited-same-line-regexp ()
+  "Return the value of `info-custom-delimited-same-line-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-custom-delimited-same-line-regexp))
+
+(defun info-isolated-backquote-regexp ()
+  "Return the value of `info-isolated-backquote-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-isolated-backquote-regexp))
+
+(defun info-isolated-quote-regexp ()
+  "Return the value of `info-isolated-quote-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-isolated-quote-regexp))
+
+(defun info-quotation-regexp ()
+  "Return the value of `info-quotation-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-quotation-regexp))
+
+(defun info-quotation-same-line-regexp ()
+  "Return the value of `info-quotation-same-line-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-quotation-same-line-regexp))
+
+(defun info-quoted+<>-regexp ()
+  "Return the value of `info-quoted+<>-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-quoted+<>-regexp))
+
+(defun info-quoted+<>-same-line-regexp ()
+  "Return the value of `info-quoted+<>-same-line-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'info-quoted+<>-same-line-regexp))
+
+(defun Info-emphasis-regexp ()
+  "Return the value of `Info-emphasis-regexp'.
+Value for current manual, if non-nil, else global value."
+  (info-fontifying-regexp 'Info-emphasis-regexp))
+
 (defun Info-display-node-default-header ()
   "Insert node name as header."
   ;; `infop-node-name' is free here - bound in `Info-merge-subnodes'.
@@ -6499,7 +6703,7 @@ Non-nil NODE can have the form `NODE' or `(MANUAL) NODE'.
 If NODE is nil then read the node name.  If optional arg LOCALP is
 non-nil then read the node name only from the current manual."
     (when (and node  (stringp Info-current-file)  (not (string-match-p "(\\([^)]+\\)) \\([^)]*\\)" node)))
-      (setq node  (concat "(" (file-name-sans-extension (file-name-nondirectory Info-current-file)) ") " node)))
+      (setq node  (concat "(" (Info-manual-string Info-current-file) ") " node)))
     (unless node (setq node  (Info-read-bookmarked-node-name localp)))
     (bmkp-get-bookmark-in-alist node t (bmkp-info-alist-only)))
 
@@ -6519,8 +6723,7 @@ name `(emacs) Modes', and the bookmark must have that same name."
 See `Info-bookmark-name-for-node' for the form of the bookmark name."
     (let ((node  (Info-node-name-at-point)))
       (and node
-           (let* ((file  (and (stringp Info-current-file)
-                              (file-name-sans-extension (file-name-nondirectory Info-current-file))))
+           (let* ((file  (and (stringp Info-current-file)  (Info-manual-string Info-current-file)))
                   (bname  (if file (concat "(" file ") " node) node)))
              (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))))
 
