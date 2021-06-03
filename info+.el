@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jun  1 16:18:09 2021 (-0700)
+;; Last-Updated: Thu Jun  3 14:25:01 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7167
+;;     Update #: 7182
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -565,6 +565,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/02 dadams
+;;     Info-toggle-fontify-local: Do not allow empty-string regexp as input.
+;;     Info-manual-(string|symbol): Added optional INFO-FILE arg.
+;;     Info-bookmark-(for-node|named-at-point): Don't pass Info-current-file as arg.
 ;; 2021/06/01 dadams
 ;;     Added: Info-manual-string, Info-manual-symbol, info-fontifying-regexp, Info-toggle-fontify-local,
 ;;            Info-toggle-fontify-local-angle-bracketed, Info-toggle-fontify-local-angle-bracketed-same-line,
@@ -2419,10 +2423,16 @@ Non-nil MSGP means show a status message when done."
   (let* ((manual    (Info-manual-symbol))
          (val       (get manual regexp-var))
          (last-var  (intern (format "last-%s" regexp-var)))
-         (last-val  (get manual last-var)))
+         (last-val  (get manual last-var))
+         (default   (symbol-value regexp-var)))
     (if (or readp  (and (not val)  (not last-val)))
         ;; Read new regexp.
-        (let ((newval  (read-regexp (format "Regexp to use for `%s' in `%s': " regexp-var manual))))
+        (let ((newval  (read-regexp (format "Regexp for `%s' in `%s': " regexp-var manual)
+                                    default)))
+          (while (equal newval "")
+            (setq newval  (read-regexp (format "Regexp for `%s' in `%s' (`C-q DEL' for NO highlight): "
+                                               regexp-var manual)
+                                       default)))
           (put manual regexp-var newval)
           (put manual last-var (setq last-val  (setq val  newval))))
       ;; Toggle current value.
@@ -6617,13 +6627,19 @@ currently visited manuals."
 ;;(@* "Non-Interactive Functions")
 ;;; Non-Interactive  Functions ---------------------------------------
 
-(defun Info-manual-string ()
-  "String naming the current Info manual (\"emacs\", \"elisp\", etc.)."
-  (file-name-sans-extension (file-name-nondirectory Info-current-file)))
+(defun Info-manual-string (&optional info-file)
+  "String naming Info manual corresponding to INFO-FILE.
+Optional arg INFO-FILE defaults to the value of `Info-current-file',
+the current Info manual (\"emacs\", \"elisp\", etc.).
+Return nil if `Info-current-file' is nil."
+  (setq info-file  (or info-file  Info-current-file))
+  (file-name-sans-extension (file-name-nondirectory info-file)))
 
-(defun Info-manual-symbol ()
-  "Symbol naming the current Info manual (`emacs', `elisp', etc.)."
-  (intern (Info-manual-string)))
+(defun Info-manual-symbol (&optional info-file)
+  "Symbol naming the current Info manual (`emacs', `elisp', etc.).
+If no current Info manual, then return nil."
+  (let ((manual-strg  (Info-manual-string info-file)))
+    (and manual-strg  (intern manual-strg))))
 
 (defun info-fontifying-regexp (variable)
   "Value of VARIABLE for current manual, if non-nil, else its global value."
@@ -6703,7 +6719,7 @@ Non-nil NODE can have the form `NODE' or `(MANUAL) NODE'.
 If NODE is nil then read the node name.  If optional arg LOCALP is
 non-nil then read the node name only from the current manual."
     (when (and node  (stringp Info-current-file)  (not (string-match-p "(\\([^)]+\\)) \\([^)]*\\)" node)))
-      (setq node  (concat "(" (Info-manual-string Info-current-file) ") " node)))
+      (setq node  (concat "(" (Info-manual-string) ") " node)))
     (unless node (setq node  (Info-read-bookmarked-node-name localp)))
     (bmkp-get-bookmark-in-alist node t (bmkp-info-alist-only)))
 
@@ -6723,7 +6739,7 @@ name `(emacs) Modes', and the bookmark must have that same name."
 See `Info-bookmark-name-for-node' for the form of the bookmark name."
     (let ((node  (Info-node-name-at-point)))
       (and node
-           (let* ((file  (and (stringp Info-current-file)  (Info-manual-string Info-current-file)))
+           (let* ((file  (and (stringp Info-current-file)  (Info-manual-string)))
                   (bname  (if file (concat "(" file ") " node) node)))
              (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))))
 
