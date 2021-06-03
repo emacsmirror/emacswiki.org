@@ -34,12 +34,13 @@ Wanderlust has //very// good IMAP support; it leaves messages on the server & ca
 
 WanderLust is installable via [[MELPA]] or [[el-get]]. Note that for MELPA, Wanderlust is only available via MELPA, it is not avialable via the stable branch. E.g, use something like:
 
+{{{
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (package-initialize)		; Needed to set up load-path for packages
-
+}}}
 and then use the usual package steps for installation.
 
 Alternatively, you may be able to find `wanderlust', `wl', or `wl-beta' from your system's package manager.
