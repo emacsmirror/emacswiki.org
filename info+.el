@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  3 14:25:01 2021 (-0700)
+;; Last-Updated: Thu Jun  3 18:18:46 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7182
+;;     Update #: 7201
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -428,6 +428,18 @@
 ;;      current manual, the global highlighting of that kind takes
 ;;      over there.
 ;;
+;;      Instead of explicitly setting the variable value for a manual
+;;      using `put', you can just use the local toggle command (such
+;;      as `Info-toggle-fontify-local-quotation') with a prefix arg.
+;;      That prompts you for the regexp to use locally, for the
+;;      current manual.
+;;
+;;      You can also use such local highlighting to just turn OFF the
+;;      global highlighting for a given regexp variable.  To do that,
+;;      use a prefix arg with the toggle command, and when prompted
+;;      for the regexp, type `$-'.  That's a regexp that cannot match
+;;      anything.
+;;
 ;;  * Optionally showing breadcrumbs in the mode line or the header
 ;;    line, or both. See where you are in the Info hierarchy, and
 ;;    access higher nodes directly.
@@ -565,6 +577,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/03 dadams
+;;     Info-toggle-fontify-local, Info-toggle-fontify-local-*, Info-fontify-node, Info-fontify-quotations,
+;;       Info-fontify-custom-delimited:
+;;         You can use manual-local fontifying to turn off the corresponding global highlighting.
 ;; 2021/06/02 dadams
 ;;     Info-toggle-fontify-local: Do not allow empty-string regexp as input.
 ;;     Info-manual-(string|symbol): Added optional INFO-FILE arg.
@@ -2416,7 +2432,7 @@ you are prompted for the chars to use."
                           "")))))
 
 (defun Info-toggle-fontify-local (regexp-var &optional readp msgp)
-  "Toggle the value of variable REGEXP-VAR.
+  "Toggle the local value of variable REGEXP-VAR for this manual.
 Helper for `Info-toggle-fontify-local-*' commands.
 Non-nil READP means read a new value for it, instead of toggling it.
 Non-nil MSGP means show a status message when done."
@@ -2427,12 +2443,18 @@ Non-nil MSGP means show a status message when done."
          (default   (symbol-value regexp-var)))
     (if (or readp  (and (not val)  (not last-val)))
         ;; Read new regexp.
-        (let ((newval  (read-regexp (format "Regexp for `%s' in `%s': " regexp-var manual)
-                                    default)))
-          (while (equal newval "")
-            (setq newval  (read-regexp (format "Regexp for `%s' in `%s' (`C-q DEL' for NO highlight): "
-                                               regexp-var manual)
-                                       default)))
+        (let ((newval  (read-regexp
+                        (format "Regexp for `%s' in `%s' (Use `$-' for NO such local highlighting): "
+                                regexp-var manual)
+                        default)))
+          (when (equal newval default)
+            (message "That's the _global_ regexp.  (Maybe use it as a guide.)  Try again.") (sleep-for 2)
+            (setq newval (read-regexp (format "Regexp for `%s' in `%s' (Use `$-' for NO such highlight): "
+                                              regexp-var manual)
+                                      default)))
+          ;; If regexp read contains `$' followed by any char then use symbol `$-' instead.
+          (let ((off-rx (string-match "[$]" newval)))
+            (when (and off-rx  (< (match-end 0) (length newval))) (setq newval (intern "$-"))))
           (put manual regexp-var newval)
           (put manual last-var (setq last-val  (setq val  newval))))
       ;; Toggle current value.
@@ -2444,12 +2466,23 @@ Non-nil MSGP means show a status message when done."
       (let ((modp               (buffer-modified-p))
             (inhibit-read-only  t))
         (Info-fontify-node))
-      (when msgp (message "`%s' is now %s" regexp-var (if val 'ON 'OFF))))))
+      (when msgp
+        (if (eq (intern "$-") val)
+            (message "`%s' manual now has NO `%s' highlighting (OVERRIDES global)" manual regexp-var)
+          (message "`%s' manual local `%s' highlighting is now %s"
+                   manual
+                   regexp-var
+                   (if val 'ON (format "OFF (global is %s)"
+                                       (if (symbol-value regexp-var) 'ON 'OFF)))))))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-custom-delimited "info+")
 (defun Info-toggle-fontify-local-custom-delimited (&optional readp msgp)
   "Toggle `info-custom-delimited-same-line-regexp' for current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-custom-delimited-same-line-regexp readp msgp))
 
@@ -2538,7 +2571,11 @@ is on, and it turns them all on, if any is off:
 ;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-backquote "info+")
 (defun Info-toggle-fontify-local-isolated-backquote (&optional readp msgp)
   "Toggle `info-isolated-backquote-regexp' for the current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-isolated-backquote-regexp readp msgp))
 
@@ -2562,35 +2599,55 @@ With a prefix arg, read a new value for it instead."
 ;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-quote "info+")
 (defun Info-toggle-fontify-local-isolated-quote (&optional readp msgp)
   "Toggle `info-isolated-quote-regexp' for the current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-isolated-quote-regexp readp msgp))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-quotation "info+")
 (defun Info-toggle-fontify-local-quotation (&optional readp msgp)
   "Toggle `info-quotation-regexp' for the current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-quotation-regexp readp msgp))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-quotation-same-line "info+")
 (defun Info-toggle-fontify-local-quotation-same-line (&optional readp msgp)
   "Toggle `info-quotation-same-line-regexp' for the current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-quotation-same-line-regexp readp msgp))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-angle-bracketed "info+")
 (defun Info-toggle-fontify-local-angle-bracketed (&optional readp msgp)
   "Toggle `info-quoted+<>-regexp' for the current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-quoted+<>-regexp readp msgp))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-angle-bracketed-same-line "info+")
 (defun Info-toggle-fontify-local-angle-bracketed-same-line (&optional readp msgp)
   "Toggle `info-quoted+<>-same-line-regexp' for the current Info manual.
-With a prefix arg, read a new value for it instead."
+With a prefix arg, read a new value for it instead.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'info-quoted+<>-same-line-regexp readp msgp))
 
@@ -2602,7 +2659,11 @@ With a prefix arg, read a new value for it instead.
 NOTE: The regexp must match the surrounding underscore chars (`_'),
       and it must have at least one regexp group.  Regexp group #1
       gets highlighted with face `info-emphasis'.  The enclosing
-      underscore chars are made invisible."
+      underscore chars are made invisible.
+
+When reading a new value, You can use `$-' as the regexp, to NOT do
+any such local highlighting, that is, to override any such global
+highlighting.  (`$-' is a regexp that cannot match anything.)"
   (interactive "P\np")
   (Info-toggle-fontify-local 'Info-emphasis-regexp readp msgp))
 
@@ -4511,14 +4572,15 @@ If key's command cannot be found by looking in indexes, then
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
             (let ((regexp  (Info-emphasis-regexp)))
-              (while (ignore-errors (re-search-forward regexp nil t))
-                (ignore-errors
-                  (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
-                    (funcall fn (match-beginning 0) (1+ (match-beginning 0))
-                             '(invisible t front-sticky nil rear-nonsticky t))
-                    (funcall fn (1- (match-end 0)) (match-end 0)
-                             '(invisible t front-sticky nil rear-nonsticky t))
-                    (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))))
+              (unless (eq (intern "$-") regexp)
+                (while (ignore-errors (re-search-forward regexp nil t))
+                  (ignore-errors
+                    (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
+                      (funcall fn (match-beginning 0) (1+ (match-beginning 0))
+                               '(invisible t front-sticky nil rear-nonsticky t))
+                      (funcall fn (1- (match-end 0)) (match-end 0)
+                               '(invisible t front-sticky nil rear-nonsticky t))
+                      (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis)))))))))
 
         ;; Fontify HEADER LINE
         (goto-char (point-min))
@@ -4916,14 +4978,15 @@ If key's command cannot be found by looking in indexes, then
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
             (let ((regexp  (Info-emphasis-regexp)))
-              (while (ignore-errors (re-search-forward regexp nil t))
-                (ignore-errors
-                  (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
-                    (funcall fn (match-beginning 0) (1+ (match-beginning 0))
-                             '(invisible t front-sticky nil rear-nonsticky t))
-                    (funcall fn (1- (match-end 0)) (match-end 0)
-                             '(invisible t front-sticky nil rear-nonsticky t))
-                    (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))))
+              (unless (eq (intern "$-") regexp)
+                (while (ignore-errors (re-search-forward regexp nil t))
+                  (ignore-errors
+                    (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
+                      (funcall fn (match-beginning 0) (1+ (match-beginning 0))
+                               '(invisible t front-sticky nil rear-nonsticky t))
+                      (funcall fn (1- (match-end 0)) (match-end 0)
+                               '(invisible t front-sticky nil rear-nonsticky t))
+                      (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis)))))))))
 
         ;; Fontify HEADER LINE
         (goto-char (point-min))
@@ -5308,14 +5371,15 @@ If key's command cannot be found by looking in indexes, then
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
             (let ((regexp  (Info-emphasis-regexp)))
-              (while (ignore-errors (re-search-forward regexp nil t))
-                (ignore-errors
-                  (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
-                    (funcall fn (match-beginning 0) (1+ (match-beginning 0))
-                             '(invisible t front-sticky nil rear-nonsticky t))
-                    (funcall fn (1- (match-end 0)) (match-end 0)
-                             '(invisible t front-sticky nil rear-nonsticky t))
-                    (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis))))))))
+              (unless (eq (intern "$-") regexp)
+                (while (ignore-errors (re-search-forward regexp nil t))
+                  (ignore-errors
+                    (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
+                      (funcall fn (match-beginning 0) (1+ (match-beginning 0))
+                               '(invisible t front-sticky nil rear-nonsticky t))
+                      (funcall fn (1- (match-end 0)) (match-end 0)
+                               '(invisible t front-sticky nil rear-nonsticky t))
+                      (funcall fn (match-beginning 1) (match-end 1) '(font-lock-face info-emphasis)))))))))
 
         ;; Fontify HEADER LINE
         (goto-char (point-min))
@@ -5818,65 +5882,69 @@ This respects option `Info-fontify-quotations'.
                          (info-quoted+<>-same-line-regexp)
                        (info-quotation-same-line-regexp))))
         (property  'font-lock-face))
-    (while (ignore-errors (re-search-forward regexp nil t))
-      (cond ((and (eq (aref (match-string 0) 0) ?`) ; Single-quote wrapped backslashes: `\', `\\', `\\\', etc.
-                  (goto-char (match-beginning 0))
-                  (save-match-data (looking-at "\\(`\\\\+'\\)")))
-             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
-             (goto-char (match-end 0)))
-            ((and (eq (aref (match-string 0) 0) ?‘) ; Single-quote wrapped backslashes:
-                  (goto-char (match-beginning 0)) ; ‘\’, ‘\\’, ‘\\\’, etc. 
-                  (save-match-data (looking-at "\\(‘\\\\+’\\)")))
-             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
-             (goto-char (match-end 0)))
-            ((and (memq (aref (match-string 0) 0) '(?` ?‘)) ; ‘...’, `...'
-                  (goto-char (match-beginning 0)) ; If ` or ‘ is preceded by \, then skip it
-                  (< (save-excursion (skip-chars-backward "\\\\")) 0))
-             (goto-char (1+ (match-beginning 0))))
-            ((and Info-fontify-angle-bracketed-flag
-                  (eq ?< (aref (match-string 0) 0)) ; <...>: If < is preceded by \, then skip it
-                  (goto-char (match-beginning 0))
-                  (< (save-excursion (skip-chars-backward "\\\\")) 0))
-             (goto-char (1+ (match-beginning 0))))
-            ((memq (aref (match-string 0) 0) '(?` ?‘)) ; ‘...’, `...'
-             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
-             (goto-char (match-end 0)) (forward-char 1))
-            ((and Info-fontify-angle-bracketed-flag
-                  (eq ?< (aref (match-string 0) 0))) ; <...>
-             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
-             (goto-char (match-end 0)) (forward-char 1))
-            ((eq (aref (match-string 0) 0) ?“) ; “...”
-             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-double-quoted-name)
-             (goto-char (match-end 0)) (forward-char 1))
-            ;; Don't try to handle strings correctly.  Check only the first " for being escaped.
-            ;; The second " ends the match, even if it is escaped (odd number of \s before it).
-            ((and (goto-char (match-beginning 0)) ; "...": If " preceded by \, then skip it
-                  (< (save-excursion (skip-chars-backward "\\\\")) 0))
-             (goto-char (1+ (match-beginning 0))))
-            ((and (not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
-                  (not (string= "’" (buffer-substring (match-beginning 0) (match-end 0)))))
-             (put-text-property (match-beginning 0) (match-end 0) property 'info-string)
-             (goto-char (match-end 0)) (forward-char 1))
-            (t
-             (goto-char (match-end 0)) (forward-char 1))))
+    (unless (eq (intern "$-") regexp)
+      (while (ignore-errors (re-search-forward regexp nil t))
+        (cond ((and (eq (aref (match-string 0) 0) ?`) ; Single-quote wrapped backslashes: `\', `\\', `\\\', etc.
+                    (goto-char (match-beginning 0))
+                    (save-match-data (looking-at "\\(`\\\\+'\\)")))
+               (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+               (goto-char (match-end 0)))
+              ((and (eq (aref (match-string 0) 0) ?‘) ; Single-quote wrapped backslashes:
+                    (goto-char (match-beginning 0)) ; ‘\’, ‘\\’, ‘\\\’, etc. 
+                    (save-match-data (looking-at "\\(‘\\\\+’\\)")))
+               (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+               (goto-char (match-end 0)))
+              ((and (memq (aref (match-string 0) 0) '(?` ?‘)) ; ‘...’, `...'
+                    (goto-char (match-beginning 0)) ; If ` or ‘ is preceded by \, then skip it
+                    (< (save-excursion (skip-chars-backward "\\\\")) 0))
+               (goto-char (1+ (match-beginning 0))))
+              ((and Info-fontify-angle-bracketed-flag
+                    (eq ?< (aref (match-string 0) 0)) ; <...>: If < is preceded by \, then skip it
+                    (goto-char (match-beginning 0))
+                    (< (save-excursion (skip-chars-backward "\\\\")) 0))
+               (goto-char (1+ (match-beginning 0))))
+              ((memq (aref (match-string 0) 0) '(?` ?‘)) ; ‘...’, `...'
+               (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+               (goto-char (match-end 0)) (forward-char 1))
+              ((and Info-fontify-angle-bracketed-flag
+                    (eq ?< (aref (match-string 0) 0))) ; <...>
+               (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+               (goto-char (match-end 0)) (forward-char 1))
+              ((eq (aref (match-string 0) 0) ?“) ; “...”
+               (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-double-quoted-name)
+               (goto-char (match-end 0)) (forward-char 1))
+              ;; Don't try to handle strings correctly.  Check only the first " for being escaped.
+              ;; The second " ends the match, even if it is escaped (odd number of \s before it).
+              ((and (goto-char (match-beginning 0)) ; "...": If " preceded by \, then skip it
+                    (< (save-excursion (skip-chars-backward "\\\\")) 0))
+               (goto-char (1+ (match-beginning 0))))
+              ((and (not (string= "'" (buffer-substring (match-beginning 0) (match-end 0)))) ; "..."
+                    (not (string= "’" (buffer-substring (match-beginning 0) (match-end 0)))))
+               (put-text-property (match-beginning 0) (match-end 0) property 'info-string)
+               (goto-char (match-end 0)) (forward-char 1))
+              (t
+               (goto-char (match-end 0)) (forward-char 1)))))
     (when Info-fontify-isolated-quote-flag
       (goto-char (point-min))
       (let ((regexp  (info-isolated-quote-regexp)))
-        (while (ignore-errors (re-search-forward regexp nil t))
-          (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
-          (goto-char (match-end 0)) (forward-char 1)))
+        (unless (eq (intern "$-") regexp)
+          (while (ignore-errors (re-search-forward regexp nil t))
+            (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
+            (goto-char (match-end 0)) (forward-char 1))))
       (goto-char (point-min))
       (let ((regexp  (info-isolated-backquote-regexp)))
-        (while (ignore-errors (re-search-forward regexp nil t))
-          (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
-          (goto-char (match-end 0)) (forward-char 1))))))
+        (unless (eq (intern "$-") regexp)
+          (while (ignore-errors (re-search-forward regexp nil t))
+            (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
+            (goto-char (match-end 0)) (forward-char 1)))))))
 
 (defun Info-fontify-custom-delimited ()
   "Fontify text between custom delimiters."
   (let ((regexp  (info-custom-delimited-same-line-regexp)))
-    (while (ignore-errors (re-search-forward regexp nil t))
-      (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
-      (goto-char (match-end 0)) (forward-char 1))))
+    (unless (eq (intern "$-") regexp)
+      (while (ignore-errors (re-search-forward regexp nil t))
+        (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
+        (goto-char (match-end 0)) (forward-char 1)))))
 
 (defun Info-fontify-reference-items ()
   "Fontify reference items such as \"Function:\" in Info buffer."
