@@ -121,7 +121,6 @@ effect.)
 
 ** Glossary words, that is, words that are defined in a manual's '''`Glossary'''' node, are highlighted and linked to their glossary entries, if option '''`Info-fontify-glossary-words'''' is non-`nil'.  By default, a mouseover on such a link shows a
 tooltip with the word's definition from the glossary, and either `mouse-2' or `RET' on a link takes you to the entry in the Glossary.  And glossary entries that mention other entries link to them.
-
 (Currently only the Emacs and Semantic manuals have `Glossary' nodes, as far as I know.)
 
 ** Be aware that any such highlighting is not 100% foolproof.
@@ -133,7 +132,7 @@ can be thrown off.
 For example, command `Info-toggle-fontify-emphasis' toggles
 option `Info-fontify-emphasis-flag'.
 
-** You can define ''specific highlighting for individual manuals''. To do this, you `put' the regexp you want for a given regexp variable on the manual symbol.  For example, if ##MY-REGEXP## is a regexp string then this defines the regexp to use for a
+** You can define ''specific highlighting for individual manuals''. To do this, you `put' the [[regexp]] you want for a given regexp variable on the manual symbol.  For example, if ##MY-REGEXP## is a regexp string then this defines the regexp to use for a
 quotation as being ##MY-REGEXP##, but ''only for the Elisp manual'':
 ##(put 'elisp 'info-quotation-regexp MY-REGEXP)##.
 Then you can toggle that highlighting separately, using
@@ -141,6 +140,16 @@ command `Info-toggle-fontify-local-quotation'.  There's such a
 command for each regexp variable.  When you toggle a
 particular kind of manual-local highlighting ''off'' in the
 current manual, the global highlighting for that kind takes over there.
+Instead of explicitly setting the variable value for a manual
+using `put', you can just use the local toggle command (such
+as `Info-toggle-fontify-local-quotation') with a [[prefix argument]].
+That prompts you for the regexp to use locally, for the
+current manual.
+You can also use such local highlighting to just turn '''OFF''' the
+global highlighting for a given regexp variable.  To do that,
+use a prefix argument with the toggle command, and when prompted
+for the regexp, type '''`##$-##''''.  That's a regexp that ''cannot match
+anything''.
 
 ** Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
 
