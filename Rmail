@@ -195,6 +195,7 @@ Prior to Emacs 23, rmail used the //babyl// file format. Rmail will automaticall
 
 == Encryption ==
 
+=== TLS Encryption ===
 You can enable TLS encryption by setting `rmail-movemail-flags':
 
 <pre>
@@ -202,6 +203,16 @@ You can enable TLS encryption by setting `rmail-movemail-flags':
 </pre>
 
 Another possible method is by using Stunnel.
+
+=== Encrypting Emails ===
+
+While writing an email, you can use `M-x mml-secure-encrypt-pgpmime' to mark the email for encryption.
+
+When you send the email, it will be encrypted based on the recipient's email address, if it's linked to a PGP key.
+
+=== Decrypting Emails ===
+
+While reading an encrypted email, you can use `M-x rmail-epa-decrypt' to decrypt the email.
 
 == External Links ==
 
