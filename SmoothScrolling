@@ -29,6 +29,22 @@ While [[https://github.com/zk-phi/sublimity Sublimity]] offers a set of differen
 (sublimity-mode 1)
 }}}
 
+= pixel-scroll.el =
+
+This is distributed with Emacs and allows scrolling by pixel lines.
+
+{{{
+(pixel-scroll-mode 1)
+}}}
+
+= good-scroll.el =
+
+[https://github.com/io12/good-scroll.el good-scroll.el] implements smooth scrolling by pixel lines. It attempts to improve upon pixel-scroll-mode by adding variable speed.
+
+{{{
+(good-scroll-mode 1)
+}}}
+
 = Sniplets =
 
 If you want the text to scroll one line at a time when you move the [[cursor]] past the top or bottom of the window, use the following setting:
