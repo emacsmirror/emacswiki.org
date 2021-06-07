@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2021.06.06
+;; Version: 2021.06.07
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  6 14:59:24 2021 (-0700)
+;; Last-Updated: Mon Jun  7 09:19:56 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12979
+;;     Update #: 12983
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -877,8 +877,8 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2021/06/06 dadams
-;;     Added redefinition of dired-repeat-over-lines (bug #48883).
+;; 2021/06/07 dadams
+;;     Added redefinitions of dired-repeat-over-lines and dired-toggle-marks (bug #48883).
 ;; 2021/05/10 dadams
 ;;     diredp-copy-filename-as-kill-recursive: use diredp-filename-separator, not SPC.
 ;;     dired-copy-filename-as-kill, diredp-yank-files: Mention diredp-filename-separator in doc string.
@@ -12053,6 +12053,28 @@ Non-file lines are skipped."
       (when (dired-get-filename nil t) (save-excursion (funcall function))))
     (move-marker pos nil)
     (dired-move-to-filename)))
+
+
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Toggle also `.' and `..'.  See bug #48883.
+;;
+(defun dired-toggle-marks ()
+  "Toggle marks: marked files become unmarked, and vice versa.
+Files marked with other marks (such as `D') are not affected.
+Hidden subdirs are also not affected."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((inhibit-read-only  t))
+      (while (not (eobp))
+        (or (dired-between-files)
+            ;; Use subst instead of insdel because it does not move the gap and thus should be faster and because
+            ;; other characters are left alone automatically
+            (apply 'subst-char-in-region (point) (1+ (point)) (if (eq ?\   (following-char)) ; SPC
+                                                                  (list ?\   dired-marker-char)
+                                                                (list dired-marker-char ?\  ))))
+        (forward-line 1)))))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
