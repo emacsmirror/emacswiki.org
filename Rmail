@@ -24,6 +24,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
 
  send-mail-function 'smtpmail-send-it       ; Send mail via SMTP
  rmail-preserve-inbox 1                     ; Don't delete mail from server
+ rmail-mail-new-frame 1                     ; Compose in a full frame
  rmail-delete-after-output 1                ; Delete original mail after copying
  rmail-mime-prefer-html nil                 ; Prefer plaintext when possible
  rmail-file-name   "~/mail/inbox"           ; The path to our inbox file
