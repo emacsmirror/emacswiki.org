@@ -206,7 +206,7 @@ Another possible method is by using Stunnel.
 
 === Encrypting Emails ===
 
-While writing an email, you can use `M-x mml-secure-encrypt-pgpmime' to mark the email for encryption.
+While writing an email, you can use `M-x mml-secure-message-sign-encrypt' (or `C-c C-m C-e') to mark the email for encryption.
 
 When you send the email, it will be encrypted based on the recipient's email address, if it's linked to a PGP key.
 
