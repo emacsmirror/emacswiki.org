@@ -81,3 +81,17 @@ Would it be possible to add a very simple tutorial or few usage examples? I'm a 
 
 -- julkhami 2021-06-09 20:17 UTC
 
+
+----
+
+[new:DrewAdams:2021-06-11 20:42 UTC]
+[[jukhami]]: What usage examples are you thinking of / looking for? There are many ways to use the library. I have no idea what uses you have in mind. 
+
+A suggestion is to use `C-h k' for the keys, or `C-h f' for the commands, that are mentioned on the wiki page. Those descriptions should give you some idea what they do, and any prompts they show should also help.
+
+I could add an example or two, but let me know what you're looking for, specifically.
+
+Or if you have a specific question, post it to https://emacs.stackexchange.com/questions and I'll try to answer it there.
+
+-- DrewAdams 2021-06-11 20:44 UTC
+
