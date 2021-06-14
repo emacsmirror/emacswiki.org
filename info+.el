@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  3 18:18:46 2021 (-0700)
+;; Last-Updated: Mon Jun 14 07:55:30 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7201
+;;     Update #: 7230
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -174,8 +174,9 @@
 ;;    `info-good-fixed-pitch-font-families',
 ;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
 ;;    `Info-link-faces', `Info-merged-map', `Info-mode-syntax-table',
-;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
-;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
+;;    `info-nomatch', `info-quotation-regexp',
+;;    `info-quotation-same-line-regexp', `info-quoted+<>-regexp',
+;;    `info-quoted+<>-same-line-regexp',
 ;;    `info-remap-default-face-cookie', `Info-toc-outline-map'.
 ;;
 ;;
@@ -438,7 +439,19 @@
 ;;      global highlighting for a given regexp variable.  To do that,
 ;;      use a prefix arg with the toggle command, and when prompted
 ;;      for the regexp, type `$-'.  That's a regexp that cannot match
-;;      anything.
+;;      anything.  When using Lisp, use the value of constant
+;;      `info-nomatch' - that prevents even trying to match. For
+;;      example:
+;;
+;;        (put 'some-manual 'info-isolated-quote-regexp info-nomatch)
+;;
+;;      This is already done by default for the isolated-quote regexp
+;;      variables, for several manuals that don't involve (much) Elisp
+;;      code with such chars: `ada', `bovine', `calc', `emacs-gnutls',
+;;      `epa', `eshell', `eww', `info', `nxml', `pcl-cvs', `smtpmail',
+;;      `srecode', `todo-mode', `wisent'.  The manuals you have may
+;;      well be different from those Emacs provides by default, and
+;;      you might want to add or remove such highlighting.
 ;;
 ;;  * Optionally showing breadcrumbs in the mode line or the header
 ;;    line, or both. See where you are in the Info hierarchy, and
@@ -577,6 +590,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/14 dadams
+;;     Added info-nomatch; use & doc it.  Turn off highlighting of isolated quote chars by default for some manuals.
 ;; 2021/06/03 dadams
 ;;     Info-toggle-fontify-local, Info-toggle-fontify-local-*, Info-fontify-node, Info-fontify-quotations,
 ;;       Info-fontify-custom-delimited:
@@ -1313,6 +1328,9 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "info+")
   )
 
+(defconst info-nomatch (intern "$-")
+  "Symbol whose name is a regexp that cannot be matched.")
+
 (defvar info-good-fixed-pitch-font-families '("Lucida Console" "Lucida Sans Typewriter"
                                               "Consolas" "ProggyVector" "OCR A Extended")
   "Some good fixed-pitch font families.
@@ -1548,7 +1566,8 @@ NOTE:
  And when you use command `info-apropos', if you use a non-positive
  prefix arg then you are prompted for the manuals to search, ignoring
  the value of `Info-apropos-manuals'."
-  :set #'(lambda (sym defs) (custom-set-default sym defs)
+  :set #'(lambda (sym defs)
+           (custom-set-default sym defs)
            (with-current-buffer (get-buffer-create "*info*")
              (setq Info-apropos-nodes  ()
                    Info-current-node   nil
@@ -2431,6 +2450,39 @@ you are prompted for the chars to use."
                             (format ", with delimiters %c and %c" (info-custom-delim-1) (info-custom-delim-2))
                           "")))))
 
+;; Turn off highlighting of isolated quote marks for non-Emacs manuals
+;;
+(put 'info         'info-isolated-quote-regexp     info-nomatch)
+(put 'info         'info-isolated-backquote-regexp info-nomatch)
+(put 'ada-mode     'info-isolated-quote-regexp     info-nomatch)
+(put 'ada-mode     'info-isolated-backquote-regexp info-nomatch)
+(put 'nxml-mode    'info-isolated-quote-regexp     info-nomatch)
+(put 'nxml-mode    'info-isolated-backquote-regexp info-nomatch)
+(put 'emacs-gnutls 'info-isolated-quote-regexp     info-nomatch)
+(put 'emacs-gnutls 'info-isolated-backquote-regexp info-nomatch)
+(put 'bovine       'info-isolated-quote-regexp     info-nomatch)
+(put 'bovine       'info-isolated-backquote-regexp info-nomatch)
+(put 'calc         'info-isolated-quote-regexp     info-nomatch)
+(put 'calc         'info-isolated-backquote-regexp info-nomatch)
+(put 'eww          'info-isolated-quote-regexp     info-nomatch)
+(put 'eww          'info-isolated-backquote-regexp info-nomatch)
+(put 'epa          'info-isolated-quote-regexp     info-nomatch)
+(put 'epa          'info-isolated-backquote-regexp info-nomatch)
+(put 'eshell       'info-isolated-quote-regexp     info-nomatch)
+(put 'eshell       'info-isolated-backquote-regexp info-nomatch)
+(put 'pcl-cvs      'info-isolated-quote-regexp     info-nomatch)
+(put 'pcl-cvs      'info-isolated-backquote-regexp info-nomatch)
+(put 'srecode      'info-isolated-quote-regexp     info-nomatch)
+(put 'srecode      'info-isolated-backquote-regexp info-nomatch)
+(put 'todo-mode    'info-isolated-quote-regexp     info-nomatch)
+(put 'todo-mode    'info-isolated-backquote-regexp info-nomatch)
+(put 'wisent       'info-isolated-quote-regexp     info-nomatch)
+(put 'wisent       'info-isolated-backquote-regexp info-nomatch)
+(put 'smtpmail     'info-isolated-quote-regexp     info-nomatch)
+(put 'smtpmail     'info-isolated-backquote-regexp info-nomatch)
+
+
+
 (defun Info-toggle-fontify-local (regexp-var &optional readp msgp)
   "Toggle the local value of variable REGEXP-VAR for this manual.
 Helper for `Info-toggle-fontify-local-*' commands.
@@ -2452,9 +2504,9 @@ Non-nil MSGP means show a status message when done."
             (setq newval (read-regexp (format "Regexp for `%s' in `%s' (Use `$-' for NO such highlight): "
                                               regexp-var manual)
                                       default)))
-          ;; If regexp read contains `$' followed by any char then use symbol `$-' instead.
+          ;; If regexp read contains `$' followed by any char then use symbol `nomatch' instead.
           (let ((off-rx (string-match "[$]" newval)))
-            (when (and off-rx  (< (match-end 0) (length newval))) (setq newval (intern "$-"))))
+            (when (and off-rx  (< (match-end 0) (length newval))) (setq newval  info-nomatch)))
           (put manual regexp-var newval)
           (put manual last-var (setq last-val  (setq val  newval))))
       ;; Toggle current value.
@@ -2467,7 +2519,7 @@ Non-nil MSGP means show a status message when done."
             (inhibit-read-only  t))
         (Info-fontify-node))
       (when msgp
-        (if (eq (intern "$-") val)
+        (if (eq info-nomatch val)
             (message "`%s' manual now has NO `%s' highlighting (OVERRIDES global)" manual regexp-var)
           (message "`%s' manual local `%s' highlighting is now %s"
                    manual
@@ -4572,7 +4624,7 @@ If key's command cannot be found by looking in indexes, then
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
             (let ((regexp  (Info-emphasis-regexp)))
-              (unless (eq (intern "$-") regexp)
+              (unless (eq info-nomatch regexp)
                 (while (ignore-errors (re-search-forward regexp nil t))
                   (ignore-errors
                     (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
@@ -4978,7 +5030,7 @@ If key's command cannot be found by looking in indexes, then
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
             (let ((regexp  (Info-emphasis-regexp)))
-              (unless (eq (intern "$-") regexp)
+              (unless (eq info-nomatch regexp)
                 (while (ignore-errors (re-search-forward regexp nil t))
                   (ignore-errors
                     (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
@@ -5371,7 +5423,7 @@ If key's command cannot be found by looking in indexes, then
           (goto-char (point-min))
           (when (and font-lock-mode  not-fontified-p)
             (let ((regexp  (Info-emphasis-regexp)))
-              (unless (eq (intern "$-") regexp)
+              (unless (eq info-nomatch regexp)
                 (while (ignore-errors (re-search-forward regexp nil t))
                   (ignore-errors
                     (let ((fn  (if Info-fontify-emphasis-flag #'add-text-properties #'remove-text-properties)))
@@ -5882,7 +5934,7 @@ This respects option `Info-fontify-quotations'.
                          (info-quoted+<>-same-line-regexp)
                        (info-quotation-same-line-regexp))))
         (property  'font-lock-face))
-    (unless (eq (intern "$-") regexp)
+    (unless (eq info-nomatch regexp)
       (while (ignore-errors (re-search-forward regexp nil t))
         (cond ((and (eq (aref (match-string 0) 0) ?`) ; Single-quote wrapped backslashes: `\', `\\', `\\\', etc.
                     (goto-char (match-beginning 0))
@@ -5927,13 +5979,13 @@ This respects option `Info-fontify-quotations'.
     (when Info-fontify-isolated-quote-flag
       (goto-char (point-min))
       (let ((regexp  (info-isolated-quote-regexp)))
-        (unless (eq (intern "$-") regexp)
+        (unless (eq info-nomatch regexp)
           (while (ignore-errors (re-search-forward regexp nil t))
             (put-text-property (1- (match-end 0)) (match-end 0) property 'info-isolated-quote)
             (goto-char (match-end 0)) (forward-char 1))))
       (goto-char (point-min))
       (let ((regexp  (info-isolated-backquote-regexp)))
-        (unless (eq (intern "$-") regexp)
+        (unless (eq info-nomatch regexp)
           (while (ignore-errors (re-search-forward regexp nil t))
             (put-text-property (match-beginning 0) (1+ (match-beginning 0)) property 'info-isolated-backquote)
             (goto-char (match-end 0)) (forward-char 1)))))))
@@ -5941,7 +5993,7 @@ This respects option `Info-fontify-quotations'.
 (defun Info-fontify-custom-delimited ()
   "Fontify text between custom delimiters."
   (let ((regexp  (info-custom-delimited-same-line-regexp)))
-    (unless (eq (intern "$-") regexp)
+    (unless (eq info-nomatch regexp)
       (while (ignore-errors (re-search-forward regexp nil t))
         (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) 'font-lock-face 'info-custom-delimited)
         (goto-char (match-end 0)) (forward-char 1)))))
@@ -6859,8 +6911,8 @@ See `Info-bookmark-name-for-node' for the form of the bookmark name."
 
 (defun Info--manuals (&optional visited-only)
   "Version of `info--manual-names' that works for Emacs 23+."
-  (let ((manuals  (and (fboundp 'info--manual-names)
-                       (ignore-errors (info--manual-names visited-only))))) ; Arg was added in Emacs 25.
+  (let ((manuals  (and (fboundp 'info--manual-names) ; Arg was added in Emacs 25.
+                       (ignore-errors (info--manual-names visited-only)))))
     (unless manuals
       (ignore-errors
         (with-temp-buffer
@@ -6870,7 +6922,6 @@ See `Info-bookmark-name-for-node' for the form of the bookmark name."
           (re-search-forward "\\* Menu: *\n" nil t)
           (let (manual)
             (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
-              ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
               (setq manual  (match-string 1))
               (set-text-properties 0 (length manual) nil manual)
               (add-to-list 'manuals (list manual)))))))
