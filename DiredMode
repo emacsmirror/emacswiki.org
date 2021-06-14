@@ -15,7 +15,8 @@ The Emacs menu bar can be helpful to new users to learn the default keybindings 
 Dired has spawned many extensions and related packages. Some have been integrated into Emacs core:
 
 * [[Dired X]] -- Many extra features (library ##dired-x.el##).
-* DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
+** DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
+* [[Dired Aux]] -- Many extra features (library ##dired-aux.el##).
 * DiredSearchAndReplace -- Search multiple files.
 * [[WDired]] -- Rename files by editing names directly in the Dired buffer.
 ** Compare with external package: DiredEfap 
@@ -76,7 +77,6 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 * [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
 * [[https://github.com/Fuco1/dired-hacks|dired-hacks]] is a collection of dired packages adding various functionality such as filtering, subtrees, inteligent file opening, avfs support, coloring and more.  It is actively maintained and opened to patches, with clean and extensible design in mind.
 * DiredSync -- Synchronize directories within dired (2014)
-* DiredTar - extension for creating and unpacking tar-files from Dired
 * DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
 * [https://gitlab.com/xuhdev/dired-icon dired-icon] -- display file icons in dired buffers.
