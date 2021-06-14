@@ -33,12 +33,10 @@ WARNING: (2021) These pages linked to in this section may have been neglected fo
 This page provides supplementary information about DiredMode and some enhancements to it.
 * DiredReuseDirectoryBuffer -- Make Dired reuse the Dired buffer when you visit a directory
 * DiredLineCommands -- Improvements to next and previous line in Dired.
-* DiredDoShellAsynchronous -- Run shell command in background
 * DiredGetFileSize -- File size of selected files
 * DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.
 * FindGrepDiredSearchAndReplace -- interactive regexp search/replace in, say "*.rb" in current dir and all subdirs.
 * FindGrepDiredDoSearch -- logical combination of find-grep-dired and dired-do-search
-* DiredWThirtyTwoTweaks -- Dired Enhancements for MS Windows
 * ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'
 * DiredOfFile -- Open Dired for current file only
 * DiredFindFileOtherFrame -- open a new frame from dired
@@ -102,7 +100,7 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 
 == Windows specific tips and additional features ==
 
-* DiredWThirtyTwoTweaks
+* DiredWThirtyTwoTweaks -- Dired Enhancements for MS Windows
 * MsShellExecute -- Open any file from dired on W32 systems
 * WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
 
