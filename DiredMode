@@ -81,10 +81,11 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 
 = Alternatives to Dired =
 
-* DiMode -- simple directory editor for GNU Emacs by JoeKeane.
-* MidnightCommanderMode -- emulates Midnight Commander
-* NortonCommanderMode -- emulates Norton Commander
-* [[Sunrise_Commander]] -- Midnight Commander clone
+* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Robust dual-pane dired with many Midnight Commander features, and more (2021 active)
+* [[Sunrise_Commander]] -- Midnight Commander clone [https://github.com/sunrise-commander/sunrise-commander github] (2021 active)
+* [Lisp:di.el DiMode] -- simple directory editor for GNU Emacs by JoeKeane (2013 orphaned).
+* MidnightCommanderMode -- emulates Midnight Commander (2013 orphaned)
+* NortonCommanderMode -- emulates Norton Commander (2009 orphaned)
 
 = See also =
 
