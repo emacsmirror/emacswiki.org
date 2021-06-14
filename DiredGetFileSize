@@ -1,5 +1,13 @@
-If you want to get size of all marked files you an simple call an
-external process of du:
+== Use file marking ==
+Mark the desired files, then type '* N' to see their combined size in the mini-buffer.
+
+== Use package Diredc ==
+Marking or tagging files gives an automatic running tally in the header line
+
+== Calling an external process `du`
+* Within Dired, mark the files, press `! du -sh`
+
+* With an elisp function and custom keybinding:
 
  (defun dired-get-size ()
   (interactive)
@@ -13,9 +21,7 @@ external process of du:
  
  (define-key dired-mode-map (kbd "?") 'dired-get-size)
 
-That was the easy way ... more fun would it be if you can get the file
-size just using elisp. I haven't found a real convincing way to do
-that, but that piece of code works:
+* An inferior example, admittedly only display MB and that even not accurate
 
  (defun cdrw-get-size ()
   (interactive)
@@ -26,17 +32,8 @@ that, but that piece of code works:
       (directory-files-and-attributes (file-name-directory file) nil 
         (regexp-quote (file-name-nondirectory file))))) 1048576.0)))))
 
-But as you can see, it only display MB and that even not accurate, but
-if i just sum up the bytes, emacs return false numbers after 130MB
-because it can't work with such big numbers. If you want other formats
-look at ls-lisp-human-size in ls-lisp.el.
 
-The code is ugly and depressing slow, i would be happy if someone find
-a better solution
-    
----
-
-The following seems to be fast and reliable. I also believe it to be more adaptable, but the proof is in the pudding I suppose. Improvements welcome.
+* A third example in elisp
                 
     (defun file-size (filename)
       "Return size of file FILENAME in bytes.
