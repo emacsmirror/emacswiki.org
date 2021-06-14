@@ -2,6 +2,8 @@
 
 [https://github.com/renard/dired-sync dired-sync] is designed to fill that missing feature.
 
+NOTE: 2021: This package was last maintained in year 2014. There exists a MELPA package [https://github.com/stsquad/dired-rsync dired-rsync] under much more current maintenance (2020-12).
+
 == Features ==
 
 * <tt>rsync</tt> and <tt>ssh</tt> based.
