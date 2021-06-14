@@ -149,7 +149,16 @@ You can also use such local highlighting to just turn '''OFF''' the
 global highlighting for a given regexp variable.  To do that,
 use a prefix argument with the toggle command, and when prompted
 for the regexp, type '''`##$-##''''.  That's a regexp that ''cannot match
-anything''.
+anything''.  When using Lisp, use the value of constant
+'''`info-nomatch'''' -- that prevents even trying to match. For example: ##(put 'some-manual 'info-isolated-quote-regexp info-nomatch)##.  This is already done by default for the isolated-quote regexp
+variables, for several manuals that don't involve (much) Elisp
+code with such chars: `ada', `bovine', `calc', `emacs-gnutls',
+`epa', `eshell', `eww', `info', `nxml', `pcl-cvs', `smtpmail',
+`srecode', `todo-mode', `wisent'.  The manuals you have may
+well be different from those Emacs provides by default, and
+you might want to add or remove such highlighting.
+
+
 
 ** Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
 
