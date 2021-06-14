@@ -4,7 +4,7 @@ Mark the desired files, then type '* N' to see their combined size in the mini-b
 == Use package Diredc ==
 Marking or tagging files gives an automatic running tally in the header line
 
-== Calling an external process `du`
+== Calling an external process `du` ==
 * Within Dired, mark the files, press `! du -sh`
 
 * With an elisp function and custom keybinding:
