@@ -23,10 +23,26 @@ Dired has spawned many extensions and related packages. Some have been integrate
 
 [:DiredEnhancements]
 == Dired tips and additional features ==
+
+WARNING: (2021) These pages linked to in this section may have been neglected for many years and contain out-dated information.
+
 * DiredPower -- Various Dired tips and features.
 * DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
 * DiredSorting -- Dired tips and addons for sorting listings
 * DiredSortCriterias -- minimalistic dired sorting by different criterias
+This page provides supplementary information about DiredMode and some enhancements to it.
+* DiredReuseDirectoryBuffer -- Make Dired reuse the Dired buffer when you visit a directory
+* DiredLineCommands -- Improvements to next and previous line in Dired.
+* DiredDoShellAsynchronous -- Run shell command in background
+* DiredGetFileSize -- File size of selected files
+* DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.
+* FindGrepDiredSearchAndReplace -- interactive regexp search/replace in, say "*.rb" in current dir and all subdirs.
+* FindGrepDiredDoSearch -- logical combination of find-grep-dired and dired-do-search
+* DiredWThirtyTwoTweaks -- Dired Enhancements for MS Windows
+* ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'
+* DiredOfFile -- Open Dired for current file only
+* DiredFindFileOtherFrame -- open a new frame from dired
+* DiredSorting – Dired tips and addons for sorting listings
 
 == External Dired packages ==
 
@@ -51,7 +67,7 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 ** In Dired, `C-j' jumps among different "views" or states of the same Dired buffer.
 ** You can bookmark any Dired buffer -- its current state. Jump among Dired bookmarks using `J' in Dired (or `C-x j d' globally).
 ** In Dired, `M-b' bookmarks each of the marked files and dirs.
-* [[Dired+]] -- Extends standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el## in many ways.
+* [[Dired+]] -- Extends standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el## in many ways. (see also: DiredPlus)
 * DiredBookmarks -- Save/restore Dired state persistently, including switches, marked files, inserted subdirectories, and hidden (sub)directories.
 * DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter.
 ** When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
@@ -59,7 +75,7 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 * DiredEfap -- Rename the file at [[point]] in Dired.
 * [[Diredful]] -- Colorful file names in dired buffers.
 * [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
-* [https://github.com/Fuco1/dired-hacks dired-hacks] -- Collection of useful dired additions.
+* [[https://github.com/Fuco1/dired-hacks|dired-hacks]] is a collection of dired packages adding various functionality such as filtering, subtrees, inteligent file opening, avfs support, coloring and more.  It is actively maintained and opened to patches, with clean and extensible design in mind.
 * DiredSync -- Synchronize directories within dired (2014)
 * DiredTar - extension for creating and unpacking tar-files from Dired
 * DiredTweaks -- Small Dired tweaks.
@@ -67,7 +83,7 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 * [https://gitlab.com/xuhdev/dired-icon dired-icon] -- display file icons in dired buffers.
 * [https://github.com/fasheng/dired-toggle dired-toggle.el] -- provide a simple way to toggle dired buffer for current directory, similar to `dired-jump'(`C-x C-j')
 * [http://user42.tuxfamily.org/dired-visit-history/index.html dired-visit-history.el] -- add dired visits to <code>file-name-history</code>
-* [[Files+]] -- 
+* [[Files+]] -- (see also: FilesPlus)
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
  '''##files 691##''' ##space used 49439 available 56233408##
