@@ -18,6 +18,7 @@ Dired has spawned many extensions and related packages. Some have been integrate
 * DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
 * DiredSearchAndReplace -- Search multiple files.
 * [[WDired]] -- Rename files by editing names directly in the Dired buffer.
+** Compare with external package: DiredEfap 
 * [[Image Dired Thumbnail Mode]] -- edit directories full of images 
 
 
