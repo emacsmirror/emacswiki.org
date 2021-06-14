@@ -11,3 +11,5 @@ The package is quite old. Does anybody knows a newer version of dired-tar?
 : -- SewerynKokot
 
 Although old (1996) it still works well in Emacs from Bzr (now in 2011). But I think something like this should be included in GNU Emacs. -- DanielClemente
+
+2021: Yes, it has not existed as part of emacs core, probably for many years now. From any Dired buffer, just press enter on any tar or compressed tar. The mode has many features including viewing and modifying entries in place.
