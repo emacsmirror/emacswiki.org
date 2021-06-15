@@ -1,6 +1,6 @@
 '''[::Dired]''' is the main mode for Emacs file-manager operations. The name "Dired" stands for "directory editor". 
 
-A single Dired buffer can display the contents of a single directory, or it can include listings of one or more sub-directories. A Dired buffer can alternatively display an *arbitrary* set of files and directories, from any file systems.
+A single Dired buffer can display the contents of a single directory, or it can include listings of one or more sub-directories. A Dired buffer can alternatively display an ''arbitrary'' set of files and directories, from any file systems.
 
 A Dired buffer can display a filtered subset of directory contents, and it can show either just file names or additional file details.
 
@@ -17,7 +17,7 @@ The [[menu bar]] is helpful for learning operations and key bindings. As always,
 See also these standard Dired features:
 
 * [[Dired X]] -- standard library ##dired-x.el##.
-** DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
+* DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
 * [[Dired Aux]] -- library ##dired-aux.el##.
 * [[WDired]] -- Edit a Dired buffer.
 * [[Image Dired Thumbnail Mode]] -- Use listings of image files 
@@ -27,13 +27,19 @@ See also these standard Dired features:
 [:DiredEnhancements]
 == Dired tips and additional features ==
 
- DiredFindFileOtherFrame -- open a new frame from dired* DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.* DiredGetFileSize -- File size of selected files* DiredLineCommands -- Improvements to next and previous line in Dired.* DiredPower -- Various Dired tips and features.
-* DiredOfFile -- Open Dired for current file only* DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
+* DiredFindFileOtherFrame -- open a new frame from dired
+* DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.
+* DiredGetFileSize -- File size of selected files
+* DiredLineCommands -- Improvements to next and previous line in Dired.
+* DiredPower -- Various Dired tips and features.
+* DiredOfFile -- Open Dired for current file only
+* DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
 * DiredSorting -- Dired tips and addons for sorting listings
 * DiredSortCriterias -- minimalistic dired sorting by different criterias
 This page provides supplementary information about DiredMode and some enhancements to it.
 
-* ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'* FindGrepDiredDoSearch -- logical combination of find-grep-dired and dired-do-search
+* ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'
+* FindGrepDiredDoSearch -- logical combination of find-grep-dired and dired-do-search
 * FindGrepDiredSearchAndReplace -- interactive regexp search/replace in, say "*.rb" in current dir and all subdirs.
 
 
