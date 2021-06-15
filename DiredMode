@@ -14,7 +14,7 @@ You visit a directory in Dired mode using key bindings `C-x d', `C-x 4 d', and `
 
 The [[menu bar]] is helpful for learning operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info -- choose ''Dired'' under ''Advanced Features''. You can also read about [[Manual:Dired]] online.)
 
-== Vanilla Dired distributed with Gnu Emacs ==
+== Dired as Distributed with Gnu Emacs ==
 
 * [[Dired X]] -- standard library ##dired-x.el##.
 * DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
@@ -44,7 +44,7 @@ This page provides supplementary information about DiredMode and some enhancemen
 
 
 
-== 3rd-Party Packages (Libraries) ==
+== 3rd-Party Packages That Provide Dired Features ==
 
 
 * [[Bookmark+]] 
@@ -87,7 +87,7 @@ This page provides supplementary information about DiredMode and some enhancemen
 
 
 
-== Windows specific tips and additional features ==
+== MS Windows Tips and Features For Dired ==
 
 * DiredWThirtyTwoTweaks -- Dired Enhancements for MS Windows
 * MsShellExecute -- Open any file from dired on W32 systems
