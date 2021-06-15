@@ -74,7 +74,6 @@ This page provides supplementary information about DiredMode and some enhancemen
 * [[Diredful]] -- Colorful file names in Dired buffers.
 * [[https://github.com/Fuco1/dired-hacks|dired-hacks]] -- Collection of Dired packages that add filtering, subtrees, intelligent file opening, `avfs' support, coloring and more.
 * DiredSync -- Synchronize directories within Dired.
-* DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
 * [https://gitlab.com/xuhdev/dired-icon dired-icon] -- Display file icons in Dired buffers.
 * [https://github.com/fasheng/dired-toggle dired-toggle.el] -- A simple way to toggle Dired buffer for current directory, similar to `dired-jump'(`C-x C-j')
