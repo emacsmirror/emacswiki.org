@@ -12,9 +12,9 @@ You can operate on multiple files after ''marking'' them. The usual mark is `##*
 
 You visit a directory in Dired mode using key bindings `C-x d', `C-x 4 d', and `C-x 5 d'.
 
-The [[menu bar]] is helpful for learning operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info -- choose ''Dired'' under ''Advanced Features''. You can also read it [[Manual:Dired]] online.)
+The [[menu bar]] is helpful for learning operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info -- choose ''Dired'' under ''Advanced Features''. You can also read about [[Manual:Dired]] online.)
 
-See also these standard Dired features:
+== Vanilla Dired distributed with Gnu Emacs ==
 
 * [[Dired X]] -- standard library ##dired-x.el##.
 * DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
@@ -25,7 +25,7 @@ See also these standard Dired features:
 
 
 [:DiredEnhancements]
-== Dired tips and additional features ==
+== Some Tips and Features==
 
 * DiredFindFileOtherFrame -- open a new frame from dired
 * DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.
@@ -44,9 +44,9 @@ This page provides supplementary information about DiredMode and some enhancemen
 
 
 
-== Dired Libraries ==
+== 3rd-Party Packages (Libraries) ==
 
-* [[Anything]] -- After evaluating ##(anything-dired-bindings)##, some dired commands are replaced with Anything-based interface.
+
 * [[Bookmark+]] 
 ** In the bookmark list, `##M-d >##' opens Dired on the marked file and directory bookmarks (only).
 ** In Dired, `C-j' jumps among different "views" or states of the same Dired buffer.
