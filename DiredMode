@@ -54,9 +54,10 @@ This page provides supplementary information about DiredMode and some enhancemen
 ** In Dired, `M-b' bookmarks each of the marked files and dirs.
 * [[Dired+]] -- Extends standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el## in many ways. (see also: DiredPlus)
 * DiredBookmarks -- Save/restore Dired state persistently, including switches, marked files, inserted subdirectories, and hidden (sub)directories.
-* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Robust dual-pane dired with many Midnight Commander features, and more (2021 active)* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter.
-** When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
-* [Lisp:di.el DiMode] -- simple directory editor for GNU Emacs (JoeKeane, (2013 orphaned).* DiredDragAndDrop -- Lets you drag-and-drop files.
+* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Robust dual-pane dired with many Midnight Commander features, and more (2021 active)
+* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
+* [Lisp:di.el DiMode] -- simple directory editor for GNU Emacs (JoeKeane, (2013 orphaned).
+* DiredDragAndDrop -- Lets you drag-and-drop files.
 * DiredEfap -- Rename the file at [[point]] in Dired.
 * [[Diredful]] -- Colorful file names in dired buffers.
 * [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
@@ -79,11 +80,13 @@ This page provides supplementary information about DiredMode and some enhancemen
 * Isearch
 ** DiredIsearch -- Run `isearch' in Dired, but match only file names
 ** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
-* MidnightCommanderMode -- emulates Midnight Commander (2013 orphaned)* OperatingOnFilesInDired – Opening files in associated applications.
-* NortonCommanderMode -- emulates Norton Commander (2009 orphaned)
-* [[Sunrise_Commander]] -- Midnight Commander clone ([https://github.com/sunrise-commander/sunrise-commander github], 2021 active)* ThumbsMode -- Modify dired for automatic image previewing.
+* MidnightCommanderMode -- emulates Midnight Commander 
+* NortonCommanderMode -- emulates Norton Commander 
+* OperatingOnFilesInDired – Opening files in associated applications.
+* [[Sunrise_Commander]] -- Midnight Commander clone ([https://github.com/sunrise-commander/sunrise-commander github], 2021 active)
+* ThumbsMode -- Modify Dired for automatic image previewing.
 * [[Trashcan]] -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems.
-* [[Virtual Dired]] -- edit text files that list files as if they were directory listings.
+* [[Virtual Dired]] -- Edit text files that list files as if they were directory listings.
 
 
 
