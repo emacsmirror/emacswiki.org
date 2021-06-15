@@ -54,20 +54,20 @@ This page provides supplementary information about DiredMode and some enhancemen
 ** In Dired, `M-b' bookmarks each of the marked files and dirs.
 * [[Dired+]] -- Extends standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el## in many ways. (see also: DiredPlus)
 * DiredBookmarks -- Save/restore Dired state persistently, including switches, marked files, inserted subdirectories, and hidden (sub)directories.
-* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Robust dual-pane dired with many Midnight Commander features, and more (2021 active)
-* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
-* [Lisp:di.el DiMode] -- simple directory editor for GNU Emacs (JoeKeane, (2013 orphaned).
-* DiredDragAndDrop -- Lets you drag-and-drop files.
+* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Dual-pane Dired with many Midnight Commander features, and more.
+* DiredDetails -- Hide or show file and directory details in a Dired listing. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
+* [Lisp:di.el DiMode] -- Simple directory editor for GNU Emacs, by JoeKeane.
+* DiredDragAndDrop -- Drag-and-drop files.
 * DiredEfap -- Rename the file at [[point]] in Dired.
-* [[Diredful]] -- Colorful file names in dired buffers.
-* [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
-* [[https://github.com/Fuco1/dired-hacks|dired-hacks]] is a collection of dired packages adding various functionality such as filtering, subtrees, inteligent file opening, avfs support, coloring and more.  It is actively maintained and opened to patches, with clean and extensible design in mind.
-* DiredSync -- Synchronize directories within dired (2014)
+* [[DiredFileTypeFaces]] -- Colorful file names in Dired buffers.
+* [[Diredful]] -- Colorful file names in Dired buffers.
+* [[https://github.com/Fuco1/dired-hacks|dired-hacks]] -- Collection of Dired packages that add filtering, subtrees, intelligent file opening, `avfs' support, coloring and more.
+* DiredSync -- Synchronize directories within Dired.
 * DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
-* [https://gitlab.com/xuhdev/dired-icon dired-icon] -- display file icons in dired buffers.
-* [https://github.com/fasheng/dired-toggle dired-toggle.el] -- provide a simple way to toggle dired buffer for current directory, similar to `dired-jump'(`C-x C-j')
-* [http://user42.tuxfamily.org/dired-visit-history/index.html dired-visit-history.el] -- add dired visits to <code>file-name-history</code>
+* [https://gitlab.com/xuhdev/dired-icon dired-icon] -- Display file icons in Dired buffers.
+* [https://github.com/fasheng/dired-toggle dired-toggle.el] -- A simple way to toggle Dired buffer for current directory, similar to `dired-jump'(`C-x C-j')
+* [http://user42.tuxfamily.org/dired-visit-history/index.html dired-visit-history.el] -- Add Dired visits to `file-name-history'.
 * [[Files+]] -- (see also: FilesPlus)
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
@@ -79,12 +79,12 @@ This page provides supplementary information about DiredMode and some enhancemen
 ** [[Icicles - Dired Enhancements#OpenDiredOnSavedFiles|Open Dired on saved file names]] (`##C-M-<##'), that is, names that you previously saved as an Emacs [[fileset]] or as an Icicles completion candidates set.
 * Isearch
 ** DiredIsearch -- Run `isearch' in Dired, but match only file names
-** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
-* MidnightCommanderMode -- emulates Midnight Commander 
-* NortonCommanderMode -- emulates Norton Commander 
-* OperatingOnFilesInDired – Opening files in associated applications.
-* [[Sunrise_Commander]] -- Midnight Commander clone ([https://github.com/sunrise-commander/sunrise-commander github], 2021 active)
-* ThumbsMode -- Modify Dired for automatic image previewing.
+** DiredLis -- Letter `isearch' in Dired mode, no need to use keys to activate `isearch-mode'.
+* MidnightCommanderMode -- Emulates Midnight Commander.
+* NortonCommanderMode -- Emulates Norton Commander.
+* OperatingOnFilesInDired – Open files using associated applications.
+* [[Sunrise_Commander]] -- Midnight Commander clone ([https://github.com/sunrise-commander/sunrise-commander github]).
+* ThumbsMode -- Automatic image previewing.
 * [[Trashcan]] -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems.
 * [[Virtual Dired]] -- Edit text files that list files as if they were directory listings.
 
@@ -93,8 +93,8 @@ This page provides supplementary information about DiredMode and some enhancemen
 == MS Windows Tips and Features For Dired ==
 
 * DiredWThirtyTwoTweaks -- Dired Enhancements for MS Windows
-* MsShellExecute -- Open any file from dired on W32 systems
-* WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
+* MsShellExecute -- Open files from Dired on MS Windows
+* WThirtyTwoFindDired -- Lightweight MS Windows-specific version of `find-dired'.
 
 
 
