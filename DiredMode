@@ -1,18 +1,18 @@
-DiredMode is the base-line major mode for Emacs file-manager operations, used by '''[::Dired]''' buffers. It differs in many ways from dedicated file-manager programs, but the basic behavior is comparable. Some users speak of "editing" a directory, not "exploring" or "managing" one. The name "Dired" stands for "directory editor".
+'''[::Dired]''' is the main mode for Emacs file-manager operations. The name "Dired" stands for "directory editor". 
 
 A single Dired buffer can display the contents of a single directory, or it can include listings of one or more sub-directories. A Dired buffer can alternatively display an *arbitrary* set of files and directories, from any file systems.
 
-A Dired buffer can display a filtered subset of directory contents, and it can display either just file names or any combination of additional file details.
+A Dired buffer can display a filtered subset of directory contents, and it can show either just file names or additional file details.
 
-All the operations you expect from a file manager application are available in Dired, plus some that are specific to Emacs.
+All the operations you expect from a typical file-manager application are available in Dired, plus some that are specific to Emacs.
 
-You can use `C-x C-q' to make a Dired buffer editable. This enters [[WDired]] mode (writable Dired). For example, you can use this to bulk-rename files, or to change file ownerships and privileges.
+You can use '''`C-x C-q'''' to make a Dired buffer editable. This enters [[WDired]] mode (writable Dired). For example, you can use this to bulk-rename files, or to change file ownerships and privileges.
 
-You can operate on groups of files by first marking them. The usual mark is `##*##', but the mark used for deletion is `D'. `D' marks are also called "flags".
+You can operate on multiple files after ''marking'' them. The usual mark is `##*##', but the mark used for deletion is `D'. `D' marks are also called ''flags'', and the operation of marking with `D' is also called ''flagging''.
 
 You visit a directory in Dired mode using key bindings `C-x d', `C-x 4 d', and `C-x 5 d'.
 
-The [[menu bar]] can be helpful to learn the available operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info - choose ''Dired'' under ''Advanced Features''. (Or read [[Manual:Dired]] online.)
+The [[menu bar]] is helpful for learning operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info -- choose ''Dired'' under ''Advanced Features''. You can also read it [[Manual:Dired]] online.)
 
 See also these standard Dired features:
 
