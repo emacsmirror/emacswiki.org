@@ -8,11 +8,15 @@ All the operations you expect from a typical file-manager application are availa
 
 You can use '''`C-x C-q'''' to make a Dired buffer editable. This enters [[WDired]] mode (writable Dired). For example, you can use this to bulk-rename files, or to change file ownerships and privileges.
 
-You can operate on multiple files after ''marking'' them. The usual mark is `##*##', but the mark used for deletion is `D'. `D' marks are also called ''flags'', and the operation of marking with `D' is also called ''flagging''.
+You can operate on multiple files after ''marking'' them. The usual mark is '''`##*##'''', but the mark used for deletion is '''`D''''. `D' marks are also called ''flags'', and the operation of marking with `D' is also called ''flagging''.
 
-You visit a directory in Dired mode using key bindings `C-x d', `C-x 4 d', and `C-x 5 d'.
+You visit a directory in Dired mode using key bindings '''`C-x d'''', `C-x 4 d', and `C-x 5 d'.
 
-The [[menu bar]] is helpful for learning operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info -- choose ''Dired'' under ''Advanced Features''. You can also read about [[Manual:Dired]] online.)
+The [[menu bar]] is helpful for learning operations and key bindings. As always, '''`C-h m'''' provides information on the mode. Consult the Emacs manual (`C-h r') for more info -- choose ''Dired'' under ''Advanced Features''. You can also read about [[Manual:Dired]] online.)
+
+
+
+
 
 == Dired as Distributed with Gnu Emacs ==
 
@@ -22,6 +26,10 @@ The [[menu bar]] is helpful for learning operations and key bindings. As always,
 * [[WDired]] -- Edit a Dired buffer.
 * [[Image Dired Thumbnail Mode]] -- Use listings of image files 
 * DiredSearchAndReplace -- Search multiple files.
+
+
+
+
 
 
 [:DiredEnhancements]
@@ -44,8 +52,11 @@ This page provides supplementary information about DiredMode and some enhancemen
 
 
 
-== 3rd-Party Packages That Provide Dired Features ==
 
+
+
+
+== 3rd-Party Packages That Provide Dired Features ==
 
 * [[Bookmark+]] 
 ** In the bookmark list, `##M-d >##' opens Dired on the marked file and directory bookmarks (only).
