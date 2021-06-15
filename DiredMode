@@ -1,65 +1,44 @@
-DiredMode is the base-line major mode for Emacs "file-manager" style operations, used by '''[::Dired]''' buffers. It differs in many ways from dedicated "file-manager" programs, but the basic behavior is comparable. As it is a component the Emacs "editor", some users speak of "editing" a directory, not "exploring" or "managing" one.
+DiredMode is the base-line major mode for Emacs file-manager operations, used by '''[::Dired]''' buffers. It differs in many ways from dedicated file-manager programs, but the basic behavior is comparable. Some users speak of "editing" a directory, not "exploring" or "managing" one. The name "Dired" stands for "directory editor".
 
-A single dired buffer can be made to display the contents of a single directory along with the contents of zero or more sub-directories. It can be limited to display a filtered subset of those contents and can display either just file names or any combination of additional file details.
+A single Dired buffer can display the contents of a single directory, or it can include listings of one or more sub-directories. A Dired buffer can alternatively display an *arbitrary* set of files and directories, from any file systems.
 
-All the operations you expect from a "file manager" are available, plus some specific to Emacs such as the ability to single-click byte-compile files.
+A Dired buffer can display a filtered subset of directory contents, and it can display either just file names or any combination of additional file details.
 
-Bulk renaming of files is especially easy and powerful in '''[::Dired]''' buffers: You enter [[[WDired]] (ie. writable dired) mode, in which the buffer becomes editable, and you can perform any Emacs editing operation on the buffer contents. You can even use that mode to change file ownerships and privileges!
+All the operations you expect from a file manager application are available in Dired, plus some that are specific to Emacs.
 
-Operations can be performed on groups of files by either first "marking" them (m), or in the case of deletions "tagging" them (d).
+You can use `C-x C-q' to make a Dired buffer editable. This enters [[WDired]] mode (writable Dired). For example, you can use this to bulk-rename files, or to change file ownerships and privileges.
 
-Launch Dired using the default keybindings `C-x d' or `C-x 4 d' followed by a path.
+You can operate on groups of files by first marking them. The usual mark is `##*##', but the mark used for deletion is `D'. `D' marks are also called "flags".
 
-The Emacs menu bar can be helpful to new users to learn the default keybindings and available operations, and there's always `C-h m' and the Info manual: `C-h i', choose Emacs, then choose Dired under Advanced Features. (Or read [[Manual:Dired]] online.)
+You visit a directory in Dired mode using key bindings `C-x d', `C-x 4 d', and `C-x 5 d'.
 
-Dired has spawned many extensions and related packages. Some have been integrated into Emacs core:
+The [[menu bar]] can be helpful to learn the available operations and key bindings. As always, `C-h m' provides information on the mode. Consult the Emacs manual (`C-h r') for more info - choose ''Dired'' under ''Advanced Features''. (Or read [[Manual:Dired]] online.)
 
-* [[Dired X]] -- Many extra features (library ##dired-x.el##).
+See also these standard Dired features:
+
+* [[Dired X]] -- standard library ##dired-x.el##.
 ** DiredOmitMode -- Selectively remove files and subdirectories from the display, to reduce clutter.
-* [[Dired Aux]] -- Many extra features (library ##dired-aux.el##).
+* [[Dired Aux]] -- library ##dired-aux.el##.
+* [[WDired]] -- Edit a Dired buffer.
+* [[Image Dired Thumbnail Mode]] -- Use listings of image files 
 * DiredSearchAndReplace -- Search multiple files.
-* [[WDired]] -- Rename files by editing names directly in the Dired buffer.
-** Compare with external package: DiredEfap 
-* [[Image Dired Thumbnail Mode]] -- edit directories full of images 
 
 
 [:DiredEnhancements]
 == Dired tips and additional features ==
 
-WARNING: (2021) These pages linked to in this section may have been neglected for many years and contain out-dated information.
-
-* DiredPower -- Various Dired tips and features.
-* DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
+ DiredFindFileOtherFrame -- open a new frame from dired* DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.* DiredGetFileSize -- File size of selected files* DiredLineCommands -- Improvements to next and previous line in Dired.* DiredPower -- Various Dired tips and features.
+* DiredOfFile -- Open Dired for current file only* DiredReuseDirectoryBuffer – Make Dired reuse an existing Dired buffer
 * DiredSorting -- Dired tips and addons for sorting listings
 * DiredSortCriterias -- minimalistic dired sorting by different criterias
 This page provides supplementary information about DiredMode and some enhancements to it.
-* DiredReuseDirectoryBuffer -- Make Dired reuse the Dired buffer when you visit a directory
-* DiredLineCommands -- Improvements to next and previous line in Dired.
-* DiredGetFileSize -- File size of selected files
-* DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.
+
+* ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'* FindGrepDiredDoSearch -- logical combination of find-grep-dired and dired-do-search
 * FindGrepDiredSearchAndReplace -- interactive regexp search/replace in, say "*.rb" in current dir and all subdirs.
-* FindGrepDiredDoSearch -- logical combination of find-grep-dired and dired-do-search
-* ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'
-* DiredOfFile -- Open Dired for current file only
-* DiredFindFileOtherFrame -- open a new frame from dired
-* DiredSorting – Dired tips and addons for sorting listings
-
-== External Dired packages ==
-
-=== Curated Dired customization layers ===
-
-The following packages all try to make Dired friendlier to use by a combination of adding features and presenting existing features in a way more familiar to users coming from other "file managers".
-
-* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Robust dual-pane dired with many Midnight Commander features, and more (2021 active)
-* [[Sunrise_Commander]] -- Midnight Commander clone ([https://github.com/sunrise-commander/sunrise-commander github], 2021 active)
-* [Lisp:di.el DiMode] -- simple directory editor for GNU Emacs (JoeKeane, (2013 orphaned).
-* MidnightCommanderMode -- emulates Midnight Commander (2013 orphaned)
-* NortonCommanderMode -- emulates Norton Commander (2009 orphaned)
 
 
-=== Individual external Dired packages ===
 
-Following are a uasi-random accumulation of external dired-related packages, in alphabetical order. Others are available on MELPA. Some may be obsolete or orphaned, so check first (and update this page). This is the remainder of the old version of this page, so parts of it may still be a dis-organized mash-up.
+== Dired Libraries ==
 
 * [[Anything]] -- After evaluating ##(anything-dired-bindings)##, some dired commands are replaced with Anything-based interface.
 * [[Bookmark+]] 
@@ -69,9 +48,9 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 ** In Dired, `M-b' bookmarks each of the marked files and dirs.
 * [[Dired+]] -- Extends standard Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el## in many ways. (see also: DiredPlus)
 * DiredBookmarks -- Save/restore Dired state persistently, including switches, marked files, inserted subdirectories, and hidden (sub)directories.
-* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter.
+* [https://github.com/Boruch-Baum/emacs-diredc diredc] -- Robust dual-pane dired with many Midnight Commander features, and more (2021 active)* DiredDetails -- Lets you hide or show the file and directory details in a Dired listing, to save space and clutter.
 ** When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
-* DiredDragAndDrop -- Lets you drag-and-drop files.
+* [Lisp:di.el DiMode] -- simple directory editor for GNU Emacs (JoeKeane, (2013 orphaned).* DiredDragAndDrop -- Lets you drag-and-drop files.
 * DiredEfap -- Rename the file at [[point]] in Dired.
 * [[Diredful]] -- Colorful file names in dired buffers.
 * [[DiredFileTypeFaces]] -- Colorful file names in dired buffers.
@@ -94,10 +73,13 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 * Isearch
 ** DiredIsearch -- Run `isearch' in Dired, but match only file names
 ** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
-* OperatingOnFilesInDired – Opening files in associated applications.
-* ThumbsMode -- Modify dired for automatic image previewing.
+* MidnightCommanderMode -- emulates Midnight Commander (2013 orphaned)* OperatingOnFilesInDired – Opening files in associated applications.
+* NortonCommanderMode -- emulates Norton Commander (2009 orphaned)
+* [[Sunrise_Commander]] -- Midnight Commander clone ([https://github.com/sunrise-commander/sunrise-commander github], 2021 active)* ThumbsMode -- Modify dired for automatic image previewing.
 * [[Trashcan]] -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems.
 * [[Virtual Dired]] -- edit text files that list files as if they were directory listings.
+
+
 
 == Windows specific tips and additional features ==
 
@@ -105,7 +87,9 @@ Following are a uasi-random accumulation of external dired-related packages, in 
 * MsShellExecute -- Open any file from dired on W32 systems
 * WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
 
-= See also =
+
+
+== See also ==
 
 * CategoryDirectories for some other listing formats, besides what you get in Dired.
 * DiredModeScreenshots - Here are some screenshots of Dired buffers, vanilla and otherwise.
