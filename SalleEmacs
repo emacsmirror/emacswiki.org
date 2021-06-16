@@ -33,64 +33,6 @@ Il connait par coeur ce wiki. Exemple:
 
 Visitez la page ErBot (en) pour plus d'exemples (fsbot est une instance de ErBot).
 
-== statbot ==
- 
-Statbot est un dérivé de hird de la salle #hurd.
-Il retient les nick.  Exemple:
-
- <deego> seen iconoclast
- <statbot> deego: iconoclast was talking just a few minutes ago.
-
-Il génere aussi d'intéressantes statistiques:
-
-* http://gnufans.net/~deego/irc/emacs.html
-
-== f00f ==
-
-F00f est une base de donnée interactive, une base de connaissance.
-
-* [http://vengeance.et.tudelft.nl/ecfh/f00f.php3 Interface web de f00f]
-* [http://vengeance.et.tudelft.nl/ecfh/irc.php3 Image]
-
-F00f réagit aux messages privés (/MSG), aux doubles points
-d'exclamation (!!) et aux doubles point d'intérogation (??).
-
-Voici quelques utilisation de f00f:
-
- /msg f00f ?? help
-
-Demande de l'aide a f00f.  Il vous répondra en privé avec
-l'information demandé.
-
- ?? emacspeak
-
-Demande a f00f une expliquation.  Il répondra directement dans la salle.
-
- /msg f00f shapr: emacs
-
-Demande a f00f d'expliquer a quelqu'un.  Il répondra en privé a celui-ci.
-(ici f00f expliquera a shapr ce qu'est emacs.
-
- kensanata: !! wiki
-
-Demande a f00f d'expliquer en privé a quelqu'un comme précedemment.
-Cependant, la commande est visible dans la salle.
-
-D'une manière générale, il est préférable d'utiliser /MSG pour éviter
-d'inonder la salle.  Par contre, il est bon de montrer qu'on a envoyé
-l'information a quelqu'un pour éviter d'inonder celui-ci.  A vous de
-voir!
-
- /msg f00f #emacs: aaaaa
-
-Demande a f00f de donner l'information a toute la salle.
-(dans ce cas a propos de aaaaa --  Anonym Association Against Acronym Abuse).
-
- /msg f00f !apropos wiki
-
-Demande de l'information sur tout ce qui concerne les wikis.
-Vous recevrez l'information via un message privé.
-
 == Ancien Robots ==
 
 Ces robots ne sont plus sur #emacs:
@@ -101,5 +43,8 @@ google-bot est également remplacé par fsbot qui peut ausdsi rechercher sur goo
 
 Erica n'est qu'un autre nom que fsbot a eu, a une époque de son histoire.
 
+f00f, pas vu depuis 2014
+
+statbot, pas vu depuis 2014
 ----
 InternetRelayChat (en)
