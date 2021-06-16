@@ -1,6 +1,6 @@
 [[fr:SalleEmacs]]
 
-The unofficially official IRC channel for GNU Emacs is '''#emacs''' on [https://libera.chat/ Libera Chat] (a new network set up by the former freenode staff who were ousted in the takeover), forcing the move to this new network.  Connect by pointing your IRC client to irc.libera.chat:6697 (TLS).  The FSF has yet to make a decision on the official status this channel on the new network.
+The official IRC channel for GNU Emacs is '''#emacs''' on [https://libera.chat/ Libera Chat] (a new network set up by the former freenode staff who were ousted in the takeover), forcing the move to this new network.  Connect by pointing your IRC client to irc.libera.chat:6697 (TLS).  The FSF has yet to make a decision on the official status this channel on the new network.
 
 This community used to be on freenode, but this was taken over by the new freenode staff on May 25 2021 UTC and shut down as part of a larger hostile takeover of the freenode network (see [https://www.kline.sh/ freenode now belongs to Andrew Lee, and I'm leaving for a new network] and [https://mastodon.sdf.org/@kline/106299403921451814 andrew lee just seized over 700 channels on freenode because they mentioned libera.chat in their topic]), prompting the community of '''#emacs''' to migrate.
 
