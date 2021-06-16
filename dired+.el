@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2021.06.07
+;; Version: 2021.06.16
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun  7 09:19:56 2021 (-0700)
+;; Last-Updated: Wed Jun 16 08:31:55 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12983
+;;     Update #: 12987
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -877,6 +877,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/16 dadams
+;;     diredp--dired-recent-files-1: Bug fix in generated rev-fn: use BUFNAME, not BUFFER.
 ;; 2021/06/07 dadams
 ;;     Added redefinitions of dired-repeat-over-lines and dired-toggle-marks (bug #48883).
 ;; 2021/05/10 dadams
@@ -4641,7 +4643,7 @@ When called from Lisp:
                        (message "Reverting...")
                        (kill-buffer)
                        (funcall ,(if dirs-p '#'diredp-dired-recent-dirs '#'diredp-dired-recent-files)
-                                ',buffer current-prefix-arg (and (not current-prefix-arg)  ',fils))
+                                ',bufname current-prefix-arg (and (not current-prefix-arg)  ',fils))
                        (message "Reverting...done"))))
     (funcall (if other-window-p #'dired-other-window #'dired) (cons bufname fils) switches)
     (with-current-buffer bufname
