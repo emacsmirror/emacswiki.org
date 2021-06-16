@@ -5,19 +5,17 @@ For more Info on IRC, see the IRC help archive:
 * http://www.irchelp.org/
 
 == Getting Started ==
+ 
+Call M-x erc-tls and answer the questions as follows:
 
-Assuming you downloaded the tarball and extracted the elisp files into
-~/elisp/erc, load ERC by using M-x load-file and typing ~/elisp/erc/erc.el at the prompt.
-Then call M-x erc and answer the questions as follows:
-
-* IRC server: irc.freenode.net
-* IRC port: 6667
+* IRC server: irc.libera.chat
+* IRC port: 6697
 * Nickname: (type a nickname)
 * Password: (none)
 
 Note that ERC will append some punctuation characters to make your
 nickname unique if it isn't.  Thus, usually you need not worry about
-inventing unique nicknames.  On Freenode(irc.freenode.net) people
+inventing unique nicknames.  On Libera (irc.libera.chat) people
 can reserve their nicknames; in that case you will see a warning, and
 may be kicked off the network by the owner of the nickname, but let's ignore
 that for the moment.
@@ -45,7 +43,7 @@ Commands start with a slash.  Here are the most important ones:
 You can join several channels at a time.  ERC will create a new buffer for each
 channel you join.
 
-NOTE: If you can't join #emacs channel or any other which requires you to be identified visit https://freenode.net/kb/answer/registration to see the instructions to identify yourself.
+NOTE: If you can't join #emacs channel or any other which requires you to be identified visit https://libera.chat/guides/registration to see the instructions to identify yourself.
 
 
 == Moving on ==
