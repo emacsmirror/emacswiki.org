@@ -2,7 +2,7 @@
 
 Multiple Major Modes by MichaelAbrahamShulman. This one is used on the OracleProC page.
 
-It was once the method of choice for combining major modes, development stalled from 2004-2011, and restarted mid-2012.
+It was once the method of choice for combining [MultipleModes major modes], development stalled from 2004-2011, and restarted mid-2012.
 
 You can find description of using it, together with psgml-mode, php-mode, javascript-mode and css-mode to edit HTML files at HtmlModeDeluxe.
 
