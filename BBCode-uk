@@ -1,0 +1,71 @@
+[https://uk.wikipedia.org/wiki/BBCode BBCode] — це легка мова розмітки, що використовується на форумах (зазвичай, на базі PHP) для позначення жирного тексту, заголовків, посилань тощо. Офіційного стандарту для BBCode немає, але загальноприйнято, що ##[b][/b]## позначає текст жирним шрифтом, ##[i][/i]## — курсивним і так далі.
+
+== Режими BBCode ==
+
+Є три основних режими для редагування BBCode:
+
+* '''[http://xahlee.org/emacs/xbbcode-mode.html xbbcode-mode.el]''' від [[Xah Lee]]
+* '''[http://bitbucket.org/jfm/emacs-bbcode/ bcode-mode.el]''' від [[JasonMcBrayer]]
+* '''[https://github.com/ejmr/bbcode-mode bbcode-mode.el]''' від Eric James Michael Ritz.
+
+== Інші поради ==
+
+Якщо ви не хочете використовувати основний режим, можете використовувати наступний код разом із SkeletonMode. Привʼяжіть відповідні комбінації клавіш (нижче) і використовуйте разом із VisualMode.
+
+    (setq skeleton-end-newline nil)
+    (define-skeleton bb-italic
+      "Make italic text."
+      nil "[i]" _ "[/i]")
+    (define-skeleton bb-bold
+      "Make bold text."
+      nil "[b]" _ "[/b]")
+    (define-skeleton bb-underline
+      "Make underlined text."
+      nil "[u]" _ "[/u]")
+    (define-skeleton bb-tt
+      "Typewriter font."
+      nil "[font=\"Courier New\"]" _ "[/font]")
+    (define-skeleton bb-url
+      "Prompt for URL and insert link."
+      "URL: " "[url=\"" str "\"]" _ "[/url]")
+    (define-skeleton bb-list
+      "Start an unordered list."
+      nil "[list][*] " _ "\n[/list]")
+    (define-skeleton bb-point
+      "Make a new list point."
+      nil (unless (bolp) "\n") "[*] ")
+    (define-skeleton bb-img
+      "Insert [img] ... [/img] tags."
+      nil "[img]" _ "[/img]")
+    (define-skeleton bb-indent
+      "Insert [indent] ... [/indent] tags."
+      nil "[indent]" _ "[/indent]")
+    (define-skeleton bb-youtube
+      "Insert [youtube] ... [/youtube] tags."
+      nil "[youtube]" _ "[/youtube]")
+
+Наступні комбінації клавіш приблизно відповідають схемі AUCTeX:
+
+    (global-set-key "\C-c\C-f\C-e" 'bb-italic)
+    (global-set-key "\C-c\C-f\C-u" 'bb-underline)
+    (global-set-key "\C-c\C-f\C-b" 'bb-bold)
+    (global-set-key "\C-c\C-f\C-t" 'bb-tt)
+    (global-set-key "\C-c\C-fu"    'bb-url)
+    (global-set-key "\C-c\C-f\C-l" 'bb-list)
+    (global-set-key "\C-cj"        'bb-point)
+    (global-set-key "\C-c\C-j"     'bb-point)
+    (global-set-key "\C-c\C-fi"    'bb-img)
+    (global-set-key "\C-c\C-f\C-i" 'bb-indent)
+    (global-set-key "\C-c\C-f\C-y" 'bb-youtube)
+    (global-set-key "\C-c\C-fy"    'bb-youtube)
+
+Можливо вам захочеться написати [[minor mode мінорний режим]], якщо клавіші !AUCTeX вам чужі. Пропозиції вітаються.
+
+== Див. також ==
+
+* InteractiveSpell для перевірки правопису.
+* TypographicalPunctuationMarks щоб прикрашати ваші дописи "розумними лапками", ап'острофами, малими&ndash;тире, еліпсами... тощо.
+* [[Yasnippet]] — інший спосіб введення міток BBCode.
+
+----
+CategoryMarkup
