@@ -28,8 +28,9 @@ To see it in action, check out this [http://i.imgur.com/Sjzgx.gif short video].
 
 == Indicators.el ==
 
-[new]
-[https://github.com/Fuco1/indicators.el indicators.el] provides similar functionality but offers many improvements, like per-pixel resolution and ability to add indicators whose positions are determined by markers or functions. It also provides minor mode to quickly control the display of indicators.
+[https://github.com/Fuco1/indicators.el indicators.el] provides similar functionality with many improvements, like per-pixel resolution and ability to add indicators whose positions are determined by markers or functions. It also provides minor mode to quickly control the display of indicators.
+
+But indicators.el doesn't provide hook for flymake integration.
 
 ----
 CategoryDisplay
