@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2021.06.16
+;; Version: 2021.06.21
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 16 08:31:55 2021 (-0700)
+;; Last-Updated: Mon Jun 21 06:23:09 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 12987
+;;     Update #: 12991
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -877,6 +877,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/21 dadams
+;;     dired-buffers-for-dir: Updated for Emacs 28: Added optional arg SUBDIRS.
+;;     dired-do(-flagged)-delete: Applied fix for bug #48805.
 ;; 2021/06/16 dadams
 ;;     diredp--dired-recent-files-1: Bug fix in generated rev-fn: use BUFNAME, not BUFFER.
 ;; 2021/06/07 dadams
@@ -9128,12 +9131,15 @@ Non-interactively:
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Allows for consp `dired-directory' too.
+;; 1. Allow for consp `dired-directory' too.
+;; 2. Updated for Emacs 28: Added optional arg SUBDIRS.
 ;;
-(defun dired-buffers-for-dir (dir &optional file)
+(defun dired-buffers-for-dir (dir &optional file subdirs)
   "Return a list of buffers that Dired DIR (top level or in-situ subdir).
 If FILE is non-nil, include only those whose wildcard pattern (if any)
 matches FILE.
+If SUBDIRS is non-nil, also include the dired buffers of
+directories below DIR.
 The list is in reverse order of buffer creation, most recent last.
 As a side effect, killed Dired buffers for DIR are removed from
 `dired-buffers'."
@@ -9143,9 +9149,9 @@ As a side effect, killed Dired buffers for DIR are removed from
       (setq buf  (cdr elt))
       (cond ((null (buffer-name buf))   ; Buffer is killed - clean up.
              (setq dired-buffers  (delq elt dired-buffers)))
-            ((dired-in-this-tree dir (car elt))
+            ((file-in-directory-p (car elt) dir)
              (with-current-buffer buf
-               (and (assoc dir dired-subdir-alist)
+               (and (or subdirs  (assoc dir dired-subdir-alist))
                     (or (null file)
                         (if (stringp dired-directory)
                             ;; Allow for consp `dired-directory' too.
@@ -11874,6 +11880,7 @@ Return buffer position on success, else nil."
 ;;
 ;; 1. Display a message to warn that flagged, not marked, files will be deleted.
 ;; 2. Use `diredp-internal-do-deletions', so it works with all Emacs versions.
+;; 3. Applies fix for bug #48805.
 ;;
 ;;;###autoload
 (defun dired-do-flagged-delete (&optional no-msg) ; Bound to `x'
@@ -11892,13 +11899,19 @@ non-empty directories is allowed."
     )
   (let* ((dired-marker-char  dired-del-marker)
          (regexp             (dired-marker-regexp))
-         (case-fold-search   nil))
+         (case-fold-search   nil)
+         (markers            ()))
     (if (save-excursion (goto-char (point-min)) (re-search-forward regexp nil t))
         (diredp-internal-do-deletions
-         ;; This cannot move point since last arg is nil.
-         (dired-map-over-marks (cons (dired-get-filename) (point)) nil)
+         (nreverse
+          ;; This cannot move point since last arg is nil.
+          (dired-map-over-marks (cons (dired-get-filename) (let ((mk  (point-marker)))
+                                                             (push mk markers)
+                                                             mk))
+                                nil))
          nil
-         'USE-TRASH-CAN)                ; This arg is for Emacs 24+ only.
+         'USE-TRASH-CAN)             ; This arg is for Emacs 24+ only.
+      (dolist (mk  markers) (set-marker mk nil))
       (unless no-msg (message "(No deletions requested.)")))))
 
 
@@ -11906,6 +11919,7 @@ non-empty directories is allowed."
 ;;
 ;; 1. Display a message to warn that marked, not flagged, files will be deleted.
 ;; 2. Use `diredp-internal-do-deletions', so it works with all Emacs versions.
+;; 3. Applies fix for bug #48805.
 ;;
 ;;;###autoload
 (defun dired-do-delete (&optional arg)  ; Bound to `D'
@@ -11922,11 +11936,18 @@ non-empty directories is allowed."
     (ding)
     (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
              dired-marker-char dired-del-marker))
-  (diredp-internal-do-deletions
-   ;; This can move point if ARG is an integer.
-   (dired-map-over-marks (cons (dired-get-filename) (point)) arg)
-   arg
-   'USE-TRASH-CAN))                     ; This arg is for Emacs 24+ only.
+  (let ((markers  ()))
+    (diredp-internal-do-deletions
+     (nreverse
+      ;; This can move point if ARG is an integer.
+      (dired-map-over-marks (cons (dired-get-filename) (let ((mk  (point-marker)))
+                                                         (push mk markers)
+                                                         mk))
+                            arg))
+     arg
+     'USE-TRASH-CAN)                 ; This arg is for Emacs 24+ only.
+    (dolist (mk  markers) (set-marker mk nil))))
+
 
 (defun diredp-internal-do-deletions (file-alist arg &optional trash)
   "`dired-internal-do-deletions', but for any Emacs version.
