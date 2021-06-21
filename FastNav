@@ -64,5 +64,10 @@ Newest version at https://github.com/gleber/fastnav.el contains changes which re
 [new:gleber:2012-02-14 09:02 UTC]
 As of jumping to beginning of words - this seems to be simple to implement, although it may be much more expensive than per-character sprinting, since it will have to search through much more text. I'll be glad to accept pull requests with this feature!
 
+[new]
+Take a look at <b>Fastway</b> to quickly move to the beginning of words on the current line....
+
+https://github.com/super-tomcat/Fastway
+
 ----
 CategoryKeys, CategoryEditing
