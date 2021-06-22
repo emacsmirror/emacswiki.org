@@ -4,13 +4,13 @@
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:46:06 2018 (-0800)
+;; Last-Updated: Tue Jun 22 06:59:04 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 556
+;;     Update #: 557
 ;; URL: https://www.emacswiki.org/emacs/download/hl-line%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightCurrentLine
 ;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `hl-line'.
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `hl-line',
+;;   `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
