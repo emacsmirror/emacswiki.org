@@ -8,6 +8,14 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Unable to make links using ircs:// protocol ==
+
+I can't make links using the <code>ircs://</code> protocol, though the <code>irc://</code> protocol does work.
+
+So, something like <code>ircs://irc.libera.chat:6697/#emacs</code> and <code>[ircs://irc.libera.chat:6697/#emacs #emacs]</code> doesn't work; while irc://irc.libera.chat/#emacs and [irc://irc.libera.chat/#emacs #emacs] do.
+
+---AnonymousCoward
+
 == icicle-download-wizard fails and afterwards www.emacswiki.org refuses connections ==
 
 I wanted to try icicles and followed the instructions from icicles-install.el.
