@@ -12,24 +12,56 @@ The Libera.Chat [[IRC]] channel '''#emacs''' is a place where people can ask que
 
 The chatter is in English and EmacsLisp, but other flavours of Lisp and French, Finnish, German, Hindi, Portuguese, Swedish, Icelandic, Tagalog, Persian, and who knows what else are heard from time to time.  Pour les francophones, allez voir aussi SalleEmacsFr. Para la gente hispanoparlante, también vea CanalEmacsEs. See EmacsChannelDemographics to get a sense of who's on the channel.
 
-Channel list:
-
-* '''#emacs''' is the generic Emacs channel
-* '''#emacs-beginners''' is also open for questions. See EmacsBeginnersChannel .
-* '''#evil-mode''' is for [[Evil]].
-* '''#emacsfr''' is the French Emacs channel, SalleEmacsFr
-* '''#emacs-es''' is the Hispanic Emacs channel, CanalEmacsEs
-* '''##emacs.de''' is the German Emacs channel, [[Emacs IRC Kanal (Deutsch)]]
-* '''#xemacs''' is the XEmacsChannel
-* '''#gnus''' for [[Gnus]]
-* '''#org-mode''' for OrgMode
-* '''#ideologies''' is the IdeologiesChannel
-* '''#emacs-social''' is for *very* off-topic conversations that don't fit into any of the others
-* '''#emacswiki''' for EmacsWiki
-* '''#erc''' for [[ERC]]
-* '''#rcirc''' for [[rcirc]]
-
 Public logging of the Emacs channel is forbidden.  (See EmacsChannelLogging.)
+
+== List of Emacs-related channels ==
+
+=== General Emacs-related channels ===
+
+; #emacs: is the generic Emacs channel
+; #emacs-beginners: is also open for questions. See EmacsBeginnersChannel
+; #emacs-til: a channel to share something you learned about Emacs today
+; #xemacs: is the XEmacsChannel
+
+=== Emacs channels in languages other than English ===
+
+; ##emacs.de: is the German Emacs channel, [[Emacs IRC Kanal (Deutsch)]]
+; #emacs-es: is the Hispanic Emacs channel, CanalEmacsEs
+; #emacs-pl: is the Polish Emacs channel
+; #emacs-tw: [https://emacser.tw/ Emacs Taiwan]
+; #emacs.tw: [https://emacser.tw/ Emacs Taiwan]
+
+==== French language Emacs channels ====
+
+; #emacsfr: is the generic French Emacs channel, SalleEmacsFr
+; #org-mode-fr: is the French OrgMode channel
+; #emacsfr-off: is the French off-topic Emacs channel
+
+=== Channels for specific Emacs packages or Emacs-related projects ===
+
+; #emacswiki: for EmacsWiki (as of 2021-06-15 this doesn't seem active anymore, perhaps see '''#wiki''' instead)
+; #evil-mode: is for [[Evil]]
+; #exwm: for the [[Emacs X Window Manager]]
+; #gnus: for [[Gnus]]
+; #org-mode: for OrgMode
+; #slime: for SlimeMode
+; #spacemacs: for [[Spacemacs]]
+
+==== Channels for Emacs-based IRC clients ====
+
+; #emacs-circe: for [[Circe]]
+; #erc: for [[ERC]]
+; #rcirc: for [[rcirc]]
+
+=== Channels for Emacs-related events ===
+
+; #emacsconf: for EmacsConf
+; #emacsconf-org: for EmacsConf organizers and speakers
+; #emacs-berlin: for the [https://emacs-berlin.org/ Emacs Berlin] [https://www.emacswiki.org/emacs/Usergroups Usergroup]
+
+=== Off-topic Emacs channels ===
+; #emacs-social: is for *very* off-topic conversations that don't fit into any of the others
+; #ideologies: is the IdeologiesChannel (as of 2021-06-25 this doesn't seem to be active anymore, at least on Libera Chat)
 
 = Tips for getting help =
 
