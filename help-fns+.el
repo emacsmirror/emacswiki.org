@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 17 14:06:25 2021 (-0700)
+;; Last-Updated: Sat Jun 26 11:03:13 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2541
+;;     Update #: 2543
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,6 +118,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/06/26 dadams
+;;     describe-variable (all versions): Disallow nil (as a symbol) for the default value.
 ;; 2021/03/17 dadams
 ;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2021/02/22 dadams
@@ -1886,7 +1888,7 @@ it is displayed along with the global value."
                                `(lambda (vv) (with-current-buffer ',curbuf (user-variable-p vv)))
                              `(lambda (vv) (with-current-buffer ',curbuf
                                         (or (boundp vv)  (get vv 'variable-documentation)))))
-                   t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
+                   t nil nil (and symb  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
              current-prefix-arg)))
@@ -2088,7 +2090,7 @@ it is displayed along with the global value."
                        `(lambda (vv) (with-current-buffer ',curbuf (user-variable-p vv)))
                      `(lambda (vv) (with-current-buffer ',curbuf
                                 (or (get vv 'variable-documentation)  (and (boundp vv)  (not (keywordp vv)))))))
-                   t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
+                   t nil nil (and symb  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
              nil
@@ -2317,7 +2319,7 @@ the global value."
                       `(lambda (vv) (with-current-buffer ',curbuf (user-variable-p vv)))
                     `(lambda (vv) (with-current-buffer ',curbuf
                                (or (get vv 'variable-documentation)  (and (boundp vv)  (not (keywordp vv)))))))
-                  t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
+                  t nil nil (and symb  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
              nil
