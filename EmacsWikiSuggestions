@@ -15,6 +15,10 @@ Discussion about the "Goto Bar", the links at the top and bottom of each page, i
 Discussion about the TextFormattingRules used in contributing to pages  is at TextFormattingDiscussion.
 
 '''Add your suggestions below this line.'''
+== Does anyone object to me removing XEmacs references? ==
+
+Hi.  The wiki still prominently refers to XEmacs, which is dead.  Users aware of the current Emacs landscape get the impression that the wiki is stale.  And clueless users might even install XEmacs and be disappointed with the whole Emacs concept.  So, does anyone object to me removing as many XEmacs references as my time and energy permit?
+
 == Is it worth it to create a Category Logging? ==
 
 I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things? -- [[halloleo]]
@@ -31,7 +35,7 @@ The page 'GnuPlot' [[https://www.emacswiki.org/emacs/GnuPlot]] gives a good two 
 If everything after the first two sentences were replaced with a link to 'GnuplotModes' [[https://www.emacswiki.org/emacs/GnuplotModes]] that would restore it well.
 It has updated links to the Mr. Ravel's mode. It also has links to a second mode.
 
-It could also use a link to a third mode, 'GnuplotMode' 
+It could also use a link to a third mode, 'GnuplotMode'
 [[https://www.emacswiki.org/emacs/GnuplotMode]].
 
 
@@ -43,7 +47,7 @@ The new CSS is a  very nice improvement, but the default font-size is set to 1.2
 There's a [[https://github.com/bburns/emacswiki-light-theme github repo]] for the new css, so I think that it would be better to place your suggestion there. I created a [[https://github.com/bburns/emacswiki-light-theme/issues/13 new issue just for that]].
 
 [new:BrianBurns:2016-03-23 11:25 UTC]
-Good point - I'll set the size to 100%, as it's easy enough for users to override, and there was only one other (positive) comment on the font size - I just tend to like larger fonts as my eyes get older. :) 
+Good point - I'll set the size to 100%, as it's easy enough for users to override, and there was only one other (positive) comment on the font size - I just tend to like larger fonts as my eyes get older. :)
 
 == Alt key problem when using Compiz in Ubuntu ==
 
@@ -51,7 +55,7 @@ In Ubuntu (at least when using Compiz), the left Alt key brings up a HUD by defa
 
 == Camel Case Auto-split Syntax ==
 [new]
-I think a syntax like <nowiki>^EmacsWiki</nowiki> to automatically generate a link with spacing like [[EmacsWiki|Emacs Wiki]] would improve the overall look of the site quite a bit. On the main navigation bar for example, "Site Map," "Elisp Area," and "Recent Changes" would look much nicer. 
+I think a syntax like <nowiki>^EmacsWiki</nowiki> to automatically generate a link with spacing like [[EmacsWiki|Emacs Wiki]] would improve the overall look of the site quite a bit. On the main navigation bar for example, "Site Map," "Elisp Area," and "Recent Changes" would look much nicer.
 
 --MikeAbrahams
 
@@ -66,7 +70,7 @@ I wonder whether I understood this correctly. You can always create link to page
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
 
 [new:DrewAdams:2012-08-05 16:41 UTC]
-Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting. 
+Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting.
 
 (I've updated HowTo to mention page [[CSS]].) -- DrewAdams
 
@@ -92,7 +96,7 @@ Given the selection we have on the [[CSS]] page, which are the themes you'd like
 I went through the available stylesheets and moved my favorites to the top.  None of them are perfect but several could potentially be fixed into something decent with a bit of tweaking. In my opinion this is a very serious issue.  Applying a new CSS theme made the wiki spring to life for me.  --MikeAbrahams
 
 [new]
-What do you guys think about updating the default theme of the site? I think it looks really nice with a lighter theme like Cali+ or  [http://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia], but the gray and orange theme is kind of dark. I'm mostly thinking of new users - it took me a couple of years to realize you could change the look of the site, but I've really enjoyed visiting here since discovering those other themes. 
+What do you guys think about updating the default theme of the site? I think it looks really nice with a lighter theme like Cali+ or  [http://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia], but the gray and orange theme is kind of dark. I'm mostly thinking of new users - it took me a couple of years to realize you could change the look of the site, but I've really enjoyed visiting here since discovering those other themes.
 -- BrianBurns
 
 [new]
@@ -101,14 +105,14 @@ I'm in favor of trying something new!
 
 [new]
 
-Okay great! I put up an album of screenshots for some themes (just things that I thought might look good as a default theme, and some others) for comparison at http://imgur.com/a/czk9D - I like the lighter themes but they could still use some tweaking - I'd like to try and make one that combines 
+Okay great! I put up an album of screenshots for some themes (just things that I thought might look good as a default theme, and some others) for comparison at http://imgur.com/a/czk9D - I like the lighter themes but they could still use some tweaking - I'd like to try and make one that combines
 
 * Made in California (gray links, but larger `function references' text)
-* Cali+ (headings, have section separators but lighter dots, box around table of contents) 
+* Cali+ (headings, have section separators but lighter dots, box around table of contents)
 * Planet CSS (code block font, colored syntax highlighting)
 * Wikipedia (large logo on left, maybe try a vertical sidebar)
 
-and see how it looks - other suggestions are welcome too. I'll put the CSS on Github when I get it started - it can be a collaborative effort, and I'll post to the dev list and reddit once I get the Github up for some more feedback. 
+and see how it looks - other suggestions are welcome too. I'll put the CSS on Github when I get it started - it can be a collaborative effort, and I'll post to the dev list and reddit once I get the Github up for some more feedback.
 
 -- BrianBurns
 
@@ -123,7 +127,7 @@ I like to browse the talk pages to see some meta-discussion.
 But if it's not there, I don't want to bother clicking through.
 
 On Pmwiki, Talk-links are followed by a question-mark if there is no page (it's the default indicator that a wiki-link does not exist). I don't actually like the question-mark.
-On Wikipedia... well, I can't find an article without a talk page right now. 
+On Wikipedia... well, I can't find an article without a talk page right now.
 No idea.
 
 While I'm on about Talk, is there a reason that Talk asks for a users homepage-url, while other edits only ask for username?
@@ -166,7 +170,7 @@ In case you're interested, I added the following to [http://emacswiki.org/emacs/
 
 
 [new:DrewAdams:2013-05-08 14:33 UTC]
-I don't see it.  Then again, I don't use the bootstrap version... 
+I don't see it.  Then again, I don't use the bootstrap version...
 
 I agree that the link back to the page commented on should be much more prominent.  And the main page is not necessarily an "article".  It is sometimes a file in ElispArea, for instance. -- DrewAdams
 
@@ -248,7 +252,7 @@ This bothers me similarly to the above since it just adds clutter for anyone who
 
 Maybe somewhere in the footer close to where the language links are too.  Then again this link ("Pages linking here") as well as the links to the translations can easily be missed.  Maybe both kinds should be placed somewhere more visible?  But if you do this please do so in a way that makes it easy to hide it using a style sheet.  -- JonasBernoulli
 
-== Subscription service to  watch changes == 
+== Subscription service to  watch changes ==
 
 There should be a way to subscribe to changes to pages of interest to users, including Emacs Lisp files.
 
@@ -283,7 +287,7 @@ Leave your name here if you are interested adding a feature to EmacsWiki (probab
 * xuhdev
 
 
-== Screenshots for major modes == 
+== Screenshots for major modes ==
 
 [new]
 I would like to see a screenshot showing what each mode looks like.
