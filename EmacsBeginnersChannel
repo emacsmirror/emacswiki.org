@@ -1,9 +1,9 @@
-The #emacs-beginners channel on irc.freenode.net is a particularly-newbie-friendly channel where you can ask questions. You can join using the [http://webchat.freenode.net?channels=%23emacs-beginners&uio=d4 Freenode web interface], or use your favorite IRC client. There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. See EmacsChannel for a list of related channels.
+The '''#emacs-beginners''' channel on irc.libera.chat is a particularly-newbie-friendly channel where you can ask questions.  You can join using the [https://web.libera.chat/ Libera Chat web interface], or use your favorite IRC client.  There are several IRC clients available for Emacs -- see the client section of [[InternetRelayChat]] for options. See EmacsChannel for a list of related channels.
 
 = Tips for getting help =
 
-* Don't ask to ask - just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
-* If you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel. If no one answers, you can also ask in #emacs - see the EmacsChannel for tips on getting help there.
+* Don't ask to ask -- just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
+* If you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel. If no one answers, you can also ask in #emacs -- see the EmacsChannel for tips on getting help there.
 * If you need to share code that's more than one or two lines long, use a service such as paste.lisp.org or gist.github.com instead of pasting the code directly into the channel.
 
 Other newbie resources you may find useful: 
@@ -15,13 +15,13 @@ Other newbie resources you may find useful:
 [:Conduct]
 = Conduct =
 
-In addition to [http://freenode.net/policy.shtml freenode's network-wide policies], we have some of our own rules (some of which are redundant):
+In addition to [https://libera.chat/policies Libera Chat’s network-wide policies], we have some of our own rules (some of which are redundant):
 
-* Treat people with respect. No sexism, racism, homophobia, or discrimination against other conditions or factors. Don't be a jerk. Don't put other people down, insult them, or threaten them. If you like teasing people or using sarcasm, please be aware that other people may not know the context or may not be able to read your intent. Avoid that kind of ambiguous communication if possible, or clarify if asked.
-* Be patient. You might not get an answer right away. People are not actively watching the channel all the time. If no one knows the answer to your question, you might not get a response at all. You don't need to repeat the question or ask if people have seen it. While waiting for someone to reply to your question, you might want to participate in other questions, investigate other ways of [[GetHelp|getting help]], or focus on other things. Check back occasionally to see if someone has responded to you.
-* Be friendly to newbies. They might not know what things are called or where to look for help, so you may want to suggest links or keywords to help them learn more.
-* Don't start or participate in flame wars. If a discussion gets out of hand, feel free to use ##/ignore##. If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere. If a discussion disrupts Emacs-related help, bring it to the attention of a channel operator. See the [[#LawAndOrder|Law and Order]] section below. 
-* You don't need to change your IRC nick to indicate that you are away. A simple ##/away## message will be enough.
+* Treat people with respect.  No sexism, racism, homophobia, or discrimination against other conditions or factors.  Don't be a jerk. Don't put other people down, insult them, or threaten them.  If you like teasing people or using sarcasm, please be aware that other people may not know the context or may not be able to read your intent.  Avoid that kind of ambiguous communication if possible, or clarify if asked.
+* Be patient.  You might not get an answer right away. People are not actively watching the channel all the time.  If no one knows the answer to your question, you might not get a response at all.  You don't need to repeat the question or ask if people have seen it.  While waiting for someone to reply to your question, you might want to participate in other questions, investigate other ways of [[GetHelp|getting help]], or focus on other things.  Check back occasionally to see if someone has responded to you.
+* Be friendly to newbies.  They might not know what things are called or where to look for help, so you may want to suggest links or keywords to help them learn more.
+* Don't start or participate in flame wars.  If a discussion gets out of hand, feel free to use ##/ignore##. If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere.  If a discussion disrupts Emacs-related help, bring it to the attention of a channel operator.  See the [[#LawAndOrder|Law and Order]] section below. 
+* You don't need to change your IRC nick to indicate that you are away.  A simple ##/away## message will be enough.
 
 Violators of this code of conduct may be temporarily or permanently banned from the channel.
 
