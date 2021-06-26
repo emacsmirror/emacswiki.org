@@ -1,19 +1,25 @@
-== joining #emacs ==
+== Joining #emacs using ERC ==
 
 Here is an example setup:
 
- (setq erc-server "irc.freenode.net" 
-       erc-port 6667 
-       erc-nick "your-nick"
-       erc-user-full-name user-full-name
-       erc-email-userid "userid"    ; for when ident is not activated
-       erc-prompt-for-password nil) ; OPN doesn't require passwords
+{{{
+(setq erc-server "irc.libera.chat" 
+      erc-port 6697 
+      erc-nick "your-nick"
+      erc-user-full-name user-full-name
+      erc-email-userid "userid"    ; for when ident is not activated
+      erc-prompt-for-password nil) ; OPN doesn't require passwords
+}}}
 
-To start ERC, use M-x erc RET.  This will prompt you for server,
-port, nick, and password, and it will use the values of the variables
-above as defaults.  Then just punch the required amount of RETs.
+To start ERC, use <kbd>M-x</kbd> <kbd>erc</kbd> <kbd>RET</kbd> or
+<kbd>M-x</kbd> <kbd>erc-tls</kbd> <kbd>RET</kbd> for IRC servers on
+TLS connections.  This will prompt you for server, port, nick, and
+password, and it will use the values of the variables above as
+defaults.  Then just punch the required amount of RETs.
 
-The ERC developers hang out at both the #emacs and #erc channels.  #emacs is for general chat about Emacs, and #erc is ERC-specific.
+The ERC developers hang out at both the '''#emacs''' and '''#erc'''
+channels.  '''#emacs''' is for general chat about Emacs, and
+'''#erc''' is ERC-specific.
 
 ----
 [[ERC]], EmacsChannel
