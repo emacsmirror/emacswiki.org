@@ -1,11 +1,11 @@
-== What's in a Name? Emacs, XEmacs, Scheemacs... ==
+== What's in a Name?  Emacs, XEmacs, Scheemacs... ==
 
 The EmacsWiki is for info and discussion about ''Emacs'' and ''XEmacs''.  Some people use the terminology of the
-ChurchOfEmacs to refer to these critters collectively -- they call both Emacs and XEmacs "'''[[Emacsen]]'''".  
+ChurchOfEmacs to refer to these critters collectively -- they call both Emacs and XEmacs "'''[[Emacsen]]'''".
 
-Some people used to make a point of calling Emacs ''GNU Emacs'' to differentiate it from ''Lucid Emacs'' which has since been renamed XEmacs.  While this is less offensive and incorrect than the term ''FSF Emacs'' (the scope of developers and users far transcends the FSF, the main copyright holder), RichardStallman, Emacs's original author, insists that ''Emacs'' is, after all, the proper term for the version he is still actively maintaining.  Nowadays, most people are speaking about ''Emacs'' and ''XEmacs'', but pretty much nobody is bothered by seeing ''GNU Emacs'' as a way to offset it from ''XEmacs''.
+Some people used to make a point of calling Emacs ''GNU Emacs'' to differentiate it from ''Lucid Emacs'' which has since been renamed XEmacs (and is no longer under development).  While this is less offensive and incorrect than the term ''FSF Emacs'' (the scope of developers and users far transcends the FSF, the main copyright holder), RichardStallman, Emacs's original author, insists that ''Emacs'' is, after all, the proper term for the version he is still actively maintaining.  Nowadays, most people are speaking about ''Emacs'' and ''XEmacs'', but pretty much nobody is bothered by seeing ''GNU Emacs'' as a way to offset it from ''XEmacs''.
 
-"Emacs" is used in the names of a larger class of programmable editors, with a similar look-and-feel (mostly conspicuous in the keybindings) and a history going back to the original TecoEmacs (mid-1970s) and offshoots such as [[EINE]] and [[ZWEI]].  Emacs, which was created in 1985 and was closely modelled on the earlier [WikiPedia:Gosling_Emacs Gosling Emacs] editor (modeled after TecoEmacs), is simply one of many.  [[XEmacs]], which originated in 1991 as an offshoot of Emacs called LucidEmacs, is another.  Both of these projects have a venerable history and an active developer base.
+"Emacs" is used in the names of a larger class of programmable editors, with a similar look-and-feel (mostly conspicuous in the keybindings) and a history going back to the original TecoEmacs (mid-1970s) and offshoots such as [[EINE]] and [[ZWEI]].  Emacs, which was created in 1985 and was closely modelled on the earlier [WikiPedia:Gosling_Emacs Gosling Emacs] editor (modeled after TecoEmacs), is one of many.  [[XEmacs]], which originated in 1991 as an offshoot of Emacs called LucidEmacs, is another.  Both of these projects have a venerable history, but, while Emacs is under very active development, XEmacs is no longer under development and very few people currently use it.
 
 : RMS refers to his creation as Emacs, as do most maintainers, I think.
 It's likely to cause confusion to use the term generally for Emacs-like
@@ -25,7 +25,13 @@ Note: The X in XEmacs does not mean "X Windows".  As a matter of fact, LucidEmac
 If you want to link to the Emacs page, use GnuEmacs; to link to the
 [[XEmacs]] page, use <nowiki>[[XEmacs]]</nowiki>.
 
-== Comparison ==
+== Historical ==
+
+As written above, XEmacs is no longer under development and very few people currently use it.  The sections below are kept here for historical interest.
+
+=== Historical---Comparison ===
+
+*This section is kept for historical interest*.
 
 : "innumerable tiny differences.  too many to list."
 :: kensanata, on #emacs
@@ -67,7 +73,9 @@ it's a bit faster or at least more interactive. -- DougAlcorn
 
 : I'm going to claim that xemacs21-gnome is significantly faster at executing elisp. I don't have any hard numbers, but I'll see if I can make some -- ShaeErisson
 
-== Why Choose One over the Other? ==
+=== Historical---Why Choose One over the Other? ===
+
+*This section is kept for historical interest*.
 
 If you've actually chosen one of the [[Emacsen]] (as opposed to just
 blindly started using one because it happened to be available), list
@@ -196,7 +204,7 @@ I have spent a substantial period of time using each of XEmacs or Emacs, and hav
   i might do things a litle differently if i could.
 * It's a testimony to the myriad little things i am able to get
   working more nicely in Emacs that i am willing to forego that big
-  capability. 
+  capability.
 
 :: -- KenManheimer
 
@@ -216,4 +224,3 @@ I started with Zemacs on a Symbolics LispMachine around 1986. Switched back and 
 :: --JavierThayer
 ----
 CategoryHistory ElispCompatibility
-
