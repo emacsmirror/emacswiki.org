@@ -1,12 +1,12 @@
-Page http://freenode.net/using_the_network.html lists the available modes on the FreeNode network.
+[https://libera.chat/guides/usermodes This guide] from Libera Chat lists the available modes on the network.
 
-Typical /topic pattern optimizing for newbies (link first):
+Typical <code>/topic</code> pattern optimizing for newbies (link first):
 
 <pre>
 /topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | No public logging
 </pre>
 
-Typical /topic pattern optimizing for the amusement of regulars (quote first):
+Typical <code>/topic</code> pattern optimizing for the amusement of regulars (quote first):
 
 <pre>
 /topic quote | See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | No public logging
@@ -71,7 +71,7 @@ You may also want to check out https://github.com/jwiegley/dot-emacs/blob/master
 
 === Easy op/deop ===
 
-<pre>
+{{{
 (defun erc-cmd-OPME ()
   "Request chanserv to op me."
   (erc-message "PRIVMSG"
@@ -82,10 +82,10 @@ You may also want to check out https://github.com/jwiegley/dot-emacs/blob/master
 (defun erc-cmd-DEOPME ()
   "Deop myself from current channel."
   (erc-cmd-DEOP (format "%s" (erc-current-nick))))
-</pre>
+}}}
 
 === Ban, kickban ===
-<pre>
+{{{
 (defun erc-cmd-BAN (nick)
   (let* ((chan (erc-default-target))
          (who (erc-get-server-user nick))
@@ -103,13 +103,13 @@ You may also want to check out https://github.com/jwiegley/dot-emacs/blob/master
                             nick
                             (or reason
                                 "Kicked (kickban)"))))
-</pre>
+}}}
 
 [:ERCQuiet]
 === Make people quiet ===
 
 They can stay in channel, but they can't say anything. [https://gist.github.com/jwiegley/1af912d0833206125afa Source]
-<pre>
+{{{
 (defun erc-cmd-QUIET (nick)
   (erc-cmd-OPME)
   (sleep-for 0 250)
@@ -118,12 +118,12 @@ They can stay in channel, but they can't say anything. [https://gist.github.com/
                             nick))
   (sleep-for 0 250)
   (erc-cmd-DEOPME))
-</pre>
+}}}
 
 === Kick/ban based on IP address  ===
 
 [https://gist.github.com/jwiegley/e1b92259c3335124d3fc Source]
-<pre>
+{{{
 (defun erc-cmd-KICKBANIP (nick &rest reason)
   (setq reason (mapconcat #'identity reason " "))
   (and (string= reason "")
@@ -138,14 +138,14 @@ They can stay in channel, but they can't say anything. [https://gist.github.com/
                                 "Kicked (kickbanip)")))
   (sleep-for 0 250)
   (erc-cmd-DEOPME))
-</pre>
+}}}
 == Circe commands ==
 
 https://github.com/jorgenschaefer/Config/blob/master/emacs.el#L886-L914
 
-<pre>
-  (defun circe-command-AKICK (args)
-    "Kick a user from the current channel using ChanServ.
+{{{
+(defun circe-command-AKICK (args)
+  "Kick a user from the current channel using ChanServ.
 
 Example uses:
 
@@ -173,7 +173,7 @@ Example uses:
                                  (match-string 1 args)
                                  "30"
                                  (match-string 2 args))))))
-</pre>
+}}}
 ----
 
 EmacsChannel
