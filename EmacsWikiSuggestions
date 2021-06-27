@@ -19,6 +19,22 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 Hi.  The wiki still prominently refers to XEmacs, which is dead.  Users aware of the current Emacs landscape get the impression that the wiki is stale.  And clueless users might even install XEmacs and be disappointed with the whole Emacs concept.  So, does anyone object to me removing as many XEmacs references as my time and energy permit?
 
+[new:DrewAdams:2021-06-27 15:18 UTC]
+Thanks for asking before just doing it. Yes, I object.
+
+I don't object to updating such text, to make clear that it describes an Emacs implementation that is no longer under development (and that is used by very few Emacs users).
+
+I don't object to removal of some how-to information that could no longer be used by anyone.
+
+The point is that this site is about '''Emacs''', not only GnuEmacs, and the site contains information about the history of Emacs and its different implementations, as well as references to other such info. There's even a whole category about this (CategoryHistory), and pages about the GNU/XEmacs split (EmacsSchism, EmacsAndXEmacs, EmacsSchismDiscussion).
+
+In posing the question, you'd maybe be better off saying also which content you'd like to remove, and if not obvious, say how you think it might mislead readers rather than helping them.
+
+Just one opinion.
+
+
+
+
 == Is it worth it to create a Category Logging? ==
 
 I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things? -- [[halloleo]]
