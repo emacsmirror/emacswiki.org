@@ -35,6 +35,16 @@ Just one opinion.
 [new]
 Yeah, it's a bit like documentation for code that is now obsolete, but if somebody were to search for information about Emacs 19 and MULE, for example, where would they find it? Sure, it's obsolete, but it's still interesting. It's no longer "How To" information, but I'd still like to keep it. Like Drew, I'd love pages to be rewritten such as to clearly state what is and what isn't obsolete, and I would love long pages containing both obsolete and current information to be split into two pages, with the obsolete stuff being relegated to the Talk page, or to a separate page altogether. As a final consideration, I'd say that rewriting pages such that they are more useful for current users than for future historians is more important. So I wouldn't spend too much time on making the obsolete material nice to read. All I'm saying is that if at all possible, let's keep it somewhere. -- [[Alex Schroeder]]
 
+[new:DrewAdams:2021-06-28 16:52 UTC]
+FWIW - I agree with all that Alex has said. -- DrewAdams
+
+
+
+
+
+
+
+
 == Is it worth it to create a Category Logging? ==
 
 I am starting to write a few simple log functions (for debugging variables, etc in Emacs), and I have some questions about it, and I saw [[Log4E_Logging_For_Elisp]] - does it make sense to have CategoryLogging for these things? -- [[halloleo]]
