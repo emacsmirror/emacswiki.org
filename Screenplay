@@ -6,7 +6,7 @@ There are five screenplay libraries known, two of which share the same name :(
 * Lisp:screenplay.el -- by AlexSchroeder
 * RubyTwoMode -- uses emacs + python + LaTeX to give industry standard Final Draft scripts.
 
-Of these, FountainMode is the most mature and capable of producing a screenplay.
+Of these, FountainMode is probably the most mature.
 
 There is also a LaTeX Document Class called "plari" by Antti-Juhani Kaijanaho for screen plays.
 You can find it on any CTAN-mirror.  
