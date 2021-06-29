@@ -10,7 +10,7 @@ You can subscribe to [https://xenodium.com xenodium.com]'s Emacs posts via [http
 
 === Blog ===
 
-<rss xenodium.com/emacs/rss.xml>
+<rss https://xenodium.com/emacs/rss.xml>
 
 ----
 * CategoryHomepage
