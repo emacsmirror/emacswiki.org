@@ -8,5 +8,9 @@ I write about Emacs things at [https://xenodium.com xenodium.com]. All posts are
 
 You can subscribe to [https://xenodium.com xenodium.com]'s Emacs posts via [https://xenodium.com/rss.xml rss].
 
+=== Blog ===
+
+<rss xenodium.com/emacs/rss.xml>
+
 ----
 * CategoryHomepage
