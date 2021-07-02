@@ -49,6 +49,7 @@ This section describes commands (interactive functions) dealing with frames.
 
 Library <tt>[[frame-cmds.el]]</tt> is a library of frame commands. Using the suggested key bindings, you can:
 
+* Use `C-x 5 2' to clone the selected frame, that is, create a new frame with the same charactistics (frame parameters).
 * Use `C-M-' with the arrow keys (up, down, left, right) to resize a frame incrementally.
 * Use `M-' with the arrow keys to move a frame incrementally.
 * Use '''Shift''' plus the usual keys for scrolling to move a frame to the screen edges: `C-S-v' (bottom), `M-S-v' (top), `C-S-next' (right), `C-S-prior' (left).
