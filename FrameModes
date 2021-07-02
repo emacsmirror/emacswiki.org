@@ -61,8 +61,9 @@ Library <tt>[[frame-cmds.el]]</tt> is a library of frame commands. Using the sug
 * Use `C-mouse-1' in Dired to mark/unmark a file -- see `mouse-show-hide-mark-unmark', below.
 * Use `C-mouse-3' on the mode line to remove window from frame -- see `mouse-remove-window', below.
 
-These are the commands in <tt>[[frame-cmds.el]]</tt>:
+These are some of the commands in <tt>[[frame-cmds.el]]</tt>:
 
+* `clone-frame' -- Copy selected frame to a new frame with the same parameters.
 * `enlarge-frame', `enlarge-frame-horizontally', `shrink-frame', and `shrink-frame-horizontally' -- Resize a frame incrementally.
 * `tile-frames-horizontally' and `tile-frames-vertically' -- Tile the visible frames horizontally and vertically.
 ** With prefix argument, you are prompted for names of two frames to tile.
