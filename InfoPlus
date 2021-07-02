@@ -101,7 +101,7 @@ visibility of a manual's nodes, to reflect how you use it.
 
 
 
-
+[:highlighting]
 * Additional, finer-grained Info highlighting.  This can make a big difference in readability.
 
 ** In the Emacs Lisp manual, reference items are highlighted, so they stand out.  This means: constants, [[command]]s, functions, [[macro]]s, special forms, syntax classes, [[user option]]s, and other [[variable]]s.
