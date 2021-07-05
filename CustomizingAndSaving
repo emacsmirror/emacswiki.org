@@ -246,7 +246,7 @@ Here is one user's [[http://msnyder.info/posts/2014/01/cus-edit-plus/|takeaway]]
 
 
 
-
+[:summary]
 There is a detailed explanation of what that library does in the source-code comments, so I won't repeat that all here. Here are the highlights:
 
 * Emacs informs you when you quit (`C-x C-c') if you have unsaved customizations. It asks if you want to review them.  If so, it opens a Customize buffer with all of your changes -- variables and faces.  This is analogous to Emacs asking you about files you've changed but not saved, before letting you exit.
