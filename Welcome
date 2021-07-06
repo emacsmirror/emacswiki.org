@@ -1,5 +1,7 @@
 This is the landing page for visitors to the Emacs Wiki using a Gemini client such as Elpher. 🚀🚀🎉
 
+=> gemini://emacswiki.org
+
 It is badly supported using a huge hack, but it might work nevertheless. 😅
 
 => /page/SiteMap Continue to the Site Map
