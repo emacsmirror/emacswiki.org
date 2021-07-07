@@ -3,9 +3,13 @@ What to do if you think that Emacs [http://en.wikipedia.org/wiki/Memory_leak lea
 ==How to extract more information==
 
 ===Generic GNU/Linux programs===
+
 * ##top## will tell you the virtual memory (VIRT) and the resident memory (RES)
-* ##pmap -d 25952## (use correct PID) will tell you the memory map of a process
-* ##cat /proc/25952/smaps## may hint you to the memory space which is getting too big
+* ##pmap -d <pid>## will tell you the memory map of a process
+* ##cat /proc/<pid>/smaps## may hint you to the memory space which is getting too big
+
+n.b. Substitute your actual Emacs process ID for ##<pid>##.  You can obtain this number
+within Emacs using ##M-: (emacs-pid)##
 
 For instance this was in ##/proc/25952/smaps##. 2580 Mb is much for 180 small buffers open.
 {{{
@@ -53,7 +57,7 @@ I've done some leak hunting recently, and wrote some scripts to assist. These ar
 You can go through the previous revisions in the version control system until you find the most recent version which didn't show this behaviour. An easy way to do this is via the bisect operation offered by version control programs.
 
 ===Some tips for a program that's consuming too much memory===
-If a program (like Emacs) seems to want progressively all your computer's memory there is risk that it will slow down your system or is killed by your kernel. A easy thing you can do is to stop the program via ##kill -SIGSTOP 25952## to freeze it (and ##SIGCONT## to restore it). Then go on with debugging (##gdb## etc.).
+If a program (like Emacs) seems to want progressively all your computer's memory there is risk that it will slow down your system or is killed by your kernel. A easy thing you can do is to stop the program via ##kill -SIGSTOP <pid>## to freeze it (and ##SIGCONT## to restore it). Then go on with debugging (##gdb## etc.).
 
 ==Interpret the results==
 What does it mean if you have a very high numbers of [[cons]]es? Etc.
