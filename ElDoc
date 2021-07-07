@@ -2,7 +2,9 @@ A very simple but effective thing, eldoc-mode is a MinorMode which shows you, in
 
 == Overview ==
 
-ElDoc works for EmacsLisp and certain other language modes that implement support for ElDoc.  These include
+Projekt homepage on GNU ELPA: http://elpa.gnu.org/packages/eldoc.html
+
+ElDoc works for EmacsLisp and certain other language modes that implement support for ElDoc. These include
 
 * CEldocMode -- for C, by grepping cpp
 * CPerlMode -- for Perl
@@ -558,7 +560,7 @@ For using this function you should add following code to python-mode-hook:
 
 == El Doc on Mouseover Hover ==
 
-See http://emacs.stackexchange.com/questions/22132/help-buffer-on-hover-possible
+See the anser on the question _Help Buffer on Hover Possible?_: https://emacs.stackexchange.com/a/22139/12999
 
 
 
