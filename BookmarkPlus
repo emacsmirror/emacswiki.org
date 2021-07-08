@@ -690,7 +690,7 @@ prefix `##<f9> c##'.
 
 In addition to keys on '''Bookmark+''' keymaps, '''Bookmark+''' binds some mode-specific bookmarking commands in
 some other modes: Occur, Compilation (including Grep),
-Buffer-menu, [[EWW]], Gnus, [[Info]], Man, Woman, W3M, and [[Dired]] (if you use library '''[[Dired+]]''').  These keys let you set or jump to bookmarks specific
+Buffer-menu, [[eww|EWW]], Gnus, [[Info]], Man, Woman, W3M, and [[Dired]] (if you use library '''[[Dired+]]''').  These keys let you set or jump to bookmarks specific
 to the modes.
 
 
