@@ -8,6 +8,12 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Wrong translation on buttons ==
+
+Some buttons on the bottom of all pages have the wrong translation on the Swedish version of the site. For example the "Talk" button is labeld with "Ságastallan" which seems to be in the Sami language. I saw some other button with incorrect translation, but I can't remember which page it was. Is there some page where I can fix the translation of the buttons?
+
+-- tfendin
+
 == Unable to make links using ircs:// protocol ==
 
 I can't make links using the <code>ircs://</code> protocol, though the <code>irc://</code> protocol does work.
@@ -48,12 +54,6 @@ Thanks, Alex! -- DrewAdams
 Thanks for the help, it solved my problem!
 Feel free to remove the entry.
 --- AnonymousCoward
-
-== Wrong translation on buttons ==
-
-Some buttons on the bottom of all pages have the wrong translation on the Swedish version of the site. For example the "Talk" button is labeld with "Ságastallan" which seems to be in the Sami language. I saw some other button with incorrect translation, but I can't remember which page it was. Is there some page where I can fix the translation of the buttons?
-
--- tfendin
 
 == Source code blocks edited in recent days not being syntax highlighted ==
 
