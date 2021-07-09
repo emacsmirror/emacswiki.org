@@ -14,6 +14,24 @@ Some buttons on the bottom of all pages have the wrong translation on the Swedis
 
 -- tfendin
 
+[new]
+The easiest solution for me would be for you to make changes to this file via git and [https://git-send-email.io/ send the patch via mail] to alex@gnu.org:
+{{{
+git clone https://alexschroeder.ch/cgit/oddmuse
+}}}
+
+Alternatively, editing on GitHub should also work.
+
+Or just download the plain text from [https://alexschroeder.ch/cgit/oddmuse/plain/modules/translations/swedish-utf8.pl swedish-utf8.pl], edit it, and send it to me via mail.
+
+Optionally also add your name and email address to the file header so that you also get credit.
+
+A few words are also from the [https://www.emacswiki.org/config config] file; the German translations, for example, are in [https://www.emacswiki.org/config-de config-de], where as the Swedish ones are in [https://www.emacswiki.org/config-se config-se]. To changes these, just send me an email.
+
+In any case, thanks! :)
+
+-- Alex
+
 == Unable to make links using ircs:// protocol ==
 
 I can't make links using the <code>ircs://</code> protocol, though the <code>irc://</code> protocol does work.
