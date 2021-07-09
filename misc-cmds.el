@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  8 18:58:02 2021 (-0800)
+;; Last-Updated: Fri Jul  9 10:34:02 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3346
+;;     Update #: 3353
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -107,6 +107,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/07/09 dadams
+;;     goto-longest-line< goto-long-line, kill-buffer-and-its-windows:
+;;       Added optional arg MSGP (instead of using interactive-p).
 ;; 2021/02/08 dadams
 ;;     Renamed to-indentation-repeat-(back|for)ward to (back|forward)-to-indentation+.
 ;;       Aliased the old names to the new ones.
@@ -849,7 +852,7 @@ Counting starts at (point-min), so any narrowing restriction applies."
                                                  (forward-line 0) (point))))))
 
 ;;;###autoload
-(defun goto-longest-line (beg end)
+(defun goto-longest-line (beg end &optional msgp)
   "Go to the first of the longest lines in the region or buffer.
 If the region is active, it is checked.
 If not, the buffer (or its restriction) is checked.
@@ -881,8 +884,8 @@ buffer, you can use `C-SPC' to set the mark, then use this
    (if (or (not mark-active)  (not (< (region-beginning) (region-end))))
        (list (point-min) (point-max))
      (if (< (point) (mark))
-         (list (point) (mark))
-       (list (mark) (point)))))
+         (list (point) (mark) 'MSGP)
+       (list (mark) (point) 'MSGP))))
   (when (and (not mark-active)  (= beg end)) (error "The buffer is empty"))
   (when (and mark-active  (> (point) (mark))) (exchange-point-and-mark))
   (when (< end beg) (setq end  (prog1 beg (setq beg  end))))
@@ -927,24 +930,24 @@ buffer, you can use `C-SPC' to set the mark, then use this
            (when (and (> emacs-major-version 21)  (require 'hl-line nil t))
              (let ((hl-line-mode  t))  (hl-line-highlight))
              (add-hook 'pre-command-hook #'hl-line-unhighlight nil t))
-           (when (interactive-p)
+           (when msgp
              (let ((others  (cdr long-lines)))
                (message "Line %d: %d chars%s (%d lines measured)"
-                (car long-lines) max-width
-                (concat
-                 (and others
-                      (format ", Others: {%s}" (mapconcat
-                                                (lambda (line) (format "%d" line))
-                                                (cdr long-lines) ", "))))
-                (- line start-line))))
+                        (car long-lines) max-width
+                        (concat
+                         (and others
+                              (format ", Others: {%s}" (mapconcat
+                                                        (lambda (line) (format "%d" line))
+                                                        (cdr long-lines) ", "))))
+                        (- line start-line))))
            (list (car long-lines) max-width (cdr long-lines) (- line start-line))))))
 
 ;;;###autoload
-(defun goto-long-line (len)
+(defun goto-long-line (len &optional msgp)
   "Go to the first line that is at least LEN characters long.
 Use a prefix arg to provide LEN.
 Plain `C-u' (no number) uses `fill-column' as LEN."
-  (interactive "P")
+  (interactive "P\np")
   (setq len  (if (consp len) fill-column (prefix-numeric-value len)))
   (let ((start-line                 (line-number-at-pos))
         (len-found                  0)
@@ -954,8 +957,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
       (forward-line 1)
       (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
     (if found
-        (when (interactive-p)
-          (message "Line %d: %d chars" (line-number-at-pos) len-found))
+        (when msgp (message "Line %d: %d chars" (line-number-at-pos) len-found))
       (goto-line start-line)
       (message "Not found"))))
 
@@ -1427,10 +1429,10 @@ CMD is the command to execute (interactively, `chown')."
 ;; We cannot just redefine `kill-buffer', because some programs count on a
 ;; specific other buffer taking the place of the killed buffer (in the window).
 ;;;###autoload
-(defun kill-buffer-and-its-windows (buffer)
+(defun kill-buffer-and-its-windows (buffer &optional msgp)
   "Kill BUFFER and delete its windows.  Default is `current-buffer'.
 BUFFER may be either a buffer or its name (a string)."
-  (interactive (list (read-buffer "Kill buffer: " (current-buffer) 'existing)))
+  (interactive (list (read-buffer "Kill buffer: " (current-buffer) 'existing) 'MSGP))
   (setq buffer  (get-buffer buffer))
   (if (buffer-live-p buffer)            ; Kill live buffer only.
       (let ((wins  (get-buffer-window-list buffer nil t))) ; On all frames.
@@ -1443,8 +1445,7 @@ BUFFER may be either a buffer or its name (a string)."
               ;; Ignore error, in particular,
               ;; "Attempt to delete the sole visible or iconified frame".
               (condition-case nil (delete-window win) (error nil))))))
-    (when (interactive-p)
-      (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
+    (when msgp (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
 
 ;; Candidate as a replacement for `quit-window', at least when used interactively.
 ;; For example: (define-key global-map [remap quit-window] 'quit-window-delete)
