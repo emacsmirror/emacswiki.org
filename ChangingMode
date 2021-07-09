@@ -1,0 +1,19 @@
+== About ChangingMode ==
+I create a lot of files from emacs and I was troubled by the fact that I had to manually change major mode from fundamental to a more suiting major mode for every file I had created. Thus, I created this mode which changes the major mode when the buffer is saved, as if it was closed and opened again. As a bonus it also sets the execution bit on the file if it's a script, i.e. if the first row begins with ###!##.
+
+I haven't looked for a solution which doesn't require the manual M-x customize-variable.
+
+== The code ==
+ (defun set-auto-mode-keep-if-same()
+   (set-auto-mode t))
+ 
+ ;; Change the default major mode to changing-mode with M-x customize-variable major-mode
+ (define-derived-mode changing-mode fundamental-mode "Changing"
+   "Major mode which changes the major mode when saving"
+   (add-hook 'after-save-hook #'set-auto-mode-keep-if-same nil t)
+   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p nil t))
+
+== Activating the mode ==
+Change the default major from fundamental-mode to changing-mode with
+
+ M-x customize-variable RET major-mode
