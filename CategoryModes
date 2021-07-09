@@ -41,6 +41,7 @@ Other pages (could this please be split in major and minor modes?):
 * ButtonLockMode -- clickable text defined by regular expression, controlled by font-lock
 * CelsscMode -- a mode for editing celestia catalog files
 * CddbMode -- a mode for CD database files
+* ChangingMode -- a (default) major mode which changes major mode when saving
 * [EmacsWiki:cheezburger Cheezburger] -- mode for viewing I Can Has Cheezburger
 * ChopMode -- interactive binary search for a line within a window
 * ChronometerMode -- a [not so] simple chronometer
