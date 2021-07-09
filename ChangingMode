@@ -14,6 +14,6 @@ I haven't looked for a solution which doesn't require the manual M-x customize-v
    (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p nil t))
 
 == Activating the mode ==
-Change the default major from fundamental-mode to changing-mode with
+Change the default major mode from fundamental-mode to changing-mode with
 
  M-x customize-variable RET major-mode
