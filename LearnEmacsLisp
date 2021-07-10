@@ -36,6 +36,9 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 
 Emacs Lisp belong to the Lisp family (WikiPedia:Lisp_programming_language), and learning it will teach you Lisp concepts, as well as learning Lisp concepts will help you with Emacs Lisp.
 
+* Harold Abelson & Gerald Jay Sussman: MIT lectures introducing Lisp (videos):
+[https://www.youtube.com/watch?v=-J_xL4IGhJA] is the first one, ''Lecture 1A: Overview and Introduction to Lisp''...  Excellent, from soup to nuts, step by step. It doesn't get any better than this.
+* Harold Abelson, Gerald Jay Sussman with Julie Sussman's book ''Structure and Interpretation of Computer Programs'' (Scheme, not Emacs Lisp): [https://sarabander.github.io/sicp/] (The book for the course shown in the videos.)
 * Pascal Costanza'a intro to Lisp (in general, not Emacs Lisp):
 [http://p-cos.net/lisp/guide.html]
 * Paul Graham's overview of Lisp (in general, not Emacs Lisp):
@@ -45,7 +48,7 @@ Emacs Lisp belong to the Lisp family (WikiPedia:Lisp_programming_language), and 
 * Peter Seibel's book ''Practical Common Lisp'' (Common Lisp, not Emacs Lisp):
 [http://www.gigamonkeys.com/book/]
 * Steve Losh's article ''A Road to Common Lisp'' (Common Lisp, not Emacs Lisp): [http://stevelosh.com/blog/2018/08/a-road-to-common-lisp/]
-* Harold Abelson, Gerald Jay Sussman with Julie Sussman's book ''Structure and Interpretation of Computer Programs'' (Scheme, not Emacs Lisp): [https://sarabander.github.io/sicp/]
+
 * Jos ́e Antonio Ortega Ruiz's article ''A Scheme bookshelf'' (Scheme, not Emacs Lisp): [http://programming-musings.org/2007/01/31/a_scheme_bookshelf/index.html]
 
 ----
