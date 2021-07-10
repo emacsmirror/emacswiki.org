@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul  9 10:34:02 2021 (-0700)
+;; Last-Updated: Fri Jul  9 18:11:35 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3353
+;;     Update #: 3355
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -108,8 +108,9 @@
 ;;; Change Log:
 ;;
 ;; 2021/07/09 dadams
-;;     goto-longest-line< goto-long-line, kill-buffer-and-its-windows:
+;;     goto-longest-line, goto-long-line, kill-buffer-and-its-windows:
 ;;       Added optional arg MSGP (instead of using interactive-p).
+;;     goto-long-line: Off-by-one bug: test LEN with <=, not <.
 ;; 2021/02/08 dadams
 ;;     Renamed to-indentation-repeat-(back|for)ward to (back|forward)-to-indentation+.
 ;;       Aliased the old names to the new ones.
@@ -955,7 +956,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
         (inhibit-field-text-motion  t))
     (while (and (not found)  (not (eobp)))
       (forward-line 1)
-      (setq found  (< len (setq len-found  (- (line-end-position) (point))))))
+      (setq found  (<= len (setq len-found  (- (line-end-position) (point))))))
     (if found
         (when msgp (message "Line %d: %d chars" (line-number-at-pos) len-found))
       (goto-line start-line)
