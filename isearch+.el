@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 12 07:36:21 2021 (-0700)
+;; Last-Updated: Mon Jul 12 14:16:10 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7256
+;;     Update #: 7260
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1286,6 +1286,7 @@
 ;;     isearch-lazy-highlight-search:
 ;;       Use version of search-invisible binding from Emacs 28 master of 2021-07-11, which doesn't match invisible
 ;;       text unless (1) it can open or (2) we're counting matches - bug #40808.
+;;     isearch-mode: Applied Juri's fix for bug #45005.
 ;; 2021/05/25 dadams
 ;;     lazy-highlight-buffer-max-at-a-time: Changed default value to 200, per Emacs bug #48581.
 ;; 2021/03/17 dadams
@@ -5024,7 +5025,8 @@ Non-nil argument REGEXP-FUNCTION:
         search-ring-yank-pointer                     nil
         isearch-opened-overlays                      ()
         isearch-input-method-function                input-method-function
-        isearch-input-method-local-p                 (local-variable-p 'input-method-function)
+        isearch-input-method-local-p                 (and (< emacs-major-version 28) ; Bug #45005.
+                                                          (local-variable-p 'input-method-function))
         regexp-search-ring-yank-pointer              nil
         ;; Save original value of `ring-bell-function', then set it to `isearchp-ring-bell-function'.
         isearchp-orig-ring-bell-fn                   ring-bell-function
@@ -5051,7 +5053,10 @@ Non-nil argument REGEXP-FUNCTION:
 
   ;; Bypass input method while reading key.  When a user types a printable char, appropriate
   ;; input method is turned on in minibuffer to read multibyte characters.
-  (unless isearch-input-method-local-p (make-local-variable 'input-method-function))
+  ;;
+  ;; Bug #45005: This bit is not needed for Emacs 28+.
+  (unless (or (> emacs-major-version 27)  isearch-input-method-local-p)
+    (make-local-variable 'input-method-function))
   (setq input-method-function  nil)
   (looking-at "")
   (setq isearch-window-configuration  (if isearch-slow-terminal-mode (current-window-configuration) nil))
