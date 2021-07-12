@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 12 07:15:00 2021 (-0700)
+;; Last-Updated: Mon Jul 12 07:36:21 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7254
+;;     Update #: 7256
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1282,7 +1282,7 @@
 ;;
 ;; 2021/07/12 dadams
 ;;     Added: isearchp-reached-limit-p.
-;;     isearch-search: Support using filter predicates with empty search hits.
+;;     isearch-search: Support using filter predicates with empty search hits (fixes Emacs bug #49534).
 ;;     isearch-lazy-highlight-search:
 ;;       Use version of search-invisible binding from Emacs 28 master of 2021-07-11, which doesn't match invisible
 ;;       text unless (1) it can open or (2) we're counting matches - bug #40808.
@@ -6132,7 +6132,8 @@ You need library `character-fold+.el' for this command."
   ;;
   ;; 1. Pass `isearchp-reg-(beg|end)', not nil, as BOUND arg to `isearch-search-string'.
   ;; 2. Instead of testing bobp|eobp, test whether point is beyond `isearchp-reg-(beg|end)'.
-  ;; 3. Added doc string.
+  ;; 3. Support using filter predicates with empty search hits, e.g. regexp search for just $.  (See bug #49534.)
+  ;; 4. Added doc string.
   ;;
   (defun isearch-search ()
     "Search using the current search string."
