@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 25 13:49:41 2021 (-0700)
+;; Last-Updated: Mon Jul 12 07:15:00 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7230
+;;     Update #: 7254
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -286,10 +286,11 @@
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
 ;;    `isearchp-noprompt-action-function',
 ;;    `isearchp-orig-ring-bell-fn', `isearchp-pref-arg',
-;;    `isearchp-reg-beg', `isearchp-reg-end',
-;;    `isearchp-regexp-level-overlays' (Emacs 24.4+),
-;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
-;;    (Emacs 22+), `isearchp--replacing-on-demand' (Emacs 22+),
+;;    `isearchp-reached-limit-p', `isearchp-reg-beg',
+;;    `isearchp-reg-end', `isearchp-regexp-level-overlays' (Emacs
+;;    24.4+), `isearchp-replace-literally' (Emacs 22+),
+;;    `isearchp-replacement' (Emacs 22+),
+;;    `isearchp--replacing-on-demand' (Emacs 22+),
 ;;    `isearch-update-post-hook' (Emacs 20-21),
 ;;    `isearchp-user-entered-new-filter-p' (Emacs 24.4+),
 ;;    `isearchp-win-pt-line'.
@@ -1279,6 +1280,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/07/12 dadams
+;;     Added: isearchp-reached-limit-p.
+;;     isearch-search: Support using filter predicates with empty search hits.
+;;     isearch-lazy-highlight-search:
+;;       Use version of search-invisible binding from Emacs 28 master of 2021-07-11, which doesn't match invisible
+;;       text unless (1) it can open or (2) we're counting matches - bug #40808.
 ;; 2021/05/25 dadams
 ;;     lazy-highlight-buffer-max-at-a-time: Changed default value to 200, per Emacs bug #48581.
 ;; 2021/03/17 dadams
@@ -6114,7 +6121,8 @@ You need library `character-fold+.el' for this command."
   )
 
 
-;;; Support for limiting search to active region, full-buffer higlighting, and other things.
+;;; Support for limiting search to active region, full-buffer higlighting,
+;;; using filter predicates with empty search hits, and other things.
 ;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
@@ -6139,20 +6147,24 @@ You need library `character-fold+.el' for this command."
               (inhibit-quit                nil)
               (case-fold-search            isearch-case-fold-search)
               (search-invisible            isearch-invisible)
-              (retry                       t))
+              (retry                       t)
+              (empty-hit-p                 nil))
           (setq isearch-error  nil)
           (while retry
             (setq isearch-success  (isearch-search-string isearch-string
                                                           (if isearch-forward isearchp-reg-end isearchp-reg-beg)
                                                           t))
-            ;; Clear RETRY unless the search predicate says to skip this search hit.
-            (when (or (not isearch-success)
-                      (if isearch-forward
-                          (or (eobp)  (and isearchp-reg-end  (> (point) isearchp-reg-end)))
-                        (or (bobp)  (and isearchp-reg-beg  (< (point) isearchp-reg-beg))))
-                      (= (match-beginning 0) (match-end 0))
+            (when (or (not isearch-success) ; Clear RETRY unless filter predicate says to skip this search hit.
+                      (isearchp-reached-limit-p)
                       (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
-              (setq retry  nil)))
+              (setq retry  nil))
+            (when (setq empty-hit-p  (= (match-beginning 0) (match-end 0)))
+              ;; Empty search hit, e.g. regexp search for just $.
+              (if (not (isearchp-reached-limit-p))
+                  (forward-char (if isearch-forward 1 -1))
+                (setq isearch-success  nil) ; Can't go further, so fail (and wrap next time).
+                (ding))))
+          (when empty-hit-p (backward-char (if isearch-forward 1 -1)))
           (setq isearch-just-started  nil)
           (when isearch-success
             (setq isearch-other-end  (if isearch-forward (match-beginning 0) (match-end 0)))))
@@ -6197,17 +6209,19 @@ Attempt to do the search exactly the way the pending Isearch would."
               (isearch-forward                isearch-lazy-highlight-forward)
 
 ;;; $$$$$ 2021-01-01.
-;;        This is for bug #40808, instead of previous binding of nil.
-;;        But Juri hasn't finished other parts of that bug yet, so check back later to see if there are more changes,
-;;        e.g. for fixing it wrt Org mode.
-;;               (search-invisible               nil) ; Do not match invisible text.
+              ;; This is for bug #40808, instead of previous binding of nil.
+              ;; But Juri hasn't finished other parts of that bug yet, so check back later
+              ;; to see if there are more changes, e.g. for fixing it wrt Org mode.
+              ;; (search-invisible               nil) ; Do not match invisible text.
 
+              ;; Juri's version from 2021-01-0 and Emacs 27.2.
               ;; Match invisible text only when counting matches and user can visit invisible matches.
-              (search-invisible               (and isearch-lazy-count  search-invisible  t))
+              ;; (search-invisible               (and isearch-lazy-count  search-invisible  t))
 
-;;; This was a previous version from Juri:
-;;;               ;; Don't match invisible text unless it can open or we're counting matches - bug #40808.
-;;;               (search-invisible               (or (eq search-invisible 'open)  isearch-lazy-count))
+              ;; Juri's version from incipient Emacs 28 (master of 2021-07-11).
+              ;; Don't match invisible text unless it can open or we're counting matches - bug #40808.
+              (search-invisible               (or (eq search-invisible 'open)
+                                                  (and isearch-lazy-count  search-invisible)))
               (retry                          t)
               (success                        nil)
               (dim-face                       (if (fboundp 'isearchp-dim-face-spec) ; In `isearch-prop.el'.
@@ -6238,6 +6252,12 @@ Attempt to do the search exactly the way the pending Isearch would."
                 (when (and (not dimming)  filter-OK) (setq retry  nil)))))
           success)
       (error nil)))
+
+  (defun isearchp-reached-limit-p ()
+    "Return non-nil if at search-boundary limit in current search direction."
+    (if isearch-forward
+        (or (eobp)  (and isearchp-reg-end  (> (point) isearchp-reg-end)))
+      (or (bobp)  (and isearchp-reg-beg  (< (point) isearchp-reg-beg)))))
 
 
 
