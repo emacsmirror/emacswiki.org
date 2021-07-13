@@ -70,7 +70,7 @@ But a predicate can just check each line for `cat' AND check for `dog' AND check
 
 
 
-
+[:AFilterPredicateCanPerformSideEffects]
 === A Filter Predicate Can Perform Side Effects ===
 
 A filter predicate can even perform side effects, if you like.
