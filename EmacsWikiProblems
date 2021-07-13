@@ -40,6 +40,9 @@ So, something like <code>ircs://irc.libera.chat:6697/#emacs</code> and <code>[ir
 
 ---AnonymousCoward
 
+[new]
+Fixed: ircs://irc.libera.chat:6697/#emacs – Alex
+
 == icicle-download-wizard fails and afterwards www.emacswiki.org refuses connections ==
 
 I wanted to try icicles and followed the instructions from icicles-install.el.
