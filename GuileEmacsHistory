@@ -54,6 +54,7 @@ The 2014 GoogleSummerOfCode once again had GuileEmacs with BT Templeton as the a
 
 During that, the Elisp engine was finally replaced by libguile in full, resulting in an essentially "normal" GNU Emacs build that uses libguile for Elisp. Significant quirks and flaws remain though.
 
+[https://emacsninja.com/posts/state-of-emacs-lisp-on-guile.html State of Emacs Lisp on Guile] (2020).
 
 == See also ==
 GuileEmacs
