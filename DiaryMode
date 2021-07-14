@@ -189,7 +189,7 @@ send you to school on those days... :)
              (<= date1 d) 
              (<= d date2)
              (= (calendar-day-of-week date) dayname)
-             (not (check-calendar-holidays date))
+             (not (calendar-check-holidays date))
              )
              entry)))
 
