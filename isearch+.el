@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 12 14:16:10 2021 (-0700)
+;; Last-Updated: Wed Jul 14 07:43:20 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7260
+;;     Update #: 7270
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1280,6 +1280,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/07/14 dadams
+;;     isearch-lazy-highlight-search:
+;;       Juri, bug #49534: Removed test (= (point) bound) - no need for empty highlighting.
 ;; 2021/07/12 dadams
 ;;     Added: isearchp-reached-limit-p.
 ;;     isearch-search: Support using filter predicates with empty search hits (fixes Emacs bug #49534).
@@ -6242,7 +6245,6 @@ Attempt to do the search exactly the way the pending Isearch would."
               (when (or (and (boundp 'isearchp-lazy-dim-filter-failures-flag)
                              isearchp-lazy-dim-filter-failures-flag)
                         (not success)
-                        (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
                         (= (match-beginning 0) (match-end 0)))
                 (setq retry  nil))
               ;; Check filter predicate.  If `isearchp-lazy-dim-filter-failures-flag' is non-nil
