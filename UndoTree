@@ -8,18 +8,14 @@ For more information, see the Commentary at the top of the ##undo-tree.el## file
 
 == Downloading ==
 
-The undo-tree package is available from GNU [[ELPA]] in recent Emacsen, and in [[el-get]]. You can install it with `M-x install-package undo-tree'. The latest "stable" version (version 0.6.4, released August 2013) can also be downloaded from:
+The undo-tree package is available from GNU [[ELPA]] in recent Emacsen, and in [[el-get]]. You can install it with `M-x install-package undo-tree'. The latest "stable" version (version 0.8.1, released February 2021) can also be downloaded from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/undo-tree.html
 
 If you want to live on the bleeding edge, the latest "development" version can be found in a git repository located at:
 
-* Undo-tree git repository: http://www.dr-qubit.org/git/undo-tree.git
-
-This is a git repository, ''*not*'' a web page. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
-
-    git clone http://www.dr-qubit.org/git/undo-tree.git
+* Undo-tree git repository: https://gitlab.com/tsc25/undo-tree
 
 To enable it, add it to your LoadPath (if necessary), then add the following to your InitFile:
 
