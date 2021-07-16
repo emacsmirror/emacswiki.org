@@ -45,7 +45,7 @@ Below there is a list of similar projects, WYSIWYG editors for
 structured documents with export to TeX or LaTeX.
 * [http://opera.inrialpes.fr/Thot.en.html Thot] structured document editor. X-Window GUI. Last changes: 1997.
 * [http://www.lyx.org/ LyX] is WYSIWYM editor using LaTeX engine. 
-* [http://www.ctan.org/tex-archive/help/Catalogue/entries/microimp.html MicroIMP]: an intuitive WYSIWYG document preparation system,
+* [https://ctan.org/pkg/microimp MicroIMP]: an intuitive WYSIWYG document preparation system,
 based on LaTeX. Free, not open-source. Windows only.
 * [http://www.mackichan.com/index.html?products/swp.html~mainFrame Scientific WorkPlace] and [http://www.mackichan.com/index.html?products/sw.html~mainFrame Scientific Word] is a mathematical word processor combining professional typesetting based on the TeX system (save to LaTeX) with a powerful symbolic algebra using MuPAD engine (Scientific WorkPlace only). Proprietary. Windows or MacOS.
 
