@@ -89,9 +89,18 @@ which in most cases is bound to M-r C-l C-l
 
 (note, recenter-top-bottom seems only to exhibit the desired behavior when invoked using a key binding)
 
-== Half page scrolling à la Vim ==
+== Evil: half-page scrolling à la Vim ==
 
-Coming from vim and still evil-mode not having a decent half scroll page function, based on above commands I came up with this:
+As at July 2021, Evil has options for half-page scrolling with <code>evil-scroll-down</code> and <code>-up</code>:
+
+  (evil-scroll-down COUNT)
+  
+  Scrolls the window and the cursor COUNT lines downwards.
+  If COUNT is not specified the function scrolls down
+  ‘evil-scroll-count’, which is the last used count.
+  If the scroll count is zero the command scrolls half the screen.
+
+[Another evil user had written:] Coming from vim and still evil-mode not having a decent half scroll page function, based on above commands I came up with this:
 
   (defun zz-scroll-half-page (direction)
     "Scrolls half page up if `direction' is non-nil, otherwise will scroll half page down."
@@ -113,6 +122,8 @@ Coming from vim and still evil-mode not having a decent half scroll page functio
     (interactive)
     (zz-scroll-half-page t))
 
+
+ 
 
 == View.el == 
 This seems to be built-in. Maybe it wasn't in the past.
