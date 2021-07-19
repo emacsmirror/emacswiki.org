@@ -49,6 +49,15 @@ This setting will prevent Emacs from trashing old desktop lock files (if you use
 
 == Mac OS X ==
 
+If you don't need "Put Back" feature, these lines should suffice to configure deletion of files to Trash:
+
+{{{
+(setq delete-by-moving-to-trash t)
+
+(if (eq system-type 'darwin)
+    (setq trash-directory "~/.Trash"))
+}}}
+
 If you use [http://brew.sh/ Homebrew] you can ##brew install trash## for a command-line program to trash files and directories using OSX conventions.
 
 {{{
@@ -61,6 +70,10 @@ When using Homebrew, install it using \"brew install trash\"."
 		nil 0 nil
 		file))
 }}}
+
+Note that the command ##trash -F## works slower, but enables "Put Back" feature.
+
+If you don't want to use a third-party package for files removal, consider calling [https://github.com/emacsorphanage/osx-trash/issues/4 ns-do-applescript] with this task.
 
 ----
 CategoryDirectories
