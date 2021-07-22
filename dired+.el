@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.06.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 21 12:34:10 2021 (-0700)
+;; Last-Updated: Thu Jul 22 16:19:13 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 13003
+;;     Update #: 13023
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -676,7 +676,8 @@
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
-;;    `diredp-full-file-name-less-p', `diredp-full-file-name-more-p',
+;;    `diredp-fit-one-window-frame', `diredp-full-file-name-less-p',
+;;    `diredp-full-file-name-more-p',
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-get-image-filename',
 ;;    `diredp-get-subdirs', `diredp-hide-details-if-dired' (Emacs
@@ -877,6 +878,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/07/22 dadams
+;;     Added: diredp-fit-one-window-frame.
+;;     dired-maybe-insert-subdir: With negative prefix arg, remove all inserted subdir listings.
+;;     diredp-fit-frame-unless-buffer-narrowed, diredp-toggle-marks-in-region: Use diredp-fit-one-window-frame.
 ;; 2021/06/21 dadams
 ;;     dired-buffers-for-dir: Updated for Emacs 28: Added optional arg SUBDIRS.
 ;;     diredp-dired-inserted-subdirs, diredp-next-subdir: dired-get-subdir-min -> cdr (Emacs 27 removed it).
@@ -2359,6 +2364,7 @@ of that nature."
 ;; (defvar rgrep-find-ignored-directories)
 (defvar save-some-buffers-action-alist)           ; In `files.el'
 (defvar switch-to-buffer-preserve-window-point)   ; In `window.el', Emacs 24+
+(defvar tab-line-exclude)                         ; In `tab-line.el', Emacs 27+
 (defvar tooltip-mode)                             ; In `tooltip.el'
 (defvar vc-directory-exclusion-list)              ; In `vc'
 (defvar w32-browser-wait-time)                    ; In `w32-browser.el'
@@ -10428,12 +10434,16 @@ Binding variable `help-form' will help the user who types the help key."
 ;; 1. Use `diredp-this-subdir' instead of `dired-get-filename'.
 ;; 2. If on a subdir listing header line or a non-dir file in a subdir listing, go to
 ;;    the line for the subdirectory in the parent directory listing.
-;; 3. Fit one-window frame after inserting subdir.
+;; 3. A negative prefix arg means remove all inserted subdir listings.
+;; 4. Fit one-window frame after inserting subdir.
 ;;
 ;;;###autoload
-(defun dired-maybe-insert-subdir (dirname &optional switches no-error-if-not-dir-p)
-                                        ; Bound to `i'
-  "Move to Dired subdirectory line or subdirectory listing.
+(defun dired-maybe-insert-subdir (dirname &optional arg no-error-if-not-dir-p) ; Bound to `i'
+  "Insert subdir listing or move to subdir line or listing.
+With a negative prefix arg, just remove all inserted subdir listings.
+
+Otherwise (non-negative prefix arg or none):
+
 This bounces you back and forth between a subdirectory line and its
 inserted listing header line.  Using it on a non-directory line in a
 subdirectory listing acts the same as using it on the subdirectory
@@ -10451,40 +10461,50 @@ header line.
 
 Subdirectories are listed in the same position as for `ls -lR' output.
 
-With a prefix arg, you can edit the `ls' switches used for this
-listing.  Add `R' to the switches to expand the directory tree under a
-subdirectory.
+With a non-negative prefix arg, you can edit the `ls' switches used
+for this subdir listing.  Add `R' to the switches to expand the
+directory tree under a subdirectory.
 
 Dired remembers switches specified with a prefix arg, so reverting the
 buffer does not reset them.  However, you might sometimes need to
 reset some subdirectory switches after using \\<dired-mode-map>`\\[dired-undo]'.  You can reset all
 subdirectory switches to the default value using
 `\\[dired-reset-subdir-switches]'.
-See Info node `(emacs) Subdir switches' for more details."
+See Info node `(emacs) Subdir switches' for more details.
+
+If called from Lisp, non-nil ARG is an `ls' switches string or a
+number.  A number means remove all inserted subdir listings."
   (interactive (list (diredp-this-subdir)
                      (and current-prefix-arg
-                          (read-string "Switches for listing: "
-                                       (or (and (boundp 'dired-subdir-switches)  dired-subdir-switches)
-                                           dired-actual-switches)))))
-  (let ((opoint    (point))
-        (filename  dirname))
-    (cond ((consp filename)             ; Subdir header line or non-directory file.
-           (setq filename  (car filename))
+                          (if (natnump (prefix-numeric-value current-prefix-arg))
+                              (read-string "Switches for listing: "
+                                           (or (and (boundp 'dired-subdir-switches)  dired-subdir-switches)
+                                               dired-actual-switches))
+                            (prefix-numeric-value current-prefix-arg)))))
+  (if (numberp arg)
+      (diredp-remove-inserted-subdirs)
+    (let ((opoint    (point))
+          (filename  dirname))
+      (cond ((consp filename) ; Subdir header line or non-directory file.
+             (setq filename  (car filename))
            (if (assoc filename dired-subdir-alist)
-               (dired-goto-file filename) ;  Subdir header line.
+               (dired-goto-file filename) ;  On subdir header line.  Go to subdir line in parent listing.
              (dired-insert-subdir (substring (file-name-directory filename) 0 -1))))
-          (t
-           ;; We don't need a marker for opoint as the subdir is always
-           ;; inserted *after* opoint.
-           (setq dirname  (file-name-as-directory dirname))
-           (or (and (not switches)  (dired-goto-subdir dirname))
-               (dired-insert-subdir dirname switches no-error-if-not-dir-p))
-           ;; Push mark so that it's easy to go back.  Do this after the
-           ;; insertion message so that the user sees the `Mark set' message.
-           (push-mark opoint)
-           (when (and (get-buffer-window (current-buffer)) ; Fit one-window frame.
-                      (fboundp 'fit-frame-if-one-window)) ; In `autofit-frame.el'.
-             (fit-frame-if-one-window))))))
+            (t
+             ;; We don't need a marker for opoint as the subdir is always
+             ;; inserted *after* opoint.
+             (setq dirname  (file-name-as-directory dirname))
+             (or (and (not arg)  (dired-goto-subdir dirname))
+                 (dired-insert-subdir dirname arg no-error-if-not-dir-p))
+             ;; Push mark so that it's easy to go back.  Do this after the
+             ;; insertion message so that the user sees the `Mark set' message.
+             (push-mark opoint)
+             (diredp-fit-one-window-frame))))))
+
+(defun diredp-fit-one-window-frame ()
+  "Fit one-window selected frame to its buffer."
+  (when (and (get-buffer-window (current-buffer))  (fboundp 'fit-frame-if-one-window)) ; In `autofit-frame.el'.
+    (fit-frame-if-one-window)))
 
 (defun diredp-this-subdir ()
   "This line's filename, if directory, or `dired-current-directory' list.
@@ -11433,8 +11453,7 @@ according to option `diredp-hide-details-initially-flag'."
   (defun diredp-fit-frame-unless-buffer-narrowed ()
     "Fit frame unless Dired buffer is narrowed.
 Requires library `autofit-frame.el'."
-    (when (and (get-buffer-window (current-buffer))  (not (buffer-narrowed-p)))
-      (fit-frame-if-one-window)))
+    (unless (buffer-narrowed-p) (diredp-fit-one-window-frame)))
 
   ;; Fit frame only if not narrowed.  Put it on this hook because `dired-hide-details-mode' is
   ;; invoked from `dired-after-readin-hook' via `diredp-hide/show-details', even for an update
@@ -11578,8 +11597,9 @@ nil."
 
 ;;;###autoload
 (defun diredp-next-subdir (arg &optional no-error-if-not-found no-skip) ; Bound to `C-M-n'
-  "Go to the next subdirectory, regardless of level.
-If ARG = 0 then go to this directory's header line.
+  "Go to the Nth next subdirectory, regardless of level.
+N is the numeric prefix arg (defaults to 1).
+If N = 0 then go to this directory's header line.
 
 If `diredp-wrap-around-flag' is non-nil then wrap around if none is
 found before the buffer end (buffer beginning, if ARG is negative).
@@ -11608,7 +11628,7 @@ the position moved to so far."
 
 ;;;###autoload
 (defun diredp-prev-subdir (arg &optional no-error-if-not-found no-skip) ; Bound to `C-M-p'
-  "Go to the previous subdirectory, regardless of level.
+  "Go to the Nth previous subdirectory, regardless of level.
 When called interactively and not on a subdir line, go to this subdir's line.
 Otherwise, this is a mirror image of `diredp-next-subdir'."
   ;;(interactive "^p")
@@ -12993,8 +13013,7 @@ With non-nil prefix arg, mark them instead."
             (when details-hidden-p (dired-details-hide)))
         (narrow-to-region beg end)
         (dired-toggle-marks))))
-  (when (and (get-buffer-window (current-buffer))  (fboundp 'fit-frame-if-one-window))
-    (fit-frame-if-one-window)))
+  (diredp-fit-one-window-frame))
 
 
 ;;; Mouse 3 menu.
