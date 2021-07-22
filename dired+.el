@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.06.21
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 22 16:19:13 2021 (-0700)
+;; Last-Updated: Thu Jul 22 16:31:29 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 13023
+;;     Update #: 13027
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -601,6 +601,7 @@
 ;;    `diredp-relsymlink-this-file',
 ;;    `diredp-remove-all-tags-this-file',
 ;;    `diredp-remove-file-from-recentf',
+;;    `diredp-remove-inserted-subdirs',
 ;;    `diredp-remove-this-from-recentf', `diredp-rename-this-file',
 ;;    `diredp-send-bug-report',
 ;;    `diredp-set-bookmark-file-bookmark-for-marked',
@@ -879,7 +880,7 @@
 ;;; Change Log:
 ;;
 ;; 2021/07/22 dadams
-;;     Added: diredp-fit-one-window-frame.
+;;     Added: diredp-remove-inserted-subdirs, diredp-fit-one-window-frame.
 ;;     dired-maybe-insert-subdir: With negative prefix arg, remove all inserted subdir listings.
 ;;     diredp-fit-frame-unless-buffer-narrowed, diredp-toggle-marks-in-region: Use diredp-fit-one-window-frame.
 ;; 2021/06/21 dadams
@@ -10500,6 +10501,19 @@ number.  A number means remove all inserted subdir listings."
              ;; insertion message so that the user sees the `Mark set' message.
              (push-mark opoint)
              (diredp-fit-one-window-frame))))))
+
+(defun diredp-remove-inserted-subdirs () ; Not bound
+  "Remove all inserted subdir listings.
+Note that `C-x C-v' and accept the default directory does this, as it
+rereads the main directory."
+  (interactive)
+  (diredp-ensure-mode)
+  (dolist (entry  dired-subdir-alist)
+    (unless (string= (car entry) default-directory)
+      ;; Could just use (dired-goto-subdir (car entry)) but next two lines are the relevant part.
+      (goto-char (cdr entry))
+      (skip-chars-forward "^\r\n")
+      (dired-kill-subdir))))
 
 (defun diredp-fit-one-window-frame ()
   "Fit one-window selected frame to its buffer."
