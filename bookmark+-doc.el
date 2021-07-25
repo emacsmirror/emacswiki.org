@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Mar  9 18:51:56 2021 (-0800)
+;; Last-Updated: Sun Jul 25 15:16:38 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 15355
+;;     Update #: 15356
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3764,7 +3764,7 @@
 ;;  the text in the buffer, the highlighted location can thus become
 ;;  out of sync with the recorded position.  This is normal.  When you
 ;;  jump to the bookmark, its highlight is automatically repositioned
-;;  to the recorded location, possibly adjusted according to the the
+;;  to the recorded location, possibly adjusted according to the
 ;;  surrounding context.
 ;;
 ;;  In addition to the default highlighting, which you can customize,
