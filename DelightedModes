@@ -83,7 +83,13 @@ cc-mode.el assumes that `mode-name' is always a string (which was true in Emacs 
 
 The symptom of this conflict is the following error (where the ##...## varies):
 
- (wrong-type-argument stringp (inhibit-mode-name-delight ...))
+ (wrong-type-argument stringp (delight-mode-name-inhibit ...))
+
+or the message:
+
+ c-update-modeline: Wrong type argument: stringp, (delight-mode-name-inhibit ...)
+
+(n.b. With delight.el version 1.5 and earlier, the error would refer to `inhibit-mode-name-delight' rather than `delight-mode-name-inhibit'.)
 
 The conflicting function is `c-update-modeline' which adds the various suffix characters documented at ##M-: (info "(ccmode) Minor Modes")##.  (E.g. In the mode line of a `c-mode' buffer, the name ##C## might be changed to ##C/*l## or similar, depending on the minor modes.)
 
