@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 30 10:26:42 2021 (-0700)
+;; Last-Updated: Fri Jul 30 11:31:04 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 671
+;;     Update #: 684
 ;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
@@ -46,8 +46,9 @@
 ;;    `fontify-buffer', `interesting-buffer-p', `live-buffer-name',
 ;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
 ;;    `mode-symbol-p', `mod-signed', `notify-user-of-mode',
-;;    `plist-to-alist', `read-mode-name', `region-or-buffer-limits',
-;;    `signum', `some-apply-p' `string-after-p', `string-before-p',
+;;    `plist-to-alist', `plist-to-alist-1', `plist-to-dotted-alist',
+;;    `read-mode-name', `region-or-buffer-limits', `signum',
+;;    `some-apply-p' `string-after-p', `string-before-p',
 ;;    `undefine-keys-bound-to', `undefine-killer-commands',
 ;;    `unique-name'.
 ;;
@@ -56,7 +57,7 @@
 ;;; Change Log:
 ;;
 ;; 2021/07/30 dadams
-;;     Added: plist-to-alist.
+;;     Added: plist-to-alist, plist-to-dotted-alist, plist-to-alist-1.
 ;; 2016/10/16 dadams
 ;;     Added: all-apply-p, some-apply-p.
 ;; 2016/05/19 dadams
@@ -541,21 +542,38 @@ For each key in KEYMAP that is indirectly bound to one of the commands in
 
 ;;;$ MISCELLANEOUS ------------------------------------------------------------
 
-(defun plist-to-alist (&optional arg &rest args)
-  "Return an alist from a plist or individual key & value args, or both.
+(defun plist-to-alist (&optional plist &rest pairs)
+  "Return an alist from a PLIST or individual key & value PAIRS, or both.
 If the first arg is a list, append the remaining args to it and create
  the alist from the resulting plist.
-Otherwise, just use the plist created from all the args (including the
- first)."
-  (setq arg  (if (listp arg)
-                 (if args
-                     (nconc (copy-sequence arg) args)
-                   arg)
-               (cons arg args)))
+Otherwise, just use the plist created from all of the args (including
+ the first).
+
+Alist elements are (KEY VALUE), where KEY and VALUE are successive
+plist elements.  If you instead want (KEY . VALUE) elements then use
+function `plist-to-dotted-alist'."
+  (plist-to-alist-1 nil plist pairs))
+
+(defun plist-to-dotted-alist (&optional plist &rest pairs)
+  "Same as `plist-to-alist' but using dotted list elements.
+That is, alist elements are (KEY . VALUE), not (KEY VALUE), where KEY
+and VALUE are successive plist elements."
+  (plist-to-alist-1 t plist pairs))
+
+(defun plist-to-alist-1 (dottedp &optional plist pairs)
+  "Helper for `plist-to-alist' and `plist-to-dotted-alist'."
+  (setq plist  (if (listp plist)
+                   (if pairs
+                       (nconc (copy-sequence plist) pairs)
+                     plist)
+                 (cons plist pairs)))
   (let ((alist  ()))
-    (while arg
-      (setq alist  `((,(car arg) ,(cadr arg)) ,@alist)
-            arg   (cddr arg)))
+    (while plist
+      (setq alist  (nconc (if dottedp
+                              `((,(car plist) ,@(cadr plist)))
+                            `((,(car plist) ,(cadr plist))))
+                          alist)
+            plist   (cddr plist)))
     (nreverse alist)))
 
 (defun mod-signed (num base)
