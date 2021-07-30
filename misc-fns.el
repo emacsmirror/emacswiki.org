@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 30 11:31:04 2021 (-0700)
+;; Last-Updated: Fri Jul 30 11:37:25 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 684
+;;     Update #: 685
 ;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
@@ -573,7 +573,7 @@ and VALUE are successive plist elements."
                               `((,(car plist) ,@(cadr plist)))
                             `((,(car plist) ,(cadr plist))))
                           alist)
-            plist   (cddr plist)))
+            plist  (cddr plist)))
     (nreverse alist)))
 
 (defun mod-signed (num base)
