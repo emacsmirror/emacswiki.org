@@ -1,8 +1,25 @@
-If you program in Pascal you could use pascal.el which comes with Emacs.
+Emacs comes with ***Pascal Mode*** - a major mode that adds features to be used while programming in the Pascal programming language.
 
-Alternatives modes:
-* pasc-mode.el -- http://www.nada.kth.se/~inge/MY/pascal/
-* pascal-mode.el -- Groups:pascal-mode.el
+== Using Pascal Mode ==
+
+Pascal mode may start automatically when Emacs opens a ##.pas## file. You may also use ##M-x pascal-mode##
+
+Pascal mode comes with several functions, including:
+
+* ##M-x pascal-beg-of-defun## - Move point to the beginning of the last block.
+* ##M-x outline-mode## - Collapse all codeblocks to get a birds-eye view of your code.
+* ##M-x show-all## - Re-expand all collapsed blocks.
+* ##M-x capitalize-keywords## - Make keywords start with a capital letter.
+
+== Customization ==
+
+You can see different customization options for Pascal mode by using ##M-x customize-group RET pascal 
+
+== External Links ==
+* [http://www.nada.kth.se/~inge/MY/pascal/ pasc-mode.el]
+* [https://freepascal.org/ The FreePascal compiler]
+* [https://www.freepascal.org/docs-html/current/ref/ref.html The FreePascal language reference manual]
+* pascal-mode.el -- Groups:pascal-mode.el 
 
 ----
 CategoryModes | ProgrammingModes
