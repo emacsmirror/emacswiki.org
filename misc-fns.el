@@ -4,16 +4,16 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:55:24 2018 (-0800)
+;; Last-Updated: Fri Jul 30 10:26:42 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 669
+;;     Update #: 671
 ;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -46,8 +46,8 @@
 ;;    `fontify-buffer', `interesting-buffer-p', `live-buffer-name',
 ;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
 ;;    `mode-symbol-p', `mod-signed', `notify-user-of-mode',
-;;    `read-mode-name', `region-or-buffer-limits', `signum',
-;;    `some-apply-p' `string-after-p', `string-before-p',
+;;    `plist-to-alist', `read-mode-name', `region-or-buffer-limits',
+;;    `signum', `some-apply-p' `string-after-p', `string-before-p',
 ;;    `undefine-keys-bound-to', `undefine-killer-commands',
 ;;    `unique-name'.
 ;;
@@ -55,6 +55,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/07/30 dadams
+;;     Added: plist-to-alist.
 ;; 2016/10/16 dadams
 ;;     Added: all-apply-p, some-apply-p.
 ;; 2016/05/19 dadams
@@ -538,6 +540,23 @@ For each key in KEYMAP that is indirectly bound to one of the commands in
 
 
 ;;;$ MISCELLANEOUS ------------------------------------------------------------
+
+(defun plist-to-alist (&optional arg &rest args)
+  "Return an alist from a plist or individual key & value args, or both.
+If the first arg is a list, append the remaining args to it and create
+ the alist from the resulting plist.
+Otherwise, just use the plist created from all the args (including the
+ first)."
+  (setq arg  (if (listp arg)
+                 (if args
+                     (nconc (copy-sequence arg) args)
+                   arg)
+               (cons arg args)))
+  (let ((alist  ()))
+    (while arg
+      (setq alist  `((,(car arg) ,(cadr arg)) ,@alist)
+            arg   (cddr arg)))
+    (nreverse alist)))
 
 (defun mod-signed (num base)
   "Return NUM modulo BASE, irrespective of the sign of NUM.
