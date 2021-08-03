@@ -14,10 +14,27 @@ It's really useful if you are developing packages, it makes your code more porta
 
 == Building local archives ==
 
-It's quite difficult to build local archives. 
+Mirroring is difficult, so consider using already-developed tools for this purpose. For example (there may be others):
 
-NicFerrier wrote the [[ElpaKit]] tool to make it easy.
+=== ElpaKit ===
 
+NicFerrier wrote the [[ElpaKit]] tool for this process, but it also
+
+* [MakingPackages makes Emacs packages] from source files
+* isolates, runs, and manages tests
+
+Unfortunately (as of 3 Aug 2021) ElpaKit
+
+* has [https://github.com/nicferrier/elpakit/commits/master had no commits since 2014]
+* has [https://github.com/nicferrier/elpakit/issues open issues from 2013-2016]
+
+=== elpa-mirror ===
+
+[http://blog.binchen.org/ Redguardtoo] wrote [https://github.com/redguardtoo/elpa-mirror elpa-mirror], which
+
+* is more focused on the mirroring task
+* has (as of 3 Aug 2021) [https://github.com/redguardtoo/elpa-mirror/commits/master commits less than 6 weeks old]
+* seems better tested: has [https://github.com/redguardtoo/elpa-mirror/blob/master/.github/workflows/test.yml CI], tests over [https://github.com/redguardtoo/elpa-mirror#why Emacs versions=25-27 on OS ∈ {macOS, Cygwin, Windows 10, Linux}]
 
 == Temporarily declaring the local archive ==
 
