@@ -1,0 +1,80 @@
+[[en:CategoryInternationalization]]
+Клацніть на заголовок, щоб знайти всі сторінки в категорії інтернаціоналізація
+([::i18n]). Сюди входять питання про Latin-1 і CP-1250, японські та китайські
+шрифти, і методи вводу, використовуючи шрифти BDF на NT Emacs тощо.
+
+Починаємо:
+
+* [[InternationalSetup|Міжнародне налаштування]] -- основні налаштування, які вам необхідні //(англ.)//
+** [[LanguageEnvironment|Мовне середовище]] -- Emacs не показує або не приймає äöü тощо //(англ.)//
+** [[InternationalFonts|Міжнародні шрифти]] -- де брати шрифти для відображення ваших символів //(англ.)//
+** [[FontSetsForNTEmacs|Набори шрифтів для Emacs NT]] -- як встановити шрифти для Emacs на Windows //(англ.)//
+** [[PrintingBdfFonts|Друк шрифтів BDF]] -- when you use the intlfonts package with the BDF fonts, here is how to print them using PsPrint //(англ.)//
+* [[AproposUnicode|Щодо Unicode]] -- допомога зі знаками Unicode //(англ.)//
+* [[DisplayingNonAsciiCharacters|Відображення не-ASCII символів]] -- налагодження ваших налаштувань після невдалого відображення //(англ.)//
+* [[FindingNonAsciiCharacters|Пошук не-ASCII символів]] //(англ.)//
+* [[BufferCharset|Набір знаків буфера]] -- список набору знаків, що використовується в буфері //(англ.)//
+
+* [[InputMethods|Методи вводу]] -- the code you need to be able to type weird characters which are not part of your keyboard //(англ.)//
+** [[ChangingCursorDynamically|Динамічна зміна курсора]] -- автоматична зміна кольору текстового курсора, коли ви використовуєте метод вводу //(англ.)//
+** Lisp:fliptext.el -- перевернуті символи unicode //(англ.)//
+
+* AltGrKey -- Emacs keys seems hidden because /AltGr/ + /Control/ + /key/ is (almost) just /AltGr/ + /key/  -- Solution: use /AltGr/ + /RControl/ (in that order!) //(англ.)//
+* ScimBridge -- писати різними мовами через [http://www.scim-im.org/ SCIM] //(англ.)//
+* IBusMode -- писати різними мовами через [http://code.google.com/p/ibus/ IBus] //(англ.)//
+* [[WritingChinese|Писати китайською]] -- деталі для китайських читачів і писарів //(англ.)//
+** [[ScimBridge Chinese]] use SCIM in Emacs. //(англ.)//
+** [[WritingChineseWithWuBi|Писати китайською через WuBi]] //(англ.)//
+** [[EimForChinese|Eim для китайської]] //(англ.)//
+* WritingGothic --  деталі для користувачів Gothic //(англ.)//
+* WritingIsoLatinOne -- писати з префіксом `C-x 8'. //(англ.)//
+* [[WritingJapanese|Писати японською]] -- деталі для японських читачів і писарів //(англ.)//
+** InsertSpaceBetweenZenkakuAndHankaku -- вставляння пробілів між zenkaku і hankaku (в японській) //(англ.)//
+** [[Migemo]] -- Isearch Japanese characters without convertion (in Japanese) //(англ.)//
+* [[WritingKorean|Писати корейською]] -- деталі для корейських читачів і писарів //(англ.)//
+* [[WritingRussianWithDvorak|Писати російською через Dvorak]] -- деталі для російських користувачів //(англ.)//
+* [[WritingRussianWithColemak|Писати російською через Colemak]] -- деталі для російських користувачів //(англ.)//
+* [[GnuEmacsRussification|Русифікація GNU Emacs]] -- конфіґурація для російських користувачів //(англ.)//
+* [[WritingSanskrit|Писати санскритом]] -- деталі для письменників санскритом //(англ.)//
+* WritingTengwar -- мови Толкієна //(англ.)//
+* WritingYiddish -- деталі для користувачів Їдіш //(англ.)//
+* [[SupportHindi|Підтримка Hindi]] -- як читати і писати мовою Гінді через Emacs. //(англ.)//
+* [[SupportTamil|Підтримка Tamil]] -- як читати і писати мовою Тамі через Emacs //(англ.)//
+* [[TypographicalPunctuationMarks|Типографічні знаки пунктуації]] -- короткі тире, довгі тире і типографічні лапки (також відомі як "розумні лапки") //(англ.)//
+* [[TextTranslator|Переклад тексту]] -- пакунок перекладу тексту //(англ.)//
+* GoTranslate -- інтерфейс Перекладача Google //(англ.)//
+* [[GoogleTranslate|Google Перекладач]] -- інтерфейс Перекладача Google //(англ.)//
+* TransEJ -- англійсько-японський переклад через різні вебсервіси перекладу //(англ.)//
+* Lisp:eijiro.el -- Пошук Eijiro, Японсько <=> Англійський словник, через [[Anything]] //(англ.)//
+* [https://www.mojotech.com/blog/automating-internationalization-workflow-in-emacs/ Internationalization WorkFlow] //(англ.)//
+* [http://sourceforge.jp/projects/dic-lookup-w3m/ dic-lookup-w3m] -- Lookup [http://www.kotoba.ne.jp/ online dictionaries] or [http://homepage2.nifty.com/m_kamada/l_translation.htm translate text] using [http://www.emacswiki.org/emacs/emacs-w3m emacs-w3m]. //(англ.)//
+
+Про системи кодування:
+
+* [[CodingSystem|Система кодування]] -- що таке система кодування //(англ.)//
+* [[GutenbergCoding|Кодування Gutenberg]] -- система кодування для текстів проєкту Gutenberg //(англ.)//
+* [[HtmlCoding|Кодування HTML]] -- система кодування файлів HTML (Emacs 21) //(англ.)//
+* LatexEnc -- система кодування для <nowiki>LaTeX</nowiki> <code>inputenc</code> //(англ.)//
+* MuleUCS -- розширення utf-8 та інших систем кодування unicode //(англ.)//
+* [[PerlPodCoding|Кодування POD Perl]] -- система кодування для <code>=розкодування</code> декларацій POD Perl //(англ.)//
+* [[SelectingTheRightCodingSystem|Вибір правильної системи кодування]] через автовизначення, команди клавіятури, текстову позначку у файлі, налаштування проєкту //(англ.)//
+* [[Unicad]] -- універсальне автовизначення набору знаків, так як mozilla вміє робити //(англ.)//
+* [[XmlCoding|Кодування XML]] -- система кодування для файлів XML (Emacs 21) //(англ.)//
+
+Спеціяльні пакунки:
+
+* [[ClassicalGreek|Класична грецька]] //(англ.)//
+* SimpleJapaneseTypesetter //(англ.)//
+* [[ChineseInputMethodImprove|Покращення китайського методу вводу]] //(англ.)//
+* Lisp:hanconvert.el -- перетворення між знаком спрощеної китайської і знаком традиційної китайської //(англ.)//
+* Lisp:undecodify.el (UnDecodify) -- перетворення UTF-8 зашифрованого як CP-1252 в UTF-8, основна помилка, яку роблять у Wordpress [https://github.com/larsmagne/undecodify.el/blob/master/undecodify.el також доступне на GitHub] //(англ.)//
+
+Фонова інформація:
+
+* [[FontSets|Набори шрифтів]] //(англ.)//
+* [[LatinOneAndMicrosoft|Latin-1 та Microsoft]] //(англ.)//
+* [[UnicodeEncoding|Кодування Unicode]] //(англ.)//
+* ReCode //(англ.)//
+* [[ChangingEncodings|Зміна кодування]] //(англ.)//
+
+Деяку основну інформацію про MULE читайне [http://tsukuba.m17n.org/mule/pricai96/index.html the paper] від Handa et al.
