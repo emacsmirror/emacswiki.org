@@ -160,7 +160,7 @@ I use the following code that uses the cert defined in a global variable when ca
 
 === Emacs 28 onwards ===
 
-Progress continues, and now the customization required is much simpler because `erc-tls' can do certificate authentication.
+Progress continues, and now the customization required is much simpler because `erc-tls' can do certificate authentication. Same as for v26/27, you don't need any of the above workarounds, just this section.
 
   (defun start-irc ()
     (interactive)
