@@ -108,7 +108,7 @@ This version works for me:
     BUFFER.  HOST and PORT specify the connection target."
       (open-tls-stream name buffer host port))
 
-=== Emacs 26/27 onwards ===
+=== Emacs 26/27 ===
 If you want to use `gnutls'(default) with client certificates, then you have to override `open-gnutls-stream', as it is not flexible enough(a patch to upstream would be nice).
 
 Note: You don't need any previous workarounds on this page like setting `tls-program' (it is deprecated) and the builtin `gnutls' lib does vaildate server certificates(see `gnutls-trustfiles').
@@ -157,6 +157,24 @@ I use the following code that uses the cert defined in a global variable when ca
     )
 
 --Jiten
+
+=== Emacs 28 onwards ===
+
+Progress continues, and now the customization required is much simpler because `erc-tls' can do certificate authentication.
+
+  (defun start-irc ()
+    (interactive)
+    (erc-tls :server "irc.libera.chat"
+             :port 6697
+             :nick "me"
+             :full-name "Me Myself"
+             :client-certificate
+             '("/Users/me/libera.key"
+               "/Users/me/libera.crt")))
+
+You should follow [https://libera.chat/guides/certfp the instructions] to generate the *.key and *.crt files, and don't forget to add the fingerprint to !NickServ as also described on that page.
+
+--Dbane
 
 ----
 [[ERC]]
