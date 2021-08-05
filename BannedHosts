@@ -12,3 +12,4 @@
 # pages), please get the page database instead.  See
 # http://emacswiki.org/cgi-bin/wiki/WikiDownload
 ^\.\.\. # 2021-08-05 [ - ] PENENENEN
+^\.\.\. # 2021-08-05 [ - ] DisplayingNonAsciiCharacters
