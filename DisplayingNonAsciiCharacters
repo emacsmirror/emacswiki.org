@@ -1,5 +1,24 @@
-[[es:PENENENEN]]
-When the display fPENNNNNNNNNNNNNNNNNNNNENNNNNNNNNNNENENENENENNEPENE
+When the display for some characters does not work, you will see
+little empty boxes instead of the glyphs you would like to see.
+
+One way to debug this is to check whether you have the fonts necessary
+for this character set.  If you do, then you will have to check wether
+your fontset has the correct mapping from charset to font (see
+FontSets).
+
+== Check character set ==
+
+Put point on the empty box, and use `C-u C-x ='.  The result should
+tell you the charset you want to know.  Here is an example from the
+HELLO file (use `C-h h' to display it):
+
+   character: ? (07067, 3639, 0xe37)
+     charset: cyrillic-iso8859-5
+	      (Right-Hand Part of Latin/Cyrillic Alphabet (ISO/IEC 8859-5): ISO-IR-144)
+  code point: 55
+      syntax: word
+    category: y:Cyrillic  
+ buffer code: 0x8C 0xB7
    file code: ESC 2C 4C 37 (encoded by coding system iso-2022-7bit-unix)
 	font: -- none --
 
