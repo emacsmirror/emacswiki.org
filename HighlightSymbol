@@ -9,7 +9,7 @@ See also:
 
 * [[ShowWhiteSpace#HighlightChars|Highlight Characters]]
 * HighLight -- Set option `hlt-auto-faces-flag' to `t' if you want each highlighted symbol to automatically use the next face/color from option `hlt-auto-face-backgrounds' (similar to `##highlight-symbol.el##' behavior)
-* %%AutoHighlightSymbolMode%%: https://github.com/mitsuo-saito/auto-highlight-symbol-mode
+* %%AutoHighlightSymbolMode%%: https://github.com/jcs-elpa/auto-highlight-symbol
 * In Emacs 24.4, `##M-s h .##' will be bound to `highlight-symbol-at-point'
 
 ====Problems====
