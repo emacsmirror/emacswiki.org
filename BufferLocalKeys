@@ -36,7 +36,6 @@ It works, thanks! Let me remember that, to unset a buffer-local key, you can use
 I had trouble with the keys defined by the above function not being found the first time the function was called, and only showing up after the second time the function was call.  (This was using Emacs 27.2.)  However, the following function worked for me:
 
     (defun buffer-local-set-key (key func)
-      ;; From: https://www.emacswiki.org/emacs/BufferLocalKeys
       (interactive "KSet key on this buffer: \naCommand: ")
       (let* ((mode-name (format "%s-magic" (buffer-name)))
              (name (intern mode-name))
