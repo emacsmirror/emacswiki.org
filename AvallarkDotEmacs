@@ -2,7 +2,7 @@ AbdulBijur's .emacs file.
 <pre>
 ;; this is my dot_emacs, copy, modify and use it as u want it.
 
-;; .emacs is where the soul lives… ;; this is my very own custoemr misation file
+;; .emacs is where the soul lives… ;; this is mine
 
  (custom-set-variables
   ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
