@@ -1,5 +1,7 @@
  comint.el patch --- multi-line commands in the SQL input history file
 
+NOTE: the patched comint.el file is no longer available and would most likely not work if it was
+
 If you work with SqlMode on a regular basis, you will want to save your command history between sessions.  Set sql-input-ring-file-name in order to save your command history.
 
 If you enter a multi-line SQL statement in an SQLi buffer, you can retrieve it as a multi-line command from the MinibufferHistory.  Not so when you exit Emacs and restart it at a later date: As you exit SQLi mode the command history is written to a file; when you enter SQLi mode again the history is loaded one command per line.  If you entered multi-line commands, each line of those commands will end up as one command in the input history of your new session.
