@@ -1,0 +1,12 @@
+This page is about library '''<tt>[[dyna-show.el]]</tt>''', which provides highlighting of occurrences of dynamically scoped variables in an EmacsLisp buffer, using [[minor mode]] '''`dyna-show-mode''''.
+
+The variables are highlighted with face `dyna-variables'.
+
+You can use library ##dyna-show.el## together with library '''<tt>[[hl-defined.el]]</tt>''', which highlight [[symbol]]s that are known to be defined functions and/or variables.  When used together, the highlighting of dynamic variables overrides the variable highlighting of ##hl-defined.el##.
+
+
+
+----
+
+CategoryHelp CategoryEditing CategoryDisplay CategoryLisp CategoryFaces CategoryCode
+
