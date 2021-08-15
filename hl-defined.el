@@ -4,17 +4,17 @@
 ;; Description: Highlight defined or undefined symbols in Emacs-Lisp.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2021, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 13:44:18 2018 (-0800)
+;; Last-Updated: Sun Aug 15 10:10:03 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 310
+;;     Update #: 316
 ;; URL: https://www.emacswiki.org/emacs/download/hl-defined.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -80,12 +80,16 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `hdefd-face'.
+;;    `hdefd--face'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2021/08/15 dadams
+;;     Renamed hdefd-face to hdefd--face.
+;; 2021/08/14 dadams
+;;     hdefd-highlight: Skip over whitespace also, not just quote.
 ;; 2013/08/19 dadams
 ;;     Created from highlight-fns.el (obsolete - replaced by this).
 ;;
@@ -113,7 +117,7 @@
 (eval-when-compile (require 'cl)) ;; case
 
 (defgroup Highlight-Defined nil
-  "Various enhancements to Dired."
+  "Highlight defined or undefined symbols in Emacs-Lisp."
   :prefix "hdefd-" :group 'matching :group 'font-lock :group 'programming
   :link `(url-link :tag "Send Bug Report"
           ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
@@ -164,8 +168,7 @@ same name then:
           (const :tag "Undefined symbols"       undefined))
   :group 'Highlight-Defined)
 
-(defvar hdefd-face nil
-  "Symbol for face to use by `hdefd-highlight-mode'.")
+(defvar hdefd--face nil)
 
 (define-minor-mode hdefd-highlight-mode
     "Toggle highlighting defined or undefined symbols in the buffer.
@@ -176,8 +179,8 @@ Highlighting is governed by option `hdefd-highlight-type': either
 undefined symbols or defined symbols: functions or variables or both."
   :group 'Highlight-Defined
   (if hdefd-highlight-mode
-      (font-lock-add-keywords nil '((hdefd-highlight . hdefd-face)) 'APPEND)
-    (font-lock-remove-keywords nil '((hdefd-highlight . hdefd-face))))
+      (font-lock-add-keywords nil '((hdefd-highlight . hdefd--face)) 'APPEND)
+    (font-lock-remove-keywords nil '((hdefd-highlight . hdefd--face))))
   (when font-lock-mode (font-lock-mode -1))
   (font-lock-mode 1)
   (when (if (> emacs-major-version 22)
@@ -227,7 +230,7 @@ Use as a font-lock MATCHER function for `hdefd-highlight-mode'."
       (while (and (not hdefd-found)  (not (eobp)))
         (cond ((condition-case ()
                    (save-excursion
-                     (skip-chars-forward "'")
+                     (skip-chars-forward "' \t\n")
                      (setq hdefd-opoint  (point))
                      (let ((hdefd-obj  (read (current-buffer))))
                        (and (symbolp hdefd-obj)
@@ -241,7 +244,7 @@ Use as a font-lock MATCHER function for `hdefd-highlight-mode'."
                                      (not (fboundp hdefd-obj))
                                      (not (boundp  hdefd-obj))))
                             (progn (set-match-data (list hdefd-opoint (point)))
-                                   (setq hdefd-face
+                                   (setq hdefd--face
                                          (if (and (fboundp hdefd-obj)
                                                   (memq hdefd-highlight-type
                                                         '(fns-and-vars functions)))
