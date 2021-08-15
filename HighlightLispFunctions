@@ -2,6 +2,8 @@ This page is about library '''<tt>[[hl-defined.el]]</tt>''', which lets you high
 
 (Library <tt>[[highlight-fns.el]]</tt> is a rudimentary version of this feature; it just highlights defined functions.  It is essentially made obsolete by library <tt>[[hl-defined.el]]</tt>.)
 
+See also HighlightDynamicVariables, which you can use together with ##hl-defined.el##.  It highlights dynamically scoped variables.
+
 == How to Use ==
 
 '''`hdefd-highlight-mode'''' is a [[minor mode]] that highlights, in the
