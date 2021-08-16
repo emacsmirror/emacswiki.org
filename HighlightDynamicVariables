@@ -2,6 +2,12 @@ This page is about library '''<tt>[[dyna-show.el]]</tt>''', which provides highl
 
 The variables are highlighted with face `dyna-variables'.
 
+It uses `special-variable-p', which is limited. From the screenshot, you can see another limitation:
+occurrences of a function, e.g. `font-lock-mode', that has the same name as a dynamic variable, are also
+highlighted.
+
+[[image:DynaShow]]
+
 You can use library ##dyna-show.el## together with library '''<tt>[[hl-defined.el]]</tt>''', which highlight [[symbol]]s that are known to be defined functions and/or variables.  When used together, the highlighting of dynamic variables overrides the variable highlighting of ##hl-defined.el##.
 
 
