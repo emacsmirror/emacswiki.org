@@ -649,7 +649,7 @@ If you move a source directory with dired from A to B, by default there's no int
         (mapcar (lambda (name)
                   (if (string-equal name oldname)
                       newname
-                    oldname))
+                    name))
                 recentf-list)))
 
 (defun rjs/recentf-rename-directory (oldname newname)
