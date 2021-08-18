@@ -8,19 +8,18 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 26 11:03:13 2021 (-0700)
+;; Last-Updated: Wed Aug 18 09:59:06 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2543
+;;     Update #: 2556
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
-;;   `radix-tree', `wid-edit', `wid-edit+'.
+;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
+;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/08/18 dadams
+;;     describe-variable: Say var is lexically scoped, if that's the case.
 ;; 2021/06/26 dadams
 ;;     describe-variable (all versions): Disallow nil (as a symbol) for the default value.
 ;; 2021/03/17 dadams
@@ -182,7 +183,7 @@
 ;; 2015/08/30 dadams
 ;;     describe-function-1: Typo: auto-do-load -> autoload-do-load.
 ;; 2015/08/22 dadams
-;;     describe-keymap: Allow arg to be a keymap (not a keymap variable), when not interactive.  Suggestion by erjoalgo.
+;;     describe-keymap: Allow arg to be a keymap (not a keymap variable), when not interactive.  Suggested by erjoalgo.
 ;; 2015/08/13 dadams
 ;;     describe-variable:
 ;;       PREDICATE arg to completing-read needs to use original buffer, not minibuffer, when test boundp.
@@ -209,7 +210,7 @@
 ;;     describe-variable: Use face describe-variable-value always.  Fill region for value always.
 ;;                        Control number of newlines before and after Value:, and after manuals xref.
 ;; 2014/11/12 dadams
-;;     describe-package: Added version for Emacs 24.4+ - Use package-alist, package--builtins, or package-archive-contents.
+;;     describe-package: Added Emacs 24.4+ version: Use package-alist, package--builtins, or package-archive-contents.
 ;; 2014/11/08 dadams
 ;;     describe-mode-1: Show major-mode and mode-function also, on a separate line (Emacs bug #18992), filling.
 ;; 2014/08/10 dadams
@@ -1684,7 +1685,9 @@ Return the description that was displayed, as a string."
            (sig-key        (if (subrp def) (indirect-function real-def) real-def))
            (file-name      (find-lisp-object-file-name function (if aliased 'defun def)))
            (pt1            (with-current-buffer (help-buffer) (point)))
-           (beg            (if (and (or (byte-code-function-p def)  (keymapp def)  (memq (car-safe def) '(macro lambda closure)))
+           (beg            (if (and (or (byte-code-function-p def)
+                                        (keymapp def)
+                                        (memq (car-safe def) '(macro lambda closure)))
                                     (stringp file-name)
                                     (help-fns--autoloaded-p function file-name))
                                (if (commandp def) "an interactive autoloaded " "an autoloaded ")
@@ -1794,8 +1797,8 @@ Return the description that was displayed, as a string."
                     ((invalid-function void-function) nil))) ; E.g., an alias for a not yet defined function.
                  (key-bind-buf  (current-buffer))
                  (doc
-                  ;; If the function is autoloaded, and its docstring has key substitution constructs, then load the library.
-                  ;; In any case, add help buttons to doc.
+                  ;; If the function is autoloaded, and its docstring has key substitution constructs,
+                  ;; then load the library.  In any case, add help buttons to doc.
                   (if (and (autoloadp real-def)
                            doc-raw
                            help-enable-auto-load
@@ -1808,11 +1811,12 @@ Return the description that was displayed, as a string."
                 (help-fns--key-bindings function)
                 (with-current-buffer standard-output
                   (setq doc  (condition-case nil
-                                 ;; FIXME:
-                                 ;; Maybe `help-fns--signature' should return `doc' for invalid functions, not signal error.
-                                 (help-fns--signature function doc-raw (if (subrp def) (indirect-function real-def) real-def)
-                                                      real-function key-bind-buf)
-                               ((invalid-function void-function) doc-raw))) ; E.g., an alias for a not yet defined function.
+                                 ;; FIXME: Maybe `help-fns--signature' should return `doc' for invalid functions,
+                                 ;; not signal error.
+                                 (help-fns--signature
+                                  function doc-raw (if (subrp def) (indirect-function real-def) real-def)
+                                  real-function key-bind-buf)
+                               ((invalid-function void-function) doc-raw))) ; E.g., alias for not yet defined function.
                   (run-hook-with-args 'help-fns-describe-function-functions function)
                   (insert "\n")
                   (when (and doc  (boundp 'Info-virtual-files))
@@ -1820,7 +1824,7 @@ Return the description that was displayed, as a string."
                   (insert (or doc  "Not documented."))
                   (when (or (function-get function 'pure)  (function-get function 'side-effect-free))
                     (insert "\nThis function does not change global state, including the match data."))
-                  ;; Avoid asking user questions if she decides to save help buffer, when locale's codeset is not UTF-8.
+                  ;; Avoid asking user questions if decides to save help buffer, when locale's codeset isn't UTF-8.
                   (unless (memq text-quoting-style '(straight grave)) (set-buffer-file-coding-system 'utf-8)))))
 
   )
@@ -2472,6 +2476,9 @@ the global value."
                       ((not permanent-local))
                       ((bufferp locus)  (princ "  This variable's buffer-local value is permanent.\n"))
                       (t (princ "  This variable's value is permanent when it is given a local binding.\n")))
+                (unless (or (special-variable-p variable)  (not lexical-binding)) ; Say it's lexically scoped.
+                  (setq extra-line  t)
+                  (princ "  This variable is lexically scoped in the current context.\n"))                  
                 (unless (eq alias variable) ; Mention if it's an alias.
                   (setq extra-line  t)
                   (princ (format "  This variable is an alias for `%s'.\n" alias)))
