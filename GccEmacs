@@ -33,7 +33,7 @@ or
 
 === ArchLinux ===
 
-An ##emacs-git## package is available [https://aur.archlinux.org/packages/emacs-git/] on the AUR which tracks Emacs 28 where the native compilation feature has been merged.
+An ##emacs-git## package is available [https://aur.archlinux.org/packages/emacs-git/ on the AUR] which tracks Emacs 28 where the native compilation feature has been merged.
 
 Install it with your favourite AUR helper, or use the following commands to do it yourself:
 
