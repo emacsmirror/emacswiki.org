@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr 16 14:32:09 2021 (-0700)
+;; Last-Updated: Wed Aug 18 14:52:48 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 4159
+;;     Update #: 4161
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -430,12 +430,12 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-current-sort-order, bmkp-describe-bookmark,
 ;; bmkp-describe-bookmark-internals, bmkp-desktop-bookmark-p,
 ;; bmkp-edit-bookmark-name-and-location, bmkp-file-alpha-cp,
-;; bmkp-file-remote-p, bmkp-function-bookmark-p, bmkp-get-buffer-name,
-;; bmkp-get-tags, bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
-;; bmkp-incremental-filter-delay, bmkp-image-bookmark-p,
-;; bmkp-info-bookmark-p, bmkp-info-node-name-cp,
-;; bmkp-info-position-cp, bmkp-isearch-bookmarks,
-;; bmkp-isearch-bookmarks-regexp, bmkp-jump-1,
+;; bmkp-file-remote-p, bmkp-function-bookmark-p, bmkp-get-bookmark,
+;; bmkp-get-buffer-name, bmkp-get-tags, bmkp-gnus-bookmark-p,
+;; bmkp-gnus-cp, bmkp-handler-cp, bmkp-incremental-filter-delay,
+;; bmkp-image-bookmark-p, bmkp-info-bookmark-p,
+;; bmkp-info-node-name-cp, bmkp-info-position-cp,
+;; bmkp-isearch-bookmarks, bmkp-isearch-bookmarks-regexp, bmkp-jump-1,
 ;; bmkp-last-bookmark-file, bmkp-last-specific-buffer,
 ;; bmkp-last-specific-file, bmkp-latest-bookmark-alist,
 ;; bmkp-local-file-bookmark-p, bmkp-local-file-type-cp,
@@ -6176,8 +6176,8 @@ are marked or ALLP is non-nil."
                              "Toggle the value of option `bmkp-bmenu-state-file'"))
 
 (define-key bmkp-bmenu-toggle-menu [sep1] '("--")) ; ------------ Automatic stuff
-(define-key bmkp-bmenu-toggle-menu [bmkp-auto-idle-bookmark-mode]
-  '(menu-item "Automatically Creating Bookmarks" bmkp-auto-idle-bookmark-mode
+(define-key bmkp-bmenu-toggle-menu [bmkp-automatic-bookmark-mode]
+  '(menu-item "Automatically Creating Bookmarks" bmkp-automatic-bookmark-mode
     :help "Toggle the periodic automatic creation of bookmarks"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-save-desktop-before-switching]
   (bmkp-menu-bar-make-toggle bmkp-toggle-save-desktop-before-switching bmkp-desktop-jump-save-before-flag
