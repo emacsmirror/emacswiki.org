@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 18 11:27:47 2021 (-0700)
+;; Last-Updated: Wed Aug 18 15:08:04 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16815
+;;     Update #: 16825
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/08/18 dadams
+;;     Added: bmkp-set-automatic-bookmark.
+;;     Renamed: bmkp(*)-auto-idle* to bmkp(*)-automatic*.  Added defvaralias for old names.
 ;; 2021/04/18 dadams
 ;;     Added back a redefinition of bookmark-get-bookmark, as bmkp-get-bookmark with NO-NAME-CHECK-P.
 ;;     bookmark-set-name, bookmark-location:
@@ -1507,6 +1510,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2021/08/18 dadams
+;;     Applied renaming of bmkp-auto-idle-bookmark-mode to bmkp-automatic-bookmark-mode.
 ;; 2021/04/16 dadams
 ;;     bookmark-bmenu-execute-deletions:
 ;;       Use bmkp-get-bookmark, not bookmark-get-bookmark, but in vanilla-compatible way.
