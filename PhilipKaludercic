@@ -1,0 +1,41 @@
+Hi, I'm a Emacs user since 2014/15. It was the first and only editor I felt comfortable in when working on more than one file (otherwise I'd just use vi or mg).
+
+I have a personal website, where I sometimes post about Emacs: https://ruzkuku.com/ (Atom feed: http://ruzkuku.com/emacs.atom).
+
+== Packages ==
+
+Here are a few packages on mine which I have contributed to ELPA or MELPA:
+
+* [http://elpa.gnu.org/packages/setup.html setup]
+* [http://elpa.gnu.org/packages/shell-command+.html shell-command+]
+* [https://melpa.org/#/autocrypt autocrypt]
+* [https://melpa.org/#/clang-capf clang-capf]
+* [https://melpa.org/#/face-shift face-shift]
+* [https://melpa.org/#/insert-kaomoji insert-kaomoji]
+
+I am also an occasional contributor to core Emacs: https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=author&q=philipk%40posteo.net
+
+== Misc ==
+
+In the modernisation debate I am on the traditional side, and prefer OOTB behaviour.
+
+I sometimes comment/contribute on Reddit under the username _pkal (with a leading underscore) and on IRC with the username pkal (without a leading underscore).
+
+You might also find me on the EmacsMailingLists emacs-devel and help-gnu-emacs.
+
+
+
+
+
+----
+
+[new:DrewAdams:2021-01-03 23:59 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+
+----
+Category Homepage
