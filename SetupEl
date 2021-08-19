@@ -1,0 +1,139 @@
+setup.el provides a macro to ease repetitive configuration patterns in Emacs. It is available on GnuELPA and the source can be found here: https://git.sr.ht/~pkal/setup.
+
+== Basics ==
+
+The main of the setup macro is to provide context-sensitive local macros, that are expanded to pure EmacsLisp. The advantage over vanilla configurations is that one doesn't have to deal with 
+
+== Examples ==
+
+Configure FlyMake, by binding a few commands to the local mode, and hooking flymake-mode into prog-mode-hook:1
+
+{{{
+(setup flymake
+  (:bind "M-n" #'flymake-goto-next-error
+         "M-p" #'flymake-goto-prev-error)
+  (:hook-into prog-mode))
+}}}
+
+Configure DirEd to load dired-x when started, prepend a value to dired-guess-shell-alist-user, customize dired-dwim-target (both using the customization interface) and then add auto-revert-mode to the mode hook.
+
+{{{
+(setup dired
+  (:also-load dired-x)
+  (:option (prepend dired-guess-shell-alist-user) '("" "xdg-open")
+           dired-dwim-target t)
+  (:hook auto-revert-mode))
+}}}
+
+This expression will be ignored if Avy is not installed. Otherwise it configures an option and binds a command to a global key, depending on whether or not Emacs is being used in the graphical mode.
+
+{{{
+(setup (:if-package avy)
+  (:option avy-single-candidate-jump nil)
+  (if (display-graphic-p)
+      (:global "M-z" #'avy-goto-word-1)
+    (:global "C-z" #'avy-goto-word-1)))
+}}}
+
+Alternatively, the check may also be pulled into the :global macro. In that case it is necessary to call kbd manually:
+
+{{{
+(setup (:package avy)
+  (:option avy-single-candidate-jump nil)
+  (:global (kbd (if (display-graphic-p) "M-z" "C-z"))
+           #'avy-goto-word-1))
+}}}
+
+Also note that in this case :package is used instead of :if-package. This macro installs avy if it is not installed yet, before the body is evaluated further.
+
+== Tips and Ideas ==
+
+=== Alternative macro definer ===
+
+If you wish to define you own macros, use setup-define. In case the
+syntax is too cumbersome, you can use a macro like this:
+
+{{{
+(defmacro defsetup (name signature &rest body)
+  "Shorthand for `setup-define'.
+NAME is the name of the local macro.  SIGNATURE is used as the
+argument list for FN.  If BODY starts with a string, use this as
+the value for :documentation.  Any following keywords are passed
+as OPTS to `setup-define'."
+  (declare (debug defun))
+  (let (opts)
+	(when (stringp (car body))
+	  (setq opts (nconc (list :documentation (pop body))
+						opts)))
+	(while (keywordp (car body))
+	  (let* ((prop (pop body))
+			 (val `',(pop body)))
+		(setq opts (nconc (list prop val) opts))))
+	`(setup-define ,name
+	   (cl-function (lambda ,signature ,@body))
+	   ,@opts)))
+}}}
+
+To declare local macros more like defun or defmacro. Here is how
+the definition for :package could be rewritten:
+
+{{{
+(defsetup :package (package)
+  "Install PACKAGE if it hasn't been installed yet."
+  :repeatable t
+  :shorthand #'cadr
+  `(unless (package-installed-p ',package)
+	   (package-install ',package)))
+}}}
+
+=== setup-based Macro ===
+
+The first element of a `setup` body can but does not have to be a
+name. That can be exploited to use `setup` in your own macros. I have
+this macro in my personal configuration, when I'm only interested in
+modifying user options:
+
+{{{
+(defmacro setc (&rest args)
+  "Customize user options using ARGS like `setq'."
+  (declare (debug setq))
+  `(setup (:option ,@args)))
+}}}
+
+== Comparison to UsePackage ==
+
+The most popular configuration macro for Emacs is use-package by John Wiegley.
+The intention is similar, but usage is noticeably different. 
+While use-package to specifies information about package and it's usage, setup is less declarative and just provides a set of context-sensitive local macros, that are simply substituted.
+
+The higher level of abstraction allows use-package to hide some of the complexity, by transparently reordering everything into the right order.
+The downside is that it is easy to get lost or forget what use-package is doing. Each setup macro on the other hand intends to encapsulate one common configuration action, and simplify the syntax. Take the FlyMake example from above. That is expanded into the following code:
+
+{{{
+(progn
+  (eval-after-load 'flymake
+    (function
+     (lambda nil
+       (progn
+         (define-key flymake-mode-map
+           [134217838]
+           (function flymake-goto-next-error))
+         (define-key flymake-mode-map
+           [134217840]
+           (function flymake-goto-prev-error))))))
+  (add-hook 'prog-mode-hook
+            (function flymake-mode)))
+}}}
+
+The macro :bind wraps define-key calls in a eval-after-load block, and automatically parses multiple arguments in a setq-like fashion. Likewise, :hook-into knows to deuce that flymake-mode should be added to prog-mode's hook (prog-mode-hook).
+
+Furthermore use-package might be said to be less flexible, because the macro assumes a certain kind of usage. Each expression should define one package. This is not assumed for setup: Each body can just as easily configure no to as many packages as one wants.
+
+{{{
+(setup (:package company company-math)
+  (:bind "TAB" company-complete))
+}}}
+
+would install both company and company-math. The context is set to company, because the :package call is the first element of the list, and company is it's first argument.
+
+An attempt is also made by setup.el to ease extensibility. Each macro is defined using the setup-define function. Combined with further attributes, it allows for the simple definition of local and context sensitive macros, that are debug-able, can be composed and deferred.
