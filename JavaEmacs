@@ -10,7 +10,7 @@ JEmacs is a re-implementation of Emacs, written in a mix of
 JEmacs uses Kawa to compile Scheme and ELisp into Java bytecodes. Kawa
 is a widely-praised Scheme implementation that includes many Scheme
 extensions, powerful Java/Scheme interoperability, and high
-performance though a sophisticated compiler.
+performance through a sophisticated compiler.
 
 Kawa is being extended to support ELisp. This is so JEmacs can run the
 many existing Emacs packages written in ELisp. These will be compiled
