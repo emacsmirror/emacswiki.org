@@ -1,10 +1,12 @@
 Emacs has a daunting learning curve, especially if you don't even know what to look for.
 
-Aside from asking questions over [InternetRelayChat IRC] (#emacs on irc.libera.chat), the [https://discord.me/emacs Emacs Discord], EmacsStackExchange, or in the appropriate mailing lists, you can also reach out to people who offer Emacs coaching services. [https://www.codementor.io/search/mentors?q=emacs CodeMentor lists a number of people]. In addition, there's:
+Aside from asking questions over [InternetRelayChat IRC] (#emacs on irc.libera.chat), the [https://discord.me/emacs Emacs Discord], EmacsForums, or in the appropriate mailing lists, you can also reach out to people who offer Emacs coaching services. [https://www.codementor.io/search/mentors?q=emacs CodeMentor lists a number of people]. In addition, there's:
 
 * [https://www.sanityinc.com/ Steve Purcell]: maintainer of MELPA ([https://www.codementor.io/@sanityinc CodeMentor profile])
 * [https://bzg.fr/en/about/ Bastien Guerry]: maintainer of Org Mode
 * [[Leo Vivier]]: co-maintainer of Org Roam; offers coaching in Org Mode, Org Roam, and other topics
 * ... (please add yourself if you offer coaching)
 
-CategoryCommunity
+https://meet.jit.si/ can be a quick way to set up a web conference and share your screen.
+
+CategoryCommunity CategoryHelp
