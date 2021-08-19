@@ -11,7 +11,12 @@
        pages   = "73",
     }
 
-[https://gist.github.com/VladimirAlexiev/8334496 Here's a patch] to bibtex-autokey that implements a key format commonly used on CEUR-WS (e.g. see http://ceur-ws.org/Vol-1032/CSP2013.bib). It uses crossref instead of year: eg Alexiev:TPDL2012 instead of Alexiev:2012
+[https://gist.github.com/VladimirAlexiev/8334496 bibtex-autokey-use-crossref-instead-of-year.patch] fixes bibtex-autokey for key format as per CEUR-WS (e.g. see [http://ceur-ws.org/Vol-1032/CSP2013.bib CSP2013.bib]). It uses crossref instead of year: eg `Alexiev:TPDL2012` instead of `Alexiev:2012`.
+
+[https://gist.github.com/VladimirAlexiev/e71713baa650daa915d1daef848313b4 bibtex-sort-fix-names.el] implements this:
+* sort bibtex buffer chronologically;
+* replace , ; & with `and` in author/editor fields
+
 
 Besides bibliographical information `.bib' files might contain definition of shortcuts used in bibliographical entries via @STRING definition, comments via @COMMENT, and code to include at the beginning of created `.bbl' bibliography file (see below) via @PREAMBLE command.
 
