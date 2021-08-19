@@ -5,6 +5,7 @@ This page contains links to various users' Emacs configurations.
 
 Self-documenting Emacs configurations that make use of a mixture of Org and Emacs Lisp with literate programming techniques.
 
+* https://github.com/apemangr/Condor-Emacs
 * https://github.com/Bassmann/emacs-config
 * https://github.com/BrettWitty/dotemacs/blob/master/bew_config.org
 * https://github.com/grettke/lolsmacs
