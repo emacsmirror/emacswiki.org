@@ -4,67 +4,16 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2021, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 13 10:55:36 2020 (-0800)
+;; Last-Updated: Fri Aug 20 10:37:02 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3100
+;;     Update #: 3102
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
-;;
-;; Features that might be required by this library:
-;;
-;;   `ansi-color', `apropos', `apropos+', `apropos-fn+var',
-;;   `auth-source', `autofit-frame', `avoid', `backquote',
-;;   `bindings+', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
-;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+', `button',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
-;;   `cmds-menu', `col-highlight', `color', `color-moccur', `comint',
-;;   `compile', `compile+', `compile-', `crosshairs', `cus-edit',
-;;   `cus-edit+', `cus-face', `cus-load', `cus-start', `cus-theme',
-;;   `custom', `descr-text', `descr-text+', `diff-mode-', `dired',
-;;   `dired+', `dired-aux', `dired-loaddefs', `dired-sort-menu',
-;;   `dired-sort-menu+', `dired-x', `doremi', `doremi-cmd',
-;;   `doremi-frm', `easymenu', `echo-bell', `ediff+', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `em-joc', `epg-config', `eshell-auto',
-;;   `face-remap', `face-remap+', `facemenu', `facemenu+', `faces',
-;;   `faces+', `files+', `find-dired', `find-dired+', `find-func',
-;;   `find-func+', `find-where', `finder', `finder+', `finder-inf',
-;;   `fit-frame', `flx', `font-lock', `font-lock+',
-;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
-;;   `framemove', `fuzzy-match', `grep', `grep+', `gv', `header2',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `help-mode+', `hexrgb', `hide-comnt', `highlight',
-;;   `highlight-chars', `highlight-symbol', `hl-line', `hl-line+',
-;;   `hl-spotlight', `iedit', `image', `image-dired', `image-file',
-;;   `image-mode', `imenu', `imenu+', `info', `info+', `isearch+',
-;;   `isearch-prop', `iso-transl', `kmacro', `lacarte',
-;;   `lib-requires', `linkd', `lisp-mnt', `loadhist', `local-lpr',
-;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
-;;   `ls-lisp-verbosity', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `moccur-edit', `modeline-char',
-;;   `modeline-posn', `modeline-win', `mouse', `mouse+', `mwheel',
-;;   `naked', `narrow-indirect', `occur-schroeder', `oneonone',
-;;   `package', `palette', `paren', `parse-time', `password-cache',
-;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `pretty-lambdada',
-;;   `printing', `ps-def', `ps-print', `ps-print-loaddefs',
-;;   `radix-tree', `regexp-opt', `replace', `replace+', `ring',
-;;   `ring+', `savehist-20+', `second-sel', `seq', `setup',
-;;   `setup-keys', `simple+', `start', `strings', `subr+',
-;;   `swiss-move', `synonyms', `syntax', `tabbar', `tabulated-list',
-;;   `text-mode', `thing-cmds', `thingatpt', `thingatpt+',
-;;   `thumb-frm', `time-date', `timer', `tool-bar', `tool-bar+',
-;;   `ucs-cmds', `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `window+', `zones', `zoom-frm'.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
 ;;
@@ -98,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2021/08/20 dadams
+;;     Soft-require dyna-show.el.
 ;; 2020/12/13 dadams
 ;;     Autoload yow.el.
 ;; 2019/04/10 dadams
@@ -791,6 +742,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;;   "Toggle highlighting of trailing whitespace." t)
 ;;; (autoload 'hc-toggle-highlight-trailing-whitespace "highlight-chars"
 ;;;   "Toggle highlighting of trailing whitespace." t)
+
+(when (> emacs-major-version 23) (require 'dyna-show nil t))
 
 (when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
   (require 'flx nil t));; Emacs 24.3+ - requires `cl-lib.el' for `cl-loop', `cl-incf', `cl-cddar'.
