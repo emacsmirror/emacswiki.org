@@ -8,6 +8,16 @@ highlighted.
 
 [[image:DynaShow]]
 
+Put this in your init file, after adding ##dyna-show.el## to your `load-path':
+
+   (require 'dyna-show)
+
+If you want to turn on this highlighting automatically whenever
+you enter EmacsLisp mode then you can do this in your InitFile:
+
+  (require 'dyna-show)
+  (add-hook 'emacs-lisp-mode-hook 'dyna-show-mode 'APPEND)
+
 You can use library ##dyna-show.el## together with library '''<tt>[[hl-defined.el]]</tt>''', which highlight [[symbol]]s that are known to be defined functions and/or variables.  When used together, the highlighting of dynamic variables overrides the variable highlighting of ##hl-defined.el##.
 
 
