@@ -213,7 +213,7 @@ In Emacs's native python-mode, use:
 }}}
 This should work with any recent IPython, including on Windows, and works around an issue when IPython complains about incomplete shell when calling help (e.g. for help(func)). 
 * <code>--simple-prompt</code> is needed since IPython 5.
-* <code>---InteractiveShell.display_page=True</code> ensures that anything passed to the pager will be displayed as regular output instead
+* <code>--InteractiveShell.display_page=True</code> ensures that anything passed to the pager will be displayed as regular output instead
 
 To get help/pydoc to work fully, run the following, e.g. create an IPython profile then put the code into nopager10.py in ~/.ipython/profile_default/startup/
 <pre>
