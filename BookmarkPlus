@@ -4061,8 +4061,7 @@ Imenu, you can do this:
 
   (add-hook 'imenu-after-jump-hook #'bmkp-set-automatic-bookmark)
 
-The bookmark is an autonamed bookmark (see
-[[#AutonamedBookmarks]]).
+The bookmark is an [[#AutonamedBookmarks|autonamed]] bookmark.
 
 
 
