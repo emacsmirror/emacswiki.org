@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Aug 21 12:20:20 2021 (-0700)
+;; Last-Updated: Sat Aug 21 13:46:16 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 9448
+;;     Update #: 9450
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2756,6 +2756,15 @@ From Lisp code:
              (when old-bmk              ; Restore props of existing bookmark per `bmkp-properties-to-keep'.
                (dolist (prop  bmkp-properties-to-keep)
                  (bookmark-prop-set record prop (bookmark-prop-get old-bmk prop)))))
+           ;; Maybe make bookmark temporary.
+           ;; Pass RECORD, not BNAME, so `bookmark-prop-set' DTRT in `bmkp-make-bookmark-temporary'.
+           (if bmkp-autotemp-all-when-set-p
+               (bmkp-make-bookmark-temporary record)
+             (catch 'bookmark-set
+               (dolist (pred  bmkp-autotemp-bookmark-predicates)
+                 (when (and (functionp pred)  (funcall pred bname))
+                   (bmkp-make-bookmark-temporary record)
+                   (throw 'bookmark-set t)))))
            (bookmark-store bname (cdr record) (consp parg) no-refresh-p (not interactivep))
            (when (and interactivep  bmkp-prompt-for-tags-flag)
              (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not update here.
@@ -2772,14 +2781,6 @@ From Lisp code:
                                                         (bmkp-this-buffer-alist-only))
                                         nil interactivep))
              (all-in-buffer            (bmkp-light-this-buffer nil interactivep)))
-           ;; Maybe make bookmark temporary.
-           (if bmkp-autotemp-all-when-set-p
-               (bmkp-make-bookmark-temporary bname)
-             (catch 'bookmark-set
-               (dolist (pred  bmkp-autotemp-bookmark-predicates)
-                 (when (and (functionp pred)  (funcall pred bname))
-                   (bmkp-make-bookmark-temporary bname)
-                   (throw 'bookmark-set t)))))
            (run-hooks 'bmkp-after-set-hook)
            (if bookmark-use-annotations
                (bookmark-edit-annotation bname)
