@@ -61,7 +61,7 @@ The following pairs of `interactive' specs are equivalent:
 
   (defun bar (arg)
     (interactive
-      (list (prefix-numeric-value current-prefix-arg))
+      (list (prefix-numeric-value current-prefix-arg)))
     ...)
 
   (defun foo (arg buf)
