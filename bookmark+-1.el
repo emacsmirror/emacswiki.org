@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Aug 21 11:53:33 2021 (-0700)
+;; Last-Updated: Sat Aug 21 12:20:20 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 9442
+;;     Update #: 9448
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -996,7 +996,8 @@ The possible values:
 
 ;;;###autoload (autoload 'bmkp-automatic-bookmark-min-distance "bookmark+")
 (defcustom bmkp-automatic-bookmark-min-distance 1000
-  "*Minimum number of chars between automatic bookmark positions."
+  "*Minimum number of chars between automatic bookmark positions.
+Automatic bookmarking is done by `bmkp-automatic-bookmark-mode'."
   :type '(choice
           (const   :tag "No minumum distance" nil)
           (integer :tag "At least this many chars" :value 1000))
@@ -1027,8 +1028,7 @@ use either \\[customize] or command `bmkp-automatic-bookmark-mode'."
 ;;;###autoload (autoload 'bmkp-automatic-bookmark-mode-delay "bookmark+")
 (defcustom bmkp-automatic-bookmark-mode-delay 60
   "*Number of seconds delay before automatically setting a bookmark.
-Such automatic bookmarking is controlled by
-`bmkp-temporary-bookmarking-mode'."
+Automatic bookmarking is done by `bmkp-automatic-bookmark-mode'."
   :type 'integer :group 'bookmark-plus)
 
 
@@ -1058,8 +1058,7 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
 ;;;###autoload (autoload 'bmkp-automatic-bookmark-set-function "bookmark+")
 (defcustom bmkp-automatic-bookmark-set-function #'bmkp-set-autonamed-bookmark-at-line
   "*Function used to set an automatic bookmark.
-Used by `bmkp-set-automatic-bookmark',
-`bmkp-temporary-bookmarking-mode' and `bmkp-automatic-bookmark-mode'.
+Used by `bmkp-automatic-bookmark-mode' and `bmkp-set-automatic-bookmark'.
 
 The default value, `bmkp-set-autonamed-bookmark-at-line', sets an
 autonamed bookmark at the start of the current line.  To bookmark the
