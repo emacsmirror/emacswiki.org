@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Aug 21 11:42:58 2021 (-0700)
+;; Last-Updated: Sat Aug 21 13:57:14 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16826
+;;     Update #: 16829
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2020/08/21 dadams
+;;     bookmark-set: Moved making bmk temporary before bookmark-store, and pass RECORD, not BNAME.
 ;;     bmkp(*)-automatic*: Put defvaralias symbols in right order.
 ;; 2021/08/18 dadams
 ;;     Added: bmkp-set-automatic-bookmark.
