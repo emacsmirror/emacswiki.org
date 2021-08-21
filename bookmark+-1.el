@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug 18 15:04:20 2021 (-0700)
+;; Last-Updated: Sat Aug 21 11:53:33 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 9439
+;;     Update #: 9442
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -990,7 +990,7 @@ The possible values:
 ;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
 ;; works for newer Emacs too.
 (when (fboundp 'defvaralias)            ; Emacs 22+
-  (defvaralias 'bmkp-automatic-bookmark-min-distance 'bmkp-auto-idle-bookmark-min-distance)
+  (defvaralias 'bmkp-auto-idle-bookmark-min-distance 'bmkp-automatic-bookmark-min-distance)
   (bmkp-make-obsolete-variable 'bmkp-auto-idle-bookmark-min-distance 'bmkp-automatic-bookmark-min-distance
                                "2021-08-18"))
 
@@ -1020,7 +1020,7 @@ use either \\[customize] or command `bmkp-automatic-bookmark-mode'."
 ;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
 ;; works for newer Emacs too.
 (when (fboundp 'defvaralias)            ; Emacs 22+
-  (defvaralias 'bmkp-automatic-bookmark-mode-delay 'bmkp-auto-idle-bookmark-mode-delay)
+  (defvaralias 'bmkp-auto-idle-bookmark-mode-delay 'bmkp-automatic-bookmark-mode-delay)
   (bmkp-make-obsolete-variable 'bmkp-auto-idle-bookmark-mode-delay 'bmkp-automatic-bookmark-mode-delay
                                "2021-08-18"))
 
@@ -1035,7 +1035,7 @@ Such automatic bookmarking is controlled by
 ;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
 ;; works for newer Emacs too.
 (when (fboundp 'defvaralias)            ; Emacs 22+
-  (defvaralias 'bmkp-automatic-bookmark-mode-lighter 'bmkp-auto-idle-bookmark-mode-lighter)
+  (defvaralias 'bmkp-auto-idle-bookmark-mode-lighter 'bmkp-automatic-bookmark-mode-lighter)
   (bmkp-make-obsolete-variable 'bmkp-auto-idle-bookmark-mode-lighter 'bmkp-automatic-bookmark-mode-lighter
                                "2021-08-18"))
 
@@ -1050,7 +1050,7 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
 ;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
 ;; works for newer Emacs too.
 (when (fboundp 'defvaralias)            ; Emacs 22+
-  (defvaralias 'bmkp-automatic-bookmark-set-function 'bmkp-auto-idle-bookmark-mode-set-function)
+  (defvaralias 'bmkp-auto-idle-bookmark-mode-set-function 'bmkp-automatic-bookmark-set-function)
   (bmkp-make-obsolete-variable 'bmkp-auto-idle-bookmark-mode-set-function
                                'bmkp-automatic-bookmark-set-function
                                "2021-08-18"))
