@@ -108,6 +108,8 @@ But no one does.
 
 Why not? Because key bindings are very handy, once you get used to them. And it is very easy to bind keys as you like, that is, to assign different [[KeySequence | key sequences]] to [[command]]s as you see fit. The point here, however, is that you shouldn't let fear of M-krazy C-key S-M-C-kombinations intimidate you -- you can learn and use Emacs without the K.K.K. ever sneaking up and attacking you.
 
+
+[:MostImportantKeyBindings]
 The ''most important things to know about Emacs key bindings'' are these:
 
 * ''Know that you can use menus'' at first, and use more and more keyboard key sequences, little by little, as much or as little as you like. That is, you can get used to Emacs's krazy key bindings progressively; there is no reason to jump into 100%-keys-all-the-time right away. 
