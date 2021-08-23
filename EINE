@@ -1,4 +1,10 @@
-An emacsen editor from the MIT Artificial Intelligence Lab Lisp machines written by DanielWeinreb and MikeMcMahon in the late 1970s, based on RichardStallman's original Emacs at MIT. EINE is the acronym for "EINE is Not Emacs".  Later, EINE was rewritten and renamed [[ZWEI]].
+An emacsen editor from the MIT Artificial Intelligence Lab Lisp machines written by DanielWeinreb and MikeMcMahon in the late 1970s, based on RichardStallman's original Emacs at MIT. EINE is the acronym for "EINE is Not Emacs".  Later, EINE was rewritten and renamed [[ZWEI]].  The name appeared in August 1977: 
+
+<pre>
+DLW@MIT-AI 08/08/77 04:26:09
+To: (BUG LISPM) at MIT-AI
+The Lisp machine editor has now officially been named "EINE", which stands for EINE Is Not Emacs.  (Apologies to Ted Anderson, the creator of "TINT").
+</pre>
 
 See:
 * Daniel L. Weinreb, A Real-Time Display-oriented Editor for the LISP Machine, Undergraduate Thesis, MIT EECS Department, January 1979. 
