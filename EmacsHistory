@@ -22,6 +22,7 @@ The title of the report was AnIntroductionToTheEmacsEditor.
 Several Emacs-like editors were written in the following years, such
 as '''[[EINE]]''' (__E__INE __I__s __N__ot __E__MACS) and '''[[ZWEI]]''' (__Z__WEI __W__as __E__INE __I__nitially),
 written by Daniel Weinreb and Mike !McMahon.  ZWEI later became '''[[Zmacs]]'''.
+Ted Anderson wrote [[SINE]] ("SINE is not EINE") for the MagicSix operating system.
 
 In 1978, Bernard Greenberg wrote '''MulticsEmacs''' at Honeywell's Cambridge
 Information Systems Lab. The editor was written in MacLisp, a dialect
