@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 14 07:43:20 2021 (-0700)
+;; Last-Updated: Mon Aug 23 14:04:39 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7270
+;;     Update #: 7272
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1280,6 +1280,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/08/23 dadams
+;;     isearchp-add-filter-predicate-1:
+;;       Describe arg PREDICATE in doc string - can be like an element of isearchp-filter-predicates-alist.
 ;; 2021/07/14 dadams
 ;;     isearch-lazy-highlight-search:
 ;;       Juri, bug #49534: Removed test (= (point) bound) - no need for empty highlighting.
@@ -6604,6 +6607,10 @@ other than REGEXP."
   (defun isearchp-add-filter-predicate-1 (where predicate flip-read-name-p flip-read-prefix-p msgp)
     "Helper for `isearchp-add-filter-predicate' and similar commands.
 WHERE is passed to `add-function'.
+
+PREDICATE is a predicate or a list with the format of an element of
+`isearchp-filter-predicates-alist'.
+
 See `isearchp-add-filter-predicate' for descriptions of other args."
     (let ((pred    predicate)
           (name    nil)
