@@ -1,5 +1,4 @@
-TECO EMACS is an early editor developed on the IncompatibleTimeSharingSystem (ITS) operating system at MIT in the 1970s
-and written in [[TECO]] macros.
+TECO EMACS is an early editor developed on the IncompatibleTimeSharingSystem (ITS) operating system at MIT starting in summer 1976 and written in [[TECO]] macros.
 
 You can try v165 on TOPS-20 online using "telnet twenex.org" see http://www.twenex.org/ for more details about the system.
 
