@@ -4,7 +4,7 @@
 * If you have emacs 23, multi-tty works like make-frame-on-display, except that each person needs to connect to your emacs.  (This is somewhat similar to using screen, but each user can resize their terminal without affecting the others.)  You can give each user their own colored "point" with JonathanRockway's [http://github.com/jrockway/elisp/blob/master/_local/colorful-points.el colorful-points] mode.  The connection can also be accelerated (reducing lag time over a slow connection) using mosh [http://mosh.mit.edu].
 ** Anyone have a more detailed description of how to set this up?
 * [http://xpra.org/ xpra] serves X11 windows efficiently over the net. Opening an emacs frame on a xpra server allows easy to use collaboration
-* [http://www.gnu.org/software/screen/ GNU Screen] is a terminal multiplexer. Run Emacs in console mode (##emacs -nw##) within ##screen## for multi-user real-time collaborative editing (and much more). Works across *n*x, Mac OS X, even W32 (with Cygwin installed). Check out Bill Clementson's [http://bc.tech.coop/blog/071001.html awesome emacs/screen setup].
+* [http://www.gnu.org/software/screen/ GNU Screen] is a terminal multiplexer. Run Emacs in console mode (##emacs -nw##) within ##screen## for multi-user real-time collaborative editing (and much more). Works across *n*x, Mac OS X, even W32 (with Cygwin installed). Check out Bill Clementson's [http://bc.tech.coop/blog/071001.html awesome emacs/screen setup] (see [http://web.archive.org/web/20130719001125/http://bc.tech.coop/blog/071001.html copy] on http://WayBackMachine.org).
 ** One minor problem is that screen has to run setuid root for users to share a screen session. An alternative is to use [[tmux for collaborative editing]], which doesn't have this requirement.
 
 
