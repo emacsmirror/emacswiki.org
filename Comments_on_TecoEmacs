@@ -1,0 +1,4 @@
+the term 'real time mode' when describing ^R has been around forever but isn't very descriptive.  the term 'real time' is loaded with lots of other uses.  someone should explain that they are describing the difference between line-oriented editing (like unix 'ed') vs full-screen 'smart' terminal-based editing.
+
+-- Anonymous 2021-08-24 16:09 UTC
+
