@@ -377,18 +377,6 @@ system files:
 Using find-file-hook is better, I think. -- [[rubikitch]]
 
 [new]
-The code above depends on function ##tramp-file-name-path##, which appears to me not to be defined anywhere in the current release of TRAMP (2.1.13) nor in any of four random earlier releases I downloaded and checked. No luck on google (some usages, no definition), koders or krugle either.
-
--- PhilHudson
-
-[new]
-##tramp-file-name-path## has been replaced by ##tramp-file-name-localname## in CVS on 2003-02-15. I updated the above snippets. From the commit message:
-
-[...]Replace term `path' with `localname' unless it is used for a search path.  In GNU, the word `path' is reserved for search paths.[...]
-
--- BerndWachter
-
-[new]
 And the following can help us maintain a record of any changes we make
 to system files:
 
