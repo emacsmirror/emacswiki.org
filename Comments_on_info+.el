@@ -72,3 +72,14 @@ Following are the key sequences that follow "SPC h" or "M-m h" prefix keys (in c
 
 -- emacs18 2021-08-25 06:51 UTC
 
+
+----
+
+Thanks. I've added that info to the Info+ wiki page.
+
+https://www.emacswiki.org/emacs/InfoPlus#SpacemacsUseOfInfo+
+
+I have no suggestions for Spacemacs key bindings to Info+ commands.
+
+-- DrewAdams 2021-08-25 16:39 UTC
+
