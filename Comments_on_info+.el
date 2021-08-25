@@ -6,3 +6,12 @@ The issue is that defface forms that do have autoload cookie refer to info-good-
 
 -- emacs18 2021-08-25 00:07 UTC
 
+
+----
+
+Done. And thanks for your comment. I had no idea that Spacemacs, or some Spacemacs users, used `info+.el'.
+
+That missing autoload cookie was an oversight.  It's needed because an autoloaded `defface` makes use of it.
+
+-- DrewAdams 2021-08-25 02:03 UTC
+
