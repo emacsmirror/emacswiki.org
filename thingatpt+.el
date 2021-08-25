@@ -4,12 +4,12 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Fri Oct 25 08:42:31 2019 (-0700)
+;; Last-Updated: Wed Aug 25 09:25:22 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 2390
+;;     Update #: 2392
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
@@ -603,7 +603,7 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
           (set-syntax-table buffer-syntax)))
     (tap-bounds-of-thing-at-point-1 thing)))
 
-;; This is the vanilla `bounds-of-thing-at-point', but with Emacs bugs #8667 and #9300 fixed.
+;; This is the vanilla `bounds-of-thing-at-point', but with bugs #8667, #9300, and #9454 fixed.
 (defun tap-bounds-of-thing-at-point-1 (thing)
   "Helper for `tap-bounds-of-thing-at-point'.
 Do everything except handle the optional SYNTAX-TABLE arg."
