@@ -4,13 +4,13 @@
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 15 10:13:00 2020 (-0700)
+;; Last-Updated: Wed Aug 25 12:52:30 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 848
+;;     Update #: 854
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -189,6 +189,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/08/25 dadams
+;;     mode-line-position: Updated for option column-number-indicator-zero-based (new in Emacs 26).
 ;; 2020/10/15 dadams
 ;;     Removed advice for replace-dehighlight.  Do it in around advice for perform-replace.
 ;;     perform-replace advice: Change to around advice, and bind, don't set, modelinepos-region-acting-on.
@@ -502,28 +504,46 @@ delete others, mouse-3: delete this"))
                           'help-echo "Buffer position, mouse-1: Line/col menu")))
                     (line-number-mode
                      ((column-number-mode
-                       (10 ,(propertize
-                             " (%l,%c)"
-                             'face (and (> (current-column)
-                                           modelinepos-column-limit)
-                                        'modelinepos-column-warning)
-                             'local-map mode-line-column-line-number-mode-map
-                             'mouse-face 'mode-line-highlight
-                             'help-echo "Line and column, mouse-1: Line/col menu"))
+                       (column-number-indicator-zero-based
+                        (10 ,(propertize
+                              " (%l,%c)"
+                              'face (and (> (current-column)
+                                            modelinepos-column-limit)
+                                         'modelinepos-column-warning)
+                              'local-map mode-line-column-line-number-mode-map
+                              'mouse-face 'mode-line-highlight
+                              'help-echo "Line and column, mouse-1: Line/col menu"))
+                        (10 ,(propertize
+                              " (%l,%C)"
+                              'face (and (> (current-column)
+                                            modelinepos-column-limit)
+                                         'modelinepos-column-warning)
+                              'local-map mode-line-column-line-number-mode-map
+                              'mouse-face 'mode-line-highlight
+                              'help-echo "Line number, mouse-1: Line/col menu")))
                        (6 ,(propertize
                             " L%l"
                             'local-map mode-line-column-line-number-mode-map
                             'mouse-face 'mode-line-highlight
                             'help-echo "Line number, mouse-1: Line/col menu"))))
                      ((column-number-mode
-                       (5 ,(propertize
-                            " C%c"
-                            'face (and (> (current-column)
-                                          modelinepos-column-limit)
-                                       'modelinepos-column-warning)
-                            'local-map mode-line-column-line-number-mode-map
-                            'mouse-face 'mode-line-highlight
-                            'help-echo "Column number, mouse-1: Line/col menu")))))))))
+                       (column-number-indicator-zero-based
+                        (5 ,(propertize
+                             " C%c"
+                             'face (and (> (current-column)
+                                           modelinepos-column-limit)
+                                        'modelinepos-column-warning)
+                             'local-map mode-line-column-line-number-mode-map
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "Column number, mouse-1: Line/col menu"))
+                        (5 ,(propertize
+                             " C%C"
+                             'face (and (> (current-column)
+                                           modelinepos-column-limit)
+                                        'modelinepos-column-warning)
+                             'local-map mode-line-column-line-number-mode-map
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "Column number, mouse-1: Line/col menu"))))))))))
  
 
 ;;; Advise some standard functions, so they use `modelinepos-region-acting-on' during
