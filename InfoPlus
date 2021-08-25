@@ -275,7 +275,7 @@ when you kill an Info [[buffer]].
 
 
 
-
+----
 
 [:SpacemacsUseOfInfo+]
 == Spacemacs Use of Info+ ==
@@ -351,7 +351,9 @@ Following are the key sequences that follow `SPC h' or `M-m h' prefix keys.  If 
 
 
 
+----
 
+[:DiscussionAndIssues]
 == Discussion and Issues ==
 
 [new]
