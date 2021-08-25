@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun 14 07:55:30 2021 (-0700)
+;; Last-Updated: Tue Aug 24 18:57:42 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7230
+;;     Update #: 7232
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -590,6 +590,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/08/24 dadams
+;;     info-good-fixed-pitch-font-families: Added autoload cookie.
+;;       Thx to wiku user emacs18 and https://github.com/syl20bnr/spacemacs/issues/15010.
 ;; 2021/06/14 dadams
 ;;     Added info-nomatch; use & doc it.  Turn off highlighting of isolated quote chars by default for some manuals.
 ;; 2021/06/03 dadams
@@ -1331,6 +1334,7 @@ Don't forget to mention your Emacs and library versions."))
 (defconst info-nomatch (intern "$-")
   "Symbol whose name is a regexp that cannot be matched.")
 
+;;;###autoload
 (defvar info-good-fixed-pitch-font-families '("Lucida Console" "Lucida Sans Typewriter"
                                               "Consolas" "ProggyVector" "OCR A Extended")
   "Some good fixed-pitch font families.
