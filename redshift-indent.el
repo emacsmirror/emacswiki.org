@@ -4,22 +4,20 @@
 ;; URL: https://www.emacswiki.org/emacs/redshift-indent.el
 ;; Keywords: convenience
 ;; Created: Sep 2015
-;; Version: 0.4.3
+;; Version: 0.4.4
 
-;; This file is not part of GNU Emacs.
-;;
-;; This file is free software: you can redistribute it and/or modify
+;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;;
-;; GNU Emacs is distributed in the hope that it will be useful,
+
+;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;;
+
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;
@@ -86,9 +84,12 @@
 ;; the indentation for that line, but this is less agreeable when editing).
 
 ;;; Change Log:
-;; 0.4.3 - Work-in-progress release to the Emacs Wiki.
-
+;; 0.4.4 - Work-in-progress release to the Emacs Wiki.
+ 
 ;;; Code:
+
+(defconst redshift-indent-version "0.4.4"
+  "The loaded version of redshift-indent.el.")
 
 (defcustom redshift-cosmological-constant 0.5
   "The cosmological constant fixes the size of Space.
@@ -304,4 +305,6 @@ With prefix arg -2, indentation will appear 0.5 times its normal width."
                                                  (/ 1.0 (abs arg))))
     (redshift-indent-mode 1)))
 
+ 
+(provide 'redshift-indent)
 ;;; redshift-indent.el ends here
