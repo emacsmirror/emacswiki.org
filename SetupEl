@@ -125,7 +125,7 @@ The downside is that it is easy to get lost or forget what use-package is doing.
             (function flymake-mode)))
 }}}
 
-The macro :bind wraps define-key calls in a eval-after-load block, and automatically parses multiple arguments in a setq-like fashion. Likewise, :hook-into knows to deuce that flymake-mode should be added to prog-mode's hook (prog-mode-hook).
+The macro :bind wraps define-key calls in a eval-after-load block, and automatically parses multiple arguments in a setq-like fashion. Likewise, :hook-into knows to deduce that flymake-mode should be added to prog-mode's hook (prog-mode-hook).
 
 Furthermore use-package might be said to be less flexible, because the macro assumes a certain kind of usage. Each expression should define one package. This is not assumed for setup: Each body can just as easily configure no to as many packages as one wants.
 
