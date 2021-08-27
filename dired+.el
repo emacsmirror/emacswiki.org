@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.06.21
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 22 16:31:29 2021 (-0700)
+;; Last-Updated: Thu Aug 26 23:49:46 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 13027
+;;     Update #: 13028
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -13906,7 +13906,7 @@ Marked (or next prefix arg) files & subdirs here
   \\[diredp-insert-subdirs]\t\t- Insert marked subdirectories
 
   \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
-  M-o \\[dired-copy-filename-as-kill]\t\t- Copy absolute names for pasting
+  M-0 \\[dired-copy-filename-as-kill]\t\t- Copy absolute names for pasting
   \\[diredp-yank-files]\t\t- Paste files whose absolute names you copied
   \\[dired-do-find-marked-files]\t\t- Visit
   \\[dired-do-print]\t\t- Print
