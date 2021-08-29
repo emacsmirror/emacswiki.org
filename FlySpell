@@ -227,6 +227,8 @@ Found a working solution at https://www.reddit.com/r/emacs/comments/4oc7pg/spell
 (advice-add 'ispell-pdict-save :after #'flyspell-buffer-after-pdict-save)
 </pre>
 
+The above solution might trigger too often the ##flyspell-buffer## command. In order to avoid that, you can change the ##ispell-pdict-save## call by ##flyspell-mode-off##. Thanks to that, ##flyspell## will recheck the buffer when you save a word in your personal dictionary and not after correcting a word or even after dismissing the correction menu.
+
 == Flyspell with subword-mode ==
 [new]
 
