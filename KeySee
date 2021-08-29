@@ -94,6 +94,8 @@ Suggested key binding:
   (global-set-key (kbd "S-<f10>") kc-complete-menu-bar)
 
 
+See Also: [[EmacsNewbieWithIcicles#PossibleKeyBindings|Which keys can I use now, and what do they do?]]
+
 ----
 
 CategoryCompletion
