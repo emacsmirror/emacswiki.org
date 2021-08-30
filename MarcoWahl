@@ -4,18 +4,18 @@ https://melpa.org
 
 * fit-text-scale https://gitlab.com/marcowahl/fit-text-scale .  Automatically fit text to current window size by rescale.
 
-* lisp-butt-mode. Represent sequences of closing parens more compact.
+* lisp-butt-mode https://gitlab.com/marcowahl/lisp-butt-mode .  Represent sequences of closing parens more compact.
 
-* org-pretty-tags. Represent Org tags as non-ascii text or an image. 
+* org-pretty-tags https://gitlab.com/marcowahl/org-pretty-tags .  Represent Org tags as non-ascii text or an image. 
 
-* rope-read-mode.  A mode for rearranging text in “rope read“ style.
+* rope-read-mode https://gitlab.com/marcowahl/rope-read-mode .  A mode for rearranging text in “rope read“ style.
 
-* emacsshot.  Take a screenshot of Emacs from within Emacs.
+* emacsshot https://gitlab.com/marcowahl/emacsshot .  Take a screenshot of Emacs from within Emacs.
 
-* underline-with-char. Convenient underlining with a char e.g. '-'.
+* underline-with-char https://gitlab.com/marcowahl/underline-with-char .  Convenient underlining with a char e.g. '-'.
 
 
-For the code see the respective subpages at https://gitlab.com/marcowahl. Everything there is open for participation.
+Everything there is open for participation.
 
 I actually use the packages above.
 
