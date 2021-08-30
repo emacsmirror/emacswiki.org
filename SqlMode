@@ -33,7 +33,13 @@ Starting with version 21.4-a, sql.el is included in the regular sources of Emacs
 that haven't made it out of CVS, so don't use the latest version if you're not running a bleeding edge Emacs from CVS.
 
 If those with pre-22.1 versions of Emacs can identify changes needed to run on older releases, send them to MichaelMauger for consideration.  However, the emphasis is on improving future versions of Emacs.
- 
+
+[new]
+After the experience of writing a sqlcmd replacement for sql-ms (see below), I wrote a second Python utility that aims to be a single ODBC client that you can use for any database, and that can be easily configured for SQLi mode. You can find it at https://github.com/sebasmonia/datum, it includes code and instructions to set it up in Emacs. Goal is for this tool to work on any platform.
+
+-- SebastianMonia 
+
+
 == Related Pages ==
 
 Related pages are maintained in CategorySql
