@@ -2,7 +2,7 @@
 
 https://melpa.org
 
-* fit-text-scale. Fit text to window size by rescale.
+* fit-text-scale https://gitlab.com/marcowahl/fit-text-scale .  Automatically fit text to current window size by rescale.
 
 * lisp-butt-mode. Represent sequences of closing parens more compact.
 
