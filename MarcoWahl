@@ -1,7 +1,5 @@
 ==Packages==
 
-https://melpa.org
-
 * fit-text-scale https://gitlab.com/marcowahl/fit-text-scale .  Automatically fit text to current window size by rescale.
 
 * lisp-butt-mode https://gitlab.com/marcowahl/lisp-butt-mode .  Represent sequences of closing parens more compact.
@@ -14,6 +12,7 @@ https://melpa.org
 
 * underline-with-char https://gitlab.com/marcowahl/underline-with-char .  Convenient underlining with a char e.g. '-'.
 
+See also https://melpa.org for respective packages.
 
 Everything there is open for participation.
 
