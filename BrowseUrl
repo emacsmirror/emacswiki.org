@@ -348,12 +348,20 @@ Add the following to .emacs
 
     (defun browse-url-edge (url &optional new-window)
       (shell-command
-        (concat "start microsoft-edge:" url)))
+        (concat "start microsoft-edge:" " " url)))
 
 and set the browser function
 
     (setq browse-url-browser-function 'browse-url-edge)
 
+[new]
+I don't know why but to be able to use # anchors in URLs I had to define:
+
+    (defun browse-url-edge (url &optional new-window)
+      (shell-command
+        (concat "start msedge" " " url)))
+
+-- DieterWilhelm, 2021-08-30
 
 == Feeling Lucky? ==
 
