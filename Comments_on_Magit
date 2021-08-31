@@ -13,3 +13,22 @@ Many commands, iincluding the *unstaging* command, now act on the items in the r
 
 -- JonasBernoulli 2014-09-05 22:01 UTC
 
+
+----
+
+Where is the section for signing git commit with gpg key? 
+
+Three things:
+
+1) I do not want to disturb my actual system setting for this ,becasue Emacs is "yet another software" on my device.
+
+2) This is such a de facto standard and it is badly missing (docs and features) 
+
+3) While trying to commit with sign  (--s choose from the transient pop) ...it is taking way long ...press $ and it is saying " Waiting for the editor to close .....gpg failed to sign data...etc"
+
+Heads up! gpg key is perfectly wotking on other app inside emacs(GUI/Environment) ,i.e I can sign and encrypt my mail in mu4e or Gnus , no problem whatsoever. But...this damn thing is failing me.
+
+I am wondering nobody encounter this problem???? Hard to believe!, if anybody did ..where is precise and explicit docs of it???
+
+-- [https://about.me/unixbhaskar unixbhaskar] 2021-08-31 03:34 UTC
+
