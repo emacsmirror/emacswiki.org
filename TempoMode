@@ -140,12 +140,12 @@ In Emacs 23 abbrevs are all lisp, allowing for the following magic to turn all y
 
 Sometimes it's desirable to offer a list of completions when being prompted.  Here's a way to do it:
 
-  (defun tempo-complete (prompt completions match-required
-                         &optional save-name no-insert)
-    "Do whatever `tempo-insert-prompt' does, but use completing-read."
-    (flet ((read-string (prompt)
-             (completing-read prompt completions match-required)))
-      (tempo-insert-prompt prompt save-name no-insert)))
+   (defun tempo-complete (prompt completions require-match &optional save-name no-insert)
+      "Like `tempo-insert-prompt', but use completing-read."
+      (cl-flet ((read-string (prompt)
+               (completing-read prompt completions (lambda (s) t) require-match)))
+        (tempo-insert-prompt prompt save-name no-insert)))
+
 
 Now let's use it in the LaTeX example seen above:
 
