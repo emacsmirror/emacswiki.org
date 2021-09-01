@@ -65,8 +65,8 @@ overlays over the underlying text."
 			     (overlay-start o2)))))
 	(pos beg))
     (mapc (lambda (ov)
-            ;; Skip the overlay for the selected region.
-            (unless (eq (overlay-get ov 'face) 'region)
+            ;; Skip overlays for the selected region and `hl-line-mode'.
+            (unless (memq (overlay-get ov 'face) '(region hl-line))
               (let* ((ov-beg (overlay-start ov))
                      (ov-end (overlay-end ov))
                      (buf-str (buffer-substring-no-properties pos ov-beg))
