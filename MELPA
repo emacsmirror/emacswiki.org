@@ -27,6 +27,9 @@ For more information, see [https://melpa.org/#/getting-started Getting started w
 
 For builds of stable version packages triggered by upstream version tags, see [[https://stable.melpa.org/ MELPA Stable]].
 
+The definition of "stable" in this context is rather informal.
+[https://www.reddit.com/r/emacs/comments/etikbz/speaking_as_a_package_maintainer_please_do_not/ A Reddit post] outlines the situation and issues some caveats. 
+
 = Adding your package =
 
 MELPA uses a recipe system similar to Homebrew or [[el-get]].  Recipes are stored in a github repository which tells the updated package.el how to download each package.
