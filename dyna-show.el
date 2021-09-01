@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 14 19:28:17 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 15 15:32:21 2021 (-0700)
+;; Last-Updated: Wed Sep  1 14:26:29 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 70
+;;     Update #: 76
 ;; URL: https://www.emacswiki.org/emacs/download/dyna-show.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightDynamicVariables
 ;; Keywords: highlight, lisp, variables, lexical
@@ -28,10 +28,11 @@
 ;;
 ;;  `dyna-show-mode' is a minor mode that highlights, in the current
 ;;  buffer, symbols that are known to be Emacs-Lisp dynamic variables.
-;;  It uses face `dyna-variables' for this.  The command toggles the
-;;  highlighting on/off.  The buffer should be in Emacs-Lisp mode.
+;;  It uses faces `dyna-options' for user options and `dyna-variables'
+;;  for other dynamic variables.  The command toggles the highlighting
+;;  on/off.  The buffer should be in Emacs-Lisp mode.
 ;;
-;;  The simple built-in test`special-variable-p' is used.  That test
+;;  The simple built-in test `special-variable-p' is used.  That test
 ;;  is not 100% reliable.  It doesn't respect vacuous `defvar' sexps,
 ;;  which declare a variable to be special in a given context, without
 ;;  assigning a value to the variable.  Instead, it uses `defvar',
@@ -61,9 +62,9 @@
 ;;    (add-hook 'emacs-lisp-mode-hook 'dyna-show-mode 'APPEND)
 ;;
 ;;
-;;  Face defined here:
+;;  Faces defined here:
 ;;
-;;    `dyna-variables'.
+;;    `dyna-options', `dyna-variables'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -76,7 +77,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
-;; 
+;;
+;; 2021/09/01 dadams
+;;     Added face dyna-options.
+;;     dyna-highlight: Highlight options with face dyna-options.
 ;; 2021/08/15 dadams
 ;;     Created.
 ;; 
@@ -123,6 +127,13 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "https://emacswiki.org/emacs/HighlightDynamicVariables")
   :link '(emacs-commentary-link :tag "Commentary" "dyna-show"))
 
+(defface dyna-options
+    '((((class color) (min-colors 88))
+         (:underline (:color "Green" :style wave)))
+      (t :underline t))
+  "Face used to highlight user options."
+  :group 'matching :group 'font-lock :group 'programming :group 'faces)
+
 (defface dyna-variables
     '((((class color) (min-colors 88))
          (:underline (:color "Red" :style wave)))
@@ -135,6 +146,7 @@ Don't forget to mention your Emacs and library versions."))
     (defvaralias 'dyna--face 'hdefd--face nil)
   (defvar dyna--face))
 
+;;;###autoload
 (define-minor-mode dyna-show-mode
   "Toggle highlighting dynamic (\"special\") variables in the buffer.
 The current buffer should be in Emacs-Lisp mode.
@@ -156,8 +168,11 @@ Highlighting uses face `dyna-variables'."
              (if dyna-show-mode "ON" "OFF"))))
 
 (defun dyna-highlight (_limit)
-  "Highlight Emacs-Lisp dynamic variables using face `dyna-variables'.
-Use as a font-lock MATCHER function for `dyna-show-mode'."
+  "Highlight Emacs-Lisp dynamic variables.
+User options are highlighted with face `dyna-options'.
+Other dynamic variables are highlighted with face `dyna-variables'.
+
+Used as a font-lock MATCHER function for `dyna-show-mode'."
   (let ((dyna--opoint  (point))
         (dyna--found   nil))
     (with-syntax-table emacs-lisp-mode-syntax-table
@@ -171,7 +186,9 @@ Use as a font-lock MATCHER function for `dyna-show-mode'."
                             (special-variable-p dyna--obj)
                             (not (memq dyna--obj '(nil t)))
                             (progn (set-match-data (list dyna--opoint (point)))
-                                   (setq dyna--face  'dyna-variables)
+                                   (setq dyna--face  (if (custom-variable-p dyna--obj)
+                                                         'dyna-options
+                                                       'dyna-variables))
                                    t))))
                  (error nil))
                (forward-sexp 1)
