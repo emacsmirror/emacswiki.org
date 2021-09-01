@@ -6,4 +6,6 @@ Jenkins in an open source automation server that supports building, deploying an
 
 [https://github.com/ataylor284/jenkins-watch jenkins-watch] Display jenkins/hudson build status on the emacs modeline
 
+[https://github.com/john2x/jenkinsfile-mode jenkinsfile-mode] is available for editing a <code>Jenkinsfile</code>. It requires <code>groovy-mode</code>. It is available from MELPA.
+
 Also see [[CircleCI]] and [[Travis]].
