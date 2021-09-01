@@ -1,8 +1,8 @@
 This page is about library '''<tt>[[dyna-show.el]]</tt>''', which provides highlighting of occurrences of dynamically scoped variables in an EmacsLisp buffer, using [[minor mode]] '''`dyna-show-mode''''.
 
-The variables are highlighted with face `dyna-variables'.
+The variables are highlighted using faces '''`dyna-options'''' for user options and '''`dyna-variables'''' for other dynamic variables. 
 
-It uses `special-variable-p', which is limited. From the screenshot, you can see another limitation:
+It uses predicate `special-variable-p', which is limited. From the screenshot, you can see another limitation:
 occurrences of a function, e.g. `font-lock-mode', that has the same name as a dynamic variable, are also
 highlighted.
 
