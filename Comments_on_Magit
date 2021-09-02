@@ -32,3 +32,14 @@ I am wondering nobody encounter this problem???? Hard to believe!, if anybody di
 
 -- [https://about.me/unixbhaskar unixbhaskar] 2021-08-31 03:34 UTC
 
+
+----
+
+Resolved it doing the suggestion provided by someone at Reddit emacs space ...just need to add one entry in gpg-agent.conf file i.e
+
+allow-emacs-pinentry
+
+and Start the pinentry-start service ....voila!
+
+-- [https://about.me/unixbhaskar unixbhaskar] 2021-09-02 05:39 UTC
+
