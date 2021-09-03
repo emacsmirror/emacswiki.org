@@ -56,7 +56,9 @@ This function is similar to `copy-region-as-kill' but it prefers
 overlays over the underlying text."
   (interactive
    (if (region-active-p)
-       (list (mark) (point))
+       (let ((m (mark))
+             (p (point)))
+         (list (min m p) (max m p)))
      (user-error "Please, select some text")))
   (let ((tmp-buf (generate-new-buffer " *tmp*"))
         (overlays (sort (overlays-in beg end)
