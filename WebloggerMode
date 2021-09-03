@@ -1,5 +1,5 @@
 [[es:ModoWeblogger]]
-WebloggerMode (<i>weblogger.el</i>) is an Emacs package that allows you to post to one of the following blog sites from emacs:
+WebloggerMode <i>weblogger.el</i> is an Emacs package that allows you to post to one of the following blog sites from emacs:
 
 * Blogger
 * Drupal
@@ -8,29 +8,34 @@ WebloggerMode (<i>weblogger.el</i>) is an Emacs package that allows you to post 
 * Moveable Type
 * WordPress
 
-This package is primarily written by MarkHershberger. It was developed from BloggerMode (blogger.el).
+This package is primarily written by MarkHershberger.  It was developed from BloggerMode (blogger.el).
 
-=Requirement=
+== Requirement ==
 
 WebloggerMode requires Lisp:xml-rpc.el .
 
-=Download location=
+== Download location ==
 
 The current version (1.4.5, released on 2010-03-11) is available at https://launchpad.net/weblogger-el
 
-=Usage=
+It's also available in [[MELPA]], however, there it is [https://melpa.org/#/weblogger available in a version 1.4.6], according to the source code released on 2011-09-26.
+
+== Usage ==
 From comments in the source, here are some docs:
 
-<pre>
+In your InitFile:
 
-;; in .emacs file:
-;;
-;; (load-file "weblogger.el")
+{{{
+(load-file "weblogger.el")
+}}}
 
 then:
- M-x weblogger-setup-weblog
- M-x weblogger-start-entry
 
+<kbd>M-x</kbd> <kbd>weblogger-setup-weblog</kbd>
+
+<kbd>M-x</kbd> <kbd>weblogger-start-entry</kbd>
+
+{{{
 ;; C-x C-s    -- post-and-publish current buffer to the weblog.
 ;;               Calling weblogger-publish-entry with an prefix argument
 ;;               (i.e. C-u C-x C-s) will prompt for which weblog
@@ -48,16 +53,15 @@ then:
 ;; C-c C-s s  -- Change the server being used.
 ;; C-c C-s w  -- Change the weblog.
 ;; C-c C-s u  -- Change the user (re-login).
-</pre>
+}}}
 
-
-=Discussion=
+== Discussion ==
 
 If you run into a bug in WebloggerMode, please report it using Savannah or M-x weblogger-submit-bug-report but make sure that I (MarkHershberger) know about it.  Another good way to get support is to join the Emacs Weblogs mailing list (https://savannah.nongnu.org/mail/?group=emacsweblogs).  Posting rants and fixes on various blogs across the Internet won't get your problem fixed.  (2010-03-09 -- MarkHershberger)
 
 After getting WebloggerMode, the user should either run
 
-    M-x weblogger-setup-weblog RET
+<kbd>M-x</kbd> <kbd>weblogger-setup-weblog</kbd> <kbd>RET</kbd>
 
 or define `weblogger-config-alist' manually to define the blogs (s)he wishes to post to.  
 
@@ -100,8 +104,5 @@ I have applied rix's patch to 1.4.4 and posting to my Wordpress blog is good exc
 
 I have made a patch to both weblogger.el and xml-rpc.el, to make it work with M$ Windows Live space which is basically metaWeblog, with some quirks in its xml content. You can get my code at http://windows-config.googlecode.com/svn/trunk/.emacs_d/weblogger, both .el files under there (this abused personal google code project is not meant to fork weblogger.el or any other OSS software, it's only for my own convenience). --baohaojun
 
-
 ----
-
 CategoryJournaling
-
