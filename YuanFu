@@ -4,33 +4,36 @@ a.k.a casouri.
 
 I started using Emacs in 2017 when I was a freshman in college. I've been playing with it ever since.
 
-You can find me on [https://emacs-china.org emacs-china] under the name casouri, or visit [https://archive.casouri.cat/note my blog]. I put all the packages I wrote on [https://www.github.com/casouri github]. 
+You find me on [https://archive.casouri.cat/note my blog]. I host all the packages I wrote on [https://www.github.com/casouri GitHub]. 
 
 [https://github.com/casouri/lunarymacs My init.el]
 
 == Some EMACS expansions that I like ==
 
-    Eight       Megabytes      And        Constantly   Swapping      ;; hard to beat
+    Eight       Megabytes      And        Constantly   Swapping      ; hard to beat
     Even a      Master of      Arts       Comes        Simpler
     Emacs       Makes          A          Computer     Slow
     Elsewhere   Maybe          All        Commands are Simple
-    Excellent   Manuals        Are        Clearly      Suppressed
-    Embarrassed Manual-Writer  Accused of Communist    Subversion    ;; for the record, Emacs has a fantastic manual
-
+    Excellent   Manuals        Are        Clearly      Suppressed.   ; for the record, Emacs has a fantastic manual
+    Embarrassed Manual-Writer  Accused of Communist    Subversion    
 
 
 == Development ==
 
 Here are some of the packages that I wrote.
 
-* [https://github.com/casouri/ghelp ghelp]: Generic Help, different backends, same interface. Currently supports helpful and eglot.
-
-* [https://github.com/casouri/trivial-copy trivial-copy]: Copy paste files like you do in Finder. 
+* [https://github.com/casouri/ghelp ghelp]: Generic Help: different backends, same interface. Currently supports helpful and eglot.
 
 * [https://github.com/casouri/ftable ftable]: Fill (auto-layout) table. (Like fill-paragraph but for tables.)
 
 * [https://github.com/casouri/valign valign]: 
 Align org tables, even when there are variable font characters/images/CJK characters.
+
+* [https://github.com/casouri/xeft xeft]: A Deft copy, but use a Xapian backend for faster incremental search.
+
+* [https://github.com/casouri/vundo vundo]: Display an undo tree like undo-tree.el, but do not keep internal state and is compatible with the built-in undo system.
+
+* [https://github.com/casouri/iscroll iscroll]: Smooth scrolling over images.
 
 Here are some site-lisp's I wrote.
 
@@ -39,9 +42,6 @@ Outline for programming modes.
 
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/outline%2B.el outline+.el]:
 Cycle outline headers like in Org mode.
-
-* [https://github.com/casouri/lunarymacs/blob/master/site-lisp/sidebar.el sidebar.el]: 
-Show an outline sidebar.
 
 * [https://github.com/casouri/lunarymacs/blob/master/site-lisp/quanjiao.el quanjiao.el]:
 智能全角引号。
