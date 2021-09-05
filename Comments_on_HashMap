@@ -1,0 +1,6 @@
+Is there a typo in hash-table-equal-p? It looks like the call to 'maphash' is comparing the values in h2 to the values in h2.  As such the following evaluates to true.
+
+    (hash-table-equal-p #s(hash-table test equal data (:a 1 :b 2)) #s(hash-table test equal data (:a 4 :b 5)))
+
+-- srunnels 2021-09-05 16:27 UTC
+
