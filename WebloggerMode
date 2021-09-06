@@ -12,7 +12,7 @@ This package is primarily written by MarkHershberger.  It was developed from Blo
 
 == Requirement ==
 
-WebloggerMode requires Lisp:xml-rpc.el .
+WebloggerMode requires [https://github.com/xml-rpc-el/xml-rpc-el xml-rpc.el] .
 
 == Download location ==
 
