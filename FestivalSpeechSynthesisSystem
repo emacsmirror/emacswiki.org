@@ -1,3 +1,14 @@
 http://festvox.org
 ----
 TextToSpeech
+
+There are at least two possibilities (2021-09-07) to use festival with emacs:
+* from the [https://www.emacswiki.org/emacs/festival.el wiki] or 
+* from the [https://github.com/festvox/festival/blob/master/lib/festival.el festival developers]
+
+In either case, add 
+
+    (push "/path/to/directory/" load-path)
+    (require 'festival)
+
+keep the double quotes, and replace the `/path/to/directory' with the appropriate value
