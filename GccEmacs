@@ -33,6 +33,9 @@ if spack doesn't work, set ##SPACK_PYTHON## to python3 path. You can customize m
 === fedora ===
 
     dnf copr enable deathwish/emacs-pgtk-nativecomp
+
+then
+
     dnf update emacs
 
 or
