@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 24 18:57:42 2021 (-0700)
+;; Last-Updated: Thu Sep  9 14:03:55 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7232
+;;     Update #: 7244
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -590,6 +590,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/09 dadams
+;;     Info-glossary-fallbacks-alist: Prepended semantic manual to default value.  Say in doc to put t entries last.
+;;     info-fallback-manual-for-glossary: Try explicit-list fallback entries before t entries.
+;;     Info-goto-glossary-definition: Get short manual name first, before calling info-fallback-manual-for-glossary.
 ;; 2021/08/24 dadams
 ;;     info-good-fixed-pitch-font-families: Added autoload cookie.
 ;;       Thx to wiku user emacs18 and https://github.com/syl20bnr/spacemacs/issues/15010.
@@ -1869,14 +1873,18 @@ cycle the option value."
   :type 'boolean :group 'Info-Plus)
 
 ;;;###autoload
-(defcustom Info-glossary-fallbacks-alist '((emacs . t))
+(defcustom Info-glossary-fallbacks-alist '((semantic . semantic) (emacs . t))
   "Alist of fallback manuals to use for glossary links.
 Each element is of the form (GLOSSARY-MANUAL . MANUALS).  The glossary
-of GLOSSARY-MANUALis used to create glossary links for each manual in
+of GLOSSARY-MANUAL is used to create glossary links for each manual in
 MANUALS, if it has no glossary of its own.  If MANUALS is `t' then all
 manuals use the glossary of GLOSSARY-MANUAL.
 
-This has no effect if option `Info-fontify-glossary-words' is nil."
+Put any alist entries that have `t' for MANUALS after all entries that
+have an explicit list for MANUALS, so that the explicit lists are
+handled before the `t' catch-alls.
+
+This option has no effect if `Info-fontify-glossary-words' is nil."
   :type '(alist
           :key-type   (symbol :tag "Fallback manual (use its glossary)")
           :value-type (choice
@@ -4120,7 +4128,8 @@ Non-nil RESETP means re-create an existing hash table."
   "Name of manual whose glossary is to be used for MANUAL, or nil if none."
   (catch 'info-fallback-manual-for-glossary
     (dolist (entry  Info-glossary-fallbacks-alist)
-      (when (or (eq t (cdr entry))  (memq (intern manual) (cdr entry)))
+      (when (or (and (listp (cdr entry))  (memq (intern manual) (cdr entry))) ; Do this first, before catch-all.
+                (eq t (cdr entry)))
         (throw 'info-fallback-manual-for-glossary (symbol-name (car entry)))))
     nil))
 
@@ -5875,9 +5884,9 @@ But usable with Emacs < 24 too."
   (goto-char (posn-point (event-start event)))
   (let ((word  (word-at-point)))
     (ignore-errors
-      (Info-goto-node (format "(%s)Glossary" (file-name-sans-extension
-                                              (file-name-nondirectory
-                                               (info-fallback-manual-for-glossary Info-current-file)))))
+      (Info-goto-node (format "(%s)Glossary" (info-fallback-manual-for-glossary
+                                              (file-name-sans-extension
+                                               (file-name-nondirectory Info-current-file)))))
       (goto-char (point-min))
       (forward-line 4)
       (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
