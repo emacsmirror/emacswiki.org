@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep  9 14:03:55 2021 (-0700)
+;; Last-Updated: Fri Sep 10 15:05:48 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7244
+;;     Update #: 7324
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -72,6 +72,8 @@
 ;;
 ;;    `Info-breadcrumbs-in-mode-line-mode',
 ;;    `Info-change-visited-status' (Emacs 24+),
+;;    `Info-cycle-fontify-glossary-words',
+;;    `Info-cycle-link-glossary-words',
 ;;    `Info-cycle-fontify-quotations', `Info-describe-bookmark' (Emacs
 ;;    24.2+), `Info-define-custom-delimiting',
 ;;    `Info-follow-nearest-node-new-window', `Info-glossary',
@@ -132,7 +134,7 @@
 ;;    `Info-fontify-indented-text-chars',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
-;;    `Info-glossary-fallbacks-alist',
+;;    `Info-glossary-fallbacks-alist', `Info-link-glossary-words',
 ;;    `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+),
 ;;    `Info-saved-history-file' (Emacs 24.4+), `Info-saved-nodes',
 ;;    `Info-subtree-separator', `Info-toc-outline-no-redundancy-flag'.
@@ -170,13 +172,13 @@
 ;;
 ;;    `Info-breadcrumbs-depth-internal',
 ;;    `info-custom-delimited-same-line-regexp',
-;;    `info-fontify-emphasis', `info-glossary-link-map',
-;;    `info-good-fixed-pitch-font-families',
+;;    `info-fontify-emphasis', `Info-glossary-link-history',
+;;    `info-glossary-link-map', `info-good-fixed-pitch-font-families',
 ;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
-;;    `Info-link-faces', `Info-merged-map', `Info-mode-syntax-table',
-;;    `info-nomatch', `info-quotation-regexp',
-;;    `info-quotation-same-line-regexp', `info-quoted+<>-regexp',
-;;    `info-quoted+<>-same-line-regexp',
+;;    `info-last-non-nil-fontify-glossary-words', `Info-link-faces',
+;;    `Info-merged-map', `Info-mode-syntax-table', `info-nomatch',
+;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
+;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
 ;;    `info-remap-default-face-cookie', `Info-toc-outline-map'.
 ;;
 ;;
@@ -392,10 +394,14 @@
 ;;    - Glossary words, that is, words that are defined in a manual's
 ;;      `Glossary' node, are highlighted and linked to their glossary
 ;;      entries, if option `Info-fontify-glossary-words' is non-nil.
-;;      By default, a mouseover on such a link shows a tooltip with
-;;      the word's definition from the glossary.  (Currently only the
-;;      Emacs and Semantic manuals have `Glossary' nodes, as far as I
-;;      know.)
+;;      (Currently only the Emacs and Semantic manuals have `Glossary'
+;;      nodes, as far as I know.)
+;;
+;;      By default, a mouseover on such a link shows the word's
+;;      definition from the glossary in the help echo.  Non-default
+;;      values of the option let you not show the definition on
+;;      mouseover, and they let you show the link face only when
+;;      you've not yet visited (followed) the link for a given word.
 ;;
 ;;    - Text between two delimiters that you specify, if the car of
 ;;      option `Info-fontify-custom-delimited' is non-nil.
@@ -590,15 +596,27 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/10 dadams
+;;     Added Info-cycle-(fontify|link)-glossary-words, Info-link-glossary-words, Info-glossary-link-history,
+;;           info-last-non-nil-fontify-glossary-words.
+;;     Info-fontify-glossary-words: Added more values: can show link only until followed.
+;;                                  Renamed link-only value.  If you had customized to that, customize again.
+;;     Info-history-clear: Clear also Info-glossary-link-history.
+;;     Info-toggle-fontify-glossary-words: Toggle to last non-nil value.
+;;     Info-fontify-glossary-words:
+;;       Respect show-link(-and-def)-till-visited - add link face only if not yet visited.
+;;     Info-goto-glossary-definition: Add word to Info-glossary-link-history.
+;;     Everywhere: changed eq to derived-mode-p for Info-mode.
+;;     Fixed multiple commands, to echo msg regardless of whether in Info-mode.
 ;; 2021/09/09 dadams
-;;     Info-glossary-fallbacks-alist: Prepended semantic manual to default value.  Say in doc to put t entries last.
+;;     Info-glossary-fallbacks-alist: Prepend semantic manual to default value.  Say in doc to put t entries last.
 ;;     info-fallback-manual-for-glossary: Try explicit-list fallback entries before t entries.
-;;     Info-goto-glossary-definition: Get short manual name first, before calling info-fallback-manual-for-glossary.
+;;     Info-goto-glossary-definition: Get short manual name before calling info-fallback-manual-for-glossary.
 ;; 2021/08/24 dadams
 ;;     info-good-fixed-pitch-font-families: Added autoload cookie.
 ;;       Thx to wiku user emacs18 and https://github.com/syl20bnr/spacemacs/issues/15010.
 ;; 2021/06/14 dadams
-;;     Added info-nomatch; use & doc it.  Turn off highlighting of isolated quote chars by default for some manuals.
+;;     Added info-nomatch; use & doc it.  Turn off highlighting isolated quote chars by default for some manuals.
 ;; 2021/06/03 dadams
 ;;     Info-toggle-fontify-local, Info-toggle-fontify-local-*, Info-fontify-node, Info-fontify-quotations,
 ;;       Info-fontify-custom-delimited:
@@ -621,8 +639,8 @@
 ;;     Info-emphasis-regexp: Updated doc to say it must have a regexp group.
 ;;     Info-fontify-quotations: Use functions, not vars: (info-*-regexp), not info-*-regexp.
 ;;     Info-fontify-node: Use function Info-emphasis-regexp, not var.  Wrap stuff in EMPHASIS clause with
-;;       ignore-errors because using the function and in case the regexp is faulty.  This is a special case, because
-;;       we use text property`invisible, not just font-lock.
+;;       ignore-errors because using function and in case regexp is faulty.  This is a special case, because we
+;;       use text property`invisible, not just font-lock.
 ;;     Info-bookmark-(for-node|named-at-point): use Info-manual-string.
 ;; 2021/05/24 dadams
 ;;     Added: Info--manuals - factored out from info-display-manual.
@@ -1765,38 +1783,44 @@ never highlighted, and this option has no effect.  This gives you a
 way to turn off all matching of `Info-emphasis-regexp'."
   :type 'boolean :group 'Info-Plus)
 
+(defvaralias 'Info-link-glossary-words 'Info-fontify-glossary-words)
 ;;;###autoload
 (defcustom Info-fontify-glossary-words t
-  "Non-nil means `info' fontifies first occurrences of glossary words.
-In addition, you can click `mouse-2' on such a highlighted word, or
-use `RET' on it, to go to its definition in the `Glossary' node of the
-current manual.
+  "Non-nil means link first occurrences of words to their glossary entries.
+Only the first occurrence of the word in a given node is linked.
 
-You can optionally also have a mouseover action show the definition
-immediately, as a tooltip (or in the echo area if `tooltip-mode' is
-turned off).
+You can click `mouse-2' on the word, or use `RET' on it, to go to its
+definition in the `Glossary' node of the current manual.
 
-* A value of `link-only' means do not also show the definition on
-  mouseover.
+By default, a mouseover action also shows the definition immediately,
+as the help echo in a tooltip (or in the echo area if `tooltip-mode'
+is turned off).
 
-* Any other non-nil value means show the definition on mouseover.
+By default, the link is fontified (with face `info-glossary-word').
+You can optionally show the link this way only until you
+follow (visit) a link for that word to the glossary.  That reduces
+clutter for words you've already looked up.  Their first occurrences
+in nodes are still linked, but the links are only evident (with
+`mouse-face') on mouseover.
 
 Glossary terms of more than one word are not highlighted or linked.
 
-This option has no effect for a manual that has no node named
-`Glossary'.
+See option `Info-glossary-fallbacks-alist' for the glossaries to look
+in.
 
 Note: This fontification can never be 100% reliable.  It aims to be
 useful in most Info texts, but it can occasionally result in
-fontification that you might not expect.  This is not a bug; it is
-part of the design to be able to appropriately fontify a great variety
-of texts.  Set this flag to nil if you do not find this fontification
-useful.  You can use command `Info-toggle-fontify-glossary-words' to
-toggle the option value."
+fontification that you might not expect.  This is not a bug; it's part
+of the design to be able to appropriately fontify a great variety of
+texts.  Set this option to nil if you do not find this linking useful.
+You can use command `Info-cycle-fontify-glossary-words' to cycle the
+option value among the possibilities."
   :type '(choice
-          (const :tag "OFF - don't fontify and link glossary words"   nil)
-          (const :tag "Fontify and link, but don't show tooltip"      link-only)
-          (other :tag "Fontify, link, and show tooltip on mouseover"  t))
+          (const :tag "OFF - don't link glossary words"          nil)
+          (const :tag "Show link and definition"                 t)
+          (const :tag "Show link (but not definition)"           show-link)
+          (const :tag "Show link and definition until visited"   show-link-and-def-till-visited)
+          (const :tag "Show link until visited (no definition)"  show-link-till-visited))
   :group 'Info-Plus)
 
 ;;;###autoload
@@ -1961,6 +1985,11 @@ The function is passed no arguments.
 The function is invoked by `Info-fontify-node', before fontifying
 reference items (`Info-fontify-reference-items').  When it is called,
 point is at `point-min' in the node to be fontified.")
+
+(defvar Info-glossary-link-history ()
+  "List of glossary words whose links have been followed so far.
+This is empty at the beginning of an Emacs session, and after you use
+`\\[Info-history-clear].")
 
 (defvar info-glossary-link-map (let ((map  (make-sparse-keymap)))
                                  (define-key map (kbd "RET")   'Info-goto-glossary-definition)
@@ -2177,11 +2206,14 @@ If ... contains an end char then that char must be backslashed.")
 
 ;;;###autoload (autoload 'Info-history-clear "info+")
 (defun Info-history-clear (&optional msgp)
-  "Clear Info history and reload current manual."
+  "Clear Info history and reload current manual.
+This resets links, including glossary links, to their initial,
+unvisited state."
   (interactive (progn (unless (y-or-n-p "Clear the Info history? ") (info-user-error "OK, canceled"))
                       (list t)))
-  (setq Info-history       ()
-        Info-history-list  ())
+  (setq Info-history                ()
+        Info-history-list           ()
+        Info-glossary-link-history  ())
   (when (derived-mode-p 'Info-mode) (revert-buffer nil t))
   (when msgp (message "Info history cleared")))
 
@@ -2317,13 +2349,13 @@ line from non-nil `Info-use-header-line'."
     "Toggle option `Info-node-access-invokes-bookmark-flag'."
     (interactive "p")
     (setq Info-node-access-invokes-bookmark-flag  (not Info-node-access-invokes-bookmark-flag))
-    (when (eq major-mode 'Info-mode)
+    (when (derived-mode-p 'Info-mode)
       (font-lock-defontify)
       (let ((modp               (buffer-modified-p))
             (inhibit-read-only  t))
-        (Info-fontify-node))
-      (when msgp (message "`Info-node-access-invokes-bookmark-flag' is now %s"
-                          (if Info-node-access-invokes-bookmark-flag 'ON 'OFF)))))
+        (Info-fontify-node)))
+    (when msgp (message "`Info-node-access-invokes-bookmark-flag' is now %s"
+                        (if Info-node-access-invokes-bookmark-flag 'ON 'OFF))))
 
   )
 
@@ -2401,13 +2433,13 @@ are prompted for NODE."
     "Toggle option `Info-fontify-bookmarked-xrefs-flag'."
     (interactive "p")
     (setq Info-fontify-bookmarked-xrefs-flag  (not Info-fontify-bookmarked-xrefs-flag))
-    (when (eq major-mode 'Info-mode)
+    (when (derived-mode-p 'Info-mode)
       (font-lock-defontify)
       (let ((modp               (buffer-modified-p))
             (inhibit-read-only  t))
-        (Info-fontify-node))
-      (when msgp (message "`Info-fontify-bookmarked-xrefs-flag' is now %s"
-                          (if Info-fontify-bookmarked-xrefs-flag 'ON 'OFF)))))
+        (Info-fontify-node)))
+    (when msgp (message "`Info-fontify-bookmarked-xrefs-flag' is now %s"
+                        (if Info-fontify-bookmarked-xrefs-flag 'ON 'OFF))))
 
   )
 
@@ -2451,16 +2483,16 @@ you are prompted for the chars to use."
   (setq Info-fontify-custom-delimited (cons (not (car Info-fontify-custom-delimited))
                                             (cdr Info-fontify-custom-delimited)))
   (when newp (call-interactively #'Info-define-custom-delimiting))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-custom-delimited' is now %s%s"
-                        (if (car Info-fontify-custom-delimited) 'ON 'OFF)
-                        (if newp
-                            (format ", with delimiters %c and %c" (info-custom-delim-1) (info-custom-delim-2))
-                          "")))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-custom-delimited' is now %s%s"
+                      (if (car Info-fontify-custom-delimited) 'ON 'OFF)
+                      (if newp
+                          (format ", with delimiters %c and %c" (info-custom-delim-1) (info-custom-delim-2))
+                        ""))))
 
 ;; Turn off highlighting of isolated quote marks for non-Emacs manuals
 ;;
@@ -2525,19 +2557,19 @@ Non-nil MSGP means show a status message when done."
       (let ((newval  (if val nil last-val)))
         (unless (equal val last-val) (put manual last-var (setq last-val  val)))
         (put manual regexp-var (setq val  newval))))
-    (when (eq major-mode 'Info-mode)
+    (when (derived-mode-p 'Info-mode)
       (font-lock-defontify)
       (let ((modp               (buffer-modified-p))
             (inhibit-read-only  t))
-        (Info-fontify-node))
-      (when msgp
-        (if (eq info-nomatch val)
-            (message "`%s' manual now has NO `%s' highlighting (OVERRIDES global)" manual regexp-var)
-          (message "`%s' manual local `%s' highlighting is now %s"
-                   manual
-                   regexp-var
-                   (if val 'ON (format "OFF (global is %s)"
-                                       (if (symbol-value regexp-var) 'ON 'OFF)))))))))
+        (Info-fontify-node)))
+    (when msgp
+      (if (eq info-nomatch val)
+          (message "`%s' manual now has NO `%s' highlighting (OVERRIDES global)" manual regexp-var)
+        (message "`%s' manual local `%s' highlighting is now %s"
+                 manual
+                 regexp-var
+                 (if val 'ON (format "OFF (global is %s)"
+                                     (if (symbol-value regexp-var) 'ON 'OFF))))))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-custom-delimited "info+")
 (defun Info-toggle-fontify-local-custom-delimited (&optional readp msgp)
@@ -2585,26 +2617,26 @@ is on, and it turns them all on, if any is off:
             Info-fontify-visited-nodes)
         (dolist (opt  opts) (set opt nil))
       (dolist (opt  opts) (set opt t))))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "Info+ fontify options are now ALL %s"
-                        (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "Info+ fontify options are now ALL %s"
+                      (if Info-fontify-angle-bracketed-flag 'ON 'OFF))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
 (defun Info-toggle-fontify-angle-bracketed (&optional msgp)
   "Toggle option `Info-fontify-angle-bracketed-flag'."
   (interactive "p")
   (setq Info-fontify-angle-bracketed-flag  (not Info-fontify-angle-bracketed-flag))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
-                        (if Info-fontify-angle-bracketed-flag 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
+                      (if Info-fontify-angle-bracketed-flag 'ON 'OFF))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-emphasis "info+")
 (defun Info-toggle-fontify-emphasis (&optional msgp)
@@ -2612,25 +2644,66 @@ is on, and it turns them all on, if any is off:
   (interactive "p")
   (unless info-fontify-emphasis (error "`info-fontify-emphasis' must be non-nil to use this command"))
   (setq Info-fontify-emphasis-flag  (not Info-fontify-emphasis-flag))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-emphasis-flag' is now %s"
-                        (if Info-fontify-emphasis-flag 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-emphasis-flag' is now %s"
+                      (if Info-fontify-emphasis-flag 'ON 'OFF))))
 
+(defvar info-last-non-nil-fontify-glossary-words t
+  "Last non-nilvalue of `Info-fontify-glossary-words'.")
+
+;;;###autoload (autoload 'Info-toggle-link-glossary-words "info+")
+(defalias 'Info-toggle-link-glossary-words 'Info-toggle-fontify-glossary-words)
 ;;;###autoload (autoload 'Info-toggle-fontify-glossary-words "info+")
 (defun Info-toggle-fontify-glossary-words (&optional msgp)
-  "Toggle option `Info-fontify-glossary-words'."
+  "Toggle option `Info-fontify-glossary-words'.
+This toggles between nil and the last non-nil setting (or t if none)."
   (interactive "p")
-  (setq Info-fontify-glossary-words  (not Info-fontify-glossary-words))
-  (when (eq major-mode 'Info-mode)
+  (if Info-fontify-glossary-words
+      (setq info-last-non-nil-fontify-glossary-words  Info-fontify-glossary-words
+            Info-fontify-glossary-words               nil)
+    (setq Info-fontify-glossary-words  info-last-non-nil-fontify-glossary-words))
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-glossary-words' is now %s" (if Info-fontify-glossary-words 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-glossary-words' is now %s"
+                      (case Info-fontify-glossary-words
+                        ((nil)                           "OFF - no glossary links")
+                        (show-link-and-def-till-visited  "Show link and DEFINITION, until visited")
+                        (show-link                       "Show link only (NOT definition)")
+                        (show-link-till-visited          "Show link only (NOT definition), until visited")
+                        (t                               "Show link and DEFINITION always")))))
+
+;;;###autoload (autoload 'Info-cycle-link-glossary-words "info+")
+(defalias 'Info-cycle-link-glossary-words 'Info-cycle-fontify-glossary-words)
+;;;###autoload (autoload 'Info-cycle-fontify-glossary-words "info+")
+(defun Info-cycle-fontify-glossary-words (&optional msgp)
+  "Cycle option `Info-fontify-glossary-words' through its possible values."
+  (interactive "p")
+  (when Info-fontify-glossary-words (setq info-last-non-nil-fontify-glossary-words  Info-fontify-glossary-words))
+  (setq Info-fontify-glossary-words  (case Info-fontify-glossary-words
+                                       ((nil)                           'show-link-and-def-till-visited)
+                                       (show-link-and-def-till-visited  'show-link-till-visited)
+                                       (show-link-till-visited          'show-link)
+                                       (show-link                       t)
+                                       (t                               nil)))
+  (when (derived-mode-p 'Info-mode)
+    (font-lock-defontify)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-glossary-words' is now %s"
+                      (case Info-fontify-glossary-words
+                        ((nil)                           "OFF - no glossary links")
+                        (show-link-and-def-till-visited  "Show link and DEFINITION, until visited")
+                        (show-link                       "Show link only (NOT definition)")
+                        (show-link-till-visited          "Show link only (NOT definition), until visited")
+                        (t                               "Show link and DEFINITION always")))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-backquote "info+")
 (defun Info-toggle-fontify-local-isolated-backquote (&optional readp msgp)
@@ -2650,13 +2723,13 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   "Toggle option `Info-fontify-isolated-quote-flag'."
   (interactive "p")
   (setq Info-fontify-isolated-quote-flag  (not Info-fontify-isolated-quote-flag))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-isolated-quote-flag' is now %s"
-                        (if Info-fontify-isolated-quote-flag 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-isolated-quote-flag' is now %s"
+                      (if Info-fontify-isolated-quote-flag 'ON 'OFF))))
 (define-obsolete-function-alias 'Info-toggle-fontify-single-quote 'Info-toggle-fontify-isolated-quote
   "2020-10-22")
 
@@ -2736,26 +2809,26 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   "Toggle option `Info-fontify-reference-items-flag'."
   (interactive "p")
   (setq Info-fontify-reference-items-flag  (not Info-fontify-reference-items-flag))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-reference-items-flag' is now %s"
-                        (if Info-fontify-reference-items-flag 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-reference-items-flag' is now %s"
+                      (if Info-fontify-reference-items-flag 'ON 'OFF))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-visited-nodes "info+")
 (defun Info-toggle-fontify-visited-nodes (&optional msgp)
   "Toggle option `Info-fontify-visited-nodes'."
   (interactive "p")
   (setq Info-fontify-visited-nodes  (not Info-fontify-visited-nodes))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
-      (Info-fontify-node))
-    (when msgp (message "`Info-fontify-visited-nodes' is now %s"
-                        (if Info-fontify-visited-nodes 'ON 'OFF)))))
+      (Info-fontify-node)))
+  (when msgp (message "`Info-fontify-visited-nodes' is now %s"
+                      (if Info-fontify-visited-nodes 'ON 'OFF))))
 
 ;;;###autoload (autoload 'Info-cycle-fontify-quotations "info+")
 (defun Info-cycle-fontify-quotations (&optional msgp)
@@ -2767,7 +2840,7 @@ same line (other non-nil value)."
                                    ((nil)  t)
                                    ((t)    'multiline)
                                    (t      nil)))
-  (when (eq major-mode 'Info-mode)
+  (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
@@ -2781,7 +2854,7 @@ same line (other non-nil value)."
 (defun Info-save-current-node (&optional msgp)
   "Save name of current Info node to list `Info-saved-nodes'."
   (interactive "p")
-  (unless (eq major-mode 'Info-mode) (info-user-error "You must be in Info to use this command"))
+  (unless (derived-mode-p 'Info-mode) (info-user-error "You must be in Info to use this command"))
   (unless Info-current-node          (info-user-error "No current Info node"))
   (unless Info-current-file          (info-user-error "No Info file"))
   (add-to-list 'Info-saved-nodes (concat "(" (file-name-nondirectory Info-current-file) ")"
@@ -3734,7 +3807,7 @@ two (or more) of those words."
       (while (and nodes  (not (string-match apropos-regexp (nth 1 (car nodes)))))
         (setq nodes  (cdr nodes)))
       ;; Use another window, if not already in Info.
-      (unless (eq major-mode 'Info-mode) (pop-to-buffer "*info*"))
+      (unless (derived-mode-p 'Info-mode) (pop-to-buffer "*info*"))
       (if nodes
           (Info-find-node Info-apropos-file (caar nodes))
         (setq nodename  (format "Index for ‘%s’" apropos-regexp))
@@ -3781,7 +3854,7 @@ of trying to match it literally."
         (re-search-forward "\\* Menu: *\n" nil t)
         (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
           (when (or (eq Info-apropos-manuals 'all)  (member (match-string 1) Info-apropos-manuals))
-            (add-to-list 'manuals (match-string 1)))) ; Ensure no duplicates in MANUALS, so the `dolist' runs faster.
+            (add-to-list 'manuals (match-string 1)))) ; Ensure no duplicates in MANUALS, so `dolist' runs faster.
         (dolist (manual  (nreverse manuals))
           (message "Searching %s" manual)
           (condition-case err
@@ -3887,7 +3960,7 @@ Non-nil NOMSG means do not show a status message."
   (info-initialize)
   (setq filename  (Info-find-file filename))
   ;; Go into Info buffer.
-  (or (eq major-mode 'Info-mode)  (Info--pop-to-buffer-same-window "*info*"))
+  (unless (derived-mode-p 'Info-mode)  (Info--pop-to-buffer-same-window "*info*"))
   ;; Record the node we are leaving, if we were in one.
   (and (not no-going-back)
        Info-current-file
@@ -3905,7 +3978,7 @@ Non-nil NOMSG means do not show a status message."
   "Helper for `Info-find-node'.
 \(Same arguments.)"
   (buffer-disable-undo (current-buffer))
-  (or (eq major-mode 'Info-mode)  (Info-mode))
+  (unless (derived-mode-p 'Info-mode)  (Info-mode))
   (widen)
   (setq Info-current-node  nil)
   (unwind-protect
@@ -4505,7 +4578,7 @@ COMMAND must be a symbol or string."
         (let ((num-matches  (length where)))
           ;; Get Info running, and pop to it in another window.
           (save-window-excursion (info))
-          (unless (eq major-mode 'Info-mode) (pop-to-buffer "*info*"))
+          (unless (derived-mode-p 'Info-mode) (pop-to-buffer "*info*"))
           ;; Bind Info-history to nil, to prevent the last Index node visited by
           ;; `Info-find-emacs-command-nodes' from being pushed onto the history.
           (let ((Info-history       ())
@@ -5813,15 +5886,15 @@ Otherwise, it is the glossary specified by option
 Do nothing if the current node is `dir' or if the manual has no
 `Glossary' node.
 
-Don't fontify anything in an Index.  Don't fontify a word in node
-`Glossary' unless its occurrence is in a definition other than its
-own."
+Don't fontify anything in an Index.  Don't fontify a word in a
+`Glossary', except for occurrences in definitions other than its own."
   (unless (equal "dir"   Info-current-file)
     (let* ((manual        (file-name-sans-extension (file-name-nondirectory Info-current-file)))
            (ht-var        (intern (concat manual "-glossary-hash-table")))
-           (words-here    ())
+           (words-done    ())
+           (gloss-done    Info-glossary-link-history)
            (gloss-node-p  (equal Info-current-node "Glossary"))
-           wbeg wend word def)
+           wbeg wend word def show-link-p)
       (unless (and (boundp ht-var)  (hash-table-p (symbol-value ht-var)))
         (setq ht-var  (intern (concat (info-fallback-manual-for-glossary manual) "-glossary-hash-table"))))
       (when (and (boundp ht-var)
@@ -5830,7 +5903,7 @@ own."
         (while (and (not (eobp))  (forward-word))
           (setq wend  (prog1 (point) (save-excursion (backward-word) (setq wbeg  (point))))
                 word  (buffer-substring wbeg wend))
-          (unless (or (Info--member-string-nocase word words-here) ; Fontify only the first occurrence in node.
+          (unless (or (Info--member-string-nocase word words-done) ; Fontify only the first occurrence in node.
                       ;; Don't fontify an existing link.
                       (let ((face  (get-text-property 0 'font-lock-face word)))
                         (and face  (memq face Info-link-faces))))
@@ -5844,19 +5917,25 @@ own."
                                  (not (string-match-p ; Don't fontify if term being defined matches WORD.
                                        (buffer-substring (line-beginning-position) (line-end-position))
                                        word)))))))
-              (setq words-here  (cons word words-here))
+              (setq show-link-p  (or (not (memq Info-fontify-glossary-words
+                                                '(show-link-and-def-till-visited show-link-till-visited)))
+                                     (not (Info--member-string-nocase word gloss-done)))
+                    words-done   (cons word words-done)
+                    gloss-done   (cons word gloss-done))
               (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
                 (add-text-properties
                  wbeg wend
-                 (list 'help-echo (if (eq Info-fontify-glossary-words 'link-only)
-                                      link-echo
-                                    ;; Need to put `link-echo' before `def', because for the text to magically
-                                    ;; change from `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link'
-                                    ;; the text needs to start with `mouse-2'.  This is an undocumented "feature".
-                                    (concat link-echo "\n\n" def))
-                       'font-lock-face 'info-glossary-word
-                       'mouse-face 'highlight
-                       'keymap info-glossary-link-map))))))))))
+                 `(help-echo
+                   ,(if (memq Info-fontify-glossary-words '(show-link show-link-till-visited))
+                         link-echo
+                       ;; Need to put `link-echo' before `def', because for the text to magically
+                       ;; change from `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link'
+                       ;; the text needs to start with `mouse-2'.  This is an undocumented "feature".
+                       (concat link-echo "\n\n" def))
+                   ,(and show-link-p  'font-lock-face) ; Add link face only if not yet visited.
+                   ,(and show-link-p  'info-glossary-word)
+                   mouse-face highlight
+                   keymap ,info-glossary-link-map))))))))))
 
 (defun Info-fontify-indented-text ()
   "Fontify text indented `Info-fontify-indented-text-chars' or more.
@@ -5879,7 +5958,9 @@ But usable with Emacs < 24 too."
 
 ;;;###autoload (autoload 'Info-goto-glossary-definition "info+")
 (defun Info-goto-glossary-definition (&optional event)
-  "Go to definition of glossary word indicated by `mouse-2' or `RET'."
+  "Go to definition of indicated glossary word.
+By default, this is bound to `RET', `mouse-2', and (if
+`mouse-1-click-follows-link' is non-nil) `mouse-1'."
   (interactive (list last-nonmenu-event))
   (goto-char (posn-point (event-start event)))
   (let ((word  (word-at-point)))
@@ -5889,7 +5970,8 @@ But usable with Emacs < 24 too."
                                                (file-name-nondirectory Info-current-file)))))
       (goto-char (point-min))
       (forward-line 4)
-      (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t)))))
+      (let ((case-fold-search  t)) (re-search-forward (format "^%s$" word) nil t))
+      (add-to-list 'Info-glossary-link-history word))))
 
 ;;;###autoload (autoload 'Info-glossary "info+")
 (defun Info-glossary (term)
@@ -5899,7 +5981,7 @@ TERM as a case-insensitive substring.
 Use an empty TERM name to go to the `Glossary' node itself."
   (interactive
    (progn
-     (unless (derived-mode-p 'Info-mode)   (info-user-error "You must be in Info to use this command"))
+     (unless (derived-mode-p 'Info-mode) (info-user-error "You must be in Info to use this command"))
      (when (equal Info-current-file "dir")
        (info-user-error "The Info directory node has no glossary; use `m' to select a manual"))
      (list (let ((completion-ignore-case  t))
@@ -6631,7 +6713,8 @@ User options you can customize
   Toggle with \\[Info-toggle-fontify-isolated-quote].
 `Info-fontify-glossary-words' -
   Fontify and link glossary words.
-  Toggle with \\[Info-toggle-fontify-glossary-words].
+  Cycle values with \\[Info-cycle-fontify-glossary-words].
+  Toggle last value with \\[Info-toggle-fontify-glossary-words].
 `Info-fontify-bookmarked-xrefs-flag' -
   Fontify references to bookmarked nodes.
   Toggle with \\[Info-toggle-fontify-bookmarked-xrefs].
@@ -6747,7 +6830,7 @@ currently visited manuals."
         found)
     (dolist (buffer blist)
       (with-current-buffer buffer
-        (when (and (eq major-mode 'Info-mode)
+        (when (and (derived-mode-p 'Info-mode)
                    (stringp Info-current-file)
                    (string-match manual-re Info-current-file))
           (setq found  buffer
