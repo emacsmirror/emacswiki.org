@@ -47,6 +47,30 @@ Easily turned into a shell script to print out the names of files with detected 
 for file in *.txt; do emacs "$file" --batch --eval="(condition-case nil (check-parens) (error (kill-emacs 1)))" &> /dev/null || echo $file; done
 }}}
 
+==Abuse Emacs as an REPL==
+
+Surely there's better way to use Emacs or REPL, but why not?
+
+{{{
+$ emacs --batch --eval "(while t (print (eval (read))))"
+}}}
+
+Now use the REPL
+{{{
+Lisp expression: (defun factorial (x) (if (> x 0) (* (factorial (1- x)) x) 1))
+
+factorial
+Lisp expression: (factorial 5)
+
+120
+}}}
+
+Coincidentally pressing ^D has the normal behavior of quitting the REPL
+{{{
+Lisp expression: Error reading from stdin
+$ 
+}}}
+
 ==Indenting C files==
 
   emacs -batch sample.c --eval '(indent-region (point-min) (point-max) nil)' -f save-buffer
