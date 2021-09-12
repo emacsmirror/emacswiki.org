@@ -15,3 +15,5 @@ A simple way to transfer text to the phone..."
     (switch-to-buffer buf)
     (image-mode)))
 }}}
+
+Alternatively [https://github.com/ruediger/qrencode-el qrencode-el] is an Emacs Lisp implementation of a QR code encoder. Encode a region of text using <code>qrencode-region</code> function.
