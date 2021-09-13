@@ -17,20 +17,10 @@ Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[rcirc]] H
 Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden (J steht für /join/).
 Nun sollte man im Emacs mindestens drei Buffer haben:
 
-<<<<<<< you
-# <b><nowiki>irc.libera.chat</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz
+# <b><nowiki>irc.libera.chat</nowiki></b> ist die direkte Verbindung zu einem Server im Libera Netz
 # **#rcirc@irc.libera.chat** ist der englische Kanal über den Chat Client
 # **##emacs.de@irc.libera.chat** ist der deutsche Kanal über Emacs im Allgemeinen
-||||||| ancestor
-# <b><nowiki>*chat.freenode.net*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz
-# **#rcirc@chat.freenode.net** ist der englische Kanal über den Chat Client
-# **##emacs.de@chat.freenode.net** ist der deutsche Kanal über Emacs im Allgemeinen
-=======
-# <b><nowiki>* irc
-*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz irc
-# **#rcirc@irc.libera.chat** ist der englische Kanal über den Chat Client
-# **##emacs.de@irc.libera.chat** ist der deutsche Kanal über Emacs im Allgemeinen
->>>>>>> other
+
 
 Typischerweise geht das auch, in dem man beim Prompt den Befehl ##/join <Kanal>## verwendet. Das sieht dann so aus:
 
