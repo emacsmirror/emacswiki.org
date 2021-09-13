@@ -1,4 +1,4 @@
-Der [[IRC]] Kanal **##emacs.de** auf dem Freenode Netzwerk dient der Unterhaltung zum Thema auf Deutsch.
+Der [[IRC]] Kanal **##emacs.de** auf dem Libera Netzwerk dient der Unterhaltung zum Thema auf Deutsch.
 
 == Wie geht das? ==
 
@@ -17,9 +17,10 @@ Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[rcirc]] H
 Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden (J steht für /join/).
 Nun sollte man im Emacs mindestens drei Buffer haben:
 
-# <b><nowiki>*chat.freenode.net*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz
-# **#rcirc@chat.freenode.net** ist der englische Kanal über den Chat Client
-# **##emacs.de@chat.freenode.net** ist der deutsche Kanal über Emacs im Allgemeinen
+# <b><nowiki>* irc
+*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz irc
+# **#rcirc@irc.libera.chat** ist der englische Kanal über den Chat Client
+# **##emacs.de@irc.libera.chat** ist der deutsche Kanal über Emacs im Allgemeinen
 
 Typischerweise geht das auch, in dem man beim Prompt den Befehl ##/join <Kanal>## verwendet. Das sieht dann so aus:
 
@@ -57,21 +58,13 @@ Das sieht dann so aus:
 
 {{{
 15:11 <ascology> register *secret* kensanata+irc@gmail.com
-15:11 -NickServ- An email containing nickname activation
-                 instructions has been sent to
-                 kensanata+irc@gmail.com.
-15:11 -NickServ- If you do not complete registration within one
-                 day, your nickname will expire.
-15:11 -NickServ- ascology is now registered to
-                 kensanata+irc@gmail.com, with the password
-                 *secret*.
-15:11 -NickServ-  
-15:11 -NickServ- For frequently-asked questions about the network,
-                 please see the
-15:11 -NickServ- FAQ page (http://freenode.net/faq.shtml). Should
-                 you need more
-15:11 -NickServ- help you can /join #freenode to find network
-                 staff.
+15:11 NickServ (NickServ@services.libera.chat): An email containing nickname activation instructions has been sent to kensanata+irc@gmail.com.
+15:11 NickServ (NickServ@services.libera.chat): Please check the address if you don't receive it. If it is incorrect, DROP then REGISTER again.
+15:11 NickServ (NickServ@services.libera.chat): If you do not complete registration within one day, your nickname will expire.
+15:11 NickServ (NickServ@services.libera.chat): ascology  is now registered to lkensanata+irc@gmail.com.
+15:11 MSG(NickServ): VERIFY REGISTER *********************
+15:11 NickServ (NickServ@services.libera.chat): ascology  has now been verified.
+15:11 NickServ (NickServ@services.libera.chat): Thank you for verifying your e-mail address! You have taken steps in ensuring that your registrations are not exploited.
 > 
 }}}
 
@@ -87,7 +80,7 @@ Typischerweise geht das auch, in dem man beim Prompt den Befehl ##/query <Spitzn
 (setq rcirc-default-nick "ascology"
       rcirc-nick-prefix-chars "~&@%+!"
       rcirc-server-alist
-      `(("chat.freenode.net"
+      `(("irc.libera.chat"
          :port 6697
          :encryption tls
 	 :channels ("#emacs" "##emacs.de" "#rcirc"))))
