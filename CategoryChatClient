@@ -20,6 +20,7 @@ There is also an IRC bouncer, a proxy, to make your IRC connections persistent:
 ** [https://matrix.org/docs/projects/client/emacs-maelstrom/ Emacs Maelstrom] ([https://savannah.nongnu.org/projects/maelstrom-el Savannah])
 ** [https://matrix.org/docs/projects/client/matrix-client-el/ matrix-client.el] ([https://github.com/alphapapa/matrix-client.el GitHub])
 ** [https://github.com/alphapapa/ement.el ement.el] is a new Matrix client for Emacs in development. Successor to matrix-client.el.
+** [https://github.com/zevlg/telega.el Telega] a Telegram client
 
 * Jabber clients
 ** [[Gajim]] -- Some function to be able to talk with Gajim from Emacs.
