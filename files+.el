@@ -4,13 +4,13 @@
 ;; Description: Enhancements of standard library `files.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:26:30 2018 (-0800)
+;; Last-Updated: Fri Sep 17 10:24:27 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 745
+;;     Update #: 747
 ;; URL: https://www.emacswiki.org/emacs/download/files%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FilesPlus
 ;; Keywords: internal, extensions, local
@@ -70,6 +70,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/17 dadams
+;;     insert-directory: Apply fix for bug #50630.
 ;; 2015/12/15 dadams
 ;;     insert-directory: Use match beginning for "total" text.  Thx to Tino Calancha.
 ;; 2015/12/10 dadams
@@ -641,7 +643,7 @@ normally equivalent short `-D' option is just passed on to
                 (re-search-forward "^ *files [0-9]+/[0-9]+ \\(total\\)" nil t)
                 (replace-match "space used" nil nil nil 1)
                 (let ((available  (and (fboundp 'get-free-disk-space)
-                                       (get-free-disk-space ".")))
+                                       (get-free-disk-space file)))
                       (map        (make-sparse-keymap)))
                   (define-key map [mouse-2] 'dired-mouse-describe-listed-directory)
                   (define-key map "\r" 'dired-describe-listed-directory)
