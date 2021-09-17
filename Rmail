@@ -222,6 +222,7 @@ While reading an encrypted email, you can use `M-x rmail-epa-decrypt' to decrypt
 * [https://muto.ca/posts/actually-using-emacs-rmail.html Muto's rmail article]
 * [https://alexschroeder.ch/wiki/2020-12-17_Rmail Alex Schroder's rmail post]
 * [http://ruzkuku.com/texts/rmail.html Philip K.'s rmail article]
+* [https://ane.iki.fi/2020/09/09/rmail.html  Antoine Kalmbach's article]
 * [https://www.stunnel.org/ Stunnel's homepage]
 
 ----
