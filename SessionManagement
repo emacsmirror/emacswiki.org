@@ -34,6 +34,7 @@ Emacs and restored when you start a new session.
 * [WorkgroupsForWindows Workgroups] - A window-configuration
   persistence package, providing storage/restoration, saving/loading,
   animated window config morphing, and lots more.
+* [https://github.com/ffevotte/desktop-plus desktop+] -- Extends standard Desktop feature to save/restore multiple "desktop" sessions by name.
 
 See also: http://emacs-session.sourceforge.net/related.html.
 
