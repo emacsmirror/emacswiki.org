@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2021.04.18
-;; Last-Updated: Sun Apr 18 11:26:35 2021 (-0700)
+;; Version: 2021.09.19
+;; Last-Updated: Sun Sep 19 14:31:41 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 15060
+;;     Update #: 15068
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -181,13 +181,27 @@
   (interactive)
   (message "Bookmark+, version %s" bmkp-version-number))
 
-;; This was added for vanilla Emacs 28.  Add it here for older releases.
-(defconst bookmark-bmenu-buffer "*Bookmark List*" "Name of buffer used for Bookmark List.")
-
 ;; This was made automatically buffer-local for vanilla Emacs 28.  Do it here, for all Bookmark+ files.
 (defvar bookmark-annotation-name nil
   "Name of bookmark under edit in `bookmark-edit-annotation-mode'.")
 (make-variable-buffer-local 'bookmark-annotation-name)
+
+;;;###autoload (autoload 'bookmark-bmenu-buffer "bookmark+")
+;; This was added for vanilla Emacs 28.  Add it here for older releases.
+(defconst bookmark-bmenu-buffer "*Bookmark List*"
+  "Name of buffer used by vanilla Emacs for the bookmark-list display.")
+
+;; NOTE:
+;; $$$$$$ Currently all vanilla Emacs functions that use constant `bookmark-bmenu-buffer' are
+;; already redefined for Bookmark+.  But if vanilla Emacs adds more such functions, and if those
+;; functions could be invoked somehow when using Bookmark+, and if `bmkp-bmenu-buffer' has a
+;; different value from `bookmark-bmenu-buffer', then some adjustment of Bookmark+ code will be
+;; needed, to make sure the `bmkp-bmenu-buffer' value gets used instead.
+;;
+;;;###autoload (autoload 'bmkp-bmenu-buffer "bookmark+")
+(defcustom bmkp-bmenu-buffer bookmark-bmenu-buffer
+  "Name of buffer used by Bookmark+ for the bookmark-list display.
+The default value is that of vanilla Emacs constant `bookmark-bmenu-buffer'.")
 
 
 
