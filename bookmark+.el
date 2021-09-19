@@ -8,9 +8,9 @@
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
 ;; Version: 2021.09.19
-;; Last-Updated: Sun Sep 19 14:31:41 2021 (-0700)
+;; Last-Updated: Sun Sep 19 14:43:17 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 15068
+;;     Update #: 15071
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -191,6 +191,19 @@
 (defconst bookmark-bmenu-buffer "*Bookmark List*"
   "Name of buffer used by vanilla Emacs for the bookmark-list display.")
 
+;;;###autoload (autoload 'bookmark-plus "bookmark+")
+(defgroup bookmark-plus nil
+  "Bookmark enhancements."
+  :prefix "bmkp-" :group 'bookmark
+  :link `(url-link :tag "Send Bug Report"
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug here, starting with `emacs -Q'.  \
+Don't forget to mention your Emacs and library versions."))
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
+  :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
+
 ;; NOTE:
 ;; $$$$$$ Currently all vanilla Emacs functions that use constant `bookmark-bmenu-buffer' are
 ;; already redefined for Bookmark+.  But if vanilla Emacs adds more such functions, and if those
@@ -201,7 +214,8 @@
 ;;;###autoload (autoload 'bmkp-bmenu-buffer "bookmark+")
 (defcustom bmkp-bmenu-buffer bookmark-bmenu-buffer
   "Name of buffer used by Bookmark+ for the bookmark-list display.
-The default value is that of vanilla Emacs constant `bookmark-bmenu-buffer'.")
+The default value is that of vanilla Emacs constant `bookmark-bmenu-buffer'."
+  :type 'string :group 'bookmark-plus)
 
 
 
