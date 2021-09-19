@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sun Sep 19 12:48:46 2021 (-0700)
+;; Last-Updated: Sun Sep 19 14:25:31 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 978
+;;     Update #: 979
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -114,6 +114,7 @@
 
 ;; Quiet the byte-compiler
 
+(defvar bmkp-bmenu-buffer) ; In `bookmark+.el'
 (defvar grep-mode-map)
 
 
