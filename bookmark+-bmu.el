@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Sep 19 13:18:27 2021 (-0700)
+;; Last-Updated: Sun Sep 19 14:36:58 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 4169
+;;     Update #: 4170
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -525,18 +525,6 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
-
-(defgroup bookmark-plus nil
-  "Bookmark enhancements."
-  :prefix "bmkp-" :group 'bookmark
-  :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Bookmark+ bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
-  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
-  :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
 (defface bmkp->-mark '((((background dark)) (:foreground "Yellow"))
                        (t (:foreground "Blue")))
