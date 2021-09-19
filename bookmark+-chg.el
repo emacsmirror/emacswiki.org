@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Aug 21 13:57:14 2021 (-0700)
+;; Last-Updated: Sun Sep 19 14:49:24 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 16829
+;;     Update #: 16850
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2021/09/19 dadams
+;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
+;;     bmkp-bmenu-barf-if-not-in-menu-list: Test mode with derived-mode-p; don't test buffer name.
 ;; 2020/08/21 dadams
 ;;     bookmark-set: Moved making bmk temporary before bookmark-store, and pass RECORD, not BNAME.
 ;;     bmkp(*)-automatic*: Put defvaralias symbols in right order.
@@ -1513,6 +1516,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2021/09/19 dadams
+;;     Moved defgroup from here to bookmark+.el, for new defcustom bmkp-bmenu-buffer.
+;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
+;;     bmkp-bmenu-barf-if-not-in-menu-list: Test mode with derived-mode-p; don't test buffer name.
 ;; 2021/08/18 dadams
 ;;     Applied renaming of bmkp-auto-idle-bookmark-mode to bmkp-automatic-bookmark-mode.
 ;; 2021/04/16 dadams
@@ -2224,6 +2231,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2021/09/19 dadams
+;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
 ;; 2021/02/12 dadams
 ;;     Typo in eval-after-load for EWW: previous -> next.
 ;; 2020/07/04 dadams
@@ -2413,6 +2422,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2021/09/19 dadams
+;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
 ;; 2021/04/16 dadams
 ;;     bmkp-unlight-bookmark, bmkp-light-bookmarks, bmkp-cycle-lighted-this-buffer, bmkp-light-face,
 ;;       bmkp-light-style, bmkp-light-when, bmkp-lighting-attribute, bmkp-overlay-of-bookmark:
@@ -2573,6 +2584,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2021/09/19 dadams
+;;     Version 2021.09.19
+;;     Added option bmkp-bmenu-buffer.
+;;     Autoload bookmark-bmenu-buffer.
+;;     Moved defgroup here, from bookmark+-bmu.el.  Added autoload cookie.
 ;; 2021/04/18 dadams
 ;;     Version 2021.04.18
 ;; 2021/03/04 dadams
