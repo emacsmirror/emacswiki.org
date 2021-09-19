@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2021, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Apr 16 14:40:36 2021 (-0700)
+;; Last-Updated: Sun Sep 19 12:53:32 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 1002
+;;     Update #: 1004
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -237,6 +237,7 @@
 ;; Quiet the byte-compiler
 ;;
 (defvar bmkp-autoname-format)           ; In `bookmark+-1.el'.
+(defvar bmkp-bmenu-buffer)              ; In `bookmark+.el'
 (defvar bmkp-current-nav-bookmark)      ; In `bookmark+-1.el'.
 (defvar bmkp-latest-bookmark-alist)     ; In `bookmark+-1.el'.
 (defvar bmkp-light-left-fringe-bitmap)  ; Defined in this file for Emacs 22+.
@@ -528,7 +529,7 @@ You are prompted for the highlight STYLE, FACE, and condition (WHEN)."
                                              ,@(and style  (not (eq style 'none))  `(:style ,style))
                                              ,@(and when   (not (eq when 'auto))   `(:when ,when)))
                                          ())))
-    (when (get-buffer-create bookmark-bmenu-buffer) (bmkp-refresh-menu-list curr-bmk)))
+    (when (get-buffer-create bmkp-bmenu-buffer) (bmkp-refresh-menu-list curr-bmk)))
   (when msgp (message "Setting highlighting...done")))
 
 
@@ -607,7 +608,7 @@ Completion candidates are the lighted bookmarks at point."
                       (IGNORE  (unless bmks (error "No highlighted bookmarks at point")))
                       (bmk   (bookmark-completing-read "Bookmark" (car bmks) bmks)))
                  (list bmk (point) t)))
-  (pop-to-buffer (get-buffer-create bookmark-bmenu-buffer))
+  (pop-to-buffer (get-buffer-create bmkp-bmenu-buffer))
   (bookmark-bmenu-list)
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
@@ -764,7 +765,7 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
                                                    ,@(and style  (not (eq style 'none))  `(:style ,style))
                                                    ,@(and when   (not (eq when 'auto))   `(:when ,when)))
                                                ()))
-  (when (get-buffer-create bookmark-bmenu-buffer) (bmkp-refresh-menu-list bookmark-name))
+  (when (get-buffer-create bmkp-bmenu-buffer) (bmkp-refresh-menu-list bookmark-name))
   (when msgp (message "Setting highlighting...done"))
   (when light-now-p (bmkp-light-bookmark bookmark-name nil nil msgp))) ; This msg is more informative.
 
