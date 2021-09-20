@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 10 15:05:48 2021 (-0700)
+;; Last-Updated: Sun Sep 19 20:09:31 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7324
+;;     Update #: 7373
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -146,6 +146,7 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `Info--manuals', `Info--member-string-nocase',
+;;    `info--msg-Info-fontify-glossary-words-now',
 ;;    `Info--pop-to-buffer-same-window', `info--user-search-failed',
 ;;    `Info-bookmark-for-node', `Info-bookmark-name-at-point',
 ;;    `Info-bookmark-named-at-point', `Info-bookmark-name-for-node',
@@ -394,14 +395,26 @@
 ;;    - Glossary words, that is, words that are defined in a manual's
 ;;      `Glossary' node, are highlighted and linked to their glossary
 ;;      entries, if option `Info-fontify-glossary-words' is non-nil.
-;;      (Currently only the Emacs and Semantic manuals have `Glossary'
-;;      nodes, as far as I know.)
 ;;
-;;      By default, a mouseover on such a link shows the word's
-;;      definition from the glossary in the help echo.  Non-default
-;;      values of the option let you not show the definition on
-;;      mouseover, and they let you show the link face only when
-;;      you've not yet visited (followed) the link for a given word.
+;;      Glossary terms of more than one word are not highlighted or
+;;      linked.  Currently only the Emacs and Semantic manuals have
+;;      `Glossary' nodes, as far as I know.
+;;
+;;      By default, a glossary link is fontified (with face
+;;      `info-glossary-word').  You can optionally show the link this
+;;      way only until you follow a link for that word to the
+;;      glossary.  That reduces clutter for words you've already
+;;      looked up.  Their first occurrences in nodes are still linked,
+;;      but the links are only evident on mouseover (using property
+;;      `mouse-face').
+;;
+;;      Optionally (not by default), a mouseover action also shows the
+;;      definition immediately, as part of the help echo in a tooltip
+;;      (or in the echo area if `tooltip-mode' is turned off).
+;;
+;;      You can cycle or toggle the option value with command
+;;      `Info-cycle-fontify-glossary-words' or
+;;      `Info-toggle-fontify-glossary-words'.
 ;;
 ;;    - Text between two delimiters that you specify, if the car of
 ;;      option `Info-fontify-custom-delimited' is non-nil.
@@ -596,6 +609,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/19 dadams
+;;     Added: info--msg-Info-fontify-glossary-words-now.
+;;     Info-fontify-glossary-words: Default now: show-link-and-def-till-visited.  show-link-and-def -> t.
+;;     info-last-non-nil-fontify-glossary-words: Default now:  show-link-and-def-till-visited.
+;;     Info-(cycle|toggle)-fontify-glossary-words: Use info--msg-Info-fontify-glossary-words-now.
+;;     Info-cycle-fontify-glossary-words: show-link-and-def -> t.
+;;     Info-fontify-glossary-words: Don't include mouse-2 info if using echo area.
 ;; 2021/09/10 dadams
 ;;     Added Info-cycle-(fontify|link)-glossary-words, Info-link-glossary-words, Info-glossary-link-history,
 ;;           info-last-non-nil-fontify-glossary-words.
@@ -1785,25 +1805,28 @@ way to turn off all matching of `Info-emphasis-regexp'."
 
 (defvaralias 'Info-link-glossary-words 'Info-fontify-glossary-words)
 ;;;###autoload
-(defcustom Info-fontify-glossary-words t
+(defcustom Info-fontify-glossary-words 'show-link-and-def-till-visited
   "Non-nil means link first occurrences of words to their glossary entries.
 Only the first occurrence of the word in a given node is linked.
+Glossary terms of more than one word are not highlighted or linked.
 
 You can click `mouse-2' on the word, or use `RET' on it, to go to its
 definition in the `Glossary' node of the current manual.
 
-By default, a mouseover action also shows the definition immediately,
-as the help echo in a tooltip (or in the echo area if `tooltip-mode'
-is turned off).
-
-By default, the link is fontified (with face `info-glossary-word').
-You can optionally show the link this way only until you
-follow (visit) a link for that word to the glossary.  That reduces
+By default, a glossary link is fontified (with face
+`info-glossary-word').  You can optionally show the link this way only
+until you follow a link for that word to the glossary.  That reduces
 clutter for words you've already looked up.  Their first occurrences
-in nodes are still linked, but the links are only evident (with
-`mouse-face') on mouseover.
+in nodes are still linked, but the links are only evident on
+mouseover (using property `mouse-face').
 
-Glossary terms of more than one word are not highlighted or linked.
+Optionally (not by default), a mouseover action also shows the
+definition immediately, as part of the help echo in a tooltip (or in
+the echo area if `tooltip-mode' is turned off).
+
+You can cycle or toggle the option value with command
+`Info-cycle-fontify-glossary-words' or
+`Info-toggle-fontify-glossary-words'.
 
 See option `Info-glossary-fallbacks-alist' for the glossaries to look
 in.
@@ -1817,7 +1840,7 @@ You can use command `Info-cycle-fontify-glossary-words' to cycle the
 option value among the possibilities."
   :type '(choice
           (const :tag "OFF - don't link glossary words"          nil)
-          (const :tag "Show link and definition"                 t)
+          (const :tag "Show link and definition"                 show-link-and-def)
           (const :tag "Show link (but not definition)"           show-link)
           (const :tag "Show link and definition until visited"   show-link-and-def-till-visited)
           (const :tag "Show link until visited (no definition)"  show-link-till-visited))
@@ -2652,15 +2675,27 @@ is on, and it turns them all on, if any is off:
   (when msgp (message "`Info-fontify-emphasis-flag' is now %s"
                       (if Info-fontify-emphasis-flag 'ON 'OFF))))
 
-(defvar info-last-non-nil-fontify-glossary-words t
-  "Last non-nilvalue of `Info-fontify-glossary-words'.")
+(defvar info-last-non-nil-fontify-glossary-words 'show-link-and-def-till-visited
+  "Last non-nil value of `Info-fontify-glossary-words'.")
+
+(defun info--msg-Info-fontify-glossary-words-now ()
+  "Echo current value of `Info-fontify-glossary-words'."
+  (message "`Info-fontify-glossary-words': %s"
+           (case Info-fontify-glossary-words
+             ((nil)                           "OFF - no glossary links")
+             (show-link                       "Show link only (not definition), always")
+             (show-link-till-visited          "Show link only (not definition), until visited")
+             (show-link-and-def               "Show link and definition, always")
+             (show-link-and-def-till-visited  "Show link and definition, until visited")
+             (otherwise                       "Show link and definition, until visited"))))
 
 ;;;###autoload (autoload 'Info-toggle-link-glossary-words "info+")
 (defalias 'Info-toggle-link-glossary-words 'Info-toggle-fontify-glossary-words)
 ;;;###autoload (autoload 'Info-toggle-fontify-glossary-words "info+")
 (defun Info-toggle-fontify-glossary-words (&optional msgp)
   "Toggle option `Info-fontify-glossary-words'.
-This toggles between nil and the last non-nil setting (or t if none)."
+This toggles between nil and the last non-nil setting (or
+`show-link-and-def-till-visited' if none)."
   (interactive "p")
   (if Info-fontify-glossary-words
       (setq info-last-non-nil-fontify-glossary-words  Info-fontify-glossary-words
@@ -2671,13 +2706,7 @@ This toggles between nil and the last non-nil setting (or t if none)."
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
       (Info-fontify-node)))
-  (when msgp (message "`Info-fontify-glossary-words' is now %s"
-                      (case Info-fontify-glossary-words
-                        ((nil)                           "OFF - no glossary links")
-                        (show-link-and-def-till-visited  "Show link and DEFINITION, until visited")
-                        (show-link                       "Show link only (NOT definition)")
-                        (show-link-till-visited          "Show link only (NOT definition), until visited")
-                        (t                               "Show link and DEFINITION always")))))
+  (when msgp (info--msg-Info-fontify-glossary-words-now)))
 
 ;;;###autoload (autoload 'Info-cycle-link-glossary-words "info+")
 (defalias 'Info-cycle-link-glossary-words 'Info-cycle-fontify-glossary-words)
@@ -2690,20 +2719,14 @@ This toggles between nil and the last non-nil setting (or t if none)."
                                        ((nil)                           'show-link-and-def-till-visited)
                                        (show-link-and-def-till-visited  'show-link-till-visited)
                                        (show-link-till-visited          'show-link)
-                                       (show-link                       t)
-                                       (t                               nil)))
+                                       (show-link                       'show-link-and-def)
+                                       (show-link-and-def               nil)))
   (when (derived-mode-p 'Info-mode)
     (font-lock-defontify)
     (let ((modp               (buffer-modified-p))
           (inhibit-read-only  t))
       (Info-fontify-node)))
-  (when msgp (message "`Info-fontify-glossary-words' is now %s"
-                      (case Info-fontify-glossary-words
-                        ((nil)                           "OFF - no glossary links")
-                        (show-link-and-def-till-visited  "Show link and DEFINITION, until visited")
-                        (show-link                       "Show link only (NOT definition)")
-                        (show-link-till-visited          "Show link only (NOT definition), until visited")
-                        (t                               "Show link and DEFINITION always")))))
+  (when msgp (info--msg-Info-fontify-glossary-words-now)))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-backquote "info+")
 (defun Info-toggle-fontify-local-isolated-backquote (&optional readp msgp)
@@ -3972,7 +3995,7 @@ Non-nil NOMSG means do not show a status message."
 ;;
 ;; 1. Added optional arg NOMSG.
 ;; 2. Call `fit-frame' if `Info-fit-frame-flag'.
-;; 3. If `Info-fontify-glossary-words' and NODENAME is `Glossary' then create glossary-words hash table.
+;; 3. If non-nil `Info-fontify-glossary-words' and NODENAME is `Glossary' then create glossary-words hash table.
 ;;
 (defun Info-find-node-2 (filename nodename &optional no-going-back strict-case nomsg)
   "Helper for `Info-find-node'.
@@ -5477,7 +5500,7 @@ If key's command cannot be found by looking in indexes, then
 ;;    fontify <...> in face `info-quoted-name'.
 ;; 6. If `Info-fontify-quotations' and `Info-fontify-isolated-quote-flag' then fontify
 ;;    isolated ' and ` in faces `Info-isolated-quote' and `Info-isolated-backquote', respectively.
-;; 7. If `Info-fontify-glossary-words' then fontify glossary words.
+;; 7. If non-nil `Info-fontify-glossary-words' then fontify glossary words.
 ;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.2+
           (and (= emacs-major-version 24)  (> emacs-minor-version 1)))
@@ -5922,16 +5945,22 @@ Don't fontify anything in an Index.  Don't fontify a word in a
                                      (not (Info--member-string-nocase word gloss-done)))
                     words-done   (cons word words-done)
                     gloss-done   (cons word gloss-done))
-              (let ((link-echo  "mouse-2: go to Glossary entry for this word"))
+              ;; If using echo area, don't bother to show the mouse-2 info.  If using tooltip then we need
+              ;; to show the `link-echo' BEFORE the `def', because for the text to magically change from
+              ;; `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link' the text needs to start with
+              ;; `mouse-2'.  This is an undocumented "feature".  It's too bad, as it makes it harder to
+              ;; see the def.  For a tooltip we can at least add blank lines to separate the two.
+              ;;
+              ;; Unfortunately, after toggling `tooltip-mode' the change in behavior (adding/removing mouse-2
+              ;; info) doesn't take effect till you refontify, e.g. you move to another node.  Not a big deal.
+              (let* ((echo  "mouse-2: go to Glossary for this word")
+                     (echo  (if (memq Info-fontify-glossary-words '(show-link show-link-till-visited))
+                                echo
+                              (if tooltip-mode (concat echo "\n\n" def) def))))
                 (add-text-properties
                  wbeg wend
                  `(help-echo
-                   ,(if (memq Info-fontify-glossary-words '(show-link show-link-till-visited))
-                         link-echo
-                       ;; Need to put `link-echo' before `def', because for the text to magically
-                       ;; change from `mouse-2' to `mouse-1' due to `mouse-1-click-follows-link'
-                       ;; the text needs to start with `mouse-2'.  This is an undocumented "feature".
-                       (concat link-echo "\n\n" def))
+                   ,echo
                    ,(and show-link-p  'font-lock-face) ; Add link face only if not yet visited.
                    ,(and show-link-p  'info-glossary-word)
                    mouse-face highlight
