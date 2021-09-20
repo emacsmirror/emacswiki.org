@@ -24,8 +24,8 @@ Important for this discussion is the understanding that X generally distinguishe
 
 With this out of the way, starting with Emacs 24.1, GNU Emacs should already do the right thing here. If you dislike this behavior, there are two options you can customize:
 
-* ##x-select-enable-primary## - default ##nil##; set this to ##t## if you want the Emacs commands ##C-w## and ##C-y## to use the primary selection.
-* ##x-select-enable-clipboard## - default ##t##; set this to ##nil## if you want the Emacs commands ##C-w## and ##C-y## to use the clipboard selection.
+* ##select-enable-primary## - default ##nil##; set this to ##t## if you want the Emacs commands ##C-w## and ##C-y## to use the primary selection.
+* ##select-enable-clipboard## - default ##t##; set this to ##t## if you want the Emacs commands ##C-w## and ##C-y## to use the clipboard selection.
 
 Yes, you can have Emacs use both at the same time.
 
