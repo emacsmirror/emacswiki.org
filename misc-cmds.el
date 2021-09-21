@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 21 15:10:10 2021 (-0700)
+;; Last-Updated: Tue Sep 21 15:39:48 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3359
+;;     Update #: 3362
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -848,14 +848,16 @@ selects backward.)"
     len))
 
 (when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
-  (defun count-words-rectangle (start end &optional msgp)
+  (defun count-words-rectangle (start end &optional allow-partial-p msgp)
     "Count words in the rectangle from START to END.
-This is similar to `count-words', but for the rectangle.  Also:
+This is similar to `count-words', but for a rectangular region.
 
-* A prefix arg has no effect.
-* A word that straddles the beginning or end of a rectangle row is not
-  counted.  That is, this counts only words that are entirely within
-  the rectangle.
+Also:
+
+* By default, a word that straddles the beginning or end of a
+  rectangle row is not counted.  That is, this counts only words that
+  are entirely within the rectangle.
+* A prefix arg means count also such partial words at row boundaries.
 
 If called interactively, START and END are the bounds of the start and
 end of the active region.  Print a message reporting the number of
@@ -863,7 +865,7 @@ rows (lines), columns (characters per row), words, and characters.
 
 If called from Lisp, return the number of words in the rectangle
 between START and END, without printing any message."
-    (interactive "r\np")
+    (interactive "r\nP\np")
     (let ((bounds  (extract-rectangle-bounds start end))
           (words   0)
           (chars   0))
@@ -873,12 +875,13 @@ between START and END, without printing any message."
         (dolist (beg+end  bounds)
           (setq beg  (car beg+end)
                 end  (cdr beg+end))
-          (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
-                     (char-after beg)       (equal '(2) (syntax-after beg)))
-            (setq words  (1- words)))
-          (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
-                     (char-after end)       (equal '(2) (syntax-after     end)))
-            (setq words  (1- words)))))
+          (unless allow-partial-p
+            (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
+                       (char-after beg)       (equal '(2) (syntax-after beg)))
+              (setq words  (1- words)))
+            (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
+                       (char-after end)       (equal '(2) (syntax-after     end)))
+              (setq words  (1- words))))))
       (when msgp
         (dolist
             (beg+end  bounds)
