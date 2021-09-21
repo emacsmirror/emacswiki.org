@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul  9 18:11:35 2021 (-0700)
+;; Last-Updated: Tue Sep 21 15:10:10 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3355
+;;     Update #: 3359
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -35,24 +35,24 @@
 ;;    `clear-regexp-search-ring' `clear-search-history',
 ;;    `clear-search-ring', `clear-search-histories',
 ;;    `comment-region-lines', `compare-windows-repeat',
-;;    `count-chars-in-region', `delete-extra-windows-for-buffer',
-;;    `delete-lines', `delete-window-maybe-kill-buffer.',
-;;    `end-of-line+', `end-of-visual-line+.',
-;;    `forward-char-same-line', `forward-overlay',
-;;    `forward-to-indentation+', `goto-previous-mark',
-;;    `indent-rigidly-tab-stops', `indirect-buffer',
-;;    `kill-buffer-and-its-windows', `list-colors-nearest',
-;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
-;;    `mark-buffer-before-point', `mark-line', `mark-whole-word',
-;;    `narrow-to-line', `next-buffer-repeat' (Emacs 22+),
-;;    `old-rename-buffer', `previous-buffer-repeat' (Emacs 22+),
-;;    `quit-window-delete', `recenter-top-bottom',
-;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
-;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `resolve-file-name', `reversible-transpose-sexps',
-;;    `revert-buffer-no-confirm', `selection-length',
-;;    `split-para-at-sentence-ends' (Emacs 21+), `split-para-mode'
-;;    (Emacs 21+), `switch-to-alternate-buffer',
+;;    `count-chars-in-region', `count-words-rectangle' (Emacs 26+),
+;;    `delete-extra-windows-for-buffer', `delete-lines',
+;;    `delete-window-maybe-kill-buffer.', `end-of-line+',
+;;    `end-of-visual-line+.', `forward-char-same-line',
+;;    `forward-overlay', `forward-to-indentation+',
+;;    `goto-previous-mark', `indent-rigidly-tab-stops',
+;;    `indirect-buffer', `kill-buffer-and-its-windows',
+;;    `list-colors-nearest', `list-colors-nearest-color-at',
+;;    `mark-buffer-after-point', `mark-buffer-before-point',
+;;    `mark-line', `mark-whole-word', `narrow-to-line',
+;;    `next-buffer-repeat' (Emacs 22+), `old-rename-buffer',
+;;    `previous-buffer-repeat' (Emacs 22+), `quit-window-delete',
+;;    `recenter-top-bottom', `recenter-top-bottom-1',
+;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
+;;    `region-to-file', `resolve-file-name',
+;;    `reversible-transpose-sexps', `revert-buffer-no-confirm',
+;;    `selection-length', `split-para-at-sentence-ends' (Emacs 21+),
+;;    `split-para-mode' (Emacs 21+), `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window',
 ;;    `to-indentation-repeat-backward',
 ;;    `to-indentation-repeat-forward', `to-next-word',
@@ -107,6 +107,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/21 dadams
+;;     Added count-words-rectangle.
 ;; 2021/07/09 dadams
 ;;     goto-longest-line, goto-long-line, kill-buffer-and-its-windows:
 ;;       Added optional arg MSGP (instead of using interactive-p).
@@ -844,6 +846,53 @@ selects backward.)"
   (let ((len  (abs (- (mark) (point)))))
     (message "Region contains %s characters" len)
     len))
+
+(when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
+  (defun count-words-rectangle (start end &optional msgp)
+    "Count words in the rectangle from START to END.
+This is similar to `count-words', but for the rectangle.  Also:
+
+* A prefix arg has no effect.
+* A word that straddles the beginning or end of a rectangle row is not
+  counted.  That is, this counts only words that are entirely within
+  the rectangle.
+
+If called interactively, START and END are the bounds of the start and
+end of the active region.  Print a message reporting the number of
+rows (lines), columns (characters per row), words, and characters.
+
+If called from Lisp, return the number of words in the rectangle
+between START and END, without printing any message."
+    (interactive "r\np")
+    (let ((bounds  (extract-rectangle-bounds start end))
+          (words   0)
+          (chars   0))
+      (dolist (beg+end  bounds)
+        (setq words  (+ words (count-words (car beg+end) (cdr beg+end)))))
+      (let (beg end)
+        (dolist (beg+end  bounds)
+          (setq beg  (car beg+end)
+                end  (cdr beg+end))
+          (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
+                     (char-after beg)       (equal '(2) (syntax-after beg)))
+            (setq words  (1- words)))
+          (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
+                     (char-after end)       (equal '(2) (syntax-after     end)))
+            (setq words  (1- words)))))
+      (when msgp
+        (dolist
+            (beg+end  bounds)
+          (setq chars  (+ chars (- (cdr beg+end) (car beg+end)))))
+        (let ((rows  (count-lines start end))
+              (cols  (let ((rpc  (save-excursion
+                                   (rectangle--pos-cols (region-beginning) (region-end)))))
+                       (abs (- (car rpc) (cdr rpc))))))
+          (message "Rectangle has %d row%s, %d colum%s, %d word%s, and %d char%s."
+                   rows  (if (= rows 1)  "" "s")
+                   cols  (if (= cols 1)  "" "s")
+                   words (if (= words 1) "" "s")
+                   chars (if (= chars 1) "" "s"))))
+      words)))
 
 (unless (fboundp 'line-number-at-pos)   ; Exists in Emacs 22.
   (defun line-number-at-pos (&optional pos)
