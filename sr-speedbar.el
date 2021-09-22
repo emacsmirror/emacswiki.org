@@ -7,16 +7,16 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, Peter Lunicks, all rights reversed.
 ;; Created: 2008
-;; Version: 20200616
+;; Version: 20210922
 ;; X-Original-Version: 0.1.10
-;; Last-Updated: 2020-06-16
+;; Last-Updated: 2021-09-22
 ;; URL: http://www.emacswiki.org/emacs/download/sr-speedbar.el
 ;; Keywords: speedbar, sr-speedbar.el
 ;; Compatibility: GNU Emacs 22 ~ GNU Emacs 25
 ;;
 ;; Features required by this library:
 ;;
-;;  `speedbar' `advice' `cl'
+;;  `speedbar' `advice' `cl-lib'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -78,6 +78,10 @@
 ;;      M-x customize-group RET sr-speedbar RET
 
 ;;; Change log:
+;; * 22 Sep 2021:
+;;   * Vasilij Schneidermann <mail@vasilij.de>
+;;     * Fix cl deprecation warning
+;;
 ;; * 07 Jan 2021:
 ;;   * Jacob First <jacob.first@member.fsf.org>
 ;;     * Fix inconsistent window selection when opening speedbar on the right side vs. on the left.
@@ -273,8 +277,6 @@
 (require 'speedbar)
 (require 'advice)
 (require 'cl-lib)
-(eval-when-compile
-  (require 'cl))
 
 ;;; Code:
 
@@ -576,9 +578,9 @@ If WINDOW is nil, get current window."
     (walk-windows
      (lambda (w)
        (with-selected-window w
-         (incf window-number)
+         (cl-incf window-number)
          (if (window-dedicated-p w)
-             (incf dedicated-window-number)))))
+             (cl-incf dedicated-window-number)))))
     (if (and (> dedicated-window-number 0)
              (= (- window-number dedicated-window-number) 1))
         t nil)))
