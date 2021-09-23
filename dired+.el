@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.06.21
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 26 23:49:46 2021 (-0700)
+;; Last-Updated: Thu Sep 23 14:48:00 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 13028
+;;     Update #: 13033
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -31,7 +31,7 @@
 ;;   `hl-line', `hl-line+', `image', `image-dired', `image-file',
 ;;   `image-mode', `info', `info+', `kmacro', `macroexp', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mwheel', `naked',
-;;   `palette', `pp', `pp+', `radix-tree', `replace', `ring',
+;;   `palette', `pp', `pp+', `radix-tree', `rect', `replace', `ring',
 ;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
 ;;   `thingatpt+', `timer', `vline', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
@@ -879,6 +879,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/23 dadams
+;;     diredp-menu-bar-multiple-menu: Removed items that are anyway on Apply (Map) submenu.
 ;; 2021/07/22 dadams
 ;;     Added: diredp-remove-inserted-subdirs, diredp-fit-one-window-frame.
 ;;     dired-maybe-insert-subdir: With negative prefix arg, remove all inserted subdir listings.
@@ -9571,7 +9573,7 @@ If after invoking COMMAND in all of the marked files new buffers have
 been created to visit some of them then you are prompted to kill those
 buffers.
 
-An errors are logged by `dired-log'.  Use `?'  to see the error
+Any errors are logged by `dired-log'.  Use `?'  to see the error
 messages.
 
 Be aware that COMMAND could be invoked in a directory (Dired) buffer.
@@ -14660,18 +14662,18 @@ If no one is selected, symmetric encryption will be performed.  "
     '(menu-item "Add Marked Files To Recent Visits" diredp-do-add-to-recentf
       :help "Add the files marked here to the list of recently visited files"
       :enable (featurep 'recentf)))
-(define-key diredp-menu-bar-multiple-menu [diredp-do-eval-in-marked]
-  '(menu-item "Eval Sexp In..." diredp-do-eval-in-marked
-              :help "Evaluate a Lisp sexp in each marked file"))
-;;; (define-key diredp-menu-bar-multiple-menu [diredp-do-invoke-in-marked]
-;;;   '(menu-item "Invoke Function In..." diredp-do-invoke-in-marked
-;;;               :help "Invoke a Lisp function in each marked file"))
-(define-key diredp-menu-bar-multiple-menu [diredp-do-apply-to-marked]
-  '(menu-item "Apply Function To..." diredp-do-apply-to-marked
-              :help "Apply a Lisp function to each marked file name"))
-(define-key diredp-menu-bar-multiple-menu [diredp-do-command-in-marked]
-    '(menu-item "Invoke Command/Macro In..." diredp-do-command-in-marked
-      :help "Invoke an Emacs command or keyboard macro in each marked file"))
+;;;; (define-key diredp-menu-bar-multiple-menu [diredp-do-eval-in-marked]
+;;;;   '(menu-item "Eval Sexp In..." diredp-do-eval-in-marked
+;;;;               :help "Evaluate a Lisp sexp in each marked file"))
+;;;; ;;; (define-key diredp-menu-bar-multiple-menu [diredp-do-invoke-in-marked]
+;;;; ;;;   '(menu-item "Invoke Function In..." diredp-do-invoke-in-marked
+;;;; ;;;               :help "Invoke a Lisp function in each marked file"))
+;;;; (define-key diredp-menu-bar-multiple-menu [diredp-do-apply-to-marked]
+;;;;   '(menu-item "Apply Function To..." diredp-do-apply-to-marked
+;;;;               :help "Apply a Lisp function to each marked file name"))
+;;;; (define-key diredp-menu-bar-multiple-menu [diredp-do-command-in-marked]
+;;;;     '(menu-item "Invoke Command/Macro In..." diredp-do-command-in-marked
+;;;;       :help "Invoke an Emacs command or keyboard macro in each marked file"))
 (define-key diredp-menu-bar-multiple-menu [print]
   '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
 (define-key diredp-menu-bar-multiple-menu [compress]
@@ -15872,7 +15874,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "@"           nil) ; For Emacs 20
 (define-key dired-mode-map "@@"          'diredp-do-apply-to-marked)                ; `@ @'
 ;;; (define-key dired-mode-map (kbd "@ M-@") 'diredp-do-invoke-in-marked)               ; `@ M-@'
-(define-key dired-mode-map (kbd "@ M-x") 'diredp-do-command-in-marked)        ; `@ M-x'
+(define-key dired-mode-map (kbd "@ M-x") 'diredp-do-command-in-marked)              ; `@ M-x'
 (define-key dired-mode-map (kbd "@ M-:") 'diredp-do-eval-in-marked)                 ; `@ M-:'
 (define-key dired-mode-map "$"       'diredp-hide-subdir-nomove)                    ; `$'
 (define-key dired-mode-map "\M-$"    'dired-hide-subdir)                            ; `M-$'
@@ -16002,7 +16004,7 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-recursive-map "\M-\C-?"   'diredp-unmark-all-files-recursive))     ; `M-DEL'
 (define-key diredp-recursive-map "@@"          'diredp-do-apply-to-marked-recursive)    ; `@ @'
 ;;; (define-key diredp-recursive-map (kbd "@ M-@") 'diredp-do-invoke-in-marked-recursive)   ; `@ M-@'
-(define-key diredp-recursive-map (kbd "@ M-x") 'diredp-do-command-in-marked-recursive) ; `@ M-x'
+(define-key diredp-recursive-map (kbd "@ M-x") 'diredp-do-command-in-marked-recursive)  ; `@ M-x'
 (define-key diredp-recursive-map (kbd "@ M-:") 'diredp-do-eval-in-marked-recursive)     ; `@ M-:'
 (define-key diredp-recursive-map "#"           'diredp-flag-auto-save-files-recursive)  ; `#'
 (define-key diredp-recursive-map "*@"          'diredp-mark-symlinks-recursive)         ; `* @'
