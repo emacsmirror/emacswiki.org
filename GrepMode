@@ -287,5 +287,11 @@ This is what I use:
 
 I use it because the starting directory is explicitly shown in the minibuffer. (With the standard Emacs function I am always wondering from what directory grep will start searching.)
 
+== Writable grep buffer and apply the changes to files ==
+
+`wgrep' allows you to edit a grep buffer and apply those changes to the relevant file buffers.
+
+https://melpa.org/#/wgrep
+
 ----
 CategoryRegexp CategoryExternalUtilities CategorySearchAndReplace CategoryProgrammerUtils CategoryNavigation
