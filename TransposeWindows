@@ -4,6 +4,8 @@ There are multiple solutions to transpose windows within a frame.
 
 To swap the top and bottom windows when two windows are open, use a sequence of seven keys, `C-x 0 C-x 4 b'. More likely you are in the bottom window and want its buffer to be in the top window.  In that case, use `C-x 0 C-x 2 C-x b RET'.
 
+From Emacs 26.1 there is `M-x window-swap-states'.
+
 === Via buffer-move ===
 
 Available [http://melpa.org/#/buffer-move within MELPA] and [https://github.com/lukhas/buffer-move GitHub]. 
