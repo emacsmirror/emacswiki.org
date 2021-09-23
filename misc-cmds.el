@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 21 15:39:48 2021 (-0700)
+;; Last-Updated: Thu Sep 23 08:54:40 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3362
+;;     Update #: 3363
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -107,6 +107,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/09/23 dadams
+;;     list-colors-nearest-color-at: Raise error if color-named-at not defined.
 ;; 2021/09/21 dadams
 ;;     Added count-words-rectangle.
 ;; 2021/07/09 dadams
@@ -1678,6 +1680,7 @@ Use RGB distance by default.  Non-nil optional arg USE-HSV-P
 \(interactively, the prefix arg) means use HSV distance instead of RGB
 distance."
     (interactive "d")
+    (unless (fboundp 'color-named-at) (error "This command needs library `misc-fns.el'"))
     (list-colors-nearest (color-named-at position) use-hsv-p))) ; In `misc-fns.el'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
