@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 23 08:54:40 2021 (-0700)
+;; Last-Updated: Thu Sep 23 09:35:56 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3363
+;;     Update #: 3365
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -108,6 +108,7 @@
 ;;; Change Log:
 ;;
 ;; 2021/09/23 dadams
+;;     Require rect.el if Emacs 26+, for extract-rectangle-bounds.
 ;;     list-colors-nearest-color-at: Raise error if color-named-at not defined.
 ;; 2021/09/21 dadams
 ;;     Added count-words-rectangle.
@@ -374,6 +375,7 @@
 
 (eval-when-compile (require 'cl)) ;; case, plus for Emacs < 21: dolist, pop
 
+(when (> emacs-major-version 25) (require 'rect)) ; extract-rectangle-bounds
 (require 'frame-fns nil t) ;; (no error if not found): flash-ding
 (require 'misc-fns nil t) ;; (no error if not found): another-buffer, color-named-at
 (require 'strings nil t) ;; (no error if not found): read-buffer
