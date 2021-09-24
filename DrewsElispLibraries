@@ -71,6 +71,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode' -- see '''DiffEnhancements'''
 * <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
 * <tt>[[doremi-frm.el]]</tt> -- incrementally adjust [[frame]] properties using arrow keys and/or mouse wheel -- see also '''DoReMi'''
+* <tt>[[dyna-show.el]]</tt> -- highlight dynamic variables in EmacsLisp
 * <tt>[[ediff+.el]]</tt> -- extensions to standard library `ediff': toggle case sensitivity (not needed for GNU Emacs 22 or later)
 * <tt>[[emacsbug+.el]]</tt> -- extensions to standard library `emacsbug' -- see [[EmacsBugs#emacsbugplus|EmacsBugs]]
 * <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors (see also <tt>[[palette.el]]</tt>)
@@ -131,6 +132,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 === Emacs 24 or Later  (will not work in older versions) ===
 
 * <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
+* <tt>[[dyna-show.el]]</tt> -- highlight dynamic variables in EmacsLisp
 * <tt>[[keysee.el]]</tt> -- key and menu completion -- see '''KeySee'''
 * <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
 * <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws -- see '''NotAndOr'''
