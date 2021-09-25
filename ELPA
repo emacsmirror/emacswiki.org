@@ -19,11 +19,8 @@ The following examples show how to add the [[MELPA]] repository, in addition to 
 Add this to your [[init file]]:
 
 {{{
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 }}}
-
-Any combination of repositories is fine.  You should probably always include "gnu", which is for GNU ELPA, but it is not required.
 
 Package archives may also be [[LocalElpaArchive|local to your machine]].
 
