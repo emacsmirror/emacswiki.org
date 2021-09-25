@@ -1,8 +1,86 @@
-setup.el provides a macro to ease repetitive configuration patterns in Emacs. It is available on GnuELPA and the source can be found here: https://git.sr.ht/~pkal/setup.
+setup.el provides a macro to ease repetitive configuration patterns in Emacs. This is done by providing context sensitive local macros, that expand to regular, pure EmacsLisp.
+
+The package is available on GnuELPA and is currently maintained by PhilipKaludercic on SourceHut: https://git.sr.ht/~pkal/setup.
+
+Setup is self-documented: To get an overview of all known local macros, just read the DocString for the setup macro.
 
 == Basics ==
 
-The main of the setup macro is to provide context-sensitive local macros, that are expanded to pure EmacsLisp. The advantage over vanilla configurations is that one doesn't have to deal with 
+You can use the setup macro in a InitFile with LexicalBinding. Each setup body may start with a name, that sets the context for the current body. Without this, no default context is set. Within the setup body, local-macros (i.e. macros that are only defined in the setup body) may want to make use of the context, to generate code.
+
+E.g.
+
+{{{
+(setup foo-mode
+  (:hook bar-mode))
+}}}
+
+expands to
+
+{{{
+(add-hook 'foo-mode-hook #'bar-mode)
+}}}
+
+As the context says the current mode is "foo-mode", and it's hook is "foo-mode-hook". The :hook macro uses this, to generate an add-hook call for "bar-mode".
+
+Some configuration must wait for a feature to be loaded. Setup takes care of this automatically, e.g. when binding commands to a mode-map, the :bind macro uses WithEvalAfterLoad:
+
+{{{
+(setup foo-mode
+  (:bind "C-'" quux))
+}}}
+
+expands to
+
+{{{
+;; The macroexpansion has been slightly prettified for legibility 
+(with-eval-after-load foo-mode
+  (define-key foo-mode-map (kbd "C-'") #'quux))
+}}}
+
+The context can be changed, using macros like :with-feature, :with-mode, :with-hook, etc.:
+
+{{{
+(setup foo-mode
+  (:with-map baz-mode-map
+    (:hook qux-mode))
+  (:hook bar-mode))
+}}}
+
+expands to
+
+{{{
+(progn
+  (add-hook 'baz-mode-hook #'qux-mode)
+  (add-hook 'foo-mode-hook #'bar-mode))
+}}}
+
+In fact, whenever a context is set as the first argument to setup, this could be seen as the equivalent code to:
+
+{{{
+(setup 
+  (:with-feature foo-mode
+    (:hook bar-mode)))
+}}}
+
+Note how  setup still works fine, even though the first element is no a symbol. Generally, the first element doesn't have to be a symbol, if the local macro provides a "shorthand" to extract a context. For example the :package keyword (that ensures a package is installed), can be used as the first form, and it uses the package name as the context:
+
+{{{
+(setup (:package foo-mode)
+  (:hook bar-mode))
+}}}
+
+is equivalent to
+
+{{{
+(setup foo-mode
+  (:package foo-mode)
+  (:hook bar-mode))
+}}}
+
+This demonstrates what the phrase "context sensitive local macro" means: The macros :hook, :bind, etc. can all only be used within a setup body, and they make use of whatever the surrounding code defines, to infer what hook a function should be added to or what map to bind keys into. 
+
+All local macros are defined using the function "setup-define". If you want to inspect the definition of a macro, just use, setup provides Xref integration so that M-. should just work.
 
 == Examples ==
 
