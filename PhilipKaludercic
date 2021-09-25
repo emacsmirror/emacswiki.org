@@ -1,6 +1,6 @@
 Hi, I'm a Emacs user since 2014/15. It was the first and only editor I felt comfortable in when working on more than one file (otherwise I'd just use vi or mg).
 
-I have a personal website, where I sometimes post about Emacs: https://ruzkuku.com/ (Atom feed: http://ruzkuku.com/emacs.atom).
+I have a personal website, where I sometimes post about Emacs: https://ruzkuku.com/.
 
 == Packages ==
 
@@ -14,7 +14,7 @@ Here are a few packages on mine which I have contributed to ELPA or MELPA:
 * [https://melpa.org/#/face-shift face-shift]
 * [https://melpa.org/#/insert-kaomoji insert-kaomoji]
 
-I am also an occasional contributor to core Emacs: https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=author&q=philipk%40posteo.net
+I am also an occasional contributor to core Emacs (https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=author&q=philipk%40posteo.net), GNU ELPA (https://git.savannah.gnu.org/cgit/emacs/elpa.git/log/?qt=author&q=philipk%40posteo.net) and NonGNU ELPA (https://git.savannah.gnu.org/cgit/emacs/nongnu.git/log/?qt=author&q=philipk%40posteo.net).
 
 == Misc ==
 
