@@ -1,8 +1,7 @@
-M-x idle-highlight-mode sets an idle timer that highlights all occurences in the buffer of the word under the point.
+M-x idle-highlight-mode sets an idle timer that highlights all occurrences in the buffer of the word under the point.
 
-This library is best installed via [http://marmalade-repo.org/packages/idle-highlight-mode package.el]: M-x package-install idle-highlight-mode
-
-Repository: https://github.com/nonsequitur/idle-highlight-mode
+This library is best installed via melpa: (use-package idle-highlight-mode)
+Repository: https://gitlab.com/ideasman42/emacs-idle-highlight-mode/
 
 ----
 CategoryFaces
