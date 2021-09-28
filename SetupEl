@@ -42,7 +42,7 @@ The context can be changed, using macros like :with-feature, :with-mode, :with-h
 
 {{{
 (setup foo-mode
-  (:with-mode baz-mode-map
+  (:with-mode baz-mode
     (:hook qux-mode))
   (:hook bar-mode))
 }}}
