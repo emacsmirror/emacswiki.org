@@ -178,6 +178,51 @@ modifying user options:
   `(setup (:option ,@args)))
 }}}
 
+== Additional Keywords ==
+
+Here are a few examples of how setup-define can be used:
+
+=== Unconditional quit ===
+
+By default, :only-if, :if-host, etc. can be used to abort the evaluation of a setup body. In some cases one might want to unconditionally abort, e.g. when using a complex conditional construct. In that case, :quit generates the right code:
+
+{{{
+(setup-define :quit
+  #'setup-quit
+  :documentation "Unconditionally abort the evaluation of the current body.")
+}}}
+
+=== Bound unconditional quiting ===
+
+In case one doesn't want the entire setup body from being aborted because of :only-if, :if-host, :quit, etc. you can use this following to limit its scope:
+
+{{{
+(setup-define :with-local-quit
+    (lambda (&rest body)
+      `(catch ',(setup-get 'quit)
+         ,@body))
+  :documentation "Prevent any reason to abort from leaving beyond BODY."
+  :debug '(setup))
+}}}
+
+=== Deferred Loading ===
+
+If you want to load the current feature after a series of other features, this macro can help automatically define the code to do so:
+
+{{{
+(setup-define :load-after
+    (lambda (&rest features)
+      (let ((body `(require ',(setup-get 'feature))))
+        (dolist (feature (if (listp features)
+                             (nreverse features)
+                           (list features)))
+          (setq body `(with-eval-after-load ',feature ,body)))
+        body))
+  :documentation "Load the current feature after FEATURES.")
+}}}
+
+Note that multiple arguments can be passed to :after-load, leading to multiple encapsulated with-eval-after-load blocks.
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
