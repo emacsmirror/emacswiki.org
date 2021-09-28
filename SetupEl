@@ -213,9 +213,7 @@ If you want to load the current feature after a series of other features, this m
 (setup-define :load-after
     (lambda (&rest features)
       (let ((body `(require ',(setup-get 'feature))))
-        (dolist (feature (if (listp features)
-                             (nreverse features)
-                           (list features)))
+        (dolist (feature (nreverse features))
           (setq body `(with-eval-after-load ',feature ,body)))
         body))
   :documentation "Load the current feature after FEATURES.")
