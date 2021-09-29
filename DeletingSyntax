@@ -2,7 +2,7 @@ Assume you are at the end of the following line and you want to delete backwards
 
     something something <something
 
-If you could delete by *syntax*, you'd see the following (-!- is point):
+If you could delete by *syntax* (more formally, by [https://en.wikipedia.org/wiki/Lexical_analysis#Lexeme lexeme]), you'd see the following (-!- is point):
 
     something something <something-!-
     something something <-!-
