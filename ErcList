@@ -1,5 +1,3 @@
-See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-list.el.
-
 erc-list.el implements a channel list view mode buffer.
 
 Use the /LIST command or invoke it interactively with M-x erc-chanlist RET to get a nicely sorted
