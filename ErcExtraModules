@@ -2,7 +2,7 @@ Some of [[ERC]]’s modules aren't part of GnuEmacs due to copyright assignment 
 
 * ErcBbdb
 * ErcChess
-* ErcList (ERC 5.3's erc-list.el will be available in the next Emacs release, see also EmacsFromCvs)
+* ErcList
 * ErcNicklist
 * ErcSpeak
 
