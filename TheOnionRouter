@@ -5,3 +5,7 @@
 * [https://wiki.torproject.org/noreply/TheOnionRouter TorProject:TheOnionRouter]
 
 [[Anonymous]] editors of the Wiki can use this tool to keep their IP address secret.  See UserName for more information.
+
+== Tor and vc ==
+
+If you wish to route all vc (VersionControl) through tor, set vc-tor to t.
