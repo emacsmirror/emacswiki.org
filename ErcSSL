@@ -1,6 +1,6 @@
-ERC is fully equipped to connect to SSL/TLS-enabled servers (e.g. OFTC and [[Freenode]]) however, Certificate Authentication support is rather untested.
+ERC is fully equipped to connect to SSL/TLS-enabled servers (e.g. OFTC and Libera) however, Certificate Authentication support is rather untested.
 
-Note added August, 2017: `M-x erc-tls' might just work without further configuration. Be sure to use the server's TLS port, e.g. 6697 for freenode.
+Note added August, 2017: `M-x erc-tls' might just work without further configuration. Be sure to use the server's TLS port, e.g. 6697 for Libera.
 
 For the purposes of this guide, head on over to the following OFTC page to get an idea on how to create the necessary certificates
 
@@ -50,10 +50,10 @@ Now, assuming you've already enabled 'erc, we can continue to work with the supp
    (interactive)
    (erc-tls :server "irc.oftc.net" :port 6697
         :nick "ootput" :full-name "ootput")
-   (erc :server "irc.freenode.net" :port 6667
+   (erc :server "irc.libera.chat" :port 6667
         :nick "ootput" :full-name "ootput")
-   (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#screen" "#ion")
-                                       ("oftc.net" "#debian"))))
+   (setq erc-autojoin-channels-alist '(("irc.libera.chat" "#emacs" "#screen" "#ion")
+                                       ("irc.oftc.net" "#debian"))))
 
 This will establish connection to OFTC on port 6697 (SSL), but more
 importantly, it will allow us to use certificates for transparent Nickserv auth.
