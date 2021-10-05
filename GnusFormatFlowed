@@ -8,7 +8,7 @@ See FormatFlowed.
 
 ##format=flowed## is enabled by default in Gnus, in the sense that encoded messages are correctly decoded and rewrapped according to `fill-flowed-display-column' (which is usually `fill-column'), but that's about it.
 
-The easiest way to deal with ##format=flowed## is to avoid it: if you want dynamic reflowing, simply unfold encoded lines to full length and setup article buffers to wrap:
+The easiest way to deal with ##format=flowed## is to avoid it: if you want dynamic reflowing, simply unfold encoded lines to full length and set up article buffers to wrap:
 
 {{{
 
