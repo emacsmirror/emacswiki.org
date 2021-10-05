@@ -1,0 +1,23 @@
+== Emacs being used as a message router in Germany's air traffic control systems for a time in the 1990s ==
+
+As [https://www.reddit.com/r/emacs/comments/lly7po/do_you_use_emacs_lisp_as_a_general_purpose/gnvzisy/ recounted on r/emacs] by [http://evrl.com/ Cees de Groot]:
+
+[quote]
+Early '90s, after "Die Wende" and the unification of East and West Germany. I was the person that got sent to the tough jobs, or the ones that nobody else wanted, so I found myself one Monday morning checking in at a DASA plant (DASA was first German Aerospace, then Daimler Aerospace, and now a part of Airbus). The project was between DASA and HP as main contractors to replace both countries' ATC systems with a unified one. So we have two megacompanies and a government contract, and shops like my employer getting some juicy partial jobs. And there are actually two Emacs stories in here.
+
+First: that Monday morning, I check in with the developers that I'm supposed to help out. They are in a lab surrounded with wonderful stuff - the newest HP workstations on HP/UX, and a bunch of HP's top-of-the-range servers, fridge sized and close to 7 figures list price. The reason I got called in though: they couldn't work on the systems. They were VMS developers, pulled off a different project, and supposed to code up some part of the whole system (I forgot which one) in C on VMS (a truly gross idea, because C was not very well adapted to VMS, but that's a different thing). Anyway, they got their workstations, manuals, were told that vi was the editor, and have a nice day.
+
+Here we are: a dozen people struggling to type code in Vi. And it's not that they were stupid, but muscle memory for the VMS editor (TPU, IIRC, but this is a long time ago) does really not translate well to Vi.
+
+I went back home (was closer than the office), loaded all the GNU sources on a QIC tape, went back, and started a routine that was all too well known back in the day: compile the GNU toolchain on some vendor Unix in order to be able to compile the nice utilities, including Emacs. GCC took the longest, you need three or four build stages before you have a reliable compiler, but a day later I had Emacs on HP/UX. It was downhilll from there: I did VMS work, so I whipped up a little init.el that mapped to the VMS editor as closely as possible, and rolled it out to the workstations. A short briefing later and, well, they almost hugged me :).
+
+Some weeks later I got called to our second office, they were behind schedule and needed an extra pair of hands. We had - for reasons I don't know - ATC workstations on microVAXen running that 4GL on VMS but they struggled with getting messaging over the network going - the 4GL was terminal oriented, did not know what a network was, but ATC messages (like airplane hand-overs from airfield to airfield or to Eurocontrol) needed to go to the local message router and from there to the site the message was destined for. We're talking "no internet" here - all X.25 and leased lines and zero convenience.
+
+Well, I got to work and figured out that it was easier to make VMS talk TCP/IP than HP/UX talk DECnet, so I got that setup, and then picked the hot new tech, DCE, to do the messaging. I did C extentions for the 4GL a lot, so the VMS side was done in a couple of days. Then they told me to talk to Herr Doktor So-and-so who was responsible for the actual message router.
+
+In Germany, a Herr Doktor is always right (they have forgiven Moses by now for not having space on the stone tablets, but it really is the 11th Commandment). This one worked at Symbolics before so knew one programming language: Lisp. He wanted to code the message router in Lisp because of the "complex" (meh) requirements, but there was no Lisp (or no Lisp in budget) for HP/UX so he was stuck. I told him about Emacs, gave him my tape with the ports, and maybe that was a mistake ;-)
+
+A week later - I helped out finishing the 4GL UI in the meantime and completed the messaging protocol - he called me in, quite happy. He showed me the code - page after page of Emacs Lisp, with exactly zero comments "because Lisp is self-documenting". I got scared, it was an air traffic control system after all, but I was no Herr Doktor so I whipped up the DCE native code for Emacs, made a hack to have it start headless in message router server mode, and we got messages to flow. I did a code hand-over, and drove back home a couple of days later. The "self-documenting" code, as far as I know, landed in production so at least for a while, all ATC message routing in Germany was done through Emacs.
+
+Pro tip: don't look in the kitchen when governments brew up safety critical systems. I was scared to fly over Germany for a while...
+[/quote]
