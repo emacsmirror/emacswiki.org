@@ -4,7 +4,7 @@ See CategoryMusic for ways to /make/ music using Emacs.
 
 == MP3/Ogg-Vorbis/Other music players (in alphabetical order) ==
 
-=== Fully featured options ===
+=== Fully featured Emacs players ===
 
 * [[Bongo]] -- beautiful, flexible and usable media player, developed in parallel to EMMS 2.0
 * [[EMMS]] -- The Emacs Multi-Media System
@@ -12,10 +12,11 @@ See CategoryMusic for ways to /make/ music using Emacs.
 * [https://github.com/jorenvo/simple-mpc simple-mpc-mode] -- provides an interface to [http://musicpd.org/ MPD], focuses on simplicity, UI inspired by [[Mingus]] and [[mu4e]]
 * [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://github.com/andyetitmoves/libmpdee libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
 
-=== Lightweight options and cool hacks ===
+=== Lightweight options, cool hacks, and non-Emacs players ===
 
 * [[Amarok]] -- remote control the giant wolf
 * [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]] using MS Windows file associations -- simple player, nothing to do
+* [https://github.com/cdrummond/cantata Cantata] -- Full-featured, Qt5-based MPD client
 * [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - an extremely lightweight yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).  Oh... and there's a pretty comprehensive manual in a variety of formats too
 * [[GIMME]] -- XMMS2 client on Emacs
 * The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
