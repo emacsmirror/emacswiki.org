@@ -1,10 +1,10 @@
 I use Emacs
 
-I created and maintain TaskTimer, EdiMode, PmxMode and RandomIdleQuote. My emacs configuration files can be found on github: http://github.com/jcowgar/dotemacs
+I created and maintain TaskTimer, EdiMode, PmxMode and RandomIdleQuote. My emacs configuration files can be found on github: http://github.com/jcowgar/emacs.d
 
 : Welcome to the wiki! -- AlexSchroeder
 
-My nick on #emacs is jeremy_c. You can find my home page at: http://jeremy.cowgar.com
+My nick on #emacs is jeremyc. You can find my home page at: http://jeremy.cowgar.com
 
 I have a few customizations in my .emacs that I believe are pretty handy. Don't yell, but they came from learning a bit about vim.
 
