@@ -221,6 +221,54 @@ If you want to load the current feature after a series of other features, this m
 
 Note that multiple arguments can be passed to :after-load, leading to multiple encapsulated with-eval-after-load blocks.
 
+=== Remove the current mode from the mode line ====
+
+The ModeLine uses `minor-mode-alist` to map active minor modes to indicators. This macro makes manipulating the variable easier:
+
+{{{
+(setup-define :hide-mode
+    (lambda (&optional mode)
+      `(setq minor-mode-alist
+	     (delq (assq ,(or mode (setup-get 'mode)) minor-mode-alist)
+		   minor-mode-alist)))
+  :documentation "Hide the mode-line lighter of the current mode.
+Alternatively, MODE can be specified manually, and override the
+current mode."
+  :after-loaded t)
+}}}
+
+=== Add advice ===
+
+The following macro simplifies the definition of [[Advice]]:
+
+{{{
+(setup-define :advise
+    (lambda (symbol where arglist &rest body)
+      (let ((name (gensym "setup-advice-")))
+	`(progn
+	   (defun ,name ,arglist ,@body)
+	   (advice-add ',symbol ,where #',name))))
+  :documentation "Add a piece of advice on a function.
+See `advice-add' for more details."
+  :after-loaded t
+  :debug '(sexp sexp function-form)
+  :indent 3)
+}}}
+
+=== Check for executables ===
+
+If you wish to only configure a system when a executable is installed, the following macro 
+will ensure that the evaluation is interrupted, when this is not the case:
+
+{{{
+(setup-define :needs
+    (lambda (executable)
+      `(unless (executable-find ,executable)
+         ,(setup-quit)))
+  :documentation "If EXECUTABLE is not in the path, stop here."
+  :repeatable 1)
+}}}
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
