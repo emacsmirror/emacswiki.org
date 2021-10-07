@@ -215,6 +215,24 @@ When you send the email, it will be encrypted based on the recipient's email add
 
 While reading an encrypted email, you can use `M-x rmail-epa-decrypt' to decrypt the email.
 
+== Using an External MRA ==
+
+You can use a Mail Retrieval Agent (MRA) other than `movemail' by simply creating a function that calls the command of your choice. This example uses `mpop':
+
+{{{
+(defun rmail-my-mra ()
+  (interactive)
+  (shell-command "echo 'Checking mail...'")
+  (shell-command "mpop --half-quiet")
+  (rmail-summary))
+
+(add-hook 'rmail-mode-hook
+  (lambda ()
+    (local-set-key "g" 'rmail-my-mra)))
+}}}
+
+From here, you can use `M-x rmail-my-mra' or press `g' from an `rmail' buffer, and Emacs will call `mpop' to retrieve your mail.
+
 == External Links ==
 
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Rmail.html The rmail manual]
