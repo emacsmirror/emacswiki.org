@@ -306,3 +306,12 @@ Furthermore use-package might be said to be less flexible, because the macro ass
 would install both company and company-math. The context is set to company, because the :package call is the first element of the list, and company is it's first argument.
 
 An attempt is also made by setup.el to ease extensibility. Each macro is defined using the setup-define function. Combined with further attributes, it allows for the simple definition of local and context sensitive macros, that are debug-able, can be composed and deferred.
+
+----
+
+[new:DrewAdams:2021-10-08 02:27 UTC]
+I didn't realize that you had created this library, which has the same name as my library (in the %%EmacsWiki%% ElispArea), which has existed since 1996 and been on the wiki since 2004.
+
+I'm hoping you're rename yours that uses the same name. (Admittedly, the name is not a great one nowadays, in any case; it's been around a long time.)
+
+Thx - DrewAdams
