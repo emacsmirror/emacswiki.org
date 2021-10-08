@@ -315,3 +315,7 @@ I didn't realize that you had created this library, which has the same name as m
 I'm hoping you're rename yours that uses the same name. (Admittedly, the name is not a great one nowadays, in any case; it's been around a long time.)
 
 Thx - DrewAdams
+
+[new:PhilipKaludercic:2021-10-08 07:51 UTC]
+
+I found out about your setup.el recently, but sadly too late, as I and others have been using it for a while now. Should be maybe add Wikipedia style "Disambiguation" links to avoid confusion?
