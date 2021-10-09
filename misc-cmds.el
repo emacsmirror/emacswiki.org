@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 23 09:35:56 2021 (-0700)
+;; Last-Updated: Sat Oct  9 16:38:05 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3365
+;;     Update #: 3369
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -18,8 +18,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
-;;   `frame-fns', `macroexp', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `frame-fns', `macroexp', `misc-cmds', `misc-fns', `rect',
+;;   `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -107,6 +107,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/09 dadams
+;;     count-words-rectangle: (partial) correction to count.
 ;; 2021/09/23 dadams
 ;;     Require rect.el if Emacs 26+, for extract-rectangle-bounds.
 ;;     list-colors-nearest-color-at: Raise error if color-named-at not defined.
@@ -859,15 +861,20 @@ This is similar to `count-words', but for a rectangular region.
 Also:
 
 * By default, a word that straddles the beginning or end of a
-  rectangle row is not counted.  That is, this counts only words that
-  are entirely within the rectangle.
+  rectangle row is not counted.  That is, by default this counts only
+  words that are entirely within the rectangle.
+
 * A prefix arg means count also such partial words at row boundaries.
+
+Note: When not allowing partial words, the count can be less than what
+it should be if some words straddle both the beginning and end of
+their row.
 
 If called interactively, START and END are the bounds of the start and
 end of the active region.  Print a message reporting the number of
 rows (lines), columns (characters per row), words, and characters.
 
-If called from Lisp, return the number of words in the rectangle
+If called from Lisp, return only the number of words in the rectangle
 between START and END, without printing any message."
     (interactive "r\nP\np")
     (let ((bounds  (extract-rectangle-bounds start end))
@@ -875,17 +882,18 @@ between START and END, without printing any message."
           (chars   0))
       (dolist (beg+end  bounds)
         (setq words  (+ words (count-words (car beg+end) (cdr beg+end)))))
-      (let (beg end)
-        (dolist (beg+end  bounds)
-          (setq beg  (car beg+end)
-                end  (cdr beg+end))
-          (unless allow-partial-p
+      (unless allow-partial-p
+        (let (beg end)
+          (dolist (beg+end  bounds)
+            (setq beg  (car beg+end)
+                  end  (cdr beg+end))
             (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
                        (char-after beg)       (equal '(2) (syntax-after beg)))
               (setq words  (1- words)))
             (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
                        (char-after end)       (equal '(2) (syntax-after     end)))
-              (setq words  (1- words))))))
+              (setq words  (1- words)))))
+        (setq words  (max 0 words)))
       (when msgp
         (dolist
             (beg+end  bounds)
