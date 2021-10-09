@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct  9 15:32:53 2021 (-0700)
+;; Last-Updated: Sat Oct  9 16:34:53 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 901
+;;     Update #: 905
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -206,6 +206,7 @@
 ;;     Added: modelinepos-region-style, count-words-rectangle, modelinepos-style-default.
 ;;     modelinepos-style: Support modelinepos-region-style.  For non-rect, put lines before cols.
 ;;     modelinepos-rectangle-style: Use quote, not backquote.
+;;     count-words-region: (partial) correction to count.
 ;; 2021/09/23 dadams
 ;;     Added: modelinepos-rectangle-style.
 ;;     modelinepos-style: Added support for modelinepos-rectangle-style (words & chars in rectangle).
@@ -347,7 +348,7 @@ It is the responsibility of individual commands to manage the value.
 
   ;; Same as in `misc-cmds.el'.
   (defun count-words-rectangle (start end &optional allow-partial-p msgp)
-    "Count words in the rectangle from START to END.
+  "Count words in the rectangle from START to END.
 This is similar to `count-words', but for a rectangular region.
 
 Also:
@@ -358,43 +359,48 @@ Also:
 
 * A prefix arg means count also such partial words at row boundaries.
 
+Note: When not allowing partial words, the count can be less than what
+it should be if some words straddle both the beginning and end of
+their row.
+
 If called interactively, START and END are the bounds of the start and
 end of the active region.  Print a message reporting the number of
 rows (lines), columns (characters per row), words, and characters.
 
 If called from Lisp, return only the number of words in the rectangle
 between START and END, without printing any message."
-    (interactive "r\nP\np")
-    (let ((bounds  (extract-rectangle-bounds start end))
-          (words   0)
-          (chars   0))
-      (dolist (beg+end  bounds)
-        (setq words  (+ words (count-words (car beg+end) (cdr beg+end)))))
+  (interactive "r\nP\np")
+  (let ((bounds  (extract-rectangle-bounds start end))
+        (words   0)
+        (chars   0))
+    (dolist (beg+end  bounds)
+      (setq words  (+ words (count-words (car beg+end) (cdr beg+end)))))
+    (unless allow-partial-p
       (let (beg end)
         (dolist (beg+end  bounds)
           (setq beg  (car beg+end)
                 end  (cdr beg+end))
-          (unless allow-partial-p
-            (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
-                       (char-after beg)       (equal '(2) (syntax-after beg)))
-              (setq words  (1- words)))
-            (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
-                       (char-after end)       (equal '(2) (syntax-after     end)))
-              (setq words  (1- words))))))
-      (when msgp
-        (dolist
-            (beg+end  bounds)
-          (setq chars  (+ chars (- (cdr beg+end) (car beg+end)))))
-        (let ((rows  (count-lines start end))
-              (cols  (let ((rpc  (save-excursion
-                                   (rectangle--pos-cols (region-beginning) (region-end)))))
-                       (abs (- (car rpc) (cdr rpc))))))
-          (message "Rectangle has %d row%s, %d colum%s, %d word%s, and %d char%s."
-                   rows  (if (= rows 1)  "" "s")
-                   cols  (if (= cols 1)  "" "s")
-                   words (if (= words 1) "" "s")
-                   chars (if (= chars 1) "" "s"))))
-      words))
+          (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
+                     (char-after beg)       (equal '(2) (syntax-after beg)))
+            (setq words  (1- words)))
+          (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
+                     (char-after end)       (equal '(2) (syntax-after     end)))
+            (setq words  (1- words)))))
+      (setq words  (max 0 words)))
+    (when msgp
+      (dolist
+          (beg+end  bounds)
+        (setq chars  (+ chars (- (cdr beg+end) (car beg+end)))))
+      (let ((rows  (count-lines start end))
+            (cols  (let ((rpc  (save-excursion
+                                 (rectangle--pos-cols (region-beginning) (region-end)))))
+                     (abs (- (car rpc) (cdr rpc))))))
+        (message "Rectangle has %d row%s, %d colum%s, %d word%s, and %d char%s."
+                 rows  (if (= rows 1)  "" "s")
+                 cols  (if (= cols 1)  "" "s")
+                 words (if (= words 1) "" "s")
+                 chars (if (= chars 1) "" "s"))))
+    words))
 
   (defcustom modelinepos-rectangle-style 'rows+cols
     "Mode-line info about region size when a rectangle is selected."
