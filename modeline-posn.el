@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 23 12:09:29 2021 (-0700)
+;; Last-Updated: Sat Oct  9 15:32:53 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 863
+;;     Update #: 901
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -40,21 +40,28 @@
 ;;     now active (Emacs 23+).
 ;;
 ;;  For #2: When the region is active, the mode line displays some
-;;  information that you can customize - see option
-;;  `modelinepos-style'.  Customization choices for this include (a)
-;;  the number of chars, (b) the number of bytes, (c) the number of
-;;  chars and number of lines (or the number of rows and number of
-;;  columns, if a rectangle is selected), and (d) anything else you
-;;  might want.  Choice (c) is the default.
+;;  information that you can customize - see options
+;;  `modelinepos-style', `modelinepos-rectangle-style' (Emacs 26+),
+;;  and `modelinepos-region-style'.
 ;;
-;;  For (d), you provide a `format' expression as separate components:
+;;  Customization choices for `modelinepos-style' include (a) the
+;;  number of chars, (b) the number of bytes, (c) the number of rows
+;;  or lines and number of columns, (d) the number of rows or lines,
+;;  columns, words, and characters, and (3) anything else you might
+;;  want.  Choice (c) is the default.
+;;
+;;  For (c) and (d), if a rectangle is selected then the numbers are
+;;  limited to its boundaries.  For (d), only words entirely inside
+;;  the rectangle are counted.
+;;
+;;  For (e), you provide a `format' expression as separate components:
 ;;  the format string and the sexp arguments to be evaluated and
 ;;  plugged into the string.  The number of sexp args depends on the
 ;;  format string that you use: one for each `%' construct.
 ;;
-;;  Choice (d) is provided so that you can choose alternative
+;;  Choice (e) is provided so that you can choose alternative
 ;;  formatting styles.  For example, instead of `256 ch, 13 l', you
-;;  could show `(256 chars, 13 lines)'.  But (d) can really show any
+;;  could show `(256 chars, 13 lines)'.  But (e) can really show any
 ;;  information at all.  It need not have anything to do with the
 ;;  region, but it is nevertheless shown when the region is active.
 ;;
@@ -100,6 +107,10 @@
 ;;  different values for different modes.
 ;;
 ;;
+;;  Commands defined here:
+;;
+;;    `count-words-rectangle' (Emacs 26+).
+;;
 ;;  Faces defined here:
 ;;
 ;;    `modelinepos-column-warning', `modelinepos-region',
@@ -108,7 +119,8 @@
 ;;  User options defined here:
 ;;
 ;;    `modelinepos-column-limit', `modelinepos-empty-region-flag',
-;;    `modelinepos-rectangle-style' (Emcs 26+), `modelinepos-style',
+;;    `modelinepos-rectangle-style' (Emacs 26+),
+;;    `modelinepos-region-style', `modelinepos-style',
 ;;    `use-empty-active-region' (Emacs < 23).
 ;;
 ;;  Non-interactive functions defined here:
@@ -118,7 +130,7 @@
 ;;  Non-option variables defined here:
 ;;
 ;;    `modelinepos-rect-p', `modelinepos-region-acting-on' (Emacs
-;;    23+).
+;;    23+), `modelinepos-style-default'.
 ;;
 ;;  
 ;;  ***** NOTE: The following built-in functions have 
@@ -190,6 +202,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/09 dadams
+;;     Added: modelinepos-region-style, count-words-rectangle, modelinepos-style-default.
+;;     modelinepos-style: Support modelinepos-region-style.  For non-rect, put lines before cols.
+;;     modelinepos-rectangle-style: Use quote, not backquote.
 ;; 2021/09/23 dadams
 ;;     Added: modelinepos-rectangle-style.
 ;;     modelinepos-style: Added support for modelinepos-rectangle-style (words & chars in rectangle).
@@ -283,20 +299,20 @@
 
 ;;;###autoload
 (defface modelinepos-column-warning '((t (:foreground "Red")))
-  "*Face used to highlight the modeline column number.
+  "Face used to highlight the modeline column number.
 This is used when the current column number is greater than
 `modelinepos-column-limit'."
   :group 'Modeline :group 'Convenience :group 'Help :group 'faces)
 
 ;;;###autoload
 (defface modelinepos-region '((t :inherit region))
-  "*Face used to highlight the modeline position and size when
+  "Face used to highlight the modeline position and size when
 the region is active."
   :group 'Modeline :group 'Convenience :group 'Help :group 'faces)
 
 ;;;###autoload
 (defface modelinepos-region-acting-on '((t (:inherit region :box (:line-width 3 :color "Red"))))
-  "*Face for modeline position & size when a command acts on active region.
+  "Face for modeline position & size when a command acts on active region.
 \(Not used for Emacs 22)."
   :group 'Modeline :group 'Convenience :group 'Help :group 'faces)
 
@@ -311,70 +327,139 @@ It is the responsibility of individual commands to manage the value.
 
 ;;;###autoload
 (defcustom modelinepos-column-limit 70
-  "*Current column greater than this means highlight column in mode-line."
+  "Current column greater than this means highlight column in mode-line."
   :type 'integer :group 'Modeline :group 'Convenience :group 'Help)
 
 ;;;###autoload
 (defcustom modelinepos-empty-region-flag t
-  "*Non-nil means indicate an active region even when empty."
+  "Non-nil means indicate an active region even when empty."
   :type 'boolean :group 'Modeline :group 'Convenience :group 'Help)
 
-(when (and (fboundp 'extract-rectangle-bounds) ; Emacs 26+
-           (require 'misc-cmds nil t))         ; Defines `count-words-rectangle'
+;;;###autoload
+(defcustom modelinepos-region-style 'lines+cols
+  "Mode-line info about region size, except when a rectangle is selected."
+  :group 'Modeline :group 'Convenience :group 'Help
+  :type '(choice
+          (const :tag "Lines and columns"                lines+cols)
+          (const :tag "Lines, columns, words, and chars" lines+cols+words+chars)))
+
+(when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
+
+  ;; Same as in `misc-cmds.el'.
+  (defun count-words-rectangle (start end &optional allow-partial-p msgp)
+    "Count words in the rectangle from START to END.
+This is similar to `count-words', but for a rectangular region.
+
+Also:
+
+* By default, a word that straddles the beginning or end of a
+  rectangle row is not counted.  That is, by default this counts only
+  words that are entirely within the rectangle.
+
+* A prefix arg means count also such partial words at row boundaries.
+
+If called interactively, START and END are the bounds of the start and
+end of the active region.  Print a message reporting the number of
+rows (lines), columns (characters per row), words, and characters.
+
+If called from Lisp, return only the number of words in the rectangle
+between START and END, without printing any message."
+    (interactive "r\nP\np")
+    (let ((bounds  (extract-rectangle-bounds start end))
+          (words   0)
+          (chars   0))
+      (dolist (beg+end  bounds)
+        (setq words  (+ words (count-words (car beg+end) (cdr beg+end)))))
+      (let (beg end)
+        (dolist (beg+end  bounds)
+          (setq beg  (car beg+end)
+                end  (cdr beg+end))
+          (unless allow-partial-p
+            (when (and (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
+                       (char-after beg)       (equal '(2) (syntax-after beg)))
+              (setq words  (1- words)))
+            (when (and (char-after (1- end))  (equal '(2) (syntax-after (1- end)))
+                       (char-after end)       (equal '(2) (syntax-after     end)))
+              (setq words  (1- words))))))
+      (when msgp
+        (dolist
+            (beg+end  bounds)
+          (setq chars  (+ chars (- (cdr beg+end) (car beg+end)))))
+        (let ((rows  (count-lines start end))
+              (cols  (let ((rpc  (save-excursion
+                                   (rectangle--pos-cols (region-beginning) (region-end)))))
+                       (abs (- (car rpc) (cdr rpc))))))
+          (message "Rectangle has %d row%s, %d colum%s, %d word%s, and %d char%s."
+                   rows  (if (= rows 1)  "" "s")
+                   cols  (if (= cols 1)  "" "s")
+                   words (if (= words 1) "" "s")
+                   chars (if (= chars 1) "" "s"))))
+      words))
+
   (defcustom modelinepos-rectangle-style 'rows+cols
     "Mode-line info about region size when a rectangle is selected."
     :group 'Modeline :group 'Convenience :group 'Help
-    :type `(choice
-            (const :tag "Rows and columns"            rows+cols)
-            (const :tag "Rows, columns, words, chars" rows+cols+words+chars))))
+    :type '(choice
+            (const :tag "Rows and columns"                rows+cols)
+            (const :tag "Rows, columns, words, and chars" rows+cols+words+chars))))
 
 ;;;###autoload
-(defcustom modelinepos-style '((if modelinepos-rect-p ; Format string
-                                   (if (and (boundp 'modelinepos-rectangle-style)
-                                            (eq 'rows+cols+words+chars modelinepos-rectangle-style))
-                                       " %d rows, %d cols, %d words, %d chars"
-                                     " %d rows, %d cols")
-                                 " %d ch, %d l")
-                               (if modelinepos-rect-p ; Rows (rectangle)
-                                   (count-lines (region-beginning) (region-end))
-                                 (abs (- (mark t) (point)))) ; Chars
-                               (if modelinepos-rect-p        ; Columns (rectangle)
-                                   (if (fboundp 'rectangle--pos-cols) ; Emacs 25+
-                                       (let ((rpc  (save-excursion
-                                                     (rectangle--pos-cols (region-beginning) (region-end)))))
-                                         (abs (- (car rpc) (cdr rpc))))
-                                     (let ((start  (region-beginning))
-                                           (end    (region-end))
-                                           startcol endcol)
-                                       (save-excursion
-                                         (goto-char start)
-                                         (setq startcol   (current-column))
-                                         (beginning-of-line)
-                                         (goto-char end)
-                                         (setq endcol  (current-column))
-                                         (when (< endcol startcol) ; Ensure start column is the left one.
-                                           (let ((col  startcol))
-                                             (setq startcol  endcol
-                                                   endcol    col)))
-                                         (abs (- startcol endcol)))))
-                                 (count-lines (mark t) (point))) ; Lines
-                               (and modelinepos-rect-p ; Words (in rectangle)
-                                    (boundp 'modelinepos-rectangle-style)
-                                    (eq 'rows+cols+words+chars modelinepos-rectangle-style)
-                                    (count-words-rectangle (region-beginning) (region-end)))
-                               (and modelinepos-rect-p ; Chars (in rectangle)
-                                    (boundp 'modelinepos-rectangle-style)
-                                    (eq 'rows+cols+words+chars modelinepos-rectangle-style)
-                                    (abs (- (mark t) (point)))))
-  "Mode-line info about region size.
-When a rectangle command is invoked, show the number of rows and
-  columns (and possibly the number of words and chars, according to
-  option `modelinepos-rectangle-style' - Emacs 26 and later).
+(defvar modelinepos-style-default
+  '((if modelinepos-rect-p              ; Format string
+        (if (and (boundp 'modelinepos-rectangle-style)
+                 (eq 'rows+cols+words+chars modelinepos-rectangle-style))
+            " %d rows, %d cols, %d words, %d chars"
+          " %d rows, %d cols")
+      (if (eq 'lines+cols+words+chars modelinepos-region-style)
+          " %d lines, %d cols, %d words, %d chars"
+        " %d lines, %d cols"))
+    (if modelinepos-rect-p
+        (count-lines (region-beginning) (region-end)) ; Rows (rectangle)
+      (count-lines (mark t) (point)))                 ; Lines
+    (if modelinepos-rect-p
+        (if (fboundp 'rectangle--pos-cols) ; Emacs 25+
+            (let ((rpc  (save-excursion (rectangle--pos-cols (region-beginning) (region-end)))))
+              (abs (- (car rpc) (cdr rpc))))
+          (let ((start  (region-beginning))
+                (end    (region-end))
+                startcol endcol)
+            (save-excursion
+              (goto-char start)
+              (setq startcol   (current-column))
+              (beginning-of-line)
+              (goto-char end)
+              (setq endcol  (current-column))
+              (when (< endcol startcol) ; Ensure start column is the left one.
+                (let ((col  startcol))
+                  (setq startcol  endcol
+                        endcol    col)))
+              (abs (- startcol endcol))))) ; Columns (rectangle)
+      (abs (- (mark t) (point))))          ; Columns
+    (if (and modelinepos-rect-p
+             (boundp 'modelinepos-rectangle-style)
+             (eq 'rows+cols+words+chars modelinepos-rectangle-style))
+        (count-words-rectangle (region-beginning) (region-end)) ; Words (rectangle)
+      (and (eq 'lines+cols+words+chars modelinepos-region-style)
+           (count-words (region-beginning) (region-end)))) ; Words
+    (if (and modelinepos-rect-p
+             (boundp 'modelinepos-rectangle-style)
+             (eq 'rows+cols+words+chars modelinepos-rectangle-style))
+        (- (region-end) (region-beginning)) ; Chars (rectangle)
+      (and (eq 'lines+cols+words+chars modelinepos-region-style)
+           (abs (- (mark t) (point))))))
+  "Default value for option `modelinepos-style'.
+It corresponds to the Customize `Value Menu' choice
+`Lines/rows & columns (and possibly words & chars)'.")
 
-Otherwise, choose:
- * `Characters' to show the number of characters
- * `Bytes' to show the number of bytes
- * `Chars & lines' to show the number of characters and lines
+;;;###autoload
+(defcustom modelinepos-style modelinepos-style-default
+  "Mode-line info about the active region.
+Choose:
+ * `Characters' (number of chars)
+ * `Bytes' (number of bytes)
+ * `Lines & chars, or rows & cols for rectangle'
+   See option `modelinepos-region-style' and (for Emacs 26 and later)
+   option `modelinepos-rectangle-style').
  * `Customized format' to use the format you specify"
   :type '(choice
           (const :tag "Characters: \"_ chars\""
@@ -389,20 +474,21 @@ Otherwise, choose:
           ;;     (string-bytes (buffer-substring-no-propertiesw (region-beginning) (region-end))))))
           (const :tag "Bytes: \"_ bytes\""
                  (" %d bytes" (string-bytes (buffer-substring-no-properties (region-beginning) (region-end)))))
-          (const :tag "Chars & lines, or rows & columns for rectangle"
+          (const :tag "Lines/rows & columns (and possibly words & chars)"
                  ((if modelinepos-rect-p ; Format string
                       (if (and (boundp 'modelinepos-rectangle-style)
                                (eq 'rows+cols+words+chars modelinepos-rectangle-style))
                           " %d rows, %d cols, %d words, %d chars"
                         " %d rows, %d cols")
-                    " %d ch, %d l")
-                  (if modelinepos-rect-p ; Rows (rectangle)
-                      (count-lines (region-beginning) (region-end))
-                    (abs (- (mark t) (point))))          ; Chars
-                  (if modelinepos-rect-p                 ; Columns (rectangle)
+                    (if (eq 'lines+cols+words+chars modelinepos-region-style)
+                        " %d lines, %d cols, %d words, %d chars"
+                      " %d lines, %d cols"))
+                  (if modelinepos-rect-p
+                      (count-lines (region-beginning) (region-end)) ; Rows (rectangle)
+                    (count-lines (mark t) (point))) ; Lines
+                  (if modelinepos-rect-p
                       (if (fboundp 'rectangle--pos-cols) ; Emacs 25+
-                          (let ((rpc  (save-excursion
-                                        (rectangle--pos-cols (region-beginning) (region-end)))))
+                          (let ((rpc  (save-excursion (rectangle--pos-cols (region-beginning) (region-end)))))
                             (abs (- (car rpc) (cdr rpc))))
                         (let ((start  (region-beginning))
                               (end    (region-end))
@@ -417,20 +503,26 @@ Otherwise, choose:
                               (let ((col  startcol))
                                 (setq startcol  endcol
                                       endcol    col)))
-                            (abs (- startcol endcol)))))
-                    (count-lines (mark t) (point))) ; Lines
-                  (and modelinepos-rect-p           ; Words (in rectangle)
-                       (boundp 'modelinepos-rectangle-style)
-                       (eq 'rows+cols+words+chars modelinepos-rectangle-style)
-                       (count-words-rectangle (region-beginning) (region-end)))
-                  (and modelinepos-rect-p ; Chars (in rectangle)
-                       (boundp 'modelinepos-rectangle-style)
-                       (eq 'rows+cols+words+chars modelinepos-rectangle-style)
-                       (abs (- (mark t) (point))))))
+                            (abs (- startcol endcol))))) ; Columns (rectangle)
+                    (abs (- (mark t) (point))))          ; Columns
+                  (if (and modelinepos-rect-p
+                           (boundp 'modelinepos-rectangle-style)
+                           (eq 'rows+cols+words+chars modelinepos-rectangle-style))
+                      (count-words-rectangle (region-beginning) (region-end)) ; Words (rectangle)
+                    (and (eq 'lines+cols+words+chars modelinepos-region-style)
+                         (count-words (region-beginning) (region-end)))) ; Words
+                  (if (and modelinepos-rect-p
+                           (boundp 'modelinepos-rectangle-style)
+                           (eq 'rows+cols+words+chars modelinepos-rectangle-style))
+                      (- (region-end) (region-beginning)) ; Chars (rectangle)
+                    (and (eq 'lines+cols+words+chars modelinepos-region-style)
+                         (abs (- (mark t) (point)))))))
           (list :tag "Customized format"
                 (string :tag "Format string")
                 (repeat :inline t (sexp :tag "Sexp argument for format string"))))
   :group 'Modeline :group 'Convenience :group 'Help)
+
+
 
 ;; REPLACES ORIGINAL defined in `simple.el'.
 ;;
@@ -548,7 +640,7 @@ delete others, mouse-3: delete this"))
                           'mouse-face 'mode-line-highlight
                           'help-echo "Buffer position, mouse-1: Line/col menu")))
                     (line-number-mode
-                     ((column-number-mode
+                     ((column-number-mode   ; Line-number mode & column-number-mode
                        (column-number-indicator-zero-based
                         (10 ,(propertize
                               " (%l,%c)"
@@ -571,7 +663,7 @@ delete others, mouse-3: delete this"))
                             'local-map mode-line-column-line-number-mode-map
                             'mouse-face 'mode-line-highlight
                             'help-echo "Line number, mouse-1: Line/col menu"))))
-                     ((column-number-mode
+                     ((column-number-mode   ; Column-number-mode only, not line-number mode
                        (column-number-indicator-zero-based
                         (5 ,(propertize
                              " C%c"
