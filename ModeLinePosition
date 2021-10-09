@@ -12,19 +12,22 @@ The following extensions are provided by library ##modeline-posn.el##:
 
 
 '''For #2:''' When the region is active, the mode line displays some
-information that you can customize --- see option
-'''`modelinepos-style''''.  Customization choices for this include: (a)
-the number of chars, (b) the number of bytes, (c) the number of chars and number of lines,
-and (d) anything else you might want.  Choice (c) is the default.
+information that you can customize --- see options
+'''`modelinepos-style'''', '''`modelinepos-rectangle-style'''' (Emacs 26+), and '''`modelinepos-region-style''''.  
 
-For (d), you provide a `format' expression as separate components:
+Customization choices for `modelinepos-style' include: (a)
+the number of chars, (b) the number of bytes, (c) the number of rows or lines and number of columns, (d) the number of rows or lines, columns, words, and characters, and (e) anything else you might want.  Choice (c) is the default.
+
+For (c) and (d), if a _rectangle_ is selected then the numbers are limited to its boundaries.  For (d), only words entirely inside the rectangle are counted.
+
+For (e), you provide a `format' expression as separate components:
 the format string and the sexp arguments to be evaluated and
 plugged into the string.  The number of sexp args depends on the
 format string that you use: one for each '''`##%##'''' construct.
 
-Choice (d) is provided so that you can choose alternative
+Choice (e) is provided so that you can choose alternative
 formatting styles.  For example, instead of '''`## 256 ch, 13 l##'''', you
-could show '''`## (256 chars, 13 lines)##''''.  But (d) can really show
+could show '''`## (256 chars, 13 lines)##''''.  But (e) can really show
 information at all.  It need not have anything to do with the
 region, but it is nevertheless shown when the region is active.
 
