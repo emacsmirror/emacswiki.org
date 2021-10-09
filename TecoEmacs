@@ -42,9 +42,8 @@ EMACS binds M-[ and M-] to paragraph movement, which conflicts with the characte
 
 == Historical Documents ==
 
-An early version of the TECO EMACS manual for ITS users is MIT AI memo number 554 (AIM-554) dated October 1981.
-It exists in the online [http://www.ai.mit.edu/research/publications/ MIT AI Publications Archive]
-with only the odd pages.  A revisied edition of the manual for TWENEX users is available in full in AI memo number
+An early version of the TECO EMACS manual for ITS users is MIT AI memo number 554 (AIM-554), "EMACS Manual for ITS Users: A reference manual for the extensible, customizable, self-documenting real-time display editor", dated October 1981.
+It exists in the online [https://dspace.mit.edu/handle/1721.1/6329?show=full MIT AI Publications Archive].  A revised edition of the manual for TWENEX users is available in full in AI memo number
 555 (AIM-555).
 
 One of the earliest TECO EMACS command lists dated 1982-03-06:
