@@ -369,3 +369,7 @@ If you won't rename, then I guess I'll have to.  "Sadly", indeed.  (Not the end 
 [I have to say that I think there was a lot more cooperation and mutual respect in the "old days".  People didn't hesitate to acknowledge/reference the slightest borrowing/inspiration etc.  That seems rare now, as if every idea or implementation springs ''sui generis'' from thin air by the artist.  (To be clear: I'm not saying you borrowed anything without attribution.  Just making a more general point about the degree of cooperation I perceive nowadays.)]
 
 -- DrewAdams
+
+[new:PhilipKaludercic:2021-10-11 11:15 UTC]
+
+I guess what I don't understand, is why anything has to be renamed.  What is the issue with two files coexisting on the internet with the same name?  Obviously I don't want to burden (let alone disrespect) you or your  users, I just don't get the real issue of having a name conflict, if one package is on EmacsWiki and the other one is on ELPA.
