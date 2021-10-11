@@ -373,3 +373,12 @@ If you won't rename, then I guess I'll have to.  "Sadly", indeed.  (Not the end 
 [new:PhilipKaludercic:2021-10-11 11:15 UTC]
 
 I guess what I don't understand, is why anything has to be renamed.  What is the issue with two files coexisting on the internet with the same name?  Obviously I don't want to burden (let alone disrespect) you or your  users, I just don't get the real issue of having a name conflict, if one package is on EmacsWiki and the other one is on ELPA.
+
+[new:DrewAdams:2021-10-11 18:53 UTC]
+I think the answer is obvious.  Just imagine if there were multiple libraries of any other name - available from different sources, whether different GIT repositories or any other locations.
+
+Even you acknowledged such name conflict as "sad" - and indeed it is.  Fortunately, it can be fixed, given the will.  Why did you say that, if you really thought there is no issue?
+
+People have played very well with each other about this kind of thing in the past.  No one tries to name their library the same as another -- in fact, just the opposite.
+
+ -- DrewAdams
