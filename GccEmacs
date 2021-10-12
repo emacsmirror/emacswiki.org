@@ -50,6 +50,7 @@ Install it with your favourite AUR helper, or use the following commands to do i
 
     $ git clone https://aur.archlinux.org/emacs-git.git
     $ cd emacs-git
+    $ sed -i 's/^JIT=\(     \)/JIT="YES"/' PKGBUILD  # At the moment native just-in-time compilation in the package disabled by default 
     $ makepkg --syncdeps --install
 
 === Debian/unstable ===
