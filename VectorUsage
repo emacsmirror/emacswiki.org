@@ -52,7 +52,7 @@ search.
 
 == Using CL Functions Without Bothering with Prefix `cl-' ==
 
-Library ##cl.el## contains macros that alias `case' to `cl-case', `loop' to `cl-loop', `position' to `cl-position', and so on. -- nearly all the `cl-' functions.  If you like, you can take advantage of this, using only the unprefixed names in your code, just by doing this:
+Library ##cl.el## contains macros that alias `case' to `cl-case', `loop' to `cl-loop', `position' to `cl-position', and so on -- nearly all the `cl-' functions.  If you like, you can take advantage of this, using only the unprefixed names in your code, just by doing this:
 
     (eval-when-compile (require 'cl))
 
