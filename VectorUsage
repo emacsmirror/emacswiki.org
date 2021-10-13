@@ -35,7 +35,7 @@ Here is how to search a vector for a value:
     (cl-position 'c [a b c])
     => 2
 
-`cl-position' is a function from the CL-Lib package.  You need to require it:
+`cl-position' is a function from the CL-Lib package.  You need to require it (or require package CL at byte-compile time -- see next):
 
     (require 'cl-lib)
 
@@ -48,11 +48,17 @@ search.
       (cl-loop for i from 0 for a across v if (equal a b) return i))
      => 3
 
-=== Old versions of Emacs ===
 
-In old versions of Emacs, this function was called `position' and the macro `loop' instead.  To use them, you have to load the CL package:
 
-    (require 'cl-lib)
+== Using CL Functions Without Bothering with Prefix `cl-' ==
+
+Library ##cl.el## contains macros that alias `case' to `cl-case', `loop' to `cl-loop', `position' to `cl-position', and so on. -- nearly all the `cl-' functions.  If you like, you can take advantage of this, using only the unprefixed names in your code, just by doing this:
+
+    (eval-when-compile (require 'cl))
+
+Unless you really need library ##cl-lib.el## (or ##cl.el##) at runtime for some reason, that's all you need.
+
+
 
 == Library Ring+ ==
 
