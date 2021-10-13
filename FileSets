@@ -24,7 +24,7 @@ The [[InfoMode|Info]] doc for filesets, Manual:Filesets, is quite poor, unfortun
 
 I (DrewAdams) have had trouble trying to use the more recent version with GnuEmacs, especially wrt byte-compiling. For now, I just use the version included with Emacs (1.8.4).
 
-Regardless of which version you use, there is a bug in the definition of `filesets-get-filelist'. (StefanKangas says, 2021-10-12, that this bug is fixed in Emacs 28.1.) I've made a bug fix available as library <tt>[[filesets+.el]]</tt>. That library will load ##filesets.el## for you, so all you have to do is load ##filesets##'''''##+##'''''##.el##. In addition, I recommend that you customize the following two options, to put the
+Regardless of which version you use, there is a bug in the definition of `filesets-get-filelist'. (StefanKangas said, on 2021-10-12, that this bug is fixed in Emacs 28.1.) I've made a bug fix available as library <tt>[[filesets+.el]]</tt>. That library will load ##filesets.el## for you, so all you have to do is load ##filesets##'''''##+##'''''##.el##. In addition, I recommend that you customize the following two options, to put the
 '''Filesets''' menu on the '''File''' menu just before item '''Open
 File...''' (otherwise, it appears as a separate [[menu bar|menu-bar]] menu):
 
