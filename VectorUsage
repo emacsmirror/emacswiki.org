@@ -1,5 +1,9 @@
 Usually you should not be trying to modify vectors themselves, only the elements stored in the vector, because vectors are designed for ''random access''.  They are fast.  They are not designed to be searched or sorted.  They are also immutable, so you cannot change them (only the elements).  If you want change them (change their size), you must create a copy instead.
 
+In Emacs 28.1, you can type `M-x shortdoc-display-group RET vector RET' for an overview of what you can do.
+
+You can also use the seq.el package instead, included in a recent Emacs or installable from GNU ELPA, for many common operations.
+
 == Sorting/Randomizing/Shuffling ==
 
     (defun shuffle-vector (vector)
@@ -24,29 +28,31 @@ Example output:
 
 = Searching Vectors for Values =
 
-You can search lists using ''member'' or ''memq'', and you can search alists using ''assoc'' and ''assq''.
+You can search lists using `member' or `memq', and you can search alists using `assoc' and `assq'.
 
 Here is how to search a vector for a value:
 
-    (position 'c [a b c])
+    (cl-position 'c [a b c])
     => 2
 
-The ''position'' is a function from the CL package.
+`cl-position' is a function from the CL-Lib package.  You need to require it:
 
-Here is how to search a vector ''v'' for a value ''b'' using the loop macro.
+    (require 'cl-lib)
+
+Here is how to search a vector `v' for a value `b' using the loop macro.
 This may be more useful if you need to do things with the elements as you
 search.
 
     (let ((v [4 5 6 7 8])
           (b 7))
-      (loop for i from 0 for a across v if (equal a b) return i))
+      (cl-loop for i from 0 for a across v if (equal a b) return i))
      => 3
 
-The distinction may also be important if you're trying to avoid loading the CL package (it is always loaded in XEmacs):
-Functions require loading the CL package,
-macros only require loading the CL package at compile-time:
+=== Old versions of Emacs ===
 
-    (eval-when-compile (require 'cl))
+In old versions of Emacs, this function was called `position' and the macro `loop' instead.  To use them, you have to load the CL package:
+
+    (require 'cl-lib)
 
 == Library Ring+ ==
 
