@@ -89,7 +89,7 @@ You can control mh-nmail with the following keys:
 
 = About the documentation =
 
-MH-E has it's own InfoMode documentation which comes with Emacs. The most recent version
+MH-E has its own InfoMode documentation which comes with Emacs. The most recent version
 is 8.0 which is now being kept in sync with the released version of the
 software. [http://sourceforge.net/forum/forum.php?forum_id=566555]
 
