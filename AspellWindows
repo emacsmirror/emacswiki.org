@@ -8,7 +8,7 @@ Error enabling Flyspell mode:
 
 [new] Yes, version requirements were increased for Emacs 26.1 (2016-12-13 "Remove support for aspell < 0.60 (from 2004)" https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=9e6618becaa15b).  Perhaps Hunspell from EZWinports would work better (as suggested on InteractiveSpell)?
 
-[new] With [https://www.mingw-w64.org/ Mingw-w64] it is possible to have the latest Aspell version working with Emacs 27.1. -- luis
+[new] With Mingw-w64 (https://www.mingw-w64.org/) it is possible to have the latest Aspell version working with Emacs 27.1. -- luis
 You'll have to configure it:
 
     (setq ispell-program-name "<path-to-msys64-dir>/usr/bin/aspell.exe")
