@@ -171,6 +171,18 @@ Week starts with monday, use also Spanish weekday and month names. Editor specia
                                      "junio" "julio" "agosto" "septiembre"
                                      "octubre" "noviembre" "diciembre"])
 
+=== Slovak ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Pondelok" "Utorok" "Streda" "Štvrtok" 
+                                   "Piatok" "Sobota" "Nedeľa"]
+          calendar-day-abbrev-array ["Po" "Ut" "Вт" "Ср" "Pi" "So" "Ne"]
+          calendar-day-header-array ["Po" "Ut" "St" "Št" "Pi" "So" "Ne"]
+          calendar-month-name-array ["Január" "Február" "Marec" "Apríl" 
+                                     "Máj" "Jún" "Júl" "August" "September" 
+                                     "Október" "November" "December"])
+
+
 === Swedish ===
 See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
 
