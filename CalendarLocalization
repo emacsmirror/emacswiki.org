@@ -51,8 +51,8 @@ and the 'terrestrial-branch' (地支) in Chinese:
 
     (setq calendar-week-start-day 1
           calendar-day-name-array
-          ["pondělí" "úterý" "středa" 
-           "čtvrtek" "pátek" "sobota" "neděle"]
+          ["neděle" "pondělí" "úterý" "středa" 
+           "čtvrtek" "pátek" "sobota"]
           calendar-month-name-array
           ["leden" "únor" "březen" "duben" "květen"
            "červen" "červenec" "srpen" "září"
@@ -174,8 +174,8 @@ Week starts with monday, use also Spanish weekday and month names. Editor specia
 === Slovak ===
 
     (setq calendar-week-start-day 1
-          calendar-day-name-array ["Pondelok" "Utorok" "Streda" "Štvrtok" 
-                                   "Piatok" "Sobota" "Nedeľa"]
+          calendar-day-name-array ["Nedeľa" "Pondelok" "Utorok" "Streda"
+                                   "Štvrtok" "Piatok" "Sobota"]
           calendar-day-abbrev-array ["Po" "Ut" "Вт" "Ср" "Pi" "So" "Ne"]
           calendar-day-header-array ["Po" "Ut" "St" "Št" "Pi" "So" "Ne"]
           calendar-month-name-array ["Január" "Február" "Marec" "Apríl" 
