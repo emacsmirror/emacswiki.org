@@ -51,8 +51,8 @@ and the 'terrestrial-branch' (地支) in Chinese:
 
     (setq calendar-week-start-day 1
           calendar-day-name-array
-          ["neděle" "pondělí" "úterý" "středa" 
-           "čtvrtek" "pátek" "sobota"]
+          ["pondělí" "úterý" "středa" 
+           "čtvrtek" "pátek" "sobota" "neděle"]
           calendar-month-name-array
           ["leden" "únor" "březen" "duben" "květen"
            "červen" "červenec" "srpen" "září"
