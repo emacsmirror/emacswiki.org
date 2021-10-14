@@ -347,6 +347,29 @@ Here is my calendar configuration. -- [[rubikitch]]
 (add-hook 'today-invisible-calendar-hook 'calendar-mark-weekend)
 </pre>
 
+=== Slovak ===
+
+<pre>
+(setq holiday-other-holidays
+      '((holiday-fixed 1 1 "Deň vzniku Slovenskej republiky")
+        (holiday-fixed 1 6 "Zjavenie Pána (Traja králi)")
+        (holiday-easter-etc -2 "Veľký piatok")
+        (holiday-easter-etc 0 "Veľká noc")
+        (holiday-easter-etc +1 "Veľkonočný pondelok")
+        (holiday-fixed 5 1 "Sviatok práce")
+        (holiday-fixed 5 8 "Deň víťazstva nad fašizmom")
+        (holiday-fixed 7 5 "Sviatok svätého Cyrila a Metoda")
+        (holiday-fixed 8 29 "Výročie SNP")
+        (holiday-fixed 9 1 "Deň Ústavy Slovenskej republiky")
+        (holiday-fixed 9 15 "Sedembolestná Panna Mária")
+        (holiday-fixed 11 1 "Sviatok všetkých svätých")
+        (holiday-fixed 11 17 "Deň boja za slobodu a demokraciu")
+        (holiday-fixed 12 24 "Štedrý deň")
+        (holiday-fixed 12 25 "Prvý sviatok vianočný")
+        (holiday-fixed 12 26 "Druhý sviatok vianočný")
+        (holiday-fixed 12 30 "Deň vyhlásenia Slovenska za samostatnú cirkevnú provinciu (pamätný deň)")))
+</pre>
+
 === Swiss ===
 <pre>
 ;; Holidays
@@ -504,6 +527,7 @@ Lisp:ukrainian-holidays.el
 (setq holiday-oriental-holidays nil)
 
 </pre>
+
 === Republic of Zimbabwe ===
 
 <pre>
