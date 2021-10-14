@@ -8,6 +8,11 @@ Error enabling Flyspell mode:
 
 [new] Yes, version requirements were increased for Emacs 26.1 (2016-12-13 "Remove support for aspell < 0.60 (from 2004)" https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=9e6618becaa15b).  Perhaps Hunspell from EZWinports would work better (as suggested on InteractiveSpell)?
 
+[new] With [https://www.mingw-w64.org/ Mingw-w64] it is possible to have the latest Aspell version working with Emacs 27.1. -- luis
+You'll have to configure it:
+
+    (setq ispell-program-name "<path-to-msys64-dir>/usr/bin/aspell.exe")
+
 == Setup for 64-bit Windows 7 ==
 
 First you need to download and install both the aspell executable and at least one dictionary from http://aspell.net/win32/.  &nbsp;These will be two separate downloads, be sure to get both.  &nbsp;Under the 64-bit version of Windows 7 the default install directory for both of them is "C:\Program Files (x86)\Aspell\dict\".  &nbsp;"C:\Program Files (x86)" is used for 32-bit executables, while "C:\Program Files" is for the 64-bit ones.
