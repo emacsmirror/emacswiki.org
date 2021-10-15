@@ -36,6 +36,8 @@ apps are not started from a shell."
 
 Found at https://agel.readthedocs.io/en/latest/configuration.html#path-to-the-ag-executable.
 
+Note: when using fish shell ##"$SHELL --login -c 'string join : $PATH'"## should be used as argument to ##shell-command-to-string##, as fish prints ##$PATH## (and other variables ending in path) separated with spaces instead of colons.
+
 2021-03-23: Deleted the ##-i## flag from the shell invocation in the function. Starting the shell with the ##-i## command causes plumbing errors in the shell's output and the resulting error message confuses the parsing, setting both the env PATH and the exec-path incorrectly.
 
 ----
