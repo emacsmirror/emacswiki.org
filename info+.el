@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 19 20:09:31 2021 (-0700)
+;; Last-Updated: Fri Oct 15 09:49:58 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7373
+;;     Update #: 7430
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -26,9 +26,10 @@
 ;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
 ;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `naked', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
+;;   `thingatpt+', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -153,7 +154,9 @@
 ;;    `info-buffer-name-function-default',
 ;;    `Info-case-insensitive-string=',
 ;;    `Info-case-insensitive-string-hash', `info-custom-delim-1',
-;;    `info-custom-delim-2', `Info-display-node-default-header',
+;;    `info-custom-delim-2', `Info-defontify',
+;;    `Info-defontify-current-node',
+;;    `Info-display-node-default-header',
 ;;    `info-fallback-manual-for-glossary',
 ;;    `Info-fontify-custom-delimited', `Info-fontify-glossary-words',
 ;;    `Info-fontify-indented-text', `info-fontifying-regexp',
@@ -163,6 +166,7 @@
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
 ;;    `Info-manual-string', `Info-manual-symbol',
 ;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
+;;    `Info-refontify-current-node',
 ;;    `Info-remap-default-face-to-variable-pitch',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
 ;;    `Info-save-history-list' (Emacs 24.4+), `Info-search-beg',
@@ -609,6 +613,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/15 dadams
+;;     Added: Info-refontify-current-node, Info-defontify-current-node, Info-defontify.
+;;     Use Info-refontify-current-node everywhere, instead of font-lock-defontify plus Info-fontify-node.
+;;     Info-fontify-glossary-words (option): Added hide possibilities and renamed option values.  Updated doc.
+;;     Info-fontify-glossary-words (function): Handle hide possibilities.  Use new/renamed option values.
+;;     Info-cycle-fontify-glossary-words, Info-toggle-fontify-glossary-words,
+;;       info--msg-Info-fontify-glossary-words-now, info-last-non-nil-fontify-glossary-words:
+;;         Use new/renamed option values.
 ;; 2021/09/19 dadams
 ;;     Added: info--msg-Info-fontify-glossary-words-now.
 ;;     Info-fontify-glossary-words: Default now: show-link-and-def-till-visited.  show-link-and-def -> t.
@@ -1805,24 +1817,27 @@ way to turn off all matching of `Info-emphasis-regexp'."
 
 (defvaralias 'Info-link-glossary-words 'Info-fontify-glossary-words)
 ;;;###autoload
-(defcustom Info-fontify-glossary-words 'show-link-and-def-till-visited
-  "Non-nil means link first occurrences of words to their glossary entries.
-Only the first occurrence of the word in a given node is linked.
-Glossary terms of more than one word are not highlighted or linked.
+(defcustom Info-fontify-glossary-words 'face-till-visit-+-mouseover-def
+  "Non-nil means link first word occurrences in node to glossary entries.
+Glossary terms of more than one word are not linked.
 
 You can click `mouse-2' on the word, or use `RET' on it, to go to its
 definition in the `Glossary' node of the current manual.
 
-By default, a glossary link is fontified (with face
-`info-glossary-word').  You can optionally show the link this way only
-until you follow a link for that word to the glossary.  That reduces
-clutter for words you've already looked up.  Their first occurrences
-in nodes are still linked, but the links are only evident on
-mouseover (using property `mouse-face').
+The link can optionally be shown, with face `info-glossary-word'.
+Mouseover on the link can optionally show the glossary definition in a
+tooltip (or in the echo area if `tooltip-mode' is disabled).
 
-Optionally (not by default), a mouseover action also shows the
-definition immediately, as part of the help echo in a tooltip (or in
-the echo area if `tooltip-mode' is turned off).
+By default, a glossary link for a given word is shown (with face
+`info-glossary-word') only until you follow a link for that word to
+the glossary.  You can optionally show the links always, instead.
+
+You can optionally hide glossary links always (not even show them
+until visited).  You may feel that hiding such links reduces clutter.
+
+If a link is hidden, it is still noticeable on mouseover: It's
+highlighted using property `mouse-face', and a tooltip is shown for
+it.
 
 You can cycle or toggle the option value with command
 `Info-cycle-fontify-glossary-words' or
@@ -1835,15 +1850,16 @@ Note: This fontification can never be 100% reliable.  It aims to be
 useful in most Info texts, but it can occasionally result in
 fontification that you might not expect.  This is not a bug; it's part
 of the design to be able to appropriately fontify a great variety of
-texts.  Set this option to nil if you do not find this linking useful.
-You can use command `Info-cycle-fontify-glossary-words' to cycle the
-option value among the possibilities."
-  :type '(choice
-          (const :tag "OFF - don't link glossary words"          nil)
-          (const :tag "Show link and definition"                 show-link-and-def)
-          (const :tag "Show link (but not definition)"           show-link)
-          (const :tag "Show link and definition until visited"   show-link-and-def-till-visited)
-          (const :tag "Show link until visited (no definition)"  show-link-till-visited))
+texts.  Set this option to nil if you don't find this linking useful."
+  :type
+  '(choice
+    (const :tag "OFF - don't link glossary words"                         nil)
+    (const :tag "Show link until visited.  Show definition on mouseover"  face-till-visit-+-mouseover-def)
+    (const :tag "Show link until visited.  NO definition on mouseover"    face-till-visit-+-NO-mouseover-def)
+    (const :tag "Show link always.  Show definition on mouseover"         face-+-mouseover-def)
+    (const :tag "Show link always.  NO definition on mouseover"           face-+-NO-mouseover-def)
+    (const :tag "Hide link.  Show definition on mouseover"                NO-face-+-mouseover-def)
+    (const :tag "Hide link.  NO definition on mouseover)"                 NO-face-+-NO-mouseover-def))
   :group 'Info-Plus)
 
 ;;;###autoload
@@ -2372,11 +2388,7 @@ line from non-nil `Info-use-header-line'."
     "Toggle option `Info-node-access-invokes-bookmark-flag'."
     (interactive "p")
     (setq Info-node-access-invokes-bookmark-flag  (not Info-node-access-invokes-bookmark-flag))
-    (when (derived-mode-p 'Info-mode)
-      (font-lock-defontify)
-      (let ((modp               (buffer-modified-p))
-            (inhibit-read-only  t))
-        (Info-fontify-node)))
+    (Info-refontify-current-node)
     (when msgp (message "`Info-node-access-invokes-bookmark-flag' is now %s"
                         (if Info-node-access-invokes-bookmark-flag 'ON 'OFF))))
 
@@ -2456,11 +2468,7 @@ are prompted for NODE."
     "Toggle option `Info-fontify-bookmarked-xrefs-flag'."
     (interactive "p")
     (setq Info-fontify-bookmarked-xrefs-flag  (not Info-fontify-bookmarked-xrefs-flag))
-    (when (derived-mode-p 'Info-mode)
-      (font-lock-defontify)
-      (let ((modp               (buffer-modified-p))
-            (inhibit-read-only  t))
-        (Info-fontify-node)))
+    (Info-refontify-current-node)
     (when msgp (message "`Info-fontify-bookmarked-xrefs-flag' is now %s"
                         (if Info-fontify-bookmarked-xrefs-flag 'ON 'OFF))))
 
@@ -2506,11 +2514,7 @@ you are prompted for the chars to use."
   (setq Info-fontify-custom-delimited (cons (not (car Info-fontify-custom-delimited))
                                             (cdr Info-fontify-custom-delimited)))
   (when newp (call-interactively #'Info-define-custom-delimiting))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+  (Info-refontify-current-node)
   (when msgp (message "`Info-fontify-custom-delimited' is now %s%s"
                       (if (car Info-fontify-custom-delimited) 'ON 'OFF)
                       (if newp
@@ -2580,11 +2584,7 @@ Non-nil MSGP means show a status message when done."
       (let ((newval  (if val nil last-val)))
         (unless (equal val last-val) (put manual last-var (setq last-val  val)))
         (put manual regexp-var (setq val  newval))))
-    (when (derived-mode-p 'Info-mode)
-      (font-lock-defontify)
-      (let ((modp               (buffer-modified-p))
-            (inhibit-read-only  t))
-        (Info-fontify-node)))
+    (Info-refontify-current-node)
     (when msgp
       (if (eq info-nomatch val)
           (message "`%s' manual now has NO `%s' highlighting (OVERRIDES global)" manual regexp-var)
@@ -2640,24 +2640,15 @@ is on, and it turns them all on, if any is off:
             Info-fontify-visited-nodes)
         (dolist (opt  opts) (set opt nil))
       (dolist (opt  opts) (set opt t))))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
-  (when msgp (message "Info+ fontify options are now ALL %s"
-                      (if Info-fontify-angle-bracketed-flag 'ON 'OFF))))
+  (Info-refontify-current-node)
+  (when msgp (message "Info+ fontify options are now ALL %s" (if Info-fontify-angle-bracketed-flag 'ON 'OFF))))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-angle-bracketed "info+")
 (defun Info-toggle-fontify-angle-bracketed (&optional msgp)
   "Toggle option `Info-fontify-angle-bracketed-flag'."
   (interactive "p")
   (setq Info-fontify-angle-bracketed-flag  (not Info-fontify-angle-bracketed-flag))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+  (Info-refontify-current-node)
   (when msgp (message "`Info-fontify-angle-bracketed-flag' is now %s"
                       (if Info-fontify-angle-bracketed-flag 'ON 'OFF))))
 
@@ -2667,27 +2658,24 @@ is on, and it turns them all on, if any is off:
   (interactive "p")
   (unless info-fontify-emphasis (error "`info-fontify-emphasis' must be non-nil to use this command"))
   (setq Info-fontify-emphasis-flag  (not Info-fontify-emphasis-flag))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
-  (when msgp (message "`Info-fontify-emphasis-flag' is now %s"
-                      (if Info-fontify-emphasis-flag 'ON 'OFF))))
+  (Info-refontify-current-node)
+  (when msgp (message "`Info-fontify-emphasis-flag' is now %s" (if Info-fontify-emphasis-flag 'ON 'OFF))))
 
-(defvar info-last-non-nil-fontify-glossary-words 'show-link-and-def-till-visited
+(defvar info-last-non-nil-fontify-glossary-words 'face-till-visit-+-mouseover-def
   "Last non-nil value of `Info-fontify-glossary-words'.")
 
 (defun info--msg-Info-fontify-glossary-words-now ()
   "Echo current value of `Info-fontify-glossary-words'."
   (message "`Info-fontify-glossary-words': %s"
            (case Info-fontify-glossary-words
-             ((nil)                           "OFF - no glossary links")
-             (show-link                       "Show link only (not definition), always")
-             (show-link-till-visited          "Show link only (not definition), until visited")
-             (show-link-and-def               "Show link and definition, always")
-             (show-link-and-def-till-visited  "Show link and definition, until visited")
-             (otherwise                       "Show link and definition, until visited"))))
+             ((nil)                               "OFF - no glossary links")
+             (face-till-visit-+-mouseover-def     "Show link until visited.  Show definition on mouseover")
+             (face-till-visit-+-NO-mouseover-def  "Show link until visited.  NO definition on mouseover")
+             (face-+-mouseover-def                "Show link always.  Show definition on mouseover")
+             (face-+-NO-mouseover-def             "Show link always.  NO definition on mouseover")
+             (NO-face-+-mouseover-def             "Hide link.  Show definition on mouseover")
+             (NO-face-+-NO-mouseover-def          "Hide link.  NO definition on mouseover)")
+             (otherwise                           "Show link until visited.  Show definition on mouseover"))))
 
 ;;;###autoload (autoload 'Info-toggle-link-glossary-words "info+")
 (defalias 'Info-toggle-link-glossary-words 'Info-toggle-fontify-glossary-words)
@@ -2695,17 +2683,13 @@ is on, and it turns them all on, if any is off:
 (defun Info-toggle-fontify-glossary-words (&optional msgp)
   "Toggle option `Info-fontify-glossary-words'.
 This toggles between nil and the last non-nil setting (or
-`show-link-and-def-till-visited' if none)."
+`face-till-visit-+-mouseover-def' if none)."
   (interactive "p")
   (if Info-fontify-glossary-words
       (setq info-last-non-nil-fontify-glossary-words  Info-fontify-glossary-words
             Info-fontify-glossary-words               nil)
     (setq Info-fontify-glossary-words  info-last-non-nil-fontify-glossary-words))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+  (Info-refontify-current-node)
   (when msgp (info--msg-Info-fontify-glossary-words-now)))
 
 ;;;###autoload (autoload 'Info-cycle-link-glossary-words "info+")
@@ -2716,16 +2700,14 @@ This toggles between nil and the last non-nil setting (or
   (interactive "p")
   (when Info-fontify-glossary-words (setq info-last-non-nil-fontify-glossary-words  Info-fontify-glossary-words))
   (setq Info-fontify-glossary-words  (case Info-fontify-glossary-words
-                                       ((nil)                           'show-link-and-def-till-visited)
-                                       (show-link-and-def-till-visited  'show-link-till-visited)
-                                       (show-link-till-visited          'show-link)
-                                       (show-link                       'show-link-and-def)
-                                       (show-link-and-def               nil)))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+                                       ((nil)                               'face-till-visit-+-mouseover-def)
+                                       (face-till-visit-+-mouseover-def     'face-till-visit-+-NO-mouseover-def)
+                                       (face-till-visit-+-NO-mouseover-def  'face-+-mouseover-def)
+                                       (face-+-mouseover-def                'face-+-NO-mouseover-def)
+                                       (face-+-NO-mouseover-def             'NO-face-+-mouseover-def)
+                                       (NO-face-+-mouseover-def             'NO-face-+-NO-mouseover-def)
+                                       (NO-face-+-NO-mouseover-def          nil)))
+  (Info-refontify-current-node)
   (when msgp (info--msg-Info-fontify-glossary-words-now)))
 
 ;;;###autoload (autoload 'Info-toggle-fontify-local-isolated-backquote "info+")
@@ -2746,11 +2728,7 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   "Toggle option `Info-fontify-isolated-quote-flag'."
   (interactive "p")
   (setq Info-fontify-isolated-quote-flag  (not Info-fontify-isolated-quote-flag))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+  (Info-refontify-current-node)
   (when msgp (message "`Info-fontify-isolated-quote-flag' is now %s"
                       (if Info-fontify-isolated-quote-flag 'ON 'OFF))))
 (define-obsolete-function-alias 'Info-toggle-fontify-single-quote 'Info-toggle-fontify-isolated-quote
@@ -2832,11 +2810,7 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   "Toggle option `Info-fontify-reference-items-flag'."
   (interactive "p")
   (setq Info-fontify-reference-items-flag  (not Info-fontify-reference-items-flag))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+  (Info-refontify-current-node)
   (when msgp (message "`Info-fontify-reference-items-flag' is now %s"
                       (if Info-fontify-reference-items-flag 'ON 'OFF))))
 
@@ -2845,13 +2819,8 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   "Toggle option `Info-fontify-visited-nodes'."
   (interactive "p")
   (setq Info-fontify-visited-nodes  (not Info-fontify-visited-nodes))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
-  (when msgp (message "`Info-fontify-visited-nodes' is now %s"
-                      (if Info-fontify-visited-nodes 'ON 'OFF))))
+  (Info-refontify-current-node)
+  (when msgp (message "`Info-fontify-visited-nodes' is now %s" (if Info-fontify-visited-nodes 'ON 'OFF))))
 
 ;;;###autoload (autoload 'Info-cycle-fontify-quotations "info+")
 (defun Info-cycle-fontify-quotations (&optional msgp)
@@ -2863,11 +2832,7 @@ same line (other non-nil value)."
                                    ((nil)  t)
                                    ((t)    'multiline)
                                    (t      nil)))
-  (when (derived-mode-p 'Info-mode)
-    (font-lock-defontify)
-    (let ((modp               (buffer-modified-p))
-          (inhibit-read-only  t))
-      (Info-fontify-node)))
+  (Info-refontify-current-node)
   (when msgp (message "`Info-fontify-quotations' is now %s" (case Info-fontify-quotations
                                                               ((nil)      'OFF)
                                                               (multiline  "on (MULTILINE too)")
@@ -5940,9 +5905,12 @@ Don't fontify anything in an Index.  Don't fontify a word in a
                                  (not (string-match-p ; Don't fontify if term being defined matches WORD.
                                        (buffer-substring (line-beginning-position) (line-end-position))
                                        word)))))))
-              (setq show-link-p  (or (not (memq Info-fontify-glossary-words
-                                                '(show-link-and-def-till-visited show-link-till-visited)))
-                                     (not (Info--member-string-nocase word gloss-done)))
+              (setq show-link-p  (and (or (not (memq Info-fontify-glossary-words
+                                                     '(face-till-visit-+-mouseover-def
+                                                       face-till-visit-+-NO-mouseover-def)))
+                                          (not (Info--member-string-nocase word gloss-done)))
+                                      (not (memq Info-fontify-glossary-words '(NO-face-+-mouseover-def
+                                                                               NO-face-+-NO-mouseover-def))))
                     words-done   (cons word words-done)
                     gloss-done   (cons word gloss-done))
               ;; If using echo area, don't bother to show the mouse-2 info.  If using tooltip then we need
@@ -5954,7 +5922,9 @@ Don't fontify anything in an Index.  Don't fontify a word in a
               ;; Unfortunately, after toggling `tooltip-mode' the change in behavior (adding/removing mouse-2
               ;; info) doesn't take effect till you refontify, e.g. you move to another node.  Not a big deal.
               (let* ((echo  "mouse-2: go to Glossary for this word")
-                     (echo  (if (memq Info-fontify-glossary-words '(show-link show-link-till-visited))
+                     (echo  (if (memq Info-fontify-glossary-words '(face-till-visit-+-NO-mouseover-def
+                                                                    face-+-NO-mouseover-def
+                                                                    NO-face-+-NO-mouseover-def))
                                 echo
                               (if tooltip-mode (concat echo "\n\n" def) def))))
                 (add-text-properties
@@ -6795,7 +6765,7 @@ These are all of the current Info Mode bindings:
   (setq desktop-save-buffer  'Info-desktop-buffer-misc-data)
   (add-hook 'kill-buffer-hook 'Info-kill-buffer nil t)
   (add-hook 'clone-buffer-hook 'Info-clone-buffer nil t)
-  (add-hook 'change-major-mode-hook 'font-lock-defontify nil t)
+  (add-hook 'change-major-mode-hook 'Info-defontify nil t)
   (add-hook 'isearch-mode-hook 'Info-isearch-start nil t)
   ;; The `Info-*' variables are free here.
   (set (make-local-variable 'isearch-search-fun-function) 'Info-isearch-search)
@@ -6871,6 +6841,56 @@ currently visited manuals."
  
 ;;(@* "Non-Interactive Functions")
 ;;; Non-Interactive  Functions ---------------------------------------
+
+(defun Info-refontify-current-node ()
+  "In Info mode, refontify the current node.
+This first removes text properties used for fontifying from
+the (entire) current Info file (`Info-current-file').
+It then fontifies (only) the current node.
+
+The properties removed are those that comprise links:
+`font-lock-face', `mouse-face', `help-echo', and `keymap'."
+  (when (derived-mode-p 'Info-mode)
+    (let ((modp               (buffer-modified-p))
+          (inhibit-read-only  t))
+      (save-restriction
+        (widen)
+        (remove-list-of-text-properties (point-min) (point-max)
+                                        '(font-lock-face mouse-face help-echo keymap)))
+      (Info-fontify-node)
+      (restore-buffer-modified-p modp))))
+
+;; Currently used only in `change-major-mode-hook' and `Info-refontify-current-node'.
+;; Use it in Info, instead of `font-lock-defontify'.
+;;
+(defun Info-defontify ()
+  "Remove text properties for fontifying from current Info file.
+This includes properties comprising links.  The properties removed are
+`font-lock-face', `mouse-face', `help-echo', and `keymap'.  They are
+removed from all text in the current Info file (`Info-current-file').
+
+This is like `font-lock-fontify', but that removes only property
+`font-lock-face'."
+  (let ((modp               (buffer-modified-p))
+        (inhibit-read-only  t))
+    (save-restriction
+      (widen)
+      (remove-list-of-text-properties (point-min) (point-max)
+                                      '(font-lock-face mouse-face help-echo keymap)))
+    (restore-buffer-modified-p modp)))
+
+;; Not used currently, but could be.  Same as `Info-defontify', but just for current node.
+;;
+(defun Info-defontify-current-node ()
+  "Remove text properties for fontifying from current Info node.
+The properties removed are `font-lock-face', `mouse-face',
+`help-echo', and `keymap'.  They are removed from all text in the
+node, not just text used in links."
+  (let ((modp               (buffer-modified-p))
+	(inhibit-read-only  t))
+    (remove-list-of-text-properties (point-min) (point-max)
+                                    '(font-lock-face mouse-face help-echo keymap))
+    (restore-buffer-modified-p modp)))
 
 (defun Info-manual-string (&optional info-file)
   "String naming Info manual corresponding to INFO-FILE.
