@@ -119,7 +119,7 @@ highlighted if '''`Info-fontify-emphasis-flag'''' is non-`nil'.
 then there is no such highlighting, and that option has no
 effect.)
 
-** Glossary words, that is, words that are defined in a manual's '''`Glossary'''' node, are highlighted and linked to their glossary entries, if option '''`Info-fontify-glossary-words'''' is non-`nil'.
+** Glossary words, that is, words that are defined in a manual's '''`Glossary'''' node, are highlighted and linked to their glossary entries, if option '''`Info-fontify-glossary-words'''' is non-`nil'.  Several alternative behaviors are available using this option, including (1) whether to hide the link (showing it only on mouseover), (2) whether to show the definition in a mouseover tooltip, and (3) whether to show the link always or only until you've visited its word in the Glossary.
 
 
 ** Be aware that any such highlighting is not 100% foolproof.
