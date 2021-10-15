@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 15 09:49:58 2021 (-0700)
+;; Last-Updated: Fri Oct 15 10:08:57 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7430
+;;     Update #: 7432
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -405,18 +405,24 @@
 ;;      `Glossary' nodes, as far as I know.
 ;;
 ;;      By default, a glossary link is fontified (with face
-;;      `info-glossary-word').  You can optionally show the link this
-;;      way only until you follow a link for that word to the
-;;      glossary.  That reduces clutter for words you've already
+;;      `info-glossary-word'), and by default the link (the face) is
+;;      shown only until you follow a link for that word to the
+;;      glossary.  This reduces clutter for words you've already
 ;;      looked up.  Their first occurrences in nodes are still linked,
 ;;      but the links are only evident on mouseover (using property
 ;;      `mouse-face').
 ;;
-;;      Optionally (not by default), a mouseover action also shows the
-;;      definition immediately, as part of the help echo in a tooltip
-;;      (or in the echo area if `tooltip-mode' is turned off).
+;;      By default also, mouseover shows the word's definition in a
+;;      tooltip (or in the echo area if `tooltip-mode' is off).  You
+;;      can optionally not show the definition this way.
 ;;
-;;      You can cycle or toggle the option value with command
+;;      To reduce clutter even more, you can optionally hide glossary
+;;      links (no face), showing them only on mouseover.
+;;
+;;      All glossary-link behaviors are specified with option
+;;      `Info-fontify-glossary-words'.
+;;
+;;      You can cycle or toggle the option value using command
 ;;      `Info-cycle-fontify-glossary-words' or
 ;;      `Info-toggle-fontify-glossary-words'.
 ;;
