@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 10 10:16:32 2021 (-0700)
+;; Last-Updated: Sat Oct 16 15:36:58 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 910
+;;     Update #: 936
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -129,8 +129,13 @@
 ;;
 ;;  Non-option variables defined here:
 ;;
+;;    `modelinepos-bytes-format', `modelinepos-chars-format',
+;;    `modelinepos-lines+cols-format',
+;;    `modelinepos-lines+cols+words+chars-format',
 ;;    `modelinepos-rect-p', `modelinepos-region-acting-on' (Emacs
-;;    23+), `modelinepos-style-default'.
+;;    23+), `modelinepos-rows+cols-format',
+;;    `modelinepos-rows+cols+words+chars-format',
+;;    `modelinepos-style-default'.
 ;;
 ;;  
 ;;  ***** NOTE: The following built-in functions have 
@@ -202,6 +207,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/16 dadams
+;;     Added: modelinepos-(bytes|chars)-format, modelinepos-(lines|rows)+cols(+words+chars)-format.
+;;     modelinepos-style(-default): Use those new vars, instead of hardcoding the formats.
 ;; 2021/10/10 dadams
 ;;     count-words-rectangle: Finished correction to count.
 ;; 2021/10/09 dadams
@@ -407,16 +415,46 @@ between START and END, without printing any message."
             (const :tag "Rows and columns"                rows+cols)
             (const :tag "Rows, columns, words, and chars" rows+cols+words+chars))))
 
+(defvar modelinepos-chars-format " %d Chars"
+  "Format string to indicate the number of characters.
+Used for `modelinepos-style'.
+It should start with a SPC char and expect that single value.")
+
+(defvar modelinepos-bytes-format " %d Bytes"
+  "Format string to indicate the number of bytes.
+Used for `modelinepos-style'.
+It should start with a SPC char and expect that single value.")
+
+(defvar modelinepos-lines+cols-format " %d lines, %d cols"
+  "Format string to indicate the number of lines and columns.
+Used for `modelinepos-region-style'.
+It should start with a SPC char and expect those two input values.")
+
+(defvar modelinepos-lines+cols+words+chars-format " %d lines, %d cols, %d words, %d chars"
+  "Format string to indicate number of lines, columns, words, and chars.
+Used for `modelinepos-region-style'.
+It should start with a SPC char and expect those four input values.")
+
+(defvar modelinepos-rows+cols-format " %d rows, %d cols"
+  "Format string to indicate the number of rows and columns.
+Used for `modelinepos-rectangle-style' (Emacs 26+).
+It should start with a SPC char and expect those two input values.")
+
+(defvar modelinepos-rows+cols+words+chars-format " %d rows, %d cols, %d words, %d chars"
+  "Format string to indicate number of rows, columns, words, and chars.
+Used for `modelinepos-rectangle-style' (Emacs 26+).
+It should start with a SPC char and expect those four input values.")
+
 ;;;###autoload
 (defvar modelinepos-style-default
   '((if modelinepos-rect-p              ; Format string
         (if (and (boundp 'modelinepos-rectangle-style)
                  (eq 'rows+cols+words+chars modelinepos-rectangle-style))
-            " %d rows, %d cols, %d words, %d chars"
-          " %d rows, %d cols")
+            modelinepos-rows+cols+words+chars-format ; " %d rows, %d cols, %d words, %d chars"
+          modelinepos-rows+cols-format) ;" %d rows, %d cols"
       (if (eq 'lines+cols+words+chars modelinepos-region-style)
-          " %d lines, %d cols, %d words, %d chars"
-        " %d lines, %d cols"))
+          modelinepos-lines+cols+words+chars-format ; " %d lines, %d cols, %d words, %d chars"
+        modelinepos-lines+cols-format)) ; " %d lines, %d cols"
     (if modelinepos-rect-p
         (count-lines (region-beginning) (region-end)) ; Rows (rectangle)
       (count-lines (mark t) (point)))                 ; Lines
@@ -450,7 +488,7 @@ between START and END, without printing any message."
              (eq 'rows+cols+words+chars modelinepos-rectangle-style))
         (- (region-end) (region-beginning)) ; Chars (rectangle)
       (and (eq 'lines+cols+words+chars modelinepos-region-style)
-           (abs (- (mark t) (point))))))
+           (abs (- (mark t) (point)))))) ; Chars
   "Default value for option `modelinepos-style'.
 It corresponds to the Customize `Value Menu' choice
 `Lines/rows & columns (and possibly words & chars)'.")
@@ -461,13 +499,20 @@ It corresponds to the Customize `Value Menu' choice
 Choose:
  * `Characters' (number of chars)
  * `Bytes' (number of bytes)
- * `Lines & chars, or rows & cols for rectangle'
-   See option `modelinepos-region-style' and (for Emacs 26 and later)
-   option `modelinepos-rectangle-style').
+ * `Lines & chars, or rows & cols for rectangle'.
+   This can also include words & chars: see options
+   `modelinepos-region-style' and `modelinepos-rectangle-style' (for
+   Emacs 26 and later).
+   To change the concrete formatting used for these, change variables
+   `modelinepos-lines+cols-format',
+   `modelinepos-lines+cols+words+chars-format',
+   `modelinepos-rows+cols-format', and
+   `modelinepos-rows+cols+words+chars-format'.
  * `Customized format' to use the format you specify"
   :type '(choice
-          (const :tag "Characters: \"_ chars\""
-                 (" %d chars" (abs (- (mark t) (point)))))
+          (const :tag "Characters"
+                 (modelinepos-chars-format
+                  (abs (- (mark t) (point)))))
           ;; Should we use this instead?  It can sometimes be costly.
           ;; See https://emacs.stackexchange.com/a/29912/105.
           ;; (const :tag "Bytes: \"_ bytes\""
@@ -476,17 +521,18 @@ Choose:
           ;;       (- (bufferpos-to-filepos (region-end) 'exact)
           ;;          (bufferpos-to-filepos (region-beginning) 'exact))
           ;;     (string-bytes (buffer-substring-no-propertiesw (region-beginning) (region-end))))))
-          (const :tag "Bytes: \"_ bytes\""
-                 (" %d bytes" (string-bytes (buffer-substring-no-properties (region-beginning) (region-end)))))
+          (const :tag "Bytes"
+                 (modelinepos-bytes-format
+                  (string-bytes (buffer-substring-no-properties (region-beginning) (region-end)))))
           (const :tag "Lines/rows & columns (and possibly words & chars)"
                  ((if modelinepos-rect-p ; Format string
                       (if (and (boundp 'modelinepos-rectangle-style)
                                (eq 'rows+cols+words+chars modelinepos-rectangle-style))
-                          " %d rows, %d cols, %d words, %d chars"
-                        " %d rows, %d cols")
+                          modelinepos-rows+cols+words+chars-format ; " %d rows, %d cols, %d words, %d chars"
+                        modelinepos-rows+cols-format) ;" %d rows, %d cols")
                     (if (eq 'lines+cols+words+chars modelinepos-region-style)
-                        " %d lines, %d cols, %d words, %d chars"
-                      " %d lines, %d cols"))
+                        modelinepos-lines+cols+words+chars-format ; " %d lines, %d cols, %d words, %d chars"
+                      modelinepos-lines+cols-format)) ; " %d lines, %d cols"
                   (if modelinepos-rect-p
                       (count-lines (region-beginning) (region-end)) ; Rows (rectangle)
                     (count-lines (mark t) (point))) ; Lines
