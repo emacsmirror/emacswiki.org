@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 15 10:08:57 2021 (-0700)
+;; Last-Updated: Sat Oct 16 14:01:44 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 7432
+;;     Update #: 7452
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -91,7 +91,7 @@
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
 ;;    `Info-toggle-fontify-custom-delimited',
-;;    `Info-toggle-fontify-emphasis',
+;;    `Info-toggle-fontify-emphasis', `Info-toggle-fontify-extra',
 ;;    `Info-toggle-fontify-glossary-words',
 ;;    `Info-toggle-fontify-isolated-quote',
 ;;    `Info-toggle-fontify-local-angle-bracketed',
@@ -131,7 +131,7 @@
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
 ;;    `Info-fontify-custom-delimited', `Info-fontify-emphasis-flag',
-;;    `Info-fontify-glossary-words',
+;;    `Info-fontify-extra-function', `Info-fontify-glossary-words',
 ;;    `Info-fontify-indented-text-chars',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
@@ -180,6 +180,7 @@
 ;;    `info-fontify-emphasis', `Info-glossary-link-history',
 ;;    `info-glossary-link-map', `info-good-fixed-pitch-font-families',
 ;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
+;;    `info-last-non-nil-fontify-extra-function',
 ;;    `info-last-non-nil-fontify-glossary-words', `Info-link-faces',
 ;;    `Info-merged-map', `Info-mode-syntax-table', `info-nomatch',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
@@ -430,7 +431,8 @@
 ;;      option `Info-fontify-custom-delimited' is non-nil.
 ;;
 ;;    - Any extra highlighting you want in a node, as defined by the
-;;      value of variable `Info-fontify-extra-function'.
+;;      value of option `Info-fontify-extra-function' - a function
+;;      that accepts no args.
 ;;
 ;;    - Be aware that any such highlighting is not 100% foolproof.
 ;;      Especially for a manual such as Emacs or Elisp, where
@@ -619,6 +621,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/16 dadams
+;;     Added: Info-toggle-fontify-extra, info-last-non-nil-fontify-extra-function.
+;;     Info-fontify-extra-function is now a user option.
+;;     Info-mode-menu submenu Toggle/Cycle: Added Info-toggle-fontify-extra.
 ;; 2021/10/15 dadams
 ;;     Added: Info-refontify-current-node, Info-defontify-current-node, Info-defontify.
 ;;     Use Info-refontify-current-node everywhere, instead of font-lock-defontify plus Info-fontify-node.
@@ -1821,6 +1827,21 @@ never highlighted, and this option has no effect.  This gives you a
 way to turn off all matching of `Info-emphasis-regexp'."
   :type 'boolean :group 'Info-Plus)
 
+(defvar info-last-non-nil-fontify-extra-function nil
+  "Last non-nil value of `Info-fontify-extra-function'.")
+
+;;;###autoload
+(defcustom Info-fontify-extra-function nil
+  "If non-nil then a function used to provide additional highlighting.
+The function is passed no arguments.
+
+The function is invoked by `Info-fontify-node', before fontifying
+reference items (`Info-fontify-reference-items').  When it is called,
+the value of point is `point-min' in the node to be fontified."
+  :type '(choice (const :tag "OFF - no extra fontifying" nil)
+                 (function :tag "Function accepting no arguments"))
+  :group 'Info-Plus)
+
 (defvaralias 'Info-link-glossary-words 'Info-fontify-glossary-words)
 ;;;###autoload
 (defcustom Info-fontify-glossary-words 'face-till-visit-+-mouseover-def
@@ -2022,14 +2043,6 @@ nodes can be repeated because they are in more than one section."
 (defvar info-fontify-emphasis t
   "Non-nil means allow `Info-fontify-emphasis-flag' to work.
 If nil then emphasis is never fontified, regardless of that flag.")
-
-(defvar Info-fontify-extra-function nil
-  "If non-nil then a function used to provide additional highlighting.
-The function is passed no arguments.
-
-The function is invoked by `Info-fontify-node', before fontifying
-reference items (`Info-fontify-reference-items').  When it is called,
-point is at `point-min' in the node to be fontified.")
 
 (defvar Info-glossary-link-history ()
   "List of glossary words whose links have been followed so far.
@@ -2820,6 +2833,20 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   (when msgp (message "`Info-fontify-reference-items-flag' is now %s"
                       (if Info-fontify-reference-items-flag 'ON 'OFF))))
 
+;;;###autoload (autoload 'Info-toggle-fontify-extra "info+")
+(defun Info-toggle-fontify-extra (&optional msgp)
+  "Toggle option `Info-fontify-extra-function'."
+  (interactive "p")
+  (when Info-fontify-extra-function (setq info-last-non-nil-fontify-extra-function  Info-fontify-extra-function))
+  (unless info-last-non-nil-fontify-extra-function
+    (error "Non-nil option `Info-fontify-extra-function' has never been defined"))
+  (setq Info-fontify-extra-function  (and (not Info-fontify-extra-function)
+                                          info-last-non-nil-fontify-extra-function))
+  (Info-refontify-current-node)
+  (when msgp (message "`Info-fontify-extra-function' is now %s"
+                      (if Info-fontify-extra-function Info-fontify-extra-function 'OFF))))
+
+;;;###autoload (autoload 'Info-cycle-fontify-quotations "info+")
 ;;;###autoload (autoload 'Info-toggle-fontify-visited-nodes "info+")
 (defun Info-toggle-fontify-visited-nodes (&optional msgp)
   "Toggle option `Info-fontify-visited-nodes'."
@@ -2828,7 +2855,6 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
   (Info-refontify-current-node)
   (when msgp (message "`Info-fontify-visited-nodes' is now %s" (if Info-fontify-visited-nodes 'ON 'OFF))))
 
-;;;###autoload (autoload 'Info-cycle-fontify-quotations "info+")
 (defun Info-cycle-fontify-quotations (&optional msgp)
   "Cycle option `Info-fontify-quotations'.
 The three states are off (nil), multiline (symbol `multiline'), and
@@ -3680,9 +3706,12 @@ candidates."
       :style toggle :selected (car Info-fontify-custom-delimited)
       :help "Toggle option `Info-fontify-custom-delimited'"]
      ["     Set Custom Delimiters" Info-define-custom-delimiting
-      ;; < Emacs 27, doesn't work if menu used with mouse, because first read is swallowed by mouse event.
+      ;; Doesn't work for Emacs < 27 if menu is used with mouse, because first read is swallowed by mouse event.
       :visible (fboundp 'read-char-from-minibuffer)
       :help "Read custom delimiter chars and set fontifying regexp from them."]
+     ["Highlighting Extra" Info-toggle-fontify-extra
+      :style toggle :selected Info-fontify-extra-function
+      :help "Toggle option `Info-fontify-extra-function'"]
      ["Highlighting Visited Nodes" Info-toggle-fontify-visited-nodes
       :style toggle :selected Info-fontify-visited-nodes
       :help "Toggle option `Info-fontify-visited-nodes'"]
