@@ -8,13 +8,13 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 16 15:36:58 2021 (-0700)
+;; Last-Updated: Sun Oct 17 16:31:58 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 936
+;;     Update #: 968
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -37,7 +37,7 @@
 ;;
 ;;  3. Make `size-indication-mode' show that the current command acts
 ;;     on the active region or acts specially because the region is
-;;     now active (Emacs 23+).
+;;     now active.
 ;;
 ;;  For #2: When the region is active, the mode line displays some
 ;;  information that you can customize - see options
@@ -109,19 +109,20 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `count-words-rectangle' (Emacs 26+).
+;;    `count-words-rectangle' (Emacs 26+),
+;;    `modelinepos-toggle-rectangle-style' (Emacs 26+),
+;;    `modelinepos-toggle-region-style'.
 ;;
 ;;  Faces defined here:
 ;;
 ;;    `modelinepos-column-warning', `modelinepos-region',
-;;    `modelinepos-region-acting-on' (Emacs 23+).
+;;    `modelinepos-region-acting-on'.
 ;;
 ;;  User options defined here:
 ;;
 ;;    `modelinepos-column-limit', `modelinepos-empty-region-flag',
 ;;    `modelinepos-rectangle-style' (Emacs 26+),
-;;    `modelinepos-region-style', `modelinepos-style',
-;;    `use-empty-active-region' (Emacs < 23).
+;;    `modelinepos-region-style', `modelinepos-style'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -131,9 +132,9 @@
 ;;
 ;;    `modelinepos-bytes-format', `modelinepos-chars-format',
 ;;    `modelinepos-lines+cols-format',
-;;    `modelinepos-lines+cols+words+chars-format',
-;;    `modelinepos-rect-p', `modelinepos-region-acting-on' (Emacs
-;;    23+), `modelinepos-rows+cols-format',
+;;    `modelinepos-lines+cols+words+chars-format', `modelinepos-menu',
+;;    `modelinepos-rect-p', `modelinepos-region-acting-on',
+;;    `modelinepos-rows+cols-format',
 ;;    `modelinepos-rows+cols+words+chars-format',
 ;;    `modelinepos-style-default'.
 ;;
@@ -207,6 +208,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/17 dadams
+;;     Removed support for Emacs 22 and 23.
+;;       modelinepos-show-region-p: Removed Emacs 24+ test.
+;;       mode-line-position: Removed Emacs 22 version.
+;;       use-empty-active-region, use-region-p: Removed (Emacs 22 only).
+;;     Require rect.el for Emacs 26+.
+;;     Added: modelinepos-toggle-region-style, modelinepos-toggle-rectangle-style, modelinepos-menu.
+;;     Bind modelinepos-menu to [mode-line down-mouse-1].
 ;; 2021/10/16 dadams
 ;;     Added: modelinepos-(bytes|chars)-format, modelinepos-(lines|rows)+cols(+words+chars)-format.
 ;;     modelinepos-style(-default): Use those new vars, instead of hardcoding the formats.
@@ -298,13 +307,15 @@
 ;;
 ;;; Code:
 
+(when (> emacs-major-version 25) (require 'rect)) ; extract-rectangle-bounds
+
 ;; Quiet the byte-compiler.
 
 (defvar isearchp-reg-beg)                 ; In `isearch+.el'
 (defvar isearchp-reg-end)                 ; In `isearch+.el'
 (defvar isearchp-restrict-to-region-flag) ; In `isearch+.el'
+(defvar modelinepos-rectangle-style)      ; Here, for Emacs 26+
 (defvar rectangle--string-preview-window) ; In `rect.el' for Emacs 25+
-(defvar use-empty-active-region)          ; In `simple.el' for Emacs 23+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -323,8 +334,7 @@ the region is active."
 
 ;;;###autoload
 (defface modelinepos-region-acting-on '((t (:inherit region :box (:line-width 3 :color "Red"))))
-  "Face for modeline position & size when a command acts on active region.
-\(Not used for Emacs 22)."
+  "Face for modeline position & size when a command acts on active region."
   :group 'Modeline :group 'Convenience :group 'Help :group 'faces)
 
 (defvar modelinepos-rect-p nil
@@ -332,8 +342,7 @@ the region is active."
 
 (defvar modelinepos-region-acting-on nil
   "Non-nil means that a command is acting on the active region.
-It is the responsibility of individual commands to manage the value.
-\(Not used for Emacs 22).")
+It is the responsibility of individual commands to manage the value.")
 (make-variable-buffer-local 'modelinepos-region-acting-on)
 
 ;;;###autoload
@@ -353,6 +362,15 @@ It is the responsibility of individual commands to manage the value.
   :type '(choice
           (const :tag "Lines and columns"                lines+cols)
           (const :tag "Lines, columns, words, and chars" lines+cols+words+chars)))
+
+(defun modelinepos-toggle-region-style (&optional msgp)
+  "Toggle value of option `modelinepos-region-style'."
+  (interactive "p")
+  (setq modelinepos-region-style  (if (eq modelinepos-region-style 'lines+cols)
+                                      'lines+cols+words+chars
+                                    'lines+cols))
+  (force-mode-line-update 'ALL)
+  (when msgp (message "`modelinepos-region-style' is now `%s'" modelinepos-region-style)))
 
 (when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
 
@@ -407,6 +425,15 @@ between START and END, without printing any message."
                  words (if (= words 1) "" "s")
                  chars (if (= chars 1) "" "s"))))
     words))
+
+  (defun modelinepos-toggle-rectangle-style (&optional msgp)
+    "Toggle value of option `modelinepos-rectangle-style'."
+    (interactive "p")
+    (setq modelinepos-rectangle-style  (if (eq modelinepos-rectangle-style 'rows+cols)
+                                           'rows+cols+words+chars
+                                         'rows+cols))
+    (force-mode-line-update 'ALL)
+    (when msgp (message "`modelinepos-rectangle-style' is now `%s'" modelinepos-rectangle-style)))
 
   (defcustom modelinepos-rectangle-style 'rows+cols
     "Mode-line info about region size when a rectangle is selected."
@@ -609,9 +636,7 @@ character."
   ;;
   (condition-case nil                   ; Ignore errors, just in case.
       (and transient-mark-mode  mark-active
-           (or (if (> emacs-major-version 23)
-                   (and (not (eq 0 echo-keystrokes))  modelinepos-empty-region-flag)
-                 modelinepos-empty-region-flag)
+           (or (and (not (eq 0 echo-keystrokes))  modelinepos-empty-region-flag)
                (/= (region-beginning) (region-end))))
     (error nil)))
 
@@ -623,155 +648,129 @@ character."
 ;;
 ;; Highlight line & column indicator if column > `modelinepos-column-limit'.
 ;;
-(unless (> emacs-major-version 22)
-  (setq-default mode-line-position
-                '(:eval
-                  (let ((help-echo "mouse-1: select (drag to resize), mouse-2: \
-delete others, mouse-3: delete this"))
-                    `((-3 ,(propertize "%p" 'help-echo help-echo))
-                      (size-indication-mode
-                       (8 ,(propertize
-                            (if (modelinepos-show-region-p)
+(setq-default mode-line-position
+              '(:eval
+                `((-3 ,(propertize "%p"
+                                   'local-map mode-line-column-line-number-mode-map
+                                   'mouse-face 'mode-line-highlight
+                                   'help-echo "Buffer position, mouse-1: Line/col menu"))
+                  ;; We might be able to remove one or more of these `condition-case's, but it seems
+                  ;; better to keep them, at least for now.
+                  (size-indication-mode
+                   (8 ,(propertize
+                        (if (or modelinepos-region-acting-on
+                                (condition-case nil
+                                    (modelinepos-show-region-p)
+                                  (error nil)))
+                            (condition-case nil
                                 (apply #'format (mapcar #'eval modelinepos-style))
-                              " of %I")
-                            'face (and (modelinepos-show-region-p)  'modelinepos-region)
-                            'help-echo help-echo)))
-                      (line-number-mode
-                       ((column-number-mode
-                         (10 ,(propertize
-                               " (%l,%c)"
-                               'face (and (> (current-column)
-                                             modelinepos-column-limit)
-                                          'modelinepos-column-warning)
-                               'help-echo help-echo))
-                         (6 ,(propertize " L%l" 'help-echo help-echo))))
-                       ((column-number-mode
-                         (5 ,(propertize
-                              " C%c"
-                              'face (and (> (current-column)
-                                            modelinepos-column-limit)
-                                         'modelinepos-column-warning)
-                              'help-echo help-echo))))))))))
-
-
-
-;; REPLACES ORIGINAL defined in `bindings.el'.
-;;
-;; Use region size if region is active.
-;;
-;; Highlight line & column indicator if column > `modelinepos-column-limit'.
-;;
-(when (> emacs-major-version 22)
-  (setq-default mode-line-position
-                '(:eval
-                  `((-3 ,(propertize "%p"
-                                     'local-map mode-line-column-line-number-mode-map
-                                     'mouse-face 'mode-line-highlight
-                                     'help-echo "Buffer position, mouse-1: Line/col menu"))
-                    ;; We might be able to remove one or more of these `condition-case's, but it seems
-                    ;; better to keep them, at least for now.
-                    (size-indication-mode
-                     (8 ,(propertize
-                          (if (or modelinepos-region-acting-on
-                                  (condition-case nil
-                                      (modelinepos-show-region-p)
-                                    (error nil)))
-                              (condition-case nil
-                                  (apply #'format (mapcar #'eval modelinepos-style))
-                                (error ""))
-                            " of %I")
-                          'face (if modelinepos-region-acting-on
-                                    'modelinepos-region-acting-on
-                                  (and (condition-case nil
-                                           (modelinepos-show-region-p)
-                                         (error nil))
-                                       'modelinepos-region))
-                          'local-map mode-line-column-line-number-mode-map
-                          'mouse-face 'mode-line-highlight
-                          'help-echo "Buffer position, mouse-1: Line/col menu")))
-                    (line-number-mode
-                     ((column-number-mode   ; Line-number mode & column-number-mode
-                       (column-number-indicator-zero-based
-                        (10 ,(propertize
-                              " (%l,%c)"
-                              'face (and (> (current-column)
-                                            modelinepos-column-limit)
-                                         'modelinepos-column-warning)
-                              'local-map mode-line-column-line-number-mode-map
-                              'mouse-face 'mode-line-highlight
-                              'help-echo "Line and column, mouse-1: Line/col menu"))
-                        (10 ,(propertize
-                              " (%l,%C)"
-                              'face (and (> (current-column)
-                                            modelinepos-column-limit)
-                                         'modelinepos-column-warning)
-                              'local-map mode-line-column-line-number-mode-map
-                              'mouse-face 'mode-line-highlight
-                              'help-echo "Line number, mouse-1: Line/col menu")))
-                       (6 ,(propertize
-                            " L%l"
+                              (error ""))
+                          " of %I")
+                        'face (if modelinepos-region-acting-on
+                                  'modelinepos-region-acting-on
+                                (and (condition-case nil
+                                         (modelinepos-show-region-p)
+                                       (error nil))
+                                     'modelinepos-region))
+                        'local-map mode-line-column-line-number-mode-map
+                        'mouse-face 'mode-line-highlight
+                        'help-echo "Buffer position, mouse-1: Line/col menu")))
+                  (line-number-mode
+                   ((column-number-mode ; Line-number mode & column-number-mode
+                     (column-number-indicator-zero-based
+                      (10 ,(propertize
+                            " (%l,%c)"
+                            'face (and (> (current-column)
+                                          modelinepos-column-limit)
+                                       'modelinepos-column-warning)
                             'local-map mode-line-column-line-number-mode-map
                             'mouse-face 'mode-line-highlight
-                            'help-echo "Line number, mouse-1: Line/col menu"))))
-                     ((column-number-mode   ; Column-number-mode only, not line-number mode
-                       (column-number-indicator-zero-based
-                        (5 ,(propertize
-                             " C%c"
-                             'face (and (> (current-column)
-                                           modelinepos-column-limit)
-                                        'modelinepos-column-warning)
-                             'local-map mode-line-column-line-number-mode-map
-                             'mouse-face 'mode-line-highlight
-                             'help-echo "Column number, mouse-1: Line/col menu"))
-                        (5 ,(propertize
-                             " C%C"
-                             'face (and (> (current-column)
-                                           modelinepos-column-limit)
-                                        'modelinepos-column-warning)
-                             'local-map mode-line-column-line-number-mode-map
-                             'mouse-face 'mode-line-highlight
-                             'help-echo "Column number, mouse-1: Line/col menu"))))))))))
+                            'help-echo "Line and column, mouse-1: Line/col menu"))
+                      (10 ,(propertize
+                            " (%l,%C)"
+                            'face (and (> (current-column)
+                                          modelinepos-column-limit)
+                                       'modelinepos-column-warning)
+                            'local-map mode-line-column-line-number-mode-map
+                            'mouse-face 'mode-line-highlight
+                            'help-echo "Line number, mouse-1: Line/col menu")))
+                     (6 ,(propertize
+                          " L%l"
+                          'local-map mode-line-column-line-number-mode-map
+                          'mouse-face 'mode-line-highlight
+                          'help-echo "Line number, mouse-1: Line/col menu"))))
+                   ((column-number-mode ; Column-number-mode only, not line-number mode
+                     (column-number-indicator-zero-based
+                      (5 ,(propertize
+                           " C%c"
+                           'face (and (> (current-column)
+                                         modelinepos-column-limit)
+                                      'modelinepos-column-warning)
+                           'local-map mode-line-column-line-number-mode-map
+                           'mouse-face 'mode-line-highlight
+                           'help-echo "Column number, mouse-1: Line/col menu"))
+                      (5 ,(propertize
+                           " C%C"
+                           'face (and (> (current-column)
+                                         modelinepos-column-limit)
+                                      'modelinepos-column-warning)
+                           'local-map mode-line-column-line-number-mode-map
+                           'mouse-face 'mode-line-highlight
+                           'help-echo "Column number, mouse-1: Line/col menu")))))))))
+
+ 
+;;; Add commands to mode-line menu.
+;;;
+(defvar modelinepos-menu (let ((map  (make-sparse-keymap "Toggle Line and Column Number Display")))
+                           (define-key map [toggle-region-style]
+                             '(menu-item "Full Region Style" modelinepos-toggle-region-style
+                                         :help "Toggle value of option `modelinepos-region-style'"
+                                         :button (:toggle . (eq 'lines+cols+words+chars
+                                                                modelinepos-region-style))))
+                           (when (fboundp 'modelinepos-toggle-rectangle-style)
+                             (define-key map [toggle-rectangle-style]
+                               '(menu-item "Full Rectangle Style" modelinepos-toggle-rectangle-style
+                                           :help "Toggle value of option `modelinepos-rectangle-style'"
+                                           :button (:toggle . (eq 'rows+cols+words+chars
+                                                                  modelinepos-rectangle-style)))))
+                           (define-key map [size-indication-mode]
+                             '(menu-item "Display Size Indication" size-indication-mode
+		                         :help "Toggle displaying a size indication in the mode-line"
+		                         :button (:toggle . size-indication-mode)))
+                           (define-key map [line-number-mode]
+                             '(menu-item "Display Line Numbers" line-number-mode
+		                         :help "Toggle displaying line numbers in the mode-line"
+		                         :button (:toggle . line-number-mode)))
+                           (define-key map [column-number-mode]
+                             '(menu-item "Display Column Numbers" column-number-mode
+		                         :help "Toggle displaying column numbers in the mode-line"
+		                         :button (:toggle . column-number-mode)))
+                           (when (fboundp 'modelinepos-toggle-rectangle-style)
+                             (define-key map [count-words-rectangle]
+                               '(menu-item "Count Words in Rectangle" count-words-rectangle
+                                           :help "Count words in the active rectangular region"
+                                           :visible modelinepos-rect-p)))
+                           (define-key map [count-words-region]
+                             '(menu-item "Count Words in Region" count-words-region
+                                         :help "Count words in the region"
+                                         :visible (use-region-p)))
+                           (define-key map [mode-line down-mouse-1] map)
+                           map)
+  "Menu keymap for `modeline-posn.el' features.
+Used in place of `mode-line-column-line-number-mode-map'.")
+
+(global-set-key [mode-line down-mouse-1] modelinepos-menu)
+
  
 
 ;;; Advise some standard functions, so they use `modelinepos-region-acting-on' during
 ;;; initial input when they act on the active region.
-
-
-;; `use-region-p': For Emacs 22 only.  Provide the standard Emacs 23+ definition.  Cleaned up the doc string.
-(unless (fboundp 'use-region-p)
-
-  (defcustom use-empty-active-region nil
-    "Whether region-aware commands should act on empty regions.
-Region-aware commands are those that act differently depending on
-whether or not the region is active and Transient Mark mode is
-enabled.
-If nil, these commands treat empty regions as inactive.
-If non-nil, these commands treat an active region as such, even if it
-is empty."
-    :type 'boolean :group 'editing-basics)
-
-  (defun use-region-p ()
-    "Return t if the region is active and it is appropriate to act on it.
-This is used by commands that act specially on the region under
-Transient Mark mode.
-
-The return value is t if Transient Mark mode is enabled and the
-mark is active; furthermore, if `use-empty-active-region' is nil,
-the region must not be empty.  Otherwise, the return value is nil.
-
-For some commands, it may be appropriate to ignore the value of
-`use-empty-active-region'; in that case, use `region-active-p'."
-    (and transient-mark-mode
-         mark-active
-         (or use-empty-active-region  (> (region-end) (region-beginning))))))
-
 
 ;;; Functions from `replace.el' (loaded by default, with no `provide').
 
 ;; This one works for `query-replace', `query-replace-regexp', `replace-string',
 ;; and `replace-regexp'.
 (defadvice query-replace-read-args (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
         (modelinepos-region-acting-on          (or (use-region-p)
                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
@@ -779,7 +778,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; This one is for `isearch-query-replace'.
 (defadvice query-replace-read-to (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
         (modelinepos-region-acting-on          (or (use-region-p)
                                                    (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
@@ -788,7 +786,6 @@ For some commands, it may be appropriate to ignore the value of
 ;; This one is for `query-replace-regexp-eval'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice query-replace-read-from (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
         (modelinepos-region-acting-on          (or (use-region-p)
                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
@@ -797,7 +794,6 @@ For some commands, it may be appropriate to ignore the value of
 ;; This one works for `keep-lines', `flush-lines', and `how-many'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice keep-lines-read-args (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
         (modelinepos-region-acting-on          (or (use-region-p)
                                                    (and (boundp 'isearchp-reg-beg) isearchp-reg-beg))))
@@ -806,7 +802,6 @@ For some commands, it may be appropriate to ignore the value of
 ;; Advise interactive part of `map-query-replace-regexp'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice map-query-replace-regexp (before bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (interactive
    (let* ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
           (modelinepos-region-acting-on            (or (use-region-p)
@@ -830,13 +825,11 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; Turn on highlighting for act of (query-)replacing.
 (defadvice perform-replace (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (let ((modelinepos-region-acting-on  (or (use-region-p)  (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
     ad-do-it))
 
 ;; ;; Turn it off after highlighting for replacement commands.  There is no hook, so use `replace-dehighlight'.
 ;; (defadvice replace-dehighlight (after bind-modelinepos-region-acting-on activate)
-;;   "\(Not used for Emacs 22.)"
 ;;   (setq modelinepos-region-acting-on  nil))
 
 
@@ -844,7 +837,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice prepend-to-buffer (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (interactive
    (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
          (modelinepos-region-acting-on          (or (use-region-p)
@@ -855,7 +847,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice append-to-buffer (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (interactive
    (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
          (modelinepos-region-acting-on          (or (use-region-p)
@@ -866,7 +857,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice copy-to-buffer (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (interactive
    (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
          (modelinepos-region-acting-on          (or (use-region-p)
@@ -877,7 +867,6 @@ For some commands, it may be appropriate to ignore the value of
 
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice append-to-file (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (interactive
    (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
          (modelinepos-region-acting-on          (or (use-region-p)
@@ -893,7 +882,6 @@ For some commands, it may be appropriate to ignore the value of
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 ;;
 (defadvice write-region (around bind-modelinepos-region-acting-on activate)
-  "\(Not used for Emacs 22.)"
   (interactive
    (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
          (modelinepos-region-acting-on          (or (use-region-p)
@@ -923,9 +911,8 @@ For some commands, it may be appropriate to ignore the value of
           (modelinepos-rect-p                    (member this-command '(copy-rectangle-to-register))))
       ad-do-it))
 
-  ;; Emacs 23-24.3 - no `register-read-with-preview'.
+  ;; Emacs 24.3 - no `register-read-with-preview'.
   (defadvice copy-to-register (around bind-modelinepos-region-acting-on activate)
-    "\(Not used for Emacs 22.)"
     (interactive
      (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
            (modelinepos-region-acting-on          (or (use-region-p)
@@ -937,7 +924,6 @@ For some commands, it may be appropriate to ignore the value of
     ad-do-it)
 
   (defadvice append-to-register (around bind-modelinepos-region-acting-on activate)
-    "\(Not used for Emacs 22.)"
     (interactive
      (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
            (modelinepos-region-acting-on          (or (use-region-p)
@@ -949,7 +935,6 @@ For some commands, it may be appropriate to ignore the value of
     ad-do-it)
 
   (defadvice prepend-to-register (around bind-modelinepos-region-acting-on activate)
-    "\(Not used for Emacs 22.)"
     (interactive
      (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
            (modelinepos-region-acting-on          (or (use-region-p)
