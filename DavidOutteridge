@@ -1,4 +1,17 @@
-I use Emacs.
+I use Emacs.  The main reason for opening this page is to make available some code that I think may be of interest.  I still have to work out how to make the .tar file available; I am hoping that I can simply upload it; it is big: 265mB.  Below is an introduction to the package.; but there is no file nor link yet.  Suggestions of any kind are most welcome.
+
+
+What is Here
+
+The code in this directory started out nearly thirty years ago (Emacs 18.59 was the latest and greatest) as support code for an experimental software project. In addition, this support code had its own experimental nature, which is reflected in various ways by the way the code is written. This support code has been in continual use since its inception. However, development essentially ceased several years ago due to diminished need and other intruding life-activities. But, there are ideas manifest in this code which the author believes have some merit. Thus, long-standing intentions to repair and upgrade have been honoured; and the support code has been pruned somewhat, extended a little, and hosted in Emacs 27.1. What is here is being made available in case it is of use to anyone.
+
+There is none of the original software project in this package, just key items of the support package. The primary aspect of the support is a presentation and information system centered around keymaps, what they look like, and information about, and access to, their commands. There are more than 3200 symbols in the Emacs standard obarray, and a good fraction of those are commands. The key objective of this software was, and remains, to aid in assisting in comprehension; a big task.
+
+The support package is named NavigationShell and it is entirely keyboard driven. The latter characteristic runs counter to what is seen in today's trends, where clickable menus abound, even in Emacs. If this keyboard driven characteristic sounds to you like a bug rather than a feature, then you should not waste any more time, but abandon reading this text immediately.
+
+The justification for NavigationShell being keyboard driven was, and still is, the following. The author uses Emacs to write software and other texts by typing on a keyboard; the mouse has no input to this activity. Given that context, not using the mouse, not shifting a hand from one input device to another and back, but controlling the behaviour of Emacs via the keyboard, makes sense to the author.
+
+The package required some modification to Emacs distribution code, and this still is true, although improved hardware, faster and with hugely more memory, has reduced the modifications. For this modifications reason the package cannot be made a simple entity such as a major mode, which would be better, of course. What follows is a guide describing installation and initial use of the software. The recommended procedure is to use this slightly modified Emacs 27.1 via the tutorial for an hour or two, without modifying it, and without combining it with another Emacs configuration. This hour or two will enable you to see what is here. 
 
 
 CategoryHomepage
