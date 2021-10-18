@@ -1,3 +1,4 @@
+DeletedPage
 ;;; dired-single.el --- Reuse the current dired buffer to visit another directory
 ;;; @(#) $Id: dired-single.el,v 1.7 2008/10/30 01:49:22 joe Exp $
 
