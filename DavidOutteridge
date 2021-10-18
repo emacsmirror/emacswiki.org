@@ -14,4 +14,19 @@ The justification for NavigationShell being keyboard driven was, and still is, t
 The package required some modification to Emacs distribution code, and this still is true, although improved hardware, faster and with hugely more memory, has reduced the modifications. For this modifications reason the package cannot be made a simple entity such as a major mode, which would be better, of course. What follows is a guide describing installation and initial use of the software. The recommended procedure is to use this slightly modified Emacs 27.1 via the tutorial for an hour or two, without modifying it, and without combining it with another Emacs configuration. This hour or two will enable you to see what is here. 
 
 
+
+
+
+[new:DrewAdams:2021-10-18 01:12 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+
+
+
+----
+
 CategoryHomepage
