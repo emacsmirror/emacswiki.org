@@ -1,25 +1,17 @@
-General information about using the mouse in Emacs, how to customize it, and how it works internally.
-
-== Introduction ==
-
 Emacs has long supported the [[WikiPedia:Mouse mouse]] under window systems like X and Microsoft's.  Touchpads and trackballs and such are also considered mice by Emacs.
 
 If you are completely new to Emacs and/or the mouse, see EmacsNewbieMouseReference for a gentle introduction.
 
-Emacs has a mouse [[pointer]], a graphic indicator of the mouse position.  Common pointer symbols used in Emacs include an arrow, an hourglass, an ''I''-bar, and a pointing finger.  Emacs treats mouse buttons, wheels, and other such things mostly like keyboard keys (see CategoryKeys).
-
-There is also the concept of the `mouse-face' property -- a [[text property]] whose value is a [[face]] (font/color/etc) that is seen only when the mouse is "hovered" over text with that property. When the `mouse-face' is shown, faces used for the normal `face' text property are not shown. Typically, `mouse-face' highlighting indicates that clicking the mouse on the highlighted text will perform an action that is different from clicking it elsewhere.  Hypertext links are often highlighted using property `mouse-face'.
-
-== See also ==
-
-=== Intermediate techniques ===
+== Intermediate techniques ==
 
 * CopyingWholeLines -- Use the mouse to copy lines.
 * DragAndDrop -- how to control what happens when you drag stuff into Emacs
 * GrabAndDrag -- Scroll a window by mouse dragging
 * SecondarySelection -- A second selection (like a second [[region]]).  You can create, copy, cut, and paste it using the mouse, the same way you manipulate the region.
 
-=== Adjusting mouse behavior===
+There is also the concept of the `mouse-face' property -- a [[text property]] whose value is a [[face]] (font/color/etc) that is seen only when the mouse is "hovered" over text with that property. When the `mouse-face' is shown, faces used for the normal `face' text property are not shown. Typically, `mouse-face' highlighting indicates that clicking the mouse on the highlighted text will perform an action that is different from clicking it elsewhere.  Hypertext links are often highlighted using property `mouse-face'.
+
+== Adjusting mouse behavior==
 
 * MouseBindingNotation -- Naming mouse buttons and changing what they do
 * PointerShape -- Change the shape of the [[pointer]].
@@ -27,7 +19,7 @@ There is also the concept of the `mouse-face' property -- a [[text property]] wh
 * MouseCopy -- Single-click copy/yank to point
 * [[DelicateMouseClick]] -- Placement point on the side (left/right) of the character clicked upon
 
-=== Mouse-specific modes and extensions ===
+== Mouse-specific modes and extensions ==
 
 These are centered around using or extending the mouse; they are useless without the mouse.
 
@@ -38,7 +30,7 @@ These are centered around using or extending the mouse; they are useless without
 * [[Mouse+]] -- Highlight the position where the mouse will paste, until you release the mouse button. Lets you correct your aim. Also: use `mouse-2' in the [[echo area]] to initiate `M-x'.
 * MouseEvent -- Write mouse-event code compatible with different EmacsLisp dialects
 
-=== Mouse-supporting extensions ===
+== Mouse-supporting extensions ==
 
 These are not specific to the mouse, but have significant features which can make use of the mouse.
 
