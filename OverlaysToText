@@ -8,6 +8,8 @@ The following defun will allow you to turn the overlays into plain text, allowin
 [new]
 Fix to read display attribute. -- [[rubikitch]]
 
+== overlays-to-text ==
+
 {{{
 ;;; Originally posted to #emacs by phf on 2007-10-24.
 
@@ -44,6 +46,10 @@ into real text."
         (insert x)))
     (pop-to-buffer tb)))
 }}}
+
+
+== copy-region-with-overlays ==
+
 
 [new:AlexKost:2021-09-01 07:55 UTC]
 The following command allows you to copy the selected text with
@@ -94,3 +100,25 @@ overlays over the underlying text."
     (deactivate-mark)))
 }}}
 
+== extract-line-prefixes ==
+
+Some modes (like tide-references) use line prefixes instead of overlays. Here's a version of the above to extract those:
+
+{{{
+(defun extract-line-prefixes ()
+  "Create a new buffer called *text* containing the line prefixes of the current buffer."
+  (interactive)
+  (let ((tb (get-buffer-create "*text*")))
+    (with-current-buffer tb
+      (erase-buffer))
+    (save-excursion
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (let* ((props (text-properties-at (point)))
+               (prefix (plist-get props 'line-prefix)))
+          (when prefix
+            (with-current-buffer tb
+              (insert prefix "\n"))))
+        (forward-line 1)))
+    (pop-to-buffer tb)))
+}}}
