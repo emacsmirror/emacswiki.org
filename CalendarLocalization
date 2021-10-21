@@ -176,7 +176,7 @@ Week starts with monday, use also Spanish weekday and month names. Editor specia
     (setq calendar-week-start-day 1
           calendar-day-name-array ["Nedeľa" "Pondelok" "Utorok" "Streda"
                                    "Štvrtok" "Piatok" "Sobota"]
-          calendar-day-abbrev-array ["Po" "Ut" "Вт" "Ср" "Pi" "So" "Ne"]
+          calendar-day-abbrev-array ["Po" "Ut" "St" "Št" "Pi" "So" "Ne"]
           calendar-day-header-array ["Po" "Ut" "St" "Št" "Pi" "So" "Ne"]
           calendar-month-name-array ["Január" "Február" "Marec" "Apríl" 
                                      "Máj" "Jún" "Júl" "August" "September" 
@@ -366,8 +366,7 @@ Here is my calendar configuration. -- [[rubikitch]]
         (holiday-fixed 11 17 "Deň boja za slobodu a demokraciu")
         (holiday-fixed 12 24 "Štedrý deň")
         (holiday-fixed 12 25 "Prvý sviatok vianočný")
-        (holiday-fixed 12 26 "Druhý sviatok vianočný")
-        (holiday-fixed 12 30 "Deň vyhlásenia Slovenska za samostatnú cirkevnú provinciu (pamätný deň)")))
+        (holiday-fixed 12 26 "Druhý sviatok vianočný")))
 </pre>
 
 === Swiss ===
