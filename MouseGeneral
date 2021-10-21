@@ -14,6 +14,7 @@ There is also the concept of the `mouse-face' property -- a [[text property]] wh
 == Adjusting mouse behavior==
 
 * MouseBindingNotation -- Naming mouse buttons and changing what they do
+* MouseBindings -- The functions bound to the mouse in a default Emacs
 * PointerShape -- Change the shape of the [[pointer]].
 * MouseAvoidance -- Automatically move the pointer out of your way.
 * MouseCopy -- Single-click copy/yank to point
