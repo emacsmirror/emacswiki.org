@@ -17,6 +17,17 @@ or
     (setq european-calendar-style 't)
 
 == Localized Day and Month Names ==
+
+=== Austrian ===
+If you prefer /Jänner/ instead of the german /Januar/. You can also use /Feber/ instead of /Februar/.
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch" "Donnerstag" "Freitag" "Samstag"]
+          calendar-day-abbrev-array ["So" "Mo" "Di" "Mi" "Do" "Fr" "Sa"]
+          calendar-day-header-array ["So" "Mo" "Di" "Mi" "Do" "Fr" "Sa"]
+          ;; calendar-month-name-array ["Jänner" "Feber" "März" "April" "Mai" "Juni" "Juli" "August" "September" "Oktober" "November" "Dezember"]
+          calendar-month-name-array ["Jänner" "Februar" "März" "April" "Mai" "Juni" "Juli" "August" "September" "Oktober" "November" "Dezember"])
+
 === Bulgarian ===
 
       (setq calendar-week-start-day 1
@@ -198,6 +209,28 @@ See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
                                      "Septembris" "Oktobris" "Novembris" "Decembris"])
 
 == Localized National Holidays ==
+
+
+=== Austrian ===
+<pre>
+(setq holiday-general-holidays
+      '((holiday-fixed 1 1 "Neujahr")
+        (holiday-fixed 1 6 "Heilige drei Könige")
+        ;;(holiday-easter-etc -2 "Karfreitag")
+        (holiday-easter-etc 0 "Ostersonntag")
+        (holiday-easter-etc +1 "Ostermontag")
+        (holiday-fixed 5 1 "Staatsfeiertag")
+        (holiday-easter-etc +39 "Christi Himmelfahrt")
+        (holiday-easter-etc +49 "Pfingstsonntag")
+        (holiday-easter-etc +50 "Pfingstmontag")
+        (holiday-easter-etc +60 "Fronleichnam")
+        (holiday-fixed 8 15 "Mariä Himmelfahrt")
+        (holiday-fixed 10 26 "Nationalfeiertag")
+        (holiday-fixed 11 1 "Allerheiligen")
+        (holiday-fixed 12 8 "Mariä Empfängnis")
+        (holiday-fixed 12 25 "Christtag")
+        (holiday-fixed 12 26 "Stefanitag")))
+</pre>
 
 === Bulgarian ===
 
