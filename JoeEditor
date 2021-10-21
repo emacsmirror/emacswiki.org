@@ -1,8 +1,24 @@
-Joe is a great free software editor that offers a nice emacs emulation mode:
-it's called jmacs:
+JOE -- Joe's Own Editor -- is an editor with an [[Emacsen]] mode called ''jmacs'' (the native JOE behavior emulates !WordStar).  Originally written by Joseph Allen, it is GPL licensed and hosted on !SourceForge.  It's written in C, with almost no external dependencies, and runs on Unixes and Microsoft Windows.
 
+JOE is lightweight and relatively minimalist (compared to full Emacs), but still has a number of features beyond something like original vi.  Key bindings are configurable, it does SyntaxHighlighting, and has a keyboard macro facility.  It is ''not'' fully programmable (short of hacking the C code), and lacks GUI facilities or debugger integration.
 
-Very minimalist and accessible:
+== Config file ==
 
-http://freshmeat.net/projects/joe
+The jmacs emulation is actually just a JOE config file that sets appropriate options.  
+When started as ##jmacs## it looks for a config file ##~/.jmacsrc## (on Unix-like systems) and loads it; if that does not exist, it loads ##/etc/joe/jmacsrc## instead.  (Thus, one's ##.jmacsrc## needs to explicitly include ##/etc/joe/jmacsrc## if one wants to keep the Emacs emulation behavior.)
 
+In the config file, a single dash prefix disables an option, a double dash enables it, and leading whitespace indicates a comment, line.  A short example ##.jmacs## might look like:
+
+    :include /etc/joe/jmacsrc
+    -nobackups
+       This is a comment.  Use TAB (ASCII 9) for indent, not SPACE:
+    -indentc 9
+    --spaces
+
+== External links ==
+
+* Home page: https://joe-editor.sourceforge.io/
+** Manual: https://joe-editor.sourceforge.io/4.6/man.html
+** The standard config files (e.g. /etc/joe/jmacsrc) contain many comments
+* WikiPedia:Joe%27s_Own_Editor
+* Freshmeat: http://freshmeat.net/projects/joe
