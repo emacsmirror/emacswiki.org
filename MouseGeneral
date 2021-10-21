@@ -20,6 +20,20 @@ There is also the concept of the `mouse-face' property -- a [[text property]] wh
 * MouseCopy -- Single-click copy/yank to point
 * [[DelicateMouseClick]] -- Placement point on the side (left/right) of the character clicked upon
 
+=== Quickies ===
+
+Right-click always pops up menu (not the region/kill stuff):
+
+    (global-set-key [mouse-3] 'mouse-popup-menubar-stuff)
+
+Middle-click pastes at point (text cursor location), not where clicked (as for xterm, even if running GUI):
+
+    (setq mouse-yank-at-point t)
+
+Focus-follows-mouse (point-to-focus) for internal Emacs windows.  Argument is delay in seconds.
+
+    (setq mouse-autoselect-window 0.25)
+
 == Mouse-specific modes and extensions ==
 
 These are centered around using or extending the mouse; they are useless without the mouse.
