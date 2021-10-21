@@ -40,7 +40,7 @@ A ''secondary'' selection is available by pressing and holding the [[Meta]] key 
 
 == Customization ==
 
-Behavior of the mouse is most easily changed using the [[CustomizingAndSaving Customization]] features of Emacs.  In the default graphical interface, click the ''Options'' menu, then ''Customize Emacs'' (at the bottom of the menu), and then ''Top-level Customization Group''.  That will load the main menu of the Customization subsystem.  Click the link for the ''Editing'' group, and then click ''Mouse'' in 
+Behavior of the mouse is most easily changed using the [[CustomizingAndSaving|Customization]] features of Emacs.  In the default graphical interface, click the ''Options'' menu, then ''Customize Emacs'' (at the bottom of the menu), and then ''Top-level Customization Group''.  That will load the main menu of the Customization subsystem.  Click the link for the ''Editing'' group.  On the resulting page, click ''Mouse'' in the list of subgroups.
 
 For the most part, Emacs treats mouse buttons, scroll wheels, and other protuberances, like keyboard keys.  Changing what mouse buttons do is thus similar to assigning any other [[key binding]], just with its own MouseBindingNotation.
 
