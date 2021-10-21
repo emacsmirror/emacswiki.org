@@ -1,12 +1,16 @@
 == Terminology ==
 
-Emacs has its own terminology for these concepts:
+Emacs has its own terminology and keys for these concepts:
 
 || *Common Name* || *Common Key* || *Emacs Name*   || *Emacs Key* ||
+|| Selection     || —            || Region         || —           || 
+|| Clipboard     || —            || Kill ring      || —           || 
 || Cut           || ##C-x##      || Kill-region    || ##C-w##     ||
 || Copy          || ##C-c##      || Kill-ring-save || ##M-w##     ||
 || Paste         || ##C-v##      || Yank           || ##C-y##     ||
 || —             || —            || Yank next      || ##M-y##     ||
+
+== Changing the defaults ==
 
 If you do not care for the DefaultKillingAndYanking [[key binding]]s, then consider these alternatives:
 
@@ -16,11 +20,11 @@ If you do not care for the DefaultKillingAndYanking [[key binding]]s, then consi
 * DeleteSelectionMode -- ##DEL## deletes the region; just typing replaces it.
 * WholeLineOrRegion -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
 
-== X11 Copy & Paste to/from Emacs: ==
+== X Window System ==
 
-X copy and paste support has historically [http://standards.freedesktop.org/clipboards-spec/clipboards-latest.txt been a mess]. This is relevant, as Emacs supports the various aspects of this mess.
+Copy and paste support on the X window system (as used by Unix and Linux) has historically [http://standards.freedesktop.org/clipboards-spec/clipboards-latest.txt been a mess].  This is relevant, as Emacs supports the various aspects of this mess.
 
-Important for this discussion is the understanding that X generally distinguishes between two types of /selection/, the /PRIMARY/ and the /CLIPBOARD/. Every time you select a piece of text with the mouse, the selected text is set as the /PRIMARY/ selection. Using the /copy/ function will place the selected text into the /CLIPBOARD/. Pasting using the middle mouse button will insert the /PRIMARY/ selection, pasting using the paste function will insert the /CLIPBOARD/.
+Important for this discussion is the understanding that X generally distinguishes between two types of /selection/, the /PRIMARY/ and the /CLIPBOARD/. Every time you select a piece of text with the mouse, the selected text is set as the PRIMARY selection. Using the /copy/ function will place the selected text into the CLIPBOARD. Pasting using the middle mouse button will insert the /PRIMARY/ selection.  Pasting using the yank/paste functions will insert the /CLIPBOARD/.
 
 With this out of the way, starting with Emacs 24.1, GNU Emacs should already do the right thing here. If you dislike this behavior, there are two options you can customize:
 
@@ -29,7 +33,7 @@ With this out of the way, starting with Emacs 24.1, GNU Emacs should already do 
 
 Yes, you can have Emacs use both at the same time.
 
-This does not affect pasting using the middle mouse button. By default, this uses ##mouse-yank-primary##, which will only look at the /primary/ selection. If you want the middle mouse button to insert the /clipboard/ instead, use the following:
+This does not affect pasting using the middle mouse button. By default, this uses ##mouse-yank-primary##, which will only look at the /PRIMARY/ selection. If you want the middle mouse button to insert the /CLIPBOARD/ instead, use the following:
 
   (global-set-key (kbd "<mouse-2>") 'clipboard-yank)
   ;; before Emacs 25 it was called 'x-clipboard-yank
@@ -37,12 +41,6 @@ This does not affect pasting using the middle mouse button. By default, this use
 Finally, in other applications, pasting usually replaces the selected text with the contents of the clipboard. To enable this behavior in Emacs, use DeleteSelectionMode with the following:
 
   (delete-selection-mode)
-
-
-=== XEmacs ===
-
- (setq interprogram-cut-function 'own-clipboard)
- (setq interprogram-paste-function 'get-clipboard)
 
 === Third party plugins ===
 
@@ -69,6 +67,11 @@ If it's getting to be a bit of a hassle, use https://github.com/thomp/datclip to
 Monitor the clipboard and insert any change into the kill-ring.
 It makes it easier to use ##yank-pop## from several inputs outside Emacs.
 https://github.com/bburns/clipmon
+
+=== XEmacs ===
+
+ (setq interprogram-cut-function 'own-clipboard)
+ (setq interprogram-paste-function 'get-clipboard)
 
 ---- 
 CategoryEmulation
