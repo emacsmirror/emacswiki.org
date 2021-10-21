@@ -1,17 +1,18 @@
 General information about using the mouse in Emacs, how to customize it, and how it works internally.
 
-* Mouse [[pointer]] -- Graphic indicator of the mouse position. Common pointer symbols used in Emacs include an arrow, an hourglass, an ''I''-bar, and a pointing finger.
-* `mouse-face' property -- [[text property|Text property]] whose value is a face that is seen only when the mouse is over text with that property. When it is shown, faces used for the `face' text property are not shown. Typically, `mouse-face' highlighting indicates that clicking the mouse on the highlighted text will perform an action that is different from clicking it elsewhere. Hypertext links are often highlighted using property `mouse-face'.
-* ''mouse actions'' -- Use of mouse buttons, a mouse wheel, and mouse motion in Emacs.  Mouse actions are a subset of key sequences (see CategoryKeys).
+== Introduction ==
+
+Emacs has long supported the [[WikiPedia:Mouse mouse]] under window systems like X and Microsoft's.  Touchpads and trackballs and such are also considered mice by Emacs.
+
+If you are completely new to Emacs and/or the mouse, see EmacsNewbieMouseReference for a gentle introduction.
+
+Emacs has a mouse [[pointer]], a graphic indicator of the mouse position.  Common pointer symbols used in Emacs include an arrow, an hourglass, an ''I''-bar, and a pointing finger.  Emacs treats mouse buttons, wheels, and other such things mostly like keyboard keys (see CategoryKeys).
+
+There is also the concept of the `mouse-face' property -- a [[text property]] whose value is a [[face]] (font/color/etc) that is seen only when the mouse is "hovered" over text with that property. When the `mouse-face' is shown, faces used for the normal `face' text property are not shown. Typically, `mouse-face' highlighting indicates that clicking the mouse on the highlighted text will perform an action that is different from clicking it elsewhere.  Hypertext links are often highlighted using property `mouse-face'.
 
 == See also ==
 
-=== Fundamentals ===
-
-* EmacsNewbieMouseReference -- Getting started
-* [[Region]] -- Use the mouse to select, copy, cut, and paste selected text
-
-=== Intermediate mouse techniques ===
+=== Intermediate techniques ===
 
 * CopyingWholeLines -- Use the mouse to copy lines.
 * DragAndDrop -- how to control what happens when you drag stuff into Emacs
