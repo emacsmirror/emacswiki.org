@@ -32,11 +32,17 @@ Use `C-mouse-3' (hold Control and right-click) to get a pop-up context menu.  Th
 
 == Intermediate mouse actions ==
 
-Double click `mouse-3' to extend the region (as with a single click), and then cut/kill the selected text.
+Double-clicking `mouse-1' on a word selects the entire word.  Triple-click to select the entire line.  Combine either of these with a drag to select whole-words or whole-lines at once.
+
+Double-click `mouse-3' to extend the region (as with a single click), and then cut/kill the selected text.
 
 `C-mouse-1' pops up a menu with a list of buffers (open files).  Click a buffer on the menu to switch to that buffer.
 
+Clicking `mouse-1' on a button or link follows/invokes it, as you might expect.  Pressing ''and holding'' `mouse-1' will move point to that location, without triggering it.
+
 A ''secondary'' selection is available by pressing and holding the [[Meta]] key during mouse actions.  (The Meta key is also known as the Alt key, and written as `M-'.)  For example, `M-' while dragging creates and extends the secondary selection.  `M-mouse-2' pastes the secondary selection (that is, click `mouse-2' while holding Meta/Alt).
+
+Press and hold both Control ''and'' Meta/Alt while dragging to define a rectangular selection region (ignoring lines and wrapping).
 
 == Customization ==
 
@@ -50,7 +56,7 @@ MouseGeneral is a top-level list of mouse topics.
 
 [https://www.emacswiki.org/emacs?search=%22CategoryMouse%22 CategoryMouse] finds pages related to the mouse.
 
-As always, the EmacsManual has more information.  In particular, see FIXME.
+As always, the EmacsManual has more information.  In particular, see [[Manual:Mouse Commands for Editing]].
 
 ----
 CategoryHelp
