@@ -3,14 +3,18 @@ Discovering mouse bindings has some complications: Clicking and dragging both ge
 Here are some clues, based on Emacs 27.1 (2020 August).
 
 || Context         || Key                    || Function                  ||
-|| Most            || ##<mouse-1>##          || ##mouse-set-point##       ||
-|| Main            || ##<down-mouse-1>##     || ##mouse-drag-region##     ||
-|| Most            || ##<mouse-2>##          || ##mouse-yank-primary##    ||
-|| Main            || ##<mouse-3>##          || ##mouse-save-then-kill##  ||
-|| Main            || ##<M-mouse-1>##        || ##mouse-start-secondary## ||
-|| Most            || ##<M-mouse-2>##        || ##mouse-yank-secondary##  ||
-|| Main            || ##<M-mouse-3>##        || ##mouse-secondary-save-then-kill## ||
-|| Main            || ##<C-M-down-mouse-1>## || ##mouse-drag-region-rectangle##    ||
+|| Global          || ##<mouse-1>##          || ##mouse-set-point##       ||
+|| Global          || ##<down-mouse-1>##     || ##mouse-drag-region##     ||
+|| Global          || ##<mouse-2>##          || ##mouse-yank-primary##    ||
+|| Global          || ##<mouse-3>##          || ##mouse-save-then-kill##  ||
+|| Global          || ##<M-mouse-1>##        || ##mouse-start-secondary## ||
+|| Global          || ##<M-mouse-2>##        || ##mouse-yank-secondary##  ||
+|| Global          || ##<C-down-mouse-1>##   || ##mouse-buffer-menu##     ||
+|| Global          || ##<C-down-mouse-2>##   || ##facemenu-menu##         ||
+|| Global          || ##<C-down-mouse-3>##   || See below                 ||
+|| Global          || ##<M-mouse-3>##        || ##mouse-secondary-save-then-kill## ||
+|| Global          || ##<C-M-down-mouse-1>## || ##mouse-drag-region-rectangle##    ||
+|| Global          || ##<C-M-down-mouse-1>## || ##mouse-drag-region-rectangle##    ||
 || ##<mode-line>## || ##<down-mouse-1>##     || ##mouse-drag-mode-line##           ||
 || ##<mode-line>## || ##<mouse-1>##          || ##mouse-select-window##            ||
 || ##<mode-line>## || ##<mouse-2>##          || ##mouse-delete-other-windows##     ||
@@ -19,6 +23,8 @@ Here are some clues, based on Emacs 27.1 (2020 August).
 When `mouse-wheel-mode' is enabled, keys ##<mouse-4>##, ##<mouse-5>##, ##<mouse-6>##, and so on, are bound to function ##mwheel-scroll##.
 
 `mouse-save-then-kill' is the function that handles the "extend region on first click, cut/kill on second click" behavior.
+
+##<C-down-mouse-3>##, which pops up a context-sensitive menu, allegedly invokes `mouse-popup-menubar-stuff' (per [[Manual:Menu Mouse Clicks]]).  However, the standard ##mouse.el## file (Emacs 27.1) has code which calls `mouse-menu-bar-map' or `mouse-menu-major-mode-map', depending on context.
 
 == See also ==
 
