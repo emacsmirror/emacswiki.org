@@ -2,16 +2,19 @@ Discovering mouse bindings has some complications: Clicking and dragging both ge
 
 Here are some clues, based on Emacs 27.1 (2020 August).
 
-|| Context || Key                  || Function              || Remarks ||
-|| Most || ##<mouse-1>##        || ##mouse-set-point##       ||
-|| Main || ##<down-mouse-1>##   || ##mouse-drag-region##     ||
-|| Most || ##<mouse-2>##        || ##mouse-yank-primary##    ||
-|| Main || ##<mouse-3>##        || ##mouse-save-then-kill##  ||
-|| Main || ##<M-mouse-1>##      || ##mouse-start-secondary## ||
-|| Most || ##<M-mouse-2>##      || ##mouse-yank-secondary##  ||
-|| Main || ##<M-mouse-3>##      || ##mouse-secondary-save-then-kill## ||
+|| Context || Key                    || Function                  ||
+|| Most    || ##<mouse-1>##          || ##mouse-set-point##       ||
+|| Main    || ##<down-mouse-1>##     || ##mouse-drag-region##     ||
+|| Most    || ##<mouse-2>##          || ##mouse-yank-primary##    ||
+|| Main    || ##<mouse-3>##          || ##mouse-save-then-kill##  ||
+|| Main    || ##<M-mouse-1>##        || ##mouse-start-secondary## ||
+|| Most    || ##<M-mouse-2>##        || ##mouse-yank-secondary##  ||
+|| Main    || ##<M-mouse-3>##        || ##mouse-secondary-save-then-kill## ||
+|| Main    || ##<C-M-down-mouse-1>## || ##mouse-drag-region-rectangle##    ||
 
 When `mouse-wheel-mode' is enabled, keys ##<mouse-4>##, ##<mouse-5>##, ##<mouse-6>##, and so on, are bound to function ##mwheel-scroll##.
+
+`mouse-save-then-kill' is a "DWIM function" that extends region on first click, and cuts/kills on second click.
 
 == See also ==
 
