@@ -2,19 +2,19 @@ Mouse usage in Emacs by default is somewhat different than it is in most other a
 
 == Fundamentals ==
 
-A mouse is a type of ''pointing device''.  Touchpads (as found on most laptops), trackballs, and most sorts of similar things, are all considered a mouse by Emacs.
+A mouse is a type of [[WikiPedia:pointing device|pointing device]].  Any kind of pointing device (mice, touchpads, pointing sticks, trackballs, etc.) is considered a mouse by Emacs.
 
-Emacs uses the [[mouse pointer]], a graphic indicator of the mouse position.  Common pointer symbols used in Emacs include an arrow, an hourglass, an I-bar, and a pointing finger.
+Emacs uses the [[mouse pointer]], a graphic indicator of the mouse position.  Common pointer symbols used in Emacs include an arrow, an hourglass, an I-bar, and a pointing finger.  Moving the mouse moves the pointer.
 
-The mouse pointer should be distinguished from the TextCursor, which is typically a blinking bar, box, or underline.  The text cursor indicates the location of [[point]], where text will be inserted, and various other text operations occur.
+The mouse ''pointer'' should be distinguished from the ''text cursor'' and/or ''point''.  The [[text cursor]] is typically a blinking bar, box, or underline.  The text cursor indicates the location of [[point]].  Point is where text will be inserted, and where various other text operations occur.
 
 == Button names ==
 
 Emacs designates the primary mouse button as `mouse-1', and numbers them going up from there.  On a typical computer, `mouse-1' is the left mouse button.  (Left-handed people may have their computer set to swap the assignments of the left and right buttons.)
 
-On a two-button mouse, the secondary (right) button is `mouse-3'.
+On a two-button mouse, the secondary (right) button is typically `mouse-3'.  (Number 2 is reserved for the middle button, even when not present.)
 
-The middle button, if any, is `mouse-2'.  On a two-button mouse, you can generally simulate it by pressing the left and right buttons together.  On mice with a scroll wheel, pressing the wheel (like a button) usually sends `mouse-2'.
+The middle button, if any, is `mouse-2'.  On a two-button mouse, you can generally simulate it by pressing the left and right buttons simultaniously.  On mice with a scroll wheel, pressing the wheel (like a button) usually sends `mouse-2'.
 
 == Basic mouse actions ==
 
@@ -22,13 +22,15 @@ Exactly what each mouse button does, depends on the type of [[buffer]] you are w
 
 Clicking `mouse-1' (left mouse button) will move [[point]] (and thus the text cursor) to that location.  This is similar to most software.
 
-Drag (press and hold) `mouse-1' to define the [[region]] --- that is, to select/highlight text.  The spot where you started dragging becomes [[mark]]; point moves to the end (where you released the button).
+Drag (press and hold) `mouse-1' to define the [[region]] --- that is, to select/highlight text.  The spot where you started dragging becomes [[mark]]; point moves to the end (where you released the button).  Other operations (cut, copy, search, indent, etc.) can then be applied to the selected text region.
 
 Click `mouse-2' (middle button) to [[CopyAndPaste|paste]] a copy of the selection.  If no region is active, Emacs uses the text of the last region you selected.  Text is inserted where you clicked.  Note that this does '''''not''''' paste the contents of the clipboard or kill ring.
 
+A common technique is to select text by dragging with the left button, and then immediately paste it elsewhere by clicking there with the middle button.
+
 Click `mouse-3' (right button) to ''extend'' the selection/region.  If there is already a region selected, this will make the region larger, to include everything from the end of the previous region, to the location clicked.  If there is no active selection, this will select starting from point, to the location clicked, making it the active region.
 
-Use `C-mouse-3' (hold Control and right-click) to get a pop-up context menu.  This is equivalent to a plain right-click in most mainstream software.
+Use `C-mouse-3' (hold Control and then right-click) to get a pop-up context menu.  This is equivalent to a plain right-click in most mainstream software.
 
 == Intermediate mouse actions ==
 
@@ -36,17 +38,19 @@ Double-clicking `mouse-1' on a word selects the entire word.  Triple-click to se
 
 Double-click `mouse-3' to extend the region (as with a single click), and then cut/kill the selected text.
 
+A common technique is to move point to the start of some text by left clicking, and then cut that text by double-right-clicking the other end.  Optionally, one can then paste the cut text elsewhere by middle-clicking the other location.
+
 `C-mouse-1' pops up a menu with a list of buffers (open files).  Click a buffer on the menu to switch to that buffer.
 
 Clicking `mouse-1' on a button or link follows/invokes it, as you might expect.  Pressing ''and holding'' `mouse-1' will move point to that location, without triggering it.
 
-A ''secondary'' selection is available by pressing and holding the [[Meta]] key during mouse actions.  (The Meta key is also known as the Alt key, and written as `M-'.)  For example, `M-' while dragging creates and extends the secondary selection.  `M-mouse-2' pastes the secondary selection (that is, click `mouse-2' while holding Meta/Alt).
+A ''secondary selection'' is available by pressing and holding the [[Meta]] key during mouse actions.  (The Meta key is also known as the Alt key, and written as `M-'.)  For example, `M-' while dragging creates and extends the secondary selection.  `M-mouse-2' pastes the secondary selection (that is, click `mouse-2' while holding Meta/Alt).
 
-Press and hold both Control ''and'' Meta/Alt while dragging to define a rectangular selection region (ignoring lines and wrapping).
+Press and hold both Control ''and'' Meta/Alt while dragging to define a rectangular selection region.  Rectangle regions span multiple lines between the points clicked, without spilling over to the entire line.  This is useful for working with columns of text.
 
 == Customization ==
 
-Behavior of the mouse is most easily changed using the [[CustomizingAndSaving|Customization]] features of Emacs.  In the default graphical interface, click the ''Options'' menu, then ''Customize Emacs'' (at the bottom of the menu), and then ''Top-level Customization Group''.  That will load the main menu of the Customization subsystem.  Click the link for the ''Editing'' group.  On the resulting page, click ''Mouse'' in the list of subgroups.
+Behavior of the mouse is most easily changed using the [[CustomizingAndSaving|Customization]] features of Emacs.  In the default graphical interface, click the ''Options'' menu, then ''Customize Emacs'' (at the bottom of the menu), and then ''Top-level Customization Group''.  That will load the main menu of the Customization subsystem.  Click the link for the ''Editing'' group.  On the resulting page, click ''Mouse'' in the list of subgroups.  Explore the settings there.  ''Apply'' lets you try them out, but does not save them after Emacs is closed.  ''Apply and Save'' keeps changes for the future.
 
 For the most part, Emacs treats mouse buttons, scroll wheels, and other protuberances, like keyboard keys.  Changing what mouse buttons do is thus similar to assigning any other [[key binding]], just with its own MouseBindingNotation.
 
@@ -56,7 +60,7 @@ MouseGeneral is a top-level list of mouse topics.
 
 [https://www.emacswiki.org/emacs?search=%22CategoryMouse%22 CategoryMouse] finds pages related to the mouse.
 
-As always, the EmacsManual has more information.  In particular, see [[Manual:mouse buttons (what they do)]], and subsequent pages.
+As always, the EmacsManual has more information.  In particular, see [[Manual:Mouse Commands]], and subsequent pages.
 
 ----
 CategoryHelp
