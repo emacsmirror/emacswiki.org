@@ -9,18 +9,17 @@ Here are some clues, based on Emacs 27.1 (2020 August).
 || Global          || ##<mouse-3>##          || ##mouse-save-then-kill##  ||
 || Global          || ##<M-mouse-1>##        || ##mouse-start-secondary## ||
 || Global          || ##<M-mouse-2>##        || ##mouse-yank-secondary##  ||
+|| Global          || ##<M-mouse-3>##        || ##mouse-secondary-save-then-kill## ||
 || Global          || ##<C-down-mouse-1>##   || ##mouse-buffer-menu##     ||
 || Global          || ##<C-down-mouse-2>##   || ##facemenu-menu##         ||
 || Global          || ##<C-down-mouse-3>##   || See below                 ||
-|| Global          || ##<M-mouse-3>##        || ##mouse-secondary-save-then-kill## ||
-|| Global          || ##<C-M-down-mouse-1>## || ##mouse-drag-region-rectangle##    ||
 || Global          || ##<C-M-down-mouse-1>## || ##mouse-drag-region-rectangle##    ||
 || ##<mode-line>## || ##<down-mouse-1>##     || ##mouse-drag-mode-line##           ||
 || ##<mode-line>## || ##<mouse-1>##          || ##mouse-select-window##            ||
 || ##<mode-line>## || ##<mouse-2>##          || ##mouse-delete-other-windows##     ||
 || ##<mode-line>## || ##<mouse-3>##          || ##mouse-delete-window##            ||
 
-When `mouse-wheel-mode' is enabled, keys ##<mouse-4>##, ##<mouse-5>##, ##<mouse-6>##, and so on, are bound to function ##mwheel-scroll##.
+When `mouse-wheel-mode' is enabled, keys ##<mouse-4>##, ##<mouse-5>##, ##<mouse-6>##, and so on, are bound to function `mwheel-scroll'.
 
 `mouse-save-then-kill' is the function that handles the "extend region on first click, cut/kill on second click" behavior.
 
