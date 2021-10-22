@@ -1,7 +1,7 @@
-I use Emacs.  The main reason for opening this page is to make available some code that I think may be of interest.  I still have to work out how to make the .tar file available; I am hoping that I can simply upload it; it is big: 265mB.  Below is an introduction to the package.; but there is no file nor link yet.  Suggestions of any kind are most welcome.
+I use Emacs.  I have added my page to EmacsWiki Homepage to draw attention to some code that I think may be of interest.  Below is an introduction to the code.  I have chosen to present the code in a tutorial demonstration format; this is best consumed thoughtfully for an hour or so, along with perhaps a cup of tea.  The way to get the tutorial is to download a large .tar file from here: http://emacswiki.ngdr.net/  Full instructions on how to handle the download file are on the website; although I suppose that most people will know how to start the process.  Tutorial usage instructions are on the site as well.
 
 
-What is Here
+This is how the website text starts:
 
 The code in this directory started out nearly thirty years ago (Emacs 18.59 was the latest and greatest) as support code for an experimental software project. In addition, this support code had its own experimental nature, which is reflected in various ways by the way the code is written. This support code has been in continual use since its inception. However, development essentially ceased several years ago due to diminished need and other intruding life-activities. But, there are ideas manifest in this code which the author believes have some merit. Thus, long-standing intentions to repair and upgrade have been honoured; and the support code has been pruned somewhat, extended a little, and hosted in Emacs 27.1. What is here is being made available in case it is of use to anyone.
 
