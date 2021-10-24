@@ -1,13 +1,13 @@
 [[ELPA]] packages come in two forms. The first is a relatively simple
-single file package, the second is a more complicated multi-file
+single file package, while the second is a more complicated multi-file
 format. Most of this page discusses the multi-file format because it
 causes the most problems.
 
 
 == Singlefile packages ==
 
-These are very simple, they just follow a standard markup. This is
-almost exactly as you would get with AutoInsertMode:
+These are very simple: a package consists of a single EmacsLisp file with a header that
+follows a standard markup. This is almost exactly as you would get with AutoInsertMode:
 
 {{{
 ;;; test.el --- a simple package                     -*- lexical-binding: t; -*-
@@ -56,20 +56,13 @@ these days you should consider it a default.
 
 == Multifile packages ==
 
-[[ELPA]] multifile packages have a complex structure. They are not
-simple tar archives. This page attempts to describe how to make them.
+[[ELPA]] multifile packages have a complex structure built on tar files.
+In other words, not every tar file works as a package; only tar files that
+follow certain conventions, as described here or in the emacs manual 
+"(elisp) Multi-file Packages". 
 
 
 === When do you need to build a multifile package? ===
-
-MELPA builds packages for you, with it's own build system. You don't
-build packages with MELPA.
-
-ELPA requires you to have the directory sturcture here checked into
-the ELPA git repository. You don't build the actual tar file.
-
-Marmalade requires that you submit the actual tar file of your built
-package.
 
 Emacs requires that you build tar file packages if you want to install
 them from the file system with:
@@ -79,6 +72,15 @@ M-x package-install-file
 }}}
 
 for example.
+
+If you are submitting to a package archive, you may not need to build the 
+package yourself:
+* MELPA builds packages for you, with its own build system. You don't
+build packages with MELPA.
+* ELPA requires you to have the directory structure here checked into
+the ELPA git repository. You don't build the actual tar file.
+* Marmalade requires that you submit the actual tar file of your built
+package. 
 
 
 === An example package ===
@@ -154,7 +156,6 @@ M-x elpakit-make-multi
 }}}
 
 in the package directory of a multi-file package.
-
 
 
 === Marmalade peculiarities ===
