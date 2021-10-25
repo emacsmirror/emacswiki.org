@@ -228,9 +228,13 @@ The ModeLine uses `minor-mode-alist` to map active minor modes to indicators. Th
 {{{
 (setup-define :hide-mode
     (lambda (&optional mode)
-      `(setq minor-mode-alist
-	     (delq (assq ,(or mode (setup-get 'mode)) minor-mode-alist)
-		   minor-mode-alist)))
+      (let* ((mode (or mode (setup-get 'mode)))
+             (mode (if (string-match-p "-mode\\'" (symbol-name mode))
+                       mode
+                     (intern (format "%s-mode" mode)))))
+        `(setq minor-mode-alist
+               (delq (assq ',mode minor-mode-alist)
+                     minor-mode-alist))))
   :documentation "Hide the mode-line lighter of the current mode.
 Alternatively, MODE can be specified manually, and override the
 current mode."
