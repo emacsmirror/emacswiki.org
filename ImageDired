@@ -79,8 +79,6 @@ Some images has un-linked text under it.  That is the image's comment (no one in
 
 That's it.  Simple.  Works.  I guess that it doesn't get more sexy :), at least not as long as it is a static gallery.  I plan to add an option to include a CSS-file so that you can customize the look of it.  I don't know much about CSS and stuff, but I guess I need to add the class-attribute to each page element.  Suggestions on this subject are welcome.
 
-Btw, if my server is up (you can see the URL in the screenshots, I won't place a link to it in pure text because I'm not sure I want much traffic in there), you can test it live.
-
 == History ==
 
 Image-Dired is a part of GNU Emacs since version 22.1. - prior to that it was known as Tumme, which means thumb in Swedish.
