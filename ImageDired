@@ -1,6 +1,6 @@
 '''Image-Dired''' extends [[Dired]] to create an image and image thumbnail viewer.  Using Image-Dired you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
 
-Image-Dired has been part of GNU Emacs since version 22.1 - prior to that it was known as Tumme, which means thumb in Swedish.  If you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
+Image-Dired is a part of GNU Emacs.
 
 The code is here:
 
@@ -81,6 +81,9 @@ That's it.  Simple.  Works.  I guess that it doesn't get more sexy :), at least 
 
 Btw, if my server is up (you can see the URL in the screenshots, I won't place a link to it in pure text because I'm not sure I want much traffic in there), you can test it live.
 
+== History ==
+
+Image-Dired is a part of GNU Emacs since version 22.1. - prior to that it was known as Tumme, which means thumb in Swedish.
 
 ----
 CategoryDirectories
