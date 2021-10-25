@@ -2,13 +2,13 @@
 
 Emacs has its own terminology and keys for these concepts:
 
-|| *Common Name* || *Common Key* || *Emacs Name*   || *Emacs Key* ||
-|| Selection     || —            || Region         || —           || 
-|| Clipboard     || —            || Kill ring      || —           || 
-|| Cut           || ##C-x##      || Kill-region    || ##C-w##     ||
-|| Copy          || ##C-c##      || Kill-ring-save || ##M-w##     ||
-|| Paste         || ##C-v##      || Yank           || ##C-y##     ||
-|| —             || —            || Yank next      || ##M-y##     ||
+|| *Common Name* || *Common Key* || *Emacs Name*       || *Emacs Key* ||
+|| Selection     || —            || Region             || —           || 
+|| Clipboard     || —            || Kill ring          || —           || 
+|| Cut           || ##C-x##      || Kill               || ##C-w##     ||
+|| Copy          || ##C-c##      || ##kill-ring-save## || ##M-w##     ||
+|| Paste         || ##C-v##      || Yank               || ##C-y##     ||
+|| —             || —            || ##yank-pop##       || ##M-y##     ||
 
 == Changing the defaults ==
 
