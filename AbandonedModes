@@ -19,13 +19,5 @@ simpler method invoking `read-file-name'. This works but many orther
 functions won't work anymore. Anyway, that will let other start using
 this mode and maybe adopt it :)
 
-== Discussion (now probably only of historical interest) ==
-* The name of this wiki page may be misleading; I thought that there is abandonned-mode.  It should be renamed as ListOfAbandonnedModes etc, shouldn't it?
-* Also, I think it is spelt "abandoned".
-[new:stepnem:2010-02-23 15:42 UTC]
-Yeah, you're right of course. Well, Xavier is French, which explains the spelling. I propose making a new AbandonedModes (note the plural, it should be clear) page and redirect this one to there (and delete it after some time). I'm going to do that, later today or tomorrow, if no contrary opinions occur or noone beats me to it. Thanks.
-[new:stepnem:2010-02-24 09:01 UTC]
-Done. I'll remove this discussion, too, after some time.
-
 ----
 CategoryModes
