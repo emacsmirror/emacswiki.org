@@ -41,7 +41,7 @@ It can be installed by adding it to ''company-frontends''.
 
 == Issues & questions ==
 
-==== Why is `company-backends' initialized with `company-css', `company-elisp', etc? Shouldn't we add those symbols to `company-backends' when their respective libraries are required? ===
+=== Why is `company-backends' initialized with `company-css', `company-elisp', etc? Shouldn't we add those symbols to `company-backends' when their respective libraries are required? ===
 
 No need to: iterating through backends that don't apply to the current buffer is pretty fast.
 
@@ -51,7 +51,7 @@ But the user can have different `'company-backends' values in different major mo
             (lambda ()
               (set (make-local-variable 'company-backends) '(company-css))))
 
-==== Can I complete by typing a key instead of waiting for the delay timer? ====
+=== Can I complete by typing a key instead of waiting for the delay timer? ===
 
 Yes, just bind `company-manual-begin', `company-complete-common', `company-complete', `company-select-next' to a key in the global map.
 
@@ -59,7 +59,7 @@ Yes, just bind `company-manual-begin', `company-complete-common', `company-compl
 
 Alternatively, you can set `company-idle-delay' to 0, to always complete immediately.
 
-==== I don't like the default colors! ====
+=== I don't like the default colors! ===
 
 Contributions welcome.
 
@@ -81,7 +81,7 @@ And if you're using a theme with a dark background, here's another quick option:
 
 (Borrowed from [https://github.com/noprompt/matilde/blob/master/emacs.d/noprompt-auto-complete.el#L18-L24 Joel Holdbrooks's init directory]).
 
-==== How do I get substring completion? ====
+=== How do I get substring completion? ===
 
 Non-prefix completion is supported since version 0.6.13, but returning appropriate candidates is the responsibility of each backend. If `company-capf' is in `company-backends' (which is by default when using Emacs 24.4), it obeys `completion-styles' when fetching candidates from `completion-at-point-functions'.
 
@@ -105,11 +105,11 @@ The search feature was actually inspired by the way I use iswitchb.  You can sta
 [new]
 I've written another command named `company-filter-candidates' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke). --  [[nschum]]
 
-==== How do I disable the down-case feature of the dabbrev backend? ====
+=== How do I disable the down-case feature of the dabbrev backend? ===
 
 Customize `company-dabbrev-downcase'.
 
-==== I want to have completion and indent bound to tab key (as it is done and works fine in Ca2+), how can i achieve that? ====
+=== I want to have completion and indent bound to tab key (as it is done and works fine in Ca2+), how can i achieve that? ===
 
 [new]
 Depending on the emphasis, one of these:
@@ -135,7 +135,7 @@ One option is the following:
 From: https://github.com/company-mode/company-mode/issues/94#issuecomment-365701801
 
 
-==== Yasnippet integration ====
+== Yasnippet integration ==
 
 If the two fixes below don't work for you, you can try: https://gist.github.com/sebastiencs/a16ea58b2d23e2ea52f62fcce70f4073
 
