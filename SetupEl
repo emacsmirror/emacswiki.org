@@ -400,6 +400,10 @@ would install both company and company-math. The context is set to company, beca
 
 An attempt is also made by setup.el to ease extensibility. Each macro is defined using the setup-define function. Combined with further attributes, it allows for the simple definition of local and context sensitive macros, that are debug-able, can be composed and deferred.
 
+== See Also ==
+
+* SystemCrafters video on UsePackage alternatives, that discusses setup.el among other things https://www.youtube.com/watch?v=ZolOUgXHgbo
+
 ----
 
 [new:DrewAdams:2021-10-08 02:27 UTC]
