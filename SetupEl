@@ -362,6 +362,47 @@ version.
   :shorthand #'cadr)
 }}}
 
+=== Using straight.el ===
+
+[https://github.com/raxod502/straight.el straight.el] is a "next-generation, purely functional package manager for the Emacs hacker," according to its repo.  I like using it is all I know.  Here's a :straight keyword for setup:
+
+{{{
+(setup-define :straight
+  (lambda (recipe)
+    `(unless (straight-use-package ',recipe)
+       ,(setup-quit)))
+  :documentation
+  "Install RECIPE with `straight-use-package'.
+This macro can be used as HEAD, and will replace itself with the
+first RECIPE's package."
+  :repeatable t
+  :shorthand (lambda (sexp)
+               (let ((recipe (cadr sexp)))
+                 (if (consp recipe)
+                     (car recipe)
+                   recipe))))
+}}}
+
+In addition, I find it convenient to only install a package given a certain predicate evaluates to t.  I prefer this local macro over :needs, :if-feature, and others because this stops the package from being installed if a certain condition isn't met.
+
+{{{
+(setup-define :straight-when
+  (lambda (recipe condition)
+    `(if ,condition
+         (straight-use-package ',recipe)
+       ,(setup-quit)))
+  :documentation
+  "Install RECIPE with `straight-use-package' when CONDITION is met.
+If CONDITION is false, stop evaluating the body.  This macro can
+be used as HEAD, and will replace itself with the RECIPE's
+package.  This macro is not repeatable."
+  :repeatable nil
+  :indent 1
+  :shorthand (lambda (sexp)
+               (let ((recipe (cadr sexp)))
+                 (if (consp recipe) (car recipe) recipe))))
+}}}
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
@@ -403,6 +444,7 @@ An attempt is also made by setup.el to ease extensibility. Each macro is defined
 == See Also ==
 
 * SystemCrafters video on UsePackage alternatives, that discusses setup.el among other things https://www.youtube.com/watch?v=ZolOUgXHgbo
+* Configuration using setup.el extensively: https://tildegit.org/acdw/emacs
 
 ----
 
