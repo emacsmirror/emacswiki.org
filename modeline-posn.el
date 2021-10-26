@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 17 16:31:58 2021 (-0700)
+;; Last-Updated: Tue Oct 26 13:50:35 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 968
+;;     Update #: 971
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp', `rect'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -208,6 +208,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/26 dadams
+;;     isearch-mode advice: Use isearchp-reg-beg, not use-region-p.
 ;; 2021/10/17 dadams
 ;;     Removed support for Emacs 22 and 23.
 ;;       modelinepos-show-region-p: Removed Emacs 24+ test.
@@ -1029,11 +1031,11 @@ Used in place of `mode-line-column-line-number-mode-map'.")
 
 ;; Library `isearch+.el' lets you restrict Isearch to the active region.
 
-(defadvice isearch-mode (before bind-modelinepos-region-acting-on activate)
+(defadvice isearch-mode (after bind-modelinepos-region-acting-on activate)
   "\(Used only for Emacs 24.3 and later.)"
   (setq modelinepos-region-acting-on  (and (boundp 'isearchp-restrict-to-region-flag)
                                            isearchp-restrict-to-region-flag
-                                           (use-region-p)))
+                                           isearchp-reg-beg))
   (add-hook 'isearch-mode-end-hook  (lambda () (setq modelinepos-region-acting-on  nil))))
 
 ;; Transfer the region restriction and its mode-line highlighting from Isearch to the replacement command.
