@@ -310,6 +310,44 @@ If PATH does not exist, abort the evaluation."
                  (directory-file-name (cadr args))))))
 }}}
 
+=== Install PACKAGE with MIN-VERSION or higher ===
+
+Based on the require-package function from here: https://github.com/purcell/emacs.d/blob/master/lisp/init-elpa.el
+
+I was advised to use a separate function instead of putting everything inside the keyword 
+definition, which would minimize code when expanded. Feel free to modify and post that 
+version.
+
+{{{
+(setup-define :package-min-version
+    (lambda (package min-version)
+      `(unless (package-installed-p ',package ,min-version)
+         (cl-labels
+             ((find-best (pkg)
+                         (car (sort (cdr (assoc pkg package-archive-contents))
+                                    (lambda (a b)
+                                      (version-list-<= (package-desc-version b)
+                                                       (package-desc-version a))))))
+              (good-enough (pkg)
+                           (and pkg
+                                (version-list-<= ,min-version (package-desc-version pkg)))))
+           (let
+               ((best-pkg (find-best ',package)))
+             (if (good-enough best-pkg)
+                 (package-install best-pkg)
+               (package-refresh-contents)
+               (let ((best-pkg (find-best ',package)))
+                 (if (good-enough best-pkg)
+                     (package-install best-pkg)
+                   (error "No version of %s >= %S is available" ',package ',min-version))))))
+         (package-installed-p ',package ',min-version)))
+  :documentation "Install PACKAGE with MIN-VERSION or higher if it hasn't been installed yet.
+  This macro can be used as NAME, and it will replace itself with
+  the first PACKAGE."
+  :repeatable t
+  :shorthand #'cadr)
+}}}
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
