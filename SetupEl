@@ -259,6 +259,20 @@ See `advice-add' for more details."
   :indent 3)
 }}}
 
+an alternative implementation might be given a function as an advice argument instead of 
+constructing a new function.
+
+{{{
+(setup-define :advise
+    (lambda (symbol where function)
+      `(advice-add ',symbol ,where ,(setup-ensure-function function)))
+  :documentation "Add a piece of advice on a function.
+See `advice-add' for more details."
+  :after-loaded t
+  :debug '(sexp sexp function-form)
+  :repeatable t)
+}}}
+
 === Check for executables ===
 
 If you wish to only configure a system when a executable is installed, the following macro 
