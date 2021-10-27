@@ -1,17 +1,52 @@
-I use Emacs.  I have added my page to EmacsWiki Homepage to draw attention to some code that I think may be of interest.  Below is an introduction to the code.  I have chosen to present the code in a tutorial demonstration format; this is best consumed thoughtfully for an hour or so, along with perhaps a cup of tea.  The way to get the tutorial is to download a large .tar file from here: http://emacswiki.ngdr.net/  Full instructions on how to handle the download file are on the website; although I suppose that most people will know how to start the process.  Tutorial usage instructions are on the site as well.
+I use Emacs and have done so for close to three decades.  Recent
+tasks implemented in Emacs are these.
 
+* Design software to produce arbitrary-sized wood cabinets with
+  box-joints and other intricacies.  The Emacs Lisp software does all
+  the design based on user-supplied parameters, and produces a script
+  for CAD software, which renders the design visually.  This CAD
+  software interfaces with a laser cutter to produce the cabinet
+  components.
 
-This is how the website text starts:
+* Numerical integration of the Euler Spiral.  My application is for
+  transition curves; but the Emacs Lisp software is general enough
+  for other uses.
 
-The code in this directory started out nearly thirty years ago (Emacs 18.59 was the latest and greatest) as support code for an experimental software project. In addition, this support code had its own experimental nature, which is reflected in various ways by the way the code is written. This support code has been in continual use since its inception. However, development essentially ceased several years ago due to diminished need and other intruding life-activities. But, there are ideas manifest in this code which the author believes have some merit. Thus, long-standing intentions to repair and upgrade have been honoured; and the support code has been pruned somewhat, extended a little, and hosted in Emacs 27.1. What is here is being made available in case it is of use to anyone.
+* Computation, largely based on two dimensional vector arithmetic, to
+  produce modular components that assemble into large arbitrary
+  structures.  This Emacs Lisp code produces a script for CAD
+  software, which renders the design visually, ultimately resulting
+  in templates for metal and wood structures.
 
-There is none of the original software project in this package, just key items of the support package. The primary aspect of the support is a presentation and information system centered around keymaps, what they look like, and information about, and access to, their commands. There are more than 3200 symbols in the Emacs standard obarray, and a good fraction of those are commands. The key objective of this software was, and remains, to aid in assisting in comprehension; a big task.
+* On-going support for a few websites.  This is simple text writing
+  of .html code that is uploaded to the ISP hosting the websites.
 
-The support package is named NavigationShell and it is entirely keyboard driven. The latter characteristic runs counter to what is seen in today's trends, where clickable menus abound, even in Emacs. If this keyboard driven characteristic sounds to you like a bug rather than a feature, then you should not waste any more time, but abandon reading this text immediately.
+Describing the above tasks is intended to show both my use of Emacs
+as a text editor, and my use of Emacs Lisp as an engineering
+mathematics computation language.  The seamless embedded computer
+language feature of Emacs Lisp I value greatly.
 
-The justification for NavigationShell being keyboard driven was, and still is, the following. The author uses Emacs to write software and other texts by typing on a keyboard; the mouse has no input to this activity. Given that context, not using the mouse, not shifting a hand from one input device to another and back, but controlling the behaviour of Emacs via the keyboard, makes sense to the author.
+But software used within Emacs itself also has been produced, and
+that is what is emphasized and promoted here because it has been so
+valuable to its author.  This software was produced initially many
+years ago, and has had additions and modifications sporadically, but
+the base software has been well tested over the years.  This software
+makes Emacs keymaps more visible and user-friendly.  I think it is
+useful to those new to Emacs, although that is only speculation since
+I am long past being a newcomer.  It has led to personal theses about
+one or two aspects of help systems, both in Emacs and more generally.
 
-The package required some modification to Emacs distribution code, and this still is true, although improved hardware, faster and with hugely more memory, has reduced the modifications. For this modifications reason the package cannot be made a simple entity such as a major mode, which would be better, of course. What follows is a guide describing installation and initial use of the software. The recommended procedure is to use this slightly modified Emacs 27.1 via the tutorial for an hour or two, without modifying it, and without combining it with another Emacs configuration. This hour or two will enable you to see what is here. 
+The software is available via NavigationShell, needs to be
+downloaded, and the demonstration Emacs built, which is a simple task
+if (another) Emacs is already resident, so that support libraries,
+etc. are in place.  Within half-an-hour the tutorial can be
+describing and demonstrating things and concepts such as
+self-displaying keymaps, reactive and proactive help, keymap editing,
+and project keymap creation.
+
+It is hard for me to believe that what the software does is not
+interesting, especially to imaginative people.  And it is the ideas
+that I wish to promulgate, rather than the software itself.
 
 
 
