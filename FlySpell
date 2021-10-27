@@ -36,7 +36,7 @@ Flyspell comes with a mode to check comments and strings in programming modes. J
 
 === All modes with autodetect ===
 
-One may want to be able to enable Flyspell, and have it automatically decide on `flyspell-mode` or `flyspell-prog-mode`, based on the type of buffer/mode in use.  Perhaps one even wants Flyspell on by default.  The following functions will achieve (most of) that.  Written using Emacs 27.1 on Debian 11.1 in 2021 October.
+One may want to be able to enable Flyspell, and have it automatically decide on `flyspell-mode' or `flyspell-prog-mode', based on the type of buffer/mode in use.  Perhaps one even wants Flyspell on by default.  The following functions will achieve (most of) that.  Written using Emacs 27.1 on Debian 11.1 in 2021 October.
 
     (defun flyspell-on-for-buffer-type ()
       "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
