@@ -34,6 +34,48 @@ Flyspell comes with a mode to check comments and strings in programming modes. J
 
 - [[ruediger]] -
 
+=== All modes with autodetect ===
+
+One may want to be able to enable Flyspell, and have it automatically decide on `flyspell-mode` or `flyspell-prog-mode`, based on the type of buffer/mode in use.  Perhaps one even wants Flyspell on by default.  The following functions will achieve (most of) that.  Written using Emacs 27.1 on Debian 11.1 in 2021 October.
+
+    (defun flyspell-on-for-buffer-type ()
+      "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+      (interactive)
+      (if (not (symbol-value flyspell-mode)) ; if not already on
+	(progn
+	  (if (derived-mode-p 'prog-mode)
+	    (progn
+	      (message "Flyspell on (code)")
+	      (flyspell-prog-mode))
+	    ;; else
+	    (progn
+	      (message "Flyspell on (text)")
+	      (flyspell-mode 1)))
+	  ;; I tried putting (flyspell-buffer) here but it didn't seem to work
+	  )))
+    
+    (defun flyspell-toggle ()
+      "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+      (interactive)
+      (if (symbol-value flyspell-mode)
+	  (progn ; flyspell is on, turn it off
+	    (message "Flyspell off")
+	    (flyspell-mode -1))
+	  ; else - flyspell is off, turn it on
+	  (flyspell-on-for-buffer-type)))
+
+One can then bind `flyspell-toggle' to a key, to have a way to quickly turn Flyspell on or off, as appropriate.  For example:
+
+    (global-set-key (kbd "C-c f") 'flyspell-toggle )
+
+To have Flyspell automatically turn on for some/all/most buffers, add `flyspell-on-for-buffer-type' to one or more ModeHooks, as appropriate.  `find-file-hook' happens every time a buffer associated with a file is created.  That will trigger for everything except buffers not associated with a file.
+
+    (add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
+
+Unfortunately, there does not appear to be a good way to hook creation of *any* buffer.  However, adding `flyspell-on-for-buffer-type' to multiple hooks is reasonably harmless -- the first thing it does is check if Flyspell is already enabled, and does nothing if so.  So one can try painting with a broad brush:
+
+    (add-hook 'after-change-major-mode-hook 'flyspell-on-for-buffer-type)
+
 == Performance ==
 [new]
 I highly suggest setting `flyspell-issue-message-flag' to nil, as printing messages for every word (when checking the entire buffer) causes an enormous slowdown.  -- [[nschum]]
