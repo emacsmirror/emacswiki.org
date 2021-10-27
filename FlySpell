@@ -457,6 +457,26 @@ Call this on `flyspell-incorrect-hook'."
 (add-hook 'flyspell-incorrect-hook 'flyspell-skip-ja)
 </pre>
 
+== Key binding to insert into personal dictionary ==
+It may be useful to have a key binding that inserts a highlighted word -- nominally misspelled -- into one's personal dictionary.  It can be a little more convenient than navigating the full popup menu of Flyspell options.
+
+    (global-set-key (kbd "C-c s") 'flyspell-learn-word-at-point)
+    
+    (defun flyspell-learn-word-at-point ()
+      "Takes the highlighted word at point -- nominally a misspelling -- and inserts it into the personal/private dictionary, such that it is known and recognized as a valid word in the future."
+      (interactive)
+      (let ((current-location (point))
+	    (word (flyspell-get-word)))
+	(when (consp word)
+	  (flyspell-do-correct
+	    'save nil
+	    (car word)
+	    current-location
+	    (cadr word)
+	    (caddr word)
+	    current-location))))
+
+Code based on https://stackoverflow.com/a/22116480/6884780 posted 2014 March 01 by "user2053036", retrieved 2021 October.  Tested with Emacs 27.1 on Debian 11.1.
 
 ----
 CategoryModes | CategorySpelling ==
