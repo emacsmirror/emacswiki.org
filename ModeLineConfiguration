@@ -1,7 +1,11 @@
 [[de:indonesia]]
 The Emacs ModeLine is configurable, offering special modes and functions that change its functionality.
 
-Display of some standard information in the mode line is governed by these minor modes (each toggle on and off):
+Similar to the mode line are the HeaderLine (at the top of internal Emacs windows) and the FrameTitle (the title of the external window in GUI environments).
+
+== Standard minor modes ==
+
+Display of some information in the mode line is governed by these standard minor modes (included in Emacs).  Repeat a command to toggle on and off as needed, or place in your InitFile to turn it on by default.
 
 * `display-time-mode' -- Enable the display of the current time, see DisplayTime
 * `line-number-mode' -- Enable or disable the display of the current line number, see also LineNumbers
@@ -9,7 +13,13 @@ Display of some standard information in the mode line is governed by these minor
 * `size-indication-mode' (for Emacs 22 and up) -- Enable or disable the current buffer size, Emacs 22 and later, see Manual:size-indication-mode
 * `display-battery-mode' -- Enable or disable laptop battery information, see DisplayBatteryMode.
 
-Here are particular enhancements to the mode line:
+== Easy Customization ==
+
+There is an interactive [[CustomizingAndSaving Customization]] group for the mode line.  In the standard menus, find `Options -> Customize Emacs -> Top-level Customization Group`, and then navigate to `Environment -> Mode Line`.
+
+== Enhancements ==
+
+There are a number of enhancements particular to the mode line:
 
 * ModeLineMinorModeMenu -- Pop up minor-mode menus from the mode-line.
 * ModeLinePosition -- Display region size if region is active (in TransientMarkMode) and highlights the column number if greater than `modelinepos-column-limit'.  
@@ -20,28 +30,35 @@ Here are particular enhancements to the mode line:
 * SmlModeLine -- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
 * ShowPointMode -- Show value of point in the mode-line.
 * [[wcMode]] -- Show character/word/line count in mode-line
-* NyanMode -- Indicate your position in the buffer in the mode line, with a little help from [http://en.wikipedia.org/wiki/Nyan_Cat Nyan Cat].
+* NyanMode -- Indicate your position in the buffer in the mode line, with a little help from [WikiPedia:Nyan_Cat Nyan Cat].
 * PowerLine -- How to make VIM-like [https://github.com/Lokaltog/vim-powerline powerline].
 * SmartModeLine -- Smart, sexy, and space efficient mode line. [https://github.com/Bruce-Connor/smart-mode-line/]
 * Spaceline -- [https://github.com/TheBB/spaceline modeline from Spacemacs]
-* Doom Modeline -- [https://github.com/seagle0128/doom-modeline modeline from Doom emacs]
+* Doom modeline -- [https://github.com/seagle0128/doom-modeline modeline from Doom emacs]
 * OcticonsModeLine -- Nice icons in the mode line thanks to the [https://github.com/rougier/emacs-octicons octicons] font.
 
-Customize the mode line by altering the `mode-line-format' variable.  The `header-line-format' variable customizes the HeaderLine.
+== Manual Customization ==
 
-The mode line is [[buffer]]-specific, meaning that the same buffer has the same mode line in different windows.
+Customize the mode line by altering the `mode-line-format' variable.  HideModeLine by setting `mode-line-format' to `nil'.  The mode line is [[buffer]]-specific, meaning that the same buffer has the same mode line in different windows.
 
-The mode line may be [[HideModeLine|hidden]] for a specific buffer by changing `mode-line-format' to `nil'.
+
+* '''string''' -- A string appears verbatim, except for %-constructs embedded in the string
+* '''symbol''' -- A LISP symbol stands for its value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.
+* '''(string rest...)''', '''(list rest...)''' -- A list whose first element is a string or list means to process all the elements recursively and concatenate the results. This is the most common form of mode-line construct.
+
+See also [[Manual:Mode Line Format]] in the Emacs Lisp Reference Manual
+
+=== Example ===
 
 The mode line normally looks something like this:
 
     -u:**-F1  *scratch*   All L12    (Lisp Interaction)-------%-
 
-which may be cryptic to new users, so to make it like this:
+As an example, to make it like this:
 
     Lisp Interaction: buffer *scratch*, line 5 -- user: alice
 
-use:
+One might use:
 
     (setq mode-line-format
           (list
@@ -54,14 +71,6 @@ use:
            "-- user: "
            ;; value of user
            (getenv "USER")))
-
-The mode line uses the same data structure as the FrameTitle and HeaderLine:
-
-* '''string''' -- A string appears verbatim except for %-constructs
-* '''symbol''' -- A symbol stands for its value, the symbols `t' and `nil' are ignored as is any symbol whose value is void.
-* '''(string rest...)''', '''(list rest...)''' -- A list whose first element is a string or list means to process all the elements recursively and concatenate the results. This is the most common form of mode-line construct.
-
-See also [http://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Format.html] in the Emacs Lisp Reference Manual
 
 ----
 CategoryDisplay
