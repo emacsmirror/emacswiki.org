@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 26 13:50:35 2021 (-0700)
+;; Last-Updated: Thu Oct 28 09:03:31 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 971
+;;     Update #: 977
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -208,6 +208,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/10/27 dadams
+;;     isearch-mode advice: Added boundp for isearchp-reg-beg, just to avoid byte-compile warning.
 ;; 2021/10/26 dadams
 ;;     isearch-mode advice: Use isearchp-reg-beg, not use-region-p.
 ;; 2021/10/17 dadams
@@ -1035,6 +1037,7 @@ Used in place of `mode-line-column-line-number-mode-map'.")
   "\(Used only for Emacs 24.3 and later.)"
   (setq modelinepos-region-acting-on  (and (boundp 'isearchp-restrict-to-region-flag)
                                            isearchp-restrict-to-region-flag
+                                           (boundp 'isearchp-reg-beg) ; Just to avoid byte-compile warning.
                                            isearchp-reg-beg))
   (add-hook 'isearch-mode-end-hook  (lambda () (setq modelinepos-region-acting-on  nil))))
 
