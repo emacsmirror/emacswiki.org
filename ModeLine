@@ -1,39 +1,48 @@
-The '''[::mode line]''' is at the bottom of every Emacs [[Window]] aside from MiniBuffer windows.[http://www.gnu.org/s/emacs/manual/html_node/elisp/Mode-Line-Format.html] It has useful summary information about the buffer shown in the window, including its name and current modes.
+The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]].  It has useful summary information about the buffer shown in the window, including its name and current modes.
 
-Here is a screenshot that shows three windows with their mode lines:
+== Parts of the mode line ==
+
+This screenshot shows three internal Emacs windows, each with a mode line at the bottom.  The mode lines use black text on a yellow/beige background, and are called out with blue lines.
 
 [[image:DrewsEmacsWindowCallouts]]
 
-For complete information on the contents of mode lines, see [[Manual:mode line]] in the EmacsManual. The information in a mode line usually includes the following:
+The information in a mode line usually includes the following:
 * Whether or not the buffer has been modified:
-** '''##**##''' -- modified since last save
-** '''##--##''' -- not modified since last save
-** '''##%*##''' -- read-only, but modified
-** '''##%%##''' -- read-only, not modified
-: In the screenshot, buffers ##*Help*## and ##drews-lisp-20## are read-only (unmodified); buffer ##shrink-fit.el## is writable and unmodified.
-* Buffer name -- for example, a file name.
-* The name of one or more [[MajorMode]]s or [[MinorMode]]s of the buffer , surrounded by parentheses. In the screenshot, buffer ##shrink-fit.el## is in major mode ##Emacs-Lisp## (and in no minor mode). In Emacs 22, you can click the major-mode and minor-mode names for additional behavior.
-: '''Note:''' If the modes are surrounded by square brackets -- like this: ##[(Emacs-Lisp)]## -- then you are in a ''recursive'' edit. You may want to do `##C-]##' (command `abort-recursive-edit') to get out of it.
-* Line number of the TextCursor (and [[Point]]), and perhaps the column number. In the screenshot, the cursor is in column 0 (`C0') of line 234 (`L234') of buffer ##shrink-fit.el##.
-* Position in buffer:
-** `Top' -- the ''beginning'' of the buffer is shown in the window
-** `Bot' -- the ''end'' of the buffer is shown in the window
-** `All' -- ''all'' of the buffer is shown in the window
-** a percentage -- percentage of the buffer ''above'' the top of the window.
-In the screenshot, the first ##48%## of buffer ##shrink-fit.el## is not shown.
-* Coding system of the buffer: a character indicating the general conversion and possibly a string indicating the end-of-line translation
-** ##-## -- no code conversion, except possibly end-of-line translation
-** ##=## -- no code conversion or end-of-line translation
-** ##1## -- ISO Latin 1 code conversion
-** another character - another code conversion -- see the Emacs manual
-: All of the buffers in the screenshot are unconverted (##-##).
-* End-of-line translation:
-** ##(Unix)## -- newline character separates lines
-** ##(DOS)## or ##\## -- carriage-return plus linefeed separates lines
-** ##(MAC)## or ##/## -- carriage-return separates lines
-: All of the buffers in the screenshot have newline-separated lines (##(Unix)##).
+** ##**## -- modified since last save
+** ##--## -- not modified since last save
+** ##%*## -- read-only, but modified
+** ##%%## -- read-only, not modified
+** In the screenshot, buffers ##*Help*## and ##drews-lisp-20## are read-only (unmodified); buffer ##shrink-fit.el## is writable and unmodified.
+* Buffer name -- For example the file name being visited
+* The name of one or more [[MajorMode]]s or [[MinorMode]]s of the buffer, surrounded by parentheses
+** One can click the major-mode and minor-mode names to get a menu of related options (Emacs 22+)
+** Square brackets -- like this: ##[(Emacs-Lisp)]## -- indicate a RecursiveEdit
 
-See also ModeLineConfiguration.
+* Line number of the TextCursor and [[Point]], and perhaps the column number
+** In the screenshot, in buffer ##shrink-fit.el##, the cursor is in column 0 (##C0##) of line 234 (##L234##)
+* Position in buffer:
+** ##Top## -- the ''beginning'' of the buffer is shown in the window
+** ##Bot## -- the ''end'' of the buffer is shown in the window
+** ##All## -- ''all'' of the buffer is shown in the window
+** A percentage, like ##42%## -- amount of the buffer ''above'' the ''top'' of the window (the portion before the visible text)
+** In the screenshot, the first ##48%## of buffer ##shrink-fit.el## is not shown
+* Coding system of the buffer (related to the characters used for different human languages)
+** ##-## -- no code conversion, except possibly end-of-line translation
+** ##=## -- no code conversion ''or'' end-of-line translation
+** ##1## -- ISO Latin 1 code conversion
+** Anything else -- Some other code conversion.  See [[Manual:International Character Set Support]] in the Emacs manual
+** All of the buffers in the screenshot have no conversion applied (##-##)
+* End-of-line translation:
+** ##(Unix)## -- newline character separates lines, as used by Unix, Linux and !MacOS X
+** ##(DOS)## or ##\## -- carriage-return plus linefeed separates lines, as used by Microsoft, DEC, and others
+** ##(MAC)## or ##/## -- carriage-return separates lines, as used by classic Macintosh (not !MacOS X)
+** All of the buffers in the screenshot have newline-separated lines (##(Unix)##)
+
+== See also ==
+
+* ModeLineConfiguration -- Information and links on customizing the mode line to your taste
+* [[Manual:Mode Line]] -- Emacs user manual, on the mode line and how to customize it
+* [[Manual:Mode Line Format]] -- Emacs technical manual, on the mode line
 
 ----
 CategoryDisplay
