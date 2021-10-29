@@ -57,7 +57,24 @@ The default mode line is base up of several components, themselves each a variab
 
 As of Emacs 27.1, the default `mode-line-format` is:
 
-    (%e mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode)    mode-line-modes mode-line-misc-info mode-line-end-spaces)
+    (%e mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode) mode-line-modes mode-line-misc-info mode-line-end-spaces)
+
+Broken down, that is:
+
+|| Item   || Meaning ||
+|| ##%e## || Out-of-memory error message, or nothing ||
+|| ##mode-line-front-space## || Dash (##-##) for text terminals, a space (## ##) for graphic displays ||
+|| ##mode-line-mule-info## || Information on character sets, encodings, and other human-language details ||
+|| ##mode-line-client## || Identifies frames created by ##emacsclient## ||
+|| ##mode-line-modified## || Modified and read-only status ||
+|| ##mode-line-remote## || At-sign (##@##) for buffers visiting remote files, otherwise a dash ||
+|| ##mode-line-frame-identification## || Frame title, for some platforms ||
+|| ##mode-line-buffer-identification## || Buffer/file name, or other details for non-file buffers ||
+|| ##mode-line-position## || Line, column, and portion (percent) of [[point]] in buffer, and total size of buffer ||
+|| ##(vc-mode vc-mode)## || FIXME ??? ||
+|| ##mode-line-modes## || Major and minor modes, in parenthesis, plus square brackets for recursive edits ||
+|| ##mode-line-misc-info## || Defun name for `which-function-mode', clock for `display-time-mode'
+|| ##mode-line-end-spaces## || A line of dashes for text terminals; nothing for graphics displays ||
 
 === Percent Sign Constructs ==
 
