@@ -55,7 +55,7 @@ Fundamentally, every mode line variable is made up of:
 
 The default mode line is base up of several components, themselves each a variable you can modify.  Among other things, this allows one to heavily customize one part of the mode line, while leave the rest at defaults, or as done by Easy Customization.  (It also allows different [[face]]s and mouse menus to be assigned to each part of the mode line.)
 
-As of Emacs 27.1, the default `mode-line-format` is:
+As of Emacs 27.1, the default `mode-line-format' is:
 
     (%e mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode) mode-line-modes mode-line-misc-info mode-line-end-spaces)
 
