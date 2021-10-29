@@ -39,14 +39,59 @@ There are a number of enhancements particular to the mode line:
 
 == Manual Customization ==
 
-Customize the mode line by altering the `mode-line-format' variable.  HideModeLine by setting `mode-line-format' to `nil'.  The mode line is [[buffer]]-specific, meaning that the same buffer has the same mode line in different windows.
+Customize the mode line by altering the `mode-line-format' variable, or its components.  HideModeLine by setting `mode-line-format' to `nil'.  The mode line is [[buffer]]-specific, meaning that the same buffer has the same mode line in different windows.
 
+See also [[Manual:Mode Line Format]] in the Emacs Lisp Reference Manual.
+
+=== Syntax ===
+
+Fundamentally, every mode line variable is made up of:
 
 * '''string''' -- A string appears verbatim, except for %-constructs embedded in the string
-* '''symbol''' -- A LISP symbol stands for its value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.
-* '''(string rest...)''', '''(list rest...)''' -- A list whose first element is a string or list means to process all the elements recursively and concatenate the results. This is the most common form of mode-line construct.
+* '''symbol''' -- A LISP symbol is evaluated for its value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.
+* '''lists''' -- A list whose first element is a string (##(string rest...)##) or list ##(list rest...)##) means to process all the elements recursively and concatenate the results.
 
-See also [[Manual:Mode Line Format]] in the Emacs Lisp Reference Manual
+=== Mode Line Components ===
+
+The default mode line is base up of several components, themselves each a variable you can modify.  Among other things, this allows one to heavily customize one part of the mode line, while leave the rest at defaults, or as done by Easy Customization.  (It also allows different [[face]]s and mouse menus to be assigned to each part of the mode line.)
+
+As of Emacs 27.1, the default `mode-line-format` is:
+
+    (%e mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode)    mode-line-modes mode-line-misc-info mode-line-end-spaces)
+
+=== Percent Sign Constructs ==
+
+The heart of the classic mode line mechanism are what the manual calls ''%-constructs'' -- a percent sign (##%##) followed by a single character.  Every occurrence of such a construct in a mode line string, is replaced with useful information.  The %-constructs are are listed below.
+
+Several of these use the technique of evaluating to some kind of status indicator if a given condition is in effect, or, if not in effect, evaluating as an empty string or other placeholder.  This allows the mode line to accumulate status fields that appear as applicable.
+
+|| Symbol || Replacement value ||
+|| ##%b## || buffer name ||
+|| ##%f## || file name, with path ||
+|| ##%F## || frame name ||
+|| ##%s## || process status, or ##no process## ||
+|| ##%l## || line number ||
+|| ##%n## || ##Narrow## if the window is narrowed, otherwise nothing ||
+|| ##%t## || text/binary file mode, for platforms that make that distinction (like Microsoft Windows)  ||
+|| ##%z## || coding systems in effect for keyboard, terminal, and file/buffer ||
+|| ##%Z## || same as ##%z## plus end-of-line format ||
+|| ##%*## || buffer status - ##%## if read-only, otherwise ##*## if modified, otherwise ##-## ||
+|| ##%+## || buffer status - ##*## if modified, otherwise ##%## if read-only, otherwise ##-## ||
+|| ##%&## || buffer status - ##*## if modified, otherwise ##-## ||
+|| ##%@## || default-directory status - ##@## if remote, ##-## if local ||
+|| ##%[## || recursive editing level, one ##[## for each level deep ||
+|| ##%]## || recursive editing level, one ##]## for each level deep ||
+|| ##%c## || column number, first column is zero ||
+|| ##%C## || column number, first column is one ||
+|| ##%i## || buffer size, in bytes ||
+|| ##%I## || buffer size, auto-scaled to K/M/G ||
+|| ##%p## || percent of buffer above top of window ||
+|| ##%P## || percent buffer above bottom of window ||
+|| ##%e## || out-of-memory error message, if any ||
+|| ##%%## || literal ##%## ||
+|| ##%-## || "infinitely many dashes" ||
+
+The combination of ##%*## and ##%+## achieve the four-way ##--##, ##%%##, ##**##, ##%*## buffer status indicator.
 
 === Example ===
 
