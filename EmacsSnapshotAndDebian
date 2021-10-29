@@ -75,7 +75,7 @@ The following packages are available through apt and might need to be installed.
 Get the required dependencies with build-dep.
 
 {{{
-    sudo apt build-dep emacs25
+    sudo apt build-dep emacs-gtk
 }}}
 
 === Building from the source ===
