@@ -21,6 +21,19 @@ This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is runni
 
 This may not work correctly on Windows 7. See MsWindowsSevenProblems
 
+== Pin to Taskbar (Windows 10) ==
+On Windows 10 and later pinning shortcut created by installer to Windows taskbar will pin runemacs.exe, when clicked such pin will spawn other
+process (emacs.exe) and create another un-pinned same-looking icon on taskbar. To avoid this:
+
+1. Remove (unpin) any Emacs pinned icons from taskbar
+
+2. Start Emacs from Start menu (or run runemacs.exe directly)
+
+3. Pin newly created taskbar icon, right-click it and in context menu right-click "emacs" and select "Properties"
+
+4. In shown dialog in Target field replace emacs.exe with runemacs.exe and click Apply
+
+
 == Right-Click Context Menu == 
 You may want to add a command to "Open in Emacs" when you right click on files in Explorer. There are several solutions to that which you can find here: MsWindowsGlobalContextMenu
 
