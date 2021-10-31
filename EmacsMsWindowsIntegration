@@ -21,7 +21,13 @@ This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is runni
 
 This may not work correctly on Windows 7. See MsWindowsSevenProblems
 
-== Pin to Taskbar (Windows 10) ==
+
+
+
+
+
+
+== Pin Shortcut to Taskbar (Windows 10) ==
 On Windows 10 and later pinning shortcut created by installer to Windows taskbar will pin runemacs.exe, when clicked such pin will spawn other
 process (emacs.exe) and create another un-pinned same-looking icon on taskbar. To avoid this:
 
@@ -32,6 +38,13 @@ process (emacs.exe) and create another un-pinned same-looking icon on taskbar. T
 3. Pin newly created taskbar icon, right-click it and in context menu right-click "emacs" and select "Properties"
 
 4. In shown dialog in Target field replace emacs.exe with runemacs.exe and click Apply
+
+
+[new:DrewAdams:2021-10-31 23:31 UTC]
+Sorry, but I don't understand this.  Is the problem you cite only for a *"shortcut created by installer"*?  If so, what does that mean (what installer; what's special about such a shortcut)?
+
+I just create a shortcut manually to ##Z:\Emacs-26.3\bin\runemacs.exe --debug-init## (or whatever), and then pin that shortcut to the Task Bar.  I have Windows 10, and I have no problem if I do that. -- DrewAdams
+[new]
 
 
 == Right-Click Context Menu == 
