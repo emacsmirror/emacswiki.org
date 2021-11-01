@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 10 10:17:20 2021 (-0700)
+;; Last-Updated: Mon Nov  1 09:10:38 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 3372
+;;     Update #: 3375
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -35,7 +35,7 @@
 ;;    `clear-regexp-search-ring' `clear-search-history',
 ;;    `clear-search-ring', `clear-search-histories',
 ;;    `comment-region-lines', `compare-windows-repeat',
-;;    `count-chars-in-region', `count-words-rectangle' (Emacs 26+),
+;;    `count-chars-in-region', `count-rectangle-contents' (Emacs 26+),
 ;;    `delete-extra-windows-for-buffer', `delete-lines',
 ;;    `delete-window-maybe-kill-buffer.', `end-of-line+',
 ;;    `end-of-visual-line+.', `forward-char-same-line',
@@ -107,6 +107,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/01 dadams
+;;     Renamed count-words-rectangle to count-rectangle-contents (not just about words).
+;;     count-rectangle-contents: Return all of the values, not just the word count.
 ;; 2021/10/10 dadams
 ;;     count-words-rectangle: Finished correction to count.
 ;; 2021/10/09 dadams
@@ -857,29 +860,33 @@ selects backward.)"
 
 (when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
 
-  ;; Same as in library `modeline-posn.el'.
-  (defun count-words-rectangle (start end &optional allow-partial-p msgp)
-    "Count words in the rectangle from START to END.
-This is similar to `count-words', but for a rectangular region.
+  ;; Same as in library `modeline-region.el'.
+  (defun count-rectangle-contents (start end &optional count-partial-words-p msgp)
+    "List the number of rows, columns, words, and chars for a rectangle.
+Return a list of the number of rows (lines), columns (chars per row),
+words, and chars.  If called interactively, echo those numbers.
 
-Also:
+Option `mlr-count-partial-words-flag' controls whether to count words
+that straddle the beginning or end of a rectangle row.  A prefix arg
+flips the behavior specified by the option value.
 
-* By default, a word that straddles the beginning or end of a
-  rectangle row is not counted.  That is, by default count only words
-  that are entirely within the rectangle.
+When called from Lisp:
 
-* A prefix arg means count also such partial words at row boundaries.
-
-If called interactively, START and END are the bounds of the start and
-end of the active region.  Print a message reporting the number of
-rows (lines), columns (characters per row), words, and characters.
-
-If called from Lisp, return only the number of words in the rectangle
-between START and END, without printing any message."
-    (interactive "r\nP\np")
-    (let ((bounds  (extract-rectangle-bounds start end))
+* START and END are the limits of the active region.
+* Non-nil COUNT-PARTIAL-WORDS-P means count partial words (option
+  `mlr-count-partial-words-flag'is ignored).
+* Non-nil MSGP means echo the counts."
+    (interactive
+     (list (region-beginning)
+           (region-end)
+           (if current-prefix-arg (not mlr-count-partial-words-flag) mlr-count-partial-words-flag)
+           t))
+    (let ((rows    (count-lines start end))
+          (cols    (let ((rpc  (save-excursion (rectangle--pos-cols (region-beginning) (region-end)))))
+                     (abs (- (car rpc) (cdr rpc)))))
           (words   0)
           (chars   0)
+          (bounds  (extract-rectangle-bounds start end))
           this-ws beg end)
       (dolist (beg+end  bounds)
         (setq beg      (car beg+end)
@@ -887,7 +894,7 @@ between START and END, without printing any message."
               this-ws  (count-words beg end)
               words    (+ words this-ws)
               chars    (+ chars (- end beg)))
-        (unless allow-partial-p
+        (unless count-partial-words-p
           (when (and (not (zerop this-ws))
                      (char-after (1- beg))  (equal '(2) (syntax-after (1- beg)))
                      (char-after beg)       (equal '(2) (syntax-after beg)))
@@ -898,16 +905,13 @@ between START and END, without printing any message."
                      (char-after end)       (equal '(2) (syntax-after     end)))
             (setq words  (1- words)))))
       (when msgp
-        (let ((rows  (count-lines start end))
-              (cols  (let ((rpc  (save-excursion
-                                   (rectangle--pos-cols (region-beginning) (region-end)))))
-                       (abs (- (car rpc) (cdr rpc))))))
-          (message "Rectangle has %d row%s, %d colum%s, %d word%s, and %d char%s."
-                   rows  (if (= rows 1)  "" "s")
-                   cols  (if (= cols 1)  "" "s")
-                   words (if (= words 1) "" "s")
-                   chars (if (= chars 1) "" "s"))))
-      words))
+        (message "Rectangle has %d row%s, %d colum%s, %d word%s, and %d char%s."
+                 rows  (if (= rows 1)  "" "s")
+                 cols  (if (= cols 1)  "" "s")
+                 words (if (= words 1) "" "s")
+                 chars (if (= chars 1) "" "s")))
+      (list rows cols words chars)))
+
   )
 
 (unless (fboundp 'line-number-at-pos)   ; Exists in Emacs 22.
