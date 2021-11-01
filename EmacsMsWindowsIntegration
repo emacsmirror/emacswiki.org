@@ -47,7 +47,11 @@ I just create a shortcut manually to ##Z:\Emacs-26.3\bin\runemacs.exe --debug-in
 [new]
 
 [new:blami:2021-11-02 01:47 JST]
-Do you pin the shortcut (1) by going to Start menu while Emacs not running and right clicking shortcut and selecting "Pin to taskbar", or (2) directly by running Emacs from that shortcut (no matter if yours or installer but pointing to runemacs.exe) right-clicking icon that it created on taskbar and selecting "Pin to taskbar"?. In case (1) when you click such taskbar pin it will not activate (underline) as Emacs starts but instead create another Emacs icon for emacs.exe on taskbar (problem). In case (2) emacs.exe will be pinned and clicking such pin will activate pin and not create another icon (ok) but will also show command line window (problem). These can be avoided by steps described above on both Windows 10 and 11. Sorry if it's not clear, English is not my first language. -- blami
+Do you pin the shortcut (1) by going to Start menu while Emacs not running and right clicking shortcut and selecting "Pin to taskbar", or (2) directly by running Emacs from that shortcut (no matter if yours or installer but pointing to runemacs.exe) right-clicking icon that it created on taskbar and selecting "Pin to taskbar"?. In case (1) when you click such taskbar pin it will not activate (underline) as Emacs starts but instead create another Emacs icon for emacs.exe on taskbar (problem). In case (2) emacs.exe will be pinned and clicking such pin will activate pin and not create another icon (ok) but will also show command line window (problem). These can be avoided by steps described above on both Windows 10 and 11. Sorry if it's not clear, English is not my first language.
+
+Did quick search on the Internet and I am not alone who has this problem (and came to this solution): https://www.reddit.com/r/emacs/comments/8b9rvc/windows_emacs_in_taskbar_avoid_having_two_icons/ 
+
+-- blami
 [new]
 
 
