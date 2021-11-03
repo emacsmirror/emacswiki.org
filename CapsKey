@@ -98,6 +98,23 @@ The links are dead, but you can use [http://www.autohotkey.com/ AutoHotkey].
 [new:SamuelBronson:2012-02-04 20:43 UTC]
 I fixed the links, so they're not dead anymore. (But you can still try AutoHotKey.)
 
+[h3]An example AutoHotKey script[/h3]
+
+This remaps Caps Lock to control globally in windows. It also disables ctrl in emacs (to force unlearning of bad RSI key combinations - the first 3 lines can be removed to disable this). It also remaps caps lock functionality to start+caps lock for a fallback in case this is required. Currently using with AHK Version 1.1.33.04 on Win 10. 
+<pre>
+#IfWinActive emacs@
+LCtrl::return
+#IfWinActive
+#CapsLock::
+SetCapsLockState % !GetKeyState("CapsLock", "T")
+return
+*CapsLock::
+Send {Ctrl down}
+return
+*CapsLock Up::
+Send {Ctrl up}
+return
+</pre>
 [new:JonasOster:2006-09-29 14:55 UTC]
 I remap Caps Lock to Super. This enables me to create very comfortable and intuitive key bindings without interfering with the standard Emacs bindings. See example on my wiki home page (JonasOster).
 
