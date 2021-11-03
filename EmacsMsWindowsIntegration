@@ -52,7 +52,24 @@ Do you pin the shortcut (1) by going to Start menu while Emacs not running and r
 Did quick search on the Internet and I am not alone who has this problem (and came to this solution): https://www.reddit.com/r/emacs/comments/8b9rvc/windows_emacs_in_taskbar_avoid_having_two_icons/ 
 
 -- blami
-[new]
+
+
+
+[new:DrewAdams:2021-11-03 13:47 UTC]
+I just do the same thing I've always done, in previous versions of Windows (back at least through Windows XP). I create a shortcut to `runemacs.exe` in the same folder as that executable. And I pin that shortcut to the task bar. Then I just click that pinned icon to start a new Emacs session.
+
+No matter how many sessions I create, they all get piled onto the same icon that's created for the sessions (this icon is over to the right - it's not the icon that's pinned). Even if I create sessions in other ways than using a shortcut pinned to the task bar, and even if they're for other Emacs releases, they're all piled into the same icon (at the right). -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
 
 
 == Right-Click Context Menu == 
