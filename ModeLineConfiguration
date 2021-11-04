@@ -15,7 +15,7 @@ Display of some information in the mode line is governed by these standard minor
 
 == Easy Customization ==
 
-There is an interactive [[CustomizingAndSaving Customization]] group for the mode line.  In the standard menus, find `Options -> Customize Emacs -> Top-level Customization Group`, and then navigate to `Environment -> Mode Line`.
+There is an interactive [[CustomizingAndSaving|Customization]] group for the mode line.  In the standard menus, find `Options -> Customize Emacs -> Top-level Customization Group`, and then navigate to `Environment -> Mode Line`.
 
 == Enhancements ==
 
