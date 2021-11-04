@@ -33,6 +33,14 @@ target directory if you use jde-compile instead of a full maven build.
  '(jde-compile-option-directory "./../../target/classes"))
 </pre>
 
+This does not accept all POMs.  A pom starting with
+
+<pre>
+<?xml version="1.0" encoding="UTF-8"?>
+</pre>
+
+will be rejected.  The start element needs to be <code><?xml></code> with no attributes or extra spaces.
+
 ----
 CategoryProgrammerUtils
 JavaDevelopmentEnvironment
