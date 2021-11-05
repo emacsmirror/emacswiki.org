@@ -1,0 +1,95 @@
+This page is about library '''<tt>[[modeline-region.el]]</tt>''', which provides information about the active region in the [[mode line]], using [[minor mode]] '''`modeline-region-mode'''' and its globalized version '''`global-modeline-region-mode''''.
+
+These modes enhance the buffer size indication
+in the mode-line, that is, what is provided by vanilla [[option]]
+'''`mode-line-position'''' with '''`size-indication-mode'''' turned on.  (These modes automatically turn on `size-indication-mode'.)
+
+*Region information is shown in the mode-line when the region is
+active* -- you can show the the region size in various ways.
+
+To use this library, put file ##modeline-region.el## in a directory in your
+`load-path', and add this to your [[init file]]:
+
+  (require 'modeline-region)
+
+If you want to turn on this showing of active-region information
+in the mode-line globally (in all buffers) then add this as well:
+
+  (global-modeline-region-mode 1)
+
+Otherwise, to turn it on/off in a given buffer or globally, use
+command `modeline-region-mode' or `global-modeline-region-mode',
+respectively.
+
+Whether an empty active region is indicated by these modes is
+controlled by [[option]] '''`mlr-empty-region-flag''''.  By default an empty
+region ''is'' indicated, to avert you to the fact that
+you're acting on an empty region.
+
+When these modes are on, information about the region size is
+shown in the mode-line using face '''`mlr-region'''', by default.  By
+default, this face looks the same as face `region'.
+
+But when you use a ''command that acts on the region'', the
+mode-line indication instead uses face '''`mlr-region-acting-on'''', to
+draw attention to this fact.
+
+In particular, if you use library <tt>[[isearch+.el]]</tt> (see IsearchPlus) then you can
+restrict [[Isearch]] commands and replacement commands to the active region (this
+is controlled by [[option]] `isearchp-restrict-to-region-flag').
+Then, because such commands act on the region the mode-line
+indication uses face `mlr-region-acting-on'.
+
+When mode `modeline-region-mode' or `global-modeline-region-mode'
+is on, the menu shown when you click the mode-line ''position'' or
+''size'' fields lets you do the following, regardless of whether the
+region is currently active, in addition to the usual operations of
+toggling showing of column and line numbers and indication size:
+
+* Toggle *Showing More Region Info* -- Command
+   `mlr-toggle-non-rectangle-style': toggle the value of [[option]]
+   '''`mlr-non-rectangle-style''''.
+
+* Toggle *Showing More Rectangle Info* -- Command
+   `mlr-toggle-rectangle-style': toggle the value of [[option]]
+   '''`mlr-rectangle-style''''.
+
+* *Choose Region Style* -- Command `mlr-choose-region-style':
+   Choose what to show in the mode-line when the region is active.
+   That is, change [[option]] '''`mlr-region-style'''' to a style you
+   choose.  The option value is changed, but it's not saved.  Use
+   `M-x customize-option' to save it.
+
+When the region is active the menu also includes this item:
+
+* *Count Region Contents* -- Command `count-words-region': Echo
+   the number of lines, words, and chars in the region.
+
+When the active region is ''rectangular'' the menu also includes this
+item:
+
+* *Count Rectangle Contents* -- Command
+   `mlr-count-rectangle-contents': Echo the number of rows,
+   columns, words, and chars in the rectangle.  By default, the
+   count excludes words that straddle the rectangle row limits;
+   with a prefix arg those words are counted.
+
+_____
+
+An unrelated additional enhancement is provided by [[option]]
+'''`mlr-column-limit''''.  This highlights the current-column number in the mode-line
+whenever it's greater than the option value, letting you know when
+you've gone past a certain number of characters in any line.
+
+_____
+
+This library supersedes my older library <tt>[[modeline-posn.el]]</tt> (see ModeLinePosition).  This new
+one is more correct, more featureful, and cleaner.
+
+
+
+
+
+----
+
+CategoryDisplay CategoryEditing CategoryRegion CategoryWindows CategoryModeLine CategoryModeLineConfiguration
