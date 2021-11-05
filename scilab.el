@@ -192,7 +192,7 @@
 (require 'tempo)
 (require 'derived)
 
-(defconst scilab-mode-version "2.1.27quad(V. Bela�che)"
+(defconst scilab-mode-version "2.1.28(V. Belaïche)"
  "Current version of Scilab mode.")
 (defvar scilab-mode-all-versions nil
  "Current status of Scilab mode, Emacs/Xemacs and existence of client.")
@@ -1558,7 +1558,6 @@ All Key Bindings:
  (make-local-variable 'comment-indent-function)
  (setq comment-indent-function 'scilab-comment-indent)
  (make-local-variable 'fill-column)
- (setq fill-column default-fill-column)
  (make-local-variable 'auto-fill-function)
  (make-local-variable 'which-func-format)
  (setq which-func-format scilab-which-func-format)
@@ -7160,4 +7159,3 @@ Useful if you accidentally suspend the top-level process."
 ;;; "sasasas",...
 ;;;; "sasasas,... 
 ;;;
-;;; Version 2.1.27
