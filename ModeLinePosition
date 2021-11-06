@@ -1,5 +1,13 @@
 == Mode-Line Position ==
 
+[new:DrewAdams:2021-11-06 21:45 UTC]
+2021-11-06: The library this page describes has been superseded by library ModeLineRegion (<tt>[[modeline-region.el]]</tt>), which is more correct, more featureful, and cleaner.
+
+(For now, this page's description is still useful, including the screenshots.  The info here is largely applicable also to ModeLineRegion.)
+[new]
+
+---- 
+
 This page describes library <tt>[[modeline-posn.el]]</tt>, which provides extensions to the standard Emacs variable `mode-line-position' for Emacs 22 and later. That variable governs the behavior of minor modes `line-number-mode',  `column-number-mode', and `size-indication-mode', which show/hide the current line number, column number, and buffer size, respectively, in the [[mode line]].
 
 The following extensions are provided by library ##modeline-posn.el##:
