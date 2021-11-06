@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov  5 15:44:50 2021 (-0700)
+;; Last-Updated: Sat Nov  6 14:02:06 2021 (-0700)
 ;;           By: dradams
-;;     Update #: 105
+;;     Update #: 113
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -18,22 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
-;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
-;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
-;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `strings', `syntax',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -175,13 +160,6 @@
 ;;    `mlr-rows+cols+words+chars-format', `mlr-menu',
 ;;    `modeline-region-mode-map'.
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; TO DO:
-;;;
-;;; 1. Maybe make more of the `defcustom's buffer-local?
-;;;    E.g. `mlr-region-style', `mlr(-non)-rectangle-style',...? 
-;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
@@ -220,12 +198,16 @@
 ;; Quiet the byte-compiler.
 ;;
 (defvar cua-rectangle-mark-mode)          ; In `cua-rect.el'
-(defvar isearchp-reg-beg)                 ; In `isearch+.el'
-(defvar isearchp-reg-end)                 ; In `isearch+.el'
-(defvar isearchp-restrict-to-region-flag) ; In `isearch+.el'
-(defvar mlr--orig-mode-line-position)     ; Here
-(defvar rectangle-mark-mode)              ; In `rect.el'
-(defvar rectangle--string-preview-window) ; In `rect.el' for Emacs 25+
+(defvar isearchp-reg-beg)                    ; In `isearch+.el'
+(defvar isearchp-reg-end)                    ; In `isearch+.el'
+(defvar isearchp-restrict-to-region-flag)    ; In `isearch+.el'
+(defvar mlr--orig-mode-line-position)        ; Here
+(defvar mlr-rectangle-style)                 ; Here, for Emacs 26+
+(defvar rectangle--inhibit-region-highlight) ; In `rect.el' for Emacs 25+
+(defvar rectangle-mark-mode)                 ; In `rect.el'
+(defvar rectangle--string-preview-state)     ; In `rect.el' for Emacs 25+
+(defvar rectangle--string-preview-window)    ; In `rect.el' for Emacs 25+
+(defvar string-rectangle-history)            ; In `rect.el' for Emacs 25+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -319,6 +301,9 @@ When called from Lisp:
            (region-end)
            (if current-prefix-arg (not mlr-count-partial-words-flag) mlr-count-partial-words-flag)
            t))
+    (declare-function rectangle--pos-cols "rect.el" (start end &optional window) 'FILEONLY)
+    (declare-function rectangle--string-preview "rect.el" () 'FILEONLY)
+    (declare-function rectangle--default-line-number-format "rect.el" (start end start-at) 'FILEONLY)
     (let ((rows    (count-lines start end))
           (cols    (let ((rpc  (save-excursion
                                  (rectangle--pos-cols (region-beginning) (region-end)))))
