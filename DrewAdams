@@ -196,6 +196,8 @@ This page describes my EmacsLisp libraries: '''DrewsElispLibraries'''.
 === Recent Developments ===
 
 [new]
+* '''[[Sortie]]'''-- interactive sorting of completion candidates (<tt>[[sortie.el]]</tt>)
+* '''KeySee''' -- key and menu completion (<tt>[[keysee.el]]</tt>)
 * '''[[AproposUnicode|Apu]]''' -- `apropos' and more for Unicode characters
 * '''[[Bookmark+]]''' -- record places and things, tag stuff
 * '''[[Isearch+]]''' -- IncrementalSearch enhancements
@@ -209,7 +211,7 @@ This page describes my EmacsLisp libraries: '''DrewsElispLibraries'''.
 * '''ThingAtPointCommands''' -- commands to select things near the [[cursor]]
 * HighLight -- highlight text in different ways, hide/show [[face]]s
 * [[Mouse+]] -- highlight the [[yank]] position while you press ‘mouse-2’; other mouse enhancements
-* ModeLinePosition -- enhanced [[mode line]] support for [[variable]] `mode-line-position' (Emacs 22 and later)
+* '''ModeLineRegion''' -- show info about the active [[region]] in the [[mode line]] (<tt>[[modeline-region.el]]</tt>)
 * CrosshairHighlighting, HighlightCurrentLine, HighlightCurrentColumn, ChangingCursorDynamically -- ways to make the [[cursor]] location ([[point]]) more apparent
 * CustomizingAndSaving  -- how to make [[Customize]] play better with the rest of Emacs
 * ModeLineMinorModeMenu -- Pop up MinorMode menus from the [[mode line]]
