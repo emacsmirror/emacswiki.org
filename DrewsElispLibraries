@@ -99,7 +99,8 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
 * <tt>[[modeline-char.el]]</tt> -- in [[mode line]], show the value of the char after point - see ModeLineCharacterInfo
-* <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition''' (superseded by '''ModeLineRegion''')
+* <tt>[[modeline-region.el]]</tt> -- show info about the active [[region]] in the [[mode line]] -- see '''ModeLineRegion'''
 * <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
 * <tt>[[mouse3.el]]</tt> -- customizable behavior for `mouse-3' -- see [[Mouse3]]
 * <tt>[[naked.el]]</tt> -- provide for naked key descriptions: no angle brackets -- see NaKeD
@@ -113,6 +114,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions -- see SaveHist.
 * <tt>[[second-sel.el]]</tt> -- secondary-selection enhancements -- see '''[[SecondarySelection]]'''
 * <tt>[[showkey.el]]</tt> -- show keys as you use them -- see ShowKey
+* <tt>[[sortie.el]]</tt> -- interactive sorting of completion candidates -- see '''[[Sortie]]'''
 * <tt>[[subr+.el]]</tt> -- extensions to standard library `subr.el' -- see SplittingStrings
 * <tt>[[synonyms.el]]</tt> -- search and browse a hyperlinked thesaurus -- see '''[[Synonyms]]'''
 * <tt>[[thing-cmds.el]]</tt> -- commands to select things near the [[cursor]] -- see '''ThingAtPointCommands'''
@@ -134,8 +136,13 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
 * <tt>[[dyna-show.el]]</tt> -- highlight dynamic variables in EmacsLisp -- see '''HighlightDynamicVariables'''
 * <tt>[[keysee.el]]</tt> -- key and menu completion -- see '''KeySee'''
+* <tt>[[modeline-region.el]]</tt> -- show info about the active [[region]] in the [[mode line]] -- see '''ModeLineRegion'''
 * <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
 * <tt>[[notandor.el]]</tt> -- transform Boolean [[sexp]]s using De Morgan's laws -- see '''NotAndOr'''
+* <tt>[[sortie.el]]</tt> -- interactive sorting of completion candidates -- see '''[[Sortie]]'''
+
+
+
 
 
 
@@ -207,6 +214,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[imenu+.el]]</tt> -- extensions to standard library `imenu'; see also '''ImenuMode'''
 * <tt>[[info+.el]]</tt> -- extensions to standard library `info' -- see also '''InfoPlus'''
 * <tt>[[isearch+.el]]</tt> -- extensions to standard library `isearch'; see also '''IncrementalSearch'''
+* <tt>[[keysee.el]]</tt> -- key and menu completion -- see '''KeySee'''
 * <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[Completion]] and cycling, to access MenuBar menus -- see '''LaCarte'''
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist')
 * <tt>[[line-num.el]]</tt> -- display line numbers in left-margin of buffer
@@ -215,6 +223,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[menu-bar+.el]]</tt> -- extensions to standard library `menu-bar'; see '''MenuBarPlus''' and '''HelpMenuBarPlus'''
 * <tt>[[misc-cmds.el]]</tt> -- miscellaneous commands (interactive functions); see also KillingBuffers, SecondarySelection, IsearchPlus, FindLongLines, RepeatKeyDifferentBehaviors, BackToIndentationOrBeginning, and FileModes.
 * <tt>[[misc-fns.el]]</tt> -- miscellaneous non-interactive functions
+* <tt>[[modeline-region.el]]</tt> -- show info about the active [[region]] in the [[mode line]] -- see '''ModeLineRegion'''
 * <tt>[[mouse+.el]]</tt> -- extensions to standard library `mouse' -- see MousePlus
 * <tt>[[next-prev.el]]</tt> -- get or move to next/previous position that satisfies a some predicate
 * <tt>[[novice+.el]]</tt> -- extensions to standard library `novice'
@@ -231,6 +240,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[setup-keys.el]]</tt> -- some key bindings
 * <tt>[[highlight-chars.el]]</tt> -- commands to highlight whitespace: TABs, hard spaces, and trailing whitespace; see also '''ShowWhiteSpace'''
 * <tt>[[simple+.el]]</tt> -- extensions to standard library `simple'
+* <tt>[[sortie.el]]</tt> -- interactive sorting of completion candidates -- see '''[[Sortie]]'''
 * <tt>[[start.el]]</tt> -- main Emacs startup file: require/autoload other files
 * <tt>[[start-opt.el]]</tt> -- some customizations to be done at the end of startup
 * <tt>[[strings.el]]</tt> -- miscellaneous string functions
@@ -260,7 +270,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
-* <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition''' (superseded by '''ModeLineRegion''')
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[rec-edit.el]]</tt> -- recursive-edit enhancements: '''`rec-edit-mode''''.* <tt>[[yes-no.el]]</tt> -- let your users specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
@@ -1100,7 +1110,7 @@ I am not able to see your packages in MELPA.  For example, icicles is missing in
 [:AllLibraries]
 All libraries referenced here: 
 
-Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacsbug+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:keysee.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:highlight-chars.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:ucs-cmds.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:yes-no.el, Lisp:zones.el, Lisp:zoom-frm.el
+Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacsbug+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:keysee.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:modeline-region.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:highlight-chars.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:ucs-cmds.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:yes-no.el, Lisp:zones.el, Lisp:zoom-frm.el
 
 
 
