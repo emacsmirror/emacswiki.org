@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov  6 14:02:06 2021 (-0700)
+;; Last-Updated: Sun Nov  7 15:14:35 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 113
+;;     Update #: 119
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -164,6 +164,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/07 dadams
+;;     mlr-show-region-p: If empty region then return nil if mouse-1 is pressed.
 ;; 2021/11/05 dadams
 ;;     Created.
 ;;
@@ -552,24 +554,22 @@ Choose a style from the `Value Menu':
 
 (defun mlr-show-region-p ()
   "Whether to show mode-line region info and highlighting.
-Return non-nil if region is active and nonempty, or emptiness is OK.
-Option `mlr-empty-region-flag' non-nil means emptiness is OK.
+Return non-nil if the region is active and nonempty, or emptiness is
+OK.  Option `mlr-empty-region-flag' non-nil means emptiness is OK.
 
-But do not return non-nil if the condition is true but you are
-selecting with the mouse.  This is to prevent highlighting the mode
-line whenever you press `mouse-1' without dragging at least one
-character."
-  ;; Fragile hack: Starting with Emacs 24, the region is considered empty as soon as
-  ;; you press `mouse-1' (`down-mouse-1').  That causes modeline highlighting each time
-  ;; you just click `mouse-1', i.e., without dragging it.
-  ;;
-  ;; The hack is to check whether `echo-keystrokes' is 0.  `mouse-drag-track' binds
-  ;; `echo-keystrokes' to 0, and that seems to be the only way to tell whether we are
-  ;; in `mouse-drag-track'.  If the Emacs code for that changes then this might break.
-  ;;
+More precisely, return non-nil for the active region if either of
+these conditions is true:
+ * The region is not empty.
+ * Option `mlr-empty-region-flag' is non-nil, and the last input did
+   not use `mouse-1'.
+
+The `mouse-1' test prevents highlighting the mode line whenever you
+press `mouse-1' without dragging at least one character."
   (ignore-errors (and (region-active-p)
-                      (or (and (not (eq 0 echo-keystrokes))  mlr-empty-region-flag)
-                          (> (region-end) (region-beginning))))))
+                      (or (> (region-end) (region-beginning))
+                          (and mlr-empty-region-flag
+                               (not (eq 'down-mouse-1 (car-safe last-input-event)))
+                               (not (mouse-movement-p last-input-event)))))))
 
 ;;; Add commands to mode-line menu.
 ;;;
