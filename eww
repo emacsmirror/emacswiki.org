@@ -1,5 +1,5 @@
 [[ja:eww-ja]]
-'''Eww''' (the <b>E</b>acs <b>W</b>eb <b>W</b>owser) is a Web browser written in elisp and based on shr.el.
+'''Eww''' (the <b>E</b>macs <b>W</b>eb <b>W</b>owser) is a Web browser written in elisp and based on shr.el.
 
 Eww is included in Emacs 24.4 and later.
 
