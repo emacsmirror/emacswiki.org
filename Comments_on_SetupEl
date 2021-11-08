@@ -1,10 +1,48 @@
 
+[new:DrewAdams:2021-10-08 02:27 UTC]
+I didn't realize that you had created this library, which has the same name as my library <tt>[[setup.el]]</tt> (in the %%EmacsWiki%% ElispArea), which has existed since 1996 and been on the wiki since 2004.
+
+I'm hoping you're rename yours that uses the same name. (Admittedly, the name is not a great one nowadays, in any case; it's been around a long time.)
+
+Thx - DrewAdams
+
+[new:PhilipKaludercic:2021-10-08 07:51 UTC]
+
+I found out about your setup.el recently, but sadly too late, as I and others have been using it for a while now. Should be maybe add Wikipedia style "Disambiguation" links to avoid confusion?
+
+-- PhilipKaludercic
+
+[new:DrewAdams:2021-10-10 00:06 UTC]
+''"for a while now"''
+
+You certainly haven't been using it as long I and others have been using my ##setup.el##.  Which one is it "too late" to rename?  Which library should keep the name, do you think?
+
+Where do we end, if this kind of thing goes on -- no respect/cooperation wrt precedent?  What's to stop others from doing the same (to you)?  Is that the kind of environment/community you want to foster?
+
+If you won't rename, then I guess I'll have to.  "Sadly", indeed.  (Not the end of the world -- but this shouldn't be necessary on my part.)
+
+[I have to say that I think there was a lot more cooperation and mutual respect in the "old days".  People didn't hesitate to acknowledge/reference the slightest borrowing/inspiration etc.  That seems rare now, as if every idea or implementation springs ''sui generis'' from thin air by the artist.  (To be clear: I'm not saying you borrowed anything without attribution.  Just making a more general point about the degree of cooperation I perceive nowadays.)]
+
+-- DrewAdams
+
+[new:PhilipKaludercic:2021-10-11 11:15 UTC]
+
+I guess what I don't understand, is why anything has to be renamed.  What is the issue with two files coexisting on the internet with the same name?  Obviously I don't want to burden (let alone disrespect) you or your  users, I just don't get the real issue of having a name conflict, if one package is on EmacsWiki and the other one is on ELPA.
+
+-- PhilipKaludercic
+
+[new:DrewAdams:2021-10-11 18:53 UTC]
+I think the answer is obvious.  Just imagine if there were multiple libraries of any other name - available from different sources, whether different GIT repositories or any other locations.
+
+Even you acknowledged such name conflict as "sad" - and indeed it is.  Fortunately, it can be fixed, given the will.  Why did you say that, if you really thought there is no issue?
+
+People have played very well with each other about this kind of thing in the past.  No one tries to name their library the same as another -- in fact, just the opposite.
+
+ -- DrewAdams
+
 Just wanted to add to the argument of setup vs setup.el, the name is so generic that honestly either of you should complain about duplicates.
 
 -- exoticus 2021-10-25 23:59 UTC
-
-
-----
 
 "either" or "neither"? But yes, you are right. I like generic names, which is why I chose setup but I didn't know that Drew had a library with the same name.
 
