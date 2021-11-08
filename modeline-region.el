@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  7 15:14:35 2021 (-0800)
+;; Last-Updated: Sun Nov  7 21:17:06 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 119
+;;     Update #: 123
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -18,7 +18,22 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
+;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
+;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `ring', `second-sel', `strings', `syntax',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -166,6 +181,7 @@
 ;;
 ;; 2021/11/07 dadams
 ;;     mlr-show-region-p: If empty region then return nil if mouse-1 is pressed.
+;;     mlr-menu: Reordered, to put Showing items together.
 ;; 2021/11/05 dadams
 ;;     Created.
 ;;
@@ -574,6 +590,18 @@ press `mouse-1' without dragging at least one character."
 ;;; Add commands to mode-line menu.
 ;;;
 (defvar mlr-menu (let ((map  (make-sparse-keymap "Position/Size Information")))
+                   (when (fboundp 'mlr-count-rectangle-contents) ; Emacs 26+
+                     (define-key map [mlr-count-rectangle-contents]
+                       '(menu-item "Count Rectangle Contents" mlr-count-rectangle-contents
+                                   :help "Show number of rows, columns, words, and chars in rectangle"
+                                   :visible mlr-rect-p)))
+                   (define-key map [count-words-region]
+                     '(menu-item "Count Region Contents" count-words-region
+                                 :help "Show number of lines, words, and chars in active region"
+                                 :visible (use-region-p)))
+                   (define-key map [mlr-choose-region-style]
+                     '(menu-item "Choose Region Style" mlr-choose-region-style
+                                 :help "Change the value of option `mlr-region-style'"))
                    (when (fboundp 'mlr-toggle-rectangle-style) ; Emacs 26+
                      (define-key map [mlr-toggle-rectangle-style]
                        '(menu-item "Showing More Rectangle Info" mlr-toggle-rectangle-style
@@ -587,18 +615,6 @@ press `mouse-1' without dragging at least one character."
                                  :enable size-indication-mode
                                  :button (:toggle . (eq 'lines+words+chars
                                                         mlr-non-rectangle-style))))
-                   (when (fboundp 'mlr-count-rectangle-contents) ; Emacs 26+
-                     (define-key map [mlr-count-rectangle-contents]
-                       '(menu-item "Count Rectangle Contents" mlr-count-rectangle-contents
-                                   :help "Show number of rows, columns, words, and chars in rectangle"
-                                   :visible mlr-rect-p)))
-                   (define-key map [count-words-region]
-                     '(menu-item "Count Region Contents" count-words-region
-                                 :help "Show number of lines, words, and chars in active region"
-                                 :visible (use-region-p)))
-                   (define-key map [mlr-choose-region-style]
-                     '(menu-item "Choose Region Style" mlr-choose-region-style
-                                 :help "Change the value of option `mlr-region-style'"))
                    (define-key map [size-indication-mode]
                      '(menu-item "Showing Size Indication" size-indication-mode
                                  :help "Toggle displaying a size indication in the mode-line"
