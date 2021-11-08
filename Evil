@@ -373,7 +373,7 @@ in evil search:
 
 [https://github.com/Dewdrops/powerline Here] is a powerline fork tuned for Evil user.
 
-== counsel-yank-pop (or yank-pop) intergration in visual mode ==
+== counsel-yank-pop (or yank-pop) integration in visual mode ==
 
 `counsel-yank-pop' in visual mode does not replace the region, instead it just inserts the text.
 To fix this behavior, I simply advise `counsel-yank-pop' with a function that kills the region. 
