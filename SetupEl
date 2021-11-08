@@ -6,7 +6,9 @@ Setup is self-documented: To get an overview of all known local macros, just rea
 
 == Basics ==
 
-You can use the setup macro in a InitFile with LexicalBinding. Each setup body may start with a name, that sets the context for the current body. Without this, no default context is set. Within the setup body, local-macros (i.e. macros that are only defined in the setup body) may want to make use of the context, to generate code.
+The setup macro is to be used in your InitFile. By default, it behaves just like progn, evaluating everything at once. What it introduces are context-sensitive local macros. Understanding what setup.el does means understanding the previous sentence. These macros are "local" because they can only be used within a setup body. They are "context-sensitive", because their expansion can depend on where they are written. The context may include the current feature that is being configured, the current mode, the current hook, the current map, etc.
+
+Each setup body may start with a name, that sets the feature-context for the current body. Without this, no default context is set.
 
 E.g.
 
