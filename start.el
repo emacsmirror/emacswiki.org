@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 20 10:37:02 2021 (-0700)
+;; Last-Updated: Tue Nov  9 12:26:50 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 3102
+;;     Update #: 3107
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,10 @@
 ;;
 ;; Change Log:
 ;;
+;; 2021/11/09 dadams
+;;     Soft-require modeline-region.el for Emacs 24+.
+;; 2021/11/01 dadams
+;;     No longer (soft-)require modeline-posn.el.
 ;; 2021/08/20 dadams
 ;;     Soft-require dyna-show.el.
 ;; 2020/12/13 dadams
@@ -433,8 +437,10 @@
 
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'oneonone nil t))            ; Default frame configuration.
-(when (boundp 'mode-line-position)      ; Emacs 22+ - Mode-line highlighting of position and size.
-  (require 'modeline-posn nil t))
+(when (> emacs-major-version 23)        ; Emacs 24+ - Mode-line region-size indication.
+  (require 'modeline-region nil t))
+;;; (when (boundp 'mode-line-position)  ; Emacs 22+ - Mode-line highlighting of position and size.
+;;;   (require 'modeline-posn nil t))
 (when (boundp 'pre-redisplay-function)  ; Emacs 24.4+ - Mode-line Highlight of selected window bufname.
   (require 'modeline-win nil t))
 (when (> emacs-major-version 21)        ; Emacs 22+ - Mode-line current-character info.
