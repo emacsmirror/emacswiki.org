@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  7 21:17:06 2021 (-0800)
+;; Last-Updated: Tue Nov  9 13:31:48 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 123
+;;     Update #: 149
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -18,22 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
-;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
-;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
-;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `strings', `syntax',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -160,8 +145,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `mlr--advice-1', `mlr--advice-2', `mlr--advice-3',
-;;    `mlr--advice-10', `mlr--advice-17', `mlr--set-var',
-;;    `mlr-show-region-p', `turn-on-modeline-region-mode'.
+;;    `mlr--advice-10', `mlr--advice-17', `mlr-show-region-p',
+;;    `turn-on-modeline-region-mode'.
 ;;
 ;;  Constants defined here:
 ;;
@@ -171,14 +156,22 @@
 ;;
 ;;    `mlr-bytes-format', `mlr-chars-format',
 ;;    `mlr-lines+chars-format', `mlr-lines+words+chars-format',
-;;    `mlr-rect-p', `mlr-region-acting-on', `mlr-rows+cols-format',
-;;    `mlr-rows+cols+words+chars-format', `mlr-menu',
+;;    `mlr--orig-mlp-local-p', `mlr--orig-mode-line-position',
+;;    `mlr-menu', `mlr-rect-p', `mlr-region-acting-on',
+;;    `mlr-rows+cols-format', `mlr-rows+cols+words+chars-format',
 ;;    `modeline-region-mode-map'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/09 dadams
+;;     Added: mlr--orig-mlp-local-p.
+;;     mlr--orig-mode-line-position, mlr-region-acting-on: Use defvar-local.
+;;     modeline-region-mode: Restore mode-line-position - local or global (use mlr--orig-mlp-local-p).
+;;     (global-)modeline-region-mode: Added autoload cookie.
+;;     mlr--region-style-alist: Removed unneeded autoload cookie.
+;;     Removed unused mlr--set-var.
 ;; 2021/11/07 dadams
 ;;     mlr-show-region-p: If empty region then return nil if mouse-1 is pressed.
 ;;     mlr-menu: Reordered, to put Showing items together.
@@ -219,7 +212,6 @@
 (defvar isearchp-reg-beg)                    ; In `isearch+.el'
 (defvar isearchp-reg-end)                    ; In `isearch+.el'
 (defvar isearchp-restrict-to-region-flag)    ; In `isearch+.el'
-(defvar mlr--orig-mode-line-position)        ; Here
 (defvar mlr-rectangle-style)                 ; Here, for Emacs 26+
 (defvar rectangle--inhibit-region-highlight) ; In `rect.el' for Emacs 25+
 (defvar rectangle-mark-mode)                 ; In `rect.el'
@@ -252,14 +244,6 @@ the region is active."
   "Face for modeline position & size when a command acts on active region."
   :group 'modeline-region :group 'faces)
 
-(defvar mlr-rect-p nil
-  "Non-nil means the current command is a rectangle command.")
-
-(defvar mlr-region-acting-on nil
-  "Non-nil means that a command is acting on the active region.
-It is the responsibility of individual commands to manage the value.")
-(make-variable-buffer-local 'mlr-region-acting-on)
-
 ;;;###autoload
 (defcustom mlr-column-limit 70
   "Current column greater than this means highlight column in mode-line."
@@ -288,16 +272,23 @@ rectangle."
           (const :tag "Lines and characters"    lines+chars)
           (const :tag "Lines, words, and chars" lines+words+chars)))
 
-(defun mlr-toggle-non-rectangle-style (&optional msgp)
-  "Toggle value of option `mlr-non-rectangle-style'."
-  (interactive "p")
-  (setq mlr-non-rectangle-style  (if (eq mlr-non-rectangle-style 'lines+chars)
-                                     'lines+words+chars
-                                   'lines+chars))
-  (force-mode-line-update 'ALL)
-  (when msgp (message "`mlr-non-rectangle-style' is now `%s'" mlr-non-rectangle-style)))
-
 (when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
+
+  (defcustom mlr-rectangle-style 'rows+cols
+    "Mode-line info about region size when a rectangle is selected."
+    :group 'modeline-region
+    :type '(choice
+            (const :tag "Rows and columns"                rows+cols)
+            (const :tag "Rows, columns, words, and chars" rows+cols+words+chars)))
+
+  (defun mlr-toggle-rectangle-style (&optional msgp)
+    "Toggle value of option `mlr-rectangle-style'."
+    (interactive "p")
+    (setq mlr-rectangle-style  (if (eq mlr-rectangle-style 'rows+cols)
+                                   'rows+cols+words+chars
+                                 'rows+cols))
+    (force-mode-line-update 'ALL)
+    (when msgp (message "`mlr-rectangle-style' is now `%s'" mlr-rectangle-style)))
 
   (defun mlr-count-rectangle-contents (start end &optional count-partial-words-p msgp)
     "List the number of rows, columns, words, and chars for a rectangle.
@@ -353,23 +344,6 @@ When called from Lisp:
                  words (if (= words 1) "" "s")
                  chars (if (= chars 1) "" "s")))
       (list rows cols words chars)))
-
-  (defcustom mlr-rectangle-style 'rows+cols
-    "Mode-line info about region size when a rectangle is selected."
-    :group 'modeline-region
-    :type '(choice
-            (const :tag "Rows and columns"                rows+cols)
-            (const :tag "Rows, columns, words, and chars" rows+cols+words+chars)))
-
-  (defun mlr-toggle-rectangle-style (&optional msgp)
-    "Toggle value of option `mlr-rectangle-style'."
-    (interactive "p")
-    (setq mlr-rectangle-style  (if (eq mlr-rectangle-style 'rows+cols)
-                                   'rows+cols+words+chars
-                                 'rows+cols))
-    (force-mode-line-update 'ALL)
-    (when msgp (message "`mlr-rectangle-style' is now `%s'" mlr-rectangle-style)))
-
   )
 
 (defvar mlr-chars-format " %d Chars"
@@ -391,6 +365,19 @@ It should start with a SPC char and expect those two input values.")
   "Format string for the number of lines, words, and chars in region.
 Used for `mlr-non-rectangle-style'.
 It should start with a SPC char and expect those thres input values.")
+
+(defvar-local mlr--orig-mlp-local-p nil
+  "(local-variable-p 'mode-line-position) before `modeline-region-mode'.")
+
+(defvar-local mlr--orig-mode-line-position nil
+  "Value of `mode-line-position' before turning on `modeline-region-mode'.")
+
+(defvar mlr-rect-p nil
+  "Non-nil means the current command is a rectangle command.")
+
+(defvar-local mlr-region-acting-on nil
+  "Non-nil means that a command is acting on the active region.
+It is the responsibility of individual commands to manage the value.")
 
 (defvar mlr-rows+cols-format " %d rows, %d cols"
   "Format string for the number of rows and columns in rectangle.
@@ -468,7 +455,6 @@ It corresponds to the Customize `Value Menu' choice
 ;; This constant value must be identical to the code used in the `:type' spec
 ;; of the `mlr-region-style' `defcustom'.
 ;;
-;;;###autoload
 (defconst mlr--region-style-alist
   `((chars (mlr-chars-format
             (if (and mlr-rect-p  (fboundp 'extract-rectangle-bounds)) ; Emacs 26+
@@ -632,14 +618,20 @@ press `mouse-1' without dragging at least one character."
   "Menu keymap for `modeline-region.el' features.
 Used in place of `mode-line-column-line-number-mode-map'.")
 
+(defun mlr-toggle-non-rectangle-style (&optional msgp)
+  "Toggle value of option `mlr-non-rectangle-style'."
+  (interactive "p")
+  (setq mlr-non-rectangle-style  (if (eq mlr-non-rectangle-style 'lines+chars)
+                                     'lines+words+chars
+                                   'lines+chars))
+  (force-mode-line-update 'ALL)
+  (when msgp (message "`mlr-non-rectangle-style' is now `%s'" mlr-non-rectangle-style)))
+
 ;;;###autoload
 (defvar modeline-region-mode-map (make-sparse-keymap)
   "Keymap for minor mode `modeline-region-mode'")
 
-(defun mlr--set-var (variable value)
-  "Return a function that restores VARIABLE to VALUE."
-  (lambda () (set variable  value)))
-
+;;;###autoload
 (define-minor-mode modeline-region-mode
   "Toggle showing region information in the mode-line.
 The information shown depends on options `mlr-region-style',
@@ -649,8 +641,9 @@ The information shown depends on options `mlr-region-style',
   nil nil nil :keymap 'modeline-region-mode-map
   (cond (modeline-region-mode
          (size-indication-mode 1)
+         (setq mlr--orig-mlp-local-p  (local-variable-p 'mode-line-position))
          (make-local-variable 'mode-line-position)
-         (setq-local mlr--orig-mode-line-position  mode-line-position)
+         (setq mlr--orig-mode-line-position  mode-line-position)
          ;; Use region size if region is active.
          ;; Highlight line & column indicator if column > `mlr-column-limit'.
          (setq-local mode-line-position
@@ -751,8 +744,9 @@ The information shown depends on options `mlr-region-style',
          (advice-add 'isearch-query-replace :around 'mlr--advice-18)
          (advice-add 'isearch-query-replace-regexp :around 'mlr--advice-19))
         (t
-         (make-local-variable 'mlr--orig-mode-line-position)
-         (setq-local mode-line-position  mlr--orig-mode-line-position)
+         (if mlr--orig-mlp-local-p
+             (setq-local mode-line-position  mlr--orig-mode-line-position)
+           (set (kill-local-variable 'mode-line-position) mlr--orig-mode-line-position))
          (advice-remove 'replace-dehighlight #'mlr--advice-1)
          (advice-remove 'query-replace-read-args #'mlr--advice-2)
          (advice-remove 'query-replace-read-to #'mlr--advice-2)
@@ -791,6 +785,7 @@ The information shown depends on options `mlr-region-style',
   "Turn on `modeline-region-mode'."
   (modeline-region-mode))
 
+;;;###autoload
 (define-globalized-minor-mode global-modeline-region-mode modeline-region-mode
  turn-on-modeline-region-mode)
  
