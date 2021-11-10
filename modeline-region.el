@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov  9 13:31:48 2021 (-0800)
+;; Last-Updated: Wed Nov 10 13:46:17 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 149
+;;     Update #: 165
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -62,6 +62,10 @@
 ;;  indication instead uses face `mlr-region-acting-on', to draw
 ;;  attention to this fact.
 ;;
+;;  Specific commands and non-interactive functions are advised, to
+;;  realize this feature of indicating that they act specially on the
+;;  region.
+;;
 ;;  In particular, if you use library `isearch+.el' then you can
 ;;  restrict Isearch commands and replacement commands to the active
 ;;  region (this is controlled by option
@@ -69,11 +73,26 @@
 ;;  act on the region the mode-line indication uses face
 ;;  `mlr-region-acting-on'.
 ;;
+;;  If you have additional functions that you want to use face
+;;  `mlr-region-acting-on', to draw attention to the fact that they're
+;;  currently acting on the active region, you can just add an advice
+;;  function to the hook `modeline-region-mode-hook'.  Add the advice
+;;  when the mode is turned on, and remove it when the mode is turned
+;;  off.  You can use the existing advice functions defined here,
+;;  `mlr--advice-*', as models.
+;;
+;;  For example, function `mlr--advice-3' just binds variable
+;;  `mlr-region-acting-on' to the value of `(use-region-p)'.  That's
+;;  all that's needed, in general, but in some cases you'll want an
+;;  `:around' advice to also contain an `interactive' spec that's
+;;  specific to the advised function.
+;;
 ;;  When mode `modeline-region-mode' or `global-modeline-region-mode'
-;;  is on, the menu shown when you click the mode-line position or
-;;  size fields lets you do the following, regardless of whether the
-;;  region is currently active, in addition to the usual operations of
-;;  toggling showing of column and line numbers and indication size:
+;;  is enabled, the menu shown when you click the mode-line position
+;;  or size fields lets you do the following, regardless of whether
+;;  the region is currently active, in addition to the usual
+;;  operations of toggling showing of column and line numbers and
+;;  indication size:
 ;;
 ;;   * Toggle `Showing More Region Info' - Command
 ;;     `mlr-toggle-non-rectangle-style': toggle the value of option
