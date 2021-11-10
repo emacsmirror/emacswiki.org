@@ -30,6 +30,9 @@ To also exclude messages sent by the server when you join a channel, such as the
     (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                     "324" "329" "332" "333" "353" "477"))
 
+(the full list of strangely numbered irc message types can be found on the irc RFC:
+https://datatracker.ietf.org/doc/html/rfc1459)
+
 To ignore changes in the server buffer, set `erc-track-exclude-server-buffer'.
 
 == Switch to last active channel ==
