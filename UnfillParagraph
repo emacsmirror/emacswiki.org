@@ -15,7 +15,7 @@ It works where a line ends with a newline character ("\n") and paragraphs are se
     ;; Handy key definition
     (define-key global-map "\M-Q" 'unfill-paragraph)
 
-It is worth mentioning here that the key sequence ESC 9 9 9 9 9 9 9 9 ^X f sets fill-column to a very large number. With that, the key sequence M-q , or M-x fill-paragraph, unfills paragraphs. (That is eight digit 9s. Going to nine of them wraps the number to  -73741825 and foils that behavior.)
+It is worth mentioning here that the key sequence <code>ESC 9 9 9 9 9 9 9 9 ^X f</code> sets fill-column to a very large number. With that, the key sequence <code>M-q</code> , or <code>M-x</code> fill-paragraph, unfills paragraphs. (That is eight digit 9s. Going to nine of them wraps the number to  -73741825 and foils that behavior.)
 
 See also UnfillRegion, UnwrapLine.
 
