@@ -54,7 +54,7 @@ As of yasnippet version 0.9.1, prompts will use `ido' if `ido-mode' is enabled b
                                                 choices))
                                (action . (("Expand" . identity)))))
                        "*helm-select-yasnippet")))
-          (cond ((null results)
+          (cond ((null result)
                  (signal 'quit "user quit!"))
                 (display-fn
                  (catch 'result
