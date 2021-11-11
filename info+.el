@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 16 14:01:44 2021 (-0700)
+;; Last-Updated: Thu Nov 11 09:54:24 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7452
+;;     Update #: 7454
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -621,6 +621,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/11 dadams
+;;     Bind Info-url-for-node to W.
 ;; 2021/10/16 dadams
 ;;     Added: Info-toggle-fontify-extra, info-last-non-nil-fontify-extra-function.
 ;;     Info-fontify-extra-function is now a user option.
@@ -1367,6 +1369,7 @@
 (define-key Info-mode-map "G"               'Info-goto-node-web)
 (define-key Info-mode-map "O"               'Info-toc-outline)
 (define-key Info-mode-map "v"               'Info-virtual-book)
+(define-key Info-mode-map "W"               'Info-url-for-node)
 (define-key Info-mode-map (kbd "C-x DEL")   'Info-change-visited-status)
 ;; Mouse back and forward buttons
 (define-key Info-mode-map [S-down-mouse-2]  'Info-mouse-follow-nearest-node-new-window)
@@ -3531,6 +3534,8 @@ virtual book) using \\<Info-mode-map>`\\[Info-save-current-node]' (`Info-save-cu
   (info)
   (Info-find-node 'toc "Top"))
 
+;; Vanilla Emacs added this from Info+ on 2021-11-11, in response to bug #44895.
+;;
 ;;;###autoload (autoload 'Info-goto-node-web "info+")
 (defun Info-goto-node-web (node &optional flip-new-win)
   "Use `browse-url' to go to Info node NODE using a Web browser.
@@ -3577,6 +3582,9 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
 ;;    string can never occur otherwise; it is an arbitrary choice,
 ;;    standing for “GNU Texinfo”.) This is necessary because XHTML
 ;;    requires that identifiers begin with a letter.
+;;
+;;
+;; Vanilla Emacs added this from Info+ on 2021-11-11, in response to bug #44895.
 ;;
 ;;;###autoload (autoload 'Info-url-for-node "info+")
 (defun Info-url-for-node (node)
