@@ -33,7 +33,7 @@ But when you use a ''command that acts on the region'', the
 mode-line indication instead uses face '''`mlr-region-acting-on'''', to
 draw attention to this fact.
 
-Specific [[command]]s and non-interactive functions are advised, to
+Specific [[command]]s and non-interactive functions are ''advised'', to
 realize this feature of indicating that they act specially on the
 region.
 
