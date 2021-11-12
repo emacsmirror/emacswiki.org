@@ -91,7 +91,7 @@ When the active region is ''rectangular'' the menu also includes this item:
    with a prefix arg those words are counted.
 
 
-This library also adds these items to the mode-line menu for position and size fields:
+This library also adds these items to the mode-line menu for the position and size fields:
 
 * *Show Region Info Here* -- Command `modeline-region-mode'.
 
