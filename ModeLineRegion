@@ -56,18 +56,18 @@ all that's needed, in general, but in some cases you'll want an
 `:around' advice to also contain an `interactive' spec that's specific to the advised function.
 
 When mode `modeline-region-mode' or `global-modeline-region-mode'
-is enabled, the menu shown when you click the mode-line ''position'' or
+is enabled, the menu shown when you click the mode-line ''position'' and
 ''size'' fields lets you do the following, regardless of whether the
 region is currently active, in addition to the usual operations of
 toggling showing of column and line numbers and indication size:
 
-* Toggle *Showing More Region Info* -- Command
+* Toggle *+ Region Info* -- Command
    `mlr-toggle-non-rectangle-style': toggle the value of [[option]]
-   '''`mlr-non-rectangle-style''''.
+   '''`mlr-non-rectangle-style''''.  This shows or hides the number of words in the region.
 
-* Toggle *Showing More Rectangle Info* -- Command
+* Toggle *+ More Rectangle Info* -- Command
    `mlr-toggle-rectangle-style': toggle the value of [[option]]
-   '''`mlr-rectangle-style''''.
+   '''`mlr-rectangle-style''''.  This shows or hides the number of words and chars in the rectangle.
 
 * *Choose Region Style* -- Command `mlr-choose-region-style':
    Choose what to show in the mode-line when the region is active.
@@ -80,8 +80,7 @@ When the region is active the menu also includes this item:
 * *Count Region Contents* -- Command `count-words-region': Echo
    the number of lines, words, and chars in the region.
 
-When the active region is ''rectangular'' the menu also includes this
-item:
+When the active region is ''rectangular'' the menu also includes this item:
 
 * *Count Rectangle Contents* -- Command
    `mlr-count-rectangle-contents': Echo the number of rows,
