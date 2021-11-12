@@ -63,11 +63,13 @@ toggling showing of column and line numbers and indication size:
 
 * Toggle '''+ Region Info''' -- Command
    `mlr-toggle-non-rectangle-style': toggle the value of [[option]]
-   '''`mlr-non-rectangle-style''''.  This shows or hides the number of words in the region.
+   '''`mlr-non-rectangle-style''''.  This shows or hides the number of words in the region (in addition to the number of lines and characters).
 
 * Toggle '''+ More Rectangle Info''' -- Command
    `mlr-toggle-rectangle-style': toggle the value of [[option]]
-   '''`mlr-rectangle-style''''.  This shows or hides the number of words and chars in the rectangle.
+   '''`mlr-rectangle-style''''.  This shows or hides the number of words
+and characters in the rectangle (in addition to the number of
+rows and columns).
 
 * *Choose Region Style* -- Command `mlr-choose-region-style':
    Choose what to show in the mode-line when the region is active.
