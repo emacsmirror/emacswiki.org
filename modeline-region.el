@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 10 13:46:17 2021 (-0800)
+;; Last-Updated: Fri Nov 12 14:48:37 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 165
+;;     Update #: 206
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -89,18 +89,22 @@
 ;;
 ;;  When mode `modeline-region-mode' or `global-modeline-region-mode'
 ;;  is enabled, the menu shown when you click the mode-line position
-;;  or size fields lets you do the following, regardless of whether
+;;  and size fields lets you do the following, regardless of whether
 ;;  the region is currently active, in addition to the usual
 ;;  operations of toggling showing of column and line numbers and
 ;;  indication size:
 ;;
 ;;   * Toggle `Showing More Region Info' - Command
 ;;     `mlr-toggle-non-rectangle-style': toggle the value of option
-;;     `mlr-non-rectangle-style'.
+;;     `mlr-non-rectangle-style'.  This shows or hides the number of
+;;     words in the region (in addition to the number of lines and
+;;     characters).
 ;;
 ;;   * Toggle `Showing More Rectangle Info' - Command
 ;;     `mlr-toggle-rectangle-style': toggle the value of option
-;;     `mlr-rectangle-style'.
+;;     `mlr-rectangle-style'.  This shows or hides the number of words
+;;     and characters in the rectangle (in addition to the number of
+;;     rows and columns).
 ;;  
 ;;   * `Choose Region Style' - Command `mlr-choose-region-style':
 ;;     Choose what to show in the mode-line when the region is active.
@@ -121,6 +125,28 @@
 ;;     columns, words, and chars in the rectangle.  By default, the
 ;;     count excludes words that straddle the rectangle row limits;
 ;;     with a prefix arg those words are counted.
+;;
+;;  This library also adds these items to the mode-line menu for the
+;;  position and size fields:
+;;
+;;   * `Show Region Info Here' - Command `modeline-region-mode'.
+;;
+;;   * `Show Region Info Globally' - Command
+;;     `global-modeline-region-mode'.
+;;
+;;  This means that you can use the mode-line position and size menus
+;;  to toggle showing region info on and off - no need to invoke the
+;;  mode commands from the keyboard to do that.
+;;
+;;  All of these improvements to the mode-line position and size field
+;;  menus are provided automatically.
+;;
+;;  By default this is done just by loading this library.  But if you
+;;  prefer not to have that done except on demand, then customize
+;;  option `mlr-init-menu-on-load-flag' to `nil'.  If you do that then
+;;  the menus will only be enhanced when you invoke
+;;  `modeline-region-mode' or `global-modeline-region-mode' for the
+;;  first time.
 ;;
 ;;  _____
 ;;
@@ -147,8 +173,9 @@
 ;;  User options defined here:
 ;;
 ;;    `mlr-column-limit', `mlr-count-partial-words-flag',
-;;    `mlr-empty-region-flag', `mlr-non-rectangle-style',
-;;    `mlr-rectangle-style', `mlr-region-style'.
+;;    `mlr-empty-region-flag', `mlr-init-menu-on-load-flag',
+;;    `mlr-non-rectangle-style', `mlr-rectangle-style',
+;;    `mlr-region-style'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -164,7 +191,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `mlr--advice-1', `mlr--advice-2', `mlr--advice-3',
-;;    `mlr--advice-10', `mlr--advice-17', `mlr-show-region-p',
+;;    `mlr--advice-10', `mlr--advice-17',
+;;    `mlr-set-default-mode-line-position', `mlr-show-region-p',
 ;;    `turn-on-modeline-region-mode'.
 ;;
 ;;  Constants defined here:
@@ -175,19 +203,28 @@
 ;;
 ;;    `mlr-bytes-format', `mlr-chars-format',
 ;;    `mlr-lines+chars-format', `mlr-lines+words+chars-format',
-;;    `mlr--orig-mlp-local-p', `mlr--orig-mode-line-position',
-;;    `mlr-menu', `mlr-rect-p', `mlr-region-acting-on',
-;;    `mlr-rows+cols-format', `mlr-rows+cols+words+chars-format',
-;;    `modeline-region-mode-map'.
+;;    `mlr--mlp-is-set-up-p', `mlr--orig-mlp-local-p',
+;;    `mlr--orig-mode-line-position', `mlr-menu', `mlr-rect-p',
+;;    `mlr-region-acting-on', `mlr-rows+cols-format',
+;;    `mlr-rows+cols+words+chars-format', `modeline-region-mode-map'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/12 dadams
+;;     Added: mlr-init-menu-on-load-flag, mlr-set-default-mode-line-position, mlr--mlp-is-set-up-p.
+;;     modeline-region-mode:
+;;       Set up mode-line-position menus only if not yet done.  Do it using
+;;       mlr-set-default-mode-line-position.  Use mode-line-percent-position if defined (Emacs 26+).
+;;     mlr--orig-mode-line-position: Initialize to mode-line-position value, not nil.
+;;     mlr-menu: Add items (global-)modeline-region-mode.  Remove :visible.  Set :enable to
+;;               (and size-indication-mode modeline-region-mode) or
+;;               (and size-indication-mode  (or modeline-region-mode  global-modeline-region-mode)).
 ;; 2021/11/09 dadams
 ;;     Added: mlr--orig-mlp-local-p.
 ;;     mlr--orig-mode-line-position, mlr-region-acting-on: Use defvar-local.
-;;     modeline-region-mode: Restore mode-line-position - local or global (use mlr--orig-mlp-local-p).
+;;     modeline-region-mode: Restore mode-line-position, local or global (use mlr--orig-mlp-local-p).
 ;;     (global-)modeline-region-mode: Added autoload cookie.
 ;;     mlr--region-style-alist: Removed unneeded autoload cookie.
 ;;     Removed unused mlr--set-var.
@@ -281,6 +318,16 @@ rectangle."
 ;;;###autoload
 (defcustom mlr-empty-region-flag t
   "Non-nil means indicate an active region even when empty."
+  :group 'modeline-region :type 'boolean)
+
+;;;###autoload
+(defcustom mlr-init-menu-on-load-flag t
+  "Non-nil means set up menus when `modeline-region.el' is loaded.
+That is, when you load the library initialize `mode-line-position'
+menus to include items relevant to `modeline-region-mode'.
+
+If nil then the menus don't reflect such items until you invoke that
+command or its globalized version, `global-modeline-region-mode'"
   :group 'modeline-region :type 'boolean)
 
 ;;;###autoload
@@ -385,10 +432,15 @@ It should start with a SPC char and expect those two input values.")
 Used for `mlr-non-rectangle-style'.
 It should start with a SPC char and expect those thres input values.")
 
+(defvar mlr--mlp-is-set-up-p nil
+  "Non-nil means `mode-line-position' menus have been set up.
+That is, they include entries for `modeline-region-mode'.
+\(This set-up only needs to be done once.)")
+
 (defvar-local mlr--orig-mlp-local-p nil
   "(local-variable-p 'mode-line-position) before `modeline-region-mode'.")
 
-(defvar-local mlr--orig-mode-line-position nil
+(defvar-local mlr--orig-mode-line-position mode-line-position
   "Value of `mode-line-position' before turning on `modeline-region-mode'.")
 
 (defvar mlr-rect-p nil
@@ -498,6 +550,10 @@ It corresponds to the Customize `Value Menu' choice
     (lines/rows\ &\ chars/cols ,mlr--region-style-default))
   "Alist for `mlr-choose-region-style'.")
 
+;;;###autoload
+(defvar modeline-region-mode-map (make-sparse-keymap)
+  "Keymap for minor mode `modeline-region-mode'")
+
 (defun mlr-choose-region-style ()
   "Change option `mlr-region-style' to a style you choose.
 The option value is changed, but it's not saved.
@@ -599,37 +655,59 @@ press `mouse-1' without dragging at least one character."
                      (define-key map [mlr-count-rectangle-contents]
                        '(menu-item "Count Rectangle Contents" mlr-count-rectangle-contents
                                    :help "Show number of rows, columns, words, and chars in rectangle"
-                                   :visible mlr-rect-p)))
+                                   :enable (and size-indication-mode
+                                                modeline-region-mode
+                                                mlr-rect-p))))
                    (define-key map [count-words-region]
                      '(menu-item "Count Region Contents" count-words-region
                                  :help "Show number of lines, words, and chars in active region"
-                                 :visible (use-region-p)))
+                                 :enable (and size-indication-mode
+                                              modeline-region-mode
+                                              (use-region-p))))
                    (define-key map [mlr-choose-region-style]
                      '(menu-item "Choose Region Style" mlr-choose-region-style
+                                 :enable (and size-indication-mode
+                                              (or modeline-region-mode
+                                                  global-modeline-region-mode))
                                  :help "Change the value of option `mlr-region-style'"))
                    (when (fboundp 'mlr-toggle-rectangle-style) ; Emacs 26+
                      (define-key map [mlr-toggle-rectangle-style]
-                       '(menu-item "Showing More Rectangle Info" mlr-toggle-rectangle-style
+                       '(menu-item "+ Rectangle Info" mlr-toggle-rectangle-style
                                    :help "Toggle value of option `mlr-rectangle-style'"
-                                   :enable size-indication-mode
+                                   :enable (and size-indication-mode
+                                                (or modeline-region-mode
+                                                    global-modeline-region-mode))
                                    :button (:toggle . (eq 'rows+cols+words+chars
                                                           mlr-rectangle-style)))))
                    (define-key map [mlr-toggle-non-rectangle-style]
-                     '(menu-item "Showing More Region Info" mlr-toggle-non-rectangle-style
+                     '(menu-item "+ Region Info" mlr-toggle-non-rectangle-style
                                  :help "Toggle value of option `mlr-non-rectangle-style'"
-                                 :enable size-indication-mode
+                                 :enable (and size-indication-mode
+                                              (or modeline-region-mode
+                                                  global-modeline-region-mode))
                                  :button (:toggle . (eq 'lines+words+chars
                                                         mlr-non-rectangle-style))))
+                   (define-key map [separator-region-info] '("--"))
+                   (define-key map [global-modeline-region-mode]
+                     '(menu-item "Show Region Info Globally" global-modeline-region-mode
+                                 :help "Toggle `global-modeline-region-mode'"
+                                 :enable size-indication-mode
+                                 :button (:toggle . global-modeline-region-mode)))
+                   (define-key map [modeline-region-mode]
+                     '(menu-item "Show Region Info Here" modeline-region-mode
+                                 :help "Toggle `modeline-region-mode'"
+                                 :enable size-indication-mode
+                                 :button (:toggle . modeline-region-mode)))
                    (define-key map [size-indication-mode]
-                     '(menu-item "Showing Size Indication" size-indication-mode
+                     '(menu-item "Show Size Indication" size-indication-mode
                                  :help "Toggle displaying a size indication in the mode-line"
                                  :button (:toggle . size-indication-mode)))
                    (define-key map [line-number-mode]
-                     '(menu-item "Showing Line Numbers" line-number-mode
+                     '(menu-item "Show Line Numbers" line-number-mode
                                  :help "Toggle displaying line numbers in the mode-line"
                                  :button (:toggle . line-number-mode)))
                    (define-key map [column-number-mode]
-                     '(menu-item "Showing Column Numbers" column-number-mode
+                     '(menu-item "Show Column Numbers" column-number-mode
                                  :help "Toggle displaying column numbers in the mode-line"
                                  :button (:toggle . column-number-mode)))
                    (define-key map [mode-line down-mouse-1] map)
@@ -646,9 +724,88 @@ Used in place of `mode-line-column-line-number-mode-map'.")
   (force-mode-line-update 'ALL)
   (when msgp (message "`mlr-non-rectangle-style' is now `%s'" mlr-non-rectangle-style)))
 
-;;;###autoload
-(defvar modeline-region-mode-map (make-sparse-keymap)
-  "Keymap for minor mode `modeline-region-mode'")
+(defun mlr-set-default-mode-line-position ()
+  "Set up default `mode-line-position' menus for `modeline-region-mode'.
+Set `mlr--mlp-is-set-up-p' to non-nil, to show the menus are set up."
+  (setq-default mode-line-position
+                '(:eval
+                  `((:propertize
+                     (if (boundp 'mode-line-percent-position) mode-line-percent-position (-3 "p"))
+                     local-map mlr-menu
+                     mouse-face mode-line-highlight
+                     help-echo "Buffer position, mouse-1: Line/col menu")
+                    ;; We might be able to remove one or more of these `ignore-error's,
+                    ;; but it seems better to keep them, at least for now.
+                    (size-indication-mode
+                     (8 ,(propertize
+                          (if (and modeline-region-mode
+                                   (or mlr-region-acting-on  (ignore-errors (mlr-show-region-p))))
+                              (or (ignore-errors
+                                    (apply #'format (mapcar #'eval mlr-region-style)))
+                                  "")
+                            " of %I")
+                          'face (and modeline-region-mode
+                                     (if mlr-region-acting-on
+                                         'mlr-region-acting-on
+                                       (and (ignore-errors (mlr-show-region-p))
+                                            'mlr-region)))
+                          'local-map mlr-menu
+                          'mouse-face 'mode-line-highlight
+                          'help-echo "Buffer position, mouse-1: Line/col menu")))
+                    (line-number-mode
+                     ((column-number-mode ; Line-number mode & column-number-mode
+                       (column-number-indicator-zero-based
+                        (10 ,(propertize
+                              " (%l,%c)"
+                              'face (and modeline-region-mode
+                                         mlr-column-limit
+                                         (> (current-column) mlr-column-limit)
+                                         'mlr-column-warning)
+                              'local-map mlr-menu
+                              'mouse-face 'mode-line-highlight
+                              'help-echo "Line and column, mouse-1: Line/col menu"))
+                        (10 ,(propertize
+                              " (%l,%C)"
+                              'face (and modeline-region-mode
+                                         mlr-column-limit
+                                         (> (current-column) mlr-column-limit)
+                                         'mlr-column-warning)
+                              'local-map mlr-menu
+                              'mouse-face 'mode-line-highlight
+                              'help-echo "Line number, mouse-1: Line/col menu")))
+                       (6 ,(propertize
+                            " L%l"
+                            'local-map mlr-menu
+                            'mouse-face 'mode-line-highlight
+                            'help-echo "Line number, mouse-1: Line/col menu"))))
+                     ((column-number-mode ; Column-number-mode only, not line-number mode
+                       (column-number-indicator-zero-based
+                        (5 ,(propertize
+                             " C%c"
+                             'face (and modeline-region-mode
+                                        mlr-column-limit
+                                        (> (current-column) mlr-column-limit)
+                                        'mlr-column-warning)
+                             'local-map mlr-menu
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "Column number, mouse-1: Line/col menu"))
+                        (5 ,(propertize
+                             " C%C"
+                             'face (and modeline-region-mode
+                                        mlr-column-limit
+                                        (> (current-column) mlr-column-limit)
+                                        'mlr-column-warning)
+                             'local-map mlr-menu
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "Column number, mouse-1: Line/col menu")))))))))
+
+  (setq mlr--mlp-is-set-up-p  t) ; Flag to indicate this has been done.
+
+  )
+
+;; Set up the menus when this library is loaded (default behavior).
+;;
+(when mlr-init-menu-on-load-flag (mlr-set-default-mode-line-position))
 
 ;;;###autoload
 (define-minor-mode modeline-region-mode
@@ -660,76 +817,10 @@ The information shown depends on options `mlr-region-style',
   nil nil nil :keymap 'modeline-region-mode-map
   (cond (modeline-region-mode
          (size-indication-mode 1)
+         (unless mlr--mlp-is-set-up-p (mlr-set-default-mode-line-position))
          (setq mlr--orig-mlp-local-p  (local-variable-p 'mode-line-position))
          (make-local-variable 'mode-line-position)
          (setq mlr--orig-mode-line-position  mode-line-position)
-         ;; Use region size if region is active.
-         ;; Highlight line & column indicator if column > `mlr-column-limit'.
-         (setq-local mode-line-position
-                     '(:eval
-                       `((-3 ,(propertize
-                               "%p"
-                               'local-map mlr-menu
-                               'mouse-face 'mode-line-highlight
-                               'help-echo "Buffer position, mouse-1: Line/col menu"))
-                         ;; We might be able to remove one or more of these `ignore-error's,
-                         ;; but it seems better to keep them, at least for now.
-                         (size-indication-mode
-                          (8 ,(propertize
-                               (if (or mlr-region-acting-on  (ignore-errors (mlr-show-region-p)))
-                                   (or (ignore-errors
-                                         (apply #'format (mapcar #'eval mlr-region-style)))
-                                       "")
-                                 " of %I")
-                               'face (if mlr-region-acting-on
-                                         'mlr-region-acting-on
-                                       (and (ignore-errors (mlr-show-region-p))
-                                            'mlr-region))
-                               'local-map mlr-menu
-                               'mouse-face 'mode-line-highlight
-                               'help-echo "Buffer position, mouse-1: Line/col menu")))
-                         (line-number-mode
-                          ((column-number-mode ; Line-number mode & column-number-mode
-                            (column-number-indicator-zero-based
-                             (10 ,(propertize
-                                   " (%l,%c)"
-                                   'face (and mlr-column-limit
-                                              (> (current-column) mlr-column-limit)
-                                              'mlr-column-warning)
-                                   'local-map mlr-menu
-                                   'mouse-face 'mode-line-highlight
-                                   'help-echo "Line and column, mouse-1: Line/col menu"))
-                             (10 ,(propertize
-                                   " (%l,%C)"
-                                   'face (and mlr-column-limit
-                                              (> (current-column) mlr-column-limit)
-                                              'mlr-column-warning)
-                                   'local-map mlr-menu
-                                   'mouse-face 'mode-line-highlight
-                                   'help-echo "Line number, mouse-1: Line/col menu")))
-                            (6 ,(propertize
-                                 " L%l"
-                                 'local-map mlr-menu
-                                 'mouse-face 'mode-line-highlight
-                                 'help-echo "Line number, mouse-1: Line/col menu"))))
-                          ((column-number-mode ; Column-number-mode only, not line-number mode
-                            (column-number-indicator-zero-based
-                             (5 ,(propertize
-                                  " C%c"
-                                  'face (and mlr-column-limit
-                                             (> (current-column) mlr-column-limit)
-                                             'mlr-column-warning)
-                                  'local-map mlr-menu
-                                  'mouse-face 'mode-line-highlight
-                                  'help-echo "Column number, mouse-1: Line/col menu"))
-                             (5 ,(propertize
-                                  " C%C"
-                                  'face (and mlr-column-limit
-                                             (> (current-column) mlr-column-limit)
-                                             'mlr-column-warning)
-                                  'local-map mlr-menu
-                                  'mouse-face 'mode-line-highlight
-                                  'help-echo "Column number, mouse-1: Line/col menu")))))))))
          (advice-add 'replace-dehighlight :after #'mlr--advice-1)
          (advice-add 'query-replace-read-args :around #'mlr--advice-2)
          (advice-add 'query-replace-read-to :around #'mlr--advice-2)
