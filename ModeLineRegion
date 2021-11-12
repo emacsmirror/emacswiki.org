@@ -4,8 +4,7 @@ These modes enhance the buffer size indication
 in the mode-line, that is, what is provided by vanilla [[option]]
 '''`mode-line-position'''' with '''`size-indication-mode'''' turned on.  (These modes automatically turn on `size-indication-mode'.)
 
-*Region information is shown in the mode-line when the region is
-active* -- you can show the the region size in various ways.
+''Region information is shown in the mode-line when the region is active'' -- you can show the the region size in various ways.
 
 To use this library, put file ##modeline-region.el## in a directory in your
 `load-path', and add this to your [[init file]]:
