@@ -61,11 +61,11 @@ is enabled, the menu shown when you click the mode-line ''position'' and
 region is currently active, in addition to the usual operations of
 toggling showing of column and line numbers and indication size:
 
-* Toggle *+ Region Info* -- Command
+* Toggle '''+ Region Info''' -- Command
    `mlr-toggle-non-rectangle-style': toggle the value of [[option]]
    '''`mlr-non-rectangle-style''''.  This shows or hides the number of words in the region.
 
-* Toggle *+ More Rectangle Info* -- Command
+* Toggle '''+ More Rectangle Info''' -- Command
    `mlr-toggle-rectangle-style': toggle the value of [[option]]
    '''`mlr-rectangle-style''''.  This shows or hides the number of words and chars in the rectangle.
 
@@ -87,6 +87,19 @@ When the active region is ''rectangular'' the menu also includes this item:
    columns, words, and chars in the rectangle.  By default, the
    count excludes words that straddle the rectangle row limits;
    with a prefix arg those words are counted.
+
+
+This library also adds these items to the mode-line menu for position and size fields:
+
+* *Show Region Info Here* -- Command `modeline-region-mode'.
+
+* *Show Region Info Globally* -- Command `global-modeline-region-mode'.
+
+This means that you can use the mode-line position and size menus to toggle showing region info on and off - no need to invoke the mode commands from the keyboard to do that.
+
+All of these improvements to the mode-line position and size field menus are provided automatically.
+
+By default this is done just by loading library ##modeline-region.el##.  But if you prefer not to have that done except on demand, then customize option '''`mlr-init-menu-on-load-flag'''' to `nil'.  If you do that then the menus will only be enhanced when you invoke `modeline-region-mode' or `global-modeline-region-mode' for the first time.
 
 _____
 
