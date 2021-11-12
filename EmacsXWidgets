@@ -1,86 +1,54 @@
-The xwidget patch enables embedding of gtk widgets inside emacs buffers.
+[Horribly outdated version of page removed]
 
-mplayer could be embeded in emacs, using mplayers -wid flag, emacs and uzbl are other xembed compatible apps.
+Xwidgets are a feature that allows Emacs to display GTK+ and NS
+widgets inside buffers.
 
-Currently im investigating if its possible to embed generic gtk widgets in a buffer. Then xembed would be solved as well, because of gtk_socket. This is probably rather difficult, but even more interesting than plain xembed
-support. The interface is currently similar to the image support, ie, one puts a display property with an "xwidget" spec on it, on some text. The interface would be toolkit neutral:
+At present, only WebKit widgets are implemented.
 
-(xwidget :type embed ...) etc, different types for different interesting widgets.
+To try out xwidgets, you should build a recent copy of the `master'
+branch from the Emacs Git repository.
 
-Im now able to have a gtk button move with the text in emacs, just like an image!
+Then, make sure all dependencies are installed, and configure Emacs as
+such:
 
-[[image:EmacsXembedScreenshot]]
+  ./configure --with-x-toolkit=gtk3 --with-xwidgets ...
 
-Its very cool!
+Where ... denotes any futher options you may want to pass to
+configure.
 
-Embedded webkit displaying an emacs elnode web app! yay!
+After the compilation completes, you can run Emacs like such:
 
-[[image:WebkitElnodeScreenshot]]
+  src/emacs  (Where `src' is the `src' directory inside the
+              directory where you cloned the Git repository)
 
+And type
 
-== getting the code ==
+  M-x xwidget-webkit-browse-url RET
 
-I've now created an "xwidget" branch in the savannah emacs bzr repo, and the code will live there now.
+You can then enter a URL, and you will find a functional web browser
+installed.
 
-http://bzr.savannah.gnu.org/lh/emacs/xwidget/files
+If Emacs then proceeeds to crash with SIGTRAP, your WebKitGTK has a
+bug.  See etc/PROBLEMS, but in short, you must run Emacs like this
+instead:
 
-== bug reporting and tracker ==
+  SNAP=1 SNAP_NAME=1 SNAP_REVISION=1 src/emacs ...
 
- emacs xwidgets uses the same tracker as mainline emacs, but a
- different package.
- 
- M-x report-emacs-bug
- 
- Change the address to:
- submit@debbugs.gnu.org
- 
- Include this line early in the body:
- Package: emacs-xwidgets
+Where "..." are any other options you may want to pass Emacs.
 
-To view current bugs, follow this link: http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs-xwidgets
+Inside the web browser, you can type `e' to enter "edit mode", where
+self inserting characters are passed to the WebKit widget, or `C-s' to
+perform incremental search on the contents of the WebKit widget.
 
-== The interface ==
+Your help is needed to make this feature stable.  Please report any
+bugs you find to bug-gnu-emacs@gnu.org (use M-x report-emacs-bug) and
+read (emacs)Bugs in the manual.  And when doing so, make sure to put
+me in the X-Debbugs-Cc: field of the e-mail to the bug tracker, like
+so:
 
-Heres stuff from my elisp test code:
+  From: J. Random Hacker <frobber@bumblebee>
+  To: bug-gnu-emacs@gnu.org
+  Subject: 29.0.50; Trying to thump page in Xwidget Webkit leads to page being thonked instead.
+  X-Debbugs-Cc: luangruo@yahoo.com
 
-(insert "xwidgetdemo<<< a button. another button\n")
-(goto-char (point-min))
-(put-text-property (point) (+ 1 (point)) 'display '(xwidget :xwidget-id 1 :type 'webkit-osr :title "1" :width 40 :height 50))
-
-xwidget-id must be a unique integer. type identifies the widget class.
-
-
-Callbacks are handled with the Emacs even system.
-
-== Notes and Status ==
-
-Xwidgets is a concept similar to the Java AWT toolkit, but instead for Elisp.
-The current implementation of Xwidgets targets GTK as the native peer widget set, but
-aims to be toolkit agnostic. I dont aim to make every GTK widget an Xwidget, just a small
-subset suitable to implement certain types of GUI:s currently difficult to do with Emacs,
-for instance slider widgets, embedded applications, etc.
-
-Currently the patch allows for:
-* inserting xwidgets: button, toggle button, slider, xembed socket, webkit view, and some rudimentary canvas experiments(clutter, goocanvas)
-* moving them by inserting text, just like images
-* an emacs event based callback interface
-* an MVC model for sliders. Each time you split a window you get new sliders on screen. they are kept in sync
-* an offscreen rendering webkit xwidget. so, you can have a decent html renderer inside Emacs.
-
-Current issues:
-* theres a problem with clipping on emacs-window borders(topmost. left and bottom seems ok now
-* xwidgets are not garbed currently, they are just hidden.
-* theres just a fixed array of xwidgets, not a proper list
-
-These issues appear difficult but not unsolveable.
-
-
-I seem to code on this on yearly sprints. 2011 has been fruitful for xwidgets. 
-
-I presented this work during GHM 2011:
-http://www.gnu.org/ghm/2011/paris/#sec-2-11
-
-there is a video of the presentation where you can see the branch in action.
-
-
--- JoakimVerona
+Thanks.
