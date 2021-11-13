@@ -6,19 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
-;; Version: 0
-;; Package-Requires: ()
-;; Last-Updated: Thu Oct 28 09:03:31 2021 (-0700)
-;;           By: dradams
-;;     Update #: 977
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
-;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 24.x, 25.x, 26.x
 ;;
-;; Features that might be required by this library:
+;; THIS LIBRARY IS OBSOLETE (unmaintained), as of 2021-11-05.  It has
+;; been superseded by library `modeline-region.el', which is available
+;; here: https://www.emacswiki.org/emacs/modeline-region.el
 ;;
-;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp', `rect'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
