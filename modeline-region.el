@@ -4,13 +4,13 @@
 ;; Description: Show region information in the mode-line.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 12 14:48:37 2021 (-0800)
+;; Last-Updated: Fri Nov 12 18:28:20 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 206
+;;     Update #: 212
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -18,7 +18,22 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
+;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
+;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
+;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
+;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `ring', `second-sel', `strings', `syntax',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -232,6 +247,96 @@
 ;;     mlr-show-region-p: If empty region then return nil if mouse-1 is pressed.
 ;;     mlr-menu: Reordered, to put Showing items together.
 ;; 2021/11/05 dadams
+;;     Created, based on previous library modeline-posn.el - its change log is below...
+;;
+;; ----------
+;;
+;; modeline-posn.el change log:
+;;
+;; 2021/10/27 dadams
+;;     isearch-mode advice: Added boundp for isearchp-reg-beg, just to avoid byte-compile warning.
+;; 2021/10/26 dadams
+;;     isearch-mode advice: Use isearchp-reg-beg, not use-region-p.
+;; 2021/10/17 dadams
+;;     Removed support for Emacs 22 and 23.
+;;       modelinepos-show-region-p: Removed Emacs 24+ test.
+;;       mode-line-position: Removed Emacs 22 version.
+;;       use-empty-active-region, use-region-p: Removed (Emacs 22 only).
+;;     Require rect.el for Emacs 26+.
+;;     Added: modelinepos-toggle-region-style, modelinepos-toggle-rectangle-style, modelinepos-menu.
+;;     Bind modelinepos-menu to [mode-line down-mouse-1].
+;; 2021/10/16 dadams
+;;     Added: modelinepos-(bytes|chars)-format, modelinepos-(lines|rows)+cols(+words+chars)-format.
+;;     modelinepos-style(-default): Use those new vars, instead of hardcoding the formats.
+;; 2021/10/10 dadams
+;;     count-words-rectangle: Finished correction to count.
+;; 2021/10/09 dadams
+;;     Added: modelinepos-region-style, count-words-rectangle, modelinepos-style-default.
+;;     modelinepos-style: Support modelinepos-region-style.  For non-rect, put lines before cols.
+;;     modelinepos-rectangle-style: Use quote, not backquote.
+;;     count-words-rectangle: (partial) correction to count.
+;; 2021/09/23 dadams
+;;     Added: modelinepos-rectangle-style.
+;;     modelinepos-style: Added support for modelinepos-rectangle-style (words & chars in rectangle).
+;;                        Fixed typo that prevented Bytes from working.
+;; 2021/08/25 dadams
+;;     mode-line-position: Updated for option column-number-indicator-zero-based (new in Emacs 26).
+;; 2020/10/15 dadams
+;;     Removed advice for replace-dehighlight.  Do it in around advice for perform-replace.
+;;     perform-replace advice: Change to around advice, and bind, don't set,
+;;       modelinepos-region-acting-on.
+;; 2017/02/27 dadams
+;;     modelinepos-style: Wrap calls to rectangle--pos-cols with save-excursion (Emacs bug #25777).
+;; 2017/02/19 dadams
+;;     isearch-query-replace-regexp:
+;;       Check that isearchp-reg-beg is boundp before using it in remove-hook.  Thx to Yuri D'Elia.
+;;       Ref: https://lists.gnu.org/archive/html/emacs-devel/2017-02/msg00637.html
+;; 2017/02/18 dadams
+;;     rectangle-number-lines: Typo rectange -> rectangle.  Thx to Charles Roelli.
+;; 2017/01/14 dadams
+;;     Added vacuous defvars for isearchp-reg-end, isearchp-restrict-to-region-flag.
+;; 2017/01/08 dadams
+;;     modelinepos-style: Simplified. 
+;; 2017/01/07 dadams
+;;     modelinepos-style: Added style # bytes.
+;; 2014/07/21 dadams
+;;     Added: modelinepos-rect-p, cua-rectangle-mark-mode, rectangle-number-lines,
+;;            rectangle-mark-mode, string-insert-rectangle, string-rectangle.
+;;     modelinepos-style: Respect modelinepos-rect-p, showing rows & cols.
+;;     register-read-with-preview: Bind modelinepos-rect-p.
+;;                                 Added copy-rectangle-to-register to cms affected.
+;; 2014/07/15 dadams
+;;     Advise functions append-to-buffer, prepend-to-buffer, copy-to-buffer, append-to-file,
+;;       register-read-with-preview, copy-to-register, append-to-register, prepend-to-register,
+;;       write-region.
+;; 2014/01/18 dadams
+;;     Added: modelinepos-region-acting-on (face and var), 
+;;            use-region-p (Emacs 22), use-empty-active-region (Emacs 22).
+;;     Renamed: modelinepos-empty-region-p to modelinepos-show-region-p.
+;;     modelinepos-show-region-p: Wrapped in condition-case, to ignore errors.
+;;     mode-line-position (Emacs 23+):
+;;       Show modelinepos-region-acting-on highlight (cmd restricted to region).
+;;     Advise Isearch and replacement functions:
+;;       keep-lines-read-args, map-query-replace-regexp, perform-replace, query-replace-read-args,
+;;       query-replace-read-from, query-replace-read-to, replace-dehighlight.
+;; 2013/11/23 dadams
+;;     Added: modelinepos-empty-region-p.
+;;     Use modelinepos-empty-region-p to decide whether region is empty.
+;;     modelinepos-empty-region-flag: Change default value to t.
+;; 2013/04/19 dadams
+;;     Added: modelinepos-empty-region-flag.  Use it in mode-line-position.
+;; 2013/02/01 dadams
+;;     Do not show size of active region in mode line if it is empty.
+;; 2012/05/25 dadams
+;;     Added face modelinepos-region and option modelinepos-style.
+;;     Updated mode-line-position accordingly.  Thx to Jonathan Kotta for the suggestion.
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defface, defcustom, and command.
+;; 2009/06/11 dadams
+;;     Added Emacs 23 version.
+;; 2007/04/02 dadams
+;;     Added modelinepos-column-warning.  Thx to AmitPatel for the suggestion.
+;; 2006/09/14 dadams
 ;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
