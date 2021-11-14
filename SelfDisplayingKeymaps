@@ -1,0 +1,19 @@
+When invoked with a keypress, a Self Displaying Keymap displays its
+options in a popup.  For example, pressing <C-x> displays the
+commands in that keymap, together with the keys to activate the
+commands.  A further keypress runs the appropriate command; for
+example <C-b> runs command list-buffers, and dismisses the popup.
+
+A further use of these keymaps is display of help information for
+both the keymap and any of its commands.  Yet another use is
+provision for a user to create personal/project self
+displaying keymaps.
+
+The concept of these keymaps is not speculation, but exists in a
+code package that has been in use successfully for many years.  If
+the idea of seeing a keymap and its options intrigues you (even the
+global keymap, although that is not very useful) then download a
+slightly modified Emacs 27.1 as described in NavigationShell.  You
+need to allocate about an hour, in total, to see what is available.
+What is there will be new and different to you; and probably quite
+interesting too.
