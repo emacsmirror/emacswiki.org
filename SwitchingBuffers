@@ -265,7 +265,6 @@ This functionality is also provided by the [[FrameBufs]] package.
 
 * In the EmacsManual:
 ** [[Manual:Icomplete]] -  show possible minibuffer completions as you type
-** [[Manual:ibuffer]] - enhanced BufferMenu with more Dired-like features
 * BufferMenu
 
 ----
