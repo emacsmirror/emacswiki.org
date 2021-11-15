@@ -1,3 +1,15 @@
+== Opening the buffer menu ==
+
+By default, `C-x C-b' opens a new window, and displays the buffer menu in that window.  You need to switch to that window (e.g., with `C-x o') before you can use it.
+
+To have it instead open the buffer menu ''and switch to it'' in one action, rebind the key as follows:
+
+    (global-set-key (kbd "C-x C-b") 'buffer-menu-other-window)
+
+To just open the buffer menu in the current window (burying whatever buffer you were in before):
+
+    (global-set-key (kbd "C-x C-b") 'buffer-menu)
+
 == Enhancements ==
 
 Enhancements to vanilla buffer menu.  Some of these may be obsolete in modern Emacs.
