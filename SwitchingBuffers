@@ -260,5 +260,13 @@ Thanks for the answer. Just for the record - there is a small package that allow
 
 [new:AlpAker:2011-03-16 01:29 UTC]]
 This functionality is also provided by the [[FrameBufs]] package.
+
+== See also ==
+
+* In the EmacsManual:
+** [[Manual:Icomplete]] -  show possible minibuffer completions as you type
+** [[Manual:ibuffer]] - enhanced BufferMenu with more Dired-like features
+* BufferMenu
+
 ----
 CategoryBufferSwitching
