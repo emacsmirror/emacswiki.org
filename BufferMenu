@@ -1,31 +1,15 @@
-The buffer menu presents a list of buffers. It is similar to how DiredMode operates with files.  Command `M-x buffer-menu' lists the buffers in the current window. This is an alternative to the default listing of buffers with ListBuffers.
+== Enhancements ==
 
-According to the EmacsManual:
+Enhancements to vanilla buffer menu.  Some of these may be obsolete in modern Emacs.
 
-: ''The "buffer menu" opened by `C-x C-b' (List Buffers) does
-not merely list buffers.  It also allows you to perform various
-operations on buffers, through an interface similar to Dired. You can save buffers, kill them (here called "deleting"
-them, for consistency with Dired), or display them.''
-
-: ''To use the buffer menu, type `C-x C-b' and switch to the window displaying the `##*Buffer List*##' buffer.  You can also type `M-x buffer-menu' to open the buffer menu in the selected window.  Alternatively, the command `M-x buffer-menu-other-window' opens the buffer menu in another window, and selects that window.''
-
-Use `##?##' (or `C-h m', as always) in the `##*Buffer List*##' window for more information about possible operations on the buffers listed.
-
-To bind `C-x C-b' to command `buffer-menu':
-
-  (global-set-key (kbd "C-x C-b") 'buffer-menu)
-
-The relation between `list-buffers' and `buffer-menu' is a bit like that between `list-directories' (`C-x C-d') and `dired' (`C-x d'): one is for listing, the other is for listing and manipulating.  However, you can just select the window displayed by `list-buffers', to act on its listed buffers.
-
-
-Enhancements to vanilla buffer menu:
-
-[:BufferMenuPlus]
 * [[BufferMenu+]] -- Highlighting using local faces. More commands. Better sorting. New columns. Column width resizing.
 * BufferMenuHighlighting -- Highlighting using font-lock faces.
 * BufferMenuSorting -- Sorting the listing in buffer menu.
 * FixBuffersList -- New modification status and colors in buffers list.
-* Open in a different frame (from smoke_ on #emacs):
+
+=== Open in different frame ===
+
+Open in a different frame (from ##smoke_## on ###emacs##):
 
         (defun Buffer-menu-other-frame ()
           (interactive)
@@ -34,7 +18,7 @@ Enhancements to vanilla buffer menu:
         (define-key Buffer-menu-mode-map "5"
            'Buffer-menu-other-frame)
 
-* Rename buffer at point:
+=== Rename buffer at point ===
 
         (defun Buffer-menu-rename-buffer (newname)
           "Rename buffer at line in window."
@@ -46,6 +30,16 @@ Enhancements to vanilla buffer menu:
           (revert-buffer))
         
         (define-key Buffer-menu-mode-map "R" 'Buffer-menu-rename-buffer)
+
+== History ==
+
+In the past, there were variations on the buffer menu.  `list-buffers` came first, and presented a simple list, allowing you to pick a buffer to switch to, and little else.
+
+Various non-standard enhancements (some listed on this page) were developed to add capabilities.
+
+Later, a standard `buffer-menu' was added, which let you manipulate buffers.  `C-x C-b' remained bound to the simpler `list-buffers` for a time.  The relation between `list-buffers' and `buffer-menu' was a bit like that between `list-directories' (`C-x C-d') and `dired' (`C-x d'): One for listing, the other for listing and manipulating.
+
+Eventually the older, simpler `list-buffers` was retired.  Since circa Emacs 22, `list-buffers`, `buffer-menu', and `C-x C-b' all do the same thing.
 
 ----
 CategoryBufferSwitching
