@@ -1,20 +1,48 @@
-BufferMenu has various options to sort the listing of buffers.  According to the EmacsManual.
+By default, the BufferMenu is sorted such that "buffers that were current most recently come first" (per [[Manual:List Buffers]]).  In other words, most-recently-used (MRU) ordering, where simply viewing the buffer counts as usage.
 
-: ''The buffers are listed in the order that they were current; the buffers that were current most recently come first.''
+== Sorting on the fly ==
 
-What the manual fails to mention is that you can change the sorting with `M-x Buffer-menu-sort'
+In GUIs, you can usually click the column heading to sort by that column.
 
-; `M-2 M-x Buffer-menu-sort': Sort by buffer ''name''.
-; `M-3 M-x Buffer-menu-sort': Sort by buffer ''size'' (ascending).
-; `M-4 M-x Buffer-menu-sort': Sort by buffer ''mode'' name.
-; `M-5 M-x Buffer-menu-sort': Sort by buffer ''file'' name.
-; `M-x Buffer-menu-sort': Sort by ''display time'' (default).
+You can also sort the buffer list using `tabulated-list-sort', bound to the ##S## key in the buffer menu.
 
-Some of these might vary by version. Also note that in some GUI versions, you can just click on the column's name (e.g. click on Size to sort by size).
+By default, it sorts by the first column (column number zero).  That usually won't be useful.  Give a prefix argument to sort by that column.  For example, ##M-3 S## will sort by the fourth column, which is the buffer name.  The page BufferMenu has a list of columns and their meanings.
 
-If you hit the S key (bound to tabulated-list-sort) in the Buffer Menu, the Buffer Menu is sorted by column.  Unfortunately, there's no command I found for returning tabulated-list-sort-key variable to its default nil value -- except to kill-buffer then buffer-menu to bring it back.
+Older versions of Emacs may have a `buffer-menu-sort' function which does a similar thing.
 
-=== Sort by Buffer Name ===
+If you hit the S key (bound to ) in the Buffer Menu, the Buffer Menu is sorted by column.  Unfortunately, there's no command I found for returning tabulated-list-sort-key variable to its default nil value -- except to kill-buffer then buffer-menu to bring it back.
+
+== Default sort ==
+
+Emacs 24 to Emacs 27.1, and likely later, do not have a built-in way to set the default sort order of the buffer menu.  Jeff Chiu crafted a solution with an [[Advice]] on `list-buffers':
+
+https://gist.github.com/codeforkjeff/37a350d9af3a2c158eac
+
+He talks about it a bit more in his blog:
+
+https://codefork.com/blog/index.php/2014/09/26/buffer-menu-sorting-in-emacs-24/
+
+== Historical ==
+
+=== Default sort variable ===
+
+Obsolete circa Emacs 24.  Per Jeff Chiu, this was lost when `Buffer-menu' was rewritten to use `tabulated-list'.
+
+To permanently customize the default listing order of buffer menu, set `buffer-menu-sort-column' to the column number (with the first column being zero).  For example, to automatically sort by buffer name:
+
+   (setq Buffer-menu-sort-column 3)
+
+=== ibuffer directory column ===
+
+Obsolete circa Emacs 22.
+
+Adds a directory column to ibuffer.  Sorting by directory can be handy when working on a bunch of unrelated projects.
+
+https://gist.github.com/offby1/1163610
+
+=== Sorted buffer list ===
+
+Obsolete circa Emacs 22, likely earlier.
 
 If your buffer list becomes too disorganized, you can sort it using this function:
   
@@ -37,24 +65,6 @@ If your buffer list becomes too disorganized, you can sort it using this functio
 and bind it with
 
   (global-set-key "\M-b"    'sort-buffers)
-
-[new]
-An extension like this became obsolete with Emacs 22.
-
-
-To permanently customize the default listing order of buffer menu, set `Buffer-menu-sort-column'.  For example, use the following to automatically sort by column Mode.
-
-   (setq Buffer-menu-sort-column 4)
-
-[new]
-You can easily sort on any column, in both directions, if you use BufferMenuPlus. If you instead use the vanilla BufferMenu, you can still sort the list in a couple of ways. -- DrewAdams
-
-[This](https://gist.github.com/offby1/1163610) lets you sort by directory name.  I find this handy when working on a bunch of unrelated projects. -- EricHanchrow
-
-[new]
-Emacs 24 doesn't seem to recognize Buffer-menu-sort-column.
-
-Here is a snippet of code that advises list-buffers to get automatic sorting behavior on startup: https://gist.github.com/codeforkjeff/37a350d9af3a2c158eac
 
 ----
 CategoryBufferSwitching
