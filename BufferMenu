@@ -1,6 +1,6 @@
 The buffer menu lists the [[buffer]]s (files and such) open in Emacs.  It appears when you press `C-x C-b'.
 
-The buffer menu is itself a buffer, with its own MajorMode (called `buffer-menu' in code, and displayed as ##Buffer Menu## in the ModeLine).
+The buffer menu is itself a buffer, with its own MajorMode (called `Buffer-menu' in code, and displayed as ##Buffer Menu## in the ModeLine).
 
 The buffer menu should not be confused with the "Buffers" menu (note the plural) that appears in the pull-down menu bar.  Both allow switching buffers, but the buffer menu has several other features.  The "Buffers" pull-down menu has an item, ''List All Buffers'', which opens the buffer menu.
 
