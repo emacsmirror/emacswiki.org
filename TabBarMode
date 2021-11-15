@@ -1,22 +1,10 @@
-== Description ==
-
-Tabbar is an emacs minor mode that displays a tab bar at the top,
-similar to the idea of web browser's tabs.
-
-<i><b>Note:</b> Emacs 27.1 will come with two built-in tab modes, <tt>tab-bar-mode</tt> (per-frame) and <tt>tab-line-mode</tt> (per-window).  See documentation for details.</i> Tab-line-mode is similar to tabbar.el described on this page, with one buffer per tab. Tab-bar-mode is for storing one window configuration per tab.
-
-== Download ==
-
-The original code is at: http://sourceforge.net/projects/emhacks/
-Note: the version on
-[http://emhacks.cvs.sourceforge.net/viewvc/emhacks/emhacks/ Sourceforge]
-is really old.
-
-Check if Debian has newer version in
-[http://packages.debian.org/search?keywords=emacs-goodies-el
-emacs-goodies-el] package.
-
 == Introduction ==
+
+This page describes ##tabbar.el##, a third-party enhancement to Emacs that provides a minor mode that displays a tab bar at the top, similar to the idea of web browser's tabs.  
+
+'''Note:''' As of Emacs version 27.1, two built-in tab modes are included.  `tab-line-mode' is per-window, and similar to ##tabbar.el##, with each tab representing a buffer.  `tab-bar-mode' is per-frame, which each tab representing a window configuration.  For the built-in modes, see the EmacsManual, on [[Manual:Tab Line]] and/or [[Manual:Tab Bars]].
+
+== Overview ==
 
 Tabbar is a package originally written by David Ponce from 2003 to
 2005, and now maintained by others.
@@ -592,6 +580,18 @@ An extra very useful feature is to show tabgroup in modeline:
 This will show something like:
 
     Projectname > file.ext  (37, 1) [mode]...
+
+== Download ==
+
+The original code is very old (circa 2003), but can be found at:
+
+Main page: http://sourceforge.net/projects/emhacks/
+
+CVS: http://emhacks.cvs.sourceforge.net/viewvc/emhacks/emhacks/
+
+Check if Debian has newer version in
+[http://packages.debian.org/search?keywords=emacs-goodies-el
+emacs-goodies-el] package.
 
 == Questions and Answers ==
 
