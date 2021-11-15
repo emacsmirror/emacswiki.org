@@ -1,3 +1,20 @@
+== Columns ==
+
+The default columns, with their positions, headings, and purpose, are:
+
+|| Heading || # || Meaning ||
+|| C       || 0        || ##>## if marked to display, ##D## if marked to kill, ##.## if current ||
+|| R       || 1        || ##%## if read-only ||
+|| M       || 2        || ##*## if modified, ##S## if marked to save  ||
+|| Buffer  || 3        || Name of the buffer (not always the file) ||
+|| Size    || 4        || Length in bytes ||
+|| Mode    || 5        || MajorMode ||
+|| File    || 6        || Full path and name of file, if any ||
+
+The "current" buffer is the most recently used (displayed) buffer, other than the buffer menu itself.
+
+The column number is important for BufferMenuSorting.
+
 == Opening the buffer menu ==
 
 By default, `C-x C-b' opens a new window, and displays the buffer menu in that window.  You need to switch to that window (e.g., with `C-x o') before you can use it.
