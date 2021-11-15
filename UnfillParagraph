@@ -1,7 +1,9 @@
 Unfilling a paragraph joins all the lines in a paragraph into a single
-line. It is the contrary of FillParagraph.
+line.  It is the inverse of FillParagraph.
 
-It works where a line ends with a newline character ("\n") and paragraphs are separated by blank lines.  To make a paragraph end in a single newline then use the function below:
+== Function ==
+
+To make a paragraph end in a single newline use the function below.  It works where a line ends with a newline character ("\n") and paragraphs are separated by blank lines.  
 
     ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
     (defun unfill-paragraph (&optional region)
@@ -11,16 +13,27 @@ It works where a line ends with a newline character ("\n") and paragraphs are se
             ;; This would override `fill-column' if it's an integer.
             (emacs-lisp-docstring-fill-column t))
         (fill-paragraph nil region)))
-
+    
     ;; Handy key definition
     (define-key global-map "\M-Q" 'unfill-paragraph)
 
-It is worth mentioning here that the key sequence <code>ESC 9 9 9 9 9 9 9 9 C-x f</code> sets fill-column to a very large number. With that, the key sequence <code>M-q</code> , or <code>M-x</code> fill-paragraph, unfills paragraphs. (That is eight digit 9s. Going to nine of them wraps the number to  -73741825 and foils that behavior.)
+== Key sequence ==
 
-See also UnfillRegion, UnwrapLine.
+One can manually set `fill-column' to some large value.  Once that is done, ##M-q## (`fill-paragraph') effectively unfills paragraphs.
 
-[new]
-There is a whole bunch of unfilling functions in ourcomments-util.el in [NxhtmlMode nXhtml]. There is for example already a function unfill-region.
+For example, press:
+
+    ESC 9 9 9 9 9 9 9 9 C-x f
+
+That is eight presses of the ##9## key, as a prefix argument to `set-fill-column'.  Any more nines causes the value to wrap.
+
+The function works the same way; it simply limits the effect to the body of the function, using `let'.
+
+== See also ==
+
+* UnfillRegion
+* UnwrapLine
+* NxhtmlMode - Contains several unfilling functions in ourcomments-util.el
 
 ----
 CategoryFilling
