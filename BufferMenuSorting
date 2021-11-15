@@ -10,7 +10,7 @@ By default, it sorts by the first column (column number zero).  That usually won
 
 Older versions of Emacs may have a `buffer-menu-sort' function which does a similar thing.
 
-If you hit the S key (bound to ) in the Buffer Menu, the Buffer Menu is sorted by column.  Unfortunately, there's no command I found for returning tabulated-list-sort-key variable to its default nil value -- except to kill-buffer then buffer-menu to bring it back.
+Once sorted, there is no nice way to restore the default MRU sort.  You have to `kill-buffer' the buffer menu buffer, and then re-open it.  (Sorting sets the variable `tabulated-list-sort-key' in `tabulated-list.el'.  Its default is `nil'.  No way to restore the nil value is provided.)
 
 == Default sort ==
 
