@@ -14,7 +14,7 @@ To just open the buffer menu in the current window (burying whatever buffer you 
 
 Enhancements to vanilla buffer menu.  Some of these may be obsolete in modern Emacs.
 
-* [[Manual:ibuffer]] - enhanced BufferMenu with more Dired-like features (included in Emacs since version 22)
+* IbufferMode - enhanced BufferMenu with more Dired-like features (included in Emacs since version 22)
 * [[BufferMenu+]] -- Highlighting using local faces. More commands. Better sorting. New columns. Column width resizing.
 * BufferMenuHighlighting -- Highlighting using font-lock faces.
 * BufferMenuSorting -- Sorting the listing in buffer menu.
@@ -59,7 +59,6 @@ Eventually the older, simpler `list-buffers` was retired.  Since circa Emacs 22,
 * In the EmacsManual:
 ** [[Manual:List Buffers]]
 ** [[Manual:Several Buffers]]
-** [[Manual:ibuffer]] - enhanced BufferMenu with more Dired-like features
 * SwitchingBuffers
 
 ----
