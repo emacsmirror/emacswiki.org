@@ -1,9 +1,1 @@
-By default, using `C-x C-b' will call `list-buffers' with BufferMenu. The list of buffers is displayed in another window. If you want to use it in order to switch buffers, you will have to hit `C-x o' to switch windows, first.
-This is a very crude way of switching buffers.
-
-The following code will eliminate the need for `C-x o', making list-buffers much easier to use:
-
-    (global-set-key (kbd "\C-x\C-b") 'buffer-menu-other-window)
-
-----
-CategoryBufferSwitching
+#REDIRECT BufferMenu
