@@ -53,5 +53,12 @@ Later, a standard `buffer-menu' was added, which let you manipulate buffers.  `C
 
 Eventually the older, simpler `list-buffers` was retired.  Since circa Emacs 22, `list-buffers`, `buffer-menu', and `C-x C-b' all do the same thing.
 
+== See also ==
+
+* In the EmacsManual:
+** [[Manual:List Buffers]]
+** [[Manual:Several Buffers]]
+* SwitchingBuffers
+
 ----
 CategoryBufferSwitching
