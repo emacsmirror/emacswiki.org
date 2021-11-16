@@ -398,8 +398,16 @@ It will generate a *Completions* buffer and list all completion. It use Emacs's 
     (global-set-key (kbd "C-c h") 'kk-hippie-completion)
     (global-set-key (kbd "C-c f") (lambda () (interactive) (kk-hippie-completion 'kk-hippie-expand-file)))
     (global-set-key (kbd "M-v") 'switch-to-completions)
+    (define-key completion-list-mode-map (kbd "M-v") 'other-window)
+    ;;(global-set-key (kbd "C-M-v") 'scroll-other-window)
 
 use M-v to quickly switch to *Completions* buffer and select.
+
+other useful keys:
+use C-M-v to quickly scroll without switching to *Completions* buffer.
+use M-v in the *Completions* buffer to return to original editing window.
+use q in the *Completions* buffer to close and return to original editing window.
+
 
 -- KiteDriver
 
