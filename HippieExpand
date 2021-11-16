@@ -407,9 +407,9 @@ other useful keys:
 
 use C-M-v to quickly scroll without switching to *Completions* buffer.
 
-use M-v in the *Completions* buffer to return to original editing window.
+use M-v in the *Completions* buffer to return to original editing buffer.
 
-use q in the *Completions* buffer to close and return to original editing window.
+use q in the *Completions* buffer to close and return to original editing buffer.
 
 
 -- KiteDriver
