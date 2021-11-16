@@ -4,6 +4,18 @@ The buffer menu is itself a buffer, with its own MajorMode (called `Buffer-menu'
 
 The buffer menu should not be confused with the "Buffers" menu (note the plural) that appears in the pull-down menu bar.  Both allow switching buffers, but the buffer menu has several other features.  The "Buffers" pull-down menu has an item, ''List All Buffers'', which opens the buffer menu.
 
+== Appearance ==
+
+Screenshot of the buffer menu as it appears in Emacs 27.1 (released 2020 August):
+
+[[image:BufferMenuScreenShot]]
+
+Note the HeaderLine with column headings at the top of the window.  Clicking a header will [[BufferMenuSorting|sort]] by that field.
+
+Characters at the left are status indicators.  In this example, the most recent buffer is ##pathclip.el##, as indicated by a dot (##.##) in the first column; that buffer has also been modified (per the ##*##).  The ##init.el## buffer has been modified, and further, marked for saving (##S##).  Two more files -- ##template_ckfiles## and ##README## -- have been marked for viewing (##>##).  The two EmacsLisp files (##.el.gz##) have been marked for kill (close) as shown by ##D##.
+
+
+
 == Columns ==
 
 The buffer menu consists of several columns (a ''tabulated list'' in Emacs-speak).  The default columns, with their positions, headings, and purpose, are:
