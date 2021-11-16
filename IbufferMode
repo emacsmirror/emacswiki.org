@@ -5,6 +5,12 @@ You could use the following key binding to start using it:
 
     (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+== Appearance ==
+
+Screenshot of Ibuffer mode as it appears in Emacs 27.1 (released 2020 August):
+
+[[image:IbufferModeScreenShot]]
+
 == Search all marked buffers ==
 
 * '''`M-s a C-s'''' - Do incremental search in the marked buffers.
