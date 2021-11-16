@@ -433,6 +433,8 @@ The following code will combine etags and dabbrev together with hippie-completio
 
 <pre>
 
+(require 'etags)
+
 (defun tags-complete-tag (string predicate what)
   (save-excursion
     ;; If we need to ask for the tag table, allow that.
@@ -440,7 +442,7 @@ The following code will combine etags and dabbrev together with hippie-completio
 	(all-completions string (tags-completion-table) predicate)
       (try-completion string (tags-completion-table) predicate))))
 
-(require 'cc-mode)
+;;(require 'cc-mode)
 
 (defun he-tag-beg ()
   (let ((p (save-excursion
