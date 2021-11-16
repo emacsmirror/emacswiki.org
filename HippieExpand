@@ -383,6 +383,15 @@ It will generate a *Completions* buffer and list all completion. It use Emacs's 
       (with-output-to-temp-buffer "*Completions*"
         (display-completion-list (all-completions "" lst) str))))
     
+
+    (defun kk-completion-autoresize (prompt lst &optional str)
+      (let ((str (or str he-search-string)))
+        (save-selected-window
+          (with-output-to-temp-buffer "*Completions*"
+            (display-completion-list (all-completions "" lst) str))
+          (switch-to-completions)
+          (fit-window-to-buffer))))
+
     (defun kk-hippie-completion (&optional hippie-expand-function)
       (interactive)
       (let ((options (kk-hippie-expand-completions hippie-expand-function)))
@@ -395,6 +404,11 @@ It will generate a *Completions* buffer and list all completion. It use Emacs's 
                                  '(try-expand-line
                                    try-expand-line-all-buffers)))
     
+
+    (defun kk-hippie-completion-file ()
+      (interactive)
+      (kk-hippie-completion 'kk-hippie-expand-file))
+
     (global-set-key (kbd "C-c h") 'kk-hippie-completion)
     (global-set-key (kbd "C-c f") (lambda () (interactive) (kk-hippie-completion 'kk-hippie-expand-file)))
     (global-set-key (kbd "M-v") 'switch-to-completions)
