@@ -27,8 +27,10 @@ If you don't already have MELPA installed, add the following snippet to your .em
 {{{
 (require 'package)
 (add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+     '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
 }}}
+
 
 To install latex-preview-pane, simply execute <code>M-x package-install latex-preview-pane</code> and restart Emacs.
 
