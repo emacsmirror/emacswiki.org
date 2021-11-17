@@ -71,7 +71,7 @@ By default, the position is given first as the relative portion of the file visi
 || ##All## || ''all'' of the buffer is shown in the window ||
 || ##xx%## || percent of the buffer ''above'' the ''top'' of the window (the portion before the visible text) ||
 
-: ''The entire file ##short-unicode## is visible ['''C'''].  The first line of file ##win.ini## is visible ['''E'''].   Lastly, point is 38% into ['''P'''] the file ##spell.el##.''
+: ''The entire file ##short-unicode## is visible ['''C'''].  The first line of file ##win.ini## is visible ['''E'''].   Lastly, point is 38% ['''P'''] into the file ##spell.el##.''
 
 After the portion comes the line number, prefixed by ##L##.  Optionally, column number may appear as well, with ##C## prefix.
 
