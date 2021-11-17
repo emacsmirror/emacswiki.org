@@ -1,42 +1,91 @@
 The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]].  It has useful summary information about the buffer shown in the window, including its name and current modes.
 
-== Parts of the mode line ==
+== Appearance ==
 
-This screenshot shows three internal Emacs windows, each with a mode line at the bottom.  The mode lines use black text on a yellow/beige background, and are called out with blue lines.
+This screenshot shows Emacs 27.1 (circa 2020).  Three internal Emacs windows are present, each with a mode line at the bottom.  The mode lines use black text on a grey/silver background.  The main parts of the window use a white background.
 
-[[image:DrewsEmacsWindowCallouts]]
+[[image:ModeLineCalloutsScreenShot]]
 
-The information in a mode line usually includes the following:
-* Whether or not the buffer has been modified:
-** ##**## -- modified since last save
-** ##--## -- not modified since last save
-** ##%*## -- read-only, but modified
-** ##%%## -- read-only, not modified
-** In the screenshot, buffers ##*Help*## and ##drews-lisp-20## are read-only (unmodified); buffer ##shrink-fit.el## is writable and unmodified.
-* Buffer name -- For example the file name being visited
-* The name of one or more [[MajorMode]]s or [[MinorMode]]s of the buffer, surrounded by parentheses
-** One can click the major-mode and minor-mode names to get a menu of related options (Emacs 22+)
-** Square brackets -- like this: ##[(Emacs-Lisp)]## -- indicate a RecursiveEdit
+== Components ==
 
-* Line number of the TextCursor and [[Point]], and perhaps the column number
-** In the screenshot, in buffer ##shrink-fit.el##, the cursor is in column 0 (##C0##) of line 234 (##L234##)
-* Position in buffer:
-** ##Top## -- the ''beginning'' of the buffer is shown in the window
-** ##Bot## -- the ''end'' of the buffer is shown in the window
-** ##All## -- ''all'' of the buffer is shown in the window
-** A percentage, like ##42%## -- amount of the buffer ''above'' the ''top'' of the window (the portion before the visible text)
-** In the screenshot, the first ##48%## of buffer ##shrink-fit.el## is not shown
-* Coding system of the buffer (related to the characters used for different human languages)
-** ##-## -- no code conversion, except possibly end-of-line translation
-** ##=## -- no code conversion ''or'' end-of-line translation
-** ##1## -- ISO Latin 1 code conversion
-** Anything else -- Some other code conversion.  See [[Manual:International Character Set Support]] in the Emacs manual
-** All of the buffers in the screenshot have no conversion applied (##-##)
-* End-of-line translation:
-** ##(Unix)## -- newline character separates lines, as used by Unix, Linux and !MacOS X
-** ##(DOS)## or ##\## -- carriage-return plus linefeed separates lines, as used by Microsoft, DEC, and others
-** ##(MAC)## or ##/## -- carriage-return separates lines, as used by classic Macintosh (not !MacOS X)
-** All of the buffers in the screenshot have newline-separated lines (##(Unix)##)
+The standard components of the mode line, from left to right, are as follows.
+
+: ''References to the screenshot above are given in indented italics, with the callouts in [square brackets].''
+
+=== Human language ===
+
+The first part of the mode line is concerned with human language details (as opposed to programming languages).
+
+If a special input methods is active, it may be indicated first, depending on your terminal type.
+
+Next comes the coding system of the buffer -- one or more characters, indicating how different human languages are encoded as bytes.  The most common are:
+
+|| || Meaning ||
+|| ##-## || No code conversion, except possibly end-of-line translation ||
+|| ##=## || No code conversion ''or'' end-of-line translation ||
+|| ##1## || ISO Latin 1 code conversion ||
+|| ##U## || Unicode (typically UTF-8) ||
+
+: ''The file ##short-unicode## contains Unicode text ['''A'''].  The other two have no translation (aside from end-of-line).''
+
+See [[Manual:International|International Character Set Support]] in the Emacs manual for details on all this.
+
+=== End-of-line ===
+
+Next in the mode line is an indication of how the file represents EndOfLine.  Either a single character, or a word in parenthesis, may be shown by Emacs:
+
+|| || Word       || Meaning         || Used by               ||
+|| ##:## || ##(Unix)## || Line feed       || Unix, Linux, !MacOS X ||
+|| ##/## || ##(MAC)##  || Carriage return || classic Macintosh (not !MacOS X) ||
+|| ##\## || ##(DOS)##  || Both            || Microsoft, DEC, RFCs  || 
+
+: ''The ##win.ini## file uses the DOS/Windows end-of-line format ['''G'''].  The others are using the OS native format.''
+
+=== Modification ===
+
+The next two characters in the mode line indicate whether or not the buffer has been modified, or is read-only against modification.
+
+|| || Meaning ||
+|| ##**## || modified since last save ||
+|| ##--## || not modified since last save ||
+|| ##%*## || read-only, but modified ||
+|| ##%%## || read-only, not modified ||
+
+: ''File ##spell.el## has been modified ['''L'''].  File ##win.ini## is read-only ['''H'''].
+
+=== Buffer name ===
+
+Every buffer has a name.  Conventionally, this is the file name being visited.
+
+: ''Three files are shown: File ##short-unicode## ['''B'''], file ##win.ini## ['''K'''], and file ##spell.el## ['''N'''].''
+
+=== Position ===
+
+After the buffer name comes the current position -- where TextCursor and [[Point]] are located.
+
+By default, the position is given first as the relative portion of the file visible:
+
+|| || Meaning ||
+|| ##Top## || the ''beginning'' of the buffer is shown in the window ||
+|| ##Bot## || the ''end'' of the buffer is shown in the window ||
+|| ##All## || ''all'' of the buffer is shown in the window ||
+|| ##xx%## || percent of the buffer ''above'' the ''top'' of the window (the portion before the visible text) ||
+
+: ''The entire file ##short-unicode## is visible ['''C'''].  The first line of file ##win.ini## is visible ['''E'''].   Lastly, point is 38% into ['''P'''] the file ##spell.el##.''
+
+After the portion comes the line number, prefixed by ##L##.  Optionally, column number may appear as well, with ##C## prefix.
+
+: ''Point is on line 47 ['''R'''] of file ##spell.el##.
+
+=== Modes ===
+
+Last are the mode(s) applied to the buffer, all in a single set of parenthesis.  First comes the [[MajorMode]], followed by any [[MinorMode]]s.
+
+Square brackets around the mode parenthetical -- like this: ##[(Emacs-Lisp)]## -- indicate a RecursiveEdit is in progress.
+
+One can click the major-mode and minor-mode names to get a menu of related options (Emacs 22+).
+
+: ''File ##short-unicode## is in Fundamental mode ['''D'''], meaning no particular major mode is applied.  File ##win.ini## is using `conf-mode', with  the !WinIni variant ['''F'''].  File ##spell.el## is in `emacs-lisp-mode' ['''S'''], with minor modes `eldoc-mode' ['''T'''] and `visual-line-mode' ['''U'''].
 
 == See also ==
 
