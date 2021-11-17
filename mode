@@ -1,0 +1,16 @@
+A '''mode''' is a set of behaviors.
+
+A great deal of the functionality of Emacs is grouped into the various modes available.  Modes can be applied to individual [[buffer]]s, or globally to Emacs as a whole.
+
+Every buffer has a single MajorMode, typically related to the type of file being edited.  Buffers can optionally have one or more [[MinorMode]]s applied as well.
+
+Modes can do such varied things as:
+* Change how text is displayed
+* Customize what is displayed in the ModeLine
+* Determine features such as:
+** [[Indentation]]
+** SyntaxHighlighting
+** Word [[completion]]
+
+----
+CategoryGlossary
