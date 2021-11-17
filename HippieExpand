@@ -428,6 +428,21 @@ use q in the *Completions* buffer to close and return to original editing buffer
 
 -- KiteDriver
 
+The following code will combine switch-to-completions and other-window function together.
+
+<pre>
+
+(defun switch-to-completions-or-other-window ()
+  (interactive)
+  (if (get-buffer-window "*Completions*" nil)
+      (switch-to-completions)
+    (other-window 1)))
+
+(global-set-key (kbd "M-v") 'switch-to-completions-or-other-window)
+
+</pre>
+
+-- KiteDriver
 
 The following code will combine etags and dabbrev together with hippie-completion.
 
