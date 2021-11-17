@@ -1,4 +1,4 @@
-This page is about functions that delete, or "kill" [[buffer]]s.  This is called "closing the file" in many other programs.  The standard [[command]] to kill a buffer is `kill-buffer'. This page goes beyond `kill-buffer'.
+This page is about functions that delete, or "kill" [[buffer]]s.  This is called "closing the file" in many other programs.  The standard [[command]] to kill a buffer is `kill-buffer', bound to `C-x k'. This page goes beyond the basics.
 
 : '''Note:''' "killing" a buffer has nothing to do with killing text. After you [[kill]] (aka "cut") text, you can [[yank]] (aka "paste") it back again. After you "kill" a buffer, it is gone forever.
 
