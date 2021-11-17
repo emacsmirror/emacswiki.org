@@ -83,7 +83,7 @@ After the portion comes the line number, prefixed by ##L##.  Optionally, column 
 
 === Modes ===
 
-Last are the mode(s) applied to the buffer, all in a single set of parenthesis.  First comes the [[MajorMode]], followed by any [[MinorMode]]s.
+Last are the [[mode]](s) applied to the buffer, all in a single set of parenthesis.  First comes the [[MajorMode]], followed by any [[MinorMode]]s.
 
 Square brackets around the mode parenthetical -- like this: ##[(Emacs-Lisp)]## -- indicate a RecursiveEdit is in progress.
 
