@@ -81,7 +81,7 @@ Open in a different frame (from ##smoke_## on ###emacs##):
 
 == History ==
 
-In the past, there were variations on the buffer menu.  `list-buffers` came first, and presented a simple list, allowing you to pick a buffer to switch to, and little else.
+In the past, there were variations on the buffer menu.  `list-buffers' came first, and presented a simple list, allowing you to pick a buffer to switch to, and little else.
 
 Various non-standard enhancements (some listed on this page) were developed to add capabilities.
 
