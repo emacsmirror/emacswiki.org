@@ -415,6 +415,12 @@ It will generate a *Completions* buffer and list all completion. It use Emacs's 
     (define-key completion-list-mode-map (kbd "M-v") 'other-window)
     ;;(global-set-key (kbd "C-M-v") 'scroll-other-window)
 
+    ;;; recommended bind key
+    (global-set-key (kbd "M-<SPC>") 'hippie-expand)
+    ;;(global-set-key (kbd "C-<SPC>") 'hippie-expand)
+    (global-set-key (kbd "C-M-<SPC>") 'kk-hippie-completion)
+
+
 use M-v to quickly switch to *Completions* buffer and select.
 
 other useful keys:
