@@ -1,6 +1,6 @@
 == What is Powershell? ==
 
-!PowerShell is Microsoft's modern command line shell and scripting language, targeted especially at IT management and automation.  It's effectively a command line environment for the .NET Framework (which is their answer to Java and Java's standard libraries).  Syntactically, !PowerShell strongly resembles [[Perl]]; semantically, it's a bit more like [[Python]]; with a bit of DEC VMS thrown in for flavor.  Introduced in 2006 as a Windows-only thing, !PowerShell is now available for Mac and Linux, too.  It is still under active development in  2021.  !PowerShell source code files typically have extensions of ##.ps1## or ##.psm1##.
+!PowerShell is Microsoft's modern command line shell and scripting language, targeted especially at IT management and automation.  It's effectively a command line environment for the .NET Framework (which is their answer to Java and Java's standard libraries).  Syntactically, !PowerShell strongly resembles [[Perl]]; semantically, it's a bit more like [[Python]]; the command environment is a mix of DOS, Unix, and DEC VMS.  Introduced in 2006 as a Windows-only thing, !PowerShell is now available for Mac and Linux, too.  It is still under active development in  2021.  !PowerShell source code files typically have extensions of ##.ps1## or ##.psm1##.
 
 [[WikiPedia:PowerShell]]
 
@@ -8,7 +8,7 @@ http://Microsoft.com/powershell
 
 == Editing Mode ==
 
-As of Emacs 27.1, there is no "official" `powershell-mode', but there have been various third-party implementations:  
+Emacs can provide the usual editing-acceleration features -- such as SyntaxHighlighting and electric [[Indentation]] -- for !PowerShell.  As of Emacs 27.1, there is no "official" `powershell-mode', but there have been various third-party implementations:  
 
 * Vivek Sharma
 ** Original (dead): ##http://VivekSharma.com/techlog/attache/powershell-mode.el.txt##
@@ -34,15 +34,21 @@ As of Emacs 27.1, there is no "official" `powershell-mode', but there have been 
 
 Above links and versions last checked 2021 November.
 
-== Powershell as an Inferior Shell == 
+== PowerShell as an Inferior Shell == 
 
-Download Lisp:Powershell.el  (updated 20 May 2010)
+On Windows, at least, it is possible to run !PowerShell as an inferior shell within Emacs, analogous to ShellMode on Unix/Linux systems.
 
-* [http://Nabble.com/Run-powershell-as-a-shell-within-Emacs-on-Windows-td17504130.html News Item]
-* [http://Blogs.MSDN.com/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx Blog post]
-
-http://i40.tinypic.com/16i8bc8.jpg
-
+* ##Powershell.el##
+** Lisp:Powershell.el
+** Last updated 20 May 2010
+** Download the source from this wiki, and [[InitFile|incorporate it into your config]]
+* Unknown Nabble link
+** Dead: ##http://Nabble.com/Run-powershell-as-a-shell-within-Emacs-on-Windows-td17504130.html##
+** No archive available
+* "Run !PowerShell as a shell within Emacs"
+** 10 April 2008, Dino Chiesa, "About All About Interop", Microsoft MSDN
+** Original/dead: ##http://Blogs.MSDN.com/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx##
+** Archive: http://web.archive.org/web/20100123183703/http://Blogs.MSDN.com/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx
 
 === HTTP GET via Powershell ===
 
