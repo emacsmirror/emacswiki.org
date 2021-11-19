@@ -1,9 +1,10 @@
-== Description ==
+== What is Powershell? ==
+
+!PowerShell is Microsoft's modern command line shell and scripting language, targeted especially at IT management and automation.  It's effectively a command line environment for the .NET Framework (which is their answer to Java and Java's standard libraries).  Syntactically, !PowerShell strongly resembles [[Perl]]; semantically, it's a bit more like [[Python]]; with a bit of DEC VMS thrown in for flavor.  Introduced in 2006 as a Windows-only thing, !PowerShell is now available for Mac and Linux, too.  It is still under active development in  2021.  !PowerShell source code files typically have extensions of ##.ps1## or ##.psm1##.
+
+[[WikiPedia:PowerShell]]
 
 http://Microsoft.com/powershell 
-
-''Microsoft Windows PowerShell command line shell and scripting language helps IT professionals achieve greater control and productivity. Using a new admin-focused scripting language, more than 130 standard command line tools, and consistent syntax and utilities, Windows PowerShell allows IT professionals to more easily control system administration and accelerate automation. Windows PowerShell is easy to adopt, learn, and use, because it works with your existing IT infrastructure and existing script investments, and because it runs on Windows XP, Windows Vista, and Windows Server 2003. Windows PowerShell is now included as part of Windows Server 2008 and can be evaluated in Windows Server 2008 Beta 3. Exchange Server 2007, System Center Operations Manager 2007, System Center Data Protection Manager V2, and System Center Virtual Machine Manager also leverage Windows PowerShell to improve administrator control, efficiency, and productivity.''
-
 
 == Editing Mode ==
 
@@ -99,7 +100,3 @@ I changed the if statement to skip if power-shell-command-reply is null, and set
 	     (setq powershell-command-reply "")
 	     )
 }}}
-
-
-
-
