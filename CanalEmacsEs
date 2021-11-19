@@ -14,7 +14,17 @@ Incluso si hay bastante gente de habla hispana en EmacsChannel, hay también un 
 
 Si no hay bastantes visitantes en #emacs-es, plantee la pregunta en #emacs.  Incluso si la mayoría no habla español, intentaremos ayudarle.
 
-* irc://irc.libera.chat/#emacs-es (basta clicar con '''Mozilla Firefox''' con la extensión '''ChatZilla''')
+* Acceda desde Emacs con su cliente de IRC: Emacs ERC.
+
+Evalua esto en Emacs para conectarte al servidor:
+
+<pre>
+(erc-tls :server "irc.libera.chat" :port 6697 :nick "mi_nick")
+</pre>
+
+Una vez te hayas unido, ingresa al canal con C-c C-j #emacs-es RET
+
+
 
 == Ayuda Para Novatos ==
 
