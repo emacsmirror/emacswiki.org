@@ -19,7 +19,7 @@ As of Emacs 27.1, there is no "official" `powershell-mode', but there have been 
 * Frédéric Perrin
 ** http://svn.fperrin.net/powershell-mode/powershell-mode.el
 ** Originally released circa 2009
-** Latest version 792 dated 2012 (as of 2021 November)
+** Latest version 792 dated 2012
 ** speedbar/imenu support, syntax highlighting, may lack PowerShell 2.0+ support
 * Rick Bielawski
 ** [[Lisp:PowerShell-Mode.el]]
