@@ -8,17 +8,31 @@ http://Microsoft.com/powershell
 
 == Editing Mode ==
 
-There are three editing modes:
+As of Emacs 27.1, there is no "official" `powershell-mode', but there have been various third-party implementations:  
 
-* [http://VivekSharma.com/techlog/attache/powershell-mode.el.txt Powershell-mode]. Version: 0.5, Author: Vivek Sharma, Date: Oct 2008.
+* Vivek Sharma
+** Original (dead): ##http://VivekSharma.com/techlog/attache/powershell-mode.el.txt##
+** Archive: http://web.archive.org/web/20170810092842/http://viveksharma.com/techlog/attache/powershell-mode.el.txt
+** Originally released circa 2006
+** Latest version 0.5 dated 2008 August 19
+** Site offline since circa 2018
+* Frédéric Perrin
+** http://svn.fperrin.net/powershell-mode/powershell-mode.el
+** Originally released circa 2009
+** Latest version 792 dated 2012 (as of 2021 November)
+** speedbar/imenu support, syntax highlighting, may lack PowerShell 2.0+ support
+* Rick Bielawski
+** [[Lisp:PowerShell-Mode.el]]
+** Based on Frédéric Perrin's work, with significant updates by [[Rick Bielawski]]
+** Last updated 2014 January
+** Development/release nominally homed on this wiki
+* Joe Schafer (jschaf)
+** https://github.com/jschaf/powershell.el
+** Originally released 2013 June
+** Last updated 2020 October
+** Available in [[MELPA]] with ##M-x package-install RET powershell RET##
 
-* [http://svn.fperrin.net/powershell-mode/powershell-mode.el powershell-mode.el]. Author: Frédéric Perrin, last updated : Feb 2010.
-
-: I (Frédéric Perrin) started the second because of a lack of licence on Vivek's mode. My version has more simple code for indenting (more robust and less imposing of a style in general than Vivek's version), speedbar/imenu support, syntax highlighting (some features for v2 may be missing).
-
-* [[Lisp:PowerShell-Mode.el]].  Frédéric Perrin's version with significant updates made by [[Rick_Bielawski]].
-
-: Frédéric told [[Rick_Bielawski|me]] he is ok with the ElispArea version being the version receiving long term maintenance (which I'm trying to provide) so hopefully we can now have just this one place for people to look.  If I can't be contacted or are unresponsive to your needs the license lets you pick up where we left off right [[Lisp:PowerShell-Mode.el|here]] rather than creating yet another location for people to consider.  Thanks.
+Above links and versions last checked 2021 November.
 
 == Powershell as an Inferior Shell == 
 
