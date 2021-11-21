@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 12 18:28:20 2021 (-0800)
+;; Last-Updated: Sun Nov 21 15:55:32 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 212
+;;     Update #: 328
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -41,140 +41,29 @@
 ;;
 ;;    Show region information in the mode-line.
 ;;
-;;  Minor mode `modeline-region-mode' and its globalized version
-;;  `global-modeline-region-mode' enhance the buffer size indication
-;;  in the mode-line, that is, what is provided by vanilla option
-;;  `mode-line-position' with `size-indication-mode' turned on.
-;;  (These modes automatically turn on `size-indication-mode'.)
+;;  More description below.
 ;;
-;;  Region information is shown in the mode-line when the region is
-;;  active -- you can show the the region size in various ways.
 ;;
-;;  To use this library, put this file in a directory in your
-;;  `load-path', and add this to your init file:
+;;(@> "Index")
 ;;
-;;    (require 'modeline-region)
+;;  Index
+;;  -----
 ;;
-;;  If you want to turn on this showing of active-region information
-;;  in the mode-line globally (in all buffers) then add this as well:
+;;  If you have library `linkd.el' and Emacs 22 or later, load
+;;  `linkd.el' and turn on `linkd-mode' now.  It lets you easily
+;;  navigate around the sections of this doc.  Linkd mode will
+;;  highlight this Index, as well as the cross-references and section
+;;  headings throughout this file.  You can get `linkd.el' here:
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
-;;    (global-modeline-region-mode 1)
-;;
-;;  Otherwise, to turn it on/off in a given buffer or globally, use
-;;  command `modeline-region-mode' or `global-modeline-region-mode',
-;;  respectively.
-;;
-;;  Whether an empty active region is indicated by these modes is
-;;  controlled by option `mlr-empty-region-flag'.  By default an empty
-;;  region is indicated, to avert you to the fact that you're acting
-;;  on an empty region.
-;;
-;;  When these modes are on, information about the region size is
-;;  shown in the mode-line using face `mlr-region', by default.  By
-;;  default, this face looks the same as face `region'.
-;;
-;;  But when you use a command that acts on the region, the mode-line
-;;  indication instead uses face `mlr-region-acting-on', to draw
-;;  attention to this fact.
-;;
-;;  Specific commands and non-interactive functions are advised, to
-;;  realize this feature of indicating that they act specially on the
-;;  region.
-;;
-;;  In particular, if you use library `isearch+.el' then you can
-;;  restrict Isearch commands and replacement commands to the active
-;;  region (this is controlled by option
-;;  `isearchp-restrict-to-region-flag').  Then, because such commands
-;;  act on the region the mode-line indication uses face
-;;  `mlr-region-acting-on'.
-;;
-;;  If you have additional functions that you want to use face
-;;  `mlr-region-acting-on', to draw attention to the fact that they're
-;;  currently acting on the active region, you can just add an advice
-;;  function to the hook `modeline-region-mode-hook'.  Add the advice
-;;  when the mode is turned on, and remove it when the mode is turned
-;;  off.  You can use the existing advice functions defined here,
-;;  `mlr--advice-*', as models.
-;;
-;;  For example, function `mlr--advice-3' just binds variable
-;;  `mlr-region-acting-on' to the value of `(use-region-p)'.  That's
-;;  all that's needed, in general, but in some cases you'll want an
-;;  `:around' advice to also contain an `interactive' spec that's
-;;  specific to the advised function.
-;;
-;;  When mode `modeline-region-mode' or `global-modeline-region-mode'
-;;  is enabled, the menu shown when you click the mode-line position
-;;  and size fields lets you do the following, regardless of whether
-;;  the region is currently active, in addition to the usual
-;;  operations of toggling showing of column and line numbers and
-;;  indication size:
-;;
-;;   * Toggle `Showing More Region Info' - Command
-;;     `mlr-toggle-non-rectangle-style': toggle the value of option
-;;     `mlr-non-rectangle-style'.  This shows or hides the number of
-;;     words in the region (in addition to the number of lines and
-;;     characters).
-;;
-;;   * Toggle `Showing More Rectangle Info' - Command
-;;     `mlr-toggle-rectangle-style': toggle the value of option
-;;     `mlr-rectangle-style'.  This shows or hides the number of words
-;;     and characters in the rectangle (in addition to the number of
-;;     rows and columns).
-;;  
-;;   * `Choose Region Style' - Command `mlr-choose-region-style':
-;;     Choose what to show in the mode-line when the region is active.
-;;     That is, change option `mlr-region-style' to a style you
-;;     choose.  The option value is changed, but it's not saved.  Use
-;;     `M-x customize-option' to save it.
-;;
-;;  When the region is active the menu also includes this item:
-;;
-;;   * `Count Region Contents' - Command `count-words-region': Echo
-;;     the number of lines, words, and chars in the region.
-;;
-;;  When the active region is rectangular the menu also includes this
-;;  item:
-;;
-;;   * `Count Rectangle Contents' - Command
-;;     `mlr-count-rectangle-contents': Echo the number of rows,
-;;     columns, words, and chars in the rectangle.  By default, the
-;;     count excludes words that straddle the rectangle row limits;
-;;     with a prefix arg those words are counted.
-;;
-;;  This library also adds these items to the mode-line menu for the
-;;  position and size fields:
-;;
-;;   * `Show Region Info Here' - Command `modeline-region-mode'.
-;;
-;;   * `Show Region Info Globally' - Command
-;;     `global-modeline-region-mode'.
-;;
-;;  This means that you can use the mode-line position and size menus
-;;  to toggle showing region info on and off - no need to invoke the
-;;  mode commands from the keyboard to do that.
-;;
-;;  All of these improvements to the mode-line position and size field
-;;  menus are provided automatically.
-;;
-;;  By default this is done just by loading this library.  But if you
-;;  prefer not to have that done except on demand, then customize
-;;  option `mlr-init-menu-on-load-flag' to `nil'.  If you do that then
-;;  the menus will only be enhanced when you invoke
-;;  `modeline-region-mode' or `global-modeline-region-mode' for the
-;;  first time.
-;;
-;;  _____
-;;
-;;  An unrelated additional enhancement is provided by option
-;;  `mlr-column-limit'.  This highlights the current-column number in
-;;  the mode-line whenever it's greater than the option value, letting
-;;  you know when you've gone past a certain number of characters in
-;;  any line.
-;;
-;;  _____
-;;
-;;  This library supersedes my older library `modeline-posn.el'.  This
-;;  one is more correct, more featureful, and cleaner.
+;;  (@> "Things Defined Here")
+;;  (@> "Documentation")
+;;    (@> "Purpose and Getting Started")
+;;    (@> "General Behavior")
+;;    (@> "Controlling What Region Info To Show")
+;;    (@> "Use Mode-Line Menus To Change Behavior")
+;;    (@> "Highlight Large Column Numbers")
+;;    (@> "Show That Additional Commands Are Regionable")
  
 ;;(@* "Things Defined Here")
 ;;
@@ -190,7 +79,7 @@
 ;;    `mlr-column-limit', `mlr-count-partial-words-flag',
 ;;    `mlr-empty-region-flag', `mlr-init-menu-on-load-flag',
 ;;    `mlr-non-rectangle-style', `mlr-rectangle-style',
-;;    `mlr-region-style'.
+;;    `mlr-region-style', `mlr-use-property-mlr-acts-on-flag'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -222,11 +111,259 @@
 ;;    `mlr--orig-mode-line-position', `mlr-menu', `mlr-rect-p',
 ;;    `mlr-region-acting-on', `mlr-rows+cols-format',
 ;;    `mlr-rows+cols+words+chars-format', `modeline-region-mode-map'.
+  
+;;(@* "Documentation")
+;;
+;;  Documentation
+;;  -------------
+;;
+;;(@* "Purpose and Getting Started")
+;;  ** Purpose and Getting Started **
+;;
+;;  Minor mode `modeline-region-mode' and its globalized version
+;;  `global-modeline-region-mode' enhance the buffer size indication
+;;  in the mode-line, that is, what is provided by vanilla option
+;;  `mode-line-position' with `size-indication-mode' turned on.
+;;  (These modes automatically turn on `size-indication-mode'.)
+;;
+;;  Region information is shown in the mode-line when the region is
+;;  active -- you can show the the region size in various ways.
+;;
+;;  To use this library, put this file in a directory in your
+;;  `load-path', and add this to your init file:
+;;
+;;    (require 'modeline-region)
+;;
+;;  If you want to turn on this showing of active-region information
+;;  in the mode-line globally (in all buffers) then add this as well:
+;;
+;;    (global-modeline-region-mode 1)
+;;
+;;  Otherwise, to turn it on/off in a given buffer or globally, use
+;;  command `modeline-region-mode' or `global-modeline-region-mode',
+;;  respectively.
+;;
+;;  (This library supersedes my older library `modeline-posn.el'.
+;;  This one is more correct, more featureful, and cleaner.)
+;;
+;;(@* "General Behavior")
+;;  ** General Behavior **
+;;
+;;  Whether an empty active region is indicated by these modes is
+;;  controlled by option `mlr-empty-region-flag'.  By default an empty
+;;  region is indicated, to avert you to the fact that you're acting
+;;  on an empty region.
+;;
+;;  When these modes are on, information about the region size is
+;;  shown in the mode-line using face `mlr-region', by default.  By
+;;  default, this face looks the same as face `region'.
+;;
+;;  But when you use a command that's known to act on the active
+;;  region, the mode-line indication instead uses face
+;;  `mlr-region-acting-on', to draw attention to this fact.
+;;
+;;  By a "command that acts on the active region" I mean a command
+;;  that's "regionable": it acts on the region only when it's active.
+;;  It typically acts on the full buffer, or the text from point to
+;;  the end of the buffer, when the region's not active.
+;;
+;;  And by "act" I mean the command is in some way region-aware,
+;;  region-reactive, or region-sensitive.
+;;
+;;  (A command that always acts on the region, whether or not it's
+;;  active, can be called just "regional"; it's not "regionable".
+;;  There's no need to avert you to its acting on the region.)
+;;
+;;  Some specific commands and non-interactive functions are advised
+;;  in `modeline-region-mode', to realize this feature of indicating
+;;  that they act specially on the region.
+;;
+;;  In particular, if you use library `isearch+.el' then you can
+;;  restrict Isearch commands and replacement commands to the active
+;;  region (this is controlled by option
+;;  `isearchp-restrict-to-region-flag').  Then, because such commands
+;;  act on the region, the mode-line indication uses face
+;;  `mlr-region-acting-on'.
+;;
+;;  (Advice is also provided for the merely "regional" commands
+;;  `prepend-to-buffer', `append-to-buffer', `copy-to-buffer',
+;;  `append-to-file', and `write-region', but it isn't used.  To
+;;  highlight the use of those commands as if they were "regionable",
+;;  uncomment the code defining and using their advice.)
+;;
+;;  You can show that other functions act on the region, besides those
+;;  handled that way by default -
+;;  see (@> "Show That Additional Commands Are Regionable").
+;;
+;;(@* "Controlling What Region Info To Show")
+;;  ** Controlling What Region Info To Show **
+;;
+;;  These user options control what region size information is shown
+;;  in the mode-line:
+;;
+;;  * `mlr-region-style' - Show the size as the number of characters,
+;;    bytes, lines & characters, rows &columns, or arbitrary info you
+;;    choose.  For arbitrary info, you provide a format string and a
+;;    Lisp sexp whose evaluation returns the value you want to show
+;;    using that format.  (Arbitrary means arbitrary: the value
+;;    displayed need not have anything to do with region size.)
+;;
+;;    Use options `mlr-non-rectangle-style' and `mlr-rectangle-style'
+;;    to specify just what to show for lines & characters and rows &
+;;    columns, respectively.
+;;
+;;  * `mlr-non-rectangle-style' - Show the number of lines & chars, or
+;;    that plus the number of words in the region.
+;;
+;;  * `mlr-rectangle-style' - Show the number of rectangle rows &
+;;    columns, or that plus the number of words and characters.
+;;
+;;  * `mlr-count-partial-words-flag' - Whether to count words that
+;;    straddle rectangle rows.  By default they're not counted.
+;;
+;;(@* "Use Mode-Line Menus To Change Behavior")
+;;  ** Use Mode-Line Menus To Change Behavior **
+;;
+;;  When `modeline-region-mode' or `global-modeline-region-mode' is
+;;  enabled, the menu shown when you click the mode-line size fields
+;;  lets you do the following, regardless of whether the region is
+;;  currently active.  This is in addition to the usual operations of
+;;  toggling display of column and line numbers, and toggling
+;;  indication of buffer size:
+;;
+;;   * `+ Region Info' - Command `mlr-toggle-non-rectangle-style':
+;;     toggle the value of option `mlr-non-rectangle-style'.  This
+;;     shows or hides the number of words in the region (in addition
+;;     to the number of lines & characters).
+;;
+;;   * `+ Rectangle Info' - Command `mlr-toggle-rectangle-style':
+;;     toggle the value of option `mlr-rectangle-style'.  This shows
+;;     or hides the number of words and characters in the rectangle
+;;     (in addition to the number of rows & columns).
+;;  
+;;   * `Choose Region Style' - Command `mlr-choose-region-style':
+;;     Choose what to show in the mode-line when the region is active.
+;;     That is, change the value of option `mlr-region-style'.  (The
+;;     value isn't saved.  Use `M-x customize-option' to save it.)
+;;
+;;  When the region is active the menu also includes this item:
+;;
+;;   * `Count Region Contents' - Command `count-words-region': Echo
+;;     the number of lines, words, and characters in the region.
+;;
+;;  When the active region is rectangular the menu also includes this
+;;  item:
+;;
+;;   * `Count Rectangle Contents' - Command
+;;     `mlr-count-rectangle-contents': Echo the number of rows,
+;;     columns, words, and characters in the rectangle.  By default,
+;;     the count excludes words that straddle the rectangle row
+;;     limits; with a prefix arg those partial words are counted.
+;;
+;;  These items are also added to the mode-line menu for the size
+;;  fields:
+;;
+;;   * `Show Region Info Here' - Command `modeline-region-mode'.
+;;
+;;   * `Show Region Info Globally' - Command
+;;     `global-modeline-region-mode'.
+;;
+;;  This means that you can use the mode-line size menus to toggle
+;;  showing region info on and off - no need to invoke the mode
+;;  commands from the keyboard to do that.
+;;
+;;  All of these improvements to the mode-line size field menus are
+;;  provided automatically.
+;;
+;;  By default this is done just by loading this library.  But if you
+;;  prefer not to have that done except on demand, then customize
+;;  option `mlr-init-menu-on-load-flag' to `nil'.  If you do that then
+;;  the menus will only be enhanced when you invoke
+;;  `modeline-region-mode' or `global-modeline-region-mode' for the
+;;  first time.
+;;
+;;(@* "Highlight Large Column Numbers")
+;;  ** Highlight Large Column Numbers **
+;;
+;;  An unrelated additional mode-line enhancement is provided by
+;;  option `mlr-column-limit'.  This highlights the current-column
+;;  number in the mode-line whenever it's greater than the option
+;;  value, letting you know when you've gone past a certain number of
+;;  characters in any line.  Turn this option off if you don't want
+;;  this behavior.
+;;
+;;(@* "Show That Additional Commands Are Regionable")
+;;  ** Show That Additional Commands Are Regionable **
+;;
+;;  If you want additional commands to use face
+;;  `mlr-region-acting-on', to draw attention to the fact that they're
+;;  currently acting on the active region, there are two ways to make
+;;  this happen.  You can use either approach for any command - in
+;;  other words, you can mix and match if you like.
+;;
+;;  1. Put non-nil property `mlr-acts-on' on the command symbol:
+;;
+;;       (put 'my-cmd 'mlr-acts-on t)
+;;
+;;  2. Advise the command, binding buffer-local variable
+;;    `mlr-region-acting-on' to the value returned by `use-region-p'
+;;    around the command's invocation.  Then add your advice function
+;;    to hook `modeline-region-mode-hook'.
+;;
+;;  #1 is the simplest approach, and is likely all you need.  To make
+;;  use of it, turn on option `mlr-use-property-mlr-acts-on-flag'.
+;;
+;;  [That option is off by default because you might never want to
+;;  indicate additional regionable commands.  Also, `pre-command-hook'
+;;  and `post-command-hook' are used when it's on, to check the
+;;  current command for property `mlr-acts-on'.  Those hooks can
+;;  sometimes slow things down or be a bother in other ways.  (That
+;;  drawback isn't specific to this library.)]
+;;
+;;  #2 is a bit more complicated, but it gives you additional control
+;;  of the mode-line behavior.  You can also advise non-interactive
+;;  functions (method #1 works only for commands).
+;;
+;;  Here's an example of #2:
+;;
+;;    (advice-add 'my-cmd :around #'my-advice)
+;;
+;;    (defun my-advice (function &rest args)
+;;      "Make mode-line show that FUNCTION acts on the active region."
+;;      (cond (modeline-region-mode
+;;             (let ((mlr-region-acting-on  (use-region-p)))
+;;               (apply function args)))
+;;            (t (apply function args))))
+;;
+;;    (add-hook 'modeline-region-mode-hook 'my-advice)
+;;
+;;  You can use the advice functions `mlr--advice-*' defined here as
+;;  models, except that you'll want to make your advice functions
+;;  conditional on whether `modeline-region-mode' is enabled, as in
+;;  the above example.
+;;
+;;  [The `modeline-region-mode' code itself adds and removes the advice
+;;  functions defined here, depending on whether the mode is enabled.
+;;  For example, like the `my-advice' example above, function
+;;  `mlr--advice-3' binds `mlr-region-acting-on' to (use-region-p),
+;;  but it does that unconditionally, since it's used only when the
+;;  mode is enabled.]
+;;
+;;  In your advice function, binding or setting `mlr-region-acting-on'
+;;  to (use-region-p) is generally all that's needed, but in some
+;;  cases you'll want an `:around' advice to also contain an
+;;  `interactive' spec that's specific to the advised function.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/21 dadams
+;;     Added option mlr-use-property-mlr-acts-on-flag and functions mlr-pre-cmd, mlr-post-cmd.
+;;     modeline-region-mode: Add&remove pre&post command hooks if mlr-use-property-mlr-acts-on-flag.
+;;     Improved documentation in Commentary.
+;; 2021/11/15 dadams
+;;     mlr-set-default-mode-line-position: Removed redundant ignore-errors around mlr-show-region-p.
 ;; 2021/11/12 dadams
 ;;     Added: mlr-init-menu-on-load-flag, mlr-set-default-mode-line-position, mlr--mlp-is-set-up-p.
 ;;     modeline-region-mode:
@@ -391,23 +528,27 @@ More generally, enhance `mode-line-position'."
 (defface mlr-column-warning '((t (:foreground "Red")))
   "Face used to highlight the modeline column number.
 This is used when the current column number is greater than
-`mlr-column-limit'."
+`mlr-column-limit'.
+Used by `modeline-region-mode'."
   :group 'modeline-region :group 'faces)
 
 ;;;###autoload
 (defface mlr-region '((t :inherit region))
   "Face used to highlight the modeline position and size when
-the region is active."
+the region is active.
+Used by `modeline-region-mode'."
   :group 'modeline-region :group 'faces)
 
 ;;;###autoload
 (defface mlr-region-acting-on '((t (:inherit region :box (:line-width 3 :color "Red"))))
-  "Face for modeline position & size when a command acts on active region."
+  "Face for modeline position & size when a command acts on active region.
+Used by `modeline-region-mode'."
   :group 'modeline-region :group 'faces)
 
 ;;;###autoload
 (defcustom mlr-column-limit 70
-  "Current column greater than this means highlight column in mode-line."
+  "Current column greater than this means highlight column in mode-line.
+Used by `modeline-region-mode'."
   :group 'modeline-region
   :type '(choice
           (const   :tag "NO limit: don't highlight column number of long lines" nil)
@@ -417,12 +558,14 @@ the region is active."
 (defcustom mlr-count-partial-words-flag nil
   "Non-nil means count words that straddle rectangle rows.
 By default (nil value), count only words that are entirely within the
-rectangle."
+rectangle.
+Used by `modeline-region-mode'."
     :group 'modeline-region :type 'boolean)
 
 ;;;###autoload
 (defcustom mlr-empty-region-flag t
-  "Non-nil means indicate an active region even when empty."
+  "Non-nil means indicate an active region even when empty.
+Used by `modeline-region-mode'."
   :group 'modeline-region :type 'boolean)
 
 ;;;###autoload
@@ -437,7 +580,8 @@ command or its globalized version, `global-modeline-region-mode'"
 
 ;;;###autoload
 (defcustom mlr-non-rectangle-style 'lines+chars
-  "Mode-line info about region size, except when rectangular."
+  "Mode-line info about region size, except when rectangular.
+Used by `modeline-region-mode'."
   :group 'modeline-region
   :type '(choice
           (const :tag "Lines and characters"    lines+chars)
@@ -446,7 +590,8 @@ command or its globalized version, `global-modeline-region-mode'"
 (when (fboundp 'extract-rectangle-bounds) ; Emacs 26+
 
   (defcustom mlr-rectangle-style 'rows+cols
-    "Mode-line info about region size when a rectangle is selected."
+    "Mode-line info about region size when a rectangle is selected.
+Used by `modeline-region-mode'."
     :group 'modeline-region
     :type '(choice
             (const :tag "Rows and columns"                rows+cols)
@@ -552,8 +697,11 @@ That is, they include entries for `modeline-region-mode'.
   "Non-nil means the current command is a rectangle command.")
 
 (defvar-local mlr-region-acting-on nil
-  "Non-nil means that a command is acting on the active region.
-It is the responsibility of individual commands to manage the value.")
+  "Non-nil means that Emacs is currently acting on the active region.
+It is the responsibility of an individual command to manage the value.
+This can be done by advising the command to bind this variable or, if
+option `mlr-use-property-mlr-acts-on-flag' is non-nil, by putting a
+non-nil property `mlr-acts-on' on the command symbol.")
 
 (defvar mlr-rows+cols-format " %d rows, %d cols"
   "Format string for the number of rows and columns in rectangle.
@@ -734,6 +882,34 @@ Choose a style from the `Value Menu':
           (string :tag "Format string")
           (repeat :inline t (sexp :tag "Sexp argument for format string")))))
 
+;;;###autoload
+(defcustom mlr-use-property-mlr-acts-on-flag nil
+  "Whether property `mlr-acts-on' says a command acts on active region.
+This affects the behavior of minor mode `modeline-region-mode'.
+
+A non-nil value of property `mlr-acts-on' on a command symbol means
+highlight the mode-line when the command is invoked, to indicate that
+the command acts on the active region.
+
+Use the Customize UI or function `customize-set-variable', not `setq',
+to change the value of this option during an Emacs session.  This
+turns off `global-modeline-region-mode' everywhere and reinitializes
+command `modeline-region-mode', so that when you use that command
+again it respects the new value of the option properly.
+
+NOTE: It's easy to put property `mlr-acts-on' on a command symbol.
+But it's generally better, and more flexible, to instead advise the
+command, binding buffer-local variable `mlr-region-acting-on' to the
+value returned by `use-region-p', for the duration of the command.
+This is because the put-property-on-symbol method makes use of `pre-'
+and `post-command-hook', which can sometimes slow things down or
+otherwise be a bother."
+  :group 'modeline-region :type 'boolean
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+	 (when (boundp 'global-modeline-region-mode)
+	   (global-modeline-region-mode -1))))
+
 (defun mlr-show-region-p ()
   "Whether to show mode-line region info and highlighting.
 Return non-nil if the region is active and nonempty, or emptiness is
@@ -831,7 +1007,7 @@ Used in place of `mode-line-column-line-number-mode-map'.")
 
 (defun mlr-set-default-mode-line-position ()
   "Set up default `mode-line-position' menus for `modeline-region-mode'.
-Set `mlr--mlp-is-set-up-p' to non-nil, to show the menus are set up."
+Sets `mlr--mlp-is-set-up-p' to t, to show the menus have been set up."
   (setq-default mode-line-position
                 '(:eval
                   `((:propertize
@@ -844,7 +1020,7 @@ Set `mlr--mlp-is-set-up-p' to non-nil, to show the menus are set up."
                     (size-indication-mode
                      (8 ,(propertize
                           (if (and modeline-region-mode
-                                   (or mlr-region-acting-on  (ignore-errors (mlr-show-region-p))))
+                                   (or mlr-region-acting-on  (mlr-show-region-p)))
                               (or (ignore-errors
                                     (apply #'format (mapcar #'eval mlr-region-style)))
                                   "")
@@ -852,8 +1028,7 @@ Set `mlr--mlp-is-set-up-p' to non-nil, to show the menus are set up."
                           'face (and modeline-region-mode
                                      (if mlr-region-acting-on
                                          'mlr-region-acting-on
-                                       (and (ignore-errors (mlr-show-region-p))
-                                            'mlr-region)))
+                                       (and (mlr-show-region-p)  'mlr-region)))
                           'local-map mlr-menu
                           'mouse-face 'mode-line-highlight
                           'help-echo "Buffer position, mouse-1: Line/col menu")))
@@ -903,14 +1078,24 @@ Set `mlr--mlp-is-set-up-p' to non-nil, to show the menus are set up."
                              'local-map mlr-menu
                              'mouse-face 'mode-line-highlight
                              'help-echo "Column number, mouse-1: Line/col menu")))))))))
-
-  (setq mlr--mlp-is-set-up-p  t) ; Flag to indicate this has been done.
-
-  )
+  (setq mlr--mlp-is-set-up-p  t)) ; Flag to indicate this has been done.
 
 ;; Set up the menus when this library is loaded (default behavior).
 ;;
 (when mlr-init-menu-on-load-flag (mlr-set-default-mode-line-position))
+
+(defun mlr-pre-cmd ()
+  "Update `mlr-region-acting-on' per property `mlr-acting-on'.
+Does nothing if `mlr-use-property-mlr-acts-on-flag' is nil."
+  (when mlr-use-property-mlr-acts-on-flag
+    (setq mlr-region-acting-on  (and (symbolp this-command)  (get this-command 'mlr-acts-on)))
+    (force-mode-line-update)))
+
+(defun mlr-post-cmd ()
+  "Reset `mlr-region-acting-on' if property `mlr-acting-on' was used."
+  (when (and (symbolp this-command)  (get this-command 'mlr-acts-on))
+    (setq mlr-region-acting-on  nil)
+    (force-mode-line-update)))
 
 ;;;###autoload
 (define-minor-mode modeline-region-mode
@@ -926,6 +1111,9 @@ The information shown depends on options `mlr-region-style',
          (setq mlr--orig-mlp-local-p  (local-variable-p 'mode-line-position))
          (make-local-variable 'mode-line-position)
          (setq mlr--orig-mode-line-position  mode-line-position)
+	 (when mlr-use-property-mlr-acts-on-flag
+           (add-hook 'pre-command-hook 'mlr-pre-cmd nil 'LOCAL)
+           (add-hook 'post-command-hook 'mlr-post-cmd nil 'LOCAL))
          (advice-add 'replace-dehighlight :after #'mlr--advice-1)
          (advice-add 'query-replace-read-args :around #'mlr--advice-2)
          (advice-add 'query-replace-read-to :around #'mlr--advice-2)
@@ -933,11 +1121,11 @@ The information shown depends on options `mlr-region-style',
          (advice-add 'query-replace-read-from :around #'mlr--advice-3)
          (advice-add 'keep-lines-read-args :around #'mlr--advice-3)
          (advice-add 'map-query-replace-regexp :around #'mlr--advice-4)
-         (advice-add 'prepend-to-buffer :around 'mlr--advice-5)
-         (advice-add 'append-to-buffer :around 'mlr--advice-6)
-         (advice-add 'copy-to-buffer :around 'mlr--advice-7)
-         (advice-add 'append-to-file :around 'mlr--advice-8)
-         (advice-add 'write-region :around 'mlr--advice-9)
+         ;;; (advice-add 'prepend-to-buffer :around 'mlr--advice-5)
+         ;;; (advice-add 'append-to-buffer :around 'mlr--advice-6)
+         ;;; (advice-add 'copy-to-buffer :around 'mlr--advice-7)
+         ;;; (advice-add 'append-to-file :around 'mlr--advice-8)
+         ;;; (advice-add 'write-region :around 'mlr--advice-9)
          (if (fboundp 'register-read-with-preview)
              ;; Emacs 24.4+.  Used by all register-reading cmds, but restrict highlighting
              ;;               to those affecting the region.
@@ -962,6 +1150,9 @@ The information shown depends on options `mlr-region-style',
          (if mlr--orig-mlp-local-p
              (setq-local mode-line-position  mlr--orig-mode-line-position)
            (set (kill-local-variable 'mode-line-position) mlr--orig-mode-line-position))
+	 (when mlr-use-property-mlr-acts-on-flag
+           (remove-hook 'pre-command-hook 'mlr-pre-cmd 'LOCAL)
+           (remove-hook 'post-command-hook 'mlr-post-cmd 'LOCAL))
          (advice-remove 'replace-dehighlight #'mlr--advice-1)
          (advice-remove 'query-replace-read-args #'mlr--advice-2)
          (advice-remove 'query-replace-read-to #'mlr--advice-2)
@@ -969,11 +1160,11 @@ The information shown depends on options `mlr-region-style',
          (advice-remove 'query-replace-read-from #'mlr--advice-3)
          (advice-remove 'keep-lines-read-args #'mlr--advice-3)
          (advice-remove 'map-query-replace-regexp #'mlr--advice-4)
-         (advice-remove 'prepend-to-buffer 'mlr--advice-5)
-         (advice-remove 'append-to-buffer 'mlr--advice-6)
-         (advice-remove 'copy-to-buffer 'mlr--advice-7)
-         (advice-remove 'append-to-file 'mlr--advice-8)
-         (advice-remove 'write-region 'mlr--advice-9)
+         ;;; (advice-remove 'prepend-to-buffer 'mlr--advice-5)
+         ;;; (advice-remove 'append-to-buffer 'mlr--advice-6)
+         ;;; (advice-remove 'copy-to-buffer 'mlr--advice-7)
+         ;;; (advice-remove 'append-to-file 'mlr--advice-8)
+         ;;; (advice-remove 'write-region 'mlr--advice-9)
          (if (fboundp 'register-read-with-preview)
              ;; Emacs 24.4+.  Used by all register-reading cmds, but restrict highlighting
              ;;               to those affecting the region.
@@ -1002,7 +1193,7 @@ The information shown depends on options `mlr-region-style',
 
 ;;;###autoload
 (define-globalized-minor-mode global-modeline-region-mode modeline-region-mode
- turn-on-modeline-region-mode)
+  turn-on-modeline-region-mode)
  
 
 ;;; ADVISED FUNCTIONS.
@@ -1013,10 +1204,10 @@ The information shown depends on options `mlr-region-style',
 ;;; to reset `mlr-rect-p' to nil, because the replacement function acting on the
 ;;; rectangle is finished.
 ;;;
-;;; Some functions are advised to set `mlr-region-acting-on' to non-nil, to turn
+;;; Some functions are advised, to set `mlr-region-acting-on' to non-nil, to turn
 ;;; on the mode-line info and highlighting for the (non-rectangular) region.
 ;;; When this variable is non-nil, the face used for this in the mode-line is
-;;; `mlr-region-acting-on'. not `mlr-region'.  This is typically used to
+;;; face `mlr-region-acting-on'. not `mlr-region'.  This is typically used to
 ;;; indicate that a command is acting on the region, not the whole buffer.
 
 
@@ -1069,60 +1260,60 @@ This applies to `query-replace-regexp-eval', `keep-lines',
 ;;; Commands from `simple.el' and `files.el' -----------------------------------
 ;;; They are loaded by default.  (`files.el' has no `provide'.)
 
-(defun mlr--advice-5 (orig-fun &rest args)
-  "Turn on mode-line region highlighting for `prepend-to-buffer'."
-  (interactive
-   (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (use-region-p)))
-     (list (read-buffer "Prepend to buffer: " (other-buffer (current-buffer) t))
-           (region-beginning) (region-end))))
-  (apply orig-fun args))
+;;; (defun mlr--advice-5 (orig-fun &rest args)
+;;;   "Turn on mode-line region highlighting for `prepend-to-buffer'."
+;;;   (interactive
+;;;    (let (;; (icicle-change-region-background-flag  nil)
+;;;          (mlr-region-acting-on  (use-region-p)))
+;;;      (list (read-buffer "Prepend to buffer: " (other-buffer (current-buffer) t))
+;;;            (region-beginning) (region-end))))
+;;;   (apply orig-fun args))
 
-(defun mlr--advice-6 (orig-fun &rest args)
-  "Turn on mode-line region highlighting for `append-to-buffer'."
-  (interactive
-   (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (use-region-p)))
-     (list (read-buffer "Append to buffer: " (other-buffer (current-buffer) t))
-           (region-beginning) (region-end))))
-  (apply orig-fun args))
+;;; (defun mlr--advice-6 (orig-fun &rest args)
+;;;   "Turn on mode-line region highlighting for `append-to-buffer'."
+;;;   (interactive
+;;;    (let (;; (icicle-change-region-background-flag  nil)
+;;;          (mlr-region-acting-on  (use-region-p)))
+;;;      (list (read-buffer "Append to buffer: " (other-buffer (current-buffer) t))
+;;;            (region-beginning) (region-end))))
+;;;   (apply orig-fun args))
 
-(defun mlr--advice-7 (orig-fun &rest args)
-  "Turn on mode-line region highlighting for `copy-to-buffer'."
-  (interactive
-   (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (use-region-p)))
-     (list (read-buffer "Copy to buffer: " (other-buffer (current-buffer) t))
-           (region-beginning) (region-end))))
-  (apply orig-fun args))
+;;; (defun mlr--advice-7 (orig-fun &rest args)
+;;;   "Turn on mode-line region highlighting for `copy-to-buffer'."
+;;;   (interactive
+;;;    (let (;; (icicle-change-region-background-flag  nil)
+;;;          (mlr-region-acting-on  (use-region-p)))
+;;;      (list (read-buffer "Copy to buffer: " (other-buffer (current-buffer) t))
+;;;            (region-beginning) (region-end))))
+;;;   (apply orig-fun args))
 
-(defun mlr--advice-8 (orig-fun &rest args)
-  "Turn on mode-line region highlighting for `append-to-file'."
-  (interactive
-   (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (use-region-p)))
-     (list (region-beginning)
-           (region-end)
-           (read-file-name "Append to file: "))))
-  (apply orig-fun args))
+;;; (defun mlr--advice-8 (orig-fun &rest args)
+;;;   "Turn on mode-line region highlighting for `append-to-file'."
+;;;   (interactive
+;;;    (let (;; (icicle-change-region-background-flag  nil)
+;;;          (mlr-region-acting-on  (use-region-p)))
+;;;      (list (region-beginning)
+;;;            (region-end)
+;;;            (read-file-name "Append to file: "))))
+;;;   (apply orig-fun args))
 
 
 ;; Built-in functions (from C code). -------------------------------------------
 
-(defun mlr--advice-9 (orig-fun &rest args)
-  "Turn on mode-line region highlighting for `write-region'."
-  (interactive
-   (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (or (use-region-p)
-                                    (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
-     (list (region-beginning)
-           (region-end)
-           (read-file-name "Write region to file: ")
-           nil
-           nil
-           nil
-           t)))
-  (apply orig-fun args))
+;;; (defun mlr--advice-9 (orig-fun &rest args)
+;;;   "Turn on mode-line region highlighting for `write-region'."
+;;;   (interactive
+;;;    (let (;; (icicle-change-region-background-flag  nil)
+;;;          (mlr-region-acting-on  (or (use-region-p)
+;;;                                     (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+;;;      (list (region-beginning)
+;;;            (region-end)
+;;;            (read-file-name "Write region to file: ")
+;;;            nil
+;;;            nil
+;;;            nil
+;;;            t)))
+;;;   (apply orig-fun args))
 
 
 ;;; Functions from `register.el'. ----------------------------------------------
