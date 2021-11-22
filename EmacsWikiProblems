@@ -492,5 +492,9 @@ Vegard's update wiped out my previous update. -- DrewAdams
 [new]
 Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to edit the page before he saved it? Perhaps diff3 will sometimes merge things and drop changes without marking them as a conflict? Or he used a raw client that interacts with the wiki text directly, didn't post back the last modification date, thus diff3 was unable to determine the ancestor for conflict resolution, and he ended up overwriting what you had done. I think the caching problem you reported earlier is something else (and much trickier, apparently). -- AlexSchroeder
 
+
+== Certificate Issues ==
+The SSL certificate was expired for most of this weekend?  Someone fixed - new one in place now.  Root cause addressed? -- Lee 21Nov21.
+
 ----
 CategoryEmacsWikiSite
