@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 21 15:55:32 2021 (-0800)
+;; Last-Updated: Mon Nov 22 07:59:47 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 328
+;;     Update #: 331
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -86,11 +86,9 @@
 ;;    `global-modeline-region-mode', `mlr-choose-region-style',
 ;;    `mlr-count-rectangle-contents', `modeline-region-mode',
 ;;    `mlr-toggle-non-rectangle-style', `mlr-toggle-rectangle-style',
-;;    `mlr--advice-4', `mlr--advice-5', `mlr--advice-6',
-;;    `mlr--advice-7', `mlr--advice-8', `mlr--advice-9',
-;;    `mlr--advice-11', `mlr--advice-12', `mlr--advice-13',
-;;    `mlr--advice-14', `mlr--advice-15', `mlr--advice-16',
-;;    `mlr--advice-18', `mlr--advice-19'.
+;;    `mlr--advice-4', `mlr--advice-11', `mlr--advice-12',
+;;    `mlr--advice-13', `mlr--advice-14', `mlr--advice-15',
+;;    `mlr--advice-16', `mlr--advice-18', `mlr--advice-19'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -1104,7 +1102,7 @@ The information shown depends on options `mlr-region-style',
 `mlr-non-rectangle-style' and `mlr-rectangle-style' (for Emacs 26+).
 
 \(This mode automatically turns on `size-indication-mode'.)"
-  nil nil nil :keymap 'modeline-region-mode-map
+  :group 'modeline-region :init-value nil :keymap modeline-region-mode-map
   (cond (modeline-region-mode
          (size-indication-mode 1)
          (unless mlr--mlp-is-set-up-p (mlr-set-default-mode-line-position))
