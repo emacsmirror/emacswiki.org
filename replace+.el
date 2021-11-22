@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 12 15:07:07 2020 (-0700)
+;; Last-Updated: Mon Nov 22 09:06:30 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 1907
+;;     Update #: 1916
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -21,16 +21,19 @@
 ;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `easymenu',
-;;   `fit-frame', `font-lock', `font-lock+', `frame-cmds',
-;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `highlight',
-;;   `hl-line', `hl-line+', `info', `info+', `isearch+',
-;;   `isearch-prop', `kmacro', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `radix-tree',
-;;   `replace', `second-sel', `strings', `syntax', `text-mode',
-;;   `thingatpt', `thingatpt+', `vline', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `zones'.
+;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
+;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
+;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `ring', `second-sel', `strings', `syntax',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -148,6 +151,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/22 dadams
+;;     replace-(string|regexp) advice: Fix version - need Emacs 27+ for REGION-NONCONTIGUOUS-P arg.
 ;; 2020/10/12 dadams
 ;;     replace-highlight: Recycle faces isearchp-regexp-level-* when more than 8 group matches.
 ;; 2018/06/03 dadams
@@ -378,7 +383,10 @@
 (defvar isearchp-regexp-level-overlays) ; In `isearch+.el' (Emacs 24.4+).
 (defvar lazy-highlight-cleanup)         ; Emacs 22+.
 (defvar minibuffer-prompt-properties)   ; Emacs 22+.
+(defvar occur-buffer)                   ; In `replace.el' (Emacs 24+20).
 (defvar occur-collect-regexp-history)   ; In `replace.el' (Emacs 24+).
+(defvar occur-command-arguments)        ; In `replace.el' (Emacs 24+20).
+(defvar occur-nlines)                   ; In `replace.el' (Emacs 24+20).
 (defvar query-replace-defaults)         ; In `replace.el' (Emacs 22+).
 (defvar query-replace-lazy-highlight)   ; In `replace.el' (Emacs 22+).
 (defvar replace-lax-whitespace)         ; In `replace.el' (Emacs 24.3+).
@@ -996,8 +1004,8 @@ replacement."
 (when (> emacs-major-version 21)
   (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
     (interactive
-     (let* ((emacs25+    (> emacs-major-version 24))
-            (emacs24.4+  (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)
+                             (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -1019,10 +1027,10 @@ replacement."
                               (region-beginning)))
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
-       (if emacs25+
+       (if (> emacs-major-version 26)
            (list from to delimited start end (nth 3 common)
                  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                      (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
+                      (region-noncontiguous-p)))
          (if emacs24.4+
              (list from to delimited start end (nth 3 common))
            (list from to delimited start end)))))))
@@ -1036,8 +1044,8 @@ replacement."
 (when (> emacs-major-version 21)
   (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
     (interactive
-     (let* ((emacs25+    (> emacs-major-version 24))
-            (emacs24.4+  (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+     (let* ((emacs24.4+  (or (> emacs-major-version 24)
+                             (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -1059,10 +1067,10 @@ replacement."
                               (region-beginning)))
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
-       (if emacs25+
+       (if (> emacs-major-version 26)
            (list regexp to delimited start end (nth 3 common)
                  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
-                      (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
+                      (region-noncontiguous-p)))
          (if emacs24.4+
              (list regexp to delimited start end (nth 3 common))
            (list regexp to delimited start end)))))))
