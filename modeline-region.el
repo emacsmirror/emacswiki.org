@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 22 07:59:47 2021 (-0800)
+;; Last-Updated: Tue Nov 23 15:26:05 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 331
+;;     Update #: 358
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -88,7 +88,8 @@
 ;;    `mlr-toggle-non-rectangle-style', `mlr-toggle-rectangle-style',
 ;;    `mlr--advice-4', `mlr--advice-11', `mlr--advice-12',
 ;;    `mlr--advice-13', `mlr--advice-14', `mlr--advice-15',
-;;    `mlr--advice-16', `mlr--advice-18', `mlr--advice-19'.
+;;    `mlr--advice-16', `mlr--advice-18', `mlr--advice-19',
+;;    `mlr--advice-20', `mlr--advice-21'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -174,14 +175,14 @@
 ;;
 ;;  Some specific commands and non-interactive functions are advised
 ;;  in `modeline-region-mode', to realize this feature of indicating
-;;  that they act specially on the region.
+;;  that they act specially on the region.  These include replacement
+;;  commands.
 ;;
-;;  In particular, if you use library `isearch+.el' then you can
-;;  restrict Isearch commands and replacement commands to the active
-;;  region (this is controlled by option
-;;  `isearchp-restrict-to-region-flag').  Then, because such commands
-;;  act on the region, the mode-line indication uses face
-;;  `mlr-region-acting-on'.
+;;  If you use library `isearch+.el' then you can restrict Isearch
+;;  commands and replacement commands to the active region (this is
+;;  controlled by option `isearchp-restrict-to-region-flag').  Then,
+;;  because such commands act on the region, the mode-line indication
+;;  uses face `mlr-region-acting-on'.
 ;;
 ;;  (Advice is also provided for the merely "regional" commands
 ;;  `prepend-to-buffer', `append-to-buffer', `copy-to-buffer',
@@ -356,6 +357,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/23 dadams
+;;     Added: mlr--advice-20, mlr--advice-21.
+;;     modeline-region-mode: Provide advice for occur and shell-command-on-region.
+;;     mlr--advice-(10-16): Removed unnecessary (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg).
 ;; 2021/11/21 dadams
 ;;     Added option mlr-use-property-mlr-acts-on-flag and functions mlr-pre-cmd, mlr-post-cmd.
 ;;     modeline-region-mode: Add&remove pre&post command hooks if mlr-use-property-mlr-acts-on-flag.
@@ -1118,6 +1123,7 @@ The information shown depends on options `mlr-region-style',
          (advice-add 'perform-replace :around #'mlr--advice-2)
          (advice-add 'query-replace-read-from :around #'mlr--advice-3)
          (advice-add 'keep-lines-read-args :around #'mlr--advice-3)
+         (advice-add 'occur :around #'mlr--advice-21)
          (advice-add 'map-query-replace-regexp :around #'mlr--advice-4)
          ;;; (advice-add 'prepend-to-buffer :around 'mlr--advice-5)
          ;;; (advice-add 'append-to-buffer :around 'mlr--advice-6)
@@ -1143,7 +1149,8 @@ The information shown depends on options `mlr-region-style',
            (add-hook 'cua-rectangle-mark-mode-hook (lambda () (setq mlr-rect-p  cua-rectangle-mark-mode))))
          (advice-add 'isearch-mode :after 'mlr--advice-17)
          (advice-add 'isearch-query-replace :around 'mlr--advice-18)
-         (advice-add 'isearch-query-replace-regexp :around 'mlr--advice-19))
+         (advice-add 'isearch-query-replace-regexp :around 'mlr--advice-19)
+         (advice-add 'shell-command-on-region :around 'mlr--advice-20))
         (t
          (if mlr--orig-mlp-local-p
              (setq-local mode-line-position  mlr--orig-mode-line-position)
@@ -1157,6 +1164,7 @@ The information shown depends on options `mlr-region-style',
          (advice-remove 'perform-replace #'mlr--advice-2)
          (advice-remove 'query-replace-read-from #'mlr--advice-3)
          (advice-remove 'keep-lines-read-args #'mlr--advice-3)
+         (advice-remove 'occur #'mlr--advice-21)
          (advice-remove 'map-query-replace-regexp #'mlr--advice-4)
          ;;; (advice-remove 'prepend-to-buffer 'mlr--advice-5)
          ;;; (advice-remove 'append-to-buffer 'mlr--advice-6)
@@ -1183,7 +1191,8 @@ The information shown depends on options `mlr-region-style',
                         (lambda () (setq mlr-rect-p  cua-rectangle-mark-mode))))
          (advice-remove 'isearch-mode 'mlr--advice-17)
          (advice-remove 'isearch-query-replace 'mlr--advice-18)
-         (advice-remove 'isearch-query-replace-regexp 'mlr--advice-19))))
+         (advice-remove 'isearch-query-replace-regexp 'mlr--advice-19)
+         (advice-remove 'shell-command-on-region 'mlr--advice-20))))
 
 (defun turn-on-modeline-region-mode ()
   "Turn on `modeline-region-mode'."
@@ -1254,6 +1263,16 @@ This applies to `query-replace-regexp-eval', `keep-lines',
            (and transient-mark-mode  mark-active  (region-end)))))
   (apply orig-fun args))
 
+(defun mlr--advice-21 (orig-fun &rest args)
+  "Turn on mode-line region highlighting for `occur'."
+  (interactive
+   (let (;; (icicle-change-region-background-flag  nil)
+         (mlr-region-acting-on  (use-region-p)))
+     (nconc (occur-read-primary-args)
+            (and (use-region-p) (list (region-bounds))))))
+  (declare-function region-bounds "simple.el" () 'FILEONLY)
+  (apply orig-fun args))
+
 
 ;;; Commands from `simple.el' and `files.el' -----------------------------------
 ;;; They are loaded by default.  (`files.el' has no `provide'.)
@@ -1302,8 +1321,7 @@ This applies to `query-replace-regexp-eval', `keep-lines',
 ;;;   "Turn on mode-line region highlighting for `write-region'."
 ;;;   (interactive
 ;;;    (let (;; (icicle-change-region-background-flag  nil)
-;;;          (mlr-region-acting-on  (or (use-region-p)
-;;;                                     (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+;;;          (mlr-region-acting-on  (use-region-p))
 ;;;      (list (region-beginning)
 ;;;            (region-end)
 ;;;            (read-file-name "Write region to file: ")
@@ -1328,8 +1346,7 @@ This applies to the register-reading commands that affect the region:
 
 For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
       (let (;; (icicle-change-region-background-flag  nil)
-            (mlr-region-acting-on  (and (or (use-region-p)
-                                            (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))
+            (mlr-region-acting-on  (and (use-region-p)
                                         (member this-command '(copy-to-register
                                                                append-to-register
                                                                prepend-to-register
@@ -1343,8 +1360,7 @@ For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
     "Turn on mode-line region highlighting for `copy-to-register'."
     (interactive
      (let (;; (icicle-change-region-background-flag  nil)
-           (mlr-region-acting-on  (or (use-region-p)
-                                      (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+           (mlr-region-acting-on  (use-region-p)))
        (list (read-char "Copy to register: ")
              (region-beginning)
              (region-end)
@@ -1355,8 +1371,7 @@ For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
     "Turn on mode-line region highlighting for `prepend-to-register'."
     (interactive
      (let (;; (icicle-change-region-background-flag  nil)
-           (mlr-region-acting-on  (or (use-region-p)
-                                      (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+           (mlr-region-acting-on  (use-region-p)))
        (list (read-char "Prepend to register: ")
              (region-beginning)
              (region-end)
@@ -1367,8 +1382,7 @@ For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
     "Turn on mode-line region highlighting for `append-to-register'."
     (interactive
      (let (;; (icicle-change-region-background-flag  nil)
-           (mlr-region-acting-on  (or (use-region-p)
-                                      (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
+           (mlr-region-acting-on  (use-region-p)))
        (list (read-char "Append to register: ")
              (region-beginning)
              (region-end)
@@ -1384,8 +1398,7 @@ For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
   "Turn on mode-line region highlighting for `string-rectangle'."
   (interactive
    (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (or (use-region-p)
-                                    (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)))
+         (mlr-region-acting-on  (use-region-p))
          (mlr-rect-p            t))
      (make-local-variable 'rectangle--string-preview-state)
      (make-local-variable 'rectangle--inhibit-region-highlight)
@@ -1418,8 +1431,7 @@ For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
   "Turn on mode-line region highlighting for `string-insert-rectangle'."
   (interactive
    (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (or (use-region-p)
-                                    (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)))
+         (mlr-region-acting-on  (use-region-p))
          (mlr-rect-p            t))
      (barf-if-buffer-read-only)
      (list (region-beginning)
@@ -1433,8 +1445,7 @@ For `copy-rectangle-to-register', also set `mlr-rect-p' to non-nil."
   "Turn on mode-line region highlighting for `rectangle-number-lines'."
   (interactive
    (let (;; (icicle-change-region-background-flag  nil)
-         (mlr-region-acting-on  (or (use-region-p)
-                                    (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg)))
+         (mlr-region-acting-on  (use-region-p))
          (mlr-rect-p            t))
      (if current-prefix-arg
          (let* ((start     (region-beginning))
@@ -1499,6 +1510,19 @@ from Isearch to query-replacing."
              (boundp 'isearchp-restrict-to-region-flag)  isearchp-restrict-to-region-flag)
     (goto-char isearchp-reg-beg)
     (push-mark isearchp-reg-end t 'ACTIVATE))
+  (apply orig-fun args))
+
+(defun mlr--advice-20 (orig-fun &rest args)
+  "Mode-line region highlight for `shell-command-on-region' with prefix arg."
+  (interactive
+   (let (;; (icicle-change-region-background-flag  nil)
+         (mlr-region-acting-on  current-prefix-arg)
+         string)
+     (unless (mark) (user-error "The mark is not set now, so there is no region"))
+     (setq string  (read-shell-command "Shell command on region: "))
+     (list (region-beginning) (region-end) string current-prefix-arg current-prefix-arg
+	   shell-command-default-error-buffer t (region-noncontiguous-p))))
+  (declare-function region-noncontiguous-p "simple.el" () 'FILEONLY)
   (apply orig-fun args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
