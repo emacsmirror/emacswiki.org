@@ -4,7 +4,6 @@ You can use OrgMode to blog.  There are a few different ways to do this:
 * [https://github.com/Malabarba/ox-jekyll-subtree ox-jekyll-subtree] -- publish entries in an org file to Jekyll
 * [http://orgmode.org/worg/blorgit.html blorgit] -- publish org files with Ruby Sinatra
 * [https://github.com/novoid/lazyblorg lazyblorg] -- publish from org files to static blog
-* [https://github.com/renard/o-blog/ o-blog] -- standalone blog publisher for org-mode
 * [https://github.com/punchagan/org2blog/ org2blog] -- publish org files to !WordPress
 * [https://ox-hugo.scripter.co ox-hugo] -- export Org subtrees/files to Markdown with front-matter for [https://gohugo.io Hugo] static site generator
 
@@ -12,6 +11,7 @@ No longer maintained:
 
 * [[Blorg|blorg]] -- publish finished tasks from an org file
 * [[OrgBlog|org-blog]] -- create blog posts and publish them with OrgPublish
+* [https://github.com/renard/o-blog/ o-blog] -- standalone blog publisher for org-mode
 
 ----
 OrgMode
