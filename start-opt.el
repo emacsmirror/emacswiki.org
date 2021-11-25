@@ -8,26 +8,35 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:50:50 2018 (-0800)
+;; Last-Updated: Wed Nov 24 19:59:42 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 2008
+;;     Update #: 2024
 ;; URL: https://www.emacswiki.org/emacs/download/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `autofit-frame', `avoid', `chistory',
-;;   `cl', `cus-theme', `doremi', `doremi-cmd', `doremi-frm',
-;;   `easymenu', `eyedropper', `faces', `faces+', `fit-frame',
-;;   `frame-cmds', `frame-fns', `header2', `help+20', `hexrgb',
-;;   `highlight', `info', `info+20', `isearch+', `iso-transl',
-;;   `lib-requires', `loadhist', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mouse', `mouse+', `mwheel', `naked',
-;;   `pp', `pp+', `replace+', `ring', `second-sel', `setup-keys',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `apropos', `apropos+', `autofit-frame', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `chistory', `cl', `cl-lib', `cmds-menu', `col-highlight',
+;;   `color', `crosshairs', `cus-edit', `cus-face', `cus-load',
+;;   `cus-start', `cus-theme', `custom', `doremi', `doremi-cmd',
+;;   `doremi-frm', `easymenu', `facemenu', `facemenu+', `faces',
+;;   `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `header2',
+;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `highlight-symbol',
+;;   `hl-line', `hl-line+', `info', `info+', `isearch+',
+;;   `isearch-prop', `iso-transl', `kmacro', `lib-requires',
+;;   `loadhist', `macroexp', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse', `mouse+', `mwheel', `naked', `palette',
+;;   `pp', `pp+', `radix-tree', `rect', `replace', `replace+',
+;;   `ring', `second-sel', `setup-keys', `strings', `syntax',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `wimpy-del'.
+;;   `wimpy-del', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,9 +56,10 @@
 ;;  Bindings for the following commands are optionally replaced here
 ;;  by bindings to substitute commands:
 ;;
-;;    `clipboard-kill-region', `delete-window', `eval-expression',
-;;    `eval-last-sexp', `kill-buffer', `kill-region', `list-buffers',
-;;    `query-replace', `save-buffers-kill-emacs',
+;;    `clipboard-kill-region' (Emacs < 26), `delete-window',
+;;    `eval-expression', `eval-last-sexp', `kill-buffer',
+;;    `kill-region' (Emacs < 26), `list-buffers', `query-replace',
+;;    `save-buffers-kill-emacs',
 ;;
 ;;  Bindings that would try to modify buffers in these modes have been
 ;;  removed: Dired, Buffer-menu, Compilation.
@@ -58,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/24 dadams
+;;     Don't require wimpy-del.el for Emacs 26+.  Instead, advise kill-region to require confirmation.
 ;; 2017/10/11 dadams
 ;;     Do not turn on icomplete-mode.
 ;; 2016/03/16 dadams
@@ -217,7 +229,8 @@
 (require 'chistory) ;; command-history-map
 (require 'header2 nil t) ;; (no error if not found): auto-make-header
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
-(require 'wimpy-del nil t) ;; (no error if not found): kill-region-wimpy
+(when (< emacs-major-version 26)
+  (require 'wimpy-del nil t)) ;; (no error if not found): kill-region-wimpy
 (require 'setup-keys nil t) ;; (no error if not found):  sub-kill-buffer-and-its-windows,
                             ;; sub-pp-evals, sub-query-replace-w-options, sub-delete-windows-for
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
@@ -225,6 +238,10 @@
                         ;; `faces+.el' requires `faces.el': set-face-foreground
 (require 'frame-cmds nil t) ;; (no error if not found): remove-frame
 (require 'autofit-frame nil t) ;; (no error if not found): fit-frame-if-one-window
+
+;; Quiet the byte-compiler.
+;;
+(defvar region-extract-function)        ; Emacs 24+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -282,6 +299,35 @@
   (make-face 'font-lock-keyword-face)
   (set-face-foreground 'font-lock-keyword-face "Blue3"))
 ;; (set-face-foreground 'font-lock-builtin-face "Orchid") ; Restore default per before Emacs 23.2.
+
+
+
+
+;; Advise `kill-region' to require confirmation if region size is 2000+ chars.
+;;
+(when (> emacs-major-version 25)
+
+  (defun kill-region-wimp-advice (orig-fun beg end &optional region)
+    "When interactive, and region is 2000+ chars, require confirmation."
+    (when (called-interactively-p 'interactive)
+      (let ((bounds  (funcall region-extract-function 'bounds))
+            (chars   0)
+            beg end)
+        (dolist (beg+end  bounds)
+          (setq beg    (car beg+end)
+                end    (cdr beg+end)
+                chars  (+ chars (- end beg))))
+        (when (and (>= chars 2000)  (not (y-or-n-p (format "Really kill %s (%d chars)? " 
+                                                           (if (cadr bounds) 'rectangle 'region)
+                                                           chars))))
+          (error "OK, not killed"))))
+    (funcall orig-fun beg end region))
+
+  (advice-add 'kill-region :around #'kill-region-wimp-advice)
+
+  )
+
+
 
 
 ;;; EDIFF stuff.  These variables and functions are defined in `ediff.el'.
@@ -581,7 +627,7 @@
 
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
 
-(eval-after-load "wimpy-del"
+(eval-after-load "wimpy-del"            ; Now used only for Emacs < 26.
   '(progn
     (substitute-key-definition 'kill-region           'kill-region-wimpy global-map)
     (substitute-key-definition 'clipboard-kill-region 'clipboard-kill-region-wimpy global-map)))
