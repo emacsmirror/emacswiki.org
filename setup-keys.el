@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  8 19:07:58 2021 (-0800)
+;; Last-Updated: Fri Nov 26 13:57:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 1361
+;;     Update #: 1365
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -22,18 +22,19 @@
 ;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
 ;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
-;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `faces',
-;;   `faces+', `fit-frame', `font-lock', `font-lock+', `frame-cmds',
-;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `facemenu',
+;;   `facemenu+', `faces', `faces+', `fit-frame', `font-lock',
+;;   `font-lock+', `font-lock-menus', `frame-cmds', `frame-fns',
+;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
+;;   `help-macro+', `help-mode', `hexrgb', `highlight',
 ;;   `highlight-symbol', `hl-line', `hl-line+', `info', `info+',
 ;;   `isearch+', `isearch-prop', `iso-transl', `kmacro', `macroexp',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
 ;;   `mouse+', `mwheel', `naked', `palette', `pp', `pp+',
-;;   `radix-tree', `replace', `replace+', `ring', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `timer', `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `zones'.
+;;   `radix-tree', `rect', `replace', `replace+', `ring',
+;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `vline', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,6 +84,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/26 dadams
+;;     Emacs 27+: Bind C-x down-mouse-1 to mouse-drag-region-rectangle.
 ;; 2021/02/08 dadams
 ;;     Renamed to-indentation-repeat-(back|for)ward to (back|forward)-to-indentation+.
 ;; 2020/01/03 dadams
@@ -459,6 +462,9 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 ;; Additional definitions for some standard mouse commands:
 ;; SGI does not pass all ALT-mouse stuff thru to Emacs, so use C-M-mouse also:
+(when (fboundp 'mouse-drag-region-rectangle) ; Emacs 27+
+  (global-set-key [(control x) mouse-1] 'mouse-set-point)
+  (global-set-key [(control x) down-mouse-1] 'mouse-drag-region-rectangle))
 (global-set-key [C-M-mouse-1] 'mouse-start-secondary) ; In `mouse.el'.            `C-M-mouse-1'
 (global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary) ; In `mouse.el'.
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary) ; In `mouse.el'.
