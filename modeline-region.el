@@ -8,9 +8,9 @@
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 23 15:26:05 2021 (-0800)
+;; Last-Updated: Fri Nov 26 13:25:17 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 358
+;;     Update #: 364
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -357,6 +357,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/25 dadams
+;;     mlr-count-rectangle-contents: Use rectangle-dimensions for Emacs 27+.
+;;     mlr--region-style-default: Correct number of rows.
 ;; 2021/11/23 dadams
 ;;     Added: mlr--advice-20, mlr--advice-21.
 ;;     modeline-region-mode: Provide advice for occur and shell-command-on-region.
@@ -620,7 +623,7 @@ flips the behavior specified by the option value.
 
 When called from Lisp:
 
-* START and END are the limits of the active region.
+* START and END are the top-left and bottom-right corner positions.
 * Non-nil COUNT-PARTIAL-WORDS-P means count partial words (option
   `mlr-count-partial-words-flag'is ignored).
 * Non-nil MSGP means echo the counts."
@@ -632,14 +635,19 @@ When called from Lisp:
     (declare-function rectangle--pos-cols "rect.el" (start end &optional window) 'FILEONLY)
     (declare-function rectangle--string-preview "rect.el" () 'FILEONLY)
     (declare-function rectangle--default-line-number-format "rect.el" (start end start-at) 'FILEONLY)
-    (let ((rows    (count-lines start end))
-          (cols    (let ((rpc  (save-excursion
-                                 (rectangle--pos-cols (region-beginning) (region-end)))))
-                     (abs (- (car rpc) (cdr rpc)))))
-          (words   0)
-          (chars   0)
-          (bounds  (extract-rectangle-bounds start end))
-          this-ws beg end)
+    (let* ((dims    (and (fboundp 'rectangle-dimensions) ; Emacs 27+
+                         (rectangle-dimensions start end)))
+           (rows    (if dims
+                        (cdr dims)
+                      (1+ (abs (- (line-number-at-pos end) (line-number-at-pos start))))))
+           (cols    (if dims
+                        (car dims)
+                      (let ((rpc  (save-excursion (rectangle--pos-cols start end))))
+                        (abs (- (car rpc) (cdr rpc))))))
+           (words   0)
+           (chars   0)
+           (bounds  (extract-rectangle-bounds start end))
+           this-ws beg end)
       (dolist (beg+end  bounds)
         (setq beg      (car beg+end)
               end      (cdr beg+end)
@@ -729,7 +737,10 @@ It should start with a SPC char and expect those four input values.")
         mlr-lines+chars-format))       ; " %d lines, %d chars"
 
     ;; Rows (rectangle) / Lines (region)
-    (count-lines (region-beginning) (region-end)) ; Rows (rectangle) or lines (region)
+    (if mlr-rect-p
+        (1+ (abs (- (line-number-at-pos (region-end)) ; Rows (rectangle)
+                    (line-number-at-pos (region-beginning)))))
+      (count-lines (region-beginning) (region-end))) ; Lines (region)
 
     ;; Columns (rectangle) / Chars (short region) or Words (full region)
     (if mlr-rect-p
