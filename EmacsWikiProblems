@@ -496,5 +496,8 @@ Hm, maybe this is unrelated. Possibly it just took him more than nine minutes to
 == Certificate Issues ==
 The SSL certificate was expired for most of this weekend?  Someone fixed - new one in place now.  Root cause addressed? -- Lee 21Nov21.
 
+[new]
+No idea. The certs are installed from Let's Encrypt automatically. -- AlexSchroeder
+
 ----
 CategoryEmacsWikiSite
