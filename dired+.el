@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct  3 16:18:57 2021 (-0700)
+;; Last-Updated: Tue Nov 30 14:07:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 13039
+;;     Update #: 13044
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -880,6 +880,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/11/30 dadams
+;;     diredp-do-apply/eval-marked-recursive:
+;;       Typo in body: current-prefix-arg -> arg.  Corrected first argument to diredp-get-files.
 ;; 2021/10/03 dadams
 ;;     Added: diredp-toggle-dot+dot-dot-flag.
 ;;     dired-toggle-marks: Added optional arg FLIP.  Respect diredp-toggle-dot+dot-dot-flag.
@@ -7791,7 +7794,7 @@ When called from Lisp:
                                     (and (boundp 'function-name-history)  'function-name-history))))
            current-prefix-arg
            diredp-list-file-attributes)))
-  (let ((use-no-args-p  (and (consp current-prefix-arg)  (< (car current-prefix-arg) 16))))
+  (let ((use-no-args-p  (and (consp arg)  (< (car arg) 16))))
     (if use-no-args-p
         (when (functionp fun/sexp)
           (unless (or (not (fboundp 'func-arity)) ; Emacs < 26
@@ -7801,7 +7804,7 @@ When called from Lisp:
                   (let ((max  (cdr (func-arity fun/sexp))))
                     (or (eq max 'many)  (> max 0))))
         (error "Function `%s' cannot accept any args" fun/sexp))) ; Function to apply to file name.
-    (let* ((files     (diredp-get-files arg nil nil nil nil details)) ; @@@@ is ARG correct here? Copied from 
+    (let* ((files     (diredp-get-files (and (not use-no-args-p)  arg) nil nil nil nil details))
            (fbufs     (delq nil (mapcar #'find-buffer-visiting files)))
            (mod-bufs  (diredp-remove-if-not #'buffer-modified-p fbufs))
            (new-bufs  ())
