@@ -15,10 +15,13 @@ To install the *official stable binaries*:
 
 : Visit https://ftp.gnu.org/gnu/emacs/windows/emacs-27/ (or https://ftpmirror.gnu.org/emacs/windows/emacs-27/ to use a nearby [https://www.gnu.org/prep/ftp mirror]).
   Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed (currently
-  ##emacs-27.1-x86_64.zip## and ##emacs-27.1-i686.zip##, respectively). You might also want to read the [https://ftp.gnu.org/gnu/emacs/windows/README README] file at the same site (not the one inside
+  ##emacs-27.2-x86_64.zip## and ##emacs-27.2-i686.zip##, respectively). You might also want to read the [https://ftp.gnu.org/gnu/emacs/windows/README README] file at the same site (not the one inside
   the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
   (faster) and extract all the files into a directory of your choice
-  (e.g. ##c:\packages\emacs-27.1##).
+  (e.g. ##c:\packages\emacs-27.2##).
+
+:: *Note*: The 27.2 pre-packaged binaries kindly provided by the maintainers at the GNU ftp site above and dated 2021-03-31, come with an older GnuTLS library version with a known problem that could wrongly refuse connections to sites, such as MELPA, with a "certificate has expired" error. See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51038 for a discussion. 
+
 
 To install the *official snapshot binaries*:
 
