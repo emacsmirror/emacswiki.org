@@ -7,6 +7,8 @@ On Unix systems, the shell usually cannot do that.  On Unix systems
 therefore, we must use something like TrivialMode, OpenWith or RunAssoc instead.
 
 ----
+
+[new]
 Why not using xdg-open that is part of freedesktop.org which is cross desktop compatible??
  I am using the following function to open files using the association defined in the Desktop environment:
 
@@ -25,6 +27,8 @@ In my .emacs I have a keybinding for using it from dired:
 </pre>
 
 --- erreina
+
+[new]
 
 NOTE: It is easier to use `!' or `&' (asynchronous command).
 The default command is `xdg-open'.
