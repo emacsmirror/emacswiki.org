@@ -26,8 +26,8 @@ In my .emacs I have a keybinding for using it from dired:
 
 --- erreina
 
-NOTE: It is easier to use <pre>!</pre> or <pre>&</pre> (asynchronous command).
-The default command is <pre>xdg-open</pre>.
+NOTE: It is easier to use `!` or `&` (asynchronous command).
+The default command is `xdg-open`.
 
 -- dominik
 
