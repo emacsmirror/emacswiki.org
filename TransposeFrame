@@ -1,6 +1,6 @@
 transpose-frame.el provides some interactive functions which allows users to transpose windows arrangement in currently selected frame.
 
-This program is tested on GNU Emacs 22, 23.
+This program is tested on GNU Emacs 22, 23, 27.1.
 
 == Downloading ==
 
