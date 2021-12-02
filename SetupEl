@@ -405,6 +405,25 @@ package.  This macro is not repeatable."
                  (if (consp recipe) (car recipe) recipe))))
 }}}
 
+=== Install a package if not available locally ===
+
+This macro builds up on :package, but also checks if <code>feature-or-package</code>
+could be found in the load path.
+
+{{{
+(setup-define :local-or-package
+  (lambda (feature-or-package)
+    `(unless (locate-file ,(symbol-name feature-or-package)
+			  load-path
+			  (get-load-suffixes))
+       (:package ',feature-or-package)))
+  :documentation "Install PACKAGE if it is not available locally.
+This macro can be used as NAME, and it will replace itself with
+the first PACKAGE."
+  :repeatable t
+  :shorthand #'cadr)
+}}}
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
