@@ -10,7 +10,16 @@ Corallo, Andrea; Nassi, Luca; Manca, Nicola.  (2020).  [https://zenodo.org/recor
 
 Crestani, Marcus.  (2005).  [http://crestani.de/xemacs/pdf/thesis-newgc.pdf A New Garbage Collector for XEmacs].  Masters thesis, Univertät Tübingen.
 
+Houser, Chris and Kalter, Scott D.  (1992).  [https://dl.acm.org/doi/10.1145/147135.147248 Eoops: an object-oriented programming system for Emacs-Lisp].  SIGPLAN Lisp Pointers 5(3), pp 25-33.
+
 Lapalme, Guy.  (1998).  [https://pdfs.semanticscholar.org/ab48/0568f9a0e4a6fc3b25918c1a481bb1b99c37.pdf Dynamic Tabbing for Automatic Indentation with the Layout Rule].  Journal of Functional Programming (JFP), 8(5), pp 493-502.
+
+Monnier, Stefan and Sperber, Michael. (2020). [https://dl.acm.org/doi/abs/10.1145/3386324
+Evolution of Emacs Lisp]. /ACM HOPL'2020/.
+
+Monnier, Stefan. (2020). [https://programming-journal.org/2021/5/1/
+SMIE: Weakness is Power! Auto-indentation with incomplete information]. 
+ <Programming> Journal, Volume 5, issue 1.
 
 Neubauer, Matthias and Sperber, Michael. (2001). [http://www.deinprogramm.de/sperber/papers/dynamic-scope-analysis.pdf Down with Emacs Lisp: Dynamic Scope Analysis].  In /International Conference on Functional Programming/ (ICFP'01), pp 38-49.
 
@@ -20,14 +29,9 @@ Stallman, R. M. (1981). [https://doi.org/10.1145/800209.806466 EMACS the Extensi
 
 Twidale, Michael B.; Jones, M. Cameron. (2005). [https://www.ideals.illinois.edu/handle/2142/9607 "Let them use emacs": the interaction of simplicity and appropriation]. /International reports on socio-informatics/ 2(2) 66-71.
 
+Veran, Dider.  (2010).  [https://hal.archives-ouvertes.fr/hal-01543381/ CLOX: Common Lisp Objects for XEmacs].  European Lisp Symposium (ELS) 2010.
+
 Zhong, Shudan and Xu, Hong. (2019). [https://dl.acm.org/citation.cfm?doid=3301275.3302272 Intelligently recommending key bindings on physical keyboards with demonstrations in Emacs]. In /Proceedings of the 24th International Conference on Intelligent User Interfaces/ (IUI), 12–17. doi:10.1145/3301275.3302272.
-
-Monnier, Stefan and Sperber, Michael. (2020). [https://dl.acm.org/doi/abs/10.1145/3386324
-Evolution of Emacs Lisp]. /ACM HOPL'2020/.
-
-Stefan Monnier (2020). [https://programming-journal.org/2021/5/1/
-SMIE: Weakness is Power! Auto-indentation with incomplete information]. 
- <Programming> Journal, Volume 5, issue 1.
 
 = Other research of unclear academic publication status =
 
