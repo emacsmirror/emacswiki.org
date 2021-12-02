@@ -1,6 +1,6 @@
 [[http://www.methods.co.nz/asciidoc AsciiDoc]] is set of document formatting rules for text documents. The documents can be converted into variety of formats , like HTML, manual pages etc with the <code>asciidoc</code> command line program (Python).
 
-[https://github.com/sensorflo/adoc-mode adoc-mode] is an Emacs major mode for editing AsciiDoc files. You can install it from [[MELPA]] or [https://github.com/sensorflo/adoc-mode from GitHub]. It comes with its [https://github.com/sensorflo/adoc-mode/wiki own manual] (a single page on the GitHub wiki).
+[https://github.com/sensorflo/adoc-mode adoc-mode] is an Emacs major mode for editing AsciiDoc files. You can install it from [[MELPA]] or [https://github.com/sensorflo/adoc-mode from GitHub]. It comes with its [https://github.com/sensorflo/adoc-mode/wiki own manual] (a single page on the GitHub wiki). (NOTE: adoc-mode doesn't appear to be actively maintained and uses `cl`, which causes it to display error messages in Emacs 27+.)
 
 Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available [http://github.com/metaperl/asciidoc-el from GitHub].
 
