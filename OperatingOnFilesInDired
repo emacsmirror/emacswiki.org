@@ -26,7 +26,10 @@ In my .emacs I have a keybinding for using it from dired:
 
 --- erreina
 
+NOTE: It is easier to use <pre>!</pre> or <pre>&</pre> (asynchronous command).
+The default command is <pre>xdg-open</pre>.
 
+-- dominik
 
 [:w32-browser]
 == Dired+ with W32 Browser ==
