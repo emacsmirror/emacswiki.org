@@ -215,6 +215,10 @@ When you send the email, it will be encrypted based on the recipient's email add
 
 While reading an encrypted email, you can use `M-x rmail-epa-decrypt' to decrypt the email.
 
+More:
+
+* [[Decrypting an mail in Rmail that itself contains a multipart MIME message]]
+
 == Using an External MRA ==
 
 You can use a Mail Retrieval Agent (MRA) other than `movemail' by simply creating a function that calls the command of your choice. This example uses `mpop':
