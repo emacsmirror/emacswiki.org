@@ -3,7 +3,7 @@
  <johnw> you can do (pymacs-load "os") and then call (os-stat FILE), 
          for example
 
-Update 2018/07/16 - Pymacs has moved to https://github.com/dgentry/Pymacs.  Further pointers to releases, etc., are in the README there.  Note that the URL in the message below is obsolete.
+Update 2018/07/16 - Pymacs has moved to https://github.com/pymacs2/Pymacs.  Further pointers to releases, etc., are in the README there.  Note that the URL in the message below is obsolete.
 
 
 Newsgroups: comp.lang.python.announce
