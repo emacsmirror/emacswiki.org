@@ -1,4 +1,4 @@
-Shell Script mode, `sh-mode', is the major mode for editing Unix and GNU/Linux shell script code.  It was originally authored by DanielPfeiffer
+Shell Script mode, `sh-script', is the major mode for editing Unix and GNU/Linux shell script code.  It was originally authored by DanielPfeiffer
 
 It supports several shell variants, including ##bash##, ##csh##, ##ksh## and ##zsh##, as well as plain Bourne shell, ##sh##.
 
