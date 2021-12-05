@@ -58,7 +58,7 @@ standalone. It's also available at subversions:
 == Emacsspeak ==
 
 Emacs W3 implements some special functionality for EmacSpeak which
-allows a user to read the content of cells, rows and coloums of tables
+allows a user to read the content of cells, rows and columns of tables
 separate from each other.
 
 The combination of Emacs W3 and EmacSpeak also implements the w3c
