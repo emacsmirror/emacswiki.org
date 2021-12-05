@@ -217,7 +217,7 @@ While reading an encrypted email, you can use `M-x rmail-epa-decrypt' to decrypt
 
 More:
 
-* [[Decrypting an mail in Rmail that itself contains a multipart MIME message]]
+* [[Decrypting an email in Rmail that itself contains a multipart MIME message]]
 
 == Using an External MRA ==
 
