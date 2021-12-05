@@ -1,0 +1,283 @@
+When you get an email from Protonmail, it looks like this:
+
+{{{
+Date: Fri, 03 Dec 2021 21:22:09 +0000
+To: "alex@alexschroeder.ch" <alex@alexschroeder.ch>
+From: Alex Schroeder <kensanata@protonmail.com>
+Reply-To: Alex Schroeder <kensanata@protonmail.com>
+Subject: This is a test
+Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"; boundary="------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013"; charset=utf-8
+
+
+[1:application/pgp-encrypted Show Save:noname (11B)]
+
+
+[2:application/octet-stream Show Save:encrypted.asc (4kB)]
+
+}}}
+
+If you use ##M-x rmail-epa-decrypt## on it, you end up with a mess:
+
+{{{
+Date: Fri, 03 Dec 2021 21:22:09 +0000
+To: "alex@alexschroeder.ch" <alex@alexschroeder.ch>
+From: Alex Schroeder <kensanata@protonmail.com>
+Reply-To: Alex Schroeder <kensanata@protonmail.com>
+Subject: This is a test
+Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"; boundary="------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013"; charset=utf-8
+
+This is an OpenPGP/MIME encrypted message (RFC 4880 and 3156)
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: application/pgp-encrypted
+Content-Description: PGP/MIME version identification
+
+Version: 1
+
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: application/octet-stream; name="encrypted.asc"
+Content-Description: OpenPGP encrypted message
+Content-Disposition: inline; filename="encrypted.asc"
+
+Content-Type: multipart/mixed;boundary=---------------------686d27e4451d3d892c4454340ab28bec
+
+-----------------------686d27e4451d3d892c4454340ab28bec
+Content-Type: multipart/alternative;boundary=---------------------c64b8c441ded87524ef1cba04b60b251
+
+-----------------------c64b8c441ded87524ef1cba04b60b251
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
+
+Here's me trying to send a multipart MIME message.
+
+Sent with ProtonMail Secure Email.
+-----------------------c64b8c441ded87524ef1cba04b60b251
+Content-Type: multipart/related;boundary=---------------------88e51607ea08dc7653bdfbbdd91583c0
+
+-----------------------88e51607ea08dc7653bdfbbdd91583c0
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: base64
+
+PGRpdj5IZXJlJ3MgbWUgdHJ5aW5nIHRvIHNlbmQgYSA8aT5tdWx0aXBhcnQgTUlNRSBtZXNzYWdl
+PC9pPi48YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdiBjbGFzcz0icHJvdG9ubWFpbF9zaWdu
+YXR1cmVfYmxvY2siPjxkaXYgY2xhc3M9InByb3Rvbm1haWxfc2lnbmF0dXJlX2Jsb2NrLXVzZXIg
+cHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2stZW1wdHkiPjwvZGl2PjxkaXYgY2xhc3M9InByb3Rv
+bm1haWxfc2lnbmF0dXJlX2Jsb2NrLXByb3RvbiI+U2VudCB3aXRoIDxhIHJlbD0ibm9vcGVuZXIg
+bm9yZWZlcnJlciIgaHJlZj0iaHR0cHM6Ly9wcm90b25tYWlsLmNvbS8iIHRhcmdldD0iX2JsYW5r
+Ij5Qcm90b25NYWlsPC9hPiBTZWN1cmUgRW1haWwuPC9kaXY+PC9kaXY+
+-----------------------88e51607ea08dc7653bdfbbdd91583c0--
+-----------------------c64b8c441ded87524ef1cba04b60b251--
+-----------------------686d27e4451d3d892c4454340ab28bec--
+
+
+
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013--
+
+
+}}}
+
+If you use ##e## to edit the email, you can see the details of MIME message:
+
+{{{
+Date: Fri, 03 Dec 2021 21:22:09 +0000
+To: "alex@alexschroeder.ch" <alex@alexschroeder.ch>
+From: Alex Schroeder <kensanata@protonmail.com>
+Reply-To: Alex Schroeder <kensanata@protonmail.com>
+Subject: This is a test
+Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"; boundary="------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013"; charset=utf-8
+
+This is an OpenPGP/MIME encrypted message (RFC 4880 and 3156)
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: application/pgp-encrypted
+Content-Description: PGP/MIME version identification
+
+Version: 1
+
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: application/octet-stream; name="encrypted.asc"
+Content-Description: OpenPGP encrypted message
+Content-Disposition: inline; filename="encrypted.asc"
+
+Content-Type: multipart/mixed;boundary=---------------------686d27e4451d3d892c4454340ab28bec
+
+-----------------------686d27e4451d3d892c4454340ab28bec
+Content-Type: multipart/alternative;boundary=---------------------c64b8c441ded87524ef1cba04b60b251
+
+-----------------------c64b8c441ded87524ef1cba04b60b251
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
+
+Here's me trying to send a multipart MIME message.
+
+Sent with ProtonMail Secure Email.
+-----------------------c64b8c441ded87524ef1cba04b60b251
+Content-Type: multipart/related;boundary=---------------------88e51607ea08dc7653bdfbbdd91583c0
+
+-----------------------88e51607ea08dc7653bdfbbdd91583c0
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: base64
+
+PGRpdj5IZXJlJ3MgbWUgdHJ5aW5nIHRvIHNlbmQgYSA8aT5tdWx0aXBhcnQgTUlNRSBtZXNzYWdl
+PC9pPi48YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdiBjbGFzcz0icHJvdG9ubWFpbF9zaWdu
+YXR1cmVfYmxvY2siPjxkaXYgY2xhc3M9InByb3Rvbm1haWxfc2lnbmF0dXJlX2Jsb2NrLXVzZXIg
+cHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2stZW1wdHkiPjwvZGl2PjxkaXYgY2xhc3M9InByb3Rv
+bm1haWxfc2lnbmF0dXJlX2Jsb2NrLXByb3RvbiI+U2VudCB3aXRoIDxhIHJlbD0ibm9vcGVuZXIg
+bm9yZWZlcnJlciIgaHJlZj0iaHR0cHM6Ly9wcm90b25tYWlsLmNvbS8iIHRhcmdldD0iX2JsYW5r
+Ij5Qcm90b25NYWlsPC9hPiBTZWN1cmUgRW1haWwuPC9kaXY+PC9kaXY+
+-----------------------88e51607ea08dc7653bdfbbdd91583c0--
+-----------------------c64b8c441ded87524ef1cba04b60b251--
+-----------------------686d27e4451d3d892c4454340ab28bec--
+
+
+
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013--
+}}}
+
+The problem is that we have multiple nested multipart messages, with different separators. Just look at the end of that message and you can see four of them! (The ones ending with two dashes: ##--##.)
+
+The outermost message uses the separator that ends in ##a013##.
+
+After encryption, it contains a malformed multipart message using the separator that ends in ##28bec##.
+
+It is malformed because the "Content-Type" header doesn't come at the beginning of a part!
+
+Here is where it breaks:
+
+{{{
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: application/octet-stream; name="encrypted.asc"
+Content-Description: OpenPGP encrypted message
+Content-Disposition: inline; filename="encrypted.asc"
+
+Content-Type: multipart/mixed;boundary=---------------------686d27e4451d3d892c4454340ab28bec
+}}}
+
+What should have happened is that the separator ending in ##aa013## should replace the separator ending in ##28bec## and the section about "encrypted.asc" should disappear.
+
+Some editing later:
+
+{{{
+Date: Fri, 03 Dec 2021 21:22:09 +0000
+To: "alex@alexschroeder.ch" <alex@alexschroeder.ch>
+From: Alex Schroeder <kensanata@protonmail.com>
+Reply-To: Alex Schroeder <kensanata@protonmail.com>
+Subject: This is a test
+Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"; boundary="------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013"; charset=utf-8
+
+This is an OpenPGP/MIME encrypted message (RFC 4880 and 3156)
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: application/pgp-encrypted
+Content-Description: PGP/MIME version identification
+
+Version: 1
+
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013
+Content-Type: multipart/alternative;boundary=---------------------c64b8c441ded87524ef1cba04b60b251
+
+-----------------------c64b8c441ded87524ef1cba04b60b251
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
+
+Here's me trying to send a multipart MIME message.
+
+Sent with ProtonMail Secure Email.
+-----------------------c64b8c441ded87524ef1cba04b60b251
+Content-Type: multipart/related;boundary=---------------------88e51607ea08dc7653bdfbbdd91583c0
+
+-----------------------88e51607ea08dc7653bdfbbdd91583c0
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: base64
+
+PGRpdj5IZXJlJ3MgbWUgdHJ5aW5nIHRvIHNlbmQgYSA8aT5tdWx0aXBhcnQgTUlNRSBtZXNzYWdl
+PC9pPi48YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdiBjbGFzcz0icHJvdG9ubWFpbF9zaWdu
+YXR1cmVfYmxvY2siPjxkaXYgY2xhc3M9InByb3Rvbm1haWxfc2lnbmF0dXJlX2Jsb2NrLXVzZXIg
+cHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2stZW1wdHkiPjwvZGl2PjxkaXYgY2xhc3M9InByb3Rv
+bm1haWxfc2lnbmF0dXJlX2Jsb2NrLXByb3RvbiI+U2VudCB3aXRoIDxhIHJlbD0ibm9vcGVuZXIg
+bm9yZWZlcnJlciIgaHJlZj0iaHR0cHM6Ly9wcm90b25tYWlsLmNvbS8iIHRhcmdldD0iX2JsYW5r
+Ij5Qcm90b25NYWlsPC9hPiBTZWN1cmUgRW1haWwuPC9kaXY+PC9kaXY+
+-----------------------88e51607ea08dc7653bdfbbdd91583c0--
+-----------------------c64b8c441ded87524ef1cba04b60b251--
+----------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013--
+
+
+
+--------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013--
+
+
+}}}
+
+Hit ##C-c C-c## to end editing, and show all the parts:
+
+{{{
+Date: Fri, 03 Dec 2021 21:22:09 +0000
+To: "alex@alexschroeder.ch" <alex@alexschroeder.ch>
+From: Alex Schroeder <kensanata@protonmail.com>
+Reply-To: Alex Schroeder <kensanata@protonmail.com>
+Subject: This is a test
+Content-Type: multipart/encrypted; protocol="application/pgp-encrypted"; boundary="------3fbae9a22b0ccea867aff374056147dc95811e989be011758b659ff6264aa013"; charset=utf-8
+
+
+[1:application/pgp-encrypted Show Save:noname (11B)]
+
+
+[2:multipart/alternative Hide]
+
+
+[2/1:text/plain Hide]
+
+Here's me trying to send a multipart MIME message.
+
+Sent with ProtonMail Secure Email.
+
+[2/2:multipart/related Hide]
+
+
+[2/2/1:text/html Hide Save:noname (388B)]
+
+Here's me trying to send a multipart MIME message.
+
+Sent with ProtonMail Secure Email.
+}}}
+
+Now, the question is: how do we tell ##rmail-epa-decrypt## about it?
+
+In ##rmail-epa-decrypt-1## there is this part, where the region is decrypted ... by nested parts are not post-processed.
+
+{{{
+	(epa-decrypt-region
+	 armor-start (- (point-max) after-end)
+	 ;; Call back this function to prepare the output.
+	 (lambda ()
+	   (let ((inhibit-read-only t))
+	     (delete-region armor-start (- (point-max) after-end))
+	     (goto-char armor-start)
+	     (current-buffer))))
+}}}
+
+Any ideas?
+
+== Current workaround ==
+
+{{{
+(defun asc:rmail-fixup-mime-multipart ()
+  "Fix up decryption of a MIME multipart message.
+
+If you've used `rmail-epa-decrypt' and the decrypted section
+turns out to be a MIME multipart message (i.e. OpenPGP/MIME),
+then the display it messed up: the new multipart content-type
+header just sits there alone in the middle of a part, and
+everything belonging to this multipart message is not decoded
+correctly. This function fixes the situation."
+  (interactive)
+  (rmail-edit-current-message)
+  (when (search-forward "\n\nContent-Type: multipart" nil t)
+    (let ((multipart-start (line-beginning-position)))
+      (re-search-backward "^--.*\n")
+      (delete-region (match-end 0) multipart-start)
+      (insert "Content-Description: encrypted message\n")
+      (rmail-cease-edit))))
+}}}
+
+I tried to add this to ##rmail-epa-decrypt-1## (in the hopes of not having to call ##rmail-edit-current-message## and ##rmail-cease-edit## but it isn't easy. It works in a temporary buffer and copies back the changed stuff, ignoring changes made to the MIME boundaries outside the encrypted armour. So for the moment, I am keeping it as it is.
+
+* ##M-x rmail-epa-decrypt##
+* ##M-x asc:rmail-fixup-mime-multipart## if necessary
