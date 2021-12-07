@@ -87,20 +87,19 @@ I used to use this to temporarily unset the GPG_AGENT_INFO environment variable 
         (when (not (display-graphic-p))
           (setenv "GPG_AGENT_INFO" agent))))
 
-If you use emacsclient and sometimes over plaintext ssh, sometimes in X, this will alter the behavious on-the-fly:
+If you use emacsclient and sometimes over plaintext ssh, sometimes in X, this will alter the behaviour on-the-fly:
 
-    (defadvice epg--start (around advice-epg-disable-agent disable)
-      "Don't allow epg--start to use gpg-agent in plain text
-    terminals."
-      (if (display-graphic-p)
-          ad-do-it
-        (let ((agent (getenv "GPG_AGENT_INFO")))
-          (setenv "GPG_AGENT_INFO" nil) ; give us a usable text password prompt
-          ad-do-it
-          (setenv "GPG_AGENT_INFO" agent))))
-    (ad-enable-advice 'epg--start 'around 'advice-epg-disable-agent)
-    (ad-activate 'epg--start)
+    (defun epg--gpg-agent (orig-fun &rest args)
+       "Don't allow epg--start to use gpg-agent in plain text terminals."
+        (if (display-graphic-p)
+            (apply orig-fun args)
+          (let ((agent (getenv "GPG_AGENT_INFO")))
+            (setenv "GPG_AGENT_INFO" nil) ; give us a usable text password prompt
+            (apply orig-fun args)
+            (setenv "GPG_AGENT_INFO" agent))))
 
+    (advice-add 'epg--start :around #'epg--gpg-agent))
+    
 Note also there's a bug in pinentry in GnuPG2, if you run Arch Linux you could install gnupg1 and do <code>(when (file-executable-p "/usr/bin/gpg1") (setq epg-gpg-program "/usr/bin/gpg1"))</code> to make it use gpg1 on your Arch boxen.
 
 [new]
