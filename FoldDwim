@@ -1,4 +1,4 @@
-fold-dwim.el is a unified user interface for Emacs folding/outlining modes.  It supports folding.el, hideshow.el, outline.el, TeX-fold.el, and nxml-outln.el
+[https://web.archive.org/web/20150919013147/http://community.dur.ac.uk/p.j.heslin/Software/Emacs/Download/fold-dwim.el fold-dwim.el] is a unified user interface for Emacs folding/outlining modes.  It supports folding.el, hideshow.el, outline.el, TeX-fold.el, and nxml-outln.el
 
 From the commentary:
 
