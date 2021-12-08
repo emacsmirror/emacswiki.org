@@ -48,7 +48,7 @@ The following will add colors, but its very slow.  Don't try it on /dev or simil
 
 == term ==
 
-`M-x term' and `M-x ansi-term' do their own hilighting.
+`M-x term' and `M-x ansi-term' do their own highlighting.
 It makes no sense to add ansi-color to these modes.
 If you still want to investigate this, take a look at
 term-emulate-terminal.  That is the function where you
