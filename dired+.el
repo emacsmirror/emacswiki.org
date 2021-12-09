@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 30 14:07:33 2021 (-0800)
+;; Last-Updated: Thu Dec  9 14:23:32 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 13044
+;;     Update #: 13057
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -880,6 +880,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/12/09 dadams
+;;     dired-buffers-for-dir: Expand DIR arg with expand-file-name (fixes Emacs bug #52395).
 ;; 2021/11/30 dadams
 ;;     diredp-do-apply/eval-marked-recursive:
 ;;       Typo in body: current-prefix-arg -> arg.  Corrected first argument to diredp-get-files.
@@ -1200,8 +1202,7 @@
 ;;       Corrected interactive spec, which was missing nil DIRNAME arg.  Corrected body: use DIRNAME.
 ;;     diredp-get-files-for-dir, diredp-do-bookmark-dirs-recursive, diredp-change-marks-recursive,
 ;;       diredp-unmark-all-files-recursive, diredp-mark-files-regexp-recursive, diredp-mark-recursive-1,
-;;       diredp-do-delete-recursive:
-;;         Factor out (dired-buffers-for-dir (expand-file-name directory)).
+;;       diredp-do-delete-recursive: Factor out (dired-buffers-for-dir (expand-file-name directory)).
 ;; 2018/01/03 dadams
 ;;     dired-mark-files-regexp: Corrected doc string wrt prefix args.  Thx to John Mastro.
 ;;     diredp-do-grep-recursive: Removed unused optional arg IGNORE-MARKS-P.
@@ -9157,17 +9158,24 @@ Non-interactively:
 ;;
 ;; 1. Allow for consp `dired-directory' too.
 ;; 2. Updated for Emacs 28: Added optional arg SUBDIRS.
+;; 3. Fix for Emacs bug #52395.  Expand DIR with `default-directory', so `file-name-as-directory' gets applied to
+;;    absolute name.  Otherwise, (dired-buffers-for-dir "~/some/dir/") returns nil, because the element in
+;;    `dired-subdir-alist' is ("/the/home/dir/some/dir/" . #<buffer dir>), not ("~/some/dir/" . #<buffer dir>).
 ;;
 (defun dired-buffers-for-dir (dir &optional file subdirs)
   "Return a list of buffers that Dired DIR (top level or in-situ subdir).
+DIR is automatically expanded with `expand-file-name' using the
+ `default-directory'.  If you need expansion relative to some other
+ directory then do that before calling `dired-buffers-for-dir'.
 If FILE is non-nil, include only those whose wildcard pattern (if any)
-matches FILE.
-If SUBDIRS is non-nil, also include the dired buffers of
-directories below DIR.
+ matches FILE.
+If SUBDIRS is non-nil, also include the dired buffers of directories
+ below DIR.
+
 The list is in reverse order of buffer creation, most recent last.
 As a side effect, killed Dired buffers for DIR are removed from
-`dired-buffers'."
-  (setq dir  (file-name-as-directory dir))
+ `dired-buffers'."
+  (setq dir  (expand-file-name (file-name-as-directory dir)))
   (let (result buf)
     (dolist (elt  dired-buffers)
       (setq buf  (cdr elt))
@@ -12007,7 +12015,8 @@ non-empty directories is allowed."
 (defun diredp-internal-do-deletions (file-alist arg &optional trash)
   "`dired-internal-do-deletions', but for any Emacs version.
 FILE-ALIST is an alist of files to delete, with their buffer positions.
-ARG is the prefix arg.  Filenames are absolute.
+ Filenames are absolute.
+ARG is normally the raw prefix arg for the calling command.
 Non-nil TRASH means use the trash can."
   ;; \(car FILE-ALIST) *must* be the *last* (bottommost) file in the dired
   ;; buffer.  That way as changes are made in the buffer they do not shift
