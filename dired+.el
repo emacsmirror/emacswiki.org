@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 10 10:20:58 2021 (-0800)
+;; Last-Updated: Fri Dec 10 13:23:16 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 13062
+;;     Update #: 13070
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -886,6 +886,8 @@
 ;;     Added: diredp-create-file-here, redefinition of dired-do-touch.
 ;;     diredp-menu-bar-dir-menu: Added diredp-create-file-here.
 ;;                               Moved it and New Directory after dired-maybe-insert-subdir and a separator.
+;;     dired-do-delete(-recursive): Zero ARG now deletes marked, but with delete-by-moving-to-trash flipped.
+;;     Protect delete-by-moving-to-trash with boundp everywhere.
 ;; 2021/12/09 dadams
 ;;     dired-buffers-for-dir: Expand DIR arg with expand-file-name (fixes Emacs bug #52395).
 ;; 2021/11/30 dadams
@@ -7873,49 +7875,55 @@ subdirectories are handled recursively in the same way.
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files' and `diredp-get-subdirs'."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
-  (unless arg
-    (ding)
-    (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
-             dired-marker-char dired-del-marker))
-  (let* ((files     (diredp-get-files nil nil nil nil 'ONLY-MARKED-P details))
-         (count     (length files))
-         (trashing  (and (boundp 'delete-by-moving-to-trash)  delete-by-moving-to-trash))
-         (succ      0))
-    (if (dired-mark-pop-up
-         " *Deletions*" 'delete files dired-deletion-confirmer
-         (format "%s %s " (if trashing "Trash" "Delete") (dired-mark-prompt arg files)))
-        (let ((progress-reporter  (and (fboundp 'make-progress-reporter)
-                                       (make-progress-reporter (if trashing "Trashing..." "Deleting...")
-                                                               succ
-                                                               count)))
-              (failures           ()))
-          (unless progress-reporter (message "Deleting..."))
-          (dolist (file  files)
-            (condition-case err
-                (progn (if (fboundp 'dired-delete-file) ; Emacs 22+
-                           (dired-delete-file file dired-recursive-deletes trashing)
-                         ;; This test is equivalent to (and (file-directory-p file)  (not (file-symlink-p file)))
-                         ;; but more efficient.
-                         (if (eq t (car (file-attributes file))) (delete-directory file) (delete-file file)))
-                       (setq succ  (1+ succ))
-                       (when (fboundp 'progress-reporter-update)
-                         (progress-reporter-update progress-reporter succ)))
-              (error (dired-log "%s\n" err) ; Catch errors from failed deletions.
-                     (setq failures  (cons file failures))))
-            (dired-clean-up-after-deletion file))
-          (if failures
-              (dired-log-summary (format "%d of %d deletion%s failed"
-                                         (length failures) count (dired-plural-s count))
-                                 failures)
-            (if (fboundp 'progress-reporter-done)
-                (progress-reporter-done progress-reporter)
-              (message "Deleting...done")))
-          (let ((sdirs  (diredp-get-subdirs nil nil details))
-                dbufs)
-            (dolist (dir  (cons default-directory sdirs))
-              (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
-                (with-current-buffer (car dbufs) (dired-revert))))))
-      (message "OK. NO deletions performed"))))
+  (let* ((flip                       (zerop (prefix-numeric-value arg)))
+         (delete-by-moving-to-trash  (and (boundp 'delete-by-moving-to-trash)
+                                          (if flip
+                                              (not delete-by-moving-to-trash)
+                                            delete-by-moving-to-trash))))
+    (when flip (setq arg  nil))
+    (unless arg
+      (ding)
+      (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
+               dired-marker-char dired-del-marker))
+    (let* ((files  (diredp-get-files nil nil nil nil 'ONLY-MARKED-P details))
+           (count  (length files))
+           (succ   0))
+      (if (dired-mark-pop-up
+           " *Deletions*" 'delete files dired-deletion-confirmer
+           (format "%s %s " (if delete-by-moving-to-trash "Trash" "Delete") (dired-mark-prompt arg files)))
+          (let ((progress-reporter  (and (fboundp 'make-progress-reporter)
+                                         (make-progress-reporter
+                                          (if delete-by-moving-to-trash "Trashing..." "Deleting...")
+                                          succ
+                                          count)))
+                (failures           ()))
+            (unless progress-reporter (message "Deleting..."))
+            (dolist (file  files)
+              (condition-case err
+                  (progn (if (fboundp 'dired-delete-file) ; Emacs 22+
+                             (dired-delete-file file dired-recursive-deletes delete-by-moving-to-trash)
+                           ;; This test is equivalent to (and (file-directory-p file)  (not (file-symlink-p file)))
+                           ;; but more efficient.
+                           (if (eq t (car (file-attributes file))) (delete-directory file) (delete-file file)))
+                         (setq succ  (1+ succ))
+                         (when (fboundp 'progress-reporter-update)
+                           (progress-reporter-update progress-reporter succ)))
+                (error (dired-log "%s\n" err) ; Catch errors from failed deletions.
+                       (setq failures  (cons file failures))))
+              (dired-clean-up-after-deletion file))
+            (if failures
+                (dired-log-summary (format "%d of %d deletion%s failed"
+                                           (length failures) count (dired-plural-s count))
+                                   failures)
+              (if (fboundp 'progress-reporter-done)
+                  (progress-reporter-done progress-reporter)
+                (message "Deleting...done")))
+            (let ((sdirs  (diredp-get-subdirs nil nil details))
+                  dbufs)
+              (dolist (dir  (cons default-directory sdirs))
+                (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+                  (with-current-buffer (car dbufs) (dired-revert))))))
+        (message "OK. NO deletions performed")))))
 
 ;;;###autoload
 (defun diredp-do-move-recursive (&optional ignore-marks-p details) ; Bound to `M-+ R'
@@ -9404,7 +9412,7 @@ and FILE is expanded in `default-directory'."
           (on-dir-line-p  (atom this-subdir)))
      (unless on-dir-line-p ; Subdir header line or non-directory file.
        (setq this-subdir  (car this-subdir)))
-     (let* ((input  (read-string "Create file (here): "))
+     (let* ((input  (read-string (format "Create file in `%s': " this-subdir)))
             (file   (expand-file-name input this-subdir)))
        (while (or  (string= input "")  (file-exists-p file))
          (setq input  (read-string (if (string= input "")
@@ -12049,23 +12057,35 @@ non-empty directories is allowed."
 ;; 1. Display a message to warn that marked, not flagged, files will be deleted.
 ;; 2. Use `diredp-internal-do-deletions', so it works with all Emacs versions.
 ;; 3. Applies fix for bug #48805.
+;; 4. Zero ARG deletes marked, but with `delete-by-moving-to-trash' flipped.
 ;;
 ;;;###autoload
 (defun dired-do-delete (&optional arg)  ; Bound to `D'
   "Delete all marked (or next ARG) files.
-NOTE: This deletes marked, not flagged, files.
-`dired-recursive-deletes' controls whether deletion of
-non-empty directories is allowed."
+NOTE: This deletes the marked (`*'), not the flagged (`D'), files.
+
+User option `dired-recursive-deletes' controls whether deletion of
+non-empty directories is allowed.
+
+ARG is the prefix argument.
+
+As an exception, if ARG is zero then delete the marked files, but with
+the behavior specified by option `delete-by-moving-to-trash' flipped."
   (interactive "P")
-  ;; This is more consistent with the file-marking feature than
-  ;; `dired-do-flagged-delete'.  But it can be confusing to the user,
-  ;; especially since this is usually bound to `D', which is also the
-  ;; `dired-del-marker'.  So offer this warning message:
-  (unless arg
-    (ding)
-    (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
-             dired-marker-char dired-del-marker))
-  (let ((markers  ()))
+  (let* ((flip                       (zerop (prefix-numeric-value arg)))
+         (delete-by-moving-to-trash  (and (boundp 'delete-by-moving-to-trash)  (if flip
+                                                                                   (not delete-by-moving-to-trash)
+                                                                                 delete-by-moving-to-trash)))
+         (markers                    ()))
+    (when flip (setq arg  nil))
+    ;; This is more consistent with the file-marking feature than
+    ;; `dired-do-flagged-delete'.  But it can be confusing to the user,
+    ;; especially since this is usually bound to `D', which is also the
+    ;; `dired-del-marker'.  So offer this warning message.
+    (unless arg
+      (ding)
+      (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
+               dired-marker-char dired-del-marker))
     (diredp-internal-do-deletions
      (nreverse
       ;; This can move point if ARG is an integer.
@@ -12074,9 +12094,8 @@ non-empty directories is allowed."
                                                          mk))
                             arg))
      arg
-     'USE-TRASH-CAN)                 ; This arg is for Emacs 24+ only.
+     t)          ; Gets ANDed anyway with `delete-by-moving-to-trash'.
     (dolist (mk  markers) (set-marker mk nil))))
-
 
 (defun diredp-internal-do-deletions (file-alist arg &optional trash)
   "`dired-internal-do-deletions', but for any Emacs version.
@@ -12461,7 +12480,9 @@ For Emacs 24 and later, a prefix arg means that if
 deleting it."
   (interactive "P")
   (let ((file  (dired-get-filename)))
-    (if (not (yes-or-no-p (format "%s file `%s'? " (if (and use-trash-can  delete-by-moving-to-trash)
+    (if (not (yes-or-no-p (format "%s file `%s'? " (if (and use-trash-can
+                                                            (boundp 'delete-by-moving-to-trash)
+                                                            delete-by-moving-to-trash)
                                                        "Trash"
                                                      "Permanently delete")
                                   file)))
@@ -15890,7 +15911,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-dir-menu [separator-dired] '("--")) ; ---------------------
 
 (define-key diredp-menu-bar-dir-menu [diredp-create-file-here]
-  '(menu-item "New (Empty) File..." diredp-create-file-here :help "Create a new empty file in this (sub)directory"))
+  '(menu-item "New (Empty) File Here..." diredp-create-file-here
+              :help "Create a new empty file in this (sub)directory"))
 (define-key diredp-menu-bar-dir-menu [create-directory] ; Moved from "Immediate".
   '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 
