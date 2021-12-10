@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec  9 14:23:32 2021 (-0800)
+;; Last-Updated: Fri Dec 10 10:20:58 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 13057
+;;     Update #: 13062
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -486,10 +486,11 @@
 ;;    `diredp-copy-abs-filenames-as-kill-recursive',
 ;;    `diredp-copy-filename-as-kill-recursive',
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
-;;    `diredp-decrypt-this-file', `diredp-delete-this-file',
-;;    `diredp-describe-autofile', `diredp-describe-file',
-;;    `diredp-describe-marked-autofiles', `diredp-describe-mode',
-;;    `diredp-dired-for-files', `diredp-dired-for-files-other-window',
+;;    `diredp-create-file-here', `diredp-decrypt-this-file',
+;;    `diredp-delete-this-file', `diredp-describe-autofile',
+;;    `diredp-describe-file', `diredp-describe-marked-autofiles',
+;;    `diredp-describe-mode', `diredp-dired-for-files',
+;;    `diredp-dired-for-files-other-window',
 ;;    `diredp-dired-inserted-subdirs', `diredp-dired-plus-help',
 ;;    `diredp-dired-recent-dirs',
 ;;    `diredp-dired-recent-dirs-other-window',
@@ -844,6 +845,7 @@
 ;;        Use new `dired-get-marked-files'.
 ;;  `dired-insert-subdir-newpos' - If not a descendant, put at eob.
 ;;  `dired-insert-subdir-validate' - Do nothing: no restrictions.
+;;  `dired-do-touch' - Zero prefix arg creates empty file.
 ;;  `dired-do-kill-lines' - Added optional arg INIT-COUNT.
 ;;  `dired-maybe-insert-subdir' - Go back to subdir line if in listing.
 ;;  `dired-handle-overwrite' - Added optional arg FROM, for listing.
@@ -880,6 +882,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/12/10 dadams
+;;     Added: diredp-create-file-here, redefinition of dired-do-touch.
+;;     diredp-menu-bar-dir-menu: Added diredp-create-file-here.
+;;                               Moved it and New Directory after dired-maybe-insert-subdir and a separator.
 ;; 2021/12/09 dadams
 ;;     dired-buffers-for-dir: Expand DIR arg with expand-file-name (fixes Emacs bug #52395).
 ;; 2021/11/30 dadams
@@ -3247,6 +3253,26 @@ version in these respects:
       (when (and (null result)  error-if-none-p)
         (diredp-user-error (if (stringp error-if-none-p) error-if-none-p "No files specified")))
       result)))
+
+
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; Zero prefix arg means create empty file, prompting for file name.
+;;
+;;;###autoload
+(defun dired-do-touch (&optional arg)
+  "Change the timestamp of the marked (or next ARG) files.
+As an exception, if ARG is zero then create a single new (empty) file
+instead.  You are prompted for the file name.
+
+This invokes system program `touch'.
+
+Use `M-n' to pull the file attributes of the file at point
+into the minibuffer."
+  (interactive "P")
+  (if (zerop (prefix-numeric-value arg))
+      (call-interactively #'diredp-create-file-here)
+    (dired-do-chxxx "Timestamp" dired-touch-program 'touch arg)))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -9362,6 +9388,46 @@ directory then bind `mouse-2' to `dired-mouse-find-file' instead."
   (substitute-key-definition 'dired-w32-browser-reuse-dir-buffer 'dired-w32-browser dired-mode-map)
   (substitute-key-definition 'dired-mouse-w32-browser-reuse-dir-buffer 'dired-mouse-w32-browser dired-mode-map)
   (message "Reusing Dired buffers is now OFF"))
+
+;;;###autoload
+(defun diredp-create-file-here (file)   ; Not bound
+  "Create new FILE in the directory of this Dired listing.
+You are prompted for the (relative) file name, which is relative to
+the directory of the current listing.
+
+If called from Lisp, the buffer must be in Dired (or a derived) mode,
+and FILE is expanded in `default-directory'."
+  (interactive
+   (let* ((_IGNORE        (diredp-ensure-mode))
+          (this-dir       default-directory)
+          (this-subdir    (diredp-this-subdir))
+          (on-dir-line-p  (atom this-subdir)))
+     (unless on-dir-line-p ; Subdir header line or non-directory file.
+       (setq this-subdir  (car this-subdir)))
+     (let* ((input  (read-string "Create file (here): "))
+            (file   (expand-file-name input this-subdir)))
+       (while (or  (string= input "")  (file-exists-p file))
+         (setq input  (read-string (if (string= input "")
+                                       "Empty input.  Create file: "
+                                     (format "`%s' already exists.  Create file: " file)))
+               file   (expand-file-name input this-subdir)))
+       (list file))))
+  (unless (if (or (> emacs-major-version 23)
+                  (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+              (called-interactively-p 'interactive)
+            (interactive-p))
+    (diredp-ensure-mode)
+    (when (file-exists-p (expand-file-name file)) (error "File `%s' already exists")))
+  (let ((failures  (dired-bunch-files
+                    2
+		    #'dired-check-process
+		    (append
+		     (list (concat dired-touch-program " " file) dired-touch-program)
+		     (if (string-match-p "gnu" system-configuration) '("--") nil))
+		    (list file))))
+    (if failures
+        (dired-log-summary (format "%s: error" 'touch) nil)
+      (dired-relist-entry (expand-file-name file)))))
 
 ;;;###autoload
 (defun diredp-omit-marked ()            ; Not bound
@@ -15823,6 +15889,13 @@ If no one is selected, symmetric encryption will be performed.  "
 
 (define-key diredp-menu-bar-dir-menu [separator-dired] '("--")) ; ---------------------
 
+(define-key diredp-menu-bar-dir-menu [diredp-create-file-here]
+  '(menu-item "New (Empty) File..." diredp-create-file-here :help "Create a new empty file in this (sub)directory"))
+(define-key diredp-menu-bar-dir-menu [create-directory] ; Moved from "Immediate".
+  '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
+
+(define-key diredp-menu-bar-dir-menu [separator-create-new] '("--")) ; ---------------------
+
 (define-key diredp-menu-bar-dir-menu [insert]
   '(menu-item "Insert/Move-To This Subdir" dired-maybe-insert-subdir
     :help "Move to subdirectory line or listing"))
@@ -15830,8 +15903,6 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Undo" dired-undo :help "Undo changes: marks, killed lines, and subdir listings"))
 (define-key diredp-menu-bar-dir-menu [revert]
   '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
-(define-key diredp-menu-bar-dir-menu [create-directory] ; Moved from "Immediate".
-  '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 
 
 ;;; Mouse-3 menu binding.
