@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 10 13:23:16 2021 (-0800)
+;; Last-Updated: Sat Dec 11 09:43:31 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 13070
+;;     Update #: 13072
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -882,6 +882,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/12/11 dadams
+;;     diredp-display-image: Removed unneeded binding of inhibit-changing-match-data (deprecated in Emacs 29).
 ;; 2021/12/10 dadams
 ;;     Added: diredp-create-file-here, redefinition of dired-do-touch.
 ;;     diredp-menu-bar-dir-menu: Added diredp-create-file-here.
@@ -4105,8 +4107,7 @@ A prefix argument ARG specifies files to use instead of those marked.
   (let ((file     (dired-get-filename t 'NO-ERROR))
         (failure  nil))
     (save-excursion
-      (if (let ((inhibit-changing-match-data  t))
-            (and file  (diredp-string-match-p (image-file-name-regexp) file)))
+      (if (and file  (diredp-string-match-p (image-file-name-regexp) file))
           (condition-case err
               (let ((find-file-run-dired  nil)) (find-file-other-window file))
             (error (setq failure  (error-message-string err))))
