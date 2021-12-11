@@ -352,7 +352,8 @@ If you're running Emacs on Termux you can use `am' to pass URL to browser. `am' 
       (setq truncate-lines t))
   (setq browse-url-browser-function 'open-url-am)
 
-If you haven't set a default browser, the system service will prompted you with which browser you wan't to open the url with.
+If you haven't set a default browser, the system service will prompted you with which browser you want to open the url with.
+
 Note: You need to include protocol to open URL with `am' (example: "https://google.com" will work, "google.com" won't and will return error)
 
 === Microsoft Edge (Windows 10) ===
