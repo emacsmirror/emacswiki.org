@@ -348,7 +348,7 @@ If you're running Emacs on Termux you can use `am' to pass URL to browser. `am' 
 
   (defun open-url-am (url &rest ignore)
     (interactive "sURL: ")
-    (shell-command (concat "am start -a android.intent.action.VIEW -d '" url
+    (shell-command (concat "am start -a android.intent.action.VIEW -d '" url "'")
       (setq truncate-lines t))
   (setq browse-url-browser-function 'open-url-am)
 
