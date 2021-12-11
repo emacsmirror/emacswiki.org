@@ -344,7 +344,7 @@ Add the following to .emacs:
           browse-url-generic-program "icecat")
 
 === Termux (Android) ===
-If you're running Emacs on Termux you can use "am" to pass URL to browser. "am" can be installed by running "apt install termux-am". You can then add this to your init.el:
+If you're running Emacs on Termux you can use `am' to pass URL to browser. `am' can be installed by running `apt install termux-am'. You can then add this to your init.el:
 
   (defun open-url-am (url &rest ignore)
     (interactive "sURL: ")
@@ -353,7 +353,7 @@ If you're running Emacs on Termux you can use "am" to pass URL to browser. "am" 
   (setq browse-url-browser-function 'open-url-am)
 
 If you haven't set a default browser, the system service will prompted you with which browser you wan't to open the url with.
-Note: The URL you want to open must include its protocol (eg, https://)
+Note: You need to include protocol to open URL with `am' (example: "https://google.com" will work, "google.com" won't and will return error)
 
 === Microsoft Edge (Windows 10) ===
 Add the following to .emacs
