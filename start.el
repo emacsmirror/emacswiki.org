@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov  9 12:26:50 2021 (-0800)
+;; Last-Updated: Mon Dec 13 14:41:33 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 3107
+;;     Update #: 3110
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -21,8 +21,8 @@
 ;;
 ;;  This file basically just does `require' and `autoload'.
 ;;
-;;  The files `setup.el', `oneonone.el', and `setup-keys.el', required
-;;  here, are companion files that do fairly essential
+;;  The files `da-setup.el', `oneonone.el', and `setup-keys.el',
+;;  required here, are companion files that do fairly essential
 ;;  configuration/customization of the editor.
 ;;
 ;;  The file `start-opt.el', not required here, is another companion
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2021/12/13 dadams
+;;     Require da-setup.el, renamed from setup.el.
 ;; 2021/11/09 dadams
 ;;     Soft-require modeline-region.el for Emacs 24+.
 ;; 2021/11/01 dadams
@@ -633,7 +635,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (when (fboundp 'pretty-lambda-for-modes) (pretty-lambda-for-modes)))
 (when (> emacs-major-version 21) (require 'echo-bell nil t)) ; Visual bell in echo area.
 
-(require 'setup nil t)                  ; Startup assignments and such.
+(require 'da-setup nil t)                  ; Startup assignments and such.
 
 (require 'local-lpr nil t)              ; Local settings for `lpr.el'.
 (require 'local-ps-print nil t)         ; Local settings for PostScript printing.
