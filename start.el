@@ -802,5 +802,6 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (defalias 'toggle-standard-display-european 'standard-display-european)
 (defalias 'toggle-transient-mark-mode 'transient-mark-mode)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; start.el ends here
