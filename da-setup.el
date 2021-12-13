@@ -397,6 +397,5 @@ such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
 
 (provide 'da-setup)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; da-setup.el ends here
