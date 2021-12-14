@@ -2,13 +2,41 @@ FlyMake performs on-the-fly syntax checks on the files being edited using the ex
 
 The project has been part of Emacs since Emacs 23, was then abandoned/maintained in various projects outside of Emacs for some years, but has recently had a revival in Emacs 26, so that many major modes now are supported out of the box, if you just enable Flymake.
 
+As of version 1.2, Flymake supports displaying project-wide diagnostics using the built-in library project.el.
+
+Flymake can be used by LSP clients for placing their messages.
+
 Much of this page is probably obsolete after the Emacs 26 revival?
 
 === Keyboard support for showing the errors ===
 
-Type "C-h ." This is the standard shortcut for help-at-point
+Type "C-h ." This is the standard shortcut for <code>help-at-point</code>.  By customizing the variable 
+<code>help-at-pt-display-when-idle</code> using the <i>Customize</i> menu, you can display such help messages automatically in the Echo Area.  Note that this command is not specifically for Flymake, and works with positioned message from many libraries.
+
+Flymake's messages can also be displayed in a tool-tip when hovering over a highlighted area with the mouse.
 
 == Language Support ==
+
+Flymake works by running checkers listed in the hook variable <code>flymake-diagnostic-functions</code>.  For example, in <code>emacs-lisp-mode</code>, the buffer-local value of this hook will include the checkers <code>elisp-flymake-byte-compile</code> and <code>elisp-flymake-checkdoc</code>.  Therefore, checkers can be disabled by using the function <code>remove-hook</code> on this variable.
+
+The Flymake manual includes an annotated example for creating custom checkers.
+
+Built-in checkers are provided for:
+
+* C and C++
+* Emacs Lisp
+* HTML
+* IDL
+* Java
+* Perl
+* PHP
+* Python
+* Ruby
+* TeX
+* XML
+
+with other checkers currently available as third-party packages.  Some are
+listed here:
 
 ; PHP: FlymakePhp for PHP
 ; Ruby: FlymakeRuby for Ruby
