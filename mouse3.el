@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  1 15:31:41 2021 (-0800)
+;; Last-Updated: Wed Dec 15 09:54:55 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 1897
+;;     Update #: 1898
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -18,18 +18,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `easymenu',
-;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `highlight', `hl-line', `hl-line+', `info',
-;;   `info+', `isearch+', `isearch-prop', `kmacro', `macroexp',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
-;;   `pp+', `radix-tree', `replace', `second-sel', `strings',
-;;   `syntax', `text-mode', `thingatpt', `thingatpt+', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `color', `frame-fns', `gv', `highlight', `isearch+',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `naked',
+;;   `rect', `strings', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -324,7 +316,6 @@
 ;;   `mouse3-popup-include-global-menus-flag',
 ;;   `mouse3-popup-x-popup-panes-flag', `mouse3-region-popup-entries',
 ;;   `mouse3-region-popup-x-popup-panes',
-;;   
 ;;   `mouse3-second-click-default-command'.
 ;;
 ;; Commands defined here:
