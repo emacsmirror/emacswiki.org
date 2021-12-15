@@ -225,7 +225,7 @@ You define the rest of the popup menu (other than the global part)
 using submenu keymaps and `menu-item' bindings ([[Manual:Extended Menu Items|extended menu items]]).  You do this by customizing option
 '''`mouse3-region-popup-entries'''' and '''`mouse3-noregion-popup-entries''''.  You can reuse existing keymaps or
 create menu items and submenus from scratch.  See the documentation
-for `mouse3-(no)region-popup-entries'.  If you reuse existing keymaps
+for `##mouse3-(no)region-popup-entries##'.  If you reuse existing keymaps
 you can add their menu items either as a submenu or as individual
 items.
 
