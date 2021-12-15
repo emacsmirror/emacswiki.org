@@ -57,7 +57,7 @@ later reuse).
 You can use option `mouse3-second-click-default-command' to
 customize the behavior to either pop up a menu or invoke any
 command you choose.  The default value is
-`mouse3-region-popup-menu', which pops up a menu.  To obtain the
+`mouse3-popup-menu', which pops up a menu.  To obtain the
 vanilla Emacs behavior,
 customize the option value to command `mouse3-kill/delete-region'.
 
@@ -174,21 +174,22 @@ selection features.
 
 If you choose for `mouse-3' to pop up a menu then you can customize
 that menu using various user options.  The command that pops up the
-menu is '''`mouse3-region-popup-menu''''.  See the documentation for that
+menu is '''`mouse3-popup-menu''''.  See the documentation for that
 command for more explanation of the use of options.
 
 A fairly complete default menu is provided out of the box, so you
 do not need to customize anything unless you want to.
 
-`mouse3-region-popup-menu' ultimately invokes standard function
+`mouse3-popup-menu' ultimately invokes standard function
 `x-popup-menu' to do its work.  The menu definition used by
 `x-popup-menu' can take two alternative forms which are quite
 different.  Which form you choose to use is controlled by option
-'''`mouse3-region-popup-x-popup-panes-flag''''.
+'''`mouse3-popup-x-popup-panes-flag''''.
 
 If that option is `nil' (the default value), you can use [[keymap]]s and [[Manual:Extended Menu Items|extended menu items]] to define the popup menu.  This is ''recommended''.
-If the value is non-`nil' then you can use option
-`mouse3-region-popup-x-popup-panes' to make use of the alternative,
+If the value is non-`nil' then you can use options
+`mouse3-region-popup-x-popup-panes' and
+`mouse3-noregion-popup-x-popup-panes' to make use of the alternative,
 `x-popup-menu'-specific form.
 
 That alternative form is easy to use, but it does not offer you all
@@ -205,14 +206,14 @@ read-only, and it removes or disables [[region]]-related items and
 submenus when the region is empty.
 
 The rest of the description here assumes that
-`mouse3-region-popup-x-popup-panes-flag' is `nil' (the default value
+`mouse3-popup-x-popup-panes-flag' is `nil' (the default value
 and recommended).
 
 You can optionally include, at the beginning of the menu, a submenu
 that has, as its own submenus, the global menus that are currently
 available.  (These are the same menus that are popped up by
 `C-mouse-3'.)  This is controlled by option
-'''`mouse3-region-popup-include-global-menus-flag''''.  If the [[menu bar]]
+'''`mouse3-popup-include-global-menus-flag''''.  If the [[menu bar]]
 is not shown currently, then these submenus are the menu-bar menus.
 Otherwise they are the major-mode menus.
 
@@ -222,9 +223,9 @@ first submenu is '''Dired by name''', which itself has submenus
 
 You define the rest of the popup menu (other than the global part)
 using submenu keymaps and `menu-item' bindings ([[Manual:Extended Menu Items|extended menu items]]).  You do this by customizing option
-'''`mouse3-region-popup-entries''''.  You can reuse existing keymaps or
+'''`mouse3-region-popup-entries'''' and '''`mouse3-noregion-popup-entries''''.  You can reuse existing keymaps or
 create menu items and submenus from scratch.  See the documentation
-for `mouse3-region-popup-entries'.  If you reuse existing keymaps
+for `mouse3-(no)region-popup-entries'.  If you reuse existing keymaps
 you can add their menu items either as a submenu or as individual
 items.
 
@@ -249,7 +250,7 @@ provided in ##mouse3.el## for [[PictureMode|Picture]] mode.  The menu implementa
 two modes is different, to give you an idea of what is possible.
 For Dired mode, `mouse3-region-popup-entries' is used.  For Picture
 mode, `mouse3-region-popup-x-popup-panes' is used, and both
-`mouse3-region-popup-x-popup-panes-flag' and
+`mouse3-popup-x-popup-panes-flag' and
 `mouse3-region-popup-x-popup-panes' are made buffer-local.
 
 The example code for Picture mode provides actions on the rectangle
