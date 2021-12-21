@@ -8,6 +8,12 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Chrome 100 gives Forbidden error ==
+
+I'm running Chrome with the #force-major-version-to-100 flag enabled, which causes emacswiki.org to fail with "Forbidden".
+
+Please see https://developer.chrome.com/blog/force-major-version-to-100/ for more details on the experiment.
+
 == Wrong translation on buttons ==
 
 Some buttons on the bottom of all pages have the wrong translation on the Swedish version of the site. For example the "Talk" button is labeld with "Ságastallan" which seems to be in the Sami language. I saw some other button with incorrect translation, but I can't remember which page it was. Is there some page where I can fix the translation of the buttons?
