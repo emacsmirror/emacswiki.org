@@ -39,6 +39,7 @@ Emacs 28 provides an additional word wrapping feature that is called ##word-wrap
 
 -- volhovm
 
+[new]
 It's a nice trick. I suggest you also do ##(modify-category-entry 58 ?> (category-table) t)## to avoid unnecessary pain. When you have a line like ##* hello <spaces> :hello:hello:##, with ##<spaces>## such that the line wrap should occur somewhere in ##:hello:hello:##. Since initially, with ##(setq word-wrap-by-category t)##, according to ##kinsoku.el##, character ##:## belongs to category ##?>##, it is prohibited to be placed at the beginning of the line. So where to put the line break? The only possibility is right after the asterisk at the beginning of the line. It seems there is a conflict there between kinsoku and org.mode.
 
 -- C.
