@@ -14,6 +14,11 @@ I'm running Chrome with the #force-major-version-to-100 flag enabled, which caus
 
 Please see https://developer.chrome.com/blog/force-major-version-to-100/ for more details on the experiment.
 
+[new]
+Thanks for reporting this. I've removed the offending lines from my banned user agent config.
+See [https://alexschroeder.ch/wiki/2020-12-22_Apache_config_file_to_block_user_agents my blog] for more info.
+– Alex
+
 == Wrong translation on buttons ==
 
 Some buttons on the bottom of all pages have the wrong translation on the Swedish version of the site. For example the "Talk" button is labeld with "Ságastallan" which seems to be in the Sami language. I saw some other button with incorrect translation, but I can't remember which page it was. Is there some page where I can fix the translation of the buttons?
