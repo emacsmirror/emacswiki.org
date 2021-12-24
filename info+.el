@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 24 10:36:16 2021 (-0800)
+;; Last-Updated: Fri Dec 24 10:56:23 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7474
+;;     Update #: 7475
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1816,17 +1816,6 @@ and }, and turning the option on."
   :group 'Info-Plus)
 
 ;;;###autoload
-(defcustom Info-fontify-indented-text-manuals '(elisp)
-  "List of manuals for which to use fixed-pitch for indented text.
-This has no effect if `Info-fontify-indented-text-chars' is nil."
-  :type '(repeat (symbol :tag "Manual")) :group 'info
-  :set #'(lambda (sym defs)
-           (custom-set-default sym defs)
-           (mapatoms (lambda (x) (put x 'info-indented-text-regexp nil)))
-           (dolist (manual  (symbol-value sym))
-             (put manual 'info-indented-text-regexp 'info-indented-text-regexp))))
-
-;;;###autoload
 (defcustom Info-fontify-emphasis-flag t
   "Non-nil means `info' fontifies text between underscores (`_').
 The text that is highlighted matches the value of option
@@ -1939,6 +1928,17 @@ avoid fontifying continuation lines of menu-item descriptions."
           (const   :tag "OFF - don't fontify indented text"   nil)
           (integer :tag "Fontify text indented at least this many chars" :value 10))
   :group 'Info-Plus)
+
+;;;###autoload
+(defcustom Info-fontify-indented-text-manuals '(elisp)
+  "List of manuals for which to use fixed-pitch for indented text.
+This has no effect if `Info-fontify-indented-text-chars' is nil."
+  :type '(repeat (symbol :tag "Manual")) :group 'info
+  :set #'(lambda (sym defs)
+           (custom-set-default sym defs)
+           (mapatoms (lambda (x) (put x 'info-indented-text-regexp nil)))
+           (dolist (manual  (symbol-value sym))
+             (put manual 'info-indented-text-regexp 'info-indented-text-regexp))))
 
 
 (define-obsolete-variable-alias 'Info-fontify-single-quote-flag 'Info-fontify-isolated-quote-flag "2020-10-22")
