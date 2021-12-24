@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 11 09:54:24 2021 (-0800)
+;; Last-Updated: Fri Dec 24 10:36:16 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 7454
+;;     Update #: 7474
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -133,6 +133,7 @@
 ;;    `Info-fontify-custom-delimited', `Info-fontify-emphasis-flag',
 ;;    `Info-fontify-extra-function', `Info-fontify-glossary-words',
 ;;    `Info-fontify-indented-text-chars',
+;;    `Info-fontify-indented-text-manuals',
 ;;    `Info-fontify-isolated-quote-flag', `Info-fontify-quotations',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-glossary-fallbacks-alist', `Info-link-glossary-words',
@@ -162,11 +163,11 @@
 ;;    `Info-fontify-indented-text', `info-fontifying-regexp',
 ;;    `Info-fontify-quotations', `Info-fontify-reference-items',
 ;;    `Info-get-glossary-hash-table-create',
-;;    `Info-goto-glossary-definition', `Info-no-glossary-manuals',
+;;    `Info-goto-glossary-definition', `info-indented-text-regexp',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
 ;;    `Info-manual-string', `Info-manual-symbol',
-;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
-;;    `Info-refontify-current-node',
+;;    `Info-node-name-at-point', `Info-no-glossary-manuals',
+;;    `Info-read-bookmarked-node-name', `Info-refontify-current-node',
 ;;    `Info-remap-default-face-to-variable-pitch',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
 ;;    `Info-save-history-list' (Emacs 24.4+), `Info-search-beg',
@@ -179,7 +180,8 @@
 ;;    `info-custom-delimited-same-line-regexp',
 ;;    `info-fontify-emphasis', `Info-glossary-link-history',
 ;;    `info-glossary-link-map', `info-good-fixed-pitch-font-families',
-;;    `info-isolated-backquote-regexp', `info-isolated-quote-regexp',
+;;    `info-indented-text-regexp', `info-isolated-backquote-regexp',
+;;    `info-isolated-quote-regexp',
 ;;    `info-last-non-nil-fontify-extra-function',
 ;;    `info-last-non-nil-fontify-glossary-words', `Info-link-faces',
 ;;    `Info-merged-map', `Info-mode-syntax-table', `info-nomatch',
@@ -383,13 +385,6 @@
 ;;      `foobar, are highlighted if `Info-fontify-quotations' and
 ;;      `Info-fontify-isolated-quote-flag' are both non-`nil'.
 ;;
-;;    - Non-nil option `Info-fontify-indented-text-chars' means
-;;      fontify text that is indented at least that many characters
-;;      (default 10).  In the Elisp manual this often means blocks of
-;;      code and ASCII-art diagrams.  But in general there's no
-;;      telling what is indented at any given level, so caveat emptor.
-;;      Think of this as an experimental feature.
-;;
 ;;    - Emphasized text, that is, text enclosed in underscore
 ;;      characters, like _this is emphasized text_, is
 ;;      highlighted if `Info-fontify-emphasis-flag' is non-`nil'.
@@ -444,6 +439,23 @@
 ;;      or an `Info-toggle-fontify-*' command.  For example, command
 ;;      `Info-toggle-fontify-emphasis' toggles option
 ;;      `Info-fontify-emphasis-flag'.
+;;
+;;    - Minor mode `Info-variable-pitch-text-mode' uses a
+;;      variable-pitch font for Info text.  If you enable this then
+;;      you might also want to customize option
+;;      `Info-fontify-indented-text-chars', so indented text such as
+;;      code uses a fixed-pitch font (face `info-indented-text').
+;;
+;;    - Non-nil option `Info-fontify-indented-text-chars' means
+;;      fontify text that is indented at least that many characters
+;;      (default 10).  In the Elisp manual this often means blocks of
+;;      code and ASCII-art diagrams.  But in general there's no
+;;      telling what is indented at any given level, so caveat emptor.
+;;      Think of this as an experimental feature.
+;;
+;;    - Option `Info-fontify-indented-text-manuals' is a list of
+;;      manuals that should use `Info-fontify-indented-text-chars'.
+;;      By default this is just the Elisp manual: (elisp).
 ;;
 ;;    - You can define specific highlighting for individual manuals.
 ;;      To do this, you `put' the regexp you want for a given regexp
@@ -621,6 +633,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2021/12/24 dadams
+;;     Added: Info-fontify-indented-text-manuals, function and variable info-indented-text-regexp.
 ;; 2021/11/11 dadams
 ;;     Bind Info-url-for-node to W.
 ;; 2021/10/16 dadams
@@ -1802,6 +1816,17 @@ and }, and turning the option on."
   :group 'Info-Plus)
 
 ;;;###autoload
+(defcustom Info-fontify-indented-text-manuals '(elisp)
+  "List of manuals for which to use fixed-pitch for indented text.
+This has no effect if `Info-fontify-indented-text-chars' is nil."
+  :type '(repeat (symbol :tag "Manual")) :group 'info
+  :set #'(lambda (sym defs)
+           (custom-set-default sym defs)
+           (mapatoms (lambda (x) (put x 'info-indented-text-regexp nil)))
+           (dolist (manual  (symbol-value sym))
+             (put manual 'info-indented-text-regexp 'info-indented-text-regexp))))
+
+;;;###autoload
 (defcustom Info-fontify-emphasis-flag t
   "Non-nil means `info' fontifies text between underscores (`_').
 The text that is highlighted matches the value of option
@@ -2118,6 +2143,9 @@ You can use command `Info-define-custom-delimiting' (or command
 regexp.  They prompt you for the delimiters to use.
 
 \(You can of course also let-bind this in Lisp code.\)")
+
+(defvar info-indented-text-regexp info-nomatch
+  "Dummy value.  Function `info-indented-text-regexp' is used instead.")
 
 (defvar info-isolated-backquote-regexp "`\\(.\\|\n\\)"
   ;; Another possibility: "[^`]`"
@@ -6957,6 +6985,14 @@ If no current Info manual, then return nil."
   "Return the value of `info-custom-delimited-same-line-regexp'.
 Value for current manual, if non-nil, else global value."
   (info-fontifying-regexp 'info-custom-delimited-same-line-regexp))
+
+(defun info-indented-text-regexp ()
+  "Set and return value of variable `info-indented-text-regexp'.
+The value is for current manual.  It is based on option
+`Info-fontify-indented-text-chars', and it applies only to manuals in
+option `Info-fontify-indented-text-manuals'."
+  (setq info-indented-text-regexp  (format "^ \\{%d,\\}.*" (abs Info-fontify-indented-text-chars)))
+  (info-fontifying-regexp 'info-indented-text-regexp))
 
 (defun info-isolated-backquote-regexp ()
   "Return the value of `info-isolated-backquote-regexp'.
