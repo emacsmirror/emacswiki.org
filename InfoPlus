@@ -140,6 +140,22 @@ can be thrown off.
 For example, command `Info-toggle-fontify-emphasis' toggles
 option `Info-fontify-emphasis-flag'.
 
+** Minor mode '''`Info-variable-pitch-text-mode'''' uses a
+variable-pitch font for Info text.  If you enable this then
+you might also want to customize option
+`Info-fontify-indented-text-chars', so indented text such as
+code uses a fixed-pitch font (face `info-indented-text').
+
+** Non-nil option '''`Info-fontify-indented-text-chars'''' means fontify text that is indented at least that many characters (default 10).  In the Elisp manual this often means blocks of
+code and ASCII-art diagrams.  But in general there's no
+telling what is indented at any given level, so caveat emptor.
+Think of this as an ''experimental feature''.
+
+** Option '''`Info-fontify-indented-text-manuals'''' is a list of
+manuals that should use `Info-fontify-indented-text-chars'.
+By default this is just the Elisp manual: ##(elisp)##.
+
+
 ** You can define ''specific highlighting for individual manuals''. To do this, you `put' the [[regexp]] you want for a given regexp variable on the manual symbol.  For example, if ##MY-REGEXP## is a regexp string then this defines the regexp to use for a
 quotation as being ##MY-REGEXP##, but ''only for the Elisp manual'':
 ##(put 'elisp 'info-quotation-regexp MY-REGEXP)##.
