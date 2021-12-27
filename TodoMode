@@ -21,11 +21,17 @@ This has been posted by Logan Lee on the Usenet (http://groups.google.com/group/
 
  (1) To enter todo major mode, M-x todo-mode.
  (2) Let's jump to the default Todo category. Press 'j' then select 'Todo'.
- (3) Let's insert a dummy task. Press 'i' then enter description then category that it belongs to. In this case, there is only one category (ie. Todo) so enter 'Todo' as its category.
- (4) Let's insert another dummy task in order to demonstrate raising or lowering priority of a task or filing a task once it's done. Do this by pressing 'i' again and following the rest of step 3.
- (5) Now, try pressing 'r' to move the task at cursor up by one line or 'l' to lower it by one line. The line position of a task represents its respective priority.
- (6) Now, try pressing 'f' at a task to file it. Filing a task means you add it to a file called '.todo-done' located at your home directory. You will see on your screen that the filed task has disappeared from view.
- (7) Lastly, let's try adding a new category. 'M-x todo-add-category'. First, you will be directed to the source of '.todo-do' file. Don't panic because of unknown syntax shown to your screen. Proceed to step 8 to learn  more about the syntax of .todo-do file.
+ (3) Let's insert a dummy task. Press 'i' then enter description then category that it belongs to.
+     In this case, there is only one category (ie. Todo) so enter 'Todo' as its category.
+ (4) Let's insert another dummy task in order to demonstrate raising or lowering priority of a task or 
+     filing a task once it's done. Do this by pressing 'i' again and following the rest of step 3.
+ (5) Now, try pressing 'r' to move the task at cursor up by one line or 'l' to lower it by one line. 
+     The line position of a task represents its respective priority.
+ (6) Now, try pressing 'f' at a task to file it. Filing a task means you add it to a file called '.todo-done' 
+     located at your home directory. You will see on your screen that the filed task has disappeared from view.
+ (7) Lastly, let's try adding a new category. 'M-x todo-add-category'. First, you will be directed to the 
+     source of '.todo-do' file. Don't panic because of unknown syntax shown to your screen. Proceed to step 8 to 
+     learn  more about the syntax of .todo-do file.
  (8) The format of .todo-do file:
 
  ;; This specifies that "Todo" and "New Category That You Have Added" are
