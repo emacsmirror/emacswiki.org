@@ -4,13 +4,13 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2021, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:38:30 2018 (-0800)
+;; Last-Updated: Wed Dec 29 08:01:58 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 932
+;;     Update #: 937
 ;; URL: https://www.emacswiki.org/emacs/download/lacarte.el
 ;; Doc URL: https://www.emacswiki.org/emacs/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -19,7 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `subr-21'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -265,6 +265,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/12/29 dadams
+;;     lacarte-add-if-menu-item: Add ?\000 char only if in Icicle mode.
 ;; 2014/11/28 dadams
 ;;     lacarte-get-a-menu-item-alist-22+: Do not try to handle non-keymap as a keymap.
 ;; 2014/02/01 dadams
@@ -452,7 +454,10 @@ you can use `C-A' in the minibuffer to toggle case-sensitivity.
 If you use Icicles, then you can also sort the completion candidates
 in different ways, using `C-,'.  With Icicles, by default menu items
 are sorted before non-menu commands, and menu items are highlighted
-using face `icicle-special-candidate'."
+using face `icicle-special-candidate'.
+
+When called from Lisp, non-nil NO-COMMANDS-P means only menu items are
+available."
   (interactive "P")
   (run-hooks 'menu-bar-update-hook)
   (let ((lacarte-menu-items-alist         (lacarte-get-overall-menu-item-alist))
@@ -700,7 +705,8 @@ Ignore events that do not belong to menu-bar menus."
                                 ;; Add key description, if bound to a key.
                                 (let ((key  (and bndg  (where-is-internal bndg nil t))))
                                   ;; Hidden ?\000 char to prevent Icicles from highlighting shortcut too.
-                                  (and key  (concat (lacarte-propertize "?\000" 'invisible t)
+                                  (and key  (concat (and (fboundp 'icicle-mode)  icicle-mode
+                                                         (lacarte-propertize "?\000" 'invisible t))
                                                     (lacarte-propertize
                                                      (format " (%s)" (lacarte-key-description key))
                                                      'face 'lacarte-shortcut)))))
