@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 29 08:01:58 2021 (-0800)
+;; Last-Updated: Thu Dec 30 11:34:14 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 937
+;;     Update #: 945
 ;; URL: https://www.emacswiki.org/emacs/download/lacarte.el
 ;; Doc URL: https://www.emacswiki.org/emacs/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -75,7 +75,8 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `lacarte-convert-menu-item-function'.
+;;    `lacarte-convert-menu-item-function',
+;;    `lacarte-completion-styles' (Emacs 23+).
 ;;
 ;;  Faces defined here:
 ;;
@@ -149,6 +150,9 @@
 ;;  You can use a prefix arg with `lacarte-execute-menu-command' to
 ;;  have it offer only items from specific keymaps: the local (major
 ;;  mode) keymap, the global keymap, or the minor-mode keymaps.
+;;
+;;  Completion matching uses option `lacarte-completion-styles', not
+;;  standard option `completion-styles'.  (Emacs 23 and later only.)
 ;;
 ;;  By default, in Icicle mode, `ESC M-x' is bound to
 ;;  `lacarte-execute-command', and `M-`' is bound to
@@ -265,6 +269,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2021/12/30 dadams
+;;     Added lacarte-completion-styles.
+;;     lacarte-execute(-menu)-command: Respect lacarte-completion-styles.
 ;; 2021/12/29 dadams
 ;;     lacarte-add-if-menu-item: Add ?\000 char only if in Icicle mode.
 ;; 2014/11/28 dadams
@@ -421,6 +428,16 @@ remove the `&' characters used in MS Windows menus to define keyboard
 accelerators.  See `lacarte-remove-w32-keybd-accelerators'."
   :type '(choice (const :tag "None" nil) function) :group 'lacarte)
 
+(when (boundp 'completion-styles)       ; Emacs 23+
+  (defcustom lacarte-completion-styles `(,@(and (assq 'substring completion-styles-alist) ; Emacs 24+
+                                                '(substring))
+                                         ,@(and (assq 'flex completion-styles-alist)
+                                                '(flex)) ; Emacs 27+
+                                         initials basic partial-completion emacs22)
+    "Value of `completion-styles' used during La Carte commands."
+    :type '(repeat symbol)
+    :group 'lacarte))
+
 ;;;###autoload
 (defface lacarte-shortcut               ; Same grays as for `shadow'.
     '((((background dark)) (:foreground "gray70"))
@@ -461,6 +478,7 @@ available."
   (interactive "P")
   (run-hooks 'menu-bar-update-hook)
   (let ((lacarte-menu-items-alist         (lacarte-get-overall-menu-item-alist))
+        (completion-styles                lacarte-completion-styles)
         (completion-ignore-case           t) ; Not case-sensitive, by default.
         ;; ?\000 prevents the key shortcut from being highlighted with face `icicle-special-candidate'.
         (icicle-special-candidate-regexp  (and (not no-commands-p)  ".* > [^?\000]*"))
@@ -550,6 +568,7 @@ in different ways, using `C-,'."
          ((< (prefix-numeric-value current-prefix-arg) 0) '((minor)))))
   (run-hooks 'menu-bar-update-hook)
   (let* ((lacarte-menu-items-alist  (lacarte-get-overall-menu-item-alist maps))
+         (completion-styles         lacarte-completion-styles)
          (completion-ignore-case    t)  ; Not case-sensitive, by default.
          (menu-item                 (completing-read "Menu command: " lacarte-menu-items-alist
                                                      nil t nil 'lacarte-history))
