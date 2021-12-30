@@ -59,6 +59,8 @@ I am using that command, bind to `##<f5>##` too. It also check if the buffer has
 
 == Revert all buffers that are visiting a file ==
 
+Note that there is a [[https://melpa.org/#/revert-buffer-all|revert-buffer-all]], which handles corner cases and shows progress which is useful when many buffers are open.
+
 This is a little function that is useful when editing several files that might for any reason change on disk (update from VersionControl).  It reverts all buffers that are visiting a file.
 
   (defun revert-all-buffers ()
