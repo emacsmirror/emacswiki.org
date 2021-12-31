@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 30 11:34:14 2021 (-0800)
+;; Last-Updated: Thu Dec 30 11:46:35 2021 (-0800)
 ;;           By: dradams
-;;     Update #: 945
+;;     Update #: 948
 ;; URL: https://www.emacswiki.org/emacs/download/lacarte.el
 ;; Doc URL: https://www.emacswiki.org/emacs/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -398,6 +398,12 @@
 ;;; Code:
 
 (unless (fboundp 'replace-regexp-in-string) (require 'subr-21 nil t))
+
+;; Quiet the byte-compiler (e.g. for older Emacs versions).
+(defvar lacarte-completion-styles)
+(defvar icicle-mode)
+(defvar icicle-sort-comparer)
+(defvar icicle-sort-orders-alist)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -832,11 +838,12 @@ Returns `lacarte-menu-items-alist', which it modifies."
         (when (consp scan) (setq scan  (cdr scan)))))
     lacarte-menu-items-alist))
 
-(defun lacarte-remove-w32-keybd-accelerators (menu-item)
-  "Remove `&' characters that define keyboard accelerators in MS Windows.
+(when (fboundp 'replace-regexp-in-string) ; Emacs 22+
+  (defun lacarte-remove-w32-keybd-accelerators (menu-item)
+    "Remove `&' characters that define keyboard accelerators in MS Windows.
 \"&&\" is an escaped `&' - it is replaced by a single `&'.
 This is a candidate value for `lacarte-convert-menu-item-function'."
-  (replace-regexp-in-string "&&?" 'lacarte-escape-w32-accel menu-item))
+    (replace-regexp-in-string "&&?" 'lacarte-escape-w32-accel menu-item)))
 
 (defun lacarte-escape-w32-accel (match-string)
   "If STRING is \"&&\", then return \"&\".  Else return \"\"."
