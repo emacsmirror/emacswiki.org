@@ -23,5 +23,8 @@ Version 1.1 now supports emacs 23.
 [new]
 Version 1.6 now supports Confluence 4.0+.
 
+[new:mrkrd:2022-01-01 11:36 UTC]
+[https://github.com/mrkrd/tributary/ tributary.el] has similar functionality and uses REST API.
+
 ----
 CategoryHypermedia
