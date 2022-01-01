@@ -41,6 +41,7 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 ** [[Yaoddmuse]] -- Edit or Post OddMuse Wiki pages *asynchronously*, including the EmacsWiki. 
 ** PlannerMode (a PIM) -- extending EmacsMuse with day pages, diary, appointments, todo, etc.
 ** ConfluenceMode -- A mode for editing pages in a Confluence Wiki.
+** [https://github.com/mrkrd/tributary/ tributary.el] -- Another mode for editing Confluence Wiki.
 ** WikiRel -- Find an EmacsWiki page based on the current mode in Emacs
 ** [[trac_editor]] -- a simple editor for Trac's Wiki
 * Wikipedia/Mediawiki
