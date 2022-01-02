@@ -1,0 +1,64 @@
+当你想要修改一个现有包（package）的行为的时候，你会使用 Hooks 还是使用 [[Advice-zh|Advice]] 呢？
+
+使用 Hooks 一般是个更好的选择，因为他带来的修改更小（they break less）。如果包作者提供了 hook，那么说明作者<i>明确知道</i>此处可能运行用户代码的。
+相对而言，advice 可能会带来不可预料的副作用（unexpected side effects），因而只有当没有恰当的 hook 可以使用时，才去考虑使用 advice。
+
+问题的关键时 advice 不易察觉地（subtly）修改了目标命令（the commands to be adviced）的语义，并且这些修改对于这些命令的代码时不可见的。
+因而，虽然使用 advice 也可以解决问题，但是最好直接去修改那些命令。
+当然，这并不代表 `advice.el` 是不好的，但是它应该只在无法直接修改命令的情况下被使用。
+例如，当你想要让你的包在此前的版本（older releases）中也可以正常运行时。
+
+被 advice 修改过的函数很难使用 ''debugger'' 进行调试。
+
+在使用 advice 修改 Emacs Lisp 自带的函数（primitives）时，有一些额外事项需要注意，原因在 EmacsLispReference 中有具体介绍。
+
+== 其他人的看法 ==
+
+下面是 StefanMonnier 在 mailing list ##help-gnu-emacs@gnu.org## 中对 advice 的强烈建议:
+
+{{{
+`advice' is a sledghammer: it's the last resort before
+modifying the source code.
+
+Advising is a source of major headaches because of unexpected
+interactions with other pieces of code...
+Advice have to be written *extremely* carefully.
+I.e. if you can do it without `advice', then don't use `advice'.
+}}}
+
+下面是 RichardStallman 在 2005-03-03 对于 Emacs 开发者（并非用户）使用 advice 修改 Emacs primitives 的看法：
+
+{{{
+Please do not think of making any part of Emacs advise primitives.
+That technique should never be used, because it causes confusion.  All
+code in Emacs that advises other parts of Emacs was installed without
+my knowledge.  It is a bug that ought to be fixed.
+}}}
+
+下面是 RichardStallman 在 2005-08-03 发表的意见:
+
+{{{
+No!  Emacs code should not use defadvice.
+
+When you're trying to make improvements in Emacs or fix problems in
+Emacs, please do NOT think of defadvice as the way to do it.
+}}}
+
+下面是 2007-06-02 KevinRodgers 和 EliZaretski 在 ##help-gnu-emacs@gnu.org## 上的对话:
+
+{{{
+Kevin> I think RMS' position is that defadvice should not be
+Kevin> used within Emacs itself.  But the inclusion of defadvice.el
+Kevin> in Emacs is tacit acknowledgement of its usefulness
+
+Eli> You are right on both accounts.  And I see no contradiction
+Eli> between those two, because RMS never said that defadvice is
+Eli> not useful.  His position on not using it within Emacs itself
+Eli> is because doing that obscures how things work, which is bad
+Eli> from the maintainability point of view.  FWIW, I agree with that.
+}}}
+
+上面这些应该足够了 ：）
+
+----
+CategoryCode
