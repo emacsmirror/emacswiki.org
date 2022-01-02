@@ -1,4 +1,4 @@
-advice 允许你在配置文件中对现有函数进行修改。在使用 advice 之前，请先查看是否可以使用 hooks 或者 options 来达到相同的效果。如果不行的话，再使用 advice 机制。更多的区别请查看 [[AdviceVsHooks|advice vs. hooks]] 页面。
+advice 允许你在配置文件中对现有函数进行修改。在使用 advice 之前，请先查看是否可以使用 hooks 或者 options 来达到相同的效果。如果不行的话，再使用 advice 机制。更多的区别请查看 [[AdviceVsHooks-zh|advice vs. hooks]] 页面。
 
 下面是一个例子：
 
