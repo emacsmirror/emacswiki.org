@@ -1,3 +1,4 @@
+[[zh:Advice_zh]]
 Advice is how you modify existing functions in your configuration.
 Using advice should be you last resort.
 Please check whether there are any hooks or options to achieve what you want to do before using advice.
