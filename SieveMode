@@ -1,4 +1,4 @@
-sieve-mode.el ist a mode für the mail filtering language Sieve. See http://www.cyrusoft.com/sieve/ for more informations.
+sieve-mode.el is a mode for the mail filtering language Sieve. See http://www.cyrusoft.com/sieve/ for more information.
 
 * Homepage: http://josefsson.org/sieve/
 * Tutorial: http://josefsson.org/sieve/tutorial.html
