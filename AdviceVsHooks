@@ -1,3 +1,4 @@
+[[zh:AdviceVsHooks-zh]]
 When having the choice to use a Hook or [[Advice]] to manipulate a
 certain package, what should you do?
 
