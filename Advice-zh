@@ -1,0 +1,52 @@
+advice 允许你在配置文件中对现有函数进行修改。在使用 advice 之前，请先查看是否可以使用 hooks 或者 options 来达到相同的效果。如果不行的话，再使用 advice 机制。更多的区别请查看 [[AdviceVsHooks|advice vs. hooks]] 页面。
+
+下面是一个例子：
+
+{{{
+(advice-add 'rcirc-handler-NICK :before #'rcirc-color--handler-NICK)
+(defun rcirc-color--handler-NICK (_process sender args _text)
+  "Update colors in `rcirc-color-mapping'."
+  (let* ((old-nick (rcirc-user-nick sender))
+         (cell (gethash old-nick rcirc-color-mapping))
+         (new-nick (car args)))
+    ;; don't delete the old mapping
+    (when cell
+      (puthash new-nick cell rcirc-color-mapping))))
+}}}
+
+在上面的代码中，我们想在一个现有函数 ##rcirc-handler-NICK## 上增加对颜色的控制代码。
+请注意，在代码中，我们将不需要使用到的参数名前增加了一个下划线。
+
+可以通过下列的标记控制 advice 所增加的函数的调用位置：
+
+##:before## 表示在原有函数之前被调用（上面的例子中正是这种情况）。
+
+##:after## 在原有函数之后被调用。
+
+##:override## 直接替代掉原有函数。
+
+##:around## 比较特殊：新的函数会替代掉原有函数，同时，原有函数会被作为一个参数传递到新的函数中，因而新的函数可以手动调用原有函数。
+
+更多信息请参见 [[Manual:Advice combinators]] 页面。
+
+-----
+=== 使用 nadvice advice-add 的另一个例子 ===
+
+这个一个使用 ##advice-add## 该表一个函数行为的一个很小的例子。代码中，修改 ##display-buffer## 函数的行为，让它首先删除除了活动窗口（active window）之外的所有 window，因此调用后能保证只有两个 window 被显示。
+
+{{{
+(advice-add 
+   'display-buffer    ; function to be advised
+   :before            ; advice runs first
+   (lambda (&rest r) (delete-other-windows)) ; advising function, this must have the same argument list as the main function, in this case all absorbed into a list "r"
+   '((name . "test"))) ; convenient name for identifying or removing this advice later
+}}}
+
+下面的代码可以删除上面的 advice。
+{{{
+(advice-remove 'display-buffer "test")
+}}}
+
+
+----
+CategoryCode
