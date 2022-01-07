@@ -4,12 +4,10 @@ Circe is yet another '''C'''lient for '''IRC''' in '''E'''macs
 
 Its homepage is at https://github.com/emacs-circe/circe.
 
-[new]
-I love the lui interface stuff. This is just what I was looking for for a long time now.
-
-I will use it for my current project instead on reinventing the wheel again.
 
 =Installation=
+
+See also: https://github.com/emacs-circe/circe/wiki#installation
 
 ==On Gentoo GNU/Linux==
 
@@ -26,7 +24,7 @@ This ebuild installs a site file, too, so you don't have anything to do and circ
 First copy the sources to some directory:
 <pre>
 cd ~/some/dir/
-git clone git://github.com/jorgenschaefer/circe.git circe
+git clone git://github.com/emacs-circe/circe.git circe
 </pre>
 
 Then add this directory to your emacs load-path and autoload circe by putting this into your ~/.emacs:
@@ -43,7 +41,8 @@ git pull
 
 = Configuration =
 
-For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [https://github.com/jorgenschaefer/circe homepage].
+For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [https://github.com/emacs-circe/circe homepage]. Especially the wiki page about the configuration has many examples: https://github.com/emacs-circe/circe/wiki/Configuration
+
 ----
 CategoryChatClient
 InternetRelayChat
