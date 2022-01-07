@@ -42,7 +42,7 @@ Open (toggle) NeoTree:
 * <code>C-c C-c</code> Change the root directory.
 * <code>C-c C-p</code> Copy a file or a directory.
 
-=== Commands（Global） ===
+=== Commands ===
 
 * <code>neotree-dir</code> show NeoTree window and specify a directory as its root
 * <code>neotree-show</code> or <code>neotree</code> show NeoTree window using current directory as its root
@@ -50,7 +50,7 @@ Open (toggle) NeoTree:
 * <code>neotree-toggle</code> toggle/hide NeoTree window
 * <code>neotree-find</code>  show NeoTree window and use the directory of current buffer as its root
 
-=== Command（Only in NeoTree Buffer） ===
+=== Commands available in the NeoTree window ===
 
 * <code>neotree-enter</code> Open File / Unfold Directory
 * <code>neotree-refresh</code> Refresh
