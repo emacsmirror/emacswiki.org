@@ -118,5 +118,9 @@ return
 [new:JonasOster:2006-09-29 14:55 UTC]
 I remap Caps Lock to Super. This enables me to create very comfortable and intuitive key bindings without interfering with the standard Emacs bindings. See example on my wiki home page (JonasOster).
 
+==Related==
+
+There is a caps lock minor mode.  See https://elpa.gnu.org/packages/caps-lock.html.
+
 ----
 CategoryKeys MovingTheCtrlKey RepeatedStressInjury
