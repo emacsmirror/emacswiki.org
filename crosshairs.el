@@ -4,13 +4,13 @@
 ;; Description: Highlight the current line and column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Tue Jun 22 06:33:44 2021 (-0700)
+;; Last-Updated: Wed Jan 12 12:47:40 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 517
+;;     Update #: 519
 ;; URL: https://www.emacswiki.org/emacs/download/crosshairs.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -98,6 +98,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/12 dadams
+;;     Explicitly require hl-line.el and vline.el.
 ;; 2017/06/26 dadams
 ;;     crosshairs-flash:
 ;;       Use hl-line-unhighlight-now, not global-hl-line-unhighlight, for
@@ -175,7 +177,9 @@
 ;;
 ;;; Code:
 
+(require 'hl-line) ;; Needed by `hl-line+.el'.
 (require 'hl-line+) ;; Requires `hl-line.el'.
+(require 'vline) ;; Needed by `col-highlight.el'.
 (require 'col-highlight) ;; Requires `vline.el'.
 
 (defvar global-hl-line-overlays)        ; In `hl-line.el' (Emacs 24.4+)
