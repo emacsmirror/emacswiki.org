@@ -389,5 +389,11 @@ Perhaps you want that [https://www.emacswiki.org/emacs?action=browse;id=CSS;css=
 [new]
 There was actually such a link in the side bar, a very long time ago. I no longer remember why it got removed. Probably somebody said it didn't serve any purpose. -- Alex
 
+-- Greg
+
+Please update this page https://www.emacswiki.org/emacs/MsWindowsGlobalContextMenu to correct the section referencing C:\Documents and Settings\yourName\SendTo
+
+This is now located at C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\SendTo
+
 ----
 CategoryEmacsWikiSite
