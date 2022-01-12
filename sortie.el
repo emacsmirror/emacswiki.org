@@ -4,13 +4,13 @@
 ;; Description: Sorting of completion candidates.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2020-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2020-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun  3 13:54:04 2020 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 23 14:22:26 2021 (-0700)
+;; Last-Updated: Wed Jan 12 14:43:51 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 208
+;;     Update #: 217
 ;; URL: https://www.emacswiki.org/emacs/download/sortie.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Sortie
 ;; Keywords: completion sorting cycling
@@ -68,7 +68,7 @@
 ;; (defun my-completion-with-sort-cycling ()
 ;;   "Read and echo choice using completion with sort-order cycling."
 ;;   (interactive)
-;;   (minibuffer-with-setup-hook #'sorti-minibuffer-setup
+;;   (minibuffer-with-setup-hook #'sorti-bind-cycle-key
 ;;     (let ((sorti-current-order          'order1)
 ;;           (sorti-sort-function-chooser  'my-sort-fn-chooser)
 ;;           (sorti-sort-orders-alist      '((order1 . "alphabetical")
@@ -141,6 +141,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/12 dadams
+;;     sorti-bind-cycle-key: Added optional arg MAP.
+;;     sorti-bind-cycle-key-and-complete: Pass minibuffer-local-completion-map to sorti-bind-cycle-key.
+;;     sorti-cycle-sort-order: Handle nil sorti-sort-function-chooser.
 ;; 2021/03/23 dadams
 ;;     Added autoload cookie.
 ;; 2020/06/04 dadams
@@ -213,13 +217,15 @@ DESCRIPTION is echoed when you switch to sort-order NAME.")
   "Ring of sort orders for cycling with `sorti-cycle-key'.
 Use functions such as `ring-insert' to define the ring.")
 
-(defun sorti-bind-cycle-key ()
-  "Bind `sorti-cycle-key' to command `sorti-cycle-sort-order'."
-  (define-key minibuffer-local-map sorti-cycle-key #'sorti-cycle-sort-order))
+(defun sorti-bind-cycle-key (&optional map)
+  "Bind `sorti-cycle-key' to command `sorti-cycle-sort-order' in KEYMAP.
+MAP defaults to `minibuffer-local-map'."
+  (define-key (or map  minibuffer-local-map) sorti-cycle-key #'sorti-cycle-sort-order))
 
 (defun sorti-bind-cycle-key-and-complete ()
-  "Bind `sorti-cycle-key', then complete the minibuffer contents."
-  (sorti-bind-cycle-key)
+  "Bind `sorti-cycle-key', then complete the minibuffer contents.
+The key is bound in `minibuffer-local-completion-map'."
+  (sorti-bind-cycle-key minibuffer-local-completion-map)
   (minibuffer-complete))
 
 ;;;###autoload
@@ -228,7 +234,9 @@ Use functions such as `ring-insert' to define the ring.")
 With a prefix arg, just reverse the current sort order (don't cycle).
 \(A prefix key has no effect if sorting is currently turned off.)"
   (interactive "P\np")
-  (let ((sort-fn  (funcall sorti-sort-function-chooser)))
+  (let ((sort-fn  (if sorti-sort-function-chooser
+                      (funcall sorti-sort-function-chooser)
+                    sorti-current-order)))
     (cond ((and reversep  sort-fn)
            (if (advice-member-p 'sorti-reverse-order sort-fn)
                (advice-remove sort-fn 'sorti-reverse-order)
@@ -237,14 +245,15 @@ With a prefix arg, just reverse the current sort order (don't cycle).
            (setq sorti-current-order  (ring-next sorti-sort-orders-ring sorti-current-order)))))
   (setq last-command  'ignore)
   (minibuffer-complete)
-  (when msgp (message "Sorting is now %s%s"
-                      (if sorti-current-order
-                          (format "%s" (propertize (cdr (assq sorti-current-order sorti-sort-orders-alist))
-                                                   'face 'sorti-msg-emphasis))
-                        (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
-                      (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
-                          " REVERSED"
-                        ""))))
+  (when msgp
+    (message "Sorting is now %s%s"
+             (if sorti-current-order
+                 (format "%s" (propertize (cdr (assq sorti-current-order sorti-sort-orders-alist))
+                                          'face 'sorti-msg-emphasis))
+               (format "turned %s" (propertize "OFF" 'face 'sorti-msg-emphasis)))
+             (if (advice-member-p 'sorti-reverse-order (funcall sorti-sort-function-chooser))
+                 " REVERSED"
+               ""))))
 
 (defun sorti-reverse-order (old-fn candidates)
   "Reverse the result of calling OLD-FN with single argument CANDIDATES."
