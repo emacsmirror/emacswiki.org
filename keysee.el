@@ -8,9 +8,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Wed Jan 12 07:13:39 2022 (-0800)
+;; Last-Updated: Wed Jan 12 08:02:15 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 443
+;;     Update #: 444
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -132,8 +132,6 @@
 ;;  Suggested key binding:
 ;;
 ;;    (global-set-key (kbd "S-<f10>") 'kc-complete-menu-bar)
-;;    ;; Or if, as with MS Windows, that key is unavailable, perhaps
-;;    (global-set-key (kbd "S-<f11>") 'kc-complete-menu-bar)
 ;;
 ;;
 ;;  Commands defined here:
