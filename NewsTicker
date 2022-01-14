@@ -13,6 +13,13 @@ in a web browser.
 
 Recent versions of newsticker.el ( >= 1.99) offer a "treeview," in which feeds can be gathered into arbitrary groups for more efficient reading. The treeview tiles three windows -- one showing the feed hierarchy, another showing the list of articles in the selected feed, and a third showing the text of the selected article. Here is a [http://www.nongnu.org/newsticker/newsticker-1.99.png|screenshot] of the new treeview.
 
+For those who prefer a simple elegant interface without treeview
+window that showing all the articles in single buffer (similar to
+what ##org-feed.el## provides), add the following in your configuration file
+to bring back the old "plainview" frontend:
+
+    (setq newsticker-frontend 'newsticker-plainview)
+
 == Links ==
 There is a newsticker.el project on Savannah: Visit http://www.nongnu.org/newsticker/ for downloading the latest stable newsticker version. Note that development is taking place in Emacs CVS repository, the repository at savannah is not up to date.
 
