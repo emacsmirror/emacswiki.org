@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Sep 19 14:36:58 2021 (-0700)
+;; Last-Updated: Fri Jan 14 12:40:58 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 4170
+;;     Update #: 4177
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -25,9 +25,10 @@
 ;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
 ;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `naked', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
+;;   `thingatpt+', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4901,6 +4902,9 @@ The current bookmark list is then updated to reflect your edits."
 ;;;###autoload (autoload 'bmkp-bmenu-edit-marked "bookmark+")
 (defun bmkp-bmenu-edit-marked (&optional allp include-omitted-p) ; Bound to `E' in bookmark list
   "Edit the full records (the Lisp sexps) of the marked bookmarks.
+If no bookmarks are marked then mark the bookmark on the current line,
+and edit its record.
+
 When you finish editing, use `\\[bmkp-edit-bookmark-records-send]'.
 The current bookmark list is then updated to reflect your edits.
 
@@ -4929,18 +4933,18 @@ arg, any that are marked are included."
     (unless copied-bmks (error "No marked bookmarks"))
     (setq bmkp-edit-bookmark-records-number  (length copied-bmks))
     (bmkp-with-output-to-plain-temp-buffer bufname
-      (princ
-       (substitute-command-keys
-        (concat ";; Edit the Lisp records for the marked bookmarks.\n;;\n"
-                ";; DO NOT CHANGE THE ORDER of the bookmarks in this buffer.\n"
-                ";; DO NOT DELETE any of them.\n;;\n"
-                ";; Type \\<bmkp-edit-bookmark-records-mode-map>\
+     (princ (substitute-command-keys
+             (concat ";; Edit the Lisp records for the marked bookmarks.\n;;\n"
+                     ";; DO NOT CHANGE THE ORDER of the bookmarks in this buffer.\n"
+                     ";; DO NOT DELETE any of them.\n;;\n"
+                     ";; Type \\<bmkp-edit-bookmark-records-mode-map>\
 `\\[bmkp-edit-bookmark-records-send]' when done.\n;;\n")))
-      ;; $$$$$$ (let ((print-circle  t)) (pp copied-bmks)) ; $$$$$$ Should not really be needed now.
-      (pp copied-bmks)
-      (with-current-buffer bufname (goto-char (point-min))))
+     ;; $$$$$$ (let ((print-circle  t)) (pp copied-bmks)) ; $$$$$$ Should not really be needed now.
+     (pp copied-bmks)
+     (with-current-buffer bufname
+       (goto-char (point-min))
+       (buffer-enable-undo)))
     (pop-to-buffer bufname)
-    (buffer-enable-undo)
     (with-current-buffer (get-buffer bufname) (bmkp-edit-bookmark-records-mode))))
 
 (defun bmkp-bmenu-propertize-item (bookmark start end)
