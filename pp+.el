@@ -4,13 +4,13 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 29 14:53:55 2018 (-0700)
+;; Last-Updated: Fri Jan 14 10:01:59 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 448
+;;     Update #: 453
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
@@ -588,7 +588,7 @@ Else show it in buffer OUT-BUFFER-NAME."
                                              (<= (car sexp-size) (car pp-max-tooltip-size))
                                              (<= (cdr sexp-size) (cdr pp-max-tooltip-size))))))
     (if (and use-tooltip  (save-excursion (posn-at-point))) ; Ensure that point is on-screen now.
-        (progn (pp-show-tooltip expression) (message nil))
+        (progn (pp-show-tooltip expression)  (message nil))
       (let* ((old-show-function  temp-buffer-show-function)
              (temp-buffer-show-function
               `(lambda (buf)
@@ -603,12 +603,9 @@ Else show it in buffer OUT-BUFFER-NAME."
                         (goto-char (point-min)) ; Expected by some hooks ...
                         (make-frame-visible (window-frame window))
                         (unwind-protect
-                             (progn (select-window window)
-                                    (run-hooks 'temp-buffer-show-hook))
-                          (when (window-live-p old-selected)
-                            (select-window old-selected))
-                          (message "Evaluating...done.  See buffer `%s'."
-                                   out-buffer-name)))
+                             (progn (select-window window)  (run-hooks 'temp-buffer-show-hook))
+                          (when (window-live-p old-selected) (select-window old-selected))
+                          (message "Evaluating...done.  See buffer `%s'." out-buffer-name)))
                     (message "%s" (buffer-substring (point-min) (point))))))))
         (with-output-to-temp-buffer out-buffer-name
           (pp expression)
