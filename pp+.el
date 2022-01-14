@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 14 12:04:01 2022 (-0800)
+;; Last-Updated: Fri Jan 14 12:11:41 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 456
+;;     Update #: 458
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
@@ -139,8 +139,7 @@
 ;;; Change Log:
 ;;
 ;; 2022/01/14 dadams
-;;     pp-display-expression: Use ', for out-buffer-name in constructed lambda.
-;;                            Set buffer-undo-list to nil, to get undo in the buffer.
+;;     pp-display-expression: Use ', for out-buffer-name in constructed lambda.  Enable undo in output.
 ;; 2018/06/29 dadams
 ;;     pp-eval-expression: Ensure not just (boundp 'lexical-binding) but also Emacs 24+.
 ;; 2017/10/23 dadams
@@ -615,8 +614,8 @@ Else show it in buffer OUT-BUFFER-NAME."
         (with-output-to-temp-buffer out-buffer-name
           (pp expression)
           (with-current-buffer standard-output
-            (setq buffer-read-only  nil
-                  buffer-undo-list  ())
+            (setq buffer-read-only  nil)
+            (buffer-enable-undo)
             ;; Avoid `let'-binding because `change-major-mode-hook' is local.  IOW, avoid runtime
             ;; message: "Making change-major-mode-hook buffer-local while locally let-bound!"
             ;; Suggestion from Stefan M.: Set these hooks instead of binding, because they are not
