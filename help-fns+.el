@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 14 09:10:00 2022 (-0800)
+;; Last-Updated: Fri Jan 14 09:18:48 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 2560
+;;     Update #: 2564
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -3066,28 +3066,23 @@ Non-interactively:
     (defun describe-package (package)
       "Display the full documentation of PACKAGE (a symbol)."
       (interactive
-       (let* ((guess (function-called-at-point)))
+       (let* ((guess  (function-called-at-point)))
          (require 'finder-inf nil t)
          ;; Load the package list if necessary (but don't activate them).
-         (unless package--initialized
-           (package-initialize t))
-         (let ((packages (append (mapcar 'car package-alist)
-                                 (mapcar 'car package-archive-contents)
-                                 (mapcar 'car package--builtins))))
-           (unless (memq guess packages)
-             (setq guess nil))
-           (setq packages (mapcar 'symbol-name packages))
-           (let ((val
-                  (completing-read (if guess
-                                       (format "Describe package (default %s): "
-                                               guess)
-                                     "Describe package: ")
-                                   packages nil t nil nil guess)))
+         (unless package--initialized (package-initialize t))
+         (let ((packages  (append (mapcar 'car package-alist)
+                                  (mapcar 'car package-archive-contents)
+                                  (mapcar 'car package--builtins))))
+           (unless (memq guess packages) (setq guess  nil))
+           (setq packages  (mapcar 'symbol-name packages))
+           (let ((val  (completing-read (if guess
+                                            (format "Describe package (default %s): " guess)
+                                          "Describe package: ")
+                                        packages nil t nil nil guess)))
              (list (intern val))))))
-      (if (not (or (package-desc-p package) (and package (symbolp package))))
+      (if (not (or (package-desc-p package)  (and package  (symbolp package))))
           (message "No package specified")
-        (help-setup-xref (list #'describe-package package)
-                         (called-interactively-p 'interactive))
+        (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
         (with-help-window (help-buffer)
           (with-current-buffer standard-output
             (describe-package-1 package)
@@ -3120,7 +3115,7 @@ Non-interactively:
                                         packages nil t nil nil guess)))
              (list (if (equal val "") guess (intern val)))))))
       (if (not (or (and (fboundp 'package-desc-p)  (package-desc-p package))
-                   (and package (symbolp package))))
+                   (and package  (symbolp package))))
           (when (called-interactively-p 'interactive) (message "No package specified"))
         (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
         (with-help-window (help-buffer)
