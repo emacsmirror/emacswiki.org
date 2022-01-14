@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 18 09:59:06 2021 (-0700)
+;; Last-Updated: Fri Jan 14 09:10:00 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 2556
+;;     Update #: 2560
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/14 dadams
+;;     Soft-require package.el, so describe-package gets redefined.
 ;; 2021/08/18 dadams
 ;;     describe-variable: Say var is lexically scoped, if that's the case.
 ;; 2021/06/26 dadams
@@ -440,6 +442,8 @@
 
 (when (or (> emacs-major-version 23)  (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
   (require 'info)) ;; Info-virtual-files
+
+(require 'package nil t) ;; describe-package
 
 (eval-when-compile (require 'cl)) ;; case
 
