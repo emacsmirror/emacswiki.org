@@ -4,13 +4,13 @@
 ;; Description: Bookmark+: extensions to standard library `bookmark.el'.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
 ;; Version: 2021.09.19
-;; Last-Updated: Sun Sep 19 14:43:17 2021 (-0700)
+;; Last-Updated: Fri Jan 14 12:52:46 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15071
+;;     Update #: 15072
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -26,9 +26,10 @@
 ;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
 ;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `naked', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
+;;   `thingatpt+', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
