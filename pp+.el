@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 14 10:01:59 2022 (-0800)
+;; Last-Updated: Fri Jan 14 12:04:01 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 453
+;;     Update #: 456
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
@@ -49,6 +49,7 @@
 ;;   * The buffer displaying the pretty-printed result is in
 ;;     `emacs-lisp-mode' (and is fontified accordingly), but without
 ;;     having run `emacs-lisp-mode-hook' or `change-major-mode-hook'.
+;;     The buffer has undo: you can make changes there and undo them.
 ;;
 ;;   * Command `pp-eval-expression' is enhanced in these ways:
 ;;
@@ -137,6 +138,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/14 dadams
+;;     pp-display-expression: Use ', for out-buffer-name in constructed lambda.
+;;                            Set buffer-undo-list to nil, to get undo in the buffer.
 ;; 2018/06/29 dadams
 ;;     pp-eval-expression: Ensure not just (boundp 'lexical-binding) but also Emacs 24+.
 ;; 2017/10/23 dadams
@@ -569,9 +573,10 @@ This command respects user options `pp-eval-expression-print-length',
 
 ;; REPLACES ORIGINAL in `pp.el':
 ;;
-;; 1. Respects `pp-max-tooltip-size'.
+;; 1. Respect `pp-max-tooltip-size'.
 ;; 2. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
 ;; 3. Call `font-lock-fontify-buffer'.
+;; 4. Provide undo to buffer OUT-BUFFER-NAME.
 ;;
 ;;;###autoload
 (defun pp-display-expression (expression out-buffer-name)
@@ -605,12 +610,13 @@ Else show it in buffer OUT-BUFFER-NAME."
                         (unwind-protect
                              (progn (select-window window)  (run-hooks 'temp-buffer-show-hook))
                           (when (window-live-p old-selected) (select-window old-selected))
-                          (message "Evaluating...done.  See buffer `%s'." out-buffer-name)))
+                          (message "Evaluating...done.  See buffer `%s'." ',out-buffer-name)))
                     (message "%s" (buffer-substring (point-min) (point))))))))
         (with-output-to-temp-buffer out-buffer-name
           (pp expression)
           (with-current-buffer standard-output
-            (setq buffer-read-only  nil)
+            (setq buffer-read-only  nil
+                  buffer-undo-list  ())
             ;; Avoid `let'-binding because `change-major-mode-hook' is local.  IOW, avoid runtime
             ;; message: "Making change-major-mode-hook buffer-local while locally let-bound!"
             ;; Suggestion from Stefan M.: Set these hooks instead of binding, because they are not
