@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Sep 19 14:49:24 2021 (-0700)
+;; Last-Updated: Fri Jan 14 12:54:17 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 16850
+;;     Update #: 16855
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1516,6 +1516,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2022/01/14 dadams
+;;     bmkp-bmenu-edit-marked: Enable undo inside with-current-buffer (not significant).
 ;; 2021/09/19 dadams
 ;;     Moved defgroup from here to bookmark+.el, for new defcustom bmkp-bmenu-buffer.
 ;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
