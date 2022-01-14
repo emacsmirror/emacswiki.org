@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug 18 15:34:51 2021 (-0700)
+;; Last-Updated: Fri Jan 14 12:46:47 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15383
+;;     Update #: 15385
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2667,7 +2667,7 @@
 ;;  constitute an unnamed set.  Likewise, the marked bookmarks and the
 ;;  unmarked bookmarks are unnamed sets.  Bookmark+ is all about
 ;;  helping you act on sets of Emacs objects.  Bookmarks are named,
-;;  persistent pointers to objects such as files and file sets.
+;;  persistent pointers to objects such as files and filesets.
 ;;  Bookmark tags are named, persistent sets of bookmarks (and hence
 ;;  of their target objects).
 ;;
