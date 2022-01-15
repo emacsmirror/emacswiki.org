@@ -1,7 +1,7 @@
 == Q. When is a menu not a menu? A. When it's a la carte! ==
 
 
-This page describes library '''<tt>[[lacarte.el]]</tt>''', which lets you execute ''menu'' commands from the keyboard, using [[completion]]: 
+This page describes library '''<tt>[[lacarte.el]]</tt>''', which lets you execute [[menu-bar]] ''menu'' commands from the keyboard, using [[completion]]: 
 
 : '''<code>ESC M-x</code>'''
 
@@ -11,8 +11,6 @@ This page describes library '''<tt>[[lacarte.el]]</tt>''', which lets you execut
 : <code>Menu command: Tools > </code>'''<code>Compa [TAB]</code>'''
 : <code>Menu command: Tools > Compare (Ediff) > </code>'''<code>Two F [TAB]</code>'''
 : <code>Menu command: Tools > Compare (Ediff) > Two Files... </code>'''<code>[RET]</code>'''
-
-(Note: ##lacarte.el## replaces the deprecated library [[icicles-menu.el]].)
 
 
 
@@ -26,11 +24,12 @@ For convenience, bind a [[key sequence]] to `lacarte-execute-command':
 
   (global-set-key [?\e ?\M-x] 'lacarte-execute-command)
 
-Consider also replacing the standard binding of `tmm-menu':
+Consider also replacing the standard bindings of `tmm-menu' and `menu-bar-open':
 
   (global-set-key [?\M-`] 'lacarte-execute-command)
+  (global-set-key [f10] 'lacarte-execute-command)
 
-And you're good to go.  Type `<code><ESC> M-x</code>'. You are prompted for a menu command to execute.  Just start typing its name. Each menu item's full name, for completion, has its parent menu names as prefixes, as shown in the example above: 
+And you're good to go.  Type `<code><ESC> M-x</code>' (or `ESC ESC X', which is the same thing). You're prompted for a command or menu command to execute.  Just start typing its name. Each menu item's full name, for completion, has its parent menu names as prefixes, as shown in the example above: 
 
   Tools > Compare (Ediff) > Two Files...
 
@@ -47,8 +46,13 @@ And you're good to go.  Type `<code><ESC> M-x</code>'. You are prompted for a me
 
 == Commands and Menu Commands ==
 
-You can bind either '''`lacarte-execute-menu-command'''' or
-'''`lacarte-execute-command'''' to a key such as `##ESC M-x##'.
+Suggested key bindings:
+
+* '''`lacarte-execute-menu-command'''': `F10', `##M-`##'
+
+* '''`lacarte-execute-command'''':      `ESC M-x'
+
+
 `lacarte-execute-menu-command' uses only menu commands.
 `lacarte-execute-command' lets you choose among ordinary Emacs
 [[command]]s, in addition to menu commands.  You can use a [[prefix argument]]
@@ -57,10 +61,15 @@ with `lacarte-execute-command' to get the same effect as
 
 Use `lacarte-execute-command' if you don't care whether a command
 is on a menu.  Then, if you want a command that affects a [[buffer]],
-just type `buf'.  This is especially useful if you use '''Icicles''' -- see [[#IciclesEnhancesDining|below]]. By default, in ''Icicle'' mode, `##ESC M-x##' is bound to `lacarte-execute-command', and `##M-`##' is bound to `lacarte-execute-menu-command'.
+just type `buf'.
+This is especially useful if you use '''Icicles''' -- see [[#IciclesEnhancesDining|below]].
 
 You can use a [[prefix argument]] with `lacarte-execute-menu-command' to
 have it offer only items from specific keymaps: the local ([[major mode]]) keymap, the global keymap, or the [[minor mode|minor-mode]] keymaps.
+
+
+
+
 
 
 
