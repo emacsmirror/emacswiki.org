@@ -39,7 +39,7 @@ Here's the best news: After you load '''Icicles''', you can turn it (''Icicle'' 
 As to learning '''Icicles''' -- You can access most '''Icicles''' features from the [[menu bar]] menus '''[[Icicles_-_Icicles_Menu|Icicles]]''' and '''[[Icicles_-_Minibuf_Menu|Minibuf]]'''. The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode), and the '''Minibuf''' menu is available whenever the [[minibuffer]] is active. Using menus can let you know what's available, and it can help you find your way around without struggling at the same time to learn key bindings. 
 
 
-[:Discoverability]
+
 [:WhatIsIcicles]
 == So what is Icicles, anyway, and why bother? ==
 
@@ -47,6 +47,8 @@ As to learning '''Icicles''' -- You can access most '''Icicles''' features from 
 
 '''Icicles''' adds lots of features to vanilla Emacs, the most important feature being enhanced support for input [[completion]], that is, completion of what you type in the [[minibuffer]].  '''Icicles''' lets you do the following things that are of particular help to you as an EmacsNewbie:
 
+
+[:Discoverability]
 [new]
 * See ''what you can do'' at any moment:
 
