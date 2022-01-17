@@ -32,32 +32,46 @@ Press ##U## to update Mu4e's mail listing, and ##bu## to see all your new mail o
 
 === Context templates ===
 
-Defining [http://www.djcbsoftware.nl/code/mu/mu4e/Contexts-example.html mu4e contexts] for multiple email addresses that only differ in the "from" field and maybe signature, while automatically matching their corresponding address using their ##:match-func## (when replying to messages) can quickly get pretty verbose and clunky. To keep it lean and avoid code duplication, one can define a function to build a context based on a template:
+Defining [http://www.djcbsoftware.nl/code/mu/mu4e/Contexts-example.html mu4e contexts] for multiple email accounts:
 
-  (defun my-make-mu4e-context (name address signature)
-    "Return a mu4e context named NAME with :match-func matching
-  its ADDRESS in From or CC fields of the parent message. The
-  context's `user-mail-address' is set to ADDRESS and its
-  `mu4e-compose-signature' to SIGNATURE."
-    (lexical-let ((addr-lex address))
-      (make-mu4e-context :name name
-                         :vars `((user-mail-address . ,address)
-                                 (mu4e-compose-signature . ,signature))
-                         :match-func
-                         (lambda (msg)
-                           (when msg
-                             (or (mu4e-message-contact-field-matches msg :to addr-lex)
-                                 (mu4e-message-contact-field-matches msg :cc addr-lex)))))))
+  ;; assumed Maildir layout
+  ;; ~/Maildir/Account0/{Inbox,Sent,Trash}
+  ;; ~/Maildir/Account1/{Inbox,Sent,Trash}
+  ;; where Account0 is context name
+  (defun my-make-mu4e-context (context-name full-name mail-address signature)
+    "Return a mu4e context named CONTEXT-NAME with :match-func matching
+  folder name CONTEXT-NAME in Maildir. The context's `user-mail-address',
+  `user-full-name' and `mu4e-compose-signature' is set to MAIL-ADDRESS
+  FULL-NAME and SIGNATURE respectively.
 
-Then, easily define contexts:
-
-    (setq mu4e-contexts
-        `( ,(my-make-mu4e-context "main" "me@example.com"
-                                  "Emacs is awesome.")
-           ,(my-make-mu4e-context "work" "me@work-example.com"
-                                  "A very professional signature.")
-           ,(my-make-mu4e-context "other" "activist@example.com"
-                                  "Plain text mail forever.")))
+  Special folders are set to context specific folders."
+    (let ((dir-name (concat "/" context-name)))
+      (make-mu4e-context
+       :name context-name
+       ;; we match based on the maildir of the message
+       ;; this matches maildir /Arkham and its sub-directories
+       :match-func
+       `(lambda (msg)
+          (when msg
+            (string-match-p
+  	   ,(concat "^" dir-name)
+  	   (mu4e-message-field msg :maildir))))
+       :vars
+       `((user-mail-address    . ,mail-address)
+         (user-full-name       . ,full-name)
+         (mu4e-sent-folder     . ,(concat dir-name "/Sent"))
+         (mu4e-drafts-folder   . ,(concat dir-name "/Drafts"))
+         (mu4e-trash-folder    . ,(concat dir-name "/Trash"))
+         (mu4e-refile-folder   . ,(concat dir-name "/Archive"))
+         (mu4e-compose-signature . ,signature)))))
+  ;;Fixing duplicate UID errors when using mbsync and mu4e
+  (setq mu4e-change-filenames-when-moving t)
+  
+  (setq mu4e-contexts
+        `(
+  	,(my-make-mu4e-context
+  	  "account0" "john"
+  	  "john@example.org" "emacs")))
 
 === Integrating with mbsync ===
 
@@ -78,6 +92,9 @@ I use mu4e with mbsync (and GMail). Since it takes a while, mbsync runs in a cro
 
     (advice-add 'mu4e-update-mail-and-index
                 :around #'rjs/mu4e-update-mail-and-index)
+
+    ;;Fixing duplicate UID errors when using mbsync and mu4e
+    (setq mu4e-change-filenames-when-moving t)
 
 == Links ==
 
