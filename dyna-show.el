@@ -4,13 +4,13 @@
 ;; Description: Highlight dynamic ("special") variables in Emacs-Lisp.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2021-2022, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 14 19:28:17 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep  1 14:26:29 2021 (-0700)
+;; Last-Updated: Mon Jan 17 11:14:42 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 76
+;;     Update #: 79
 ;; URL: https://www.emacswiki.org/emacs/download/dyna-show.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightDynamicVariables
 ;; Keywords: highlight, lisp, variables, lexical
@@ -78,6 +78,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2022/01/17 dadams
+;;     dyna-highlight: Move over strings, like symbols, with forward-sexp.
 ;; 2021/09/01 dadams
 ;;     Added face dyna-options.
 ;;     dyna-highlight: Highlight options with face dyna-options.
@@ -195,7 +197,7 @@ Used as a font-lock MATCHER function for `dyna-show-mode'."
                (setq dyna--opoint  (point)
                      dyna--found   t))
               (t
-               (if (looking-at "\\(\\sw\\|\\s_\\)")
+               (if (looking-at "\\(\\sw\\|\\s_\\|[\"]\\)") ; Avoid going inside a string.
                    (forward-sexp 1)
                  (forward-char 1)))))
       dyna--found)))
