@@ -43,7 +43,6 @@ Defining [http://www.djcbsoftware.nl/code/mu/mu4e/Contexts-example.html mu4e con
   folder name CONTEXT-NAME in Maildir. The context's `user-mail-address',
   `user-full-name' and `mu4e-compose-signature' is set to MAIL-ADDRESS
   FULL-NAME and SIGNATURE respectively.
-
   Special folders are set to context specific folders."
     (let ((dir-name (concat "/" context-name)))
       (make-mu4e-context
@@ -66,10 +65,11 @@ Defining [http://www.djcbsoftware.nl/code/mu/mu4e/Contexts-example.html mu4e con
          (mu4e-compose-signature . ,signature)))))
   ;;Fixing duplicate UID errors when using mbsync and mu4e
   (setq mu4e-change-filenames-when-moving t)
-  
+
+You can then set an account:
+
   (setq mu4e-contexts
-        `(
-  	,(my-make-mu4e-context
+        `(,(my-make-mu4e-context
   	  "account0" "john"
   	  "john@example.org" "emacs")))
 
