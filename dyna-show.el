@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 14 19:28:17 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 17 11:14:42 2022 (-0800)
+;; Last-Updated: Tue Jan 18 11:48:35 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 79
+;;     Update #: 80
 ;; URL: https://www.emacswiki.org/emacs/download/dyna-show.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightDynamicVariables
 ;; Keywords: highlight, lisp, variables, lexical
@@ -154,7 +154,8 @@ Don't forget to mention your Emacs and library versions."))
 The current buffer should be in Emacs-Lisp mode.
 With prefix ARG, turn the mode on if ARG is positive, off otherwise.
 
-Highlighting uses face `dyna-variables'."
+User options are highlighted with face `dyna-options'.
+Other dynamic variables are highlighted with face `dyna-variables'."
   :group 'dyna-show
   (if (not dyna-show-mode)
       (font-lock-remove-keywords nil '((dyna-highlight . dyna--face)))
