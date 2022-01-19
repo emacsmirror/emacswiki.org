@@ -7,7 +7,7 @@ Variables of these types can be highlighted:
 * File-local variables
 * Other buffer-local variables
 
-Note: Library ##hi-var.el## supersedes library ##dyna-show.el##, which
+Note: Library ##hi-var.el## supersedes library <tt>[[dyna-show.el]]</tt> (see HighlightDynamicVariables), which
 highlights dynamic variables but doesn't highlight file-local
 and buffer-local variables.
 
