@@ -1,106 +1,32 @@
 [[de:Dutch]]
 [[de:Dutch]]
-Traditionally, Unix uses the ^H keystroke to send a backspace from or to a terminal. Emacs, not coming from a Unix background (see CategoryHistory), does not respect this tradition. If you are using Emacs on a terminal and are not getting the results you expect when you press Backspace, you may want to try mapping ^H to delete-backward-char:
-
-  (global-set-key [(control ?h)] 'delete-backward-char)
-
-Note: This does not work on Linux Mint and probably all debian based distros.
-
-Try instead:
-  
-  (normal-erase-is-backspace-mode 1)
-
-: Personally, I prefer##(keyboard-translate ?\C-h ?\C-?)##; that way, the key does whatever it is supposed to do regardless of mode. -- Anonymous
-
-Note: This also does not work on Linux Mint.
-
-: ##(define-key key-translation-map [?\C-h] [?\C-?])## is usually a better solution than##keyboard-translate##.  That latter is local to "terminals" so that it doesn't work well with emacs daemon. -- Ryo
-
-Note: This also does not work on Linux Mint.
-
-If you do this, you probably also want to remap the the help function, too:
 
 {{{
-(global-set-key [(hyper ?h)] 'help-command)
+;; map backspace [delete-backward-char] to C-h
+(define-key key-translation-map [?\C-?] [?\C-h])
+
+;; map M-backspace [backward-kill-word] to M-h
+(define-key key-translation-map [?\M-\d] [?\M-h])
+
+;; map C-h to backspace
+(define-key key-translation-map [?\C-h] [?\C-?])
+
+;; map M-h [mark-paragraph] to M-backspace
+(define-key key-translation-map [?\M-h] [?\M-\d])
+
+;; tip: Tab is available as C-i
 }}}
 
-I like the following setting:
+That way C-h and M-h behave like the backwards version of C-d and M-d, and help is available with a single press of backspace key.
 
-{{{
-(global-set-key (kbd "C-?") 'help-command)
-(global-set-key (kbd "M-?") 'mark-paragraph)
-(global-set-key (kbd "C-h") 'delete-backward-char)
-(global-set-key (kbd "M-h") 'backward-kill-word)
-}}}
+key-translation-map takes care of different functions of backspace key in different modes. For example, backspace key runs [Info-scroll-down] in Info mode and [delete-backward-char] in text mode.
 
-That way C-h and M-h behave like the backwards version of C-d and M-d, and my right pinky does not suffer by trying to get to the backspace or del key (this and mapping ctrl to alt-keys and meta to super and right crtl solves the pinkys problem)
+The above is tested with Emacs 29, both in pure GTK mode and in alacritty terminal emulator. I'm using sway window manager with X disabled.
 
-Note: This also does not work on Linux Mint.
+To use C-h as backward-delete-char in other GTK programs, use
 
-''Question: How do I make Backspace and Del work as usual in X with a PC keyboard? Backspace should delete to the left, Del to the right, and Ctrl-H should give help. Now Ctrl-H is help but both Backspace and Del deletes to the left. There is no mention of the problem in the FAQ or Info (Emacs 20). C-h f says both of them are called DEL. I've done it before but don't remember how.''
+ gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
 
-: The problem probably isn't Emacs but something to do with xmodmap.  Try <code>xev</code> to see what each key returns, then <code>man xmodmap</code> will help you map them to something that will work better with Emacs and what you want. -- CharlesSebold
-
-: ''Is that really it? <code>xev</code> says they are different (<code>keycode 107 (keysym 0xffff, Delete)</code> and <code>keycode 22 (keysym 0xff08, BackSpace)</code>), but Emacs doesn't seem to show that it understands they are different keys.'' When I upgraded to Emacs 21, it suddenly worked.
-
-: I think you want the variable "delete-key-deletes-forward". From the (xemacs) help:
-  *If non-nil, the DEL key will erase one character forwards.
-  If nil, the DEL key will erase one character backwards.
-
-If you'd rather adjust your terminal to send C-? instead of C-h for the backspace key, try adding the following lines to your .Xdefaults or other appropriate X resources file:
-
- xterm*ttyModes: erase ^?
- xterm*VT100*translations:       #override \
-     <Key>BackSpace: string(0x7f)
- xterm*backarrowKeyIsErase:      true
-
-The following two defaults might also improve your emacs experience:
-
- xterm*termName: xterm-color
- xterm*metaSendsEscape:  true
-
-Under X, the following also allows you to override the behaviour of, say, the delete key:
-
-{{{
-(global-set-key [delete] 'delete-char)
-(global-set-key [M-delete] 'kill-word)
-}}}
-
-These two settings make the delete key perform "kill-forward" operations, while the backspace key continues to perform "kill-backward" operations.
-
-----
-
-: ''This page probably needs to make a clearer distinction between running emacs as an X application, running it inside a terminal emulator under X, and running it directly on a realy honst-to-god ascii terminal.  Here's the beginning of a possible resdesign of this page.  Let me know if this is a good idea.'' --DaleHagglund
-
-: The discussion below is based on GnuEmacs version 21.3.  I expect most things will work the same in any earlier version of 21, and probably 20 as well.  Pleast let me know (or simply edit this page) if you can recast soem of my examples so that they'll work with both XEmacs and GnuEmacs.  --DaleHagglund
-
-: I cannot agree more with DaleHagglund. I login to my Linux server sometimes using Cygwin-X interface and sometimes using Putty. When I launch emacs, I get different behavior of keys in different environment. This is very inconvenient. --PrateekSrivastava
-
-Looking at a keyboard, we see three logically separate keys we can type: C-h, Backspace, and Delete.  Customizing what these keys do in emacs is usually possible, but how to do so is not always immediately obvious.
-
-== Emacs running under a window system ==
-
-Under a window system such as X, these three logically separate keys are also individually distinguishable: the window system generates a unique event for each one.  If you're running GnuEmacs under X, you can see this by typing
-
-  M-: (read-event "?") RET
-
-and then pressing one of C-h, the backspace key, or the delete key.  The responses are 8, <code>backspace</code>, and <code>delete</code>.  8 is the ASCII code BS which is tranditionally generated by typing C-h.  By default, Emacs uses <code>C-h</code> as the prefix key for the help system.  Changing this is possible, but I won't discuss it further here.
-
-By default, both <code>backspace</code> and <code>delete</code> map to the <code>delete-backward-char</code> function.  (The actual mechanics here is somewhat complicated.  See the sections ''Function Keys'' and ''Translating Input'' in the EmacsLispReference for more information.) Many people prefer the Delete key to delete the character immediately under the TextCursor.  This can be done with
-
-  (global-set-key [delete] 'delete-char)
-  (global-set-key [M-delete] 'kill-word)
-
-These two bindings together make the delete key behave like a forward looking version of the backspace key under a window system.
-
-== Emacs inside a terminal emulator ==
-
-With a terminal emulator such as <code>xterm</code>, you can usually configure the bytes sent by the Backspace and Delete keys.  For example, <code>xterm</code>, by default, sends the `DEL' character for Backspace and the sequence `ESC [ 3 ~' for the Delete key. The MacOS Terminal can be configured to do the same by unchecking the "Delete sends Ctrl-H" option under Preferences|Advanced. If your terminal is set up this way, configure Emacs' "Normal Erase Is Backspace" option to "Off" in order to make Emacs map 'backspace' to backward-delete-char and 'delete' to delete-char.
-
-If your terminal is set up to send ^H when you press backspace, instead configure "Normal Erase Is Backspace" option to "On" (or "Maybe") so that Emacs will treat ^H as backward-delete-char instead of help.
-
-
+It is unclear how to achieve the same with QT programs.
 ----
 CategoryKeys
-
-CategoryNeedsAttention (this page should updated to reflect best practice)
