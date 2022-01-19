@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 14 19:28:17 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan 18 11:48:35 2022 (-0800)
+;; Last-Updated: Wed Jan 19 10:25:05 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 80
+;;     Update #: 85
 ;; URL: https://www.emacswiki.org/emacs/download/dyna-show.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightDynamicVariables
 ;; Keywords: highlight, lisp, variables, lexical
@@ -25,6 +25,14 @@
 ;;; Commentary: 
 ;; 
 ;;    Highlight dynamic ("special") variables in Emacs-Lisp.
+;;
+;;  NOTE:
+;;    Library `dyna-show.el' is superseded by library `hi-vars.el'.
+;;    That library does what `dyna-show.el' does: it highlights
+;;    dynamic variables and user options.  But it can also, or
+;;    alternatively, highlight variables to show that they are
+;;    file-local or (otherwise) buffer-local.  A given variable can be
+;;    highlighted with both kinds of highlighting.
 ;;
 ;;  `dyna-show-mode' is a minor mode that highlights, in the current
 ;;  buffer, symbols that are known to be Emacs-Lisp dynamic variables.
