@@ -8,9 +8,9 @@
 ;; Created: Mon Jan 17 11:16:28 2022 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 19 10:29:27 2022 (-0800)
+;; Last-Updated: Wed Jan 19 10:49:04 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 163
+;;     Update #: 167
 ;; URL: https://www.emacswiki.org/emacs/download/hi-var.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightElispVariables
 ;; Keywords: highlight, lisp, variables, lexical, file-local
@@ -41,12 +41,12 @@
 ;;  It merges `hivar-options' or `hivar-dynamic-vars' with
 ;;  `hivar-file-local-vars' or `hivar-buffer-local-vars', so you can
 ;;  tell when a dynamic var is buffer- or file-local.  By default, the
-;;  former pair of faces uses and underline and the latter uses an
+;;  former pair of faces use an underline and the latter pair use an
 ;;  overline.
 ;;
 ;;  If you don't want to highlight all of these types of variables,
-;;  you can use option `hivar-highlighting' to choose those types you
-;;  do want to highlight.
+;;  you can use option `hivar-highlighting' to choose the types you do
+;;  want to highlight.
 ;;
 ;;  The simple built-in test `special-variable-p' is used, to tell
 ;;  whether a variable is dynamically bound.  That test is not 100%
@@ -74,9 +74,10 @@
 ;;    (require 'hi-var)
 ;;    (add-hook 'emacs-lisp-mode-hook 'hi-var-mode 'APPEND)
 ;;
-;;  NOTE: Library `hi-var.el' replaces obsolete library
-;;        `dyna-show.el'.  The library was renamed when highlighting
-;;        of file-local and other buffer-local variables was added.
+;;  NOTE:
+;;    Library `hi-var.el' supersedes library `dyna-show.el', which
+;;    highlights dynamic variables but doesn't highlight file-local
+;;    and buffer-local variables.
 ;;
 ;;
 ;;  Faces defined here:
