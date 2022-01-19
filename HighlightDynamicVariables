@@ -6,6 +6,9 @@ It uses predicate `special-variable-p', which is limited. From the screenshot, y
 occurrences of a function, e.g. `font-lock-mode', that has the same name as a dynamic variable, are also
 highlighted.
 
+Note: Library '''<tt>[[hi-var.el]]</tt>''' supersedes library ##dyna-show.el##.  Library ##hi-var.el## highlights what ##dyna-show.el## does, but it can also highlight ''file-local'' and other ''buffer-local'' variables. See '''HighlightElispVariables'''.
+
+
 [[image:DynaShow]]
 
 Put this in your init file, after adding ##dyna-show.el## to your `load-path':
