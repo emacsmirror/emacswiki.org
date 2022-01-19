@@ -34,6 +34,8 @@ both).  You can use these two libraries together - command
 '''`hdefd-highlight-mode'''' to highlight functions and/or variables,
 and command `hi-var-mode' to highlight dynamic variables. When used together, the variable highlighting of ##hi-var.el## overrides that of ##hl-defined.el##.
 
+[[image:HighlightVariables]]
+
 Put this in your init file, after adding ##hi-var.el## to your `load-path':
 
    (require 'hi-var)
