@@ -15,6 +15,8 @@
 (define-key key-translation-map [?\M-h] [?\M-\d])
 
 ;; tip: Tab is available as C-i
+;;      RET is available as C-j
+;;      ESC is available as C-[
 }}}
 
 That way C-h and M-h behave like the backwards version of C-d and M-d, and help is available with a single press of backspace key.
