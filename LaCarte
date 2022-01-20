@@ -99,6 +99,18 @@ whether and how many candidates to cycle among.
 
 
 
+== Menu Organization Helps You Find a Command ==
+
+Unlike commands listed in a flat `*Apropos*' page, menu items are organized, grouped logically by common area of application (`File', `Edit',...).  This grouping is also available when cycling completion candidates using '''Icicles''', and you can take advantage of it to hasten your search for the right command.
+
+You want to execute a command that puts the [[cursor]] at the end of a buffer, but you don't remember its name, what menu it might be a part of, or where it might appear in that (possibly complex) menu. With '''Icicles''' and '''La Carte''', you type `<code>ESC M-x</code>' and then type `buffer' at the prompt. You use the '''Page Up''' and '''Page Down''' keys (called `prior' and `next' in Emacs) to cycle through all menu items that contain the word `buffer'. 
+
+There are ''lots'' of such menu items. But, all items from the same menu (e.g. `File') are grouped together. You cycle quickly (not reading) to the `Edit' menu, because you guess that moving the cursor has more to do with editing than with file operations, tool use, buffer choice, help, etc. Then you cycle more slowly among the `buffer' menu items in the `Edit' menu. You quickly find `<code>Edit > Go To > Goto End of Buffer</code>'.  QED.
+
+
+
+
+
 [:IciclesEnhancesDining]
 == Icicles Enhances Dining A La Carte ==
 
@@ -143,18 +155,6 @@ In addition, when you cycle to a candidate or complete to one (entirely), you ca
 {{{
   Replace nonprinting characters in buffer with printable representations.
 }}}
-
-
-
-
-=== Menu Organization Helps You Find a Command ===
-
-Unlike commands listed in a flat `*Apropos*' page, menu items are organized, grouped logically by common area of application (`File', `Edit',...).  This grouping is also available when cycling completion candidates using '''Icicles''', and you can take advantage of it to hasten your search for the right command.
-
-You want to execute a command that puts the [[cursor]] at the end of a buffer, but you don't remember its name, what menu it might be a part of, or where it might appear in that (possibly complex) menu. With '''Icicles''' and '''La Carte''', you type `<code>ESC M-x</code>' and then type `buffer' at the prompt. You use the '''Page Up''' and '''Page Down''' keys (called `prior' and `next' in Emacs) to cycle through all menu items that contain the word `buffer'. 
-
-There are ''lots'' of such menu items. But, all items from the same menu (e.g. `File') are grouped together. You cycle quickly (not reading) to the `Edit' menu, because you guess that moving the cursor has more to do with editing than with file operations, tool use, buffer choice, help, etc. Then you cycle more slowly among the `buffer' menu items in the `Edit' menu. You quickly find `<code>Edit > Go To > Goto End of Buffer</code>'.  QED.
-
 
 
 === Learn About Menu Items By Exploring Them ===
