@@ -134,15 +134,17 @@ hardcodes a hyphen (`-') as the separator - see [[https://debbugs.gnu.org/cgi/bu
 If you use Icicles then more powerful matching is available.  You
 can of course just use vanilla Emacs matching, with its
 `completion-styles'.  But you can also use other matching methods,
-including ''[[regexp]]'' matching and various kinds of [[https://www.emacswiki.org/emacs/Icicles_-_Completion_Methods_and_Styles#FuzzyCompletion|fuzzy matching]].
+including ''[[regular-expression]]'' matching and various kinds of [[https://www.emacswiki.org/emacs/Icicles_-_Completion_Methods_and_Styles#FuzzyCompletion|fuzzy matching]].
 
-With regexp matching (which Icicles calls [[https://www.emacswiki.org/emacs/Icicles_-_Apropos_Completions|"apropos" matching]]) you
-can type pattern ##^e.+buff##, and then quickly cycle to `Edit > Go
-To > Goto End of Buffer'.  Or type ##.*print.*buf##, to choose from
+With [[regexp]] matching (which Icicles calls [[https://www.emacswiki.org/emacs/Icicles_-_Apropos_Completions|"apropos" matching]]) you
+can type pattern ##^e.+buff##, and then quickly cycle to `##Edit > Go
+To > Goto End of Buffer##'.  Or type ##.*print.*buf##, to choose from
 the menu commands that match `print' followed somewhere by `buf'.
-And in particular, with regexp matching, you can use ##^## and #$##
+And in particular, with regexp matching, you can use ##^## and ##$##
 to directly match the first and last menu components,
-respectively.
+respectively.   If you know how to use regexps, you can easily and
+quickly get to a menu command you want, or at least narrow the
+list of candidates for completion and cycling.
 
 If you use Icicles you can also use [[https://www.emacswiki.org/emacs/Icicles_-_Progressive_Completion|progressive completion]], which
 means matching ''multiple patterns''.  You specify the patterns
@@ -163,59 +165,28 @@ patterns to match, but also by adding ''patterns to NOT match''.
 
 
 
+== Additional Benefits of Using Icicles with La Carte ==
+
+* When you cycle to a candidate menu item, or you complete to one
+(entirely), the Emacs ''command associated with the menu item'' is
+shown in the [[mode line]] of buffer `*Completions*'.
+
+* You can use '''`M-h'''' to complete your minibuffer input against
+commands, including menu-item commands, ''that you've entered
+previously''.  (You can of course also use the standard history
+keys, such as `M-p' and `M-r', to access these commands.)
+
+* You can display the ''complete documentation'' (doc string) for the
+command corresponding to each menu item, as the item appears in
+the minibuffer.  To do this, just cycle menu-item candidates
+using '''`##C-M-<down>##'''' (instead of `##<down>##').
+The documentation appears in buffer `*Help*'.
 
 
-[:IciclesEnhancesDining]
-== Icicles Enhances Dining A La Carte ==
-
-Use '''[[Icicles]]'''  with '''La Carte''' to get more power and convenience.
-It is '''Icicles''' that lets you choose menu items a la carte, in fact.
-That is, you can access them directly, wherever they might be in
-the menu hierachy.  Without '''Icicles''', you are limited to choosing
-items by their menu-hierarchy prefixes, and you must complete the
-entire menu prefix to the item, from the top of the menu on down.
-With '''Icicles''', you can directly match any parts of a menu item and
-its hierarchy path.
-
-Type any part of a menu-item, then use the '''Page Up''' and '''Page Down'''
-keys (`prior' and `next') to [[Icicles - Cycling Completions|cycle]] through all menu commands that
-contain the text you typed somewhere in their name.  You can match within
-any menu or within all menus; that is, you can match any part(s) of the
-menu-hierachy prefix.
-
-You can use `S-TAB' to show and choose from all such [[Icicles - Apropos Completions|apropos
-completions]], just as you normally use `TAB' to show all prefix
-completions (that is, ordinary completions).  Vanilla, prefix
-completion is still available using `TAB', and you can cycle
-through the prefix completions using the arrow keys.
-
-You can use '''Icicles''' [[progressive completion]] to match multiple
-parts of a menu item separately, in any order.  For example, if
-you want a menu command that has to do with buffers and
-highlighting, type `##buf M-SPC hig S-TAB##'.
-
-'''Icicles''' apropos completion also lets you type a [[regular expression]]
-(regexp) -- it is matched against all of the possible menu items.
-So, for instance, you could type `##^e.+buff `next' `next'## ...' to
-quickly cycle to menu command `##Edit > Go To > Goto End of Buffer##'.
-Or type `##.*print.*buf S-TAB##' to choose from the list of all menu
-commands that match `print' followed somewhere by `buf'.
-
-: [[image:lacarte-w-icicles]]
-
-If you know how to use regexps, you can easily and quickly get to a menu command you want, or at least narrow the list of candidates for completion and cycling.
-
-In addition, when you cycle to a candidate or complete to one (entirely), you can see help for that candidate in the [[mode line]]. In the screenshot above, for example, the current candidate is menu item '''File > Print > Printify Buffer''', and this menu item is described in the mode-line as follows:
-{{{
-  Replace nonprinting characters in buffer with printable representations.
-}}}
 
 
-=== Learn About Menu Items By Exploring Them ===
 
-You can display the complete documentation (doc string) for the command corresponding to each menu item, as the item appears in the [[minibuffer]].  To do this, just cycle menu-item candidates using `<code>C-down</code>' or `<code>C-next</code>', instead of `<code>[down]</code>' or `<code>[next]</code>'. The documentation appears in buffer `*Help*'.
 
-In sum, if you use '''La Carte''', you will want to use it with '''[[Icicles]]''' -- ''enjoy!''
 
 ----
 '''See Also:'''
@@ -224,12 +195,10 @@ In sum, if you use '''La Carte''', you will want to use it with '''[[Icicles]]''
 
 * [[Icicles - Key Completion]] -- Navigate the [[menu bar]] menus by using '''[[Icicles]]''' to complete the `menu-bar' prefix key!
 
-* MenuAccessFromKeyboard, for alternative libraries that also give you keyboard access to menus, in different ways.
-
 
 ----
 
-DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el
+DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:sortie.el, Lisp:icicles.el
 
 CategoryCompletion CategoryMenus CategoryKeys
 
