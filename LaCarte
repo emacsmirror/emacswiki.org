@@ -111,6 +111,60 @@ There are ''lots'' of such menu items. But (again, depending on the sort order) 
 
 
 
+
+
+== Completion Matching ==
+
+During completion you can match the separator of menu components,
+which is the value of [[option]] '''`lacarte-menu-separator'''', and which
+defaults to '''` > ''''.
+
+As usual (with Emacs 23 or later), you can use completion styles
+to control how completion candidates are matched by your
+minibuffer input.
+
+If you don't use [[Icicles]] then completion matching uses option
+'''`lacarte-completion-styles'''', not standard option
+`completion-styles'.  (Emacs 23 and later only.)  By default this
+includes style `flex' (Emacs 27+) or `basic' (Emacs 20-26).  You
+can use any list of styles you like, but some might not be so
+useful.  The `initials' style, for example, is useless, because it
+hardcodes a hyphen (`-') as the separator - see [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=17559|Emacs bug #17559]].
+
+If you use Icicles then more powerful matching is available.  You
+can of course just use vanilla Emacs matching, with its
+`completion-styles'.  But you can also use other matching methods,
+including ''[[regexp]]'' matching and various kinds of [[https://www.emacswiki.org/emacs/Icicles_-_Completion_Methods_and_Styles#FuzzyCompletion|fuzzy matching]].
+
+With regexp matching (which Icicles calls [[https://www.emacswiki.org/emacs/Icicles_-_Apropos_Completions|"apropos" matching]]) you
+can type pattern ##^e.+buff##, and then quickly cycle to `Edit > Go
+To > Goto End of Buffer'.  Or type ##.*print.*buf##, to choose from
+the menu commands that match `print' followed somewhere by `buf'.
+And in particular, with regexp matching, you can use ##^## and #$##
+to directly match the first and last menu components,
+respectively.
+
+If you use Icicles you can also use [[https://www.emacswiki.org/emacs/Icicles_-_Progressive_Completion|progressive completion]], which
+means matching ''multiple patterns''.  You specify the patterns
+progressively, but they are matched ''in all possible orders''.  For
+example, if you want a menu command that has to do with buffers
+and highlighting, type `buf M-SPC hig S-TAB'.  (`M-SPC', not
+`SPC', is the default key for separating match patterns, because
+space characters are often part of completion candidates.)
+
+And if you use Icicles you can prune matches not only by adding
+patterns to match, but also by adding ''patterns to NOT match''.
+(Icicles calls this [[https://www.emacswiki.org/emacs/Icicles_-_Nutshell_View#ChippingAway|"chipping away the non-elephant"]].)
+
+
+
+
+
+
+
+
+
+
 [:IciclesEnhancesDining]
 == Icicles Enhances Dining A La Carte ==
 
