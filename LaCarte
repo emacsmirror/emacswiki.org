@@ -1,22 +1,25 @@
-== Q. When is a menu not a menu? A. When it's a la carte! ==
+== Q. When is a menu not a menu? A. When it's a la carte. ==
 
 
-This page describes library '''<tt>[[lacarte.el]]</tt>''', which lets you execute [[menu-bar]] ''menu'' commands from the keyboard, using [[completion]]: 
+This page describes library '''<tt>[[lacarte.el]]</tt>''', which lets you execute [[menu-bar]] menu commands from the keyboard, using [[completion]].  Use it as an alternative to vanilla
+Emacs menu-bar access, including the default `F10' behavior of
+`menu-bar-open' and that of standard library ##tmm.el##. 
 
-: '''<code>ESC M-x</code>'''
+Use the keyboard to access any menu item, without knowing where it
+is or what its full name is.  Type part of its name and use
+completion to get the rest: the complete path and item name.
+When you choose a menu-item candidate, the corresponding command is executed.
 
-: <code>Menu command:</code>
-: <code>Menu command:</code> '''<code>t [TAB]</code>'''
-: <code>Menu command: Tools > </code>
-: <code>Menu command: Tools > </code>'''<code>Compa [TAB]</code>'''
-: <code>Menu command: Tools > Compare (Ediff) > </code>'''<code>Two F [TAB]</code>'''
-: <code>Menu command: Tools > Compare (Ediff) > Two Files... </code>'''<code>[RET]</code>'''
+Completion candidates have this form:
 
+    menu > submenu > subsubmenu > ... > menu item
 
+For example:
 
-== Menu Completion at the Keyboard ==
+    File > Open Recent > Cleanup list
+    File > Open Recent > Edit list...
 
-All you need to do is put this in your [[init file]] (##~/.emacs##):
+Put this in your [[init file]] (##~/.emacs##):
 
   (require 'lacarte)
 
@@ -29,9 +32,12 @@ Consider also replacing the standard bindings of `tmm-menu' and `menu-bar-open':
   (global-set-key [?\M-`] 'lacarte-execute-command)
   (global-set-key [f10] 'lacarte-execute-command)
 
-And you're good to go.  Type `<code><ESC> M-x</code>' (or `ESC ESC X', which is the same thing). You're prompted for a command or menu command to execute.  Just start typing its name. Each menu item's full name, for completion, has its parent menu names as prefixes, as shown in the example above: 
+Type `##<ESC> M-x##' (or `ESC ESC X', which is the same thing). You're prompted for a command or menu command to execute.  Each menu
+item's full name, for completion, has its parent menu names as
+prefixes.
 
-  Tools > Compare (Ediff) > Two Files...
+
+
 
 
 
