@@ -1,12 +1,9 @@
-= Emacs 29+ =
+== Native Smooth Scrolling ==
 
-Emacs 29+ has native support for smooth scrolling, enable it with
+Future release Emacs 29 is projected to have native support for smooth scrolling. You can enable it using `pixel-scroll-precision-mode'.
 
-{{{
-(pixel-scroll-precision-mode)
-}}}
 
-= mouse wheel & keyboard scroll one line at a time =
+== mouse wheel & keyboard scroll one line at a time ==
 
     ;; scroll one line at a time (less "jumpy" than defaults)
     
@@ -18,16 +15,16 @@ Emacs 29+ has native support for smooth scrolling, enable it with
     
     (setq scroll-step 1) ;; keyboard scroll one line at a time
 
-= smooth-scroll.el =
+== smooth-scroll.el ==
 
 [http://www.emacswiki.org/emacs/smooth-scroll.el "smooth-scroll.el"] provides a minor mode "smooth-scroll-mode" which brings
 "smooth scrolling" and "in-place scrolling" feature to Emacs.
 
-= smooth-scrolling.el =
+== smooth-scrolling.el ==
 
 http://emacs.wordpress.com/2007/09/10/smooth-scrolling/
 
-= sublimity-scroll.el =
+== sublimity-scroll.el ==
 
 While [[https://github.com/zk-phi/sublimity Sublimity]] offers a set of different features, some people are using just the smooth-scrolling:
 
@@ -37,7 +34,7 @@ While [[https://github.com/zk-phi/sublimity Sublimity]] offers a set of differen
 (sublimity-mode 1)
 }}}
 
-= pixel-scroll.el =
+== pixel-scroll.el ==
 
 This is distributed with Emacs and allows scrolling by pixel lines.
 
@@ -45,7 +42,7 @@ This is distributed with Emacs and allows scrolling by pixel lines.
 (pixel-scroll-mode 1)
 }}}
 
-= good-scroll.el =
+== good-scroll.el ==
 
 [https://github.com/io12/good-scroll.el good-scroll.el] implements smooth scrolling by pixel lines. It attempts to improve upon pixel-scroll-mode by adding variable speed.
 
@@ -53,7 +50,7 @@ This is distributed with Emacs and allows scrolling by pixel lines.
 (good-scroll-mode 1)
 }}}
 
-= Sniplets =
+== Sniplets ==
 
 If you want the text to scroll one line at a time when you move the [[cursor]] past the top or bottom of the window, use the following setting:
 
