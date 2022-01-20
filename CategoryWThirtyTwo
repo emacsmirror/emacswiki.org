@@ -18,9 +18,13 @@ https://www.gnu.org/software/emacs/download.html#windows
 
 === Unofficial Releases ===
 
+* /RHO Emacs/ -- https://gchristensen.github.io/rho-emacs/
+** ρEmacs is a preconfigured distribution of GNU Emacs editor for Microsoft Windows. It offers some enhancements over the standard Emacs experience and targets several Windows-specific issues. Currently offering version 27.2.
+** Responsive to problem reports. [https://github.com/GChristensen/rho-emacs/issues/5 Issue with M-x grep] in v1.0.2 turned around in a couple of hours.
+\\\\
 * /emax64/ -- https://github.com/m-parashar/emax64/releases/  ([https://ntemacs.sourceforge.io/ sourceforge link])
 ** Optimized 64-bit build of Emacs for Windows. Built on Windows 10.
-** Kept highly up to date with releases around once per month. 
+** Was kept highly up to date with releases around once per month. Seems to have stalled at Emacs 27.1 2020-09-30
 ** Extensive library support including !ImageMagick, Pdf-Tools, and !GnuTLS.
 ** //addpm// modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
 \\\\
