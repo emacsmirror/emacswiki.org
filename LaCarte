@@ -27,11 +27,6 @@ For convenience, bind a [[key sequence]] to `lacarte-execute-command':
 
   (global-set-key [?\e ?\M-x] 'lacarte-execute-command)
 
-Consider also replacing the standard bindings of `tmm-menu' and `menu-bar-open':
-
-  (global-set-key [?\M-`] 'lacarte-execute-command)
-  (global-set-key [f10] 'lacarte-execute-command)
-
 Type `##<ESC> M-x##' (or `ESC ESC X', which is the same thing). You're prompted for a command or menu command to execute.  Each menu
 item's full name, for completion, has its parent menu names as
 prefixes.
@@ -42,21 +37,17 @@ prefixes.
 
 
 
-== Not Just for Wimps and Noobs Anymore ==
-
-''You'' don't use menus. Nah, they're too slow! Only newbies and wimps use menus. '''''Well, not any more.''''' Use the keyboard to access any menu item, without knowing where it is or what its full name is. Type just part of its name and use completion to get the rest: the complete path and item name.
-
-
-
-
-
 == Commands and Menu Commands ==
 
-Suggested key bindings:
+Use `lacarte-execute-command' if you don't care whether a command
+is on a menu.  Then, if you want a command that affects a [[buffer]],
+just type `buf'.
 
-* '''`lacarte-execute-menu-command'''': `F10', `##M-`##'
+Consider also replacing the standard bindings of `tmm-menu' and
+`menu-bar-open':
 
-* '''`lacarte-execute-command'''':      `ESC M-x'
+  (global-set-key [?\M-`] 'lacarte-execute-command)
+  (global-set-key [f10]   'lacarte-execute-command)
 
 
 `lacarte-execute-menu-command' uses only menu commands.
@@ -65,13 +56,17 @@ Suggested key bindings:
 with `lacarte-execute-command' to get the same effect as
 `lacarte-execute-menu-command'.
 
-Use `lacarte-execute-command' if you don't care whether a command
-is on a menu.  Then, if you want a command that affects a [[buffer]],
-just type `buf'.
-This is especially useful if you use '''Icicles''' -- see [[#IciclesEnhancesDining|below]].
 
 You can use a [[prefix argument]] with `lacarte-execute-menu-command' to
-have it offer only items from specific keymaps: the local ([[major mode]]) keymap, the global keymap, or the [[minor mode|minor-mode]] keymaps.
+have it offer only items from specific current menu-bar menus:
+
+* No prefix arg       - all menu-bar menus
+* Positive prefix arg - [[major mode|major-mode]] menu
+* Zero prefix arg     - global menus
+* Negative prefix arg - [[minor mode|minor-mode]] menus
+
+
+
 
 
 
