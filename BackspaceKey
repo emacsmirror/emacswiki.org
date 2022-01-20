@@ -15,7 +15,7 @@
 (define-key key-translation-map [?\M-h] [?\M-\d])
 
 ;; tip: Tab is available as C-i
-;;      RET is available as C-j
+;;      RET is available as C-j or C-m
 ;;      ESC is available as C-[
 }}}
 
