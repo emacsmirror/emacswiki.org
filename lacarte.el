@@ -1,16 +1,16 @@
-;;; lacarte.el --- Execute menu items as commands, with completion.
+;;; lacarte.el --- Execute menu items as commands, with completion.  -*- lexical-binding:t -*-
 ;;
 ;; Filename: lacarte.el
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 30 11:46:35 2021 (-0800)
+;; Last-Updated: Thu Jan 20 15:04:44 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 948
+;;     Update #: 1117
 ;; URL: https://www.emacswiki.org/emacs/download/lacarte.el
 ;; Doc URL: https://www.emacswiki.org/emacs/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -19,7 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `sortie'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -27,19 +27,26 @@
 ;;
 ;;  Q. When is a menu not a menu?  A. When it's a la carte.
 ;;
-;;  Library La Carte lets you execute menu items as commands, with
-;;  completion.  You can use it as an alternative to standard library
-;;  `tmm.el'.
+;;  Library La Carte lets you execute menu-bar menu commands from the
+;;  keyboard, with completion.  Use it as an alternative to vanilla
+;;  Emacs menu-bar access, including the default `F10' behavior of
+;;  `menu-bar-open' and that of standard library `tmm.el'.
 ;;
-;;  Type a menu item.  Completion is available.  Completion candidates
-;;  are of the form menu > submenu > subsubmenu > ... > menu item.
+;;  Use the keyboard to access any menu item, without knowing where it
+;;  is or what its full name is.  Type part of its name and use
+;;  completion to get the rest: the complete path and item name.  When
+;;  you choose a menu-item candidate, the corresponding command is
+;;  executed.
+;;
+;;  Completion candidates have this form:
+;;
+;;    menu > submenu > subsubmenu > ... > menu item
+;;
 ;;  For example:
 ;;
 ;;    File > Open Recent > Cleanup list
 ;;    File > Open Recent > Edit list...
 ;;
-;;  When you choose a menu-item candidate, the corresponding command
-;;  is executed.
 ;;
 ;;  Put this in your init file (~/.emacs):
 ;;
@@ -51,14 +58,15 @@
 ;;    (global-set-key [?\M-`]     'lacarte-execute-menu-command)
 ;;    (global-set-key [f10]       'lacarte-execute-menu-command)
 ;;
-;;  (The latter two replace standard bindings for `tmm-menubar'.  On
-;;  MS Windows, `f10' is normally bound to `menu-bar-open', which uses
-;;  the Windows native keyboard access to menus.)
+;;  The latter two replace standard bindings for `tmm-menubar' and
+;;  `menu-bar-open', respectively.
 ;;
 ;;  To really take advantage of La Carte, use it together with
 ;;  Icicles.  Icicles is not required to be able to use La Carte, but
-;;  it enhances the functionality of `lacarte.el' considerably.
+;;  it enhances the functionality of `lacarte.el' considerably.  By
+;;  default in Icicle mode uses those suggested La Carte key bindings.
 ;;  (Note: `lacarte.el' was originally called `icicles-menu.el'.)
+;;  Icicles is here: https://www.emacswiki.org/emacs/Icicles.
 ;;
 ;;  If you use MS Windows keyboard accelerators, consider using
 ;;  `lacarte-remove-w32-keybd-accelerators' as the value of
@@ -76,7 +84,8 @@
 ;;  User options defined here:
 ;;
 ;;    `lacarte-convert-menu-item-function',
-;;    `lacarte-completion-styles' (Emacs 23+).
+;;    `lacarte-completion-styles' (Emacs 23+),
+;;    `lacarte-default-sort-function', `lacarte-menu-separator'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -84,19 +93,26 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `lacarte-add-if-menu-item', `lacarte-escape-w32-accel',
+;;    `lacarte-add-if-menu-item', `lacarte-by-depth-p',
+;;    `lacarte-by-length-p', `lacarte-collection-function',
+;;    `lacarte-depth', `lacarte-escape-w32-accel',
 ;;    `lacarte-get-a-menu-item-alist',
 ;;    `lacarte-get-a-menu-item-alist-1',
 ;;    `lacarte-get-a-menu-item-alist-22+',
 ;;    `lacarte-get-a-menu-item-alist-pre-22',
 ;;    `lacarte-get-overall-menu-item-alist',
 ;;    `lacarte-key-description', `lacarte-menu-first-p',
-;;    `lacarte-propertize', `lacarte-remove-w32-keybd-accelerators',
+;;    `lacarte-propertize', `lacarte-read-menu-command.',
+;;    `lacarte-remove-w32-keybd-accelerators',
+;;    `lacarte-sort-alphabetically',
+;;    `lacarte-sort-by-last-use-as-input', `lacarte-sort-by-length',
+;;    `lacarte-sort-fn-chooser', `lacarte-sort-menus-first',
 ;;    `lacarte-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `lacarte-history', `lacarte-menu-items-alist'.
+;;    `lacarte-completion-keymap', `lacarte-history',
+;;    `lacarte-menu-items-alist'.
 ;;
 ;;
 ;;  Getting Started
@@ -106,35 +122,24 @@
 ;;
 ;;    (global-set-key [?\e ?\M-x] 'lacarte-execute-command)
 ;;
-;;  Type `ESC M-x' (or `ESC ESC x', which is the same thing).  You are
-;;  prompted for a command or menu command to execute.  Just start
-;;  typing its name.  Each menu item's full name, for completion, has
-;;  its parent menu names as prefixes.
-;;
-;;  ESC M-x
-;;  Command:
-;;  Command: t [TAB]
-;;  Command: Tools >
-;;  Command: Tools > Compa [TAB]
-;;  Command: Tools > Compare (Ediff) > Two F [TAB]
-;;  Command: Tools > Compare (Ediff) > Two Files... [RET]
-;;
-;;
-;;  Not Just for Wimps and Noobs Anymore
-;;  ------------------------------------
-;;
-;;  *You* don't use menus.  Nah, they're too slow!  Only newbies and
-;;  wimps use menus.  Well not any more.  Use the keyboard to access
-;;  any menu item, without knowing where it is or what its full name
-;;  is.  Type just part of its name and use completion to get the
-;;  rest: the complete path and item name.
+;;  Type `ESC M-x' (or `ESC ESC x', which is the same thing).  You're
+;;  prompted for a command or a menu command to execute.  Each menu
+;;  item's full name, for completion, has its parent menu names as
+;;  prefixes.
 ;;
 ;;
 ;;  Commands and Menu Commands
 ;;  --------------------------
 ;;
-;;  You can bind either `lacarte-execute-menu-command' or
-;;  `lacarte-execute-command' to a key such as `ESC M-x'.
+;;  Use `lacarte-execute-command' if you don't care whether a command
+;;  is on a menu.  Then, if you want a command that affects a buffer,
+;;  just type `buf'.
+;;
+;;  Consider also replacing the standard bindings of `tmm-menu' and
+;;  `menu-bar-open':
+;;
+;;    (global-set-key [?\M-`] 'lacarte-execute-command)
+;;    (global-set-key [f10]   'lacarte-execute-command)
 ;;
 ;;  `lacarte-execute-menu-command' uses only menu commands.
 ;;  `lacarte-execute-command' lets you choose among ordinary Emacs
@@ -142,112 +147,130 @@
 ;;  with `lacarte-execute-command' to get the same effect as
 ;;  `lacarte-execute-menu-command'.
 ;;
-;;  Use `lacarte-execute-command' if you don't care whether a command
-;;  is on a menu.  Then, if you want a command that affects a buffer,
-;;  just type `buf'.  This is especially useful if you use Icicles -
-;;  see below.
-;;
 ;;  You can use a prefix arg with `lacarte-execute-menu-command' to
-;;  have it offer only items from specific keymaps: the local (major
-;;  mode) keymap, the global keymap, or the minor-mode keymaps.
+;;  have it offer only items from specific current menu-bar menus:
 ;;
-;;  Completion matching uses option `lacarte-completion-styles', not
-;;  standard option `completion-styles'.  (Emacs 23 and later only.)
-;;
-;;  By default, in Icicle mode, `ESC M-x' is bound to
-;;  `lacarte-execute-command', and `M-`' is bound to
-;;  `lacarte-execute-menu-command'.
+;;  * No prefix arg       - all menu-bar menus
+;;  * Positive prefix arg - major-mode menu
+;;  * Zero prefix arg     - global menus
+;;  * Negative prefix arg - minor-mode menus
 ;;
 ;;
-;;  Icicles Enhances Dining A La Carte
-;;  ----------------------------------
+;;  Completion Candidate Sorting and Cycling
+;;  ----------------------------------------
 ;;
-;;  Use Icicles with La Carte to get more power and convenience.
+;;  If you also use library `sortie.el', or if you use Icicles, then:
 ;;
-;;  It is Icicles that lets you choose menu items a la carte, in fact.
-;;  That is, you can access them directly, wherever they might be in
-;;  the menu hierachy.  Without Icicles, you are limited to choosing
-;;  items by their menu-hierarchy prefixes, and you must complete the
-;;  entire menu prefix to the item, from the top of the menu on down.
-;;  With Icicles, you can directly match any parts of a menu item and
-;;  its hierarchy path.  Icicles is here:
-;;  https://www.emacswiki.org/emacs/Icicles.
+;;  * You can change the sorting of completion candidates on the fly,
+;;    with `C-,' (by default).  Available sort orders include by menu
+;;    depth, by menu length, by last use as minibuffer input,
+;;    alphabetical, and (for `lacarte-execute-command' only) menu
+;;    items first.  If you use Icicles then additional sort orders are
+;;    available.
 ;;
-;;  Type any part of a menu-item, then use the Page Up and Page Down
-;;  keys (`prior' and `next') to cycle through all menu commands that
-;;  contain the text you typed somewhere in their name.  You can match
-;;  within any menu or within all menus; that is, you can match any
-;;  part(s) of the menu-hierachy prefix.
+;;  * You can cycle among matching candidates.  If you don't use
+;;    Icicles then set option `completion-cycle-threshold' to non-nil
+;;    to be able to cycle.  With vanilla Emacs (but not with Icicles),
+;;    cycling and showing all matching completion candidates are
+;;    mutually exclusive - `completion-cycle-threshold' controls
+;;    whether and how many candidates to cycle among.
 ;;
-;;  You can use `S-TAB' to show and choose from all such "apropos
-;;  completions", just as you normally use `TAB' to show all prefix
-;;  completions (that is, ordinary completions).  Vanilla, prefix
-;;  completion is still available using `TAB', and you can cycle
-;;  through the prefix completions using the arrow keys.
 ;;
-;;  You can use Icicles "progressive completion" to match multiple
-;;  parts of a menu item separately, in any order.  For example, if
-;;  you want a menu command that has to do with buffers and
-;;  highlighting, type `buf M-SPC hig S-TAB'.
+;;  Menu Organization Can Help You Find a Command
+;;  ---------------------------------------------
 ;;
-;;  Icicles apropos completion also lets you type a regular expression
-;;  (regexp) - it is matched against all of the possible menu items.
-;;  So, for instance, you could type `^e.+buff [next] [next]...' to
-;;  quickly cycle to menu command `Edit > Go To > Goto End of Buffer'.
-;;  Or type `.*print.*buf S-TAB' to choose from the list of all menu
-;;  commands that match `print' followed somewhere by `buf'.
+;;  Unlike commands listed in a flat `*Apropos*' page, menu items are
+;;  organized - grouped logically by common area of application
+;;  (`File', `Edit',...).  This grouping is also available when
+;;  cycling among completion candidates (depending on the sort order).
 ;;
-;;  If you know how to use regexps, you can easily and quickly get to
-;;  a menu command you want, or at least narrow the list of candidates
-;;  for completion and cycling.
+;;  Suppose you want to execute a command that puts the cursor at the
+;;  end of a buffer, but you don't remember its name, what menu it
+;;  might be a part of, or where it might appear in that (possibly
+;;  complex) menu.  You type `ESC M-x' and then type `buffer' at the
+;;  prompt.  Then cycle through all menu items that contain the word
+;;  `buffer'.
 ;;
-;;  Additional benefits of using Icicles with La Carte:
+;;  There are lots of such menu items.  But (again, depending on the
+;;  sort order) all items from the same menu (e.g. `File') are grouped
+;;  together.  You cycle quickly (not reading) to the `Edit' menu,
+;;  because you guess that moving the cursor has more to do with
+;;  editing than with file operations, tool use, buffer choice, help,
+;;  etc.  Then you cycle more slowly among the `buffer' menu items in
+;;  the `Edit' menu.  You quickly find `Edit > Go To > Goto End of
+;;  Buffer'.
+;;
+;;  
+;;  Completion Matching
+;;  -------------------
+;;
+;;  During completion you can match the separator of menu components,
+;;  which is the value of option `lacarte-menu-separator', and which
+;;  defaults to ` > '.
+;;
+;;  As usual (with Emacs 23 or later), you can use completion styles
+;;  to control how completion candidates are matched by your
+;;  minibuffer input.
+;;
+;;  If you don't use Icicles then completion matching uses option
+;;  `lacarte-completion-styles', not standard option
+;;  `completion-styles'.  (Emacs 23 and later only.)  By default this
+;;  includes style `flex' (Emacs 27+) or `basic' (Emacs 20-26).  You
+;;  can use any list of styles you like, but some might not be so
+;;  useful.  The `initials' style, for example, is useless, because it
+;;  hardcodes a hyphen (`-') as the separator - see Emacs bug #17559.
+;;
+;;  If you use Icicles then more powerful matching is available.  You
+;;  can of course just use vanilla Emacs matching, with its
+;;  `completion-styles'.  But you can also use other matching methods,
+;;  including regular-expression matching and various kinds of fuzzy
+;;  matching.
+;;
+;;  With regexp matching (which Icicles calls "apropos" matching) you
+;;  can type pattern `^e.+buff', and then quickly cycle to `Edit > Go
+;;  To > Goto End of Buffer'.  Or type `.*print.*buf', to choose from
+;;  the menu commands that match `print' followed somewhere by `buf'.
+;;  And in particular, with regexp matching, you can use `^' and `$'
+;;  to directly match the first and last menu components,
+;;  respectively.  If you know how to use regexps, you can easily and
+;;  quickly get to a menu command you want, or at least narrow the
+;;  list of candidates for completion and cycling.
+;;
+;;  If you use Icicles you can also use progressive completion, which
+;;  means matching multiple patterns.  You specify the patterns
+;;  progressively, but they are matched in all possible orders.  For
+;;  example, if you want a menu command that has to do with buffers
+;;  and highlighting, type `buf M-SPC hig S-TAB'.  (`M-SPC', not
+;;  `SPC', is the default key for separating match patterns, because
+;;  space characters are often part of completion candidates.)
+;;
+;;  And if you use Icicles you can prune matches not only by adding
+;;  patterns to match, but also by adding patterns to NOT match.
+;;  (Icicles calls this "chipping away the non-elephant".)
+;;
+;;  See also:
+;;
+;;  * https://www.emacswiki.org/emacs/Icicles_-_Progressive_Completion
+;;  * https://www.emacswiki.org/emacs/Icicles_-_Nutshell_View#ChippingAway
+;;
+;;  
+;;  Additional Benefits of Using Icicles with La Carte
+;;  --------------------------------------------------
 ;;
 ;;  * When you cycle to a candidate menu item, or you complete to one
 ;;    (entirely), the Emacs command associated with the menu item is
-;;    shown in the mode line of buffer `*Completions*'.
+;;    shown in the mode-line of buffer `*Completions*'.
 ;;
 ;;  * You can use `M-h' to complete your minibuffer input against
-;;    commands, including menu-item commands, that you have entered
-;;    previously.  You can also use the standard history keys
-;;    (e.g. `M-p', `M-r') to access these commands.
+;;    commands, including menu-item commands, that you've entered
+;;    previously.  (You can of course also use the standard history
+;;    keys, such as `M-p' and `M-r', to access these commands.)
 ;;
-;;
-;;  Menu Organization Helps You Find a Command
-;;  ------------------------------------------
-;;
-;;  Unlike commands listed in a flat `*Apropos*' page, menu items are
-;;  organized, grouped logically by common area of application
-;;  (`File', `Edit',...).  This grouping is also available when
-;;  cycling completion candidates using Icicles, and you can take
-;;  advantage of it to hasten your search for the right command.
-;;
-;;  You want to execute a command that puts the cursor at the end of a
-;;  buffer, but you don't remember its name, what menu it might be a
-;;  part of, or where it might appear in that (possibly complex) menu.
-;;  With Icicles and La Carte, you type `ESC M-x' and then type
-;;  `buffer' at the prompt.  You use the Page Up and Page Down keys to
-;;  cycle through all menu items that contain the word `buffer'.
-;;
-;;  There are lots of such menu items.  But all items from the same
-;;  menu (e.g. `File') are grouped together.  You cycle quickly (not
-;;  reading) to the `Edit' menu, because you guess that moving the
-;;  cursor has more to do with editing than with file operations, tool
-;;  use, buffer choice, help, etc.  Then you cycle more slowly among
-;;  the `buffer' menu items in the `Edit' menu.  You quickly find
-;;  `Edit > Go To > Goto End of Buffer'.  QED.
-;;
-;;
-;;  Learn About Menu Items By Exploring Them
-;;  ----------------------------------------
-;;
-;;  With Icicles, you can display the complete documentation (doc
-;;  string) for the command corresponding to each menu item, as the
-;;  item appears in the minibuffer.  To do this, just cycle menu-item
-;;  candidates using `C-down' or `C-next', instead of `[down]' or
-;;  `[next]'.  The documentation appears in buffer `*Help*'.
-;;
-;;  In sum, if you use La Carte, you will want to use it with Icicles!
+;;  * You can display the complete documentation (doc string) for the
+;;    command corresponding to each menu item, as the item appears in
+;;    the minibuffer.  To do this, just cycle menu-item candidates
+;;    using `C-down' or `C-next', instead of `[down]' or `[next]'.
+;;    The documentation appears in buffer `*Help*'.
  
 ;;(@> "Index")
 ;;
@@ -269,6 +292,21 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2022/01/20 dadams
+;;     Added: lacarte-completion-keymap.
+;;            Make SPC self-inserting in it.  Inherit from minibuffer-local-must-match-map.
+;; 2022/01/14 dadams
+;;     Support lexical-binding and on-demand sorting.  (Emacs 24+)
+;;      Soft-reguire sortie.el.
+;;      Added: lacarte-by-depth-p, lacarte-by-length-p, lacarte-collection-function,
+;;        lacarte-default-sort-function, lacarte-depth, lacarte-menu-separator, lacarte-read-menu-command,
+;;        lacarte-sort-alphabetically, lacarte-sort-by-last-use-as-input, lacarte-sort-by-length,
+;;        lacarte-sort-fn-chooser, lacarte-sort-menus-first.
+;;      lacarte-execute(-menu)-command:
+;;        Use lacarte-menu-first-p, lacarte-menu-separator, lacarte-read-menu-command.
+;;        Add to icicle-sort-orders-alist: lacarte-by-depth-p, lacarte-by-length-p.
+;;      lacarte-add-if-menu-item, lacarte-menu-first-p: Use lacarte-menu-separator.
+;;      lacarte-execute-menu-command: Prompt indicates map types.
 ;; 2021/12/30 dadams
 ;;     Added lacarte-completion-styles.
 ;;     lacarte-execute(-menu)-command: Respect lacarte-completion-styles.
@@ -399,11 +437,17 @@
 
 (unless (fboundp 'replace-regexp-in-string) (require 'subr-21 nil t))
 
+(when (fboundp 'advice-member-p)        ; Emacs 24+
+  (require 'sortie nil t)) ;; (no error if not found):
+;; sorti-bind-cycle-key-and-complete, sorti-current-order, sorti-sort-function-chooser,
+;; sorti-sort-orders-alist, sorti-sort-orders-ring
+
 ;; Quiet the byte-compiler (e.g. for older Emacs versions).
 (defvar lacarte-completion-styles)
 (defvar icicle-mode)
 (defvar icicle-sort-comparer)
 (defvar icicle-sort-orders-alist)
+(defvar sorti-current-order)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -435,16 +479,39 @@ accelerators.  See `lacarte-remove-w32-keybd-accelerators'."
   :type '(choice (const :tag "None" nil) function) :group 'lacarte)
 
 (when (boundp 'completion-styles)       ; Emacs 23+
-  (defcustom lacarte-completion-styles `(,@(and (assq 'substring completion-styles-alist) ; Emacs 24+
-                                                '(substring))
-                                         ,@(and (assq 'flex completion-styles-alist)
-                                                '(flex)) ; Emacs 27+
-                                         initials basic partial-completion emacs22)
-    "Value of `completion-styles' used during La Carte commands."
-    :type '(repeat symbol)
-    :group 'lacarte))
+
+  (defcustom lacarte-completion-styles `(,(if (assq 'flex completion-styles-alist)
+                                              'flex  ; Emacs 27+
+                                            'basic)) ; Emacs < 27
+;;;     ;; Don't include `initials', as that hard-codes `-' as the separator.
+;;;     `(,@(and (assq 'substring completion-styles-alist) ; Emacs 24+
+;;;              '(substring))
+;;;       ,@(and (assq 'flex completion-styles-alist)
+;;;              '(flex))                   ; Emacs 27+
+;;;       basic partial-completion emacs22)
+    "Value of `completion-styles' used during La Carte commands.
+The default value includes only the `flex' style (Emacs 27 and later)
+or the `basic' style (prior to Emacs 27)."
+    :type '(repeat symbol) :group 'lacarte)
+  )
 
 ;;;###autoload
+(defcustom lacarte-default-sort-function #'lacarte-sort-alphabetically
+  "Default sort function for La Carte.
+If neither `sortie.el' nor `icicles.el' is used then this is the only
+sort function.
+
+The function must accept, as its only argument, a list of string
+candidates to sort.  It must return a list of sorted candidates."
+  :type 'function :group 'lacarte)
+
+;;;###autoload
+(defcustom lacarte-menu-separator ">"
+  "String that separates menu or menu-item names in a menu path.
+It should neither begin nor end with SPC chars.
+The actual separator is this surrounded by one or more SPC chars."
+  :type 'string :group 'lacarte)
+
 (defface lacarte-shortcut               ; Same grays as for `shadow'.
     '((((background dark)) (:foreground "gray70"))
       (t (:foreground "gray50")))
@@ -487,28 +554,31 @@ available."
         (completion-styles                lacarte-completion-styles)
         (completion-ignore-case           t) ; Not case-sensitive, by default.
         ;; ?\000 prevents the key shortcut from being highlighted with face `icicle-special-candidate'.
-        (icicle-special-candidate-regexp  (and (not no-commands-p)  ".* > [^?\000]*"))
+        (icicle-special-candidate-regexp  (and (not no-commands-p)
+					       (concat ".* " lacarte-menu-separator " [^?\000]*")))
         (icicle-sort-orders-alist         (and (boundp 'icicle-sort-orders-alist)
+                                               (append (and (not no-commands-p)
+                                                            '(("menu items first" . lacarte-menu-first-p)))
+                                                       '(("by depth"         . lacarte-by-depth-p)
+                                                         ("by length"        . lacarte-by-length-p))
+                                                       icicle-sort-orders-alist)))
+        (icicle-sort-comparer             (and (boundp 'icicle-sort-comparer)
                                                (if no-commands-p
-                                                   icicle-sort-orders-alist
-                                                 (cons (cons "menu items first" 'lacarte-menu-first-p)
-                                                       icicle-sort-orders-alist))))
-        (icicle-sort-comparer             (and (boundp 'icicle-sort-comparer)  (if no-commands-p
-                                                                                   icicle-sort-comparer
-                                                                                 'lacarte-menu-first-p)))
+                                                   'icicle-case-string-less-p
+                                                 'lacarte-menu-first-p)))
         choice cmd)
     (unless no-commands-p
       (mapatoms (lambda (symb)
                   (when (commandp symb)
                     (push (cons (symbol-name symb) symb) lacarte-menu-items-alist)))))
-    (setq choice  (completing-read (if no-commands-p "Menu command: " "Command: ")
-                                   lacarte-menu-items-alist nil t nil 'lacarte-history)
+    (setq choice  (lacarte-read-menu-command (if no-commands-p "Menu command: " "Command: ")
+                                             (not no-commands-p))
           cmd     (cdr (assoc choice lacarte-menu-items-alist)))
     (unless cmd (error "No such menu command"))
     ;; Treat special cases of `last-command-event', reconstructing it for
     ;; menu items that get their meaning from the click itself.
     (cond ((eq cmd 'menu-bar-select-buffer)
-           (string-match " >\\s-+\\(.+\\)\\s-+\\*?%?\\s-+\\S-*\\s-*$" choice)
+           (string-match (concat lacarte-menu-separator "\\s-+\\(.+\\)\\s-+\\*?%?\\s-+\\S-*\\s-*$") choice)
            (setq choice  (substring choice (match-beginning 1) (match-end 1)))
            (when (string-match "  \\*?%?" choice)
              (setq choice  (substring choice 0 (match-beginning 0))))
@@ -517,7 +587,10 @@ available."
            (string-match "Edit > Select and Paste > \\(.*\\)$" choice)
            (setq last-command-event  (substring choice (match-beginning 1) (match-end 1))))
           ((eq cmd 'menu-bar-select-frame)
-           (string-match " >\\s-[^>]+>\\s-+\\(.+\\)$" choice)
+           (string-match (concat " " lacarte-menu-separator
+				 "\\s-[^" lacarte-menu-separator "]+" lacarte-menu-separator
+				 "\\s-+\\(.+\\)$")
+                         choice)
            (setq choice              (substring choice (match-beginning 1) (match-end 1))
                  last-command-event  choice)))
     (call-interactively cmd)))
@@ -530,10 +603,10 @@ available."
     (save-match-data (string-match regexp string start))))
 
 (defun lacarte-menu-first-p (s1 s2)
-  "Return non-nil if S1 is a menu item and S2 is not."
-  (if (lacarte-string-match-p " > " s1)
-      (or (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))
-    (and (not (lacarte-string-match-p " > " s2))  (string-lessp s1 s2))))
+  "Return non-nil if S1 is a menu and S2 isn't, or S1 < S2 alphabetically."
+  (if (lacarte-string-match-p lacarte-menu-separator s1)
+      (or (not (lacarte-string-match-p lacarte-menu-separator s2))  (string-lessp s1 s2))
+    (and (not (lacarte-string-match-p lacarte-menu-separator s2))  (string-lessp s1 s2))))
 
 ;; Same as `icicle-propertize', in `icicles-fn.el'.
 (defun lacarte-propertize (object &rest properties)
@@ -575,28 +648,187 @@ in different ways, using `C-,'."
   (run-hooks 'menu-bar-update-hook)
   (let* ((lacarte-menu-items-alist  (lacarte-get-overall-menu-item-alist maps))
          (completion-styles         lacarte-completion-styles)
-         (completion-ignore-case    t)  ; Not case-sensitive, by default.
-         (menu-item                 (completing-read "Menu command: " lacarte-menu-items-alist
-                                                     nil t nil 'lacarte-history))
-         (cmd                       (cdr (assoc menu-item lacarte-menu-items-alist))))
+         (completion-ignore-case    t) ; Not case-sensitive, by default.
+         (icicle-sort-orders-alist  (append '(("by depth"  . lacarte-by-depth-p)
+                                              ("by length" . lacarte-by-length-p))
+                                            (and (boundp 'icicle-sort-orders-alist)
+                                                 icicle-sort-orders-alist)))
+         (icicle-sort-comparer      'icicle-case-string-less-p)
+         (choice                    (lacarte-read-menu-command
+                                     (let ((map  (car maps)))
+                                       (format "Menu command%s: " (if (cadr maps)
+                                                                      ""
+                                                                    (if (eq map 'local)
+                                                                        " (local)"
+                                                                      (if (eq map 'global)
+                                                                          " (global)"
+                                                                        " (minor modes)")))))))
+         (cmd                       (cdr (assoc choice lacarte-menu-items-alist))))
     (unless cmd (error "No such menu command"))
     ;; Treat special cases of `last-command-event', reconstructing it for
     ;; menu items that get their meaning from the click itself.
     (cond ((eq cmd 'menu-bar-select-buffer)
-           (string-match " >\\s-+\\(.+\\)\\s-+\\*?%?\\s-+\\S-*\\s-*$"
-                         menu-item)
-           (setq menu-item  (substring menu-item (match-beginning 1) (match-end 1)))
-           (when (string-match "  \\*?%?" menu-item)
-             (setq menu-item  (substring menu-item 0 (match-beginning 0))))
-           (setq last-command-event  menu-item))
+           (string-match (concat lacarte-menu-separator "\\s-*\\(.+\\)\\s-+\\*?%?\\s-+\\S-*\\s-*$") choice)
+           (setq choice  (substring choice (match-beginning 1) (match-end 1)))
+           (when (string-match "  \\*?%?" choice) (setq choice  (substring choice 0 (match-beginning 0))))
+           (setq last-command-event  choice))
           ((eq cmd 'menu-bar-select-yank)
-           (string-match "Edit > Select and Paste > \\(.*\\)$" menu-item)
-           (setq last-command-event  (substring menu-item (match-beginning 1) (match-end 1))))
+           (string-match "Edit > Select and Paste > \\(.*\\)$" choice)
+           (setq last-command-event  (substring choice (match-beginning 1) (match-end 1))))
           ((eq cmd 'menu-bar-select-frame)
-           (string-match " >\\s-[^>]+>\\s-+\\(.+\\)$" menu-item)
-           (setq menu-item           (substring menu-item (match-beginning 1) (match-end 1))
-                 last-command-event  menu-item)))
+           (string-match (concat " " lacarte-menu-separator
+				 "\\s-[^" lacarte-menu-separator "]+" lacarte-menu-separator
+				 "\\s-+\\(.+\\)$")
+                         choice)
+           (setq choice              (substring choice (match-beginning 1) (match-end 1))
+                 last-command-event  choice)))
     (call-interactively cmd)))
+
+(defvar lacarte-completion-keymap nil
+  "Completion keymap used by La Carte.
+`minibuffer-local-must-match-map', but with `SPC' self-inserting.")
+(unless lacarte-completion-keymap
+  (let ((map  (make-sparse-keymap)))
+    (define-key map (kbd "SPC") 'self-insert-command)
+    ;; (define-key map (kbd "?")   'self-insert-command)
+    (set-keymap-parent map minibuffer-local-must-match-map)
+    (setq lacarte-completion-keymap  map)))
+
+(defun lacarte-read-menu-command (prompt &optional nonmenu-ok-p)
+  "Read a menu command with completion.
+Optional NONMENU-OK-P means include nonmenu commands as candidates."
+  (let ((minibuffer-local-must-match-map  lacarte-completion-keymap))
+    (if (or (and (boundp 'icicle-mode)  icicle-mode)
+            (not (featurep 'sortie)))
+        ;; Icicles sorting or no sorting.
+        (completing-read prompt lacarte-menu-items-alist nil t nil 'lacarte-history)
+      (minibuffer-with-setup-hook #'sorti-bind-cycle-key-and-complete
+        (let ((sorti-current-order          'order1)
+              (sorti-sort-function-chooser  'lacarte-sort-fn-chooser)
+              (sorti-sort-orders-alist      `(,@(and nonmenu-ok-p  '((order0 . "menu items first")))
+                                              (order1 . "alphabetical")
+                                              (order2 . "by depth")
+                                              (order3 . "by length")
+                                              (order4 . "by last use as input")))
+              (sorti-sort-orders-ring       (let ((rng  (make-ring (if nonmenu-ok-p 5 4))))
+                                              (ring-insert rng 'order4)
+                                              (ring-insert rng 'order3)
+                                              (ring-insert rng 'order2)
+                                              (ring-insert rng 'order1)
+                                              (when nonmenu-ok-p (ring-insert rng 'order0))
+                                              rng)))
+          (completing-read prompt (lacarte-collection-function lacarte-menu-items-alist)
+                           nil t nil 'lacarte-history))))))
+
+(defun lacarte-collection-function (candidates)
+  "La Carte collection function, which provides metadata for sorting.
+Sorting is per the current value of `lacarte-sort-fn-chooser'.
+Sorting is available only if library `sortie.el' is used."
+  (if (and (boundp 'lexical-binding)  lexical-binding)
+      (lambda (string pred action)
+        (if (eq action 'metadata)
+            (let ((order  (lacarte-sort-fn-chooser)))
+              `(metadata ,@(and order
+                                `((display-sort-function . ,order)
+                                  (cycle-sort-function   . ,order)))))
+          (complete-with-action action candidates string pred)))
+    `(lambda (string pred action)
+       (if (eq action 'metadata)
+           (let ((order  (lacarte-sort-fn-chooser)))
+             `(metadata ,@(and order
+                               `((display-sort-function . ,order)
+                                 (cycle-sort-function   . ,order)))))
+         (complete-with-action action ',candidates string pred)))))
+
+;;; Don't bother with `case' or `cl-case'.  Too much trouble to support for multiple Emacs releases.
+;;;
+;;; (eval-when-compile (or (require 'cl-lib nil t) (require 'cl))) ;; case
+;;;
+;;; (defun lacarte-sort-fn-chooser ()
+;;;   "Return sort function for current value of `sorti-current-order'."
+;;;   (case (and (boundp 'sorti-current-order)  sorti-current-order)
+;;;     (order0 'lacarte-menu-first-p)
+;;;     (order1 'lacarte-sort-alphabetically)
+;;;     (order2 'lacarte-sort-by-depth)
+;;;     (order3 'lacarte-sort-by-length)
+;;;     (order4 'lacarte-sort-by-last-use-as-input)
+;;;     (t      lacarte-default-sort-function)))
+
+(defun lacarte-sort-fn-chooser ()
+  "Return sort function for current value of `sorti-current-order'."
+  (let ((order  (and (boundp 'sorti-current-order)  sorti-current-order)))
+    (cond ((eq order 'order0) 'lacarte-sort-menus-first)
+          ((eq order 'order1) 'lacarte-sort-alphabetically)
+          ((eq order 'order2) 'lacarte-sort-by-depth)
+          ((eq order 'order3) 'lacarte-sort-by-length)
+          ((eq order 'order4) 'lacarte-sort-by-last-use-as-input)
+          (t lacarte-default-sort-function))))
+
+(defun lacarte-sort-menus-first (candidates)
+  "Sort CANDIDATES that are menus before those that are command names.
+And sort the menus and the nonmenus alphabetically.
+This is used only if you use library `sortie.el'."
+  (let ((cands  (copy-sequence candidates))) (sort cands #'lacarte-menu-first-p)))
+
+(defun lacarte-sort-alphabetically (candidates)
+  "Sort CANDIDATES alphabetically.
+This is used only if you use library `sortie.el'."
+  (let ((cands  (copy-sequence candidates))) (sort cands #'string<)))
+
+(defun lacarte-sort-by-length (candidates)
+  "Sort CANDIDATES by their length.
+This is used only if you use library `sortie.el'."
+  (let ((cands  (copy-sequence candidates))) (sort cands #'lacarte-by-length-p)))
+
+(defun lacarte-by-length-p (s1 s2)
+  "True if length of menu item s1 is less than that of item s2."
+  (< (length s1) (length s2)))
+
+(defun lacarte-sort-by-depth (candidates)
+  "Sort menu-path CANDIDATES by their depth.
+Depth is the number of `lacarte-menu-separator's they contain.
+This is used only if you use library `sortie.el'."
+  (let ((cands  (copy-sequence candidates))) (sort cands #'lacarte-by-depth-p)))
+
+(defun lacarte-by-depth-p (s1 s2)
+  "True if depth of menu item s1 is less than that of item s2."
+  (< (lacarte-depth s1) (lacarte-depth s2)))
+
+(defun lacarte-depth (menu-path)
+  "Return the number of `lacarte-menu-separator's in `MENU-PATH.
+This can return the wrong number if any menu component itself contains
+`lacarte-menu-separator'.  This could happen, for example, with a
+menu such as `Buffers', where a buffer name could be anything."
+  (let ((sep    (regexp-quote lacarte-menu-separator))
+	(index  0)
+        (count  0))
+    (while (string-match sep menu-path index)
+      (setq count  (1+ count)
+	    index  (match-end 0)))
+    count))
+
+(defun lacarte-sort-by-last-use-as-input (candidates)
+  "Sort menu-path CANDIDATES by their last use as input.
+A previously used candidate sorts before one that's never been used.
+any two unused candidates are sorted alphabetically.
+This is used only if you use library `sortie.el'."
+  (let ((cands  (copy-sequence candidates))) (sort cands #'lacarte-by-last-input-p)))
+
+
+(defun lacarte-by-last-input-p (s1 s2)
+  "True if menu item s1 was input more recently than item s2."
+  (let ((hist     (and (symbolp minibuffer-history-variable) (boundp minibuffer-history-variable)
+                       (symbol-value minibuffer-history-variable)))
+        (s1-tail  ())
+        (s2-tail  ()))
+    (if (not (consp hist))
+        (string-lessp s1 s2)
+      (setq s1-tail  (member s1 hist)
+            s2-tail  (member s2 hist))
+      (cond ((and s1-tail  s2-tail)  (>= (length s1-tail) (length s2-tail)))
+            (s1-tail                 t)
+            (s2-tail                 nil)
+            (t                       (string-lessp s1 s2))))))
 
 (defun lacarte-get-overall-menu-item-alist (&optional maps)
   "Alist formed from menu items in current active keymaps.
@@ -644,8 +876,8 @@ Returns `lacarte-menu-items-alist', which it modifies."
   lacarte-menu-items-alist)
 
 ;;; Free vars here: ROOT, DONE.  Bound in `lacarte-get-a-menu-item-alist'.
-(defun lacarte-add-if-menu-item (event binding root done)
-  "Update `lacarte-menu-items-alist' to reflect EVENT and its BINDING.
+(defun lacarte-add-if-menu-item (_event binding root done)
+  "Update `lacarte-menu-items-alist' to reflect BINDING.
 ROOT is the accumulated part of a menu item so far.
 DONE is the alist of accumulated completion candidates so far.
 Ignore events that do not belong to menu-bar menus."
@@ -674,7 +906,7 @@ Ignore events that do not belong to menu-bar menus."
             (member :filter (cdr (cddr bndg))))
        (let ((filt  (cadr (member :filter (cdr (cddr bndg))))))
          (setq composite-name
-               (concat root (and root  " > ") (eval (cadr bndg))))
+               (concat root (and root  (concat " " lacarte-menu-separator " ")) (eval (cadr bndg))))
          ;; Used to concat also the cached key, but Emacs abandoned this in Emacs 23.
          ;; (let ((keys  (car-safe (cdr-safe (cdr-safe (cdr-safe bndg))))))
          ;;  (and (consp keys)  (stringp (cdr keys))  (cdr keys)))))
@@ -690,7 +922,9 @@ Ignore events that do not belong to menu-bar menus."
                      (eval (cadr enable-condition))
                    (error nil)))
              (progn
-               (setq composite-name  (concat root (and root  " > ") (eval (cadr bndg))))
+               (setq composite-name  (concat root
+                                             (and root  (concat " " lacarte-menu-separator " "))
+                                             (eval (cadr bndg))))
                (setq bndg   (car-safe (cdr-safe (cdr-safe bndg)))))
            (setq bndg  nil))))
 
@@ -698,7 +932,9 @@ Ignore events that do not belong to menu-bar menus."
       ;; (ITEM-STRING [HELP-STRING] . REAL-BINDING) or
       ;; (ITEM-STRING [HELP-STRING] (KEYBD-SHORTCUTS) . REAL-BINDING)
       ((stringp (car-safe bndg))
-       (setq composite-name  (concat root (and root  " > ") (eval (car bndg))))
+       (setq composite-name  (concat root
+                                     (and root  (concat " " lacarte-menu-separator " "))
+                                     (eval (car bndg))))
        (setq bndg   (cdr bndg))
        ;; Skip HELP-STRING
        (when (stringp (car-safe bndg)) (setq bndg  (cdr bndg)))
