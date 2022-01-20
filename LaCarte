@@ -74,6 +74,31 @@ have it offer only items from specific current menu-bar menus:
 
 
 
+== Completion Candidate Sorting and Cycling ==
+
+If you also use library [[Sortie]] (<tt>[[sortie.el]]</tt>), or if you use [[Icicles]], then:
+
+* You can change the ''sorting'' of completion candidates on the fly,
+with '''`##C-,##'''' (by default).  Available sort orders include ##by menu
+depth##, ##by menu length##, ##by last use as minibuffer input##,
+##alphabetical##, and (for `lacarte-execute-command' only) ##menu
+items first##.  If you use Icicles then additional sort orders are
+available.
+
+* You can ''cycle'' among matching candidates.  If you don't use
+Icicles then set option `completion-cycle-threshold' to non-`nil'
+to be able to cycle.  With vanilla Emacs (but not with Icicles),
+cycling and showing all matching completion candidates are
+mutually exclusive - `completion-cycle-threshold' controls
+whether and how many candidates to cycle among.
+
+
+
+
+
+
+
+
 [:IciclesEnhancesDining]
 == Icicles Enhances Dining A La Carte ==
 
