@@ -1,3 +1,11 @@
+= Emacs 29+ =
+
+Emacs 29+ has native support for smooth scrolling, enable it with
+
+{{{
+(pixel-scroll-precision-mode)
+}}}
+
 = mouse wheel & keyboard scroll one line at a time =
 
     ;; scroll one line at a time (less "jumpy" than defaults)
