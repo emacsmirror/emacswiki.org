@@ -2,6 +2,7 @@ This page is about '''[::Isearch+]''', that is,  library '''<tt>[[isearch+.el]]<
 
 ----
 
+[:isearch-prop.elFeatures]
 == isearch-prop.el Features ==
 
 These are the main '''<tt>[[isearch-prop.el]]</tt>''' features:
