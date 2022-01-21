@@ -118,6 +118,19 @@ Alternatively, for manual installation:
   $ wget https://github.com/webframp/sicp-info/raw/master/sicp.info
   $ install-info sicp.info dir
 
+=== Book "Advanced Bash-Scripting Guide" ===
+
+Home page of the book: https://hangar118.sdf.org/p/bash-scripting-guide-home/
+
+Download and install:
+
+  $ mkdir -p ~/.local/share/info
+  $ cd ~/.local/share/info
+  $ wget https://hangar118.sdf.org/p/bash-scripting-guide-home/bash-scripting-guide.info
+  $ install-info --add-once bash-scripting-guide.info dir
+
+For more installation suggestions and configuration options of the standalone GNU Info visit the home page of the book
+
 === Common Lisp Spec ===
 
   $ mkdir /tmp/cl-info
