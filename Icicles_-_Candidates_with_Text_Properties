@@ -277,7 +277,19 @@ A value of `t' presents the face name itself in the face it names.
 
 Here is a screenshot showing some of the face-name candidates:
 
+[:FaceCandidatesSansSwatches]
 [[image:DrewsEmacsFaceNameCompletions]]
+
+And here's one showing them using separate swatches:
+
+[:FaceCandidatesWithSwatches]
+[[image:DrewsEmacsFaceNameSwatches]]
+
+
+
+
+
+
 
 '''See Also:''' 
 
