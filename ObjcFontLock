@@ -2,7 +2,7 @@
 
 Objective-C use a syntax for method calls it has inherited from Smalltalk. Unfortunately, this syntax is frustratingly hard to read -- when browsing through code, method calls tend to "disappear" as they are different from normal C function calls.
 
-By highlighting method calls, it is possible to read the same piece of code faster and more accurate.
+By highlighting method calls, it is possible to read the same piece of code faster and more accurately.
 
 == Getting the package ==
 
