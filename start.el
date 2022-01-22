@@ -4,13 +4,13 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec 13 14:41:33 2021 (-0800)
+;; Last-Updated: Sat Jan 22 10:17:59 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 3110
+;;     Update #: 3112
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2022/01/22 dadams
+;;     Don't require find-func+.el for Emacs 26+.
 ;; 2021/12/13 dadams
 ;;     Require da-setup.el, renamed from setup.el.
 ;; 2021/11/09 dadams
@@ -721,7 +723,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
     '(progn (require 'imenu+ nil t)
       (add-hook 'c-mode-common-hook
        (lambda () (condition-case nil (imenup-add-defs-to-menubar) (error nil)))))))
-(when (> emacs-major-version 21) (eval-after-load "find-func" '(require 'find-func+ nil t)))
+(when (and (> emacs-major-version 21)  (< emacs-major-version 26))
+  (eval-after-load "find-func" '(require 'find-func+ nil t)))
 ;(eval-after-load "vc" '(require 'vc+)) ; Extensions to `vc.el'.
 (autoload 'insert-time-string "insert-time-string" "Insert current time at point." t)
 (autoload 'display-line-numbers "line-num"
@@ -801,7 +804,6 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (defalias 'toggle-scroll-bar-mode 'scroll-bar-mode)
 (defalias 'toggle-standard-display-european 'standard-display-european)
 (defalias 'toggle-transient-mark-mode 'transient-mark-mode)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; start.el ends here
