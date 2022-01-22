@@ -4,16 +4,16 @@
 ;; Description: Extensions to `find-func.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2008-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2022, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  7 14:17:06 2008 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:33:55 2018 (-0800)
+;; Last-Updated: Sat Jan 22 10:26:35 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 42
+;;     Update #: 45
 ;; URL: https://www.emacswiki.org/emacs/download/find-func%2b.el
 ;; Keywords: emacs-lisp, functions, variables
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -38,6 +38,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/22 dadams
+;;     This library is not needed for Emacs 26 or later.
+;;     Rquire find-func.el (inhibits byte-compiler warnings).
 ;; 2011/06/15 dadams
 ;;     find-library-other-window: Require find-func.el.
 ;; 2008/09/07 dadams
@@ -66,12 +69,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'find-func)
+
 ;;;###autoload
 (defun find-library-other-window (library)
   "Find the Emacs-Lisp source of LIBRARY in another window."
   (interactive
    (progn (require 'find-func)
-          (let* ((path  (cons (or find-function-source-path load-path)
+          (let* ((path  (cons (or find-function-source-path  load-path)
                               (find-library-suffixes)))
                  (def   (if (eq (function-called-at-point) 'require)
                             (save-excursion (backward-up-list)
