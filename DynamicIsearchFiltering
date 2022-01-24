@@ -19,7 +19,7 @@ This lets you search only given zones of text, where those zones can be defined 
 
 
 
-
+[:IsearchFilterPredicates]
 == Isearch Filter Predicates ==
 
 
@@ -37,7 +37,7 @@ The value of standard variable (but not a user option) '''`isearch-filter-predic
 
 
 
-
+[:UsingFilterPredicatesEasily]
 === Using Filter Predicates Easily ===
 
 If you search the Emacs Lisp source code, you will find only two uses, so far, of variable `isearch-filter-predicate', even though such filtering has been around since Emacs 23.  It's hardly ever used.  Why?  
@@ -53,7 +53,7 @@ The idea is simple: Isearch+ defines some keys that prompt you for a filter.  Yo
 
 
 
-
+[:AFilterPredicateCanHelpYouSearch]
 === A Filter Predicate Can Help You Search ===
 
 A filter predicate does essentially the same thing as the search pattern that you type at the Isearch prompt. Each restricts the search space (the buffer text) to certain zones: those that satisfy the predicate and those that match the search pattern.
@@ -106,7 +106,7 @@ to predicate `isearchp-show-hit-w-crosshairs'.)
 
 
 
-
+[:WhatYouCanDo]
 == What You Can Do ==
 
 Here are some of the things you can do using dynamic filtering:
@@ -155,7 +155,7 @@ Here are some of the things you can do using dynamic filtering:
 
 
 
-
+[:FilteringCommandsAvailableDuringSearch]
 == Filtering Commands Available During Search ==
 
 The following commands are available during Isearch.  They are all on prefix key '''`##C-z##'''', by default.  They are on
