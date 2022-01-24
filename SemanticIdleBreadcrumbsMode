@@ -35,7 +35,7 @@ void member_function (int a, int b) | outer_namespace::inner_namespace::class
 
 Q: Could you specify how you achieved the format in the screenshot?
 
-A: That is done by setting `semantic-idle-breadcrumbs-format-tag-list-function` to `semantic-idle-breadcrumbs--format-innermost-first`
+A: That is done by setting `semantic-idle-breadcrumbs-format-tag-list-function' to `semantic-idle-breadcrumbs--format-innermost-first'.
 
 == Alternatives ==
 
