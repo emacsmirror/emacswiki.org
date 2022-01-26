@@ -4,13 +4,13 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2020.01.04
+;; Version: 2022.01.26
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan  3 10:35:18 2020 (-0800)
+;; Last-Updated: Wed Jan 26 10:48:22 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 23739
+;;     Update #: 23741
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -27,24 +27,26 @@
 ;;   `col-highlight', `color', `crosshairs', `cus-edit', `cus-face',
 ;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
 ;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
-;;   `easymenu', `eieio', `eieio-core', `eieio-loaddefs',
-;;   `el-swank-fuzzy', `epg-config', `ffap', `ffap-', `fit-frame',
-;;   `flx', `font-lock', `font-lock+', `format-spec', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `gv', `help+', `help-fns',
-;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
-;;   `highlight', `hl-line', `hl-line+', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `image',
-;;   `image-dired', `image-file', `image-mode', `info', `info+',
-;;   `isearch+', `isearch-prop', `kmacro', `levenshtein', `macroexp',
-;;   `mb-depth', `mb-depth+', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `password-cache', `pp', `pp+', `radix-tree', `replace', `ring',
-;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
-;;   `url-parse', `url-vars', `vline', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `facemenu',
+;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `fit-frame',
+;;   `flx', `font-lock', `font-lock+', `font-lock-menus',
+;;   `format-spec', `frame-cmds', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `hl-line', `hl-line+', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
+;;   `icicles-opt', `icicles-var', `image', `image-dired',
+;;   `image-file', `image-mode', `info', `info+', `isearch+',
+;;   `isearch-prop', `kmacro', `levenshtein', `macroexp', `mb-depth',
+;;   `mb-depth+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `package', `palette',
+;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
