@@ -138,3 +138,11 @@ If you are running native compilation from a script, you will need to block the 
     (while (or comp-files-queue
                (> (comp-async-runnings) 0))
       (sleep-for 1))
+
+== Troubleshooting ==
+
+=== Very slow load times ===
+
+If you're running anti-virus software, each native-compiled library may get scanned for viruses when loaded, which can have a dramatic impact on loading performance, especially when starting Emacs for the first time in a session.
+
+If you're experiencing such slowness, test disabling your anti-virus to see whether that's the cause.
