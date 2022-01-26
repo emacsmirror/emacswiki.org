@@ -431,7 +431,16 @@ The intention is similar, but usage is noticeably different.
 While use-package to specifies information about package and it's usage, setup is less declarative and just provides a set of context-sensitive local macros, that are simply substituted.
 
 The higher level of abstraction allows use-package to hide some of the complexity, by transparently reordering everything into the right order.
-The downside is that it is easy to get lost or forget what use-package is doing. Each setup macro on the other hand intends to encapsulate one common configuration action, and simplify the syntax. Take the FlyMake example from above. That is expanded into the following code:
+The downside is that it is easy to get lost or forget what use-package is doing. Each setup macro on the other hand intends to encapsulate one common configuration action, and simplify the syntax. The FlyMake example from above:
+
+{{{
+(setup flymake
+  (:bind "M-n" #'flymake-goto-next-error
+         "M-p" #'flymake-goto-prev-error)
+  (:hook-into prog-mode))
+}}}
+
+...is expanded into the following code:
 
 {{{
 (progn
