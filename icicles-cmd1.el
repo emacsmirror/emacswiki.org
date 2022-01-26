@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Apr 15 14:35:00 2021 (-0700)
+;; Last-Updated: Wed Jan 26 10:20:31 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 27649
+;;     Update #: 27654
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -35,7 +35,7 @@
 ;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
 ;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `palette', `password-cache', `pp', `pp+', `radix-tree',
+;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
 ;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
 ;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
 ;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
@@ -902,10 +902,12 @@ customize option `icicle-top-level-key-bindings'."
 
 ;; REPLACE ORIGINAL in `pp.el':
 ;;
+;; 0. If `pp+.el' is loaded then just use its definition of `pp-display-expression'.
 ;; 1. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
 ;; 2. Call `font-lock-fontify-buffer'.
+;; 3. Provide undo to buffer OUT-BUFFER-NAME.
 ;;
-;; Same as `pp-display-expression' definition in `pp+.el'.
+;; Same as `pp-display-expression' definition in `pp+.el', but without tooltip support.
 ;;
 (defun icicle-pp-display-expression (expression out-buffer-name)
   "Prettify and show EXPRESSION.
@@ -940,6 +942,7 @@ OUT-BUFFER-NAME."
         (pp expression)
         (with-current-buffer standard-output
           (setq buffer-read-only  nil)
+          (buffer-enable-undo)
           ;; Avoid `let'-binding because `change-major-mode-hook' is local.  IOW, avoid runtime
           ;; message: "Making change-major-mode-hook buffer-local while locally let-bound!"
           ;; Suggestion from Stefan M.: Set these hooks instead of binding, because they are not
@@ -3075,7 +3078,7 @@ See also:
    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching
    ;; in `icicle-unsorted-apropos-candidates' etc., because `icicle-describe-opt-of-type-complete'
    ;; does everything.
-   (icicle-apropos-complete-match-fn   nil)
+   (icicle-apropos-complete-match-fn       nil)
    (icicle-last-apropos-complete-match-fn  'icicle-multi-comp-apropos-complete-match)
    (icicle-candidate-help-fn               'icicle-describe-opt-action)
    (icicle-pref-arg                        current-prefix-arg))
