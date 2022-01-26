@@ -4,11 +4,11 @@
 ;; Description: Internal variables for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2020, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sat Dec  5 10:03:14 2020 (-0800)
+;; Last-Updated: Wed Jan 26 09:57:37 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1898
+;;     Update #: 1901
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -30,7 +30,7 @@
 ;;   `hl-line', `hl-line+', `icicles-opt', `info', `info+', `kmacro',
 ;;   `levenshtein', `macroexp', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `naked', `package', `password-cache', `pp', `pp+',
-;;   `radix-tree', `replace', `second-sel', `seq', `strings',
+;;   `radix-tree', `rect', `replace', `second-sel', `seq', `strings',
 ;;   `syntax', `tabulated-list', `text-mode', `thingatpt',
 ;;   `thingatpt+', `url-handlers', `url-parse', `url-vars', `vline',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
@@ -887,7 +887,7 @@ Any function that reads from the minibuffer and accepts a default
 value or initial value should, before reading, put that value in
 `icicle-initial-value'.  For example, `completing-read' does that.
 
-In addition, `completing-read' and `read-file-name' respect this
+In addition, `completing-read' and `read-file-name' will respect this
 value, using it as the initial value if none is provided explicitly.
 This means that you can bind `icicle-initial-value' around an
 expression that calls `completing-read' or `read-file-name', and the
