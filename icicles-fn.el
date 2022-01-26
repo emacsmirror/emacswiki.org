@@ -4,11 +4,11 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Apr 10 18:11:45 2021 (-0700)
+;; Last-Updated: Wed Jan 26 09:59:07 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15307
+;;     Update #: 15308
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -30,7 +30,7 @@
 ;;   `hl-line', `hl-line+', `icicles-opt', `icicles-var', `info',
 ;;   `info+', `kmacro', `levenshtein', `macroexp', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `package',
-;;   `password-cache', `pp', `pp+', `radix-tree', `replace',
+;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
 ;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
 ;;   `text-mode', `thingatpt', `thingatpt+', `url-handlers',
 ;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
