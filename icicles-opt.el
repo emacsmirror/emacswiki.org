@@ -4,11 +4,11 @@
 ;; Description: User options (customizable variables) for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Apr 10 18:03:16 2021 (-0700)
+;; Last-Updated: Wed Jan 26 09:55:59 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 6236
+;;     Update #: 6237
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -30,7 +30,7 @@
 ;;   `hl-line+', `info', `info+', `kmacro', `levenshtein',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
-;;   `replace', `second-sel', `seq', `strings', `syntax',
+;;   `rect', `replace', `second-sel', `seq', `strings', `syntax',
 ;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
 ;;   `url-handlers', `url-parse', `url-vars', `vline',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
