@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Apr 15 14:33:00 2021 (-0700)
+;; Last-Updated: Wed Jan 26 10:38:52 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 11920
+;;     Update #: 11923
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2022/01/26 dadams
+;;     icicle-pp-display-expression: Add undo (sync def with that in pp+.el).
 ;; 2021/04/15 dadams
 ;;     icicle-file-of-content-apropos-complete-match: Typo: file-name -> input, for date transform.
 ;;     icicle-locate-file-of-content:
@@ -9392,6 +9394,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2022/01/26 dadams
+;;     Version 2022.01.26
 ;; 2020/01/03 dadams
 ;;     Version 2020.01.04
 ;; 2018/10/15 dadams
