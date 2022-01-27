@@ -4,36 +4,39 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 26 13:57:33 2021 (-0800)
+;; Last-Updated: Thu Jan 27 14:20:01 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1365
+;;     Update #: 1368
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
-;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
-;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `facemenu',
-;;   `facemenu+', `faces', `faces+', `fit-frame', `font-lock',
-;;   `font-lock+', `font-lock-menus', `frame-cmds', `frame-fns',
-;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
-;;   `help-macro+', `help-mode', `hexrgb', `highlight',
-;;   `highlight-symbol', `hl-line', `hl-line+', `info', `info+',
-;;   `isearch+', `isearch-prop', `iso-transl', `kmacro', `macroexp',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
-;;   `mouse+', `mwheel', `naked', `palette', `pp', `pp+',
-;;   `radix-tree', `rect', `replace', `replace+', `ring',
-;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
-;;   `thingatpt+', `timer', `vline', `w32browser-dlgopen',
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `color', `crosshairs', `cus-edit', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `custom', `doremi',
+;;   `doremi-cmd', `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `highlight-symbol',
+;;   `hl-line', `hl-line+', `info', `info+', `isearch+',
+;;   `isearch-prop', `iso-transl', `kmacro', `macroexp', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
+;;   `mwheel', `naked', `package', `palette', `password-cache', `pp',
+;;   `pp+', `radix-tree', `rect', `replace', `replace+', `ring',
+;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
+;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
+;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
 ;;   `wid-edit', `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,6 +87,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/27 dadams
+;;     Use vanilla Emacs 26+ for find-library-other-*.
 ;; 2021/11/26 dadams
 ;;     Emacs 27+: Bind C-x down-mouse-1 to mouse-drag-region-rectangle.
 ;; 2021/02/08 dadams
@@ -787,9 +792,13 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (define-key ctl-x-4-map "1" 'delete-other-frames)                          ; `C-x 4 1'
     (define-key ctl-x-5-map "h" 'show-*Help*-buffer)))                         ; `C-x 5 h'
 
-(eval-after-load "find-func+"           ; Emacs 22+
-  '(define-key ctl-x-4-map "l" 'find-library-other-window))                    ; `C-x 4 l'
-(find-function-setup-keys)  ;; C-x F, C-x 4 F, C-x 5 F, C-x K, C-x V, C-x 4 V, C-x 5 V
+(if (not (and (> emacs-major-version 25)  (require 'find-func nil t)))
+    (eval-after-load "find-func+"       ; Emacs 22 - Emacs 25.
+      '(define-key ctl-x-4-map "l" 'find-library-other-window))
+  (define-key ctl-x-4-map "l" 'find-library-other-window)                      ; `C-x 4 l'
+  (define-key ctl-x-5-map "l" 'find-library-other-frame))                      ; `C-x 5 l'
+(eval-after-load "find-func"
+  '(find-function-setup-keys))  ;; C-x F, C-x 4 F, C-x 5 F, C-x K, C-x V, C-x 4 V, C-x 5 V
 
 ;; [f1] function key.
 ;;; (eval-after-load "help+"
