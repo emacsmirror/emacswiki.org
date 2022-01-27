@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 14 12:11:41 2022 (-0800)
+;; Last-Updated: Thu Jan 27 15:16:11 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 458
+;;     Update #: 459
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
@@ -138,6 +138,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/27 dadams
+;;     pp-read--expression: Turn on eldoc-mode (that was added for Emacs 26+).
 ;; 2022/01/14 dadams
 ;;     pp-display-expression: Use ', for out-buffer-name in constructed lambda.  Enable undo in output.
 ;; 2018/06/29 dadams
@@ -280,6 +282,7 @@ A value of nil means no limit."
        (lambda ()                       ; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
          (add-function :before-until (local 'eldoc-documentation-function)
                        #'elisp-eldoc-documentation-function)
+         (eldoc-mode 1)
          (add-hook 'completion-at-point-functions
                    #'elisp-completion-at-point nil t)
          (run-hooks 'eval-expression-minibuffer-setup-hook))
