@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 11 09:43:31 2021 (-0800)
+;; Last-Updated: Fri Jan 28 13:15:44 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 13072
+;;     Update #: 13088
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -18,24 +18,27 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `autofit-frame', `avoid', `backquote',
-;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-lib', `cmds-menu', `col-highlight', `crosshairs',
-;;   `custom', `dired', `dired+', `dired-aux', `dired-loaddefs',
-;;   `dired-x', `doremi', `doremi-frm', `easymenu', `facemenu',
-;;   `facemenu+', `faces', `faces+', `fit-frame', `font-lock',
-;;   `font-lock+', `font-lock-menus', `format-spec', `frame-cmds',
-;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
-;;   `hl-line', `hl-line+', `image', `image-dired', `image-file',
-;;   `image-mode', `info', `info+', `kmacro', `macroexp', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mwheel', `naked',
-;;   `palette', `pp', `pp+', `radix-tree', `rect', `replace', `ring',
-;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
-;;   `thingatpt+', `timer', `vline', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
+;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
+;;   `help-macro+', `help-mode', `hexrgb', `highlight', `hl-line',
+;;   `hl-line+', `image', `image-dired', `image-file', `image-mode',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mwheel', `naked', `package',
+;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -882,6 +885,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/01/28 dadams
+;;     dired-buffers-for-dir:
+;;       Revert to using dired-in-this-tree, not file-in-directory-p.  (Previous Emacs 28 change was wrong.)
+;;       Apply expand-file-name to DIR, not to result of file-name-as-directory.
+;;     dired-hide-details-mode: Update for Emacs 28 - include wdired-mode for derived-mode-p.
+;;     Everywhere: No need any more to apply expand-file-name to arg of dired-buffers-for-dir.
 ;; 2021/12/11 dadams
 ;;     diredp-display-image: Removed unneeded binding of inhibit-changing-match-data (deprecated in Emacs 29).
 ;; 2021/12/10 dadams
@@ -5394,7 +5403,7 @@ instead of collecting all files if none are marked.
 
 If there is more than one Dired buffer for DIRECTORY then raise an
 error."
-  (let ((dbufs  (dired-buffers-for-dir (expand-file-name directory))))
+  (let ((dbufs  (dired-buffers-for-dir directory)))
     (dolist (file  (if (not dbufs)
                        (and (not only-marked-p)  (directory-files directory 'FULL diredp-re-no-dot))
                      (when (cadr dbufs) (error "More than one Dired buffer for `%s'" directory))
@@ -5732,8 +5741,7 @@ satisfy PREDICATE are included in the result."
                        (not (member (file-truename file) diredp-files-within-dirs-done))
                        (file-accessible-directory-p file))
               (setq res  (diredp-files-within-1 (or (and (functionp file-list)
-                                                         (dired-buffers-for-dir
-                                                          (expand-file-name file)) ; Removes killed buffers.
+                                                         (dired-buffers-for-dir file) ; Removes killed buffers.
                                                          (with-current-buffer
                                                              (cdr (assoc (file-name-as-directory file)
                                                                          dired-buffers))
@@ -5786,9 +5794,7 @@ Non-interactively:
                                "Insert this dir into ancestor dir: "
                                (mapcar #'list (diredp-ancestor-dirs default-directory)))
                               t)))
-    (let ((child-dired-buf  (if in-dired-now-p
-                                (current-buffer)
-                              (dired-buffers-for-dir (expand-file-name child))))
+    (let ((child-dired-buf  (if in-dired-now-p (current-buffer) (dired-buffers-for-dir child)))
           (switches         ())
           (marked           ()))
       (when (consp child-dired-buf)
@@ -6460,7 +6466,7 @@ When called from Lisp, optional arg DETAILS is passed to
         dbufs)
     (when (and msgp  sdirs) (message "Checking descendant directories..."))
     (dolist (dir  (cons default-directory sdirs))
-      (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+      (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
           (let ((bname  (bookmark-buffer-name))
                 (count  2))
@@ -6768,7 +6774,7 @@ When called from Lisp:
       (unless (char-displayable-p new) (error "Not a displayable character: `%c'" new))
       (message "Changing mark `%c' to `%c'..." old new)
       (dolist (dir  (cons default-directory sdirs))
-        (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+        (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
           (with-current-buffer (car dbufs)
             (let ((inhibit-read-only  t)
                   (file               nil))
@@ -6837,7 +6843,7 @@ When called from Lisp:
           (message "Unmarking ALL marks here and below...")
         (message "Unmarking mark `%c' here and below..." mark))
       (dolist (dir  (cons default-directory sdirs))
-        (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+        (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
           (with-current-buffer (car dbufs)
             (let ((inhibit-read-only  t)
                   (file               nil))
@@ -6978,7 +6984,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
         dbufs chg.mtch)
     (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking"))
     (dolist (dir  (cons default-directory sdirs))
-      (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+      (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
           (setq chg.mtch  (diredp-mark-if (and (not (diredp-looking-at-p dired-re-dot))
                                                (not (eolp)) ; Empty line
@@ -7034,7 +7040,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
         dbufs chg.mtch)
     (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking"))
     (dolist (dir  (cons default-directory sdirs))
-      (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+      (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
           (setq chg.mtch
                 (diredp-mark-if
@@ -7191,7 +7197,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
            (changed            0)
            dbufs chg.mtch mode nlink uid gid size time name sym)
       (dolist (dir  (cons default-directory (diredp-get-subdirs ignorep nil details)))
-        (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+        (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
           (with-current-buffer (car dbufs)
             (setq chg.mtch
                   (diredp-mark-if
@@ -7397,7 +7403,7 @@ When called from Lisp, optional arg DETAILS is passed to
          dbufs chg.mtch)
     (message "%s %s..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") plural)
     (dolist (dir  (cons default-directory sdirs))
-      (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+      (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
           (setq chg.mtch  (diredp-mark-if (eval predicate-sexp) singular)
                 changed   (+ changed (or (car chg.mtch)  0))
@@ -7922,7 +7928,7 @@ When called from Lisp, optional arg DETAILS is passed to
             (let ((sdirs  (diredp-get-subdirs nil nil details))
                   dbufs)
               (dolist (dir  (cons default-directory sdirs))
-                (when (setq dbufs  (dired-buffers-for-dir (expand-file-name dir))) ; Dirs with Dired buffers only.
+                (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
                   (with-current-buffer (car dbufs) (dired-revert))))))
         (message "OK. NO deletions performed")))))
 
@@ -9192,35 +9198,33 @@ Non-interactively:
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
 ;; 1. Allow for consp `dired-directory' too.
-;; 2. Updated for Emacs 28: Added optional arg SUBDIRS.
+;; 2. Updated for Emacs 28: Added optional arg SUBDIRS-P.
 ;; 3. Fix for Emacs bug #52395.  Expand DIR with `default-directory', so `file-name-as-directory' gets applied to
 ;;    absolute name.  Otherwise, (dired-buffers-for-dir "~/some/dir/") returns nil, because the element in
 ;;    `dired-subdir-alist' is ("/the/home/dir/some/dir/" . #<buffer dir>), not ("~/some/dir/" . #<buffer dir>).
 ;;
-(defun dired-buffers-for-dir (dir &optional file subdirs)
+(defun dired-buffers-for-dir (dir &optional file subdirs-p)
   "Return a list of buffers that Dired DIR (top level or in-situ subdir).
 DIR is automatically expanded with `expand-file-name' using the
  `default-directory'.  If you need expansion relative to some other
  directory then do that before calling `dired-buffers-for-dir'.
 If FILE is non-nil, include only those whose wildcard pattern (if any)
  matches FILE.
-If SUBDIRS is non-nil, also include the dired buffers of directories
+If SUBDIRS-P is non-nil, also include the dired buffers of directories
  below DIR.
 
 The list is in reverse order of buffer creation, most recent last.
 As a side effect, killed Dired buffers for DIR are removed from
  `dired-buffers'."
-  (setq dir  (expand-file-name (file-name-as-directory dir)))
+  (setq dir  (file-name-as-directory (expand-file-name dir)))
   (let (result buf)
     (dolist (elt  dired-buffers)
       (setq buf  (cdr elt))
       (cond ((null (buffer-name buf))   ; Buffer is killed - clean up.
              (setq dired-buffers  (delq elt dired-buffers)))
-            ((or (and (fboundp 'file-in-directory-p) ; Emacs 24+
-                      (file-in-directory-p (car elt) dir))
-                 (dired-in-this-tree dir (car elt)))
+            ((dired-in-this-tree (car elt) dir)
              (with-current-buffer buf
-               (and (or (and subdirs  (fboundp 'file-in-directory-p))  (assoc dir dired-subdir-alist))
+               (and (or subdirs-p  (assoc dir dired-subdir-alist))
                     (or (null file)
                         (if (stringp dired-directory)
                             ;; Allow for consp `dired-directory' too.
@@ -11537,7 +11541,7 @@ show an image preview, then do so.  Otherwise, show text help."
           "Hide details in Dired mode."
           (and diredp-hide-details-propagate-flag  diredp-hide-details-last-state)
           :group 'dired
-          (unless (derived-mode-p 'dired-mode) (error "Not a Dired buffer"))
+          (unless (derived-mode-p 'dired-mode 'wdired-mode) (error "Not a Dired buffer"))
           (dired-hide-details-update-invisibility-spec)
           (setq diredp-hide-details-toggled  t)
           (when diredp-hide-details-propagate-flag
