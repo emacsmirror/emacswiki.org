@@ -450,5 +450,46 @@ Returns t if frame has focus or nil if"
 }}}
 
 The usage there is not exactly the same but with this functions I'm sure similar things can be accomplished
+
+== Ivy completion for erc buffers ==
+
+This example erc-extending minor mode brings the power of ivy to erc buffer switching.
+
+<pre>
+;; -*- coding: utf-8; lexical-binding: t -*-
+;;; ivy-erc --- Ivy extensions for erc.
+
+;;; Commentary:
+
+;;; Code:
+
+(require 'ivy)
+(require 'erc)
+
+(define-minor-mode ivy-erc
+  "Add some useful functionality to the default racket-mode."
+  :lighter " ivy-erc"
+  :keymap (make-sparse-keymap))
+
+(defun ivy-erc-switch-buffer (&optional arg)
+  "Switch open erc buffer with ivy completion."
+  (interactive)
+  (let ((proc (unless arg erc-server-process)))
+    (ivy-read "IRC channel: "
+              (mapcar 'buffer-name
+                      (erc-buffer-filter
+                       (let ((buf (current-buffer)))
+                         (lambda ()
+                           (not (eq buf (current-buffer)))))
+                       proc))
+              :action 'switch-to-buffer
+              :require-match t
+              :caller 'ivy-erc-switch-buffer)))
+
+
+(provide 'ivy-erc)
+;;; ivy-erc.el ends here
+</pre>
+
 ----
 [[ERC]]
