@@ -67,3 +67,18 @@ I like the zoom-frm.el functionality, unfortunately Emacs now tells me that 'Pac
 
 -- DennisVanDok 2022-01-31 16:14 UTC
 
+
+----
+
+@DennisVanDoc:
+
+There's no problem - you can ignore that warning.
+
+[[zoom-frm.el]] (and most of my other libraries) is compatible with multiple Emacs releases.  Depending on which release you use when you byte-compile it, you'll get different byte-compiler warnings.
+
+Deprecated libraries are still supported - deprecation does not mean desupport.
+
+The use of library ##cl.el## by ##zoom-frame.el## is only for macro `case' --- the library is not loaded when you use Emacs (runtime). It's loaded only for byte-compilation: ##(eval-when-compile (require 'cl))##
+
+-- DrewAdams 2022-01-31 19:08 UTC
+
