@@ -4,12 +4,12 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Wed Aug 25 09:25:22 2021 (-0700)
+;; Last-Updated: Fri Feb  4 13:39:14 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 2392
+;;     Update #: 2397
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
@@ -116,7 +116,11 @@
 ;;  Load this library after loading the standard GNU file
 ;;  `thingatpt.el'.  You can put this in your init file (`~/.emacs'):
 ;;
-;;    (eval-after-load "thingatpt" '(require 'thingatpt+))
+;;    (eval-after-load 'thingatpt '(require 'thingatpt+))
+;;
+;;  (If you use Emacs 20, where the first arg to `eval-after-load'
+;;  must be a file name, then use the appropriate file name for
+;;  thingatpt.el.  See `C-h f eval-after-load' for arg FILE.)
 ;;
 ;;  That defines new functions and improved versions of some of the
 ;;  standard thing-at-point functions.  All such functions have the
@@ -131,7 +135,7 @@
 ;;  `bounds-of-thing-at-point' symbol properties for standard thing
 ;;  types (e.g. `list'), then put this in your init file, instead:
 ;;
-;;    (eval-after-load "thingatpt"
+;;    (eval-after-load 'thingatpt
 ;;      '(when (require 'thingatpt+)
 ;;         (tap-put-thing-at-point-props))
 ;;
@@ -156,7 +160,7 @@
 ;;  To get the most out of this library, I recommend that you put
 ;;  (only) the following in your init file:
 ;;
-;;    (eval-after-load "thingatpt"
+;;    (eval-after-load 'thingatpt
 ;;      '(when (require 'thingatpt+)
 ;;         (tap-redefine-std-fns))
 ;;
