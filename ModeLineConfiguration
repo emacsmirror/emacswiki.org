@@ -36,6 +36,7 @@ There is an interactive [[CustomizingAndSaving|Customization]] group for the mod
 
 == Mode-Line Enhancements ==
 
+* DelightedModes -- Customise how major and minor modes appear in the mode-line.
 * HideModeLine -- Save screen real estate by hiding the mode-line.
 * LunarModeLine -- Display current lunar phase in the modeline.
 * ModeLineDirtrack -- show the buffer's current directory in the mode-line.
