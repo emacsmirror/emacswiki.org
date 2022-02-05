@@ -14,7 +14,7 @@ Here are some other libraries and modes extending <code>ffap</code>,
 * PerlDevelopEnvironment - another find perl modules
 * PythonMode (the python.el one) -- module file in python path
 * RpmSpecMode -- find patches in <code>../SOURCES</code>
-* <tt>[[ffap-.el]]</tt> -- inhibit using ffap in Dired, so you can use [[completion]] for the file name instead of just getting the file name under the [[cursor]]
+* <tt>[[ffap-.el]]</tt> -- extensions to standard lib ##ffap.el##
 * [[Icicles - Inserting Text from Cursor]] -- using FFAP with [[Icicles]]
 * [http://user42.tuxfamily.org/ffap-gcc-path/index.html ffap-gcc-path.el] -- <code>ffap-c-path</code> from GCC include path
 * [http://user42.tuxfamily.org/ffap-href/index.html ffap-href.el] -- URL/file in <code><a href=""></code> etc
