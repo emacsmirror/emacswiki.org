@@ -36,11 +36,11 @@ Modifying multiple modes:
 
 The first argument is the mode symbol.
 
-The second argument is the replacement name to use in the mode line (or ##nil## to hide it).
+The second argument is the replacement lighter/name to use in the mode line (or ##nil## to hide it).
 
 The third argument is either the keyword ##:major## for major modes or, for minor modes, the library which defines the mode. This is passed to `eval-after-load' and so should be either the name (as a string) of the library file which defines the mode, or the feature (symbol) provided by that library. If this argument is ##nil##, the mode symbol will be passed as the feature. If this argument is either ##t## or ##'emacs## then it is assumed that the mode is already loaded (you can use this with standard minor modes that are pre-loaded by default when Emacs starts).
 
-In the above example, ##rainbow-mode## is the symbol for both the minor mode and the feature which provides it, and its lighter text will be hidden from the mode line.
+In the above examples, ##rainbow-mode## is the symbol for both the minor mode and the feature which provides it, and its lighter text will be hidden from the mode line.
 
 To determine which library defines a mode, use e.g.: ##C-h f eldoc-mode RET##. The name of the library is displayed in the first paragraph, with an ".el" suffix (in this example it displays "eldoc.el", and therefore we could use the value "eldoc" for the library).
 
