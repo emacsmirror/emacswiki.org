@@ -2,6 +2,8 @@
 
 The example usage below would reduce ##(Emacs-Lisp Rbow Smrt ElDoc Abbrev Ovwrt)## to just ##(Elisp \t Abv Ov)##, hiding the names that we don't wish to appear at all, and abbreviating the names that we want to keep, therefore reclaiming space in the mode line so that other useful information can be seen.
 
+The name "delight" derives from the fact that the mode-line content for a minor mode is known as its "lighter".
+
 This library is similar in purpose to DiminishedModes but it accounts for major modes as well as minor modes, and also incorporates the necessary `eval-after-load' call for minor modes, which makes the configuration simpler.
 
 Another alternative to delight is [https://github.com/alezost/dim.el dim].
