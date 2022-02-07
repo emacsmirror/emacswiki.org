@@ -43,7 +43,7 @@ Finally, in other applications, pasting usually replaces the selected text with 
   (delete-selection-mode)
 == Wayland ==
 
-Although upcoming versions of emacs uses pure GTK and therefore is supposed to support Wayland clipboard natively, this does not work if emacs is launched in tty mode. Integration with wl-clipboard program is needed (you need to install wl-clipboard first):
+Although Emacs 29 has an option to build with pure GTK and therefore is supposed to support Wayland clipboard natively, that support does not work if emacs is run in a tty, or when run inside multiple displays.  For that to work, the wl-clipboard program is needed (you need to install wl-clipboard first):
 
 {{{
   ;; credit: yorickvP on Github
