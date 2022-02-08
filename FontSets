@@ -114,14 +114,15 @@ it in the top left corner of your selected [[Frame]].
 
 Emacs 24 has the command mouse-set-font that does the same thing.
 
-== .emacs ==
+== ~/.emacs ==
 
-You can create new fontsets in you .emacs file.  Usually this is not
-necessary because you can just switch to the standard fontset.  If you
-are using NT Emacs, you can either check the NT Emacs FAQ (see
-OnlineResources) or read FontSetsForNTEmacs.  It all comes down to
-using `create-fontset-from-fontset-spec'.  The same thing can be
-accomplished using .Xdefaults or .Xresources.
+You can create new fontsets in your ##~/.emacs## init file.  Usually this is not necessary because you can just switch to the standard fontset.
+
+If you are using NT Emacs, you can either check the NT Emacs FAQ (see OnlineResources) or read FontSetsForNTEmacs.  It all comes down to using `create-fontset-from-fontset-spec'.
+
+== .Xdefaults (or .Xresources) ==
+
+The same thing can be accomplished using .Xdefaults or .Xresources.
 
 '''.Xdefaults or .Xresources'''
 
