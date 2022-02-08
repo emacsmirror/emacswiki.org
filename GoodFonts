@@ -3,8 +3,6 @@ It's pain in the rear to hunt down the font, install it and see for yourself whe
 
 == Recommendations ==
 
-[[https://gist.github.com/Earnestly/7024056|High Quality Monospace Fonts & Configuration]]
-
 Not so much a recommendation but I have just installed Dina.  It has the
 virtue of including italic and bold italic variants.  I have not yet
 decided whether I will stick with it.  --JohnYates
@@ -45,6 +43,12 @@ This list is sorted by inch followed by screen resolution; Currently a  good cus
 
 === For every resolution ===
 
+[new]
+I *highly* recommend the Liberation fonts, originally [https://www.redhat.com/en/blog/liberation-fonts sponsored and released by RedHat].  They are available as scalable TrueType fonts and are the most complete I know of for Western languages.  They work well at medium resolutions, such as 100dpi, and they look very good at high resolutions too, such as 200dpi and above. -- GregAWoods
+
+Download the Liberation fonts from:  https://releases.pagure.org/liberation-fonts/
+
+[new]
 As an atom/emacs new developer, I am recommending Hack,
 an open source font which fits very well in every situation and editor. 
 
