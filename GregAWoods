@@ -2,7 +2,7 @@ GregAWoods uses Emacs.
 
 * [http://www.planix.ca/~woods/ Personal Web page]
 
-* [ftp://ftp.planix.ca/pub/woods/dotfiles.tar.gz Homedir startup files, including DotEmacs]
+* [https://github.com/robohack/dotfiles Homedir startup files], including [https://github.com/robohack/dotfiles/blob/master/.emacs.el DotEmacs]
 
 Once upon a time was the PCL-CVS maintainer.
 
