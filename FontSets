@@ -124,12 +124,7 @@ If you are using NT Emacs, you can either check the NT Emacs FAQ (see OnlineReso
 
 The same thing can be accomplished using .Xdefaults or .Xresources.
 
-'''.Xdefaults or .Xresources'''
-
-Here is an example setting by MichaelLee for .Xdefaults or
-.Xresources.  Usually .Xdefaults is used when you start X via xdm or a
-similar manager, while .Xresources is used when you start X via the
-startx command.
+Here is an example setting by MichaelLee for ##~/.Xdefaults## or ##~/.Xresources##.  Usually ##~/.Xdefaults## is used when you start X via Xdm or a similar session manager, while ##~/.Xresources## is used when you start X via the ##startx## command, but this is not universal -- consult your system documentation and/or your ##~/.xinitrc## file.
 
 True Type Fonts were used for the various coding systems.  You can use
 True Type fonts in Emacs as long as your X server supports True Type
