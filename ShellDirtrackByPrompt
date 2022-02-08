@@ -2,6 +2,22 @@ The default mechanism for keeping Emacs apprised of the shell’s current direct
 
 This page describes alternative methods that track the current working directory, regardless of what command is being used to set it.  They work by having the shell always report the current directory to Emacs.
 
+== Works with Emacs 25.* ==
+Example Bash PS1:
+
+  if [ "$INSIDE_EMACS" ]; then
+    export PS1="[$(git branch 2>/dev/null | grep '^*' | colrm 1 2):\w] \n$ "
+
+Example .emacs:
+
+  (defun my-dirtrack-mode ()
+    (shell-dirtrack-mode 0)
+    (set-variable 'dirtrack-list '("^.*[^ ]+:\\(.*\\)]" 1 nil));;'("[[:ascii:]]*:\\([^\n]+\\)" 1 nil))
+    (dirtrack-mode 1)
+    )
+  (add-hook 'shell-mode-hook 'my-dirtrack-mode)
+
+
 == First, program your shell prompt to emit the PWD ==
 
 This example is for zsh
