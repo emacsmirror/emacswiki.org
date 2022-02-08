@@ -168,31 +168,23 @@ If you need a better Unicode coverage, GNU Unifont might work.  However, it only
 
 Evaluate the following code in your ##*scratch*## buffer:
 
-{{{
-(dolist (font-family (font-family-list))
-  (let ((str font-family))
-    (insert (propertize (concat "The quick brown fox jumps over the lazy dog ("
-     str ")") 'face `((:family ,font-family))))
-    (newline)))
-}}}
-
 [new]
-The above code will display variable-width fonts as well as monospace fonts which isn't much help for general Emacs usage. See [https://gist.github.com/3055728 this Gist] for a function to display only monospaced fonts.
-
-[new:ThierryPirot:2015-03-08 17:16 UTC]
-The following code is for me a working version of the above one.  
 {{{
+(require 'cl-lib)
+(require 'cl-extra)
 (let ((str "The quick brown fox jumps over the lazy dog ´`''\"\"1lI|¦!Ø0Oo{[()]}.,:; ")
       (font-families (cl-remove-duplicates 
 		      (sort (font-family-list) 
 			    (lambda(x y) (string< (upcase x) (upcase y))))
-		      :test 'string=)))
+		      :test 'cl-equalp)))
   (dolist (ff font-families)
     (insert 
      (propertize str 'font-lock-face `(:family ,ff))               ff "\n"
      (propertize str 'font-lock-face `(:family ,ff :slant italic)) ff "\n")))
 }}}
--- ThierryPirot
+
+[new]
+The code above will display variable-width fonts as well as monospace fonts (and other non-text fonts, such as the cursor font, symbol fonts, etc.).  See [https://gist.github.com/3055728 this Gist] for a function to display only monospaced fonts.
 
 == Discussion ==
 
