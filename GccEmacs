@@ -82,6 +82,19 @@ Detailed installation instructions are available [https://gist.github.com/mjlbac
 
 An ##emacs-nativecomp## docker image is [https://hub.docker.com/r/andreacorallo/emacs-nativecomp available]. Also examine the gitlab repo for the [https://gitlab.com/koral/emacs-nativecomp-dockerfile dockerfile].
 
+=== macOS ===
+
+The ##Gccemacs## prebuilt packages are [https://github.com/jimeh/emacs-builds available] and updated daily using GitHub action.
+The build script is also [https://github.com/jimeh/build-emacs-for-macos available].
+
+    $ brew tap jimeh/emacs-builds
+    $ brew install --cask emacs-app-nightly-28
+
+It's also possible to install the package via [https://brew.sh/ homebrew] with [https://github.com/d12frosted/homebrew-emacs-plus this formula].
+
+    $ brew tap d12frosted/emacs-plus
+    $ brew install emacs-plus@28 --with-native-comp
+
 === Windows ===
 
 The ##Gccemacs## prebuilt packages are [https://github.com/kiennq/emacs-build/releases available] and updated semi-monthly using GitHub action.
