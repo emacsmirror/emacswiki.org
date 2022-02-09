@@ -44,7 +44,14 @@ This list is sorted by inch followed by screen resolution; Currently a  good cus
 === For every resolution ===
 
 [new]
-I *highly* recommend the Liberation fonts, originally [https://www.redhat.com/en/blog/liberation-fonts sponsored and released by RedHat].  They are available as scalable TrueType fonts and are the most complete I know of for Western languages.  They work well at medium resolutions, such as 100dpi, and they look very good at high resolutions too, such as 200dpi and above. -- GregAWoods
+I agree the DejaVu Sans Mono TTF font is quite good, and has full coverage of ISO8859-1 with easily-to-distinguish similar-looking characters, as well as a vast number of Unicode characters.
+
+I also recommend the Liberation fonts, originally [https://www.redhat.com/en/blog/liberation-fonts sponsored and released by RedHat].  I like the look of the Liberation Mono font slightly better than the DejaVu Sans Mono font.  However though it has full ISO8859-1 coverage, it has nowhere near as many Unicode characters.
+
+Both of these fonts are available as scalable TrueType fonts.  They work well at medium resolutions, such as 100dpi, and they also look very good at high resolutions too, such as 200dpi and above.
+-- GregAWoods
+
+Download DejaVu Fonts from: https://dejavu-fonts.github.io/Download.html
 
 Download the Liberation fonts from:  https://releases.pagure.org/liberation-fonts/
 
