@@ -1,6 +1,20 @@
 == Native Smooth Scrolling ==
 
-Future release Emacs 29 is projected to have native support for smooth scrolling. You can enable it using `pixel-scroll-precision-mode'.
+The next release of Emacs, Emacs 29, will come with built-in support
+for pixel-based scrolling.
+
+You can enable it using `pixel-scroll-precision-mode'.  You will need
+to build with the option `--with-xinput2', unless you're not using X.
+
+If you want Emacs to continue to "drift" the display after it stops,
+and you aren't using the NS port on macOS, enable
+`pixel-scroll-precision-use-momentum'.
+
+Apply the following settings if you also want scrolling with an
+ordinary mouse to be almost as smooth as scrolling with a touchpad:
+
+  (setq pixel-scroll-precision-large-scroll-height 40.0)
+  (setq pixel-scroll-precision-interpolation-factor 30)
 
 
 == mouse wheel & keyboard scroll one line at a time ==
