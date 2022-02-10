@@ -1,11 +1,11 @@
 ElispParser(EParser for short) is a small parser tool written written by AkimichiTatsukawa.
 Though it is not a parser generator, it is a tool to make a parser easier.
 
-The package can be obtained at URL: http://akimichi.homeunix.net/~emile/aki/program/elisp/.
+The package can be obtained at URL: [s]http://akimichi.homeunix.net/~emile/aki/program/elisp/[/s] (dead).
 
-English document is available at URL: http://akimichi.homeunix.net/~emile/aki/program/elisp/eparser.html.
+English document is available at URL: [s]http://akimichi.homeunix.net/~emile/aki/program/elisp/eparser.html[/s] (dead).
 
-Sample program is available at URL: http://akimichi.homeunix.net/~emile/aki/program/elisp/sample.el.
+Sample program is available at URL: [s]http://akimichi.homeunix.net/~emile/aki/program/elisp/sample.el[/s] (dead).
 
 See also: SemanticBovinator.
 
@@ -14,8 +14,15 @@ See also: SemanticBovinator.
 = Problems/Discussion =
 
 Links seem to be dead. :( --MarcoBakera
+----
 
+Links from archive.org:
 
+[https://web.archive.org/web/20040820154206/http://akimichi.homeunix.net/~emile/aki/program/elisp/eparser.el eparser.el]
+
+[https://web.archive.org/web/20040820154520/http://akimichi.homeunix.net/~emile/aki/program/elisp/sample.el Sample program]
+
+[https://web.archive.org/web/20040820151225/http://akimichi.homeunix.net/~emile/aki/program/elisp/eparser.html English document]
 ----
 CategoryCode
 CategoryExtensions
