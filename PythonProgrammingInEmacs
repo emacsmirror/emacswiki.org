@@ -288,7 +288,7 @@ See CythonMode
 
 ==Troubleshooting==
 === Unicode encoding in python-shell on Mac OS X ===
-(This problem does not occur when using Python 3, macOS 10.15, and Emacs 27.1 from https://emacsformacosx.com).
+(This problem does not occur when using Python 3, macOS 10.15, and Emacs 27.1 from https://emacsformacosx.com. It also should not appear in [[AquamacsEmacs]].).
 
 When using Emacs 24.1 on Mac OS X compiled via homebrew, the python-shell always used US-ASCII as encoding. To fix it I used:
 <pre>
