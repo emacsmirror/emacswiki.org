@@ -3,7 +3,7 @@ The typing-practice package runs solely in the minibuffer, so your boss thinks y
 ''typing-practice'' also ships with some alternative word lists so that the user can possibly learn to type fast in some specialized contexts. For example, there are word lists for HTML, CSS, Javascript, and PHP. It is also easy to add your own word list.
 
 Download it at: http://alfredfazio.ws/doku.php?id=packages:typing-practice (link seems broken currently)
-or at: [https://raw.github.com/mebubo/dotfiles/master/.emacs.d/site-lisp/typing-practice.el github]
+or at: [https://github.com/mebubo/dotfiles/blob/pre-cleanup/unused/.emacs.d/site-lisp/typing-practice.el github]
 
 [new]
 I prefer not to see a cursor while training, so i use this advice:
