@@ -428,6 +428,7 @@ If you have multiple emacs daemons running, use the following to make sure the e
                "zathura"))
 </pre>
 
+Zathura has vi-like key map by default.  An Emacs-like key map configuration can be found [[https://gist.github.com/ne9z/8778d614b90b85dfe8f6b698ad758f36|here]].
 == Synctex and Evince ==
 
 Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
