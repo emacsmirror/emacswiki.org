@@ -418,15 +418,26 @@ $ synctex edit -o 38:221.279541:332.136200:foo.pdf -x "emacsclient +%{line} %{in
 The emacsclient should be installed and running. You can run it from emacs with the command "M-x server-start".
 
 If you have multiple emacs daemons running, use the following to make sure the emacsclient connects to the correct instance:
-<pre>
+
+{{{
+(require 'tex)
+
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(setq TeX-PDF-mode t
+      TeX-source-correlate-mode t
+      TeX-source-correlate-start-server t)
+
 (add-to-list 'TeX-expand-list
-             '("%sn" (lambda () server-name)))
+	     '("%sn" (lambda () server-name)))
+
 (add-to-list 'TeX-view-program-list
-             '("Zathura"
-               ("zathura %o"
-                (mode-io-correlate " --synctex-forward %n:0:%b -x \"emacsclient --socket-name=%sn --no-wait +%{line} %{input}\""))
-               "zathura"))
-</pre>
+	     '("Zathura"
+	       ("zathura %o"
+		(mode-io-correlate " --synctex-forward %n:0:\"%b\" -x \"emacsclient --socket-name=%sn +%{line} %{input}\""))
+	       "zathura"))
+
+(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Zathura")
+}}}
 
 Zathura has vi-like key map by default.  An Emacs-like key map configuration can be found [[https://gist.github.com/ne9z/8778d614b90b85dfe8f6b698ad758f36|here]].
 == Synctex and Evince ==
