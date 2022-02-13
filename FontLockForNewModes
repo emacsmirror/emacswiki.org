@@ -37,11 +37,6 @@ Font-lock will install <code>font-lock-change-major-mode</code> on <code>change-
 This is gross.  It is also the reason why sometimes (very seldom) a buffer will only start to fontify after you do something in the buffer.  Now, having stuff on `post-command-hook' slows Emacs down.  That's why the first call to `turn-on-font-lock-if-enabled' will remove itself from `post-command-hook' again.
 
 ----
-* [http://two-wugs.net/emacs/mode-tutorial.html Tutorial by Scott Andrew Borton for creating a new mode with fontification]
-
-(this link is unfortunately dead as far as I can tell.  However, [http://web.archive.org/web/20070702002238/http://two-wugs.net/emacs/mode-tutorial.html the WaybackMachine] has it. --CharlesSebold)
-
-[new:diesch:2010-03-10 12:30 UTC]
-Steffen Schwigon made it [http://renormalist.net/Renormalist/EmacsLanguageModeCreationTutorial available] again. --FlorianDiesch
+There used to be a link here to a tutorial by Scott Andrew Borton for creating a new mode with fontification; however, it has been dead for since 2010, and as of 2022, even the links at the wayback machine auto-redirect to a casino page. --Boruch Baum
 ----
 CategoryFaces CategoryCode
