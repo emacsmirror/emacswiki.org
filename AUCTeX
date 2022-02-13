@@ -439,6 +439,8 @@ If you have multiple emacs daemons running, use the following to make sure the e
 (setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Zathura")
 }}}
 
+Click inside Zathura while pressing Control button to locate the text inside emacs.
+
 Zathura has vi-like key map by default.  An Emacs-like key map configuration can be found [[https://gist.github.com/ne9z/8778d614b90b85dfe8f6b698ad758f36|here]].
 == Synctex and Evince ==
 
