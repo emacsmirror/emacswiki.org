@@ -85,9 +85,6 @@ pstricks.el has been added to the latest auctex cvs version with some changes to
 
 ##C-c ?## (or ##M-x TeX-doc##) gives documentation for the symbol at point, or for any package, command or document.
 
-[new:unhammer:2008-12-03 18:42 UTC]
-
-[new]
 On my system (!MacTeX 2008, Aquamacs) I can only get documentation for packages, it seems. Does anyone know how to set up !AUCTeX so that we get a more emacs-lisp-like documentation system? (Eg., documentation for every !TeX command, from ##\emph{}## to ##\citep{}## to ##\operatorname{}## ...)
 
 [new:2009-08-05:2009-08-05 20:38 UTC]
@@ -95,7 +92,6 @@ I also wish I could access a more emacs-lisp-like documentation system.
 
 [new]
 Well, I guess this won't be as naturally done as in elisp. But there is latex-doc package that tries to do that. See: http://www.ee.usyd.edu.au/~thlai/emacs/index.html
-
 
 [new:RedBlue:2010-06-26 08:21 UTC]
 Latex2e-help-texinfo  comes with latex documentation in .info format http://www.ctan.org/tex-archive/info/latex2e-help-texinfo/. It also contains ltx-help.el which defines latex-help function. I've just put latex2e.info in my info directory following the instructions on info installation from emacs FAQ. Put ltx-help.el in my .emacs.d. Then corrected slightly the reg expressions in latex-help-get-cmd-alist function to recognize all the entries in the doc index and oala, help of all latex commands is under my fingertips (C-c i to be more specific).
