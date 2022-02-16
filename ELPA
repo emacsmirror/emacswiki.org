@@ -55,16 +55,9 @@ INS
 
 Package authors may wish to contribute their packages to the GNU ELPA repository.
 
-The **first and main step** is to complete your FSF copyright assignment to cover changes to Emacs, and to make sure that all significant contributors to the package have done the same.
+The **first and main step** is to complete your FSF copyright assignment to cover changes to Emacs, and to make sure that all significant contributors to the package have done the same.  Accordingly, you will also want to change your files's headers to state that the copyright now belongs to the FSF (you can copy what you see in any of Emacs's own files).
 
-Then visit the [[https://savannah.gnu.org/|Savannah GNU website]] and
-create an account. You can request inclusion in the ##emacs## group.
-
-Once granted, clone the GNU ELPA repository as shown on
-[[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from
-section ##Member clone##. Be sure to read the ##README## file in the repository.
-
-You should now be able to push to the ELPA repo.
+Then send an email to the <tt>emacs-devel</tt> mailing-list proposing inclusion of your package into GNU ELPA, providing the URL of the Git repository where you keep it.  You can choose to use GNU ELPA's own Git repository (git://git.sv.gnu.org/emacs/elpa.git) to host your package, but even so, you will want to send a URL pointing to the Git repository from which to clone your package.
 
 You might also want to look at the details of MakingPackages for ELPA.
 
