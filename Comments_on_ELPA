@@ -63,3 +63,22 @@ Hope this helps  (Emacs experts, tell me if I omitted anything)
 
 -- epement 2014-12-16 13:32 UTC
 
+
+----
+
+The instructions for how to add to ELPA are incorrect. After following them today, I received an email from Stefen Monnier:
+
+<pre>
+
+Ah, no, it's not needed at all (membership to the `emacs` group is
+mainly to get write access to the `emacs.git` repository).
+Just send an email to `emacs-devel` suggesting the inclusion of your
+package and we'll take it from there.
+Thanks,
+
+
+        Stefan
+</pre>
+
+-- bjc 2022-02-16 18:44 UTC
+
