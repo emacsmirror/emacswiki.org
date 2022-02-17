@@ -248,6 +248,17 @@ sudo port install emacs-mac-app
 
 The application will appear in your Applications/MacPorts folder.
 
+=== pkgsrc ===
+
+pkgsrc [https://pkgsrc.org/ http://pkgsrc.org/] is yet another means of installing Emacs on Mac OS X or macOS.
+
+Prebuilt binaries are available from [https://pkgsrc.joyent.com/install-on-osx/ https://pkgsrc.joyent.com/install-on-osx/].
+
+<pre>
+pkgin in emacs
+</pre>
+
+
 == Terminal Emulation ==
 
 Read up on [[iTerm2]] if you want to spend most of your time in ssh using emacs rather than the GUI.
