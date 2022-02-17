@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2021.10.03
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 28 13:15:44 2022 (-0800)
+;; Last-Updated: Thu Feb 17 08:55:33 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 13088
+;;     Update #: 13089
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -14348,7 +14348,7 @@ File `dired+.el' has a header `Update #' that you can use to identify it.\
 
 (defun diredp-visit-ignore-regexp ()    ; Taken from `image-file-name-regexp'.
   "Return a regular expression matching file names to skip.
-This is used by `dired-visit-(next|previous)'."
+This is used by `diredp-visit-(next|previous)'."
   (let ((exts-regexp  (and diredp-visit-ignore-extensions
                            (concat "\\." (regexp-opt (nconc (mapcar #'upcase diredp-visit-ignore-extensions)
                                                             diredp-visit-ignore-extensions)
@@ -14369,7 +14369,7 @@ With numeric prefix arg N, move down N-1 lines first.
 After moving N lines, skip any lines with file names that match either
 `diredp-visit-ignore-extensions' or `diredp-visit-ignore-regexps'.
 
-Kill the last buffer visited by a `dired-visit-*' command."
+Kill the last buffer visited by a `diredp-visit-*' command."
   (interactive "p")
   (dired-next-line arg)
   (while (diredp-string-match-p (diredp-visit-ignore-regexp) (dired-get-file-for-visit))
@@ -14384,7 +14384,7 @@ With numeric prefix arg N, move up N-1 lines first.
 After moving N lines, skip any lines with file names that match either
 `diredp-visit-ignore-extensions' or `diredp-visit-ignore-regexps'.
 
-Kill the last buffer visited by a `dired-visit-*' command."
+Kill the last buffer visited by a `diredp-visit-*' command."
   (interactive "p")
   (dired-previous-line arg)
   (while (diredp-string-match-p (diredp-visit-ignore-regexp) (dired-get-file-for-visit))
@@ -14395,7 +14395,7 @@ Kill the last buffer visited by a `dired-visit-*' command."
 (defun diredp-visit-this-file ()        ; Bound to `e' (replaces `dired-find-file' binding)
   "View the file on this line in another window in the same frame.
 If it was not already shown there then kill the previous buffer
-visited by a `dired-visit-*' command.
+visited by a `diredp-visit-*' command.
 
 If it was already shown there, and if it and Dired are the only
 windows there, then delete its window (toggle : show/hide the file)."
