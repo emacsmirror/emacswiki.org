@@ -4,13 +4,13 @@
 ;; Description: Enhancements to cus-edit.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr  5 14:28:30 2018 (-0700)
+;; Last-Updated: Thu Feb 17 07:34:11 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1668
+;;     Update #: 1669
 ;; URL: https://www.emacswiki.org/emacs/download/cus-edit%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -18,10 +18,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `assoc', `autofit-frame', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `custom', `easymenu', `fit-frame', `misc-fns',
-;;   `speedbar', `strings', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `autofit-frame', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `cus-edit', `cus-face', `cus-load', `cus-start', `fit-frame',
+;;   `macroexp', `misc-fns', `strings', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -353,6 +353,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/02/17 dadams
+;;     custom-(face|variable)-menu: fboundp, not boundp, for custom-comment-invisible-p (and quote it).
 ;; 2018/04/05 dadams
 ;;     Added: cus-editp-remove-duplicates.  Use instead of help-remove-duplicates.
 ;;     Added: custom-mismatches.
@@ -816,7 +818,7 @@ to preferences when idle.")
       ("---" ignore ignore)
       ("Add Comment" custom-comment-show
        (lambda (widget)
-         (and (boundp 'custom-comment-invisible-p)  custom-comment-invisible-p)))
+         (and (fboundp 'custom-comment-invisible-p)  'custom-comment-invisible-p)))
       ("---" ignore ignore)
       ("Show all display specs" custom-face-edit-all
        (lambda (widget)
@@ -894,10 +896,10 @@ widget.  If FILTER is nil, ACTION is always valid.")
               '(("Use Backup Value" custom-variable-reset-backup
                  (lambda (widget)
                    (get (widget-value widget) 'backup-value)))))
-      ,@(when (boundp 'custom-comment-invisible-p)
+      ,@(when (fboundp 'custom-comment-invisible-p)
               '(("---" ignore ignore)
                 ("Add Comment" custom-comment-show
-                 (lambda (widget) custom-comment-invisible-p))))
+                 (lambda (widget) 'custom-comment-invisible-p))))
       ("---" ignore ignore)
       ("Don't show as Lisp expression"
        custom-variable-edit
