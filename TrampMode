@@ -14,7 +14,7 @@ Tramp Documentation:
 
 == Quick-start tramp  ==
 
-Faster than the default scp
+Faster than the default scp (for small files)
 
     (setq tramp-default-method "ssh")
 
