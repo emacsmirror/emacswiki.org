@@ -1,0 +1,38 @@
+Here's a solution for you if you want to dynamically switch your signature as you type a recipient into the To: header.
+
+This assumes you are using MessageMode to compose your messages.
+
+{{{
+(setq message-signature 'asc:signature)
+(add-hook 'message-mode-hook 'asc:signature-setup)
+
+(defun asc:signature ()
+  (let ((to (message-fetch-field "to")))
+    (cond
+     ((and to (string-match-p "friends@example.org" to))
+      (mapconcat #'identity
+		 '("Alex Schroeder"
+                   "Code Monkey")
+		 "\n"))
+     (t
+      (mapconcat #'identity
+		 '("Alex Schroeder"
+                   "Developer")
+		 "\n")))))
+
+(defun asc:check-for-signature-change (&rest ignore)
+  (when (message--in-tocc-p)
+    (save-excursion
+      (goto-char (point-max))
+      (let ((end (point)))
+	(when (re-search-backward message-signature-separator nil t)
+	  (delete-region (1- (match-beginning 0)) end)))
+      (message-insert-signature))))
+
+(defun asc:signature-setup ()
+  (make-local-variable 'after-change-functions)
+  (push 'asc:check-for-signature-change after-change-functions)
+}}}
+
+----
+CategoryMail
