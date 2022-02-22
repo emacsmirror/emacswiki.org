@@ -31,7 +31,7 @@ This assumes you are using MessageMode to compose your messages.
 
 (defun asc:signature-setup ()
   (make-local-variable 'after-change-functions)
-  (push 'asc:check-for-signature-change after-change-functions)
+  (push 'asc:check-for-signature-change after-change-functions))
 }}}
 
 ----
