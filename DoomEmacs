@@ -1,19 +1,21 @@
-For what DoomEmacs is go to:       https://github.com/hlissner/doom-emacs
+For what DoomEmacs is go to: https://github.com/hlissner/doom-emacs
 
-I quote part of his Readme.md (in case you'd rather get a brief look here rather than clicking through to another site):
+I quote part of his ##Readme.md## (in case you'd rather get a brief look here rather than clicking through to another site):
 
-"Introduction
+[quote]
 
-    It is a story as old as time. A stubborn, shell-dwelling, and melodramatic vimmer—envious of the features of modern text editors—spirals into despair before he succumbs to the dark side. This is his config.
+== Introduction ==
 
-Doom is a configuration framework for GNU Emacs tailored for Emacs bankruptcy veterans who want less framework in their frameworks, a modicum of stability (and reproducibility) from their package manager, and the performance of a hand rolled config (or better). It can be a foundation for your own config or a resource for Emacs enthusiasts to learn more about our favorite operating system.
+: It is a story as old as time.  A stubborn, shell-dwelling, and melodramatic vimmer—envious of the features of modern text editors—spirals into despair before he succumbs to the [https://github.com/emacs-evil/evil dark side].  This is his config.
+
+Doom is a configuration framework for [https://www.gnu.org/software/emacs/ GNU Emacs] tailored for Emacs bankruptcy veterans who want less framework in their frameworks, a modicum of stability (and reproducibility) from their package manager, and the performance of a hand rolled config (or better). It can be a foundation for your own config or a resource for Emacs enthusiasts to learn more about our favorite operating system.
 
 Its design is guided by these mantras:
 
-    Gotta go fast. Startup and run-time performance are priorities. Doom goes beyond by modifying packages to be snappier and load lazier.
-    Close to metal. There's less between you and vanilla Emacs by design. That's less to grok and less to work around when you tinker. Internals ought to be written as if reading them were part of Doom's UX, and it is!
-    Opinionated, but not stubborn. Doom is about reasonable defaults and curated opinions, but use as little or as much of it as you like.
-    Your system, your rules. You know better. At least, Doom hopes so! It won't automatically install system dependencies (and will force plugins not to either). Rely on doom doctor to tell you what's missing.
-    Nix/Guix is a great idea! The Emacs ecosystem is temperamental. Things break and they break often. Disaster recovery should be a priority! Doom's package management should be declarative and your private config reproducible, and comes with a means to roll back releases and updates (still a WIP).
+* *Gotta go fast.*  Startup and run-time performance are priorities.  Doom goes beyond by modifying packages to be snappier and load lazier.
+* *Close to metal.*  There's less between you and vanilla Emacs by design.  That's less to grok and less to work around when you tinker.  Internals ought to be written as if reading them were part of Doom's UX, and it is!
+* *Opinionated, but not stubborn.*  Doom is about reasonable defaults and curated opinions, but use as little or as much of it as you like.
+* *Your system, your rules.*  You know better.  At least, Doom hopes so!  It won't /automatically/ install system dependencies (and will force plugins not to either).  Rely on ##doom doctor## to tell you what's missing.
+* **Nix/Guix is a great idea!**  The Emacs ecosystem is temperamental.  Things break and they break often.  Disaster recovery should be a priority!  Doom's package management should be declarative and your private config reproducible, and comes with a means to roll back releases and updates (still a WIP).
 
-Check out the FAQ for answers to common questions about the project.     ...  "
+Check out [https://discourse.doomemacs.org/t/doom-emacs-faq/45 the FAQ] for answers to common questions about the project.[/quote]  ...
