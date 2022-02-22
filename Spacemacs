@@ -1,3 +1,6 @@
 “Emacs advanced Kit focused on [[Evil]]: The best editor is neither Emacs nor Vim, it's Emacs *and* Vim!”
 
 !GitHub page: https://github.com/syl20bnr/spacemacs
+
+----
+CategoryDotEmacs
