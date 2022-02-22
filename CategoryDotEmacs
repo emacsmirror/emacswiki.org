@@ -48,6 +48,7 @@ of selected resources.
 * [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
 * TinyTools -- JariAalto's add-on utilities
 * [https://github.com/jkitchin/scimax Scimax] - starterkit for Engineers and Scientists 
+* DoomEmacs -- a configuration framework for GnuEmacs focused on stability and being lightweight
 
 == Example Configurations ==
 
