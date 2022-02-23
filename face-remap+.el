@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library `face-remap.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2009-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 17 14:26:21 2009 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:18:18 2018 (-0800)
+;; Last-Updated: Wed Feb 23 09:23:10 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 179
+;;     Update #: 181
 ;; URL: https://www.emacswiki.org/emacs/download/face-remap%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/SetFonts
 ;; Keywords: window frame face font
@@ -46,6 +46,10 @@
 ;;  text-scale commands have no effect on frame size for one-window
 ;;  frames.
 ;;
+;;  For Emacs versions 23-28, this also fixes a regression (bugs
+;;  #46973 and #54114) introduced in 23 - it provides the Emacs 29
+;;  version of function `face-remap-set-base'.
+;;
 ;;  See also:
 ;;
 ;;  * Library `zoom-frm.el', which provides commands `zoom-in' and
@@ -77,6 +81,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/02/23 dadams
+;;     Added vanilla Emacs 29 version of face-remap-set-base (fixes regression).
 ;; 2009/06/22 dadams
 ;;     Removed vestigial defvar (unused variable).
 ;; 2009/06/17 dadams
@@ -181,6 +187,42 @@ See option `text-scale-resize-window' for the possible behaviors."
           (condition-case nil
               (enlarge-window (round (- (* oheight scale-factor) oheight)))
             (error nil)))))))
+
+;; This is the vanilla Emacs 29 version, fixing bugs #46973 and #54114 - a regression.
+;;
+(when (and (> emacs-major-version 22)  (< emacs-major-version 29))
+
+  (defun face-remap-set-base (face &rest specs)
+    "Set the base remapping of FACE in the current buffer to SPECS.
+This causes the remappings specified by `face-remap-add-relative'
+to apply on top of the face specification given by SPECS.
+
+The remaining arguments, SPECS, specify the base of the remapping.
+Each one of SPECS should be either a face name or a property list
+of face attribute/value pairs, like in a `face' text property.
+
+If SPECS is empty or a single face `eq' to FACE, call `face-remap-reset-base'
+to use the normal definition of FACE as the base remapping; note that
+this is different from SPECS containing a single value nil, which means
+not to inherit from the global definition of FACE at all."
+    ;; Simplify the specs in the case where it's just a single face (and
+    ;; it's not a list with just a nil).
+    (while (and (consp specs) (not (null (car specs))) (null (cdr specs)))
+      (setq specs (car specs)))
+    (if (or (null specs)
+	    (eq specs face))            ; default
+        ;; Set entry back to default
+        (face-remap-reset-base face)
+      ;; Set the base remapping
+      (make-local-variable 'face-remapping-alist)
+      (let ((entry (assq face face-remapping-alist)))
+        (if entry
+	    (setcar (last entry) specs)	; overwrite existing base entry
+	  (push (list face specs) face-remapping-alist)))
+      ;; Force redisplay of this buffer.
+      (force-mode-line-update)))
+
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
