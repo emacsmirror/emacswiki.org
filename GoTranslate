@@ -1,14 +1,14 @@
 = Go Translate =
 
-Improved Google Translate interface with asynchronous request and better user experience.
+Powerful translator on Emacs. Supports multiple translation engines such as Google, Bing, deepL.
 
 https://github.com/lorniu/go-translate
 
-Main features:
-# Completely **asynchronous**, without any blocking problems, so very smoothly
-# Optimize the display of translation results, the interface is more **beautiful** and natural
-# It is **convenient** for switch between different languages, and support many interactive operations
-# The code is clean, and **easy to expand**. New functions can be constructed very simply
+n addition to Google Translate, it now supports more engines like Google RPC API, Bing, DeepL. You can easily add other translation engines on the basis of the framework.
+
+Very scalable, very flexible, asynchronous request and better user experience.
+
+The reason I rewrite this is that I want to add the new RPC API of Google translation to this plugin. Since adding new API, it's not nice to implement the plugin as a translation framework first.
 
 == Installation ==
 
@@ -27,41 +27,26 @@ Or manually download go-translate.el then put into /some-path, then add this to 
 (require 'go-translate)
 </pre>
 
-== Configuration ==
+== Configuration and Usage ==
 
-First, config the local language and your default target language:
-
+First, config the languages and setup the translator:
 <pre>
-(setq go-translate-local-language "en")
-(setq go-translate-target-language "fr")
+(require 'go-translate)
+
+(setq gts-translate-list '(("en" "zh")))
+
+(setq gts-default-translator
+      (gts-translator
+       :picker (gts-prompt-picker)
+       :engines (list (gts-bing-engine) (gts-google-engine))
+       :render (gts-buffer-render)))
 </pre>
 
-If you have any other translation plans, then put them into go-translate-extra-directions:
-
+Then, fire the translation with command:
 <pre>
-(add-to-list go-translate-extra-directions (cons "ja" "ru"))  ; from japanese to russian
-(add-to-list go-translate-extra-directions (cons "en" "fr"))  ; from english to french
-
-;; or
-(setq go-translate-extra-directions '(("ja" . "ru") ("en" . "fr")))
+M-x gts-do-translate
 </pre>
 
-Other customizations you can look into custom-group - go-translate, eg:
-
-<pre>
-(setq go-translate-buffer-follow-p t)       ; focus the result window
-(setq go-translate-buffer-source-fold-p t)  ; fold the source text in the result window
-(setq go-translate-buffer-window-config ..) ; config the result window as your wish
-</pre>
-
-== Quick Usage ==
-
-The core command is go-translate, and there are several extended commands such as go-translate-popup. You can bind keys for them. such as:
-
-<pre>
-(global-set-key "\C-ct" 'go-translate)
-(global-set-key "\C-cT" 'go-translate-popup)
-</pre>
 
 Read https://github.com/lorniu/go-translate for more.
 
