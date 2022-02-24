@@ -1,0 +1,56 @@
+The text above lumps character classes such as <code>[:alpha:]</code>
+together with syntax classes such as designated with the character <code>w</code> (as used in, e.g., <code>(skip-syntax-forward "w")</code>).
+While regexp character classes and Emacs syntax tables may be used for similar purposes, they look like they have
+developed independently from one another and *are very different things*:
+
+*Syntax classes* are a rather low-level concept which is *always in use* in any Emacs buffer. Every single character in the buffer is assigned a "syntax class" -- which one is fixed and looked up in the "syntax table". There is a basic syntax table called <code>standard-syntax-table</code> -- the one which <code>fundamental-mode</code> uses --, and any mode can set its own syntax table and inherit from it. Basic commands that need to identify logical sections of the buffer, such as, moving forward by one /word/ (<code>forward-word</code>), or by one /S-expression/ (<code>forward-sexp</code>), look up the syntax of characters they pass. For example, <code>forward-sexp</code> will move point forward until it first encounters a character with syntax class "open parenthesis" and then one with syntax class "close parenthesis" (simplified, but this illustrates the point -- <code>(skip-syntax-forward CLASS)</code> is yet more primitive; try it out with <code>M-x eval-expression</code>).
+
+Using syntax classes is very fast, I assume (a syntax table is a
+vector whose indexes are the character codes), and is, as mentioned,
+done all the time. They are limited, however, in that any character
+can have only one syntax class, and the choice of classes available is
+fixed at 15 and seems slanted towards certain programming languages of
+the day when Emacs was still younger: Besides Elisp, of course, C, C++
+and %%TeX%%, for example. (They have some added-on features, e.g. to
+define the syntax of two-character sequences (as used in C comments),
+which sits somewhat oddly with the one-character syntax table lookup
+system.) There are only fifteen syntax classes, some of which seem
+somewhat esoteric (e.g. where can you lookup the purpose of syntax
+class "generic comment delimiter", when there are already syntax
+classes "comment start" and "comment end"?).
+
+Regexp *character classes*, on the other hand, are sets of characters
+defined by the regexp engine and *only used* whenever a command uses a
+*regexp* for searching and matching, and though they are partly
+similar (e.g. <code>[:alpha:]</code> would seem to cover roughly the
+same characters as the syntax class “word constituent”, wouldn’t it?),
+they are their own standard, as it were. One should never assume that
+similar-sounding character classes and syntax classes are /identical/,
+even if they’re similar. Also, nothing keeps a character from
+belonging to more than one character class, and this frequently
+happens (digits are in <code>[:alnum:]</code> and
+<code>[:digit:]</code>, one of many examples) One may expect that with
+the possibilities of Unicode, the choice of character classes will
+also continue to grow. Regexp character classes are also not
+mode-dependent, as syntax classes are, but the same in all contexts.
+
+Regexps /can/ be used to match characters by syntax class using the
+backslash sequences <code>\s</code> and <code>\S</code>, if this is
+deemed helpful, e.g. <code>\s(</code> matches any character that has
+syntax class “open parenthesis”, and <code>\S </code>%% matches%% any
+character that does not have syntax class “whitespace”. It is debatable if this is a good idea, however, let alone good programming practice: It makes it unpredictable what a regexp will match in an unknown mode, since it depends on the current syntax table: i.e. the exact same regexp may not match the exact same characters in two different modes because they may have different syntax classes in those modes.
+
+What aids and abets this lumping together, outrageously, is that certain character
+classes /do/ reflect (the always present) syntax classes:
+<code>[:space:]</code> and <code>[:word:]</code> simply match any
+character with syntax class “whitespace” and “word”, respectively, and
+thus are nothing but a form of unnecessary “syntactic sugar” that means exactly the same
+thing as <code>\s </code>%% and%% <code>\sw</code>, respectively.
+<code>[:punct:]</code>, on a different note, seems to take recourse to
+syntax classes for multibyte characters: For these latter (only), it “matches
+anything that has non-word syntax”, i.e. has a syntax class other than
+“word”, which -- frankly -- sounds a bit like a quick and dirty fix for unfinished
+work.
+
+-- Anonymous 2022-02-24 16:44 UTC
+
