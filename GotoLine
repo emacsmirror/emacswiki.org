@@ -1,6 +1,10 @@
-'''Note:''' The information on this page is for older Emacs versions than 23.2.  Starting with Emacs 23.2, `M-g g' is bound to goto-line. 
+`goto-line' is bound to both ##M-g g## and ##M-g M-g##.
 
-(Perhaps this page should be cleaned up a bit.)
+If you would like it to be bound to just ##M-g## ''without'' affecting the other key bindings under that prefix, see https://github.com/davep/goto-line-faster.el/blob/main/goto-line-faster.el
+
+----
+
+'''Note:''' The rest of the discussion on this page pre-dates Emacs 23.1 (which is when the current default bindings were added).
 
 I think goto-line is much more used than facemenu-* and M-g should be bound to M-x goto-line (as does Xemacs, BTW). I have never seen a newbie want to run a facemenu- function.  Heck, even somewhat experienced users like me have no idea what those do.  But lots of newbies ask how to goto-line, and are disappointed when they find no key. -- DeepakGoel
 
