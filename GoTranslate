@@ -4,7 +4,7 @@ Powerful translator on Emacs. Supports multiple translation engines such as Goog
 
 https://github.com/lorniu/go-translate
 
-n addition to Google Translate, it now supports more engines like Google RPC API, Bing, DeepL. You can easily add other translation engines on the basis of the framework.
+In addition to Google Translate, it now supports more engines like Google RPC API, Bing, DeepL. You can easily add other translation engines on the basis of the framework.
 
 Very scalable, very flexible, asynchronous request and better user experience.
 
