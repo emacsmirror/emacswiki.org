@@ -1,4 +1,26 @@
-== Commands to Rename Frames ==
+A [[frame]] contains and displays one or more Emacs internal [[window]]s.
+
+Many other programs and people would call an Emacs frame a "window", and the Emacs internal windows would be called "panes".
+
+When running on a GUI (graphical user interface, such as X11, Microsoft Windows, or !MacOS X), each external window provided by the host GUI becomes an Emacs frame.  In a character cell terminal (like a text console or an xterm), there is an implicit Emacs frame for the terminal.
+
+Frames can have names, similar to how buffers have names.  Additionally, on GUIs, there is a ''frame title'', typically shown by the host GUI in a "title bar" above the Emacs frame.  There is also a separate ''icon title'', for iconified/minimized representations of Emacs frames.
+
+To have the Emacs frame title appear in the title bar of a character terminal, see XTermTitle.
+
+== Standard behavior ==
+
+The frame title is determined by the variable `frame-title-format'.  Likewise, the icon title comes from`icon-title-format'.  They both behave like the `mode-line-format' variable: A string, Lisp symbol, and/or recursively-interpreted list of same, concatenated together, with ##%## (percent sign) being interpreted specially in any strings.  Two of the most common are ##%f## for the full file path, and the ##%b## for the buffer name.  See ModeLineConfiguration for details.
+
+The default `frame-title-format' (as of Emacs 27.1, circa 2020) is:
+
+    (multiple-frames "%b" ("" invocation-name "@" system-name))
+
+In effect, if there are multiple Emacs frames (multiple external GUI windows), the buffer name is used as the frame title; otherwise, something like ##Emacs@hostname## is used.
+
+Note that ##%## constructs which indicate line or column number of point (##%l##, ##%c##, ##%C##) are ignored in frame and icon title formats.
+
+== Renaming frames ==
 
 Library <tt>[[frame-cmds.el]]</tt> contains two commands for renaming [[frame]]s:
 
@@ -13,43 +35,64 @@ to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
 : ##OLD-NAME## can be a frame, its name, or `nil'.  Default is `selected-frame'.
 : ##NEW-NAME## is a string or `nil'.  Default ##NEW-NAME## is current `buffer-name'.
 
-== Setting the Frame Title and Icon Title ==
+== Example customizations ==
 
-The frame title is changed by changing the value of the variable
-`frame-title-format'. Likewise, the icon title can be changed with `icon-title-format'.
-They recognize most of the same special characters as variable `mode-line-format'; see that variable for further details:
+These would generally be placed in one's InitFile, to take effect for every Emacs session.  However, you can also use them in LispInteractionMode.  This may be useful to test and tune to your liking, before you save the finished result.
 
-  A string is printed verbatim in the mode line except for %-constructs:
-    (%-constructs are allowed when the string is the entire mode-line-format
-     or when it is found in a cons-cell or a list)
-    %b -- print buffer name.      %f -- print visited file name.
-    %F -- print frame name.
-    %* -- print %, * or hyphen.   %+ -- print *, % or hyphen.
-          %& is like %*, but ignore read-only-ness.
-          % means buffer is read-only and * means it is modified.
-          For a modified read-only buffer, %* gives % and %+ gives *.
-    %s -- print process status.
-    %p -- print percent of buffer above top of window, or Top, Bot or All.
-    %P -- print percent of buffer above bottom of window, perhaps plus Top,
-          or print Bottom or All.
-    %m -- print the mode name.
-    %n -- print Narrow if appropriate.
-    %z -- print mnemonics of buffer, terminal, and keyboard coding systems.
-    %Z -- like %z, but including the end-of-line format.
-    %[ -- print one [ for each recursive editing level.  %] similar.
-    %% -- print %.   %- -- print infinitely many dashes.
-  Decimal digits after the % specify field width to which to pad.
+=== Static text ===
 
-=== Examples of Setting Frame and Icon Titles ===
+The simplest possible frame title would likely be some text which never changes -- always the same, regardless of frame, buffer, window, or anything else.
 
-Note that most of the following examples use lists but string values are also valid.
+    (setq frame-title-format "Hello world")
 
-    (setq frame-title-format '("" "%b @ Emacs " emacs-version))
-    (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
-    (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN"))) ;;list is needed here, could someone explain ?
-    ;; list is needed in the last example to flatten the sub-lists, otherwise a quote is sufficient
-: Also see BackquoteSyntax -- LawrenceMitchell)
+=== Simple format string ===
 
+Moving up one step in complexity would be a simple string that makes use of ##%## constructs.  This shows the buffer name first, followed by the full file path (if any) in angle brackets:
+
+    (setq frame-title-format "%b <%f>")
+
+See ModeLineConfiguration for the possible percent-sign constructs.
+
+=== User and host ===
+
+A popular desire is to put some variation on ##user@host## in the frame title.
+
+==== Lisp symbols ====
+
+This method uses Emacs Lisp symbols, rather than host OS environment strings, to obtain username and hostname.  This may, in theory, be more portable across different OSes.  To provide just the user and host:
+
+    (setq frame-title-format (list user-login-name "@" system-name))
+
+One can combine this with % constructs.  For example, this puts the buffer name first, with the user and host following in parenthesis:
+
+    (setq frame-title-format (list "%b (" user-login-name "@" system-name ")"))
+
+That might render as:
+
+    *scratch* (jsmith@darkstar)
+
+==== Environment variables ====
+
+A perhaps more common but less portable approach is to query the host OS environment variables directly.
+
+==== Microsoft Windows ====
+
+Windows 
+
+    (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN")))
+
+In the above, `list' is needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.
+
+==== SuSE ====
+
+This reportedly worked well on SuSE Linux:
+
+    (setq frame-title-format (list "%f - " (getenv "USER") "@" (getenv "HOSTNAME")))
+
+
+==== FIXME ====
+
+This example 
 
 Another example to use in an [[init file]], used on e.g. Ubuntu where USERDOMAIN doesn't exist, and the environment variable HOSTNAME isn't exported by default (as can be seen by running "export -p" at a login shell), and we want to get the host name by running the POSIX 'hostname(1)' command only once, at startup. 
 
@@ -61,17 +104,25 @@ Another example to use in an [[init file]], used on e.g. Ubuntu where USERDOMAIN
     (setq frame-title-format '("%b - " my-username "@" my-hostname))
 
 
-: the one before didn't work for me (suse linux), here's the one that works:
+=== Buffer name and Emacs version ===
 
-    (setq frame-title-format (list "%f - " (getenv "USER") "@" (getenv "HOSTNAME")))
+Here are two similar examples, both of which display the buffer name and Emacs version.
 
-: here's another way to see "USER@HOST":
+    (setq frame-title-format '("" "%b @ Emacs " emacs-version))
+    (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
 
-    (setq frame-title-format `(,(user-login-name) "@" ,(system-name) "     " global-mode-string "     %f" ))
+They would render something like:
 
-And if you're an ErcChannelTracking fan, take a look at
+    *scratch* @ Emacs 27.1
+    [*scratch*] @ Emacs 27.1
+
+=== ErcChannelTracking ===
+
+If you're an ErcChannelTracking fan, take a look at:
 
     (setq frame-title-format '("" erc-modified-channels-object "%b @ Emacs " emacs-version))
+
+=== Frame and icon ===
 
 To set both frame and icon title to the same thing, which also tells if you are using GnuEmacs or [[XEmacs]]:
 
@@ -79,119 +130,27 @@ To set both frame and icon title to the same thing, which also tells if you are 
           (setq icon-title-format
                 (format "%%b - %semacs" (if (featurep 'xemacs) "x" ""))))
 
+=== Date and time ===
+
 Display date/time if `display-time-mode' is set:
 
     (setq frame-title-format '("" invocation-name "@" system-name "     "
       global-mode-string "     %f" ))
-    ;; See also:  `display-time-format' and `mode-line-format'
 
-Feel free to add your titles here!
+See also `display-time-format' and `mode-line-format'.
 
-=== Discussion ===
+=== Directory, file, or buffer name ===
 
-By [[Kelvin Hu]] (edited by [[Reuben Thomas]]):
-
-Hi guys, I find a *almost perfect format*, as below:
+Full directory path name for DirEd, full file path name for files, buffer name otherwise.
 
     (setq frame-title-format
           '(buffer-file-name "%f"
             (dired-directory dired-directory "%b")))
 
-== Setting Xterm Window Titles from within Emacs ==
 
-When running Emacs inside of xterm (e.g. with <code>emacs -nw</code>), it is possible to mostly mimic the behavior of frame/icon titles.  To do so, you will need a copy of
-[http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-title.el xterm-title.el],
-[http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-frobs.el xterm-frobs.el],
-and the following snippet for your <code>.emacs</code>:
+=== Mark modified buffer ===
 
-    (when (and (not window-system)
-               (string-match "^xterm" (getenv "TERM")))
-      (require 'xterm-title)
-      (xterm-title-mode 1))
-
-Then modify the frame/icon frame title variables as you would in a window system.
-
-=== Notes ===
-
-[new]
-By [[avar]]:
-
-My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for me:
-
-  (when (and
-         (not window-system)
-         (or
-          (string= (getenv "TERM") "dumb")
-          (string-match "^xterm" (getenv "TERM"))))
-    (require 'xterm-title)
-    (xterm-title-mode 1))
-
-[new]
-By PaulGoins:
-
-My Emacs (emacs-snapshot on Ubuntu, version 1:20090730-1~intrepid1) says TERM is "dumb" after fully loading, but while loading .emacs it does show the right thing (rxvt-unicode, in my case).  "Your mileage may vary", I suppose.
-
-(Note: xterm-title-mode does not seem to work with urxvt.  It does work fine with other xterm-compatibles like gnome-terminal.)
-
-[new]
-By wisnij:
-
-I wasn't able to get xterm-title working with my Cygwin xterm for some reason.  As a stopgap, using xterm-frobs directly seems to work well enough:
-
-  (if (and (not window-system)
-           (string-match "^xterm" (getenv "TERM")))
-      (progn
-        (require 'xterm-frobs)
-        (defun my-xterm-title-hook ()
-          (xterm-set-window-title
-           (concat
-            (cond (buffer-read-only "%  ")
-                  ((buffer-modified-p) "*  "))
-            (buffer-name)
-            "  (" invocation-name "@" system-name ")")))
-        (add-hook 'post-command-hook  'my-xterm-title-hook))
-      (setq frame-title-format
-            '(""
-              (:eval (cond (buffer-read-only "%%  ")
-                           ((buffer-modified-p) "*  ")))
-              "%b  (" invocation-name "@" system-name ")")))
-
-
-[new]
-By CraigMcDaniel:
-
-As an alternative to using xterm-title.el/xterm-frobs.el, send your own escape codes to the terminal. I'm running iTerm2 so this example sets the window title to the full file name and the tab title to the shorter buffer name:
-
-  (defun xterm-title-update ()
-    (interactive)
-    (send-string-to-terminal (concat "\033]1; " (buffer-name) "\007"))
-    (if buffer-file-name
-        (send-string-to-terminal (concat "\033]2; " (buffer-file-name) "\007"))
-        (send-string-to-terminal (concat "\033]2; " (buffer-name) "\007"))))
-   
-  (add-hook 'post-command-hook 'xterm-title-update)
-
-[new]
-By mcandre:
-
-If you already show directories in the buffer name, you may want to use a simpler format:
-
-  (setq uniquify-buffer-name-style 'post-forward
-             uniquify-min-dir-content 7))
-  
-  (setq frame-title-format '("%b"))
-
-For ncurses / CLI title setting, xterm-title doesn't seem to work for me in Terminal.app (Mac OS X). So I just use xterm-frobs directly:
-
-  (require 'xterm-frobs)
-  (defun my-xterm-title-hook ()
-        (xterm-set-window-title (buffer-name)))
-  (add-hook 'post-command-hook  'my-xterm-title-hook)
-
-[new]
-By Jens Bo
-
-In order to mark that there are unsaved changes in the current buffer one could use:
+This puts a bullet point (•) after the buffer name, if there are unsaved changes.
 
   (setq frame-title-format
     '((:eval (if (buffer-file-name)
@@ -201,5 +160,6 @@ In order to mark that there are unsaved changes in the current buffer one could 
                  " •"))
       " - Emacs")
   )
+
 ----
 CategoryFrames CategoryDisplay FrameModes
