@@ -12,3 +12,4 @@
 # pages), please get the page database instead.  See
 # http://emacswiki.org/cgi-bin/wiki/WikiDownload
 ^216\.131\.(6[4-9]|[7-9][0-9]|1[0-1][0-9]|12[0-7])\. # 2022-02-25 [216.131.64.0 - 216.131.127.255] newpaste.el
+^216\.131\.(7[2-3])\. # 2022-02-25 [216.131.72.0 - 216.131.73.255] newpaste.el
