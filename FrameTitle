@@ -18,7 +18,13 @@ The default `frame-title-format' (as of Emacs 27.1, circa 2020) is:
 
 In effect, if there are multiple Emacs frames (multiple external GUI windows), the buffer name is used as the frame title; otherwise, something like ##Emacs@hostname## is used.
 
-Note that ##%## constructs which indicate line or column number of point (##%l##, ##%c##, ##%C##) are ignored in frame and icon title formats.
+=== Caveats ===
+
+If the current buffer has no associated file (for example, ##*scratch*## and dired buffers), then ##%f## will be blank.  Thus ##%f## used alone can produce confusing results.
+
+##%## constructs which indicate line or column number of point (##%l##, ##%c##, ##%C##) are ignored in frame and icon title formats.
+
+`list' is needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.
 
 == Renaming frames ==
 
@@ -53,6 +59,18 @@ Moving up one step in complexity would be a simple string that makes use of ##%#
 
 See ModeLineConfiguration for the possible percent-sign constructs.
 
+=== Buffer name and Emacs version ===
+
+Here are two similar examples, both of which display the buffer name and Emacs version.
+
+    (setq frame-title-format '("" "%b @ Emacs " emacs-version))
+    (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
+
+They would render something like:
+
+    *scratch* @ Emacs 27.1
+    [*scratch*] @ Emacs 27.1
+
 === User and host ===
 
 A popular desire is to put some variation on ##user@host## in the frame title.
@@ -73,48 +91,28 @@ That might render as:
 
 ==== Environment variables ====
 
-A perhaps more common but less portable approach is to query the host OS environment variables directly.
+A common but perhaps less portable approach is to query the host OS environment variables directly.  Problems can arise because not all systems use the same variable names in the same way.  None the less, an example that works on many Unix-like systems is:
+
+    (setq frame-title-format (list "%b - " (getenv "USER") "@" (getenv "HOSTNAME")))
+
+This shows the buffer name followed by user@host, separated by a literal dash (##-##).
 
 ==== Microsoft Windows ====
 
-Windows 
+Microsoft Windows does not use the same variable names as Unix-like systems.  To get a similar result as the above, one would need to use:
 
-    (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN")))
+    (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "COMPUTERNAME")))
 
-In the above, `list' is needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.
+==== Hostname via command ====
 
-==== SuSE ====
-
-This reportedly worked well on SuSE Linux:
-
-    (setq frame-title-format (list "%f - " (getenv "USER") "@" (getenv "HOSTNAME")))
-
-
-==== FIXME ====
-
-This example 
-
-Another example to use in an [[init file]], used on e.g. Ubuntu where USERDOMAIN doesn't exist, and the environment variable HOSTNAME isn't exported by default (as can be seen by running "export -p" at a login shell), and we want to get the host name by running the POSIX 'hostname(1)' command only once, at startup. 
+Reportedly some versions of Ubuntu Linux do not export ##HOSTNAME## by default (one can check with ##export -p##).  One suggestion was to use the external command ##hostname(1)## during Emacs startup to determine the hostname, and then reference that in the frame title.
 
     (setq my-hostname 
       (replace-regexp-in-string "\\(^[[:space:]\n]*\\|[[:space:]\n]*$\\)" "" ;; like perl chomp()
         (with-output-to-string 
            (call-process "/bin/hostname" nil standard-output nil))))
-    (setq my-username (getenv "USERNAME"))
-    (setq frame-title-format '("%b - " my-username "@" my-hostname))
-
-
-=== Buffer name and Emacs version ===
-
-Here are two similar examples, both of which display the buffer name and Emacs version.
-
-    (setq frame-title-format '("" "%b @ Emacs " emacs-version))
-    (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
-
-They would render something like:
-
-    *scratch* @ Emacs 27.1
-    [*scratch*] @ Emacs 27.1
+    (setq my-username (getenv "USER"))
+    (setq frame-title-format (list "%b - " my-username "@" my-hostname))
 
 === ErcChannelTracking ===
 
