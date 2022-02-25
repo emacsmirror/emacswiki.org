@@ -1,7 +1,233 @@
-HELLO MY GOOD CUSTOMER 
-FRESH CREDIT CARD, DUMPS CARD, SOFTWARE BUG WESTERN UNION 2022 BANK WIRE LOGS & TRANSFER,ALL BANK LOGS GOOD BALANCE,SOFTWARE HACK PERFECT MONEY ADDER 2022, HACKED PAYPAL 2022, ELECTRONICS TOOLS.. We are a group of Russian hackers,We will share with you all what we have and you too.Please No bargain,work quickly. - Our online support only to serious customer Hello all customers ! - Selling cvv all country very good...dumps with bin , good fresh and cheap all country live 100% - I have software do bug Transfer WESTERN UNION , PAYPAL ACCOUNT , BANK LOGIN , DUMPS TRACK 1&2 - I need customer business long time with me, buy cvv from me only good..never bad. - If you really trust and want work plase contact : BOOKING FLIGHT TICKET AND HOTEL RESERVATION - I PAY ANY BILLS ONLINE 
-Contact Me:
-Email: myersjustine14@yahoo.com
-Cell : +1(409)4202312
-_____________ WU TRANSFER _____________ Transfer Western Union i work all country - 150$ = 1500$ MTCN (sender name country sender) - 200$ = 2000$ MTCN (sender name country sender) - 300$ = 3500$ MTCN (sender name country sender) - 400$ = 4800$ MTCN (sender name country sender) - 500$ = 7000$ MTCN (sender name country sender) Give me your western union info and payment me fee. Then i will do transfer's for you. After about 45 min you'll have MTCN and sender name Country Sender. ______________________ CC _______________________ - List cc and my price : - Us (Visa,Master) = 10$ per 1 - Us (Amex,Dis) = 9$ per 1 - Us Fullz info = 25$ per 1 - Us Bin 10$ , US DoB 15$ _________________________________ - Uk (Visa,Master) = 10$ per 1 - Uk (Amex,Dis) = 15$ per 1 - Uk Fullz info = 30$ per 1 - Uk Bin 15$ , UK DoB 20$ - I do the best UK balance high _________________________________ - Ca (Visa,Master) = 15$ per 1 - Ca (Amex,Dis) = 20$ per 1 - Ca Fullz info = 30$ per 1 - Ca Bin 15$ , CA DoB 20$ _________________________________ - Au (Visa,Master) = 15$ per 1 - Au (Amex,Dis) = 20$ per 1 - Au Fullz info = 30$ per 1 - Au Bin 17$ , AU DoB 20$ _________________________________ - Eu (Visa,Master) = 20$ per 1 - Eu (Amex,Dis) = 30$ per 1 - Eu Fullz info = 40$ per 1 - Eu Bin 25$ , AU DoB 30$ _________________________________ - RDP = 20$ - SMTP = 25$ ( All Country ) - Asia = 20$ per 1 (fullz info = 30$) I can check balance in cvv, balance will be as good as you expect and price BOOKING FLIGHT TICKET AND HOTEL RESERVATION - I PAY ANY BILLS ONLINE Contact Me: ICQ : 709 051 849 Email: myersjustine14@yahoo.com Yahoo ID: lawsonk66 Gmail : myersjustine14@gmail.com Cell : 1 (562) 741-8663 _____________ DUMPS,TRACK 1&2 With PIN _____________ - Dumps,Tracks 1&2 Us = 70$ per 1 - Dumps,Tracks 1&2 Uk = 150$ per 1 - Dumps,Tracks 1&2 Ca = 120$ per 1 - Dumps,Tracks 1&2 Au = 120$ per 1 - Dumps,Tracks 1&2 Eu = 150$ per 1 - Track1: 4124877000619142=11052011451475400000 - Pin: 3574 - Track2: 4548036252470062=13101010000097900685 _ Pin: 5465 - 4151700282453129=10051011406543400000 - Pin: 2750 _______ BANK LOGIN Price US UK CA AU EU: _________ * Bank Us : ( Bank of america,HALIFAX,BOA,CHASE,Wells Fargo...) . Balance 3000$ = 150$ . Balance 5000$ = 250$ . Balance 8000$ = 400$ . Balance 12000$ = 600$ . Balance 15000$ = 800$ . Balance 20000$ = 1000$ * Bank UK : ( LLOYDS TSB,BARCLAYS,Standard Chartered,HSBC...) . Balance 5000 GBP = 200$ . Balance 10000 GBP = 500$ . Balance 16000 GBP = 700$ . Balance 20000 GBP = 1000$ . Balance 30000 GBP = 1200$ ____________ PAYPAL ACCOUNT ______________ - 150$ = 1500$ Account Paypal ( Full ) - 200$ = 2500$ Account Paypal ( Full ) - 300$ = 4500$ Account Paypal ( Full ) - 400$ = 5500$ Account Paypal ( Full ) - 500$ = 7000$ Account Paypal ( Full ) ___________ BUSINESS RULES: _______________ 1. I always check and update new cvv good and fresh every day 2. I will change cvv if not good or dont work 3. If you buy over 20 stuff, I will discount for you 4. I have a replacement policy for bad Cvv. All my cvv are inspected before sale. 5. I accept payment with Perfect Money, Bitcoin , Western Union, Web Money, Money Gram. 6. I sure you will happy if bussiness with me. 7. Hope you are best customer and we can to work a long time business BOOKING FLIGHT TICKET AND HOTEL RESERVATION 
- *** Thank you for reading *** join me if u real and serious for real business and good work ***
+;;; newpaste.el --- Paste directly from Emacs to http://paste.lisp.org using Emacs `url' library
+
+;; Copyright (C) 2012  Max Mikhanosha
+
+;; Author: Max Mikhanosha <max@momoland.openchat.com>
+;; Keywords: 
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Usage:
+;;
+;; 1) Select a region
+;; 2) M-x newpaste
+;; 
+
+;;; Code:
+
+(require 'cl)
+(require 'url)
+
+(defvar newpaste-channel nil
+  "Default channel")
+(defvar newpaste-username nil
+  "Default username. Still will be asked if `newpaste-confirm-username' is set")
+(defvar newpaste-title nil)
+(defvar newpaste-expiration nil)
+
+(defvar newpaste-ask-username t
+  "When non-NIL paste will ask for username, even if its already
+  known because of previous paste")
+
+(defvar newpaste-ask-expiration t
+  "When non-NIL ask for expiration")
+
+(defvar newpaste-ask-title t
+  "When non-NIL ask for title")
+
+(defvar newpaste-ask-channel nil
+  "When non-NIL ask for channel")
+
+(defvar newpaste-ask-colorization t
+  "When non-NIL will ask for colorization")
+
+(defvar newpaste-debug nil
+  "When non-nil will leave buffers *newpaste-get* and
+*newpaste-post* behind")
+
+
+(defvar newpaste-colorizations-list
+  '("None"
+    "Basic Lisp"
+    "Scheme"
+    "Emacs Lisp"
+    "Common Lisp"
+    "C"
+    "C++"
+    "Java"
+    "Objective C"
+    "Erlang"
+    "Python"
+    "Haskell"
+    "Unified Context Diff"
+    "WebKit (text or diff)"))
+
+(defvar newpaste-expiration-list
+  '("Never expires (recommended)"
+    "One hour"
+    "One day"
+    "One week"
+    "Four weeks"))
+
+(defvar newpaste-mode-colorization-alist
+  '((emacs-lisp-mode . "Emacs Lisp")
+    (lisp-mode . "Common Lisp")
+    (slime-repl-mode . "Common Lisp")
+    (c-mode . "C")
+    (c++-mode . "C++")
+    (java-mode . "Java")))
+
+(defun newpaste-ask (prompt default choices)
+  "Ask user for a string value, offering DEFAULT as choice. If
+CHOICES is set then completing read is used, and input must match
+one of them"
+  (if choices
+      (completing-read prompt choices nil t nil nil default)
+    (read-string prompt default)))
+
+(defun newpaste-maybe-ask-for (prompt ask-p defaults &optional choices)
+  "When ASK-P is non-NIL ask user for the value. Use first of the
+DEFAULTS that is non-nil as default.
+
+When ASK-P is NIL return the first non-NIL value in DEFAULTs or
+show error
+
+When CHOICES is non-NIL then `completing-read' is used, and input must match
+one of the choices"
+  (let ((default (some #'identity defaults)))
+    (if ask-p (newpaste-ask prompt default choices)
+      (or default (newpaste-ask prompt default choices)))))
+
+(defun newpaste-guess-colorization (text text-major-mode)
+  (or (cdr (assoc text-major-mode newpaste-mode-colorization-alist))
+      (and (string-match "defun" text) "Basic Lisp")
+      (and (string-match "void" text) "C++")))
+
+(defun newpaste-paste-internal (text &optional text-major-mode)
+  (let* ((url-cookie-trusted-urls '("http://paste.lisp.org/.*"))
+         (buffer (url-retrieve-synchronously "http://paste.lisp.org/new")))
+    (with-current-buffer buffer
+      (when newpaste-debug
+        (when (get-buffer "*newpaste-get*")
+          (kill-buffer "*newpaste-get*"))
+        (rename-buffer "*newpaste-get*"))
+      (let ((inputs '())
+            (captcha-answer)
+            (outputs))
+        (goto-char (point-min))
+        (while (re-search-forward "<input " nil t)
+          (let ((attrs '()))
+            (while (looking-at "[ \t\n]*\\([a-z]+\\)=\"\\([^\"]+\\)\"")
+              (let ((attr-name (match-string 1))
+                    (attr-value (match-string 2)))
+                (push attr-value attrs)
+                (push (intern (format ":%s" attr-name)) attrs))
+              (goto-char (1+ (match-end 0))))
+            (push attrs inputs)))
+        (goto-char (point-min))
+        (when (re-search-forward "What do you get when you multiply \\([0-9]+\\) by \\([0-9]+\\)\\?"
+                                 nil t)
+          (setq captcha-answer (* (string-to-number (match-string 1))
+                                  (string-to-number (match-string 2)))))
+        (dolist (input inputs)
+          (cond ((equal "reset" (getf input :type)))
+                ((equal "submit" (getf input :type))
+                 (push (cons "submit" (getf input :value)) outputs))
+                ((equal "username" (getf input :name))
+                 (push (cons "username"
+                             (newpaste-maybe-ask-for
+                              "Username: " newpaste-ask-username
+                              (list
+                               (getf input :value)
+                               newpaste-username)))
+                       outputs))
+                ((equal "channel" (getf input :name))
+                 (push (cons "channel"
+                             (newpaste-maybe-ask-for
+                              "Channel: " newpaste-ask-channel
+                              (list
+                               newpaste-channel
+                               (getf input :value))))
+                       outputs))
+                ((equal "captchaid" (getf input :name))
+                 (push (cons "captchaid" (getf input :value))
+                       outputs))
+                ((equal "title" (getf input :name))
+                 (push (cons "title" (newpaste-maybe-ask-for
+                                      "Title: " newpaste-ask-title
+                                      (list
+                                       newpaste-title
+                                       (getf input :value))))
+                       outputs))
+                ((equal "captcha" (getf input :name))
+                 (or captcha-answer (error "Unable to find captcha"))
+                 (push (cons "captcha" (format "%d" captcha-answer)) outputs))))
+        (push (cons "text" text) outputs)
+        (push (cons "colorize"
+                    (newpaste-maybe-ask-for
+                     "Colorize as: " newpaste-ask-colorization
+                     (list
+                      (newpaste-guess-colorization text text-major-mode))
+                     newpaste-colorizations-list))
+              outputs)
+        (push (cons "expiration"
+                    (newpaste-maybe-ask-for
+                     "Expiration: " newpaste-ask-expiration
+                     newpaste-expiration-list
+                     newpaste-expiration-list)) outputs)
+        (unless newpaste-debug
+          (kill-buffer))
+        (let ((url-request-method "POST")
+              (url-request-extra-headers
+               '(("Content-Type" . "application/x-www-form-urlencoded")))
+              (url-request-data
+               (mapconcat (lambda (arg)
+                            (concat (url-hexify-string (car arg))
+                                    "="
+                                    (url-hexify-string (cdr arg))))
+                          outputs
+                          "&")))
+          (with-current-buffer (url-retrieve-synchronously "http://paste.lisp.org/submit")
+            (when newpaste-debug
+              (when (get-buffer "*newpaste-post*")
+                (kill-buffer "*newpaste-post*"))
+              (rename-buffer "*newpaste-post*"))
+            (goto-char (point-min))
+            (let ((paste-num
+                   (when (re-search-forward "Paste number \\([0-9]+\\) pasted" nil t)
+                     (match-string 1))))
+              (if paste-num
+                  (let ((url (format "http://paste.lisp.org/display/%s" paste-num)))
+                    (kill-new url)
+                    (unless newpaste-debug
+                      (kill-buffer))
+                    (message url))
+                (message "Unable to paste, check *paste-post* buffer for errors")
+                (unless newpaste-debug
+                  (when (get-buffer "*paste-post*")
+                    (kill-buffer "*paste-post*")
+                    (rename-buffer "*paste-post*")))))))))))
+
+(defun newpaste (beg end)
+  (interactive "r")
+  (let ((text (buffer-substring-no-properties beg end)))
+    (when (string-match "\\`[ \t\n]*\\'" text)
+      (error "Can't paste empty string"))
+    (newpaste-paste-internal text major-mode)))
+
+(provide 'newpaste)
+;;; newpaste.el ends here
+
