@@ -1,6 +1,6 @@
 The '''[::header line]''' is a fixed line displayed at the top of an Emacs [[window]].  This feature is new in GnuEmacs 21 (and is not in [[XEmacs]]).
 
-The header line is set with the `header-line-format' variable, in the same fashion as the `mode-line-format' for the [[mode line]] at the bottom of the window.  Unlike the mode line, there's no global default for the header line; it's only used by modes that specifically choose to.  `header-line-format' is a ModeLineConstruct, with recursive sub-list concatenation and %-construct replacement.
+The header line is set with the `header-line-format' variable, in the same fashion as the `mode-line-format' for the [[mode line]] at the bottom of the window.  Unlike the mode line, there's no global default for the header line; it's only used by modes that specifically choose to.  `header-line-format' is a ModeLineConstruct, with recursive sub-list concatenation and [PercentConstruct %-construct] replacement.
 
 == Hscroll ==
 
