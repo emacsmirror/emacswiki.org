@@ -73,7 +73,7 @@ If you want to change just one part of the mode-line, you likely will want to mo
 
     (setq mode-line-position "(%l,%c)") ;; *** WRONG! ***
 
-That will result in a literal #(%l,%c)# appearing in your mode-line.  The reason is that simple strings are only interpreted for [PercentConstruct %-constructs] when they occur in the top level mode line construct.  When `format-mode-line' processes `mode-line-format' recursively, `mode-line-position' is encountered as a '''''symbol'''''.  Symbols whose ''value'' is a string are ''not'' processed for %-constructs.  Instead use:
+That will result in a literal ##(%l,%c)## appearing in your mode-line.  The reason is that simple strings are only interpreted for [PercentConstruct %-constructs] when they occur in the top level mode line construct.  When `format-mode-line' processes `mode-line-format' recursively, `mode-line-position' is encountered as a '''''symbol'''''.  Symbols whose ''value'' is a string are ''not'' processed for %-constructs.  Instead use:
 
     (setq mode-line-position (list "(%l,%c)"))
 
