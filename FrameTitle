@@ -1,10 +1,6 @@
 A [[frame]] contains and displays one or more Emacs internal [[window]]s.
 
-Many other programs and people would call an Emacs frame a "window", and the Emacs internal windows would be called "panes".
-
-When running on a GUI (graphical user interface, such as X11, Microsoft Windows, or !MacOS X), each external window provided by the host GUI becomes an Emacs frame.  In a character cell terminal (like a text console or an xterm), there is an implicit Emacs frame for the terminal.
-
-Frames can have names, similar to how buffers have names.  Additionally, on GUIs, there is a ''frame title'', typically shown by the host GUI in a "title bar" above the Emacs frame.  There is also a separate ''icon title'', for iconified/minimized representations of Emacs frames.
+Frames have names, similar to how buffers have names.  Additionally, on GUIs, there is a ''frame title'', typically shown by the host GUI in a "title bar" above the Emacs frame.  There is also a separate ''icon title'', for iconified/minimized representations of Emacs frames.
 
 To have the Emacs frame title appear in the title bar of a character terminal, see XTermTitle.
 
@@ -12,13 +8,13 @@ To have the Emacs frame title appear in the title bar of a character terminal, s
 
 The frame title is determined by the variable `frame-title-format'.  Likewise, the icon title comes from`icon-title-format'.  They are both [[ModeLineConstruct]]s, similar to the `mode-line-format' variable.  Most commonly, they are set to a string, or a list whose elements will be recursively processed and concatenated together.
 
-For strings in mode line constructs, the ##%## (percent sign) is special, and allows insertion of useful information.  Two of the most common forms are ##%f## for the full file path, and the ##%b## for the buffer name.  Again, see ModeLineConstruct for details.
+Mode line constructs can use [PercentConstruct %-constructs] to insert information.  Two of the most common forms are ##%f## for the full file path, and the ##%b## for the buffer name.
 
 The default `frame-title-format' (as of Emacs 27.1, circa 2020) is:
 
     (multiple-frames "%b" ("" invocation-name "@" system-name))
 
-In effect, if there are multiple Emacs frames (multiple external GUI windows), the buffer name is used as the frame title; otherwise, something like ##Emacs@hostname## is used.
+In effect, if there are multiple Emacs frames (multiple external GUI windows), the buffer name is used as the frame title; otherwise, something like ##Emacs@foo## is used.
 
 === Caveats ===
 
@@ -55,7 +51,7 @@ The simplest possible frame title would likely be some text which never changes 
 
 === Simple format string ===
 
-Moving up one step in complexity would be a simple string that makes use of ##%## constructs.  A very simple example might be this, which uses the buffer name as the frame title:
+Moving up one step in complexity would be a simple string that makes use of [PercentConstruct %-constructs].  A very simple example might be this, which uses the buffer name as the frame title:
 
     (setq frame-title-format "%b")
 
@@ -63,7 +59,8 @@ More than one specifier can be given.  This shows the buffer name first, followe
 
     (setq frame-title-format "%b <%f>")
 
-See ModeLineConstruct for the possible percent-sign constructs.
+Note that %-constructs are not expanded if contained within a Lisp symbol whose value is a string; see [[ModeLineConstruct#NestedStrings]] for details.
+
 
 === Buffer name and Emacs version ===
 
@@ -79,7 +76,7 @@ They would render something like:
 
 === User and host ===
 
-A popular desire is to put some variation on ##user@host## in the frame title.
+A popular desire is to put some variation on ##user@host## in the frame title (where "host" means "name of the computer").
 
 ==== Lisp symbols ====
 
