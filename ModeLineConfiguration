@@ -58,15 +58,13 @@ There is an interactive [[CustomizingAndSaving|Customization]] group for the mod
 
 
 
-== Manual Customization ==
+== Build your own ==
 
 The ModeLine is defined by the variable `mode-line-format', itself made up of several more variables.  Thus, you can alter `mode-line-format' to change the whole thing, or alter any of the component variables to change just that part.  The latter may also provide better coexistence with other parts of Emacs that use the mode line variables.
 
-Each of these variables is expected to contain a ''mode line construct''.  A mode line construct is most commonly a string, or, a list starting with a string, where each list member is concatenated together to form a string.  Within those strings, codes starting with ##%## (percent sign) are replaced with other values.  See ModeLineConstruct for full details, including idioms and tips.
+Each of these variables is expected to contain a ''mode line construct''.  A mode line construct is most commonly a string, or, a list starting with a string, where each list member is concatenated together to form a string.  Within those strings, [PercentConstructs %-constructs] are replaced with other values.  See ModeLineConstruct for full details, including idioms and tips.
 
 The desired variables would generally be placed in one's InitFile, to take effect for every Emacs session.  However, you can also use them in LispInteractionMode.  This may be useful to test and tune to your liking, before you save the finished result.
-
-See also [[Manual:Mode Line Format]] in the Emacs Lisp Reference Manual.
 
 === Default mode-line ===
 
@@ -74,7 +72,7 @@ The default `mode-line-format' (as of Emacs 27.1, circa 2020) is:
 
     ("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode) mode-line-modes mode-line-misc-info mode-line-end-spaces)
 
-The leading ##"%e"## is a string containing a %-construct; it will be replaced with any active out-of-memory error message, or an empty string otherwise.  (See ModeLineConstruct for a list of percent sign codes.)
+The leading ##"%e"## is a string containing a [PercentConstructs %-construct]; it will be replaced with any active out-of-memory error message, or an empty string otherwise.
 
 ##(vc-mode vc-mode)## is a conditional, which will display the value of `vc-mode' only if `vc-mode' is non-##nil##.  (FIXME explain why this is needed, since nil values are normally ignored anyway)
 
@@ -91,9 +89,9 @@ The mode-line is typically built from several variables, each itself a mode line
 || ##mode-line-modified## || Modified and read-only status ||
 || ##mode-line-remote## || At-sign (##@##) for buffers visiting remote files, otherwise a dash ||
 || ##mode-line-frame-identification## || Frame title, for some environments ||
-|| ##mode-line-buffer-identification## || Buffer/file name, or other details for non-file buffers ||
-|| ##mode-line-position## || Line, column, and portion (percent) of [[point]] in buffer, and total size of buffer ||
-|| ##mode-line-modes## || Major and minor modes, in parenthesis, plus square brackets for recursive edits ||
+|| ##mode-line-buffer-identification## || Buffer/file name ||
+|| ##mode-line-position## || Line, column, and portion (percent) of [[point]] in buffer; total size ||
+|| ##mode-line-modes## || Major and minor modes, in parenthesis; square brackets if RecursiveEdit ||
 || ##mode-line-misc-info## || Defun name for `which-function-mode', clock for `display-time-mode'
 || ##mode-line-end-spaces## || A line of dashes for text terminals; nothing for graphics displays ||
 
@@ -122,6 +120,16 @@ To do so, you might use this:
            "-- user: "
            ;; user login name/ID
            (getenv "USER")))
+
+== See also ==
+
+* ModeLineConstruct
+* PercentConstruct
+* ModeLine
+* HeaderLine
+* FrameTitle
+* Emacs Lisp Reference Manual: [[Manual:Mode Line Format]]
+* Emacs Lisp Reference Manual: [[Manual:Mode Line Data]]
 
 ----
 CategoryDisplay
