@@ -60,37 +60,24 @@ There is an interactive [[CustomizingAndSaving|Customization]] group for the mod
 
 == Manual Customization ==
 
-Customize the mode-line by altering variable `mode-line-format', or its components.  
+The ModeLine is defined by the variable `mode-line-format', itself made up of several more variables.  Thus, you can alter `mode-line-format' to change the whole thing, or alter any of the component variables to change just that part.  The latter may also provide better coexistence with other parts of Emacs that use the mode line variables.
+
+Each of these variables is expected to contain a ''mode line construct''.  A mode line construct is most commonly a string, or, a list starting with a string, where each list member is concatenated together to form a string.  See ModeLineConstruct for full details, including idioms and tips.
+
+The desired variables would generally be placed in one's InitFile, to take effect for every Emacs session.  However, you can also use them in LispInteractionMode.  This may be useful to test and tune to your liking, before you save the finished result.
 
 See also [[Manual:Mode Line Format]] in the Emacs Lisp Reference Manual.
 
+=== Default mode-line ===
 
+The default `mode-line-format' (as of Emacs 27.1, circa 2020) is:
 
-
-=== Syntax ===
-
-Each mode-line variable is made up of:
-
-* '''string''' -- A string appears verbatim, except for %-constructs embedded in the string
-* '''symbol''' -- A Lisp symbol is evaluated for its value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.
-* '''lists''' -- A list whose first element is a string (##(string rest...)##) or list ##(list rest...)##) means to process all the elements recursively and concatenate the results.
-
-
-
-
-
-=== Mode-Line Components ===
-
-The default mode-line has several components, each a variable you can modify.  You can customize one part of the mode-line, while leaving the rest alone.
-
-The default `mode-line-format' is:
-
-    (%e mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode) mode-line-modes mode-line-misc-info mode-line-end-spaces)
+    ("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode) mode-line-modes mode-line-misc-info mode-line-end-spaces)
 
 Broken down, that is:
 
 || Item   || Meaning ||
-|| ##%e## || Out-of-memory error message, or nothing ||
+|| ##"%e"## || Out-of-memory error message, or an empty string ||
 || ##mode-line-front-space## || Dash (##-##) for text terminals, a space (## ##) for graphic displays ||
 || ##mode-line-mule-info## || Information on character sets, encodings, and other human-language details ||
 || ##mode-line-client## || Identifies frames created by ##emacsclient## ||
@@ -99,52 +86,10 @@ Broken down, that is:
 || ##mode-line-frame-identification## || Frame title, for some platforms ||
 || ##mode-line-buffer-identification## || Buffer/file name, or other details for non-file buffers ||
 || ##mode-line-position## || Line, column, and portion (percent) of [[point]] in buffer, and total size of buffer ||
-|| ##(vc-mode vc-mode)## || FIXME ??? ||
+|| ##(vc-mode vc-mode)## || ??? FIXME ||
 || ##mode-line-modes## || Major and minor modes, in parenthesis, plus square brackets for recursive edits ||
 || ##mode-line-misc-info## || Defun name for `which-function-mode', clock for `display-time-mode'
 || ##mode-line-end-spaces## || A line of dashes for text terminals; nothing for graphics displays ||
-
-
-
-
-
-=== Percent Sign Constructs ==
-
-The heart of the mode-line implementation are what the manual calls ''%-constructs'' -- a percent sign (##%##) followed by a single character.  Each occurrence of such a construct in a mode-line string is replaced with useful information.  The %-constructs are listed below.
-
-Several of them use the technique of evaluating to some kind of status indicator if a given condition is in effect, or if not in effect evaluating as an empty string or other placeholder.  This lets the mode-line accumulate status fields that appear as applicable.
-
-|| Symbol || Replacement value ||
-|| ##%b## || buffer name ||
-|| ##%f## || file name, with path ||
-|| ##%F## || frame name ||
-|| ##%s## || process status, or ##no process## ||
-|| ##%l## || line number ||
-|| ##%n## || ##Narrow## if the window is narrowed, otherwise nothing ||
-|| ##%t## || text/binary file mode, for platforms that make that distinction (like Microsoft Windows)  ||
-|| ##%z## || coding systems in effect for keyboard, terminal, and file/buffer ||
-|| ##%Z## || same as ##%z## plus end-of-line format ||
-|| ##%*## || buffer status - ##%## if read-only, otherwise ##*## if modified, otherwise ##-## ||
-|| ##%+## || buffer status - ##*## if modified, otherwise ##%## if read-only, otherwise ##-## ||
-|| ##%&## || buffer status - ##*## if modified, otherwise ##-## ||
-|| ##%@## || default-directory status - ##@## if remote, ##-## if local ||
-|| ##%[## || recursive editing level, one ##[## for each level deep ||
-|| ##%]## || recursive editing level, one ##]## for each level deep ||
-|| ##%c## || column number, first column is zero ||
-|| ##%C## || column number, first column is one ||
-|| ##%i## || buffer size, in bytes ||
-|| ##%I## || buffer size, auto-scaled to K/M/G ||
-|| ##%p## || percent of buffer above top of window ||
-|| ##%P## || percent buffer above bottom of window ||
-|| ##%e## || out-of-memory error message, if any ||
-|| ##%%## || literal ##%## ||
-|| ##%-## || "infinitely many dashes" ||
-
-The combination of ##%*## and ##%+## achieve the four-way ##--##, ##%%##, ##**##, ##%*## buffer status indicator.
-
-
-
-
 
 === Example ===
 
