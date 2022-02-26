@@ -1,36 +1,29 @@
-When running Emacs inside of xterm (e.g. with <code>emacs -nw</code>), it is possible to mostly mimic the behavior of frame/icon titles.  To do so, you will need a copy of
-[http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-title.el xterm-title.el],
-[http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-frobs.el xterm-frobs.el],
-and the following snippet for your <code>.emacs</code>:
+When running Emacs inside of xterm (e.g., ##emacs -nw##, or via SSH), it is possible to mostly mimic the behavior of a GUI FrameTitle.
+
+== Noah Friedman implementation ==
+
+Noah Friedman provides ##xterm-frobs.el## and ##xterm-title.el##, which were the standard for many years.
+
+As of 2022, they have not been updated since 2016, and do not appear to work with modern Emacs (version 27.1 circa 2020).  Failure mode is an apparent input hang when attempting to invoke ##xterm-title-mode##, recoverable with <kbd>C-g</kbd>, but still no title updates.
+
+It is also reported that ##xterm-title-mode## does not work with ##urxvt##, even when other xterm-compatibles do work on the same system.
+
+In any event, to use Mr Friedman's implementation, install these Lisp files:
+
+* http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-title.el
+* http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-frobs.el
+
+Place the following in your InitFile:
 
     (when (and (not window-system)
                (string-match "^xterm" (getenv "TERM")))
       (require 'xterm-title)
       (xterm-title-mode 1))
 
-Then modify the frame/icon frame title variables as you would in a window system.
+Then modify the frame/icon frame title variables as you would in a window system (see FrameTitle for details on that).
 
+=== Cygwin ===
 
-By [[avar]]:
-
-My Emacs insists that I have a "dumb" terminal. Even under xterm. This works for me:
-
-  (when (and
-         (not window-system)
-         (or
-          (string= (getenv "TERM") "dumb")
-          (string-match "^xterm" (getenv "TERM"))))
-    (require 'xterm-title)
-    (xterm-title-mode 1))
-
-[new]
-By PaulGoins:
-
-My Emacs (emacs-snapshot on Ubuntu, version 1:20090730-1~intrepid1) says TERM is "dumb" after fully loading, but while loading .emacs it does show the right thing (rxvt-unicode, in my case).  "Your mileage may vary", I suppose.
-
-(Note: xterm-title-mode does not seem to work with urxvt.  It does work fine with other xterm-compatibles like gnome-terminal.)
-
-[new]
 By wisnij:
 
 I wasn't able to get xterm-title working with my Cygwin xterm for some reason.  As a stopgap, using xterm-frobs directly seems to work well enough:
@@ -54,10 +47,20 @@ I wasn't able to get xterm-title working with my Cygwin xterm for some reason.  
               "%b  (" invocation-name "@" system-name ")")))
 
 
-[new]
+=== Terminal.app ===
+
+For ncurses / CLI title setting, xterm-title doesn't seem to work for me in Terminal.app (Mac OS X). So I just use xterm-frobs directly:
+
+  (require 'xterm-frobs)
+  (defun my-xterm-title-hook ()
+        (xterm-set-window-title (buffer-name)))
+  (add-hook 'post-command-hook  'my-xterm-title-hook)
+
+== Roll your own ==
+
 By CraigMcDaniel:
 
-As an alternative to using xterm-title.el/xterm-frobs.el, send your own escape codes to the terminal. I'm running iTerm2 so this example sets the window title to the full file name and the tab title to the shorter buffer name:
+As an alternative to using external libraries, send your own escape codes to the terminal. I'm running iTerm2 so this example sets the window title to the full file name and the tab title to the shorter buffer name:
 
   (defun xterm-title-update ()
     (interactive)
@@ -68,19 +71,17 @@ As an alternative to using xterm-title.el/xterm-frobs.el, send your own escape c
    
   (add-hook 'post-command-hook 'xterm-title-update)
 
-[new]
-By mcandre:
+== Improperly dumb terminals ==
 
-If you already show directories in the buffer name, you may want to use a simpler format:
+Sometimes Emacs insists that you have a "dumb" terminal.  One can tell Emacs to treat all such terminals as xterm:
 
-  (setq uniquify-buffer-name-style 'post-forward
-             uniquify-min-dir-content 7))
-  
-  (setq frame-title-format '("%b"))
+  (when (and
+         (not window-system)
+         (or
+          (string= (getenv "TERM") "dumb")
+          (string-match "^xterm" (getenv "TERM"))))
+    ;; do xterm stuff here
+    )
 
-For ncurses / CLI title setting, xterm-title doesn't seem to work for me in Terminal.app (Mac OS X). So I just use xterm-frobs directly:
 
-  (require 'xterm-frobs)
-  (defun my-xterm-title-hook ()
-        (xterm-set-window-title (buffer-name)))
-  (add-hook 'post-command-hook  'my-xterm-title-hook)
+Note that ##TERM## may have the correct value while loading the InitFile, but change to ##dumb## after Emacs finishes loading.
