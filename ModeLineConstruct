@@ -66,8 +66,8 @@ A list starting with a symbol other than the above creates a conditional.  If th
 
 For the novice Lisp user, some common idioms and pitfalls are explained in the following.
 
-=== Nested strings ===
 [:NestedStrings]
+=== Nested strings ===
 
 If you want to change just one part of the mode-line, you likely will want to modify one of the many variables used to build `mode-line-format'.  For example, if you just want to change the position indicator, you might try this:
 
