@@ -12,7 +12,7 @@ To have the Emacs frame title appear in the title bar of a character terminal, s
 
 The frame title is determined by the variable `frame-title-format'.  Likewise, the icon title comes from`icon-title-format'.  They are both [[ModeLineConstruct]]s, similar to the `mode-line-format' variable.  Most commonly, they are set to a string, or a list whose elements will be recursively processed and concatenated together.
 
-For strings in mode line constructs, the ##%## (percent sign) is special, and allows insertion of useful information.  Two of the most common forms are ##%f## for the full file path, and the ##%b## for the buffer name.  Again, see ModeLineConfiguration for details.
+For strings in mode line constructs, the ##%## (percent sign) is special, and allows insertion of useful information.  Two of the most common forms are ##%f## for the full file path, and the ##%b## for the buffer name.  Again, see ModeLineConstruct for details.
 
 The default `frame-title-format' (as of Emacs 27.1, circa 2020) is:
 
@@ -26,7 +26,7 @@ If the current buffer has no associated file (for example, ##*scratch*## and dir
 
 ##%## constructs which indicate line or column number of point (##%l##, ##%c##, ##%C##) are ignored in frame and icon title formats.
 
-See also the Lisp usage tips in ModeLineConfiguration.
+See also the Lisp usage tips in ModeLineConstruct.
 
 == Renaming frames ==
 
@@ -63,7 +63,7 @@ More than one specifier can be given.  This shows the buffer name first, followe
 
     (setq frame-title-format "%b <%f>")
 
-See ModeLineConfiguration for the possible percent-sign constructs.
+See ModeLineConstruct for the possible percent-sign constructs.
 
 === Buffer name and Emacs version ===
 
