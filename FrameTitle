@@ -175,5 +175,15 @@ If you already show directories in the buffer name, you may want to use a simple
   (setq frame-title-format '("%b"))
 
 
+== See also ==
+
+* ModeLineConstruct
+* PercentConstruct
+* ModeLine
+* HeaderLine
+* ModeLineConfiguration
+* Emacs Lisp Reference Manual: [[Manual:Mode Line Format]]
+* Emacs Lisp Reference Manual: [[Manual:Mode Line Data]]
+
 ----
 CategoryFrames CategoryDisplay FrameModes
