@@ -83,5 +83,14 @@ Sometimes Emacs insists that you have a "dumb" terminal.  One can tell Emacs to 
     ;; do xterm stuff here
     )
 
+Another approach would be to try to detect xterm via more than one possible variable:
+
+    (when (and (not (display-graphic-p))
+	   (or
+	    (string-match "^xterm" (getenv "TERM"))
+	    (getenv "XTERM_VERSION")))
+        ;; do xterm stuff here
+	)
+
 
 Note that ##TERM## may have the correct value while loading the InitFile, but change to ##dumb## after Emacs finishes loading.
