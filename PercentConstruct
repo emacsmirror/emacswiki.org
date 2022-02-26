@@ -30,6 +30,8 @@ Several of these use the technique of evaluating to some kind of status indicato
 
 The combination of ##%*## and ##%+## achieve the four-way ##--##, ##%%##, ##**##, ##%*## buffer status indicator that appears near the start of the default mode line.
 
+Note that strings in a mode line construct are '''''not always''''' expanded; see [[ModeLineConstruct#NestedStrings]] for details.
+
 == See also ==
 * ModeLineConstruct
 * ModeLineConfiguration
