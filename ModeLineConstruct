@@ -78,7 +78,7 @@ In the above, `mode-name' will be evaluated once, when the `setq' expression is 
 
     (setq frame-title-format 'mode-name)
 
-The leading single quote suppresses immediate evaluation, so that `setq' instead receives the symbol `mode-name', and not its current value.  (In other words, it gets a pointer/reference, not the value.)  When Emacs renders the frame title, it evaluates any Lisp symbols to get their value at the time.  End result, the frame title changes to reflect the current mode.
+The leading single quote suppresses immediate evaluation, so that `setq' instead receives the symbol `mode-name', and not its current value.  (Analogous to a pointer or reference in some systems.)  Each time Emacs updates the frame title, it evaluates any Lisp symbols to get their value at that time.  End result, the frame title changes to reflect the current mode.
 
 === FIXME ===
 
