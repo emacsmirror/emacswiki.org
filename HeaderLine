@@ -1,12 +1,12 @@
 The '''[::header line]''' is a fixed line displayed at the top of an Emacs [[window]].  This feature is new in GnuEmacs 21 (and is not in [[XEmacs]]).
 
-The header line is set with the <code>header-line-format</code> variable, the same as <code>mode-line-format</code> for the [[mode line]] at the bottom of the window.  Unlike the mode line, there's no global default for the header line, it's only used by modes that specifically choose to.
+The header line is set with the `header-line-format' variable, in the same fashion as the `mode-line-format' for the [[mode line]] at the bottom of the window.  Unlike the mode line, there's no global default for the header line; it's only used by modes that specifically choose to.  `header-line-format' is a ModeLineConstruct, with recursive sub-list concatenation and %-construct replacement.
 
 == Hscroll ==
 
 The header line, like the mode line, doesn't follow any [[Hscroll]]ing.  If you're writing a mode that shows column headings or the like then you probably want it to.  SimpleEmacsSpreadsheet is an example of doing that.
 
-The hscroll can be followed by using the <code>:eval</code> feature (described under Manual:mode-line-format).  Look at <code>window-hscroll</code> and use it to chop off some of the string at the left.  For example
+The hscroll can be followed by using the ##:eval## feature (described under ModeLineConstruct).  Look at `window-hscroll' and use it to chop off some of the string at the left.  For example
 
     (defconst my-header "some long header line string ...")
     (setq header-line-format '(:eval (substring my-header
@@ -15,13 +15,13 @@ The hscroll can be followed by using the <code>:eval</code> feature (described u
 
 == Fringe ==
 
-On the new X graphical displays the header line extends at the left across TheFringe and the [[scroll bar]] (if the scroll bar is at the left), so to align a header string to columns of text you need to adjust for that.  In Emacs 22.1, you can add a space with an <code>:align-to</code> [[TextProperties|TextProperty]] (see [[Manual:specified spaces]]),
+On the new X graphical displays the header line extends at the left across TheFringe and the [[scroll bar]] (if the scroll bar is at the left), so to align a header string to columns of text you need to adjust for that.  In Emacs 22.1, you can add a space with an ##:align-to## [[TextProperties|TextProperty]] (see [[Manual:specified spaces]]),
 
     (setq header-line-format
           (concat (propertize " " 'display '((space :align-to 0)))
                   "some header text"))
 
-In Emacs 21 however this doesn't work, it's just an ordinary space.  The effect can be approximated there by adding one space for the fringe and two for a left scrollbar.  An <code>:eval</code> can dynamically follow any change of scrollbar position.
+In Emacs 21 however this doesn't work, it's just an ordinary space.  The effect can be approximated there by adding one space for the fringe and two for a left scrollbar.  An ##:eval## can dynamically follow any change of scrollbar position.
 
     (setq header-line-format
           '(:eval
