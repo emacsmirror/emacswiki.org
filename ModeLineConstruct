@@ -92,6 +92,20 @@ In the above, `mode-name' will be evaluated once, when the `setq' expression is 
 
 The leading single quote suppresses immediate evaluation, so that `setq' instead receives the symbol `mode-name', and not its current value.  (Analogous to a pointer or reference in some systems.)  Each time Emacs updates the frame title, it evaluates any Lisp symbols to get their value at that time.  End result, the frame title changes to reflect the current mode.
 
-=== FIXME ===
+=== Backquoted lists ===
 
-`list' is sometimes needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.  (FIXME this needs much better 'splaining)
+The FrameTitle page used to have something like this ([https://www.emacswiki.org/emacs?action=browse;id=FrameTitle;revision=48 rev 48]):
+
+: Examples of Setting Frame and Icon Titles
+
+    (setq frame-title-format '("" "%b @ Emacs " emacs-version))
+    (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
+    (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN")))
+
+: `list' is needed in the last example to flatten the sub-lists, otherwise a quote is sufficient.
+: 
+: Also see BackquoteSyntax – LawrenceMitchell
+
+However it is not clear to your current author (BenScott) why any of the lists/elements in question were being quoted in the first place, or why they were broken up into so many elements.  This would seem to work just as well:
+
+    (setq frame-title-format (list "%b @ Emacs " emacs-version) )
