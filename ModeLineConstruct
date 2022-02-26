@@ -10,7 +10,7 @@ A mode line construct can be either a single string, a single Lisp symbol, or a 
 
 === Single string ===
 
-A mode line construct can be a single string.  When rendered by `format-mode-line', this yields the same string, with any [PercentConstructs %-constructs] replaced with their values.
+A mode line construct can be a single string.  When rendered by `format-mode-line', this yields the same string, with any [PercentConstruct %-constructs] replaced with their values.
 
      (setq example-construct "buffer: %b")
 
@@ -18,13 +18,13 @@ Note that %-construct replacement in simple strings only happens at the top-leve
 
 === Single Lisp symbol ===
 
-A mode line construct can be a single Lisp symbol.  When rendered, symbols are evaluated for their value.  The symbols `t' and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to [PercentConstructs %-construct] replacement.
+A mode line construct can be a single Lisp symbol.  When rendered, symbols are evaluated for their value.  The symbols `t' and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to [PercentConstruct %-construct] replacement.
 
      (setq example-construct emacs-version)
 
 === List of constructs ===
 
-A mode line construct can be a list of mode constructs.  Such a list must start with either a string, or another list.  When rendered, the list elements(s) are processed recursively as mode line constructs, and the results concatenated into one string.  Strings in such a list are subject to [PercentConstructs %-construct] processing.
+A mode line construct can be a list of mode constructs.  Such a list must start with either a string, or another list.  When rendered, the list elements(s) are processed recursively as mode line constructs, and the results concatenated into one string.  Strings in such a list are subject to [PercentConstruct %-construct] processing.
 
      (setq example-construct (list "Emacs version: " emacs-version))
 
@@ -73,7 +73,7 @@ If you want to change just one part of the mode-line, you likely will want to mo
 
     (setq mode-line-position "(%l,%c)") ;; *** WRONG! ***
 
-That will result in a literal #(%l,%c)# appearing in your mode-line.  The reason is that simple strings are only interpreted for [PercentConstructs %-constructs] when they occur in the top level mode line construct.  When `format-mode-line' processes `mode-line-format' recursively, `mode-line-position' is encountered as a '''''symbol'''''.  Symbols whose ''value'' is a string are ''not'' processed for %-constructs.  Instead use:
+That will result in a literal #(%l,%c)# appearing in your mode-line.  The reason is that simple strings are only interpreted for [PercentConstruct %-constructs] when they occur in the top level mode line construct.  When `format-mode-line' processes `mode-line-format' recursively, `mode-line-position' is encountered as a '''''symbol'''''.  Symbols whose ''value'' is a string are ''not'' processed for %-constructs.  Instead use:
 
     (setq mode-line-position (list "(%l,%c)"))
 
