@@ -1,0 +1,85 @@
+The Emacs ModeLine, HeaderLine, and FrameTitle all use a common convention called a ''mode line construct''.  The various variables (like `mode-line-format' and `frame-title-format') store mode line constructs, which are used to build the string that makes up the line/title.
+
+The function `format-mode-line' renders a mode line construct into a simple string.  For example, the variable `icon-title-format' is passed to the function `format-mode-line', and the resulting string is given to the window system as the icon title.
+
+Despite the name, these constructs and functions are not specific to the mode line only.  For use of mode line constructs in the actual mode-line, see ModeLineConfiguration.
+
+== Elements of a Mode Line Construct ==
+
+A mode line construct can be any ''one'' of the following (but may contain further mode line constructs, recursively).
+
+A '''string'''.  When formatted, this yields the same string, with any ##%##-constructs replaced with their values, as given in Percent Sign Constructs below.
+
+     (setq example-construct "buffer: %b")
+
+A Lisp ''symbol''.  When formatted, symbols are evaluated for their value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is ''not'' subject to percent sign replacement.
+
+     (setq example-construct emacs-version)
+
+A list of mode line constructs, where the first element of each list must be either a string, or another list.  The list(s) are processed recursively as mode line constructs, and the results concatenated into one string.
+
+     (setq example-construct (list "Emacs version: " emacs-version))
+
+A list starting with an integer, specifying field width.  The remainder of the list is processed recursively, as above.  If the width is positive, the resulting string is space padded on the right to that width as needed.  If the width is negative, it is truncated as needed.
+
+FIXME more list types here
+
+A list starting with a symbol other than the above creates a conditional.
+
+Emacs Lisp Reference Manual: [[Manual:Mode Line Data]]
+
+== Percent Sign Constructs ==
+
+Strings in a mode line construct can contain what the manual calls ''%-constructs'' -- a percent sign (##%##) followed by a single character.  Each occurrence of such a %-construct in a mode line construct is replaced with another value, as given below.
+
+Several of them use the technique of evaluating to some kind of status indicator if a given condition is in effect, and otherwise evaluating as an empty string or other placeholder.  This lets a mode line construct accumulate status indicators that appear only as applicable.
+
+|| Symbol || Replacement value ||
+|| ##%b## || buffer name ||
+|| ##%f## || file name, with path ||
+|| ##%F## || frame name ||
+|| ##%s## || process status, or ##no process## ||
+|| ##%l## || line number ||
+|| ##%n## || ##Narrow## if the window is narrowed, otherwise nothing ||
+|| ##%t## || text/binary file mode, for platforms that make that distinction (like Microsoft Windows)  ||
+|| ##%z## || coding systems in effect for keyboard, terminal, and file/buffer ||
+|| ##%Z## || same as ##%z## plus end-of-line format ||
+|| ##%*## || buffer status - ##%## if read-only, otherwise ##*## if modified, otherwise ##-## ||
+|| ##%+## || buffer status - ##*## if modified, otherwise ##%## if read-only, otherwise ##-## ||
+|| ##%&## || buffer status - ##*## if modified, otherwise ##-## ||
+|| ##%@## || default-directory status - ##@## if remote, ##-## if local ||
+|| ##%[## || recursive editing level, one ##[## for each level deep ||
+|| ##%]## || recursive editing level, one ##]## for each level deep ||
+|| ##%c## || column number, first column is zero ||
+|| ##%C## || column number, first column is one ||
+|| ##%i## || buffer size, in bytes ||
+|| ##%I## || buffer size, auto-scaled to K/M/G ||
+|| ##%p## || percent of buffer above top of window ||
+|| ##%P## || percent buffer above bottom of window ||
+|| ##%e## || out-of-memory error message, if any ||
+|| ##%%## || literal ##%## ||
+|| ##%-## || one or more dashes (##-##), to fill all remaining space in the line/title ||
+
+The combination of ##%*## and ##%+## achieve the four-way ##--##, ##%%##, ##**##, ##%*## buffer status indicator that appears near the start of the default mode line.
+
+Emacs Lisp Reference Manual: [[Manual:%-Constructs]]
+
+== Lisp usage ==
+
+For the novice Lisp user, some common idioms and pitfalls are explained in the following.
+
+=== Quoting Lisp symbols ===
+
+Using Lisp symbols (variables) in mode line constructs can be tricky if you want the format to always reflect the current (changed) value of the symbol.  For example, the variable `mode-name' reflects the major mode of the current buffer.  Suppose we try something like this:
+
+    (setq frame-title-format mode-name) ;; *** WRONG! ***
+
+In the above, `mode-name' will be evaluated once, when the `setq' expression is evaluated.  Thus the frame title will be set to whatever mode Emacs was in at the time, and never change.  To get the desired behavior, we need to quote the Lisp symbol:
+
+    (setq frame-title-format 'mode-name)
+
+The leading single quote suppresses immediate evaluation, so that `setq' instead receives the symbol `mode-name', and not its current value.  (In other words, it gets a pointer/reference, not the value.)  When Emacs renders the frame title, it evaluates any Lisp symbols to get their value at the time.  End result, the frame title changes to reflect the current mode.
+
+=== FIXME ===
+
+`list' is sometimes needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.  (FIXME this needs much better 'splaining)
