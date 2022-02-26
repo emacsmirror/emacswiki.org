@@ -2,27 +2,35 @@ The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]]
 
 Like the rest of Emacs, you can [[ModeLineConfiguration|configure the mode line]] to look and behave however you want.
 
-The Emacs user manual has an explanation of the [[Manual:Mode Line]], and the technical manual explains the internal [[Manual:Mode Line Format]].
-
 == Appearance ==
+
+=== Graphical ===
 
 This screenshot shows Emacs 27.1 (circa 2020).  Three buffers visiting files are shown, each in a [[window]] with a mode line at the bottom.  The mode lines use black text on a grey/silver background.  The main parts of the window use a white background.
 
 [[image:ModeLineCalloutsScreenShot]]
 
+=== Text ===
+
+Text-only character cell displays (like xterm) will appear slightly different.  Following are reproductions of what the mode-lines would look like for the same three windows above (same files, same version of Emacs, same config and state).
+
+    -UUU:----F1      short-unicode   All L4    (Fundamental) --------------------
+    -UU-(DOS)%%--F1  win.ini         Top L5    (Conf[WinIni]) -------------------
+    -UU-:----F1      spell.el        38% L47   (Emacs-Lisp ElDoc Wrap) -----
+
+The spacing has been modified to align selected parts.
+
 == Components ==
 
 The standard (default) components of a mode line, from left to right, are as follows.
 
-: ''References to the screenshot above are given in indented italics, with the callouts in [square brackets].''
+: ''References to the screenshot and text above are given in indented italics, with the callouts in [square brackets].''
 
 === Human Language ===
 
 The first part of the mode line is concerned with human-language (as opposed to programming-language) details.
 
-If an input method is active, it can be indicated first, depending on your terminal type.
-
-Next comes the coding system of the buffer -- one or more characters indicating how the given language is encoded as bytes in the buffer.
+If an input method is active, it may be indicated first.  Next comes the coding system of the buffer -- one or more characters indicating how the given language is encoded as bytes in the buffer.
 
 || || Meaning ||
 || ##-## || No code conversion, except possibly end-of-line translation ||
@@ -30,7 +38,7 @@ Next comes the coding system of the buffer -- one or more characters indicating 
 || ##1## || ISO Latin 1 code conversion ||
 || ##U## || Unicode (typically UTF-8) ||
 
-: ''The file buffer ##short-unicode## contains Unicode text ['''A'''].  The other two buffers have no translation (aside from end-of-line).''
+: ''The file buffer ##short-unicode## contains Unicode text ['''A'''].  The other two buffers have no translation (aside from end-of-line).  (FIXME explain the multiple U's in text mode)''
 
 See [[Manual:International|International Character Set Support]] in the Emacs manual for details.
 
@@ -43,7 +51,7 @@ Next in the mode line is an indication of how an EndOfLine is represented in the
 || ##/## || ##(MAC)##  || Carriage return || classic Macintosh (not !MacOS X) ||
 || ##\## || ##(DOS)##  || Both            || Microsoft, DEC, RFCs  || 
 
-: ''The ##win.ini## file buffer uses the DOS/Windows end-of-line format ['''G'''].  The others use the OS native format.''
+: ''The ##win.ini## file buffer uses the DOS/Windows end-of-line format, indicated by ##(DOS)## ['''G'''].  The others use the OS native format, indicated by ##:## (colon).''
 
 === Buffer Modification ===
 
@@ -55,23 +63,23 @@ The next two characters in the mode line indicate whether or not the buffer has 
 || ##%*## || read-only, but modified ||
 || ##%%## || read-only, not modified ||
 
-: ''File buffer ##spell.el## has been modified ['''L'''].  File buffer ##win.ini## is read-only ['''H'''].
+: ''File buffer ##spell.el## has been modified (##**##) ['''L'''].  File buffer ##win.ini## is read-only (##%%##) ['''H'''].
+
+=== Frame Title ===
+
+For text mode terminals, the FrameTitle is given next.  This is omitted from the mode-line for graphical displays (as the frame title typically appears in the title bar of the external host GUI window).
+
+: ''The first frame title is ##F1## for text displays.''.
 
 === Buffer Name ===
 
 Every buffer has a name.  If the buffer is visiting a file then this is normally the file name.
 
-: ''Three file buffers are shown: ##short-unicode## ['''B'''], ##win.ini## ['''K'''], and ##spell.el## ['''N'''].''
+: ''Three buffers are shown, all visiting files: ##short-unicode## ['''B'''], ##win.ini## ['''K'''], and ##spell.el## ['''N'''].''
 
 === Cursor Position ===
 
-After the buffer name comes the current position of the TextCursor in the buffer (that is, [[point]] -- actually, it's the ''window'' point, that is, the value of point in the given window).
-
-This is described relative to the visible portion of the buffer -- more precisely, the portion of the buffer that's presented in the window, including any parts you need to scroll to see. If the buffer is ''narrowed'' then this "visible portion" is the ''buffer restriction'' (the narrowing); otherwise it is the entire buffer contents.
-
-(For brevity here, we'll write just "buffer", but understand that what's meant is "buffer restriction" (narrowing), if the buffer is narrowed.)
-
-By default, the position is described first as the portion of the buffer that's currently visible (without scrolling):
+After the buffer name comes the current position of the TextCursor in the window (that is, [[point]]).  The position is described first as the portion of the buffer that's currently visible in the window:
 
 || || Meaning ||
 || ##Top## || the ''beginning'' of the buffer is shown in the window ||
@@ -85,21 +93,26 @@ Next comes the line number, prefixed by ##L##.  Optionally, the column number ma
 
 : ''The cursor is on line 47 ['''R'''] of buffer ##spell.el##.''
 
+If the buffer is [[narrowing|narrowed]] then the position is reported relative to the ''buffer restriction'' (the narrowing), not the entire buffer.
+
+
 === Modes ===
 
-Last are the [[mode]]s applied to the buffer, in parentheses.  First is the [[MajorMode]], followed by [[MinorMode]]s. (Some minor modes might not be indicated here, to save space.  This is mode-specific and is sometimes user-configurable.)
+Last are the [[mode]]s applied to the buffer, in parentheses.  First is the [[MajorMode]], followed by [[MinorMode]]s.
 
 Square brackets around the modes -- like this: ##[(Emacs-Lisp)]## -- indicate that a RecursiveEdit is in progress.
 
 You can click the major-mode and minor-mode names to access their menus and some of their [[option]]s.
 
-: ''Buffer ##short-unicode## is in Fundamental mode ['''D'''].  Buffer ##win.ini## is in `conf-mode', with the !WinIni variant ['''F'''].  Buffer ##spell.el## is in `emacs-lisp-mode' ['''S'''], with minor modes `eldoc-mode' ['''T'''] and `visual-line-mode' ['''U'''].
+: ''Buffer ##short-unicode## is in Fundamental mode ['''D'''].  Buffer ##win.ini## is in `conf-mode', with the !WinIni variant ['''F'''].  Buffer ##spell.el## is in `emacs-lisp-mode' ['''S'''], with minor modes `eldoc-mode' ['''T'''] and `visual-line-mode' (##Wrap##) ['''U'''].
+
+Not all minor modes may appear in the mode-line.  This is mode-specific and is sometimes user-configurable.
 
 == See Also ==
 
 * ModeLineConfiguration -- Information and links on customizing the mode line to your taste
-* [[Manual:Mode Line]] -- Emacs user manual, on the mode line and how to customize it
-* [[Manual:Mode Line Format]] -- Emacs technical manual, on the mode line
+* Emacs user manual: [[Manual:Mode Line]] -- The mode line and how to customize it
+* Emacs technical manual: [[Manual:Mode Line Format]] -- The internal format of the mode line
 
 ----
 CategoryDisplay
