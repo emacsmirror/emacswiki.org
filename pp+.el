@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 27 15:16:11 2022 (-0800)
+;; Last-Updated: Sat Feb 26 14:26:31 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 459
+;;     Update #: 479
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
@@ -120,8 +120,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `pp-expression-size', `pp-read--expression' (Emacs 24.4+),
-;;    `pp-show-tooltip' (Emacs 24+), `pp-tooltip-show' (Emacs 24+).
+;;    `pp-expression-size', `pp-max-tooltip-size-default' (Emacs
+;;    24.4+), `pp-read--expression' (Emacs 24.4+), `pp-show-tooltip'
+;;    (Emacs 24+), `pp-tooltip-show' (Emacs 24+).
 ;;
 ;;  Variables defined here:
 ;;
@@ -138,6 +139,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/02/26 dadams
+;;     Added pp-max-tooltip-size-default.
+;;     pp-max-tooltip-size, pp-eval-expression-with-tooltip, pp-eval-last-sexp-with-tooltip:
+;;       Use function pp-max-tooltip-size-default, not variable x-max-tooltip-size.
 ;; 2022/01/27 dadams
 ;;     pp-read--expression: Turn on eldoc-mode (that was added for Emacs 26+).
 ;; 2022/01/14 dadams
@@ -291,11 +296,17 @@ A value of nil means no limit."
 
 (when (fboundp 'window-inside-absolute-pixel-edges) ; Emacs 24+
 
-  (defcustom pp-max-tooltip-size nil
-    "Max size for showing pretty-printed values in a tooltip at point.
-The value can be:
+  (defun pp-max-tooltip-size-default ()
+    "Return the default maximum dimensions for tooltips used by `pp+.el'.
+If your Emacs has var `x-max-tooltip-size' then return its value.
+Otherwise (this is the case for macOS), return the cons (80 . 40)."
+    (if (boundp 'x-max-tooltip-size) x-max-tooltip-size (cons 80 40)))
 
-* A cons that has the same form as `x-max-tooltip-size':
+  (defcustom pp-max-tooltip-size nil
+    "Max size for a tooltip at point showing a pretty-printed value.
+The option value can be:
+
+* Cons of the form returned by function `pp-max-tooltip-size-default':
   (WIDTH . HEIGHT), where WIDTH is the max width of the tooltip in
   chars and HEIGHT is the max height in chars.  If the value to be
   printed cannot fit in a tooltip this large then it is shown in
@@ -303,7 +314,8 @@ The value can be:
 
 * nil, meaning never use a tooltip.
 
-* t, meaning use a tooltip but clip the value to `x-max-tooltip-size'.
+* t, meaning use a tooltip but clip the value shown to the dimensions
+  provided by `pp-max-tooltip-size-default'.
 
 Note: Regardless of the option value, a tooltip is not used if point
 is off-screen when pretty-printing is called for.  This can happen,
@@ -313,17 +325,17 @@ expression that moves point off-screen."
             (const :tag "Do not use a tooltip" nil)
             (const :tag "Always use a tooltip, and clip value if too big" t)
             (cons  :tag "Use a tooltip only if smaller than WIDTH x HEIGHT"
-                   (integer :tag "Width (characters)"  :value ,(car x-max-tooltip-size))
-                   (integer :tag "Height (characters)" :value ,(cdr x-max-tooltip-size))))
+                   (integer :tag "Width (characters)"  :value ,(car (pp-max-tooltip-size-default)))
+                   (integer :tag "Height (characters)" :value ,(cdr (pp-max-tooltip-size-default)))))
     :group 'pp :group 'lisp)
 
   (defface pp-tooltip
-      '((((class color))
-         :background "lightyellow"
-         :foreground "black"
-         :family     "Courier")
-        (t
-         :family     "Courier"))
+    '((((class color))
+       :background "lightyellow"
+       :foreground "black"
+       :family     "Courier")
+      (t
+       :family     "Courier"))
     "Face for `pp-show-tooltip'."
     :group 'tooltip)
 
@@ -398,15 +410,15 @@ pretty-printing."
 
   (defun pp-eval-expression-with-tooltip (expression &optional insert-value)
     "This is `pp-eval-expression', but using a tooltip when possible.
-This is `pp-eval-expression' with `pp-max-tooltip-size' bound to
-`x-max-tooltip-size'.  A printed value larger than this is shown in
-buffer `*Pp Eval Output*'."
+This is `pp-eval-expression' with `pp-max-tooltip-size' bound to the
+value returned by function `pp-max-tooltip-size-default'.  A printed
+value larger than that is shown in buffer `*Pp Eval Output*'."
     (interactive
      (list (if (fboundp 'pp-read--expression)
                (pp-read--expression "Eval: ")
              (read-from-minibuffer "Eval: " nil pp-read-expression-map t 'read-expression-history))
            current-prefix-arg))
-    (let ((pp-max-tooltip-size  x-max-tooltip-size))
+    (let ((pp-max-tooltip-size  (pp-max-tooltip-size-default)))
       (pp-eval-expression expression insert-value)))
 
   (defun pp-eval-expression-without-tooltip (expression &optional insert-value)
@@ -422,9 +434,9 @@ This is `pp-eval-expression' with `pp-max-tooltip-size' bound to `nil'."
 
   (defun pp-eval-last-sexp-with-tooltip (arg)
     "Run `pp-eval-expression-with-tooltip' on the sexp before point.
-This is `pp-eval-last-sexp' with `pp-max-tooltip-size' bound to
-`x-max-tooltip-size'.  A printed value larger than this is shown in
-buffer `*Pp Eval Output*'."
+This is `pp-eval-last-sexp' with `pp-max-tooltip-size' bound to the
+value returned by function `pp-max-tooltip-size-default'.  A printed
+value larger than that is shown in buffer `*Pp Eval Output*'."
     (interactive "P")
     (if arg
         (let ((print-length  pp-eval-expression-print-length)
@@ -432,7 +444,7 @@ buffer `*Pp Eval Output*'."
               (print-circle  (and (boundp 'print-circle) ; Emacs 22+
                                   pp-eval-expression-print-circle)))
           (insert (pp-to-string (eval (pp-last-sexp) lexical-binding))))
-      (let ((pp-max-tooltip-size  x-max-tooltip-size))
+      (let ((pp-max-tooltip-size  (pp-max-tooltip-size-default)))
         (pp-eval-expression (pp-last-sexp)))))
 
   (defun pp-eval-last-sexp-without-tooltip (arg)
