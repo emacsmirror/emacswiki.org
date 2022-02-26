@@ -1,5 +1,16 @@
 When running Emacs inside of xterm (e.g., ##emacs -nw##, or via SSH), it is possible to mostly mimic the behavior of a GUI FrameTitle.
 
+== Vladimir Panteleev implementation ==
+
+Vladimir Panteleev provides ##term-title.el##.  It is less featureful than Noah Friedman's implementation (below), but works with more recent versions of Emacs.  You can get it from here:
+
+https://github.com/CyberShadow/term-title
+
+Then place something like the following in your InitFile:
+
+    (require 'term-title)
+    (term-title-mode)
+
 == Noah Friedman implementation ==
 
 Noah Friedman provides ##xterm-frobs.el## and ##xterm-title.el##, which were the standard for many years.
