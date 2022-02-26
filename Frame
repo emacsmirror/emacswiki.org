@@ -1,13 +1,20 @@
 [[ja:フレーム]]
-'''Frames''' are only called frames in Emacs; outside Emacs, frames are called "[[Window]]s". (But not all of the properties of Emacs frames pertain to non-Emacs "windows" such as your Web browser window or an application dialog box.)
 
-A [::frame] is rectangular, with four frame '''borders'''. A frame usually has a '''title bar''' with a frame title (name). A frame usually has a '''MenuBar''', just under the title bar. Depending on your version of Emacs, a frame may also have a '''ToolBar''' with buttons. 
+A '''frame''' contains and displays one or more Emacs internal [[window]]s.
+
+Outside of Emacs, frames are usually called "windows".  The Emacs internal windows would usually be called "panes" or something like that.  When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
+
+When running on a GUI (graphical user interface, such as X11, Microsoft Windows, or !MacOS X), each external window provided by the host GUI becomes an Emacs frame.  In a character cell terminal (like a text console or an xterm), there is an implicit Emacs frame for the terminal.
+
+A frame is rectangular, with four ''borders''.  On GUIs, the host system usually provides a ''title bar'', showing the FrameTitle.  A frame usually has a MenuBar, just under the title bar.  On GUIs, the frame may also have a ToolBar with icon buttons. 
+
+This wiki is concerned predominantly with Emacs frames.  Not all of the properties of Emacs frames pertain to non-Emacs "windows" (such as your web browser).
+
+== Appearance ==
 
 Here is a screenshot showing a frame with three [[Window]]s:
 
 [[image:DrewsEmacsWindowCallouts]]
-
-The frame space under the menu-bar is tiled into panes called, in Emacs-speak, '''[[Window]]s'''. Sorry about the confusion :).
 
 A frame can be in one of these states:
 * '''visible''' - this really means user-accessible
@@ -18,9 +25,7 @@ A ''visible'' frame can be in one of these states:
 * '''raised''' - you can see it and manipulate it
 * '''iconified''' (minimized) - you see only a small icon representing the frame
 
-A ''raised'' frame can be maximized, occupying the full screen, or not.
-
-You can resize a frame, drag it around, iconify it, raise (uniconify) it if it is iconified, rename it, or delete it.
+A ''raised'' frame can be maximized, occupying the full screen, or not.  You can resize a frame, drag it around, iconify/minimize it, restore/uniconify, rename it, or delete it.
 
 Some common frame commands:
 
