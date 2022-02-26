@@ -97,13 +97,19 @@ The mode-line is typically built from several variables, each itself a mode line
 
 == Examples ==
 
+=== Position as coordinates ===
+
+If you prefer line and column to be reported like coordinates, you might use this:
+
+    (setq mode-line-position (list "(%l,%c)"))
+
+This alters just `mode-line-position', leaving the rest of the mode-line untouched.  This approach confers several benefits: It saves you from having to recreate the entire mode line just to change one thing; it allows other minor modes and enhancements to interact with the mode-line; it allows other parts of Emacs which want to show the mode line position to use your format.
+
+`list' is needed here because symbols whose ''value'' is a string are not subject to [PercentConstructs %-construct] replacement.  Using a simple literal string only works for the top level of a ModeLineConstruct (i.e., `mode-line-format').
+
 === Descriptive labels ===
 
-The mode-line normally looks something like this:
-
-    -u:**-F1  *scratch*   All L12    (Lisp Interaction)-------%-
-
-Perhaps you prefer descriptive labels over cryptic conciseness, and want something like this:
+Perhaps you prefer descriptive labels over cryptic conciseness, and want your mode line to look like this:
 
     Lisp Interaction: buffer *scratch*, line 5 -- user: alice
 
