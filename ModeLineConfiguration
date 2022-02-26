@@ -62,7 +62,7 @@ There is an interactive [[CustomizingAndSaving|Customization]] group for the mod
 
 The ModeLine is defined by the variable `mode-line-format', itself made up of several more variables.  Thus, you can alter `mode-line-format' to change the whole thing, or alter any of the component variables to change just that part.  The latter may also provide better coexistence with other parts of Emacs that use the mode line variables.
 
-Each of these variables is expected to contain a ''mode line construct''.  A mode line construct is most commonly a string, or, a list starting with a string, where each list member is concatenated together to form a string.  See ModeLineConstruct for full details, including idioms and tips.
+Each of these variables is expected to contain a ''mode line construct''.  A mode line construct is most commonly a string, or, a list starting with a string, where each list member is concatenated together to form a string.  Within those strings, codes starting with ##%## (percent sign) are replaced with other values.  See ModeLineConstruct for full details, including idioms and tips.
 
 The desired variables would generally be placed in one's InitFile, to take effect for every Emacs session.  However, you can also use them in LispInteractionMode.  This may be useful to test and tune to your liking, before you save the finished result.
 
