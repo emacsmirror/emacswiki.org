@@ -2,7 +2,7 @@
 
 A '''frame''' contains and displays one or more Emacs internal [[window]]s.
 
-Outside of Emacs, frames are usually called "windows".  The Emacs internal windows would usually be called "panes" or something like that.  When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
+Outside of Emacs, frames are usually called "windows".  The Emacs internal windows would usually be called "panes" or "sub-windows" or "MDI windows" or some other term.  When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
 
 When running on a GUI (graphical user interface, such as X11, Microsoft Windows, or !MacOS X), each external window provided by the host GUI becomes an Emacs frame.  In a character cell terminal (like a text console or an xterm), there is an implicit Emacs frame for the terminal.
 
