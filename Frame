@@ -6,7 +6,7 @@ Outside of Emacs, frames are usually called "windows".  The Emacs internal windo
 
 When running on a GUI (graphical user interface, such as X11, Microsoft Windows, or !MacOS X), each external window provided by the host GUI becomes an Emacs frame.  In a character cell terminal (like a text console or an xterm), there is an implicit Emacs frame for the terminal.
 
-A frame is rectangular, with four ''borders''.  On GUIs, the host system usually provides a ''title bar'', showing the FrameTitle.  A frame usually has a MenuBar, just under the title bar.  On GUIs, the frame may also have a ToolBar with icon buttons. 
+A frame is rectangular, with four ''borders''.  Frames have names, similar to buffers.  On GUIs, the host system usually provides a ''title bar'', showing the FrameTitle.  A frame usually has a MenuBar, just under the title bar.  On GUIs, the frame may also have a ToolBar with icon buttons. 
 
 This wiki is concerned predominantly with Emacs frames.  Not all of the properties of Emacs frames pertain to non-Emacs "windows" (such as your web browser).
 
@@ -15,6 +15,8 @@ This wiki is concerned predominantly with Emacs frames.  Not all of the properti
 Here is a screenshot showing a frame with three [[Window]]s:
 
 [[image:DrewsEmacsWindowCallouts]]
+
+== Behavior ==
 
 A frame can be in one of these states:
 * '''visible''' - this really means user-accessible
@@ -27,13 +29,21 @@ A ''visible'' frame can be in one of these states:
 
 A ''raised'' frame can be maximized, occupying the full screen, or not.  You can resize a frame, drag it around, iconify/minimize it, restore/uniconify, rename it, or delete it.
 
-Some common frame commands:
+== Commands and keys ==
 
-  C-x 5 o -- other frame
-  C-x 5 0 -- delete frame
-  C-x 5 1 -- delete other frame
-  C-x 5 2 -- make frame
-  C-x C-z -- Iconify Frame
+Most frame-related [[KeySequence]]s are prefixed with <kbd>C-x 5</kbd>.
+
+|| Key                || Meaning                                           || Command                 ||
+|| <kbd>C-x 5 o</kbd> || Switch to '''o'''ther frame                       || ##other-frame##         ||
+|| <kbd>C-x 5 0</kbd> || Delete current frame (zero/zap)                   || ##delete-frame##        ||
+|| <kbd>C-x 5 1</kbd> || Delete other frames (makes this the only ''one'') || ##delete-other-frames## ||
+|| <kbd>C-x 5 2</kbd> || Create new frame (from one, become ''two'')       || ##make-frame-command##  ||
+|| <kbd>C-x C-z</kbd> || Iconify/minimize frame                            || ##suspend-frame##       ||
+
+== See also ==
+
+* [[Window]]
+* WindowsAndFrames
 
 ----
 CategoryGlossary CategoryFrames
