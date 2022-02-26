@@ -74,45 +74,53 @@ The default `mode-line-format' (as of Emacs 27.1, circa 2020) is:
 
     ("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification mode-line-position (vc-mode vc-mode) mode-line-modes mode-line-misc-info mode-line-end-spaces)
 
-Broken down, that is:
+The leading ##"%e"## is a string containing a %-construct; it will be replaced with any active out-of-memory error message, or an empty string otherwise.  (See ModeLineConstruct for a list of percent sign codes.)
 
-|| Item   || Meaning ||
-|| ##"%e"## || Out-of-memory error message, or an empty string ||
+##(vc-mode vc-mode)## is a conditional, which will display the value of `vc-mode' only if `vc-mode' is non-##nil##.  (FIXME explain why this is needed, since nil values are normally ignored anyway)
+
+The remaining elements are described in the next section.
+
+=== Mode-line components ===
+     
+The mode-line is typically built from several variables, each itself a mode line construct.
+
+|| Symbol   || Meaning ||
 || ##mode-line-front-space## || Dash (##-##) for text terminals, a space (## ##) for graphic displays ||
 || ##mode-line-mule-info## || Information on character sets, encodings, and other human-language details ||
 || ##mode-line-client## || Identifies frames created by ##emacsclient## ||
 || ##mode-line-modified## || Modified and read-only status ||
 || ##mode-line-remote## || At-sign (##@##) for buffers visiting remote files, otherwise a dash ||
-|| ##mode-line-frame-identification## || Frame title, for some platforms ||
+|| ##mode-line-frame-identification## || Frame title, for some environments ||
 || ##mode-line-buffer-identification## || Buffer/file name, or other details for non-file buffers ||
 || ##mode-line-position## || Line, column, and portion (percent) of [[point]] in buffer, and total size of buffer ||
-|| ##(vc-mode vc-mode)## || ??? FIXME ||
 || ##mode-line-modes## || Major and minor modes, in parenthesis, plus square brackets for recursive edits ||
 || ##mode-line-misc-info## || Defun name for `which-function-mode', clock for `display-time-mode'
 || ##mode-line-end-spaces## || A line of dashes for text terminals; nothing for graphics displays ||
 
-=== Example ===
+== Examples ==
+
+=== Descriptive labels ===
 
 The mode-line normally looks something like this:
 
     -u:**-F1  *scratch*   All L12    (Lisp Interaction)-------%-
 
-As an example, to make it like this:
+Perhaps you prefer descriptive labels over cryptic conciseness, and want something like this:
 
     Lisp Interaction: buffer *scratch*, line 5 -- user: alice
 
-you might use this:
+To do so, you might use this:
 
     (setq mode-line-format
           (list
-           ;; value of `mode-name'
+           ;; name of major mode
            "%m: "
-           ;; value of current buffer name
+           ;; buffer name
            "buffer %b, "
-           ;; value of current line number
+           ;; line number
            "line %l "
            "-- user: "
-           ;; value of user
+           ;; user login name/ID
            (getenv "USER")))
 
 ----
