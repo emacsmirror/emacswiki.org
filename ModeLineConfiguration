@@ -1,7 +1,7 @@
 [[de:indonesia]]
 The Emacs ModeLine is configurable, offering special modes and functions that change its functionality. The mode-line is [[buffer]]-specific, so the same buffer has the same mode-line in different windows.
 
-Similar to the mode-line are the HeaderLine (at the top of a [[window]]) and the FrameTitle (the title of a [[frame]]).
+Similar to the mode-line are the HeaderLine (at the top of an Emacs internal [[window]]) and the FrameTitle (typically appearing in the host window containing Emacs).
 
 
 
