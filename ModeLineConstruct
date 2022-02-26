@@ -4,77 +4,61 @@ The function `format-mode-line' renders a mode line construct into a simple stri
 
 Despite the name, these constructs and functions are not specific to the mode line only.  For use of mode line constructs in the actual mode-line, see ModeLineConfiguration.
 
-== Elements of a Mode Line Construct ==
+== Composition ==
 
-A mode line construct can be any ''one'' of the following, but may embed further mode line constructs.  Nesting mode line constructs for recursive processing is very common.
+A mode line construct can be either a single string, a single Lisp symbol, or a list.  For lists, the first element in the list determines how the list is interpreted.  Nesting mode line constructs for recursive processing is very common.
 
-A '''string'''.  When rendered by `format-mode-line', this yields the same string, with any ##%##-constructs replaced with their values, as given in Percent Sign Constructs below.
+=== Single string ===
+
+A mode line construct can be a single string.  When rendered by `format-mode-line', this yields the same string, with any [PercentConstructs %-constructs] replaced with their values.
 
      (setq example-construct "buffer: %b")
 
-A '''Lisp symbol'''.  When rendered, symbols are evaluated for their value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to percent sign replacement.
+=== Single Lisp symbol ===
+
+A mode line construct can be a single Lisp symbol.  When rendered, symbols are evaluated for their value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to [PercentConstructs %-construct] replacement.
 
      (setq example-construct emacs-version)
 
-A '''list of mode line constructs''', where the list must start with either a string, or another list.  When rendered, the list(s) are processed recursively as mode line constructs, and the results concatenated into one string.
+=== List of constructs ===
+
+A mode line construct can be a list of mode constructs.  Such a list must start with either a string, or another list.  When rendered, the list elements(s) are processed recursively as mode line constructs, and the results concatenated into one string.
 
      (setq example-construct (list "Emacs version: " emacs-version))
 
-A list starting with an integer, specifying '''field width'''.  The remainder of the list is processed recursively, as above.  If the width is positive, the resulting string is space padded on the right to that width as needed.  If the width is negative, it is truncated as needed.
+=== Field width ===
 
+A list starting with an integer specifies a field width.  The remainder of the list is processed recursively, as above.  If the width is positive, the resulting string is space padded on the right to that width as needed.  If the width is negative, it is truncated as needed.
+
+     ;; FIXME example for positive padded
+     
      ;; limit path display to 70 characters 
      (setq example-construct (list -70 "File: %f"))
 
-A '''Lisp form''': A list starting with ##:eval## causes tthe rest of the list to be evaluated as a Lisp form, and uses the result as the string to display.  If the Lisp evaluation loads any files, it may cause infinite recursion and crash Emacs, so don't do that.
+=== Eval form ==
+
+A list starting with ##:eval## causes the rest of the list to be evaluated as a Lisp form, and uses the result as the string to display.
 
     FIXME need example
 
-A list to '''propertize''': A list starting with ##:propertize## will process the next element as a mode line construct, taking the remaining elements as text properties to add to the resulting string.  (FIXME explain what this means in practice)
+If the Lisp evaluation loads any files, it may cause infinite recursion and crash Emacs, so don't do that.
+
+=== Propertize ===
+
+A list starting with ##:propertize## will process the second list element as a mode line construct, taking the remaining elements as text properties to add to the resulting string.  (FIXME explain what this means in practice)
 
     FIXME need example
 
-A '''conditional''': A list starting with a symbol other than the above creates a conditional.  If the value of that first symbol is non-nil, the second element in the list is recursively processed as a mode line construct.  If the value is nil, the third element (if present) is so processed.
+=== Conditional ===
+
+A list starting with a symbol other than the above creates a conditional.  If the value of that first symbol is non-nil, the second element in the list is recursively processed as a mode line construct.  If the value is nil, the third element (if present) is so processed.
 
     ;; full file path if any, otherwise buffer name
     (setq example-construct (list buffer-file-name "%f" "%b"))
-
-Emacs Lisp Reference Manual: [[Manual:Mode Line Data]]
-
-== Percent Sign Constructs ==
-
-Strings in a mode line construct can contain what the manual calls ''%-constructs'' -- a percent sign (##%##) followed by a single character.  Each occurrence of such a %-construct in a mode line construct is replaced with another value, as given below.
-
-Several of them use the technique of evaluating to some kind of status indicator if a given condition is in effect, and otherwise evaluating as an empty string or other placeholder.  This lets a mode line construct accumulate status indicators that appear only as applicable.
-
-|| Symbol || Replacement value ||
-|| ##%b## || buffer name ||
-|| ##%f## || file name, with path ||
-|| ##%F## || frame name ||
-|| ##%s## || process status, or ##no process## ||
-|| ##%l## || line number ||
-|| ##%n## || ##Narrow## if the window is narrowed, otherwise nothing ||
-|| ##%t## || text/binary file mode, for platforms that make that distinction (like Microsoft Windows)  ||
-|| ##%z## || coding systems in effect for keyboard, terminal, and file/buffer ||
-|| ##%Z## || same as ##%z## plus end-of-line format ||
-|| ##%*## || buffer status - ##%## if read-only, otherwise ##*## if modified, otherwise ##-## ||
-|| ##%+## || buffer status - ##*## if modified, otherwise ##%## if read-only, otherwise ##-## ||
-|| ##%&## || buffer status - ##*## if modified, otherwise ##-## ||
-|| ##%@## || default-directory status - ##@## if remote, ##-## if local ||
-|| ##%[## || recursive editing level, one ##[## for each level deep ||
-|| ##%]## || recursive editing level, one ##]## for each level deep ||
-|| ##%c## || column number, first column is zero ||
-|| ##%C## || column number, first column is one ||
-|| ##%i## || buffer size, in bytes ||
-|| ##%I## || buffer size, auto-scaled to K/M/G ||
-|| ##%p## || percent of buffer above top of window ||
-|| ##%P## || percent buffer above bottom of window ||
-|| ##%e## || out-of-memory error message, if any ||
-|| ##%%## || literal ##%## ||
-|| ##%-## || one or more dashes (##-##), to fill all remaining space in the line/title ||
-
-The combination of ##%*## and ##%+## achieve the four-way ##--##, ##%%##, ##**##, ##%*## buffer status indicator that appears near the start of the default mode line.
-
-Emacs Lisp Reference Manual: [[Manual:%-Constructs]]
+    
+    ;; display the version control mode, if any is active
+    ;; FIXME explain why is this needed, since nil values are usually ignored anyway
+    (setq example construct (vc-mode vc-mode))
 
 == Lisp usage ==
 
@@ -109,3 +93,12 @@ The FrameTitle page used to have something like this ([https://www.emacswiki.org
 However it is not clear to your current author (BenScott) why any of the lists/elements in question were being quoted in the first place, or why they were broken up into so many elements.  This would seem to work just as well:
 
     (setq frame-title-format (list "%b @ Emacs " emacs-version) )
+
+== See also ==
+
+* PercentConstruct
+* ModeLineConfiguration
+* ModeLine
+* HeaderLine
+* FrameTitle
+* Emacs Lisp Reference Manual: [[Manual:Mode Line Data]]
