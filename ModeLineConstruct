@@ -16,7 +16,7 @@ A mode line construct can be a single string.  When rendered by `format-mode-lin
 
 === Single Lisp symbol ===
 
-A mode line construct can be a single Lisp symbol.  When rendered, symbols are evaluated for their value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to [PercentConstructs %-construct] replacement.
+A mode line construct can be a single Lisp symbol.  When rendered, symbols are evaluated for their value.  The symbols `t' and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to [PercentConstructs %-construct] replacement.
 
      (setq example-construct emacs-version)
 
