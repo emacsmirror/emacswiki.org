@@ -6,25 +6,37 @@ Despite the name, these constructs and functions are not specific to the mode li
 
 == Elements of a Mode Line Construct ==
 
-A mode line construct can be any ''one'' of the following (but may contain further mode line constructs, recursively).
+A mode line construct can be any ''one'' of the following, but may embed further mode line constructs.  Nesting mode line constructs for recursive processing is very common.
 
-A '''string'''.  When formatted, this yields the same string, with any ##%##-constructs replaced with their values, as given in Percent Sign Constructs below.
+A '''string'''.  When rendered by `format-mode-line', this yields the same string, with any ##%##-constructs replaced with their values, as given in Percent Sign Constructs below.
 
      (setq example-construct "buffer: %b")
 
-A Lisp ''symbol''.  When formatted, symbols are evaluated for their value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is ''not'' subject to percent sign replacement.
+A '''Lisp symbol'''.  When rendered, symbols are evaluated for their value.  The symbols `t` and `nil' are ignored, as are any symbols whose value is void.  A symbol whose value is a string is '''''not''''' subject to percent sign replacement.
 
      (setq example-construct emacs-version)
 
-A list of mode line constructs, where the first element of each list must be either a string, or another list.  The list(s) are processed recursively as mode line constructs, and the results concatenated into one string.
+A '''list of mode line constructs''', where the list must start with either a string, or another list.  When rendered, the list(s) are processed recursively as mode line constructs, and the results concatenated into one string.
 
      (setq example-construct (list "Emacs version: " emacs-version))
 
-A list starting with an integer, specifying field width.  The remainder of the list is processed recursively, as above.  If the width is positive, the resulting string is space padded on the right to that width as needed.  If the width is negative, it is truncated as needed.
+A list starting with an integer, specifying '''field width'''.  The remainder of the list is processed recursively, as above.  If the width is positive, the resulting string is space padded on the right to that width as needed.  If the width is negative, it is truncated as needed.
 
-FIXME more list types here
+     ;; limit path display to 70 characters 
+     (setq example-construct (list -70 "File: %f"))
 
-A list starting with a symbol other than the above creates a conditional.
+A '''Lisp form''': A list starting with ##:eval## causes tthe rest of the list to be evaluated as a Lisp form, and uses the result as the string to display.  If the Lisp evaluation loads any files, it may cause infinite recursion and crash Emacs, so don't do that.
+
+    FIXME need example
+
+A list to '''propertize''': A list starting with ##:propertize## will process the next element as a mode line construct, taking the remaining elements as text properties to add to the resulting string.  (FIXME explain what this means in practice)
+
+    FIXME need example
+
+A '''conditional''': A list starting with a symbol other than the above creates a conditional.  If the value of that first symbol is non-nil, the second element in the list is recursively processed as a mode line construct.  If the value is nil, the third element (if present) is so processed.
+
+    ;; full file path if any, otherwise buffer name
+    (setq example-construct (list buffer-file-name "%f" "%b"))
 
 Emacs Lisp Reference Manual: [[Manual:Mode Line Data]]
 
