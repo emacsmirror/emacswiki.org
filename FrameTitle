@@ -24,7 +24,7 @@ If the current buffer has no associated file (for example, ##*scratch*## and dir
 
 ##%## constructs which indicate line or column number of point (##%l##, ##%c##, ##%C##) are ignored in frame and icon title formats.
 
-`list' is needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.
+See also the section on "Lisp pitfalls" below.
 
 == Renaming frames ==
 
@@ -41,6 +41,24 @@ to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
 : ##OLD-NAME## can be a frame, its name, or `nil'.  Default is `selected-frame'.
 : ##NEW-NAME## is a string or `nil'.  Default ##NEW-NAME## is current `buffer-name'.
 
+== Lisp gotchas ==
+
+FIXME is this even right???  Title formats can consist of a list, provided the first element of the list is either a string or another list.
+
+`list' is sometimes needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.  (FIXME this needs much better 'splaining)
+
+=== Quoting Lisp symbols ===
+
+Using Lisp symbols (variables) in title formats can be tricky if you want the format to always reflect the current (changed) value of the symbol.  For example, the variable `mode-name' reflects the major mode of the current buffer.  Suppose we try something like this:
+
+    (setq frame-title-format mode-name) ;; *** WRONG! ***
+
+In the above, `mode-name' will be evaluated once, when the `setq' expression is evaluated.  Thus the frame title will be set to whatever mode Emacs was in at the time, and never change.  To get the desired behavior, we need to quote the Lisp symbol:
+
+    (setq frame-title-format 'mode-name)
+
+The leading single quote suppresses immediate evaluation, so that `setq' instead receives the symbol `mode-name', and not its current value.  (In other words, it gets a pointer/reference, not the value.)  When Emacs renders the frame title, it evaluates any Lisp symbols to get their value at the time.  End result, the frame title changes to reflect the current mode.
+
 == Example customizations ==
 
 These would generally be placed in one's InitFile, to take effect for every Emacs session.  However, you can also use them in LispInteractionMode.  This may be useful to test and tune to your liking, before you save the finished result.
@@ -53,7 +71,11 @@ The simplest possible frame title would likely be some text which never changes 
 
 === Simple format string ===
 
-Moving up one step in complexity would be a simple string that makes use of ##%## constructs.  This shows the buffer name first, followed by the full file path (if any) in angle brackets:
+Moving up one step in complexity would be a simple string that makes use of ##%## constructs.  A very simple example might be this, which uses the buffer name as the frame title:
+
+    (setq frame-title-format "%b")
+
+More than one specifier can be given.  This shows the buffer name first, followed by the full file path (if any) in angle brackets:
 
     (setq frame-title-format "%b <%f>")
 
