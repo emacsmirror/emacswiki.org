@@ -1,0 +1,39 @@
+Strings in a ModeLineConstruct can contain what the manual calls ''%-constructs'' -- a percent sign (##%##) followed by a single character.  Each occurrence of such a %-construct in a mode line construct is replaced with another value, as given below.
+
+Several of these use the technique of evaluating to some kind of status indicator if a given condition is in effect, and otherwise evaluating as an empty string or other placeholder.  This lets a mode line construct accumulate status indicators that appear only as applicable.
+
+|| Symbol || Replacement value ||
+|| ##%b## || buffer name ||
+|| ##%f## || file name, with path ||
+|| ##%F## || frame name ||
+|| ##%s## || process status, or ##no process## ||
+|| ##%l## || line number ||
+|| ##%n## || ##Narrow## if the window is narrowed, otherwise nothing ||
+|| ##%t## || text/binary file mode, for platforms that make that distinction (like Microsoft Windows)  ||
+|| ##%z## || coding systems in effect for keyboard, terminal, and file/buffer ||
+|| ##%Z## || same as ##%z## plus end-of-line format ||
+|| ##%*## || buffer status - ##%## if read-only, otherwise ##*## if modified, otherwise ##-## ||
+|| ##%+## || buffer status - ##*## if modified, otherwise ##%## if read-only, otherwise ##-## ||
+|| ##%&## || buffer status - ##*## if modified, otherwise ##-## ||
+|| ##%@## || default-directory status - ##@## if remote, ##-## if local ||
+|| ##%[## || recursive editing level, one ##[## for each level deep ||
+|| ##%]## || recursive editing level, one ##]## for each level deep ||
+|| ##%c## || column number, first column is zero ||
+|| ##%C## || column number, first column is one ||
+|| ##%i## || buffer size, in bytes ||
+|| ##%I## || buffer size, auto-scaled to K/M/G ||
+|| ##%p## || percent of buffer above top of window ||
+|| ##%P## || percent buffer above bottom of window ||
+|| ##%e## || out-of-memory error message, if any ||
+|| ##%%## || literal ##%## ||
+|| ##%-## || one or more dashes (##-##), to fill all remaining space in the line/title ||
+
+The combination of ##%*## and ##%+## achieve the four-way ##--##, ##%%##, ##**##, ##%*## buffer status indicator that appears near the start of the default mode line.
+
+== See also ==
+* ModeLineConstruct
+* ModeLineConfiguration
+* ModeLine
+* HeaderLine
+* FrameTitle
+* Emacs Lisp Reference Manual: [[Manual:%-Constructs]]
