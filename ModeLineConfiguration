@@ -105,7 +105,7 @@ If you prefer line and column to be reported like coordinates, you might use thi
 
 This alters just `mode-line-position', leaving the rest of the mode-line untouched.  This approach confers several benefits: It saves you from having to recreate the entire mode line just to change one thing; it allows other minor modes and enhancements to interact with the mode-line; it allows other parts of Emacs which want to show the mode line position to use your format.
 
-`list' is needed here because symbols whose ''value'' is a string are not subject to [PercentConstruct %-construct] replacement.  Using a simple literal string only works for the top level of a ModeLineConstruct (i.e., `mode-line-format').
+`list' is needed here because symbols whose ''value'' is a string are not subject to [PercentConstruct %-construct] replacement.  See [[ModeLineConstruct#NestedStrings]] for details.
 
 === Descriptive labels ===
 
