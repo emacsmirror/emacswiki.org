@@ -11,7 +11,7 @@ Similar to the mode-line are the HeaderLine (at the top of a [[window]]) and the
 
 == Standard Minor Modes ==
 
-Display of some information in the mode-line is governed by these standard minor modes.  Repeat a command to toggle on and off as needed, or place in your InitFile to turn it on by default.
+Display of some information in the mode line is governed by these standard minor modes.  Repeat a command to toggle on and off as needed, or place in your InitFile to turn it on by default.
 
 * `display-time-mode' -- Display the current time -- DisplayTime
 * `line-number-mode' -- Display the current line number.  See also LineNumbers
@@ -26,7 +26,7 @@ Display of some information in the mode-line is governed by these standard minor
 
 == Customize UI ==
 
-There is an interactive [[CustomizingAndSaving|Customization]] group for the mode-line.  In the standard menus, find *Options* -> *Customize Emacs* -> *Top-level Customization Group*, then navigate to *Environment* -> *Mode Line*.
+There is an interactive [[CustomizingAndSaving|Customization]] group for the mode line.  In the standard menus, find *Options* -> *Customize Emacs* -> *Top-level Customization Group*, then navigate to *Environment* -> *Mode Line*.
 
 
 
@@ -36,20 +36,19 @@ There is an interactive [[CustomizingAndSaving|Customization]] group for the mod
 
 == Mode-Line Enhancements ==
 
-* DelightedModes -- Customise how major and minor modes appear in the mode-line.
-* HideModeLine -- Save screen real estate by hiding the mode-line.
+* HideModeLine -- Save screen real estate by hiding the mode line.
 * LunarModeLine -- Display current lunar phase in the modeline.
 * ModeLineDirtrack -- show the buffer's current directory in the mode-line.
 * ModeLineMinorModeMenu -- Pop up minor-mode menus from the mode-line.
-* ModeLinePosAtBeginning -- Display line and column numbers at the start of the mode-line, so they are visible even when the TextCursor is inside a function with a long name.
-* ModeLineRegion -- Display size of active [[region]] in the mode-line, in various ways.  
-* [https://github.com/seagle0128/doom-modeline Mode-line from Doom Emacs]
+* ModeLinePosAtBeginning -- Display line and column numbers at the start of the mode line, so they are visible even when the TextCursor is inside a function with a long name.
+* ModeLineRegion -- Display size of active [[region]] in the mode-ilne, in various ways.  
+* [https://github.com/seagle0128/doom-modeline Mode-line from Doom emacs]
 * [https://github.com/TheBB/spaceline Mode-line from Spacemacs]
-* NyanMode -- Indicate your position in the buffer in the mode-line, with a little help from [WikiPedia:Nyan_Cat Nyan Cat].
-* OcticonsModeLine -- Icons in the mode-line thanks to the [https://github.com/rougier/emacs-octicons octicons] font.
+* NyanMode -- Indicate your position in the buffer in the mode line, with a little help from [WikiPedia:Nyan_Cat Nyan Cat].
+* OcticonsModeLine -- Nice icons in the mode line thanks to the [https://github.com/rougier/emacs-octicons octicons] font.
 * PowerLine -- How to make VIM-like [https://github.com/Lokaltog/vim-powerline powerline].
 * ShowPointMode -- Show value of point in the mode-line.
-* SmartModeLine -- Smart, sexy, and space efficient mode-line. [https://github.com/Bruce-Connor/smart-mode-line/]
+* SmartModeLine -- Smart, sexy, and space efficient mode line. [https://github.com/Bruce-Connor/smart-mode-line/]
 * SmlModeLine -- Indicate in the mode-line, in a scrollbar-like way, the portion of the buffer that is visible in the window.
 * [[wcMode]] -- Show character/word/line count in mode-line
 
@@ -60,7 +59,7 @@ There is an interactive [[CustomizingAndSaving|Customization]] group for the mod
 
 == Manual Customization ==
 
-Customize the mode-line by altering variable `mode-line-format', or its components.  
+Customize the mode line by altering variable `mode-line-format', or its components.  
 
 See also [[Manual:Mode Line Format]] in the Emacs Lisp Reference Manual.
 
@@ -79,7 +78,7 @@ Each mode-line variable is made up of:
 
 
 
-=== Mode-Line Components ===
+=== Mode Line Components ===
 
 The default mode-line has several components, each a variable you can modify.  You can customize one part of the mode-line, while leaving the rest alone.
 
