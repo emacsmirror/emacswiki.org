@@ -10,7 +10,9 @@ To have the Emacs frame title appear in the title bar of a character terminal, s
 
 == Standard behavior ==
 
-The frame title is determined by the variable `frame-title-format'.  Likewise, the icon title comes from`icon-title-format'.  They both behave like the `mode-line-format' variable: A string, Lisp symbol, and/or recursively-interpreted list of same, concatenated together, with ##%## (percent sign) being interpreted specially in any strings.  Two of the most common are ##%f## for the full file path, and the ##%b## for the buffer name.  See ModeLineConfiguration for details.
+The frame title is determined by the variable `frame-title-format'.  Likewise, the icon title comes from`icon-title-format'.  They are both [[ModeLineConstruct]]s, similar to the `mode-line-format' variable.  Most commonly, they are set to a string, or a list whose elements will be recursively processed and concatenated together.
+
+For strings in mode line constructs, the ##%## (percent sign) is special, and allows insertion of useful information.  Two of the most common forms are ##%f## for the full file path, and the ##%b## for the buffer name.  Again, see ModeLineConfiguration for details.
 
 The default `frame-title-format' (as of Emacs 27.1, circa 2020) is:
 
@@ -24,7 +26,7 @@ If the current buffer has no associated file (for example, ##*scratch*## and dir
 
 ##%## constructs which indicate line or column number of point (##%l##, ##%c##, ##%C##) are ignored in frame and icon title formats.
 
-See also the section on "Lisp pitfalls" below.
+See also the Lisp usage tips in ModeLineConfiguration.
 
 == Renaming frames ==
 
@@ -40,24 +42,6 @@ to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
 : Prefix arg ##ALL-NAMED## non-`nil' means rename all frames named ##FRAME## to ##NEWNAME##.
 : ##OLD-NAME## can be a frame, its name, or `nil'.  Default is `selected-frame'.
 : ##NEW-NAME## is a string or `nil'.  Default ##NEW-NAME## is current `buffer-name'.
-
-== Lisp gotchas ==
-
-FIXME is this even right???  Title formats can consist of a list, provided the first element of the list is either a string or another list.
-
-`list' is sometimes needed to flatten the sub-lists, otherwise a quote is sufficient.  See also BackquoteSyntax.  (FIXME this needs much better 'splaining)
-
-=== Quoting Lisp symbols ===
-
-Using Lisp symbols (variables) in title formats can be tricky if you want the format to always reflect the current (changed) value of the symbol.  For example, the variable `mode-name' reflects the major mode of the current buffer.  Suppose we try something like this:
-
-    (setq frame-title-format mode-name) ;; *** WRONG! ***
-
-In the above, `mode-name' will be evaluated once, when the `setq' expression is evaluated.  Thus the frame title will be set to whatever mode Emacs was in at the time, and never change.  To get the desired behavior, we need to quote the Lisp symbol:
-
-    (setq frame-title-format 'mode-name)
-
-The leading single quote suppresses immediate evaluation, so that `setq' instead receives the symbol `mode-name', and not its current value.  (In other words, it gets a pointer/reference, not the value.)  When Emacs renders the frame title, it evaluates any Lisp symbols to get their value at the time.  End result, the frame title changes to reflect the current mode.
 
 == Example customizations ==
 
