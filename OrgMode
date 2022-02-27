@@ -8,7 +8,7 @@
 
 Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
 
-Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes [http://orgmode.org/worg/org-tutorials/index.html tutorials], ideas, code snippets, [http://orgmode.org/worg/dev/org-syntax.html Org Syntax], etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. 
+Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes [http://orgmode.org/worg/org-tutorials/index.html tutorials], ideas, code snippets, [http://orgmode.org/worg/dev/org-syntax.html Org Syntax], etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. There is also [https://blog.tecosaur.com/tmio/rss.xml This month in Org] which summarizes interesting developments from the Org mode mailing list. 
 
 [:features]
 === Features ===
