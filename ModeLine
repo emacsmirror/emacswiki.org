@@ -65,9 +65,9 @@ The next two characters in the mode line indicate whether or not the buffer has 
 
 : ''File buffer ##spell.el## has been modified (##**##) ['''L'''].  File buffer ##win.ini## is read-only (##%%##) ['''H'''].
 
-=== Frame Title ===
+=== Frame Name ===
 
-For text mode terminals, the FrameTitle is given next.  This is omitted from the mode-line for graphical displays (as the frame title typically appears in the title bar of the external host GUI window).
+For text mode terminals, the frame name is given next.  This is omitted from the mode-line for graphical displays (as the FrameTitle typically appears in the title bar of the external host GUI window).
 
 : ''The first frame title is ##F1## for text displays.''.
 
