@@ -1,6 +1,6 @@
 An Emacs '''window''' is the major display element in Emacs.
 
-What is usually called a "window" outside of Emacs is called a ''[[frame]]'' in Emacs.  The Emacs internal windows would usually be called “panes” or “sub-windows” or “MDI windows” or some other term.  When not otherwise qualified, this wiki uses window to mean an Emacs internal window.
+What is usually called a "window" outside of Emacs is called a ''[[frame]]'' in Emacs.  The Emacs internal windows would usually be called “panes” or “sub-windows” or “MDI windows” or some other term.  When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
 
 A window displays the contents of a single ''[[buffer]]''.  In the simplest case, this is a file you are visiting (editing), though buffers can also be many other things.  A buffer can be displayed in more than one window at a time, or need not be displayed at all.
 
