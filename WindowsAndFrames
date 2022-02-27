@@ -1,3 +1,16 @@
+Emacs displays information in [[frame]]s containing [[window]]s.  Every window shows the contents of a [[buffer]].  Buffers contain the content you are editing/viewing in Emacs.
+
+== Terminology ==
+
+Emacs terminology differs significantly from mainstream computing usage on what ''window'' means.
+
+|| Emacs  || Mainstream || Remarks                          ||
+|| frame  || window     || Top-level Emacs display element  ||
+|| window || pane       || Contained within a frame         ||
+|| buffer || document   || The content you are working with ||
+
+When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
+
 == Appearance ==
 
 This screenshot shows Emacs 27.2 (circa 2021).  Three buffers visiting files are shown, each in a window with a mode line at the bottom.  The mode lines use black text on a grey/silver background.  The main parts of the window use a white background.
