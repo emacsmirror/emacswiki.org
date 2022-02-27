@@ -8,9 +8,9 @@ At the bottom of each window is a ModeLine that describes its contents and statu
 
 == Appearance ==
 
-Here is a screenshot showing a frame with three windows:
+In this screenshot, colored boxes have been added to identify the frame (red), and three windows (in blue, green, and yellow).
 
-[[image:DrewsEmacsWindowCallouts]]
+[[image:FrameWindowOverlayScreenShot]]
 
 == Commands and keys ==
 
