@@ -1,12 +1,11 @@
-**Good starting point:** https://github.com/minad/vertico
+* **Source on Github:** https://github.com/minad/vertico
+* **ELPA:** http://elpa.gnu.org/packages/vertico.html
 
-Excerpts from the above : 
-
-=== Introduction ===
+== Introduction ==
 
 Vertico provides a performant and minimalistic vertical completion UI based on the default completion system. The main focus of Vertico is to provide a UI which behaves correctly under all circumstances. By reusing the built-in facilities system, Vertico achieves full compatibility with built-in Emacs completion commands and completion tables. Vertico only provides the completion UI but aims to be highly flexible, extensible and modular. Additional enhancements are available as extensions or complementary packages. The code base is small and maintainable. The main vertico.el package is only about 600 lines of code without white space and comments.
 
-=== Features ===
+== Features ==
 
 * Vertical display with arrow key navigation. See the extensions for additional display modes.
 * Prompt shows the current candidate index and the total number of candidates.
@@ -18,3 +17,5 @@ Vertico provides a performant and minimalistic vertical completion UI based on t
 * Annotations are displayed next to the candidates (annotation- and affixation-function).
 * Support for candidate grouping and group cycling commands (group-function).
 
+== Resources ==
+1. [https://github.com/minad/vertico#resources Resources section on the github readme]
