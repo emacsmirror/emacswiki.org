@@ -1,26 +1,38 @@
-In Emacs-speak, a '''[::window]''' is a [[frame]] pane, that is, a subframe. What is usually called a "window" outside of Emacs is called a '''[[frame]]''' in Emacs.
+An Emacs '''window''' is the major display element in Emacs.
 
-A window displays the contents of a single ''[[buffer]]''. A buffer need not be displayed in a window, however.
+What is usually called a "window" outside of Emacs is called a ''[[frame]]'' in Emacs.  The Emacs internal windows would usually be called “panes” or “sub-windows” or “MDI windows” or some other term.  When not otherwise qualified, this wiki uses window to mean an Emacs internal window.
 
-At the bottom of each window is a ModeLine that describes the current buffer status.
+A window displays the contents of a single ''[[buffer]]''.  In the simplest case, this is a file you are visiting (editing), though buffers can also be many other things.  A buffer can be displayed in more than one window at a time, or need not be displayed at all.
+
+At the bottom of each window is a ModeLine that describes its contents and status.
+
+== Appearance ==
 
 Here is a screenshot showing a frame with three windows:
 
 [[image:DrewsEmacsWindowCallouts]]
 
-Emacs may be thought of as a [http://en.wikipedia.org/wiki/Tiling_window_manager tiling window manager]: the screen is organized into mutually non-overlapping windows, as opposed to the more popular approach of "floating" windows.
+== Commands and keys ==
 
-Commonly used window commands include these:
+|| Key              || Meaning                              || Command                         ||
+|| <kbd>C-x o</kbd> || Switch to '''o'''ther window           || ##other-window##                ||
+|| <kbd>C-x 0</kbd> || Delete current window (zero/zap)     || ##delete-window##               ||
+|| <kbd>C-x 1</kbd> || Make current window the only ''one'' || ##delete-other-windows##        ||
+|| <kbd>C-x 2</kbd> || Split window horizontally            || ##split-window-below##          ||
+|| <kbd>C-x 3</kbd> || Split window vertically              || ##split-window-right##          ||
+|| <kbd>C-x ^</kbd> || Make window taller (pointing up)     || ##enlarge-window##              ||
+|| Unbound          || Make window narrower                 || ##shrink-window##               ||
+|| <kbd>C-x }</kbd> || Make window wider                    || ##enlarge-window-horizontally## ||
+|| <kbd>C-x {</kbd> || Make window narrower                 || ##shrink-window-horizontally ## ||
+|| <kbd>C-x -</kbd> || Shrink window to fit buffer          || ##shrink-window-if-larger-than-buffer## ||
+|| <kbd>C-M-v</kbd> || Scroll the other window forward      || ##scroll-other-window##         ||
+|| <kbd>C-M-S-v</kbd> || Scroll the other window backward   || ##scroll-other-window-down##    ||
 
-    C-x 0 delete the current window
-    C-x 1 maximize the current window
-    C-x 2 split the current window horizontally
-    C-x 3 split the current window vertically
-    C-x ^ make selected window taller
-    C-x } make selected window wider
-    C-x - shrink window if larger than buffer
+== See also ==
 
-See also WindowsAndFrames.
+* [[Frame]]
+* [[Buffer]]
+* WindowsAndFrames
 
 ----
 CategoryGlossary
