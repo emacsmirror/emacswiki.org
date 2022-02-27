@@ -1,3 +1,9 @@
+== Appearance ==
+
+This screenshot shows Emacs 27.2 (circa 2021).  Three buffers visiting files are shown, each in a window with a mode line at the bottom.  The mode lines use black text on a grey/silver background.  The main parts of the window use a white background.
+
+[[image:FrameCalloutsScreenShot]]
+
 == Applying frames and windows ==
 
 Both frames and windows can be used to organize your Emacs activity.  For example, you might have one frame for working with SQL, divided into two windows: One editing a query file, and a second showing the results of the query.  You might have another for Gnus, with three windows: Summary, article, and BBDB info.  You might have a third frame for chatting on IRC, with all your channels visible in separate windows.
