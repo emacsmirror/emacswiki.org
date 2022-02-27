@@ -25,7 +25,7 @@ Below the title bar is a MenuBar ['''B'''].  Each menu (##File##, ##Edit##, ##Op
 
 Below the menu bar is a ToolBar ['''C'''].  Each icon corresponds to a single, frequently-used command.  Like the menu bar, the tool bar can change with modes.
 
-This frame is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  The windows back a white background.  Each window is showing a different [[buffer]].  Here, each buffer is visiting a file, but buffers can contain many more things than just files.  Buffers can appear in multiple windows, or not at all.
+This frame is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  The windows have a white background.  Each window is showing a different [[buffer]].  Here, each buffer is visiting a file, but buffers can contain many more things than just files.  Buffers can appear in multiple windows, or not at all.
 
 Each window has its own ModeLine at the bottom: ['''E'''], ['''G'''], ['''L'''].  In this screen shot, the mode lines have a darker gray background.  The mode line reflects pertinent information about the corresponding window and buffer.
 
