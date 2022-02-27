@@ -7,7 +7,7 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 * Use AproposMode to find functions and variables based on words in their documentation or parts of their name.
 * Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]] or in [[http://epub-manuals.ourproject.org/blog/gnu-emacs-manual/ epub format]].
 * LearnEmacsLisp to learn Emacs -- Emacs '''is''' a Lisp environment. You don't have to become a Lisp expert to take advantage of this connection. Knowing a little Lisp helps you '''ask Emacs'''.
-* Watch EmacsScreencasts
+* Watch EmacsScreencasts  << *good place to start with many comprehensive resources!*
 * Some beginner-oriented tutorials written by users:
 ** EmacsCrashCourse.
 ** [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
@@ -60,6 +60,8 @@ then you might not be using it enough to matter.  Don't worry about it.
 * Play the game KeyWiz to learn Emacs key bindings. (This works for ViperMode key bindings too.)
 
 * Use a suggestion system for `M-x', such as [[Smex]].
+
+* Try enabling [[WhichKey]] to aid in exploration and key binding familiarity.
 
 
 ----
