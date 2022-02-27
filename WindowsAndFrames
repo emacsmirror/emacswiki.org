@@ -1,4 +1,4 @@
-Emacs displays information in [[frame]]s containing [[window]]s.  Every window shows the contents of a [[buffer]].  Buffers contain the content you are editing/viewing in Emacs.
+Emacs displays information in [[frame]]s containing [[window]]s.  Every window shows the contents of a [[buffer]].  Buffers contain the content you are working with in Emacs.
 
 == Terminology ==
 
@@ -11,13 +11,13 @@ Emacs terminology differs significantly from mainstream computing usage on what 
 
 When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
 
-== Appearance ==
+In the following screenshot, colored boxes have been added to identify the frame (red), and three windows (in blue, green, and yellow).
 
-This screenshot shows Emacs 27.2 (circa 2021), running on Microsoft Windows.  Three windows are shown, each a buffer visiting a file.
+[[image:FrameWindowOverlayScreenShot]]
+
+== Parts of an Emacs frame ==
 
 [[image:FrameCalloutsScreenShot]]
-
-== Components ==
 
 At the top of the frame is a '''title bar''' ['''A'''].  This is provided by the host operating environment, not Emacs.  The FrameTitle text appears here.
 
@@ -25,9 +25,9 @@ Below the title bar is a MenuBar ['''B'''].  Each menu (##File##, ##Edit##, ##Op
 
 Below the menu bar is a ToolBar ['''C'''].  Each icon corresponds to a single, frequently-used command.  Like the menu bar, the tool bar can change with modes.
 
-This frame is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  Each window is showing a different buffer.  Each buffer is visiting a file.  Buffers can appear in multiple windows, or not at all, and buffers can contain many more things than just files.
+This frame is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  The windows back a white background.  Each window is showing a different [[buffer]].  Here, each buffer is visiting a file, but buffers can contain many more things than just files.  Buffers can appear in multiple windows, or not at all.
 
-Each window has its own ModeLine at the bottom: ['''E'''], ['''G'''], ['''L'''].  The mode line reflects pertinent information about the corresponding window and buffer.
+Each window has its own ModeLine at the bottom: ['''E'''], ['''G'''], ['''L'''].  In this screen shot, the mode lines have a darker gray background.  The mode line reflects pertinent information about the corresponding window and buffer.
 
 At the bottom of the frame is the MiniBuffer ['''H'''].  Emacs uses the minibuffer for prompts and messages to you.  All windows share the same minibuffer.
 
@@ -45,9 +45,9 @@ Each window also has a [[fringe]], appearing at the left ['''P'''] and right [''
 || <kbd>C-x 1</kbd> || <kbd>C-x 5 1</kbd> || Delete others (make this the only ''one'') ||
 || <kbd>C-x 2</kbd> || <kbd>C-x 5 2</kbd> || Create new (was one, now ''two'')          ||
 
-== Applying frames and windows ==
+== Using frames and windows effectively ==
 
-Both frames and windows can be used to organize your Emacs activity.  For example, you might have one frame for working with SQL, divided into two windows: One editing a query file, and a second showing the results of the query.  You might have another for Gnus, with three windows: Summary, article, and BBDB info.  You might have a third frame for chatting on IRC, with all your channels visible in separate windows.
+Both frames and windows can be used to organize your Emacs activity.  For example, you might have one frame for working with [SqlMode SQL], divided into two windows: One editing a query file, and a second showing the results of the query.  You might have another for [[Gnus]], with three windows: Summary, article, and [[BBDB]] info.  You might have a third frame for chatting on [InternetRelayChat IRC], with all your channels visible in separate windows.
 
 The keyboard can be used to navigate frames and windows, but so can the mouse.  You can have Emacs select windows just by pointing at them; see [[Manual:focus follows mouse]] in the Emacs manual.  Note that text-only terminals can still have multiple frames, with the same key sequences and commands.
 
