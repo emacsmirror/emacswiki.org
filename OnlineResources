@@ -45,14 +45,6 @@ Being Productive With Emacs - Part 3 (PDF)] -- Extending Emacs.
 * [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html
 Stevey's Blog Rants: Shiny and New: Emacs 22] -- It has good tips about Emacs,
 specially about <code>replace-regexp</code> use.
-* IBM Developer Works series on the ''Emacs Editing Environment''.  '''Registration required.'''
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs1-i.html Part 1: Learn the basics of Emacs].
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs2-i.html Part 2: Learn the essential modes and editing features of Emacs].
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs3-i.html Part 3: Advanced Emacs text operations].
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs4-i.html Part 4: Options, registers, and bookmarks].
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs5-i.html Part 5: Shape your Emacs view].
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs6-i.html Part 6: Customize your Emacs world].
-** [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs7-i.html Part 7: Let Emacs help you out].
 * [http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Beyond the tutorial] -- Consise summary of [[key]]s, [[command]]s, terminology, [[regexp]] syntax....
 
 ----
