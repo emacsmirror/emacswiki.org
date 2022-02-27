@@ -13,9 +13,27 @@ When not otherwise qualified, this wiki uses ''window'' to mean an Emacs interna
 
 == Appearance ==
 
-This screenshot shows Emacs 27.2 (circa 2021).  Three buffers visiting files are shown, each in a window with a mode line at the bottom.  The mode lines use black text on a grey/silver background.  The main parts of the window use a white background.
+This screenshot shows Emacs 27.2 (circa 2021), running on Microsoft Windows.  Three windows are shown, each a buffer visiting a file.
 
 [[image:FrameCalloutsScreenShot]]
+
+== Components ==
+
+At the top of the frame is a '''title bar''' ['''A'''].  This is provided by the host operating environment, not Emacs.  The FrameTitle text appears here.
+
+Below the title bar is a MenuBar ['''B'''].  Each menu (##File##, ##Edit##, ##Options##, and so on) will yield a pull-down menu when clicked.  Additional menus may appear depending on the [[mode]]s in effect.
+
+Below the menu bar is a ToolBar ['''C'''].  Each icon corresponds to a single, frequently-used command.  Like the menu bar, the tool bar can change with modes.
+
+This frame is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  Each window is showing a different buffer.  Each buffer is visiting a file.  Buffers can appear in multiple windows, or not at all, and buffers can contain many more things than just files.
+
+Each window has its own ModeLine at the bottom: ['''E'''], ['''G'''], ['''L'''].  The mode line reflects pertinent information about the corresponding window and buffer.
+
+At the bottom of the frame is the MiniBuffer ['''H'''].  Emacs uses the minibuffer for prompts and messages to you.  All windows share the same minibuffer.
+
+Each window has its own ScrollBar, such as ['''N'''] for window ['''F'''].  The scroll bar reflects the current position in the buffer, and can be used to quickly move through the buffer using the mouse.
+
+Each window also has a [[fringe]], appearing at the left ['''P'''] and right ['''R'''] edges.  Things like line wrap can be indicated by glyphs in the fringe.
 
 == Commands and keys ==
 
