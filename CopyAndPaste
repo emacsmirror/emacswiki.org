@@ -63,9 +63,9 @@ Although Emacs 29 has an option to build with pure GTK and therefore is supposed
   (setq interprogram-paste-function 'wl-paste)
 }}}
 
-=== Third party plugins ===
+== Third party plugins ==
 
-==== simpleclip ====
+=== simpleclip ===
 
 You can use https://github.com/rolandwalker/simpleclip which ALWAYS works.
 
@@ -74,22 +74,22 @@ More specifically, for copy&paste, there are only two commands:
   simpleclip-get-contents
   simpleclip-set-contents
 
-==== cliphist ====
+=== cliphist ===
 
 Read clipboard history from clipboard managers (Parcellite, ClipIt at Linux and Flycut at Mac).
 https://github.com/redguardtoo/cliphist
 
-==== datclip ====
+=== datclip ===
 
 If it's getting to be a bit of a hassle, use https://github.com/thomp/datclip to simply show the primary, secondary, and clipboard selections in the datclip buffer.
 
-==== clipmon ====
+=== clipmon ===
 
 Monitor the clipboard and insert any change into the kill-ring.
 It makes it easier to use ##yank-pop## from several inputs outside Emacs.
 https://github.com/bburns/clipmon
 
-=== XEmacs ===
+== XEmacs ==
 
  (setq interprogram-cut-function 'own-clipboard)
  (setq interprogram-paste-function 'get-clipboard)
