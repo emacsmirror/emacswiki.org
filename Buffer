@@ -1,26 +1,35 @@
 [[ko:버퍼]]
-(This is a [[CategoryGlossary|glossary]] page. It is not for how-to information.)
 
-A '''[::buffer]''' is similar to what is sometimes called a ''workspace'' or a ''document'' in other editors.  A buffer can contain text and images. Often the contents of a buffer come from a file -- use `M-: buffer-file-name' to see the file name.
+An Emacs '''[::buffer]''' contains content you are working with.
 
-When you use `C-x C-f' to invoke command
-`find-file', Emacs opens the file you request, and puts
-its contents into a buffer with the same name as the file. Instead of thinking that you are editing a file, think that you are editing text in a buffer. When you save the buffer, the file is updated to reflect your edits. 
+Buffers are similar to what other systems might call a ''file'', ''document'', or ''workspace''.
 
-Buffers can also contain text that doesn't come from a file.  When you
-use `C-x C-b' to get a list of buffers, that
-list is itself in a buffer, called
-<tt>##*Buffer List*##</tt>, and that buffer is not associated with any file.  
+Buffers are shown in [[window]]s on the screen.  A buffer can be displayed in more than one window at a time, or need not be displayed at all.  At the bottom of each window is a ModeLine that describes the buffer and its state.  Every buffer has a unique ''buffer name''; the name is shown in the mode-line.
 
-By convention, buffers whose names start with an asterisk ('''`*'''')
-are not associated with files (but that doesn't mean you can't save them in files).  If they have unsaved changes when you exit Emacs, these buffers are killed without your being asked for confirmation.
+While buffers are often associated with files, buffers can contain much more than files.  Much of the power of Emacs comes from the numerous "applications" available for it, many of which present information in buffers of their own.
 
-Buffers whose names start with a space are [[InvisibleBuffers|invisible]] to many operations. These are generally internal buffers that you don't want to see. Their names normally don't appear in the buffer list or as
-[[Completion]] candidates when you switch buffers using `C-x b'.  
+When you visit a file (AKA open, read, load), Emacs puts the file's contents into a buffer, stored in main memory (RAM).  Emacs picks a buffer name based on the file name, making it unique if needed.  When you save the buffer, the file is written to reflect your changes.  Instead of thinking that you are "editing a file", think that you are ''editing text in a buffer''.  When you kill (close) a buffer, its contents are discarded, and the memory released.  Normally Emacs will prompt you if there are unsaved changes.
 
-Buffers are shown in [[Window]]s.  You can have more than one
-window showing the same buffer.  `C-x 2' splits the
-current window, creating two windows, both showing the same buffer.
+By convention, buffers whose names start with an asterisk (##*##) are not associated with files.  For example, by default Emacs starts with an empty buffer named ##*scratch*##.  If such buffers have unsaved changes when you exit Emacs, these buffers are discarded without asking.
+
+Buffers whose names start with a space are [[InvisibleBuffers|invisible]], hidden from many operations.  These are generally used by Emacs for internal purposes, and are not intended for user consumption.
+
+== Commands and keys ==
+
+|| Key                || Meaning                        || Command                 ||
+|| <kbd>C-x C-f</kbd> || Visit/open/load a file         || ##find-file##           ||
+|| <kbd>C-x C-r</kbd> || Load a file, block changes     || ##find-file-read-only## ||
+|| <kbd>C-x C-s</kbd> || Update file to reflect changes || ##save-buffer##         ||
+|| <kbd>C-x C-w</kbd> || Write to new file (Save As)    || ##write-file##          ||
+|| <kbd>C-x k</kbd>   || Close the current buffer       || ##kill-buffer##         ||
+|| <kbd>C-x b</kbd>   || Prompt for buffer to show      || ##switch-to-buffer##    ||
+|| <kbd>C-x C-b</kbd> || Open the BufferMenu            || ##list-buffers##        ||
+
+== See also ==
+
+* [[Window]]
+* [[Frame]]
+* WindowsAndFrames
 
 ----
 CategoryGlossary
