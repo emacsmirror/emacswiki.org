@@ -83,6 +83,7 @@ This category is about help with '''''Emacs'''''.  See also CategoryDocumentatio
 * ReferenceSheetHelpUtils -- Help Emacs help you help Emacs help you...
 * UsageMemo -- integration of Emacs help system and memo
 * [http://user42.tuxfamily.org/help-xref-elfiles/index.html help-xref-elfiles.el] -- buttonize <code>foo.el</code> and <code>.emacs</code> in docstrings
+* [[WhichKey]] --  displays the key bindings following your currently entered incomplete command (a prefix) in a popup.
 
 ----
 
