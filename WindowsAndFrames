@@ -17,6 +17,16 @@ This screenshot shows Emacs 27.2 (circa 2021).  Three buffers visiting files are
 
 [[image:FrameCalloutsScreenShot]]
 
+== Commands and keys ==
+
+[[Frame]]s, [[window]]s, and [[buffer]]s all have their own commands and KeySequences, which are described on their individual pages.  However, the major commands for windows and frames follow a pattern that is worth noting:
+
+|| Window           || Frame || Meaning                                                 ||
+|| <kbd>C-x o</kbd> || <kbd>C-x 5 o</kbd> || Switch to '''o'''ther                      ||
+|| <kbd>C-x 0</kbd> || <kbd>C-x 5 0</kbd> || Delete current (zero/zap)                  ||
+|| <kbd>C-x 1</kbd> || <kbd>C-x 5 1</kbd> || Delete others (make this the only ''one'') ||
+|| <kbd>C-x 2</kbd> || <kbd>C-x 5 2</kbd> || Create new (was one, now ''two'')          ||
+
 == Applying frames and windows ==
 
 Both frames and windows can be used to organize your Emacs activity.  For example, you might have one frame for working with SQL, divided into two windows: One editing a query file, and a second showing the results of the query.  You might have another for Gnus, with three windows: Summary, article, and BBDB info.  You might have a third frame for chatting on IRC, with all your channels visible in separate windows.
