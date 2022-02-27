@@ -46,6 +46,6 @@ Being Productive With Emacs - Part 3 (PDF)] -- Extending Emacs.
 Stevey's Blog Rants: Shiny and New: Emacs 22] -- It has good tips about Emacs,
 specially about <code>replace-regexp</code> use.
 * [http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Beyond the tutorial] -- Consise summary of [[key]]s, [[command]]s, terminology, [[regexp]] syntax....
-
+* [https://www.reddit.com/r/emacs/ r/emacs] -- Many interesting discussions and resources. Check out the [https://www.reddit.com/r/emacs/search?q=Weekly%20tips&restrict_sr=on&sort=new&t=all Weekly tips threads]
 ----
 CategoryHelp, CategoryDocumentation 
