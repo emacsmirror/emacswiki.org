@@ -1,4 +1,4 @@
-The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]].  It has useful summary information about the [[buffer]] shown in the window, including its name and current [[mode]]s.
+The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]].  It has useful summary information about the [[buffer]] shown in the window, including its name and current [[mode]]s.  An Emacs mode-line is similar to what some other software calls a "status bar".
 
 Like the rest of Emacs, you can [[ModeLineConfiguration|configure the mode line]] to look and behave however you want.
 
