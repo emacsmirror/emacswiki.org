@@ -1,31 +1,35 @@
 [[ko:버퍼]]
 
-An Emacs '''[::buffer]''' contains content you are working with.
+(This is a [[CategoryGlossary|glossary]] page. It is not for how-to information.)
 
-Buffers are similar to what other systems might call a ''file'', ''document'', or ''workspace''.
+An Emacs '''[::buffer]''' is similar to what other systems might call a ''file'', ''document'', or ''workspace''. A buffer can contain text and images.
 
-Buffers are shown in [[window]]s on the screen.  A buffer can be displayed in more than one window at a time, or need not be displayed at all.  At the bottom of each window is a ModeLine that describes the buffer and its state.  Every buffer has a unique ''buffer name''; the name is shown in the mode-line.
+Buffers are shown in [[window]]s on the screen.  A buffer can be displayed in more than one window at a time, or it might not be displayed at all.
 
-While buffers are often associated with files, buffers can contain much more than files.  Much of the power of Emacs comes from the numerous "applications" available for it, many of which present information in buffers of their own.
+At the bottom of each window is a ModeLine that describes the buffer and its state.  Every buffer has a unique ''buffer name''; the name is shown in the mode-line.
 
-When you visit a file (AKA open, read, load), Emacs puts the file's contents into a buffer, stored in main memory (RAM).  Emacs picks a buffer name based on the file name, making it unique if needed.  When you save the buffer, the file is written to reflect your changes.  Instead of thinking that you are "editing a file", think that you are ''editing text in a buffer''.  When you kill (close) a buffer, its contents are discarded, and the memory released.  Normally Emacs will prompt you if there are unsaved changes.
+By default, *visiting* a file puts the file content into a buffer and displays it in a window.  By default, the buffer name is based on the (relative) file name.
+
+*Saving* a buffer writes it to its visited file.   
+
+*Killing* a buffer discards its contents.  By default, Emacs prompts you if there are unsaved changes.
 
 By convention, buffers whose names start with an asterisk (##*##) are not associated with files.  For example, by default Emacs starts with an empty buffer named ##*scratch*##.  If such buffers have unsaved changes when you exit Emacs, these buffers are discarded without asking.
 
-Buffers whose names start with a space are [[InvisibleBuffers|invisible]], hidden from many operations.  These are generally used by Emacs for internal purposes, and are not intended for user consumption.
+Buffers whose names start with a space are [[InvisibleBuffers|invisible]], which means they are hidden from many operations.  These buffers are typically created and used by Emacs for internal purposes.
 
-== Commands and keys ==
+== Buffer Commands and Their Keys ==
 
 || Key                || Meaning                        || Command                 ||
-|| <kbd>C-x C-f</kbd> || Visit/open/load a file         || ##find-file##           ||
-|| <kbd>C-x C-r</kbd> || Load a file, block changes     || ##find-file-read-only## ||
-|| <kbd>C-x C-s</kbd> || Update file to reflect changes || ##save-buffer##         ||
-|| <kbd>C-x C-w</kbd> || Write to new file (Save As)    || ##write-file##          ||
-|| <kbd>C-x k</kbd>   || Close the current buffer       || ##kill-buffer##         ||
-|| <kbd>C-x b</kbd>   || Prompt for buffer to show      || ##switch-to-buffer##    ||
+|| <kbd>C-x C-f</kbd> || Find and visit a file         || ##find-file##           ||
+|| <kbd>C-x C-r</kbd> || Visit a file in read-only mode     || ##find-file-read-only## ||
+|| <kbd>C-x C-s</kbd> || Save the current buffer to its file || ##save-buffer##         ||
+|| <kbd>C-x C-w</kbd> || Save the current buffer contents to a file you specify (Save As)    || ##write-file##          ||
+|| <kbd>C-x k</kbd>   || Kill a buffer you name       || ##kill-buffer##         ||
+|| <kbd>C-x b</kbd>   || Switch to editing a buffer you specify      || ##switch-to-buffer##    ||
 || <kbd>C-x C-b</kbd> || Open the BufferMenu            || ##list-buffers##        ||
 
-== See also ==
+== See Also ==
 
 * [[Window]]
 * [[Frame]]
