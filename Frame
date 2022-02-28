@@ -1,16 +1,17 @@
 [[ja:フレーム]]
 
-A '''frame''' contains and displays one or more Emacs internal [[window]]s.
+A '''frame''' contains and displays one or more Emacs [[window]]s.
 
-Outside of Emacs, frames are usually called "windows".  The Emacs internal windows would usually be called "panes" or "sub-windows" or "MDI windows" or some other term.  When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
+Outside of Emacs, frames are usually called "windows".
 
-When running on a GUI (graphical user interface, such as X11, Microsoft Windows, or !MacOS X), each external window provided by the host GUI becomes an Emacs frame.  Creating a new frame in Emacs creates a new host GUI window.
+Outside of Emacs, Emacs windows might be called "panes", "sub-windows", or "MDI windows".
 
-In a character cell terminal (like a text console or an xterm), there is an implicit Emacs frame for the terminal.  Text terminals can still create additional frames, each effectively a "virtual terminal", and cycle between them, using the same commands.
+When running on a graphic display, an Emacs frame is implemented as a window-manager window.  
 
-A frame is rectangular, with four ''borders''.  Frames have names, similar to buffers.  On GUIs, the host system usually provides a ''title bar'', showing the FrameTitle.  A frame usually has a MenuBar, just under the title bar.  On GUIs, the frame may also have a ToolBar with icon buttons. 
+In a character-cell terminal (such as a text console or an xterm) there is an implicit Emacs frame for the terminal.  You can create additional frames -- each is in effect a virtual terminal.
 
-This wiki is concerned predominantly with Emacs frames.  Not all of the properties of Emacs frames pertain to non-Emacs "windows" (such as your web browser).
+A frame is rectangular, with four ''borders''.  On a graphic display, a frame usually has a ''title bar'', showing the FrameTitle.  By default, a frame has a MenuBar, just under the title bar.  On a graphic displays, by default a frame also has a ToolBar with icon buttons. 
+
 
 == Appearance ==
 
