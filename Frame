@@ -15,22 +15,15 @@ A frame is rectangular, with four ''borders''.  On a graphic display, a frame us
 
 == Appearance ==
 
-In this screenshot, colored boxes have been added to identify the frame (red), and three windows (in blue, green, and yellow).
+In this screenshot, colored boxes indicate the frame (red), and three windows (in blue, green, and yellow) in the frame.
 
 [[image:FrameWindowOverlayScreenShot]]
 
 == Behavior ==
 
-A frame can be in one of these states:
-* '''visible''' - this really means user-accessible
-* '''invisible''' - you cannot access it
+A frame can be visible (raised), invisible, or iconified (minimized). 
 
-A ''visible'' frame can be in one of these states:
-
-* '''raised''' - you can see it and manipulate it
-* '''iconified''' (minimized) - you see only a small icon representing the frame
-
-A ''raised'' frame can be maximized, occupying the full screen, or not.  You can resize a frame, drag it around, iconify/minimize it, restore/uniconify, rename it, or delete it.
+A ''raised'' frame can be maximized, occupying the full screen, or not.  You can resize a frame, drag it around, iconify/minimize it, restore it, rename it, or delete it.
 
 == Commands and keys ==
 
