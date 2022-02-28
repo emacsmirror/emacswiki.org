@@ -9,35 +9,36 @@ Emacs terminology differs significantly from mainstream computing usage on what 
 || window || pane       || Contained within a frame         ||
 || buffer || document   || The content you are working with ||
 
-When not otherwise qualified, this wiki uses ''window'' to mean an Emacs internal window.
 
-In the following screenshot, colored boxes have been added to identify the frame (red), and three windows (in blue, green, and yellow).
+In this screenshot, colored boxes have been added to identify the frame (red), and three windows (in blue, green, and yellow).
 
 [[image:FrameWindowOverlayScreenShot]]
 
-== Parts of an Emacs frame ==
+== Parts of an Emacs Frame ==
 
 [[image:FrameCalloutsScreenShot]]
 
-At the top of the frame is a '''title bar''' ['''A'''].  This is provided by the host operating environment, not Emacs.  The FrameTitle text appears here.
+At the top of the frame is a '''title bar''' ['''A'''].  This is provided by the window manager, not Emacs, but you can set the FrameTitle that appears there.
 
-Below the title bar is a MenuBar ['''B'''].  Each menu (##File##, ##Edit##, ##Options##, and so on) will yield a pull-down menu when clicked.  Additional menus may appear depending on the [[mode]]s in effect.
+Below the title bar is a MenuBar ['''B'''].  Click `mouse-1' on a menu name (##File##, ##Edit##, ##Options##, and so on) to open a pull-down menu.  Some of the menus available depend on the current [[mode]].
 
-Below the menu bar is a ToolBar ['''C'''].  Each icon corresponds to a single, frequently-used command.  Like the menu bar, the tool bar can change with modes.
+Below the menu bar is a ToolBar ['''C'''].  Each icon corresponds to a single, frequently used command.  Like the menu bar, the tool bar can change with the mode.
 
-This frame is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  The windows have a white background.  Each window is showing a different [[buffer]].  Here, each buffer is visiting a file, but buffers can contain many more things than just files.  Buffers can appear in multiple windows, or not at all.
+The frame shown here is divided into three windows: ['''D'''], ['''F'''], ['''K'''].  The windows have a white background.  Each window shows a different [[buffer]].  Here, each buffer is visiting a file, but buffers need not visit files.  A buffer can appear in multiple windows, or not at all.
 
-Each window has its own ModeLine at the bottom: ['''E'''], ['''G'''], ['''L'''].  In this screen shot, the mode lines have a darker gray background.  The mode line reflects pertinent information about the corresponding window and buffer.
+Each window has its own ModeLine at the bottom: ['''E'''], ['''G'''], ['''L'''].  In this screenshot, the mode-lines have a darker gray background.  A mode-line typically reflects information about the buffer in its window.
 
-At the bottom of the frame is the MiniBuffer ['''H'''].  Emacs uses the minibuffer for prompts and messages to you.  All windows share the same minibuffer.
+At the bottom of the frame is the MiniBuffer ['''H'''].  Emacs uses the minibuffer to read input.  All windows in a frame share the same minibuffer. The EchoArea, which displays output, uses the same space as the minibuffer.
 
-Each window has its own ScrollBar, such as ['''N'''] for window ['''F'''].  The scroll bar reflects the current position in the buffer, and can be used to quickly move through the buffer using the mouse.
+Each window can have its own ScrollBar -- see ['''N'''] for window ['''F'''].  The scroll bar reflects the TextCursor position ([[point]]) in the buffer. You can drag the scroll bar with a mouse to quickly move through the buffer.
 
-Each window also has a [[fringe]], appearing at the left ['''P'''] and right ['''R'''] edges.  Things like line wrap can be indicated by glyphs in the fringe.
+By default, each window also has a [[fringe]], at the left ['''P'''] or right ['''R'''] (or both) edges.  Things such as line wrap can be indicated by glyphs in the fringe.
 
-== Commands and keys ==
+== Commands and Keys ==
 
-[[Frame]]s, [[window]]s, and [[buffer]]s all have their own commands and KeySequences, which are described on their individual pages.  However, the major commands for windows and frames follow a pattern that is worth noting:
+[[Frame]]s, [[window]]s, and [[buffer]]s all have their own commands and KeySequences.  
+
+Here are some common commands for windows:
 
 || Window           || Frame || Meaning                                                 ||
 || <kbd>C-x o</kbd> || <kbd>C-x 5 o</kbd> || Switch to '''o'''ther                      ||
@@ -45,13 +46,13 @@ Each window also has a [[fringe]], appearing at the left ['''P'''] and right [''
 || <kbd>C-x 1</kbd> || <kbd>C-x 5 1</kbd> || Delete others (make this the only ''one'') ||
 || <kbd>C-x 2</kbd> || <kbd>C-x 5 2</kbd> || Create new (was one, now ''two'')          ||
 
-== Using frames and windows effectively ==
+== Using Frames and Windows ==
 
 Both frames and windows can be used to organize your Emacs activity.  For example, you might have one frame for working with [SqlMode SQL], divided into two windows: One editing a query file, and a second showing the results of the query.  You might have another for [[Gnus]], with three windows: Summary, article, and [[BBDB]] info.  You might have a third frame for chatting on [InternetRelayChat IRC], with all your channels visible in separate windows.
 
-The keyboard can be used to navigate frames and windows, but so can the mouse.  You can have Emacs select windows just by pointing at them; see [[Manual:focus follows mouse]] in the Emacs manual.  Note that text-only terminals can still have multiple frames, with the same key sequences and commands.
+You can use the keyboard or a mouse to navigate among frames and windows.  On some platforms you can select a window just by hovering the mouse over it -- see [[Manual:focus follows mouse]].  
 
-You can organize your frames and windows into configurations.  You can then save, restore, and switch between them, to correspond with your activities.  See WindowConfiguration and FrameConfiguration.  You can have Emacs use frames instead of windows whenever possible; see OneOnOneEmacs.
+You can organize your frames and windows into configurations.  You can save, restore, and switch between configurations -- see WindowConfiguration and FrameConfiguration.
 
 == See also ==
 
