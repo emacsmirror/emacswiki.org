@@ -176,6 +176,7 @@ If you need a better Unicode coverage, GNU Unifont might work.  However, it only
 * ##(set-face-font 'default "fixed")## and ##(scroll-bar-mode -1)## gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
 
 == Test ==
+In general, trying to use Emacs with arbitrary fonts is not a good idea, as not every font can be used by Emacs. See https://lists.gnu.org/archive/html/bug-gnu-emacs/2022-02/msg02019.html.
 
 Evaluate the following code in your ##*scratch*## buffer:
 
