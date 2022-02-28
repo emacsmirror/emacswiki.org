@@ -22,7 +22,7 @@ Commonly used window commands include these:
 || <kbd>C-M-v</kbd> || Scroll the other window forward      || ##scroll-other-window##         ||
 || <kbd>C-M-S-v</kbd> || Scroll the other window backward   || ##scroll-other-window-down##    ||
 
-== See also ==
+See Also:
 
 * [[Frame]]
 * [[Buffer]]
