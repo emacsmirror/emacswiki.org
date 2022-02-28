@@ -1,36 +1,36 @@
-The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]].  It has useful summary information about the [[buffer]] shown in the window, including its name and current [[mode]]s.  An Emacs mode-line is similar to what some other software calls a "status bar".
+The '''[::mode line]''' appears at the bottom of every Emacs internal [[window]].  It has useful summary information about the [[buffer]] shown in the window, including its name and current [[mode]]s.
 
-Like the rest of Emacs, you can [[ModeLineConfiguration|configure the mode line]] to look and behave however you want.
+An Emacs mode-line serves a similar function  to what some other applications call a "status bar", but the reported status is specific to the mode-line's window.
+
+You can [[ModeLineConfiguration|configure the mode line]] in various ways.
 
 == Appearance ==
 
 === Graphical ===
 
-This screenshot shows Emacs 27.1 (circa 2020).  Three buffers visiting files are shown, each in a [[window]] with a mode line at the bottom.  The mode lines use black text on a grey/silver background.  The main parts of the window use a white background.
+This screenshot shows Emacs 27.1.  Three [[buffer]]s visiting files are shown, each in a [[window]] with a mode-line at its bottom.  The mode-lines use black text on a grey/silver background.  The main parts of the window use a white background.
 
 [[image:ModeLineCalloutsScreenShot]]
 
 === Text ===
 
-Text-only character cell displays (like xterm) will appear slightly different.  Following are reproductions of what the mode-lines would look like for the same three windows above (same files, same version of Emacs, same config and state).
+This gives an idea of what the mode-lines would look like on a text-only character-cell display for the same three windows above:
 
     -UUU:----F1      short-unicode   All L4    (Fundamental) --------------------
     -UU-(DOS)%%--F1  win.ini         Top L5    (Conf[WinIni]) -------------------
     -UU-:----F1      spell.el        38% L47   (Emacs-Lisp ElDoc Wrap) -----
 
-The spacing has been modified to align selected parts.
+
 
 == Components ==
 
-The standard (default) components of a mode line, from left to right, are as follows.
+The standard (default) components of a mode-line, from left to right, are as follows.
 
-: ''References to the screenshot and text above are given in indented italics, with the callouts in [square brackets].''
 
-=== Human Language ===
 
-The first part of the mode line is concerned with human-language (as opposed to programming-language) details.
+=== Input Method and Coding System ===
 
-If an input method is active, it may be indicated first.  Next comes the coding system of the buffer -- one or more characters indicating how the given language is encoded as bytes in the buffer.
+If an input method is active, it may be indicated first.  Next comes the coding system of the buffer -- one or more characters indicating how buffer characters are encoded.
 
 || || Meaning ||
 || ##-## || No code conversion, except possibly end-of-line translation ||
@@ -38,20 +38,20 @@ If an input method is active, it may be indicated first.  Next comes the coding 
 || ##1## || ISO Latin 1 code conversion ||
 || ##U## || Unicode (typically UTF-8) ||
 
-: ''The file buffer ##short-unicode## contains Unicode text ['''A'''].  The other two buffers have no translation (aside from end-of-line).  (FIXME explain the multiple U's in text mode)''
+: ''The file buffer ##short-unicode## shown above contains Unicode text ['''A'''].  The other two buffers have no translation (aside from end-of-line).
 
 See [[Manual:International|International Character Set Support]] in the Emacs manual for details.
 
 === End Of Line ===
 
-Next in the mode line is an indication of how an EndOfLine is represented in the buffer.  This is either a single character, or a word in parenthesis:
+Next in the mode-line is an indication of how an EndOfLine is represented in the buffer.  This is either a single character, or a word in parenthesis:
 
 || Char || Word       || Meaning         || Used by               ||
 || ##:## || ##(Unix)## || Line feed       || Unix, Linux, !MacOS X ||
 || ##/## || ##(MAC)##  || Carriage return || classic Macintosh (not !MacOS X) ||
 || ##\## || ##(DOS)##  || Both            || Microsoft, DEC, RFCs  || 
 
-: ''The ##win.ini## file buffer uses the DOS/Windows end-of-line format, indicated by ##(DOS)## ['''G'''].  The others use the OS native format, indicated by ##:## (colon).''
+: ''The ##win.ini## file buffer shown above uses the DOS/Windows end-of-line format, indicated by ##(DOS)## ['''G'''].  The others use the OS native format, indicated by ##:## (colon).''
 
 === Buffer Modification ===
 
@@ -63,19 +63,19 @@ The next two characters in the mode line indicate whether or not the buffer has 
 || ##%*## || read-only, but modified ||
 || ##%%## || read-only, not modified ||
 
-: ''File buffer ##spell.el## has been modified (##**##) ['''L'''].  File buffer ##win.ini## is read-only (##%%##) ['''H'''].
+: ''File buffer ##spell.el## shown above has been modified (##**##) ['''L'''].  File buffer ##win.ini## is read-only (##%%##) ['''H'''].
 
 === Frame Name ===
 
-For text mode terminals, the frame name is given next.  This is omitted from the mode-line for graphical displays (as the FrameTitle typically appears in the title bar of the external host GUI window).
+For text-mode terminals, the frame name is shown next.  This is omitted from the mode-line for graphical displays (the FrameTitle typically appears in a the window-manager window).
 
 : ''The first frame title is ##F1## for text displays.''.
 
 === Buffer Name ===
 
-Every buffer has a name.  If the buffer is visiting a file then this is normally the file name.
+If the buffer is visiting a file then the buffer name is the (relative) file name.
 
-: ''Three buffers are shown, all visiting files: ##short-unicode## ['''B'''], ##win.ini## ['''K'''], and ##spell.el## ['''N'''].''
+: ''Three buffers are shown above, all visiting files: ##short-unicode## ['''B'''], ##win.ini## ['''K'''], and ##spell.el## ['''N'''].''
 
 === Cursor Position ===
 
@@ -87,11 +87,11 @@ After the buffer name comes the current position of the TextCursor in the window
 || ##All## || ''all'' of the buffer is shown in the window ||
 || ##xx%## || percent of the buffer ''above'' the ''top'' of the window (the portion before the visible text) ||
 
-: ''The entire buffer ##short-unicode## is visible ['''C'''].  The first line of ##win.ini## is visible ['''E'''].   Lastly, point is 38% ['''P'''] into buffer ##spell.el##.''
+: ''The entire buffer ##short-unicode## shown above is visible ['''C'''].  The first line of buffer ##win.ini## is visible ['''E'''].   Lastly, point is 38% ['''P'''] into buffer ##spell.el##.''
 
-Next comes the line number, prefixed by ##L##.  Optionally, the column number may appear as well, with prefix ##C##.
+Next comes the line number, prefixed by ##L##.  Optionally, the column number appears as well, with prefix ##C##.
 
-: ''The cursor is on line 47 ['''R'''] of buffer ##spell.el##.''
+: ''The cursor is on line 47 ['''R'''] of buffer ##spell.el## (above).''
 
 If the buffer is [[narrowing|narrowed]] then the position is reported relative to the ''buffer restriction'' (the narrowing), not the entire buffer.
 
@@ -102,17 +102,17 @@ Last are the [[mode]]s applied to the buffer, in parentheses.  First is the [[Ma
 
 Square brackets around the modes -- like this: ##[(Emacs-Lisp)]## -- indicate that a RecursiveEdit is in progress.
 
-You can click the major-mode and minor-mode names to access their menus and some of their [[option]]s.
+You can click the major-mode and minor-mode names with `mouse-1' to access their menus and some of their [[option]]s.
 
-: ''Buffer ##short-unicode## is in Fundamental mode ['''D'''].  Buffer ##win.ini## is in `conf-mode', with the !WinIni variant ['''F'''].  Buffer ##spell.el## is in `emacs-lisp-mode' ['''S'''], with minor modes `eldoc-mode' ['''T'''] and `visual-line-mode' (##Wrap##) ['''U'''].
+: ''Buffer ##short-unicode## shown above is in Fundamental mode ['''D'''].  Buffer ##win.ini## is in `conf-mode', with the !WinIni variant ['''F'''].  Buffer ##spell.el## is in `emacs-lisp-mode' ['''S'''], with minor modes `eldoc-mode' ['''T'''] and `visual-line-mode' (##Wrap##) ['''U'''].
 
-Not all minor modes may appear in the mode-line.  This is mode-specific and is sometimes user-configurable.
+Not all minor modes appear in the mode-line.  This is mode-specific and is user-configurable.
 
 == See Also ==
 
-* ModeLineConfiguration -- Information and links on customizing the mode line to your taste
-* Emacs user manual: [[Manual:Mode Line]] -- The mode line and how to customize it
-* Emacs technical manual: [[Manual:Mode Line Format]] -- The internal format of the mode line
+* ModeLineConfiguration -- Information and links on customizing the mode-line
+* Emacs user manual: [[Manual:Mode Line]] -- The mode-line and how to customize it
+* Emacs technical manual: [[Manual:Mode Line Format]] -- The internal format of the mode-line
 
 ----
 CategoryDisplay
