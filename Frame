@@ -31,14 +31,13 @@ Most frame-related [[KeySequence]]s are prefixed with <kbd>C-x 5</kbd>.
 
 || Key                || Meaning                                           || Command                 ||
 || <kbd>C-x 5 o</kbd> || Switch to '''o'''ther frame                       || ##other-frame##         ||
-|| <kbd>C-x 5 0</kbd> || Delete current frame (zero/zap)                   || ##delete-frame##        ||
-|| <kbd>C-x 5 1</kbd> || Delete other frames (makes this the only ''one'') || ##delete-other-frames## ||
-|| <kbd>C-x 5 2</kbd> || Create new frame (from one, become ''two'')       || ##make-frame-command##  ||
-|| <kbd>C-x C-z</kbd> || Iconify/minimize frame                            || ##suspend-frame##       ||
-|| <kbd>M-F10</kbd>   || Maximize frame                                    || ##toggle-frame-maximized## ||
-|| <kbd>F11</kbd>     || Full screen                                       || ##toggle-frame-maximized## ||
+|| <kbd>C-x 5 0</kbd> || Delete the selected frame                   || ##delete-frame##        ||
+|| <kbd>C-x 5 1</kbd> || Delete all frames except the selected one || ##delete-other-frames## ||
+|| <kbd>C-x 5 2</kbd> || Create a new frame on the same terminal   || ##make-frame-command##  ||
+|| <kbd>C-x C-z</kbd> || Iconify or raise graphic-display frame   || ##suspend-frame##       ||
+|| <kbd>M-F10</kbd>   || Maximize or unmaximize frame (toggle)                                    || ##toggle-frame-maximized## ||
+|| <kbd>F11</kbd>     || Make frame fullscreen or restore fullscreen frame to previous size (toggle)                                   || ##toggle-frame-maximized## ||
 
-Your window manager or operating environment likely provides ways to perform many of these as well.
 
 == See also ==
 
