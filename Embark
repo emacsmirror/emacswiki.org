@@ -1,0 +1,77 @@
+* [https://github.com/oantolin/embark/ Source on Github]
+* [https://github.com/oantolin/embark/wiki/Default-Actions Project wiki and default action keymap]
+* [https://github.com/oantolin/embark/#resources Resources section on Embark README] --   Some excellent pointers to the different possibilities using Embark.
+
+== Excerpt from README ==
+
+This package provides a sort of right-click contextual menu for Emacs, accessed through the embark-act command (which you should bind to a convenient key), offering you relevant actions to use on a target determined by the context:
+
+    In the minibuffer, the target is the current top completion candidate.
+    In the *Completions* buffer the target is the completion at point.
+    In a regular buffer, the target is the region if active, or else the file, symbol, URL, s-expression or defun at point.
+
+Multiple targets can be present at the same location and you can cycle between them by repeating the embark-act key binding. The type of actions offered depend on the type of the target. Here is a sample of a few of the actions offered in the default configuration:
+
+    For files you get offered actions like deleting, copying, renaming, visiting in another window, running a shell command on the file, etc.
+    For buffers the actions include switching to or killing the buffer.
+    For package names the actions include installing, removing or visiting the homepage.
+    For Emacs Lisp symbols the actions include finding the definition, looking up documentation, evaluating (which for a variable immediately shows the value, but for a function lets you pass it some arguments first). There are some actions specific to variables, such as setting the value directly or though the customize system, and some actions specific to commands, such as binding it to a key.
+
+By default when you use embark-act if you don’t immediately select an action, after a short delay Embark will pop up a buffer showing a list of actions and their corresponding key bindings. If you are using embark-act outside the minibuffer, Embark will also highlight the current target. These behaviors are configurable via the variable embark-indicators. Instead of selecting an action via its key binding, you can select it by name with completion by typing C-h after embark-act.
+
+Everything is easily configurable: determining the current target, classifying it, and deciding which actions are offered for each type in the classification. The above introduction just mentions part of the default configuration.
+
+Configuring which actions are offered for a type is particularly easy and requires no programming: the variable embark-keymap-alist associates target types with variables containing keymaps, and those keymaps containing bindings for the actions. (To examine the available categories and their associated keymaps, you can use C-h v embark-keymap-alist or customize that variable.) For example, in the default configuration the type file is associated with the symbol embark-file-map. That symbol names a keymap with single-letter key bindings for common Emacs file commands, for instance c is bound to copy-file. This means that if you are in the minibuffer after running a command that prompts for a file, such as find-file or rename-file, you can copy a file by running embark-act and then pressing c.
+
+These action keymaps are very convenient but not strictly necessary when using embark-act: you can use any command that reads from the minibuffer as an action and the target of the action will be inserted at the first minibuffer prompt. After running embark-act all of your key bindings and even execute-extended-command can be used to run a command. For example, if you want to replace all occurrences of the symbol at point, just use M-% as the action, there is no need to bind query-replace in one of Embark’s keymaps. Also, those action keymaps are normal Emacs keymaps and you should feel free to bind in them whatever commands you find useful as actions and want to be available through convenient bindings.
+
+The actions in embark-general-map are available no matter what type of completion you are in the middle of. By default this includes bindings to save the current candidate in the kill ring and to insert the current candidate in the previously selected buffer (the buffer that was current when you executed a command that opened up the minibuffer).
+
+Emacs’s minibuffer completion system includes metadata indicating the category of what is being completed. For example, find-file’s metadata indicates a category of file and switch-to-buffer’s metadata indicates a category of buffer. Embark has the related notion of the type of a target for actions, and by default when category metadata is present it is taken to be the type of minibuffer completion candidates when used as targets. Emacs commands often do not set useful category metadata so the Marginalia package, which supplies this missing metadata, is highly recommended for use with Embark.
+
+Embark’s default configuration has actions for the following target types: files, buffers, symbols, packages, URLs, bookmarks, and as a somewhat special case, actions for when the region is active. You can read about the default actions and their key bindings on the GitHub project wiki.
+
+
+=== Quickstart ===
+
+{{{
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+
+(use-package embark
+  :ensure t
+
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+}}}
+
+
+----
+CategoryCompletion
