@@ -23,6 +23,7 @@ The [[minibuffer]] is typically used to read user input (data) to control progra
 * [[Vertico]] -- VERTical Interactive COmpletion.
 * [[Marginalia]] -- Adds useful annotations to minibuffer completion.
 * [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application. 
+* [[Embark]] - Emacs Mini-Buffer Actions Rooted in Keymaps
 * InteractivelyDoThings -- Input completion without having to hit `TAB'.
 * LightningCompletion -- Input completion without having to hit `TAB'.
 * Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
