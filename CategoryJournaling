@@ -15,8 +15,6 @@ or a similar website that gets updated frequently.
 * PlannerMode -- helps you plan your life by pulling together BBDB, calendar, Gnus, and EmacsMuse
 * EmacsMuse -- Muse can integrate well with PyBlosxom with the help of the muse-blosxom.el file.
 * OrgBlogging -- blogging with OrgMode
-** OrgBlog -- create and publish a blog with OrgMode
-** [[Blorg]] -- export a blog from an org file
 * Lisp:tjic-website.el -- a few small functions for managing local files
   that later need to get scp-ed or ftp-ed to a website
 * Lisp:tjic-blog.el -- an add-on to tjic-website which supports a blog
