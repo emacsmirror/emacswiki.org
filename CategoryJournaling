@@ -22,6 +22,7 @@ or a similar website that gets updated frequently.
 * [[lisplog]] -- Create and manage a blog with Emacs. It supports rss too
 * [[Skinny]] -- an Elnode webapp for presenting a directory structure of [[Creole]] files as a blog
 * OrgJournal -- a simple org-mode based journal mode that integrates with the calendar
+* [[https://github.com/jkitchin/scimax/blob/master/scimax-journal.el scimax-journal.el]] -- Similar to OrgJournal 
 
 Other packages that can be used with Emacs effortlessly, eg. because they
 depend on plain text.
