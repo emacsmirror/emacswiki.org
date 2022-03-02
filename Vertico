@@ -18,7 +18,9 @@ Vertico provides a performant and minimalistic vertical completion UI based on t
 * Support for candidate grouping and group cycling commands (group-function).
 
 == Resources ==
-1. [https://github.com/minad/vertico#resources Resources section on the github readme]
+* [https://github.com/minad/vertico#resources Resources section on the github readme]-- lists some guides on using vertico
+* [https://github.com/minad/vertico/wiki Vertico's github wiki] -- Additional configuration tips
+* [https://kristofferbalintona.me/posts/vertico-marginalia-all-the-icons-completion-and-orderless/ Kristoffer Balintona's blog post] -- Customising [[Vertico]], [[Marginalia]], [[Orderless]], All-the-icons-completion and other goodies.
 
 ----
 CategoryCompletion
