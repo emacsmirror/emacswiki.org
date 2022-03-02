@@ -316,6 +316,8 @@ user@host:/u/l/share/emacs/site-lisp $
                 (if (= (user-uid) 0) " # " " $ "))))
 </pre>
 
+(((from sbied@comcast.net on 2-Mar-2022: isn't that argument to "(butlast" wrong and should be 3 instead of (- (length p-lst) 3)?)))
+
 And, to be utterly gratuitous, here's my Eshell prompt, which is based
 on my tcsh prompt.  For reference, I define my tcsh prompt like so:
 
