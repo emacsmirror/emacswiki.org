@@ -475,5 +475,5 @@ An attempt is also made by setup.el to ease extensibility. Each macro is defined
 
 * SystemCrafters video on UsePackage alternatives, that discusses setup.el among other things https://www.youtube.com/watch?v=ZolOUgXHgbo
 * Configuration using setup.el extensively: https://tildegit.org/acdw/emacs
-* Another configuration using setup.el extensively: https://github.com/mfiano/dotfiles/tree/master/.emacs.d (contains additional setup.el macros)
+* Another configuration using setup.el extensively: https://github.com/mfiano/emacs-config (contains additional setup.el macros)
 * Configuration of the setup.el author: https://git.sr.ht/~pkal/emacs-init/tree/master/item/init.el
