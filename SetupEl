@@ -424,6 +424,40 @@ the first PACKAGE."
   :shorthand #'cadr)
 }}}
 
+=== A prefix-less alternative to :option ===
+
+When customizing a package that uses a symbol prefix consistently, you might
+want to use this macro that automatically prefixes each option name with the 
+current feature name:
+
+{{{
+(setup-define :option*
+  (lambda (name val)
+    `(customize-set-variable
+      ',(intern (format "%s-%s" (setup-get 'feature) name))
+      ,val
+      ,(format "Set for %s's setup block" (setup-get 'feature))))
+  :documentation "Set the option NAME to VAL.
+NAME is not the name of the option itself, but of the option with
+the feature prefix."
+  :debug '(sexp form)
+  :repeatable t)
+}}}
+
+So that 
+
+{{{
+(customize-set-variable 'foo-bar "baz" "Set for foo's setup block")
+}}}
+
+is expanded to
+
+{{{
+(customize-set-variable 'foo-bar "baz" "Set for foo's setup block")
+}}}
+
+(Alternatively, you could also re-use :option instead of customize-set-variable.
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
