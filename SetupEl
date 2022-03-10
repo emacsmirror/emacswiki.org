@@ -447,7 +447,7 @@ the feature prefix."
 So that 
 
 {{{
-(customize-set-variable 'foo-bar "baz" "Set for foo's setup block")
+(setup foo (:option* bar "baz"))
 }}}
 
 is expanded to
