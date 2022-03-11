@@ -6,6 +6,7 @@ Emacs or XEmacs from source.
 Some pages are listed here explicitly:
 
 * BuildingEmacs
+** GccEmacs -- build GnuEmacs with the new native code features enabled
 * BuildingXEmacs
 * EmacsOnAIX
 * EmacsOnMacOS
