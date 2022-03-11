@@ -10,7 +10,7 @@ The feature is discussed in detail in the paper [https://zenodo.org/record/37363
 
 To build !GccEmacs, you will need ##libgccjit## in addition to the other dependencies described in BuildingEmacs.
 
-First, checkout the ##master## branch of Emacs (or any release branch from ##emacs-28## onwards), and configure it with the ##--with-native-compilation## flag:
+First, checkout the unstable ##master## branch of Emacs (or any stable release branch from ##emacs-28## onwards), and configure it with the ##--with-native-compilation## flag:
 
     $ git clone git://git.savannah.gnu.org/emacs.git
     $ cd emacs
