@@ -511,3 +511,6 @@ An attempt is also made by setup.el to ease extensibility. Each macro is defined
 * Configuration using setup.el extensively: https://tildegit.org/acdw/emacs
 * Another configuration using setup.el extensively: https://github.com/mfiano/emacs-config (contains additional setup.el macros)
 * Configuration of the setup.el author: https://git.sr.ht/~pkal/emacs-init/tree/master/item/init.el
+
+----
+CategoryExtensions
