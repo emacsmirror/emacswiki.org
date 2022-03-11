@@ -48,6 +48,7 @@ Extensions (using the category name from `finder-by-keyword'), are utility libra
 == Macros ==
 
 * MacroUtilities -- Utilities for writing macros.
+* SetupEl -- A macro to ease repetitive configuration patterns in EmacsLisp.
 
 == New Language Constructs ==
 
