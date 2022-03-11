@@ -24,7 +24,7 @@ You should see //"Does Emacs have native lisp compiler? yes"// near the end of t
 If you wish, install conventionally with ##make install## otherwise run it from the build tree with ##./src/emacs##.
 
 ==== Spack ====
-If you're using unixy system with non-root access and would like to install emacs from source without being bothered by installing dependencies.
+If you're using unixy system with non-root access and would like to install emacs from source without being bothered by installing dependencies.  At the time of writing, this only supports native compilation with the unstable master branch.
 
     $ git clone https://github.com/spack/spack.git
     $ ./spack/bin/spack install emacs@master+native+tls
