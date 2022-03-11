@@ -290,6 +290,33 @@ The following ##defadvice##, which employs [SkeletonMode skeletons], accomplishe
 
 This also makes the '##"##' key "move over" existing quotation marks. E.g., if point is at the beginning of ##``word''##, hitting ##"## places it at the first letter.
 
+[new]
+In AUCTeX 13.1 language specific quotation marks are no longer set by ##TeX-open-quote## and ##TeX-close-quote## but by ##TeX-quote-language##. The following is a version of the above code using the new variables (based on the original function ##TeX-insert-quote##):
+{{{
+(defun ad-TeX-insert-quote (func wrap-region)
+  (let* ((lang-override (if (eq (car TeX-quote-language) 'override)
+                            TeX-quote-language
+                          (assoc (car TeX-quote-language)
+                                 TeX-quote-language-alist)))
+         (lang (or lang-override TeX-quote-language))
+         (open-quote (if lang (nth 1 lang) TeX-open-quote))
+         (close-quote (if lang (nth 2 lang) TeX-close-quote))
+         (q-after-q (if lang (nth 3 lang) TeX-quote-after-quote)))
+    (cond
+     (mark-active
+      (let ((skeleton-end-newline nil))
+        (skeleton-insert `(nil ,open-quote _ ,close-quote) -1)))
+     ((looking-at (regexp-opt (list open-quote close-quote)))
+      (forward-char (length open-quote)))
+     (t
+      (funcall func wrap-region)))))
+
+(advice-add 'TeX-insert-quote :around 'ad-TeX-insert-quote)
+
+(put 'TeX-insert-quote 'delete-selection nil)
+}}}
+-- fifr 
+
 === Inserting and wrapping single quotes ===
 
 It's nice to have the same behavior for the '##'##' key -- inserting "##`##" or "##'##" according to context, and wrapping the region in single quotes:
