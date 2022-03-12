@@ -1,4 +1,4 @@
-The EmacsWiki [[Git]] repository checks in every change on the Emacswiki (with username and summary being used as author and commit message). It contains the raw text of all Emacswiki pages.
+The [[https://github.com/emacsmirror/emacswiki.org/commits/master EmacsWiki Git repository]] checks in every change on the Emacswiki (with username and summary being used as author and commit message). It contains the raw text of all Emacswiki pages.
 
 It uses [[Git]] and can be [http://github.com/emacsmirror/emacswiki.org found] on github as part of the [https://emacsmirror.net/ Emacsmirror].
 
