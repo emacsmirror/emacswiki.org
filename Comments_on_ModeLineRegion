@@ -1,0 +1,62 @@
+Hello Drew, I tried to use ''modeline-region.el'' in emacs 28 and found some inconsistencies due to 
+the addition of variables ''mode-line-position-line-format'', ''mode-line-position-column-format'' and ''mode-line-position-column-line-format'' and their use in ''mode-line-position''. Below is a patch which uses the new variables.
+
+BR, Kai
+
+<pre>
+diff --git a/modeline-region.el b/modeline-region.el
+index 01b8031bf..dc6bfed37 100644
+--- a/modeline-region.el
++++ b/modeline-region.el
+@@ -1050,7 +1050,7 @@ Sets `mlr--mlp-is-set-up-p' to t, to show the menus have been set up."
+                      ((column-number-mode ; Line-number mode & column-number-mode
+                        (column-number-indicator-zero-based
+                         (10 ,(propertize
+-                              " (%l,%c)"
++                              (car mode-line-position-column-line-format)
+                               'face (and modeline-region-mode
+                                          mlr-column-limit
+                                          (> (current-column) mlr-column-limit)
+@@ -1059,23 +1059,24 @@ Sets `mlr--mlp-is-set-up-p' to t, to show the menus have been set up."
+                               'mouse-face 'mode-line-highlight
+                               'help-echo "Line and column, mouse-1: Line/col menu"))
+                         (10 ,(propertize
+-                              " (%l,%C)"
++                              (string-replace
++                               "%c" "%C" (car mode-line-position-column-line-format))
+                               'face (and modeline-region-mode
+                                          mlr-column-limit
+                                          (> (current-column) mlr-column-limit)
+                                          'mlr-column-warning)
+                               'local-map mlr-menu
+                               'mouse-face 'mode-line-highlight
+-                              'help-echo "Line number, mouse-1: Line/col menu")))
++                              'help-echo "Line and column, mouse-1: Line/col menu")))
+                        (6 ,(propertize
+-                            " L%l"
++                            (car mode-line-position-line-format)
+                             'local-map mlr-menu
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "Line number, mouse-1: Line/col menu"))))
+                      ((column-number-mode ; Column-number-mode only, not line-number mode
+                        (column-number-indicator-zero-based
+                         (5 ,(propertize
+-                             " C%c"
++                             (car mode-line-position-column-format)
+                              'face (and modeline-region-mode
+                                         mlr-column-limit
+                                         (> (current-column) mlr-column-limit)
+@@ -1084,7 +1085,8 @@ Sets `mlr--mlp-is-set-up-p' to t, to show the menus have been set up."
+                              'mouse-face 'mode-line-highlight
+                              'help-echo "Column number, mouse-1: Line/col menu"))
+                         (5 ,(propertize
+-                             " C%C"
++                             (string-replace
++                              "%c" "%C" (car mode-line-position-column-format))
+                              'face (and modeline-region-mode
+                                         mlr-column-limit
+                                         (> (current-column) mlr-column-limit)
+</pre>
+
+-- Kai Tetzlaff 2022-03-12 05:31 UTC
+
