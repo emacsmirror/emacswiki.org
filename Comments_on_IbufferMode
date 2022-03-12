@@ -142,3 +142,12 @@ Ibuffer is great, otherwise ;-)
 
 -- derkire 2021-04-07 21:31 UTC
 
+
+----
+
+Is there a way to modify switch-to-buffer (C-x b) so that it will not switch to the *Ibuffer* buffer, but instead go to the most recent non-Ibuffer buffer? Ibuffer (C-x C-b) is great for long-distance buffer selection, but then plain switch-to-buffer just takes you back to IBuffer.
+
+Thanks
+
+-- Lance 2022-03-12 18:27 UTC
+
