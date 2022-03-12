@@ -18,6 +18,10 @@ Here's how you would configure it:
 Where 25 is the value of `smtpmail-smtp-service'; it can be an
 integer or a string, just as long as they match (eq).
 
+You may also need to set `smtpmail-servers-requiring-authorization', or smtpmail might attempt to send without authenticating:
+
+    (setq smtpmail-servers-requiring-authorization ".*")
+
 The key/certificate strings in smtpmail-starttls-credentials are optional, only use them if you intend to do certificate-based authentication (i.e., if you won't supply a username/password).
 
 Here's a typical example:
