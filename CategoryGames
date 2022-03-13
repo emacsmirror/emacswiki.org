@@ -55,6 +55,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * ScrmableSrtnig
 * [http://melpa.org/#/slime-volleyball Slime Volleyball] [https://github.com/fitzsim/slime-volleyball (screenshot)]
 * SokobanMode
+* [[Trek52]] -- Star Trek game
 * TypingOfEmacs -- a game for fast typers
 * TypingPractice -- typing practice in the minibuffer.
 * [https://github.com/ScottishPig/Elisp/blob/master/2048.el 2048-mode] Port of popular game 2048 to Elisp
