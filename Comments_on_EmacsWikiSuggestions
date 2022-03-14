@@ -5,33 +5,6 @@ I'm adding some talk for a test
 
 ----
 
-== ALT Multiple commands on a single key stroke ==
-
-An example of a simple solution to mapping a chain of commands to a single key stroke:
-<code>
-(setq newline-under-current-line "\C-e\C-o")
-(global-set-key "\C-i" newline-under-current-line)
-</code>
-
--- [http://region aterrf snewt] 2013-05-24 07:58 UTC
-
-
-----
-
-Wait, what? What does ''ALT Multiple commands on a single key stroke'' that have to do with anything on EmacsWikiSuggestions ?
-
--- MichaelPaulukonis 2013-05-24 16:48 UTC
-
-
-----
-
-Maybe it should be moved to EmacsNiftyTricks?
-
--- AlexSchroeder 2013-05-24 22:25 UTC
-
-
-----
-
 Where is the appropriate place to leave a suggestion for some entries discussing how to create a right-click context menu?  It should not have been necessary for me to have reverse engineered Aquamacs to figure out something so simple:
 
 http://stackoverflow.com/questions/16454838/yasnippet-how-to-create-a-right-click-context-menu-popup-menu
