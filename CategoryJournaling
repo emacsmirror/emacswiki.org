@@ -35,12 +35,10 @@ depend on plain text.
 * WebloggerMode -- for several blog APIs; Blogger, Metaweblog, Moveable Type, Live Journal, Wordpress
 * wpmail.el <http://github.com/thomas11/wpmail/tree/master> -- for posting to Wordpress via e-mail. Currently only tested with wordpress.com.
 * [[Tumblr]] -- implementation (currently only) for posting to Tumblr.
-* BloggerMode -- for the Blogger API
 * gblogger: [[http://code.google.com/p/emacspeak/|Full-featured and up-to-date tools for the Google API]]. Part of the emacspeak suite, but available separately.
 * <nowiki>LiveJournal</nowiki> clients (see MeatBall:LiveJournal)
 ** LjUpdate
 ** [[http://www.jwz.org/hacks/jwz-lj.el|jwz-lj.el]] 
-* [[http://www.zerobeat.in/files/advogato.el|advogato.el]] 
 * EmacsAtomApi -- an interface to weblog services which present the [[http://atomenabled.org|Atom API]].
 * [[http://www.marginalia.org/code/mt.el|mt.el]] - Moveable Type (This package works well enough, but it only gives access to ''title'', ''description'' i.e. Body, and the categories. It would be nice to have: ''mt_allow_comments'', ''mt_allow_pings'', ''mt_text_more'', ''mt_excerpt'', ''mt_keywords'', ''mt_tb_ping_urls''. Looking over mt.el, it would seem that it's relatively easy to add these, but I'm not a Lisp programmer.)
 * [[Identica-mode]] -- post to any laconi.ca server (similar to [[Twitter]] but free)
