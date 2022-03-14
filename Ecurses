@@ -1,3 +1,6 @@
 This library implements a Curses-like API for Emacs.  It currently supports minimal functionality.
 
 * <tt>[[ecurses.el]]</tt> - Ecurses library
+
+----
+CategoryCode
