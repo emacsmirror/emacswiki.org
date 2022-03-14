@@ -55,27 +55,3 @@ depend on plain text.
 * WThreeMShimbun -- read various web articles in Gnus, Wanderlust, or Mew.
 * HOWTOReadFeedsInEmacsViaEmail
 
-== Discussion ==
-
-* EevMode -- e-script lets you keep an EXECUTABLE diary! VERY COOL!
-
-[new]
-/While I have no doubt whatsoever, that one can implement a diary within the e-script environment, using eev-mode or not, I feel inclined to state that neither on the EevMode page of this wiki, nor on the eev-mode or e-script project homepage there is anything written about such subject.  The same way one could add a link here to a perl script reposatory, saying there is a way to create a diary with perl somehow./  --QirbCameled
-
-[new]
-Writing diary in e-script enables us to replay operations.
-I think it is VERY IMPORTANT to take a note of commands when you learn computers.
-eev-mode is only a minor-mode to execute shell commands in Emacs, so it is orthogonal with other major-modes for journal. -- [[Anonymous]]
-
-[new]
-It seems to me that there are many such commands, potentially useful for many tasks, including keeping a journal.  To list them all on this page would diminish the value of this category, however. -- AlexSchroeder
-
-[new]
-Nathan Weizenbaum wrote a nice [http://nex3.leeweiz.net/posts/25-how-i-wrote-an-emacs-blog-client-and-lived-to-tell-the-tale blog post] about the experience of hacking up hacking up an Emacs client for his blog with TextileMode and HttpPost. -- EdwardOConnor
-
-* Organize and clean up the page ?
-
-[new:XavierMaillard:2009-02-26 20:37 UTC]
-This page is really getting messy mixing real CategoryJournaling tools
-with CategoryChatClient or other tools. It is time to take a decision
-and leave here qualified tool. Opinions ? -- XavierMaillard
