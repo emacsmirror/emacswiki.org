@@ -3,3 +3,6 @@ This page is about Trek52, a Star Trek game for Emacs.
 Trek52 requires the [[Ecurses]] library.
 
 * <tt>[[trek52.el]]</tt> -- Load this and then `M-x trek52'
+
+----
+CategoryGames
