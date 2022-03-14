@@ -73,7 +73,11 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * Use the ''secondary'' selection: SecondarySelection.  With it, you can mark some text without moving point.  So if you want to copy a word from elsewhere in the text to point, double-click `M-mouse-1' on the word, then `M-mouse-2' to insert.  Very easy. With library '''<tt>[[second-sel.el]]</tt>''', you can do more: swap primary and secondary, use a ring of secondary selections,...
 * There is also mouse-copy.el (comes with Emacs 21) which is the secondary selection on steroids.  Normally, copy and paste require two steps: mark the region to be copied, then paste with the middle mouse button.  Using mouse-copy.el, you only have to mark the region, the pasting is done automatically.
 * Copy and paste from [[register]]s - `C-x r s R'  and  `C-x r g R' (think: register-set/register-get). This works slightly different in [[XEmacs]].  From the info page ([[XEmacs]])RegText: "'`C-x r s R' stores a copy of the text of the region into the register named R.  `C-x r i R' inserts the text from the register `R' in the buffer."  At least this is true for [[XEmacs]] 21.4.x.
-* An example of a simple solution to mapping a chain of commands to a single key stroke: (setq newline-under-current-line "\C-e\C-o") (global-set-key "\C-i" newline-under-current-line) – aterrf snewt 2013-05-24 07:58 UTC
+* An example of a simple solution to mapping a chain of commands to a single key stroke: – aterrf snewt 2013-05-24 07:58 UTC
+{{{
+(setq newline-under-current-line "\C-e\C-o") 
+(global-set-key "\C-i" newline-under-current-line)
+}}} 
 
 == Buffers and Files ==
 
