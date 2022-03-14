@@ -141,6 +141,7 @@ Tips and tricks for writing a MajorMode.
 * CompletionUI -- Completion user interface, providing various highly customizable completion mechanisms (dynamic, hotkeys, cycling, tab-completion, help-echo, tooltip, menu...)
 * DoReMi -- Macro `define-doremi' and command `doremi'.  Use them to define commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
 * DictionaryTrees -- Advanced dictionary data structures
+* [[Ecurses]] -- A library implementing a curses-like API for Emacs.
 * ElispParser -- A small parser tool written in EmacsLisp.
 * EmacsDataBase is a flexible system for defining, accessing, modifying, summarizing, and generally playing with, a set of records.  You can view each record individually or summarized (with other records) in separate buffer. Record format (field names and their types) can be arbitrarily complex.
 * TinyDb -- A mini-database, smaller than EmacsDataBase
