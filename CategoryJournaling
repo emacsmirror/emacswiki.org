@@ -5,6 +5,8 @@ these funky Emacs tools.
 This category lists EmacsLisp packages that help you maintain a weblog
 or a similar website that gets updated frequently.
 
+Please use the [[Comments_on_CategoryJournaling|Talk]] page for discussions. 
+
 == Creating text files ==
 
 * EmacsWikiJournal -- a journal support RSS and calendar; based on EmacsWikiMode.
