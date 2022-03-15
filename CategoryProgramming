@@ -17,6 +17,7 @@ Language-specific:
 * PuppetProgramming -- Puppet specific programming.
 * PythonProgrammingInEmacs -- About python programming features
 * RubyLanguage -- Ruby specific programming.
+* [[RLanguage]] -- For programming in R.
 
 Coding style:
 
