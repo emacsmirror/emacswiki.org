@@ -1,6 +1,6 @@
 Emacs has a daunting learning curve, especially if you don't even know what to look for.
 
-Aside from asking questions over [InternetRelayChat IRC] (#emacs on irc.libera.chat), the [https://discord.me/emacs Emacs Discord], EmacsForums, or in the appropriate mailing lists, you can also reach out to people who offer Emacs coaching services. . In addition, there's:
+Aside from asking questions over [InternetRelayChat IRC] (#emacs on irc.libera.chat), the [https://discord.me/emacs Emacs Discord], EmacsForums, or in the appropriate mailing lists, you can also reach out to people who offer Emacs coaching services:
 
 * [https://www.sanityinc.com/ Steve Purcell]: maintainer of MELPA ([https://www.codementor.io/@sanityinc CodeMentor profile])
 * [[Leo Vivier]]: co-maintainer of Org Roam; offers coaching in Org Mode, Org Roam, and other topics
@@ -13,9 +13,6 @@ Aside from asking questions over [InternetRelayChat IRC] (#emacs on irc.libera.c
 * [https://meet.jit.si/ Jitsi] can be a quick way to set up a web conference and share your screen.
 * [https://jami.net/ Check out Jami].
 
-
 ------
-
 CategoryCommunity
-
 CategoryHelp
