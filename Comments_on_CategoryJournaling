@@ -12,7 +12,7 @@ eev-mode is only a minor-mode to execute shell commands in Emacs, so it is ortho
 It seems to me that there are many such commands, potentially useful for many tasks, including keeping a journal.  To list them all on this page would diminish the value of this category, however. -- AlexSchroeder
 
 [new]
-Nathan Weizenbaum wrote a nice [http://nex3.leeweiz.net/posts/25-how-i-wrote-an-emacs-blog-client-and-lived-to-tell-the-tale blog post] about the experience of hacking up hacking up an Emacs client for his blog with TextileMode and HttpPost. -- EdwardOConnor
+Nathan Weizenbaum wrote a nice [http://nex3.leeweiz.net/posts/25-how-i-wrote-an-emacs-blog-client-and-lived-to-tell-the-tale blog post] about the experience of hacking up an Emacs client for his blog with TextileMode and HttpPost. -- EdwardOConnor
 
 * Organize and clean up the page ?
 
