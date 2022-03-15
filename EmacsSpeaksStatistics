@@ -6,9 +6,17 @@ ESS is a package that integrates various statistical software with Emacs. S, GNU
 
 * R: http://www.r-project.org/
 
-* ESS Introductory Material: https://ess-intro.github.io/
+* [[https://ess-intro.github.io/ ESS Introductory Material]]  **<- Great starting point**
 
-Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
+
+=== General Notes ===
+
+* Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
+* The [[https://ess.r-project.org/Manual/readme.html ESS Manual]] is pretty detailed and provides all the information required to customise ESS.
+* The ESS mailing list is a good place to post ESS related questions.
+* As of today, the #R channel on Libera does not have many ESS users. 
+* Fun Fact: Many current RStudio users, (like Jenny Bryan) used to be ESS users! 
+* ESS is actually more flexible than RStudio as it can connect and run with multiple R sessions. Any buffer can be reconnected to a different R session. 
 
 == Basic configuration options ==
 
