@@ -15,6 +15,7 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 ** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
 ** [http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/ Absolute Beginners Guide to Emacs] - another Emacs intro for newbies.
 * [[CategoryCommunity|Explore the Emacs community]] and learn from other people who use Emacs.
+* Consider trying out one of the StarterKits. There are many varying accounts of people switching to and from starter kits to hand-rolled configurations. However, these will certainly help in getting started faster and as references.
 
 Some people learn best by doing, not reading.  To learn by doing, get yourself a text file
 to play around with. Make a backup copy if you're nervous about
