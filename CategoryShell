@@ -11,6 +11,8 @@ EmacsShell: `M-x eshell' is even dumber, doesn't emulate anything, and runs a sh
 
 ShellPop: A utility which helps you pop up and pop out shell buffer easily.
 
+[[https://github.com/akermu/emacs-libvterm vterm]] : Full-fledged terminal emulator
+
 There are several modes that look alike but don't run a shell.  Examples include all command-line interfaces that connect to dedicated interpreters such as CommonLisp, [[Scheme]], [[SQL]], etc.
 
 ----
