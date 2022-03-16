@@ -28,4 +28,4 @@ Sur la page HowToEdit, vous allez trouver un lien ##[[fr:CommentEditer]]## signi
 L'interface du wiki a besoi d'être traduite. Rendez-vous sur Oddmuse::Translations. Chaque langue nécessite l'ensemble de ces fichiers.
 The wiki interface needs translation. Check Oddmuse:Translations. Every language needs one of these files.
 
-De plus, chaque langue doit disposer *des noms des pages importantes* qui apparaissent en haut et en base de toutes les pages. Les plus importants étant la HomePage et les ModificationsRécentes.
+De plus, chaque langue doit disposer *des noms des pages importantes* qui apparaissent en haut et en base de toutes les pages. Les plus importants étant la HomePage et les Modifications.
