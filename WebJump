@@ -1,117 +1,119 @@
-WebJump is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  WebJump is now included in GNU Emacs and XEmacs, in file webjump.el. For more sites you can easily add to webjump, see https://github.com/hangelwen/emacs-config/blob/master/site-lisp/webjump-plus.el .
+== summary ==
 
---8<-------------------------- §separator§ ------------------------>8--
+WebJump is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  WebJump is now included in GNU Emacs and XEmacs, in file webjump.el.
 
-DennyZhang:
+== extensions ==
+
+=== webjump-plus ===
+
+For more sites you can easily add to webjump, see [https://github.com/hangelwen/emacs-config/blob/master/site-lisp/webjump-plus.el webjump-plus.el].
+
+=== from DennyZhang ===
 
 Below are some customizations compared to default behavior. Hope it's useful for others.
+
 <pre>
+  (global-set-key [(super j)] 'webjump)
+  ;; C-u super j: browse webjump link in the way of w3m, instead of default web browser
+  (defun webjump (use-w3m-p)
+    "The behaviour is different from standard webjump in the following:
+   - Users can input web host and search keyword in a single inpute, instead of two
+   - User can choose whether to view link in w3m or not, by given the use-w3m-p parameter
+   - Set the default web host as google
+   - The matching of web host is case insensitive
+   "
+    (interactive "P")
+    (let* ((completion-ignore-case t) user-input
+           search-engine search-keywords item name expr)
+      ;; read customer input for search engine and search keywords, like "google emacs webjump"
+      (make-local-variable 'minibuffer-local-completion-map)
+      (define-key minibuffer-local-completion-map " " nil)
+      (setq user-input (split-string
+                        (completing-read "WebJump to site: " webjump-sites nil nil "google ")
+                        " "))
+      (setq search-engine (car user-input))
+      (setq search-keywords (mapconcat #'identity
+                                       (cdr user-input) " "))
+      (setq item (assoc-string search-engine webjump-sites nil))
+      (setq name (car item))
+      (setq expr (cdr item))
+      (when use-w3m-p
+        (make-local-variable 'browse-url-browser-function)
+        (setq browse-url-browser-function 'w3m-browse-url))
+      (browse-url (webjump-url-fix
+                   (cond ((not expr) "")
+                         ((stringp expr) expr)
+                         ((vectorp expr) (webjump-builtin-keywords expr name search-keywords))
+                         ((listp expr) (eval expr))
+                         ((symbolp expr)
+                          (if (fboundp expr)
+                              (funcall expr name)
+                            (error "WebJump URL function \"%s\" undefined"
+                                   expr)))
+                         (t (error "WebJump URL expression for \"%s\" invalid"
+                                   name)))))))
 
-(global-set-key [(super j)] 'webjump)
-;; C-u super j: browse webjump link in the way of w3m, instead of default web browser
-(defun webjump (use-w3m-p)
-  "The behaviour is different from standard webjump in the following:
- - Users can input web host and search keyword in a single inpute, instead of two
- - User can choose whether to view link in w3m or not, by given the use-w3m-p parameter
- - Set the default web host as google
- - The matching of web host is case insensitive
- "
-  (interactive "P")
-  (let* ((completion-ignore-case t) user-input
-         search-engine search-keywords item name expr)
-    ;; read customer input for search engine and search keywords, like "google emacs webjump"
-    (make-local-variable 'minibuffer-local-completion-map)
-    (define-key minibuffer-local-completion-map " " nil)
-    (setq user-input (split-string
-                      (completing-read "WebJump to site: " webjump-sites nil nil "google ")
-                      " "))
-    (setq search-engine (car user-input))
-    (setq search-keywords (mapconcat #'identity
-                                     (cdr user-input) " "))
-    (setq item (assoc-string search-engine webjump-sites nil))
-    (setq name (car item))
-    (setq expr (cdr item))
-    (when use-w3m-p
-      (make-local-variable 'browse-url-browser-function)
-      (setq browse-url-browser-function 'w3m-browse-url))
-    (browse-url (webjump-url-fix
-                 (cond ((not expr) "")
-                       ((stringp expr) expr)
-                       ((vectorp expr) (webjump-builtin-keywords expr name search-keywords))
-                       ((listp expr) (eval expr))
-                       ((symbolp expr)
-                        (if (fboundp expr)
-                            (funcall expr name)
-                          (error "WebJump URL function \"%s\" undefined"
-                                 expr)))
-                       (t (error "WebJump URL expression for \"%s\" invalid"
-                                 name)))))))
-
-(defun webjump-builtin-keywords (expr name &optional keywords)
-  "If keywords are given, no need to ask users' input"
-  (if (and keywords (not (string-equal keywords "")))
-      (concat (aref expr 2) (webjump-url-encode keywords) (aref expr 3))
-      (webjump-builtin expr name)))
-
+  (defun webjump-builtin-keywords (expr name &optional keywords)
+    "If keywords are given, no need to ask users' input"
+    (if (and keywords (not (string-equal keywords "")))
+        (concat (aref expr 2) (webjump-url-encode keywords) (aref expr 3))
+        (webjump-builtin expr name)))
 </pre>
 
-[new]
+=== from JoeBloggs ===
 
 Here is a customization type that you can use for setting webjump sites:
 
 <pre>
+  (defcustom webjump-sites-custom (if (featurep 'webjump-plus)
+                                  (append webjump-plus-sites webjump-sample-sites)
+                                  webjump-sample-sites)
+    "*Hotlist for WebJump.
 
-(defcustom webjump-sites-custom (if (featurep 'webjump-plus)
-                                (append webjump-plus-sites webjump-sample-sites)
-                                webjump-sample-sites)
-  "*Hotlist for WebJump.
+  The hotlist is represented as an association list, with the CAR of each cell
+  being the name of the Web site, and the CDR being the definition for the URL of
+  that site.  The URL definition can be a string (the URL), a vector (specifying
+  a special \"builtin\" which returns a URL), a symbol (name of a function which
+  returns a URL), or a list (which when `eval'ed yields a URL).
 
-The hotlist is represented as an association list, with the CAR of each cell
-being the name of the Web site, and the CDR being the definition for the URL of
-that site.  The URL definition can be a string (the URL), a vector (specifying
-a special \"builtin\" which returns a URL), a symbol (name of a function which
-returns a URL), or a list (which when `eval'ed yields a URL).
+  If the URL definition is a vector, then a \"builtin\" is used.  A builtin has a
+  Lisp-like syntax, with the name as the first element of the vector, and any
+  arguments as the following elements.  The three current builtins are `name',
+  which returns the name of the site as the URL, `simple-query', which
+  returns a URL that is a function of a query entered by the user, and `mirrors',
+  which allows the user to select from among multiple mirror sites for the same
+  content.
 
-If the URL definition is a vector, then a \"builtin\" is used.  A builtin has a
-Lisp-like syntax, with the name as the first element of the vector, and any
-arguments as the following elements.  The three current builtins are `name',
-which returns the name of the site as the URL, `simple-query', which
-returns a URL that is a function of a query entered by the user, and `mirrors',
-which allows the user to select from among multiple mirror sites for the same
-content.
+  The first argument to the `simple-query' builtin is a static URL to use if the
+  user enters a blank query.  The second and third arguments are the prefix and
+  suffix, respectively, to add to the encoded query the user enters.  This
+  builtin covers Web sites that have single-string searches with the query
+  embedded in the URL.
 
-The first argument to the `simple-query' builtin is a static URL to use if the
-user enters a blank query.  The second and third arguments are the prefix and
-suffix, respectively, to add to the encoded query the user enters.  This
-builtin covers Web sites that have single-string searches with the query
-embedded in the URL.
+  The arguments to the `mirrors' builtin are URLs of mirror sites.
 
-The arguments to the `mirrors' builtin are URLs of mirror sites.
+  If the symbol of a function is given, then the function will be called with the
+  Web site name (the one you specified in the CAR of the alist cell) as a
+  parameter.  This might come in handy for various kludges.
 
-If the symbol of a function is given, then the function will be called with the
-Web site name (the one you specified in the CAR of the alist cell) as a
-parameter.  This might come in handy for various kludges.
-
-For convenience, if the `http://', `ftp://', or `file://' prefix is missing
-from a URL, WebJump will make a guess at what you wanted and prepend it before
-submitting the URL."  
-  :type '(alist :key-type (string :tag "Name")
-                :value-type (choice (string :tag "URL")
-                                    (choice :tag "Vector"
-                                            (vector :tag "Name"
-                                                    (const name))
-                                            (vector :tag "Simple-query"
-                                                    (const simple-query)
-                                                    (string :tag "Static URL")
-                                                    (string :tag "Prefix")
-                                                    (string :tag "Suffix"))
-                                            (sexp :tag "Mirrors"
-                                                  :help-echo "This should be a vector whos first element is the symbol 'mirrors and subsequent elements are strings containing URLs of mirror sites."))
-                                    (function :tag "Function")
-                                    (sexp :tag "Sexp to eval"))))
-(setq webjump-sites webjump-sites-custom)
+  For convenience, if the `http://', `ftp://', or `file://' prefix is missing
+  from a URL, WebJump will make a guess at what you wanted and prepend it before
+  submitting the URL."
+    :type '(alist :key-type (string :tag "Name")
+                  :value-type (choice (string :tag "URL")
+                                      (choice :tag "Vector"
+                                              (vector :tag "Name"
+                                                      (const name))
+                                              (vector :tag "Simple-query"
+                                                      (const simple-query)
+                                                      (string :tag "Static URL")
+                                                      (string :tag "Prefix")
+                                                      (string :tag "Suffix"))
+                                              (sexp :tag "Mirrors"
+                                                    :help-echo "This should be a vector whos first element is the symbol 'mirrors and subsequent elements are strings containing URLs of mirror sites."))
+                                      (function :tag "Function")
+                                      (sexp :tag "Sexp to eval"))))
+  (setq webjump-sites webjump-sites-custom)
 </pre>
 
  -- JoeBloggs 2013-04-09 06:13 UTC
-
-[new]
