@@ -4,13 +4,13 @@
 ;; Description: Incremental change using arrow keys or mouse wheel.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2022, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 11:05:23 2018 (-0800)
+;; Last-Updated: Fri Mar 18 13:07:20 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 1632
+;;     Update #: 1635
 ;; URL: https://www.emacswiki.org/emacs/download/doremi.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `mwheel', `ring'.
+;;   `custom', `mwheel', `ring', `timer', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -111,6 +111,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/03/18 dadams
+;;     doremi: Moved test for event being mouse-2 or switch-frame inside the cond.
 ;; 2015/08/15 dadams
 ;;     doremi: If not display-graphic-p, use read-key instead of read-event.  Thx to Felix Esch.
 ;; 2015/07/08 dadams
@@ -399,10 +401,10 @@ For examples of using `doremi', see the source code of libraries
                         (and (consp evnt)
                              (member (event-basic-type (car evnt))
                                      `(switch-frame mouse-wheel mouse-2
-                                       ,wheel-up ,wheel-down)))))
+                                                    ,wheel-up ,wheel-down)))))
         ;; Set up the proper increment value.
         (cond ((member evnt doremi-up-keys) (setq new-incr  incr)) ; +
-              ((member evnt doremi-down-keys) ; -
+              ((member evnt doremi-down-keys)                      ; -
                (setq new-incr  (if (atom incr) (- incr) (mapcar #'- incr))))
               ((member evnt doremi-boost-up-keys) ; ++
                (setq new-incr
@@ -445,52 +447,52 @@ For examples of using `doremi', see the source code of libraries
                        (if (atom new-incr)
                            (* doremi-boost-scale-factor new-incr)
                          (mapcar #'(lambda (in) (* doremi-boost-scale-factor in)) new-incr)))))
+              ((and (consp evnt)  (memq (event-basic-type (car evnt)) '(mouse-2 switch-frame)))
+               (message save-prompt)) ; Just skip mouse-2 event (ignore while using wheel).
               (t (error "`doremi', unexpected event: `%S' - report bug to %s%s%s%s"
                         evnt "drew.adams" "@" "oracle" ".com")))
-        (if (and (consp evnt) (memq (event-basic-type (car evnt)) '(mouse-2 switch-frame)))
-            (message save-prompt)       ; Just skip mouse-2 event (ignore while using wheel).
 
-          ;; Adjust setting and update INIT-VAL.  Four cases are treated separately:
-          ;; 1) ENUM non-nil: use `ring-next' and `ring-previous'.
-          ;; 2) SETTER-FN and GROWTH-FN are both "growth" functions: call one of them.
-          ;; 3) SETTER-FN is a "growth" function: call it on the INCR arg.
-          ;; 4) otherwise (absolute fn): increment INIT-VAL, then call SETTER-FN on it.
-          (condition-case failure
-              (setq init-val
-                    (cond (;; 1) Ring of values (enumeration list).  Use `ring-next''...
-                           (ring-p enum)
-                           ;; If INIT-VAL is not already in the ring, add it.
-                           ;; Extend the ring size if ALLOW-NEW-P is `extend'.
-                           (when (and allow-new-p (not (ring-member enum init-val)))
-                             (ring-insert+extend enum init-val
-                                                 (eq 'extend allow-new-p)))
-                           (when (< (ring-length enum) 2)
-                             (error "`doremi' - Need at least two alternatives: %S" enum))
-                           (let* ((vec     (cdr (cdr enum)))
-                                  (veclen  (length vec)))
+        ;; Adjust setting and update INIT-VAL.  Four cases are treated separately:
+        ;; 1) ENUM non-nil: use `ring-next' and `ring-previous'.
+        ;; 2) SETTER-FN and GROWTH-FN are both "growth" functions: call one of them.
+        ;; 3) SETTER-FN is a "growth" function: call it on the INCR arg.
+        ;; 4) otherwise (absolute fn): increment INIT-VAL, then call SETTER-FN on it.
+        (condition-case failure
+            (setq init-val
+                  (cond (;; 1) Ring of values (enumeration list).  Use `ring-next''...
+                         (ring-p enum)
+                         ;; If INIT-VAL is not already in the ring, add it.
+                         ;; Extend the ring size if ALLOW-NEW-P is `extend'.
+                         (when (and allow-new-p (not (ring-member enum init-val)))
+                           (ring-insert+extend enum init-val
+                                               (eq 'extend allow-new-p)))
+                         (when (< (ring-length enum) 2)
+                           (error "`doremi' - Need at least two alternatives: %S" enum))
+                         (let* ((vec     (cdr (cdr enum)))
+                                (veclen  (length vec)))
+                           (if (and (numberp new-incr) (>= new-incr 0))
+                               (doremi-set-new-value setter-fn (ring-next enum init-val))
+                             (doremi-set-new-value setter-fn (ring-previous enum init-val)))))
+
+                        ;; 2) Two incremental growth functions.  Call one on (new) INCR only.
+                        ((functionp growth-fn)
+                         (if (atom new-incr)
                              (if (and (numberp new-incr) (>= new-incr 0))
-                                 (doremi-set-new-value setter-fn (ring-next enum init-val))
-                               (doremi-set-new-value setter-fn (ring-previous enum init-val)))))
-
-                          ;; 2) Two incremental growth functions.  Call one on (new) INCR only.
-                          ((functionp growth-fn)
-                           (if (atom new-incr)
-                               (if (and (numberp new-incr) (>= new-incr 0))
-                                   (doremi-set-new-value setter-fn new-incr)
-                                 (doremi-set-new-value growth-fn (- new-incr)))
-                             (if (and (numberp (car new-incr)) (>= (car new-incr) 0))
                                  (doremi-set-new-value setter-fn new-incr)
-                               (doremi-set-new-value growth-fn (mapcar #'- new-incr)))))
+                               (doremi-set-new-value growth-fn (- new-incr)))
+                           (if (and (numberp (car new-incr)) (>= (car new-incr) 0))
+                               (doremi-set-new-value setter-fn new-incr)
+                             (doremi-set-new-value growth-fn (mapcar #'- new-incr)))))
 
-                          ;; 3) Single incremental growth function.  Call it on (new) INCR only.
-                          (growth-fn (doremi-set-new-value setter-fn new-incr))
+                        ;; 3) Single incremental growth function.  Call it on (new) INCR only.
+                        (growth-fn (doremi-set-new-value setter-fn new-incr))
 
-                          ;; 4) Otherwise.  Increment value.  Call setter function on new value.
-                          ((and (numberp new-incr) (numberp init-val))
-                           (doremi-set-new-value setter-fn (+ init-val new-incr)))
-                          (t (error "`doremi' - Bad argument.  INIT-VAL: %S, INCR: %S"
-                                    init-val new-incr))))
-            (error (error "%s" (error-message-string failure))))))
+                        ;; 4) Otherwise.  Increment value.  Call setter function on new value.
+                        ((and (numberp new-incr) (numberp init-val))
+                         (doremi-set-new-value setter-fn (+ init-val new-incr)))
+                        (t (error "`doremi' - Bad argument.  INIT-VAL: %S, INCR: %S"
+                                  init-val new-incr))))
+          (error (error "%s" (error-message-string failure)))))
       (message nil)
       (setq unread-command-events  (cons evnt unread-command-events)))))
 
