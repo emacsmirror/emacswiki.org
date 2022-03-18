@@ -1,36 +1,38 @@
-== summary ==
+== Summary ==
 
 WebJump is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  WebJump is now included in GNU Emacs and XEmacs, in file webjump.el.
 
-== extensions ==
+== Extensions ==
 
-=== webjump-plus ===
+User contributed extensions.
 
-For more sites you can easily add to webjump, see [https://github.com/hangelwen/emacs-config/blob/master/site-lisp/webjump-plus.el webjump-plus.el].
+=== webjump-plus.el ===
 
-=== from DennyZhang ===
+For more sites you can easily add to !WebJump, see [https://github.com/hangelwen/emacs-config/blob/master/site-lisp/webjump-plus.el webjump-plus.el].
 
-Below are some customizations compared to default behavior. Hope it's useful for others.
+=== From DennyZhang ===
 
-<pre>
-  (global-set-key [(super j)] 'webjump)
-  ;; C-u super j: browse webjump link in the way of w3m, instead of default web browser
-  (defun webjump (use-w3m-p)
-    "The behaviour is different from standard webjump in the following:
+Below are some customizations by DennyZhang compared to default behavior.  Hope it's useful for others.
+
+{{{
+(global-set-key [(super j)] 'webjump)
+;; C-u super j: browse webjump link in the way of w3m, instead of default web browser
+(defun webjump (use-w3m-p)
+  "The behaviour is different from standard webjump in the following:
    - Users can input web host and search keyword in a single inpute, instead of two
    - User can choose whether to view link in w3m or not, by given the use-w3m-p parameter
    - Set the default web host as google
    - The matching of web host is case insensitive
    "
-    (interactive "P")
-    (let* ((completion-ignore-case t) user-input
-           search-engine search-keywords item name expr)
-      ;; read customer input for search engine and search keywords, like "google emacs webjump"
-      (make-local-variable 'minibuffer-local-completion-map)
-      (define-key minibuffer-local-completion-map " " nil)
-      (setq user-input (split-string
-                        (completing-read "WebJump to site: " webjump-sites nil nil "google ")
-                        " "))
+  (interactive "P")
+  (let* ((completion-ignore-case t) user-input
+         search-engine search-keywords item name expr)
+    ;; read customer input for search engine and search keywords, like "google emacs webjump"
+    (make-local-variable 'minibuffer-local-completion-map)
+    (define-key minibuffer-local-completion-map " " nil)
+    (setq user-input (split-string
+                      (completing-read "WebJump to site: " webjump-sites nil nil "google ")
+                      " "))
       (setq search-engine (car user-input))
       (setq search-keywords (mapconcat #'identity
                                        (cdr user-input) " "))
@@ -53,22 +55,22 @@ Below are some customizations compared to default behavior. Hope it's useful for
                          (t (error "WebJump URL expression for \"%s\" invalid"
                                    name)))))))
 
-  (defun webjump-builtin-keywords (expr name &optional keywords)
-    "If keywords are given, no need to ask users' input"
-    (if (and keywords (not (string-equal keywords "")))
-        (concat (aref expr 2) (webjump-url-encode keywords) (aref expr 3))
-        (webjump-builtin expr name)))
-</pre>
+(defun webjump-builtin-keywords (expr name &optional keywords)
+  "If keywords are given, no need to ask users' input"
+  (if (and keywords (not (string-equal keywords "")))
+      (concat (aref expr 2) (webjump-url-encode keywords) (aref expr 3))
+    (webjump-builtin expr name)))
+}}}
 
-=== from JoeBloggs ===
+=== From JoeBloggs ===
 
-Here is a customization type that you can use for setting webjump sites:
+Here is a customization type that you can use for setting !WebJump sites:
 
-<pre>
-  (defcustom webjump-sites-custom (if (featurep 'webjump-plus)
-                                  (append webjump-plus-sites webjump-sample-sites)
+{{{
+(defcustom webjump-sites-custom (if (featurep 'webjump-plus)
+                                    (append webjump-plus-sites webjump-sample-sites)
                                   webjump-sample-sites)
-    "*Hotlist for WebJump.
+  "*Hotlist for WebJump.
 
   The hotlist is represented as an association list, with the CAR of each cell
   being the name of the Web site, and the CDR being the definition for the URL of
@@ -99,24 +101,24 @@ Here is a customization type that you can use for setting webjump sites:
   For convenience, if the `http://', `ftp://', or `file://' prefix is missing
   from a URL, WebJump will make a guess at what you wanted and prepend it before
   submitting the URL."
-    :type '(alist :key-type (string :tag "Name")
-                  :value-type (choice (string :tag "URL")
-                                      (choice :tag "Vector"
-                                              (vector :tag "Name"
-                                                      (const name))
-                                              (vector :tag "Simple-query"
-                                                      (const simple-query)
-                                                      (string :tag "Static URL")
-                                                      (string :tag "Prefix")
-                                                      (string :tag "Suffix"))
-                                              (sexp :tag "Mirrors"
-                                                    :help-echo "This should be a vector whos first element is the symbol 'mirrors and subsequent elements are strings containing URLs of mirror sites."))
-                                      (function :tag "Function")
-                                      (sexp :tag "Sexp to eval"))))
-  (setq webjump-sites webjump-sites-custom)
-</pre>
+  :type '(alist :key-type (string :tag "Name")
+                :value-type (choice (string :tag "URL")
+                                    (choice :tag "Vector"
+                                            (vector :tag "Name"
+                                                    (const name))
+                                            (vector :tag "Simple-query"
+                                                    (const simple-query)
+                                                    (string :tag "Static URL")
+                                                    (string :tag "Prefix")
+                                                    (string :tag "Suffix"))
+                                            (sexp :tag "Mirrors"
+                                                  :help-echo "This should be a vector whos first element is the symbol 'mirrors and subsequent elements are strings containing URLs of mirror sites."))
+                                    (function :tag "Function")
+                                    (sexp :tag "Sexp to eval"))))
+(setq webjump-sites webjump-sites-custom)
+}}}
 
- -- JoeBloggs 2013-04-09 06:13 UTC
+---JoeBloggs 2013-04-09 06:13 UTC
 
 ----
 CategoryInterface CategoryWebBrowser
