@@ -1,4 +1,4 @@
-'''[::WebJump]''' is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  Originally written by NeilVanDyke, WebJump is included in [[GNU Emacs]], in the file ##webjump.el## under ##lisp/net/##.
+'''WebJump''' is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  Originally written by NeilVanDyke, WebJump is included in [[GNU Emacs]], in the file ##webjump.el## under ##lisp/net/##.
 
 == Summary ==
 
