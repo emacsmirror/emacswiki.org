@@ -1,18 +1,22 @@
+'''[::WebJump]''' is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  Originally written by NeilVanDyke, WebJump is included in [[GNU Emacs]], in the file ##webjump.el## under ##lisp/net/##.
+
 == Summary ==
 
-WebJump is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  WebJump is now included in GNU Emacs and XEmacs, in file webjump.el.
+!WebJump allows you to jump to a URL in your web browser from Emacs’s [[minibuffer]], just hit <kbd>M</kbd>-<kbd>x</kbd> <kbd>webjump</kbd> <kbd>RET</kbd>.
+
+Then at the prompt you could enter <kbd>Emacs Wiki</kbd> (for example) using <kbd>TAB</kbd> to autocomplete as you normally would in the minibuffer.  Then you can enter a query or just press <kbd>RET</kbd> to be taken straight to the EmacsWiki homepage.
 
 == Extensions ==
 
-User contributed extensions.
+Extensions to !WebJump, either providing configuration for use with more sites, or extending functionality, or behavior, are listed below.
 
 === webjump-plus.el ===
 
-For more sites you can easily add to !WebJump, see [https://github.com/hangelwen/emacs-config/blob/master/site-lisp/webjump-plus.el webjump-plus.el].
+For more sites you can easily add to !WebJump, see NeilVanDyke’s [https://neilvandyke.org/webjump/webjump-plus.el webjump-plus.el] (though last updated in 2003 it is still useful to see how to extend !WebJump for more sites yourself).
 
 === From DennyZhang ===
 
-Below are some customizations by DennyZhang compared to default behavior.  Hope it's useful for others.
+Below are some customizations by DennyZhang that change the default behavior.  Hope it's useful for others.
 
 {{{
 (global-set-key [(super j)] 'webjump)
@@ -119,6 +123,10 @@ Here is a customization type that you can use for setting !WebJump sites:
 }}}
 
 ---JoeBloggs 2013-04-09 06:13 UTC
+
+== Links ==
+
+* [https://neilvandyke.org/webjump/ Page for WebJump] on NeilVanDyke’s homepage
 
 ----
 CategoryInterface CategoryWebBrowser
