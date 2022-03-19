@@ -10,11 +10,11 @@ Then at the prompt you could enter <kbd>Emacs Wiki</kbd> (for example) using <kb
 
 Extensions to !WebJump, either providing configuration for use with more sites, or extending functionality, or behavior, are listed below.
 
-=== webjump-plus.el ===
+=== Neil Van Dyke’s webjump-plus.el ===
 
 For more sites you can easily add to !WebJump, see NeilVanDyke’s [https://neilvandyke.org/webjump/webjump-plus.el webjump-plus.el] (though last updated in 2003 it is still useful to see how to extend !WebJump for more sites yourself).
 
-=== From DennyZhang ===
+=== From Denny Zhang ===
 
 Below are some customizations by DennyZhang that change the default behavior.  Hope it's useful for others.
 
@@ -66,7 +66,7 @@ Below are some customizations by DennyZhang that change the default behavior.  H
     (webjump-builtin expr name)))
 }}}
 
-=== From JoeBloggs ===
+=== From Joe Bloggs ===
 
 Here is a customization type that you can use for setting !WebJump sites:
 
@@ -124,7 +124,7 @@ Here is a customization type that you can use for setting !WebJump sites:
 
 ---JoeBloggs 2013-04-09 06:13 UTC
 
-==== JoeBloggs’ webjump-ido.el ====
+==== Joe Bloggs’ webjump-ido.el ====
 
 JoeBloggs has also written an extension, ##webjump-ido.el##, that allows you to use [[Ido]] to select URLs to webjump to.  It’s available in the [https://www.emacswiki.org/emacs/webjump-ido.el elisp area] or from [https://github.com/vapniks/webjump-ido/blob/master/webjump-ido.el Joe Bloggs’ GitHub repository.]
 
