@@ -124,9 +124,14 @@ Here is a customization type that you can use for setting !WebJump sites:
 
 ---JoeBloggs 2013-04-09 06:13 UTC
 
+==== JoeBloggs’ webjump-ido.el ====
+
+JoeBloggs has also written an extension, ##webjump-ido.el##, that allows you to use [[Ido]] to select URLs to webjump to.  It’s available in the [https://www.emacswiki.org/emacs/webjump-ido.el elisp area] or from [https://github.com/vapniks/webjump-ido/blob/master/webjump-ido.el Joe Bloggs’ GitHub repository.]
+
 == Links ==
 
-* [https://neilvandyke.org/webjump/ Page for WebJump] on NeilVanDyke’s homepage
+* [https://neilvandyke.org/webjump/ Page for WebJump] on NeilVanDyke’s homepage.
+* [https://github.com/vapniks/webjump-ido Page for webjump-ido.el] at JoeBloggs’ !GitHub repository.
 
 ----
 CategoryInterface CategoryWebBrowser
