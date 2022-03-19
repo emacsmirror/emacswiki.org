@@ -237,7 +237,7 @@ Here is a better way:
   	  ido-rotate-temp t)
       (exit-minibuffer)))
 
---GaÃ«l Deest
+--Gaël Deest
 
 
 [new]
@@ -731,7 +731,7 @@ Lisp:yas-ido.el
 
 == ido-webjump ==
 
-Use ido for selecting URLs for webjump.
+Use ido for selecting URLs for WebJump.
 
 Lisp:webjump-ido.el
 
