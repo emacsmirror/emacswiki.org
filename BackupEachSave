@@ -60,8 +60,15 @@ It's probably hacky but it works for me. I hope it will be useful to other (unwi
 
 -- Max
 
-[new]
 
+[new]
+That solution is very specific.  It doesn't handle other drives besides C:, and it doesn't preserve the info about which drive the file was originally on.  What about this more generic solution which preserves the drive number?
+
+    (replace-regexp-in-string ":/" "/" containing-dir)
+
+In this case you would get "c:/some/path/c/some/path".
+
+-- MattM
 
 ----
 CategoryFiles
