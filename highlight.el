@@ -4,13 +4,13 @@
 ;; Description: Highlighting commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 10 08:19:22 2019 (-0700)
+;; Last-Updated: Sun Mar 20 13:38:50 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 4177
+;;     Update #: 4247
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -19,17 +19,24 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `crosshairs', `easymenu',
-;;   `fit-frame', `font-lock', `font-lock+', `frame-fns', `gv',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `crosshairs', `custom', `doremi', `doremi-frm',
+;;   `easymenu', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `facemenu', `facemenu+', `faces', `faces+',
+;;   `fit-frame', `font-lock', `font-lock+', `font-lock-menus',
+;;   `frame-cmds', `frame-fns', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
+;;   `hl-line', `hl-line+', `info', `info+', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mwheel',
+;;   `naked', `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -470,6 +477,10 @@
 ;;   `M-s h h' - `hlt-highlight-isearch-matches'
 ;;   `M-s h u' - `hlt-unhighlight-isearch-matches'
 ;;
+;;  Unlike standard Isearch key `M-s h r' (`isearch-highlight-regexp')
+;;  `M-s h h' and `M-s h u' use only highlighting created by library
+;;  `highlight', and they do not exit Isearch.
+;;
 ;;(@* "Copy and Yank (Paste) Text Properties")
 ;;  ** Copy and Yank (Paste) Text Properties **
 ;;
@@ -774,6 +785,15 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2022/03/20 dadams
+;;     hlt-unhighlight-isearch-matches: Corrected defaulting STRING to isearch-string.
+;;     hlt-(un)highlight-isearch-matches:
+;;       If empty isearch-string then read STRING.
+;;       Corrected order of args in interactive spec.
+;;       Improved doc string.
+;;       In Commentary, mention differences from standard isearch-highlight-regexp (M-s h r).
+;; 2021/03/18 dadams
+;;     Need to require facemenu.el now.  No longer preloaded for Emacs 28+.
 ;; 2019/07/10 dadams
 ;;     hlt-+/--highlight-regexp-region: Removed incrementing START in loop - useless.
 ;; 2019/07/09 dadams
@@ -1214,13 +1234,15 @@
       :help "Highlight all text in the region")))
 
 ;;; Facemenu `Text Properties' Menu ----------------------------------
-(when (boundp 'facemenu-mouse-menu)
+
+(when (boundp 'facemenu-mouse-menu)     ; In `facemenu+.el'.
   (easy-menu-add-item facemenu-mouse-menu ()
                       ["Paste Text Properties to Region"
                        hlt-yank-props
                        (and (hlt-nonempty-region-p)  (not buffer-read-only)  hlt-copied-props)]
                       'dp)
   (easy-menu-add-item facemenu-mouse-menu () ["Copy Text Properties" hlt-copy-props t] 'dp))
+
 (easy-menu-add-item facemenu-menu ()
                     ["Paste Text Properties to Region"
                      hlt-yank-props
@@ -3264,7 +3286,7 @@ Args are the same as for `hlt-highlight-property-with-value'."
 
 ;;;###autoload
 (defun hlt-highlight-isearch-matches (&optional face msgp mousep buffers string)
-  "Highlight matches of the current Isearch search pattern using FACE.
+  "Highlight matches of the (nonempty) Isearch search pattern using FACE.
 If the region is active then it limits highlighting.  If inactive then
 highlight matches throughout the buffer, or the list of BUFFERS.  If
 this is accessed from a `multi-search' command then the BUFFERS are
@@ -3283,7 +3305,13 @@ To use a prefix argument you must set either `isearch-allow-scroll' or
 arg during Isearch exits Isearch.
 
 If invoked outside of Isearch, use the last Isearch search pattern or,
-if none, prompt for the pattern to match."
+if none, prompt for the pattern to match
+
+Non-interactively:
+ FACE is the face to use for highlighting.
+ Non-nil MOUSEP means use `mouse-face' property, not `face'.
+ BUFFERS are the buffers to act on.
+ STRING is the search string to use."
   (interactive
    (list (if (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
              (let (fac)
@@ -3295,7 +3323,8 @@ if none, prompt for the pattern to match."
          t
          (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
          ()
-         (or isearch-string  (read-string "Highlight string: "))))
+         (or (and (not (equal "" isearch-string))  isearch-string)
+             (read-string "Highlight string: "))))
   (let ((bufs                   (or buffers  (and (boundp 'multi-isearch-buffer-list)
                                                   multi-isearch-buffer-list)))
         (regexp                 (cond ((functionp isearch-word) (funcall isearch-word string))
@@ -3317,23 +3346,26 @@ if none, prompt for the pattern to match."
 
 ;;;###autoload
 (defun hlt-unhighlight-isearch-matches (&optional face msgp mousep buffers string)
-  "Unhighlight matches of the current Isearch search pattern.
-With no prefix arg, unhighlight all faces.
+  "Unhighlight matches of the current (nonempty) Isearch search pattern.
+With no prefix arg, unhighlight all faces highlighted by `hlt-*'.
 With a non-negative prefix arg, prompt for the face to unhighlight.
 With a non-positive prefix arg, use `mouse-face' instead of `face'.
 With any other prefix arg, unhighlight the last highlighting face used
  or chosen with command `hlt-choose-default-face'.
  (`hlt-auto-faces-flag' has no effect.)
 
+If invoked outside of Isearch, use the last Isearch search pattern or,
+if none, prompt for the pattern to match.
+
 To use a prefix argument you must set either `isearch-allow-scroll' or
 `isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
 arg during Isearch exits Isearch.
 
-Non-interactively, FACE = nil means unhighlight all faces."
+Non-interactively, args are as for `hlt-highlight-isearch-matches',
+except that nil FACE means unhighlight all faces."
   (interactive
    (let ((bufs  (and (boundp 'multi-isearch-buffer-list)  multi-isearch-buffer-list)))
-     (list (or string  (read-string "Highlight string: "))
-           (and current-prefix-arg
+     (list (and current-prefix-arg
                 (if (>= (prefix-numeric-value current-prefix-arg) 0)
                     (let (fac)
                       (with-isearch-suspended (setq fac  (call-interactively #'hlt-choose-default-face)))
@@ -3341,7 +3373,9 @@ Non-interactively, FACE = nil means unhighlight all faces."
                   hlt-last-face))
            t
            (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
-           bufs)))
+           bufs
+           (or (and (not (equal "" isearch-string))  isearch-string)
+               (read-string "Highlight string: ")))))
   (hlt-+/--highlight-regexp-region t nil nil string face msgp mousep nil buffers))
 
 (define-key isearch-mode-map (kbd "M-s h h") 'hlt-highlight-isearch-matches)
