@@ -10,6 +10,7 @@ files.
 * AutoEncryption -- encrypt when loading and saving files
 * AutoSave -- losing your Emacs session doesn't mean losing your work. See this page to customize the behavior of files with names like #file#.
 * BackupDirectory -- Organize your BackupFiles in one place. See this page to customize the behavior of files with names like file~.
+* BackupEachSave -- a more comprehensive system for saving backups on each buffer saving, as opposed to extending ForceBackups.
 * BuffernameTags -- decorate buffer names to aid development
 * BuffersMisc -- misc. things to do to buffers.
 * CouchdbDocument -- Edit couchdb document.
