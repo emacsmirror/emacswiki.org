@@ -109,7 +109,9 @@ You could also ##(setq tramp-chunksize 500)## to see if that helps.
 
 === Tramp hangs #3 ===
 
-If you are using zsh, the zle option can cause this behaviour.  The Tramp manual does actually note this in [https://www.gnu.org/software/emacs/manual/html_node/tramp/Remote-shell-setup.html 4.16 Remote shell setup hints], and provides a possible workaround there (namely, if you *tell* TRAMP you're using zsh, it will automatically supply some extra flags to configure things appropriately; you can see the flags it uses in ##tramp-sh-extra-args##). 
+If you are using zsh, the zle option can cause this behaviour.  The Tramp manual does actually note this in [https://www.gnu.org/software/emacs/manual/html_node/tramp/Remote-shell-setup.html 4.16 Remote shell setup hints], and provides a possible workaround there (namely, if you *tell* TRAMP you're using zsh, it will automatically supply some extra flags to configure things appropriately; you can see the flags it uses in ##tramp-sh-extra-args##).
+
+Additionally, with the default settings, using ##sshx## rather than ##ssh## will likely work because it will tell the remote host to run ##/bin/sh## instead of zsh.
 
 However, telling Tramp in advance like that might not be your preference; as an alternative, try placing this in your .zshrc:
 
