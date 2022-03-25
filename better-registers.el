@@ -1,6 +1,6 @@
 ;;; better-registers.el --- facilities for more powerful registers
-;; Version: 20140812.1546
-;; X-Original-Version: 20140810.1244
+;; Version: 20220325.1356
+;; X-Original-Version: 20140812.1546
 ;; -*- emacs-lisp -*-
 ;; Copyright (C) 2005 Sigurd Meldgaard
 
@@ -75,9 +75,10 @@
 ;; In modes which overwrite C-j C-xj should still be bound to the same.
 (eval-when-compile (require 'cl-lib))
 
-(defvar better-registers-version "0.58"
+(defvar better-registers-version "0.61"
   "The version of the package better-registers.
    Revision history:
+   from 0.60 to 0.61 register-read-with-preview works for Emacs 25 and newer
    from 0.59 to 0.60 User can choose to use C-r or not optionally
    from 0.58 to 0.59 Add support for both Emacs 24.4 and older
    from 0.57 to 0.58 Improved interactive argument handling of better-registers-save-registers.
@@ -230,8 +231,10 @@
   (set-register register (cons 'macro last-kbd-macro)))
 
 
-(if (and (>= emacs-major-version 24)
-         (>= emacs-minor-version 4))
+(if (or 
+      (and (>= emacs-major-version 24)
+           (>= emacs-minor-version 4))
+      (>= emacs-major-version 25))
     (defun better-registers-jump-to-register (register &optional delete)
       (interactive (list (register-read-with-preview "Jump to register: ")
                          current-prefix-arg))
