@@ -77,5 +77,25 @@ Add a little extra code to your .emacs to make F12/C-F12/C-S-F12 perform registe
                                           (copy-to-register char (region-beginning) (region-end))
                                           (cua-delete-region)))
 
+== Making 'register-read-with-preview work on emacs 26+ ==
+
+One should replace this in Lisp:better-registers.el (line 233):
+
+<code>
+(and (>= emacs-major-version 24)
+
+     (>= emacs-minor-version 4))
+</code>
+
+... by:
+
+<code>
+(or 
+ (and (>= emacs-major-version 24)
+
+      (>= emacs-minor-version 4))
+
+ (>= emacs-major-version 26))
+</code>
 ----
 CategoryEditing
