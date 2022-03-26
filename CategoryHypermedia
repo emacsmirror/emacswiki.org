@@ -75,6 +75,7 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * LinkdMode -- A system for recognizing special s-expressions in all kinds of text files, and causing these "lisp hot spots" to become interactive
 * [[N3Mode]] --- Emacs major mode for Notation 3 RDF
 * ButtonLockMode --- define clickable text based on regular expressions
+* [[Edit_with_Emacs]] - Browser add ons to edit browser text input in Emacs
 
 ----
 [new] We need to organize this page and clean it up a little. It is
