@@ -4,13 +4,13 @@
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct  2 18:06:21 2021 (-0700)
+;; Last-Updated: Sat Mar 26 08:31:59 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 2562
+;;     Update #: 2570
 ;; URL: https://www.emacswiki.org/emacs/download/synonyms.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Synonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
@@ -408,13 +408,14 @@
 ;;
 ;;    `synonyms-action', `synonyms-add-history-links',
 ;;    `synonyms-default-regexp', `synonyms-define-cache-file',
-;;    `synonyms-define-synonyms-file', `synonyms-format-entries',
+;;    `synonyms-define-synonyms-file', `synonyms-file-readable-p',
+;;    `synonyms-file-writable-p', `synonyms-format-entries',
 ;;    `synonyms-format-entry', `synonyms-format-finish',
 ;;    `synonyms-format-synonyms',
 ;;    `synonyms-hack-backslashes-if-cygwin', `synonyms-lookup',
-;;    `synonyms-nearest-word', `synonyms-file-readable-p',
+;;    `synonyms-nearest-word', `synonyms-p',
 ;;    `synonyms-search-entries', `synonyms-search-synonyms',
-;;    `synonyms-show-synonyms', `synonyms-file-writable-p'.
+;;    `synonyms-show-synonyms'.
 ;;
 ;;  Internal variables defined here -
 ;;
@@ -471,6 +472,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/03/26 dadams
+;;     Added synonyms-p.
 ;; 2015/09/19 dadams
 ;;     synonyms-action: Added args APPENDP and MOREP.
 ;;     synonyms, synonyms-history-(backward|forward): Pass APPENDP and MOREP to synonyms-action.
@@ -980,28 +983,28 @@ to match (no prompting)."
 
 ;;;###autoload
 (defun synonyms-match-more ()
-  "Same as using `synonyms' with `synonyms-match-more-flag' = t."
+  "Same as command `synonyms' with `synonyms-match-more-flag' = t."
   (interactive)
   (let ((synonyms-match-more-flag  t))
     (synonyms)))
 
 ;;;###autoload
 (defun synonyms-match-more-no-read (arg)
-  "Same as using `synonyms' with `synonyms-match-more-flag' = t."
+  "Same as `synonyms-no-read' with `synonyms-match-more-flag' = t."
   (interactive "P")
   (let ((synonyms-match-more-flag  t))
     (synonyms-no-read arg)))
 
 ;;;###autoload
 (defun synonyms-append-result ()
-  "Same as using `synonyms' with `synonyms-append-result-flag' = t."
+  "Same as command `synonyms' with `synonyms-append-result-flag' = t."
   (interactive)
   (let ((synonyms-append-result-flag  t))
     (synonyms)))
 
 ;;;###autoload
 (defun synonyms-append-result-no-read (arg)
-  "Same as using `synonyms' with `synonyms-append-result-flag' = t."
+  "Same as `synonyms-no-read' with `synonyms-append-result-flag' = t."
   (interactive "P")
   (let ((synonyms-append-result-flag  t))
     (synonyms-no-read arg)))
@@ -1407,6 +1410,18 @@ With prefix arg, look up the definition in the alternate dictionary,
                  (goto-char end)
                (deactivate-mark))       ; User did not click inside region, so deactivate it.
              (synonyms-definition (synonyms-default-regexp) alternate-p)))))
+
+;; Simple synonym test function.
+;;
+(defun synonyms-p (word test-word)
+  "Return non-nil if WORD is in the thesaurus with synonym TEST-WORD."
+  (let ((buf  (get-buffer-create (format " *%s*" word))))
+    (call-process "grep" nil buf nil "-i"
+                  (synonyms-hack-backslashes-if-cygwin (format "^%s," word))
+                  (expand-file-name synonyms-file))
+    (with-current-buffer buf
+      (goto-char (point-min))
+      (search-forward test-word nil t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
