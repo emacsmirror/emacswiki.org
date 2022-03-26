@@ -4,13 +4,13 @@
 ;; Description: Incrementally adjust face attributes and frame parameters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2022, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Tue Mar 30 10:43:56 2021 (-0700)
+;; Last-Updated: Sat Mar 26 09:00:07 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 3078
+;;     Update #: 3080
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-frm.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -22,7 +22,7 @@
 ;;   `col-highlight', `crosshairs', `custom', `doremi', `faces',
 ;;   `faces+', `frame-cmds', `frame-fns', `hexrgb', `hl-line',
 ;;   `hl-line+', `macroexp', `misc-cmds', `misc-fns', `mwheel',
-;;   `palette', `ring', `strings', `thingatpt', `thingatpt+',
+;;   `palette', `rect', `ring', `strings', `thingatpt', `thingatpt+',
 ;;   `timer', `vline', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -325,6 +325,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/03/26 dadams
+;;     doremi-push-frame-config-for-command, doremi-frame-configs+: Removed condion that ring+.el be loaded.
 ;; 2020/11/05 dadams
 ;;     Wrap soft-require of palette.el with condition-case to ignore error if error hard-requiring vline.el.
 ;; 2015/07/26 dadams
@@ -1032,22 +1034,21 @@ possible."
 (defun doremi-push-frame-config-for-command (command)
   "Advise COMMAND to save frame configuration.
 You can restore previous frame configurations with \\[doremi-frame-configs+]."
-  (when (featurep 'ring+)
-    (eval
-     `(defadvice ,command (around doremi-push-frame-config-for-command activate)
-       "Saves frame configuration. You can restore previous frame configuration \
+  (eval
+   `(defadvice ,command (around doremi-push-frame-config-for-command activate)
+      "Saves frame configuration. You can restore previous frame configuration \
 with \\[doremi-frame-configs+]."
-       (doremi-push-current-frame-config)
-       (when (fboundp 'frame-configuration-to-register) ; Defined in `frame-cmds.el'
-         (frame-configuration-to-register frame-config-register))
-       ad-do-it                         ; COMMAND code is executed here.
-       (when (interactive-p)
-         (message
-          (substitute-command-keys
-           (if (fboundp 'jump-to-frame-config-register) ; Defined in `frame-cmds.el'
-               (format "Use `\\[jump-to-frame-config-register]' (`C-x r j %c') or \
+      (doremi-push-current-frame-config)
+      (when (fboundp 'frame-configuration-to-register) ; Defined in `frame-cmds.el'
+        (frame-configuration-to-register frame-config-register))
+      ad-do-it                        ; COMMAND code is executed here.
+      (when (interactive-p)
+        (message
+         (substitute-command-keys
+          (if (fboundp 'jump-to-frame-config-register) ; Defined in `frame-cmds.el'
+              (format "Use `\\[jump-to-frame-config-register]' (`C-x r j %c') or \
 `\\[doremi-frame-configs+]' to restore frames as before (undo)." frame-config-register)
-             "Use `\\[doremi-frame-configs+]' to restore frames as before (undo)."))))))))
+            "Use `\\[doremi-frame-configs+]' to restore frames as before (undo).")))))))
 
 ;; Undo (rotate) frame configuration changes made by the
 ;; frame-changing commands defined here (see mapcar, at end of file).
@@ -1057,16 +1058,15 @@ with \\[doremi-frame-configs+]."
 (defun doremi-frame-configs+ ()
   "Cycle among frame configurations recorded in `doremi-frame-config-ring'."
   (interactive)
-  (when (featurep 'ring+)
-    (doremi (lambda (newval)            ; Cycle among previous frame configs.
-              (set-frame-configuration (ring-next doremi-frame-config-ring newval))
-              newval)
-            (doremi-frame-config-wo-parameters (current-frame-configuration)
-                                               '(buffer-list minibuffer))
-            nil
-            nil
-            doremi-frame-config-ring
-            t)))
+  (doremi (lambda (newval)            ; Cycle among previous frame configs.
+            (set-frame-configuration (ring-next doremi-frame-config-ring newval))
+            newval)
+          (doremi-frame-config-wo-parameters (current-frame-configuration)
+                                             '(buffer-list minibuffer))
+          nil
+          nil
+          doremi-frame-config-ring
+          t))
  
 ;;; Background Frame Color Commands
 
