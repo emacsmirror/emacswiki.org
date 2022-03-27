@@ -34,6 +34,7 @@ Emacs packages that provide a consistent interface to many different version con
 * DaRcs -- There's a VC backend available, a pcl-cvs like interface available, and a non-VC interface.
 * [[fossil]] -- A VC backend is under development. 
 * [[Git]] -- Supported by VC, but git.el comes with the package and there are many other Git-specific modes.
+** [[GitHub]] 
 * [[Mercurial]] (##hg##)
 * MonoTone -- Partially supported by DVC, but a mode is distributed with Monotone.
 
@@ -53,3 +54,4 @@ Emacs packages that provide a consistent interface to many different version con
 * [[WikiPedia:Revision control]]
 * [[WikiPedia:List of revision control software]]
 * [http://revctrl.org Revctrl Wiki]
+* [[https://drewdevault.com/2019/02/25/Using-git-with-discipline.html Drew DeVault's article on using git]]
