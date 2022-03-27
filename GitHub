@@ -19,3 +19,5 @@ See [[Git]] for more about Emacs support for git.
 [https://github.com/sshaw/copy-as-format copy-as-format] Copy buffer locations as GitHub/[[Slack]]/JIRA/HipChat... formatted code
 
 [https://github.com/sshaw/issue-link issue-link] Get the link to JIRA/Tracker/GitHub issues. Turn bug/feature/issue IDs into links.
+
+[[https://github.com/novoid/github-orgmode-tests Github Orgmode tests]]
