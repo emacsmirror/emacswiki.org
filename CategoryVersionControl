@@ -9,6 +9,7 @@ Emacs packages that provide a consistent interface to many different version con
 ** VcTopDirectory automatically chdirs <code>vc-dir</code> buffer to top-level directory for git/Bazaar which list files with absolute paths
 ** [[VC-Jump]] -- jump to corresponding VC status buffer
 ** [[VCUndoHistory]] -- history for abandoned VC changes
+* [[Magit]]
 
 * DistributedVersionControl is an interface to various *distributed* version control systems.  It doesn't come with Emacs.  Currently DVC supports Git, Mercurial, Bazaar and GNU Arch. Monotone is only partially supported and Darcs support is not usable yet.
 
