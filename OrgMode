@@ -144,8 +144,7 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 * For those who track their time using org-mode (in macosx): [https://github.com/koddo/org-clock-statusbar-app|org-clock-statusbar-app]
 * https://github.com/JHeiner/BabelRoot contains code that runs
 * org-babel-execute asynchronously in a term-mode buffer.
-
-[[https://github.com/ahungry/org-jira org-jira]] -- connecting OrgMode
+* [[https://github.com/ahungry/org-jira org-jira]] -- connecting OrgMode
 and Jira.
 
 [:elisp]
