@@ -46,6 +46,7 @@
 * [http://github.com/mooz/keysnail/wiki KeySnail] -- Firefox and Thunderbird extension, with customizable Emacs keybindings
 * [[Google Chrome]]
 * PrintWithWebBrowser -- preview and print with your web browser
+* ExternalEdit -- a shell script for systems running X11, allowing you to launch Emacs as an editor for any application, not just web browsers
 
 ----
 CategoryHypermedia
