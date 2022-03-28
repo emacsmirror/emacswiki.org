@@ -76,6 +76,7 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * [[N3Mode]] --- Emacs major mode for Notation 3 RDF
 * ButtonLockMode --- define clickable text based on regular expressions
 * [[Edit_with_Emacs]] - Browser add ons to edit browser text input in Emacs
+* ExternalEdit -- a shell script for systems running X11, allowing you to launch Emacs as an editor for any application, not just web browsers
 
 ----
 [new] We need to organize this page and clean it up a little. It is
