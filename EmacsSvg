@@ -20,6 +20,9 @@ To get auto completion and validation of SVGs using NxmlMode, install the schema
 
 it would also be neat to integrate Inkscape and emacs, particularily with EmacsXembed patches
 
+Alternatively, one could implement a SVG editor, of course.
+[https://www.leonrische.me/pages/mouse_events_on_images_in_emacs.html Mouse Events on Images in Emacs] does just that.
+
 == Emacs, Inkscape and DBus ==
 There is a DBus enabled branch of Inkscape on Launchpad.
 
