@@ -13,7 +13,7 @@ The format of the web source has changed, resulting in an error when you try to 
     (11/29/10 --- kc5gmr)
 
 
-Also check out this sudoku on steroids https://github.com/zevlg/gnu-emacs-stuff/blob/master/sudoku.el with bunch of features:
+Also check out this sudoku on steroids https://github.com/zevlg/sudoku.el with bunch of features:
 
 * Custom puzzle editor
 * Printing puzzles (TeX source generator)
