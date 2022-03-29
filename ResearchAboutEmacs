@@ -4,6 +4,8 @@ There is also a Zotero group called [https://www.zotero.org/groups/2392126/emacs
 
 Thanks to contributors on [https://www.reddit.com/r/emacs/comments/djrlib/academic_research_about_emacs/ /r/emacs] and [https://emacs.stackexchange.com/questions/53236/academic-research-about-emacs Emacs StackExchange site].
 
+== List of published academic research about Emacs ==
+
 Aspinall, David. (2000). [http://proofgeneral.inf.ed.ac.uk/papers/pgoutline.ps.gz Proof General: A Generic Tool for Proof Development]. In /Tools and Algorithms for the Construction and Analysis of Systems/ (TACAS'00), LNCS 1785.  Plus a few related articles at https://proofgeneral.github.io/pubs/
 
 Corallo, Andrea; Nassi, Luca; Manca, Nicola.  (2020).  [https://zenodo.org/record/3736363 Bringing GNU Emacs to Native Code]. 13th European Lisp Symposium (ELS 2020) (ELS'20), Zurich, 27-28 April 2020.
@@ -35,6 +37,6 @@ Verna, Dider.  (2010).  [https://hal.archives-ouvertes.fr/hal-01543381/ CLOX: Co
 
 Zhong, Shudan and Xu, Hong. (2019). [https://dl.acm.org/citation.cfm?doid=3301275.3302272 Intelligently recommending key bindings on physical keyboards with demonstrations in Emacs]. In /Proceedings of the 24th International Conference on Intelligent User Interfaces/ (IUI), 12–17. doi:10.1145/3301275.3302272.
 
-= Other research of unclear academic publication status =
+== Other research of unclear academic publication status ==
 
 Voit, K. (2013). [http://arxiv.org/abs/1304.1332 What really happened on September 15th 2008? Getting The Most from Your Personal Information with Memacs]. ArXiv:1304.1332 [Cs].
