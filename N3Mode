@@ -1,5 +1,6 @@
-An Emacs major mode for Notation 3
+An Emacs major mode for Notation 3 (also known as N3) and Turtle RDF documents.
 
-homepage http://larve.net/people/hugo/2003/scratchpad/NotationThreeEmacsMode.html
+Homepage: https://github.com/kurtjx/n3-mode-for-emacs (last commit 2017-12-13)
 
-https://github.com/kurtjx/n3-mode-for-emacs is slightly newer (last commit 2010-10-07)
+----
+CategoryHypermedia
