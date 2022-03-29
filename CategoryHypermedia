@@ -79,11 +79,3 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * ExternalEdit -- a shell script for systems running X11, allowing you to launch Emacs as an editor for any application, not just web browsers
 
 ----
-[new] We need to organize this page and clean it up a little. It is
-going to be a real mess. Suggestions on what we could do ? -- XavierMaillard
-
-[new]
-How is this for a start?  I took the liberty to put a few categories here and add a bit of useful stuff. ––mangledmind
-
-[new] 
-I followed up with separating out browsing, editing, and serving -- seems like it cleans things up a bit. -- dat
