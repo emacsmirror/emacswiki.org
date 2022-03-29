@@ -1,5 +1,5 @@
 Edited by AlexSchroeder, who thinks the code looks impressive,
-eventhough I doesn't understand it.  I'm keeping it here for myself to
+even though he doesn't understand it.  I'm keeping it here for myself to
 read when I have some more time.
 
  From: ThomasBurdick
@@ -126,7 +126,7 @@ Now let's define the rest of our states:
 These act similarly to functions, but they run in the context of a
 machine that switches between various states.  When the machine is in
 the state `count', for example it executes the body we defined above.
-A state should end by sitching to another state, via a call to the
+A state should end by switching to another state, via a call to the
 function `state' (which we saw above).  `halt' is a special state that
 will always be defined, and will halt the state machine and cause it
 to return `nil' (even though I forgot to include this in the first
