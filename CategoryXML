@@ -20,6 +20,7 @@ These are some packages used for XML processing in Emacs or XEmacs:
 * [http://xae.sunsite.dk/ XAE] -- XML Authoring Environment for Emacs (link is broken).
 * XmlCoding -- coding system from ?xml tag (Emacs 21)
 * XmlGen -- sexp -> xml generation.
+* EmacsSvg -- Page about SVG support in GnuEmacs and related software for editing SVG in Emacs
 
 Here is an article by BrianGillan (IBM) on Getting and installing
 Emacs, Adding PSGML for SGML and XML modes, Editing a document with
