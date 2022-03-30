@@ -12,4 +12,8 @@ See [[Git]] for more about Emacs support for git.
 
 [https://gitlab.com/joewreschnig/gitlab-ci-mode/ gitlab-ci-mode] is a major mode for editing GitLab CI YAML files.
 
-[https://github.com/magit/forge Forge] integrates GitLab with Magit.
+[https://github.com/magit/forge Forge] integrates GitLab with [[Magit]].
+
+----
+
+[[CategoryVersionControl]] 
