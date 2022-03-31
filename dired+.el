@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 17 08:56:53 2022 (-0800)
+;; Last-Updated: Thu Mar 31 09:14:00 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13090
+;;     Update #: 13097
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -569,7 +569,8 @@
 ;;    `diredp-mark-files-tagged-all', `diredp-mark-files-tagged-none',
 ;;    `diredp-mark-files-tagged-not-all',
 ;;    `diredp-mark-files-tagged-some',
-;;    `diredp-mark-files-tagged-regexp', `diredp-mark-region-files',
+;;    `diredp-mark-files-tagged-regexp', `diredp-mark-if-sexp',
+;;    `diredp-mark-if-sexp-recursive', `diredp-mark-region-files',
 ;;    `diredp-mark-region-files-with-char',
 ;;    `diredp-mark-sexp-recursive' (Emacs 22+),
 ;;    `diredp-mark/unmark-autofiles', `diredp-mark/unmark-extension',
@@ -594,6 +595,7 @@
 ;;    `diredp-mouse-mark-region-files', `diredp-mouse-mark/unmark',
 ;;    `diredp-mouse-unmark', `diredp-mouse-upcase',
 ;;    `diredp-mouse-view-file', `diredp-move-file' (Emacs 24+),
+;;    `diredp-move-files-named-in-kill-ring',
 ;;    `diredp-multiple-w32-browser-recursive',
 ;;    `diredp-nb-marked-in-mode-name', `diredp-next-dirline',
 ;;    `diredp-next-line', `diredp-next-subdir', `diredp-omit-marked',
@@ -885,6 +887,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/03/31 dadams
+;;     diredp-move-files-named-in-kill-ring: Use diredp-filename-separator for split-string.
+;; 2022/03/27 dadams
+;;     Added (aliases) diredp-mark-if-sexp, diredp-mark-if-sexp-recursive.
 ;; 2022/01/28 dadams
 ;;     dired-buffers-for-dir:
 ;;       Revert to using dired-in-this-tree, not file-in-directory-p.  (Previous Emacs 28 change was wrong.)
@@ -6013,7 +6019,8 @@ Optional arg DETAILS is passed to `diredp-y-or-n-files-p'."
   (unless (file-directory-p dir) (error "Not a directory: `%s'" dir))
   (let ((files  diredp-last-copied-filenames))
     (unless (stringp files)  (error "No copied file names"))
-    (setq files  (diredp-delete-if-not (lambda (file) (file-name-absolute-p file)) (split-string files)))
+    (setq files  (diredp-delete-if-not (lambda (file) (file-name-absolute-p file))
+                                       (split-string files (regexp-quote diredp-filename-separator))))
     (unless files  (error "No copied (absolute* file names (Did you use `M-0 w'?)"))
     (if (and (not no-confirm-p)
              (diredp-y-or-n-files-p "MOVE files whose names you copied? " files nil details))
@@ -7127,6 +7134,10 @@ When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'
 ;;
 (when (fboundp 'minibuffer-with-setup-hook) ; Emacs 22+
 
+  ;; Just to help discovery.  And can't use the name `dired-mark-if', since that's a macro.
+  ;;
+  (defalias 'diredp-mark-if-sexp-recursive 'dired-mark-sexp-recursive)
+  ;;
   (defun diredp-mark-sexp-recursive (predicate &optional arg details) ; Bound to `M-+ M-(', `M-+ * ('
     "Mark files here and below for which PREDICATE returns non-nil.
 Like `diredp-mark-sexp', but act recursively on subdirs.
@@ -12855,6 +12866,11 @@ When called from Lisp, optional arg DETAILS is passed to
     (interactive) (dired-do-touch 1)))
 
 
+;; Just to help discovery.  And can't use the name `dired-mark-if', since that's a macro.
+;;
+;;;###autoload
+(defalias 'diredp-mark-if-sexp 'dired-mark-sexp)
+;;
 ;; REPLACE ORIGINAL in `dired-x.el'.
 ;;
 ;; 1. Variable (symbol) `s' -> `blks'.
@@ -15653,7 +15669,7 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Mark files whose contents matches regexp"))
 (define-key diredp-marks-mark-menu [marks-mark-sexp]
   '(menu-item "Mark If..." dired-mark-sexp ; In `dired-x.el'.
-              :help "Mark files that satisfy specified condition"))
+              :help "Mark files that satisfy condition specified by a sexp"))
 (define-key diredp-marks-mark-menu [marks-image-dired-mark-tagged-files]
   '(menu-item "Mark Image Files Tagged..." image-dired-mark-tagged-files
     :enable (fboundp 'image-dired-mark-tagged-files) ; In `image-dired.el'.
