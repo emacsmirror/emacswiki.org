@@ -97,3 +97,4 @@ See also CategoryVersionControl.
 * [[WTFSubmit]] -- Submit some horrible code to TheDailyWTF.com
 * StatefulCounterFactory -- generate lexical closures that maintain counts of things
 * StatefulStackFactory -- generate lexical closures that maintain stacks
+* [[CurlEmodule]] -- emodule written for [[XEmacs]] in C that provides libcurl bindings.
