@@ -49,7 +49,7 @@ others at Lucid Inc., based on an early alpha version of GNU Emacs
 19, adding a graphical X11 interface based on the Lucid widget set and introducing some changes to Emacs itself. The codebases (and the Lisp compatibility) between GNU and Lucid Emacsen soon diverged, and the separate development teams gave up trying to merge them back into a single program. Lucid Emacs
 has later become an open-source project under the name '''[[XEmacs]]''', which, in its last version 21, has functionally become mostly superceded by GNU Emacs 22 and later versions (which now also featured an X11 interface), although there exists an actively maintained fork called '''[[SXemacs]]'''. To paraphrase George Bernard Shaw, GNU Emacs and XEmacs are two editors separated by a common language.
 
-JamieZawinski drew up an Emacs timeline a couple of decades back.[http://www.jwz.org/doc/emacs-timeline.html]
+JamieZawinski drew up an [[http://www.jwz.org/doc/emacs-timeline.html Emacs timeline]] a couple of decades back.
 
 For humor, see EmacsReleaseDates.
 
