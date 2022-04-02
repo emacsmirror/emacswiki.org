@@ -39,24 +39,7 @@ Emacs and restored when you start a new session.
 See also: http://emacs-session.sourceforge.net/related.html.
 
 === Discussion ===
-
-[new]
-I tried *desktopaid* at April 2013 in 23.1.1. I downloaded the package from [http://sourceforge.net/projects/desktopaid/ source page]. The package has desktopaid.elc but it's compiled for older version of emacs so it wont work. Trying with desktopaid.el emacs opened with no error. So i changed a little the proposed .emacs lines and i added:
-<pre>
-;; desktopaid
-(setq load-path (cons "~/.emacs.d/" load-path))
-(autoload 'dta-hook-up "desktopaid.el" "Desktop Aid" t)
-(dta-hook-up)
-</pre>
-*In short: Across sessions -- Frames: OK,  Windows:No , Directories:No* 
-What you should pay attention to :
-Starting first time emacs with desktopaid enabled we will be asked 'Select configuration:' If we proceed with just an Enter, then in trying to close emacs will error that there is no .desktopaid dir.  So create the ~/.desktopaid dir first and give a name of the configuration file when asked at the start.
-Generally i wouldnt recommended for new emacs users since it seems not-maintained and tricky to set-up correctly. Unless ofcourse the functionality is needed.
-AlexandrosPrekates
-
-[new]
-
-I use EmacsSession, because it doesn't reload all the files and doesn't require a lot of customization like DeskTop does. -- AlexSchroeder
+Moved to Talk page
 
 ----
 CategoryPersistence
