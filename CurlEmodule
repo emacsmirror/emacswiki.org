@@ -1,4 +1,4 @@
-There is a small emodule, an extension written in C, for XEmacs which provides libcurl bindings.
+There is a small emodule, an extension written in C, for [[XEmacs]] which provides libcurl bindings.
 
 * [https://github.com/myrkraverk/xemacs-libcurl The code on GitHub].
 * [http://www.myrkraverk.com/blog/2015/05/xemacs-binding-for-libcurl/ Blog with demonstration.]
