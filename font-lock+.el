@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr  2 08:24:07 2022 (-0700)
+;; Last-Updated: Sat Apr  2 11:24:39 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 219
+;;     Update #: 233
 ;; URL: https://www.emacswiki.org/emacs/download/font-lock%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `font-lock', `syntax'.
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `font-lock',
+;;   `macroexp', `syntax'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -37,8 +38,14 @@
 ;;    (require 'font-lock+)
 ;;
 ;;
+;;  Commands defined here:
+;;
+;;    `font-lock-selection-off', `font-lock-selection-on',
+;;    `font-lock-selection-toggle'.
+;;
 ;;  Non-interactive functions defined here:
 ;;
+;;    `font-lock-selection--off/on',
 ;;    `put-text-property-unless-ignore'.
 ;;
 ;;
@@ -54,10 +61,17 @@
 ;;    `font-lock-fontify-syntactically-region',
 ;;    `font-lock-prepend-text-property'.
 ;;
+;;  Suggested binding:
+;;
+;;    (define-key ctl-x-map [(down-mouse-1)] 'font-lock-selection-toggle)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2022/04/02 dadams
+;;     Added: font-lock-selection-off, font-lock-selection-on, font-lock-selection-toggle,
+;;            font-lock-selection--off/on.
 ;; 2014/08/30 dadams
 ;;     Require cl.el when compile, for incf.
 ;;     Load font-lock.el[c] when compile, for macro save-buffer-state.
@@ -97,6 +111,58 @@
   (load-library "font-lock")) ;; Macro save-buffer-state
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun font-lock-selection-toggle (start-event &optional msgp)
+  "Toggle font-locking for the text you select with the mouse."
+  (interactive "e\np")
+  (font-lock-selection--off/on start-event 'toggle msgp))
+
+(defun font-lock-selection-off (start-event &optional msgp)
+  "Turn font-lock off for the text you select with the mouse."
+  (interactive "e\np")
+  (font-lock-selection--off/on start-event t msgp))
+
+(defun font-lock-selection-on (start-event &optional msgp)
+  "Turn font-lock on for the text you select with the mouse."
+  (interactive "e\np")
+  (font-lock-selection--off/on start-event nil msgp))
+
+(defun font-lock-selection--off/on (start-event &optional new-state msgp)
+  "Helper for commands that turn font-lock on/off for mouse selection."
+    (save-excursion
+    (run-hooks 'mouse-leave-buffer-hook) ; Let temporary modes like Isearch turn off.
+    (let* ((original-window  (selected-window))
+           (echo-keystrokes  0)
+           (start-posn       (event-start start-event))
+           (start-point      (posn-point start-posn))
+           (end-point        start-point)
+           (start-window     (posn-window start-posn))
+           (new-state        (if (eq 'toggle new-state)
+                                 (not (get-text-property start-point 'font-lock-ignore))
+                               new-state)))
+      (with-current-buffer (window-buffer start-window)
+        (let ((read-only                          buffer-read-only)
+              (modified-p                         (buffer-modified-p))
+              (inhibit-modification-hooks         t)
+              (font-lock-fontify-region-function  'ignore) ; Else `put-text-property' calls it.
+              event)
+          (setq buffer-read-only  nil)
+          (track-mouse
+            (while (progn (setq event  (read-event))
+                          (or (mouse-movement-p event)
+                              (memq (car-safe event) '(switch-frame select-window))))
+              (unless (memq (car-safe event) '(switch-frame select-window))
+                (setq end-point  (posn-point (event-end event))))
+              (unless (integer-or-marker-p end-point)
+                (funcall (if (fboundp 'user-error) #'user-error #'error)
+                         "Mouse dragged out of window"))
+              (font-lock-default-unfontify-region start-point end-point)
+              (put-text-property start-point end-point 'font-lock-ignore new-state)))
+          (setq buffer-read-only  read-only)
+          (set-buffer-modified-p modified-p)))
+      (font-lock-mode) (font-lock-mode)
+      (when msgp (message "Font-lock now %s the text you selected"
+                          (if new-state 'IGNORES 'HANDLES))))))
 
 (defun put-text-property-unless-ignore (start end property value &optional object)
   "`put-text-property', but ignore text with property `font-lock-ignore'."
