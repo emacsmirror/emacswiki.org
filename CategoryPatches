@@ -2,6 +2,7 @@ Click on the header to list the pages related to the patching of Emacs.
 Such patches are necessary when extensions are added on the C level.
 
 * ApplyingPatches -- Beginner information on working with patches.
+* CurlEmodule -- C module for [[XEmacs]] which adds libcurl bindings.
 * SecurEmacs -- extend Emacs 21 with GNU TLS
 * DynamicallyExtendingEmacs -- let Emacs load shared libraries (so/dll)
 * PixelDrawing -- draw pixels from Lisp
