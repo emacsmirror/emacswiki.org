@@ -44,6 +44,7 @@ Move among windows -- alternatives to <kbd>C-x o</kbd>
   <kbd>M-x describe-function</kbd>.
 * [[https://github.com/ramnes/move-border|move-border.el]] -- Resize
   windows by moving their own border in a given direction
+* [[Multicolumn]] -- improved handling of multiple side-by-side windows in a frame
 * OneWindow -- Make Emacs always use only one window for whatever it
   does
 * PlaceWindows ([[place-windows.el]]) -- place active windows
