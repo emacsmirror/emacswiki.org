@@ -31,6 +31,7 @@ The following are specific tricks and packages for buffer switching.
 * ListBuffers -- List buffers (default behavior for `C-x C-b')
 * LustyExplorer -- Dynamic filesystem explorer and buffer switcher
 * [[MTorus]] -- provides navigation on a discrete 2-torus of buffers
+* [[Multicolumn]] -- a package which improves handling of multiple side-by-side windows, including switching between them
 * PerWindowPoint --   Enable each window to remember and return to its value of point in each buffer it has displayed.
 * [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke
 * PointStack -- go back to places in buffers that you've marked
