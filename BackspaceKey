@@ -30,5 +30,13 @@ To use C-h as backward-delete-char in other GTK programs, use
  gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
 
 It is unclear how to achieve the same with QT programs.
+
+== terminal ==
+
+When using emacs on a terminal the backspace may delete-forward (same as <kbd>C-d</kbd>), to have it delete-backwards issue command <kbd>M-x normal-erase-is-backspace-mode</kbd>.  To load automatically modify your emacs start up file accordingly, for example:
+
+    (if (not window-system) (normal-erase-is-backspace-mode 0))
+
+
 ----
 CategoryKeys
