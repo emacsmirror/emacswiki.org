@@ -25,6 +25,11 @@ and so on.
 
 '''See Library:''' Lisp:oneonone.el
 
+
+
+
+
+[:MinibufferResizing]
 == Minibuffer Resizing ==
 
 Even with a display-wide standalone minibuffer, you will sometimes have input that covers more than two lines, which is the default height of the standalone frame (which you can control using option `1on1-minibuffer-frame-height').  To accomodate dynamic changes in input size, the standalone minibuffer frame is automatically resized after each user event (e.g typing a character) to fit its current content, provided [[user option]] '''`1on1-fit-minibuffer-frame-flag'''' is non-`nil'. Options '''`1on1-fit-minibuffer-frame-max-height'''' and
@@ -36,6 +41,11 @@ beyond the maximum.
 To take advantage of this feature, you must also have library <tt>[[fit-frame.el]]</tt> -- see [[Shrink-Wrapping Frames]].
 
 
+
+
+
+
+[:MinibufferBackgroundColor]
 == Minibuffer Background Color Indicates User Activity ==
 
 I took advantage of the fact that frame `1on1-minibuffer-frame'
@@ -109,6 +119,7 @@ Each of these background changes can improve orientation. Taken together, I find
 
 ----
 
+[:Discussion]
 == Discussion ==
 
 [new]
