@@ -33,6 +33,11 @@ The current bug tracking system for Emacs is controlled by e-mail.  The [http://
 ===Reporting bugs===
 To send a bug report about Emacs, open Emacs and hit `M-x report-emacs-bug'.  Fill in the gaps and send the e-mail.  You may also copy the contents of the mail buffer and use your mail client of choice, it doesn't really matter where you send it from.
 
+===Replying to an existing bug===
+If you want to respond to an existing bug report, such as to provide further information or to convey that you are also running into the issue in your own configuration, you can do so by sending an email to BUG_NUMBER@debbugs.gnu.org.
+
+If you initiate this through the index at https://lists.gnu.org/r/bug-gnu-emacs/ with the button "reply via email to" at the bottom of the page, be sure to also add the above email address, BUG_NUMBER@debbugs.gnu.org, otherwise the email will only go specifically to the person you're replying to.
+
 ===Sending patches and other things===
 To send a patch to Emacs, send an e-mail to the bug tracking system at bug-gnu-emacs@gnu.org (this is the same as what `M-x report-emacs-bug' does).  The leading part of the e-mail should contain a few magic words which the system will recognize and tag the generated report with.
 
