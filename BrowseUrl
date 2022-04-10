@@ -376,6 +376,36 @@ I don't know why but to be able to use # anchors in URLs I had to define:
 
 -- DieterWilhelm, 2021-08-30
 
+
+=== Lagrange and Gemini URLs ===
+To support Gemini URLs and open them with Lagrange, the following snippet can be used. It first creates the <code>lagrange-browse-url-lagrange</code> function. Then, it cofigures the handlers with the proper regexp to identify a gopher/gemini URL. The regexp were obtained from the elpher package.
+
+If you installed the elpher package, it configures the <code>browse-url-default-handlers</code> properly by default. So, you would not require to change anything to use elpher by default. However, if you want to use Lagrange instead, use this snippet.
+
+    (defcustom lagrange-program "lagrange"
+      "The program path to Lagrange.")
+    (defcustom lagrange-arguments nil
+      "Extra arguments for Lagrange.")
+
+    (defun lagrange-browse-url-lagrange (url &rest _)
+      "Open Lagrange to browse the given URL."
+      (interactive (browse-url-interactive-arg "URL: "))
+      (setq url (browse-url-encode-url url))
+      (let* ((process-environment (browse-url-process-environment)))
+        (apply #'start-process
+               (concat "lagrange " url) nil
+               lagrange-program
+               (append
+                lagrange-arguments            
+                (list url)))))
+
+    (with-eval-after-load 'browse-url
+      (add-to-list 'browse-url-handlers 
+                   (cons "^\\(gopher\\|finger\\|gemini\\)://" 
+                     #'lagrange-browse-url-lagrange)))
+
+--  ChristianGimenez, 2022-04-10
+
 == Feeling Lucky? ==
 
 Let Google figure out the most appropriate web site for the stuff in your region:
