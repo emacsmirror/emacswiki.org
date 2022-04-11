@@ -4,7 +4,7 @@ This page is about the Emacs `grep' command. '''See Also:''' OccurMode
 
 With Emacs 22 and later comes the very easy to use yet powerful commands lgrep and rgrep. They both prompt the user for what to search for in a convenient manner. You do not have to know the unix grep command (but if you know it you can use that knowledge too). *lgrep* searches in the current directory and *rgrep* searches the current directory tree. rgrep knows about version control systems so it can avoid searching its control directories.
 
-One very conventient thing is that lgrep and rgrep share command argument history with grep. This mean that you after using them can use the grep command to for example filter the output results, perhaps like this:
+One very convenient thing is that lgrep and rgrep share command argument history with grep. This mean that you after using them can use the grep command to for example filter the output results, perhaps like this:
 
     grep -i -nH -e "eshell/" *.el | grep -v defun
 
