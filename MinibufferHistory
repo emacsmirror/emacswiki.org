@@ -19,7 +19,7 @@ Naturally, these keys work only during minibuffer input.
 
 == Rebinding Cycling Keys to History Completing Keys ==
 
-`M-s' and `M-r' are, by default, bound to `next-complete-history-element' and `previous-complete-history-element', respectively (see above). Alternatively, you might want to rebind `M-p', `M-n', `up' and `down' to the history completion commands:
+`M-s' and `M-r' are, by default, bound to `next-matching-history-element' and `previous-matching-history-element', respectively (see above). Alternatively, you might want to rebind `M-p', `M-n', `up' and `down' to the history completion commands:
 
  (define-key minibuffer-local-map (kbd "M-p") 'previous-complete-history-element)
  (define-key minibuffer-local-map (kbd "M-n") 'next-complete-history-element)
