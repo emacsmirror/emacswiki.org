@@ -5,15 +5,15 @@ files distributed with Emacs.
 
 Because these instructions have been repeated so many times on this wiki,
 a brief summary of the basic steps is provided here.  Nevertheless you
-should really also read the official documentation.  We won't repeat
+should really also read the official documentation. We won't repeat
 everything said there just for the sake of it.
 
-First, visit [http://www.gnu.org/software/emacs/download.html Emacs' Download page]. Get the latest release (tarball), unpack it and run:
+First, visit [http://ftpmirror.gnu.org/emacs/ Emacs' Download page]. 
+Get the latest release (tarball), unpack it and run:
 
     $ sudo apt install build-essential  # for Ubuntu 20.04
     $ sudo apt build-dep emacs  # for Ubuntu 20.04
     $ cd /where/you/unpacked/emacs
-    $ ./autogen.sh    # not needed when installing from tarball
     $ ./configure
     $ make
     $ make install
@@ -59,7 +59,7 @@ On Debian Buster that list should be:
 
 libc6-dev libjpeg62-turbo libncurses5-dev libpng-dev libtiff5-dev libgif-dev xaw3dg-dev zlib1g-dev libx11-dev
 
-=== Improved X11 experience ===
+=== Improved X11 experience (recommended) ===
 For an improved X11 experience, install the following dependencies on your system.
 
 **Fedora 20**: glibc-devel libjpeg-turbo ncurses-libs libpng-devel libtiff-devel giflib-devel Xaw3d-devel zlib-devel ice-devel libSM-devel libX11-devel libXext-devel libXi-devel libXmu-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libX11-devel
