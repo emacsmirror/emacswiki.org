@@ -8,13 +8,16 @@ a brief summary of the basic steps is provided here.  Nevertheless you
 should really also read the official documentation.  We won't repeat
 everything said there just for the sake of it.
 
-    $ cd /where/you/unpacked/or/branched/emacs
+First, visit [http://www.gnu.org/software/emacs/download.html Emacs' Download page]. Get the latest release (tarball), unpack it and run:
+
+    $ sudo apt install build-essential  # for Ubuntu 20.04
+    $ sudo apt build-dep emacs  # for Ubuntu 20.04
+    $ cd /where/you/unpacked/emacs
     $ ./autogen.sh    # not needed when installing from tarball
     $ ./configure
     $ make
     $ make install
 
-Emacs releases can be downloaded [http://www.gnu.org/software/emacs/#Obtaining here].
 More information on obtaining the development sources can be found at
 EmacsDevelopmentSources.
 
@@ -56,14 +59,20 @@ On Debian Buster that list should be:
 
 libc6-dev libjpeg62-turbo libncurses5-dev libpng-dev libtiff5-dev libgif-dev xaw3dg-dev zlib1g-dev libx11-dev
 
-For an improved X11 experience consider adding the dependencies and configure options listed in this [https://superuser.com/a/1129052/114341 StackExchange Answer]
+=== Improved X11 experience ===
+For an improved X11 experience, install the following dependencies on your system.
 
-
-Fedora 20:
-
-glibc-devel libjpeg-turbo ncurses-libs libpng-devel libtiff-devel giflib-devel Xaw3d-devel zlib-devel ice-devel libSM-devel libX11-devel libXext-devel libXi-devel libXmu-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libX11-devel
+**Fedora 20**: glibc-devel libjpeg-turbo ncurses-libs libpng-devel libtiff-devel giflib-devel Xaw3d-devel zlib-devel ice-devel libSM-devel libX11-devel libXext-devel libXi-devel libXmu-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libX11-devel
 
 missing/unresolved libraries: libxtrap-dev  x-dev xlibs-static-dev
+
+**Ubuntu 20.04**: libgtk-3-dev libwebkit2gtk-4.0-dev 
+
+And then, configure with:
+
+    ./configure --with-cairo --with-xwidgets --with-x-toolkit=gtk3
+
+Source: [https://superuser.com/a/1129052/114341 StackExchange: Compiling Emacs 25.1 on Ubuntu 16.04]
 
 ----
 CategoryBuilding
