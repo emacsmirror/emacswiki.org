@@ -45,12 +45,12 @@ or
 
 === ArchLinux ===
 
-An ##emacs-git## package is available [https://aur.archlinux.org/packages/emacs-git/ on the AUR] which tracks Emacs 28 where the native compilation feature has been merged.
+An ##emacs28-git## package is available [https://aur.archlinux.org/packages/emacs28-git/ on the AUR] which tracks Emacs 28 where the native compilation feature has been merged.
 
 Install it with your favourite AUR helper, or use the following commands to do it yourself:
 
-    $ git clone https://aur.archlinux.org/emacs-git.git
-    $ cd emacs-git
+    $ git clone https://aur.archlinux.org/emacs28-git.git
+    $ cd emacs28-git
     $ sed -i 's/^JIT=\(     \)/JIT="YES"/' PKGBUILD  # At the moment native just-in-time compilation in the package disabled by default 
     $ makepkg --syncdeps --install
 
