@@ -2,7 +2,7 @@ Visual Fill Column is a small Emacs minor mode that mimics the effect of FillCol
 
 And thus it is more of an analog to the (now defunct) LongLines mode, than the previously recommended / linked VisualLineMode (at least by itself).  So perhaps it is more accurate to say, the two of them put together are the new analog to the old LongLines mode.
 
-For a visual representation, you might want to take a quick look at the home page of their GitHub repo: https://github.com/joostkremers/visual-fill-column where they have a photo clearly demonstrating the feature.
+For a visual representation, you might want to take a quick look at the home page of their Codeberg repo: https://codeberg.org/joostkremers/visual-fill-column where they have a photo clearly demonstrating the feature.
 
 If you are looking for a similar (soft) wrap on the *left* side, without indenting *everything* in the way that say, OrgIndentMode does, you may be interested in AdaptiveWrap.
 
