@@ -37,6 +37,7 @@ making everything very hard to read. The solution for this is:
 
 * LongLines -- inserts "soft" newlines to break long lines into shorter ones.
 These "soft" newlines will not be saved to file, copied into the KillRing, etc.
+* VisualFillColumn -- similar to LongLines above, it "soft" wraps text in a file at the `fill-column' variable, without changing the contents of the file.
 
 Highlighting or finding long lines without necessarily filling them:
 
