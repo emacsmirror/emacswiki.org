@@ -13,8 +13,8 @@ To build !GccEmacs, you will need ##libgccjit## in addition to the other depende
 First, checkout the latest stable release branch (from ##emacs-28## onwards) or the unstable ##master## branch, and configure it with the ##--with-native-compilation## flag:
 
     $ git clone git://git.savannah.gnu.org/emacs.git
-    $ git checkout emacs-28
     $ cd emacs
+    $ git checkout emacs-28
     $ ./autogen.sh
     $ ./configure --with-native-compilation
     $ make -j$(nproc)
