@@ -458,6 +458,27 @@ is expanded to
 
 (Alternatively, you could also re-use :option instead of customize-set-variable.
 
+=== Customizing Faces ===
+
+{{{
+(setup-define :face
+    (lambda (face spec) `(custom-set-faces (quote (,face ,spec))))
+    :documentation "Customize FACE to SPEC."
+    :signature '(face spec ...)
+    :debug '(setup)
+    :repeatable t
+    :after-loaded t)
+}}}
+
+For example,
+
+{{{
+(setup (:straight forge)
+    (:load-after magit)
+    ;; Make it easier to see that a topic was closed.
+    (:face forge-topic-closed ((t (:strike-through t)))))
+}}}
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
