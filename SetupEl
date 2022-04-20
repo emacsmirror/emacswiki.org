@@ -526,6 +526,28 @@ would install both company and company-math. The context is set to company, beca
 
 An attempt is also made by setup.el to ease extensibility. Each macro is defined using the setup-define function. Combined with further attributes, it allows for the simple definition of local and context sensitive macros, that are debug-able, can be composed and deferred.
 
+== Imenu Support ==
+
+Here is a basic regular expression for all Imenu to find where you use the macro.
+
+{{{
+(with-eval-after-load 'imenu
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (setf (map-elt imenu-generic-expression "Setup")
+                    (list (rx line-start (0+ blank)
+                              "(setup" (1+ blank)
+                              (or (group-n 1 (1+ (or (syntax word)
+                                                     (syntax symbol))))
+                                  ;; Add here items that can define a feature:
+                                  (seq "(:" (or "straight" "require" "package")
+                                       (1+ blank)
+                                       (group-n 1 (1+ (or (syntax word)
+                                                          (syntax symbol)))))))
+                          1)))))
+
+}}}
+
 == See Also ==
 
 * SystemCrafters video on UsePackage alternatives, that discusses setup.el among other things https://www.youtube.com/watch?v=ZolOUgXHgbo
