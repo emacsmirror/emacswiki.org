@@ -6,7 +6,7 @@ I have a personal website, where I sometimes post about Emacs: https://amodernis
 
 Here are a few packages on mine which I have contributed to ELPA or MELPA:
 
-* [http://elpa.gnu.org/packages/setup.html setup]
+* [http://elpa.gnu.org/packages/setup.html setup] (see SetupEl)
 * [http://elpa.gnu.org/packages/shell-command+.html shell-command+]
 * [http://elpa.gnu.org/packages/vc-backup.html vc-backup]
 * [http://elpa.gnu.org/packages/compat.html compat]
