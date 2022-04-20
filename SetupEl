@@ -528,7 +528,7 @@ An attempt is also made by setup.el to ease extensibility. Each macro is defined
 
 == Imenu Support ==
 
-Here is a basic regular expression for all Imenu to find where you use the macro.
+Here is a basic regular expression to help Imenu find where you use the macro.
 
 {{{
 (with-eval-after-load 'imenu
