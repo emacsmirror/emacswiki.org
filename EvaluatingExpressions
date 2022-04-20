@@ -10,7 +10,7 @@ the result again later, you can find it in [[buffer]] `*Messages*' (for a while)
 by using a [[prefix argument]]: `C-u C-x C-e'.  This can be useful if you are writing some code that uses the result.
 
 ; ##C-M-x##: In EmacsLispMode (e.g., when in a file buffer `##*.el##'), you can use
-`C-M-x' (command `eval-defun') which evaluates the defun at point. If 
+`C-M-x' (command `eval-defun') which evaluates the defun at point. Note that the function name is a bit of a misnomer: invoking `eval-defun' evaluates the top-level sexp containing point, irrespective of use of defun. If 
 the [[cursor]] is inside or immediately after a [[variable]] declaration, then this function, unlike `C-x C-e', resets the variable to the value
 contained in the declaration.
 
