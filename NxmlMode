@@ -269,7 +269,7 @@ This is an error in nxml-mode, which doesn't have a schema to validate XHTML Tra
 
 == Commenting comments ==
 
-nXML mode already tries to correctlt comment comments, but sadly still fails:
+nXML mode already tries to correctly comment comments, but sadly still fails:
 
 Commenting
 <pre>
