@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 24 10:56:23 2021 (-0800)
+;; Last-Updated: Thu Apr 21 13:12:24 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7475
+;;     Update #: 7477
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -18,18 +18,21 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `crosshairs', `fit-frame',
-;;   `font-lock', `font-lock+', `frame-fns', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `rect', `replace',
-;;   `second-sel', `strings', `syntax', `text-mode', `thingatpt',
-;;   `thingatpt+', `vline', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+'.
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `crosshairs', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `fit-frame', `font-lock',
+;;   `font-lock+', `frame-fns', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
+;;   `hl-line', `hl-line+', `info', `info+', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3836,7 +3839,9 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
 
 ;; REPLACE ORIGINAL in `info.el':
 ;;
-;; 1. Added optional arg LITERALP.  Use apropos matching, not literal-string matching, by default.
+;; 1. Added optional arg LITERALP.
+;;    Use apropos matching, not literal-string matching, by default.
+;;    This is the _opposite_ of the vanilla behavior after the botched fix of bug #31807.
 ;; 2. Added optional args ARG and NARG.
 ;; 3. Handle prefix arg: can match literally and can choose the manuals to search.
 ;; 4. Use other window, unless already in Info.
@@ -3849,14 +3854,14 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
 Present a menu of the possible matches.
 The manuals to search are defined by option `Info-apropos-manuals'.
 
-With a prefix arg, match PATTERN as a literal string, not as a regexp
-or keywords.
-
 Just as for commands such as `apropos', PATTERN can be a word, a list
 of words (separated by spaces), or a regexp (using some regexp special
 characters).  If it is a word, search for matches for that word as a
 substring.  If it is a list of words, search for matches for any
-two (or more) of those words."
+two (or more) of those words.
+
+With a prefix arg, match PATTERN as a literal string, not as a regexp
+or keywords.  (Vanilla Emacs version of this command has it backward.)"
   (interactive (list (apropos-read-pattern "index entries") current-prefix-arg))
   (apropos-parse-pattern pattern)
   (if (equal apropos-regexp "")
