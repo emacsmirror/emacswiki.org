@@ -184,6 +184,23 @@ modifying user options:
 
 Here are a few examples of how setup-define can be used. Feel free to add your own macros or ideas to this section (see HowToEdit)
 
+=== Autoloading ===
+
+This can be useful when working with local Lisp files.
+
+{{{
+(setup-define :autoload
+  (lambda (func)
+    (let ((fn (if (memq (car-safe func) '(quote function))
+                  (cadr func)
+                func)))
+      `(unless (fboundp (quote ,fn))
+         (autoload (function ,fn) ,(symbol-name (setup-get 'feature)) nil t))))
+  :documentation "Autoload COMMAND if not already bound."
+  :repeatable t
+  :signature '(FUNC ...))
+}}}
+
 === Unconditional quit ===
 
 By default, :only-if, :if-host, etc. can be used to abort the evaluation of a setup body. In some cases one might want to unconditionally abort, e.g. when using a complex conditional construct. In that case, :quit generates the right code:
