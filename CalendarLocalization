@@ -615,3 +615,6 @@ Lisp:ukrainian-holidays.el
 	(holiday-fixed 12 26 "Day of Goodwill"))
       )
 </pre>
+
+----
+CategoryCalendar
