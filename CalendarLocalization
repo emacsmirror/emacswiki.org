@@ -18,6 +18,18 @@ or
 
 == Localized Day and Month Names ==
 
+=== Afrikaans ===
+
+{{{
+(setq calendar-week-start-day 1
+      calendar-day-name-array ["Sondag" "Maandag" "Dinsdag" "Woensdag"
+                               "Donderdag" "Vrydag" "Saterdag"]
+      calendar-month-name-array ["Januarie" "Februarie" "Maart" "April"
+				 "Mei" "Junie" "Julie" "Augustus"
+				 "September" "Oktober" "November"
+				 "Desember"])
+}}}
+
 === Austrian ===
 If you prefer /Jänner/ instead of the german /Januar/. You can also use /Feber/ instead of /Februar/.
 
