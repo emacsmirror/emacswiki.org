@@ -50,3 +50,6 @@ Keyword parameters may be emulated (assuming you have no ##&rest## args) by trea
 \(foobar-plist :bar 42)"
   (format "foo is %S and bar is %S" (plist-get args :foo) (plist-get args :bar)))
 }}}
+
+----
+CategoryCode
