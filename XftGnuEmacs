@@ -249,21 +249,18 @@ If you're having trouble with latin characters being displayed in a
 different font, try the following, which is mentioned in passing at
 the end of README.unicode:
 
-    (set-fontset-font "fontset-default" 'latin '("arial" .
-"unicode-bmp"))
+    (set-fontset-font "fontset-default" 'latin '("arial" . "unicode-bmp"))
 
 If you're having trouble with the euro symbol € character being
 displayed in a different font, try the following:
 
-    (set-fontset-font "fontset-default" 'gb18030 '("dejavu sans mono"
-. "unicode-bmp"))
+    (set-fontset-font "fontset-default" 'gb18030 '("dejavu sans mono" . "unicode-bmp"))
 
 Or, to change ONLY the Euro symbol (or any other specific characters
 that aren't covered by a suitable predefined charset or script), try
 something along the lines of
 
-    (set-fontset-font "fontset-default" '(#x20ac . #x20ac) '("dejavu sans mono"
-. "unicode-bmp"))
+    (set-fontset-font "fontset-default" '(#x20ac . #x20ac) '("dejavu sans mono" . "unicode-bmp"))
 
 where the hexadecimal numbers are the first and last Unicode codepoints you want to affect.
 
