@@ -598,6 +598,27 @@ The full package with regional holidays see at [https://github.com/grafov/russia
       )
 }}}
 
+==== Afrikaans ====
+
+The same public holidays, as above, but with their names in Afrikaans instead of English.
+
+{{{
+;; Openbare vakansiedae in Suid-Afrika
+(setq holiday-local-holidays
+      '((holiday-fixed 1 1 "Nuwejaarsdag")
+	(holiday-fixed 3 21 "Menseregtedag")
+	(holiday-easter-etc -2 "Goeie Vrydag")
+        (holiday-easter-etc +1 "Gesinsdag")
+	(holiday-fixed 4 27 "Vryheidsdag")
+	(holiday-fixed 5 1 "Werkersdag")
+	(holiday-fixed 6 16 "Jeugdag")
+	(holiday-fixed 8 9 "Nasionale Vrouedag")
+	(holiday-fixed 9 24 "Erfenisdag")
+	(holiday-fixed 12 16 "Versoeningsdag")
+	(holiday-fixed 12 25 "Kersdag")
+	(holiday-fixed 12 26 "Welwillendheidsdag")))
+}}}
+
 
 === Swiss ===
 <pre>
