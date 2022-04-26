@@ -37,7 +37,7 @@ Emacs packages that provide a consistent interface to many different version con
 * [[Git]] -- Supported by VC, but git.el comes with the package and there are many other Git-specific modes.
 ** [[GitHub]] 
 ** [[GitLab]]
-** [[srht|sr.ht]]
+** [[SourceHut]]
 * [[Mercurial]] (##hg##)
 * MonoTone -- Partially supported by DVC, but a mode is distributed with Monotone.
 
