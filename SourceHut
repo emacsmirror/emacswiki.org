@@ -1,0 +1,7 @@
+[https://sourcehut.org/ Sourcehut.org] is a software development platform.
+
+* tracking or advertising
+* all features work without JavaScript
+* 100% free and open source software
+
+One of the specific changes that set it apart from other such platforms is the focus on an email workflow. Repositories have mailing lists; issue trackers are public inboxes (email accounts that accept email and publish a bug tracker) and can be used without an account. If you have a good plain text email workflow, that makes it easy to use without a web UI. If you use Emacs for email, that means that no special mode is required to interact with it. Just git and email means [[Magit]] and [[Email Clients]].
