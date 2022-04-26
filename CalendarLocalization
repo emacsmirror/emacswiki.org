@@ -250,6 +250,24 @@ See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
           calendar-month-abbrev-array ["Січ" "Лют" "Бер" "Кві" "Тра" "Чер"
                                        "Лип" "Сер" "Вер" "Жов" "Лис" "Гру"])
 
+=== Zulu ===
+
+Or <i>isiZulu</i>
+
+{{{
+(setq calendar-week-start-day 1
+      calendar-day-name-array ["iSonto" "uMsombuluko" "uLwesibili"
+			       "uLwesithathu" "uLwesine" "uLwesihlanu"
+			       "uMgqibelo"]
+      calendar-day-abbrev-array ["So" "Ms" "Lb" "Lt" "Ls" "Lh" "Mg"]
+      calendar-day-header-array ["So" "Ms" "Lb" "Lt" "Ls" "Lh" "Mg"]
+      calendar-month-name-array ["uMasingana" "uNhlolanja" "uNdasa"
+				 "uMbasa" "uNhlaba" "uNhlangulana"
+				 "uNtulikazi" "uNcwaba" "uMandulo"
+				 "uMfumfu" "uLwezi" "uZibandlela"]
+      calendar-month-abbrev-array ["Mas" "Nlj" "Nda" "Mba" "Nlb" "Nlg"
+				   "Ntu" "Ncw" "Man" "Mfu" "Lwe" "Zib"])
+}}}
 
 == Localized National Holidays ==
 
@@ -619,6 +637,26 @@ The same public holidays, as above, but with their names in Afrikaans instead of
 	(holiday-fixed 12 26 "Welwillendheidsdag")))
 }}}
 
+==== Zulu ====
+
+South African public holidays, but with their Zulu (or <i>isiZulu</i>) names.
+
+{{{
+;; Amaholide omphakathi eNingizimu Afrika
+(setq holiday-local-holidays
+      '((holiday-fixed 1 1 "Usuku loNyaka Omusha")
+	(holiday-fixed 3 21 "Usuku lwaMalungelo Esintu")
+	(holiday-easter-etc -2 "Ulwsihlanu Oluhle")
+        (holiday-easter-etc +1 "Usuku Lomndeni")
+	(holiday-fixed 4 27 "Usuku Lwenkululeko")
+	(holiday-fixed 5 1 "Usuku Lwabasebenzi")
+	(holiday-fixed 6 16 "Usuku Lwentsha")
+	(holiday-fixed 8 9 "Usuku Lwabesifazane")
+	(holiday-fixed 9 24 "Usuku Lwamagugu")
+	(holiday-fixed 12 16 "Usuku Lokubuyisana")
+	(holiday-fixed 12 25 "Ukhisimuzi")
+	(holiday-fixed 12 26 "Usuku Loxolo")))
+}}}
 
 === Swiss ===
 <pre>
