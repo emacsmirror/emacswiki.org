@@ -309,6 +309,12 @@ Or <i>isiZulu</i>
        ))
 </pre>
 
+=== Brazilian ==
+
+Available as MELPA package: https://github.com/jadler/brazilian-holidays
+
+Or a snippet to put in the your config file (init.el or .emacs): https://github.com/luksamuk/brazil-holidays
+
 === Bulgarian ===
 
 Available on Github: https://github.com/dimitern/bulgarian-holidays.el
