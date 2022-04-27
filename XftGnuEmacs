@@ -387,3 +387,6 @@ JohnBrow got it to run under Fedora 8, looks very nice.  After
 checking the source out of CVS he had to do "yum install gtk-*" to
 pull all the required development packages in for the ./configure
 command to work.
+
+----
+CategoryDisplay
