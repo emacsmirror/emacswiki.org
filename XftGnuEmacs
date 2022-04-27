@@ -165,7 +165,7 @@ See the `FcPatternFormat(3)` manpage for a description of FontConfig patterns.
 
 == Fixed problems ==
 
-=== FreeBSD support 
+=== FreeBSD support ===
 
 Use *gmake* rather than *make* to compile on !FreeBSD.
 
