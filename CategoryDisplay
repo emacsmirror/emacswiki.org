@@ -32,6 +32,7 @@ that colors and [[face]]s belong in CategoryFaces.
 * MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
 * [[Sublimity]] - Smooth-scrolling and minimap like sublime editor, similar to MiniMap.
 * [https://github.com/rougier/aerial-emacs Aerial] - An alternative layout for emacs (cleaner and less cluttered)
+* XftGnuEmacs -- XFT support for GnuEmacs allowing the use of anti-aliased fonts under X11.
 
 == Managing Frames within Emacs ==
 
