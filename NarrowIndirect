@@ -10,7 +10,7 @@ In particular, you can kill an indirect buffer without affecting
 its base buffer.  You will likely want to kill indirect narrowed
 buffers rather than widening them.
 
-''Note:'' Because the indirect clone shares text properties with it
+''Note:'' Because the indirect clone shares text properties with its
 base buffer, if you give it a different major mode that uses
 different font-locking then the font-locking of the base buffer
 changes the same way.  However, you can restore the font-locking
