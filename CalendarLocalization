@@ -236,6 +236,16 @@ Week starts with monday, use also Spanish weekday and month names. Editor specia
 === Swedish ===
 See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
 
+=== Turkish ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["pazar" "pazartesi" "salı" "çarşamba" 
+                                   "perşembe" "cuma" "cumartesi"]
+          
+          calendar-month-name-array  ["ocak" "şubat" "mart" "nisan" "mayıs" 
+                                      "haziran" "temmuz" "ağustos" "eylül" 
+                                      "ekim" "kasım" "aralık"])
+         
 
 === Ukrainian ===
 
