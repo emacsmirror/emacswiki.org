@@ -36,7 +36,7 @@ prefixes.
 
 
 
-
+[:Commands]
 == Commands and Menu Commands ==
 
 Use `lacarte-execute-command' if you don't care whether a command
@@ -73,7 +73,7 @@ have it offer only items from specific current menu-bar menus:
 
 
 
-
+[:SortingAndCycling]
 == Completion Candidate Sorting and Cycling ==
 
 If you also use library [[Sortie]] (<tt>[[sortie.el]]</tt>), or if you use [[Icicles]], then:
@@ -98,7 +98,7 @@ whether and how many candidates to cycle among.
 
 
 
-
+[:FindingCommands]
 == Menu Organization Can Help You Find a Command ==
 
 Unlike commands listed in a flat `*Apropos*' page, menu items are organized, grouped logically by common area of application (`File', `Edit',...).  This grouping is also available when cycling among completion candidates (depending on the sort order).
@@ -112,7 +112,7 @@ There are ''lots'' of such menu items. But (again, depending on the sort order) 
 
 
 
-
+[:CompletionMatching]
 == Completion Matching ==
 
 During completion you can match the separator of menu components,
@@ -164,7 +164,7 @@ patterns to match, but also by adding ''patterns to NOT match''.
 
 
 
-
+[:MoreIciclesBenefits]
 == Additional Benefits of Using Icicles with La Carte ==
 
 * When you cycle to a candidate menu item, or you complete to one
