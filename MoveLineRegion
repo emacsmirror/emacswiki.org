@@ -1,3 +1,5 @@
+1 May 2022: This often causes the error: "command-execute: The mark is not set now, so there is no region". A more robust and less complicated approach is given by: https://www.emacswiki.org/emacs/MoveText (Emacs should really provide this functionality by default and let users configure if they want the region to expand automatically or not.) 
+
 These, in combination with MoveLine and MoveRegion, provide behavior similar to Eclipse's Alt-Up/Down.  They use MoveLine if there is no active [[region]], MoveRegion if there is.  Note that unlike in Eclipse, the [[region]] will not expand to the beginning of the first line or the end of the last line, see the [https://github.com/targzeta/move-lines move-lines] package for this.
 
 {{{
