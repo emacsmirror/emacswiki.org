@@ -96,7 +96,7 @@ If your .emacs is set-up to do indentation one way and you are contributing to a
             ;; Highlight leading space characters in Haskell files.
             (eval . (highlight-regexp "^ *")))))
 
-If other people are working on the same code, you might want to use [http://editorconfig.com EditorConfig] and the [https://github.com/editorconfig/editorconfig-emacs emacs extension].
+If other people are working on the same code, you might want to use [https://editorconfig.org EditorConfig] and the [https://github.com/editorconfig/editorconfig-emacs emacs extension].
 
 == Smart Tabs ==
 Is it possible to make Emacs use a /smart/ mix of tabs and spaces?
