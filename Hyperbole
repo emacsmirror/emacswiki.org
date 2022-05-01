@@ -33,7 +33,9 @@ work.
 GNU Hyperbole is available as a quick install package from GNU [[ELPA]]. The project home page is https://www.gnu.org/software/hyperbole. That page includes screenshots, download and installation instructions, and resource links.
 
 [new]
-A major new release of Hyperbole, version 7, the Git Ready for Action Release, was released on November 15, 2017.  It includes easily embeddable cross-references to git and Github objects, social media hashtag and user page links, rapid drags for displaying buffers and files in any desired window and window grids for displaying many buffers/files in a specified grid of windows, e.g. 3 rows by 5 columns.
+A major new release of Hyperbole, version 8, the Epiphany Release, was released on May 1, 2022.  The new features are too extensive to mention here.  See [https://www.gnu.org/s/hyperbole/HY-NEWS HY-NEWS].
+
+Hyperbole, version 7, the Git Ready for Action Release, was released on November 15, 2017.  It includes easily embeddable cross-references to git and Github objects, social media hashtag and user page links, rapid drags for displaying buffers and files in any desired window and window grids for displaying many buffers/files in a specified grid of windows, e.g. 3 rows by 5 columns.
 
 Hyperbole's major capabilities include:
 
