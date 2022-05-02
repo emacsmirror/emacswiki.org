@@ -1,11 +1,6 @@
 == Description ==
 
-Filladapt by KyleJones enhances Emacs' fill functions by guessing a fill prefix, such as a comment sequence in program code, and handling bullet points like "1." or "*".  Get it from the author at
-
-: http://www.wonderworks.com/
-: http://www.wonderworks.com/download/filladapt.el
-
-It is also available from GNU ELPA at http://elpa.gnu.org/packages/filladapt.html
+Filladapt by KyleJones enhances Emacs' fill functions by guessing a fill prefix, such as a comment sequence in program code, and handling bullet points like "1." or "*".  It is available from GNU ELPA at http://elpa.gnu.org/packages/filladapt.html
 
 Here are some things adding to filladapt (in addition to the sections below),
 
