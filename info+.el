@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 21 13:12:24 2022 (-0700)
+;; Last-Updated: Mon May  2 14:25:36 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7477
+;;     Update #: 7480
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -636,6 +636,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/02 dadams
+;;     info-display-manual: Apply bug #54961's (partial) fix.
 ;; 2021/12/24 dadams
 ;;     Added: Info-fontify-indented-text-manuals, function and variable info-indented-text-regexp.
 ;; 2021/11/11 dadams
@@ -6897,7 +6899,10 @@ Otherwise, visit the manual in a new Info buffer.
 
 With a prefix arg (Emacs 24.4+), completion candidates are limited to
 currently visited manuals."
-  (interactive (let ((manuals  (Info--manuals current-prefix-arg)))
+  (interactive (let* ((_IGNORE  (info-initialize))
+                      (manuals  (Info--manuals current-prefix-arg)))
+                 (when (fboundp 'info--filter-manual-names) ; Emacs 29, bug #54961.
+                   (setq manuals  (info--filter-manual-names manuals)))
                  (list (completing-read "Display manual: " manuals nil t))))
   (let ((blist             (buffer-list))
         (manual-re         (concat "\\(/\\|\\`\\)" manual "\\(\\.\\|\\'\\)"))
