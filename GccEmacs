@@ -31,7 +31,7 @@ If you're using unixy system with non-root access and would like to install emac
 
 if spack doesn't work, set ##SPACK_PYTHON## to python3 path. You can customize more, see https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/emacs/package.py for options.
 
-=== fedora ===
+=== Fedora ===
 
     dnf copr enable deathwish/emacs-pgtk-nativecomp
 
@@ -43,16 +43,11 @@ or
 
     dnf install emacs
 
-=== ArchLinux ===
+=== Arch ===
 
-An ##emacs28-git## package is available [https://aur.archlinux.org/packages/emacs28-git/ on the AUR] which tracks Emacs 28 where the native compilation feature has been merged.
+An ##emacs-nativecomp## package is available in the official ##extra## repository, which is enabled by default.
 
-Install it with your favourite AUR helper, or use the following commands to do it yourself:
-
-    $ git clone https://aur.archlinux.org/emacs28-git.git
-    $ cd emacs28-git
-    $ sed -i 's/^JIT=\(     \)/JIT="YES"/' PKGBUILD  # At the moment native just-in-time compilation in the package disabled by default 
-    $ makepkg --syncdeps --install
+    pacman -S emacs-nativecomp
 
 === Debian/unstable ===
 
