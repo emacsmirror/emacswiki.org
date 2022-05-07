@@ -1,6 +1,6 @@
 Erbot is an emacs-lisp irc bot. Main instances are fsbot on '''#emacs''' and other software channels on Libera Chat; and donald-bot on '''#latex'''.
 
-**Most of the erbot-docs below are a bit dated (by 2+ decades).  The ErbotParsing section is freshly revamped in 2019.  For current help, PM fsbot on Libera Chat and type <code>,help</code>. -deego, 2019**
+**Most of the erbot-docs below are a bit dated (by 2+ decades).**  **The** ErbotParsing **section is freshly revamped in 2019.  For current help, PM fsbot on Libera Chat and type** <code>,help</code>. -deego, 2019**
 
 ----
 
