@@ -4,6 +4,9 @@
 ;; Copyright (C) 2005 Lars Brinkhoff. (Original Author)
 ;; This file is in the public domain.
 
+;; Note that Emacs 29+ has both macros built-in as `cl-with-gensyms',
+;; and `cl-only-once'.
+
 (require 'cl-lib)
 
 (defmacro with-gensyms (symbols &rest body)
