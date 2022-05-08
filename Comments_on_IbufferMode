@@ -166,3 +166,16 @@ I'm not sure if it's mine.  It's in my init.el with no attribution (I usually li
 
 -- Mao 2022-05-08 05:58 UTC
 
+
+----
+
+Maybe this is a better solution?  Then the Ibuffer buffer won't show up if you visit a buffer from ibuffer and then kill that buffer.
+{{{
+(defun kill-ibuffer (&rest args)
+  "kills the *Ibuffer* buffer.  Advice for after ibuffer-visit-buffer"
+  (kill-buffer "*Ibuffer*"))
+(advice-add 'ibuffer-visit-buffer :after #'kill-ibuffer)
+}}}
+
+-- Mao 2022-05-08 21:13 UTC
+
