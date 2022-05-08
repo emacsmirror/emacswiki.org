@@ -151,3 +151,18 @@ Thanks
 
 -- Lance 2022-03-12 18:27 UTC
 
+
+----
+
+@Lance -- is this what you want?
+{{{
+(defun bury-ibuffer--ibuffer-visit-buffer (&rest args)
+  "Buries the *Ibuffer* buffer"
+  (bury-buffer "*Ibuffer*"))
+(advice-add 'ibuffer-visit-buffer :after #'bury-ibuffer--ibuffer-visit-buffer)
+}}}
+
+I'm not sure if it's mine.  It's in my init.el with no attribution (I usually link back to my sources for reference).
+
+-- Mao 2022-05-08 05:58 UTC
+
