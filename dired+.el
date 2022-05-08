@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 31 09:14:00 2022 (-0700)
+;; Last-Updated: Sun May  8 09:10:10 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13097
+;;     Update #: 13099
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -10190,7 +10190,8 @@ So for example:
 When invoked interactively, raise an error if no files are marked.
 
 If you exit (\\[keyboard-quit], RET or q), you can resume the query replace
-with the command \\[tags-loop-continue]."
+with the command \\[fileloop-continue] (\\[tags-loop-continue] for
+Emacs 26 or prior)."
   (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
                  (list (nth 0 common)
                        (nth 1 common)
