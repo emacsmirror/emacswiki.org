@@ -11,6 +11,7 @@ Self-documenting Emacs configurations that make use of a mixture of Org and Emac
 * https://github.com/grettke/lolsmacs
 * GuiltyDolphin's [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom .emacs] includes a [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/config.org structured main config file] (using literate programming techniques with org), separate [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/init.el init.el] and [https://github.com/GuiltyDolphin/dotfiles/blob/master/dotfiles/emacs/custom/Cask Cask] files, [https://github.com/GuiltyDolphin/dotfiles/tree/master/dotfiles/emacs/custom/snippets snippets], and more
 * https://jamiecollinson.com/blog/my-emacs-config/
+* Jeremy Friesen: https://github.com/jeremyf/dotemacs
 * Justin Abrahms: https://justin.abrah.ms/dotfiles/emacs.html
 * https://gitlab.com/Kaligule/emacs-config
 * https://github.com/KaratasFurkan/.emacs.d
