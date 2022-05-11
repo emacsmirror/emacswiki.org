@@ -497,6 +497,47 @@ For example,
     (:face forge-topic-closed ((t (:strike-through t)))))
 }}}
 
+== Example Configurations ==
+
+=== Vertico and co. ===
+
+This block would configure the [[Vertico]], [[Marginalia]], [[Consult]], [[Orderless]], [[Embark]] completion framework:
+
+{{{
+(setup (:package vertico marginalia consult orderless embark)
+  ;; Vertico
+  (:option vertico-mouse-mode t
+           vertico-reverse-mode t
+           vertico-count 8
+           vertico-resize t
+           vertico-cycle t
+           vertico-mode t)
+  ;; Marginalia
+  (:option marginalia-mode t)
+  (:bind-into minibuffer-local-map
+    "M-A" marginalia-cycle)
+  ;; Consult
+  (:global [remap switch-to-buffer] #'consult-buffer
+           [remap goto-line] #'consult-goto-line
+           [remap imenu] #'consult-imenu
+           [remap project-switch-to-buffer] #'consult-project-buffer
+           "M-s g" (if (executable-find "rg")
+                       #'consult-ripgrep
+                     #'consult-grep)
+           "M-s d" consult-find
+           "M-s l" consult-line
+           "M-s m" consult-mark
+           "M-s o" consult-outline
+           "M-s f" consult-flymake)
+  (:option xref-show-xrefs-function #'consult-xref
+           xref-show-definitions-function #'consult-xref)
+  ;; Orderless
+  (:option completion-styles '(orderless))
+  ;; Embark
+  (:global "C-'" #'embark-act
+           "C-=" #'embark-dwim))
+}}}
+
 == Comparison to UsePackage ==
 
 The most popular configuration macro for Emacs is use-package by John Wiegley.
