@@ -324,10 +324,9 @@ Putty session keyboard configuration:
 
 If you have a keyboard with two Alt keys (e.g. a US Keyboard), you will find that PuTTY doesn't recognize the one on the right side (see [http://www.derkeiler.com/Newsgroups/comp.security.ssh/2004-04/0169.html this dicussion post] for an explanation).
 
-However, this little problem is easily fixed with a simple registry edit using [http://www.microsoft.com/whdc/archive/w2kscan-map.mspx these instructions] from Microsoft and  [http://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/scancode.doc this scan code map].  Here's an example <code>.reg</code> file to do the job; save it as <code>fix-alt-key.reg</code> or something, and then double-click to add it to the registry.
+However, this little problem is easily fixed with a simple registry edit using [http://www.microsoft.com/whdc/archive/w2kscan-map.mspx these instructions] from Microsoft and  [http://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/scancode.doc this scan code map].  Here's an example <code>.reg</code> file to do the job; save it as <code>fix-alt-key.reg</code> or something, then double-click to add it to the registry, the reboot.
 
  Windows Registry Editor Version 5.00
-
  [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
  "Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,38,00,38,e0,00,00,00,00
 
