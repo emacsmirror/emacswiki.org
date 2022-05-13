@@ -1,6 +1,6 @@
-My full name is Piotr Filip Mieszkowski.  I use GnuEmacs in my everyday work, which is web development.
+My full name is Piotr Filip Mieszkowski.  I use GnuEmacs in my everyday work, which is software engineering.
 
-I'm impressed by the huge possibilities these Lisp-enabled editors have.  For some time I have been using a few other editors.  Some of them were tty-oriented, others were window and mouse-oriented (wily is an example).  All of them had something interesting and useful.  Emacs is my choice because it is /really/ flexible and is an environment, not only an editor.
+I'm impressed by the huge possibilities these Lisp-enabled editors have.  For some time I have been using a few other editors.  Some of them were tty-oriented, others were window and mouse-oriented (wily is an example).  All of them had something interesting and useful.  Emacs is my choice because it is /really/ flexible and is so much more than just a text editor.
 
 I *use* GnuEmacs.
 
@@ -19,11 +19,12 @@ Things I find very useful:
 
 * KeyboardMacros, [[register]]s and [[bookmark]]s
 * OccurMode, hi-lock
-* DeskTop
 * SavePlace
-* [[Anything]] (esp. when used with custom extensions!)
-
-Two of these, while used together, allow you to make your Emacs the best environment you could ever try. DeskTop saves lists of buffers with files associated to them across Emacs sessions and SavePlace saves your [[Point]] across sessions. Why remember which files you were editing, if Emacs could do it for you? :)
+* CompanyMode
+* LspMode with Java and Scala language servers
+* DeftMode and Zetteldeft
+* [[Magit]]
+* countless modes supporting file-types (sources in various languages, configuration formats and more).
 
 ----
 CategoryHomepage
