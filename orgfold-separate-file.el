@@ -1,5 +1,5 @@
 ;;; orgfold.el
-;; Copyright (C) 2009-2022
+;; Copyright (C) 2009 
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,8 +22,13 @@
 ;; file.
 ;; 
 
+(require 'cl)
+
+
 (defun orgfold-get-fold-info-file-name ()
   (concat (buffer-file-name) ".fold"))
+
+
 
 (defun orgfold-save ()
   (save-excursion
@@ -34,25 +39,43 @@
         (outline-next-visible-heading 1))
 
       (while (not (eobp))
-        (push (when (seq-some (lambda (o) (overlay-get o 'invisible))
-                         (overlays-at (line-end-position)))
-                t)
+        (push (if (some (lambda (o) (overlay-get o 'invisible))
+                        (overlays-at (line-end-position)))
+                  t)
               foldstates)
         (outline-next-visible-heading 1))
 
-      (with-temp-file (orgfold-get-fold-info-file-name)
-        (prin1 (nreverse foldstates) (current-buffer))))))
+      ;; save folding info only if there are actually closed branches
+      (if (some 'identity foldstates)
+          (let* ((foldfile (orgfold-get-fold-info-file-name))
+                 (buffer (or (get-file-buffer foldfile)
+                             (find-file-noselect foldfile))))
+            (with-current-buffer buffer
+              (erase-buffer)
+              (prin1 (nreverse foldstates) buffer)
+              (write-file foldfile))
+            (kill-buffer buffer))))))
+
 
 (defun orgfold-restore ()
   (save-excursion
     (goto-char (point-min))
-    (let* ((foldfile (orgfold-get-fold-info-file-name))
-           (foldstates
-            (when (file-readable-p foldfile)
-              (with-temp-buffer
-                (insert-file-contents foldfile)
-                (when (> (buffer-size) 0)
-                  (read (current-buffer)))))))
+    (let ((foldstates
+           (let* ((foldfile (orgfold-get-fold-info-file-name))
+                  (buffer (get-file-buffer foldfile))
+                  kill result)
+             (unless buffer
+               (when (file-readable-p foldfile)
+                 (setq buffer (find-file-noselect foldfile))
+                 (setq kill t)))
+
+             (when buffer
+               (with-current-buffer buffer
+                 (goto-char (point-min))
+                 (setq result (read (current-buffer))))
+               (if kill
+                   (kill-buffer buffer))
+               result))))
 
       (when foldstates
         (show-all)
@@ -63,12 +86,13 @@
 
         (while (and foldstates
                     (not (eobp)))
-          (when (pop foldstates)
-            (hide-subtree))
+          (if (pop foldstates)
+              (hide-subtree))
 
           (outline-next-visible-heading 1))
 
         (message "restored saved folding")))))
+                  
 
 
 (add-hook 'org-mode-hook 'orgfold-activate)
