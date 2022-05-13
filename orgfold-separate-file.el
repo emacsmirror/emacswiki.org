@@ -41,7 +41,6 @@
         (outline-next-visible-heading 1))
 
       (with-temp-file (orgfold-get-fold-info-file-name)
-        (erase-buffer)
         (prin1 (nreverse foldstates) (current-buffer))))))
 
 (defun orgfold-restore ()
