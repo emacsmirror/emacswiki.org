@@ -1,4 +1,11 @@
 ;;; orgfold.el
+
+;; DON'T CLICK DOWNLOAD !!!
+
+;; BEWARE THAT WHEN CLICKING THE DOWNLOAD/GIT BUTTON ON EMACS-WIKI,
+;; IT DOES NOT TAKE YOU TO THIS VERSION OF THE FILE
+
+
 ;; Copyright (C) 2009-2022
 
 ;; This file is free software; you can redistribute it and/or modify
