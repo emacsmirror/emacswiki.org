@@ -1,4 +1,3 @@
-
 Some [[Lisp]] dialects, such as Scheme and EuLisp, are Lisp1's, which
 means symbols have a single binding that you can establish with `let'.
 In such a Lisp, the following code locally binds the `add-one' function:
@@ -70,6 +69,19 @@ Later, funcall the variable instead of calling the function directly:
     (funcall my-error-function "This is an error message")
 
 Contributors: JohnWiegley, AlexSchroeder
+
+----
+
+Another alternative is to store the function in the value cell of the local variable and call it from there:
+
+ (defun value-call (s &rest sargs)
+  "Calls the function stored in the value slot of S, with SARGS"
+  (apply (symbol-value s) sargs))
+ 
+ (let ((add-one (lambda (x)
+                 (+ 1 x))))
+  (value-call 'add-one 1))
+ => 2
 
 ----
 CategoryCode
