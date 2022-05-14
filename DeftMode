@@ -2,6 +2,8 @@ Deft is an Emacs mode for quickly browsing, filtering, and editing directories o
 
 http://jblevins.org/projects/deft/
 
+There's also Zettledeft project (https://www.eliasstorms.net/zetteldeft/) that builds on Deft and provides a framework to build a Zettelkasten information system.
+
 ----
 
 Notational Velocity provides a show-hide function key, letting you pop in-and-out of the interface quickly.  I recreated a crude version of this in Deft, bound to f6.
