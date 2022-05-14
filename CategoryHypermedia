@@ -65,8 +65,9 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
 * FreeMind -- transforming between org-mode and /FreeMind/ mindmapping files.
 * FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
+* [[OrgMode]]
 * [[Hyperbole]] --- a workspace management, pan-document-hypertext system
-** [[Koutliner]] --- part of Hyperbole, outliner/layouter; works well along with org mode
+** [[Koutliner]] --- part of Hyperbole, outliner/layouter; works well along with [[OrgMode]]
 
 == Package/Language documentation modes ==
 * LangHelp -- Integrated help system in EmacsRuby.
