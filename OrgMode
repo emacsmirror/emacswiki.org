@@ -146,6 +146,7 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 * org-babel-execute asynchronously in a term-mode buffer.
 * [[https://github.com/ahungry/org-jira org-jira]] -- connecting OrgMode
 and Jira.
+* [[https://github.com/sheijk/org-menu org-menu]] -- Provides a handy transient menu for easily discovering and accessing org-mode related commands. Nifty for inserting source blocks, navigation and several other goodies.
 
 [:elisp]
 == Related elisp code ==
