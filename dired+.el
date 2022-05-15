@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  8 09:10:10 2022 (-0700)
+;; Last-Updated: Sun May 15 08:50:03 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13099
+;;     Update #: 13104
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -595,7 +595,7 @@
 ;;    `diredp-mouse-mark-region-files', `diredp-mouse-mark/unmark',
 ;;    `diredp-mouse-unmark', `diredp-mouse-upcase',
 ;;    `diredp-mouse-view-file', `diredp-move-file' (Emacs 24+),
-;;    `diredp-move-files-named-in-kill-ring',
+;;    `diredp-move-files-named-in-kill-ring', `diredp-move-this-file',
 ;;    `diredp-multiple-w32-browser-recursive',
 ;;    `diredp-nb-marked-in-mode-name', `diredp-next-dirline',
 ;;    `diredp-next-line', `diredp-next-subdir', `diredp-omit-marked',
@@ -887,6 +887,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/15 dadams
+;;     Added alias diredp-move-this-file.
+;;     diredp-mouse-3-menu: Added diredp-rename-this-file.
+;;     diredp-single-move-copy-link-menu: Renamed item diredp-rename-this-file.
+;;     diredp-menu-bar-regexp-menu: Renamed item dired-do-rename-regexp.
 ;; 2022/03/31 dadams
 ;;     diredp-move-files-named-in-kill-ring: Use diredp-filename-separator for split-string.
 ;; 2022/03/27 dadams
@@ -12525,8 +12530,11 @@ Makes the first char of the name uppercase and the others lowercase."
   (interactive) (dired-upcase 1))
 
 ;;;###autoload
+(defalias 'diredp-move-this-file 'diredp-rename-this-file)
+;;;###autoload
 (defun diredp-rename-this-file ()       ; Bound to `r'
-  "In Dired, rename this file."
+  "In Dired, rename this file or move it to a different directory.
+To move it, rename the directory part of its absolute name."
   (interactive)
   (let ((use-file-dialog  nil)) (dired-do-rename 1)))
 
@@ -13308,6 +13316,7 @@ With non-nil prefix arg, mark them instead."
                              ["Downcase" diredp-downcase-this-file]
                              "--"       ; ------------------------------------------------------
                              ["Copy to..." diredp-copy-this-file]
+                             ["Move/Rename to..." diredp-rename-this-file]
                              ["Symlink to (Relative)..." diredp-relsymlink-this-file]
                              ["Symlink to..." diredp-symlink-this-file]
                              ["Hardlink to..." diredp-hardlink-this-file]
@@ -14636,7 +14645,7 @@ windows there, then delete its window (toggle : show/hide the file)."
 (define-key diredp-single-move-copy-link-menu [single-copy]
   '(menu-item "Copy to..." diredp-copy-this-file :help "Copy file at cursor"))
 (define-key diredp-single-move-copy-link-menu [single-rename]
-  '(menu-item "Move to..." diredp-rename-this-file
+  '(menu-item "Move/Rename to..." diredp-rename-this-file
     :help "Rename file at cursor, or move it to a different directory"))
 
 
@@ -15409,8 +15418,8 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Copy to..." dired-do-copy-regexp ; In `dired-aux.el'.
               :help "Copy marked files matching regexp"))
 (define-key diredp-menu-bar-regexp-menu [rename]
-  '(menu-item "Move to..." dired-do-rename-regexp ; In `dired-aux.el'.
-              :help "Move marked files matching regexp"))
+  '(menu-item "Move/Rename to..." dired-do-rename-regexp ; In `dired-aux.el'.
+              :help "Move/rename marked files matching regexp"))
 (define-key diredp-menu-bar-regexp-menu [unmark-regexp-default-dir]
   '(menu-item "Unmark (Default Dir)..."
               (lambda () (interactive)
