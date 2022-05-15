@@ -148,6 +148,12 @@ Full directory path name for DirEd, full file path name for files, buffer name o
           '(buffer-file-name "%f"
             (dired-directory dired-directory "%b")))
 
+To abbreviate the file path name.
+
+    (setq frame-title-format
+          '(buffer-file-name (:eval (abbreviate-file-name buffer-file-name))
+            (dired-directory dired-directory "%b")))
+
 
 === Mark modified buffer ===
 
