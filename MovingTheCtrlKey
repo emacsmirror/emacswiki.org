@@ -367,7 +367,7 @@ Your keyboard's info should appear. Ensure that the created .kl file, as well as
 
 It is also possible to use the space bar as an additional control key.  When this behavior is enabled, the space bar will behave as a control key when it is held, and will behave normally when pressed and released by itself.
 
-You can achieve this behavior in Linux with [https://gitlab.com/at-home-modifier/at-home-modifier-evdev/wikis/home at-home-modifier] or [https://github.com/alols/xcape], in MS Windows with the [https://github.com/benhansenslc/BigCtrl BigCtrl] script for !AutoHotKey, and in !MacOS with the [https://ke-complex-modifications.pqrs.org/#spacebar_changes] rule for [https://github.com/pqrs-org/Karabiner-Elements Karabiner-Elements] (formerly "!Keyremap4MacBook").
+You can achieve this behavior in Linux with [https://gitlab.com/at-home-modifier/at-home-modifier-evdev/wikis/home at-home-modifier] or [https://github.com/alols/xcape Xcape], in MS Windows with the [https://github.com/benhansenslc/BigCtrl BigCtrl] script for !AutoHotKey, and in !MacOS with the [https://ke-complex-modifications.pqrs.org/#spacebar_changes Spacebar changes] rule for [https://github.com/pqrs-org/Karabiner-Elements Karabiner-Elements] (formerly "Keyremap4!MacBook").
 
 Using the aforementioned tools, similar behavior can be enabled for any modifier key---[Ctrl], [Shift], [Meta], or otherwise.
 
