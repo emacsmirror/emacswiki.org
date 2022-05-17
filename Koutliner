@@ -71,4 +71,4 @@ always begin with a 0, as in 012, to distinguish them from relative ids.
 This has some neat features that I have not seen elsewhere such as auto-numbering.  It has been around many years. (AllOut also does auto-numbering but likely only single level numbering, not multi-level as in legal outlines, nor does it have permanent hyperlinkable ids for each node).
 
 ----
-CategoryOutline
+CategoryOutline CategoryHypermedia
