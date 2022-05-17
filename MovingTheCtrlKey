@@ -365,13 +365,13 @@ Your keyboard's info should appear. Ensure that the created .kl file, as well as
 [:Using space bar as both space and control]
 == Using space bar as both space and control ==
 
-An alternative to moving the control key, to avoid Emacs pinky, is to use the space bar as /both/ space and control.
+It is also possible to use the space bar as an additional control key.  When this behavior is enabled, the space bar will behave as a control key when it is held, and will behave normally when pressed and released by itself.
 
-If you press the space bar alone, it inserts a space. If you press it together with another key, it acts as a control key.
+You can achieve this behavior in Linux with [https://gitlab.com/at-home-modifier/at-home-modifier-evdev/wikis/home at-home-modifier] or [https://github.com/alols/xcape], in MS Windows with the [https://github.com/benhansenslc/BigCtrl BigCtrl] script for !AutoHotKey, and in MacOS with the [https://ke-complex-modifications.pqrs.org/#spacebar_changes] rule for [[Karabiner-Elements][https://github.com/pqrs-org/Karabiner-Elements]] (formerly "Keyremap4MacBook").
 
-You can achieve this by using [https://gitlab.com/at-home-modifier/at-home-modifier-evdev/wikis/home at-home-modifier] or [https://github.com/alols/xcape] in X (Linux only). And for MS Windows, !AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
+Using the aforementioned tools, similar behavior can be enabled for any modifier key---[Ctrl], [Shift], [Meta], or otherwise.
 
-This is not limited to ctrl -- shift, alt, or any other keys can be pressed with thumbs. See also the following [[#Japanese keyboard]] section.
+See also the following [[#Japanese keyboard]] section.
 
 History: This trick was invented by K. Kimura in 2001, and has been known as "!SandS", standing for "Space and Shift" (the original idea was to use the space as shift) to some users in Japan. See the [http://gitorious.org/at-home-modifier/at-home-modifier/blobs/raw/master/README README] of at-home-modifier for the full history.
 
