@@ -2,8 +2,6 @@ Tracker is a search tool that is available in many GNU/Linux distributions.
 
 You can learn more about tracker here: http://www.gnome.org/projects/tracker/
 
-The tracker integration into emacs can be found here: http://zanfishen.com/stories/emacs-tracker.html
-
 [new]
 [[Anything]] can use tracker as a source, too.  --TassiloHorn
 
