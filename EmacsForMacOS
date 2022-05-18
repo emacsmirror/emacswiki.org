@@ -15,8 +15,6 @@ If you've used Emacs before and already have your own Emacs initialization file,
 As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files. When using the vanilla EmacsforOsx binary, a useful site for setting, at least, Emacs server and Emacs client applications is [https://korewanetadesu.com/emacs-on-os-x.html Configuring Emacs on Mac OS X]. Emacs shell environments behave differently from Terminal environments and in order to have correct environments like LANG=en_GB.utf-8 LC_ALL=en_GB.utf-8 or PATH= for sub-applications launched from Emacs like R, Octave, Gnuplot etc., set the environments not only in .bash_profile but in .bashrc and try (since Yosemite /etc/launchd.conf is no more consulted for security reasons).  
 
 If you are looking for more integration with OSX, Mitsuharu Yamamoto's Mac port might be the best option.
-It adds valuable smooth scrolling and subpixel font rendering not found elsewhere. 
-Other than that is it stock standard emacs.
 
 === OS X Binary Vanilla builds ===
 These builds are based on the development version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
