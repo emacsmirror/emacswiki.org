@@ -24,6 +24,7 @@ On a more cautious note, see RepeatedStrainInjury. :(
 == Standard Emacs - Minor Modifications ==
 
 * FontLockColorsAccessibility -- Suggestion to change font-lock-* faces to enhance accessibility.
+* MovingTheCtrlKey -- How to move the Ctrl (or Control or "C-") key into a more accessible position -- see also CategoryKeys
 * StickyModifiers -- reducing repetitive strain injury by clicking keyboard keys in a combination like C-M-s one by one.
 * XModMap -- can be used to map modifiers to a more convenient location -- like the number row -- so you can use them without straining your wrists.  Yay!
 
