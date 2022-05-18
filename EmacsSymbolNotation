@@ -17,7 +17,7 @@ Here are examples of notational symbols you might find in Emacs and EmacsLisp.
 ; ##`(a ,@b)##: another backquote operator: ##,@## splices the value of ##b## into the list whose car is ##a##.  That is, the example expression here returns a list whose [[car]] is the [[symbol]] ##a## and whose [[cdr]] is the [[symbol value]] of ##b##.  The value of ##b## is often a list, but it need not be.
 ; ##'(2 . (4 5))##:  the dot is the cons operator (it joins `car' and `cdr' and creates a list). It is equivalent to ##(cons 2 '(4 5))##. Both are the same as ##'(2 4 5)##
 ; ##:a##:  this is called keyword. It is really a symbol which starts with a colon. You don't need to quote it with '
-; ###'a##:  this is used to quote a function. Just as ##'argument## expands into ##(quote argument)##, ###'argument## expands into (function argument)
+; ###'a##:  this is used to quote a function. Just as ##'argument## expands into ##(quote argument)##, ###'argument## expands into ##(function argument)##
 ; ##t##:  this is *not* a variable called t; it is a constant symbol which represents true
 ; ##nil##:  constant symbol which represents false
 ; ##;##:  the character used to comment text until the end of the line
