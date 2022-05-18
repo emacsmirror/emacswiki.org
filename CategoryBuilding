@@ -9,7 +9,7 @@ Some pages are listed here explicitly:
 ** GccEmacs -- build GnuEmacs with the new native code features enabled
 * BuildingXEmacs
 * EmacsOnAIX
-* EmacsOnMacOS
+* EmacsForMacOS
 * EmacsOnSun
 * EmacsOnVMS
 * EmacsSnapshotAndDebian
