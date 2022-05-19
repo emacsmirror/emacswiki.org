@@ -1,6 +1,6 @@
 Tracker is a search tool that is available in many GNU/Linux distributions.
 
-You can learn more about tracker here: http://www.gnome.org/projects/tracker/
+You can learn more about tracker here: https://wiki.gnome.org/Projects/Tracker
 
 [new]
 [[Anything]] can use tracker as a source, too.  --TassiloHorn
@@ -26,3 +26,6 @@ To answer the question about searching by tags above: The code in Lisp:tracker-d
 Past, some of the above links seems to be regularly outdated (page is missing or host is down). So I upload it on this Wiki. You could get it here : Lisp:tracker-dired.el .
 
 Thanks to MaartenGrachten for his help. - CyrilB
+
+----
+CategorySearchAndReplace
