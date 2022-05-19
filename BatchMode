@@ -33,6 +33,13 @@ this at the top of your script file:
 #!/usr/bin/emacs --script
 }}}
 
+When printing the following I had to escape the quotes!
+{{{
+echo emacs info: $(emacs  --batch --eval="(print (concat emacs-version \",build: \" (number-to-string emacs-build-number) \" on \" emacs-build-system))")
+
+emacs info: "29.0.50,build: 4 on nb3"
+}}}
+
 ==Error codes==
 
 One use of batch scripting is to run a predicate over a collection of files. For example, to use 'check-parens' and exit with an error code 1 if 'check-parens' throws an exception:
