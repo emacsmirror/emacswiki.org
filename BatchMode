@@ -33,7 +33,7 @@ this at the top of your script file:
 #!/usr/bin/emacs --script
 }}}
 
-When printing the following I had to escape the quotes!
+When printing the following inside a bash script I had to escape the quotes!
 {{{
 echo emacs info: $(emacs  --batch --eval="(print (concat emacs-version \",build: \" (number-to-string emacs-build-number) \" on \" emacs-build-system))")
 
