@@ -441,7 +441,6 @@
     ("htink" "think" nil 0)
     ("htis" "this" nil 0)
     ("htp:" "http:" nil 0)
-    ("http:\\\\" "http://" nil 0)
     ("httpL" "http:" nil 0)
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
