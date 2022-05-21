@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Jan 26 10:36:28 2022 (-0800)
+;; Last-Updated: Sat May 21 12:17:37 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 28677
+;;     Update #: 28679
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6506,8 +6506,7 @@
 ;;
 ;;  With `C-x C-f' (`icicle-file'), `M-R' opens each of those input
 ;;  patterns, just as if you had used `C-x C-f' separately on each
-;;  one: it visits all Icicles files, file `my file.txt', and file
-;;  `bookmark+.el'.
+;;  one: it visits all Icicles files, and file `bookmark+.el'.
 ;;
 ;;  With this feature you can, for instance, select an existing list
 ;;  of file names, yank it into the minibuffer of a file-processing
