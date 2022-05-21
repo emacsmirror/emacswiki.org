@@ -36,7 +36,7 @@ After reading, these are the multi-inputs that can be acted on:
 
 With `C-x C-f' (`icicle-file'), `M-R' opens each of those input
 patterns, just as if you had used `C-x C-f' separately on each
-one: it visits all '''Icicles''' files, file `##my file.txt##', and file
+one: it visits all '''Icicles''' files and file
 `##bookmark+.el##'.
 
 With this feature you can, for instance, select an existing list
