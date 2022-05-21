@@ -424,7 +424,7 @@
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
 ;;    (@file :file-name "icicles-doc2.el" :to "Some Icicles Commands Hard-Code Completion Methods")
-;;    (@file :file-name "icicles-doc2.el" :to "Vanilla Emacs Styles and Option `completing-styles'")
+;;    (@file :file-name "icicles-doc2.el" :to "Vanilla Emacs Styles and Option `completion-styles'")
 ;;    (@file :file-name "icicles-doc2.el" :to "Prefix Completion Method `vanilla'")
 ;;    (@file :file-name "icicles-doc2.el" :to "Icicles Completion Methods")
 ;;    (@file :file-name "icicles-doc2.el" :to "Changing Completion Method")
