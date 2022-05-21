@@ -47,8 +47,8 @@ to remove the default key bindings for such commands.
 
 
 
-[:VanillaEmacsStylesAndOption_completing-styles]
-== Vanilla Emacs Styles and Option `completing-styles' ==
+[:VanillaEmacsStylesAndOption_completion-styles]
+== Vanilla Emacs Styles and Option `completion-styles' ==
 
 Starting with Emacs 23, Emacs provides '''completion styles''', which,
 like '''Icicles''' completion ''methods'', are different ways to complete
