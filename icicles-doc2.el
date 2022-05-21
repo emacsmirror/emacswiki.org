@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Jan 26 11:01:15 2022 (-0800)
+;; Last-Updated: Sat May 21 12:36:45 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 30079
+;;     Update #: 30080
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -300,7 +300,7 @@
 ;;
 ;;  (@> "Completion Methods and Styles")
 ;;    (@> "Some Icicles Commands Hard-Code Completion Methods")
-;;    (@> "Vanilla Emacs Styles and Option `completing-styles'")
+;;    (@> "Vanilla Emacs Styles and Option `completion-styles'")
 ;;    (@> "Prefix Completion Method `vanilla'")
 ;;    (@> "Icicles Completion Methods")
 ;;    (@> "Changing Completion Method")
@@ -4032,8 +4032,8 @@
 ;;  case, consider customizing option `icicle-top-level-key-bindings'
 ;;  to remove the default key bindings for such commands.
 ;;
-;;(@* "Vanilla Emacs Styles and Option `completing-styles'")
-;;  ** Vanilla Emacs Styles and Option `completing-styles' **
+;;(@* "Vanilla Emacs Styles and Option `completion-styles'")
+;;  ** Vanilla Emacs Styles and Option `completion-styles' **
 ;;
 ;;  Starting with Emacs 23, Emacs provides "completion styles", which,
 ;;  like Icicles completion methods, are different ways to complete
@@ -5915,9 +5915,9 @@
 ;;    when `TAB' completion method is `vanilla'.  During completion
 ;;    you can use `C-M-(' to cycle to the next the style set.  You can
 ;;    use command `icicle-choose-completion-style-set' anytime to
-;;    choose the default style set and set option `completing-styles'
+;;    choose the default style set and set option `completion-styles'
 ;;    to it.  With a prefix argument, the command also saves the new
-;;    `completing-styles' value.
+;;    `completion-styles' value.
 ;;
 ;;  * User option `icicle-levenshtein-distance' is the Levenshtein
 ;;    distance allowed for strings to be considered as matching during
