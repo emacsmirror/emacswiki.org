@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 14:33:51 2022 (-0700)
+;; Last-Updated: Sun May 22 12:51:38 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13107
+;;     Update #: 13113
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -887,6 +887,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/22 dadams
+;;     dired-read-dir-and-switches: Prevent any additional reads from changing raw prefix arg used for later tests.
 ;; 2022/05/21 dadams
 ;;     diredp-mouse-3-menu: Corrected This File entry for Describe.
 ;; 2022/05/15 dadams
@@ -3242,6 +3244,7 @@ Optional arg LOCALP as in `dired-get-filename'.
 Optional second argument ARG specifies files to use instead of marked.
  Usually ARG comes from the command's prefix arg.
  If ARG is an integer, use the next ARG files (previous -ARG, if < 0).
+  (1 means file on current line.  -1 means file on previous line.)
  If ARG is a cons with element 16, 64, or 256, corresponding to
   `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files
   in the Dired buffer, where:
@@ -3543,22 +3546,22 @@ of file names.
 
 If you use Icicles then reading uses Icicles completion, with
 additional multi-command keys.  See `dired' (defadvice doc)."
-  (let* ((switchs                                     (and current-prefix-arg
-                                                           (natnump (prefix-numeric-value current-prefix-arg))
-                                                           (read-string "Dired listing switches: "
-                                                                        dired-listing-switches)))
+  (let* ((raw-parg  current-prefix-arg)
+         (switchs   (and current-prefix-arg
+                         (natnump (prefix-numeric-value current-prefix-arg))
+                         (read-string "Dired listing switches: " dired-listing-switches)))
          (icicle-candidate-action-fn
           (lambda (cand)
-            (dired-other-window cand (and current-prefix-arg  (read-string "Dired listing switches: "
-                                                                           dired-listing-switches)))
+            (dired-other-window cand (and raw-parg  (read-string "Dired listing switches: "
+                                                                 dired-listing-switches)))
             (select-window (minibuffer-window))
             (select-frame-set-input-focus (selected-frame))))
 ;;; $$$$$$ Alternative: Could choose no-op for non-dir candidate.
 ;;;          (icicle-candidate-action-fn
 ;;;           (lambda (cand)
 ;;;             (cond ((file-directory-p cand)
-;;;                    (dired-other-window cand (and current-prefix-arg  (read-string "Dired listing switches: "
-;;;                                                                                   dired-listing-switches)))
+;;;                    (dired-other-window cand (and raw-parg  (read-string "Dired listing switches: "
+;;;                                                                         dired-listing-switches)))
 ;;;                    (select-window (minibuffer-window))
 ;;;                    (select-frame-set-input-focus (selected-frame)))
 ;;;                   (t
@@ -3569,7 +3572,7 @@ additional multi-command keys.  See `dired' (defadvice doc)."
               (dired-other-window (cons (read-string (format "Dired %s(buffer name): " string)) files)))))
          (icicle-sort-comparer                        (or (and (boundp 'icicle-file-sort) ; If not reading files
                                                                icicle-file-sort) ; then dirs first.
-                                                          (and (> (prefix-numeric-value current-prefix-arg) 0)
+                                                          (and (> (prefix-numeric-value raw-parg) 0)
                                                                'icicle-dirs-first-p)
                                                           (and (boundp 'icicle-sort-comparer)
                                                                icicle-sort-comparer)))
@@ -3606,7 +3609,7 @@ additional multi-command keys.  See `dired' (defadvice doc)."
          (icicle--temp-orders                         (and (boundp 'icicle-sort-orders-alist)
                                                            (copy-sequence icicle-sort-orders-alist)))
          (icicle-candidate-help-fn                    (lambda (cand)
-                                                        (icicle-describe-file cand current-prefix-arg t)))
+                                                        (icicle-describe-file cand raw-parg t)))
          (icicle-candidate-alt-action-fn              (and (boundp 'icicle-candidate-alt-action-fn)
                                                            (or icicle-candidate-alt-action-fn
                                                                (icicle-alt-act-fn-for-type "file"))))
@@ -3615,7 +3618,7 @@ additional multi-command keys.  See `dired' (defadvice doc)."
           (and (boundp 'icicle-sort-orders-alist)
                (progn (when t ; $$$$ (and icicle-file-sort-first-time-p  icicle-file-sort)
                         (setq icicle-sort-comparer  icicle-file-sort))
-                        ; $$$$ (setq icicle-file-sort-first-time-p  nil))
+                        ;; $$$$ (setq icicle-file-sort-first-time-p  nil))
                       (if icicle-file-sort
                           (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
                             (if already-there
@@ -3626,7 +3629,7 @@ additional multi-command keys.  See `dired' (defadvice doc)."
     (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
     (unwind-protect
          (list
-          (if (> (prefix-numeric-value current-prefix-arg) 0)
+          (if (> (prefix-numeric-value raw-parg) 0)
               ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
               ;; code knows we want directories.  Some dialog boxes can only select directories
               ;; or files when popped up, not both. If no dialog box is used, call `read-file-name'
