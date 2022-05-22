@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jan 26 10:38:52 2022 (-0800)
+;; Last-Updated: Sun May 22 13:28:50 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 11923
+;;     Update #: 11929
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1220,6 +1220,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2022/05/22 dadams
+;;     icicle-add-key+cmd: Use icicle-characterp.
 ;; 2021/03/17 dadams
 ;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2020/11/05 dadams
@@ -2343,6 +2345,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2022/05/22 dadams
+;;     icicle-SPC-scatter-re, icicle-file-name-(non)directory, icicle-input-from-minibuffer:
+;;       Use icicle-characterp.
 ;; 2021/04/10 dadams
 ;;     icicle-increment-cand-nb+signal-end: Respect new option, icicle-wrap-around-cycling-flag.
 ;; 2021/04/06 dadams
@@ -7922,6 +7927,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2022/05/22 dadams
+;;     Added icicle-characterp as an alias for Emacs < 23, since they've removed char-valid-p.
+;;     icicle-edmacro-parse-keys: Use icicle-characterp.
 ;; 2021/04/10 dadams
 ;;     Added icicle-wrap-around-cycling-flag.
 ;; 2018/03/02 dadams
