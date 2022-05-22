@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Wed Jan 26 09:55:59 2022 (-0800)
+;; Last-Updated: Sun May 22 13:19:51 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 6237
+;;     Update #: 6240
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -247,8 +247,9 @@
 ;;  Functions defined here:
 ;;
 ;;    `icicle-bind-top-level-commands',
-;;    `icicle-buffer-sort-*...*-last', `icicle-color-defined-p' (Emacs
-;;    22+), `icicle-compute-shell-command-candidates',
+;;    `icicle-buffer-sort-*...*-last', `icicle-characterp',
+;;    `icicle-color-defined-p' (Emacs 22+),
+;;    `icicle-compute-shell-command-candidates',
 ;;    `icicle-edmacro-parse-keys', `icicle-ffap-guesser',
 ;;    `icicle-kbd', `icicle-remap', `icicle-thing-at-point',
 ;;    `icicle-widgetp'.
@@ -614,6 +615,11 @@
 
 ;;; But first some functions and a widget that are used in option definitions.
 
+(defalias 'icicle-characterp (if (fboundp 'characterp) 'characterp 'char-valid-p)
+  "Return non-nil if OBJECT is a character.
+Defined for compatibility with Emacs 20-22.")
+
+
 ;; Same as `naked-edmacro-parse-keys' in `naked.el'.
 ;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
 ;; Differences are:
@@ -732,7 +738,7 @@ ANGLES."
       (setq res  (edmacro-subseq res 2 -2)))
     (if (and (not need-vector)
 	     (loop for ch across res
-		   always (and (if (fboundp 'characterp) (characterp ch) (char-valid-p ch))
+		   always (and (icicle-characterp ch)
 			       (let ((ch2  (logand ch (lognot ?\M-\^@))))
 				 (and (>= ch2 0)  (<= ch2 127))))))
 	(concat (loop for ch across res collect (if (= (logand ch ?\M-\^@) 0) ch (+ ch 128))))
