@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Jan 26 09:59:07 2022 (-0800)
+;; Last-Updated: Sun May 22 13:15:53 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 15308
+;;     Update #: 15309
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4317,7 +4317,7 @@ chars in it replaced by one less SPC char followed by `.*'."
     ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
     ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
     (when (or (and (fboundp 'max-char)  (< (1+ max-char-in-name) (max-char))) ; Emacs 23+
-              (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
+              (icicle-characterp (1+ max-char-in-name))) ; Emacs 20-22.
       (setq repl-char  (1+ max-char-in-name)))
     (let* ((one-spc   (replace-regexp-in-string "\\([^ ]\\|\\`\\)\\( \\)\\([^ ]\\|\\'\\)" ".*"
                                                 string 'FIXEDCASE 'LITERAL 2))
@@ -4886,7 +4886,7 @@ what it returns."
     ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
     (when (or (and (fboundp 'max-char)  ; Emacs 23+
                    (< (1+ max-char-in-name) (max-char)))
-              (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
+              (icicle-characterp (1+ max-char-in-name))) ; Emacs 20-22.
       (setq repl-char  (1+ max-char-in-name)))
     (let* ((escaped-file  (subst-char-in-string ?\\ repl-char ; Replace \ by REPL-CHAR
                                                 filename 'IN-PLACE))
@@ -4911,7 +4911,7 @@ That is, backslash is never treated as a directory separator."
     ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
     (when (or (and (fboundp 'max-char)  ; Emacs 23+
                    (< (1+ max-char-in-name) (max-char)))
-              (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
+              (icicle-characterp (1+ max-char-in-name))) ; Emacs 20-22.
       (setq repl-char  (1+ max-char-in-name)))
     (setq filename  (subst-char-in-string repl-char ?\\ ; Replace REPL-CHAR by \
                                           (file-name-nondirectory
@@ -4975,7 +4975,7 @@ The current buffer must be a minibuffer."
         ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
         (when (or (and (fboundp 'max-char) ; Emacs 23+
                        (< (1+ max-input-char) (max-char)))
-                  (char-valid-p (1+ max-input-char))) ; Emacs 20-22.
+                  (icicle-characterp (1+ max-input-char))) ; Emacs 20-22.
           (setq repl-char  (1+ max-input-char)))
         (setq input
               (save-match-data          ; Need `save-match-data' around `icicle-subst-envvar-in-file-name'.
