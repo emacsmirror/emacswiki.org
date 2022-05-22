@@ -1614,7 +1614,7 @@ options are valid."
 (defsubst blank-char-valid-p (char)
   ;; This check should be improved!!!
   (or (< char 256)
-      (char-valid-p char)))
+      (characterp char)))
 
 
 (defun blank-legal-display-vector-p (vec)
