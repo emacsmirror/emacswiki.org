@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Jan 26 10:27:20 2022 (-0800)
+;; Last-Updated: Sun May 22 13:11:16 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7485
+;;     Update #: 7486
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9149,13 +9149,12 @@ completions are found for PREFIX."
               ;; Include BINDING if it is not `self-insert-command' or user has OK'd use of such.
               (or (not (eq bndg 'self-insert-command)) ; Command, keymap.
                   (and icicle-complete-keys-self-insert-ranges ; Insert char (Emacs 22).
-                       (char-valid-p event))))
-             (when (and (if (fboundp 'characterp) (characterp event) (char-valid-p event)) ; `ESC' -> `M-'.
+                       (icicle-characterp event))))
+             (when (and (icicle-characterp event) ; `ESC' -> `M-'.
                         (eq event meta-prefix-char)
                         (keymapp bndg))
                (map-keymap (lambda (key bndg)
-                             (when (if (fboundp 'characterp) (characterp key) (char-valid-p key))
-                               (icicle-add-key+cmd (event-apply-modifier key 'meta 27 "M-") bndg)))
+                             (when (icicle-characterp key) (icicle-add-key+cmd (event-apply-modifier key 'meta 27 "M-") bndg)))
                            bndg))
              (when (and (functionp bndg)  (commandp bndg)) ; Follow remapped command to target command.
                (setq bndg  (key-binding (vconcat icicle-key-prefix-2 (vector event)))))
