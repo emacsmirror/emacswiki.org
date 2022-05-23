@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 22 12:51:38 2022 (-0700)
+;; Last-Updated: Mon May 23 09:46:34 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13113
+;;     Update #: 13117
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -887,6 +887,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/23 dadams
+;;     dired-find-file: Show erroneous file name in error msg.  Redefine for all Emacs versions now, not just 20.
 ;; 2022/05/22 dadams
 ;;     dired-read-dir-and-switches: Prevent any additional reads from changing raw prefix arg used for later tests.
 ;; 2022/05/21 dadams
@@ -13357,21 +13359,22 @@ With non-nil prefix arg, mark them instead."
     (let ((last-command  'mouse-save-then-kill)) (mouse-save-then-kill event))))
 
 
-;; REPLACE ORIGINAL in `dired.el' for Emacs 20.
+;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
+;; 1. Show erroneous file name in error message.
+;; 2. (Needed only for Emacs 20) Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
 ;;
-(when (< emacs-major-version 21)
-  (defun dired-find-file ()             ; Bound to `RET'
-    "In Dired, visit the file or directory named on this line."
-    (interactive)
-    (let* ((dgf-result  (or (dired-get-filename nil 'NO-ERROR)  (error "No file on this line")))
-           (file-name   (file-name-sans-versions dgf-result t)))
-      (if (file-exists-p file-name)
-          (find-file file-name)
-        (error (if (file-symlink-p file-name)
-                   "File is a symlink to a nonexistent target"
-                 "File no longer exists; type `g' to update Dired buffer"))))))
+(defun dired-find-file ()               ; Bound to `RET'
+  "In Dired, visit the file or directory named on this line."
+  (interactive)
+  (let* ((dgf-result  (or (dired-get-filename nil 'NO-ERROR)  (error "No file on this line")))
+         (file-name   (file-name-sans-versions dgf-result t)))
+    (if (file-exists-p file-name)
+        (find-file file-name)
+      (error (if (file-symlink-p file-name)
+                 "File `%s' is a symlink to a nonexistent target"
+               "File `%s' no longer exists; type `g' to update Dired buffer")
+             file-name))))
 
 ;;;###autoload
 (defun diredp-find-file-other-frame ()  ; Bound to `C-o'
