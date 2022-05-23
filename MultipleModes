@@ -3,7 +3,6 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 = Comparison =
 
 || library        || elisp files || size  || last update || url                                                 ||
-|| web-mode       ||           1 || 386 kb ||  2018-12-14 || http://web-mode.org                  ||
 || polymode       ||          19 || 260 kb || 2019-01-03 || https://polymode.github.io/ ||
 || mmm-mode       ||          17 || 185 kb ||  2018-06-21 || https://github.com/purcell/mmm-mode                 ||
 || multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
@@ -12,13 +11,7 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 
 -----------
-= web-mode.el = 
 
-WebMode is a major mode for editing web templates: HTML files embedding parts (CSS / JavaScript) and blocks (server and client side). web-mode.el is autonomous and is compatible with many template engines : PHP, JSP, GSP (Grails), ASP / ASP.NET AJAX (Atlas), Django / Twig / Jinja(2) / ErlyDTL (Zotonic) / Selmer, ERB, FreeMarker, Velocity, Cheetah, Smarty, CTemplate / Mustache / Hapax / Handlebars / Meteor / Blaze /ember.js, Blade (laravel), Knockoutjs, Go Template (Revel), Razor/Play, Dust, Closure (soy), underscore.js, template-toolkit, Liquid (jekyll), angular.js, web2py, mako (pylons), reactjs (jsx), mojolicious.
-
-Actively maintained by François-Xavier Bois.
-
-* http://web-mode.org
 
 = polymode =
 
