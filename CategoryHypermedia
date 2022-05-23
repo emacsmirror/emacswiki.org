@@ -26,6 +26,7 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 * AtomBlogger -- Creating/Editting Blogger posts.
 * SaveAsHtml, HtmlFontify -- Save files in HTML format.
 * HtmlLite -- Construct html pages with sexps.
+* WebMode -- major-mode for editing web templates, i.e. HTML documents with template language additions like PHP, Mustache, Jinja, Twig, and many more.
 === Servers ===
 * HttpServer
 ** EmacsHttpd -- HTTP server embedded in the Emacs.
