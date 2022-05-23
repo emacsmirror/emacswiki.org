@@ -154,6 +154,7 @@ operations on files in the solution.
 * WajigMode -- An interface for wajig
 * WavefrontObjMode -- Edit 3D Wavefront Obj format files
 * WebgenMode -- minor mode for [http://webgen.rubyforge.org/ webgen]
+* WebMode -- major-mode for editing web templates
 * WhiteSpace -- minor mode to visualize (HARD) SPACE, TAB and NEWLINE
 * WikiMode
 * WikiNavMode --simple file navigation using &91;&91;WikiStrings&93;&93;
