@@ -9,6 +9,9 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 * LearnEmacsLisp to learn Emacs -- Emacs '''is''' a Lisp environment. You don't have to become a Lisp expert to take advantage of this connection. Knowing a little Lisp helps you '''ask Emacs'''.
 * Watch EmacsScreencasts  << *good place to start with many comprehensive resources!*
 * Some beginner-oriented tutorials written by users:
+** [https://www.masteringemacs.org/reading-guide Mastering Emacs reading guide]
+** [https://www.masteringemacs.org/ Mastering Emacs]
+** [http://xahlee.info/emacs/index.html Xah Emacs Tutorial]
 ** EmacsCrashCourse.
 ** [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
 ** OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
