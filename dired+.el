@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 23 09:46:34 2022 (-0700)
+;; Last-Updated: Tue May 24 10:04:10 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13117
+;;     Update #: 13128
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -887,6 +887,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/24 dadams
+;;     dired-read-dir-and-switches:
+;;       Use DIRED-BUFFER also if positive prefix arg.  Better doc.  Added autoload cookie.
 ;; 2022/05/23 dadams
 ;;     dired-find-file: Show erroneous file name in error msg.  Redefine for all Emacs versions now, not just 20.
 ;; 2022/05/22 dadams
@@ -3515,36 +3518,47 @@ current subdir, else use current subdir of this Dired buffer."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; 1. Added behavior for non-positive prefix arg:
+;; 1. Added optional args READ-EXTRA-FILES-P and DIRED-BUFFER.
+;;
+;; 2. Behavior for non-positive prefix arg:
+;;
 ;;    * Construct a cons DIRNAME arg.
-;;    * Read a Dired buffer name (not a directory) for its car.
 ;;    * If READ-EXTRA-FILES-P is non-nil then read any number of file and dir names, to be included as its cdr. 
 ;;    * If chosen Dired buffer exists and is an ordinary listing then start out with its `directory-files'.
 ;;
 ;; 2. If you use Icicles then this is a multi-command - see doc for `dired' defadvice.
 ;;
+;;;###autoload
 (defun dired-read-dir-and-switches (string &optional read-extra-files-p dired-buffer)
   "Read arguments for `dired' commands.
-STRING is added to the prompt after \"Dired \".  If not \"\", it should
-end with a space.
-
-With a non-negative prefix arg, read the `ls' switches.
-With a non-negative prefix arg or none, read the directory to Dired.
-
-With a non-positive prefix arg:
-* If DIRED-BUFFER is non-nil, it is the name of the Dired buffer to
-  use.  Otherwise, read it (it is not necessarily a directory name).
-  If in Dired now, the current buffer name is the default.
-* If READ-EXTRA-FILES-P is non-nil then read any number of directory
-  or file names, to make up the Dired arbitrary-files listing.  You
-  can use file-name wildcards (i.e., `*' for globbing), to include the
-  matching files and directories.  Use `C-g' when done entering the
-  files and directories to list.
+Add STRING to the prompt after \"Dired \".  If it is not \"\" then it
+should end with a space.
 
 Return a list of arguments for `dired': (DIRNAME SWITCHES).  DIRNAME
-here has the same form as `dired-directory'.  When a non-positive
-prefix arg is used, DIRNAME is a cons of the buffer name and the list
-of file names.
+here has the same form as `dired-directory'.
+
+With a non-negative prefix arg, read the `ls' switches.
+
+With a non-positive prefix arg:
+
+ * DIRNAME is a cons of the Dired buffer name (see below) and the list
+   of file names.
+
+ * With non-nil READ-EXTRA-FILES-P, read any number of directory or
+   file names, to make up the Dired arbitrary-files listing (the cdr
+   of DIRNAME).  Use `C-g' when done entering the files and
+   directories to list.  You can use file-name wildcards (i.e., `*'
+   for globbing), to include the matching files and directories.
+
+Optional arg DIRED-BUFFER: 
+
+ * If non-nil then it should be a string.  Use it as the Dired buffer
+   name.
+
+ * If nil, read the buffer name (it is not necessarily a directory
+   name).  If in Dired now, the current buffer name is the default.
+   With a positive prefix arg, read the buffer name as a directory
+   name, defaulting to the `default-directory'.
 
 If you use Icicles then reading uses Icicles completion, with
 additional multi-command keys.  See `dired' (defadvice doc)."
@@ -3620,7 +3634,7 @@ additional multi-command keys.  See `dired' (defadvice doc)."
           (and (boundp 'icicle-sort-orders-alist)
                (progn (when t ; $$$$ (and icicle-file-sort-first-time-p  icicle-file-sort)
                         (setq icicle-sort-comparer  icicle-file-sort))
-                        ;; $$$$ (setq icicle-file-sort-first-time-p  nil))
+                      ;; $$$$ (setq icicle-file-sort-first-time-p  nil))
                       (if icicle-file-sort
                           (let ((already-there  (rassq icicle-file-sort icicle--temp-orders)))
                             (if already-there
@@ -3630,38 +3644,39 @@ additional multi-command keys.  See `dired' (defadvice doc)."
                         icicle--temp-orders)))))
     (when (fboundp 'icicle-bind-file-candidate-keys) (icicle-bind-file-candidate-keys))
     (unwind-protect
-         (list
-          (if (> (prefix-numeric-value raw-parg) 0)
-              ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
-              ;; code knows we want directories.  Some dialog boxes can only select directories
-              ;; or files when popped up, not both. If no dialog box is used, call `read-file-name'
-              ;; because the user may want completion of file names for use in a wildcard pattern.
-              (funcall (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
-                           #'read-directory-name
-                         #'read-file-name)
-                       (format "Dired %s(directory): " string) nil default-directory nil)
-            (dolist (db  dired-buffers) ; Remove any killed buffers from `dired-buffers' (even if DIRED-BUFFER).
-              (unless (buffer-name (cdr db)) (setq dired-buffers  (delq db dired-buffers))))
-            (let* ((dbufs   (and (not dired-buffer)
-                                 (mapcar (lambda (db) (list (buffer-name (cdr db)))) dired-buffers)))
-                   (dirbuf  (or dired-buffer
-                                (completing-read (format "Dired %s(buffer name): " string) dbufs nil nil nil nil
-                                                 (and (derived-mode-p 'dired-mode)  (buffer-name)))))
-                   (files   (and (diredp-existing-dired-buffer-p dirbuf)
-                                 (with-current-buffer (get-buffer dirbuf)
-                                   (and (not (consp dired-directory))
-                                        (directory-files dired-directory 'FULL diredp-re-no-dot)))))
-                   file)
-              (when read-extra-files-p
-                (while (condition-case nil ; Use lax completion, to allow wildcards.
-                           (setq file  (read-file-name "File or dir (C-g when done): "))
-                         (quit nil))
-                  ;; Do not allow root dir (`/' or a Windows drive letter, e.g. `d:/').
-                  (if (diredp-root-directory-p file)
-                      (progn (message "Cannot choose root directory") (sit-for 1))
-                    (push file files))))
-              (cons dirbuf files)))
-          switchs)
+        (list
+         (if (> (prefix-numeric-value raw-parg) 0)
+             (or dired-buffer
+                 ;; If a dialog box is about to be used, call `read-directory-name' so the dialog
+                 ;; code knows we want directories.  Some dialog boxes can only select directories
+                 ;; or files when popped up, not both.  If no dialog box is used, call `read-file-name'
+                 ;; because the user may want completion of file names for use in a wildcard pattern.
+                 (funcall (if (and (fboundp 'read-directory-name)  (next-read-file-uses-dialog-p))
+                              #'read-directory-name
+                            #'read-file-name)
+                          (format "Dired %s(directory): " string) nil default-directory nil))
+           (dolist (db  dired-buffers) ; Remove any killed buffers from `dired-buffers' (even if DIRED-BUFFER).
+             (unless (buffer-name (cdr db)) (setq dired-buffers  (delq db dired-buffers))))
+           (let* ((dbufs   (and (not dired-buffer)
+                                (mapcar (lambda (db) (list (buffer-name (cdr db)))) dired-buffers)))
+                  (dirbuf  (or dired-buffer
+                               (completing-read (format "Dired %s(buffer name): " string) dbufs nil nil nil nil
+                                                (and (derived-mode-p 'dired-mode)  (buffer-name)))))
+                  (files   (and (diredp-existing-dired-buffer-p dirbuf)
+                                (with-current-buffer (get-buffer dirbuf)
+                                  (and (not (consp dired-directory))
+                                       (directory-files dired-directory 'FULL diredp-re-no-dot)))))
+                  file)
+             (when read-extra-files-p
+               (while (condition-case nil ; Use lax completion, to allow wildcards.
+                          (setq file  (read-file-name "File or dir (C-g when done): "))
+                        (quit nil))
+                 ;; Do not allow root dir (`/' or a Windows drive letter, e.g. `c:/').
+                 (if (diredp-root-directory-p file)
+                     (progn (message "Cannot choose root directory (`%s')" file) (sit-for 1))
+                   (push file files))))
+             (cons dirbuf files)))
+         switchs)
       (when (fboundp 'icicle-unbind-file-candidate-keys) (icicle-unbind-file-candidate-keys)))))
 
 
