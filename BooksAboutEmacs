@@ -7,6 +7,25 @@ The electronic manuals integrated in Emacs (EmacsLispIntro, EmacsLispReference, 
 Some people, however, believe that the GnuFreeDocumentationLicense is not really "free" -- see EmacsManualLicense. For the EmacsWiki position on licensing, see the discussion started [[2003-11-16]]
 about moving from the FDL to the current EmacsWiki license (see the footer of each page).
 
+== Mastering Emacs ==
+
+Book about basic, but also complex Emacs topics. Author's perspective is good for people coming from more recent editors, like Sublime text. Updated to cover up to Emacs 28.
+
+* https://www.masteringemacs.org/
+
+== Hacking Your Way Around Emacs ==
+
+https://leanpub.com/hacking-your-way-emacs/ is an intermediate book on Emacs Lisp.
+
+== Emacs for Writers ==
+
+Randall Wood has written [http://therandymon.com/woodnotes/emacs-for-writers/emacs-for-writers.html a short guide on how to use Emacs for writing text] (not code), which covers most functions appropriate for word processing, but it may be useful for beginners as well.
+
+== The Craft of Text Editing ==
+
+* TheCraftOfTextEditing -- a non-introductory book about text editors, specifically Emacs.
+
+
 == O'Reilly's "Learning GNU Emacs" 3rd Edition ==
 
 http://www.oreilly.com/catalog/gnu3/
@@ -84,20 +103,6 @@ tell us if we can (or can't) place this link here. (It's a very
 interesting link!) -- JeanPhilippeTheberge
 
 The authors of the book may not own the copyright.  They probably don't if the book was published in the US. -- Erika
-
-== Emacs for Writers ==
-
-Randall Wood has written [http://therandymon.com/woodnotes/emacs-for-writers/emacs-for-writers.html a short guide on how to use Emacs for writing text] (not code), which covers most functions appropriate for word processing, but it may be useful for beginners as well.
-
-== The Craft of Text Editing ==
-
-* TheCraftOfTextEditing -- a non-introductory book about text editors, specifically Emacs.
-
-== Mastering Emacs ==
-
-Book about basic, but also complex Emacs topics. Author's perspective is good for people coming from more recent editors, like Sublime text.
-
-* https://www.masteringemacs.org/
 
 == XEmacs auf Gut Deutsch ==
 
