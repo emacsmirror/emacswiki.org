@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun May 22 13:19:51 2022 (-0700)
+;; Last-Updated: Tue May 24 10:10:07 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 6240
+;;     Update #: 6241
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -615,10 +615,9 @@
 
 ;;; But first some functions and a widget that are used in option definitions.
 
-(defalias 'icicle-characterp (if (fboundp 'characterp) 'characterp 'char-valid-p)
-  "Return non-nil if OBJECT is a character.
-Defined for compatibility with Emacs 20-22.")
-
+;; Return non-nil if OBJECT is a character.
+;; Defined for compatibility with Emacs 20-22.
+(defalias 'icicle-characterp (if (fboundp 'characterp) 'characterp 'char-valid-p))
 
 ;; Same as `naked-edmacro-parse-keys' in `naked.el'.
 ;; Based on `edmacro-parse-keys' in standard library `edmacro.el'
