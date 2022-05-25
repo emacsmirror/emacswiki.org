@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May 24 20:51:18 2022 (-0700)
+;; Last-Updated: Tue May 24 21:33:59 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9454
+;;     Update #: 9456
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1909,37 +1909,44 @@ Bookmarks created using vanilla Emacs (`bookmark.el'):
 Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
 except for the following differences.
 
-1. Visit information is recorded, using entries `visits' and `time':
+1. Time of creation is recorded when you create a new bookmark:
+
+ (created . CREATION-TIME)
+
+ CREATION-TIME is an Emacs time representation, returned by function
+ `current-time'.
+
+2. Visit information is recorded, using entries `visits' and `time':
 
  (visits . NUMBER-OF-VISITS)
  (time . TIME-LAST-VISITED)
 
  NUMBER-OF-VISITS is a whole-number counter.
 
- TIME-LAST-VISITED is an Emacs time representation, such as is
- returned by function `current-time'.
+ TIME-LAST-VISITED is an Emacs time representation, returned by
+ `current-time'.
 
-2. The buffer name is recorded, using entry `buffer-name'.  It need
+3. The buffer name is recorded, using entry `buffer-name'.  It need
 not be associated with a file.
 
-3. If no file is associated with the bookmark, then FILENAME is
+4. If no file is associated with the bookmark, then FILENAME is
    `   - no file -'.
 
-4. Bookmarks can be tagged by users.  The tag information is recorded
+5. Bookmarks can be tagged by users.  The tag information is recorded
 using entry `tags':
 
  (tags . TAGS-ALIST)
 
  TAGS-ALIST is an alist with string keys.
 
-5. A bookmark can be simply a wrapper for a file, in which case it has
+6. A bookmark can be simply a wrapper for a file, in which case it has
 entry `file-handler' instead of `handler'.  When you \"jump\" to such
 a bookmark, the `file-handler' function or shell-command is applied to
 the `filename' entry.  Any `handler' entry present is ignored, as are
 entries such as `position'.  It is only the target file that is
 important.
 
-6. Bookmarks can have individual highlighting, provided by users.
+7. Bookmarks can have individual highlighting, provided by users.
 This overrides any default highlighting.
 
  (lighting . HIGHLIGHTING)
@@ -1953,7 +1960,7 @@ This overrides any default highlighting.
    `:when'  - A sexp to be evaluated.  Return value of `:no-light'
               means do not highlight.
 
-7. The following additional entries are used to record region
+8. The following additional entries are used to record region
 information.  When a region is bookmarked, POS represents the region
 start position.
 
@@ -1974,7 +1981,7 @@ bookmarked.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' *precedes* `end-position'.
 
-8. The following additional entries are used for a Dired bookmark.
+9. The following additional entries are used for a Dired bookmark.
 
  (dired-marked . MARKED-FILES)
  (dired-subdirs . INSERTED-SUBDIRS)
@@ -1986,7 +1993,7 @@ bookmarked.
  HIDDEN-SUBDIRS is the list of inserted subdirs that were hidden.
  SWITCHES is the string of `dired-listing-switches'.
 
-9. The following additional entries are used for a Gnus bookmark.
+10. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -1996,20 +2003,20 @@ bookmarked.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-10. For a URL bookmark, FILENAME or LOCATION is a URL.
+11. For a URL bookmark, FILENAME or LOCATION is a URL.
 
-11. A sequence bookmark has this additional entry:
+12. A sequence bookmark has this additional entry:
 
  (sequence . COMPONENT-BOOKMARKS)
 
  COMPONENT-BOOKMARKS is the list of component bookmark names.
 
-12. A function bookmark has this additional entry, which records the
+13. A function bookmark has this additional entry, which records the
 FUNCTION:
 
  (function . FUNCTION)
 
-13. A bookmark-list bookmark has this additional entry, which records
+14. A bookmark-list bookmark has this additional entry, which records
 the state of buffer `*Bookmark List*' at the time it is created:
 
  (bookmark-list . STATE)
