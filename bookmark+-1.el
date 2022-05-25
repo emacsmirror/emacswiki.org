@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jan 14 12:34:36 2022 (-0800)
+;; Last-Updated: Tue May 24 20:51:18 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9453
+;;     Update #: 9454
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2696,7 +2696,7 @@ A prefix argument changes the behavior as follows:
 Bookmark properties listed in option `bmkp-properties-to-keep' are not
 overwritten when you set an existing bookmark.  Their existing values
 are kept.  Other properties may be updated.  Properties such as
-`position' and `visit' are typically updated, for example, to record
+`position' and `visits' are typically updated, for example, to record
 the new position and the number of visits.
 
 Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it removes
