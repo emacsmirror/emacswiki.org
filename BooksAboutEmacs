@@ -9,17 +9,24 @@ about moving from the FDL to the current EmacsWiki license (see the footer of ea
 
 == Mastering Emacs ==
 
-Book about basic, but also complex Emacs topics. Author's perspective is good for people coming from more recent editors, like Sublime text. Updated to cover up to Emacs 28.
 
-* https://www.masteringemacs.org/
+* [[https://www.masteringemacs.org/ Mastering Emacs by Mickey Peterson]] -- Book about basic, but also complex Emacs topics. Author's perspective is good for people coming from more recent editors, like Sublime text. Updated to cover up to Emacs 28.
 
 == Hacking Your Way Around Emacs ==
 
-https://leanpub.com/hacking-your-way-emacs/ is an intermediate book on Emacs Lisp.
+* [[https://leanpub.com/hacking-your-way-emacs/ Hacking your way around Emacs by Marcin Borkowski]] -- an intermediate book on Emacs Lisp.
+
+== Literate Configuration ==
+
+* [[https://leanpub.com/lit-config Literate Configuration by Diego Zamboni]] -- A short book that covers the basics of maintaining your literate configuration in Emacs and OrgMode
+
+== Publishing with Emacs, OrgMode and LeanPub ==
+
+* [[https://leanpub.com/emacs-org-leanpub Publishing with Emacs, OrgMode and LeanPub by Diego Zamboni]] -- Build a workflow to automate your writing and publishing using Emacs.
 
 == Emacs for Writers ==
 
-Randall Wood has written [http://therandymon.com/woodnotes/emacs-for-writers/emacs-for-writers.html a short guide on how to use Emacs for writing text] (not code), which covers most functions appropriate for word processing, but it may be useful for beginners as well.
+* [[http://therandymon.com/woodnotes/emacs-for-writers/emacs-for-writers.html Emacs for Writers by Randal Wood]] -- a short guide on how to use Emacs for writing text (not code), which covers most functions appropriate for word processing, but it may be useful for beginners as well.
 
 == The Craft of Text Editing ==
 
@@ -28,18 +35,16 @@ Randall Wood has written [http://therandymon.com/woodnotes/emacs-for-writers/ema
 
 == O'Reilly's "Learning GNU Emacs" 3rd Edition ==
 
-http://www.oreilly.com/catalog/gnu3/
+* [[https://learning.oreilly.com/library/view/learning-gnu-emacs/0596006489/ Learning Emacs - 3rd Edition]] -- Published in December 2004
 
-Published December 2004
+** ISBN: 0-596-00648-9
 
-ISBN: 0-596-00648-9
+** Covers GNU Emacs 21.3.5
 
-Covers GNU Emacs 21.3.5
-
-Includes new chapter on platform-specific issues (Unix, Windows, Mac OS X), with installation How To
+** Includes new chapter on platform-specific issues (Unix, Windows, Mac OS X), with installation How To
 
 
-== O'Reilly's "Learning GNU Emacs" 2nd Edition ==
+=== O'Reilly's "Learning GNU Emacs" 2nd Edition ===
 
 
 Published December 1996
