@@ -62,6 +62,8 @@ MouseGeneral is a top-level list of mouse topics.
 
 As always, the EmacsManual has more information.  In particular, see [[Manual:Mouse Commands]], and subsequent pages.
 
+An r/emacs discussion that [[https://www.reddit.com/r/emacs/comments/uxh0dy/a_mousedriven_emacs/ talks about mouse driven Emacs actions]]
+
 ----
 CategoryHelp
 CategoryMouse
