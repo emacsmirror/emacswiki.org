@@ -18,7 +18,7 @@ There is also the concept of the `mouse-face' property -- a [[text property]] wh
 * PointerShape -- Change the shape of the [[pointer]].
 * MouseAvoidance -- Automatically move the pointer out of your way.
 * MouseCopy -- Single-click copy/yank to point
-* [[DelicateMouseClick]] -- Placement point on the side (left/right) of the character clicked upon
+
 
 === Quickies ===
 
@@ -44,6 +44,7 @@ These are centered around using or extending the mouse; they are useless without
 * [[Mouse3]] -- Customize how `mouse-3' behaves.  Context-sensitive menus.
 * [[Mouse+]] -- Highlight the position where the mouse will paste, until you release the mouse button. Lets you correct your aim. Also: use `mouse-2' in the [[echo area]] to initiate `M-x'.
 * MouseEvent -- Write mouse-event code compatible with different EmacsLisp dialects
+* [[DelicateMouseClick]] -- Place point on the side (left/right) of the character where you click
 
 == Mouse-supporting extensions ==
 
