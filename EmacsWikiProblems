@@ -8,6 +8,10 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Ampersands do not display correctly in grey boxes ==
+
+This can be seen for example on the page [https://www.emacswiki.org/emacs/ReplaceRegexpWithLispExpressions#h5o-5]. The token \& is displayed as \& amp; in the last line figuring in the grey box under the header Find files listed in a buffer.
+
 == When downloading a file, emacs-wiki does not show the latest version ==
 
 I have updated the file at https://www.emacswiki.org/emacs/orgfold-separate-file.el. And the page correctly shows the latest code (e.g. it does not include `(require cl)`.
