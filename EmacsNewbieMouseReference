@@ -16,6 +16,10 @@ On a two-button mouse, the secondary (right) button is typically `mouse-3'.  (Nu
 
 The middle button, if any, is `mouse-2'.  On a two-button mouse, you can generally simulate it by pressing the left and right buttons simultaniously.  On mice with a scroll wheel, pressing the wheel (like a button) usually sends `mouse-2'.
 
+
+
+
+
 == Basic mouse actions ==
 
 Exactly what each mouse button does, depends on the type of [[buffer]] you are working in, and any [[mode]]s that might be in effect.  The general behavior is:
@@ -28,25 +32,42 @@ Click `mouse-2' (middle button) to [[CopyAndPaste|paste]] a copy of the selectio
 
 A common technique is to select text by dragging with the left button, and then immediately paste it elsewhere by clicking there with the middle button.
 
-Click `mouse-3' (right button) to ''extend'' the selection/region.  If there is already a region selected, this will make the region larger, to include everything from the end of the previous region, to the location clicked.  If there is no active selection, this will select starting from point, to the location clicked, making it the active region.
+Click `mouse-3' (right button) to ''relimit'' (extend or reduce) the selection/region.  If there is already a selection, this makes it larger or smaller, to include everything from the farthest end of the selection to where you click.  If there is no selection, this selects text from point to where you click, making it the active region.
 
 Use `C-mouse-3' (hold Control and then right-click) to get a pop-up context menu.  This is equivalent to a plain right-click in most mainstream software.
 
-== Intermediate mouse actions ==
 
-Double-clicking `mouse-1' on a word selects the entire word.  Triple-click to select the entire line.  Combine either of these with a drag to select whole-words or whole-lines at once.
 
-Double-click `mouse-3' to extend the region (as with a single click), and then cut/kill the selected text.
 
-A common technique is to move point to the start of some text by left clicking, and then cut that text by double-right-clicking the other end.  Optionally, one can then paste the cut text elsewhere by middle-clicking the other location.
 
-`C-mouse-1' pops up a menu with a list of buffers (open files).  Click a buffer on the menu to switch to that buffer.
 
-Clicking `mouse-1' on a button or link follows/invokes it, as you might expect.  Pressing ''and holding'' `mouse-1' will move point to that location, without triggering it.
 
-A ''secondary selection'' is available by pressing and holding the [[Meta]] key during mouse actions.  (The Meta key is also known as the Alt key, and written as `M-'.)  For example, `M-' while dragging creates and extends the secondary selection.  `M-mouse-2' pastes the secondary selection (that is, click `mouse-2' while holding Meta/Alt).
+== More mouse actions ==
+
+Double-click `mouse-1' on a word to select it.  Triple-click to select a line of text.  Combine either of these with either a drag or a `mouse-3' click to extend the selection by whole words or lines.
+
+Double-click `mouse-3' to kill the text from point to where you click.
+
+A common technique is to move point to the start of some text by left clicking, and then cut that text by double-right-clicking the other end.  Optionally, one can then paste the cut text elsewhere by middle-clicking at the other location.
+
+`C-mouse-1' pops up a menu with a list of buffers (open files).  Choose a menu entry to switch to that buffer.
+
+Clicking `mouse-2' on a button or a link activates/follows it.
+
+If option `mouse-1-click-follows-link' is non-nil (the default) then clicking `mouse-1' on a button or link acts the same as `mouse-2'.  If the option is nil then `mouse-1' just sets point to the clicked location, even if its on a button or link.
+
+If `mouse-1-click-follows-link' is non-nil then you need to
+press ''and hold'' `mouse-1' on a button or link to set point there instead of activating it.
+
+Whether you use nil or non-nil `mouse-1-click-follows-link' generally depends on whether (a) you want both `mouse-1' and `mouse-2' to follow links, and you rarely want to set point on link text, or (b) you are content to use only `mouse-2' to follow links, and you want `mouse-1' to always set point, including on link text. 
+
+A [[secondary selection]] is available by pressing and holding the [[Meta]] key during mouse actions.  (The Meta key is also known as the Alt key, and written as `M-'.)  For example, `M-' while dragging creates and extends the secondary selection.  `M-mouse-2' pastes the secondary selection (that is, click `mouse-2' while holding Meta/Alt).
 
 Press and hold both Control ''and'' Meta/Alt while dragging to define a rectangular selection region.  Rectangle regions span multiple lines between the points clicked, without spilling over to the entire line.  This is useful for working with columns of text.
+
+
+
+
 
 == Customization ==
 
