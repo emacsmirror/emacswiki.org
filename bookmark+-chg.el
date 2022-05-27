@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 14 12:54:17 2022 (-0800)
+;; Last-Updated: Thu May 26 22:32:01 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16855
+;;     Update #: 16860
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1516,6 +1516,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2022/05/26 dadams
+;;     bmkp-bmenu-menubar-menu: Added bmkp-send-bug-report.
 ;; 2022/01/14 dadams
 ;;     bmkp-bmenu-edit-marked: Enable undo inside with-current-buffer (not significant).
 ;; 2021/09/19 dadams
@@ -2233,6 +2235,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2022/05/26 dadams
+;;     menu-bar-bookmark-map:
+;;       Added bmkp-send-bug-report.
+;;       Corrected position of Insert Bookmark Contents to after bmkp-list-defuns-in-commands-file.
 ;; 2021/09/19 dadams
 ;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
 ;; 2021/02/12 dadams
