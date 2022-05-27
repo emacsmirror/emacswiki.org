@@ -37,7 +37,7 @@ about moving from the FDL to the current EmacsWiki license (see the footer of ea
 * TheCraftOfTextEditing -- a non-introductory book about text editors, specifically Emacs.
 
 
-== O'Reilly's "Learning GNU Emacs" 3rd Edition ==
+== O’Reilly’s ‘Learning GNU Emacs’ 3rd Edition ==
 
 * [[https://learning.oreilly.com/library/view/learning-gnu-emacs/0596006489/ Learning Emacs - 3rd Edition]] -- Published in December 2004
 
@@ -48,7 +48,7 @@ about moving from the FDL to the current EmacsWiki license (see the footer of ea
 ** Includes new chapter on platform-specific issues (Unix, Windows, Mac OS X), with installation How To
 
 
-=== O'Reilly's "Learning GNU Emacs" 2nd Edition ===
+=== O’Reilly’s ‘Learning GNU Emacs’ 2nd Edition ===
 
 
 Published December 1996
@@ -95,6 +95,16 @@ key should be the Alt key (the preferred method), the ESC key, or the
 Windows key, or something else entirely.  It is possible to change the
 Meta key to Alt and you should do that at your earliest possible
 convenience if you have to hit ESC as your meta.
+
+== O’Reilly’s ‘Writing GNU Emacs Extensions’ ==
+
+* [[https://www.oreilly.com/library/view/writing-gnu-emacs/9781449395056/ Writing GNU Emacs Extensions]] -- Published in April 1997
+
+** ISBN: 1-565-92261-1
+
+** EAN/ISBN-13: 978-1565922617
+
+** Bob Glickstein’s book about extending GnuEmacs, though a little out of date now, some of the information in there is still useful.
 
 == Sams "Teach Yourself Emacs in 24 Hours" ==
 
