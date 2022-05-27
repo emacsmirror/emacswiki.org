@@ -55,4 +55,7 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 * <tt>[[wimpy-del.el]]</tt> -- Require confirmation when deleting a large region.
 * [[Zones]] -- Use multiple buffer zones (in effect, multiple [[region]]s). 
 
-See also CategoryEditing.
+== See also ==
+
+* CategoryEditing
+* EmacsNewbieMouseReference -- Basics on how to define and manipulate the region using the mouse in Emacs.
