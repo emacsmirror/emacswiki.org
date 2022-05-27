@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 24 10:04:10 2022 (-0700)
+;; Last-Updated: Fri May 27 14:18:01 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13128
+;;     Update #: 13156
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -490,6 +490,7 @@
 ;;    `diredp-copy-filename-as-kill-recursive',
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
 ;;    `diredp-create-file-here', `diredp-decrypt-this-file',
+;;    `diredp-define-snapshot-dired-commands',
 ;;    `diredp-delete-this-file', `diredp-describe-autofile',
 ;;    `diredp-describe-file', `diredp-describe-marked-autofiles',
 ;;    `diredp-describe-mode', `diredp-dired-for-files',
@@ -666,9 +667,9 @@
 ;;    `diredp-bookmark', `diredp-cannot-revert',
 ;;    `diredp-copy-as-kill-from-clipboard',
 ;;    `diredp-create-files-non-directory-recursive',
-;;    `diredp-delete-dups', `diredp-delete-if',
-;;    `diredp-delete-if-not', `diredp-directories-within',
-;;    `diredp-dired-plus-description',
+;;    `diredp-define-snapshot-dired-commands-1', `diredp-delete-dups',
+;;    `diredp-delete-if', `diredp-delete-if-not',
+;;    `diredp-directories-within', `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp--dired-recent-files-1',
 ;;    `diredp-dired-union-1', `diredp-dired-union-interactive-spec',
@@ -686,6 +687,7 @@
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-fit-one-window-frame', `diredp-full-file-name-less-p',
 ;;    `diredp-full-file-name-more-p',
+;;    `diredp-get-args-for-snapshot-cmd',
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-get-image-filename',
 ;;    `diredp-get-subdirs', `diredp-hide-details-if-dired' (Emacs
@@ -715,8 +717,9 @@
 ;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
 ;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
 ;;    `diredp-set-tag-value', `diredp-set-union',
-;;    `diredp--set-up-font-locking', `diredp-sort-arbitrary',
-;;    `diredp-string-less-p', `diredp-string-match-p', `diredp-tag',
+;;    `diredp--set-up-font-locking', `diredp--snapshot-cmd-name-time',
+;;    `diredp-sort-arbitrary', `diredp-string-less-p',
+;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag',
 ;;    `diredp-visit-ignore-regexp', `diredp-y-or-n-files-p'.
@@ -744,7 +747,8 @@
 ;;    `diredp-single-bookmarks-menu', `diredp-single-encryption-menu',
 ;;    `diredp-single-image-menu', `diredp-single-move-copy-link-menu',
 ;;    `diredp-single-open-menu', `diredp-single-rename-menu',
-;;    `diredp-w32-drives-mode-map'.
+;;    `diredp-snapshot-cmd-buffer-name-format',
+;;    `diredp-snapshot-cmd-time-format', `diredp-w32-drives-mode-map'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -887,6 +891,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/27 dadams
+;;     Added: diredp-define-snapshot-dired-commands, diredp-define-snapshot-dired-commands-1,
+;;            diredp-get-args-for-snapshot-cmd, diredp-snapshot-cmd-buffer-name-format,
+;;            diredp-snapshot-cmd-time-format, diredp--snapshot-cmd-name-time.
+;;     diredp-get-file-or-dir-name: Emacs 20 bug fix - use ./ and ../, not . and ..
 ;; 2022/05/24 dadams
 ;;     dired-read-dir-and-switches:
 ;;       Use DIRED-BUFFER also if positive prefix arg.  Better doc.  Added autoload cookie.
@@ -1047,7 +1056,7 @@
 ;;     Renamed diredp-eval-lisp-sexp to diredp-eval-in-this-file,
 ;;             diredp-do-lisp-sexp   to diredp-do-eval-in-marked.
 ;;     diredp-do-apply/eval-recursive: Pass ARG to diredp-get-files, unless single C-u.
-;;     diredp-do-(apply-to|invoke-in|apply/eval)-marked(-recursive), 
+;;     diredp-do-(apply-to|invoke-in|apply/eval)-marked(-recursive),
 ;;       diredp-(apply-to|invoke-in|invoke/eval)-this-file: Raise error if wrong-arity function.
 ;;     diredp-(apply-to|invoke-in|invoke/eval|eval)-this-file:
 ;;       Added ARG, passed to diredp-get-file-or-dir-name if multiple C-u .
@@ -2254,7 +2263,7 @@
   ;; (no error if not found):
   (require 'w32-browser nil t));; dired-w32explore, dired-w32-browser, dired-mouse-w32-browser,
                                ;; dired-multiple-w32-browser
-(when (< emacs-major-version 21) (require 'subr-21)) ;; replace-regexp-in-string
+(when (< emacs-major-version 21) (require 'subr-21)) ;; replace-regexp-in-string, add-to-list
 
 ;; Provide macro for code byte-compiled using Emacs < 22.
 (eval-when-compile
@@ -2879,13 +2888,18 @@ Argument ARG:
  `all-files-no-dirs' or nil means skip directories.
  `all-files-no-dots' means skip `.' and `..'.
 Optional arg LOCALP as in `dired-get-filename'."
-  (let ((fname  nil))
+  (let* ((fname        nil)
+         ;; With Emacs 20 `dired-get-filename' returns `./' and `../' instead of `./' and `../'.
+         (emacs20      (< emacs-major-version 22))
+         (dots=        (if emacs20 '("./" "../") '("." "..")))
+         (dots-suffix  (if emacs20 "/\\.\\.?/$" "/\\.\\.?$")))
     (while (and (not fname)  (not (eobp)))
       (setq fname  (dired-get-filename localp 'NO-ERROR))
       (when (and fname  (or (not arg)  (eq arg 'all-files-no-dirs))  (file-directory-p fname))
         (setq fname  nil))
-      (when (and fname  (eq arg 'all-files-no-dots)  (or (member fname '("." ".."))
-                                                         (diredp-string-match-p "/\\.\\.?$" fname)))
+      (when (and fname  (eq arg 'all-files-no-dots)
+                 (or (member fname dots=)
+                     (diredp-string-match-p dots-suffix fname)))
         (setq fname  nil))
       (forward-line 1))
     (forward-line -1)
@@ -3523,7 +3537,7 @@ current subdir, else use current subdir of this Dired buffer."
 ;; 2. Behavior for non-positive prefix arg:
 ;;
 ;;    * Construct a cons DIRNAME arg.
-;;    * If READ-EXTRA-FILES-P is non-nil then read any number of file and dir names, to be included as its cdr. 
+;;    * If READ-EXTRA-FILES-P is non-nil then read any number of file and dir names, to be included as its cdr.
 ;;    * If chosen Dired buffer exists and is an ordinary listing then start out with its `directory-files'.
 ;;
 ;; 2. If you use Icicles then this is a multi-command - see doc for `dired' defadvice.
@@ -3550,7 +3564,7 @@ With a non-positive prefix arg:
    directories to list.  You can use file-name wildcards (i.e., `*'
    for globbing), to include the matching files and directories.
 
-Optional arg DIRED-BUFFER: 
+Optional arg DIRED-BUFFER:
 
  * If non-nil then it should be a string.  Use it as the Dired buffer
    name.
@@ -4640,6 +4654,115 @@ See also `dired' (including the advice)."
   (with-current-buffer (car arg)
     (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
     (setq revert-buffer-function  #'diredp-cannot-revert)))
+
+;;;###autoload
+(defun diredp-define-snapshot-dired-commands (cmd-name directory &optional files msg-p)
+  "Define Dired commands for the marked files in current Dired buffer.
+Define both a same-window and an other-window command.
+Copy the same-window command name to `kill-ring', for use with `M-x'.
+
+A prefix ARG specifies files to use instead of the marked files:
+
+ If ARG is an integer, use the files and dirs named on the next ARG
+  lines (previous -ARG, if < 0).  E.g., 1: use file on current line;
+  -1: use file on previous line.
+
+ If ARG is `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use
+  all files in the Dired buffer, where:
+    `C-u C-u' includes only files - NO directories
+    `C-u C-u C-u' includes directories EXCEPT `.' and `..'
+    `C-u C-u C-u C-u' includes ALL directories (even `.' and `..')
+
+ If ARG is otherwise non-nil (e.g. `M--' or a single `C-u'), use the
+  file or dir of the current line.  This is the same as ARG = 1.
+
+When called from Lisp:
+
+ CMD-NAME is the name of the new command, a symbol.
+
+ DIRECTORY is the directory/buffer name of the Dired buffer that the
+  new command shows.  It is the car of the list returned by
+  `dired-read-dir-and-switches'.
+
+ FILES is the list of file and directory names to be shown in the
+  Dired buffer.
+
+ Non-nil MSG-P means echo the name of the new command.
+
+___
+
+The defined commands produce a Dired buffer that lists the files and
+directories chosen when they were defined.  This set of files never
+changes, regardless of any changes to the content of the directory in
+which you created the commands.
+
+Using any prefix arg with the commands prompts for the `ls' switches
+to use.
+
+Such commands are particularly useful to let you Dired a set of files
+and dirs that results from some possibly long-lasting command, such as
+`find-dired'.  This can be quicker than recalculating the set of files
+to Dired, but the set of files used is not necessarily up-to-date with
+respect to what a new calculation would produce."
+  (interactive (diredp-get-args-for-snapshot-cmd))
+  (unless (derived-mode-p 'dired-mode) (error "Not in a Dired buffer"))
+  (let ((cmd-name  (diredp-define-snapshot-dired-commands-1 cmd-name directory files nil)))
+    (diredp-define-snapshot-dired-commands-1
+     (intern (format "%s-other-window" cmd-name)) directory files 'OTHER-WIN)
+    (kill-new (symbol-name cmd-name))
+    (when msg-p (message "Commands defined: `%s(-other-window)'" cmd-name))
+    cmd-name))
+
+(defvar diredp-snapshot-cmd-time-format "%F %R %z"
+  "Time format for `diredp-define-snapshot-dired-commands-1'.
+Used as arg to `format-time-string'.")
+
+(defun diredp--snapshot-cmd-name-time ()
+  "Replace SPC chars in time part of snapshot command names.
+Uses `diredp-snapshot-cmd-time-format' for the time part to fix."
+  (replace-regexp-in-string
+   (regexp-quote " ") "_" (format-time-string diredp-snapshot-cmd-time-format)))
+
+(defvar diredp-snapshot-cmd-buffer-name-format "Files on %s"
+  "Buffer name format for `diredp-define-snapshot-dired-commands-1'.
+Should accept a single value, which by default is a time string.")
+
+(defun diredp-get-args-for-snapshot-cmd ()
+  "Get args for `diredp-define-snapshot-dired-commands'.
+Read command name.
+Get directory/buffer name with `dired-read-dir-and-switches'.
+Get file list with `dired-get-marked-files' and `current-prefix-arg'."
+  (unless (derived-mode-p 'dired-mode) (error "Not in a Dired buffer"))
+  (let* ((dbufname  (format diredp-snapshot-cmd-buffer-name-format
+                            (diredp--snapshot-cmd-name-time)))
+         (dir       (let ((current-prefix-arg  nil))
+                      (car (dired-read-dir-and-switches "" nil dbufname))))
+         (fils      (dired-get-marked-files nil current-prefix-arg)))
+    (list (intern (read-string "Define command: "
+                               (format "dired-files-in-%s-on-%s"
+                                       default-directory (diredp--snapshot-cmd-name-time))))
+          dir
+          fils
+          'MSGP)))
+
+(defun diredp-define-snapshot-dired-commands-1 (cmd-name directory files other-window-p)
+  "Helper for `diredp-define-snapshot-dired-commands', which see for args."
+
+  (defalias cmd-name `(lambda (switches)
+                        "Dired the files chosen from a Dired buffer at a given time.
+The set of files listed does not change, regardless of any changes
+to the content of the directory in which the command was created.
+
+A prefix arg prompts you for the `ls' switches to use."
+                        (interactive (list (and current-prefix-arg
+                                                (read-string "Dired listing switches: "
+                                                             dired-listing-switches))))
+                        (funcall ,(if other-window-p
+                                      '#'dired-other-window
+                                    '#'dired)
+                                 ',`(,directory ,@files)
+                                 switches)))
+  cmd-name)
 
 (when (fboundp 'quit-restore-window)    ; Emacs 24+
 
@@ -7747,17 +7870,17 @@ use `g' in that buffer to revert the listing.)"
 ;;;; (defun diredp-do-invoke-in-marked-recursive (function &optional ignore-marks-p details) ; Bound to `M-+ @ M-@'
 ;;;;   "Invoke FUNCTION in each of the marked files, including in marked subdirs.
 ;;;; No arguments are passed to FUNCTION.
-;;;; 
+;;;;
 ;;;; Like `diredp-do-invoke-in-marked' but act recursively on subdirs, and
 ;;;; do no result-logging, error-logging, or echoing.
-;;;; 
+;;;;
 ;;;; The files included are those that are marked in the current Dired
 ;;;; buffer, or all files in the directory if none are marked.  Marked
 ;;;; subdirectories are handled recursively in the same way.
-;;;; 
+;;;;
 ;;;; With a prefix argument, ignore all marks - include all files in this
 ;;;; Dired buffer and all subdirs, recursively.
-;;;; 
+;;;;
 ;;;; When called from Lisp, optional arg DETAILS is passed to
 ;;;; `diredp-get-files'."
 ;;;;   (interactive
@@ -9754,19 +9877,19 @@ use `g' in that buffer to revert the listing.)"
 ;;; (defun diredp-do-invoke-in-marked (function &optional arg) ; Bound to `@ M-@'
 ;;;   "Invoke FUNCTION in each marked file, passing it no arguments.
 ;;; Return a list of the results.
-;;; 
+;;;
 ;;; You are prompted for FUNCTION.
-;;; 
+;;;
 ;;; A prefix arg behaves according to the ARG argument of
 ;;; `dired-get-marked-files'.  In particular, `C-u C-u' operates on all
 ;;; files in the Dired buffer.
-;;; 
+;;;
 ;;; If you use multiple `C-u' as prefix arg then many files might be acted
 ;;; on, and some of them might already be visited in modified buffers.  If
 ;;; the function you apply modifies file content, and you want to save any
 ;;; such buffers before using this command, then use \\[save-some-buffers]
 ;;; first.
-;;; 
+;;;
 ;;; The result returned for each file is logged by `dired-log'.  Use `?'
 ;;; to see all such results and any error messages.  If there are fewer
 ;;; marked files than `diredp-do-report-echo-limit' then each result is
@@ -13189,7 +13312,7 @@ With non-nil prefix arg, mark them instead."
             (goto-char beg)
             (setq beg  (line-beginning-position))
             (goto-char end)
-            (when (and (bolp) (> end beg)) (backward-char)) 
+            (when (and (bolp) (> end beg)) (backward-char))
             (setq end  (line-end-position))
             (narrow-to-region beg end)
             (dired-toggle-marks)
