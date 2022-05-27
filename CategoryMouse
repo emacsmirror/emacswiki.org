@@ -10,6 +10,7 @@ Include pages that address standard Emacs uses of mouse buttons, such as how to 
 Otherwise, category Mouse does ''not'' include topics that merely mention mouse bindings, unless those bindings do something specifically related to the mouse. This also means that
 Category Mouse does not include topics about mouse-initiated menus (popup menus), except information on how to bind menus to mouse actions or information about menus that pertain to the mouse itself.
 
+* EmacsNewbieMouseReference -- fundamentals of mouse usage in Emacs including terminology
 
 ----
 CategoryKeys CategoryDisplay
