@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Fri Jan 14 12:49:18 2022 (-0800)
+;; Last-Updated: Thu May 26 22:31:28 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 980
+;;     Update #: 985
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -897,10 +897,9 @@ Menu for bookmarks that target this file or buffer.")
     :help "List the functions defined in `bmkp-bmenu-commands-file'"
     :enable (and bmkp-bmenu-commands-file  (file-readable-p bmkp-bmenu-commands-file)))
   'bmkp-choose-navlist-from-bookmark-list)
-
 (define-key-after menu-bar-bookmark-map [insert]
   '(menu-item "Insert Bookmark Contents..." bookmark-insert :help "Insert bookmarked text")
-  'bmkp-choose-navlist-from-bookmark-list)
+  'bmkp-list-defuns-in-commands-file)
 (define-key-after menu-bar-bookmark-map [locate]
   '(menu-item "Insert Bookmark Location..." bookmark-locate ; Alias for `bookmark-insert-location'.
     :help "Insert a bookmark's file or buffer name")
@@ -932,6 +931,14 @@ Menu for bookmarks that target this file or buffer.")
   '(menu-item "Empty Bookmark File..." bmkp-empty-file
     :help "Empty an existing bookmark file or create a new, empty bookmark file")
   'load)
+
+(define-key-after menu-bar-bookmark-map [separator-4] '("--") ;-------------------------------------
+                  'bmkp-empty-file)
+(define-key-after menu-bar-bookmark-map [bmkp-send-bug-report]
+  '(menu-item "Send Bug Report" bmkp-send-bug-report
+    :help "Send an email reporting a Bookmark+ bug")
+  'separator-4)
+
 
 
 ;; `bmkp-annotate-menu' of vanilla `Bookmarks' menu: `Annotate'
