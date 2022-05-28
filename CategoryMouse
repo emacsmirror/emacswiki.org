@@ -12,6 +12,7 @@ Category Mouse does not include topics about mouse-initiated menus (popup menus)
 
 * DiredPlus -- a library which extends DiredMode, including adding extra mouse functionality
 * EmacsNewbieMouseReference -- fundamentals of mouse usage in Emacs including terminology
+* MouseGeneral -- a wiki page that goes beyond the EmacsNewbieMouseReference above, and links to more intermediate mouse topics, configuration options, and mouse related Emacs extensions
 
 ----
 CategoryKeys CategoryDisplay
