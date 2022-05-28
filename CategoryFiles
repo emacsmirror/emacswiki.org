@@ -16,6 +16,8 @@ files.
 * CouchdbDocument -- Edit couchdb document.
 * DfMode -- keep an eye on disk space usage
 * [http://user42.tuxfamily.org/do-not-edit/index.html do-not-edit.el] -- read-only from DO NOT EDIT
+* DiredMode -- the main mode for managing files under Emacs
+* DiredPlus -- a library which adds extra features and functionality to Dired
 * DosToUnix -- replace DOS carriage returns with UNIX line feeds
 * [[Everything]] -- Bridge to MS Windows desktop-search engine [[http://www.voidtools.com/|Everything]] 
 * FileFormat -- conversions on read/write for certain types or markup
