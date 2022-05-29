@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 28 18:01:54 2022 (-0700)
+;; Last-Updated: Sat May 28 19:35:15 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13158
+;;     Update #: 13159
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4715,7 +4715,7 @@ respect to what a new calculation would produce."
                      cmd-name directory files nil))
         (cmd-other  (diredp-define-snapshot-dired-commands-1
                      (intern (format "%s-other-window" cmd-name)) directory files 'OTHER-WIN)))
-    (when msg-p
+    (when msg-p                         ; Display definitions, with comments on how to save them.
       (let ((buf  (get-buffer-create (format "*DEFUN `%s(-other-window)'*" cmd-same))))
         (with-current-buffer buf
           (insert
@@ -4733,7 +4733,6 @@ respect to what a new calculation would produce."
           (kill-line 2)
           (forward-line -1)
           (forward-sexp 1)
-          ;; Other
           (insert "\n(symbol-function cmd-other)\n")
           (pp-eval-last-sexp 'INSERT)
           (backward-sexp 2)
