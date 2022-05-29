@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 27 14:18:01 2022 (-0700)
+;; Last-Updated: Sat May 28 18:01:54 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13156
+;;     Update #: 13158
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -891,6 +891,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/28 dadams
+;;     diredp-define-snapshot-dired-commands: Display defuns of the created commands.
+;;     diredp-define-snapshot-dired-commands-1 (minor doc string change).
 ;; 2022/05/27 dadams
 ;;     Added: diredp-define-snapshot-dired-commands, diredp-define-snapshot-dired-commands-1,
 ;;            diredp-get-args-for-snapshot-cmd, diredp-snapshot-cmd-buffer-name-format,
@@ -4659,7 +4662,9 @@ See also `dired' (including the advice)."
 (defun diredp-define-snapshot-dired-commands (cmd-name directory &optional files msg-p)
   "Define Dired commands for the marked files in current Dired buffer.
 Define both a same-window and an other-window command.
-Copy the same-window command name to `kill-ring', for use with `M-x'.
+
+Display the command definitions in a separate window.  You can use
+`\\[write-file]' (`write-file') or `\\[append-to-file]' to save them.
 
 A prefix ARG specifies files to use instead of the marked files:
 
@@ -4706,12 +4711,41 @@ to Dired, but the set of files used is not necessarily up-to-date with
 respect to what a new calculation would produce."
   (interactive (diredp-get-args-for-snapshot-cmd))
   (unless (derived-mode-p 'dired-mode) (error "Not in a Dired buffer"))
-  (let ((cmd-name  (diredp-define-snapshot-dired-commands-1 cmd-name directory files nil)))
-    (diredp-define-snapshot-dired-commands-1
-     (intern (format "%s-other-window" cmd-name)) directory files 'OTHER-WIN)
-    (kill-new (symbol-name cmd-name))
-    (when msg-p (message "Commands defined: `%s(-other-window)'" cmd-name))
-    cmd-name))
+  (let ((cmd-same   (diredp-define-snapshot-dired-commands-1
+                     cmd-name directory files nil))
+        (cmd-other  (diredp-define-snapshot-dired-commands-1
+                     (intern (format "%s-other-window" cmd-name)) directory files 'OTHER-WIN)))
+    (when msg-p
+      (let ((buf  (get-buffer-create (format "*DEFUN `%s(-other-window)'*" cmd-same))))
+        (with-current-buffer buf
+          (insert
+           (substitute-command-keys
+            (format (concat ";; Commands `%s(-other-window)'.\n"
+                            ";; Use `\\[write-file]' (`write-file') or `\\[append-to-file]' to save to a file.\n"
+                            "(symbol-function cmd-same)\n")
+                    cmd-same)))
+          (pp-eval-last-sexp 'INSERT)
+          (backward-sexp 2)
+          (kill-sexp)
+          (goto-char (point-min))
+          (forward-line 3)
+          (insert (format "(defun %s (switches)\n" cmd-same))
+          (kill-line 2)
+          (forward-line -1)
+          (forward-sexp 1)
+          ;; Other
+          (insert "\n(symbol-function cmd-other)\n")
+          (pp-eval-last-sexp 'INSERT)
+          (backward-sexp 2)
+          (kill-sexp)
+          (forward-line 1)
+          (insert (format "(defun %s (switches)\n" cmd-other))
+          (kill-line 2)
+          (emacs-lisp-mode)
+          (set-buffer-modified-p nil))
+        (display-buffer buf))
+      (when msg-p (message "Commands defined: `%s(-other-window)'" cmd-same))
+      cmd-other)))
 
 (defvar diredp-snapshot-cmd-time-format "%F %R %z"
   "Time format for `diredp-define-snapshot-dired-commands-1'.
@@ -4749,11 +4783,12 @@ Get file list with `dired-get-marked-files' and `current-prefix-arg'."
   "Helper for `diredp-define-snapshot-dired-commands', which see for args."
 
   (defalias cmd-name `(lambda (switches)
-                        "Dired the files chosen from a Dired buffer at a given time.
+                        ,(format "Dired files chosen from a Dired buffer at a given time%s.
 The set of files listed does not change, regardless of any changes
 to the content of the directory in which the command was created.
 
 A prefix arg prompts you for the `ls' switches to use."
+                                 (if other-window-p ", in other window" ""))
                         (interactive (list (and current-prefix-arg
                                                 (read-string "Dired listing switches: "
                                                              dired-listing-switches))))
