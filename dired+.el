@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 28 19:35:15 2022 (-0700)
+;; Last-Updated: Sun May 29 06:52:10 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13159
+;;     Update #: 13163
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -891,6 +891,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/05/29 dadams
+;;     diredp-define-snapshot-dired-commands, diredp-get-args-for-snapshot-cmd, diredp-add-to-this-dired-buffer,
+;;       diredp-breadcrumbs-in-header-line-mode:
+;;         Use diredp-ensure-mode.
 ;; 2022/05/28 dadams
 ;;     diredp-define-snapshot-dired-commands: Display defuns of the created commands.
 ;;     diredp-define-snapshot-dired-commands-1 (minor doc string change).
@@ -4697,9 +4701,9 @@ When called from Lisp:
 ___
 
 The defined commands produce a Dired buffer that lists the files and
-directories chosen when they were defined.  This set of files never
-changes, regardless of any changes to the content of the directory in
-which you created the commands.
+directories chosen when they were defined, as absolute file names.
+This set of files never changes, regardless of any changes to the
+content of the directory in which you created the commands.
 
 Using any prefix arg with the commands prompts for the `ls' switches
 to use.
@@ -4710,7 +4714,7 @@ and dirs that results from some possibly long-lasting command, such as
 to Dired, but the set of files used is not necessarily up-to-date with
 respect to what a new calculation would produce."
   (interactive (diredp-get-args-for-snapshot-cmd))
-  (unless (derived-mode-p 'dired-mode) (error "Not in a Dired buffer"))
+  (diredp-ensure-mode)
   (let ((cmd-same   (diredp-define-snapshot-dired-commands-1
                      cmd-name directory files nil))
         (cmd-other  (diredp-define-snapshot-dired-commands-1
@@ -4765,7 +4769,7 @@ Should accept a single value, which by default is a time string.")
 Read command name.
 Get directory/buffer name with `dired-read-dir-and-switches'.
 Get file list with `dired-get-marked-files' and `current-prefix-arg'."
-  (unless (derived-mode-p 'dired-mode) (error "Not in a Dired buffer"))
+  (diredp-ensure-mode)
   (let* ((dbufname  (format diredp-snapshot-cmd-buffer-name-format
                             (diredp--snapshot-cmd-name-time)))
          (dir       (let ((current-prefix-arg  nil))
@@ -5261,7 +5265,7 @@ From Lisp:
   ;; Bind `current-prefix-arg' to force reading file/dir names.
   ;; Read `ls' switches too, if user used prefix arg.
   (interactive
-   (progn (unless (derived-mode-p 'dired-mode) (error "Not in a Dired buffer"))
+   (progn (diredp-ensure-mode)
           (let* ((current-prefix-arg  (if current-prefix-arg 0 -1))
                  (all                 (diredp-dired-union-interactive-spec "add files/dirs here "
                                                                            'NO-DIRED-BUFS
@@ -13945,8 +13949,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
           "Toggle the use of breadcrumbs in Dired header line.
 With arg, show breadcrumbs iff arg is positive."
           :init-value nil :group 'header-line :group 'Dired-Plus
-          (unless (derived-mode-p 'dired-mode)
-            (error "You must be in Dired or a mode derived from it to use this command"))
+          (diredp-ensure-mode)
           (if diredp-breadcrumbs-in-header-line-mode
               (diredp-set-header-line-breadcrumbs)
             (setq header-line-format  (default-value 'header-line-format)))))
