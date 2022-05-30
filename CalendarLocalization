@@ -257,7 +257,8 @@ See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
                                      "Травень" "Червень" "Липень" "Серпень"
                                      "Вересень" "Жовтень" "Листопад" "Грудень"]
           calendar-month-abbrev-array ["Січ" "Лют" "Бер" "Кві" "Тра" "Чер"
-                                       "Лип" "Сер" "Вер" "Жов" "Лис" "Гру"])
+                                       "Лип" "Сер" "Вер" "Жов" "Лис" "Гру"]
+    )
 
 === Zulu ===
 
@@ -692,6 +693,8 @@ South African public holidays, but with their Zulu (or <i>isiZulu</i>) names.
 
 === Ukrainian ===
 Lisp:ukrainian-holidays.el
+
+See [https://gitlab.com/LinuxOrgUa/ukrainian-holidays-el ukrainian-holidays-el] on GitLab.
 
 === Zimbabwean ===
 
