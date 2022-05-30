@@ -1,4 +1,4 @@
-Оновлена версія https://gitlab.com/andmizyk/ukrainian-holidays-el
+Оновлена версія https://gitlab.com/LinuxOrgUa/ukrainian-holidays-el
 
 <pre>
 ;; Щоб показувати лише українські свята, додай до .emacs:
