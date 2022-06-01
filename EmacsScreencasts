@@ -61,6 +61,8 @@ workflows that can help you use Emacs more effectively.
 * http://emacsmovies.org/
 * Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
 * [http://www.cinsk.org/emacs/ Seongkook's screencasts] (CinSK)
+** [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3E0OjExoI7vlCAVygj6S4I Video series on using 'Scimax' (Emacs starterkit)] by jKitchin
+** [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV Videos on using OrgMode and related packages] by jKitchin
 
 === Configuration ===
 
