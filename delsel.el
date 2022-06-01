@@ -4,14 +4,14 @@
 ;; Description: Delete the region (selection) upon char insertion or DEL.
 ;; Author: Matthieu Devin <devin@lucid.com>, Drew Adams
 ;; Maintainer: D. ADAMS (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 10 16:39:49 2018 (-0700)
+;; Last-Updated: Wed Jun  1 12:09:23 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 522
+;;     Update #: 533
 ;; URL: https://www.emacswiki.org/emacs/download/delsel.el
 ;; Doc URL: https://emacswiki.org/emacs/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -90,6 +90,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/01 dadams
+;;     delete-active-region: Updated per Emacs 27: made interactive.
+;;     delete-selection-helper: Update per Emacs 28.1: Handle quit event.
+;;     delete-selection-pre-hook-1:
+;;       Added Emacs 29/master handling of new option delete-selection-temporary-region.
+;;     Per Emacs 28.1, put property delete-selection on yank-pop and yank-from-kill-ring.
 ;; 2018/04/03 dadams
 ;;     Updated wrt Emacs 24-27:
 ;;      Added: delete-selection-uses-region-p, delsel--replace-text-or-position,
@@ -201,6 +207,7 @@
 (defvar cmpl-last-insert-location)
 (defvar cmpl-original-string)
 (defvar completion-to-accept)
+(defvar delete-selection-temporary-region)
 (defvar region-extract-function)
 
 ;;;;;;;;;;;;;;;;;;
@@ -321,9 +328,12 @@ either \\[customize] or function `delete-selection-mode'."
 ;;
 ;; Handles `completion.el'.
 ;;
+;;;###autoload
 (defun delete-active-region (&optional killp)
   "Delete the active region.
-If KILLP is not-nil, kill the active region instead of deleting it."
+If called interactively with a prefix arg, or if called from Lisp with
+non-nil arg KILLP, then kill the active region instead deleting it."
+  (interactive "P")
   (cond ((and (eq last-command 'complete) ; See `completion.el'.
               (boundp 'cmpl-last-insert-location))
          ;; Do not delete region if a `self-insert-command'.  Delete it only if a
@@ -441,7 +451,14 @@ See `delete-selection-helper'."
                (not buffer-read-only)
                (if (fboundp 'use-region-p)
                    (use-region-p)
-                 (and transient-mark-mode  mark-active)))
+                 (and transient-mark-mode  mark-active))
+               (or (not (boundp 'delete-selection-temporary-region)) ; Emacs < 29.1
+                   (null delete-selection-temporary-region)
+                   (and delete-selection-temporary-region
+                        (consp transient-mark-mode)
+                        (eq (car transient-mark-mode) 'only))
+                   (and (not (eq delete-selection-temporary-region 'selection))
+                        (eq transient-mark-mode 'lambda))))
       (delete-selection-helper (and (symbolp this-command)
                                     (get this-command 'delete-selection))))))
 
@@ -510,6 +527,11 @@ other non-nil value
                    (self-insert-command (prefix-numeric-value current-prefix-arg))
                    (setq this-command  'ignore)))))
 
+    ;; If the user has quit here (for instance, if the user is
+    ;; presented with a "changed on disk; really edit the buffer?"
+    ;; prompt, but hit `C-g'), just ding.
+    (quit (ding))
+
     ;; If `ask-user-about-supersession-threat' signals an error, stop safe_run_hooks from
     ;; clearing out `pre-command-hook'.
     (file-supersession (message "%s" (cadr err)) (ding))
@@ -559,6 +581,9 @@ to `delete-selection-mode'."
 (put 'quoted-insert 'delete-selection t)
 
 (put 'yank 'delete-selection 'yank)
+(put 'yank-pop 'delete-selection 'yank)
+(when (fboundp 'yank-from-kill-ring)    ; Emacs 28.1
+  (put 'yank-from-kill-ring 'delete-selection 'yank))
 (put 'clipboard-yank 'delete-selection 'yank)
 (put 'insert-register 'delete-selection t)
 
