@@ -1,4 +1,5 @@
-Оновлена версія https://gitlab.com/LinuxOrgUa/ukrainian-holidays-el
+Оновлена версія
+https://gitlab.com/LinuxOrgUa/ukrainian-calendar.el
 
 <pre>
 ;; Щоб показувати лише українські свята, додай до .emacs:
