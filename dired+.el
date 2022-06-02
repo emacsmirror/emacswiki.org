@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 29 06:52:10 2022 (-0700)
+;; Last-Updated: Thu Jun  2 15:17:35 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13163
+;;     Update #: 13211
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -128,7 +128,7 @@
 ;;    `C-u C-u C-u'     - Use all files and dirs except `.' and `..'.
 ;;    `C-u C-u C-u C-u' - use all files and dirs, `.' and `..'.
 ;;
-;;    (More than four `C-u' act the same as two.)
+;;    (More than four `C-u' is the same as two.)
 ;;
 ;;  This feature can be particularly useful when you have a Dired
 ;;  buffer with files chosen from multiple directories.
@@ -148,6 +148,22 @@
 ;;  in the doc strings.  In particular, the behavior of a prefix arg
 ;;  for `dired-do-query-replace-regexp' is different, so that you can
 ;;  use it also to specify word-delimited replacement.
+;;
+;;  Note too that if you have inserted subdir listings then 4 `C-u',
+;;  which includes both `.' and `..', includes them for the main
+;;  listing and for each inserted subdir listing.  That is, since the
+;;  same directory is listed twice, as both parent and child, it is
+;;  also included twice in the list returned by
+;;  `dired-get-marked-files', typically with slightly different
+;;  syntax.  If this is problematic for a given use of
+;;  `dired-get-marked-files' then you'll want to remove duplicates
+;;  (which, again, likely differ in syntax though they represent the
+;;  same directory).
+;;
+;;  The same thing happens if you explicitly mark the same
+;;  subdirectory in both its own listing and its parent directory.
+;;  `dired-get-marked-files' includes both names.  (This is also true
+;;  for vanilla Emacs.)
 ;;
 ;;
 ;;  Act on Marked (or All) Files Here and Below
@@ -687,6 +703,7 @@
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-fit-one-window-frame', `diredp-full-file-name-less-p',
 ;;    `diredp-full-file-name-more-p',
+;;    `diredp-get-args-for-diredp-marked',
 ;;    `diredp-get-args-for-snapshot-cmd',
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-get-image-filename',
@@ -891,6 +908,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/02 dadams
+;;     Added: diredp-get-args-for-diredp-marked.
+;;     diredp-marked(-other-window): Can now use multiple C-u to get all files etc.  Prefix arg changed generally.
+;;     dired-insert-directory (with ls-lisp+.el):
+;;       Don't handle wildcards in file name if a file with that name really exists.
+;;     Updated Commentary for the case of marking the same directory in multiple listings in the same buffer,
+;;       including the case of 4 C-u.
 ;; 2022/05/29 dadams
 ;;     diredp-define-snapshot-dired-commands, diredp-get-args-for-snapshot-cmd, diredp-add-to-this-dired-buffer,
 ;;       diredp-breadcrumbs-in-header-line-mode:
@@ -3897,8 +3921,11 @@ If HDR is non-nil, insert a header line with the directory name."
       (if file-list
           (dolist (f  file-list)
             (let ((beg  (point)))
-              ;; Compute wildcard arg for this file.
-              (insert-directory f switches (diredp-string-match-p "[[?*]" f) nil)
+              ;; Compute WILDCARD arg for file, but only if there's no actual file whose name contains wildcards.
+              (insert-directory f
+                                switches
+                                (and (diredp-string-match-p "[[?*]" f)  (not (file-exists-p f)))
+                                nil)
               ;; Re-align fields, if necessary.
               (dired-align-file beg (point))))
         (insert-directory dir switches wildcard (not wildcard)))
@@ -8431,52 +8458,56 @@ Possible default values (`M-n') are, in order:
 ;;; remove SWITCHES here, alas.
 
 ;;;###autoload
-(defun diredp-marked (dirname &optional n switches) ; Not bound
-  "Open Dired on only the marked files or the next N files.
-With a non-zero numeric prefix arg N, use the next abs(N) files.
-A plain (`C-u'), zero, or negative prefix arg prompts for listing
-switches as in command `dired'.
+(defun diredp-marked (dirname &optional arg switches) ; Not bound
+  "Open Dired on the marked files and directories.
+A prefix ARG that is non-positive or a single `C-u' means prompt for
+  `ls' listing switches, as in command `dired'.
 
-Note that the marked files can include files in inserted
-subdirectories, so the Dired buffer that is opened can contain files
-from multiple directories in the same tree."
-  (interactive (progn (diredp-ensure-mode)
-                      (let ((num  (and current-prefix-arg
-                                       (atom current-prefix-arg)
-                                       (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                       (abs (prefix-numeric-value current-prefix-arg)))))
-                        (list (cons (generate-new-buffer-name (buffer-name)) (dired-get-marked-files t num))
-                              num
-                              (and current-prefix-arg ; Switches
-                                   (or (consp current-prefix-arg)
-                                       (< (prefix-numeric-value current-prefix-arg) 0))
-                                   (read-string "Dired listing switches: " dired-listing-switches))))))
-  (unless (or n  (save-excursion (goto-char (point-min))
-                                 (and (re-search-forward (dired-marker-regexp) nil t)
-                                      (re-search-forward (dired-marker-regexp) nil t))))
+A prefix ARG also specifies the files to use instead of the marked
+  files (any markings are ignored), as follows:
+
+ If ARG is positive or negative, use the files named on the next ARG
+  lines.  E.g., 1 or -1: use the file on the current line; 3 or -3:
+  use the file on the current line and those on the following 2 lines.
+
+ If ARG is `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', use _all_
+  files in the Dired buffer, where:
+
+    `C-u C-u' includes only files - NO directories
+    `C-u C-u C-u' includes directories EXCEPT `.' and `..'
+    `C-u C-u C-u C-u' includes ALL directories (even `.' and `..')
+
+ If ARG is otherwise non-nil (e.g. 0, `M--' or a single `C-u'), use
+  the file or dir of the current line (same as ARG = -1)."
+  (interactive (diredp-get-args-for-diredp-marked))
+  (unless (or arg  (save-excursion (goto-char (point-min))
+                                   (re-search-forward (dired-marker-regexp) nil t)))
     (error "No marked files"))
   (dired dirname switches))
 
 ;;;###autoload
-(defun diredp-marked-other-window (dirname &optional n switches) ; Bound to `C-M-*'
+(defun diredp-marked-other-window (dirname &optional arg switches) ; Bound to `C-M-*'
   "Same as `diredp-marked', but uses a different window."
-  (interactive (progn (diredp-ensure-mode)
-                      (let ((num  (and current-prefix-arg
-                                       (atom current-prefix-arg)
-                                       (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                       (abs (prefix-numeric-value current-prefix-arg)))))
-                        (list (cons (generate-new-buffer-name (buffer-name)) (dired-get-marked-files t num))
-                              num
-                              (and current-prefix-arg ; Switches
-                                   (or (consp current-prefix-arg)
-                                       (< (prefix-numeric-value current-prefix-arg) 0))
-                                   (read-string "Dired listing switches: " dired-listing-switches))))))
-  (unless (or n  (save-excursion (goto-char (point-min))
-                                 (and (re-search-forward (dired-marker-regexp) nil t)
-                                      (re-search-forward (dired-marker-regexp) nil t))))
+  (interactive (diredp-get-args-for-diredp-marked))
+  (unless (or arg  (save-excursion (goto-char (point-min))
+                                   (re-search-forward (dired-marker-regexp) nil t)))
     (error "No marked files"))
   (dired-other-window dirname switches))
 
+(defun diredp-get-args-for-diredp-marked ()
+  "Get args for `diredp-marked(-other-window)'."
+  (progn (diredp-ensure-mode)
+         (let* ((raw    current-prefix-arg)
+                (narg   (prefix-numeric-value raw))
+                (non-0  (and raw  (not (zerop narg))))
+                (+/-    (and raw  (atom raw)  non-0  (abs narg))) ; Use only forward direction
+                (files  (or +/-  raw)))
+           (when (and raw  (zerop narg)) (setq files  1))
+           (list (cons (generate-new-buffer-name (buffer-name))
+                       (dired-get-marked-files t files))
+                 files
+                 (and (or (equal raw '(4))  (< narg 1))  ; `C-u', negative, or 0
+                      (read-string "Dired listing switches: " dired-listing-switches))))))
 
 ;; Similar to `dired-mark-extension' in `dired-x.el'.
 ;; The difference is that this uses prefix arg to unmark, not to determine the mark character.
@@ -10805,8 +10836,9 @@ number.  A number means remove all inserted subdir listings."
 
 (defun diredp-remove-inserted-subdirs () ; Not bound
   "Remove all inserted subdir listings.
-Note that `C-x C-v' and accept the default directory does this, as it
-rereads the main directory."
+Note that `C-x C-v' followed by accepting the default directory does
+this, as it rereads the main directory.  However, that also removes
+all markings etc."
   (interactive)
   (diredp-ensure-mode)
   (dolist (entry  dired-subdir-alist)
