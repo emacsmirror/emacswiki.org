@@ -248,17 +248,7 @@ See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
 
 === Ukrainian ===
 
-    (setq calendar-week-start-day 1
-          calendar-day-name-array ["Неділя" "Понеділок" "Вівторок" "Середа"
-                                   "Четвер" "Пʼятниця" "Субота"]
-          calendar-day-abbrev-array ["Нд" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
-          calendar-day-header-array ["Нд" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
-          calendar-month-name-array ["Січень" "Лютий" "Березень" "Квітень"
-                                     "Травень" "Червень" "Липень" "Серпень"
-                                     "Вересень" "Жовтень" "Листопад" "Грудень"]
-          calendar-month-abbrev-array ["Січ" "Лют" "Бер" "Кві" "Тра" "Чер"
-                                       "Лип" "Сер" "Вер" "Жов" "Лис" "Гру"]
-    )
+See [https://gitlab.com/LinuxOrgUa/ukrainian-calendar.el ukrainian-calendar.el]
 
 === Zulu ===
 
@@ -694,7 +684,7 @@ South African public holidays, but with their Zulu (or <i>isiZulu</i>) names.
 === Ukrainian ===
 Lisp:ukrainian-holidays.el
 
-See [https://gitlab.com/LinuxOrgUa/ukrainian-holidays-el ukrainian-holidays-el] on GitLab.
+Or see [https://gitlab.com/LinuxOrgUa/ukrainian-calendar.el ukrainian-calendar.el] with ukrainian holidays.
 
 === Zimbabwean ===
 
