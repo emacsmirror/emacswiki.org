@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  2 15:17:35 2022 (-0700)
+;; Last-Updated: Fri Jun  3 13:40:25 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13211
+;;     Update #: 13215
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -240,6 +240,55 @@
 ;;  mark some files and subdirs in a hierarchy of Dired buffers, use
 ;;  `M-+ C-}' to save their names persistently, then later use `C-{'
 ;;  to retrieve them, and `C-M-<' (in Dired) to open Dired on them.
+;;
+;;
+;;  Saving and Restoring Dired Listings
+;;  -----------------------------------
+;;
+;;  Suppose you use a command such as `find-name-dired', to generate a
+;;  Dired buffer that lists files from various places.  The search
+;;  part of that operation might take a long time.
+;;
+;;  And suppose that you later want to get back to such a listing,
+;;  even if that buffer no longer exists.  In particular, maybe you
+;;  want to get to it in another Emacs session.
+;;
+;;  And suppose that you don't want to pay the penalty of performing
+;;  the search again, and you're content with the set of file names
+;;  that the original search found.  That is, you don't care whether
+;;  that set of names is still 100% up-to-date.
+;;
+;;  In such a context you want, in effect, to create a Dired buffer
+;;  snapshot of some sort - you want to record the set of names that
+;;  your search found, and later use them again in Dired.
+;;
+;;  Dired+ gives you two ways to do this.  Both involve first creating
+;;  a Dired buffer that's produced from an explicit set of file names,
+;;  from anywhere, rather than one that's produced using `ls' or
+;;  similar.
+;;
+;;  1. Use `C-M-*' (`diredp-marked-other-window') or `diredp-marked',
+;;     to create a snapshot Dired buffer.  Then bookmark that buffer.
+;;     Just jump to the bookmark to restore the snapshot buffer.
+;;
+;;  2. Use `M-x diredp-define-snapshot-dired-commands', to create two
+;;     commands (for same-window and other-window) that will create a
+;;     snapshot Dired buffer.  Save the `defuns' of those commmands to
+;;     your init file, for persistent access.
+;;
+;;  I think the first approach is generally preferable, but you might
+;;  prefer the second.
+;;
+;;  If you use approach #1 then you also need my library Bookmark+:
+;;
+;;    https://www.emacswiki.org/emacs/BookmarkPlus
+;;
+;;  If you bookmark a Dired buffer without using Bookmark+ then the
+;;  bookmark records only the Dired directory name.  It doesn't record
+;;  the snapshot information - the explicit list of files to be
+;;  restored.  (It also doesn't record the`ls' switches or which files
+;;  were marked in the bookmarked snapshot listing, so you can't
+;;  restore them.)
 ;;
 ;;
 ;;  Image Files
@@ -4735,11 +4784,21 @@ content of the directory in which you created the commands.
 Using any prefix arg with the commands prompts for the `ls' switches
 to use.
 
-Such commands are particularly useful to let you Dired a set of files
-and dirs that results from some possibly long-lasting command, such as
+Such commands are particularly useful to dired a set of files and dirs
+that results from some possibly long-lasting command, such as
 `find-dired'.  This can be quicker than recalculating the set of files
 to Dired, but the set of files used is not necessarily up-to-date with
-respect to what a new calculation would produce."
+respect to what a new calculation would produce.
+
+You can chance the values of variables
+`diredp-snapshot-cmd-time-format'
+`diredp-snapshot-cmd-buffer-name-format', to change format of the
+Dired buffer name.
+___
+
+See also commands `diredp-marked(-other-window)', which you can also
+use to get snapshot Dired buffers.  Use library Bookmark+ to bookmark
+such a buffer for persistent access."
   (interactive (diredp-get-args-for-snapshot-cmd))
   (diredp-ensure-mode)
   (let ((cmd-same   (diredp-define-snapshot-dired-commands-1
@@ -8478,7 +8537,22 @@ A prefix ARG also specifies the files to use instead of the marked
     `C-u C-u C-u C-u' includes ALL directories (even `.' and `..')
 
  If ARG is otherwise non-nil (e.g. 0, `M--' or a single `C-u'), use
-  the file or dir of the current line (same as ARG = -1)."
+  the file or dir of the current line (same as ARG = -1).
+
+Use library Bookmark+ to bookmark the resulting Dired buffer, for
+persistent access.
+
+This command is particularly useful to dired a set of files and dirs
+that results from some possibly long-lasting command, such as
+`find-dired'.  This can be quicker than recalculating the set of files
+to Dired, but the set of files used is not necessarily up-to-date with
+respect to what a new calculation would produce.
+___
+
+See also command `diredp-define-snapshot-dired-commands'.  It defines
+Dired commands (same-window and other-window) that, like
+`diredp-marked', create a snapshot Dired buffer.  Put the command
+defuns in your init file, for persistent access."
   (interactive (diredp-get-args-for-diredp-marked))
   (unless (or arg  (save-excursion (goto-char (point-min))
                                    (re-search-forward (dired-marker-regexp) nil t)))
