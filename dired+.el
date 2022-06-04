@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  3 13:40:25 2022 (-0700)
+;; Last-Updated: Fri Jun  3 18:17:36 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13215
+;;     Update #: 13218
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -957,6 +957,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/03 dadams
+;;     diredp-multiple-dired-menu, diredp-menu-bar-dir-menu: Added diredp-define-snapshot-dired-commands.
 ;; 2022/06/02 dadams
 ;;     Added: diredp-get-args-for-diredp-marked.
 ;;     diredp-marked(-other-window): Can now use multiple C-u to get all files etc.  Prefix arg changed generally.
@@ -15194,6 +15196,9 @@ If no one is selected, symmetric encryption will be performed.  "
                                  (re-search-forward (dired-marker-regexp) nil t)))
     :help "Open Dired on marked files and dirs only"))
 
+(define-key diredp-multiple-dired-menu [diredp-define-snapshot-dired-commands]
+  '(menu-item "Define Dired Commands for Marked" diredp-define-snapshot-dired-commands
+    :help "Define commands to dired the marked files and dirs"))
 (define-key diredp-multiple-dired-menu [diredp-marked-other-window]
   '(menu-item "Dired Marked in Other Window" diredp-marked-other-window
     :enable (save-excursion (goto-char (point-min))
@@ -16209,6 +16214,9 @@ If no one is selected, symmetric encryption will be performed.  "
 
 (define-key diredp-menu-bar-dir-menu [separator-dired-on-set] '("--")) ; --------------------
 
+(define-key diredp-menu-bar-dir-menu [diredp-define-snapshot-dired-commands]
+  '(menu-item "Define Dired Commands for Marked Files" diredp-define-snapshot-dired-commands
+    :help "Define commands to dired the marked files"))
 (define-key diredp-menu-bar-dir-menu [diredp-marked-other-window]
   '(menu-item "Dired Marked Files in Other Window" diredp-marked-other-window
     :enable (save-excursion (goto-char (point-min))
