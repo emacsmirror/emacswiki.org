@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  3 18:17:36 2022 (-0700)
+;; Last-Updated: Sat Jun  4 10:19:02 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13218
+;;     Update #: 13222
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -271,10 +271,10 @@
 ;;     to create a snapshot Dired buffer.  Then bookmark that buffer.
 ;;     Just jump to the bookmark to restore the snapshot buffer.
 ;;
-;;  2. Use `M-x diredp-define-snapshot-dired-commands', to create two
-;;     commands (for same-window and other-window) that will create a
-;;     snapshot Dired buffer.  Save the `defuns' of those commmands to
-;;     your init file, for persistent access.
+;;  2. Use command `diredp-define-snapshot-dired-commands', to create
+;;     two commands (for same-window and other-window) that will
+;;     create a snapshot Dired buffer.  Save the `defuns' of those
+;;     commmands to your init file, for persistent access.
 ;;
 ;;  I think the first approach is generally preferable, but you might
 ;;  prefer the second.
@@ -289,6 +289,16 @@
 ;;  restored.  (It also doesn't record the`ls' switches or which files
 ;;  were marked in the bookmarked snapshot listing, so you can't
 ;;  restore them.)
+;;
+;;  Both approaches, #1 and #2, use the marked files and dirs as the
+;;  set to snapshot.  More precisely, they use the Dired+ version of
+;;  function `dired-get-marked-files'.  That means that you can use a
+;;  prefix arg to get a different set of files to snapshot, instead of
+;;  those that are explicitly marked.  See the doc strings.
+;;
+;;  Note too that it is the full content of the original Dired buffer
+;;  that is used to define the files to snapshot.  In particular,
+;;  inserted subdir listings are included.
 ;;
 ;;
 ;;  Image Files
