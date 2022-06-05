@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue May 24 21:33:59 2022 (-0700)
+;; Last-Updated: Sun Jun  5 16:54:26 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9456
+;;     Update #: 9461
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1470,9 +1470,12 @@ as part of the bookmark definition."
 If nil show only beginning of region."
   :type 'boolean :group 'bookmark-plus)
 
+;; The default value corresponds to what's used by `bmkp-bmenu-sort-by-bookmark-type' (`s k').
+;;
 ;;;###autoload (autoload 'bmkp-sort-comparer "bookmark+")
-(defcustom bmkp-sort-comparer '((bmkp-info-node-name-cp bmkp-gnus-cp bmkp-url-cp bmkp-local-file-type-cp)
-                                bmkp-alpha-p) ; This corresponds to `s k'.
+(defcustom bmkp-sort-comparer '((bmkp-info-node-name-cp bmkp-url-cp bmkp-gnus-cp
+                                                        bmkp-local-file-type-cp bmkp-handler-cp)
+                                bmkp-alpha-p)
   ;; $$$$$$ An alternative default value: `bmkp-alpha-p', which corresponds to `s n'.
   "*Predicate or predicates for sorting (comparing) bookmarks.
 This defines the default sort for bookmarks in the bookmark list.
@@ -1562,10 +1565,10 @@ is tried and
           (const    :tag "None (do not sort)" nil)
           (function :tag "Sorting Predicate")
           (list     :tag "Sorting Multi-Predicate"
-           (repeat (function :tag "Component Predicate"))
-           (choice
-            (const    :tag "None" nil)
-            (function :tag "Final Predicate"))))
+                    (repeat (function :tag "Component Predicate"))
+                    (choice
+                     (const    :tag "None" nil)
+                     (function :tag "Final Predicate"))))
   :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-su-or-sudo-regexp "bookmark+")
