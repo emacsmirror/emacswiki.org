@@ -3,7 +3,7 @@
 使用 Hooks 一般是个更好的选择，因为他带来的修改更小（they break less）。如果包作者提供了 hook，那么说明作者<i>明确知道</i>此处可能运行用户代码的。
 相对而言，advice 可能会带来不可预料的副作用（unexpected side effects），因而只有当没有恰当的 hook 可以使用时，才去考虑使用 advice。
 
-问题的关键时 advice 不易察觉地（subtly）修改了目标命令（the commands to be adviced）的语义，并且这些修改对于这些命令的代码时不可见的。
+问题的关键是 advice 不易察觉地（subtly）修改了目标命令（the commands to be adviced）的语义，并且这些修改对于这些命令的代码是不可见的。
 因而，虽然使用 advice 也可以解决问题，但是最好直接去修改那些命令。
 当然，这并不代表 `advice.el` 是不好的，但是它应该只在无法直接修改命令的情况下被使用。
 例如，当你想要让你的包在此前的版本（older releases）中也可以正常运行时。
