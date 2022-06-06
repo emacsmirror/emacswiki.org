@@ -1,8 +1,9 @@
 Hello, i translate this wiki into Ukrainian language.\\
-I use Emacs since 24 version. Currently I use GNU Emacs 26. There is my [https://gitlab.com/andmizyk/emacs-files config].
+I use Emacs since version of 24. Currently I use GNU Emacs 27.1. There is my [https://gitlab.com/andmizyk/emacs-files emacs config].
 
-My other activities: On [https://wiki.debian.org/AndMizyk DebianWiki].
+My packages:
 
+- [https://gitlab.com/LinuxOrgUa/ukrainian-calendar.el ukrainian-calendar.el]
 
 
 
