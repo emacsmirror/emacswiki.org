@@ -9,6 +9,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * AugeasMode
 * AutoconfMode -- for autoconf configure scripts
 * AutoExpMode -- for Microsoft Visual Studio's autoexp.dat file
+* [[AutoHotKey Mode]] -- page summarizing the modes available for the AutoHotKey scripting language
 * [[Asm86Mode]] -- Asm86 Mode is an Emacs major mode that helps the often-tedious task of coding assembly for the Asm86 assembler.
 * AutoLispMode
 * AxcessMode -- also Netlinx
