@@ -23,6 +23,7 @@ Here are some of the things '''Dired+''' does:
 
 * Lets you open Dired for an arbitrary set of files and (non-root) directories, anywhere.  Just use a non-positive prefix arg (e.g. `C--') with `dired': you are prompted for the Dired buffer name and for each file or dir to include. You can use glob patterns with wildcards to include all of the matching files and dirs at once.
 
+[:DiredSnapshot]
 * Lets you snapshot the set of files and directories in a Dired buffer, to Dired them later, regardless of whether the contents of the original Dired buffer have changed.  This is particularly useful to let you Dired a set of files
 and dirs that results from some possibly long-lasting command, such as `find-dired'.  Instead of recalculating the set of files to show and act on, you just create a Dired buffer with the set of names recorded previously.  There are two ways to do this.  One is to use command `diredp-define-snapshot-dired-commands' in any buffer in `dired-mode' or a derived mode, then save the resulting command defuns of commands that restore the snapshot.  The other is to use '''`C-M-*'''' (`dired-marked-other-window') to immediately give you such a snapshot Dired buffer, and then bookmark that buffer.  For this latter approach you need library BookmarkPlus.  In sum, you either save the definition of a command that restores the snapshot or you create a bookmark that does so.
 
