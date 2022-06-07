@@ -158,7 +158,7 @@ operations on files in the solution.
 * WebMode -- major-mode for editing web templates
 * WhiteSpace -- minor mode to visualize (HARD) SPACE, TAB and NEWLINE
 * WikiMode
-* WikiNavMode --simple file navigation using &91;&91;WikiStrings&93;&93;
+* WikiNavMode -- simple file navigation using %%[[WikiStrings]]%%
 * WikipediaMode
 * WikipediaAlternative -- an alternative (to the previous) mode for Wikipedia
 * WikitextMode -- for editing Wikispaces' articles
