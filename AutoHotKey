@@ -1,4 +1,5 @@
 AutoHotkey is an open source scripting language for Windows that can automate and customize almost any action on your PC.
+
 * Use virtually any key, button, or combination as a hotkey for your keyboard, mouse, joystick, and handheld remote controls.
 * Expand abbreviations as you type them using hotstrings.
 * Easily create your own graphical user interfaces and custom menus.
@@ -7,7 +8,11 @@ AutoHotkey is an open source scripting language for Windows that can automate an
 * Call functions inside a DLL, such as standard Windows API functions.
 * All of this and more in a simplified syntax that makes learning easy for beginners while offering powerful features for advanced users.
 
-See also:
+== Emacs modes for editing AutoHotKey scripts ==
+
+See [[AutoHotKey Mode]] for information on the Emacs major modes available for editing AutoHotKey scripts.
+
+== See also: ==
 
 * [http://www.autohotkey.com/wiki/index.php?title=Main_Page autohotkey.com wiki]
 * [http://www.autohotkey.com/forum autohotkey forum]
@@ -150,3 +155,6 @@ Actually, the Quick Time Player needed F8 and F9 as UP and DOWN, so I put this o
 
 
 One thing to add is that AutoHotKey and Autoit are derived from the same code base, so AutoHotKey tips here may work well with ##AutoIt##. -- TomBaker
+
+----
+CategoryWThirtyTwo
