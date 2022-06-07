@@ -17,7 +17,7 @@ See also CategoryCode if you want to write a new major mode, or if
 you are looking for Emacs features that augment the the basic modes
 listed on this page.
 
-Other pages (could this please be split in major and minor modes?):
+Other pages (could this please be split in [MajorMode major] and [MinorMode minor modes]?):
 
 * AbbrevMode
 * AdvancedDeskCalculator -- often known as just "Calc"
@@ -28,6 +28,7 @@ Other pages (could this please be split in major and minor modes?):
 * AutoCompressionMode
 * AutoEncryption
 * AutoFillMode
+* [[AutoHotKey Mode]] -- page summarizing the modes available for the AutoHotKey scripting language
 * BabelMode
 * BalloonHelpMode -- Tooltips for XEmacs
 * BbdbMode
