@@ -74,6 +74,7 @@ Use Dired in Windows and let Emacs open files using default Windows commands.
 
 
 === Tips and Tricks ===
+* AutoHotKey -- a free and open source scripting language for Windows that allows you to automate and customize almost anything on your PC
 * [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
 * WThirtyTwoNetSend -- send messages using the NT command net send
 * WThirtyTwoSwitchToWindows -- switch to a window by its name
