@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun  8 14:00:56 2022 (-0700)
+;; Last-Updated: Wed Jun  8 14:19:09 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13229
+;;     Update #: 13230
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -275,7 +275,7 @@
 ;;  2. Use command `diredp-define-snapshot-dired-commands', to create
 ;;     two commands (for same-window and other-window) that will
 ;;     create a snapshot Dired buffer.  Save the `defuns' of those
-;;     commmands to your init file, for persistent access.
+;;     commands to your init file, for persistent access.
 ;;
 ;;  The saved set of files, whether embedded in a bookmark or in a
 ;;  special Dired command, is a snapshot of the files available at a
