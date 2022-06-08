@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun  4 10:19:02 2022 (-0700)
+;; Last-Updated: Wed Jun  8 14:00:56 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13222
+;;     Update #: 13229
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -242,8 +242,8 @@
 ;;  to retrieve them, and `C-M-<' (in Dired) to open Dired on them.
 ;;
 ;;
-;;  Saving and Restoring Dired Listings
-;;  -----------------------------------
+;;  Dired Snapshots: Saving and Restoring Dired Listings
+;;  ----------------------------------------------------
 ;;
 ;;  Suppose you use a command such as `find-name-dired', to generate a
 ;;  Dired buffer that lists files from various places.  The search
@@ -254,9 +254,9 @@
 ;;  want to get to it in another Emacs session.
 ;;
 ;;  And suppose that you don't want to pay the penalty of performing
-;;  the search again, and you're content with the set of file names
-;;  that the original search found.  That is, you don't care whether
-;;  that set of names is still 100% up-to-date.
+;;  the `find' search again, and you're content with the set of file
+;;  names found by the original search.  That is, you don't care
+;;  whether that set of names is still 100% up-to-date.
 ;;
 ;;  In such a context you want, in effect, to create a Dired buffer
 ;;  snapshot of some sort - you want to record the set of names that
@@ -265,7 +265,8 @@
 ;;  Dired+ gives you two ways to do this.  Both involve first creating
 ;;  a Dired buffer that's produced from an explicit set of file names,
 ;;  from anywhere, rather than one that's produced using `ls' or
-;;  similar.
+;;  similar, and then saving that set of file names for re-creating
+;;  such a Dired buffer later.
 ;;
 ;;  1. Use `C-M-*' (`diredp-marked-other-window') or `diredp-marked',
 ;;     to create a snapshot Dired buffer.  Then bookmark that buffer.
@@ -275,6 +276,16 @@
 ;;     two commands (for same-window and other-window) that will
 ;;     create a snapshot Dired buffer.  Save the `defuns' of those
 ;;     commmands to your init file, for persistent access.
+;;
+;;  The saved set of files, whether embedded in a bookmark or in a
+;;  special Dired command, is a snapshot of the files available at a
+;;  particular time.
+;;
+;;  When you later use Dired with that explicit set of file names,
+;;  only those files are listed - if a name no longer corresponds to
+;;  an existing file then it is ignored.  The resulting Dired buffer
+;;  represents the current state of the file system, but only as far
+;;  as the files it lists are concerned.
 ;;
 ;;  I think the first approach is generally preferable, but you might
 ;;  prefer the second.
