@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun  8 14:19:09 2022 (-0700)
+;; Last-Updated: Wed Jun  8 14:24:29 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13230
+;;     Update #: 13233
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -274,7 +274,7 @@
 ;;
 ;;  2. Use command `diredp-define-snapshot-dired-commands', to create
 ;;     two commands (for same-window and other-window) that will
-;;     create a snapshot Dired buffer.  Save the `defuns' of those
+;;     create a snapshot Dired buffer.  Save the `defun's of those
 ;;     commands to your init file, for persistent access.
 ;;
 ;;  The saved set of files, whether embedded in a bookmark or in a
@@ -297,8 +297,8 @@
 ;;  If you bookmark a Dired buffer without using Bookmark+ then the
 ;;  bookmark records only the Dired directory name.  It doesn't record
 ;;  the snapshot information - the explicit list of files to be
-;;  restored.  (It also doesn't record the`ls' switches or which files
-;;  were marked in the bookmarked snapshot listing, so you can't
+;;  restored.  (It also doesn't record the `ls' switches or which
+;;  files were marked in the bookmarked snapshot listing, so you can't
 ;;  restore them.)
 ;;
 ;;  Both approaches, #1 and #2, use the marked files and dirs as the
@@ -308,7 +308,7 @@
 ;;  those that are explicitly marked.  See the doc strings.
 ;;
 ;;  Note too that it is the full content of the original Dired buffer
-;;  that is used to define the files to snapshot.  In particular,
+;;  that's used to define the files to snapshot.  In particular,
 ;;  inserted subdir listings are included.
 ;;
 ;;
