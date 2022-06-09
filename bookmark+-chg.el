@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun  5 16:48:01 2022 (-0700)
+;; Last-Updated: Thu Jun  9 08:03:09 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16861
+;;     Update #: 16862
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2022/06/09 dadams
+;;     bmkp-bookmark-description: Added list of explicit files, for Dired snapshots.
 ;; 2022/06/05 dadams
 ;;     bmkp-sort-comparer: Updated default value to what's used in bmkp-bmenu-sort-by-bookmark-type.
 ;; 2021/09/19 dadams
