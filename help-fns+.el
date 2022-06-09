@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 14 09:18:48 2022 (-0800)
+;; Last-Updated: Thu Jun  9 14:28:00 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 2564
+;;     Update #: 2582
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `radix-tree', `wid-edit', `wid-edit+'.
+;;   `auth-source', `backquote', `button', `bytecomp', `cconv', `cl',
+;;   `cl-generic', `cl-lib', `cl-macs', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `gv', `help-fns', `help-mode',
+;;   `info', `macroexp', `naked', `package', `password-cache',
+;;   `radix-tree', `seq', `tabulated-list', `url-handlers',
+;;   `url-parse', `url-vars', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +121,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/09 dadams
+;;     describe-variable (Emacs 23+): Don't fill var value, as that loses significant whitespace.
 ;; 2022/01/14 dadams
 ;;     Soft-require package.el, so describe-package gets redefined.
 ;; 2021/08/18 dadams
@@ -709,6 +715,7 @@ so that matches are exact (ignoring case).")
             (insert (format "* %-38s (%s)%s.%s\n"  (format "%s [%s]:" (nth 1 entry) (nth 0 entry))
                             (nth 0 entry)  (nth 2 entry)
                             (if (nth 3 entry) (format " (line %s)" (nth 3 entry)) ""))))))))
+
   (add-to-list 'Info-virtual-files '("\\`\\*Indexed\\*\\'"
                                      (find-file . Info-indexed-find-file)
                                      (find-node . Info-indexed-find-node)
@@ -1296,7 +1303,7 @@ Return the description that was displayed, as a string."
 ;; 1. Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
 ;; 2. Add key-description buttons to command help.
 ;;
-(when (and (boundp 'Info-virtual-files)      ; Emacs 23.2 through 24.2
+(when (and (boundp 'Info-virtual-files) ; Emacs 23.2 through 24.2
            (not (fboundp 'help-fns--autoloaded-p)))
 
   (defun describe-function-1 (function)
@@ -1466,7 +1473,6 @@ Return the description that was displayed, as a string."
               (when (and doc  (boundp 'Info-virtual-files)) ; Emacs 23.2+
                 (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
               (insert (or doc  "Not documented."))))))))
-
   )
 
 (when (fboundp 'help-fns--autoloaded-p) ; Emacs 24.3+
@@ -1662,7 +1668,6 @@ Return the description that was displayed, as a string."
             (when (and doc  (boundp 'Info-virtual-files)) ; Emacs 23.2+
               (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
             (insert (or doc  "Not documented.")))))))
-
   )
 
 (when (or (= emacs-major-version 25)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
@@ -1780,7 +1785,6 @@ Return the description that was displayed, as a string."
             (unless (and (boundp 'text-quoting-style) ; Emacs 25+
                          (memq text-quoting-style '(straight grave)))
               (set-buffer-file-coding-system 'utf-8)))))))
-
   )
 
 (when (> emacs-major-version 25)
@@ -1791,9 +1795,8 @@ Return the description that was displayed, as a string."
       (with-current-buffer (help-buffer)
         (fill-region-as-paragraph (save-excursion (goto-char pt1) (forward-line 0) (point)) (point))))
     (terpri)(terpri)
-
     (pcase-let* ((`(,real-function ,def ,_aliased ,real-def)
-                   (help-fns--analyze-function function))
+                  (help-fns--analyze-function function))
                  (doc-raw
                   (condition-case nil
                       ;; FIXME: Maybe `documentation' should return nil for invalid functions, not signal an error.
@@ -1812,25 +1815,24 @@ Return the description that was displayed, as a string."
                     (condition-case err
                         (help-documentation function nil 'ADD-HELP-BUTTONS)
                       (error (format "No Doc! %S" err))))))
-                (help-fns--key-bindings function)
-                (with-current-buffer standard-output
-                  (setq doc  (condition-case nil
-                                 ;; FIXME: Maybe `help-fns--signature' should return `doc' for invalid functions,
-                                 ;; not signal error.
-                                 (help-fns--signature
-                                  function doc-raw (if (subrp def) (indirect-function real-def) real-def)
-                                  real-function key-bind-buf)
-                               ((invalid-function void-function) doc-raw))) ; E.g., alias for not yet defined function.
-                  (run-hook-with-args 'help-fns-describe-function-functions function)
-                  (insert "\n")
-                  (when (and doc  (boundp 'Info-virtual-files))
-                    (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
-                  (insert (or doc  "Not documented."))
-                  (when (or (function-get function 'pure)  (function-get function 'side-effect-free))
-                    (insert "\nThis function does not change global state, including the match data."))
-                  ;; Avoid asking user questions if decides to save help buffer, when locale's codeset isn't UTF-8.
-                  (unless (memq text-quoting-style '(straight grave)) (set-buffer-file-coding-system 'utf-8)))))
-
+      (help-fns--key-bindings function)
+      (with-current-buffer standard-output
+        (setq doc  (condition-case nil
+                       ;; FIXME: Maybe `help-fns--signature' should return `doc' for invalid functions,
+                       ;; not signal error.
+                       (help-fns--signature
+                        function doc-raw (if (subrp def) (indirect-function real-def) real-def)
+                        real-function key-bind-buf)
+                     ((invalid-function void-function) doc-raw))) ; E.g., alias for not yet defined function.
+        (run-hook-with-args 'help-fns-describe-function-functions function)
+        (insert "\n")
+        (when (and doc  (boundp 'Info-virtual-files))
+          (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
+        (insert (or doc  "Not documented."))
+        (when (or (function-get function 'pure)  (function-get function 'side-effect-free))
+          (insert "\nThis function does not change global state, including the match data."))
+        ;; Avoid asking user questions if decides to save help buffer, when locale's codeset isn't UTF-8.
+        (unless (memq text-quoting-style '(straight grave)) (set-buffer-file-coding-system 'utf-8)))))
   )
 
 
@@ -2053,8 +2055,8 @@ nor the buffers in the buffer list.  See also `with-temp-buffer'."
     `(let ((,old-frame   (selected-frame))
            (,old-buffer  (current-buffer)))
        (unwind-protect
-            (progn (if (> emacs-major-version 22) (select-frame ,frame 'NORECORD) (select-frame ,frame))
-                   ,@body)
+           (progn (if (> emacs-major-version 22) (select-frame ,frame 'NORECORD) (select-frame ,frame))
+                  ,@body)
          (when (frame-live-p ,old-frame)
            (if (> emacs-major-version 22) (select-frame ,old-frame 'NORECORD) (select-frame ,old-frame)))
          (when (buffer-live-p ,old-buffer) (set-buffer ,old-buffer))))))
@@ -2298,8 +2300,8 @@ file local variable.\n")
 
   (defface describe-variable-value '((((background dark)) (:foreground "#58DFFA4FFFFF")) ; a dark cyan
                                      (t (:foreground "Firebrick")))
-           "*Face used to highlight the variable value, for `describe-variable'."
-           :group 'help :group 'faces)
+    "*Face used to highlight the variable value, for `describe-variable'."
+    :group 'help :group 'faces)
 
   (defun describe-variable (variable &optional buffer frame optionp)
     "Display the full documentation of VARIABLE (a symbol).
@@ -2383,9 +2385,11 @@ the global value."
                       (unless (or (numberp val)  (symbolp val)  (characterp val)
                                   (and (stringp val)  (string-match-p "[\n]" val)))
                         (terpri))
-                      (let ((opoint  (point)))
-                        (pp val)
-                        (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
+                      ;; Can't fill value, as that breaks values (e.g. strings) where whitespace is significant.
+                      ;; (let ((opoint  (point)))
+                      ;;   (pp val)
+                      ;;   (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
+                      (pp val)
                       (when (stringp val) (terpri))
                       (put-text-property from (point) 'face 'describe-variable-value)
                       (if (< (point) (+ 68 (line-beginning-position 0)))
@@ -2402,9 +2406,11 @@ the global value."
                         (unless (or (numberp origval)  (symbolp origval)  (characterp origval)
                                     (and (stringp origval)  (string-match-p "[\n]" origval)))
                           (terpri))
-                        (let ((opoint  (point)))
-                          (pp origval)
-                          (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
+                        ;; Can't fill value, as that breaks values (e.g. strings) where whitespace is significant.
+                        ;; (let ((opoint  (point)))
+                        ;;   (pp origval)
+                        ;;   (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
+                        (pp origval)
                         (put-text-property from (point) 'face 'describe-variable-value)
                         (when (< (point) (+ from 20)) (delete-region (1- from) from) (terpri)))))))
               (terpri)
@@ -2427,12 +2433,12 @@ the global value."
                       (if (eq val global-val)
                           (progn (princ " the same.") (terpri))
                         (princ ":") (terpri) (terpri)
-                        ;; Fixme: `pp' can take an age if you happen to ask for a very large expression.
-                        ;; We should probably print it raw once and check whether it is a sensible size,
-                        ;; before prettyprinting.  -- fx
+                        ;; Fixme: `pp' can be slow for a very large expression.  We should maybe print it raw once
+                        ;; and check whether it is a sensible size, before prettyprinting.  -- fx
                         (let ((opoint  (point)))
                           (pp global-val)
-                          (save-excursion (fill-region-as-paragraph opoint (point) nil t t))
+                          ;; Can't fill value, as that breaks values (e.g. strings) where whitespace is significant.
+                          ;; (save-excursion (fill-region-as-paragraph opoint (point) nil t t))
                           (put-text-property opoint (point) 'face 'describe-variable-value)
                           ;; See previous comment for this function.  (help-xref-on-pp opoint (point))
                           (when (< (point) (+ opoint 20)) (delete-region (1- opoint) opoint))))))))
@@ -2552,7 +2558,8 @@ the global value."
                                        ((looking-at "[\n]")          1)
                                        (t                            0))))
                     (delete-region (- (line-beginning-position) nb-nls) (line-beginning-position)))))
-              (with-current-buffer standard-output (buffer-string))))))))) ; Return the text displayed.
+              (with-current-buffer standard-output (buffer-string)))))))) ; Return the text displayed.
+  )
 
 ;;;###autoload
 (defun describe-option (variable &optional buffer) ; Bound to `C-h o'
@@ -2907,9 +2914,9 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                                                      help-echo "`mouse-2' or `RET': Show full image"
                                                      keymap (keymap
                                                              (mouse-2 . (lambda (e) (interactive "e")
-                                                                           (find-file ,filename)))
+                                                                          (find-file ,filename)))
                                                              (13 . (lambda () (interactive)
-                                                                      (find-file ,filename))))))))
+                                                                     (find-file ,filename))))))))
              (image-info       (and (require 'image-dired nil t)
                                     (fboundp 'image-file-name-regexp)
                                     (if (fboundp 'string-match-p)
@@ -3124,7 +3131,6 @@ Non-interactively:
             (when (fboundp 'package-desc-name)  (setq package  (package-desc-name package))) ; Emacs 24.4
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))) ; Link to manuals
-
   )
 
 
