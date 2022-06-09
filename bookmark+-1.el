@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun  5 16:54:26 2022 (-0700)
+;; Last-Updated: Thu Jun  9 08:03:23 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9461
+;;     Update #: 9463
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9282,13 +9282,21 @@ the file is an image file then the description includes the following:
                                                 (inserted  (length (bookmark-prop-get bookmark
                                                                                       'dired-subdirs)))
                                                 (hidden    (length (bookmark-prop-get bookmark
-                                                                                      'dired-hidden-dirs))))
+                                                                                      'dired-hidden-dirs)))
+                                                (files     (cdr (bookmark-prop-get bookmark
+                                                                                   'dired-directory))))
                                             (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
-Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
+Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
                                                     (if switches (format " `%s'" switches) "")
                                                     (if switches "" (format "\t"))
                                                     (expand-file-name file)
-                                                    marked inserted hidden))))
+                                                    marked inserted hidden
+                                                    (if (not files)
+                                                        ""
+                                                      (format "Explicit file list:\n  %s\n"
+                                                              (mapconcat #'identity
+                                                                         files
+                                                                         "\n  ")))))))
                    (non-file-p       (or (and location  (format "Location:\t\t%s\n" location))
                                          (and buf  (format "Buffer:\t\t\t%s\n" buf))))
                    (file             (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
