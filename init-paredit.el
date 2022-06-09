@@ -83,6 +83,7 @@
                ;;'java-mode-hook
                'haskell-mode-hook
                'emacs-lisp-mode-hook
+               'lisp-data-mode-hook
                'lisp-interaction-mode-hook
                'lisp-mode-hook
                'maxima-mode-hook
