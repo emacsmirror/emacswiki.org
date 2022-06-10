@@ -64,7 +64,7 @@ StartupWMClass=Emacs
 }}}
 
 
-
+To set emacsclient as the default application for a particular mime type on freedesktop.org based systems such as GNOME & KDE,  you can use xdg-mime, e.g: xdg-mime default emacsclient.desktop text/x-python
 
 
 === Windows ===
