@@ -21,4 +21,4 @@ Reading within Emacs documentation that is not about Emacs but about other parts
 
 ExternalDocumentation is about integrating other sources of information, it explains how to install Info-format documentation for Git manual, Python manual, etc.
 
-If, for some reason, you need access to the Emacs documentation strings without having access to Emacs itself, there's a site collecting it: [http://bruce-connor.github.io/emacs-online-documentation/ Emacs Online Documentation].
+To access Emacs related documentation online without Emacs, see [[https://emacsdocs.org/ Emacs Docs]] which includes the manuals for Emacs, Elisp, Org, Magit and AUCTeX.
