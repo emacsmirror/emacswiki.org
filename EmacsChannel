@@ -164,5 +164,32 @@ This community used to be on freenode, but this was taken over by the new freeno
 
 The '''#emacs''' channel on freenode is now run by the new freenode staff, and no longer has anything to do with the community that was previously on freenode.
 
+= Some notes on cross-posting =
+
+These are some **informal** notes and thoughts on cross-posting on IRC channels gathered from the crazy whiz kids in #Emacs. It is placed here as a reference since the internet does not seem to have any information on the topic.
+
+A simple definition of cross-posting would 'posting exactly the same message on multiple channels'.
+
+While cross-posting by itself is maybe common on platforms like Reddit (where there is often some kind of notification that the post has been cross-posted), and perhaps not an issue in itself :- the following notes are more relevant to #emacs and #org-mode channels on IRC. These channels are more intimately 'connected' both in terms of common users and questions. The following notes are more about the problems of 'instantly' cross-posting across these channels at the same time, and why this specific kind of cross-posting is probably not the best practice to follow.
+
+Issues:
+
+* Cross-posting leads to potential duplication of conversations and effort.
+
+* It can also potentially facilitate asynchronous, fragmented and contradictory input, thus reducing the overall efficiency of the discussion, and end up confusing the person who asked the question.
+
+* If someone answers the question in one channel, the cross-poster may often tend to fail to update the other channel. Subsequently someone else may see this unanswered question in the other channel, and start considering how to answer, actually answer, and then is finally told that it has already been answered.
+
+* A number of users just don't want to see the same question twice, at same second, with no warning.
+
+* Cross-posting also treats what is basically a collection of social settings as though they were somebody's personal tech support. The attitude of "I'll just blast this question to several different places and hope for an answer from one of them" seems reasonable until you remember you're possibly asking many people to donate time to hold your hand, while putting in no effort yourself to avoid this.
+
+Suggestions:
+
+* If there is a need to cross-post in order to increase 'reach' and invite more feedback, it would be nice if the poster mentions that they are cross-posting, and also update the channel X that the discussion thread has taken off or the question has been answered in channel Y.
+
+* As of today, #emacs tends to have significantly more users and activity than #org-mode. This is a multi-edged phenomenon as it could mean that your question is lost in the chatter of #emacs, or that it could be answered a lot more quickly! Since #org-mode is quieter, there is the chance that your question is more 'visible' and thus answered at a later time.
+
+
 ----
 InternetRelayChat
