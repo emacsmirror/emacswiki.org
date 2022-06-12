@@ -186,6 +186,7 @@ different files, for example if they use something bash-it. Currently as I know 
 
 
 == Dynamically loading aliases from Bash environment ==
+-- 2019-04-01 [[Arthur Miller]]:
 
 I just played with Eshell a bit again, and hacked simple way to load aliases dynamically. Unlike Sed version above
 it seems to work much smoother since it asks Bash for the list of currently available aliases instead of parsing .bashrc file. It means that alias changes will be mirrored in Eshell when .bashrc is changed. I also use only temporary buffer, and does not read files at all which seems to be a bit faster as well. Gotcha is that I was too lazy to make it properly (it works well for me). First caveat is that it expects a list of single quoted aliases: 
@@ -230,6 +231,24 @@ Also, you can't use something like alias md="mkdir". Second issue is that it exp
     (add-hook 'eshell-mode-hook 'eshell-load-bash-aliases)
 ----
 
+-- 2022-06-12 [[Edgar Vincent]]:
 
--- 2019-04-01 [[Arthur Miller]]:
+Drawing upon Arthur Miller's function, I simplified a few things. I don't think there is an single/double quote issue when using Bash's <code>alias</code> builtin command, as it seems to use single quotes exclusively.
+
+  (defun eshell-load-bash-aliases ()
+    "Read Bash aliases and add them to the list of eshell aliases."
+    ;; Bash needs to be run - temporarily - interactively
+    ;; in order to get the list of aliases.
+      (with-temp-buffer
+        (call-process "bash" nil '(t nil) nil "-ci" "alias")
+        (goto-char (point-min))
+        (while (re-search-forward "alias \\(.+\\)='\\(.+\\)'$" nil t)
+          (eshell/alias (match-string 1) (match-string 2)))))
+
+  ;; We only want Bash aliases to be loaded when Eshell loads its own aliases,
+  ;; rather than every time `eshell-mode' is enabled.
+  (add-hook 'eshell-alias-load-hook 'eshell-load-bash-aliases)
+----
+
+----
 CategoryEshell
