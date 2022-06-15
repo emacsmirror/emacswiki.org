@@ -1,6 +1,8 @@
-[https://marmalade-repo.org/ Marmalade] (HTTP only) is an [[ELPA]] compatible package repository that allows users to upload their own packages. Package maintainers don't have to be the same as the maintainers of the original code. This is somewhat like major GNU/Linux distributions. 
+*Note:* The repository has had significant availability problems for years (and it [[https://github.com/nicferrier/elmarmalade/issues/158#issuecomment-858226196 seems to be down since 2021]]), so package users/authors may wish to look at [[ELPA]] and [[MELPA]] in addition to (or instead of) Marmalade.
 
-The repository has had significant availability problems for years (as of 2021), so package users/authors may wish to look at ELPA and [[MELPA]] in addition to (or instead of) Marmalade. 
+----
+
+[https://marmalade-repo.org/ Marmalade] (HTTP only) is an [[ELPA]] compatible package repository that allows users to upload their own packages. Package maintainers don't have to be the same as the maintainers of the original code. This is somewhat like major GNU/Linux distributions. 
 
 == About Marmalade ==
 
