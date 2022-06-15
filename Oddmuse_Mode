@@ -1,0 +1,39 @@
+Oddmuse Mode (with a space) is a fork of OddmuseCurl, which in turn is a fork of a very old revision of OddmuseMode.
+The naming is unfortunate.
+
+Use it to edit [http://oddmuse.org/ Oddmuse] wikis such as [[Emacs Wiki]].
+
+Cool features:
+
+* [[VersionControl|VC]] integration
+* Preview using [[HtmlRendering|shr]]
+
+== Repository ==
+
+* [https://alexschroeder.ch/cgit/oddmuse.el/about about oddmuse.el]
+
+== Setup ==
+
+A typical setup:
+
+{{{
+;;; Oddmuse
+
+(setq oddmuse-username "AlexSchroeder")
+(add-to-list 'auto-mode-alist '("/Users/alex/.emacs.d/oddmuse" . oddmuse-mode))
+(autoload 'oddmuse-edit "oddmuse"
+  "Edit a page on an Oddmuse wiki." t)
+(add-to-list 'vc-handled-backends 'oddmuse)
+(defun vc-oddmuse-registered (file)
+  "Handle files in `oddmuse-directory'."
+  (string-match (concat "^" (expand-file-name oddmuse-directory))
+		(file-name-directory file)))
+}}}
+
+Adding to `vc-handled-backends' and the definition of `vc-oddmuse-registered' would be
+part of autoloads, if this file was distributed with Emacs. As it stands, you could
+instead ##(require 'vc-oddmuse)##. It's just that I want to keep my Emacs startup speed
+down and that's why I don't.
+
+----
+CategoryHypermedia
