@@ -79,8 +79,6 @@ package yourself:
 build packages with MELPA.
 * ELPA requires you to have the directory structure here checked into
 the ELPA git repository. You don't build the actual tar file.
-* Marmalade requires that you submit the actual tar file of your built
-package. 
 
 
 === An example package ===
@@ -113,25 +111,11 @@ The pkg file, `alchemist-pkg.el`, must look like this:
 In other words: package name, version, summary. All strings.
 
 
-Marmalade has a
+[[Marmalade Repo]] has a
 [[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile demo multifile package]]
 with a Makefile that shows how you can build
 a package with simple unix tools, do it but also tools like Cask and
 ELPAKit will help you build packages as well.
-
-
-=== Advantages and Disadvantages of manually building packages ===
-
-NicFerrier says that the requirement of Marmalade to take a package
-tar file is a feature:
-
-: Some things, like MELPA just build the packages for you. I don't
-like that on principle because then you can't actually test what
-you're building. There are certain things about packages that are good
-to test yourself (especially after you have a user base already using
-your package - you want to just release a broken one?). The best way
-of doing that is to make the package yourself.\\
-NicFerrier
 
 
 === Cask ===
@@ -148,7 +132,9 @@ Then you can install or upload somewhere.
 
 === ELPAKit ===
 
-[[https://marmalade-repo.org/packages/elpakit ELPAKit]] does the right
+(*Note:* Development on ELPAKit seems to be stalled since late 2014)
+
+[[https://github.com/nicferrier/elpakit ELPAKit]] does the right
 thing too. With no python:
 
 {{{
@@ -156,24 +142,3 @@ M-x elpakit-make-multi
 }}}
 
 in the package directory of a multi-file package.
-
-
-=== Marmalade peculiarities ===
-
-MarmaladeRepo has some odd stuff about how it displays commentary
-about a package. Commentary isn't normally part of multi-file
-packages, but is there a way to add more information which will
-be shown in the about part on the marmalade website.
-
-What Marmalade does to try to find commentary for a package is to try
-to present any README it can find. If you add a plain text README it
-will get displayed.
-
-In fact Marmalade will [[https://github.com/nicferrier/elmarmalade/blob/master/marmalade-service.el#L127 display *any* README it finds]]
-
-I could add more logic to this if you think there are better ways to find package description. One thing that springs to mind is:
-
-* if no README
-* find the elisp file that is named the same as the package
-* find a commentary section in that
-
