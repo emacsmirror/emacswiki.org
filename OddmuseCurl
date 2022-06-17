@@ -6,10 +6,6 @@ Cool features:
 * [[VersionControl|VC]] integration
 * Preview using [[HtmlRendering|shr]]
 
-Problems:
-
-* In 2022, using curl 7.64, there was a problem with posting text containing emojis. The text is posted using the ##--form text=<filename## argument and if said file contained emojis, it wouldn't work.
-
 == Download ==
 
 The code is maintained on GitHub using [[Git]]:
