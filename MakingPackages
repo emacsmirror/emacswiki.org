@@ -142,3 +142,6 @@ M-x elpakit-make-multi
 }}}
 
 in the package directory of a multi-file package.
+
+----
+CategoryCode CategoryPackaging
