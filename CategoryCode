@@ -128,6 +128,7 @@ Tips and tricks for writing a MajorMode.
 * InstallElisp - Retrieve and install elisp from Internet
 * [[elinstall]] - An installer for elisp code. It sets up autoloads, load-path, etc. by Tom Breton (Tehom)
 * [[ELPA]] - Emacs Lisp Package Archive by TomTromey
+* MakingPackages -- Overview of how to build packages for ELPA or [[MELPA]]
 * [[Pases]] -- Packaging system for Emacsen
 * AutoInstall - Asynchronous retrieve and install elisp file from Internet. 
 * [http://gmarceau.qc.ca/plugin.el plugin.el] -- Automatic fetching, installing and loading of Emacs modules
