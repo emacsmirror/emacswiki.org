@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jun  9 08:03:23 2022 (-0700)
+;; Last-Updated: Tue Jun 21 19:39:57 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9463
+;;     Update #: 9478
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5301,22 +5301,25 @@ The edited value must be a list each of whose elements is either a
 BOOKMARK is a bookmark name or a bookmark record."
   (interactive (list (bookmark-completing-read "Edit tags for bookmark" (bmkp-default-bookmark-name))))
   (setq bookmark  (bmkp-get-bookmark-in-alist bookmark))
-  (let* ((btags    (bmkp-get-tags bookmark))
-         (bmkname  (bmkp-bookmark-name-from-record bookmark))
-         (edbuf    (format "*Edit Tags for Bookmark `%s'*" bmkname)))
+  (let* ((btags  (bmkp-get-tags bookmark))
+         (bname  (bmkp-bookmark-name-from-record bookmark))
+         (edbuf  (format "*Edit Tags for Bookmark `%s'*" bname)))
+    (set-text-properties 0 (length bname) nil bname) ; Strip properties from (copied) bookmark name string.
+    (bookmark-maybe-historicize-string bname)
     (setq bmkp-return-buffer  (current-buffer))
-    (bmkp-with-output-to-plain-temp-buffer edbuf
-      (princ
-       (substitute-command-keys
-        (concat ";; Edit tags for bookmark\n;;\n;; \"" bmkname "\"\n;;\n"
-                ";; The edited value must be a list each of whose elements is\n"
-                ";; either a string or a cons whose key is a string.\n;;\n"
-                ";; DO NOT MODIFY THESE COMMENTS.\n;;\n"
-                ";; Type \\<bmkp-edit-tags-mode-map>`\\[bmkp-edit-tags-send]' when done.\n\n")))
-      (let ((print-circle  bmkp-propertize-bookmark-names-flag)
-            (print-gensym  bmkp-propertize-bookmark-names-flag))
-        (pp btags))
-      (goto-char (point-min)))
+    (bmkp-with-output-to-plain-temp-buffer
+     edbuf
+     (princ ";; Edit tags for bookmark\n;;\n;; ")
+     (prin1 bname)                      ; In case bookmark name contains " chars etc.
+     (princ "\n;;\n;; The edited value must be a list each of whose elements is\n")
+     (princ ";; either a string or a cons whose key is a string.\n;;\n")
+     (princ ";; DO NOT MODIFY THESE COMMENTS.\n;;\n")
+     (princ (substitute-command-keys
+             ";; Type \\<bmkp-edit-tags-mode-map>`\\[bmkp-edit-tags-send]' when done.\n\n"))
+     (let ((print-circle  bmkp-propertize-bookmark-names-flag)
+           (print-gensym  bmkp-propertize-bookmark-names-flag))
+       (pp btags))
+     (goto-char (point-min)))
     (pop-to-buffer edbuf)
     (buffer-enable-undo)
     (with-current-buffer (get-buffer edbuf) (bmkp-edit-tags-mode))))
