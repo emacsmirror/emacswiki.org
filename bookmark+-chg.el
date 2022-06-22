@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun  9 08:03:09 2022 (-0700)
+;; Last-Updated: Tue Jun 21 19:35:15 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16862
+;;     Update #: 16863
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2022/06/21 dadams
+;;     bmkp-edit-tags: Use prin1 for bookmark name, in case of embedded " chars etc.
+;;                     Strip properties from bookmark name, and historicize it.
 ;; 2022/06/09 dadams
 ;;     bmkp-bookmark-description: Added list of explicit files, for Dired snapshots.
 ;; 2022/06/05 dadams
