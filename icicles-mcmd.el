@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jan 26 10:01:04 2022 (-0800)
+;; Last-Updated: Thu Jun 23 08:22:09 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 19883
+;;     Update #: 19884
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2159,7 +2159,7 @@ Bound to `M-,' in the minibuffer."
                   (icicle-candidate-nb                     icicle-candidate-nb)
                   (icicle-must-pass-after-match-predicate  (lambda (s) (functionp (intern s))))
                   (icicle-update-input-hook                nil))
-              (read (completing-read "Transform match using function: " obarray 'functionp
+              (read (completing-read "Transform match using function: " obarray 'functionp nil nil
                                      (if (boundp 'function-name-history)
                                          'function-name-history
                                        'icicle-function-name-history)))))
@@ -2705,12 +2705,12 @@ By default, this is bound to `C-x C-M-l' during completion."
            ;; the proper font for Unicode chars in `*Completions*'.  Emacs 23+ only.
            ;; But skip this if using `oneonone.el', since `1on1-display-*Completions*-frame' does it.
            (when (and ;; $$$$$$ (not (fboundp '1on1-display-*Completions*-frame))
-                      (get-buffer-window "*Completions*" 'visible)
-                      icicle-pre-minibuffer-buffer
-                      (> emacs-major-version 22))
+                  (get-buffer-window "*Completions*" 'visible)
+                  icicle-pre-minibuffer-buffer
+                  (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
-               (when (one-window-p t)   ; $$$$$ Also this? (window-dedicated-p (selected-window))
+               (when (one-window-p t) ; $$$$$ Also this? (window-dedicated-p (selected-window))
                  ;; Prior to Emacs 24, dunno how to get last-used window showing `icicle-pre-minibuffer-buffer'.
                  ;; This only gets some window showing it, which is not TRT.
                  (let* ((orig-win       (if (not (fboundp 'icicle-mru-window-for-buffer))
