@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov  1 09:10:38 2021 (-0700)
+;; Last-Updated: Sat Jun 25 10:06:06 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 3375
+;;     Update #: 3377
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -107,6 +107,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/25 dadams
+;;     split-para-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2021/11/01 dadams
 ;;     Renamed count-words-rectangle to count-rectangle-contents (not just about words).
 ;;     count-rectangle-contents: Return all of the values, not just the word count.
@@ -651,7 +653,7 @@ Then turn off `auto-fill-mode'."
   ;; file in Emacs 20, prohibit byte-compiling the `define-minor-mode' call.
   (eval '(define-minor-mode split-para-mode 
           "Toggle between a filled paragraph and one split into sentences."
-          nil nil nil
+          :global nil
           (if (not split-para-mode)
               (split-para-at-sentence-ends)
             (auto-fill-mode 1)
