@@ -4,13 +4,13 @@
 ;; Description: In the mode-line, show the value of the character after point.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2015-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Jul  7 10:52:36 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:00:17 2018 (-0800)
+;; Last-Updated: Sat Jun 25 10:13:29 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 169
+;;     Update #: 171
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-char.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineCharacterInfo
 ;; Keywords: mode-line, character
@@ -80,6 +80,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/25 dadams
+;;     mlc-char-in-mode-line-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2016/12/10 dadams
 ;;     mlc-copy-char-to-second-sel: x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2015/07/10 dadams
@@ -148,7 +150,7 @@ copy to second sel; mouse-3: large tooltip"
 ;;;###autoload
 (define-minor-mode mlc-char-in-mode-line-mode
   "Show char after point in mode line, at start of `global-mode-string'."
-  nil nil nil :group 'Modeline
+  :group 'Modeline
   (unless mlc-char-in-mode-line-mode-initialized
     (setq mlc-char-in-mode-line-mode-initialized  t)
     (setq global-mode-string  (cond ((consp global-mode-string)
