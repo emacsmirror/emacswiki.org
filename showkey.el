@@ -4,13 +4,13 @@
 ;; Description: Show keys as you use them.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2022, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 27 13:28:14 2021 (-0800)
+;; Last-Updated: Sat Jun 25 10:30:04 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 162
+;;     Update #: 163
 ;; URL: https://www.emacswiki.org/emacs/download/showkey.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowKey
 ;; Keywords: help keys mouse
@@ -100,6 +100,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2022/06/25 dadams
+;;     showkey-(tooltip|log)-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2018/02/10 dadams
 ;;     showkey-show-tooltip:
 ;;       Use selected-frame, not nil, as second arg to x-show-tip.  See Emacs bug #30399.
@@ -254,7 +256,7 @@ Note that keys such as `C-g' that quit, and keys that raise an error,
 are not logged.
 
 See also minor mode `showkey-log-mode'."
-  nil nil nil :global t
+  :global t
   (if showkey-tooltip-mode
       (add-hook 'pre-command-hook 'showkey-show-tooltip 'APPEND)
     (x-hide-tip)
@@ -325,7 +327,7 @@ Note that keys such as `C-g' that quit, and keys that raise an error,
 are not logged.
 
 See also minor mode `showkey-tooltip-mode'."
-  nil nil nil :global t
+  :global t
   (cond (showkey-log-mode
          (unless (get-buffer "*KEYS*")
            (let ((pop-up-frames                t)
