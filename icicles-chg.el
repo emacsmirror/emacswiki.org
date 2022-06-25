@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun May 22 13:28:50 2022 (-0700)
+;; Last-Updated: Sat Jun 25 09:42:11 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 11929
+;;     Update #: 11932
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1220,6 +1220,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2022/06/25 dadams
+;;     icicle-ido-like-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2022/05/22 dadams
 ;;     icicle-add-key+cmd: Use icicle-characterp.
 ;; 2021/03/17 dadams
@@ -4762,6 +4764,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2022/06/23 dadams
+;;     icicle-search-define-replacement: Added missing nil args to completing-read.
 ;; 2021/03/17 dadams
 ;;      Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2020/08/14 dadams
