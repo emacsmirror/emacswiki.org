@@ -4,13 +4,13 @@
 ;; Description: Extensions to `icomplete.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 14 10:17:48 2019 (-0800)
+;; Last-Updated: Sat Jun 25 09:57:13 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 1723
+;;     Update #: 1726
 ;; URL: https://www.emacswiki.org/emacs/download/icomplete%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -126,6 +126,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/25 dadams
+;;     icompletep-cycling-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2019/01/14 dadams
 ;;     Applied fix for Emacs bug #34070.
 ;; 2016/07/04 dadams
@@ -1441,7 +1443,7 @@ keys for it, customize the bindings in `icomplete-minibuffer-map'.
 
 Turning this mode on also turns on Icomplete mode.
 Turning it off does not turn Icomplete mode on or off."
-          nil nil nil
+          :global nil
           (when icompletep-cycling-mode (icomplete-mode 99)) ; Turn on Icomplete if cycling is on.
           (setq icomplete-minibuffer-map  (and icompletep-cycling-mode
                                            icompletep-ORIG-icomplete-minibuffer-map))))
