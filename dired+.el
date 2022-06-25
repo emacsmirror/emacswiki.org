@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun  8 14:24:29 2022 (-0700)
+;; Last-Updated: Sat Jun 25 09:29:48 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13233
+;;     Update #: 13235
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -978,6 +978,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/06/25 dadams
+;;     dired-omit-mode, dired-hide-details-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2022/06/03 dadams
 ;;     diredp-multiple-dired-menu, diredp-menu-bar-dir-menu: Added diredp-define-snapshot-dired-commands.
 ;; 2022/06/02 dadams
@@ -11508,7 +11510,7 @@ your init file:
   (add-hook \\='dired-mode-hook (lambda () (dired-omit-mode)))
 
 See Info node `(dired-x) Omitting Variables' for more information."
-           nil nil nil :group 'Dired-Plus
+           :init-value nil :lighter nil :keymap nil :group 'Dired-Plus
            (if (not dired-omit-mode)
                (revert-buffer)
              (let ((dired-omit-size-limit  nil)
@@ -11868,7 +11870,7 @@ show an image preview, then do so.  Otherwise, show text help."
 
   (eval '(define-minor-mode dired-hide-details-mode
           "Hide details in Dired mode."
-          (and diredp-hide-details-propagate-flag  diredp-hide-details-last-state)
+          :init-value (and diredp-hide-details-propagate-flag  diredp-hide-details-last-state)
           :group 'dired
           (unless (derived-mode-p 'dired-mode 'wdired-mode) (error "Not a Dired buffer"))
           (dired-hide-details-update-invisibility-spec)
