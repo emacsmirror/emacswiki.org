@@ -1,5 +1,14 @@
 This page is about libraries that highlight the current column of characters.
 
+== Standard Library `hi-lock.el' ==
+
+GnuEmacs version 27 has library `##hi-lock.el##', which provides a local minor mode for highlighting interactively regular expressions `M-s h r'(command <code>highlight-regexp</code>), and, for this topic, subexpressions, using the subexpression number as an option. Then a color background marker could be set at an exact position. For example a pink background for the 72th characters of the line, namely after 71 previous characters at the beginning of the line with
+
+   C-u 1 M-s h r ^.\{71\}\(.\)<ret> hi-pink
+
+See [[Manual:Highlight Interactively]].
+
+
 == Library `column-marker.el' ==
 
 Library ColumnMarker lets you highlight and unhighlight any column. With no prefix argument, the commands `column-marker-1', `column-marker-2', and `column-marker-3' highlight the current column. The highlighting stays on that column until you highlight a different one or remove the highlighting.
