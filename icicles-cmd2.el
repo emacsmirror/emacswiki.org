@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun May 22 13:11:16 2022 (-0700)
+;; Last-Updated: Sat Jun 25 09:45:47 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7486
+;;     Update #: 7487
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9295,7 +9295,7 @@ dynamically for the mode, use `icicle-ido-like-mode-hook'.  E.g.:
  (add-hook 'icicle-ido-like-mode-hook
            (lambda () (setq icicle-default-value
                        (if icicle-ido-like-mode t 'insert-end))))"
-          nil nil nil :global t :group 'Icicles-Miscellaneous
+          :global t :group 'Icicles-Miscellaneous
           (setq
            icicle-show-Completions-initially-flag      icicle-ido-like-mode
            icicle-top-level-when-sole-completion-flag  icicle-ido-like-mode)
