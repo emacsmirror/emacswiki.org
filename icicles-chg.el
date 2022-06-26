@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Jun 25 09:42:11 2022 (-0700)
+;; Last-Updated: Sun Jun 26 13:16:49 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 11932
+;;     Update #: 11933
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7931,6 +7931,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2022/06/26 dadams
+;;     icicle-default-value: Minor doc-string fixes.
 ;; 2022/05/22 dadams
 ;;     Added icicle-characterp as an alias for Emacs < 23, since they've removed char-valid-p.
 ;;     icicle-edmacro-parse-keys: Use icicle-characterp.
