@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue May 24 10:10:07 2022 (-0700)
+;; Last-Updated: Sun Jun 26 12:59:51 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 6241
+;;     Update #: 6247
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2644,13 +2644,12 @@ This option controls how a non-nil default-value argument to functions
 such as `completing-read', `read-file-name', `read-from-minibuffer',
 and `read-string' is handled.
 
-When it is non-nil and the initial-input argument is nil or \"\", the
-default value can be inserted into the minibuffer as the initial
-input.
+When it is non-nil and non-t, and the initial-input argument is nil or
+\"\", the default value can be inserted into the minibuffer as the
+initial input.
 
 For `completing-read' and `read-file-name', if the option value is `t'
 then the default value is normally added to the prompt as a hint.
-
 However, for `read-file-name', if `insert-default-directory' is
 non-nil, then to avoid duplication:
 
@@ -2668,18 +2667,18 @@ prompts in the commands that call these functions.
 
 By design, Icicles commands never add the default value to the prompt
 themselves.  This includes Icicles versions of standard commands that
-might do so.  Icicles instead tries to give you the choice, using
+might do so.  Icicles instead tries to give users the choice, using
 option `icicle-default-value'.
 
-Function `completing-read' is the only input-reading function for
-which Icicles adds the default value to the prompt (for option value
-`t').  Other such functions, like `(icicle-)read-from-minibuffer' and
-`(icicle-)read-file-name', treat empty input (just `RET') specially -
-see their doc for details.
+Functions `completing-read', `read-file-name', and `read-string' are
+the only input-reading functions for which Icicles adds the default
+value to the prompt (for option value `t').  Other such functions,
+such as `read-from-minibuffer', treat empty input (just `RET')
+specially - see their doc for details.
 
 Inserting the default value in the minibuffer as the initial input has
 the advantage of not requiring you to use `M-n' to retrieve it.  It
-has the disadvantage of making you use `M-p' (or do something else) to
+has the disadvantage of making you use `M-k' (or do something else) to
 get rid of the default value in the minibuffer if you do not want to
 use or edit it.
 
