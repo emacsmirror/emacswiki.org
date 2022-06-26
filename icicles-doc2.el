@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat May 21 12:36:45 2022 (-0700)
+;; Last-Updated: Sun Jun 26 13:10:30 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 30080
+;;     Update #: 30084
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5015,9 +5015,9 @@
 ;;
 ;;  * User option `icicle-default-value' controls the treatment of a
 ;;    default value for minibuffer input.  When the value is non-`nil'
-;;    and the INITIAL-INPUT argument of minibuffer-reading functions
-;;    is `nil' or "", the DEFAULT-VALUE argument can be inserted into
-;;    the minibuffer as the initial input.
+;;    and non-t, and the INITIAL-INPUT argument of minibuffer-reading
+;;    functions is `nil' or "", the DEFAULT-VALUE argument can be
+;;    inserted into the minibuffer as the initial input.
 ;;
 ;;    For `completing-read' and `read-file-name', if the option value
 ;;    is `t' then the default value is normally added to the prompt as
@@ -5040,31 +5040,24 @@
 ;;
 ;;    By design, Icicles commands never add the default value to the
 ;;    prompt themselves.  This includes Icicles versions of standard
-;;    commands that might do so.  Icicles instead tries to give you
+;;    commands that might do so.  Icicles instead tries to give users
 ;;    the choice, using option `icicle-default-value'.
 ;;
-;;    Function `completing-read' is the only input-reading function
-;;    for which Icicles adds the default value to the prompt (for
-;;    `icicle-default-value' value `t').  Other such functions, like
-;;    `(icicle-)read-from-minibuffer' and `(icicle-)read-file-name',
-;;    treat empty input (just `RET') specially - see their doc for
-;;    details.
+;;    Functions `completing-read', `read-file-name', and `read-string'
+;;    are the only input-reading functions for which Icicles adds the
+;;    default value to the prompt (for option value `t').  Other such
+;;    functions, such as `read-from-minibuffer', treat empty input
+;;    (just `RET') specially - see their doc for details.
 ;;
-;;    Non-`nil' and non-`t' means to automatically insert the default
-;;    input value into the minibuffer as the initial value.  I prefer
-;;    to have it inserted, as I often use the default value (perhaps
-;;    editing it).  A value of `nil' neither inserts the default value
-;;    nor adds it to the prompt.
-;;
-;;    If the value is `t' or `nil', remember that you can always
-;;    insert the default value manually using `M-n'.  If the value is
-;;    neither `t' nor `nil', you can always use `M-p' to remove the
-;;    default value from the minibuffer.
-;;
-;;    If you often want to use or edit the default value, then
-;;    consider setting `icicle-default-value' to non-`nil' and
-;;    non-`t'.  If you rarely do so, then consider setting it to `nil'
-;;    or `t'.
+;;    Inserting the default value in the minibuffer as the initial
+;;    input has the advantage of not requiring you to use `M-n' to
+;;    retrieve it.  It has the disadvantage of making you use `M-k'
+;;    (or do something else) to get rid of the default value in the
+;;    minibuffer if you do not want to use or edit it.
+;; 
+;;    If you often want to use or edit the default value, then set
+;;    `icicle-default-value' to non-`nil' and non-`t'.  If you rarely
+;;    do so, then set it to `nil` or `t'.
 ;;
 ;;    A non-`nil', non-`t' value of `icicle-default-value' controls
 ;;    also whether or not the initial value is preselected, and where
