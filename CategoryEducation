@@ -5,7 +5,7 @@ Click the title heading to search for all pages in this category.
 == Learning ==
 
 * Dictionary lookup packages (many of them) can be found under CategoryInterface.
-* Drill - a module of OrgMode. Runs an interactive session where "facts" in org mode files are presented for review or recall, using the supermemo SM5 spaced repetition algorithm. [http://bitbucket.org/eeeickythump/org-drill Homepage] and [http://orgmode.org/worg/org-contrib/org-drill.html Worg-page].
+* Drill - a module of OrgMode. Runs an interactive session where "facts" in org mode files are presented for review or recall, using the supermemo SM5 spaced repetition algorithm. [https://gitlab.com/phillord/org-drill/ Gitlab repository] and [http://orgmode.org/worg/org-contrib/org-drill.html Worg-page].
 * ELIP - EMACS Learning Instruction Program, based on the supermemo interval learning system, requires EmacsDataBase EDB. http://www.gnuvola.org/software/elip/
 * EtxtMode -- a mode that extends ViewMode for easier reading and bookmarking of e-texts, like those found on Project Gutenberg
 * FlashCard -- type complete answers, use five simulated decks of cards to practice
