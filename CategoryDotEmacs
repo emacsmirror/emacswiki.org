@@ -40,6 +40,8 @@ of selected resources.
 
 == Init-related packages and starter kits ==
 
+See also the StarterKits page, which tries to provide a comparative list of a larger number of popular starter kits for [[GNU Emacs]].
+
 * EmacsMacro -- A "portable configuration file that configures itself."
 * [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack
 * [https://git.sr.ht/~technomancy/better-defaults PhilHagelberg's defaults]
@@ -62,3 +64,4 @@ See the [[ExampleConfigurations|example configurations]] for a list of existing 
 * EmacsNiftyTricks
 * LearnEmacsLisp
 * SessionManagement
+* StarterKits
