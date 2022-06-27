@@ -100,6 +100,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * PureMode -- mode for editing and running Pure scripts
 * QuackMode -- alternative for PLT Scheme's <nowiki>DrScheme</nowiki>
 * R-Mode -- mode for R language, a part of EssMode
+* RakuMode -- mode for editing Raku code.
 * RubyMode -- see also EnhancedRubyMode
 * RagelMode -- semi-working mode to handle Ragel Grammars.
 * SawFishMode
