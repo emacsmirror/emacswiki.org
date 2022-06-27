@@ -111,7 +111,7 @@ The pkg file, `alchemist-pkg.el`, must look like this:
 In other words: package name, version, summary. All strings.
 
 
-[[Marmalade Repo]] has a
+[[MarmaladeRepo|Marmalade]] has a
 [[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile demo multifile package]]
 with a Makefile that shows how you can build
 a package with simple unix tools, do it but also tools like Cask and
