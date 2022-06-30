@@ -1,3 +1,5 @@
 [https://github.com/emacs-lsp/lsp-mode lsp-mode] is a client for LanguageServerProtocol. It "aims to provide IDE-like experience by providing optional integration with the most popular Emacs packages like [CompanyMode company], [[Flycheck]] and [[Projectile]].".
 
-It supports using dozens of different language servers, [https://emacs-lsp.github.io/lsp-mode/page/languages/ which see].
+It supports using dozens of [https://emacs-lsp.github.io/lsp-mode/page/languages/ different language servers].
+
+CategoryModes CategoryProgramming
