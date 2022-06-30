@@ -26,3 +26,4 @@ Others users and developers created a shell client written in C called [http://f
 
 In this case, this will not be necessary: just creating a library and setting some hooks variables will be enough.
 
+CategoryCode
