@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jun 26 13:16:49 2022 (-0700)
+;; Last-Updated: Thu Jun 30 14:51:56 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 11933
+;;     Update #: 11937
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2347,6 +2347,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2022/06/30 dadams
+;;     icicle-handle-default-for-prompt:
+;;       Update for Emacs 28+: take into account option minibuffer-default-prompt-format.
+;;     Unconditionally added vacuous defvars for byte-compiler: filesets-tree-max-level,
+;;       icicle-read-char-history, icicle-read-char-by-name-multi-completion-flag.
 ;; 2022/05/22 dadams
 ;;     icicle-SPC-scatter-re, icicle-file-name-(non)directory, icicle-input-from-minibuffer:
 ;;       Use icicle-characterp.
