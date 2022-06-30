@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun May 22 13:15:53 2022 (-0700)
+;; Last-Updated: Thu Jun 30 14:51:28 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 15309
+;;     Update #: 15319
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -512,9 +512,6 @@
   (defvar completion-styles)            ; In `minibuffer.el'
   (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23+)
 
-(when (or (< emacs-major-version 23)  (> emacs-major-version 25))
-  (defvar icicle-read-char-by-name-multi-completion-flag)) ; In `icicles-opt.el' (for Emacs 23+)
-
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
 (defvar crm-local-completion-map)       ; In `crm.el'
 (defvar crm-local-must-match-map)       ; In `crm.el'
@@ -530,6 +527,7 @@
 (defvar ffap-shell-prompt-regexp)       ; In `ffap.el'
 (defvar ffap-machine-p-known)           ; In `ffap.el'
 (defvar filesets-data)                  ; In `filesets.el'
+(defvar filesets-tree-max-level)        ; In `filesets.el'
 (defvar font-width-table)               ; In C code.
 (defvar font-weight-table)              ; In C code.
 (defvar font-slant-table)               ; In C code.
@@ -537,8 +535,8 @@
 (defvar icicle-file-name-completion-table) ; In `icicles-var.el' for Emacs 24+.
 (defvar icicle-Info-index-nodes)        ; In `icicles-cmd2.el'
 (defvar icicle-Info-manual)             ; In `icicles-cmd2.el'
-(when (or (fboundp 'read-char-by-name)  (> emacs-major-version 25))
-  (defvar icicle-read-char-history))    ; In `icicles-var.el' for Emacs 23-25.
+(defvar icicle-read-char-by-name-multi-completion-flag) ; In `icicles-opt.el' (for Emacs 23+)
+(defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23-25.
 (defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar image-dired-thumb-height)       ; In `image-dired.el'.
 (defvar image-dired-thumb-width)        ; In `image-dired.el'.
@@ -557,6 +555,7 @@
 (defvar recentf-menu-items-for-commands)
 (defvar shell-completion-execonly)      ; In `shell.el'
 (defvar ucs-names)                      ; In `mule-cmds.el'.
+
 
 
 
@@ -1383,10 +1382,14 @@ Argument INCLUDE:
 In the existing PROMPT before modification, recognizes inclusion of
 a default value according to these possible patterns:
 
- `minibuffer-default-in-prompt-regexps'
+ `minibuffer-default-in-prompt-regexps' (variable, `minibuf-eldef.el')
+ `minibuffer-default-prompt-format' (option, Emacs 28+)
  \"(default ___):\"
  \"(default is ___):\"
- \" [___] \""
+ \" [___] \"
+
+If library `minibuf-eldef.el' is loaded then only
+`minibuffer-default-in-prompt-regexps' is used."
   (when (consp default) (setq default  (car default)))
   ;; Remove the default, if already there.
   (dolist (rgx  (if (boundp 'minibuffer-default-in-prompt-regexps) ; In `minibuf-eldef.el'.
