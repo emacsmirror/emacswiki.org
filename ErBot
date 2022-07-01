@@ -11,7 +11,6 @@ Other sections available:
 * ErBotItalian -- a somewhat dated Italian translation of this page, thanks to tr3
 * ErbotInstallation -- if you want to run your own copy.
 * ErbotInstances -- bots that use this package.
-* ErbotBugs -- comments, suggestions, bugreports :)
 * ErbotEmacs -- emacs features, and developer guidelines.
 * ErbotExtra -- more stuff with erbot, extensions
 * ErbMsg -- the memoserv-esque message notifier for ErBot
