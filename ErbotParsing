@@ -107,7 +107,7 @@ In some contexts, however, quoted expressions should *NOT* be prefixed with `fs-
 `fs-parse' is idempotent; this equality holds: (equal (parse foo) (parse (parse foo)). Thus, other than the fs-prefix codewalker, lisp-expressions stay unaltered after parsing.
 
 While the lisp parser is pretty stable and reliable, the english parser is anything but. The latter is heavily context-dependent. For example, 
-##,describe foo## gets parsed as ##,([fs-]describe "foo")##  but ##,foo is bar## gets parsed as ##,(set-term 'foo 'bar)##. Furthermore, the latter would get parsed as ##(foo 'is 'bar)## if a user-function foo exists. The English parser also changes with time, at the whim of the author, to try to make fsbot more dwimmy. If you need a reliable parse of your command, please try using the lisp syntax.
+##,describe foo## gets parsed as ##,([fs-]describe "foo")##  but ##,foo is bar## gets parsed as ##,(set-term 'foo 'bar)##. Furthermore, the latter would get parsed as ##(foo 'is 'bar)## if a user-function foo exists. The English parser also changes with time, at the whim of the author, to try to make fsbot more dwimmy. This context-dependence is regarded by the author as a feature, not a bug. If this is a problem, please try using the lisp syntax instead.
 
 
 === `fs-' stripping ===
