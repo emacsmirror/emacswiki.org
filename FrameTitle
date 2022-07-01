@@ -140,15 +140,6 @@ Display date/time if `display-time-mode' is set:
 
 See also `display-time-format' and `mode-line-format'.
 
-==== Buffer, date, time and Week number ====
-
-Week numbers are especially important as this is my primary measurement blocks (every week of the year get its own org file).
-The code below evaluates ##format-time-string## with yyyy-mm-dd.hhmm format, followed by the week. After this is evaluated, the buffer name, ##%b##, is added.
-
-#+begin_src emacs-lisp
-(setq frame-title-format '("%b " (:eval (format-time-string "%Y-%m-%d.%H%M w:%U"))))
-#+end_src
-
 
 === Directory, file, or buffer name ===
 
