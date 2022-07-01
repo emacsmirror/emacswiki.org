@@ -106,6 +106,10 @@ In some contexts, however, quoted expressions should *NOT* be prefixed with `fs-
 
 `fs-parse' is idempotent; this equality holds: (equal (parse foo) (parse (parse foo)). Thus, other than the fs-prefix codewalker, lisp-expressions stay unaltered after parsing.
 
+While the lisp parser is pretty stable and reliable, the english parser is anything but. Its parse depends heavily on the context. For example, 
+`,describe foo' gets parsed as `,([fs-]describe "foo")'  but `,foo is bar' gets parsed as `,(set-term 'foo 'bar)'. Furthermore, the latter would get parsed as `(foo 'is 'bar)' if a user-function foo exists. The english parser also changes with time, at the whim of the author, to try to make fsbot more dwimmy. If you need a reliable parse of your command, please try using the lisp syntax.
+
+
 === `fs-' stripping ===
 The definition of `fs-increment' that you just created is built upon several other `fs-' functions. As we alluded to above, you can immediately see your new function in the publicly available file userfunctions.el. Or you can ask fsbot to `find-function' the function for you and return a pretty-printed output. When you type ##,(find-function 'fs-increment)##, fsbot will return a readable version of the definition, by stripping all the `fs-' prefixes. Thus, when you see the bot returning this definition: ##(lambda (myvar) (+ 1 (apply 'myfun myvar)))##, keep in mind that's just a readable shorthand for ##(lambda (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar)))##. The former does not always equal the latter. Fsbot's output is readable but inaccurate if taken literally. If you want the bot to retain the `fs-' prefixes when printing the definition, you can use other botcommands such as `find-function-literally' or `ffl'.
 
