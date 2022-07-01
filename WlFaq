@@ -673,7 +673,4 @@ It decodes current entity to call internal or external method as
     (mime-preview-play-current-entity ignore-examples "extract")))
 }}}
 == See Also ==
-WanderLust
-
-----
-CategoryMail
+WanderLust | CategoryMail
