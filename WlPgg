@@ -3,3 +3,7 @@ Some older versions of SEMI ship with an out of date version of pgg which does n
 Fortunately, SEMI seems to work fine with a more up-to-date PGG. To use the more up-to-date version of PGG, simply delete all pgg*.elc? files shipped with SEMI.
 
 See also a bug fix in GnusPGG.
+
+----
+
+WanderLust CategoryMail
