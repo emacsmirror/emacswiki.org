@@ -94,6 +94,7 @@ operations on files in the solution.
 * [[Logview]]
 * LojbanMode -- support for lojban language.
 * LongLinesJpMode -- longlines mode for Japanese.
+* LspMode — enables LSP support for Emacs for various programming languages. 
 * MailboxMode -- berkeley style aka standard mailbox browsing minor mode
 * MailCrypt -- PGP and GPG support
 * MailMode -- a mode for writing mail/news messages
