@@ -48,7 +48,7 @@ where ''##FONT##'' is a string naming the font you want, for example, ##"Droid S
 
 This should work on all platforms.  As of Emacs 23, all of your system fonts including %%TrueType%% are available to Emacs.
 
-If you are using a development snapshot for what will become Emacs 24.4 then see [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16529|Emacs bug #16529]].
+If you are using a development snapshot for what will become Emacs 24.4 then see [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=16529|Emacs bug #16529]].
 
 (There needs to be an explanation for how to set fonts for particular modes or buffers here. Including a set-face-attribute hook as described above for a particular mode does not work; once you enter that mode the new font is set, but it is applied <i>globally</i> to all other open buffers!)
 
@@ -86,7 +86,7 @@ To change the font of the current buffer, you can put code like this in your [[i
 [:ChangingGtkFonts]
 == Changing the (buffer) menu fonts for GTK emacs ==
 
-According to http://stackoverflow.com/questions/3454466/emacs23-buffer-menu-font-gtk say in ##~/.emacs.d/gtkrc##:
+According to https://stackoverflow.com/questions/3454466/emacs23-buffer-menu-font-gtk say in ##~/.emacs.d/gtkrc##:
 {{{
 style "menufont"
 {
@@ -209,7 +209,7 @@ Or set them in your ~/.Xresources or ~/.Xdefaults file (depending on your setup)
 
 Actually, you may want to specify FontSets instead of a single font, if you are interested in displaying various fonts at the same time
 
-Debian users: if your emacs startup fonts look ugly, that might be because you've installed the gsfonts-x11 package. gsfonts-x11 gives X the ability to display Ghostscript fonts, and they are poorly rendered on screen. To fix this, read the document that comes with gsfonts-x11, or [http://www.linuxtopia.org/online_books/linux_system_administration/debian_linux_guides/debian_linux_reference_guide/ch-tune.en_036.html Section 9.4.13 of the Debian Reference, "TrueType fonts in X"].
+Debian users: if your emacs startup fonts look ugly, that might be because you've installed the gsfonts-x11 package. gsfonts-x11 gives X the ability to display Ghostscript fonts, and they are poorly rendered on screen. To fix this, read the document that comes with gsfonts-x11, or [https://www.linuxtopia.org/online_books/linux_system_administration/debian_linux_guides/debian_linux_reference_guide/ch-tune.en_036.html Section 9.4.13 of the Debian Reference, "TrueType fonts in X"].
 
 [new]
 As an emacs newbie, I feel this section quite incomplete. For most people, Installing a font means two things : 
@@ -234,7 +234,7 @@ X Logical Font Description (XLFD) python utility: https://gist.github.com/tomleo
 
 === Good Pixel Fonts ===
 
-* http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
+* https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
 
 
 == Testing if fonts are available? ==
@@ -323,10 +323,10 @@ Alternatively, follow the following procedure:
 
 == Emacs for Mac OS X ==
 
-M-x mac-font-panel-mode is not available on Emacs builds downloaded from http://emacsformacosx.com. On these builds, use the default Mac shortcut to popup the font panel, i.e, Command+T. Alternatively, use M-x ns-popup-font-panel. Then follow the instructions in the Carbon Emacs section.
+M-x mac-font-panel-mode is not available on Emacs builds downloaded from https://emacsformacosx.com. On these builds, use the default Mac shortcut to popup the font panel, i.e, Command+T. Alternatively, use M-x ns-popup-font-panel. Then follow the instructions in the Carbon Emacs section.
 
 [new]
-From my personal experiences, there is no working-for-all-emacs solution for fontset.  For current Emacs 24.x (from http://emacsformacosx.com/), below script can be one of the solution:
+From my personal experiences, there is no working-for-all-emacs solution for fontset.  For current Emacs 24.x (from https://emacsformacosx.com/), below script can be one of the solution:
 
 {{{
     (when (eq system-type 'darwin)
