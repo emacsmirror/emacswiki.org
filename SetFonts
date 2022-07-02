@@ -1,5 +1,5 @@
 [[zh:设置字体]]
-The most important info first. Here's how to change the default font in your InitFile: use ##M-x customize-face## to customize the ##default## face.
+The most important info first. Here's how to change the default font in your InitFile: use `M-x customize-face' to customize the `default' face.
 
 
 
@@ -71,7 +71,7 @@ in my ~/.Xresources and ~/.emacs, respectively.
 
 
 ===Change the Font for the Current Buffer===
-To change the font of the current buffer, you can put code like this in your [[init file]].  This example changes to an Arial font with hight 140:
+To change the font of the current buffer, you can put code like this in your [[init file]].  This example changes to an Arial font with height 140:
 : ##(face-remap-add-relative 'default :family "Arial" :height 140)##
 
 
