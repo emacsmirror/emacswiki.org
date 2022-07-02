@@ -1,5 +1,5 @@
 [[zh:设置字体]]
-The most important info first. Here's how to change the default font in your InitFile: use ##M-x customize-face## to customize the ##default## face.
+What you probably want is changing the default font in your InitFile. To learn how to do that, see [[#CarbonEmacs]].
 
 
 
@@ -7,13 +7,13 @@ The most important info first. Here's how to change the default font in your Ini
 [:InspectingAndChangingFonts]
 == Inspecting and Changing Fonts ==
 
-* Use `<code>S-down-mouse-1</code>' or `<code>M-x menu-set-font</code>' to see the font and fontset menu. Emacs starts with the startup fontset.
+* Use <kbd><S-down-mouse-1></kbd> or <kbd>M-x menu-set-font</kbd> to see the font and fontset menu. Emacs starts with the startup fontset.
 
-* Use `<code>M-x describe-font</code>' to see the requested font and actual font being used.
+* Use <kbd>M-x describe-font</kbd> to see the requested font and actual font being used.
 
 * See GoodFonts for some recommendations, see FontSets for how to set various fonts at the same time (one per coding system).
 
-* Use command `doremi-font' in DoReMi to change the default font of a [[frame]] by cycling among the available fonts -- just stop when you get to the font you want. 
+* Use command `doremi-font' in DoReMi to change the default font of a [[frame]] by cycling among the available fonts -- stop when you get to the font you want. 
 
 * Use command `icicle-font' in '''[[Icicles]]''' to do the same thing (cycle among fonts) -- but with the added benefit of [[completion]], including [[regexp]] matching.
 
@@ -46,11 +46,11 @@ To change the default font for the current frame, as well as future frames, put 
 
 where ''##FONT##'' is a string naming the font you want, for example, ##"Droid Sans Mono-10"##.
 
-This should work on all platforms.  As of Emacs 23, all of your system fonts including %%TrueType%% are available to Emacs.
+This should work on all operating systems.  As of Emacs 23, all of your system fonts including %%TrueType%% are available to Emacs.
 
-If you are using a development snapshot for what will become Emacs 24.4 then see [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16529|Emacs bug #16529]].
+If you are using a development snapshot for what will become Emacs 24.4 then see [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=16529|Emacs bug #16529]].
 
-(There needs to be an explanation for how to set fonts for particular modes or buffers here. Including a set-face-attribute hook as described above for a particular mode does not work; once you enter that mode the new font is set, but it is applied <i>globally</i> to all other open buffers!)
+(There needs to be an explanation for how to set fonts for particular modes or buffers here. Including a set-face-attribute hook as described above for a particular mode does not work; once you enter that mode the new font is set, but it is applied <em>globally</em> to all other open buffers!)
 
 
 
@@ -71,7 +71,7 @@ in my ~/.Xresources and ~/.emacs, respectively.
 
 
 ===Change the Font for the Current Buffer===
-To change the font of the current buffer, you can put code like this in your [[init file]].  This example changes to an Arial font with hight 140:
+To change the font of the current buffer, you can put code like this in your [[init file]].  This example changes to an Arial font with height 140:
 : ##(face-remap-add-relative 'default :family "Arial" :height 140)##
 
 
@@ -86,7 +86,7 @@ To change the font of the current buffer, you can put code like this in your [[i
 [:ChangingGtkFonts]
 == Changing the (buffer) menu fonts for GTK emacs ==
 
-According to http://stackoverflow.com/questions/3454466/emacs23-buffer-menu-font-gtk say in ##~/.emacs.d/gtkrc##:
+According to https://stackoverflow.com/questions/3454466/emacs23-buffer-menu-font-gtk say in ##~/.emacs.d/gtkrc##:
 {{{
 style "menufont"
 {
@@ -97,7 +97,7 @@ widget "*emacs-menuitem*" style "menufont"
 
 Using ##widget "*" ...## will change all "toolkit" fonts (menus, dialogs).
 
-[new]
+[new:Anonymous:2022-07-02 11:11 UTC]
 When using gtk emacs on a remote 4k display, I would get an small black menubar with tiny white lettering.
 
 I initially started digging into all these settings to change the menubar font size and color to be more readable.
@@ -121,10 +121,10 @@ You can resize (text-scale) the text in a buffer (in all windows showing it), or
 
 Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in all frames displaying it:
 
-* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' (`text-scale-adjust') to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat).  To restore the default (global) face height, type `C-x C-0'.  `S-mouse-1' pops up a menu where you can choose these same actions.
+* Vanilla Emacs: You can use <kbd>C-x C-+</kbd> and <kbd>C-x C--</kbd> (`text-scale-adjust') to increase or decrease the buffer text size (<kbd>C-+</kbd> or <kbd>C--</kbd> to repeat).  To restore the default (global) face height, type <kbd>C-x C-0</kbd>.  <kbd><S-mouse-1></kbd> pops up a menu where you can choose these same actions.
 
 [new]
-:: BUG? -- If you use a fontset with Xft, `##C-x C-+##' this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) -- , increasing the text size does not scale the Korean characters. -- [[cinsk]]
+:: BUG? -- If you use a fontset with Xft, <kbd>C-x C-+</kbd> this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) -- , increasing the text size does not scale the Korean characters. -- [[cinsk]]
 [new]
 
 
@@ -132,7 +132,7 @@ Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in a
 [:zoom-in-out]
 [:zoom-in]
 [:zoom-out]
-* '''`zoom-in/out'''', '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- The first is a more general replacement for the vanilla command (`text-scale-adjust') bound by default to `##C-x C-+##', `C-x C--', `C-x C-0', and `##C-x C-=##'.  You can bind the other two to mouse-wheel rotations, so you can use the wheel like you do in a Web browser.  You can also use these same commands to zoom a frame (see [[#ZoomFrame|below]]): `C-u' for each command toggles between buffer and frame zooming.  And `C-u' while repeating toggles buffer/frame on the fly during '''`zoom-in/out''''.
+* '''`zoom-in/out'''', '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- The first is a more general replacement for the vanilla command (`text-scale-adjust') bound by default to <kbd>C-x C-+</kbd>, <kbd>C-x C--</kbd>, <kbd>C-x C-0</kbd>, and <kbd>C-x C-=</kbd>.  You can bind the other two to mouse-wheel rotations, so you can use the wheel like you do in a Web browser.  You can also use these same commands to zoom a frame (see [[#ZoomFrame|below]]): <kbd>C-u</kbd> for each command toggles between buffer and frame zooming.  And <kbd>C-u</kbd> while repeating toggles buffer/frame on the fly during '''`zoom-in/out''''.
 
 * '''`doremi-buffer-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change buffer font size incrementally using the arrow keys or the mouse wheel.
 
@@ -209,7 +209,7 @@ Or set them in your ~/.Xresources or ~/.Xdefaults file (depending on your setup)
 
 Actually, you may want to specify FontSets instead of a single font, if you are interested in displaying various fonts at the same time
 
-Debian users: if your emacs startup fonts look ugly, that might be because you've installed the gsfonts-x11 package. gsfonts-x11 gives X the ability to display Ghostscript fonts, and they are poorly rendered on screen. To fix this, read the document that comes with gsfonts-x11, or [http://www.linuxtopia.org/online_books/linux_system_administration/debian_linux_guides/debian_linux_reference_guide/ch-tune.en_036.html Section 9.4.13 of the Debian Reference, "TrueType fonts in X"].
+Debian users: if your emacs startup fonts look ugly, that might be because you've installed the gsfonts-x11 package. gsfonts-x11 gives X the ability to display Ghostscript fonts, and they are poorly rendered on screen. To fix this, read the document that comes with gsfonts-x11, or [https://www.linuxtopia.org/online_books/linux_system_administration/debian_linux_guides/debian_linux_reference_guide/ch-tune.en_036.html Section 9.4.13 of the Debian Reference, "TrueType fonts in X"].
 
 [new]
 As an emacs newbie, I feel this section quite incomplete. For most people, Installing a font means two things : 
@@ -222,7 +222,7 @@ The section covers only the second point. I am quite willing to agree that emacs
 Note that arrived here after a search on "font" which, I think, seems quite a reasonable thing to do to install a new font. I didn't see a newbie-specific page.
 -- LionelB
 
-[new]
+[new:Anonymous:2022-07-02 11:11 UTC]
 For downloading fonts and installing them, there's nothing Emacs-specific. Emacs uses your system's fonts. If you're using Emacs with X11, then use the X11 font installation technique (xset fp etc.). If you're using Emacs with X11/Xft, then use the Xft font installation technique (.fonts.conf). If you're using Emacs with MS Windows, then use the MS Windows font installation technique (Control Panel / Fonts). If you're using Emacs with Mac, then use the Mac font installation technique (Font Book / Add Fonts).
 
 [new]
@@ -234,7 +234,7 @@ X Logical Font Description (XLFD) python utility: https://gist.github.com/tomleo
 
 === Good Pixel Fonts ===
 
-* http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
+* https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
 
 
 == Testing if fonts are available? ==
@@ -306,15 +306,15 @@ As of 23.3.1 TTF support is still quite defective (on Debian at least): for exam
 
 Make sure you compile with the xft flag enabled. 
 
-
+[:CarbonEmacs]
 == CarbonEmacs ==
 
-Customize the default face (##M-x customize-face RET default RET##).
+Customize the default face (<kbd>M-x customize-face RET default RET</kbd>).
 
 Alternatively, follow the following procedure:
 
-# M-x mac-font-panel-mode and pick the font you want.
-# M-x describe-font and copy the font name (e.g. "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
+<kbd>M-x mac-font-panel-mode</kbd> and pick the font you want.
+<kbd>M-x describe-font</kbd> and copy the font name (e.g. "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
 # Add the following to your ##.emacs## file:
 
     (set-default-font
@@ -323,10 +323,10 @@ Alternatively, follow the following procedure:
 
 == Emacs for Mac OS X ==
 
-M-x mac-font-panel-mode is not available on Emacs builds downloaded from http://emacsformacosx.com. On these builds, use the default Mac shortcut to popup the font panel, i.e, Command+T. Alternatively, use M-x ns-popup-font-panel. Then follow the instructions in the Carbon Emacs section.
+<kbd>M-x mac-font-panel-mode</kbd> is not available on Emacs builds downloaded from https://emacsformacosx.com. On these builds, use the default Mac shortcut to popup the font panel, i.e, <kbd><Command-t></kbd>. Alternatively, use <kbd>M-x ns-popup-font-panel</kbd>. Then follow the instructions in the Carbon Emacs section.
 
 [new]
-From my personal experiences, there is no working-for-all-emacs solution for fontset.  For current Emacs 24.x (from http://emacsformacosx.com/), below script can be one of the solution:
+From my personal experiences, there is no working-for-all-emacs solution for fontset.  For current Emacs 24.x (from https://emacsformacosx.com/), below script can be one of the solution:
 
 {{{
     (when (eq system-type 'darwin)
