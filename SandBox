@@ -1061,3 +1061,44 @@ and now with curly brackets -and pre-:
 (setq 'yes-or-no-p 'y-or-n-p)
 }}}
 
+----
+<article></article>
+<article/>
+<section></section>
+</section>
+<nav></nav>
+<nav/>
+<h1></h1>
+<h1/>
+<h2></h2>
+<h2/>
+<h3></h3>
+<h3/>
+<h4></h4>
+<h4/>
+<h5></h5>
+<h6></h6>
+<h6/>
+<hgroup></hgroup>
+<hgroup/>
+<p></p>
+<p/>
+<a></a>
+<a/>
+<picture></picture>
+<picture/>
+<source></source>
+<source/>
+<img onerror="alert(1);" src="//x" alt=""></img>
+<img></img>
+<img/>
+<iframe></iframe>
+<iframe/>
+<embed></embed>
+<embed/>
+<form></form>
+<form/>
+<script></script>
+<script/>
+<noscript></noscript>
+<noscript/>
