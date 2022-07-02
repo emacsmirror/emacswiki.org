@@ -22,5 +22,5 @@ Currently blip.el allows posting with M-x blip-post and seeing blips from the da
 I am aware that this package is quite messy. There is probably a lot code that could be removed and other things that could be cleaned up. Maybe I will get around to do it someday, but for now I decided that it's better to post a half working solution then to hold it for indefinite time.
 I also hope that authors of TwIt won't mind that I copied a lot of their work.
 
-CategoryExtensions
+CategoryInterface
 
