@@ -140,7 +140,6 @@ Display date/time if `display-time-mode' is set:
 
 See also `display-time-format' and `mode-line-format'.
 
-
 === Directory, file, or buffer name ===
 
 Full directory path name for DirEd, full file path name for files, buffer name otherwise.
