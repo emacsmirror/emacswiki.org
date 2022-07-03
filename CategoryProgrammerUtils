@@ -32,6 +32,7 @@ See also CategoryVersionControl.
 * CompileInsideScratchbox - Run Emacs outside scratchbox, but compile inside scratchbox.
 * CreatingYourOwnCompileErrorRegexp
 * FlyMake -- Run `make' on the fly, highlighting errors/warnings in source buffer.
+* [[Flycheck]] -- a modern replacement for FlyMake above, with support for more languages and other features.
 
 == Interpreted files ==
 * MakingScriptsExecutableOnSave
