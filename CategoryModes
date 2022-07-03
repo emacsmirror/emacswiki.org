@@ -64,6 +64,8 @@ Other pages (could this please be split in [MajorMode major] and [MinorMode mino
 * EpubMode -- mode for reading epub e-books in Emacs
 * FaqMode -- easy FAQ browsing
 * FetchmailMode -- mode for editing fetchmail configuration files
+* [[Flycheck]] -- a more modern on-the-fly syntax checker than FlyMake below
+* FlyMake -- performs on-the-fly syntax checking on files being edited using external tools
 * FollowMode -- make side-by-side windows behave like one tall window
 * FortuneMode -- interface to write fortunes quickly
 * FreexMode -- a personal wiki on steroids
