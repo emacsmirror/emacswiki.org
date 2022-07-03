@@ -5,6 +5,8 @@ Emacs Interfaces to Online Utilities.
 
 * Archie ([http://www.stud.ifi.uio.no/~larsi/other/archie.el archie.el] -- '''''broken link''''') -- query archie servers and parse the results (by LarsMagneIngebrigtsen)
 * BitLy -- Shorten URLs using the bitly service.
+* [[Blip]] -- an emacs package for interfacing with Blip (https://blip.pl),
+a Polish microblogging service
 * Dictionaries
 ** Anaya ([http://turingmachine.org/elisp/anaya.el anaya.el] -- '''''broken link''''')  ([http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/anaya.el anaya.el] '''''working link''''') -- Emacs interface to the Anaya Online Spanish Dictionaries (by DanielMGerman)
 ** Dict servers as defined by RFC 2229
