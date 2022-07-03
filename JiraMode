@@ -73,4 +73,5 @@ This allows me to call up issues without an error.
 
 # Question: Is there a git repo or project page where I can submit patches? In addition to the one above, I've had to fix another little bug in order to get this to work on new JIRAs, but now it's working fine (I'm the guy from the next bullet up)
 
+----
 CategoryInterface
