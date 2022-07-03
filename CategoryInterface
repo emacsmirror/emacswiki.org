@@ -26,6 +26,7 @@ a Polish microblogging service
 ** GoogleClient -- Blogger, Reader, Calendar
 ** GoogleContacts -- Contacts
 ** GnusGmail -- Mail
+* JiraMode -- for connecting to and using a Jira bug tracking server from within [[GNU Emacs]]
 * LookUpHTMLDoc -- Look up documentation in HTML form
 * [http://user42.tuxfamily.org/oeis-el/index.html oeis.el] -- Online Encyclopedia of Integer Sequences
 * PumpioEl -- Pump.io client written in Elisp for Pump.io’s API
