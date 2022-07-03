@@ -42,6 +42,7 @@ Development environments:
 * EmacsForDevStudioUsers-- will make your MSVC-using friend envious of your comfortable development environment
 * [[eproject]] - project workspaces for emacs
 * IdeSkel -- simple environment for svn/cvs projects, with embedded "speedbars"
+* LspMode -- client for the LanguageServerProtocol, providing an IDE-like experience by integrating Emacs packages like CompanyMode, [[Flycheck]] and [[Projectile]].
 * ObjectOrientedBrowser -- supports C++, Java, Python, and a few other languages
 * ProjectBufferMode -- generic mode to handle projects
 * For !JavaScript -- try [https://github.com/mooz/js2-mode js2-mode] and [http://ternjs.net/ Tern]
