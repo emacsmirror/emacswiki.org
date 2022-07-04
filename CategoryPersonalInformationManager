@@ -53,6 +53,12 @@ maintained anymore.
 
 * OrgMode is a organizer based on OutlineMode.
 
+* [https://www.orgroam.com/ org-roam] -- a package that empowers plain text based personal knowledge management. Based off Roam Research and leverages OrgMode. As of today this probably has the largest community of users and features.
+
+* [https://github.com/Kungsgeten/org-brain org-brain] -- A package that implements a variation of concept-mapping using OrgMode and is focused on Hierarchical links between 'nodes' or notes.
+
+* [https://protesilaos.com/emacs/denote] -- Denote aims to be a simple-to-use, focused-in-scope and effective note-taking tool for Emacs. It can combine plain text, markdown, yaml and Org mode notes and implements its 'denote' links to link between ntes.
+
 * PlannerMode integrates the various modes out there (EmacsWikiMode,
 BbdbMode, DiaryMode, Gnus, etc.)  and tries to provide a coherent,
 wiki-based interface.
