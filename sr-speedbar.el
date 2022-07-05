@@ -78,6 +78,12 @@
 ;;      M-x customize-group RET sr-speedbar RET
 
 ;;; Change log:
+;; * 04 July 2022:
+;;   * Doerthous <doerthous@gmail.com>
+;;     * Add support that allows speedbar window split from `selected-window'
+;;       or `frame-root-window'.
+;;     * define `sr-speedbar-use-frame-root-window'.
+;;
 ;; * 22 Sep 2021:
 ;;   * Vasilij Schneidermann <mail@vasilij.de>
 ;;     * Fix cl deprecation warning
@@ -325,6 +331,16 @@ Default is nil."
   :type 'boolean
   :group 'sr-speedbar)
 
+(defcustom sr-speedbar-use-frame-root-window nil
+  "Open speedbar based on selected window or frame root window.
+If nil, the speedbar window will split from `selected-window'.
+Otherwise `frame-root-window'.
+Default is nil."
+  :type 'boolean
+  :set (lambda (symbol value)
+         (set symbol value))
+  :group 'sr-speedbar)
+
 (if (not (fboundp 'ad-advised-definition-p))
     (defun ad-advised-definition-p (definition)
       "Return non-nil if DEFINITION was generated from advice information."
@@ -514,7 +530,9 @@ Otherwise return nil."
 (defun sr-speedbar-get-window ()
   "Get `sr-speedbar' window."
   (setq sr-speedbar-window
-        (split-window (selected-window)
+        (split-window (if sr-speedbar-use-frame-root-window
+                          (frame-root-window)
+                        (selected-window))
                       (- sr-speedbar-width)
                       (if sr-speedbar-right-side 'right 'left))))
 
