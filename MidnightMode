@@ -33,7 +33,7 @@ If you want to have "midnight" occur multiple times a day, you can change the `m
 
     (setq midnight-period 7200) ;; (eq (* 2 60 60) "2 hours")
 
-As of 2009-10-02, DeskTop mode does not preserve the value of `buffer-display-time' for buffers, so the buffer's "age" is effectively restarted.  This means that buffers restored by a Desktop sessions are considered "new" by CleanBufferList, even though they may be considered "old".
+Note that when you use DesktopMode, close Emacs, spend 10h doing something else, and come back, `buffer-display-time' is adjusted for the downtime so that `clean-buffer-list' still works as expected.
 
 ----
 CategoryCalendar
