@@ -151,6 +151,8 @@ The code below evaluates ##format-time-string## as a yyyy-mm-dd.hhmm format, fol
 
 Notice the usage of ##:eval##, which continues to evaluate the date each time it's called (each time a frame is created). Without it, we will get a static format time string that won't change.
 
+For more detailed explanation, check the help documentation on ##mode-line-format##. It contains the different contacts to be used. 
+
 === Directory, file, or buffer name ===
 
 Full directory path name for DirEd, full file path name for files, buffer name otherwise.
