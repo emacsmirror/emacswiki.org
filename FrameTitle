@@ -140,6 +140,16 @@ Display date/time if `display-time-mode' is set:
 
 See also `display-time-format' and `mode-line-format'.
 
+=== Date, Time, Week Number and Buffer Name ===
+I find it useful to know the time, date and week numbers as I'm working in Emacs. Week numbers are especially important to me, as this is my primary productivity blocks (every week of the year get its own org file).
+
+The code below evaluates ##format-time-string## as a yyyy-mm-dd.hhmm format, followed by the week. After this is evaluated, the buffer name, ##%b##, is added.
+
+{{{
+(setq frame-title-format '("%b " (:eval (format-time-string "%Y-%m-%d.%H%M w:%U"))))
+}}}
+
+
 === Directory, file, or buffer name ===
 
 Full directory path name for DirEd, full file path name for files, buffer name otherwise.
