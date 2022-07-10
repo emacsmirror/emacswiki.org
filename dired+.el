@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 25 09:29:48 2022 (-0700)
+;; Last-Updated: Sun Jul 10 15:00:52 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13235
+;;     Update #: 13236
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -978,6 +978,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/07/10 dadams
+;;     diredp-menu-bar-dir-menu, item diredp-add-to-this-dired-buffer: Removed :keys.
 ;; 2022/06/25 dadams
 ;;     dired-omit-mode, dired-hide-details-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2022/06/03 dadams
@@ -16223,8 +16225,7 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Open Dired separately for each of the inserted subdirectories"))
 (define-key diredp-menu-bar-dir-menu [diredp-add-to-this-dired-buffer]
   '(menu-item "Add Entries Here..." diredp-add-to-this-dired-buffer
-    :help "Add individual file and directory names to the listing"
-    :keys "C-x E"))
+    :help "Add individual file and directory names to the listing"))
 (define-key diredp-menu-bar-dir-menu [diredp-dired-union]
   '(menu-item "Dired Union..." diredp-dired-union
     :help "Open Dired for the union of some existing Dired buffers"))
