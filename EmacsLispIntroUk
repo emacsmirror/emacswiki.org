@@ -1,0 +1,26 @@
+[[en:EmacsLispIntro]]
+[[es:EmacsLispIntroEs]]
+: ''Програмований редактор це хороша можливість навчитися програмувати!'' -- TheEmacsPaper
+
+Легкий спосіб вивчити [[Lisp]]: Прочитати ''Introduction to Programming in Emacs Lisp'', що написав Robert J. Chassell. Настійно рекомендується для тих, хто не має досвіду програмування на Lisp.
+
+До Emacs 21, ознайомлення з EmacsLisp постачалося окремо. Ознайомлення надається у форматі Texinfo, це означає, що його можна конвертувати в різні формати: info, html та інші. Для прикладу, в Debian, apt-get install emacs-lisp-intro все зробить.
+
+Одним зі способів прочитати ознайомлення — виконати `C-h i', щоб запустити Info, потім <code>`m Emacs Lisp Intro RET'</code> або виконати <code>(info "(eintr) Top")</code>. Дивіться InfoMode, щоб дізнатися, як використовувати Info.
+
+Отримати файл <code>emacs-lisp-intro</code> можна з будь-якого дзеркала GNU або на:
+
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/emacs-lisp-intro/html_mono/emacs-lisp-intro.html
+* Доступно в друкованій версії на GnuPress.
+
+Тут можна отримати більше інформації про ''Emacs Lisp Introduction'' (формат PDF): http://www.gnupress.org/Intro-Elisp-Review1.pdf (посилання не працює з 2010-02-14, але можна переглянути на [http://web.archive.org/web/20070728115705/http://www.gnupress.org/Intro-Elisp-Review1.pdf archive.org]).
+
+Вам також знадобиться EmacsLispReference, якщо ви починаєте вчити як
+працює Emacs Lisp. Зверніть увагу: EmacsLispIntro призначений для початківців;
+EmacsLispReference насправді є довідником, а не посібником.
+
+Вирішення вправ у Emacs Lisp Intro: https://github.com/RenWenshan/emacs-lisp-intro-solutions
+
+----
+КатегоріяДокументація
