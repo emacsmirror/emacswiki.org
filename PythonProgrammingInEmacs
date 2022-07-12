@@ -28,7 +28,7 @@ Any of the main [LanguageServerProtocol] packages should support Python programm
 * [https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/ Palantir's python-language-server], also based on Jedi
 * [https://emacs-lsp.github.io/lsp-python-ms/ Microsoft's python-language-server]
 * [https://emacs-lsp.github.io/lsp-pyright/ Microsoft's Pyright language server].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
-* [https://github.com/python-lsp/python-lsp-server Python LSP Server].
+* [https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/ Python LSP Server]
 ===python-mode.el===
 * [ProgrammingWithPythonModeDotEl python-mode.el].  Replaces the `python-mode' in python.el.
 ===Anaconda mode===
