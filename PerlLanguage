@@ -46,7 +46,7 @@ It makes heavy use of the template.el package (TemplatesMode).
 
 * [http://web-mode.org web-mode.el] -- Major mode for editing template-toolkit (tt) templates.
 
-* [https://github.com/vividsnow/perl-live] - perl live coding
+* [https://github.com/vividsnow/perl-live perl-live] -- perl live coding
 
 == Related modes ==
 
