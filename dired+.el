@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.02.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 10 15:00:52 2022 (-0700)
+;; Last-Updated: Sun Jul 17 14:19:26 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13236
+;;     Update #: 13239
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -750,8 +750,7 @@
 ;;    `derived-mode-p' (Emacs < 22),
 ;;    `diredp--add-dired-to-invisibility-hook', `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-apply-to-this-file',
-;;    `diredp-bookmark', `diredp-cannot-revert',
-;;    `diredp-copy-as-kill-from-clipboard',
+;;    `diredp-bookmark', `diredp-copy-as-kill-from-clipboard',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-define-snapshot-dired-commands-1', `diredp-delete-dups',
 ;;    `diredp-delete-if', `diredp-delete-if-not',
@@ -978,6 +977,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/07/17 dadams
+;;     Removed: diredp-cannot-revert.
+;;     diredp-dired-for-files(-other-window): Removed setting revert-buffer-function to diredp-cannot-revert.
 ;; 2022/07/10 dadams
 ;;     diredp-menu-bar-dir-menu, item diredp-add-to-this-dired-buffer: Removed :keys.
 ;; 2022/06/25 dadams
@@ -1557,7 +1559,7 @@
 ;;       Use dired-re-maybe-mark and dired-re-inode-size for permission matchings and directory names.
 ;;     dired(-other-(frame|window)) advice:
 ;;       Add interactive spec, to handle arg <= 0 (broken by change to dired-read-dir-and-switches 2015/02/02).
-;;     diredp-dired-for-files: Typo: pass empy string.
+;;     diredp-dired-for-files: Typo: pass empty string.
 ;; 2015/06/05 dadams
 ;;     Added: diredp-grepped-files-other-window as alias for diredp-compilation-files-other-window.
 ;;     diredp-compilation-files-other-window: Added SWITCHES optional arg (prefix arg).
@@ -4752,8 +4754,7 @@ See also `dired' (including the advice)."
                  (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
   (dired arg switches)
   (with-current-buffer (car arg)
-    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-    (setq revert-buffer-function  #'diredp-cannot-revert)))
+    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))))
 
 ;;;###autoload
 (defun diredp-dired-for-files-other-window (arg &optional switches) ; Bound to `C-x 4 D F'
@@ -4762,8 +4763,7 @@ See also `dired' (including the advice)."
                  (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
   (dired-other-window arg switches)
   (with-current-buffer (car arg)
-    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
-    (setq revert-buffer-function  #'diredp-cannot-revert)))
+    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))))
 
 ;;;###autoload
 (defun diredp-define-snapshot-dired-commands (cmd-name directory &optional files msg-p)
@@ -11919,11 +11919,6 @@ Requires library `autofit-frame.el'."
   (defun dired-revert (&optional arg noconfirm)
     (setq mode-line-process  nil)        ; Set by, e.g., `find-dired'.
     (old-dired-revert arg noconfirm)))
-
-(defun diredp-cannot-revert (_ignore-auto _noconfirm)
-  "`revert-buffer-function' for Dired listing of arbitrary files.
-Just raise an error."
-  (error "Cannot revert Dired buffer with arbitrary listing"))
 
 ;; Like `dired-up-directory', but go up to MS Windows drive if in top-level directory.
 ;;
