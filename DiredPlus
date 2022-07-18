@@ -54,7 +54,7 @@ hidden subdirectories of the chosen Dired listings.
 : Note: When using a Dired buffer that lists arbitrary files, other than one composed of recent files, be aware that any operation that
 reverts the listing relists the same file names, and only those
 that correspond to currently existing files.  This means: (1) if any of the files no longer exist then they will no longer be listed (which is likely what you would expect), and (2) if any of the files has been renamed then it will no longer be
-listed (which is likely not what you would expect).  This applies to the use of [[WDired]] to rename files: the renamed files will not be listed when you return to Dired from WDired.
+listed (which is likely not what you would expect).  This applies to the use of [[WDired]] to rename files: the renamed files are not listed when you return to Dired from WDired.  It applies also to the use of `R' (`dired-do-rename').
 
 * Lets you reuse Dired buffers (`C-M-R', aka `C-M-S-r' toggles this behavior, so you don't accumulate lots of them that you don't want to keep around. If the current Dired buffer is already showing in another window, or if the target for a find-file operation is a directory that is already in a Dired buffer, then there is no reuse (the current Dired buffer is not killed when you visit the target).
 
