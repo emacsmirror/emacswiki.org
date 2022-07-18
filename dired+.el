@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2022.02.17
+;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 17 14:19:26 2022 (-0700)
+;; Last-Updated: Sun Jul 17 18:50:40 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13239
+;;     Update #: 13250
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -413,12 +413,36 @@
 ;;  key `C-x D', these Dired listings are composed of arbitrary files;
 ;;  they're not the output of `ls'.
 ;;
-;;  You can sort any Dired buffer of arbitrary files in various ways,
-;;  using `C-M-L' (aka `C-M-S-l').  You're prompted for the sort
+;;  You can revert (using `g') or sort any Dired buffer that lists
+;;  arbitrary files, which includes a buffer created with the commands
+;;  on prefix keys `C-x D' and `C-x 4 D' and a buffer created with
+;;  commands created using command
+;;  `diredp-define-snapshot-dired-commands'.
+;;
+;;  You can also sort such a buffer in various ways, but you need to
+;;  use `C-M-L' (aka `C-M-S-l') to do so - you can't use the ordinary
+;;  Dired sort commands, such as `s'.  You're prompted for the sort
 ;;  order.  The default sort order for such buffers is determined by
-;;  option `diredp-default-sort-arbitrary-function'.  You can also
-;;  revert such buffers, using `g'.  This applies to all Dired buffers
-;;  created with the commands on prefix keys `C-x D' and `C-x 4 D'.
+;;  option `diredp-default-sort-arbitrary-function'.
+;;
+;;  When using a Dired buffer that lists arbitrary files, other than
+;;  one composed of recent files, be aware that any operation that
+;;  reverts the listing relists the same file names, and only those
+;;  that correspond to currently existing files.  This means that:
+;;
+;;  1. If any of the files no longer exist then they will no longer be
+;;     listed (which is likely what you would expect).
+;;
+;;  2. If any of the files has been renamed then it will no longer be
+;;     listed (which is likely not what you would expect).  This
+;;     applies to the use of WDired to rename files: the renamed files
+;;     will not be listed when you return to Dired from WDired.
+;;
+;;  (With Emacs prior to version 28 you can't use WDired on a
+;;  recent-files buffer at all, because such a buffer uses a
+;;  `revert-buffer-function' that updates the file list to show the
+;;  currently recent files, and older versions of WDired hard-code the
+;;  function used to revert back to Dired mode when you exit WDired.)
 ;;
 ;;  You can optionally add a header line to a Dired buffer using
 ;;  toggle command `diredp-breadcrumbs-in-header-line-mode'.  (A
