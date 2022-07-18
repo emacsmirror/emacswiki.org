@@ -151,3 +151,52 @@ goto the previous term buffer with OFFSET."
 
 (provide 'multi-sh)
 }}}
+
+
+== Helm eshell switch buffer ==
+This method leverages Helm, to either switch or create new eshell buffers. It can be customized to switch to any desired buffered major-mode, or to name the new buffers to one's pleasure.
+
+{{{
+;;;
+;;; Helm EShell switch buffer
+;;; 
+
+(defcustom helm-eshell-switch-buffer-actions
+  '(("Switch to buffer" .
+     (lambda (candidate)
+       (if (get-buffer candidate)
+	   (switch-to-buffer candidate)
+	 (let ((new-eshell-buffer
+		(get-buffer-create (concat "*eshell " candidate "*"))))
+	   (cl-assert (and new-eshell-buffer (buffer-live-p new-eshell-buffer)))
+	   (pop-to-buffer-same-window new-eshell-buffer)
+	   (unless (derived-mode-p 'eshell-mode)
+	     (eshell-mode))))))
+    ("Kill buffer" . (lambda (candidate)
+		       (kill-buffer candidate))))
+  "Actions for switching eshell buffers"
+  :type '(alist :key-type string :value-type function))
+
+(defvar helm-eshell-switch-buffer-source
+  (helm-build-in-buffer-source "*eshell buffers*"
+    :candidates (lambda ()
+		  (with-temp-buffer
+		    (let* ((all-buffers (buffer-list))
+			   (eshell-buffers
+			    (seq-filter
+			     (lambda (checked-buffer)
+			       (with-current-buffer checked-buffer
+				 (string-equal major-mode "eshell-mode")))
+			     all-buffers))
+			   (eshell-buffer-names (mapcar 'buffer-name eshell-buffers))
+			   (all-buffers (cons helm-input eshell-buffer-names)))
+		      (mapcar* #'cons all-buffers all-buffers))))
+    :action 'helm-eshell-switch-buffer-actions
+    :fuzzy-match t))
+
+(defun helm-eshell-switch-buffer ()
+  "Switches to an existing or non-existing eshell buffer."
+  (interactive)
+  (helm-other-buffer 'helm-eshell-switch-buffer-source "*helm eshell buffers*"))
+
+}}}
