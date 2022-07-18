@@ -116,7 +116,7 @@ When working with version-control, you may not want Emacs to modify lines which 
 
 * [https://github.com/lewang/ws-butler ws-butler] - An alternative to ws-trim which leverages highlight-changes-mode to track modified lines.
 
-* [https://gitlab.com/bkhl/trimspace-mode/ trimspace-mode] - minor mode that enables trimming of whitespace in the whole file, but only if the file is already "clean" of trailing whitespace. A much simpler package than the other alternatives, but without the ability to selectively delete trailing whitespace only from edited line.
+* [https://codeberg.org/bkhl/trimspace-mode trimspace-mode] - minor mode that enables trimming of whitespace in the whole file, but only if the file is already "clean" of trailing whitespace. A much simpler package than the other alternatives, but without the ability to selectively delete trailing whitespace only from edited line.
 
 === Remove whitespace at the end of the document ===
 
