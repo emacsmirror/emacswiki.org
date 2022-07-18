@@ -45,11 +45,16 @@ hidden subdirectories of the chosen Dired listings.
 [:diredp-fileset]
 * Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').  See the Emacs manual, node [[Manual:Filesets]] (emacs).
 
-* Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x D r'''' and '''`C-x 4 D r'''').
+* Lets you open a Dired buffer that shows recently used files ('''`C-x D R''''') or directories ('''`C-x D r''''') -- commands `diredp-dired-recent-files' and `diredp-dired-recent-dirs'.
 
-* Lets you ''sort'' Dired buffers that include arbitrary files and dirs (as opposed to Dired buffers that show `ls' output), using '''`C-M-L'''' (aka `C-M-S-l'). This applies to all buffers created using the commands on prefix keys `C-x D' and `C-x 4 D'.
+* Lets you ''sort'' Dired buffers that include arbitrary files and directories (as opposed to Dired buffers that show `ls' output), using '''`C-M-L'''' (aka `C-M-S-l').  This applies to all buffers created using the commands on prefix keys `C-x D' and `C-x 4 D', and to some other commands.
 
-* You can also ''revert'' Dired buffers that include arbitrary files and dirs, using `g' (except buffers created with `C-x D F'). For Dired buffers listing recent files or dirs, you can use a prefix arg with `g' in the same way as you can for the commands that create the buffers (e.g. `C-x D R', `C-x D r').
+* You can also ''revert'' Dired buffers that include arbitrary files and directories, using `g'. For Dired buffers listing recent files or dirs, you can use a prefix arg with `g' in the same way as you can for the commands that create the buffers (e.g. `C-x D R', `C-x D r').
+
+: Note: When using a Dired buffer that lists arbitrary files, other than one composed of recent files, be aware that any operation that
+reverts the listing relists the same file names, and only those
+that correspond to currently existing files.  This means: (1) if any of the files no longer exist then they will no longer be listed (which is likely what you would expect), and (2) if any of the files has been renamed then it will no longer be
+listed (which is likely not what you would expect).  This applies to the use of [[WDired]] to rename files: the renamed files will not be listed when you return to Dired from WDired.
 
 * Lets you reuse Dired buffers (`C-M-R', aka `C-M-S-r' toggles this behavior, so you don't accumulate lots of them that you don't want to keep around. If the current Dired buffer is already showing in another window, or if the target for a find-file operation is a directory that is already in a Dired buffer, then there is no reuse (the current Dired buffer is not killed when you visit the target).
 
