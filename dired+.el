@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 17 18:50:40 2022 (-0700)
+;; Last-Updated: Sun Jul 17 19:19:17 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13250
+;;     Update #: 13253
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -436,7 +436,8 @@
 ;;  2. If any of the files has been renamed then it will no longer be
 ;;     listed (which is likely not what you would expect).  This
 ;;     applies to the use of WDired to rename files: the renamed files
-;;     will not be listed when you return to Dired from WDired.
+;;     are not listed when you return to Dired from WDired.  It
+;;     applies also to the use of `R' (`dired-do-rename').
 ;;
 ;;  (With Emacs prior to version 28 you can't use WDired on a
 ;;  recent-files buffer at all, because such a buffer uses a
