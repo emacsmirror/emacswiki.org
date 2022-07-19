@@ -200,3 +200,6 @@ This method leverages Helm, to either switch or create new eshell buffers. It ca
   (helm-other-buffer 'helm-eshell-switch-buffer-source "*helm eshell buffers*"))
 
 }}}
+
+----
+CategoryEshell
