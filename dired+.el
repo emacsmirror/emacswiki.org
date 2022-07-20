@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 17 19:19:17 2022 (-0700)
+;; Last-Updated: Wed Jul 20 08:00:41 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13253
+;;     Update #: 13267
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1002,6 +1002,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/07/20 dadams
+;;     diredp-create-file-here: Add missing FILE arg to error.
+;;     Restore defvar for directory-listing-before-filename-regexp, for Emacs 20.
+;;     diredp-image-dired-edit-comment-and-tags: Protect widget-keymap with boundp, for Emacs 20.
+;;     Added more vacuous defvars to quiet byte-compiler for Emacs 20.
 ;; 2022/07/17 dadams
 ;;     Removed: diredp-cannot-revert.
 ;;     diredp-dired-for-files(-other-window): Removed setting revert-buffer-function to diredp-cannot-revert.
@@ -1690,7 +1695,7 @@
 ;;       Corrected visible condition: expand-file-name, so ~/ compares with its expansion.
 ;;     diredp-font-lock-keywords-1: Include period (.) for diredp(-compressed)-file-suffix.
 ;; 2014/09/09 dadams
-;;     Added: dired-read-dir-and-switches.
+;;     Added: dired-read-dir-and-switches redefinition.
 ;;     Advise dired, for doc string.
 ;;     dired-get-filename: Hack for Emacs 20-22, to expand ~/...
 ;; 2014/09/07 dadams
@@ -2534,13 +2539,25 @@ of that nature."
 (defvar diredp-move-file-dirs)                    ; Here, Emacs 24+
 (defvar diredp-single-bookmarks-menu)             ; Here, if Bookmark+ is available
 (defvar filesets-data)                            ; In `filesets.el'
+(defvar font-lock-mode)                           ; In `fontcore.el'
+(defvar grep-command)                             ; In `grep.el'
 (defvar grep-use-null-device)                     ; In `grep.el'
 (defvar header-line-format)                       ; Emacs 22+
+(defvar icicle-candidate-alt-action-fn)           ; In `icicles-var.el'
+(defvar icicle-default-value)                     ; In `icicles-opt.el'
+(defvar icicle-file-extras)                       ; In `icicles-opt.el'
+(defvar icicle-file-match-regexp)                 ; In `icicles-opt.el'
+(defvar icicle-file-no-match-regexp)              ; In `icicles-opt.el'
+(defvar icicle-file-predicate)                    ; In `icicles-opt.el'
+(defvar icicle-file-require-match-flag)           ; In `icicles-opt.el'
 (defvar icicle-file-sort)                         ; In `icicles-opt.el'
-;; $$$$ (defvar icicle-file-sort-first-time-p)            ; In `icicles-var.el'
+;; $$$$ (defvar icicle-file-sort-first-time-p)      ; In `icicles-var.el'
 (defvar icicle-files-ido-like-flag)               ; In `icicles-opt.el'
 (defvar icicle-ignored-directories)               ; In `icicles-opt.el'
+(defvar icicle-show-Completions-initially-flag)   ; In`icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
+(defvar icicle-sort-orders-alist)                 ; In `icicles-opt.el'
+(defvar icicle-top-level-when-sole-completion-flag) ; In `icicles-opt.el'
 (defvar image-dired-display-image-buffer)         ; In `image-dired.el'
 (defvar image-dired-line-up-method)               ; In `image-dired.el'
 (defvar image-dired-main-image-directory)         ; In `image-dired.el'
@@ -2551,6 +2568,7 @@ of that nature."
 (defvar ls-lisp-use-insert-directory-program)     ; In `ls-lisp.el'
 (defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
+(defvar pp-read-expression-map)                   ; In `pp+.el'
 (defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
 (defvar recentf-list)                             ; In `recentf.el'
 ;; Really a function, not a var - this quiets Emacs 20 byte-compiler, which doesn't recognize `declare-function'.
@@ -2561,6 +2579,7 @@ of that nature."
 (defvar tooltip-mode)                             ; In `tooltip.el'
 (defvar vc-directory-exclusion-list)              ; In `vc'
 (defvar w32-browser-wait-time)                    ; In `w32-browser.el'
+(defvar widget-keymap)                            ; In `wid-edit.el'
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2958,13 +2977,11 @@ Default value is same as `directory-files-no-dot-files-regexp'.")
                                      map)
   "Keymap for `diredp-w32-drives-mode'.")
 
-;;; $$$$$$ Starting with Emacs 22, *-move-to* is defvaraliased to *-listing-before*.
-;;; But `files+.el' defines *-listing-before*, so we define it here too.
-;;; (unless (> emacs-major-version 21)
-;;;   (defvar directory-listing-before-filename-regexp dired-move-to-filename-regexp
-;;;     "Regular expression to match up to the file name in a directory listing.
-;;; The default value is designed to recognize dates and times
-;;; regardless of the language."))
+(unless (boundp 'directory-listing-before-filename-regexp) ; Emacs 20 (doesn't have `defvaralias').
+  (defvar directory-listing-before-filename-regexp dired-move-to-filename-regexp
+    "Regular expression to match up to the file name in a directory listing.
+The default value is designed to recognize dates and times
+regardless of the language."))
  
 ;;; Macros
 
@@ -4277,7 +4294,7 @@ Move backward using `S-TAB'.  Click `Save' to save your edits or
                                           (message "Operation canceled"))
                    "Cancel")
     (widget-insert "\n")
-    (use-local-map widget-keymap)
+    (when (boundp 'widget-keymap) (use-local-map widget-keymap)) ; Emacs 22+
     (widget-setup)
     (widget-forward 1)))                ; Jump to the first widget.
 
@@ -9786,7 +9803,7 @@ and FILE is expanded in `default-directory'."
               (called-interactively-p 'interactive)
             (interactive-p))
     (diredp-ensure-mode)
-    (when (file-exists-p (expand-file-name file)) (error "File `%s' already exists")))
+    (when (file-exists-p (expand-file-name file)) (error "File `%s' already exists" file)))
   (let ((failures  (dired-bunch-files
                     2
 		    #'dired-check-process
