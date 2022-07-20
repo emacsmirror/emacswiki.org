@@ -52,7 +52,7 @@ Development environments:
 File management:
 
 * AutomaticFileHeaders -- automatic insertion and update of file headers for different types of file (C, shell, EmacsLisp, and so on). 
-* [[Bookmark+]] -- Tag files and code fragments a la [[http://delicious.com|del.icio.us]], to organize into sets and facilitate/control access. Bookmark [[Dired]] states. Open Dired on predefined sets of files located anywhere.
+* [[Bookmark+]] -- Tag files and code fragments a la del.icio.us, to organize into sets and facilitate/control access. Bookmark [[Dired]] states. Open Dired on predefined sets of files located anywhere.
 * ChangeLog -- Log the changes to your source files.
 * EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
 * [https://github.com/mattkeller/mk-project/ mk-project] -- Quickly switch between projects and perform operations on a per-project basis
