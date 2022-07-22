@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 20 08:00:41 2022 (-0700)
+;; Last-Updated: Fri Jul 22 15:49:34 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13267
+;;     Update #: 13301
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -891,9 +891,11 @@
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
 ;;  `dired-get-marked-files'  - Can include `.' and `..'.
 ;;                              Allow FILTER + DISTINGUISH-ONE-MARKED.
-;;  `dired-goto-file'         - Fix Emacs bug #7126.
-;;                              Remove `/' from dir before compare.
-;;                              (Emacs < 24 only.)
+;;  `dired-goto-file'         - Respect `diredp-case-fold-search'.
+;;                              Prefix arg toggles that.
+;;                              Open an enclosing hidden parent dir.
+;;                              Expand input per current subdir list.
+;;  `dired-goto-file-1'       - Use `string-collate-equalp', Emacs 25+
 ;;  `dired-hide-details-mode' - Respect new user options:
 ;;                              * `diredp-hide-details-initially-flag'
 ;;                              * `diredp-hide-details-propagate-flag'
@@ -1002,6 +1004,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/07/22 dadams
+;;     Added: dired-goto-file-1 redefinition (Emacs 25+): use string-collate-equalp.
+;;     dired-goto-file: Added version for Emacs 25+ (needs string-collate-equalp):
+;;                       Respect diredp-case-fold-search.  Prefix arg toggles that.
+;;                       Expand input file name relative to current subdir listing, not default-directory.
 ;; 2022/07/20 dadams
 ;;     diredp-create-file-here: Add missing FILE arg to error.
 ;;     Restore defvar for directory-listing-before-filename-regexp, for Emacs 20.
@@ -12284,9 +12291,8 @@ FILE must be an absolute file name.
 Return buffer position on success, else nil."
     ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
     ;; into the buffer, so we won't find it in the buffer.
-    (interactive (prog1                 ; Let push-mark display its message
-                     (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
-                   (push-mark)))
+    (interactive (prog1 (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
+                   (push-mark))) ; Let `push-mark' display its message.
     (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
     (setq file  (directory-file-name file)) ; does no harm if no directory
     (let* ((case-fold-search  nil)
@@ -12359,7 +12365,7 @@ Return buffer position on success, else nil."
 ;;
 ;; If destination is in a hidden dir listing, open that listing and move to destination in it.
 ;;
-(unless (< emacs-major-version 24)
+(when (= emacs-major-version 24)
   (defun dired-goto-file (file)
     "Go to line describing file FILE in this Dired buffer.
 FILE must be an absolute file name.
@@ -12367,7 +12373,7 @@ Return buffer position on success, else nil."
     ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
     ;; into the buffer, so we won't find it in the buffer.
     (interactive (prog1 (list (expand-file-name (read-file-name "Goto file: " (dired-current-directory))))
-                   (push-mark)))        ; Let push-mark display its message.
+                   (push-mark)))  ; Let push-mark display its message.
     (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
     (setq file  (directory-file-name file)) ; Does no harm if not a directory
     (let* ((case-fold-search  nil)
@@ -12385,7 +12391,98 @@ Return buffer position on success, else nil."
                  (when (dired-subdir-hidden-p (dired-current-directory))
                    (diredp-hide-subdir-nomove 1)) ; Open hidden parent directory.
                  (dired-goto-file-1 (file-name-nondirectory file) file (dired-subdir-max)))))))
-      (and found  (goto-char found))))) ; Return buffer position, or nil if not found.
+      (and found  (goto-char found)))))
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; 1. Expand input file name relative to current subdir listing, not `default-directory'.
+;; 2. Respect option `diredp-case-fold-search'.  Prefix arg means respect its complement instead.
+;; 3. If destination is in a hidden dir listing, open that listing and move to destination in it.
+;;
+(when (>= emacs-major-version 25)
+
+  (defun dired-goto-file (file &optional toggle-case-fold-p) ; Bound to `j'
+    "Go to line describing file FILE in this Dired buffer.
+Respect option `diredp-case-fold-search'.  But with a prefix arg,
+respect its complement instead.
+
+When called from Lisp:
+  FILE must be an absolute file name.
+  Non-nil optional arg TOGGLE-CASE-FOLD-P means toggle value of
+   `diredp-case-fold-search'
+Return buffer position on success, else nil."
+    ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
+    ;; into the buffer, so we won't find it in the buffer.
+
+    ;; Unlike vanilla Dired, expand input name in current subdir listing.
+    (interactive (prog1 (list (let ((curr-listing-dir  (dired-current-directory)))
+                                (expand-file-name (read-file-name "Goto file: " curr-listing-dir) curr-listing-dir))
+;;; $$$$$ WAS THIS: (expand-file-name (read-file-name "Goto file: " (dired-current-directory)))
+                              current-prefix-arg)
+                   (push-mark))) ; Let `push-mark' display its message.
+    (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
+    (setq file  (directory-file-name file)) ; Does no harm if not a directory
+    (let* ((case-fold-search  (if toggle-case-fold-p (not diredp-case-fold-search) diredp-case-fold-search))
+           (dir               (file-name-directory file))
+           (found             (or
+                               ;; Absolute name.
+                               (save-excursion (goto-char (point-min))
+                                               (dired-goto-file-1 file file (point-max)))
+                               ;; Relative name with leading subdirs.  (E.g. produced by `find-dired'.)
+                               (save-excursion
+                                 (goto-char (point-min))
+                                 (when (dired-subdir-hidden-p (dired-current-directory))
+                                   (diredp-hide-subdir-nomove 1)) ; Open hidden parent directory.
+                                 (dired-goto-file-1 (file-relative-name file default-directory) file (point-max)))
+                               ;; Base name only.
+                               ;; Get result of `dired-goto-subdir' without calling it if we have no subdirs.
+                               (save-excursion
+                                 ;; $$$$ FIXME: This assumes that the base name is to be in `default-directory'@@@@ 
+                                 (when (if (string= dir (expand-file-name default-directory))
+                                           (goto-char (point-min))
+                                         (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
+                                   (when (dired-subdir-hidden-p (dired-current-directory))
+                                     (diredp-hide-subdir-nomove 1)) ; Open hidden parent directory.
+                                   (dired-goto-file-1 (file-name-nondirectory file) file (dired-subdir-max)))))))
+      (and found  (goto-char found)))) ; Return buffer position, or nil if not found.
+
+
+  ;; REPLACE ORIGINAL in `dired.el':
+  ;;
+  ;; Respect `case-fold-search'. 
+  ;;
+  (defun dired-goto-file-1 (file full-name limit)
+    "Advance to the Dired listing labeled by FILE; return its position.
+Return nil if the listing is not found.  If FILE contains
+characters that would not appear in a Dired buffer, search using
+the quoted forms of those characters.
+
+FULL-NAME specifies the actual file name the listing must have,
+as returned by `dired-get-filename'.  LIMIT is the search limit."
+    (let (str)
+      (setq str  (replace-regexp-in-string "\^m" "\\^m"  file nil t)
+            str  (replace-regexp-in-string "\\\\" "\\\\" str  nil t))
+      (and (dired-switches-escape-p dired-actual-switches)
+	   (string-match-p "[ \t\n]" str)
+           ;; FIXME: to fix this for embedded control characters etc, we should escape everything that `ls -b' does.
+	   (setq str  (replace-regexp-in-string " " "\\ "  str nil t)
+	         str  (replace-regexp-in-string "\t" "\\t" str nil t)
+	         str  (replace-regexp-in-string "\n" "\\n" str nil t)))
+      (let ((found          nil)
+	    (search-string  (concat " " str))) ; This makes search faster (e.g. for the filename "-").
+        (while (and (not found)  (search-forward search-string limit 'move))
+          ;; Check that we are in the right place.  Match could have
+          ;; BASE just as initial substring or in permission bits etc.
+          ;;
+          ;; Comparison respects `case-fold-search' (Emacs 25+).
+	  (if (let ((fil  (dired-get-filename nil t)))
+                (and full-name  fil  (string-collate-equalp full-name fil nil case-fold-search)))
+	      (setq found  (dired-move-to-filename))
+	    (forward-line 1)))
+        found)))
+
+  )
 
 
 ;; REPLACE ORIGINAL in `dired.el':
