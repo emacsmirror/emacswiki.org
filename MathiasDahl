@@ -16,6 +16,7 @@ I use GNU Emacs on GNU/Linux and Windows and I have done some small elisp hacks 
 * [[VLF]] - View larger files than Emacs normally can. Kind of works, maybe... This has now been taken over by others much more competent and it can be installed from M-x list-packages in Emacs 24.3+.
 * AnythingLauncher - Use Emacs as your launcher for commands, directories, web sites and whatever you can think of
 * QuickBufferCycle
+* KeyboardMacroTimer - Call last keyboard macro every N seconds
 
 === Contact info ===
 
