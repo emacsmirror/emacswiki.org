@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 23 10:46:15 2022 (-0700)
+;; Last-Updated: Sat Jul 23 11:49:59 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13333
+;;     Update #: 13342
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -986,6 +986,7 @@
 ;;     Call `dired-get-marked-files' with original ARG.
 ;;     Added optional arg INTERACTIVEP - no error if nil and no files.
 ;;  `dired-do-run-mail' - Require confirmation.
+;;  `dired-jump' - Open destination directory listing if hidden.
 ;;  `dired-mark-sexp' - 1. Variable `s' -> `blks'.
 ;;                      2. Fixes to `uid' and `gid'.
 ;;  `dired-mark-unmarked-files' (Emacs < 24 only) - Emacs 24+ version.
@@ -1006,9 +1007,11 @@
 ;;; Change Log:
 ;;
 ;; 2022/07/23 dadams
+;;     Added redefinition of dired-jump.
 ;;     dired-goto-file:
-;;       Pass non-nil OPEN-HIDDEN-DIR-P (new) in calls to dired-goto-file-1 (don't use that code here).
-;;       Show message whether found or not.  (Don't show Mark set message from push-mark.)
+;;       Added optional arg OPEN-HIDDEN-DIR-P.
+;;       Pass non-nil OPEN-HIDDEN-DIR-P to dired-goto-file-1 (don't use its code here).
+;;       Show a message whether found or not.  (Don't show Mark set message from push-mark.)
 ;;     dired-goto-file-1: Use compare-strings, not string-collate-equalp.
 ;;                        Added optional arg OPEN-HIDDEN-DIR-P.
 ;; 2022/07/22 dadams
@@ -2590,6 +2593,8 @@ of that nature."
 (defvar save-some-buffers-action-alist)           ; In `files.el'
 (defvar switch-to-buffer-preserve-window-point)   ; In `window.el', Emacs 24+
 (defvar tab-line-exclude)                         ; In `tab-line.el', Emacs 27+
+(defvar tar-subfile-mode)                         ; In `tar-mode.el'.
+(defvar tar-superior-buffer)                      ; In `tar-mode.el'.
 (defvar tooltip-mode)                             ; In `tooltip.el'
 (defvar vc-directory-exclusion-list)              ; In `vc'
 (defvar w32-browser-wait-time)                    ; In `w32-browser.el'
@@ -12370,7 +12375,7 @@ Return buffer position on success, else nil."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; If destination is in a hidden dir listing, open that listing and move to destination in it.
+;; If destination is in a hidden dir listing then open that listing.
 ;;
 (when (= emacs-major-version 24)
   (defun dired-goto-file (file)
@@ -12396,7 +12401,7 @@ Return buffer position on success, else nil."
                          (goto-char (point-min))
                        (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
                  (when (dired-subdir-hidden-p (dired-current-directory))
-                   (diredp-hide-subdir-nomove 1)) ; Open hidden parent directory.
+                   (diredp-hide-subdir-nomove 1)) ; Open hidden directory.
                  (dired-goto-file-1 (file-name-nondirectory file) file (dired-subdir-max)))))))
       (and found  (goto-char found)))))
 
@@ -12405,13 +12410,13 @@ Return buffer position on success, else nil."
 ;;
 ;; 1. Expand input file name relative to current subdir listing, not `default-directory'.
 ;; 2. Respect option `diredp-case-fold-search'.  Prefix arg means respect its complement instead.
-;; 3. If destination is in a hidden dir listing, open that listing and move to destination in it.
+;; 3. If destination is in a hidden dir listing then open that listing.
 ;;
 (when (>= emacs-major-version 25)
 
   ;; Vanilla comment: Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
   ;; into the buffer, so we won't find it in the buffer.
-  (defun dired-goto-file (file &optional toggle-case-fold-p) ; Bound to `j'
+  (defun dired-goto-file (file &optional toggle-case-fold-p open-hidden-dir-p) ; Bound to `j'
     "Go to line describing file FILE in this Dired buffer.
 Respect option `diredp-case-fold-search'.
 But with a prefix arg, respect its complement instead.
@@ -12421,14 +12426,17 @@ listing.  (The directory name in the minibuffer before point.)
 
 When called from Lisp:
   FILE must be an absolute file name.
-  Non-nil optional arg TOGGLE-CASE-FOLD-P means toggle value of
-   `diredp-case-fold-search'
+  Non-nil TOGGLE-CASE-FOLD-P means act as if `diredp-case-fold-search'
+    is toggled.
+  Non-nil OPEN-HIDDEN-DIR-P means open current subdir if hidden.
+
 Return buffer position on success, else nil."
     ;; Unlike vanilla Dired, expand input name in current subdir listing.
     (interactive (prog1 (list (let ((curr-listing-dir  (dired-current-directory)))
                                 (expand-file-name (read-file-name "Goto file: " curr-listing-dir) curr-listing-dir))
 ;;; $$$$$ WAS THIS: (expand-file-name (read-file-name "Goto file: " (dired-current-directory)))
-                              current-prefix-arg)
+                              current-prefix-arg
+                              t)
                    (push-mark nil t)))
     (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
     (setq file  (directory-file-name file)) ; Does no harm if not a directory
@@ -12438,12 +12446,12 @@ Return buffer position on success, else nil."
                                ;; Absolute name.
                                (save-excursion
                                  (goto-char (point-min))
-                                 (dired-goto-file-1 file file (point-max) 'OPEN-HIDDEN-DIR-P))
+                                 (dired-goto-file-1 file file (point-max) open-hidden-dir-p))
                                ;; Relative name with leading subdirs.  (E.g. produced by `find-dired'.)
                                (save-excursion
                                  (goto-char (point-min))
                                  (dired-goto-file-1 (file-relative-name file default-directory) file
-                                                    (point-max) 'OPEN-HIDDEN-DIR-P))
+                                                    (point-max) open-hidden-dir-p))
                                ;; Base name only.
                                ;; Get effect of `dired-goto-subdir', but without calling it if we have no subdirs.
                                (save-excursion
@@ -12451,7 +12459,7 @@ Return buffer position on success, else nil."
                                            (goto-char (point-min))
                                          (and (cdr dired-subdir-alist)  (dired-goto-subdir dir)))
                                    (dired-goto-file-1 (file-name-nondirectory file) file
-                                                      (dired-subdir-max)  'OPEN-HIDDEN-DIR-P)))))
+                                                      (dired-subdir-max)  open-hidden-dir-p)))))
            (result            (and found  (goto-char found)))) ; Return buffer position, or nil if not found.
       (when (called-interactively-p 'interactive)
         (if result
@@ -12467,14 +12475,15 @@ Return buffer position on success, else nil."
   ;;
   (defun dired-goto-file-1 (file full-name limit &optional open-hidden-dir-p)
     "Advance to the Dired listing labeled by FILE; return its position.
-Return nil if the listing is not found.  If FILE contains
-characters that would not appear in a Dired buffer, search using
-the quoted forms of those characters.
+Return nil if the listing is not found.
 
-FULL-NAME specifies the actual file name the listing must have,
-as returned by `dired-get-filename'.
+If FILE contains chars that would not appear in a Dired buffer then
+search using the quoted forms of those chars
+
+FULL-NAME specifies the actual file name the listing must have, as
+ returned by `dired-get-filename'.
 LIMIT is the search limit.
-Non-nil OPEN-HIDDEN-DIR-P means show current subdir listed if hidden."
+Non-nil OPEN-HIDDEN-DIR-P means open current subdir listing if hidden."
     (let (str)
       (setq str  (replace-regexp-in-string "\^m" "\\^m"  file nil t)
             str  (replace-regexp-in-string "\\\\" "\\\\" str  nil t))
@@ -12498,8 +12507,52 @@ Non-nil OPEN-HIDDEN-DIR-P means show current subdir listed if hidden."
 	      (setq found  (dired-move-to-filename))
 	    (forward-line 1)))
         (when (and open-hidden-dir-p  found  (dired-subdir-hidden-p (dired-current-directory)))
-          (diredp-hide-subdir-nomove 1)) ; Open hidden parent directory.
+          (diredp-hide-subdir-nomove 1)) ; Open hidden directory.
         found)))
+
+
+  ;; REPLACE ORIGINAL in `dired-x.el':
+  ;;
+  ;; 1. Respect option `diredp-case-fold-search'.
+  ;; 2. If destination in Dired is in a hidden dir listing, open that listing.
+  ;;
+  (defun dired-jump (&optional other-window file-name open-hidden-dir-p)
+    "Jump to name of current buffer's visited file in Dired.
+With a prefix arg you are prompted for the file name instead.
+If the file line can't be found in Dired, refresh and try again.
+
+If in Dired already, pop up a level and go to directory's line.
+
+When called from Lisp:
+ Non-nil OTHER-WINDOW means jump to Dired buffer in other window.
+ Non-nil FILE-NAME means jump to its line in Dired.
+ Non-nil OPEN-HIDDEN-DIR-P means open current subdir if hidden."
+    (interactive (list nil
+                       (and current-prefix-arg  (read-file-name "Jump to Dired for file: "))
+                       t))
+    (if (bound-and-true-p tar-subfile-mode)
+        (switch-to-buffer tar-superior-buffer)
+      ;; Expand name for `dired-goto-file' - `read-file-name' can give abbreviated name (Bug#24409).
+      (let* ((file   (or (and file-name  (expand-file-name file-name))  buffer-file-name))
+             (dir    (if file (file-name-directory file) default-directory))
+             (found  nil))
+        (if (and (eq major-mode 'dired-mode)  (null file-name))
+            (progn (setq dir  (dired-current-directory))
+                   (dired-up-directory other-window)
+                   (setq found  (dired-goto-file dir))
+                   (unless found
+                     (dired-insert-subdir (file-name-directory dir)) ; Refresh and try again
+                     (setq found  (dired-goto-file dir))))
+          (if other-window (dired-other-window dir) (dired dir))
+          (when (and file  (not (setq found  (dired-goto-file file))))
+            (dired-insert-subdir (file-name-directory file)) ; Refresh and try again
+            (setq found  (dired-goto-file file))
+            (when dired-omit-mode ; Toggle omitting, if it is on, and try again.
+              (dired-omit-mode)
+              (setq found  (dired-goto-file file)))))
+        (when (and open-hidden-dir-p  found  (dired-subdir-hidden-p (dired-current-directory)))
+          (diredp-hide-subdir-nomove 1)) ; Open hidden directory.
+        found)))        ; Return buffer position, or nil if not found.
 
   )
 
