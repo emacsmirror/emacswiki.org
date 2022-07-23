@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 23 10:41:51 2022 (-0700)
+;; Last-Updated: Sat Jul 23 10:46:15 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13332
+;;     Update #: 13333
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -12453,7 +12453,7 @@ Return buffer position on success, else nil."
                                    (dired-goto-file-1 (file-name-nondirectory file) file
                                                       (dired-subdir-max)  'OPEN-HIDDEN-DIR-P)))))
            (result            (and found  (goto-char found)))) ; Return buffer position, or nil if not found.
-      (when (interactive-p)
+      (when (called-interactively-p 'interactive)
         (if result
             (message (substitute-command-keys "Found - (`\\[exchange-point-and-mark] C-g' to go back)"))
           (pop-mark)
