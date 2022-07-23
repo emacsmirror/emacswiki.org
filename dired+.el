@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 23 10:37:47 2022 (-0700)
+;; Last-Updated: Sat Jul 23 10:41:51 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13331
+;;     Update #: 13332
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -895,7 +895,8 @@
 ;;                              Prefix arg toggles that.
 ;;                              Open an enclosing hidden parent dir.
 ;;                              Expand input per current subdir list.
-;;  `dired-goto-file-1'       - Use `string-collate-equalp', Emacs 25+
+;;  `dired-goto-file-1'       - Use `compare-strings', Emacs 25+.
+;;                              Added optional arg OPEN-HIDDEN-DIR-P.
 ;;  `dired-hide-details-mode' - Respect new user options:
 ;;                              * `diredp-hide-details-initially-flag'
 ;;                              * `diredp-hide-details-propagate-flag'
