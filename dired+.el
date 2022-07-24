@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.17
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 23 11:49:59 2022 (-0700)
+;; Last-Updated: Sat Jul 23 20:40:14 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13342
+;;     Update #: 13346
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1008,6 +1008,8 @@
 ;;
 ;; 2022/07/23 dadams
 ;;     Added redefinition of dired-jump.
+;;     diredp-dired-this-subdir, diredp-(dired|remove)-inserted-subdirs:
+;;       Wrap default-directory with expand-file-name (for string= test).
 ;;     dired-goto-file:
 ;;       Added optional arg OPEN-HIDDEN-DIR-P.
 ;;       Pass non-nil OPEN-HIDDEN-DIR-P to dired-goto-file-1 (don't use its code here).
@@ -5629,7 +5631,7 @@ With a prefix arg:
  inserted subdir to its own Dired buffer."
   (interactive "P\np")
   (diredp-ensure-mode)
-  (let* ((this-dir       default-directory)
+  (let* ((this-dir       (expand-file-name default-directory))
          (this-subdir    (diredp-this-subdir))
          (on-dir-line-p  (atom this-subdir)))
     (unless on-dir-line-p               ; Subdir header line or non-directory file.
@@ -5649,7 +5651,7 @@ With a prefix arg, create the Dired buffers but do not display them.
 Markings and current Dired switches are preserved."
   (interactive "P\np")
   (diredp-ensure-mode)
-  (let ((this-dir    default-directory)
+  (let ((this-dir    (expand-file-name default-directory))
         (this-buff   (current-buffer))
         (this-frame  (selected-frame))
         marked)
@@ -11004,7 +11006,7 @@ all markings etc."
   (interactive)
   (diredp-ensure-mode)
   (dolist (entry  dired-subdir-alist)
-    (unless (string= (car entry) default-directory)
+    (unless (string= (car entry) (expand-file-name default-directory))
       ;; Could just use (dired-goto-subdir (car entry)) but next two lines are the relevant part.
       (goto-char (cdr entry))
       (skip-chars-forward "^\r\n")
