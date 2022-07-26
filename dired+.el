@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2022.07.17
+;; Version: 2022.07.25
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 23 20:40:14 2022 (-0700)
+;; Last-Updated: Mon Jul 25 19:27:17 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13346
+;;     Update #: 13350
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1006,6 +1006,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/07/25 dadams
+;;     Added: diredp-uninserted-subdirs.
+;;     dired-maybe-insert-subdir: C-u C-u: remove all, <= 0: prompt for subdir, >= 0: prompt for switches.
 ;; 2022/07/23 dadams
 ;;     Added redefinition of dired-jump.
 ;;     diredp-dired-this-subdir, diredp-(dired|remove)-inserted-subdirs:
@@ -10931,72 +10934,99 @@ Binding variable `help-form' will help the user who types the help key."
 ;; 1. Use `diredp-this-subdir' instead of `dired-get-filename'.
 ;; 2. If on a subdir listing header line or a non-dir file in a subdir listing, go to
 ;;    the line for the subdirectory in the parent directory listing.
-;; 3. A negative prefix arg means remove all inserted subdir listings.
-;; 4. Fit one-window frame after inserting subdir.
+;; 3. Prefix arg `C-u C-u' means remove all inserted subdir listings.
+;; 4. Non-positive prefix arg means prompt for the subdir to insert.
+;; 5. Fit one-window frame after inserting subdir.
 ;;
 ;;;###autoload
 (defun dired-maybe-insert-subdir (dirname &optional arg no-error-if-not-dir-p) ; Bound to `i'
-  "Insert subdir listing or move to subdir line or listing.
-With a negative prefix arg, just remove all inserted subdir listings.
+  "Insert a subdirectory listing or move to a subdir line or listing.
+Inserted subdirs are listed in the same positions as with `ls -lR'.
 
-Otherwise (non-negative prefix arg or none):
+This bounces you back and forth between a subdir line and its inserted
+listing header line.  Using it on a non-directory line in a subdir
+listing acts the same as using it on the subdir header line.
 
-This bounces you back and forth between a subdirectory line and its
-inserted listing header line.  Using it on a non-directory line in a
-subdirectory listing acts the same as using it on the subdirectory
-header line.
+* If on a subdir line, then go to the subdir's listing, creating it if
+  not yet present.
 
-* If on a subdirectory line, then go to the subdirectory's listing,
-  creating it if not yet present.
-
-* If on a subdirectory listing header line or a non-directory file in
-  a subdirectory listing, then go to the line for the subdirectory in
-  the parent directory listing.
+* If on a subdir listing header line or a non-directory file in a
+  subdir listing, then go to the line for the subdir in the parent
+  directory listing.
 
 * If on a non-directory file in the top Dired directory listing, do
   nothing.
 
-Subdirectories are listed in the same position as for `ls -lR' output.
+A prefix arg changes the behavior, as follows:
 
-With a non-negative prefix arg, you can edit the `ls' switches used
-for this subdir listing.  Add `R' to the switches to expand the
-directory tree under a subdirectory.
+* A non-negative numeric prefix prefix arg prompts you for the `ls'
+  switches to use for the subdir listing.  `R' as a switch expands the
+  directory tree.
+
+* A non-positive numeric prefix prefix arg prompts you for the subdir
+  to insert.  Candidates are the directories within (below) the
+  listing surrounding point.
+
+* `C-u C-u' just removes all inserted subdir listings.
 
 Dired remembers switches specified with a prefix arg, so reverting the
-buffer does not reset them.  However, you might sometimes need to
-reset some subdirectory switches after using \\<dired-mode-map>`\\[dired-undo]'.  You can reset all
-subdirectory switches to the default value using
-`\\[dired-reset-subdir-switches]'.
-See Info node `(emacs) Subdir switches' for more details.
+buffer does not reset them.
 
-If called from Lisp, non-nil ARG is an `ls' switches string or a
-number.  A number means remove all inserted subdir listings."
-  (interactive (list (diredp-this-subdir)
-                     (and current-prefix-arg
-                          (if (natnump (prefix-numeric-value current-prefix-arg))
-                              (read-string "Switches for listing: "
-                                           (or (and (boundp 'dired-subdir-switches)  dired-subdir-switches)
-                                               dired-actual-switches))
-                            (prefix-numeric-value current-prefix-arg)))))
-  (if (numberp arg)
+However, you might sometimes need to reset some switches for a subdir
+after using undo (\\<dired-mode-map>`\\[dired-undo]').  You can reset all subdir switches to the
+default value using `\\[dired-reset-subdir-switches]'.  See Info node
+`(emacs) Subdir Switches' for more details.
+
+If called from Lisp, pass symbol `REMOVE' as ARG to remove inserted
+subdirs.  Otherwise, the args are as for `dired-insert-subdir'."
+  (interactive (let ((num  (prefix-numeric-value current-prefix-arg))
+                     (raw  current-prefix-arg))
+                 (let ((subdir    (or (and raw  (atom raw)  (<= num 0)
+                                           (completing-read "Insert subdir: "
+                                                            (diredp-uninserted-subdirs (dired-current-directory))
+                                                            nil t))
+                                      (diredp-this-subdir)))
+                       (switches  (and raw  (atom raw)  (natnump num)
+                                       (read-string
+                                        "Switches for listing: "
+                                        (or (and (boundp 'dired-subdir-switches)  dired-subdir-switches)
+                                            dired-actual-switches))))
+                       (remove    (and (consp raw)  (= 16 num)  'REMOVE)))
+                   (unless (or remove  (let ((subd  (if (consp subdir) (car subdir) subdir)))
+                                         (not (string= subd (if (consp dired-directory)
+                                                                (car dired-directory)
+                                                              dired-directory)))))
+                     (error "No subdir here"))
+                   (list subdir (or switches  remove)))))
+  (if (eq arg 'REMOVE)
       (diredp-remove-inserted-subdirs)
-    (let ((opoint    (point))
+    (let ((opoint    (point)) ; No need for a marker for OPOINT, as subdir is always inserted after OPOINT.
           (filename  dirname))
       (cond ((consp filename) ; Subdir header line or non-directory file.
              (setq filename  (car filename))
-           (if (assoc filename dired-subdir-alist)
-               (dired-goto-file filename) ;  On subdir header line.  Go to subdir line in parent listing.
-             (dired-insert-subdir (substring (file-name-directory filename) 0 -1))))
+             (if (assoc filename dired-subdir-alist)
+                 (dired-goto-file filename) ;  On subdir header line.  Go to subdir line in parent listing.
+               (dired-insert-subdir (substring (file-name-directory filename) 0 -1))))
             (t
-             ;; We don't need a marker for opoint as the subdir is always
-             ;; inserted *after* opoint.
              (setq dirname  (file-name-as-directory dirname))
              (or (and (not arg)  (dired-goto-subdir dirname))
                  (dired-insert-subdir dirname arg no-error-if-not-dir-p))
-             ;; Push mark so that it's easy to go back.  Do this after the
-             ;; insertion message so that the user sees the `Mark set' message.
-             (push-mark opoint)
+             (push-mark opoint) ; Do this after inserting message so user sees `Mark set'.
              (diredp-fit-one-window-frame))))))
+
+(defun diredp-uninserted-subdirs (dir &optional full)
+  "Subdirs of DIR not yet inserted in this Dired buffer.
+This includes all directories under DIR, not just direct (child)
+subdirectories.
+
+Non-nil optional arg FULL means the directory names are absolute.
+Otherwise (default) they are relative to `dired-directory'."
+  (let* ((uninserted   (diredp-remove-if
+                        (lambda (dir) (assoc (file-name-as-directory (expand-file-name dir)) dired-subdir-alist))
+                        (diredp-directories-within dir))))
+    (if full
+        uninserted
+      (mapcar #'file-relative-name uninserted))))
 
 (defun diredp-remove-inserted-subdirs () ; Not bound
   "Remove all inserted subdir listings.
