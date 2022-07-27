@@ -38,7 +38,7 @@ If you’ll be connecting to a remote shell over a slow internet connection, the
 
 == ssh.el ==
 
-To ssh to a system to run commands and also edit remote files use https://github.com/ieure/ssh-el and ~/.emacs:
+To ssh to a system to run commands and also edit remote files use https://codeberg.org/emacs-weirdware-abandoned/ssh and ~/.emacs:
 
     (require 'ssh)
     (add-hook 'ssh-mode-hook
