@@ -31,7 +31,7 @@ To make sure two words are separated by ''just one space'', use `M-SPC' or `M-x 
 === Cycle spacing around point ===
 
 To cycle the whitespace around point in a smart way (between one or N spaces, no space, and its
-original value, use `M-x cycle-space'. 
+original value, use `M-x cycle-spacing'. 
 
 === Delete extra blank lines between paragraphs ===
 
