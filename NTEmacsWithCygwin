@@ -139,4 +139,4 @@ If you want to launch NTEmacs via Cygwin (in order that it inherits your Cygwin 
 <code>C:\cygwin\bin\bash.exe --login -c "env HOME=\"`cygpath '%APPDATA%'`\" /cygdrive/c/emacs/emacs-23.2/bin/runemacs.exe"</code>
 
 ----
-CygWin
+CygWin CategoryWThirtyTwo
