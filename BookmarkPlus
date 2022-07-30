@@ -139,9 +139,12 @@ And Quelpa can be combined with library `use-package', as follows:
                  :defer 2)
 
 
+As always, you should read the Commentary in (at least) file <tt>[[bookmark+.el]]</tt>. In particular,  read the NOTE there about updating '''Bookmark+'''. And in particular:
 
+: Always load <tt>[[bookmark+-mac.el]]</tt> (''not''
+##bookmark+-mac.elc##) before you byte-compile new versions of the files, in case there have been any changes to Lisp macros (in ##bookmark+-mac.el##). 
 
-
+That NOTE is repeated in the Commentary of some of the individual Lisp files, in particular <tt>[[bookmark+-chg.el]]</tt>.
 
 
 
