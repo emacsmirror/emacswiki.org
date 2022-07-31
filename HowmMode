@@ -5,7 +5,7 @@ Howm allows you to take notes fragmentarily and browse them collectively.
 It has hyperlinks and full-text search like EmacsWikiMode.
 It is a minor mode and can be combined with other modes.
 
-* http://howm.sourceforge.jp/
+* https://howm.osdn.jp/
 
 There is no distinction between pages - each record can be arbitrarily
 timestamped, hyperlinked, and displayed with other related pages in
@@ -39,7 +39,7 @@ Todo and Notifiers are created as you type and displayed in a separate buffer ac
 
 [YYYY-MM-DD]! float until the date (deadline)
 
-http://howm.sourceforge.jp/s-menu.png
+https://howm.osdn.jp/menu.png
 
 ----
 
@@ -50,19 +50,16 @@ As for recurring scheduled tasks, you can simply list them :-)
       [2005-06-27]@ hogehoge
       [2005-07-04]@ hogehoge
 </pre>
-A method to input such lists is described in http://howm.sourceforge.jp/README.html.
+A method to input such lists is described in https://howm.osdn.jp/README.html
 
 : Thanks to SebastianBlatt for this question; it was not documented in English.
 I am lazy and tend to leave problems until someone gives comments. --khi
 
 : That's pretty convenient, thanks! One more question, though: is it possible to get howm to query the diary file or abuse diary-lib (diary-mode supports cyclic tasks and also has a nice entry format to specify e.g. the third Monday of August), so that I wouldn't have to enter holidays by hand every year? ...yes, I know I'm lazy. :-) --SebastianBlatt
 
-Some codes to integrate howm and diary are found in
-http://www.bookshelf.jp/cgi-bin/goto.cgi?file=meadow&node=howm%20calendar
+Some codes to integrate howm and diary are found in HowmAndCalendar (pasted by --DavidOtoole for convenience)
 (Please search the word "mark-calendar" in this page).
 I expect everyone can read elisp part at least.
-
-''To simplify things for others, I've pasted the code at HowmAndCalendar.'' --DavidOtoole
 
 These codes provide the below features.
 
@@ -136,25 +133,20 @@ Answere from [[khi]]:
 
 == Tips ==
 
-* rd-mode (yet another document format)
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000014.html
+* [https://osdn.net/projects/howm/lists/archive/eng/2005/000014.html rd-mode (yet another document format)]
 * sort todo list
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000007.html
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000009.html
-* highlight specified words
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000016.html
+** [https://osdn.net/projects/howm/lists/archive/eng/2005/000007.html Thread 1]
+** [https://osdn.net/projects/howm/lists/archive/eng/2005/000009.html Thread 2]
+* [https://osdn.net/projects/howm/lists/archive/eng/2005/000016.html highlight specified words]
 * add new action-lock (embed buttons, toggle-switches, etc. into notes)
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2006/000023.html
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2006/000024.html
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2006/000027.html
-* combination with OrgMode
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000038.html
-* save and kill buffer by C-c C-c
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000050.html
-* switch context (separating work and personal)
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000059.html
-* howmoney (manage expense)
-http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000089.html
+** [https://osdn.net/projects/howm/lists/archive/eng/2006/000023.html Thread 1]
+** [https://osdn.net/projects/howm/lists/archive/eng/2006/000024.html Thread 2]
+** [https://osdn.net/projects/howm/lists/archive/eng/2006/000027.html Thread 3]
+* [https://osdn.net/projects/howm/lists/archive/eng/2008/000038.html combination with OrgMode]
+* [https://osdn.net/projects/howm/lists/archive/eng/2008/000050.html save and kill buffer] by C-c C-c
+* [https://osdn.net/projects/howm/lists/archive/eng/2008/000059.html switch context (separating work and personal)]
+* [https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
+* [https://leahneukirchen.org/blog/archive/2022/03/note-taking-in-emacs-with-howm.html Blog post on taking notes with howm] -- a nice introduction along with goodies like replacing grep with ripgrep and using counsel-rg.
 
 ----
 CategoryHypermedia | CategoryPersonalInformationManager
