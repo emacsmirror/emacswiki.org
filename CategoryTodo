@@ -21,3 +21,5 @@ for all pages related to todo lists.
 * TodoStack -- a stack as a todo list.  Don't laugh.  Once you get used to it, it can have its uses.
 * TodoTxtMode -- major mode for editing (an extension of) the todo.txt format.
 * DoListMode -- major mode for editing a todo list, based on org-mode but an alternative approach.
+* HowmMode -- minor mode for flexible note-taking and task scheduling which can also be combined with OrgMode
+
