@@ -77,6 +77,7 @@ Other pages (could this please be split in [MajorMode major] and [MinorMode mino
 * HexlMode -- hex editing and display mode
 * HighlineMode -- minor mode to highlight current line in buffer
 * HiLockMode -- hilight arbitrary strings temporarily
+* HowmMode – a mode that let’s you take notes as fragments and then browse them collectively
 * IbufferMode
 * '''Icicle''' Mode -- [[Icicles]]: MiniBuffer input [[Completion]] and cycling of completion candidates. Lots more.
 * IMDbAddsMode -- Editing and syntax highlighting for IMDb data submissions
