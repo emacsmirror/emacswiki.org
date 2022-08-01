@@ -59,6 +59,7 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 == Hypertext systems ==
 * [[Synonyms]] -- Browse a hyperlinked thesaurus. Use any comma-separated values (CSV) file as a hyperlinked document, without writing any code.
 * EevMode -- E-script environment, the ULTIMATE hyperlink and memo system.
+* HowmMode – A mode for taking notes as fragments and then browsing them collectively, a note can be anything and can be arbitrarily hyperlinked to any other note or file
 * MultiLingualHyperTextLibraries
 * WebBot -- Framework for automatic text substitution if you load and save a file.
 
