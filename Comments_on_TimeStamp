@@ -24,3 +24,27 @@ The updating is not working. Do you see any mistakes; or do you have any suggest
 
 -- [http://www.worddoer.com edhe] 2020-10-21 15:37 UTC
 
+
+----
+
+I have previously---in about 1993---converted the time-stamp functionality written by Stephen Gildea to "file-stamp", because I had a large number of files where some files had been changed over a period of years or months, and I needed to keep track of them.  So then in each file I placed the following two templates:
+   Time-stamp: <>
+ and 
+   File-stamp: <>
+
+I also had implemented a feature to copy these lines, below these, in the header to provide a history of the time and name of the file.  I was using GNU/Linux, and had frequently been given to installing GNU/Linus on different machines; therefore I needed to keep track of everything possible about the history of the tile.  
+
+Over time I have lost track of the files that provided these functions, and the functionality in timestamp.el is sufficiently more complicated that I am unable to repeat my own trickery.
+
+This was a very important feature for me, in writing a publication that consisted of over 20 files, with a (to me) complicated history of revisions and corrections.  
+
+Two steps are involved: (1) copy timestamp.el to filestamp.el, and edit, removing unneeded parts; and (2) incorporating a new function---or writing a file-save hook to copy the two stamps, move down a few lines (or to the end), pasting the lines, and modifying them to preclude their being changed by the functions.  
+
+It worked quite well.  
+
+May I request suggestions?
+
+Alan Davis
+
+-- Anonymous 2022-08-01 02:32 UTC
+
