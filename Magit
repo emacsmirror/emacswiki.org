@@ -10,6 +10,7 @@ deserve to be called porcelains.  [https://magit.vc/about.html (more)]
 * Homepage: https://magit.vc
 * Development: https://github.com/magit/magit
 
+## Screenshot
 https://magit.vc/screenshots/status.png
 
 == Crash course ==
@@ -53,6 +54,7 @@ Various packages exist which extend Magit, including:
 * [https://github.com/magit/magit-svn magit-svn] use Magit with ##git svn## repositories {[https://github.com/emacsorphanage/magit-svn/commit/f7dad9b0f6b81b23550ea5cca0f3219f184b746c no maintainer]}
 * [https://github.com/magit/magit-topgit magit-topgit] Topgit extension for Magit
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
+* [https://www.tsdh.org/posts/2022-08-01-difftastic-diffing-with-magit.html Integrating difftastic]
 
 You can find even more extensions by searching for "magit" on
 https://melpa.org.  You might also want to search for "git".
