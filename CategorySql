@@ -53,3 +53,6 @@ Click on the header to list all SQL related pages.
 * ModeCompileSql -- a different approach for executing SQL scripts.
 * [https://github.com/kiwanami/emacs-edbi EDBI] -- Emacs Database Interface. GUI and Database API.
 * [https://github.com/nicferrier/emacs-sql-postgres sql-postgres] -- sql-mode add on for indenting Postgres' PlPgSQL, a PL/SQL variant
+
+----
+CategoryDatabase
