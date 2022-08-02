@@ -20,7 +20,7 @@ Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/gu
 * Links to URLs, files, gnus, rmail, vm, news, wanderlust, bbdb, irc, shell commands, bookmarks, images, attachments
 * Table: editing, spreadsheets, formulas
 * Export: HTML, LaTeX, Markdown, iCalendar, OpenDocument, Beamer slides, PDF, and more via an extensible exporting system
-* Babel: Literate programming, reproducible research
+* Babel: Literate programming, reproducible research, OrgModeSQL
 * Agenda: Overview of scheduled and TODO items across files
 
 [:install]
@@ -47,9 +47,9 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets]. 
 * Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org]. 
 * SachaChua has written (so many!) relevant articles -- 
+** [https://sachachua.com/blog/category/org/ Org category]
 ** [https://sachachua.com/blog/2007/12/a-day-in-a-life-with-org/ A graphical map for learning Org]. 
 ** [https://sachachua.com/blog/2007/12/how-to-use-emacs-org-as-a-basic-day-planner/ using org as a basic day planner]
-** [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ A day in a life with Org].
 * [https://github.com/tonyaldon/posts Tony Aldon's posts], some of which explain the inner workings of OrgMode
 * John Wiegley wrote about -- [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ Using Org mode as a day planner] 
 * Peter Prevos wrote about -- [https://lucidmanager.org/productivity/taking-notes-with-emacs-org-mode-and-org-roam/ Taking notes with org-mode and org-roam]
