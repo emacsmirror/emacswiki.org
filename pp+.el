@@ -8,11 +8,11 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 26 14:26:31 2022 (-0800)
+;; Last-Updated: Tue Aug  2 13:37:43 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 479
+;;     Update #: 480
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
-;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
+;; Doc URL: https://www.emacswiki.org/emacs/PpPlus
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
