@@ -4,8 +4,9 @@ Emacs has lots of different database code.
 
 == SQL Databases ==
 
-See [[SQL]] for information on how to use SQL databases from Emacs, as well as:
+See CategorySql for information on how to use SQL databases from Emacs, as well as:
 
+* SqlMode -- SQL major mode for Emacs and XEmacs
 * [[PostgreSQL]] - EmacsLisp interface to the PostgreSQL database server
 * [[MySql]] - EmacsLisp interface to MySQL server
 
