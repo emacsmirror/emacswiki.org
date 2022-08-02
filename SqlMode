@@ -398,5 +398,6 @@ NAME is the name of the connection in `sql-connection-alist'."
 I notice that sql mode doesn't seem to have any Info documentation in the Emacs 26 distribution.  Is there some that I'm missing?  Can some of this stuff be convered to Info?  What I hoped to find was a buffer variable that tells an SQL file what database to use, so it could be set with Local Variables in the sql file.  Then M-x sql-sqlite (or whatever) would choose that database by default. 
 
 ----
+CategoryDatabase
 CategoryModes
 CategorySql
