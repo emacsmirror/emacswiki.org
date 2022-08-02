@@ -6,4 +6,6 @@ Tutorials and examples of using SQL in OrgMode files
 * [https://arjanvandergaag.nl/blog/using-emacs-as-a-database-client.html Using Emacs as a database client]
 * [https://bofh.org.uk/2019/02/25/baking-with-emacs/ Baking with Emacs]
 
-CategorySQL
+----
+CategorySql
+OrgMode
