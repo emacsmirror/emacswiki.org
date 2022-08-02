@@ -26,7 +26,7 @@ Click on the header to list all SQL related pages.
 ** SqlUpcase (sql-upcase.el) -- automatically upcase SQL keywords
 ** SqlWithPlaceholders -- process SQL statements with placeholders embodied within them
 ** TsqlIndent
-
+* OrgModeSQL -- using SQL in OrgMode via org-babel
 * OracleProC -- how to mix C and SQL
 * OracleOnWindows -- things to keep in mind
 * PostgreSQL -- a socket level interface for Emacs + more PostgreSQL-related things
