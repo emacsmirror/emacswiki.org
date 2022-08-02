@@ -44,6 +44,12 @@ After the experience of writing a sqlcmd replacement for sql-ms (see below), I w
 
 Related pages are maintained in CategorySql
 
+* There is a useful tutorial style article on using sql-mode (targeted at DB2 but 
+more broadly applicable) by RoyMathew at 
+http://www.ibm.com/developerworks/data/library/techarticle/0206mathew/0206mathew.html
+* [https://www.acsu.buffalo.edu/~taowei/wiki/emacs_sql.html Emacs for MySQL tutorial]
+
+
 == Miscellaneous Settings ==
 
 If you don't like window splittings related to the *SQL* buffer, try
@@ -223,9 +229,6 @@ Older sql-modes such as the one by JimLange can be found in the ElispArchive.
 
 * oracle-wiki: http://www.orawiki.com/ and http://www.oracle-doku.de/oracle-wiki
 
-There is a useful tutorial style article on using sql-mode (targeted at DB2 but 
-more broadly applicable) by RoyMathew at 
-http://www.ibm.com/developerworks/data/library/techarticle/0206mathew/0206mathew.html
 Also check out the Oracle FAQ at http://www.orafaq.com/
 
 * PostgreSQL Query Analyzer (http://www.nongnu.org/pgqa/). The project is still in its early stage. Contributions and ideas are welcome.
