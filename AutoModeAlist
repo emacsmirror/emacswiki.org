@@ -171,7 +171,7 @@ The most usual case: Match only the file name extension (enclosed by ##\\.## or 
     '("\\.jpe?g\\'"            . image-mode)        ; match both ".jpg" and ".jpeg" extensions
     '("\\.bat\\'"              . bat-mode)          ; MS Windows/DOS batch files
     '("\\.[Bb][Aa][Tt]\\'"     . bat-mode)          ; match also the upper-case spelling
-    '("\\.\\(BAT\\|bat\\)\\'"  . bat-mode)          ; more precise: do not match .Bat, .bAt, BaT, and the like
+    '("\\.\\(BAT\\|bat\\)\\'"  . bat-mode)          ; more precise: do not match .Bat, .bAt, BaT, and the like (but only if auto-mode-case-fold is turned off and you are using a case-sensitive file system)
 
 
 Match a base name that ends or begins as specified but is not an extension:
