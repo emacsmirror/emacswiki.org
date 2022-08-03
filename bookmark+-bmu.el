@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu May 26 22:30:58 2022 (-0700)
+;; Last-Updated: Wed Aug  3 08:25:57 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 4181
+;;     Update #: 4197
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -847,6 +847,30 @@ Each alist element has the form (SORT-ORDER . COMPARER):
   "*Non-nil means to propertize bookmark names to hold full bookmark data.
 This means that you can effectively have more than one bookmark with
 the same name.
+
+___
+
+Just FYI, in case you're interested in Lisp things -
+
+If the value is non-nil and you examine the internal definitions of
+bookmarks (e.g. by opening your bookmark file or using `\\[describe-variable]
+bookmark-alist'), then you'll see the propertized strings written
+something like this (instead of just \"NAME\"), where NAME is the
+bookmark name:
+
+  #(\"NAME\" 0 15 (bmkp-full-record #1))
+
+\(If you examine the internal form of a bookmark using \\<bookmark-bmenu-mode-map>\
+`C-u \\[bmkp-bmenu-describe-this-bookmark]',
+then you won't see that.  The help output removes that noise, to just
+show you \"NAME\".)
+
+That propertized-string Lisp syntax shows that the bookmark-name
+string \"NAME\" has property `bmkp-full-record', whose value is in
+fact the list that is the full bookmark record, including that string
+itself!
+
+___
 
 Emacs 20 users: If you need to use your bookmarks with Emacs 20 then
 set this to nil.  In particular, if your bookmark file was written
