@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jun 21 19:39:57 2022 (-0700)
+;; Last-Updated: Wed Aug  3 13:21:55 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9478
+;;     Update #: 9480
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1949,7 +1949,15 @@ the `filename' entry.  Any `handler' entry present is ignored, as are
 entries such as `position'.  It is only the target file that is
 important.
 
-7. Bookmarks can have individual highlighting, provided by users.
+7. The HANDLER function, if present, and if you want the bookmark
+destination to be displayed, should display it.  The easiest, and
+generally best way for it to do this is simply to invoke the default
+handler, `bookmark-default-handler', at its end.  Handler function
+`bmkp-jump-man' does this at the end, for example:
+
+ (bookmark-default-handler (bmkp-get-bookmark bookmark))
+
+8. Bookmarks can have individual highlighting, provided by users.
 This overrides any default highlighting.
 
  (lighting . HIGHLIGHTING)
@@ -1963,7 +1971,7 @@ This overrides any default highlighting.
    `:when'  - A sexp to be evaluated.  Return value of `:no-light'
               means do not highlight.
 
-8. The following additional entries are used to record region
+9. The following additional entries are used to record region
 information.  When a region is bookmarked, POS represents the region
 start position.
 
@@ -1984,7 +1992,7 @@ bookmarked.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' *precedes* `end-position'.
 
-9. The following additional entries are used for a Dired bookmark.
+10. The following additional entries are used for a Dired bookmark.
 
  (dired-marked . MARKED-FILES)
  (dired-subdirs . INSERTED-SUBDIRS)
@@ -1996,7 +2004,7 @@ bookmarked.
  HIDDEN-SUBDIRS is the list of inserted subdirs that were hidden.
  SWITCHES is the string of `dired-listing-switches'.
 
-10. The following additional entries are used for a Gnus bookmark.
+11. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -2006,20 +2014,20 @@ bookmarked.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-11. For a URL bookmark, FILENAME or LOCATION is a URL.
+12. For a URL bookmark, FILENAME or LOCATION is a URL.
 
-12. A sequence bookmark has this additional entry:
+13. A sequence bookmark has this additional entry:
 
  (sequence . COMPONENT-BOOKMARKS)
 
  COMPONENT-BOOKMARKS is the list of component bookmark names.
 
-13. A function bookmark has this additional entry, which records the
+14. A function bookmark has this additional entry, which records the
 FUNCTION:
 
  (function . FUNCTION)
 
-14. A bookmark-list bookmark has this additional entry, which records
+15. A bookmark-list bookmark has this additional entry, which records
 the state of buffer `*Bookmark List*' at the time it is created:
 
  (bookmark-list . STATE)
@@ -7398,6 +7406,8 @@ binary data (weird chars)."
   (condition-case nil (upcase string) (error string)))
 
 ;; Thx to Michael Heerdegen and Michael Albinus for help with this one.
+;; See also Emacs bug #10489.
+;;
 (defun bmkp-same-file-p (file1 file2)
   "Return non-nil if FILE1 and FILE2 name the same file.
 If either name is not absolute, then it is expanded relative to
@@ -7413,6 +7423,7 @@ If either name is not absolute, then it is expanded relative to
     (and (equal remote1 remote2)
          (if (fboundp 'file-equal-p)
              (file-equal-p file1 file2)
+           ;; Need to use `expand-file-name' because prior to Emacs 24 `file-true-name' doesn't expand name.
            (let ((ft1  (file-truename (expand-file-name file1)))
                  (ft2  (file-truename (expand-file-name file2))))
              (eq t (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p)))))))
