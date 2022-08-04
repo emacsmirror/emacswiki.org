@@ -79,7 +79,7 @@ Like [[WDired]], it would be handy if you could hand-edit the contents of log vi
 
 == Related Information ==
 * [http://www.gnu.org/software/rcs/ GNU RCS Home Page]
-* [http://users.ninthfloor.org/~ashawley/rcs/ Resources on Using GNU RCS by Aaron Hawley]
+* [strike][http://users.ninthfloor.org/~ashawley/rcs/ Resources on Using GNU RCS by Aaron Hawley][/strike] [https://web.archive.org/web/20201108101838/https://users.ninthfloor.org/~ashawley/rcs/ Archived version]
 * [http://www.cs.purdue.edu/homes/trinkle/RCS/ Win32 Port]
 * [http://obsidianrook.com/devnotes/joys-of-rcs.html The Joys of RCS] - a nice writeup about version control/emacs/RCS.
 
