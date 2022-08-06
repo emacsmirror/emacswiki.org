@@ -96,7 +96,9 @@ It's also possible to install the package via [https://brew.sh/ homebrew] with [
 The ##Gccemacs## prebuilt packages are [https://github.com/kiennq/emacs-build/releases available] and updated semi-monthly using GitHub action.
 The build script is also available in the same [https://github.com/kiennq/emacs-build github repo].
 
-It's also possible to install the package via [https://scoop.sh/ scoop] with [https://github.com/kiennq/scoop-misc/blob/master/emacs-k.json this bucket].
+It's also possible to install the package via [https://scoop.sh/ scoop] with [https://github.com/kiennq/scoop-misc this bucket].
+
+    $ scoop bucket add kiennq-scoop https://github.com/kiennq/scoop-misc
 
     $ scoop install emacs-k
 
