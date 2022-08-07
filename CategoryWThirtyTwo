@@ -91,6 +91,7 @@ Use Dired in Windows and let Emacs open files using default Windows commands.
 * WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * MakeSmartShortcuts -- seeing is believing, try it out
+* [https://github.com/termitereform/JunkPile/blob/master/emacs-on-windows.md How I use Emacs on Windows] -- Useful article talking about Emacs setup, including the PATH and other tips (Non WSL/Cygwin).
 
 
 === MS applications ===
