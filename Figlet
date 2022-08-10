@@ -22,7 +22,7 @@ Emacs interfaces to Figlet, "a program for making large letters out of ordinary 
 *** `figlet-figletify-region-comment'
 * http://www.figlet.org/figlet.el - Martin Giese
 
-Each small, each has their benefits. The Geise version handles parameters better, but dumps everything into a comment by default.
+Each small, each has their benefits. The Giese version handles parameters better, but dumps everything into a comment by default.
 
 
 == See Also ==
