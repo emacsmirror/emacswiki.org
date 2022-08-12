@@ -97,10 +97,10 @@ The magic behind that is temporarily replacing the built-in directory-files by a
     ,(interactive-form (symbol-function 'ediff-directories))
     (let ((directory-files-original (symbol-function 'directory-files)))
       (unwind-protect
-      (progn
-        (fset 'directory-files (symbol-function 'directory-files-recursive))
-        (ediff-directories dir1 dir2 regexp)
-        (fset 'directory-files directory-files-original))))))
+           (progn
+             (fset 'directory-files (symbol-function 'directory-files-recursive))
+             (ediff-directories dir1 dir2 regexp))
+        (fset 'directory-files directory-files-original)))))
 </pre>
 [[xor3]]
 ----
