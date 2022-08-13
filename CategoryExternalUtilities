@@ -72,6 +72,7 @@ Command-line tools:
 * TopMode -- run "top" from Emacs
 * ExecuteExternalCommand -- call a shell command from emacs
 * EukleidesMode -- Full featured major mode to edit [http://eukleides.org eukleides] files
+* [[Figlet]] -- Emacs interfaces to the Figlet program, which converts ordinary text to larger text using other characters in monospaced fonts
 * [[Sdcv]] -- A interface for *sdcv* (StarDict console version).
 * [[CheatFuMode]] -- cheat_fu mode
 * QuickRun -- Run editing buffer and show its output quickly.
