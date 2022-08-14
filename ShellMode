@@ -239,6 +239,14 @@ Remember that Emacs has native built-in commands of [b]M-![/b] (or "M-x shell-co
 
 Also, prefixing either command with Ctrl-U will send the output to the active editing buffer, rather than sending it to a separate buffer. Suppose you have a marked block to change (by an external command like `sort` or `sed` or `awk`). Use [b]M-|[/b] to see the output in a new window, and if satisfied, use [b]Ctrl-U M-|[/b] to change the marked block in the current window. If not satisfied, just run [b]M-|[/b] again with different parameters or option switches, and this will overwrite the output of the new window, without destroying the contents of the currently active window.
 
+== Access shell output in other shell commands ==
+
+In Emacs Shell mode, enable the use of an underscore (_) as a shorthand for the output of the last command:
+
+https://github.com/mathiasdahl/shell-underscore
+
+-- MaDa
+
 ----
 CategoryExternalUtilities
 CategoryShell
