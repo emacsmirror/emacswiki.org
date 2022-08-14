@@ -243,9 +243,7 @@ Also, prefixing either command with Ctrl-U will send the output to the active ed
 
 In Emacs Shell mode, enable the use of an underscore (_) as a shorthand for the output of the last command:
 
-https://github.com/mathiasdahl/shell-underscore
-
--- MaDa
+ShellUnderscore
 
 ----
 CategoryExternalUtilities
