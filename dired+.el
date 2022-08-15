@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2022.07.25
+;; Version: 2022.08.15
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 15 08:40:51 2022 (-0700)
+;; Last-Updated: Mon Aug 15 08:57:39 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13360
+;;     Update #: 13363
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1007,7 +1007,7 @@
 ;;; Change Log:
 ;;
 ;; 2022/08/15 dadama
-;;     dired-switches-escape-p: Typo: dired-switches-check -> dired-check-switches.
+;;     dired-switches-escape-p: Typo: dired-switches-check -> dired-check-switches.  Ensure SWITCHES is a string.
 ;; 2022/07/25 dadams
 ;;     Added: diredp-uninserted-subdirs.
 ;;     dired-maybe-insert-subdir: C-u C-u: remove all, <= 0: prompt for subdir, >= 0: prompt for switches.
@@ -3997,13 +3997,14 @@ directories to list.  See the advice for `dired' for more information."
 ;;
 (defun dired-switches-escape-p (switches)
   "Return non-nil if the string SWITCHES contains `-b' or `--escape'."
-  (if (fboundp 'dired-check-switches)   ; Emacs 24.4+ - see Emacs bug #17218.
+  (if (fboundp 'dired-check-switches) ; Emacs 24.4+ - see Emacs bug #17218.
       (dired-check-switches switches "b" "escape")
-    ;; Do not match things like "--block-size" that happen to contain "b".
-    (if (> emacs-major-version 21)      ; SWITCHES must be a string here, not nil.
-        (diredp-string-match-p "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
-      (diredp-string-match-p "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>" switches))))
-
+    (and (stringp switches)
+         ;; Don't match things like "--block-size" that happen to contain "b".
+         (diredp-string-match-p (if (> emacs-major-version 21)
+                                    "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>"
+                                  "\\(\\`\\| \\)-\\(\w\\|[0-9]\\)*b\\|--escape\\>")
+                                switches))))
 
 ;; From `dired.el'
 
