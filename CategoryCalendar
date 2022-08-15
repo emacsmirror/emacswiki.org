@@ -8,6 +8,7 @@ This category is related to calendars, including todo lists, diaries, task manag
 ** [[XTide]] - Show tides for the selected date in the calendar.
 ** CalendarWeekNumbers - Show week numbers.
 ** CalendarPrinting - Printing your calendar
+* [[Calfw]] - calendar framework
 * OrgMode - tasks, schedule, notes (lends itself well to outlines and tagging)
 * PlannerMode -- tasks, schedule, notes (lends itself well to day views and publishing blogs)
 * DiaryMode
