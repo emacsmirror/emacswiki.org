@@ -1,1 +1,5 @@
 In Emacs Shell mode, enable the use of an underscore (_) as a shorthand for the output of the last command. For examples and more information, see: https://github.com/mathiasdahl/shell-underscore
+
+----
+CategoryShell
+ShellMode
