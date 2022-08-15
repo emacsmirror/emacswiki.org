@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.07.25
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 25 19:27:17 2022 (-0700)
+;; Last-Updated: Mon Aug 15 08:40:51 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13350
+;;     Update #: 13360
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -985,7 +985,7 @@
 ;;  `dired-do-find-marked-files' -
 ;;     Call `dired-get-marked-files' with original ARG.
 ;;     Added optional arg INTERACTIVEP - no error if nil and no files.
-;;  `dired-do-run-mail' - Require confirmation.
+;;  `dired-do-run-mail' - Require confirmation (Emacs < 25 only).
 ;;  `dired-jump' - Open destination directory listing if hidden.
 ;;  `dired-mark-sexp' - 1. Variable `s' -> `blks'.
 ;;                      2. Fixes to `uid' and `gid'.
@@ -1006,9 +1006,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/08/15 dadama
+;;     dired-switches-escape-p: Typo: dired-switches-check -> dired-check-switches.
 ;; 2022/07/25 dadams
 ;;     Added: diredp-uninserted-subdirs.
 ;;     dired-maybe-insert-subdir: C-u C-u: remove all, <= 0: prompt for subdir, >= 0: prompt for switches.
+;;     dired-do-run-mail: Redefine only for Emacs < 25 (bug #13561).
 ;; 2022/07/23 dadams
 ;;     Added redefinition of dired-jump.
 ;;     diredp-dired-this-subdir, diredp-(dired|remove)-inserted-subdirs:
@@ -3505,16 +3508,16 @@ into the minibuffer."
 ;;
 (defun dired-do-kill-lines (&optional arg fmt init-count)
   "Remove all marked lines, or the next ARG lines.
-The files or directories on those lines are _not_ deleted.  Only the
-Dired listing is affected.  To restore the removals, use `\\[revert-buffer]'.
+The files or directories listed on those lines are _not_ deleted.
+Only the Dired listing is affected.  To restore the removals, use \\<dired-mode-map>`\\[revert-buffer]'.
 
 With a numeric prefix arg, remove that many lines going forward,
 starting with the current line.  (A negative prefix arg removes lines
 going backward.)
 
-If you use a prefix arg to remove the line for a subdir whose listing
-you have inserted into the Dired buffer, then that subdir listing is
-also removed.
+If you use a prefix arg to remove the line in a parent listing for a
+subdir whose listing you have inserted into the Dired buffer, then
+that inserted subdir listing is also removed.
 
 To remove a subdir listing _without_ removing the subdir's line in its
 parent listing, go to the header line of the subdir listing and use
@@ -3989,13 +3992,13 @@ directories to list.  See the advice for `dired' for more information."
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Made compatible with Emacs 20, 21, which do not have [:alnum].
+;; Made compatible with Emacs 20, 21, which do not have [:alnum:].
 ;; Also, this is defined here because it is used elsewhere in the file.
 ;;
 (defun dired-switches-escape-p (switches)
   "Return non-nil if the string SWITCHES contains `-b' or `--escape'."
-  (if (fboundp 'dired-switches-check)   ; Emacs 24.4+ - see Emacs bug #17218.
-      (dired-switches-check switches "escape" "b")
+  (if (fboundp 'dired-check-switches)   ; Emacs 24.4+ - see Emacs bug #17218.
+      (dired-check-switches switches "b" "escape")
     ;; Do not match things like "--block-size" that happen to contain "b".
     (if (> emacs-major-version 21)      ; SWITCHES must be a string here, not nil.
         (diredp-string-match-p "\\(\\`\\| \\)-[[:alnum:]]*b\\|--escape\\>" switches)
@@ -6038,8 +6041,6 @@ values of those attributes.  Otherwise, include all attribute values."
 (defvar diredp-files-within-dirs-done ()
   "Directories already processed by `diredp-files-within'.")
 
-
-;; Not used in the `Dired+' code yet.
 (defun diredp-directories-within (&optional directory no-symlinks-p predicate)
   "List of accessible directories within DIRECTORY.
 Directories in `icicle-ignored-directories' are skipped, if you use
@@ -11637,9 +11638,9 @@ ending in `dired-omit-extensions'.
 Do nothing if REGEXP is the empty string, `dired-omit-mode' is nil, or
 if called from Lisp and buffer is bigger than `dired-omit-size-limit'.
 
-Optional arg INIT-COUNT is an initial count tha'is added to the number
-of lines omitted by this invocation of `dired-omit-expunge', in the
-status message."
+Optional arg INIT-COUNT is an initial count that is added to the
+number of lines omitted by this invocation of `dired-omit-expunge', in
+the status message."
     (interactive "sOmit files (regexp): \nP")
     (when (and (symbolp regexp)  (boundp regexp)) (setq regexp  (symbol-value regexp)))
     ;; Bind `dired-marker-char' to `dired-omit-marker-char', then call `dired-do-kill-lines'.
@@ -11869,15 +11870,16 @@ the height of the current window and the value of variable
 ;;
 ;; Require confirmation.  Fixes Emacs bug #13561.
 ;;
-(defun dired-do-run-mail ()
-  "If `dired-bind-vm' is non-nil, call `dired-vm', else call `dired-rmail'."
-  (interactive)
-  (unless (y-or-n-p "Read all marked mail folders? ") (error "OK, canceled"))
-  (if dired-bind-vm
-      ;; Read mail folder using vm.
-      (dired-vm)
-    ;; Read mail folder using rmail.
-    (dired-rmail)))
+(when (< emacs-major-version 25)
+  (defun dired-do-run-mail ()
+    "If `dired-bind-vm' is non-nil, call `dired-vm', else call `dired-rmail'."
+    (interactive)
+    (unless (y-or-n-p "Read all marked mail folders? ") (error "OK, canceled"))
+    (if dired-bind-vm
+        ;; Read mail folder using vm.
+        (dired-vm)
+      ;; Read mail folder using rmail.
+      (dired-rmail))))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
