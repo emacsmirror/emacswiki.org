@@ -1,26 +1,25 @@
-There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration. These are useful in obtaining configuration snippets and LearningEmacs.
+There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration. These are useful in obtaining configuration snippets and learning Emacs.
 
-Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2020-07; some size numbers from 2016-01-16):
+Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2022-08; some size numbers from 2016-01-16):
 
 || Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            || 21.4k ||          1088 ||   10932 ||              9700 || https://github.com/syl20bnr/spacemacs/tree/develop ||
-|| Doom Emacs           ||  14.4k ||          571 ||   17415 ||               1200 || https://github.com/hlissner/doom-emacs ||
-|| purcell emacs.d      ||  5.9k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
-|| Prelude              ||  4.6k ||          166 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
+|| Spacemacs            || 22.4k ||          1088 ||   10932 ||              9700 || https://github.com/syl20bnr/spacemacs/tree/develop ||
+|| Doom Emacs           ||  14.8k ||          571 ||   17415 ||               1200 || https://github.com/hlissner/doom-emacs ||
+|| purcell emacs.d      ||  6.3k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
+|| Prelude              ||  4.8k ||          166 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
+|| Centaur Emacs        ||  1.6k ||           22 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
+|| Emacs Live           ||  1.5k ||           39 ||     715 ||                   || https://github.com/overtone/emacs-live ||
 || magnars emacs.d      ||  1.4k ||            9 ||    1490 ||               526 || https://github.com/magnars/.emacs.d ||
-|| Emacs Live           ||  1.4k ||           39 ||     715 ||                   || https://github.com/overtone/emacs-live ||
-|| Centaur Emacs        ||  1.3k ||           22 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
-|| Better Defaults      ||   841 ||            2 ||      32 ||                 4 || https://git.sr.ht/~technomancy/better-defaults || 
-|| Emacs Starter Kit    ||   792 ||           21 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit/ || 
-|| oh-my-emacs          ||   708 ||           10 ||     333 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
-|| scimax || 802 || 21 || 2150 || || https://github.com/jkitchin/scimax ||
+|| scimax               ||   821 ||           21 ||    2150 ||                   || https://github.com/jkitchin/scimax ||
+|| Emacs Starter Kit    ||   796 ||           21 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit/ || 
+|| oh-my-emacs          ||   700 ||           10 ||     333 ||               110 || https://github.com/xiaohanyu/oh-my-emacs ||  
+|| M-EMACS              ||   543 ||            2 ||     862 ||              1600 || https://github.com/MatthewZMD/.emacs.d || 
 || ohai-emacs           ||   379 ||            9 ||     124 ||               170 || https://github.com/bodil/ohai-emacs || 
 || Graphene             ||   289 ||            4 ||     347 ||                40 || https://github.com/rdallasgray/graphene || 
 || ergoemacs-mode       ||   237 ||           21 ||    2799 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode ||
 || ocodo .emacs.d       ||   100 ||            4 ||    9352 ||             46000 || https://github.com/ocodo/.emacs.d ||
 || Wakib Emacs          ||    23 ||            1 ||      93 ||                 8 || https://github.com/darkstego/wakib-emacs  ||
-|| Rho Emacs            ||    22 ||            1 ||    37    ||                 ~ || https://github.com/GChristensen/rho-emacs ||
-|| Onboard          ||    9 ||            1 ||      212 ||                 8 || https://github.com/monkeyjunglejuice/emacs.onboard ||
-
+|| Rho Emacs            ||    22 ||            1 ||      37 ||                 ~ || https://github.com/GChristensen/rho-emacs ||
+|| Onboard              ||     9 ||            1 ||     212 ||                 8 || https://github.com/monkeyjunglejuice/emacs.onboard ||
 ----
 CategoryDotEmacs LearningEmacs
