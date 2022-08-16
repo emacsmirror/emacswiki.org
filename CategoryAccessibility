@@ -44,7 +44,7 @@ On a more cautious note, see RepeatedStrainInjury. :(
 
 = Extending Emacs Accessibility with Packages =
 
-As compared with most other editors Emacs presents a very stripped down GUI interface and it can be easy to get lost/confused when initially using Emacs. Therefor, users should explore and become familiar with the standard Emacs accessibility features before electing to add an additional utilities which extend the standard behavior.
+As compared with most other editors Emacs presents a very stripped down GUI interface and it can be easy to get lost/confused when initially using Emacs. Therefore, users should explore and become familiar with the standard Emacs accessibility features before electing to add an additional utilities which extend the standard behavior.
 
 While this may seem obvious to longtime Emacs users, new users often don’t know what they don’t know and may as a consequence be mistaken into believing that just because the presence of a feature isn’t immediately accessible it must therefore require an extension.
 
