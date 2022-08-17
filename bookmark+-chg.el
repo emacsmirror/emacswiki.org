@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 16 20:44:54 2022 (-0700)
+;; Last-Updated: Tue Aug 16 20:53:12 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16866
+;;     Update #: 16867
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2604,6 +2604,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2022/08/16 dadams
+;;     Version: 2022.08.16
 ;; 2021/09/19 dadams
 ;;     Version 2021.09.19
 ;;     Added option bmkp-bmenu-buffer.
