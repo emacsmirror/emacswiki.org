@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug 16 20:40:58 2022 (-0700)
+;; Last-Updated: Wed Aug 17 08:09:50 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9486
+;;     Update #: 9487
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5582,19 +5582,18 @@ Raise an error if the entire string was not used."
     (if more-left (error "Can't read whole string") (car read-data))))
 
 ;;;###autoload (autoload 'bmkp-jump-to-list "bookmark+")
-(defun bmkp-jump-to-list (bookmark
-                          &optional position msgp) ; Bound globally to `C-x j C-j', `C-x x C-j'
+(defun bmkp-jump-to-list (bookmark) ; Bound globally to `C-x j C-j', `C-x x C-j'
   "Jump to BOOKMARK entry in `*Bookmark List*'.
 You are prompted for BOOKMARK (a bookmark name).
 If you use library `bookmark+-lit.el':
  * The defaults for BOOKMARK are the lighted bookmarks at point.
  * A prefix arg means only lighted bookmarks at point are candidates."
   (interactive (let* ((litp   (fboundp 'bmkp-bookmarks-lighted-at-point))
-                      (lbmks  (and litp  (bmkp-bookmarks-lighted-at-point (point) nil 'MSG)))
+                      (lbmks  (and litp  (bmkp-bookmarks-lighted-at-point)))
                       (bmk    (bookmark-completing-read (if current-prefix-arg "Lighted bookmark" "Bookmark")
                                                         (and litp  (if current-prefix-arg (car lbmks) lbmks))
                                                         (and current-prefix-arg  lbmks))))
-                 (list bmk (point) t)))
+                 (list bmk)))
   (pop-to-buffer (get-buffer-create bmkp-bmenu-buffer))
   (bookmark-bmenu-list)
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
