@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Jan 14 12:50:59 2022 (-0800)
+;; Last-Updated: Wed Aug 17 08:10:35 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 1005
+;;     Update #: 1006
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -600,14 +600,14 @@ See `bmkp-lighted-jump'."
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
 ;;;###autoload (autoload 'bmkp-lighted-jump-to-list "bookmark+")
-(defun bmkp-lighted-jump-to-list (bookmark &optional position msgp) ; Not bound.
+(defun bmkp-lighted-jump-to-list (bookmark) ; Not bound.
   "Jump to location in `*Bookmark List*' for a lighted bookmark at point.
 You are prompted for BOOKMARK (a bookmark name).
 Completion candidates are the lighted bookmarks at point."
-  (interactive (let* ((bmks    (bmkp-bookmarks-lighted-at-point (point) nil 'MSG))
-                      (IGNORE  (unless bmks (error "No highlighted bookmarks at point")))
-                      (bmk   (bookmark-completing-read "Bookmark" (car bmks) bmks)))
-                 (list bmk (point) t)))
+  (interactive (let* ((lbmks   (bmkp-bookmarks-lighted-at-point))
+                      (IGNORE  (unless lbmks (error "No highlighted bookmarks at point")))
+                      (bmk     (bookmark-completing-read "Bookmark" (car lbmks) lbmks)))
+                 (list bmk)))
   (pop-to-buffer (get-buffer-create bmkp-bmenu-buffer))
   (bookmark-bmenu-list)
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
