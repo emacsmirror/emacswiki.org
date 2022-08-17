@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug  3 13:27:08 2022 (-0700)
+;; Last-Updated: Tue Aug 16 20:44:54 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16864
+;;     Update #: 16866
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2022/08/16 dadams
+;;     bmkp-bookmark-description, Dired bookmark:
+;;       Ensure prop dired-directory is a cons when get list of explicitly listed files.
 ;; 2022/08/03 dadams
 ;;     bookmark-alist doc string: Mention that HANDLER should generally display the destination.
 ;; 2022/06/21 dadams
