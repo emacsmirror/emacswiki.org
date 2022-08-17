@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 16 20:53:12 2022 (-0700)
+;; Last-Updated: Wed Aug 17 08:11:33 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16867
+;;     Update #: 16868
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2022/08/17 dadams
+;;     bmkp-jump-to-list: Removed unused optional args.
 ;; 2022/08/16 dadams
 ;;     bmkp-bookmark-description, Dired bookmark:
 ;;       Ensure prop dired-directory is a cons when get list of explicitly listed files.
@@ -2442,6 +2444,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2022/08/17 dadams
+;;     bmkp-jump-to-list: Removed unused optional args.
 ;; 2021/09/19 dadams
 ;;     Everywhere: Use bmkp-bmenu-buffer, not vanilla bookmark-bmenu-buffer.
 ;; 2021/04/16 dadams
