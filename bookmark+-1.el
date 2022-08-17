@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug  3 13:21:55 2022 (-0700)
+;; Last-Updated: Tue Aug 16 20:40:58 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9480
+;;     Update #: 9486
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9290,15 +9290,15 @@ the file is an image file then the description includes the following:
                                              (bookmark-prop-get bookmark 'bookmark-file)))
                    (snippet-p        (format "Snippet for `kill-ring'.\n"))
                    (dired-p          (and file
-                                          (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
-                                                (marked    (length (bookmark-prop-get bookmark
-                                                                                      'dired-marked)))
-                                                (inserted  (length (bookmark-prop-get bookmark
-                                                                                      'dired-subdirs)))
-                                                (hidden    (length (bookmark-prop-get bookmark
-                                                                                      'dired-hidden-dirs)))
-                                                (files     (cdr (bookmark-prop-get bookmark
-                                                                                   'dired-directory))))
+                                          (let* ((switches  (bookmark-prop-get bookmark 'dired-switches))
+                                                 (marked    (length (bookmark-prop-get bookmark
+                                                                                       'dired-marked)))
+                                                 (inserted  (length (bookmark-prop-get bookmark
+                                                                                       'dired-subdirs)))
+                                                 (hidden    (length (bookmark-prop-get bookmark
+                                                                                       'dired-hidden-dirs)))
+                                                 (dir-dir   (bookmark-prop-get bookmark 'dired-directory))
+                                                 (files     (and (consp dir-dir)  (cdr dir-dir))))
                                             (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
 Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
                                                     (if switches (format " `%s'" switches) "")
