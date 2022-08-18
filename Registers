@@ -78,6 +78,7 @@ Lisp:list-register.el fails for me because of `truncate-string' not being define
 ||##C-u 1 C-x r + a##||add 1 to number in "a"||
 ||##C-x r i a##||insert number in "a"||
 ||||**position register**||
+||(These are more commonly known as [[BookMarks]].) || ||
 ||##C-x r m RET##||save default||
 ||##C-x r m <NAME> RET##||save as NAME||
 ||##C-x r b RET##||move to default||
