@@ -1,0 +1,5 @@
+SpellFu uses an in-memory dictionary to achieve fast spell checking of on-screen text, highlighting words with incorrect spelling.
+
+It's intended for developers and has methods of filtering exactly which kinds of comments should be checked.
+
+https://codeberg.org/ideasman42/emacs-spell-fu
