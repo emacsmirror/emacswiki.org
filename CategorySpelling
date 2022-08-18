@@ -6,6 +6,8 @@ The basic mechanism for spellchecking in Emacs involves the external program isp
 
 * WcheckMode is a fast general-purpose on-the-fly (spell-)checker interface which can use external programs or Emacs Lisp functions as the text-checker engine. It works not only with Ispell, Enchant, Hunspell etc. but also many other line-oriented command-line text-filtering programs and shell scripts. Wcheck mode is highly configurable.
 
+* SpellFu is a fast spell checker for on-screen text.
+
 * AutoCorrection corrects misspellings automatically as you type.
 
 See also:
