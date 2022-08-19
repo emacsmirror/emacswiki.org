@@ -15,8 +15,6 @@ The relevant page also has installation instructions.  The following was enough 
  (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
  (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-this could be useful: (RichardRiley : why?)
-
 Many distros add relevant autoloads e.g. Gentoo adds it to site-lisp/site-gentoo.el or possibly site-lisp/site-gentoo.d  
 
 == Design ==
