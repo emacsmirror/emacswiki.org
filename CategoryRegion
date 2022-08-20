@@ -59,3 +59,4 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 
 * CategoryEditing
 * EmacsNewbieMouseReference -- Basics on how to define and manipulate the region using the mouse in Emacs.
+* [[Registers]] -- Basics on registers which can be used to store a region
