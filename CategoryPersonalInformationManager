@@ -23,6 +23,9 @@ interface to browse and operate on their data (e.g. it already
 provides an extension for BbdbMode to organize its data in a tree
 outlines).
 
+* [https://protesilaos.com/emacs/denote Denote] -- Note taking tool based on
+  unique filenames that is format agnostic, i.e use Text/Markdown/OrgMode.
+
 * DiaryMode allow you to make appointments, plan ahead, remember
 birthdays (these are not linked to entries in the BBDB), holidays.
 
