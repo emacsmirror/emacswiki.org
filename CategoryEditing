@@ -31,7 +31,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** [[MRU-yank]] -- maintain [[kill ring]] as MRU (Most Recently Used) stack.  Similar to the application stack (M-tab) on MS Windows
 ** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
 ** See also CategoryRegion
-* [[register|Registers]]:
+* [[Registers]]:
 ** RegAdhoc -- automatically add [[register]]s and show their destinations
 ** BetterRegisters -- [[register]] enhancements, [[keyboard macro]]s
 ** UnifyKillringAndRegister -- make [[register]]s easy to use
