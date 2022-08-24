@@ -1,5 +1,4 @@
-See also: HowmAndCalendar PlannerAndHowmComparison
-----
+= Introduction =
 
 Howm allows you to take notes fragmentarily and browse them collectively.
 It has hyperlinks and full-text search like EmacsWikiMode.
@@ -100,7 +99,7 @@ Highlighting is not available at now. How about "separators" instead?
             ))
 </pre>
 
-== Discussion ==
+= Discussion =
 
 [new] Is there any way to have "templates" in howm ? I mean, I'd like
 to create all my notes and put them in a "inbox" category (goto-link)
@@ -121,7 +120,7 @@ I already have a directory of notes. Can howm-mode take it from there ? [[ychaou
 
 [[ychaouche]]
 
-Answere from [[khi]]:
+Answer from [[khi]]:
 
 <pre>
 ; howm-mode :)
@@ -131,7 +130,7 @@ Answere from [[khi]]:
 </pre>
 
 
-== Tips from the Mailing list ==
+= Tips from the Mailing list =
 
 * [https://osdn.net/projects/howm/lists/archive/eng/2005/000014.html rd-mode (yet another document format)]
 * sort todo list
@@ -148,7 +147,7 @@ Answere from [[khi]]:
 * [https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
 * [https://leahneukirchen.org/blog/archive/2022/03/note-taking-in-emacs-with-howm.html Blog post on taking notes with howm] -- a nice introduction along with goodies like replacing grep with ripgrep and using counsel-rg.
 
-== Workflow Possibilities ==
+= Workflow Possibilities =
 
 === Stagewise filtering of notes based on grep as well as keywords ===
 
@@ -160,13 +159,15 @@ One specific example that would be often necessary would be links to specific Co
 
 The steps to quickly identify confluence links:
 
-1. howm-list-grep-fixed (`C-c , s`) > choose ABCD for obtaining notes mentioning keyword ABCD.
+1. howm-list-grep-fixed (`C-c , s`) > choose ABCD for obtaining notes mentioning keyword ABCD.  
 
-2. howm-search-in-result (`G`) > 'wiki' which will filter above notes to those containing confluence links.
+2. howm-search-in-result (`G`) > 'wiki' which will filter above notes to those containing confluence links.  
 
-3. If you remember something close to the description words related to the confluence link - you then hit `G` again and search within the filtered notes to find notes with those description words.
+3. If you remember something close to the description words related to the confluence link - you then hit `G` again and search within the filtered notes to find notes with those description words. 
 
 With the above method, it is possible to find the desired link, and also have a view of other notes that are related to the description words, and thus being able to form more connections between notes! Note that when you hit 'G` to grep within results, it is also possible to call up `howm-insert-keyword` (C-c , i) to insert a keyword as a search term, and thus filter based on other howm defined keywords in the filtered notes. 
+
+See also: HowmAndCalendar PlannerAndHowmComparison
 
 ----
 CategoryHypermedia CategoryModes CategoryPersonalInformationManager CategoryTodo
