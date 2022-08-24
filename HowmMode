@@ -131,7 +131,7 @@ Answere from [[khi]]:
 </pre>
 
 
-== Tips ==
+== Tips from the Mailing list ==
 
 * [https://osdn.net/projects/howm/lists/archive/eng/2005/000014.html rd-mode (yet another document format)]
 * sort todo list
@@ -147,6 +147,39 @@ Answere from [[khi]]:
 * [https://osdn.net/projects/howm/lists/archive/eng/2008/000059.html switch context (separating work and personal)]
 * [https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
 * [https://leahneukirchen.org/blog/archive/2022/03/note-taking-in-emacs-with-howm.html Blog post on taking notes with howm] -- a nice introduction along with goodies like replacing grep with ripgrep and using counsel-rg.
+
+== Workflow Possibilities ==
+
+=== Stagewise filtering of notes based on grep as well as keywords ===
+
+Say you are part of a team or project called ABCD and have a frequent number of meetings. These can be captured as notes including a defined howm keyword ABCD.
+
+Now, in those meetings, there would be different topics and linking to other keywords. These keywords can be added to the notes as required.
+
+One specific example that would be often necessary would be links to specific Confluence pages pertaining to a subject. While browser bookmarks would also work - it may be more difficult to maintain context and include notes along with it. Confluence pages tend to have a specific URL structure, like company.atlassian.net/wiki/spaces/XXX. Since these are notes, it is likely you would have some additional 'description words' surrounding the link in the meeting note.
+
+
+1. howm-list-grep-fixed (=C-c , s=) > choose ABCD for obtaining notes mentioning keyword ABCD.
+
+2. howm-search-in-result (=G=) > 'wiki' which will filter above notes to those containing confluence links.
+
+3. If you remember something close to the description words related to the confluence link - you then hit =G= again and search within the filtered notes to find notes with those description words.
+
+   With the above method, it is then possible to find the desired link, and also have a view of other notes that are related to the description words, and thus being able to form more connections between notes!Say you are part of a team or project called ABCD and have a frequent number of meetings. These can be captured as notes including a defined howm keyword ABCD.
+
+Now, in those meetings, there would be different topics and linking to other keywords. These keywords can be added to the notes as required.
+
+One specific example that would be often necessary would be links to specific Confluence pages pertaining to a subject. While browser bookmarks would also work - it may be more difficult to maintain context and include notes along with it. Confluence pages tend to have a specific URL structure, like company.atlassian.net/wiki/spaces/XXX. Since these are notes, it is likely you would have some additional 'description words' surrounding the link in the meeting note.
+
+The workflow to quickly identify confluence links:
+
+1. howm-list-grep-fixed (`C-c , s`) > choose ABCD for obtaining notes mentioning keyword ABCD.
+
+2. howm-search-in-result (`G`) > 'wiki' which will filter above notes to those containing confluence links.
+
+3. If you remember something close to the description words related to the confluence link - you then hit `G` again and search within the filtered notes to find notes with those description words.
+
+With the above method, it is possible to find the desired link, and also have a view of other notes that are related to the description words, and thus being able to form more connections between notes! Note that when you hit 'G` to grep within results, it is also possible to call up `howm-insert-keyword` (C-c , i) to insert a keyword as a search term, and thus filter based on other howm defined keywords in the filtered notes. 
 
 ----
 CategoryHypermedia CategoryModes CategoryPersonalInformationManager CategoryTodo
