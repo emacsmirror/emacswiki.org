@@ -71,7 +71,9 @@ These codes provide the below features.
 
 See also: PlannerAndHowmComparison
 
-----
+
+
+= Discussion =
 
 I have a question: is it possible to show and maybe highlight "missed" appointments in the Schedule section? That is, appointments of the form "[date]@ text" that were not explicitly finished by hitting RET on the "@"? --SebastianBlatt
 
@@ -100,7 +102,6 @@ Highlighting is not available at now. How about "separators" instead?
             ))
 </pre>
 
-= Discussion =
 
 [new] Is there any way to have "templates" in howm ? I mean, I'd like
 to create all my notes and put them in a "inbox" category (goto-link)
@@ -156,11 +157,11 @@ One specific example that would be often necessary would be links to specific Co
 
 The steps to quickly identify confluence links:
 
-1. howm-list-grep-fixed (`C-c , s`) > choose ABCD for obtaining notes mentioning keyword ABCD.  
+1. howm-list-grep-fixed (`C-c , s`) -- choose ABCD for obtaining notes mentioning keyword ABCD.  
 
-2. howm-search-in-result (`G`) > 'wiki' which will filter above notes to those containing confluence links.  
+2. howm-search-in-result (`G`) -- enter 'wiki' (or something else) which will filter above 'ABCD' notes to those containing confluence links.  
 
-3. If you remember something close to the description words related to the confluence link - you then hit `G` again and search within the filtered notes to find notes with those description words. 
+3. If you remember something close to the description words related to the confluence link - you then hit `G` again and search within the filtered notes to find notes with those description words, and finally find the link you need.  
 
 With the above method, it is possible to find the desired link, and also have a view of other notes that are related to the description words, and thus being able to form more connections between notes! Note that when you hit 'G` to grep within results, it is also possible to call up `howm-insert-keyword` (C-c , i) to insert a keyword as a search term, and thus filter based on other howm defined keywords in the filtered notes. 
 
