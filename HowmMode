@@ -27,7 +27,7 @@ links:
 
 The string 'crystal star cluster' in all other files will now automatically point here.
 
-Todo and Notifiers are created as you type and displayed in a separate buffer according to the importance, so you can click and see the context of the appontment. 
+Todo and Notifiers are created as you type and displayed in a separate buffer according to the importance, so you can click and see the context of the appointment. 
 
 
 ''The format is as follows:''
@@ -58,7 +58,6 @@ I am lazy and tend to leave problems until someone gives comments. --khi
 
 Some codes to integrate howm and diary are found in HowmAndCalendar (pasted by --DavidOtoole for convenience)
 (Please search the word "mark-calendar" in this page).
-I expect everyone can read elisp part at least.
 
 These codes provide the below features.
 
@@ -69,6 +68,8 @@ These codes provide the below features.
 (howm to calendar)
 * Dates for tasks in howm notes are highlighted in calendar.
 * Type "d" in howm menu to open calendar.
+
+See also: PlannerAndHowmComparison
 
 ----
 
@@ -113,12 +114,8 @@ or C-u f summary RET in *howmS* buffer. -- [[khi]]
 
 [new:XavierMaillard:2008-10-26 18:35 UTC]
 Yes, I have seen it after having asked it here ... -- [[XavierMaillard]]
-----
-
 
 I already have a directory of notes. Can howm-mode take it from there ? [[ychaouche]]
-
-[[ychaouche]]
 
 Answer from [[khi]]:
 
@@ -167,7 +164,6 @@ The steps to quickly identify confluence links:
 
 With the above method, it is possible to find the desired link, and also have a view of other notes that are related to the description words, and thus being able to form more connections between notes! Note that when you hit 'G` to grep within results, it is also possible to call up `howm-insert-keyword` (C-c , i) to insert a keyword as a search term, and thus filter based on other howm defined keywords in the filtered notes. 
 
-See also: HowmAndCalendar PlannerAndHowmComparison
 
 ----
 CategoryHypermedia CategoryModes CategoryPersonalInformationManager CategoryTodo
