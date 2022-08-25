@@ -476,6 +476,20 @@ is expanded to
 
 (Alternatively, you could also re-use :option instead of customize-set-variable.
 
+=== Specify auto-mode-alist with globs  ===
+
+A minor variation on the built-in :file-match:
+
+{{{
+(setup-define :file-match
+  (lambda (glob)
+    `(add-to-list 'auto-mode-alist (cons ,(wildcard-to-regexp pat) ',(setup-get 'mode))))
+  :documentation "Associate the current mode with files that match GLOB."
+  :debug '(form)
+  :repeatable t)
+}}}
+
+
 === Customizing Faces ===
 
 {{{
