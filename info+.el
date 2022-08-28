@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 28 09:02:01 2022 (-0700)
+;; Last-Updated: Sun Aug 28 09:22:13 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7499
+;;     Update #: 7500
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -642,7 +642,9 @@
 ;;
 ;; 2022/08/28 dadams
 ;;     Added face info-homoglyph and defvar info-symbols-and-replacements (Emacs <27).
-;;     Info-mode: Use define-derived-mode.  Add code using info-symbols-and-replacements.
+;;     Info-mode
+;;       Use define-derived-mode.  Add code using info-symbols-and-replacements.
+;;       Apply Alan Mackenzie's fix from https://lists.gnu.org/archive/html/emacs-devel/2022-08/msg01301.html.
 ;; 2022/05/02 dadams
 ;;     info-display-manual: Apply bug #54961's (partial) fix.
 ;; 2021/12/24 dadams
@@ -6874,7 +6876,9 @@ These are all of the current Info Mode bindings:
   (make-local-variable 'Info-history-forward)
   (make-local-variable 'Info-index-alternatives)
   (unless (or (display-multi-font-p)
-              (coding-system-equal (coding-system-base (terminal-coding-system)) 'utf-8))
+              (and (coding-system-equal (coding-system-base (terminal-coding-system)) 'utf-8)
+                   ;; The Linux console has limited character repertoire even when its encoding is UTF-8.
+                   (not (equal (tty-type) "linux"))))
     (dolist (elt  info-symbols-and-replacements)
       (let ((ch    (car elt))
             (repl  (cdr elt)))
