@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May  2 14:25:36 2022 (-0700)
+;; Last-Updated: Sun Aug 28 09:02:01 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7480
+;;     Update #: 7499
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -118,9 +118,10 @@
 ;;    `info-custom-delimited', `info-double-quoted-name',
 ;;    `info-emphasis', `info-file', `info-fixed-pitch',
 ;;    `info-function-ref-item', `info-glossary-word',
-;;    `info-indented-text', `info-isolated-backquote',
-;;    `info-isolated-quote', `info-macro-ref-item', `info-menu',
-;;    `info-node', `info-quoted-name', `info-reference-item',
+;;    `info-homoglyph', `info-indented-text',
+;;    `info-isolated-backquote', `info-isolated-quote',
+;;    `info-macro-ref-item', `info-menu', `info-node',
+;;    `info-quoted-name', `info-reference-item',
 ;;    `info-special-form-ref-item', `info-string',
 ;;    `info-syntax-class-item', `info-user-option-ref-item',
 ;;    `info-variable-ref-item', `info-xref-bookmarked' (Emacs 24.2+).
@@ -190,7 +191,9 @@
 ;;    `Info-merged-map', `Info-mode-syntax-table', `info-nomatch',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
 ;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
-;;    `info-remap-default-face-cookie', `Info-toc-outline-map'.
+;;    `info-remap-default-face-cookie',
+;;    `info-symbols-and-replacements' (Emacs <27),
+;;    `Info-toc-outline-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following standard faces defined in `info.el'
@@ -356,9 +359,10 @@
 ;;      (e.g. markup text such as `*note'...`::' surrounding links) is
 ;;      kept hidden.
 ;;
-;;    - Especially when combined with `Info-persist-history-mode',
-;;      command `Info-change-visited-status' (`C-x DEL', see below),
-;;      and the Info+ bookmarking enhancements (e.g., special link
+;;    - (Emacs 24.4+) Especially when combined with
+;;      `Info-persist-history-mode', command
+;;      `Info-change-visited-status' (`C-x DEL', see below), and the
+;;      Info+ bookmarking enhancements (e.g., special link
 ;;      highlighting and persistently tracking the number of visits
 ;;      per node), `Info-toc-outline' gives you a way to organize
 ;;      access and visibility of a manual's nodes, to reflect how you
@@ -533,22 +537,22 @@
 ;;      bookmarked Info nodes are also included.  (If you use Icicles,
 ;;      see also `icicle-Info-virtual-book'.)
 ;;
-;;    - `Info-persist-history-mode' - Enabling this minor mode saves
-;;      the list of your visited Info nodes between Emacs sessions.
-;;      Together with command `Info-history' (bound to `L' by
-;;      default), this gives you a persistent virtual manual of the
-;;      nodes you have visited in the past.  If the mode is enabled
-;;      then the list of visited nodes is saved to the file named by
-;;      option `Info-saved-history-file' when you quit Emacs (not
-;;      Info) or when you kill an Info buffer.
+;;    - `Info-persist-history-mode' (Emacs 24.4+) - Enabling this
+;;      minor mode saves the list of your visited Info nodes between
+;;      Emacs sessions.  Together with command `Info-history' (bound
+;;      to `L' by default), this gives you a persistent virtual manual
+;;      of the nodes you have visited in the past.  If the mode is
+;;      enabled then the list of visited nodes is saved to the file
+;;      named by option `Info-saved-history-file' when you quit Emacs
+;;      (not Info) or when you kill an Info buffer.
 ;;
 ;;      (If you also use library Bookmark+ then you can bookmark Info
 ;;      nodes, including automatically.  This records how many times
 ;;      you have visited each node and when you last did so.)
 ;;
-;;    - `Info-change-visited-status' (bound to `C-x DEL') - Toggle or
-;;      set the visited status of the node at point or the nodes in
-;;      the active region.  Useful if you use
+;;    - `Info-change-visited-status' (Emacs 24.4+) (bound to `C-x
+;;      DEL') - Toggle or set the visited status of the node at point
+;;      or the nodes in the active region.  Useful if you use
 ;;      `Info-fontify-visited-nodes' to show you which nodes you have
 ;;      visited.  No prefix arg: toggle.  Non-negative prefix arg: set
 ;;      to visited.  Negative prefix arg: set to unvisited.
@@ -636,6 +640,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/08/28 dadams
+;;     Added face info-homoglyph and defvar info-symbols-and-replacements (Emacs <27).
+;;     Info-mode: Use define-derived-mode.  Add code using info-symbols-and-replacements.
 ;; 2022/05/02 dadams
 ;;     info-display-manual: Apply bug #54961's (partial) fix.
 ;; 2021/12/24 dadams
@@ -1345,6 +1352,7 @@
 (defvar Info-search-case-fold)
 (defvar Info-search-history)
 (defvar Info-search-whitespace-regexp)
+(defvar info-symbols-and-replacements)   ; Here, Emacs <27.
 (defvar info-tool-bar-map)
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
@@ -1487,6 +1495,16 @@ By default, face `info-fixed-pitch' is inherited by faces
   '((t (:box (:line-width 1 :style pressed-button))))
   "Face for first occurrences of glossary words in an `info' node."
   :group 'Info-Plus :group 'faces)
+
+;;;###autoload
+(defface info-homoglyph
+  (if (facep 'homoglyph)                ; Emacs 24+
+      '((t :inherit homoglyp))
+    '((((background dark)) :foreground "cyan")
+      (((type pc)) :foreground "magenta")
+      (t :foreground "brown")))
+  "Face for lookalike characters in `info'."
+  :group 'Info-Plus :group 'face)
 
 ;;;###autoload
 (defface info-menu
@@ -2249,10 +2267,10 @@ If ... contains an end char then that char must be backslashed.")
 
 (defvar info-quoted+<>-same-line-regexp
   (concat
-   "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|"               ; "..."
-   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"                  ; `...'
-   "‘\\(?:[^\n’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"                  ; ‘...’
-   "“\\(?:[^\n”]\\|\\\\\\(?:.\\|\n\\)\\)+”\\|"                  ; “...”
+   "\"\\(?:[^\"\\]\\|\\\\\\(?:.\\|\n\\)\\)*\"\\|" ; "..."
+   "`\\(?:[^\n']\\|\\\\\\(?:.\\|\n\\)\\)+'\\|"    ; `...'
+   "‘\\(?:[^\n’]\\|\\\\\\(?:.\\|\n\\)\\)+’\\|"    ; ‘...’
+   "“\\(?:[^\n”]\\|\\\\\\(?:.\\|\n\\)\\)+”\\|"    ; “...”
    "<\\(?:[[:alpha:]][^\n>]*\\|\\(?:\\\\\\(?:.\\|\n\\)\\)+\\)>" ; <...>
    )
   "`info-quoted+<>-same-line-regexp', but on same line (all but \"...\").")
@@ -2273,6 +2291,30 @@ If ... contains an end char then that char must be backslashed.")
 ;;              (or (seq (any alpha) (zero-or-more (not (any ?\n ?>))))
 ;;                  (one-or-more (seq ?\\ anything)))
 ;;              ?>)))
+
+;; See `info-utils.c': `degrade_utf8' in Texinfo for the source of the list below.
+(when (< emacs-major-version 27)        ; Emacs 23-26.
+  (defvar info-symbols-and-replacements '((?\‘ . "`")
+                                          (?\’ . "'")
+                                          (?\“ . "\"")
+                                          (?\” . "\"")
+                                          (?© . "(C)")
+                                          (?\》 . ">>")
+                                          (?→ . "->")
+                                          (?⇒ . "=>")
+                                          (?⊣ . "-|")
+                                          (?★ . "-!-")
+                                          (?↦ . "==>")
+                                          (?‐ . "-")
+                                          (?‑ . "-")
+                                          (?‒ . "-")
+                                          (?– . "-")
+                                          (?— . "--")
+                                          (?− . "-")
+                                          (?… . "...")
+                                          (?• . "*"))
+    "Alist of Unicode chars used in Info files and their ASCII translations.
+Each element is a cons with car a char and cdr an ASCII string."))
 
 (defvar Info-toc-outline-map (let ((map  (make-sparse-keymap))) (set-keymap-parent map Info-mode-map))
   "Keymap for Info TOC with outlining.")
@@ -6693,8 +6735,8 @@ With a prefix argument, open the node in a separate window."
 ;; Use `Info-mode-syntax-table' (bug #3312).
 ;; Doc string changed: displays all bindings.
 ;;
-(defun Info-mode ()
-  "Provides commands for browsing through the Info documentation tree.
+(define-derived-mode Info-mode nil "Info" ;FIXME: Derive from special-mode?
+  "Provide commands for browsing through the Info documentation tree.
 Documentation in Info is divided into \"nodes\", each of which discusses
 one topic and contains hyperlink references to other nodes that discuss
 related topics.  Info has commands to follow the references.
@@ -6811,16 +6853,16 @@ Faces you can customize
 These are all of the current Info Mode bindings:
 
 \\{Info-mode-map}"
+  :syntax-table Info-mode-syntax-table
+  :abbrev-table text-mode-abbrev-table
   (kill-all-local-variables)
   (setq major-mode  'Info-mode
         mode-name   "Info"
         tab-width   8)
   (use-local-map Info-mode-map)
   (add-hook 'activate-menubar-hook 'Info-menu-update nil t)
-  (set-syntax-table Info-mode-syntax-table)
-  (setq local-abbrev-table  text-mode-abbrev-table
-        case-fold-search    t
-        buffer-read-only    t)
+  (setq case-fold-search  t
+        buffer-read-only  t)
   (make-local-variable 'Info-current-file)
   (make-local-variable 'Info-current-subfile)
   (make-local-variable 'Info-current-node)
@@ -6831,6 +6873,15 @@ These are all of the current Info Mode bindings:
   (make-local-variable 'Info-history)
   (make-local-variable 'Info-history-forward)
   (make-local-variable 'Info-index-alternatives)
+  (unless (or (display-multi-font-p)
+              (coding-system-equal (coding-system-base (terminal-coding-system)) 'utf-8))
+    (dolist (elt  info-symbols-and-replacements)
+      (let ((ch    (car elt))
+            (repl  (cdr elt)))
+        (or (char-displayable-p ch)
+            (aset (or buffer-display-table  (setq buffer-display-table  (make-display-table)))
+                  ch
+                  (vconcat (mapcar (lambda (cc) (make-glyph-code cc 'homoglyph)) repl)))))))
   (when Info-use-header-line     ; do not override global header lines
     (setq header-line-format  '(:eval (get-text-property (point-min) 'header-line))))
   (set (make-local-variable 'tool-bar-map) info-tool-bar-map)
