@@ -12,7 +12,7 @@ Note: You need the X Printing Panel for this. See http://cups.sourceforge.net/xp
 
 [new]
 
-There's another approach I just found that worked well: ipp.el at http://purl.org/net/emarsden/home/downloads/ipp.el, written by EricMarsden (InternetPrintingProtocol). -- BillHarris
+There's another approach that works well with modern printing systems: ipp.el, written by EricMarsden (InternetPrintingProtocol).
 
 [new:DrewAdams:2004-12-24 22:03 UTC]
 '''See Also:''' library <code>printing.el</code> as an alternative, at PrintingPackage. -- DrewAdams
