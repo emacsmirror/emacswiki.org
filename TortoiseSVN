@@ -11,7 +11,7 @@ CALL SET mine=%mine:\=\\%
 SET "base=%2"
 CALL SET base=%base:\=\\%
 
-START /MIN %client% -c -e "(ediff""%mine%""""%base%"")"
+START "" /MIN %client% -c -e "(ediff""%mine%""""%base%"")"
 }}}
 
 and the file emerge.bat with content:
@@ -31,7 +31,7 @@ CALL SET base=%base:\=\\%
 SET "merged=%4"
 CALL SET merged=%merged:\=\\%
 
-START /MIN %client% -c -e "(ediff-merge-files-with-ancestor""%mine%""""%theirs""""%base%""nil""%merged%"")"
+START "" /MIN %client% -c -e "(ediff-merge-files-with-ancestor""%mine%""""%theirs%""""%base%""nil""%merged%"")"
 }}}
 
 Then configure Tortoise SVN to use the previous files as external commands. For example, if you saved the files under the directory C:\Users\Dupont\Scripts\ then, in Settings>External Programs>Merge Tool, you can set:
