@@ -2,7 +2,7 @@ There are at least 4 independently written major modes that handle COBOL source 
 
 ----
 
-The **most recent cobol-mode** is now available on ELPA and is the most up-to-date and featureful of the available cobol-modes. (It also available at [https://gist.github.com/Edward-H/6768e7dc53ea3dd2adca here].) It has:
+The **most recent Cobol mode** is [https://elpa.gnu.org/packages/cobol-mode.html available on GNU ELPA] and is the most up-to-date and featureful of the available cobol-modes. (An older version is also available at [https://gist.github.com/Edward-H/6768e7dc53ea3dd2adca its original site].) It has:
 * *syntax highlighting* for most modern COBOL dialects (in particular, COBOL 2014 and dialects supported by Micro Focus),
 * (rudimentary) *code indentation*,
 * code skeletons,
@@ -12,7 +12,7 @@ The **most recent cobol-mode** is now available on ELPA and is the most up-to-da
 -------
 Both the [http://www.emacswiki.org/elisp/cobol-mode.el cobol-mode here] and 
 the [http://www.emacswiki.org/elisp/nmcobol-mode.el nmcobol-mode here] are 
-fairly new [circa 2005] and still a work-in-progress.  The first is for ANSI Cobol 
+fairly older [circa 2005] and still a work-in-progress.  The first is for ANSI Cobol 
 while the second is for TANDEM Cobol.  See TandemNskSupport for other 
 TANDEM specific modes.
 
