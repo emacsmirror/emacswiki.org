@@ -624,7 +624,7 @@ Here is a basic regular expression to help Imenu find where you use the macro.
 == See Also ==
 
 * SystemCrafters video on UsePackage alternatives, that discusses setup.el among other things https://www.youtube.com/watch?v=ZolOUgXHgbo
-* Configuration using setup.el extensively: https://tildegit.org/acdw/emacs
+* Configuration using setup.el extensively: https://git.acdw.net/emacs
 * Another configuration using setup.el extensively: https://github.com/mfiano/emacs-config (contains additional setup.el macros)
 * Configuration of the setup.el author: https://git.sr.ht/~pkal/emacs-init/tree/master/item/init.el
 
