@@ -21,6 +21,7 @@ This page is about printing from Emacs: files, buffers, regions... Click the pag
 * PrintCommandQuotes -- dealing with problems using Windows Script Host (WSH)
 * PrintUsingWord -- Print buffers via MS Word (using VBScript) 
 * CupsInEmacs -- print with CUPS
+* InternetPrintingProtocol -- print with IPP
 * PageCommands -- `ps-nb-pages-region': report how many pages will be printed for the region
 
 === Application-Specific ===
