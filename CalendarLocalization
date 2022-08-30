@@ -436,6 +436,7 @@ See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kale
 
 === Estonian ===
 
+<pre>
 (setq calendar-week-start-day 1)
 (setq calendar-holidays
       '((holiday-fixed 1 1 "Uusaasta")
@@ -450,6 +451,7 @@ See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kale
         (holiday-fixed 24 24 "Jõululaupäev")
         (holiday-fixed 24 25 "Esimene jõulupüha")
         (holiday-fixed 24 26 "Teine jõulupüha")))
+</pre>
 
 === Finnish ===
 
