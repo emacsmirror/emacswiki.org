@@ -433,6 +433,24 @@ See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kale
 (setq holiday-oriental-holidays nil)
 </pre>
 
+
+=== Estonian ===
+
+(setq calendar-week-start-day 1)
+(setq calendar-holidays
+      '((holiday-fixed 1 1 "Uusaasta")
+        (holiday-fixed 2 24 "Iseseisvuspäev")
+        (holiday-easter-etc -2 "Suur Reede")
+        (holiday-easter-etc 0 "Ülestõusmispühade 1. püha")
+        (holiday-fixed 5 1 "Kevadpüha")
+        (holiday-easter-etc 50 "Nelipühade 1. püha")
+        (holiday-fixed 6 23 "Võidupüha")
+        (holiday-fixed 6 24 "Jaanipäev")
+        (holiday-fixed 8 20 "Taasiseseisvumispäev")
+        (holiday-fixed 24 24 "Jõululaupäev")
+        (holiday-fixed 24 25 "Esimene jõulupüha")
+        (holiday-fixed 24 26 "Teine jõulupüha")))
+
 === Finnish ===
 
 See [https://github.com/tlikonen/suomalainen-kalenteri suomalainen-kalenteri].
