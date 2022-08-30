@@ -33,6 +33,7 @@ of selected resources.
 * InterpreterModeAlist -- Set the MajorMode based on a shell script's first line
 * MenuBar -- Hide the menu bar or customize it
 * ModeLineConfiguration -- Customize the status information displayed at the bottom of the buffer
+* OptimizingEmacsStartup -- Monitor Emacs start up and make it faster
 * ProfileDotEmacs -- Profile the InitFile to see which commands take the most time
 * ProjectSettings -- making customizations local to a project
 * RemoteDotEmacs -- eval the InitFile you have on a web server
