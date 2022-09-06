@@ -28,6 +28,7 @@ This category is about help with '''''Emacs'''''.  See also CategoryDocumentatio
 * AproposMode -- Search Emacs for commands, documentation, variables, and more
 * ElectricHelp
 * InfoMode -- <em>complete</em> Emacs documentation: <kbd>C-h i</kbd>, then click <i>Emacs</i>.
+** InfoPlus -- DrewAdams’ improved Info+ mode can also be used to browse Emacs’ and related info manuals instead of the default above
 * LearnEmacsLisp -- Using EmacsLisp with Emacs is helpful.
 * SelfDocumentation -- quick reference on finding help within Emacs
 * [[Context sensitive help]] -- getting help for the MajorMode you're working with
