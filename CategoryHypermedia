@@ -5,7 +5,8 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 
 == Integrated into Emacs ==
 * BookMarks -- Remember places in files, URLs,…
-* InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems. 
+* InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems.
+** InfoPlus – DrewAdams’ improved Info+ mode can also be used instead of the default above
 * OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
 * [[eww]] --- a light-weight configurable web browser
 * [[w3]] --- another web browser (not to be confused with w3m/emacs-w3m!)
