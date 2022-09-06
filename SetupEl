@@ -423,6 +423,14 @@ package.  This macro is not repeatable."
                  (if (consp recipe) (car recipe) recipe))))
 }}}
 
+Note that this macro can also be reproduced using :and:
+
+{{{
+(setup (:and (some-condition)
+	     (:straight foo))
+  (the rest of the body))
+}}}
+
 === Install a package if not available locally ===
 
 This macro builds up on :package, but also checks if <code>feature-or-package</code>
