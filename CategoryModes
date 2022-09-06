@@ -86,7 +86,8 @@ operations on files in the solution.
 * ImenuMode -- Mode-specific buffer indexes (navigation menus).
 * ImpatientMode -- minor mode for i.a. creating a live connection between your HTML file and your browser
 * InfoLook, WordHelp, FuncDoc -- find info about a command keyword
-* InfoMode
+* InfoMode -- for reading ‘Info’ manuals, GNU’s hypertext documentation system integrated with Emacs
+* InfoPlus -- an improved Info mode which can be used instead of the default one above
 * IntelHexMode -- Editing and updating checksums of Intel Hex files.
 * InternetRelayChat modes (various)
 * ItunesMode -- For Windows: http://www.geocities.jp/tmjb2006/itunes/itunes-mode.html
