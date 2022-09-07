@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2022.08.15
+;; Version: 2022.09.07
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 15 08:57:39 2022 (-0700)
+;; Last-Updated: Wed Sep  7 16:19:10 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13363
+;;     Update #: 13367
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1006,7 +1006,9 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2022/08/15 dadama
+;; 2022/09/07 dadams
+;;     diredp-do-command-in-marked(-recursive), diredp-invoke-command: COMMAND arg can be a keyboard macro.
+;; 2022/08/15 dadams
 ;;     dired-switches-escape-p: Typo: dired-switches-check -> dired-check-switches.  Ensure SWITCHES is a string.
 ;; 2022/07/25 dadams
 ;;     Added: diredp-uninserted-subdirs.
@@ -8050,7 +8052,8 @@ use `g' in that buffer to revert the listing.)"
                             current-prefix-arg
                             diredp-list-file-attributes)))
   (unless (commandp command) (error "Not a command: `%s'" command))
-  (unless (or (not (fboundp 'func-arity)) ; Emacs < 26
+  (unless (or (arrayp (symbol-function command)) ; Keyboard macro
+              (not (fboundp 'func-arity))        ; Emacs < 26
               (= 0 (car (func-arity command))))
     (error "Command `%s' cannot accept zero args" command))
   (let* ((ignore-marks-p  (and (consp arg)  (< (car arg) 16)))
@@ -8070,7 +8073,7 @@ use `g' in that buffer to revert the listing.)"
                                 (call-interactively command))))
           (error (dired-log "File: %s\n  %s\n" file (error-message-string err))
                  (setq failures  (cons file failures))))))
-    (message nil)   ; Clear echo area of anything inserted there by COMMAND.
+    (message nil) ; Clear echo area of anything inserted there by COMMAND.
     (when failures
       (dired-log-summary (format "%d of %d failed" (length failures) count) failures))
     (setq new-bufs  (diredp-set-difference (delq nil (mapcar #'find-buffer-visiting files)) fbufs nil))
@@ -10054,6 +10057,7 @@ also echoed momentarily."
   "Invoke Emacs COMMAND in each marked file.
 Visit each marked file at its beginning, then invoke COMMAND.
 You are prompted for the COMMAND.
+COMMAND can be the name of a command or a keyboard macro.
 
 Only explicitly marked files are used.  A prefix arg has no effect on
 which files are used.
@@ -10081,7 +10085,8 @@ use `g' in that buffer to revert the listing.)"
   (interactive (progn (diredp-ensure-mode)
                       (list (diredp-read-command "Invoke command: ") current-prefix-arg)))
   (unless (commandp command) (error "Not a command: `%s'" command))
-  (unless (or (not (fboundp 'func-arity)) ; Emacs < 26
+  (unless (or (arrayp (symbol-function command)) ; Keyboard macro
+              (not (fboundp 'func-arity))        ; Emacs < 26
               (= 0 (car (func-arity command))))
     (error "Command `%s' cannot accept zero args" command))
   (let* ((files     (dired-get-marked-files nil nil nil nil 'NO-ERROR)) ; nil for 2nd argument
@@ -10318,6 +10323,8 @@ Non-nil optional arg ECHOP means also echo the result."
 
 (defun diredp-invoke-command (command arg)
   "Visit the file or directory of this line, and invoke COMMAND.
+COMMAND can be the name of a command or a keyboard macro.
+
 COMMAND is invoked at the beginning of the buffer.  It is passed only
 ARG, a raw prefix arg.
 
@@ -10326,7 +10333,8 @@ You may not want to do this if COMMAND modifies the buffer text.
 \(But generally this will have little lasting effect - you can just
 use `g' in that buffer to revert the listing.)"
   (unless (commandp command) (error "Not a command: `%s'" command))
-  (unless (or (not (fboundp 'func-arity)) ; Emacs < 26
+  (unless (or (arrayp (symbol-function command)) ; Keyboard macro
+              (not (fboundp 'func-arity))        ; Emacs < 26
               (= 0 (car (func-arity command))))
     (error "Command `%s' cannot accept zero args" command))
   (let* ((file     (dired-get-filename nil 'NO-ERROR)) ; Explicitly marked or integer ARG
