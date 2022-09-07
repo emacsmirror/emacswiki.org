@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug 17 08:09:50 2022 (-0700)
+;; Last-Updated: Wed Sep  7 15:50:09 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 9487
+;;     Update #: 9488
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9656,8 +9656,7 @@ Handler function for function bookmarks.
 BOOKMARK is a bookmark name or a bookmark record."
   (let ((fn  (bookmark-prop-get bookmark 'function)))
     (cond ((functionp fn) (funcall fn))
-          ((vectorp fn)
-           (execute-kbd-macro fn current-prefix-arg)))))
+          ((arrayp fn)    (execute-kbd-macro fn current-prefix-arg)))))
 
 (defun bmkp-make-bookmark-list-record ()
   "Create and return a bookmark-list bookmark record.
