@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.09.07
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep  7 16:19:10 2022 (-0700)
+;; Last-Updated: Wed Sep  7 17:33:08 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13367
+;;     Update #: 13369
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -8052,7 +8052,9 @@ use `g' in that buffer to revert the listing.)"
                             current-prefix-arg
                             diredp-list-file-attributes)))
   (unless (commandp command) (error "Not a command: `%s'" command))
-  (unless (or (arrayp (symbol-function command)) ; Keyboard macro
+  (unless (or (and (fboundp 'kmacro-keyboard-macro-p) ; Emacs 27+
+                   (kmacro-keyboard-macro-p command)) ; Keyboard macro
+              (arrayp (symbol-function command)) ; Keyboard macro
               (not (fboundp 'func-arity))        ; Emacs < 26
               (= 0 (car (func-arity command))))
     (error "Command `%s' cannot accept zero args" command))
@@ -8070,7 +8072,7 @@ use `g' in that buffer to revert the listing.)"
             (with-current-buffer (find-file-noselect file)
               (save-excursion (goto-char (point-min))
                               (let ((current-prefix-arg  (and (not ignore-marks-p)  arg)))
-                                (call-interactively command))))
+                                (command-execute command))))
           (error (dired-log "File: %s\n  %s\n" file (error-message-string err))
                  (setq failures  (cons file failures))))))
     (message nil) ; Clear echo area of anything inserted there by COMMAND.
@@ -10085,7 +10087,9 @@ use `g' in that buffer to revert the listing.)"
   (interactive (progn (diredp-ensure-mode)
                       (list (diredp-read-command "Invoke command: ") current-prefix-arg)))
   (unless (commandp command) (error "Not a command: `%s'" command))
-  (unless (or (arrayp (symbol-function command)) ; Keyboard macro
+  (unless (or (and (fboundp 'kmacro-keyboard-macro-p) ; Emacs 27+
+                   (kmacro-keyboard-macro-p command)) ; Keyboard macro
+              (arrayp (symbol-function command)) ; Keyboard macro
               (not (fboundp 'func-arity))        ; Emacs < 26
               (= 0 (car (func-arity command))))
     (error "Command `%s' cannot accept zero args" command))
@@ -10333,7 +10337,9 @@ You may not want to do this if COMMAND modifies the buffer text.
 \(But generally this will have little lasting effect - you can just
 use `g' in that buffer to revert the listing.)"
   (unless (commandp command) (error "Not a command: `%s'" command))
-  (unless (or (arrayp (symbol-function command)) ; Keyboard macro
+  (unless (or (and (fboundp 'kmacro-keyboard-macro-p) ; Emacs 27+
+                   (kmacro-keyboard-macro-p command)) ; Keyboard macro
+              (arrayp (symbol-function command)) ; Keyboard macro
               (not (fboundp 'func-arity))        ; Emacs < 26
               (= 0 (car (func-arity command))))
     (error "Command `%s' cannot accept zero args" command))
@@ -10344,7 +10350,7 @@ use `g' in that buffer to revert the listing.)"
           (save-selected-window
             (with-current-buffer (find-file-noselect file)
               (save-excursion (goto-char (point-min))
-                              (let ((current-prefix-arg  arg)) (call-interactively command)))))
+                              (let ((current-prefix-arg  arg)) (command-execute command)))))
         (error (setq failure  (format "File: %s\n  %s\n" file (error-message-string err))))))
     (if (not failure)
         nil                             ; Return nil for success.
