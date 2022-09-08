@@ -1,4 +1,4 @@
-DynamicScoping is the opposite of to LexicalScoping.
+DynamicScoping is the opposite of LexicalScoping.
 
 DynamicScoping is what you get in C with global variables: if you change them, it will affect any further reference to this variable: the value of a variable is the result of ist last affectation in execution time.
 By contrast, with LexicalScoping the value of a variable is the result of its last affectation in code, or in compilation time.
