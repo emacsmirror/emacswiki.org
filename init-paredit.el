@@ -86,6 +86,8 @@
                'lisp-data-mode-hook
                'lisp-interaction-mode-hook
                'lisp-mode-hook
+               'scheme-mode-hook
+               'racket-mode-hook
                'maxima-mode-hook
                'ielm-mode-hook
                'sh-mode-hook
