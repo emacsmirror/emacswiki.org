@@ -449,19 +449,19 @@ Then we can set up the wrapping functionality:
   "Wrap BODY in an `elpaca' block if necessary.
 The body is wrapped in an `elpaca' block if `setup-attributes'
 contains an alist with the key `elpaca'."
-  (if (assoc 'elpaca setup-attributes)
-      `(elpaca ,(cdr (assoc 'elpaca setup-attributes)) ,@(macroexp-unprogn body))
+  (if (assq 'elpaca setup-attributes)
+      `(elpaca ,(cdr (assq 'elpaca setup-attributes)) ,@(macroexp-unprogn body))
     body))
 
 ;; Add the wrapper function
-(setq setup-modifier-list '(setup-wrap-to-catch-quits setup-wrap-to-install-package))
+(add-to-list 'setup-modifier-list #'setup-wrap-to-install-package)
 
 (setup-define :elpaca
   (lambda (order)
     (push (cond
            ((eq order t) `(elpaca . ,(setup-get 'feature)))
            ((eq order nil) '(elpaca . nil))
-           (t `(elpaca . ,order)))
+           (`(elpaca . ,order)))
           setup-attributes)
     ;; If the macro wouldn't return nil, it would try to insert the result of
     ;; `push' which is the new value of the modified list. As this value usually
