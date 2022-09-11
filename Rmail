@@ -241,8 +241,7 @@ From here, you can use `M-x rmail-my-mra' or press `g' from an `rmail' buffer, a
 
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Rmail.html The rmail manual]
 * [https://cadadr.dreamwidth.org/828.html cadadr's rmail article]
-* [https://muto.ca/posts/actually-using-emacs-rmail.html Muto's rmail article] ([[https://web.archive.org/web/20210416115342/https://muto.ca/posts/actually-using-emacs-rmail.html Web Archive]])
-* [https://alexschroeder.ch/wiki/2020-12-17_Rmail Alex Schroder's rmail post]
+* [https://mutoshack.gitlab.io/posts/actually-using-emacs-rmail.html Muto's Rmail article]
 * [http://ruzkuku.com/texts/rmail.html Philip K.'s rmail article]
 * [https://ane.iki.fi/2020/09/09/rmail.html  Antoine Kalmbach's article]
 * [https://www.stunnel.org/ Stunnel's homepage]
