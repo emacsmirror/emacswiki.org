@@ -431,6 +431,95 @@ Note that this macro can also be reproduced using :and:
   (the rest of the body))
 }}}
 
+=== Using Elpaca ===
+
+[https://github.com/progfolio/elpaca Elpaca] is an elisp package manager. It is a replacement for the built-in Emacs package manager, package.el. We can extend SetupEl's functionality using <code>setup-modifier-list</code> and wrap SetupEl bodies in an Elpaca call, this requires installing and processing the package first:
+
+{{{
+;; <elpaca bootstrap goes here>
+
+(elpaca setup (require 'setup))
+(elpaca-process-queues)
+}}}
+
+Then we can set up the wrapping functionality:
+
+{{{
+(defun setup-wrap-to-install-package (body _name)
+  "Wrap BODY in an `elpaca' block if necessary.
+The body is wrapped in an `elpaca' block if `setup-attributes'
+contains an alist with the key `elpaca'."
+  (if (assoc 'elpaca setup-attributes)
+      `(elpaca ,(cdr (assoc 'elpaca setup-attributes)) ,@(macroexp-unprogn body))
+    body))
+
+;; Add the wrapper function
+(setq setup-modifier-list '(setup-wrap-to-catch-quits setup-wrap-to-install-package))
+
+(setup-define :elpaca
+  (lambda (order)
+    (push (cond
+           ((eq order t) `(elpaca . ,(setup-get 'feature)))
+           ((eq order nil) '(elpaca . nil))
+           (t `(elpaca . ,order)))
+          setup-attributes)
+    ;; If the macro wouldn't return nil, it would try to insert the result of
+    ;; `push' which is the new value of the modified list. As this value usually
+    ;; cannot be evaluated, it is better to return nil which the byte compiler
+    ;; would optimize away anyway.
+    nil)
+  :documentation "Install ORDER with `elpaca'.
+The first ORDER can be used to deduce the feature context."
+  :repeatable t
+  :shorthand (lambda (sexp)
+               (let ((order (cadr sexp)))
+                 (if (consp order)
+                     (if (consp (cadr order))
+                         (car (cadr order))
+                       (car order))
+                   order))))
+}}}
+
+Now we can install packages. Using shorthand functionality to determain package name:
+
+{{{
+(setup (:elpaca avy)
+  (the rest of the body))
+}}}
+
+Full Elpaca "orders" are supported, with shorthand:
+
+{{{
+(setup (:elpaca (avy :host github :repo "abo-abo/avy"))
+  (the rest of the body))
+}}}
+
+Install multiple packages, even with a different name:
+
+{{{
+(setup avy
+  (:elpaca install-something-else install-second-thing)
+  (the rest of the body))
+}}}
+
+Use feature context as the package name to install:
+
+{{{
+(setup avy
+  (:elpaca t)
+  (the rest of the body))
+}}}
+
+Dont install anything, but account for asynchronous installation:
+
+{{{
+(setup avy
+  (:elpaca nil)
+  (the rest of the body))
+}}}
+
+See [https://github.com/progfolio/elpaca#installing-packages elpaca#installing-packages] for an explanation on a <code>nil</code> "order".
+
 === Install a package if not available locally ===
 
 This macro builds up on :package, but also checks if <code>feature-or-package</code>
