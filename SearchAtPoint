@@ -1,9 +1,8 @@
 Vim has the mighty `*' and <code>‘#’</code> keys that do an IncrementalSearch for the label under the TextCursor.
 
-The standard method in emacs can be cumbersome in comparison. C-s C-w, appends the rest of the word under the cursor to the search pattern. So using M-b to return to the beginning of word and C-s C-w emacs searches the next occurrence of the word. 
+The standard method in Emacs since 24.4 is to use <code>M-s .</code>, that binds <code>isearch-forward-symbol-at-point</code>.  This will copy the symbol under the cursor, start isearch, and paste that symbol into the minibuffer for isearch.  You can then search for more instances of that symbol by doing <code>C-s</code> in the minibuffer (i.e., the normal key sequence for repeating an isearch)(<code>C-r</code> will do a reverse search).
 
-Here are some ways of implementing Vim's `*' and <code>‘#’</code> in Emacs. The methods are ordered from "most like Vim" to "least like Vim in order to gain other benefits."
-
+Here are some other ways of implementing Vim's `*' and <code>‘#’</code> in Emacs. The methods are ordered from "most like Vim" to "least like Vim in order to gain other benefits."
 
 == Evil Vim emulation package ==
 See [[Evil]] for installation instructions, then create keybinds. For example:
@@ -32,18 +31,6 @@ Enable highlight-symbol-mode (usually done conditionally depending on major mode
   (global-set-key [(shift f3)] 'highlight-symbol-prev)
 
 See highlight-symbol-mode for additional configuration and functions with this minor mode.
-
-== isearch-forward-symbol-at-point ==
-
-As of GNU Emacs 26.1 (and probably earlier) there's a useful command built into <code>isearch.el</code> named <code>isearch-forward-symbol-at-point</code>.  This will copy the symbol under the cursor, start isearch, and paste that symbol into the minibuffer for isearch.  You can then search for more instances of that symbol by doing <code>C-s</code> in the minibuffer (i.e., the normal key sequence for repeating an isearch)(<code>C-r</code> will do a reverse search).
-
-As of GNU Emacs 28.1 (and probably earlier), <code>isearch-forward-symbol-at-point</code> is bound to <code>M-s .</code>. If you want to bind this to a different key sequence, for example Control-Shift-"s":
-
-   (global-set-key (kbd "C-S-s") 'isearch-forward-symbol-at-point)
-
-This works well as a substitute for vim's <code>*</code> command and yet it doesn't take you too far from something that feels like emacs.
-
-Thanks to Mike Panitz for contributing this tip
 
 == Isearch with symbol regex ==
 
