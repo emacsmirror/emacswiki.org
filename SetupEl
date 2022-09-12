@@ -472,12 +472,11 @@ contains an alist with the key `elpaca'."
 The first ORDER can be used to deduce the feature context."
   :repeatable t
   :shorthand (lambda (sexp)
-               (let ((order (cadr sexp)))
-                 (if (consp order)
-                     (if (consp (cadr order))
-                         (car (cadr order))
-                       (car order))
-                   order))))
+               (pcase-exhaustive (cadr sexp)
+                 (`'(,name . ,_) name)
+                 (``(,name . ,_) name)
+                 (`(,name . ,_) name)
+                 ((and (pred symbolp) name) name))))
 }}}
 
 Now we can install packages. Using shorthand functionality to determain package name:
