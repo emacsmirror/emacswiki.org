@@ -10,6 +10,7 @@ Type: M-x set-input-method and pick one of
 * korean-hanja-jis
 * korean-hanja3
 * korean-symbol
+* [https://github.com/poppyer9/korean-ipa-romaja korean-ipa-romaja] An IPA enhanced romanization
 
 [:koreanHangul]
 
