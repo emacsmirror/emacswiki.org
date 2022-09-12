@@ -457,11 +457,11 @@ contains an alist with the key `elpaca'."
 (add-to-list 'setup-modifier-list #'setup-wrap-to-install-package)
 
 (setup-define :elpaca
-  (lambda (order)
+  (lambda (order &rest recipe)
     (push (cond
            ((eq order t) `(elpaca . ,(setup-get 'feature)))
            ((eq order nil) '(elpaca . nil))
-           (`(elpaca . ,order)))
+           (`(elpaca . (,order ,@recipe))))
           setup-attributes)
     ;; If the macro wouldn't return nil, it would try to insert the result of
     ;; `push' which is the new value of the modified list. As this value usually
@@ -469,14 +469,8 @@ contains an alist with the key `elpaca'."
     ;; would optimize away anyway.
     nil)
   :documentation "Install ORDER with `elpaca'.
-The first ORDER can be used to deduce the feature context."
-  :repeatable t
-  :shorthand (lambda (sexp)
-               (pcase-exhaustive (cadr sexp)
-                 (`'(,name . ,_) name)
-                 (``(,name . ,_) name)
-                 (`(,name . ,_) name)
-                 ((and (pred symbolp) name) name))))
+The ORDER can be used to deduce the feature context."
+  :shorthand #'cadr)
 }}}
 
 Now we can install packages. Using shorthand functionality to determain package name:
@@ -489,15 +483,7 @@ Now we can install packages. Using shorthand functionality to determain package 
 Full Elpaca "orders" are supported, with shorthand:
 
 {{{
-(setup (:elpaca (avy :host github :repo "abo-abo/avy"))
-  (the rest of the body))
-}}}
-
-Install multiple packages, even with a different name:
-
-{{{
-(setup avy
-  (:elpaca install-something-else install-second-thing)
+(setup (:elpaca avy :host github :repo "abo-abo/avy")
   (the rest of the body))
 }}}
 
