@@ -1,4 +1,4 @@
-[::Björn Lindström], Bangkok
+[::Björn Lindström]
 
 Systems engineer working with television and stuff.
 
@@ -9,4 +9,4 @@ I use Emacs.
 == Emacs configuration and packages ==
 
 ; [https://gitlab.com/bkhl/dotfiles/-/blob/main/.emacs.d/configuration.org configuration.org] : My Emacs configuration in org-mode format.
-; [https://codeberg.org/bkhl/trimspace-mode trimspace-mode] : Minor mode to handle enabling/disabling of [DeletingWhitespace automatic stripping of whitespace].
+; [https://gitlab.com/bkhl/trimspace-mode trimspace-mode] : Minor mode to handle enabling/disabling of [DeletingWhitespace automatic stripping of whitespace].
