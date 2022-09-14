@@ -2,7 +2,7 @@
 
 (This is a [[CategoryGlossary|glossary]] page. It is not for how-to information.)
 
-An Emacs '''[::buffer]''' is similar to what other systems might call a ''file'', ''document'', or ''workspace''. A buffer can contain text and images.
+An Emacs '''[::buffer]''' is similar to what other systems might call a ''file'', ''document'', ''workspace'' or ''editor''. A buffer can contain text and images.
 
 Buffers are shown in [[window]]s on the screen.  A buffer can be displayed in more than one window at a time, or it might not be displayed at all.
 
