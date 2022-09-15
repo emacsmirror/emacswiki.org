@@ -10,3 +10,6 @@ I use Emacs.
 
 ; [https://gitlab.com/bkhl/dotfiles/-/blob/main/.emacs.d/configuration.org configuration.org] : My Emacs configuration in org-mode format.
 ; [https://gitlab.com/bkhl/trimspace-mode trimspace-mode] : Minor mode to handle enabling/disabling of [DeletingWhitespace automatic stripping of whitespace].
+
+----
+CategoryHomepage
