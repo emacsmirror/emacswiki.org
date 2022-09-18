@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 28 09:22:13 2022 (-0700)
+;; Last-Updated: Sun Sep 18 15:43:44 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7500
+;;     Update #: 7502
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -640,6 +640,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/09/18 dadams
+;;     Added vacuous defvar for Info-minibuf-history.
 ;; 2022/08/28 dadams
 ;;     Added face info-homoglyph and defvar info-symbols-and-replacements (Emacs <27).
 ;;     Info-mode
@@ -1341,6 +1343,7 @@
 (defvar Info-last-search)
 (defvar Info-link-keymap)
 (defvar Info-menu-entry-name-re)
+(defvar Info-minibuf-history)
 (defvar Info-next-link-keymap)
 (defvar Info-mode-line-node-keymap)
 (defvar Info-node-spec-re)
