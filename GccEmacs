@@ -134,7 +134,7 @@ The built-in package manager package.el supports ahead-of-time native compilatio
 
 Some third-party package managers also support ahead-of-time native compilation:
 
-* [https://github.com/raxod502/straight.el straight.el] native-compiles packages by default.
+* StraightEl native-compiles packages by default.
 
 You can native-compile your packages manually:
 
