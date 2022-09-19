@@ -384,7 +384,7 @@ version.
 
 === Using straight.el ===
 
-[https://github.com/raxod502/straight.el straight.el] is a "next-generation, purely functional package manager for the Emacs hacker," according to its repo.  I like using it is all I know.  Here's a :straight keyword for setup:
+StraightEl ([https://github.com/raxod502/straight.el on GitHub]) is a "next-generation, purely functional package manager for the Emacs hacker," according to its repo.  I like using it is all I know.  Here's a :straight keyword for setup:
 
 {{{
 (setup-define :straight
