@@ -1,0 +1,61 @@
+straight.el is described by its authors as a: [quote]next-generation, purely functional package manager for the Emacs hacker.[/quote]
+
+straight.el is [https://github.com/radian-software/straight.el available from GitHub.]
+
+It can use [[MELPA]], [[ELPA]], or [[Emacsmirror]] packages, but doesn’t download the packages from those archives, instead they are cloned from the package’s git repository.  Being a purely functional package manager all config is stored in you InitFile, making package builds and configuration reproducible.
+
+== Installation ==
+
+=== Preliminaries ===
+
+straight.el should not be used in conjunction with Emacs’ default package manager, package.el, as it is a replacement for package.el.  Using the two together might cause problems such as duplicate package builds.
+
+As a result, if you are using an Emacs version ≥ 27 you have to add this line to your [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]] to disable package.el:
+
+{{{
+(setq package-enable-at-startup nil)
+}}}
+
+You should also remove any code that relates to package.el from your InitFile, such as anything that calls: <code>package-initialize</code> and <code>package-archives</code>, for example.  Also, if you are using JohnWiegley’s UsePackage, remove any references to either <code>:ensure</code>, or <code>use-package-always-ensure</code>.
+
+=== Bootstrapping ===
+
+Now you can install staight.el by placing this bootstrapping code into your InitFile:
+
+{{{
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+}}}
+
+Then when you restart Emacs it should work.  If you run into any trouble [https://github.com/radian-software/straight.el#debugging check the README on GitHub.]
+
+== Usage ==
+
+Now you can just add packages to Emacs by adding a line like the following to your InitFile:
+
+{{{
+(straight-use-package 'helm)
+}}}
+
+This will install the [[Helm]] package, for example.  Being a purely functional package manager everything is done using the InitFile so configuration is reproducible.  You can, for example, install a package by calling <kbd>M-x</kbd> <kbd>straight-use-package</kbd> and then entering the package you want, but this will only install the package for that session.  A package so installed will not be there when you quit and restart Emacs, it has to be added to you InitFile, as above, to be installed permanently.
+
+=== Use with use-package ===
+
+setup.el can be used together with JohnWiegley’s UsePackage.  To do so use-package has to be installed like any other straight.el package, by adding the following to your InitFile:
+
+{{{
+(straight-use-package 'use-package)
+}}}
+
+----
+CategoryPackaging
