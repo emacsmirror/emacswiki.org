@@ -435,6 +435,8 @@ Note that this macro can also be reproduced using :and:
 
 [https://github.com/progfolio/elpaca Elpaca] is an elisp package manager. It is a replacement for the built-in Emacs package manager, package.el. We can extend SetupEl's functionality using <code>setup-modifier-list</code> and wrap SetupEl bodies in an Elpaca call, this requires installing and processing the package first:
 
+*Note*: Initial startup will give the error <code>Symbol's value as variable is void: setup-modifier-list</code> as Elpaca doesnt have a way of doing a blocking install.
+
 {{{
 ;; <elpaca bootstrap goes here>
 
