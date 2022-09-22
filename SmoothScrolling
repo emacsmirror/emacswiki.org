@@ -4,7 +4,8 @@ The next release of Emacs, Emacs 29, will come with built-in support
 for pixel-based scrolling.
 
 You can enable it using `pixel-scroll-precision-mode'.  You will need
-to build with the option `--with-xinput2', unless you're not using X.
+to build with XInput 2 support (which should be on by default, but may
+require libXi to be installed), unless you're not using X.
 
 If you want Emacs to continue to "drift" the display after it stops,
 and you aren't using the NS port on macOS, enable
