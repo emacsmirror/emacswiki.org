@@ -11,11 +11,15 @@ and you aren't using the NS port on macOS, enable
 `pixel-scroll-precision-use-momentum'.
 
 Apply the following settings if you also want scrolling with an
-ordinary mouse to be almost as smooth as scrolling with a touchpad:
+ordinary mouse to be almost as smooth as scrolling with a touchpad,
+on systems other than X:
 
   (setq pixel-scroll-precision-large-scroll-height 40.0)
-  (setq pixel-scroll-precision-interpolation-factor 30)
 
+If that number does not work, decrease it by 5 at a time until it
+starts to.  Keep in mind that setting it too low will cause normal
+trackpad scrolling to be interpolated, which is probably not what
+you want.
 
 == mouse wheel & keyboard scroll one line at a time ==
 
