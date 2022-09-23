@@ -260,6 +260,46 @@ current mode."
   :after-loaded t)
 }}}
 
+=== Removing hooks ===
+
+It is sometimes desirable to modify hooks buffer-locally, such as in the case of `flymake-diagnostic-functions'.
+
+{{{
+(setup-define :unhook
+  (lambda (func)
+    `(remove-hook (quote ,(setup-get 'hook)) ,func))
+  :documentation "Remove FUNC from the current hook."
+  :repeatable t
+  :ensure '(func)
+  :signature '(FUNC ...))
+
+(setup-define :local-unhook
+  (lambda (hook &rest functions)
+    `(add-hook
+      (quote ,(setup-get 'hook))
+      (lambda ()
+        ,@(mapcar
+           (lambda (arg)
+             (let ((fn (cond ((eq (car-safe arg) 'function) arg)
+                             ((eq (car-safe arg) 'quote)    `(function ,(cadr arg)))
+                             ((symbolp arg)                 `(function ,arg))
+                             (t                             arg))))
+               `(remove-hook (quote ,hook) ,fn t)))
+           functions))))
+  :documentation "Remove FUNCTION from HOOK only in the current hook."
+  :debug '(&rest sexp)
+  :repeatable nil)
+}}}
+
+This can be used like so:
+
+{{{
+(setup flymake
+  (:hook-into prog-mode text-mode org-src-mode)
+  (:with-mode org-src-mode
+    (:local-unhook flymake-diagnostic-functions #'elisp-flymake-checkdoc)))
+}}}
+
 === Add advice ===
 
 The following macro simplifies the definition of [[Advice]]:
