@@ -1,0 +1,4 @@
+When I try to emms-browse-by-album, EMMS shows a list of (year) album. The list is not sorted by album, but by year. It makes no sense since there already is another emms-browse-by-year function that does that (although without showing album names). Is there a variable I can setq to get it to do what it should have done by default (ie not show year first and sort by it when I specifically told it to show albums)? If not, then EMMS is useless to me since I have a large collection of music and have spent a lot of time setting good album tags like "J. S. Bach: Cantatas vol. 48, BWV 34, 117, 98, 120 -BCJ" to easily remember what is in which album when scrolling a list of albums to see what I want to listen to.
+
+-- [https://mostad.eu/ einar] 2022-09-23 11:13 UTC
+
