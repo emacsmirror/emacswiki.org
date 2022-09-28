@@ -723,6 +723,8 @@ would install both company and company-math. The context is set to company, beca
 
 An attempt is also made by setup.el to ease extensibility. Each macro is defined using the setup-define function. Combined with further attributes, it allows for the simple definition of local and context sensitive macros, that are debug-able, can be composed and deferred.
 
+Finally, a common question is how UsePackage :init translates into setup forms.  The answer is that it is not needed at all.  Any non-setup macro you write will be preserved by macroexpansion.  Again, as mentioned in the first section "By default, [setup] behaves just like progn".  This once more illustrates why the direct comparison with UsePackage can be counter-productive, as setup is *not* declarative, since you retain precise control over the order in which forms are evaluated.  The destinction between :init and :config doesn't make sense for setup, since anything you want to evaluate directly can just be written out, and anything that should be delayed ought to ideally be hanled by a delayed (:after-loaded) macro or if neecssary or more convenient using :when-loaded.
+
 == Imenu Support ==
 
 Here is a basic regular expression to help Imenu find where you use the macro.
