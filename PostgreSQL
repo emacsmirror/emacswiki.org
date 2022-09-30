@@ -1,15 +1,6 @@
 == Elisp Interface ==
 
-Code by EricMarsden for a socket-level elisp interface to PostgreSQL.
-
-* Look for pg.el [[http://www.chez.com/emarsden/downloads/|here]]
-* For newer versions look at [http://www.online-marketwatch.com/pgel/pg.html pg.el]
-* There is also a version hosted on GitHub: https://github.com/cbbrowne/pg.el
-
-If you don't require a flashy interface and sophisticated programming
-language features this may be a good option. Otherwise near the same
-URL you can find a Common Lisp implementation of the same code, which
-has better exception handling support.
+Code by EricMarsden for a [[https://github.com/emarsden/pg-el/|socket-level Emacs Lisp interface to the PostgreSQL database]].
 
 NicFerrier's EmacsDb has a [https://github.com/nicferrier/emacs-db-pg backend] for PostgreSQL
 
@@ -21,6 +12,7 @@ and supports more features (SSL, out-of-band transfer of parameters, etc)
 
 There is a prototype implementation available here:
 https://github.com/anse1/emacs-libpq
+
 == Info Documentation ==
 
 You can convert Postgres' DocBook docs to Texinfo via docbook2X for
