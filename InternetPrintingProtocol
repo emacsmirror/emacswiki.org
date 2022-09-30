@@ -1,14 +1,11 @@
 The InternetPrintingProtocol (IPP), defined by the Printer Working Group, is intended to replace the old LPD protocol for interacting with network printers. This is only a partial implementation of the client side of the protocol, but it's sufficient to submit a print job to a device, to query its capabilities, and to examine its queue.
 
-Code by EricMarsden and the file can be downloaded as a package at MELPA since August 2022.
+Available as a MELPA package named "ipp" since August 2022.
 
-The source may be found here:
+Source:
 
-http://purl.org/net/emarsden/home/downloads/ipp.el
+https://github.com/emarsden/ipp-el/
 
-or:
-
-([http://www.emacswiki.org/cgi-bin/wiki?action=history;id=ipp.el history])  Lisp:ipp.el
 
 ----
 CategoryPrinting
