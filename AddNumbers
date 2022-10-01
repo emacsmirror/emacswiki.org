@@ -50,4 +50,16 @@ To solve this problem, I modified the function somewhat.  Now, instead of [[kill
 See also RectangleAdd.
 
 ----
+
+'''Or Just Use Emacs Calc'''
+
+The column of numbers between point and mark can be summed by entering: <kbd>C-x * :</kbd>
+
+The sum appears in Emacs Calc's buffer at the top of its stack.
+
+To copy the sum back to the original buffer, press <kbd>y</kbd>.
+
+To sum a row of numbers instead, use <kbd>C-x * _</kbd>
+
+----
 CategoryCalculators
