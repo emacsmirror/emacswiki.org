@@ -15,7 +15,7 @@ The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs an
 
 You can edit this website.  There's a link, '''Edit this page''', at the bottom of this and other pages.  ''Please check [[Comments on SiteMap]] before editing this SiteMap page, however.''
 
-==How to use this site==
+== How to use this site ==
 
 * HowToNavigate -- how to find what you're looking for 
 * HowToEdit -- how you can contribute to the site
@@ -25,7 +25,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * EmacsWikiAdministrators -- handling vandalism and spam on this site
 
 [:LearningEmacs]
-==Learning About Emacs==
+== Learning About Emacs ==
+
 * [[https://www.gnu.org/software/emacs/ GNU Emacs Homepage]] official Emacs releases and documentation here.
 * EmacsNewbie -- basic concepts, vocabulary, notation used in documentation
 * [[CategoryDocumentation|Documentation]] -- learn why Emacs is called the self-documenting text editor.
@@ -40,7 +41,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 
 [:GeneralUse]
-==Emacs Use In-Depth==
+== Emacs Use In-Depth ==
+
 * [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
@@ -87,7 +89,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 
 [:EmacsApplications]
-==Applications within Emacs==
+== Applications within Emacs ==
+
 * [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
 * [[CategoryCalculators|Calculators]] -- math operations
 ** [[CategoryFinancial|Financial]] -- money management and accounting
@@ -122,7 +125,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 
 [:Customization]
-==Customizing Emacs==
+== Customizing Emacs ==
+
 * [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
 * [[CategoryPackaging|Packages]] -- Emacs package management
@@ -132,6 +136,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 [:ProgrammingEmacs]
 == Programming Emacs in Lisp and C ==
+
 * [[CategoryCode|Code]] -- EmacsLisp coding tips
 * [[CategoryDebug|Debug]] -- debugging Emacs, debugging with Emacs, debugging EmacsLisp
 * [[CategoryPatches|Patches]] -- patches to Emacs, mostly for C-level
@@ -139,19 +144,20 @@ extensions
 * [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
 
 [:CustomInstallations]
-==Installing Custom Emacs Builds==
+== Installing Custom Emacs Builds ==
+
 * [[CategoryBuilding|Building]] -- building Emacs from source code
 * [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
 
 [:Bugs]
-==Emacs Bugs==
+== Emacs Bugs ==
 
 * EmacsBugs -- how to report bugs and where to find a list of those already reported
 * [[CategoryWishList|WishList]] -- "Emacs isn't perfect already?"
 * [[Proposals|Proposals]] -- Formal proposals for improvements to Emacs.
 
 [:EmacsInfo]
-==Other Emacs-related information==
+== Other Emacs-related information ==
 * EmacsImplementations -- a list of Emacsen and their impersonators
 * EmacsMerchandise -- physical Emacs-related swag you can buy
 * [[CategoryHistory|History]] -- history of Emacs
