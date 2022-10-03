@@ -137,5 +137,10 @@ An extension written in your favourite language can only communicate with the ed
 pre-defined interface, and avoiding "pre-defined interfaces" is part of the power of Emacs.
 Extensions totally miss the point of Emacs. Go figure.
  
+
+[new]
+…unless such an extension is an ELisp package/Emacs module which does the integrative trick, eg. a streaming translator between, say, Ruby or JSON and ELisp, which can be used as a kind of import filter to load non-ELisp scripts into the ELisp engine. That's what I intended to suggest regarding the modules above. The new JSON engine of Emacs does the same, AFAIK.
+
+––mangledmind
 ----
 CategoryExtensionLanguage
