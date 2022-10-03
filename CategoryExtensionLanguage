@@ -37,7 +37,7 @@ See also EmacsImplementations.
 Perhaps a section on AddingExtensionLanguages would be good?
 
 ----
-Perhaps an example of how to use other languages via syscalls/file-exec from elisp would be more purposeful.
+Perhaps an example of how to use other languages via syscalls/file-exec from elisp (or inferior-modes like SLIME etc do) would be more purposeful. It does not really make sense to mix several languages in a VM which is targeted and tailored towards (E)Lisp symbols and objects.  Using im-/export filters would be quite a massive undertaking, so simply using external calls which pull the results into ELisp code would be the elegant way to go.  Otherwise, you sooner or later end up crippling Emacs's power and versatility by interfacing into dozens of other languages via APIs.  Just saying.
 
 ----
 CategoryCode
