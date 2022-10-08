@@ -10,6 +10,7 @@ Click the heading to find all pages related to [[Frame]]s in Emacs.
 ** [[OneOnOneEmacs]] -- frame-friendly Emacs
 * FrameMove -- move between frames (i.e., change the input focus) using the arrow keys 
 * FrameParameters -- what frame parameters are, and how to set and save them
+* FacesPerFrame -- varying faces or themes by frame
 * FrameResize -- keeping a constant character width when the frame is resized
 * FrameSize -- set the size of frames
 * FrameTag -- switch between frames using M-1 to M-9.
