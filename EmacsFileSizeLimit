@@ -58,6 +58,16 @@ Good luck with editing those files, by the way.
 
 See [[VLF]] for a method of viewing awkwardly large files (larger than physical, virtual, or whatever limit you choose for performance issues) a portion at a time.
 
+== Editing Large Files ==
+
+Emacs uses a gap buffer data structure for representing buffers, see https://nullprogram.com/blog/2017/09/07/ for a readable explanation. This makes lots of edits within a local area fast, but jumping back and forth across a huge file and editing in each spot can be very slow. It also makes the maximum file size bounded (see above). 
+
+Moving to alternative data structures has been suggested, e.g.:
+
+''For large files: by moving from a gap buffer to a rope representation for buffers, we can partially use memory-mapped backing storage, and even when we do need private, modifiable memory for editing, we can allocate only when we immediately need and not have to move the gap around through humongous amounts of main memory. Such a system would not only improve our support for humongous files, but would also make a 32-bit Emacs capable of editing files larger than its address space.''
+
+(Daniel Colascione on emacs-devel 5 Mar 2018 https://lists.gnu.org/archive/html/emacs-devel/2018-03/msg00104.html )
+
 ----
 CategoryBuilding
 
