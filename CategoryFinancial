@@ -1,11 +1,12 @@
 Here are some Emacs things relating to finance, money, accounting, etc.
 
 * LedgerMode -- double entry accounting.
-* BalanceMode -- tracking bank accounts
+* BeancountMode -- Emacs major-mode to work with Beancount ledger files.
+* BalanceMode -- tracking bank accounts.
 * LoanPaymentCalculator -- calculating loan payments.
 * [[Chart]] -- stock and commodity quotes in Emacs.
 * StockQuote -- stock quotes using UrlPackage.
-* [http://user42.tuxfamily.org/accjournal/index.html accjournal.el] -- text file double-entry accounting
+* [http://user42.tuxfamily.org/accjournal/index.html accjournal.el] -- text file double-entry accounting.
 * [http://www.moge.org/okabe/docs/elisp.html accounting.el] -- trial balance from entries in a buffer ([http://www.moge.org/okabe/temp/accounting.el download] at end of page)
 * FormTenForty -- US Income tax table
 
