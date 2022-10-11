@@ -1,0 +1,21 @@
+Emacs-related posts for working with Youtube:
+
+* [http://mbork.pl/2022-10-10_Adding_timestamps_to_youtube_links Marcin Borkowski: Adding timestamps to youtube links]
+* https://github.com/agzam/youtube-sub-extractor.el
+* [https://bitspook.in/blog/extending-org-mode-to-handle-youtube-links/ Extending org-mode to handle youtube links]
+* https://github.com/karthink/elfeed-tube
+* https://github.com/mfxarc/elfeed-yt-dl
+* [https://www.youtube.com/watch?v=9QtKXdN1ej8 Emacs Get Youtube Video Contents In ORG File 2022_05_26_03:13:56]
+* [http://ag91.github.io/blog/2022/05/02/emms-+-org-roam-youtube-playlists-with-titles Andrea: Emms + Org Roam: YouTube playlists with titles!]
+* [http://ag91.github.io/blog/2022/03/27/an-elisp-snippet-to-dowload-youtube-videos-transcripts Andrea: An Elisp snippet to download YouTube videos transcripts]
+* [https://ag91.github.io/blog/2021/10/29/emacs-with-nyxt-capturing-youtube-links-at-time-and-molding-nyxt-with-js/ Emacs with Nyxt: capturing YouTube links at time and molding Nyxt with JS]
+* [https://joshuao.com/org-ytp.el org-ytp.el: Convert youtube playlists to org headlines]
+* [https://endlessparentheses.com/embedding-youtube-videos-with-org-mode-links.html Embedding Youtube videos with org-mode links · Endless Parentheses]
+* https://sachachua.com/blog/2021/04/org-mode-insert-youtube-video-with-separate-captions/
+* [https://www.youtube.com/watch?v=xUgZ1UmIZKU emacs subscribe to youtube channels or playlist and open the links with mpv player]
+* [https://github.com/xFA25E/ytel-show Browse youtube in emacs]
+* https://github.com/TobiasZawada/org-yt
+* https://www.reddit.com/r/emacs/comments/g3mo8u/a_tiny_tip_for_those_using_elfeed_for_youtube_subs/
+* [https://www.youtube.com/watch?v=9MgEtlqq0HA VIDEO: Emacs Is Great - Ep 22: Using emacs, mpv and elfeed to consume YouTube videos.]
+* https://www.reddit.com/r/emacs/comments/7usz5q/youtube_subscriptions_using_elfeed_mpv_no_browser/
+* https://github.com/maximus12793/helm-youtube
