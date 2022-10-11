@@ -9,8 +9,8 @@ Note this code depends on ##use-package##. I modified code found [https://sntag.
     (use-package ess
       :mode (
     	 ("\\.jl..'" . ess-mode)
-    	 ("\\.R\\'"  . ess-mode)
-    	 ("\\.r\\'"  . ess-mode)
+    	 ("\\.R..'"  . ess-mode)
+    	 ("\\.r..'"  . ess-mode)
     	 )
       )
     (add-hook 'julia-mode-hook #'ess-julia-mode)
