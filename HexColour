@@ -94,5 +94,7 @@ Good idea, added 'words for easier copy&paste.
 
 [new]
 Thanks for all the great tips! However, they simply don't work for me :c
-However, with Emacs 28.2, package cl is deprecated, any fix suggestion?
+using https://github.com/emacsmirror/rainbow-mode for now
+
+Also, with Emacs 28.2, package cl is deprecated, any fix suggestion?
 -- melonion
