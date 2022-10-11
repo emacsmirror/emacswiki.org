@@ -1,0 +1,28 @@
+Julia's ecosystem is rapidly evolving, and advice from a few years ago may no longer be current. As of October 2022, there seem to be two packages that support a Julia IDE for Emacs: ESS and ##julia-snail##.
+
+There are a few lines of code that seem to be required in ##init.el## to get either ESS or ##julia-snail## to work with Julia. The following ##init.el## code was tested in Emacs 28.1 on Manjaro Linux 22.0.0; Julia version was 1.8.2.
+
+=== ESS ===
+
+Note this code depends on ##use-package##. I modified code found [https://sntag.github.io/post/2020-04-13-getting-emacs-and-julia-to-work/ here].
+
+    (use-package ess
+      :mode (
+    	 ("\\.jl..'" . ess-mode)
+    	 ("\\.R\\'"  . ess-mode)
+    	 ("\\.r\\'"  . ess-mode)
+    	 )
+      )
+    (add-hook 'julia-mode-hook #'ess-julia-mode)
+
+=== julia-snail ===
+
+The GitHub for julia-snail is [https://github.com/gcv/julia-snail here]. ##julia-snail## requires ##vterm##.
+
+    (require 'julia-snail)
+    (add-hook 'julia-mode-hook #'julia-snail-mode)
+    ;; To add something like the C-<return> behavior from ESS
+    (fset 'send-line-and-step-jl
+          (kmacro-lambda-form [?\C-c ?\C-l ?\C-n] 0 "%d"))
+    (add-hook 'julia-mode-hook
+          (lambda () (local-set-key (kbd "C-<return>") #'send-line-and-step-jl)))
