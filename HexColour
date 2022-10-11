@@ -91,3 +91,7 @@ This keeps it from colouring parts of words like 'redistribute'.  Oh and for som
 [new]
 Good idea, added 'words for easier copy&paste.
 -- [[nschum]]
+
+[new]
+Thanks for all the great tips! However, with Emacs 28.2, package cl is deprecated, any fix suggestion?
+-- melonion
