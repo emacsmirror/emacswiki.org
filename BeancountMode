@@ -1,0 +1,11 @@
+Beancount-mode is an Emacs major mode for working with the ledger files of Beancount, a text based double-entry accounting software.
+
+Beancount-mode is available [https://github.com/beancount/beancount-mode from its GitHub page.]
+
+== See also ==
+
+* [https://beancount.github.io/ Beancount’s Homepage]
+
+----
+CategoryFinancial
+CategoryNeedsAttention
