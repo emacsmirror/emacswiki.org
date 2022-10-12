@@ -74,7 +74,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * JavaMode -- Based on CcMode and comes with Emacs.
 * JavaScriptMode
 * JspMode
-* JuliaMode -- Also see [[JuliaProgrammingLanguage]] for more information of Julia programming in Emacs.
+* JuliaMode -- Also see [[Julia]] and [[JuliaProgrammingLanguage]] for more information of Julia programming in Emacs.
 * LispInteractionMode
 * LogoMode -- Edit BerkeleyLogo source code and send instructions to to an interpreter.
 * [[Logview]] -- View Log4j or any other similar log files.
