@@ -192,12 +192,12 @@ If you already show directories in the buffer name, you may want to use a simple
 
 === All buffers displayed in a frame ===
 
-  (defun lockywolf/generate-frame-title ()
+  (defun generate-frame-title ()
     (let ((retval ""))
       (walk-window-tree (lambda (x) (setf retval (seq-concatenate 'string (buffer-name (window-buffer x)) "  " retval))))
       (setf (frame-parameter nil 'name) retval)
      retval))
-  (setq-default frame-title-format '(:eval (lockywolf/generate-frame-title)))
+  (setq-default frame-title-format '(:eval (generate-frame-title)))
 
 
 
