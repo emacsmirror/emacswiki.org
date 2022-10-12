@@ -26,3 +26,8 @@ The GitHub for julia-snail is [https://github.com/gcv/julia-snail here]. ##julia
           (kmacro-lambda-form [?\C-c ?\C-l ?\C-n] 0 "%d"))
     (add-hook 'julia-mode-hook
           (lambda () (local-set-key (kbd "C-<return>") #'send-line-and-step-jl)))
+
+----
+Categories:
+CategoryProgramming,
+ProgrammingModes
