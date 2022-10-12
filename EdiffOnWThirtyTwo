@@ -1,6 +1,10 @@
 EdiffMode is great. It needs a couple of diff-tools to work though. You have at least these options to get them:
 
 * Install CygWin
+* If you have msys2, ensure you have the diffutils package installed, e.g.
+  <tt>
+  pacman -S mingw-w64-x86_64-diffutils
+  </tt>
 * Fetch some nice natively compiled Unix command ports, found here: http://unxutils.sourceforge.net/ (this is really really handy if you do not want the full CygWin package and still miss some of the nice Unix commands). *This is not maintained any more*.
 * You can also diff28b.zip from ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2gnu/.
 * Use <nowiki>GnuWin32</nowiki> tools that can be found on http://gnuwin32.sourceforge.net/. These seems to be more actively maintained than the <nowiki>UnxUtils</nowiki>. See also the documentation for [[EmacsW32]] where I try to mention positive and negative sides of the different alternatives mentioned here.
