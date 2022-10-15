@@ -47,7 +47,6 @@ There is a [[https://github.com/abicky/nodejs-mode.el|node.js mode]]. As of 2013
 
 == Some links ==
 
-* There are some notes on integrating node.js with Emacs in [[http://blog.deadpansincerity.com/2011/05/setting-up-emacs-as-a-javascript-editing-environment-for-fun-and-profit/|Setting up Emacs as a Javascript editing environment for Fun or Profit]]
 * Stackoverflow: [[http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs|Using Node.js with JS-comint in Emacs]]
 * [[https://coderwall.com/p/qvqhkg|Live-code Node.js apps]] - mostly about configuring js-comint
 * http://grokbase.com/t/gg/nodejs/127cs8cewg/emacs - some discussion of what tools used in emacs with node.js
