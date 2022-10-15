@@ -5,5 +5,25 @@ The minor mode `dot-mode.el' emulates the "." (redo) command of Vi (see ViAndEma
 
 See also ViKeys.
 
+== Integration with god-mode ==
+`god-mode` is a global minor mode for entering Emacs commands without modifier keys. It's similar to Vim's separation of command mode and insert mode.
+
+* https://github.com/emacsorphanage/god-mode
+
+You can emulate `vim` behavior by enabling `dot-mode` only when `god-mode` is disabled, and repeat things after:
+
+    (defun my-god-repeat ()
+      (interactive)
+      (god-local-mode-pause)
+      (dot-mode-execute)
+      (god-local-mode-resume))
+
+    (defun my-god-turn-dot ()
+      (interactive)
+      (dot-mode
+        (if god-local-mode -1 1)))
+
+    (add-hook 'god-local-mode-hook 'my-god-turn-dot)
+    (define-key god-local-mode-map (kbd "C-.") #'my-god-repeat)
 ----
 CategoryModes
