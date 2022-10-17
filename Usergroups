@@ -60,6 +60,7 @@ You can also add this [https://emacslife.com/calendar/emacs-calendar.ics ical fe
 == Other ==
 
 * [https://m-x-research.github.io/ M-x research] -- We meet virtually every 1st and 3rd Thursday of every month to dicuss and share Emacs experiences, tips, tricks and tools useful for researchers and research software engineers.
+* [https://hispa-emacs.org/ Hispa-Emacs] -- We are enthusiasts of Emacs in particular (and of the GNU+Linux world in general) in the Spanish-speaking world: we meet every first Friday of the month ( <%%(diary-float t 3 -1)>in org-mode).
 * EmSig, the Emacs Multimedia Special Interest Group meets on freenode's "#emsig" channel
 * [http://www.meetup.com/find/?allMeetups=false&keywords=emacs&radius=Infinity Search Meetup.com for Emacs meetups]
 
