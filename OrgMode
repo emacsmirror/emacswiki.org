@@ -40,7 +40,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 
 * David O'Toole has written a [http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html general tutorial] with screenshots. It has been translated into [http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html Chinese], [http://web.archive.org/web/20080225214358/http://lumiere.ens.fr/~guerry/orgtutorialfr.html French], [http://users.itk.ppke.hu/~mpasztor/orgtutorial/notebook/orgtutorial-hu.html Hungarian], [http://hpcgi1.nifty.com/spen/index.cgi?OrgMode/OrgTutorial Japanese] and [http://jmjeong.com/index.php?display=Emacs/OrgMode Korean]. 
 
-* [http://orgmode.org/worg/ Worg] has many tutorials on specific features. Charles Cave has [http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html has written] on using date and times. Bernt Hansen describes his use and customizations of Org-mode in 70(!) pages long [http://doc.norang.ca/org-mode.html document], which assumes basic familiarity with Org.
+* [http://orgmode.org/worg/ Worg] has many tutorials on specific features. Charles Cave [http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html has written] on using date and times. Bernt Hansen describes his use and customizations of Org-mode in 70(!) pages long [http://doc.norang.ca/org-mode.html document], which assumes basic familiarity with Org.
 
 * One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD). Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
 
