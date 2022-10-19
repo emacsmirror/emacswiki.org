@@ -1024,8 +1024,27 @@ system.activationScripts.tramp = ''
 }}}
 
 
-
 ---JoeBloggs
+
+=== Tramp buffer backgrounds ===
+
+I have gotten confused about which buffer I'm in when I'm editing the same source locally and remotely (mostly when doing portability work), so I made my .emacs make tramp file buffers, dired buffers, and shells have a slightly lighter-than-black grey tint, which is super helpful for telling at a glance where you're working.  The little @ is kinda small and it's easy to forget to look for it.
+
+{{{
+;; make backgrounds in tramp remote buffers dark grey so don't get confused
+(defun checker-tramp-file-hook ()
+  (when (file-remote-p buffer-file-name)
+    (face-remap-add-relative 'default :background "grey11")))
+(add-hook 'find-file-hook 'checker-tramp-file-hook)
+(defun checker-tramp-dired-hook ()
+  (when (file-remote-p dired-directory)
+    (face-remap-add-relative 'default :background "grey11")))
+(add-hook 'dired-after-readin-hook 'checker-tramp-dired-hook)
+(defun checker-tramp-shell-hook ()
+  (when (file-remote-p default-directory)
+    (face-remap-add-relative 'default :background "grey11")))
+(add-hook 'shell-mode-hook 'checker-tramp-shell-hook)
+}}}
 
 ----
 CategoryExternalUtilities
