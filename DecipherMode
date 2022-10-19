@@ -39,7 +39,7 @@ Here it is (you can also find this patch in gnu.emacs.sources archives):
     +        (setq cipher-char (cdr (assoc char cpy)))
     +        (and (and (>= cipher-char ?A) (<= cipher-char ?Z))
     +             (decipher-set-map cipher-char (1+ char)))
-    +        (decf char))
+    +        (cl-decf char))
     +
     +      (setq cipher-char (cdr (assoc ?z cpy)))
     +      (and (and (>= cipher-char ?A) (<= cipher-char ?Z))
