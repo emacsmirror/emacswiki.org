@@ -188,6 +188,8 @@ May I suggest using cl-plusp instead of plusp in the function above. plusp produ
 * [[Icicles - Support for Projects]]
 * [[Icicles - Completion Methods and Styles]] 
 
+[new:JustinAbrahms:2022-10-19]
+You probably want [[Projectile]] these days.
 ----
 
 [new]
