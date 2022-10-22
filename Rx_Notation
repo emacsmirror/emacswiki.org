@@ -4,6 +4,7 @@ As an alternative to the string-based syntax, Emacs provides the structured rx n
 
 Here is an rx regexp that matches a block comment in the C programming language:
 
+<pre>
 (rx "/*"                          ; Initial /*
     (zero-or-more
      (or (not (any "*"))          ;  Either non-*,
@@ -11,16 +12,21 @@ Here is an rx regexp that matches a block comment in the C programming language:
               (not (any "/")))))  ;  non-/
     (one-or-more "*")             ; At least one star,
     "/")                          ; and the final /
+</pre>
 
 or, using shorter synonyms and written more compactly,
 
+<pre>
 (rx "/*"
     (* (| (not "*")
           (: "*" (not "/"))))
     (+ "*") "/")
+</pre>
 
 In conventional string syntax, it would be written
 
+<pre>
 "/\\*\\(?:[^*]\\|\\*[^/]\\)*\\*+/"
+</pre>
 
-The rx notation is mainly useful in Lisp code; it cannot be used in most interactive situations where a regexp is requested, such as when running query-replace-regexp or in variable customization. 
+Rx notation is mainly useful in Lisp code; it cannot be used in most interactive situations where a regexp is requested, such as when running query-replace-regexp or in variable customization. 
