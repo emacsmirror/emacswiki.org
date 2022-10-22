@@ -15,16 +15,17 @@ Regexps are important to Emacs users in many ways, including these:
 * We search with them interactively.  Try `C-M-s' (command <code>isearch-forward-regexp</code>).
 * Emacs code uses them to parse text.  We use regexps all the time, without knowing it, when we use Emacs.
 
-You can use a tool to construct regexps. For example, you can use '''`rx'''' like this:
+Conventionally, Emacs allows only regular expressions formatted as strings and that is still the case for interactive use, such as `M-x' (command <code>query-replace-regexp</code>). However, when writing Lisp code, 
+one can now use the easier to understand [[Rx Notation]], which structures a regular expression as Lisp
+S-expressions. For example, you can use '''`rx'''' like this:
 
     (rx (or (and "\*" (*? anything) "*/") (and "//" (*? anything) eol)))
 
-To produce this regexp (which matches C-style multiline and single line comments):
+To produce this regexp in string format (which matches C-style multiline and single line comments):
 
     \\*\\(?:.\\|\n\\)*?\\*/\\|//\\(?:.\\|\n\\)*?$
 
-And there's a package [https://elpa.gnu.org/packages/xr.html xr (available on GNU ELPA)] that does the opposite conversion, from regexps to a human-readable form.
-
+When used in InteractiveLispMode, Rx can also be a handy tool to construct regexps. There's also a package [https://elpa.gnu.org/packages/xr.html xr (available on GNU ELPA)] that does the opposite conversion, from string syntax regexps to something more human-readable.
 
 
 [:RegexpSyntax]
@@ -237,12 +238,9 @@ OccurBuffer, DiredPower
 regular expression. You enter the regexp in a
 small window at the bottom of the frame. The first 200 matches in the [[buffer]] are highlighted, so you can see if the regexp does what you want. Use Lisp syntax, which means doubling backslashes and using ##\\\\## to match a literal backslash.
 
-* Macro `rx' provides user-friendly syntax for
+* Macro `rx' (available in Lisp programs and in lisp-interaction-mode) provides user-friendly syntax for
 regular expressions. For example, ##(rx (one-or-more blank) line-end)##
 returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
-
-* SymbolicRegexp is similar in aim to `rx'.
-
 
 
 
@@ -253,6 +251,11 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 * Read about regexps in the [[Manual:Regexps|Elisp manual]]. See also RegexpReferences. Study EmacsLisp code that uses regexps.
 
 * Regexp searching (`C-M-s') is a great way to learn about regexps -- see [[IncrementalSearch#RegexpSearches|Regexp Searches]]. Change your regexp on the fly and see immediately what difference the change makes.
+
+* [[Rx notation]] is an easier way to write regular expressions. Use the [[rx]] function in LispInteractionMode to convert it to Emacs's conventional string syntax.
+
+* If you are stumped by a complex regular expression, try using the [[xr]] package to convert it to [[Rx notation]]. 
+
 
 * Some examples of use (see also ReplaceRegexp and EmacsCrashRegexp):
 ** Search for trailing whitespace: ##C-M-s SPC+$##
