@@ -1,6 +1,6 @@
 == The rx Structured Regexp Notation ==
 
-As an alternative to the string-based syntax, Emacs provides the structured rx notation based on Lisp S-expressions. This notation is usually easier to read, write and maintain than regexp strings, and can be indented and commented freely. It requires a conversion into string form since that is what regexp functions expect, but that conversion typically takes place during byte-compilation rather than when the Lisp code using the regexp is run.
+As an "alternative" to the string-based RegularExpression syntax, Emacs provides the structured rx notation based on Lisp S-expressions. This notation is usually easier to read, write and maintain than regexp strings, and can be indented and commented freely. It requires a conversion into string form since that is what regexp functions expect, but that conversion typically takes place during byte-compilation rather than when the Lisp code using the regexp is run.
 
 Here is an rx regexp that matches a block comment in the C programming language:
 
