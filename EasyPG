@@ -31,6 +31,23 @@ Alternatively, set [https://www.gnu.org/software/emacs/manual/html_node/epa/Encr
 
 Note that easy-pg consists of two different kind of modules, one is a library (epg.el) and the others are applications (epa-*.el).  Auto-encryption (epa-file.el) is a part of the latter.  As the docs says "The !EasyPG Library dares to disable passphrase caching", that is intended behavior. Caveat user, if you start using the library directly. ;)
 
+== How to get Emacs to use the minibuffer for password entry ==
+
+Emacs 28.3 GPG 2.3.8 (Windows 10 and Cygwin)
+
+Add the following two lines to ~/.gnupg/gpg-agent.conf:
+
+    allow-emacs-pinentry
+    allow-loopback-pinentry
+
+Add the following to your .emacs (or equivalent)
+
+    (setq epa-pinentry-mode 'loopback)
+
+Don't forget to restart (or kill) gpg-agent.
+
+----
+
 == How to use a non-graphical password prompt for gpg ==
 In X, Emacs 23 seems to pop up a graphical window to ask you the keyphrase. How to let it ask the password in minibuffer?
 ----
