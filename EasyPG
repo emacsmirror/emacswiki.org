@@ -33,7 +33,7 @@ Note that easy-pg consists of two different kind of modules, one is a library (e
 
 == How to get Emacs to use the minibuffer for password entry ==
 
-Emacs 28.2 GPG 1.4 (Cygwin)
+Emacs 28.2 GPG 1.4 (Cygwin) Emacs 28.2 GPG 2.3.8 (Windows 10)
 
 Add the following two lines to ~/.gnupg/gpg-agent.conf:
 
