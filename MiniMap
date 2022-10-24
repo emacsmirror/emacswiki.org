@@ -1,4 +1,4 @@
-[http://www.sublimetext.com/ Minimap] is a feature provided by the Sublime editor. It shows a smaller, "minibar", display of the current buffer alongside the main editing window.
+[http://elpa.gnu.org/packages/minimap.html Minimap] is a feature provided by the [http://www.sublimetext.com/ Sublime] editor. It shows a smaller, "minibar", display of the current buffer alongside the main editing window.
 
 This page is about a minimap implementation for Emacs. In the minibar window, it highlights the portion of the buffer that is currently visible in the main window. This highlight position is updated automatically, as you navigate in the main window. You can scroll the main window by dragging the
 highlighted area in the minibar.
