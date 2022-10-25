@@ -1,7 +1,8 @@
 Here’s how to detach an rcirc channel when using soju:
 
 
-<pre>(defun-rcirc-command detach (channel)
+<pre>
+(defun-rcirc-command detach (channel)
   "Detach channel to soju."
   (interactive "sPart channel: ")
   (let ((channel (if (> (length channel) 0) channel target)))
