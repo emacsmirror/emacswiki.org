@@ -9,6 +9,7 @@ Here’s how to detach an rcirc channel when using soju:
     (rcirc-send-privmsg
      process "BouncerServ"
      (format
-      "channel update %s -detached true -reattach-on highlight" channel))))</pre>
+      "channel update %s -detached true -reattach-on highlight" channel))))
+</pre>
 
 Soju/rcirc already lets you reattached detached channels with /join, and this lets you type /detach in a channel to detach it. This makes it easy to attach and detach channels. This method works by talking to BouncerServ, if there’s instead some fancy Modern IRC way to do it that’s better, let me know!
