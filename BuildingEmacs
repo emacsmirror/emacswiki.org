@@ -14,7 +14,8 @@ Get the latest release (tarball), unpack it and run:
     $ sudo apt install build-essential  # for Ubuntu 20.04
     $ sudo apt build-dep emacs  # for Ubuntu 20.04
     $ cd /where/you/unpacked/emacs
-    $ ./configure
+    $ mkdir build && cd build
+    $ ../configure
     $ make
     $ make install
 
