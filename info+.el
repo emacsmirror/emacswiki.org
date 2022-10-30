@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 18 15:43:44 2022 (-0700)
+;; Last-Updated: Sun Oct 30 14:59:29 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 7502
+;;     Update #: 7512
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -640,6 +640,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/10/30 dadams
+;;     Info-set-mode-line: Update for Emacs 28.1+,
 ;; 2022/09/18 dadams
 ;;     Added vacuous defvar for Info-minibuf-history.
 ;; 2022/08/28 dadams
@@ -2374,7 +2376,7 @@ unvisited state."
 
   )
 
-(when (> emacs-major-version 23) ; Emacs 23 `revert-buffer' invokes a brain-dead `kill-buffer' etc.
+(when (> emacs-major-version 23) ; Emacs 23 `revert-buffer' invokes a poor `kill-buffer' etc.
 
   (defun Info-change-visited-status (start end &optional arg)
     "Change whether the nodes in the region have been visited.
@@ -2442,7 +2444,7 @@ A negative prefix arg means consider the nodes not visited."
     (when (or (not file)  (string= file "")) (setq file  Info-current-file))
     (setq file               (Info-find-file file)
           Info-history-list  (remove (list file (substring-no-properties node)) Info-history-list))
-    ;; Emacs 23 has brain-dead `kill-buffer', which is invoked by `revert-buffer' and deletes
+    ;; Emacs 23 has a poor `kill-buffer', which is invoked by `revert-buffer' and deletes
     ;; the window/frame if dedicated.
     (when (and (> emacs-major-version 23)  (derived-mode-p 'Info-mode)) (revert-buffer nil t))
     (when msgp (message "Node %sis now unvisited" 
@@ -4465,25 +4467,30 @@ Non-nil RESETP means re-create an existing hash table."
 If `Info-breadcrumbs-in-mode-line-mode' is non-nil, insert breadcrumbs."
   (if Info-breadcrumbs-in-mode-line-mode
       (Info-insert-breadcrumbs-in-mode-line)
-    (setq mode-line-buffer-identification  (nconc (propertized-buffer-identification "%b")
-                                                  (list
-                                                   (concat
-                                                    " ("
-                                                    (if (stringp Info-current-file)
-                                                        (replace-regexp-in-string
-                                                         "%" "%%" (file-name-nondirectory Info-current-file))
-                                                      (format "*%S*" Info-current-file))
-                                                    ") "
-                                                    (if Info-current-node
-                                                        (propertize
-                                                         (replace-regexp-in-string
-                                                          "%" "%%" Info-current-node)
-                                                         'face 'mode-line-buffer-id
-                                                         'help-echo
-                                                         "mouse-1: scroll forward, mouse-3: scroll back"
-                                                         'mouse-face 'mode-line-highlight
-                                                         'local-map Info-mode-line-node-keymap)
-                                                      "")))))))
+    (setq mode-line-buffer-identification
+	  (nconc (propertized-buffer-identification "%b")
+	         (list (concat " ("
+                               (propertize ; Remove trailing ".info", ".info.gz", etc.
+                                (if (stringp Info-current-file)
+                                    (if (fboundp 'string-replace) ; Emacs 28.1+
+                                        (string-replace
+                                         "%" "%%" (replace-regexp-in-string
+                                                   "\\..*\\'" "" (file-name-nondirectory Info-current-file)))
+                                      (replace-regexp-in-string
+                                       "%" "%%" (file-name-nondirectory Info-current-file)))
+                                  (format "*%S*" Info-current-file))
+                                'help-echo "Manual name")
+                               ") ")
+		       (if Info-current-node
+		           (propertize
+                            (if (fboundp 'string-replace) ; Emacs 28.1+
+                                (string-replace "%" "%%" Info-current-node)
+                              (replace-regexp-in-string "%" "%%" Info-current-node))
+			    'face 'mode-line-buffer-id
+			    'help-echo "mouse-1: scroll forward, mouse-3: scroll back"
+			    'mouse-face 'mode-line-highlight
+			    'local-map Info-mode-line-node-keymap)
+		         ""))))))
 
 (defun Info-insert-breadcrumbs-in-mode-line ()
   (let ((nodes   (Info-toc-nodes Info-current-file))
