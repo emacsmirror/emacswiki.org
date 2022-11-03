@@ -8,6 +8,8 @@ gnus-alias provides a simple mechanism to switch Identities when using message-m
 
 All of this is also provided by the standard `gnus-posting-styles'.  Whereas PostingStyles let you set these up initially, though, gnus-alias lets you change them on the fly easily, too (in this regard gnus-alias is much like GnusPers, upon which it is based).  With a simple command (`gnus-alias-select-identity') you can select & replace one Identity with another.
 
+To activate Gnus-Alias identity rules such as selecting one needs to call <code>(gnus-alias-init)</code> or add <b><i>gnus-alias-determine-identity</i></b> to <b><i>message-setup-hook</i></b>. manually
+
 There are other significant differences between gnus-alias and PostingStyles, too.  gnus-alias has a much simpler interface/API for selecting an initial Identity automatically.  PostingStyles is much more flexible (especially in that you can build up an "Identity" piece by piece), but with that flexibility can come some complexity.
 
 Other advantages to using gnus-alias:
