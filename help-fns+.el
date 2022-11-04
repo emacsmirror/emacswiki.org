@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  9 14:28:00 2022 (-0700)
+;; Last-Updated: Thu Nov  3 21:23:37 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 2582
+;;     Update #: 2585
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,12 +18,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `auth-source', `backquote', `button', `bytecomp', `cconv', `cl',
-;;   `cl-generic', `cl-lib', `cl-macs', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `epg-config', `gv', `help-fns', `help-mode',
-;;   `info', `macroexp', `naked', `package', `password-cache',
-;;   `radix-tree', `seq', `tabulated-list', `url-handlers',
-;;   `url-parse', `url-vars', `wid-edit', `wid-edit+'.
+;;   `auth-source', `button', `cl', `cl-generic', `cl-lib',
+;;   `cl-macs', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `gv', `help-fns', `help-mode', `info', `macroexp',
+;;   `naked', `package', `password-cache', `radix-tree', `seq',
+;;   `tabulated-list', `url-handlers', `url-parse', `url-vars',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -121,6 +121,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/11/03 dadams
+;;     describe-file: File Type -> File type.
 ;; 2022/06/09 dadams
 ;;     describe-variable (Emacs 23+): Don't fill var value, as that loses significant whitespace.
 ;; 2022/01/14 dadams
@@ -2938,7 +2940,7 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                                       (error nil))))
              (help-text        (concat
                                 (format "%s\n%s\n\n" filename (make-string (length filename) ?-))
-                                (format "File Type:                       %s\n"
+                                (format "File type:                  %s\n"
                                         (cond ((eq t type)  "Directory")
                                               ((stringp type)  (format "Symbolic link to `%s'" type))
                                               (t  "Normal file")))
