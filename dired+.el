@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2022.09.07
+;; Version: 2022.11.04
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep  7 17:33:08 2022 (-0700)
+;; Last-Updated: Thu Nov  3 21:01:19 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 13369
+;;     Update #: 13380
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -779,7 +779,8 @@
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-define-snapshot-dired-commands-1', `diredp-delete-dups',
 ;;    `diredp-delete-if', `diredp-delete-if-not',
-;;    `diredp-directories-within', `diredp-dired-plus-description',
+;;    `diredp-describe-file-1', `diredp-directories-within',
+;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp--dired-recent-files-1',
 ;;    `diredp-dired-union-1', `diredp-dired-union-interactive-spec',
@@ -792,6 +793,7 @@
 ;;    `diredp-fewer-than-echo-limit-files-p',
 ;;    `diredp-fewer-than-N-files-p', `diredp-fileset-1',
 ;;    `diredp-find-a-file-read-args',
+;;    `diredp-file-content-description',
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
@@ -1006,6 +1008,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/11/04 dadams
+;;     Added: diredp-describe-file-1, diredp-file-content-description.  Former uses latter.
+;;       diredp-file-content-description: Includes info from dired-show-file-type.
+;;     diredp-list-file: File Type -> File type.
+;;     diredp(-mouse)-describe-file: Non-negative prefix arg means describe symlink.  Use diredp-describe-file-1.
+;;     diredp-list-file-attributes: Bug fix (typo): Removed quote before "all".
 ;; 2022/09/07 dadams
 ;;     diredp-do-command-in-marked(-recursive), diredp-invoke-command: COMMAND arg can be a keyboard macro.
 ;; 2022/08/15 dadams
@@ -2815,7 +2823,7 @@ attributes.
 A non-list means use all attribute values."
   :group 'Dired-Plus :type '(choice
                              (repeat (integer :tag "Use attribute with number"))
-                             (const :tag "Use all attributes" 'all)))
+                             (const :tag "Use all attributes" all)))
 
 ;;;###autoload
 (defcustom diredp-max-frames 200
@@ -6016,7 +6024,7 @@ values of those attributes.  Otherwise, include all attribute values."
           (concat
            "\n"
            (and (memq 0 details)
-                (format " File Type:                  %s\n"
+                (format " File type:                  %s\n"
                         (cond ((eq t (nth 0 attrs))  "Directory")
                               ((stringp (nth 0 attrs))  (format "Symbolic link to `%s'" (nth 0 attrs)))
                               (t  "Normal file"))))
@@ -13312,28 +13320,84 @@ You need library `bookmark+.el' to use this command."
     (diredp-copy-tags-this-file prefix 'MSG))
   (diredp-previous-line 1))
 
-(when (fboundp 'describe-file)          ; In `help-fns+.el' or `help+20.el'.
-  (defun diredp-describe-file (&optional internal-form-p) ; Bound to `C-h RET', `C-h C-RET'
+(when (fboundp 'describe-file)          ; In `help-fns+.el'.
+
+  (defun diredp-describe-file (&optional arg) ; Bound to `C-h RET', `C-h C-RET'
     "In Dired, describe this file or directory.
 You need library `help-fns+.el' to use this command.
+
+A non-negative prefix arg means that if the targeted file or dir is a
+symlink then describe the symlinked file or dir instead.
+
 If the file has an autofile bookmark and you use library `Bookmark+',
 then show also the bookmark information (tags etc.).  In this case, a
-prefix arg shows the internal form of the bookmark."
+non-positive prefix arg shows the internal form of the bookmark."
     (interactive "P")
-    (describe-file (dired-get-filename nil 'NO-ERROR) internal-form-p))
+    (diredp-ensure-mode)
+    (diredp-describe-file-1 (dired-get-filename nil 'NO-ERROR) arg))
 
-  (defun diredp-mouse-describe-file (event &optional internal-form-p) ; Not bound
+  (defun diredp-mouse-describe-file (event &optional arg) ; Not bound
     "Describe the clicked file.
 You need library `help-fns+.el' to use this command.
+
+A non-negative prefix arg means that if the targeted file or dir is a
+symlink then describe the symlinked file or dir instead.
+
 If the file has an autofile bookmark and you use library `Bookmark+',
 then show also the bookmark information (tags etc.).  In this case, a
-prefix arg shows the internal form of the bookmark."
+non-positive prefix arg shows the internal form of the bookmark."
     (interactive "e\nP")
     (let (file)
       (with-current-buffer (window-buffer (posn-window (event-end event)))
+        (diredp-ensure-mode)
         (save-excursion (goto-char (posn-point (event-end event)))
                         (setq file  (dired-get-filename nil 'NO-ERROR))))
-      (describe-file file internal-form-p))))
+      (diredp-describe-file-1 file arg)))
+
+  (defun diredp-describe-file-1 (file arg)
+    "Helper for `diredp(-mouse)-describe-file."
+    (let* ((numarg            (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+           (follow-symlink-p  (and numarg  (natnump numarg)))
+           (bmk-internal-p    (and numarg  (<= numarg 0)))
+           (content-desc      (diredp-file-content-description file follow-symlink-p))
+           (content-desc      (if (diredp-string-match-p "directory\n" content-desc)
+                                  ""
+                                (concat "Content type:"
+                                        (if (> (length content-desc) 43)
+                                            "\n "
+                                          "               ")
+                                        content-desc))))
+      (describe-file file bmk-internal-p)
+      (when content-desc
+        (with-current-buffer "*Help*"
+          (let ((inhibit-read-only  t))
+            (save-excursion
+              (goto-char (point-min))
+              (search-forward "File type:")
+              (forward-line 1)
+              (insert content-desc)))))))
+
+  ;; This is from `dired-show-file-type'.
+  ;;
+  (defun diredp-file-content-description (file &optional follow-symlink-p)
+    "Return the `dired-show-file-type' description as a string.
+The string doesn't include the file name, and it ends with a newline."
+    (unless file (setq file  (if (derived-mode-p 'dired-mode)
+                                 (dired-get-filename t)
+                               (read-file-name "File: "))))
+    (let ((process-file-side-effects  nil))
+      (with-temp-buffer
+        (if follow-symlink-p
+            (process-file "file" nil t t "-L" "--" file)
+          (process-file "file" nil t t "--" file))
+        (when (bolp) (backward-delete-char 1))
+        (filter-buffer-substring (point-min)
+                                 (save-excursion (goto-char (point-min))
+                                                 (search-forward (concat file ": ") (line-end-position)))
+                                 'DELETE)
+        (concat (buffer-string) "\n"))))
+
+  )
 
 ;; Define these even if `Bookmark+' is not loaded.
 ;;;###autoload
