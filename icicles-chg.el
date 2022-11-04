@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jun 30 14:51:56 2022 (-0700)
+;; Last-Updated: Thu Nov  3 21:18:42 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 11937
+;;     Update #: 11941
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4769,10 +4769,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2022/11/03 dadams
+;;     icicle-display-candidates-in-Completions: Check hist-cand membership with abs filename.
+;;       Code for Emacs 20 crash is just for hist cand.
+;;     icicle-describe-file: Like diredp-describe-file today: File Type -> File type.
 ;; 2022/06/23 dadams
 ;;     icicle-search-define-replacement: Added missing nil args to completing-read.
 ;; 2021/03/17 dadams
-;;      Use buffer-string, not buffer-substring, for whole buffer.
+;;     Use buffer-string, not buffer-substring, for whole buffer.
 ;; 2020/08/14 dadams
 ;;     icicle-help-string-completion: mouse-choose-completion is obsolete (removed).
 ;;     icicle-choose-completion, icicle-current-completion-in-Completions,
