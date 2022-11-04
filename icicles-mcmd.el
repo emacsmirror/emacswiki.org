@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jun 23 08:22:09 2022 (-0700)
+;; Last-Updated: Thu Nov  3 11:57:40 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 19884
+;;     Update #: 19886
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2368,13 +2368,7 @@ By default, this is bound to `C-x C-M-l' during completion."
                         (histvar           (and (symbolp minibuffer-history-variable)
                                                 (boundp minibuffer-history-variable)
                                                 minibuffer-history-variable))
-                        (hist              (and histvar
-                                                (if filep
-                                                    ;; Need (or DIR  default-directory) instead of DIR
-                                                    ;; because Emacs 20 `expand-file-name' crashes.
-                                                    (let ((default-directory  (or dir  default-directory)))
-                                                      (mapcar #'expand-file-name (symbol-value histvar)))
-                                                  (symbol-value histvar))))
+                        (hist              (and histvar  (symbol-value histvar)))
                         (case-fold-search
                          ;; Do not bother with buffer completion, `read-buffer-completion-ignore-case'.
                          (if (and filep  (boundp 'read-file-name-completion-ignore-case))
@@ -2421,17 +2415,22 @@ By default, this is bound to `C-x C-M-l' during completion."
                        ;; Highlight candidate (`*-historical-candidate') if it was used previously.
                        (when icicle-highlight-historical-candidates-flag
                          (let ((candidate  (icicle-current-completion-in-Completions)))
-                           (when (and (consp hist)  (not (member candidate icicle-hist-cands-no-highlight)))
-                             ;; Need (or DIR  default-directory) instead of DIR
-                             ;; because Emacs 20 `expand-file-name' crashes.
-                             (let ((default-directory  (or dir  default-directory)))
-                               (when (member (if filep
-                                                 (expand-file-name (icicle-transform-multi-completion
-                                                                    candidate))
-                                               candidate)
-                                             hist)
-                                 (add-text-properties
-                                  beg end `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))))
+                           (when (and (consp hist)
+                                      (not (member candidate icicle-hist-cands-no-highlight))
+                                      (if (not filep)
+                                          (member candidate hist)
+                                        ;; Need (or DIR  default-directory) instead of DIR
+                                        ;; because Emacs 20 `expand-file-name' crashes.
+                                        (let ((default-directory  (or dir  default-directory)))
+                                          (member (expand-file-name
+                                                   (icicle-transform-multi-completion candidate))
+                                                  (mapcar (lambda (elt)
+                                                            (if (file-name-absolute-p elt)
+                                                                elt
+                                                              (expand-file-name elt)))
+                                                          hist)))))
+                             (add-text-properties
+                              beg end `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))
 
                        ;; Highlight Info index-entry cand (using face `icicle-historical-candidate-other')
                        ;; if its node has been visited.
@@ -6482,7 +6481,7 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                (help-text
                 (concat
                  (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
-                 (format "File Type:                  %s\n"
+                 (format "File type:                  %s\n"
                          (cond ((eq t type) "Directory")
                                ((stringp type) (format "Symbolic link to `%s'" type))
                                (t "Normal file")))
