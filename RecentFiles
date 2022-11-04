@@ -1,7 +1,7 @@
 [[fr:FichiersRécents]]
 
 Recentf is a minor mode that builds a list of recently opened files.
-This list is is automatically saved across sessions on exiting Emacs - 
+This list is automatically saved across sessions on exiting Emacs - 
 you can then access this list through a command or the menu.
 
 To enable `recentf-mode', put this in your `~/.emacs':
