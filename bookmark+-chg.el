@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug 17 08:11:33 2022 (-0700)
+;; Last-Updated: Sat Nov  5 14:30:06 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 16868
+;;     Update #: 16870
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2022/09/07 dadams
+;;     bmkp-jump-function: Use arrayp, not vectorp (keyboard macros can be strings).
 ;; 2022/08/17 dadams
 ;;     bmkp-jump-to-list: Removed unused optional args.
 ;; 2022/08/16 dadams
@@ -1530,6 +1532,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2022/11/05 dadams
+;;     Typo: bmkp-bmenu-show-only-man-page-bookmarks should be bmkp-bmenu-show-only-man-bookmarks.
 ;; 2022/05/26 dadams
 ;;     bmkp-bmenu-menubar-menu: Added bmkp-send-bug-report.
 ;; 2022/01/14 dadams
