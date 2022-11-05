@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Aug  3 08:25:57 2022 (-0700)
+;; Last-Updated: Sat Nov  5 14:27:59 2022 (-0700)
 ;;           By: dradams
-;;     Update #: 4197
+;;     Update #: 4198
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2315,7 +2315,7 @@ for confirmation."
                                bmkp-info-alist-only)                                          ; `I S'
 (bmkp-define-show-only-command desktop  "Display (only) the desktop bookmarks."
                                bmkp-desktop-alist-only)                                       ; `K S'
-(bmkp-define-show-only-command man-page "Display (only) the `man' page bookmarks."
+(bmkp-define-show-only-command man "Display (only) the `man' page bookmarks."
                                bmkp-man-alist-only)                                           ; `M S'
 (bmkp-define-show-only-command function "Display (only) the function bookmarks."
                                bmkp-function-alist-only)                                      ; `Q S'
