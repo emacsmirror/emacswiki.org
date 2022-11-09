@@ -44,7 +44,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 
 * One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD). Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
 
-* Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets]. 
+* Eric Neilsen has a [https://archive.ph/pd6WL cookbook of Org configuration snippets]. 
 * Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org]. 
 * SachaChua has written (so many!) relevant articles -- 
 ** [https://sachachua.com/blog/category/org/ Org category]
