@@ -494,6 +494,16 @@ Lisp:french-holidays.el
         (holiday-float 11 0 1 "Totensonntag" 20)))
 </pre>
 
+=== Indian ===
+To add a few key Indian national holidays:
+<pre>
+(setq  holiday-india-holidays 
+       '((holiday-fixed 1 26 "Republic Day")
+	(holiday-fixed 8 15 "Independence Day")
+	(holiday-fixed 10 2 "Gandhi Jayanthi"))
+)
+</pre>
+
 === Irish ===
 To add a few key Irish public holidays:
 <pre>
