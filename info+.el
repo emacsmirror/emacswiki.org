@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 30 14:59:29 2022 (-0700)
+;; Last-Updated: Fri Nov 11 10:49:43 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 7512
+;;     Update #: 7525
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -640,6 +640,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/11/11 dadams
+;;     Added back removed editing feature from vanilla Emacs 26.3 (but leave it disabled):
+;;       Info-edit-mode, Info-edit, Info-cease-edit, Info-edit-mode-hook, Info-edit-mode-map.
 ;; 2022/10/30 dadams
 ;;     Info-set-mode-line: Update for Emacs 28.1+,
 ;; 2022/09/18 dadams
@@ -1335,6 +1338,8 @@
 (defvar Info-breadcrumbs-in-mode-line-mode)
 (defvar Info-current-node-virtual)
 (defvar Info-bookmarked-node-xref-faces) ; Here, Emacs 24.2+, with Bookmark+.
+(defvar Info-edit-mode-hook)
+(defvar Info-edit-mode-map)
 (defvar Info-fontify-bookmarked-xrefs-flag) ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-visited-nodes)
 (defvar Info-hide-note-references)
@@ -6984,6 +6989,52 @@ currently visited manuals."
         (Info--pop-to-buffer-same-window found)
       (info-initialize)
       (info (Info-find-file manual)))))
+
+;; Emacs 27+ removed `Info-edit-mode'.  Restore it.
+;;
+(unless (fboundp 'Info-edit-mode)
+
+  (defvar Info-edit-mode-hook nil
+    "Hook run when `Info-edit-mode' is activated.")
+
+  (defvar Info-edit-mode-map (let ((map  (make-sparse-keymap)))
+                               (set-keymap-parent map text-mode-map)
+                               (define-key map "\C-c\C-c" 'Info-cease-edit)
+                               map)
+    "Local keymap for `Info-edit-mode'.")
+
+  (put 'Info-edit-mode 'mode-class 'special) ; Only for specially formatted data
+
+  (define-derived-mode Info-edit-mode text-mode "Info Edit"
+    "Major mode for editing the contents of an Info node.
+Like Text mode with the addition of `\\<Info-edit-mode-map>\\[Info-cease-edit]', which
+returns to (read-only) Info mode for browsing."
+    (setq buffer-read-only nil)
+    (force-mode-line-update)
+    (buffer-enable-undo (current-buffer)))
+
+  (defun Info-edit ()
+    "Edit the contents of this Info node."
+    (interactive)
+    (Info-edit-mode)
+    (message "%s" (substitute-command-keys
+		   "EDITING.  Use `\\<Info-edit-mode-map>\\[Info-cease-edit]' to end editing")))
+
+  (put 'Info-edit 'disabled "**BE CAREFUL** if you enable this - you might mess up your Info files.")
+
+  (defun Info-cease-edit ()
+    "Finish editing Info node; switch back to (read-only) Info mode."
+    (interactive)
+    (and (buffer-modified-p) ; Do this first, so nothing changed if user `C-g's at query.
+         (y-or-n-p "Save the file? ")
+         (save-buffer))
+    (Info-mode)
+    (force-mode-line-update)
+    (and (marker-position Info-tag-table-marker)
+         (buffer-modified-p)
+         (message "Tags may have changed.  Use `Info-tagify' if necessary")))
+
+  )
  
 ;;(@* "Non-Interactive Functions")
 ;;; Non-Interactive  Functions ---------------------------------------
