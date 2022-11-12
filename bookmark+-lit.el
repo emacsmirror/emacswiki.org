@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Nov 12 12:56:12 2022 (-0800)
+;; Last-Updated: Sat Nov 12 14:02:47 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1023
+;;     Update #: 1031
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -614,11 +614,15 @@ bookmarks at point."
   (bookmark-bmenu-list)
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
 
-(defun bmkp-choose-bookmark-lighted-at-point ()
-  "Return the name of a bookmark lighted at point.
-If there is more than one such, prompt user to choose one."
-  (let ((lbmks  (bmkp-bookmarks-lighted-at-point)))
-    (unless lbmks (error "No highlighted bookmarks at point"))
+(defun bmkp-choose-bookmark-lighted-at-point (&optional position noerrorp)
+  "Return the name of a bookmark lighted at POSITION (default: point).
+If there is more than one such, prompt user to choose one.
+Optional arg POSITION is a buffer position to use instead of point.
+
+Raise an error if there is no highlighted bookmark present, unless
+optional arg NOERRORP is non-nil, in which case return nil."
+  (let ((lbmks  (bmkp-bookmarks-lighted-at-point position)))
+    (unless (or lbmks  noerrorp) (error "No highlighted bookmark %s" (if position "" "at point")))
     (if (cdr lbmks)
         (bookmark-completing-read "Bookmark" (car lbmks) lbmks)
       (car lbmks))))
