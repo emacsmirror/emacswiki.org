@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Wed Aug 17 08:10:35 2022 (-0700)
+;; Last-Updated: Sat Nov 12 12:56:12 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1006
+;;     Update #: 1023
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -94,14 +94,14 @@
 ;;    `bmkp-bmenu-unlight-marked', `bmkp-bookmarks-lighted-at-point',
 ;;    `bmkp-cycle-lighted-this-buffer',
 ;;    `bmkp-cycle-lighted-this-buffer-other-window',
-;;    `bmkp-describe-bookmark-lighted-here',
+;;    `bmkp-describe-bookmark-lighted-on-this-line',
 ;;    `bmkp-light-autonamed-this-buffer', `bmkp-light-bookmark',
 ;;    `bmkp-light-bookmark-this-buffer', `bmkp-light-bookmarks',
 ;;    `bmkp-light-bookmarks-in-region',
 ;;    `bmkp-light-navlist-bookmarks',
 ;;    `bmkp-light-non-autonamed-this-buffer',
-;;    `bmkp-light-this-buffer', `bmkp-lighted-jump',
-;;    `bmkp-lighted-jump-other-window', `bmkp-lighted-jump-to-list',
+;;    `bmkp-light-this-buffer', `bmkp-lighted-here-jump-to-list',
+;;    `bmkp-lighted-jump', `bmkp-lighted-jump-other-window',
 ;;    `bmkp-next-lighted-this-buffer',
 ;;    `bmkp-next-lighted-this-buffer-repeat',
 ;;    `bmkp-previous-lighted-this-buffer',
@@ -112,7 +112,7 @@
 ;;    `bmkp-toggle-auto-light-when-jump',
 ;;    `bmkp-toggle-auto-light-when-set',
 ;;    `bmkp-unlight-autonamed-this-buffer', `bmkp-unlight-bookmark',
-;;    `bmkp-unlight-bookmark-here',
+;;    `bmkp-unlight-bookmark-on-this-line',
 ;;    `bmkp-unlight-bookmark-this-buffer', `bmkp-unlight-bookmarks',
 ;;    `bmkp-unlight-non-autonamed-this-buffer',
 ;;    `bmkp-unlight-this-buffer'.
@@ -140,13 +140,13 @@
 ;;    `bmkp-a-bookmark-lighted-on-this-line',
 ;;    `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-name-from-record', `bmkp-bookmark-overlay-p',
-;;    `bmkp-default-lighted', `bmkp-fringe-string' (Emacs 22+),
-;;    `bmkp-get-lighting', `bmkp-lighted-p', `bmkp-light-face',
-;;    `bmkp-light-style', `bmkp-light-style-choices',
-;;    `bmkp-light-when', `bmkp-lighted-alist-only',
-;;    `bmkp-lighting-attribute', `bmkp-lighting-face',
-;;    `bmkp-lighting-style', `bmkp-lighting-when',
-;;    `bmkp-make/move-fringe' (Emacs 22+),
+;;    `bmkp-choose-bookmark-lighted-at-point', `bmkp-default-lighted',
+;;    `bmkp-fringe-string' (Emacs 22+), `bmkp-get-lighting',
+;;    `bmkp-lighted-p', `bmkp-light-face', `bmkp-light-style',
+;;    `bmkp-light-style-choices', `bmkp-light-when',
+;;    `bmkp-lighted-alist-only', `bmkp-lighting-attribute',
+;;    `bmkp-lighting-face', `bmkp-lighting-style',
+;;    `bmkp-lighting-when', `bmkp-make/move-fringe' (Emacs 22+),
 ;;    `bmkp-make/move-overlay-of-style', `bmkp-number-lighted',
 ;;    `bmkp-overlay-of-bookmark', `bmkp-read-set-lighting-args',
 ;;    `bmkp-set-lighting-for-bookmarks',
@@ -599,18 +599,29 @@ See `bmkp-lighted-jump'."
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
-;;;###autoload (autoload 'bmkp-lighted-jump-to-list "bookmark+")
-(defun bmkp-lighted-jump-to-list (bookmark) ; Not bound.
-  "Jump to location in `*Bookmark List*' for a lighted bookmark at point.
-You are prompted for BOOKMARK (a bookmark name).
-Completion candidates are the lighted bookmarks at point."
-  (interactive (let* ((lbmks   (bmkp-bookmarks-lighted-at-point))
-                      (IGNORE  (unless lbmks (error "No highlighted bookmarks at point")))
-                      (bmk     (bookmark-completing-read "Bookmark" (car lbmks) lbmks)))
-                 (list bmk)))
+;; Keep the alias for a while, in case someone has it referenced in a state file.
+(defalias 'bmkp-lighted-jump-to-list 'bmkp-lighted-here-jump-to-list)
+(bmkp-make-obsolete 'bmkp-lighted-jump-to-list 'bmkp-lighted-here-jump-to-list "2022-11-12")
+
+;;;###autoload (autoload 'bmkp-lighted-here-jump-to-list "bookmark+")
+(defun bmkp-lighted-here-jump-to-list (bookmark) ; Not bound.
+  "Jump to location in `*Bookmark List*' for a lighted BOOKMARK at point.
+If there's more than one such bookmark then you're prompted for the
+bookmark name.  Completion candidates are the names of the lighted
+bookmarks at point."
+  (interactive (list (bmkp-choose-bookmark-lighted-at-point)))
   (pop-to-buffer (get-buffer-create bmkp-bmenu-buffer))
   (bookmark-bmenu-list)
   (bmkp-bmenu-goto-bookmark-named (setq bmkp-last-bmenu-bookmark  bookmark)))
+
+(defun bmkp-choose-bookmark-lighted-at-point ()
+  "Return the name of a bookmark lighted at point.
+If there is more than one such, prompt user to choose one."
+  (let ((lbmks  (bmkp-bookmarks-lighted-at-point)))
+    (unless lbmks (error "No highlighted bookmarks at point"))
+    (if (cdr lbmks)
+        (bookmark-completing-read "Bookmark" (car lbmks) lbmks)
+      (car lbmks))))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmark "bookmark+")
 (defun bmkp-unlight-bookmark (bookmark &optional noerrorp msgp) ; Not bound
@@ -631,9 +642,18 @@ BOOKMARK is a bookmark name or a bookmark record."
         (when (eq bmk (overlay-get ov 'bookmark))  (delete-overlay ov)))) ; Check full bookmark, not name.
     (when msgp (message "UNhighlighted bookmark `%s'" bmk-name))))
 
-;;;###autoload (autoload 'bmkp-unlight-bookmark-here "bookmark+")
-(defun bmkp-unlight-bookmark-here (&optional noerrorp msgp) ; `C-x p C-u'
-  "Unhighlight a bookmark at point or the same line (in that order)."
+;; Keep the alias for a while, in case someone has it referenced in a state file.
+(defalias 'bmkp-unlight-bookmark-here 'bmkp-unlight-bookmark-on-this-line)
+(bmkp-make-obsolete 'bmkp-unlight-bookmark-here 'bmkp-unlight-bookmark-on-this-line "2022-11-12")
+
+;;;###autoload (autoload 'bmkp-unlight-bookmark-on-this-line "bookmark+")
+(defun bmkp-unlight-bookmark-on-this-line (&optional noerrorp msgp) ; `C-x p C-u'
+  "Unhighlight a highlighted bookmark on this line, preferably at point.
+Other than preferring a bookmark at point, if more than one
+highlighted bookmark is present then which one gets unhighlighted is
+undefined.  When multiple highlighted bookmarks are present you might
+want to use `\\[bmkp-bookmarks-lighted-at-point]' to see the names of all of the bookmarks at
+point."
   (interactive (list nil 'MSG))
   (let ((bmk  (or (bmkp-a-bookmark-lighted-at-pos)  (bmkp-a-bookmark-lighted-on-this-line))))
     (unless bmk (error "No highlighted bookmark on this line"))
@@ -1180,13 +1200,20 @@ See `bmkp-next-lighted-this-buffer-repeat'."
   (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-lighted-this-buffer))
 
+;; Keep the alias for a while, in case someone has it referenced in a state file.
+(defalias 'bmkp-describe-bookmark-lighted-here 'bmkp-describe-bookmark-lighted-on-this-line)
+(bmkp-make-obsolete 'bmkp-describe-bookmark-lighted-here 'bmkp-describe-bookmark-lighted-on-this-line
+                    "2022-11-12")
+
 ;;;###autoload (autoload 'bmkp-describe-bookmark-lighted-here "bookmark+")
-(defun bmkp-describe-bookmark-lighted-here (&optional position defn) ; `C-x p ?'
-  "Describe a highlighted bookmark at point or the same line.
-If there is more than one highlighted bookmark present then which one
-is described is undefined.  When multiple highlighted bookmarks are
-present you might want to use `\\[bmkp-bookmarks-lighted-at-point]' to see the names of all of the
-bookmarks at point, and then use `\\[bmkp-describe-bookmark]' to describe one of them.
+;;;###autoload (autoload 'bmkp-describe-bookmark-lighted-on-this-line "bookmark+")
+(defun bmkp-describe-bookmark-lighted-on-this-line (&optional position defn) ; `C-x p ?'
+  "Describe a highlighted bookmark on this line, preferably one at point.
+Other than preferring a bookmark at point, if more than one
+highlighted bookmark is present then which one is described is
+undefined.  When multiple highlighted bookmarks are present you might
+want to use `\\[bmkp-bookmarks-lighted-at-point]' to see the names of all of the bookmarks at
+point, and then use `\\[bmkp-describe-bookmark]' to describe one of them.
 
 When called from Lisp:
  * Use POSITION, not point.
