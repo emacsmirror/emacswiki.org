@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 12 12:56:52 2022 (-0800)
+;; Last-Updated: Sun Nov 13 13:03:31 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 16875
+;;     Update #: 16877
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2448,6 +2448,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2022/11/13 dadams
+;;     (Temporary - remove later): require bookmark+-1.el, for bmkp-make-obsolete.
 ;; 2022/11/12 dadams
 ;;     Added: bmkp-choose-bookmark-lighted-at-point.
 ;;     Renamed: bmkp-describe-bookmark-lighted-here to bmkp-describe-bookmark-lighted-on-this-line,
