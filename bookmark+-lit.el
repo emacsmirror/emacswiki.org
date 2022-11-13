@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Nov 12 14:02:47 2022 (-0800)
+;; Last-Updated: Sun Nov 13 13:01:31 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1031
+;;     Update #: 1032
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -188,6 +188,8 @@
 ;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read, bmkp-get-bookmark,
 ;; bookmark-get-position, bookmark-handle-bookmark, bookmark-maybe-load-default-file,
 ;; bookmark-name-from-full-record, bookmark-name-from-record, bookmark-prop-get, bookmark-prop-set
+
+(require 'bookmark+-1) ;; bmkp-make-obsolete
 
 
 ;; Some general Renamings.
