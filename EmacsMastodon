@@ -1,0 +1,31 @@
+A list of Emacs-related Mastodon handles. Add yourself here!
+
+* [https://mastodon.social/@tarsius @tarsius@mastodon.social] - Jonas Bernoulli
+* [https://graz.social/@publicvoit @publicvoit@graz.social] - Karl Voit
+* [https://mastodon.etalab.gouv.fr/@bzg @bzg@mastodon.etalab.gouv.fr] - Bastien Guerry
+* [https://types.pl/@emacsomancer @emacsomancer@types.pl]
+* [https://mathstodon.xyz/@bremner @bremner@mathstodon.xyz] - David Bremner
+* [https://mastodon.technology/@temporal @temporal@mastodon.technology]
+* [https://icosahedron.website/@technomancy @technomancy@icosahedron.website]
+* [https://emacs.ch/@louis @louis@emacs.ch] - Louis, manages the emacs.ch instance
+* [https://emacs.ch/@sachac @sachac@emacs.ch] - Sacha Chua, Emacs News, Planet Emacslife
+* [https://fostodon.org/@credmp @credmp@fosstodon.org]
+* [https://indieweb.social/@xenodium @xenodium@indieweb.social] - Álvaro Ramírez, xenodium, plainorg
+* [https://post.lurk.org/@acousticmirror @acousticmirror@post.lurk.org]
+* [https://mathstodon.xyz/@JordiGH @JordiGH@mathstodon.xyz]
+* [https://mastodon.org.uk/@stsquad @stsquad@mastodon.org.uk]
+* [https://cybre.space/@rrix @rrix@cybre.space]
+* [https://mastodon.social/@ersatzmaus @ersatzmaus@mastodon.social]
+* [https://functional.cafe/@erkin @erkin@functional.cafe]
+* [https://cybre.space/@rrix @rrix@cybre.space]
+* [https://lonely.town/@wasamasa @wasamasa@lonely.town]
+* [https://mastodon.social/@ieure @ieure@mastodon.social]
+
+Bots:
+
+* [https://emacs.ch/@emacslife @emacslife@emacs.ch]
+* [https://emacs.ch/@rssbot @rssbot@emacs.ch]
+
+If you want to access Mastodon from Emacs, try [https://codeberg.org/martianh/mastodon.el mastodon.el].
+
+CategoryCommunity
