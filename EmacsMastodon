@@ -30,4 +30,10 @@ Bots:
 
 If you want to access Mastodon from Emacs, try [https://codeberg.org/martianh/mastodon.el mastodon.el].
 
+Mastodon timelines are RSS-compatible: to follow a given user account via RSS, you only need to add '.rss' to their user handle, as in:
+
+'https://symbolics.social/slartibartfast.rss'
+
+This means that to access Mastodon via Emacs, you can also use [[Elfeed]], [[GnusRss]], or any of the methods listed under [[Rss]].
+
 CategoryCommunity
