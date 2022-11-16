@@ -43,6 +43,10 @@ or
 
     dnf install emacs
 
+=== openSUSE/SLE ===
+
+The openSUSE Tumbleweed ##emacs-*## packages are officially [https://build.opensuse.org/package/view_file/openSUSE:Factory/emacs/emacs.spec built] with the option.
+
 === Arch ===
 
 An ##emacs-nativecomp## package is available in the official ##extra## repository, which is enabled by default.
