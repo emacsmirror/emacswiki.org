@@ -395,6 +395,8 @@ version.
 {{{
 (setup-define :package-min-version
     (lambda (package min-version)
+      (when (stringp min-version)
+        (setq min-version (version-to-list min-version)))
       `(unless (package-installed-p ',package ,min-version)
          (cl-labels
              ((find-best (pkg)
