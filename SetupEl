@@ -659,6 +659,9 @@ This code transforms errors in the expanded code into warnings, letting the rest
 (advice-add 'setup :filter-return #'my-protect-setup)
 }}}
 
+[new:PhilipKaludercic:2022-11-19 10:57 UTC]
+You should already be able to do this by adding <code>setup-wrap-to-demote-errors</code> to <code>setup-modifier-list</code> -- without the need for any advice.
+
 == Example Configurations ==
 
 === Vertico and co. ===
