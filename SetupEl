@@ -638,6 +638,27 @@ For example,
     (:face forge-topic-closed ((t (:strike-through t)))))
 }}}
 
+== Transforming Configuration Errors Into Warnings ==
+
+This code transforms errors in the expanded code into warnings, letting the rest of your config file run.
+
+{{{
+(defun my-protect-setup (expansion)
+  "Wrap `setup' output with `condition-case'."
+  (let ((err (gensym "setup-err")))
+    `(condition-case ,err
+	 ,expansion
+       (error
+	(display-warning 'setup (concat "Problem in config: "
+					(error-message-string ,err)
+					": \n"
+					(with-output-to-string
+					  (pp (quote ,expansion))))
+			 :error)))))
+
+(advice-add 'setup :filter-return #'my-protect-setup)
+}}}
+
 == Example Configurations ==
 
 === Vertico and co. ===
