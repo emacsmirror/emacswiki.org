@@ -7,7 +7,7 @@ To see other packages related to docker, see [[Docker]].
 
 Install the package at https://github.com/emacs-pe/docker-tramp.el
 
-NOTE: if running Emacs version build from the sources (or v29.1), as of Nov-2022 there's a native support for Docker via tramp (tramp-container.el) so the above package is not required.
+NOTE: if running Emacs built from the sources (or v29.1), as of Nov-2022 (probably earlier) there's a native support for Docker via tramp (tramp-container.el) so the above package is not required.
 
 === Manual install ===
 
