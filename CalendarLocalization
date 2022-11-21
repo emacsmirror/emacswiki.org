@@ -83,7 +83,7 @@ and the 'terrestrial-branch' (地支) in Chinese:
 
 === Croatian ===
 
-See [https://github.com/amno1/emacs-calendar-hr croatian-hr.el].
+See [https://github.com/amno1/emacs-calendar-hr calendar-hr.el].
 
 *Note:* This will also add Croatian holidays.
 
