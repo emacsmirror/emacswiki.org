@@ -81,6 +81,12 @@ and the 'terrestrial-branch' (地支) in Chinese:
            "červen" "červenec" "srpen" "září"
            "říjen" "listopad" "prosinec"])
 
+=== Croatian ===
+
+See [https://github.com/amno1/emacs-calendar-hr croatian-hr.el].
+
+*Note:* This will also add Croatian holidays.
+
 === Danish ===
 
 See [https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el da-kalender.el] from [https://hub.369.dk/elisp/ Søren's Emacs Lisp Stuff].
