@@ -2,31 +2,30 @@
 [[fr:SectionElisp]]
 [[en:ElispArea]]
 
-Bienvenidos al área [[Elisp]] de EmacsWiki donde recopilamos archivos EmacsLisp. No hace falta login, ni conexiones ftp, ni claves. Es tan simple como la Wiki misma. Ten encuenta que eso también significa que cualquier persona puede incorporar código malicioso en estos archivos.
-Ante cualquier duda, no los uses.
+Bienvenidos al área [[Elisp]] de EmacsWiki donde recopilamos archivos EmacsLisp. No hace falta login, ni conexiones ftp, ni claves. Es tan simple como la Wiki misma. Ten en cuenta que eso también significa que cualquier persona puede incorporar código malicioso en estos archivos. Ante cualquier duda, no los uses.
 
-== Descargando ==
+== Descargar ==
 
-Algunos vínculos hacia librerías muestran ésta última en una página de tipo Wiki con encabezados y piés particulares de EmacsWiki. Podés seleccionar el texto, copiar y luego pegarlo localmente. O sino,  haz clic en el vínculo que dice _Download_ que está debajo del título de la página, ya sea para ver (o guardar) la librería como texto plano, sin encabezados ni piés propios de la Wiki.
+Algunos vínculos hacia librerías muestran ésta última en una página de tipo Wiki con encabezados y pies particulares de EmacsWiki. Puedes seleccionar el texto, copiar y luego pegarlo localmente. O si no, haz clic en el vínculo que dice _Download_ que está debajo del título de la página, ya sea para ver (o guardar) la librería como texto plano, sin encabezados ni pies propios de la Wiki.
 
-Otros links a librerías no muestran tal encabezado ni piés de página. En este caso puedes copiar y pegar el texto o grabar la dirección en vez de seguirlo. Estos vínculos están frecuentemente (¡pero no siempre!) indicados con el prefijo '''Download:'''. Siempre corresponden a URLs que tienen precediendo en el nombre del archivo la palabra `/download/'.
+Otros enlaces a librerías no muestran tal encabezado ni pies de página. En este caso puedes copiar y pegar el texto o grabar la dirección en vez de seguirlo.  Estos vínculos frecuentemente están (¡pero no siempre!) indicados con el prefijo '''Download:'''. Siempre corresponden a URLs que preceden el nombre del archivo con la palabra `/download/'.
 
-Aparte de descargar librerías individuales, también podés usar un *sistema de control de versiones* para descargar los archivos. Mirá WikiDownload para más info.
+Aparte de descargar librerías individuales, también puedes usar un *sistema de control de versiones* para descargar los archivos. Consulta WikiDownload para más información.
 
 * [http://www.emacswiki.org/elisp/ Listado alfabético de todas las librerías Elisp en esta Wiki]
 * [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Lista cronológica de todas las librerías Elisp en esta Wiki]
 ([http://www.emacswiki.org/elisp/changelog.html en los últimos siete días])
 * Por categoría -- La mayoría de los enlaces fuera del MapaDelSitio son hacia las páginas de '''categorías''', que vinculan a librerías relevantes contribuídas por usuarios.
 
-== Contribuyendo(Uploading) ==
+== Contribuir (Uploading) ==
 
 === Archivos ===
 
-Los pequeños archivos de hasta 200k aproximadamente podés pegarlos en páginas comunes. Aquí encontrarás instrucciones básicas, pero si podés ,y mientras te sea posible, echale un vistazo y  trata de *seguir las ElispAreaConventions*.
+Los pequeños archivos de hasta 200k aproximadamente, los puedes pegar en páginas comunes. Aquí encontrarás instrucciones básicas, pero si puedes, y mientras te sea posible, échale un vistazo y  trata de *seguir las ElispAreaConventions*.
 
-Primero, tenés que crear una página en la Wiki explicando qué hace el archivo. Mirá CreateNewPages para ver cómo se hace esto. En esa página, creá un enlace al archivo usando el prefijo Lisp:
+Primero, tienes que crear una página en la Wiki explicando qué hace el archivo. Consulta CreateNewPages para ver cómo se hace esto. En esa página, crea un enlace al archivo usando el prefijo Lisp:
 
-Un ejemplo:
+Por ejemplo:
 
     Lisp:foo.el
 
@@ -34,13 +33,13 @@ El resultado es:
 
 : Lisp:foo.el
 
-Este tipo de enlaces le facilita a todo los visitantes la descarga del archivo y la búsqueda de referencias del mismo.
+Este tipo de enlaces facilita a todos los visitantes la descarga del archivo y la búsqueda de referencias del mismo.
 
-Ahora, seguí el vínculo, editá la página y pegá el archivo. Al pegar, asegurate que la primer línea comience con puntos y comas, así: <code>;;;</code>.
+Ahora, sigue el vínculo, edita la página y pega el archivo. Al pegar, asegúrate que la primer línea comience con puntos y comas, así: <code>;;;</code>.
 
-Al "postear" el enlace que va hacia el archivo elisp en otras páginas, una práctica común es también proveer un vínculo a la página/s Wiki que describe la librería en cuestión, talvés escribiéndola/s entre paréntesis. Mirá las TextFormattingRules para más información acerca de cómo crear el enlace a la página Wiki.
+Al "publicar" el enlace que va hacia el archivo elisp en otras páginas, una práctica común es proveer también un vínculo a la página/s Wiki que describe la librería en cuestión, tal ves escribiéndola/s entre paréntesis. Mira las TextFormattingRules para más información acerca de cómo crear el enlace a la página Wiki.
 
-Un ejemplo:
+Por ejemplo:
 
     Lisp:color-moccur.el (OccurBuffer)
 
@@ -51,35 +50,34 @@ El resultado es:
 === Archivos Grandes ===
 
 Lo mejor es comprimirlos usando Gzip y recién ahí subirlos.
-Luego, creá la página para contener tu archivo. Usá el nombre del archivo como nombre de la página, (ej.: color-theme.el.gz).
-Editá la página y haz clic en el vínculo debajo del botón "Guardar"(/"Save"/ en inglés) que dice "Reemplazar el texto con un archivo"(/"Replace the text with a file"/).
+Luego, crea la página para contener tu archivo. Usa el nombre del archivo como nombre de la página, (p. ej.: color-theme.el.gz).
+Edita la página y haz clic en el vínculo debajo del botón "Guardar"(/"Save"/ en inglés) que dice "Reemplazar el texto con un archivo"(/"Replace the text with a file"/).
 
 === Paquetes y "tarballs" que no son Elisp ===
 
-Podés guardar software libre en [http://savannah.gnu.org/ Savannah].
+Puedes guardar software libre en [http://savannah.gnu.org/ Savannah].
 
 === Code snippets ===
 
-Para pequeñas funciones o "code snippets", sólo ponlas en páginas de wiki directamente, o agrégalas a ElispCookbook.
-Si lo necesitas, asegúrate de usar los tags <nowiki><pre> y </pre></nowiki> o sino <nowiki>{{{ y }}}</nowiki> para que el código no sea formateado.
+Para pequeñas funciones o fragmentos de código ("code snippets"), sólo ponlos en páginas del wiki directamente, o agrégalos a ElispCookbook. Si lo necesitas, asegúrate de usar las etiquetas <nowiki><pre> y </pre></nowiki> o si no <nowiki>{{{ y }}}</nowiki> para que el código no sea formateado.
 
 == Convenciones ==
 
-La Wiki es para software libre solamente. Asegúrate de que tus archivos contengan el texto adecuado que indique indique que es Software Libre. Las "code snippets" están cubiertas bajo la licencia que dice al pié de cada página.
+La Wiki es para software libre solamente. Asegúrate de que tus archivos contengan el texto adecuado que indique que es Software Libre. Los "code snippets" están cubiertos bajo la licencia que dice al pié de cada página.
 
-Por favor, describí las librerías de EmacsLisp que agregues a la Wiki. Podés crear nuevas páginas para ello(mirá CreateNewPages) o agregá la descripción en las páginas existentes.
+Por favor, describe las librerías de EmacsLisp que agregues a la Wiki. Puedes crear nuevas páginas para ello (consulta CreateNewPages) o agrega la descripción en las páginas existentes.
 
-Directrices propuestas para los archivos de Emacs Lisp en la Emacs Wiki están en ElispAreaConventions.
+Directrices propuestas para los archivos de Emacs Lisp en la Wiki de Emacs están en ElispAreaConventions.
 
 == Alternativas ==
 
 Aquí hay algunos lugares para descargar y distribuir código elisp:
 
-* [[ELPA]] -- paquetes incluídos en ELPA pueden ser instalados usando el manejador de paquetes package.el. El número de paquetes es limitado pero de buena calidad.
+* [[ELPA]] -- paquetes incluidos en ELPA se pueden instalar usando el administrador de paquetes package.el. El número de paquetes es limitado pero de buena calidad.
 
-* [[DELPS]] -- paquetes disponibles en formato DELPS, llamado /epackages/, pueden ser instalados usando el manejador ##epackage.el##. Esta es una implementación moderna de ELPA: desde un repositorio centralizado hasta repositorios individualmente mantenidos y distribuídos [[Git]] con un estilo Debian de empaquetamiento.
+* [[DELPS]] -- paquetes disponibles en formato DELPS, llamado /epackages/, se pueden instalar usando el administrador ##epackage.el##. Esta es una implementación moderna de ELPA: desde un repositorio centralizado hasta repositorios [[Git]] individualmente mantenidos y distribuidos con un estilo de empaquetamiento Debian.
 
-* [[Emacsmirror]] -- Una gran colección de paquetes que son distribuidos en forma de repositorios [[Git]]. No tienen soporte para package.el aún.
+* [[Emacsmirror]] -- Una gran colección de paquetes que son distribuidos en forma de repositorios [[Git]]. No tienen soporte para package.el, aún.
 
 * WikifiedEmacsLispList -- Punteros de varios archivos en los sitios de los propios autores. Desafortunadamente, muchos de los enlaces están muertos (aquellos que no lo están, también se encuentran en la Emacsmirror).
 
@@ -109,15 +107,15 @@ Puedes encontrar consejos adicionales en ElispAreaDiscussions
 
 === Versionar ===
 
-Si en una página de código elisp pones un signo de porciento (%), luego "Id:" (los dos puntos son necesarios) y a continuación otro %, se expandirá en un número de revisión y se verá así:
+Si en una página de código elisp pones un signo de porcentaje (%), luego "Id:" (los dos puntos son necesarios) y a continuación otro %, se expandirá en un número de revisión y se verá así:
 
-%Id: 4%
+%Id: 5%
 
 De esta manera puedes tener archivos lisp en la Wiki con números de versión automáticos.
 
 === Conflictos con los Nombres ===
 
-Si observas que hay librerías que están duplicadas con respecto a las de Emacs, ten en cuenta por qué el código ha sido posteado en la wiki.
+Si observas que hay librerías que están duplicadas con respecto a las de Emacs, ten en cuenta por qué el código ha sido publicado en la wiki.
 
 # Por error -- Hay que borrar la página.
 # Es una librería que fue subida a la Wiki antes de que haya sido integrada al Emacs -- En este caso, depende: Algunas veces estas copias son la última revisión que actualmente funciona en los viejos emacsen.
@@ -130,7 +128,7 @@ Al pegar un código en la página debes asegurarte que sea codificado bajo UTF-8
 La Wiki brinda páginas usando un encabezado HTTP que indica a los navegadores clientes que la página será codificada bajo UTF-8.
 Si tu código contiene una codificación Latin-1 u otra, la operación de pegado resultará en la aparición de caracteres basura: no será válido para UTF-8.
 
-Esto pasa usualmente cuando el código contiene Strings literales. Considere usar caracteres escrito en forma octal:
+Esto pasa usualmente cuando el código contiene Strings literales. Considera usar caracteres escritos en forma octal:
 
   (replace-string "\221" "`" nil (point-min) (point-max))  ; abriendo comilla simple
   (replace-string "\222" "'" nil (point-min) (point-max))  ; cerrando comilla simple
