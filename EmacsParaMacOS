@@ -1,0 +1,1056 @@
+== Binarios para OS X ==
+
+El  Emacs oficial  es  totalmente compatible  con Mac  OS  X (junto  con
+GNU/Linux,   Windows,   DOS   y  más).    Puedes   encontrar   versiones
+precompiladas de emacs y Emacs.app en https://emacsformacosx.com/.
+
+Las versiones de macOS anteriores a 10.15 Catalina incluyen una copia de
+GNU Emacs 22 sin compatibilidad con IGU compilada y, por lo tanto, Emacs
+está disponible automáticamente en todas  las versiones de macOS excepto
+en las más recientes a través de  la terminal. En macOS 10.15 Catalina y
+superior,  todavía  se  incluye   [[mg]]  (anteriormente  conocido  como
+microGNUemacs).  Sin   embargo,  hay   otras  distribuciones   de  Emacs
+orientadas a macOS  que incluyen compatibilidad con IGU,  así como otras
+características que  pueden hacer que  sea una opción más  adecuada para
+algunas personas, si no para la mayoría.
+
+Cocoa es  la API de  Objective-C (desarrollada originalmente  por !NeXT)
+que se  usa para aplicaciones  OS X  nativas (incluidas en  Emacs 23.2).
+Aquamacs y  Emacs.app (que se fusionó  con el Emacs oficial  a partir de
+Emacs-23)  se ejecutan  bajo Cocoa.   Ten en  cuenta que  Emacs.app, GNU
+Emacs/Cocoa y GNU Emacs/nextstep se refieren a lo mismo.
+
+Carbon es la API del lenguaje C (desarrollada por Apple) que permite que
+las aplicaciones  escritas en  OS 9  (o anterior) se  ejecuten en  OS X.
+Carbon Emacs se  ejecuta en Carbon.  A partir de  Emacs 23, Carbon Emacs
+quedó obsoleto en favor de Emacs.app.
+
+X11 Emacs es  el emacs "original" que se ejecuta  bajo X11 (instalado de
+forma predeterminada en las versiones recientes de Mac OS X)
+
+Si eres un nuevo usuario de Emacs en Mac, muchas personas consideran que
+Aquamacs es una  buena opción.  Muchos encuentran que es  más parecido a
+Mac  que Emacs.app.   Si has  usado  Emacs antes  y ya  tiene tu  propio
+archivo de inicialización de  Emacs, entonces Emacs.app es probablemente
+una mejor opción.
+
+En comparación con Aquamacs, Emacs.app tiene un enfoque más tradicional,
+prefiere un  solo marco y es  más probable que funcione  con archivos de
+inicialización de emacs existentes. Cuando se usa el binario EmacsforOsx
+estándar, un sitio  útil para configurar, al menos, el  servidor Emacs y
+las        aplicaciones        cliente         de        Emacs        es
+[https://korewanetadesu.com/emacs-on-os-x.html  Configurar Emacs  en Mac
+OS X]. Los entornos del intérprete  de comandos de Emacs se comportan de
+manera  diferente a  los  entornos  de Terminal  y  para tener  entornos
+correctos   como  LANG=en_GB.utf-8   LC_ALL=en_GB.utf-8  o   PATH=  para
+aplicaciones secundarias iniciadas desde  Emacs como R, Octave, Gnuplot,
+etc., configura los entornos no solo  en .bash_profile sino en .bashrc y
+pruebe (ya que Yosemite /etc/launchd.conf  ya no se consulta por razones
+de seguridad).
+
+Si estás buscando  una mayor integración con OSX, la  portación a Mac de
+Mitsuharu Yamamoto podría ser la mejor opción.
+
+=== Compilaciones binarias estándar para OS X ===
+
+Estas compilaciones se basan en la  versión de desarrollo de GNU Emacs y
+no contienen paquetes  ni parches adicionales. Sin  embargo, los métodos
+abreviados de teclado  populares de Mac están  disponibles (por ejemplo,
+Comando-O para abrir  un archivo); estos están  asignados al modificador
+Super (es decir, la tecla Apple/Command funciona como Super).
+
+* https://emacsformacosx.com/  --  "¡Emacs  puro!   ¡Sin  extras!   ¡Sin
+  tonterías!"        El       sitio       pone       a       disposición
+  [https://emacsformacosx.com/builds   Versiones,   Pruebas  previas   y
+  nocturnas].
+
+=== Distribuciones OS X con extras ===
+
+Las distribuciones personalizadas contienen  rutinas de inicio y ajustes
+para hacer que el comportamiento de  la interfaz de usuario de Emacs sea
+más "similar a  Mac". Además de eso, suelen  incluir versiones recientes
+de paquetes populares.
+
+* [https://bitbucket.org/mituharu/emacs-mac/  Mitsuharu  Yamamoto's  Mac
+  port] se basa en la última versión estable de GNU Emacs (28.1 a partir
+  de 2022-05) y  afirma incorporar la mayoría de  las características de
+  Carbon Emacs y  la portación Carbon+AppKit de Emacs  22.3. Ha mejorado
+  la compatibilidad con  C-g, una emulación de `select'  que no requiere
+  encuestas   periódicas,   compatibilidad    con   pantalla   completa,
+  representación de tipos de letra  de subpíxeles y desplazamiento suave
+  (píxeles).   Consulta  el   [https://bitbucket.org/mituharu/emacs-mac/
+  readme]   para  obtener   más   detalles.  Disponible   a  través   de
+  [https://github.com/railwaycat/homebrew-emacsmacport    Homebrew]    y
+  MacPorts  (como  emacs-mac-app), como  se  explica  a continuación,  o
+  [https://github.com/railwaycat/homebrew-emacsmacport/releases binarios
+  precompilados].
+
+* AquamacsEmacs (https://aquamacs.org/)  es una conveniente distribución
+  basada en GNU Emacs 25.3.   Aquamacs viene preconfigurado con una gran
+  cantidad de paquetes y se diferencia de otros Emacsen en que se parece
+  más a una  aplicación de Mac OS  X. Se admiten los  acordes de teclado
+  estándar  de OS  X,  los  archivos se  abren  en  ventanas o  pestañas
+  separadas,  hay  agradables tipos  de  letra  disponibles y  tiene  un
+  conveniente instalador  de arrastrar y  soltar. Se admiten  cientos de
+  tipos de  archivos (C, Java,  HTML, Python, Ruby, AppleScript,  XML, R
+  (Splus), LaTeX  (AUCTeX), etc.). Todos estos  modos adicionales vienen
+  incluidos  y configurados  fácilmente, sin  háckear el  `InitFile'. El
+  corrector  ortográfico es  fácil de  instalar (p.  ej., CocoAspell)  y
+  también se proporcionan  métodos de entrada asiáticos  y opciones para
+  solucionar la falta de la tecla  Meta en los teclados de Mac. Aquamacs
+  se basa en Cocoa, el marco de interfaz de usuario moderno en OS X.  Es
+  una  aplicación universal  lista  para usar  en PPC  e  Intel Mac  que
+  funciona  bien  en  todas  las   versiones  recientes  de  Mac  OS  X.
+  Recomendado para usuarios  de Mac que desean un Emacs  que se adapte a
+  la      Mac.       [http://aquamacs.org/nightlies.shtml      Versiones
+  experimentales] basadas en GNU Emacs 25 también están disponibles.
+
+* [https://vigou3.gitlab.io/emacs-modified-macos/  Emacs Modificado para
+  macOS] es una distribución basada en  la última versión estable de GNU
+  Emacs con algunas adiciones, sobre todo [CategoryESS ESS] y AUCTeX. De
+  lo contrario, esta es una distribución estándar de Emacs. Los usuarios
+  de Emacs en  otras plataformas apreciarán la apariencia  similar de la
+  aplicación.
+
+* [https://homepage.mac.com/zenitani/emacs-e.html    CarbonEmacsPackage]
+  brinda  una  apariencia   auténtica  del  Emacs  original   y  es  una
+  distribución  compatible con  Mac basada  en una  versión anterior  de
+  Emacs,                            GNU                      Emacs 22.3. 
+  ([https://groups.google.com/group/carbon-emacs/browse_thread/thread/8d87f6babc1f3e29
+  No se planean  nuevas versiones]).  Utiliza el archivo  ".emacs" en el
+  directorio de inicio  de un usuario, haciendo la  migración desde/a un
+  entorno UNIX/Linux  fácil y directo.  Viene con toneladas  de paquetes
+  adicionales  (incluidos AUCTeX,  ColorTheme, EmacsMuse,  EmacsSession,
+  EmacsSpeaksStatistics,  HaskellMode,  HowmMode,  [[Mew]],  [NxhtmlMode
+  nXhtml],  PhpMode,  PoMode,  PsgmlMode,  PythonMode,  RubyMode,  etc.)
+  Varios compatibles con Mac se  agregan funciones; opacidad de ventana,
+  atajos de  teclado OSX  (MacKeyMode), cuadro  de diálogo  de impresión
+  estilo  cacao (MacPrintMode)  y soporte  para nombres  de archivo  con
+  acentos.  Una aplicación binaria universal está disponible.
+
+== Construir Emacs desde la fuente ==
+
+=== Obtener la fuente ===
+
+==== GIT ====
+
+Para descargar emacs usando git, usa este comando:
+
+    git clone git://git.savannah.gnu.org/emacs.git
+
+==== Tarball ====
+
+Disponible  en  la página  [http://savannah.gnu.org/projects/emacs/  GNU
+Savannah emacs].  Haz clic en "Área de descargas" en "Resumen rápido".
+
+=== Construir Emacs para OS X, usando la IGU normal ===
+
+Hay muchas opciones para compilar emacs (como compilar para la IGU X11 o
+la IGU  Cocoa), que se  analizan en el  archivo INSTALL. También  hay un
+script (emacs/mac/make-package) para  crear un paquete de Mac  OS X para
+que lo use el instalador.
+
+Para construir Emacs bajo Mac OS X:
+
+<pre>
+  ./configure
+  make install
+</pre>
+
+Cuando   finalice   la   compilación,    deberías   ver   Emacs.app   en
+./nextstep/Emacs.app.     Simplemente   cópialo    en   tu    directorio
+`Applications' y ábrelo para ejecutarlo.
+
+Para  obtener   instrucciones  más   detalladas,  consulta   el  archivo
+<tt>nextstep/INSTALL</tt>.   Además, te  puedes  beneficiar  al leer  el
+script de compilación aquí: https://github.com/ieure/emacs-nightly.
+
+[nuevo:CarlGroner:2011-10-20 18:26 UTC] A partir  de octubre de 2011, la
+versión de  `autoconf' en OS  X Lion  no es lo  suficientemente reciente
+como para configurar/compilar Emacs desde  la fuente. Se proporciona una
+solución mediante  el uso  del script  <tt>autogen/copy_autogen</tt> que
+compilará  emacs utilizando  versiones pregeneradas  de los  archivos de
+compilación     requeridos.     Consulta      los     comentarios     en
+<tt>autogen/copy_autogen</tt> para obtener más información.
+
+==== Aquamacs ====
+
+AquamacsEmacs se puede  compilar a través de un script  de compilación o
+manualmente.  La  fuente  está  disponible en  un  repositorio  de  Git.
+Entonces hazlo con:
+
+<pre>
+  ./configure
+  make
+  make install
+</pre>
+
+Cuando finalice la compilación, busca `Aquamacs.app` en `./nextstep/'.
+
+Nota: los  cambios en  cualquier archivo fuente  en `src/`  requieren un
+simple   "make".     El   binario    se   instalará    directamente   en
+`nextstep/Aquamacs.app`.  Los cambios en  los archivos fuente en `lisp/`
+requieren  un "make  install".  Los  cambios en  cualquier archivo  lisp
+directamente en el paquete `.app` pueden tener efecto o no (al reiniciar
+Aquamacs):     para    muchos     de     estos    archivos     <tt>(list
+lisp/site-load.el)</tt>, debe llamar a "make".
+
+Las  instrucciones  de  construcción  detalladas  están  disponibles  en
+`BuildingAquamacs`.
+
+==== X11 Emacs ====
+
+Las instrucciones  para compilar e  instalar se pueden encontrar  en los
+archivos  `INSTALL`  o  `INSTALL.REPO`.  La  compilación  e  instalación
+básicas de la aplicación X11 Emacs utiliza los comandos:
+
+<pre>
+    ./configure --with-x
+    make
+    sudo make install
+</pre>
+
+==== Carbon Emacs (para Emacs<23) ====
+
+Las instrucciones  para compilar  e instalar se  pueden encontrar  en el
+archivo  recién  descargado  en `emacs/mac/INSTALL`.  La  compilación  e
+instalación básicas de la aplicación carbon Emacs utiliza los comandos:
+
+<pre>
+    ./configure --enable-carbon-app
+    make
+    sudo make install
+</pre>
+
+Nota:  Carbon  emacs  ha  sido  reemplazado por  Cocoa  Emacs  en  Emacs
+23.x. Esta es  la razón por la que <tt>configure</tt>  ya no reconoce la
+opción <tt>--enable-carbon-app</tt>.
+
+
+== Instalar Emacs con un administrador de paquetes ==
+
+Los  administradores  de  paquetes  brindan  una  forma  conveniente  de
+instalar y mantener/actualizar software.
+
+=== Fink ===
+
+Fink     [https://fink.sourceforge.net/    http://fink.sourceforge.net/]
+incluye varias versiones de Emacs en paquetes como `emacs23`, `emacs24`,
+`emacs24-nox`.   También incluye  paquetes  para  varias extensiones  de
+Emacs como AUCTeX.
+
+=== Homebrew ===
+
+[http://brew.sh/ Homebrew] tiene Emacs 28.1 a partir de mayo de 2022.
+
+==== Instalación de homebrew Cask ====
+
+Homebrew  ahora  recomienda usar  la  versión  `cask` con  el  siguiente
+mensaje:  "Prueba Cask  para  obtener  una versión  de  Cocoa con  mejor
+soporte"
+
+Para instalar la versión cask:
+
+<pre>
+brew install --cask emacs
+</pre>
+
+Esto instala un paquete precompilado de https://emacsformacosx.com/
+
+==== Instalación homebrew estándar ====
+
+Si prefiere  no ejecutar  la versión  cask, aún  puedes usar  la antigua
+receta de homebrew.
+
+* Se puede construir una aplicación Emacs.app específica de Cocoa usando
+  el interruptor <tt>--with-cocoa</tt>.
+* Se puede construir una versión compatible con X11 usando el conmutador
+  <tt>--with-x</tt>. Ten en cuenta que  esta versión no tendrá todas las
+  funciones  de  la  versión  Cocoa;  úsala  solo  si  es  absolutamente
+  necesario.
+
+Otras opciones incluyen:
+
+* <tt>--keep-ctags</tt>  No elimina el ejecutable  ctags que proporciona
+        emacs.  **No se  recomienda el  uso  de este  indicador** En  su
+        lugar,  utiliza  <tt>brew  install   ctags</tt>  después  de  la
+        instalación.
+* <tt>--srgb</tt>
+       Esta opción habilitará los colores sRGB al usar Cocoa.
+
+Para   instalar  usando   el   interruptor  <tt>--with-cocoa</tt>,   uno
+simplemente usa:
+
+<pre>
+brew install --with-cocoa emacs
+</pre>
+
+para   obtener  algunos   "bonitos"  colores,   agrega  el   interruptor
+<tt>--srgb</tt>:
+
+<pre>
+brew install --with-cocoa --srgb emacs
+</pre>
+
+y finalmente vincúlalo a tu directorio `Applications`:
+
+<pre>
+ln -Fs $(find /usr/local -name "Emacs.app") /Applications/Emacs.app
+</pre>
+
+Esto crea un  enlace simbólico y no  un alias. Por lo  tanto, es posible
+que   Spotlight    no   lo   encuentre   (probado    en   macOS   Sierra
+10.12.2). Spotlight indexa  enlaces simbólicos a archivos  que se tratan
+como archivos del  sistema, pero no los muestra en  la IGU. Sin embargo,
+muestra  alias,  por  lo  que puedes  simplemente  <kbd>comando</kbd>  +
+<kbd>opción</kbd>                  +                  <tt>arrastrar</tt>
+<code>/usr/local/Cellar/emacs/*/Emacs.app</code>                       a
+<code>/Applications/</code> desde el Finder. O:
+
+<pre>
+$ osascript -e "tell application \"Finder\" to make alias file to (POSIX file \"/usr/local/Cellar/emacs-plus/25.3/Emacs.app\") at POSIX file \"$HOME/Applications\""
+</pre>
+
+Después de la instalación, usar el comando <tt>emacs</tt> en la terminal
+abre de manera  predeterminada Emacs.app en una  nueva ventana, separada
+de la  terminal. Esto representa  un cambio  en el comportamiento  de la
+versión preinstalada de  <tt>emacs</tt> en macOS 10.14  y anteriores. Si
+deseas ejecutar  <tt>emacs</tt> en la  terminal, se debe invocar  con el
+indicador  <tt>-nw</tt> "sin  ventana".  Debes  configurar variables  de
+entorno  (EDITOR y/o  VISUAL), en  perfiles del  intérprete de  comandos
+(.bash_profile)  y otros  archivos de  configuración (.git_config)  para
+invocar  <tt>emacs  -nw</tt> si  este  es  el valor  predeterminado  que
+deseas.
+
+==== Versión de Emacs-Plus en tap ====
+
+Para        usar       en        su        lugar       la        versión
+[https://github.com/d12frosted/homebrew-emacs-plus  emacs-plus], que  es
+como homebrew  emacs normal pero  con algunas opciones  de configuración
+habilitadas,
+
+<pre>
+brew tap d12frosted/emacs-plus
+brew install emacs-plus
+</pre>
+
+
+==== Versión de Mitsuharu en tap ====
+
+Para usar  en su lugar  la versión Yamamoto  Mitsuharu de Emacs  (27.1 a
+partir de  2020-11) (con  más [https://bitbucket.org/mituharu/emacs-mac/
+características específicas de mac]):
+
+<pre>
+brew tap railwaycat/emacsmacport
+brew install emacs-mac
+</pre>
+
+y  finalmente  vincúlalo  a   tu  directorio  `Applications`  (ubicación
+predeterminada de la aplicación Homebrew):
+
+<pre>
+ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications
+</pre>
+
+=== MacPorts ===
+
+!MacPorts [https://www.macports.org/  https://www.macports.org/] es otra
+forma de  instalar Emacs en Mac  OS X o macOS (e  incluso otros sistemas
+similares a Unix que también son compatibles con !MacPorts).
+
+A partir del 30 de mayo de 2022 brinda los siguientes paquetes:
+
+* emacs 28.1
+* emacs-app 28.1
+* emacs-mac-app 9.0
+* xemacs 21.4.22
+* y unos cuantos más...
+
+Consulta        [https://www.macports.org/ports.php?by=name&substr=emacs
+Portaciones disponibles] para ver la lista actual.
+
+El ejecutable de emacs se instala en:  <code>/opt/local/bin/emacs</code>
+
+El ejecutable emacs-app se instala en:
+<code>/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs</code>
+
+Los diversos paquetes de emacs que ofrece <nowiki>MacPorts</nowiki> (por
+ejemplo, org-mode) se instalarán en:
+
+<code>/opt/local/share/emacs/site-lisp/</code>
+
+Ten en cuenta que Mac OS–X Lion viene con GNU Emacs 22.1.1, ubicado en:
+
+<code>/usr/bin/emacs</code>
+
+Usuarios  de   Linux,  agregan  estas   líneas  a  su   //.profile//  (o
+//.bashrc//, etc.) para sentirse como en casa:
+
+{{{
+alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'
+
+alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'
+}}}
+
+Para las versiones nativas de OS  X (Cocoa), una vez que hayas instalado
+!MacPorts, ejecuta
+
+{{{
+sudo port install emacs-app
+}}}
+
+o (si prefieres una versión de desarrollo, generalmente más reciente)
+
+{{{
+sudo port install emacs-app-devel
+}}}
+
+También es  posible compilar la versión  de desarrollo de GNU  Emacs con
+ATSUI: Apple Type Services for Unicode Imaging.
+
+==== Versión de Mitsuharu en MacPorts ====
+
+Para usar  en su lugar  la versión Yamamoto  Mitsuharu de Emacs  (27.1 a
+partir de  2020-11) (con  más [https://bitbucket.org/mituharu/emacs-mac/
+características específicas de mac]):
+
+<pre>
+sudo port install emacs-mac-app
+</pre>
+
+La aplicación aparecerá en tu directorio `Applications/MacPorts`.
+
+=== pkgsrc ===
+
+pkgsrc [https://pkgsrc.org/  http://pkgsrc.org/] es otro medio  más para
+instalar Emacs en Mac OS X o macOS.
+
+Los      binarios      precompilados      están      disponibles      en
+[https://pkgsrc.joyent.com/install-on-osx/
+https://pkgsrc.joyent.com/install-on-osx/].
+
+<pre>
+pkgin in emacs
+</pre>
+
+
+== Emulador de terminal ==
+
+Lee sobre [[iTerm2]] si quieres pasar la mayor parte de tu tiempo en ssh
+usando emacs en lugar de la IGU.
+
+== Consejos ==
+
+=== Visita los archivos nativa de Mac con la app Mac dired ===
+
+Usa el modo shell. Asegúrate de que  el cursor esté en el archivo, luego
+escribe:  ! open <kbd>RET</kbd>
+
+=== Usar la IGU Emacs.app desde la línea de comando ===
+
+Para debug-init:
+
+<pre>
+open /Applications/Emacs.app --args --debug-init
+</pre>
+
+Para --debug-init si instalaste Emacs.app desde Macports:
+
+<pre>
+open -a /Applications/MacPorts/Emacs.app --args --debug init
+</pre>
+
+Para  abrir  un archivo  desde  una  terminal.  Esto  se puede  usar  en
+combinación con el comando sudo.
+
+<pre>
+open -a /Applications/Emacs.app <file-name> 
+</pre>
+
+Como arriba,  pero para cuando Emacs.app  se haya instalado a  través de
+MacPorts.
+
+<pre>
+open -a /Applications/MacPorts/Emacs.app <file-name> 
+</pre>
+
+=== Llamar a Emacs desde otros programas ===
+
+Inserta esto en el archivo `.bash_profile` en tu directorio de inicio:
+
+<pre>
+export EDITOR="/Applications/Emacs.app/Contents/MacOS/Emacs"
+</pre>
+
+A diferencia  de "open -a", este  comando abrirá una nueva  ventana y no
+terminará    hasta    que    cierres    la    ventana    (<kbd>C-x</kbd>
+<kbd>C-c</kbd>). Por lo  tanto, el programa llamador  esperará hasta que
+hayas terminado  de editar, antes de  leer el archivo. Por  ejemplo, los
+programas de  control de cambios  como git y  svn llamarán a  emacs para
+editar la descripción de un cambio.
+
+=== Usar Emacs.app desde el Dock ===
+
+Crea una aplicación que ejecute un script del intérprete de comandos que
+ejecute Emacs.app, así:  usa el Finder para navegar  a `/Aplicaciones` y
+haz      doble     clic      en     [https://support.apple.com/kb/HT2488
+Automator.app]. Selecciona el tipo de  documento "Aplicación" y haz clic
+en   "Seleccionar".   En   la   lista  de   la   izquierda,   seleccione
+"Biblioteca". En la siguiente lista, busque "Ejecutar script de Shell" y
+arrástralo al área de flujo de trabajo  a la derecha. En el nuevo script
+de shell, elimine el texto y reemplázalo con:
+
+<pre>
+cd # Comenzar en mi directorio de inicio.
+# Usar mi entorno:
+echo '/Applications/Emacs.app/Contents/MacOS/Emacs "$@"' | zsh --login -s "$@"
+</pre>
+
+Selecciona  "Shell: /bin/zsh"  y "Pasar  entrada: como  argumentos". Haz
+clic en "Archivo > Guardar..." y elige un nombre y una ubicación para tu
+nueva   aplicación.   Por   ejemplo,   puedes   elegir   el   directorio
+`/Aplicaciones`  y   nombrar  la  aplicación  "Emacs   para  Dock".   No
+reemplaces Emacs.app.
+
+Si lo  deseas, puedes cambiar el  icono de tu nueva  aplicación para que
+coincida  con Emacs.app,  así: selecciona  Emacs.app y  haz clic  con el
+botón     derecho     en     "Obtener    información"     o     presione
+<kbd>cmd</kbd>+<kbd>i</kbd>. En la ventana de información, selecciona el
+icono   pequeño   en   la   esquina   superior   izquierda   y   cópialo
+(<kbd>cmd</kbd>+<kbd>c</kbd>).  A  continuación,   selecciona  tu  nueva
+aplicación, obtén  su información,  selecciona el  ícono pequeño  y pega
+(<kbd>cmd</kbd>+<kbd>v</kbd>).
+
+Arrastra  tu nueva  aplicación a  [http://support.apple.com/kb/HT2474 el
+Dock] como de costumbre y listo.
+
+Tu nueva aplicación hace dos cosas que el Dock no hace (en Mac OS 10.9).
+El comando "cd" hace que emacs se  inicie en tu directorio de inicio, en
+lugar del directorio raíz "/".  La opción --login proporciona a emacs el
+mismo  entorno  que  una  [https://en.wikipedia.org/wiki/Terminal_(OS_X)
+Terminal] interactiva.  [Cuidado si  usas zsh:  el entorno  es el  de un
+intérprete  de comandos  de  inicio  de sesión  no  interactivo; eso  es
+[.]zshrc  *no*fuente; MacOS  11.6]. En  particular,  le das  a emacs  tu
+variable de entorno  PATH habitual, por lo que  puedes ejecutar comandos
+en  emacs de  la  misma manera  que  los comandos  en  la Terminal.  Una
+alternativa  a  --login  es  -i,  que configura  el  entorno  de  manera
+diferente,         como         se        describe         en         el
+[http://www.gnu.org/software/bash/manual/bashref.html#Bash-Startup-Files
+manual de referencia de Bash].
+
+Si seguiste  la guía anterior,  registraste la  aplicación en el  dock e
+hiciste  clic,  en realidad  crearás  otro  ícono  en  el dock  para  la
+aplicación Emacs  en ejecución.   Después de  eso, si  haces clic  en el
+ícono  de  la aplicación  original,  no  se  creará otra  aplicación  en
+ejecución  en el  Dock, pero  el Automator  podría girar  infinitamente,
+puesto que ya lo tiene (como en el segundo ícono de la aplicación).
+
+Si  estás  utilizando  "M-x  server-start",  entonces  podrías  usar  el
+siguiente script en lugar del anterior:
+
+<pre>
+EMACS=/Applications/Aquamacs.app/Contents/MacOS/Aquamacs
+EMACSCLIENT=/Applications/Aquamacs.app/Contents/MacOS/bin/emacsclient
+
+cd # comienza en mi directorio de inicio
+
+if pgrep -U $(id -u) $(basename $EMACS) >/dev/null; then
+  if [ "$#" -eq 0 ]; then
+    # set -- -e '(select-frame-set-input-focus (car (or (visible-frame-list) (frame-list)))'
+    echo "\"$EMACSCLIENT\" -e '(select-frame-set-input-focus (car (or (visible-frame-list) (frame-list))))'" | bash --login -s "$@";
+  else
+    echo "\"$EMACSCLIENT\" -n \"\$@\"" | bash --login -s "$@";
+  fi
+else
+  echo "\"$EMACS\" \"\$@\"" | bash --login -s "$@" &
+  disown %-
+fi
+</pre>
+
+El  script anterior  se prueba  en  Aquamacs, pero  puede funcionar  con
+Emacs.  Lo que hace, si haces clic en el ícono de la aplicación original
+dos veces, solo  le dará el foco  a Emacs (Aquamacs), y  si arrastras un
+archivo, llamará  a emacsclient para  transferirlo al proceso  de Emacs.
+Si no hay un proceso de Emacs, lo creará. -- CinSK
+
+Si  deseas  que  el  engranaje  de  Automator  deje  de  girar,  intenta
+reemplazar las dos líneas entre el último else y fi con
+
+<pre>
+  nohup bash --login -c "$EMACS "$@"" >/dev/null 2>&1 &
+</pre>
+
+=== Use Alt/Opción como tecla Meta en emuladores de terminal ===
+
+Para  Terminal.app, a  partir de  `Snow  Leopard`: Ve  a Preferencias  →
+Configuración → Teclado  → Usar opción como tecla meta.   A partir de El
+Capitan (o tal vez antes): Ve a Preferencias → Perfiles → Teclado → Usar
+opción como tecla meta.
+
+Para  iTerm: Ve  a  Administrar perfiles  → Perfiles  de  teclado →  (tu
+perfil) →  Tecla de  opción como...   Para iTerm2:  Ve a  Preferencias →
+Perfiles →  Teclas →  La tecla de  opción izquierda/derecha  actúa como:
+Meta
+
+Si deseas utilizar la tecla Opción para los caracteres internacionales y
+[MetaKeyProblems      tecla      Meta]      en      Emacs,      consulta
+[https://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/
+esta página] para iTerm 0.10.x parche y/o binario.
+
+<kbd>Alt-b</kbd>  y <kbd>Alt-f</kbd>  para navegar  por palabra  también
+funcionan para tu intérprete de comandos ahora.
+
+=== Usa Comando Izquierdo como tecla meta en el emulador de terminal iTerm2 ===
+
+# En iTerm2, ve a Preferencias → Teclas
+# 
+# En reasignación de  teclas modificadoras, cambia la  tecla de  Comando
+# izquierda para que se comporte como la Opción derecha
+# Luego ve a Preferencias → Perfiles → $TuPerfil → Teclas
+# En la parte inferior derecha de la  pantalla, haz clic en "La tecla de
+# Opción derecha actúa como: +<kbd>Esc</kbd>"
+
+=== Llama a AppleScript desde Emacs ===
+
+En el trabajo  uso todos los días  la compilación de Andrew  Choi de GNU
+Emacs en  OS X.  Guardo algunas  notas y algunas funciones  de Lisp para
+llamar a AppleScript desde Emacs en mi diario de advogato.org:
+
+https://advogato.org/person/wainstead/
+
+=== Codificación para Terminal.app en OS X ===
+
+* UTF-8
+
+OS X Terminal.app  utiliza UTF-8 de forma  predeterminada.  Para obtener
+el comportamiento correcto de Emacs que viene con OS X, Uso la siguiente
+configuración en mi archivo InitFile:
+
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+
+también  puedes  escribir  acentos  como  este  carácter  <kbd>C-x</kbd>
+<kbd>8</kbd> <kbd>'</kbd> ve <kbd>C-x</kbd> <kbd>8</kbd> <kbd>C-h</kbd>
+
+Consulta UnicodeEncoding.
+
+Esto también funciona con XEmacs 21.5.9 y superior, al menos.
+
+* <kbd>Ctrl-Arriba</kbd> y <kbd>Ctrl-Abajo</kbd> en modo shell
+
+En el modo shell, las combinaciones  de teclas [C-arriba] y [C-abajo] no
+funcionan como se esperaba para navegar por el historial. El problema es
+que   Terminal.app   no   ​​envía  correctamente   estas   secuencias   de
+control.   Para   corregir   este  comportamiento,   abre   Terminal.app
+Preferencias → Configuración → Teclado.  Selecciona el botón "+" y verás
+que puedes agregar enlaces a la  tecla "cursor abajo" con el modificador
+"control".   Selecciona    "enviar   cadena   al   shell"    e   ingresa
+"<kbd>ESC</kbd><kbd>p</kbd>", es decir,  emacs <kbd>M-p</kbd>. De manera
+similar,  define  el   cursor  de  control  hacia   arriba  para  enviar
+"<kbd>ESC</kbd><kbd>n</kbd>" al shell.
+
+=== Teclas modificadoras de enlace ===
+
+Las variables disponibles para vincular las teclas modificadoras:
+
+<pre>
+mac-function-modifier
+mac-control-modifier
+mac-command-modifier
+mac-option-modifier
+mac-right-command-modifier
+mac-right-control-modifier
+mac-right-option-modifier
+</pre>
+
+los  valores pueden  ser  <code>'control, 'alt,  'meta, 'super,  'hyper,
+nil</code> (la  configuración en  nil permite  que el  sistema operativo
+asigne valores)
+
+Consulta                                                         también
+https://lists.gnu.org/archive/html/help-gnu-emacs/2011-02/msg00019.html
+
+ejemplo de uso:
+
+<pre>
+;; acordes de teclado
+(when (eq system-type 'darwin) ;; configuración específica de mac
+  (setq mac-option-modifier 'alt)
+  (setq mac-command-modifier 'meta)
+  (global-set-key [kp-delete] 'delete-char) ;; establece fn-delete para que se elimine a la derecha
+  )
+</pre>
+
+Ejemplo  para   vincular  el   <code>mac-right-option-modifier</code>  a
+<code>'none</code>    para    que    aún    lo    puedas    usar    para
+[https://osxdaily.com/2017/03/22/ type-accents-mac-easy/ escribir acentos]:
+
+<pre>
+(when (eq system-type 'darwin)
+  (setq mac-right-option-modifier 'none))
+</pre>
+
+=== Combinaciones de teclas de Emacs en Cocoa Apps ===
+
+Esta  información no  se refiere  al uso  real de  emacs, pero  creo que
+muchas personas  estarán felices de  saber que algunas  combinaciones de
+teclas de movimiento del cursor/edición de texto se pueden usar en Cocoa
+Apps. Si alguna vez usas cualquier  otra aplicación en tu Mac... También
+puedes configurar  acordes de  teclado adicionales  como se  describe en
+[https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
+este documento].
+
+https://www.lorax.com/FreeStuff/TextExtras.html              proporciona
+características adicionales similares a Emacs para cada aplicación Cocoa
+como <kbd>alt-/</kbd> para compleción
+
+=== Acordes de teclado de Emacs en Terminal ===
+
+[nuevo] Así que <kbd>control-s</kbd> solo me está sonando en emacs en la
+Terminal Mac OS  X (10.4) en mi  máquina de casa, pero  funciona bien en
+10.2 en mi máquina del trabajo  -- ¿qué pasa?  Investigué el problema de
+control  de  flujo   tty  e  intenté  deshabilitarlo;   aún  así,  emacs
+simplemente  se  sienta  allí pitando.   <kbd>M-x</kbd>  save-buffers  y
+<kbd>M-x</kbd> isearch se vuelven una  molestia.  ¿Algún consejo para la
+terminal de Mac OS X?  [nuevo]
+: No conozco la respuesta a esto, pero el hecho de que esté emitiendo un
+  pitido  significa   que  Emacs   probablemente  lo  está   captando  y
+  simplemente no  lo está entendiendo.  Si tuviera  algo que ver  con el
+  control de flujo, ni siquiera sonaría. -- JonathanArnold
+: esto se  puede deber al marcar "decir el  texto seleccionado cuando se
+  presiona la  tecla" en  el panel de  control/sysprefs de  "Speech". La
+  tecla predeterminada es <kbd>ctrl-s</kbd>. -- JeremyLeipzig
+
+[nuevo] Digamos que quiero  ejecutar la función "forward-sexp" vinculada
+a <kbd>C-M-f</kbd>.  *Debería* ser  capaz de llegar  a él  con "mantener
+presionada  la  tecla  <kbd>ctrl</kbd>,  mantener  presionada  la  tecla
+<kbd>alt</kbd>, presionar <kbd>f</kbd>". Sin  embargo, si realmente hago
+eso obtengo el resultado del comando forward-word (<kbd>M-f</kbd>). Para
+realmente obtener forward-sexp, debo "presionar <kbd>esc</kbd>, mantener
+presionada  la  tecla   <kbd>ctrl</kbd>,  presionar  <kbd>f</kbd>".  Sin
+embargo, la tecla <kbd>alt</kbd> funciona bien como meta para cosas como
+<kbd>M-x</kbd>  y básicamente  cualquier  cosa que  no requiera  también
+<kbd>ctrl</kbd>.  Alguien sabe  como o  arreglar esto?  (Esto es  usando
+Terminal.app en 10.4.9 por cierto).
+
+[nuevo]
+: iTerm envía eventos de  mouse y teclas <kbd>C-M</kbd>.  Emacsen remoto
+se ejecuta durante  meses a través de iTerm +  ssh + [[screen]].  ¿Algún
+voluntario  para  háckear <kbd>C-M</kbd>-  y  la  entrada del  mouse  en
+Terminal.app con GDB y Objective-C?
+
+Consulta                           la                          siguiente
+ [https://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html
+ publicación  de blog]  para  intercambiar las  teclas <kbd>cmd</kbd>  y
+ <kbd>meta</kbd>. Además, si deseas conservar una de las funciones de la
+ tecla  <kbd>Opción</kbd>  como  modificador de  caracteres  nacionales,
+ consulta
+ [https://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/
+ this página] para parchar iTerm y/o el binario.
+
+[nuevo]
+: Las  terminales  en la  mayoría de  los sistemas  operativos (incluido
+  Terminal.app) tienen un  conjunto muy limitado de teclas  que envían a
+  las     aplicaciones.     Rara      vez     enviarán     la     teclas
+  <kbd>C</kbd>-<kbd>M</kbd> a  la aplicación.   Por esta y  varias otras
+  razones, recomiendo  ejecutar Emacs  como una aplicación  completa, no
+  dentro de  una terminal,  excepto para  cambios rápidos.   Puedes usar
+  <kbd>Esc</kbd>  <kbd>C-f</kbd>  en  caso  de apuro,  pero  no  es  tan
+  eficiente como <kbd>M-C-f</kbd>.
+
+[nuevo]
+: El acorde <kbd>C-M-f</kbd> se procesa correctamente en Terminal.app de
+  Leopard. Presenté un informe de error con Apple cuando ejecutaba Tiger
+  y, de hecho, recibí una respuesta  por correo electrónico que me decía
+  que esto se solucionaría en Leopard (y así fue).
+
+=== Acceso completo al disco de Emacs en Catalina / Big Sur ===
+
+Las versiones recientes  de macOS requieren que otorgues  acceso a Emacs
+(¡y Terminal!) a tu disco por separado.
+
+GNU Emacs para OSX ejecuta un envoltorio de Ruby, por lo que en realidad
+debes  otorgar   acceso  completo  al   disco  tanto  a  Emacs   como  a
+<tt>/usr/bin/ruby</tt>.
+
+=== Acordes de teclado de Emacs en X11 ===
+
+Consulta la siguiente publicación de  blog para usar <kbd>alt</kbd> como
+tu tecla <kbd>meta</kbd>:
+
+https://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
+
+=== Usar acordes de teclado predeterminados de macOS para Cortar/Copiar/Pegar/Seleccionar todo ===
+
+Si deseas utilizar  los acordes de teclado  predeterminados para copiar,
+pegar,  cortar,  etc. macOS,  coloca  esto  en  tu .init.el.   Dado  que
+<kbd>M-x</kbd> se sobrescribe en la  línea 2, no olvides reasignarlo. Ve
+la última línea como ejemplo.
+
+<pre>
+(global-set-key (kbd "M-c") 'kill-ring-save) ; ⌘-c = Copiar
+(global-set-key (kbd "M-x") 'kill-region) ; ⌘-x = Cortar
+(global-set-key (kbd "M-v") 'yank) ; ⌘-v = Pegar
+(global-set-key (kbd "M-a") 'mark-whole-buffer) ; ⌘-a = Seleccionar todo
+(global-set-key (kbd "M-z") 'undo) ; ⌘-z = Deshacer
+(global-set-key (kbd "≈") 'execute-extended-command) ; Reemplaza ≈ con lo que produzca tu opción-x
+</pre>
+
+=== Maximiza Emacs 23.3 y 24+ en Mac OS X Lion ===
+
+El modo de pantalla  completa no se ofrece en 23.3 o  24+.  Al tratar de
+adaptar   la   función   "maximize-frame"   a   continuación,   descubrí
+inadvertidamente que si uno usa el botón de control de maximizar una vez
+que el marco  se maximiza verticalmente, el marco se  maximiza dos veces
+tanto vertical como  horizontalmente y tres veces da  como resultado que
+el marco se restaure a  su tamaño original.  ¡Suficientemente bueno para
+mi!
+
+-pmr
+
+También         puedes        usar         Zoom        derecha         (
+https://www.macupdate.com/app/mac/30591/right-zoom ) con
+
+-dwd
+
+=== Activar/Desactivar Suavizado ===
+
+Para activar/desactivar  el suavizado,  usa los siguientes  comandos. De
+forma predeterminada, el suavizado está activado.
+
+ (setq mac-allow-anti-aliasing t)    ;; activar suavizado (predeterminado)
+ (setq mac-allow-anti-aliasing nil)  ;; desactivar suavizado
+
+Para  Emacs >=  24.4  y OS  X  >= 10.5,  el tipo  de  letra de  respaldo
+predeterminada ha cambiado, y ya no  admite estos comandos. En su lugar,
+se  puede usar  el antiguo  backend ejecutando  el siguiente  comando en
+Terminal.app.
+
+ $ defaults write org.gnu.Emacs FontBackend ns
+
+Los comandos entonces funcionarán normalmente.
+
+Otra opción es usar el siguiente comando predeterminado, que tiene algún
+efecto, pero no tanto como con el método anterior.
+
+ defaults write org.gnu.Emacs AppleAntiAliasingThreshold 100
+
+Para revertir los cambios, utiliza
+
+
+ defaults delete org.gnu.Emacs AppleAntiAliasingThreshold
+
+
+=== Abra emacsclient en una nueva pestaña de iTerm desde el Finder de Mac ===
+
+<pre>
+-- -*- coding:utf-8 mode:applescript-*-
+-- https://superuser.com/questions/457484/how-to-open-emacs-from-macs-finder
+-- https://gist.github.com/ambethia/304964#comment-799519
+--  use automator.app save this as an app
+on run {input, parameters}
+	tell application "iTerm"
+		activate
+		if (count of terminals) = 0 then
+			set t to (make new terminal)
+		else
+			set t to current terminal
+		end if
+		tell t
+			set s to (make new session at the end of sessions)
+			tell s
+				exec command (("/usr/local/bin/emacsclient -t -nw \"" & POSIX path of first item of input as text) & "\"")
+			end tell
+		end tell
+	end tell
+end run
+</pre>
+
+=== Haz que la pantalla completa funcione con posframe.el ===
+
+<pre>
+;; En la plataforma Mac, Emacs no puede ingresar al modo de pantalla completa nativo de Mac,
+;; de lo contrario, causará una pantalla blanca y un deslizamiento hacia la izquierda y hacia la derecha
+;; después de que la propiedad de pantalla completa original también se integre cuando
+;; Se crea `make-frame`.
+;;
+;; Así que primero configura `ns-use-native-fullscreen` y `ns-use-fullscreen-animation`
+;; para evitar que Emacs use el modo de pantalla completa nativo de Mac.
+;; En lugar de cambiar al espacio de trabajo separado de pantalla completa de
+;; Mac, el modo de pantalla completa tradicional, pantalla completa tradicional
+;; modo, solo estará en full screen en el espacio de trabajo actual.
+;;
+;; De esta manera, para ejecutar `make-frame` al cerrar el código o complemento,
+;; no habrá errores causados ​​por el deslizamiento de Mac por espacio
+;; de trabajo separado
+;;
+;; En la plataforma Mac, no puedes usar `set-frame-parameter` y
+;; `fullboth` directamente para configurar la pantalla completa.  Eso también provocaría que
+;; el administrador de ventanas de Mac lance directamente la ventana de Emacs en un
+;; espacio de trabajo separado, produciendo así el mismo error para `make-frame`.
+;;
+;; Por lo tanto, al iniciar, configure Emacs para maximizar el estado de la ventana
+;; 'set-frame-parameter' y 'maximized', y luego configúralo al máximo
+;; estado de la pantalla después de 5 segundos.
+;;
+;; Mac no moverá la ventana de Emacs a un espacio de trabajo separado y
+;; finalmente resolverá el problema de que la ventana nativa de pantalla completa en
+;; la plataforma Mac hace que `make-frame` se deslice hacia la izquierda y hacia la derecha.
+
+(setq ns-use-native-fullscreen nil)
+(setq ns-use-fullscreen-animation nil)
+(run-at-time "5sec" nil
+             (lambda ()
+               (let ((fullscreen (frame-parameter (selected-frame)
+               'fullscreen)))
+                 ;; Si emacs tiene el estado de pantalla completa, maximizado
+                 ;; primera ventana, arrastra desde el espacio único de Mac.
+                 (when (memq fullscreen '(fullscreen fullboth))
+                   (set-frame-parameter (selected-frame)
+                   'fullscreen 'maximized))
+                 ;; Manipular un cuadro sin esperar a que
+                 ;; animación a pantalla completa complete puede causar un
+                 ;; bloqueo u otro comportamiento inesperado en macOS
+                 ;; (bug #28496).
+                 (sleep-for 0.5)
+                 ;; Llama a `toggle-frame-fullscreen' para emacs de pantalla completa.
+                 (toggle-frame-fullscreen))))
+</pre>
+
+No hace  un marco  de pantalla  completa cuando se  inicie emacs,  de lo
+contrario, el  administrador de ventanas  de macOS moverá la  ventana de
+emacs a  otro espacio único,  el código  anterior puede hacer  que emacs
+solo  sea  un   marco  de  pantalla  completa  en   el  espacio  actual.
+
+---AndyStewart
+
+
+== Háckear las fuentes ==
+
+La sección está  destinada a recopilar trucos útiles para  las fuentes C
+(o  para las  fuentes Lisp  que se  ejecutan antes  de que  se lean  los
+archivos de inicio, como ##startup.el##).
+
+=== Verdadera pantalla completa para la compilación Cocoa en Emacs 23 ===
+
+Esta bifurcación  tiene parches para  pantalla completa real  y funciona
+maravillosamente.
+
+<pre>
+$ git clone git://github.com/typester/emacs.git
+$ cd emacs
+$ ./configure --with-ns
+$ make bootstrap
+$ make install
+$ mv nextstep/Emacs.app /Applications
+</pre>
+
+<pre>
+(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
+</pre>
+
+[https://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html Fuente]
+
+ 
+=== Cambiar la apariencia de la barra de desplazamiento ===
+
+El tamaño de  la "perilla" en la barra de  desplazamiento de una ventana
+determinada es proporcional a la cantidad del búfer que se muestra en la
+ventana.  Cuando  se muestra  todo el  búfer en  la ventana,  la perilla
+ocupa toda  la barra de  desplazamiento.  Encuentro que esto  me distrae
+(sin  mencionar  que estéticamente  es  objetable),  y prefiero  más  el
+comportamiento de  aplicaciones como  iTerm que  muestran una  ranura de
+barra de desplazamiento vacía en tales casos.
+
+Puedes  obtener  ese efecto  en  Emacs  haciendo  un pequeño  cambio  en
+src/nsterm.m.  Busca este fragmento de código:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setFloatValue: 0.0 knobProportion: 1.0];
+  else
+    {
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      por = (float)portion/whole;
+      [self setFloatValue: pos knobProportion: por];
+    }
+  return self;
+}
+</pre>
+
+y reemplazarlo con:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setEnabled:NO];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      por = (float)portion/whole;
+      [self setFloatValue: pos knobProportion: por];
+    }
+  return self;
+}
+</pre>
+
+Otro cambio es hacer que la  perilla tenga un tamaño mínimo y constante,
+de modo que solo indique la posición en el búfer, en lugar de cambiar el
+tamaño de acuerdo  con la parte del  búfer que se muestra  en la ventana
+(los tamaños variables me distraen).  Para  hacer esto, usa el código de
+reemplazo:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setEnabled:NO];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      [self setFloatValue: pos knobProportion: 0];
+    }
+  return self;
+}
+</pre>
+
+
+------
+CategoryPorts CategoryBuilding
