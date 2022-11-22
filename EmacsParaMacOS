@@ -843,7 +843,7 @@ Para revertir los cambios, utiliza
  defaults delete org.gnu.Emacs AppleAntiAliasingThreshold
 
 
-=== Abra emacsclient en una nueva pestaña de iTerm desde el Finder de Mac ===
+=== Abre emacsclient en una nueva pestaña de iTerm desde el Finder de Mac ===
 
 <pre>
 -- -*- coding:utf-8 mode:applescript-*-
