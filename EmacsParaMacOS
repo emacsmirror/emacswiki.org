@@ -442,7 +442,7 @@ usando emacs en lugar de la IGU.
 
 == Consejos ==
 
-=== Visita los archivos nativa de Mac con la app Mac dired ===
+=== Visita los archivos nativos de Mac con la app Mac dired ===
 
 Usa el modo shell. Asegúrate de que  el cursor esté en el archivo, luego
 escribe:  ! open <kbd>RET</kbd>
