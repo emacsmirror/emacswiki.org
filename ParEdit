@@ -6,11 +6,11 @@ Skeleton like matching paren insertion is a small part of ParEdit's functionalit
 
 You can install it by configuring [[MELPA]], and then typing M-x package-install RET paredit RET.
 
-'''The latest stable version is available at <tt>[http://mumble.net/~campbell/emacs/paredit.el paredit.el]</tt>.''' See also the [http://mumble.net/~campbell/emacs/paredit.html Reference Table], the [http://mumble.net/~campbell/emacs/paredit.release Release Notes] and the [http://pub.gajendra.net/src/paredit-refcard.pdf Paredit Reference Card] (modeled on the older PareditCheatsheet).  There is an EmacsRocks episode about %%ParEdit%%: http://emacsrocks.com/e14.html
+'''The latest stable version is available at <tt>[https://paredit.org/paredit.el paredit.el]</tt>.''' See also the [http://mumble.net/~campbell/emacs/paredit.html Reference Table], the [https://paredit.org/NEWS Release Notes] and the [http://pub.gajendra.net/src/paredit-refcard.pdf Paredit Reference Card] (modeled on the older PareditCheatsheet).  There is an EmacsRocks episode about %%ParEdit%%: http://emacsrocks.com/e14.html
 
-The latest ''development'' version is available at <tt>[http://mumble.net/~campbell/emacs/paredit-beta.el paredit-beta.el]</tt> ([http://mumble.net/~campbell/emacs/paredit-beta.html Reference Table]).
+The latest ''development'' version is available at <tt>[https://paredit.org/paredit-beta.el paredit-beta.el]</tt> ([http://mumble.net/~campbell/emacs/paredit-beta.html Reference Table]).
 
-The git repository is at <tt>[http://mumble.net/~campbell/git/paredit.git/ paredit git repository]</tt>.
+The git repository is at <tt>[https://paredit.org/paredit.git paredit git repository]</tt>.
 
 A spinoff of %%ParEdit%% (by the same author) is also now available in the current CVS version of EdWin, MIT Scheme's Emacs clone. Type ##M-x paredit-mode RET## to enable it, or add the following code to your ##.edwin## file to enable it automatically in the Scheme mode:
 
