@@ -11,7 +11,18 @@ From Emacs 26.1 there is `M-x window-swap-states'.
 Available [http://melpa.org/#/buffer-move within MELPA] and [https://github.com/lukhas/buffer-move GitHub]. 
 Swap the current buffer with its adjacent top, bottom, left, or right buffer.
 
-    M-x package-install buffer-move
+ M-x package-install buffer-move
+
+ (defun swap-windows ()
+   "Try swapping window in all directions, stopping when succeeds."
+   (interactive)
+   (condition-case nil (buf-move-to 'right)
+     (error
+      (condition-case nil (buf-move-to 'left)
+        (error
+         (condition-case nil (buf-move-to 'down)
+           (error
+            (condition-case nil (buf-move-to 'up)))))))))
 
 === Via Thomas Bellman's solution ===
 
