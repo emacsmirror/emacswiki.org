@@ -14,7 +14,7 @@ Swap the current buffer with its adjacent top, bottom, left, or right buffer.
  M-x package-install buffer-move
 
  (defun swap-windows ()
-   "Try swapping window in all directions, stopping when succeeds."
+   "Try swapping windows in all directions, stopping when succeeds."
    (interactive)
    (condition-case nil (buf-move-to 'right)
      (error
