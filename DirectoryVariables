@@ -28,7 +28,9 @@ Here's an example of a `.dir-locals.el' file:
       ("src/imported"
        . ((nil . ((change-log-default-name . "ChangeLog.local"))))))
 
-Note that values are not evaluated. However, as in the <code>haskell-mode</code> instance above, you can use the special <code>eval</code> pseudo-variable to evaluate arbitrary code. Remember that when you do this you are no longer dealing with buffer-local variables, but simply evaluating elisp in the current context! e.g.: <code>(eval . (setq foo "bar"))</code> would only set a buffer-local value for <code>foo</code> if that variable was /automatically/ buffer-local.
+Note that values are not evaluated. However, as in the <code>haskell-mode</code> instance above, you can use the special <code>eval</code> pseudo-variable to evaluate arbitrary code. Remember that when you do this you are no longer dealing with buffer-local variables, but simply evaluating elisp in the current context! e.g.: <code>(eval . (setq foo "bar"))</code> would only set a buffer-local value for <code>foo</code> if that variable was /automatically/ buffer-local. Here's a single example of using eval:
+
+ ((nil . ((eval . (functionname ARG)))))
 
 == Notation ==
 
