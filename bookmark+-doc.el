@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jan 14 12:46:47 2022 (-0800)
+;; Last-Updated: Sun Nov 27 14:24:37 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15385
+;;     Update #: 15386
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1030,12 +1030,13 @@
 ;;  read-only mode.  You can use `C-x C-q' in the annotation buffer to
 ;;  switch to edit mode (and back again).
 ;;
-;;  You can use command `bookmark-edit-annotation' or `bmkp-annotate'
-;;  anywhere to edit the annotation for a bookmark.  For
-;;  `bookmark-edit-annotation', you can choose among the bookmarks
-;;  that already have annotations.  With a prefix arg, you can choose
-;;  any bookmark (and so create an annotation).  Using `bmkp-annotate'
-;;  is the same as using `bookmark-edit-annotation' with a prefix arg.
+;;  You can use command `bookmark-edit-annotation' or
+;;  `bmkp-annotate-bookmark' anywhere to edit the annotation for a
+;;  bookmark.  For `bookmark-edit-annotation', you can choose among
+;;  the bookmarks that already have annotations.  With a prefix arg,
+;;  you can choose any bookmark (and so create an annotation).  Using
+;;  `bmkp-annotate-bookmark' is the same as using
+;;  `bookmark-edit-annotation' with a prefix arg.
 ;;
 ;;  In the annotation edit buffer, make your changes and then use `C-c
 ;;  C-c' to save the result.  Use `C-x C-k' if you do not want to save
