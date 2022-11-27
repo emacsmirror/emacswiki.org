@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Nov 18 13:22:29 2022 (-0800)
+;; Last-Updated: Sun Nov 27 12:26:52 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1062
+;;     Update #: 1065
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -552,7 +552,7 @@ the current line's bookmark."
 ;;  *** General Highlight Commands ***
 
 ;;;###autoload (autoload 'bmkp-bookmarks-lighted-at-point "bookmark+")
-(defun bmkp-bookmarks-lighted-at-point (&optional position fullp msgp) ; `C-x p ='
+(defun bmkp-bookmarks-lighted-at-point (&optional position fullp msgp) ; `C-x x ='
   "Return a list of the bookmarks highlighted at point.
 Include only those in the current bookmark list (`bookmark-alist').
 With no prefix arg, return the bookmark names.
@@ -672,7 +672,7 @@ When called from Lisp:
 (bmkp-make-obsolete 'bmkp-unlight-bookmark-here 'bmkp-unlight-bookmark-on-this-line "2022-11-12")
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmark-on-this-line "bookmark+")
-(defun bmkp-unlight-bookmark-on-this-line (&optional noerrorp msgp) ; `C-x p C-u'
+(defun bmkp-unlight-bookmark-on-this-line (&optional noerrorp msgp) ; `C-x x C-u'
   "Unhighlight a highlighted bookmark on this line, preferably at point.
 Other than preferring a bookmark at point, if more than one
 highlighted bookmark is present then which one gets unhighlighted is
@@ -689,7 +689,7 @@ When called from Lisp:
     (bmkp-unlight-bookmark bmk noerrorp msgp)))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmark-this-buffer "bookmark+")
-(defun bmkp-unlight-bookmark-this-buffer (bookmark &optional noerrorp msgp) ; `C-x p u'
+(defun bmkp-unlight-bookmark-this-buffer (bookmark &optional noerrorp msgp) ; `C-x x u'
   "Unhighlight a BOOKMARK in this buffer.
 BOOKMARK is a bookmark name or a bookmark record.
 With a prefix arg, choose from all lighted bookmarks, not just those
@@ -715,7 +715,7 @@ When called from Lisp:
   (bmkp-unlight-bookmark bookmark noerrorp msgp))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmarks "bookmark+")
-(defun bmkp-unlight-bookmarks (&optional overlays-symbols this-buffer-p msgp) ; `C-x p U'
+(defun bmkp-unlight-bookmarks (&optional overlays-symbols this-buffer-p msgp) ; `C-x x U'
   "Unhighlight lighted bookmarks.
 A prefix argument determines which bookmarks to unhighlight:
  none    - Current buffer, all lighted bookmarks.
@@ -736,8 +736,7 @@ Non-nil optional args used when called from Lisp:
                            (current-prefix-arg           '(bmkp-non-autonamed-overlays)))
                      (or (not current-prefix-arg)  (atom current-prefix-arg))
                      'MSG))
-  (unless overlays-symbols
-    (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
+  (unless overlays-symbols (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
   (let ((count           0)
         (count-auto      0)
         (count-non-auto  0)
@@ -975,7 +974,7 @@ Non-interactively:
                (when msgp (message "Bookmark's condition canceled highlighting"))))))))
 
 ;;;###autoload (autoload 'bmkp-light-bookmark-this-buffer "bookmark+")
-(defun bmkp-light-bookmark-this-buffer (bookmark &optional style face msgp) ; `C-x p h'
+(defun bmkp-light-bookmark-this-buffer (bookmark &optional style face msgp) ; `C-x x h'
   "Highlight a BOOKMARK in the current buffer.
 With a prefix arg you are prompted for the style and/or face to use:
  Plain prefix arg (`C-u'): prompt for both style and face.
@@ -1008,7 +1007,7 @@ See `bmkp-light-bookmark' for arguments when called from Lisp."
   (bmkp-light-bookmark bookmark style face msgp))
 
 ;;;###autoload (autoload 'bmkp-light-bookmarks "bookmark+")
-(defun bmkp-light-bookmarks (alist &optional overlays-symbols msgp) ; `C-x p H'
+(defun bmkp-light-bookmarks (alist &optional overlays-symbols msgp) ; `C-x x H'
   "Highlight bookmarks.
 A prefix argument determines which bookmarks to highlight:
  none    - Current buffer, all bookmarks.
@@ -1044,8 +1043,7 @@ Non-nil optional args used when called from Lisp:
                ((natnump current-prefix-arg) '(bmkp-autonamed-overlays))
                (current-prefix-arg           '(bmkp-non-autonamed-overlays)))
          'MSG))
-  (unless overlays-symbols
-    (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
+  (unless overlays-symbols (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
   (let ((bmkp-use-region  nil)          ; Inhibit region handling.
         (total            0)
         (nb-auto          0)
@@ -1244,7 +1242,7 @@ See `bmkp-next-lighted-this-buffer'."
   (bmkp-cycle-lighted-this-buffer (- n) nil startoverp))
 
 ;;;###autoload (autoload 'bmkp-next-lighted-this-buffer-repeat "bookmark+")
-(defun bmkp-next-lighted-this-buffer-repeat (arg) ; `C-x p C-down'
+(defun bmkp-next-lighted-this-buffer-repeat (arg) ; `C-x x C-down'
   "Jump to the Nth next highlighted bookmark in the current buffer.
 This is a repeatable version of `bmkp-next-bookmark-this-buffer'.
 N defaults to 1, meaning the next one.
@@ -1256,7 +1254,7 @@ When called form Lisp, ARG is the raw prefix arg."
   (bmkp-repeat-command 'bmkp-next-lighted-this-buffer))
 
 ;;;###autoload (autoload 'bmkp-previous-lighted-this-buffer-repeat "bookmark+")
-(defun bmkp-previous-lighted-this-buffer-repeat (arg) ; `C-x p C-up'
+(defun bmkp-previous-lighted-this-buffer-repeat (arg) ; `C-x x C-up'
   "Jump to the Nth previous highlighted bookmark in the current buffer.
 See `bmkp-next-lighted-this-buffer-repeat'."
   (interactive "P")
@@ -1270,7 +1268,7 @@ See `bmkp-next-lighted-this-buffer-repeat'."
 
 ;;;###autoload (autoload 'bmkp-describe-bookmark-lighted-here "bookmark+")
 ;;;###autoload (autoload 'bmkp-describe-bookmark-lighted-on-this-line "bookmark+")
-(defun bmkp-describe-bookmark-lighted-on-this-line (&optional position defn) ; `C-x p ?'
+(defun bmkp-describe-bookmark-lighted-on-this-line (&optional position defn) ; `C-x x ?'
   "Describe a highlighted bookmark on this line, preferably one at point.
 Other than preferring a bookmark at point, if more than one
 highlighted bookmark is present then which one is described is
@@ -1486,8 +1484,7 @@ A new list is returned (no side effects)."
 (defun bmkp-number-lighted (&optional overlays-symbols)
   "Number of bookmarks highlighted.
 \(See `bmkp-light-bookmarks' for argument when called from Lisp.)"
-  (unless overlays-symbols
-    (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
+  (unless overlays-symbols (setq overlays-symbols  '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays)))
   (let ((count  0))
     (dolist (ov-symb  overlays-symbols)
       (dolist (ov  (symbol-value ov-symb)) (when (overlay-buffer ov) (setq count  (1+ count)))))
