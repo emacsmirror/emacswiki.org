@@ -1263,9 +1263,8 @@ instruction lines).  It can be preceded only by whitespace.
 
 You can include other text in the annotation, after the
 destination specification, and you can see or edit it when you
-edit the annotation (e.g., using `C-u a' in buffer `*Bookmark
-List*'), but it is ignored when the annotation is "shown" (e.g.,
-using `a a').
+edit the annotation (e.g., `a e' in buffer `*Bookmark
+List*'), but it is ignored when the annotation is only "shown" (e.g., `a a').
 
 In the `*Bookmark List*' display, '''`M-down'''' and '''`M-up'''' move the
 cursor down and up a line, respectively, but they also show the
