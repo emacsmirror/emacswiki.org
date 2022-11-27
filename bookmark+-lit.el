@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Nov 27 12:26:52 2022 (-0800)
+;; Last-Updated: Sun Nov 27 13:09:00 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1065
+;;     Update #: 1071
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -805,7 +805,11 @@ When called from Lisp, non-nil MSGP means echo the new status."
 You are prompted for the bookmark, highlight STYLE, FACE, and
 condition (WHEN) that make up the property-list value of the
 `lighting' entry.
+
 With a prefix argument, do not highlight now.
+
+If there's a highlighted bookmark at point or on its line, then that's
+the default for BOOKMARK-NAME - use `\\<minibuffer-local-map>\\[next-history-element]' to retrieve it.
 
 Non-interactively:
  STYLE, FACE, and WHEN are as for a bookmark's `lighting' entry
