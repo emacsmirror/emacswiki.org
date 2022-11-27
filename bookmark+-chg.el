@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov 18 13:27:58 2022 (-0800)
+;; Last-Updated: Sun Nov 27 12:30:11 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 16879
+;;     Update #: 16880
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2448,6 +2448,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2022/11/27 dadams
+;;     Corrected all C-x p to C-x x, in comments.
 ;; 2022/11/18 dadams
 ;;     bmkp-light-bookmarks: Arg ALIST is not optional.
 ;;     Describe args for commands when called from Lisp.
