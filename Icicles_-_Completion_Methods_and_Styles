@@ -517,6 +517,7 @@ One takeaway here is that fuzzy-match completion is complicated. Rather than try
 
 [:icicle-levenshtein-distance]
 [:LevenshteinMatchCompletion]
+[:LevenshteinCompletion]
 === Levenshtein Completion ===
 
 Library '''<tt>[[levenshtein.el]]</tt>''' is required for '''Icicles''' to use
