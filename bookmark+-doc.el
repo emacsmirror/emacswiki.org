@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 14:31:29 2022 (-0800)
+;; Last-Updated: Sun Nov 27 14:46:56 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15387
+;;     Update #: 15396
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1088,18 +1088,18 @@
 ;;    `find-file-other-window'.
 ;;  * URL is a URL.  It is handled by `browse-url'.
 ;;  * BOOKMARK is the name of a bookmark in the current bookmark
-;;    alist.
+;;    alist.  It is invoked (this is bookmark indirection - a kind of
+;;    bookmark inheritance).
 ;;
 ;;  The double-quote characters are necessary here, so that you can
 ;;  include characters such as `SPC' in the name.  The text must be on
 ;;  the first line of the annotation (not counting the commented
 ;;  instruction lines).  It can be preceded only by whitespace.
 ;;
-;;  You can include other text in the annotation, after the
+;;  You can include other text in the annotation, after the external
 ;;  destination specification, and you can see or edit it when you
-;;  edit the annotation (e.g., using `C-u a' in buffer `*Bookmark
-;;  List*'), but it is ignored when the annotation is "shown" (e.g.,
-;;  using `a a').
+;;  edit the annotation (e.g., `a e' in buffer `*Bookmark List*'), but
+;;  it is ignored when the annotation is only "shown" (e.g., `a a').
 ;;
 ;;  In the `*Bookmark List*' display, `M-down' and `M-up' move the
 ;;  cursor down and up a line, respectively, but they also show the
