@@ -1253,8 +1253,7 @@ these forms as the annotation text.
 * ##FILE## is an absolute file name.  It is handled by
   `find-file-other-window'.
 * ##URL## is a URL.  It is handled by `browse-url'.
-* ##BOOKMARK## is the name of a bookmark in the current bookmark
-  alist.
+* ##BOOKMARK## is the name of a bookmark in the current bookmark alist.  It is invoked (this is bookmark indirection -- a kind of bookmark inheritance).
 
 The double-quote characters are necessary here, so that you can include
 characters such as `SPC' in the name.  The text must be on the
@@ -1262,7 +1261,7 @@ first line of the annotation (not counting the commented
 instruction lines).  It can be preceded only by whitespace.
 
 You can include other text in the annotation, after the
-destination specification, and you can see or edit it when you
+external destination specification, and you can see or edit it when you
 edit the annotation (e.g., `a e' in buffer `*Bookmark
 List*'), but it is ignored when the annotation is only "shown" (e.g., `a a').
 
