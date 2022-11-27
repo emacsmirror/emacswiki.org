@@ -1186,7 +1186,10 @@ bookmark from such a navigation list, use '''`C-x j N'''' or '''`C-x 4 j N''''
 
 
 
-
+[:bmkp-annotate-bookmark]
+[:bookmark-edit-annotation]
+[:bookmark-show-annotation]
+[:bookmark-automatically-show-annotations]
 [:BookmarkAnnotations]
 == Bookmark Annotations ==
 
@@ -1200,11 +1203,11 @@ Command '''`bookmark-show-annotation'''' shows an annotation in
 read-only mode.  You can use '''`C-x C-q'''' in the annotation buffer to
 switch to edit mode (and back again).
 
-You can use command `bookmark-edit-annotation' or `bmkp-annotate'
+You can use command `bookmark-edit-annotation' or `bmkp-annotate-bookmark'
 anywhere to edit the annotation for a bookmark.  For
 '''`bookmark-edit-annotation'''', you can choose among the bookmarks
 that already have annotations.  With a [[prefix argument|prefix arg]], you can choose
-any bookmark (and so ''create'' an annotation).  Using '''`bmkp-annotate''''
+any bookmark (and so ''create'' an annotation).  Using '''`bmkp-annotate-bookmark''''
 is the same as using `bookmark-edit-annotation' with a prefix arg.
 
 In the annotation edit buffer, make your changes and then use '''`C-c C-c'''' to save the result.  Use '''`C-x C-k'''' if you do not want to save the
