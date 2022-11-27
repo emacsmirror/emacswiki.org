@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 14:24:37 2022 (-0800)
+;; Last-Updated: Sun Nov 27 14:31:29 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15386
+;;     Update #: 15387
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1050,12 +1050,13 @@
 ;;  value then the buffer is in show (read-only) mode.
 ;;
 ;;  In the `*Bookmark List*' display, bookmarks with annotations are
-;;  marked by an `a' to the left of the bookmark name.  You can use `a
-;;  a' to show the annotation for the bookmark on the current line.
-;;  You can use `a e' to create an annotation or edit an existing
-;;  annotation for it.  You can use `a >' to edit annotations for all
-;;  of the marked bookmarks.  You can use `a A' to show a list of the
-;;  names and annotations of all annotated bookmarks.
+;;  marked by an `a' character to the left of the bookmark name.  You
+;;  can use `a a' to show the annotation for the bookmark on the
+;;  current line.  You can use `a e' to create an annotation or edit
+;;  an existing annotation for it.  You can use `a >' to edit
+;;  annotations for all of the marked bookmarks.  You can use `a A' to
+;;  show a list of the names and annotations of all annotated
+;;  bookmarks.
 ;;
 ;;  A bookmark annotation is stored as part of the bookmark itself.
 ;;  For this reason, you typically want to keep the text fairly short.
@@ -1068,7 +1069,7 @@
 ;;  are annotations that are short and serve only as pointers to
 ;;  external files, URLs, or other bookmarks.
 ;;
-;;  Whenever you show the annotation of a bookmark (via `a' in the
+;;  Whenever you show the annotation of a bookmark (via `a a' in the
 ;;  `*Bookmark List*' display, `bookmark-show-annotation', or
 ;;  `bookmark-automatically-show-annotations') and the annotation is
 ;;  such a pointer, the effect is to visit the destination.
@@ -1098,7 +1099,7 @@
 ;;  destination specification, and you can see or edit it when you
 ;;  edit the annotation (e.g., using `C-u a' in buffer `*Bookmark
 ;;  List*'), but it is ignored when the annotation is "shown" (e.g.,
-;;  using `a').
+;;  using `a a').
 ;;
 ;;  In the `*Bookmark List*' display, `M-down' and `M-up' move the
 ;;  cursor down and up a line, respectively, but they also show the
