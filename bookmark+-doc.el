@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 14:46:56 2022 (-0800)
+;; Last-Updated: Mon Nov 28 09:27:03 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 15396
+;;     Update #: 15405
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1026,6 +1026,10 @@
 ;;  your choosing.  An annotation is thus metadata that is associated
 ;;  with a bookmark.  You can use it for any purpose you like.
 ;;
+;;  "Annotation" is arguably not the best name for what this is or
+;;  does.  But that's the name vanilla Emacs uses for it, so Bookmark+
+;;  does too.
+;;
 ;;  Command `bookmark-show-annotation' shows an annotation in
 ;;  read-only mode.  You can use `C-x C-q' in the annotation buffer to
 ;;  switch to edit mode (and back again).
@@ -1038,8 +1042,12 @@
 ;;  `bmkp-annotate-bookmark' is the same as using
 ;;  `bookmark-edit-annotation' with a prefix arg.
 ;;
+;;  The annotation edit buffer starts with some text that isn't saved
+;;  as part of the annotation.  It shows some editing instructions,
+;;  the user name, system name, and date+time of the current edit.
+;;
 ;;  In the annotation edit buffer, make your changes and then use `C-c
-;;  C-c' to save the result.  Use `C-x C-k' if you do not want to save
+;;  C-c' to save the result.  Use `C-x C-k' if you don't want to save
 ;;  the changes.  You can also use `C-x C-q' and then `y' to confirm
 ;;  reverting the changes.
 ;;
@@ -1064,32 +1072,39 @@
 ;;  annotation is Org mode, by default.  (To change the mode used,
 ;;  customize option `bmkp-annotation-modes-inherit-from'.)
 ;;
-;;  You can obtain the effect of using longer annotations, and some
-;;  other advantages as well, by using "external annotations".  These
-;;  are annotations that are short and serve only as pointers to
-;;  external files, URLs, or other bookmarks.
+;;  You can obtain the effect of using a longer annotation, and some
+;;  other advantages as well, by using an "annotation forward" in the
+;;  annotation text.  This is short text that serves only as a pointer
+;;  to an external file, URL, or another bookmark.
 ;;
 ;;  Whenever you show the annotation of a bookmark (via `a a' in the
 ;;  `*Bookmark List*' display, `bookmark-show-annotation', or
-;;  `bookmark-automatically-show-annotations') and the annotation is
-;;  such a pointer, the effect is to visit the destination.
+;;  `bookmark-automatically-show-annotations') and the annotation
+;;  contains such a pointer (only one such is used), the effect is to
+;;  visit the pointer's destination.  That is, showing the annotation
+;;  goes to the forward destination, instead of showing the annotation
+;;  text stored with the bookmark.  (You can still see the latter, by
+;;  editing the annotation.)
 ;;
 ;;  So for example, you can use bookmarks to one or more Org files to
-;;  annotate (provide metadata for) one or more other bookmarks.
+;;  annotate (provide notes about, or metadata for) one or more other
+;;  bookmarks.  For example, set a bookmark at some place in an Info
+;;  manual, then write your own notes about that Info content in an
+;;  Org file, bookmark that Org-file destination, and use that as a
+;;  forward destination in your bookmark to that Info location.
 ;;
-;;  You create an external annotation for a bookmark by using one of
+;;  You create an annotation forward for a bookmark by using one of
 ;;  these forms as the annotation text.
 ;;
 ;;     bmkp-annot-url: "FILE"
 ;;     bmkp-annot-url: "URL"
 ;;     bmkp-annot-url: "BOOKMARK"
 ;;
-;;  * FILE is an absolute file name.  It is handled by
+;;  * FILE is an absolute file name.  Forwarding to it uses
 ;;    `find-file-other-window'.
-;;  * URL is a URL.  It is handled by `browse-url'.
+;;  * URL is a URL.  Forwarding to it uses `browse-url'.
 ;;  * BOOKMARK is the name of a bookmark in the current bookmark
-;;    alist.  It is invoked (this is bookmark indirection - a kind of
-;;    bookmark inheritance).
+;;    alist.  Forwarding just jumps to it.
 ;;
 ;;  The double-quote characters are necessary here, so that you can
 ;;  include characters such as `SPC' in the name.  The text must be on
@@ -1098,8 +1113,8 @@
 ;;
 ;;  You can include other text in the annotation, after the external
 ;;  destination specification, and you can see or edit it when you
-;;  edit the annotation (e.g., `a e' in buffer `*Bookmark List*'), but
-;;  it is ignored when the annotation is only "shown" (e.g., `a a').
+;;  edit the annotation (e.g., `a e' in buffer `*Bookmark List*').
+;;  But it is ignored when the annotation is only shown (e.g., `a a').
 ;;
 ;;  In the `*Bookmark List*' display, `M-down' and `M-up' move the
 ;;  cursor down and up a line, respectively, but they also show the
