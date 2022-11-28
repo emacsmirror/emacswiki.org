@@ -35,6 +35,7 @@ Bots:
 
 * [https://emacs.ch/@emacslife @emacslife@emacs.ch]
 * [https://emacs.ch/@rssbot @rssbot@emacs.ch]
+* [https://emacs.ch/@orgmode_bot @orgmode_bot@emacs.ch]
 
 If you want to access Mastodon from Emacs, try [https://codeberg.org/martianh/mastodon.el mastodon.el].
 
