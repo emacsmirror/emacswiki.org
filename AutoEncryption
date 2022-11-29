@@ -12,6 +12,10 @@ This library worked out of the box for me. In contrast to most other approaches 
 
 EasyPG Assistant is bundled with Emacs since version 23.1; it handles gpg encrypted files out-of-the-box so (my) mc-gpg-file-mode is now obsolete.
 
+[new:farblos:2022-11-29 13:57 UTC]
+
+-farblos
+
 == Mc-Auto-Encrypt ==
 
 You can get the code for this at Lisp:mc-auto-encrypt.el.  This method takes advantage of the FileLocalVariables to evaluate a form, mc-auto-encrypt, and setup a before-save-hook and after-save-hook that handles the decryption and encryption.  To start using it on a plain text file you need to put ##(require 'mc-auto-encrypt)## in your DotEmacs and then place this at the end of your unencrypt text file:
