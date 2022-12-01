@@ -303,13 +303,13 @@ RadChand
 ----
 Upd: 01.12.2022
 
-Для корректного copy-paste из других редакторов работает такой код для .emacs
-то есть windows-1251 не срабатывает, используйте cp1251
+Для корректной работы с файлами windows-1251 и copy-paste русского текста в windows-1251 из файла в файл работает такой код для .emacs
+Однако, кодировка буфера обмена selection-coding-system (aka clipboard-coding-system) должна быть в utf-8
 
 <pre>
 ;; ENCODING
 (set-language-environment "Russian")
-(set-selection-coding-system 'cp1251)
-(set-default-coding-systems 'cp1251)
-(prefer-coding-system 'cp1251)
+(prefer-coding-system 'utf-8)
+(setq-default coding-system-for-read 'cp1251)
+(set-selection-coding-system 'utf-8)
 </pre>
