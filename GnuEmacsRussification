@@ -299,3 +299,17 @@ RadChand
 Но все файлы будут открываться и сохраняться в древнючей koi-8 
 (которая в рускоязычных странах не используется уже лет 30), 
 поэтому второй строкой указываем utf-8 (или виндовую cp1251).
+
+----
+Upd: 01.12.2022
+
+Для корректного copy-paste из других редакторов работает такой код для .emacs
+то есть windows-1251 не срабатывает, используйте cp1251
+
+<pre>
+;; ENCODING
+(set-language-environment "Russian")
+(set-selection-coding-system 'cp1251)
+(set-default-coding-systems 'cp1251)
+(prefer-coding-system 'cp1251)
+</pre>
