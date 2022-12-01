@@ -13,8 +13,7 @@ See [[InstallingPackages#installing-packages|InstallingPackages]] for basic usag
 
 ##package.el## supports multiple ELPA repositories.  Sometimes "ELPA" is used to refer to an ELPA repository.
 
-[::GnuELPA] - The [[http://elpa.gnu.org/ GNU ELPA]] repository contains FSF-sanctioned Emacs packages.  It is the default repository used by ##package.el##.
-The following examples show how to add the [[MELPA]] repository, in addition to GNU ELPA.
+[::GnuELPA] - The [[https://elpa.gnu.org/ GNU ELPA]] repository contains FSF-sanctioned Emacs packages.  It is the default repository used by ##package.el##.  Starting with Emacs 28.1, the [[https://elpa.nongnu.org/ NonGNU ELPA]] repository is also enabled by default.  The following examples show how to add the [[MELPA]] repository, in addition to GNU ELPA.
 
 Add this to your [[init file]]:
 
@@ -27,8 +26,9 @@ Package archives may also be [[LocalElpaArchive|local to your machine]].
 You can also add repositories one at a time:
 
 {{{
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
 ;;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 ;;; deprecated for Org versions >= 9.5: see https://orgmode.org/elpa.html
 }}}
@@ -68,7 +68,7 @@ There are varying degrees of difficulty and hoops to contribute to [[MELPA]].
 
 == How Packages work in Emacs 24 ==
 
-[[http://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
+[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html#Packaging-Basics|The Elisp Manual describes how the package system is initialized]]:
 : Whenever Emacs starts up, it automatically calls the function `package-initialize' to load installed packages. This is done after loading the init file and abbrev file (if any) and before running `after-init-hook' (see Startup Summary). Automatic package loading is disabled if the user option package-enable-at-startup is nil.
 
 So packages are initialized //AFTER// the init.el is loaded.  This means you should //NOT// put package specific initialization into your init.el except in a few ways:
@@ -206,7 +206,7 @@ You can make packages work in Emacs 23.  Add something like this to your //init.
 }}}
 
 The following package.el version must be placed in one of the directories in your load path:
-http://git.savannah.gnu.org/gitweb/?p=emacs.git;a=blob_plain;hb=ba08b24186711eaeb3748f3d1f23e2c2d9ed0d09;f=lisp/emacs-lisp/package.el
+https://git.savannah.gnu.org/gitweb/?p=emacs.git;a=blob_plain;hb=ba08b24186711eaeb3748f3d1f23e2c2d9ed0d09;f=lisp/emacs-lisp/package.el
 
 In case Emacs 23 shows this error at startup: //File error: Cannot load file, package//, a solution to this error message is to add the following code to your Emacs init file, and of course to make sure the version of package.el noted above is :
 
