@@ -1,4 +1,4 @@
-*Note:* The repository has had significant availability problems for years (and it [[https://github.com/nicferrier/elmarmalade/issues/158#issuecomment-858226196 seems to be down since 2021]]), so package users/authors may wish to look at [[ELPA]] and [[MELPA]] in addition to (or instead of) Marmalade.
+*Note:* The repository has had significant availability problems for years (and it [[https://github.com/nicferrier/elmarmalade/issues/158#issuecomment-858226196 seems to be down since 2021]]), so package users/authors may wish to look at [[ELPA]], NonGNU ELPA and [[MELPA]] in addition to (or instead of) Marmalade.
 
 ----
 
