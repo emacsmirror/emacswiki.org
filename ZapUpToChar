@@ -83,6 +83,9 @@ See FastNav for a collection of commands that jump to, replace at and do other o
 [new]
 XEmacs has zap-to-char and also zap-up-to-char which deletes up to the given character, but not the character, so deleting something like: "^Hello, World" where ^ is [[Point]], you could `M-x zap-up-to-char ,' and your result would be: "^, World" ... Obviously, if you use that *very* handy function, you would want to bind it to something as it is not bound by default. -- JeremyCowgar
 
+[new]
+I find this command useful when used in conjunction with `repeat', so that if there is another instance of the character before the expected one, I can just keep going. `repeat' is `C-x z' by default, though I bound it to `C-z' to make it faster.
+
 ----
 
 See also ViKeys, ZapToCharUsage, ZapToISearch, FastNav.
