@@ -2,7 +2,7 @@
 
 <pre>
 (make-string (length word) 0)
-<pre>
+</pre>
 
 == replace-regexp-in-string ==
 
