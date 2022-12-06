@@ -1,3 +1,9 @@
+== Replace any character with a fixed char ==
+
+<pre>
+(make-string (length word) 0)
+<pre>
+
 == replace-regexp-in-string ==
 
 Emacs21 already has what you need:
@@ -23,7 +29,6 @@ dired.el already has what you need:
 
 You can use the regexp you want to replace as a separator while splitting a string into a list, and join the strings back using your replacement as the new separator.
 
-<pre>
 (mapconcat 'identity (split-string "da foo is foobared" "fo+") "baz" )
 
  => "da baz is bazbared"
