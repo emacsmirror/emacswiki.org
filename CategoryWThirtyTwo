@@ -92,7 +92,7 @@ Use Dired in Windows and let Emacs open files using default Windows commands.
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * MakeSmartShortcuts -- seeing is believing, try it out
 * [https://github.com/termitereform/JunkPile/blob/master/emacs-on-windows.md How I use Emacs on Windows] -- Useful article talking about Emacs setup, including the PATH and other tips (Non WSL/Cygwin).
-
+* [[Reading PuTTY credentials triggers security alarms]] -- how to disable it
 
 === MS applications ===
 * MsOutlook -- use Emacs as the editor for Microsoft Outlook
