@@ -5,11 +5,11 @@
 Learn [[Lisp]] the easy way: Read the ''Introduction to Programming in Emacs Lisp'', written by Robert J. Chassell.  Highly
 recommended for those without prior Lisp programming experience.
 
-Until Emacs 21, the EmacsLisp introduction was distributed separately. The introduction comes in Texinfo format, which means that it can be converted to a variety of formats: info, html, and others.  So, for example, in Debian, apt-get install emacs-lisp-intro would do the trick.
+Until Emacs 21, the EmacsLisp introduction was distributed separately. The introduction comes in Texinfo format, which means that it can be converted to a variety of formats, such as info and HTML.
 
-The way to read the intro is to type `C-h i' to start Info, and then <code>`m Emacs Lisp Intro RET'</code> or evaluate <code>(info "(eintr) Top")</code>. See InfoMode for help on using Info
+The way to read the intro is to type `C-h i' to start Info, and then <code>`m Emacs Lisp Intro RET'</code> or evaluate <code>(info "(eintr) Top")</code>. See InfoMode for help on using Info. Note that in some systems, Emacs info documentation containing the introduction must be installed separately, for example, in Debian <code>sudo apt install emacs-common-non-dfsg</code> would do the trick.
 
-Get the <code>emacs-lisp-intro</code> file from any GNU ftp mirror or from:
+Get the <code>emacs-lisp-intro</code> file from any GNU FTP mirror or from:
 
 * http://www.gnu.org/manual/manual.html
 * http://www.gnu.org/software/emacs/emacs-lisp-intro/html_mono/emacs-lisp-intro.html
