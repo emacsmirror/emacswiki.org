@@ -8,9 +8,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Wed Jan 12 08:02:15 2022 (-0800)
+;; Last-Updated: Sun Dec 11 13:32:39 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 444
+;;     Update #: 464
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -178,6 +178,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/12/11 dadams
+;;     Require cl-lib instead of cl-macs.
 ;; 2021/03/30 dadams
 ;;     kc-complete-keys-1: Bind sorti-current-order to nil.
 ;; 2021/03/23 dadams
@@ -257,7 +259,7 @@
 ;;
 ;;; Code:
 
-(require 'cl-macs) ;; cl-case, cl-loop
+(require 'cl-lib) ;; cl-case, cl-loop, cl-remove-if (cl-seq)
 (require 'sortie)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
