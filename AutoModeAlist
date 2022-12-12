@@ -7,6 +7,8 @@ Something like this:
 
 Where `python-mode' is a function that is either AutoLoad""ed or already defined.
 
+Regex explanation:
+
 Note that ##\'## matches the end of a string, whereas ##$## matches the empty string before a newline.
 Thus, ##$## may lead to unexpected behavior when dealing with filenames containing newlines.
 (Should be pretty rare...  ;)) 
