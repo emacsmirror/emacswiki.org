@@ -4,6 +4,8 @@ Some users, especially Vi users, prefer a behavior of ZapToChar that
 # doesn't delete the provided character,
 # and starts the point from before the character rather than after.
 
+Note that Gnu Emacs 28.1 defines zap-up-to-char with this behaviour, making the information in this page largely redundant.
+
 A [::zap-up-to-char] can be interactively accomplished with the commands `M-z CHAR CHAR C-b'.[http://lists.gnu.org/archive/html/help-gnu-emacs/2002-12/msg00159.html]
 This is not satisfactory for some.
 In [[XEmacs]], an implementation is installed and available by default.
