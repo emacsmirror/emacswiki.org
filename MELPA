@@ -1,4 +1,4 @@
-[https://melpa.org/ MELPA] is an [[ELPA]]-compatible package repository that contains an enormous amount of useful Emacs packages.
+[https://melpa.org/ MELPA] is an [[ELPA]]-compatible package repository that contains an enormous number of useful Emacs packages.
 
 In contrast to ELPA, Emacs is not configured by default to install packages from MELPA. You will have to configure Emacs to use it.
 
@@ -19,7 +19,7 @@ If you prefer versions that have been tagged by their maintainers for release, y
              '("melpa-stable" . "https://stable.melpa.org/packages/"))
 }}}
 
-Next, you can use `M-x package-list-packages' and install new things to your hearts content.
+Next, you can use `M-x package-list-packages' and install new things to your heart's content.
 
 For more information, see [https://melpa.org/#/getting-started Getting started with MELPA].
 
