@@ -638,6 +638,23 @@ For example,
     (:face forge-topic-closed ((t (:strike-through t)))))
 }}}
 
+=== Add documentation to setup block ===
+
+Similar to [https://github.com/conao3/leaf.el leaf.el] :doc keyword.
+The doc alist could be, for example, fed to [[marginalia]], and provide annotations to minibuffer completions.
+
+{{{
+(defvar setup--doc-alist nil "AList of docs for setup blocks.")
+
+(setup-define :doc
+  (lambda (string)
+    `(add-to-list 'setup--doc-alist '(,(setup-get 'feature) . ,string)))
+  :documentation "Allow documentation using STRING.
+This will be ignored at expansion."
+  :signature '(STRING ...)
+  :repeatable nil)
+}}}
+
 == Transforming Configuration Errors Into Warnings ==
 
 This code transforms errors in the expanded code into warnings, letting the rest of your config file run.
