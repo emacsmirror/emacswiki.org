@@ -63,6 +63,7 @@ You can also add this [https://emacslife.com/calendar/emacs-calendar.ics ical fe
 * [https://hispa-emacs.org/ Hispa-Emacs] -- We are enthusiasts of Emacs in particular (and of the GNU+Linux world in general) in the Spanish-speaking world: we meet every first Friday of the month ( <%%(diary-float t 3 -1)>in org-mode).
 * EmSig, the Emacs Multimedia Special Interest Group meets on freenode's "#emsig" channel
 * [http://www.meetup.com/find/?allMeetups=false&keywords=emacs&radius=Infinity Search Meetup.com for Emacs meetups]
+* [https://susam.net/club/mastering-emacs/ Mastering Emacs Book Club] -- Online web meetings to discuss a few pages of the book Mastering Emacs in each meeting. Click the preceding link for schedule, details, meeting link, etc.
 
 ----
 
