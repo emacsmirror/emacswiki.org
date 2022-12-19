@@ -21,6 +21,7 @@ interpreters are supported:
 * isql by '''Interbase'''
 * db2 by '''DB2''' (IBM)
 * inl by '''RELEX'''
+* vsql by '''Vertica'''
 
 Type M-x sql-help RET to read the online help.
 The latest version is available from Emacs's source control:
