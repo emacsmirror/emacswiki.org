@@ -1,16 +1,25 @@
-Emacs's built-in ispell package handles spell-checking and correction, while flyspell provides on-the-fly checking and highlighting of misspellings.
+Emacs' built-in ispell package handles spell-checking and correction, while [[Fly Spell|flyspell]] provides on-the-fly checking and highlighting of misspellings.
 
-== Installing a spell checker ==
+== Spell-checker configuration ==
 
-Emacs supports three spelling checkers by default: Hunspell, which is now widely used by popular free software such as LibreOffice, OpenOffice, Firefox and Thunderbird; GNU Aspell, which pays particular attention to quality of suggestions, and the original Ispell. If no spell checker is manually configured, Emacs will choose aspell over hunspell over ispell.
+Emacs supports three spelling checkers by default:
 
+* Hunspell, which is now widely used by popular free software such as LibreOffice, OpenOffice, Firefox and Thunderbird
+* GNU Aspell, which pays particular attention to quality of suggestions
+* Ispell, the original spell-checker
+
+If no spell checker is manually configured, Emacs will choose Aspell over Hunspell over Ispell.
+
+[:Hunspell]
 === Hunspell ===
 
-[https://hunspell.github.io/ Hunspell] is a widely-used free software spelling checker, and supports a wider range of languages than others. It has many [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries].
+[https://hunspell.github.io/ Hunspell] is a widely-used free-software spelling checker that supports a wider range of languages through its extensive set of [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries].
 
-=== Emacs 24.4+ ===
+Starting with Emacs 24.4, the ispell package has out-of-the-box support for Hunspell and its dictionaries. Although, if both Hunspell and Aspell are installed, Emacs will use Aspell by default.  Therefore, in this case, Hunspell must be explicitly set as the default spell-checker by adding the following line to InitFile:
 
-ispell.el in Emacs 24.4 has built-in support for detecting Hunspell's default dictionary, so it should now work out of the box with no Emacs configuration.
+{{{
+(setq ispell-program-name "hunspell")
+}}}
 
 ==== Windows ====
 
@@ -43,7 +52,7 @@ Emacs on OS X can run into the same problem as on Windows. I got installed Hunsp
 
 However it can also be set using [http://stackoverflow.com/questions/25385934/setting-environment-variables-via-launchd-conf-no-longer-works-in-os-x-yosemite launchctl].
 
-=== rw-hunspell ===
+==== rw-hunspell ====
 
 The ELPA package [http://marmalade-repo.org/packages/rw-hunspell rw-hunspell] provides some useful extensions to ispell.el for Hunspell.
 
@@ -62,11 +71,9 @@ On my linux setup I use the following:
 )
 </pre>
 
+==== German language with Hunspell for Emacs before 24.4 ====
 
-[:Hunspell]
-=== Hunspell, no external package ===
-
-The code below comes from http://unix.stackexchange.com/questions/86554/make-hunspell-work-with-emacs-and-german-language, and works for me.
+For Emacs versions before 24.4, German language needs an additional configuration:
 
 <pre>
 (add-to-list 'ispell-local-dictionary-alist '("deutsch-hunspell"
@@ -91,6 +98,7 @@ The code below comes from http://unix.stackexchange.com/questions/86554/make-hun
       ispell-dictionary   "deutsch-hunspell") ; Default dictionary to use
 </pre>
 
+[http://unix.stackexchange.com/questions/86554/make-hunspell-work-with-emacs-and-german-language|Reference]
 
 [:GnuAspell]
 === GNU Aspell ===
@@ -113,7 +121,7 @@ and a french dictionary
 [http://www.gutenberg.eu.org/distributions/16-installation.html].
 The files contain installation instructions.
 
-== Using ispell.el ==
+== Using a spell-checker ==
 
 The list of installed dictionaries can be obtained by typing
 
@@ -129,6 +137,8 @@ and typing SPC in minibuffer when asked.
 You can specify which dictionary to use at startup by putting in your InitFile
 
   (setq ispell-dictionary "german")
+
+Consider that Hunspell's native dictionaries are named using the pattern {{{languagecode_COUNTRYCODE}}}, e.g. de_DE, uk_UA, etc.
 
 If you want to use the english dictionary in a particular buffer instead, 
 put the following on the first line of the buffer
