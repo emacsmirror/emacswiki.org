@@ -52,35 +52,6 @@ Emacs on OS X can run into the same problem as on Windows. I got installed Hunsp
 
 However it can also be set using [http://stackoverflow.com/questions/25385934/setting-environment-variables-via-launchd-conf-no-longer-works-in-os-x-yosemite launchctl].
 
-==== German language with Hunspell for Emacs before 24.4 ====
-
-For Emacs versions before 24.4, German language needs an additional configuration:
-
-<pre>
-(add-to-list 'ispell-local-dictionary-alist '("deutsch-hunspell"
-                                              "[[:alpha:]]"
-                                              "[^[:alpha:]]"
-                                              "[']"
-                                              t
-                                              ("-d" "de_DE"); Dictionary file name
-                                              nil
-                                              iso-8859-1))
-
-(add-to-list 'ispell-local-dictionary-alist '("english-hunspell"
-                                              "[[:alpha:]]"
-                                              "[^[:alpha:]]"
-                                              "[']"
-                                              t
-                                              ("-d" "en_US")
-                                              nil
-                                              iso-8859-1))
-
-(setq ispell-program-name "hunspell"          ; Use hunspell to correct mistakes
-      ispell-dictionary   "deutsch-hunspell") ; Default dictionary to use
-</pre>
-
-[http://unix.stackexchange.com/questions/86554/make-hunspell-work-with-emacs-and-german-language|Reference]
-
 [:GnuAspell]
 === GNU Aspell ===
 
@@ -197,9 +168,9 @@ WcheckMode is a fast general-purpose on-the-fly (spell-)checker interface which 
     (message nil)))
 }}}
 
-=== Spell-checking with curly quotes as apostrophes ===
+=== Spell-checking words with special characters (e.g., curly quotes as apostrophes, umlauts) ===
 
-If you use TypographicalPunctuationMarks you may find you get spelling errors for words like "isn’t".
+If you use TypographicalPunctuationMarks or umlauts you may find you get spelling errors for words like "isn’t".
 
 ==== Emacs 24.4+ ====
 
@@ -214,7 +185,7 @@ WORDCHARS 0123456789'’
 
 The ICONV lines tell the spell checker that the curly and straight apostrophes are equivalent, and WORDCHARS is a list of the characters that are allowed in words, which both the spell checker and Emacs parse. WORDCHARS needs to contain both the curly and straight apostrophe.
 
-==== Other Versions ====
+==== Versions before 24.4 ====
 
 You need to tell Emacs that the extra characters you use are allowed in words. Customize ispell-local-dictionary-alist, and add, for example:
 
@@ -224,6 +195,34 @@ You need to tell Emacs that the extra characters you use are allowed in words. C
 
 Note the curly quote in the (short) list of non-letter characters allowed in words.
 
+===== German language with Hunspell for Emacs before 24.4 =====
+
+For Emacs versions before 24.4, German language needs an additional configuration:
+
+<pre>
+(add-to-list 'ispell-local-dictionary-alist '("deutsch-hunspell"
+                                              "[[:alpha:]]"
+                                              "[^[:alpha:]]"
+                                              "[']"
+                                              t
+                                              ("-d" "de_DE"); Dictionary file name
+                                              nil
+                                              iso-8859-1))
+
+(add-to-list 'ispell-local-dictionary-alist '("english-hunspell"
+                                              "[[:alpha:]]"
+                                              "[^[:alpha:]]"
+                                              "[']"
+                                              t
+                                              ("-d" "en_US")
+                                              nil
+                                              iso-8859-1))
+
+(setq ispell-program-name "hunspell"          ; Use hunspell to correct mistakes
+      ispell-dictionary   "deutsch-hunspell") ; Default dictionary to use
+</pre>
+
+[http://unix.stackexchange.com/questions/86554/make-hunspell-work-with-emacs-and-german-language|Reference]
 ----
 
 CategoryModes | CategorySpelling
