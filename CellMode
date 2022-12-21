@@ -2,9 +2,15 @@
 
 Cell-mode implements an abstract spreadsheet control in an Emacs buffer.
 
-As of 2019 %%CellMode%% is in development again and has undergone substantial revision. The current URL is http://xelf.me/cell.html
+As of 2019 %%CellMode%% is in development again and has undergone substantial revision. The current URL is https://gitlab.com/dto/cell-mode
 
-WikiTodo: Add a better introduction.
+The project page describes %%CellMode%% as follows:
+
+"Cell-mode is an object-oriented spreadsheet control for GNU Emacs. It
+provides a major mode for spreadsheet-based user interfaces; it can be
+further extended by defining application-specific Emacs Lisp minor
+modes which supply new cell and spreadsheet classes via Emacs’
+included object system, EIEIO."
 
 ----
 CategoryModes
