@@ -163,6 +163,7 @@ These are the main '''<tt>[[isearch+.el]]</tt>''' features:
 
 * Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
 
+[:RegexpGroupHighlighting]
 * Optional highlighting of the first eight [[regexp]]-group levels in the current search hit,
 controlled by option
 '''`isearchp-highlight-regexp-group-levels-flag''''.  For
