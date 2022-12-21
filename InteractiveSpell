@@ -52,25 +52,6 @@ Emacs on OS X can run into the same problem as on Windows. I got installed Hunsp
 
 However it can also be set using [http://stackoverflow.com/questions/25385934/setting-environment-variables-via-launchd-conf-no-longer-works-in-os-x-yosemite launchctl].
 
-==== rw-hunspell ====
-
-The ELPA package [http://marmalade-repo.org/packages/rw-hunspell rw-hunspell] provides some useful extensions to ispell.el for Hunspell.
-
-On my linux setup I use the following:
-<pre>
-(require 'rw-language-and-country-codes)
-(require 'rw-ispell)
-(require 'rw-hunspell)
-(setq ispell-dictionary "da_DK_hunspell")
-;; The following is set via custom
-(custom-set-variables
- '(rw-hunspell-default-dictionary "da_DK_hunspell")
- '(rw-hunspell-dicpath-list (quote ("/usr/share/hunspell")))
- '(rw-hunspell-make-dictionary-menu t)
- '(rw-hunspell-use-rw-ispell t)
-)
-</pre>
-
 ==== German language with Hunspell for Emacs before 24.4 ====
 
 For Emacs versions before 24.4, German language needs an additional configuration:
