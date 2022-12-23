@@ -5,20 +5,17 @@
 The author of a function prompts users for a yes-or-no answer decides which of these prompting functions to use.  For functions delivered as part of vanilla Emacs, the designers of Emacs have presumably based their decisions on years of experience with user problems. You are asked to type a full word not to annoy you but to save you from shooting yourself in the foot.
 
 
+== Use `y-or-n-p' always, or `yes-or-no-p' always ==
 
+Emacs by default prompts for a `yes' sometimes, and other times simply `y'. To use `yes' always, set this in the init file,
 
-== Some Users Want to Always Use `y-or-n-p', Never `yes-or-no-p' ==
+    (defalias 'y-or-n-p 'yes-or-no-p)
 
-However, Emacs design decisions need to be relatively conservative, and they need to fit the needs of the average user, as well as the EmacsNewbie.
-
-Some users apparently feel that no `yes-or-no-p' prompts are important enough to warrant typing two or three characters, and they prefer to substitute `y-or-n-p' for `yes-or-no-p' everywhere, to save typing one or two characters. If you want to do that, put this in your init file (##~/.emacs##):
+and similarly to use `y' always set
 
     (defalias 'yes-or-no-p 'y-or-n-p)
 
-Is that a good idea?  Depends on the user, presumably.
-
-
-
+Emacs design decisions need to be relatively conservative, and they need to fit the needs of the average user, as well as the EmacsNewbie. Some users apparently feel that no `yes-or-no-p' prompts are important enough to warrant typing two or three characters, and they prefer to substitute `y-or-n-p' for `yes-or-no-p' everywhere.
 
 == Auto-Confirmation: Automatically Saying Yes ==
 
