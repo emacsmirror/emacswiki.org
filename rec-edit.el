@@ -8,9 +8,9 @@
 ;; Created: Sun Oct 27 08:27:03 2019 (-0700)
 ;; Version: 2019.10.27
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 27 14:43:25 2019 (-0700)
+;; Last-Updated: Sun Dec 25 08:50:11 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 81
+;;     Update #: 82
 ;; URL: https://www.emacswiki.org/emacs/download/rec-edit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/RecursiveEdit#rec-edit.el
 ;; Keywords: recursive edit, mode-line
@@ -49,6 +49,16 @@
 ;;  mode-line indication of recursive editing (`[...]') is
 ;;  highlighted, with 4 different faces for different recursion
 ;;  levels.
+;;
+;;  Note that entering a minibuffer session initiates a recursive
+;;  edit, but that's not indicated in the mode-line by adding another
+;;  level of brackets ([]).  An additional feature provided by
+;;  `rec-edit-mode' is thus that if you are in a recursive edit before
+;;  you enter the minibuffer then the bracket highlighting changes to
+;;  the next level (without adding more brackets).  This means that
+;;  it's easier to notice whenever you enter the minibuffer.  That can
+;;  be helpful especially when you use multiple minibuffer levels,
+;;  that is, when `enable-recursive-minibuffers' is non-nil.
 ;;
 ;;  Internal constant `red-ORIG-mode-line-modes' holds the original
 ;;  value of `mode-line-modes', that is, the value that is current
