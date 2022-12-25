@@ -41,7 +41,7 @@ Caps Lock                 → Left Ctrl
 Apostrophe/Quotation mark → Right Ctrl
 Tab                       → Apostrophe/Quotation mark
 Right Ctrl                → Tab (use C-i for Tab)
-Sticky modifier keys
+Sticky modifier keys, and use Caps Lock indicator for sticky status
 </pre>
 Here is the modified keymap with the above properties. [https://gist.github.com/ne9z/cdd01fc1d3363623b39f79a665bec97d keymap link]
 === GNOME Desktop Environment ===
