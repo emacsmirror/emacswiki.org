@@ -5,9 +5,9 @@
 The author of a function prompts users for a yes-or-no answer decides which of these prompting functions to use.  For functions delivered as part of vanilla Emacs, the designers of Emacs have presumably based their decisions on years of experience with user problems. You are asked to type a full word not to annoy you but to save you from shooting yourself in the foot.
 
 
-== Use `y-or-n-p' always, or `yes-or-no-p' always ==
+== Can I use `y-or-n-p' always, or `yes-or-no-p' always? ==
 
-Emacs by default prompts for a `yes' sometimes, and other times simply `y'. To use `yes' always, set this in the init file,
+By default, Emacs prompts for a `yes' sometimes, and other times simply `y'. If you want to use `yes' always, do this in your [[init file]],
 
     (defalias 'y-or-n-p 'yes-or-no-p)
 
