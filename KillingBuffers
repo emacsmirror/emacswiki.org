@@ -303,5 +303,12 @@ Example:
 {{{
 (kill-some-buffers (remove-if-not '(lambda (x) (with-current-buffer x (eq major-mode 'org-mode))) (buffer-list)))
 }}}
+
+== Check if a buffer is alive or has been killed  ==
+
+One option is {{{ (buffer-live-p OBJECT) }}}
+
+ALternately one could use buffer-list {{{ (memq OBJECT (buffer-list)) }}}
+
 ----
 CategoryCommands OneOnOneEmacs CategoryBufferSwitching
