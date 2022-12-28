@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2022.11.04
+;; Version: 2022.12.28
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov  3 21:01:19 2022 (-0700)
+;; Last-Updated: Wed Dec 28 09:29:15 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 13380
+;;     Update #: 13390
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -921,8 +921,9 @@
 ;;  `dired-move-to-filename'  - Made it a command.
 ;;  `dired-other-frame'       - Handle non-positive prefix arg.
 ;;  `dired-other-window'      - Handle non-positive prefix arg.
-;;  `dired-pop-to-buffer'     - Put window point at bob (bug #12281).
-;;                              (Emacs 22-24.1)
+;;  `dired-pop-to-buffer'     - Restore (Emacs 29+).
+;;                              Put window point at bob (bug #12281)
+;;                              (Emacs 22-24.1).
 ;;  `dired-read-dir-and-switches' - Non-positive prefix arg behavior.
 ;;
 ;;; NOT YET:
@@ -1008,6 +1009,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/12/28 dadams
+;;     Restore dired-pop-to-buffer - removed from vanilla Emacs 29+.
 ;; 2022/11/04 dadams
 ;;     Added: diredp-describe-file-1, diredp-file-content-description.  Former uses latter.
 ;;       diredp-file-content-description: Includes info from dired-show-file-type.
@@ -12717,10 +12720,10 @@ Non-nil TRASH means use the trash can."
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Put window point at bob.  Fixes bug #12281.
+;; Emacs 23-28: Fix bug #12281.
+;; Emacs 29+: Restore the function (not used by vanilla `dired.el' anymore).
 ;;
-(when (and (> emacs-major-version 22)  (or (< emacs-major-version 24)
-                                           (and (= emacs-major-version 24)  (= emacs-minor-version 1))))
+(when (> emacs-major-version 22)
   (defun dired-pop-to-buffer (buf)
     "Pop up buffer BUF in a way suitable for Dired."
     (let ((split-window-preferred-function
@@ -12734,7 +12737,12 @@ Non-nil TRASH means use the trash can."
     (set-window-start (selected-window) (point-min))
     (when dired-shrink-to-fit
       ;; Try to not delete window when we want to display less than `window-min-height' lines.
-      (fit-window-to-buffer (get-buffer-window buf) nil 1))))
+      (cond ((> emacs-major-version 24)
+             (fit-window-to-buffer (get-buffer-window buf) nil 1 nil nil t))
+            ((= emacs-major-version 24)
+             (fit-window-to-buffer (get-buffer-window buf) nil 1 nil nil))
+            ((= emacs-major-version 23)
+             (fit-window-to-buffer (get-buffer-window buf) nil 1))))))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
