@@ -49,6 +49,11 @@ Copy the file name from the MiniBuffer.
 
 In Emacs versions prior to 22, you need to delete the last slash from a directory name before hitting `RET'.  
 
+== Opening file at line number N ==
+
+Here is some advice for find-file to open files using the format <filename>:<line-number>: Lisp:find-file-with-line-number
+
+
 
 ----
 CategoryFiles CategoryDirectories
