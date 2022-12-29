@@ -6,8 +6,9 @@ Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopf
 
 == Project information ==
 
-=== Current Development (as of December 5 2015) ===
+=== Current Development (as of 2022-12) ===
 
+* Available on MELPA
 * Savannah project page:  http://savannah.nongnu.org/projects/bbdb/
 * Latest source code: <code>git clone git://git.savannah.nongnu.org/bbdb.git</code>
 
@@ -20,6 +21,8 @@ Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopf
 
 === Mailing lists: ===
 
+* bbdb-user@nongnu.org
+* To join, go to https://lists.nongnu.org/mailman/listinfo/bbdb-user
 * Mailing List Archive: http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/
 * Gmane mirror: http://gmane.org/find.php?list=bbdb
 
