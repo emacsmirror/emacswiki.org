@@ -1,4 +1,10 @@
 [[ja:プランナーモード]]
+
+== 2022-12 ==
+This package seems to be abandonware, in that the most recent git commit at the linked repository is dated 2014-01-12.
+
+== Introduction ==
+
 Planner is a PersonalInformationManager (PIM) by JohnWiegley. You can use it to manage your tasks, schedule, notes,
 and anything else you want to store in a free-text richly-hyperlinked personal information manager integrated into
 Emacs. Because it's in Emacs, it can easily be tweaked to support your particular way of planning, and it
