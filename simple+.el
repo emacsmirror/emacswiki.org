@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library `simple.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Mon Jul 29 13:20:05 2019 (-0700)
+;;; Last-Updated: Thu Dec 29 15:05:15 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 505
+;;     Update #: 507
 ;; URL: https://www.emacswiki.org/emacs/download/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -260,8 +260,8 @@ runs `next-error-hook' with `run-hooks', and stays with that buffer
 until you use it in some other buffer which uses Compilation mode
 or Compilation Minor mode.
 
-See variables `compilation-parse-errors-function' and
-\`compilation-error-regexp-alist' for customization ideas."
+See variables `compilation-parse-errors-function' (prior to Emacs 29)
+and `compilation-error-regexp-alist' for customization ideas."
     (interactive "P")
     (if (and (consp arg) (= 16 (prefix-numeric-value arg))
              (boundp 'compilation-highlight-overlay)
