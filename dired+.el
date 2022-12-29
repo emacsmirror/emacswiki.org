@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2022.12.28
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 28 09:29:15 2022 (-0800)
+;; Last-Updated: Thu Dec 29 09:59:22 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 13390
+;;     Update #: 13391
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1009,6 +1009,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/12/29 dadams
+;;     Restore defvar of dired-shrink-to-fit - removed from vanilla Emacs 29+.
 ;; 2022/12/28 dadams
 ;;     Restore dired-pop-to-buffer - removed from vanilla Emacs 29+.
 ;; 2022/11/04 dadams
@@ -2559,7 +2561,7 @@ of that nature."
 (defvar dired-query-alist)                        ; In `dired-aux.el', Emacs < 24
 (defvar dired-recursive-copies)                   ; In `dired-aux.el', Emacs 22+
 (defvar dired-recursive-deletes)                  ; In `dired.el', Emacs 22+
-(defvar dired-shrink-to-fit)                      ; In `dired.el'
+;; (defvar dired-shrink-to-fit)                      ; In `dired.el'
 (defvar dired-switches-alist)                     ; In `dired.el'
 (defvar dired-subdir-switches)                    ; In `dired.el'
 (defvar dired-touch-program)                      ; Emacs 22+
@@ -12716,6 +12718,19 @@ Non-nil TRASH means use the trash can."
   (if (> emacs-major-version 23)
       (dired-internal-do-deletions file-alist arg trash)
     (dired-internal-do-deletions file-alist arg)))
+
+
+;; RESTORE ORIGINAL from Emacs prior to Emacs 29.  Used only in `dired-pop-to-buffer'
+;;
+;;
+(defvar dired-shrink-to-fit t
+  ;; I see no reason ever to make this nil -- rms.
+  ;;  (> baud-rate search-slow-speed)
+  "Non-nil means Dired shrinks the display buffer to fit the marked files.")
+;; (make-obsolete-variable 'dired-shrink-to-fit
+;; 			"use the Customization interface to add a new rule
+;; to `display-buffer-alist' where condition regexp is \"^ \\*Marked Files\\*$\",
+;; action argument symbol is `window-height' and its value is nil." "24.3")
 
 
 ;; REPLACE ORIGINAL in `dired.el':
