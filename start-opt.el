@@ -4,39 +4,42 @@
 ;; Description: Customizations to be done at the end of startup.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2023, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 24 19:59:42 2021 (-0800)
+;; Last-Updated: Thu Dec 29 11:23:40 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 2024
+;;     Update #: 2027
 ;; URL: https://www.emacswiki.org/emacs/download/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `autofit-frame', `avoid', `backquote',
-;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `chistory', `cl', `cl-lib', `cmds-menu', `col-highlight',
-;;   `color', `crosshairs', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `cus-theme', `custom', `doremi', `doremi-cmd',
-;;   `doremi-frm', `easymenu', `facemenu', `facemenu+', `faces',
-;;   `faces+', `fit-frame', `font-lock', `font-lock+',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `header2',
-;;   `help+', `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `highlight', `highlight-symbol',
-;;   `hl-line', `hl-line+', `info', `info+', `isearch+',
-;;   `isearch-prop', `iso-transl', `kmacro', `lib-requires',
-;;   `loadhist', `macroexp', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse', `mouse+', `mwheel', `naked', `palette',
-;;   `pp', `pp+', `radix-tree', `rect', `replace', `replace+',
-;;   `ring', `second-sel', `setup-keys', `strings', `syntax',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
+;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `chistory', `cl', `cl-generic', `cl-lib',
+;;   `cl-macs', `cmds-menu', `col-highlight', `color', `crosshairs',
+;;   `cus-edit', `cus-face', `cus-load', `cus-start', `cus-theme',
+;;   `custom', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
+;;   `eieio', `eieio-core', `eieio-loaddefs', `epg-config',
+;;   `facemenu', `facemenu+', `faces', `faces+', `find-func',
+;;   `fit-frame', `font-lock', `font-lock+', `font-lock-menus',
+;;   `frame-cmds', `frame-fns', `gv', `header2', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
+;;   `highlight', `highlight-symbol', `hl-line', `hl-line+', `info',
+;;   `info+', `isearch+', `isearch-prop', `iso-transl', `kmacro',
+;;   `lib-requires', `loadhist', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mouse', `mouse+', `mwheel', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `replace+', `ring',
+;;   `second-sel', `seq', `setup-keys', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `wimpy-del', `zones'.
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -48,7 +51,7 @@
 ;;  when other libraries were loaded. It also sets some mode hooks and
 ;;  makes some parameter (variable settings.
 ;;
-;;  The following bindings are made here for `command-history-map':
+;;  These bindings are made here for `command-history-mode-map':
 ;;
 ;;    `e'        `electric-command-history'
 ;;    `m'        `repeat-matching-complex-command'
@@ -68,6 +71,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/12/29 dadams
+;;     Use command-history-mode-map if available, not command-history-map (removed in Emacs 29+).
 ;; 2021/11/24 dadams
 ;;     Don't require wimpy-del.el for Emacs 26+.  Instead, advise kill-region to require confirmation.
 ;; 2017/10/11 dadams
@@ -226,7 +231,7 @@
 ;;
 ;;; Code:
 
-(require 'chistory) ;; command-history-map
+(require 'chistory) ;; command-history-mode-map (command-history-map)
 (require 'header2 nil t) ;; (no error if not found): auto-make-header
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
 (when (< emacs-major-version 26)
@@ -241,6 +246,8 @@
 
 ;; Quiet the byte-compiler.
 ;;
+(defvar command-history-map) ;  chistory.el prior to Emacs 29.
+(defvar command-history-mode-map) ;  chistory.el Emacs 24+.
 (defvar region-extract-function)        ; Emacs 24+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -588,12 +595,18 @@
 ;;; (define-key shell-mode-map "\C-c\?" 'my-shell-completion-help))
 ;;; (add-hook 'shell-mode-hook 'define-shell-completion-keys)
 
-(add-hook 'command-history-hook (function (lambda ()
+(add-hook 'command-history-hook (lambda ()
                                   (when (fboundp 'electric-command-history)
-                                    (define-key command-history-map "e"
+                                    (define-key (if (boundp 'command-history-mode-map) ; Emacs 24+
+                                                    command-history-mode-map
+                                                  command-history-map)
+                                      "e"
                                       'electric-command-history)) ; In `echistory.el'.
-                                  (define-key command-history-map "m"
-                                    'repeat-matching-complex-command)))) ; `chistory.el'.
+                                  (define-key (if (boundp 'command-history-mode-map) ; Emacs 24+
+                                                  command-history-mode-map
+                                                command-history-map)
+                                    "m"
+                                    'repeat-matching-complex-command))) ; `chistory.el'.
 
 (eval-after-load "color-moccur"
   '(progn
