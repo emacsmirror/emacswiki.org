@@ -4,13 +4,13 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 30 20:21:37 2020 (-0800)
+;; Last-Updated: Fri Dec 30 10:20:59 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 3922
+;;     Update #: 3923
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -18,17 +18,21 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `crosshairs', `fit-frame',
-;;   `font-lock', `font-lock+', `frame-fns', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hl-line', `hl-line+', `info', `info+', `kmacro',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `radix-tree', `replace', `second-sel',
-;;   `strings', `syntax', `text-mode', `thingatpt', `thingatpt+',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `crosshairs', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `fit-frame', `font-lock',
+;;   `font-lock+', `frame-fns', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
+;;   `hl-line', `hl-line+', `info', `info+', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -135,6 +139,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/12/30 dadams
+;;     menu-bar-edit-menu: Emacs 20+ removed alias for menu-bar-kill-ring-save.
 ;; 2020/12/30 dadams
 ;;     Soft-require bookmark+.el.
 ;;     menu-bar-goto-menu:
@@ -960,12 +966,20 @@ But if invoked in the minibuffer just invoke `abort-recursive-edit'."
     :help "Cut (kill) text in nonempty region between mark and current position"
     :enable (and (not buffer-read-only)  (menu-barp-nonempty-region-p)))
   'separator-edit-cut)
-(define-key-after menu-bar-edit-menu [copy]
-  '(menu-item "Copy" menu-bar-kill-ring-save
-    :help "Copy text in nonempty region between mark and current position"
-    :enable (menu-barp-nonempty-region-p)
-    :keys "\\[kill-ring-save]")
-  'cut)
+
+(if (fboundp 'menu-bar-kill-ring-save)  ; Alias was removed in Emacs 29+
+    (define-key-after menu-bar-edit-menu [copy]
+      '(menu-item "Copy" menu-bar-kill-ring-save
+                  :help "Copy text in nonempty region between mark and current position"
+                  :enable (menu-barp-nonempty-region-p)
+                  :keys "\\[kill-ring-save]")
+      'cut)
+  (define-key-after menu-bar-edit-menu [copy]
+    '(menu-item "Copy" kill-ring-save
+                :help "Copy text in nonempty region between mark and current position"
+                :enable (menu-barp-nonempty-region-p)
+                :keys "\\[kill-ring-save]")
+    'cut))
 
 ;; Use `x-get-selection', not `x-selection-exists-p', because of Emacs bugs on Windows etc.
 ;; See thread "x-selection-exists-p  vs  x-get-selection", emacs-devel@gnu.org, 2008-05-04.
