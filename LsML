@@ -1,0 +1,19 @@
+A XML markup made by LdBeth, project homepage is at [https://ldbeth.sdf.org/lsml/] which sources and examples, which is also used for the XML namespace. Similar to org-mime.el but uses XML instead of OrgMode.
+
+Currently it only supports sending email with WanderLust.
+
+== How to install ==
+
+It might not be obvious, but consult NxmlMode on details about how to install new RelaxNG schemas.
+
+Add these lines to schemas.xml, and move lsml.rnc to somewhere emacs know about.
+
+{{{
+  <namespace ns="https://ldbeth.sdf.org/lsml" typeId="LsML"/>
+  <documentElement prefix="" localName="lsml" typeId="LsML"/>
+  <typeId id="LsML" uri="lsml.rnc"/>
+}}}
+
+Load lsml.el, and modify lsml-xsl-directory to where lsml.xsl and lsml-mime.xsl are placed.
+
+Once done composing email, run M-x `lsml-compose' RET.
