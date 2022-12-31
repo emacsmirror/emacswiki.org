@@ -27,7 +27,9 @@ links:
 
 The string 'crystal star cluster' in all other files will now automatically point here.
 
-Todo and Notifiers are created as you type and displayed in a separate buffer according to the importance, so you can click and see the context of the appointment. 
+Todo and Notifiers are created as you type and displayed in a separate buffer
+according to the importance, so you can click and see the context of the
+appointment.
 
 
 ''The format is as follows:''
@@ -71,11 +73,12 @@ These codes provide the below features.
 
 See also: PlannerAndHowmComparison
 
-
-
 = Discussion =
 
-I have a question: is it possible to show and maybe highlight "missed" appointments in the Schedule section? That is, appointments of the form "[date]@ text" that were not explicitly finished by hitting RET on the "@"? --SebastianBlatt
+I have a question: is it possible to show and maybe highlight "missed"
+appointments in the Schedule section? That is, appointments of the form "[date]@
+text" that were not explicitly finished by hitting RET on the "@"?
+--SebastianBlatt
 
 This should work. --[[khi]]
 <pre>
@@ -145,26 +148,56 @@ Answer from [[khi]]:
 * [https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
 * [https://leahneukirchen.org/blog/archive/2022/03/note-taking-in-emacs-with-howm.html Blog post on taking notes with howm] -- a nice introduction along with goodies like replacing grep with ripgrep and using counsel-rg.
 
-= Workflow Possibilities =
+= Notes on functionalities and workflows  =
 
 === Stagewise filtering of notes based on grep as well as keywords ===
 
-Say you are part of a team or project called ABCD and have a frequent number of meetings. These can be captured as notes including a defined howm keyword ABCD.
+Say you are part of a team or project called ABCD and have a frequent number of
+meetings. These can be captured as notes including a defined howm keyword ABCD.
 
-Now, in those meetings, there would be different topics and linking to other keywords. These keywords can be added to the notes as required.
+Now, in those meetings, there would be different topics and linking to other
+keywords. These keywords can be added to the notes as required.
 
-One specific example that would be often necessary would be links to specific Confluence pages pertaining to a subject. While browser bookmarks would also work - it may be more difficult to maintain context and include notes along with it. Confluence pages tend to have a specific URL structure, like company.atlassian.net/wiki/spaces/XXX. Since these are notes, it is likely you would have some additional 'description words' surrounding the link in the meeting note.
+One specific example that would be often necessary would be links to specific
+Confluence pages pertaining to a subject. While browser bookmarks would also
+work - it may be more difficult to maintain context and include notes along with
+it. Confluence pages tend to have a specific URL structure, like
+company.atlassian.net/wiki/spaces/XXX. Since these are notes, it is likely you
+would have some additional 'description words' surrounding the link in the
+meeting note.
 
 The steps to quickly identify confluence links:
 
-1. howm-list-grep-fixed (`C-c , s`) -- choose ABCD for obtaining notes mentioning keyword ABCD.  
+1. howm-list-grep-fixed (`C-c , s`) -- choose ABCD for obtaining notes
+mentioning keyword ABCD.
 
-2. howm-search-in-result (`G`) -- enter 'wiki' (or something else) which will filter above 'ABCD' notes to those containing confluence links.  
+2. howm-search-in-result (`G`) -- enter 'wiki' (or something else) which will
+filter above 'ABCD' notes to those containing confluence links.
 
-3. If you remember something close to the description words related to the confluence link - you then hit `G` again and search within the filtered notes to find notes with those description words, and finally find the link you need.  
+3. If you remember something close to the description words related to the
+confluence link - you then hit `G` again and search within the filtered notes to
+find notes with those description words, and finally find the link you need.
 
-With the above method, it is possible to find the desired link, and also have a view of other notes that are related to the description words, and thus being able to form more connections between notes! Note that when you hit 'G` to grep within results, it is also possible to call up `howm-insert-keyword` (C-c , i) to insert a keyword as a search term, and thus filter based on other howm defined keywords in the filtered notes. 
+With the above method, it is possible to find the desired link, and also have a
+view of other notes that are related to the description words, and thus being
+able to form more connections between notes! Note that when you hit 'G` to grep
+within results, it is also possible to call up `howm-insert-keyword` (C-c , i)
+to insert a keyword as a search term, and thus filter based on other howm
+defined keywords in the filtered notes.
 
+=== Dired view of filtered notes ===
+
+Use `howm-view-dired' which is by default assigned to 'X' in any `*howmS*'
+buffer which will provide a virtual dired view of only the files that are
+currently visible, no matter where the files are located in the specified howm
+directories. This enables for example copying, or performing other actions on a
+specific set of files that are in arbitrary locations.
+
+This is also a good way to delete any notes that are empty, since hitting 'X' on
+a particular note will open the dired view with the cursor on that note.
+
+Note: make sure to `q' after viewing the dired buffer, as it seems there may be
+a bug that locks howm if the function is called again after changing the search term.
 
 ----
 CategoryHypermedia CategoryModes CategoryPersonalInformationManager CategoryTodo
