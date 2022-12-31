@@ -1,4 +1,4 @@
-Enable the display of time in the modeline -- add the following to your ~/.emacs:
+Enable the display of time and CPU load average in the modeline -- add the following to your ~/.emacs:
 
     (display-time-mode 1)
 
@@ -19,6 +19,8 @@ Note that the former two have no effect, if `display-time-format' is non-nil.
 == More Control ==
 
 If you want even more control, you can alternatively configure the variable `display-time-string-forms'.  This variable hold a list whose elements are either strings or Lisp expressions that should return a string, when evaluated. When Emacs updates the time in the modeline, it concatenates the resulting strings and displays them. Within that list you may use symbols like `24-hours' or `minutes' to refer to the current time. See the documentation of `display-time-string-forms' for details. 
+
+If you don't wish to see the CPU load average displayed by default to the right of the time, use this configuration: ##(setq display-time-default-load-average nil)##.
 
 == Example: another face for the current time ==
 
