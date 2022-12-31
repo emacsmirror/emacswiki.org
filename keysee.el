@@ -4,13 +4,13 @@
 ;; Description: Key and menu completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2020-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2020-2023, Drew Adams, all rights reserved.
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Sun Dec 11 13:32:39 2022 (-0800)
+;; Last-Updated: Sat Dec 31 11:05:50 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 464
+;;     Update #: 466
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl-lib', `cl-macs', `gv', `macroexp', `sortie'.
+;;   `cl-lib', `macroexp', `sortie'.
 ;;
 ;;; Commentary:
 ;;
@@ -794,7 +794,7 @@ you can complete against the name.
 If you use a non-`nil' value for `kc-self-insert-ranges' then it's
 best to use only small ranges for good performance.  In general, you
 will want to leave this option value as `nil' and use command
-`ucs-insert' (`C-x 8 RET') to insert characters."
+`insert-char' (`C-x 8 RET') to insert characters."
   (interactive)
   (kc-complete-keys-1 (kc-this-command-keys-prefix)))
 
