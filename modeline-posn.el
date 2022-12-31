@@ -4,7 +4,7 @@
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2023, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
@@ -782,7 +782,7 @@ Used in place of `mode-line-column-line-number-mode-map'.")
                                                    (and (boundp 'isearchp-reg-beg)  isearchp-reg-beg))))
     ad-do-it))
 
-;; This one is for `query-replace-regexp-eval'.
+;; This one is for `query-replace-read-args', so `query-replace(-regexp)', `replace-(string|regexp)'.
 ;; We don't really need the second part of the `(or...)', but could just use `(use-region-p)'.
 (defadvice query-replace-read-from (around bind-modelinepos-region-acting-on activate)
   (let ((icicle-change-region-background-flag  nil) ; Inhibit changing face `region' during minibuffer input.
