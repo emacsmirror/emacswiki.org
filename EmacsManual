@@ -2,9 +2,7 @@ Emacs comes with a comprehensive manual.  Access it through [[Info]], either wit
 the ##info## command in a shell window under GNU and Unix operating systems,
 or in Emacs, by typing `M-x info RET' (that's Meta- or ESC x, the word "info",
 followed by the return key), or by typing `C-h i' (that's Control-h followed by i).
-Starting with Emacs 22, you can also read the manual with `C-h r'.
-
-
+Starting with Emacs 22, you can also read the manual with `C-h r'. Another option is to use `C-h R' or `info-display-manual' which will provide a list of manuals available, including the EmacsManual. 
 
 The GNU Emacs manual is also available online from any GNU ftp mirror or from here:
 
