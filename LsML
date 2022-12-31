@@ -14,6 +14,6 @@ Add these lines to schemas.xml, and move lsml.rnc to somewhere emacs know about.
   <typeId id="LsML" uri="lsml.rnc"/>
 }}}
 
-Load lsml.el, and modify lsml-xsl-directory to where lsml.xsl and lsml-mime.xsl are placed.
+Load lsml.el, and modify `lsml-xsl-directory' to where lsml.xsl and lsml-mime.xsl are placed.
 
 Once done composing email, run M-x `lsml-compose' RET.
