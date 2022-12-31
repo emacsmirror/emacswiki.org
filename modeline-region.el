@@ -4,13 +4,13 @@
 ;; Description: Show region information in the mode-line.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2023, Drew Adams, all rights reserved.
 ;; Created: Thu Nov  4 19:58:03 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 26 13:25:17 2021 (-0800)
+;; Last-Updated: Sat Dec 31 14:11:42 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 364
+;;     Update #: 366
 ;; URL: https://www.emacswiki.org/emacs/modeline-region.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ModeLineRegion
 ;; Keywords: mode-line, region, faces, help, column
@@ -18,22 +18,25 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
-;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `color', `crosshairs', `custom', `doremi',
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
 ;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
 ;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
 ;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
 ;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
 ;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `strings', `syntax',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `mwheel', `naked', `package', `palette', `password-cache', `pp',
+;;   `pp+', `radix-tree', `rect', `replace', `ring', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
+;;   `thingatpt', `thingatpt+', `timer', `url-handlers', `url-parse',
+;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1249,9 +1252,11 @@ done by advising `query-replace-read-to' and `perform-replace'."
 
 (defun mlr--advice-3 (orig-fun &rest args)
   "Turn on mode-line region highlighting for the act of (query-)replacing.
-This applies to `query-replace-regexp-eval', `keep-lines',
-`flush-lines', and `how-many'.  It is done by advising
-`query-replace-read-from' and `keep-lines-read-args'."
+This applies to `keep-lines', `flush-lines', `how-many', and
+`query-replace-read-args' (thus also `query-replace',
+`query-replace-regexp', `replace-string', and `replace-regexp').  It
+is done by advising `query-replace-read-from' and
+`keep-lines-read-args'."
   (let (;; (icicle-change-region-background-flag  nil)
         (mlr-region-acting-on  (use-region-p)))
     (apply orig-fun args)))
