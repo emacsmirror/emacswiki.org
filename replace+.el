@@ -4,13 +4,13 @@
 ;; Description: Extensions to `replace.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 22 09:06:30 2021 (-0800)
+;; Last-Updated: Sat Dec 31 10:40:32 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 1916
+;;     Update #: 1923
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -18,22 +18,25 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
-;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
+;;   `col-highlight', `color', `crosshairs', `custom', `doremi',
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
 ;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
 ;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
 ;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
 ;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
 ;;   `info', `info+', `isearch+', `isearch-prop', `kmacro',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mwheel', `naked', `palette', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `strings', `syntax',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `mwheel', `naked', `package', `palette', `password-cache', `pp',
+;;   `pp+', `radix-tree', `rect', `replace', `ring', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
+;;   `thingatpt', `thingatpt+', `timer', `url-handlers', `url-parse',
+;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -151,6 +154,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2022/12/31 dadams
+;;     query-replace-read-from: query-replace-interactive was removed from Emacs 29+.
 ;; 2021/11/22 dadams
 ;;     replace-(string|regexp) advice: Fix version - need Emacs 27+ for REGION-NONCONTIGUOUS-P arg.
 ;; 2020/10/12 dadams
@@ -388,6 +393,7 @@
 (defvar occur-command-arguments)        ; In `replace.el' (Emacs 24+20).
 (defvar occur-nlines)                   ; In `replace.el' (Emacs 24+20).
 (defvar query-replace-defaults)         ; In `replace.el' (Emacs 22+).
+(defvar query-replace-interactive)      ; In `replace.el' (prior to Emacs 29)
 (defvar query-replace-lazy-highlight)   ; In `replace.el' (Emacs 22+).
 (defvar replace-lax-whitespace)         ; In `replace.el' (Emacs 24.3+).
 (defvar replace-regexp-lax-whitespace)  ; In `replace.el' (Emacs 24.3+).
@@ -610,6 +616,8 @@ The possible strings are, in order:
 ;;
 (defun query-replace-read-from (string regexp-flag)
   "Query and return the `from' argument of a query-replace operation.
+STRING is a prefix for the prompt.
+REGEXP-FLAG non-nil means the response should be a regexp.
 The return value can also be a pair (FROM . TO) indicating that the user
 wants to replace FROM with TO.
 
@@ -619,7 +627,7 @@ See options `search/replace-region-as-default-flag',
 
 If option `replace-w-completion-flag' is non-nil then you can complete
 to a symbol name."
-  (if query-replace-interactive
+  (if (and (boundp 'query-replace-interactive)  query-replace-interactive) ; Prior to Emacs 29.
       (car (if regexp-flag regexp-search-ring search-ring))
     (let* ((default                       (search/replace-default
                                            (symbol-value query-replace-from-history-variable)))
@@ -649,7 +657,8 @@ to a symbol name."
                                                 (completing-read
                                                  from-prompt obarray nil nil nil
                                                  query-replace-from-history-variable default t)
-                                              (if query-replace-interactive
+                                              (if (and (boundp 'query-replace-interactive)
+                                                       query-replace-interactive) ; Prior to Emacs 29.
                                                   (car (if regexp-flag regexp-search-ring search-ring))
                                                 (read-from-minibuffer
                                                  from-prompt nil nil nil
