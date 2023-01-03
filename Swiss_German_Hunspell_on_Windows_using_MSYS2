@@ -9,6 +9,8 @@ pacman -S mingw-w64-ucrt-x86_64-hunspell-en
 pacman -S mingw-w64-ucrt-x86_64-hunspell
 }}}
 
+Notice that on Windows, I have added both ##C:\msys64\ucrt64\bin## and ##C:\msys64\usr\bin## to my account's ##PATH## environment variable. The above will install into ##C:\msys64\ucrt64\##.
+
 Download the Swiss German dictionary for Swiss German from Libre Office:
 
 * https://extensions.libreoffice.org/en/extensions/show/german-de-ch-frami-dictionaries
