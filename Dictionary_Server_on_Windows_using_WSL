@@ -1,0 +1,89 @@
+A dictionary server is a service that looks up terms. It can do this online or locally. This happens on port 2628 which means that in a corporate environment, you are probably limited to local installations.
+
+First, [https://learn.microsoft.com/en-us/windows/wsl/install install WSL2] with your preferred distribution. Start the PowerShell as administrator in order to install it.
+
+List your options:
+
+{{{
+wsl --list --online
+}}}
+
+Install Debian or Ubuntu:
+
+{{{
+wsl --install Debian
+}}}
+
+Verify what you have installed:
+
+{{{
+wsl --list --verbose
+}}}
+
+You should now be able to start ##wsl##, a terminal window that gives you access to a GNU/Linux subsystem.
+
+There, install the dictionary server ##dictd## and some dictionaries like ##dict-de-en## (for translations) or ##dict-gcide##, which includes the 1913 Webster's Unabridged Dictionary.
+
+{{{
+sudo apt install dictd dict-gcide
+}}}
+
+You can test it within wsl:
+
+{{{
+sudo service dictd start
+dict awesome
+}}}
+
+Now comes the tricky part: starting the dictionary server whenever you log in.
+
+First, install Emacs inside WSL and create a file called ##/etc/init-wsl## or similar.
+
+{{{
+sudo apt install emacs
+sudo emacs /etc/init-wsl
+}}}
+
+The content is just the service startup:
+
+{{{
+#!/bin/sh
+# service docker start
+service dictd start
+}}}
+
+(Oops! Now you know that you can also run Docker this way.)
+
+Give execute permissions to everybody:
+
+{{{
+sudo chmod +x /etc/init-wsl
+}}}
+
+So now we have a single command that starts the service. We now rely on a Windows application called Task Scheduler (##taskschd##). Start it up and create a new task.
+
+* Name: WSL Startup
+* Trigger: When you log on
+* Action: Start a program
+* Command: C:\Windows\System32\wsl.exe
+* Add arguments (optional): -d Debian -u root /etc/init-wsl
+
+This is how the file you created previously gets started whenever you login, starting the dictionary server for you.
+
+To test it, return to the ##wsl## terminal where you started the dictionary server manually and stop it:
+
+{{{
+sudo service dictd stop
+}}}
+
+Return to the Task Scheduler window and execute the task.
+
+Return to the ##wsl## terminal and verify that the service runs:
+
+{{{
+dict awesome
+}}}
+
+Open Emacs (outside the WSL terminal) and run ##M-x dictionary##.
+
+CategoryDictionary CategoryWThirtyTwo
