@@ -44,7 +44,7 @@ Finally, Emacs. If you set `LANG` in your `.bashrc`, you have to set it in your 
 
 Use `ispell-change-dictionary` to switch back to English.
 
-## Related
+== Related
 
 * GettingIspellWorkinginEmacsForWindows
 
