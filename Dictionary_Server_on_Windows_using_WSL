@@ -60,7 +60,7 @@ Give execute permissions to everybody:
 sudo chmod +x /etc/init-wsl
 }}}
 
-So now we have a single command that starts the service. We rely on a Windows application called Task Scheduler (##taskschd##). Start it up and create a new task.
+So now we have a single command that starts the service. The Windows application Task Scheduler (##taskschd##) will run this command for you when you logon. Start it up and create a new task.
 
 * Name: WSL Startup
 * Trigger: When you log on
