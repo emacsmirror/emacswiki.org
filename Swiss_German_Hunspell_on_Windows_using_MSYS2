@@ -27,9 +27,9 @@ Rename!
 * de_CH_frami.aff → de_CH.aff
 * de_CH_frami.dic → de_CH.dic
 
-If you do not rename, then ##hunspell -D## will add an error at the end telling you that it didn't find a dictionary for your ##de_CH.UTF-8## locale. This error message cause `ispell-find-hunspell-dictionaries` to abort so there are no dictionaries to choose from when you run `ispell-change-dictionary`.
+If you do not rename, then ##hunspell -D## will add an error at the end telling you that it didn't find a dictionary for your ##de_CH.UTF-8## locale. This error message cause ##ispell-find-hunspell-dictionaries## to abort so there are no dictionaries to choose from when you run ##ispell-change-dictionary##.
 
-Finally, Emacs. If you set `LANG` in your `.bashrc`, you have to set it in your init file, too.
+Finally, Emacs. If you set ##LANG## in your ##.bashrc##, you have to set it in your init file, too.
 
 {{{
 ;; In case you didn't set it as a Windows environment variable
@@ -42,7 +42,7 @@ Finally, Emacs. If you set `LANG` in your `.bashrc`, you have to set it in your 
       '(("de_CH" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
 }}}
 
-Use `ispell-change-dictionary` to switch back to English.
+Use ##ispell-change-dictionary## to switch back to English.
 
 == Related ==
 
