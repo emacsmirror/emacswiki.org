@@ -4,11 +4,11 @@
 ;; Description: Internal variables for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Wed Jan 26 09:57:37 2022 (-0800)
+;; Last-Updated: Wed Jan  4 12:15:16 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 1901
+;;     Update #: 1902
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -782,7 +782,6 @@ noted in parentheses.
 * `icicle-use-~-for-home-dir-flag'       - Use `~' for $HOME? (`M-~')
 * `icicle-use-C-for-actions-flag'        - `C-' for actions? (`M-g')
 * `icicle-use-candidates-only-once-flag' - Remove used candidate?
-* `icicle-word-completion-keys'          - Keys for word completion
 * `icicle-WYSIWYG-Completions-flag'      - WYSIWYG `*Completions*'?
 * `icicle-yank-function'                 - Yank function to use
 
