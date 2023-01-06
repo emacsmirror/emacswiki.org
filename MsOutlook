@@ -46,6 +46,8 @@ machine outlook.office365.com:443 login user@domain.tld password secret
 
 As of version <code>0.9.1</code> Excorporate requires the port to be attached to the domain, not appended as <code>port 443</code>.
 
+NOTE: Excorporate does not work with accounts that have MFA enabled: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=50113
+
 == Windows script glue ==
 
 If your machine has the windows script host installed which should be true for almost all
