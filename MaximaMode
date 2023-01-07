@@ -43,3 +43,7 @@ Then add those lines to your ~/.emacs init file:
  (add-to-list 'auto-mode-alist '("\\.ma[cx]" . maxima-mode))
 
 and M-x imaxima (and not maxima) in order to get the beautiful LaTeXed maths.
+
+== See also ==
+
+[https://gitlab.com/sasanidas/maxima maxima-mode.el]
