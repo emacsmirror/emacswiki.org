@@ -4,13 +4,13 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 27 14:20:01 2022 (-0800)
+;; Last-Updated: Tue Jan 10 14:37:45 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 1368
+;;     Update #: 1371
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -25,19 +25,20 @@
 ;;   `cus-load', `cus-start', `cus-theme', `custom', `doremi',
 ;;   `doremi-cmd', `doremi-frm', `easymenu', `eieio', `eieio-core',
 ;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
-;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `highlight', `highlight-symbol',
-;;   `hl-line', `hl-line+', `info', `info+', `isearch+',
-;;   `isearch-prop', `iso-transl', `kmacro', `macroexp', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `naked', `package', `palette', `password-cache', `pp',
-;;   `pp+', `radix-tree', `rect', `replace', `replace+', `ring',
-;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
-;;   `text-mode', `thingatpt', `thingatpt+', `timer', `url-handlers',
-;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `zones'.
+;;   `faces', `faces+', `find-func', `fit-frame', `font-lock',
+;;   `font-lock+', `font-lock-menus', `frame-cmds', `frame-fns',
+;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
+;;   `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `highlight-symbol', `hl-line', `hl-line+', `info', `info+',
+;;   `isearch+', `isearch-prop', `iso-transl', `kmacro', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse',
+;;   `mouse+', `mwheel', `naked', `package', `palette',
+;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `replace+', `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -87,6 +88,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/01/10 dadams
+;;     Bind goto-longest-line to C-end in search-map.
 ;; 2022/01/27 dadams
 ;;     Use vanilla Emacs 26+ for find-library-other-*.
 ;; 2021/11/26 dadams
@@ -755,7 +758,9 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (when (fboundp 'undo-repeat) (global-set-key [remap undo] 'undo-repeat))   ; `C-x u' etc.
     (when (fboundp 'next-buffer-repeat)
       (global-set-key [remap previous-buffer] 'previous-buffer-repeat)         ; `C-x left'
-      (global-set-key [remap next-buffer]     'next-buffer-repeat))))          ; `C-x right'
+      (global-set-key [remap next-buffer]     'next-buffer-repeat))            ; `C-x right'
+    (when (boundp 'search-map)          ; Emacs 23+
+      (define-key search-map [(control end)] 'goto-longest-line))))            ; `C-end'
   
 ;; In `chistory.el'.
 (define-key ctl-x-map [(meta ?x)] 'repeat-matching-complex-command)            ; `C-x M-x'
