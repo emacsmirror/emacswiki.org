@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 25 10:06:06 2022 (-0700)
+;; Last-Updated: Tue Jan 10 14:22:40 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 3377
+;;     Update #: 3378
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -97,6 +97,7 @@
 ;;   (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)
 ;;   (global-set-key "\M-p"           'back-to-indentation+)
 ;;   (global-set-key "\M-n"           'forward-to-indentation+)
+;;   (when (boundp 'search-map) (define-key search-map [(control end)] 'goto-longest-line))
 ;;
 ;;   (global-set-key [remap mark-word]       'mark-whole-word)
 ;;   (global-set-key [remap previous-buffer] 'previous-buffer-repeat)
