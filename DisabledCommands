@@ -43,10 +43,11 @@ Alternatively, if you want to be told which commands were disabled (which are th
 
 If you use a separate custom file and want Emacs to place its disable/enable forms there instead of in your init file, you can use the following advice:
 
-    (defadvice en/disable-command (around put-in-custom-file activate)
+    (defun myscope/disabled-commands-in-custom-file (orig-fun &rest orig-args)
       "Put declarations in `custom-file'."
       (let ((user-init-file custom-file))
-        ad-do-it))
+        (apply orig-fun orig-args)))
+    (advice-add 'en/disable-command :around #'myscope/disabled-commands-in-custom-file)
 
 ----
 CategoryCommands
