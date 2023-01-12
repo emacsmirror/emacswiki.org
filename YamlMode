@@ -24,6 +24,9 @@ Another good accompanying mode for editing YAML files (and some other structured
 
 The [https://github.com/antonj/Highlight-Indentation-for-Emacs highlight-indentation] Package visualizes the indentation.  It also allows to show the current column prominently.
 
+== Resources ==
+* [https://blog.chmouel.com/2016/09/07/dealing-with-yaml-in-emacs/ Dealing with YAML in Emacs] - Blog post which mentions the above packages, and a few more.  
+
 ----
 CategoryModes
 DataModes
