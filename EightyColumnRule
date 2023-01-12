@@ -36,7 +36,7 @@ Keeping lines short is important.
 == Related Emacs Packages ==
 
 === ColumnMarker ==
-Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLinePosition, FindLongLines, and FillColumnIndicator.
+Using ColumnMarker is one way to keep track of column 80 overflow. See also ModeLineRegion, FindLongLines, and FillColumnIndicator.
 
 ----
 
