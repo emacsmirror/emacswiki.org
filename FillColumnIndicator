@@ -78,7 +78,7 @@ If you're curious about the color scheme in the screenshots on this page, the se
 
 * ColumnMarker
 * HighlightCurrentColumn -- Highlight the current column when Emacs is idle, or momentarily, or in such a way that the highlighting tracks the cursor. An extension of <tt>[[column-marker.el]]</tt>.
-* ModeLineRegion (<tt>[[modeline-region.el]]</tt>) for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
+* ModeLineRegion for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
 * MarginMode
 * EightyColumnRule
 
