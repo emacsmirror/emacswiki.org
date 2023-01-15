@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2023, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov  3 21:23:37 2022 (-0700)
+;; Last-Updated: Sun Jan 15 10:29:40 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 2585
+;;     Update #: 2591
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,12 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `auth-source', `button', `cl', `cl-generic', `cl-lib',
-;;   `cl-macs', `eieio', `eieio-core', `eieio-loaddefs',
-;;   `epg-config', `gv', `help-fns', `help-mode', `info', `macroexp',
-;;   `naked', `package', `password-cache', `radix-tree', `seq',
-;;   `tabulated-list', `url-handlers', `url-parse', `url-vars',
-;;   `wid-edit', `wid-edit+'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -121,6 +116,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/01/15 dadams
+;;     describe-keymap: Evaluate keymap var in original buffer, not in *Help* - it could be buffer-local.
 ;; 2022/11/03 dadams
 ;;     describe-file: File Type -> File type.
 ;; 2022/06/09 dadams
@@ -3005,39 +3002,63 @@ Non-interactively:
 * KEYMAP can be such a keymap variable or a keymap.
 * Non-nil optional arg SEARCH-SYMBOLS-P means that if KEYMAP is not a
   symbol then search all variables for one whose value is KEYMAP."
-  (interactive (list (intern (completing-read "Keymap: " obarray
-                                              (lambda (m) (and (boundp m)  (keymapp (symbol-value m))))
-                                              t nil 'variable-name-history))))
-  (unless (and (symbolp keymap)  (boundp keymap)  (keymapp (symbol-value keymap)))
-    (if (not (keymapp keymap))
-        (error "%sot a keymap%s"
-               (if (symbolp keymap) (format "`%S' is n" keymap) "N")
-               (if (symbolp keymap) " variable" ""))
-      (let ((sym  nil))
-        (when search-symbols-p
-          (setq sym  (catch 'describe-keymap
-                       (mapatoms (lambda (symb) (when (and (boundp symb)
-                                                      (eq (symbol-value symb) keymap)
-                                                      (not (eq symb 'keymap))
-                                                      (throw 'describe-keymap symb)))))
-                       nil)))
-        (unless sym
-          (setq sym  (gentemp "KEYMAP OBJECT (no variable) "))
-          (set sym keymap))
-        (setq keymap  sym))))
-  (setq keymap  (or (condition-case nil (indirect-variable keymap) (error nil))  keymap)) ; Follow aliasing.
-  (let* ((name  (symbol-name keymap))
-         (doc   (if (fboundp 'help-documentation-property) ; Emacs 23+
-                    (help-documentation-property keymap 'variable-documentation nil 'ADD-HELP-BUTTONS)
-                  (documentation-property keymap 'variable-documentation)))
-         (doc   (and (not (equal "" doc))  doc)))
-    (help-setup-xref (list #'describe-keymap keymap)
-                     (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
-                             (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-                         (called-interactively-p 'interactive)
-                       (interactive-p)))
-    (if (fboundp 'with-help-window)
-        (with-help-window (help-buffer)
+  (interactive
+   (let ((obuf  (current-buffer)))
+     (list (intern (completing-read "Keymap: " obarray
+                                    (if (and (boundp 'lexical-binding)  lexical-binding) ; Emacs 24+.
+                                        (lambda (m)
+                                          (with-current-buffer obuf
+                                            (and (boundp m)  (keymapp (symbol-value m)))))
+                                      `(lambda (m)
+                                         (with-current-buffer ,obuf
+                                           (and (boundp m)  (keymapp (symbol-value m))))))
+                                    t nil 'variable-name-history)))))
+  (let ((obuf  (current-buffer)))
+    (unless (and (symbolp keymap)  (boundp keymap)  (keymapp (symbol-value keymap)))
+      (if (not (keymapp keymap))
+          (error "%sot a keymap%s"
+                 (if (symbolp keymap) (format "`%S' is n" keymap) "N")
+                 (if (symbolp keymap) " variable" ""))
+        (let ((sym  nil))
+          (when search-symbols-p
+            (setq sym  (catch 'describe-keymap
+                         (mapatoms (lambda (symb) (when (and (boundp symb)
+                                                        (eq (symbol-value symb) keymap)
+                                                        (not (eq symb 'keymap))
+                                                        (throw 'describe-keymap symb)))))
+                         nil)))
+          (unless sym
+            (setq sym  (gentemp "KEYMAP OBJECT (no variable) "))
+            (set sym keymap))
+          (setq keymap  sym))))
+    (setq keymap  (or (condition-case nil (indirect-variable keymap) (error nil))  keymap)) ; Follow aliasing.
+    (let* ((name  (symbol-name keymap))
+           (doc   (if (fboundp 'help-documentation-property) ; Emacs 23+
+                      (help-documentation-property keymap 'variable-documentation nil 'ADD-HELP-BUTTONS)
+                    (documentation-property keymap 'variable-documentation)))
+           (doc   (and (not (equal "" doc))  doc))
+           (key-descriptions  (with-current-buffer obuf
+                                (substitute-command-keys (concat "\\{" name "}")))))
+      (help-setup-xref (list #'describe-keymap keymap)
+                       (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                               (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                           (called-interactively-p 'interactive)
+                         (interactive-p)))
+      (if (fboundp 'with-help-window)
+          (with-help-window (help-buffer)
+            (princ name) (terpri) (princ (make-string (length name) ?-)) (terpri) (terpri)
+            (when doc
+              (when (boundp 'Info-virtual-files) ; Emacs 23.2+
+                (with-current-buffer "*Help*"    ; Link to manuals.
+                  (Info-make-manuals-xref name nil nil (not (if (or (> emacs-major-version 23)
+                                                                    (and (= emacs-major-version 23)
+                                                                         (> emacs-minor-version 1)))
+                                                                (called-interactively-p 'interactive)
+                                                              (interactive-p))))))
+              (princ doc) (terpri) (terpri))
+            ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
+            (with-current-buffer "*Help*" (insert key-descriptions)))
+        (with-output-to-temp-buffer "*Help*"
           (princ name) (terpri) (princ (make-string (length name) ?-)) (terpri) (terpri)
           (when doc
             (when (boundp 'Info-virtual-files) ; Emacs 23.2+
@@ -3049,20 +3070,7 @@ Non-interactively:
                                                             (interactive-p))))))
             (princ doc) (terpri) (terpri))
           ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
-          (with-current-buffer "*Help*" (insert (substitute-command-keys (concat "\\{" name "}")))))
-      (with-output-to-temp-buffer "*Help*"
-        (princ name) (terpri) (princ (make-string (length name) ?-)) (terpri) (terpri)
-        (when doc
-          (when (boundp 'Info-virtual-files) ; Emacs 23.2+
-            (with-current-buffer "*Help*"    ; Link to manuals.
-              (Info-make-manuals-xref name nil nil (not (if (or (> emacs-major-version 23)
-                                                                (and (= emacs-major-version 23)
-                                                                     (> emacs-minor-version 1)))
-                                                            (called-interactively-p 'interactive)
-                                                          (interactive-p))))))
-          (princ doc) (terpri) (terpri))
-        ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
-        (with-current-buffer "*Help*" (insert (substitute-command-keys (concat "\\{" name "}"))))))))
+          (with-current-buffer "*Help*" (insert key-descriptions)))))))
 
 
 ;; REPLACE ORIGINAL in `package.el':
