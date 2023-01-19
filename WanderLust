@@ -178,6 +178,7 @@ You can chat on <code>irc.freenode.net</code> on the <code>#wanderlust</code> ch
 * WlEmacsTwentyThree
 * [http://www.emacswiki.org/emacs/MailtoHandler#toc5 MailtoHandler] -- Using wl for <code>mailto:</code> links
 * https://gist.github.com/622291 -- gravatar.el and wl-gravatar.el
+* WlViewPatch -- enable diff file highlighting in message reader
 
 == External Links ==
 
