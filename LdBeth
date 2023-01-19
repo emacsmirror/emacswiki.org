@@ -12,13 +12,11 @@ Happy Hacking!
 
 == Packages I use ==
 
-# WanderLust and NotMuch for e-mail
-# Gnus for news
-# MuseMode and PlannerMode for blogging and writing
-# WThreeM and Conkeror for browsing web.
+# WanderLust for e-mail
 # Erc for IRC
 # Sly for Common Lisp
-# AucTex for LaTeX
+# NxmlMode for XML
+# NewsTicker for RSS and Atom
 
 == Programming Languages I use ==
 
