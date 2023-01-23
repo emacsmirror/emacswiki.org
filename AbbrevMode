@@ -52,7 +52,7 @@ You may not want to use ##~/.abbrev_defs## as your abbrev file.  I use the follo
 
 Also, if you want abbreviations to be saved whenever you save files (##C-x s##) or quit emacs, add the following to your .emacs:
 
-  (setq save-abbrevs 'silent)        ;; save abbrevs when files are saved
+  (setq save-abbrevs 'silently)        ;; save abbrevs when files are saved
 
 == Restoring Abbrevs ==
 
