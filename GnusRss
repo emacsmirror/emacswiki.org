@@ -75,12 +75,6 @@ One can then browse the list of available feeds via the server buffer
 
 New feeds can be added [[http://gwene.org/|here]].
 
-== reader2maildir ==
-
-If you want to read [[http://reader.google.com/|Google Reader]] feeds with Gnus, you can use [[https://github.com/kisonecat/reader2maildir|reader2maildir]] to fetch feeds from Google Reader into a local Maildir, which can then be accessed via dovecot and nnimap.
-
-Seen marks are propagated in both directions, so if you read an article in Gnus, it will show up as Read in Google Reader, and vice versa.
-
 == Discussion ==
 
 ----
