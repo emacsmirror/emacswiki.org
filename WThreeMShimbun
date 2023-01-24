@@ -7,7 +7,11 @@ You will need to install the following packages, before installing emacs-w3m:
 * [[FLIM]] (ftp://ftp.m17n.org/pub/mule/flim/)
 * [[APEL]] (ftp://ftp.m17n.org/pub/mule/apel/)
 
-: ftp.m17n.org doesn't seem to allow anonymous access at the moment. There's an unofficial git clone of the CVS tree at http://github.com/wanderlust/flim, last pulled in August 2010 or you could try one of the following alternatives:
+: ftp.m17n.org doesn't seem to allow anonymous access at the moment. Development versions of FLIM and APEL for Wanderlust are available at:
+: * https://github.com/wanderlust/flim
+: * https://github.com/wanderlust/apel
+
+: You could also try these alternatives:
 : * ftp://ftp.jpl.org/pub/elisp/apel/
 : * http://www.kanji.zinbun.kyoto-u.ac.jp/~tomo/lemi/dist/flim/
 
