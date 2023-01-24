@@ -11,11 +11,10 @@ The diary entries are added manually to the ~/diary file. 'M-x diary' does not c
 
 Here is some code to make your calendar and diary display fancier:
 
- (setq view-diary-entries-initially t
-       mark-diary-entries-in-calendar t
-       number-of-diary-entries 7)
- (add-hook 'diary-display-hook 'fancy-diary-display)
- (add-hook 'today-visible-calendar-hook 'calendar-mark-today)
+ (setq calendar-view-diary-initially-flag t
+       diary-number-of-entries 7
+       diary-display-function #'diary-fancy-display)
+ (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
 
 Here is some code to get rid of the ugly equal signs under the date:
 
