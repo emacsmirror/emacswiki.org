@@ -1,0 +1,13 @@
+A MinorMode for accessing cross reference information output by the GNAT compiler.
+
+* https://elpa.gnu.org/packages/doc/gpr-query.html
+
+The current [::gpr-query] maintainer is StephenLeake, [http://stephe-leake.org/] who maintains the code in GNU ELPA and periodically publishes updated versions on the project page.
+
+Related packages:
+
+[::gpr-mode] - a major mode for editing GNAT project files.
+
+----
+CategoryModes
+ProgrammingModes
