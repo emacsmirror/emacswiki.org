@@ -10,6 +10,9 @@ ELPA packages:
 
 * ada-mode
 * ada-ref-man
+* gnat-compiler
+* gpr-mode
+* gpr-query
 * other-frame-window
 * uniquify-files
 * wisi
