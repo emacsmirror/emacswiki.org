@@ -62,7 +62,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * GnomeWizard -- Gwizard
 * GoLangMode -- Ken Thompson's Go language
 * GoLispMode -- navigate lisp files as hypertext
-* GPRMode
+* GprMode
 * GprQuery
 * GroovyMode
 * HaskellMode 
