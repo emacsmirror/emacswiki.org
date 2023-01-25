@@ -1,0 +1,17 @@
+A MajorMode for editing GNAT project files is available in GNU ELPA (the Emacs Lisp Package Archive).
+
+Project page:
+
+* https://elpa.gnu.org/packages/doc/gpr-mode.html
+
+The current [::gpr-mode] maintainer is StephenLeake, [http://stephe-leake.org/] who maintains the code in GNU ELPA and periodically publishes updated versions on the project page.
+
+Related packages:
+
+[::ada-mode] - a major mode for editing Ada files.
+
+[::gpr-query] - uses the cross reference information output by the gnat compiler to provide an Emacs xref backend. 
+
+----
+CategoryModes
+ProgrammingModes
