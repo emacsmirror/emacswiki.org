@@ -5,15 +5,15 @@
 ;; Author: Lynn Slater
 ;;         Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2019, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 14 07:18:29 2019 (-0700)
+;; Last-Updated: Thu Jan 26 06:41:02 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 2022
+;;     Update #: 2034
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -77,7 +77,7 @@
 ;; file, put this in your init file (~/.emacs):
 ;;
 ;;   (autoload 'auto-update-file-header "header2")
-;;   (add-hook 'write-file-hooks 'auto-update-file-header)
+;;   (add-hook 'write-file-functions 'auto-update-file-header) ; Emacs 20: write-file-hooks
 ;;
 ;; To have Emacs add a file header whenever you create a new file in
 ;; some mode, put this in your init file (~/.emacs):
@@ -173,6 +173,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/01/26 dadams
+;;     Avoid benign byte-compiler warnings in some Emacs versions.
+;;       make-(header|revision): beginning-of-buffer -> inlined
+;;       make-header: mapcar -> run-hooks
+;;       
 ;; 2019/09/13 dadams
 ;;     Cleaned up some code for string vars that might be nil.
 ;; 2016/08/10 dadams
@@ -866,10 +871,14 @@ constructed by calling the functions in `make-header-hook'.  The mode line
 and end lines start and terminate block comments.  The body lines continue
 the comment."
   (interactive)
-  (beginning-of-buffer)                 ; Leave mark at old location.
-  (let* ((return-to             nil)    ; To be set by `make-header-hook'.
+  (progn ; This is just (beginning-of-buffer), but avoids interactive-only warning.
+    (unless (or (and (fboundp 'region-active-p) (region-active-p))
+                (and transient-mark-mode  mark-active))
+      (push-mark))                      ; Leave mark at old location.
+    (goto-char (point-min)))
+  (let* ((return-to             nil) ; To be set by `make-header-hook'.
          (header-prefix-string  (header-prefix-string))) ; Cache result.
-    (mapcar #'funcall make-header-hook)
+    (run-hooks make-header-hook)
     (when return-to (goto-char return-to))))
 
 ;;;###autoload
@@ -881,8 +890,12 @@ the comment."
         (logical-comment-start  (if (= 1 (length comment-start))
                                     (concat comment-start comment-start " ")
                                   comment-start)))
-    ;; Look for the history line
-    (beginning-of-buffer)               ; Leave a mark behind.
+    ;; Look for the history line.
+    (progn ; This is just (beginning-of-buffer), but avoids interactive-only warning.
+      (unless (or (and (fboundp 'region-active-p) (region-active-p))
+                  (and transient-mark-mode  mark-active))
+        (push-mark))                    ; Leave mark at old location.
+      (goto-char (point-min)))
     (if (re-search-forward (concat "^\\(" (and comment-start  (regexp-quote comment-start))
                                    (regexp-quote (header-prefix-string)) "\\|"
                                    (if (nonempty-comment-start)
