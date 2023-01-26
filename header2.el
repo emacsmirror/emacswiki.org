@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 26 06:41:02 2023 (-0800)
+;; Last-Updated: Thu Jan 26 06:43:34 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 2034
+;;     Update #: 2035
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -177,7 +177,6 @@
 ;;     Avoid benign byte-compiler warnings in some Emacs versions.
 ;;       make-(header|revision): beginning-of-buffer -> inlined
 ;;       make-header: mapcar -> run-hooks
-;;       
 ;; 2019/09/13 dadams
 ;;     Cleaned up some code for string vars that might be nil.
 ;; 2016/08/10 dadams
