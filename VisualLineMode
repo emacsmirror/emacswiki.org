@@ -11,6 +11,8 @@ To use the original behavior put the following in your .emacs:
 
     (setq line-move-visual nil)
 
+Note that Visual Line mode only affects how the current buffer is displayed. It does not wrap lines when, for example, you print the buffer with ##lpr-buffer##.
+
 [new]
 But can you have visual-line-mode wrap at a given column and not just at the window border?  I like how longlines-mode keeps text at 80 columns or less.
 --BryanMurdock
