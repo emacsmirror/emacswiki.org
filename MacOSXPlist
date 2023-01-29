@@ -47,7 +47,4 @@ with the following
 
 == osx-plist 2.0.0 and newer ==
 
-An updated version of the package now lives here [https://github.com/ferdy/osx-plist osx-plist],
-and can be installed from MELPA or MELPA stable. This version incorporates the fix for
-"root node is an array" mentioned just above, and also adds support for plists
-containing types such as integers, reals, dates, and base64 data.  See the Github page for details.
+An updated version of the package now lives on Github [https://github.com/gonewest818/osx-plist osx-plist], and can be installed from MELPA or MELPA stable. This version incorporates the fix for "root node is an array" mentioned just above, and also adds support for plists containing types such as integers, reals, dates, and base64 data.  See the Github page for details.
