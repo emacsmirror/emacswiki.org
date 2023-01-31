@@ -1,6 +1,6 @@
 The GnuEmacs library '''[::Dired X]''' (<tt>[::dired-x].el</tt>) provides extra functionality for DiredMode. It comes with Emacs.
 
-A manual comes with Emacs documenting these _extra_ features for Dired Mode.  Origanally written by SebastianKremer.
+A manual comes with Emacs documenting these _extra_ features for Dired Mode.  Originally written by SebastianKremer.
 
 To use this mode run `M-x load-library RET dired-x RET' or add the following to your InitFile.
 
