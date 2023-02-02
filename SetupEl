@@ -579,6 +579,42 @@ This will be ignored at expansion."
   :repeatable nil)
 }}}
 
+=== Package-vc support ===
+
+This alternative definition of :package adds support for package-vc, an alternative installation backend added in Emacs 29:
+
+{{{
+(setup-define :package
+  (lambda (package)
+    (if (consp package)
+        `(unless (and (package-installed-p ',(car package))
+                      (package-vc-p (cadr (assoc ',(car package)
+                                                 (package--alist)))))
+           (package-vc-install
+            ,(if (consp (cdr package))
+                 `',(car package)
+               `(list ',(car package) ,@(cdr package)))))
+      `(unless (package-installed-p ',package)
+         (unless (memq ',package package-archive-contents)
+           (package-refresh-contents))
+         (package-install ',package))))
+  :documentation "Install PACKAGE if it hasn't been installed yet.
+The first PACKAGE can be used to deduce the feature context.  If
+PACKAGE is a cons-cell, then the it will be interpreted as a
+package specification that will be passed to
+`package-vc-install'."
+  :repeatable t
+  :shorthand (lambda (form)
+               (if (consp (cadr form)) (caadr form) (cadr form))))
+}}}
+
+If you now want to have a package installed from source, you just need to wrap the package symbol in a cons-cell, that may optionally also include package specification:
+
+{{{
+(setup (:package (foo :url "https://some.scm.host/path/to/repo")
+  ...)
+}}}
+
 == Transforming Configuration Errors Into Warnings ==
 
 This code transforms errors in the expanded code into warnings, letting the rest of your config file run.
