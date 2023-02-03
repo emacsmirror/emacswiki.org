@@ -1,0 +1,14 @@
+*** Motivation
+Derzeit sind bei mir über die Jahre entstandene 13 Org Mode Files mit 13500
+headlines als aktive org-agenda-files im Einsatz. Darunter befindet sich
+ein haushalt.org, diverse projekt.org Files, hobby org Files und mein
+Riesen Nachschlage Org Mode File linux.org. Bis auf reine Journal Files
+sind die meisten hierarchisch aufgebaut.
+
+Anfangs war ich über die hierarchische Aufbauweise begeistert und habe auch
+meistens schnell gefunden, wonach ich suchte (z.B. linux.org: notes - gimp)
+oder versuchte es über über M-x occur aufzuspüren.
+
+Aber über die Zeit stellte sich die Frage: wie finde ich Dinge schneller?
+Denn beim Emacs Einsatz versucht man ja immer Dinge effektiver zu gestalten
+und den Emacs den eigenen Wünschen mehr und mehr anzupassen.
