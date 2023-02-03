@@ -26,7 +26,7 @@ To show the function in the HeaderLine instead of the ModeLine,
           header-line-format which-func-header-line-format)))
 }}}
 
-(Note: Emacs 24.2.91 seems to put the which-func configuration in `mode-line-misc-info' instead, so you may need to replace `mode-line-format' with `mode-line-misc-info' in the above snippet.)
+(Note: Emacs 24.2.91 seems to put the which-func configuration in `mode-line-misc-info' instead, so you may need to replace `mode-line-format' with `mode-line-misc-info' in the above snippet. Note: Though this doesn't seem to work in Emacs 28.2, it shows the function in the modeline and the headline.)
 
 By default, which-func mode automatically enables itself in all modes which have imenu support. To configure a subset of languages for which-func mode, set `which-func-modes':
 
