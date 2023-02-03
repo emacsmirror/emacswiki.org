@@ -44,11 +44,11 @@ In meiner .emacs steht u.a.:
 Das ganze wende ich folgendermaßen an:
 * drücke f4
 * Wenn ich weiß, der zu suchende Eintrag in der Überschrift beginnt mit
-  gimp, gebe ich xl space ein, da zu ^\*+ expandiert, dann tippe ich gimp,
-  Return und schon erscheint der Org Mode Sparse Tree. Mit einem
-  next-error, den ich ebenfalls auf eine Taste gelegt habe bin ich an der
+  gimp, gebe ich xl space ein, welches zu ^\*+ expandiert, dann tippe ich gimp,
+  Return und schon erscheint der Org Mode Sparse Tree mit den gimp Treffern. Mit einem
+  next-error, den ich ebenfalls auf eine Taste gelegt habe, bin ich an der
   gewünschten Stelle in Zeile 23456, für die ich sonst sicher länger
-  gebraucht hätte. Kleiner Nebeneffekt: der ganze unnötige Rest herum ist
+  gebraucht hätte. Kleiner eleganter Nebeneffekt des sparse Tree: der ganze unnötige Rest herum ist
   ausgeblendet.
 
 Wenn ich nicht mehr genau weiß, ob gimp an erster Stelle in der Überschrift
