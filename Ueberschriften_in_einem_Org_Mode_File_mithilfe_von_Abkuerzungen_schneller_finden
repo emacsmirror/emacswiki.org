@@ -12,3 +12,49 @@ oder versuchte es über über M-x occur aufzuspüren.
 Aber über die Zeit stellte sich die Frage: wie finde ich Dinge schneller?
 Denn beim Emacs Einsatz versucht man ja immer Dinge effektiver zu gestalten
 und den Emacs den eigenen Wünschen mehr und mehr anzupassen.
+== Idee ==
+Irgendwann stolpert jeder über Emacs abbrev-mode, so auch ich über
+http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html. Speziell
+die Idee, Regexes abzukürzen fand ich cool.
+
+In meiner .emacs steht u.a.:
+
+(defun xah-abbrev-h-f ()
+  "Abbrev hook function, used for `define-abbrev'.
+   Our use is to prevent inserting the char that triggered expansion. Experimental.
+   the “ahf” stand for abbrev hook function.
+  Version 2016-10-24"
+  t)
+
+(put 'xah-abbrev-h-f 'no-self-insert t)
+(clear-abbrev-table global-abbrev-table)
+(define-abbrev-table 'global-abbrev-table
+  '(
+                                        ; for regexes
+    ("xa"  "\\(\\|\\)" xah-abbrev-h-f)
+    ("xg"  "{^\\*+ }" xah-abbrev-h-f)
+    ("xgl" "{^\\*+ .*}" xah-abbrev-h-f)
+    ("xl"  "^\\*+")
+    ("xll" "^\\*+ .*" xah-abbrev-h-f)
+    ("xw"  "\\b\\b" xah-abbrev-h-f)
+    ))
+
+(global-set-key      [f4]          'org-occur)
+
+Das ganze wende ich folgendermaßen an:
+* drücke f4
+* Wenn ich weiß, der zu suchende Eintrag in der Überschrift beginnt mit
+  gimp, gebe ich xl space ein, da zu ^\*+ expandiert, dann tippe ich gimp,
+  Return und schon erscheint der Org Mode Sparse Tree. Mit einem
+  next-error, den ich ebenfalls auf eine Taste gelegt habe bin ich an der
+  gewünschten Stelle in Zeile 23456, für die ich sonst sicher länger
+  gebraucht hätte. Kleiner Nebeneffekt: der ganze unnötige Rest herum ist
+  ausgeblendet.
+
+Wenn ich nicht mehr genau weiß, ob gimp an erster Stelle in der Überschrift
+steht - obwohl ich mich mittlerweile bemühe, solche Schlagworte nach vorne
+zu schieben - nutze ich statt xl xll, welches zu ^\*+ .* expandiert und den
+Begriff irgendwo in der Zeile akzeptiert.
+
+xg und xlg nutze ich zur Suche über alle org Files, xa für Alternativen und
+xw für Wortsuche aber bei weitem nicht so häufig wie xl oder xll.
