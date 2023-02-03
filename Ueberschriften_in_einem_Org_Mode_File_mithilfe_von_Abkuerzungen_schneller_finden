@@ -12,7 +12,7 @@ oder versuchte es über über M-x occur aufzuspüren.
 Aber über die Zeit stellte sich die Frage: wie finde ich Dinge schneller?
 Denn beim Emacs Einsatz versucht man ja immer Dinge effektiver zu gestalten
 und den Emacs den eigenen Wünschen mehr und mehr anzupassen.
-== Idee ==
+== Implementierung ==
 Irgendwann stolpert jeder über Emacs abbrev-mode, so auch ich über
 http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html. Speziell
 die Idee, Regexes abzukürzen fand ich cool.
