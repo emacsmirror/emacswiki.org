@@ -18,7 +18,7 @@ http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html. Speziell
 die Idee, Regexes abzukürzen fand ich cool.
 
 In meiner .emacs steht u.a.:
-
+{{{
 (defun xah-abbrev-h-f ()
   "Abbrev hook function, used for `define-abbrev'.
    Our use is to prevent inserting the char that triggered expansion. Experimental.
@@ -40,7 +40,7 @@ In meiner .emacs steht u.a.:
     ))
 
 (global-set-key      [f4]          'org-occur)
-
+}}}
 Das ganze wende ich folgendermaßen an:
 * drücke f4
 * Wenn ich weiß, der zu suchende Eintrag in der Überschrift beginnt mit
