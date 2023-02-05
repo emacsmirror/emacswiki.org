@@ -7,7 +7,7 @@ Almost everywhere I am I'm (un)known as [::ryuslash], including IRC. I also have
 ; [https://github.com/ryuslash/yoshi-theme yoshi-theme]: My personal Emacs theme.
 ; [https://github.com/ryuslash/flycheck-commit-check flycheck-commit-check]: A flycheck checker for my [https://github.com/ryuslash/commit-check commit-check] project.
 ; [https://github.com/ryuslash/eshell-fringe-status eshell-fringe-status]: Inspired by [http://finalterm.org/ Final Term] showing a failed indicator in its margin, I wanted to see the success/failed status of my commands in eshell as well.
-; [https://git.sr.ht/~ryuslash/vc-p4 vc-p4]: A fork of the vc-p4.el to try and make it work with the latest Emacs and improve the interaction with Perforce.
+; [https://git.sr.ht/~ryuslash/vc-p4 vc-p4]: A fork of the vc-p4.el to try and make it work with the latest Emacs and improve the interaction with PerforceSCM.
 
 === Projects maintained by others ===
 
