@@ -13,6 +13,7 @@ Almost everywhere I am I'm (un)known as [::ryuslash], including IRC. I also have
 ; [https://github.com/ryuslash/upcase-mode upcase-mode]: An experiment with transient keymaps to lessen the use of the Shift key.
 ; [https://github.com/ryuslash/mode-icons mode-icons]: An attempt to make my mode-line a bit more visual, less textual. And to save space.
 ; [https://github.com/ryuslash/desktop-registry desktop-registry]: A module to turn Emacs' desktop files into a poor man's project file.
+; [https://git.sr.ht/~ryuslash/vc-p4 vc-p4]: A fork of the vc-p4.el to try and make it work with the latest Emacs and improve the interaction with Perforce.
 
 === Unfinished projects ===
 
