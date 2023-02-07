@@ -1,0 +1,8 @@
+EmacsWiki 不运行 MediaWiki（用于运行维基百科的软件），而是运行 [[https://www.oddmuse.org/|Oddmuse]]。该软件由 AlexSchroeder 维护。
+
+* CategoryOddmuse – 使用Emacs而不是浏览器编辑Oddmusewiki的各种模式
+* WikiDownload – 如何下载此wiki的部分内容（包括您需要的所有内容）
+* [[https://www.emacswiki.org/emacs?action=version|Wiki Version]]–查看此Wiki已安装的模块（如果您想复刻，则很重要）
+* [[https://www.emacswiki.org/emacs/config|Config File]] – 看看这个wiki安装了什么配置（如果你想复刻的话也很重要）
+* [[https://www.emacswiki.org/emacs/2010-10-02|2010-10-02]] – 关于运行wiki的软件更改的最新讨论
+** [[https://www.emacswiki.org/emacs/2011-09-30|2011-09-30]] – 关于访客数量的数据和图表
