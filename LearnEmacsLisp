@@ -45,6 +45,7 @@ Emacs Lisp belong to the Lisp family (WikiPedia:Lisp_programming_language), and 
 [http://www.paulgraham.com/rootsoflisp.html]
 * Paul Graham's book ''ANSI Common Lisp'', chapter 2 (Common Lisp, not Emacs Lisp):
 [http://lib.store.yahoo.net/lib/paulgraham/acl2.txt]
+* Peter Norvig's ''Tutorial on Good Lisp Programming Style'' [https://www.cs.umd.edu/%7Enau/cmsc421/norvig-lisp-style.pdf]
 * Peter Seibel's book ''Practical Common Lisp'' (Common Lisp, not Emacs Lisp):
 [http://www.gigamonkeys.com/book/]
 * Steve Losh's article ''A Road to Common Lisp'' (Common Lisp, not Emacs Lisp): [http://stevelosh.com/blog/2018/08/a-road-to-common-lisp/]
