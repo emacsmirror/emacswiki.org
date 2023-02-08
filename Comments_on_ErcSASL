@@ -9,3 +9,13 @@ Looks like no, see https://github.com/joseph-gay/erc-sasl/issues/2
 
 -- npostavs 2016-05-31 19:16 UTC
 
+
+----
+
+It seems the needed patches are going into Emacs 29.
+https://debbugs.gnu.org/cgi/bugreport.cgi?bug=29108#31
+
+I could not test them though
+
+-- [https://vejeta.com Vejeta] 2023-02-08 01:54 UTC
+
