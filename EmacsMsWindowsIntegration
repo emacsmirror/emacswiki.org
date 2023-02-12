@@ -21,7 +21,7 @@ This shortcut will connect to [WThirtyTwoServerMode Emacs daemon] if it is runni
 
 This may not work correctly on Windows 7. See MsWindowsSevenProblems
 
-Note: If the path contains a blank (whitespace) things get a little bit more complicated and one should use quotes. Also, it works omitting the alternative editor completely. In this case the emacsclient tries to launch a new emacs server anyway:
+Note: If the path contains a blank (whitespace) things get a little bit more complicated and one should use quotes or use 8.3 filenames (e.g. C:\Progra~1 for C:\Program Files). Also, it works omitting the alternative editor completely. In this case the emacsclient tries to launch a new emacs server anyway:
 {{{
 "c:\path\to\emacs\bin\emacsclientw.exe" -c -n -a ""
 }}}
