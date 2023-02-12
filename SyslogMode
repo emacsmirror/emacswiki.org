@@ -1,9 +1,8 @@
+syslog-mode is a mode for viewing system logfiles.
 
+Project home page: https://github.com/vapniks/syslog-mode
 
-Harley Gorrell's download: http://www.mahalito.net/~harley/elisp/syslog-mode.el.
-Emacswiki version download: Lisp:syslog-mode.el.
-
-syslog-mode.el is a mode for viewing system logfiles.
+Also available in MELPA (under same name).
 
 === Configuration ===
 
@@ -13,7 +12,16 @@ Put syslog-mode.el in your load-path and add the following lines to your emacs c
  (add-to-list 'auto-mode-alist '("/var/log.*\\'" . syslog-mode))
 
 Tip: When you would easy move to the first line of your boot sequence configure the variable <code>syslog-boot-start-regexp</code> (default is <nowiki>SunOS</nowiki>) and use C-<down> in the syslog-mode.
-----
+
+=== Historic information ===
+
+The following links are historic (out of date):
+* Harley Gorrell's download: http://www.mahalito.net/~harley/elisp/syslog-mode.el.
+* Emacswiki version download: Lisp:syslog-mode.el.
+
+=== See also ===
+
 There is also a SyslogClientServer for both sending and displaying received syslog messages.
+
 ----
 CategoryModes
