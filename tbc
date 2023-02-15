@@ -2,6 +2,10 @@ I'm Tim Chambers 1E4AF729D5CEFFD0. I love GnuEmacs. My initials are tbc. I'm an 
 
 == Blog ==
 
+''15 Feb 23''
+
+Sad to learn evernote-mode.el ([https://github.com/pymander/evernote-mode by pymander]) has no maintainer. [https://github.com/pymander/evernote-mode/issues/38#issuecomment-1431856227 Left a note of thanks].
+
 ''03 Oct 16''
 
 Haven't made it to a meetup yet. Halfway through HRS' Org-mode talk (YouTube). Googled emacs philosophy today. Discovered Emacs is Dead. Also thinking about ViAndEmacs. What I want to do is explain what ''I'' mean by Emacs as an operating system. I sympathize with HRS, but my take is a little different. Pondering...
