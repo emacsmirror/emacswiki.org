@@ -93,7 +93,7 @@ Gentoo includes support for running Emacs as a daemon in the
 
 Every user who wants to connect to an Emacs server must have an own
 instance of the daemonized Emacs. The init script automatically
-determines the user by its name, so you create a symbolic link
+determines the user by its name, so you create a symbolic linke emacs.service file from ~/.config/systemd/user/default.target.wants to ~/.config/systemd/user/graphical-session.target.wants, but that didn't change anything.
 (do not copy the script, or you will miss eventual updates!) in your
 <code>/etc/init.d</code> directory:
 
@@ -376,3 +376,35 @@ $ emacsclient -c
 </pre>
 
 Once that code has been loaded, sending a USR1 to the emacs process will restart the server. You can now reconnect. Joy.
+
+== Emacs daemon as a service on Wayland in KDE/Plasma ==
+
+On wayland if we try to run the systemd service that comes along with emacs, some environment variables are not set when the daemon tries to start and
+the daemon will fail to start.
+
+To solve the problem, we have to start the service after the plasma-wayland graphical environment has already been loaded.
+We change the <code>WantedBy</code> in the <code>[Install]</code> section to <code>graphical-session.target</code> and add
+<pre>
+Requires=plasma-kwin_wayland.service
+After=plasma-kwin_wayland.service
+</pre>
+to the <code>[Unit]</code> section. The <code>emacs.service</code> file would now look like:
+
+{{{
+Unit]
+Description=Emacs text editor
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+Requires=plasma-kwin_wayland.service
+After=plasma-kwin_wayland.service
+
+
+[Service]
+Type=forking
+ExecStart=emacs --daemon
+ExecStop=emacsclient --eval "(kill-emacs)"
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target
+
+}}}
