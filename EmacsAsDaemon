@@ -391,7 +391,7 @@ After=plasma-kwin_wayland.service
 to the <code>[Unit]</code> section. The <code>emacs.service</code> file would now look like:
 
 {{{
-Unit]
+[Unit]
 Description=Emacs text editor
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 Requires=plasma-kwin_wayland.service
