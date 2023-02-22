@@ -1,4 +1,4 @@
-As a fun little side project I’ve been involved in some Gemini-protocol wiki programming and therefore you can “enjoy” a transmogrified Emacs Wiki via gemini://emacswiki.org with an appropriate Gemini client. There's a Gopher and Gemini client for Emacs called [https://thelambdalab.xyz/elpher/ Elpher] that I like to use.
+As a fun little side project I’ve been involved in some Gemini-protocol wiki programming and therefore you can “enjoy” a transmogrified Emacs Wiki via `gemini://emacswiki.org` with an appropriate Gemini client. There's a Gopher and Gemini client for Emacs called [https://thelambdalab.xyz/elpher/ Elpher] that I like to use.
 
 No web browser I know of has implemented the Gemini protocol. There are a bunch of other clients that you could use instead. [https://gemini.circumlunar.space/clients.html Gemini Clients] has a list.
 
