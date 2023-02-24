@@ -47,15 +47,14 @@ This example assumes that 'browse-url-filename-alist' has already been defined a
             ("^/\([^:@]+@\)?\([^:]+\):/*" . "ftp://\1\2/")
             ("^/+" . "file:/")))
 
-== Set browser according to the GConf configuration system ==
+== Open the url in the default browser according to the xwindows configuration system ==
 
-From time to time I test new browsers and don't want to adjust browse-url-generic-program everytime I switch. Under Gnome or Unity I normally do this with the tool gnome-default-applications-properties. This tool sets the browser via the GConf configuration system with the key /desktop/gnome/applications/browser/exec. To get this value and to set it automatically I use the following code:
+    (if window-system
+        (setq browse-url-browser-function 'browse-url-generic
+              browse-url-generic-program "xdg-open")
+      (setq browse-url-browser-function 'my-browse))
 
-    (setq browse-url-generic-program
-          (substring (shell-command-to-string "gconftool-2 -g /desktop/gnome/applications/browser/exec") 0 -1)
-          browse-url-browser-function 'browse-url-generic)
-
--- FlorianAdamsky
+-- [[jasonblewis]]
 
 == Different Browsers Depending On Environment ==
 
