@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan 10 14:22:40 2023 (-0800)
+;; Last-Updated: Sun Feb 26 13:17:03 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 3378
+;;     Update #: 3381
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -108,6 +108,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/02/26 dadams
+;;     (beginning|end)-of-visual-line+: Plain C-u does plain (beginning|end)-of-line+ now.
 ;; 2022/06/25 dadams
 ;;     split-para-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2021/11/01 dadams
@@ -502,56 +504,69 @@ This is similar to `beginning-of-line', but:
 ;;;###autoload (autoload 'end-of-visual-line+ "misc-cmds")
 ;;;###autoload (autoload 'beginning-of-visual-line+ "misc-cmds")
 (when (fboundp 'visual-line-mode)       ; Emacs 23+
-  (defun end-of-visual-line+ (&optional n)
+
+  (defun end-of-visual-line+ (&optional arg)
     "Move cursor to end of current visual line, or end of next if repeated.
 If point reaches the beginning or end of buffer, it stops there.
 To ignore intangibility, bind `inhibit-point-motion-hooks' to t.
 
 This is similar to `end-of-visual-line', but:
+
   If called interactively with no prefix arg:
+
      If the previous command was also `end-of-visual-line+', then move
-     to the end of the next visual line.  Else, end of current one.
-  Otherwise, move to the end of the Nth next visual line (Nth previous
-     one if N<0).  Command `end-of-visual-line', by contrast, moves to
-     the end of the (N-1)th next line."
-    (interactive
-     (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-    (unless n (setq n  0))              ; non-interactive with no arg
-    (let ((line-move-visual  t))
-      (if (and (eq 'end-of-visual-line+ last-command)  (not current-prefix-arg))
-          (line-move 1 t)
-        (line-move n t)))
-    ;; Unlike `move-beginning-of-line', `move-end-of-line' doesn't
-    ;; constrain to field boundaries, so we don't either.
-    (vertical-motion (cons (window-width) 0)))
+        to the end of the next visual line.
+     Else, move to the end of the current visual line.
 
-  (defun beginning-of-visual-line+ (&optional n)
-    "Move cursor to beginning of current visual line or next if repeated.
-If point reaches the beginning or end of buffer, it stops there.
-To ignore intangibility, bind `inhibit-point-motion-hooks' to t.
+  If called interactively with a plain prefix arg (`C-u'), or called
+     from Lisp with a cons ARG:
+        Move to the end of the current logical (not visual) line.
 
-This is the similar to `beginning-of-visual-line', but:
-1. With arg N, the direction is the opposite: this command moves
-   backward, not forward, N visual lines.
-2. If called interactively with no prefix arg:
-      If the previous command was also `beginning-of-visual-line+',
-      then move to the beginning of the previous visual line.  Else,
-      move to the beginning of the current visual line.
-   Otherwise, move to the beginning of the Nth previous visual line
-      (Nth next one if N<0).  Command `beginning-of-visual-line', by
-      contrast, moves to the beginning of the (N-1)th next visual
-      line."
-    (interactive
-     (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 0)))
-    (unless n (setq n  0))              ; non-interactive with no arg
-    (let ((opoint  (point)))
-      (let ((line-move-visual  t))
-        (if (and (eq 'beginning-of-visual-line+ last-command)  (not current-prefix-arg))
-            (line-move -1 t)
-          (line-move n t)))
-      (vertical-motion 0)
-      ;; Constrain to field boundaries, like `move-beginning-of-line'.
-      (goto-char (constrain-to-field (point) opoint (/= n 1))))))
+  Otherwise treat ARG numerically:
+
+     Move to the end of the ARGth next visual line (ARGth previous one
+     if N<0).
+
+Note: Unlike vanilla command `end-of-visual-line', a numeric arg N
+moves to the end of the Nth next, not the (N-1)th next, visual line.)"
+    (interactive (list (and current-prefix-arg  (if (consp current-prefix-arg) 
+                                                    current-prefix-arg
+                                                  (prefix-numeric-value current-prefix-arg)))))
+    (cond ((consp current-prefix-arg)
+           (when (eolp) (forward-line))
+           (end-of-line+))
+          (t
+           (unless arg (setq arg  0))
+           (let ((line-move-visual  t))
+             (if (and (eq 'end-of-visual-line+ last-command)  (not current-prefix-arg))
+                 (line-move 1 t)
+               (line-move arg t)))
+           ;; Unlike `move-beginning-of-line', `move-end-of-line' doesn't
+           ;; constrain to field boundaries, so we don't either.
+           (vertical-motion (cons (window-width) 0)))))
+
+  (defun beginning-of-visual-line+ (&optional arg)
+    "Like `end-of-visual-line+', but moving to line beginnings, not ends.
+Note: Unlike vanilla `beginning-of-visual-line', a positive numeric
+argument N moves backward, not forward, N visual lines."
+    (interactive (list (and current-prefix-arg  (if (consp current-prefix-arg) 
+                                                    current-prefix-arg
+                                                  (prefix-numeric-value current-prefix-arg)))))
+    (cond ((consp current-prefix-arg)
+           (when (bolp) (forward-line -1))
+           (beginning-of-line+))
+          (t
+           (unless arg (setq arg  0))
+           (let ((opoint  (point)))
+             (let ((line-move-visual  t))
+               (if (and (eq 'beginning-of-visual-line+ last-command)  (not current-prefix-arg))
+                   (line-move -1 t)
+                 (line-move arg t)))
+             (vertical-motion 0)
+             ;; Constrain to field boundaries, like `move-beginning-of-line'.
+             (goto-char (constrain-to-field (point) opoint (/= arg 1)))))))
+
+  )
 
 ;;;###autoload
 (defun to-next-word (&optional n)
