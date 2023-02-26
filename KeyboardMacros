@@ -25,8 +25,7 @@ You want to add the text "-- foobar was here" at the end of ''each'' of the line
 # `<code>C-x (</code>' to start recording a keyboard macro.
 # `C-e' (or `M-x end-of-line') to move the cursor to the end of the line.
 # Type "<code>-- foobar was here</code>"
-# `C-a' (or `M-x beginning-of-line') to move the cursor to the beginning of the line.
-# `C-n' (or `M-x next-line') to move the cursor to the beginning of the next line.
+# `C-f' (or `M-x forward-char') to move the cursor to the beginning of the next line. (C-n might not go to the next line if the macro encounters a long line long that wraps on the screen) 
 # `<code>C-x )</code>' to stop recording the keyboard macro.
 # `C-u 0 C-x e' to execute the macro an infinite number of times until the end of the file is reached (See InfiniteArgument).
 
