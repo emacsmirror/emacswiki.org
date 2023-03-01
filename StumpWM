@@ -247,5 +247,15 @@ https://github.com/stumpwm/stumpwm-contrib
 
 Which is good news for anyone using them, however stumpish and stumpwm-mode are not included.  Stumpwm-mode is now available on melpa but you still need stumpish installed to use it.  None of the contrib modules have appeared on quicklisp yet.
 
+*Correction to the above*
+
+* stumpish is included here:
+
+https://github.com/stumpwm/stumpwm-contrib/tree/master/util/stumpish
+
+* stumpwm-mode can be found here:
+
+https://github.com/stumpwm/stumpwm-contrib/tree/master/util/swm-emacs
+
 ----
 CategoryRelated
