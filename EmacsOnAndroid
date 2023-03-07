@@ -6,7 +6,9 @@ See GoogleAndroid for tips about using Emacs to develop Android applications.
 ===Real native port===
 
 The feature/android branch of the Emacs git repository contains the source code of a real port to Android, complete with touch screen and on screen keyboard support.
-You will have to build it yourself.
+Prebuilt binaries are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
+
+F-Droid also provides pre-builts, but they are usually outdated, have less dependencies included, and do not work on older systems.
 
 ===Native port (installable Android application)===
 A native Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
