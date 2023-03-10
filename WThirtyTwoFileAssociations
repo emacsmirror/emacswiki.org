@@ -23,7 +23,7 @@ This is similar to the "assoc" commands above. By defining file "meta types", e.
 
 With this method, for every associated file, you will be able to see Emacs listed under "Open with" option in context menu and in file properties.
 
-Save below script in file with ".reg" extension.
+Save below script in a file with ".reg" extension (remember to change all paths to match installation directory of your Emacs instance).
 <pre>
 Windows Registry Editor Version 5.00
 ;; -----
@@ -55,6 +55,11 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell\open]
 @="Open in Emacs"
 
+;; -----
+;; Command responsible for opening Emacs (it will open file in the existing window, or try to create a new one)
+;; If you want to always open files in new window, use this instead:
+;; @="C:\\tools\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"\" -c -n \"%1\""
+;; -----
 [HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell\open\command]
 @="C:\\tools\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"\" -n \"%1\""
 
