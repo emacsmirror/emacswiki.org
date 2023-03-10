@@ -23,7 +23,7 @@ This is similar to the "assoc" commands above. By defining file "meta types", e.
 
 With this method, for every associated file, you will be able to see Emacs listed under "Open with" option in context menu and in file properties.
 
-Save below script in a file with ".reg" extension (remember to change all paths to match installation directory of your Emacs instance).
+Save below script in a file with ".reg" extension (eg. emacs_file-associations.reg). Remember to change all paths to match installation directory of your Emacs instance.
 <pre>
 Windows Registry Editor Version 5.00
 ;; -----
@@ -50,7 +50,7 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\DefaultIcon]
 @="C:\\tools\\emacs\\bin\\emacsclientw.exe,0"
 
-;; This gets displayed in context menu
+;; -----
 [HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell]
 [HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell\open]
 @="Open in Emacs"
@@ -96,7 +96,7 @@ Windows Registry Editor Version 5.00
 "Emacs.AssocFile"=""
 </pre>
 
-For me it works immediately after running the file. If not, it should take effect after you restart your desktop Explorer instance, e.g., after rebooting or killing all 'explorer.exe' instances in Task Manager.
+For me it works immediately after running the script. If not, it should take effect after you restart your desktop Explorer instance, e.g., after rebooting or killing all 'explorer.exe' instances in Task Manager.
 
 
 
