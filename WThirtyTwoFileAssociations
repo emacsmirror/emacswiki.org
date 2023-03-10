@@ -19,39 +19,79 @@ To set up Emacs file associations properly, use the commands `ftype' and `assoc'
 
 == Changing file associations with registry keys ==
 
-This is similar to the "assoc" commands above.
+This is similar to the "assoc" commands above. By defining file "meta types", e.g., %%"Emacs.AssocFile"%%, and then hanging the file associations (e.g., ".org") off of those. 
 
-by defining file "meta types", e.g., %%"EmacsFile"%%, and then hanging the file associations (e.g., ".foo") off of those:
+With this method, for every associated file, you will be able to see Emacs listed under "Open with" option in context menu and in file properties.
+
+Save below script in file with ".reg" extension.
 <pre>
-REGEDIT4
-#-----
-# Set up the handler and icon
-#-----
-[HKEY_CLASSES_ROOT\EmacsFile]
-@="Emacs File"
-"Content Type"="text/plain"
+Windows Registry Editor Version 5.00
+;; -----
+;;  Set up the handler
+;; -----
+[HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile]
+@="Emacs Document"
+"FriendlyTypeName"="Emacs Document"
+"PerceivedType"="Document"
 
-[HKEY_CLASSES_ROOT\EmacsFile\shell]
-[HKEY_CLASSES_ROOT\EmacsFile\shell\open]
-# This gets displayed in context menu
+;; -----
+;;  Set up the application details (ApplicationName will appear in "Open with" context menu)
+;; -----
+[HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Application]
+@=""
+"ApplicationCompany"="Free Software Foundation, Inc."
+"ApplicationDescription"="Emacs — it might be thought of as a thermonuclear word processor."
+"ApplicationIcon"="C:\\tools\\emacs\\bin\\emacsclientw.exe,0"
+"ApplicationName"="Emacs"
+
+;; -----
+;;  Set up the icon
+;; -----
+[HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\DefaultIcon]
+@="C:\\tools\\emacs\\bin\\emacsclientw.exe,0"
+
+;; This gets displayed in context menu
+[HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell]
+[HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell\open]
 @="Open in Emacs"
 
-[HKEY_CLASSES_ROOT\EmacsFile\shell\open\command]
-@="C:\\Program Files\\Emacs\\bin\\runemacs.exe \"%1\""
+[HKEY_CURRENT_USER\Software\Classes\Emacs.AssocFile\Shell\open\command]
+@="C:\\tools\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"\" -n \"%1\""
 
-[HKEY_CLASSES_ROOT\EmacsFile\DefaultIcon]
-@="C:\\Program Files\\Emacs\\etc\\icons\\emacs.ico,0"
-# Alternate
-# @="C:\\Program Files\\Emacs\\bin\\runemacs.exe,0"
-
-#-----
-# Associate file types w/ Emacs
-#-----
-[HKEY_CLASSES_ROOT\.foo]
-@="EmacsFile"
-"Content Type"="text/plain"</pre>
+;; -----
+;; Associate file types w/ Emacs (examples below)
+;; -----
+[HKEY_CURRENT_USER\Software\Classes\.el\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.md\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.qmd\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.html\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.txt\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.bat\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.reg\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.log\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.c\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.h\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.js\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.json\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.toml\OpenWithProgids]
+"Emacs.AssocFile"=""
+[HKEY_CURRENT_USER\Software\Classes\.css\OpenWithProgids]
+"Emacs.AssocFile"=""
 </pre>
-Note that this only takes effect after you restart your desktop Explorer instance, e.g., after rebooting or killing all 'explorer.exe' instances in Task Manager.
+
+For me it works immediately after running the file. If not, it should take effect after you restart your desktop Explorer instance, e.g., after rebooting or killing all 'explorer.exe' instances in Task Manager.
 
 
 
