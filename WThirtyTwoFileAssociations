@@ -76,10 +76,6 @@ Windows Registry Editor Version 5.00
 "Emacs.AssocFile"=""
 [HKEY_CURRENT_USER\Software\Classes\.txt\OpenWithProgids]
 "Emacs.AssocFile"=""
-[HKEY_CURRENT_USER\Software\Classes\.bat\OpenWithProgids]
-"Emacs.AssocFile"=""
-[HKEY_CURRENT_USER\Software\Classes\.reg\OpenWithProgids]
-"Emacs.AssocFile"=""
 [HKEY_CURRENT_USER\Software\Classes\.log\OpenWithProgids]
 "Emacs.AssocFile"=""
 [HKEY_CURRENT_USER\Software\Classes\.c\OpenWithProgids]
