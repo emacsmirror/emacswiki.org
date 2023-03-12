@@ -148,6 +148,10 @@ Answer from [[khi]]:
 * [https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
 * [https://leahneukirchen.org/blog/archive/2022/03/note-taking-in-emacs-with-howm.html Blog post on taking notes with howm] -- a nice introduction along with goodies like replacing grep with ripgrep and using counsel-rg.
 
+= Mentions =
+
+* [https://sachachua.com/blog/2023/02/2023-02-20-emacs-news/ SachaChua@Emacs news] has a link to a video talking about howm (non-English)
+
 = Notes on functionalities and workflows  =
 
 === Stagewise filtering of notes based on grep as well as keywords ===
