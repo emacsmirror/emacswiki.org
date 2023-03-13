@@ -150,4 +150,3 @@ You can use `M-x anything-regexp' and press TAB to replace.
 CategorySearchAndReplace,
 CategoryRegexp,
 CategoryCode
-
