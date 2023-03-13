@@ -27,6 +27,15 @@ Let's hope I made the right tweaks to the elisp highlighter… – Alex
 I have updated the file at https://www.emacswiki.org/emacs/orgfold-separate-file.el. And the page correctly shows the latest code (e.g. it does not include `(require cl)`.
 However, when I try to download the file by clicking the `Download` button, then it shows the older (incorrect) version of the file (which does include `(require cl)`.
 
+[new]
+It works for me. Perhaps you still had a recent version in your browser cache? I'm not sure how this is possible. In these situations, here's what I try:
+
+* Does Control+Shift+R ("reload page without using the cache") solve the issue?
+* Does appending cache=0 solve the issue? In this case: https://www.emacswiki.org/emacs/orgfold-separate-file.el?cache=0
+ If so, making a trivial edit such as appending a newline at the end can hopefully solve the issue.
+
+– Alex
+
 == Chrome 100 gives Forbidden error ==
 
 I'm running Chrome with the #force-major-version-to-100 flag enabled, which causes emacswiki.org to fail with "Forbidden".
