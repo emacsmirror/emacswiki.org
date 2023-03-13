@@ -12,6 +12,9 @@ Note that this page is not about EmacsWikiMode.
 
 I am keen in studying some changes over at https://www.emacswiki.org/emacs?action=rc;all=1;from=1;showedit=1;rcidonly=ElispCookbook but, no matter which diff I click on, I get message "Revision xx not available (showing current revision instead)".  -- gsl
 
+[new]
+The wiki software deletes old revisions after a while. You can get the missing information from the [[Git repository]]. – Alex
+
 == Ampersands do not display correctly in grey boxes ==
 
 This can be seen for example on the page [https://www.emacswiki.org/emacs/ReplaceRegexpWithLispExpressions#h5o-5]. The token \& is displayed as \& amp; in the last line figuring in the grey box under the header Find files listed in a buffer.
