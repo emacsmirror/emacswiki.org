@@ -56,9 +56,11 @@ To start from one instead of of zero:
 
 == Find files listed in a buffer ==
 
+{{{
   M-x replace-regexp
   Replace regexp:  .+
   Replace regexp with:  \,(find-file-noselect \&)
+}}}
 
 == Promote header tags in HTML ==
 
