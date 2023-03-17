@@ -6,13 +6,13 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 21 10:52:11 2018 (-0700)
+;; Last-Updated: Fri Mar 17 10:19:18 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1250
+;;     Update #: 1258
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -20,16 +20,28 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `dired', `dired+', `dired-aux', `dired-x',
-;;   `easymenu', `ffap', `find-dired', `fit-frame', `frame-fns',
-;;   `help+20', `highlight', `image-dired', `image-file', `info',
-;;   `info+20', `kmacro', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `naked', `pp', `pp+', `second-sel', `strings',
-;;   `subr-21', `thingatpt', `thingatpt+', `time-date', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
+;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
+;;   `faces', `faces+', `find-dired', `fit-frame', `font-lock',
+;;   `font-lock+', `font-lock-menus', `format-spec', `frame-cmds',
+;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
+;;   `hl-line', `hl-line+', `image', `image-dired', `image-file',
+;;   `image-mode', `info', `info+', `kmacro', `macroexp', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mwheel', `naked',
+;;   `package', `palette', `parse-time', `password-cache', `pp',
+;;   `pp+', `radix-tree', `rect', `replace', `ring', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
+;;   `thingatpt', `thingatpt+', `time-date', `timer', `url-handlers',
+;;   `url-parse', `url-vars', `vline', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -90,6 +102,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/03/17 dadams
+;;     find-ls-option: Per Emacs bug #62096, add darwin to the berkeley-unix case.
+;;     find-dired: escape +-sign in "\\`\\(.*\\) {} \\(\\\\;\\|\\+\\)\\'".
+;;     find-dired-sentinel: Bind only inhibit-read-only, not also buffer-read-only.
+;;                          Haven't yet applied other updates for Emacs 28+.
 ;; 2018/09/21 dadams
 ;;     Added: find-diredp--pop-to-buffer-same-window.
 ;;     find-dired: Use find-diredp--pop-to-buffer-same-window instead of switch-to-buffer.
@@ -334,7 +351,7 @@ If a command uses more chars than this then it is shown only in buffer
                 (eq 0 (condition-case nil
                           (process-file find-program nil nil nil null-device "-ls")
                         (error nil))))
-           (cons "-ls" (if (eq system-type 'berkeley-unix) "-gilsb" "-dilsb")))
+           (cons "-ls" (if (memq system-type '(berkeley-unix darwin)) "-gilsb" "-dilsb")))
           (t (cons (format "-exec ls -ld {} %s" (if (boundp 'find-exec-terminator) find-exec-terminator "\\;"))
                    "-ld")))
   "*Description of the option to `find' to produce an `ls -l'-type listing.
@@ -427,14 +444,13 @@ where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
                                        (if (string= args "")
                                            ""
                                          (format "%s %s %s " (shell-quote-argument "(") args (shell-quote-argument ")")))
-                                       (if (string-match "\\`\\(.*\\) {} \\(\\\\;\\|+\\)\\'" (car find-ls-option))
+                                       (if (string-match "\\`\\(.*\\) {} \\(\\\\;\\|\\+\\)\\'" (car find-ls-option))
                                            (format "%s %s %s"
                                                    (match-string 1 (car find-ls-option))
                                                    (shell-quote-argument "{}")
                                                    (if (boundp 'find-exec-terminator) find-exec-terminator "\\;"))
                                          (car find-ls-option)))))
     (shell-command (concat args "&") (current-buffer)) ; Start `find' process.
-    ;; The next statement will bomb in classic Dired (no optional arg allowed)
     (dired-mode dir (cdr find-ls-option))
     (let ((map  (make-sparse-keymap)))
       (set-keymap-parent map (current-local-map))
@@ -442,7 +458,7 @@ where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
       (use-local-map map))
     (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
     (set (make-local-variable 'revert-buffer-function)
-	 `(lambda (ignore-auto noconfirm)
+	 `(lambda (_ignore-auto _noconfirm)
            (setq find-diredp-repeating-search  t)
            (find-dired ,dir ,find-args ',depth-limits ',excluded-paths)))
     ;; Set subdir-alist so that Tree Dired will work:
@@ -465,8 +481,8 @@ where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
       (dired-insert-set-properties opoint (point)))
     (setq buffer-read-only t)
     (let ((proc  (get-buffer-process (current-buffer))))
-      (set-process-filter proc (function find-dired-filter))
-      (set-process-sentinel proc (function find-dired-sentinel))
+      (set-process-filter proc #'find-dired-filter)
+      (set-process-sentinel proc #'find-dired-sentinel)
       ;; Initialize the process marker; it is used by the filter.
       (move-marker (process-mark proc) (point) (current-buffer)))
     (setq mode-line-process  '(": %s `find'"))))
@@ -625,11 +641,10 @@ STRING is the string to insert."
   "Sentinel for \\[find-dired] processes.
 PROC is the process.
 STATE is the state of process PROC."
-  (let ((buf                (process-buffer proc))
-        (inhibit-read-only  t))
+  (let ((buf  (process-buffer proc)))
     (when (buffer-name buf)
       (with-current-buffer buf
-        (let ((buffer-read-only  nil))
+        (let ((inhibit-read-only  t))
           (save-excursion
             (goto-char (point-max))
             (insert "\n  find " state)  ; STATE is, e.g., "finished".  Insert 2 SPC so f in `find' is not taken as a mark.
