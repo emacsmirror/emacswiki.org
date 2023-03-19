@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library `face-remap.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2009-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 17 14:26:21 2009 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 23 09:23:10 2022 (-0800)
+;; Last-Updated: Sun Mar 19 14:44:31 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 181
+;;     Update #: 209
 ;; URL: https://www.emacswiki.org/emacs/download/face-remap%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/SetFonts
 ;; Keywords: window frame face font
@@ -28,27 +28,45 @@
 ;;  Commands `text-scale-decrease', `text-scale-increase', and
 ;;  `text-scale-adjust' (bound to `C-x C--', `C-x C-+', `C-x C-=', and
 ;;  `C-x C-0') let you resize the text in the current buffer by
-;;  changing its scale factor.  When you shrink or enlarge the
-;;  apparent text size this way, however, the window takes no notice
-;;  of it.  In particular, although shrinking text can result in extra
-;;  horizontal space at the right, window commands do not see this
-;;  space as extra.
+;;  changing its scale factor.
 ;;
-;;  With this library, user option `text-scale-resize-window' lets you
-;;  automatically resize the selected window (horizontally,
-;;  vertically, or both) when text is resized, so that the way the
-;;  window fits the buffer text remains relatively constant.
-;;  Shrinking the text in one window shrinks that window, giving more
-;;  space to adjacent windows.
+;;  In vanilla Emacs:
 ;;
-;;  If you also use library `fit-frame.el', then one-window frames
-;;  also respond to text resizing by scaling.  If not, then the
-;;  text-scale commands have no effect on frame size for one-window
-;;  frames.
+;;  * When you shrink or enlarge the apparent text size this way,
+;;    however, the window takes no notice of it.  In particular,
+;;    although shrinking text can result in extra horizontal space at
+;;    the right, window commands do not see this space as extra.
 ;;
-;;  For Emacs versions 23-28, this also fixes a regression (bugs
-;;  #46973 and #54114) introduced in 23 - it provides the Emacs 29
-;;  version of function `face-remap-set-base'.
+;;  * If you change the major mode in a buffer that you've
+;;    text-scaled, that mode change resets the text size, so you lose
+;;    any scaling you've done in it.
+;;
+;;  This library provides two enhancements to standard library
+;;  `face-remap.el':
+;;
+;;  1. You can optionally have text-scaling also automatically resize
+;;     the selected window (horizontally, vertically, or both) when
+;;     text is resized, so that the way the window fits the buffer
+;;     text remains relatively constant.  Shrinking the text in one
+;;     window shrinks that window, giving more space to adjacent
+;;     windows.  This is governed by user option
+;;     `text-scale-resize-window'.
+;;
+;;     If you also use library `fit-frame.el', then one-window frames
+;;     also respond to text resizing by scaling.  If not, then the
+;;     text-scale commands have no effect on frame size for one-window
+;;     frames.
+;;
+;;  2. You can optionally make text-scaling be permanently
+;;     buffer-local, for all buffers.  This has the effect that if you
+;;     change the major mode in a buffer that's been text-scaled, that
+;;     mode change has no effect on the text size: whatever size you
+;;     scaled it to remains in effect.  This is governed by global
+;;     minor mode `text-scale-keep-mode'.
+;;
+;;  For Emacs versions 23-28, this library also fixes a regression
+;;  (bugs #46973 and #54114) introduced in 23 - it provides the Emacs
+;;  29 version of function `face-remap-set-base'.
 ;;
 ;;  See also:
 ;;
@@ -67,6 +85,10 @@
 ;;   (require 'face-remap+)
 ;;
 ;;
+;;  Commands defined here:
+;;
+;;    `text-scale-keep-mode'.
+;;
 ;;  Options (user variables) defined here:
 ;;
 ;;    `text-scale-resize-window'.
@@ -81,6 +103,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/03/19 dadams
+;;     Added: text-scale-keep-mode.
 ;; 2022/02/23 dadams
 ;;     Added vanilla Emacs 29 version of face-remap-set-base (fixes regression).
 ;; 2009/06/22 dadams
@@ -111,11 +135,11 @@
 
 (require 'face-remap)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 
 ;;;###autoload
 (defcustom text-scale-resize-window t
-  "*Non-nil means text scaling resizes the window or frame accordingly.
+  "Non-nil means text scaling resizes the window or frame accordingly.
 For example, if you use `C-x C--' (`text-scale-decrease')' to make the
 text smaller, then the window or frame is made smaller by a similar
 factor.
@@ -130,6 +154,15 @@ vertically."
           (const :tag "Resize only horizontally"              horizontally)
           (const :tag "Resize only vertically"                vertically))
   :group 'display)
+
+;;;###autoload
+(define-minor-mode text-scale-keep-mode
+  "Keep the same text-scaling when a buffer changes major mode.
+Disabling the mode restores the vanilla Emacs behavior, where changing
+the major mode loses a buffer's current text-scaling.  This minor mode
+is global: it affects all buffers."
+  :init-value nil :global t
+  (put 'face-remapping-alist 'permanent-local text-scale-keep-mode))
 
 
 ;; REPLACES ORIGINAL `text-scale-increase' defined in `face-remap.el',
