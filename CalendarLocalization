@@ -240,7 +240,7 @@ Week starts with monday, use also Spanish weekday and month names. Editor specia
 }}}
 
 === Swedish ===
-See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
+See [[sv-kalender.el]]
 
 === Turkish ===
 
