@@ -134,9 +134,22 @@ Mokurai 黙雷 Cherlin says:
 
 : Another point of contention is the Japanese modification of ASCII, JIS X 0201, to have the Yen sign (now U+00A5) in the location of the backslash, or REVERSE SOLIDUS, '\' (ASCII 0x5C, U+005C), and to substitute overline '¯', now U+00AF, for tilde '~' at 0x7E. This created inherent ambiguity in programming for Windows, where '\' is the separator in file paths, except in systems where '\' has been moved to 80h, thus breaking compatibility with the ISO 8859 encodings. Some Japanese programmers claim that Unicode is broken for not permitting the practice of overloading 0x5C to continue, and insisting that Japanese programmers should either label their files with the proper legacy encoding, or translate them properly to Unicode. This may require manual intervention to resolve the ambiguity, throughout a huge code base. Note that some Microsoft Windows fonts for Japan and Korea that claim to be Unicode-compliant have Yen sign or Korean Won sign at this code point.
 
-=== Pasting ===
+=== Character selection tools ===
 
-Maybe worth noting that Windows, Mac, and Linux all have character selection tools designed to make cut/paste with special characters a little easier (e.g., linux utilities include gucharmap and kcharselect)?
+Windows, Mac, and Linux all have character selection tools designed to make cut/paste with special characters a little easier (e.g., linux utilities include `gucharmap` and `kcharselect`).
+
+Several Emacs packages are also aimed at this:
+
+[https://github.com/elias94/accent accent]
+
+[https://github.com/purcell/list-unicode-display list-unicode-display] allows the user to search by name, providing the corresponding list of characters.
+
+[https://github.com/accidentalrebel/emacs-unicode-picker Unicode Picker] eases search and selection of Unicode characters easier. 
+
+[https://codeberg.org/thomp/d-char-selector d-char-selector] provides a popup for character selection.
+
+
+=== Pasting ===
 
 If you have trouble pasting from other applications:
 Emacs by default requests a selection of type COMPOUND_TEXT.  It
