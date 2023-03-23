@@ -201,8 +201,9 @@ for Emacs 24.3 and later.
 must also use library [[Info+]].
 
 [:modeline-position]
+[:modeline-region]
 [:query-replace]
-* If you use library ModeLinePosition (<tt>[[modeline-posn.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `##M-%##' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLinePosition for screenshots and more info.
+* If you use library ModeLineRegion (<tt>[[modeline-region.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `##M-%##' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLineRegion for more info.
 
 
 
