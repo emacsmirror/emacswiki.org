@@ -1,0 +1,16 @@
+Often referred to collectively as 'Ivy', however all 3 of these (related) tools live in the same repository: https://github.com/abo-abo/swiper.  They are also available via GNU ELPA and MELPA.
+
+Ivy strives for minimalism, simplicity, customizability and discoverability.  Many consider Ivy to follow Emacs paradigms more closely than similar packages (aka 'completion frameworks', in particular, [[Helm]]).
+
+From the repo:
+
+flexible, simple tools for minibuffer completion in Emacs
+
+This repository contains:
+
+* Ivy - a generic completion mechanism for Emacs.
+* Counsel - a collection of Ivy-enhanced versions of common Emacs commands.
+* Swiper, an Ivy-enhanced alternative to Isearch.
+
+----
+CategoryCompletion
