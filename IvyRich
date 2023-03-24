@@ -1,0 +1,8 @@
+Adds additional information to IvyCounselSwiper completion candidates in the minibuffer (compare [[Marginalia]]).
+
+Source: https://github.com/yevgnen/ivy-rich
+
+Also available in MELPA.
+
+----
+CategoryCompletion
