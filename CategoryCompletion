@@ -15,29 +15,38 @@ Besides the question of ''where'' text is completed (minibuffer or other buffer)
 [:MinibufferCompletion]
 == Minibuffer Input Completion ==
 
-The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is explained in the `Completion' section of the EmacsManual (`C-h i m Emacs RET m Completion RET').
+The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is explained in the `Completion' section of the EmacsManual (`C-h i m Emacs RET m Completion RET').  Of particular note, you need to press `TAB' to see the candidates (which are not displayed by default).  Here are more pages related to default behavior:
 
-
-* CompletingHelp -- show descriptions or help with candidates
-* [[Helm]] -- Powerful completion framework with many available modules.
-* [[Vertico]] -- VERTical Interactive COmpletion.
-* [[Marginalia]] -- Adds useful annotations to minibuffer completion.
-* [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application. 
-* [[Embark]] - Emacs Mini-Buffer Actions Rooted in Keymaps
-* InteractivelyDoThings -- Input completion without having to hit `TAB'.
-* LightningCompletion -- Input completion without having to hit `TAB'.
-* Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
-* RecentFiles -- Complete recently used filenames.
-* ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
-* [[Synonyms]] -- Input completion for thesaurus lookup.
-* Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
 * CompletingRead -- EmacsLisp function `completing-read' and similar.
+* InteractivelyDoThings -- Input completion without having to hit `TAB'.  Not default, but it is built-in (since Emacs 22).
+
+Originally, the built-in completion machinery did not support some additional functionality which was desired (by some), so external packages needed to implement more things from scratch in order to work around those limitations.  These also tend to be more feature-complete, and can be considered roughly 'monolithic', and/or referred to as 'frameworks'.  In this category I would put:
+
+* [[Helm]] -- Powerful completion framework with many available modules.
+* [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application.
+* [[Ivy]] -- Ivy strives for minimalism, simplicity, customizability and discoverability.  Some consider it to follow Emacs paradigms more closely than some of the above.
+
+At some point later, more functionality was exposed through the native completion machinery, prompting a newer, more modular crop of completion packages, which built upon the newly exposed functionality:
+
+* [[Vertico]] -- VERTical Interactive COmpletion.
+* [[Marginalia]] -- Adds useful annotations to minibuffer completion (compare [[IvyRich]].
+* [[Embark]] - Emacs Mini-Buffer Actions Rooted in Keymaps (compare Ivy's [[https://oremacs.com/swiper/#actions Actions]]).
+* This list is incomplete, please add more if you are familiar with these.
 
 See also:
 
 * IcompleteMode's "Incremental completion" for interactive display of possible completion candidates based on what's typed so far.
 * MinibufferHistory
+* Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
+* RecentFiles -- Complete recently used filenames.
+* ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
+* [[Synonyms]] -- Input completion for thesaurus lookup.
+* Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
 
+The following seem to be obsolete or abandoned:
+
+* LightningCompletion -- Input completion without having to hit `TAB'.
+* CompletingHelp -- show descriptions or help with candidates
 
 
 
