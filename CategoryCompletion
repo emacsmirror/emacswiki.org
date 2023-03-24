@@ -24,7 +24,7 @@ Originally, the built-in completion machinery did not support some additional fu
 
 * [[Helm]] -- Powerful completion framework with many available modules.
 * [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application.
-* [[IvyCounselSwiper]] -- Ivy strives for minimalism, simplicity, customizability and discoverability.  Some consider it to follow Emacs paradigms more closely than some of the above.
+* [[IvyCounselSwiper]] -- Ivy strives for minimalism, simplicity, customizability and discoverability.  Many consider it to follow Emacs paradigms more closely than some of the above.
 
 At some point later, more functionality was exposed through the native completion machinery, prompting a newer, more modular crop of completion packages, which built upon the newly exposed functionality:
 
