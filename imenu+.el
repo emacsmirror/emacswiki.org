@@ -4,13 +4,13 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 16 08:58:34 2019 (-0700)
+;; Last-Updated: Fri Mar 24 14:18:42 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1127
+;;     Update #: 1135
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -86,6 +86,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/03/24 dadams
+;;     imenup-lisp-fn-defn-regexp-1: Added define-inline, define-advice, define-compilation-mode,
+;;                                         cl-defgeneric, cl-defmethod, ert-deftest.
 ;; 2019/05/16 dadams
 ;;     Change default value of imenup-show-bookmarks-flag to nil.
 ;; 2019/05/09 dadams
@@ -324,13 +327,13 @@ See also `imenup-emacs-key-defn-regexp-1'.")
 (defvar imenup-lisp-fn-defn-regexp-1
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
-              (regexp-opt '("defun" "cl-defun" "defun*" "defsubst" "cl-defsubst" "defadvice"
-                            "define-skeleton" "define-minor-mode"
-                            "define-global-minor-mode" "define-globalized-minor-mode"
+              (regexp-opt '("defun" "cl-defun" "defun*" "defsubst" "cl-defsubst" "define-inline"
+                            "define-advice" "defadvice" "define-skeleton" "define-compilation-mode"
+                            "define-minor-mode" "define-global-minor-mode" "define-globalized-minor-mode"
                             "define-derived-mode" "define-generic-mode" "defsetf"
                             "define-setf-expander" "define-method-combination"
-                            "defgeneric" "defmethod" "icicle-define-command"
-                            "icicle-define-file-command")
+                            "defgeneric" "cl-defgeneric" "defmethod" "cl-defmethod" "ert-deftest"
+                            "icicle-define-command" "icicle-define-file-command")
                           t)
               "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)")
     (concat "^\\s-*("
