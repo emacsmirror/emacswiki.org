@@ -4,13 +4,13 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 22 10:17:59 2022 (-0800)
+;; Last-Updated: Sat Mar 25 07:51:45 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 3112
+;;     Update #: 3114
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2023/03/25 dadams
+;;     Don't require savehist-20+.el for Emacs 23+ (probably don't need it for 22 either).
 ;; 2022/01/22 dadams
 ;;     Don't require find-func+.el for Emacs 26+.
 ;; 2021/12/13 dadams
@@ -695,7 +697,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (require 'dired-sort-menu+ nil t))    ; Menu/dialogue for dired sort options
 (unless (fboundp 'dired-hide-details-mode)
   (require 'dired-details+ nil t))      ; Enhancements to `dired-details.el'.
-(require 'savehist-20+ nil t)           ; Save your history lists.
+(when (< emacs-major-version 23)
+  (require 'savehist-20+ nil t))        ; Save your history lists.
 (eval-after-load "faces" '(require 'faces+ nil t)) ; Extensions to `faces.el'.
 (when (> emacs-major-version 22)
   (autoload 'menu-bar-read-lispref "info+" "Access the Emacs Lisp manual via `Info'." t)
