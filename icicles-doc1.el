@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat May 21 12:17:37 2022 (-0700)
+;; Last-Updated: Sat Mar 25 07:55:16 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 28679
+;;     Update #: 28682
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4914,8 +4914,8 @@
 ;;  minibuffer history, to see whether, and where, each candidate is
 ;;  located in the history list.  If you, like I, have very long
 ;;  history lists, then this can take a while.  I use histories of
-;;  virtually unlimited length - I let library `savehist-20+.el' save
-;;  all of my histories from one Emacs session to the next.
+;;  virtually unlimited length - I let library `savehist.el' save all
+;;  of my histories from one Emacs session to the next.
 ;;
 ;;  Here are some of the Icicles sort orders that exist by default:
 ;;
