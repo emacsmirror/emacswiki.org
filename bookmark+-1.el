@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Sep  7 15:50:09 2022 (-0700)
+;; Last-Updated: Sat Mar 25 08:02:37 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 9488
+;;     Update #: 9491
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1382,7 +1382,7 @@ If an integer, then use a menu only if there are fewer bookmark
 ;;;###autoload (autoload 'bmkp-new-bookmark-default-names "bookmark+")
 (defcustom bmkp-new-bookmark-default-names
   (let ((fns  '((lambda () (let ((ff  (function-called-at-point)))
-                             (and ff  (symbolp ff)  (symbol-name ff)))))))
+                        (and ff  (symbolp ff)  (symbol-name ff)))))))
     (when (fboundp 'region-or-non-nil-symbol-name-nearest-point) ; Defined in `thingatpt+.el'.
       (setq fns  (cons 'region-or-non-nil-symbol-name-nearest-point fns)))
     fns)
@@ -10486,7 +10486,7 @@ VARIABLES is the list of variables.  Each entry in VARIABLES is either
     (when unprintables (message "Unsavable (unreadable) vars: %S" unprintables)  (sit-for 3))
     vars+vals))
 
-;; Same as `savehist-printable' in `savehist-20+.el', except added `print-circle' and `print-gensym' bindings.
+;; Same as `savehist-printable' in `savehist.el', except added `print-circle' and `print-gensym' bindings.
 (defun bmkp-readable-p (value)
   "Return non-nil if VALUE is Lisp-readable if printed using `prin1'."
   (cond ((numberp value))
