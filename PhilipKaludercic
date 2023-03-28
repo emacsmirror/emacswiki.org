@@ -10,10 +10,15 @@ Here are a few packages on mine which I have contributed to ELPA or MELPA:
 * [http://elpa.gnu.org/packages/shell-command+.html shell-command+]
 * [http://elpa.gnu.org/packages/vc-backup.html vc-backup]
 * [http://elpa.gnu.org/packages/compat.html compat]
-* [https://melpa.org/#/autocrypt autocrypt]
+* [https://elpa.gnu.org/packages/autocrypt.html autocrypt]
 * [https://melpa.org/#/clang-capf clang-capf]
-* [https://melpa.org/#/face-shift face-shift]
+* [https://elpa.gnu.org/packages/face-shift.html face-shift]
 * [https://melpa.org/#/insert-kaomoji insert-kaomoji]
+* [https://elpa.gnu.org/packages/xref-union.html xref-union]
+* [https://elpa.gnu.org/packages/site-lisp.html site-lisp]
+* [https://elpa.gnu.org/packages/openpgp.html openpgp]
+* [https://elpa.gnu.org/packages/auto-header.html auto-header]
+
 
 I am also an occasional contributor to core Emacs (https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=author&q=philipk%40posteo.net), GNU ELPA (https://git.savannah.gnu.org/cgit/emacs/elpa.git/log/?qt=author&q=philipk%40posteo.net) and NonGNU ELPA (https://git.savannah.gnu.org/cgit/emacs/nongnu.git/log/?qt=author&q=philipk%40posteo.net).
 
