@@ -134,7 +134,7 @@ If you want your parens, quotes, etc, passed along to GPT, please use elisp when
 
 rather than this:
 
-    <deego> , gpt complete: (loop for i from 1 to 10)
+    <deego> , gpt complete: (loop for i from 1 to 10
     <fsbot> Life is selling REVOLUTIONARY HAIR PRODUCTS!
 
 
