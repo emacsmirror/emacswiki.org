@@ -1,4 +1,4 @@
-(This section is current as of 2022 -deego)
+(This section is current as of 2023 -deego)
 
 
 == Parsing/Lispification and Lisp interpreter ==
@@ -117,6 +117,31 @@ The definition of `fs-increment' that you just created is built upon several oth
 
 === More on fs-find-function ===
 ##(fs-find-function 'foo)## first looks for an emacs function `foo', and when that doesn't work, it looks for a userfunction `fs-foo'. Thus, provided a built-in `foo' does not exist, you can use `foo' to refer to `fs-foo' when using fs-find-function. `fs-ff' is an alias for `fs-find-function'. Putting all these shortcuts together: You will often see #emacsers typing the English-form ##,ff myfun## instead of the more verbose form ##,(fs-find-function 'fs-myfun)##. The English form gets parsed as ##(fs-find-function 'myfun)##, which initially looks for `myfun', falls back upon `fs-myfun', and eventually returns the `fs-' stripped definition of `fs-myfun'. You will find similar shortcuts and fallbacks in many other botcommands, meant to promote convenience and brevity. Here's another example: `ff' actually has yet another fallback: it punts to `fs-find-variable' when the latter is expected to work. That arose because far too often, I noticed people trying `ff' when they actually meant `fv', which is a shortcut for `fs-find-variable'.
+
+
+=== An early first stab at a GPT interface ===
+
+This is ***expensive***. If there's too much abuse, I will disable private queries for this functionality.
+
+    <deego> fsbot: gpt which is the world's tiniest editor? 
+    <fsbot> The world's tiniest editor is probably "Micro Emacs" or "µemacs", which is a compact text editor designed for Unix-like operating systems
+
+
+If you want your parens, quotes, etc, passed along to GPT, please use elisp when talking to fsbot:
+
+    <deego> (gpt "complete: (loop for i from 1 to 10 " )
+    <fsbot> do (print i))
+
+rather than this:
+
+    <deego> gpt complete: (loop for i from 1 to 10)
+    <fsbot> Life is selling REVOLUTIONARY HAIR PRODUCTS!
+
+
+
+
+
+ 
 
 ----
 
