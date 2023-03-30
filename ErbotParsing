@@ -123,18 +123,18 @@ The definition of `fs-increment' that you just created is built upon several oth
 
 This is ***expensive***. If there's too much abuse, I will disable private queries for this functionality.
 
-    <deego> fsbot: gpt which is the world's tiniest editor? 
+    <deego> , gpt which is the world's tiniest editor? 
     <fsbot> The world's tiniest editor is probably "Micro Emacs" or "µemacs", which is a compact text editor designed for Unix-like operating systems
 
 
 If you want your parens, quotes, etc, passed along to GPT, please use elisp when talking to fsbot:
 
-    <deego> (gpt "complete: (loop for i from 1 to 10 " )
+    <deego> , (gpt "complete: (loop for i from 1 to 10 " )
     <fsbot> do (print i))
 
 rather than this:
 
-    <deego> gpt complete: (loop for i from 1 to 10)
+    <deego> , gpt complete: (loop for i from 1 to 10)
     <fsbot> Life is selling REVOLUTIONARY HAIR PRODUCTS!
 
 
