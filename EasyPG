@@ -17,9 +17,13 @@ Now visit ##anything.gpg## and it will encrypt it when you save the buffer.
 
 See AutoEncryption for alternatives.
 
-== Using symmetric encryption always ==
+== Using symmetric or public-key encryption always ==
 
-To prevent EPG from prompting for a key every time you save a file, put the following at the top of your file:
+If you always want a file encrypted with symmetric encryption, put the following at the top of your file:
+
+    -*- epa-file-encrypt-to: nil -*-
+
+To encrypt with a public key, but prevent EPG from prompting for a key every time you save a file, put the following at the top of your file:
 
     -*- epa-file-encrypt-to: ("your@email.address") -*-
 
