@@ -135,7 +135,7 @@ Just add the relevant configuration option as described in the [https://nixos.or
 
 
 {{{
-systemctl --user emacs restart
+systemctl --user restart emacs
 }}}
 
 === macOS ===
