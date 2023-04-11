@@ -305,7 +305,7 @@ This can be used like so:
 The following macro simplifies the definition of [[Advice]]:
 
 {{{
-(setup-define :advise
+(setup-define :advice
     (lambda (symbol where arglist &rest body)
       (let ((name (gensym "setup-advice-")))
 	`(progn
@@ -322,7 +322,7 @@ an alternative implementation might be given a function as an advice argument in
 constructing a new function.
 
 {{{
-(setup-define :advise
+(setup-define :advice
     (lambda (symbol where function)
       `(advice-add ',symbol ,where ,function))
   :documentation "Add a piece of advice on a function.
