@@ -16,7 +16,7 @@ See [http://www.selenic.com/mercurial/wiki/index.cgi/MergingWithEmacs MergingWit
 
 == Documentation ==
 
-[http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsMercurial.html Small article] about using Emacs with mercurial.el
+[http://alexott.net/en/writings/emacs-vcs/EmacsMercurial.html Small article] about using Emacs with mercurial.el
 
 ----
 CategoryVersionControl
