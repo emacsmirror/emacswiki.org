@@ -25,7 +25,7 @@ The links below will help you get started creating your own ideal text editor.
 * LearnEmacsLisp is the main portal page.  Learning Elisp is one of the best ways of LearningEmacs.
 * ElispCookbook has useful short examples.
 * PlainLispForMath for an explanation of simple arithmetic expressions in Lisp.
-* An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]].
+* An unfinished [s][[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]][/s] ([[https://web.archive.org/web/20171006041002/http://www.gnuvola.org/software/elisp-tutorial/index.html#lessons archive]]).
 * For help on using other people's Emacs Lisp, see InstallingPackages.
 * EmacsLispComparisons -- Compare Emacs Lisp with other popular languages.
 
