@@ -7,7 +7,6 @@ Erbot is an emacs-lisp irc bot. Main instances are fsbot on '''#emacs''' and oth
 Other sections available:
 
 * ErbotParsing - asking erbot to parse your English sentence into a lisp expression.
-* ErbotPorts -- running erbot on IM, lispy, etc.
 * ErBotItalian -- a somewhat dated Italian translation of this page, thanks to tr3
 * ErbotInstallation -- if you want to run your own copy.
 * ErbotInstances -- bots that use this package.
