@@ -1,5 +1,7 @@
-Documentation, current as of 2023, on fsbot, an irc bot that hangs out on #emacs and other channels in libera chat.
-The bot is called fsbot. The software is called erbot.
+Documentation, current as of 2023, on fsbot, an irc bot that hangs out in #emacs on libera.
+The bot is called fsbot. The software is called erbot. 
+Fsbot ("free software bot") is an infobot that has supported several free software channels on irc since c. 2001.
+
 
 (Please don't change the design or contents of this document, except for minor cleanup. -deego).
 
