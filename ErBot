@@ -143,6 +143,25 @@ If you insist on using ##,gpt##  instead, it's best to use the format below, oth
     <fsbot> do (print i))
 
 
+== Google ==
+To invoke google, type ##,gg## or ##,goog## or ##,google##. 
+Typing ##,gge fsbot## is equivalent to type ##,gg site:emacswiki.org fsbot#.
+##gg 2 fsbot emacs## will return the top two google results for ##fsbot emacs## 
+
+If you wish to pass on double-quoted arguments to google, it's best to use the lisp syntax.
+Example:
+
+    <deego> ,(google 1 "\"richard stallman is just my mundane name\"")
+    <fsbot> https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/r/Richard_Stallman.htm
+    <deego> ,(google 1 "\"richard stallman is my just mundane name\"")
+    <fsbot> ""  ..(string)
+
+
+
+
+
+
+
 
 ----
 
