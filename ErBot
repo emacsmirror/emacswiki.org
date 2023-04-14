@@ -127,16 +127,19 @@ The definition of `fs-increment' that you just created is built upon several oth
 **Please note that your that input that invokes chatgpt is *not* used by openai for training.***
 
 Given the hefty price tag, if there's too much abuse, I will disable private queries for this functioanilty.
-The recommended way to invoke GPT is to use ",,,"  or "!" or ",g"  when talking to the bot.
+The recommended way to invoke GPT is to use `,,,'  or `!' or `,g'  when talking to the bot.
 These three special handlers take care of quoting the rest of your input properly, and passing it verbatim.
  
-    <deego> ! which is the world's tiniest editor? 
+    <deego> ! which is the world's tiniest editor (((" ? 
     <fsbot> The world's tiniest editor is probably "Micro Emacs" or "µemacs", which is a compact text editor designed for Unix-like operating systems
 
-If you insist on using ,gpt  instead, it's best to use the format below, otherwise your incomplete parens, quotes, etc, may not pass on correctly.
+Notice that the gibberish at the end of the text did not cause problems. Normally, the gibberish would mess up fsbot's read feature, but that feature is disabled for the above three special handlers. The read feauture is otherwise useful for most other bot functionality, (example: when you simply type ,+ 1 2) 
+
+If you insist on using `,gpt'  instead, it's best to use the format below, otherwise your incomplete parens, quotes, etc, may not pass on correctly.
  
     <deego> , (gpt "complete this code: (loop for i from 1 to 10 " )
     <fsbot> do (print i))
+
 
 
 
