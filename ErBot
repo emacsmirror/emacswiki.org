@@ -1,665 +1,152 @@
-Erbot is an emacs-lisp irc bot. Main instances are fsbot on '''#emacs''' and other software channels on Libera Chat; and donald-bot on '''#latex'''.
+Documentation, current as of 2023, on fsbot, an irc bot that hangs out on #emacs and other channels in libera chat.
+The bot is called fsbot. The software is called erbot.
 
-**Most of the erbot-docs below are a bit dated (by 2+ decades).**  ErbotParsing **section is freshly revamped in 2019: jump straight to that!  For current help, PM fsbot on Libera Chat and type** <code>,help</code>. -deego, 2019
+(Please don't change the design or contents of this document, except for minor cleanup. -deego).
 
-----
-
-Other sections available:
-
-* ErbotParsing - asking erbot to parse your English sentence into a lisp expression.
-* ErBotItalian -- a somewhat dated Italian translation of this page, thanks to tr3
-* ErbotInstallation -- if you want to run your own copy.
-* ErbotInstances -- bots that use this package.
-* ErbotEmacs -- emacs features, and developer guidelines.
-* ErbotExtra -- more stuff with erbot, extensions
-* ErbMsg -- the memoserv-esque message notifier for ErBot
-* ErbotContrib -- contributed code snippets for erbots.
-
-----
-
-
-
-
-
-
-== Introduction ==
-
-Bots reacts to an initial comma.  Here is a usage example.  As you can
-see, the same easy syntax is used for querying as well as to define
-terms:
-
-    <lurwas> , clog
-    <fsbot> BEEEEEP...Try search or search-wide on clog
-    <lurwas> , clog is a channel logger
-    <fsbot> Done (create clog )
-    <kensanata> , clog
-    <fsbot> clog is, like, a channel logger
-
-    <deego> , clog is also temporary-string
-    <fsbot> Added entry to term "clog"
-    <deego> , clog
-    <fsbot> I think clog is [0] a channel logger
-    <fsbot> [1] temporary-string
-    <deego> , forget clog 1
-    <fsbot> Removed entry 1 of clog
-    <deego> , clog
-    <fsbot> I think clog is a channel logger
-
-The above fuzzy "english" syntax is just a front-end to an accurate
-lisp syntax which can also be used instead. 
-
-
-The bots can do elisp, as well:
-
-    <deego> fsbot: (+ 2 3 (expt 4 5))
-    <fsbot> 1029
-    .
-    . 
-    <deego> , (let ((i 0) (b 0)) (while (< i 1000) (setq i (+ i 1) b (+ b
-                   (fs-random-choose '(0 2))))) b)
-     <fsbot> 984
-    
-    <deego> (progn (let ((j 0)) (dotimes (i 10) (setq j (+ j i))) j))
-    <singbot> 45
-
-
-Start your private investigation:
-
-    /query fsbot
-    help
-
-When talking privately, you can skip the initial comma, as above.
-
-
-
-== Data ==
-
-Each TERM can have one or more ENTRIES.  That TERM is internally
-stored as a bbdb-name, and the ENTRIES are formatted as a list and
-stored in the corresponding bbdb-notes.  As of December 2002,
-'''fsbot''' has 1600 terms, a full 1200 of which contain references to
-emacswiki.org.
-
-Deego feeds fsbot with the index of all new pages on Community wikiand EmacsWiki. All pagenames are terms in the fsbot database.
-
-== Searching: search and search-wide ==
-
-Searching for regular expressions amongst the terms:
-
-Examples:
-
-    <deego> fsbot: search foo.*bar
-    <fsbot> ...
-
-Searching for regular expressions amongst the terms and their entries:
-
-    <deego> fsbot: search-wide foo$
-    <fsbot> ...
-
-If a search yields exactly one match, fsbot goes ahead and shows it.
-
-== Describe ==
-
-Here are some equivalent ways to ask for description of a term:
-
-
-    <deego> , describe emacschannel
-    <fsbot> deego: EmacsChannel may be at http://www.emacswiki.org/cgi-bin/wiki.pl?EmacsChannel
-    <deego> , (describe "emacschannel")
-    <fsbot> deego: hmm, EmacsChannel is at http://www.emacswiki.org/cgi-bin/wiki.pl?EmacsChannel
-
-In fact, all the rest are converted to the last form. (See lispify). <b>The most common way to ask for a description, however, is to simply type the term:</b>
-
-    <deego> , emacschannel
-    <fsbot> I think EmacsChannel is at http://www.emacswiki.org/cgi-bin/wiki.pl?EmacsChannel
-
-Asking the bot to describe a term this way calls a function
-`describe-internal' which tries a lot of other "smartly structured"
-fallback operations and searches to return you some info if the exact
-term is not found ...  Boring details: The bot searches for the term in its database in several exceedingly more permissive ways.  If it doesn't find anything, it goes to google for help (but often attaches a channel-specific extra term when googling).  If that fails too, it just tries to answer your query by looking for common English terms in your statement like "thank you".  If that also fails, the bot resorts (weighted) randomly to one of several things on your query: doctor (psychoanalysis), fortune, yow, a small flame, spook, etc.
-
-You can also search for multiple words:
-
-    <deego> fsbot: foo bar baz
-    <fsbot> ...
-
-This amounts to searching for foo.*bar.*baz -- ie. the order of the
-terms is important.
-
-
-Example:
-
-    <kensanata> , ff ignore
-    <fsbot> (defun ignore (&rest ignore)
-    <fsbot>   (interactive)
-    <fsbot>   nil)
-    <kensanata> , a bbdb-ignore
-    <fsbot> 6 matches.  (bbdb-ignore-most-messages-alist
-        bbdb-ignore-most-messages-hook
-        bbdb-ignore-selected-messages-confirmation
-        bbdb-ignore-selected-messages-hook
-        bbdb-ignore-some-messages-alist
-        bbdb-ignore-some-messages-hook)
 
 == Parsing/Lispification and Lisp interpreter ==
 
-See ErbotParsing
 
-Fsbot has interfaces to many other Emacs help facilities, see section
-ErbotEmacs Help above.
+To set the **notes** for new **term** "myterm" to "my notes", you can type one of three things: (1) ##,myterm is my notes## (2) ##,(fs-set-term "myterm" "my notes")##, or finally, (3) ##,(set-term "myterm" "my notes")##. (1) is referrred to as a natural-language- or English- syntax. (2) is the lisp form, and finally, (3) shows that if the `fs-' prefixes are omitted, a codewalker adds them right back. Internally, all three expressions eventually convert to form (2) which then converts to ##(fsi-set-term "myterm" "my notes")## before actually getting executed. 
+
+You often use the easiest paren-free English syntax to command the bot, but as is inevitable with any NL-parsing, you will eventually run into ambiguities, edge-cases and conflicts. Your best option in such cases is to use the precise lisp syntax for more fine-tuned control. But, you shouldn't have to remember the equivalent lisp-form. You should simply be able to look it up! You simply ask the bot itself via ##(fs-parse)## which is also aliased to ##(fs-lispify)##: 
+
+    <deego> ,(parse "Emacs is a good editor")                                                                                                                                                  
+    <fsbot> (fs-set-term "Emacs" "a good editor")
 
 
+This tells you that a sentence of the form "foo is bar" gets parsed into an `fs-set-term' form. So far, the bot has merely parsed the command, not actually executed it. 
+Next, you actually execute the command and tell the bot that Emacs is a good editor:
+
+   <deego> ,Emacs is a good editor                                                                                                                                                          
+   <fsbot> Created new note for "Emacs"
+
+As should be clear by now, you could have also used the lisp-form to effect the above:
+
+    <deego>  ,(set-term "Emacs" "a good editor")
+    <fsbot> Created new note for "Emacs"                     
 
 
+This sets the term, persistent across sessions, in the publicly available file **botbbdb**.
 
-== Merging, moving, copying and forgetting terms ==
-
-Use commands like cp, mv, merge, forget (= rm) for manipulating terms.
-Merge merges the entries of first term it is given, into the second
-term.
-
-    <deego> , foo
-    <fsbot> From memory, foo is bar
-    <deego> , cp foo fool
-    <fsbot> Copied entries of foo to fool
-    <deego> , fool
-    <fsbot> From memory, fool is bar
-
-=== Using no instead of forget ===
-
-    <deego> , foo is bar
-    <fsbot> created.
-    <deego> , no foo is baz
-    <fsbot> created.
-    <fsbot> , foo
-    <fsbot> Perhaps foo is baz
-
-== Moving entries around within terms ==
-
-    <deego> , tmpfoo
-    <fsbot> Perhaps tmpfoo is [0] a
-    <fsbot> [1] b
-    <deego> , 1->0 in tmpfoo
-    <fsbot> Moved entry 1 to 0 in "tmpfoo"
-    <deego> , tmpfoo
-    <fsbot> tmpfoo - [0] b
-    <fsbot> [1] a
-
-== String-replace and regexp-replace in terms ==
-
-With foo being baz as before, let's string-replace:
-
-    <deego> , s/baz/newstring/ in foo                                        
-    <fsbot> Replaced string "baz" with "newstring".
-    <deego> , foo                                                           
-    <fsbot> Perhaps foo is newstring
-
-For a term with multiple entries add a space the entry number, e.g:
-
-      <mplsCorwin> , s/robert/vela/ in fosshost-app 1
-      <fsbot> Changed 1 (of 2) notes when replacing *string* "robert" with "vela"
-              for term "fosshost-app".
-
-Now, a regexp-replace
-
-    <deego> , r/^new/old/ in foo                                            
-    <fsbot> Replaced regexp "^new" with "old"
-
-The last / can optionally be skipped.  For a literal /, either try
-using //, or try using real lisp instead of English for really
-complicated entries.  (To find lisp renditions of English stuff, see
-lispify).
-
-== Entries Starting With Special Keywords ==
-
-If the first entry of a single-entry term starts with one of '("lisp"
-"redirect" "unecho" "function" "directonly"), that term has a special meaning.
-Using describe-literally (dl) instead of describe can turn off these
-special interpretations.
-
-=== lisp ====
-
-In this case, fsbot evals the expression that follows "lisp".
-
-    <deego> , tmprandom is lisp (random 3)
-    <fsbot> created.
-    <deego> , tmprandom
-    <fsbot> 2
-
-Yes, fsbot has an eval:
-
-    <deego> , (eval '(+ pi (string-to-number emacs-version)))
-    <fsbot> 24.141592653589793
-
-If the lisp form finally results in the symbol 'noreply, then the bot
-doesnt' reply to the channel at all.  The lisp expression understands
-arguments, labeled by lispa, lispb, lispc, lispd, lispe and lispargs
-for all its arguments.
-
-For example,
+An additional note for an existing term is entered via "is also" whose parse is:
  
- <deego> ,tmpfoo is lisp (+ lispa lispb (apply  '+ lispargs))
- <fsbot> created.
- <deego> ,tmpfoo 1 2 3 4
- <fsbot> 13
+  <deego> ,(parse "Emacs is also a great OS")                                                                                                                                          
+  <fsbot> (fs-set-also "Emacs" "a great OS")
 
-Of course, if you want to use lisp expressions with arguments, the
-better way remains using a defun rather than creating entries like
-those above.
 
- <deego> ,(defun tmpfoo (&rest args) (apply '+  args))
- <fsbot> fs-tmpfoo
- <deego> ,tmpfoo 1 2 3 4
- <fsbot> 10
+As we mentioned, for convenience, you can skip the `fs-' prefix when commanding fsbot, and it is always automatically added for you. Thus, instead of having to type ##(fs-parse ..)##, you were able to simply type ##(parse...)##.
 
-Or, a more interesting example:
 
-{{{
-<kensanata> forget channel-wisdom
-<fsbot> Forgot "channel-wisdom" which had one note:  ["redirect shit#emacssays"]
-<kensanata> (defun channel-wisdom (&rest args) (concat "Shut up, " nick "!"))
-<fsbot> fs-channel-wisdom  ..(symbol)
-<kensanata> channel-wisdom
-<fsbot> Shut up, kensanata!
-}}}
+As we saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as **fslisp**. Furthermore, it sandboxes everything to ensure we internally always stay in the `fs-' namespace. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
 
-More code:
+You have about 1000 such `fs-' commands available, referred to as **botcommands**. Internally, some botcommands are macros and some are functions. These include some powerful building blocks like `fs-while', `fs-mapcar' and cousins, `fs-eval', `fs-read', `fs-error', `fs-setq' and `fs-makunbound', `fs-apply', `fs-funcall', `fs-quote', `fs-lambda', etc.  
 
-{{{
-<kensanata> which\\sis\\sbetter:\\S is lisp (let ((it nil) (in
-    (mapcar 'symbol-name (nthcdr 2 lispargs)))) (while in (unless (string=
-    (car in) "or") (setq it (cons (car in) it))) (setq in (cdr in))) (if it
-    (random-choice it) "Or what?"))
-<fsbot> Created new note for "which\\\\sis\\\\sbetter:\\\\S"
-<kensanata> which is better: toast, bread, croissant or jam
-<fsbot> jam
-}}}
 
-Or fancy output, and showing how to describe such terms:
+Among those included are `fs-defun', `fs-fmakunbound', and `fs-defalias'. In other words, you can build upon the initial botcommands and create - or remove - as many more as you like.
 
-{{{
-<kensanata> dl how\\scool\\sis\\s\\S
-<fsbot> From memory, how\scool\sis\s\S is lisp (let ((i (random 10)))
-    (format "|%s%s| %d%%" (substring "**********" 0 i) (substring
-    "----------" i) (* 10 i)))
-<kensanata> how cool is emacs
-<fsbot> |*****-----| 50%
-}}}
+Thus, you have read/write access to the `fs-' space. This rw access applies to all new functions you create, but not to the initial core `fs-' functionality, which has read-only access. Thus, trying ##(fmakunbound 'fmakunbound)## - equivalently  ##(fs-fmakunbound 'fs-fmakunbound)## - will lead to an error because `fs-fmakunbound' is part of the core functionality. Such core functions should behave in a consistent fashion, for everyone to use, and should not change just because some irc user changed them via a PM. Another example of a **core botcommand** is `fs-set-term'.
 
-=== redirect ===
 
-    <deego> , shae
-    <fsbot> [->] ShaeErisson is [0] at http://www.emacswiki.org/cgi-bin/wiki.pl?ShaeErisson
-    <fsbot> [1] Nick: shapr
-    <deego> , dl shae
-    <fsbot> shae may be redirect shaeerisson
+You can query and search among the ~ 1000 bot-commands available to you using `fs-commands':
 
-=== function ===
 
-This will allow users to create their own functions.  This is not yet
-functional.  Entries here can be either set using the usual <nowiki>, foo is
-function (lambda ()...)</nowiki> , or using the soon-to-come fsbot command
-defun. fsbot also has funcall and apply, but they are broken as of
-this writing.
+    <deego> , (commands "^a")
+    <fsbot> 7 matches.  (a ac and append apply apropos av)
 
-This feature will probably never be implemented, nor is it needed any
-more, since the bots can now parse (defun...)... See ErbotEmacs.
+This means that you have access to the following bot commands that start with the letter a: `fs-a', `fs-ac', `fs-and', `fs-append', etc.
 
-=== noecho ===
+This was, in essence, an apropos-search, but restricted to items with the prefix `fs-'. A related command is fs-apropos. It searches over all emacs functions/variables, no longer restricting to the `fs-' prefix:
+
+    <deego> , (apropos "^ac")
+    <fsbot> 11 matches.  (acapulco accept-process-output access-file
+        accessible-keymaps ache aching acid acons acos
+        activate-input-method active-minibuffer-window)
+
+
+Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-' functions and set your own `fs-' variables. Once defined, these remain persistent across sessions. These are referred to as **userfunctions** and **uservariables**, respectively, and get stored in the publicly available files **userfunctions.el** and **uservariables.el**. /Uservariables should not be confused with terms/, which are set via `fs-set-term', as illustrated earlier. 
+
+
+=== Interaction History, logging and trash: ===
+
+*Summary*: Use ##,history## for your private session-history. ##,dump## to dump previous interactions, ##,trash*## to see undo-information, and ##,botlog## to see everyone's rw changes. 
+
+
+*Interaction:* Every interaction with the bot is logged via multiple logging mechanisms, detailed below. (The full record of) an *interaction* refers to the set {your command, its parse, the bot's response, and finally, any *undo-information* it generated}. Each interaction is assigned a random, unique name.
+
+*Privacy:* Every interaction, especially when *rw*, enters a permanent, public record on the web. Please plan accordingly! Though *ro* interactions are somewhat semi-private to you, as explained below, I can make no guarantee of privacy even for this case. 
+
+*ro* and *rw*: *rw* refers to an interaction that attempts to make any changes to the bot database, set any term or alter any functions or variables  (even temporarily.).  *ro* refers to other interactions that merely query a bot for information.
+
+*Logtmp:* Every interaction generates a temporary log, available in an unlisted url under the logtmp/ folder.  These logs are subject to periodic deletion. 
+
+*History:* When /query-ing the bot, ##,history## will list all your previous commands along with the name assigned to the corresponding interaction-record. In a channel, it lists a history of the entire channel's interactions, irrespective of the author. To dump the full record, use ##,dump##.
+
+*Dump:* ##,dump N## will dump the n'th-oldest interaction. ##,dump <partial-name>## is another way to dump the interaction, where the name was looked up via typing ##,history##.
+
+*Logfull:* rw interactions also get listed under the logfull/ folder. Unlike logtmp, these logs are permanent. As mentioned above, the record includes all undo-information.
+
+*Botlog:* Also available in the botlog/ folder on the web. ##,botlog N## will dump a list of all rw interactions on day #(today - N). This includes every single rw change, made by any user, on any channel. Every interaction will also include a pointer to its logfull-record.
+
+*Undo:* Every rw interaction's record also includes an *undo* entry: enough information to reconstruct the original database. This information becomes part of a permanent public record on the web. It also gets stored in the *trashcan*.
+
+
+*Trashcan:* While all undo-information is part of a permanent public web record, it is also stored in the bot's db temporarily via a trash-mechanism. A *trash-term* is simply a term that starts with "FsTrash". Whenever any undo-information is created, new trash-term(s) are created. ##,trashlist## returns a list of trash-terms, which can then be queried like any other term. You can then use this information to undo any accidental damage. ##,trashtrash## empties the trashcan; that is, it deletes all terms starting with FsTrash.
+
+
+
+
+
+
+=== Some notes on the parser === 
+
+Internally, things get pretty complex. For example, ##(fs-apply SUBJECT OBJECT)## is fairly complex because it has to handle all kinds of cases in the secure `fs-' model: the subject could be a variable, a lambda, a quoted lambda, a quoted symbol, etc. The object could be a variable or a list. Additionally, of course, the subject/object can be other fslisp-expressions that result in any of the aforementioned possibilities. Among other things, in each case, the codewalkers need to ensure that we don't allow jailbreaking out of the `fs-' namespace.  
+
+
+Here's another reminder that everything you do is actually happening in the `fs-' space. When you  ##,(defun increment (myvar) (+ 1 (apply 'myfun myvar)))##, it first internally gets parsed as ##,(fs-defun fs-increment (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar)))##. That works because `fs-defun', `fs-apply', and ##`fs-+'## are functions/macros that are provided to you in the core functionality, and because you hopefully already `defun'd a `fs-myfun' prior to this. Notice how the parser figures out that it needs to prefix the quoted expression as well. It converts `myfun' to `fs-myfun'. (If it didn't, you would be able to jailbreak to access things like ##'shell-command##). 
+
+In some contexts, however, quoted expressions should *NOT* be prefixed with `fs-'. When you type ##,(format "%s" 'a)##, you expect the answer to be "a", and indeed, the parser correctly figures out that it should NOT, in this case, convert ##'a## to ##'fs-a##.
+
+`fs-parse' is idempotent; this equality holds: (equal (parse foo) (parse (parse foo)). Thus, other than the fs-prefix codewalker, lisp-expressions stay unaltered after parsing.
+
+While the lisp parser is pretty stable and reliable, the english parser is anything but. The latter is heavily context-dependent. For example, 
+##,describe foo## gets parsed as ##,([fs-]describe "foo")##  but ##,foo is bar## gets parsed as ##,(set-term 'foo 'bar)##. Furthermore, the latter would get parsed as ##(foo 'is 'bar)## if a user-function foo existed. The English parser also evolves with time, at the whim of the author, to try to make fsbot more DWIM-my. This context-dependence is regarded by the author as a feature, not a bug. If that is a problem, please try using the lisp syntax instead. English sucks as a programming language. That's why you also have lisp at your disposal.
+
+
+
+=== `fs-' stripping ===
+The definition of `fs-increment' that you just created is built upon several other `fs-' functions. As we alluded to above, you can immediately see your new function in the publicly available file userfunctions.el. Or you can ask fsbot to `find-function' the function for you and return a pretty-printed output. When you type ##,(find-function 'fs-increment)##, fsbot will return a readable version of the definition, by stripping all the `fs-' prefixes. Thus, when you see the bot returning this definition: ##(lambda (myvar) (+ 1 (apply 'myfun myvar)))##, keep in mind that's just a readable shorthand for ##(lambda (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar)))##. The former does not always equal the latter. Fsbot's output is readable but inaccurate if taken literally. If you want the bot to retain the `fs-' prefixes when printing the definition, you can use other botcommands such as `find-function-literally' or `ffl'.
+
+
+=== More on fs-find-function ===
+##(fs-find-function 'foo)## first looks for an emacs function `foo', and when that doesn't work, it looks for a userfunction `fs-foo'. Thus, provided a built-in `foo' does not exist, you can use `foo' to refer to `fs-foo' when using fs-find-function. `fs-ff' is an alias for `fs-find-function'. Putting all these shortcuts together: You will often see #emacsers typing the English-form ##,ff myfun## instead of the more verbose form ##,(fs-find-function 'fs-myfun)##. The English form gets parsed as ##(fs-find-function 'myfun)##, which initially looks for `myfun', falls back upon `fs-myfun', and eventually returns the `fs-' stripped definition of `fs-myfun'. You will find similar shortcuts and fallbacks in many other botcommands, meant to promote convenience and brevity. Here's another example: `ff' actually has yet another fallback: it punts to `fs-find-variable' when the latter is expected to work. That arose because far too often, I noticed people trying `ff' when they actually meant `fv', which is a shortcut for `fs-find-variable'.
+
+
+=== An early first stab at a GPT interface ===
+
+This is ***expensive***. If there's too much abuse, I will disable private queries for this functionality.
+
+    <deego> , gpt which is the world's tiniest editor? 
+    <fsbot> The world's tiniest editor is probably "Micro Emacs" or "µemacs", which is a compact text editor designed for Unix-like operating systems
+
+
+If you want your parens, quotes, etc, passed along to GPT, please use elisp when talking to fsbot:
+
+    <deego> , (gpt "complete: (loop for i from 1 to 10 " )
+    <fsbot> do (print i))
+
+rather than this:
+
+    <deego> , gpt complete: (loop for i from 1 to 10
+    <fsbot> Life is selling REVOLUTIONARY HAIR PRODUCTS!
+
+
+
+
+
  
-You can have entries that fsbot does not prefix with his usual mumbling.
-Just use `noecho' or `unecho' as the first word.
-
-Example:
-
-    <kensanata> , ni! is noecho NI! NI! NI! NI!
-    <fsbot> created.
-    <kensanata> fsbot: ni!
-    <fsbot> NI! NI! NI! NI!
-
-You can, of course, see the full stuff by asking it to
-describe-literally:
-
-    <deego> fsbot: dl ni!
-    <fsbot> deego, From memory, ni! is noecho NI! NI! NI! NI!
-
-
-=== directonly ===
-
-Yeah, this is a boring subsection.  Feel free to skip it :)
-
-Background:In many channels (channels that match a regexp), fsbot responds not just to questions asked of it, but also responds briefly to any single word queries, if the query hits an exact match in its database.  This is generally very useful, people often (accidentally) get their questions answered that way.
-
- <deego> iirc?								
- <fsbot> IIRC is like, an acronym for "If I recall correctly"
- <deego> gnus?
- <hbot> hmm, gnus is Gnus is the Emacs newsreader--- http:/www.gnus.org/. It also reads mail, Slashdot, and your mind. .. + more entries
-
-However, sometimes that is not the intention. Say, you want to teach it what WTF means yet you do not want it to barge in with explanation of WTF whenever someone says WTF to another person. Here's an example:
-
- <deego> ... (Something very silly) ...
- <bpt> WTF?
- <fsbot> bpt: WTF is What the fuck.
- <bpt> I know that you silly bot!
-
-In that case, you teach the bot something different:
-
- <deego> fsbot: WTF is directonly What the Fuck.
-
-When the first letter is directonly, fsbot will not reply to single question-mark queries. This directonly can be followed by the other usual entries.
-
- <deego> fsbot: foo is directonly lisp (+ 1 2)
- <deego> , foo
- <fsbot> 3
-
-
-
-
-== Google ==
-
-Syntax: , g[oogle] [number] WORD [MORE-WORDS]
-
-    <deego> , google site:emacswiki.org pcomplete
-    <fsbot> [google]    http://www.emacswiki.org/cgi-bin/wiki.pl?ErcCompletion
-
-Yes, googling has a timeout built into it.  The bot has timeout built
-into it at various places in various functions and in the overall
-parsing.
-
-
-Multiple google results:
-
- <deego> , g 2 emacs						
- <fsbot> [google]    http://www.gnu.org/software/emacs/emacs.html
- <fsbot> http://www.gnu.org/software/emacs/windows/ntemacs.html
-
-
-
-You can also Google for words restricted to the EmacsWiki site:
-
-    <deego> , ge dumpkeys
-    <fsbot> [google]
-        http://www.emacswiki.org/cgi-bin/wiki.pl?LoadKeys
-
-Similar functions exist for a few other sites:
-ge -- google-emacswiki
-gt --google-twiki
-gg -- google-gnufans-net
-ggo -- google-gnufans-org
-gu -- google-usemod
-gw -- gogole-wikipedia
-
-
-
-
-The form below also happens to work, even though we didn't prefix it
-with g or ge: 
-
-    <deego> , site:emacswiki.org pcomplete
-    <fsbot> [google]    http://www.emacswiki.org/cgi-bin/wiki.pl?ErcCompletion
-
-Here's what happened, if i remember the chronology correctly: fsbot
-tried to look for the term site:emacswiki.org, then it tried searching
-for the regexp site:emacswiki.org.*pcomplete, then it tried to
-search-wide for the regexp site:emacswiki.org.*pcomplete, then it
-tried to parse your message as an english message looking for words
-like "thank you" etc.  Finally, it gave up and went to google.  If
-this googling would not have returned anything within the allotted
-time, or gives 0 results, fsbot first tries to parse your message as
-an english message (looking for words like "thank you"), and if that
-fails, does some funny default thing: which includes things like:
-
-* getting your message parsed by the doctor.
-* return a fortune
-* return a yow.
-
-
-== Talking to people as well as the bot ==
-
-If a sentence is not addressed to the bot, but has ,, in the middle of
-it, the bot responds to the part of the sentence starting with ,,
-
-    <resolve> probably best off with ,, categoryoutline
-    <fsbot> I heard CategoryOutline is at http://www.emacswiki.org/cgi-bin/wiki.pl?\CategoryOutline
-
-A second pair of ,, can terminate the input to the bot.
-
-== Embedding Question marks (?) ==
-
-You cannot include a (single) question mark at the end of the answer,
-because the last question mark is stripped away (that behavior is useful
-for many many other cases).
-
-Example:
-
-    <deego> , foo is why do you say foo?
-    <fsbot> created
-    <deego> foo
-    <fsbot> why do you say foo
-
-You can use the internal set-term function, however, if you know what
-you are doing.
-
-Example:
-
-    <kensanata> , (set-term "why" "Why not?")
-    <fsbot> created.
-    <kensanata> why?
-    <fsbot> why -- Why not?
-    <Johbe> wohoo!
-
-Or you could just end the sentence with 2 question marks.
-
-== Karma ==
-
-<b> Karma is currently unavailable. </b>
-
-Here's older info:
-
-Karma started out just for fun, but following another of DamienElmes'
-awesome suggestions, it is now also used by the bot to automatically
-track a TERM's popularity..
-
-Karma is used both for terms as well as nicks or any other entries
-people care to assign karma to.  For each direct reference to a Term
-the bot increases the term's karma slightly (by 0.1).  Subsequently,
-when a certain input by the user would result in multiple term
-matches, the Term with the highest karma gets displayed (the user also
-gets a list of the other possible terms..).  You can also change karma
-of anything:
-
-
-* , foo++ [number] and , foo-- change foo's karma (by upto 1 point). Doing this in public channels is the only way to change someone's karma.
-* type , karma foo to see foo's karma.
-* type , karma to see the best karma.
-* , karma-best N shows N best karmas.
-
-As you can see, users have much more influence over karma than the
-automatic increments. Thus, if you think a particular Term is more
-relevant than another similarly named term, just increase its karma.
-
-Karma is case-insensitive and everything gets downcased.
-
-Most of this karma stuff is not functional right now...  This was just
-the new design for the overhauled karma, whenever that becomes
-functional.  :)
-
-
-== Country ==
- <deego> , country .jp
- *fsbot* Japan
-
-
-== #dunnet and dunnet-mode ==
-
-NOTE: the bots' DUNNET is broken ATM.
-
-You can enable dunnet-mode in any channel, but we recommend doing that
-only on '''#dunnet'''.  Here is how to enable it:
-
-    *** Topic for #dunnet: you are in a twisty little maze of passages all alike
-    *** #dunnet: topic set by smoke, 07:31:48 11/29/02
-
-    <deego> , (dunnet-mode)
-    <fsbot> Dunnet mode set to t.  To toggle, type , (dunnet-mode)
-
-    <deego> , look
-    <fsbot> Dead end
-    <fsbot> You are at a dead end of a dirt road.  The road goes to the east.
-    <fsbot> In the distance you can see that it will eventually fork off.  The
-    <fsbot> trees here are very tall royal palms, and they are spaced equidistant
-    <fsbot> from each other.
-    <fsbot> There is a shovel here.
-    <deego> , take shovel
-    <fsbot> Taken.  
-
-You can also play dunnet without enabling dunnet-mode:
-
-    <deego> , dunnet go east
-    <fsbot> E/W Dirt road
-    <fsbot> You are on the continuation of a dirt road.  There are more trees on
-    <fsbot> both sides of you.  The road continues to the east and west.
-    <fsbot> There is a large boulder here.
-
-Fsbot is also a doctor, fortune-teller, pinhead, elisp-interpretor...
-Later: whoops, fsbot currently hangs in dunnet when it reaches the
-computer... -- DeepakGoel
-
-Perhaps this triggers some password stuff? -- AlexSchroeder
-== Wiki Training ==
-
-See the bottom of the ErbotInstallation page
-
-== JavaDoc Training ==
-
-If you have required <code>erbjavadoc</code> (see the ErbotInstallation page), 
-users on a channel can add links to all Java classes and package names by 
-"scraping" links from a javadoc generated page.  For example, to load the entire
-Java 1.5 standard library:
-
-     <deego> , learn-javadocs http://java.sun.com/j2se/1.5.0/docs/api
-     <erbot> I'm downloading the javadocs now ...
-     <erbot> Processing 213 entries from 
-               http://java.sun.com/j2se/1.5.0/docs/api/overview-frame.html
-               will take at least 0.3 minutes.
-     <erbot> Processing 3467 entries from 
-               http://java.sun.com/j2se/1.5.0/docs/api/allclasses-frame.html
-               will take at least 7.2 minutes.
-
-      [Time passes as this is an asynchronous operation]
-
-     <erbot> Added 213 entries from
-               http://java.sun.com/j2se/1.5.0/docs/api/overview-frame.html.
-    <erbot> Added 3467 entries from
-               http://java.sun.com/j2se/1.5.0/docs/api/allclasses-frame.html.
-
-To see the list of javadocs that have been learned:
-
-    <deego> , learned-javadocs
-    <erbot> I know about the following set of javadocs: 
-              http://java.sun.com/j2se/1.5.0/docs/api  
-
-Please keep in mind, learning a set of javadocs as large as the jdk1.5
-pages will take a long time (especially if you have not compiled erbot 
-elisp files).  While learning the pages, erbot is still able to respond to
-user requests on channels.  Furthermore, a set of javadocs cannot be
-learned more than once until it has been forgotten which the bot 
-operator must do, usually with the following in the erbot emacs session:
-
-     ;; The following will take a long time to run and is not 
-     ;; asynchronous and thus erbot will be disconnected 
-     ;; from IRC if performed on a live session.
-     (erburl-forget-terms "http://java.sun.com/j2se/1.5.0/docs/api")
-     (setq erbjavadoc-scraped-urls 
-               (remove "http://java.sun.com/j2se/1.5.0/docs/api"
-                               erbjavadoc-scraped-urls))
-     (erbjavadoc-save-data)
-
-If that seems complicated, its because <code>erbjavadoc-forget-javadocs</code>, 
-the function that does all of the above, has been commented out 
-until I can figure out how to make it asynchronous as well otherwise 
-users on a channel can cause the bot to be disconnected.
-
-== Viewing Web Pages and Web Server Info ==
-
-Web pages can be viewed by users on a channel.  Of course this assumes
-that the web page in question can be rendered by a text browser (in this case
-w3m).  The output will be paginated appropriately so as not to flood the
-channel.  For example:
-
-     <pete> !web http://www.jroller.com/page/fate
-     <erbot> 2000
-     <erbot>
-     <erbot>                                  The BileBlog
-     <erbot>                              All | General | Java
-     <erbot> 20041230 Thursday December 30, 2004
-     <erbot> The real interview with Klaus Wuestefeld Not one to be
-               outdone by any old fake ..[Type !more]
-
-In addition to web pages, one can also view the HTTP headers for
-a request.  For example:
-
-     <pete> !wserver http://www.jroller.com/page/fate 
-     <erbot> HTTP/1.1 200 OK
-     <erbot> Server: Resin/3.0.9
-     <erbot> Cache-Control: private
-     <erbot> Set-Cookie: JSESSIONID=a-_xBElt4Mi8; path=/
-     <erbot> Content-Type: text/html; charset=utf-8
-     <erbot> Content-Length: 74851
-     <erbot> Date: Sat, 08 Jan 2005 04:11:44 GMT
-
-== Licensing ==
-
-Info stored in fsbot is licensed under the FDL, according to fsbot.
-
-    *fsbot* [1] All information known to fsbot is freely distributable under GNU FDL.
-
-Note that since the "invariant sections" of fsbot's FDL are "none", the license is DFSG-free.
-
-
-== TODO: Topics to document   ==
-
-We still need to write more here about these topics: help, website,
-paginator, dictionary, Erbot's customization, elisp, codewalking,
-wserver, web, h4x0r, stud, bash-quotes, say, geek-code, readonly
-functions,
-
-== Authors etc. == 
-
-The people responsible for Erbot's code are DeepakGoel,
-SebastianFreundt, DavidEdmondson, MichaelOlson, Pete Kazmier, YannHodique
-(erbot->lispy extention), JorgenSchaefer (RSS feed), Dheeraj Buduru
-(erbkarma.el),Alejandro Benitez (natural language translation), J. Michael Dupont at '''#fsedu'''
-(perl scripts), authors of packages used by Erbot: google.el (hober
-AKA EdwardOConnor), dictionary-el (Torsten Hilbrich), w3, url, bbdb,
-h4x0r.el (Charles Sebold), bash-quotes.el (TerryPatcher), many of Noah
-Friedman's libraries (like flame.el), and of course, the entire ERC
-and emacs.  It is a result of collaborative design :), with many
-people's thoughts going into it: resolve (DamienElmes), bpt
-(BtTempleton), forcer (JorgenSchaefer), kensanata (AlexSchroeder),
-LawrenceMitchell, Grant Bowman, MarioLang, TerryPatcher,
-LuisFernandes, tintin and many other #emacsers.  
-
-This list may be outdated. Please consult the AUTHORS file that comes with erbot, and please feel free to update this list.
-
-
-
-== Done reading already? ==
-Erbot has a bunch of other newer features (like natural language translation) which may not be documented here at all, or which may be documented on other pages. So,  scroll down (== page-up) and go on to other pages like  ErbotEmacs :)
-
-== Discussion ==
-
-[new]
-Here can erbot be downloaded from? I mirror this package on the [[Emacsmirror]] so people can get a copy from their but the place where I used to get this package (http://mwolson.org/static/dist/erbot-latest.tar.gz) seams to be dead. -- JonasBernoulli
-
-[new]
-AFAICT the official sources are still on savannah: https://savannah.nongnu.org/projects/erbot/
-I just imported the CVS with history into https://github.com/sigma/erbot if that can be of any help. -- YannHodique
-
-[new]
-
-The current sources reside at http://gnufans.net/~fsbot/. Disclaimer/forewarning: Source is far from polished; nor is installation straightforward. -deego, 2019
 
 ----
-EmacsChannel  ErcRobot
+
+ErBot
 
