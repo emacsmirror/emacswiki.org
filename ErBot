@@ -124,21 +124,19 @@ The definition of `fs-increment' that you just created is built upon several oth
 
 === An early first stab at a GPT interface ===
 
-This is ***expensive***. If there's too much abuse, I will disable private queries for this functionality.
+**Please note that your that input that invokes chatgpt is *not* used by openai for training.***
 
-    <deego> , gpt which is the world's tiniest editor? 
+Given the hefty price tag, if there's too much abuse, I will disable private queries for this functioanilty.
+The recommended way to invoke GPT is to use ",,,"  or "!" or ",g"  when talking to the bot.
+These three special handlers take care of quoting the rest of your input properly, and passing it verbatim.
+ 
+    <deego> ! which is the world's tiniest editor? 
     <fsbot> The world's tiniest editor is probably "Micro Emacs" or "µemacs", which is a compact text editor designed for Unix-like operating systems
 
-
-If you want your parens, quotes, etc, passed along to GPT, please use elisp when talking to fsbot:
-
-    <deego> , (gpt "complete: (loop for i from 1 to 10 " )
+If you insist on using ,gpt  instead, it's best to use the format below, otherwise your incomplete parens, quotes, etc, may not pass on correctly.
+ 
+    <deego> , (gpt "complete this code: (loop for i from 1 to 10 " )
     <fsbot> do (print i))
-
-rather than this:
-
-    <deego> , gpt complete: (loop for i from 1 to 10
-    <fsbot> Life is selling REVOLUTIONARY HAIR PRODUCTS!
 
 
 
