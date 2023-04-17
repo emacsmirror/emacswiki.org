@@ -158,6 +158,15 @@ Example:
 Notice that the second request returned no results.
 
 
+== Other minor features ==
+
+erbot has many other minor features developed over 20+ years of irc usage. New ones come and go. Some fall into disuse. The best way to learn them is to just start using fsbot. Here's a partial list.
+
+* redirect terms
+* tell foo about bar
+* karma
+* praise
+* flame, spook, doctor, yow, fortune, fact (rms), geek-code
 
 ----
 
