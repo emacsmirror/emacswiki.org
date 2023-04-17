@@ -146,7 +146,7 @@ If you insist on using ##,gpt##  instead, it's best to use the format below, oth
 == Google ==
 To invoke google, type ##,gg## or ##,goog## or ##,google##. 
 ##,gge fsbot## is equivalent to ##,gg site:emacswiki.org fsbot##.
-##, gg 2 fsbot emacs## will return the top two google results for ##fsbot emacs## 
+##, gg 2 fsbot emacs## will return the top two google results for ##fsbot+emacs## 
 
 If you wish to pass on double-quoted arguments to google, it's best to use the lisp syntax.
 Example:
