@@ -128,7 +128,7 @@ The definition of `fs-increment' that you just created is built upon several oth
 
 **Please note that your that input that invokes chatgpt does *not* become part of openai's training corpus.**
 
-Given the hefty price tag, if there's too much abuse, I will disable private queries for this functioanilty.
+(Given the hefty price tag, if there's too much abuse, I will disable private queries for this functionality.)
 The recommended way to invoke GPT is to use ##,,,##  or ##!## or ##,g##  when talking to the bot.
 These three special handlers take care of quoting the rest of your input properly, and passing it verbatim.
  
