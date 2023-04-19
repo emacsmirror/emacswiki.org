@@ -173,6 +173,46 @@ Another code for solving conflicts in Company and Yasnippet.
 
 -- YoungtaekOh
 
+
+The above was not working for me, so after searching around a bit, I put together the following solution:
+
+1. It adds yasnippet keys in the completion list that company mode shows. As described in: https://emacs.stackexchange.com/a/10520
+
+2. It adds behavior such that pressing TAB on a valid yasnippet triggering key would perform yas-expand and if you are not on a snippet key then it is as if you are in vanilla company-completion. As described in: https://stackoverflow.com/a/28510968
+
+{{{
+
+  ;; From here. Dated 2015, tested 2023. Based on PR accepted into spacemacs
+  ;; https://stackoverflow.com/a/28510968.
+  ;; Add yasnippet support for all company backends
+  ;; https://github.com/syl20bnr/spacemacs/pull/179
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+
+  (defun company-mode/backend-with-yas (backends)
+    (if (or (not company-mode/enable-yas) (and (listp backends) (member 'company-yasnippet backends)))
+	backends
+      (append (if (consp backends) backends (list backends))
+              '(:with company-yasnippet))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+  ;; From here. Dated 2015, tested 2023. API use confirmed by author of yasnippet
+  ;; https://stackoverflow.com/a/28510968
+  ;; Try yas-expand and on failure to company-completion
+  (defun company-yasnippet-or-completion ()
+    (interactive)
+    (let ((yas-fallback-behavior nil))
+      (unless (yas-expand)
+	(call-interactively #'company-complete-common))))
+
+  (add-hook 'company-mode-hook (lambda ()
+				 (substitute-key-definition 'company-complete-common
+							    'company-yasnippet-or-completion
+							    company-active-map)))
+
+}}}
+--- aksharvarma
 == Discussion ==
 
 How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
