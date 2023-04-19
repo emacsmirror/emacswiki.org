@@ -147,7 +147,9 @@ If you insist on using ##,gpt##  instead, it's best to use the lisp format below
 
 You want to swap the term "emacs" with "vi."
 
-Or cp the term emacs to elisp.
+Or, cp the term emacs to elisp.
+
+Or, rename the term elisp to EmacsLisp
 
 Or, forget the tenth note for "emacs."
 
