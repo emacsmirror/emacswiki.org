@@ -144,7 +144,9 @@ If you insist on using ##,gpt##  instead, it's best to use the lisp format below
 
 == Extended English interface using triple-comma ==
 
-You want to swap the term "emacs" with "vi."
+You want fsbot to output its notes about the term "emacs."
+
+Or, you want to swap the term "emacs" with "vi."
 
 Or, cp the term emacs to elisp.
 
@@ -160,12 +162,12 @@ Or, tell <nick> about the fifth note of emacs.
 
 Or, move the third note of emacs to the 2nd position.
 
-I always see people struggling, especially with that last case.  Do you always remember the English syntax for that?  ## ,3->2 in emacs ##,  or its equivalent lisp parse: ##, (rearrange 3 2 "emacs")## ?  Of course not! Well, just command the bot using whatever you remember, using the shiny new ##,,,##, or, just describe what you want:
+I always see people struggling, especially with that last case.  Do you always remember the English syntax for that?  ## ,3->2 in emacs ##,  or its equivalent lisp parse: ##, (rearrange 3 2 "emacs")## ?  Of course not! Well, just command the bot using whatever you remember, using the shiny new ##,,,## Or, just try to describe what you want done:
 
-   <deego> ,,, move the third note of emacs to the 5th postition                                                                                                                       
+   <deego> ,,, move the thiird note of emacs to the 5th postition                                                                                                                       
    <fsbot> Moved note 3 to 5 in "emacs"
 
-It worked, even though I made a typo!
+It worked, even though I made two typos!
 
 
 
