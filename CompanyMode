@@ -213,7 +213,9 @@ The above was not working for me, so after searching around a bit, I put togethe
 							    company-active-map)))
 
 }}}
---- aksharvarma
+
+-- aksharvarma
+
 == Discussion ==
 
 How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
