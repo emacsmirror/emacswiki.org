@@ -129,7 +129,7 @@ The definition of `fs-increment' that you just created is built upon several oth
 **Please note that your that input that invokes chatgpt does *not* become part of openai's training corpus.**
 
 (Given the hefty price tag, if there's too much abuse, I will disable private queries for this functionality.)
-The recommended way to invoke GPT is to use ##,,,##  or ##!## or ##,g##  when talking to the bot.
+The recommended way to invoke GPT is to use ##!## or ##,g##  when talking to the bot.
 These three special handlers take care of quoting the rest of your input properly, and passing it verbatim.
  
     <deego> ! which is the world's tiniest editor (((" ? 
@@ -141,6 +141,25 @@ If you insist on using ##,gpt##  instead, it's best to use the lisp format below
  
     <deego> , (gpt "complete this code: (loop for i from 1 to 10 " )
     <fsbot> do (print i))
+
+
+== Extended English interface using ,,, ==
+
+You want to swap the term emacs with vi. 
+Or cp the term emacs to elisp.
+Or, forget the tenth notes for emacs.
+Or, add a new note for emacs.
+Or, create a new note for elisp.
+Or, tell <nick> about the fifth note of emacs. 
+Or, move the third note of emacs to the 2nd position.
+I always see people struggling, especially with the last case...  do you always remember the English syntax ## ,3->2 in emacs ##,  or its equivalent lisp parse: ##, (rearrange 3 2 "emacs")##. Of course not! Well, just command the bot in "plain-er" English, using the shiny new ##,,,##:
+
+   <deego> ,,, move the third note of emacs to the 5th postition                                                                                                                       
+   <fsbot> Moved note 3 to 5 in "emacs"
+
+It worked, even though I made a typo!
+
+
 
 
 == Google ==
