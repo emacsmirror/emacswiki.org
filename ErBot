@@ -160,7 +160,7 @@ Or, tell <nick> about the fifth note of emacs.
 
 Or, move the third note of emacs to the 2nd position.
 
-I always see people struggling, especially with that last case.  Do you always remember the English syntax for that?  ## ,3->2 in emacs ##,  or its equivalent lisp parse: ##, (rearrange 3 2 "emacs")## ?  Of course not! Well, just command the bot in "plain-er" English, using the shiny new ##,,,##:
+I always see people struggling, especially with that last case.  Do you always remember the English syntax for that?  ## ,3->2 in emacs ##,  or its equivalent lisp parse: ##, (rearrange 3 2 "emacs")## ?  Of course not! Well, just command the bot using whatever you remember, using the shiny new ##,,,##, or, just describe what you want:
 
    <deego> ,,, move the third note of emacs to the 5th postition                                                                                                                       
    <fsbot> Moved note 3 to 5 in "emacs"
