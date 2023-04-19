@@ -145,13 +145,20 @@ If you insist on using ##,gpt##  instead, it's best to use the lisp format below
 
 == Extended English interface using ,,, ==
 
-You want to swap the term emacs with vi. 
+You want to swap the term emacs with vi.
+
 Or cp the term emacs to elisp.
-Or, forget the tenth notes for emacs.
+
+Or, forget the tenth note for emacs.
+
 Or, add a new note for emacs.
+
 Or, create a new note for elisp.
+
 Or, tell <nick> about the fifth note of emacs. 
+
 Or, move the third note of emacs to the 2nd position.
+
 I always see people struggling, especially with the last case...  do you always remember the English syntax ## ,3->2 in emacs ##,  or its equivalent lisp parse: ##, (rearrange 3 2 "emacs")##. Of course not! Well, just command the bot in "plain-er" English, using the shiny new ##,,,##:
 
    <deego> ,,, move the third note of emacs to the 5th postition                                                                                                                       
