@@ -74,7 +74,7 @@ Numerous minor modes are disabled by default (if they were enabled in the first 
 * visual-line-mode
 * whitespace-mode
 
-It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Please report any examples you encounter upstream with ##M-x report-emacs-bug## (regardless of whether the mode is part of Emacs, or from a third party library or package), so that
+It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Please report any examples you encounter upstream with ##M-x report-emacs-bug## (regardless of whether the mode is part of Emacs, or from a third party library or package), so that in future they can be handled by default.
 
 ===Variable Overrides===
 
