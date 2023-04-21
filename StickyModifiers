@@ -46,7 +46,7 @@ Turning "Sticky Keys" on in the Macintosh is extremely easy (OSX 10.4.4). One go
 
 === Linux ===
 
-=== Sway Window Manager ===
+==== Sway Window Manager ====
 
 You can use [https://raw.githubusercontent.com/ne9z/ergo-keyboard-layout/main/swaywm-emacs-ergo-keymap.txt this keymap].  Right click the link and save the keymap as text file, then load it in sway config with
 <pre>
