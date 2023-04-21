@@ -14,36 +14,11 @@ Note that separate keyboard mappings are often used for X (graphical sessions) a
 
 === Sway Window Manager ===
 
-First, you can consult
+You can use [https://raw.githubusercontent.com/ne9z/ergo-keyboard-layout/main/swaywm-emacs-ergo-keymap.txt this keymap].  Right click the link and save the keymap as text file, then load it in sway config with
 <pre>
-man xkeyboard-config # section "Ctrl position"
+    input "type:keyboard" xkb_file $HOME/path_to_key_map.txt
 </pre>
-manual page for all available options for moving the control key.  Then, apply the preferred option in Sway WM configuration, like so
-<pre>
-input "type:keyboard" {
-    xkb_options ctrl:swapcaps # for swapping Left Ctrl and Caps Lock
-}
-</pre>
-If that was not enough, as in my case, you can dump the entire keyboard configuration in a text file,
-<pre>
-xkbcomp $DISPLAY my_old_keymap.xkb
-</pre>
-edit it however you want -- as long as the file is still valid -- and apply the resulting keyboard configuration:
-<pre>
-input "type:keyboard" {
-    xkb_file $HOME/.config/sway/my_ergonomic_keymap.xkb
-}
-</pre>
-In my case I opted to do the following swapping
-<pre>
-# on US-Qwerty keyboard
-Caps Lock                 → Left Ctrl
-Apostrophe/Quotation mark → Right Ctrl
-Tab                       → Apostrophe/Quotation mark
-Right Ctrl                → Tab (use C-i for Tab)
-Sticky modifier keys, and use Caps Lock indicator for sticky status
-</pre>
-Here is the modified keymap with the above properties. [https://gist.github.com/ne9z/cdd01fc1d3363623b39f79a665bec97d keymap link]
+
 === GNOME Desktop Environment ===
 
 This setting is in the GNOME Tweak Tool. In some versions of the tool, you will need to tap on the "Keyboard & Mouse" section in the left navigation pane, and then tap the "Additional Layout Options" button in the "Keyboard & Mouse" main content area. The "Additional Layout Options" window should appear, and you can navigate to the "Ctrl position" section to place a check mark next to the "Caps Lock as Ctrl" listing.
