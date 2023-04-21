@@ -46,35 +46,11 @@ Turning "Sticky Keys" on in the Macintosh is extremely easy (OSX 10.4.4). One go
 
 === Linux ===
 
-==== Sway Window Manager ====
+=== Sway Window Manager ===
 
-In Sway Window Manager, sticky modifiers can be enabled by loading a custom keyboard configuration file.
-
-Dump the entire keyboard configuration in a text file,
+You can use [https://raw.githubusercontent.com/ne9z/ergo-keyboard-layout/main/swaywm-emacs-ergo-keymap.txt this keymap].  Right click the link and save the keymap as text file, then load it in sway config with
 <pre>
-xkbcomp $DISPLAY my_old_keymap.xkb
-</pre>
-
-Replace all instances of "SetMods" with "LatchMods":
-<pre>
-sed 's|SetMods|LatchMods|g' \
-    my_old_keymap.xkb \
-    > keymap_with_sticky_modifiers.xkb
-</pre>
-
-Optionally, use "Caps Lock" indicator for indicating sticky modifier status.  [https://gist.github.com/ne9z/cdd01fc1d3363623b39f79a665bec97d/revisions#diff-9e3d60479e28135dc4cdd85f72666280f6772137c035c0135bcc5da7877e9e18 like so].
-
-At this point, you can use the new keymap with the following configuration in sway config:
-<pre>
-input "type:keyboard" {
-    xkb_file $HOME/.config/sway/my_ergonomic_keymap.xkb
-}
-</pre>
-If you want the "locked sticky modifiers" behavior, i.e., press modifier key twice to apply the modifier to all future key-presses until the modifier is pressed a third time, simply do the following replacement and apply in sway config:
-<pre>
-sed 's|,clearLocks);|clearLocks,latchToLock);|g' \
-$HOME/.config/sway/my_ergonomic_keymap.xkb \
-> $HOME/.config/sway/my_ergonomic_keymap_with_locked_modifiers.xkb
+    input "type:keyboard" xkb_file $HOME/path_to_key_map.txt
 </pre>
 
 ==== Console ====
