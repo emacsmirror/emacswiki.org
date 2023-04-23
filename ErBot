@@ -134,12 +134,9 @@ These special handlers take care of quoting the rest of your input properly, and
     <deego> ! which is the world's tiniest editor (((" ? 
     <fsbot> The world's tiniest editor is probably "Micro Emacs" or "µemacs", which is a compact text editor designed for Unix-like operating systems
 
-Notice that the gibberish at the end of the text did not cause problems. Normally, the gibberish would be passed through fsbot's read feature, but that feature is disabled for the above three special handlers. The read feature is otherwise useful for most other bot functionality, for example, when you simply type ##,+ 1 2##. 
+Notice that the gibberish at the end of the text did not, in this case, cause problems. Normally, such gibberish would be passed through fsbot's read feature and lead to an error, but that feature is disabled for the above three special handlers. The read feature is otherwise useful for most other bot functionality, for example, when you simply type ##,+ 1 2##. 
 
-If you insist on using ##,gpt##  instead, it's best to use the lisp format below, otherwise your incomplete parens, quotes, etc, may not pass on correctly.
- 
-    <deego> , (gpt "complete this code: (loop for i from 1 to 10 " )
-    <fsbot> do (print i))
+
 
 
 == Extended English interface using triple-comma ==
