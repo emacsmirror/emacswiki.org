@@ -141,7 +141,7 @@ Notice that the gibberish at the end of the text did not, in this case, cause pr
 
 == Extended English interface using triple-comma ==
 
-You want fsbot to output its notes about the term "emacs."
+You want fsbot to output its notes about the term "emacs." Or, just list its notes 3 through 6.
 
 Or, you want to swap the term "emacs" with "vi."
 
