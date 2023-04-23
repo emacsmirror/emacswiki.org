@@ -198,6 +198,7 @@ erbot has many other minor features developed over 20+ years of irc usage. New o
 * karma
 * praise
 * flame, spook, doctor, yow, fortune, fact (rms), geek-code
+* A sandboxed octave evaluator, usually disabled in fsbot
 
 ----
 
