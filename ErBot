@@ -191,15 +191,17 @@ Notice that the second request returned no results.
 
 == Other minor features ==
 
-erbot has many other minor features developed over 20+ years of irc usage. New ones come and go. Some fall into disuse. The best way to learn them is to just start using fsbot and see how people use them on #emacs. Here's a partial list.
+erbot has many other features developed over 20+ years of irc usage. New ones come and go. Some fall into disuse. The best way to learn them is to just start using fsbot and see how people use them on #emacs. Here's a partial list.
 
 * redirect terms
 * tell foo about bar
 * karma
 * praise
 * flame, spook, doctor, yow, fortune, fact (rms), geek-code
-* A sandboxed octave evaluator, usually disabled in fsbot
-
+* A sandboxed octave evaluator, usually disabled in fsbot. It tries to make the input safe before executing it, but almost surely has some obscure security holes.
+* A plurality detector.
+* Dvorak/colemak/qwerty battle
+* A dunnet player
 ----
 
 ErBot
