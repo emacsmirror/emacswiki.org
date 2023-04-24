@@ -1,0 +1,17 @@
+Uses Emacs for almost everything; in love with the self-documentation and interoperability of modes which makes life fun.
+
+* Some of my favorite built-in parts of Emacs include: Ido, Dired, TRAMP, Keyboard Macros, Org+Agenda and most importantly the beautiful self documentation.
+
+* Some packages of note I use from MELPA include: Magit, AUCTex, PDF Tools, Notmuch, Yasnippet.
+
+* Packages I use which improves the Emacs (editing) experience without any significant learning curve. These tend to be among the top downloaded MELPA packages.
+** Plug and play: aggresive-indent, beginend, highlight-numbers, hungry-delete, anzu (just the basic stuff is sufficient), undo-tree, which-key, browse-kill-ring, dired-rainbow, volatile-highlights.
+** 10-15 minutes for basic usage: smartparens, expand-region, move-text, wgrep, iedit
+
+[[https://aksharvarma.org/ Website]] with no Emacs content.
+
+Have picked snippets from Emacs Wiki for a long time. Had something to add back today (an alternative way to integrate yasnippet with company-mode), so here I am.
+
+----
+
+CategoryHomepage
