@@ -144,7 +144,7 @@ Several Emacs packages are also aimed at this:
 
 [https://github.com/purcell/list-unicode-display list-unicode-display] allows the user to search by name, providing the corresponding list of characters.
 
-[https://github.com/accidentalrebel/emacs-unicode-picker Unicode Picker] eases search and selection of Unicode characters easier. 
+[https://github.com/accidentalrebel/emacs-unicode-picker Unicode Picker] eases search and selection of Unicode characters. 
 
 [https://codeberg.org/thomp/d-char-selector d-char-selector] provides a popup for character selection.
 
