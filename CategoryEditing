@@ -94,3 +94,4 @@ This category is about editing, not modes.  See CategoryModes, instead.
 * Grammar Checker
 ** [http://www.emacswiki.org/emacs/BaoqiuCui#toc2 Grammar Checker] -- Use [http://www.link.cs.cmu.edu/link Link Grammar] as the grammar checker back-end.
 ** [http://www.emacswiki.org/emacs/langtool.el langtool.el] -- Use [https://languagetool.org Language Tools] as grammar checker back-end
+* [CollaborativeEditing Collaborative Editing]
