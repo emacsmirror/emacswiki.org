@@ -12,12 +12,12 @@ seltener benutzten.
 == Implementierung ==
 Folgendes habe ich in meiner .emacs eingebunden, um which-key zu
 installieren bzw. zu customizen.
-
-    * (use-package which-key
-    *   :ensure t
-    *   :config
-    *   (which-key-mode)
-    *   (setq which-key-idle-delay 0.7)) ;; default was 1 second
-
+{{{
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 0.7)) ;; default was 1 second
+}}}
 == Ressourcen ==
 * https://github.com/justbur/emacs-which-key
