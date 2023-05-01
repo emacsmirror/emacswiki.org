@@ -10,8 +10,8 @@ Popup mit den vielen Kommandos, die unter C-h verfügbar sind - auch die
 seltener benutzten.
 
 == Implementierung ==
-Folgendes habe ich in meiner .emacs eingebunden, um which-key zu
-installieren bzw. zu customizen.
+Folgendes ist in meiner .emacs eingebunden, um which-key zu installieren, 
+zu laden bzw. zu anzupassen.
 {{{
 (use-package which-key
   :ensure t
