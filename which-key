@@ -1,0 +1,23 @@
+== Überblick ==
+which-key ist ein empfehlenswerter Minor Mode zur Anzeige von verfügbaren
+key bindings in einem Popup Window nach Eingabe eines Teil-Kommandos
+(prefix). Die Anzeige erfolgt nach einer (default) Verzögerung von 1
+Sekunde. Somit hilft es einem, sich an weniger oft benutzte key bindings
+leichter zu erinnern bzw. sie erst einmal kennenzulernen.
+
+Wenn man beispielsweise C-h eingibt, dann erscheint nach kurzer Zeit ein
+Popup mit den vielen Kommandos, die unter C-h verfügbar sind - auch die
+seltener benutzten.
+
+== Implementierung ==
+Folgendes habe ich in meiner .emacs eingebunden, um which-key zu
+installieren bzw. zu customizen.
+
+    * (use-package which-key
+    *   :ensure t
+    *   :config
+    *   (which-key-mode)
+    *   (setq which-key-idle-delay 0.7)) ;; default was 1 second
+
+== Ressourcen ==
+* https://github.com/justbur/emacs-which-key
