@@ -3,8 +3,8 @@ Globally unique identifiers.  There's a specification: http://www.ietf.org/inter
 There are 2 packages here on the Wiki:
 
 * [[UUID]] is by James Mastros
-** there is now a [[https://github.com/nicferrier/emacs-uuid github of the code]], some fixes for it and a [[http://marmalade-repo.org/packages/uuid/0.0.2|package]].
-* [[uuid]]
+** there is now a [[https://github.com/nicferrier/emacs-uuid github of the code]], some fixes for it and a [[http://marmalade-repo.org/packages/uuid/0.0.2|package]].  Last updated 2012.
+* [[uuid.el]], now a package called [[https://melpa.org/#/uuidgen][uuidgen]], last updated 2022.
 
 ----
 CategoryExtensions
