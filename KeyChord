@@ -164,7 +164,7 @@ there are no delay values yet."
       (let ((last-delay (car key-chord-last-delays))
             (lower-quartile-delay (nth (/ (length key-chord-last-delays) 4)
                                        (sort key-chord-last-delays '<))))
-        (/ (max lower-quartile-delay last-delay)
+        (/ (max lower-quartile-delay (* 0.5 last-delay))
            key-chord-max-delay-divisor))))
 
 (defun key-chord-input-method (first-char)
@@ -176,8 +176,30 @@ there are no delay values yet."
 		       (min key-chord-one-key-delay (key-chord-recent-typing-delay))
 		     ;; else
 		     (min key-chord-two-keys-delay (key-chord-recent-typing-delay)))))
- ;; ... and so forth from key-chord 0.5 ...
-)))
+	(if (if executing-kbd-macro
+		(not (memq first-char key-chord-in-last-kbd-macro))
+	      (sit-for delay 0 'no-redisplay))
+	    (progn
+	      (setq key-chord-last-unmatched nil)
+	      (list first-char))
+	  ;; else input-pending-p
+	  (let* ((input-method-function nil)
+		 (next-char (read-event))
+		 (res (vector 'key-chord first-char next-char)))
+	    (if (key-chord-lookup-key res)
+		(progn
+		  (setq key-chord-defining-kbd-macro
+			(cons first-char key-chord-defining-kbd-macro))
+		  (list 'key-chord first-char next-char))
+	      ;; else put back next-char and return first-char
+	      (setq unread-command-events (cons next-char unread-command-events))
+	      (if (eq first-char next-char)
+		  (setq key-chord-last-unmatched first-char))
+	      (list first-char)))))
+    ;; else no key-chord keymap
+    (setq key-chord-last-unmatched first-char)
+    (list first-char)))
+
 }}}
 ----
 CategoryKeys
