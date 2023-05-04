@@ -69,7 +69,11 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl-lib))
+(eval-when-compile
+  (if (not (featurep 'cl-lib))
+      (require 'cl)
+    (require 'cl-lib)))
+
 (defgroup savekill nil
   "savekill"
   :group 'killing)
