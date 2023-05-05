@@ -308,6 +308,9 @@ I think TAB is best choice for alignments in code up to this day.
 When I generate some data files, I will always use TAB for inter-column space
 separation. And in code, when I need parallel columns, Tab is the only solution.
 
+[new]
+I respect all of you, but if you make me write more then 10 lines of code to make my editor put tabs in the file when I press the "tab" key, i will cut you. like a fish.
+
 ----
 
 See UntabifyUponSave to make Emacs save all your files replacing spaces with tabs because by running `M-x untabify' automatically on each save.
