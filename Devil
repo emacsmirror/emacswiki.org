@@ -1,21 +1,35 @@
 Devil is a key interception and translation package for GNU Emacs. It offers a global minor mode to intercept keystrokes and translate them to Emacs key sequences according to a configurable set of translation rules. For example, with the default translation rules, when we type <kbd>, x , f</kbd>, Devil translates it to <kbd>C-x C-f</kbd> and runs the command bound to this key sequence.
 
-To quickly get started with Devil, first clone it from its Git repository:
+Devil can be most easily installed from MELPA. MELPA can be added as a package source in Emacs with Elisp code like this:
 
 {{{
-git clone https://github.com/susam/devil.git
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 }}}
 
-Then add the following to your Emacs initialization file:
+Assuming MELPA has been added as a package source in your Emacs, Devil can be installed easily with these commands:
 
 {{{
-(add-to-list 'load-path "/path/to/devil/")
-(require 'devil)
-(global-devil-mode)
-(global-set-key (kbd "C-,") 'global-devil-mode)
+M-x package-refresh-contents RET
+M-x package-install RET devil RET
 }}}
 
-Then type <kbd>, x , f</kbd> and watch Devil translate it to <kbd>C-x C-f</kbd> and invoke the find file functionality. See the project README at https://github.com/susam/devil for more examples of key sequences and details on how to customize Devil.
+To confirm that it is installed successfully, type the following command:
+
+{{{
+M-x devil-show-version RET
+}}}
+
+To enable Devil mode, type the following command:
+
+{{{
+M-x global-devil-mode RET
+}}}
+
+Finally, type <kbd>, x , f</kbd> and watch Devil translate it to <kbd>C-x C-f</kbd> and invoke the corresponding `find-file' command.
+
+See the project README at https://github.com/susam/devil for more examples of key sequences and details on how to customize Devil.
 
 ----
 CategoryModes
