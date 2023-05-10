@@ -13,7 +13,7 @@ As of Emacs 24.3, the current working directory is no longer on the <code>deskto
 If you add the following to your <code>.emacs</code> file, the cd-into-your-desktop-containing-directory technique will work:
 
 <pre>
-(setq desktop-path '("~/.emacs.d/" "~" "."))
+(setq desktop-path '("." "~/.emacs.d/" "~"))
 </pre>
 
 [new] 
