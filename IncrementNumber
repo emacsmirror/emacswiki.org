@@ -175,7 +175,7 @@ increase/decrease the number at point or on the current line:
 
 ----
 
-See ReplaceRegexp, ReplaceCount, RenumberList and MacroMath for other ways to deal with automatic incrementation.
+See [[number-mark.el]], ReplaceRegexp, ReplaceCount, RenumberList and MacroMath for other ways to deal with automatic incrementation.
 
 ----
 CategoryEditing
