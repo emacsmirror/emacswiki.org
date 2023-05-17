@@ -413,6 +413,7 @@ apparently, heredoc/newdoc syntax is not recognized and auto-indentation fails b
 == See also ==
 
 * PhpsMode, available from GNU ELPA.
+* PsySH repl for PHP
 
 ----
 CategoryModes
