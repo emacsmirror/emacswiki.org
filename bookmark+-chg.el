@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 12:30:11 2022 (-0800)
+;; Last-Updated: Wed May 17 12:01:57 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 16880
+;;     Update #: 16882
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1532,6 +1532,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2023/05/17 dadams
+;;     bmkp-bmenu-mode-status-help: Bind describe-function-orig-buffer (new in Emacs 28).
 ;; 2022/11/05 dadams
 ;;     Typo: bmkp-bmenu-show-only-man-page-bookmarks should be bmkp-bmenu-show-only-man-bookmarks.
 ;; 2022/05/26 dadams
