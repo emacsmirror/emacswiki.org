@@ -1,0 +1,9 @@
+PsySH is a REPL for PHP.
+
+* https://psysh.org/
+* https://github.com/bobthecow/psysh
+
+There are a couple of Emacs integrations:
+
+* https://melpa.org/#/psysh
+* Lisp:psysh.el
