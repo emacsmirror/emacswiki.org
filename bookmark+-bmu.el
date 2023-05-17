@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Nov  5 14:27:59 2022 (-0700)
+;; Last-Updated: Wed May 17 11:57:11 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 4198
+;;     Update #: 4200
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -4296,183 +4296,186 @@ Unlike `bookmark-bmenu-select', this command:
   (interactive) (let ((bmkp-use-w32-browser-p  t))  (bmkp-bmenu-jump-to-marked)))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mode-status-help "bookmark+")
-(defun bmkp-bmenu-mode-status-help ()   ; Bound to `C-h m' and `?' in bookmark list
+(defun bmkp-bmenu-mode-status-help () ; Bound to `C-h m' and `?' in bookmark list
   "`describe-mode' + current status of `*Bookmark List*' + face legend."
   (interactive)
   (unless (string= (buffer-name) "*Help*") (bmkp-bmenu-barf-if-not-in-menu-list))
-  (with-current-buffer (get-buffer-create "*Help*")
-    (bmkp-with-help-window "*Help*"
-      (let ((buffer-read-only  nil)
-            top)
-        (erase-buffer)
-        (save-excursion
-          (let ((standard-output  (current-buffer)))
-            (if (> emacs-major-version 21)
-                (describe-function-1 'bookmark-bmenu-mode)
-              (describe-function-1 'bookmark-bmenu-mode nil t)))
-          (help-setup-xref (list #'bmkp-bmenu-mode-status-help) (interactive-p))
-          (goto-char (point-min))
-          (search-forward               ; This depends on the text written by `bookmark-bmenu-mode'.
-           "More bookmarking help below." nil t)
-          (delete-region (point-min) (point)) ; Get rid of intro from `describe-function'.
-          (insert "*************************** Bookmark List ***************************\n\n")
-          (insert "Major mode for editing a list of bookmarks.\n")
-          (insert "Each line in `*Bookmark List*' represents an Emacs bookmark.\n")
-          (setq top  (copy-marker (point)))
-          ;; Add buttons to access help and Customize.
-          ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
-          (when (and (> emacs-major-version 21) ; In `help-mode.el'.
-                     (condition-case nil (require 'help-mode nil t) (error nil))
-                     (fboundp 'help-insert-xref-button))
-            (goto-char (point-min))
-            (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
-            (insert "           ")
-            (help-insert-xref-button "[Doc on the Web]" 'bmkp-help-button)
-            (insert "           ")
-            (help-insert-xref-button "[Customize]" 'bmkp-customize-button)
-            (insert "\n\n")
-            (goto-char (point-max))
-            (insert (substitute-command-keys
-                     "\nSend a Bookmark+ bug report: `\\[bmkp-send-bug-report]'.\n\n"))
-            (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
-            (insert "           ")
-            (help-insert-xref-button "[Doc on the Web]" 'bmkp-help-button)
-            (insert "           ")
-            (help-insert-xref-button "[Customize]" 'bmkp-customize-button)
-            (insert "\n\n")
-            (goto-char (point-min))
-            (forward-line 2))
-          (goto-char top)
-          (insert (format
-                   "\n\nCurrent Status\n--------------\n
+  (let ((describe-function-orig-buffer  (current-buffer)))
+    (with-current-buffer (get-buffer-create "*Help*")
+      (bmkp-with-help-window
+       "*Help*"
+       (let ((buffer-read-only  nil)
+             top)
+         (erase-buffer)
+         (save-excursion
+           (let ((standard-output  (current-buffer)))
+             (if (> emacs-major-version 21)
+                 (describe-function-1 'bookmark-bmenu-mode)
+               (describe-function-1 'bookmark-bmenu-mode nil t)))
+           (help-setup-xref (list #'bmkp-bmenu-mode-status-help) (interactive-p))
+           (goto-char (point-min))
+           (search-forward ; This depends on the text written by `bookmark-bmenu-mode'.
+            "More bookmarking help below." nil t)
+           (delete-region (point-min) (point)) ; Get rid of intro from `describe-function'.
+           (insert "*************************** Bookmark List ***************************\n\n")
+           (insert "Major mode for editing a list of bookmarks.\n")
+           (insert "Each line in `*Bookmark List*' represents an Emacs bookmark.\n")
+           (setq top  (copy-marker (point)))
+           ;; Add buttons to access help and Customize.
+           ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
+           (when (and (> emacs-major-version 21) ; In `help-mode.el'.
+                      (condition-case nil (require 'help-mode nil t) (error nil))
+                      (fboundp 'help-insert-xref-button))
+             (goto-char (point-min))
+             (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
+             (insert "           ")
+             (help-insert-xref-button "[Doc on the Web]" 'bmkp-help-button)
+             (insert "           ")
+             (help-insert-xref-button "[Customize]" 'bmkp-customize-button)
+             (insert "\n\n")
+             (goto-char (point-max))
+             (insert (substitute-command-keys
+                      "\nSend a Bookmark+ bug report: `\\[bmkp-send-bug-report]'.\n\n"))
+             (help-insert-xref-button "[Doc in Commentary]" 'bmkp-commentary-button)
+             (insert "           ")
+             (help-insert-xref-button "[Doc on the Web]" 'bmkp-help-button)
+             (insert "           ")
+             (help-insert-xref-button "[Customize]" 'bmkp-customize-button)
+             (insert "\n\n")
+             (goto-char (point-min))
+             (forward-line 2))
+           (goto-char top)
+           (insert (format
+                    "\n\nCurrent Status\n--------------\n
 Bookmark file:\t%s\nSorted:\t\t\t%s\nFiltering:\t\t%s\nMarked:\t\t\t%d\nOmitted:\t\t%d\n\
 Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
-                   bmkp-current-bookmark-file
-                   (if (not bmkp-sort-comparer)
-                       "no"
-                     (format "%s%s" (or (bmkp-current-sort-order)  "")
-                             ;; Code essentially the same as found in `bmkp-msg-about-sort-order'.
-                             (if (not (and (consp bmkp-sort-comparer) ; Ordinary single predicate
-                                           (consp (car bmkp-sort-comparer))))
-                                 (if bmkp-reverse-sort-p "; reversed" "")
-                               (if (not (cadr (car bmkp-sort-comparer)))
-                                   ;; Single PRED.
-                                   (if (or (and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
-                                           (and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p)))
-                                       "; reversed"
-                                     "")
-                                 ;; In case we want to distinguish:
-                                 ;; (if (and bmkp-reverse-sort-p
-                                 ;;          (not bmkp-reverse-multi-sort-p))
-                                 ;;     "; reversed"
-                                 ;;   (if (and bmkp-reverse-multi-sort-p
-                                 ;;            (not bmkp-reverse-sort-p))
-                                 ;;       "; reversed +"
-                                 ;;     ""))
+                    bmkp-current-bookmark-file
+                    (if (not bmkp-sort-comparer)
+                        "no"
+                      (format "%s%s" (or (bmkp-current-sort-order)  "")
+                              ;; Code essentially the same as found in `bmkp-msg-about-sort-order'.
+                              (if (not (and (consp bmkp-sort-comparer) ; Ordinary single predicate
+                                            (consp (car bmkp-sort-comparer))))
+                                  (if bmkp-reverse-sort-p "; reversed" "")
+                                (if (not (cadr (car bmkp-sort-comparer)))
+                                    ;; Single PRED.
+                                    (if (or (and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
+                                            (and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p)))
+                                        "; reversed"
+                                      "")
+                                  ;; In case we want to distinguish:
+                                  ;; (if (and bmkp-reverse-sort-p
+                                  ;;          (not bmkp-reverse-multi-sort-p))
+                                  ;;     "; reversed"
+                                  ;;   (if (and bmkp-reverse-multi-sort-p
+                                  ;;            (not bmkp-reverse-sort-p))
+                                  ;;       "; reversed +"
+                                  ;;     ""))
 
-                                 ;; At least two PREDs.
-                                 (cond ((and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
-                                        "; reversed")
-                                       ((and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p))
-                                        "; each predicate group reversed")
-                                       ((and bmkp-reverse-multi-sort-p  bmkp-reverse-sort-p)
-                                        "; order of predicate groups reversed")
-                                       (t ""))))))
-                   (or (and bmkp-bmenu-filter-function  (downcase bmkp-bmenu-title))  "none")
-                   (length bmkp-bmenu-marked-bookmarks)
-                   (length bmkp-bmenu-omitted-bookmarks)
-                   (if bookmark-save-flag "yes" "no")
-                   (if bmkp-bmenu-state-file "yes" "no")))
+                                  ;; At least two PREDs.
+                                  (cond ((and bmkp-reverse-sort-p  (not bmkp-reverse-multi-sort-p))
+                                         "; reversed")
+                                        ((and bmkp-reverse-multi-sort-p  (not bmkp-reverse-sort-p))
+                                         "; each predicate group reversed")
+                                        ((and bmkp-reverse-multi-sort-p  bmkp-reverse-sort-p)
+                                         "; order of predicate groups reversed")
+                                        (t ""))))))
+                    (or (and bmkp-bmenu-filter-function  (downcase bmkp-bmenu-title))  "none")
+                    (length bmkp-bmenu-marked-bookmarks)
+                    (length bmkp-bmenu-omitted-bookmarks)
+                    (if bookmark-save-flag "yes" "no")
+                    (if bmkp-bmenu-state-file "yes" "no")))
 
-          ;; Add markings legend.
-          (let ((mm   "  >")
-                (DD   "  D")
-                (tt   "  t")
-                (aa   "  a")
-                (XX   "  X")
-                (mod  "  *"))
-            (put-text-property 2 3 'face 'bmkp->-mark mm)
-            (put-text-property 2 3 'face 'bmkp-D-mark DD)
-            (put-text-property 2 3 'face 'bmkp-t-mark tt)
-            (put-text-property 2 3 'face 'bmkp-a-mark aa)
-            (put-text-property 2 3 'face 'bmkp-X-mark XX)
-            (put-text-property 2 3 'face 'bmkp-*-mark mod)
-            (insert "Legend for Markings\n-------------------\n\n")
-            (insert (concat mm  "  marked\n"))
-            (insert (concat DD  "  flagged for deletion                     (`x' to delete all such)\n"))
-            (insert (concat tt  "  tagged                                   (`C-h C-RET' to see)\n"))
-            (insert (concat aa  "  annotated                                (`C-h C-RET' to see)\n"))
-            (insert (concat mod "  modified (not saved)\n"))
-            (insert (concat XX  "  temporary (will not be saved)\n"))
-            (insert "\n\n"))
+           ;; Add markings legend.
+           (let ((mm   "  >")
+                 (DD   "  D")
+                 (tt   "  t")
+                 (aa   "  a")
+                 (XX   "  X")
+                 (mod  "  *"))
+             (put-text-property 2 3 'face 'bmkp->-mark mm)
+             (put-text-property 2 3 'face 'bmkp-D-mark DD)
+             (put-text-property 2 3 'face 'bmkp-t-mark tt)
+             (put-text-property 2 3 'face 'bmkp-a-mark aa)
+             (put-text-property 2 3 'face 'bmkp-X-mark XX)
+             (put-text-property 2 3 'face 'bmkp-*-mark mod)
+             (insert "Legend for Markings\n-------------------\n\n")
+             (insert (concat mm  "  marked\n"))
+             (insert (concat DD  "  flagged for deletion                     (`x' to delete all such)\n"))
+             (insert (concat tt  "  tagged                                   (`C-h C-RET' to see)\n"))
+             (insert (concat aa  "  annotated                                (`C-h C-RET' to see)\n"))
+             (insert (concat mod "  modified (not saved)\n"))
+             (insert (concat XX  "  temporary (will not be saved)\n"))
+             (insert "\n\n"))
 
-          ;; Add face legend.
-          (let ((gnus             "Gnus\n")
-                (no-jump          "Bookmarks you cannot jump to from `*Bookmark List*'\n")
-                (info             "Info node\n")
-                (man              "Man page\n")
-                (url              "URL\n")
-                (local-no-region  "Local file with no region\n")
-                (local-w-region   "Local file with a region\n")
-                (no-file          "No such local file\n")
-                (buffer           "Buffer\n")
-                (no-buf           "No such buffer now\n")
-                (bad              "Possibly invalid bookmark\n")
-                (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
-                (sudo             "Remote accessed by `su' or `sudo'\n")
-                (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
-                (file-handler     "Bookmark with entry `file-handler'\n")
-                (bookmark-list    "*Bookmark List*\n")
-                (bookmark-file    "Bookmark file\n")
-                (snippet          "Snippet\n")
-                (desktop          "Desktop\n")
-                (sequence         "Sequence\n")
-                (variable-list    "Variable list\n")
-                (function         "Function\n"))
-            (put-text-property 0 (1- (length gnus))          'face 'bmkp-gnus         gnus)
-            (put-text-property 0 (1- (length info))          'face 'bmkp-info         info)
-            (put-text-property 0 (1- (length man))           'face 'bmkp-man          man)
-            (put-text-property 0 (1- (length url))           'face 'bmkp-url          url)
-            (put-text-property 0 (1- (length local-no-region))
-                               'face 'bmkp-local-file-without-region                  local-no-region)
-            (put-text-property 0 (1- (length local-w-region))
-                               'face 'bmkp-local-file-with-region                     local-w-region)
-            (put-text-property 0 (1- (length no-file))       'face 'bmkp-no-local     no-file)
-            (put-text-property 0 (1- (length buffer))        'face 'bmkp-buffer       buffer)
-            (put-text-property 0 (1- (length no-buf))        'face 'bmkp-non-file     no-buf)
-            (put-text-property 0 (1- (length remote))        'face 'bmkp-remote-file  remote)
-            (put-text-property 0 (1- (length sudo))          'face 'bmkp-su-or-sudo   sudo)
-            (put-text-property 0 (1- (length local-dir))
-                               'face 'bmkp-local-directory                            local-dir)
-            (put-text-property 0 (1- (length file-handler))  'face 'bmkp-file-handler file-handler)
-            (put-text-property 0 (1- (length bookmark-list))
-                               'face 'bmkp-bookmark-list                               bookmark-list)
-            (put-text-property 0 (1- (length bookmark-file))
-                               'face 'bmkp-bookmark-file                               bookmark-file)
-            (put-text-property 0 (1- (length snippet))       'face 'bmkp-snippet       snippet)
-            (put-text-property 0 (1- (length desktop))       'face 'bmkp-desktop       desktop)
-            (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence      sequence)
-            (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
-            (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
-            (put-text-property 0 (1- (length no-jump))       'face 'bmkp-no-jump       no-jump)
-            (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark  bad)
-            (insert "Legend for Bookmark Types\n-------------------------\n\n")
-            (when (and (fboundp 'display-images-p)  (display-images-p)
-                       bmkp-bmenu-image-bookmark-icon-file
-                       (file-readable-p bmkp-bmenu-image-bookmark-icon-file))
-              (let ((image  (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95)))
-                (when image (insert "  ")  (insert-image image)  (insert " Image file\n"))))
-            (insert "  " gnus) (insert "  " info) (insert "  " man) (insert "  " url)
-            (insert "  " local-no-region) (insert "  " local-w-region) (insert "  " no-file)
-            (insert "  " buffer) (insert "  " no-buf) (insert "  " remote) (insert "  " sudo)
-            (insert "  " local-dir) (insert "  " file-handler) (insert "  " bookmark-list)
-            (insert "  " bookmark-file) (insert "  " snippet) (insert "  " desktop)
-            (insert "  " sequence) (insert "  " variable-list) (insert "  " function)
-            (insert "  " no-jump) (insert "  " bad)
-            (insert "\n\nKeys without prefix `C-x' are available only here (`*Bookmark List*').\n")
-            (insert "Keys with prefix `C-x' are available everywhere.\n\n")
-            (insert "Remember that you can see all bindings for a prefix key by hitting it,\n")
-            (insert "then `C-h'.  E.g., `s C-h' to see keys with prefix `s' (sorting).")))))))
+           ;; Add face legend.
+           (let ((gnus             "Gnus\n")
+                 (no-jump          "Bookmarks you cannot jump to from `*Bookmark List*'\n")
+                 (info             "Info node\n")
+                 (man              "Man page\n")
+                 (url              "URL\n")
+                 (local-no-region  "Local file with no region\n")
+                 (local-w-region   "Local file with a region\n")
+                 (no-file          "No such local file\n")
+                 (buffer           "Buffer\n")
+                 (no-buf           "No such buffer now\n")
+                 (bad              "Possibly invalid bookmark\n")
+                 (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
+                 (sudo             "Remote accessed by `su' or `sudo'\n")
+                 (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
+                 (file-handler     "Bookmark with entry `file-handler'\n")
+                 (bookmark-list    "*Bookmark List*\n")
+                 (bookmark-file    "Bookmark file\n")
+                 (snippet          "Snippet\n")
+                 (desktop          "Desktop\n")
+                 (sequence         "Sequence\n")
+                 (variable-list    "Variable list\n")
+                 (function         "Function\n"))
+             (put-text-property 0 (1- (length gnus))          'face 'bmkp-gnus         gnus)
+             (put-text-property 0 (1- (length info))          'face 'bmkp-info         info)
+             (put-text-property 0 (1- (length man))           'face 'bmkp-man          man)
+             (put-text-property 0 (1- (length url))           'face 'bmkp-url          url)
+             (put-text-property 0 (1- (length local-no-region))
+                                'face 'bmkp-local-file-without-region                  local-no-region)
+             (put-text-property 0 (1- (length local-w-region))
+                                'face 'bmkp-local-file-with-region                     local-w-region)
+             (put-text-property 0 (1- (length no-file))       'face 'bmkp-no-local     no-file)
+             (put-text-property 0 (1- (length buffer))        'face 'bmkp-buffer       buffer)
+             (put-text-property 0 (1- (length no-buf))        'face 'bmkp-non-file     no-buf)
+             (put-text-property 0 (1- (length remote))        'face 'bmkp-remote-file  remote)
+             (put-text-property 0 (1- (length sudo))          'face 'bmkp-su-or-sudo   sudo)
+             (put-text-property 0 (1- (length local-dir))
+                                'face 'bmkp-local-directory                            local-dir)
+             (put-text-property 0 (1- (length file-handler))  'face 'bmkp-file-handler file-handler)
+             (put-text-property 0 (1- (length bookmark-list))
+                                'face 'bmkp-bookmark-list                               bookmark-list)
+             (put-text-property 0 (1- (length bookmark-file))
+                                'face 'bmkp-bookmark-file                               bookmark-file)
+             (put-text-property 0 (1- (length snippet))       'face 'bmkp-snippet       snippet)
+             (put-text-property 0 (1- (length desktop))       'face 'bmkp-desktop       desktop)
+             (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence      sequence)
+             (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
+             (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
+             (put-text-property 0 (1- (length no-jump))       'face 'bmkp-no-jump       no-jump)
+             (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark  bad)
+             (insert "Legend for Bookmark Types\n-------------------------\n\n")
+             (when (and (fboundp 'display-images-p)  (display-images-p)
+                        bmkp-bmenu-image-bookmark-icon-file
+                        (file-readable-p bmkp-bmenu-image-bookmark-icon-file))
+               (let ((image  (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95)))
+                 (when image (insert "  ")  (insert-image image)  (insert " Image file\n"))))
+             (insert "  " gnus) (insert "  " info) (insert "  " man) (insert "  " url)
+             (insert "  " local-no-region) (insert "  " local-w-region) (insert "  " no-file)
+             (insert "  " buffer) (insert "  " no-buf) (insert "  " remote) (insert "  " sudo)
+             (insert "  " local-dir) (insert "  " file-handler) (insert "  " bookmark-list)
+             (insert "  " bookmark-file) (insert "  " snippet) (insert "  " desktop)
+             (insert "  " sequence) (insert "  " variable-list) (insert "  " function)
+             (insert "  " no-jump) (insert "  " bad)
+             (insert "\n\nKeys without prefix `C-x' are available only here (`*Bookmark List*').\n")
+             (insert "Keys with prefix `C-x' are available everywhere.\n\n")
+             (insert "Remember that you can see all bindings for a prefix key by hitting it,\n")
+             (insert "then `C-h'.  E.g., `s C-h' to see keys with prefix `s' (sorting)."))))))))
+
 
 (when (and (> emacs-major-version 21)
            (condition-case nil (require 'help-mode nil t) (error nil))
