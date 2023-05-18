@@ -14,6 +14,10 @@ Gnus is able to read RSS feeds natively.  See [[GnusRss]].
 
 [[Elfeed]] is a traditional feed reader for Emacs.  It is available in MELPA.
 
+== Reading RSS using NewsTicker ==
+
+[[NewsTicker]] is a feed reader that comes packaged with Emacs since version 22.
+
 == Gatewaying RSS to e-mail ==
 
 If your inbox is not full enough, you can gateway RSS to e-mail using rss2email.  See [[HOWTOReadFeedsInEmacsViaEmail]].
