@@ -615,6 +615,74 @@ If you now want to have a package installed from source, you just need to wrap t
   ...)
 }}}
 
+=== Using Elpaca ===
+[https://github.com/progfolio/elpaca Elpaca] is an elisp package manager. It is a replacement for the built-in Emacs package manager, package.el. We can extend SetupEl's functionality using <code>setup-modifier-list</code> and wrap SetupEl bodies in an Elpaca call, this requires installing and processing the package first:
+*Note*: Initial startup will give the error <code>Symbol's value as variable is void: setup-modifier-list</code> as Elpaca doesnt have a way of doing a blocking install.
+{{{
+;; <elpaca bootstrap goes here>
+(elpaca setup (require 'setup))
+(elpaca-process-queues)
+}}}
+
+Then we can set up the wrapping functionality:
+{{{
+(defun setup-wrap-to-install-package (body _name)
+"Wrap BODY in an `elpaca' block if necessary.
+The body is wrapped in an `elpaca' block if `setup-attributes'
+contains an alist with the key `elpaca'."
+(if (assq 'elpaca setup-attributes)
+    `(elpaca ,(cdr (assq 'elpaca setup-attributes)) ,@(macroexp-unprogn body))
+  body))
+;; Add the wrapper function
+(add-to-list 'setup-modifier-list #'setup-wrap-to-install-package)
+(setup-define :elpaca
+  (lambda (order &rest recipe)
+    (push (cond
+	   ((eq order t) `(elpaca . ,(setup-get 'feature)))
+	   ((eq order nil) '(elpaca . nil))
+	   (`(elpaca . (,order ,@recipe))))
+	  setup-attributes)
+    ;; If the macro wouldn't return nil, it would try to insert the result of
+    ;; `push' which is the new value of the modified list. As this value usually
+    ;; cannot be evaluated, it is better to return nil which the byte compiler
+    ;; would optimize away anyway.
+    nil)
+  :documentation "Install ORDER with `elpaca'.
+The ORDER can be used to deduce the feature context."
+  :shorthand #'cadr)
+}}}
+
+Now we can install packages. Using shorthand functionality to determain package name:
+{{{
+(setup (:elpaca avy)
+  (the rest of the body))
+}}}
+
+Full Elpaca "orders" are supported, with shorthand:
+{{{
+(setup (:elpaca avy :host github :repo "abo-abo/avy")
+  (the rest of the body))
+}}}
+
+Use feature context as the package name to install:
+{{{
+(setup avy
+  (:elpaca t)
+  (the rest of the body))
+}}}
+
+Don't install anything, but account for asynchronous installation:
+{{{
+(setup avy
+  (:elpaca nil)
+  (the rest of the body))
+}}}
+See [https://github.com/progfolio/elpaca#installing-packages elpaca#installing-packages] for an explanation on a <code>nil</code> "order".
+
+[new:PhilipKaludercic:2023-05-18 15:25 UTC]
+
+This section was [https://www.emacswiki.org/emacs?action=browse&diff=1&id=SetupEl&Compare=Compare&revision=57&diffrevision=56 removed] by the author of Elpaca, but added back again for the sake of completness. Note that it might not work, but it could serve as a foundation for something that does.
+
 == Transforming Configuration Errors Into Warnings ==
 
 This code transforms errors in the expanded code into warnings, letting the rest of your config file run.
