@@ -46,6 +46,8 @@ any PDA supported by pilot-link.
 
 * [[LinkdMode|LinkD]] lets you create links within and among Emacs buffers and files.
 
+* [https://xwmx.github.io/nb/ nb] -- command line and local web note‑taking, bookmarking, archiving, and knowledge base tool that is also compatible with OrgMode files and can also be used in conjunction with  HowmMode or OrgJournal.  
+
 * OrganizerMode generates and uses pages with linked information from
 todo mode, bbdb, diary, gnus, vm, etc.. as well as a related organizer
 file (similar to a todo file).  Provides commands to link entries to
@@ -55,6 +57,8 @@ performed on upon organizer page entries.  Note that OrganizerMode is not being
 maintained anymore.
 
 * OrgMode is a organizer based on OutlineMode.
+
+* [https://github.com/rtrppl/orgrr Org-roam-ripgrep] -- compatible with org-roam notes, but uses ripgrep instead of a database. 
 
 * [https://www.orgroam.com/ org-roam] -- a package that empowers plain text based personal knowledge management. Based off Roam Research and leverages OrgMode. As of today this probably has the largest community of users and features.
 
