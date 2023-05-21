@@ -34,6 +34,8 @@ summarizing, and generally playing with, a set of records.  You can view each
 record individually or summarized (with other records) in separate buffer.
 Record format (field names and their types) can be arbitrarily complex.
 
+* [https://github.com/ahyatt/ekg ekg] -- emacs knowledge graph is a note taking package that competes with tools like [https://www.orgroam.com/ org-roam] and Denote. Notes are stored in a SQLite database.
+
 * EmacsPilot allows synchronization of the BBDB database and the Emacs diary with 
 any PDA supported by pilot-link.
 
