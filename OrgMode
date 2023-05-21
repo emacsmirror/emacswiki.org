@@ -54,6 +54,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * John Wiegley wrote about -- [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ Using Org mode as a day planner] 
 * Peter Prevos wrote about -- [https://lucidmanager.org/productivity/taking-notes-with-emacs-org-mode-and-org-roam/ Taking notes with org-mode and org-roam]
 * Phil Newton wrote about -- [https://www.philnewton.net/blog/how-i-get-work-done-with-emacs/ How I get work done with Emacs] including OrgMode and [[Projectile]]
+* The r/emacs and r/org-mode reddit channels are also worth searching through for OrgMode related resources since many announcements take place there: https://www.reddit.com/r/emacs/search/?q=org-mode
 
 [:publish]
 == Publishing ==
