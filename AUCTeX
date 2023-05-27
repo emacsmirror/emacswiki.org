@@ -583,6 +583,71 @@ Unfortunately, configuration can be tricky to get right, mainly because there ar
 
 When correctly configured, you can perform a forward search (from within Emacs) by using AUCTeX's built-in View command: C-c C-v. To perform inverse search (from within Sumatra PDF), simply double-click the area of text. This also works with multi-file LaTeX projects.
 
+* Following is a working setup between WSLg emacs and Miktex under ubuntu with SumatraPDF. For basic setup A) and B), you don't need any other program. 
+
+A) For forward search, put following in your init.el (note the location of SumatraPDF):
+   
+     (eval-after-load "tex"
+       '(progn
+          (add-to-list 'TeX-expand-list '("%(sumatra)" (lambda () "/mnt/c/prog/SumatraPDF/SumatraPDF.exe")))
+          ;; Miktex outputs absolute path, change to relative path
+          (defun yxz11-synctex-absolute-to-relative (&optional file)
+            (interactive)
+            (or file (setq file (buffer-file-name)))
+            (setq yxz11-file-name-directory (file-name-directory file))
+            (cond
+             ((file-exists-p (concat (file-name-sans-extension file) ".synctex.gz"))
+              (setq yxz11-synctex-file-name (concat (file-name-sans-extension file) ".synctex.gz")))
+             ((file-exists-p (concat (file-name-sans-extension file) ".synctex"))
+              (setq yxz11-synctex-file-name (concat (file-name-sans-extension file) ".synctex")))
+             (t (setq yxz11-synctex-file-name nil))
+             )
+            (if yxz11-synctex-file-name
+                (with-temp-file yxz11-synctex-file-name
+                  (insert-file-contents yxz11-synctex-file-name)
+                  (goto-char (point-min))
+                  (while (search-forward yxz11-file-name-directory nil t)
+                    (replace-match "./")))))
+          (add-hook 'TeX-after-compilation-finished-functions
+                    #'yxz11-synctex-absolute-to-relative)
+          (setq TeX-view-program-list
+                '(("Sumatra-viewer" ("%(sumatra) -reuse-instance -forward-search \'%b\' %n \'%o\'"))))
+          (setq TeX-view-program-selection '(
+                                             (output-pdf "Sumatra-viewer")
+                                             (output-dvi "open")
+                                             (output-html "open")))))
+
+B) For inverse search, use SumatraPDF's option:
+      
+    ubuntu.exe run /path/to/emacsclient -n +%l \"$(wslpath '%f')\"
+
+After above two steps, the search should work. For my setup, I do see the black command window and emacs does not get focus.
+
+C) To get rid of the black command window, install nircmd [https://www.nirsoft.net/utils/nircmd.html] and change SumatraPDF's option to (note the location of nircmd):
+
+    c:\prog\bin\nircmd.exe exec hide ubuntu.exe run /path/to/emacsclient -n +%l \"$(wslpath '%f')\"
+
+D) To bring emacs to the front and get focus, install AutoHotkey [https://www.autohotkey.com/] and make an ahk file c:\prog\bin\bringEmacsFront.ahk as:
+
+   SetTitleMatchMode RegEx
+   if WinExist("Emacs.+\(Ubuntu\)")
+     WinActivate;
+   exit
+
+and a batch file c:\prog\bin\ecw.bat as:
+
+   @echo OFF
+   ubuntu.exe run /path/to/emacsclient -n %*
+   start c:/prog/bin/bringEmacsFront.ahk
+
+Change SumatraPDF's option to:
+
+   c:\prog\bin\nircmd.exe exec hide c:\prog\bin\ecw.bat +%l \"$(wslpath '%f')\" 
+
+You only need above step A) and D) to make everthing work. B) and C) are for the case that you don't want to install AutoHotKey or nircmd. Above D) is useful if you want to bring WSLg emacs to the front using emacsclient.
+
+-- YZ
+
 == Synctex and Okular ==
 The default PDF Viewer of KDE, Okular, can also be configured with Synctex in both directions (when you click on Shift + Left mouse button you go to the good line in the tex file, and when you do C-c C-c => View you open (or update) the pdf document at the good line).
 
