@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 11 10:49:43 2022 (-0800)
+;; Last-Updated: Sun May 28 19:39:43 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 7525
+;;     Update #: 7532
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -640,6 +640,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/05/28 dadams
+;;     Added redefinition of Info-menu-update.
 ;; 2022/11/11 dadams
 ;;     Added back removed editing feature from vanilla Emacs 26.3 (but leave it disabled):
 ;;       Info-edit-mode, Info-edit, Info-cease-edit, Info-edit-mode-hook, Info-edit-mode-map.
@@ -4601,6 +4603,60 @@ If `Info-breadcrumbs-in-mode-line-mode' is non-nil, insert breadcrumbs."
 ;;;           ;; Otherwise use Info-read-node-completion-table - e.g. Mac OS
 ;;;           (t (complete-with-action code Info-read-node-completion-table string predicate))))
 
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Menus `Menu Item' and `References' are in submenu `Info' > `Navigation', not in main menu `Info'.
+;;
+(defun Info-menu-update ()
+  "Update the Info menu for the current node."
+  (condition-case nil
+      (if (or (not (derived-mode-p 'Info-mode))
+              (equal (list Info-current-file Info-current-node)
+                     Info-menu-last-node))
+          ()
+        ;; Update `Menu Item' menu.
+        (let* ((Info-complete-menu-buffer  (current-buffer))
+               (items                      (nreverse (condition-case nil
+                                                         (Info-complete-menu-item "" nil t)
+                                                       (error nil))))
+               (number                     0)
+               entries current)
+          (while (and items  (< number 9))
+            (setq current  (car items)
+                  items    (cdr items)
+                  number   (1+ number)
+                  entries  (cons `[,current (Info-menu ,current) :keys ,(format "%d" number)] entries)))
+          (when items (setq entries  (cons ["Other..." Info-menu t] entries)))
+          (unless entries (setq entries  (list ["No menu" nil nil] nil :active)))
+          (easy-menu-change '("Info" "Navigation") "Menu Item" (nreverse entries)))
+        ;; Update `Reference' menu.  Vanilla code taken from `Info-follow-reference'.
+        (let ((items             ())
+              (number            0)
+              (case-fold-search  t)
+              str ii entries current)
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward "\\*note[ \n\t]+\\([^:]*\\):" nil t)
+              (setq str  (match-string 1)
+                    ii   0)
+              (while (setq ii  (string-match "[ \n\t]+" str ii))
+                (setq str  (concat (substring str 0 ii) " " (substring str (match-end 0)))
+                      ii   (1+ ii)))
+              (setq items  (cons str items))))
+          (while (and items  (< number 9))
+            (setq current  (car items)
+                  items    (cdr items)
+                  number   (1+ number)
+                  entries  (cons `[,current (Info-follow-reference ,current) t] entries)))
+          (when items (setq entries  (cons ["Other..." Info-follow-reference t] entries)))
+          (unless entries (setq entries  (list ["No references" nil nil] nil :active)))
+          ;; (easy-menu-change '("Info") "Reference" (nreverse entries)))
+          (easy-menu-change '("Info" "Navigation") "Reference" (nreverse entries)))
+        ;; Update last seen node.
+        (setq Info-menu-last-node  (list Info-current-file Info-current-node)))
+    (error (ding))))
 
 
 ;; REPLACE ORIGINAL in `info.el':
