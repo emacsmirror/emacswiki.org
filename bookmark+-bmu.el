@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed May 17 11:57:11 2023 (-0700)
+;; Last-Updated: Mon May 29 14:30:53 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 4200
+;;     Update #: 4204
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -469,7 +469,8 @@ Elements of ALIST that are not conses are ignored."
 
 ;; Quiet the byte-compiler
 (defvar bookmark-file-coding-system)    ; In `bookmark.el' (Emacs 25.2+)
-(defvar bmkp-bmenu-buffer)              ; In `bookmark+.el'
+(defvar bmkp-auto-light-when-jump)      ; In `bookmark+-lit.el'.
+(defvar bmkp-bmenu-buffer)              ; In `bookmark+.el'.
 (defvar bmkp-bmenu-highlight-menu)      ; Defined in this file (conditionally).
 (defvar bmkp-copied-tags)               ; In `bookmark+-1.el'.
 (defvar bmkp-count-multi-mods-as-one-flag) ; In `bookmark+-1.el'.
@@ -490,6 +491,7 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-sort-orders-alist)         ; Here.
 (defvar bmkp-su-or-sudo-regexp)         ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
+(defvar describe-function-orig-buffer)  ; In `help-fns.el' (Emacs 28+).
 (defvar dired-re-mark)                  ; In `dired.el'.
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'.
 (defvar minibuffer-prompt-properties)   ; Emacs 22+.
