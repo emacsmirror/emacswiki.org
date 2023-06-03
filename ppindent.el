@@ -1,138 +1,83 @@
-;;; ppindent.el --- Indents C preprocessor directives
-
-;; Copyright (C) 2007 Free Software Foundation, Inc.
-
-;; Author: Craig McDaniel <craigmcd@gmail.com>
-;; Keywords: languages, c
-;; Maintainer: Craig McDaniel <craigmcd@gmail.com>
-
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-
-;; This file is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING. If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
-
-;;; Commentary:
-
-;; PPINDENT indents C-preprocessor statements depending on the current
-;; #if..., #el.., #endif level. It only modifies lines with "#" as the
-;; first non-blank character and therefore does not conflict with the
-;; normal C indentation. Unlike a true indent, it inserts the
-;; requisite number of spaces after, rather than before the "#"
-;; character. This type of preprocesor indent is commonly used to
-;; provide the most compatibility with different C-compilers.
-;;
-;; Example:
-
-;;        #ifdef WOO
-;;        ....
-;;        #if defined(X) && !defined(Y)
-;;        #ifdef Q8
-;;        ...
-;;        #else
-;;        ...
-;;        ....
-;;        #elif defined (Z)
-;;        ....
-;;        #endif
-;;        #endif
-;;        #endif
-          
-;; After "M-x ppindent-c" becomes:
-          
-;;        #ifdef WOO
-;;        ....
-;;        #  if defined(X) && !defined(Y)
-;;        #    ifdef Q8
-;;        ...
-;;        #    else
-;;        ...
-;;        ....
-;;        #    elif defined (Z)
-;;        ....
-;;        #    endif
-;;        #  endif
-;;        #endif
-
-;; Two functions are provided: PPINDENT-C indents as described
-;; above. PPINDENT-H does not indent the first level, assuming that
-;; .h/.hpp files use an #ifdef guard around the entire file.
-
-;; You can customize PPINDENT-INCREMENT if you want to use something
-;; other than 2 spaces for the indent.
-
-;;; History:
-
-;; 2007-01-19 WCM Initial version
-
-;;; Code:
-
-(provide 'ppindent)
-
-(defgroup pp-indent nil
-  "Indent C preproccessor directives."
-  :group 'c)
-
-(defcustom ppindent-increment 2
-  "Number of spaces per indention level.
-
-Used in C pre-processor indent functions ppindent-c and ppindent-h"
-  :type 'number
-  :group 'pp-indent)
-
-(defun starts-withp (str prefix)
-  "str starts with prefix"
-  (eql (compare-strings prefix nil nil str nil (length prefix)) t))
-
-(defun my-make-string (length init)
-  "just like make-string, but makes an empty string if length is negative"
-  (when (minusp length)
-    (setf length 0))
-  (make-string length init))
-
-(defun ppindent-aux (start)
-  (let ((cnt start))
-    (goto-char (point-min))
-    (while (re-search-forward "^[ \t]*#[ \t]*\\(.*\\)" nil t)
-      (cond ((starts-withp (match-string-no-properties 1) "if")
-             (replace-match (concat "#" (my-make-string cnt ?\s) "\\1"))
-             (incf cnt ppindent-increment))
-            ((starts-withp (match-string-no-properties 1) "el")
-             (when (< (- cnt ppindent-increment) start)
-               (throw 'err `(,(line-number-at-pos) "Unmatched #else or #elif")))
-             (replace-match (concat "#" (my-make-string
-                                         (- cnt ppindent-increment)
-                                         ?\s) "\\1")))
-            ((starts-withp (match-string-no-properties 1) "endif")
-             (when (< (- cnt ppindent-increment) start)
-               (throw 'err `(,(line-number-at-pos) "Unmatched #endif")))
-             (decf cnt ppindent-increment)
-             (replace-match (concat "#" (my-make-string cnt ?\s) "\\1")))
-            (t
-             (replace-match (concat "#" (my-make-string cnt ?\s) "\\1")))))))
-
-(defun ppindent-buffer (start)
-  (let ((result (catch 'err (save-excursion (ppindent-aux start)))))
-    (when result
-      (goto-line (car result))
-      (error "Error: %s" (cadr result)))))
-
-(defun ppindent-c ()
-  "Indent all C pre-processor statements"
-  (interactive)
-  (ppindent-buffer 0))
-
-(defun ppindent-h ()
-  "Indent C pre-processor statements, keeping first level #ifdef unindented"
-  (interactive)
-  (ppindent-buffer (- ppindent-increment)))
-
+#FILE text/x-emacs-lisp 
+Ozs7IHBwaW5kZW50LmVsIC0tLSBJbmRlbnRzIEMgcHJlcHJvY2Vzc29yIGRpcmVjdGl2ZXMKCjs7
+IENvcHlyaWdodCAoQykgMjAwNywyMDIzIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbiwgSW5jLgoK
+OzsgQXV0aG9yOiBDcmFpZyBNY0RhbmllbCA8Y3JhaWdtY2RAZ21haWwuY29tPgo7OyBLZXl3b3Jk
+czogbGFuZ3VhZ2VzLCBjCjs7IE1haW50YWluZXI6IENyYWlnIE1jRGFuaWVsIDxjcmFpZ21jZEBn
+bWFpbC5jb20+Cgo7OyBUaGlzIGZpbGUgaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3Ry
+aWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo7OyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBH
+ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo7OyB0aGUgRnJlZSBTb2Z0d2Fy
+ZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyLCBvciAoYXQgeW91ciBvcHRpb24pCjs7IGFu
+eSBsYXRlciB2ZXJzaW9uLgoKOzsgVGhpcyBmaWxlIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3Bl
+IHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCjs7IGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0
+aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCjs7IE1FUkNIQU5UQUJJTElUWSBvciBG
+SVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gU2VlIHRoZQo7OyBHTlUgR2VuZXJhbCBQ
+dWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgoKOzsgWW91IHNob3VsZCBoYXZlIHJlY2Vp
+dmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKOzsgYWxvbmcgd2l0
+aCBHTlUgRW1hY3M7IHNlZSB0aGUgZmlsZSBDT1BZSU5HLiBJZiBub3QsIHdyaXRlIHRvCjs7IHRo
+ZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSAtIFN1aXRl
+IDMzMCwKOzsgQm9zdG9uLCBNQSAwMjExMS0xMzA3LCBVU0EuCgo7OzsgQ29tbWVudGFyeToKCjs7
+IFBQSU5ERU5UIGluZGVudHMgQy1wcmVwcm9jZXNzb3Igc3RhdGVtZW50cyBkZXBlbmRpbmcgb24g
+dGhlIGN1cnJlbnQKOzsgI2lmLi4uLCAjZWwuLiwgI2VuZGlmIGxldmVsLiBJdCBvbmx5IG1vZGlm
+aWVzIGxpbmVzIHdpdGggIiMiIGFzIHRoZQo7OyBmaXJzdCBub24tYmxhbmsgY2hhcmFjdGVyIGFu
+ZCB0aGVyZWZvcmUgZG9lcyBub3QgY29uZmxpY3Qgd2l0aCB0aGUKOzsgbm9ybWFsIEMgaW5kZW50
+YXRpb24uIFVubGlrZSBhIHRydWUgaW5kZW50LCBpdCBpbnNlcnRzIHRoZQo7OyByZXF1aXNpdGUg
+bnVtYmVyIG9mIHNwYWNlcyBhZnRlciwgcmF0aGVyIHRoYW4gYmVmb3JlIHRoZSAiIyIKOzsgY2hh
+cmFjdGVyLiBUaGlzIHR5cGUgb2YgcHJlcHJvY2Vzb3IgaW5kZW50IGlzIGNvbW1vbmx5IHVzZWQg
+dG8KOzsgcHJvdmlkZSB0aGUgbW9zdCBjb21wYXRpYmlsaXR5IHdpdGggZGlmZmVyZW50IEMtY29t
+cGlsZXJzLgo7Owo7OyBFeGFtcGxlOgoKOzsgICAgICAgICNpZmRlZiBXT08KOzsgICAgICAgIC4u
+Li4KOzsgICAgICAgICNpZiBkZWZpbmVkKFgpICYmICFkZWZpbmVkKFkpCjs7ICAgICAgICAjaWZk
+ZWYgUTgKOzsgICAgICAgIC4uLgo7OyAgICAgICAgI2Vsc2UKOzsgICAgICAgIC4uLgo7OyAgICAg
+ICAgLi4uLgo7OyAgICAgICAgI2VsaWYgZGVmaW5lZCAoWikKOzsgICAgICAgIC4uLi4KOzsgICAg
+ICAgICNlbmRpZgo7OyAgICAgICAgI2VuZGlmCjs7ICAgICAgICAjZW5kaWYKICAgICAgICAgIAo7
+OyBBZnRlciAiTS14IHBwaW5kZW50LWMiIGJlY29tZXM6CiAgICAgICAgICAKOzsgICAgICAgICNp
+ZmRlZiBXT08KOzsgICAgICAgIC4uLi4KOzsgICAgICAgICMgIGlmIGRlZmluZWQoWCkgJiYgIWRl
+ZmluZWQoWSkKOzsgICAgICAgICMgICAgaWZkZWYgUTgKOzsgICAgICAgIC4uLgo7OyAgICAgICAg
+IyAgICBlbHNlCjs7ICAgICAgICAuLi4KOzsgICAgICAgIC4uLi4KOzsgICAgICAgICMgICAgZWxp
+ZiBkZWZpbmVkIChaKQo7OyAgICAgICAgLi4uLgo7OyAgICAgICAgIyAgICBlbmRpZgo7OyAgICAg
+ICAgIyAgZW5kaWYKOzsgICAgICAgICNlbmRpZgoKOzsgVHdvIGZ1bmN0aW9ucyBhcmUgcHJvdmlk
+ZWQ6IFBQSU5ERU5ULUMgaW5kZW50cyBhcyBkZXNjcmliZWQKOzsgYWJvdmUuIFBQSU5ERU5ULUgg
+ZG9lcyBub3QgaW5kZW50IHRoZSBmaXJzdCBsZXZlbCwgYXNzdW1pbmcgdGhhdAo7OyAuaC8uaHBw
+IGZpbGVzIHVzZSBhbiAjaWZkZWYgZ3VhcmQgYXJvdW5kIHRoZSBlbnRpcmUgZmlsZS4KCjs7IFlv
+dSBjYW4gY3VzdG9taXplIFBQSU5ERU5ULUlOQ1JFTUVOVCBpZiB5b3Ugd2FudCB0byB1c2Ugc29t
+ZXRoaW5nCjs7IG90aGVyIHRoYW4gMiBzcGFjZXMgZm9yIHRoZSBpbmRlbnQuCgo7OzsgSGlzdG9y
+eToKCjs7IDIwMDctMDEtMTkgV0NNIEluaXRpYWwgdmVyc2lvbgo7OyAyMDIzLTA1LTMxIEZpeGVz
+IGZvciBsYXRlciBFbWFjcyB2ZXJzaW9ucwoKOzs7IENvZGU6CgoocmVxdWlyZSAnY2wtbGliKQoK
+KHByb3ZpZGUgJ3BwaW5kZW50KQoKKGRlZmdyb3VwIHBwLWluZGVudCBuaWwKICAiSW5kZW50IEMg
+cHJlcHJvY2Nlc3NvciBkaXJlY3RpdmVzLiIKICA6Z3JvdXAgJ2MpCgooZGVmY3VzdG9tIHBwaW5k
+ZW50LWluY3JlbWVudCAyCiAgIk51bWJlciBvZiBzcGFjZXMgcGVyIGluZGVudGlvbiBsZXZlbC4K
+ClVzZWQgaW4gQyBwcmUtcHJvY2Vzc29yIGluZGVudCBmdW5jdGlvbnMgcHBpbmRlbnQtYyBhbmQg
+cHBpbmRlbnQtaCIKICA6dHlwZSAnbnVtYmVyCiAgOmdyb3VwICdwcC1pbmRlbnQpCgooZGVmdW4g
+c3RhcnRzLXdpdGhwIChzdHIgcHJlZml4KQogICJzdHIgc3RhcnRzIHdpdGggcHJlZml4IgogIChl
+cWwgKGNvbXBhcmUtc3RyaW5ncyBwcmVmaXggbmlsIG5pbCBzdHIgbmlsIChsZW5ndGggcHJlZml4
+KSkgdCkpCgooZGVmdW4gbXktbWFrZS1zdHJpbmcgKGxlbmd0aCBpbml0KQogICJqdXN0IGxpa2Ug
+bWFrZS1zdHJpbmcsIGJ1dCBtYWtlcyBhbiBlbXB0eSBzdHJpbmcgaWYgbGVuZ3RoIGlzIG5lZ2F0
+aXZlIgogICh3aGVuIChjbC1taW51c3AgbGVuZ3RoKQogICAgKHNldGYgbGVuZ3RoIDApKQogICht
+YWtlLXN0cmluZyBsZW5ndGggaW5pdCkpCgooZGVmdW4gcHBpbmRlbnQtYXV4IChzdGFydCkKICAo
+bGV0ICgoY250IHN0YXJ0KSkKICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAod2hpbGUg
+KHJlLXNlYXJjaC1mb3J3YXJkICJeWyBcdF0qI1sgXHRdKlxcKC4qXFwpIiBuaWwgdCkKICAgICAg
+KGNvbmQgKChzdGFydHMtd2l0aHAgKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDEpICJpZiIp
+CiAgICAgICAgICAgICAocmVwbGFjZS1tYXRjaCAoY29uY2F0ICIjIiAobXktbWFrZS1zdHJpbmcg
+Y250ID9ccykgIlxcMSIpKQogICAgICAgICAgICAgKGNsLWluY2YgY250IHBwaW5kZW50LWluY3Jl
+bWVudCkpCiAgICAgICAgICAgICgoc3RhcnRzLXdpdGhwIChtYXRjaC1zdHJpbmctbm8tcHJvcGVy
+dGllcyAxKSAiZWwiKQogICAgICAgICAgICAgKHdoZW4gKDwgKC0gY250IHBwaW5kZW50LWluY3Jl
+bWVudCkgc3RhcnQpCiAgICAgICAgICAgICAgICh0aHJvdyAnZXJyIGAoLChsaW5lLW51bWJlci1h
+dC1wb3MpICJVbm1hdGNoZWQgI2Vsc2Ugb3IgI2VsaWYiKSkpCiAgICAgICAgICAgICAocmVwbGFj
+ZS1tYXRjaCAoY29uY2F0ICIjIiAobXktbWFrZS1zdHJpbmcKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAoLSBjbnQgcHBpbmRlbnQtaW5jcmVtZW50KQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID9ccykgIlxcMSIpKSkKICAgICAgICAgICAg
+KChzdGFydHMtd2l0aHAgKG1hdGNoLXN0cmluZy1uby1wcm9wZXJ0aWVzIDEpICJlbmRpZiIpCiAg
+ICAgICAgICAgICAod2hlbiAoPCAoLSBjbnQgcHBpbmRlbnQtaW5jcmVtZW50KSBzdGFydCkKICAg
+ICAgICAgICAgICAgKHRocm93ICdlcnIgYCgsKGxpbmUtbnVtYmVyLWF0LXBvcykgIlVubWF0Y2hl
+ZCAjZW5kaWYiKSkpCiAgICAgICAgICAgICAoY2wtZGVjZiBjbnQgcHBpbmRlbnQtaW5jcmVtZW50
+KQogICAgICAgICAgICAgKHJlcGxhY2UtbWF0Y2ggKGNvbmNhdCAiIyIgKG15LW1ha2Utc3RyaW5n
+IGNudCA/XHMpICJcXDEiKSkpCiAgICAgICAgICAgICh0CiAgICAgICAgICAgICAocmVwbGFjZS1t
+YXRjaCAoY29uY2F0ICIjIiAobXktbWFrZS1zdHJpbmcgY250ID9ccykgIlxcMSIpKSkpKSkpCgoo
+ZGVmdW4gcHBpbmRlbnQtYnVmZmVyIChzdGFydCkKICAobGV0ICgocmVzdWx0IChjYXRjaCAnZXJy
+IChzYXZlLWV4Y3Vyc2lvbiAocHBpbmRlbnQtYXV4IHN0YXJ0KSkpKSkKICAgICh3aGVuIHJlc3Vs
+dAogICAgICAoZ290by1jaGFyIChwb2ludC1taW4pKQogICAgICAoZm9yd2FyZC1saW5lICgxLSAo
+Y2FyIHJlc3VsdCkpKQogICAgICAoZXJyb3IgIkVycm9yOiAlcyIgKGNhZHIgcmVzdWx0KSkpKSkK
+CihkZWZ1biBwcGluZGVudC1jICgpCiAgIkluZGVudCBhbGwgQyBwcmUtcHJvY2Vzc29yIHN0YXRl
+bWVudHMiCiAgKGludGVyYWN0aXZlKQogIChwcGluZGVudC1idWZmZXIgMCkpCgooZGVmdW4gcHBp
+bmRlbnQtaCAoKQogICJJbmRlbnQgQyBwcmUtcHJvY2Vzc29yIHN0YXRlbWVudHMsIGtlZXBpbmcg
+Zmlyc3QgbGV2ZWwgI2lmZGVmIHVuaW5kZW50ZWQiCiAgKGludGVyYWN0aXZlKQogIChwcGluZGVu
+dC1idWZmZXIgKC0gcHBpbmRlbnQtaW5jcmVtZW50KSkpCgo=
