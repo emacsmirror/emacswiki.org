@@ -1,6 +1,21 @@
 == Emacs and transparency ==
 
-On the following platforms,
+From the online help in Emacs 29:
+
+> New frame parameter 'alpha-background' and X resource "alphaBackground".
+
+> This controls the opacity of the text background when running on a
+composited display. 
+
+To use this add the following sort of expressions to your emacs config file:
+
+>     (set-frame-parameter nil 'alpha-background 70)
+
+>     (add-to-list 'default-frame-alist '(alpha-background . 70))
+
+For Wayland desktop environments (as opposed to X) you need a PGTK (Pure GTK) build of Emacs for this to work.
+
+Before 29, on the following platforms:
 
 * Emacs 23+
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
