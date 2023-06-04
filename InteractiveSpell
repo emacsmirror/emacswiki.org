@@ -1,4 +1,4 @@
-Emacs' built-in ispell package handles spell-checking and correction, while [[Fly Spell|flyspell]] provides on-the-fly checking and highlighting of misspellings.
+Emacs' built-in ispell package handles spell-checking and correction, while [[FlySpell|flyspell]] provides on-the-fly checking and highlighting of misspellings.
 
 == Spell-checker configuration ==
 
