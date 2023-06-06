@@ -49,4 +49,6 @@ The specific file to be profiled (i.e. ~/.emacs) is hardcoded within profile-dot
 
 ==Download ==
 
+You should probably set `profile-dotemacs-file` to "~/.emacs.d/init.el", depending on you actual InitFile.
+
 [[profile-dotemacs.el]]
