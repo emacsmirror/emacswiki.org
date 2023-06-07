@@ -6,30 +6,24 @@ MS-Windows to choose from, see [[CategoryWThirtyTwo#toc1]].
 There are two general flavours: native Windows and Cygwin builds.  The latter have drawbacks as detailed [[#below]],
 so the guidelines here are only about the native Windows builds.
 
-The latest stable version is 27.1.  There are also *snapshot* versions, which are builds of the code currently under development (i.e., having newer features, and possibly more bugs).
-The current development version is 28.0.50 (snapshot versions always have a large 3rd number).
-
 ==Guidelines for installing Emacs on MS Windows==
 
 To install the *official stable binaries*:
 
-: Visit https://ftp.gnu.org/gnu/emacs/windows/emacs-27/ (or https://ftpmirror.gnu.org/emacs/windows/emacs-27/ to use a nearby [https://www.gnu.org/prep/ftp mirror]).
-  Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed (currently
-  ##emacs-27.2-x86_64.zip## and ##emacs-27.2-i686.zip##, respectively). You might also want to read the [https://ftp.gnu.org/gnu/emacs/windows/README README] file at the same site (not the one inside
-  the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
-  (faster) and extract all the files into a directory of your choice
-  (e.g. ##c:\packages\emacs-27.2##).
+* Visit https://ftpmirror.gnu.org/emacs/windows/ 
+* Consider reading the README
+* Find the highest Emacs version directory
+* Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed
+* Open it using Explorer (slow) or 7zip (faster) and extract all the files into a directory of your choice
 
-:: *Note*: The 27.2 pre-packaged binaries kindly provided by the maintainers at the GNU ftp site above and dated 2021-03-31, come with an older GnuTLS library version with a known problem that could wrongly refuse connections to sites, such as MELPA, with a "certificate has expired" error. See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51038 for a discussion. 
-
+*Note*: The 27.2 pre-packaged binaries come with an older GnuTLS library version with a known problem that could wrongly refuse connections to sites, such as MELPA, with a "certificate has expired" error. See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51038 for a discussion. 
 
 To install the *official snapshot binaries*:
 
-: Visit https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-28/.
-  Download the installer.exe with the latest date (again with x86_64 and i686 indicating 64 bit or 32 bit, respectively). 
-  As of this writing, those are ##emacs-28.0.50-snapshot-2020-07-05-x86_64-installer.exe## and ##emacs-28.0.50-snapshot-2020-07-05-i686-installer.exe##.
-  Run the executable to extract the Emacs installation into the directory of your choice.
-  Alternatively, you can download snapshots in zip format, like for the stable release.
+* Visit https://alpha.gnu.org/gnu/emacs/pretest/windows/
+* Download the installer.exe with the latest date (again with x86_64 and i686 indicating 64 bit or 32 bit, respectively)
+* Run the executable to extract the Emacs installation into the directory of your choice.
+* Alternatively, you can download snapshots in zip format, like for the stable release.
 
 If installing the *snapshot* "emax64" version from !SourceForge:
 
@@ -38,8 +32,7 @@ If installing the *snapshot* "emax64" version from !SourceForge:
   choice (e.g. ##c:\packages##).  A directory named emaxw64 will be created
   therein.
 
-A subdirectory of the one just created will be /bin/
-(e.g. ##c:\packages\ntemacs23\bin##). Enter this bin-directory and run ##addpm.exe##
+A subdirectory of the one just created will be ##/bin/##. Enter this bin-directory and run ##addpm.exe##
 (takes only a second). A shortcut to ##.../bin/runemacs.exe## will be created in the
 /Start Menu/ (/Programs -- Gnu Emacs – Emacs/). If you are using Vista you /must/ run
 ##addpm.exe## as an administrator, otherwise the registry entries will not be created.
@@ -91,7 +84,6 @@ before you can select /User Accounts/. Either way, set up the ##HOME## environme
 described above.  See also MsWindowsDotEmacs.
 
 *Integration with Windows Shell:* If you're using Win7 or later and Emacs24, check out EmacsMsWindowsIntegration for how to start Emacs from a shortcut, use it to open file types, etc.
-
 
 ----
 CategoryWThirtyTwo
