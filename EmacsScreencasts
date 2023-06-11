@@ -1,4 +1,4 @@
-Watching how people use Emacs is a great way to learn about not only
+Watching how people use Emac is a great way to learn about not only
 what they're demonstrating, but even about things they might take for
 granted. Check out these screencasts to learn about packages and
 workflows that can help you use Emacs more effectively.
@@ -18,6 +18,7 @@ workflows that can help you use Emacs more effectively.
 * [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (36:34)
 * [https://www.youtube.com/watch?v=hbmV1bnQ-i0 Basic Emacs tutorial] (37:14)
 * [https://www.youtube.com/watch?v=ujODL7MD04Q Emacs Tutorial (Beginners) - Part 1 - File commands, cut/copy-paste, cursor commands] (5:59)
+* [https://www.youtube.com/watch?v=vq_YZvgRLeY Emacs Elements on using Emacs Help] (14:52)
 * [https://www.youtube.com/watch?v=6I438IEjT1A Tutorial Emacs francais (Débutant)]
 * [https://www.youtube.com/playlist?list=PL9KxKa8NpFxIcNQa9js7dQQIHc81b0-Xg Using Emacs by Mike Zamansky]
 * [https://www.youtube.com/playlist?list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6 GNU Emacs by Protesilaos Stavrou]
@@ -46,6 +47,7 @@ workflows that can help you use Emacs more effectively.
 ** [https://www.youtube.com/watch?v=ht4JtEbFtFI Kurt Schwehr CCOM Research Tools Screencast 03 - emacs part 3 - org-mode and babel]
 ** [https://www.youtube.com/watch?v=2Cl_aiUkkG0 Kurt Schwehr CCOM Research Tools Screencast 04 - emacs part 4 - yet more emacs]
 ** [https://www.youtube.com/watch?v=LLhSroiMexE Kurt Schwehr CCOM Research Tools Emacs part 5 - modes]
+* [https://www.youtube.com/watch?v=mQDbHZi-KNk&list=PLMe_NuipfzWhO5zDitkQ9s4-weglAo3Sg&pp=iAQB Emacs fundamentals playlist] - by Emacs Elements
 
 === Video channels and screencast series ===
 
@@ -62,7 +64,9 @@ workflows that can help you use Emacs more effectively.
 * Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
 * [http://www.cinsk.org/emacs/ Seongkook's screencasts] (CinSK)
 * [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3E0OjExoI7vlCAVygj6S4I Video series on using 'Scimax' (Emacs starterkit)] by jKitchin
-* [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV Videos on using OrgMode and related packages] by jKitchin
+* [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV
+* Videos on using OrgMode and related packages] by jKitchin
+* [https://www.youtube.com/@emacselements/videos Emacs Elements] Many vidoes covering the fundamentals of Emacs.
 
 === Configuration ===
 
