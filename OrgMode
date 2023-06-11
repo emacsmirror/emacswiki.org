@@ -55,6 +55,17 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * Peter Prevos wrote about -- [https://lucidmanager.org/productivity/taking-notes-with-emacs-org-mode-and-org-roam/ Taking notes with org-mode and org-roam]
 * Phil Newton wrote about -- [https://www.philnewton.net/blog/how-i-get-work-done-with-emacs/ How I get work done with Emacs] including OrgMode and [[Projectile]]
 * The r/emacs and r/org-mode reddit channels are also worth searching through for OrgMode related resources since many announcements take place there: https://www.reddit.com/r/emacs/search/?q=org-mode
+* [https://www.reddit.com/r/emacs/comments/13wuk38/what_is_literate_programming_used_for/ r/emacs thread] on Literate programming] with examples of folks using Org-mode for research.
+* [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3E0OjExoI7vlCAVygj6S4I Video series on using 'Scimax' (Emacs starterkit)] by jKitchin
+* [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV Videos on using OrgMode and related packages] by jKitchin
+* How to set up an Emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU YouTube video], [https://github.com/danielmai/.emacs.d GitHub repository] - by Daniel Mai
+* [https://www.youtube.com/watch?v=e9Ucb1JHUfQ&list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6&index=2&pp=iAQB OrgMode basics] - by Protesilaos (48:31)
+* [https://www.youtube.com/playlist?list=PLVtKhBrRV_ZkPnBtt_TD1Cs9PJlU0IIdE Org mode by Rainer König]
+* [https://www.youtube.com/playlist?list=PLX2044Ew-UVV0CNIrlst0MkKbu85O7_QT Uncle Dave's Org-mode tutorials]
+* EmacsMuse: [http://greens.org/~ringo0 Managing websites] - DavidEsposito
+* [https://www.youtube.com/watch?v=FtieBc3KptU Emacs for writers] (1:01:06)
+* [https://www.youtube.com/watch?v=e9Ucb1JHUfQ&list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6&index=2&pp=iAQB OrgMode basics] - by Protesilaos (48:31)
+* [https://www.youtube.com/c/SystemCrafters System Crafters] have playlists related to OrgMode
 
 [:publish]
 == Publishing ==
