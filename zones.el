@@ -1,17 +1,17 @@
 ;;; zones.el --- Zones of text - like multiple regions
 ;;
-;; Copyright (C) 2010-2019  Free Software Foundation, Inc.
+;; Copyright (C) 2010-2023  Free Software Foundation, Inc.
 ;;
 ;; Filename: zones.el
 ;; Description:  Zones of text - like multiple regions
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2019.7.22
+;; Version: 2023.06.11
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 22 17:57:50 2019 (-0700)
+;; Last-Updated: Sun Jun 11 15:27:42 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 3175
+;;     Update #: 3305
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -21,8 +21,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cconv', `cl', `cl-lib', `gv',
-;;   `macroexp'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -101,7 +100,8 @@
 ;;  User options defined here:
 ;;
 ;;    `zz-auto-remove-empty-izones-flag',
-;;    `zz-narrowing-use-fringe-flag' (Emacs 23+).
+;;    `zz-narrowing-adds-zone-flag', `zz-narrowing-use-fringe-flag'
+;;    (Emacs 23+).
 ;;
 ;;  Faces defined here:
 ;;
@@ -109,17 +109,18 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `zz-add-key-bindings-to-narrow-map', `zz-buffer-narrowed-p'
-;;    (Emacs 22-23), `zz-buffer-of-markers', `zz-car-<',
+;;    `zz-add-key-bindings-to-narrow-map', `zz-basic-zones',
+;;    `zz-basic-zones-in-bufs', `zz-buffer-narrowed-p' (Emacs 22-23),
+;;    `zz-buffer-of-markers', `zz-car-<',
 ;;    `zz-choose-zone-by-id-and-text', `zz-do-izones',
 ;;    `zz-dotted-zones-from-izones', `zz-do-zones', `zz-dot-pairs',
-;;    `zz-empty-zone-p', `zz-every',
-;;    `zz-izone-has-other-buffer-marker-p', `zz-izone-limits',
-;;    `zz-izone-limits-in-bufs', `zz-izones-from-noncontiguous-region'
-;;    (Emacs 25+), `zz-izones-from-zones', `zz-izone-p',
-;;    `zz-izones-p', `zz-izones-renumber', `zz-map-izones',
-;;    `zz-map-zones', `zz-marker-from-object', `zz-markerize',
-;;    `zz-max', `zz-min', `zz-narrow-advice', `zz-narrowing-lighter',
+;;    `zz-empty-zone-p', `zz-every', `zz-get-overlay-props',
+;;    `zz-izone-has-other-buffer-marker-p',
+;;    `zz-izones-from-noncontiguous-region' (Emacs 25+),
+;;    `zz-izones-from-zones', `zz-izone-p', `zz-izones-p',
+;;    `zz-izones-renumber', `zz-map-izones', `zz-map-zones',
+;;    `zz-marker-from-object', `zz-markerize', `zz-max', `zz-min',
+;;    `zz-narrow-advice', `zz-narrowing-lighter',
 ;;    `zz-noncontiguous-region-from-izones',
 ;;    `zz-noncontiguous-region-from-zones', `zz-numberize',
 ;;    `zz-number-or-marker-p', `zz-numeric-position',
@@ -303,14 +304,19 @@
 ;;  When creating zones from overlays you can specify how to represent
 ;;  the zone limits: using markers, readable markers, or positive
 ;;  integers.  And you can specify whether to create basic zones or
-;;  izones.  The overlay property list becomes the list of EXTRA
-;;  information of the resulting zone: (LIMIT1 LIMIT2 . EXTRA).
+;;  izones.
 ;;
-;;  When creating overlays from zones, any list of EXTRA zone
-;;  information is used as the property list of the resulting overlay.
-;;  When creating a single such overlay you can optionally specify
-;;  additional overlay properties, as well as arguments FRONT-ADVANCE
-;;  and REAR-ADVANCE for function `make-overlay'.
+;;  The resulting zone has ((:zz-overlay . PROPS)) as its list of
+;;  extra information, where PROPS is the overlay's property list.  So
+;;  the zone is (LIMIT1 LIMIT2 (:zz-overlay . PROPS)) (or the same
+;;  with an identifier, if an izone).
+;;
+;;  When creating overlays from zones, the presence of a list
+;;  (:zz-overlay . PROPS) in the extra zone information results in the
+;;  overlay having PROPS as its property list.  When creating a single
+;;  such overlay you can optionally specify additional overlay
+;;  properties, as well as arguments FRONT-ADVANCE and REAR-ADVANCE
+;;  for function `make-overlay'.
 ;;
 ;;  You can use function `zz-overlay-union' to coalesce overlays in a
 ;;  given buffer that overlap or are adjacent.
@@ -435,11 +441,22 @@
 ;;  not rebind that key; your bindings are respected.
 ;;
 ;;  C-x n #   `zz-select-zone-by-id-and-text' - Select zone as region
+;;  C-x n M-% `zz-query-replace-zones' - Query-replace within zones
+;;  C-x n C-M-%                        - Regexp query-replace
+;;  C-x n M-= ~ `isearchp-toggle-complementing-domain' -
+;;              Toggle searching anti-zones
+;;  C-x n M-= d `isearchp-toggle-dimming-outside-search-area' -
+;;              Toggle dimming text that is outside the search area
+;;  C-x n M-= v `isearchp-toggle-anti-zones-invisible' - Toggle
+;;              visibility of the complement of (the union of) zones
+;;  C-x n M-= V `isearchp-toggle-zones-invisible' - Toggle visibility
+;;              of zones
 ;;  C-x n a   `zz-add-zone' - Add to current izones set (variable)
 ;;  C-x n A   `zz-add-zone-and-unite' - Add zone, then unite zones
 ;;  C-x n c   `zz-clone-zones' - Clone zones from one var to another
 ;;  C-x n C   `zz-clone-and-unite-zones' - Clone then unite zones
 ;;  C-x n d   `narrow-to-defun'
+;;  C-x n D   `isearchp-remove-dimming' - Remove text dimming
 ;;  C-x n C-d `zz-delete-zone' - Delete an izone from current var
 ;;  C-x n f   `zz-set-zones-from-face' - Set zone set to face areas
 ;;  C-x n h   `hlt-highlight-regions' - Ad hoc zone highlighting
@@ -448,14 +465,25 @@
 ;;  C-x n L   `zz-set-zones-from-highlighting' - Set to highlighted
 ;;  C-x n n   `narrow-to-region'
 ;;  C-x n p   `narrow-to-page'
+;;  C-x n P   `isearchp-put-prop-on-zones' - Add text property
 ;;  C-x n r   `zz-add-zones-matching-regexp' - Add regexp-match zones
 ;;  C-x n R   `zz-set-zones-matching-regexp' - Set zone set to matches
+;;  C-x n C-r `isearchp-zones-backward' - Search backward within zones
+;;  C-x n C-M-r                         - Regexp-search backward
 ;;  C-x n s   `zz-select-zone-repeat' - Cycle zones as active region
 ;;                                      (negative arg removes zone)
+;;  C-x n C-s `isearchp-zones-forward' - Search forward within zones
+;;  C-x n C-M-s                        - Regexp-search forward
 ;;  C-x n u   `zz-unite-zones' - Unite (coalesce) zones
 ;;  C-x n v   `zz-set-izones-var' - Set current zones-set variable
 ;;  C-x n w   `widen'
 ;;  C-x n x   `zz-narrow-repeat' - Cycle or pop zones as narrowings
+;;
+;;  For the `hlt*' commands you need library `highlight.el': `C-x n
+;;  h', `C-x n H'.  For the `isearchp-' commands you need library
+;;  `isearch-prop.el': `C-x n M-= ~', `C-x n M-= d', `C-x n M-= v',
+;;  `C-x n M-= V', `C-x n D', `C-x n P', `C-x n C-r', `C-x n C-M-r',
+;;  `C-x n C-s', 'C-x n C-M-s`.
 ;;
 ;;
 ;;(@* "Command `zz-narrow-repeat'")
@@ -524,9 +552,9 @@
 ;;
 ;;  You can define your own commands that iterate over a list of
 ;;  izones in a given buffer, or over such lists in a set of buffers.
-;;  Utility functions `zz-izone-limits', `zz-izone-limits-in-bufs',
-;;  and `zz-read-bufs', `zz-do-zones', `zz-do-izones', `zz-map-zones',
-;;  and `zz-map-izones' can help with this.
+;;  Utility functions `zz-basic-zones', `zz-basic-zones-in-bufs', and
+;;  `zz-read-bufs', `zz-do-zones', `zz-do-izones', `zz-map-zones', and
+;;  `zz-map-izones' can help with this.
 ;;
 ;;  As examples of such commands, if you use library `highlight.el'
 ;;  then you can use `C-x n h' (command `hlt-highlight-regions') to
@@ -548,7 +576,7 @@
 ;; (defun hlt-highlight-regions (&optional regions face msgp mousep
 ;;                                         buffers)
 ;;   "Apply `hlt-highlight-region' to regions in `zz-izones'."
-;;   (interactive (list (zz-izone-limits zz-izones)
+;;   (interactive (list (zz-basic-zones zz-izones)
 ;;                      nil
 ;;                      t
 ;;                      current-prefix-arg))
@@ -574,6 +602,29 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2023/06/11 dadams
+;;     Advise widen, to update mode-line lighter.
+;;     zz-narrow-advice: update mode-line lighter.
+;;     zz-narrow: Apply abs to (caar val) for zz-lighter-narrowing-part in default cond clause.
+;; 2022/12/30 dadams
+;;     Wrap condition-case-when-debug in eval-when-compile.
+;; 2022/06/25 dadams
+;;     zz-auto-add-region-as-izone-mode: Removed optional args for define-minor-mode - use only keywords.
+;;     zz-add-zones-matching-regexp: Error if can't require isearch-prop.el.
+;; 2020/04/12 dadams
+;;     zz-set-zones-from-face: Removed soft-require of zones.el. ;-)
+;; 2019/11/13 dadams
+;;     Renamed zz-izone-limits(-in-bufs) to zz-basic-zones(-in-bufs), and improved their doc strings.
+;; 2019/11/03 dadams
+;;     Added: zz-get-overlay-props.  Use in zz-zone-to-overlay.
+;;     zz-overlay-to-zone, zz-zone-to-overlay:
+;;       Use (:zz-overlay . PROPS) in EXTRA, instead of just all of EXTRA, for overlay properties in a zone.
+;; 2019/10/10 dadams
+;;     Added: zz-narrowing-adds-zone-flag.
+;;     zz-narrow-advice: Add respect for zz-narrowing-adds-zone-flag.
+;;     zz(-map)-query-replace(-regexp)-zones, zz-replace-(string|regexp)-zones:
+;;       Arg ZONES is a list of zones (izones or basic), not a noncontiguous region.
+;;       Corrected: BEG and END were flipped.
 ;; 2019/07/22 dadams
 ;;     Added: zz-numberize, zz-readable-markerize, zz-position-from-object.
 ;;     zz-do-izones, zz-map-izones: Use zz-izones-from-zones of zz-zone-union, not zz-unite-zones.
@@ -919,8 +970,8 @@
 ;; Quiet the byte-compiler.
 (defvar hlt-last-face)                  ; In `highlight.el'
 (defvar isearchp-dim-outside-search-area-flag) ; In `isearch+.el'
-(defvar mode-line-modes)                ; Emacs 22+
 (defvar narrow-map)                     ; Emacs 23+
+(defvar real-this-command)              ; Emacs 24+
 (defvar region-extract-function)        ; Emacs 25+
 (defvar repeat-message-function)        ; In `repeat.el'
 (defvar repeat-previous-repeated-command) ; In `repeat.el'
@@ -938,18 +989,19 @@
 ;;                                              'condition-case-no-debug ; Emacs 23
 ;;                                            'condition-case))) ; Emacs 22
 
-(unless (fboundp 'condition-case-unless-debug)
-  (defmacro condition-case-unless-debug (var bodyform &rest handlers)
-    "Like `condition-case' except that it does not prevent debugging.
+(eval-when-compile
+  (unless (fboundp 'condition-case-unless-debug)
+    (defmacro condition-case-unless-debug (var bodyform &rest handlers)
+      "Like `condition-case' except that it does not prevent debugging.
 More specifically if `debug-on-error' is set then the debugger will be invoked
 even if this catches the signal."
-    (declare (debug condition-case) (indent 2)) ; 
-    `(condition-case ,var
-         ,bodyform
-       ,@(mapcar (lambda (handler)
-                   `((debug ,@(if (listp (car handler)) (car handler) (list (car handler))))
-                     ,@(cdr handler)))
-                 handlers))))
+      (declare (debug condition-case) (indent 2)) ; 
+      `(condition-case ,var
+           ,bodyform
+         ,@(mapcar (lambda (handler)
+                     `((debug ,@(if (listp (car handler)) (car handler) (list (car handler))))
+                       ,@(cdr handler)))
+                   handlers)))))
 
 (defalias 'zz-user-error (if (fboundp 'user-error) #'user-error #'error)) ; For Emacs 22-23.
 
@@ -995,6 +1047,14 @@ variable then the empty zones are removed from that izones variable.
 
 \(You can use command `zz-remove-empty-izones' to manually remove
 empty zones from any izones variable.)"
+  :type 'boolean :group 'zones)
+
+(defcustom zz-narrowing-adds-zone-flag t
+  "Non-nil means that narrowing interactively adds a zone.
+The zone corresponds to the new buffer restriction.
+
+\(To make narrowing functions add a zone when used in Lisp code, bind
+`zz-add-zone-anyway-p' to a non-nil value)."
   :type 'boolean :group 'zones)
 
 (when (>= emacs-major-version 23)       ; Emacs 23.1+
@@ -1065,7 +1125,7 @@ current `zz-izones-var' during narrowing.")
 (defvar zz-zone-abstract-function #'zz-zone-abstract-function-default
   "Function used to create an abstract (description) of a zone.
 It must accept an izone as its first argument, and it should return a
-cons whose care is the abstract (a string).")
+cons whose car is the abstract (a string).")
 
 (defvar zz-zone-abstract-limit 68
   "Max number of chars of zone text to include in default zone abstract.")
@@ -1074,15 +1134,35 @@ cons whose care is the abstract (a string).")
 
 ;;; Advice for Standard Functions ------------------------------------
 
+(defadvice widen (after zz--widen activate)
+  "When called interactively, reset mode-line narrowing lighter."
+  (when (interactive-p)
+    (setq zz-lighter-narrowing-part  "")
+    (zz-narrowing-lighter)))
+
 (defun zz-narrow-advice (interactive-p)
   "Advice for narrowing functions.
-Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'."
-  (when (or interactive-p  zz-add-zone-anyway-p)
-    (zz-add-zone (point-min) (point-max) nil nil nil "Narrowed, and recorded zone: ")))
+If the function was called interactively and option
+`zz-narrowing-adds-zone-flag' is non-nil, or if `zz-add-zone-anyway-p'
+is non-nil, then call `zz-add-zone', to add a zone for the new buffer
+restriction.
+
+If the function was called interactively then set the mode-line
+lighter to `Narrow'."
+  (when (or (and interactive-p  zz-narrowing-adds-zone-flag)
+            zz-add-zone-anyway-p)
+    (zz-add-zone (point-min) (point-max) nil nil nil "Narrowed, and recorded zone: "))
+  (when interactive-p
+    (setq zz-lighter-narrowing-part  "")
+    (zz-narrowing-lighter)))
 
 (defadvice narrow-to-region (after zz-add-zone--region activate)
   "Push the region limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
+
+Interactively, this is controlled by option
+`zz-narrowing-adds-zone-flag'.  Non-interactively it is controlled by
+variable `zz-add-zone-anyway-p'.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
@@ -1092,15 +1172,21 @@ value can be modified."
   "Push the defun limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
+Interactively, this is controlled by option
+`zz-narrowing-adds-zone-flag'.  Non-interactively it is controlled by
+variable `zz-add-zone-anyway-p'.
+
 This is a destructive operation. The list structure of the variable
 value can be modified."
   (zz-narrow-advice (interactive-p)))
 
-;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
-;;
 (defadvice narrow-to-page (after zz-add-zone--defun activate)
   "Push the page limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
+
+Interactively, this is controlled by option
+`zz-narrowing-adds-zone-flag'.  Non-interactively it is controlled by
+variable `zz-add-zone-anyway-p'.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
@@ -1239,7 +1325,7 @@ zones are first removed from `zz-izones-var'."
            (widen)
            (setq zz-lighter-narrowing-part  "")
            (zz-narrowing-lighter)
-           (when msgp (message "No longer narrowed; no more narrowings")))
+           (when msgp (message "No longer narrowed.  Zones cleared (no zones)")))
           (t
            (setq arg  (prefix-numeric-value arg))
            (let ((latest  ())
@@ -1253,7 +1339,7 @@ zones are first removed from `zz-izones-var'."
              (setq val  (set var (append (nthcdr arg val) latest))
                    val  (set var (mapcar #'zz-markerize val)))
              (cond (val
-                    (setq zz-lighter-narrowing-part   (format "-%d" (caar val)))
+                    (setq zz-lighter-narrowing-part   (format "-%d" (abs (caar val))))
                     (condition-case err
                         (let* ((zz-add-zone-anyway-p  t)
                                (izone                  (car val))
@@ -1501,7 +1587,7 @@ Non-interactively:
          (_IGNORE     (unless (boundp var) (set var ())))
          (val         (symbol-value var))
          (_IGNORE     (unless (zz-izones-p val) (error "Not an izones variable: `%s', value: `%S'" var val)))
-         (zone-union  (zz-zone-union (zz-izone-limits val))))
+         (zone-union  (zz-zone-union (zz-basic-zones val))))
     (set var  (zz-izones-from-zones zone-union))
     (when msgp
       (let ((len  (length (symbol-value var))))
@@ -1573,6 +1659,8 @@ arg, and the parameters when called from Lisp."
           (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
           (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0)))))
      (list regx var beg end nloc setv 0 t)))
+  (unless (require 'isearch-prop nil t)
+    (error "You need library `isearch-prop.el' for this command"))
   (unless (and beg  end) (setq beg  (point-min)
                                end  (point-max)))
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg))))
@@ -1756,8 +1844,6 @@ The variable defaults to `zz-izones'.  With a prefix arg you are
     (error "You need library `highlight.el' for this command"))
   (unless (require 'isearch-prop nil t)
     (error "You need library `isearch-prop.el' for this command"))
-  (unless (require 'zones nil t)
-    (error "You need library `zones' for this command"))
   (font-lock-default-fontify-buffer)    ; Fontify the whole buffer.
   (zz-set-zones-from-highlighting start end face nil 'text-prop)
   (zz-unite-zones variable t))
@@ -1769,7 +1855,7 @@ The zone is added to the current value of `zz-izones-var'.  An empty
 region is not added.
 
 This uses function `zz-add-region-as-izone' on `deactivate-mark-hook'."
-  nil nil nil
+  :global nil
   (if zz-auto-add-region-as-izone-mode
       (add-hook 'deactivate-mark-hook #'zz-add-region-as-izone)
     (remove-hook 'deactivate-mark-hook #'zz-add-region-as-izone)))
@@ -1884,14 +1970,14 @@ ZONES is normally a list of basic zones.  It can also be a list like
  extra info.
 Non-nil optional arg UNITE-P means first unite the zones and then
 iterate over the resulting list."
-  (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+  (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
   (when unite-p (setq zones  (zz-zone-union zones)))
   (mapcar (lambda (zone) (funcall function zone)) zones))
 
 (defun zz-do-zones (function &optional zones unite-p)
   "Like `zz-map-zones', but without returning the result of mapping.
 The return value is undefined."
-  (when (zz-izones-p zones) (setq zones  (zz-izone-limits zones nil 'ONLY-THIS-BUFFER)))
+  (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
   (when unite-p (setq zones  (zz-zone-union zones)))
   (dolist (zone  zones) (funcall function zone)))
 
@@ -1904,7 +1990,7 @@ Non-nil optional arg UNITE-P means first unite the zones and then
 iterate over the resulting list."
   (setq izones  (or izones  (symbol-value zz-izones-var)))
   (when unite-p
-    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
+    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-basic-zones izones)))))
   (mapcar (lambda (izone) (funcall function izone)) izones))
 
 (defun zz-do-izones (function &optional izones unite-p)
@@ -1912,7 +1998,7 @@ iterate over the resulting list."
 The return value is undefined."
   (setq izones  (or izones  (symbol-value zz-izones-var)))
   (when unite-p
-    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-izone-limits izones)))))
+    (setq izones  (zz-izones-from-zones (zz-zone-union (zz-basic-zones izones)))))
   (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone))))
 
 (defun zz-zones-complement (zones &optional beg end)
@@ -2321,13 +2407,13 @@ value can be modified."
 
 ;; Non-destructive version.
 ;;
-;; (defun zz-izone-limits-in-bufs (buffers &optional variable)
-;;   "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
+;; (defun zz-basic-zones-in-bufs (buffers &optional variable)
+;;   "Return a list of all `zz-basic-zones' for each buffer in BUFFERS.
 ;; That is, return a list of all recorded buffer zones for BUFFERS.
 ;; If BUFFERS is nil, return the zones recorded for the current buffer.
 ;;
 ;; This is a non-destructive operation: The list returned is independent
-;; of the `zz-izone-limits' list in each of the buffers.
+;; of the `zz-basic-zones' list in each of the buffers.
 ;;
 ;; Optional arg VARIABLE is the izones variable to use.  If nil,
 ;; use the value of `zz-izones-var'.  The variable is evaluated in each
@@ -2336,36 +2422,36 @@ value can be modified."
 ;;   (let ((limits  ()))
 ;;     (dolist (buf  (or (reverse buffers)  (list (current-buffer)))) ; Reverse so we keep the order.
 ;;       (with-current-buffer buf
-;;         (setq limits  (append (zz-izone-limits (symbol-value (or variable  zz-izones-var))
-;;                                                buf
-;;                                                'ONLY-THIS-BUFFER)
+;;         (setq limits  (append (zz-basic-zones (symbol-value (or variable  zz-izones-var))
+;;                                               buf
+;;                                               'ONLY-THIS-BUFFER)
 ;;                               limits))))
 ;;     limits))
 
-(defun zz-izone-limits-in-bufs (buffers &optional variable)
-  "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
-That is, return a list of all recorded buffer zones for BUFFERS.
-If BUFFERS is nil, return the zones recorded for the current buffer.
+(define-obsolete-function-alias 'zz-izone-limits-in-bufs 'zz-basic-zones-in-bufs "2020.08.21")
+(defun zz-basic-zones-in-bufs (buffers &optional izones-var)
+  "Return a list of basic zones for IZONES-VAR for each buffer in BUFFERS.
+If BUFFERS is nil, return the zones for the current buffer only.
+
+Optional arg IZONES-VAR is the izones variable to use.  If nil, use
+the value of `zz-izones-var'.  The variable is evaluated in each
+buffer of BUFFERS (or in the current buffer, if BUFFERS is nil).
 
 This is a destructive operation: The list returned can have as
-sublists the `zz-izone-limits' lists of BUFFERS.
-
-Optional arg VARIABLE is the izones variable to use.  If nil, use the
-value of `zz-izones-var'.  The variable is evaluated in each
-buffer (or in the current buffer, if BUFFERS is nil)."
+sublists the `zz-basic-zones' lists for BUFFERS."
   (let ((limits  ()))
     (dolist (buf  (or buffers  (list (current-buffer))))
       (with-current-buffer buf
-        (setq limits  (nconc limits (zz-izone-limits (symbol-value (or variable  zz-izones-var)) buf 'THISBUF)))))
+        (setq limits  (nconc limits
+                             (zz-basic-zones (symbol-value (or izones-var  zz-izones-var)) buf 'THISBUF)))))
     limits))
 
-(defun zz-izone-limits (izones &optional buffer only-one-buffer-p)
-  "Return a list like IZONES, but with no identifiers.
-That is, return a list of zones, (LIMIT1 LIMIT2 . EXTRA).
+(define-obsolete-function-alias 'zz-izone-limits 'zz-basic-zones "2020.08.21")
+(defun zz-basic-zones (izones &optional buffer only-one-buffer-p)
+  "Return a list of basic zones based on IZONES.
+In other words, remove zone identifiers from IZONES.
 
 This is a non-destructive operation: A new list is returned.
-
-Each limit can be a number or a marker (but see ONLY-ONE-BUFFER-P).
 The conses are new - they do not share with any conses with IZONES.
 
 IZONES has the same structure as `zz-izones'.
@@ -2375,7 +2461,7 @@ value of `zz-izones-var'.  This variable is evaluated in BUFFER
 \(default: current buffer) to obtain the izones.
 
 Non-nil optional arg ONLY-ONE-BUFFER-P means remove any izones that
-contain markers for a buffer other than BUFFER."
+refer to a buffer other than BUFFER."
   (let ((restrs  izones))
     (when only-one-buffer-p
       (setq restrs  (zz-remove-izones-w-other-buffer-markers restrs (or buffer  (current-buffer)))))
@@ -2534,38 +2620,47 @@ reads any symbol, but it provides completion against variable names."
 
   (defun zz-query-replace-zones (from-string to-string &optional delimited start end backward zones)
     "`query-replace' in the zones currently defined in the current buffer.
-The value of variable `zz-izones' defines the zones."
+Interactively, the zones are the izones of variable `zz-izones'.
+
+When called from Lisp:
+ The first six arguments are the same as for `query-replace'.
+ Optional arg ZONES is a list of izones or basic zones."
     (interactive
-     (let* ((common  (query-replace-read-args (concat "Query replace"
-                                                      (if current-prefix-arg
-                                                          (if (eq current-prefix-arg '-) " backward" " word")
-                                                        "")
-                                                      (if (use-region-p) " in region" ""))
-                                              nil))
-            (beg     (point-max))
-            (end     (point-min))
-            (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
+     (let ((common  (query-replace-read-args (concat "Query replace"
+                                                     (if current-prefix-arg
+                                                         (if (eq current-prefix-arg '-) " backward" " word")
+                                                       "")
+                                                     (if (use-region-p) " in region" ""))
+                                             nil))
+           (beg     (point-min))
+           (end     (point-max))
+           (zs      (zz-basic-zones (symbol-value zz-izones-var) nil 'ONLY-THIS-BUFFER)))
        (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
     (unless zones (error "No zones to search"))
-    (let ((region-extract-function  (lambda (_ignore) zones)))
+    (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
+    (let ((region-extract-function  (lambda (_ignore) (zz-noncontiguous-region-from-zones zones))))
       (query-replace from-string to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
   (defun zz-query-replace-regexp-zones (regexp to-string &optional delimited start end backward zones)
     "`query-replace-regexp' in the zones currently defined in the current buffer.
-The value of variable `zz-izones' defines the zones."
+Interactively, the zones are the izones of variable `zz-izones'.
+When called from Lisp:
+ The first six arguments are the same as for `query-replace-regexp'.
+ Optional arg ZONES is a list of izones or basic zones."
     (interactive
-     (let* ((common  (query-replace-read-args (concat "Query replace"
-                                                      (if current-prefix-arg
-                                                          (if (eq current-prefix-arg '-) " backward" " word")
-                                                        "")
-                                                      (if (use-region-p) " in region" ""))
-                                              nil))
-            (beg     (point-max))
-            (end     (point-min))
-            (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
+     (let ((common  (query-replace-read-args (concat "Query replace regexp"
+                                                     (if current-prefix-arg
+                                                         (if (eq current-prefix-arg '-) " backward" " word")
+                                                       "")
+                                                     (if (use-region-p) " in region" ""))
+                                             nil))
+           (beg     (point-min))
+           (end     (point-max))
+           (zs      (zz-basic-zones (symbol-value zz-izones-var) nil 'ONLY-THIS-BUFFER)))
        (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
     (unless zones (error "No zones to search"))
-    (let ((region-extract-function  (lambda (_ignore) zones)))
+    (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
+    (let ((region-extract-function  (lambda (_ignore) (zz-noncontiguous-region-from-zones zones))))
       (query-replace-regexp regexp to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
 
@@ -2573,23 +2668,30 @@ The value of variable `zz-izones' defines the zones."
 
     (defun zz-map-query-replace-regexp-zones (regexp to-strings &optional n start end zones)
       "`map-query-replace-regexp' in the zones currently defined in the current buffer.
-The value of variable `zz-izones' defines the zones."
+Interactively, the zones are the izones of variable `zz-izones'.
+When called from Lisp:
+ The first five arguments are the same as for `map-query-replace-regexp'.
+ Optional arg ZONES is a list of izones or basic zones."
       (interactive
        (let* ((from  (read-regexp "Map query replace (regexp): " nil query-replace-from-history-variable))
               (to    (read-from-minibuffer (format "Query replace %s with (space-separated strings): "
                                                    (query-replace-descr from))
                                            nil nil nil query-replace-to-history-variable from t))
-              (beg   (point-max))
-              (end   (point-min))
-              (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
+              (beg   (point-min))
+              (end   (point-max))
+              (zs    (zz-basic-zones (symbol-value zz-izones-var) nil 'ONLY-THIS-BUFFER)))
          (list from to (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)) beg end zs)))
       (unless zones (error "No zones to search"))
-      (let ((region-extract-function  (lambda (_ignore) zones)))
+      (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
+      (let ((region-extract-function  (lambda (_ignore) (zz-noncontiguous-region-from-zones zones))))
         (map-query-replace-regexp regexp to-strings n start end 'REGION-NONCONTIGUOUS-P)))
 
     (defun zz-replace-string-zones (from-string to-string &optional delimited start end backward zones)
       "`replace-string' in the zones currently defined in the current buffer.
-The value of variable `zz-izones' defines the zones."
+Interactively, the zones are the izones of variable `zz-izones'.
+When called from Lisp:
+ The first six arguments are the same as for `replace-string'.
+ Optional arg ZONES is a list of izones or basic zones."
       ;; (declare (interactive-only "use `search-forward' and `replace-match' instead."))
       (interactive
        (let ((common  (query-replace-read-args (concat "Replace"
@@ -2599,17 +2701,21 @@ The value of variable `zz-izones' defines the zones."
                                                        " string"
                                                        (if (use-region-p) " in region" ""))
                                                nil))
-             (beg     (point-max))
-             (end     (point-min))
-             (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
+             (beg     (point-min))
+             (end     (point-max))
+             (zs      (zz-basic-zones (symbol-value zz-izones-var) nil 'ONLY-THIS-BUFFER)))
          (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
       (unless zones (error "No zones to search"))
-      (let ((region-extract-function  (lambda (_ignore) zones)))
+      (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
+      (let ((region-extract-function  (lambda (_ignore) (zz-noncontiguous-region-from-zones zones))))
         (replace-string from-string to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
     (defun zz-replace-regexp-zones (regexp to-string &optional delimited start end backward zones)
       "`replace-regexp' in the zones currently defined in the current buffer.
-The value of variable `zz-izones' defines the zones."
+Interactively, the zones are the izones of variable `zz-izones'.
+When called from Lisp:
+ The first six arguments are the same as for `replace-regexp'.
+ Optional arg ZONES is a list of izones or basic zones."
       ;; (declare (interactive-only "use `re-search-forward' and `replace-match' instead."))
       (interactive
        (let ((common  (query-replace-read-args (concat "Replace"
@@ -2619,12 +2725,13 @@ The value of variable `zz-izones' defines the zones."
                                                        " regexp"
                                                        (if (use-region-p) " in region" ""))
                                                t))
-             (beg     (point-max))
-             (end     (point-min))
-             (zs      (zz-noncontiguous-region-from-izones zz-izones-var)))
+             (beg     (point-min))
+             (end     (point-max))
+             (zs      (zz-basic-zones (symbol-value zz-izones-var) nil 'ONLY-THIS-BUFFER)))
          (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
       (unless zones (error "No zones to search"))
-      (let ((region-extract-function  (lambda (_ignore) zones)))
+      (when (zz-izones-p zones) (setq zones  (zz-basic-zones zones nil 'ONLY-THIS-BUFFER)))
+      (let ((region-extract-function  (lambda (_ignore) (zz-noncontiguous-region-from-zones zones))))
         (replace-regexp regexp to-string delimited start end backward 'REGION-NONCONTIGUOUS-P)))
 
     )                                   ; Emacs 27+
@@ -2641,7 +2748,7 @@ VARIABLE defaults to the value of `zz-izones-var'.
 This is similar to an Emacs \"noncontiguous region\" - entry pairs are
 dotted: `(beg . end)', not `(beg end)'.  But here the conses of zone
 limits are not united together - they can overlap."
-  (zz-dot-pairs (zz-izone-limits (symbol-value (or variable  zz-izones-var)))))
+  (zz-dot-pairs (zz-basic-zones (symbol-value (or variable  zz-izones-var)))))
 
 (defun zz-noncontiguous-region-from-izones (&optional variable)
   "Return a noncontiguous region from value of value of VARIABLE.
@@ -2651,7 +2758,7 @@ VARIABLE defaults to the value of `zz-izones-var'.  An Emacs
 It is like a list of united basic zones, but the entry pairs are
 dotted: `(beg . end)', not `(beg end)'."
   (let ((iz-var  (make-symbol "NRFI")))
-    (zz-dot-pairs (zz-izone-limits (zz-clone-and-unite-zones (or variable  zz-izones-var) iz-var)))))
+    (zz-dot-pairs (zz-basic-zones (zz-clone-and-unite-zones (or variable  zz-izones-var) iz-var)))))
 
 (defun zz-noncontiguous-region-from-zones (basic-zones)
   "Return a noncontiguous region from a list of BASIC-ZONES.
@@ -2660,6 +2767,25 @@ An Emacs \"noncontiguous region\" (Emacs 25+) is what the value of
 zones, but the entry pairs are dotted: `(beg . end)', not `(beg end)'."
   (zz-dot-pairs (zz-zone-union basic-zones)))
 
+;; If we were sure to have Emacs > 23 then we could use this simpler definition,
+;; but it would also mean requiring `cl-seq.el' (which requires `cl-lib.el').
+;; (defun zz-get-overlay-props (zone)
+;;   "Return the list of overlay properties recorded in ZONE.
+;; They are the PROPS of (:zz-overlay . PROPS) in the extra part of ZONE."
+;;   (let* ((extra  (cddr zone))
+;;          (extra  (and (listp extra)  extra)))
+;;     (cdar (cl-member :zz-overlay extra :key #'car))))
+
+(defun zz-get-overlay-props (zone)
+  "Return the list of overlay properties recorded in ZONE.
+This is PROPS of (:zz-overlay . PROPS) in the extra part of ZONE."
+  (let* ((extra  (cddr zone))
+         (extra  (and (listp extra)  extra)))
+    (catch 'zz-get-overlay-props
+      (dolist (elt  extra)
+        (when (eq :zz-overlay (car elt)) (throw 'zz-get-overlay-props (cdr elt))))
+      nil)))
+      
 (defun zz-overlay-to-zone (overlay &optional pos-type)
   "Return a basic zone derived from OVERLAY.
 If OVERLAY is not an overlay or it has been deleted (has no buffer)
@@ -2673,13 +2799,13 @@ Optional arg POS-TYPE controls the kind of position used by the zone:
     (and buf
          (let* ((beg    (overlay-start overlay))
                 (end    (overlay-end overlay))
-                (props  (overlay-properties overlay)))
+                (props  `(:zz-overlay ,@(overlay-properties overlay))))
            (case pos-type
              (markers           (setq beg  (copy-marker beg)
                                       end  (copy-marker end)))
              (readable-markers  (setq beg  (zz-readable-marker beg buf)
                                       end  (zz-readable-marker end buf))))
-           `(,beg ,end ,@props)))))
+           `(,beg ,end ,props)))))
 
 (defun zz-overlays-to-zones (overlays &optional pos-type izones-p)
   "Return a list of zones derived from OVERLAYS list.
@@ -2688,7 +2814,7 @@ This uses `zz-overlay-to-zone', which see for optional arg POS-TYPE.
 By default, the zones are basic zones.  Non-nil optional arg IZONES-P
 means they are izones.
 
-Note: If you plan to coelesce the resulting ZONES (using, e.g.,
+Note: If you plan to coalesce the resulting ZONES (using, e.g.,
 `zz-unite-zones') then you will no doubt want to ensure that the
 OVERLAYS are all of the same type."
   (let ((zones  (delq nil (mapcar `(lambda (ov) (zz-overlay-to-zone ov ',pos-type)) overlays))))
@@ -2699,16 +2825,16 @@ OVERLAYS are all of the same type."
   "Create and return an overlay derived from ZONE.
 ZONE is a basic zone; it has the form (LIMIT1 LIMIT2 . EXTRA).
 
-If EXTRA is not a list then it is ignored.
-If EXTRA is a list then it is treated as a plist of overlay
-properties.  This is so regardless of the type of any given
-property (e.g., it need not be a symbol).  If the list has an odd
-number of elements then the last one is treated as a property with
-value `nil'.
+If EXTRA is a list that has an element (:zz-overlay . PROPS) then
+PROPS (of the first such element, if there is more than one) is
+treated as a plist of overlay properties.  This is so regardless of
+the type of any given property (e.g., it need not be a symbol).  If
+the list has an odd number of elements then the last one is treated as
+a property with value `nil'.
 
 Optional arg PROPERTIES is a plist to add to the overlay properties
-coming from the `cddr' of ZONE (after adding the value `nil' if the
-latter list has an odd length.
+derived from an (:zz-overlay . PROPS) of ZONE (after adding the value
+`nil' if the latter list has an odd length.
 
 Optional args FRONT-ADVANCE and REAR-ADVANCE are passed to
  `make-overlay'."
@@ -2716,8 +2842,7 @@ Optional args FRONT-ADVANCE and REAR-ADVANCE are passed to
          (zon     (zz-zone-ordered zone))
          (beg     (car zon))
          (end     (cadr zone))
-         (zprops  (cddr zone))
-         (zprops  (and (listp zprops)  zprops))
+         (zprops  (zz-get-overlay-props zon))
          (ov      (make-overlay (zz-marker-from-object beg) (zz-marker-from-object end) buf
                                 front-advance rear-advance)))
     (while zprops
@@ -2762,9 +2887,9 @@ EXTRA is a list.
 
 This is a non-destructive operation.  A new list is returned.
 
-\(zz-izone-limits (zz-izones-from-zones BASIC-ZONES)) = BASIC-ZONES
+\(zz-basic-zones (zz-izones-from-zones BASIC-ZONES)) = BASIC-ZONES
 
-Also, (zz-izones-from-zones (zz-izone-limits zz-izones)) returns the
+Also, (zz-izones-from-zones (zz-basic-zones zz-izones)) returns the
 same set of izones as `zz-izones', but possibly with different IDs
 associated with the basic zones."
   (let ((ii  0))
