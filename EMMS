@@ -956,3 +956,8 @@ You can find EMMS integration with space line all the icons here: [https://githu
   "Show the current played track"
   (emms-mode-line-icon-function))
 </pre>
+
+
+----
+
+CategoryMusic CategoryModes CategoryInterface
