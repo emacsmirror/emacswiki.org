@@ -5,7 +5,8 @@ EMMS is the Emacs Multi-Media System. It tries to be a clean and
 small
 application to play multimedia files from Emacs using external
 players. Many of its ideas are derived from MpthreePlayer, but it
-tries to be more general and cleaner. It is comparable to [[Bongo]].
+tries to be more general and cleaner. It is comparable to [[Bongo]]. See
+MusicPlayers for other packages. 
 
 http://www.gnu.org/software/emms/
 
@@ -959,5 +960,6 @@ You can find EMMS integration with space line all the icons here: [https://githu
 
 
 ----
+See CategoryMusic for ways to make music using Emacs
 
-CategoryMusic CategoryModes CategoryInterface
+MultimediaModes CategoryModes CategoryInterface 
