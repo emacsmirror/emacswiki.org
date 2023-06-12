@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Mar 25 08:02:37 2023 (-0700)
+;; Last-Updated: Mon Jun 12 12:08:23 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 9491
+;;     Update #: 9495
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9157,7 +9157,10 @@ Starting with Emacs 22, if the file is an image file then:
     (setq bookmark  (bmkp-get-bookmark bookmark))
     (help-setup-xref (list #'bmkp-describe-bookmark bookmark) (interactive-p))
     (let ((help-text  (bmkp-bookmark-description bookmark)))
-      (bmkp-with-help-window "*Help*" (princ help-text) (bmkp-add-jump-to-list-button bookmark))
+      (bmkp-with-help-window "*Help*"
+                             (princ help-text)
+                             (bmkp-add-describe-bookmark-internals-button bookmark)
+                             (bmkp-add-jump-to-list-button bookmark))
       (with-current-buffer "*Help*"
         (save-excursion
           (goto-char (point-min))
@@ -9351,11 +9354,26 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
 (when (and (> emacs-major-version 21)
            (condition-case nil (require 'help-mode nil t) (error nil))
            (get 'help-xref 'button-category-symbol)) ; In `button.el'
+  
   (define-button-type 'bmkp-jump-to-list-button
     :supertype 'help-xref
     'help-function #'bmkp-jump-to-list
     'help-echo
-    (purecopy "mouse-2, RET: Show in `*Bookmark List*'")))
+    (purecopy "mouse-2, RET: Show in `*Bookmark List*'"))
+
+  (define-button-type 'bmkp-describe-bookmark-button
+    :supertype 'help-xref
+    'help-function #'bmkp-describe-bookmark
+    'help-echo
+    (purecopy "mouse-2, RET: Show external form"))
+
+  (define-button-type 'bmkp-describe-bookmark-internals-button
+    :supertype 'help-xref
+    'help-function #'bmkp-describe-bookmark-internals
+    'help-echo
+    (purecopy "mouse-2, RET: Show internal form"))
+
+  )
 
 (defun bmkp-add-jump-to-list-button (bookmark)
   "Add a [Show in `*Bookmark List*'] button for BOOKMARK."
@@ -9369,6 +9387,38 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
         (goto-char (point-min)) (forward-line 2)
         (help-insert-xref-button "[Show in `*Bookmark List*']"
                                  #'bmkp-jump-to-list-button
+                                 (bookmark-name-from-record bookmark))
+        (insert "\n")))))
+
+(defun bmkp-add-describe-bookmark-button (bookmark)
+  "Add an [External Form] button for BOOKMARK."
+  (with-current-buffer "*Help*"
+    (let ((buffer-read-only  nil))
+      ;; Add button to go to the bookmark entry in `*Bookmark List*'.
+      ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
+      (when (and (> emacs-major-version 21) ; In `help-mode.el'.
+                 (condition-case nil (require 'help-mode nil t) (error nil))
+                 (fboundp 'help-insert-xref-button))
+        (goto-char (point-max))
+        (insert "\n")
+        (help-insert-xref-button "[External Form]"
+                                 #'bmkp-describe-bookmark-button
+                                 (bookmark-name-from-record bookmark))
+        (insert "\n")))))
+
+(defun bmkp-add-describe-bookmark-internals-button (bookmark)
+  "Add an [Internal Form] button for BOOKMARK."
+  (with-current-buffer "*Help*"
+    (let ((buffer-read-only  nil))
+      ;; Add button to go to the bookmark entry in `*Bookmark List*'.
+      ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
+      (when (and (> emacs-major-version 21) ; In `help-mode.el'.
+                 (condition-case nil (require 'help-mode nil t) (error nil))
+                 (fboundp 'help-insert-xref-button))
+        (goto-char (point-max))
+        (insert "\n")
+        (help-insert-xref-button "[Internal Form]"
+                                 #'bmkp-describe-bookmark-internals-button
                                  (bookmark-name-from-record bookmark))
         (insert "\n")))))
 
@@ -9401,8 +9451,10 @@ If it is a record then it need not belong to `bookmark-alist'."
          (print-level   nil)            ; For `pp-to-string'
          (help-text     (format "Bookmark `%s'\n%s\n\n%s" bname (make-string (+ 11 (length bname)) ?-)
                                 (pp-to-string bmk))))
-    (bmkp-with-help-window "*Help*" (princ help-text))
-    (bmkp-add-jump-to-list-button bookmark)
+    (bmkp-with-help-window "*Help*"
+                           (princ help-text)
+                           (bmkp-add-describe-bookmark-button bookmark)
+                           (bmkp-add-jump-to-list-button bookmark))
     help-text))
 
 (defun bmkp-annotation-or-bookmark-description (bookmark)
