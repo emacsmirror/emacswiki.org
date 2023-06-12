@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 17 12:01:57 2023 (-0700)
+;; Last-Updated: Mon Jun 12 12:18:08 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 16882
+;;     Update #: 16887
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2023/06/12 dadams
+;;     Added:bmkp-describe-bookmark-button, bmkp-describe-bookmark-internals-button,
+;;           bmkp-add-describe-bookmark-button, bmkp-add-describe-bookmark-internals-button.
+;;     bmkp-describe-bookmark(-internals): Use bmkp-add-describe-bookmark(-internals)-button.
 ;; 2022/09/07 dadams
 ;;     bmkp-jump-function: Use arrayp, not vectorp (keyboard macros can be strings).
 ;; 2022/08/17 dadams
@@ -2626,6 +2630,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2023/06/12 dadams
+;;     Version: 2023.06.12
 ;; 2022/08/16 dadams
 ;;     Version: 2022.08.16
 ;; 2021/09/19 dadams
