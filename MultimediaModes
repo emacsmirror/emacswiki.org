@@ -19,5 +19,7 @@ But see MusicPlayers.
 * ThumbsMode -- image browsing
 * [[Tumme]] -- image browsing
 * EmacsImageViewer -- A simple image viewer.
+* EMMS - Emacs Multi-Media System, an application to play multimedia files from Emacs using external players
+
 ----
 CategoryModes
