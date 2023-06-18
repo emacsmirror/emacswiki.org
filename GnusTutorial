@@ -57,7 +57,7 @@ We tell Gnus all this with
                               :user "you"
                               :password "secret")))
 
-If a newsserver requires authentification, Gnus will prompt you for username
+If a newsserver requires authentication, Gnus will prompt you for username
 and password when it needs them (which is not every single time, because Gnus
 records them in memory for a time).  To avoid repeatedly entering username and
 password, put the following lines in ~/.authinfo:
