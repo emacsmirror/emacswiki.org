@@ -59,6 +59,8 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 * Use the improved menu bar provided by [[HelpMenuBarPlus|MenuBarPlus]].
 
+* Use the [https://github.com/Wilfred/helpful helpful] package for an enhanced help with more contextual information
+
 * Use the improved Emacs help provided by HelpPlus.
 
 * Enable a random TipOfTheDay.
