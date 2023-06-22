@@ -1,4 +1,4 @@
-There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration. These are useful in obtaining configuration snippets and learning Emacs.
+There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration. These are useful in obtaining configuration snippets and learning Emacs. In this context, it is also worth being aware of the [https://git.sr.ht/~pkal/ecg Emacs Configuration Generator]
 
 Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2022-08; some size numbers from 2016-01-16):
 
