@@ -132,127 +132,25 @@ You will need Cygwin installed to build it.
 
 = Run Emacs server automatically at windows startup =
 
-The script creates a .bat file in your shell:startup folder. It also adds a line to delete any old emacs server data that may not have gotten cleaned, if the previous shutdown was dirty. Tested on Windows 10.
-
-{{{
-# Path to startup file
-$startup_file = "$([Environment]::GetFolderPath('Startup'))\StartEmacsServer.bat"
-
-# Introduce variable HOME:
-# 1. for simplicity
-# 2. runemacs.exe expects it to be
-#
-# %APPDATA% is chosen because runemacs.exe operates there
-#	https://www.gnu.org/software/emacs/manual/html_node/emacs/Find-Init.html#Find-Init
-#	https://www.gnu.org/software/emacs/manual/html_node/emacs/General-Variables.html#General-Variables
-New-Item $startup_file -type file
-Set-Content -Path $startup_file -Value "set HOME=%APPDATA%"
-
-# Clean previous server file info first
-Add-Content -Path $startup_file -Value "del /Q ""%HOME%/.emacs.d/server/*"""
-Add-Content -Path $startup_file -Value "runemacs.exe --daemon"
-
-}}}
-
------
-The above script munges batch file and PowerShell scripting. It no longer works in Windows 10. It may have done in early days of PowerShell. PS does not recognize the ##%VAR%## format of variable substitution. Those vars are just treated literally.
-
-This script runs in PowerShell. Tested in PS 7.1.5 and PS 5.1 (default on Win10). It writes a log file to the user *temp* folder for troubleshooting if needed.
-
-* Copy the script into a ##.ps1## file in a local folder.
-* Create a new shortcut in the StartUp folder.
-* Format of the shortcut
-** Path to PowerShell
-** Name of script
-** ##-ExecutionPolicy bypass## - ignore script restrictions for this script only
-** ##-NoProfile## - saves time and prevents unexpected interactions
-** ##-File## - name of script file, including absolute path
-* Example shortcut entry
-
-{{{
-"C:\Program Files\PowerShell\7\pwsh.exe" -ExecutionPolicy Bypass -NoProfile -File  C:\Users\micha\Dropbox\src\powershell\emacsclient-on-startup.ps1
-}}}
------
-{{{
-# Start Emacs in daemon mode on system startup
-# Michael Powe
-# Usage:
-# - put script in a local folder
-# - open the Startup folder (`shell:StartUp` in the File Explorer)
-# - create a new shortcut there and point it to the script.
-# - "C:\Program Files\PowerShell\7\pwsh.exe" -ExecutionPolicy Bypass -NoProfile -File  C:\Users\micha\Dropbox\src\powershell\emacsclient-on-startup.ps1
-# 20211106T013351
-
-$env:SERVER_HOME="$env:APPDATA\.emacs.d"
-
-# open log file
-# overwrites each time server is started
-# log file format:
-# {micha} [4] --> cat .\StartupPSLog.txt
-# 10:28:25.038 2021-11-08 Script started
-# 10:28:28.127 2021-11-08 Script removed old server
-# 10:28:28.137 2021-11-08 Starting server
-# 10:28:31.548 2021-11-08 New emacs daemon has Process Id 7784
-# 10:28:32.294 2021-11-08 Daemon started at 11/08/2021 10:28:28
-
-Set-Content -Path $env:TEMP\StartupPSLog.txt -Value (([datetime]::Now.ToString("HH:mm:ss.fff yyyy-MM-dd")) + (" Script started"))
-
-# Warning - PS is lousy at recursively deleting directories that contain subdirectories. Sometimes, it pukes.
-# Might need error trapping here.
-if(Test-Path $env:SERVER_HOME\server\){
-    # server directory found, remove artefacts
-	Remove-Item -Force -Recurse $env:SERVER_HOME\server\*.*
-	Add-Content -Path $env:TEMP\StartupPSLog.txt -Value (([datetime]::Now.ToString("HH:mm:ss.fff yyyy-MM-dd")) + (" Script removed old server"))
-} else {
-    # new server, go
-	Add-Content -Path $env:TEMP\StartupPSLog.txt -Value  (([datetime]::Now.ToString("HH:mm:ss.fff yyyy-MM-dd")) + (" Old server not found "))
-}
-
-Add-Content -Path $env:TEMP\StartupPSLog.txt -Value (([datetime]::Now.ToString("HH:mm:ss.fff yyyy-MM-dd")) + (" Starting server"))
-#
-# Do it
-#
-runemacs --daemon
-
-# make a space for the service to start before looking for it below. Otherwise, it may not have come up yet.
-Start-Sleep -Seconds 3
-
-Add-Content -Path $env:TEMP\StartupPSLog.txt -Value (([datetime]::Now.ToString("HH:mm:ss.fff yyyy-MM-dd")) + (" New emacs daemon has Process Id " + ((get-process "emacs").Id)))
-Add-Content -Path $env:TEMP\StartupPSLog.txt -Value (([datetime]::Now.ToString("HH:mm:ss.fff yyyy-MM-dd")) + (" Daemon started at " + ((get-process "emacs").StartTime)))
-
-}}}
-
--- Michael Powe, Mon Nov  8, 2021  3:03 PM
- 
------
-
-You can also open Explorer, type in ##shell:startup## in the address bar, and press enter. In this startup folder, create a shortcut by right clicking and selecting new->shortcut. When asked for location, put the following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon## where you have substituted the proper path to runemacs.exe. This shortcut will run at startup. You can double click on the shortcut to start the Emacs server if it is not already running.
-
-=== Simple server setup ===
-The following is an adaptation (clarification?) of the above.  It's not clear what language the above script is written in.  Rather than create a script to write a 3 line script, this modification gives the smallest setup I could create.
-
 Open Windows Explorer with `Win+E' and navigate to `shell:startup'.  Create a new file `StartEmacsServer.bat' using the right click context menu.  Right click this new file, select "Edit", and insert:
 
 {{{
-rem Sets HOME for current shell
+rem Sets HOME for current shell if you haven't set HOME environment variable already
 set HOME=%APPDATA%
 
-rem Clean previous server file info first
-del /q ""%HOME%\\.emacs.d\\server\\*""
-C:\emacs-27.1-x86_64\bin\runemacs.exe --daemon -c ""(setq default-directory "~/")""
-rem start "" "C:\Users\<user>\Desktop\emacsclientw.exe - Shortcut.lnk"
+del /q %HOME%\.emacs.d\server\*
+C:\path\to\emacs\bin\runemacs.exe --daemon --chdir %HOME%
 }}}
 
-`rem' is the Windows batch keyword for comments.  This script sets a HOME environment variable for the current cmd process, meaning it will not exist beyond the running of the script.  It then deletes the folder which contains Emacs server information.  `/q' means "quiet"; the user is not prompted whether to delete.  Double quotes are used to provide single quotes around the path, in case it contains spaces.  Finally, `runemacs.exe' is called with the `--daemon' flag, starting a background instance.  If you want to modify/debug this script, put `pause' at the end and the prompt will remain open.
+`rem' is the Windows batch keyword for comments.  This script sets a HOME environment variable for the current cmd process, meaning it will not exist beyond the running of the script.  It then deletes the folder which contains Emacs server information.  `/q' means "quiet"; the user is not prompted whether to delete.  You can use double quotes to provide single quotes around the path, in case it contains spaces.  Finally, `runemacs.exe' is called with the `--daemon' flag, starting a background instance.  If you want to modify/debug this script, put `pause' at the end and the prompt will remain open.
 
 Double clicking the script will start a new Emacs daemon.  To create a new frame, make a shortcut for `emacsclientw.exe'.  Right click on the shortcut and select "Properties". Set the "Target" as:
 
 {{{
-C:\emacs-27.1-x86_64\bin\emacsclientw.exe -create-frame --alternate-editor=""
+C:\path\to\emacs\bin\emacsclientw.exe -create-frame
 }}}
 
-This tells `emacsclientw.exe' to create a new frame within the Emacs daemon process.  If it fails, no alternative editor is to be opened.  Use this shortcut as the main entry point to Emacs.  In the last line of the above script, correct the path to match your shortcut and delete the leading `rem' to have a client frame open on startup.
-
+This tells `emacsclientw.exe' to create a new frame within the Emacs daemon process.  If it fails, no alternative editor is to be opened.  Use this shortcut as the main entry point to Emacs.
 
 == Debug Version ==
 Sometimes it is useful to be able to start up default autonomous copy of Emacs (not client/server), for example if you play with your config file and something gets messed up.
