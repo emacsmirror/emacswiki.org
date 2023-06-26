@@ -4,6 +4,8 @@ Modes and setups to help you write and perform music:
 
 * EmacsLive is a setup to help you run [http://overtone.github.io/ Overtone], "an open source audio environment designed to explore new musical ideas from synthesis and sampling to instrument building, live-coding and collaborative jamming" based on [http://clojure.org/ Clojure] and using the [http://supercollider.github.io/ SuperCollider] server
 
+* [https://tidalcycles.org/docs/getting-started/editor/Emacs/ Tidal Cycles] and Emacs. "Tidal Cycles … is software for making patterns with code, whether live coding music at algoraves or composing in the studio."
+
 * SuperCollider is a mode helping you to write !SuperCollider code directly
 
 * [http://chuck.cs.princeton.edu/ ChucK] Mode by Kao Cardoso Félix, based on code by Mikael Johansson, is [https://bitbucket.org/kaofelix/chuck-mode available from Bitbucket]
