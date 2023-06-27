@@ -32,6 +32,13 @@ The following macros implement the threading operators in Emacs Lisp.
         (dolist (form body result)
           (setq result (append (list (car form) result)
                                (cdr form))))))
+    (defmacro as-> (init name &rest forms)
+      (declare (indent 2))
+      (let ((result name))
+        `(let ((,result ,init))
+          ,@(loop for form in forms
+               collect `(setq ,result ,form))
+       ,result)))
 
 Note: good idea ! Another implementation [http://github.com/sroccaserra/emacs/blob/master/tools.el here] (look for "trush"), ported more or less directly from the Clojure macro. Like the original, it works on examples like this :
 
