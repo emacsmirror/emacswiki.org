@@ -21,7 +21,7 @@ Check the [http://www.youtube.com/watch?v=jNSrrQwcCr4 screencast]!
 
 == Multi-eshell ==
 
-[http://cims.nyu.edu/~stucchio/software/elisp/multi-eshell.el.html multi-eshell.el] exists. It maintains a ring of shell buffers, and has 3 useful functions:
+[https://github.com/stucchio/newemacsconfig/blob/master/lisp/multi-eshell.el multi-eshell.el] exists. It maintains a ring of shell buffers, and has 3 useful functions:
 
 multi-eshell -- Creates a NEW shell and switches to it, even if one already exists.
 
