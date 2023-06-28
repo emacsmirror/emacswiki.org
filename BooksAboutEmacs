@@ -1,5 +1,14 @@
 This page lists publications about Emacs on the Web and in print. CategoryDocumentation has information on the help and manuals in Emacs. The order is generally alphabetical.
 
+== Printed GNU Emacs Manuals ==
+
+The electronic manuals integrated in Emacs (EmacsLispIntro, EmacsLispReference, and EmacsManual) are also available in print from GnuPress, so you can read them without having to stare at a monitor. These books are excellent and, additionally, buying them supports the FreeSoftwareFoundation.
+
+Some people, however, believe that the GnuFreeDocumentationLicense is not really "free" -- see EmacsManualLicense. For the EmacsWiki position on licensing, see the discussion started [[2003-11-16]]
+about moving from the FDL to the current EmacsWiki license (see the footer of each page).
+
+----
+
 == Emacs for Writers ==
 
 * [[http://therandymon.com/woodnotes/emacs-for-writers/emacs-for-writers.html Emacs for Writers by Randal Wood]] -- a short guide on how to use Emacs for writing text (not code), which covers most functions appropriate for word processing, but it may be useful for beginners as well.
@@ -92,12 +101,7 @@ convenience if you have to hit ESC as your meta.
 
 ** Bob GlicksteinΓÇÖs book about extending GnuEmacs, though a little out of date now, some of the information in there is still useful.
 
-== Printed Manuals ==
 
-The electronic manuals integrated in Emacs (EmacsLispIntro, EmacsLispReference, and EmacsManual) are also available in print from GnuPress, so you can read them without having to stare at a monitor. These books are excellent and, additionally, buying them supports the FreeSoftwareFoundation.
-
-Some people, however, believe that the GnuFreeDocumentationLicense is not really "free" -- see EmacsManualLicense. For the EmacsWiki position on licensing, see the discussion started [[2003-11-16]]
-about moving from the FDL to the current EmacsWiki license (see the footer of each page).
 
 == Publishing with Emacs, OrgMode and LeanPub ==
 
@@ -127,6 +131,8 @@ The authors of the book may not own the copyright.  They probably don't if the b
 == Use GNU Emacs - The plain text computing environment ==
 
 * [[https://www2.lib.uchicago.edu/keith/emacs/ Use GNU Emacs]] - written by Keith Waclena. This is a great supplement to read alongside the emacs manual, or as a starting point for the EmacsNewbie. Updated to describe Emacs 28.2.
+
+
 
 == XEmacs auf Gut Deutsch ==
 
