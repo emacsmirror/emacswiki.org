@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan 10 14:37:45 2023 (-0800)
+;; Last-Updated: Thu Jun 29 13:25:33 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1371
+;;     Update #: 1376
 ;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -410,7 +410,7 @@
 (require 'second-sel nil t) ;; (no error if not found): secondary-yank|select|move|swap,
                             ;; isearch-yank-secondary, yank-pop-commands,
                             ;; isearch-yank-secondary, set-secondary-start,
-                            ;; secondary-save-then-kill
+                            ;; secondary-save-then-kill, secondary-to-register
 (require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'fit-frame nil t) ;; (no error if not found):
                            ;; fit-frame, fit-frame-or-mouse-drag-vertical-line
@@ -494,13 +494,15 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (eval-after-load "second-sel"
   '(progn
-    (global-set-key (kbd "C-M-y")  (if (fboundp 'secondary-yank|select|move|swap)
-                                       'secondary-yank|select|move|swap
-                                     'secondary-dwim))                           ; `C-M-y'
-    (define-key esc-map "y"                     'yank-pop-commands)              ; `M-y'
-    (define-key isearch-mode-map (kbd "C-M-y")  'isearch-yank-secondary)         ; `C-M-y'
-    (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)            ;`C-x C-M-SPC'
-    (global-set-key (kbd "C-x C-M-<return>")    'secondary-save-then-kill)))     ;`C-x C-M-RET'
+     (global-set-key (kbd "C-M-y")  (if (fboundp 'secondary-yank|select|move|swap)
+                                        'secondary-yank|select|move|swap
+                                      'secondary-dwim))                          ; `C-M-y'
+     (define-key esc-map "y"                     'yank-pop-commands)             ; `M-y'
+     (define-key isearch-mode-map (kbd "C-M-y")  'isearch-yank-secondary)        ; `C-M-y'
+     (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)           ;`C-x C-M-SPC'
+     (global-set-key (kbd "C-x C-M-<return>")    'secondary-save-then-kill)      ;`C-x C-M-RET'
+     (when (keymapp 'ctl-x-r-map)        ; Emacs 23+
+       (define-key ctl-x-r-map (kbd "S")         'secondary-to-register))))      ; `C-x r S'
 
 (eval-after-load "narrow-indirect"
   '(progn
