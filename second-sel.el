@@ -4,13 +4,13 @@
 ;; Description: Secondary selection commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2008-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2023, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 16 10:51:59 2018 (-0700)
+;; Last-Updated: Thu Jun 29 13:13:05 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 625
+;;     Update #: 634
 ;; URL: https://www.emacswiki.org/emacs/download/second-sel.el
 ;; Doc URL: https://emacswiki.org/emacs/SecondarySelection#second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
@@ -33,8 +33,8 @@
 ;;    `rotate-secondary-selection-yank-pointer',
 ;;    `secondary-yank|select|move|swap', `secondary-save-then-kill',
 ;;    `secondary-swap-region', `secondary-to-primary',
-;;    `set-secondary-start', `yank-pop-commands',
-;;    `yank-pop-secondary', `yank-secondary'.
+;;    `secondary-to-register', `set-secondary-start',
+;;    `yank-pop-commands', `yank-pop-secondary', `yank-secondary'.
 ;;
 ;;  User options defined here:
 ;;
@@ -45,7 +45,8 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `add-secondary-to-ring', `current-secondary-selection',
-;;    `second-sel-msg', `secondary-selection-limits'.
+;;    `get-secondary-selection', `second-sel-msg',
+;;    `secondary-selection-limits'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -69,6 +70,7 @@
 ;;   (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)
 ;;   (global-set-key (kbd "C-x C-M-<return>")    'secondary-save-then-kill)
 ;;   (global-set-key (kbd "C-M-<mouse-3>")       'mouse-secondary-save-then-kill)
+;;   (define-key ctl-x-r-map (kbd "S")           'secondary-to-register)
 ;;
 ;;
 ;;  You can enhance what `second-sel.el' offers in these ways:
@@ -102,6 +104,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/06/29 dadams
+;;     Added: secondary-to-register, get-secondary-selection.
 ;; 2018/09/16 dadams
 ;;     secondary-save-then-kill-1: If not initiated by mouse then do not extend to full word etc.
 ;;                                 (Fourth cond clause is mouse-specific.)
@@ -250,6 +254,12 @@ Function is called with two parameters, START and END corresponding to
 the value of the mark and point; it is guaranteed that START <= END.
 Normally set from the UNDO element of a yank-handler; see `insert-for-yank'."))
 
+(defun get-secondary-selection ()
+  "Return the value of the secondary selection, or nil if none."
+  (if (fboundp 'gui-get-selection)
+      (gui-get-selection 'SECONDARY)    ; Emacs 25.1+.
+    (x-get-selection 'SECONDARY)))
+
 (defalias 'secondary-dwim 'secondary-yank|select|move|swap)
 (if (< emacs-major-version 22)
     (make-obsolete 'secondary-dwim 'secondary-yank|select|move|swap)
@@ -307,9 +317,7 @@ selection yanked."
                   (current-secondary-selection (cond ((consp arg) 0)
                                                      ((eq arg '-) -2)
                                                      (t (1- arg))))
-                (if (fboundp 'gui-get-selection)
-                    (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
-                  (x-get-selection 'SECONDARY)))))
+                (get-secondary-selection))))
     (unless sel (error "No secondary selection"))
     (funcall (if (fboundp 'insert-for-yank) 'insert-for-yank 'insert) sel))
   (when (consp arg)
@@ -358,9 +366,7 @@ Pop to the buffer that has the secondary selection, and change it to
 the region.  Leave behind the secondary selection in place of the
 original buffer's region."
   (interactive "r")
-  (let ((osecondary  (if (fboundp 'gui-get-selection)
-                         (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
-                       (x-get-selection 'SECONDARY)))
+  (let ((osecondary  (get-secondary-selection))
         osec-buf osec-start osec-end)
     (unless (and osecondary (overlayp mouse-secondary-overlay))
       (error "No secondary selection"))
@@ -399,9 +405,7 @@ original buffer's region."
   "Convert the secondary selection into the active region.
 Select the secondary selection and pop to its buffer."
   (interactive)
-  (let ((secondary  (if (fboundp 'gui-get-selection)
-                        (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
-                      (x-get-selection 'SECONDARY))))
+  (let ((secondary  (get-secondary-selection)))
     (unless (and secondary (overlayp mouse-secondary-overlay))
       (error "No secondary selection"))
     (if (fboundp 'gui-set-selection)
@@ -414,6 +418,20 @@ Select the secondary selection and pop to its buffer."
   (push-mark (overlay-start mouse-secondary-overlay) 'nomsg 'activate)
   (goto-char (overlay-end mouse-secondary-overlay))
   (setq deactivate-mark  nil))
+
+;;;###autoload
+(defun secondary-to-register (register &optional text msgp)
+  "Copy secondary selection to REGISTER.
+You're prompted for the REGISTER to use.
+
+When called from Lisp:
+  Non-nil TEXT means use that instead of the secondary-selection text.
+  Non-nil MSGP means echo a \"Saved\" message."
+  (interactive (let ((sel  (get-secondary-selection)))
+                 (unless sel (error "No secondary selection"))
+                 (list (register-read-with-preview "Copy to register: ") sel t)))
+  (set-register register (or text  (get-secondary-selection)))
+  (when msgp (message "Saved secondary selection to register %c" register)))
 
 ;; Like `kill-new'.
 (defun add-secondary-to-ring (string &optional replace yank-handler)
@@ -533,9 +551,7 @@ move the yanking point; just return the Nth kill forward."
 (defun secondary-selection-limits ()
   "Return a list (BUFFER START END) of secondary-selection info.
 Return nil if there is no secondary selection."
-  (let ((sel  (if (fboundp 'gui-get-selection)
-                  (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
-                (x-get-selection 'SECONDARY))))
+  (let ((sel  (get-secondary-selection)))
     (and sel
          (overlayp mouse-secondary-overlay)
          (list (overlay-buffer mouse-secondary-overlay)
