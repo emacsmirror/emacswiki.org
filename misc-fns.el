@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 30 11:37:25 2021 (-0700)
+;; Last-Updated: Tue Jul  4 08:17:34 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 685
+;;     Update #: 689
 ;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
@@ -31,6 +31,12 @@
 ;;   (require 'misc-fns)
 ;;   (add-hook '<MODE>-hook 'notify-user-of-mode), for each <MODE>.
 ;;
+;;  You might want to put this in your init file as well, to include
+;;  the name of the current buffer in the message telling you the
+;;  state of `read-only-mode':
+;;
+;;   (add-hook 'read-only-mode-hook 'read-only-echo-buffer)
+;;
 ;;
 ;;  Face defined here: `notifying-user-of-mode'.
 ;;
@@ -47,15 +53,17 @@
 ;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
 ;;    `mode-symbol-p', `mod-signed', `notify-user-of-mode',
 ;;    `plist-to-alist', `plist-to-alist-1', `plist-to-dotted-alist',
-;;    `read-mode-name', `region-or-buffer-limits', `signum',
-;;    `some-apply-p' `string-after-p', `string-before-p',
-;;    `undefine-keys-bound-to', `undefine-killer-commands',
-;;    `unique-name'.
+;;    `read-mode-name', `read-only-echo-buffer',
+;;    `region-or-buffer-limits', `signum', `some-apply-p'
+;;    `string-after-p', `string-before-p', `undefine-keys-bound-to',
+;;    `undefine-killer-commands', `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2023/07/04 dadams
+;;     Added: read-only-echo-buffer.
 ;; 2021/07/30 dadams
 ;;     Added: plist-to-alist, plist-to-dotted-alist, plist-to-alist-1.
 ;; 2016/10/16 dadams
@@ -369,6 +377,12 @@ Useful as a mode hook.  For example:
                         (format-mode-line mode-name)
                       mode-name)
              (substitute-command-keys "\\[describe-mode]"))))
+
+(defun read-only-echo-buffer ()
+  "Echo `buffer-read-only' value, showing buffer name."
+  (message "Read-only mode is %s in buffer `%s'"
+           (if buffer-read-only 'ON 'OFF)
+           (current-buffer)))
 
 (defun mode-ancestors (mode)
   "Return the ancestor modes, a list of symbols, for symbol MODE.
