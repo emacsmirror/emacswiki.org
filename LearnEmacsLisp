@@ -31,6 +31,7 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 * Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
 * Check out examples in ElispCookbook
 * Check out existing ExampleConfigurations
+* check out [https://github.com/p3r7/awesome-elisp Awesome elisp] on GitHub. 
 
 == General Lisp Resources ==
 
