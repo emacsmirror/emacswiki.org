@@ -1,7 +1,7 @@
 == Emacs for ChromeBooks ==
 Emacs can be run on a ChromeBook by using the Linux system for Chromebooks.
 
-Once upon a time, Chrome had a development environment called NaCl (Native Client).  It could run many linux utilities, and had a virtual file system available to it, and an Emacs port, so you could do software development with Emacs on a ChromeBook (and in fact on any browser that supported Chrome. However, a better way of supporting apps on the web was found, Web Assembly.  NaCl was removed in favor of Web Assembly.  Emacs can in theory be ported to Web Assembly someday.  Since Emacs relies on many of the Gnu utilities such as find, however, porting Emacs might be best to wait until those other utilities are available.
+Once upon a time, Chrome had a development environment called NaCl (Native Client).  It could run many linux utilities, and had a virtual file system available to it, and an Emacs port, so you could do software development with Emacs on a ChromeBook (and in fact on any browser that supported Chrome). However, a better way of supporting apps on the web was found, Web Assembly.  NaCl was removed in favor of Web Assembly.  Emacs can in theory be ported to Web Assembly someday.  Since Emacs relies on many of the Gnu utilities such as find, however, porting Emacs might be best to wait until those other utilities are available.
 
 There is an alternative, though, so we don't need to wait for Web Assembly, we can use the Linux system for ChromeBooks (formerly called Crostini).
 
