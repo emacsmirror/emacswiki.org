@@ -1,73 +1,18 @@
-== Emacs for ChromeBooks and Chrome ==
-The Chrome Web Store has a DevEnv app with Emacs built into the development environment (it also has gcc, make, and other tools one would use to write software). https://chrome.google.com/webstore/detail/nacl-development-environm/aljpgkjeipgnmdpikaajmnepbcfkglfa.  It is currently at Beta quality level, but should be good enough for many users.
+== Emacs for ChromeBooks ==
+Emacs can be run on a ChromeBook by using the Linux system for Chromebooks.
 
+Once upon a time, Chrome had a development environment called NaCl (Native Client).  It could run many linux utilities, and had a virtual file system available to it, and an Emacs port, so you could do software development with Emacs on a ChromeBook (and in fact on any browser that supported Chrome. However, a better way of supporting apps on the web was found, Web Assembly.  NaCl was removed in favor of Web Assembly.  Emacs can in theory be ported to Web Assembly someday.  Since Emacs relies on many of the Gnu utilities such as find, however, porting Emacs might be best to wait until those other utilities are available.
 
+There is an alternative, though, so we don't need to wait for Web Assembly, we can use the Linux system for ChromeBooks (formerly called Crostini).
 
 
 == Installation ==
-* On the ChromeBook or in Chrome, go to “about://flags”, enable “Native Client”, and restart Chrome (using the Find on Page feature helps).
-* Go to Chrome Web Store, and install the NaCl DevEnv. (Search for DevEnv, or use link above).
-* Launch the DevEnv app (it may need a few minutes to complete installation).
-* Type “emacs” at the command line.
+Instructions for setting up Linux on a Chromebook are here: https://support.google.com/chromebook/answer/9145439.
+Emacs can be installed as a normal apt package
+sudo apt-get update
+sudo apt-get install emacs
 
 
-
-== General Notes ==
-
-What you get with DevEnv:
-The DevEnv comes with everything you need to build software: gcc, make, interpreters (Python, LUA, Ruby), editors, Unix utilities such as find and grep, and a sandbox file system.  You can mount google drive (GDrive, you can get free accounts) to get files into and out of this sandbox file system (instructions below).
-
-Known issues list (this will updated as things get fixed): 
-https://docs.google.com/document/d/1gEUBUkVDQR1oDx18ZSM39PlbQBvlmNMwOQBhbSm_9mc﻿
-
-Things that are known to work as of April 2016 (some highlights, see link above for a full and current list):
-* Normal editing and editing keys, with file and buffer operations.
-* syntax coloring, c-mode, tabs to fix indent
-* Emacs Package Managers (such as melpa)
-* Using a .emacs or .emacs.d/init.el file
-* M-x eshell
-
-
-Packages known to work:
-* autocomplete
-
-
-Things that are known not to work as of April 2016 (highlights, see the link for a full and current list):
-* dired mode
-* TRAMP mode 
-* ARM ChromeBooks (The DevEnv install fails)
-* X-windows mode 
-
-
-Things that are not known if they work yet:
-There’s a ton of Emacs packages out there, and not all of them have been tested yet.  Please report broken packages.  Packages that people report as working will get added to the list of known working packages.
-
-
-Customizing your Emacs (and getting files into and out of the dev env):
-On a ChromeBook, you can put your custom elisp in your GDrive folder, and mount your GDrive folder.  You can then either copy the elisp files to your home directory as normal, or start Emacs with a command line argument pointing it at your .emacs.
-
-Emacs also runs inside Chrome as a Chrome app on Windows, Mac, and Linux.  It may not make a lot of sense when you could run native Emacs for that platform, but it works if you want to do it, or just kick the tires.  You can mount a local folder from the Windows, Mac, or Linux file system into the dev environment.
-
-To mount GDrive, look at the title bar of the DevEnv window, and click on the three dots.  Click the “choose folder” button. This will allow you to mount a folder from GDrive (ChromeBook only) or the host machine (chrome in Windows, Mac, or Linux) into your dev environment file namespace (/mnt/local by default).
-
-If you choose to use your elisp from a shared drive instead of copying it into the devenv sandbox filesystem, you can start emacs with a command line pointing to the initialization file, type: 
-emacs -q -l <path-to-mounted-files>/my-init-file.el
-
-You can instead create your own ~/.emacs or ~/.emacs.d/init.el file by hand, and put customizations in it, these will be used.
-
-Alternately, you can put all your elisp into a zip file, serve it from a desktop somewhere, fetch it with curl, and unzip it in the devenv to your ~ directory.
-
-As another alternative, you can use a package manager archive such as melpa to install custom elisp packages, and edit your init.el or .emacs by hand.
-
-The DevEnv provides support for gcc, so you can actually do regular code development inside the NaCl dev env, and then export the compiled binaries when you are done, if you like.  Think of the DevEnv as a linux terminal where you can do regular command line work like you do in Linux, with some things not implemented yet.  You can even do VI (though now you have Emacs, I’m not sure why you would want to ^_^).
-
-Troubleshooting:
-If you already have DevEnv installed, you may need to force update it (delete the NaCl Dev Env chrome app and re-add it).
-
-Bugs? Feature requests?  Help prioritizing the stuff that is known not to work yet?
-email: petewil at google dot com
-
-Thanks to the NaCl team!  Without their help Emacs on a ChromeBook would never have happened.﻿
 
 == Maintainers on EmacsWiki ==
 
