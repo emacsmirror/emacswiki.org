@@ -89,6 +89,8 @@ Monitor the clipboard and insert any change into the kill-ring.
 It makes it easier to use ##yank-pop## from several inputs outside Emacs.
 https://github.com/bburns/clipmon
 
+Quick note: As of July 2023, because of this issue: https://github.com/bburns/clipmon/issues/3, clipmon may cause emacs to hang if you also use gui dialog boxes. obar's suggestion re: copyq in a comment regarding that issue provides a simple and effective alternative for integrating the clipboard history with the kill-ring. Indeed, it was the only workable method that I could find. I could not get either ##gpaste##/##gpastel## or ##cliphist## to work for me.
+
 == XEmacs ==
 
  (setq interprogram-cut-function 'own-clipboard)
