@@ -3,7 +3,7 @@
 
 The Arduino IDE is useful for beginners, but Emacs is better.
 
-* [https://github.com/bookest/arduino-mode arduino-mode.el] - major mode for editing .ino and .pde files.
+* [https://repo.or.cz/arduino-mode.git arduino-mode.el] - major mode for editing .ino and .pde files.
 * CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports Arduino sketch projects, enabling compilation and uploading sketches to your microcontroller.
 
 To compile sketches outside of the Arduino IDE, you will need to use [https://github.com/sudar/Arduino-Makefile Arduino.mk] which comes with the Arduino development environment.  This enables command line compilation of your sketches, and is used by the CEDET support.
@@ -75,10 +75,10 @@ Then, following the INSTALL file, add this to your emacs config file:
 You must add the last line in order to tell CEDET the path where the Arduino libraries are.
 === Install Arduino mode ===
 
-Go to your emacs config directory and get a git copy of the [https://github.com/bookest/arduino-mode Arduino-mode]:
+Go to your emacs config directory and get a git copy of the [https://repo.or.cz/arduino-mode.git Arduino-mode]:
 
 <pre>
-~/.emacs.d/vendor $ git clone git://github.com/bookest/arduino-mode.git
+~/.emacs.d/vendor $ git clone git://repo.or.cz/arduino-mode.git
 </pre>
 
 Configure your emacs init file to use it:
