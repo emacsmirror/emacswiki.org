@@ -166,7 +166,9 @@ This can then be installed in ##~/Library/LaunchAgents## and loaded via:
 
    launchctl load -w ~/Library/LaunchAgents/gnu.emacs.daemon.plist
 
-For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
+For further instructions see [https://web.archive.org/web/20091207041756/http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd]
+
+To set environment variable(s) for the daemon, add an <code>EnvironmentVariables <dictionary of strings></code> section to the plist file. See the <em>launchd.plist</em> man page for details <code>man 5 launchd.plist</code> for details.
 
 === Microsoft Windows ===
 
