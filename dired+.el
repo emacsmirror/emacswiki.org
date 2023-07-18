@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2023.05.28
+;; Version: 2023.07.18
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 28 08:14:30 2023 (-0700)
+;; Last-Updated: Tue Jul 18 09:34:44 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 13477
+;;     Update #: 13544
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -981,7 +981,8 @@
 ;;  `dired-insert-subdir-newpos' - If not a descendant, put at eob.
 ;;  `dired-insert-subdir-validate' - Do nothing: no restrictions.
 ;;  `dired-do-touch' - Zero prefix arg creates empty file.
-;;  `dired-do-kill-lines' - Added optional arg INIT-COUNT.
+;;  `dired-kill-line' - Add optional arg MSGP and confirmation msg.
+;;  `dired-do-kill-lines' - Added optional args INIT-COUNT and BUFFER.
 ;;  `dired-maybe-insert-subdir' - Go back to subdir line if in listing.
 ;;  `dired-handle-overwrite' - Added optional arg FROM, for listing.
 ;;  `dired-copy-file(-recursive)', `dired-hardlink', `dired-query',
@@ -1018,6 +1019,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/07/18 dadams
+;;     Added redefinition of dired-kill-line.
+;;     dired-do-kill-lines: Added optional arg BUFFER.
+;;     diredp-omit-(un)marked: Added optional args ARG and MSGP.
+;;     dired-do-kill-lines, diredp-omit-(un)marked, dired-omit-expunge: Echo buffer name in confirmation msg.
+;;     diredp-multiple-omit-menu, diredp-menu-bar-marks-menu, diredp-hide/show-menu: Added Revert menu item.
 ;; 2023/05/28 dadams
 ;;     diredp-omit-files-font-lock-regexp, diredp-recent-files-quit-kills-flag: Added autoload cookie.
 ;; 2023/01/29 dadams
@@ -3607,10 +3614,41 @@ into the minibuffer."
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
 ;;
-;; 1. Added optional arg INIT-COUNT.
-;; 2. Changed doc to speak of removing, not killing.
+;; 1. Added optional argument MSGP.
+;; 2. Show confirmation message.
+
+(defun dired-kill-line (&optional arg msgp)
+  "Kill the current line (not the files).
+With a prefix argument, kill that many lines starting with the current line.
+\(A negative argument kills backward.)"
+  (interactive "P\np")
+  (setq arg  (prefix-numeric-value arg))
+  (let ((count  arg)
+        buffer-read-only file)
+    (while (/= 0 arg)
+      (setq file  (dired-get-filename nil t))
+      (if (not file)
+	  (error "Can only kill file lines")
+	(save-excursion (and file  (dired-goto-subdir file)  (dired-kill-subdir)))
+	(delete-region (line-beginning-position) (progn (forward-line 1) (point)))
+	(if (> arg 0)
+	    (setq arg  (1- arg))
+	  (setq arg  (1+ arg))
+	  (forward-line -1))))
+    (dired-move-to-filename)
+    (when msgp (message "Killed %d line%s in `%s'" count (dired-plural-s count) (current-buffer)))))
+
+
+;; REPLACE ORIGINAL in `dired-aux.el'.
 ;;
-(defun dired-do-kill-lines (&optional arg fmt init-count)
+;; 1. Added optional args INIT-COUNT and BUFFER.  Echo BUFFER in confirmation message.
+;; 2. Show confirmation msg even when prefix arg is used.
+;; 3. Changed doc to speak of removing, not killing.
+;;
+;; Accommodates vanilla callers, which provide FMT accepting only number of lines and plural indication,
+;; but also allows Dired+ callers that provide FMT accepting also BUFFER.
+;;
+(defun dired-do-kill-lines (&optional arg fmt init-count buffer)
   "Remove all marked lines, or the next ARG lines.
 The files or directories listed on those lines are _not_ deleted.
 Only the Dired listing is affected.  To restore the removals, use \\<dired-mode-map>`\\[revert-buffer]'.
@@ -3627,22 +3665,36 @@ To remove a subdir listing _without_ removing the subdir's line in its
 parent listing, go to the header line of the subdir listing and use
 this command with any prefix arg.
 
-When called from Lisp, non-nil INIT-COUNT is added to the number of
-lines removed by this invocation, for the reporting message."
-  ;; Returns count of killed lines.  FMT="" suppresses message.
+When called from Lisp:
+
+* Non-nil and non-\"\" FMT is a `format' string for `message'.  It
+  must have a single %d and a single %s, in that order, to show the
+  number of lines and `dired-plural-s' of that number, respectively.
+  It can optionally have a single %s for the BUFFER, after the others.
+  If FMT is \"\" then no message is shown.
+* Non-nil INIT-COUNT is added to the number of lines removed by this
+  invocation, for the reporting message.
+* Non-nil BUFFER is the buffer to report on; nil means current buffer."
   (interactive "P")
   (if arg
-      (if (dired-get-subdir) (dired-kill-subdir) (dired-kill-line arg))
+      (if (dired-get-subdir) (dired-kill-subdir) (dired-kill-line arg 'MSGP))
     (save-excursion
       (goto-char (point-min))
       (let ((count   (or init-count  0))
             (regexp  (dired-marker-regexp))
+            (buf     (or buffer  (current-buffer)))
             buffer-read-only)
         (while (and (not (eobp))  (re-search-forward regexp nil t))
           (setq count  (1+ count))
           (delete-region (line-beginning-position) (progn (forward-line 1) (point))))
-        (unless (equal "" fmt) (message (or fmt "Killed %d line%s.") count (dired-plural-s count)))
-        count))))
+        ;; The hair is that there are vanilla callers that provide a FMT that doesn't allow for buffer.
+        (unless (equal "" fmt)
+          (if fmt
+              (if buffer
+                  (message fmt count (dired-plural-s count) buf) ; Dired+ callers.
+                (message fmt count (dired-plural-s count))) ; For vanilla compatibility (w/o buffer).
+            (message "Killed %d line%s in `%s'" count (dired-plural-s count) buf)))
+        count))))                       ; Return count of killed lines.
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -10007,25 +10059,28 @@ and FILE is expanded in `default-directory'."
       (dired-relist-entry (expand-file-name file)))))
 
 ;;;###autoload
-(defun diredp-omit-marked ()            ; Not bound
-  "Omit lines of marked files.  Return the number of lines omitted."
-  (interactive)
+(defun diredp-omit-marked (&optional arg msgp)            ; Not bound
+  "Remove lines of marked (or next prefix argument) files.
+Return the number of lines omitted."
+  (interactive "P\np")
   (let ((old-modified-p  (buffer-modified-p))
+        (buf             (current-buffer))
         count)
-    (when (interactive-p) (message "Omitting marked lines..."))
-    (setq count  (dired-do-kill-lines nil "Omitted %d line%s."))
+    (when msgp (message "Omitting marked lines in `%s'..." buf))
+    (setq count  (dired-do-kill-lines arg (if msgp (format "Omitted %%d line%%s in `%s'" buf) "")))
     (set-buffer-modified-p old-modified-p) ; So no `%*' appear in mode-line.
     count))
 
 ;;;###autoload
-(defun diredp-omit-unmarked ()          ; Not bound
-  "Omit lines of unmarked files.  Return the number of lines omitted."
-  (interactive)
+(defun diredp-omit-unmarked (&optional arg msgp)          ; Not bound
+  "Remove lines of unmarked (or next prefix argument) files.
+Return the number of lines omitted."
+  (interactive "P\np")
   (let ((old-modified-p  (buffer-modified-p))
         count)
     (dired-toggle-marks)
-    (message "Omitting unmarked lines...")
-    (setq count  (diredp-omit-marked))
+    (when msgp (message "Omitting marked lines in `%s'..." (current-buffer)))
+    (setq count  (diredp-omit-marked arg msgp))
     (dired-toggle-marks)                ; Marks all except `.', `..'
     (set-buffer-modified-p old-modified-p) ; So no `%*' appear in mode-line.
     count))
@@ -11787,7 +11842,7 @@ When nil, don't show messages."))
   ;; Added optional args LINEP and INIT-COUNT.
   ;;
   (defun dired-omit-expunge (&optional regexp linep init-count)
-    "Erase all unmarked files whose names match REGEXP.
+    "Remove lines of all unmarked files whose names match REGEXP.
 With a prefix arg (non-nil LINEP when called from Lisp), match REGEXP
 against the whole line.  Otherwise, match it against the file name.
 
@@ -11831,7 +11886,10 @@ the status message."
                                                     (car dired-directory))))))
                   (when dired-omit-verbose (message "(Nothing to omit)"))
                 (setq count  (+ count
-                                (dired-do-kill-lines nil (if dired-omit-verbose "Omitted %d line%s" "") init-count)))
+                                (dired-do-kill-lines
+                                 nil
+                                 (if dired-omit-verbose (format "Omitted %%d line%%s in `%s'" (current-buffer)) "")
+                                 init-count)))
                 (force-mode-line-update))))
           ;; Try to preserve modified state of buffer, so `%*' doesn't appear in `mode-line'.
           (set-buffer-modified-p (and old-modified-p  (save-excursion (goto-char (point-min))
@@ -15743,10 +15801,12 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Omit' submenu for Dired menu-bar `Multiple' menu.")
 (define-key diredp-menu-bar-multiple-menu [multiple-omit] (cons "Omit" diredp-multiple-omit-menu))
 
+(define-key diredp-multiple-omit-menu [revert]
+  '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
 (define-key diredp-multiple-omit-menu [omit-unmarked]
-  '(menu-item "Omit Unmarked" diredp-omit-unmarked :help "Hide lines of unmarked files"))
+  '(menu-item "Omit Unmarked" diredp-omit-unmarked :help "Remove lines of unmarked (or next N) files"))
 (define-key diredp-multiple-omit-menu [omit-marked]
-  '(menu-item "Omit Marked" diredp-omit-marked :help "Hide lines of marked files"))
+  '(menu-item "Omit Marked" diredp-omit-marked :help "Remove lines of marked (or next N) files"))
 
 
 ;; `Multiple' > `Delete' menu.
@@ -16388,10 +16448,12 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Omit' submenu for Dired menu-bar `Marks' menu.")
 (define-key diredp-menu-bar-marks-menu [marks-omit] (cons "Omit" diredp-marks-omit-menu))
 
+(define-key diredp-menu-bar-marks-menu [revert]
+  '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
 (define-key diredp-marks-omit-menu [marks-omit-unmarked]
-  '(menu-item "Omit Unmarked" diredp-omit-unmarked :help "Hide lines of unmarked files"))
+  '(menu-item "Omit Unmarked" diredp-omit-unmarked :help "Remove lines of unmarked (or next N) files"))
 (define-key diredp-marks-omit-menu [marks-omit-marked]
-  '(menu-item "Omit Marked" diredp-omit-marked :help "Hide lines of marked files"))
+  '(menu-item "Omit Marked" diredp-omit-marked :help "Remove lines of marked (or next N) files"))
 
 
 ;; `Marks' > `Flag' menu.
@@ -16619,6 +16681,8 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Hide/Show' submenu for Dired menu-bar `Dir' menu.")
 (define-key diredp-menu-bar-dir-menu [hide-show] (cons "Hide/Show" diredp-hide/show-menu))
 
+(define-key diredp-hide/show-menu [revert]
+  '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
 (when (fboundp 'dired-omit-mode)
   (define-key diredp-hide/show-menu [dired-omit-mode]
     '(menu-item "Hide/Show Uninteresting (Omit Mode)" dired-omit-mode
