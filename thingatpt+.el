@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Fri Feb  4 13:39:14 2022 (-0800)
+;; Last-Updated: Sun Jul 23 15:00:25 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 2397
+;;     Update #: 2405
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
@@ -94,6 +94,11 @@
 ;;    plus the same functions without the prefix `tap-', if you invoke
 ;;    `tap-redefine-std-fns'.
 ;;
+;;
+;;  ***** NOTE: The following function defined in `thingatpt.el'
+;;              has been REDEFINED HERE:
+;;
+;;    `number-at-point' (Emacs 25+).
 ;;
 ;;  A REMINDER (the doc strings are not so great):
 ;;
@@ -253,6 +258,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/07/23 dadams
+;;     Added redefinition of Emacs 25+ misguided version of number-at-point.
 ;; 2019/10/25 dadams
 ;;     tap-bounds-of-string-at-point:
 ;;       Use char-syntax. Don't respect only " as the string delimiter.
@@ -1517,6 +1524,22 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
   "Return bounds of vector at point.
 Return nil if none is found."
   (and (tap-vector-at-point)  (tap-bounds-of-thing-at-point 'sexp)))
+
+
+;; REPLACES ORIGINAL in `thingatpt.el'
+;;
+;; Restore vanilla definition from prior to Emacs 25.
+;;
+;; Emacs misguidedly redefined `number-at-point' in Emacs 25, so that it returns the number
+;; BEFORE point, instead of returning nil when point is just after a number.
+;;
+;; Actually, this applies to all uses of function `thing-at-point-looking-at': it should return
+;; nil when point is after, not on, the thing.
+;;
+(when (> emacs-major-version 24)
+  (defun number-at-point ()
+  "Return the number at point, or nil if none is found."
+  (form-at-point 'sexp 'numberp)))
 
 
 (put 'number 'tap-bounds-of-thing-at-point 'tap-bounds-of-number-at-point)
