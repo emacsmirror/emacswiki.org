@@ -578,11 +578,7 @@ In your multi-command definition you would use macro `icicle-file-bindings' to p
 
 HTH -- DrewAdams
 
-<pre>
-
-</pre>
-
----
+----
 
 Hi Drew.  Thanks for icicles.  A great package.
 I just tried bring icicles up on a system new to me.
