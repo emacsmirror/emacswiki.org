@@ -3,15 +3,13 @@ I use Emacs.
 * Nick on #emacs:  <code>UriahEep</code>
 * Real Email:  john.n.brow@gmail.com
 * John uses GNU Emacs under Windows, Linux and Apple
-* GNU Emacs 28.1 (build 2, x86_64-w64-mingw32) of 2022-04-21
+* GNU Emacs 28.2 (build 2, x86_64-w64-mingw32 of 2022-09-13
 
-I use Emacs both at home and at work.
+Because I have been subjected to numerous older development environments my desire for full-screen editors caused me at one time to write my own editors.  During my tour of duty as a programmer and analyst I ran across all the usual editor suspects until I dove into Emacs in the late 1990's and really never looked back.  I'm learning elisp at the same pace as Emacs development ;-)
 
-Because I have been subjected to numerous older development environments my desire for full-screen editors caused me at one time to write my own editors.  During my tour of duty as a programmer and analyst I ran across all the usual editor suspects until I dove into Emacs in the late 90's and really never looked back.  I'm learning elisp at the same pace as Emacs development ;-)
+I've found Org-Mode to be extremely useful.  
 
-I doubt I'll ever completely get rid of Emacs because I keep finding more uses for it.  At home I do a little C and Python programming and HTML (in Emacs).  And for super-trivial Java stuff I find Emacs works easier than firing up my IDE (NetBeans).  If I ever get around to writing a novel I'll be using Emacs exclusively.  There's a lot to be said for a stable editor, and I consider Emacs to be a stable editor.
-
-My function keys (including S-fn and C-fn) are customized.  The latest fad of mine is to assign about 4-6 of my S-fx to find-file my most frequent directories where my current work is.  For example I mapped C-f1 to open my .emacs for editing and inspection.  My latest use for Emacs in an IT environment involves Muse, a work diary, calendar, calculator and a few other builtin modes.  No toolbar and no menubar; just the main editing area, the status line and the command line.
+My function keys (including S-fn and C-fn) are customized.  The latest fad of mine is to assign about 4-6 of my S-fx to find-file my most frequent directories where my current work is.  For example I mapped C-f1 to open my .emacs for editing and inspection.    No toolbar and no menu bar; just the main editing area, the status line and the command line.  For complex mass editing of data I start a macro with f5 (kmacro-start-macro), perform the editing operations once, S-f5 to end the macro (kmacro-end-macro) or f9 to execute the macro (kmacro-end-and-call-macro).  Very useful for those one-off repetitive edits!
 
 [new]
 Emacs being slow or resource hungry comes from people who try using Emacs as if it was still vi (or any other standalone text editor) and not as the user-level "operating system" (programmable and multi-purpose) that it is and should be.  Welcome. --AaronHawley
