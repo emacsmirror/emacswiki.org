@@ -16,7 +16,7 @@ Get the latest release (tarball), unpack it and run:
     $ cd /where/you/unpacked/emacs
     $ mkdir build && cd build
     $ ../configure
-    $ sudo make -jX # use -jX if compiling with X cores
+    $ make -jX # use -jX if compiling with X cores
     $ sudo make -jX install # use -jX if compiling with X cores
 
 More information on obtaining the development sources can be found at
