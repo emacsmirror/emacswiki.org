@@ -578,21 +578,36 @@ In your multi-command definition you would use macro `icicle-file-bindings' to p
 
 HTH -- DrewAdams
 
+<pre>
 
+</pre>
 
+---
 
+Hi Drew.  Thanks for icicles.  A great package.
+I just tried bring icicles up on a system new to me.
 
+The sytem is running on RedHatEnterprise 8.8
+I am using this version of emacs:
 
+GNU Emacs 28.2 (build 2, x86_64-pc-linux-gnu, GTK+ Version 3.24.20, cairo version 1.16.0) of 2023-06-02
 
+This was installed via snap.
 
+I have compiled icicles with this version of emacs.
 
+I tried to open a new frame and switch to a different buffer using C-x 5 b 
+I did C-h k to get the actual command run: 
 
+C-x 5 b runs the command switch-to-buffer-other-frame (found in
+global-map), which is an interactive native-compiled Lisp function in
+‘/var/lib/snapd/snap/emacs/2031/usr/share/emacs/28.2/lisp/window.el’.
 
+I am seeing this error message: 
 
+read-buffer-to-switch: Wrong number of arguments: #<subr icicle-read-buffer>, 4
 
-
-
-
+Not sure if this is an icicles issue or if it is something else.
 
 
 
