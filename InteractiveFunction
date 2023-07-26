@@ -28,7 +28,7 @@ Example of a command that reads a string argument:
 
     (defun hello (someone)
       "Say hello to SOMEONE via M-x hello."
-      (interactive "sWho do you want to say hello to? ")
+      (interactive "sWhom do you want to say hello to? ")
       (message "Hello %s!" someone))
 
 For a complete list of arguments to `interactive', see `C-h f interactive' or the "Defining Commands" section of the EmacsLispManual (`C-h i m elisp RET m Defining SPC Commands RET').
@@ -37,7 +37,7 @@ To use multiple arguments, separate their `interactive' entries with a newline:
 
     (defun multiple-hello (someone num)
       "Say hello to SOMEONE via M-x hello, for NUM times."
-      (interactive "sWho do you want to say hello to? \nnHow many times? ")
+      (interactive "sWhom do you want to say hello to? \nnHow many times? ")
       (dotimes (i num)
         (insert (format "Hello %s!\n" someone))))
 
