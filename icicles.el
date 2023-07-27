@@ -6,47 +6,16 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2022.01.26
+;; Version: 2023.07.27
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 26 10:48:22 2022 (-0800)
+;; Last-Updated: Thu Jul 27 08:56:25 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 23741
+;;     Update #: 23742
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
-;;
-;; Features that might be required by this library:
-;;
-;;   `advice', `apropos', `apropos+', `apropos-fn+var',
-;;   `auth-source', `autofit-frame', `avoid', `backquote',
-;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
-;;   `col-highlight', `color', `crosshairs', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
-;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `facemenu',
-;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `fit-frame',
-;;   `flx', `font-lock', `font-lock+', `font-lock-menus',
-;;   `format-spec', `frame-cmds', `frame-fns', `fuzzy',
-;;   `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
-;;   `hl-line', `hl-line+', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `image', `image-dired',
-;;   `image-file', `image-mode', `info', `info+', `isearch+',
-;;   `isearch-prop', `kmacro', `levenshtein', `macroexp', `mb-depth',
-;;   `mb-depth+', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `palette',
-;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
-;;   `ring', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
