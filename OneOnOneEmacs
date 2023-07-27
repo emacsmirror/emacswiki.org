@@ -664,11 +664,17 @@ These are som quick choices I made to get legible text.
   (setq lon1-default-special-frame-background "IndianRed4")
   (setq lon1-default-frame-cursor-color "firebrick")
 
----
 
 [new: brosasaki:2023-07-26 00:00 UTC]
 I don’t know when the last edit to this page was made, but as of July 2023, this library is nonfunctional, even with the comment-outs mentioned earlier. hexrgb.el (the only other dependency for this) requires deprecated packages. Also, if the “minibuffer frame” is closed (which it often does on its own) it cannot be recovered as all attempts to issue commands get sent to a missing minibuffer, so the session is mostly bricked until emacs is restarted. Unless I’m missing something here, the library shouldn’t be linked to across the site if it doesn’t work and isn’t maintained.
 
 If anyone knows of any derivatives or alternatives to this library, other than davidsheperd7/frames-only-mode which has a similar goal but less features than this apparently once had, it would be good to direct site visitors to those from here.
+
+[new:DrewAdams:2023-07-27 16:32 UTC]
+It's unclear what you're saying.  I use this library every day.
+
+If you have a ''specific bug'' to report, use `M-x customize-group', click '''Send Bug Report''', and send the bug description in the email message opened.
+
+----
 
 CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWishList CategoryCustomize
