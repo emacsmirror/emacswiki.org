@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jan 26 10:20:31 2022 (-0800)
+;; Last-Updated: Thu Jul 27 15:16:15 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 27654
+;;     Update #: 27662
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1005,17 +1005,17 @@ Get the Icicles functions from option
 
 Only one (the first matching) replacement is made for any function."
   (let ((result        ())
-	(replacements  (copy-sequence icicle-comint-dynamic-complete-replacements)))
+        (replacements  (copy-sequence icicle-comint-dynamic-complete-replacements)))
     (dolist (fn  comint-dynamic-complete-functions)
       (catch 'c-d-c-f-replacements-loop
-	(dolist (rep  replacements)
-	  (when (or (eq (car rep) fn)
-		    (and (listp (car rep))  (memq fn (car rep))))
-	    (push (eval (cadr rep)) result)
-	    (unless (eq (car rep) fn)  (push fn result))
-	    (setq replacements  (delete rep replacements)) ; For ((a b c) 'NEW), put NEW in front of only one.
-	    (throw 'c-d-c-f-replacements-loop nil))) ; Allow only one replacement.
-	(push fn result)))
+        (dolist (rep  replacements)
+          (when (or (eq (car rep) fn)
+                    (and (listp (car rep))  (memq fn (car rep))))
+            (push (eval (cadr rep)) result)
+            (unless (eq (car rep) fn)  (push fn result))
+            (setq replacements  (delete rep replacements)) ; For ((a b c) 'NEW), put NEW in front of only one.
+            (throw 'c-d-c-f-replacements-loop nil))) ; Allow only one replacement.
+        (push fn result)))
     (nreverse result)))
 
 (defun icicle-comint-dynamic-complete-filename (&optional replace-to-eol-p)
@@ -3606,27 +3606,26 @@ and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles inp
             (setq command-history  (cons newcmd command-history)))
           ;; Trick `called-interactively-p' into thinking that this is an interactive call of NEWCMD
           ;; (Emacs bug #14136).
-          (if (or (> emacs-major-version 24)
-                  (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50"))))
-              (unwind-protect
-                   (progn (add-hook 'called-interactively-p-functions
-                                    #'icicle-repeat-complex-command--called-interactively-skip)
-                          (eval newcmd))
-                (remove-hook 'called-interactively-p-functions
-                             #'icicle-repeat-complex-command--called-interactively-skip))
-            (eval newcmd)))
+          (cond ((< emacs-major-version 24) (eval newcmd))
+                ((and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50")))
+                 (unwind-protect
+                     (progn (add-hook 'called-interactively-p-functions
+                                      #'icicle-repeat-complex-command--called-interactively-skip)
+                            (eval newcmd))
+                   (remove-hook 'called-interactively-p-functions
+                                #'icicle-repeat-complex-command--called-interactively-skip)))
+                (t
+                 (apply #'funcall-interactively (car newcmd) (mapcar (lambda (ee) (eval ee t)) (cdr newcmd))))))
       (if command-history
           (icicle-user-error "Argument %d is beyond length of command history" arg)
         (icicle-user-error "There are no previous complex commands to repeat")))))
 
-;; Same as `repeat-complex-command--called-interactively-skip' in `simple.el', but tests for
+;; Same as `repeat-complex-command--called-interactively-skip' in Emacs 24 version of `simple.el', but tests for
 ;; `icicle-repeat-complex-command', not `repeat-complex-command'.
-(when (or (> emacs-major-version 24)
-          (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50"))))
+(when (and (= emacs-major-version 24)  (not (version< emacs-version "24.3.50")))
   (defun icicle-repeat-complex-command--called-interactively-skip (i _frame1 frame2)
     "If currently `icicle-repeat-complex-command', return 1 to skip over it."
-    (and (eq 'eval (cadr frame2))  (eq 'icicle-repeat-complex-command
-                                       (cadr (backtrace-frame i #'called-interactively-p)))
+    (and (eq 'eval (cadr frame2))  (eq 'icicle-repeat-complex-command (cadr (backtrace-frame i #'called-interactively-p)))
          1))
   (byte-compile 'icicle-repeat-complex-command))
 
