@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jul 27 09:17:14 2023 (-0700)
+;; Last-Updated: Thu Jul 27 15:07:37 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 11944
+;;     Update #: 11946
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2023/07/27 dadams
+;;     icicle-repeat-complex-command: Updated per vanilla, for Emacs 25+.
+;;     icicle-repeat-complex-command--called-interactively-skip is only for Emacs 24.
 ;; 2022/01/26 dadams
 ;;     icicle-pp-display-expression: Add undo (sync def with that in pp+.el).
 ;; 2021/04/15 dadams
