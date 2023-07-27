@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Nov  3 21:18:42 2022 (-0700)
+;; Last-Updated: Thu Jul 27 09:17:14 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 11941
+;;     Update #: 11944
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2347,6 +2347,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2023/07/27 dadams
+;;     icicle-read-buffer: Added optional arg PREDICATE.
+;;       See https://lists.gnu.org/archive/html/emacs-devel/2023-07/msg00802.html.
 ;; 2022/06/30 dadams
 ;;     icicle-handle-default-for-prompt:
 ;;       Update for Emacs 28+: take into account option minibuffer-default-prompt-format.
@@ -9417,6 +9420,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2023/07/27 dadams
+;;     Version 2023.07.27
 ;; 2022/01/26 dadams
 ;;     Version 2022.01.26
 ;; 2020/01/03 dadams
