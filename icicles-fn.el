@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Jun 30 14:51:28 2022 (-0700)
+;; Last-Updated: Thu Jul 27 08:41:11 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 15319
+;;     Update #: 15321
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,22 +19,25 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `browse-url',
 ;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `eieio',
-;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `epg-config',
-;;   `ffap', `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `gv', `help+', `help-fns',
 ;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
 ;;   `hl-line', `hl-line+', `icicles-opt', `icicles-var', `info',
-;;   `info+', `kmacro', `levenshtein', `macroexp', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `package',
-;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
-;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
-;;   `text-mode', `thingatpt', `thingatpt+', `url-handlers',
-;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `info+', `json', `kmacro', `levenshtein', `macroexp', `mailcap',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `text-property-search',
+;;   `thingatpt', `thingatpt+', `url', `url-cookie', `url-domsuf',
+;;   `url-expand', `url-handlers', `url-history', `url-methods',
+;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1938,11 +1941,12 @@ for POSITION."
 ;; 2. Emacs 23+ compatible: handles `read-buffer-function'
 ;;    and `read-buffer-completion-ignore-case'.
 ;; 3. Respects `icicle-buffer-ignore-space-prefix-flag'.
+;; 4. Emacs prior to 25: Added arg PREDICATE, per Emacs 25+.
 ;;
 (unless (fboundp 'icicle-ORIG-read-buffer)
   (defalias 'icicle-ORIG-read-buffer (symbol-function 'read-buffer)))
 
-(defun icicle-read-buffer (prompt &optional default require-match)
+(defun icicle-read-buffer (prompt &optional default require-match predicate)
   "Read the name of a buffer and return it as a string.
 Prompt with first arg, PROMPT (a string).
 
@@ -1956,8 +1960,8 @@ If `another-buffer' is undefined, then use `other-buffer'.
 Starting with Emacs 23, DEFAULT can be a list of names (strings), in
 which case the first name in the list is returned on empty input.
 
-Non-nil REQUIRE-MATCH means to allow only names of existing buffers.
-It is the same as for `completing-read'.
+Optional args REQUIRE-MATCH and PREDICATE are passed to
+`completing-read'.
 
 Case sensitivity is determined by
 `read-buffer-completion-ignore-case', if defined, or
@@ -1984,7 +1988,7 @@ This binds variable `icicle-buffer-name-input-p' to non-nil."
                (t
                 (let ((bufs  (if (listp icicle-bufflist) icicle-bufflist (buffer-list))))
                   (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf)))) bufs))))
-         nil require-match nil 'buffer-name-history default nil)))))
+         predicate require-match nil 'buffer-name-history default nil)))))
 
 
 ;; REPLACE ORIGINAL `read-number' defined in `subr.el',
