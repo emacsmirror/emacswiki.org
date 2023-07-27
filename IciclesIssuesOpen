@@ -605,7 +605,9 @@ read-buffer-to-switch: Wrong number of arguments: #<subr icicle-read-buffer>, 4
 
 Not sure if this is an icicles issue or if it is something else.
 
+[new:DrewAdams:2023-07-27 16:55 UTC]
 
+Should be OK now. Please download latest `icicles-fn.el'. Thx.
 
 ----
 
