@@ -15,12 +15,6 @@ M-x package-refresh-contents RET
 M-x package-install RET devil RET
 }}}
 
-To confirm that it is installed successfully, type the following command:
-
-{{{
-M-x devil-show-version RET
-}}}
-
 To enable Devil mode, type the following command:
 
 {{{
