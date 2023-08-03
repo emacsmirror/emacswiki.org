@@ -234,6 +234,7 @@ can thus complete against a set of files in ''multiple'' directories.
 
 
 [:ReadingFileNames]
+[:IciclesCommandsThatReadFileNames]
 === Icicles Commands that Read File Names ===
 
 '''Icicles''' commands that use `read-file-name' include all [[multi-command]]s,
