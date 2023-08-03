@@ -329,6 +329,7 @@ candidate file it is ''not'' visited read-only.)
 [:icicle-visit-marked-file-of-content]
 [:icicle-find-file-of-content]
 [:MatchFileContent]
+[:MatchFileNamesAndFileContentToo]
 ==== Match File Names and File Content Too ====
 
 Starting with Emacs 23, the '''Icicles''' commands that read file names
