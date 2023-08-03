@@ -1374,6 +1374,7 @@ candidates.
 
 
 [:MultiCompletion]
+[:MatchMultipleThingsTogether]
 == Match Multiple Things Together ==
 
 Some '''Icicles''' commands that ask for your input provide completion
