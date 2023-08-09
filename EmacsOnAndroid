@@ -3,15 +3,18 @@ See GoogleAndroid for tips about using Emacs to develop Android applications.
 
 ==Ways to run Emacs on Android devices==
 
-===Real native port===
+===FSF GUI port===
 
-The feature/android branch of the Emacs git repository contains the source code of a real port to Android, complete with touch screen and on screen keyboard support.
-Prebuilt binaries are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
+A port of Emacs to Android as a GUI application will constitute part of the upcoming Emacs 30.1 release, and is already present within the Emacs Git repository.
 
-F-Droid also provides pre-builts, but they are usually outdated, have less dependencies included, and do not work on older systems.
+This port features extensive support for touch screen input and on-screen keyboards, coupled with accessing storage devices mounted through ``content providers'' via the Storage Access Framework, and a plenitude of other features.
+ 
+Regularly updated prebuilt snapshots of the in-development source code are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
 
-===Native port (installable Android application)===
-A native Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
+F-Droid also provides prebuilts, but they are outdated, have less dependencies included, and do not work on older systems.
+
+===Emacs within a GNU/Linux chroot===
+Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
 
 With UserLand, you can install a variety of different distributions. 
 Here are some of the commands to install emacs on some of them: 
