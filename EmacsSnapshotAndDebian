@@ -10,7 +10,7 @@ actual packages are here: [[http://emacs.secretsauce.net/pool/main/e/emacs-snaps
 
 === ganneff.de ===
 Maintains debian packages based upon emac git snapshots.
-Each's build status can be reviewed at the developer's gitlab
+Each build status can be reviewed at the developer's gitlab
 instance:
 [[https://git.nsb-software.de/joerg/emacs/pipelines|https://git.nsb-software.de/joerg/emacs/pipelines]].
 The actual repository root is at
