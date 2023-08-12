@@ -24,7 +24,6 @@ Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopf
 * bbdb-user@nongnu.org
 * To join, go to https://lists.nongnu.org/mailman/listinfo/bbdb-user
 * Mailing List Archive: http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/
-* Gmane mirror: http://gmane.org/find.php?list=bbdb
 
 If you keep elaborate notes on people, consider using MiniEdit to
 enter multi-line descriptions, instead of using the minibuffer.
