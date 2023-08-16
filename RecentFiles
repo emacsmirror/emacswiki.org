@@ -669,6 +669,13 @@ If you move a source directory with dired from A to B, by default there's no int
 == Recent directories from zsh ==
 
 {{{
+(defun slurp (f)
+  (with-temp-buffer
+    (insert-file-contents f)
+    (buffer-substring-no-properties
+       (point-min)
+       (point-max))))
+
 (defun visit-zsh-recent-dirs ()
   "Open the list of recent directories from zsh in a special buffer"
   (interactive)
