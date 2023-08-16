@@ -666,7 +666,17 @@ If you move a source directory with dired from A to B, by default there's no int
 (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify)
 }}}
 
+== Recent directories from zsh ==
 
+{{{
+(defun visit-zsh-recent-dirs ()
+  "Open the list of recent directories from zsh in a special buffer"
+  (interactive)
+  (recentf-open-files (mapcar '(lambda (str) (substring str 2 -1))
+                              (split-string
+                               (slurp "~/.chpwd-recent-dirs") "\n" t))))
+
+}}}
 
 == History ==
 
