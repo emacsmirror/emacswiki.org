@@ -100,7 +100,7 @@ Library ##linum.el## works incrementally and can number large files very quickly
 
 http://stud4.tuwien.ac.at/~e0225855/linum/linum.html
 
-##linum.el## is distributed with Emacs in versions after 22 (currently only CVS Emacs)
+##linum.el## is distributed with Emacs in versions after 22.  It is considered obsolete as of Emacs version 29.1.
 
 [new:DrewAdams:2007-03-08 21:38 UTC]
 Seems very good, to me. It looks like a good candidate to replace ##setnu.el##. -- DrewAdams 
@@ -443,6 +443,10 @@ It seems to work, at least with 24.5.
 Scaling the frame instead of the buffer using [http://www.emacswiki.org/emacs/zoom-frm.el zoom-frm.el] will preserve linum's column.
 
 --[[sshaw]]
+
+== Linum: Using on Emacs version 29.1 or later ==
+
+Emacs 29.1 marks ##linum## as obsolete, and you can expect to get errors of the form "Symbol's function definition is void: global-linum-mode".  The release notes recommend migrating to ##nlinum## or the built-in ##line-numbers-mode##.  To stick with ##linum##, add ##(require 'linum)## to your Init file.
 
 == Setnu ==
 
