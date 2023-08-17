@@ -6,7 +6,7 @@ For example, if you want to have AutoFillMode on by default in text mode, add th
 
 That ones easy, because there's a premade function for us, "turn-on-auto-fill."
 
-But only a very few are like that. For the rest, you can use LambdaFunctions:
+But only a very few are like that. For the rest, you can use a Lambda Function or a LambdaExpression:
 
  (add-hook 'text-mode-hook (lambda () (set-fill-column 72)))
  (add-hook 'text-mode-hook (lambda () (column-number-mode 1)))
