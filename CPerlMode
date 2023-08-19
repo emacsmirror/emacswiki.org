@@ -8,7 +8,11 @@ you need the following in your ~/.emacs file (or your InitFile):
     ;;; "Brevity is the soul of wit" <foo at acm.org>                               
     (defalias 'perl-mode 'cperl-mode)
 
-Alternatively, use:
+Alternatively, in Emacs 29 or higher, put:
+
+    (add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
+
+Or in older versions of Emacs:
 
     (add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
     (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
