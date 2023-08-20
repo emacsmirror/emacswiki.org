@@ -1,3 +1,4 @@
+[[it:autocorrection]]
 <pre>
 ;; common auto correction like abbrevs
 (define-abbrev-table 'global-abbrev-table '(
