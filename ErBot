@@ -39,6 +39,18 @@ An additional note for an existing term is entered via "is also" whose parse is:
 
 As we mentioned, for convenience, you can skip the `fs-' prefix when commanding fsbot, and it is always automatically added for you. Thus, instead of having to type ##(fs-parse ..)##, you were able to simply type ##(parse...)##.
 
+Let's assume we added 11 more notes for the term "emacs." Now, how do we read them off? Just say emacs! - 
+
+  <deego> ,emacs
+  <fsbot> emacs is [0/12] an extensible, customizable, self-documenting real-time display editor <http://www.gnu.org/software/emacs/>
+  <fsbot> [1] began as a set of macros for the TECO editor in 1976 by gls and rms
+  <fsbot> [2] frustratingly inadequate, but often better than any extant alternative (see ,salespitch)
+  <fsbot> [3] heavily optimised to navigate its own code ;;[ ,more / ,dump]
+
+There's a bunch of other functionality available to manipulate terms, notes, their order, merge/cp/rm terms, etc. 
+
+
+
 
 As we saw above, the bot understands and executes a restricted and modified subset of lisp we refer to as **fslisp**. Furthermore, it sandboxes everything to ensure we internally always stay in the `fs-' namespace. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
 
