@@ -32,8 +32,6 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 * [https://emacs-modified.gitlab.io/macos/ Emacs Modified for macOS] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS] and AUCTeX. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
 
-* [http://homepage.mac.com/zenitani/emacs-e.html CarbonEmacsPackage] provides authentic look and feel of original Emacs, and is a Mac-friendly distribution based on an older version of Emacs, GNU Emacs 22.3. ([http://groups.google.com/group/carbon-emacs/browse_thread/thread/8d87f6babc1f3e29 Newer versions are not planned].) It uses the ".emacs" file under an user's home directory, making the migration from/to a UNIX/Linux environment easy and straightforward. It comes with tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.)  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-style print dialog (MacPrintMode) and support for filenames with accent signs.  A Universal Binary application is available.
-
 == Building Emacs From Source ==
 
 === Getting the Source ===
