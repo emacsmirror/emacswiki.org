@@ -1,6 +1,8 @@
 *mu4e* is an email client for Emacs. It's based on the [http://www.djcbsoftware.nl/code/mu mu] email indexer/searcher. 
 
-:: //It's not information overload. It's filter failure. mu4e's mission is to be a better filter.// '''--Prof. Shirky'''
+:: //It's not information overload. It's filter failure.// '''--Prof. Shirky'''
+
+mu4e's mission is to be a better filter.
 
 mu4e first appeared in ##mu 0.9.8##.
 
