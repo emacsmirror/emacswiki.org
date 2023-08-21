@@ -14,16 +14,15 @@ I can't remember what C-x C-f does ;P
     (defalias 'openo 'find-file-other-window)
 --
 Or you can also use something like this:   /Thanos 2023-08-21/
-   
-    (setq my/eshell-aliases
+
+   (setq my/eshell-aliases
       '((g . magit)
 	(gl . magit-log)
 	(d . dired)
-	(o . find-file)
+	(o . find-file)	
 	(oo . find-file-other-window)
-	(ls . (eshell/ls '-la))
-	(ll . eshell/ls)
-	(clear . eshell/clear-scrollback)))
+	(l . (lambda () (eshell/ls '-la)))
+	(eshell/clear . eshell/clear-scrollback)))
      
     (mapc (lambda (alias)
 	(defalias (car alias) (cdr alias)))
