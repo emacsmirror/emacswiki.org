@@ -4,7 +4,7 @@ See also EshellFunctions for more elaborate examples.
 
 The eshell aliases are stored in a file whose name is in the variable ##eshell-aliases-file## (this defaults to something like ~/.emacs.d/eshell/aliases). If you edit it by hand then (as the manual says), you'll need to refresh eshell's cache of the values. To do this, run the ##eshell-read-aliases-list## function (which, of course, you can do by typing its name in eshell!)
 
-== open file ==
+== Using 'defalias' ==
 
 I used this in my .emacs so that I can simply open file instead of
 find-file.  This has the added advantage that I can M-x open file when
@@ -12,15 +12,14 @@ I can't remember what C-x C-f does ;P
 
     (defalias 'open 'find-file)
     (defalias 'openo 'find-file-other-window)
-
-Or you can also use something like this -Thanos
+--
+Or you can also use something like this:   /Thanos 2023-08-21/
    
     (setq my/eshell-aliases
       '((g . magit)
 	(gl . magit-log)
 	(d . dired)
 	(o . find-file)
-	(f . find-file)
 	(oo . find-file-other-window)
 	(ls . (eshell/ls '-la))
 	(ll . eshell/ls)
