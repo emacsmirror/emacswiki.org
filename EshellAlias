@@ -13,6 +13,23 @@ I can't remember what C-x C-f does ;P
     (defalias 'open 'find-file)
     (defalias 'openo 'find-file-other-window)
 
+Or you can also use something like this -Thanos
+   
+    (setq my/eshell-aliases
+      '((g . magit)
+	(gl . magit-log)
+	(d . dired)
+	(o . find-file)
+	(f . find-file)
+	(oo . find-file-other-window)
+	(ls . (eshell/ls '-la))
+	(ll . eshell/ls)
+	(clear . eshell/clear-scrollback)))
+     
+    (mapc (lambda (alias)
+	(defalias (car alias) (cdr alias)))
+       my/eshell-aliases)
+
 == Alias 'll' to 'ls -l' ==
 
 Make sure that the positional parameters are included:
