@@ -1,14 +1,13 @@
 == Emacs for ChromeBooks ==
-Emacs can be run on a !ChromeBook by using the [https://support.google.com/chromebook/answer/9145439 Linux system for Chromebooks] also known as  [https://chromeos.dev/en/linux Crostini].
+Emacs can be run on a !ChromeBook by using the [https://support.google.com/chromebook/answer/9145439 Linux system for Chromebooks].
 
-Once upon a time in 2015, Chrome had a development environment called [https://developer.chrome.com/docs/native-client/welcome-to-native-client/ NaCl (Native Client)].  It could run many GNU/Linux utilities, implemented a virtual file system, and had an [https://archive.fosdem.org/2015/schedule/event/emacs_and_elisp_on_the_chromebook/ Emacs port to NaCl] so you could do software development with Emacs on a !ChromeBook (and in fact on any browser that supported Chrome). A better, more secure way of supporting apps on the web was found, however, called [https://webassembly.org WebAssembly].  !NaCl was removed in favor of !WebAssembly.  Emacs can in theory be ported to !WebAssembly someday.  Since Emacs relies on many of the GNU utilities such as <code>find</code>, however, it might be best to port Emacs after those other utilities are available.
+Once upon a time in 2015, Chrome had a development environment called [https://developer.chrome.com/docs/native-client/welcome-to-native-client/ NaCl (Native Client)].  It could run many GNU/Linux utilities, implemented a virtual file system, and had an [https://archive.fosdem.org/2015/schedule/event/emacs_and_elisp_on_the_chromebook/ Emacs port to NaCl] so you could do software development with Emacs on a !ChromeBook (and in fact on any browser that supported Chrome). A better, more secure way of supporting apps on the web was found, however, called [https://webassembly.org WebAssembly].  !NaCl was [https://developer.chrome.com/docs/native-client/migration/ removed in favor of WebAssembly].  Emacs can in theory be ported to !WebAssembly someday.  Since Emacs relies on many of the GNU utilities such as <code>find</code>, however, it might be best to port Emacs after those other utilities are available.
 
-There is an alternative, though, so we don't need to wait for Web Assembly, we can use the Linux system for ChromeBooks (formerly called Crostini).
+There is an alternative, though, so we don't need to wait for Web Assembly, we can use the Linux system for !ChromeBooks (formerly called [https://chromeos.dev/en/linux Crostini]).
 
 
 == Installation ==
 Instructions for setting up Linux on a Chromebook are here: https://support.google.com/chromebook/answer/9145439\\ 
-[https://support.google.com/chrome/a/answer/1289314?hl=en Managed Chromebooks] belonging to an organization such as a school or business have Crostini disabled by default. Please contact local IT administration for help if necessary.\\ 
 Once the Chromebook's Linux Development Environment has been enabled and started, Emacs can be installed as a normal <code>apt</code> package:  
 
  sudo apt-get update
