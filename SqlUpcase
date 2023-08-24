@@ -16,6 +16,12 @@ Place the library somewhere in your Emacs load-path (or use ##M-x package-instal
    (add-hook 'sql-mode-hook 'sql-upcase-mode)
    (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
 
+Or, with use-package (built-in Emacs 29 or later):
+
+ (use-package sql-upcase :ensure nil
+   :commands sql-upcase-mode sql-upcase-region
+   :hook (sql-mode sql-interactive-mode))
+
 ==Configure==
 
 By default, /only/ lower-case keywords are processed. ##(setq sql-upcase-mixed-case t)## to handle mixed-case keywords as well.
