@@ -202,15 +202,6 @@ like this in your ##.psqlrc## file:
 
   \set PROMPT1 '// %n@%M %/\n'
 
-== Emacs 19 ==
-
-If you are using GNU Emacs 19.34, you will need two additional things:
-
-* http://www.mit.edu/afs/athena.mit.edu/project/ptest/emacs/emacs-20.5/lisp/emacs-lisp/
-* http://www.dina.kvl.dk/~abraham/custom/
-
-Once you completed installation, type M-x load-library RET sql RET to load sql.el.  Then, type M-x sql-help RET to read the online help.
-
 == Other SQL modes ==
 
 * RobRiepel's mode based on a mode by LynnSlater with support for SQL*Plus by Oracle and isql by Sybase: http://www.stanford.edu/people/riepel/SQL-mode.html
