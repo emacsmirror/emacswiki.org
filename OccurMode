@@ -277,5 +277,19 @@ I don't have a problem in this regard, because I use a dedicated window for `*Oc
 
 But this solution opens an additional frame for occur by default which I don't want, so it would need further configuration to prevent that. The solution above doesn't have this problem, because it operates in the current frame. -- anon
 
+== Occurx-mode ==
+
+There is another alternative to the occur command, [https://github.com/k32/occurx-mode occurx-mode]
+
+Features:
+
+* Patterns are specified using rx notation in a fully-fledged buffer
+
+* Patterns can be saved and restored
+
+* Patterns can be combined and/or negated
+
+* Matches are automatically highlighted with different colors
+
 ----
 CategoryModes CategoryRegexp GrepMode CategorySearchAndReplace CategoryNavigation
