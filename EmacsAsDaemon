@@ -439,3 +439,13 @@ Restart=on-failure
 [Install]
 WantedBy=default.target
 }}}
+
+Note that since modern emacs installations already ship a systemd --user service, you can use a drop-in instead. That is, instead of the above, add below contents to the file <code>~/.config/systemd/user/emacs.service.d/10-after-gfx.conf<code>:
+
+{{{
+[Unit]
+Requires=org.gnome.Shell@wayland.service
+After=org.gnome.Shell@wayland.service
+}}}
+
+and that's it! Just do <code>systemctl --user daemon-reload</code> and <code>systemctl --user enable --now emacs</code> and you should be set to go. Afterwards, you can also verify if the drop-in was recognized through <code>systemctl --user cat emacs</code>.
