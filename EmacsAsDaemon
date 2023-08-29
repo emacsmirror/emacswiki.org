@@ -388,7 +388,7 @@ To solve the problem, we have to start the service after the graphical environme
 
 === KDE/Plasma ===
 
-We change the <code>WantedBy</code> in the <code>[Install]</code> section to <code>graphical-session.target</code> and add
+Add
 <pre>
 Requires=plasma-kwin_wayland.service
 After=plasma-kwin_wayland.service
@@ -410,13 +410,12 @@ ExecStop=emacsclient --eval "(kill-emacs)"
 Restart=on-failure
 
 [Install]
-WantedBy=graphical-session.target
-
+WantedBy=default.target
 }}}
 
 === GNOME ===
 
-We change the <code>WantedBy</code> in the <code>[Install]</code> section to <code>graphical-session.target</code> and add
+Similarly, add
 <pre>
 Requires=org.gnome.Shell@wayland.service
 After=org.gnome.Shell@wayland.service
@@ -438,6 +437,5 @@ ExecStop=emacsclient --eval "(kill-emacs)"
 Restart=on-failure
 
 [Install]
-WantedBy=graphical-session.target
-
+WantedBy=default.target
 }}}
