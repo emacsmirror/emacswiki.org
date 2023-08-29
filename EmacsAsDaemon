@@ -440,7 +440,7 @@ Restart=on-failure
 WantedBy=default.target
 }}}
 
-Note that since modern emacs installations already ship a systemd --user service, you can use a drop-in instead. That is, instead of the above, add below contents to the file <code>~/.config/systemd/user/emacs.service.d/10-after-gfx.conf<code>:
+Note that since modern emacs installations already ship a systemd --user service, you can use a drop-in instead. That is, instead of the above, add below contents to the file <code>~/.config/systemd/user/emacs.service.d/10-after-gfx.conf</code>:
 
 {{{
 [Unit]
