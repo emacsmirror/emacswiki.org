@@ -465,4 +465,4 @@ Requires=org.gnome.Shell@wayland.service
 After=org.gnome.Shell@wayland.service
 }}}
 
-Then the <code>systemctl</code> commands shown there can be repeated.
+Then the <code>systemctl</code> commands shown there can be invoked.
