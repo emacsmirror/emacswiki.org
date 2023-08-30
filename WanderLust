@@ -32,7 +32,7 @@ Wanderlust has //very// good IMAP support; it leaves messages on the server & ca
 
 == Installing Wanderlust ==
 
-WanderLust is installable via [[MELPA]] or [[el-get]]. Note that for MELPA, Wanderlust is only available via MELPA, it is not avialable via the stable branch. E.g, use something like:
+WanderLust is installable via [[MELPA]] or [[el-get]]. Note that for MELPA, Wanderlust is only available via MELPA, it is not available via the stable branch. E.g, use something like:
 
 {{{
 (require 'package)
