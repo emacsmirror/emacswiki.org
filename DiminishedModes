@@ -51,5 +51,7 @@ what diminished modes would be on the mode-line if they were still minor."
 ----
 See also DelightedModes
 
+Other packages for controlling the modeline: [https://github.com/radian-software/blackout Blackout], [https://www.eskimo.com/~seldon/diminish.el diminish.el]
+
 ----
 CategoryDisplay
