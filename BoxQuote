@@ -1,10 +1,17 @@
-Fancy quoting...
+Package boxquote by Dave Pearson provides flexible fancy quoting for most use cases like this:
 
  ,----
  | The default style looks like this.
  `----
 
-* http://www.davep.org/emacs/boxquote.el
+* With <code>M-x boxquote-yank</code> you can put a box around text in your kill-ring and insert it at point.
+* <code>M-x boxquote-region</code> puts a box around the region you selected before.
+* <code>M-x boxquote-buffer</code> quotes the entire buffer you are just visiting at point in a fancy box.
+* <code>M-x boxquote-title</code> prompts you for a title and adds it at point to the box that is already there.
+
+Package boxquote can be configured via Customize using <code>M-x customize-group RET boxquote RET</code>. It is hosted on GitHub:
+
+* https://github.com/davep/boxquote.el
 
 See also [[rebox2]], where the default boxquote style is available (style 26), and seamless editing of boxed text is offered, and a top title is supported.
 ----
