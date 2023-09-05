@@ -51,7 +51,7 @@ As for recurring scheduled tasks, you can simply list them :-)
       [2005-06-27]@ hogehoge
       [2005-07-04]@ hogehoge
 </pre>
-A method to input such lists is described in https://github.com/kaorahi/howm/README.html
+A method to input such lists is described in https://kaorahi.github.io/howm/README.html
 
 : Thanks to SebastianBlatt for this question; it was not documented in English.
 I am lazy and tend to leave problems until someone gives comments. --khi
