@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 24 14:18:42 2023 (-0700)
+;; Last-Updated: Tue Sep  5 09:02:08 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1135
+;;     Update #: 1136
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -238,7 +238,7 @@
 
 (require 'imenu)
 
-(require 'find-where nil t) ;; (no error if not found) gw-to-previous-thing
+(require 'find-where nil t) ;; (no error if not found) fw-to-previous-thing
 
 ;; Quiet the byte-compiler
 (defvar imenu-menubar-modified-tick)
@@ -658,7 +658,7 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
 
   (defun find-where ()
     "Function used as REGEXP entry of a generic-expression definition matcher.
-This uses `gw-to-previous-thing' to locate a THING beginning.  On
+This uses `fw-to-previous-thing' to locate a THING beginning.  On
 first invocation it prompts for the THING.
 
 Instead of that prompting, which is one-time only, use this function
@@ -668,7 +668,7 @@ example of such a function is `find-where-list'."
 
   (defun find-where-1 (&optional thing)
     "Helper for defining `find-where-THING' function."
-    (let* ((res    (gw-to-previous-thing thing))
+    (let* ((res    (fw-to-previous-thing thing))
            (beg    (car res))
            (beg    (if imenu-use-markers (copy-marker beg) beg))
            (thing  (cadr res))
