@@ -4,7 +4,7 @@ Howm allows you to take notes fragmentarily and browse them collectively.
 It has hyperlinks and full-text search like EmacsWikiMode.
 It is a minor mode and can be combined with other modes.
 
-* https://howm.osdn.jp/
+* https://github.com/kaorahi/howm
 
 There is no distinction between pages - each record can be arbitrarily
 timestamped, hyperlinked, and displayed with other related pages in
@@ -51,7 +51,7 @@ As for recurring scheduled tasks, you can simply list them :-)
       [2005-06-27]@ hogehoge
       [2005-07-04]@ hogehoge
 </pre>
-A method to input such lists is described in https://howm.osdn.jp/README.html
+A method to input such lists is described in https://github.com/kaorahi/howm/README.html
 
 : Thanks to SebastianBlatt for this question; it was not documented in English.
 I am lazy and tend to leave problems until someone gives comments. --khi
