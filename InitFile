@@ -4,7 +4,10 @@ Your '''[::init file]''' contains personal EmacsLisp code that you want to execu
 See the Emacs manual (`C-h r'), node 
 [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html Init File]].
 
-* For GnuEmacs, your init file is '''##~/.emacs##''', '''##~/.emacs.el##''', or '''##~/.emacs.d/init.el##'''.  You can choose to use any of these names.  ‘~/’ stands for your home directory.  
+* For GnuEmacs, your init file is '''##~/.emacs##''', '''##~/.emacs.el##''', or '''##~/.emacs.d/init.el##'''.  You can choose to use any of these names.  '''##~/##''' stands for your home directory.
+** Since version 27.1, if both all of the above files and the directory '''##~/.emacs.d##''' do not exist, GnuEmacs will find (but not create) the config file '''##emacs/init.el##''' you put in an XDG-compatible location. Namely:
+*** '''##~/.config/emacs/init.el##''' if the environment variable '''##XDG_CONFIG_HOME##''' is unset, and
+*** '''##$XDG_CONFIG_HOME/emacs/init.el##''' if '''##XDG_CONFIG_HOME##''' /is/ set.
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
 * For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
