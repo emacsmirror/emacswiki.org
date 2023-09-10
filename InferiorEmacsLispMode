@@ -23,6 +23,8 @@ If you use ParEdit, and already have it installed, you can enable it in IELM aut
       (turn-on-eldoc-mode)
       (and (featurep 'paredit) (paredit-mode 1)))
 
+Enabling ParEdit injudiciously in IELM may lead to an apparently nonresponsive IELM. If this occurs, consider disabling electric-indent-mode. https://paredit.org/cgit/paredit/commit/?id=bf73ccf7f76e4262213f0c34b502276ab39d950f
+
 == Icicles Enhancements to IELM ==
 
 You can use [[Icicles]] [[completion]] in IELM. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
