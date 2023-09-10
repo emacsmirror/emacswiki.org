@@ -56,6 +56,9 @@ that have unusual breaking behaviour, such as Wiki types modes.
 [[https://github.com/nicferrier/creole-mode/blob/e3a2b15b228c9c1df7560ec390424040d69b8bb7/creole-mode.el#L70|Here's an example]]
 from a WikiCreole mode where auto-fill is useful but shouldn't affect text inside links. 
 
+==== auto-fill and org-mode ====
+There is an (apparent) incompatibility between (i) auto-fill-mode, (ii) org-mode, and (iii) ##comment-auto-fill-only-comments##.  See https://github.com/syl20bnr/spacemacs/issues/11749#issuecomment-526757521.
+
 ----
 CategoryComments
 CategoryFilling 
