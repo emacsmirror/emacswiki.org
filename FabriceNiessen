@@ -1,3 +1,43 @@
+Cher(e)s ami(e)s d'Emacs,
+
+Je m'appelle Fabrice Niessen, et je suis l'auteur de différents packages Emacs
+tels que :
+
+- le thème de couleurs "leuven-theme",
+- les CSS "BigBlow" (voir Org HTML theme Bigblow - YouTube)
+  et "ReadTheDoc" (pour les exports HTML d'Org mode),
+- Org-macros,
+- etc.,
+
+que vous pouvez tous retrouver sur [https://github.com/fniessen|GitHub.com/fniessen].
+
+Si je vous écris ici, c'est parce que je suis un utilisateur compulsif
+d'Emacs, et que j'ai une passion pour cet éditeur qui m'anime depuis maintenant
+24 ans. Et je suis ravi de vous annoncer que j'organise une formation sur Emacs,
+conçue pour les utilisateurs de niveau débutant jusqu'à confirmé.
+
+La formation se déroulera à Paris, en présentiel, du jeudi 8 novembre à 09h00
+au vendredi 9 novembre à 18h00. Cette formation couvrira une variété de sujets
+allant des fonctionnalités de base jusqu'à un ensemble d'astuces avancées,
+utilisant des packages essentiels, le tout dans le but de maximiser encore et
+toujours votre productivité avec Emacs.
+
+Afin de participer à cette formation passionnante, je vous demande de bien
+vouloir effectuer votre réservation via le site web officiel
+
+[https://emacsboost.com/|EmacsBoost.com]
+
+où vous pourrez remplir vos coordonnées complètes.
+
+Pour assurer la qualité de l'expérience de chaque participant, j'ai limité le
+nombre de places disponibles. Veuillez noter que les inscriptions sont traitées
+selon le principe du "premier arrivé, premier servi", alors ne tardez pas trop
+pour garantir votre participation, si cela vous intéresse.
+
+J'ai hâte de vous accueillir à cette formation sur Emacs. C'est une occasion
+unique d'améliorer vos compétences en matière d'édition de texte ou de code et
+de profiter de mes 24 ans d'expertise.
+
 = Contact Me =
 
 Website: http://www.pirilampo.org/
@@ -9,10 +49,6 @@ Contact: http://www.pirilampo.org/contact/
 Customizing Emacs is difficult, but this task is needed... That's why I'm sharing my [https://github.com/fniessen/emacs-leuven|Emacs config file], hoping it can help you getting what you want.
 
 My [https://github.com/fniessen/emacs-leuven|Emacs init file] is really huge, but very well commented. You should find lots of interesting things in it. It runs on Windows and Unix platforms, and it works well with both GNU Emacs and XEmacs. I keep on updating it quite frequently, so visit that page often!
-
-= Web =
-
-Search the Web with my advanced [http://www.mygooglest.com/|Google Search Tools].
 
 [new]
 Welcome to the wiki! -- AlexSchroeder
