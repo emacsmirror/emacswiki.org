@@ -2,16 +2,8 @@ This is a collection of general coding style guidelines (mostly for Elisp), not 
 
 == C ==
 
-A good place is your friendly linux kernel source tree, at
-Documentation/CodingStyle.  At the other end of the spectrum are the
-GNU Coding Standards (used by Emacs), available at
-http://www.gnu.org/prep/standards_toc.html.
-
-It's worth mentioning that TabsAreEvil and that 6-8 spaces for a tab
-are preferable as they force the coder to find better ways to do
-things than infinite nesting.  6-8 spaces is of course very hard to
-maintain with something like java where just a method name can take up
-40 columns.
+The GNU project at large (and of course Emacs) follows the GNU Coding Standards.
+Refer to http://www.gnu.org/prep/standards_toc.html for more details.
 
 == Emacs Lisp ==
 
