@@ -11,3 +11,5 @@ It is worth consulting `auto-mode-alist' to know exactly which major mode to rem
 When a major mode powered by Tree-sitter is selected, Emacs will try to load the (native) library for that language, and will give an error if it is not available. In UNIX/Linux this would be a .so file, and in Windows a .dll.
 
 The easiest way to satisfy (2) is to make sure the library is present in <code>~/.emacs.d/tree-sitter/</code>, as this is where Emacs will look by default. If the compiled libraries are available, simply copy them to this directory (for example for Windows some of them can be obtained from [https://corwin.bru.st/emacs-tree-sitter/ Corwin Brust's build archive]). Otherwise you can compile them yourself manually, or using the `treesit-install-language-grammar' function that should work with its default rules if you have gcc installed.
+
+CategoryProgramming
