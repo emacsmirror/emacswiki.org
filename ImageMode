@@ -2,7 +2,7 @@
 
 The user can toggle between the rendered view and the textual content of the image file.
 
-Image mode is discussed in the manual here: https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Conveniences.html.
+Image mode is discussed in the manual here: https://www.gnu.org/software/emacs/manual/html_node/emacs/Image-Mode.html.
 
 See also ImageDired, which allows you to view a collection of thumbnails. 
 
