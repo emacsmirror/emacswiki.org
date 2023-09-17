@@ -34,6 +34,7 @@ Code navigation and information:
 * WhichFuncMode -- Display the name of the current function at point in the ModeLine
 * ToggleTest -- A language agnostic tool to create/navigate quickly between source (test subject) files and the corresponding test files (Category: TDD, productivity, navigation)
 * [[Tree]] -- Multi-directory find, grep, tags generation
+* [[Tree-sitter]] -- More accurate (and probably faster) syntax highlighting and code navigation using the [https://tree-sitter.github.io/tree-sitter/ Tree-sitter incremental parsing library]
 
 Development environments:
 
