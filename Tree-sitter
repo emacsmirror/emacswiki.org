@@ -1,0 +1,13 @@
+Historically, Emacs, like many editors, has used heuristics (often regular expressions) for approximating the parse of a language to do syntax highlighting and code navigation in order to do it quickly. The [https://tree-sitter.github.io/tree-sitter/ Tree-sitter] library offers a way to do a 'proper' parse quickly, providing more accurate syntax highlighting, indentation rules, and navigation.
+
+Since Tree-sitter is implemented in C and offers different features than the legacy emacs facilities, two things are required to activate it:
+# Use a major mode that invokes the Tree-sitter backend
+# Make the Tree-sitter library for the required language available
+
+From Emacs 29, (1) is accomplished by using major modes that have "...-ts-..." in the name, such as `java-ts-mode'. Since there are existing rules for selecting major modes in the variable `auto-mode-alist', Emacs 29 provides the variable `major-mode-remap-alist' to 'redirect' the major modes without having to modify the more complicated `auto-mode-alist' variable. Customise `major-mode-remap-alist' with each entry having as the key the major mode you wish to redirect to Tree-sitter, and the value being the equivalent "...-ts-..." mode. For example `java-mode' would be remapped to `java-ts-mode'.
+
+It is worth consulting `auto-mode-alist' to know exactly which major mode to remap as it is less obvious what some modes are for, such as <code>'c-or-c++-mode'</code>.
+
+When a major mode powered by Tree-sitter is selected, Emacs will try to load the (native) library for that language, and will give an error if it is not available. In UNIX/Linux this would be a .so file, and in Windows a .dll.
+
+The easiest way to satisfy (2) is to make sure the library is present in <code>~/.emacs.d/tree-sitter/</code>, as this is where Emacs will look by default. If the compiled libraries are available, simply copy them to this directory (for example for Windows some of them can be obtained from [https://corwin.bru.st/emacs-tree-sitter/ Corwin Brust's build archive]). Otherwise you can compile them yourself manually, or using the `treesit-install-language-grammar' function that should work with its default rules if you have gcc installed.
