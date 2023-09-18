@@ -140,7 +140,7 @@ When query-replace is in progress:
 [:RepeatingPreviousCommands]
 == Repeating Previous Commands ==
 
-* Repeat the most recent command: `C-x z', and again with `z'.
+* Repeat the most recent command: `C-x z', and again with `z'. If you are on a Mac, please note that `C-x z' by default minimizes the active window. So, if you want to use the command on macOS you will first have to modify this behaviour in keyboard settings for macOS. 
 * See the recent commands (displayed in EmacsLisp):  `M-x list-command-history'. Rerun a command by hitting `x' on the line containing a command.
 * RepeatingComplexCommand allows you to choose which previous command as EmacsLisp and even modify it.
 
