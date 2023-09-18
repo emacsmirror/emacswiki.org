@@ -10,6 +10,7 @@ Project page: http://sourceforge.net/projects/breadcrumbemacs/
 
 Updated fork: https://github.com/pheaver/breadcrumb
 
+Newer version: https://github.com/joaotavora/breadcrumb
 
 = Feature Overview =
 
@@ -22,6 +23,7 @@ Updated fork: https://github.com/pheaver/breadcrumb
 * Integrated with find-tag and tags-search to set bookmark automatically.
 * Bookmark list menu allows interactively listing and managing of bookmarks.
 * Interactively visit bookmarks in the other window in the bookmark menu.
+
 
 
 '''See Also:''' BookMarks
