@@ -52,7 +52,6 @@ DrewAdams suggestion of `transpose-lines' works like a charm. It makes the imple
 
 This moves the cursor to the beginning of the line, though.
 
-
 Column can be preserved the following way:
 
 {{{
@@ -78,5 +77,7 @@ Column can be preserved the following way:
     (forward-line -1)))
 }}}
 
+[new:Mahmoud Adam:2023-09-18 12:16 UTC]
+You can use `undo-auto-amalgamate' before `transpose-lines' to group multiple movements to one undo, rather than going back every moved line while undoing -- MahmoudAdam
 ----
 CategoryEditing
