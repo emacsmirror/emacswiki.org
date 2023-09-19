@@ -6,7 +6,7 @@ Since Tree-sitter is implemented in C and offers different features than the leg
 
 From Emacs 29, (1) is accomplished by using major modes that have "...-ts-..." in the name, such as `java-ts-mode'. Since there are existing rules for selecting major modes in the variable `auto-mode-alist', Emacs 29 provides the variable `major-mode-remap-alist' to 'redirect' the major modes without having to modify the more complicated `auto-mode-alist' variable. Customise `major-mode-remap-alist' with each entry having as the key the major mode you wish to redirect to Tree-sitter, and the value being the equivalent "...-ts-..." mode. For example `java-mode' would be remapped to `java-ts-mode'.
 
-It is worth consulting `auto-mode-alist' to know exactly which major mode to remap as it is less obvious what some modes are for, such as <code>'c-or-c++-mode'</code>.
+It is worth consulting `auto-mode-alist' to know exactly which major mode to remap as it is less obvious what some modes are for, such as <code>'c-or-c++-mode'</code>, and bear in mind some packages update this list.
 
 When a major mode powered by Tree-sitter is selected, Emacs will try to load the (native) library for that language, and will give an error if it is not available. In UNIX/Linux this would be a .so file, and in Windows a .dll.
 
