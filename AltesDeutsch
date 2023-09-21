@@ -1,0 +1,5 @@
+Deutsche Readme: [https://github.com/mokrates/quail-classic-german/blob/main/README.de.md README.de.md]
+
+Config: [https://github.com/mokrates/quail-classic-german/blob/main/classic-german.el classic-german.el]
+
+Eine Input-Methode wie german-postfix, mit der aber auch das lange ſ und ein hübſcheres ʒ verwendet werden kann.
