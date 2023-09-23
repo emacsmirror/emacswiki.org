@@ -18,9 +18,7 @@ If you use emacs both on the console and in X a lot, you may want to disable spe
 
 Something that might annoy you under certain X window managers (WindowMaker, for example) and in Carbon Emacs when speedbar starts is that its window will appear to have focus but keyboard input goes to the original Emacs window. You can make things look right again by defining this mode hook before starting speedbar:
 
- (setq speedbar-mode-hook '(lambda ()
-    (interactive)
-    (other-frame 0)))
+ (add-hook 'speedbar-mode-hook (lambda () (other-frame 0)))
 
 If this fails, you can call other-frame right after you call speedbar.
 
