@@ -65,3 +65,16 @@ As of March 2020, the best hex mode for Emacs appears to be nhexl-mode (https://
 
 ----
 CategoryModes
+
+[new:BearOfNH:2023-09-24 21:29 UTC]
+Is there a way to change hexl-mode (or other) output to be "reversed" from the standard? E.g., instead of
+<pre>
+87654321  0011 2233 4455 6677 8899 aabb ccdd eeff
+00000010: 6ecb b464 9a12 6d81 324c 4a86 0d82 9621
+</pre>
+I would like to see
+<pre>
+ffee ccdd bbaa 9988 7766 5544 3322 1100  87654321
+2196 820d 864a 4c32 816d 129a 64b4 cb6e :00000010
+</pre>
+I left out the "ASCII" column as it's fine as it is. This approach shows integers in their "natural" (to me :-)) representation, e.g. aligned 32-bit hex 142 would show up as <code>0000 0142</code>, not <code>4201 0000</code>. It also shows bits in their monotonic increasing order instead of counting __bytes__ left-to-right then __bits__ right-to-left. I've looked at the hexl alternatives but none of them have this feature.
