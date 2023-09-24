@@ -74,7 +74,7 @@ Is there a way to change hexl-mode (or other) output to be "reversed" from the s
 </pre>
 I would like to see
 <pre>
-ffee ccdd bbaa 9988 7766 5544 3322 1100  87654321
+ffee ddcc bbaa 9988 7766 5544 3322 1100  87654321
 2196 820d 864a 4c32 816d 129a 64b4 cb6e :00000010
 </pre>
 I left out the "ASCII" column as it's fine as it is. This approach shows integers in their "natural" (to me :-)) representation, e.g. aligned 32-bit hex 142 would show up as <code>0000 0142</code>, not <code>4201 0000</code>. It also shows bits in their monotonic increasing order instead of counting __bytes__ left-to-right then __bits__ right-to-left. I've looked at the hexl alternatives but none of them have this feature.
