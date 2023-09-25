@@ -249,3 +249,6 @@ The workaround is to prevent Emacs from guessing the text direction in term-mode
 You only need to use this hook for Emacs 24.x, as it will be active by default in the 25.1 release. (If your pre-release version of Emacs 25 suffers from this issue, simply update it.)
 
 Furthermore, the root of the problem has been fixed in the Emacs master branch (such that the workaround is not necessary at all). That fix should be included in either Emacs 25.2 or 25.3.
+
+Addendum: I have encountered a problem of emacs 26.1 hanging in ansi-term when lots (thousands) of short lines scrolled by. usually overflowing the terminal buffer. The above workaround fixed it for me.
+
