@@ -1,6 +1,6 @@
 [[fr:FaireDesChosesIntÃ©ractivement]]
 
-'''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version from the unofficial [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head%3A/lisp/ido.el bzr mirror] or [http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/lisp/ido.el git mirror]. You may get a current version from the canonical emacs bzr repository at Savannah when it gains a web interface ([[BzrForEmacsDevs#toc6]]). Or you can get a very outdated version of it at http://www.cua.dk/.
+'''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version from the unofficial [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head%3A/lisp/ido.el bzr mirror] or [http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/lisp/ido.el git mirror]. You may get a current version from the canonical emacs bzr repository at Savannah when it gains a web interface ([[BzrForEmacsDevs#toc6]]).
 
 = Overview of Ido =
 
@@ -597,7 +597,7 @@ In order to be more consistent with the normal find-file HCI, to which I am real
      ))
 
 
-Maybe this is useless with recent versions of emacs/ido, but here I'm forced to use emacs 21, so I downloaded ido 1.56 from cua.dk (see above) and it works like a charm. My only difficulty was that I had to comment this line in  ido-read-internal, and i don't really know what kind of wizardry I am trying to cheat here.
+Maybe this is useless with recent versions of emacs/ido, but here I'm forced to use emacs 21, so I downloaded ido 1.56 from cua.dk and it works like a charm. My only difficulty was that I had to comment this line in  ido-read-internal, and i don't really know what kind of wizardry I am trying to cheat here.
 
    ;;(process-environment (cons "HOME=/" process-environment)) 
 
