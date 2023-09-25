@@ -92,6 +92,19 @@ While the standard mode hook `so-long-mode-hook' (which runs between `change-maj
      (cancel-timer idle-highlight-timer)
      (setq idle-highlight-timer nil)))
 
+==Non-file buffers==
+
+Note that ##global-so-long-mode## only affects file-visiting buffers, and only at the time the file is visited.  Quoting the documentation:
+
+[quote]Note also that the mitigations are automatically triggered when visiting a
+file.  The library does not automatically detect if long lines are inserted
+into an existing buffer (although the `so-long' command can be invoked
+manually in such situations).[/quote]
+
+Triggering the behaviour automatically in any other scenario will require a different approach.
+
+One such use-case is ##compilation-mode##, used by ##M-x compile## itself, but also by the likes of ##M-x rgrep## and various others.  See https://emacs.stackexchange.com/a/78941/454 for a solution to automatically triggering ##so-long-minor-mode## in these buffers if long lines are inserted by the inferior process.
+
 ==Troubleshooting==
 
 Any elisp library has the potential to cause performance problems, and while ##so-long## addresses some important common cases, it's entirely possible that your own config contains problem cases that are unknown to this library.
