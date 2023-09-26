@@ -102,6 +102,7 @@ you may need different values for this.  This is buffer-local.
 * Lisp:frame-cmds.el has commands for ''incrementally'' resizing a frame (by pressing arrow keys and `C-M-').
 * Lisp:zoom-frm.el has commands for zooming a frame in and out.
 * Lisp:doremi-frm.el has commands for incrementally resizing a frame with the arrow keys or mouse wheel.
+* Lisp:frame-fns.el is a dependency for some of the above.
 
 ----
 OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
