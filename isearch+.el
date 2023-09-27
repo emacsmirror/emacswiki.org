@@ -4,13 +4,13 @@
 ;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 23 14:04:39 2021 (-0700)
+;; Last-Updated: Wed Sep 27 14:44:49 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 7272
+;;     Update #: 7289
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,20 +19,23 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `backquote', `bookmark',
-;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `button', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `cmds-menu', `col-highlight', `color', `crosshairs', `custom',
-;;   `doremi', `doremi-frm', `easymenu', `facemenu', `facemenu+',
-;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
-;;   `font-lock-menus', `frame-cmds', `frame-fns', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
-;;   `info', `info+', `isearch-prop', `kmacro', `macroexp',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mwheel',
-;;   `naked', `palette', `pp', `pp+', `radix-tree', `replace',
-;;   `ring', `second-sel', `strings', `syntax', `text-mode',
-;;   `thingatpt', `thingatpt+', `timer', `vline',
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `color', `crosshairs', `custom', `doremi', `doremi-frm',
+;;   `easymenu', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `facemenu', `facemenu+', `faces', `faces+',
+;;   `fit-frame', `font-lock', `font-lock+', `font-lock-menus',
+;;   `frame-cmds', `frame-fns', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
+;;   `highlight', `hl-line', `hl-line+', `info', `info+',
+;;   `isearch-prop', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mwheel', `naked', `package',
+;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
+;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
 ;;   `zones'.
 ;;
@@ -869,6 +872,14 @@
 ;;    case the new value takes effect only when the current search is
 ;;    exited.
 ;;
+;;    By default, `isearchp-deactivate-region-flag' is non-nil, which
+;;    means that the region highlighting doesn't get in the way
+;;    visually.  But if you use searching to navigate, and thus, in
+;;    particular, to extend or reduce the region, the effect is not as
+;;    noticeable.  This can be especially relevant when the region is
+;;    a rectangle.  Just use `C-SPC C-SPC' to make the region visible
+;;    again.
+;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
 ;;
@@ -1280,6 +1291,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-* to *.
+;; 2022/05/03 dadams
+;;     Added redefinition of isearch-yank-char-in-minibuffer, to respect isearchp-directional-yank.
 ;; 2021/08/23 dadams
 ;;     isearchp-add-filter-predicate-1:
 ;;       Describe arg PREDICATE in doc string - can be like an element of isearchp-filter-predicates-alist.
@@ -2030,7 +2045,11 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile  (if (>= emacs-major-version 24)
+                        (require 'cl-lib) ; cl-case, cl-loop
+                      (require 'cl)
+                      (defalias 'cl-case 'case)
+                      (defalias 'cl-loop 'loop)))
 
  ;; Cannot do (require 'isearch), because `isearch.el' does no `provide'.
  ;; We do not want to do a (load-library "isearch"), because it would not
@@ -3654,14 +3673,14 @@ Note: You cannot use `DEL' (Backspace) to remove the failed portion of
   "Cycle option `isearchp-drop-mismatch'.
 See also option `isearchp-drop-mismatch-regexp-flag'."
   (interactive)
-  (setq isearchp-drop-mismatch  (case isearchp-drop-mismatch
+  (setq isearchp-drop-mismatch  (cl-case isearchp-drop-mismatch
                                   (replace-last  nil)
                                   ((nil)         t)
                                   (otherwise     'replace-last)))
   (if (and isearchp-drop-mismatch  (not (eq 'replace-last isearchp-drop-mismatch)))
       (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
     (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch))
-  (case isearchp-drop-mismatch
+  (cl-case isearchp-drop-mismatch
     (replace-last  (message "Automatic REPLACEMENT of last mismatched input is now ON"))
     ((nil)         (message "Automatic removal of mismatched input is now OFF"))
     (otherwise     (message "Automatic removal of ALL mismatched input is now ON")))
@@ -3804,7 +3823,7 @@ Toggles between nil and the last non-nil value."
   (when search-invisible (setq isearchp-last-non-nil-invisible  search-invisible))
   (setq search-invisible   (if search-invisible nil isearchp-last-non-nil-invisible)
         isearch-invisible  search-invisible)
-  (message "Option `search-invisible' is now `%s'" (case search-invisible
+  (message "Option `search-invisible' is now `%s'" (cl-case search-invisible
                                                      (open  'OPEN)
                                                      ((nil) 'OFF)
                                                      (t     'ON)))
@@ -3902,7 +3921,7 @@ The new value takes effect only when the current search is exited."
 (defun isearchp-set-region-around-search-target ()
   "Set the region around the last search or query-replace target."
   (interactive)
-  (case last-command
+  (cl-case last-command
     ((isearch-forward isearch-backward isearch-forward-regexp isearch-backward-regexp)
      (push-mark isearch-other-end t 'activate))
     (t (push-mark (match-beginning 0) t 'activate)))
@@ -5244,6 +5263,27 @@ With a numeric prefix ARG, pull in ARG characters."
 
 ;; REPLACE ORIGINAL in `isearch.el', Emacs 27+.
 ;;
+;; Respect `isearchp-directional-yank'.
+;;
+(defun isearch-yank-char-in-minibuffer (&optional arg)
+  "Pull next character from buffer into end of search string in minibuffer.
+If `isearchp-directional-yank' is non-nil then use next char for
+forward search, previous char for backward search.
+
+With a numeric prefix ARG, pull in ARG characters."
+  (interactive "p")
+  (if (eobp)
+      (insert
+       (with-current-buffer (cadr (buffer-list))
+         (buffer-substring-no-properties (point) (progn (if (or isearch-forward  (not isearchp-directional-yank))
+                                                            (forward-char arg)
+                                                          (backard-char arg))
+                                                        (point)))))
+    (forward-char arg)))
+
+
+;; REPLACE ORIGINAL in `isearch.el', Emacs 27+.
+;;
 ;; Added optional arg RESPECT-DIRECTION.
 ;;
 (defun isearch--yank-char-or-syntax (syntax-list fn &optional arg respect-direction)
@@ -5339,6 +5379,7 @@ With a numeric prefix ARG, pull in ARG lines."
 ;;
 (defun isearch-yank-until-char (char &optional arg) ; Bound to `C-y C-M-z'
   "Yank buffer text, up to next instance of CHAR, onto search string.
+If `isearchp-directional-yank' is non-nil then select text backward.
 You are prompted for CHAR.
 Non-nil optional ARG means yank until next ARGth instance of CHAR.
 This is often useful for keyboard macros, for example in programming
@@ -6625,7 +6666,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                     pred    (nth 0 pred)) ; (PREDICATE)
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
-                    (append (and (or name  (case isearchp-prompt-for-filter-name
+                    (append (and (or name  (cl-case isearchp-prompt-for-filter-name
                                              (always      (not flip-read-name-p))
                                              (non-symbol  (if (not (symbolp pred))
                                                               (not flip-read-name-p)
@@ -6672,9 +6713,9 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                                        isearch-filter-predicate)
                  nil)
           (with-isearch-suspended
-            (setq name  (read-string (if (= 0 (length name))
-                                         "Name (cannot be empty): "
-                                       (format "`%s' exists.  Another name: " name)))))))
+           (setq name  (read-string (if (= 0 (length name))
+                                        "Name (cannot be empty): "
+                                      (format "`%s' exists.  Another name: " name)))))))
       name))
 
   (defun isearchp-read-prompt-prefix ()
@@ -6747,28 +6788,28 @@ If you do not choose a completion candidate then the value returned by
           input choice pred result)
       (unless prompt  (setq prompt  "Predicate: "))
       (with-isearch-suspended
-        (while (or (not pred)
-                   (and (not (functionp pred))
-                        (not (advice-function-member-p pred isearch-filter-predicate))))
-          (setq input   (completing-read prompt filter-alist nil nil nil 'isearchp-predicate-history)
-                choice  (assoc input filter-alist)
-                choice  (or choice  (assoc (intern input) filter-alist)))
-          (setq result  (or choice  (read input)) ; For example, input was a lambda form.
-                pred    (if choice
-                            (if (stringp (nth 0 choice))
-                                (let ((bmk-filt  (cdr (assq 'isearchp-filter choice))))
-                                  (if bmk-filt
-                                      (setq result  bmk-filt) ; BOOKMARK
-                                    (nth 1 choice))) ; (NAME FUNCTION [PREFIX])
-                              (nth 0 choice)) ; (FUNCTION [PREFIX])
-                          result))
-          (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
-            (message "Not a function: `%S'" pred) (sit-for 1))
-          (when (and (symbolp pred)  (get pred 'isearchp-part-pred))
-            (setq pred    (funcall pred)
-                  result  pred
-                  choice  nil))
-          (setq isearchp-user-entered-new-filter-p  (not choice))))
+       (while (or (not pred)
+                  (and (not (functionp pred))
+                       (not (advice-function-member-p pred isearch-filter-predicate))))
+         (setq input   (completing-read prompt filter-alist nil nil nil 'isearchp-predicate-history)
+               choice  (assoc input filter-alist)
+               choice  (or choice  (assoc (intern input) filter-alist)))
+         (setq result  (or choice  (read input)) ; For example, input was a lambda form.
+               pred    (if choice
+                           (if (stringp (nth 0 choice))
+                               (let ((bmk-filt  (cdr (assq 'isearchp-filter choice))))
+                                 (if bmk-filt
+                                     (setq result  bmk-filt) ; BOOKMARK
+                                   (nth 1 choice))) ; (NAME FUNCTION [PREFIX])
+                             (nth 0 choice)) ; (FUNCTION [PREFIX])
+                         result))
+         (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
+           (message "Not a function: `%S'" pred) (sit-for 1))
+         (when (and (symbolp pred)  (get pred 'isearchp-part-pred))
+           (setq pred    (funcall pred)
+                 result  pred
+                 choice  nil))
+         (setq isearchp-user-entered-new-filter-p  (not choice))))
       result))
 
   (defun isearchp-read-regexp-during-search (&optional prompt)
@@ -6791,9 +6832,9 @@ associated `name'."
                        (preds                                      (isearchp-current-filter-predicates))
                        name)
                    (with-isearch-suspended
-                     (setq name  (completing-read "Remove filter predicate: " preds nil t nil nil
-                                                  (and (advice--p isearch-filter-predicate)
-                                                       (isearchp-last-isearch-advice)))))
+                    (setq name  (completing-read "Remove filter predicate: " preds nil t nil nil
+                                                 (and (advice--p isearch-filter-predicate)
+                                                      (isearchp-last-isearch-advice)))))
                    (list name t)))
     ;; FUNCTION arg to `remove-function' can be a string that is a `name' property value,
     ;; or it can be a function, e.g., a symbol.
@@ -7129,12 +7170,12 @@ about the use of a prefix argument."
      (let ((isearchp-resume-with-last-when-empty-flag  nil)
            mn mx)
        (with-isearch-suspended 
-         (setq mn  (read-number "Minimum column: " 0))
-         (while (not (natnump mn))
-           (setq mn  (read-number "Minimum column (0,1,2,...): " 0)))
-         (setq mx  (read-number "Maximum column: " most-positive-fixnum))
-         (while (not (natnump mx))
-           (setq mx  (read-number "Maximum column (0,1,2,...): " most-positive-fixnum))))
+        (setq mn  (read-number "Minimum column: " 0))
+        (while (not (natnump mn))
+          (setq mn  (read-number "Minimum column (0,1,2,...): " 0)))
+        (setq mx  (read-number "Maximum column: " most-positive-fixnum))
+        (while (not (natnump mx))
+          (setq mx  (read-number "Maximum column (0,1,2,...): " most-positive-fixnum))))
        (list mn mx 
              (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
              (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
@@ -7457,9 +7498,9 @@ You need library `bookmark+.el' for this."
        (let (bname)
          (unless (require 'bookmark+ nil t) (error "You need library `bookmark+.el' for this command"))
          (with-isearch-suspended
-           (setq bname  (bmkp-completing-read-lax
-                         "Bookmark name (and filter name)" nil
-                         (bmkp-remove-if-not #'isearchp-filter-bookmark-p bookmark-alist))))
+          (setq bname  (bmkp-completing-read-lax
+                        "Bookmark name (and filter name)" nil
+                        (bmkp-remove-if-not #'isearchp-filter-bookmark-p bookmark-alist))))
          (list bname t)))
       (bookmark-maybe-load-default-file)
       (let ((bmk  `(,bookmark-name
@@ -7582,17 +7623,17 @@ Non-nil ONLY-ONE-P means read only one sexp and return it."
   (defalias 'puthash 'cl-puthash))
 
 ;; Same as `icicle-remove-duplicates'.
-(if (fboundp 'puthash)                  ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+(if (fboundp 'puthash) ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
     (defun isearchp-remove-duplicates (sequence &optional test)
       "Copy of SEQUENCE with duplicate elements removed.
 Optional arg TEST is the test function.  If nil, test with `equal'.
 See `make-hash-table' for possible values of TEST."
       (setq test  (or test  #'equal))
       (let ((htable  (make-hash-table :test test)))
-        (loop for elt in sequence
-              unless (gethash elt htable)
-              do     (puthash elt elt htable)
-              finally return (loop for i being the hash-values in htable collect i))))
+        (cl-loop for elt in sequence
+                 unless (gethash elt htable)
+                 do     (puthash elt elt htable)
+                 finally return (cl-loop for i being the hash-values in htable collect i))))
 
   (defun isearchp-remove-duplicates (list &optional use-eq)
     "Copy of LIST with duplicate elements removed.
