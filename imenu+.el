@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep  5 09:02:08 2023 (-0700)
+;; Last-Updated: Wed Sep 27 14:52:50 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1136
+;;     Update #: 1141
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -69,7 +69,7 @@
 ;;    `imenu--generic-function', `imenu--make-index-alist',
 ;;    `imenu--mouse-menu', `imenu--sort-by-name',
 ;;    `imenu--split-submenus', `imenu-progress-message',
-;;    `imenu-update-menubar' (Emacs <22).
+;;    `imenu-update-menubar'.
 ;;
 ;;
 ;;  ***** NOTE: The following variable defined in `imenu.el' has
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-case to case.
 ;; 2023/03/24 dadams
 ;;     imenup-lisp-fn-defn-regexp-1: Added define-inline, define-advice, define-compilation-mode,
 ;;                                         cl-defgeneric, cl-defmethod, ert-deftest.
@@ -234,7 +236,10 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile  (if (>= emacs-major-version 24)
+                        (require 'cl-lib) ; cl-case
+                      (require 'cl)
+                      (defalias 'cl-case 'case)))
 
 (require 'imenu)
 
@@ -445,7 +450,7 @@ See also command `imenup-toggle-case-sensitive-sorting'."
               imenu-sort-function        nil) ; Don't sort.
       (setq imenu-sort-function  imenup-last-sort-function)))
   (imenu--menubar-select imenu--rescan-item)
-  (case imenu-sort-function
+  (cl-case imenu-sort-function
     (imenu--sort-by-name (message "Menu items now being sorted by name"))
     ((nil)               (message "Menu items are in buffer order (NOT SORTED)"))
     (otherwise           (message "Menu items now being sorted with `%s'" imenu-sort-function))))
