@@ -4,11 +4,11 @@
 ;; Description: Bookmark+ key and menu bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Thu May 26 22:31:28 2022 (-0700)
+;; Last-Updated: Wed Sep 27 14:19:13 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 985
+;;     Update #: 987
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -108,7 +108,10 @@
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
 ;; bmkp-menu-bar-make-toggle
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile  (if (>= emacs-major-version 24) ; case
+                        (require 'cl-lib)
+                      (require 'cl)
+                      (defalias 'cl-case 'case)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -126,7 +129,7 @@
   "Set prefix key option SYMBOL to key-sequence VALUE."
   (set pref-keys-option keys)
   (let* ((g-map     (current-global-map))
-         (b-map     (case pref-keys-option
+         (b-map     (cl-case pref-keys-option
                       (bmkp-bookmark-map-prefix-keys          'bookmark-map)
                       (bmkp-jump-map-prefix-keys              'bmkp-jump-map)
                       (bmkp-jump-other-window-map-prefix-keys 'bmkp-jump-other-window-map))))
