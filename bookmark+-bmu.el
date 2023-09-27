@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon May 29 14:30:53 2023 (-0700)
+;; Last-Updated: Wed Sep 27 14:17:00 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 4204
+;;     Update #: 4221
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -20,18 +20,18 @@
 ;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
-;;   `col-highlight', `crosshairs', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `epg-config', `fit-frame', `font-lock',
-;;   `font-lock+', `frame-fns', `gv', `help+', `help-fns',
-;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
-;;   `hl-line', `hl-line+', `info', `info+', `kmacro', `macroexp',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `crosshairs', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `fit-frame', `font-lock', `font-lock+',
+;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hl-line', `hl-line+',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `package', `password-cache',
+;;   `pp', `pp+', `radix-tree', `rect', `replace', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
+;;   `thingatpt', `thingatpt+', `url-handlers', `url-parse',
+;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -361,7 +361,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist, push)
+(eval-when-compile  (if (>= emacs-major-version 24) ; case
+                        (require 'cl-lib)
+                      (require 'cl)
+                      (defalias 'cl-case 'case)))
+
 (eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 (eval-when-compile (require 'org nil t)) ;; org-add-link-type
 
@@ -372,6 +376,14 @@
 ;; bookmark-get-filename, bookmark-get-handler, bookmark-kill-line,
 ;; bookmark-maybe-load-default-file, bookmark-name-from-full-record,
 ;; bookmark-name-from-record, bookmark-prop-get
+
+
+;; Emacs 28 changes the parent of `bookmark-bmenu-mode-map' to `tabulated-list-mode-map'.
+;; Not good.  Change it back to `special-mode-map'.
+(defvar special-mode-map)               ; Emacs 20-22.  Quiet the byte-compiler.
+(when (boundp 'special-mode-map)        ; Emacs 23+
+  (set-keymap-parent bookmark-bmenu-mode-map special-mode-map))
+
 
 
 ;; Some general Renamings.
@@ -971,14 +983,15 @@ prompting with completion for the new path."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Add bookmark to `bmkp-bmenu-marked-bookmarks'.  Delete it from `bmkp-flagged-bookmarks'.
-;; 2. Don't call `bookmark-bmenu-ensure-position' again at end.
-;; 3. Raise error if not in `*Bookmark List*'.
-;; 4. Narrower scope for `with-buffer-modified-unmodified' and `let'.
-;; 5. If current sort is `s >' (marked first or last), and it was unmarked before, then re-sort.
-;; 6. Added optional arg NO-RE-SORT-P to inhibit #5.
-;; 7. Added optional arg MSG-P.
-;; 8. Call `bmkp-bmenu-mode-line'.
+;; 1. Don't use `tabulated-list-mode' (Emacs 28+).
+;; 2 Add bookmark to `bmkp-bmenu-marked-bookmarks'.  Delete it from `bmkp-flagged-bookmarks'.
+;; 3. Don't call `bookmark-bmenu-ensure-position' again at end.
+;; 4. Raise error if not in `*Bookmark List*'.
+;; 5. Narrower scope for `with-buffer-modified-unmodified' and `let'.
+;; 6. If current sort is `s >' (marked first or last), and it was unmarked before, then re-sort.
+;; 7. Added optional arg NO-RE-SORT-P to inhibit #5.
+;; 8. Added optional arg MSG-P.
+;; 9. Call `bmkp-bmenu-mode-line'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-mark "bookmark+")
 (defun bookmark-bmenu-mark (&optional no-re-sort-p msg-p) ; Bound to `m' in bookmark list
@@ -1021,15 +1034,16 @@ Non-interactively:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Remove bookmark from `bmkp-bmenu-marked-bookmarks' and `bmkp-flagged-bookmarks'.
-;; 2. Use `bmkp-delete-bookmark-name-from-list', not `delete'.
-;; 3. Don't call `bookmark-bmenu-ensure-position' again at end.
-;; 4. Raise error if not in `*Bookmark List*'.
-;; 5. Narrower scope for `with-buffer-modified-unmodified' and `let'.
-;; 6. If current sort is `s >' (marked first or last), and it was marked before, then re-sort.
-;; 7. Added optional arg NO-RE-SORT-P to inhibit #6.
-;; 8. Added optional arg MSG-P.
-;; 9. Call `bmkp-bmenu-mode-line'.
+;;  1. Don't use `tabulated-list-mode' (Emacs 28+).
+;;  2. Remove bookmark from `bmkp-bmenu-marked-bookmarks' and `bmkp-flagged-bookmarks'.
+;;  3. Use `bmkp-delete-bookmark-name-from-list', not `delete'.
+;;  4. Don't call `bookmark-bmenu-ensure-position' again at end.
+;;  5. Raise error if not in `*Bookmark List*'.
+;;  6. Narrower scope for `with-buffer-modified-unmodified' and `let'.
+;;  7. If current sort is `s >' (marked first or last), and it was marked before, then re-sort.
+;;  8. Added optional arg NO-RE-SORT-P to inhibit #6.
+;;  9. Added optional arg MSG-P.
+;; 10. Call `bmkp-bmenu-mode-line'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-unmark "bookmark+")
 (defun bookmark-bmenu-unmark (&optional backup no-re-sort-p msg-p) ; Bound to `u' in bookmark list
@@ -1067,13 +1081,14 @@ Non-interactively:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Do not use `bookmark-bmenu-ensure-position' as a test - it always returns non-nil anyway.
+;; 1. Don't use `tabulated-list-mode' (Emacs 28+).
+;; 2. Do not use `bookmark-bmenu-ensure-position' as a test - it always returns non-nil anyway.
 ;;    And don't call it again the end.
-;; 2. Use `bmkp-delete-bookmark-name-from-list', not `delete'.
-;; 3. Use face `bmkp-D-mark' on the `D' flag.
-;; 4. Raise error if not in buffer `*Bookmark List*'.
-;; 5. Remove bookmark from `bmkp-bmenu-marked-bookmarks'.  Add it to `bmkp-flagged-bookmarks'.
-;; 6. Call `bmkp-bmenu-mode-line'.
+;; 3. Use `bmkp-delete-bookmark-name-from-list', not `delete'.
+;; 4. Use face `bmkp-D-mark' on the `D' flag.
+;; 5. Raise error if not in buffer `*Bookmark List*'.
+;; 6. Remove bookmark from `bmkp-bmenu-marked-bookmarks'.  Add it to `bmkp-flagged-bookmarks'.
+;; 7. Call `bmkp-bmenu-mode-line'.
 ;;
 ;;;###autoload (autoload 'bmkp-bmenu-flag-for-deletion "bookmark+")
 (defalias 'bmkp-bmenu-flag-for-deletion 'bookmark-bmenu-delete) ; A better name.
@@ -1361,9 +1376,10 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; Redefined.
-;; 1. Get name of the current bookmark from text property `bmkp-bookmark-name'.
-;; 2. Added optional arg FULL, to return full bookmark record.
-;; 3. Use `condition-case' in case we're at eob (so cannot advance).
+;; 1. Don't use `tabulated-list-mode' (Emacs 28+).
+;; 2. Get name of the current bookmark from text property `bmkp-bookmark-name'.
+;; 3. Added optional arg FULL, to return full bookmark record.
+;; 4. Use `condition-case' in case we're at eob (so cannot advance).
 ;;
 (defun bookmark-bmenu-bookmark (&optional full)
   "Return the name of the bookmark on this line.
@@ -1381,7 +1397,8 @@ Non-nil optional FULL means return the bookmark record, not the name."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Mode-line major-mode name is different, and indicates whether in temporary bookmarking minor mode.
-;; 2. Doc string is different.
+;; 2. Don't derive from `tabulated-list-mode' (Emacs 28+).
+;; 3. Doc string is different.
 ;;
 (defun bookmark-bmenu-mode ()
   "Major mode for editing a list of bookmarks.
@@ -2158,21 +2175,22 @@ Non-interactively, non-nil MSG-P means display messages."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;;  1. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
-;;  2. Added optional arg NO-CONFIRM-P.
-;;  3. Delete bookmark on current line (after confirmation) if none are flagged/marked.
-;;  4. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
+;;  1. Don't use progress-reporter.
+;;  2. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
+;;  3. Added optional arg NO-CONFIRM-P.
+;;  4. Delete bookmark on current line (after confirmation) if none are flagged/marked.
+;;  5. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
 ;;     `bookmark-save' refreshes the bookmark list display, and that removes `D' flags.
-;;  5. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmarks when
+;;  6. Use `bmkp-get-bookmark' instead of `bookmark-get-bookmark', so we can get the right bookmarks when
 ;;     they have names with property `bmkp-full-record'.  But don't require that they have names, so
 ;;     calls from vanilla or other code won't be bothered.
-;;  6. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
+;;  7. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
 ;;     `bookmark-bmenu-list', updating the modification count, and saving.
-;;  7. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
-;;  8. Pass full bookmark, not name, to `delete' (and do not use `assoc').
-;;  9. Use `bmkp-bmenu-goto-bookmark-named'.
-;; 10. Added status messages.
-;; 11. Raise error if not in buffer `*Bookmark List*'.
+;;  8. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
+;;  9. Pass full bookmark, not name, to `delete' (and do not use `assoc').
+;; 10. Use `bmkp-bmenu-goto-bookmark-named'.
+;; 11. Added status messages.
+;; 12. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-execute-deletions "bookmark+")
 (defun bookmark-bmenu-execute-deletions (&optional markedp no-confirm-p) ; Bound to `x' in bookmark list
@@ -2608,7 +2626,7 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
                            (error (throw 'bmkp-bmenu-read-filter-input nil)))
                     (unless (or (not (fboundp 'characterp))  (characterp char)) ; E.g. `M-x', `M-:'
                       (throw 'bmkp-bmenu-read-filter-input nil))
-                    (case char
+                    (cl-case char
                       ((?\e ?\r)  (throw 'bmkp-bmenu-read-filter-input nil)) ; Break and exit.
                       (?\C-g      (setq inhibit-quit  nil)
                                   (throw 'bmkp-bmenu-read-filter-input 'QUIT)) ; Quit.
@@ -4517,8 +4535,8 @@ Save the command definition in `bmkp-bmenu-commands-file'."
          (fn     (intern (read-string "Define command to jump to a bookmark now marked: " nil
                                       bmkp-bmenu-define-command-history)))
          (def    `(defun ,fn (bookmark-name &optional flip-use-region-p)
-                   (interactive (list (bmkp-read-bookmark-for-type nil ',cands t) current-prefix-arg))
-                   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))))
+                    (interactive (list (bmkp-read-bookmark-for-type nil ',cands t) current-prefix-arg))
+                    (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))))
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
@@ -4526,7 +4544,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
             (print-gensym           bmkp-propertize-bookmark-names-flag)
-            (version-control        (case bookmark-version-control
+            (version-control        (cl-case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
                                       (nospecial  version-control)
@@ -4591,7 +4609,7 @@ Use the command at any time to restore them."
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
             (print-gensym           bmkp-propertize-bookmark-names-flag)
-            (version-control        (case bookmark-version-control
+            (version-control        (cl-case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
                                       (nospecial  version-control)
@@ -4693,7 +4711,7 @@ the omit list and the sort & filter information."
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
             (print-gensym           bmkp-propertize-bookmark-names-flag)
-            (version-control        (case bookmark-version-control
+            (version-control        (cl-case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
                                       (nospecial  version-control)
@@ -4789,7 +4807,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
 If you use this function non-interactively, be sure to load library
 `bookmark+-mac.el' first."
   (interactive
-   (progn (or (condition-case nil       ; Load `bookmark+-mac.el' when called interactively.
+   (progn (or (condition-case nil ; Load `bookmark+-mac.el' when called interactively.
                   (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
                 (error nil))
               (require 'bookmark+-mac))
@@ -4800,16 +4818,16 @@ If you use this function non-interactively, be sure to load library
         def)
     (dolist (tag  tags)
       (push `(lambda (b1 b2)
-              (let ((tags1  (bmkp-get-tags b1))
-                    (tags2  (bmkp-get-tags b2)))
-                (cond ((and (assoc-default ,tag tags1 nil t)
-                            (assoc-default ,tag tags2 nil t))  nil)
-                      ((assoc-default ,tag tags1 nil t)        '(t))
-                      ((assoc-default ,tag tags2 nil t)        '(nil))
-                      ((and tags1  tags2)                      nil)
-                      (tags1                                   '(t))
-                      (tags2                                   '(nil))
-                      (t                                       nil))))
+               (let ((tags1  (bmkp-get-tags b1))
+                     (tags2  (bmkp-get-tags b2)))
+                 (cond ((and (assoc-default ,tag tags1 nil t)
+                             (assoc-default ,tag tags2 nil t))  nil)
+                       ((assoc-default ,tag tags1 nil t)        '(t))
+                       ((assoc-default ,tag tags2 nil t)        '(nil))
+                       ((and tags1  tags2)                      nil)
+                       (tags1                                   '(t))
+                       (tags2                                   '(nil))
+                       (t                                       nil))))
             comparer))
     (setq comparer  (nreverse comparer)
           comparer  (list comparer 'bmkp-alpha-p))
@@ -4820,7 +4838,7 @@ If you use this function non-interactively, be sure to load library
             (print-level            nil)
             (print-circle           bmkp-propertize-bookmark-names-flag)
             (print-gensym           bmkp-propertize-bookmark-names-flag)
-            (version-control        (case bookmark-version-control
+            (version-control        (cl-case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
                                       (nospecial  version-control)
