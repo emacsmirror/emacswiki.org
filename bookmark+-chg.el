@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 30 08:58:01 2023 (-0700)
+;; Last-Updated: Wed Sep 27 14:20:57 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 16894
+;;     Update #: 16898
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-* to *.
 ;; 2023/06/30 dadams
 ;;     Added: bmkp-bookmarks-already-loaded, as replacement for vanilla bookmarks-already-loaded and
 ;;            bookmark-bookmarks-timestamp.
@@ -1543,6 +1545,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-* to *.
 ;; 2023/05/17 dadams
 ;;     bmkp-bmenu-mode-status-help: Bind describe-function-orig-buffer (new in Emacs 28).
 ;; 2022/11/05 dadams
@@ -2266,6 +2270,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-* to *.
 ;; 2022/05/26 dadams
 ;;     menu-bar-bookmark-map:
 ;;       Added bmkp-send-bug-report.
@@ -2461,6 +2467,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-* to *.
 ;; 2022/11/27 dadams
 ;;     Corrected all C-x p to C-x x, in comments.
 ;; 2022/11/18 dadams
