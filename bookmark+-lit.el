@@ -4,11 +4,11 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Nov 27 13:09:00 2022 (-0800)
+;; Last-Updated: Wed Sep 27 14:20:33 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1071
+;;     Update #: 1075
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -186,7 +186,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: push)
+(eval-when-compile  (if (>= emacs-major-version 24) ; case
+                        (require 'cl-lib)
+                      (require 'cl)
+                      (defalias 'cl-case 'case)))
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read, bmkp-get-bookmark,
@@ -1282,8 +1285,8 @@ point, and then use `\\[bmkp-describe-bookmark]' to describe one of them.
 
 When called from Lisp:
  Use POSITION, not point.
- DEFN corresponds to the prefix arg: non-nil means show show the
-   internal definition of the bookmark."
+ DEFN corresponds to the prefix arg: non-nil means show the internal
+  definition of the bookmark."
   (interactive (list (point) current-prefix-arg))
   (let ((bmk  (or (bmkp-a-bookmark-lighted-at-pos position 'FULL)
                   (bmkp-a-bookmark-lighted-on-this-line 'FULL))))
@@ -1523,7 +1526,7 @@ If STYLE is `none' then:
     (when (and (< emacs-major-version 22)  (not (rassq style bmkp-light-styles-alist)))
       (message "Fringe styles not supported before Emacs 22 - changing to `line' style")
       (setq style 'line))
-    (case style
+    (cl-case style
       (region        (and (bmkp-region-bookmark-p bookmark)
                           (let ((end  (bmkp-get-end-position bookmark)))
                             (if (not ov)
