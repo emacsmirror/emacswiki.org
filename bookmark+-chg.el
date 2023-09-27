@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Sep 27 14:20:57 2023 (-0700)
+;; Last-Updated: Wed Sep 27 14:48:28 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 16898
+;;     Update #: 16900
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2645,6 +2645,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2023/09/27 dadams
+;;     Version: 2023.09.27
 ;; 2023/06/12 dadams
 ;;     Version: 2023.06.12
 ;; 2022/08/16 dadams
