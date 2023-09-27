@@ -289,7 +289,7 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 
     (defun switch-full-screen ()
       (interactive)
-      (shell-command "wmctrl -r :ACTIVE: -b toggle,fullscreen"))
+      (shell-command "wmctrl -r :ACTIVE: -b add,fullscreen"))
 
     (global-set-key [f11] 'switch-full-screen)
 
@@ -300,13 +300,13 @@ and now you are GNOME HIG compliant :)
 
     (defun switch-full-screen ()
       (interactive)
-      (shell-command "wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz"))
+      (shell-command "wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz"))
 
 * Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
 
     (defun switch-full-screen ()
       (interactive)
-      (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b toggle,maximized_vert,maximized_horz"))
+      (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b add,maximized_vert,maximized_horz"))
 
 * To automatically execute the above commands when emacs is starting, complement them with:
 
