@@ -96,9 +96,9 @@ In this case, you may have to update some internal variable corresponding to the
 
 <code>M-x package-refresh-contents</code>
 
-or, from within <code>M-x list-packages</code>, press `U' to update the list.
+or, from within <code>M-x list-packages</code>, press <code>U</code> to update the list. After that, consider to press <code>x</code> to upgrade packages to the latest version.
 
-As this update process might take a while, it shouldn't really be part of the init file for every time you fire up Emacs.
+As this update process might take a while, it shouldn't really be part of the init file every time you fire up Emacs.
 
 ----
 CategoryPackaging
