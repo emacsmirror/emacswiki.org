@@ -1,7 +1,5 @@
 [[zh:安装软件包]]
 
-The most common method of installing packages of Emacs Lisp since Emacs 24 has been [[ELPA]] packages.
-
 Basic commands:
 
 {{{
@@ -9,7 +7,17 @@ M-x package-install
 M-x package-delete
 }}}
 
+[[ELPA]] is the most common method of installing packages (as of Emacs 24).
+
 Additional package archives such as [[MELPA]] exist to supplement what is in [[GnuELPA]].
+
+== Discovering packages ==
+
+Type <code>M-x list-packages</code> to open the package list.  Press `i' to mark for installation, `u' to unmark, and `x' to perform the installation.  Press `RET' to read more about installing and using each package.
+
+You may want to start by installing the <code>paradox</code> package.  This will allow you to use the command <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.
+
+If there is a package that you want, but it's not listed, you may need to [[#package-archives|add another package source]].
 
 [:package-archives]
 == Adding a package source ==
@@ -28,25 +36,19 @@ Alternatively, you can use the Customize interface with the command `M-x customi
 The value will depend on the package source you want to add. See [[ELPA]] and [[MELPA]] for more information.
 
 [:installing-packages]
-== Installing packages ==
 
-Type <code>M-x list-packages</code> to open the package list.  Press `i' to mark for installation, `u' to unmark, and `x' to perform the installation.  Press `RET' to read more about installing and using each package.  
-
-If you don't see the package listed there, you may need to add another package source to your ##package-archives## variable. See the section on [[#package-archives|adding a package source]].
-
-You may want to start by installing the <code>paradox</code> package.  This will allow you to use the command <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.  
+== Moving into a New System == 
 
 If you move to a different system and you would like to quickly install all of your previously installed packages, look into `M-x package-install-selected-packages'. If you use UsePackage, the <code>:ensure t</code> property will tell Emacs to install a package if it hasn't already been installed.
 
 == Shortlisting Packages ==
 
-If you are looking for a package or a feature, it is more likely that it is already in [http://melpa.org/ MELPA]. As on April 2019, MELPA has upwards of 4000 packages.   So, start your search for a package in that repository.  Alternately, you can shortlist packages right within Emacs using the [https://github.com/politza/tablist `tablist`] package.  See [https://emacsnotes.wordpress.com/2019/04/16/how-i-shortlist-add-ons-for-my-emacs-introducing-tablist/ How I shortlist add-ons for my Emacs: Introducing `tablist`] for a nice tutorial on how you can do this.
+If you are looking for a package or a feature, it is more likely that it is already in [http://melpa.org/ MELPA]. As on April 2019, MELPA has upwards of 4000 packages. So, start your search for a package in that repository. Alternately, you can shortlist packages right within Emacs using the [https://github.com/politza/tablist `tablist`] package. See [https://emacsnotes.wordpress.com/2019/04/16/how-i-shortlist-add-ons-for-my-emacs-introducing-tablist/ How I shortlist add-ons for my Emacs: Introducing `tablist`] for a nice tutorial on how you can do this.
 
 
 == Working with network proxies ==
 
-If you are behind a firewall that requires the use of a proxy, you may need to configure HTTP or HTTPS proxies in order to list or install packages.
-Here is sample code from [http://stackoverflow.com/questions/10787087/use-elpa-emacs-behind-proxy-requiring-authentication Stack Overflow]. Replace the proxy information with whatever your network requires.
+If you are behind a firewall that requires the use of a proxy, you may need to configure HTTP or HTTPS proxies in order to list or install packages. Here is sample code from [http://stackoverflow.com/questions/10787087/use-elpa-emacs-behind-proxy-requiring-authentication Stack Overflow]. Replace the proxy information with whatever your network requires.
 
     (setq url-proxy-services
        '(("no_proxy" . "^\\(localhost\\|10.*\\)")
@@ -60,7 +62,7 @@ Here is sample code from [http://stackoverflow.com/questions/10787087/use-elpa-e
 
 == Using and configuring packages ==
 
-Many packages come with instructions on installation and use.  These can be viewed in the package manager by pressing `RET' on the package line.
+Many packages come with instructions on installation and use. These can be viewed in the package manager by pressing `RET' on the package line.
 
 UsePackage can make it easier for you to organize your package-related configuration. For more information, see its homepage: https://github.com/jwiegley/use-package
 
