@@ -2,7 +2,7 @@ Deft is an Emacs mode for quickly browsing, filtering, and editing directories o
 
 http://jblevins.org/projects/deft/
 
-There's also Zettledeft project (https://www.eliasstorms.net/zetteldeft/) that builds on Deft and provides a framework to build a Zettelkasten information system.
+There's also Zettledeft project (https://www.eliasstorms.net/zetteldeft/) that builds on Deft and provides a framework to build a Zettelkasten information system. The zk project from https://github.com/localauthor/zk is very much like Zetteldeft, but it implements a much simpler and lightweight zettelkasten-style framework without building on Deft.
 
 ----
 
