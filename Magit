@@ -56,5 +56,20 @@ Various packages exist which extend Magit, including:
 You can find even more extensions by searching for "magit" on
 https://melpa.org.  You might also want to search for "git".
 
+== Diff worktree with commit at point ==
+
+The code below introduces a way to invoke `magit-diff` from any magit buffer with the commit at point as its only argument. This produces a diff with the worktree.
+
+{{{
+(defun my-magit-diff-with-commit-at-point ()
+  (interactive)
+  (let* ((section (magit-current-section))
+         (value (oref section value)))
+    (magit-diff-range (magit-rev-parse value))))
+
+(transient-append-suffix `magit-diff "r"
+  '("W" "Diff worktree at point" my-magit-diff-with-commit-at-point))
+}}}
+
 ----
 [[Git]] CategoryVersionControl
