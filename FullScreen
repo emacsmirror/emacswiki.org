@@ -314,6 +314,43 @@ and now you are GNOME HIG compliant :)
 
       (add-hook 'after-init-hook 'switch-full-screen)
 
+==== External program: devilspie2 ====
+
+This will not only maximize the window,[1] but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [#h5o-2|.emacs.d/early-init.el]).
+<pre>
+# Configure devilspie2 to start 
+mkdir -p ~/.config/devilspie2/
+
+width="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f1)"
+height="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2)"
+
+tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
+if (get_class_instance_name() == "emacs") then
+
+    set_window_geometry(0, 0, $width, $height);
+
+end
+EOF
+
+# Autostart devilspie2
+mkdir -p "$HOME/.config/autostart/" # The directory does not exist by default
+cd "$HOME/.config/autostart/" || exit
+file="devilspie-2.desktop"
+touch "$file"
+desktop-file-edit \
+--set-name="Devilspie 2" \
+--set-comment="Perform scripted actions on windows as they are created" \
+--set-key="Type" --set-value="Application" \
+--set-key="Exec" --set-value="devilspie2" \
+--set-key="X-MATE-Autostart-Delay" --set-value="0" \
+"$file"
+desktop-file-validate "$file"
+</pre>
+* Add this to ~/.emacs to fully maximize the window: (add-to-list 'default-frame-alist '(fullscreen . maximized))
+* Log out and then log back into your desktop environment
+
+1: Workaround to the devilspie2 bug: "maximize* commands don't work for Emacs" - https://savannah.nongnu.org/bugs/index.php?63979
+
 ==== External program: devilspie ====
 
 http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
