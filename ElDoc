@@ -2,7 +2,7 @@ A very simple but effective thing, eldoc-mode is a MinorMode which shows you, in
 
 == Overview ==
 
-Projekt homepage on GNU ELPA: http://elpa.gnu.org/packages/eldoc.html
+Project homepage on GNU ELPA: http://elpa.gnu.org/packages/eldoc.html
 
 ElDoc works for EmacsLisp and certain other language modes that implement support for ElDoc. These include
 
@@ -430,7 +430,7 @@ Fetches function documentation from the net on demand:
 
 == Python + Rope support ==
 
-Eldoc support for Python using Rope extension. Allow highlihting of current position in argument list, integration with flyspell(propely show errors in minibuffer). Advice for message function can be avoided I it is possible to switch off Pymacs traces in minibuffer(this advice just don't execute real message function in case of calling rope, because some indetifiers in source code cause Rope traces).
+Eldoc support for Python using Rope extension. Allow highlighting of current position in argument list, integration with flyspell(properly show errors in minibuffer). Advice for message function can be avoided I it is possible to switch off Pymacs traces in minibuffer(this advice just don't execute real message function in case of calling rope, because some identifiers in source code cause Rope traces).
 
 <pre>
 (defun rope-eldoc-function ()
@@ -560,7 +560,7 @@ For using this function you should add following code to python-mode-hook:
 
 == El Doc on Mouseover Hover ==
 
-See the anser on the question _Help Buffer on Hover Possible?_: https://emacs.stackexchange.com/a/22139/12999
+See the answer on the question _Help Buffer on Hover Possible?_: https://emacs.stackexchange.com/a/22139/12999
 
 
 
