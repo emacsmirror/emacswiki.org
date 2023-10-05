@@ -19,7 +19,7 @@ Probably the simplest way to configure fullscreen or maximized mode is to custom
  '(initial-frame-alist (quote ((fullscreen . maximized)))))
 }}}
 
-To avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen, you can add an the above lines to .emacs.d/early-init.el instead of .emacs (thanks Chad). This has been successfully tested in GNU/Linux (both X11, and Wayland), and Windows.
+To avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen, even if .emacs takes time to load, you can add an the above lines to .emacs.d/early-init.el instead of .emacs (thanks Chad). This has been successfully tested in GNU/Linux (both X11, and Wayland), and Windows.
 
 [:frame-cmds.el]
 == Maximize/Restore Using Library frame-cmds.el ==
