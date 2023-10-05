@@ -21,15 +21,15 @@ Probably the simplest way to configure fullscreen or maximized mode is to custom
 
 ===To avoid the slightly distracting visual effect===
 
-To avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen, you can modify ##.emacs.d/early-init.el## instead of .emacs (thanks Chad). It works even if it takes time to load a typical .emacs configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), and Windows.
+To avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen, you can modify ##.emacs.d/early-init.el## instead of .emacs (thanks Chad).
 
 {{{
   (push '(fullscreen . maximized) default-frame-alist)
 }}}
 
-The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list.
+It works even if it takes time to load a typical .emacs configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), and Windows.
 
-The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
+The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
 
 Essentially the code above will make emacs behave like `emacs --maximize` automatically each time when you open it, because the --maximize argument also opens Emacs without the slightly distracting visual effect.
 
