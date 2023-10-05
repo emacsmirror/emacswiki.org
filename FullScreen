@@ -316,7 +316,7 @@ and now you are GNOME HIG compliant :)
 
 ==== External program: devilspie2 ====
 
-This will not only maximize the window,[1] but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [#h5o-2|.emacs.d/early-init.el]).
+This will not only maximize the window,[1] but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [[#h5o-2|.emacs.d/early-init.el]]).
 <pre>
 # Configure devilspie2 to start 
 mkdir -p ~/.config/devilspie2/
