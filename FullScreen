@@ -31,6 +31,8 @@ The push function in Emacs is used to add an element to the beginning of a list.
 
 The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
 
+Essentially the code above will make emacs behave like `emacs --maximize` automatically each time when you open it, because the --maximize argument also opens Emacs without the slightly distracting visual effect.
+
 [:frame-cmds.el]
 == Maximize/Restore Using Library frame-cmds.el ==
 
