@@ -17,14 +17,15 @@ Happy Hacking!
 # Sly for Common Lisp
 # NxmlMode for XML
 # NewsTicker for RSS and Atom
+# TodoMode and DiaryMode
+# [https://github.com/ldbeth/j-mode|A fork of J Mode]
 
 == Programming Languages I use ==
 
 # Common Lisp, Emacs Lisp (of course), Scheme and many Lisp descendants
-# J
-# Forth
-# Haskell
-# SNOBOL
+# J, APL
+# TECO
+# Forth, Haskell, SNOBOL
 
 == Packages I made ==
 
