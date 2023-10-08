@@ -2,7 +2,7 @@
 
 CryptPlusPlus by KarlBerry <karl@cs.umb.edu> can open and save encrypted files and buffers.It also supports many encryption programs, like GPG, bcrypt, openssl RC4 etc. The encrypted file is detected by group of magic characters at the beginning.
 
-The original pacgake is no longer developed. Please use crypt.el from XEmacs instead
+The original package is no longer developed. Please use crypt.el from XEmacs instead
 
 * '''Current''': http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/os-utils/crypt.el
 * Old (author's official site): http://freefriends.org/~karl/crypt++/
