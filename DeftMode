@@ -2,7 +2,7 @@ Deft is an Emacs mode for quickly browsing, filtering, and editing directories o
 
 http://jblevins.org/projects/deft/
 
-There's also Zettledeft project (https://www.eliasstorms.net/zetteldeft/) that builds on Deft and provides a framework to build a Zettelkasten information system. The zk project from https://github.com/localauthor/zk is very much like Zetteldeft, but it implements a much simpler and lightweight zettelkasten-style framework without building on Deft.
+There's also the Zettledeft project (https://www.eliasstorms.net/zetteldeft/) that builds on Deft and provides a framework to build a Zettelkasten information system. The zk project from https://github.com/localauthor/zk is very much like Zetteldeft, but it implements a much simpler and lightweight zettelkasten-style framework without building on Deft. You may also like to take a look at Org-Roam from https://github.com/org-roam/org-roam or https://www.orgroam.com/ for a solution that builds on Org Capture. The Denote project at https://protesilaos.com/emacs/denote is another package for creating and managing notes in a Zettelkasten way.
 
 ----
 
