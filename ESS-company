@@ -4,7 +4,7 @@ Two company backends are available `company-R-objects' and `company-R-args'.
 
 == Initialization ==
 
-From ESS company-mode is activated by default if you have auto-complete package installed. Change the value of `ess-use-company' if you don't want that.
+From ESS company-mode is activated by default if you have company package installed. Change the value of `ess-use-company' if you don't want that.
 
 This activates company backends in both ESS and iESS buffers. If you want them only in your ESS buffers do:
 
