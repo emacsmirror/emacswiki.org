@@ -88,7 +88,7 @@ see this:
 
 but not any kind of font information. Any hints?
 
-: Evaluating <tt>(frame-parameters)</tt> on recent versions gets you a truncated result (hence the three dots at the end), so it's no longer a useful way of finding out the current font name. --MichaelMason
+: Evaluating <tt>(frame-parameters)</tt> on recent versions gets you a truncated result (hence the three dots at the end). To expand the result, move the cursor to any of the three dots at the end and press RETURN. You should now be able to find the font information. --MichaelMason
 
 : I'm sure there's a prettier way to do this in elisp but you can find the font information by pasting this in the scratch buffer, putting the TextCursor at the end, and hitting C-j: (let (r) (mapcar (lambda (e) (if (eq (car e) 'font) (push e r))) (frame-parameters)) r) -- JDC
 
