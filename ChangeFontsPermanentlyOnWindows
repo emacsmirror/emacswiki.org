@@ -120,6 +120,10 @@ If you would like emacs to start with a specific font, instead of jumping around
 But how about fontset? Is there any way to define fontset even before emacs starts?
 -- JoonhwanLee
 
+[new]
+w32-select-font was removed in Emacs 28
+-- VagnJohansen
+
 ----
 CategoryFaces CategoryCustomize
 
