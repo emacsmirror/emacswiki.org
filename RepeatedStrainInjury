@@ -30,6 +30,8 @@ used to put much of your input activity onto FootSwitches
 lifesaving.  Try TypeBreakMode.
 ** X11 Users can try xwrits [http://www.lcdf.org/~eddietwo/xwrits/],
 !DrWright, etc.
+** German users can consider switching to the Neo keyboard layout: [https://www.neo-layout.org] – This layout offers a more ergonomic position of certain keys, especially if you are programing.
+** For Emacs, it can help to map certain key combinations, e.g. C-x to right Shift, so that you don’t have to press multiple keys at the same time so often.
 ** GNOME 2.4 users can try Applications->Desktop
 Preferences->Keyboard->Typing Break.
 ** Another cool program is Workrave [http://www.workrave.org/welcome/]
