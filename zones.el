@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2023.06.11
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 11 15:27:42 2023 (-0700)
+;; Last-Updated: Tue Oct 17 16:10:36 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 3305
+;;     Update #: 3328
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -21,7 +21,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -602,6 +602,10 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2023/09/27 dadams
+;;     Require cl-lib when available, else defalias cl-case to case.
+;;     Added declare-function to quiet byte compiler.
+;;     zz-set-fringe-for-narrowing: Provide required arg for redraw-frame (Emacs 22+).
 ;; 2023/06/11 dadams
 ;;     Advise widen, to update mode-line lighter.
 ;;     zz-narrow-advice: update mode-line lighter.
@@ -965,9 +969,25 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case (No `cl-case' for Emacs 22)
+(eval-when-compile  (if (>= emacs-major-version 24)
+                        (require 'cl-lib)
+                      (require 'cl)
+                      (defalias 'cl-case 'case)))
 
-;; Quiet the byte-compiler.
+;; Quiet the byte-compiler for Emacs 22..
+
+(declare-function face-remap-add-relative         "face-remap"       (&rest specs))
+(declare-function face-remap-remove-relative      "face-remap"       (cookie))
+(declare-function hlt-next-highlight              "ext:highlight"    (&optional start end face mousep backward-p
+                                                                                no-error-p wrap-p))
+(declare-function hlt-nonempty-region-p           "ext:highlight"    ())
+(declare-function hlt-read-bg/face-name           "ext:highlight"    (prompt &optional default))
+(declare-function hlt-region-or-buffer-limits     "ext:highlight"    (&optional buffer))
+(declare-function isearchp-add/remove-dim-overlay "ext:isearch-prop" (beg end addp))
+(declare-function use-region-p                    "simple"           ())
+(declare-function zz-set-fringe-for-narrowing     "zones"            ())
+
+
 (defvar hlt-last-face)                  ; In `highlight.el'
 (defvar isearchp-dim-outside-search-area-flag) ; In `isearch+.el'
 (defvar narrow-map)                     ; Emacs 23+
@@ -1061,8 +1081,8 @@ The zone corresponds to the new buffer restriction.
   ;; NOTE: Buffer-local face-remapping of fringe is not handled correctly until Emacs-27 (Emacs bug#33244).
 
   (defface zz-fringe-for-narrowing
-      '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
-        (t (:background "LightGreen")))
+    '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
+      (t (:background "LightGreen")))
     "Face used for fringe when buffer is narrowed."
     :group 'zones :group 'faces)
 
@@ -1088,11 +1108,11 @@ Remove remapping if not narrowed."
         (unless zz--fringe-remapping
           (setq zz--fringe-remapping  (face-remap-add-relative 'fringe 'zz-fringe-for-narrowing))
           ;; FIXME: For some reason, the display is not always redrawn fully.
-          (redraw-frame))
+          (redraw-frame (selected-frame)))
       (when zz--fringe-remapping
         (face-remap-remove-relative zz--fringe-remapping)
         ;; FIXME: For some reason, the display is not redrawn fully.
-        (redraw-frame)
+        (redraw-frame (selected-frame))
         (setq zz--fringe-remapping  nil))))
 
   )
