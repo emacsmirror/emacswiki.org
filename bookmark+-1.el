@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Sep 27 14:14:48 2023 (-0700)
+;; Last-Updated: Tue Oct 17 20:30:18 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 9545
+;;     Update #: 9546
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -804,12 +804,11 @@
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
 (eval-when-compile (require 'gnus-sum)) ;; gnus-summary-article-header
 
-(eval-when-compile  (if (>= emacs-major-version 24) ; case, multiple-value-bind, typecase
-                        (require 'cl-lib)
-                      (require 'cl)
-                      (defalias 'cl-case                'case)
-                      (defalias 'cl-multiple-value-bind 'multiple-value-bind)
-                      (defalias 'cl-typecase            'typecase)))
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl)
+                     (defalias 'cl-case                'case)
+                     (defalias 'cl-multiple-value-bind 'multiple-value-bind)
+                     (defalias 'cl-typecase            'typecase)))
 
 (when (and (require 'thingatpt+ nil t) ;; (no error if not found):
            (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
