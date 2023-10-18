@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Sep 27 14:17:00 2023 (-0700)
+;; Last-Updated: Tue Oct 17 20:31:38 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 4221
+;;     Update #: 4222
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -361,10 +361,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile  (if (>= emacs-major-version 24) ; case
-                        (require 'cl-lib)
-                      (require 'cl)
-                      (defalias 'cl-case 'case)))
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl)
+                     (defalias 'cl-case 'case)))
 
 (eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 (eval-when-compile (require 'org nil t)) ;; org-add-link-type
