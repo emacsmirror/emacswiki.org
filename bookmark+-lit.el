@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Wed Sep 27 14:20:33 2023 (-0700)
+;; Last-Updated: Tue Oct 17 20:33:10 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1075
+;;     Update #: 1076
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -186,10 +186,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile  (if (>= emacs-major-version 24) ; case
-                        (require 'cl-lib)
-                      (require 'cl)
-                      (defalias 'cl-case 'case)))
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl)
+                     (defalias 'cl-case 'case)))
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read, bmkp-get-bookmark,
