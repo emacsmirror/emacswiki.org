@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2023.06.11
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 17 16:10:36 2023 (-0700)
+;; Last-Updated: Tue Oct 17 20:45:51 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 3328
+;;     Update #: 3331
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -969,10 +969,9 @@
 ;;
 ;;; Code:
 
-(eval-when-compile  (if (>= emacs-major-version 24)
-                        (require 'cl-lib)
-                      (require 'cl)
-                      (defalias 'cl-case 'case)))
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl)
+                     (defalias 'cl-case 'case)))
 
 ;; Quiet the byte-compiler for Emacs 22..
 
@@ -986,7 +985,6 @@
 (declare-function isearchp-add/remove-dim-overlay "ext:isearch-prop" (beg end addp))
 (declare-function use-region-p                    "simple"           ())
 (declare-function zz-set-fringe-for-narrowing     "zones"            ())
-
 
 (defvar hlt-last-face)                  ; In `highlight.el'
 (defvar isearchp-dim-outside-search-area-flag) ; In `isearch+.el'
@@ -1718,7 +1716,7 @@ arg, and the parameters when called from Lisp."
                         (substitute-command-keys
                          "; `\\[isearchp-remove-dimming]' or \
 `\\[isearchp-toggle-dimming-outside-search-area]' removes dimming"))))
-        (case num-hits
+        (cl-case num-hits
           (1 (message "1 zone added%s" dim-msg))
           (t (message "%d zones added or updated%s" num-hits dim-msg)))))
     variable))
@@ -1786,7 +1784,7 @@ When called from Lisp:
                              (setq start  (car start-end)
                                    end    (cadr start-end))))
   (unless face (setq face  hlt-last-face))
-  (let ((hlt-use-overlays-flag     (case overlay/text
+  (let ((hlt-use-overlays-flag     (cl-case overlay/text
                                      (text-prop  nil) ; Only text property
                                      (overlay    'only) ; Only overlay
                                      (t          t))) ; Default: both
@@ -1819,7 +1817,7 @@ When called from Lisp:
               (zz-add-zone zone-beg zone-end)
               (setq count  (1+ count)))))))
     (when msgp
-      (case count
+      (cl-case count
         (0 (message "NO zones added or updated"))
         (1 (message "1 zone added or updated"))
         (t (message "%s highlighted areas added or updated as zones" count))))))
@@ -2820,7 +2818,7 @@ Optional arg POS-TYPE controls the kind of position used by the zone:
          (let* ((beg    (overlay-start overlay))
                 (end    (overlay-end overlay))
                 (props  `(:zz-overlay ,@(overlay-properties overlay))))
-           (case pos-type
+           (cl-case pos-type
              (markers           (setq beg  (copy-marker beg)
                                       end  (copy-marker end)))
              (readable-markers  (setq beg  (zz-readable-marker beg buf)
