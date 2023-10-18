@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2023.06.11
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 17 20:45:51 2023 (-0700)
+;; Last-Updated: Tue Oct 17 22:03:43 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 3331
+;;     Update #: 3348
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -105,7 +105,7 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `zz-fringe-for-narrowing'.
+;;    `zz-fringe-for-narrowing' (Emacs 23+).
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -132,8 +132,9 @@
 ;;    `zz-remove-empty-izones', `zz-remove-if', `zz-remove-if-not',
 ;;    `zz-remove-izones-w-other-buffer-markers',
 ;;    `zz-remove-zones-w-other-buffer-markers', `zz-repeat-command',
-;;    `zz-same-position-p', `zz-set-intersection', `zz-set-union',
-;;    `zz-some', `zz-string-match-p', `zz-two-zone-intersection',
+;;    `zz-same-position-p', `zz-set-fringe-for-narrowing' (Emacs 23+),
+;;    `zz-set-intersection', `zz-set-union', `zz-some',
+;;    `zz-string-match-p', `zz-two-zone-intersection',
 ;;    `zz-two-zone-union', `zz-zone-abstract-function-default',
 ;;    `zz-zone-buffer-name', `zz-zone-has-other-buffer-marker-p',
 ;;    `zz-zone-intersection', `zz-zone-intersection-1',
@@ -602,10 +603,11 @@
 ;;
 ;;(@* "Change Log")
 ;;
-;; 2023/09/27 dadams
+;; 2023/10/17 dadams
 ;;     Require cl-lib when available, else defalias cl-case to case.
 ;;     Added declare-function to quiet byte compiler.
 ;;     zz-set-fringe-for-narrowing: Provide required arg for redraw-frame (Emacs 22+).
+;;     Moved zz--fringe-remapping to top level to avoid warning about make-variable-buffer-local.
 ;; 2023/06/11 dadams
 ;;     Advise widen, to update mode-line lighter.
 ;;     zz-narrow-advice: update mode-line lighter.
@@ -1075,8 +1077,14 @@ The zone corresponds to the new buffer restriction.
 `zz-add-zone-anyway-p' to a non-nil value)."
   :type 'boolean :group 'zones)
 
+
+;; Used only for Emacs 23+, but put it at top level to avoid warning about `make-variable-buffer-local'.
+(defvar zz--fringe-remapping nil
+  "Cookie from remapping face `fringe' to `zz-fringe-for-narrowing'.
+Deleted by `face-remap-remove-relative' when buffer is widened.")
+(make-variable-buffer-local 'zz--fringe-remapping)
+
 (when (>= emacs-major-version 23)       ; Emacs 23.1+
-  ;; NOTE: Buffer-local face-remapping of fringe is not handled correctly until Emacs-27 (Emacs bug#33244).
 
   (defface zz-fringe-for-narrowing
     '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
@@ -1084,21 +1092,8 @@ The zone corresponds to the new buffer restriction.
     "Face used for fringe when buffer is narrowed."
     :group 'zones :group 'faces)
 
-  ;; FIXME?: This is really orthogonal to zones.
-  (defcustom zz-narrowing-use-fringe-flag nil
-    "Non-nil means use fringe face `zz-fringe-for-narrowing' when narrowed."
-    :type 'boolean :group 'zones
-    :set (lambda (sym defs)
-           (custom-set-default sym defs)
-           (if (symbol-value sym)
-               (add-hook 'post-command-hook #'zz-set-fringe-for-narrowing)
-             (remove-hook 'post-command-hook #'zz-set-fringe-for-narrowing))))
-
-  (defvar zz--fringe-remapping nil
-    "Cookie from remapping face `fringe' to `zz-fringe-for-narrowing'.
-Deleted by `face-remap-remove-relative' when buffer is widened.")
-  (with-no-warnings (make-variable-buffer-local 'zz--fringe-remapping))
-
+  ;; NOTE: Buffer-local face-remapping of fringe is not handled correctly until Emacs-27 (Emacs bug#33244).
+  ;;
   (defun zz-set-fringe-for-narrowing ()
     "Remap face `fringe' to `zz-fringe-for-narrowing' if buffer is narrowed.
 Remove remapping if not narrowed."
@@ -1112,6 +1107,19 @@ Remove remapping if not narrowed."
         ;; FIXME: For some reason, the display is not redrawn fully.
         (redraw-frame (selected-frame))
         (setq zz--fringe-remapping  nil))))
+
+  ;; FIXME?: This is really orthogonal to zones.
+  ;;
+  (defcustom zz-narrowing-use-fringe-flag nil
+    "Non-nil means use fringe face `zz-fringe-for-narrowing' when narrowed.
+This option has no effect for Emacs releases prior to Emacs 23."
+    :type 'boolean :group 'zones
+    :set (lambda (sym defs)
+           (custom-set-default sym defs)
+           (when (fboundp 'zz-set-fringe-for-narrowing) ; Emacs 23+
+             (if (symbol-value sym)
+                 (add-hook 'post-command-hook #'zz-set-fringe-for-narrowing)
+               (remove-hook 'post-command-hook #'zz-set-fringe-for-narrowing)))))
 
   )
 
