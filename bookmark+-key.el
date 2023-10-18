@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Wed Sep 27 14:19:13 2023 (-0700)
+;; Last-Updated: Tue Oct 17 20:32:32 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 987
+;;     Update #: 988
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -108,10 +108,9 @@
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
 ;; bmkp-menu-bar-make-toggle
 
-(eval-when-compile  (if (>= emacs-major-version 24) ; case
-                        (require 'cl-lib)
-                      (require 'cl)
-                      (defalias 'cl-case 'case)))
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl)
+                     (defalias 'cl-case 'case)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
