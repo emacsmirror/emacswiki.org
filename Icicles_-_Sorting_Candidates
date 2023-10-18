@@ -158,7 +158,7 @@ The result of this definition is:
 # The creation of command `##icicle-sort-##'''##alphabetical##''''.
 
 # The addition of an entry for the new sort order in option
-   `icicle-sort-orderss-alist'.  The entry associates sort order
+   `icicle-sort-orders-alist'.  The entry associates sort order
    ##alphabetical## with comparison function `icicle-case-string-less-p'.
 
 You can invoke the new sorting command any time using `M-x', but
