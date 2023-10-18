@@ -63,6 +63,7 @@ shown -- e.g. `##149/567 shown##'.
 indication is meaningless for a few Icicles multi-completion
 commands, such as `icicle-buffer' and `icicle-file'.)  See [[Icicles - Completion Methods and Styles]] and [[user option]]s `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>' and `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'.
 
+[:SortOrder]
 * The current sort order, and whether it is reversed.  See [[Icicles - Sorting Candidates]].
 
 Here's a screenshot showing:
