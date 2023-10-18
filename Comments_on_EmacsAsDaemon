@@ -84,3 +84,17 @@ The following link is dead: http://cubiclemuses.com/cm/articles/2009/08/06/emacs
 
 -- Anonymous 2021-08-03 15:34 UTC
 
+
+----
+
+In the section '''Emacs daemon as a service on Wayland''', I would suggest to add at the end a third snippet, and/or replace in the text, the "Requires" by "Wants" to start the emacs server anyway.
+This allow to merge both cases (KDE, GNome) with a single snippet, and show how to do it globally (in the emacs.service) with multiple compositors.
+{{{
+[Unit]
+Wants=plasma-kwin_wayland.service
+Wants=org.gnome.Shell@wayland.service
+After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
+}}}
+
+-- Anonyme 2023-10-18 13:14 UTC
+
