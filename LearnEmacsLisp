@@ -26,7 +26,7 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 * [https://bzg.fr/en/learn-emacs-lisp-in-15-minutes Learn Emacs Lisp in 15 Minutes] - by BastienGuerry, Org mode Maintainer.
  [http://orgmode.org/][https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS#n449]
 * [https://github.com/chrisdone/elisp-guide A quick guide to Emacs Lisp programming] - by ChrisDone, author of [https://github.com/chrisdone/structured-haskell-mode structured-haskell-mode], [https://github.com/chrisdone/god-mode God Mode], and [https://github.com/chrisdone?utf8=%E2%9C%93&tab=repositories&q=&type=source&language=emacs%20lisp etc].
-* [http://emacslife.com/how-to-read-emacs-lisp.html Read Lisp, Tweak Emacs: How to read Emacs Lisp so that you can customize Emacs] - by SachaChua, ex-maintainer of PlannerMode, EmacsWikiMode, RememberMode and author of ErcCompletion [https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS#n4231].
+* [https://sachachua.com/blog/2014/06/read-lisp-tweak-emacs-beginner-14-try-emacs-lisp/ Read Lisp, Tweak Emacs: How to read Emacs Lisp so that you can customize Emacs] - by SachaChua, ex-maintainer of PlannerMode, EmacsWikiMode, RememberMode and author of ErcCompletion [https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS#n4231].
 * [http://ergoemacs.org/emacs/elisp.html Practical Emacs Lisp] - by [https://www.emacswiki.org/emacs/Xah_Lee Xah Lee].
 * Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
 * Check out examples in ElispCookbook
