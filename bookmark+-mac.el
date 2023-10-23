@@ -1,14 +1,14 @@
-;;; bookmark+-mac.el --- Macros for Bookmark+.   -*- lexical-binding:t -*-
+;;; bookmark+-mac.el --- Macros for Bookmark+.
 ;;
 ;; Filename: bookmark+-mac.el
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Mon Oct 23 09:03:10 2023 (-0700)
+;; Last-Updated: Fri Jan 14 12:34:20 2022 (-0800)
 ;;           By: dradams
-;;     Update #: 233
+;;     Update #: 223
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -16,7 +16,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `pp'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -101,8 +101,7 @@
 ;;    `bmkp-define-cycle-command', `bmkp-define-history-variables',
 ;;    `bmkp-define-next+prev-cycle-commands',
 ;;    `bmkp-define-show-only-command', `bmkp-define-sort-command',
-;;    `bmkp-define-file-sort-predicate', `bmkp-lexlet',
-;;    `bmkp-lexlet*', `bmkp-menu-bar-make-toggle',
+;;    `bmkp-define-file-sort-predicate', `bmkp-menu-bar-make-toggle',
 ;;    `bmkp-with-bookmark-dir', `bmkp-with-help-window',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
@@ -266,12 +265,14 @@ See `bmkp-next-%s-bookmark'." type type))
     (defun ,(intern (format "bmkp-next-%s-bookmark%s-repeat"
                             type
                             (if otherp "-other-window" "")))
-        ()
+        (arg)
       ,(if otherp
            (format "Same as `bmkp-next-%s-bookmark-repeat', but use other window." type)
-           (format "Jump to the next %s bookmark.
-This is a repeatable version of `bmkp-next-%s-bookmark'." type type))
-      (interactive)
+           (format "Jump to the Nth-next %s bookmark.
+This is a repeatable version of `bmkp-next-%s-bookmark'.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one (and no repeat)." type type))
+      (interactive "P")
       (require 'repeat)
       (bmkp-repeat-command
        ',(intern (format "bmkp-next-%s-bookmark%s" type (if otherp "-other-window" "")))))
@@ -280,12 +281,12 @@ This is a repeatable version of `bmkp-next-%s-bookmark'." type type))
     (defun ,(intern (format "bmkp-previous-%s-bookmark%s-repeat"
                             type
                             (if otherp "-other-window" "")))
-        ()
+        (arg)
       ,(if otherp
            (format "Same as `bmkp-previous-%s-bookmark-repeat', but use other window." type)
-           (format "Jump to the previous %s bookmark.
+           (format "Jump to the Nth-previous %s bookmark.
 See `bmkp-next-%s-bookmark-repeat'." type type))
-      (interactive)
+      (interactive "P")
       (require 'repeat)
       (bmkp-repeat-command
        ',(intern (format "bmkp-previous-%s-bookmark%s" type (if otherp "-other-window" "")))))))
@@ -494,11 +495,9 @@ The alist is used in commands such as `bmkp-jump-to-type'."
   "Create and eval defvars for Bookmark+ history variables.
 The variables are the cdrs of `bmkp-types-alist'.  They are used in
 commands such as `bmkp-jump-to-type'."
-  (let ((dfvars  ()))
-    (dolist (entry  (bmkp-types-alist))
-      (push `(defvar ,(cdr entry) () ,(format "History for %s bookmarks." (car entry)))
-            dfvars))
-    `(progn ,@dfvars)))
+  (dolist (entry  (bmkp-types-alist))
+    `(defvar,(cdr entry) ()
+       ,(format "History for %s bookmarks." (car entry)))))
 
 ;; This is compatible with Emacs 20 and later.
 ;;;###autoload (autoload 'bmkp-menu-bar-make-toggle "bookmark+")
@@ -550,24 +549,6 @@ If BOOKMARK has no location then use nil as `default-directory'."
                                                                     "-- Unknown location --")))
                                (if (file-directory-p loc) loc (file-name-directory loc)))))
     ,@body))
-
-;; These are needed because Emacs 29 removed `lexical-let[*]'.
-;;
-(defmacro bmkp-lexlet (&rest all)
-  "`lexical-let', if available and not `lexical-binding'; else `let'."
-  (if (and (fboundp 'lexical-let)              ; Emacs < 29
-           (or (not (boundp 'lexical-binding)) ; Emacs <  24.something
-               (not lexical-binding)))         ; Emacs >= 24.something
-      `(lexical-let ,@all)
-    `(let ,@all)))                      ; Emacs 29+
-
-(defmacro bmkp-lexlet* (&rest all)
-  "`lexical-let*', if available and not `lexical-binding'; else `let*'."
-  (if (and (fboundp 'lexical-let*)             ; Emacs < 29
-           (or (not (boundp 'lexical-binding)) ; Emacs <  24.something
-               (not lexical-binding)))         ; Emacs >= 24.something
-      `(lexical-let* ,@all)
-    `(let* ,@all)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
