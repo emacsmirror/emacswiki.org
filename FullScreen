@@ -40,7 +40,7 @@ Essentially the code above will make emacs behave like `emacs --maximize` automa
 ====Windows====
 In Windows you can prevent the distracting visual effect by either:
 * Configuring ##.emacs.d/early-init.el## -- see the previous section
-* Making a conventional ##.emacs## configuration-- In Windows, there's no delay to load .emacs like in GNU/Linux, so these lines can be added to ##.emacs##:
+* Making a conventional ##.emacs## configuration-- In Windows, code to prevent the distracting visual effect in .emacs is not delayed like in GNU/Linux. This can be added to .emacs:
 
 {{{
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
