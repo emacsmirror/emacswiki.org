@@ -20,7 +20,7 @@ Probably the simplest way to configure fullscreen or maximized mode is to custom
 }}}
 
 ===To avoid the slightly distracting visual effect===
-A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it by configuring ##.emacs## in GNU/Linux. To avoid this slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen, you can add this to ##.emacs.d/early-init.el## (thanks Chad):
+A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it by configuring ##.emacs## in GNU/Linux. To avoid this slightly distracting visual effect, you can add this to ##.emacs.d/early-init.el## (thanks Chad):
 
 {{{
   (push '(fullscreen . maximized) default-frame-alist)
