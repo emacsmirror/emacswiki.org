@@ -1,4 +1,4 @@
-;;; bookmark+-key.el --- Bookmark+ key and menu bindings.
+;;; bookmark+-key.el --- Bookmark+ key and menu bindings.   -*- lexical-binding:t -*-
 ;;
 ;; Filename: bookmark+-key.el
 ;; Description: Bookmark+ key and menu bindings.
@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Tue Oct 17 20:32:32 2023 (-0700)
+;; Last-Updated: Mon Oct 23 13:52:32 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 988
+;;     Update #: 991
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -127,11 +127,11 @@
 (defun bmkp-set-map-prefix-key (pref-keys-option keys)
   "Set prefix key option SYMBOL to key-sequence VALUE."
   (set pref-keys-option keys)
-  (let* ((g-map     (current-global-map))
-         (b-map     (cl-case pref-keys-option
-                      (bmkp-bookmark-map-prefix-keys          'bookmark-map)
-                      (bmkp-jump-map-prefix-keys              'bmkp-jump-map)
-                      (bmkp-jump-other-window-map-prefix-keys 'bmkp-jump-other-window-map))))
+  (let* ((g-map  (current-global-map))
+         (b-map  (cl-case pref-keys-option
+                   (bmkp-bookmark-map-prefix-keys          'bookmark-map)
+                   (bmkp-jump-map-prefix-keys              'bmkp-jump-map)
+                   (bmkp-jump-other-window-map-prefix-keys 'bmkp-jump-other-window-map))))
     (dolist (key  (where-is-internal b-map g-map))
       (define-key g-map key nil))
     (dolist (key  keys)
@@ -640,7 +640,8 @@ Put differently, return t iff the filtered alist is non-empty."
 
 (defun bmkp-exists-this-file/buffer-bookmarks-p (&optional alist)
   "Return t if there is a this-file or this-buffer bookmark in ALIST."
-  (bmkp-exists-bookmark-satisfying-p (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)))
+  (bmkp-exists-bookmark-satisfying-p (if (buffer-file-name) #'bmkp-this-file-p #'bmkp-this-buffer-p)
+                                     alist))
 
 (defvar bmkp-bookmarks-here-menu-command-entries
   (list (list 'bmkp-next-bookmark-this-file/buffer-repeat
