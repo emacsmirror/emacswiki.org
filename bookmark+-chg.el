@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Sep 27 14:48:28 2023 (-0700)
+;; Last-Updated: Mon Oct 23 15:30:36 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 16900
+;;     Update #: 17011
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,8 +146,42 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2023/10/23 dadams
+;;     lexical-binding = t.
+;;     bmkp-make-obsolete-variable: Handle also Emacs 24+ (arg ACCESS-TYPE).
+;;     Added vacuous defvars: bmkp-setting-automatic-bmk-p, cl-print-readably, desktop-restore-eager,
+;;       icicle-bookmark-completing-p, Man-notify-method, orig-buff, repeat-previous-repeated-command,
+;;       repeat-message-function.
+;;     bmkp-(automatic|temporary)-bookmark-mode, bmkp-bookmark-set-confirm-overwrite,
+;;      bmkp-isearch-next-bookmark-buffer, bmkp-describe-bookmark-internals, bmkp-store-org-link:
+;;        Add _ prefix to unused args.
+;;     bookmark-set, bmkp-read-tags-completing, bmkp-buffer-last-access-cp,
+;;      bmkp-purge-notags-autofiles, bmkp-bookmark-description, bmkp-read-variables-completing,
+;;      bmkp-set-eww-bookmark-here, bmkp-delete-bookmarks:
+;;        Removed unused let vars.
+;;     bmkp-*-alist-only, bmkp(-autofile)-remove-tags, bmkp-sort-omit, bmkp-set-*-bookmark,
+;;      bmkp-create-variable-list-bookmark, bmkp-jump-dired, bmkp-find-file-(all|some)-tags*:
+;;        Use new macro bmkp-lexlet[*], not lexical-let (removed from Emacs 29).
+;;     bmkp-new-bookmark-default-names, bmkp-(buffer|file)-names, bmkp-tags-list,
+;;      bmkp-read-(tags|variables)-completing, bmkp-tags-in-bookmark-file, bmkp-read-(buffers|files),
+;;      bmkp-printable-vars+vals, bmkp-(automatic|temporary)-bookmark(ing)-mode:
+;;        Replace add-to-list with membership test and setq, since lexical-binding.
+;;     bmkp-switch-to-bookmark-file-this-file/buffer: Removed unused arg BATCHP.
+;;     bmkp-write-alist-bookmarks-to-file, bmkp-save-bookmarks-this-file/buffer:
+;;       Removed arg ADDP, don't pass it to bmkp-write-alist-bookmarks-to-file, and remove from doc.
+;;     bmkp-crosshairs-highlight: Removed binding of obsolete crosshairs-overlay-priority.
+;;     bmkp-tags-list: Use cl-typecase, not typecase.
+;;     bmkp-make-bookmark-file-record: Rename arg from BOOKMARK-FILE (global var) to BMK-FILE.
+;;     bmkp-desktop-save: Renamed let var from DESKTOP-DIR to DESK-DIR.
+;;     bmkp-desktop-delete: Renamed let var from DESKTOP-DIR to global var DESKTOP-DIRNAME.
+;;     bmkp-create-variable-list-bookmark: Use ', (in backquote) for bmkp-lexlet var values.
+;;     bmkp-readable-p: Bind cl-print-readably, not print-readably.
+;;     bmkp-*-tags(-*)-jump(-*): Added optional arg INTERACTIVEP.  Added error test to body (also).
+;;                               Corrected error messages.
+;;     bmkp-(next|previous)-bookmark-*-repeat: Removed arg from *-repeat (maybe put back later?).
+;;     bmkp-visit-external-annotation: Show message only when arg MSG-P.
 ;; 2023/09/27 dadams
-;;     Require cl-lib when available, else defalias cl-* to *.
+;;     Require cl-lib when available, else defalias cl-* to *.  Use only cl-*, not *.
 ;; 2023/06/30 dadams
 ;;     Added: bmkp-bookmarks-already-loaded, as replacement for vanilla bookmarks-already-loaded and
 ;;            bookmark-bookmarks-timestamp.
@@ -1545,8 +1579,25 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2023/10/23 dadams
+;;     lexical-binding = t.
+;;     Added: bmkp--bmenu-nb->, bmkp--bmenu-nb-a, bmkp--bmenu-nb-D, bmkp--bmenu-nb-t,
+;;       bmkp--bmenu-nb-X, bmkp--bmenu-nb-*, bmkp--bmenu-regexp->, bmkp--bmenu-regexp-a,
+;;       bmkp--bmenu-regexp-D, bmkp--bmenu-regexp-t, bmkp--bmenu-regexp-X, bmkp--bmenu-regexp-*.
+;;     bmkp-bmenu-list-1: Removed unused let var TEMPORARYP.
+;;     bookmark-bmenu-execute-deletions: Clarified doc: NO-CONFIRM-P is only for marked, not flagged.
+;;     bmkp-bmenu-unmark-all: Removed unused let var QUERY.
+;;     bmkp-bmenu-toggle-marks: Removed unused arg BACKUP.
+;;     bmkp-bmenu-delete-marked: Added "P" arg to interactive.
+;;                               Pass NO-CONFIRM-P arg to bookmark-bmenu-execute-deletions.
+;;                               Clarified doc string.
+;;     bmkp-bmenu-(search|query-replace)-marked-bookmarks-regexp:
+;;       Use backquote and use ', for args to bmkp-bmenu-marked-or-this-or-all.
+;;     bmkp-bmenu-mode-line-string: Use bmkp--bmenu-(nb|regexp)- dyn vars, since lexical binding now.
+;;     bmkp-bmenu-change-sort-order-repeat: Removed arg (maybe put back later?).
+;;     bmkp-bmenu-describe-this+move-(down|up): Pass arg DEFN to bmkp-bmenu-describe-this-bookmark.
 ;; 2023/09/27 dadams
-;;     Require cl-lib when available, else defalias cl-* to *.
+;;     Require cl-lib when available, else defalias cl-* to *.  Use only cl-*, not *.
 ;; 2023/05/17 dadams
 ;;     bmkp-bmenu-mode-status-help: Bind describe-function-orig-buffer (new in Emacs 28).
 ;; 2022/11/05 dadams
@@ -2270,8 +2321,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2023/10/23 dadams
+;;     lexical-binding = t.
+;;     bmkp-exists-this-file/buffer-bookmarks-p: Pass arg ALIST to bmkp-exists-bookmark-satisfying-p.
 ;; 2023/09/27 dadams
-;;     Require cl-lib when available, else defalias cl-* to *.
+;;     Require cl-lib when available, else defalias cl-* to *.  Use only cl-*, not *.
 ;; 2022/05/26 dadams
 ;;     menu-bar-bookmark-map:
 ;;       Added bmkp-send-bug-report.
@@ -2467,8 +2521,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2023/10/23 dadams
+;;     lexical-binding = t.
+;;     bmkp-bmenu-set-lighting: Pass MSGP arg, not 'MSG.
+;;     bmkp-(next|previous)-*-repeat: Removed arg from *-repeat (maybe put back later?).
+;;     bmkp-light-when: Removed let (unused vars).
+;;     bmkp-a-bookmark-lighted-on-this-line: Removed unused arg MSGP.
 ;; 2023/09/27 dadams
-;;     Require cl-lib when available, else defalias cl-* to *.
+;;     Require cl-lib when available, else defalias cl-* to *.  Use only cl-*, not *.
 ;; 2022/11/27 dadams
 ;;     Corrected all C-x p to C-x x, in comments.
 ;; 2022/11/18 dadams
@@ -2593,6 +2653,11 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2023/10/23 dadams
+;;     lexical-binding = t.
+;;     Added: bmkp-lexlet, bmkp-lexlet*.
+;;     bmkp-define-next+prev-cycle-commands: Removed arg from *-repeat (maybe put back later?).
+;;     bmkp-define-history-variables: Need progn, and ENTRY was a free var.
 ;; 2021/04/16 dadams
 ;;     bmkp-define-file-sort-predicate: Use bmkp-get-bookmark, not bookmark-get-bookmark.
 ;; 2021/03/04 dadams
@@ -2645,6 +2710,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2023/10/23 dadams
+;;     Version: 2023.10.23
+;;     Major update.  lexical-binding = t.
 ;; 2023/09/27 dadams
 ;;     Version: 2023.09.27
 ;; 2023/06/12 dadams
