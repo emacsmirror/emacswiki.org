@@ -1,4 +1,4 @@
-;;; bookmark+.el --- Bookmark+: extensions to standard library `bookmark.el'.
+;;; bookmark+.el --- Bookmark+: extensions to standard library `bookmark.el'.   -*- lexical-binding:t -*-
 ;;
 ;; Filename: bookmark+.el
 ;; Description: Bookmark+: extensions to standard library `bookmark.el'.
@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2023.09.27
-;; Last-Updated: Wed Sep 27 14:22:16 2023 (-0700)
+;; Version: 2023.10.23
+;; Last-Updated: Mon Oct 23 09:20:22 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 15079
+;;     Update #: 15082
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
