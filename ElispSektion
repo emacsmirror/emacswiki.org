@@ -12,4 +12,4 @@ Zum Verlinken der Dateien ist zu beachten:
 # Auf dieser Seite erstellt man dann einen Link mit dem Lisp prefix: Lisp:foo.el
 # Nach dem Speichern folgt man dem Link auf die foo.el Seite, bearbeitet sie, und fügt den Text der Datei ein.
 # Solche Dateien können bis zu 200k gross sein.
-# Damit die Dateien korrekt dargestellt werden, müssen sie auf der ersten Zeile mit drei Strichpunkten beginnen.
+# Damit die Dateien korrekt dargestellt werden, /müssen/ sie auf der ersten Zeile mit drei Strichpunkten beginnen.
