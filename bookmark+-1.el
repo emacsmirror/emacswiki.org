@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Oct 24 14:23:08 2023 (-0700)
+;; Last-Updated: Tue Oct 24 15:32:50 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 9662
+;;     Update #: 9670
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -875,9 +875,9 @@
 (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-before-hide-marked-alist, bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file,
 ;; bmkp-replace-regexp-in-string, bmkp-bmenu-filter-function, bmkp-bmenu-filter-pattern,
-;; bmkp-bmenu-first-time-p, bmkp-flagged-bookmarks, bmkp-bmenu-goto-bookmark-named,
-;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-omitted-bookmarks, bmkp-bmenu-refresh-menu-list,
-;; bmkp-bmenu-show-all, bmkp-bmenu-state-file, bmkp-bmenu-title, bmkp-looking-at-p,
+;; bmkp-bmenu-first-time-p, bmkp-flagged-bookmarks, bmkp-bmenu-goto-bookmark-named, bmkp-bmenu-marked-bookmarks,
+;; bmkp-bmenu-omitted-bookmarks, bmkp-bmenu-refresh-menu-list, bmkp-bmenu-show-all,
+;; bmkp-bmenu-show-file-not-buffer-flag, bmkp-bmenu-state-file, bmkp-bmenu-title, bmkp-looking-at-p,
 ;; bmkp-maybe-unpropertize-bookmark-names, bmkp-sort-orders-alist, bookmark-bmenu-toggle-filenames
 
 
@@ -3295,6 +3295,7 @@ candidate."
 ;;    But we don't require that BOOKMARK have a name, so calls from vanilla or other code aren't bothered.
 ;; 2. Pass full bookmark to the various "get" functions.
 ;; 3. Location returned can be a buffer name.
+;; 4. If both file and buffer names are recorded, respect option `bmkp-bmenu-show-file-not-buffer-flag'.
 ;;
 (defun bookmark-location (bookmark)
   "Return a description of the location of BOOKMARK.
@@ -3304,15 +3305,27 @@ bookmark record, then it is NOT looked up in `bookmark-alist' (it need
 not belong).  If it is a name without that property then it is looked
 up in `bookmark-alist'.
 
-Look first for entry `location', then for entry `buffer-name' or
-`buffer', then for entry `filename'.  Return the first such entry
-found, or \"-- Unknown location --\" if none is found."
+If BOOKMARK records a `location' entry, then use that.
+
+Otherwise, look for buffer and file names.  If only one of those is
+recorded then use that.
+
+If both buffer and file name are recorded then respect option
+`bmkp-bmenu-show-file-not-buffer-flag': If non-nil then use the file
+name, otherwise use the buffer name.
+
+If no `location', buffer, or file name is recorded then use \"--
+Unknown location --\"."
   (bookmark-maybe-load-default-file)
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
-      (bmkp-get-buffer-name bookmark)   ; Entry `buffer-name'.
-      (bookmark-prop-get bookmark 'buffer) ; Entry `buffer'.
-      (bookmark-get-filename bookmark)
+      (if bmkp-bmenu-show-file-not-buffer-flag
+          (or (bookmark-get-filename bookmark)
+              (bmkp-get-buffer-name bookmark) ; Entry `buffer-name'.
+              (bookmark-prop-get bookmark 'buffer)) ; Entry `buffer'.
+        (or (bmkp-get-buffer-name bookmark)
+            (bookmark-prop-get bookmark 'buffer)
+            (bookmark-get-filename bookmark)))
       "-- Unknown location --"))
 
 
