@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Oct 23 15:30:36 2023 (-0700)
+;; Last-Updated: Tue Oct 24 15:35:48 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 17011
+;;     Update #: 17014
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2023/10/24 dadams
+;;     bookmark-location: Respect new option, bmkp-bmenu-show-file-not-buffer-flag.
 ;; 2023/10/23 dadams
 ;;     lexical-binding = t.
 ;;     bmkp-make-obsolete-variable: Handle also Emacs 24+ (arg ACCESS-TYPE).
@@ -1579,6 +1581,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2023/10/24 dadams
+;;     Added option bmkp-bmenu-show-file-not-buffer-flag.
 ;; 2023/10/23 dadams
 ;;     lexical-binding = t.
 ;;     Added: bmkp--bmenu-nb->, bmkp--bmenu-nb-a, bmkp--bmenu-nb-D, bmkp--bmenu-nb-t,
