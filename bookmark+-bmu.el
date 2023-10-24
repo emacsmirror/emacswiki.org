@@ -1,4 +1,4 @@
-;;; bookmark+-bmu.el --- Bookmark+ code for the `*Bookmark List*' (bmenu).
+;;; bookmark+-bmu.el --- Bookmark+ code for the `*Bookmark List*' (bmenu).   -*- lexical-binding:t -*-
 ;;
 ;; Filename: bookmark+-bmu.el
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Oct 17 20:31:38 2023 (-0700)
+;; Last-Updated: Mon Oct 23 14:14:33 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 4222
+;;     Update #: 4245
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -292,7 +292,7 @@
 ;;    `bmkp-string-match-p', `bookmark-name-from-full-record',
 ;;    `bookmark-name-from-record',
 ;;
-;;  Internal variables defined here:
+;;  Internal variables and constants defined here:
 ;;
 ;;    `bmkp-bmenu-before-hide-marked-alist',
 ;;    `bmkp-bmenu-before-hide-unmarked-alist',
@@ -305,7 +305,12 @@
 ;;    `bmkp-bmenu-line-overlay', `bmkp-bmenu-mark-menu',
 ;;    `bmkp-bmenu-marked-bookmarks', `bmkp-bmenu-marks-width',
 ;;    `bmkp-bmenu-mark-types-menu', `bmkp-bmenu-menubar-menu',
-;;    `bmkp-bmenu-omit-menu', `bmkp-bmenu-search-menu',
+;;    `bmkp--bmenu-nb->', `bmkp--bmenu-nb-a', `bmkp--bmenu-nb-D',
+;;    `bmkp--bmenu-nb-t', `bmkp--bmenu-nb-X', `bmkp--bmenu-nb-*',
+;;    `bmkp-bmenu-omit-menu', `bmkp--bmenu-regexp->',
+;;    `bmkp--bmenu-regexp-a', `bmkp--bmenu-regexp-D',
+;;    `bmkp--bmenu-regexp-t', `bmkp--bmenu-regexp-X',
+;;    `bmkp--bmenu-regexp-*', `bmkp-bmenu-search-menu',
 ;;    `bmkp-bmenu-show-menu',
 ;;    `bmkp-bmenu-show-types-menu',`bmkp-bmenu-sort-menu',
 ;;    `bmkp-bmenu-tags-menu', `bmkp-bmenu-title',
@@ -1322,7 +1327,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
     (insert (format "Bookmark file:\n%s\n\n" bmkp-current-bookmark-file))
     (forward-line bmkp-bmenu-header-lines)
     (let ((max-width  0)
-          name markedp flaggedp tags annotation temporaryp start)
+          name markedp flaggedp tags annotation start)
       (setq bmkp-sorted-alist  (bmkp-sort-omit bookmark-alist
                                                (and (not (eq bmkp-bmenu-filter-function
                                                              'bmkp-omitted-alist-only))
@@ -2202,7 +2207,7 @@ arg was used), then delete the bookmark on this line, but only after
 confirmation.
 
 Non-interactively, optional arg NO-CONFIRM-P non-nil means do not ask
-for confirmation."
+for confirmation when deleting marked (not flagged) bookmarks."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (if (and (null (if markedp bmkp-bmenu-marked-bookmarks bmkp-flagged-bookmarks))
@@ -2766,7 +2771,6 @@ Non-interactively:
          (some-marked-p      bmkp-bmenu-marked-bookmarks)
          (inhibit-read-only  t)
          (case-fold-search   nil)
-         (query              nil)
          (string             (format "\n%c" mark))
          (help-form          "Type SPC or `y' to unmark one bookmark, DEL or `n' to skip to next,
 `!' to unmark all remaining bookmarks with no more questions."))
@@ -2782,7 +2786,7 @@ Non-interactively:
                       (search-forward string nil t))))
         (when (or (prog1 (not arg) (when msg-p (message "Updating bookmark-list display...")))
                   (let ((bmk  (bookmark-bmenu-bookmark)))
-                    (and bmk  (dired-query 'query "Unmark bookmark `%s'? " bmk))))
+                    (and bmk  (dired-query 'bmkp-bmenu-unmark-all-query "Unmark bookmark `%s'? " bmk))))
           (bookmark-bmenu-unmark nil 'NO-RE-SORT-P) (forward-line -1)
           (setq count  (1+ count)))))
     (unless no-re-sort-p
@@ -3038,7 +3042,7 @@ Non-interactively:
     (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-toggle-marks "bookmark+")
-(defun bmkp-bmenu-toggle-marks (&optional backup no-re-sort-p msg-p) ; Bound to `t' in bookmark list
+(defun bmkp-bmenu-toggle-marks (&optional no-re-sort-p msg-p) ; Bound to `t' in bookmark list
   "Toggle marks: Unmark all marked bookmarks; mark all unmarked bookmarks.
 This affects only the `>' mark, not the `D' flag.
 
@@ -3149,12 +3153,13 @@ that are marked are included."
     (dired-other-window (cons dirbufname files))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-delete-marked "bookmark+")
-(defun bmkp-bmenu-delete-marked (&optional no-confirm-p)      ; Bound to `D' in bookmark list
-  "Delete all (visible) bookmarks that are marked `>', after confirmation.
-Optional arg NO-CONFIRM-P non-nil means do not ask for confirmation."
-  (interactive)
+(defun bmkp-bmenu-delete-marked (&optional no-confirm-p) ; Bound to `D' in bookmark list
+  "Delete all (visible) bookmarks that are marked `>'.
+With a prefix arg (or non-nil arg NO-CONFIRM-P from Lisp), do not ask
+for confirmation."
+  (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bookmark-bmenu-execute-deletions 'MARKED 'NO-CONFIRM))
+  (bookmark-bmenu-execute-deletions 'MARKED no-confirm-p))
 
 ;;;###autoload (autoload 'bmkp-bmenu-move-marked-to-bookmark-file "bookmark+")
 (defun bmkp-bmenu-move-marked-to-bookmark-file (file &optional duplicates-ok include-omitted-p batchp)
@@ -3640,10 +3645,10 @@ arg, any that are marked are included."
                      (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                      (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (tags-search regexp '(let ((files  ())
+  (tags-search regexp `(let ((files  ())
                              file)
                         (dolist (bmk  (bmkp-sort-omit
-                                       (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p)))
+                                       (bmkp-bmenu-marked-or-this-or-all ',allp ',include-omitted-p)))
                           (setq file  (bookmark-get-filename bmk))
                           (when (and (not (equal bmkp-non-file-filename file))
                                      (not (file-directory-p file)))
@@ -3670,10 +3675,10 @@ prefix arg, any that are marked are included."
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0)))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (tags-query-replace from to delimited
-		      '(let ((files  ())
+		      `(let ((files  ())
                              file)
                         (dolist (bmk  (bmkp-sort-omit
-                                       (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
+                                       (bmkp-bmenu-marked-or-this-or-all nil ',include-omitted-p)))
                           (setq file  (bookmark-get-filename bmk))
                           (let ((buffer  (get-file-buffer file)))
                             (when (and buffer  (with-current-buffer buffer buffer-read-only))
@@ -5159,8 +5164,23 @@ the same name."
 Starting with Emacs 22, the first element is `font-lock-face'."
   (list (if (> emacs-major-version 21) 'font-lock-face 'face) value))
 
-(when (or (> emacs-major-version 24)    ; Emacs bug #12867 was partially fixed for Emacs 24.3+.
+(when (or (> emacs-major-version 24) ; Emacs bug #12867 was partially fixed for Emacs 24.3+.
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (defconst bmkp--bmenu-regexp-> "^>" "Regexp to match `>' in *Bookmark List* first column.")
+  (defconst bmkp--bmenu-regexp-D "^D" "Regexp to match `D' in *Bookmark List* first column.")
+  (defconst bmkp--bmenu-regexp-t "^t" "Regexp to match `t' in *Bookmark List* second column.")
+  (defconst bmkp--bmenu-regexp-X "^X" "Regexp to match `X' in *Bookmark List* third column.")
+  (defconst bmkp--bmenu-regexp-a "^a" "Regexp to match `a' in *Bookmark List* third column.")
+  (defconst bmkp--bmenu-regexp-* "^*" "Regexp to match `*' in *Bookmark List* fourth column.")
+
+  (defvar bmkp--bmenu-nb-> 0 "Number of `>' in *Bookmark List* first column.")
+  (defvar bmkp--bmenu-nb-D 0 "Number of `D' in *Bookmark List* first column.")
+  (defvar bmkp--bmenu-nb-t 0 "Number of `>' in *Bookmark List* second column.")
+  (defvar bmkp--bmenu-nb-X 0 "Number of `X' in *Bookmark List* third column.")
+  (defvar bmkp--bmenu-nb-a 0 "Number of `a' in *Bookmark List* third column.")
+  (defvar bmkp--bmenu-nb-* 0 "Number of `*' in *Bookmark List* fourth column.")
+
   (defun bmkp-bmenu-mode-line-string ()
     "Show, in mode line, information about the current bookmark-list display.
 The information includes the sort order and the number of marked,
@@ -5172,27 +5192,21 @@ For each number indication:
  others with the same indicator listed after it, then show `N/M',
  where N is the number indicated through the current line and M is the
  total number indicated."
-    (let* ((regexp->   "^>")
-           (regexp-D   "^D")
-           (regexp-t   "^.t")
-           (regexp-X   "^..X")
-           (regexp-a   "^..a")
-           (regexp-*   "^...\\*")
-           (nb->       (count-matches regexp-> (point-min) (point-max)))
-           (nb-D       (count-matches regexp-D (point-min) (point-max)))
-           (nb-t       (count-matches regexp-t (point-min) (point-max)))
-           (nb-X       (count-matches regexp-X (point-min) (point-max)))
-           (nb-a       (count-matches regexp-a (point-min) (point-max)))
-           (nb-*       (count-matches regexp-* (point-min) (point-max)))
-           (text-sort  (propertize
-                        (concat "sorting " (bmkp-sorting-description (bmkp-current-sort-order)))
-                        'face 'bmkp-heading))
+    (let* ((bmkp--bmenu-nb->  (count-matches bmkp--bmenu-regexp-> (point-min) (point-max)))
+           (bmkp--bmenu-nb-D  (count-matches bmkp--bmenu-regexp-D (point-min) (point-max)))
+           (bmkp--bmenu-nb-t  (count-matches bmkp--bmenu-regexp-t (point-min) (point-max)))
+           (bmkp--bmenu-nb-X  (count-matches bmkp--bmenu-regexp-X (point-min) (point-max)))
+           (bmkp--bmenu-nb-a  (count-matches bmkp--bmenu-regexp-a (point-min) (point-max)))
+           (bmkp--bmenu-nb-*  (count-matches bmkp--bmenu-regexp-* (point-min) (point-max)))
+           (text-sort   (propertize
+                         (concat "sorting " (bmkp-sorting-description (bmkp-current-sort-order)))
+                         'face 'bmkp-heading))
            regexp)
       (let ((desc  "")
             nb)
         (dolist (mk  '(?> ?D ?t ?a ?X ?*))
-          (setq nb      (symbol-value (intern (format "nb-%c" mk)))
-                regexp  (symbol-value (intern (format "regexp-%c" mk)))
+          (setq nb      (symbol-value (intern (format "bmkp--bmenu-nb-%c" mk)))
+                regexp  (symbol-value (intern (format "bmkp--bmenu-regexp-%c" mk)))
                 desc    (concat
                          desc
                          (and (> nb 0)
@@ -5209,7 +5223,7 @@ For each number indication:
                          (and (> nb 0)  " "))))
         (format "%s%s" desc text-sort))))
 
-  (defun bmkp-bmenu-mode-line ()        ; This works, but it shows the line number also.
+  (defun bmkp-bmenu-mode-line () ; This works, but it shows the line number also.
     "Set the mode line for buffer `*Bookmark List*'."
     (condition-case nil
         (progn
@@ -5220,7 +5234,9 @@ For each number indication:
           (set (make-local-variable 'mode-line-position) '("%360l (line)")) ; Move it off the screen.
           (set (make-local-variable 'mode-line-format)
                '(("" mode-name "\t" mode-line-buffer-identification mode-line-position))))
-      (error nil))))
+      (error nil)))
+
+  )
 
 (when (fboundp 'org-add-link-type)
   (org-add-link-type "bookmark"           'bookmark-jump)
@@ -5245,11 +5261,9 @@ prefix arg, the link will use another window.  The link type is
 ;;  *** Sorting - Commands ***
 
 ;;;###autoload (autoload 'bmkp-bmenu-change-sort-order-repeat "bookmark+")
-(defun bmkp-bmenu-change-sort-order-repeat (arg) ; Bound to `s s'... in bookmark list
-  "Cycle to the next sort order.
-With a prefix arg, reverse current sort order.
-This is a repeatable version of `bmkp-bmenu-change-sort-order'."
-  (interactive "P")
+(defun bmkp-bmenu-change-sort-order-repeat () ; Bound to `s s'... in bookmark list
+  "Cycle to the next sort order."
+  (interactive)
   (require 'repeat)
   (bmkp-repeat-command 'bmkp-bmenu-change-sort-order))
 
@@ -5572,7 +5586,7 @@ Return non-nil only if there was such an annotation buffer."
 With a prefix argument, show the internal definition of the bookmark."
   (interactive "P")
   (forward-line 1)
-  (bmkp-bmenu-describe-this-bookmark))
+  (bmkp-bmenu-describe-this-bookmark defn))
 
 ;;;###autoload (autoload 'bmkp-bmenu-describe-this+move-up "bookmark+")
 (defun bmkp-bmenu-describe-this+move-up (&optional defn) ; Bound to `C-up' in bookmark list
@@ -5580,7 +5594,7 @@ With a prefix argument, show the internal definition of the bookmark."
 With a prefix argument, show the internal definition of the bookmark."
   (interactive "P")
   (forward-line -1)
-  (bmkp-bmenu-describe-this-bookmark))
+  (bmkp-bmenu-describe-this-bookmark defn))
 
 ;;;###autoload (autoload 'bmkp-bmenu-describe-this-bookmark "bookmark+")
 (defun bmkp-bmenu-describe-this-bookmark (&optional defn) ; Bound to `C-h RET' in bookmark list
