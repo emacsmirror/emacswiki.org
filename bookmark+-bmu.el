@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Oct 23 14:14:33 2023 (-0700)
+;; Last-Updated: Tue Oct 24 15:34:10 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 4245
+;;     Update #: 4252
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -263,8 +263,9 @@
 ;;    `bmkp-bmenu-commands-file',
 ;;    `bmkp-bmenu-image-bookmark-icon-file',
 ;;    `bmkp-bmenu-omitted-bookmarks', `bmkp-bmenu-state-file',
-;;    `bmkp-propertize-bookmark-names-flag', `bmkp-sort-orders-alist',
-;;    `bmkp-sort-orders-for-cycling-alist'.
+;;    `bmkp-propertize-bookmark-names-flag',
+;;    `bmkp-bmenu-show-file-not-buffer-flag',
+;;    `bmkp-sort-orders-alist', `bmkp-sort-orders-for-cycling-alist'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -720,6 +721,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
 
+
 ;;;###autoload (autoload 'bmkp-bmenu-omitted-bookmarks "bookmark+")
 (defcustom bmkp-bmenu-omitted-bookmarks ()
   "*List of names of omitted bookmarks.
@@ -792,6 +794,19 @@ https://www.emacswiki.org/emacs/BookmarkPlusImageFileDefaultIcon"
           (file  :tag "Use iconic image file")
           (const :tag "Show no image"))
   :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-bmenu-show-file-not-buffer-flag "bookmark+")
+(defcustom bmkp-bmenu-show-file-not-buffer-flag nil
+  "Non-nil means show bookmark file names, not buffer names.
+This applies to the location shown to the right of the bookmark
+name.  (You hide/show this column using \\<bookmark-bmenu-mode-map>\
+`\\[bookmark-bmenu-toggle-filenames]'.)
+
+This applies only if a bookmark records no explicit `location' entry
+and it records both a buffer name and a file name.  If it records
+`location' then that is what is shown.  If it records only a file name
+or only a buffer name then that is shown."
+  :type 'boolean :group 'bookmark-plus)
 
 ;; This is a general option.  It is in this file because it is used mainly by the bmenu code.
 (when (> emacs-major-version 20)
