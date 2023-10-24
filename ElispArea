@@ -42,7 +42,9 @@ Result:
 
 This kind of link makes it easier for visitors to download the file, and to find references to the file.
 
-Now follow the link, edit the page, and paste the file.  When pasting, make sure the first line on the page starts with three semicolons: <code>;;;</code>.
+Now follow the link, edit the page, and paste the file.
+
+The file *must* start with three semicolons: <code>;;;</code>.
 
 When posting a link to the elisp file on other pages, a common practice is to also provide a link to the Wiki page(s) that describe the library, perhaps in parentheses.  See TextFormattingRules for information about how to create link to wiki page.
 
@@ -149,7 +151,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 308%
+%Id: 309%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
