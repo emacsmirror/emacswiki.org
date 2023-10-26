@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Oct 26 14:51:36 2023 (-0700)
+;; Last-Updated: Thu Oct 26 15:10:31 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 17017
+;;     Update #: 17018
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2525,6 +2525,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2023-10-26 dadams
+;;     Duplicate definition of bmkp-make-obsolete, and remove require of bookmark+-1.el.
 ;; 2023/10/23 dadams
 ;;     lexical-binding = t.
 ;;     bmkp-bmenu-set-lighting: Pass MSGP arg, not 'MSG.
