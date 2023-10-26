@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Oct 22 17:04:08 2023 (-0700)
+;; Last-Updated: Thu Oct 26 15:09:05 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1089
+;;     Update #: 1091
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -139,7 +139,6 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `bmkp--pop-to-buffer-same-window',
 ;;    `bmkp-a-bookmark-lighted-at-pos',
 ;;    `bmkp-a-bookmark-lighted-on-this-line',
 ;;    `bmkp-bookmark-data-from-record',
@@ -151,8 +150,10 @@
 ;;    `bmkp-lighted-alist-only', `bmkp-lighting-attribute',
 ;;    `bmkp-lighting-face', `bmkp-lighting-style',
 ;;    `bmkp-lighting-when', `bmkp-make/move-fringe' (Emacs 22+),
-;;    `bmkp-make/move-overlay-of-style', `bmkp-number-lighted',
-;;    `bmkp-overlay-of-bookmark', `bmkp-read-set-lighting-args',
+;;    `bmkp-make/move-overlay-of-style', `bmkp-make-obsolete',
+;;    `bmkp-number-lighted', `bmkp-overlay-of-bookmark',
+;;    `bmkp--pop-to-buffer-same-window',
+;;    `bmkp-read-set-lighting-args',
 ;;    `bmkp-set-lighting-for-bookmarks',
 ;;    `bmkp-this-buffer-lighted-alist-only',
 ;;    `bookmark-name-from-full-record', `bookmark-name-from-record'.
@@ -195,7 +196,17 @@
 ;; bookmark-get-position, bookmark-handle-bookmark, bookmark-maybe-load-default-file,
 ;; bookmark-name-from-full-record, bookmark-name-from-record, bookmark-prop-get, bookmark-prop-set
 
-(require 'bookmark+-1) ;; bmkp-make-obsolete
+
+;; Just repeat definition of `bmkp-make-obsolete', to make requires less complicated.
+;;   (require 'bookmark+-1) ;; bmkp-make-obsolete
+;;
+;; Do this up front.  Emacs 23 made incompatible change to require all args.
+;;
+(defun bmkp-make-obsolete (obsolete-name current-name &optional when)
+  "Same as `make-obsolete', but usable also for Emacs prior to Emacs 23."
+  (if (< emacs-major-version 23)
+      (make-obsolete obsolete-name current-name)
+    (make-obsolete obsolete-name current-name when)))
 
 
 ;; Some general Renamings.
