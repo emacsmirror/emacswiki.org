@@ -31,7 +31,7 @@ The distracting visual effect is caused by loading .emacs in GNU/Linux. So you h
   (push '(fullscreen . maximized) default-frame-alist)
 }}}
 
-It works even if it takes time to load a typical .emacs configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), and Windows. Don't forget to add the code to the top of .emacs.d/early-init.el if you have created it earlier to prevent load delay.
+It works even if it takes time to load a typical .emacs configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of .emacs.d/early-init.el if you have created it earlier to prevent load delay.
 
 The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
 
