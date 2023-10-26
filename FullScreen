@@ -31,6 +31,8 @@ The distracting visual effect is caused by loading .emacs in GNU/Linux. So you h
   (push '(fullscreen . maximized) default-frame-alist)
 }}}
 
+While some customizations of `default-frame-alist' could have undesirable effects when modified in early-init.el, it is okay to do it in this particular case. (thanks Stefan)
+
 It works even if it takes time to load a typical .emacs configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), and Windows. Don't forget to add the code to the top of .emacs.d/early-init.el if you have created it earlier to prevent load delay.
 
 The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
@@ -39,9 +41,9 @@ Essentially the code above will make emacs behave like `emacs --maximize` automa
 
 ====Windows====
 In Windows you can prevent the distracting visual effect by either:
-* Configuring ##.emacs.d/early-init.el## -- see the previous section
-* Add an ‘Emacs.Geometry’ entry to the Windows Registry settings. (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows). Not completely documented yet.
-* Making a conventional ##.emacs## configuration (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows) -- In Windows, the distracting visual effect is NOT caused by loading .emacs like in GNU/Linux. Therefore this can be added to .emacs but it must be added to the ''top of the file'' to avoid other configuration to load first that will cause a distracting visual effect:
+* Solution 1: Configuring ##.emacs.d/early-init.el## -- see the previous section. However, some people like to keep all configuration in .emacs (see Solution 2) below.
+* Solution 2: Add an ‘Emacs.Geometry’ entry to the Windows Registry settings. (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows). Not completely documented yet.
+* Solution 3: Making a conventional ##.emacs## configuration (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows) -- In Windows, the distracting visual effect is NOT caused by loading .emacs like in GNU/Linux. Therefore this can be added to .emacs but it must be added to the ''top of the file'' to avoid other configuration to load first that will cause a distracting visual effect:
 
 {{{
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
