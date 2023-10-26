@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 24 15:35:48 2023 (-0700)
+;; Last-Updated: Thu Oct 26 14:51:36 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 17014
+;;     Update #: 17017
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2714,6 +2714,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2023/10/26 dadams
+;;     Version: 2023.10.26, bmkp-version-number same.
 ;; 2023/10/23 dadams
 ;;     Version: 2023.10.23
 ;;     Major update.  lexical-binding = t.
