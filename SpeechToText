@@ -14,9 +14,15 @@ See also https://en.wikipedia.org/wiki/List_of_speech_recognition_software
 
 == Interfaces for Emacs ==
 
-There were several packages for driving Emacs through voice input, but none currently maintained.
+There were several packages for driving Emacs through voice input, but mostly not actively maintained.
 
-=== Dormant ===
+=== Recent ===
+
+==== Whisper ====
+
+https://github.com/natrys/whisper.el is a "Speech-to-Text interface for Emacs using OpenAI’s whisper speech recognition model. For the inference engine it uses the awesome C/C++ port whisper.cpp that can run on consumer grade CPU (without requiring a high end GPU)."
+
+=== Dormant? ===
 
 ==== VoiceCode ====
 VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink, updated Sept 2, 2019).
