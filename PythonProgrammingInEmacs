@@ -229,7 +229,7 @@ Viewing the results from [https://docs.python.org/3/library/profile.html the Pyt
 
 === Interactive environments - Shells, REPLs and notebooks ===
 ====The Python shell====
-You can open an interactive Python shell with `run-python' ("C-c C-p"), and send code for execution by the shell process using the `python-shell-send-*' functions.
+You can open an interactive Python shell with `run-python' ("C-c C-p"), and send code for execution by the shell process using the `python-shell-send-*' functions. Please note that on MacOS the natively shipped Python version comes without proper readline support. You might want to install other versions and use them as default for the `run-python` command.
 
 The support includes completion, syntax highlighting, virtualenvs, enabling a package (so relative imports work), and remote execution (for files opened with TrampMode).  Completion is provided through `completion-at-point' and thus works with CompanyMode as well. 
 ====Using IPython as the Python shell==
