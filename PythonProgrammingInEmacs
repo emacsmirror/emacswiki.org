@@ -34,7 +34,7 @@ Any of the main [LanguageServerProtocol] packages should support Python programm
 ===Anaconda mode===
 * [https://github.com/proofit404/anaconda-mode anaconda-mode] 
 ===eglot===
-* [https://github.com/joaotavora/eglot eglot]
+* [https://github.com/joaotavora/eglot eglot] (natively supported since Emacs 29)
 == Support Features ==
 Various features that can be added to or improved in Emacs.  Note that the IDE packages listed above provide many of these using packages referred to below.
 
