@@ -4,13 +4,13 @@
 ;; Description: Enhancements to cus-edit.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 17 07:34:11 2022 (-0800)
+;; Last-Updated: Sun Oct 29 14:32:07 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 1669
+;;     Update #: 1674
 ;; URL: https://www.emacswiki.org/emacs/download/cus-edit%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -353,6 +353,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/10/29 dadams
+;;     Custom-consider-unchanged:
+;;       Use option/face symbol, instead of creating a symbol from its tag.  Thx to Mauro Aranda.
+;;     custom-consider-face-unchanged: Wrap arg to custom-post-filter-face-spec with list.
 ;; 2022/02/17 dadams
 ;;     custom-(face|variable)-menu: fboundp, not boundp, for custom-comment-invisible-p (and quote it).
 ;; 2018/04/05 dadams
@@ -1431,11 +1435,12 @@ unchanged."
 without being saved.  Continue? "))
       (message nil)
     (message "Please wait...")
-    (let ((children  custom-options))
+    (let ((children  custom-options)
+          symbol)
       (dolist (child  children)
-        (let ((symbol  (widget-get-tag-or-value child)))
-          (cond ((custom-facep symbol)       (custom-consider-face-unchanged child))
-                ((custom-variable-p symbol)  (custom-consider-variable-unchanged child))))))
+        (setq symbol  (widget-get child :value))
+        (cond ((custom-facep symbol)       (custom-consider-face-unchanged child))
+              ((custom-variable-p symbol)  (custom-consider-variable-unchanged child)))))
     (message "Current values here are now considered unchanged.  They were not saved.")))
 
 
@@ -1465,7 +1470,7 @@ face, since it was considered unchanged."
     (let* ((child  (car (widget-get widget :children)))
            (value  (if (< emacs-major-version 21)
                        (widget-value child)
-                     (custom-post-filter-face-spec (widget-value child)))))
+                     (custom-post-filter-face-spec (list (widget-value child))))))
       (unless (eq (widget-get widget :custom-state) 'standard) (put symbol 'saved-face value)))
     (put symbol 'customized-face nil)
     (widget-put widget :custom-state 'saved)
