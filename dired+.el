@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2023.07.18
+;; Version: 2023.11.05
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 18 09:34:44 2023 (-0700)
+;; Last-Updated: Sun Nov  5 06:55:19 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 13544
+;;     Update #: 13568
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -21,7 +21,7 @@
 ;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
 ;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
 ;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
@@ -32,13 +32,13 @@
 ;;   `help-macro+', `help-mode', `hexrgb', `highlight', `hl-line',
 ;;   `hl-line+', `image', `image-dired', `image-file', `image-mode',
 ;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mwheel', `naked', `package',
-;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `zones'.
+;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1019,6 +1019,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/11/05 dadams
+;;     Require cl-lib when available, else defalias cl-case to case.
+;;     Added: diredp--find-dired-sentinel-advice.
+;;     Use of diredp-nb-marked-in-mode-name: No longer add-hook to dired-mode-map.  Thx to John Dixon.
+;;       It slowed Dired down considerably with long listings or for large files.  Use locate-post-command-hook for
+;;       locate.  Advise find-dired-sentinel for find-dired.
 ;; 2023/07/18 dadams
 ;;     Added redefinition of dired-kill-line.
 ;;     dired-do-kill-lines: Added optional arg BUFFER.
@@ -2434,7 +2440,10 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: dolist, pop, push)
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl) ;; case (plus, for Emacs 20: dolist, pop, push)
+                     (defalias 'cl-case 'case)))
+
 (eval-when-compile (require 'easymenu)) ;; easy-menu-create-menu
 
 (require 'dired) ;; dired-revert
@@ -2620,6 +2629,7 @@ of that nature."
 (defvar header-line-format)                       ; Emacs 22+
 (defvar icicle-candidate-alt-action-fn)           ; In `icicles-var.el'
 (defvar icicle-default-value)                     ; In `icicles-opt.el'
+(defvar icicle-file-completing-p)                 ; In `icicles-var.el'
 (defvar icicle-file-extras)                       ; In `icicles-opt.el'
 (defvar icicle-file-match-regexp)                 ; In `icicles-opt.el'
 (defvar icicle-file-no-match-regexp)              ; In `icicles-opt.el'
@@ -3153,7 +3163,7 @@ Return value depends on the number of plain `C-u' used:
  * `all-files'         if 4"
   (and (consp arg)
        (> (prefix-numeric-value arg) 4)
-       (case (prefix-numeric-value arg)
+       (cl-case (prefix-numeric-value arg)
          (16   'all-files-no-dirs)      ; `C-u C-u'
          (64   'all-files-no-dots)      ; `C-u C-u C-u'
          (256  'all-files)              ; `C-u C-u C-u C-u'
@@ -6083,7 +6093,7 @@ DETAILS is passed to `diredp-list-files', to show details about FILES."
                                                              prompt
                                                            (concat "Please answer y or n.  " prompt)))))))
                             (setq answer  (lookup-key query-replace-map (vector key) t))
-                            (case answer
+                            (cl-case answer
                               ((skip  act)              nil)
                               (recenter                 (recenter) t)
                               (show                     (diredp-list-files files nil list-buf predicate details)
@@ -6839,7 +6849,7 @@ When called from Lisp, optional arg DETAILS is passed to
                     (message "Thumb could not be created for file %s" curr-file)
                   (image-dired-insert-thumbnail thumb-name curr-file dired-buf)))
               files))
-      (case image-dired-line-up-method
+      (cl-case image-dired-line-up-method
         (dynamic      (image-dired-line-up-dynamic))
         (fixed        (image-dired-line-up))
         (interactive  (image-dired-line-up-interactive))
@@ -13154,7 +13164,7 @@ When called from Lisp:
                                                        "UNmark"
                                                      "Mark")
                                                    (format " files (regexp matching %s): "
-                                                           (case type
+                                                           (cl-case type
                                                              ((nil)   "names with default dir")
                                                              (no-dir  "relative names - no dir")
                                                              (t       "absolute names")))))
@@ -13164,7 +13174,7 @@ When called from Lisp:
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (diredp-mark-if (and (not (diredp-looking-at-p dired-re-dot))
                          (not (eolp))   ; Empty line
-                         (let ((fn  (dired-get-filename (case name-form
+                         (let ((fn  (dired-get-filename (cl-case name-form
                                                           ((nil)   t)
                                                           (no-dir  'no-dir)
                                                           (t       nil))
@@ -15149,6 +15159,7 @@ Set bookmark-file bookmark for marked here and below
     )))
 
 (when (> emacs-major-version 21)
+
   (defun diredp-nb-marked-in-mode-name ()
     "Show number of marked, flagged, and current-list lines in mode-line.
 \(Flagged means flagged for deletion.)
@@ -15176,8 +15187,7 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                                         ?* ; `dired-do-flagged-delete' binds it.
                                                       dired-marker-char))
                                 (marked-regexp      (dired-marker-regexp))
-                                (nb-marked          (count-matches marked-regexp
-                                                                   (point-min) (point-max))))
+                                (nb-marked          (count-matches marked-regexp (point-min) (point-max))))
                            (if (not (> nb-marked 0))
                                ""
                              (propertize
@@ -15185,16 +15195,13 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                       (save-excursion
                                         (forward-line 0)
                                         (if (diredp-looking-at-p (concat marked-regexp ".*"))
-                                            (format "%d/" (1+ (count-matches
-                                                               marked-regexp
-                                                               (point-min) (point))))
+                                            (format "%d/" (1+ (count-matches marked-regexp (point-min) (point))))
                                           ""))
                                       nb-marked dired-marker-char)
                               'face 'diredp-mode-line-marked 'dired+-mode-name t))))
                   (:eval (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
                                                    (dired-marker-regexp)))
-                                (nb-flagged      (count-matches flagged-regexp
-                                                                (point-min) (point-max))))
+                                (nb-flagged      (count-matches flagged-regexp (point-min) (point-max))))
                            (if (not (> nb-flagged 0))
                                ""
                              (propertize
@@ -15202,9 +15209,7 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                       (save-excursion
                                         (forward-line 0)
                                         (if (diredp-looking-at-p (concat flagged-regexp ".*"))
-                                            (format "%d/" (1+ (count-matches
-                                                               flagged-regexp
-                                                               (point-min) (point))))
+                                            (format "%d/" (1+ (count-matches flagged-regexp (point-min) (point))))
                                           ""))
                                       nb-flagged)
                               'face 'diredp-mode-line-flagged))))
@@ -15231,8 +15236,25 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                              (if (not (> this 0)) (format " %d" total) (format " %d/%d" this total)))))))))))
 
   (add-hook 'dired-after-readin-hook 'diredp-nb-marked-in-mode-name)
-  ;; This one is needed for `find-dired', because it does not call `dired-readin'.
-  (add-hook 'dired-mode-hook         'diredp-nb-marked-in-mode-name))
+
+  ;; Use this code for `locate' and `find-dired', because they don't call `dired-readin'.
+  ;; Previously we used `dired-mode-hook' for these, but that introduced a huge slow-down for `dired-jump'.
+
+  (add-hook 'locate-post-command-hook 'diredp-nb-marked-in-mode-name)
+
+  ;; There's no hook available for `find' commands, so use advice instead.
+  (defun diredp--find-dired-sentinel-advice (_proc _state)
+    "Invoke `diredp-nb-marked-in-mode-name'."
+    (diredp-nb-marked-in-mode-name))
+
+  (eval-after-load "find-dired"
+    '(if (require 'nadvice nil t)       ; Emacs 24+
+         (advice-add 'find-dired-sentinel :after #'diredp--find-dired-sentinel-advice)
+       (defadvice find-dired-sentinel (after diredp-find-dired-sentinel activate)
+         "Invoke `diredp-nb-marked-in-mode-name'."
+         (diredp-nb-marked-in-mode-name))))
+
+  )
 
 ;;;###autoload
 (defun diredp-send-bug-report ()
