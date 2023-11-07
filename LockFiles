@@ -7,3 +7,5 @@ For Emacs 28 and after, similarly to auto-save-file-name-transforms, the files a
    (setq lock-file-name-transforms
       '(("\\`/.*/\\([^/]+\\)\\'" "/var/tmp/\\1" t)))
 
+It is incumbent upon the user to recognize the dangers of doing this
+
