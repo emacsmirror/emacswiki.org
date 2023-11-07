@@ -2,3 +2,10 @@ La solution proposée pour résoudre le problème de l'enregistrement des macros
 
 -- jcm69 2019-02-14 21:09 UTC
 
+
+----
+
+The "Prompting During Keyboard Macro Execution" code doesn't seem to work anymore. I think it broke in Emacs 28. Now it spits out the error "Not in most nested command loop".
+
+-- Surgo 2023-11-07 23:42 UTC
+
