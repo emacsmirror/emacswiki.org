@@ -1,7 +1,9 @@
-Emacs keeps track of files that you are currently editing by creating a symbolic link that looks like .#-emacsa08196. Unlike [AutoSave] files or [BackupFiles], these [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=31908 cannot] be moved to a different directory. You can disable them in Emacs versions >= 24.3 with the following configuration:
+Emacs keeps track of files that you are currently editing by creating a symbolic link that looks like .#-emacsa08196. Prior to Emacs 28, these files cannot be moved to a different directory. You can disable them in Emacs versions >= 24.3 with the following configuration:
 
    (setq create-lockfiles nil)
 
-----
+For Emacs 28 and after, similarly to auto-save-file-name-transforms, the files are generated via lock-file-name-transforms. To make Emacs write all lock files to /var/tmp, you could use the following:
 
-CategoryFiles
+   (setq lock-file-name-transforms
+      '(("\\`/.*/\\([^/]+\\)\\'" "/var/tmp/\\1" t)))
+
