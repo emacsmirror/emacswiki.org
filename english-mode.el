@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t -*-
 
 ;;; english-mode.el --- speak english after type a word
 
