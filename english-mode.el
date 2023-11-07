@@ -1,6 +1,6 @@
-;;; english-mode.el --- speak english after type a word
-
 ;; -*- lexical-binding: t -*-
+
+;;; english-mode.el --- speak english after type a word
 
 (defun english-mode-map-fun (key)
   (lambda ()
