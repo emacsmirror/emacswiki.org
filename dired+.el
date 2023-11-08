@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2023.11.08
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov  8 11:46:33 2023 (-0800)
+;; Last-Updated: Wed Nov  8 15:28:35 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 13634
+;;     Update #: 13638
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -765,6 +765,7 @@
 ;;    `diredp-omit-files-font-lock-regexp',
 ;;    `diredp-omit-lines-regexp',
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diredp-quote-copied-filenames-flag',
 ;;    `diredp-recent-dirs-source',
 ;;    `diredp-recent-files-quit-kills-flag',
 ;;    `diredp-switches-in-mode-line',
@@ -1034,6 +1035,8 @@
 ;;     diredp-mark/unmark-extension, diredp-describe-file-1: Use argument, not current-prefix-arg.
 ;;     Everywhere: Remove unused args.  Remove unused let bindings.  Prefix unused vars with underscore (_).
 ;;     diredp-nb-marked-in-mode-name: Wrap body with (when (derived-mode-p 'dired-mode)...).
+;;     Added diredp-quote-copied-filenames-flag.
+;;     dired-copy-filename-as-kill: Respect diredp-quote-copied-filenames-flag.  Update for Emacs 29.
 ;; 2023/11/05 dadams
 ;;     Require cl-lib when available, else defalias cl-case to case.
 ;;     Added: diredp--find-dired-sentinel-advice.
@@ -6505,22 +6508,32 @@ Copying is done by `dired-copy-filename-as-kill' and related commands.")
   ;; Should contain only chars that are invalid in a file name.
   "String used to separate file names in a `kill-ring' entry.")
 
+(defcustom diredp-quote-copied-filenames-flag t
+  "Non-nil means \\<dired-mode-map>\\[dired-copy-filename-as-kill] double-quotes \
+file names containing SPC, ', or \"."
+  :group 'Dired-Plus :type 'boolean)
+
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; 1. Use `diredp-filename-separator', not a space char, as the separator.
-;; 2. Put text copied to kill ring in variable `diredp-last-copied-filenames'.
+;; 1. Respect option `diredp-quote-copied-filenames-flag'.
+;; 2. Use `diredp-filename-separator', not a space char, as the separator.
+;; 3. Put text copied to kill ring in variable `diredp-last-copied-filenames'.
 ;;
-(defun dired-copy-filename-as-kill (&optional arg)
+(defun dired-copy-filename-as-kill (&optional arg) ; Bound to `w'.
   "Copy names of marked (or next ARG) files into the kill ring.
-The names are separated by the value of variable
+Multiple file names are separated by the value of variable
 `diredp-filename-separator'.
+
+When multiple names are copied, those with space or quotes (', \") are
+enclosed in double-quote chars if option
+`diredp-quote-copied-filenames-flag' is non-nil.
 
 With a zero prefix arg, use the absolute file name of each marked file.
 With \\[universal-argument], use the file name relative to the Dired buffer's
 `default-directory'.  (This still may contain slashes if in a subdirectory.)
 
-If on a subdir headerline, use absolute subdirname instead;
+If on a subdir headerline, use absolute subdir name instead;
 prefix arg and marked files are ignored in this case.
 
 You can then feed the file name(s) to other commands with \\[yank].
@@ -6529,13 +6542,20 @@ The value of global variable `diredp-last-copied-filenames' is updated
 to the string list of file name(s), so you can obtain it even after
 the kill ring is modified."
   (interactive "P")
-  (let* ((num-arg  (prefix-numeric-value arg))
-         (string  (or (dired-get-subdir)
-                      (mapconcat #'identity
-                                 (cond ((not arg)       (dired-get-marked-files 'no-dir))
-                                       ((zerop num-arg) (dired-get-marked-files))
-                                       ((consp arg)     (dired-get-marked-files t))
-                                       (t               (dired-get-marked-files 'no-dir num-arg)))
+  (let* ((num-arg (prefix-numeric-value arg))
+         (subdir  (dired-get-subdir))
+         (files   (or (and subdir  (list subdir))
+                      (cond ((not arg)       (dired-get-marked-files 'no-dir))
+                            ((zerop num-arg) (dired-get-marked-files))
+                            ((consp arg)     (dired-get-marked-files t))
+                            (t               (dired-get-marked-files 'no-dir num-arg)))))
+         (string  (or (and (not (cdr files))  (car files))
+                      (mapconcat #'(lambda (file)
+                                     (if (and diredp-quote-copied-filenames-flag
+                                              (diredp-string-match-p "[ \"']" file))
+                                         (format "%S" file)
+                                       file))
+                                 files
                                  diredp-filename-separator))))
     (unless (string= "" string)
       (if (eq last-command 'kill-region) (kill-append string nil) (kill-new string))
