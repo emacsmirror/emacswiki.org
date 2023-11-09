@@ -19,30 +19,30 @@ I used to be a [http://member.fsf.org FSF Member] (joined 2003-03-06, left in 20
 and I used to be a [http://www.fsfe.org/ FSFE Member] (joined 2005-05-22, left in 2021).
 These days I'm first and foremost a member of [https://www.digitale-gesellschaft.ch/ Digitale Gesellschaft].
 
-* [http://alexschroeder.ch/wiki/Contact Contact]
+* [http://alexschroeder.ch/view/Contact Contact]
 
-* [http://alexschroeder.ch/wiki/ Blog]
+* [http://alexschroeder.ch/ Blog]
 
 * [http://alexschroeder.ch/pics/pink-bliss.png Emacs Screenshot]
 
-* [http://www.oddmuse.org/ Oddmuse] is the wiki engine used for this wiki.
+* [http://www.oddmuse.org/ Oddmuse] is the wiki engine used for this wiki
 
 If you think that Emacs Wiki is a mess and needs to be based on a different
-technology, feel free to read a blog post of mine, [http://alexschroeder.ch/wiki/2012-03-24_How_Emacs_Wiki_Works How Emacs Wiki Works].
+technology, feel free to read a blog post of mine, [http://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works How Emacs Wiki Works].
 
 I am also known as [::kensanata] on IRC.
 "Kensanata" doesn't mean anything. It was the name of my character
-when I started [http://alexschroeder.ch/wiki/J%C3%BCnger_des_Blauen_Mondes playing PBEM games].
+when I started [http://alexschroeder.ch/view/J%C3%BCnger_des_Blauen_Mondes playing PBEM games].
 I started my first homepage for this game on Geocities and needed an account name.
-Instead of alex4365472432009 I chose a name related to the game. And
+I chose a name related to the game. And
 since Geocities and Yahoo and AOL started to cooperate, "kensanata"
 turned out to be the name of my Yahoo mailbox and my AIM handle.
 Later, I also used it on ICQ. And now I'm using it on IRC.
 
-== Code ==
+== Init files ==
 
-* https://alexschroeder.ch/cgit/emacs-setup/about -- my new setup, inspired by EmacsLife
-* https://github.com/kensanata/ggg -- my Gmail Gnus GPG Guide (GGGG)
+* [https://src.alexschroeder.ch/emacs-setup.git private laptop]
+* [[Alex Schroeder on Windows|work laptop]]
 
 == RSI ==
 
@@ -51,6 +51,7 @@ RepeatedStrainInjury -- saw a doctor, started physiotherapy on
 forced me to take a lot of breaks. It didn't help. I stopped therapy
 2002-10-21 and decided to work less, get up more often, started
 practicing Aikido, and no longer work in long shifts. That helped.
+[https://alexschroeder.ch/view/2020-04-10_Watch_your_hands Watch your hands].
 
 == Snippets ==
 
