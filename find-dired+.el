@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 17 10:19:18 2023 (-0700)
+;; Last-Updated: Thu Nov  9 08:46:49 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 1258
+;;     Update #: 1259
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -23,7 +23,7 @@
 ;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
 ;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
 ;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
@@ -34,12 +34,12 @@
 ;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `highlight',
 ;;   `hl-line', `hl-line+', `image', `image-dired', `image-file',
 ;;   `image-mode', `info', `info+', `kmacro', `macroexp', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mwheel', `naked',
-;;   `package', `palette', `parse-time', `password-cache', `pp',
-;;   `pp+', `radix-tree', `rect', `replace', `ring', `second-sel',
-;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
-;;   `thingatpt', `thingatpt+', `time-date', `timer', `url-handlers',
-;;   `url-parse', `url-vars', `vline', `w32-browser',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mwheel', `nadvice',
+;;   `naked', `package', `palette', `parse-time', `password-cache',
+;;   `pp', `pp+', `radix-tree', `rect', `replace', `ring',
+;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
+;;   `text-mode', `thingatpt', `thingatpt+', `time-date', `timer',
+;;   `url-handlers', `url-parse', `url-vars', `vline', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
 ;;   `zones'.
 ;;
@@ -102,6 +102,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/11/09 dadams
+;;     find-dired-sentinel: Don't run dired-after-readin-hook.  Dired+ now advises find-dired-sentinel to DTRT.
 ;; 2023/03/17 dadams
 ;;     find-ls-option: Per Emacs bug #62096, add darwin to the berkeley-unix case.
 ;;     find-dired: escape +-sign in "\\`\\(.*\\) {} \\(\\\\;\\|\\+\\)\\'".
@@ -276,10 +278,8 @@
 
 (defvar find-dired-hook nil
   "*Hook to be run at the end of each `find-dired' execution.
-After this hook is run, hook `dired-after-readin-hook' is run.
-
-Note that if you add a function to either of those hooks, because you
-want it to act on the complete directory listing returned by the find
+Note that if you add a function to this hook, because you want that
+function to act on the complete directory listing returned by the find
 operation, you will likely also want the function to remove itself
 from the hook when it is done.
 
@@ -373,12 +373,12 @@ LS-SWITCHES is a list of `ls' switches that tell Dired how to parse
 ;;
 ;; 1. Added optional args.
 ;; 2. Interactive spec uses `find-diredp-default-fn'.
-;; 3. Runs `find-dired-hook' at end.
+;; 3. Run `find-dired-hook' at end.
 ;; 4. Buffer used has same root name as the dir (not "*Find*").
 ;;;###autoload
 (defun find-dired (dir args &optional depth-limits excluded-paths)
   "Run `find' and put its output in a buffer in Dired Mode.
-Then run `find-dired-hook' and `dired-after-readin-hook'.
+Then run `find-dired-hook'.
 The `find' command run (after changing into DIR) is essentially this,
 where LS-SWITCHES is `(car find-ls-option)':
 
@@ -633,9 +633,9 @@ STRING is the string to insert."
 
 ;; REPLACES ORIGINAL in `find-dired.el':
 ;;
-;; 1. Highlights file lines.
-;; 2. Puts `find' in mode-line.
-;; 3. Runs hooks `find-dired-hook' and `dired-after-readin-hook'.
+;; 1. Highlight file lines.
+;; 2. Put `find' in mode-line.
+;; 3. Run hook `find-dired-hook'.
 ;;
 (defun find-dired-sentinel (proc state)
   "Sentinel for \\[find-dired] processes.
@@ -658,7 +658,7 @@ STATE is the state of process PROC."
             ;; Highlight lines of file names for mouse selection.
             (dired-insert-set-properties (point-min) (point-max))
             (force-mode-line-update)))
-        (run-hooks 'find-dired-hook 'dired-after-readin-hook)
+        (run-hooks 'find-dired-hook)
         (message "find-dired `%s' done." (buffer-name))))))
 
 (when (require 'time-date nil t)        ; Emacs 22+
