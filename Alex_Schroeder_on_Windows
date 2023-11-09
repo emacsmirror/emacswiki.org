@@ -1,0 +1,511 @@
+;;; See https://www.emacswiki.org/wiki/Alex_Schroeder
+
+;; Install use-package if necessary. The use-package expressions then
+;; contain :ensure t for further installations.
+(package-initialize)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+;; No PuTTY
+(eval-after-load "tramp" '(tramp-without-putty))
+
+(defun tramp-without-putty ()
+  "Disable all putty related stuff."
+  ;; PuTTY: no snooping for credentials in the registry (Talk to IT security: Patrick)
+  (setq tramp-completion-function-alist-putty nil)
+  (defun tramp-parse-putty (&rest ignore) "Never parse PuTTY sessions." nil))
+
+;; UTF-8
+(prefer-coding-system 'utf-8)
+
+;; No tabs
+(setq-default indent-tabs-mode nil)
+
+;; disable fancy stuff
+(dolist (mode '(blink-cursor-mode
+		tool-bar-mode
+		menu-bar-mode
+		scroll-bar-mode))
+  (when (fboundp mode)
+    (funcall mode -1)))
+
+;; active some other bling
+;; (toggle-frame-fullscreen)
+(show-paren-mode 1)
+(winner-mode 1)
+(windmove-default-keybindings)
+(column-number-mode 1)
+
+;; save minibuffer history
+(savehist-mode 1)
+
+;; settings
+(setq visible-bell t
+      completion-ignore-case t
+      read-buffer-completion-ignore-case t)
+(setq sentence-end-double-space nil)
+
+;; on Windows, the menu button of the Atreus keyboard I use is not
+;; mapped to M-x
+(global-set-key (kbd "<apps>") 'execute-extended-command)
+
+;; buffers
+(use-package ibuffer
+  :ensure t
+  :bind ("C-x C-b" . ibuffer)
+  :config (setq ibuffer-formats
+                ;; switch formats using `
+                '((mark " "
+                        (name 40 40 :left :elide)
+                        " " filename-and-process)
+                  (mark " "
+                        (name 20 20 :left :elide)
+                        " " filename))))
+
+;; selection
+(use-package expand-region
+  :ensure t
+  :bind ("C-'" . er/expand-region))
+
+;; German
+(setq default-input-method 'german-prefix)
+
+;; completion
+(global-set-key (kbd "C-<tab>") #'hippie-expand)
+(setq hippie-expand-try-functions-list
+      '(try-expand-all-abbrevs try-expand-dabbrev
+	try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
+	try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+(define-key minibuffer-local-map (kbd "C-<tab>") #'hippie-expand)
+
+;; move line with M-up and M-down
+(use-package move-text
+  :ensure t
+  :config (move-text-default-bindings))
+
+;; idle highlight
+(use-package idle-highlight-mode
+  :ensure t
+  :config (global-idle-highlight-mode))
+
+;; http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
+(defun endless/fill-or-unfill ()
+  "Like `fill-paragraph', but unfill if used twice."
+  (interactive)
+  (let ((fill-column
+         (if (eq last-command 'endless/fill-or-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (call-interactively #'fill-paragraph)))
+
+(global-set-key [remap fill-paragraph]
+                #'endless/fill-or-unfill)
+
+;; Dired
+(setq dired-recursive-deletes 'always
+      dired-recursive-copies 'always
+      dired-deletion-confirmer 'y-or-n-p
+      dired-clean-up-buffers-too nil
+      delete-by-moving-to-trash t
+      dired-dwim-target t
+      ;; add -v for the natural sort of (version) numbers within text
+      dired-listing-switches "-alv")
+
+;; Hunspell
+(setenv "LANG" "de_CH.UTF-8")
+(setenv "DICTPATH" "c:/msys64/ucrt64/share/hunspell/")
+(setq ispell-local-dictionary "de_CH"
+      ispell-local-dictionary-alist
+      '(("de_CH" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)
+        ;; add apostrophe
+        ("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['0-9]" t ("-d" "en_US") nil utf-8)))
+
+(use-package dictionary
+  :bind ("C-c d" . dictionary-search))
+
+;; Number Mark
+(add-to-list 'load-path (expand-file-name "asc" user-emacs-directory))
+(autoload 'number-mark-mode "number-mark.el" "Working with numbers." t)
+
+;; AsciiDoc
+(use-package adoc-mode
+  :ensure t
+  :mode "\\.ad\\(oc\\)?\\'"
+  :bind ("C-c RET" . asc:adoc-follow-xref)
+  :config
+  (add-hook 'adoc-mode-hook 'visual-line-mode)
+  (add-hook 'adoc-mode-hook 'flyspell-mode)
+  (add-hook 'adoc-mode-hook 'abbrev-mode)
+  (add-hook 'adoc-mode-hook 'number-mark-mode)
+  (add-hook 'adoc-mode-hook (lambda () (setq ispell-local-dictionary "en_US"))))
+
+(defun asc:modules-directory ()
+  "Return the modules directory we're in."
+  (let ((dir default-directory))
+    (while (not (string= "modules"
+                         (file-name-nondirectory
+                          (directory-file-name dir))))
+      (setq dir (expand-file-name
+                 (file-name-concat dir ".."))))
+    dir))
+
+(defun asc:module-name ()
+  "Return the name of the module we're in."
+  (let ((dir default-directory)
+        last)
+    (while (not (string= "modules"
+                         (file-name-nondirectory
+                          (directory-file-name dir))))
+      (setq last (file-name-nondirectory
+                  (directory-file-name dir))
+            dir (expand-file-name
+                 (file-name-concat dir ".."))))
+    last))
+
+(defun asc:adoc-follow-xref ()
+  "Follow the xref at point."
+  (interactive)
+  (let ((data (split-string (or (adoc-xref-id-at-point)
+                                (error "No Asciidoc reference at point"))
+                             ":"))
+        module file)
+    (cond ((= 2 (length data)) (setq module (car data) file (nth 1 data)))
+          ((= 1 (length data)) (setq module (asc:module-name) file (car data))))
+    (find-file (file-name-concat (asc:modules-directory) module "pages" file))))
+
+;; See (edit-abbrevs)
+
+(define-skeleton adoc:good-example "{goodexample}" nil
+  "====\n"
+  "{goodexample} " _ "\n"
+  "====")
+
+(define-skeleton adoc:bad-example "{badexample}" nil
+  "====\n"
+  "{badexample} " _ "\n"
+  "====")
+
+(define-skeleton adoc:ok-example "{okexample}" nil
+  "====\n"
+  "{okexample} " _ "\n"
+  "====")
+
+(define-skeleton adoc:code-example "code example" nil
+  "." _ "\n"
+  "[source#,]\n"
+  "----\n"
+  "\n"
+  "----")
+
+(defun adoc:nav-entry ()
+  "Insert navigation entry and open file."
+  (interactive)
+  (unless (string= (file-name-nondirectory (buffer-file-name)) "nav.adoc")
+    (error "Only works in nav.adoc files"))
+  (let ((filename (string-replace " " "-"
+                   (string-replace ".adoc" ""
+                    (read-string "New file name: ")))))
+    (dotimes (n (read-number "Level: " 3))
+      (insert "*"))
+    (insert " xref:" filename ".adoc[]")
+    (find-file-other-window (concat "pages/" filename ".adoc"))
+    (insert "= " (string-replace "-" " "
+                                 (concat (capitalize (substring filename 0 1))
+                                         (substring filename 1)))
+            "\n"
+            "include::ROOT:partial$attributes.adoc[]\n"
+            "{help_url}/BSI%20CRM/Wertelisten/H_Wertelisten.htm[{help},role=mod]\n"
+            "{spec_url}/Wertelisten/CTL_Wertelisten.htm[{spec},role=mod]\n")))
+
+(defun adoc:image ()
+  "Insert image with caption."
+  (interactive)
+  (let ((caption (read-string "Caption: "))
+        (slug (read-string "Slug: "))
+        (filename (file-name-nondirectory
+                   (read-file-name "Image: " "../images/" nil t))))
+    (insert "." caption "\n"
+            "[#" slug "]\n"
+            "image::" filename "[]\n")))
+
+(defun adoc:xref ()
+  "Insert xref to existing file."
+  (interactive)
+  (let* ((filename (read-file-name "File: " nil nil t))
+         (path-elements (split-string filename "/"))
+         (module (nth (- (length path-elements) 3) path-elements))
+         (file (file-name-nondirectory filename))
+         (this-path-elements (split-string default-directory "/"))
+         (this-module (nth (- (length this-path-elements) 3) this-path-elements)))
+    (if (string= module this-module)
+        (insert "xref:" file "[]")
+      (insert "xref:" module ":" file "[]"))))
+
+(setq langtool-language-tool-jar "/dev/doc/LanguageTool-6.1/languagetool-commandline.jar"
+      langtool-default-language "en-US"
+      langtool-java-user-arguments '("-Dfile.encoding=UTF-8"))
+
+(use-package langtool
+  :ensure t
+  :bind (("\C-x4w" . langtool-check)
+         ("\C-x4W" . langtool-check-done)
+         ("\C-x4l" . langtool-switch-default-language)
+         ("\C-x44" . langtool-show-message-at-point)
+         ("\C-x4c" . langtool-interactive-correction)))
+(use-package langtool-popup
+  :ensure t)
+(use-package langtool-ignore-fonts
+  :ensure t)
+(langtool-ignore-fonts-add
+ 'adoc-mode '(markup-anchor-face
+              markup-attribute-face
+              ;; markup-big-face
+              ;; markup-bold-face
+              markup-code-face
+              markup-command-face
+              ;; markup-comment-face
+              markup-complex-replacement-face
+              ;; markup-emphasis-face
+              markup-error-face
+              markup-gen-face
+              markup-internal-reference-face
+              ;; markup-italic-face
+              ;; markup-list-face
+              markup-meta-face
+              markup-meta-hide-face
+              markup-passthrough-face
+              markup-preprocessor-face
+              markup-reference-face
+              markup-replacement-face
+              ;; markup-secondary-text-face
+              ;; markup-small-face
+              ;; markup-strong-face
+              ;; markup-subscript-face
+              ;; markup-superscript-face
+              ;; markup-table-cell-face
+              ;; markup-table-face
+              ;; markup-table-row-face
+              ;; markup-title-0-face
+              ;; markup-title-1-face
+              ;; markup-title-2-face
+              ;; markup-title-3-face
+              ;; markup-title-4-face
+              ;; markup-title-5-face
+              ;; markup-typewriter-face
+              ;; markup-underline-face
+              ;; markup-value-face
+              markup-verbatim-face))
+;; magit
+(use-package magit
+  :ensure t
+  :bind ("C-c g" . magit-status))
+
+;; magit and Cygwin
+(defadvice magit-expand-git-file-name
+    (before magit-expand-git-file-name-cygwin activate)
+  "Handle Cygwin directory names such as /cygdrive/c/*
+by changing them to C:/*"
+  (when (string-match "^/cygdrive/\\([a-z]\\)/\\(.*\\)" filename)
+    (setq filename (concat (match-string 1 filename) ":/"
+			   (match-string 2 filename)))))
+
+(defun un-cygwin-buffer-file-name ()
+  (when (string-match "^\\([a-z]\\):/cygdrive/\\([a-z]\\)/\\(.*\\)" buffer-file-name)
+    ;; assertion:  filename should look like "c:/cygwin/c/Users..." i.e. the drive is repeated
+    (when (equal (match-string 1 buffer-file-name) (match-string 2 buffer-file-name))
+      (set-visited-file-name
+       (concat (match-string 1 buffer-file-name) ":/"
+	       (match-string 3 buffer-file-name)) 't))))
+
+(add-hook 'git-commit-mode-hook 'un-cygwin-buffer-file-name)
+
+;; grep
+
+;; default to case insensitive
+(eval-after-load "grep"
+  '(grep-apply-setting 'grep-command "grep --color -niH -e "))
+
+(defun grep-word-at-point (word)
+  "Grep for the region, or thing at point.
+Per default, the same extension is used as the file-name of the
+current buffer. Use a prefix argument to override either."
+  (interactive (list (thing-at-point 'symbol)))
+  (when (use-region-p)
+    (setq word (buffer-substring-no-properties
+		(region-beginning) (region-end))))
+  (let* ((file-name (buffer-file-name))
+	 (extension (and file-name (file-name-extension file-name)))
+	 (pattern (if extension (concat "*." extension) "*")))
+    (when current-prefix-arg
+      (setq word (read-string "Grep for: " word)
+	    pattern (read-string "Files to grep: " pattern)))
+    (setq word (replace-regexp-in-string "\"" "\\\"" word))
+    (grep (format "grep --color -niH -e \"%s\" %s" word pattern))))
+
+(global-set-key (kbd "C-c s") 'grep-word-at-point)
+
+(use-package wgrep
+  :ensure t)
+
+;; eshell
+
+(global-set-key (kbd "C-z") 'asc:eshell-here)
+
+(defun asc:eshell-here (&optional arg)
+  (interactive "P")
+  (if (and arg (buffer-file-name))
+      (let ((dir (file-name-directory (buffer-file-name))))
+	(eshell)
+	(cd dir))
+    (eshell arg)))
+
+(global-set-key (kbd "C-x 4 C-z") 'asc:eshell-other-window)
+
+(defun asc:eshell-other-window (&optional arg)
+  (interactive "P")
+  (if (one-window-p)
+      (split-window)
+    (other-window 1))
+  (eshell arg))
+
+(setq eshell-history-size 500
+      eshell-save-history-on-exit t
+      eshell-hist-ignoredups t
+      eshell-last-dir-ring-size 500)
+
+(add-hook 'eshell-mode-hook #'asc:eshell-init)
+
+(defun asc:eshell-init ()
+  (local-set-key (kbd "C-z") 'bury-buffer)
+  (local-set-key (kbd "C-a") 'eshell-bol)
+  (local-set-key (kbd "C-w") 'asc:kill-region)
+  (local-set-key (kbd "<up>") 'previous-line)
+  (local-set-key (kbd "<down>") 'next-line)
+  (eldoc-mode 1)
+  (eshell-smart-initialize)
+  (setenv "PAGER" "cat")
+  (setenv "EDITOR" "emacsclient"))
+
+(defun asc:kill-region (begin end)
+  "Since `eshell' adds read-only prompts, I need to override this."
+  (interactive "r")
+  (let ((inhibit-read-only t))
+    (kill-region (region-beginning) (region-end))))
+
+(setq shell-file-name (executable-find "cmdproxy"))
+(setq shell-file-name "C:/tools/emacs/libexec/emacs/28.2/x86_64-w64-mingw32/cmdproxy.exe")
+
+;; initial frame size not so tall because the font size is so large
+(setq initial-frame-alist
+      '((top . 1) (left . 1) (width . 100) (height . 30)))
+
+;; Theme at the end
+(use-package brutalist-theme
+  :ensure t
+  :config
+  (let
+      ((fg "#111111")
+       (fg-table "#222291")
+       (fg-dim "dim gray")
+       (fg-slight-dim "grey70")
+       (bg "#fffff8")
+       (bg-light "#ddddd8")
+       (fg-light "#ddddd8")
+       (bg-highlight "#FFF1AA")
+       (bg-highlight-2 "LightCyan")
+       (bg-highlight-3 "LightGreen")
+       (bg-highlight-dim "#eeeee8")
+       (diff-added "#e9ffe9")
+       (diff-added-highlight "#a4f4a3")
+       (diff-removed "#ffecec")
+       (diff-removed-highlight "#f9cbca")
+       (powerline1 "grey22")
+       (powerline2 "grey40")
+       (string "blue")
+       (cursor "white smoke")
+       (paren-match "blue")
+       (paren-mismatch "red"))
+    (custom-theme-set-faces
+     'brutalist
+     `(markup-list-face ((t (:background ,bg :foreground ,fg-table))))
+     `(markup-complex-replacement-face ((t (:background ,bg-highlight :foreground ,fg))))
+     `(markup-internal-reference-face ((t (:underline t :foreground ,fg-slight-dim))))
+     `(markup-meta-face ((t (:background ,bg :foreground ,fg-dim))))
+     `(markup-secondary-text-face ((t (:background ,bg :foreground ,fg-dim))))
+     `(mode-line-inactive ((t (:inherit mode-line :foreground ,fg-dim)))))))
+;; if you add to the above, (disable-theme 'brutalist) and enable the theme again
+(enable-theme 'brutalist)
+
+(add-hook 'after-init-hook
+          (lambda ()
+            ;; ensure this face really does get set!
+            (set-face-foreground 'mode-line-inactive "dim gray")))
+
+;; font even further back
+(defface markup-replacement-face '((t (:inherit default))) "")
+(when (find-font (font-spec :name "Iosevka"))
+  (dolist (face '(default fixed-pitch))
+    (set-face-attribute face nil :family "Iosevka" :height 120)))
+
+;; emoji font: doesn't work on windows
+;; https://emacs.stackexchange.com/questions/62219/how-do-i-get-colour-emoji-to-display-in-emacs
+
+;; display emojis using an appropriate font
+;; (cond ((member "Noto Emoji" (font-family-list))
+;;        (set-fontset-font
+;; 	t 'symbol (font-spec :family "Noto Emoji") nil 'prepend))
+;;       ((member "Segoe UI Emoji" (font-family-list))
+;;        (set-fontset-font
+;; 	t 'symbol (font-spec :family "Segoe UI Emoji") nil 'prepend)))
+
+;; setting up composition functions for emoji modifiers
+;; (require 'cl)
+;; (dolist (items `(((?🇦 . ?🇿) [".[🇦-🇿]+" 0 font-shape-gstring])
+;;                  ((?🏳 . ?🏴) [".[️‍🌈⚧☠󠀠-󠁿]*" 0 font-shape-gstring])
+;;                  (?⃣ ["[#*0-9]️⃣" 2 font-shape-gstring])
+;;                  ;; TODO: I can't make keycap sequences work because I
+;;                  ;; think they're trying to shape with the wrong font.
+;;                  ,@(mapcar (lambda (range) (list range [".‍?[🏻-🏿]?[‍️♂♀]*️?" 0 font-shape-gstring]))
+;;                            (concatenate 'list "☝🎅🏇👂👃👦👧👼💏💑💪🕴🕵🕺🖐🖕🖖🙇🚣🛀🛌🤏🤞🤟🤦🤽🤾🥷🦻👯❤"
+;;                                         '((?⛹ . ?✍) (?🏂 . ?🏄) (?🏊 . ?🏌) (?👆 . ?👐)
+;;                                           (?👫 . ?👮) (?👰 . ?👸) (?💁 . ?💇) (?🙅 . ?🙇) (?🙋 . ?🙏)
+;;                                           (?🚴 . ?🚶) (?🤘 . ?🤜) (?🤰 . ?🤹) (?🤼 . ?🤾) (?🦵 . ?🦹)
+;;                                           (?🧍 . ?🧏) (?🧒 . ?🧟))))
+;;                  (?🧑 [".‍?[🏻-🏿]?[‍⚕⚖✈❤️🌾🍳🍼🎄🎓🎤🎨🏫🏭👦-👩💋💻💼🔧🔬🚀🚒🤝🦯🦰-🦳🦼🦽🧑]*" 0 font-shape-gstring])
+;;                  ((?👨 . ?👩) [".‍?[🏻-🏿]?[‍⚕⚖✈❤️🌾🍳🍼🎄🎓🎤🎨🏫🏭👦-👩💋💻💼🔧🔬🚀🚒🤝🦯🦰-🦳🦼🦽🧑]*" 0 font-shape-gstring])
+;;                  ,@(mapcar (lambda (str) (list (elt str 0) (vector str 0 'font-shape-gstring)))
+;;                            '("😶‍🌫️" "🐈‍⬛" "🐕‍🦺" "🐻‍❄️" "👁️‍🗨️" "😮‍💨" "😵‍💫"))))
+;;   (set-char-table-range
+;;    composition-function-table
+;;    (car items)
+;;    (list (cadr items))))
+
+;; at the very end, resume where we left off
+(setq desktop-restore-frames nil
+      desktop-save t
+      desktop-load-locked-desktop t
+      ;; don't save any files
+      desktop-files-not-to-save ""
+      desktop-modes-not-to-save
+      '(tags-table-mode Info-mode
+	dired-mode eww-mode))
+(desktop-save-mode 1)
+
+;; enable disabled stuff
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(expand-region expand-selection langtool langtool-ignore-fonts langtool-popup rw-hunspell brutalist-theme wgrep magit adoc-mode idle-highlight-mode move-text use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
