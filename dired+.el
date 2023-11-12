@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2023.11.08
+;; Version: 2023.11.11
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov  8 15:28:35 2023 (-0800)
+;; Last-Updated: Sat Nov 11 16:08:56 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 13638
+;;     Update #: 13686
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -37,8 +37,8 @@
 ;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
 ;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
 ;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
-;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `zones'.
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wdired',
+;;   `wid-edit', `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -242,8 +242,8 @@
 ;;  to retrieve them, and `C-M-<' (in Dired) to open Dired on them.
 ;;
 ;;
-;;  Dired Snapshots: Saving and Restoring Dired Listings
-;;  ----------------------------------------------------
+;;  Dired Snapshot Listings: Arbitrary Files and Dirs From Anywhere
+;;  ---------------------------------------------------------------
 ;;
 ;;  Suppose you use a command such as `find-name-dired', to generate a
 ;;  Dired buffer that lists files from various places.  The search
@@ -311,24 +311,108 @@
 ;;  that's used to define the files to snapshot.  In particular,
 ;;  inserted subdir listings are included.
 ;;
+;;  Snapshot listings are composed of arbitrary files and directories.
+;;  Such a listing might result from a program such as `find', or from
+;;  a particular set of Dired markings, of from some other way of
+;;  selecting files - any way at all.  What makes them different from
+;;  the usual Dired listings is that they're not the output of `ls'.
 ;;
-;;  Image Files
-;;  -----------
+;;  You can persist any snapshot listing, as just mentioned, but in
+;;  most cases you won't.  The case of not wanting to recompute a
+;;  `find' result is a bit of an exception.
 ;;
-;;  `Dired+' provides several enhancements regarding image files.
-;;  Most of these require standard library `image-dired.el'.  One of
-;;  them, command `diredp-do-display-images', which displays all of
-;;  the marked image files, requires standard library `image-file.el'.
+;;  You can create snapshot listings in the following additional ways.
 ;;
-;;  `Dired+' loads these libraries automatically, if available, which
-;;  means an Emacs version that supports image display (Emacs 22 or
-;;  later).  (You must of course have installed whatever else your
-;;  Emacs version needs to display images.)
+;;  You can use the regular `dired' commands (`C-x d', `C-x 4 d', `C-x
+;;  5 d').  Just use a non-positive prefix arg (e.g., `C--') when
+;;  invoking them.
 ;;
-;;  Besides command `diredp-do-display-images', see the commands whose
-;;  names have prefix `diredp-image-'.  And see options
-;;  `diredp-image-preview-in-tooltip' and
-;;  `diredp-auto-focus-frame-for-thumbnail-tooltip-flag'.
+;;  You're then prompted for the Dired buffer name (anything you like,
+;;  not necessarily a directory name) and for the individual files and
+;;  directories that you want listed.  (Use `C-g' to stop selecting.)
+;;
+;;  A non-negative prefix arg still prompts you for the `ls' switches
+;;  to use.  (So `C-0' does both: prompts for `ls' switches and for
+;;  the Dired buffer name and the files to list.)
+;;
+;;  `Dired+' provides these snapshot-producing commands for combining
+;;  and augmenting existing Dired listings.
+;;
+;;   * `diredp-add-to-dired-buffer', bound globally to `C-x D A', lets
+;;     you add arbitrary file and directory names to those in an
+;;     existing Dired buffer.
+;;
+;;   * `diredp-dired-union', bound globally to `C-x D U', lets you
+;;     take the union of multiple Dired listings, or convert an
+;;     ordinary Dired listing to an explicit list of absolute file
+;;     names.  With a non-positive prefix arg, you can add extra file
+;;     and directory names, just as for `diredp-add-to-dired-buffer'.
+;;
+;;  You can use `C-x D S' or `C-x 4 D S' to open an Emacs fileset as a
+;;  Dired (snapshot) listing.  See the Emacs manual, node Filesets, or
+;;  https://www.emacswiki.org/emacs/FileSets, for info about filesets.
+;;
+;;  You can visit your recent files or directories as a (snapshot)
+;;  listing, using `C-x D R' or `C-x D r'.
+;;
+;;  You can revert (using `g') or sort any Dired snapshot listing.
+;;
+;;  You can also sort such a listing in various ways, but you need to
+;;  use `C-M-L' (aka `C-M-S-l') to do so - you can't use the ordinary
+;;  Dired sort commands, such as `s'.  You're prompted for the sort
+;;  order.  The default sort order for such buffers is determined by
+;;  option `diredp-default-sort-arbitrary-function'.
+;;
+;;  When using a Dired snapshot listing other than one composed of
+;;  recent files, be aware that any operation that reverts the buffer
+;;  relists the same file names, and only those that still correspond
+;;  to currently existing files.  This means that:
+;;
+;;  1. If any of the files no longer exist then they will no longer be
+;;     listed (which is likely what you would expect).
+;;
+;;  2. If any of the files has been renamed then it will no longer be
+;;     listed (which is likely not what you would expect).  This
+;;     applies to the use of WDired to rename files: the renamed files
+;;     are not listed when you return to Dired from WDired.  It
+;;     applies also to the use of `R' (`dired-do-rename').  (A renamed
+;;     file is listed with its new name in any ordinary Dired buffer.)
+;;
+;;  (With Emacs prior to version 28 you can't use WDired on a
+;;  recent-files buffer at all, because such a buffer uses a
+;;  `revert-buffer-function' that updates the file list to show the
+;;  currently recent files, and older versions of WDired hard-code the
+;;  function used to revert back to Dired mode when you exit WDired.)
+;;
+;;
+;;  Mode-Line
+;;  ---------
+;;
+;;  How to tell whether a Dired listing is a snapshot or an ordinary
+;;  one that's the output from `ls'?  The mode-line of a snapshot
+;;  Dired buffer prefixes `Dired' with `*/': `*/Dired'.
+;;
+;;  The mode-line of a listing that's in WDired mode (that is, it's
+;;  editable) uses the prefix `W'.  For a regular Dired listing the
+;;  mode-line shows `W/Dired'; for a snapshot listing it shows
+;;  `W*/Dired'.
+;;
+;;  The mode-line also shows you the number of files and dirs marked
+;;  with `*', and the number that are flagged for deletion (marked
+;;  `D').  When the cursor is on such a line the indication tells you
+;;  how many more there are.  For example, if the cursor is on the
+;;  line of the third file that's marked `*', and there are seven of
+;;  them total, then the mode-line shows `3/7*'.
+;;
+;;  The mode-line also indicates, for the current listing (which could
+;;  be a subdir listing), how many files and dirs are listed.  If the
+;;  cursor is on the 27th file in a listing of 78 files then the
+;;  mode-line shows 27/78.
+;;
+;;  For counting files and dirs in a listing, option
+;;  `diredp-count-.-and-..-flag' controls whether to count the lines
+;;  for `.' and `..'.  By default it is nil, meaning they are not
+;;  counted.
 ;;
 ;;
 ;;  Inserted Subdirs, Multiple Dired Buffers, Files from Anywhere,...
@@ -379,71 +463,49 @@
 ;;     `Dired+' removes this limitation; you can insert any non-root
 ;;     directories (that is, not `/', `c:/', etc.).
 ;;
-;;  `Dired+' lets you create Dired buffers that contain arbitrary
-;;  files and directories interactively, not just using Lisp.  Just
-;;  use a non-positive prefix arg (e.g., `C--') when invoking `dired'.
 ;;
-;;  You are then prompted for the Dired buffer name (anything you
-;;  like, not necessarily a directory name) and the individual files
-;;  and directories that you want listed.
+;;  Image Files
+;;  -----------
 ;;
-;;  A non-negative prefix arg still prompts you for the `ls' switches
-;;  to use.  (So `C-0' does both: prompts for `ls' switches and for
-;;  the Dired buffer name and the files to list.)
+;;  `Dired+' provides several enhancements regarding image files.
+;;  Most of these require standard library `image-dired.el'.  One of
+;;  them, command `diredp-do-display-images', which displays all of
+;;  the marked image files, requires standard library `image-file.el'.
 ;;
-;;  `Dired+' adds commands for combining and augmenting Dired
-;;  listings:
+;;  `Dired+' loads these libraries automatically, if available, which
+;;  means an Emacs version that supports image display (Emacs 22 or
+;;  later).  (You must of course have installed whatever else your
+;;  Emacs version needs to display images.)
 ;;
-;;   * `diredp-add-to-dired-buffer', bound globally to `C-x D A', lets
-;;     you add arbitrary file and directory names to an existing Dired
-;;     buffer.
+;;  Besides command `diredp-do-display-images', see the commands whose
+;;  names have prefix `diredp-image-'.  And see options
+;;  `diredp-image-preview-in-tooltip' and
+;;  `diredp-auto-focus-frame-for-thumbnail-tooltip-flag'.
 ;;
-;;   * `diredp-dired-union', bound globally to `C-x D U', lets you
-;;     take the union of multiple Dired listings, or convert an
-;;     ordinary Dired listing to an explicit list of absolute file
-;;     names.  With a non-positive prefix arg, you can add extra file
-;;     and directory names, just as for `diredp-add-to-dired-buffer'.
 ;;
-;;  You can open an Emacs fileset in Dired mode, using `C-x D S' or
-;;  `C-x 4 D S'.  See the Emacs manual, node Filesets, or
-;;  https://www.emacswiki.org/emacs/FileSets, for info about filesets.
+;;  Hide/Show Details
+;;  -----------------
 ;;
-;;  You can visit your recent files or directories in Dired mode,
-;;  using `C-x D R' or `C-x D r'.  Like the other commands on prefix
-;;  key `C-x D', these Dired listings are composed of arbitrary files;
-;;  they're not the output of `ls'.
+;;  Starting with Emacs 24.4, listing details are hidden by default.
+;;  Note that this is different from the vanilla Emacs behavior, which
+;;  is to show details by default.
 ;;
-;;  You can revert (using `g') or sort any Dired buffer that lists
-;;  arbitrary files, which includes a buffer created with the commands
-;;  on prefix keys `C-x D' and `C-x 4 D' and a buffer created with
-;;  commands created using command
-;;  `diredp-define-snapshot-dired-commands'.
+;;  Use `(' anytime to toggle this hiding.  You can use option
+;;  `diredp-hide-details-initially-flag' to change the default/initial
+;;  state.  See also option `diredp-hide-details-propagate-flag'.
 ;;
-;;  You can also sort such a buffer in various ways, but you need to
-;;  use `C-M-L' (aka `C-M-S-l') to do so - you can't use the ordinary
-;;  Dired sort commands, such as `s'.  You're prompted for the sort
-;;  order.  The default sort order for such buffers is determined by
-;;  option `diredp-default-sort-arbitrary-function'.
+;;  NOTE: If you don't want to hide details initially then you must
+;;        either (1) change `diredp-hide-details-initially-flag' using
+;;        Customize (recommended) or (2) set it to `nil' (e.g., using
+;;        `setq') *BEFORE* loading `dired+.el'.
 ;;
-;;  When using a Dired buffer that lists arbitrary files, other than
-;;  one composed of recent files, be aware that any operation that
-;;  reverts the listing relists the same file names, and only those
-;;  that correspond to currently existing files.  This means that:
+;;  If you have an Emacs version older than 24.4, you can use library
+;;  `dired-details+.el' (plus `dired-details.el') to get similar
+;;  behavior.
 ;;
-;;  1. If any of the files no longer exist then they will no longer be
-;;     listed (which is likely what you would expect).
 ;;
-;;  2. If any of the files has been renamed then it will no longer be
-;;     listed (which is likely not what you would expect).  This
-;;     applies to the use of WDired to rename files: the renamed files
-;;     are not listed when you return to Dired from WDired.  It
-;;     applies also to the use of `R' (`dired-do-rename').
-;;
-;;  (With Emacs prior to version 28 you can't use WDired on a
-;;  recent-files buffer at all, because such a buffer uses a
-;;  `revert-buffer-function' that updates the file list to show the
-;;  currently recent files, and older versions of WDired hard-code the
-;;  function used to revert back to Dired mode when you exit WDired.)
+;;  Other Features
+;;  --------------
 ;;
 ;;  You can optionally add a header line to a Dired buffer using
 ;;  toggle command `diredp-breadcrumbs-in-header-line-mode'.  (A
@@ -489,48 +551,6 @@
 ;;  insert already has its own Dired buffer, then its markings and
 ;;  switches are preserved for the new, subdirectory listing in the
 ;;  ancestor Dired buffer.
-;;
-;;
-;;  Hide/Show Details
-;;  -----------------
-;;
-;;  Starting with Emacs 24.4, listing details are hidden by default.
-;;  Note that this is different from the vanilla Emacs behavior, which
-;;  is to show details by default.
-;;
-;;  Use `(' anytime to toggle this hiding.  You can use option
-;;  `diredp-hide-details-initially-flag' to change the default/initial
-;;  state.  See also option `diredp-hide-details-propagate-flag'.
-;;
-;;  NOTE: If you do not want to hide details initially then you must
-;;        either (1) change `diredp-hide-details-initially-flag' using
-;;        Customize (recommended) or (2) set it to `nil' (e.g., using
-;;        `setq') *BEFORE* loading `dired+.el'.
-;;
-;;  If you have an Emacs version older than 24.4, you can use library
-;;  `dired-details+.el' (plus `dired-details.el') to get similar
-;;  behavior.
-;;
-;;
-;;  Mode-Line
-;;  ---------
-;;
-;;  The number of files and dirs that are marked with `*', and the
-;;  number that are flagged for deletion (marked `D') are indicated in
-;;  the mode-line.  When the cursor is on such a line the indication
-;;  tells you how many more there are.  For example, if the cursor is
-;;  on the line of the third file that is marked `*', and there are
-;;  seven of them total, then the mode-line shows `3/7*'.
-;;
-;;  The mode-line also indicates, for the current listing (which could
-;;  be a subdir listing), how many files and dirs are listed.  If the
-;;  cursor is on the 27th file in a listing of 78 files then the
-;;  mode-line shows 27/78.
-;;
-;;  For counting files and dirs in a listing, option
-;;  `diredp-count-.-and-..-flag' controls whether to count the lines
-;;  for `.' and `..'.  By default it is nil, meaning they are not
-;;  counted.
 ;;
 ;;
 ;;  If You Use Dired+ in Terminal Mode
@@ -801,8 +821,9 @@
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
-;;    `diredp-fit-one-window-frame', `diredp-full-file-name-less-p',
-;;    `diredp-full-file-name-more-p',
+;;    `diredp-fit-one-window-frame',
+;;    `diredp--from-wdired-mode-advice' (Emacs 24+),
+;;    `diredp-full-file-name-less-p', `diredp-full-file-name-more-p',
 ;;    `diredp-get-args-for-diredp-marked',
 ;;    `diredp-get-args-for-snapshot-cmd',
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
@@ -834,13 +855,15 @@
 ;;    `diredp-revert-displayed-recentf-buffers',
 ;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
 ;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
+;;    `diredp--set-mode-name-for-explicit-listing',
 ;;    `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp--set-up-font-locking', `diredp--snapshot-cmd-name-time',
 ;;    `diredp-sort-arbitrary', `diredp-string-less-p',
 ;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
-;;    `diredp-this-subdir', `diredp-untag',
-;;    `diredp-visit-ignore-regexp', `diredp-y-or-n-files-p'.
+;;    `diredp-this-subdir', `diredp--to-wdired-mode-advice' (Emacs 24+),
+;;    `diredp-untag', `diredp-visit-ignore-regexp',
+;;    `diredp-y-or-n-files-p'.
 ;;
 ;;  Variables defined here:
 ;;
@@ -868,7 +891,10 @@
 ;;    `diredp-single-move-copy-link-menu', `diredp-single-open-menu',
 ;;    `diredp-single-rename-menu',
 ;;    `diredp-snapshot-cmd-buffer-name-format',
-;;    `diredp-snapshot-cmd-time-format', `diredp-w32-drives-mode-map'.
+;;    `diredp--snapshot-cmd-other-win',
+;;    `diredp--snapshot-cmd-same-win',
+;;    `diredp-snapshot-cmd-time-format',
+;;    `diredp--this-dired-mode-name', `diredp-w32-drives-mode-map'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -940,7 +966,7 @@
 ;;
 ;;  `dired-remember-marks'    - Added optional arg LOCALP.
 ;;  `dired-repeat-over-lines' - Skip dir header line (bug #48883).
-;;  `dired-revert'            - Reset `mode-line-process' to nil.
+;;  `dired-revert'            - Set `mode-line-process' to nil (Emacs 20)
 ;;  `dired-sort-set-mode-line' - Respect `diredp-switches-in-mode-line'.
 ;;  `dired-sort-toggle-or-edit'   - Error message mentions `C-M-L'.
 ;;  `dired-switches-escape-p' - Made compatible with Emacs 20, 21.
@@ -1020,6 +1046,15 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/11/11 dadams
+;;     Added: diredp--set-mode-name-for-explicit-listing, diredp--this-dired-mode-name,
+;;            diredp--snapshot-cmd-(same|other)-win, diredp--to-wdired-mode-advice, diredp--from-wdired-mode-advice.
+;;     dired-sort-set-mode-line: No need to redefine for Emacs 28+ - my patch was applied for BUG #41250.
+;;     diredp-dired-for-files*, diredp-define-snapshot-dired-commands-1, diredp--dired-recent-files-1,
+;;       diredp-dired-union-1, diredp-marked-recursive*, diredp-marked(-other-window):
+;;         Invoke diredp--set-mode-name-for-explicit-listing.
+;;     diredp-define-snapshot-dired-commands: Use diredp--snapshot-cmd-(same|other)-win (because lexical-binding).
+;;     Advise wdired-change-to-(w)dired-mode.
 ;; 2023/11/08 dadams
 ;;     Use lexical binding by default - added file-local cookie, lexical-binding:t.
 ;;     Added: diredp-lexlet(*).  Use everywhere in place of lexical-let(*).
@@ -2658,6 +2693,7 @@ of that nature."
 (defvar diredp-menu-bar-subdir-menu)              ; Here (old name)
 (defvar diredp-move-file-dirs)                    ; Here, Emacs 24+
 (defvar diredp-single-bookmarks-menu)             ; Here, if Bookmark+ is available
+(defvar diredp--this-dired-mode-name)             ; Here, Emacs 24+
 (defvar filesets-data)                            ; In `filesets.el'
 (defvar font-lock-mode)                           ; In `fontcore.el'
 (defvar grep-command)                             ; In `grep.el'
@@ -3552,35 +3588,43 @@ Each element of ALIST looks like (FILE . MARKERCHAR)."
 	  (delete-char 1)
 	  (insert chr))))))
 
+(when (< emacs-major-version 28)
 
-;; REPLACE ORIGINAL in `dired.el'.
-;;
-;; Respect option `diredp-switches-in-mode-line'.
-;;
-(defun dired-sort-set-mode-line ()
-  "Set mode-line according to option `diredp-switches-in-mode-line'."
-  (when (eq major-mode 'dired-mode)
-    (setq mode-name
-          (let ((case-fold-search  nil))
-            (if diredp-switches-in-mode-line
-                (concat "Dired"
-                        (cond ((integerp diredp-switches-in-mode-line)
-                               (let* ((l1  (length dired-actual-switches))
-                                      (xs  (substring dired-actual-switches 0 (min l1 diredp-switches-in-mode-line)))
-                                      (l2  (length xs)))
-                                 (if (zerop l2)
-                                     xs
-                                   (concat " " xs (and (< l2  l1) "...")))))
-                              ((functionp diredp-switches-in-mode-line)
-                               (format " %s" (funcall diredp-switches-in-mode-line
-                                                     dired-actual-switches)))
-                              (t (concat " " dired-actual-switches))))
-              (cond ((string-match-p dired-sort-by-name-regexp dired-actual-switches)
-                     "Dired by name")
-                    ((string-match-p dired-sort-by-date-regexp dired-actual-switches)
-                     "Dired by date")
-                    (t (concat "Dired " dired-actual-switches))))))
-    (force-mode-line-update)))
+  ;; Added to vanilla Emacs 28+ for BUG #41250, from my code: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=41250#29.
+  ;; The only difference is that vanilla Emacs uses an ellipsis char (which is worse) instead of "..." (better).
+
+
+  ;; REPLACE ORIGINAL in `dired.el'.
+  ;;
+  ;; Respect option `diredp-switches-in-mode-line'.
+  ;;
+  (defun dired-sort-set-mode-line ()
+    "Set mode-line according to option `diredp-switches-in-mode-line'."
+    (when (eq major-mode 'dired-mode)
+      (setq mode-name
+            (let ((case-fold-search  nil))
+              (if diredp-switches-in-mode-line
+                  (concat
+                   "Dired"
+                   (cond ((integerp diredp-switches-in-mode-line)
+                          (let* ((l1  (length dired-actual-switches))
+                                 (xs  (substring dired-actual-switches 0 (min l1 diredp-switches-in-mode-line)))
+                                 (l2  (length xs)))
+                            (if (zerop l2)
+                                xs
+                              (concat " " xs (and (< l2  l1) "...")))))
+                         ((functionp diredp-switches-in-mode-line)
+                          (format " %s" (funcall diredp-switches-in-mode-line
+                                                 dired-actual-switches)))
+                         (t (concat " " dired-actual-switches))))
+                (cond ((string-match-p dired-sort-by-name-regexp dired-actual-switches)
+                       "Dired by name")
+                      ((string-match-p dired-sort-by-date-regexp dired-actual-switches)
+                       "Dired by date")
+                      (t (concat "Dired " dired-actual-switches))))))
+      (force-mode-line-update)))
+
+  )
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -5021,6 +5065,8 @@ This means file names that match regexp `diredp-omit-files-font-lock-regexp'.
 ;;;###autoload
 (defun diredp-dired-for-files (arg &optional switches) ; Bound to `C-x D F'
   "Dired the file names that you enter, in a Dired buffer that you name.
+The listing is a snapshot of these explicit file names.
+
 You are prompted for the name of the Dired buffer to use.
 You are then prompted for names of files and directories to list,
  which can be located anywhere.
@@ -5032,6 +5078,7 @@ See also `dired' (including the advice)."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
   (dired arg switches)
+  (diredp--set-mode-name-for-explicit-listing)
   (with-current-buffer (car arg)
     (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))))
 
@@ -5041,10 +5088,17 @@ See also `dired' (including the advice)."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
   (dired-other-window arg switches)
+  (diredp--set-mode-name-for-explicit-listing)
   (with-current-buffer (car arg)
     (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))))
 
 ;;;###autoload
+(defvar diredp--snapshot-cmd-same-win nil
+  "Definition of snapshot listing Dired command for same window.")
+
+(defvar diredp--snapshot-cmd-other-win nil
+  "Definition of snapshot listing Dired command for other window.")
+
 (defun diredp-define-snapshot-dired-commands (cmd-name directory &optional files msg-p)
   "Define Dired commands for the marked files in current Dired buffer.
 Define both a same-window and an other-window command.
@@ -5107,40 +5161,39 @@ use to get snapshot Dired buffers.  Use library Bookmark+ to bookmark
 such a buffer for persistent access."
   (interactive (diredp-get-args-for-snapshot-cmd))
   (diredp-ensure-mode)
-  (let ((cmd-same   (diredp-define-snapshot-dired-commands-1
-                     cmd-name directory files nil))
-        (cmd-other  (diredp-define-snapshot-dired-commands-1
+  (let ((diredp--snapshot-cmd-same-win   (diredp-define-snapshot-dired-commands-1 cmd-name directory files nil))
+        (diredp--snapshot-cmd-other-win  (diredp-define-snapshot-dired-commands-1
                      (intern (format "%s-other-window" cmd-name)) directory files 'OTHER-WIN)))
     (when msg-p                         ; Display definitions, with comments on how to save them.
-      (let ((buf  (get-buffer-create (format "*DEFUN `%s(-other-window)'*" cmd-same))))
+      (let ((buf  (get-buffer-create (format "*DEFUN `%s(-other-window)'*" diredp--snapshot-cmd-same-win))))
         (with-current-buffer buf
           (insert
            (substitute-command-keys
             (format (concat ";; Commands `%s(-other-window)'.\n"
                             ";; Use `\\[write-file]' (`write-file') or `\\[append-to-file]' to save to a file.\n"
-                            "(symbol-function cmd-same)\n")
-                    cmd-same)))
+                            "(symbol-function diredp--snapshot-cmd-same-win)\n")
+                    diredp--snapshot-cmd-same-win)))
           (pp-eval-last-sexp 'INSERT)
           (backward-sexp 2)
           (kill-sexp)
           (goto-char (point-min))
           (forward-line 3)
-          (insert (format "(defun %s (switches)\n" cmd-same))
+          (insert (format "(defun %s (switches)\n" diredp--snapshot-cmd-same-win))
           (kill-line 2)
           (forward-line -1)
           (forward-sexp 1)
-          (insert "\n(symbol-function cmd-other)\n")
+          (insert "\n(symbol-function diredp--snapshot-cmd-other-win)\n")
           (pp-eval-last-sexp 'INSERT)
           (backward-sexp 2)
           (kill-sexp)
           (forward-line 1)
-          (insert (format "(defun %s (switches)\n" cmd-other))
+          (insert (format "(defun %s (switches)\n" diredp--snapshot-cmd-other-win))
           (kill-line 2)
           (emacs-lisp-mode)
           (set-buffer-modified-p nil))
         (display-buffer buf))
-      (when msg-p (message "Commands defined: `%s(-other-window)'" cmd-same))
-      cmd-other)))
+      (when msg-p (message "Commands defined: `%s(-other-window)'" diredp--snapshot-cmd-same-win))
+      diredp--snapshot-cmd-other-win)))
 
 (defvar diredp-snapshot-cmd-time-format "%F %R %z"
   "Time format for `diredp-define-snapshot-dired-commands-1'.
@@ -5190,7 +5243,8 @@ A prefix arg prompts you for the `ls' switches to use."
                                       '#'dired-other-window
                                     '#'dired)
                                  ',`(,directory ,@files)
-                                 switches)))
+                                 switches)
+                        (diredp--set-mode-name-for-explicit-listing)))
   cmd-name)
 
 (when (fboundp 'quit-restore-window)    ; Emacs 24+
@@ -5295,6 +5349,7 @@ When called from Lisp, ARG corresponds to the raw prefix arg."
                                 ',bufname current-prefix-arg)
                        (message "Reverting...done"))))
     (funcall (if other-window-p #'dired-other-window #'dired) (cons bufname fils) switches)
+    (diredp--set-mode-name-for-explicit-listing)
     (with-current-buffer bufname
       (setq diredp-recent-files-buffer  bufname)
       (use-local-map diredp-recent-files-map)
@@ -5736,6 +5791,7 @@ See `diredp-dired-union' for the other argument descriptions."
     (setq dbuf  (if otherwin
                     (dired-other-window (cons dired-name files) switches)
                   (dired (cons dired-name files) switches)))
+    (diredp--set-mode-name-for-explicit-listing)
     (with-current-buffer dbuf
       (let ((inhibit-read-only  t))
         (dired-insert-old-subdirs subdirs)
@@ -7322,6 +7378,7 @@ Dired buffer and all subdirs, recursively."
 (defun diredp-marked-recursive (dirname &optional ignore-marks-p details) ; Not bound to a key
   "Open Dired on marked files, including those in marked subdirs.
 Like `diredp-marked', but act recursively on subdirs.
+The listing is a snapshot of explicit file names.
 
 See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
@@ -7338,7 +7395,8 @@ When called from Lisp, optional arg DETAILS is passed to
   (interactive (progn (diredp-get-confirmation-recursive)
                       (list nil current-prefix-arg diredp-list-file-attributes)))
   (dired (cons (or dirname  (generate-new-buffer-name (buffer-name)))
-               (diredp-get-files ignore-marks-p nil nil nil nil details))))
+               (diredp-get-files ignore-marks-p nil nil nil nil details)))
+  (diredp--set-mode-name-for-explicit-listing))
 
 ;;;###autoload
 (defun diredp-marked-recursive-other-window (dirname &optional ignore-marks-p details) ; Bound to `M-+ C-M-*'
@@ -7350,7 +7408,8 @@ When called from Lisp, optional arg DETAILS is passed to
                       (list nil current-prefix-arg diredp-list-file-attributes)))
   (dired-other-window
    (cons (or dirname  (generate-new-buffer-name (buffer-name)))
-         (diredp-get-files ignore-marks-p nil nil nil nil details))))
+         (diredp-get-files ignore-marks-p nil nil nil nil details)))
+  (diredp--set-mode-name-for-explicit-listing))
 
 ;;;###autoload
 (defun diredp-list-marked-recursive (&optional ignore-marks-p predicate details) ; Bound to `M-+ C-M-l'
@@ -8897,15 +8956,16 @@ Possible default values (`M-n') are, in order:
   (dired-sort-other switches))
 
 
-;;; `diredp-marked(-other-window)' tries to treat SWITCHES, but SWITCHES seems to be ignored
-;;; by `dired' when the DIRNAME arg is a cons, at least on MS Windows.  I filed Emacs bug #952
-;;; on 2008-09-10, but this doesn't work in Emacs 20, 21, 22, or 23, so I don't know if it will
-;;; ever be fixed.  If it is declared a non-bug and it doesn't work on any platforms, then I'll
-;;; remove SWITCHES here, alas.
+;;; `diredp-marked(-other-window)' tries to treat SWITCHES, but SWITCHES seems to be ignored by `dired' when the
+;;; DIRNAME arg is a cons, at least on MS Windows.  I filed Emacs bugs #952 (2008-09-10) and the duplicate, 20739
+;;; (2015-06-05).  See also bug #16533.  The bugs remain unfixed.  I don't know if this will ever be fixed.  If it
+;;; is declared a non-bug and it doesn't work on any platforms, then I'll remove SWITCHES here, alas.  
 
 ;;;###autoload
 (defun diredp-marked (dirname &optional arg switches) ; Not bound
   "Open Dired on the marked files and directories.
+The listing is a snapshot of explicit file names.
+
 A prefix ARG that is non-positive or a single `C-u' means prompt for
   `ls' listing switches, as in command `dired'.
 
@@ -8944,7 +9004,8 @@ defuns in your init file, for persistent access."
   (unless (or arg  (save-excursion (goto-char (point-min))
                                    (re-search-forward (dired-marker-regexp) nil t)))
     (error "No marked files"))
-  (dired dirname switches))
+  (dired dirname switches)
+  (diredp--set-mode-name-for-explicit-listing))
 
 ;;;###autoload
 (defun diredp-marked-other-window (dirname &optional arg switches) ; Bound to `C-M-*'
@@ -8953,7 +9014,8 @@ defuns in your init file, for persistent access."
   (unless (or arg  (save-excursion (goto-char (point-min))
                                    (re-search-forward (dired-marker-regexp) nil t)))
     (error "No marked files"))
-  (dired-other-window dirname switches))
+  (dired-other-window dirname switches)
+  (diredp--set-mode-name-for-explicit-listing))
 
 (defun diredp-get-args-for-diredp-marked ()
   "Get args for `diredp-marked(-other-window)'."
@@ -15328,6 +15390,38 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
          (diredp-nb-marked-in-mode-name))))
 
   )
+
+;; Use a different format for `mode-name' from vanilla Emacs:
+;; `W' for WDired, `*' for explicit, arbitrary listingm `/' to separate sort description.
+
+(defun diredp--set-mode-name-for-explicit-listing ()
+  "Prefix `mode-name' with `*', for a listing of explicit file names."
+  (let ((mname  (if (listp mode-name) (car mode-name) mode-name)))
+    (unless (diredp-string-match-p "\\`W?[*][/]" mname)
+      (setq mode-name  (concat "*/" mname)))))
+
+(when (require 'nadvice nil t)          ; Emacs 24+
+
+  (defvar diredp--this-dired-mode-name "$$$DUMMY$$$")
+
+  (defun diredp--to-wdired-mode-advice (old-fn)
+    "Prefix WDired `mode-name' with `W' or `W/', after saving Dired `mode-name'."
+    (setq diredp--this-dired-mode-name  (if (listp mode-name) (car mode-name) mode-name))
+    (funcall old-fn)
+    (setq mode-name  (concat "W" (and (not (diredp-string-match-p "\\`[*/]" diredp--this-dired-mode-name))  "/")
+                             diredp--this-dired-mode-name)))
+
+  (eval-after-load "wdired"
+    '(progn
+       (advice-add 'wdired-change-to-wdired-mode :around #'diredp--to-wdired-mode-advice)
+       (advice-add 'wdired-change-to-dired-mode  :after  #'diredp--from-wdired-mode-advice)))
+
+  (defun diredp--from-wdired-mode-advice ()
+    "Set Dired `mode-name' to name saved before invoking changing to WDired."
+    (setq mode-name  diredp--this-dired-mode-name))
+
+  )
+
 
 ;;;###autoload
 (defun diredp-send-bug-report ()
