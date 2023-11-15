@@ -8,6 +8,16 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== ISBN search links point to outdated pages ==
+
+Looking at TheCraftOfTextEditing I noticed that the ISBN links on there have stopped working. For example ISBN 9781411682979 or ISBN 9781461278276
+
+# It seems Barnes & Noble now redirect the link to their main home page, dropping the search.
+# Amazon shows "Sorry we couldn't find that page", although https://www.amazon.com/s?k=9781411682979 seems to work.
+# Pricescan seems to be something completely different now.
+
+-- TomWillemse
+
 == Missing diffs except for last change ==
 
 I am keen in studying some changes over at https://www.emacswiki.org/emacs?action=rc;all=1;from=1;showedit=1;rcidonly=ElispCookbook but, no matter which diff I click on, I get message "Revision xx not available (showing current revision instead)".  -- gsl
