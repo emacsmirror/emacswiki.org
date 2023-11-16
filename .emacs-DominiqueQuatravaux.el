@@ -1,39 +1,32 @@
 <pre>
-;; .emacs, fichier de configuration d'emacs de Dom
-;;
-;; Disponible aussi ici : https://gist.github.com/81a47ddf251c638a26aadf8e53ccc28e
+;; -*- lexical-binding: t; -*-
+;; .emacs.d/init.el, fichier de configuration d'emacs de Dom
 ;;
 ;; MODE D'EMPLOI
 ;;
-;; Ce .emacs ambitionne de fonctionner tel quel sur toute installation fraîche
-;; d'Emacs 23 ou ultérieur.
-;;
-;; Ce .emacs fonctionne main dans la main avec la fonction "Customize" d'Emacs,
-;; de sorte qu'il est possible de tout personnaliser sans modifier ni même
-;; comprendre l'Emacs Lisp.  Essayez les combinaisons de touches suivantes :
-;;
-;;   <M-x> customize-variable <Entrée> load-path <Entrée>
-;;   <M-x> customize-group <Entrée> pointemacs <Entrée>
-;;
-;; Naturellement on peut aussi vouloir modifier ce .emacs «à la main»; à cet
-;; effet, les paragraphes sont (presque) classés par ordre pédagogique.  Le Wiki
-;; Emacs (http://www.emacswiki.org/) est une ressource irremplaçable dans une
-;; telle entreprise.  Sinon, "t" veut dire vrai, "nil" veut dire faux, à vos
-;; crayons !
+;; Ce fichier d'initialisation d'Emacs s'appuie sur le module
+;; `use-package', qu'il installe par ses propres moyens, pour
+;; l'auto-installation et la configuration des dépendances. (Chercher
+;; le mot «use-package» et ci-dessous pour voir les détails.)
 ;;
 ;; HISTORIQUE
 ;;
-;; Tiré du .emacs de la config conscrits de l'ENS en 1997, et continuellement
-;; adapté depuis.
+;; Tiré du .emacs de la config conscrits de l'ENS en 1997, et
+;; continuellement adapté depuis. En 2022, testé pour Emacs 28.
 
 ;;;;;;;;;;;;;;;;;;; Support interne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Si vous éditez ce .emacs manuellement, merci de ne rien toucher
 ;; ici; passer directement à la section suivante.
 
-(require 'cl)     ;; Petites gâteries Lisp comme "some" ou "remove-duplicates"
-(require 'assoc)  ;; Encore des gâteries pour modifier les alists
+;;; Code:
 
-(setq pointemacs-progression nil pointemacs-progression-horodatage nil)
+(eval-when-compile
+  (require 'cl-lib)  ;; Petites gâteries Lisp comme "cl-some"
+  (require 'rx))     ;; Regexps faciles
+(when (string-equal default-directory "/") (cd (getenv "HOME")))
+
+(defvar pointemacs-progression nil)
+(defvar pointemacs-progression-horodatage nil)
 (defun pointemacs-progression (texte)
   "Affiche la progression du chargement du .emacs, si
 `pointemacs-afficher-progression' est réglé à une valeur vraie"
@@ -49,152 +42,85 @@
             pointemacs-progression (append pointemacs-progression (list texte)))
       (message textecomplet))))
 
-(defun require-faible (pointemacs-symbol)
-  "Comme `require', mais renvoie nil si le paquetage n'existe pas."
-  (condition-case error
-      (progn (require pointemacs-symbol) t)
-    (file-error
-     (when (not (member (symbol-name pointemacs-symbol) error))
-         ;; Relance l'erreur si elle ne concerne pas ce fichier
-         (signal 'file-error error)))))
-
-(defun pointemacs-choisir-commande (&rest commandes)
-  "Trouve une des commandes dans le PATH, par ordre de préférence."
-  (if (not (fboundp 'locate-file))
-      (car (last commandes))  ;; Au petit bonheur
-    (some (lambda (cmd) (and (locate-file cmd exec-path) cmd)) commandes)))
-
-;; Le .emacs lui-même est customizable !
-(require 'custom)
-(deftheme pointemacs "Réglages du .emacs; l'utilisateur peut y déroger.")
-(defun pointemacs-personnalise (&rest args)
-  "Fixe un réglage par défaut dans le thème `pointemacs', comme
-`custom-set-variables' le fait dans le thème `user'."
-  (apply #'custom-theme-set-variables 'pointemacs args))
-
 (defcustom pointemacs-afficher-progression nil
 "Doit-on afficher des messages de progression pendant le chargement du .emacs ?"
 :type '(boolean)
 :group 'pointemacs)
 
-;; Rendons la variable `load-path' customizable, c'est plus convy :
-(defcustom load-path `(list ,@load-path)
-  "Répertoire de chargement des fichiers Emacs-Lisp.
-
-Tous les paquetages ne mettent pas leurs fichiers dans l'un des répertoires
-standard tels que /usr/share/emacs/site-lisp; dans ce cas il faut rajouter des
-répertoires dans cette liste.  On peut également rajouter des répertoires
-personnels, comme par exemple \"~/lib/emacs\".
-"
-  :type '(repeat file)
-  :group 'pointemacs
-)
-
-(defmacro pointemacs-discretement (&rest body)
-  "Invoque BODY sans arguments, en étouffant les messages dans le minibuffer.
-
-Évite d'afficher (par exemple) \"Wrote ~/.emacs.d/recentf\" toutes les minutes."
-  `(let ((inhibit-message t)) ,@body))
-
-(defvar pointemacs-taches-periodiques-hook nil
-  "Liste de fonctions à lancer périodiquement et discrètement.")
-
-(add-hook 'after-init-hook
-    ;; Remarque : sous XEmacs, (run-at-time nil 60 ...) ne fonctionne pas
-    ;; contrairement à ce qui est documenté.
-    (lambda () (run-at-time 1 60 (lambda () (pointemacs-discretement
-         (run-hooks 'pointemacs-taches-periodiques-hook))))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        (pointemacs-progression "Chemins d'accès")
+    (pointemacs-progression "Paquetages, modules et customizations elisp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Dans cette section, les chemins d'accès doivent être adaptés en
 ;; fonction de l'architecture (distribution / OS / préférences pour
 ;; l'organisation du répertoire personnel).
 
+(add-to-list 'set-message-functions 'inhibit-message)
+(add-to-list 'inhibit-message-regexps
+             (rx string-start "Loading" (+ anything) "..."))
+
 ;; `custom-file' est le fichier dans lequel Emacs sauvegarde les
-;; customizations faites avec l'interface graphiques.
-(setq custom-file "~/.emacs-custom.el")
+;; customizations faites avec l'interface graphique.
+(require 'custom)
+(setq custom-file (concat user-emacs-directory "emacs-custom.el"))
 (when (file-exists-p custom-file) (load-file custom-file))
 
-(defvar pointemacs-repertoire-lib
-  (expand-file-name
-   (if (eq system-type 'darwin) "~/Library/emacs" "~/lib/emacs"))
-  "Le répertoire personnel pour toutes choses Emacs : extensions,
-fichiers temporaires, etc.")
+(dolist (dir (list "/usr/local/share/emacs/site-lisp"
+                   "/usr/share/doc/git-core/contrib/emacs"
+                   ;; https://github.com/ocaml-community/utop#integration-with-emacs
+                   (replace-regexp-in-string
+                    "\n" "/share/emacs/site-lisp"
+                    (shell-command-to-string "opam var prefix"))))
+  (add-to-list 'load-path (expand-file-name dir)))
 
-(pointemacs-personnalise '(load-path 
-  (let* ((mes-chemins
-          (funcall #'nconc
-                   (list pointemacs-repertoire-lib)
-                   (mapcar (lambda (subdir)
-                             (concat pointemacs-repertoire-lib "/" subdir))
-                           (list emacs-version "el-get/el-get"))
-                   '("/usr/local/share/emacs/site-lisp"
-                     "/usr/share/doc/git-core/contrib/emacs"))))
-    (remove-duplicates (append (mapcar 'expand-file-name mes-chemins)
-                               load-path)))))
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
-;; Chemins des répertoires de travail des systèmes de paquetages elisp
-(pointemacs-personnalise 
+;; Chemins des répertoires d'installation de paquetages séparés par
+;; version d'Emacs, de façon à faciliter les opérations de mise à
+;; jour :
+(custom-set-variables
  '(package-user-dir
-   (concat pointemacs-repertoire-lib "/elpa-" emacs-version "/"))
- `(auto-install-directory
-   ,(concat pointemacs-repertoire-lib "/auto-install-" emacs-version "/"))
- '(el-get-dir (concat pointemacs-repertoire-lib "/el-get")))
+   (concat user-emacs-directory "elpa-" emacs-version "/"))
+ '(quelpa-dir
+   (concat user-emacs-directory "quelpa-" emacs-version "/")))
+(package-initialize)
 
-(pointemacs-personnalise '(Info-default-directory-list
-    (remove-duplicates
-     (mapcar 'directory-file-name
-             (append '("/usr/share/info")
-                     Info-default-directory-list
-                     (list (expand-file-name "~/lib/info"))))
-     :test 'equal :from-end t)))
+;; À partir de ce point, nous appuyons sur use-package et quelpa
+;; (et quelpa-use-package).
+;; ⚠ Sur Mac OS X, il faut d'abord installer GNU tar (`brew install
+;; gnu-tar`)! Voir https://github.com/quelpa/quelpa/issues/221
+(let ((inhibit-message t)) (package-install 'quelpa-use-package))
+(require 'use-package)
+(require 'quelpa-use-package)
 
-;; Sous Mac OS X Leopard, Emacs ne reçoit aucun environnement utile au démarrage
-;; (cause: launchd en état de mort cérébrale, lisez ses sources !) et du coup le
-;; site-start utilise des magouilles plus ou moins infâmes pour régler le PATH,
-;; qui est donc généralement FUBAR à ce stade. Le mieux est de recommencer de
-;; zéro en invoquant un login shell pour connaître le «vrai» path:
-(when (eq system-type 'darwin)
-  (setenv "LANG" "fr_CH.utf-8")
-  (let ((path-d-apres-le-shell
-         (shell-command-to-string
-	  "env PATH= $SHELL -l -c 'echo -n \"$PATH\"'")))
-    (setq exec-path (split-string path-d-apres-le-shell ":"))
-    (setenv "PATH" path-d-apres-le-shell)))
+(use-package quelpa :config
+  (setq quelpa-update-melpa-p nil)
+  (add-to-list 'inhibit-message-regexps (rx "Not upgrading." string-end)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (pointemacs-progression "gccemacs")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(custom-set-variables '(native-comp-driver-options '("-Wl,-w")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Autres réglages site-spécifiques")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Adresse électronique
-(pointemacs-personnalise '(user-mail-address "domq@cpan.org")
+(custom-set-variables '(user-mail-address "dominique@quatravaux.org")
                       '(query-user-mail-address nil)
                       '(debian-changelog-mailing-address "dominique.quatravaux@epfl.ch"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        (pointemacs-progression "Systèmes de paquetages elisp")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (fboundp 'package-initialize)
-  (package-initialize)
-  (dolist (archive-supplementaire
-           '(("marmalade" . "http://marmalade-repo.org/packages/")
-             ("melpa" . "https://melpa.org/packages/")
-             ;; http://orgmode.org/elpa.html
-             ("org" . "http://orgmode.org/elpa/")))
-           (add-to-list 'package-archives archive-supplementaire t)))
-(when (require-faible 'url) (require-faible 'auto-install))
-(when (require-faible 'el-get) (el-get 'sync))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Affectation des touches")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Voir aussi les instructions :bind au fil du texte, ci-dessous
 
 (global-set-key [(control home)] 'beginning-of-buffer)
 (global-set-key [(control end)] 'end-of-buffer)
-(global-set-key [(control f9)] 'compile)  ;; Nostalgie de Turbo Pascal...
-(unless (require-faible 'kmacro)
+(global-set-key [(f9)] 'compile)  ;; Nostalgie de Turbo Pascal...
+(make-variable-buffer-local 'compile-command)
+(unless (require 'kmacro nil t)
   (global-set-key [(f4)] 'call-last-kbd-macro))
 (global-set-key [(f5)]
   (lambda () (interactive) (revert-buffer nil (not (buffer-modified-p)))))
@@ -202,26 +128,22 @@ fichiers temporaires, etc.")
 (global-set-key [home] 'beginning-of-line)
 (global-set-key [end] 'end-of-line)
 (global-set-key [(control backspace)] 'backward-kill-word)
-(global-set-key [(control meta \])] 'pointemacs-reaffiche-debogueur)
 ;; Le setting par défaut est ridicule en mode graphique:
 (when window-system (global-set-key [(control z)] 'undo))
 (global-set-key [(control c) (control l)] 'org-store-link)
 (global-set-key [(control c) (.)] 'org-time-stamp)
-(global-set-key [(control x) (v) (b)] 'magit-status)
 
 ;; Rotation des buffers avec Ctrl-Arrêtes de poisson
-(require-faible 'prev-next-buffer) ;; Ce fichier se trouve sur emacswiki.org
-(when (fboundp 'next-buffer)
-      (global-set-key [(control prior)] 'previous-buffer)
-      (global-set-key [(control pgup)]  'previous-buffer)
-      (global-set-key [(control next)]  'next-buffer)
-      (global-set-key [(control pgdn)]  'next-buffer))
+(use-package  prev-next-buffer ;; Ce fichier se trouve sur emacswiki.org
+  :bind (([(control prior)] . previous-buffer)
+         ([(control pgup)]  . previous-buffer)
+         ([(control next)]  . next-buffer)
+         ([(control pgdn)]  . next-buffer)))
 
 ;; La touche Backspace sert à effacer un caractère à GAUCHE du curseur, BDM !
 (global-set-key [backspace] 'delete-backward-char)
 (global-set-key [delete] 'delete-char)
 (define-key isearch-mode-map [backspace] 'isearch-delete-char)
-(setq c-delete-function 'delete-char)
 (when (boundp 'shared-lisp-mode-map)
   (define-key shared-lisp-mode-map [delete] 'delete-char))
 
@@ -231,37 +153,47 @@ fichiers temporaires, etc.")
 (global-unset-key [(meta <)]) ;; Gros doigts sur la touche Alt
 (global-unset-key [(control /)]) ;; Trop proche de méta-slash qui sert
                                  ;; pour de vrai (pour la complétion)
-;; Moi quand je veux icônifier, j'utilise le window-manager:
+;; Moi quand je veux icônifier ou maximiser, j'utilise le window-manager:
+(global-unset-key [(f11)])
 (global-unset-key [(control x) (control z)])
 
-;; Control-C Control-E sous CPerl. Je me demande comment je fais pour
-;; taper ça par hasard, mais j'y arrive... Et je déteste le résultat.
-(put 'cperl-toggle-electric 'disabled t)
-
-;; Ceux qui au contraire sont utiles mais désactivés par défaut, parce que
-;; leur effet est désorientant.
+;; Combinaison utile mais désactivée par défaut, parce que son effet
+;; est désorientant.
 (put 'narrow-to-region  'disabled nil)
 
 ;; C-c C-l déjà utilisé dans d'autres modes, mais je veux la version d'org-mode
-(dolist (cons-mode-map '(("cc-mode" . c-mode-base-map)
-                         ("python-mode" . py-mode-map)
-                         ("python" . python-mode-map)
-                         ("sh-script" . sh-mode-map)))
-  (eval-after-load (car cons-mode-map)
-    `(define-key ,(cdr cons-mode-map) [(control c) (control l)] nil)))
-
-(add-hook 'cperl-mode-hook (lambda ()
-    "Désactivation de certaines touches électriques insupportables"
-    (cperl-define-key ":" 'self-insert-command)))
+(dolist (cons-mode-map `((cc-mode . c-mode-base-map)
+                         (python-mode . python-mode-map)
+                         (python . python-mode-map)
+                         (python . python-ts-mode-map)
+                         (sh-script . sh-mode-map)
+                         (web-mode . web-mode-map)))
+  (with-eval-after-load (car cons-mode-map)
+    (define-key (symbol-value (cdr cons-mode-map))
+      [(control c) (control l)] nil)))
 
 ;; Combinaisons Compose supplémentaires
-;; Voir aussi http://lolengine.net/blog/2012/06/17/compose-key-on-os-x
-(when (require-faible 'iso-transl)
-  (let ((combinaisons           
+;; Voir aussi ~/Library/KeyBindings/DefaultKeyBinding.dict et
+;; http://lolengine.net/blog/2012/06/17/compose-key-on-os-x
+(use-package iso-transl
+  :config
+  (let ((combinaisons
          '(("->" . [?→]) ("=>" . [?⇒]) ("<-" . [?←])
            ("tm" . [?™]) ("TM" . [?™])
-           (":)" . [?☺]) (":(" . [?☹]) (",/" . [?✓]) (",x" . [?✗])
-           ("/!" . [?⚠]) ("O!" . [?💡]) ("O3" . [?☁]) (".." . [?…]))))
+           (":)" . [?☺]) (":(" . [?☹]) (",/" . [?✓]) (",x" . [?✗]) ("xx" . [?×])
+           ("/!" . [?⚠]) ("O!" . [?💡]) ("O3" . [?☁]) (".." . [?…])
+           ("!?" . [?‽]) ("?!" . [?⸘]) ("??" . [?¿]) ("!!" . [?¡])
+           ("(0)" . [?⓪]) ("(1)" . [?①]) ("(2)" . [?②]) ("(3)" . [?③])
+           ("(4)" . [?④]) ("(5)" . [?⑤]) ("(6)" . [?⑥]) ("(7)" . [?⑦])
+           ("(8)" . [?⑧]) ("(9)" . [?⑨]) ("(10)" . [?⑩]) ("(11)" . [?⑪]) ("(12)" . [?⑫])
+           ("(A)" . [?Ⓐ]) ("(B)" . [?Ⓑ]) ("(C)" . [?Ⓒ]) ("(D)" . [?Ⓓ]) ("(E)" . [?Ⓔ])
+           ("(F)" . [?Ⓕ]) ("(G)" . [?Ⓖ]) ("(H)" . [?Ⓗ]) ("(I)" . [?Ⓘ]) ("(J)" . [?Ⓙ])
+           ("(K)" . [?Ⓚ]) ("(L)" . [?Ⓛ]) ("(M)" . [?Ⓜ]) ("(N)" . [?Ⓝ]) ("(O)" . [?Ⓞ])
+           ("(P)" . [?Ⓟ]) ("(Q)" . [?Ⓠ]) ("(R)" . [?Ⓡ]) ("(S)" . [?Ⓢ]) ("(T)" . [?Ⓣ])
+           ("(U)" . [?Ⓤ]) ("(V)" . [?Ⓥ]) ("(W)" . [?Ⓦ]) ("(X)" . [?Ⓧ]) ("(Y)" . [?Ⓨ]) ("(Z)" . [?ⓩ])
+           ("(+)" . [?⊕]) ("O+" . [?⊕]) ("O-" . [?⊖]) ("Mo" . [?⌘]) ("oM" . [?⌘])
+           (" 0" . [?⁰]) (" 1" . [?¹]) (" 2" . [?²]) (" 3" . [?³]) (" 4" . [?⁴])
+           (" 5" . [?⁵]) (" 6" . [?⁶]) (" 7" . [?⁷]) (" 8" . [?⁸]) (" 9" . [?⁹]))))
     (dolist (combinaison combinaisons)
       (let* ((touches (car combinaison))
              (valeur (cdr combinaison))
@@ -281,7 +213,10 @@ fichiers temporaires, etc.")
   ;; Control-x Shift-N remplace C-x ` (touche morte) :
   (global-set-key (kbd "C-x N") 'next-error)
   ;; ⌘ de droite = touche Compose, comme dans Karabiner:
-  (define-key key-translation-map (kbd "<f13>") iso-transl-ctl-x-8-map))
+  (define-key key-translation-map (kbd "<f13>") iso-transl-ctl-x-8-map)
+  ;; ⌘-x est occupé à quelque chose d'utile, mais ⌘-c et ⌘-v pas vraiment :
+  (global-set-key (kbd "M-c") 'kill-ring-save)
+  (global-set-key (kbd "M-v") 'yank))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Cycle de vie de l'éditeur")
@@ -303,34 +238,25 @@ fichiers temporaires, etc.")
        (list valeur-retour))))
   (unwind-protect ad-do-it
   (desktop-save-mode 1)))
-  
-(pointemacs-personnalise '(desktop-files-not-to-save "^$"))
 
-;; Liste File -> Open Recent..., commune à tous les desktops.
-(when (require-faible 'recentf)
-  (recentf-mode 1)
-  (add-hook 'pointemacs-taches-periodiques-hook 'recentf-save-list)
-  (pointemacs-personnalise '(recentf-menu-open-all-flag t)
-                        '(recentf-max-saved-items 100)
-                        '(recentf-exclude
-                          '("/[.]recentf\\'" "/[.]ido[.]last\\'" "[.]rnc\\'"))))
+(custom-set-variables '(desktop-files-not-to-save "^$"))
+(with-eval-after-load 'desktop
+  (add-to-list 'desktop-globals-to-save 'tramp-remote-path))
 
 ;; Sauvegarde des positions du curseur dans les fichiers ouverts.
-(when (require-faible 'saveplace)
-  (pointemacs-personnalise '(save-place t)))
+(use-package saveplace :custom (save-place t))
 
 ;; Sauvegarde des historiques dans le minibuffer et autres variables utiles
-(when (require-faible 'savehist)
-  (savehist-mode 1)
-  (pointemacs-personnalise '(savehist-additional-variables
-                             '(find-function-C-source-directory
-                               pointemacs-desktop-history))))
+(use-package savehist
+  :config (savehist-mode 1)
+  :custom (savehist-additional-variables
+           '(find-function-C-source-directory pointemacs-desktop-history)))
 
-;; Signets d'Emacs persistants :taper C-x r m pour poser un signet.
-(pointemacs-personnalise '(bookmark-save-flag 1))
+;; Signets d'Emacs persistants : taper C-x r m pour poser un signet.
+(custom-set-variables '(bookmark-save-flag 1))
 
 ;; Confirmation avant de quitter
-(pointemacs-personnalise '(confirm-kill-emacs 'yes-or-no-p))
+(custom-set-variables '(confirm-kill-emacs 'yes-or-no-p))
 
 (pointemacs-progression "Mode serveur") ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -339,25 +265,14 @@ fichiers temporaires, etc.")
 ;; débogueur Perl forké par ex.  Mais il n'est pas dispo de base sous les vieux
 ;; emacs.
 (when (= 1 (length command-line-args))
-  (when (or (require-faible 'gnuserv-compat) (require-faible 'gnuserv))
-    (gnuserv-start))
-  (when (require-faible 'server)
+  (use-package server
+    :config
     (server-start)
     (setq server-temp-file-regexp "^/tmp/Re\\|/draft$\\|COMMIT_EDITMSG")
     (defun server-kill-buffer-query-function () t)
-    (pointemacs-personnalise '(server-kill-new-buffers nil))
-    ;; Intégration avec le plug-in Firefox ItsAllText (que je recommande):
-    (add-hook 'server-visit-hook
-              (lambda () "Désactive le passage à la ligne automatique pour
-                          les pages Wiki"
-                (when (and buffer-file-name
-                           (string-match "wiki" buffer-file-name))
-                  (turn-off-auto-fill)))))
-  ;; Utiliser ensuite 'gnuclient' resp. 'emacsclient' comme éditeur
-  ;; (variable EDITOR dans son .bash_profile)
-  (when (require-faible 'edit-server)  ;; Extension Chrome "Edit with Emacs"
-    (pointemacs-personnalise '(edit-server-new-frame nil))
-    (edit-server-start)))
+    (custom-set-variables '(server-kill-new-buffers nil))))
+  ;; Utiliser ensuite 'emacsclient' comme éditeur (variable EDITOR
+  ;; dans son .bash_profile)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Traitement des fichiers ouverts par emacs")
@@ -366,59 +281,92 @@ fichiers temporaires, etc.")
 ;; Mise à jour automatique des fichiers qui changent sur disque
 (global-auto-revert-mode 1)
 ;; Pas de questions intempestives pour les fichiers de git :
-(pointemacs-personnalise '(revert-without-query '("COMMIT_EDITMSG")))
-
-;; Correspondance entre noms de fichiers et modes d'édition.  Note : certains
-;; modes sont redéfinis plus bas à l'aide de "defalias" (par exemple 'perl-mode
-;; sera probablement 'cperl-mode.  L'élégance est critiquable, mais c'est la
-;; façon la plus simple de changer un mode *partout* (y compris dans les valeurs
-;; déjà présentes au démarrage dans auto-mode-alist, interpreter-mode-alist etc)
-(aput 'auto-mode-alist "^/tmp/mutt" 'mail-mode)
-(aput 'auto-mode-alist "akefile" 'makefile-mode)
-(aput 'auto-mode-alist "Dockerfile" 'dockerfile-mode)
-(aput 'auto-mode-alist "TODO" 'text-mode)    ;; Todoo suxx
-(aput 'auto-mode-alist "strace\\'" (if (require-faible 'strace-mode) 'strace-mode 'text-mode))
-(aput 'auto-mode-alist "DefaultKeyBinding.dict" 'text-mode)
-(dolist (suffixes-et-mode
-  '((("ml" "mli" "mly" "mll" "mlp") caml-mode)
-    (("m") matlab-mode)
-    (("p") pascal-mode)
-    (("php" "inc" "html" "htm") web-mode)
-    (("pl" "PL" "pm" "t" "pod" "cgi") perl-mode)
-    (("dpatch") diff-mode)
-    (("org") org-mode)
-    (("xml" "xhtml" "xmlinc" "xsd" "sch" "rng" "xslt" "svg" "rss") xml-mode)
-    (("jj") java-mode)
-    (("js" "gypi") js-mode)
-    (("vue") vue-mode)
-    (("scss") ssass-mode)))
-  (aput 'auto-mode-alist
-        (format "\\.%s\\'" (regexp-opt (car suffixes-et-mode)))
-        (cadr suffixes-et-mode)))
+(custom-set-variables '(revert-without-query
+                        '("COMMIT_EDITMSG" "git-rebase-todo")))
 
 ;; Correspondance entre noms de fichiers et encodage
 (when (boundp 'auto-coding-alist)
-  (aput 'auto-coding-alist "screenlog\\.[0-9]\\'" 'utf-8-dos))
+  (setf (alist-get "screenlog\\.[0-9]\\'" auto-coding-alist) 'utf-8-dos))
 
-;; Idem mais en se basant sur la première ligne du fichier au
-;; format "#!/usr/bin/truc" :
-(aput 'interpreter-mode-alist "perl" 'perl-mode)
-(aput 'interpreter-mode-alist "node" 'js-mode)
-
-;; Idem mais en se basant sur la première ligne du fichier, peu
-;; importe son nom (ne marche que sous les Emacs récents):
-(when (boundp 'magic-mode-alist) (aput 'magic-mode-alist "<\\?xml" 'xml-mode))
+;; Correspondance entre première ligne et mode. Modifié pour tolérer
+;; "#!/bin/env -S", façon https://stackoverflow.com/a/16365367
+(setq auto-mode-interpreter-regexp
+        (rx (seq "#!"
+                 (opt (any " \t"))
+                 (group (opt
+                       (zero-or-more not-newline)
+                       "/bin/env" (any " \t")
+                       (opt (seq "-S" (any " \t"))))
+                 (group (one-or-more (not (syntax whitespace))))))))
 
 ;; Fichiers de sauvegarde centralisés dans un répertoire
-(let ((rep-fichiers-secours (concat pointemacs-repertoire-lib "/var/backups")))
-  (pointemacs-personnalise `(backup-directory-alist
-                             (list (cons "." ,rep-fichiers-secours)))))
+(custom-set-variables
+ '(backup-directory-alist
+   (list (cons "." (concat user-emacs-directory "/var/backups")))))
 
 ;; On lance les commandes avec /bin/sh...
-(pointemacs-personnalise '(shell-file-name "/bin/sh")
-                         '(tex-shell-file-name "/bin/sh")
-                         ;; mais M-x shell utilise /bin/bash
-                         '(explicit-shell-file-name "/bin/bash"))
+(custom-set-variables '(shell-file-name "/bin/sh")
+                      '(tex-shell-file-name "/bin/sh")
+;; ... mais M-x shell utilise /bin/zsh
+                      '(explicit-shell-file-name "/bin/zsh"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (pointemacs-progression "Configuration du minibuffer et de la mode-line")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Le minibuffer est la ligne en bas de l'écran dans laquelle on tape
+;; les noms de fichiers à ouvrir, les mots à chercher, etc.
+;; La mode-line est la ligne juste au-dessus qui décrit le buffer
+(custom-set-variables '(sml/position-percentage-format nil))
+(when (fboundp 'sml/setup) (sml/setup))
+;; Pas de marqueur "MRev" dans la barre d'état :
+(custom-set-variables '(magit-auto-revert-mode-lighter nil))
+
+(use-package delight :ensure)
+
+(use-package doom-modeline
+  :ensure t
+  :custom (doom-modeline-highlight-modified-buffer-name nil)
+  :custom-face
+  (mode-line-active ((t (:background "grey85"))))
+  (doom-modeline-warning ((t (:inherit doom-modeline :foreground "firebrick1"))))
+  :init (doom-modeline-mode 1))
+;; Va bien avec M-x nerd-icons-install-fonts
+
+(use-package ido
+  :custom
+  (ido-everywhere t)
+  (ido-auto-merge-work-directories-length -1)
+  (ido-confirm-unique-completion t)
+  (ido-default-file-method 'selected-window)
+  (ido-default-buffer-method 'samewindow)
+  (ido-use-filename-at-point 'guess)
+  :bind
+  (:map ido-common-completion-map
+  (" " . nil)
+  :map ido-file-dir-completion-map
+  ([(control backspace)] . ido-delete-backward-word-updir)
+  ("\C-x\C-w" . 'ido-fallback-command)
+  :map ido-buffer-completion-map
+  ("\C-xb" . 'ido-fallback-command))
+  :config
+  (pointemacs-progression "Activation de ido pour Emacs")
+  (ido-mode 1)
+  (defun pointemacs--ido-backspace (func-orig &rest args-orig)
+    "Dans ido, change l'action de Backspace au début du minibuffer.
+Au lieu d'effacer tout le répertoire précédent, efface seulement le slash."
+    (if (eq this-original-command 'ido-delete-backward-word-updir)
+        (apply func-orig args-orig)
+      (cl-letf (((symbol-function 'exit-minibuffer) 'ignore))
+        (apply func-orig nil))
+      (let ((dir (directory-file-name ido-current-directory)))
+        (setq ido-current-directory (file-name-directory dir))
+        (setq ido-text-init (file-name-nondirectory dir))
+        (setq ido-exit 'refresh)
+        (exit-minibuffer))))
+  (advice-add 'ido-up-directory :around #'pointemacs--ido-backspace))
+
+(use-package ido-completing-read+ :ensure
+  :config (ido-ubiquitous-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (pointemacs-progression "Personnalisation générale de l'édition de texte")
@@ -427,22 +375,22 @@ fichiers temporaires, etc.")
 ;; modes d'emacs, pas juste "text-mode" qui de son côté a une section dans
 ;; le paragraphe "configuration des modes".
 
-(when (fboundp 'tool-bar-mode) (tool-bar-mode 1))
+(tool-bar-mode -1)
+(setq ignore-window-parameters t)  ;; “Excellent window manager” my foot
 
 ;; color-theme-domq, mon thème de couleurs à moi (dispo sur
 ;; http://www.emacswiki.org/cgi-bin/emacs/color-theme-domq.el) :
-(when (and window-system (string-lessp "22" emacs-version)
-           (require-faible 'color-theme)
-           (require-faible 'color-theme-domq))
-  (color-theme-domq))
+(use-package color-theme-domq
+  :load-path "color-theme-domq"
+  :if (and window-system (string-lessp "22" emacs-version)
+           (require 'color-theme nil t)))
 
 ;; Fenêtre juste assez large pour deux fichiers en 80 colonnes + diff-hl
 (when (and window-system (string-match "^[/:]" (getenv "DISPLAY")))
-  (aput 'initial-frame-alist 'width 166)
-  (aput 'initial-frame-alist 'height 60))
-;; Vu sur emacswiki.org :
-(require-faible 'display-buffer-for-wide-screen)
-(defadvice split-window-horizontally (before petit-ecran activate)
+  (modify-frame-parameters nil '((user-position . t)
+                                 (top . 0.5) (left . 0.5)
+                                 (width . 166) (height . 60))))
+(defadvice split-window-right (before petit-ecran activate)
   "Si l'écran est trop petit, Ctrl-X 3 réserve 80 colonnes du côté gauche."
   (when (and (> (window-width) 80) (<= (window-width) 166))
     (ad-set-arg 0 85)))
@@ -450,19 +398,16 @@ fichiers temporaires, etc.")
 ;; Font-lock automatiquement allumé dans tous les modes.
 (global-font-lock-mode t)
 
-(pointemacs-personnalise
+(custom-set-variables
  '(next-line-add-newlines nil)
  '(require-final-newline 1)
- '(indent-tabs-mode nil) ;; Le monde OSS a fini par se rendre compte
- ;; que les tabs c'est MAL; tant mieux
+ '(indent-tabs-mode nil)
  '(default-major-mode 'text-mode)
- '(sentence-end-double-space nil)  ;; Personne ne tape comme ça, mon pauvre RMS
-)
+ '(sentence-end-double-space nil)) ;; Personne ne tape comme ça, mon pauvre RMS
+
 ;; Réglages de l'interface graphique d'Emacs
-(setq inhibit-startup-message t ;; Pas de propagande pour le projet
-                                ;; GNU, même si
-                                ;; pointemacs-afficher-progression est
-                                ;; désactivé
+(custom-set-variables '(inhibit-startup-screen t))
+(setq
       visible-bell t
       truncate-partial-width-windows nil)
 (line-number-mode 1)
@@ -471,100 +416,47 @@ fichiers temporaires, etc.")
 ;; Support accents et UTF-8
 (prefer-coding-system 'utf-8)
 
-(setq-default ctl-arrow t)	; Les autres caractères de contrôle
-				; sont affichés comme ceci : ^@
-
 ;; Comportement type de la région (c'est-à-dire la zone de texte
 ;; sélectionnée, lorsqu'il y en a une).
-(defcustom pointemacs-selection-effacable-p
-  (or window-system (string< "21" emacs-version))
-"Si vrai, la frappe d'un caractère quand la région est active efface celle-ci.
-
-C'est le comportement «naturel» pour les utilisateurs de systèmes
-d'exploitation graphiques modernes.  Par défaut, la sélection est
-effaçable (valeur t), sauf pour les vieux emacs en mode tty, car
-ils sont incapables de marquer visuellement la région (et cette
-fonction devient alors dangereuse)."
-:group 'pointemacs
-:type '(boolean))
-
-(when pointemacs-selection-effacable-p
-  (transient-mark-mode 1)
-  (delete-selection-mode 1)
-  (pointemacs-personnalise '(mark-even-if-inactive nil)))
+(when transient-mark-mode   ;; Seulement si la sélection est *visible* :
+  (custom-set-variables '(mark-even-if-inactive nil)
+                        '(delete-selection-mode 1)))
 
 ;; Flyspell
-(when (eq system-type 'darwin)
-  (eval-after-load "flyspell"
-    '(progn
-       (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-       (define-key flyspell-mouse-map [mouse-3] #'undefined))))
+(with-eval-after-load 'flyspell
+  (when (eq system-type 'darwin)
+    (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+    (define-key flyspell-mouse-map [mouse-3] #'undefined)))
+
+(use-package treesit-auto
+  :quelpa (treesit-auto :fetcher github :repo "domq/treesit-auto")
+  :load-path (lambda () (expand-file-name "treesit-auto" quelpa-build-dir))
+  :config
+  (setq treesit-auto-langs '(bash go gomod)
+        treesit-auto-install t   ;; ⚠ Ne suffit pas toujours ⇒
+                                 ;; M-x treesit-auto-install-all
+        global-treesit-auto-modes '(sh-mode go-mode go-ts-mode))
+  (global-treesit-auto-mode))
+
+;; yasnippets
+(use-package yasnippet
+  :ensure
+  :delight (yas-minor-mode " ✄")
+  :custom (yas-global-mode t) (yas-verbosity 2))
+(use-package yasnippet-snippets :ensure)
 
 ;; Complétion automatique du texte (méta-/ et control-méta-/)
-(eval-after-load "dabbrev"
-   '(defalias 'dabbrev-expand 'hippie-expand)) ;; Trouve plus de complétions
-(pointemacs-personnalise '(dabbrev-upcase-means-case-search t))
+(with-eval-after-load 'dabbrev
+   (defalias 'dabbrev-expand 'hippie-expand)) ;; Trouve plus de complétions
+(custom-set-variables '(dabbrev-upcase-means-case-search t))
 
 ;; Noms de buffer uniques mais utiles (en lieu et place de "Makefile<2>"):
-(when (require-faible 'uniquify)
-  (pointemacs-personnalise '(uniquify-buffer-name-style
-                             'post-forward-angle-brackets)))
+(use-package uniquify
+  :custom (uniquify-buffer-name-style 'post-forward-angle-brackets))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        (pointemacs-progression "Configuration du minibuffer")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Le minibuffer est la ligne en bas de l'écran dans laquelle on tape
-;; les noms de fichiers à ouvrir, les mots à chercher, etc.
-
-(if (not (require-faible 'ido))
-    (progn
-      (when (require-faible 'icomplete) (icomplete-mode))
-      (setq minibuffer-confirm-incomplete t
-            completion-ignored-extensions (append completion-ignored-extensions
-                                                  '(".zo" ".zi" ".zix"))))
-  (pointemacs-personnalise '(ido-everywhere t)
-                        '(ido-auto-merge-work-directories-length -1)
-                        '(ido-confirm-unique-completion t)
-                        '(ido-default-file-method 'selected-window)
-                        '(ido-default-buffer-method 'samewindow)
-                        '(ido-use-filename-at-point 'guess))
-  (defadvice ffap-file-at-point (after pointemacs-emacs22-bugfix activate)
-    "Contourne un bug de ido d'Emacs 22 pour les noms de fichiers sans chemin."
-    (when (and ad-return-value (not (string= "" ad-return-value)))
-      (setq ad-return-value (expand-file-name ad-return-value))))
-  (when (fboundp 'ido-completing-read)
-    (defun pointemacs-ido-Mx ()
-      "Utilise ido pour compléter à l'invite de M-x"
-      (interactive)
-      (call-interactively
-       (intern (ido-completing-read "M-x "
-          (let (cmd-list)
-            (mapatoms (lambda (S) (when (commandp S)
-                    (setq cmd-list (cons (format "%S" S) cmd-list)))))
-            cmd-list)))))
-    (global-set-key "\M-x" 'pointemacs-ido-Mx))
-  (eval-after-load "ido" '(progn
-    (ido-init-completion-maps)
-    (defalias 'ido-init-completion-maps 'ignore)
-    (define-key ido-common-completion-map " " nil)
-    (define-key ido-file-dir-completion-map [(control backspace)]
-      'ido-delete-backward-word-updir)
-    (define-key ido-file-completion-map "\C-x\C-w" 'ido-fallback-command)
-    (define-key ido-buffer-completion-map "\C-xb" 'ido-fallback-command)))
-  (defadvice ido-delete-backward-updir (around pointemacs-backspace activate)
-    "Dans ido, change l'action de Backspace au début du buffer.
-Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
-    (cl-flet ((ido-up-directory (&rest ignored)
-            (setq ido-text-init (file-name-nondirectory
-                                 (directory-file-name ido-current-directory))
-                  ido-current-directory (file-name-directory
-                                 (directory-file-name ido-current-directory))
-                  ido-exit 'refresh)
-            (ido-trace "Trampoline vers le répertoire" ido-current-directory)
-            (exit-minibuffer)))
-        ad-do-it))
-  (pointemacs-progression "Activation de ido pour Emacs")
-  (ido-mode 1))
+(use-package dtrt-indent
+  :quelpa
+  :custom (dtrt-indent-global-mode t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Configuration des modes")
@@ -578,6 +470,11 @@ Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
 (add-hook 'after-change-major-mode-hook
           (lambda () (when (fboundp 'c-toggle-electric-state)
                        (c-toggle-electric-state -1))))
+;; ... mais `c-toggle-electric-state' se prend les pieds le tapis au
+;; moment de mettre à jour la modeline (à partir d'Emacs 27 ou 28):
+(advice-add 'c-update-modeline
+            :before-while #'(lambda () (stringp mode-name))
+            '((name . pointemacs-seulement-si-mode-name-est-une-chaine)))
 
 (put 'c-indentation-style 'safe-local-variable
      #'(lambda (sym)
@@ -586,20 +483,52 @@ Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
 
 (pointemacs-progression "Mode org") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; http://lists.gnu.org/archive/html/emacs-orgmode/2011-10/msg00304.html
+(use-package org
+  :ensure
+  :mode ("\\.org\\'" . org-mode)
+  :custom
+  (org-startup-truncated nil)
+  (org-lowest-priority ?D)
+  (org-src-fontify-natively t)
+  (org-babel-load-languages
+   ;; C-c C-c sur un bloc de code Perl ou R pour l'exécuter ! Yow !!
+   (cl-list* (cons 'perl t) (cons 'shell t) (cons 'R t)
+             (eval (car (get 'org-babel-load-languages 'standard-value)))))
+  :config
+  (setq org-ctags-enabled-p nil)
+  (use-package ox-md :quelpa)        ;; Traduction vers MarkDown
+  (use-package ox-reveal :quelpa)
+  (use-package org-mouse :quelpa)
+  ;; https://emacs.stackexchange.com/questions/19169/org-mode-execute-region-in-session
+  (advice-add 'org-babel--normalize-body
+            :filter-return #'(lambda (orig-result)
+                               "Return contents of region if it is active."
+                               (if (use-region-p)
+                                   (buffer-substring (region-beginning) (region-end))
+                                 orig-result)))
+  :hook
+  (org-mode . (lambda () (electric-indent-mode -1))))
 
-(pointemacs-personnalise 
- '(org-startup-truncated nil)
- '(org-lowest-priority ?D)
- '(org-src-fontify-natively t)
- '(org-babel-load-languages
-   ;; C-c C-c sur un bloc de code Perl pour l'exécuter ! Yow !!
-   (list* (cons 'perl t) (cons 'sh t)
-          (eval (car (get 'org-babel-load-languages 'standard-value))))))
+(use-package org-screen            ;; Liens vers des sessions "screen" ! Yow!
+  :quelpa
+  (org-screen
+   :fetcher url
+   :url "https://git.sr.ht/~bzg/org-contrib/blob/master/lisp/org-screen.el"))
+
+(use-package ol-git-link          ;; Liens vers des révisions dans git !
+  :quelpa
+  (ol-git-link
+   :fetcher url
+   :url "https://git.sr.ht/~bzg/org-contrib/blob/master/lisp/ol-git-link.el")
+  :config
+  ;; Désactivé par défaut : mettre un préfixe C-u pour créer un lien git.
+  (advice-add 'org-git-store-link :before-while
+              #'(lambda (&rest _r) current-prefix-arg)))
 
 ;; Fabrication de liens en syntaxe org (associé à Ctrl-C Ctrl-L,
 ;; cf. «Affectation des touches» ci-dessus)
 (autoload 'org-store-link "org" "Store an org-link to the current location." t)
-  
+
 ;; Vu sur http://www.mail-archive.com/emacs-orgmode@gnu.org/msg06568.html
 (add-hook 'org-create-file-search-functions
  (lambda ()
@@ -610,167 +539,293 @@ Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
      (setq description "")
      (number-to-string (org-current-line)))))
 
-(eval-after-load "org" '(progn
-  (require-faible 'org-mouse)
-  (require-faible 'org-screen)      ;; Liens vers des sessions "screen" ! Yow !
-  (when (require-faible 'org-git-link)  ;; Liens vers des révisions dans git !
-    (setq org-store-link-functions
-          (delete 'org-git-store-link org-store-link-functions)))))
+(pointemacs-progression "Mode texte") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package text-mode   ;; Le plus simple
+  :mode ("/TODO\\'" ;; Todoo suxx
+         "/DefaultKeyBinding.dict\\'"))
 
 (pointemacs-progression "Modes pour le Web") ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Pour XML, nxml-mode (http://www.emacswiki.org/cgi-bin/wiki/NxmlMode) est le
-;; nouvel étalon-or en 2008.
 (defalias 'xml-mode 'nxml-mode)
+(use-package nxml-mode
+  :mode ("\\.xml\\'" "\\.xhtml\\'" "\\.xmlinc\\'" "\\.xsd\\'"
+         "\\.sch\\'" "\\.rng\\'" "\\.xslt\\'" "\\.svg\\'" "\\.rss\\'")
+  :magic-fallback "<\\?xml")
 
-(pointemacs-personnalise '(js-indent-level 2) '(js-auto-indent-flag nil))
-(put 'js-indent-level 'safe-local-variable 'integerp)
+(use-package web-mode
+  :ensure
+  :mode "\\.html?\\'"
+  :bind (("C-c /" . web-mode-element-close))
+  :hook (web-mode . pointemacs-web-mode-narrow-reveal-js)  ;; Définie ci-dessous
+  :custom
+  (web-mode-code-indent-offset 2)
+  (web-mode-enable-auto-indentation nil))
+(defun pointemacs-web-mode-narrow-reveal-js ()
+  "Si le fichier HTML est un slide reveal.js, masque la cuisine."
+  (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "div class=\"reveal\"")
+        (let ((narrow-from (point-at-bol)))
+          (web-mode-element-end)
+          (narrow-to-region narrow-from (point-at-bol 2))))))
 
-(eval-after-load "sgml-mode"
-  '(when (require-faible 'sgml-edit)
-     (define-key html-mode-map "\C-c\r" 'sgml-split-element)))
+(use-package vue-mode :ensure :mode "\\.vue\\'")
+(use-package ssass-mode :ensure :mode "\\.scss\\'")
 
-(pointemacs-personnalise '(web-mode-markup-indent-offset 1)
-                         '(web-mode-enable-auto-indentation nil))
+(use-package js-mode
+  :mode ("\\.js\\'" "\\.gypi\\$")
+  :interpreter (rx (or "node" "npm"))
+  :custom (js-indent-level 2) (js-auto-indent-flag nil)
+  :config
+  (put 'js-indent-level 'safe-local-variable 'integerp))
 
-(pointemacs-progression "Mode Perl") ;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package typescript-mode
+  :ensure
+  :mode "\\.tsx?\\'"
+  :delight "ts"
+  :custom (typescript-indent-level 2))
+
+(use-package json-mode :ensure :mode "\\.babelrc\\'")
+
+(pointemacs-progression "OCaml / ReasonML / BuckleScript") ;;;;;;;;;;;;
+
+(use-package utop
+  :ensure
+  :commands utop
+  :hook (tuareg-mode . utop-minor-mode)
+  :config
+  (setq utop-command "opam config exec -- dune utop . -- -emacs"))
+
+(pointemacs-progression "Shell") ;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pointemacs:remplace-dans-alist (alist from to)
+  "Remplace FROM par TO dans tous les cdr des éléments de ALIST."
+  (when (symbolp alist) (setq alist (symbol-value alist)))
+  (dolist (e alist) (when (eq from (cdr e)) (setcdr e to))))
+
+(pointemacs-progression "Perl") ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defalias 'perl-mode 'cperl-mode)
-(autoload 'cerl-mode "cperl-mode" "alternate mode for editing Perl programs" t)
-(when (require-faible 'ffap-perl-module)
-  (put 'ffap-perl-module-path 'safe-local-variable 'listp))
+(use-package cperl-mode
+  :ensure
+  :commands cperl-mode
+  :mode  ("\\.pl\\'" "\\.PL\\'" "\\.pm\\'" "\\.t\\'" "\\.pod\\'" "\\.cgi\\'")
+  :interpreter "perl"
+  :config
+  ;; “electric” === “too much magic”
+  (put 'cperl-toggle-electric 'disabled t)
+  (define-key cperl-mode-map ":" 'self-insert-command))
 
 ;; Coding style façon IDEALX - Nostalgie !
-(pointemacs-personnalise '(cperl-indent-level 2)
+(custom-set-variables '(cperl-indent-level 2)
 		      '(cperl-label-offset 0)
 		      '(cperl-continued-statement-offset 2)
                       '(cperl-indent-parens-as-block t)
 		      '(cperl-highlight-variables-indiscriminately 1))
 
-(require-faible 'cperl-domq)
+(use-package cperl-domq :load-path "cperl-domq")
 
-(pointemacs-progression "Mode CAML") ;;;;;;;;;;;;;;;;;;;;;;;;;
-(require-faible 'caml-font)
+(pointemacs-progression "Python / IPython / Jinja") ;;;;;;;;;;;;;;;;;;
 
-(autoload 'caml-mode "caml"
-  "Major mode for editing files of input for Caml.")
-(autoload 'run-caml "inf-caml" "Run an inferior Caml process." t)
-(autoload 'camldebug "camldebug" nil t)
+(use-package python-mode
+  :ensure
+  :mode "\\.py\\'"
+  :interpreter "python"
+  :custom
+  (python-shell-interpreter "python3"))
 
-;; Chargement de ProofGeneral, mais en l'empêchant de faire des effets
-;; de bord sales
-(let ((eval-after-load-alist nil)) (require-faible 'proof-site))
+(defun pointemacs-python-ts-mode-vigipirate (python-ts-mode)
+    "Empêche `python-ts-mode' de s'installer lui-même dans les alists de mode."
+    (let (auto-mode-alist interpreter-mode-alist) (funcall python-ts-mode)))
+(advice-add 'python-ts-mode :around #'pointemacs-python-ts-mode-vigipirate)
 
-(pointemacs-progression "Mode Erlang") ;;;;;;;;;;;;;;;;;;;;
-(require-faible 'erlang-start)
+(defun ipython () "Run ipython." (interactive) (term "ipython3"))
 
-(pointemacs-progression "Mode ReST") ;;;;;;;;;;;;;;;;;;;;
-;; Cf. /usr/share/doc/python-docutils/docs/user/emacs.txt.gz
-(autoload 'rst-mode "rst" "Major mode for editing reStructuredText documents.")
-(eval-after-load "rst"
-  ;; J'ajoute le hook à rst-mode-hook de sorte qu'il ne s'active
-  ;; *que* pour les fichiers que je veux traiter comme du ReST :
-  '(add-hook 'rst-mode-hook 'rst-text-mode-bindings))
+(use-package jinja2-mode
+  :quelpa
+  :mode "\\.j2\\'")
 
-(pointemacs-progression "Petits modes en vrac") ;;;;;;;;;;;;;;;;;;;;;;;
+(pointemacs-progression "YAML") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package yaml-mode
+  :ensure
+  :hook (yaml-mode . (lambda () (electric-indent-mode -1))))
 
-;; Mode texte (=édition de fichiers ASCII uniquement):
-;; Passage à la ligne automatique
-(put 'auto-fill-mode 'safe-local-variable 'booleanp)
-(add-hook 'text-mode-hook (lambda () (if (and (boundp 'auto-fill-mode)
-                                              (not auto-fill-mode))
-                                         'turn-off-auto-fill
-                                       'turn-on-auto-fill)))
-;; Mais pas pour d'autres modes où il juste m'insupporte :
-(add-hook 'html-mode-hook 'turn-off-auto-fill)
+(pointemacs-progression "Modes R") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Mode Wiki
-(autoload 'emacs-wiki-mode "emacs-wiki" "Major mode to edit Wiki files." t)
+;; C-x w sur un symbole d'un data.frame dans le buffer *R*, l'ouvre
+;; dans LibreOffice ! Si on utilise C-x q à la place de C-x w, on peut
+;; même modifier, sauvegarder, et récupérer les données modifiées dans
+;; R ! https://github.com/GioBo/ess-view
+(use-package ess-view
+  :ensure
+  :commands (ess-view-inspect-df ess-view-inspect-and-save-df)
+  :hook (inferior-ess-r-mode . (lambda () (require 'ess-view)))
+  :config (setq ess-view--spreadsheet-program
+                "/Applications/LibreOffice.app/Contents/MacOS/soffice"))
+(advice-add 'ess-view-extract-R-process
+            :filter-return (lambda (process)
+                             (or process ess-local-process-name))
+            '((name . ess-view-même-process-que-ess)))
+
+(use-package poly-R :ensure)
+(with-eval-after-load 'polymode-core
+  (setf (alist-get 'd3 polymode-mode-name-aliases)  'js-mode))
+
+(pointemacs-progression "PHP") ;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package php-mode :ensure
+  :mode ("\\.php\\'" "\\.inc\\'")
+  :hook (php-mode . (lambda () (setq c-basic-offset 2))))
+
+(with-eval-after-load 'ffap
+  (setf (alist-get 'php-mode ffap-alist) 'pointemacs:ffap-avec-point)
+  (defun pointemacs:ffap-avec-point (name)
+    "Fait marcher `find-file-at-point' avec un \"faux\" chemin absolu à la PHP.
+Fait fonctioner find-file-at-point sur des constructions du genre
+
+   require_once(__DIR__ + \"/where/ever.php\");"
+    (save-excursion
+      (let ((slash-pos (car ffap-string-at-point-region)))
+        (and
+         (goto-char slash-pos)
+         (looking-at "/")
+         (re-search-backward "__DIR__\\|__FILE__" nil t)
+         (equal (line-number-at-pos) (line-number-at-pos slash-pos))
+         (concat "." name))))))
+
+(pointemacs-progression "Autres langages de programmation") ;;;;;;;;;;;;;;;
+
+(use-package elisp-mode :delight (eldoc-mode))
+(use-package go-ts-mode :ensure :mode "\\.go")
+(use-package groovy-mode :ensure :mode "enkinsfile")
+(use-package java-mode :mode "\\.jj\\'")
+(use-package rust-mode :ensure :mode "\\.rs\\'")
+(use-package cmake-mode :ensure)
+
+(pointemacs-progression "Petits modes en vrac") ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package mail-mode :quelpa :mode "^/tmp/mutt")
+(use-package dockerfile-mode
+  :ensure
+  :delight ""
+  :mode "Dockerfile")
+(use-package strace-mode :ensure :mode "strace")
+(use-package conf-mode :mode "\\.env\\'")
+(use-package diff-mode :mode "\\.dpatch")
+(use-package protobuf-mode :ensure :delight "➿" :mode "\\.proto\\'")
+(use-package emacs-wiki :quelpa :commands emacs-wiki-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Environnement de Développement Intégré")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Ici on configure tout ce qui permet à Emacs de parler avec des débogueurs,
 ;; des indexeurs de code source, des systèmes de contrôle de version, etc.
 
-;; Chargement de variables «projet» (pour le coding style etc.) dans
-;; un fichier .emacs-dirvars
-(require-faible 'dirvars)
+(use-package compile-domq :load-path "compile-domq")
+
+(which-function-mode t)
+
+(use-package company :ensure
+  :delight ""
+  :config (global-company-mode '(not python-mode))
+  :custom (company-tooltip-limit 10))
+
+(use-package eglot
+  :hook (typescript-ts-mode . eglot-ensure)
+  (typescript-mode . eglot-ensure))
+
+(use-package info :delight (Info-mode "ⓘ"))
 
 (pointemacs-progression "IBuffer") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (require-faible 'ibuffer)
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (when (require-faible 'ibuffer-projectile)
-    (add-hook 'ibuffer-hook
-              (lambda ()
-                (ibuffer-projectile-set-filter-groups)
-                (unless (eq ibuffer-sorting-mode 'alphabetic)
-                  (ibuffer-do-sort-by-alphabetic))))))
+(use-package ibuffer
+  :ensure
+  :bind (([(control x) (control b)] . ibuffer)))
+
+(pointemacs-progression "Pliage du code source") ;;;;;;;;;;;;;;;;;;;;;;
+
+;; C-x $ plie / déplie à partir de la colonne où se trouve le curseur.
+(advice-add 'set-selective-display
+            :filter-args (lambda (args)
+                           (if (or (car args) selective-display)
+                               args
+                             (list (1+ (current-column)))))
+            '((name . set-selective-display-colonne-courante)))
 
 (pointemacs-progression "Recherche dans le code source") ;;;;;;;;;;;;;;
 
-(pointemacs-personnalise '(grep-program "zgrep")
-                         '(ag-highlight-search t))
-(defadvice wgrep-commit-buffer (around pointemacs-sauve-si-frais activate)
-  "Sauvegarde le buffer à la fin de wgrep, si il n'était pas modifié avant."
-  (if (buffer-modified-p (ad-get-arg 0))
-      ad-do-it
-    ad-do-it
-    (with-current-buffer buffer (basic-save-buffer))))
+(custom-set-variables '(grep-program "zgrep")
+                      '(wgrep-auto-save-buffer t))
+
+(use-package ag :ensure
+  :custom (ag-highlight-search t))
+(use-package wgrep-ag
+  :ensure
+  :hook ((ag . wgrep-ag-setup))
+  :config
+  ;; Bugware : wgrep-ag s'imagine qu'un bloc de résultats ne fait jamais plus d'une ligne.
+  (defalias 'wgrep-ag-prepare-header/footer 'ignore))
+
+(use-package iedit :ensure
+  :init
+  (add-to-list 'inhibit-message-regexps
+             (rx string-start "Iedit default key binding is C-;")))
 
 (pointemacs-progression "Contrôle de versions") ;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Support des systèmes de contrôle de versions que j'utilise, et
-;; (surtout...) élimination des autres.
-(let* ((vcs-preferes '("hg" "git" "svk" "svn" "CVS" "RCS"))
-       (vcs-preferes (if (string-match "^21" emacs-version)
-                         (remove "hg" vcs-preferes)
-                       vcs-preferes))
-       (est-connu
-        (lambda (systeme)
-          "Renvoie une valeur vraie si SYSTEME est utilisable.
-Plus précisément, renvoie une liste dont l'unique élément est le symbole à
-ajouter à la variable `vc-handled-backends'; ou la liste vide (nil) si le
-système n'est pas utilisable."
-          (when (require-faible (intern (concat "vc-" (downcase systeme))))
-            (list (intern (upcase systeme)))))))
-  (pointemacs-personnalise `(vc-handled-backends
-                          (mapcan ,est-connu vcs-preferes))))
+(let* ((vcs-utilises '(Git RCS Hg Bzr SVN CVS))
+       (vcs-installes
+        (cl-remove-if-not
+         (lambda (vc) (locate-library (downcase (format "vc-%s" vc))))
+         vcs-utilises)))
+  (custom-set-variables `(vc-handled-backends '(,@vcs-installes))))
+
+(use-package vc-git-out-of-tree
+  :load-path (lambda () (concat user-emacs-directory "vc-git-out-of-tree")))
 
 ;; Certains environnements de dév pour langages de script «compilent»
 ;; en tirant des liens symboliques :
-(pointemacs-personnalise '(vc-follow-symlinks t))
+(custom-set-variables '(vc-follow-symlinks t))
 
 ;; Par défaut sous emacs, vc-cvs fiche le bazar en matière de copies de
 ;; secours. Ceci désactive les copies en "machin.txt.~1.1~"...
-(eval-after-load "vc-cvs" '(defun vc-cvs-make-version-backups-p (ignored) nil))
+(with-eval-after-load 'vc-cvs
+  (defun vc-cvs-make-version-backups-p (ignored) nil))
 
 ;; ... et ceci réactive les copies de secours ordinaires pour les
 ;; fichiers sous CVS / RCS. C'est alors le comportement ordinaire,
 ;; (fichiers tilde ou un répertoire de fichiers de secours, selon la
 ;; valeur de backup-directory-alist ci-dessus), qui prend effet.
-(pointemacs-personnalise '(vc-make-backup-files t))
-
-;; Support des équivalents de PCL-CVS pour d'autres SCM (se lance avec
-;; M-x svn-status, M-x git-status etc)
-(autoload 'svn-status "psvn"
-  "Examine the status of Subversion working copy in directory DIR."
-  'interactive)
+(custom-set-variables '(vc-make-backup-files t))
 
 (pointemacs-progression "Git") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use-package git-commit
+  :ensure
+  :custom (git-commit-major-mode 'markdown-mode)
+  :config
+  (remove-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill))
+
+;; git-gutter (https://github.com/syohex/emacs-git-gutter)
+(use-package git-gutter
+  :ensure
+  :delight git-gutter-mode   ;; Pas de marque dans la mode-line
+  :config
+  (setq git-gutter:update-hooks
+        (cl-union git-gutter:update-hooks
+                  '(vc-post-command-functions
+                    magit-post-refresh-hook)))
+  (global-git-gutter-mode t))
+
 (defun pointemacs-vc-next-action (amend)
-  "C-x v v amélioré pour git.
+  "\\[vc-next-action] amélioré pour git.
 \\[universal-argument] \\[vc-next-action] effectue un \"git commit --amend\".
 Si l'index contient des modifications, appelle `magit-commit' (ce qui va
-bien après avoir fait \\[git-gutter+-stage-hunks])."
+bien après avoir fait \\[git-gutter-stage-hunks])."
   (interactive "P")
   (with-current-buffer (current-buffer)
     (while (and (boundp 'vc-parent-buffer) vc-parent-buffer)
       (set-buffer vc-parent-buffer))
     (cond
-     ((not (eq 'GIT (vc-backend buffer-file-name)))
+     ((not (eq 'Git (vc-backend buffer-file-name)))
       (vc-next-action amend))  ;; Keep C-U semantics of other VC system
      ((and (fboundp 'magit-commit)
            ;; http://stackoverflow.com/questions/2657935
@@ -785,97 +840,41 @@ bien après avoir fait \\[git-gutter+-stage-hunks])."
      (t
       (vc-next-action nil)))))
 
-(eval-after-load "vc-hooks" '(define-key vc-prefix-map "v"
-                               'pointemacs-vc-next-action))
+(with-eval-after-load 'vc-hooks
+  (define-key vc-prefix-map "v" 'pointemacs-vc-next-action))
 
-(autoload 'magit-status "magit" "Entry point into magit." 'interactive)
+(use-package magit :ensure
+  :bind
+  ([(control x) (v) (b)] . magit-status)
+  :config
+  (add-hook 'magit-mode-hook (lambda () (setq truncate-lines nil)))
+  (add-hook 'magit-log-edit-mode-hook
+            (lambda () (setq fill-paragraph-function nil))))
 
-(add-hook 'magit-mode-hook (lambda () (setq truncate-lines nil)))
-(add-hook 'magit-log-edit-mode-hook
-          (lambda () (setq fill-paragraph-function nil)))
-;; Pas de marqueur "MRev" dans la barre d'état :
-(pointemacs-personnalise '(magit-auto-revert-mode-lighter nil))
+(pointemacs-progression "Linters / flycheck") ;;;;;;;;;;;;;;;;;
 
-;; git-gutter (https://github.com/jisaacks/GitGutter)
-(when (require-faible 'git-gutter)
-  (global-git-gutter-mode t)
-  (global-set-key (kbd "C-x v n") 'git-gutter:next-hunk)
-  (global-set-key (kbd "C-x v p") 'git-gutter:previous-hunk)
-  (defun pointemacs-stage-hunks-dans-la-region ()
-    "git add -p sur tous les morceaux (hunks) entre point et marque"
-    (interactive)
-    (let ((git-gutter:ask-p))
-      (if (not (region-active-p))
-          (git-gutter:stage-hunk)
-        (save-excursion
-          (and (> (point) (mark)) (exchange-point-and-mark))
-          (cl-loop with mark = (mark)
-                   while (let ((prev-point (point)))
-                           (git-gutter:next-hunk 1)
-                           (and (< (point) mark)
-                                (> (point) prev-point)))
-                   do (git-gutter:stage-hunk))))))
-  (global-set-key (kbd "C-x v h") 'pointemacs-stage-hunks-dans-la-region))
+(use-package flycheck
+  :ensure
+  :config (global-flycheck-mode 1)
+  :custom
+  (flycheck-global-modes '(not web-mode python-mode))
+  (flycheck-ruby-rubocop-executable "/usr/local/Homebrew/Library/Homebrew/shims/gems/rubocop"))
 
-(defun pointemacs:maj-auto-git-gutter ()
-  "Recharge l'état git-gutter après toute action dans magit"
-  (when (and (fboundp 'magit-auto-revert-repository-buffer-p)
-             (fboundp 'git-gutter))
-    (cl-loop for buf being the buffers
-             if (magit-auto-revert-repository-buffer-p buf)
-             do (with-current-buffer buf (git-gutter)))))
+(pointemacs-progression "direnv") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook 'magit-post-refresh-hook 'pointemacs:maj-auto-git-gutter)     
+(use-package direnv :ensure :config (direnv-mode))
 
-(pointemacs-progression "Débogueurs") ;;;;;;;;;;;;;;;;;;;;;;;
+(pointemacs-progression "Débogueurs") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Configuration de GUD, le débogueur multi-langages d'Emacs
-(pointemacs-personnalise
- '(gud-gdb-command-name (concat (pointemacs-choisir-commande "ggdb" "gdb")
-                                " -i=mi"))
- '(gud-chdir-before-run nil)
- '(comint-history-isearch 'dwim))
+; https://stackoverflow.com/a/29687732/435004
+(advice-add 'set-window-dedicated-p
+            :override (lambda (window flag) flag)
+            '((name .  pointemacs-set-window-dedicated-p-sans-effet)))
 
-;; (defadvice gdb-display-buffer (around pointemacs-pas-de-fenetre-dediee activate)
-;;   (display-buffer (ad-get-arg 0)))
-;; 
-(defun pointemacs-GUD-piles-cliquables ()
-  "Rend les piles d'exécution  (\"stack traces\") cliquables dans GUD."
-  (compilation-shell-minor-mode t))
-(add-hook 'gud-mode-hook 'pointemacs-GUD-piles-cliquables)
-(eval-after-load "compile" '(progn
-  (add-to-list 'compilation-error-regexp-alist 'perl-debugger)
-  ;; Cf. perl5db.pl lignes 5611 et 5625-5627
-  (add-to-list 'compilation-error-regexp-alist-alist '(perl-debugger "\\(file\\|at\\) '?\\([^' \t\n]+\\)'? [^\n]*line \\([0-9]+\\)[\\., \n]"
-     2 3))))
-
-(defadvice comint-send-input (around pointemacs-bt-dans-gdb activate)
-  "Lorsqu'on tape \"bt\" dans gud-gdb, affiche la pile avec GUD à la place."
-  (if (and (fboundp 'gdb-display-stack-buffer)
-           (boundp 'gud-minor-mode)
-           (eq gud-minor-mode 'gdbmi)
-           (save-excursion
-             (backward-word)
-             (cond ((looking-at "bt")
-                    (delete-char 2)
-                    t))))
-      (gdb-display-stack-buffer)
-    ad-do-it))
-
-(defadvice gdb-json-string (before pointemacs-repertoire activate)
-  "Correction de bug : lecture des chaînes MI avec un en-tête."
-  (when (string-match "^\"" (ad-get-arg 0))
-    (ad-set-arg 0 (concat "_header=" (ad-get-arg 0)))))
-
-(add-hook 'compilation-filter-hook (lambda () (and (fboundp 'inf-ruby-auto-enter) (inf-ruby-auto-enter))))
-(eval-after-load "compile" '(progn
-  (add-to-list 'compilation-error-regexp-alist 'ruby-trace)
-  ;; Cf. perl5db.pl lignes 5611 et 5625-5627
-  (aput 'compilation-error-regexp-alist-alist 'ruby-trace '("^#0:\\([^:]*\\):\\([0-9]*\\):"
-                                                            1 2))))
-
+;; Débogueur elisp interne d'Emacs
+(custom-set-variables '(eval-expression-debug-on-error nil))
 ;; Pas de limite de taille pour afficher les valeurs Lisp:
-(pointemacs-personnalise '(eval-expression-print-length nil)
+(custom-set-variables '(eval-expression-print-length nil)
                       '(eval-expression-print-level nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -887,61 +886,62 @@ bien après avoir fait \\[git-gutter+-stage-hunks])."
 ;; qu'Emacs, à l'instar d'UNIX, était un bon système d'exploitation
 ;; auquel il ne manquait qu'un bon éditeur de texte ? :-)
 
-(require-faible 'emacs-goodies-el) ;; Automatique sous Debian, mais
-                                   ;; pour mon MacBook faut aider un peu.
-
 ;; Impression : sous Linux j'utilise kprinter qui à l'inverse de l'icône «print
 ;; buffer» de la barre d'outils a l'avantage de posséder un bouton «annuler»...
-(pointemacs-personnalise '(ps-paper-type (quote a4)))
-(let ((kprinter (some 'executable-find '("kprinter" "gtklp"))))
-  (when kprinter (pointemacs-personnalise `(lpr-command ,kprinter))))
+(custom-set-variables '(ps-paper-type (quote a4)))
+(let ((kprinter (cl-some 'executable-find '("kprinter" "gtklp"))))
+  (when kprinter (custom-set-variables `(lpr-command ,kprinter))))
 
 ;; Dired (gestionnaire de fichiers)
-(pointemacs-personnalise 
- '(dired-guess-shell-gnutar "tar")
- '(dired-omit-size-limit nil))
-(add-hook 'dired-mode-hook (lambda () (require 'dired-x)))
+(use-package dired
+  :hook ((dired-mode . (lambda () (require 'dired-x))))
+  :config
+  (setq dired-omit-size-limit nil)
+  (when (eq system-type 'darwin)
+    (when (locate-file "gtar" exec-path)
+      (setq dired-guess-shell-gnutar "gtar"))
+    (when (locate-file "gls" exec-path)
+      (setq insert-directory-program "gls"))))
 
-;; Wanderlust: client IMAP et SMTP
-(when (boundp 'mail-user-agent) (setq mail-user-agent 'wl-user-agent))
-(when (fboundp 'define-mail-user-agent)
-    (define-mail-user-agent 'wl-user-agent 'wl-user-agent-compose
-      'wl-draft-send 'wl-draft-kill 'mail-send-hook))
-
-;; shell-mode en couleurs
+;; shell-mode
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(use-package with-editor
+  :hook ((shell-mode . with-editor-export-editor)))
 
 (pointemacs-progression "Tramp") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(dolist (exported '("GIT_AUTHOR_NAME" "GIT_AUTHOR_EMAIL" "GIT_COMMITTER_EMAIL"))
-  (let ((value (getenv exported)))
-    (setq tramp-remote-process-environment
-          (setenv-internal tramp-remote-process-environment exported value t))))
+(use-package tramp
+  :config
+  (dolist (exported '("GIT_AUTHOR_NAME" "GIT_AUTHOR_EMAIL" "GIT_COMMITTER_EMAIL"))
+    (let ((value (getenv exported)))
+      (setq tramp-remote-process-environment
+            (setenv-internal tramp-remote-process-environment exported value t))))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  :custom (tramp-kubernetes-namespace nil))
 
-;; Tramp + docker, yow! /docker:drunk_bardeen:/etc/passwd
-(aput 'tramp-methods "docker" '(
-  (tramp-login-program "docker")
-  (tramp-login-args (("exec" "-it") ("%h") ("/bin/bash" "--norc")))
-  (tramp-remote-shell "/bin/bash")
-  (tramp-remote-shell-args ("-i") ("-c"))))
-
-;; Complétion possible après /docker: (seulement avec ido) :
-(defadvice tramp-completion-handle-file-name-all-completions
-  (around pointemacs-completion-docker activate)
-  "(tramp-completion-handle-file-name-all-completions \"\" \"/docker:\" renvoie
-    la liste des noms des conteneurs Docker actifs, suivis de deux points."
-  (if (equal (ad-get-arg 1) "/docker:")
-      (let* ((dockernames-raw (shell-command-to-string "docker ps | perl -we 'use strict; $_ = <>; m/^(.*)NAMES/ or die; my $offset = length($1); while(<>) {substr($_, 0, $offset, q()); chomp; print map { qq($_:\n) } (m/[[:^space:]]+/g); }'"))
-             (dockernames (cl-remove-if-not
-                           #'(lambda (dockerline) (string-match ":$" dockerline))
-                           (split-string dockernames-raw "\n"))))
-        (setq ad-return-value dockernames))
-    ad-do-it))
-
-;; Tramp + fleet! /fleetssh:stiitops@stiitops.prometheus.service:/etc/passwd
-(require-faible 'tramp-fleet)
+(pointemacs-progression "recentf") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Liste File -> Open Recent..., commune à tous les desktops.
+(use-package recentf
+  :init
+  (dolist (it (list (rx "Wrote" (+ anything) "recentf" string-end)
+                    (rx "Cleaning up the recentf list...")))
+    (add-to-list 'inhibit-message-regexps it))
+  :config
+  (recentf-mode 1)
+  (run-at-time 1 60 #'recentf-save-list)
+  :custom
+  (recentf-menu-open-all-flag t)
+  (recentf-max-saved-items 100)
+  (recentf-exclude
+   '("/[.]recentf\\'" "/[.]ido[.]last\\'" "[.]rnc\\'")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Chargement du .emacs terminé")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ 
+;; End:
+(provide 'init)
+;;; init.el ends here
+
 </pre>
