@@ -2,6 +2,8 @@
 
 ;;; english-mode.el --- speak english after type a word
 
+(require 'thingatpt)
+
 (defun english-mode-map-fun (key)
   (lambda ()
     (interactive)
@@ -21,6 +23,7 @@
         (cons (kbd ")") (english-mode-map-fun 41))
         (cons (kbd ",") (english-mode-map-fun 44))
         (cons (kbd ".") (english-mode-map-fun 46))
+	(cons (kbd ":") (english-mode-map-fun 58))
         (cons (kbd "<return>") (english-mode-map-fun 10)))
 
   (if english-mode
