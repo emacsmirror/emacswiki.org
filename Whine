@@ -14,7 +14,7 @@ This was posted to [[comp.emacs]] by Bard Bloom in 1988. Here is his original an
 
 The LCD datafile had listed it under the name [::whinify].
 
-I've made some modifications so that it runs with recent Emacs versions. The main change is that it now uses post-command-hook instead of rebinding keys.
+Apart from reusing the original lists of words and phrases, the code linked above has been completely rewritten. Instead of rebinding the keys, it uses post-command-hook to intercept the main editing commands.
 
 [new:ulm:2009-12-15 15:00 UTC]
 ----
