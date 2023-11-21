@@ -34,7 +34,7 @@
 ;; (toggle-frame-fullscreen)
 (show-paren-mode 1)
 (winner-mode 1)
-(windmove-default-keybindings)
+;; (windmove-default-keybindings)
 (column-number-mode 1)
 
 ;; save minibuffer history
@@ -62,6 +62,11 @@
                   (mark " "
                         (name 20 20 :left :elide)
                         " " filename))))
+
+;; no casual window splitting
+(setq special-display-buffer-names
+      '("*compilation*" "*info*" "*Help*" "*Completions*" "*grep*")
+      special-display-function 'display-buffer-same-window)
 
 ;; selection
 (use-package expand-region
@@ -133,7 +138,7 @@
 (use-package adoc-mode
   :ensure t
   :mode "\\.ad\\(oc\\)?\\'"
-  :bind ("C-c RET" . asc:adoc-follow-xref)
+  :bind ("C-c C-o" . asc:adoc-follow-xref)
   :config
   (add-hook 'adoc-mode-hook 'visual-line-mode)
   (add-hook 'adoc-mode-hook 'flyspell-mode)
@@ -394,8 +399,101 @@ current buffer. Use a prefix argument to override either."
   (let ((inhibit-read-only t))
     (kill-region (region-beginning) (region-end))))
 
-(setq shell-file-name (executable-find "cmdproxy"))
-(setq shell-file-name "C:/tools/emacs/libexec/emacs/28.2/x86_64-w64-mingw32/cmdproxy.exe")
+(setq shell-file-name (executable-find "cmdproxy")
+      shell-file-name "C:/tools/emacs/libexec/emacs/28.2/x86_64-w64-mingw32/cmdproxy.exe")
+
+;; Meow
+
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)))
+
+(use-package meow :ensure t
+  :config (progn
+            (meow-setup)
+            (meow-global-mode 1)))
 
 ;; initial frame size not so tall because the font size is so large
 (setq initial-frame-alist
@@ -449,39 +547,6 @@ current buffer. Use a prefix argument to override either."
   (dolist (face '(default fixed-pitch))
     (set-face-attribute face nil :family "Iosevka" :height 120)))
 
-;; emoji font: doesn't work on windows
-;; https://emacs.stackexchange.com/questions/62219/how-do-i-get-colour-emoji-to-display-in-emacs
-
-;; display emojis using an appropriate font
-;; (cond ((member "Noto Emoji" (font-family-list))
-;;        (set-fontset-font
-;; 	t 'symbol (font-spec :family "Noto Emoji") nil 'prepend))
-;;       ((member "Segoe UI Emoji" (font-family-list))
-;;        (set-fontset-font
-;; 	t 'symbol (font-spec :family "Segoe UI Emoji") nil 'prepend)))
-
-;; setting up composition functions for emoji modifiers
-;; (require 'cl)
-;; (dolist (items `(((?🇦 . ?🇿) [".[🇦-🇿]+" 0 font-shape-gstring])
-;;                  ((?🏳 . ?🏴) [".[️‍🌈⚧☠󠀠-󠁿]*" 0 font-shape-gstring])
-;;                  (?⃣ ["[#*0-9]️⃣" 2 font-shape-gstring])
-;;                  ;; TODO: I can't make keycap sequences work because I
-;;                  ;; think they're trying to shape with the wrong font.
-;;                  ,@(mapcar (lambda (range) (list range [".‍?[🏻-🏿]?[‍️♂♀]*️?" 0 font-shape-gstring]))
-;;                            (concatenate 'list "☝🎅🏇👂👃👦👧👼💏💑💪🕴🕵🕺🖐🖕🖖🙇🚣🛀🛌🤏🤞🤟🤦🤽🤾🥷🦻👯❤"
-;;                                         '((?⛹ . ?✍) (?🏂 . ?🏄) (?🏊 . ?🏌) (?👆 . ?👐)
-;;                                           (?👫 . ?👮) (?👰 . ?👸) (?💁 . ?💇) (?🙅 . ?🙇) (?🙋 . ?🙏)
-;;                                           (?🚴 . ?🚶) (?🤘 . ?🤜) (?🤰 . ?🤹) (?🤼 . ?🤾) (?🦵 . ?🦹)
-;;                                           (?🧍 . ?🧏) (?🧒 . ?🧟))))
-;;                  (?🧑 [".‍?[🏻-🏿]?[‍⚕⚖✈❤️🌾🍳🍼🎄🎓🎤🎨🏫🏭👦-👩💋💻💼🔧🔬🚀🚒🤝🦯🦰-🦳🦼🦽🧑]*" 0 font-shape-gstring])
-;;                  ((?👨 . ?👩) [".‍?[🏻-🏿]?[‍⚕⚖✈❤️🌾🍳🍼🎄🎓🎤🎨🏫🏭👦-👩💋💻💼🔧🔬🚀🚒🤝🦯🦰-🦳🦼🦽🧑]*" 0 font-shape-gstring])
-;;                  ,@(mapcar (lambda (str) (list (elt str 0) (vector str 0 'font-shape-gstring)))
-;;                            '("😶‍🌫️" "🐈‍⬛" "🐕‍🦺" "🐻‍❄️" "👁️‍🗨️" "😮‍💨" "😵‍💫"))))
-;;   (set-char-table-range
-;;    composition-function-table
-;;    (car items)
-;;    (list (cadr items))))
-
 ;; at the very end, resume where we left off
 (setq desktop-restore-frames nil
       desktop-save t
@@ -502,7 +567,7 @@ current buffer. Use a prefix argument to override either."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(expand-region expand-selection langtool langtool-ignore-fonts langtool-popup rw-hunspell brutalist-theme wgrep magit adoc-mode idle-highlight-mode move-text use-package)))
+   '(meow expand-region expand-selection langtool langtool-ignore-fonts langtool-popup rw-hunspell brutalist-theme wgrep magit adoc-mode idle-highlight-mode move-text use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
