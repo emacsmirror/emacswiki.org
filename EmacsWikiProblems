@@ -18,6 +18,11 @@ Looking at TheCraftOfTextEditing I noticed that the ISBN links on there have sto
 
 -- TomWillemse
 
+[new]
+Good point. I think I'll switch to https://en.wikipedia.org/wiki/Special:BookSources/ – offloading the problem. Agreed?
+
+-- Alex Schroeder
+
 == Missing diffs except for last change ==
 
 I am keen in studying some changes over at https://www.emacswiki.org/emacs?action=rc;all=1;from=1;showedit=1;rcidonly=ElispCookbook but, no matter which diff I click on, I get message "Revision xx not available (showing current revision instead)".  -- gsl
