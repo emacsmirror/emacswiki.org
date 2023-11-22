@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul  4 08:17:34 2023 (-0700)
+;; Last-Updated: Wed Nov 22 14:03:41 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 689
+;;     Update #: 691
 ;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
@@ -62,6 +62,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/11/22 dadams
+;;     notify-user-of-mode: If mode-name is a cons use just its car.
 ;; 2023/07/04 dadams
 ;;     Added: read-only-echo-buffer.
 ;; 2021/07/30 dadams
@@ -246,7 +248,8 @@ BUFFER may be either a buffer or its name (a string)."
   (and buffer (buffer-name buffer)))    ; Return buffer's name.
 
 (defun interesting-buffer-p (buffer)
-  "Non-nil if BUFFER is a live buffer whose name does not start with SPC."
+  "Non-nil if BUFFER is a live buffer whose name does not start with SPC.
+BUFFER may be either a buffer or its name (a string)."
   (and buffer (setq buffer (live-buffer-name buffer)) ; Live buffer's name.
        (or (zerop (length buffer))      ; Not an empty name.
            (not (char-equal ?\  (aref buffer 0)))))) ; Starts with non-blank.
@@ -371,11 +374,12 @@ Useful as a mode hook.  For example:
              (not (active-minibuffer-window))
              (or (and notifying-user-of-mode-flag ; Global var controls display.
                       (interesting-buffer-p buffer)) ; Not internal buffer.
-                 anyway))               ; Override.
+                 anyway))                            ; Override.
     (message "Buffer `%s' is in mode `%s'.   For info on the mode: `%s'."
-             buffer (if (fboundp 'format-mode-line)
-                        (format-mode-line mode-name)
-                      mode-name)
+             buffer
+             (if (fboundp 'format-mode-line)                                 
+                 (format-mode-line (if (consp mode-name) (car mode-name) mode-name))
+               mode-name)
              (substitute-command-keys "\\[describe-mode]"))))
 
 (defun read-only-echo-buffer ()
