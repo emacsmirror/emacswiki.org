@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 15 12:30:50 2020 (-0700)
+;; Last-Updated: Wed Nov 22 12:20:21 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 815
+;;     Update #: 817
 ;; URL: https://www.emacswiki.org/emacs/download/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -27,6 +27,16 @@
 ;;; Commentary:
 ;;
 ;;     Startup configuration (assignments etc.).
+;;
+;;  ** OBSOLETE** - USE `da-setup.el' INSTEAD.
+;;
+;;    Had to rename this file from `setup.el' to `da-setup.el', as
+;;    Philip Kaludercic <philipk@posteo.net> stole the name `setup.el'
+;;    for his library, which he added to MELPA and GNU ELPA.  (Finit,
+;;    la Belle Epoque avec ses politesses, I guess.)  Anyway, the name
+;;    was (and still is) not so great.
+;;
+;;  **
 ;;
 ;;  Think of this library more as an extension to your init file
 ;;  (~/.emacs) than as a true library.  It makes changes to your Emacs
