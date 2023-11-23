@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 22 14:03:41 2023 (-0800)
+;; Last-Updated: Thu Nov 23 10:46:20 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 691
+;;     Update #: 692
 ;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x
@@ -62,8 +62,6 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2023/11/22 dadams
-;;     notify-user-of-mode: If mode-name is a cons use just its car.
 ;; 2023/07/04 dadams
 ;;     Added: read-only-echo-buffer.
 ;; 2021/07/30 dadams
@@ -361,6 +359,7 @@ See function `notify-user-of-mode'."
 See function `notify-user-of-mode'."
   :group 'help)
 
+
 (defun notify-user-of-mode (&optional buffer anyway)
   "Display msg naming major mode of BUFFER (default: current buffer).
 A message is never displayed if the minibuffer is active.  Otherwise:
@@ -369,7 +368,7 @@ A message is never displayed if the minibuffer is active.  Otherwise:
   In that case, msg is displayed anyway.
 Useful as a mode hook.  For example:
 \(add-hook 'c-mode-hook 'notify-user-of-mode)"
-  (setq buffer (buffer-name (and buffer (get-buffer buffer)))) ; Default curr.
+  (setq buffer  (buffer-name (and buffer (get-buffer buffer)))) ; Default curr.
   (when (and buffer
              (not (active-minibuffer-window))
              (or (and notifying-user-of-mode-flag ; Global var controls display.
@@ -377,9 +376,7 @@ Useful as a mode hook.  For example:
                  anyway))                            ; Override.
     (message "Buffer `%s' is in mode `%s'.   For info on the mode: `%s'."
              buffer
-             (if (fboundp 'format-mode-line)                                 
-                 (format-mode-line (if (consp mode-name) (car mode-name) mode-name))
-               mode-name)
+             (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)
              (substitute-command-keys "\\[describe-mode]"))))
 
 (defun read-only-echo-buffer ()
