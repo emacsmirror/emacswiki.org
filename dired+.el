@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2023.11.11
+;; Version: 2023.11.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 11 16:08:56 2023 (-0800)
+;; Last-Updated: Thu Nov 23 10:59:03 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 13686
+;;     Update #: 13690
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -37,8 +37,8 @@
 ;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
 ;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
 ;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
-;;   `vline', `w32-browser', `w32browser-dlgopen', `wdired',
-;;   `wid-edit', `wid-edit+', `widget', `zones'.
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1046,6 +1046,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/11/23 dadams
+;;     diredp-nb-marked-in-mode-name: Ensure the Dired buffer is current for :eval's.
 ;; 2023/11/11 dadams
 ;;     Added: diredp--set-mode-name-for-explicit-listing, diredp--this-dired-mode-name,
 ;;            diredp--snapshot-cmd-(same|other)-win, diredp--to-wdired-mode-advice, diredp--from-wdired-mode-advice.
@@ -15308,7 +15310,7 @@ that listing.  If option `diredp-count-.-and-..-flag' is non-nil then
 count also `.' and `..'.
 
 Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
-    (when (derived-mode-p 'dired-mode)  ; Sanity check - should always be the right buffer, but just in case.
+    (when (derived-mode-p 'dired-mode) ; Sanity check - should always be the right buffer, but just in case.
       (let ((mname  (format-mode-line mode-name)))
         ;; Property `dired+-mode-name' indicates whether `mode-name' has been changed.
         (unless (get-text-property 0 'dired+-mode-name mname)
@@ -15318,57 +15320,63 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                      (format "Dired/%s" (match-string 2 mname))
                                    mname)
                                  'dired+-mode-name t)
-                    (:eval (let* ((dired-marker-char  (if (eq ?D dired-marker-char)
-                                                          ?* ; `dired-do-flagged-delete' binds it.
-                                                        dired-marker-char))
-                                  (marked-regexp      (dired-marker-regexp))
-                                  (nb-marked          (count-matches marked-regexp (point-min) (point-max))))
-                             (if (not (> nb-marked 0))
-                                 ""
-                               (propertize
-                                (format " %s%d%c"
-                                        (save-excursion
-                                          (forward-line 0)
-                                          (if (diredp-looking-at-p (concat marked-regexp ".*"))
-                                              (format "%d/" (1+ (count-matches marked-regexp (point-min) (point))))
-                                            ""))
-                                        nb-marked dired-marker-char)
-                                'face 'diredp-mode-line-marked 'dired+-mode-name t))))
-                    (:eval (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
-                                                     (dired-marker-regexp)))
-                                  (nb-flagged      (count-matches flagged-regexp (point-min) (point-max))))
-                             (if (not (> nb-flagged 0))
-                                 ""
-                               (propertize
-                                (format " %s%dD"
-                                        (save-excursion
-                                          (forward-line 0)
-                                          (if (diredp-looking-at-p (concat flagged-regexp ".*"))
-                                              (format "%d/" (1+ (count-matches flagged-regexp (point-min) (point))))
-                                            ""))
-                                        nb-flagged)
-                                'face 'diredp-mode-line-flagged))))
-                    (:eval (save-excursion
-                             (let ((this   0)
-                                   (total  0)
-                                   (o-pt   (line-beginning-position))
-                                   (e-pt   (or (condition-case nil
-                                                   (let ((diredp-wrap-around-flag  nil))
-                                                     (save-excursion
-                                                       (diredp-next-subdir 1)
-                                                       (line-beginning-position)))
-                                                 (error nil))
-                                               (save-excursion (goto-char (point-max)) (line-beginning-position)))))
-                               (when dired-subdir-alist (dired-goto-subdir (dired-current-directory)))
-                               (while (and (<= (point) e-pt)
-                                           (< (point) (point-max))) ; Hack to work around Emacs display-engine bug.
-                                 (when (condition-case nil
-                                           (dired-get-filename nil diredp-count-.-and-..-flag)
-                                         (error nil))
-                                   (when (<= (line-beginning-position) o-pt) (setq this  (1+ this)))
-                                   (setq total  (1+ total)))
-                                 (forward-line 1))
-                               (if (not (> this 0)) (format " %d" total) (format " %d/%d" this total))))))))))))
+                    (:eval              ; Number of marked (#*).
+                     (with-current-buffer ,(current-buffer) ; Show number of marked (#*).
+                       (let* ((dired-marker-char  (if (eq ?D dired-marker-char)
+                                                      ?* ; `dired-do-flagged-delete' binds it.
+                                                    dired-marker-char))
+                              (marked-regexp      (dired-marker-regexp))
+                              (nb-marked          (count-matches marked-regexp (point-min) (point-max))))
+                         (if (not (> nb-marked 0))
+                             ""
+                           (propertize
+                            (format " %s%d%c"
+                                    (save-excursion
+                                      (forward-line 0)
+                                      (if (diredp-looking-at-p (concat marked-regexp ".*"))
+                                          (format "%d/" (1+ (count-matches marked-regexp (point-min) (point))))
+                                        ""))
+                                    nb-marked dired-marker-char)
+                            'face 'diredp-mode-line-marked 'dired+-mode-name t)))))
+                    (:eval              ; Number of flagged (#D).
+                     (with-current-buffer ,(current-buffer)
+                       (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
+                                                 (dired-marker-regexp)))
+                              (nb-flagged      (count-matches flagged-regexp (point-min) (point-max))))
+                         (if (not (> nb-flagged 0))
+                             ""
+                           (propertize
+                            (format " %s%dD"
+                                    (save-excursion
+                                      (forward-line 0)
+                                      (if (diredp-looking-at-p (concat flagged-regexp ".*"))
+                                          (format "%d/" (1+ (count-matches flagged-regexp (point-min) (point))))
+                                        ""))
+                                    nb-flagged)
+                            'face 'diredp-mode-line-flagged)))))
+                    (:eval ; This line number / total number of lines.
+                     (with-current-buffer ,(current-buffer)
+                       (save-excursion
+                         (let ((this   0)
+                               (total  0)
+                               (o-pt   (line-beginning-position))
+                               (e-pt   (or (condition-case nil
+                                               (let ((diredp-wrap-around-flag  nil))
+                                                 (save-excursion
+                                                   (diredp-next-subdir 1)
+                                                   (line-beginning-position)))
+                                             (error nil))
+                                           (save-excursion (goto-char (point-max)) (line-beginning-position)))))
+                           (when dired-subdir-alist (dired-goto-subdir (dired-current-directory)))
+                           (while (and (<= (point) e-pt)
+                                       (< (point) (point-max))) ; Hack to work around Emacs display-engine bug.
+                             (when (condition-case nil
+                                       (dired-get-filename nil diredp-count-.-and-..-flag)
+                                     (error nil))
+                               (when (<= (line-beginning-position) o-pt) (setq this  (1+ this)))
+                               (setq total  (1+ total)))
+                             (forward-line 1))
+                           (if (not (> this 0)) (format " 0/%d" total) (format " %d/%d" this total)))))))))))))
 
   (add-hook 'dired-after-readin-hook 'diredp-nb-marked-in-mode-name)
 
