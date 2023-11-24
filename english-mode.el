@@ -19,12 +19,16 @@
   :group 'dotfiles
   :lighter " En"
   :keymap
-  (list (cons (kbd "SPC") (english-mode-map-fun 32))
+  (list (cons (kbd "<return>") (english-mode-map-fun 10))
+	(cons (kbd "SPC") (english-mode-map-fun 32))
+	(cons (kbd "\"") (english-mode-map-fun 34))
         (cons (kbd ")") (english-mode-map-fun 41))
         (cons (kbd ",") (english-mode-map-fun 44))
+	(cons (kbd "-") (english-mode-map-fun 45))
         (cons (kbd ".") (english-mode-map-fun 46))
 	(cons (kbd ":") (english-mode-map-fun 58))
-        (cons (kbd "<return>") (english-mode-map-fun 10)))
+	(cons (kbd ">") (english-mode-map-fun 62))
+	(cons (kbd "?") (english-mode-map-fun 63)))
 
   (if english-mode
       (message "english-mode activated!")
