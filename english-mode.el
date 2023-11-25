@@ -27,6 +27,7 @@
 	(cons (kbd "-") (english-mode-map-fun 45))
         (cons (kbd ".") (english-mode-map-fun 46))
 	(cons (kbd ":") (english-mode-map-fun 58))
+	(cons (kbd ";") (english-mode-map-fun 59))
 	(cons (kbd ">") (english-mode-map-fun 62))
 	(cons (kbd "?") (english-mode-map-fun 63)))
 
