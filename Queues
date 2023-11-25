@@ -2,9 +2,10 @@ A queue can be used as both a first-in last-out and a first-in first-out stack, 
 
 The latest version  (0.1, released February 2009) can be obtained from:
 
-* Queue package download: http://www.dr-qubit.org/download.php?file=predictive/queue.el
+* Queue package download: https://www.dr-qubit.org/predictive/queue.el
 * Queue git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
-* Web site: http://www.dr-qubit.org/emacs.php#structures
+* Web site: https://www.dr-qubit.org/emacs_data-structures.html
+
 
 The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, ''*not*'' a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
 
@@ -13,7 +14,7 @@ The development version is hosted in the same git repository as PredictiveMode. 
 
 The original Elib version can be obtained from:
 
-* JDEE web site: http://jdee.sunsite.dk/elib-1.0.tar.gz
+* JDEE web site: http://jdee.sunsite.dk/elib-1.0.tar.gz (this link is dead)
 
 Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
 
