@@ -5,6 +5,7 @@ diminish.el[https://github.com/myrjola/diminish.el] lets you fight modeline clut
 
 The `eval-after-load' form lets you diminish modes not loaded at Emacs startup.
 
+
 == Mode lines containing `:eval' forms ==
 
 `diminished-modes' doesn't work on mode lines that use `:eval' (for example, [[Projectile]] uses it to display the current project)
@@ -49,6 +50,9 @@ what diminished modes would be on the mode-line if they were still minor."
 }}}
 
 ----
+
+For a method to "diminish all except 'x,y,z'", check out https://github.com/myrjola/diminish.el/issues/11 
+
 See also DelightedModes
 
 Other packages for controlling the modeline: [https://github.com/radian-software/blackout Blackout]
