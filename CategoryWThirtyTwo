@@ -9,17 +9,19 @@ https://www.gnu.org/software/emacs/download.html#windows
 
 * /Stable Releases:/
 ** https://ftp.gnu.org/gnu/emacs/windows/
-* /Snapshot Builds:/
-** https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-27/
-* /Weekly Builds:/ (as of August 2018, not being updated)
-** http://alpha.gnu.org/gnu/emacs/windows/
-* /Pretests:/
-** https://alpha.gnu.org/gnu/emacs/pretest/windows/
+* /Pretests (Emacs 29):/
+** https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-29
+* /Snapshot Builds (Emacs 30):/
+** https://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-30
 
 === Unofficial Releases ===
 
 * /RHO Emacs/ -- https://gchristensen.github.io/rho-emacs/
 ** ρEmacs is a preconfigured distribution of GNU Emacs editor for Microsoft Windows. It offers some enhancements over the standard Emacs experience and targets several Windows-specific issues. Currently offering version 27.2.
+** Responsive to problem reports. [https://github.com/GChristensen/rho-emacs/issues/5 Issue with M-x grep] in v1.0.2 turned around in a couple of hours.
+\\\\
+* /Unofficial Pretests/ -- https://corwin.bru.st
+** Precompiled binaries creating use the same process and build infrastructure as the Emacs binaries available from GNU FTP. Builds run following most commits to the /emacs-29/([https://corwin.bru.st/emacs-29/]) or /master/([https://corwin.bru.st/emacs-30/]) branches.  There are also some (less frequently refreshed) binaries (in DLL form) for various treesitter grammers: [https://corwin.bru.st/emacs-tree-sitter/]
 ** Responsive to problem reports. [https://github.com/GChristensen/rho-emacs/issues/5 Issue with M-x grep] in v1.0.2 turned around in a couple of hours.
 \\\\
 * /emax64/ -- https://github.com/m-parashar/emax64/releases/  ([https://ntemacs.sourceforge.io/ sourceforge link])
