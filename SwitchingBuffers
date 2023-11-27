@@ -2,9 +2,6 @@ For the built-in mechanism for switching buffers, see BufferMenu.
 
 == Recommendations for a Buffer Menu ==
 
-[new]
-I recommend BufferSelection, because it is easy to understand and still has configurations.  I don't need the power of IbufferMode. -- AlexSchroeder
-
 [new:DrewAdams:2004-12-25 18:30 UTC]
 I recommend BufferMenuPlus, because it is straightforward and lets you do multiple operations to multiple buffers, at once. -- DrewAdams
 
@@ -12,10 +9,6 @@ I recommend BufferMenuPlus, because it is straightforward and lets you do multip
 I recommend BufferSelection, because it is simple and works really well, perfect for BufferSwitching. -- LinhDang
 
 == Recommendations for Name-Based Switching ==
-
-[new]
-I recommend IswitchBuffers, because it is easy to understand.  I don't need the power of InteractivelyDoThings, which does the same thing for opening files, and many unrelated things besides. -- AlexSchroeder
-
 
 [new:DrewAdams:2004-12-25 18:30 UTC]
 I recommend `icicle-buffer' -- see '''[[Icicles - Buffer-Name Input]]'''.  You can:
@@ -44,11 +37,6 @@ Nothing is simpler or quicker. You are not limited to cycling: you can also use 
 
 
 
-
-
-
-
-
 == Content-based switching  ==
 
 These libraries let you switch among buffers and files based on matching their content, not just their names:
@@ -56,9 +44,6 @@ These libraries let you switch among buffers and files based on matching their c
 * [[Lisp:contentswitch.el]]
 * [[Icicles]] -- see [[Icicles - Buffer-Name Input]] and [[Icicles - File-Name Input#MatchFileContent|Match File Content]]
 * helm-multi-swoop-all from helm-swoop https://github.com/ShingoFukuyama/helm-swoop
-
-
-
 
 
 
@@ -167,10 +152,9 @@ May I suggest using cl-plusp instead of plusp in the function above. plusp produ
 
 
 
+=== Buffers and files
 
-
-
-
+[[switch-buffer-or-find-file]] tries to blur the line between buffers and files you had open in the recent past.
 
 
 
