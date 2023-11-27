@@ -1,0 +1,75 @@
+These are the steps to follow to create a snapshot, a point-in-time build of Emacs for Windows packaged for distribution via GNU FTP.
+
+They have been used most recently to make Emacs 30 snapshots; please update this page as new Emacs release branches (i.e., by changing /emacs-30/ to /emacs-31/ and similar edits to the commands below).
+
+We assume that you have MSYS2/MinGW64 setup and that you have created the following directories:
+
+    /c/emacs-upload/
+    /c/emacs-build/git/emacs-29
+    /c/emacs-install/
+
+We also assume you have NSIS[https://nsis.sourceforge.io/Download] and that ##nsis.exe## is located in a folder listed on your ##PATH##.
+
+Unless otherwise noted all commands are for the MinGW64 (or, for x32 builds, MinGW32) shell.
+
+Before you start, take note of the date.  Later you will replace //$DATE// with the date on which you started the process by fetching Emacs sources, ##YYYY-MM-DD## format.  This approximates the time when the latest commit to emacs.git included in the snapshot could have been pushed, and is provided to help users select relevant snapshot binaries when attempting to reproduce/bisect problems with Emacs for/by Windows users.
+
+* Fetch/update sources
+
+** First time on a given build system:
+
+  cd /c/emacs-build/git
+  git clone https://git.savannah.gnu.org/git/emacs.git -d emacs-30
+
+** Subsequent builds on the same system
+
+  cd /c/emacs-build/git/emacs-30
+  git clean -xfd
+  git pull
+
+* Note the short revision identifier
+
+  cd /c/emacs-build/git/emacs-30
+  git rev-parse --short=6 HEAD
+
+Take note of the output, which should be six characters in length.  In later commands, replace //$REV// with this value.
+
+* Generate the configure script
+
+  cd /c/emacs-build/git/emacs-30
+  ./autogen.sh
+
+* Configure for an "in-tree" build
+
+  cd /c/emacs-build/git/emacs-30
+  ./configure --with-modules \
+              --without-dbus \
+              --with-native-compilation=aot \
+              --without-compress-install \
+              --with-tree-sitter \
+              --with-sqlite \
+              CFLAGS=-O2
+
+* Build and install Emacs
+
+  cd /c/emacs-build/git/emacs-30
+  make install V=1 -j \
+       prefix=/c/emacs-install/emacs-30
+
+* Create the "nodeps" archive
+  
+* Create "deps" and "deps-src" archives
+
+* Unpack deps into //bin// of installed Emacs
+
+* Create the "full" archive
+
+* Create the executable self-installer
+
+* Create sha256 summaries
+
+* Sign and Upload
+
+----
+
+CategoryBuilding CategoryWThirtyTwo CategoryWThirtyTwoBinaries
