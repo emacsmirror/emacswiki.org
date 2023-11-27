@@ -152,7 +152,7 @@ May I suggest using cl-plusp instead of plusp in the function above. plusp produ
 
 
 
-=== Buffers and files ===
+== Buffers and files ==
 
 [[switch-buffer-or-find-file]] tries to blur the line between buffers and files you had open in the recent past.
 
