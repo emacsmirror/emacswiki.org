@@ -1,11 +1,11 @@
 These are the steps to follow to create a binary release of Emacs for Windows from a tarball (##tar.xz##, currently) of Emacs sources fetched from //ftp.gnu.org//.
 
-They have been used most recently to make the Emacs 29.1 release, release candidate, and pretests; you may wish to update this page as new Emacs release branches are created (i.e., by changing /emacs-29/ to /emacs-30/ and similar edits to the commands below).
+They have been used most recently to make the Emacs 29.1 release, release candidate, and pretests; you may wish to update this page as new Emacs releases are created (i.e., by changing /emacs-29.1/ to /emacs-29.2/, and similar edits to the commands below).
 
 We assume that you have MSYS2/MinGW64 setup and that you have created the following directories:
 
     /c/emacs-upload/
-    /c/emacs-build/git/emacs-29
+    /c/emacs-build/
     /c/emacs-install/
 
 We also assume you have NSIS[https://nsis.sourceforge.io/Download] and that ##nsis.exe## is located in a folder listed on your ##PATH##.
@@ -40,7 +40,7 @@ Unless otherwise noted all commands are for the MinGW64 (or, for x32 builds, Min
   
 * Create "deps" and "deps-src" archives
 
-* Unpack deps into //bin// of installed Emacs
+* Unpack deps into ##bin## of installed Emacs
 
 * Create the "full" archive
 
