@@ -1,0 +1,67 @@
+This piece of code keeps track of the files you visited and provides a function that merges the current buffer-list with those files, allowing you to switch to one of them. If you picked the name of a buffer, it switches to the buffer. If you picked the name of a file, it switches to the file. If you picked a non-unique file-name, it asks a follow-up question allowing you to pick the file you wanted.
+
+One way to install it would be to override the `C-x b` key-binding:
+
+{{{
+(global-set-key (kbd "C-x b") 'switch-buffer-or-find-file)
+
+(defvar asc:file-names-seen nil
+  "List of file names seen.")
+
+(defun asc:file-names-seen-update ()
+  "Add the current file name to `asc:file-names-seen'."
+  (when buffer-file-name
+    (setq asc:file-names-seen
+          (cons buffer-file-name
+                (delete buffer-file-name
+                        asc:file-names-seen)))))
+
+(add-hook 'find-file-hook 'asc:file-names-seen-update)
+
+(defvar switch-buffer-or-find-file-history nil
+  "History of file names or buffers picked.")
+
+(defun switch-buffer-or-find-file ()
+  "Switch buffer or find file."
+  (interactive)
+  (let ((buffer-names (mapcar 'buffer-name (buffer-list)))
+        (file-names nil)
+        (file-names-alist nil)
+        (default nil)n
+        (this-buffer-name (buffer-name (current-buffer))))
+    ;; build filename list (reversed!)
+    (dolist (full-name asc:file-names-seen)
+      (let* ((name (file-name-nondirectory full-name))
+             (full-names (assoc name file-names-alist)))
+        (setq file-names (cons name file-names))
+        (if full-names
+            (setcdr full-names (cons full-name (cdr full-names)))
+          (setq file-names-alist (cons (cons name (list full-name))
+                                       file-names-alist)))))
+    ;; filter beginning of the buffer name list and figure out the default
+    (while (and (not default) buffer-names)
+      (let ((name (car buffer-names)))
+        (if (or (string= (substring name 0 1) " ")
+                (eq this-buffer-name name))
+            (setq buffer-names (cdr buffer-names))
+          (setq default name))))
+    (setq candidates (append buffer-names file-names))
+    (let* ((name (completing-read
+                  (format "Switch to (%s): " default)
+                  candidates
+                  (lambda (s)
+                    (not (or (string= (substring s 0 1) " ")
+                             (eq this-buffer-name s))))
+                  nil nil
+                  'switch-buffer-or-find-file-history
+                  default))
+           (buf (get-buffer name))
+           (files (cdr (assoc name file-names-alist))))
+      (cond (buf (switch-to-buffer buf))
+            ((= 1 (length files))
+             (find-file (car files)))
+            (t (find-file
+                (completing-read "Which one of these files: " files)))))))
+```
+
+CategoryBufferSwitching
