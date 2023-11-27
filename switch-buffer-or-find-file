@@ -5,6 +5,19 @@ One way to install it would be to override the `C-x b` key-binding:
 {{{
 (global-set-key (kbd "C-x b") 'switch-buffer-or-find-file)
 
+(defvar asc:file-names-seen nil
+  "List of file names seen.")
+
+(defun asc:file-names-seen-update ()
+  "Add the current file name to `asc:file-names-seen'."
+  (let ((name (or buffer-file-name dired-directory)))
+    (when name
+      (setq asc:file-names-seen
+            (cons name (delete name asc:file-names-seen))))))
+
+(add-hook 'find-file-hook 'asc:file-names-seen-update)
+(add-hook 'dired-after-readin-hook 'asc:file-names-seen-update)
+
 (defvar switch-buffer-or-find-file-history nil
   "History of file names or buffers picked.")
 
