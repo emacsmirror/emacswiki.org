@@ -5,21 +5,11 @@ One way to install it would be to override the `C-x b` key-binding:
 {{{
 (global-set-key (kbd "C-x b") 'switch-buffer-or-find-file)
 
-(defvar asc:file-names-seen nil
-  "List of file names seen.")
-
-(defun asc:file-names-seen-update ()
-  "Add the current file name to `asc:file-names-seen'."
-  (when buffer-file-name
-    (setq asc:file-names-seen
-          (cons buffer-file-name
-                (delete buffer-file-name
-                        asc:file-names-seen)))))
-
-(add-hook 'find-file-hook 'asc:file-names-seen-update)
-
 (defvar switch-buffer-or-find-file-history nil
   "History of file names or buffers picked.")
+
+;; default history-length is 100 which is not enough
+(put 'switch-buffer-or-find-file-history 'history-length 1000)
 
 (defun switch-buffer-or-find-file ()
   "Switch buffer or find file."
@@ -31,7 +21,13 @@ One way to install it would be to override the `C-x b` key-binding:
         (this-buffer-name (buffer-name (current-buffer))))
     ;; build filename list (reversed!)
     (dolist (full-name asc:file-names-seen)
-      (let* ((name (file-name-nondirectory full-name))
+      (let* ((name (if (file-directory-p full-name)
+                       ;; parent directory with a slash…
+                       (file-name-as-directory
+                        (file-name-nondirectory
+                         (directory-file-name full-name)))
+                     ;; filename
+                     (file-name-nondirectory full-name)))
              (full-names (assoc name file-names-alist)))
         (setq file-names (cons name file-names))
         (if full-names
@@ -45,7 +41,7 @@ One way to install it would be to override the `C-x b` key-binding:
                 (eq this-buffer-name name))
             (setq buffer-names (cdr buffer-names))
           (setq default name))))
-    (setq candidates (append buffer-names file-names))
+    (setq candidates (completion-table-merge buffer-names file-names))
     (let* ((name (completing-read
                   (format "Switch to (%s): " default)
                   candidates
