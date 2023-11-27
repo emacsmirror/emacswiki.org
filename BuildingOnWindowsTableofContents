@@ -1,8 +1,15 @@
-There are three method of building GNU Emacs on Windows:
+There are three methods of building GNU Emacs on Windows documented within the Emacs source-tree, on [[GNU Savannah]]:
 
-* Using MinGW, consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL nt/INSTALL] in the source distribution.
 * Using [[MinGW64]], consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL.W64 nt/INSTALL.W64] in the source distribution.
+* Using MinGW, consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL nt/INSTALL] in the source distribution.
 * Using [[Cygwin]], consult [https://git.savannah.gnu.org/cgit/emacs.git/tree/INSTALL INSTALL] at the top-level in the source distribution (i.e., the standard BuildingEmacs instructions apply).
+
+There are also pages devoted to processes for volunteers follow to create "official" binaries, for publication via GNU FTP and mirrors. For general information on publishing GNU packages see the GNU Maintainers documentation.[https://www.gnu.org/prep/maintain/]  These follow the [[MinGW64]] processes, mentioned above, meaning you must have (a working/functional) MINGW64 (or MINGW32) as well as MSYS2 MSYS, as from MSYS2.org[https://MSYS2.org].
+
+The possible processes vary depending on where the Emacs sources are taken from, either:
+* [WThirtyTwoRelease] - a source release, release candidate, or pretest tarball
+* [WThirtyTwoSnapshot] - emacs.git
+
 
 ----
 
