@@ -62,6 +62,6 @@ One way to install it would be to override the `C-x b` key-binding:
              (find-file (car files)))
             (t (find-file
                 (completing-read "Which one of these files: " files)))))))
-```
+}}}
 
 CategoryBufferSwitching
