@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 28 19:39:43 2023 (-0700)
+;; Last-Updated: Wed Nov 29 11:23:13 2023 (-0800)
 ;;           By: dradams
-;;     Update #: 7532
+;;     Update #: 7540
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -21,18 +21,18 @@
 ;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
-;;   `col-highlight', `crosshairs', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `epg-config', `fit-frame', `font-lock',
-;;   `font-lock+', `frame-fns', `gv', `help+', `help-fns',
-;;   `help-fns+', `help-macro', `help-macro+', `help-mode',
-;;   `hl-line', `hl-line+', `info', `info+', `kmacro', `macroexp',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `crosshairs', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `fit-frame', `font-lock', `font-lock+',
+;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
+;;   `help-macro', `help-macro+', `help-mode', `hl-line', `hl-line+',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `package', `password-cache',
+;;   `pp', `pp+', `radix-tree', `rect', `replace', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
+;;   `thingatpt', `thingatpt+', `url-handlers', `url-parse',
+;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -170,7 +170,7 @@
 ;;    `Info-goto-glossary-definition', `info-indented-text-regexp',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
 ;;    `Info-manual-string', `Info-manual-symbol',
-;;    `Info-node-name-at-point', `Info-no-glossary-manuals',
+;;    `Info-node-name-at-point',
 ;;    `Info-read-bookmarked-node-name', `Info-refontify-current-node',
 ;;    `Info-remap-default-face-to-variable-pitch',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
@@ -188,7 +188,8 @@
 ;;    `info-isolated-quote-regexp',
 ;;    `info-last-non-nil-fontify-extra-function',
 ;;    `info-last-non-nil-fontify-glossary-words', `Info-link-faces',
-;;    `Info-merged-map', `Info-mode-syntax-table', `info-nomatch',
+;;    `Info-merged-map', `Info-mode-syntax-table',
+;;    `Info-no-glossary-manuals', `info-nomatch',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
 ;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
 ;;    `info-remap-default-face-cookie',
@@ -640,6 +641,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2023/11/29 dadams
+;;     Info-read-node-name: redefinition isn't needed for Emacs 29+.
 ;; 2023/05/28 dadams
 ;;     Added redefinition of Info-menu-update.
 ;; 2022/11/11 dadams
@@ -2163,7 +2166,7 @@ node links, when` Info-fontify-glossary-words' is non-nil.")
                                         wisent woman auth cl dbus
                                         emacs-mime smtpmail url widget)
   ;; Emacs and Semantic manuals have a glossary.
-  "List of Info manuals that have no manuals.
+  "List of Info manuals that have no glossaries.
 The elements are symbols whose names can be used as string arg to
 `info'.
 
@@ -3623,7 +3626,9 @@ virtual book) using \\<Info-mode-map>`\\[Info-save-current-node]' (`Info-save-cu
   (info)
   (Info-find-node 'toc "Top"))
 
-;; Vanilla Emacs added this from Info+ on 2021-11-11, in response to bug #44895.
+;; Vanilla Emacs added this from Info+ on 2021-11-11, in response to BUG #44895.
+;;
+;; I also filed Emacs BUG #67531 because using (MANUAL)NODE is broken in vanilla Emacs.
 ;;
 ;;;###autoload (autoload 'Info-goto-node-web "info+")
 (defun Info-goto-node-web (node &optional flip-new-win)
@@ -3696,7 +3701,7 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
     (setq file  (file-name-sans-extension (file-name-nondirectory file)))
     (unless (member file '("emacs" "elisp"))
       (error "Manual cannot be `%s'; it can only be `emacs' or `elisp'" file))
-    (setq node  (mapconcat (lambda (ch)
+    (setq node  (mapconcat (lambda (ch) ; Need to use `and' for Emacs < 24, since <= is only binary.
                              (if (or (< ch 32) ; ^@^A-^Z^[^\^]^^^-
                                      (and (<= 33 ch)   (<= ch 47)) ; !"#$%&'()*+,-./
                                      (and (<= 58 ch)   (<= ch 64)) ; :;<=>?@
@@ -3884,15 +3889,24 @@ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
 ;;
 ;; Added optional arg DEFAULT.
 ;;
-(defun Info-read-node-name (prompt &optional default)
-  (let* ((completion-ignore-case           t)
-         (Info-read-node-completion-table  (Info-build-node-completions))
-         (nodename                         (completing-read
-                                            prompt 'Info-read-node-name-1 nil t nil
-                                            'Info-minibuf-history default)))
-    (if (equal nodename "")
-        (or default  (Info-read-node-name prompt))
-      nodename)))
+(when (< emacs-major-version 29)
+
+  (defun Info-read-node-name (prompt &optional default)
+    "Read an Info node name with completion, prompting with PROMPT.
+A node name can have the form \"NODENAME\", referring to a node
+in the current Info file, or \"(FILENAME)NODENAME\", referring to
+a node in FILENAME.  \"(FILENAME)\" is a short format to go to
+the Top node in FILENAME."
+    (let* ((completion-ignore-case           t)
+           (Info-read-node-completion-table  (Info-build-node-completions))
+           (nodename                         (completing-read
+                                              prompt 'Info-read-node-name-1 nil t nil
+                                              'Info-minibuf-history default)))
+      (if (equal nodename "")
+          (or default  (Info-read-node-name prompt))
+        nodename)))
+
+  )
 
 
 ;; REPLACE ORIGINAL in `info.el':
