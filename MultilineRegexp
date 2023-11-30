@@ -2,9 +2,11 @@ A word of warning before we start: Multi-line regular expressions rarely work as
 
 With that out of the way, back to basics:
 
-To match any number of characters, use this: ##.*## -- the problem is that ##.## matches any character /except/ newline.  What many people propose next works, but is inefficient if you assume that newlines are not /that/ common in your text: ##"\\(.\\|\n\\)"##.  Better match multiple lines instead: ##".*\\(\n.*\\)*"##.  The newline is optional so that the expression can end in the middle of a line.  An alternative can be ##"[\0-\377[:nonascii:]]*"##.  All options tend to suffer from "stack overflow" when used in "large" buffers, tho some eat up the stack faster than others.  An option which uses less stack space (proportional to the number of lines rather than the number of characters) could be ##\\(.*\n\\)*.*##.
+To match any number of characters, use this: ##.*## -- the problem is that ##.## matches any character /except/ newline.  What many people propose next works, but is inefficient if you assume that newlines are not /that/ common in your text: ##"\\(.\\|\n\\)"##. If you use `rx' instead of a regexp string then you can use `anychar' (or `anything'). That expands to ##"\\(.\\|\n\\)"##. An alternative is to use ##".*\\(\n.*\\)*"##.  Another alternative is  ##"[\0-\377[:nonascii:]]*"##.
 
-If you use `rx' instead of a regexp string then you can use `anychar' (or `anything'). That expands to ##"\\(.\\|\n\\)"##.
+All options tend to suffer from "stack overflow" when used in "large" buffers, though some eat up the stack faster than others.  An option which uses less stack space (proportional to the number of lines rather than the number of characters) could be ##\\(.*\n\\)*.*##.
+
+
 
 == Incremental search ==
 
