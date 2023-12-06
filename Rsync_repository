@@ -9,6 +9,12 @@ List what's available:
 rsync theshire.emacs.cl::
 }}}
 
+The actual site is less useful when Emacs Wiki dropped off the net but it's still available while the site is up:
+
+{{{
+rsync emacswiki.org::
+}}}
+
 Here's how to get or update a copy into the ##emacswiki## directory, for example:
 
 {{{
@@ -33,8 +39,8 @@ As for what to expect:
 
 {{{
 kensanata@theshire:~$ du -sh emacswiki emacswiki.org
-1.2G	emacswiki
-55M	emacswiki.org
+1.4G	emacswiki
+57M	emacswiki.org
 }}}
 
 (Back to WikiDownload.)
