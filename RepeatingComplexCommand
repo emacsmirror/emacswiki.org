@@ -37,7 +37,7 @@ What if you had to do more than just click in another window to get to another b
 Just use `C-x ESC ESC', but then use `M-p' to retrieve the next-to-last command, `M-p M-p' to get the command previous to that, and so on. `M-p' moves backward through all your previously executed commands; `M-n' moves forward through them from some previous command.
 
 
-See also RepeatLastCommand.
+See also RepeatingCommands.
 
 ----
 CategoryCommands
