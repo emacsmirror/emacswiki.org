@@ -7,7 +7,7 @@ directory tree you accumulate Dired buffers, one for each directory you visit.
 You can bury Dired buffers with `q', which is bound to `quit-window' in DiredMode.  But that does not kill the buffers -- they still accumulate, whether or not they are displayed.
 
 
-In Emacs, at least since v.29.1, you can just use `(setq dired-kill-when-opening-new-dired-buffer t)` for using a unique buffer to navigate around all the directories tree.
+In Emacs, at least since v.29.1, you can use ##(setq dired-kill-when-opening-new-dired-buffer t)## to reuse the same window to visit different directories.
 
 
 == Libraries that Provide Reuse ==
