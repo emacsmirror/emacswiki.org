@@ -1,16 +1,14 @@
 These are ways to repeat interactive commands or shorten the number of keys it takes to accomplish things.  These features make one more efficient, but also can avoid disabilities like [[RSI]].
 
 * UniversalArgument - Provide an argument to any command, often to repeat it.
-* RepeatLastCommand - Emacs can display the previous command in Emacs Lisp and prompt you to re-execute it. 
+* [[Repeatable]] -- Repeat commands bound to complex key sequences by only pressing the last key again.
+* RepeatingComplexCommand - Repeat the last command you invoked with `M-x'. You're prompted and can edit the parameters etc. 
 * KeyboardMacros - Encapsulate a number of keyboard sequences into a macro and repeat it. 
 * RepeatKeyDifferentBehaviors -- Repeating the same key and getting different behaviors, in a cycle.
 * DoReMi -- Run commands repetitively or iteratively, using the arrow keys or the mouse wheel to repeat or iterate.
 * [https://github.com/willghatch/emacs-repeatable-motion repeatable-motion] -- Repeat motion commands forward and backward.
 * RepeatingCommandsLikeVi - If you long for the "." command.
-* [[Repeatable]] -- Repeat commands bound to complex key sequences by only pressing the last key again.
 
-
-* RepetitionDetection - (Marginally related - let Emacs tell you when you're repeating yourself.)
 
 
 ----
