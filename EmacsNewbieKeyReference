@@ -140,9 +140,10 @@ When query-replace is in progress:
 [:RepeatingPreviousCommands]
 == Repeating Previous Commands ==
 
-* Repeat the most recent command: `C-x z', and again with `z'.
-* See the recent commands (displayed in EmacsLisp):  `M-x list-command-history'. Rerun a command by hitting `x' on the line containing a command.
-* RepeatingComplexCommand allows you to choose which previous command as EmacsLisp and even modify it.
+* RepeatingCommands - Covers all the ways you can repeat commands you've invoked in any way.
+* Repeat the last command you invoked: `C-x z', and again with `z'.
+* See the commands you invoked with `M-x' recently:  `M-x list-command-history'. Rerun a command by hitting `x' on the line containing a command.
+* RepeatingComplexCommand allows you to repeat a command you invoked with `M-x'.
 
 == Scrolling ==
 
