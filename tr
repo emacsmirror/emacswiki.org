@@ -8,14 +8,15 @@ with characters listed in TO. If FROM is longer
 than TO, then the excess characters are deleted.
 
 \(tr \"abcdefg\" \"abcd\" \"ABC\"\) => \"ABCefg\""
-  (dotimes (i (length str))
-    (let* ((c1 (aref str i))
-	   (pos (string-match (regexp-quote (char-to-string c1)) from))
-	   (c2 (ignore-errors
-		 (aref to pos))))
-      (when pos
-	(aset str i (or c2 0)))))
-  (replace-regexp-in-string "\000" "" str))
+  (let ((case-fold-search nil))
+    (dotimes (i (length str))
+      (let* ((c1 (aref str i))
+	     (pos (string-match (regexp-quote (char-to-string c1)) from))
+	     (c2 (ignore-errors
+		   (aref to pos))))
+        (when pos
+	  (aset str i (or c2 0)))))
+    (replace-regexp-in-string "\000" "" str)))
 }}}
 
 [new]
@@ -23,5 +24,8 @@ The above code does not work for me so I wrote a new function ourcomments-tr and
 
 [new]
 Code modified and should work now.
+
+[new]
+Modified to be case-sensitive
 ----
 ElispCookbook
