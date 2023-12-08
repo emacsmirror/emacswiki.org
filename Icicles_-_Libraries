@@ -207,6 +207,9 @@ The GitHubMirror contains a git repository that includes the '''[[https://github
 
 You can download an automatically generated zip file of '''Icicles''' files from the '''[[https://github.com/emacsmirror/icicles Icicles repository]]''' on the GitHubMirror.
 
+'''8.''' '''Download and update all the libraries using a `bash' script written by the creator of the '''[[https://www.youtube.com/channel/UCEqYjPJdmEcUVfHmQwJVM9A Emacs Elements]] Channel'''
+
+Watch the '''[[https://youtu.be/UEa8boIqKcg Video]]''' and get the '''[[https://github.com/emacs-elements/public_elements/blob/main/drew-adams-packages.sh Script]]'''.
 
 
 ----
