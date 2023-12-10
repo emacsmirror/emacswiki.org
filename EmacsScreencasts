@@ -89,14 +89,20 @@ workflows that can help you use Emacs more effectively.
 * [[Magit]]: See [[Magit#Screencasts]]
 * [http://derekslager.com/blog/posts/2007/02/screencast-formatting-a-css-file-with-emacs.ashx Formatting a CSS File] - Derek Slager
 * DocMode: [http://nschum.de/src/emacs/doc-mode/screencast/ Editing Javadoc]
-* Python
-** [https://www.youtube.com/watch?v=eH-epEqLVAs Aaron Schumacher: Emacs for Python]
-** [https://www.youtube.com/watch?v=6BlTGPsjGJk Emacs as a Python IDE] (47:36)
-* [https://www.youtube.com/watch?v=5FQwQ0QWBTU Emacs as a C++ IDE] (16:19)
 * [https://www.youtube.com/watch?v=dljNabciEGg Literate Devops with Emacs] (28:36)
-* [https://www.youtube.com/watch?v=GLdkYyGlSBg How to turn Emacs into a PHP development environment] (11:55)
 * [https://www.youtube.com/watch?v=HTUE03LnaXA Emacs as a C/C++ Editor/IDE (Part 1): auto-complete, yasnippet, and auto-complete-c-headers]
 * SkewerMode: https://www.youtube.com/watch?v=VEcobuYr5wg (12:19) - interactive web development
+
+==== Python =====
+* [https://www.youtube.com/watch?v=eH-epEqLVAs Aaron Schumacher: Emacs for Python]
+* [https://www.youtube.com/watch?v=6BlTGPsjGJk Emacs as a Python IDE] (47:36)
+
+==== C++====
+* [https://www.youtube.com/watch?v=5FQwQ0QWBTU Emacs as a C++ IDE] (16:19)
+
+
+==== PHP ====
+* [https://www.youtube.com/watch?v=GLdkYyGlSBg How to turn Emacs into a PHP development environment] (11:55)
 
 ==== Lisp ====
 
@@ -105,6 +111,10 @@ workflows that can help you use Emacs more effectively.
 ** http://www.unixuser.org/~euske/vnc2swf/slime.html
 * Redshank: http://www.foldr.org/~michaelw/emacs/redshank/ - a helper for all CommonLisp hackers, written by MichaelWeber
 * [https://www.youtube.com/watch?v=4X-1fJm25Ww The evolution of the Emacs tooling for Clojure] (35:11) Bozhidar Batsov
+
+
+==== Elisp ====
+* [https://www.youtube.com/playlist?list=PL9KxKa8NpFxKGctwh4-BqjQvdSRhh4NV- Mike Zamansky's playlist on Learning Elisp]
 
 ==== Ruby ====
 
