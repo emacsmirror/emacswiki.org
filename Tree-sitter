@@ -12,6 +12,24 @@ Tree-sitter offers different features than emacs' native parser. two things are 
 
 Emacs can automatically install a tree-sitter parser with `treesit-install-language-grammar'. If you have a C compiler installed, it will prompt for a language name.
 
+<pre>
+M-x treesit-install-language-grammar
+
+Language: c
+There is no recipe for c, do you want to build it interactively? (y or n) y
+Enter the URL of the Git repository of the language grammar: https://github.com/tree-sitter/tree-sitter-c
+Enter the tag or branch (default: default branch): <RET>
+Enter the subdirectory in which the parser.c file resides (default: "src"): <RET>
+Enter the C compiler to use (default: auto-detect): <RET>
+Enter the C++ compiler to use (default: auto-detect): <RET>
+
+Cloning repository
+Compiling library
+Library installed to ~/.emacs.d/tree-sitter/libtree-sitter-c.dll
+</pre>
+
+If a Git URL is not provided by default, you can copy one from [https://tree-sitter.github.io/tree-sitter/#parsers Tree-sitter's list of parsers]
+
 By default, Emacs will look for library files in <code>~/.emacs.d/tree-sitter/</code>. If you compiled the language's parser manually, copy it to this directory.
 === Step 2 ===
 
