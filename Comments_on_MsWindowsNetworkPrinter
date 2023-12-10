@@ -1,0 +1,8 @@
+Fails for me with
+ Opening output file: Invalid argument, c:/LPT3:
+At 2023.12.09 on Windows 11
+This is GNU Emacs 28.2 (build 2, x86_64-w64-mingw32)
+ of 2022-09-13
+
+-- pfklammer 2023-12-10 04:03 UTC
+
