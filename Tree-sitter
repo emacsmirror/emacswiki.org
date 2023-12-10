@@ -12,12 +12,25 @@ Tree-sitter offers different features than emacs' native parser. two things are 
 
 Emacs can automatically install a tree-sitter parser with `treesit-install-language-grammar'. If you have a C compiler installed, it will prompt for a language name.
 
-By default, Emacs will look for library files in <code>~/.emacs.d/tree-sitter/</code>. If you compiled the language's DLL manually, copy it to this directory.
+By default, Emacs will look for library files in <code>~/.emacs.d/tree-sitter/</code>. If you compiled the language's parser manually, copy it to this directory.
 === Step 2 ===
 
-You can use major modes that have `-ts-' in the name, such as `java-ts-mode'. Since there are existing rules for selecting major modes in the variable `auto-mode-alist', Emacs 29 provides the variable `major-mode-remap-alist' to 'redirect' the major modes without having to modify the more complicated `auto-mode-alist' variable. Customise `major-mode-remap-alist' with each entry having as the key the major mode you wish to redirect to Tree-sitter, and the value being the equivalent "...-ts-..." mode. For example `java-mode' would be remapped to `java-ts-mode'.
+You can use major modes that have `-ts-' in the name, such as `java-ts-mode'.
 
-It is worth consulting `auto-mode-alist' to know exactly which major mode to remap as it is less obvious what some modes are for, such as <code>'c-or-c++-mode'</code>, and bear in mind some packages update this list.
+Emacs 29 provides the variable `major-mode-remap-alist' to redirect the major modes without having to modify the more complicated `auto-mode-alist' variable.
+
+You can edit this value with `M-x customize-variable' or create the alist manually:
+
+<pre>
+(setq major-mode-remap-alist
+  '((css-mode  . css-ts-mode)
+    (rust-mode . rust-ts-mode)
+    (ruby-mode . ruby-ts-mode)))
+</pre>
+
+This variable can also be Customized
+
+It's worth consulting `auto-mode-alist' to know which major mode to remap, as it's less obvious what some modes are for, such as <code>'c-or-c++-mode'</code>. Some packages also modify this list.
 
 When a major mode powered by Tree-sitter is selected, Emacs will try to load the (native) library for that language, and will give an error if it is not available. In UNIX/Linux this would be a .so file, and in Windows a .dll.
 
