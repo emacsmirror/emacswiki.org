@@ -75,13 +75,16 @@ I would love to hear of a way to do this so that only the background is transluc
 
 == Emacs -nw in a Transparent Term ==
 
-Just make sure your terminal emulator has enough colors available to look good.  Then run `emacs -nw' in a transparent terminal.
+Make sure your terminal emulator has enough colors available to look good. Then run `emacs -nw' in a transparent terminal.
 
 Here's how you would start Emacs in a 256 color xterm:
 
     xterm -tn xterm-256color -e emacs -nw
 
 (Please change the above to use transparent aterm or eterm...)
+
+If you are using a custom theme that overrides the background color, set it to "unspecified-bg".
+
 
 == (Obsolete, OS X only) Transparent background color ==
 
