@@ -2,7 +2,7 @@ Here's some examples of stuff you can do to configure [[rcirc]].
 
 == Various ==
 
-<pre>
+{{{
 ;; You can autoload, but at the end of this block we'll
 ;; connect to two networks anyway.
 (require 'rcirc)
@@ -50,7 +50,7 @@ Here's some examples of stuff you can do to configure [[rcirc]].
 ;; Connect to servers.
 (rcirc); freenode is the default
 (rcirc-connect "localhost"); if you run bitlbee, this will connect to it
-</pre>
+}}}
 
 See BitlBee for an explanation of that last line.
 
