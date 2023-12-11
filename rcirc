@@ -1,4 +1,4 @@
-rcirc is a next generation InternetRelayChat client. It blends seamlessly with the rest of Emacs, it's tight, fast, and doesn't light up like a christmas tree. rcirc also has sane defaults. There is little or no reason to customize it because it does what you want by default (except that many people still do).
+rcirc is an [https://www.emacswiki.org/emacs/InternetRelayChat IRC] client. It blends seamlessly with Emacs and has sane defaults.
 
 rcirc is part of GNU Emacs since release 22.0.
 
@@ -25,7 +25,7 @@ Emacs 24 has SSL support out of the box but rcirc doesn't use it by default. Her
 
 {{{
 (setq rcirc-server-alist
-      '(("irc.freenode.net" :port 6697 :encryption tls
+      '(("irc.libera.chat" :port 6697 :encryption tls
 	 :channels ("#rcirc" "#emacs" "#emacswiki"))))
 }}}
 
