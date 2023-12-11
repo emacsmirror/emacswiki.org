@@ -227,6 +227,8 @@ The mailing lists are also available on [http://gmane.org Gmane].
 
 Note that the development & git branches of ERC and are not quite identical. The modules ErcBbdb and ErcSpeak are not available in the Emacs version, for example.
 
+* [https://www.emacswiki.org/emacs/rcirc rcirc] -- Another IRC client
+
 == External Links ==
 
 * [https://www.gnu.org/software/emacs/manual/html_node/erc/index.html ERC Manual]
