@@ -1,5 +1,7 @@
 '''Eshell''' is a shell written in EmacsLisp. It is included as of Emacs 21.
 
+Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gauland]].
+
 == Categories ==
 
 === General Usage ===
