@@ -4,39 +4,57 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 
 == Categories ==
 
+=== General Usage ===
 * EshellAlias
-* EshellAndAngeFtp -- using eshell on remote hosts
-* EshellAutojump -- use `j' to jump to your favorite directories
-* EshellBackticks -- commands in `backticks` are executed and their output replaces the commands in backticks
-* EshellBmk -- integration between Eshell and [[bookmark]]s
-* EshellColor -- faces, escape sequences, etc.
-* EshellCompletion
-* EshellControlFromOtherBuffer
-* Eshell and DiredMode -- using [[Eshell]] to read directories for [[dired]]: Customize variable `eshell-ls-use-in-dired'
-* EshellElDoc -- ElDoc functionality for Eshell
-* EshellEnhancedLS -- RET- and mouse-sensitive `ls' for Eshell
-* EshellExtensions
-* EshellFunctions
 * EshellForLoop -- writing <tt>for x in a b c do ...</tt> loops
 * EshellGlobbing -- globbing is the process that expands wildcards such as *.txt
-* EshellHistory and EshellDirectoryHistory
-* EshellIndicator
-* EshellInteractivelyRemove
-* EshellManual -- Texinfo source for a reference manual based on the comments in the source
-* EshellMultipleEshellBuffers -- Makes having multiple eshells open/cycling between them easier
-* EshellNavigation
-* EshellAndPdbTrack -- how to make PdbTrack work with Eshell
-* EshellPrompt -- changing your prompt
-* EshellRedirection -- redirecting to files, to buffers and to the clipboard
-* EshellScreen - make eshell interact with GNU screen
-* EshellScrolling -- make eshell scroll to the bottom of the screen
+* EshellFunctions
+* EshellAutojump -- use `j' to jump to your favorite directories
+* EshellBackticks -- commands in `backticks` are executed and their output replaces the commands in backticks
+
+
+=== Interfacing with Other Modes ===
+* EshellAndAngeFtp -- using eshell on remote hosts
+* EshellAndEmacsServer -- Use eshell like a shell in a terminal-emulator
 * EshellAndTramp -- using eshell with tramp
 * EshellAndViper -- making Eshell and Viper play well together
+* EshellScreen -- make eshell interact with GNU screen
 * EshellVisualCommands -- starting certain commands in AnsiTerm
+* EshellAndPdbTrack -- how to make PdbTrack work with Eshell
+* EshellInteractivelyRemove
+* Eshell And DiredMode -- using [[Eshell]] to read directories for [[dired]]: Customize variable `eshell-ls-use-in-dired'
+
+=== Themes and Customization ===
+* EshellColor -- faces, escape sequences, etc.
+* EshellCompletion
+* EshellPrompt -- changing your prompt
+
+=== About Eshell ===
+* EshellHistory and EshellDirectoryHistory
 * EshellWishList -- wish list and questions.
+* EshellManual -- Texinfo source for a reference manual based on the comments in the source
+* EshellElDoc -- ElDoc functionality for Eshell
+
+
+=== Extending Eshell ===
+* EshellEnhancedLS -- RET- and mouse-sensitive `ls' for Eshell
+* EshellExtensions
+* EshellBmk -- integration between Eshell and [[bookmark]]s
+* EshellScrolling -- make eshell scroll to the bottom of the screen
 * EshellWThirtyTwo -- snippets that make a w32 user's day brighter
-** EshellLnkFileSupport -- support for Windows shortcut
-* EshellAndEmacsServer -- Use eshell like a shell in a terminal-emulator
+* EshellControlFromOtherBuffer
+* EshellIndicator
+* EshellLnkFileSupport -- support for Windows shortcut
+* EshellRedirection -- redirecting to files, to buffers and to the clipboard
+* EshellMultipleEshellBuffers -- Makes having multiple eshells open/cycling between them easier
+* EshellNavigation
+
+
+
+
+
+
+
 
 == External Links ==
 
