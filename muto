@@ -42,7 +42,7 @@ I tried MH-E for a while. It uses MH files, which are OK, but:
 
 Fun built-in packages:
 * [[Rmail]] -- Email client
-* [[Eww]] -- Web browser
+* [[eww]] -- Web browser
 * [[rcirc]] -- IRC client
 * [[eshell]] -- Shell
 * [[proced]] -- System resource monitor
