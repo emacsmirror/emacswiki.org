@@ -41,16 +41,8 @@ I tried MH-E for a while. It uses MH files, which are OK, but:
 == See Also ==
 
 Email:
-* [[Rmail]]
-* [[MH-E]]
-* [[WanderLust]]
-* [[Mu4e]]
-* [[Notmuch]]
-
-
-Fun modes:
-* [[OrgMode]] -- Taking notes / Todos
-* [[eww]] -- Web Browser
+* [[Rmail]] -- Email client
+* [[Eww]] -- Web browser
 * [[rcirc]] -- IRC client
 * [[eshell]] -- Shell
 * [[proced]] -- System resource monitor
