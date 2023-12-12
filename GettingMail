@@ -1,6 +1,4 @@
-This page describes how to retrieve and read email from within Emacs.
-
-Also see [[WritingMail]] and [[SendingMail]].
+This page describes how to *retrieve* and *read* email from within Emacs.
 
 == Getting mail ==
 
@@ -102,6 +100,7 @@ There's a corresponding variable for /writing/ mail: `mail-user-agent', which te
 == See Also ==
 
 * WritingMail
+* SendingMail
 * [[Rmail]]
 * [[Gnus]]
 * [[MH-E]]
