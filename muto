@@ -1,5 +1,21 @@
 I'm a computer programmer from Canada. //Sometimes// I edit this wiki.
 
+== Helpful Tips ==
+
+`C-c' is reserved for the user to remap. I use it for often-used commands:
+
+{{{
+C-c i - ibuffer      C-c s - eshell
+C-c m - rmail        C-c w - eww
+C-c n - gnus         C-c e - emoji-insert
+
+Built-in keybindings:
+C-x r l  - List bookmarks
+C-x r M  - Add bookmark
+C-h m    - List *current* keybindings
+C-h b    - List *all* keybindings
+M-m      - First non-whitespace character
+}}}
 
 == Email in Emacs ==
 
