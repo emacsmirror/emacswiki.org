@@ -1,5 +1,6 @@
-== Description ==
-newsticker.el can display news items of news (RSS, Atom) feeds (such as the RSS of this wiki -- see OtherRecentChanges!), allowing you to keep up-to-date with sites that update their content continuously -- if and only if they provide a RSS or Atom feed.
+<code>newsticker.el</code> is an RSS / Atom feed reader included as of Emacs 22.
+
+Newsticker can display news feeds from various websites ([[https://www.emacswiki.org/emacs/OtherRecentChanges like this one]]), allowing you to continuously stay up-to-date with their content.
 
 From the package commentary:
 
@@ -9,9 +10,7 @@ RDF Site Summary (RSS) files) from a list of news sites, displays
 these headlines, and allows for loading the corresponding articles
 in a web browser.
 
-<code>newsticker.el</code> first appeared in GNU Emacs version 22.
-
-Recent versions of newsticker.el ( >= 1.99) offer a "treeview," in which feeds can be gathered into arbitrary groups for more efficient reading. The treeview tiles three windows -- one showing the feed hierarchy, another showing the list of articles in the selected feed, and a third showing the text of the selected article. Here is a [http://www.nongnu.org/newsticker/newsticker-1.99.png|screenshot] of the new treeview.
+As of version 1.99, Newsticker offers a "treeview," in which feeds can be gathered into arbitrary groups for more efficient reading. The treeview tiles three windows -- one showing the feed hierarchy, another showing the list of articles in the selected feed, and a third showing the text of the selected article. [http://www.nongnu.org/newsticker/newsticker-1.99.png|Treeview screenshot]
 
 For those who prefer a simple elegant interface without treeview
 window that showing all the articles in single buffer (similar to
@@ -20,21 +19,18 @@ to bring back the old "plainview" frontend:
 
     (setq newsticker-frontend 'newsticker-plainview)
 
-== Links ==
-There is a newsticker.el project on Savannah: Visit http://www.nongnu.org/newsticker/ for downloading the latest stable newsticker version. Note that development is taking place in Emacs CVS repository, the repository at savannah is not up to date.
-
-Stable releases are posted to news:gnu.emacs.sources as well, see Groups:newsticker.el.
-
-==Addons==
-
-* NewstickerNotify -- Display news number at mode-line when NewsTicker fetch news.
-
-----
-
 == See Also ==
 
 * [[Elfeed]] -- Another RSS / Atom feed reader
 * [[https://www.emacswiki.org/emacs/Comments_on_NewsTicker Comments on this page]]
+* NewstickerNotify -- Display a mode-line notification when newsticker fetches news.
+
+== External Links == 
+
+* [[https://www.gnu.org/software/emacs/manual/html_mono/newsticker.html Newsticker Manual]]
+* Groups:newsticker.el -- Newsticker news group (broken link?)
+* [[http://www.nongnu.org/newsticker/ Newsticker on Savannah]] -- Not always up to date
+
 
 ----
 CategoryJournaling
