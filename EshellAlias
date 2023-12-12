@@ -2,11 +2,11 @@ An Alias is a short "nickname" for a longer command. You can define your own ali
 
 See also EshellFunctions for more elaborate examples.
 
-== Reloading the aliases file ==
 
-Eshell aliases are stored in ##eshell-aliases-file## (which is something like ##~/.emacs.d/eshell/aliases##). If you edit it by hand, you'll need to refresh eshell's *cache* of values. To do this, run the ##eshell-read-aliases-list## function (which you can do by *typing it in eshell!*)
 
-== Using 'defalias' ==
+== Defining Aliases ==
+
+=== Using 'defalias' ===
 
 To simply write ##open## instead of ##find-file##.
 
@@ -31,13 +31,13 @@ Or you can also use something like this:   /Thanos 2023-08-21/
 	(defalias (car alias) (cdr alias)))
        my/eshell-aliases)
 
-== Alias 'll' to 'ls -l' ==
+=== Using 'alias' from within Eshell ===
 
 Make sure that the positional parameters are included:
 
     ~ $ alias ll 'ls -l $*'
 
-== Alias 'emacs' to 'find-file' ==
+To alias ##emacs## to ##find-file##:
 
     ~ $ alias emacs 'find-file $1'
 
@@ -68,39 +68,22 @@ Or the all-eshell version:
 
     alias emacs 'for i in ${eshell-flatten-list $*} {find-file $i}'
 
-== Alias 'w3m' to 'w3m-find-file' ==
+== Permanently Storing Aliases ==
 
-The same idea is for checking html files. I generate a lot of html 
-documentation using Doxygen and want to see the document without leaving emacs.
-If you have [[emacs-w3m]] and [[w3m]] installed; then you may want to alias 
-w3m to w3m-find-file same as emacs to find-file:
+All aliases will be stored automatically, thus you do not need to manually edit any file.
 
-    ~ $ alias w3m 'w3m-find-file $1'
+The variable `eshell-aliases-file' defines the file in which aliases are stored. If you edit it by hand, you'll need to refresh eshell's *cache* of values. To do this, run the ##eshell-read-aliases-list## function (which you can do by *typing it in eshell!*)
 
---AntonKulchitsky
+You also can define new eshell commands in your .emacs file.
 
-== Alias 'clear' to 'recenter 0' ==
-
-    ~ $ alias clear recenter 0
-
-== What about permanent aliases? ==
-
-The trick is that all aliases will be stored automatically, thus you
-do not need to edit anything equivalent to your ##".bash_alias"## manually.
-The variable `eshell-aliases-file' defines the file in which aliases are stored.
-Refer to the comments in the source file ##"em-alias.el"## for details.
-
-== More about permanent aliases ==
-
-You also can define new eshell commands in your .emacs file. There is a simple example.
-To define 'emacs' command as 'find-file' as above you may write:
-
-      (defun eshell/emacs (file)
-          (find-file file))
+{{{
+;; Alias 'open' to 'find-file'
+(defun eshell/open (file)
+  (find-file file))
+}}}
 
 This way you can define pretty complicated functions 
-using all emacs lisp power. From the other side, it may be just overkill 
-for such simple definitions. See [[EshellFunctions]] for more information about this. --AntonKulchitsky
+using Emacs Lisp.
 
 == Sharing aliases with bash ==
 Many people have lines like this in their .bashrc file:
