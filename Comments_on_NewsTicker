@@ -5,7 +5,174 @@ test to make sure I know the format before copying the current discussion over.
 
 ----
 
-and one more for good measure...
+Alright! All done formatting this comment section. All the below comments are ancient, but I'm marking them as being posted today (but referencing the original date when it's supplied)
+
+Cheers, and Merry Christmas <3
 
 -- [http://mutoshack.gitlab.io muto] 2023-12-12 02:52 UTC
 
+----
+
+Under ntemacs-21.3 and running newsticker, emacs can become a CPU hog. For some reason, newsticker wget under windows does not quit properly when loading images from certain feeds. If this happens to you, try adding <tt>--timeout=30</tt> to the newsticker-wget-arguments. 
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+It does a <tt>(require 'xml)</tt>. Which XML package is required?
+
+-- [AlainMellan] 2023-12-12 02:52 UTC
+
+----
+
+The one that comes with GNU Emacs (>= 21).
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+Too bad, I'm using XEmacs.
+
+-- [AlainMellan] 2023-12-12 02:52 UTC
+
+----
+
+There is a net-utils package for XEmacs containing (an) xml.el which works with newsticker.el. I added some XEmacs compatibility code, and now newsticker.el should work with XEmacs. Try the CVS version (>= 1.18, 30.Sep.2003) from http://savannah.nongnu.org/cgi-bin/viewcvs/newsticker/.
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+Any plans to include Atom (1.0 and optionally 0.3) support?
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+As of version 1.9 newsticker.el supports Atom feeds (0.3 as well as 1.0)
+
+(Originally posted 2005-11-04)
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+I tried it but I got a backtrace when showing news.
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Which Emacs version? Which news feed? What does the backtrace say? Send me a bug report
+
+(Originally posted 2005-11-05)
+
+-- [Ulf Jasper] 2023-12-12 02:52 UTC
+
+----
+
+For me newsticker works much better than Gnus rss back-end, but I miss the feature to save interested posts via eg. nnimap back-end. Is it possible?
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+You can mark an item as /immortal/ -- that will make it stay in the cache forever. Saving is currently not possible, but that  sounds like a good idea. I think I'll add the possibility to save rss/atom items to plain files (but not to IMAP). 
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Yes, I'm already keeping articles as 'immortal', but newsticker always ask if I want cache to open 'cause "it's big". otoh, I have lot of 'immortal' articles in cache with lot of inline images. What will come out of them when saved as plain files?
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+I mentioned IMAP in order that saved articles can be searched with mairix ;)
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Saving an item should also save linked images, like webbrowsers can do. Need to find out how this can be done with internal url-package, w3, w3m, wget or whatever... For the warning see `large-file-warning-threshold' (or the next newsticker release;). 
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Cool! w3m is good choice and it is already working with newsticker nicely. I'm eager to see next release (after dumping both newspipe & rss2email yesterday and gnus has poor support for rss) :-D
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Is it possible to import feeds from an OPML file? And where can I find documentation for newsticker, there's none in the emacs manual as far as I can see, and the little documentation I've managed to find doesn't, for example, tell me how to delete feeds.
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Try `newsticker-opml-import'! (If you encounter problems with nested opml files try the CVS version from savannah.) Newsticker comes with a very brief manual, separate from the Emacs manual (`C-h i m newsticker RET'). For customizing newsticker click on the customize-button on the toolbar, or type `M-x customize-group RET newsticker RET'.
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+Does anyone know why newsticker uses so many CPU cycles just to download and render rss feeds? My processor revs up to 100% capacity for a couple of minutes just to download and display 10 feeds. Gnus/nnrss maxes out at perhaps 10% CPU capacity for the same feeds, and fetches them twice as fast. And when I try to use an external program like wget to fetch feeds, the instructions newsticker sends it causes it to get stuck in a loop at 100% CPU. Any advice would be greatly appreciated.
+
+-- [MattLundin] 2023-12-12 02:52 UTC
+
+----
+
+I guess that it is the xml parsing that takes so long. Please send me the URLs of those feeds. I shall have a look then. Using wget for fetching feeds should just work. Could you provide more details? What platform are you using?
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+Thanks for the reply. I'm using Newsticker 1.99 on Ubuntu 8.10/Emacs 23.0.90 and Mac OS X/Emacs 22.3. I cleared my old  newsticker settings and customized from scratch -- everything now works fine. Sorry for the false alarm, and thanks for a wonderful rss reader. I do have one additional question. I noticed that the emacs development version of newsticker has a new location for storing data (newsticker-dir). As far as I can tell, the development version of newsticker always disregards my settings for .newsticker-cache and .newsticker-group locations in favor of the directory setting. Does this mean that the former files are now obsolete? Or is it possible to continue using the old files? Thanks.
+
+-- [MattLundin] 2023-12-12 02:52 UTC
+
+----
+
+Variables ##newsticker-cache-filename## and ##newsticker-groups-filename## have been replaced with ##newsticker-dir##. They have become obsolete in the latest newsticker version (in Emacs CVS). Newsticker will automatically convert your data: If these files are present newsticker will read them, store data in ##newsticker-dir##, and offers to remove them. If this does not work, please tell me.
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+I use emacs without X, in the terminal exclusively (Ubuntu emacs-nox package). It doesn't have XPM support (obviously) and apparently newsticker chokes when it can't load its XPM icons ("Invalid image type `xpm'"). This is kinda annoying since I can't use emacs-gtk (no anti-aliasing support...) or emacs-snapshot (would solve the anti-aliasing problem I guess, but last time I tried emacs 23 apparently didn't handle yet some other packages I use routinely). Could there be an alternative text-only version of the XPM icons like there is for tabbar-mode ?
+
+-- [FabriceGabolde] 2023-12-12 02:52 UTC
+
+----
+
+Is there any way to sort the *Newsticker Tree* buffer?
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Currently (2009-12-16) there are keys for adding groups (M-a) and for moving feeds to groups (M-m). In order to sort feeds and groups one has to edit  ##~/.emacs.d/newsticker/groups## (##`newsticker-dir'/groups##).
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
+
+----
+
+Where can I find example ##~/.emacs.d/newsticker/groups## file? The format seems to be completely undocumented.
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Is Newsticker not maintained anymore?
+
+-- Unknown 2023-12-12 02:52 UTC
+
+----
+
+Newsticker is part of GNU Emacs.
+
+-- [UlfJasper] 2023-12-12 02:52 UTC
