@@ -5,12 +5,12 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 == Categories ==
 
 === General Usage ===
-* EshellAlias
-* EshellForLoop -- writing <tt>for x in a b c do ...</tt> loops
-* EshellGlobbing -- globbing is the process that expands wildcards such as *.txt
-* EshellFunctions
-* EshellAutojump -- use `j' to jump to your favorite directories
-* EshellBackticks -- commands in `backticks` are executed and their output replaces the commands in backticks
+* [EshellAlias Aliases] -- Alias ##open## to ##open-file## etc.
+* [EshellFunctions Functions] -- Writing functions in Eshell
+* [EshellForLoop For Loops] -- Writing loops like ##for x in a b c do ...##
+* [EshellGlobbin Globbing] -- Expanding wildcards such as ##*.txt##
+* [EshellAutojump Auto-Jump] -- use `j' to jump to your favorite directories
+* [EshellBackticks Backticks] -- Replace a command in ##`backticks`## with its output.
 
 
 === Interfacing with Other Modes ===
