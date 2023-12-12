@@ -62,8 +62,9 @@ C-h m   -- View all keybindings
 == See Also ==
 
 * [[Elfeed]] -- Another RSS / Atom feed reader
-* [[https://www.emacswiki.org/emacs/Comments_on_NewsTicker Comments on this page]]
+* [[Rss]] -- The main RSS page on Emacswiki
 * NewstickerNotify -- Display a mode-line notification when newsticker fetches news.
+* [[https://www.emacswiki.org/emacs/Comments_on_NewsTicker Comments on this page]]
 
 == External Links == 
 
