@@ -2,20 +2,19 @@
 
 Newsticker can display news feeds from various websites ([[https://www.emacswiki.org/emacs/OtherRecentChanges like this one]]), allowing you to continuously stay up-to-date with their content.
 
-From the package commentary:
+== Overview ==
 
-: A newsticker is a thing that
-asynchronously retrieves a list of headlines (which are contained in
-RDF Site Summary (RSS) files) from a list of news sites, displays
-these headlines, and allows for loading the corresponding articles
-in a web browser.
+Some exerpts from the Newsticker manual -- Newsticker:
+
+* Retrieve /headlines/ from a list of news sites.
+* Provides a front-end for /reading and managing/ them.
+* /Headlines/ consist of a *title*, *description*, and a *link* to the full story.
+* A /description/ may be a brief summary or a full article.
+* Newsticker downloads news /periodically/ in the background.
 
 As of version 1.99, Newsticker offers a "treeview," in which feeds can be gathered into arbitrary groups for more efficient reading. The treeview tiles three windows -- one showing the feed hierarchy, another showing the list of articles in the selected feed, and a third showing the text of the selected article. [http://www.nongnu.org/newsticker/newsticker-1.99.png|Treeview screenshot]
 
-For those who prefer a simple elegant interface without treeview
-window that showing all the articles in single buffer (similar to
-what ##org-feed.el## provides), add the following in your configuration file
-to bring back the old "plainview" frontend:
+Newsticker also includes the old "plainview", a simpler alternative to treeview (similar to what ##org-feed.el## provides). Add the following in your init file:
 
     (setq newsticker-frontend 'newsticker-plainview)
 
