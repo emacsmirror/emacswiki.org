@@ -90,11 +90,11 @@ There's a corresponding variable for /writing/ mail: `mail-user-agent', which te
 ;; If you prefer rmail
 (setq mail-user-agent 'sendmail-user-agent)
 
-;; Or MH-E
-(setq mail-user-agent 'mh-e-user-agent)
-
 ;; Or GNUS
 (setq mail-user-agent 'gnus-user-agent)
+
+;; Or MH-E
+(setq mail-user-agent 'mh-e-user-agent)
 }}} 
 
 == See Also ==
