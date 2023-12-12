@@ -40,7 +40,7 @@ I tried MH-E for a while. It uses MH files, which are OK, but:
 
 == See Also ==
 
-Email:
+Fun built-in packages:
 * [[Rmail]] -- Email client
 * [[Eww]] -- Web browser
 * [[rcirc]] -- IRC client
@@ -53,10 +53,11 @@ External packages I like:
 * [[Elfeed]] -- RSS / Atom reader
 * [[Elpher]] -- Gopher / Gemini client
 
-== External Links ==
+== Links ==
 
 * [[https://mutoshack.gitlab.io My website]]
 * [[https://functional.cafe/@MutoShack Me on fedi]]
+* [[https://www.emacswiki.org/emacs/Comments_on_muto Leave a comment on this page!]]
 
 ----
 CategoryHomepage
