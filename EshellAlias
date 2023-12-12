@@ -1,14 +1,17 @@
+An Alias is a short "nickname" for a longer command. You can define your own aliases in Eshell.
+
 See also EshellFunctions for more elaborate examples.
 
 == Reloading the aliases file ==
 
-The eshell aliases are stored in a file whose name is in the variable ##eshell-aliases-file## (this defaults to something like ~/.emacs.d/eshell/aliases). If you edit it by hand then (as the manual says), you'll need to refresh eshell's cache of the values. To do this, run the ##eshell-read-aliases-list## function (which, of course, you can do by typing its name in eshell!)
+Eshell aliases are stored in ##eshell-aliases-file## (which is something like ##~/.emacs.d/eshell/aliases##). If you edit it by hand, you'll need to refresh eshell's *cache* of values. To do this, run the ##eshell-read-aliases-list## function (which you can do by *typing it in eshell!*)
 
 == Using 'defalias' ==
 
-I used this in my .emacs so that I can simply open file instead of
-find-file.  This has the added advantage that I can M-x open file when
-I can't remember what C-x C-f does ;P
+To simply write ##open## instead of ##find-file##.
+
+This has the added advantage that I can ##M-x open file## when
+I can't remember what ##C-x C-f## does ;P
 
     (defalias 'open 'find-file)
     (defalias 'openo 'find-file-other-window)
@@ -16,12 +19,12 @@ I can't remember what C-x C-f does ;P
 Or you can also use something like this:   /Thanos 2023-08-21/
 
    (setq my/eshell-aliases
-      '((g . magit)
+      '((g  . magit)
 	(gl . magit-log)
-	(d . dired)
-	(o . find-file)	
+	(d  . dired)
+	(o  . find-file)	
 	(oo . find-file-other-window)
-	(l . (lambda () (eshell/ls '-la)))
+	(l  . (lambda () (eshell/ls '-la)))
 	(eshell/clear . eshell/clear-scrollback)))
      
     (mapc (lambda (alias)
