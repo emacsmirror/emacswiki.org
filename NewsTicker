@@ -2,6 +2,8 @@
 
 Newsticker can display news feeds from various websites ([[https://www.emacswiki.org/emacs/OtherRecentChanges like this one]]), allowing you to continuously stay up-to-date with their content.
 
+You can start newsticker with <code>M-x newsticker-treeview</code>
+
 == Overview ==
 
 Some exerpts from the Newsticker manual -- Newsticker:
@@ -12,11 +14,50 @@ Some exerpts from the Newsticker manual -- Newsticker:
 * A /description/ may be a brief summary or a full article.
 * Newsticker downloads news /periodically/ in the background.
 
+== Tree View ==
+
 As of version 1.99, Newsticker offers a "treeview," in which feeds can be gathered into arbitrary groups for more efficient reading. The treeview tiles three windows -- one showing the feed hierarchy, another showing the list of articles in the selected feed, and a third showing the text of the selected article. [http://www.nongnu.org/newsticker/newsticker-1.99.png|Treeview screenshot]
+
+Here are some key bindings for Newsticker's Treeview:
+
+<pre>
+Tree window
+G     -- Get news
+a     -- Add new URL
+f     -- Next feed
+F     -- Previous feed
+c     -- Customize current feed
+
+
+List window
+n     -- Next item
+p     -- Previous item
+
+
+Item window
+Space -- Next page
+v     -- View in browser
+
+C-h m -- See all keybindings
+</pre>
+
+== Plain View ==
 
 Newsticker also includes the old "plainview", a simpler alternative to treeview (similar to what ##org-feed.el## provides). Add the following in your init file:
 
     (setq newsticker-frontend 'newsticker-plainview)
+
+Keybindings for the Plainview are similar to Treeview's:
+
+<pre>
+n       -- Next item
+p       -- Previous item
+G       -- Get new news
+a       -- Add URL
+Return  -- View in browser
+
+C-h m   -- View all keybindings
+</pre>
 
 == See Also ==
 
