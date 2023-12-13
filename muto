@@ -42,7 +42,7 @@ I tried MH-E for a while. It uses MH files, which are OK, but:
 
 Emacs has *no* built-in ##rust-mode##. This approach requires:
 
-* [[https://www.emacswiki.org/emacs/TreeSitter Tree Sitter]] -- For *syntax highlighting* and *auto-indentation*
+* [[https://www.emacswiki.org/emacs/Tree-sitter Tree Sitter]] -- For *syntax highlighting* and *auto-indentation*
 * [[https://rust-analyzer.github.io/ Rust-analyzer]] -- The Rust LSP *server*
 * [[https://joaotavora.github.io/eglot/ Eglot]] -- The Emacs LSP *client*.
 * [CompanyMode Company] -- Provides *auto-complete* suggestions.
