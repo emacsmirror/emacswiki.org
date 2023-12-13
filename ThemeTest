@@ -44,6 +44,9 @@ A sentence of text with /italics/, *bolds*, _underlines_, ##Code snippets## and 
        (print "I'm a string with `embedded code' in it!\n"))))
 }}}
 
+An image:
+
+[[image:IbufferModeScreenShot]]
 
 
 Here's a few ##<hr/>## rules:
