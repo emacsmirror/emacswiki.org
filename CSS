@@ -61,6 +61,17 @@ Some of these are definitely unmaintained.
 * [EmacsWiki:action=browse;id=CSS;css=https://www.emacswiki.org/emacs/download/melonesque Melonesque] -- Automatic dark theme based on system preference.
 * [EmacsWiki:action=browse;id=CSS;css=/css/wikio.css;theme= white on blue and cyan links]-- By Earle Martin, adapted for Oddmuse by AlexSchroeder.
 
-'''Additions to the list welcome!'''
+== Adding a New Theme ==
+
+New themes are always welcome! To upload a theme to this list:
+
+* Create a *new page* by visiting a page that doesn't exist, like ##emacswiki.org/emacs/YourThemeName##
+* Click *"Create it now"*, and at the bottom of the "edit" page, click *"Replace this text with a file"*
+* Upload your CSS file.
+* Now, edit *this page* and create a new entry to this list with the following form:
+
+##* [EmacsWiki:action=browse;id=CSS;css=http://www.emacswiki.org/emacs/download/YourThemeName My Cool Theme] -- My Description##
+
+
 
 Note that due to security considerations, most browsers will prevent you from loading a style sheet from a different server.
