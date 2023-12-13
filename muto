@@ -38,6 +38,29 @@ I tried MH-E for a while. It uses MH files, which are OK, but:
 * HTML can't be rendered in the summary
 * The docs are a bit bare & it took time to figure it out
 
+== Rust in Emacs ==
+
+Emacs has *no* built-in ##rust-mode##. This approach requires:
+
+* [[https://www.emacswiki.org/emacs/TreeSitter Tree Sitter]] -- For *syntax highlighting* and *auto-indentation*
+* [[https://rust-analyzer.github.io/ Rust-analyzer]] -- The Rust LSP *server*
+* [[https://joaotavora.github.io/eglot/ Eglot]] -- The Emacs LSP *client*.
+* [CompanyMode Company] -- Provides *auto-complete* suggestions.
+
+{{{
+;; First we tell Emacs to open .rs files in Rust mode:
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+
+(add-hook 'rust-ts-mode-hook ; Activates when we open a Rust file.
+	  (lambda ()
+	    (eglot-ensure)   ; Start the language server.
+	    (company-mode))) ; Start the autocomplete process
+}}}
+
+* Once installed, there's no need to run ##rust-analyzer## externally.
+* Company mode may be installed from *ELPA*
+* Eglot and Tree-sitter come built-into Emacs.
+
 == See Also ==
 
 Fun built-in packages:
