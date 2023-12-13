@@ -1,23 +1,12 @@
-You can use different style sheets for this wiki.  If you would
-like to add more colors or use fancy fonts, pick another style
-sheet and use it.  We're also interested in finding more style
-sheets, so there are links to CSS sources as well for you to
-study and adapt -- and share!
-
-By default, we're using the Light theme by BrianBurns.
-Feedback? See the [https://github.com/bburns/emacswiki-light-theme issues on GitHub].
-
-You can change the theme used for this wiki using the links below.
-
-You may return to the default using [EmacsWiki:action=browse;id=CSS;css=;theme= this link].
+You can use different stylesheets for this wiki using the links below. If you know CSS, you can even create your own!
 
 See also EmacsWikiAppearance.
 
 == Recommended Style Sheets ==
 
 * [EmacsWiki:action=browse;id=CSS;css=/light.css;theme= Default] -- the default theme by BrianBurns
-* [EmacsWiki:action=browse;id=CSS;theme=;css=/css/emacs.css Classic CSS] following the old theme before May 2013. 
-** The classic theme with: [EmacsWiki:action=browse;id=CSS;theme=typo;css=/css/emacs.css more whitespace]; [EmacsWiki:action=browse;id=CSS;theme=big;css=/css/emacs.css big fonts]; [EmacsWiki:action=browse;id=CSS;theme=medium;css=/css/emacs.css medium fonts]; [EmacsWiki:action=browse;id=CSS;theme=small;css=/css/emacs.css small fonts]; or [EmacsWiki:action=browse;id=CSS;theme=tiny;css=/css/emacs.css tiny fonts]
+* [EmacsWiki:action=browse;id=CSS;theme=;css=/css/emacs.css Classic CSS] The default theme before May 2013. 
+** With: [EmacsWiki:action=browse;id=CSS;theme=typo;css=/css/emacs.css more whitespace] -- [EmacsWiki:action=browse;id=CSS;theme=big;css=/css/emacs.css big fonts] -- [EmacsWiki:action=browse;id=CSS;theme=medium;css=/css/emacs.css medium fonts] -- [EmacsWiki:action=browse;id=CSS;theme=small;css=/css/emacs.css small fonts] -- [EmacsWiki:action=browse;id=CSS;theme=tiny;css=/css/emacs.css tiny fonts]
 
 
 == User Submitted Style Sheets ==
