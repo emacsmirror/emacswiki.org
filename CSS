@@ -1,6 +1,5 @@
 You can use different stylesheets for this wiki using the links below. If you know CSS, you can even create your own!
 
-See also EmacsWikiAppearance.
 
 == Recommended Style Sheets ==
 
@@ -15,7 +14,7 @@ Some of these are definitely unmaintained.
 === Light Themes ===
 * [EmacsWiki:action=browse;id=CSS;css=/css/pedia.css Wikipedia] -- A classic Wikimedia style theme.
 * [EmacsWiki:action=browse;id=CSS;css=/css/basic.css Basic CSS] -- For people who use custom CSS want a basic style sheet.
-* [EmacsWiki:action=browse;id=CSS;css=https://www.emacswiki.org/emacs/download/melonesque Melonesque] -- A minimal light theme by [[muto]]
+* [EmacsWiki:action=browse;id=CSS;css=https://www.emacswiki.org/emacs/download/melonesque Melonesque] -- A minimal light theme by [[muto]] (2023)
 * [EmacsWiki:action=browse;id=CSS;css=/css/ruby.css Ruby] -- Bold red links on white.
 * [EmacsWiki:action=browse;id=CSS;css=https://e3aaa61d9d045c70ef76da2aa769c172a91d9795.googledrive.com/host/0B9Sf9Sn7xbJ6fmFnbjBvRFQ4NWp1OXJQUlhZZ0Y2S0gyMGNKTUZzWTkzM1c4Sm5CU1laQWM/cali2.css Cali+] -- Modern grey on white.
 * [EmacsWiki:action=browse;id=CSS;css=/css/blue.css More text]: Less whitespace, to fit more text on one page.
@@ -61,6 +60,10 @@ New themes are always welcome! To upload a theme to this list:
 
 ##* [EmacsWiki:action=browse;id=CSS;css=http://www.emacswiki.org/emacs/download/YourThemeName My Cool Theme] -- My Description##
 
+== See Also ==
+
+* EmacsWikiAppearance -- Add custom CSS to your browser.
+* ThemeTest -- A page to help you format your theme properly.
 
 
 Note that due to security considerations, most browsers will prevent you from loading a style sheet from a different server.
