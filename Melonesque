@@ -3,22 +3,22 @@ Melonesque (Melon-esque, as in "reminiscent of melons") is a theme for the Emacs
 * To apply the theme, [[https://www.emacswiki.org/emacs?action=browse;id=CSS;css=https://www.emacswiki.org/emacs/download/melonesque Click Here]]
 * To go back to the default theme, [[https://www.emacswiki.org/emacs?action=browse;id=CSS;css=/light.css;theme= Click Here]]
 
-== About ==
+== About 🍉 ==
 
 * Automatic dark / light themes
 * Modern CSS, including color variables.
 * Minimalistic and hopefully easy on the eyes.
 * Does not play around with font sizes.
 * Does not play around with animations.
-* *Not* WCAG AAA compliant, but it's not bad overall (will work on it)
+* WCAG AAA compliant!
 
-== Screenshot ==
+== Screenshot 📸 ==
 
 This is a few screenshots bundled into one. It shows the navbar and some code snippets.
 
 [[image:MelonesqueScreenshot]]
 
-== Links ==
+== Links 🔗 ==
 
 * [[muto]] -- The author of this theme.
 * [[BrianBurns]] -- I stole code syntax colors from them.
