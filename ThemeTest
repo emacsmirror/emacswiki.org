@@ -2,36 +2,13 @@ This page includes various forms of text to help you edit [[CSS]] themes!
 
 = H1 Header =
 
-== H2 Header ==
-
-=== H3 Header ===
-
-==== H4 Header ====
-
-===== H5 Header =====
-
-====== H6 Header (who even uses this???) =======
-
-----
-
-A sentence of text with /italics/, *bolds*, _underlines_, ##Code snippets## and [TestPage Links!]
-
-* A bullet list with
 * /Italics/
 * *Bolds*
 * _Underlines_
 * ##Code snippets##
 * [TestPage Links!]
 
-# Here's
-# A
-# Numbered
-# List :3
-
-: This is a quote
-:: And this is a nested quote
-::: 3rd level nest
-:::: 4th level nest
+== H2 Header ==
 
 {{{
 ;; Comments look like this!
@@ -41,13 +18,32 @@ A sentence of text with /italics/, *bolds*, _underlines_, ##Code snippets## and 
 (defun myfunc (&optional key)
  (lambda (arg)
    (let ((local 0))
-       (print "I'm a string with `embedded code' in it!\n"))))
+       (print "A string with `code' in it!\n"))))
 }}}
+
+: This is a quote
+:: And this is a nested quote
+::: 3rd level nest
+:::: 4th level nest
+
+# Here's
+# A
+# Numbered
+# List :3
+
+A sentence of text with /italics/, *bolds*, _underlines_, ##Code snippets## and [TestPage Links!]
 
 An image:
 
 [[image:IbufferModeScreenShot]]
 
+=== H3 Header ===
+
+==== H4 Header ====
+
+===== H5 Header =====
+
+====== H6 Header =======
 
 Here's a few ##<hr/>## rules:
 
