@@ -1,11 +1,18 @@
-: when i read my old code, i find it pleasant when it is either scheme or
-elisp, sort of so-so w/ sh and C, out of sorts w/ perl and python, and
-wretched and tormented w/ C++.  ymmv of course.
+: When i read my old code, i find it pleasant when it is scheme or
+elisp, and tormented when it's C++.
 -- ThienThiNguyen on the guile-users list
 [http://mail.gnu.org/pipermail/guile-user/2002-February/002543.html]
 
-Guile, a dialect of [[Scheme]], is the native language of the GNU standard extension language interpreter (http://www.gnu.org/software/guile/).
+Guile, a dialect of [[Scheme]], is the standard extension language of GNU. 
 
-The GuileEmacs project is to replace Emacs's Elisp engine with Guile's implementation of Elisp, and get Scheme support (and other languages) in parallel, because Guile supports Elisp as one of its front-end languages for its VM/IL. This project finally shows some very encouraging progress as of lately (2014-08 now and the Elisp engine is essentially replaced).
+== See Also ==
 
-See GuileIde for editing Guile code in Emacs and using Emacs to interact with inferior Guile interpreter processes.
+* GuileEmacs -- An attempt to use Guile in place of ELisp in Emacs.
+* GuileIde -- For using Emacs as a Guile IDE.
+* [[Scheme]] -- Page regarding the language Guile implements.
+
+== External Links ==
+
+* [[http://www.gnu.org/software/guile/ Official Website]]
+* [[https://www.gnu.org/software/guile/manual/html_node/index.html Official Reference Manual]]
+* [[https://mutoshack.gitlab.io/posts/painting-in-guile-with-opengl.html Muto's article on OpenGL and Guile]]
