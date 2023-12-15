@@ -80,10 +80,10 @@ External packages I like:
 
 Links to pages here on the Wiki that I feel need additional editing or care, but do not have the time to really get around to it at the moment.
 
-[[Scheme]] -- Many outdated links / old info.
-[[Guile]] -- Not sure if this page is even needed.
-GuileIde -- On using Emacs to write in Guile Scheme.
-SchemeMode -- On the specific mode for writing Scheme.
+* [[Scheme]] -- Many outdated links / old info.
+* [[Guile]] -- Not sure if this page is even needed.
+* GuileIde -- On using Emacs to write in Guile Scheme.
+* SchemeMode -- On the specific mode for writing Scheme.
 
 
 == Links ==
