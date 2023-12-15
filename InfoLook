@@ -13,11 +13,12 @@ Supported modes: CMode, BisonMode, MakefileMode, [[Texinfo]], M4Mode, AutoconfMo
 
 * InfoMode
 * GtkLook
-* [http://user42.tuxfamily.org/wx-look/index.html wx-look.el]
+
 
 == External Links ==
 * [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Info-Lookup.html Info Lookup in the Emacs Manual]]
 * [[https://ralph-schleicher.de/emacs.html.en#Info-Lookup Ralph Schleicher]] -- Author of ##info-look.el##.
+* [http://user42.tuxfamily.org/wx-look/index.html wx-look.el] -- For WxWidget documentation.
 * [[https://www.emacswiki.org/emacs/Comments_on_InfoLook Comments on this page]]
 
 ----
