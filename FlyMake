@@ -38,24 +38,24 @@ Built-in checkers are provided for:
 with other checkers currently available as third-party packages.  Some are
 listed here:
 
-; PHP: FlymakePhp for PHP
-; Ruby: FlymakeRuby for Ruby
-; Fortran G95: [[Flymake Fortran G95]]
-; Javascript: FlymakeJavaScript for JavaScript
-; Actionscript 3: FlymakeActionscriptThree for Actionscript 3, more than just syntax checking; full incremental compilation
-; Haskell: FlymakeHaskell for Haskell
-; Erlang: FlymakeErlang for Erlang
-; Lua: FlymakeLua for Lua
-; Shell: FlymakeShell for *nix shell programming (Bash)
-; Elisp: FlymakeElisp for EmacsLisp
-; CSS: FlymakeCSS for Cascading Style Sheets
-; Java: FlymakeJava with Make or JDEE
-; C#: FlymakeCsharp for C#
-; VB.NET: included in VbDotNetMode
-; Python: See PythonMode
-; D: FlyMakeD for the D programming language.
-; FlymakeTex: TeX and LaTeX
-; FlymakeHtml: HTML markup
+* PHP: FlymakePhp
+* Ruby: FlymakeRuby
+* Fortran G95: [[Flymake Fortran G95]]
+* Javascript: FlymakeJavaScript
+* Actionscript 3: FlymakeActionscriptThree -- More than just syntax checking; full incremental compilation
+* Haskell: FlymakeHaskell
+* Erlang: FlymakeErlang
+* Lua: FlymakeLua
+* Shell: FlymakeShell for *nix shell languages
+* EmacsLisp: FlymakeElisp
+* CSS: FlymakeCSS
+* Java: FlymakeJava with Make or JDEE
+* C#: FlymakeCsharp
+* VB.NET: VbDotNetMode
+* Python: See PythonMode
+* D: FlyMakeD
+* LaTex: FlymakeTex:
+* HTML: FlymakeHtml:
 
 == Hints And Questions ==
 
