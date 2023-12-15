@@ -1,4 +1,4 @@
-##info-look## is a help agent. Help is provided according to the buffer's major mode.
+<code>info-look</code> is a help agent. Help is provided according to the buffer's major mode.
 
 Included as of GNU Emacs 20.1.
 
