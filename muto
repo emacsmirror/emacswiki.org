@@ -76,6 +76,16 @@ External packages I like:
 * [[Elfeed]] -- RSS / Atom reader
 * [[Elpher]] -- Gopher / Gemini client
 
+== Bookmarks ==
+
+Links to pages here on the Wiki that I feel need additional editing or care, but do not have the time to really get around to it at the moment.
+
+[[Scheme]] -- Many outdated links / old info.
+[[Guile]] -- Not sure if this page is even needed.
+GuileIde -- On using Emacs to write in Guile Scheme.
+SchemeMode -- On the specific mode for writing Scheme.
+
+
 == Links ==
 * [[https://www.emacswiki.org/emacs/Melonesque I maintain the Melonesque wiki theme.]]
 * [[https://mutoshack.gitlab.io My website]]
