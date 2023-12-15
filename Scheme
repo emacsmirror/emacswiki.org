@@ -12,6 +12,7 @@ There are several implementations of the language.
 * Gauche -- An R7RS Scheme intended to be a script interpreter.
 * Chicken -- A compiler for R5RS and (soon) R7RS Scheme.
 * Chibi -- Intended to be a small Scheme made to be a C extension language.
+* [https://conservatory.scheme.org/ikarus/ Ikarus] -- R6RS compiler.
 
 == Writing Scheme in Emacs ==
 
@@ -26,10 +27,7 @@ By default, ##run-scheme## looks for a program named `scheme'. You may change `s
 * InfoLook -- Generic help look-up that supports Scheme Mode.
 * SchemeLookup -- Lookup R5RS symbol at point.
 * SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
-
-For running R6RS scripts with [[Ikarus]] and jumping to source locations displayed as part of a error message from Ikarus, there is [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el].
-
-
+* [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el] -- Jump to source locations displayed in Ikarus error messages
 
 == See Also ==
 
