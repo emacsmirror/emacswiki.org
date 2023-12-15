@@ -1,0 +1,19 @@
+In GNU Plot, info files menu items do not match the regular expression:
+{{{
+"\n\\* \\(.*\\): " 
+}}}
+as it is used in ##info-look.el.gz##. To make info work with gnuplot-mode I've changed this regexp within the definition of ##info-lookup-make-completions## to:
+{{{
+"\n\\* \\(.*\\):[ :]"
+}}}
+
+– Unknown 2023-12-12 14:44 UTC
+
+----
+
+Is there a way to make ##C-h S## pop directly to the info manual, rather than being prompted for the command to be searched for?  Thanks.
+
+- Unknown 2023-12-12 14:44 UTC
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-15 12:56 UTC
+
