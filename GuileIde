@@ -1,6 +1,6 @@
+<b>NOTE: The text below is from 2008. For a Guile IDE, you may just want to use [[http://www.nongnu.org/geiser/ Geiser]].</b>
 
-NOTE: The text below is from 2008. For a full Guile IDE, you probably just want to checko out http://www.nongnu.org/geiser/
-
+----
 
 Options for editing [[Guile]] code and interacting with an inferior [[Guile]] process (for evaluating expressions, source debugging, etc.) from within Emacs include:
 
@@ -17,6 +17,8 @@ Options for editing [[Guile]] code and interacting with an inferior [[Guile]] pr
 * ttn-pers-elisp/run-guile.el -- ThienThiNguyen's [[Guile]] wrapper for CmuScheme. http://www.gnuvola.org/software/ttn-pers-elisp/dist/lisp/low-stress/run-guile.el
 
 * giguile.el -- NeilVanDyke's old [[Guile]] wrapper for SchemeMode and CmuScheme, obsoleted by QuackPackage. http://www.neilvandyke.org/giguile/
+
+----
 
 <I>Of course</I> none of these provide the [[Guile]] programmer with tools that work as well as those available to the EmacsLisp programmer, such as EdebugMode and LispInteractionMode, but that's because [[Guile]] runs as an inferior process.  If you would prefer to use EmacsLisp and supporting tools, you know where to find them (I hear tell there's even an editor built around them, called Emacs or something). (Note that replacing EmacsLisp with [[Guile]], or GuileEmacs, is a somewhat different thing, since it concerns the [[Guile]] interpreter that is running Emacs and not inferior [[Guile]] processes.)
 
