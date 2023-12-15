@@ -16,7 +16,7 @@ Supported modes: CMode, BisonMode, MakefileMode, [[Texinfo]], M4Mode, AutoconfMo
 * InfoMode
 * GtkLook
 * [http://user42.tuxfamily.org/wx-look/index.html wx-look.el]
-* [Comments_on_InfoLook Comments on this page]
+* [[https://www.emacswiki.org/emacs/Comments_on_InfoLook Comments on this page]]
 
 ----
 CategoryHelp
