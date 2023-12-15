@@ -1,18 +1,30 @@
-The best way to lookup Scheme symbols and read about them is with InfoMode and InfoLook.  This is setup in Emacs by default.  In Scheme Mode buffers, typing `C-h S' will search in the index Revised5 Report on Schema Programing (R5RS) for the the symbol at point.  You just need to install the R5RS info file into your InfoPath.
+<b>NOTE: ##scheme-lookup## is mostly unmaintained.</b>
 
-http://groups.csail.mit.edu/mac/ftpdir/scm/
+The best way to lookup [[Scheme]] symbols and read about them is with InfoMode and InfoLook.  This is setup in Emacs by default. In Scheme Mode buffers, typing `C-h S' will search the R5RS for the the symbol at point.
 
-Scheme-lookup was a modified version of <code>hyperspec.el</code> (see CommonLispHyperspec), seeded with symbols from R5RS, finalized SRFIs and the manuals of several [[Scheme]] systems.  
-It allows to simply put the TextCursor over a symbol and hit M-x scheme-lookup to jump to the relevant documentation.
+The R5RS must be installed to your InfoPath:
+
+    http://groups.csail.mit.edu/mac/ftpdir/scm/
+
+(Above link needs further instructions)
+
+== Instalation ==
+
+Scheme-lookup was a modified version of <code>hyperspec.el</code>, seeded with symbols from R5RS, finalized SRFIs and the manuals of several Scheme systems.
+  
+It allows to simply put the TextCursor over a symbol and say ##M-x scheme-lookup## to jump to the relevant documentation.
 
 To get scheme-lookup do
 
   darcs get http://twb.ath.cx/~twb/canon/scheme-lookup/
 
-then follow the instructions at the top of scheme-lookup.el.  It should all be pretty self-explanatory.
+then follow the instructions at the top of ##scheme-lookup.el##
 
-(But that site has been dead since 2009-10-31).
+(Above Link has been dead since 2009-10-31).
 
-== r5rs.el ==
+== See Also ==
 
 Since scheme-lookup was dead, NumaTortolero wrote the Lisp:r5rs.el simple file to browse documentation from the R5RS Revised5 Report on Scheme Programing language.
+
+* CommonLispHyperspec
+* [https://darcs.net/ Darcs] -- Cause they didn't use Git
