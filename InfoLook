@@ -1,36 +1,22 @@
-Major mode sensitive help agent. Help is provided according to the buffer's major mode
+##info-look## is a help agent. Help is provided according to the buffer's major mode.
+
+Included as of GNU Emacs 20.1.
 
 Author: Ralph Schleicher
 
-Part of GNU Emacs.
+== Usage ==
 
-Supported modes (in GNU Emacs 21.2): CcMode, BisonMode, MakefileMode, [[Texinfo]], M4Mode, AutoconfMode, AwkMode, PerlMode, CPerlMode, LaTeXMode, EmacsLispMode, LispInteractionMode, LispMode, SchemeMode, OctaveMode
+Supported modes: CMode, BisonMode, MakefileMode, [[Texinfo]], M4Mode, AutoconfMode, AwkMode, PerlMode, CPerlMode, LaTeXMode, EmacsLispMode, LispInteractionMode, LispMode, SchemeMode, OctaveMode, PythonMode, MaximaMode, ShMode, cfengine, GdbMode
 
-Installation:
+    C-h S    -- info-lookup-symbol
+    H-h TAB  -- Emacs < 22
 
-    (require 'info-look)
+== See Also ==
 
-Usage:
-
-    C-h TAB -- calls `info-lookup-symbol'
-
-or in GNU Emacs 22 or newer, `C-h S'.
-
-See also InfoMode, GtkLook, [http://user42.tuxfamily.org/wx-look/index.html wx-look.el].
-
-== Comments ==
-In gnuplot info files menu items do not match the regular expression:
-{{{
-"\n\\* \\(.*\\): " 
-}}}
-as it is used in "info-look.el.gz". To make info work with gnuplot-mode I've changed this regexp within the definition of "info-lookup-make-completions" to:
-{{{
-"\n\\* \\(.*\\):[ :]"
-}}}
-
-== Questions ==
-
-Is there a way to make C-h S pop directly to the info manual, rather than being prompted for the command to be searched for?  Thanks.
+* InfoMode
+* GtkLook
+* [http://user42.tuxfamily.org/wx-look/index.html wx-look.el]
+* [Comments_on_InfoLook Comments on this page]
 
 ----
 CategoryHelp
