@@ -1,42 +1,52 @@
-Scheme is a dialect of the LispLanguage concentrating on the "functional" subset of Lisp that introduced lexical scoping, closures, first class continuations (to Lisp).  Originally developed by GeraldSussman and GuySteele, the language has a very concise and clear standard
-(see [http://www.schemers.org/Documents/Standards/R5RS/ R5RS].  Many schemers are proud of the fact that the R5RS Scheme standard is about 50 pages, shorter than the index table of the CommonLisp specification (see KentPitman's posts for another opinion[http://groups.google.com/groups?selm=sfwk87xe5rv.fsf@world.std.com][http://groups.google.com/groups?selm=sfwwvh5hxxh.fsf@world.std.com][http://groups.google.com/groups?selm=sfwvgf5d6f0.fsf@shell01.TheWorld.com]).
+*Scheme* is a dialect of the [[Lisp]] programming language, concentrating on the "functional" subset of Lisp that introduced *lexical scoping*, *closures*, and *first class continuations*.  Originally developed by GeraldSussman and GuySteele, the language has a very concise and clear standard. The [https://conservatory.scheme.org/schemers/Documents/Standards/R5RS/ R5RS] Scheme standard is about <b>50 pages</b>, shorter than the index table of the Common Lisp specification. 
 
-* http://www.schemers.org/
+It is widely used for teaching and research of *programming language semantics*, and was influential on the design of Common Lisp.
 
-It is widely used for teaching and research of programming language semantics, and was influential on the design of CommonLisp.
+== Implementations ==
 
-[[Guile]] is one of the GNU implementations of Scheme which may one day lurk in the bowels of a future release of Emacs instead of EmacsLisp -- GuileEmacs.
+There are several implementations of the language.
 
-An existing implementation of [[Emacsen]] in Scheme is called EdWin and exists as part of the MitSlashGnuScheme implementation. 
+* [[Guile]] -- Guile Scheme is GNU's official extension language.
+* [MitSlashGnuScheme MIT/GNU Scheme] -- A Scheme that comes with an Emacs-like editor
+* Chez Scheme -- A Scheme currently maintained by Cisco Systems
+* Gauche -- An R7RS Scheme intended to be a script interpreter.
+* Chicken -- A compiler for R5RS and (soon) R7RS Scheme.
+* Chibi -- Intended to be a small Scheme made to be a C extension language.
 
-`M-x run-scheme' will run an external Scheme program for you. It is provided by CmuScheme. 
+== Writing Scheme in Emacs ==
 
-The default program name is `scheme'.  If your copy of scheme is called `guile' or something other, customize the variable `scheme-program-name'.
+`M-x run-scheme' will run a Scheme REPL inside Emacs. It is provided by CmuScheme.
 
-RunSchemeHere is a CmuScheme extension that allows you to easily run multiple inferior scheme processes. 
+By default, ##run-scheme## looks for a program named `scheme'. You may change `scheme-program-name' to something like ##guile##.
 
-For a really good interface for writing Scheme, check SlimeMode.
-
-For Scheme, a new Emacs mode is available: [http://www.nongnu.org/geiser/ Geiser].  It supports Guile and Racket (previously known as PLT Scheme). On Debian or Ubuntu, it can be installed with ##sudo apt-get install geiser##.
-
-For a really nice mode for Racket Scheme and other Schemes ([[Guile]]), see QuackMode.
-
-There is also a hacked up completion mode for Plt Scheme which does
-what the plt help desk does: PltCompletions
-
-For Scheme documentation lookup, see InfoLook and SchemeLookup.
-
-SchemeComplete provides R5Rs and some SRFI symbols completion and ElDoc support.
+* RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
+* [http://www.nongnu.org/geiser/ Geiser] -- An advanced REPL that supports Guile and Racket.
+* QuackMode -- A Racket-focused extension that also supports other Schemes.
+* PltCompletions -- Completion mode for PLT (Racket) which does what PLT's ##help-desk## does.
+* InfoLook -- Generic help look-up that supports Scheme Mode.
+* SchemeLookup -- Lookup R5RS symbol at point.
+* SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
 
 For running R6RS scripts with [[Ikarus]] and jumping to source locations displayed as part of a error message from Ikarus, there is [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el].
 
-A great textbook that uses Scheme is StructureAndInterpretationOfComputerPrograms.
 
-There is a Scheme interpreter written in EmacsLisp by NoahFriedman:
 
-* http://www.splode.com/~friedman/software/emacs-lisp/src/czscm.el
+== See Also ==
 
-A simpler interpreter written in EmacsLisp that supports a smaller ''core'' set of Scheme was written by KalleOlaviNiemitalo (''q.v.'' follow the link).
+* [[Lisp]] -- The language of which Scheme is a dialect.
+* CommonLisp -- Another dialect of Lisp
+* GeraldSussman -- Co-creator of Scheme
+* GuySteele -- Co-creator of Scheme
+* SlimeMode -- A Common Lisp REPL that handles rudimentary Scheme code.
+* EdWin -- An [[Emacsen]] written in Scheme, included in [MitSlashGnuScheme MIT Scheme]
+* [StructureAndInterpretationOfComputerPrograms SICP] -- An infamous book on computer programming.
+
+== External Links ==
+
+* [http://www.scheme.org/ Official Website]
+* KentPitman's critique of the R5RS: [http://groups.google.com/groups?selm=sfwk87xe5rv.fsf@world.std.com][http://groups.google.com/groups?selm=sfwwvh5hxxh.fsf@world.std.com][http://groups.google.com/groups?selm=sfwvgf5d6f0.fsf@shell01.TheWorld.com]
+* [[http://www.splode.com/~friedman/software/emacs-lisp/src/czscm.el czscm]] -- Scheme interpreter in ELisp by NoahFriedman.
+* [[http://stekt.oulu.fi/~tosi/emacs/emacs Simpler Interpreter]] written by KalleOlaviNiemitalo 
 
 ----
 CategoryProgramming
