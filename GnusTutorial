@@ -5,14 +5,6 @@ However, all this can make it hard to learn. The [[https://www.gnu.org/software/
 is more of a *technical reference* than a user
 guide, so new users often find it difficult to understand.
 
-== Ensuring Gnus is up-to-date ==
-
-Gnus is bundled with recent versions of Emacs.  Open it with
-M-x&nbsp;gnus&nbsp;RET.  Within Gnus, type `V' and look at the minibuffer.  It
-should say something like `Gnus v5.13'.  You can find out the latest upstream
-version of Gnus by searching for "##defconst gnus-version-number##" in [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el]
-(note that the version number there will sometimes reflect a version of Gnus that hasn't been released yet).
-If the version of Gnus in your Emacs is old, please consider upgrading Emacs.
 
 == Fundamental Configuration ==
 
@@ -303,72 +295,58 @@ More stuff:
 
 === Help! ===
 
-Well, most probably you will find yourself after about 17 seconds of
-using Gnus in a situation where you want to do something and have no
-idea how to do it. Here are some ideas what you can do now:
+Well, most probably you will find yourself (after about 17 seconds of
+using Gnus) in a situation where you want to do something and have no
+idea how to do it. Here are some ways to search for solutions:
 
+* ##C-h i d m gnus## -- Read the Gnus Manual (Press ##s## to search).
+* ##C-h ?## -- Displays the system help menu.
+* ##C-h m## -- Displays the current mode's keybindings.
+* ##C-h b## -- Displays all Emacs keybindings.
+* The Menu Bar -- Common Gnus functions are sometimes kept here.
 
-==== RTFM ====
+If you're really stuck, you can ask other Gnusers. Proper places for this are:
 
-To open the Gnus manual hit `C-h i d m gnus'. Then you can either work through
-the menus or search in the node-titles with i or in the fulltext with s.
-
-
-==== The menu-bar ====
-
-Most of the frequently used functions can be found somewhere in the
-menu. Sometimes you'll find them somewhere where you'd least expect them
-so keep your eyes open.
-
-
-==== The help ====
-
-`C-h' brings you to the help. The help is not more than a line "C-h (Type
-? for further options)". So lets type ?. This brings us to "A B C F I K
-L M N P S T V W C-c C-d C-f C-i C-k C-n C-w; ? for more help" which
-isn't really helpful to, so one more ?. That's better, isn't it?
-Especially the C-h b will help you quite often.
-
-
-==== Ask people ====
-
-When you really don't know what to do, you can ask other Gnus
-users. Most certainly you'll find somebody (somebody is quite often
-called Kai :-) ) who can help you. Proper places for this are
-gnu.emacs.gnus, news.software.readers or gnus.ding if you are running an
-alpha version of Gnus.
-
+* gnu.emacs.gnus
+* news.software.readers
+* gnus.ding -- (If you're on an Alpha release)
 
 === Miscellaneous ===
 
 When Gnus asks you for some kind of input, most probably the
 tab-completition can prevent you from to many keystrokes. Use it!
 
-Always remember that a Gnus-buffer is also a normal Emacs-buffer and
-that all commands Emacs offers you work in Gnus too.
+Always remember that a *Gnus-buffer* is also a *normal Emacs-buffer* and
+that you can use all Emacs commands in Gnus, too.
 
 Gnus is not only a newsreader but also the symbol of a special kind of
 user. A user who knows about usenet and the stuff he or she writes
 about, so don't destroy this image of the Gnus users.
 
+== Updating Gnus ==
+
+Gnus is bundled with recent versions of Emacs. Open it with
+##M-x Gnus## and type `V'. Gnus' version number will appear in the minibuffer.
+
+You can find the latest version by searching for "##defconst gnus-version-number##" in [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el]
+(Note: The version number there may be a beta / to-be-released version).
 
 == Basic terminology and news reading ==
 
-First, let's talk about a few terms which I'm going to use which might
-be unfamiliar to you.
+Terms I use which might be unfamiliar to you.
 
 _say_
 
 Quite often in this manual you will find that you are told to `say'
 something. As in:
 
-You can say (setq user-mail-address "some address") if Gnus does not
+You can say ##(setq user-mail-address "some address")## if Gnus does not
 supply the right one in outgoing messages.
 
 This means that you are supposed to take the Lisp code given, modify it
 as appropriate for your situation, and insert it into the file
-~/.gnus.el (or sometimes some other file, but that will be made
-explicit). You can find the right file by typing C-x C-f ~/.gnus <RET>
+##~/.gnus.el## (or sometimes some other file, but that will be made
+explicit). You can find the right file by typing ##C-x C-f ~/.gnus <RET>##
 in Emacs.
 
 _Posting, Article, Message, Mail_
