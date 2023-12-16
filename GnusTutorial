@@ -25,61 +25,50 @@ Gnus needs to know where to *fetch* its messages from. In this example we specif
 * ##pop.provider.com## -- Our Email provider.
 
 {{{
-(setq gnus-select-method '(nntp "foo.bar.com"))
+(setq gnus-select-method                    '(nntp "foo.bar.com"))
+
 (add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
 (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
 (add-to-list 'gnus-secondary-select-methods '(nnml ""))
     
-(setq mail-sources '((pop :server "pop.provider.org"
-                          :user "you"
-                          :password "secret")))
+(setq mail-sources '((pop :server   "pop.provider.org"
+                          :user     "Laura"
+                          :password "passw0rd")))
 }}}
 
-If a server requires authentication, Gnus will prompt for a username and password.
- To avoid being prompted every session, put the following in ##~/.authinfo##
+If required, Gnus will prompt for a *username* and *password* every time. To avoid this, put the following in ##~/.authinfo##
 
-    machine foo.bar.com login your_username  passwerd your_pass
-    machine localhost   login your_username2 password your_pass2
+{{{
+machine foo.bar.com login your_username  passwerd your_pass
+machine localhost   login your_username2 password your_pass2 force yes
+    
+# "force yes" forces a username connection over anonymous.
+}}}
 
-If your server offers access to anonymous users Gnus will connect as anonymous
-as well as you specified username and password in .authinfo. You will probably
-then wonder why there are so few groups and have no idea what to do now.  To
-avoid it, substitute
+Gnus needs to know how to *send* mail. ##smtpmail## is easy as it comes built-into Emacs.
+Add the following lines to ##~/.gnus.el##:
 
-    machine foo.bar.com login your_username password your_pass force yes
+{{{
+(setq send-mail-function		'smtpmail-send-it
+      message-send-mail-function	'smtpmail-send-it
+      smtpmail-smtp-server		"your.smtp-server.com")
 
-for
+;; Instead of smtpmail-smtp-server, you may set the environment variable $SMTPSERVER
+}}}
 
-    machine foo.bar.com login your_username password your_pass
+Emacs' default SMTP port is *25*. If you need to change this, customize ##smtpmail-smtp-service##.
 
-Finally you must tell Gnus where and how to send outgoing mails.  For this I
-suggest the smtpmail package which comes with Emacs.  Enter the following lines
-into your Emacs init file or ~/.gnus.el:
-
-    (setq send-mail-function		'smtpmail-send-it
-	  message-send-mail-function	'smtpmail-send-it
-	  smtpmail-smtp-server		"your.smtp-server.com")
-
-If your SMTP server uses another port in place of the default 25, specify it
-through variable smtpmail-smtp-service.
-
-Instead of setting the variable smtpmail-smtp-server, you can also specify your
-SMTP server through the environment variable SMTPSERVER.  Just append the
-following lines to ~/.profile:
-
-    export SMTPSERVER="your.smtp-server.com"
-
-If your SMTP server requires authentication, please read
-http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication
+If your *SMTP server* requires authentication, please read 
+[[http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication This Manual page]].
 
 == Using Gnus ==
 
-You can open Gnus through the Emacs menu or the toolbar or by saying
-M-x&nbsp;gnus.
+You can open Gnus through the menubar, or by saying
+##M-x gnus##.
 
-Gnus will open the servers specified in gnus-select-method and
-gnus-secondary-select-methods, read the group lists and check for new mail.
-When this is done you'll be in the group buffer, where the groups are listed
+Gnus will *open* the servers specified in ##gnus-select-method## and
+##gnus-secondary-select-methods##, read the *group lists*, and check for new mail.
+When this is done, you'll be in the *group buffer*, where the groups are listed
 and all action belonging to groups take place.
 
 === The group buffer ===
