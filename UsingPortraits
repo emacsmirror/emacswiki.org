@@ -1,12 +1,15 @@
+[b]NOTE: Portraits are no longer supported or encouraged on this Wiki.[/b]
+
 This page explains how to use portraits in discussions on this wiki.
 
 Short summary:
 
-# Choose an image of your face somewhere on the web.  We prefer portrait size 48x48.
-# Use this image URL on your homepage: Put <code>portrait: <url></code> on a line somewhere on your page. -- ''Note:'' This must be the URL of the image itself, not the URL of a Web page where the image might be displayed. In particular, if you upload the image to EmacsWiki, this will not be the URL of the EmacsWiki page containing the image. Use your browser (command "View Image" or "Copy Image Location") to copy the image URL.
-# When you save your homepage, you should now see your portrait.
-# When you use <code>[new:AlexSchroeder:2004-12-23 20:09 UTC]</code> on a page somewhere, it will automatically be expanded to <code>[new:<username>:<date>]</code> and it will show your portrait.
-# This only works if your username is also the name of your homepage.
+* Use a URL to an external [b]48x48[/b] image.
+* Put <code>portrait: <url></code> on the top of your page.
+** ''Note:'' This must be the URL of the image itself, *not* the Web page where the image might be displayed.
+* Save your homepage. You should see your portrait.
+* When you use <code>[new:AlexSchroeder:2004-12-23 20:09 UTC]</code> on a page somewhere, it will automatically be expanded to <code>[new:<username>:<date>]</code> and it will show your portrait.
+* This *only* works if your username is also the name of your homepage.
 
 == [new] ==
 
