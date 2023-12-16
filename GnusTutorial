@@ -104,42 +104,16 @@ If you want the topic mode to be always active, place the following in your
 You should now know the most important things one can do in the summary buffer,
 so I now only give a rough overview about commands and what they do.
 
-`RET'
-: enters the group under the cursor
-
-`g'
-: check for new news and mail
-
-`q'
-: quit Gnus
-: Beware: Never close Emacs without closing Gnus first!
-
-`c'
-: _catchup_
-: marks all unread articles in the group as read
-
-`C'
-: _catchup_
-: marks all articles in the group as read
-
-<code>‘#’</code>
-: mark a group
-: use it to do an action on several (marked) groups
-
-`l'
-: show only groups with unread articles
-
-`L'
-: show all subscribed groups
-
-`m'
-: Create a new mail
-
-`a'
-: Create a new posting
-
-<code>‘^’</code>
-: enter server buffer
+* `RET' -- Enter the group under the point
+* `g' -- Check for news nd mail.
+* `q' -- Quit Gnus (Always close Gnus before closing Emacs)
+* `c' -- Catchup (marks all articles as read)
+* <code>‘#’</code> -- Mark a group
+* `l' -- Show only groups with unread articles
+* `L' --Show all subscribed groups
+* `m' -- Compose new Mail
+* `a' -- Create a new Post
+* <code>‘^’</code> -- Enter server buffer
 
 You can open and close connections to servers there (timeouts).
 
@@ -161,75 +135,29 @@ variable gnus-summary-line-format may be interesting to you.
 
 Well there's some more stuff you may find interesting to know:
 
-`RET'
-: view the article under the cursor
-
-`n'
-: next unread article
-
-`p'
-: previous article
-
-`SPC'
-: scroll down
-: moves to next unread when at the bottom of the article
-
-`del'
-: scroll up
-
-`F'
-: follow-up to group and cite the article
-
-`f'
-: follow-up to group without citing the article
-
-`R'
-: reply by mail and cite the article
-
-`r'
-: reply by mail without citing the article
-
-`m'
-: new mail
-
-`a'
-: new posting
-
-`c'
-: _Catchup_
-
-`C-u / t'
-: Show only young headers
-: `/ t' without `C-u' limits the summary to old headers
-
-`T T'
-: toggle threading
-
-`C-u g'
-: Display raw article
-: hit g to return to normal view
-
-`t'
-: Show all headers
-: it's a toggle
-
-`W w'
-: Wordwrap the current article
-
-`W r'
-: Decode ROT13
-: a toggle
-
-<code>‘^’</code>
-: fetch parent of article
-
-`L'
-: create a scorefile-entry based on the current article (low score)
-: <code>‘?’</code> gives you information what each char means
-
-`I'
-: like `L' but high score
-
+* `RET' -- View article under point
+* `n' -- Next new article
+* `p' -- Previous article
+* `SPC' -- Scroll down / Next article
+* `del' -- Scroll up
+* `F' -- Follow-up to group *and* cite the article.
+* `f' -- Follow-up to group *without* citing the article.
+* `R' -- Reply /by mail/ *and* cite the article
+* `r' -- Reply by mail *without* citing the article
+* `m' -- New mail
+* `a' -- New Post
+* `c' -- Catchup (fetch new articles)
+* `/ t' -- Show old headers
+* `C-u / t' -- Show only young headers
+* `T T' -- Toggle threading
+* `C-u g' -- Display raw article
+* `g' -- Return to normal view
+* `t' -- Toggle all headers
+* `W w' -- Word-wrap the current article
+* `W r' -- Toggle Rot13
+* <code>‘^’</code> -- Fetch parent of article
+* `L' -- Create a ##scorefile-entry## based on the current article (`?' for help)
+* `I' -- Like `L' but high score
 
 === Writing new mail and news ===
 
@@ -256,24 +184,12 @@ lines in your .gnus to achieve this:
 
 More stuff:
 
-`C-c C-c'
-: send message
-
-`C-c C-d'
-: save message as draft
-
-`C-c C-k'
-: kill message
-
-`C-c C-m f'
-: attach file
-
-`M-x message-caesar-region'
-: encode region using ROT13
-
-`M-q'
-: reformat paragraph
-
+* ##C-c C-c## -- Send message
+* ##C-c C-d## -- Save message as draft
+* ##C-c C-k## -- Kill message
+* ##C-c C-m f## -- Attach file
+* ##M-q## -- Reformat paragraph
+* ##M-x message-caesar-region## -- encode region using ROT13
 
 === Help! ===
 
