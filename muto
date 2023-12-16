@@ -1,6 +1,6 @@
-I'm a computer programmer from Canada. //Sometimes// I edit this wiki.
+[font=Comic Sans MS] I'm a computer programmer from Canada. //Sometimes// I edit this wiki.[/font]
 
-== Helpful Tips ==
+== Helpful Tips💡==
 
 `C-c' is reserved for the user to remap. I use it for often-used commands:
 
@@ -17,7 +17,7 @@ C-h b    - List *all* keybindings
 M-m      - First non-whitespace character
 }}}
 
-== Email in Emacs ==
+== Email 💌 ==
 
 I '''LOVE''' rmail. rmail is small, and simple. it uses emacs' built-in sendmail-mode for composition, and emacs' bulilt-in SMTP facility. But...:
 
@@ -25,7 +25,7 @@ I '''LOVE''' rmail. rmail is small, and simple. it uses emacs' built-in sendmail
 * It lacks thread-nesting by default.
 * Mailutils oddities, i.e. ##%40## in place of the ##@## symbol.
 
-=== Other Options ===
+So I looked for some other options...
 
 * //Alpine// -- Only mbox. Perfect threading. NNTP inbox
 * //Notmuch// -- maildir. No deleting OOTB. 
@@ -38,7 +38,7 @@ I tried MH-E for a while. It uses MH files, which are OK, but:
 * HTML can't be rendered in the summary
 * The docs are a bit bare & it took time to figure it out
 
-== Rust in Emacs ==
+== Rust in Emacs 🦀 ==
 
 Emacs has *no* built-in ##rust-mode##. This approach requires:
 
@@ -61,7 +61,7 @@ Emacs has *no* built-in ##rust-mode##. This approach requires:
 * Company mode may be installed from *ELPA*
 * Eglot and Tree-sitter come built-into Emacs.
 
-== See Also ==
+== See Also 🔗 ==
 
 Fun built-in packages:
 * [[Rmail]] -- Email client
@@ -76,7 +76,7 @@ External packages I like:
 * [[Elfeed]] -- RSS / Atom reader
 * [[Elpher]] -- Gopher / Gemini client
 
-== Bookmarks ==
+== Bookmarks📔 ==
 
 Links to pages here on the Wiki that I feel need additional editing or care, but do not have the time to really get around to it at the moment.
 
@@ -101,7 +101,7 @@ Links to pages here on the Wiki that I feel need additional editing or care, but
 * CategoryGnus -- Maybe sort more commonly needed sections to top
 
 
-== Links ==
+== Links 🌏 ==
 * [[https://www.emacswiki.org/emacs/Melonesque I maintain the Melonesque wiki theme.]]
 * [[https://mutoshack.gitlab.io My website]]
 * [[https://functional.cafe/@MutoShack Me on fedi]]
