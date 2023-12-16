@@ -1,18 +1,9 @@
-== Introduction ==
+This is a step-by-step guide to using [[Gnus]], an Emacs package for reading [b]Netnews[/b],
+ [b][GettingMail email][/b], *RSS*, and much more. It is highly customizable.
 
-This tutorial introduces Gnus, an Emacs package for reading e-mail and Usenet
-news (and many other things).  It offers features that other news and mail
-readers lack.  It is highly customizable and extensible.
-
-However, all this can make it hard to learn, especially if you are new to Gnus
-and Emacs.  Also, the Gnus Manual is more of a technical reference than a user
-guide, so new users often have a hard time finding out how to make Gnus behave
-as desired.
-
-This is why this tutorial was written.  Unlike the Gnus Manual, it may be used
-as a step-by-step guide to using Gnus.  You should read through it from the
-first to the last section, skipping non-mandatory sections you are not
-interested in.
+However, all this can make it hard to learn. The [[https://www.gnu.org/software/emacs/manual/html_mono/gnus.html Gnus Manual]] 
+is more of a *technical reference* than a user
+guide, so new users often find it difficult to understand.
 
 == Ensuring Gnus is up-to-date ==
 
