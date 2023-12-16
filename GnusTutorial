@@ -8,44 +8,37 @@ guide, so new users often find it difficult to understand.
 
 == Fundamental Configuration ==
 
-Before you can actually use Gnus, you must tell it about you and your
-environment.
+Before using Gnus, you must tell it about you. Open (or create) ##~/.gnus.el## and enter:
 
-The first thing you must do is creating a gnus configuration file. Open
-~/.gnus.el.  Tell Gnus who you are.  Do so with the lines
+{{{
+(setq user-mail-address  "you@domain.com"
+      user-full-name     "Your Full Name")
 
-    (setq user-mail-address	"you@domain.com"
-	  user-full-name	"Your Full Name")
+;; Instead, you may set the $EMAIL and $NAME environment variables.
+}}}
 
-If you prefer, you can give the same information through the environment
-variables EMAIL and NAME.  Just append the following lines to ~/.profile:
+Gnus needs to know where to *fetch* its messages from. In this example we specify multiple sources:
 
-    export EMAIL="you@domain.com"
-    export NAME="Your Full Name"
+* ##foo.bar.com## -- An NNTP server.
+* ##localhost## -- Our local news server.
+* ##news.gnus.org## -- A 3rd NNTP server.
+* ##pop.provider.com## -- Our Email provider.
 
-Gnus must also know where to fetch its messages from.  Suppose your primary
-newsserver is foo.bar.com, your second one is your local newsserver and the
-third one is news.gnus.org.  Furthermore, you want to read Mails from the POP3
-server pop.provider.com and use the nnml backend for this (see section mail
-for further information).
-
-We tell Gnus all this with
-
-    (setq gnus-select-method '(nntp "foo.bar.com"))
-    (add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
-    (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
-    (add-to-list 'gnus-secondary-select-methods '(nnml ""))
+{{{
+(setq gnus-select-method '(nntp "foo.bar.com"))
+(add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
+(add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
+(add-to-list 'gnus-secondary-select-methods '(nnml ""))
     
-    (setq mail-sources '((pop :server "pop.provider.org"
-                              :user "you"
-                              :password "secret")))
+(setq mail-sources '((pop :server "pop.provider.org"
+                          :user "you"
+                          :password "secret")))
+}}}
 
-If a newsserver requires authentication, Gnus will prompt you for username
-and password when it needs them (which is not every single time, because Gnus
-records them in memory for a time).  To avoid repeatedly entering username and
-password, put the following lines in ~/.authinfo:
+If a server requires authentication, Gnus will prompt for a username and password.
+ To avoid being prompted every session, put the following in ##~/.authinfo##
 
-    machine foo.bar.com login your_username1 password your_pass1
+    machine foo.bar.com login your_username  passwerd your_pass
     machine localhost   login your_username2 password your_pass2
 
 If your server offers access to anonymous users Gnus will connect as anonymous
