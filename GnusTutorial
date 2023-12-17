@@ -73,36 +73,28 @@ and all action belonging to groups take place.
 
 === The group buffer ===
 
-==== Subscribing to groups ====
-
-Gnus may subscribe you to some groups it thinks you should have a look at, but
-most certainly that's not all you want.  To subscribe to a group you know the
-name of, say U and enter the name of the group (with tab-completion). If you
-want the complete group list say A A or M-d if you want the taglines too.  To
-search in the list use C-s.  u subscribes you to the group which is under the
-cursor. Press l to filter out unsubscribed groups. There are more options, see the info for this.
+Use ##A A## to list all available groups. ##u## subscribes you to the selected group.
 
 ==== The Topic-Mode ====
 
-If you are subscribed to many groups, you may want to group them into
-categories (For me it's for example misc, Emacs, Mail, Admin, Tech).  Gnus
-calls this categories topics and offers a minor-mode for this.  To enter topic
-mode hit t.  There is a top topic called gnus and one more topic called misc
-under it.  To make a new topic under Topic X, place the cursor behind the Topic
-X and say T n.
+You may sort groups into "folders" (For example ##RSS, Mail, Tech##).
+Gnus calls these folders *topics*.
+To enter ##topic-mode## hit ##t##.  There are two *default* topics -- ##gnus## and ##misc##.
+To make a new topic, place the cursor over a topic, and say ##T n##.
 
-Now you've only got to place the groups in the proper topics. Say L to see your
-groups, place the cursor over the group you want to move and say T m.
+To move a group to a topic, Say ##L## to see your
+groups, place the cursor over the group you want to move and say ##T m##.
 
-If you want the topic mode to be always active, place the following in your
-~/.gnus.el:
+If you want ##topic-mode## to be always active, place the following in your
+##~/.gnus.el##:
 
-    (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+{{{
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+}}}
 
 ==== More commands in the group buffer ====
 
-You should now know the most important things one can do in the summary buffer,
-so I now only give a rough overview about commands and what they do.
+Here's a rough overview of commands and what they do.
 
 * `RET' -- Enter the group under the point
 * `g' -- Check for news nd mail.
@@ -114,9 +106,6 @@ so I now only give a rough overview about commands and what they do.
 * `m' -- Compose new Mail
 * `a' -- Create a new Post
 * <code>‘^’</code> -- Enter server buffer
-
-You can open and close connections to servers there (timeouts).
-
 
 === Summary and Article buffer ===
 
