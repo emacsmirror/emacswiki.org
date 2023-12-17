@@ -1052,7 +1052,7 @@ the many other methods provided by Gnus.
 statement.
 
 == Multiple Mailboxes (using multiple From: headers) ==
-[code]
+{{{
 (setq my-email-addresses '("user@gmail.com"
 			   "user@domain.net"
                            "user@work.com"
@@ -1075,11 +1075,11 @@ statement.
   (setq gnus-from-selected-index (+ gnus-from-selected-index 1)))
 
 (global-set-key (kbd "C-c f") 'gnus-loop-from)
-[/code]
+}}}
 
 I've made what is for me a slightly more useful version of this:
 
-[code]
+{{{
 (setq my-email-addresses '(...))
 
 (defun bsb/loop-from ()
@@ -1105,7 +1105,7 @@ I've made what is for me a slightly more useful version of this:
                 (mod (+ bsb/from-selected-index 1) (length bsb/email-addresses)))
         (setq bsb/from-selected-index 0))
       (nth bsb/from-selected-index bsb/email-addresses))))
-[/code]
+}}}
 
 This replaces an address with the next one in the list rather than starting from the first.  Of course, if the From: line does not have a recognised address it just behaves as before.  Also it preserves any friendly name that
 might be on the line and the save-excursion prevents the point from jumping about as the address length changes.
