@@ -56,7 +56,7 @@ Add the following lines to ##~/.gnus.el##:
 ;; Instead of smtpmail-smtp-server, you may set the environment variable $SMTPSERVER
 }}}
 
-Emacs' default SMTP port is *25*. If you need to change this, customize ##smtpmail-smtp-service##.
+Emacs' default SMTP port is [b]25[/b]. If you need to change this, customize ##smtpmail-smtp-service##.
 
 If your *SMTP server* requires authentication, please read 
 [[http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication This Manual page]].
@@ -113,9 +113,9 @@ After you entered a group in the group buffer, Gnus will start getting
 the headers for the group. When Gnus has finished with this, you'll find
 yourself in a buffer showing a summary of each article in this group. To
 have a look at an article just place the cursor over it and hit
-<RET>. Scroll down the article with <SPC>, if you are through it one
+##<RET>##. Scroll down the article with ##<SPC>##, if you are through it one
 more space brings you to the next unread, if you want this earlier hit
-n. To scroll up hit <DEL>.
+n. To scroll up hit ##<DEL>##.
 
 If you don't like the way the summary is presented, then your taste is
 like mine. I hope I'll find the time to write a node "How to make Gnus
