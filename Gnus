@@ -1,16 +1,37 @@
 [[es:Gnus-es]]
-The official home for Gnus is http://www.gnus.org.
 
-You can find pointers to all sorts of Gnus information in other languages there as well.
-Gnus is now developed as part of Emacs, you can get the latest copy of Gnus from Emacs' git repository (see EmacsFromGit).
+Gnus is a flexible reader for *news*, *mail*, and *feeds*. It is included as of Emacs 19.30
 
-The list of topics relating to Gnus is in the page '''[[CategoryGnus]]'''.
+== Quickstart ==
 
-Gnus is a great way to sort the high-volume alt.risks.lion group.
+Start Gnus with ##M-x gnus##.
 
-== Gmane ==
+You may need to configure Gnus in your InitFile:
 
-[[Gmane]] is especially useful with Gnus.
+{{{
+(setq
+ gnus-select-method '(nntp "news.gmane.io")
+ gnus-thread-hide-subtree t
+ gnus-newsgroup-maximum-articles 50))
+
+ gnus-secondary-select-methods '((nntp "news.tilde.club")))
+}}}
+
+This will allow you to download and read (but not upload / reply to) news from ##news.gmane.io## and ##news.tilde.club##.
+
+== See Also ==
+
+* [[GnusTutorial]] -- A lengthy tutorial on Gnus
+* [[Gmane]] -- NNTP interface to GNU mailing lists.
+* EmacsFromGit -- You can get the latest Gnus from Emacs' repository
+* CategoryGnus -- More about Gnus
+
+== External ==
+
+* [[http://www.gnus.org Official Website]]
+* ##alt.risks.lion## -- Gnus is a great way to sort this high-volume group.
+
+
 
 ----
 CategoryGnus CategoryMail
