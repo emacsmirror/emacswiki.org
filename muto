@@ -75,6 +75,8 @@ External packages I like:
 * [[ParEdit]] -- Lisp programming helper
 * [[Elfeed]] -- RSS / Atom reader
 * [[Elpher]] -- Gopher / Gemini client
+* [[Magit]] -- Git interface
+* [[https://melpa.org/#/multiple-cursors multiple-cursors]] 🌐 -- Write the same line twice :3
 
 == Bookmarks📔 ==
 
