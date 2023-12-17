@@ -1,16 +1,20 @@
 Setups for IMAP are described in the Gnus manual and are straightforward.  See GnusAuthinfo on passwords.
 
-Foreign IMAP groups can be created in the usual way too with "G m" and "nnimap".  This is helpful if you're not always online.
+Foreign IMAP groups can be created in the usual way too with ##G m## and ##nnimap##.  This is helpful if you're not always online.
 
 ==Yahoo IMAP==
 
-Gnus in Emacs 24 through 25.2 had a problem accessing the Yahoo server <code>imap.mail.yahoo.com</code> of circa Apr 2018.  The symptom is a hang on first attempt in a session, but ok on second attempt.  (Now fixed in EmacsFromGit.)
+Gnus in Emacs 24 through 25.2 had a problem accessing the Yahoo server <code>imap.mail.yahoo.com</code> of circa Apr 2018.  The symptom is a hang on first attempt in a session, but ok on second attempt.
 
-The problem is a repeated sequence number from Gnus so response to initial capabilities looks like login complete.  Fix this in your <code>.gnus.el</code> with
+The problem was a *repeated sequence number* from Gnus so response to initial capabilities looks like login complete.  Fix this in your <code>.gnus.el</code> with
 
     (setq nnimap-sequence 1)
 
 Gnus intends to wait for login complete, but sequence repeat means it does not.  Is an IMAP server supposed to allow LOGIN and SELECT to pipeline?  Yahoo doesn't seem to like it and apparently ignores the SELECT.  Gnus <code>nnimap-streaming</code> doesn't affect the problem, since initial CAPABILITY is effectively always streamed.
+
+== External Links ==
+
+[[https://gnus.org/manual/gnus_83.html Manual section on IMAP]]
 
 ----
 CategoryGnus
