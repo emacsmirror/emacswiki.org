@@ -109,26 +109,22 @@ Here's a rough overview of commands and what they do.
 
 === Summary and Article buffer ===
 
-After you entered a group in the group buffer, Gnus will start getting
-the headers for the group. When Gnus has finished with this, you'll find
-yourself in a buffer showing a summary of each article in this group. To
-have a look at an article just place the cursor over it and hit
-##<RET>##. Scroll down the article with ##<SPC>##, if you are through it one
-more space brings you to the next unread, if you want this earlier hit
-n. To scroll up hit ##<DEL>##.
+When you enter a group, Gnus will *fetch* headers for that group. When it has finished, it will open a buffer showing a *summary* of each article in the group. Select an article with ##<RET>## and scroll through it with ##<SPC>## and ##<DEL>##.
 
-If you don't like the way the summary is presented, then your taste is
-like mine. I hope I'll find the time to write a node "How to make Gnus
-pretty" sometime, until then have a look in the info, especially the
-variable gnus-summary-line-format may be interesting to you.
+If you don't like how the summary looks, customize [[https://gnus.org/manual/gnus_31.html gnus-summary-line-format]]. For example:
 
-Well there's some more stuff you may find interesting to know:
+{{{
+(setq gnus-summary-line-format "%U%R%z %d  %-30n  %B%s\n")
+}}}
 
+Here are some common keybindings:
+
+* `C-h m' -- View all keybindings
 * `RET' -- View article under point
 * `n' -- Next new article
 * `p' -- Previous article
 * `SPC' -- Scroll down / Next article
-* `del' -- Scroll up
+* `DEL' -- Scroll up
 * `F' -- Follow-up to group *and* cite the article.
 * `f' -- Follow-up to group *without* citing the article.
 * `R' -- Reply /by mail/ *and* cite the article
