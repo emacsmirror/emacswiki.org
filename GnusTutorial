@@ -146,26 +146,22 @@ Here are some common keybindings:
 
 === Writing new mail and news ===
 
-After you told Gnus that you want to write a new mail or a new posting
-(a, m, F, f, R, r, you remember?) a new buffer pops up. Most of the
-headers will already be filled, but some you've got to fill by
-hand. Just write the stuff after the blank (e.g. Subject: foo). Write
-the body of the article under the line "--text follows this line--", if
-you want to add headers, just write the stuff over this line
-(e.g. X-Drunk-as-a-lord: yes).
+When you use a *Compose* key (say, ##m##), you'll enter a new buffer.
+Fill out the ##Subject:## header and enter your post body below ##--text follows this line--#. You may add additional headers above this line (e.g. ##X-Drunk-as-a-lord: yes##).
 
-If you want Gnus to add a signature under the posting create a file
-~/.signature in your home directory which includes your signature
-without the "-- ". (Remember: Signatures shouldn't be bigger then 4*80
-characters).
+You may add a *signature* below your post by writing it
+ in the ##~/.signature## file (Please keep your signature short).
 
-You most certainly want automatic linebreaking, include the following
-lines in your .gnus to achieve this:
+You likely want automatic word-wrapping. Add the following
+lines in ##~/.gnus##:
 
-     (defun my-message-mode-setup ()
-       (setq fill-column 72)
-       (turn-on-auto-fill))
-     (add-hook 'message-mode-hook 'my-message-mode-setup)
+{{{
+(defun my-message-mode-setup ()
+  (setq fill-column 72)
+  (turn-on-auto-fill))
+
+(add-hook 'message-mode-hook 'my-message-mode-setup)
+}}}
 
 More stuff:
 
@@ -178,9 +174,9 @@ More stuff:
 
 === Help! ===
 
-Well, most probably you will find yourself (after about 17 seconds of
-using Gnus) in a situation where you want to do something and have no
-idea how to do it. Here are some ways to search for solutions:
+Soon enough (after about 17 seconds of
+using Gnus), you'll find yourself in a situation where you have no idea
+how to do something or other. Here are some ways to search for solutions:
 
 * ##C-h i d m gnus## -- Read the Gnus Manual (Press ##s## to search).
 * ##C-h ?## -- Displays the system help menu.
@@ -196,8 +192,8 @@ If you're really stuck, you can ask other Gnusers. Proper places for this are:
 
 === Miscellaneous ===
 
-When Gnus asks you for some kind of input, most probably the
-tab-completition can prevent you from to many keystrokes. Use it!
+When Gnus asks you for an input,
+it is likely *tab-completable*. This will save you many keystrokes!
 
 Always remember that a *Gnus-buffer* is also a *normal Emacs-buffer* and
 that you can use all Emacs commands in Gnus, too.
@@ -218,42 +214,18 @@ You can find the latest version by searching for "##defconst gnus-version-number
 
 Terms I use which might be unfamiliar to you.
 
-_say_
-
-Quite often in this manual you will find that you are told to `say'
-something. As in:
-
-You can say ##(setq user-mail-address "some address")## if Gnus does not
-supply the right one in outgoing messages.
-
-This means that you are supposed to take the Lisp code given, modify it
-as appropriate for your situation, and insert it into the file
-##~/.gnus.el## (or sometimes some other file, but that will be made
-explicit). You can find the right file by typing ##C-x C-f ~/.gnus <RET>##
-in Emacs.
+_say_ -- "You can *say* ##(setq my-var t)## to enable ##my-var##
 
 _Posting, Article, Message, Mail_
 
-These are all related terms. A news message might also be called a
-posting or an article, whereas a mail message is known as a mail. Since
-Gnus treats both news and mail, the distinction isn't as clear. In the
-following, I'll use the term ``message'' for the generic case and ``news
-message'' and ``mail message'' for the specific cases. But sometimes, I
-might use ``posting'' or ``article'', too, both synonymous with
-``message''.
+All similar. I use the term *message* to refer to both email /and/ news posts,
+but *mail message* and *news message* for the individual cases. "posting" and "article"
+are synonymous with "message.
 
 _Backend_
 
-Gnus can read messages from various sources. On the one hand, there is
-news, and on the other hand, there is mail. News can be read from a news
-server (an NNTP server), or from a so-called spool directory. Mail can
-be read in various formats.
-
-Generally speaking, a backend describes the way Gnus accesses a set of
-messages. For a news server, this is the Network News Transfer Protocol,
-NNTP, and thus there is a backend ``nntp''. For mail stored in the same
-format that the MH message handling system used, there is the backend
-``nnmh''. And so on. See below for a list of backends.
+Gnus fetches messages from various sources. A *backend* describes how Gnus
+*accesses* a set of messages from a server. Gnus uses the ##nntp## backend to interface with NNTP servers, and the ##nnimap## backend to talk to IMAP servers.
 
 _Server_
 
@@ -277,31 +249,22 @@ Obviously, there can be two servers using the same backend. (Two
 instances of the same class, two apple pies baked according to the same
 recipe, two busses going the same route, two cars of the same model.)
 
-_(Select) method_
+[u](Select) method[/u]
 
 Just another term for server.
 
-Native server
+[u]Native server[/u]
 
-This is the primary server, so to speak. Most people let their news
+This is the *primary server*, so to speak. Most people let their news
 server be the native server, hence:
 
           (setq gnus-select-method '(nntp "news.frob.org"))
 
-Groups from the native server are also known as native groups.
-
 _Secondary select methods_
 
-This is a list of other servers which one also wishes to use. Many
-people are only going to have two servers, one native (for news) and one
-secondary (for mail). Thus:
+A list of additional servers one wishes to use. 
 
-          (setq gnus-secondary-select-methods '((nnml "")))
-
-Note that there is one more pair of parentheses in order to be able to
-mention more than one seconary select method.
-
-Groups from a secondary server are also known as secondary groups.
+Groups from a secondary server are known as *secondary groups*.
 
 In order to be able to distinguish native groups from secondary groups,
 each server is identified with a (unique) name and that name is used as
@@ -315,7 +278,7 @@ file
                 '((nnml "work" (nnml-directory "~/Mail.work/"))
                   (nnml "play" (nnml-directory "~/Mail.play/"))))
 
-you might have the groups nnml+work:boss and nnml+play:so1.
+you might have the groups ##nnml+work:boss## and ##nnml+play:so1##.
 
 _Group_
 
