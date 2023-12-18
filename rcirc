@@ -20,8 +20,8 @@ Start rcirc with ##M-x irc##. By default it connects to <code>#rcirc</code> on #
 
 To get started, see also:
 
-* [[rcircExampleSettings Example Settings]] -- Example rcirc configurations.
-* [[rcircAutoAuthentication Auto Authentication]] -- Make autho-auth work nicely with ##nickserv &c##.
+* [[rcircExampleSettings|Example Settings]] -- Example rcirc configurations.
+* [[rcircAutoAuthentication|Auto Authentication]] -- Make autho-auth work nicely with ##nickserv &c##.
 
 == Using SSL ==
 
