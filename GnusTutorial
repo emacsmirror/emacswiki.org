@@ -6,7 +6,7 @@ is more of a *technical reference* than a user
 guide, so new users often find it difficult to understand.
 
 
-== Fundamental Configuration ==
+== Setup ==
 
 Before using Gnus, you must tell it about you. Open (or create) ##~/.gnus.el## and enter:
 
@@ -61,7 +61,7 @@ Emacs' default SMTP port is [b]25[/b]. To change this, customize ##smtpmail-smtp
 If your *SMTP server* requires authentication, please read 
 [[http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication This Manual page]].
 
-== Using Gnus ==
+== General Usage ==
 
 Start Gnus with ##M-x gnus##.
 
@@ -169,12 +169,10 @@ If you're really stuck, you can ask other Gnusers. Proper places for this are:
 * news.software.readers
 * gnus.ding -- (If you're on an Alpha release)
 
-=== Miscellaneous ===
-
 * When Gnus asks you for an input, it is likely *tab-completable*.
 * Gnus buffers are also *normal Emacs buffers*; You can use all Emacs commands from Gnus.
 
-== Basic terminology and news reading ==
+== Glossary ==
 
 Terms I use which might be unfamiliar to you.
 
@@ -367,7 +365,7 @@ There are many mail backends. This list has more popular choices near the top:
 
 See MailFiles for a more complete analysis.
 
-==== Hands-on Advice ====
+=== More Advice ===
 
 You can choose a server name by adding text to the server string:
 
@@ -439,7 +437,7 @@ For *sending* mail, you'll likely use SMTP:
 
 Say ##C-h v message-send-mail-function## for more details on sending mail.
 
-== Expiry ==
+=== Expiry ===
 
 Gnus' way of "deleting" mail is called *Expiry*. Mark a message as expirable with ##E##. It will be deleted after [b]1 week[/b].
 
@@ -453,17 +451,6 @@ You may also tell Gnus to *automatically* expire mail after reading them:
 (setq gnus-auto-expirable-newsgroups  "nnmbox:mail.misc"
       gnus-total-expirable-newsgroups "nnml:mail.misc")
 }}}
-
-==== Marks ====
-
-The following are the default article marks and behavior:
-
-* _unmarked_ -- All new messages are unmarked.
-* _read_ -- Not shown on disk by default, but kept unless expirable.
-** ##C-u M-g## shows all read mail.
-* _dormant_ -- Not shown by default. Shew them with ##/ D##
-* _ticked_ -- Ticked messages are always shown and can't expire.
-* _expirable_ -- Will be deleted automatically over time.
 
 ==== Speed Issues ====
 
@@ -503,6 +490,16 @@ Then run ##gnus-groups-expire-all-groups## with ##C-c C-M-x##.
 
 : Normal scoring works with *auto-expire*, but not *Adaptive scoring*. Adaptive scoring works with total-expire.
 
+=== Marks ===
+
+The following are the default article marks and behavior:
+
+* _unmarked_ -- All new messages are unmarked.
+* _read_ -- Not shown on disk by default, but kept unless expirable.
+** ##C-u M-g## shows all read mail.
+* _dormant_ -- Not shown by default. Shew them with ##/ D##
+* _ticked_ -- Ticked messages are always shown and can't expire.
+* _expirable_ -- Will be deleted automatically over time.
 
 === Migrating old mail ===
 
@@ -532,57 +529,24 @@ that newly arriving messages go through. (Whee! What a run-on sentence!)
 
 === Making Gnus behave like other mail readers ===
 
-FIXME: This section is very incomplete! I hope that somebody will
-provide us with settings that might be desirable.
+Gnus *hides* messages after they've been read. Enter a group with ##C-u RET## to view these messages.
 
+: This may take a long time -- [[ColinBaxter]]
 
-==== Don't hide messages that have been read ====
-
-Gnus operates in a newsreaderly fashion and thinks that most of the time
-you don't want to read messages twice. So it hides from you the messages
-that you have read already. It does not, however, delete these messages!
-They are still on disk.
-
-If you want to see old messages, use C-u <RET> to enter a group, or type
-C-u M-g from within the group. If you always want to see old messages
-for a specific group, hit G c (not g c) on it and frob the display
-parameter. If you want to see old messages for several groups, you can
-also set the parameter on a topic. If you want to do it by group name,
-see the variable gnus-parameters (in recent Gnusae only).
-
-But I advise against this, because showing a lot of messages in the
-summary buffer is quite slow in Gnus, and you can tell Gnus to show you
-the interesting ones. For example, I use
+When a new post is added to a thread, you can make sure you also see the old read parent with:
 
      (setq gnus-fetch-old-headers t)
 
-and this means that when a new followup arrives in a thread, I see the
-previous messages from that thread, too. Of course, from time to time, I
-want to look at old messages and use C-u <RET> or C-u M-g, as described
-above. (Be aware that putting fetch-old-headers to t will take an long time to download
-[http://www.emacswiki.org/emacs/ColinBaxter ColinBaxter])
-
-==== Marking messages read on the server with nnimap ====
-
-When reading mail from several different clients (a home and work computer, for example),
-it can be nice to have read mail marked as read on the server, so that the messages
-appear read when reading from another client.
-
-FIXME: Does anyone know how to do this?
+When reading mail from IMAP, it may be nice to mark messages as read on the server-side.(*todo*)
 
 === Archiving Mail ===
 
 (TODO)
 
-_Footnotes_
+== Multiple Mailboxes ==
 
-[1] Using g, or <mouse-2>, or by moving to it with n or p, or by one of
-the many other methods provided by Gnus.
+This example uses multiple mailboxes with multiple ##From:## headers.
 
-[2] See the chapter on key bindings; maybe you need a `require'
-statement.
-
-== Multiple Mailboxes (using multiple From: headers) ==
 {{{
 (setq my-email-addresses '("user@gmail.com"
 			   "user@domain.net"
@@ -638,7 +602,7 @@ I've made what is for me a slightly more useful version of this:
       (nth bsb/from-selected-index bsb/email-addresses))))
 }}}
 
-This replaces an address with the next one in the list rather than starting from the first.  Of course, if the From: line does not have a recognised address it just behaves as before.  Also it preserves any friendly name that
+This replaces an address with the next one in the list rather than starting from the first.  Of course, if the ##From:## line does not have a recognised address it just behaves as before.  Also it preserves any friendly name that
 might be on the line and the save-excursion prevents the point from jumping about as the address length changes.
 
 == Reading articles ==
