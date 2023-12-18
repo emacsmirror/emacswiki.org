@@ -125,10 +125,8 @@ Here are some common keybindings:
 * `p' -- Previous article
 * `SPC' -- Scroll down / Next article
 * `DEL' -- Scroll up
-* `F' -- Follow-up to group *and* cite the article.
-* `f' -- Follow-up to group *without* citing the article.
-* `R' -- Reply /by mail/ *and* cite the article
-* `r' -- Reply by mail *without* citing the article
+* `F' -- Reply to *news* thread and quote the article.
+* `R' -- Reply to *mail* and quote the sender
 * `m' -- New mail
 * `a' -- New Post
 * `c' -- Catchup (fetch new articles)
