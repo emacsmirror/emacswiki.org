@@ -337,103 +337,72 @@ boyfriend.
 
 == Mail ==
 
-Quite a few people wish to read mail with Gnus but stumble across a few
-issues which make this a bit difficult. This comes from the fact that
-Gnus is really a newsreader, and thus it treats mail in a newsreaderly
-fashion. It is not desirable to change this, because it is a wonderful
-thing and this is what distinguishes Gnus from other mail readers. In
-this little tutorial, I'll try to explain what ``newsreaderly fashion''
-means and how exactly Gnus treats mail.
+Gnus is primarily a news reader, but *this is a good thing*, as it turns
+out "managing email in a very newsreaderly fashion" is very efficient.
 
-Specific pieces of behavior can always be changed, but if you desire to
-make Gnus behave like a conventional mail reader, think again. It will
-be an uphill battle. Maybe a different mail reader is for you? But also,
-read on. Maybe you'll find the right behavior in the description below.
+It would be an uphill battle if you tried to make Gnus "behave like a /normal/
+email client". Instead of telling Gnus to change, let Gnus change /you/.
 
-This chapter consists of a section which describes how to choose a mail
-backend. This tells Gnus how mail should be stored on the local
-disk. Unless you use an IMAP server, you also want to tell Gnus where to
-get the mail that should be stored on the local disk, and how to send
-your own mail. This is explained in the second section.
+You need to tell Gnus:
 
-A third section talks about auto-expire and total-expire. These two
-features are useful for mail from mailing lists. (Expiry is what Gnus
-has instead of simple deleting of mail.)
+* How to *store* mail on the local disk.
+* *Where* to get the mail messages.
+* How to *send* new mail.
 
-A fourth section talks about how to migrate old mail into Gnus.
+Later we'll mention *auto-expire* and *total-expire*, which are
+useful for mail from *mailing lists* (Expiry is Gnus way of "deleting" mail).
 
-What is the difference between mail backends and mail sources? Well,
-mail backends tell Gnus how to store messages, whereas mail sources tell
-Gnus where to fetch them. So Gnus fetches mail from the mail sources and
-stores them in the mail backends. Mail sources are specified via the
-mail-sources variable, mail backends are normally specified via the
-gnus-secondary-select-methods variable.
+A fourth section talks about how to *migrate old mail* into Gnus.
 
-Only the nnimap mail backend is an exception: the IMAP server itself
-receives your mail, so it doesn't need to be fetched anymore.
+The difference between mail *backends* and mail *sources* is that a backend tells
+Gnus how to store messages, whereas mail sources specify where to fetch them. Gnus fetches 
+mail from the source, and stores it in the backend. Sources are stored in ##mail-sources##. Backends are
+stored in ##gnus-secondary-select-methods##.
 
+The ##nnimap## backend is an exception: the IMAP server itself
+stores your mail; it doesn't need to be fetched.
 
-=== Choosing a mail backend ===
+=== Choosing a backend ===
 
-The Gnus manual lists quite a few backends. Of these, the news backends
-pose no problem: you use the nntp backend if you access a news server
-and the nnspool backend if you have a local news spool
-directory. (Leafnode users should use nntp so that the leafnode program
-can see what you are doing and choose the groups to download
-accordingly.) But the mail backends are more difficult. There are many
-of them, and it is not obvious which is the best choice. In quite a few
-cases, this is because there is no single best choice; or maybe what's
-the best choice depends on the group or changes over time.
+The Gnus manual lists many backends. For news, theres:
 
-Below, I'll give a list of mail backends. While I say something about
-how messages are stored, I'll try to emphasize what that means for you
-as a user.
+* ##nntp## -- Access an NNTP Netnews server.
+* ##nnspool## -- If you have a local news spool
+** (Leafnode users should always use ##nntp##)
 
-Let's try to structure the discussion a bit. We have servers, which
-contain groups, which in turn contain messages. How could we store this
-on disk? After some thought, you'll quickly come up with the following
-alternatives: You could store all messages from a server in one
-file. The second alternative is to store all messages from one group in
-one file, different groups are stored in different files. A third
-alternative is to store each message in one file; in this case, one
-could use a directory per group. A very interesting fourth alternative
-is not to store the messages at all but instead to use the Oracle of
-Delphi (say) to predict what the messages will be; this saves a lot of
-disk space. I won't talk about the fourth alternative in the following.
+Mail backends are more difficult. There are many
+of them, and what's best for you varies by use-case.
 
+Servers have Groups. Groups have Messages. You could store all messages
+in a *single file*, or have *one file per message*.
 
-==== Backends with one file per server ====
+==== Backends with one file per message ====
 
-Many people use just two servers, the native server for news and a
-secondary server for mail. Thus, this alternative would mean that you
+Many people use just two servers, the *native* server for news and a
+*secondary* server for mail. Thus, this alternative would mean that you
 store all your mail in one file. Since Emacs has no fancy mechanisms to
-access parts of files, this means that Gnus loads that file into main
-memory at startup, and all your mails are kept in main memory all the
-time. (Of course, copies are written to disk every now and then, for
-safekeeping!)
+access parts of files, Gnus loads that file into main
+memory at startup, and all your mails are kept in memory all the
+time.
 
 I think you can pretty much figure out the consequences on your own,
 now:
 
-Handling large amounts of mail will be a problem. (Emacs has a maximum
-file size of 128 MB.)
+Handling large amounts of mail may be slow.
 
 Some operations on mails will be fast, since they are in-memory
-operations. (Saving everything to disk will be slow, though.)
+operations.
 
 Some operations on mails will be slow, since they have to search through
 the whole file.
 
 It is convenient to have all mail stored in one file: you can easily
-transfer it to another computer using FTP, say, or store it on a floppy
-or Zip disk or a tape.
+transfer it to another computer using FTP, or store it on a floppy.
 
 Conclusion: If you don't have a lot of mail to deal with and like the
 convenience of storing it all in one file, one of these backends might
-be for you. However, since Gnus really shines when dealing with lots of
-mails, most Gnus users can be expected to deal with quite a large volume
-of mail. Thus, I don't think many Gnus users choose one of these
-backends.
+be for you. However, for dealing with large volumes of mail, you may choose
+a different approach
 
 _nnmbox_
 
@@ -466,7 +435,6 @@ of the formats?
 FIXME: Is it possible to just use an existing babyl file for Gnus, by
 creating a new nnmbox server and pointing it at the file? What about
 mbox?
-
 
 ==== Backends with one file per group ====
 
@@ -542,14 +510,8 @@ FIXME: Anyone out there who can give more info?
 
 If you must talk to an IMAP server, the choice is clear. But if you keep
 mails on your local disk, the choice isn't as clear-cut. I think that
-nnml is generally the best choice unless you have real great disk space
-trouble. Then, you should be thinking about nnfolder.
-
-I'm not sure if there is a situation where nnmbox or nnbabyl is
-desirable.
-
-FIXME: Tell me about it if you know more!
-
+##nnml## is generally the best choice unless you have real great disk space
+trouble. Then, you should be thinking about ##nnfolder##.
 
 ==== Hands-on Advice ====
 
@@ -571,16 +533,11 @@ nnml+x:foo.
 
      (add-to-list 'gnus-secondary-select-methods '(nnml "x"))
 
-I suggest to go with the first one, it makes for shorter group
-names. Only if you have two servers which use the same backend, then
-you'll have to assign different names to them. Maybe some people want to
-access two nntp servers, for example. But this is hardly relevant for
-mail reading.
+This is useful when you have multiple ##nnml## inboxes.
 
-And then, you can choose server parameters. Server parameters are some
-settings which you can include with your server. For example, if you use
-the nnmbox backend, then you might wish to specify a different mbox file
-to use (the default is ~/mbox):
+*Server parameters* are settings which you can include with your server. For example, if you use
+the ##nnmbox## backend, then you can specify a different mbox file
+to use (the default is ##~/mbox##):
 
      (add-to-list 'gnus-secondary-select-methods
                   '(nnmbox ""
@@ -615,16 +572,13 @@ FIXME: Can somebody say something about nnmaildir, please?
 
 === Fetching and sending mail ===
 
-The previous section has explained how Gnus stores mail on your local
-disk (though nnimap is a special case – it handles mail stored on the
-IMAP server). But the question is, how does the mail actually get to
+The previous section has explained how Gnus fetches mail to read.
+But the question is, how does the mail actually get to
 your local disk in the first place? For many people, the answer is
-POP. POP stands for `Post Office Protocol'; here, a so-called `POP
-server' keeps a mailbox for you and your computer can connect to the
-remote computer using the protocol. And another important question is
-what happens to the mail you send? This section tries to explain both.
+*POP* ([b]P[/b]ost [b]O[/b]ffice [b]P[/b]rotocol). Gnus can connect
+to a POP server, which is a remote location holding your mail.
 
-Gnus knows about a variable mail-sources which can store several places
+##mail-sources## can store several places for getting new mail 
 for getting new mail. See Mail Source Specifiers (Gnus), which contains
 a great section about this variable. In this tutorial, suffice it to
 provide a template for POP users, that will deal with the lion's share
@@ -632,7 +586,7 @@ of the cases.
 
      (setq mail-sources '((pop :server "frumple" :user "jrl")))
 
-Just replace frumple with the name of your POP server and jrl with your
+Just replace "frumple" with the name of your POP server and jrl with your
 login name on the POP server. This line goes in the file ~/.gnus.el. As
 spefified above, Gnus will then ask for your password when you fetch
 mail, but it gives you the choice of remembering the password for the
