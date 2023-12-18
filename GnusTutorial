@@ -121,17 +121,10 @@ Here are some common keybindings:
 * `m' -- New mail
 * `a' -- New Post
 * `c' -- Catchup (fetch new articles)
-* `/ t' -- Show old headers
-* `C-u / t' -- Show only young headers
-* `T T' -- Toggle threading
-* `C-u g' -- Display raw article
-* `g' -- Return to normal view
-* `t' -- Toggle all headers
-* `W w' -- Word-wrap the current article
-* `W r' -- Toggle Rot13
-* <code>‘^’</code> -- Fetch parent of article
-* `L' -- Create a ##scorefile-entry## based on the current article (`?' for help)
-* `I' -- Like `L' but high score
+* `C-u / t' -- Show only new posts.
+* `t' -- Toggle post headers.
+* `W w' -- Word-wrap the current post.
+* `L' -- Create a *score entry* (##?## for help)
 
 === Composing Mail ===
 
