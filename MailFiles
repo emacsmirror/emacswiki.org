@@ -1,0 +1,108 @@
+A comparison of different email storage formats originally taken from GnusTutorial
+
+== nnmbox ==
+
+This backend uses the well-known ``mbox'' format for storing mails. In
+this format, a message begins with the five characters From_ (the last
+character is a space) at the beginning of a line, and ends with an empty
+line.
+
+== nnbabyl ==
+
+This backend uses the lesser known ``babyl'' format for storing
+mails. This uses delimiters for the beginning and the end of a message
+which are less likely to occur in a message.
+
+FIXME: Are they guaranteed to never occur?
+
+One advantage of a babyl file over an mbox file is that it is possible
+to insert information about a message in the babyl file, without having
+to change the message itself. In an mbox file, the only place to put
+such information is the message header, which is part of the
+message. Thus, adding information about a message to an mbox file means
+that one has to change the message.
+
+I think Gnus doesn't make use of this advantage, though. Gnus stores
+information about messages in an extra file, ~/.newsrc.eld.
+
+FIXME: Can somebody provide me with some more arguments in favor of one
+of the formats?
+
+FIXME: Is it possible to just use an existing babyl file for Gnus, by
+creating a new nnmbox server and pointing it at the file? What about
+mbox?
+
+Storing all messages in a group in one file provides a nice middle
+ground between the one file per server type of backend and the one file
+per message type of backend. Using lots of little files wastes disk
+space; since this approach uses a moderate number of files, less disk
+space is wasted.
+
+FIXME: Which operations are fast using this kind of backend? Which are
+slow?
+
+== nnfolder ==
+
+This backend uses the same file format as nnmbox, but uses the one file
+per group approach.
+
+There is no ``nnbabylfolder'' backend which uses babyl format.
+
+
+= Backends with one file per message =
+
+If the number of messages grows so large that even the size of a single
+group exceeds the limit which can be handled by the file-per-group
+backends, you need to think about using one of the backends mentioned
+here.
+
+This category also includes nnml, the backend which is fastest if you
+have lots of messages.
+
+== nnmh ==
+
+This backend uses the same file format (and directory structure) as MH,
+i.e. a group is a directory, and each message is stored in a file, and
+the file names are numbers.
+
+Since nnml is so similar to nnmh but a lot faster, only unusual
+situations could warrant using this backend. You may want to use nnmh if
+you wish to use Gnus in parallel to your old MH based reader.
+
+Normally, you should not let two programs write the same Gnus directory
+(not even two instances of Gnus!), but if you really must, you may wish
+to use nnmh, since there the probability of things breaking is smaller
+than with the other backends.
+
+== nnml ==
+
+This backend is like nnmh but also includes an extra file .overview in
+each directory (group) which contains some headers from each
+message. Thus, where nnmh needs to open every file in a group to examine
+its headers, nnml (normally) needs to only read the .overview file,
+which is a lot faster.
+
+
+= Other mail backends =
+
+There is one other mail backend, for keeping messages on an IMAP server.
+
+== nnimap ==
+
+This backend transforms Gnus into an IMAP client. The general idea of
+IMAP is to store and manipulate the mails on a server (similar to NNTP
+for news).
+
+nnimap comes with Gnus 5.8, it does not work with earlier Gnus versions.
+
+== nnmaildir ==
+
+FIXME: Anyone out there who can give more info?
+
+
+= Summary =
+
+If you must talk to an IMAP server, the choice is clear. But if you keep
+mails on your local disk, the choice isn't as clear-cut. I think that
+##nnml## is generally the best choice unless you have real great disk space
+trouble. Then, you should be thinking about ##nnfolder##.
