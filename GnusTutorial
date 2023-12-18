@@ -21,20 +21,19 @@ Before using Gnus, you must tell it about you. Open (or create) ##~/.gnus.el## a
 Gnus needs to know where to *fetch* its messages from. In this example we specify multiple sources:
 
 * ##foo.bar.com## -- An NNTP server.
-* ##localhost## -- Our local news server.
-* ##news.gnus.org## -- A 3rd NNTP server.
-* ##pop.provider.com## -- Our Email provider.
+* ##localhost## -- Our local news spool.
+* ##mail.example.com## -- Our Email provider.
 
 {{{
-(setq gnus-select-method                    '(nntp "foo.bar.com"))
+(setq
+  gnus-select-method            '(nntp     "foo.bar.com")
+  gnus-secondary-select-methods '((nnspool "localhost")
+                                  (nnml    "")))
 
-(add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
-(add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
-(add-to-list 'gnus-secondary-select-methods '(nnml ""))
-    
-(setq mail-sources '((pop :server   "pop.provider.org"
-                          :user     "Laura"
-                          :password "passw0rd")))
+(setq mail-sources
+      '((pop :server   "mail.example.com"
+             :user     "Laura"
+             :password "passw0rd")))
 }}}
 
 If required, Gnus will prompt for a *username* and *password* every time. To avoid this, put the following in ##~/.authinfo##
@@ -52,12 +51,12 @@ Add the following lines to ##~/.gnus.el##:
 {{{
 (setq send-mail-function		'smtpmail-send-it
       message-send-mail-function	'smtpmail-send-it
-      smtpmail-smtp-server		"your.smtp-server.com")
+      smtpmail-smtp-server		"mail.example.com")
 
 ;; Instead of smtpmail-smtp-server, you may set the environment variable $SMTPSERVER
 }}}
 
-Emacs' default SMTP port is [b]25[/b]. If you need to change this, customize ##smtpmail-smtp-service##.
+Emacs' default SMTP port is [b]25[/b]. To change this, customize ##smtpmail-smtp-service##.
 
 If your *SMTP server* requires authentication, please read 
 [[http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication This Manual page]].
