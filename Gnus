@@ -29,6 +29,7 @@ This will allow you to download and read (but not upload / reply to) news from #
 == External ==
 
 * [[http://www.gnus.org Official Website]]
+* [[https://lars.ingebrigtsen.no/about/ Lars Magne Ingebrigtsen]] -- Gnus' original creator.
 * ##alt.risks.lion## -- Gnus is a great way to sort this high-volume group.
 
 
