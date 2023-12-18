@@ -1112,21 +1112,11 @@ might be on the line and the save-excursion prevents the point from jumping abou
 
 == Reading articles ==
 
-Gnus has hundreds of commands and keybindings that allow you to do all
-kinds of fancy things: the Gnus manual explains how to do them in
-depth. I recommend that you explore this stuff in depth.
+If you are new to Gnus, the amount of keybindings can be daunting. This section goes over the minimum required to get started using Gnus.
 
-However, at first (and at second and at third, too) this insane list can
-be daunting, especially for those relatively new to Emacs as well as
-Gnus, so in this section we'll go over the basic stuff that is good (and
-hopefully sufficient) to know to get started, in roughly the order that
-you'll need them. Then you can explore the intricacies as you get more
-comfortable.
-
-Note that this stuff pertains to both news and mail reading, which is
+Note that this stuff pertains to both news *and* mail reading, which is
 one of the best things about Gnus: it provides you with a powerful and
-unified set of commands.
-
+*unified* set of commands.
 
 === Moving Around ===
 
