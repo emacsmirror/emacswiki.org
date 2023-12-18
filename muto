@@ -69,7 +69,7 @@ Fun built-in packages:
 * [[rcirc]] -- IRC client
 * [[eshell]] -- Shell
 * [[proced]] -- System resource monitor
-* [[Mpd]] -- Music Player Daemon client.
+* [[Mpc]] -- Music Player Daemon client.
 
 External packages I like:
 * [[ParEdit]] -- Lisp programming helper
