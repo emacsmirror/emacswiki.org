@@ -84,21 +84,13 @@ External packages I like:
 Links to pages here on the Wiki that I feel need additional editing or care, but do not have the time to really get around to it at the moment.
 
 * [[Scheme]] -- Many outdated links / old info.
-* [[Guile]] -- Not sure if this page is even needed.
-* GuileIde -- I'll probably not touch this one actually.
-* SchemeMode -- On the specific mode for writing Scheme.
+* [[Guile]] -- Is virtually empty
+* SchemeMode -- A little bit messy
 * [[Rust]] -- Actually needs a page
 * [[Elpher]] -- Could use a page too
 * [[Eglot]] -- Needs a page ;-;
-* GnusTutorial -- Could use a bit of a refactor
-** Mention EmacsNewsgroups.
-** Shrink ToC (some sections are very short)
-** Bold for emphasis as per StyleGuide
-* [[Gnus]] -- This page is virtually empty!
-** Could use a "Quickstart" section
-** Several links to important categories
-** A "see also" and "External Links" section
-* CategoryGnus -- Maybe sort more commonly needed sections to top
+* GnusTutorial -- Done for now.
+* [[Gnus]] -- Done for now.
 
 
 == Links 🌏 ==
