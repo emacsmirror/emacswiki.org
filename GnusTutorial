@@ -129,6 +129,33 @@ Commands for composing mail:
 * ##M-q## -- Reformat paragraph
 * ##M-x message-caesar-region## -- encode region using ROT13
 
+=== Reading News ===
+
+This stuff pertains to both news *and* mail reading, which is
+one of the best things about Gnus: it provides you with a powerful and
+*unified* set of commands.
+
+(This section focuses only on the ##group## and ##summary## buffers)
+
+See ##C-h m## for a list of commands. Here are the most common ones.
+
+|| Key || Group Buffer                        || Summary Buffer          || 
+|| n   || Next group with *unread* articles   || Next unread article     ||
+|| p   || Previous group with unread articles || Previous unread article ||
+|| N   || Next group                          || Next article            ||
+|| P   || Previous group                      || Previous article        ||
+|| C-n || Next line                           || Next line               ||
+|| C-p || Previous line                       || Previous line           ||
+
+Most of the time, you only want to select *new* articles that you haven't yet read, 
+so *jumping to new articles* is prioritized, though accessing old / read articles is still easy.
+
+If you reach the bottom of a summary buffer and press ##n##, Gnus will load the first unread article for the next group (So you can use one hand to press ##n##, and the other to hold a cup of tea).
+
+##C-n## and ##C-p## are *never* rebound. They are the same in every Emacs mode.
+
+You can scroll an individual article with ##SPC## and ##DEL##.
+
 === Help! ===
 
 Soon enough (after about 17 seconds of
@@ -281,31 +308,19 @@ You may also tell Gnus to *automatically* expire mail after reading them:
       gnus-total-expirable-newsgroups "nnml:mail.misc")
 }}}
 
-==== Speed Issues ====
-
 Auto-expire is usually *faster* than Total-expire.
 
-Gnus keeps a list of:
+Gnus keeps lists of:
 
 * All *expirable* messages,
 * All *dormant* messages,
-* All *ticked* messages. 
-
-During expiration time, Gnus scans the expire list to see which entry is old enough to delete.
-
-For *read* messages, Gnus keeps 2 lists: One for
-
-However, for *read* messages the situation is different. Here, Gnus just
-keeps a list of ranges of article numbers to be able to distinguish read
-messages from unmarked ones. The assumption is that a message is to be
-considered marked as read if it falls in one of the ranges and isn't
-mentioned in any of the expirable, dormant or ticked lists.
+* All *ticked* messages,
+* All *read* messages.
 
 When *total-expire* is on, Gnus needs to make sure every *read* message isn't
 ticked or dormant first, before confirming it's expirable.
 
-Checking each article in the "read" range takes more
-time than just going through the list of expirable articles.
+When *auto-expire* is on, Gnus only needs to check for messages marked as expirable.
 
 You may opt to simply run expiry manual on your own when you feel like it. 
 In that case, you can tell Gnus to no longer expire on quit:
@@ -317,7 +332,7 @@ In that case, you can tell Gnus to no longer expire on quit:
 
 Then run ##gnus-groups-expire-all-groups## with ##C-c C-M-x##.
 
-: Normal scoring works with *auto-expire*, but not *Adaptive scoring*. Adaptive scoring works with total-expire.
+: *Adaptive scoring* only works with total-expire.
 
 === Marks ===
 
@@ -434,36 +449,7 @@ I've made what is for me a slightly more useful version of this:
 This replaces an address with the next one in the list rather than starting from the first.  Of course, if the ##From:## line does not have a recognised address it just behaves as before.  Also it preserves any friendly name that
 might be on the line and the save-excursion prevents the point from jumping about as the address length changes.
 
-== Reading articles ==
 
-If you are new to Gnus, the amount of keybindings can be daunting. This section goes over the minimum required to get started using Gnus.
-
-Note that this stuff pertains to both news *and* mail reading, which is
-one of the best things about Gnus: it provides you with a powerful and
-*unified* set of commands.
-
-=== Moving Around ===
-
-(This section focuses only on the ##group## and ##summary## buffers)
-
-See ##C-h m## for a list of commands. Here are the most common ones.
-
-|| Key || Group Buffer                        || Summary Buffer          || 
-|| n   || Next group with *unread* articles   || Next unread article     ||
-|| p   || Previous group with unread articles || Previous unread article ||
-|| N   || Next group                          || Next article            ||
-|| P   || Previous group                      || Previous article        ||
-|| C-n || Next line                           || Next line               ||
-|| C-p || Previous line                       || Previous line           ||
-
-Most of the time, you only want to select *new* articles that you haven't yet read, 
-so *jumping to new articles* is prioritized, though accessing old / read articles is still easy.
-
-If you reach the bottom of a summary buffer and press ##n##, Gnus will load the first unread article for the next group (So you can use one hand to press ##n##, and the other to hold a cup of tea).
-
-##C-n## and ##C-p## are *never* rebound. They are the same in every Emacs mode.
-
-You can scroll an individual article with ##SPC## and ##DEL##. This is much preferable to switching windows (##C-x o##) and scrolling (##C-v##, ##M-v##) through them :3
 
 == Glossary ==
 
@@ -477,7 +463,7 @@ You can scroll an individual article with ##SPC## and ##DEL##. This is much pref
 * *Group* -- A newsgroup (Gnus treats a mailbox as a group, too)
 * *Expirable* -- A message marked for deletion
 * *Marks* -- A status marker on a message (##R## means ##read##)
-* *$* -- Words beginning with a ##$## are environment variables
+* [b]$[/b] -- Words beginning with a ##$## are environment variables
 * *User* -- You!
 * *You* -- A very pretty user 🩵
 
