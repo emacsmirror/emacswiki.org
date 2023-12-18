@@ -339,11 +339,6 @@ You need to tell Gnus:
 * *Where* to get the mail messages.
 * How to *send* new mail.
 
-Later we'll mention *auto-expire* and *total-expire*, which are
-useful for mail from *mailing lists* (Expiry is Gnus way of "deleting" mail).
-
-A fourth section talks about how to *migrate old mail* into Gnus.
-
 The difference between mail *backends* and mail *sources* is that a backend tells
 Gnus how to store messages, whereas mail sources specify where to fetch them. Gnus fetches 
 mail from the source, and stores it in the backend. Sources are stored in ##mail-sources##. Backends are
@@ -374,27 +369,14 @@ See MailFiles for a more complete analysis.
 
 ==== Hands-on Advice ====
 
-FIXME: Do we want to tell people to use Customize?
+You can choose a server name by adding text to the server string:
 
-All of this information is nice, but how do you actually make use of it?
-Well, you have to put stuff into the ~/.gnus.el file. Here are some
-examples:
-
-The following is the most simple statement. It's what I use. This just
-specifies the backend to use and leaves everything else with the default
-settings.
-
-     (add-to-list 'gnus-secondary-select-methods '(nnml ""))
-
-It is also possible to choose a server name. With the above, you'll get
-groups like nnml:foo, but with the suggestion below, they'll be named
-nnml+x:foo.
-
-     (add-to-list 'gnus-secondary-select-methods '(nnml "x"))
+     (add-to-list 'gnus-secondary-select-methods '(nnml "x")) ; nnml+x:foo
+     (add-to-list 'gnus-secondary-select-methods '(nnml ""))  ; nnml:foo
 
 This is useful when you have multiple ##nnml## inboxes.
 
-*Server parameters* are settings which you can include with your server. For example, if you use
+Each server has a set of optional *server parameters*. For example, if you use
 the ##nnmbox## backend, then you can specify a different mbox file
 to use (the default is ##~/mbox##):
 
@@ -403,14 +385,13 @@ to use (the default is ##~/mbox##):
                     (nnmbox-mbox-file "~/MAIL")
                     (nnmbox-active-file "~/Mail.active")))
 
-The other server parameters can be set in a similar way. The Gnus info
-file explains for each backend which server parameters are possible.
+See the [[https://gnus.org/manual/gnus_84.html#Unix-Mail-Box Gnus mbox page]] for more parameters.
 
-Please note one important fact, however: each server wants to own the
+Each server wants to *own* the
 directories and files it writes to, and gets very angry if it finds that
-they are already occupied. Therefore, the nnchoke-frumple-file and the
-nnchoke-gargle-directory parameters are pretty important. For example,
-if you have used Pine before Gnus, then you are going to have a ~/Mail
+they are already occupied. Therefore, the ##nnchoke-frumple-file## and the
+##nnchoke-gargle-directory## parameters are pretty important. For example,
+if you have used Pine before Gnus, then you are going to have a ##~/Mail/##
 directory which is used by Pine. Therefore, you should add the right
 parameters to tell Gnus to stay away from that directory. For example:
 
@@ -424,12 +405,7 @@ parameter nnchoke-directory, the file-per-server type of backend has a
 nnchoke-mbox-file parameter. All these backends have a
 nnchoke-active-file parameter.
 
-Of course, nnimap is an outlier where the above does not apply.
-
-FIXME: Can somebody say something about nnmaildir, please?
-
-
-=== Fetching and sending mail ===
+=== Fetching and Sending ===
 
 The previous section has explained how Gnus fetches mail to read.
 But the question is, how does the mail actually get to
@@ -443,321 +419,89 @@ a great section about this variable. In this tutorial, suffice it to
 provide a template for POP users, that will deal with the lion's share
 of the cases.
 
-     (setq mail-sources '((pop :server "frumple" :user "jrl")))
+     (setq mail-sources '((pop :server "mail.example.com"
+                               :user   "jrl@example.com"
+                               :password "passw0rd")))
 
-Just replace "frumple" with the name of your POP server and jrl with your
-login name on the POP server. This line goes in the file ~/.gnus.el. As
-spefified above, Gnus will then ask for your password when you fetch
-mail, but it gives you the choice of remembering the password for the
-session. You can also put the password into ~/.gnus.el:
+Without ##:password##, Gnus will ask for your password every time.
 
-     (setq mail-sources '((pop :server "frumple"
-                               :user "jrl"
-                               :password "secret")))
+You can also have several servers:
 
-Note that this means that your password is stored on your hard disk in
-the clear! If you want to prevent this, you have to type the password
-every time.
+     (setq mail-sources '((pop :server "mail1.example.com" :user "jrl")
+                          (pop :server "serv2.example.com" :user "joe")))
 
-You can also have several entries for several servers, you only need to
-be careful with the nesting of the parentheses:
+For *sending* mail, you'll likely use SMTP:
 
-     (setq mail-sources '((pop :server "frumple" :user "jrl")
-                          (pop :server "mypop" :user "joe")))
+     (setq send-mail-function 'smtpmail-send-it)             ; Not for Gnus
+     (setq message-send-mail-function 'smtpmail-send-it)     ; For Gnus
+     (setq smtpmail-default-smtp-server "mail.example.com")  ; SMTP server that you'll send from.
+     (setq smtpmail-debug-info t)                            ; only to debug problems
 
-For sending mail, you probably want to contact an SMTP server
-directly. This is easily done with smtpmail.el. Just include the
-following in ~/.gnus.el and replace host names and so on:
+Say ##C-h v message-send-mail-function## for more details on sending mail.
 
-     (setq send-mail-function 'smtpmail-send-it) ; not for Gnus
-     (setq message-send-mail-function 'smtpmail-send-it) ; for Gnus
-     (setq smtpmail-default-smtp-server "YOUR SMTP HOST")
-     (setq smtpmail-local-domain "YOUR DOMAIN NAME")
-     (setq smtpmail-sendto-domain "YOUR DOMAIN NAME")
-     (setq smtpmail-debug-info t) ; only to debug problems
+== Expiry ==
 
-The above was directly snarfed from the beginning of the file. The
-comment there says it better than I ever could.
+Gnus' way of "deleting" mail is called *Expiry*. Mark a message as expirable with ##E##. It will be deleted after [b]1 week[/b].
 
-Of course, Gnus is almost infinitely customizable for sending mail,
-too. Type C-h v message-send-mail-function <RET> for all the gory
-details.
+You may also tell Gnus to *automatically* expire mail after reading them:
 
+* Total Expire -- Treat *all* mail marked "as read" as expirable.
+* Auto Expire -- Mark mail as expirable on-read (can be unmarked manually)
 
-=== Auto-expire versus total-expire ===
+{{{
+;; These variables take a regexp input.
+(setq gnus-auto-expirable-newsgroups  "nnmbox:mail.misc"
+      gnus-total-expirable-newsgroups "nnml:mail.misc")
+}}}
 
-Every now and then, people ask about auto-expire and total-expire. Since
-both of these features are means to the same end, and since they are
-similar and dissimilar at the same time, great confusion can result in
-the unsuspecting new Gnus user. I'll try to explain how each works and
-which one to use. However, be prepared that there will be no clear
-recommendation: both work well, so for many situations both are
-appropriate. So it is more a matter of taste which one to choose. And I
-can't help you with that!
-
-
-==== What is expiry? ====
-
-Gnus treats mail in a newsreaderly fashion, so it is useful to examine
-the situation for news. Your news server periodically contacts other
-news servers and exchanges messages with the other server. The two news
-servers exchange lists of messages, and messages present in one server
-but not in the other are sent to the other server. This works in both
-directions. Many connections between news servers exist, and this is the
-way how postings travel from you into the world: when you post a
-message, your news server stores it and offers it to the other servers
-in the message list exchanging phase. Since the other servers aren't
-going to have the posting you just wrote, it gets transferred and
-finally can be seen all over the world.
-
-You can quickly see that new messages will be arriving at your news
-server, which stores them on disk. So something has got to happen else
-the disk will fill up real fast. That ``something'' is expiry: the
-oldest messages are deleted to make room for the new ones. Normally, a
-news server can be configured on a per-group basis which messages should
-be deleted. In some groups, messages might be deleted which are older
-than a day, in other groups, messages might be kept for a month.
-
-This means if you go on vacation then come back later to read news, you
-are likely to miss some postings if the expiration time for the groups
-you read is shorter than the time you were on vacation.
-
-_How does that apply to mail?_
-
-Well, mail should stay more under the control of the user than news
-is. When you come back from a vacation, you expect to see all messages
-arrived during that time, not only the recent ones!
-
-Because of this, Gnus offers you the E key. This marks a message as
-expirable. No mail is ever deleted from disk, unless it is
-expirable. Every once in a while (by default, whenever you quit a group
-by hitting q in the Summary buffer), the expiry process is run, which
-goes through all expirable messages (of a group) and expires it if old
-enough. By default, messages older than seven days are ``old
-enough''. Seven days, that is, since it was marked as expirable.
-
-FIXME: Last sentence correct?
-
-``But when I read a message, exit the group, then enter it again, the
-message is gone!''
-
-Right. By default, Gnus hides messages which have already been read. If
-you are the keyboard type, you can hit C-u <RET> or C-u <SPC> to enter
-the group or C-u M-g when in the group to look at the read messages. If
-you are the mousey type, you may wish to use the ``See old articles''
-entry in the ``Group'' menu.
-
-FIXME: How does one code menu entries in TeXinfo?
-
-
-==== Why auto-expire and total-expire? ====
-
-When reading mail, by default Gnus marks as read each message that you
-read. If you want to mark it as expirable, you have to hit E. Many
-people are subscribed to mailing lists and they configure Gnus to put
-mails from a mailing list into their own group. Most messages in such
-groups should be expirable, once read. But hitting E all the time gets
-old real quick. Hence, auto-expire and total-expire were invented.
-
-
-==== Auto-expire vs. total-expire ====
-
-Auto-expire and total-expire both aim at the same goal: articles which
-are read should normally be expired, only if one does something special
-should these articles be saved on disk. But what happens when a message
-is being read by you, the user? Well, the message is marked as read
-(with the `R' mark). So, what can be done to make these messages expire?
-Well, two approaches come to mind: one idea is to change the mark that
-is attached to messages that you read, and the other idea is to make the
-`R' articles expirable. These are exactly the things that are done in
-Gnus: auto-expire means to change the mark that is attached to a message
-that is being read, and total-expire means to change the meaning of the
-`R' mark to mean expirable.
-
-A more precise description of auto-expire might be the following: If an
-article is unmarked and then selected for reading,1 it is marked with
-`E', as if the user had hit E.
-
-It is important to realize that auto-expire has no other
-consequences. Selecting a message for reading which wasn't unmarked
-doesn't do anything special, and hitting d on a message also doesn't do
-anything special. (It therefore marks the message as read, not as
-expirable!)
-
-Now, forget about auto-expire, empty your mind and prepare to learn
-about total-expire. Like I said, total-expire changes what it means for
-an article to be marked as read.
-
-A more precise description of total-expire might be the following: When
-the expire process is run (for example, when you leave a group with q),
-all messages marked as read are considered to be expirable, as if they
-had been marked with `E'. Recall that there are several ways to mark a
-message as read: by reading it, by hitting d on it, and in a few other
-ways which I haven't mentioned so far. Recall that, in addition to the
-messages marked with `R', also those marked with `r' or `O' are
-considered to be marked as read.
-
-Can auto-expire and total-expire be used together? Well, in principle
-they can, but that doesn't make sense. Just using total-expire alone
-achieves the same effect.
-
-So, how do auto-expire and total-expire compare? Well, for once thing,
-hitting d on a message means it is expirable if total-expire is on
-(since it is marked as read and all messages marked as read are
-considered expirable when total-expire is on), but it is not expirable
-if auto-expire is on (since it is marked as read and only articles
-marked expirable (`E') are considered to be expirable). If you want to
-mark a message as expirable when total-expire is off, use E.
-
-One way of comparing auto-expire and total-expire is to compare the
-message marks that are available, and what they mean. Since auto-expire
-does not change the meaning of marks, its behavior is the same as in the
-default case. It's only important whether total-expire is on or
-off. Thus, there are only two cases: the default case and the
-total-expire case.
-
-
-===== Article marks with and without total-expire =====
+==== Marks ====
 
 The following are the default article marks and behavior:
 
-_unmarked_
+* _unmarked_ -- All new messages are unmarked.
+* _read_ -- Not shown on disk by default, but kept unless expirable.
+** ##C-u M-g## shows all read mail.
+* _dormant_ -- Not shown by default. Shew them with ##/ D##
+* _ticked_ -- Ticked messages are always shown and can't expire.
+* _expirable_ -- Will be deleted automatically over time.
 
-All new messages are unmarked. This means you haven't seen them. They
-are always shown and won't be deleted.
+==== Speed Issues ====
 
-_read_
+Auto-expire is usually *faster* than Total-expire.
 
-Messages marked as read are not shown by default but kept on disk till
-hell freezes over. You can show them with C-u M-g from the summary
-buffer, or with C-u <SPC> or with the `Group' menu item `See old
-articles' from the group buffer.
+Gnus keeps a list of:
 
-Depending on the setting of gnus-fetch-old-headers, a message marked as
-read might be shown if there is a followup or reply to it.
+* All *expirable* messages,
+* All *dormant* messages,
+* All *ticked* messages. 
 
-_dormant_
+During expiration time, Gnus scans the expire list to see which entry is old enough to delete.
 
-Dormant messages aren't shown by default but kept on disk till hell
-freezes over. You can show them with / D from the summary buffer. If
-there is a reply or followup to a dormant message, the dormant message
-is also shown.
+For *read* messages, Gnus keeps 2 lists: One for
 
-_ticked_
-
-Ticked messages are always shown and kept on disk till hell freezes
-over.
-
-_expirable_
-
-Expirable messages will be deleted in due time. They are not shown by
-default, but you can make them appear with C-u M-g and so on, similar to
-the read ones.
-
-Please note that the behavior for ticked messages is similar to the
-unread ones, and that the behavior of dormant messages is similar to the
-read ones. Especially the second fact will become important when we look
-_at_
-
-The behavior of the article marks with total-expire:
-
-_unmarked_
-
-Same as in the default case.
-
-_expirable_
-
-Same as in the default case.
-
-_read_
-
-Same as expirable.
-
-_dormant_
-
-Same as in the default case.
-
-_ticked_
-
-Same as in the default case.
-
-As you can see, only the behavior of the read messages is different, and
-you can use the dormant mark if you want to achieve behavior similar to
-the behavior of read messages in the default case.
-
-
-===== Speed issues =====
-
-Total-expire may be slow when expiry happens. Why is that? Well, Gnus
-keeps an explicit list of all expirable messages (the ones marked `E'
-without taking total-expire into account), as well as a list of dormant
-messages, and a list of ticked messages. Normally, when expiration time
-comes, Gnus goes through all articles in the expire list and looks if
-they are old enough to be expired.
-
-However, for read messages the situation is different. Here, Gnus just
+However, for *read* messages the situation is different. Here, Gnus just
 keeps a list of ranges of article numbers to be able to distinguish read
 messages from unmarked ones. The assumption is that a message is to be
 considered marked as read if it falls in one of the ranges and isn't
 mentioned in any of the expirable, dormant or ticked lists.
 
-When total-expire is turned on, Gnus needs to go through all messages in
-the read range in order to look if it's in one of the lists. If the
-message is not in the ticked or dormant list, it is expirable and thus
-Gnus looks to see if it is old enough.
+When *total-expire* is on, Gnus needs to make sure every *read* message isn't
+ticked or dormant first, before confirming it's expirable.
 
-Obviously, going through all the articles in the read ranges takes more
-time than going through just the list of expirable articles.
+Checking each article in the "read" range takes more
+time than just going through the list of expirable articles.
 
-Something can be done about the speed issue, though. Normally, the
-expiry process is started whenever you leave a group. I suggest that you
-disable this and instead run expiry just once per day, for example while
-you are going for lunch. This means that expiry still takes a long time,
-but you don't see it and thus it doesn't bother you.
+You may opt to simply run expiry manual on your own when you feel like it. 
+In that case, you can tell Gnus to no longer expire on quit:
 
-Here's how to do that: You disable the expire-on-group-exit thing with
-the following line in your ~/.gnus.el file:
+{{{
+(remove-hook 'gnus-summary-prepare-exit-hook
+             'gnus-summary-expire-articles)
+}}}
 
-     (remove-hook 'gnus-summary-prepare-exit-hook
+Then run ##gnus-groups-expire-all-groups## with ##C-c C-M-x##.
 
-                  'gnus-summary-expire-articles)
-
-And before you leave for lunch, you hit C-c C-M-x, or M-x
-gnus-group-expire-all-groups <RET>.
-
-
-===== Functionality =====
-
-Adaptive scoring doesn't work with auto-expire. (But normal scoring
-still works fine.) Adaptive scoring works fine with total-expire.
-
-
-===== A summary =====
-
-Well, it is difficult to sum up the whole discussion. I used to use
-total-expire but have switched to auto-expire a long time ago. I liked
-the fact that I could use one more kind of article mark. I also liked
-the fact that marking a message as read works the same in auto-expirable
-groups and in normal mail groups: you hit E. (With total-expire, you
-normally hit d but must remember to use E for those groups where
-total-expire is off.) And I liked that auto-expire is faster.
-
-On the other hand, adaptive scoring is surely a very useful feature (I'm
-just beginning to use it), so many people might prefer total-expire.
-
-And on a third hand, maybe the key binding issue isn't so important
-after all. You see, in mail groups the d key means `keep this message
-for archival purposes', whereas in many other modes (dired, FIXME:
-others?) it stands for `delete'. I propose to make it mean delete in
-mail groups, too, with the following line in ~/.gnus.el:2
-
-     (define-key gnus-summary-mode-map "d"
-     'gnus-summary-mark-as-expirable)
-
-Marking messages as expirable (rather than read) in news groups does no
-harm, nor does it harm to do so in total-expirable mail groups. The old
-`keep this message' semantics can still be had by marking a message as
-dormant or by using M r (in non-total-expirable groups only).
+: Normal scoring works with *auto-expire*, but not *Adaptive scoring*. Adaptive scoring works with total-expire.
 
 
 === Migrating old mail ===
