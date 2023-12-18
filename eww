@@ -48,7 +48,7 @@ You may also find [[ErcProxy]] helpful, as a lot of the solutions are general-pu
 
 == Windows ==
 
-Windows may need ##libxml2## and ##GnuTLS## installed and added to ##%PATH%##. Both of these are provided by [[[http://sourceforge.net/projects/ezwinports/files/ ezwinports]].
+Windows may need ##libxml2## and ##GnuTLS## installed and added to ##%PATH%##. Both of these are provided by [[http://sourceforge.net/projects/ezwinports/files/ ezwinports]].
 
 You may also need *TLS certificates*, as explained in [http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html “GnuTLS for Emacs 24 on Windows”].
 
