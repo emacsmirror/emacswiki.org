@@ -7,7 +7,6 @@ Gnus needs to know some details first. In ##~/.gnus.el##, write:
 
 {{{
 ;; Your email and name are shown on the 'From:' header.
-;; (Defaults to the $EMAIL and $NAME environment variables)
 (setq user-mail-address  "laura@example.com"  ; $EMAIL
       user-full-name     "Laura Smith")       ; $NAME
 
