@@ -63,38 +63,13 @@ If your *SMTP server* requires authentication, please read
 
 == Using Gnus ==
 
-You can open Gnus through the menubar, or by saying
-##M-x gnus##.
+Start Gnus with ##M-x gnus##.
 
-Gnus will *open* the servers specified in ##gnus-select-method## and
-##gnus-secondary-select-methods##, read the *group lists*, and check for new mail.
-When this is done, you'll be in the *group buffer*, where the groups are listed
-and all action belonging to groups take place.
+Gnus will open the servers in your *select methods* and fetch *new messages*, then open the *Group buffer* where your Groups are listed.
 
-=== The group buffer ===
+Use ##A A## to list available groups. ##u## *subscribes* you to the selected group.
 
-Use ##A A## to list all available groups. ##u## subscribes you to the selected group.
-
-==== The Topic-Mode ====
-
-You may sort groups into "folders" (For example ##RSS, Mail, Tech##).
-Gnus calls these folders *topics*.
-To enter ##topic-mode## hit ##t##.  There are two *default* topics -- ##gnus## and ##misc##.
-To make a new topic, place the cursor over a topic, and say ##T n##.
-
-To move a group to a topic, Say ##L## to see your
-groups, place the cursor over the group you want to move and say ##T m##.
-
-If you want ##topic-mode## to be always active, place the following in your
-##~/.gnus.el##:
-
-{{{
-(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-}}}
-
-==== More commands in the group buffer ====
-
-Here's a rough overview of commands and what they do.
+Here's an overview of common commands:
 
 * `RET' -- Enter the group under the point
 * `g' -- Check for news nd mail.
@@ -105,13 +80,29 @@ Here's a rough overview of commands and what they do.
 * `L' --Show all subscribed groups
 * `m' -- Compose new Mail
 * `a' -- Create a new Post
+* `V' -- Display current Gnus version number.
 * <code>‘^’</code> -- Enter server buffer
 
-=== Summary and Article buffer ===
+=== Topics ===
 
-When you enter a group, Gnus will *fetch* headers for that group. When it has finished, it will open a buffer showing a *summary* of each article in the group. Select an article with ##<RET>## and scroll through it with ##<SPC>## and ##<DEL>##.
+You may *sort* groups into "folders". Gnus calls these folders *topics*.
+Hit ##t## to enter ##topic-mode##.  There are two *default* topics -- ##gnus## and ##misc##.
+To make a new topic, place the cursor over a topic, and say ##T n##.
 
-If you don't like how the summary looks, customize [[https://gnus.org/manual/gnus_31.html gnus-summary-line-format]]. For example:
+Move a group to a new Topic by saying ##T m## over the group you want to move.
+
+If you want ##topic-mode## to be *always active*, place the following in your
+##~/.gnus.el##:
+
+{{{
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+}}}
+
+=== Summary Buffer ===
+
+When you *enter* a group, Gnus will fetch *headers* for that group. When it has finished, it will open a buffer showing a *summary* of each article in the group. Select an article with ##<RET>## and scroll through it with ##<SPC>## and ##<DEL>##.
+
+To change how the Summary *looks*, customize [[https://gnus.org/manual/gnus_31.html gnus-summary-line-format]]. For example:
 
 {{{
 (setq gnus-summary-line-format "%U%R%z %d  %-30n  %B%s\n")
@@ -142,7 +133,7 @@ Here are some common keybindings:
 * `L' -- Create a ##scorefile-entry## based on the current article (`?' for help)
 * `I' -- Like `L' but high score
 
-=== Writing new mail and news ===
+=== Composing Mail ===
 
 When you use a *Compose* key (say, ##m##), you'll enter a new buffer.
 Fill out the ##Subject:## header and enter your post body below ##--text follows this line--#. You may add additional headers above this line (e.g. ##X-Drunk-as-a-lord: yes##).
@@ -161,7 +152,7 @@ lines in ##~/.gnus##:
 (add-hook 'message-mode-hook 'my-message-mode-setup)
 }}}
 
-More stuff:
+Commands for composing mail:
 
 * ##C-c C-c## -- Send message
 * ##C-c C-d## -- Save message as draft
@@ -174,7 +165,7 @@ More stuff:
 
 Soon enough (after about 17 seconds of
 using Gnus), you'll find yourself in a situation where you have no idea
-how to do something or other. Here are some ways to search for solutions:
+how to do something. Here are some ways to search for solutions:
 
 * ##C-h i d m gnus## -- Read the Gnus Manual (Press ##s## to search).
 * ##C-h ?## -- Displays the system help menu.
@@ -190,23 +181,8 @@ If you're really stuck, you can ask other Gnusers. Proper places for this are:
 
 === Miscellaneous ===
 
-When Gnus asks you for an input,
-it is likely *tab-completable*. This will save you many keystrokes!
-
-Always remember that a *Gnus-buffer* is also a *normal Emacs-buffer* and
-that you can use all Emacs commands in Gnus, too.
-
-Gnus is not only a newsreader but also the symbol of a special kind of
-user. A user who knows about usenet and the stuff he or she writes
-about, so don't destroy this image of the Gnus users.
-
-== Updating Gnus ==
-
-Gnus is bundled with recent versions of Emacs. Open it with
-##M-x Gnus## and type `V'. Gnus' version number will appear in the minibuffer.
-
-You can find the latest version by searching for "##defconst gnus-version-number##" in [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el]
-(Note: The version number there may be a beta / to-be-released version).
+* When Gnus asks you for an input, it is likely *tab-completable*.
+* Gnus buffers are also *normal Emacs buffers*; You can use all Emacs commands from Gnus.
 
 == Basic terminology and news reading ==
 
@@ -1138,6 +1114,10 @@ If you reach the bottom of a summary buffer and press ##n##, Gnus will load the 
 ##C-n## and ##C-p## are *never* rebound. They are the same in every Emacs mode.
 
 You can scroll an individual article with ##SPC## and ##DEL##. This is much preferable to switching windows (##C-x o##) and scrolling (##C-v##, ##M-v##) through them :3
+
+== External Links ==
+* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el] -- The latest upstream version of Gnus
+** To find the latest version number, search for ##defconst gnus-version-number## (may be in Beta)
 
 ----
 
