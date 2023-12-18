@@ -1,0 +1,21 @@
+==Questions & Answers==
+
+[new]
+[[VincentFoley]] asks: could anyone describe the differences between rcirc and ERC from an end-user point of view?
+
+[new]
+: AlexSchroeder replies: For beginners, there should be no significant differences. After all, both claim to be easy-to-use IRC clients. The differences begin when customizing or hacking it. Neither of the two has introduced radical changes to the user interface.
+
+[new]
+: WeakishJiang replies: I have not used ERC. But I found this piece on [[InternetRelayChat|this page]]:
+
+:: I used ERC for a while, but I was not very fond of the 20 odd files required in 
+:: my elisp directory, so I switched to rcirc and haven’t looked back since. It does
+:: everything I need, the (very clean) code is contained in a single file, I’m very happy! 
+:: – VincentFoley
+: Hope it helps.
+
+-- All old comments are above.
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-18 15:36 UTC
+
