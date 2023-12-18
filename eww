@@ -21,30 +21,28 @@ You can use `M-x customize-group' on `eww' or `shr' to see more options.
 
 == Usage ==
 
-You can start Eww with `M-x eww'. You'll be asked to enter a search term or URL.
+Start Eww with `M-x eww'. You'll be prompted for a search term or URL.
 
-You can see a list of keyboard bindings with `?', but here are a few you might want:
+You can see a list of keybindings with ##?##. Common keys include:
 
-* `TAB' - Next link
-* <code>Shift+TAB</code> - Previous link
-* `b' - Add bookmark
-* `B' - View bookmarks
-* `d' - Download link under point
-* `l' - Go back
-* `r' - Go forward
-* `H' - View history
-* `g' - reload the page
-* `G' - Enter a new URL or search
-* `R' - Attempt to improve readability
-* `w' - Copy the current URL
-* <code>M-<RET></code> - Open link in new tab
-* `s' - Get a list of eww tabs
+* ##TAB## -- Next link
+* ##Shift+TAB## -- Previous link
+* ##b## -- Add bookmark
+* ##B## -- View bookmarks
+* ##l## -- Go back
+* ##r## -- Go forward
+* ##H## -- View history
+* ##G## -- Enter a new URL or search
+* ##w## -- Copy the current URL
+* ##M-<RET>## -- Open link in new tab
+* ##s## -- Get a list of eww tabs
 
 == Proxy ==
 
-To open ##.onion## links from eww, run `torsocks emacs' from the commandline. From then, you should be able to load ##.onion## addresses from within [[ERC]] and eww.
+To open ##.onion## links, run `torsocks emacs' from the terminal. 
+From then, you should be able to load ##.onion## URLs Emacs-wide.
 
-You may also find [[ErcProxy]] helpful, as a lot of the solutions are general-purpose.
+[[ErcProxy]] has a lot of helpful advice.
 
 == Windows ==
 
