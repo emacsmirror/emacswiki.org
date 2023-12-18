@@ -30,7 +30,10 @@
 
 == Future ideas ==
 
-* The [https://atom.io/ Atom editor] people wrote a protocol called [https://teletype.atom.io/ Teletype] that supposedly implements an editor-neutral robust collaborative editing protocol
+* The [https://atom.io/ Atom editor] people wrote a protocol called [https://web.archive.org/web/20221213210359/https://teletype.atom.io/ Teletype] that supposedly implements an editor-neutral robust collaborative editing protocol. They abandoned Atom and Teletype in mid-December 2022, when Teletype was still in beta, but the [https://github.com/atom/teletype/ Teletype source repositories] (javascript) are still archived on Github, so some of its pieces might be useful:
+** its "string-wise sequence CRDT" (at least its design)
+** perhaps the "editor-agnostic library that manages the interaction with other clients"
+** conceivably also the "server-side application that facilitates peer discovery" (so clients can then communicate with one another directly)
 * [https://github.com/typeintandem/tandem Tandem] is another such effort which currently supports Sublime Text 3, Neovim and (unofficially) Vim licensed under [https://github.com/typeintandem/tandem/blob/master/LICENSE.txt Apache 2.0]
 
 ----
