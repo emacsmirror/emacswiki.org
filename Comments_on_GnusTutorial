@@ -17,3 +17,18 @@ because there’s no `?’ available after `C-h ?'
 
 -- [http://daveabrahams.com DaveAbrahams] 2016-01-18 06:20 UTC
 
+
+----
+
+Sorry about all the major changes. I do feel like this tutorial is excessively verbose and poorly formatted, considering the audience.
+
+The table of contents is daunting, and the length of this webpage gives off the impression that LOTS of research is required to start using Gnus.
+
+In reality, the relatively small amount of important info is buried under walls of verbose musings. 
+
+The lack of text formatting, such as ##code## and *bold* text, makes skimming though difficult as well.
+
+I'm trying to keep some of the funnier jokes, but for the most part I've taken it upon myself to turn this into an "over the weekend" tutorial, not so much an "over summer vacation" tutorial.
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-18 16:45 UTC
+
