@@ -1,5 +1,33 @@
 A comparison of different email storage formats originally taken from GnusTutorial
 
+== Intro ==
+
+Many people use just two servers, the *native* server for news and a
+*secondary* server for mail. Thus, this alternative would mean that you
+store all your mail in one file. Since Emacs has no fancy mechanisms to
+access parts of files, Gnus loads that file into main
+memory at startup, and all your mails are kept in memory all the
+time.
+
+I think you can pretty much figure out the consequences on your own,
+now:
+
+Handling large amounts of mail may be slow.
+
+Some operations on mails will be fast, since they are in-memory
+operations.
+
+Some operations on mails will be slow, since they have to search through
+the whole file.
+
+It is convenient to have all mail stored in one file: you can easily
+transfer it to another computer using FTP, or store it on a floppy.
+
+Conclusion: If you don't have a lot of mail to deal with and like the
+convenience of storing it all in one file, one of these backends might
+be for you. However, for dealing with large volumes of mail, you may choose
+a different approach
+
 == nnmbox ==
 
 This backend uses the well-known ``mbox'' format for storing mails. In
