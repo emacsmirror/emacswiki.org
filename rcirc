@@ -4,35 +4,30 @@ rcirc is part of GNU Emacs since release 22.0.
 
 == Quickstart ==
 
-If you want to chat about rcirc, the place is <tt>#rcirc</tt> on freenode. ##M-x irc## should take you there.
-
-You can override these settings in your InitFile or use ##C-u M-x rcirc## to set server, port, username and channels.
-
-You also can define a key to start rcirc for you:
+Start rcirc with ##M-x irc##. By default it connects to <code>#rcirc</code> on ##libera.chat##. Change this in your InitFile:
 
 {{{
-(global-set-key (kbd "C-c I") 'irc)
-}}}
+(global-set-key (kbd "C-c I") 'irc) ; Keybinding to easily start IRC
 
-Please also consider visiting these pages in order to getting started:
-
-* [[rcircExampleSettings]]: examples of stuff you can do to configure rcirc.
-* [[rcircAutoAuthentication]]: How to get automatic authentication with nickserv &c.
-
-==Connecting to servers using SSL/TLS ==
-
-Emacs 24 has SSL support out of the box but rcirc doesn't use it by default. Here's how to set it up:
-
-{{{
 (setq rcirc-server-alist
-      '(("irc.libera.chat" :port 6697 :encryption tls
-	 :channels ("#rcirc" "#emacs" "#emacswiki"))))
+      '(("irc.libera.chat" ; Hostname
+       :port 6697          ; Standard port for secure IRC
+       :encryption tls     ; Specify to use encryption
+       :channels ("#rcirc" "#emacs" "#emacswiki"))))
 }}}
 
-Use [http://blog.freenode.net/2011/02/port-6697-irc-via-tlsssl/ port 6697].
-This requires an Emacs that has been built with [http://www.gnutls.org/ GNU TLS] or an appropriate ##gnutls-cli##.
 
-If you are on *Windows*, you can [ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ download a precompiled binary]. Make sure the ##bin## directory is on your path. Test it by calling ##gnutls-cli## from `eshell'. This is what you would expect:
+
+To get started, see also:
+
+* [[rcircExampleSettings Example Settings]] -- Example rcirc configurations.
+* [[rcircAutoAuthentication Auto Authentication]] -- Make autho-auth work nicely with ##nickserv &c##.
+
+== Using SSL ==
+
+SSL comes with Emacs >= 24, but rcirc must enable it first (as we do above)
+
+Emacs must be built with [http://www.gnutls.org/ GNU TLS]. On *Windows*, you can [ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ download GnuTLS]. Make sure ##bin## is in your ##PATH##. Test it by running ##gnutls-cli## from [[Eshell]]:
 
 {{{
 Welcome to the Emacs shell
@@ -41,9 +36,9 @@ Welcome to the Emacs shell
 No hostname specified
 }}} 
 
-===Warnings==
+===Troubleshooting==
 
-//gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data//
+##gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data##
 
 If you're getting this warning, add the following to your init file:
 
@@ -51,54 +46,54 @@ If you're getting this warning, add the following to your init file:
 (setq gnutls-min-prime-bits 1024)
 }}}
 
-There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanation on the mailing list].
-
 ==rcirc add-ons and commands==
 
-; [[rcircColoredNicks]]: ##/color## -- color each nick using a separate color
-; [[rcircColoredNickClasses]]: Alternative scheme where nicks can belong to classes such as pals or bots
-; [[rcircColors]]: Handle escape sequences that convey text colors
-; [[rcircRetake]]: ##/retake## -- send RECOVER and RELEASE messages to !NickServ
-; [[rcircReconnect]]: ##/reconnect## -- quit and reconnect immediately for users waking their laptop from sleep after the server has closed the connection
-; [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server
-; [[rcircPounce]]: ##/pounce##, ##/unpounce## -- store messages for people and send them when they join one of the channels you're on
-; [[rcircSmiley]]: Add little :) and :( smileys
-; [[rcircAll]]: ##/all## -- run a command such as ##/away## for all connections 
-; [[rcircNoNamesOnJoin]]: How not to display NAMES list on channel JOIN (ugly hacks inside)
-; [[rcircShowVersion]]: ##/sv## -- show rcirc version
-; [[rcircAwayTime]]: Display how long you are/were away from IRC
-; [[rcircBack]]: Cancel your AWAY state with /back (requires [[rcircAwayTime]])
-; [[rcircServerAuth]]: Patch that adds server authentication (PASS).
-; [[rcircAutoAway]]: Go /away after Emacs is idle for a period of time.
-; [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
-; [[rcircEncoding]]: Change the encoding per channel
-; [[rcircLateFix]]: Correct original word when 's/wrong/right' messages are seen.
-; [[rcircHelp]]: ##/help## -- list rcirc commands and show their documentation
-; [[rcircCommandCompletion]]: Let TAB complete commands and nicks
-; [[rcircDimNicks]]: Dim the entire line for nicks in `rcirc-dim-nicks'.
-; [[rcircNotify]]: Libnotify notification popups when someone talks to you
-; [[rcircInvisible]]: How to make yourself invisible (+i); how to advice `rcirc-connect'
-; [[rcircAutoFillColumn]]: Have your rcirc windows dynamically set fill-column instead of always being too long or too short
-; [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
-; [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
-; [[rcircOccur]]: ##/occur## -- find stuff in all your rcirc buffers
-; [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
-; [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
+* [[rcircColoredNicks]]: ##/color## -- Color each nick seperately.
+* [[rcircColoredNickClasses]]: Color nicks by group, like ##pals## and ##bots##.
+* [[rcircColors]]: Handle escape sequences that convey text colors.
+* [[rcircRetake]]: ##/retake## -- send RECOVER and RELEASE messages to ##!NickServ##.
+* [[rcircReconnect]]: ##/reconnect## -- Quit and reconnect immediately (e.g. if you enter sleep mode).
+* [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server.
+* [[rcircPounce]]: ##/pounce##, ##/unpounce## -- store messages for people and send them when they're online.
+* [[rcircSmiley]]: Add :) smilies.
+* [[rcircAll]]: ##/all## -- Run a command (such as ##/away##) for all connections 
+* [[rcircNoNamesOnJoin]]: How not to display NAMES list on channel JOIN (ugly hacks inside)
+* [[rcircShowVersion]]: ##/sv## -- Show version number.
+* [[rcircAwayTime]]: Display how long you were away from IRC
+* [[rcircBack]]: Cancel your AWAY state with /back (requires [[rcircAwayTime]])
+* [[rcircServerAuth]]: Patch that adds server authentication (PASS).
+* [[rcircAutoAway]]: Go /away after Emacs is idle for a period of time.
+* [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
+* [[rcircEncoding]]: Change the encoding per channel
+* [[rcircLateFix]]: Correct original word when 's/wrong/right' messages are seen.
+* [[rcircHelp]]: ##/help## -- list rcirc commands and show their documentation
+* [[rcircCommandCompletion]]: Let TAB complete commands and nicks
+* [[rcircDimNicks]]: Dim the entire line for nicks in `rcirc-dim-nicks'.
+* [[rcircNotify]]: Libnotify notification popups when someone talks to you
+* [[rcircInvisible]]: How to make yourself invisible (+i); how to advice `rcirc-connect'
+* [[rcircAutoFillColumn]]: Have your rcirc windows dynamically set fill-column instead of always being too long or too short
+* [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
+* [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
+* [[rcircOccur]]: ##/occur## -- find stuff in all your rcirc buffers
+* [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
+* [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
+
 
 ==Related stuff that might be of interest==
 
-; [[rcirc for bs-show]]: A configuration for `M-x bs-show' users
-; [[rcirc and iswitchb]]: Hiding IRC buffers from iswitchb
-; [[rcircNickBeep]]: Beep when your nick is mentioned.
-; [[rcircDing]]: Beep when there is activity in a hidden channel.
-; [[osx browse-url-browser-function]]: A browser function for OSX.
-; [[rcircUnambiguousNickCompletion]]: Don't cycle-complete nicks if there is ambiguity
-; [[rcircAlwaysKickBastard]]: Start your session by kicking the evil bastard that's stealing your nick
-; [[rcircPresence]]: Make rcirc tell something else about your presence status (I'm away!)
-; [[rcircQueryInNewFrame]]: I want query windows to pop up a new frame
-; [[rcircForDiscordBridge]]: When someone is running a Discord bridge in your channel
-; [[rcircNormalJoin]]: Join one channel. Normally.
-; rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simply add to your InitFile <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
+* [[rcirc for bs-show]]: A configuration for `M-x bs-show' users
+* [[rcirc and iswitchb]]: Hiding IRC buffers from iswitchb
+* [[rcircNickBeep]]: Beep when your nick is mentioned.
+* [[rcircDing]]: Beep when there is activity in a hidden channel.
+* [[osx browse-url-browser-function]]: A browser function for OSX.
+* [[rcircUnambiguousNickCompletion]]: Don't cycle-complete nicks if there is ambiguity
+* [[rcircAlwaysKickBastard]]: Start your session by kicking the evil bastard that's stealing your nick
+* [[rcircPresence]]: Make rcirc tell something else about your presence status (I'm away!)
+* [[rcircQueryInNewFrame]]: I want query windows to pop up a new frame
+* [[rcircForDiscordBridge]]: When someone is running a Discord bridge in your channel
+* [[rcircNormalJoin]]: Join one channel. Normally.
+
+rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simply add to your InitFile <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
 <pre>
 (defun rcirc-switch-buffer-or-screen (buffer)
   (if (elscreen-find-screen-by-buffer buffer)
@@ -107,22 +102,21 @@ There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanatio
 		
 (setq rcirc-switch-to-buffer-function 'rcirc-switch-buffer-or-screen)
 </pre>
-; [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
-; [[rcircDbusNotification]]: use the dbus bindings for notifications
-; [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
-; [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
-; [[rcircRandomNames]]: change all the nicks to random names
-; [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
+
+* [[rcircToDocument]]: A todo list for manual maintainers
+* [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
+* [[rcircDbusNotification]]: use the dbus bindings for notifications
+* [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
+* [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
+* [[rcircRandomNames]]: change all the nicks to random names
+* [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
 
 rcirc can highlight the channels in the mode line only when your nick is mentioned in them. Use the following code snippet:
 
-<pre>
+{{{
 (rcirc-track-minor-mode 1)
 
-(setq neale/rcirc-ignored-channels
-      '(
-	"#emacs" "#guile" "#guix" "#lisp" "#scheme" "#rcirc"
-	))
+(setq neale/rcirc-ignored-channels '("#emacs" "#guix" "#scheme" "#rcirc"))
 
 (defun neale/rcirc-print-function (process sender response target text)
   (if (not (eq target nil))
@@ -135,11 +129,7 @@ rcirc can highlight the channels in the mode line only when your nick is mention
             (setq rcirc-ignore-buffer-activity-flag t)))))))
 
 (add-hook 'rcirc-print-functions 'neale/rcirc-print-function)
-</pre>
-
-/For developers:/
-
-; [[rcircToDocument]]: A todo list for manual maintainers
+}}}
 
 ==Questions & Answers==
 
@@ -147,21 +137,16 @@ rcirc can highlight the channels in the mode line only when your nick is mention
 [[VincentFoley]] asks: could anyone describe the differences between rcirc and ERC from an end-user point of view?
 
 [new]
-AlexSchroeder replies: For beginners, there should be no significant differences. After all, both claim to be easy-to-use IRC clients. The differences begin when customizing or hacking it. Neither of the two has introduced radical changes to the user interface.
+: AlexSchroeder replies: For beginners, there should be no significant differences. After all, both claim to be easy-to-use IRC clients. The differences begin when customizing or hacking it. Neither of the two has introduced radical changes to the user interface.
 
 [new]
-WeakishJiang: I have not used ERC. But I found this piece on [[InternetRelayChat|this page]]:
+: WeakishJiang replies: I have not used ERC. But I found this piece on [[InternetRelayChat|this page]]:
 
-[quote]
-I used ERC for a while, but I was not very fond of the 20 odd files required in 
-my elisp directory, so I switched to rcirc and haven’t looked back since. It does
-everything I need, the (very clean) code is contained in a single file, I’m very happy! 
-
-– VincentFoley
-[/quote]
-
-Hope it helps.
-[new]
+:: I used ERC for a while, but I was not very fond of the 20 odd files required in 
+:: my elisp directory, so I switched to rcirc and haven’t looked back since. It does
+:: everything I need, the (very clean) code is contained in a single file, I’m very happy! 
+:: – VincentFoley
+: Hope it helps.
 
 ----
 CategoryChatClient
