@@ -210,3 +210,13 @@ Or you could add a special continuation parameter, something like <code>#[cont]<
 
 -- FelixKlee 2013-09-15 14:33 UTC
 
+
+----
+
+I'd like to know if there's  way to add *Comments* on a page, that you can only view while editing, such as
+
+* ##<!-- Comment -->## or
+* ##[//] Comment##
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-18 14:46 UTC
+
