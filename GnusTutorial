@@ -6,17 +6,17 @@ This is a step-by-step guide to using [[Gnus]], an Emacs package for reading [b]
 Gnus needs to know some details first. In ##~/.gnus.el##, write:
 
 {{{
-;; Your email and name are shown on the 'From:' header.
+;; As shown on the 'From:' header.
 (setq user-mail-address  "laura@example.com"  ; $EMAIL
       user-full-name     "Laura Smith")       ; $NAME
 
-;; Your primary server, and two additional servers.
+;; Primary server and two additional servers.
 (setq
   gnus-select-method '(nntp "foo.bar.com")
   gnus-secondary-select-methods '((nnspool "localhost")
                                   (nnml    "")))
 
-;; Where 'nnml' looks for email credentials
+;; 'nnml' looks here for credentials
 (setq mail-sources
       '((pop :server   "mail.example.com"   
              :user     "Laura@example.com"
