@@ -12,7 +12,8 @@ Before using Gnus, you must tell it about you. Open (or create) ##~/.gnus.el## a
 
 {{{
 (setq user-mail-address  "you@domain.com"
-      user-full-name     "Your Full Name")
+      user-full-name     "Your Full Name"
+      mail-signature     "Most pettable Dog")
 
 ;; Instead, you may set the $EMAIL and $NAME environment variables.
 }}}
@@ -137,9 +138,6 @@ Here are some common keybindings:
 
 When you use a *Compose* key (say, ##m##), you'll enter a new buffer.
 Fill out the ##Subject:## header and enter your post body below ##--text follows this line--#. You may add additional headers above this line (e.g. ##X-Drunk-as-a-lord: yes##).
-
-You may add a *signature* below your post by writing it
- in the ##~/.signature## file (Please keep your signature short).
 
 You likely want automatic word-wrapping. Add the following
 lines in ##~/.gnus##:
