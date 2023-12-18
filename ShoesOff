@@ -1,11 +1,11 @@
-<nowiki>ShoesOff</nowiki> is an IRC bouncer written in EmacsLisp, by NickFerrier
+<nowiki>ShoesOff</nowiki> is an IRC bouncer written in EmacsLisp, by NicFerrier
 
 An *IRC bouncer* is like a proxy for IRC. It's used to maintain a permanent connection to IRC while you are temporarily offline.
 
 <nowiki>ShoesOff</nowiki> is written with [[rcirc]] but it works with any IRC clients connecting to it.
 
 == Links ==
-* [[https://github.com/nicferrier/shoes-off]] -- Github Repository
+* [[https://github.com/nicferrier/shoes-off Github Repository]]
 * InternetRelayChat
 
 ----
