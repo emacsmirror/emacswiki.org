@@ -36,15 +36,14 @@ Welcome to the Emacs shell
 No hostname specified
 }}} 
 
-If you get the following error:
+: If you get the following error:
 
-##gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data##
+: ##gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data##
 
-Add the following to your init file:
+: Add the following to your init file:
 
-{{{
-(setq gnutls-min-prime-bits 1024)
-}}}
+: <code>(setq gnutls-min-prime-bits 1024)</code>
+
 
 == Commands ==
 
