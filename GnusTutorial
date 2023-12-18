@@ -1,65 +1,43 @@
 This is a step-by-step guide to using [[Gnus]], an Emacs package for reading [b]Netnews[/b],
  [b][GettingMail email][/b], *RSS*, and much more. It is highly customizable.
 
-However, all this can make it hard to learn. The [[https://www.gnu.org/software/emacs/manual/html_mono/gnus.html Gnus Manual]] 
-is more of a *technical reference* than a user
-guide, so new users often find it difficult to understand.
-
-
 == Setup ==
 
-Before using Gnus, you must tell it about you. Open (or create) ##~/.gnus.el## and enter:
+Gnus needs to know some details first. In ##~/.gnus.el##, write:
 
 {{{
-(setq user-mail-address  "you@domain.com"
-      user-full-name     "Your Full Name"
-      mail-signature     "Most pettable Dog")
+;; Your email and name are shown on the 'From:' header.
+;; (Defaults to the $EMAIL and $NAME environment variables)
+(setq user-mail-address  "laura@example.com"  ; $EMAIL
+      user-full-name     "Laura Smith")       ; $NAME
 
-;; Instead, you may set the $EMAIL and $NAME environment variables.
-}}}
-
-Gnus needs to know where to *fetch* its messages from. In this example we specify multiple sources:
-
-* ##foo.bar.com## -- An NNTP server.
-* ##localhost## -- Our local news spool.
-* ##mail.example.com## -- Our Email provider.
-
-{{{
+;; Your primary server, and two additional servers.
 (setq
-  gnus-select-method            '(nntp     "foo.bar.com")
+  gnus-select-method '(nntp "foo.bar.com")
   gnus-secondary-select-methods '((nnspool "localhost")
                                   (nnml    "")))
 
+;; Where 'nnml' looks for email credentials
 (setq mail-sources
-      '((pop :server   "mail.example.com"
-             :user     "Laura"
+      '((pop :server   "mail.example.com"   
+             :user     "Laura@example.com"
              :password "passw0rd")))
+
+;; SMTP -- for sending mail.
+(setq 
+  send-mail-function   'smtpmail-send-it
+  smtpmail-smtp-server "mail.example.com" ; $SMTPSERVER
+  smtpmail-smtp-service 587)
 }}}
 
-If required, Gnus will prompt for a *username* and *password* every time. To avoid this, put the following in ##~/.authinfo##
+To avoid a username and password prompt every time, add this to ##~/.authinfo##
 
 {{{
-machine foo.bar.com login your_username  passwerd your_pass
-machine localhost   login your_username2 password your_pass2 force yes
+machine mail.example.com login laura@example.com password passw0rd port 993
+machine mail.example.com login laura@example.com password passw0rd port 587 force yes 
     
-# "force yes" forces a username connection over anonymous.
+# 'force yes' forces a username connection over anonymous.
 }}}
-
-Gnus needs to know how to *send* mail. ##smtpmail## is easy as it comes built-into Emacs.
-Add the following lines to ##~/.gnus.el##:
-
-{{{
-(setq send-mail-function		'smtpmail-send-it
-      message-send-mail-function	'smtpmail-send-it
-      smtpmail-smtp-server		"mail.example.com")
-
-;; Instead of smtpmail-smtp-server, you may set the environment variable $SMTPSERVER
-}}}
-
-Emacs' default SMTP port is [b]25[/b]. To change this, customize ##smtpmail-smtp-service##.
-
-If your *SMTP server* requires authentication, please read 
-[[http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication This Manual page]].
 
 == General Usage ==
 
@@ -504,6 +482,7 @@ You can scroll an individual article with ##SPC## and ##DEL##. This is much pref
 * *You* -- A very pretty user 🩵
 
 == External Links ==
+* [[https://www.gnu.org/software/emacs/manual/html_mono/gnus.html Gnus Manual]] 
 * [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el] -- The latest upstream version of Gnus
 ** To find the latest version number, search for ##defconst gnus-version-number## (may be in Beta)
 
