@@ -1,5 +1,7 @@
 How Setup Google Talk in Emacs with JabberEl
 
+[b]NOTE: Google Talk dropped XMPP support. The bolow will no longer work[/b]
+
 == Basic installation ==
 
 jabbber.el is packaged in MarmaladeRepo so you can just:
