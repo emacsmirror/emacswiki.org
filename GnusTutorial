@@ -172,11 +172,12 @@ If you're really stuck, you can ask other Gnusers. Proper places for this are:
 * gnu.emacs.gnus
 * news.software.readers
 * gnus.ding -- (If you're on an Alpha release)
+* EmacsNewsgroups
 
-* When Gnus asks you for an input, it is likely *tab-completable*.
-* Gnus buffers are also *normal Emacs buffers*; You can use all Emacs commands from Gnus.
-
-
+Also remember:
+* ##C-h b## lists all keybindings
+* Gnus' prompts are usually *tab-completable*.
+* You can use all Emacs functions from in Gnus.
 
 == Mail ==
 
