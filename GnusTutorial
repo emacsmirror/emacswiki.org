@@ -172,155 +172,6 @@ If you're really stuck, you can ask other Gnusers. Proper places for this are:
 * When Gnus asks you for an input, it is likely *tab-completable*.
 * Gnus buffers are also *normal Emacs buffers*; You can use all Emacs commands from Gnus.
 
-== Glossary ==
-
-Terms I use which might be unfamiliar to you.
-
-_say_ -- "You can *say* ##(setq my-var t)## to enable ##my-var##
-
-_Posting, Article, Message, Mail_
-
-All similar. I use the term *message* to refer to both email /and/ news posts,
-but *mail message* and *news message* for the individual cases. "posting" and "article"
-are synonymous with "message.
-
-_Backend_
-
-Gnus fetches messages from various sources. A *backend* describes how Gnus
-*accesses* a set of messages from a server. Gnus uses the ##nntp## backend to interface with NNTP servers, and the ##nnimap## backend to talk to IMAP servers.
-
-_Server_
-
-Whereas a backend describes the mechanism used by Gnus to access the
-messages, a server is a specific instance of that mechanism. You might
-create a specific server for accessing the host news.frob.org using
-NNTP, say. Or you might create a server for accessing the MH-style
-directory ~/OldMail.
-
-If you are a programmer, think of a backend as the class and of a server
-as an object (instance) of that class. If you are a cook, think of a
-backend as an apple pie recipe (say), and think of a server as an actual
-apple pie. (Yummy!) If you live in a huge city, think of a backend as a
-bus (or tram, or underground) line (the Circle Line comes to mind), and
-think of a server as a specific bus (or tram train, or underground
-train). The one at 8:15 last Monday morning, for example. If you drive a
-car, think of a backend as the model and make and of a server as a
-specific car.
-
-Obviously, there can be two servers using the same backend. (Two
-instances of the same class, two apple pies baked according to the same
-recipe, two busses going the same route, two cars of the same model.)
-
-[u](Select) method[/u]
-
-Just another term for server.
-
-[u]Native server[/u]
-
-This is the *primary server*, so to speak. Most people let their news
-server be the native server, hence:
-
-          (setq gnus-select-method '(nntp "news.frob.org"))
-
-_Secondary select methods_
-
-A list of additional servers one wishes to use. 
-
-Groups from a secondary server are known as *secondary groups*.
-
-In order to be able to distinguish native groups from secondary groups,
-each server is identified with a (unique) name and that name is used as
-a prefix for the secondary groups. Thus, you might have a group
-gnu.emacs.help (which is native) and another group nnml:mail.misc (which
-is secondary). A plus character is used if the name of a server is not
-the empty string. For example, given the following in your ~/.gnus.el
-file
-
-          (setq gnus-secondary-select-methods
-                '((nnml "work" (nnml-directory "~/Mail.work/"))
-                  (nnml "play" (nnml-directory "~/Mail.play/"))))
-
-you might have the groups ##nnml+work:boss## and ##nnml+play:so1##.
-
-_Group_
-
-Well, if you've read news before, you know about different news
-groups. One of my favorites is gnu.emacs.gnus, and I wish I would read
-alt.fan.pratchett. Since Gnus treats mail in a newsreaderly fashion, it
-is obvious that it uses groups rather than ``folders'' like other mail
-readers do. So with Gnus there are news groups and mail groups, where
-mail groups are known as mail folders to other programs.
-
-Each group belongs to a certain server, and each server uses a certain
-backend.
-
-_Expiry_
-
-News servers offer news groups which contain news postings. New news
-postings come in, so the news postings accumulate, and pretty soon the
-new hard disk is full. This is not good news at all.
-
-Thus, a news server does what is known as expiry: it deletes old
-messages. Of course, on a news server, expiry happens with no regard of
-whether people have already seen the message in question; instead, the
-news server admin chooses expiry times based on available disk space and
-maybe on the normal amount of traffic in a news group.
-
-But mail messages should be under the users' control, so there better be
-no server which deletes messages regardless of users having seen them!
-Instead, Gnus adopts a scheme where users say which messages may be
-deleted, and Gnus takes care of deleting them after a while. (They are
-not deleted immediately in case you made a mistake, or in case you wish
-to refer back to an old article.)
-
-_Article marks_
-
-Gnus distinguishes between a number of article marks, which indicate
-whether they have been looked at, or are considered important, or the
-like. Marks are represented by a character.
-
-If that character is a space, it looks as if the message isn't marked at
-all. These messages are called unmarked, the mark character used is a
-space, and marking a message with space is considered to be the same as
-removing all marks—after all, such messages are unmarked. You can type
-M-u to remove all marks and make an article unmarked.
-
-Articles that are considered important or where you wish to indicate
-that you have to deal with them later can be ticked. The mark character
-used for ticked messages is the exclamation mark, and you can use u or !
-to tick messages. Ticked messages are always shown when you enter a
-group.
-
-There is the dormant mark which is similar to the ticked mark but does
-not imply importance or urgency; thus, dormant messages aren't shown by
-default. The mark character used is the question mark, and you can mark
-messages as dormant using the ? key.
-
-So far, each kind of mark was associated with one character (as was the
-absence of any mark). But articles which you have read are a bit
-different, since lots of different characters are used here. The
-important thing to realize is that these messages are treated in the
-same way by Gnus; the different characters are only used as an
-information for the user.
-
-Articles which are marked as read because you have actually read them
-(the normal case, one would think) are marked with the `R'
-character. (Type <SPC> or g to read a message, or click on it using the
-middle mouse button, <mouse-2>.) You can also mark a message as read
-without actually reading it, this is indicated with the `r' character
-and can be achieved with d or M r.
-
-After exiting a group and then entering it again (some time later), the
-messages that had been marked as read before appear with the `O'
-character.
-
-To reiterate: the difference between `r', `R' and `O' is only an
-information for the user.
-
-_Footnotes_
-
-[1] ``SO'' standing for ``significant other'', i.e. girlfriend or
-boyfriend.
 
 
 == Mail ==
@@ -635,6 +486,22 @@ If you reach the bottom of a summary buffer and press ##n##, Gnus will load the 
 ##C-n## and ##C-p## are *never* rebound. They are the same in every Emacs mode.
 
 You can scroll an individual article with ##SPC## and ##DEL##. This is much preferable to switching windows (##C-x o##) and scrolling (##C-v##, ##M-v##) through them :3
+
+== Glossary ==
+
+* *Message* -- General term for either Mail or News
+* *Mail* -- A message sent over email
+* *Post* -- A message sent over NNTP / News
+* *Backend* -- A Gnus facility for fetching messages over a protocol
+* *Server* -- A single instance of a backend.
+* *Select Method* -- Synonymous with Server
+* *Secondary Method* -- An additional server
+* *Group* -- A newsgroup (Gnus treats a mailbox as a group, too)
+* *Expirable* -- A message marked for deletion
+* *Marks* -- A status marker on a message (##R## means ##read##)
+* *$* -- Words beginning with a ##$## are environment variables
+* *User* -- You!
+* *You* -- A very pretty user 🩵
 
 == External Links ==
 * [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/gnus/gnus.el gnus.el] -- The latest upstream version of Gnus
